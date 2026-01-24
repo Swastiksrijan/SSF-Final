@@ -40,8 +40,10 @@ export default function MemberForm() {
                 serviceId,
                 templateId,
                 {
+                    name: formData.fullName,
                     from_name: formData.fullName,
                     from_email: formData.email,
+                    email: formData.email,
                     phone: formData.phone,
                     role: "Member",
                     member_type: formData.memberType,

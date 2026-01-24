@@ -62,10 +62,14 @@ export default function Contact() {
         import.meta.env.VITE_EMAILJS_SERVICE_ID,
         import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
         {
+          name: `${formData.firstName} ${formData.lastName}`,
           from_name: `${formData.firstName} ${formData.lastName}`,
           from_email: formData.email,
+          email: formData.email,
           message: formData.message,
-        }
+          subject: "Contact Us Inquiry - SSF"
+        },
+        import.meta.env.VITE_EMAILJS_PUBLIC_KEY
       );
 
       showToast("success", "Message successfully submitted!");
@@ -123,10 +127,10 @@ export default function Contact() {
             <span className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs mb-4 inline-block">
               Contact Us
             </span>
-            <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight">
+            <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tighter">
               Connect for <span className="text-[#fb8500]">Change</span>
             </h1>
-            <p className="text-xl md:text-2xl font-serif mt-2">
+            <p className="text-xl md:text-3xl font-medium mt-4 text-zinc-100 opacity-90">
               Reach Out to Swastik Srijan Foundation
             </p>
             <p className="text-zinc-400 mt-8 text-lg leading-relaxed max-w-3xl mx-auto">
@@ -147,7 +151,7 @@ export default function Contact() {
             className="space-y-12"
           >
             <div className="space-y-6">
-              <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
+              <h2 className="text-3xl md:text-5xl font-black text-[#002344] tracking-tight">
                 Get in Touch
               </h2>
               <p className="text-lg text-zinc-500 font-medium leading-relaxed">
@@ -161,12 +165,7 @@ export default function Contact() {
                   icon: <Mail />,
                   label: "Email Us",
                   value: CONTACT_INFO.primaryEmail,
-                  sub: (
-                    <div className="space-y-1">
-                      <p>Technical issue in info@swastiksrijan.org / .in</p>
-                      <p className="text-zinc-400 text-sm">[Temp. Tech-issue]</p>
-                    </div>
-                  ),
+                  sub: "Direct Support Inquiry",
                   color: "bg-blue-50 text-[#002344]"
                 },
                 {
@@ -189,9 +188,9 @@ export default function Contact() {
                     {item.icon}
                   </div>
                   <div className="space-y-1">
-                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{item.label}</p>
-                    <p className="text-xl md:text-2xl font-serif font-bold text-[#002344] break-words">{item.value}</p>
-                    <div className="text-zinc-500 font-medium">{item.sub}</div>
+                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">{item.label}</p>
+                    <p className="text-xl md:text-2xl font-bold text-[#002344] tracking-tight break-words">{item.value}</p>
+                    <div className="text-zinc-500 font-medium text-sm leading-relaxed">{item.sub}</div>
                   </div>
                 </div>
               ))}

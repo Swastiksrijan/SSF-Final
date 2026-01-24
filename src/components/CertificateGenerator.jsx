@@ -9,6 +9,7 @@ export default function CertificateGenerator({ role }) {
     const [loading, setLoading] = useState(false);
     const [generated, setGenerated] = useState(false);
     const [error, setError] = useState('');
+    const [volunteerType, setVolunteerType] = useState('Field Volunteer');
 
     // 🔒 SECURITY CODES (You can change these)
     const VALID_CODES = {
@@ -61,7 +62,8 @@ export default function CertificateGenerator({ role }) {
         await new Promise(r => setTimeout(r, 1500));
 
         try {
-            await generateCertificate(trimmedName, role, today);
+            const certRole = role === 'Volunteer' ? volunteerType : role;
+            await generateCertificate(trimmedName, certRole, today);
 
             // Save to history
             history[recordKey] = new Date().toISOString();
@@ -112,6 +114,28 @@ export default function CertificateGenerator({ role }) {
                         />
                     </div>
 
+                    {/* Volunteer Type Selection (Only for Volunteers) */}
+                    {role === 'Volunteer' && (
+                        <div className="relative">
+                            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 ml-1">
+                                Volunteer Category (Select your role)
+                            </label>
+                            <select
+                                value={volunteerType}
+                                onChange={(e) => setVolunteerType(e.target.value)}
+                                className="w-full px-5 py-4 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-4 focus:ring-[#003366]/10 focus:border-[#003366] text-lg font-semibold text-zinc-800 outline-none transition-all appearance-none"
+                            >
+                                <option value="Field Volunteer">Field Volunteer</option>
+                                <option value="Program Volunteer">Program Volunteer</option>
+                                <option value="Professional Volunteer">Professional Volunteer</option>
+                                <option value="Digital Volunteer">Digital Volunteer</option>
+                            </select>
+                            <div className="absolute right-4 bottom-5 pointer-events-none opacity-50">
+                                <FaDownload size={14} className="rotate-270" />
+                            </div>
+                        </div>
+                    )}
+
                     {/* Access Code Input */}
                     <div className="relative">
                         <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 ml-1 flex items-center gap-2">
@@ -149,8 +173,8 @@ export default function CertificateGenerator({ role }) {
                         type="submit"
                         disabled={loading || !name.trim() || !accessCode.trim()}
                         className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] ${generated
-                                ? 'bg-green-50 text-green-700 border-2 border-green-200 cursor-default'
-                                : 'bg-gradient-to-r from-[#003366] to-[#004080] text-white hover:shadow-xl'
+                            ? 'bg-green-50 text-green-700 border-2 border-green-200 cursor-default'
+                            : 'bg-gradient-to-r from-[#003366] to-[#004080] text-white hover:shadow-xl'
                             } disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed`}
                     >
                         {loading ? (

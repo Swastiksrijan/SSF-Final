@@ -40,8 +40,10 @@ export default function VolunteerForm() {
                 serviceId,
                 templateId,
                 {
+                    name: formData.fullName,
                     from_name: formData.fullName,
                     from_email: formData.email,
+                    email: formData.email,
                     phone: formData.phone,
                     volunteer_type: formData.volunteerType,
                     message: formData.message,

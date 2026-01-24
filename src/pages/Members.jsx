@@ -1,9 +1,12 @@
-import { motion } from "framer-motion";
-import { FaCrown, FaUserShield, FaUserTie, FaAward, FaUsers, FaHandHoldingHeart, FaArrowRight, FaCheckCircle } from "react-icons/fa";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaCrown, FaUserShield, FaUserTie, FaAward, FaUsers, FaHandHoldingHeart, FaArrowRight, FaCheckCircle, FaTimes } from "react-icons/fa";
 import CertificateGenerator from "../components/CertificateGenerator";
 import MemberForm from "../components/MemberForm";
 
 const Members = () => {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
     visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
@@ -59,7 +62,6 @@ const Members = () => {
 
   return (
     <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
-      {/* ================= HERO ================= */}
       {/* ================= HERO ================= */}
       <section className="relative h-[80vh] flex items-center justify-center bg-[#001529] overflow-hidden">
         <div className="absolute inset-0">
@@ -145,12 +147,14 @@ const Members = () => {
                 </div>
 
                 <a
-                  href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
-                  target="_blank"
-                  rel="noreferrer"
+                  href="#apply"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setIsFormOpen(true);
+                  }}
                   className={`mt-8 w-full py-3 text-center rounded-xl font-bold transition-all ${type.highlight ? 'bg-[#002344] text-white hover:bg-[#FF6600]' : 'bg-zinc-100 text-zinc-700 hover:bg-zinc-200'}`}
                 >
-                  Join Now
+                  Apply Now
                 </a>
               </motion.div>
             ))}
@@ -159,7 +163,7 @@ const Members = () => {
       </section>
 
       {/* ================= QUALIFICATIONS ================= */}
-      <section className="py-24 px-6 bg-white">
+      <section className="py-24 px-6 bg-white" id="apply">
         <div className="max-w-6xl mx-auto">
           <div className="bg-gradient-to-br from-zinc-50 to-white p-10 md:p-16 rounded-[4rem] border border-zinc-200 shadow-xl">
             <div className="grid md:grid-cols-2 gap-16">
@@ -196,7 +200,13 @@ const Members = () => {
                 <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 mt-8">
                   <h4 className="font-bold text-[#002344] mb-4 text-lg">Ready to Apply?</h4>
                   <div className="space-y-3">
-                    <MemberForm />
+                    <button
+                      onClick={() => setIsFormOpen(true)}
+                      className="w-full flex justify-between items-center bg-white p-4 rounded-xl hover:shadow-md transition text-lg font-bold text-zinc-700 hover:text-[#002344] cursor-pointer"
+                    >
+                      <span>📝 Member Application Form</span>
+                      <FaArrowRight />
+                    </button>
                     <a
                       href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
                       target="_blank"
@@ -213,6 +223,39 @@ const Members = () => {
           </div>
         </div>
       </section>
+
+      {/* ================= MEMBER REGISTRATION MODAL ================= */}
+      <AnimatePresence>
+        {isFormOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsFormOpen(false)}
+              className="absolute inset-0 bg-[#001529]/80 backdrop-blur-md transition-all"
+            ></motion.div>
+
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-white rounded-[2rem] shadow-2xl p-2 md:p-4"
+            >
+              <button
+                onClick={() => setIsFormOpen(false)}
+                className="absolute top-6 right-6 z-10 w-10 h-10 bg-zinc-100 text-zinc-500 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-all shadow-lg"
+              >
+                <FaTimes size={20} />
+              </button>
+
+              <div className="p-2">
+                <MemberForm />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* ================= CERTIFICATE GENERATOR ================= */}
       <section className="py-24 bg-zinc-50 px-4 border-t border-zinc-100">

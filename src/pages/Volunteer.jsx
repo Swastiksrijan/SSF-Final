@@ -1,9 +1,12 @@
-import { motion } from "framer-motion";
-import { FaMapMarkerAlt, FaProjectDiagram, FaUserTie, FaLaptop, FaArrowRight, FaHandsHelping, FaWhatsapp } from "react-icons/fa";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaMapMarkerAlt, FaProjectDiagram, FaUserTie, FaLaptop, FaArrowRight, FaHandsHelping, FaWhatsapp, FaTimes } from "react-icons/fa";
 import CertificateGenerator from "../components/CertificateGenerator";
 import VolunteerForm from "../components/VolunteerForm";
 
 export default function Volunteer() {
+  const [isFormOpen, setIsFormOpen] = useState(false);
+
   const volunteerTypes = [
     {
       id: "field",
@@ -139,14 +142,19 @@ export default function Volunteer() {
               Join a community of over 500+ volunteers across Bharat who are dedicated to the wellness of every human being.
             </p>
 
-            <VolunteerForm />
-
-            <div className="pt-6">
+            <div className="flex flex-wrap gap-4">
+              <button
+                onClick={() => setIsFormOpen(true)}
+                className="bg-[#FF6600] text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-[#002344] transition-all flex items-center gap-3 cursor-pointer shadow-xl hover:shadow-orange-200"
+              >
+                👉 Apply as a Volunteer
+                <FaArrowRight />
+              </button>
               <a
                 href="https://chat.whatsapp.com/your-link"
                 target="_blank"
                 rel="noreferrer"
-                className="bg-[#25D366] text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-[#128C7E] transition-all flex items-center gap-3 inline-flex"
+                className="bg-[#25D366] text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-[#128C7E] transition-all flex items-center gap-3 inline-flex shadow-xl"
               >
                 <FaWhatsapp />
                 Join Volunteer Hub
@@ -166,6 +174,39 @@ export default function Volunteer() {
           </div>
         </div>
       </section>
+
+      {/* ================= VOLUNTEER REGISTRATION MODAL ================= */}
+      <AnimatePresence>
+        {isFormOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setIsFormOpen(false)}
+              className="absolute inset-0 bg-[#001529]/80 backdrop-blur-md transition-all"
+            ></motion.div>
+
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.9, opacity: 0, y: 20 }}
+              className="relative w-full max-w-4xl max-h-[90vh] overflow-y-auto bg-white rounded-[3rem] shadow-2xl p-2 md:p-6"
+            >
+              <button
+                onClick={() => setIsFormOpen(false)}
+                className="absolute top-8 right-8 z-10 w-12 h-12 bg-zinc-100 text-zinc-500 rounded-full flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all shadow-lg"
+              >
+                <FaTimes size={24} />
+              </button>
+
+              <div className="p-4">
+                <VolunteerForm />
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
 
       {/* ================= CERTIFICATE GENERATOR ================= */}
       <section className="py-24 bg-zinc-50 px-4 border-t border-zinc-100">

@@ -96,11 +96,13 @@ export const generateCertificate = async (name, role, date) => {
 
     // --- 5. Body Text ---
     let roleText = "";
-    if (role.toLowerCase() === 'volunteer') {
-        roleText = "In recognition of your selfless service and dedication as a VOLUNTEER. Your contribution has made a significant impact on our mission.";
-    } else if (role.toLowerCase() === 'donor') {
+    const lowerRole = role.toLowerCase();
+
+    if (lowerRole.includes('volunteer')) {
+        roleText = `In recognition of your selfless service and dedication as a ${role.toUpperCase()}. Your contribution has made a significant impact on our mission.`;
+    } else if (lowerRole === 'donor') {
         roleText = "In sincere gratitude for your generous DONATION. Your support empowers us to bring positive change where it is needed most.";
-    } else if (role.toLowerCase() === 'member') {
+    } else if (lowerRole === 'member') {
         roleText = "Acknowledging your commitment as an esteemed MEMBER of our community. Together, we are building a better future.";
     } else {
         roleText = `In recognition of your valuable contribution as a ${role.toUpperCase()}.`;
@@ -114,20 +116,39 @@ export const generateCertificate = async (name, role, date) => {
     doc.text(splitText, centerX, 135, { align: 'center' });
 
     // --- 6. Signatures ---
-    const sigY = height - 45;
+    const sigY = height - 35; // Moved down slightly
 
-    // Left Signature (President/Director)
-    doc.setDrawColor(textDark);
-    doc.setLineWidth(0.5);
-    doc.line(40, sigY, 90, sigY); // Line
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(darkBlue);
-    doc.text("Dr. A. K. Shukla", 65, sigY + 6, { align: 'center' }); // Example Name
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor('#777777');
-    doc.text("Founder & President", 65, sigY + 11, { align: 'center' });
+    // Left Signature (Official Signature Image)
+    try {
+        const sigUrl = '/images/signature.png';
+        const sigImg = await loadImage(sigUrl);
+        const sigWidth = 35; // Made smaller
+        const sigHeight = (sigImg.height / sigImg.width) * sigWidth;
+        // Positioned clearly in the bottom left corner above the line
+        doc.addImage(sigImg, 'PNG', 30, sigY - sigHeight - 5, sigWidth, sigHeight);
+
+        // Add signature line and name below the image
+        doc.setDrawColor(textDark);
+        doc.setLineWidth(0.5);
+        doc.line(25, sigY, 70, sigY);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(darkBlue);
+        doc.text("Amit Kumar Pandey", 47.5, sigY + 5, { align: 'center' });
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor('#777777');
+        doc.text("Secretary, SSF", 47.5, sigY + 9, { align: 'center' });
+    } catch (e) {
+        // Fallback if signature image fails
+        doc.setDrawColor(textDark);
+        doc.setLineWidth(0.5);
+        doc.line(25, sigY, 70, sigY);
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10);
+        doc.setTextColor(darkBlue);
+        doc.text("Amit Kumar Pandey", 47.5, sigY + 5, { align: 'center' });
+    }
 
     // Badge/Seal Simulation in Center (Gold Circle)
     doc.setFillColor(gold);
@@ -152,9 +173,16 @@ export const generateCertificate = async (name, role, date) => {
     doc.setTextColor('#777777');
     doc.text("Date of Issue", width - 65, sigY + 11, { align: 'center' });
 
+    // --- 7. Legal Disclaimer Footer ---
+    doc.setFont("helvetica", "italic");
+    doc.setFontSize(7);
+    doc.setTextColor('#999999');
+    const disclaimerEN = "This certificate is scanned from an original physically signed document. Original copy is available with the organization.";
+    doc.text(disclaimerEN, centerX, height - 12, { align: 'center' });
+
     // Footer ID
     const certID = `ID: SSF-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}-${new Date().getFullYear()}`;
-    doc.setFont("source-code-pro", "normal"); // Monospace fallback
+    doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor('#aaaaaa');
     doc.text(certID, 15, height - 7);

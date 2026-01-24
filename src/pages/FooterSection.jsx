@@ -26,7 +26,7 @@ export default function FooterSection() {
             {/* Socials */}
             <div className="flex gap-4 pt-4">
               {[
-                { icon: FaFacebookF, href: "https://facebook.com", label: "Facebook" },
+                { icon: FaFacebookF, href: "https://www.facebook.com/share/16H5Xpr4vG/", label: "Facebook" },
                 { icon: FaInstagram, href: "https://instagram.com", label: "Instagram" },
                 { icon: FaLinkedinIn, href: "https://linkedin.com", label: "LinkedIn" },
                 { icon: FaTwitter, href: "https://twitter.com", label: "Twitter" },

@@ -28,6 +28,7 @@ export const CONTACT_INFO = {
     social: {
         whatsapp: "https://wa.me/919718346691",
         razorpay: "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view",
+        upi: "swastikstijanfoundation@ptyes",
     },
 
     // Legal/DPO Info
