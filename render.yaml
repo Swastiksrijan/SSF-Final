@@ -1,0 +1,21 @@
+services:
+  - type: web
+    name: ngo-backend
+    env: node
+    plan: free
+    rootDir: backend_node
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: PORT
+        value: 5000
+    fromDatabase:
+      name: ngo-db
+      property: connectionString
+      key: DB_URL
+
+databases:
+  - name: ngo-db
+    plan: free
+    databaseName: ngo_db
+    user: ngo_user
