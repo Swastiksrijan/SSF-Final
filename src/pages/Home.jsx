@@ -384,7 +384,7 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
             {/* Join WhatsApp */}
             <a
-              href="https://chat.whatsapp.com/your-group-link"
+              href={CONTACT_INFO.social.whatsappGroup}
               target="_blank"
               rel="noreferrer"
               className="bg-white/10 hover:bg-[#25D366] hover:text-white p-8 rounded-2xl transition-all group flex flex-col items-center gap-4 backdrop-blur-sm border border-white/5"

@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { FaHandHoldingHeart, FaUsers, FaHeart, FaWhatsapp, FaArrowRight, FaHandsHelping, FaAward, FaUniversity, FaHandshake } from "react-icons/fa";
 import { Link } from "@tanstack/react-router";
+import { CONTACT_INFO } from "../config/contact";
 
 export default function GetInvolvedPage() {
     const fadeInUp = {
@@ -189,7 +190,7 @@ export default function GetInvolvedPage() {
                                 Get real-time updates, event invitations, impact stories, and volunteer calls directly on your phone.
                             </p>
                             <div className="pt-6">
-                                <a href="https://chat.whatsapp.com/your-link" target="_blank" rel="noreferrer">
+                                <a href={CONTACT_INFO.social.whatsappGroup} target="_blank" rel="noreferrer">
                                     <button className="bg-white text-[#25D366] px-14 py-6 rounded-3xl font-black text-xl hover:scale-105 transition-all shadow-xl">
                                         👉 Join WhatsApp Community
                                     </button>

@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaMapMarkerAlt, FaProjectDiagram, FaUserTie, FaLaptop, FaArrowRight, FaHandsHelping, FaWhatsapp, FaTimes } from "react-icons/fa";
 import CertificateGenerator from "../components/CertificateGenerator";
 import VolunteerForm from "../components/VolunteerForm";
+import { CONTACT_INFO } from "../config/contact";
 
 export default function Volunteer() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -151,7 +152,7 @@ export default function Volunteer() {
                 <FaArrowRight />
               </button>
               <a
-                href="https://chat.whatsapp.com/your-link"
+                href={CONTACT_INFO.social.whatsappGroup}
                 target="_blank"
                 rel="noreferrer"
                 className="bg-[#25D366] text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-[#128C7E] transition-all flex items-center gap-3 inline-flex shadow-xl"

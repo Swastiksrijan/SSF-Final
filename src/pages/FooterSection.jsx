@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube, FaEnvelope } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";
+import { CONTACT_INFO } from "../config/contact";
 
 export default function FooterSection() {
   return (
@@ -26,11 +27,11 @@ export default function FooterSection() {
             {/* Socials */}
             <div className="flex gap-4 pt-4">
               {[
-                { icon: FaFacebookF, href: "https://www.facebook.com/share/16H5Xpr4vG/", label: "Facebook" },
-                { icon: FaInstagram, href: "https://instagram.com", label: "Instagram" },
-                { icon: FaLinkedinIn, href: "https://linkedin.com", label: "LinkedIn" },
-                { icon: FaTwitter, href: "https://twitter.com", label: "Twitter" },
-                { icon: FaYoutube, href: "https://youtube.com", label: "YouTube" }
+                { icon: FaFacebookF, href: CONTACT_INFO.social.facebook, label: "Facebook" },
+                { icon: FaInstagram, href: CONTACT_INFO.social.instagram, label: "Instagram" },
+                { icon: FaLinkedinIn, href: CONTACT_INFO.social.linkedin, label: "LinkedIn" },
+                { icon: FaTwitter, href: CONTACT_INFO.social.twitter, label: "Twitter" },
+                { icon: FaYoutube, href: CONTACT_INFO.social.youtube, label: "YouTube" }
               ].map((Item, i) => (
                 <a
                   key={i}

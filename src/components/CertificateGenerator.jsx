@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { generateCertificate } from '../utils/generateCertificate';
 import { FaDownload, FaCertificate, FaCheckCircle, FaSpinner, FaExclamationCircle, FaLock } from 'react-icons/fa';
 import { motion } from 'framer-motion';
+import { CONTACT_INFO } from '../config/contact';
 
 export default function CertificateGenerator({ role }) {
     const [name, setName] = useState('');
@@ -211,7 +212,7 @@ export default function CertificateGenerator({ role }) {
                             </li>
                         </ul>
                         <a
-                            href="https://wa.me/919912345678?text=Hi%2C%20I%20have%20registered%20as%20a%20Volunteer%2FDonor%20but%20haven't%20received%20my%20Certificate%20Access%20Code%20yet."
+                            href={`${CONTACT_INFO.social.whatsapp}?text=Hi%2C%20I%20have%20registered%20as%20a%20Volunteer%2FDonor%20but%20haven't%20received%20my%20Certificate%20Access%20Code%20yet.`}
                             target="_blank"
                             rel="noreferrer"
                             className="inline-block text-xs text-[#003366] font-bold underline hover:text-blue-700"

@@ -1,6 +1,7 @@
 
 import { FaWhatsapp, FaHandHoldingHeart, FaUserPlus, FaDonate } from "react-icons/fa";
 import { Link } from "@tanstack/react-router";
+import { CONTACT_INFO } from "../config/contact";
 
 export default function OfficialOverview() {
     const cards = [
@@ -67,7 +68,7 @@ export default function OfficialOverview() {
 
                     <div className="flex flex-wrap justify-center gap-4 pt-4">
                         <a
-                            href="https://chat.whatsapp.com/your-group-link"
+                            href={CONTACT_INFO.social.whatsappGroup}
                             target="_blank"
                             rel="noreferrer"
                             className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-200 transform bg-[#25D366] text-white hover:bg-[#1ebc57] hover:-translate-y-0.5 shadow-lg shadow-green-900/20 text-sm min-w-[180px] justify-center"

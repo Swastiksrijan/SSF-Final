@@ -27,8 +27,14 @@ export const CONTACT_INFO = {
     // Socials & Direct Links
     social: {
         whatsapp: "https://wa.me/919718346691",
+        whatsappGroup: "https://wa.me/919718346691",
         razorpay: "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view",
         upi: "swastikstijanfoundation@ptyes",
+        instagram: "https://www.instagram.com/swastiksrijan/",
+        facebook: "https://www.facebook.com/share/16H5Xpr4vG/",
+        linkedin: "https://www.linkedin.com/company/swastik-srijan-foundation/?originalSubdomain=in",
+        twitter: "https://x.com/swastik_srijan",
+        youtube: "https://www.youtube.com/@SwastikSrijanOfficial",
     },
 
     // Legal/DPO Info
