@@ -1,4 +1,3 @@
-```javascript
 import { useState } from 'react';
 import { generateCertificate } from '../utils/generateCertificate';
 import { FaDownload, FaCertificate, FaCheckCircle, FaSpinner, FaExclamationCircle, FaLock, FaShieldAlt, FaTimesCircle } from 'react-icons/fa';
@@ -11,9 +10,7 @@ export default function CertificateGenerator({ role }) {
     const [loading, setLoading] = useState(false);
     const [generated, setGenerated] = useState(false);
     const [error, setError] = useState('');
-    const [volunteerType, setVolunteerType] = useState('Field Volunteer');
 
-    // Unified handle for verification
     const handleGenerate = async (e) => {
         e.preventDefault();
         setError('');
@@ -24,7 +21,6 @@ export default function CertificateGenerator({ role }) {
 
         setLoading(true);
 
-        // 1. 🔍 DATABASE CHECK: Verify the Certificate ID
         try {
             const response = await fetch(ENDPOINTS.VERIFY_CERT(trimmedCode));
             if (!response.ok) {
@@ -34,7 +30,6 @@ export default function CertificateGenerator({ role }) {
             }
             const record = await response.json();
 
-            // Check if valid again (backend should handle this but extra check)
             if (!record.valid) {
                 setError("Invalid Certificate ID.");
                 setLoading(false);
@@ -45,9 +40,7 @@ export default function CertificateGenerator({ role }) {
                 day: 'numeric', month: 'long', year: 'numeric'
             });
 
-            // Generate using the official details from database
             await generateCertificate(record.fullName, record.volunteerType, today, record.certId);
-
             setGenerated(true);
         } catch (error) {
             console.error("Certificate generation failed", error);
@@ -57,14 +50,13 @@ export default function CertificateGenerator({ role }) {
         }
     };
 
-
     return (
         <div className="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-xl border border-zinc-100 overflow-hidden my-12 relative">
             {/* Header */}
-            <div className={`p - 8 text - center transition - colors duration - 500 ${ generated ? 'bg-green-600' : 'bg-[#003366]' } `}>
+            <div className={`p-8 text-center transition-colors duration-500 ${generated ? 'bg-green-600' : 'bg-[#003366]'}`}>
                 <FaShieldAlt className="text-5xl text-yellow-400 mx-auto mb-4 drop-shadow-md" />
                 <h3 className="text-2xl font-bold text-white tracking-wide">
-                    {generated ? 'Verified & Issued' : `Secure Certificate Retrieval`}
+                    {generated ? 'Verified & Issued' : 'Secure Certificate Retrieval'}
                 </h3>
                 <p className="text-blue-100 text-sm mt-2 opacity-90 font-medium max-w-xs mx-auto">
                     {generated
@@ -75,8 +67,6 @@ export default function CertificateGenerator({ role }) {
 
             <div className="p-8">
                 <form onSubmit={handleGenerate} className="space-y-5">
-
-                    {/* Access Code Input */}
                     <div className="relative">
                         <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 ml-1 flex items-center gap-2">
                             <FaShieldAlt className="text-sm" /> Certificate ID / Registration ID
@@ -97,7 +87,6 @@ export default function CertificateGenerator({ role }) {
                         </p>
                     </div>
 
-                    {/* Error Message */}
                     {error && (
                         <motion.div
                             initial={{ opacity: 0, y: -5 }}
@@ -112,11 +101,10 @@ export default function CertificateGenerator({ role }) {
                     <button
                         type="submit"
                         disabled={loading || !accessCode.trim()}
-                        className={`w - full py - 4 rounded - xl font - bold text - lg shadow - lg flex items - center justify - center gap - 3 transition - all transform active: scale - [0.98] ${
-    generated
-        ? 'bg-green-50 text-green-700 border-2 border-green-200 cursor-default'
-        : 'bg-gradient-to-r from-[#003366] to-[#004080] text-white hover:shadow-xl'
-} disabled: opacity - 50 disabled:grayscale disabled: cursor - not - allowed`}
+                        className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] ${generated
+                                ? 'bg-green-50 text-green-700 border-2 border-green-200 cursor-default'
+                                : 'bg-gradient-to-r from-[#003366] to-[#004080] text-white hover:shadow-xl'
+                            } disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed`}
                     >
                         {loading ? (
                             <>
@@ -132,10 +120,8 @@ export default function CertificateGenerator({ role }) {
                             </>
                         )}
                     </button>
-
                 </form>
 
-                {/* --- HELP SECTION --- */}
                 {!generated && (
                     <div className="mt-8 pt-6 border-t border-zinc-100 text-center space-y-3">
                         <p className="text-sm font-bold text-zinc-600">
@@ -152,7 +138,7 @@ export default function CertificateGenerator({ role }) {
                             </li>
                         </ul>
                         <a
-                            href={`${ CONTACT_INFO.social.whatsapp }?text = ${ encodeURIComponent("Hi, I have registered as a Volunteer/Donor but haven't received my Certificate Access Code yet.") } `}
+                            href={`${CONTACT_INFO.social.whatsapp}?text=${encodeURIComponent("Hi, I have registered as a Volunteer/Donor but haven't received my Certificate Access Code yet.")}`}
                             target="_blank"
                             rel="noreferrer"
                             className="inline-block text-xs text-[#003366] font-bold underline hover:text-blue-700"
@@ -162,20 +148,18 @@ export default function CertificateGenerator({ role }) {
                     </div>
                 )}
 
-{
-    generated && (
-        <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-6 p-4 bg-green-50 rounded-lg text-center border border-green-100"
-        >
-            <p className="text-green-800 font-medium text-sm">
-                Certificate valid. Thank you for your service!
-            </p>
-        </motion.div>
-    )
-}
-            </div >
-        </div >
+                {generated && (
+                    <motion.div
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        className="mt-6 p-4 bg-green-50 rounded-lg text-center border border-green-100"
+                    >
+                        <p className="text-green-800 font-medium text-sm">
+                            Certificate valid. Thank you for your service!
+                        </p>
+                    </motion.div>
+                )}
+            </div>
+        </div>
     );
 }

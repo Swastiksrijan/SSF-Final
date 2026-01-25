@@ -1,8 +1,7 @@
-```javascript
 import { useState, useEffect } from "react";
 import { useParams } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { FaCertificate, FaDownload, FaSpinner, FaCheckCircle, FaTimesCircle } from "react-icons/fa";
+import { FaCertificate, FaDownload, FaSpinner, FaCheckCircle, FaTimesCircle, FaShieldAlt, FaIdCard, FaBuilding } from "react-icons/fa";
 import { ENDPOINTS } from "../config/api";
 
 export default function VerificationPage() {
@@ -25,13 +24,13 @@ export default function VerificationPage() {
                         setStatus("invalid");
                     }
                 } else {
-                    setResult(null);
+                    setData(null);
+                    setStatus("invalid");
                 }
             } catch (error) {
                 console.error("Verification error:", error);
-                setResult(null);
-            } finally {
-                setLoading(false);
+                setData(null);
+                setStatus("error");
             }
         };
 
@@ -44,7 +43,7 @@ export default function VerificationPage() {
 
             <div className="max-w-xl mx-auto relative z-10 text-center">
 
-                {loading ? (
+                {status === "loading" ? (
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
@@ -53,7 +52,7 @@ export default function VerificationPage() {
                         <div className="w-24 h-24 border-4 border-orange-400 border-t-transparent rounded-full animate-spin mx-auto"></div>
                         <h1 className="text-2xl font-bold tracking-widest text-zinc-400 animate-pulse">CRYPTOGRAPHIC VERIFICATION IN PROGRESS...</h1>
                     </motion.div>
-                ) : result ? (
+                ) : data ? (
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -73,14 +72,14 @@ export default function VerificationPage() {
                                 <div className="p-3 bg-white rounded-xl shadow-sm"><FaCertificate className="text-orange-500" /></div>
                                 <div>
                                     <p className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Certificate ID</p>
-                                    <p className="font-black text-lg">{result.certId}</p>
+                                    <p className="font-black text-lg">{data.certId}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 border-b border-zinc-200 pb-4">
                                 <div className="p-3 bg-white rounded-xl shadow-sm"><FaIdCard className="text-blue-500" /></div>
                                 <div>
                                     <p className="text-[10px] uppercase font-bold text-zinc-400 tracking-widest">Issued To</p>
-                                    <p className="font-black text-lg">{result.fullName}</p>
+                                    <p className="font-black text-lg">{data.fullName}</p>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4">
@@ -93,7 +92,7 @@ export default function VerificationPage() {
                         </div>
 
                         <p className="text-xs text-zinc-400 font-medium italic">
-                            This document is verified via SSF Ledger v2.0. Issued on {new Date(result.approvedAt).toLocaleDateString()}.
+                            This document is verified via SSF Ledger v2.0. Issued on {new Date(data.approvedAt).toLocaleDateString()}.
                         </p>
                     </motion.div>
                 ) : (
@@ -102,7 +101,7 @@ export default function VerificationPage() {
                         animate={{ opacity: 1, scale: 1 }}
                         className="bg-white rounded-[3rem] p-10 md:p-16 text-[#002344] shadow-2xl space-y-8 border-t-[1rem] border-red-500"
                     >
-                        <div className="w-24 h-24 bg-red-50 text-red-500 rounded-full flex items-center justify-center text-5xl mx-auto bg-inner">
+                        <div className="w-24 h-24 bg-red-50 text-red-500 rounded-full flex items-center justify-center text-5xl mx-auto shadow-inner">
                             <FaTimesCircle />
                         </div>
                         <h1 className="text-3xl font-black">Verification Failed</h1>
