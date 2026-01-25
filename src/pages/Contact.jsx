@@ -88,25 +88,33 @@ export default function Contact() {
     }
   };
 
+  const copyToClipboard = (text, label) => {
+    navigator.clipboard.writeText(text).then(() => {
+      showToast("success", `${label} copied to clipboard!`);
+    }).catch(() => {
+      showToast("error", "Failed to copy. Please copy manually.");
+    });
+  };
+
   return (
     <main className="min-h-screen bg-white">
       {/* Toast Notification */}
       {toast.show && (
-        <div className="fixed top-24 right-6 z-50 animate-in slide-in-from-right-10 duration-300">
+        <div className="fixed top-20 left-4 right-4 md:left-auto md:right-6 md:top-24 z-50 animate-in slide-in-from-top-4 md:slide-in-from-right-10 duration-300">
           <div
-            className={`flex items-center gap-4 px-8 py-5 rounded-2xl shadow-2xl border ${toast.type === "success"
+            className={`flex items-center gap-3 px-4 py-4 md:px-8 md:py-5 rounded-2xl shadow-2xl border ${toast.type === "success"
               ? "bg-white border-green-500 text-green-900"
               : "bg-white border-red-500 text-red-900"
               }`}
           >
             {toast.type === "success" ? (
-              <CheckCircle className="w-6 h-6 text-green-600" />
+              <CheckCircle className="w-5 h-5 md:w-6 md:h-6 text-green-600 shrink-0" />
             ) : (
-              <XCircle className="w-6 h-6 text-red-600" />
+              <XCircle className="w-5 h-5 md:w-6 md:h-6 text-red-600 shrink-0" />
             )}
-            <span className="font-bold">{toast.message}</span>
-            <button onClick={hideToast} className="p-1 hover:bg-zinc-100 rounded-full transition-colors">
-              <X className="w-5 h-5" />
+            <span className="font-bold text-sm md:text-base">{toast.message}</span>
+            <button onClick={hideToast} className="p-1 hover:bg-zinc-100 rounded-full transition-colors ml-auto">
+              <X className="w-4 h-4 md:w-5 md:h-5" />
             </button>
           </div>
         </div>
@@ -115,7 +123,7 @@ export default function Contact() {
       {/* ================= HERO ================= */}
       <section className="bg-[#001529] text-white pt-32 md:pt-48 pb-24 px-6 relative overflow-hidden">
         {/* Background elements */}
-        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px]"></div>
+        <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px]"></div>
         <div className="absolute top-0 right-0 w-96 h-96 bg-[#fb8500] opacity-[0.05] rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
 
         <div className="max-w-4xl mx-auto relative z-10 text-center space-y-8">
@@ -127,7 +135,7 @@ export default function Contact() {
             <span className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs mb-4 inline-block">
               Contact Us
             </span>
-            <h1 className="text-5xl md:text-7xl font-black leading-tight tracking-tighter">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black leading-tight tracking-tighter">
               Connect for <span className="text-[#fb8500]">Change</span>
             </h1>
             <p className="text-xl md:text-3xl font-medium mt-4 text-zinc-100 opacity-90">
@@ -159,38 +167,100 @@ export default function Contact() {
               </p>
             </div>
 
-            <div className="space-y-8">
+            <div className="space-y-10">
               {[
                 {
-                  icon: <Mail />,
-                  label: "Email Us",
-                  value: CONTACT_INFO.primaryEmail,
-                  sub: "Direct Support Inquiry",
-                  color: "bg-blue-50 text-[#002344]"
+                  icon: <Mail className="w-5 h-5" />,
+                  label: "Email Support",
+                  value: (
+                    <div className="space-y-6">
+                      <div className="group/item">
+                        <button
+                          onClick={() => copyToClipboard(CONTACT_INFO.primaryEmail, "Email")}
+                          className="text-[#002344] text-lg sm:text-xl md:text-2xl font-semibold hover:text-[#fb8500] transition-colors flex items-center gap-3 text-left cursor-pointer transition-all duration-300 tracking-tight"
+                        >
+                          <span className="border-b-[1px] border-zinc-200 group-hover:border-[#fb8500] pb-1">
+                            {CONTACT_INFO.primaryEmail}
+                          </span>
+                        </button>
+                        <p className="text-[10px] text-zinc-400 font-bold uppercase tracking-[0.25em] mt-2 ml-0.5">Primary Inquiry Inbox</p>
+                      </div>
+
+                      <div className="bg-zinc-50/50 rounded-2xl p-6 border border-zinc-100/80 flex flex-col gap-4">
+                        <div className="flex flex-col gap-3">
+                          <div className="flex items-center justify-between group/alt">
+                            <button
+                              onClick={() => copyToClipboard(CONTACT_INFO.secondaryEmail, "Technical Email")}
+                              className="text-zinc-500 hover:text-[#fb8500] text-xs md:text-sm font-medium transition-colors cursor-pointer"
+                            >
+                              {CONTACT_INFO.secondaryEmail}
+                            </button>
+                            <span className="text-[7px] font-black bg-white text-zinc-400 px-2.5 py-1 rounded border border-zinc-200 uppercase tracking-widest shadow-sm">
+                              {CONTACT_INFO.techIssueNote}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between group/alt">
+                            <button
+                              onClick={() => copyToClipboard(CONTACT_INFO.thirdEmail, "Technical Email")}
+                              className="text-zinc-500 hover:text-[#fb8500] text-xs md:text-sm font-medium transition-colors cursor-pointer"
+                            >
+                              {CONTACT_INFO.thirdEmail}
+                            </button>
+                            <span className="text-[7px] font-black bg-white text-zinc-400 px-2.5 py-1 rounded border border-zinc-200 uppercase tracking-widest shadow-sm">
+                              {CONTACT_INFO.techIssueNote}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="pt-4 border-t border-zinc-200/50">
+                          <p className="text-[10px] text-zinc-400 font-medium leading-relaxed italic">
+                            <span className="text-[#fb8500] not-italic font-bold mr-1">Note:</span>
+                            Use alternative emails only if primary is unreachable.
+                            <span className="block mt-1 font-hindi opacity-60">प्राथमिक ईमेल अनुत्तरित होने पर ही वैकल्पिक का उपयोग करें।</span>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  ),
+                  sub: "Click to copy email address",
+                  color: "bg-blue-50/50 text-[#002344]"
                 },
                 {
-                  icon: <Phone />,
+                  icon: <Phone className="w-5 h-5" />,
                   label: "Call Us",
-                  value: CONTACT_INFO.phones.primaryFormatted,
-                  sub: "Mon-Sat, 9am - 6pm",
-                  color: "bg-green-50 text-green-600"
+                  value: (
+                    <a
+                      href={`tel:${CONTACT_INFO.phones.primary.replace(/\s+/g, '')}`}
+                      className="text-[#002344] text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight hover:text-[#fb8500] transition-all inline-block border-b border-transparent hover:border-[#fb8500]"
+                    >
+                      {CONTACT_INFO.phones.primaryFormatted}
+                    </a>
+                  ),
+                  sub: "Mon - Sat, 9:00 AM - 6:00 PM (IST)",
+                  color: "bg-green-50/50 text-green-600"
                 },
                 {
-                  icon: <MapPin />,
+                  icon: <MapPin className="w-5 h-5" />,
                   label: "Registered Office",
-                  value: CONTACT_INFO.address.fullRegistered,
-                  sub: "Headquarters",
-                  color: "bg-red-50 text-[#d90429]"
+                  value: (
+                    <p className="text-[#002344] text-base md:text-lg font-medium leading-relaxed max-w-lg">
+                      {CONTACT_INFO.address.fullRegistered}
+                    </p>
+                  ),
+                  sub: "Headquarters & Administrative Office",
+                  color: "bg-red-50/50 text-[#d90429]"
                 }
               ].map((item, i) => (
-                <div key={i} className="flex gap-6 group">
-                  <div className={`w-16 h-16 ${item.color} rounded-[1.5rem] flex items-center justify-center shrink-0 shadow-sm transition-transform group-hover:scale-110`}>
+                <div key={i} className="flex gap-8 group/main">
+                  <div className={`w-12 h-12 md:w-14 md:h-14 ${item.color} rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 border border-current opacity-80 transition-all duration-300 group-hover/main:opacity-100 group-hover/main:shadow-lg`}>
                     {item.icon}
                   </div>
-                  <div className="space-y-1">
-                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em]">{item.label}</p>
-                    <p className="text-xl md:text-2xl font-bold text-[#002344] tracking-tight break-words">{item.value}</p>
-                    <div className="text-zinc-500 font-medium text-sm leading-relaxed">{item.sub}</div>
+                  <div className="space-y-2 min-w-0 flex-grow pt-1">
+                    <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.25em] font-serif italic">{item.label}</p>
+                    <div className="transition-all duration-300">{item.value}</div>
+                    <div className="text-zinc-400 font-bold text-[10px] uppercase tracking-wider flex items-center gap-2 opacity-50 group-hover/main:opacity-80 transition-opacity">
+                      <div className="w-1 h-1 rounded-full bg-zinc-300"></div>
+                      {item.sub}
+                    </div>
                   </div>
                 </div>
               ))}
@@ -269,7 +339,7 @@ export default function Contact() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-10 md:p-16 rounded-[3rem] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.1)] border border-zinc-100"
+            className="bg-white p-6 sm:p-10 md:p-16 rounded-[2rem] sm:rounded-[3rem] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.1)] border border-zinc-100"
           >
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
@@ -280,7 +350,7 @@ export default function Contact() {
                     value={formData.firstName}
                     onChange={handleChange}
                     placeholder="Jane"
-                    className="w-full px-8 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#fb8500]/10 transition-all font-medium"
+                    className="w-full px-6 md:px-8 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#fb8500]/10 transition-all font-medium"
                     required
                   />
                 </div>
@@ -317,7 +387,7 @@ export default function Contact() {
                   onChange={handleChange}
                   rows={5}
                   placeholder="How can we help you today?"
-                  className="w-full px-8 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#fb8500]/10 transition-all font-medium resize-none"
+                  className="w-full px-6 md:px-8 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#fb8500]/10 transition-all font-medium resize-none text-sm md:text-base"
                   required
                 />
               </div>

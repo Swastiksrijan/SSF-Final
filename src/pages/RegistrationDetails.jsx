@@ -214,14 +214,57 @@ export default function RegistrationDetails() {
               reach our administrative head.
             </p>
 
-            <div className="bg-white/5 backdrop-blur-md px-10 py-6 rounded-2xl border border-white/10 inline-block group hover:bg-white/10 transition-all text-white">
-              <p className="text-xs text-[#fb8500] uppercase tracking-[0.2em] font-bold mb-2">
-                Official Email
-              </p>
-              <p className="font-serif font-bold text-2xl">
-                {CONTACT_INFO.primaryEmail}
-              </p>
-              <p className="text-xs text-zinc-400 font-normal mt-2">[Note: info@swastiksrijan.org/.in under temp. tech-issue]</p>
+            <div className="bg-white/5 backdrop-blur-md px-10 py-8 rounded-[2rem] border border-white/10 inline-block group hover:bg-white/10 transition-all text-white space-y-6">
+              <div className="text-center">
+                <p className="text-[10px] text-[#fb8500] uppercase tracking-[0.3em] font-bold mb-3 opacity-80">
+                  Official Email Inbox
+                </p>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
+                    alert("Email copied to clipboard!");
+                  }}
+                  className="font-serif font-bold text-2xl md:text-3xl hover:text-[#fb8500] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#fb8500] pb-1"
+                  title="Click to copy"
+                >
+                  {CONTACT_INFO.primaryEmail}
+                </button>
+              </div>
+              <div className="pt-6 border-t border-white/5 space-y-4">
+                <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-500 font-bold opacity-60 text-center">Alternative Support</p>
+                <div className="flex flex-col gap-3">
+                  <div className="flex items-center justify-between gap-4">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(CONTACT_INFO.secondaryEmail);
+                        alert("Email copied!");
+                      }}
+                      className="text-sm text-zinc-300 font-semibold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                      title="Click to copy"
+                    >
+                      {CONTACT_INFO.secondaryEmail}
+                    </button>
+                    <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2.5 py-1 rounded border border-white/10 uppercase tracking-widest shadow-sm">
+                      {CONTACT_INFO.techIssueNote}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-4">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(CONTACT_INFO.thirdEmail);
+                        alert("Email copied!");
+                      }}
+                      className="text-sm text-zinc-300 font-semibold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                      title="Click to copy"
+                    >
+                      {CONTACT_INFO.thirdEmail}
+                    </button>
+                    <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2.5 py-1 rounded border border-white/10 uppercase tracking-widest shadow-sm">
+                      {CONTACT_INFO.techIssueNote}
+                    </span>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>

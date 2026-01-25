@@ -1,74 +1,52 @@
+```javascript
 import { useState } from 'react';
 import { generateCertificate } from '../utils/generateCertificate';
-import { FaDownload, FaCertificate, FaCheckCircle, FaSpinner, FaExclamationCircle, FaLock } from 'react-icons/fa';
+import { FaDownload, FaCertificate, FaCheckCircle, FaSpinner, FaExclamationCircle, FaLock, FaShieldAlt, FaTimesCircle } from 'react-icons/fa';
 import { motion } from 'framer-motion';
 import { CONTACT_INFO } from '../config/contact';
+import { ENDPOINTS } from "../config/api";
 
 export default function CertificateGenerator({ role }) {
-    const [name, setName] = useState('');
     const [accessCode, setAccessCode] = useState('');
     const [loading, setLoading] = useState(false);
     const [generated, setGenerated] = useState(false);
     const [error, setError] = useState('');
     const [volunteerType, setVolunteerType] = useState('Field Volunteer');
 
-    // 🔒 SECURITY CODES (You can change these)
-    const VALID_CODES = {
-        'Volunteer': 'SSF-VOL-2025',
-        'Member': 'SSF-MEM-2025',
-        'Donor': 'SSF-DONOR-VAR'
-    };
-
-    // Load history
-    const getHistory = () => {
-        try {
-            return JSON.parse(localStorage.getItem('ssf_cert_history') || '{}');
-        } catch {
-            return {};
-        }
-    };
-
+    // Unified handle for verification
     const handleGenerate = async (e) => {
         e.preventDefault();
         setError('');
         setGenerated(false);
-        const trimmedName = name.trim();
         const trimmedCode = accessCode.trim();
 
-        if (!trimmedName || !trimmedCode) return;
-
-        // 1. 🛑 SECURITY CHECK: Validate Access Code
-        const requiredCode = VALID_CODES[role];
-        if (trimmedCode !== requiredCode) {
-            setError("Invalid Access Code. Please check your email or contact the admin.");
-            return;
-        }
-
-        // 2. 🛑 DUPLICATE CHECK: Prevent re-generation
-        const history = getHistory();
-        const recordKey = `${role}-${trimmedName.toLowerCase()}`;
-
-        if (history[recordKey]) {
-            setError(`A certificate for "${trimmedName}" has already been issued.`);
-            return;
-        }
+        if (!trimmedCode) return;
 
         setLoading(true);
 
-        const today = new Date().toLocaleDateString('en-IN', {
-            day: 'numeric', month: 'long', year: 'numeric'
-        });
-
-        // Simulate verifying via "server"
-        await new Promise(r => setTimeout(r, 1500));
-
+        // 1. 🔍 DATABASE CHECK: Verify the Certificate ID
         try {
-            const certRole = role === 'Volunteer' ? volunteerType : role;
-            await generateCertificate(trimmedName, certRole, today);
+            const response = await fetch(ENDPOINTS.VERIFY_CERT(trimmedCode));
+            if (!response.ok) {
+                setError("Invalid Certificate ID. Your application might be pending or rejected.");
+                setLoading(false);
+                return;
+            }
+            const record = await response.json();
 
-            // Save to history
-            history[recordKey] = new Date().toISOString();
-            localStorage.setItem('ssf_cert_history', JSON.stringify(history));
+            // Check if valid again (backend should handle this but extra check)
+            if (!record.valid) {
+                setError("Invalid Certificate ID.");
+                setLoading(false);
+                return;
+            }
+
+            const today = new Date().toLocaleDateString('en-IN', {
+                day: 'numeric', month: 'long', year: 'numeric'
+            });
+
+            // Generate using the official details from database
+            await generateCertificate(record.fullName, record.volunteerType, today, record.certId);
 
             setGenerated(true);
         } catch (error) {
@@ -79,68 +57,29 @@ export default function CertificateGenerator({ role }) {
         }
     };
 
+
     return (
         <div className="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-xl border border-zinc-100 overflow-hidden my-12 relative">
             {/* Header */}
-            <div className={`p-8 text-center transition-colors duration-500 ${generated ? 'bg-green-600' : 'bg-[#003366]'}`}>
-                <FaCertificate className="text-5xl text-yellow-400 mx-auto mb-4 drop-shadow-md" />
+            <div className={`p - 8 text - center transition - colors duration - 500 ${ generated ? 'bg-green-600' : 'bg-[#003366]' } `}>
+                <FaShieldAlt className="text-5xl text-yellow-400 mx-auto mb-4 drop-shadow-md" />
                 <h3 className="text-2xl font-bold text-white tracking-wide">
-                    {generated ? 'Authorized & Issued' : `Official ${role} Certificate`}
+                    {generated ? 'Verified & Issued' : `Secure Certificate Retrieval`}
                 </h3>
                 <p className="text-blue-100 text-sm mt-2 opacity-90 font-medium max-w-xs mx-auto">
                     {generated
                         ? 'Your certificate has been verified and downloaded.'
-                        : 'Secure Generation Portal. Access Code required.'}
+                        : 'Enter your unique Certificate ID provided by the admin.'}
                 </p>
             </div>
 
             <div className="p-8">
                 <form onSubmit={handleGenerate} className="space-y-5">
 
-                    {/* Name Input */}
-                    <div className="relative">
-                        <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 ml-1">
-                            Full Name
-                        </label>
-                        <input
-                            type="text"
-                            value={name}
-                            onChange={(e) => {
-                                setName(e.target.value);
-                                setError('');
-                            }}
-                            placeholder="e.g. Rahul Sharma"
-                            className="w-full px-5 py-4 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-4 focus:ring-[#003366]/10 focus:border-[#003366] text-lg font-semibold text-zinc-800 outline-none transition-all"
-                            required
-                        />
-                    </div>
-
-                    {/* Volunteer Type Selection (Only for Volunteers) */}
-                    {role === 'Volunteer' && (
-                        <div className="relative">
-                            <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 ml-1">
-                                Volunteer Category (Select your role)
-                            </label>
-                            <select
-                                value={volunteerType}
-                                onChange={(e) => setVolunteerType(e.target.value)}
-                                className="w-full px-5 py-4 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-4 focus:ring-[#003366]/10 focus:border-[#003366] text-lg font-semibold text-zinc-800 outline-none transition-all appearance-none"
-                            >
-                                <option value="Field Volunteer">Field Volunteer</option>
-                                <option value="Program Volunteer">Program Volunteer</option>
-                                <option value="Professional Volunteer">Professional Volunteer</option>
-                                <option value="Digital Volunteer">Digital Volunteer</option>
-                            </select>
-                            <div className="absolute right-4 bottom-5 pointer-events-none opacity-50">
-                                <FaDownload size={14} className="rotate-270" />
-                            </div>
-                        </div>
-                    )}
-
                     {/* Access Code Input */}
                     <div className="relative">
                         <label className="block text-xs font-bold text-zinc-500 uppercase tracking-wider mb-2 ml-1 flex items-center gap-2">
-                            <FaLock className="text-sm" /> Access Code
+                            <FaShieldAlt className="text-sm" /> Certificate ID / Registration ID
                         </label>
                         <input
                             type="text"
@@ -149,7 +88,7 @@ export default function CertificateGenerator({ role }) {
                                 setAccessCode(e.target.value);
                                 setError('');
                             }}
-                            placeholder="Enter Code (e.g. SSF-VOL...)"
+                            placeholder="e.g. SSF-VOL-2026-0001"
                             className="w-full px-5 py-4 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-4 focus:ring-[#003366]/10 focus:border-[#003366] text-lg font-mono text-zinc-800 outline-none transition-all tracking-wider"
                             required
                         />
@@ -172,11 +111,12 @@ export default function CertificateGenerator({ role }) {
 
                     <button
                         type="submit"
-                        disabled={loading || !name.trim() || !accessCode.trim()}
-                        className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] ${generated
-                            ? 'bg-green-50 text-green-700 border-2 border-green-200 cursor-default'
-                            : 'bg-gradient-to-r from-[#003366] to-[#004080] text-white hover:shadow-xl'
-                            } disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed`}
+                        disabled={loading || !accessCode.trim()}
+                        className={`w - full py - 4 rounded - xl font - bold text - lg shadow - lg flex items - center justify - center gap - 3 transition - all transform active: scale - [0.98] ${
+    generated
+        ? 'bg-green-50 text-green-700 border-2 border-green-200 cursor-default'
+        : 'bg-gradient-to-r from-[#003366] to-[#004080] text-white hover:shadow-xl'
+} disabled: opacity - 50 disabled:grayscale disabled: cursor - not - allowed`}
                     >
                         {loading ? (
                             <>
@@ -212,7 +152,7 @@ export default function CertificateGenerator({ role }) {
                             </li>
                         </ul>
                         <a
-                            href={`${CONTACT_INFO.social.whatsapp}?text=Hi%2C%20I%20have%20registered%20as%20a%20Volunteer%2FDonor%20but%20haven't%20received%20my%20Certificate%20Access%20Code%20yet.`}
+                            href={`${ CONTACT_INFO.social.whatsapp }?text = ${ encodeURIComponent("Hi, I have registered as a Volunteer/Donor but haven't received my Certificate Access Code yet.") } `}
                             target="_blank"
                             rel="noreferrer"
                             className="inline-block text-xs text-[#003366] font-bold underline hover:text-blue-700"
@@ -222,18 +162,20 @@ export default function CertificateGenerator({ role }) {
                     </div>
                 )}
 
-                {generated && (
-                    <motion.div
-                        initial={{ opacity: 0, y: 10 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-6 p-4 bg-green-50 rounded-lg text-center border border-green-100"
-                    >
-                        <p className="text-green-800 font-medium text-sm">
-                            Certificate valid. Thank you for your service!
-                        </p>
-                    </motion.div>
-                )}
-            </div>
-        </div>
+{
+    generated && (
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="mt-6 p-4 bg-green-50 rounded-lg text-center border border-green-100"
+        >
+            <p className="text-green-800 font-medium text-sm">
+                Certificate valid. Thank you for your service!
+            </p>
+        </motion.div>
+    )
+}
+            </div >
+        </div >
     );
 }

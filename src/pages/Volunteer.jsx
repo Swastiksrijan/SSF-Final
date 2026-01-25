@@ -72,7 +72,7 @@ export default function Volunteer() {
               <span className="w-12 h-0.5 bg-orange-400"></span>
               <span>VOLUNTEER WITH US</span>
             </div>
-            <h1 className="text-4xl md:text-7xl font-bold leading-tight">
+            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight">
               सेवा: <span className="text-orange-400">Your Time, Their Transformation.</span>
             </h1>
             <p className="text-xl md:text-2xl text-zinc-400 leading-relaxed max-w-2xl">
@@ -101,7 +101,7 @@ export default function Volunteer() {
                   hidden: { opacity: 0, y: 30 },
                   visible: { opacity: 1, y: 0, transition: { delay: i * 0.1 } }
                 }}
-                className={`bg-white p-8 rounded-[2.5rem] border-2 ${type.border} shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col`}
+                className={`bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 ${type.border} shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col`}
               >
                 <div className={`w-16 h-16 ${type.color} rounded-2xl flex items-center justify-center text-3xl mb-8`}>
                   {type.icon}
@@ -136,7 +136,7 @@ export default function Volunteer() {
       <section className="py-24 px-6 bg-white overflow-hidden relative">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-20">
           <div className="lg:w-1/2 space-y-8 relative z-10">
-            <h2 className="text-4xl md:text-6xl font-black text-[#002344] leading-tight">
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#002344] leading-tight">
               Start Your <br /><span className="text-[#FF6600]">Service Journey</span> Today.
             </h2>
             <p className="text-xl text-zinc-600 leading-relaxed">

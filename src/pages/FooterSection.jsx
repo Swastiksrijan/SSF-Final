@@ -16,7 +16,7 @@ export default function FooterSection() {
           <div className="lg:col-span-4 space-y-8">
             <Link to="/" className="inline-block group">
               <div className="text-3xl font-serif font-bold tracking-tight text-white group-hover:text-[#fb8500] transition-colors">
-                SWASTIK <span className="text-[#fb8500]">SRIJAN</span>
+                SWASTIK <span className="text-[#fb8500]">SRIJAN FOUNDATION</span>
               </div>
             </Link>
             <p className="text-zinc-400 leading-relaxed font-medium text-lg">
@@ -25,7 +25,7 @@ export default function FooterSection() {
             </p>
 
             {/* Socials */}
-            <div className="flex gap-4 pt-4">
+            <div className="flex flex-wrap gap-3 md:gap-4 pt-4">
               {[
                 { icon: FaFacebookF, href: CONTACT_INFO.social.facebook, label: "Facebook" },
                 { icon: FaInstagram, href: CONTACT_INFO.social.instagram, label: "Instagram" },
@@ -39,9 +39,9 @@ export default function FooterSection() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={Item.label}
-                  className="w-12 h-12 flex items-center justify-center rounded-[1rem] bg-white/5 text-white hover:bg-[#fb8500] hover:text-white hover:-translate-y-1 transition-all border border-white/10"
+                  className="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-[1rem] bg-white/5 text-white hover:bg-[#fb8500] hover:text-white hover:-translate-y-1 transition-all border border-white/10"
                 >
-                  <Item.icon size={18} />
+                  <Item.icon className="text-sm md:text-base" />
                 </a>
               ))}
             </div>
@@ -67,7 +67,7 @@ export default function FooterSection() {
                 <li><Link to="/Volunteer" className="hover:text-white transition-colors">Volunteer for India</Link></li>
                 <li><Link to="/Members" className="hover:text-white transition-colors">Become a Member</Link></li>
                 <li><Link to="/PartnerWithUs" className="hover:text-white transition-colors">Partner with the Mission</Link></li>
-                <li><Link to="/Humanity&TruthObjective" className="hover:text-white transition-colors">Humanity & Truth</Link></li>
+                <li><Link to="/Humanity&Truth" className="hover:text-white transition-colors">Humanity & Truth</Link></li>
               </ul>
             </div>
 
@@ -94,12 +94,12 @@ export default function FooterSection() {
             A Commitment to Grassroots Governance.
             <span className="block text-xs mt-1 text-zinc-600">ग्रामीण शासन और जमीनी स्तर पर कार्य के प्रति हमारी प्रतिबद्धता।</span>
           </p>
-          <div className="flex flex-wrap gap-8 justify-center group">
-            <span className="flex items-center gap-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest bg-white/5 px-4 py-2 rounded-full border border-white/5">
+          <div className="flex flex-wrap gap-4 sm:gap-8 justify-center group">
+            <span className="flex items-center gap-2 sm:gap-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest bg-white/5 px-4 py-2 rounded-full border border-white/5">
               <div className="w-2 h-2 rounded-full bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.3)]"></div>
               Registered NGO
             </span>
-            <span className="flex items-center gap-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest bg-white/5 px-4 py-2 rounded-full border border-white/5">
+            <span className="flex items-center gap-2 sm:gap-3 text-[10px] font-bold text-zinc-400 uppercase tracking-widest bg-white/5 px-4 py-2 rounded-full border border-white/5">
               <div className="w-2 h-2 rounded-full bg-[#fb8500] shadow-[0_0_10px_rgba(251,133,0,0.3)]"></div>
               Transparency First
             </span>

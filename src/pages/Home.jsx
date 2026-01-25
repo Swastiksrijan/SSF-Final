@@ -229,15 +229,60 @@ export default function Home() {
 
                 {/* CONTACT INFO */}
                 <div className="pt-4 space-y-1">
-                  <p className="text-xs uppercase tracking-widest text-zinc-400 font-bold">
+                  <p className="text-xs uppercase tracking-widest text-[#FF6600] font-bold">
                     CSR & Institutional Partnerships
                   </p>
-                  <p className="text-sm text-zinc-300">
-                    Email: {CONTACT_INFO.primaryEmail}
-                  </p>
-                  <p className="text-[10px] text-zinc-500 italic">
-                    [Note: info@swastiksrijan.org/.in under temp. tech-issue]
-                  </p>
+                  <div className="text-zinc-300 space-y-4">
+                    <div className="group/item inline-block">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-1 opacity-60">Primary Email</p>
+                      <button
+                        onClick={() => {
+                          navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
+                          alert("Email copied to clipboard!");
+                        }}
+                        className="text-lg md:text-xl font-semibold hover:text-[#FF6600] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#FF6600]"
+                        title="Click to copy"
+                      >
+                        {CONTACT_INFO.primaryEmail}
+                      </button>
+                    </div>
+
+                    <div className="pt-4 border-t border-white/5 space-y-3">
+                      <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold opacity-60">Alternative Tech Support</p>
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(CONTACT_INFO.secondaryEmail);
+                              alert("Technical Email copied!");
+                            }}
+                            className="text-sm text-zinc-400 font-medium hover:text-[#FF6600] transition-colors cursor-pointer outline-none"
+                            title="Click to copy"
+                          >
+                            {CONTACT_INFO.secondaryEmail}
+                          </button>
+                          <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm">
+                            {CONTACT_INFO.techIssueNote}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3">
+                          <button
+                            onClick={() => {
+                              navigator.clipboard.writeText(CONTACT_INFO.thirdEmail);
+                              alert("Technical Email copied!");
+                            }}
+                            className="text-sm text-zinc-400 font-medium hover:text-[#FF6600] transition-colors cursor-pointer outline-none"
+                            title="Click to copy"
+                          >
+                            {CONTACT_INFO.thirdEmail}
+                          </button>
+                          <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm">
+                            {CONTACT_INFO.techIssueNote}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 {/* MORE INFO LINK */}

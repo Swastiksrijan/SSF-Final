@@ -1,6 +1,6 @@
 import jsPDF from 'jspdf';
 
-export const generateCertificate = async (name, role, date) => {
+export const generateCertificate = async (name, role, date, certId = null) => {
     const doc = new jsPDF({
         orientation: 'landscape',
         unit: 'mm',
@@ -181,11 +181,17 @@ export const generateCertificate = async (name, role, date) => {
     doc.text(disclaimerEN, centerX, height - 12, { align: 'center' });
 
     // Footer ID
-    const certID = `ID: SSF-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}-${new Date().getFullYear()}`;
+    const displayID = certId ? `OFFICIAL ID: ${certId}` : `ID: SSF-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}-${new Date().getFullYear()}`;
     doc.setFont("helvetica", "normal");
     doc.setFontSize(8);
     doc.setTextColor('#aaaaaa');
-    doc.text(certID, 15, height - 7);
+    doc.text(displayID, 15, height - 7);
+
+    if (certId) {
+        doc.setFontSize(7);
+        doc.text(`Verify at: swastiksrijan.org/verify/${certId}`, centerX, height - 8, { align: 'center' });
+    }
+
     doc.text("www.swastiksrijan.in", width - 15, height - 7, { align: 'right' });
 
     // Save

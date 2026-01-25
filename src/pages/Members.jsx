@@ -83,7 +83,7 @@ const Members = () => {
             <div className="inline-block px-4 py-1.5 rounded-full bg-[#FF6600] text-white font-bold tracking-widest uppercase text-sm shadow-xl">
               Become a Member • सदस्य बनें
             </div>
-            <h1 className="text-5xl md:text-7xl font-sans font-bold text-white leading-tight drop-shadow-lg">
+            <h1 className="text-4xl sm:text-6xl md:text-7xl font-sans font-bold text-white leading-tight drop-shadow-lg">
               The Backbone of <br /><span className="text-[#FF6600]">Our Foundation.</span>
             </h1>
             <p className="text-xl md:text-2xl text-zinc-100 font-medium leading-relaxed max-w-3xl mx-auto drop-shadow-md">
@@ -113,7 +113,7 @@ const Members = () => {
                   hidden: { opacity: 0, y: 30 },
                   visible: { opacity: 1, y: 0, transition: { delay: i * 0.1 } }
                 }}
-                className={`bg-white p-8 rounded-[2.5rem] border-2 ${type.border} shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col relative ${type.highlight ? 'ring-2 ring-purple-200' : ''}`}
+                className={`bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 ${type.border} shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col relative ${type.highlight ? 'ring-2 ring-purple-200' : ''}`}
               >
                 {type.highlight && (
                   <div className="absolute -top-4 left-1/2 -translate-x-1/2">
@@ -165,7 +165,7 @@ const Members = () => {
       {/* ================= QUALIFICATIONS ================= */}
       <section className="py-24 px-6 bg-white" id="apply">
         <div className="max-w-6xl mx-auto">
-          <div className="bg-gradient-to-br from-zinc-50 to-white p-10 md:p-16 rounded-[4rem] border border-zinc-200 shadow-xl">
+          <div className="bg-gradient-to-br from-zinc-50 to-white p-6 sm:p-10 md:p-16 rounded-[2rem] md:rounded-[4rem] border border-zinc-200 shadow-xl">
             <div className="grid md:grid-cols-2 gap-16">
               <div className="space-y-6">
                 <h3 className="text-2xl font-bold text-[#002344] flex items-center gap-3">

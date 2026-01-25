@@ -137,11 +137,24 @@ export default function TermsAndConditions() {
             </p>
 
             <div className="flex flex-col md:flex-row justify-center items-center gap-6">
-              <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20 w-full md:w-auto min-w-[250px]">
+              <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20 w-full md:w-auto min-w-[280px]">
                 <p className="text-xs text-zinc-400 uppercase tracking-wider mb-1">Email Us</p>
-                <div className="text-white font-bold text-lg">
+                <div className="text-white font-bold text-lg space-y-2">
                   <p>{CONTACT_INFO.primaryEmail}</p>
-                  <p className="text-xs text-zinc-500 font-normal mt-1">[Note: info@swastiksrijan.org/.in under temp. tech-issue]</p>
+                  <div className="pt-2 border-t border-white/10 mt-2">
+                    <p className="text-[10px] text-zinc-400 font-bold flex items-center justify-center gap-2">
+                      {CONTACT_INFO.secondaryEmail}
+                      <span className="text-[8px] bg-red-500/20 text-red-100 px-2 py-0.5 rounded-full border border-red-500/30 uppercase">
+                        {CONTACT_INFO.techIssueNote}
+                      </span>
+                    </p>
+                    <p className="text-[10px] text-zinc-400 font-bold flex items-center justify-center gap-2 mt-1">
+                      {CONTACT_INFO.thirdEmail}
+                      <span className="text-[8px] bg-red-500/20 text-red-100 px-2 py-0.5 rounded-full border border-red-500/30 uppercase">
+                        {CONTACT_INFO.techIssueNote}
+                      </span>
+                    </p>
+                  </div>
                 </div>
               </div>
 

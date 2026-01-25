@@ -1,6 +1,6 @@
 import React from "react";
 
-const HumanityAndTruthObjective = () => {
+const HumanityAndTruth = () => {
   return (
     <div className="w-full bg-[#FAFAF8] text-[#2B2B2B] font-mukta selection:bg-[#C8A24D]/20">
       {/* 1. HERO SECTION */}
@@ -245,8 +245,8 @@ const HumanityAndTruthObjective = () => {
             <p className="text-[#5A3E2B] italic border-l-2 border-[#F2F1ED] pl-6">Forests, rivers, creatures — they are all part of life. Our duty is to give them respect, not just use them.</p>
           </div>
           <div className="p-6 bg-[#F2F1ED] italic text-center space-y-2">
-            <p className="text-lg">“महामारी, सूखा, बाढ़ — यह प्रकृति के संदेश हैं, दंड नहीं।”</p>
-            <p className="text-base text-[#5A3E2B]">"Epidemic, drought, flood — these are messages from nature, not punishment."</p>
+            <p className="text-lg">“मानव-प्रकृति संतुलन: यह प्रकृति के साथ जीने का समय है।”</p>
+            <p className="text-base text-[#5A3E2B]">"Human-nature balance: It is time to live with nature."</p>
           </div>
         </section>
 
@@ -349,4 +349,4 @@ const HumanityAndTruthObjective = () => {
   );
 };
 
-export default HumanityAndTruthObjective;
+export default HumanityAndTruth;

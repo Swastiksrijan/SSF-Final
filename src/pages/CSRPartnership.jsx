@@ -337,9 +337,52 @@ export default function CSRPartnership() {
                                     <FaEnvelope />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-zinc-400 uppercase font-bold">Email Us</p>
-                                    <p className="font-bold text-white">{CONTACT_INFO.primaryEmail}</p>
-                                    <p className="text-[10px] text-zinc-500 italic">[Note: info@swastiksrijan.org/.in under temp. tech-issue]</p>
+                                    <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-1 opacity-60">Corporate Inquiry</p>
+                                    <button
+                                        onClick={() => {
+                                            navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
+                                            alert("Email copied to clipboard!");
+                                        }}
+                                        className="text-lg font-semibold text-white hover:text-[#fb8500] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#fb8500] pb-1"
+                                        title="Click to copy"
+                                    >
+                                        {CONTACT_INFO.primaryEmail}
+                                    </button>
+                                    <div className="pt-4 border-t border-white/5 mt-4 space-y-3">
+                                        <p className="text-[9px] uppercase tracking-[0.2em] text-zinc-500 font-bold opacity-60">Alternative Support</p>
+                                        <div className="flex flex-col gap-2">
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    onClick={() => {
+                                                        navigator.clipboard.writeText(CONTACT_INFO.secondaryEmail);
+                                                        alert("Email copied!");
+                                                    }}
+                                                    className="text-xs text-zinc-400 font-medium hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                                                    title="Click to copy"
+                                                >
+                                                    {CONTACT_INFO.secondaryEmail}
+                                                </button>
+                                                <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm">
+                                                    {CONTACT_INFO.techIssueNote}
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-3">
+                                                <button
+                                                    onClick={() => {
+                                                        navigator.clipboard.writeText(CONTACT_INFO.thirdEmail);
+                                                        alert("Email copied!");
+                                                    }}
+                                                    className="text-xs text-zinc-400 font-medium hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                                                    title="Click to copy"
+                                                >
+                                                    {CONTACT_INFO.thirdEmail}
+                                                </button>
+                                                <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm">
+                                                    {CONTACT_INFO.techIssueNote}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 text-white">

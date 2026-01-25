@@ -210,9 +210,46 @@ export default function PrivacyPolicy() {
               <p className="text-xs text-zinc-400 uppercase tracking-wider mb-1">
                 Contact Email
               </p>
-              <div className="text-white font-bold text-lg">
-                <p>{CONTACT_INFO.primaryEmail}</p>
-                <p className="text-xs text-zinc-400 font-normal mt-1">[Note: info@swastiksrijan.org/.in under temp. tech-issue]</p>
+              <div className="text-white font-bold text-lg space-y-4">
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
+                    alert("Email copied to clipboard!");
+                  }}
+                  className="block hover:text-[#fb8500] transition-colors cursor-pointer outline-none w-full"
+                >
+                  {CONTACT_INFO.primaryEmail}
+                </button>
+                <div className="pt-3 border-t border-white/5 space-y-2">
+                  <div className="flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(CONTACT_INFO.secondaryEmail);
+                        alert("Email copied!");
+                      }}
+                      className="text-xs text-zinc-400 font-bold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                    >
+                      {CONTACT_INFO.secondaryEmail}
+                    </button>
+                    <span className="text-[8px] bg-white/5 text-zinc-500 px-2 py-0.5 rounded-full border border-white/10 uppercase tracking-tighter">
+                      {CONTACT_INFO.techIssueNote}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2">
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(CONTACT_INFO.thirdEmail);
+                        alert("Email copied!");
+                      }}
+                      className="text-xs text-zinc-400 font-bold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                    >
+                      {CONTACT_INFO.thirdEmail}
+                    </button>
+                    <span className="text-[8px] bg-white/5 text-zinc-500 px-2 py-0.5 rounded-full border border-white/10 uppercase tracking-tighter">
+                      {CONTACT_INFO.techIssueNote}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

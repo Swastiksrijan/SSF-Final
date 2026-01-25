@@ -7,6 +7,7 @@ export const CONTACT_INFO = {
     primaryEmail: "swastiksrijanfoundation@gmail.com",
     secondaryEmail: "info@swastiksrijan.org",
     thirdEmail: "info@swastiksrijan.in",
+    techIssueNote: "Temp. Tech-issue",
     privacyEmail: "privacy@swastiksrijan.org", // Dedicated privacy email for legal pages
 
     // Phone Numbers
