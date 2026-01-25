@@ -25,6 +25,31 @@ body {
   background-color: var(--white);
   overflow-x: hidden;
   line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global Responsive Fixes */
+* {
+  overflow-wrap: break-word;
+  /* Standard */
+  word-wrap: break-word;
+  /* IE/Edge */
+}
+
+/* Specifically for long strings like emails/IDs */
+.break-all {
+  word-break: break-all !important;
+}
+
+.break-words {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 .font-serif {

@@ -181,9 +181,9 @@ export default function Home() {
 
 
       {/* 5.25 CSR APPEAL SECTION */}
-      <section className="py-20 bg-gradient-to-br from-[#001529] to-[#002344] text-white">
+      <section className="py-12 md:py-20 bg-gradient-to-br from-[#001529] to-[#002344] text-white">
         <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto bg-white/5 backdrop-blur-lg rounded-3xl border border-white/10 shadow-2xl p-10 md:p-14">
+          <div className="max-w-6xl mx-auto bg-white/5 backdrop-blur-lg rounded-3xl border border-white/10 shadow-2xl p-6 sm:p-10 md:p-14">
 
             <div className="grid md:grid-cols-2 gap-12 items-center">
 
@@ -240,7 +240,7 @@ export default function Home() {
                           navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
                           alert("Email copied to clipboard!");
                         }}
-                        className="text-lg md:text-xl font-semibold hover:text-[#FF6600] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#FF6600]"
+                        className="text-base md:text-xl font-semibold hover:text-[#FF6600] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#FF6600] break-all text-left"
                         title="Click to copy"
                       >
                         {CONTACT_INFO.primaryEmail}
@@ -250,33 +250,33 @@ export default function Home() {
                     <div className="pt-4 border-t border-white/5 space-y-3">
                       <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold opacity-60">Alternative Tech Support</p>
                       <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
                           <button
                             onClick={() => {
                               navigator.clipboard.writeText(CONTACT_INFO.secondaryEmail);
                               alert("Technical Email copied!");
                             }}
-                            className="text-sm text-zinc-400 font-medium hover:text-[#FF6600] transition-colors cursor-pointer outline-none"
+                            className="text-xs md:text-sm text-zinc-400 font-medium hover:text-[#FF6600] transition-colors cursor-pointer outline-none break-all text-left"
                             title="Click to copy"
                           >
                             {CONTACT_INFO.secondaryEmail}
                           </button>
-                          <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm">
+                          <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm shrink-0">
                             {CONTACT_INFO.techIssueNote}
                           </span>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
                           <button
                             onClick={() => {
                               navigator.clipboard.writeText(CONTACT_INFO.thirdEmail);
                               alert("Technical Email copied!");
                             }}
-                            className="text-sm text-zinc-400 font-medium hover:text-[#FF6600] transition-colors cursor-pointer outline-none"
+                            className="text-xs md:text-sm text-zinc-400 font-medium hover:text-[#FF6600] transition-colors cursor-pointer outline-none break-all text-left"
                             title="Click to copy"
                           >
                             {CONTACT_INFO.thirdEmail}
                           </button>
-                          <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm">
+                          <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm shrink-0">
                             {CONTACT_INFO.techIssueNote}
                           </span>
                         </div>

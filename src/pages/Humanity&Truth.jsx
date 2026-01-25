@@ -9,7 +9,7 @@ const HumanityAndTruth = () => {
           <p className="text-[#1F3A5F] font-hindi text-lg mb-4 tracking-wide">
             मानवता और सत्य | Humanity & Truth
           </p>
-          <h1 className="text-4xl md:text-6xl font-hindi font-bold text-[#1F3A5F] mb-6 leading-tight">
+          <h1 className="text-2xl md:text-6xl font-hindi font-bold text-[#1F3A5F] mb-6 leading-tight break-words">
             मानवता और सत्य : जैसा संसार वास्तव में है
           </h1>
           <p className="text-xl md:text-2xl font-merriweather italic text-[#5A3E2B] opacity-80">
@@ -20,8 +20,8 @@ const HumanityAndTruth = () => {
       </section>
 
       {/* 2. INTRO SECTION */}
-      <section className="py-12 px-6">
-        <div className="max-w-3xl mx-auto bg-[#F2F1ED] p-8 md:p-12 rounded-lg border-l-4 border-[#C8A24D]">
+      <section className="py-8 md:py-12 px-4 sm:px-6">
+        <div className="max-w-3xl mx-auto bg-[#F2F1ED] p-5 sm:p-12 rounded-lg border-l-4 border-[#C8A24D]">
           <div className="space-y-6">
             <div className="space-y-2">
               <p className="text-lg md:text-xl font-hindi italic leading-relaxed text-[#2B2B2B]">
@@ -147,8 +147,8 @@ const HumanityAndTruth = () => {
 
         {/* 5. राम : मानव मूल्य का आदर्श */}
         <section className="bg-white p-8 md:p-12 shadow-sm border border-[#F2F1ED]">
-          <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#1F3A5F] mb-6">
-            5. राम : मानव मूल्य का आदर्श <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Ram: The Ideal of Human Values</span>
+          <h2 className="text-xl md:text-3xl font-hindi font-bold text-[#1F3A5F] mb-6">
+            5. राम : मानव मूल्य का आदर्श <span className="block text-lg md:text-xl font-merriweather font-normal opacity-60 mt-1">Ram: The Ideal of Human Values</span>
           </h2>
           <div className="grid md:grid-cols-2 gap-8 mb-8 pb-8 border-b border-[#F2F1ED]">
             <p className="text-lg text-justify leading-relaxed">
