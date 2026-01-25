@@ -102,8 +102,8 @@ export default function CertificateGenerator({ role }) {
                         type="submit"
                         disabled={loading || !accessCode.trim()}
                         className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] ${generated
-                                ? 'bg-green-50 text-green-700 border-2 border-green-200 cursor-default'
-                                : 'bg-gradient-to-r from-[#003366] to-[#004080] text-white hover:shadow-xl'
+                            ? 'bg-green-50 text-green-700 border-2 border-green-200 cursor-default'
+                            : 'bg-gradient-to-r from-[#003366] to-[#004080] text-white hover:shadow-xl'
                             } disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed`}
                     >
                         {loading ? (

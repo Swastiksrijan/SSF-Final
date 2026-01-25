@@ -1,8 +1,7 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { CheckCircle, XCircle, X, Mail, Phone, MapPin, Send } from "lucide-react";
 import { motion } from "framer-motion";
-import OptimizedImage from "../components/OptimizedImage";
 import { CONTACT_INFO } from "../config/contact";
 
 export default function Contact() {
@@ -135,13 +134,13 @@ export default function Contact() {
             <span className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs mb-4 inline-block">
               Contact Us
             </span>
-            <h1 className="text-4xl sm:text-6xl md:text-7xl font-black leading-tight tracking-tighter">
+            <h1 className="text-3xl sm:text-6xl md:text-7xl font-black leading-tight tracking-tighter">
               Connect for <span className="text-[#fb8500]">Change</span>
             </h1>
-            <p className="text-xl md:text-3xl font-medium mt-4 text-zinc-100 opacity-90">
+            <p className="text-lg md:text-3xl font-medium mt-4 text-zinc-100 opacity-90">
               Reach Out to Swastik Srijan Foundation
             </p>
-            <p className="text-zinc-400 mt-8 text-lg leading-relaxed max-w-3xl mx-auto">
+            <p className="text-zinc-400 mt-8 text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
               We welcome your inquiries, collaborations, and feedback. Feel free to reach out to us for any information or to explore potential partnerships. Swastik Srijan Foundation values open communication and believes in the power of collective efforts to bring about positive change.
             </p>
           </motion.div>
@@ -149,8 +148,8 @@ export default function Contact() {
       </section>
 
       {/* ================= CONTENT ================= */}
-      <section className="py-24 px-6">
-        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-16 items-start">
+      <section className="py-12 md:py-24 px-6">
+        <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
 
           <motion.div
             initial={{ opacity: 0, x: -30 }}
@@ -159,7 +158,7 @@ export default function Contact() {
             className="space-y-12"
           >
             <div className="space-y-6">
-              <h2 className="text-3xl md:text-5xl font-black text-[#002344] tracking-tight">
+              <h2 className="text-2xl md:text-5xl font-black text-[#002344] tracking-tight">
                 Get in Touch
               </h2>
               <p className="text-lg text-zinc-500 font-medium leading-relaxed">
@@ -177,7 +176,7 @@ export default function Contact() {
                       <div className="group/item">
                         <button
                           onClick={() => copyToClipboard(CONTACT_INFO.primaryEmail, "Email")}
-                          className="text-[#002344] text-lg sm:text-xl md:text-2xl font-semibold hover:text-[#fb8500] transition-colors flex items-center gap-3 text-left cursor-pointer transition-all duration-300 tracking-tight"
+                          className="text-[#002344] text-base sm:text-xl md:text-2xl font-semibold hover:text-[#fb8500] transition-colors flex items-center gap-3 text-left cursor-pointer transition-all duration-300 tracking-tight break-all"
                         >
                           <span className="border-b-[1px] border-zinc-200 group-hover:border-[#fb8500] pb-1">
                             {CONTACT_INFO.primaryEmail}
@@ -188,25 +187,25 @@ export default function Contact() {
 
                       <div className="bg-zinc-50/50 rounded-2xl p-6 border border-zinc-100/80 flex flex-col gap-4">
                         <div className="flex flex-col gap-3">
-                          <div className="flex items-center justify-between group/alt">
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between group/alt gap-2 sm:gap-4">
                             <button
                               onClick={() => copyToClipboard(CONTACT_INFO.secondaryEmail, "Technical Email")}
-                              className="text-zinc-500 hover:text-[#fb8500] text-xs md:text-sm font-medium transition-colors cursor-pointer"
+                              className="text-zinc-500 hover:text-[#fb8500] text-xs md:text-sm font-medium transition-colors cursor-pointer break-all text-left"
                             >
                               {CONTACT_INFO.secondaryEmail}
                             </button>
-                            <span className="text-[7px] font-black bg-white text-zinc-400 px-2.5 py-1 rounded border border-zinc-200 uppercase tracking-widest shadow-sm">
+                            <span className="text-[7px] font-black bg-white text-zinc-400 px-2.5 py-1 rounded border border-zinc-200 uppercase tracking-widest shadow-sm shrink-0">
                               {CONTACT_INFO.techIssueNote}
                             </span>
                           </div>
-                          <div className="flex items-center justify-between group/alt">
+                          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between group/alt gap-2 sm:gap-4">
                             <button
                               onClick={() => copyToClipboard(CONTACT_INFO.thirdEmail, "Technical Email")}
-                              className="text-zinc-500 hover:text-[#fb8500] text-xs md:text-sm font-medium transition-colors cursor-pointer"
+                              className="text-zinc-500 hover:text-[#fb8500] text-xs md:text-sm font-medium transition-colors cursor-pointer break-all text-left"
                             >
                               {CONTACT_INFO.thirdEmail}
                             </button>
-                            <span className="text-[7px] font-black bg-white text-zinc-400 px-2.5 py-1 rounded border border-zinc-200 uppercase tracking-widest shadow-sm">
+                            <span className="text-[7px] font-black bg-white text-zinc-400 px-2.5 py-1 rounded border border-zinc-200 uppercase tracking-widest shadow-sm shrink-0">
                               {CONTACT_INFO.techIssueNote}
                             </span>
                           </div>
@@ -230,7 +229,7 @@ export default function Contact() {
                   value: (
                     <a
                       href={`tel:${CONTACT_INFO.phones.primary.replace(/\s+/g, '')}`}
-                      className="text-[#002344] text-xl sm:text-2xl md:text-3xl font-semibold tracking-tight hover:text-[#fb8500] transition-all inline-block border-b border-transparent hover:border-[#fb8500]"
+                      className="text-[#002344] text-lg sm:text-2xl md:text-3xl font-semibold tracking-tight hover:text-[#fb8500] transition-all inline-block border-b border-transparent hover:border-[#fb8500] break-words"
                     >
                       {CONTACT_INFO.phones.primaryFormatted}
                     </a>
@@ -242,7 +241,7 @@ export default function Contact() {
                   icon: <MapPin className="w-5 h-5" />,
                   label: "Registered Office",
                   value: (
-                    <p className="text-[#002344] text-base md:text-lg font-medium leading-relaxed max-w-lg">
+                    <p className="text-[#002344] text-sm md:text-lg font-medium leading-relaxed max-w-lg break-words">
                       {CONTACT_INFO.address.fullRegistered}
                     </p>
                   ),
@@ -250,9 +249,9 @@ export default function Contact() {
                   color: "bg-red-50/50 text-[#d90429]"
                 }
               ].map((item, i) => (
-                <div key={i} className="flex gap-8 group/main">
-                  <div className={`w-12 h-12 md:w-14 md:h-14 ${item.color} rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 border border-current opacity-80 transition-all duration-300 group-hover/main:opacity-100 group-hover/main:shadow-lg`}>
-                    {item.icon}
+                <div key={i} className="flex gap-4 md:gap-8 group/main">
+                  <div className={`w-10 h-10 md:w-14 md:h-14 ${item.color} rounded-xl md:rounded-2xl flex items-center justify-center shrink-0 border border-current opacity-80 transition-all duration-300 group-hover/main:opacity-100 group-hover/main:shadow-lg`}>
+                    {React.cloneElement(item.icon, { className: "w-4 h-4 md:w-5 md:h-5" })}
                   </div>
                   <div className="space-y-2 min-w-0 flex-grow pt-1">
                     <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.25em] font-serif italic">{item.label}</p>
@@ -306,10 +305,10 @@ export default function Contact() {
 
             {/* Inspirational Join Us Text */}
             <div className="space-y-4 border-t border-zinc-100 pt-8">
-              <p className="text-lg text-[#002344] font-medium leading-relaxed">
+              <p className="text-base md:text-lg text-[#002344] font-medium leading-relaxed">
                 If your thoughts, principles, or goals align with our organization in any way, or if you want to do something meaningful for society, do not hesitate to join us. Contact us today — because change begins with a conversation.
               </p>
-              <p className="text-lg text-[#fb8500] font-serif italic leading-relaxed">
+              <p className="text-base md:text-lg text-[#fb8500] font-serif italic leading-relaxed">
                 यदि आपके विचार, सिद्धांत या उद्देश्य हमारी संस्था से कहीं भी मेल खाते हैं, या आप समाज के लिए कुछ सार्थक करना चाहते हैं, तो हमसे जुड़ने में कोई संकोच न करें। आज ही हमसे संपर्क करें — क्योंकि बदलाव संवाद से शुरू होता है।
               </p>
             </div>
@@ -339,7 +338,7 @@ export default function Contact() {
             initial={{ opacity: 0, x: 30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="bg-white p-6 sm:p-10 md:p-16 rounded-[2rem] sm:rounded-[3rem] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.1)] border border-zinc-100"
+            className="bg-white p-5 sm:p-10 md:p-16 rounded-[2rem] sm:rounded-[3rem] shadow-[0_30px_100px_-20px_rgba(0,0,0,0.1)] border border-zinc-100"
           >
             <form onSubmit={handleSubmit} className="space-y-8">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">

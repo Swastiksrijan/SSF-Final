@@ -15,7 +15,7 @@ export default function FooterSection() {
 
           <div className="lg:col-span-4 space-y-8">
             <Link to="/" className="inline-block group">
-              <div className="text-3xl font-serif font-bold tracking-tight text-white group-hover:text-[#fb8500] transition-colors">
+              <div className="text-xl sm:text-3xl font-serif font-bold tracking-tight text-white group-hover:text-[#fb8500] transition-colors leading-tight">
                 SWASTIK <span className="text-[#fb8500]">SRIJAN FOUNDATION</span>
               </div>
             </Link>
