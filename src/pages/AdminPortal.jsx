@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaUsers, FaCheckCircle, FaTimesCircle, FaEye, FaIdCard, FaWhatsapp, FaArrowLeft, FaShieldAlt, FaDownload } from "react-icons/fa";
 import { generateCertificate } from "../utils/generateCertificate";
 
-import { ENDPOINTS } from "../config/api";
+import { ENDPOINTS, API_BASE_URL } from "../config/api";
 
 export default function AdminPortal() {
     const [applications, setApplications] = useState([]);
@@ -128,7 +128,12 @@ export default function AdminPortal() {
                                             </td>
                                             <td className="px-8 py-6">
                                                 <button
-                                                    onClick={() => setSelectedAadhar(app.aadharImage)}
+                                                    onClick={() => {
+                                                        const fullUrl = app.idDocumentUrl.startsWith('http')
+                                                            ? app.idDocumentUrl
+                                                            : `${API_BASE_URL}${app.idDocumentUrl}`;
+                                                        setSelectedAadhar(fullUrl);
+                                                    }}
                                                     className="flex items-center gap-2 bg-blue-50 text-blue-600 px-4 py-2 rounded-xl text-xs font-bold hover:bg-blue-600 hover:text-white transition-all shadow-sm"
                                                 >
                                                     <FaEye /> View Aadhar

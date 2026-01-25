@@ -96,18 +96,21 @@ router.get('/admin/volunteers', async (req, res) => {
             order: [['createdAt', 'DESC']]
         });
 
-        const formatted = volunteers.map(v => ({
-            id: v.id,
-            fullName: v.fullName,
-            email: v.email,
-            phone: v.phone,
-            volunteerType: v.volunteerType,
-            submittedAt: v.createdAt,
-            status: v.status,
-            certId: v.certId,
-            // Ensure path separators are correct for URL
-            idDocumentUrl: `http://localhost:${process.env.PORT || 5000}/${v.idDocumentPath.split('uploads')[1] ? 'uploads' + v.idDocumentPath.split('uploads')[1].replace(/\\/g, '/') : v.idDocumentPath}`
-        }));
+        const formatted = volunteers.map(v => {
+            // v.idDocumentPath is something like "backend_node/uploads/123.jpg" or "uploads/123.jpg"
+            const fileName = path.basename(v.idDocumentPath);
+            return {
+                id: v.id,
+                fullName: v.fullName,
+                email: v.email,
+                phone: v.phone,
+                volunteerType: v.volunteerType,
+                submittedAt: v.createdAt,
+                status: v.status,
+                certId: v.certId,
+                idDocumentUrl: `/uploads/${fileName}`
+            };
+        });
         res.json(formatted);
     } catch (error) {
         console.error(error);
