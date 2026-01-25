@@ -9,10 +9,10 @@ services:
     envVars:
       - key: "PORT"
         value: "5000"
-    fromDatabase:
-      name: "ngo-db"
-      property: "connectionString"
-      key: "DB_URL"
+      - key: "DB_URL"
+        fromDatabase:
+          name: "ngo-db"
+          property: "connectionString"
 
 databases:
   - name: "ngo-db"
