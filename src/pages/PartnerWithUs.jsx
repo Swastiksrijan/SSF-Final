@@ -185,12 +185,22 @@ export default function PartnerWithUs() {
                             Join our roadmap to social transformation. Reach out to our partnership team to explore collaboration opportunities.
                         </p>
 
-                        <div className="pt-8">
+                        <div className="pt-8 flex flex-wrap justify-center gap-6">
                             <Link to="/Contact">
                                 <button className="btn-primary px-16 py-6 text-xl bg-[#003366] text-white rounded-full font-bold hover:bg-[#002244] transition-colors shadow-lg shadow-blue-900/20">
                                     Contact Partnership Team
                                 </button>
                             </Link>
+                            <a
+                                href="https://forms.gle/ZjhgFc4By2RKnQbi8"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="inline-block"
+                            >
+                                <button className="btn-primary px-16 py-6 text-xl bg-white border-2 border-[#003366] text-[#003366] rounded-full font-bold hover:bg-zinc-50 transition-colors shadow-lg cursor-pointer">
+                                    Apply via Google Form
+                                </button>
+                            </a>
                         </div>
                     </div>
                 </div>

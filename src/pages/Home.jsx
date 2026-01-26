@@ -304,6 +304,15 @@ export default function Home() {
                       Partner With Us
                     </button>
                   </Link>
+                  <a
+                    href="https://forms.gle/ZjhgFc4By2RKnQbi8"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <button className="px-8 py-4 bg-white border-2 border-[#FF6600] text-[#FF6600] font-bold rounded-full hover:bg-[#FF6600] hover:text-white transition-all shadow-lg active:scale-95">
+                      Apply via Google Form
+                    </button>
+                  </a>
                   <Link to="/Impact">
                     <button className="px-8 py-4 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all active:scale-95">
                       Our Impact

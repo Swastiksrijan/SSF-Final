@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { CheckCircle, XCircle, X, Mail, Phone, MapPin, Send } from "lucide-react";
 import { motion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
+import { FaArrowRight } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 
 export default function Contact() {
@@ -314,23 +316,29 @@ export default function Contact() {
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <a
-                href="https://forms.gle/fwKiuDNnjiYdzPTR9"
-                target="_blank"
-                rel="noreferrer"
-                className="flex-1 py-4 px-6 bg-[#002344] text-white font-bold rounded-xl text-center hover:bg-[#003366] transition-colors shadow-lg shadow-[#002344]/20"
-              >
-                Become Our Volunteer
-              </a>
-              <a
-                href="https://forms.gle/jDUEBYPUXcocvn716"
-                target="_blank"
-                rel="noreferrer"
-                className="flex-1 py-4 px-6 bg-white border-2 border-[#002344] text-[#002344] font-bold rounded-xl text-center hover:bg-[#f0f4f8] transition-colors"
-              >
-                Become Our Member
-              </a>
+            <div className="flex flex-col gap-6 pt-4">
+              <div className="flex flex-col sm:flex-row gap-4">
+                <Link
+                  to="/Volunteer"
+                  className="flex-1 py-4 px-6 bg-[#002344] text-white font-bold rounded-xl text-center hover:bg-[#003366] transition-colors shadow-lg"
+                >
+                  Internal Application
+                </Link>
+                <a
+                  href="https://forms.gle/S6Qc56QE8nLYdDTL9"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex-1 py-4 px-6 bg-[#fb8500] text-white font-bold rounded-xl text-center hover:bg-[#e07600] transition-colors shadow-lg"
+                >
+                  Apply via Google Form
+                </a>
+              </div>
+              <div className="bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
+                <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-2">Member Registration</p>
+                <Link to="/Members" className="text-[#002344] font-bold hover:text-[#fb8500] flex items-center gap-2">
+                  View Membership Plans & Benefits <FaArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
           </motion.div>
 

@@ -97,12 +97,27 @@ export default function GetInvolvedPage() {
                                 <p className="text-zinc-600 leading-relaxed mb-8 font-medium flex-grow">
                                     {role.desc}
                                 </p>
-                                <Link to={role.path}>
-                                    <button className="w-full flex items-center justify-center gap-3 bg-[#002344] text-white py-4 rounded-2xl font-bold hover:bg-[#FF6600] transition-colors group/btn">
-                                        {role.btnText}
-                                        <FaArrowRight className="group-hover/btn:translate-x-2 transition-transform" />
-                                    </button>
-                                </Link>
+                                <div className="space-y-3">
+                                    <Link to={role.path}>
+                                        <button className="w-full flex items-center justify-center gap-3 bg-[#002344] text-white py-4 rounded-2xl font-bold hover:bg-[#FF6600] transition-colors group/btn shadow-lg">
+                                            {role.btnText}
+                                            <FaArrowRight className="group-hover/btn:translate-x-2 transition-transform" />
+                                        </button>
+                                    </Link>
+
+                                    {(role.id === "volunteer" || role.id === "partner") && (
+                                        <a
+                                            href={role.id === "volunteer" ? "https://forms.gle/S6Qc56QE8nLYdDTL9" : "https://forms.gle/ZjhgFc4By2RKnQbi8"}
+                                            target="_blank"
+                                            rel="noreferrer"
+                                            className="block"
+                                        >
+                                            <button className="w-full flex items-center justify-center gap-3 bg-white border-2 border-[#002344] text-[#002344] py-3 rounded-xl font-bold hover:bg-zinc-50 transition-colors text-sm">
+                                                Apply via Google Form
+                                            </button>
+                                        </a>
+                                    )}
+                                </div>
                             </motion.div>
                         ))}
                     </div>

@@ -4,13 +4,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaCheckCircle, FaSpinner, FaExclamationCircle, FaArrowRight, FaWhatsapp, FaIdCard, FaUpload, FaEye } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import { ENDPOINTS } from "../config/api";
+import { ALL_COUNTRIES } from "../data/countries";
 
 export default function VolunteerForm() {
     const [formData, setFormData] = useState({
         fullName: "",
         email: "",
+        countryCode: "+91",
         phone: "",
         volunteerType: "field",
+        position: "General Volunteer",
         idType: "College ID",
         message: "",
         idDocument: null
@@ -19,6 +22,15 @@ export default function VolunteerForm() {
     const [status, setStatus] = useState("idle"); // idle, submitting, success, error
     const [errors, setErrors] = useState({});
     const [certificateCode, setCertificateCode] = useState("");
+
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const [searchTerm, setSearchTerm] = useState("");
+
+    const filteredCountries = ALL_COUNTRIES.filter(c =>
+        c.label.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+
+    const currentCountry = ALL_COUNTRIES.find(c => c.code === formData.countryCode) || ALL_COUNTRIES.find(c => c.code === "+91");
 
     useEffect(() => {
         emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
@@ -50,10 +62,9 @@ export default function VolunteerForm() {
         if (!emailRegex.test(formData.email)) {
             newErrors.email = "Please enter a valid email address";
         }
-        const phoneRegex = /^[0-9]{10}$/;
         const cleanPhone = formData.phone.replace(/[^0-9]/g, "");
-        if (!phoneRegex.test(cleanPhone)) {
-            newErrors.phone = "Please enter a valid 10-digit phone number";
+        if (cleanPhone.length < 7 || cleanPhone.length > 15) {
+            newErrors.phone = "Please enter a valid phone number (7-15 digits)";
         }
         if (!formData.message.trim() || formData.message.trim().length < 10) {
             newErrors.message = "Please tell us a bit more (min 10 chars)";
@@ -76,10 +87,12 @@ export default function VolunteerForm() {
         try {
             // STEP 1: CONSTRUCT FORMDATA
             const data = new FormData();
+            const fullPhone = `${formData.countryCode} ${formData.phone}`;
             data.append("name", formData.fullName);
             data.append("email", formData.email);
-            data.append("phone", formData.phone);
+            data.append("phone", fullPhone);
             data.append("volunteer_type", formData.volunteerType);
+            data.append("position", formData.position);
             data.append("id_type", formData.idType);
             data.append("message", formData.message);
             data.append("id_document", formData.idDocument);
@@ -106,7 +119,7 @@ export default function VolunteerForm() {
         const whatsappMsg = encodeURIComponent(
             `Hi SSF! I am ${formData.fullName}. I just applied to be a ${formData.volunteerType} volunteer.\n\n` +
             `Email: ${formData.email}\n` +
-            `Phone: ${formData.phone}\n` +
+            `Phone: ${formData.countryCode} ${formData.phone}\n` +
             `Message: ${formData.message}\n\n` +
             `Please verify my details and provide my Certificate Access Code!`
         );
@@ -157,7 +170,7 @@ export default function VolunteerForm() {
 
                 <button
                     onClick={() => {
-                        setFormData({ fullName: "", email: "", phone: "", volunteerType: "field", message: "" });
+                        setFormData({ fullName: "", email: "", countryCode: "+91", phone: "", volunteerType: "field", position: "General Volunteer", message: "" });
                         setStatus("idle");
                     }}
                     className="text-zinc-400 hover:text-[#002344] font-bold transition-colors text-sm"
@@ -204,15 +217,131 @@ export default function VolunteerForm() {
                 <div className="grid md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                         <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Phone Number</label>
-                        <input
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            required
-                            placeholder="+91 00000 00000"
-                            className={`w-full px-6 py-4 bg-zinc-50 border-none rounded-2xl focus:ring-4 focus:ring-orange-400/20 transition-all font-medium ${errors.phone ? 'ring-2 ring-red-400' : ''}`}
-                        />
+                        <div className="flex gap-2">
+                            <div className="relative min-w-[140px]">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                    className="w-full flex items-center justify-between px-4 py-4 bg-zinc-50 border-none rounded-2xl focus:ring-4 focus:ring-orange-400/20 transition-all font-bold group"
+                                >
+                                    <div className="flex items-center gap-2">
+                                        <img
+                                            src={`https://flagcdn.com/w40/${currentCountry.name}.png`}
+                                            alt="Flag"
+                                            className="w-5 h-auto rounded-sm shadow-sm"
+                                        />
+                                        <span>{formData.countryCode}</span>
+                                    </div>
+                                    <span className={`text-[10px] transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}>▼</span>
+                                </button>
+
+                                <AnimatePresence>
+                                    {isDropdownOpen && (
+                                        <>
+                                            <div
+                                                className="fixed inset-0 z-[110]"
+                                                onClick={() => setIsDropdownOpen(false)}
+                                            ></div>
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                animate={{ opacity: 1, y: 0, scale: 1 }}
+                                                exit={{ opacity: 0, y: 10, scale: 0.95 }}
+                                                className="absolute top-full left-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-zinc-100 py-2 z-[120] flex flex-col"
+                                            >
+                                                <div className="px-3 pb-2 pt-1">
+                                                    <input
+                                                        type="text"
+                                                        placeholder="Search country..."
+                                                        value={searchTerm}
+                                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                                        className="w-full px-4 py-2 bg-zinc-50 border border-zinc-100 rounded-xl text-sm focus:ring-2 focus:ring-orange-400/20 outline-none"
+                                                        onClick={(e) => e.stopPropagation()}
+                                                    />
+                                                </div>
+                                                <div className="max-h-60 overflow-y-auto">
+                                                    {filteredCountries.length > 0 ? (
+                                                        filteredCountries.map((c, i) => (
+                                                            <button
+                                                                key={`${c.name}-${i}`}
+                                                                type="button"
+                                                                onClick={() => {
+                                                                    setFormData(prev => ({ ...prev, countryCode: c.code }));
+                                                                    setIsDropdownOpen(false);
+                                                                    setSearchTerm("");
+                                                                }}
+                                                                className={`w-full flex items-center gap-3 px-4 py-3 hover:bg-orange-50 transition-colors text-left ${formData.countryCode === c.code && currentCountry.name === c.name ? 'bg-orange-50/50' : ''}`}
+                                                            >
+                                                                <img
+                                                                    src={`https://flagcdn.com/w40/${c.name}.png`}
+                                                                    alt={c.label}
+                                                                    className="w-5 h-auto rounded-sm"
+                                                                />
+                                                                <span className="text-sm font-bold text-zinc-700">{c.label}</span>
+                                                                {formData.countryCode === c.code && currentCountry.name === c.name && (
+                                                                    <FaCheckCircle className="ml-auto text-orange-500 text-xs" />
+                                                                )}
+                                                            </button>
+                                                        ))
+                                                    ) : (
+                                                        <p className="px-4 py-3 text-sm text-zinc-400 text-center font-bold">No country found</p>
+                                                    )}
+                                                </div>
+                                            </motion.div>
+                                        </>
+                                    )}
+                                </AnimatePresence>
+                            </div>
+                            <input
+                                name="phone"
+                                value={formData.phone}
+                                onChange={handleChange}
+                                required
+                                placeholder="00000 00000"
+                                className={`flex-1 px-6 py-4 bg-zinc-50 border-none rounded-2xl focus:ring-4 focus:ring-orange-400/20 transition-all font-medium ${errors.phone ? 'ring-2 ring-red-400' : ''}`}
+                            />
+                        </div>
                         {errors.phone && <p className="text-xs text-red-500 font-bold ml-2 mt-1">{errors.phone}</p>}
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Position Applied For</label>
+                        <select
+                            name="position"
+                            value={formData.position}
+                            onChange={handleChange}
+                            className="w-full px-6 py-4 bg-zinc-50 border-none rounded-2xl focus:ring-4 focus:ring-orange-400/20 transition-all font-medium appearance-none"
+                        >
+                            <option value="General Volunteer">General Volunteer</option>
+                            <optgroup label="National Strategic Leadership">
+                                <option value="National CSR & Corporate Partnership Head">National CSR & Corporate Partnership Head</option>
+                                <option value="National Program & Project Head">National Program & Project Head</option>
+                                <option value="National Strategy & Innovation Head">National Strategy & Innovation Head</option>
+                            </optgroup>
+                            <optgroup label="State Operations & Management">
+                                <option value="State Impact Director">State Impact Director</option>
+                                <option value="State Program Coordinator">State Program Coordinator</option>
+                                <option value="State Volunteer & Community Mobilisation Head">State Volunteer & Community Mobilisation Head</option>
+                            </optgroup>
+                            <optgroup label="District & Community Action">
+                                <option value="District Program Coordinator">District Program Coordinator</option>
+                                <option value="District Volunteer Coordinator">District Volunteer Coordinator</option>
+                            </optgroup>
+                            <optgroup label="Special & Advisory">
+                                <option value="Senior Advisor – Social Development">Senior Advisor – Social Development</option>
+                                <option value="Legal & Policy Advisor">Legal & Policy Advisor</option>
+                            </optgroup>
+                            <optgroup label="Technical & Creative Support">
+                                <option value="Website Development & IT Support">Website Development & IT Support</option>
+                                <option value="Digital Marketing & Social Media">Digital Marketing & Social Media</option>
+                                <option value="Graphic Design & Visual Arts">Graphic Design & Visual Arts</option>
+                                <option value="Content Writing & Blogging">Content Writing & Blogging</option>
+                                <option value="Photography & Video Editing">Photography & Video Editing</option>
+                            </optgroup>
+                            <optgroup label="Youth & Engagement">
+                                <option value="Young Social Leadership Fellow">Young Social Leadership Fellow</option>
+                                <option value="Campus Social Coordinator">Campus Social Coordinator</option>
+                            </optgroup>
+                        </select>
                     </div>
 
                     <div className="space-y-2">

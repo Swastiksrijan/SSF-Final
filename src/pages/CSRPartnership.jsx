@@ -78,9 +78,17 @@ export default function CSRPartnership() {
                         <p className="text-xl text-zinc-300 leading-relaxed max-w-lg">
                             Move beyond compliance. Partner with Swastik Srijan Foundation to create deep, lasting social impact that resonates with your values.
                         </p>
-                        <div className="flex gap-4 pt-4">
+                        <div className="flex flex-wrap gap-4 pt-4">
                             <a href="#partner-form" className="px-8 py-4 bg-[#fb8500] text-white font-bold rounded-full hover:bg-[#e07600] transition-all shadow-lg hover:shadow-orange-500/30 transform hover:-translate-y-1">
                                 Partner With Us
+                            </a>
+                            <a
+                                href="https://forms.gle/ZjhgFc4By2RKnQbi8"
+                                target="_blank"
+                                rel="noreferrer"
+                                className="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-bold rounded-full border border-white/20 hover:bg-white/20 transition-all text-center"
+                            >
+                                Apply via Google Form
                             </a>
                             <a href="#benefits" className="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-bold rounded-full border border-white/20 hover:bg-white/20 transition-all">
                                 How It Works

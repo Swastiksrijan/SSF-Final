@@ -23,6 +23,10 @@ const Volunteer = sequelize.define('Volunteer', {
         type: DataTypes.STRING,
         defaultValue: 'field'
     },
+    position: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
     idType: {
         type: DataTypes.STRING,
         defaultValue: 'College ID'

@@ -65,6 +65,7 @@ export default function FooterSection() {
               <h4 className="font-serif font-bold text-[#fb8500] uppercase tracking-[0.15em] mb-6 text-xs">Get Involved | जुड़ें</h4>
               <ul className="space-y-3 text-zinc-400 font-medium text-sm">
                 <li><Link to="/Volunteer" className="hover:text-white transition-colors">Volunteer for India</Link></li>
+                <li><Link to="/Internship" className="hover:text-white transition-colors">Internship | इंटर्नशिप</Link></li>
                 <li><Link to="/Members" className="hover:text-white transition-colors">Become a Member</Link></li>
                 <li><Link to="/PartnerWithUs" className="hover:text-white transition-colors">Partner with the Mission</Link></li>
                 <li><Link to="/Humanity&Truth" className="hover:text-white transition-colors">Humanity & Truth</Link></li>

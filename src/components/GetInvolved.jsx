@@ -199,8 +199,16 @@ const GetInvolved = () => {
                 to="/Contact"
                 className="px-8 py-4 border-2 border-white text-white font-bold uppercase tracking-wide hover:bg-white hover:text-black transition-colors rounded-lg"
               >
-                Partner With Us
+                Connect With Us
               </Link>
+              <a
+                href="https://forms.gle/ZjhgFc4By2RKnQbi8"
+                target="_blank"
+                rel="noreferrer"
+                className="px-8 py-4 bg-[#FF6600] text-white font-bold uppercase tracking-wide hover:bg-[#e65c00] transition-colors rounded-lg shadow-lg"
+              >
+                Partner via Google Form
+              </a>
             </div>
           </div>
 

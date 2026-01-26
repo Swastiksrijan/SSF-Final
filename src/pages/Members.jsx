@@ -208,6 +208,15 @@ const Members = () => {
                       <FaArrowRight />
                     </button>
                     <a
+                      href="https://forms.gle/S6Qc56QE8nLYdDTL9"
+                      target="_blank"
+                      rel="noreferrer"
+                      className="w-full flex justify-between items-center bg-white p-4 rounded-xl hover:shadow-md transition text-lg font-bold text-[#FF6600] cursor-pointer"
+                    >
+                      <span>📑 Apply via Google Form</span>
+                      <FaArrowRight />
+                    </a>
+                    <a
                       href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
                       target="_blank"
                       rel="noreferrer"

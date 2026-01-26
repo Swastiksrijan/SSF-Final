@@ -152,6 +152,15 @@ export default function Volunteer() {
                 <FaArrowRight />
               </button>
               <a
+                href="https://forms.gle/S6Qc56QE8nLYdDTL9"
+                target="_blank"
+                rel="noreferrer"
+                className="bg-white border-2 border-[#FF6600] text-[#FF6600] px-10 py-5 rounded-2xl font-bold text-xl hover:bg-[#FF6600] hover:text-white transition-all flex items-center gap-3 cursor-pointer shadow-xl"
+              >
+                Apply via Google Form
+                <FaArrowRight />
+              </a>
+              <a
                 href={CONTACT_INFO.social.whatsappGroup}
                 target="_blank"
                 rel="noreferrer"

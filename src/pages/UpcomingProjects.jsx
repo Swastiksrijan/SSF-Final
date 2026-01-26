@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { FaBuilding, FaHeartbeat, FaMicrochip, FaMapMarkedAlt } from "react-icons/fa";
+import { FaBuilding, FaHeartbeat, FaMicrochip, FaMapMarkedAlt, FaFilePdf, FaDownload, FaCheckCircle, FaArrowRight } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 
 export default function UpcomingProjects() {
@@ -224,34 +224,97 @@ export default function UpcomingProjects() {
           </motion.div>
         </div>
       </section>
-      {/* ================= PROJECT DOCUMENT (AUTO DOWNLOAD) ================= */}
-      <section className="py-20 px-6 bg-white border-t border-zinc-100">
-        <div className="max-w-5xl mx-auto text-center space-y-6">
+      {/* ================= PROJECT DOCUMENT (OFFICIAL PROPOSAL) ================= */}
+      <section className="py-24 px-6 relative overflow-hidden bg-zinc-50 border-t border-zinc-200">
+        <div className="max-w-7xl mx-auto">
+          <div className="bg-white rounded-[2.5rem] p-8 lg:p-16 shadow-xl border border-zinc-100 relative overflow-hidden">
+            {/* Decorative BG elements */}
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gradient-to-br from-[#fb8500]/5 to-[#002344]/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
 
-          <span className="inline-block px-4 py-1.5 bg-[#002344] text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
-            Official Document
-          </span>
+            <div className="grid lg:grid-cols-12 gap-12 lg:gap-20 items-center relative z-10">
 
-          <h2 className="text-3xl lg:text-4xl font-serif font-bold text-[#002344]">
-            THE <span className="text-[#fb8500]">SSF NATIONAL ACADEMY</span>
-          </h2>
+              {/* LEFT: DOCUMENT VISUAL MOCKUP */}
+              <div className="lg:col-span-4 lg:order-1 order-2 flex justify-center lg:justify-start">
+                <div className="relative group">
+                  <div className="absolute inset-0 bg-[#002344] rounded-2xl rotate-6 opacity-20 blur-lg group-hover:rotate-12 transition-all duration-500"></div>
+                  <div className="relative w-64 aspect-[1/1.414] bg-white rounded-xl shadow-2xl border border-zinc-100 overflow-hidden flex flex-col transform group-hover:-translate-y-2 transition-transform duration-500">
+                    {/* Header of Doc */}
+                    <div className="h-1/3 bg-[#002344] p-6 flex flex-col justify-between">
+                      <div className="w-8 h-8 rounded-full bg-[#fb8500]/20 flex items-center justify-center">
+                        <div className="w-3 h-3 bg-[#fb8500] rounded-full"></div>
+                      </div>
+                      <div className="space-y-2">
+                        <div className="h-2 w-16 bg-white/20 rounded-full"></div>
+                        <div className="h-2 w-24 bg-white/40 rounded-full"></div>
+                      </div>
+                    </div>
+                    {/* Body of Doc */}
+                    <div className="flex-1 p-6 space-y-4">
+                      <div className="h-2 w-full bg-zinc-100 rounded-full"></div>
+                      <div className="h-2 w-5/6 bg-zinc-100 rounded-full"></div>
+                      <div className="h-2 w-4/6 bg-zinc-100 rounded-full"></div>
+                      <div className="h-2 w-full bg-zinc-100 rounded-full"></div>
+                      <div className="h-2 w-3/4 bg-zinc-100 rounded-full"></div>
+                    </div>
+                    {/* Footer of Doc */}
+                    <div className="h-16 border-t border-zinc-50 flex items-center justify-between px-6 bg-zinc-50/50">
+                      <div className="text-[10px] font-bold text-[#002344]">OFFICIAL</div>
+                      <FaFilePdf className="text-red-500 text-lg" />
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-          <p className="text-lg text-zinc-500 font-medium max-w-2xl mx-auto">
-            Download our complete project proposal including roadmap, impact strategy, and future vision.
-          </p>
+              {/* RIGHT: CONTENT */}
+              <div className="lg:col-span-8 lg:order-2 order-1 space-y-8 text-center lg:text-left">
+                <div>
+                  <span className="inline-flex items-center gap-2 px-4 py-2 bg-[#002344]/5 text-[#002344] text-xs font-bold rounded-full uppercase tracking-widest border border-[#002344]/10 mb-6">
+                    <span className="w-2 h-2 bg-[#002344] rounded-full animate-pulse"></span>
+                    Official Proposal Document
+                  </span>
+                  <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344] leading-tight mb-4">
+                    Strategic Vision: <span className="text-[#fb8500]">The SSF National Academy</span>
+                  </h2>
+                  <p className="text-xl text-zinc-500 font-medium leading-relaxed max-w-2xl mx-auto lg:mx-0">
+                    A comprehensive blueprint outlining our mission to establish state-of-the-art educational excellence centers across Bharat by 2027-28.
+                  </p>
+                </div>
 
-          {/* ✅ DIRECT DOWNLOAD BUTTON */}
-          <div className="pt-4">
-            <a
-              href="/pdfs/SSF.pdf"
-              download="SSF_National_Academy_Proposal.pdf"
-              className="inline-flex items-center gap-3 px-10 py-4 bg-[#fb8500] text-white font-bold rounded-full hover:bg-[#e76f00] transition-all shadow-lg"
-            >
-              📥 Download Project Proposal (PDF)
-            </a>
-            <p className="text-sm text-zinc-400 mt-2">PDF • Auto download</p>
+                <div className="flex flex-wrap gap-4 justify-center lg:justify-start">
+                  {[
+                    "5-Year Strategic Roadmap",
+                    "Impact & Sustainability Model",
+                    "Infrastructure & Architecture",
+                    "Financial Allocation"
+                  ].map((trait, i) => (
+                    <div key={i} className="flex items-center gap-2 px-4 py-2 bg-zinc-50 rounded-lg border border-zinc-100">
+                      <FaCheckCircle className="text-[#2d6a4f] text-sm" />
+                      <span className="text-sm font-bold text-zinc-700">{trait}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="pt-4 flex flex-col sm:flex-row gap-6 justify-center lg:justify-start items-center">
+                  <a
+                    href="/pdfs/SSF.pdf"
+                    download="SSF_National_Academy_Proposal.pdf"
+                    className="relative overflow-hidden group px-10 py-5 bg-[#fb8500] text-white font-bold rounded-full hover:bg-[#e76f00] transition-all shadow-xl shadow-[#fb8500]/20"
+                  >
+                    <span className="relative z-10 flex items-center gap-3">
+                      <FaDownload />
+                      <span>Download Full Proposal</span>
+                    </span>
+                    <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                  </a>
+                  <div className="text-left text-sm text-zinc-400 font-medium">
+                    <p>PDF Format • 45 MB</p>
+                    <p>Last Updated: January 2026</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
           </div>
-
         </div>
       </section>
 

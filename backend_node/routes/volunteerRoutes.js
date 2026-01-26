@@ -25,6 +25,10 @@ const upload = multer({
 
 // --- 2. Email Configuration (Reusable) ---
 const sendEmail = async (to, subject, text, html) => {
+    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+        throw new Error('Email credentials missing in .env file');
+    }
+
     try {
         const transporter = nodemailer.createTransport({
             service: 'gmail',
@@ -43,7 +47,8 @@ const sendEmail = async (to, subject, text, html) => {
         });
         console.log(`📧 Email sent to ${to}`);
     } catch (error) {
-        console.error('Email Error:', error);
+        console.error('❌ Nodemailer Error:', error);
+        throw error; // Rethrow to handle in the route
     }
 };
 
@@ -52,8 +57,10 @@ const sendEmail = async (to, subject, text, html) => {
 // @route   POST /api/register
 // @desc    Register a new volunteer
 router.post('/register', upload.single('id_document'), async (req, res) => {
+    console.log('📝 Received registration request:', req.body);
+    console.log('📁 Received file:', req.file);
     try {
-        const { name, email, phone, volunteer_type, id_type, message } = req.body;
+        const { name, email, phone, volunteer_type, position, id_type, message } = req.body;
 
         if (!req.file) {
             return res.status(400).json({ status: 'error', message: 'ID Document is required' });
@@ -64,6 +71,7 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
             email,
             phone,
             volunteerType: volunteer_type,
+            position,
             idType: id_type,
             message,
             idDocumentPath: req.file.path,
@@ -76,14 +84,14 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
         await sendEmail(
             adminEmail,
             `New Volunteer Registration: ${name}`,
-            `A new volunteer has applied. Please check the Admin Portal. Name: ${name}, Type: ${volunteer_type}`,
-            `<h3>New Volunteer Request</h3><p><strong>Name:</strong> ${name}</p><p><strong>Type:</strong> ${volunteer_type}</p><p>Please login to the Admin Portal to review documents.</p>`
+            `A new volunteer has applied. Please check the Admin Portal. Name: ${name}, Type: ${volunteer_type}, Position: ${position}`,
+            `<h3>New Volunteer Request</h3><p><strong>Name:</strong> ${name}</p><p><strong>Type:</strong> ${volunteer_type}</p><p><strong>Position:</strong> ${position}</p><p>Please login to the Admin Portal to review documents.</p>`
         );
 
         res.status(201).json({ status: 'success', message: 'Application submitted successfully', data: newVolunteer });
 
     } catch (error) {
-        console.error('Registration Error:', error);
+        console.error('❌ Registration Error DETAILS:', error);
         res.status(500).json({ status: 'error', message: 'Server Error' });
     }
 });
@@ -105,6 +113,7 @@ router.get('/admin/volunteers', async (req, res) => {
                 email: v.email,
                 phone: v.phone,
                 volunteerType: v.volunteerType,
+                position: v.position,
                 submittedAt: v.createdAt,
                 status: v.status,
                 certId: v.certId,
@@ -143,14 +152,53 @@ router.post('/admin/approve/:id', async (req, res) => {
         });
 
         // Send Approval Email
-        await sendEmail(
-            volunteer.email,
-            'Your Volunteer Application Approved - Swastik Srijan Foundation',
-            `Congratulations! You have been approved. Your Certificate ID is ${certId}.`,
-            `<h3>Application Approved!</h3><p>Welcome to the team, ${volunteer.fullName}.</p><p>Your Official Certificate ID is: <strong>${certId}</strong></p><p>You can verify and download it from our website.</p>`
-        );
+        const frontendUrl = process.env.FRONTEND_URL || 'http://localhost:5173';
+        const downloadUrl = `${frontendUrl}/verify/${certId}`;
 
-        res.json({ status: 'success', certId });
+        try {
+            await sendEmail(
+                volunteer.email,
+                'Your Volunteer Application Approved - Swastik Srijan Foundation',
+                `Congratulations! You have been approved. Your Certificate ID is ${certId}. Download it here: ${downloadUrl}`,
+                `
+                <div style="font-family: sans-serif; max-width: 600px; margin: auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
+                    <h2 style="color: #003366;">Application Approved!</h2>
+                    <p>Welcome to the team, <strong>${volunteer.fullName}</strong>.</p>
+                    <p>Your application for <strong>${volunteer.volunteerType}</strong> has been verified by our team.</p>
+                    
+                    <div style="background: #f9f9f9; padding: 20px; border-radius: 8px; margin: 20px 0; text-align: center;">
+                        <p style="margin-bottom: 10px; color: #666;">Official Certificate ID</p>
+                        <h1 style="margin: 0; color: #003366; letter-spacing: 2px;">${certId}</h1>
+                    </div>
+
+                    <div style="text-align: center; margin-top: 30px;">
+                        <a href="${downloadUrl}" style="background: #FF6600; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+                            Download Your Certificate
+                        </a>
+                    </div>
+                    
+                    <p style="margin-top: 30px; font-size: 12px; color: #888;">
+                        If the button above doesn't work, copy and paste this link into your browser:<br>
+                        <a href="${downloadUrl}">${downloadUrl}</a>
+                    </p>
+                    
+                    <p style="margin-top: 40px; border-top: 1px solid #eee; pt-20px; font-size: 14px; color: #555;">
+                        Best regards,<br>
+                        <strong>Team Swastik Srijan Foundation</strong>
+                    </p>
+                </div>
+                `
+            );
+            res.json({ status: 'success', certId, emailSent: true });
+        } catch (emailErr) {
+            console.error('⚠️ Approval successful but email failed:', emailErr.message);
+            res.json({
+                status: 'success',
+                certId,
+                emailSent: false,
+                warning: 'Application approved but email failed. Please check your EMAIL_USER and EMAIL_PASS in .env'
+            });
+        }
 
     } catch (error) {
         console.error(error);
@@ -175,6 +223,7 @@ router.get('/verify/:certId', async (req, res) => {
             valid: true,
             fullName: volunteer.fullName,
             volunteerType: volunteer.volunteerType,
+            position: volunteer.position,
             approvedAt: volunteer.approvedAt,
             certId: volunteer.certId
         });

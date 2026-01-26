@@ -7,15 +7,15 @@ const sequelize = require('./config/database'); // Import Sequelize config
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Check for required environment variables
+if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    console.warn('⚠️ WARNING: EMAIL_USER or EMAIL_PASS missing in .env. Automated emails will not work.');
+}
+
 // Middleware
 app.use(cors());
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// Connect to Database
-sequelize.sync() // This creates tables if they don't exist
-    .then(() => console.log('✅ PostgreSQL Database Synced'))
-    .catch(err => console.error('❌ Database Sync Error:', err));
 
 // Basic Route
 app.get('/', (req, res) => {
@@ -26,7 +26,15 @@ app.get('/', (req, res) => {
 const volunteerRoutes = require('./routes/volunteerRoutes');
 app.use('/api', volunteerRoutes);
 
-// Start Server
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on http://localhost:${PORT}`);
-});
+// Connect to Database & Start Server
+sequelize.sync({ alter: true })
+    .then(() => {
+        console.log('✅ PostgreSQL Database Synced');
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on http://localhost:${PORT}`);
+        });
+    })
+    .catch(err => {
+        console.error('❌ Database Sync Error:', err);
+        process.exit(1);
+    });

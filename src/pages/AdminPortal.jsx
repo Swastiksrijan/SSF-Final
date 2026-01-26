@@ -37,8 +37,14 @@ export default function AdminPortal() {
             try {
                 const response = await fetch(ENDPOINTS.ADMIN_APPROVE(id), { method: 'POST' });
                 if (response.ok) {
+                    const result = await response.json();
                     loadApplications();
-                    alert("Application Approved! Certificate ID generated.");
+
+                    if (result.emailSent) {
+                        alert("Application Approved! Certificate ID generated and email sent.");
+                    } else {
+                        alert(`Application Approved! Certificate ID generated, BUT the email failed to send.\n\nReason: ${result.warning || 'Check backend logs'}`);
+                    }
                 } else {
                     alert("Failed to approve");
                 }
