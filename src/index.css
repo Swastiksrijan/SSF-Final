@@ -1,0 +1,144 @@
+@import url("https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Noto+Serif+Devanagari:wght@400;700&family=Mukta:wght@300;400;600;700&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap");
+@import "tailwindcss";
+
+:root {
+  /* Core Brand Colors */
+  --primary: #002344;
+  --primary-light: #004d99;
+  --secondary: #d90429;
+
+  /* Modern Accents */
+  --accent-gold: #fb8500;
+  --accent-green: #2d6a4f;
+
+  /* Neutral Palette */
+  --bg-soft: #f8f9fa;
+  --text-dark: #1a1c1e;
+  --text-muted: #64748b;
+  --white: #ffffff;
+  --glass: rgba(255, 255, 255, 0.7);
+}
+
+body {
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: var(--text-dark);
+  background-color: var(--white);
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global Responsive Fixes */
+* {
+  overflow-wrap: break-word;
+  /* Standard */
+  word-wrap: break-word;
+  /* IE/Edge */
+}
+
+/* Specifically for long strings like emails/IDs */
+.break-all {
+  word-break: break-all !important;
+}
+
+.break-words {
+  overflow-wrap: break-word !important;
+  word-wrap: break-word !important;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+.font-serif {
+  font-family: "Playfair Display", serif;
+}
+
+.font-hindi {
+  font-family: "Noto Serif Devanagari", serif;
+}
+
+.font-merriweather {
+  font-family: "Merriweather", serif;
+}
+
+.font-mukta {
+  font-family: "Mukta", sans-serif;
+}
+
+/* Premium Utilities */
+.glass-effect {
+  background: var(--glass);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--primary) 0%, #001a33 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.bg-gradient-premium {
+  background: linear-gradient(135deg, #001a33 0%, var(--primary) 100%);
+}
+
+/* Buttons */
+.btn-primary {
+  @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 bg-[#002344] text-white hover:bg-[#003366] hover:-translate-y-0.5 shadow-lg hover:shadow-[#002344]/20;
+}
+
+.btn-secondary {
+  @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 bg-white text-[#002344] border-2 border-[#002344] hover:bg-[#002344] hover:text-white hover:-translate-y-0.5;
+}
+
+.btn-cta {
+  @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 bg-[#d90429] text-white hover:bg-[#b00422] hover:-translate-y-0.5 shadow-lg hover:shadow-red-500/20;
+}
+
+/* Animations */
+@keyframes float {
+  0% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
+
+  100% {
+    transform: translateY(0px);
+  }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+@keyframes scrollX {
+  0% {
+    transform: translateX(0);
+  }
+
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.animate-scrollX {
+  animation: scrollX 20s linear infinite;
+}
+
+/* Cards */
+.premium-card {
+  @apply bg-white p-8 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300;
+}
+
+/* Font compatibility */
+.font-inria {
+  font-family: "Plus Jakarta Sans", sans-serif;
+}
