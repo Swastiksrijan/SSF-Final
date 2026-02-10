@@ -16,6 +16,7 @@ import OptimizedImage from "./OptimizedImage";
 export default function PageHero({
     image,
     title,
+    altTitle,
     subtitle,
     hindiSubtitle,
     height = "min-h-[60vh]",
@@ -33,7 +34,7 @@ export default function PageHero({
             <div className="absolute inset-0 z-0">
                 <OptimizedImage
                     src={image}
-                    alt={title}
+                    alt={altTitle || title || "Hero Image"}
                     className="w-full h-full object-cover brightness-[0.75]"
                 />
                 {/* Gradient Overlay for better text readability */}
@@ -49,18 +50,22 @@ export default function PageHero({
                     className="space-y-4"
                 >
                     {/* Tiny decorative header */}
-                    <div className="flex items-center justify-center gap-3 mb-2">
-                        <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
-                        <h2 className="text-[#FF6600] font-bold tracking-[0.3em] uppercase text-[10px] md:text-xs">
-                            Swastik Srijan Foundation
-                        </h2>
-                        <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
-                    </div>
+                    {title && (
+                        <div className="flex items-center justify-center gap-3 mb-2">
+                            <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
+                            <h2 className="text-[#FF6600] font-bold tracking-[0.3em] uppercase text-[10px] md:text-xs">
+                                Swastik Srijan Foundation
+                            </h2>
+                            <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
+                        </div>
+                    )}
 
                     {/* Main Title */}
-                    <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-2xl font-serif">
-                        {title}
-                    </h1>
+                    {title && (
+                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-2xl font-serif">
+                            {title}
+                        </h1>
+                    )}
 
                     {/* Subtitles */}
                     {(subtitle || hindiSubtitle) && (

@@ -9,35 +9,77 @@ export const Route = createFileRoute("/Objectives")({
 function ObjectivesPage() {
   return (
     <div className="w-full bg-white overflow-hidden">
-      {/* ================= HERO SECTION ================= */}
-      <section className="relative min-h-[60vh] flex items-center pt-32 pb-20 overflow-hidden">
+      {/* ================= HERO SECTION (REFINED FOR MOBILE & CLARITY) ================= */}
+      <section className="relative min-h-[85vh] flex items-center pt-24 pb-16 md:pt-32 md:pb-28 overflow-hidden bg-[#001529]">
+        {/* Full-width background layer */}
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/real/academy_banner_wide.jpg"
-            alt="Objectives"
-            className="w-full h-full object-cover"
+            src="/images/uploads/Objective-Hero.jpeg"
+            alt=""
+            className="w-full h-full object-cover brightness-[0.35] blur-[25px] scale-110"
           />
-          <div className="absolute inset-0 bg-black/60 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-tr from-[#001529] via-[#001529]/70 to-transparent"></div>
         </div>
 
-        <div className="container mx-auto px-6 relative z-10">
+        <div className="container mx-auto px-6 relative z-10 grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
+          {/* LEFT CONTENT: REFINED SPACING */}
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center space-y-6"
+            className="space-y-6 md:space-y-10 order-2 lg:order-1"
           >
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center backdrop-blur-md border border-white/20">
-                <FaBullseye className="text-[#fb8500] text-3xl" />
+            <div className="space-y-4">
+              <div className="flex items-center gap-3">
+                <div className="h-[2px] w-12 bg-[#FF6600]"></div>
+                <h2 className="text-white font-bold tracking-[0.2em] uppercase text-xs md:text-sm">
+                  Swastik Srijan Foundation
+                </h2>
               </div>
+
+              <h1 className="text-4xl md:text-6xl lg:text-7xl font-sans font-bold text-white leading-[1.1] drop-shadow-2xl">
+                Our <span className="text-[#fb8500]">Objectives</span>
+                <span className="block text-xl md:text-3xl mt-4 font-normal text-zinc-300 opacity-90 drop-shadow-md font-hindi">
+                  स्वस्तिक सृजन फाउंडेशन के उद्देश्य
+                </span>
+              </h1>
             </div>
-            <h1 className="text-5xl lg:text-7xl font-serif font-bold text-white leading-tight">
-              Our <span className="text-[#fb8500]">Objectives</span>
-            </h1>
-            <p className="text-xl lg:text-2xl text-zinc-300 font-medium max-w-3xl mx-auto leading-relaxed">
-              🎯 उद्देश्य | Shaping a Better Tomorrow
+
+            <p className="text-lg md:text-xl text-zinc-400 font-medium max-w-xl leading-relaxed">
+              🎯 उद्देश्य | Shaping a Better Tomorrow through Holistic Development, Social Equity, and Grassroots Empowerment.
             </p>
+
+            <div className="pt-4 flex flex-col sm:flex-row gap-4">
+              <Link to="/Contact" className="inline-block px-10 py-4 bg-[#FF6600] text-white font-bold rounded-full hover:bg-[#e65c00] transition-all shadow-xl active:scale-95 text-center text-lg">
+                Connect With Us
+              </Link>
+              <Link to="/Volunteer" className="inline-block px-10 py-4 bg-white/10 backdrop-blur-md border border-white/20 text-white font-bold rounded-full hover:bg-white/20 transition-all text-center text-lg">
+                Join Us
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* RIGHT IMAGE: OPTIMIZED FOR CLARITY & MOBILE DISPLAY */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative order-1 lg:order-2"
+          >
+            <div className="absolute -inset-4 bg-[#fb8500]/15 rounded-[3rem] blur-3xl opacity-50"></div>
+            <div className="relative bg-[#002344]/40 backdrop-blur-md p-2 md:p-4 rounded-[2.5rem] border border-white/10 shadow-2xl overflow-hidden group mx-auto max-w-lg lg:max-w-none">
+              <img
+                src="/images/uploads/Objective-Hero.jpeg"
+                alt="On-ground NGO activities"
+                className="w-full h-auto rounded-[1.8rem] filter contrast-[1.1] brightness-[1.05] shadow-2xl"
+                style={{
+                  imageRendering: 'auto',
+                  WebkitBackdropFilter: 'blur(0px)' // Technical hint for sharper rendering
+                }}
+              />
+              {/* Subtle tech-overlay to 'sharpen' eye perception of low-res image */}
+              <div className="absolute inset-0 pointer-events-none opacity-[0.25] mix-blend-overlay bg-[url('https://grainy-gradients.vercel.app/noise.svg')]"></div>
+            </div>
           </motion.div>
         </div>
       </section>

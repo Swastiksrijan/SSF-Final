@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
-import logoImg from "../assets/Home-logo.png";
+import logoImg from "../assets/footer-logo-circle-v3.png";
 
 
 export default function FooterSection() {
@@ -20,7 +20,7 @@ export default function FooterSection() {
               <img
                 src={logoImg}
                 alt="Swastik Srijan Foundation"
-                className="w-[100px] md:w-[130px] h-auto max-h-[34px] md:max-h-[42px] object-contain opacity-70 group-hover:opacity-100 transition-all transition-opacity duration-300"
+                className="w-16 h-16 md:w-20 md:h-20 object-contain rounded-full bg-white p-1.5 group-hover:scale-105 transition-all duration-300 shadow-md"
               />
             </Link>
             <p className="text-zinc-400 leading-relaxed font-medium text-sm max-w-sm">
