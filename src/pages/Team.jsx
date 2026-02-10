@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import PageHero from "../components/PageHero";
 
 const governingBody = [
   { name: "Mr. Ramesh Pandey", role: "Founder & National President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
@@ -50,28 +51,12 @@ export default function Team() {
   return (
     <main className="min-h-screen bg-white">
       {/* ================= HERO ================= */}
-      <section className="bg-[#001529] text-white pt-48 pb-20 px-6 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px]"></div>
-        <div className="max-w-4xl mx-auto relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs mb-4 inline-block">
-              Dedicated Leadership
-            </span>
-            <h1 className="text-4xl md:text-6xl font-serif font-bold text-white">
-              Meet Our <span className="text-[#fb8500]">Team</span> <br />
-              <span className="text-2xl md:text-4xl font-sans font-normal opacity-80 underline decoration-[#fb8500]/30">हमारी टीम से मिलें</span>
-            </h1>
-            <p className="text-zinc-400 mt-6 text-xl font-medium max-w-2xl mx-auto">
-              A collective of visionary leaders, expert advisors, and dedicated volunteers driving sustainable change.
-            </p>
-            <p className="text-zinc-500 mt-2 text-md italic font-hindi">सतत परिवर्तन लाने वाले दूरदर्शी नेताओं, विशेषज्ञ सलाहकारों और समर्पित स्वयंसेवकों का एक समूह।</p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        image="/images/ssf-team.jpg"
+        title="Meet Our Team"
+        subtitle="A collective of visionary leaders, expert advisors, and dedicated volunteers driving sustainable change."
+        hindiSubtitle="सतत परिवर्तन लाने वाले दूरदर्शी नेताओं, विशेषज्ञ सलाहकारों और समर्पित स्वयंसेवकों का एक समूह।"
+      />
 
       {/* ================= GOVERNING BODY ================= */}
       <section className="py-24 px-6 bg-white">

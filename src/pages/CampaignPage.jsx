@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { FaBook, FaStethoscope, FaTools, FaBalanceScale, FaUsers, FaArrowRight, FaSeedling } from "react-icons/fa";
 import { motion } from "framer-motion";
+import PageHero from "../components/PageHero";
 
 export default function Campaign() {
   const programs = [
@@ -75,23 +76,12 @@ export default function Campaign() {
   return (
     <section className="bg-white font-inria min-h-screen">
       {/* ================= HERO ================= */}
-      <div className="bg-[#001529] text-white pt-48 pb-24 relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.03]"></div>
-        <div className="max-w-6xl mx-auto px-6 text-center relative z-10 space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em] mb-4">Our Core Mission</p>
-            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-8">
-              Driving Holistic <span className="text-[#fb8500]">Change.</span>
-            </h1>
-            <p className="text-zinc-400 max-w-2xl mx-auto text-xl leading-relaxed font-medium">
-              We focus on five key pillars of development to transform lives and empower communities in the heart of rural Bharat.
-            </p>
-          </motion.div>
-        </div>
-      </div>
+      <PageHero
+        image="/images/real/children-unity-park.jpg"
+        title="Driving Holistic Change"
+        subtitle="We focus on five key pillars of development to transform lives and empower communities."
+        hindiSubtitle="समग्र विकास के माध्यम से जीवन परिवर्तन और सामुदायिक सशक्तिकरण।"
+      />
 
       {/* ================= PROGRAMS GRID ================= */}
       <div className="max-w-7xl mx-auto px-6 py-32">

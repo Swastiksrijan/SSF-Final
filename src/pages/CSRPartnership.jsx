@@ -11,6 +11,8 @@ import {
     FaPhoneAlt
 } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
+import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
+import PageHero from "../components/PageHero";
 
 export default function CSRPartnership() {
     useEffect(() => {
@@ -52,77 +54,15 @@ export default function CSRPartnership() {
     ];
 
     return (
-        <div className="w-full font-inria bg-white overflow-hidden">
+        <div className="w-full font-sans bg-white overflow-hidden">
 
             {/* ================= HERO SECTION ================= */}
-            <section className="relative min-h-[85vh] flex items-center bg-[#001529] text-white overflow-hidden">
-                {/* Abstract Background Elements */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,#003366,transparent_50%)] opacity-50"></div>
-                <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-white to-transparent z-10"></div>
-
-                <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center relative z-20 pt-20">
-                    <motion.div
-                        initial={{ opacity: 0, x: -50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8 }}
-                        className="space-y-8"
-                    >
-                        <div className="inline-block px-4 py-1 rounded-full bg-[#fb8500]/10 border border-[#fb8500]/30 text-[#fb8500] font-bold text-sm tracking-widest uppercase">
-                            Corporate Social Responsibility
-                        </div>
-                        <h1 className="text-4xl md:text-6xl font-serif font-bold leading-tight">
-                            Not just CSR,<br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#fb8500] to-yellow-400">hearts united</span><br />
-                            can change the world.
-                        </h1>
-                        <p className="text-xl text-zinc-300 leading-relaxed max-w-lg">
-                            Move beyond compliance. Partner with Swastik Srijan Foundation to create deep, lasting social impact that resonates with your values.
-                        </p>
-                        <div className="flex flex-wrap gap-4 pt-4">
-                            <a href="#partner-form" className="px-8 py-4 bg-[#fb8500] text-white font-bold rounded-full hover:bg-[#e07600] transition-all shadow-lg hover:shadow-orange-500/30 transform hover:-translate-y-1">
-                                Partner With Us
-                            </a>
-                            <a
-                                href="https://forms.gle/ZjhgFc4By2RKnQbi8"
-                                target="_blank"
-                                rel="noreferrer"
-                                className="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-bold rounded-full border border-white/20 hover:bg-white/20 transition-all text-center"
-                            >
-                                Apply via Google Form
-                            </a>
-                            <a href="#benefits" className="px-8 py-4 bg-white/10 backdrop-blur-md text-white font-bold rounded-full border border-white/20 hover:bg-white/20 transition-all">
-                                How It Works
-                            </a>
-                        </div>
-                    </motion.div>
-
-                    <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ duration: 0.8, delay: 0.2 }}
-                        className="relative"
-                    >
-                        <div className="relative rounded-[3rem] overflow-hidden border-8 border-white/10 shadow-2xl group">
-                            <img
-                                src="/images/uploads/csr-unity.jpg"
-                                alt="Not just CSR, but hearts united"
-                                className="w-full h-full object-cover scale-105 group-hover:scale-100 transition-transform duration-700"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-tr from-[#002344]/30 to-transparent"></div>
-                        </div>
-                        {/* Floating Badge */}
-                        <div className="absolute -bottom-10 -left-10 bg-white text-[#002344] p-6 rounded-3xl shadow-xl flex items-center gap-4 animate-float hidden md:flex">
-                            <div className="p-3 bg-blue-50 rounded-full text-2xl text-[#002344]">
-                                <FaCheckCircle />
-                            </div>
-                            <div>
-                                <p className="text-sm font-bold text-zinc-500 uppercase">Trusted By</p>
-                                <p className="text-xl font-bold">Leading Corporates</p>
-                            </div>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
+            <PageHero
+                image="/images/uploads/csr-unity.jpg"
+                title="Corporate Partnership"
+                subtitle="Partner with Swastik Srijan Foundation to create deep, lasting social impact."
+                hindiSubtitle="सीएसआर से आगे, दिलों का जुड़ाव ला सकता है दुनिया में बदलाव।"
+            />
 
             {/* ================= WHY PARTNER (BENEFITS) ================= */}
             <section id="benefits" className="py-24 px-6 bg-white relative">

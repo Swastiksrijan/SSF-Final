@@ -13,6 +13,7 @@ import {
   FaEnvelope
 } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
+import PageHero from "../components/PageHero";
 
 export default function PrivacyPolicy() {
   // Scroll to top on mount
@@ -135,16 +136,12 @@ export default function PrivacyPolicy() {
     <div className="w-full bg-zinc-50 font-inria">
 
       {/* ================= HERO ================= */}
-      <section className="bg-zinc-900 text-white pt-40 pb-20 px-4 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Privacy <span className="text-white">Policy</span>
-          </h1>
-          <p className="text-zinc-300 text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed">
-            How Swastik Srijan Foundation protects and manages your information.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        image="/images/real/academy-board-compliance.jpg"
+        title="Privacy Policy"
+        subtitle="How Swastik Srijan Foundation protects and manages your information."
+        hindiSubtitle="गोपनीयता नीति - हम आपकी जानकारी की सुरक्षा और प्रबंधन कैसे करते हैं।"
+      />
 
       <div className="max-w-5xl mx-auto py-16 px-4">
 

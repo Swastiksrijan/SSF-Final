@@ -11,6 +11,8 @@ import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
 import { FaQuoteLeft } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
+import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
+
 
 // Import images
 const heroImage = "/images/hero-main.jpg";
@@ -285,15 +287,14 @@ export default function Home() {
                   </div>
                 </div>
 
-                {/* MORE INFO LINK */}
+                {/* DOWNLOAD PROFILE LINK */}
                 <div className="pt-3">
                   <a
-                    href="https://sites.google.com/view/swastiksrijanprofile/"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={profilePdf}
+                    download="Swastik_Srijan_Profile_2026.pdf"
                     className="inline-flex items-center gap-2 text-[#FF6600] font-bold text-sm hover:underline hover:text-[#ff7a1a] transition"
                   >
-                    For more information, click here
+                    Download Organization Profile
                   </a>
                 </div>
 
@@ -329,42 +330,62 @@ export default function Home() {
 
 
       {/* 5.5 FOUNDER MESSAGE */}
-      <section className="py-12 bg-zinc-50 border-t border-zinc-100">
-        <div className="container mx-auto px-4">
-          <div className="max-w-5xl mx-auto bg-white rounded-3xl shadow-xl border border-zinc-100 overflow-hidden flex flex-col md:flex-row items-stretch">
-            {/* Image Side - Fixed Aspect to show full content without taking too much height */}
-            <div className="md:w-1/2 relative min-h-[300px] bg-zinc-100">
+      <section className="py-20 bg-zinc-50 border-t border-zinc-100 relative overflow-hidden">
+        {/* Background decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-100/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none"></div>
+        <div className="absolute -bottom-12 left-0 w-72 h-72 bg-blue-100/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none"></div>
+
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl border border-zinc-100 overflow-hidden flex flex-col md:flex-row items-stretch">
+
+            {/* Image Side - Dignified Portrait */}
+            <div className="md:w-5/12 relative min-h-[400px] md:min-h-full bg-zinc-200">
               <OptimizedImage
-                src="/images/humanity-mission.jpg"
-                alt="SSF Mission in Action"
-                className="absolute inset-0 w-full h-full object-cover"
+                src="/Teams_Images/ramesh_pandey.jpg"
+                alt="Ramesh Pandey - Founder & President"
+                className="absolute inset-0 w-full h-full object-cover object-top"
               />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#001529]/80 via-transparent to-transparent opacity-90"></div>
+              <div className="absolute bottom-8 left-8 text-white z-10">
+                <div className="w-12 h-1 bg-[#FF6600] mb-3"></div>
+                <p className="font-bold text-2xl font-serif tracking-wide">Ramesh Pandey</p>
+                <p className="text-xs uppercase tracking-[0.2em] text-zinc-300 mt-1">Founder & President</p>
+              </div>
             </div>
 
             {/* Content Side */}
-            <div className="md:w-1/2 p-8 md:p-12 flex flex-col justify-center relative bg-white">
-              <FaQuoteLeft className="text-4xl text-zinc-50 absolute top-6 right-6" />
-              <div className="relative z-10 space-y-6">
+            <div className="md:w-7/12 p-8 md:p-14 flex flex-col justify-center relative bg-white">
+              <FaQuoteLeft className="text-6xl text-zinc-100 absolute top-10 right-10 z-0" />
+
+              <div className="relative z-10 space-y-8">
                 <div>
-                  <span className="text-[#FF6600] font-bold uppercase tracking-widest text-[10px]">Founder's Message | संस्थापक का संदेश</span>
-                  <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#002344]">Building a <span className="text-[#FF6600]">Better Bharat</span></h2>
-                </div>
-
-                <div className="space-y-4">
-                  <p className="text-lg text-zinc-600 font-serif italic leading-relaxed">
-                    "Building a better Bharat requires a collective spirit of <span className="text-[#002344] font-bold">Seva</span> and <span className="text-[#002344] font-bold">Samarpan</span>."
-                  </p>
-                  <p className="text-sm font-hindi text-zinc-500 border-t border-zinc-50 pt-4">
-                    "बेहतर भारत के निर्माण के लिए सेवा और समर्पण की सामूहिक भावना की आवश्यकता है।"
-                  </p>
-                </div>
-
-                <div className="pt-4 flex items-center gap-3">
-                  <div className="w-10 h-1 bg-[#FF6600] rounded-full"></div>
-                  <div>
-                    <p className="text-[#002344] font-bold text-sm tracking-widest uppercase">Ramesh Pandey</p>
-                    <p className="text-[10px] text-[#FF6600] font-bold uppercase tracking-widest">Founder & President</p>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-100 text-[#FF6600] text-[10px] font-bold uppercase tracking-widest rounded-full mb-4">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF6600]"></span>
+                    Founder's Message | संस्थापक का संदेश
                   </div>
+
+                  <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344] leading-tight">
+                    Building a <br /><span className="text-[#FF6600]">Better Bharat</span>
+                  </h2>
+                </div>
+
+                <div className="space-y-6">
+                  <blockquote className="text-xl md:text-2xl text-zinc-700 font-serif italic leading-relaxed">
+                    "True nation-building is possible only when service is guided by commitment and compassion."
+                  </blockquote>
+
+                  <div className="flex items-start gap-4 pt-2">
+                    <div className="w-1 h-16 bg-[#FF6600] rounded-full opacity-30 shrink-0"></div>
+                    <blockquote className="text-lg md:text-xl text-zinc-500 font-hindi leading-relaxed italic">
+                      "सेवा और समर्पण की भावना से ही एक बेहतर भारत का निर्माण संभव है।"
+                    </blockquote>
+                  </div>
+                </div>
+
+                <div className="pt-6 border-t border-zinc-100 flex items-center gap-4">
+                  <p className="text-sm text-zinc-400 font-medium">
+                    Inviting you to join our mission of service.
+                  </p>
                 </div>
               </div>
             </div>

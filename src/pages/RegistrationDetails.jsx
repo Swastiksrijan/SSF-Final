@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaBuilding, FaIdCard, FaBalanceScale, FaBullseye, FaAward, FaEnvelope } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { CONTACT_INFO } from "../config/contact";
+import PageHero from "../components/PageHero";
 
 export default function RegistrationDetails() {
   // Scroll to top on mount
@@ -79,23 +80,12 @@ export default function RegistrationDetails() {
     <div className="w-full bg-[#f8f9fa] font-inria min-h-screen">
 
       {/* ================= HERO ================= */}
-      <section className="bg-[#001529] text-white pt-48 pb-24 px-6 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.03]"></div>
-        <div className="max-w-4xl mx-auto relative z-10 space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em] mb-4">Organizational Trust</p>
-            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-8 leading-tight">
-              Registration <span className="text-[#fb8500]">Details.</span>
-            </h1>
-            <p className="text-zinc-400 text-xl font-medium max-w-2xl mx-auto leading-relaxed">
-              Official legal registration and governance information of Swastik Srijan Foundation.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        image="/images/real/academy-board-compliance.jpg"
+        title="Registration Details"
+        subtitle="Official legal registration and governance information of Swastik Srijan Foundation."
+        hindiSubtitle="पंजीकरण विवरण - स्वास्तिक सृजन फाउंडेशन की आधिकारिक कानूनी पंजीकरण और शासन जानकारी।"
+      />
 
       <div className="max-w-7xl mx-auto py-32 px-6">
 

@@ -1,11 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { CONTACT_INFO } from "../config/contact";
+import PageHero from "../components/PageHero";
 
 export default function CookiePolicy() {
     return (
-        <div className="w-full font-inria bg-white pt-40 pb-20 px-4">
-            <div className="max-w-4xl mx-auto">
-                <h1 className="text-4xl font-black mb-8">Cookie Policy</h1>
+        <div className="w-full font-inria bg-white">
+            {/* ================= HERO ================= */}
+            <PageHero
+                image="/images/real/academy-board-compliance.jpg"
+                title="Cookie Policy"
+                subtitle="How we use cookies to improve your experience."
+                hindiSubtitle="कुकी नीति - हम आपके अनुभव को बेहतर बनाने के लिए कुकीज़ का उपयोग कैसे करते हैं।"
+            />
+
+            <div className="max-w-4xl mx-auto py-16 px-4">
                 <p className="text-zinc-600 mb-8 font-medium">Last Updated: December 2025</p>
 
                 <div className="space-y-8">

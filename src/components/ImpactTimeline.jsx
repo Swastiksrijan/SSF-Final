@@ -54,6 +54,13 @@ export default function ImpactTimeline() {
             color: "#003366"
         },
         {
+            year: "2024",
+            title: "Integrating Learning & Environment",
+            desc: "Launched holistic programs combining environmental education, sustainability practices, and nutrition awareness.",
+            icon: <FaSeedling />,
+            color: "#FF6600"
+        },
+        {
             year: "2025",
             title: "Technology Integration",
             desc: "Programs scaled through digital tools, data-driven planning, and local leadership.",

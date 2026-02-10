@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FaFileContract, FaShieldAlt, FaUserShield, FaExternalLinkAlt, FaSyncAlt, FaExclamationTriangle, FaGavel, FaEnvelope } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
+import PageHero from "../components/PageHero";
 
 export default function TermsAndConditions() {
   // Scroll to top on mount
@@ -76,16 +77,12 @@ export default function TermsAndConditions() {
     <div className="w-full bg-zinc-50 font-inria">
 
       {/* ================= HERO ================= */}
-      <section className="bg-zinc-900 text-white pt-40 pb-20 px-4 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Terms & <span className="text-white">Conditions</span>
-          </h1>
-          <p className="text-zinc-300 text-xl md:text-2xl max-w-2xl mx-auto leading-relaxed">
-            Please read these terms carefully before using our website.
-          </p>
-        </div>
-      </section>
+      <PageHero
+        image="/images/real/academy-board-compliance.jpg"
+        title="Terms & Conditions"
+        subtitle="Please read these terms carefully before using our website."
+        hindiSubtitle="नियम और शर्तें - हमारी वेबसाइट का उपयोग करने से पहले कृपया इन शर्तों को ध्यान से पढ़ें।"
+      />
 
       <div className="max-w-5xl mx-auto py-16 px-4">
 

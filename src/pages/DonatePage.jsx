@@ -2,7 +2,6 @@ import { FaHandHoldingHeart, FaChartPie, FaUniversity, FaCheckCircle, FaRupeeSig
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import qrCode from "../assets/barcode.jpg";
-import heroImage from "/images/real/education_girls.jpg";
 import CertificateGenerator from "../components/CertificateGenerator";
 
 export default function DonatePage() {
@@ -94,57 +93,14 @@ export default function DonatePage() {
   return (
     <div className="w-full font-sans bg-zinc-50">
 
-      {/* ================= HERO SECTION (Top) ================= */}
-      <section className="relative min-h-[70vh] flex items-center justify-center pt-32 pb-20 px-4 overflow-hidden">
-        {/* Background Photo */}
-        <div className="absolute inset-0 z-0">
+      {/* ================= HERO SECTION ================= */}
+      <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[50vh]">
+        <div className="container mx-auto px-4 flex justify-center">
           <img
-            src={heroImage}
-            alt="Swastik Srijan Foundation Community"
-            className="w-full h-full object-cover"
+            src="/images/uploads/donate-hero.jpg"
+            alt="Donate - Children holding signs"
+            className="w-full h-auto max-h-[85vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
           />
-          {/* Dark gradient overlay (black 60%) */}
-          <div className="absolute inset-0 bg-black/60"></div>
-        </div>
-
-        <div className="max-w-4xl mx-auto text-center relative z-10 text-white">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="space-y-6"
-          >
-            <div className="space-y-2">
-              <h2 className="text-xl md:text-2xl font-medium tracking-wide">Swastik Srijan Foundation</h2>
-              <p className="text-sm md:text-base opacity-90 tracking-widest uppercase">A Registered Non-Profit Society</p>
-            </div>
-
-            <div className="space-y-4">
-              <h1 className="text-4xl md:text-6xl font-bold leading-tight">
-                Your Support Can <br className="hidden md:block" />
-                <span className="text-[#FF6600]">Transform Lives</span>
-              </h1>
-              <h2 className="text-2xl md:text-3xl font-hindi text-[#FF6600]">आपका सहयोग किसी का भविष्य बदल सकता है</h2>
-            </div>
-
-            <div className="space-y-3 max-w-2xl mx-auto">
-              <p className="text-lg md:text-xl text-zinc-200 leading-relaxed">
-                Every contribution helps us educate children, heal families, and build self-reliant communities.
-              </p>
-              <p className="text-md md:text-lg font-hindi text-zinc-300">
-                हर सहयोग शिक्षा, स्वास्थ्य और आत्मनिर्भरता की दिशा में एक कदम है।
-              </p>
-            </div>
-
-            <div className="pt-8">
-              <a
-                href="#donate-methods"
-                className="inline-flex items-center gap-2 bg-[#FF6600] hover:bg-[#e65c00] text-white font-bold text-xl px-10 py-4 rounded-full transition-all transform hover:scale-105 shadow-2xl"
-              >
-                👉 Donate Now | अभी दान करें
-              </a>
-            </div>
-          </motion.div>
         </div>
       </section>
 

@@ -90,54 +90,12 @@ export default function Campaigns() {
     return (
         <section className="bg-white font-inria min-h-screen">
             {/* ================= HERO ================= */}
-            {/* ================= HERO ================= */}
-            <div className="relative pt-48 pb-32 flex items-center justify-center overflow-hidden bg-zinc-900">
-                <div className="absolute inset-0 z-0">
-                    <img
-                        src="/images/uploads/childhood-hero.webp"
-                        alt="Happy Childhoods"
-                        className="w-full h-full object-cover opacity-40"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-b from-[#001529]/90 via-[#001529]/60 to-[#001529]"></div>
-                </div>
-
-                <div className="max-w-6xl mx-auto px-6 text-center relative z-10 space-y-8">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        animate={{ opacity: 1, y: 0 }}
-                    >
-                        <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em] mb-4">Programs & Initiatives | कार्यक्रम और पहल</p>
-                        <h1 className="text-5xl md:text-7xl font-serif font-bold text-white mb-4">
-                            Our <span className="text-[#fb8500]">Campaigns</span> <br />
-                            <span className="text-3xl md:text-5xl font-sans font-normal opacity-80 underline decoration-[#fb8500]/30">हमारे अभियान</span>
-                        </h1>
-                        <h2 className="text-2xl md:text-3xl font-serif text-zinc-200 mb-8">
-                            Empowering Communities, Transforming Lives | समुदायों का सशक्तिकरण, जीवन का परिवर्तन
-                        </h2>
-                        <p className="text-zinc-100 max-w-3xl mx-auto text-xl leading-relaxed font-medium drop-shadow-md">
-                            Swastik Srijan Foundation conducts various campaigns to raise awareness, encourage community participation, and address important social, educational, health, and environmental issues.
-                        </p>
-                    </motion.div>
-
-                    {/* What is Campaigning */}
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.3 }}
-                        className="max-w-3xl mx-auto mt-12"
-                    >
-                        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 border border-white/20 text-left hover:bg-white/15 transition-colors">
-                            <h3 className="text-xl font-bold text-[#fb8500] mb-2">What is Campaigning? | अभियान क्या है?</h3>
-                            <p className="text-white leading-relaxed font-medium">
-                                A campaign is a strategic effort aimed at achieving a specific goal or result within a set timeframe. It involves coordinated activities to create awareness and drive change.
-                            </p>
-                            <p className="text-zinc-300 mt-2 text-sm italic">
-                                अभियान एक निर्धारित समय सीमा के भीतर एक विशिष्ट लक्ष्य या परिणाम प्राप्त करने के लिए किया गया एक रणनीतिक प्रयास है। इसमें जागरूकता पैदा करने और बदलाव लाने के लिए समन्वित गतिविधियाँ शामिल हैं।
-                            </p>
-                        </div>
-                    </motion.div>
-                </div>
-            </div>
+            <PageHero
+                image="/images/uploads/childhood-hero.webp"
+                title="Our Campaigns"
+                subtitle="Swastik Srijan Foundation conducts various campaigns to raise awareness, encourage community participation, and address important social, educational, health, and environmental issues."
+                hindiSubtitle="हमारे अभियान - समुदायों का सशक्तिकरण, जीवन का परिवर्तन"
+            />
 
             {/* ================= MAIN CAMPAIGNS ================= */}
             <div className="py-24 bg-gradient-to-b from-white to-zinc-50">

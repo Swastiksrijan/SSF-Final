@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { FaArrowRight } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
+import PageHero from "../components/PageHero";
 
 export default function Contact() {
   const [formData, setFormData] = useState({
@@ -122,32 +123,12 @@ export default function Contact() {
       )}
 
       {/* ================= HERO ================= */}
-      <section className="bg-[#001529] text-white pt-32 md:pt-48 pb-24 px-6 relative overflow-hidden">
-        {/* Background elements */}
-        <div className="absolute inset-0 opacity-[0.02] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px]"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#fb8500] opacity-[0.05] rounded-full blur-[120px] -translate-y-1/2 translate-x-1/2"></div>
-
-        <div className="max-w-4xl mx-auto relative z-10 text-center space-y-8">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs mb-4 inline-block">
-              Contact Us
-            </span>
-            <h1 className="text-3xl sm:text-6xl md:text-7xl font-black leading-tight tracking-tighter">
-              Connect for <span className="text-[#fb8500]">Change</span>
-            </h1>
-            <p className="text-lg md:text-3xl font-medium mt-4 text-zinc-100 opacity-90">
-              Reach Out to Swastik Srijan Foundation
-            </p>
-            <p className="text-zinc-400 mt-8 text-base md:text-lg leading-relaxed max-w-3xl mx-auto">
-              We welcome your inquiries, collaborations, and feedback. Feel free to reach out to us for any information or to explore potential partnerships. Swastik Srijan Foundation values open communication and believes in the power of collective efforts to bring about positive change.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        image="/images/real/community-team-group.jpg"
+        title="Connect for Change"
+        subtitle="Reach out to Swastik Srijan Foundation to explore collaborations and partnerships."
+        hindiSubtitle="बदलाव के लिए हमसे जुड़ें - आपके सवाल और सुझाव हमारे लिए महत्वपूर्ण हैं।"
+      />
 
       {/* ================= CONTENT ================= */}
       <section className="py-12 md:py-24 px-6">

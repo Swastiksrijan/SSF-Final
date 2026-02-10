@@ -118,29 +118,13 @@ export default function ImpactPage() {
     return (
         <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
             {/* ================= HERO ================= */}
-            <section className="bg-gradient-to-br from-[#001529] via-[#002344] to-[#003366] text-white pt-48 pb-32 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-[0.05] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px]"></div>
-                <div className="absolute top-20 right-0 w-96 h-96 bg-[#FF6600] opacity-10 rounded-full blur-[120px]"></div>
-                <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500 opacity-10 rounded-full blur-[120px]"></div>
-
-                <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <motion.div
-                        initial="hidden"
-                        animate="visible"
-                        variants={fadeInUp}
-                        className="text-center space-y-8 max-w-5xl mx-auto"
-                    >
-                        <div className="inline-block px-6 py-2 bg-white/10 border border-white/20 rounded-full text-sm font-bold tracking-widest uppercase mb-4">
-                            IMPACT OF SWASTIK SRIJAN FOUNDATION
-                        </div>
-                        <h1 className="text-5xl md:text-7xl lg:text-8xl font-bold leading-tight">
-                            Transforming Lives,<br />
-                            <span className="text-[#FF6600]">Building Communities</span>
-                        </h1>
-                        <p className="text-xl md:text-3xl text-zinc-300 leading-relaxed font-serif">
-                            A decade of grassroots impact across Bharat
-                        </p>
-                    </motion.div>
+            <section className="relative w-full bg-zinc-50 pt-28 pb-12 flex items-center justify-center min-h-[60vh]">
+                <div className="container mx-auto px-4 h-full flex items-center justify-center">
+                    <img
+                        src="/images/uploads/impact-hero-banner.jpg"
+                        alt="Impact - SSF Vaccine Awareness Newspaper Clipping"
+                        className="w-full h-auto max-h-[80vh] object-contain shadow-lg rounded-lg"
+                    />
                 </div>
             </section>
 

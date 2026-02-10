@@ -2,31 +2,22 @@ import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { FaBuilding, FaHeartbeat, FaMicrochip, FaMapMarkedAlt, FaFilePdf, FaDownload, FaCheckCircle, FaArrowRight } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
+import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
+
+
+import PageHero from "../components/PageHero";
 
 export default function UpcomingProjects() {
   return (
     <div className="w-full font-inria bg-white">
 
       {/* ================= HERO ================= */}
-      <section className="bg-[#001529] text-white pt-48 pb-24 relative overflow-hidden text-center px-6">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[radial-gradient(#fb8500_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.05]"></div>
-          <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#fb8500] opacity-[0.03] rounded-full blur-[100px]"></div>
-        </div>
-        <div className="max-w-4xl mx-auto relative z-10 space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            <h1 className="text-5xl md:text-7xl font-serif font-bold mb-8">
-              Building The <span className="text-[#fb8500]">Future</span>
-            </h1>
-            <p className="text-zinc-400 text-xl md:text-2xl leading-relaxed font-medium">
-              Our vision for 2026 and beyond. Expanding our footprint, embracing technology, and deepening our impact across Bharat.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        image="/images/real/academy_banner_wide.jpg"
+        title="Building The Future"
+        subtitle="Our vision for 2026 and beyond. Expanding our footprint, embracing technology, and deepening our impact across Bharat."
+        hindiSubtitle="भविष्य का निर्माण - 2026 और उससे आगे की हमारी दृष्टि।"
+      />
 
       {/* ================= 1. NEW ACADEMIES & HUBS ================= */}
       <section className="py-32 px-6 bg-white">
@@ -296,19 +287,19 @@ export default function UpcomingProjects() {
 
                 <div className="pt-4 flex flex-col sm:flex-row gap-6 justify-center lg:justify-start items-center">
                   <a
-                    href="/pdfs/SSF.pdf"
-                    download="SSF_National_Academy_Proposal.pdf"
+                    href={profilePdf}
+                    download="Swastik_Srijan_Profile_2026.pdf"
                     className="relative overflow-hidden group px-10 py-5 bg-[#fb8500] text-white font-bold rounded-full hover:bg-[#e76f00] transition-all shadow-xl shadow-[#fb8500]/20"
                   >
                     <span className="relative z-10 flex items-center gap-3">
                       <FaDownload />
-                      <span>Download Full Proposal</span>
+                      <span>Download Organization Profile</span>
                     </span>
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
                   </a>
                   <div className="text-left text-sm text-zinc-400 font-medium">
-                    <p>PDF Format • 45 MB</p>
-                    <p>Last Updated: January 2026</p>
+                    <p>PDF Format • 21 MB</p>
+                    <p>Last Updated: Feb 2026</p>
                   </div>
                 </div>
               </div>

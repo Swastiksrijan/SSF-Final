@@ -4,6 +4,7 @@ import { FaMapMarkerAlt, FaProjectDiagram, FaUserTie, FaLaptop, FaArrowRight, Fa
 import CertificateGenerator from "../components/CertificateGenerator";
 import VolunteerForm from "../components/VolunteerForm";
 import { CONTACT_INFO } from "../config/contact";
+import PageHero from "../components/PageHero";
 
 export default function Volunteer() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -59,28 +60,12 @@ export default function Volunteer() {
   return (
     <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
       {/* ================= HERO ================= */}
-      <section className="bg-[#001529] text-white pt-48 pb-24 relative">
-        <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px]"></div>
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            className="space-y-6 max-w-4xl"
-          >
-            <div className="flex items-center gap-4 text-orange-400 font-bold tracking-widest uppercase text-sm">
-              <span className="w-12 h-0.5 bg-orange-400"></span>
-              <span>VOLUNTEER WITH US</span>
-            </div>
-            <h1 className="text-3xl sm:text-5xl md:text-7xl font-bold leading-tight">
-              सेवा: <span className="text-orange-400">Your Time, Their Transformation.</span>
-            </h1>
-            <p className="text-xl md:text-2xl text-zinc-400 leading-relaxed max-w-2xl">
-              Volunteer वो होता है जो समय, कौशल और श्रम देता है। Choose the way you want to impact lives.
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        image="/images/volunteers.png"
+        title="Volunteer With Us"
+        subtitle="Join a community of over 500+ volunteers across Bharat who are dedicated to the wellness of every human being."
+        hindiSubtitle="सेवा ही परमो धर्म:"
+      />
 
       {/* ================= VOLUNTEER CATEGORIES ================= */}
       <section className="py-24 px-6 bg-zinc-50 border-y border-zinc-100">

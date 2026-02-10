@@ -3,6 +3,7 @@ import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube } from "re
 import { CONTACT_INFO } from "../config/contact";
 import logoImg from "../assets/Home-logo.png";
 
+
 export default function FooterSection() {
   return (
     <footer className="w-full bg-[#002344] text-white pt-24 pb-12 relative overflow-hidden font-sans border-t border-[#003366]">
@@ -19,7 +20,7 @@ export default function FooterSection() {
               <img
                 src={logoImg}
                 alt="Swastik Srijan Foundation"
-                className="h-10 w-auto object-contain opacity-90 group-hover:opacity-100 transition-all"
+                className="w-[100px] md:w-[130px] h-auto max-h-[34px] md:max-h-[42px] object-contain opacity-70 group-hover:opacity-100 transition-all transition-opacity duration-300"
               />
             </Link>
             <p className="text-zinc-400 leading-relaxed font-medium text-sm max-w-sm">
@@ -93,12 +94,6 @@ export default function FooterSection() {
                   <a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="group flex items-start gap-3 hover:text-white transition-colors">
                     <span className="mt-0.5 text-[#fb8500]">📧</span>
                     <span className="whitespace-nowrap">{CONTACT_INFO.primaryEmail}</span>
-                  </a>
-                </li>
-                <li>
-                  <a href={`mailto:${CONTACT_INFO.presidentEmail}`} className="group flex items-start gap-3 hover:text-white transition-colors">
-                    <span className="mt-0.5 text-[#fb8500]">📩</span>
-                    <span className="whitespace-nowrap">{CONTACT_INFO.presidentEmail}</span>
                   </a>
                 </li>
                 <li>

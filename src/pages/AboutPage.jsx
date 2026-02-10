@@ -3,37 +3,19 @@ import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { FaArrowRight } from "react-icons/fa";
 import OptimizedImage from "../components/OptimizedImage";
+import PageHero from "../components/PageHero";
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white font-sans text-zinc-800">
 
-      {/* ================= HERO (Simplified) ================= */}
-      <section className="relative min-h-[50vh] flex items-center justify-center bg-[#001529] text-white overflow-hidden pt-20">
-        <div className="absolute inset-0 z-0">
-          <OptimizedImage
-            src="/images/real/community-education-meeting.jpg"
-            alt="SSF Field Work"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/60"></div>
-        </div>
-
-        <div className="relative z-10 text-center max-w-4xl px-4 space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-          >
-            <h1 className="text-4xl md:text-6xl font-serif font-bold mb-2">
-              Swastik Srijan Foundation
-            </h1>
-            <p className="text-xl md:text-2xl font-light text-blue-100">
-              Grassroots Governance & Community Empowerment
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      {/* ================= HERO ================= */}
+      <PageHero
+        image="/images/real/community-education-meeting.jpg"
+        title="About Our Mission"
+        subtitle="Empowering communities through grassroots governance and sustainable development."
+        hindiSubtitle="शिक्षा, स्वास्थ्य और सशक्तिकरण के माध्यम से सामुदायिक विकास।"
+      />
 
       {/* ================= SHORT INTRO ================= */}
       <section className="py-20 bg-white">

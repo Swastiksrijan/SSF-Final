@@ -1,28 +1,17 @@
 import { motion } from "framer-motion";
+import PageHero from "../components/PageHero";
 
 export default function JourneyPage() {
   return (
     <div className="w-full">
 
       {/* ================= HERO ================= */}
-      <section className="pt-36 pb-20 bg-zinc-50 text-center px-4">
-        <motion.h1
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="text-4xl md:text-5xl font-black mb-6"
-        >
-          Our Journey & Impact <br />
-          <span className="text-3xl md:text-5xl font-sans font-normal opacity-80 underline decoration-[#fb8500]/30">हमारी यात्रा और प्रभाव</span>
-        </motion.h1>
-
-        <p className="max-w-2xl mx-auto text-zinc-600 text-lg">
-          A journey of commitment, compassion, and measurable change across communities in India.
-        </p>
-        <p className="text-zinc-400 mt-2 text-md italic font-hindi">
-          भारत के विभिन्न समुदायों में प्रतिबद्धता, करुणा और मापने योग्य परिवर्तन की एक यात्रा।
-        </p>
-      </section>
+      <PageHero
+        image="/images/community-team-group.jpg"
+        title="Our Journey & Impact"
+        subtitle="A journey of commitment, compassion, and measurable change across communities in India."
+        hindiSubtitle="हमारी यात्रा और प्रभाव - भारत के विभिन्न समुदायों में प्रतिबद्धता, करुणा और मापने योग्य परिवर्तन की एक यात्रा।"
+      />
 
       {/* ================= TOP BANNER ================= */}
       <section className="pb-10 px-4">
@@ -186,6 +175,12 @@ export default function JourneyPage() {
                   title: "SSF Learning Hub",
                   desc: "The SSF Learning Hub was established to support structured learning, mentorship, and career guidance.",
                   color: "#003366"
+                },
+                {
+                  year: "2024",
+                  title: "Integrating Learning & Environment",
+                  desc: "Launched holistic programs combining environmental education, sustainability practices, and nutrition awareness.",
+                  color: "#FF6600"
                 },
                 {
                   year: "2025",

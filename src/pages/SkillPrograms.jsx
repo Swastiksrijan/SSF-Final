@@ -1,22 +1,19 @@
 import { Link } from "@tanstack/react-router";
 import { FaTools, FaUserTie, FaHandshake, FaLaptopCode, FaChartLine, FaBookOpen } from "react-icons/fa";
 import { IoCheckmarkCircleSharp } from "react-icons/io5";
+import PageHero from "../components/PageHero";
 
 export default function SkillPrograms() {
     return (
         <div className="w-full font-inria bg-white">
 
             {/* ================= HERO ================= */}
-            <section className="bg-zinc-900 text-white pt-40 pb-20 relative overflow-hidden text-center px-4">
-                <div className="max-w-4xl mx-auto relative z-10">
-                    <h1 className="text-4xl md:text-6xl font-bold mb-6">
-                        Skill & <span className="text-white">Career Programs</span>
-                    </h1>
-                    <p className="text-zinc-300 text-xl md:text-2xl leading-relaxed">
-                        Bridging the gap between education and employment. Transforming youth into industry-ready professionals.
-                    </p>
-                </div>
-            </section>
+            <PageHero
+                image="/images/real/women_empowerment_tailoring.jpg"
+                title="Skill & Career Programs"
+                subtitle="Bridging the gap between education and employment. Transforming youth into industry-ready professionals."
+                hindiSubtitle="कौशल और करियर कार्यक्रम - शिक्षा और रोजगार के बीच की दूरी कम करना।"
+            />
 
             {/* ================= 1. YOUTH SKILL DEVELOPMENT ================= */}
             <section className="py-24 px-4 bg-white">

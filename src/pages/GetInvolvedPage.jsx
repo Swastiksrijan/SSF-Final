@@ -55,22 +55,12 @@ export default function GetInvolvedPage() {
     return (
         <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
             {/* ================= HERO ================= */}
-            <section className="bg-[#001529] text-white pt-48 pb-24 relative">
-                <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px]"></div>
-                <div className="max-w-7xl mx-auto px-6 relative z-10">
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.95 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        variants={fadeInUp}
-                        className="max-w-6xl mx-auto"
-                    >
-                        <img
-                            src="/images/uploads/get-involved-banner.jpg"
-                            alt="Get Involved - Empowering Lives"
-                            className="w-full h-auto rounded-[3rem] shadow-2xl border-4 border-white/20"
-                        />
-                    </motion.div>
-                </div>
+            <section className="relative w-full h-[60vh] overflow-hidden pt-20">
+                <img
+                    src="/images/uploads/get-involved-banner.jpg"
+                    alt="Get Involved"
+                    className="w-full h-full object-cover"
+                />
             </section>
 
             {/* ================= THREE PATHS GRID ================= */}

@@ -4,37 +4,18 @@ import {
   FaGlobeAmericas
 } from "react-icons/fa";
 import { Link } from "@tanstack/react-router";
+import PageHero from "../components/PageHero";
 
 export default function MissionPage() {
   return (
     <div className="w-full bg-white overflow-hidden">
       {/* ================= HERO SECTION ================= */}
-      <section className="relative min-h-[50vh] flex items-center pt-32 pb-20 overflow-hidden">
-        <div className="absolute inset-0 z-0">
-          <img
-            src="/images/real/community-education-meeting.jpg"
-            alt="SSF Vision"
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-black/60 bg-gradient-to-r from-black/80 to-transparent"></div>
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl space-y-6"
-          >
-            <h1 className="text-5xl lg:text-7xl font-serif font-bold text-white leading-tight">
-              Mission & <span className="text-[#fb8500]">Vision</span>
-            </h1>
-            <p className="text-xl lg:text-2xl text-zinc-300 font-medium max-w-3xl leading-relaxed">
-              Our Guiding Principles for a Better Bharat
-            </p>
-          </motion.div>
-        </div>
-      </section>
+      <PageHero
+        image="/images/real/community-education-meeting.jpg"
+        title="Mission & Vision"
+        subtitle="Our Guiding Principles for a Better Bharat"
+        hindiSubtitle="लक्ष्य और दृष्टिकोण - एक बेहतर भारत के लिए हमारे प्रेरक सिद्धांत"
+      />
 
       {/* ================= WHO WE ARE ================= */}
       <section className="py-24 bg-white">

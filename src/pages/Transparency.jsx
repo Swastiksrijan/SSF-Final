@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { motion } from "framer-motion";
 import { FaFileContract, FaBalanceScale, FaHandHoldingUsd, FaFileAlt, FaLock, FaEnvelope, FaGavel } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
+import PageHero from "../components/PageHero";
 
 export default function Transparency() {
     useEffect(() => {
@@ -72,26 +73,12 @@ export default function Transparency() {
         <div className="w-full font-inria bg-white overflow-hidden text-[#002344]">
 
             {/* HER0 */}
-            <section className="relative py-24 bg-[#001529] text-white overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
-                <div className="container mx-auto px-6 relative z-10 text-center">
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="text-4xl lg:text-5xl font-serif font-bold mb-6"
-                    >
-                        Transparency & Reports
-                    </motion.h1>
-                    <motion.p
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{ delay: 0.2 }}
-                        className="text-xl text-zinc-300 max-w-2xl mx-auto leading-relaxed"
-                    >
-                        Building trust through openness, accountability, and ethical governance.
-                    </motion.p>
-                </div>
-            </section>
+            <PageHero
+                image="/images/real/academy-board-compliance.jpg"
+                title="Transparency & Reports"
+                subtitle="Building trust through openness, accountability, and ethical governance."
+                hindiSubtitle="पारदर्शिता और रिपोर्ट - खुलेपन, जवाबदेही और नैतिक शासन के माध्यम से विश्वास का निर्माण।"
+            />
 
             {/* MAIN CONTENT */}
             <section className="py-20 px-6 max-w-5xl mx-auto space-y-20">
