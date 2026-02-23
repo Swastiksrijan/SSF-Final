@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { FaGraduationCap, FaHeartbeat, FaHome, FaLeaf, FaHandHoldingHeart, FaRupeeSign, FaArrowRight, FaUsers } from "react-icons/fa";
 import { HiSparkles, HiHeart } from "react-icons/hi2";
+import PageHero from "../components/PageHero";
 
 export default function Campaigns() {
     const campaigns = [

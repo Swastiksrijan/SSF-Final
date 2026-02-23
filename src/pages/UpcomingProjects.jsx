@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { FaBuilding, FaHeartbeat, FaMicrochip, FaMapMarkedAlt, FaFilePdf, FaDownload, FaCheckCircle, FaArrowRight } from "react-icons/fa";
+import { FaBuilding, FaHeartbeat, FaMicrochip, FaMapMarkedAlt, FaFilePdf, FaDownload, FaCheckCircle, FaArrowRight, FaHeart } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
 
@@ -19,48 +19,61 @@ export default function UpcomingProjects() {
         hindiSubtitle="भविष्य का निर्माण - 2026 और उससे आगे की हमारी दृष्टि।"
       />
 
-      {/* ================= 1. NEW ACADEMIES & HUBS ================= */}
+      {/* ================= 1. SCHOOL DONATION APPEAL ================= */}
       <section className="py-32 px-6 bg-white">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
           <div className="space-y-8">
-            <div className="w-20 h-20 bg-blue-50 text-[#002344] rounded-[2rem] flex items-center justify-center text-3xl shadow-sm border border-blue-100">
-              <FaMapMarkedAlt />
+            <div className="w-20 h-20 bg-orange-50 text-[#fb8500] rounded-[2rem] flex items-center justify-center text-3xl shadow-sm border border-orange-100">
+              <FaBuilding />
             </div>
             <div className="space-y-4">
-              <p className="text-[#2d6a4f] font-bold text-xs uppercase tracking-[0.2em]">Scale of Impact</p>
-              <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344]">New Centers & Hubs</h2>
+              <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em]">Our Dream Project | हमारा स्वप्न प्रोजेक्ट</p>
+              <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344]">Building a School for the Future</h2>
             </div>
             <p className="text-xl text-zinc-500 leading-relaxed font-medium">
-              We are aggressively expanding our physical presence to reach the most remote corners of Madhya Pradesh and Uttar Pradesh.
+              We are on a mission to establish the <strong>SSF National Academy</strong>—a modern school dedicated to providing quality education and a brighter future for underprivileged children in rural areas. <br /><span className="text-lg opacity-90 mt-2 block">ग्रामीण भारत के वंचित बच्चों को गुणवत्तापूर्ण शिक्षा प्रदान करने के लिए हम इस विद्यालय का निर्माण कर रहे हैं।</span>
             </p>
 
             <div className="space-y-8 pt-4">
               <div className="flex gap-6 group">
                 <div className="p-4 bg-emerald-50 text-[#2d6a4f] rounded-2xl h-fit transition-transform group-hover:scale-110">
-                  <FaBuilding className="text-2xl" />
+                  <FaCheckCircle className="text-2xl" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold text-[#002344]">5 New Academies</h4>
-                  <p className="text-zinc-500 font-medium mt-1">Scheduled for Q3 2025: Patna, Gaya, Muzaffarpur, Varanasi, and Gorakhpur.</p>
+                  <h4 className="text-xl font-bold text-[#002344]">Holistic Education</h4>
+                  <p className="text-zinc-500 font-medium mt-1">A comprehensive learning framework focusing on academics, technology, and essential life skills.</p>
                 </div>
               </div>
               <div className="flex gap-6 group">
-                <div className="p-4 bg-blue-50 text-[#002344] rounded-2xl h-fit transition-transform group-hover:scale-110">
-                  <FaMicrochip className="text-2xl" />
+                <div className="p-4 bg-orange-50 text-[#fb8500] rounded-2xl h-fit transition-transform group-hover:scale-110">
+                  <FaHeart className="text-2xl" />
                 </div>
                 <div>
-                  <h4 className="text-xl font-bold text-[#002344]">10 Digital Learning Hubs</h4>
-                  <p className="text-zinc-500 font-medium mt-1">Solar-powered, internet-enabled micro-hubs in deep rural villages.</p>
+                  <h4 className="text-xl font-bold text-[#002344]">We Need Your Support</h4>
+                  <p className="text-zinc-500 font-medium mt-1">Building this school requires collective effort. Your donations will directly fund the construction of classrooms and facilities.</p>
                 </div>
               </div>
             </div>
+
+            <div className="pt-6">
+              <a
+                href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
+                target="_blank"
+                rel="noreferrer noopener"
+                className="inline-block"
+              >
+                <button className="px-10 py-4 bg-[#fb8500] text-white font-bold rounded-full hover:bg-[#e76f00] transition-colors shadow-lg shadow-[#fb8500]/20 flex items-center gap-2 text-lg">
+                  Donate to Build the School | विद्यालय निर्माण में सहयोग करें <FaHeart className="text-sm" />
+                </button>
+              </a>
+            </div>
           </div>
           <div className="relative">
-            <div className="absolute -inset-4 bg-[#2d6a4f]/5 rounded-[3rem] blur-2xl"></div>
+            <div className="absolute -inset-4 bg-[#fb8500]/10 rounded-[3rem] blur-2xl"></div>
             <div className="relative bg-white rounded-[2.5rem] p-4 shadow-2xl border border-zinc-100 overflow-hidden">
               <img
                 src="/images/academy/academy-expansion.jpg"
-                alt="Map of Future Sites - Rewa & Satna Expansion"
+                alt="SSF National Academy Plan"
                 className="w-full h-full object-cover rounded-[1.5rem]"
               />
             </div>
@@ -143,8 +156,8 @@ export default function UpcomingProjects() {
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center relative z-10">
           {/* LEFT CONTENT */}
           <div className="space-y-8">
-            <span className="inline-block px-4 py-1.5 bg-[#2d6a4f] text-white text-[10px] font-bold rounded-full uppercase tracking-widest shadow-lg">
-              Currently Active
+            <span className="inline-block px-4 py-1.5 bg-[#fb8500] text-white text-[10px] font-bold rounded-full uppercase tracking-widest shadow-lg">
+              Upcoming Initiative
             </span>
 
             <h2 className="text-4xl lg:text-6xl font-serif font-bold text-[#002344] leading-tight">
@@ -152,10 +165,11 @@ export default function UpcomingProjects() {
             </h2>
 
             <p className="text-xl text-zinc-600 leading-relaxed font-medium">
-              SSF Learning Hub is an active, community-driven education initiative offering
+              SSF Learning Hub is an upcoming community-driven education initiative that will offer
               <span className="font-bold text-[#002344]"> both online and offline classes</span>.
-              It supports students, youth, and communities with holistic learning, guidance,
+              It will support students, youth, and communities with holistic learning, guidance,
               and real-world support.
+              <span className="block mt-2 text-lg text-zinc-500">यह पहल छात्रों और युवाओं को समग्र शिक्षा और मार्गदर्शन (online & offline) प्रदान करेगी।</span>
             </p>
 
             {/* FEATURES */}
@@ -185,13 +199,13 @@ export default function UpcomingProjects() {
             {/* JOIN INFO */}
             <div className="pt-8 space-y-3">
               <p className="text-lg font-bold text-[#002344]">
-                👩‍🎓 Students can join for learning & guidance
+                👩‍🎓 Students will be able to join for learning & guidance
               </p>
               <p className="text-lg font-bold text-[#002344]">
-                👨‍🏫 Volunteer teachers & mentors are welcome
+                👨‍🏫 Volunteer teachers & mentors will also be welcome
               </p>
               <p className="text-zinc-500 font-medium italic">
-                "Together, we learn. Together, we grow."
+                "Together, we will learn. Together, we will grow."
               </p>
             </div>
           </div>
@@ -321,12 +335,12 @@ export default function UpcomingProjects() {
             </span>
 
             <h2 className="text-3xl lg:text-4xl font-serif font-bold text-[#002344]">
-              SSF in <span className="text-[#fb8500]">Action</span>
+              SSF in <span className="text-[#fb8500]">Action</span> <span className="text-2xl text-zinc-500">| जमीनी हकीकत</span>
             </h2>
 
             <p className="text-lg text-zinc-500 font-medium max-w-2xl mx-auto">
               Real stories, real impact — see how Swastik Srijan Foundation
-              is transforming lives on the ground.
+              is transforming lives on the ground. सच्ची कहानियाँ, वास्तविक प्रभाव।
             </p>
           </div>
 
@@ -377,9 +391,9 @@ export default function UpcomingProjects() {
       <section className="py-32 px-6 bg-white">
         <div className="max-w-6xl mx-auto">
           <div className="text-center space-y-4 mb-20">
-            <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em]">Our Flagship Roadmap</p>
+            <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em]">Our Flagship Roadmap | हमारा मुख्य रोडमैप</p>
             <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344]">Knowledge Hub for Future Leaders</h2>
-            <p className="text-xl text-zinc-500 max-w-2xl mx-auto font-medium">Our comprehensive roadmap for the SSF National Academy excellence centers.</p>
+            <p className="text-xl text-zinc-500 max-w-2xl mx-auto font-medium">Our comprehensive roadmap for the SSF National Academy excellence centers. <span className="block mt-2">भविष्य के लीडर्स के लिए हमारा ज्ञान केंद्र (Knowledge Hub)।</span></p>
           </div>
 
           <div className="grid lg:grid-cols-2 gap-10 items-center bg-[#f8f9fa] p-10 rounded-[3rem] border border-zinc-100 shadow-sm">
@@ -410,19 +424,20 @@ export default function UpcomingProjects() {
           </span>
 
           <h2 className="text-3xl lg:text-4xl font-serif font-bold">
-            Partner Through <span className="text-[#fb8500]">CSR</span>
+            Partner Through <span className="text-[#fb8500]">CSR</span> <span className="text-2xl opacity-90">| CSR के माध्यम से जुड़ें</span>
           </h2>
 
           <p className="text-lg text-zinc-300 font-medium leading-relaxed">
             Collaborate with <strong>Swastik Srijan Foundation</strong> to create
             scalable, transparent, and measurable impact in
             <strong> education, youth development, and community upliftment</strong>.
+            <span className="block mt-2 opacity-90 text-base">शिक्षा, युवा विकास और सामुदायिक उत्थान में वास्तविक प्रभाव पैदा करने के लिए हमारे साथ सहयोग करें।</span>
           </p>
 
           <div className="pt-4">
             <Link to="/Contact">
               <button className="px-10 py-4 bg-[#fb8500] text-white font-bold rounded-full hover:bg-[#e76f00] transition-all shadow-lg">
-                Explore CSR Partnership
+                Explore CSR Partnership | साझेदारी तलाशें
               </button>
             </Link>
           </div>
@@ -436,7 +451,7 @@ export default function UpcomingProjects() {
         <div className="absolute inset-0 bg-[radial-gradient(#fb8500_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.03]"></div>
         <div className="max-w-4xl mx-auto space-y-10 relative z-10">
           <h2 className="text-4xl lg:text-6xl font-serif font-bold">
-            Invest in Our <span className="text-[#fb8500]">Future</span>
+            Invest in Our <span className="text-[#fb8500]">Future</span> <span className="text-3xl lg:text-4xl opacity-90 block mt-2">हमारे भविष्य में निवेश करें</span>
           </h2>
           <p className="text-xl text-zinc-400 font-medium max-w-2xl mx-auto">
             Your partnership today builds the infrastructure for tomorrow's leaders. Join us as a Vision Partner.
@@ -444,7 +459,7 @@ export default function UpcomingProjects() {
           <div className="pt-8">
             <Link to="/Contact">
               <button className="btn-cta px-14 py-6 text-xl shadow-[#d90429]/20">
-                Become a Vision Partner
+                Become a Vision Partner | विजन पार्टनर बनें
               </button>
             </Link>
           </div>

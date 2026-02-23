@@ -7,12 +7,13 @@ import PageHero from "../components/PageHero";
 export default function VisionPage() {
     return (
         <div className="w-full bg-white overflow-hidden">
-            {/* ================= HERO SECTION ================= */}
             <PageHero
-                image="/images/real/community-education-meeting.jpg"
-                title="Our Vision"
-                subtitle="A Commitment to Inclusive Growth and Human Dignity"
-                hindiSubtitle="हमारा दृष्टिकोण - समावेशी विकास और मानवीय गरिमा के प्रति प्रतिबद्धता"
+                image="/images/uploads/mission_vision.jpeg"
+                altTitle="Our Vision"
+                height="min-h-[60vh]"
+                objectFit="contain"
+                imageClass="w-full h-full bg-white"
+                overlayOpacity="bg-transparent"
             />
 
             {/* ================= VISION STATEMENT ================= */}

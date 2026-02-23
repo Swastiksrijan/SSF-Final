@@ -11,10 +11,13 @@ export default function AboutPage() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/real/community-education-meeting.jpg"
-        title="About Our Mission"
+        image="/images/who-we-are-hero.png"
+        title="Who We Are"
         subtitle="Empowering communities through grassroots governance and sustainable development."
         hindiSubtitle="शिक्षा, स्वास्थ्य और सशक्तिकरण के माध्यम से सामुदायिक विकास।"
+        height="h-[28vh] md:min-h-[60vh]"
+        objectPosition="top"
+        overlayOpacity="bg-black/85 md:bg-black/50"
       />
 
       {/* ================= SHORT INTRO ================= */}

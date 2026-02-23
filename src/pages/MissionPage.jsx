@@ -4,16 +4,20 @@ import {
   FaGlobeAmericas
 } from "react-icons/fa";
 import { Link } from "@tanstack/react-router";
-import PageHero from "../components/PageHero";
 
 export default function MissionPage() {
   return (
     <div className="w-full bg-white overflow-hidden">
       {/* ================= HERO SECTION ================= */}
-      <PageHero
-        image="/images/uploads/vision-mission-goals.jpg"
-        altTitle="Mission & Vision"
-      />
+      <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[40vh]">
+        <div className="container mx-auto px-4 flex justify-center">
+          <img
+            src="/images/uploads/mission_vision.jpeg"
+            alt="Mission & Vision"
+            className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
+          />
+        </div>
+      </section>
 
       {/* ================= WHO WE ARE ================= */}
       <section className="py-12 md:py-24 bg-white">
@@ -191,6 +195,17 @@ export default function MissionPage() {
               </div>
             </motion.div>
           </div>
+        </div>
+      </section>
+
+      {/* ================= DIAGRAM ================= */}
+      <section className="py-12 bg-white flex justify-center border-b border-zinc-100">
+        <div className="container mx-auto px-6 flex justify-center">
+          <img
+            src="/images/uploads/vision-mission-goals.jpg"
+            alt="Vision, Mission, and Values Diagram"
+            className="w-full max-w-3xl object-contain drop-shadow-lg rounded-xl"
+          />
         </div>
       </section>
 

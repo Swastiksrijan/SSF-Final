@@ -10,32 +10,13 @@ function VisionPage() {
   return (
     <div className="w-full bg-white overflow-hidden">
       {/* ================= HERO SECTION ================= */}
-      <section className="relative min-h-[60vh] flex items-center pt-32 pb-20 overflow-hidden bg-gradient-to-br from-[#001529] via-[#002344] to-[#003366]">
-        <div className="absolute inset-0 z-0">
-          <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.05]"></div>
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#fb8500] opacity-[0.08] rounded-full blur-[120px]"></div>
-          <div className="absolute bottom-0 left-0 w-96 h-96 bg-[#d90429] opacity-[0.08] rounded-full blur-[120px]"></div>
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10">
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="max-w-4xl mx-auto text-center space-y-6"
-          >
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center">
-                <FaGlobeAmericas className="text-[#fb8500] text-3xl" />
-              </div>
-            </div>
-            <h1 className="text-5xl lg:text-7xl font-serif font-bold text-white leading-tight">
-              Our <span className="text-[#fb8500]">Vision</span>
-            </h1>
-            <p className="text-xl lg:text-2xl text-zinc-300 font-medium max-w-3xl mx-auto leading-relaxed">
-              🌍 दृष्टि कथन | Vision Statement
-            </p>
-          </motion.div>
+      <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[40vh]">
+        <div className="container mx-auto px-4 flex justify-center">
+          <img
+            src="/images/uploads/mission_vision.jpeg"
+            alt="Our Vision"
+            className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
+          />
         </div>
       </section>
 

@@ -21,6 +21,9 @@ export default function PageHero({
     hindiSubtitle,
     height = "min-h-[60vh]",
     overlayOpacity = "bg-black/50",
+    imageClass = "w-full h-full",
+    objectFit = "cover",
+    objectPosition = "center",
     children
 }) {
     const fadeInUp = {
@@ -35,7 +38,9 @@ export default function PageHero({
                 <OptimizedImage
                     src={image}
                     alt={altTitle || title || "Hero Image"}
-                    className="w-full h-full object-cover brightness-[0.75]"
+                    className={imageClass}
+                    objectFit={objectFit}
+                    style={{ objectPosition }}
                 />
                 {/* Gradient Overlay for better text readability */}
                 <div className={`absolute inset-0 ${overlayOpacity} bg-gradient-to-b from-[#001529]/60 via-transparent to-[#001529]/80`}></div>
@@ -62,14 +67,14 @@ export default function PageHero({
 
                     {/* Main Title */}
                     {title && (
-                        <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-2xl font-serif">
+                        <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-2xl font-serif">
                             {title}
                         </h1>
                     )}
 
-                    {/* Subtitles */}
+                    {/* Subtitles - hidden on mobile, visible on md+ */}
                     {(subtitle || hindiSubtitle) && (
-                        <div className="space-y-3 pt-2">
+                        <div className="hidden md:block space-y-3 pt-2">
                             {subtitle && (
                                 <p className="text-lg md:text-2xl font-light text-blue-50/90 tracking-wide max-w-3xl mx-auto">
                                     {subtitle}

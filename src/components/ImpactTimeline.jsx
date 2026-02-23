@@ -19,11 +19,18 @@ export default function ImpactTimeline() {
             color: "#003366"
         },
         {
+            year: "2015",
+            title: "Expanding Early Initiatives",
+            desc: "Strengthened nutrition and preventive support services for vulnerable populations.",
+            icon: <FaHandHoldingHeart />,
+            color: "#fb8500"
+        },
+        {
             year: "2016",
             title: "Rural Empowerment",
             desc: "Grassroots development programs strengthened through community participation and appropriate technology.",
             icon: <FaBriefcase />,
-            color: "#fb8500"
+            color: "#002344"
         },
         {
             year: "2017",
@@ -31,6 +38,13 @@ export default function ImpactTimeline() {
             desc: "Education support initiatives launched for underprivileged children.",
             icon: <FaGraduationCap />,
             color: "#d90429"
+        },
+        {
+            year: "2018",
+            title: "Promoting Health and Hygiene",
+            desc: "Conducted large-scale health camps, hygiene awareness drives, and sanitation programs.",
+            icon: <FaHandHoldingHeart />,
+            color: "#fb8500"
         },
         {
             year: "2019",
@@ -45,6 +59,20 @@ export default function ImpactTimeline() {
             desc: "Emergency relief and community support provided during the COVID-19 crisis.",
             icon: <FaUsers />,
             color: "#fb8500"
+        },
+        {
+            year: "2021",
+            title: "Sustaining Momentum",
+            desc: "Strengthened digital learning, digital platforms and changing conditions.",
+            icon: <FaBriefcase />,
+            color: "#003366"
+        },
+        {
+            year: "2022",
+            title: "Strengthening Communities",
+            desc: "Reinforced efforts with disaster relief, implemented long-term resilience-building initiatives recovering from challenges.",
+            icon: <FaUsers />,
+            color: "#d90429"
         },
         {
             year: "2023",

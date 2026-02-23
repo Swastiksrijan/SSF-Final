@@ -61,6 +61,7 @@ export default function FooterSection() {
                 <li><Link to="/Team" className="hover:text-[#fb8500] transition-colors">Our Team</Link></li>
                 <li><Link to="/Journey" className="hover:text-[#fb8500] transition-colors">Our Journey</Link></li>
                 <li><Link to="/Mission" className="hover:text-[#fb8500] transition-colors">Mission & Vision</Link></li>
+                <li><Link to="/Humanity&Truth" className="hover:text-[#fb8500] transition-colors">Humanity & Truth</Link></li>
               </ul>
             </div>
 
@@ -69,7 +70,7 @@ export default function FooterSection() {
               <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">Impact</h4>
               <ul className="space-y-3 text-sm text-zinc-400">
                 <li><Link to="/Impact" className="hover:text-[#fb8500] transition-colors">Impact Stories</Link></li>
-                <li><Link to="/CampaignsPage" className="hover:text-[#fb8500] transition-colors">Campaigns</Link></li>
+                <li><Link to="/Campaigns" className="hover:text-[#fb8500] transition-colors">Campaigns</Link></li>
                 <li><Link to="/UpcomingProjects" className="hover:text-[#fb8500] transition-colors">Projects</Link></li>
                 <li><Link to="/Media" className="hover:text-[#fb8500] transition-colors">Media Gallery</Link></li>
               </ul>

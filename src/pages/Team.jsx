@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import PageHero from "../components/PageHero";
 
 const governingBody = [
   { name: "Mr. Ramesh Pandey", role: "Founder & National President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
@@ -50,58 +49,18 @@ const volunteersTeam = [
 export default function Team() {
   return (
     <main className="min-h-screen bg-white">
-      {/* ================= HERO ================= */}
-      <PageHero
-        image="/images/ssf-team.jpg"
-        title="Meet Our Team"
-        subtitle="A collective of visionary leaders, expert advisors, and dedicated volunteers driving sustainable change."
-        hindiSubtitle="सतत परिवर्तन लाने वाले दूरदर्शी नेताओं, विशेषज्ञ सलाहकारों और समर्पित स्वयंसेवकों का एक समूह।"
-      />
-
-      {/* ================= GOVERNING BODY ================= */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
-              Governing Body (Governance & Compliance)
-            </h2>
-            <div className="w-24 h-1 bg-[#fb8500] mx-auto rounded-full"></div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-            {governingBody.map((member, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="group"
-              >
-                <div className="relative aspect-square rounded-3xl overflow-hidden mb-6 border-4 border-zinc-50 shadow-sm group-hover:shadow-xl transition-all duration-500">
-                  <img
-                    src={member.img || "/images/team/placeholder.jpg"}
-                    alt={member.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#002344]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                    <p className="text-white text-[10px] font-bold uppercase tracking-widest">{member.location}</p>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-lg font-serif font-bold text-[#002344] group-hover:text-[#fb8500] transition-colors">
-                    {member.name}
-                  </h3>
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">
-                    {member.role}
-                  </p>
-                  <p className="text-[10px] text-zinc-400 italic mt-1">{member.location}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+      {/* ================= HERO SECTION ================= */}
+      <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[40vh]">
+        <div className="container mx-auto px-4 flex justify-center">
+          <img
+            src="/images/uploads/MeetOurTeam.jpeg"
+            alt="Meet Our Team"
+            className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
+          />
         </div>
       </section>
+
+
 
       {/* ================= MANAGEMENT & OPERATIONS ================= */}
       <section className="py-24 px-6 bg-[#f8f9fa] border-y border-zinc-100">
@@ -249,6 +208,51 @@ export default function Team() {
         </div>
       </section>
 
+      {/* ================= GOVERNING BODY ================= */}
+      <section className="py-24 px-6 bg-white border-t border-zinc-100">
+        <div className="max-w-7xl mx-auto space-y-16">
+          <div className="text-center space-y-4">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
+              Governing Body (Governance & Compliance)
+            </h2>
+            <div className="w-24 h-1 bg-[#fb8500] mx-auto rounded-full"></div>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
+            {governingBody.map((member, i) => (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, scale: 0.9 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.05 }}
+                className="group"
+              >
+                <div className="relative aspect-square rounded-3xl overflow-hidden mb-6 border-4 border-zinc-50 shadow-sm group-hover:shadow-xl transition-all duration-500">
+                  <img
+                    src={member.img || "/images/team/placeholder.jpg"}
+                    alt={member.name}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#002344]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
+                    <p className="text-white text-[10px] font-bold uppercase tracking-widest">{member.location}</p>
+                  </div>
+                </div>
+                <div className="text-center">
+                  <h3 className="text-lg font-serif font-bold text-[#002344] group-hover:text-[#fb8500] transition-colors">
+                    {member.name}
+                  </h3>
+                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">
+                    {member.role}
+                  </p>
+                  <p className="text-[10px] text-zinc-400 italic mt-1">{member.location}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ================= FIELD TEAM & COMMUNITY ================= */}
       <section className="py-24 px-6 bg-zinc-50 border-t border-zinc-100">
         <div className="max-w-7xl mx-auto space-y-16">
@@ -276,6 +280,7 @@ export default function Team() {
           </motion.div>
         </div>
       </section>
+
     </main>
   );
 }
