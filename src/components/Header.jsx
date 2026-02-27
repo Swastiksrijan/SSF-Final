@@ -42,6 +42,10 @@ const Header = () => {
       name: "Get Involved",
       path: "/GetInvolved"
     },
+    {
+      name: "Login",
+      path: "/AdminPortal"
+    },
     { name: "Donate", path: "/Donate", isSpecial: true },
   ];
 
@@ -65,6 +69,15 @@ const Header = () => {
             className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
           >
             <span className="opacity-70">🌐</span> swastiksrijan.in
+          </a>
+          <div className="w-px h-3 bg-white/20"></div>
+          <a
+            href="https://wa.me/919718346691"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
+          >
+            <span className="opacity-70">💬</span> +91 97183 46691
           </a>
         </div>
       </div>
@@ -189,6 +202,15 @@ const Header = () => {
                 <a href="https://swastiksrijan.in" className="flex items-center gap-3 text-[#002344] font-semibold">
                   <span className="bg-zinc-100 p-2 rounded-lg">🌐</span>
                   swastiksrijan.in
+                </a>
+                <a
+                  href="https://wa.me/919718346691"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 text-[#002344] font-semibold"
+                >
+                  <span className="bg-zinc-100 p-2 rounded-lg">💬</span>
+                  +91 97183 46691
                 </a>
               </div>
             </div>
