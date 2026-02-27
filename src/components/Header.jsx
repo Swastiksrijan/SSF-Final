@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
@@ -8,6 +8,14 @@ import logoImg from "../assets/Home-logo.png";
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSubMenu, setMobileSubMenu] = useState(null);
+
+  useEffect(() => {
+    document.body.style.overflow = menuOpen ? "hidden" : "";
+
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [menuOpen]);
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -123,6 +131,9 @@ const Header = () => {
           <button
             className="md:hidden text-2xl text-[#002344] p-2 hover:bg-zinc-100 rounded-xl transition-colors"
             onClick={() => setMenuOpen(!menuOpen)}
+            aria-expanded={menuOpen}
+            aria-controls="mobile-navigation"
+            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
           >
             {menuOpen ? <HiX /> : <HiOutlineMenu />}
           </button>
@@ -132,7 +143,7 @@ const Header = () => {
       {/* MOBILE MENU */}
       {menuOpen && (
         <div className="md:hidden fixed inset-0 top-[116px] bg-white z-40 overflow-y-auto pb-20 animate-in slide-in-from-right duration-500">
-          <nav className="flex flex-col p-6 space-y-2">
+          <nav id="mobile-navigation" className="flex flex-col p-6 space-y-2">
             {navItems.map((item) => (
               <div key={item.name} className="border-b border-zinc-50 last:border-0">
                 <div className="flex items-center justify-between py-4">
