@@ -2,12 +2,15 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
+import { FaUserCircle } from "react-icons/fa";
+import AuthModal from "./AuthModal";
 
 import logoImg from "../assets/Home-logo.png";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSubMenu, setMobileSubMenu] = useState(null);
+  const [authOpen, setAuthOpen] = useState(false);
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -117,6 +120,14 @@ const Header = () => {
                 )}
               </div>
             ))}
+
+            <button
+              type="button"
+              onClick={() => setAuthOpen(true)}
+              className="flex items-center gap-2 text-[#002344] font-bold text-sm hover:text-[#FF6600]"
+            >
+              <FaUserCircle /> Signup / Login
+            </button>
           </nav>
 
           {/* MOBILE TOGGLE */}
@@ -133,6 +144,17 @@ const Header = () => {
       {menuOpen && (
         <div className="md:hidden fixed inset-0 top-[116px] bg-white z-40 overflow-y-auto pb-20 animate-in slide-in-from-right duration-500">
           <nav className="flex flex-col p-6 space-y-2">
+            <button
+              type="button"
+              onClick={() => {
+                closeMenu();
+                setAuthOpen(true);
+              }}
+              className="w-full mb-2 px-4 py-3 rounded-xl bg-[#002344] text-white font-semibold"
+            >
+              Signup / Login
+            </button>
+
             {navItems.map((item) => (
               <div key={item.name} className="border-b border-zinc-50 last:border-0">
                 <div className="flex items-center justify-between py-4">
@@ -195,6 +217,8 @@ const Header = () => {
           </nav>
         </div>
       )}
+
+      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} />
     </header>
   );
 };
