@@ -53,8 +53,8 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 font-sans">
       {/* TOP BAR */}
-      <div className="bg-[#002344] text-white py-2 px-6 hidden sm:block">
-        <div className="max-w-7xl mx-auto flex justify-end items-center gap-6">
+      <div className="bg-[#002344] text-white py-2 px-4 sm:px-6 block">
+        <div className="max-w-7xl mx-auto flex justify-end items-center gap-4 sm:gap-6 flex-wrap">
           <a
             href="mailto:info@swastiksrijan.in"
             className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
@@ -79,6 +79,13 @@ const Header = () => {
           >
             <span className="opacity-70">💬</span> +91 97183 46691
           </a>
+          <div className="w-px h-3 bg-white/20"></div>
+          <Link
+            to="/AdminPortal"
+            className="flex items-center gap-2 text-xs font-semibold hover:text-[#FF6600] transition-colors"
+          >
+            <span className="opacity-70">🔐</span> Login
+          </Link>
         </div>
       </div>
 
