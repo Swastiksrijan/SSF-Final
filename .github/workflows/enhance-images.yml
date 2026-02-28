@@ -1,0 +1,55 @@
+name: Enhance repository images
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_short_side:
+        description: "Upscale target for shortest side"
+        required: false
+        default: "1080"
+      max_scale:
+        description: "Maximum upscaling factor"
+        required: false
+        default: "2.0"
+
+permissions:
+  contents: write
+
+jobs:
+  enhance-images:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pillow
+
+      - name: Enhance images in-place
+        run: |
+          python scripts/enhance_images.py \
+            --root . \
+            --target-short-side "${{ github.event.inputs.target_short_side || '1080' }}" \
+            --max-scale "${{ github.event.inputs.max_scale || '2.0' }}"
+
+      - name: Commit updated images
+        run: |
+          if git diff --quiet; then
+            echo "No image changes to commit."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "chore(images): enhance repository image quality"
+          git push
