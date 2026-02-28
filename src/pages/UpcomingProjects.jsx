@@ -1,5 +1,4 @@
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
 import { FaBuilding, FaHeartbeat, FaMicrochip, FaMapMarkedAlt, FaFilePdf, FaDownload, FaCheckCircle, FaArrowRight, FaHeart } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
@@ -388,7 +387,7 @@ export default function UpcomingProjects() {
             <div className="absolute -inset-4 bg-[#002344]/5 rounded-[3rem] blur-2xl"></div>
             <div className="relative bg-white rounded-[2.5rem] p-6 shadow-2xl border border-zinc-100">
               <img
-                src="./Gallery_Images/ssf.jpg"
+                src="/Gallery_Images/ssf.jpg"
                 alt="SSF Learning Hub Online Offline Classes"
                 className="w-full h-full object-cover rounded-[2rem]"
               />
