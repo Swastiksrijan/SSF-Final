@@ -5,6 +5,7 @@ import { FaCheckCircle, FaSpinner, FaExclamationCircle, FaArrowRight, FaWhatsapp
 import { CONTACT_INFO } from "../config/contact";
 import { ENDPOINTS } from "../config/api";
 import { ALL_COUNTRIES } from "../data/countries";
+import { generateCertificate } from "../utils/generateCertificate";
 
 export default function VolunteerForm() {
     const [formData, setFormData] = useState({
@@ -81,7 +82,7 @@ export default function VolunteerForm() {
         if (!validate()) return;
         setStatus("submitting");
 
-        const VOLUNTEER_CODE = "SSF-VOL-2025";
+        const VOLUNTEER_CODE = `SSF-VOL-2026-${Date.now().toString().slice(-4)}`;
         setCertificateCode(VOLUNTEER_CODE);
 
         try {
@@ -104,6 +105,10 @@ export default function VolunteerForm() {
             });
 
             if (response.ok) {
+                const issueDate = new Date().toLocaleDateString('en-IN', {
+                    day: 'numeric', month: 'long', year: 'numeric'
+                });
+                await generateCertificate(formData.fullName, `${formData.volunteerType} volunteer`, issueDate, VOLUNTEER_CODE);
                 setStatus("success");
             } else {
                 throw new Error("Backend submission failed");
@@ -144,27 +149,33 @@ export default function VolunteerForm() {
                     <div className="flex items-center justify-center gap-2 text-emerald-800 font-bold uppercase tracking-widest text-xs">
                         <FaIdCard /> Document Submitted
                     </div>
-                    <div className="text-2xl font-bold text-[#002344]">
-                        Awaiting Approval
-                    </div>
+                    <div className="text-2xl font-bold text-[#002344]">Certificate Generated</div>
                     <p className="text-sm text-emerald-700 font-medium leading-relaxed">
-                        Our team will verify your documents manually. Once approved, you will receive an email to download your certificate.
+                        Your form is submitted and a certificate has been downloaded instantly. Your ID: <span className="font-bold">{certificateCode}</span>
                     </p>
                 </div>
 
                 <div className="space-y-4">
-                    <p className="text-sm font-bold text-zinc-400 uppercase">Final Step: Verify on WhatsApp</p>
-                    <a
-                        href={whatsappLink}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="w-full bg-[#25D366] text-white py-5 rounded-2xl font-bold text-xl hover:bg-[#128C7E] transition-all flex items-center justify-center gap-3 shadow-xl hover:shadow-green-200"
-                    >
-                        <FaWhatsapp size={24} />
-                        Connect on WhatsApp
-                    </a>
+                    <p className="text-sm font-bold text-zinc-400 uppercase">Final Step: Send Details to Admin</p>
+                    <div className="grid md:grid-cols-2 gap-3">
+                        <a
+                            href={whatsappLink}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#128C7E] transition-all flex items-center justify-center gap-3 shadow-xl hover:shadow-green-200"
+                        >
+                            <FaWhatsapp size={20} />
+                            WhatsApp
+                        </a>
+                        <a
+                            href={`mailto:${CONTACT_INFO.primaryEmail}?subject=${encodeURIComponent('New Volunteer Registration')}&body=${encodeURIComponent(`Name: ${formData.fullName}\nEmail: ${formData.email}\nPhone: ${formData.countryCode} ${formData.phone}\nVolunteer Type: ${formData.volunteerType}\nCertificate ID: ${certificateCode}\nMessage: ${formData.message}`)}`}
+                            className="w-full bg-[#002344] text-white py-4 rounded-2xl font-bold text-base hover:bg-[#001933] transition-all flex items-center justify-center gap-3 shadow-xl"
+                        >
+                            Email Admin
+                        </a>
+                    </div>
                     <p className="text-xs text-zinc-400">
-                        Clicking this will pre-fill your details in WhatsApp.
+                        WhatsApp or email button will open pre-filled details to notify admin instantly.
                     </p>
                 </div>
 
