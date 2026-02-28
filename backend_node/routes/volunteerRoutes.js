@@ -89,16 +89,25 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
             isVerified: false
         });
 
-        // Notify Admin via Email
+        // Notify Admin via Email (do not block successful submission if email fails)
         const adminEmails = getAdminRecipients();
-        await sendEmail(
-            adminEmails,
-            `New Volunteer Registration: ${name}`,
-            `A new volunteer has applied. Please check the Admin Portal. Name: ${name}, Type: ${volunteer_type}, Position: ${position}`,
-            `<h3>New Volunteer Request</h3><p><strong>Name:</strong> ${name}</p><p><strong>Type:</strong> ${volunteer_type}</p><p><strong>Position:</strong> ${position}</p><p>Please login to the Admin Portal to review documents.</p>`
-        );
+        let emailSent = true;
+        let warning = null;
 
-        res.status(201).json({ status: 'success', message: 'Application submitted successfully', data: newVolunteer });
+        try {
+            await sendEmail(
+                adminEmails,
+                `New Volunteer Registration: ${name}`,
+                `A new volunteer has applied. Please check the Admin Portal. Name: ${name}, Type: ${volunteer_type}, Position: ${position}`,
+                `<h3>New Volunteer Request</h3><p><strong>Name:</strong> ${name}</p><p><strong>Type:</strong> ${volunteer_type}</p><p><strong>Position:</strong> ${position}</p><p>Please login to the Admin Portal to review documents.</p>`
+            );
+        } catch (emailError) {
+            emailSent = false;
+            warning = 'Application saved but admin email notification failed';
+            console.error('⚠️ Volunteer registration email failed:', emailError.message);
+        }
+
+        res.status(201).json({ status: 'success', message: 'Application submitted successfully', data: newVolunteer, emailSent, warning });
 
     } catch (error) {
         console.error('❌ Registration Error DETAILS:', error);
@@ -134,14 +143,23 @@ router.post('/member-signup', async (req, res) => {
         });
 
         const adminEmails = getAdminRecipients();
-        await sendEmail(
-            adminEmails,
-            `New Member Signup: ${fullName}`,
-            `A new member signup has been submitted. Name: ${fullName}, Type: ${memberType}, Email: ${primaryEmail}, Phone: ${phone}`,
-            `<h3>New Member Signup</h3><p><strong>Name:</strong> ${fullName}</p><p><strong>Email:</strong> ${primaryEmail}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Type:</strong> ${memberType}</p><p><strong>Message:</strong> ${message || 'N/A'}</p>`
-        );
+        let emailSent = true;
+        let warning = null;
 
-        res.status(201).json({ status: 'success', message: 'Member signup submitted successfully', data: newMember });
+        try {
+            await sendEmail(
+                adminEmails,
+                `New Member Signup: ${fullName}`,
+                `A new member signup has been submitted. Name: ${fullName}, Type: ${memberType}, Email: ${primaryEmail}, Phone: ${phone}`,
+                `<h3>New Member Signup</h3><p><strong>Name:</strong> ${fullName}</p><p><strong>Email:</strong> ${primaryEmail}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Type:</strong> ${memberType}</p><p><strong>Message:</strong> ${message || 'N/A'}</p>`
+            );
+        } catch (emailError) {
+            emailSent = false;
+            warning = 'Member signup saved but admin email notification failed';
+            console.error('⚠️ Member signup email failed:', emailError.message);
+        }
+
+        res.status(201).json({ status: 'success', message: 'Member signup submitted successfully', data: newMember, emailSent, warning });
     } catch (error) {
         console.error('❌ Member signup error:', error);
         res.status(500).json({ status: 'error', message: 'Server Error' });

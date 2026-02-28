@@ -46,6 +46,10 @@ const Header = () => {
       name: "Login",
       path: "/AdminPortal"
     },
+    {
+      name: "Signup",
+      path: "/Members"
+    },
     { name: "Donate", path: "/Donate", isSpecial: true },
   ];
 
@@ -54,38 +58,52 @@ const Header = () => {
     <header className="fixed top-0 left-0 right-0 z-50 font-sans">
       {/* TOP BAR */}
       <div className="bg-[#002344] text-white py-2 px-4 sm:px-6 block">
-        <div className="max-w-7xl mx-auto flex justify-end items-center gap-4 sm:gap-6 flex-wrap">
-          <a
-            href="mailto:info@swastiksrijan.in"
-            className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
-          >
-            <span className="opacity-70">📧</span> info@swastiksrijan.in
-          </a>
-          <div className="w-px h-3 bg-white/20"></div>
-          <a
-            href="https://swastiksrijan.in"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
-          >
-            <span className="opacity-70">🌐</span> swastiksrijan.in
-          </a>
-          <div className="w-px h-3 bg-white/20"></div>
-          <a
-            href="https://wa.me/919718346691"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
-          >
-            <span className="opacity-70">💬</span> +91 97183 46691
-          </a>
-          <div className="w-px h-3 bg-white/20"></div>
-          <Link
-            to="/AdminPortal"
-            className="flex items-center gap-2 text-xs font-semibold hover:text-[#FF6600] transition-colors"
-          >
-            <span className="opacity-70">🔐</span> Login
-          </Link>
+        <div className="max-w-7xl mx-auto space-y-2">
+          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 text-[11px] font-semibold text-white/90">
+            <span>📞 Contact Us:</span>
+            <a
+              href="https://wa.me/919718346691"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-[#FF6600] transition-colors"
+            >
+              WhatsApp: +91 9718346691
+            </a>
+            <span className="hidden sm:inline text-white/30">|</span>
+            <span>Address: Rewa, Madhya Pradesh, India</span>
+          </div>
+
+          <div className="flex justify-center sm:justify-end items-center gap-4 sm:gap-6 flex-wrap">
+            <a
+              href="mailto:info@swastiksrijan.in"
+              className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
+            >
+              <span className="opacity-70">📧</span> info@swastiksrijan.in
+            </a>
+            <div className="w-px h-3 bg-white/20"></div>
+            <a
+              href="https://swastiksrijan.in"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
+            >
+              <span className="opacity-70">🌐</span> swastiksrijan.in
+            </a>
+            <div className="w-px h-3 bg-white/20"></div>
+            <Link
+              to="/AdminPortal"
+              className="flex items-center gap-2 text-xs font-semibold hover:text-[#FF6600] transition-colors"
+            >
+              <span className="opacity-70">🔐</span> Login
+            </Link>
+            <div className="w-px h-3 bg-white/20"></div>
+            <Link
+              to="/Members"
+              className="flex items-center gap-2 text-xs font-semibold hover:text-[#FF6600] transition-colors"
+            >
+              <span className="opacity-70">📝</span> Signup
+            </Link>
+          </div>
         </div>
       </div>
 
@@ -219,6 +237,14 @@ const Header = () => {
                   <span className="bg-zinc-100 p-2 rounded-lg">💬</span>
                   +91 97183 46691
                 </a>
+                <div className="flex items-center gap-3 text-[#002344] font-semibold">
+                  <span className="bg-zinc-100 p-2 rounded-lg">📍</span>
+                  Rewa, Madhya Pradesh, India
+                </div>
+                <Link to="/Members" onClick={closeMenu} className="flex items-center gap-3 text-[#002344] font-semibold">
+                  <span className="bg-zinc-100 p-2 rounded-lg">📝</span>
+                  Signup
+                </Link>
               </div>
             </div>
           </nav>
