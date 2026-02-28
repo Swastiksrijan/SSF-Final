@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
 const Volunteer = require('../models/Volunteer');
+const Member = require('../models/Member');
 
 // --- 1. File Upload Configuration ---
 const storage = multer.diskStorage({
@@ -52,6 +53,15 @@ const sendEmail = async (to, subject, text, html) => {
     }
 };
 
+const getAdminRecipients = () => {
+    const recipients = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.in,info@swastiksrijan.org')
+        .split(',')
+        .map((email) => email.trim())
+        .filter(Boolean);
+
+    return recipients.join(',');
+};
+
 // --- 3. Routes ---
 
 // @route   POST /api/register
@@ -80,9 +90,9 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
         });
 
         // Notify Admin via Email
-        const adminEmail = process.env.ADMIN_EMAIL || 'admin@swastiksrijan.in';
+        const adminEmails = getAdminRecipients();
         await sendEmail(
-            adminEmail,
+            adminEmails,
             `New Volunteer Registration: ${name}`,
             `A new volunteer has applied. Please check the Admin Portal. Name: ${name}, Type: ${volunteer_type}, Position: ${position}`,
             `<h3>New Volunteer Request</h3><p><strong>Name:</strong> ${name}</p><p><strong>Type:</strong> ${volunteer_type}</p><p><strong>Position:</strong> ${position}</p><p>Please login to the Admin Portal to review documents.</p>`
@@ -92,6 +102,48 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
 
     } catch (error) {
         console.error('❌ Registration Error DETAILS:', error);
+        res.status(500).json({ status: 'error', message: 'Server Error' });
+    }
+});
+
+
+// @route   POST /api/member-signup
+// @desc    Register a new member signup request
+router.post('/member-signup', async (req, res) => {
+    try {
+        const { fullName, email, confirmEmail, phone, memberType, message } = req.body;
+
+        const primaryEmail = (email || '').trim().toLowerCase();
+        const secondaryEmail = (confirmEmail || '').trim().toLowerCase();
+
+        if (!fullName || !primaryEmail || !secondaryEmail || !phone || !memberType) {
+            return res.status(400).json({ status: 'error', message: 'Missing required fields' });
+        }
+
+        if (primaryEmail !== secondaryEmail) {
+            return res.status(400).json({ status: 'error', message: 'Email fields do not match' });
+        }
+
+        const newMember = await Member.create({
+            fullName,
+            email: primaryEmail,
+            phone,
+            memberType,
+            message,
+            status: 'pending'
+        });
+
+        const adminEmails = getAdminRecipients();
+        await sendEmail(
+            adminEmails,
+            `New Member Signup: ${fullName}`,
+            `A new member signup has been submitted. Name: ${fullName}, Type: ${memberType}, Email: ${primaryEmail}, Phone: ${phone}`,
+            `<h3>New Member Signup</h3><p><strong>Name:</strong> ${fullName}</p><p><strong>Email:</strong> ${primaryEmail}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Type:</strong> ${memberType}</p><p><strong>Message:</strong> ${message || 'N/A'}</p>`
+        );
+
+        res.status(201).json({ status: 'success', message: 'Member signup submitted successfully', data: newMember });
+    } catch (error) {
+        console.error('❌ Member signup error:', error);
         res.status(500).json({ status: 'error', message: 'Server Error' });
     }
 });
