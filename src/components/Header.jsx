@@ -13,6 +13,35 @@ const Header = () => {
   const [mobileSubMenu, setMobileSubMenu] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
   const { lang, toggleLang } = useLanguage();
+  const t = lang === "en"
+    ? {
+      home: "Home",
+      about: "About Us",
+      missionVision: "Mission & Vision",
+      objectives: "Our Objectives",
+      team: "Meet Our Team",
+      projects: "Upcoming Projects",
+      impact: "Impact",
+      involved: "Get Involved",
+      donate: "Donate",
+      contact: "Contact Us",
+      regOffice: "Reg. Office: Rewa, Madhya Pradesh, India",
+      signup: "Signup / Login",
+    }
+    : {
+      home: "होम",
+      about: "हमारे बारे में",
+      missionVision: "मिशन और विज़न",
+      objectives: "हमारे उद्देश्य",
+      team: "हमारी टीम",
+      projects: "आगामी परियोजनाएँ",
+      impact: "प्रभाव",
+      involved: "जुड़ें",
+      donate: "दान करें",
+      contact: "संपर्क करें",
+      regOffice: "पंजीकृत कार्यालय: रीवा, मध्य प्रदेश, भारत",
+      signup: "साइनअप / लॉगिन",
+    };
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -28,26 +57,26 @@ const Header = () => {
   };
 
   const navItems = [
-    { name: "Home", path: "/" },
+    { name: t.home, path: "/" },
     {
-      name: "About Us",
+      name: t.about,
       path: "/About",
       subItems: [
-        { name: "Mission & Vision", path: "/Mission" },
-        { name: "Our Objectives", path: "/Objectives" },
-        { name: "Meet Our Team", path: "/Team" },
-        { name: "Upcoming Projects", path: "/UpcomingProjects" } // ✅ added
+        { name: t.missionVision, path: "/Mission" },
+        { name: t.objectives, path: "/Objectives" },
+        { name: t.team, path: "/Team" },
+        { name: t.projects, path: "/UpcomingProjects" }
       ]
     },
     {
-      name: "Impact",
+      name: t.impact,
       path: "/Impact"
     },
     {
-      name: "Get Involved",
+      name: t.involved,
       path: "/GetInvolved"
     },
-    { name: "Donate", path: "/Donate", isSpecial: true },
+    { name: t.donate, path: "/Donate", isSpecial: true },
   ];
 
 
@@ -57,7 +86,7 @@ const Header = () => {
       <div className="bg-[#002344] text-white py-2 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex items-center justify-end gap-3 sm:gap-4 text-[11px] sm:text-xs font-semibold text-white/90 whitespace-nowrap overflow-x-auto no-scrollbar">
-            <span>{lang === "en" ? "📞 Contact Us:" : "📞 संपर्क करें:"}</span>
+            <span>{`📞 ${t.contact}:`}</span>
             <a
               href="https://wa.me/919718346691"
               target="_blank"
@@ -67,7 +96,7 @@ const Header = () => {
               WhatsApp: +91 9718346691
             </a>
             <span className="text-white/30">|</span>
-            <span>{lang === "en" ? "Reg. Office: Rewa, Madhya Pradesh, India" : "पंजीकृत कार्यालय: रीवा, मध्य प्रदेश, भारत"}</span>
+            <span>{t.regOffice}</span>
             <span className="text-white/30">|</span>
             <a
               href="mailto:info@swastiksrijan.in"
@@ -98,7 +127,7 @@ const Header = () => {
               onClick={() => setAuthOpen(true)}
               className="flex items-center gap-2 hover:text-[#FF6600] transition-colors"
             >
-              <FaUserCircle /> {lang === "en" ? "Signup / Login" : "साइनअप / लॉगिन"}
+              <FaUserCircle /> {t.signup}
             </button>
           </div>
         </div>
@@ -177,7 +206,7 @@ const Header = () => {
               }}
               className="w-full mb-2 px-4 py-3 rounded-xl bg-[#002344] text-white font-semibold"
             >
-              {lang === "en" ? "Signup / Login" : "साइनअप / लॉगिन"}
+              {t.signup}
             </button>
 
             {navItems.map((item) => (
