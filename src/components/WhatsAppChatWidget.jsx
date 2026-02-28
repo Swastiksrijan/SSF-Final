@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { FaWhatsapp, FaTimes, FaComments, FaPaperPlane } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import { useLanguage } from "../context/LanguageContext";
@@ -93,6 +93,13 @@ export default function WhatsAppChatWidget() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([{ role: "bot", intent: "intro" }]);
   const [isTyping, setIsTyping] = useState(false);
+  const replyTimeoutRef = useRef(null);
+
+  useEffect(() => () => {
+    if (replyTimeoutRef.current) {
+      window.clearTimeout(replyTimeoutRef.current);
+    }
+  }, []);
 
   const whatsappLink = useMemo(() => {
     const message = encodeURIComponent(
@@ -111,9 +118,10 @@ export default function WhatsAppChatWidget() {
     setInput("");
     setIsTyping(true);
 
-    window.setTimeout(() => {
+    replyTimeoutRef.current = window.setTimeout(() => {
       setMessages((prev) => [...prev, { role: "bot", intent }]);
       setIsTyping(false);
+      replyTimeoutRef.current = null;
     }, 500);
   };
 
