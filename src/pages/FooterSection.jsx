@@ -2,9 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import logoImg from "../assets/footer-logo-circle-v3.png";
+import { useLanguage } from "../context/LanguageContext";
 
 
 export default function FooterSection() {
+  const { lang } = useLanguage();
   return (
     <footer className="w-full bg-[#002344] text-white pt-24 pb-12 relative overflow-hidden font-sans border-t border-[#003366]">
       {/* Background patterns */}
@@ -24,9 +26,48 @@ export default function FooterSection() {
               />
             </Link>
             <p className="text-zinc-400 leading-relaxed font-medium text-sm max-w-sm">
-              Empowering communities through education, health, and creative development. We are committed to grassroots governance and sustainable impact.
-              <span className="block text-xs text-zinc-500 mt-3 font-hindi opacity-70">समुदायों को सशक्त बनाना और यह सुनिश्चित करना कि हर बच्चे की शिक्षा, स्वास्थ्य और रचनात्मक बचपन तक पहुँच हो।</span>
+              {lang === "en"
+                ? "Empowering communities through education, health, and creative development. We are committed to grassroots governance and sustainable impact."
+                : "शिक्षा, स्वास्थ्य और रचनात्मक विकास के माध्यम से समुदायों को सशक्त बनाना हमारा संकल्प है। हम जमीनी स्तर पर टिकाऊ बदलाव के लिए काम करते हैं।"}
+              <span className="block text-xs text-zinc-500 mt-3 font-hindi opacity-70">{lang === "en" ? "समुदायों को सशक्त बनाना और यह सुनिश्चित करना कि हर बच्चे की शिक्षा, स्वास्थ्य और रचनात्मक बचपन तक पहुँच हो।" : "Empowering communities and ensuring that every child has access to education, health and a creative childhood."}</span>
             </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-md">
+              {[
+                ...(lang === "en"
+                  ? [
+                      "Since 2013: Seva, Satya aur Samarpan",
+                      "Every Donation = Direct Grassroots Impact",
+                      "CSR + Community = Sustainable Bharat",
+                      "Join Us: Volunteer • Donate • Partner",
+                    ]
+                  : [
+                      "2013 से: सेवा, सत्य और समर्पण",
+                      "हर दान = जमीनी बदलाव",
+                      "CSR + समुदाय = सतत भारत",
+                      "जुड़ें: वॉलंटियर • दान • साझेदारी",
+                    ])
+              ].map((line) => (
+                <p key={line} className="text-[11px] text-zinc-300 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+                  {line}
+                </p>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link
+                to="/Donate"
+                className="px-4 py-2 rounded-lg bg-[#fb8500] text-white text-xs font-bold tracking-wide hover:bg-[#ff9800] transition-colors"
+              >
+                Donate Now
+              </Link>
+              <Link
+                to="/CSRPartnership"
+                className="px-4 py-2 rounded-lg border border-white/20 text-white text-xs font-bold tracking-wide hover:bg-white/10 transition-colors"
+              >
+                CSR Partnership
+              </Link>
+            </div>
 
             {/* Socials */}
             <div className="flex items-center gap-3 pt-2">
@@ -74,6 +115,12 @@ export default function FooterSection() {
                 <li><Link to="/UpcomingProjects" className="hover:text-[#fb8500] transition-colors">Projects</Link></li>
                 <li><Link to="/Media" className="hover:text-[#fb8500] transition-colors">Media Gallery</Link></li>
               </ul>
+              <div className="space-y-2">
+                <p className="text-[10px] uppercase tracking-wider text-zinc-500">Featured Videos</p>
+                <a href="https://youtu.be/uF7rXdsHm0o?si=aIugOn4bzbXtTDMq" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">YouTube Story Film</a>
+                <a href="https://youtube.com/shorts/OqG3OxA8P_Q?si=KBYHwg7mW1sZ7KOI" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">YouTube Short 01</a>
+                <a href="https://youtube.com/shorts/COq-OKNz1ds?si=rpqN-jUVK2EgaHGl" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">YouTube Short 02</a>
+              </div>
             </div>
 
             {/* Column 3 */}

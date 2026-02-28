@@ -558,5 +558,64 @@ People who could never even think that they would have a home in their name, tod
 
         “हम हर उस बच्चे के साथ हैं, जो सीखने की राह पर है, चाहे मुश्किलें कितनी भी बड़ी क्यों न हों।”`
         }
-    }
+    },
+
+    {
+        img: "/images/real/student-leadership-recitation.jpg",
+        category: "EDUCATION",
+        title: {
+            en: "Evening Learning Circles for Rural Children",
+            hi: "ग्रामीण बच्चों के लिए सायंकालीन लर्निंग सर्कल"
+        },
+        desc: {
+            en: "Since 2013, SSF volunteers have run neighborhood study circles so children who miss school support can still continue learning with dignity.",
+            hi: "2013 से एसएसएफ स्वयंसेवक पड़ोस आधारित अध्ययन केंद्र चला रहे हैं ताकि जिन बच्चों को स्कूल के बाद सहायता नहीं मिलती, वे सम्मान के साथ पढ़ाई जारी रख सकें।"
+        },
+        link: "#",
+        content: {
+            en: `In several low-income pockets, children return from school without books, guidance, or quiet spaces to learn. Parents are often daily-wage workers and cannot provide academic support after long work hours.
+
+Swastik Srijan Foundation started evening learning circles where volunteers teach foundational reading, maths, and confidence-building activities. Sessions also include basic digital awareness and value-based learning.
+
+This model is simple but powerful: local mentors, regular attendance, and compassionate follow-up with families. Over the years, many children moved from irregular schooling to stable academic progress.
+
+This story reflects SSF's core belief — no child should be left behind because of economic barriers.`,
+            hi: `कई निम्न-आय बस्तियों में बच्चे स्कूल से लौटने के बाद किताब, मार्गदर्शन और शांत अध्ययन वातावरण से वंचित रह जाते हैं। माता-पिता अक्सर दिहाड़ी मजदूर होते हैं और लंबे काम के बाद पढ़ाई में मदद नहीं कर पाते।
+
+स्वास्तिक सृजन फाउंडेशन ने सायंकालीन लर्निंग सर्कल शुरू किए, जहां स्वयंसेवक बच्चों को बुनियादी पढ़ना, गणित और आत्मविश्वास बढ़ाने वाली गतिविधियां सिखाते हैं। सत्रों में डिजिटल जागरूकता और मूल्य आधारित शिक्षा भी शामिल रहती है।
+
+यह मॉडल सरल लेकिन प्रभावी है: स्थानीय मेंटर, नियमित उपस्थिति और परिवारों के साथ संवेदनशील फॉलो-अप। वर्षों में कई बच्चे अनियमित पढ़ाई से नियमित शैक्षणिक प्रगति तक पहुंचे।
+
+यह कहानी एसएसएफ के मूल विश्वास को दर्शाती है — आर्थिक कठिनाई के कारण कोई बच्चा पीछे न छूटे।`
+        }
+    },
+    {
+        img: "/images/real/medical-support-effort.jpg",
+        category: "COMMUNITY HEALTH",
+        title: {
+            en: "Grassroots Health & Dignity Support Camps",
+            hi: "जमीनी स्वास्थ्य और सम्मान सहायता शिविर"
+        },
+        desc: {
+            en: "Community-driven health support camps connected families with basic checkups, hygiene guidance, and referral support in underserved localities.",
+            hi: "समुदाय-आधारित स्वास्थ्य सहायता शिविरों ने वंचित बस्तियों में परिवारों को बेसिक जांच, स्वच्छता मार्गदर्शन और रेफरल सहायता से जोड़ा।"
+        },
+        link: "#",
+        content: {
+            en: `A major challenge in many communities is not just treatment cost, but delayed awareness. Small symptoms are ignored until they become serious.
+
+SSF organized periodic grassroots support camps with local health workers and volunteers. Families received basic screenings, menstrual hygiene awareness, nutrition counselling, and guidance on when to seek clinical care.
+
+Special focus was given to women, adolescent girls, and elderly citizens who often delay care due to social hesitation or financial constraints. Volunteers also helped with referral pathways to nearby public health services.
+
+These camps became spaces of trust — where people were heard respectfully and guided without judgment. This is how humane development truly begins.`,
+            hi: `कई समुदायों में बड़ी चुनौती केवल इलाज की लागत नहीं, बल्कि समय पर जागरूकता का अभाव है। छोटी समस्याओं को नजरअंदाज किया जाता है और वे गंभीर रूप ले लेती हैं।
+
+एसएसएफ ने स्थानीय स्वास्थ्य कार्यकर्ताओं और स्वयंसेवकों के साथ समय-समय पर जमीनी सहायता शिविर आयोजित किए। परिवारों को बेसिक जांच, मासिक धर्म स्वच्छता जागरूकता, पोषण परामर्श और क्लीनिकल देखभाल की जरूरत समझने का मार्गदर्शन मिला।
+
+विशेष ध्यान महिलाओं, किशोरियों और बुजुर्गों पर रहा, जो सामाजिक संकोच या आर्थिक कारणों से इलाज टाल देते हैं। स्वयंसेवकों ने नजदीकी सार्वजनिक स्वास्थ्य सेवाओं तक रेफरल में भी मदद की।
+
+ये शिविर भरोसे के केंद्र बने — जहां लोगों की बात सम्मान से सुनी गई और बिना भेदभाव मार्गदर्शन दिया गया। यही मानवीय विकास की असली शुरुआत है।`
+        }
+    },
 ];
