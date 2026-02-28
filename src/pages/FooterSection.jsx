@@ -2,9 +2,11 @@ import { Link } from "@tanstack/react-router";
 import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import logoImg from "../assets/footer-logo-circle-v3.png";
+import { useLanguage } from "../context/LanguageContext";
 
 
 export default function FooterSection() {
+  const { lang } = useLanguage();
   return (
     <footer className="w-full bg-[#002344] text-white pt-24 pb-12 relative overflow-hidden font-sans border-t border-[#003366]">
       {/* Background patterns */}
@@ -24,9 +26,48 @@ export default function FooterSection() {
               />
             </Link>
             <p className="text-zinc-400 leading-relaxed font-medium text-sm max-w-sm">
-              Empowering communities through education, health, and creative development. We are committed to grassroots governance and sustainable impact.
-              <span className="block text-xs text-zinc-500 mt-3 font-hindi opacity-70">समुदायों को सशक्त बनाना और यह सुनिश्चित करना कि हर बच्चे की शिक्षा, स्वास्थ्य और रचनात्मक बचपन तक पहुँच हो।</span>
+              {lang === "en"
+                ? "Empowering communities through education, health, and creative development. We are committed to grassroots governance and sustainable impact."
+                : "शिक्षा, स्वास्थ्य और रचनात्मक विकास के माध्यम से समुदायों को सशक्त बनाना हमारा संकल्प है। हम जमीनी स्तर पर टिकाऊ बदलाव के लिए काम करते हैं।"}
+              <span className="block text-xs text-zinc-500 mt-3 font-hindi opacity-70">{lang === "en" ? "समुदायों को सशक्त बनाना और यह सुनिश्चित करना कि हर बच्चे की शिक्षा, स्वास्थ्य और रचनात्मक बचपन तक पहुँच हो।" : "Empowering communities and ensuring that every child has access to education, health and a creative childhood."}</span>
             </p>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-md">
+              {[
+                ...(lang === "en"
+                  ? [
+                      "Since 2013: Seva, Satya aur Samarpan",
+                      "Every Donation = Direct Grassroots Impact",
+                      "CSR + Community = Sustainable Bharat",
+                      "Join Us: Volunteer • Donate • Partner",
+                    ]
+                  : [
+                      "2013 से: सेवा, सत्य और समर्पण",
+                      "हर दान = जमीनी बदलाव",
+                      "CSR + समुदाय = सतत भारत",
+                      "जुड़ें: वॉलंटियर • दान • साझेदारी",
+                    ])
+              ].map((line) => (
+                <p key={line} className="text-[11px] text-zinc-300 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
+                  {line}
+                </p>
+              ))}
+            </div>
+
+            <div className="flex flex-wrap gap-3 pt-1">
+              <Link
+                to="/Donate"
+                className="px-4 py-2 rounded-lg bg-[#fb8500] text-white text-xs font-bold tracking-wide hover:bg-[#ff9800] transition-colors"
+              >
+                Donate Now
+              </Link>
+              <Link
+                to="/CSRPartnership"
+                className="px-4 py-2 rounded-lg border border-white/20 text-white text-xs font-bold tracking-wide hover:bg-white/10 transition-colors"
+              >
+                CSR Partnership
+              </Link>
+            </div>
 
             {/* Socials */}
             <div className="flex items-center gap-3 pt-2">
@@ -74,6 +115,12 @@ export default function FooterSection() {
                 <li><Link to="/UpcomingProjects" className="hover:text-[#fb8500] transition-colors">Projects</Link></li>
                 <li><Link to="/Media" className="hover:text-[#fb8500] transition-colors">Media Gallery</Link></li>
               </ul>
+              <div className="space-y-2">
+                <p className="text-[10px] uppercase tracking-wider text-zinc-500">Featured Videos</p>
+                <a href="https://youtu.be/uF7rXdsHm0o?si=aIugOn4bzbXtTDMq" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">YouTube Story Film</a>
+                <a href="https://youtube.com/shorts/OqG3OxA8P_Q?si=KBYHwg7mW1sZ7KOI" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">YouTube Short 01</a>
+                <a href="https://youtube.com/shorts/COq-OKNz1ds?si=rpqN-jUVK2EgaHGl" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">YouTube Short 02</a>
+              </div>
             </div>
 
             {/* Column 3 */}
@@ -106,6 +153,54 @@ export default function FooterSection() {
               </ul>
             </div>
 
+          </div>
+        </div>
+
+
+        <div className="mb-14 rounded-3xl border border-white/10 bg-white/[0.03] p-6 md:p-8">
+          <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-6">
+            <div>
+              <p className="text-[11px] uppercase tracking-[0.2em] text-[#fb8500] font-bold">{lang === "en" ? "National Call" : "राष्ट्रीय आह्वान"}</p>
+              <h3 className="text-2xl md:text-3xl font-bold text-white mt-2">
+                {lang === "en"
+                  ? "Bharat Impact Alliance: Citizens + Corporate + Government"
+                  : "भारत प्रभाव गठबंधन: नागरिक + कॉर्पोरेट + सरकार"}
+              </h3>
+            </div>
+            <Link
+              to="/GetInvolved"
+              className="inline-flex items-center justify-center px-5 py-2.5 rounded-xl bg-[#fb8500] text-white text-sm font-bold hover:bg-[#ff9800] transition-colors"
+            >
+              {lang === "en" ? "Join The Movement" : "अभियान से जुड़ें"}
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                title: lang === "en" ? "Aam Aadmi" : "आम नागरिक",
+                text: lang === "en"
+                  ? "Volunteer 2 hours/week, spread awareness, and sponsor one child or one family support kit."
+                  : "हर हफ्ते 2 घंटे सेवा दें, जागरूकता फैलाएं और एक बच्चे या एक परिवार सहायता किट का सहयोग करें।",
+              },
+              {
+                title: lang === "en" ? "Corporate & CSR" : "कॉर्पोरेट और CSR",
+                text: lang === "en"
+                  ? "Co-create measurable projects in education, health, skilling and livelihood with transparent reporting."
+                  : "शिक्षा, स्वास्थ्य, कौशल और आजीविका में मापनीय परियोजनाएं पारदर्शी रिपोर्टिंग के साथ मिलकर चलाएं।",
+              },
+              {
+                title: lang === "en" ? "Government & Institutions" : "सरकार और संस्थान",
+                text: lang === "en"
+                  ? "Partner for last-mile implementation, citizen outreach, and scalable public-impact initiatives."
+                  : "लास्ट-माइल क्रियान्वयन, जन-जागरूकता और बड़े स्तर के जन-हित कार्यक्रमों के लिए साझेदारी करें।",
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl bg-[#001d39] border border-white/10 p-4">
+                <p className="text-white font-bold mb-2">{item.title}</p>
+                <p className="text-xs text-zinc-300 leading-relaxed">{item.text}</p>
+              </div>
+            ))}
           </div>
         </div>
 

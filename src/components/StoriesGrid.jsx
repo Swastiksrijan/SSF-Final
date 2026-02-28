@@ -1,10 +1,12 @@
 import { useState } from "react";
-import { Link } from "@tanstack/react-router";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaArrowRight, FaTimes, FaGlobe } from "react-icons/fa";
+import { motion } from "framer-motion";
+import { FaArrowRight } from "react-icons/fa";
 import { Languages } from "lucide-react";
 import { stories } from "../data/stories";
 import StoryModal from "./StoryModal";
+import { useLanguage } from "../context/LanguageContext";
+
+const FALLBACK_STORY_IMAGE = "/images/real/foundation_banner.jpg";
 
 const CardContent = ({ story, lang }) => (
     <>
@@ -14,7 +16,11 @@ const CardContent = ({ story, lang }) => (
                 <img
                     src={story.img}
                     alt={story.title[lang] || story.title.en}
-                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                    loading="lazy"
+                    onError={(e) => {
+                        e.currentTarget.src = FALLBACK_STORY_IMAGE;
+                    }}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700 saturate-105"
                 />
             ) : (
                 <div className="w-full h-full bg-zinc-200 flex items-center justify-center text-zinc-400">
@@ -48,11 +54,7 @@ const CardContent = ({ story, lang }) => (
 
 export default function StoriesGrid({ limit = null, hideHeader = false, stories: customStories = stories }) {
     const [selectedStory, setSelectedStory] = useState(null);
-    const [lang, setLang] = useState('en'); // 'en' or 'hi'
-
-    const toggleLang = () => {
-        setLang(prev => prev === 'en' ? 'hi' : 'en');
-    };
+    const { lang, toggleLang } = useLanguage();
 
     const displayedStories = limit ? customStories.slice(0, limit) : customStories;
 
@@ -61,6 +63,13 @@ export default function StoriesGrid({ limit = null, hideHeader = false, stories:
             {/* Header for the Grid Page - Only show if NO limit AND not hidden */}
             {!limit && !hideHeader && (
                 <div className="text-center mb-16 space-y-4">
+                    <button
+                        type="button"
+                        onClick={toggleLang}
+                        className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-zinc-200 text-[#002344] text-xs font-bold"
+                    >
+                        <Languages size={14} /> {lang === "en" ? "हिन्दी" : "English"}
+                    </button>
                     <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 text-[#fb8500] text-xs font-bold uppercase tracking-widest">
                         <span className="w-2 h-2 rounded-full bg-[#fb8500]"></span>
                         All Stories

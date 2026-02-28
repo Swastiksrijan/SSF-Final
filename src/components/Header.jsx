@@ -4,6 +4,7 @@ import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaUserCircle } from "react-icons/fa";
 import AuthModal from "./AuthModal";
+import { useLanguage } from "../context/LanguageContext";
 
 import logoImg from "../assets/Home-logo.png";
 
@@ -11,6 +12,7 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSubMenu, setMobileSubMenu] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const { lang, toggleLang } = useLanguage();
 
   const closeMenu = () => {
     setMenuOpen(false);
@@ -45,14 +47,6 @@ const Header = () => {
       name: "Get Involved",
       path: "/GetInvolved"
     },
-    {
-      name: "Login",
-      path: "/AdminPortal"
-    },
-    {
-      name: "Signup",
-      path: "/Members"
-    },
     { name: "Donate", path: "/Donate", isSpecial: true },
   ];
 
@@ -60,10 +54,10 @@ const Header = () => {
   return (
     <header className="fixed top-0 left-0 right-0 z-50 font-sans">
       {/* TOP BAR */}
-      <div className="bg-[#002344] text-white py-2 px-4 sm:px-6 block">
-        <div className="max-w-7xl mx-auto space-y-2">
-          <div className="flex flex-wrap items-center justify-center sm:justify-end gap-3 text-[11px] font-semibold text-white/90">
-            <span>📞 Contact Us:</span>
+      <div className="bg-[#002344] text-white py-2 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex items-center justify-end gap-3 sm:gap-4 text-[11px] sm:text-xs font-semibold text-white/90 whitespace-nowrap overflow-x-auto no-scrollbar">
+            <span>{lang === "en" ? "📞 Contact Us:" : "📞 संपर्क करें:"}</span>
             <a
               href="https://wa.me/919718346691"
               target="_blank"
@@ -72,40 +66,40 @@ const Header = () => {
             >
               WhatsApp: +91 9718346691
             </a>
-            <span className="hidden sm:inline text-white/30">|</span>
-            <span>Address: Rewa, Madhya Pradesh, India</span>
-          </div>
-
-          <div className="flex justify-center sm:justify-end items-center gap-4 sm:gap-6 flex-wrap">
+            <span className="text-white/30">|</span>
+            <span>{lang === "en" ? "Reg. Office: Rewa, Madhya Pradesh, India" : "पंजीकृत कार्यालय: रीवा, मध्य प्रदेश, भारत"}</span>
+            <span className="text-white/30">|</span>
             <a
               href="mailto:info@swastiksrijan.in"
-              className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
+              className="flex items-center gap-2 font-medium hover:text-[#FF6600] transition-colors"
             >
               <span className="opacity-70">📧</span> info@swastiksrijan.in
             </a>
-            <div className="w-px h-3 bg-white/20"></div>
+            <span className="text-white/30">|</span>
             <a
               href="https://swastiksrijan.in"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 text-xs font-medium hover:text-[#FF6600] transition-colors"
+              className="flex items-center gap-2 font-medium hover:text-[#FF6600] transition-colors"
             >
               <span className="opacity-70">🌐</span> swastiksrijan.in
             </a>
-            <div className="w-px h-3 bg-white/20"></div>
-            <Link
-              to="/AdminPortal"
-              className="flex items-center gap-2 text-xs font-semibold hover:text-[#FF6600] transition-colors"
+            <span className="text-white/30">|</span>
+            <button
+              type="button"
+              onClick={toggleLang}
+              className="px-2 py-0.5 rounded border border-white/20 text-[10px] sm:text-xs hover:text-[#FF6600] hover:border-[#FF6600]/50 transition-colors"
             >
-              <span className="opacity-70">🔐</span> Login
-            </Link>
-            <div className="w-px h-3 bg-white/20"></div>
-            <Link
-              to="/Members"
-              className="flex items-center gap-2 text-xs font-semibold hover:text-[#FF6600] transition-colors"
+              {lang === "en" ? "हिन्दी" : "English"}
+            </button>
+            <span className="text-white/30">|</span>
+            <button
+              type="button"
+              onClick={() => setAuthOpen(true)}
+              className="flex items-center gap-2 hover:text-[#FF6600] transition-colors"
             >
-              <span className="opacity-70">📝</span> Signup
-            </Link>
+              <FaUserCircle /> {lang === "en" ? "Signup / Login" : "साइनअप / लॉगिन"}
+            </button>
           </div>
         </div>
       </div>
@@ -159,13 +153,6 @@ const Header = () => {
               </div>
             ))}
 
-            <button
-              type="button"
-              onClick={() => setAuthOpen(true)}
-              className="flex items-center gap-2 text-[#002344] font-bold text-sm hover:text-[#FF6600]"
-            >
-              <FaUserCircle /> Signup / Login
-            </button>
           </nav>
 
           {/* MOBILE TOGGLE */}
@@ -190,7 +177,7 @@ const Header = () => {
               }}
               className="w-full mb-2 px-4 py-3 rounded-xl bg-[#002344] text-white font-semibold"
             >
-              Signup / Login
+              {lang === "en" ? "Signup / Login" : "साइनअप / लॉगिन"}
             </button>
 
             {navItems.map((item) => (
@@ -240,7 +227,7 @@ const Header = () => {
 
             {/* Mobile Contact Info */}
             <div className="pt-8 mt-4 border-t border-zinc-100">
-              <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">Contact Us</p>
+              <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">{lang === "en" ? "Contact Us" : "संपर्क"}</p>
               <div className="space-y-4">
                 <a href="mailto:info@swastiksrijan.in" className="flex items-center gap-3 text-[#002344] font-semibold">
                   <span className="bg-zinc-100 p-2 rounded-lg">📧</span>
@@ -263,10 +250,6 @@ const Header = () => {
                   <span className="bg-zinc-100 p-2 rounded-lg">📍</span>
                   Rewa, Madhya Pradesh, India
                 </div>
-                <Link to="/Members" onClick={closeMenu} className="flex items-center gap-3 text-[#002344] font-semibold">
-                  <span className="bg-zinc-100 p-2 rounded-lg">📝</span>
-                  Signup
-                </Link>
               </div>
             </div>
           </nav>
