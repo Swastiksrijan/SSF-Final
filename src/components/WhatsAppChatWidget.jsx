@@ -15,11 +15,25 @@ const COPY = {
       "Namaste 🙏 Welcome to Swastik Srijan Foundation. I'm here to help. You can ask about donations, CSR, volunteering, campaigns, or any other query.",
     headerTitle: "Swastik Srijan Foundation Support",
     headerSubtitle: "Auto-reply assistant + real team on WhatsApp",
+    inputPlaceholder: "Type your question...",
     sendLabel: "Send message",
     whatsappCta: "Start WhatsApp Chat",
     callCta: "Call Now",
-    fallback:
-      "Great question. Our team can give you a personalized response right away on WhatsApp. Click \"Start WhatsApp Chat\" below for real support.",
+    openSupportLabel: "Open WhatsApp support",
+    responses: {
+      donation:
+        "You can visit our Donate page to contribute. Every donation directly supports education, health, and livelihood projects. If you want, I can connect you with donor assistance on WhatsApp.",
+      csr:
+        "For CSR partnerships, we work on education, skilling, women empowerment, and rural development projects. You can explore the CSR Partnership page or request a project deck on WhatsApp.",
+      volunteer:
+        "Please open the Get Involved section for volunteering/internship. Our team will connect with you based on your profile and interests. You can also share details directly on WhatsApp.",
+      transparency:
+        "Transparency and trust are our priorities. Please check the Transparency page and registration details. We can also share official documents on WhatsApp.",
+      contact:
+        "You can call us directly at +91 9718346691, or use the WhatsApp button below for instant support.",
+      fallback:
+        "Great question. Our team can give you a personalized response right away on WhatsApp. Click \"Start WhatsApp Chat\" below for real support.",
+    },
   },
   hi: {
     quickQuestions: [
@@ -32,46 +46,52 @@ const COPY = {
       "नमस्ते 🙏 स्वास्तिक सृजन फाउंडेशन में आपका स्वागत है। मैं आपकी मदद के लिए हूँ। आप दान, CSR, वॉलंटियर, कैंपेन या किसी भी प्रश्न के बारे में पूछ सकते हैं।",
     headerTitle: "स्वास्तिक सृजन फाउंडेशन सहायता",
     headerSubtitle: "ऑटो-रिप्लाई सहायक + व्हाट्सऐप पर वास्तविक टीम",
+    inputPlaceholder: "अपना सवाल लिखें...",
     sendLabel: "संदेश भेजें",
     whatsappCta: "व्हाट्सऐप चैट शुरू करें",
     callCta: "अभी कॉल करें",
-    fallback:
-      "बहुत अच्छा प्रश्न है। इसका व्यक्तिगत उत्तर हमारी टीम आपको तुरंत व्हाट्सऐप पर देगी। नीचे \"व्हाट्सऐप चैट शुरू करें\" पर क्लिक करें।",
+    openSupportLabel: "व्हाट्सऐप सहायता खोलें",
+    responses: {
+      donation:
+        "दान करने के लिए आप हमारे Donate पेज पर जा सकते हैं। आपका हर योगदान शिक्षा, स्वास्थ्य और आजीविका परियोजनाओं में सीधे मदद करता है। चाहें तो मैं आपको व्हाट्सऐप पर डोनर सहायता से जोड़ सकता हूँ।",
+      csr:
+        "CSR साझेदारी के लिए हम शिक्षा, स्किलिंग, महिला सशक्तिकरण और ग्रामीण विकास परियोजनाओं पर काम करते हैं। आप CSR Partnership पेज देख सकते हैं या व्हाट्सऐप पर प्रोजेक्ट डेक मांग सकते हैं।",
+      volunteer:
+        "वॉलंटियर या इंटर्नशिप के लिए Get Involved सेक्शन खोलें। हमारी टीम आपकी प्रोफाइल और रुचि के अनुसार आपसे संपर्क करेगी। आप व्हाट्सऐप पर भी अपनी जानकारी भेज सकते हैं।",
+      transparency:
+        "पारदर्शिता और भरोसा हमारी प्राथमिकता है। कृपया Transparency पेज और पंजीकरण विवरण देखें। जरूरत हो तो हम व्हाट्सऐप पर आधिकारिक दस्तावेज भी साझा कर सकते हैं।",
+      contact:
+        "आप हमें सीधे +91 9718346691 पर कॉल कर सकते हैं, या तुरंत सहायता के लिए नीचे व्हाट्सऐप बटन का उपयोग करें।",
+      fallback:
+        "बहुत अच्छा प्रश्न है। इसका व्यक्तिगत उत्तर हमारी टीम आपको तुरंत व्हाट्सऐप पर देगी। नीचे \"व्हाट्सऐप चैट शुरू करें\" पर क्लिक करें।",
+    },
   },
 };
 
-function getBotReply(message, lang) {
+function getIntent(message) {
   const query = message.toLowerCase();
 
-  if (query.includes("donat") || query.includes("दान")) {
-    return "Donation ke liye aap Donate page par ja sakte hain. Aapka har yogdaan education, health aur livelihood projects mein direct impact banata hai. Agar chahen to main aapko WhatsApp par donor assistance se connect kar sakta hoon.";
-  }
+  if (query.includes("donat") || query.includes("दान")) return "donation";
+  if (query.includes("csr") || query.includes("corporate") || query.includes("साझेदारी")) return "csr";
+  if (query.includes("volunteer") || query.includes("intern") || query.includes("वॉलंटियर")) return "volunteer";
+  if (
+    query.includes("certificate") ||
+    query.includes("transparency") ||
+    query.includes("trust") ||
+    query.includes("सर्टिफिकेट") ||
+    query.includes("पारदर्शिता")
+  ) return "transparency";
+  if (query.includes("contact") || query.includes("phone") || query.includes("call") || query.includes("संपर्क") || query.includes("कॉल")) return "contact";
 
-  if (query.includes("csr") || query.includes("corporate")) {
-    return "CSR partnerships ke liye hum education, skilling, women empowerment aur rural development projects par kaam karte hain. Aap CSR Partnership page dekh sakte hain ya direct WhatsApp par project deck mang sakte hain.";
-  }
-
-  if (query.includes("volunteer") || query.includes("intern") || query.includes("वॉलंटियर")) {
-    return "Volunteer/Internship ke liye Get Involved section open karein. Team aapse profile aur interest ke basis par connect karegi. Aap WhatsApp par bhi details bhej sakte hain.";
-  }
-
-  if (query.includes("certificate") || query.includes("transparency") || query.includes("trust") || query.includes("सर्टिफिकेट") || query.includes("पारदर्शिता")) {
-    return "Transparency aur trust hamari priority hai. Aap Transparency page aur registration details check kar sakte hain. Zarurat ho to hum WhatsApp par official documents share kar denge.";
-  }
-
-  if (query.includes("contact") || query.includes("phone") || query.includes("call") || query.includes("संपर्क") || query.includes("कॉल")) {
-    return "Aap direct call kar sakte hain: +91 9718346691. Ya niche WhatsApp button se instantly connect ho jaiye.";
-  }
-
-  return COPY[lang].fallback;
+  return "fallback";
 }
 
 export default function WhatsAppChatWidget() {
   const [open, setOpen] = useState(false);
   const { lang } = useLanguage();
-  const copy = COPY[lang];
+  const copy = COPY[lang] ?? COPY.en;
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([{ role: "bot", text: copy.intro }]);
+  const [messages, setMessages] = useState([{ role: "bot", intent: "intro" }]);
   const [isTyping, setIsTyping] = useState(false);
 
   const whatsappLink = useMemo(() => {
@@ -85,14 +105,22 @@ export default function WhatsAppChatWidget() {
     const message = rawMessage.trim();
     if (!message || isTyping) return;
 
+    const intent = getIntent(message);
+
     setMessages((prev) => [...prev, { role: "user", text: message }]);
     setInput("");
     setIsTyping(true);
 
     window.setTimeout(() => {
-      setMessages((prev) => [...prev, { role: "bot", text: getBotReply(message, lang) }]);
+      setMessages((prev) => [...prev, { role: "bot", intent }]);
       setIsTyping(false);
     }, 500);
+  };
+
+  const getMessageText = (msg) => {
+    if (msg.role === "user") return msg.text;
+    if (msg.intent === "intro") return copy.intro;
+    return copy.responses[msg.intent] ?? copy.responses.fallback;
   };
 
   return (
@@ -114,7 +142,7 @@ export default function WhatsAppChatWidget() {
                     : "ml-auto bg-[#0b3a64] text-white"
                 }`}
               >
-                {msg.text}
+                {getMessageText(msg)}
               </div>
             ))}
             {isTyping && (
@@ -146,7 +174,7 @@ export default function WhatsAppChatWidget() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && sendMessage(input)}
-                placeholder={lang === "en" ? "Type your question..." : "अपना सवाल लिखें..."}
+                placeholder={copy.inputPlaceholder}
                 className="flex-1 h-9 rounded-lg border border-zinc-200 px-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#0b3a64]/20"
               />
               <button
@@ -183,7 +211,7 @@ export default function WhatsAppChatWidget() {
         type="button"
         onClick={() => setOpen((prev) => !prev)}
         className="h-14 w-14 rounded-full bg-[#25D366] text-white shadow-xl flex items-center justify-center hover:scale-105 transition-transform"
-        aria-label="Open WhatsApp support"
+        aria-label={copy.openSupportLabel}
       >
         {open ? <FaTimes className="text-xl" /> : <FaComments className="text-xl" />}
       </button>
