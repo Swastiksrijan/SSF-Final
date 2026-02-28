@@ -196,6 +196,34 @@ export default function UpcomingProjects() {
               ))}
             </div>
 
+
+            {/* LEARNING HUB ENHANCEMENTS */}
+            <div className="grid sm:grid-cols-2 gap-4 pt-2">
+              {[
+                {
+                  title: "Hybrid Learning Model",
+                  text: "Weekend offline sessions + weekday digital follow-up for continuity.",
+                },
+                {
+                  title: "Career Readiness Track",
+                  text: "Resume, interview, communication, and foundational workplace skills.",
+                },
+                {
+                  title: "Parent Connect Circles",
+                  text: "Monthly parent meetings to reduce dropout and improve learning consistency.",
+                },
+                {
+                  title: "Youth Leadership Clubs",
+                  text: "Public speaking, civic values, problem-solving, and community service tasks.",
+                },
+              ].map((item) => (
+                <div key={item.title} className="rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm">
+                  <p className="text-sm font-bold text-[#002344]">{item.title}</p>
+                  <p className="text-xs text-zinc-500 mt-1">{item.text}</p>
+                </div>
+              ))}
+            </div>
+
             {/* JOIN INFO */}
             <div className="pt-8 space-y-3">
               <p className="text-lg font-bold text-[#002344]">
@@ -333,6 +361,56 @@ export default function UpcomingProjects() {
           </div>
         </div>
       </section>
+
+      
+      {/* ================= GOVT SCHEMES AWARENESS ================= */}
+      <section className="py-24 px-6 bg-white border-t border-zinc-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center space-y-4 mb-12">
+            <span className="inline-block px-4 py-1.5 bg-[#002344] text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
+              Public Welfare Connect
+            </span>
+            <h2 className="text-3xl lg:text-5xl font-serif font-bold text-[#002344]">
+              Bharat Sarkar Yojna Awareness <span className="text-[#fb8500]">Support Desk</span>
+            </h2>
+            <p className="text-lg text-zinc-500 max-w-3xl mx-auto font-medium">
+              SSF Learning Hub mein hum economically vulnerable families ko yojnaye samajhne, eligibility check karne, aur application guidance dene ka support model build kar rahe hain.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {[
+              "PM Jan Dhan Yojana",
+              "Ayushman Bharat (PM-JAY)",
+              "PM Poshan / Mid-Day Meal",
+              "National Scholarship Portal (NSP)",
+              "PM Vishwakarma",
+              "Skill India / PMKVY",
+              "PM Ujjwala Yojana",
+              "PM Awas Yojana",
+              "Atal Pension Yojana",
+            ].map((scheme) => (
+              <div key={scheme} className="rounded-2xl border border-zinc-100 p-4 bg-[#f8f9fa] hover:bg-white transition-colors shadow-sm">
+                <p className="text-sm font-bold text-[#002344]">{scheme}</p>
+                <p className="text-xs text-zinc-500 mt-1">Awareness + documentation help + enrollment guidance through field support.</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <a
+              href={CONTACT_INFO.social.whatsapp}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <button className="px-10 py-4 bg-[#fb8500] text-white font-bold rounded-full hover:bg-[#e76f00] transition-colors shadow-lg">
+                Yojna Guidance on WhatsApp | योजना सहायता WhatsApp पर
+              </button>
+            </a>
+          </div>
+        </div>
+      </section>
+
 
             {/* ================= PROJECT DOCUMENT (OFFICIAL PROPOSAL) ================= */}
       <section className="py-24 px-6 relative overflow-hidden bg-zinc-50 border-t border-zinc-200">
