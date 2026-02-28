@@ -78,6 +78,86 @@ export default function UpcomingProjects() {
       </section>
 
 
+
+
+      {/* ================= BHARAT GRAM PARIVARTAN MISSION 2025 ================= */}
+      <section className="py-24 px-6 bg-[#f8f9fa] border-y border-zinc-100">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center space-y-4">
+            <span className="inline-block px-4 py-1.5 bg-[#002344] text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
+              Bharat Gram Parivartan Mission – 2025
+            </span>
+            <h2 className="text-3xl lg:text-5xl font-serif font-bold text-[#002344]">
+              Rural Transformation with <span className="text-[#fb8500]">Jan Bhagidari</span>
+            </h2>
+            <p className="text-lg text-zinc-600 max-w-5xl mx-auto font-medium leading-relaxed">
+              Swastik Srijan Foundation (Reg. No. 11448/13), registered under MP Society Act (1973), has served for over a decade in education, health, women empowerment, youth development, environment and rural upliftment <strong>without govt/corporate funding</strong>.
+              <span className="block mt-2">अब “भारत ग्राम परिवर्तन मिशन – 2025” के तहत रीवा (म.प्र.) में पायलट शुरू कर, चरणबद्ध तरीके से पूरे देश तक विस्तार का लक्ष्य है।</span>
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-12 gap-8">
+            <div className="lg:col-span-7 bg-white rounded-3xl p-6 md:p-8 border border-zinc-100 shadow-sm space-y-5">
+              <h3 className="text-2xl font-bold text-[#002344]">Our Humble Request (No Financial Assistance Requested)</h3>
+              <ul className="space-y-3 text-zinc-600 font-medium">
+                {[
+                  "Formal recognition and administrative permission to launch mission activities",
+                  "Coordination support from relevant ministries/departments",
+                  "Approval to begin pilot implementation in Rewa district before national rollout",
+                ].map((item) => (
+                  <li key={item} className="flex gap-3">
+                    <FaCheckCircle className="text-[#2d6a4f] mt-1" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+
+              <div className="pt-2">
+                <h4 className="text-lg font-bold text-[#002344] mb-2">Assurance by SSF</h4>
+                <div className="grid sm:grid-cols-2 gap-3">
+                  {[
+                    "Full transparency with digital monitoring",
+                    "Local community participation for sustainability",
+                    "Alignment with existing government schemes",
+                    "Scalable, measurable and replicable model",
+                  ].map((point) => (
+                    <p key={point} className="text-sm text-zinc-600 bg-zinc-50 border border-zinc-100 rounded-xl px-4 py-3">{point}</p>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div className="lg:col-span-5 bg-[#002344] text-white rounded-3xl p-6 md:p-8 space-y-4">
+              <h3 className="text-2xl font-bold">Mission Objectives | मिशन के उद्देश्य</h3>
+              <div className="grid grid-cols-1 gap-3 text-sm">
+                {[
+                  "Education + govt scheme implementation + anti-corruption awareness",
+                  "Women & child welfare, nutrition and safety awareness",
+                  "Organic farming, environment conservation and tree plantation",
+                  "Health, hygiene, mental wellness, de-addiction awareness",
+                  "Skill development and self-employment for women & youth",
+                  "Animal husbandry and agriculture-based rural economy support",
+                  "Social unity beyond caste/religion with cultural harmony",
+                  "Sports, science fairs, youth leadership and nation-building values",
+                ].map((obj) => (
+                  <div key={obj} className="rounded-xl border border-white/15 bg-white/10 px-4 py-3">
+                    {obj}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="text-center">
+            <a href={CONTACT_INFO.social.whatsapp} target="_blank" rel="noopener noreferrer">
+              <button className="px-10 py-4 bg-[#fb8500] text-white font-bold rounded-full hover:bg-[#e76f00] transition-colors shadow-lg">
+                Support Mission Launch (Coordination / Material / Volunteer)
+              </button>
+            </a>
+          </div>
+        </div>
+      </section>
+
             {/* ================= 1. SCHOOL DONATION APPEAL ================= */}
       <section className="py-32 px-6 bg-white">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
