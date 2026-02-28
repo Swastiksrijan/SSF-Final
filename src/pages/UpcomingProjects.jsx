@@ -79,7 +79,69 @@ export default function UpcomingProjects() {
 
 
 
-      {/* ================= BHARAT GRAM PARIVARTAN MISSION 2025 ================= */}
+
+
+      {/* ================= FOUNDATIONAL FACTS (PERMANENT) ================= */}
+      <section className="py-20 px-6 bg-white border-b border-zinc-100">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center space-y-4">
+            <span className="inline-flex px-4 py-1.5 rounded-full bg-[#002344] text-white text-[10px] font-bold uppercase tracking-widest">
+              Institutional Foundation
+            </span>
+            <h2 className="text-3xl lg:text-5xl font-serif font-bold text-[#002344]">
+              Mission • Vision • Core Values <span className="text-[#fb8500]">(Permanent Guiding Facts)</span>
+            </h2>
+            <p className="text-lg text-zinc-600 font-medium max-w-5xl mx-auto">
+              Swastik Srijan Foundation (Reg. No. 11448/13), registered under MP Society Act (1973), has served for over a decade without dependence on government grants or CSR funding.
+              <span className="block mt-2">स्वास्तिक सृजन फाउंडेशन (पंजीयन क्रमांक 11448/13) एक दशक से अधिक समय से सेवा, पारदर्शिता और जनभागीदारी के साथ कार्यरत है।</span>
+            </p>
+          </div>
+
+          <div className="grid lg:grid-cols-3 gap-6">
+            <div className="rounded-3xl border border-zinc-100 bg-[#f8f9fa] p-6 space-y-4">
+              <h3 className="text-2xl font-bold text-[#002344]">Mission | ध्येय</h3>
+              <ul className="space-y-2 text-sm text-zinc-600 font-medium">
+                <li>• Empower marginalized communities through education, health & livelihood.</li>
+                <li>• Ensure dignity and protection of women, children, differently-abled and seniors.</li>
+                <li>• Promote sustainable development, ethics, and transparent collaboration.</li>
+              </ul>
+              <p className="text-xs text-zinc-500">शिक्षा, स्वास्थ्य, आजीविका, गरिमा, पारदर्शिता और जनकल्याणकारी साझेदारी हमारा ध्येय है।</p>
+            </div>
+
+            <div className="rounded-3xl border border-zinc-100 bg-[#f8f9fa] p-6 space-y-4">
+              <h3 className="text-2xl font-bold text-[#002344]">Vision | दृष्टि</h3>
+              <p className="text-sm text-zinc-600 font-medium leading-relaxed">
+                To build an inclusive, ethical and empowered society where every individual has access to education, health, dignity, opportunities and a secure future — contributing to nation-building and global well-being.
+              </p>
+              <p className="text-xs text-zinc-500 leading-relaxed">
+                समावेशी, नैतिक और सशक्त समाज का निर्माण — जहाँ विकास अंतिम व्यक्ति तक पहुँचे और राष्ट्र निर्माण से वैश्विक कल्याण का मार्ग बने।
+              </p>
+            </div>
+
+            <div className="rounded-3xl border border-zinc-100 bg-[#f8f9fa] p-6 space-y-4">
+              <h3 className="text-2xl font-bold text-[#002344]">Core Values | मूल मूल्य</h3>
+              <div className="grid grid-cols-2 gap-2 text-xs font-semibold text-zinc-600">
+                {[
+                  "Service", "Human Dignity", "Ethics", "Inclusion",
+                  "Empowerment", "Social Harmony", "National Duty", "Environmental Responsibility"
+                ].map((value) => (
+                  <div key={value} className="px-3 py-2 rounded-lg bg-white border border-zinc-100">{value}</div>
+                ))}
+              </div>
+              <p className="text-xs text-zinc-500">सेवा कोई दया नहीं, कर्तव्य है — और विकास का लक्ष्य आत्मनिर्भरता व समरसता है।</p>
+            </div>
+          </div>
+
+          <div className="rounded-3xl bg-[#002344] text-white p-6 md:p-8">
+            <h4 className="text-xl md:text-2xl font-bold mb-3">COVID-19 Ground Service Legacy</h4>
+            <p className="text-sm text-zinc-200 leading-relaxed">
+              During the pandemic, SSF supported vulnerable families with masks, sanitizers, food relief, emergency coordination, and migrant support across Madhya Pradesh, Maharashtra, UP and Delhi-NCR — driven by duty, not publicity.
+            </p>
+          </div>
+        </div>
+      </section>
+
+            {/* ================= BHARAT GRAM PARIVARTAN MISSION 2025 ================= */}
       <section className="py-24 px-6 bg-[#f8f9fa] border-y border-zinc-100">
         <div className="max-w-7xl mx-auto space-y-10">
           <div className="text-center space-y-4">
