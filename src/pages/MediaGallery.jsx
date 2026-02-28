@@ -526,38 +526,8 @@ const YOUTUBE_VIDEOS = [
     title: "Community Awareness Programs",
     desc: "Engaging with locals to create meaningful social change.",
     category: "Awareness"
-  },
-  {
-    id: "IXLbvE6qL6Q",
-    title: "Growth and Development Milestones",
-    desc: "Chronicling our journey and the milestones achieved over the years.",
-    category: "Journey"
-  },
-  {
-    id: "_02EXsLLs50",
-    title: "Sustainable Living Initiatives",
-    desc: "Promoting environment-friendly practices and green living.",
-    category: "Sustainability"
-  },
-  {
-    id: "qrH-HK1ZbcA",
-    title: "Voices of Change",
-    desc: "Direct testimonials from our beneficiaries and volunteers.",
-    category: "Impact"
-  },
-  {
-    id: "vDLLP-45GJE",
-    title: "Future of Digital Learning",
-    desc: "How we are bridging the digital divide in rural India.",
-    category: "Education"
-  },
-  {
-    id: "Xl2oPiQHVQo",
-    title: "Transformative Power of Support",
-    desc: "A thank you to our partners and the difference they help us make.",
-    category: "Partnership"
   }
-];
+]
 
 export default function MediaGallery() {
   const [activeCategory, setActiveCategory] = useState("All");
@@ -716,7 +686,7 @@ export default function MediaGallery() {
             <FaEye className="inline-block mr-2" /> Watch Our Impact
           </div>
           <h2 className="text-4xl md:text-5xl font-black text-[#002344]">Video <span className="text-[#fb8500]">Highlights</span></h2>
-          <p className="text-zinc-500 max-w-2xl mx-auto mt-4 text-lg">A collection of stories, events, and initiatives captured in motion.</p>
+          <p className="text-zinc-500 max-w-2xl mx-auto mt-4 text-lg">A curated collection of verified stories, events, and initiatives captured in motion.</p>
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 xl:gap-12">
@@ -729,6 +699,8 @@ export default function MediaGallery() {
                 scrolling="no"
                 allowFullScreen={true}
                 allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
+                loading="lazy"
+                referrerPolicy="strict-origin-when-cross-origin"
                 title="SSF Legacy Video"
               ></iframe>
             </div>
@@ -752,6 +724,8 @@ export default function MediaGallery() {
                   title={video.title}
                   className="absolute inset-0 w-full h-full border-0"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  loading="lazy"
+                  referrerPolicy="strict-origin-when-cross-origin"
                   allowFullScreen
                 ></iframe>
               </div>
