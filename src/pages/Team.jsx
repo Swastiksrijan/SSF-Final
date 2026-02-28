@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
 
 const governingBody = [
   { name: "Mr. Ramesh Pandey", role: "Founder & National President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
@@ -60,6 +61,36 @@ export default function Team() {
         </div>
       </section>
 
+
+
+      {/* ================= TEAM STRUCTURE NOTE ================= */}
+      <section className="py-14 px-6 bg-white border-b border-zinc-100">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-12 gap-8 items-start">
+          <div className="lg:col-span-8 space-y-4">
+            <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#fb8500]">Team Governance Note</p>
+            <h2 className="text-2xl md:text-4xl font-serif font-bold text-[#002344]">How We Present Our Team | हमारी टीम प्रस्तुति नीति</h2>
+            <p className="text-zinc-600 font-medium leading-relaxed">
+              Public pages should highlight <strong>core leadership and accountable roles</strong> in About/overview, while the complete working roster belongs on this Team page.
+              This keeps the message clean for visitors and transparent for stakeholders.
+              <span className="block mt-2">हमारा सुझाव: About page में मुख्य नेतृत्व का संक्षिप्त परिचय रखें, और विस्तृत सदस्य सूची Team page पर रखें।</span>
+            </p>
+          </div>
+
+          <div className="lg:col-span-4 rounded-3xl bg-[#f8f9fa] border border-zinc-100 p-5 space-y-3">
+            <p className="text-sm font-bold text-[#002344]">Current Team Footprint</p>
+            <ul className="space-y-2 text-sm text-zinc-600 font-medium">
+              <li>• Governing Body: {governingBody.length} members</li>
+              <li>• Management Team: {managementTeam.length} members</li>
+              <li>• Regional Leadership: {regionalLeadership.length} members</li>
+              <li>• Advisory Board: {advisoryBoard.length} members</li>
+              <li>• Volunteers: {volunteersTeam.length} members</li>
+            </ul>
+            <Link to="/Volunteer" className="inline-block mt-2 px-4 py-2 rounded-lg bg-[#002344] text-white text-xs font-bold hover:bg-[#fb8500] transition-colors">
+              Join Team / Volunteer
+            </Link>
+          </div>
+        </div>
+      </section>
 
 
       {/* ================= MANAGEMENT & OPERATIONS ================= */}
