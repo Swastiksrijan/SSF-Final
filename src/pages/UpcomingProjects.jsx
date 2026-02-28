@@ -19,7 +19,66 @@ export default function UpcomingProjects() {
         hindiSubtitle="भविष्य का निर्माण - 2026 और उससे आगे की हमारी दृष्टि।"
       />
 
-      {/* ================= 1. SCHOOL DONATION APPEAL ================= */}
+
+      {/* ================= LEARNING ACADEMY FUND APPEAL (PRIORITY) ================= */}
+      <section className="py-20 px-6 bg-gradient-to-br from-[#001529] via-[#002344] to-[#003a66] text-white border-y border-white/10">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid lg:grid-cols-12 gap-10 items-center">
+            <div className="lg:col-span-8 space-y-6">
+              <span className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#fb8500] text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
+                Top Priority Appeal
+              </span>
+              <h2 className="text-3xl lg:text-5xl font-serif font-bold leading-tight">
+                SSF Learning Academy Fund Drive <span className="text-[#fb8500]">| शिक्षा से सशक्त भारत</span>
+              </h2>
+              <p className="text-lg text-zinc-200 leading-relaxed font-medium max-w-4xl">
+                SSF Learning Academy abhi planning stage par hai aur isko shuru karne ke liye funding sabse zaroori hai. Phase-1 launch ka target <strong>Rewa & Satna (Madhya Pradesh)</strong> hai; phir is model ko dhire-dhire desh bhar me scale kiya jayega.
+                <span className="block mt-2">योजना शुरू करने के लिए तत्काल आर्थिक सहयोग, शैक्षणिक सामग्री, डिजिटल उपकरण, फर्नीचर और स्वयंसेवी विशेषज्ञों का योगदान आवश्यक है।</span>
+              </p>
+
+              <div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-3">
+                {[
+                  "Monetary Donations (One-time/Monthly)",
+                  "Books, Notebooks & Learning Kits",
+                  "Computers, Projectors, Digital Devices",
+                  "Furniture, Sports & Lab Materials",
+                ].map((item) => (
+                  <div key={item} className="rounded-xl bg-white/10 border border-white/15 px-4 py-3 text-sm font-semibold text-zinc-100">
+                    {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="lg:col-span-4 bg-white/10 border border-white/15 rounded-3xl p-6 space-y-4 backdrop-blur-sm">
+              <p className="text-xs uppercase tracking-widest text-[#fb8500] font-bold">Act Now</p>
+              <p className="text-sm text-zinc-200 leading-relaxed">
+                Aaj ki funding kal ka rashtriya education model ban sakti hai. Youth ko quality education milegi to Bharat aur majboot banega.
+              </p>
+              <div className="flex flex-col gap-3">
+                <a href={CONTACT_INFO.social.razorpay} target="_blank" rel="noopener noreferrer">
+                  <button className="w-full px-5 py-3 rounded-xl bg-[#fb8500] text-white font-bold hover:bg-[#e76f00] transition-colors">
+                    Donate for Academy Launch
+                  </button>
+                </a>
+                <a href={CONTACT_INFO.social.whatsapp} target="_blank" rel="noopener noreferrer">
+                  <button className="w-full px-5 py-3 rounded-xl border border-white/20 text-white font-bold hover:bg-white/10 transition-colors">
+                    Fund / Material Support on WhatsApp
+                  </button>
+                </a>
+                <Link to="/CSRPartnership">
+                  <button className="w-full px-5 py-3 rounded-xl bg-white text-[#002344] font-bold hover:bg-zinc-100 transition-colors">
+                    CSR / Institutional Partnership
+                  </button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+
+            {/* ================= 1. SCHOOL DONATION APPEAL ================= */}
       <section className="py-32 px-6 bg-white">
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-20 items-center">
           <div className="space-y-8">
