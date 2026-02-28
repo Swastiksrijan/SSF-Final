@@ -1,0 +1,25 @@
+name: Netlify Auto Deploy
+
+on:
+  push:
+    branches:
+      - main
+      - work
+  workflow_dispatch:
+
+jobs:
+  trigger-netlify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate build hook secret
+        run: |
+          if [ -z "${{ secrets.NETLIFY_BUILD_HOOK }}" ]; then
+            echo "NETLIFY_BUILD_HOOK secret is missing."
+            echo "Add your Netlify Build Hook URL in GitHub repo secrets as NETLIFY_BUILD_HOOK."
+            exit 1
+          fi
+
+      - name: Trigger Netlify deploy
+        run: |
+          curl -X POST -d '{}' "${{ secrets.NETLIFY_BUILD_HOOK }}"
+          echo "Netlify deploy trigger sent successfully."
