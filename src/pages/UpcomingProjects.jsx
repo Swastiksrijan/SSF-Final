@@ -229,7 +229,112 @@ export default function UpcomingProjects() {
           </motion.div>
         </div>
       </section>
-      {/* ================= PROJECT DOCUMENT (OFFICIAL PROPOSAL) ================= */}
+
+      {/* ================= UPCOMING PROJECT PIPELINE ================= */}
+      <section className="py-24 px-6 bg-[#f8f9fa] border-y border-zinc-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center space-y-4 mb-14">
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#002344] text-white text-[10px] font-bold uppercase tracking-widest">
+              2026-27 Project Pipeline
+            </span>
+            <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344]">
+              Upcoming Projects <span className="text-[#fb8500]">Across Bharat</span>
+            </h2>
+            <p className="text-lg text-zinc-500 font-medium max-w-3xl mx-auto">
+              Designed for citizens, CSR partners, and institutions — these projects are implementation-ready, impact-focused, and rooted in grassroots realities.
+              <span className="block mt-2">जनभागीदारी, CSR और संस्थागत सहयोग से 2026-27 में जमीन पर बदलाव लाने वाले प्रोजेक्ट्स।</span>
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+            {[
+              {
+                icon: FaBuilding,
+                title: "SSF National Academy – Phase 1",
+                timeline: "Q2 2026",
+                summary: "Classrooms, foundational labs, and scholarship-led access for underserved rural students.",
+                hindi: "ग्रामीण वंचित बच्चों के लिए कक्षाएं, बेसिक लैब और छात्रवृत्ति आधारित प्रवेश।",
+                impact: "800+ students/year",
+                status: "Land & design stage",
+              },
+              {
+                icon: FaHeartbeat,
+                title: "Mobile Health & Nutrition Units",
+                timeline: "Q3 2026",
+                summary: "Periodic village camps for women, children and elderly with referral support.",
+                hindi: "महिला, बच्चों और बुजुर्गों के लिए गांव-स्तरीय हेल्थ एवं पोषण कैम्प।",
+                impact: "25 villages, 12,000 beneficiaries",
+                status: "Medical partners onboarding",
+              },
+              {
+                icon: FaMicrochip,
+                title: "Digital Learning & Skills Labs",
+                timeline: "Q3–Q4 2026",
+                summary: "Computer labs, spoken English, digital basics, and employability modules.",
+                hindi: "कंप्यूटर लैब, स्पोकन इंग्लिश, डिजिटल बेसिक्स और रोजगार कौशल मॉड्यूल।",
+                impact: "2,000 youth learners",
+                status: "CSR proposal open",
+              },
+              {
+                icon: FaMapMarkedAlt,
+                title: "Water, Hygiene & Dignity Program",
+                timeline: "Q1 2027",
+                summary: "Community hygiene infrastructure and awareness drives in high-need areas.",
+                hindi: "उच्च-आवश्यकता वाले क्षेत्रों में स्वच्छता अवसंरचना और जागरूकता अभियान।",
+                impact: "40 habitations",
+                status: "District mapping in progress",
+              },
+              {
+                icon: FaHeart,
+                title: "Women Livelihood Circles",
+                timeline: "Q1–Q2 2027",
+                summary: "Tailoring, micro-enterprise mentoring, and market linkage support.",
+                hindi: "सिलाई, सूक्ष्म उद्यम मार्गदर्शन और बाजार से जोड़ने की सहायता।",
+                impact: "1,200 women",
+                status: "Pilot cluster finalization",
+              },
+              {
+                icon: FaArrowRight,
+                title: "Disaster Preparedness Volunteer Network",
+                timeline: "Monsoon 2027",
+                summary: "Rapid-response community teams trained for floods, heatwaves and emergencies.",
+                hindi: "बाढ़, हीटवेव और आपात स्थिति के लिए प्रशिक्षित त्वरित प्रतिक्रिया टीम।",
+                impact: "50 trained local response teams",
+                status: "Training curriculum ready",
+              },
+            ].map((project) => (
+              <motion.div
+                key={project.title}
+                whileHover={{ y: -6 }}
+                className="bg-white rounded-3xl p-6 border border-zinc-100 shadow-sm hover:shadow-xl transition-all"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-[#002344]/5 text-[#002344] flex items-center justify-center text-xl mb-4">
+                  <project.icon />
+                </div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-[#fb8500] mb-2">{project.timeline}</p>
+                <h3 className="text-xl font-bold text-[#002344] mb-3 leading-snug">{project.title}</h3>
+                <p className="text-sm text-zinc-600 font-medium leading-relaxed">{project.summary}</p>
+                <p className="text-xs text-zinc-500 mt-2">{project.hindi}</p>
+
+                <div className="mt-5 pt-4 border-t border-zinc-100 space-y-2">
+                  <p className="text-xs font-bold text-zinc-700">Projected Impact: <span className="text-[#2d6a4f]">{project.impact}</span></p>
+                  <p className="text-xs font-bold text-zinc-500">Status: {project.status}</p>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="mt-10 text-center">
+            <Link to="/Contact">
+              <button className="px-10 py-4 bg-[#002344] text-white font-bold rounded-full hover:bg-[#fb8500] transition-colors shadow-lg">
+                Co-Create a Project with SSF | SSF के साथ प्रोजेक्ट साझेदारी करें
+              </button>
+            </Link>
+          </div>
+        </div>
+      </section>
+
+            {/* ================= PROJECT DOCUMENT (OFFICIAL PROPOSAL) ================= */}
       <section className="py-24 px-6 relative overflow-hidden bg-zinc-50 border-t border-zinc-200">
         <div className="max-w-7xl mx-auto">
           <div className="bg-white rounded-[2.5rem] p-8 lg:p-16 shadow-xl border border-zinc-100 relative overflow-hidden">
