@@ -92,11 +92,11 @@ export default function FooterSection() {
             </div>
           </div>
 
-          <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
+          <div className="lg:col-span-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 md:gap-6">
 
             {/* Column 1 */}
             <div className="space-y-6">
-              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">Organization</h4>
+              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">{lang === "en" ? "Organization" : "संस्था"}</h4>
               <ul className="space-y-3 text-sm text-zinc-400">
                 <li><Link to="/About" className="hover:text-[#fb8500] transition-colors">About Us</Link></li>
                 <li><Link to="/Team" className="hover:text-[#fb8500] transition-colors">Our Team</Link></li>
@@ -108,7 +108,7 @@ export default function FooterSection() {
 
             {/* Column 2 */}
             <div className="space-y-6">
-              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">Impact</h4>
+              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">{lang === "en" ? "Impact" : "प्रभाव"}</h4>
               <ul className="space-y-3 text-sm text-zinc-400">
                 <li><Link to="/Impact" className="hover:text-[#fb8500] transition-colors">Impact Stories</Link></li>
                 <li><Link to="/Campaigns" className="hover:text-[#fb8500] transition-colors">Campaigns</Link></li>
@@ -125,7 +125,7 @@ export default function FooterSection() {
 
             {/* Column 3 */}
             <div className="space-y-6">
-              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">Involve</h4>
+              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">{lang === "en" ? "Involve" : "सहभागिता"}</h4>
               <ul className="space-y-3 text-sm text-zinc-400">
                 <li><Link to="/Volunteer" className="hover:text-[#fb8500] transition-colors">Volunteer</Link></li>
                 <li><Link to="/Internship" className="hover:text-[#fb8500] transition-colors">Internship</Link></li>
@@ -135,8 +135,9 @@ export default function FooterSection() {
             </div>
 
             {/* Column 4: Contact - Improved for visibility */}
-            <div className="space-y-6 col-span-2 md:col-span-1">
-              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">Contact</h4>
+            <div className="space-y-6">
+              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">{lang === "en" ? "Contact" : "संपर्क"}</h4>
+              <p className="text-xs text-zinc-500 leading-relaxed">{lang === "en" ? "For partnerships, volunteer support, or media queries:" : "साझेदारी, वॉलंटियर सपोर्ट या मीडिया प्रश्नों के लिए:"}</p>
               <ul className="space-y-4 text-sm text-zinc-400">
                 <li>
                   <a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="group flex items-start gap-3 hover:text-white transition-colors">
