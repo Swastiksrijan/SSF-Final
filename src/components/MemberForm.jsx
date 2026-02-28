@@ -18,6 +18,7 @@ export default function MemberForm() {
     const [status, setStatus] = useState("idle");
     const [errors, setErrors] = useState({});
     const [certificateCode, setCertificateCode] = useState("");
+    const [whatsappLink, setWhatsappLink] = useState("");
 
     const [isDropdownOpen, setIsDropdownOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
@@ -88,8 +89,13 @@ export default function MemberForm() {
                 body: JSON.stringify(payload)
             });
 
+            const result = await response.json();
             if (!response.ok) {
-                throw new Error("Member signup request failed");
+                throw new Error(result.message || "Member signup request failed");
+            }
+
+            if (result.whatsapp) {
+                setWhatsappLink(result.whatsapp);
             }
 
             setStatus("success");
@@ -123,9 +129,21 @@ export default function MemberForm() {
                     </p>
                 </div>
 
-                <button onClick={() => setStatus("idle")} className="text-zinc-400 hover:text-zinc-600 font-bold transition-colors">
-                    Apply for another member
-                </button>
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+                    {whatsappLink && (
+                        <a
+                            href={whatsappLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="px-5 py-2.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 transition-colors"
+                        >
+                            Send on WhatsApp (9718346691)
+                        </a>
+                    )}
+                    <button onClick={() => setStatus("idle")} className="text-zinc-400 hover:text-zinc-600 font-bold transition-colors">
+                        Apply for another member
+                    </button>
+                </div>
             </motion.div>
         );
     }

@@ -7,7 +7,9 @@ export const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhos
 export const ENDPOINTS = {
     REGISTER: `${API_BASE_URL}/api/register`,
     MEMBER_SIGNUP: `${API_BASE_URL}/api/member-signup`,
+    ADMIN_LOGIN: `${API_BASE_URL}/api/admin/login`,
     ADMIN_VOLUNTEERS: `${API_BASE_URL}/api/admin/volunteers`,
+    ADMIN_MEMBERS: `${API_BASE_URL}/api/admin/members`,
     ADMIN_APPROVE: (id) => `${API_BASE_URL}/api/admin/approve/${id}`,
     VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${code}`
 };
