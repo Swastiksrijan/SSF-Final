@@ -204,6 +204,51 @@ export default function FooterSection() {
           </div>
         </div>
 
+
+
+        <div className="mb-14 rounded-3xl border border-[#fb8500]/30 bg-gradient-to-br from-[#fb8500]/10 to-[#002344]/20 p-6 md:p-8">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+            <div className="max-w-3xl space-y-3">
+              <p className="text-[11px] uppercase tracking-[0.2em] text-[#fb8500] font-bold">
+                {lang === "en" ? "Volunteer • Membership • Leadership Appeal" : "वॉलंटियर • सदस्यता • नेतृत्व आह्वान"}
+              </p>
+              <h3 className="text-2xl md:text-3xl font-bold text-white leading-tight">
+                {lang === "en"
+                  ? "Live Beyond Self: Serve People, Protect Nature, and Build Global Wellbeing"
+                  : "केवल अपने लिए नहीं — जनसेवा, प्रकृति संरक्षण और विश्व कल्याण के लिए आगे आएं"}
+              </h3>
+              <p className="text-sm md:text-base text-zinc-200 leading-relaxed">
+                {lang === "en"
+                  ? "If you wish to contribute as a Volunteer, Member, or Local Leadership Coordinator, join SSF to support education for all, dignity for every living being, and harmony with nature. True life grows when we uplift others."
+                  : "यदि आप वॉलंटियर, सदस्य या स्थानीय नेतृत्व समन्वयक के रूप में जुड़ना चाहते हैं, तो SSF के साथ मिलकर सर्वजन शिक्षा, हर जीव की गरिमा और प्रकृति के संतुलन के लिए कार्य करें। सच्चा जीवन वही है जो दूसरों को उठाता है।"}
+              </p>
+            </div>
+
+            <div className="flex flex-col sm:flex-row lg:flex-col gap-3 min-w-[240px]">
+              <Link
+                to="/Volunteer"
+                className="px-5 py-3 rounded-xl bg-[#fb8500] text-white text-sm font-bold text-center hover:bg-[#ff9800] transition-colors"
+              >
+                {lang === "en" ? "Become a Volunteer" : "वॉलंटियर बनें"}
+              </Link>
+              <Link
+                to="/Members"
+                className="px-5 py-3 rounded-xl border border-white/20 text-white text-sm font-bold text-center hover:bg-white/10 transition-colors"
+              >
+                {lang === "en" ? "Join as Member" : "सदस्य के रूप में जुड़ें"}
+              </Link>
+              <a
+                href={CONTACT_INFO.social.whatsapp}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="px-5 py-3 rounded-xl bg-white text-[#002344] text-sm font-bold text-center hover:bg-zinc-100 transition-colors"
+              >
+                {lang === "en" ? "Leadership Interest (WhatsApp)" : "नेतृत्व हेतु रुचि (WhatsApp)"}
+              </a>
+            </div>
+          </div>
+        </div>
+
         {/* BOTTOM: Copyright & Legal */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-xs text-zinc-500 font-medium text-center md:text-left">
