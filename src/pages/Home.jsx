@@ -267,21 +267,6 @@ export default function Home() {
                             Alternate
                           </span>
                         </div>
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(CONTACT_INFO.secondaryEmail);
-                              alert("Support Email copied!");
-                            }}
-                            className="text-xs md:text-sm text-zinc-400 font-medium hover:text-[#FF6600] transition-colors cursor-pointer outline-none break-all text-left"
-                            title="Click to copy"
-                          >
-                            {CONTACT_INFO.secondaryEmail}
-                          </button>
-                          <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm shrink-0">
-                            Support
-                          </span>
-                        </div>
                       </div>
                     </div>
                   </div>
