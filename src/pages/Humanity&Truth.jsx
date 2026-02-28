@@ -2,10 +2,10 @@ import React from "react";
 
 const HumanityAndTruth = () => {
   return (
-    <div className="w-full bg-[#FAFAF8] text-[#2B2B2B] font-mukta selection:bg-[#C8A24D]/20">
+    <div className="w-full bg-[radial-gradient(circle_at_top,_#ffffff_0%,_#f7f5ef_45%,_#f3f0e7_100%)] text-[#2B2B2B] font-mukta selection:bg-[#C8A24D]/20">
       {/* 1. HERO SECTION */}
-      <section className="pt-32 pb-20 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
+      <section className="pt-32 pb-20 px-6 text-center relative overflow-hidden">
+        <div className="max-w-4xl mx-auto bg-white/80 backdrop-blur-sm border border-[#E9E2D2] shadow-[0_20px_60px_-30px_rgba(31,58,95,0.55)] rounded-3xl px-6 md:px-12 py-10 relative z-10">
           <p className="text-[#1F3A5F] font-hindi text-lg mb-4 tracking-wide">
             मानवता और सत्य | Humanity & Truth
           </p>
@@ -21,7 +21,7 @@ const HumanityAndTruth = () => {
 
       {/* 2. INTRO SECTION */}
       <section className="py-8 md:py-12 px-4 sm:px-6">
-        <div className="max-w-3xl mx-auto bg-[#F2F1ED] p-5 sm:p-12 rounded-lg border-l-4 border-[#C8A24D]">
+        <div className="max-w-4xl mx-auto bg-[#F2F1ED]/90 p-5 sm:p-12 rounded-2xl border-l-4 border-[#C8A24D] shadow-[0_20px_60px_-40px_rgba(31,58,95,0.55)] border border-[#E8E2D6]">
           <div className="space-y-6">
             <div className="space-y-2">
               <p className="text-lg md:text-xl font-hindi italic leading-relaxed text-[#2B2B2B]">
@@ -44,10 +44,10 @@ const HumanityAndTruth = () => {
       </section>
 
       {/* MAIN CONTENT CONTAINER */}
-      <div className="max-w-4xl mx-auto px-6 py-12 space-y-20">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 py-12 space-y-10">
 
         {/* 2. संसार : अनंत और अज्ञात */}
-        <section>
+        <section className="bg-white/85 border border-[#EAE4D8] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)]">
           <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#1F3A5F] mb-6">
             2. संसार : अनंत और अज्ञात <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">The World: Infinite and Unknown</span>
           </h2>
@@ -70,7 +70,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 3. क्या कोई शक्ति है? */}
-        <section>
+        <section className="bg-white/85 border border-[#EAE4D8] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)]">
           <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#1F3A5F] mb-6">
             3. क्या कोई शक्ति है? <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Is There a Power?</span>
           </h2>
@@ -107,7 +107,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 4. धर्म और शास्त्र : सार क्या कहते हैं */}
-        <section>
+        <section className="bg-white/85 border border-[#EAE4D8] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)]">
           <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#1F3A5F] mb-6">
             4. धर्म और शास्त्र : सार क्या कहते हैं <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Religion and Scriptures: What is the Essence?</span>
           </h2>
@@ -146,7 +146,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 5. राम : मानव मूल्य का आदर्श */}
-        <section className="bg-white p-8 md:p-12 shadow-sm border border-[#F2F1ED]">
+        <section className="bg-white p-8 md:p-12 rounded-2xl shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)] border border-[#EAE4D8]">
           <h2 className="text-xl md:text-3xl font-hindi font-bold text-[#1F3A5F] mb-6">
             5. राम : मानव मूल्य का आदर्श <span className="block text-lg md:text-xl font-merriweather font-normal opacity-60 mt-1">Ram: The Ideal of Human Values</span>
           </h2>
@@ -184,7 +184,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 6. अच्छाई और बुराई */}
-        <section>
+        <section className="bg-white/85 border border-[#EAE4D8] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)]">
           <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#1F3A5F] mb-6">
             6. अच्छाई और बुराई <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Good and Evil</span>
           </h2>
@@ -203,7 +203,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 7. समाज, जाति, वर्ग, राष्ट्र */}
-        <section>
+        <section className="bg-white/85 border border-[#EAE4D8] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)]">
           <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#1F3A5F] mb-6">
             7. समाज, जाति, वर्ग, राष्ट्र <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Society, Caste, Class, Nation</span>
           </h2>
@@ -218,7 +218,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 8 & 9. शासन, सत्ता और तटस्थता */}
-        <section className="grid md:grid-cols-2 gap-12">
+        <section className="grid md:grid-cols-2 gap-12 bg-white/85 border border-[#EAE4D8] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)]">
           <div className="space-y-4">
             <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#1F3A5F]">
               8. शासन, सत्ता <span className="block text-lg font-merriweather font-normal opacity-60 mt-1">Governance and Power</span>
@@ -236,7 +236,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 10. प्रकृति और अन्य जीव */}
-        <section>
+        <section className="bg-white/85 border border-[#EAE4D8] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)]">
           <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#1F3A5F] mb-6">
             10. प्रकृति और अन्य जीव <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Nature and Other Beings</span>
           </h2>
@@ -251,7 +251,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 11 & 12. आज की दुनिया और ब्रह्मांड */}
-        <section className="space-y-12">
+        <section className="space-y-12 bg-white/85 border border-[#EAE4D8] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)]">
           <div className="grid md:grid-cols-2 gap-12">
             <div className="space-y-4">
               <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#1F3A5F]">
@@ -271,7 +271,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 13. Swastik Srijan Foundation का अनुभव */}
-        <section className="bg-[#1F3A5F] text-white p-8 md:p-12 rounded-2xl relative overflow-hidden">
+        <section className="bg-[#1F3A5F] text-white p-8 md:p-12 rounded-2xl relative overflow-hidden shadow-[0_26px_60px_-30px_rgba(31,58,95,0.9)]">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
           <h2 className="text-2xl md:text-3xl font-hindi font-bold mb-8 relative z-10">
             13. Swastik Srijan Foundation का अनुभव <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Experience of Swastik Srijan Foundation</span>
@@ -300,7 +300,7 @@ const HumanityAndTruth = () => {
         </section>
 
         {/* 14. अंतिम निष्कर्ष : सबका साझा सत्य */}
-        <section className="text-center py-12 border-t border-[#F2F1ED]">
+        <section className="text-center py-12 border-t border-[#F2F1ED] bg-white/85 border border-[#EAE4D8] rounded-2xl px-6 md:px-10 shadow-[0_20px_50px_-38px_rgba(31,58,95,0.65)]">
           <h2 className="text-3xl md:text-4xl font-hindi font-bold text-[#1F3A5F] mb-8">
             14. अंतिम निष्कर्ष : सबका साझा सत्य <span className="block text-2xl font-merriweather font-normal opacity-60 mt-1">Final Conclusion: A Shared Truth</span>
           </h2>
@@ -322,7 +322,7 @@ const HumanityAndTruth = () => {
       </div>
 
       {/* FOOTER SIGNATURE */}
-      <footer className="bg-[#F2F1ED] py-20 px-6 text-center">
+      <footer className="bg-[#F2F1ED]/90 border-t border-[#E3DBCA] py-20 px-6 text-center">
         <div className="max-w-3xl mx-auto space-y-8">
           <div className="space-y-4">
             <p className="text-lg md:text-xl font-hindi leading-relaxed text-[#2B2B2B] italic">
