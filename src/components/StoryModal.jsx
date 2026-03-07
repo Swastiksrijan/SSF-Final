@@ -6,6 +6,10 @@ import { Link } from "@tanstack/react-router";
 export default function StoryModal({ story, isOpen, onClose, lang, onToggleLang }) {
     if (!story) return null;
 
+    const storyTitle = story?.title?.[lang] || story?.title?.en || "Impact Story";
+    const storyContent = story?.content?.[lang] || story?.content?.en || "";
+    const storyCategory = story?.category || "Impact";
+
     return (
         <AnimatePresence>
             {isOpen && (
@@ -45,13 +49,13 @@ export default function StoryModal({ story, isOpen, onClose, lang, onToggleLang 
                             <div className="lg:w-2/5 relative min-h-[300px] lg:min-h-full bg-zinc-100">
                                 <img
                                     src={story.img || "/images/real/children-gathering.jpg"}
-                                    alt={story.title[lang] || story.title.en}
+                                    alt={storyTitle}
                                     className="absolute inset-0 w-full h-full object-cover"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
                                 <div className="absolute bottom-10 left-10 space-y-2">
                                     <span className="px-4 py-1.5 bg-[#fb8500] text-white text-[10px] font-bold rounded-full uppercase tracking-[0.2em] shadow-lg">
-                                        {story.category}
+                                        {storyCategory}
                                     </span>
                                     <p className="text-white/60 text-xs font-bold uppercase tracking-widest">Ground Transformation</p>
                                 </div>
@@ -61,13 +65,13 @@ export default function StoryModal({ story, isOpen, onClose, lang, onToggleLang 
                             <div className="lg:w-3/5 p-12 md:p-16 space-y-10 bg-white">
                                 <div className="space-y-4">
                                     <h3 className="text-3xl md:text-5xl font-serif font-bold text-[#002344] leading-tight">
-                                        {story.title[lang] || story.title.en}
+                                        {storyTitle}
                                     </h3>
                                     <div className="w-20 h-1.5 bg-[#fb8500] rounded-full"></div>
                                 </div>
 
                                 <div className="space-y-6 text-zinc-600 text-lg leading-relaxed whitespace-pre-line font-medium">
-                                    {(story.content?.[lang] || story.content?.en || "")
+                                    {storyContent
                                         .split('\n\n')
                                         .map((paragraph, idx) => (
                                             <p key={idx}>{paragraph}</p>

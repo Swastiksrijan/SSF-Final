@@ -224,7 +224,7 @@ export default function ImpactPage() {
                                     {(featuredProgram?.customButtons || []).map((btn, idx) => (
                                         <Link
                                             key={idx}
-                                            to={btn.link}
+                                            to={btn?.link || "/Donate"}
                                             className={`px-8 py-4 rounded-2xl font-bold transition-all shadow-xl flex items-center gap-3 uppercase tracking-wider text-[10px] ${idx === 0 ? 'bg-[#002344] text-white hover:bg-[#FF6600]' : 'bg-white border-2 border-zinc-100 text-zinc-600 hover:border-[#002344] hover:text-[#002344]'}`}
                                         >
                                             {(btn?.label || 'Know More').replace('🔘 ', '')} <FaArrowRight />
@@ -306,15 +306,15 @@ export default function ImpactPage() {
                                                 )}
                                             </div>
 
-                                            {program.customButtons ? (
+                                            {Array.isArray(program.customButtons) && program.customButtons.length > 0 ? (
                                                 <div className="flex flex-col gap-2 mb-6">
-                                                    {program.customButtons.map((btn, idx) => (
+                                                    {program.customButtons.filter((btn) => btn?.link).map((btn, idx) => (
                                                         <Link
                                                             key={idx}
-                                                            to={btn.link}
+                                                            to={btn?.link || "/Donate"}
                                                             className="w-full py-3 px-4 bg-white/80 backdrop-blur-sm border border-zinc-200 rounded-xl text-[10px] font-black text-center text-[#002344] hover:bg-[#002344] hover:text-white transition-all flex items-center justify-center gap-2 group/btn uppercase tracking-widest shadow-sm"
                                                         >
-                                                            {btn.label.replace('🔘 ', '')}
+                                                            {(btn?.label || 'Know More').replace('🔘 ', '')}
                                                             <FaArrowRight className="text-[8px] group-hover/btn:translate-x-1 transition-transform" />
                                                         </Link>
                                                     ))}
