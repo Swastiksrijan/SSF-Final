@@ -76,6 +76,118 @@ export default function Home() {
           <div className="max-w-3xl space-y-6">
             <p className="text-[#FFB066] text-xs sm:text-sm tracking-[0.2em] uppercase font-bold">Since 2013 • Registered NGO</p>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-white leading-tight">
+      {/* 3.1 MISSION • VISION • PROGRAMS (ENHANCED BLOCKS) */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl md:text-5xl font-bold text-[#002344]">Mission • Vision • Programs</h2>
+            <p className="text-zinc-500 mt-4 text-base md:text-lg">
+              Explore our core purpose and program priorities through quick visual blocks.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+            {[
+              {
+                title: "Our Mission",
+                content: "To bridge the gap between privilege and poverty through education and skill development.",
+                icon: <FaHeart className="text-3xl text-[#FF6600]" />,
+              },
+              {
+                title: "Our Vision",
+                content: "A just and empowered Bharat where every child, youth and family can access dignity and opportunity.",
+                icon: <FaGlobeAsia className="text-3xl text-[#002344]" />,
+              },
+              {
+                title: "Our Programs",
+                content: "Community schools, health camps, livelihood initiatives, and grassroots social welfare drives.",
+                icon: <FaHandshake className="text-3xl text-green-600" />,
+              },
+            ].map((item, idx) => (
+              <motion.article
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08 }}
+                className="bg-zinc-50 border border-zinc-100 rounded-3xl p-8 md:p-10 hover:shadow-xl hover:-translate-y-1 transition-all"
+              >
+                <div className="w-14 h-14 bg-white rounded-2xl border border-zinc-100 flex items-center justify-center mb-6 shadow-sm">
+                  {item.icon}
+                </div>
+                <h3 className="text-2xl font-bold text-[#002344] mb-3">{item.title}</h3>
+                <p className="text-zinc-600 leading-relaxed">{item.content}</p>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3.2 IMPACT STATISTICS (NEW) */}
+      <section className="py-14 bg-gradient-to-br from-[#001529] to-[#002344] text-white border-y border-white/10">
+        <div className="container mx-auto px-4">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-bold">Impact Statistics</h2>
+            <p className="text-zinc-300 mt-3">Measuring outcomes with accountability and purpose.</p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { value: "20,000+", label: "Lives Impacted" },
+              { value: "40+", label: "Programs Conducted" },
+              { value: "100+", label: "Villages Reached" },
+              { value: "50,000+", label: "Beneficiaries" },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, scale: 0.95 }}
+                whileInView={{ opacity: 1, scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08 }}
+                className="bg-white/10 border border-white/10 rounded-2xl p-5 md:p-7 text-center hover:bg-white/15 transition-colors"
+              >
+                <p className="text-2xl md:text-4xl font-black text-[#FFB066]">{item.value}</p>
+                <p className="text-sm md:text-base mt-2 text-zinc-100">{item.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 3.3 OUR WORK IN ACTION (NEW) */}
+      <section className="py-16 md:py-24 bg-white">
+        <div className="container mx-auto px-4">
+          <div className="text-center max-w-3xl mx-auto mb-12">
+            <h2 className="text-3xl md:text-5xl font-bold text-[#002344]">Our Work in Action</h2>
+            <p className="text-zinc-500 mt-4 text-base md:text-lg">On-ground moments from education, health, outreach, and relief activities.</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { src: "/images/tree-planting-2.jpg", alt: "Tree plantation activity" },
+              { src: "/images/classroom-mat-session.jpg", alt: "Classroom learning session" },
+              { src: "/images/slum-area-outreach.jpg", alt: "Slum outreach activity" },
+              { src: "/images/health-program-masks.jpg", alt: "Health awareness drive" },
+            ].map((img, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 15 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.06 }}
+                className="rounded-2xl overflow-hidden border border-zinc-100 shadow-sm group"
+              >
+                <OptimizedImage
+                  src={img.src}
+                  alt={img.alt}
+                  className="w-full h-40 sm:h-52 md:h-60 group-hover:scale-[1.04] transition-transform duration-700"
+                />
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
               Building Dignified Lives Through Education, Health & Livelihood
             </h1>
             <p className="text-zinc-200 text-base sm:text-lg leading-relaxed">
@@ -213,3 +325,43 @@ export default function Home() {
     </main>
   );
 }
+      {/* 8.4 PARTNER / VOLUNTEER / DONATE CTA (NEW) */}
+      <section className="py-16 bg-gradient-to-r from-orange-50 to-blue-50 border-t border-zinc-100">
+        <div className="container mx-auto px-4">
+          <div className="max-w-6xl mx-auto bg-white rounded-3xl p-8 md:p-12 border border-zinc-100 shadow-xl">
+            <div className="text-center mb-8">
+              <h2 className="text-3xl md:text-4xl font-bold text-[#002344]">Partner With Us • Volunteer • Donate</h2>
+              <p className="text-zinc-500 mt-3">Join hands to scale sustainable grassroots impact across communities.</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+              <Link to="/PartnerWithUs" className="bg-zinc-50 hover:bg-[#002344] hover:text-white rounded-2xl p-6 text-center font-bold border border-zinc-100 transition-all">
+                Partner With Us
+              </Link>
+              <Link to="/Volunteer" className="bg-zinc-50 hover:bg-[#FF6600] hover:text-white rounded-2xl p-6 text-center font-bold border border-zinc-100 transition-all">
+                Volunteer
+              </Link>
+              <Link to="/Donate" className="bg-zinc-50 hover:bg-green-600 hover:text-white rounded-2xl p-6 text-center font-bold border border-zinc-100 transition-all">
+                Donate
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 8.45 FINANCIAL TRANSPARENCY LINK (NEW) */}
+      <section className="py-14 bg-white border-t border-zinc-100">
+        <div className="container mx-auto px-4">
+          <div className="max-w-5xl mx-auto rounded-3xl border border-zinc-200 bg-zinc-50 p-8 md:p-10 text-center">
+            <h3 className="text-2xl md:text-3xl font-bold text-[#002344]">Financial Transparency / Audit Reports</h3>
+            <p className="text-zinc-600 mt-3 max-w-2xl mx-auto">
+              Review year-wise disclosures, reports, and compliance details to understand our governance and financial accountability.
+            </p>
+            <div className="mt-7">
+              <Link to="/Transparency" className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-[#002344] text-white font-bold hover:bg-[#FF6600] transition-colors">
+                Open Transparency Page <FaArrowRight />
+              </Link>
+            </div>
+          </div>
+        </div>
+      </section>
+
