@@ -1,8 +1,15 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { motion } from "framer-motion";
-import { FaFileContract, FaBalanceScale, FaHandHoldingUsd, FaFileAlt, FaLock, FaEnvelope, FaGavel } from "react-icons/fa";
+import { FaFileContract, FaBalanceScale, FaHandHoldingUsd, FaFileAlt, FaLock, FaEnvelope, FaGavel, FaDownload, FaEye } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import PageHero from "../components/PageHero";
+
+const REPORT_TYPES = [
+    "Audit Report",
+    "Balance Sheet",
+    "Income & Expenditure",
+    "Activity Summary"
+];
 
 export default function Transparency() {
     useEffect(() => {
@@ -28,7 +35,7 @@ export default function Transparency() {
             ],
             details: [
                 { label: "Registration Act", value: "Madhya Pradesh Societies Registration Act, 1973" },
-                { label: "Registration Number", value: " 05/22/03/11448/13" },
+                { label: "Registration Number", value: "05/22/03/11448/13" },
                 { label: "Year of Registration", value: "2013" },
                 { label: "Nature of Organization", value: "Non-Profit / Voluntary Organization" }
             ]
@@ -62,17 +69,39 @@ export default function Transparency() {
         }
     ];
 
-    const reports = [
-        "Annual Activity Reports",
-        "Program Highlights",
-        "Financial Summaries",
-        "Impact Reports"
-    ];
+    const currentYear = new Date().getFullYear();
+
+    const years = useMemo(() => {
+        const entries = [];
+
+        for (let year = currentYear; year >= 2014; year -= 1) {
+            const allOnRequest = year <= 2021;
+            const scanAvailable = [2022, 2023, 2024, 2025].includes(year);
+
+            entries.push({
+                year,
+                auditStatus: scanAvailable ? "Audit scan received (PDF upload pending)" : "Available upon request",
+                docs: REPORT_TYPES.map((name) => ({
+                    name,
+                    status: allOnRequest
+                        ? "On request"
+                        : name === "Audit Report" && scanAvailable
+                            ? "Scan available"
+                            : "On request",
+                    available: false,
+                    href: null
+                }))
+            });
+        }
+
+        return entries;
+    }, [currentYear]);
+
+    const requestLink = (year, docName) =>
+        `mailto:${CONTACT_INFO.primaryEmail}?subject=${encodeURIComponent(`${year} ${docName} Request`)}&body=${encodeURIComponent(`Namaste,\n\nPlease share the ${docName} for FY ${year}-${year + 1}.\n\nRegards`)}`;
 
     return (
         <div className="w-full font-inria bg-white overflow-hidden text-[#002344]">
-
-            {/* HER0 */}
             <PageHero
                 image="/images/real/academy-board-compliance.jpg"
                 title="Transparency & Reports"
@@ -80,7 +109,6 @@ export default function Transparency() {
                 hindiSubtitle="पारदर्शिता और रिपोर्ट - खुलेपन, जवाबदेही और नैतिक शासन के माध्यम से विश्वास का निर्माण।"
             />
 
-            {/* MAIN CONTENT */}
             <section className="py-20 px-6 max-w-5xl mx-auto space-y-20">
                 {sections.map((section, idx) => (
                     <motion.div
@@ -89,7 +117,7 @@ export default function Transparency() {
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.5 }}
-                        className={`flex flex-col md:flex-row gap-8 ${idx % 2 === 1 ? 'md:flex-row-reverse' : ''}`}
+                        className={`flex flex-col md:flex-row gap-8 ${idx % 2 === 1 ? "md:flex-row-reverse" : ""}`}
                     >
                         <div className="md:w-1/3 flex justify-center md:block">
                             <div className="w-20 h-20 rounded-2xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-4xl text-[#fb8500] shadow-sm">
@@ -100,12 +128,10 @@ export default function Transparency() {
                             <div className="space-y-4 text-lg text-zinc-600 leading-relaxed font-medium">
                                 <h2 className="text-3xl font-serif font-bold mb-2 text-[#002344]">{section.title}</h2>
                                 {section.hindi && (
-                                    <p className="text-lg text-[#fb8500] font-serif font-bold italic mb-4">
-                                        {section.hindi}
-                                    </p>
+                                    <p className="text-lg text-[#fb8500] font-serif font-bold italic mb-4">{section.hindi}</p>
                                 )}
-                                {section.content.map((p, i) => (
-                                    <p key={i}>{p}</p>
+                                {section.content.map((paragraph, i) => (
+                                    <p key={i}>{paragraph}</p>
                                 ))}
                             </div>
 
@@ -124,25 +150,68 @@ export default function Transparency() {
                 ))}
             </section>
 
-            {/* REPORTS SECTION */}
             <section className="py-20 bg-zinc-50 border-y border-zinc-200">
-                <div className="container mx-auto px-6 max-w-6xl text-center">
-                    <h2 className="text-3xl lg:text-4xl font-serif font-bold mb-12">Reports & Disclosures</h2>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {reports.map((report, idx) => (
-                            <motion.div
-                                key={idx}
-                                whileHover={{ y: -5 }}
-                                className="bg-white p-8 rounded-2xl shadow-lg border border-zinc-100 hover:border-[#fb8500] transition-all group cursor-default"
-                            >
-                                <div className="w-14 h-14 mx-auto bg-blue-50 text-[#002344] rounded-full flex items-center justify-center text-2xl mb-6 group-hover:bg-[#fb8500] group-hover:text-white transition-colors">
-                                    <FaFileAlt />
+                <div className="container mx-auto px-6 max-w-6xl">
+                    <div className="text-center max-w-4xl mx-auto mb-12 space-y-4">
+                        <h2 className="text-3xl lg:text-4xl font-serif font-bold">Financial Transparency / Audit Reports</h2>
+                        <p className="text-zinc-600 text-lg">
+                            Year-wise document access from 2014 to present. For 2014-2021 and documents marked “On request”,
+                            click View/Download and our team will share official copies.
+                        </p>
+                    </div>
+
+                    <div className="space-y-4">
+                        {years.map((entry) => (
+                            <details key={entry.year} className="bg-white border border-zinc-100 rounded-2xl shadow-sm open:shadow-md transition-all">
+                                <summary className="cursor-pointer list-none p-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                                    <div>
+                                        <h3 className="text-2xl font-serif font-bold text-[#002344]">FY {entry.year}-{entry.year + 1}</h3>
+                                        <p className="text-sm text-zinc-500 mt-1">{entry.auditStatus}</p>
+                                    </div>
+                                    <span className="text-xs font-bold uppercase tracking-widest text-[#fb8500] bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
+                                        4 Documents
+                                    </span>
+                                </summary>
+
+                                <div className="px-6 pb-6">
+                                    <div className="grid md:grid-cols-2 gap-4">
+                                        {entry.docs.map((doc) => (
+                                            <div key={`${entry.year}-${doc.name}`} className="border border-zinc-100 rounded-xl p-4 bg-zinc-50/50">
+                                                <div className="flex items-start justify-between gap-3">
+                                                    <div>
+                                                        <p className="font-bold text-[#002344]">{doc.name}</p>
+                                                        <p className="text-xs text-zinc-500 mt-1">Status: {doc.status}</p>
+                                                    </div>
+                                                    <FaFileAlt className="text-[#fb8500] text-lg shrink-0" />
+                                                </div>
+
+                                                <div className="flex flex-wrap gap-2 mt-4">
+                                                    <a
+                                                        href={doc.available ? doc.href : requestLink(entry.year, doc.name)}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        className="inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg bg-[#002344] text-white hover:bg-[#fb8500] transition-colors"
+                                                    >
+                                                        <FaEye /> View Report
+                                                    </a>
+                                                    <a
+                                                        href={doc.available ? doc.href : requestLink(entry.year, doc.name)}
+                                                        target="_blank"
+                                                        rel="noreferrer"
+                                                        download={doc.available}
+                                                        className="inline-flex items-center gap-2 px-3 py-2 text-xs font-semibold rounded-lg border border-zinc-300 text-zinc-700 hover:border-[#fb8500] hover:text-[#fb8500] transition-colors"
+                                                    >
+                                                        <FaDownload /> Download PDF
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                                <h3 className="text-xl font-bold">{report}</h3>
-                                <p className="text-sm text-zinc-400 mt-2">Available upon request</p>
-                            </motion.div>
+                            </details>
                         ))}
                     </div>
+
                     <div className="mt-12 text-center">
                         <p className="text-zinc-500 mb-6 italic">
                             Information provided on this page is shared in good faith to maintain transparency and public trust.
@@ -178,12 +247,12 @@ export default function Transparency() {
                                 <div className="flex items-center justify-center gap-4">
                                     <button
                                         onClick={() => {
-                                            navigator.clipboard.writeText(CONTACT_INFO.thirdEmail);
+                                            navigator.clipboard.writeText(CONTACT_INFO.backupEmail);
                                             alert("Email copied!");
                                         }}
                                         className="text-[11px] text-zinc-500 font-semibold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
                                     >
-                                        {CONTACT_INFO.thirdEmail}
+                                        {CONTACT_INFO.backupEmail}
                                     </button>
                                     <span className="text-[7px] font-black bg-zinc-50 text-zinc-400 px-2 py-1 rounded border border-zinc-200 uppercase tracking-widest">
                                         {CONTACT_INFO.techIssueNote}
