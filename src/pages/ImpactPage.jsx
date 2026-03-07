@@ -1,8 +1,9 @@
 import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { FaGraduationCap, FaHeartbeat, FaBriefcase, FaSeedling, FaFutbol, FaChild, FaPaw, FaUsers, FaArrowRight, FaQuoteLeft, FaUniversity } from "react-icons/fa";
+import { FaGraduationCap, FaHeartbeat, FaBriefcase, FaSeedling, FaFutbol, FaChild, FaPaw, FaUsers, FaArrowRight, FaQuoteLeft, FaUniversity, FaChartPie, FaChartBar, FaMapMarkedAlt, FaFileDownload, FaPlayCircle, FaHandsHelping } from "react-icons/fa";
 import { useState } from "react";
 import ImpactStories from "../components/ImpactStories";
+import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
 
 export default function ImpactPage() {
     const [showAllPrograms, setShowAllPrograms] = useState(false);
@@ -19,6 +20,54 @@ export default function ImpactPage() {
         { number: "120+", label: "Villages Reached", labelHi: "गांव पहुंचे" },
         { number: "50,000+", label: "Lives Touched", labelHi: "जीवन प्रभावित" },
         { number: "500+", label: "Active Volunteers", labelHi: "सक्रिय स्वयंसेवक" }
+    ];
+
+
+
+    const impactDashboard = [
+        { value: "50,000+", label: "Lives Reached", icon: <FaUsers className="text-[#fb8500]" /> },
+        { value: "40+", label: "Programs Conducted", icon: <FaBriefcase className="text-[#2d6a4f]" /> },
+        { value: "120+", label: "Villages Covered", icon: <FaMapMarkedAlt className="text-[#003366]" /> },
+        { value: "26,000+", label: "Direct Beneficiaries", icon: <FaHeartbeat className="text-[#d90429]" /> },
+    ];
+
+    const yearlyImpact = [
+        { year: "2021", value: 6200 },
+        { year: "2022", value: 8100 },
+        { year: "2023", value: 10400 },
+        { year: "2024", value: 12600 },
+        { year: "2025", value: 14800 },
+    ];
+
+    const categoryImpact = [
+        { label: "Education", value: 40, color: "#1d4ed8" },
+        { label: "Health", value: 25, color: "#ef4444" },
+        { label: "Environment", value: 15, color: "#16a34a" },
+        { label: "Women Empowerment", value: 20, color: "#f59e0b" },
+    ];
+
+    const pieGradient = `conic-gradient(${categoryImpact.map((item, index) => `${item.color} ${categoryImpact.slice(0, index).reduce((a, c) => a + c.value, 0)}% ${categoryImpact.slice(0, index + 1).reduce((a, c) => a + c.value, 0)}%`).join(", ")})`;
+
+    const impactTestimonials = [
+        {
+            quote: "SSF mentoring helped my daughter return to school and continue learning with confidence.",
+            author: "Parent Beneficiary, Rewa",
+        },
+        {
+            quote: "As a volunteer, I saw families gain both practical support and renewed hope through health outreach.",
+            author: "Volunteer, Greater Noida",
+        },
+        {
+            quote: "Skill sessions gave me direction to start earning and support my family with dignity.",
+            author: "Women Empowerment Participant",
+        },
+    ];
+
+    const impactGallery = [
+        { src: "/images/real/education_girls.jpg", title: "Education" },
+        { src: "/images/real/nutrition_program.jpg", title: "Health" },
+        { src: "/images/real/tree_plantation.jpg", title: "Environment" },
+        { src: "/images/real/women_empowerment_tailoring.jpg", title: "Women Empowerment" },
     ];
 
     const programs = [
@@ -155,6 +204,173 @@ export default function ImpactPage() {
                             ))}
                         </div>
                     </motion.div>
+                </div>
+            </section>
+
+            {/* ================= IMPACT DASHBOARD + CHARTS ================= */}
+            <section className="py-16 md:py-20 px-6 bg-white border-y border-zinc-100">
+                <div className="max-w-7xl mx-auto space-y-14">
+                    <div className="text-center">
+                        <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Impact Dashboard</h2>
+                        <p className="text-zinc-500 mt-3">Snapshot of measurable outcomes across our key mission areas.</p>
+                    </div>
+
+                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                        {impactDashboard.map((item, idx) => (
+                            <motion.div
+                                key={item.label}
+                                initial={{ opacity: 0, y: 12 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.05 }}
+                                className="rounded-2xl border border-zinc-100 bg-zinc-50 p-5 md:p-6 text-center hover:shadow-lg transition-all"
+                            >
+                                <div className="w-12 h-12 mx-auto rounded-xl bg-white border border-zinc-100 flex items-center justify-center text-2xl mb-3">
+                                    {item.icon}
+                                </div>
+                                <p className="text-2xl md:text-3xl font-black text-[#002344]">{item.value}</p>
+                                <p className="text-sm text-zinc-500 mt-1">{item.label}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+
+                    <div className="grid lg:grid-cols-2 gap-8">
+                        <div className="rounded-3xl border border-zinc-100 bg-white p-6 md:p-8 shadow-sm">
+                            <div className="flex items-center gap-2 mb-6">
+                                <FaChartBar className="text-[#fb8500]" />
+                                <h3 className="text-xl font-bold text-[#002344]">Lives Impacted Per Year</h3>
+                            </div>
+                            <div className="space-y-4">
+                                {yearlyImpact.map((item) => (
+                                    <div key={item.year}>
+                                        <div className="flex justify-between text-sm font-semibold text-zinc-600 mb-1">
+                                            <span>{item.year}</span><span>{item.value.toLocaleString()}</span>
+                                        </div>
+                                        <div className="h-3 bg-zinc-100 rounded-full overflow-hidden">
+                                            <motion.div
+                                                initial={{ width: 0 }}
+                                                whileInView={{ width: `${(item.value / 15000) * 100}%` }}
+                                                viewport={{ once: true }}
+                                                transition={{ duration: 0.8 }}
+                                                className="h-full bg-gradient-to-r from-[#002344] to-[#fb8500] rounded-full"
+                                            />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="rounded-3xl border border-zinc-100 bg-white p-6 md:p-8 shadow-sm">
+                            <div className="flex items-center gap-2 mb-6">
+                                <FaChartPie className="text-[#fb8500]" />
+                                <h3 className="text-xl font-bold text-[#002344]">Programs by Category</h3>
+                            </div>
+                            <div className="flex flex-col sm:flex-row gap-6 items-center">
+                                <div className="w-48 h-48 rounded-full border-8 border-white shadow-inner" style={{ background: pieGradient }}></div>
+                                <div className="space-y-3">
+                                    {categoryImpact.map((item) => (
+                                        <div key={item.label} className="flex items-center gap-3 text-sm text-zinc-700">
+                                            <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></span>
+                                            <span className="font-semibold">{item.label}</span>
+                                            <span className="text-zinc-500">{item.value}%</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ================= IMPACT IN ACTION GALLERY ================= */}
+            <section className="py-16 px-6 bg-zinc-50">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-10">
+                        <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Our Impact in Action</h2>
+                        <p className="text-zinc-500 mt-2">Education, health, environment, and women empowerment impact in real communities.</p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+                        {impactGallery.map((item) => (
+                            <div key={item.title} className="relative rounded-2xl overflow-hidden border border-zinc-100 shadow-sm group">
+                                <img src={item.src} alt={item.title} className="w-full h-56 object-cover group-hover:scale-105 transition-transform duration-700" />
+                                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4">
+                                    <p className="text-white font-bold">{item.title}</p>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* ================= BEFORE / AFTER + TESTIMONIALS ================= */}
+            <section className="py-16 px-6 bg-white border-y border-zinc-100">
+                <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-10">
+                    <div className="rounded-3xl border border-zinc-100 p-6 md:p-8">
+                        <h3 className="text-2xl font-serif font-bold text-[#002344] mb-6">Before / After Change Snapshot</h3>
+                        <div className="grid sm:grid-cols-2 gap-4">
+                            <div className="rounded-2xl overflow-hidden border border-zinc-100">
+                                <img src="/images/slum-area-outreach.jpg" alt="Before intervention" className="w-full h-44 object-cover" />
+                                <p className="px-3 py-2 text-sm font-semibold text-zinc-600 bg-zinc-50">Before: Limited learning and support access.</p>
+                            </div>
+                            <div className="rounded-2xl overflow-hidden border border-zinc-100">
+                                <img src="/images/real/children-mat-session.jpg" alt="After intervention" className="w-full h-44 object-cover" />
+                                <p className="px-3 py-2 text-sm font-semibold text-zinc-600 bg-zinc-50">After: Structured sessions, improved participation.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="rounded-3xl border border-zinc-100 p-6 md:p-8 bg-zinc-50">
+                        <h3 className="text-2xl font-serif font-bold text-[#002344] mb-6">Impact Stories / Testimonials</h3>
+                        <div className="space-y-4">
+                            {impactTestimonials.map((item, idx) => (
+                                <motion.blockquote
+                                    key={idx}
+                                    initial={{ opacity: 0, y: 10 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                    className="bg-white rounded-2xl border border-zinc-100 p-4"
+                                >
+                                    <p className="text-zinc-700 italic">“{item.quote}”</p>
+                                    <p className="text-sm font-semibold text-[#fb8500] mt-2">— {item.author}</p>
+                                </motion.blockquote>
+                            ))}
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ================= IMPACT VIDEO + REPORTS ================= */}
+            <section className="py-16 px-6 bg-zinc-50">
+                <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8">
+                    <div className="rounded-3xl overflow-hidden border border-zinc-100 shadow-sm bg-black">
+                        <div className="aspect-video">
+                            <iframe
+                                src="https://www.youtube.com/embed/5ccBV5QVy20"
+                                title="SSF Impact Video"
+                                className="w-full h-full"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                            />
+                        </div>
+                        <div className="p-4 bg-white flex items-center gap-2 text-sm font-semibold text-[#002344]">
+                            <FaPlayCircle className="text-[#fb8500]" /> Short Impact Video
+                        </div>
+                    </div>
+
+                    <div className="rounded-3xl border border-zinc-100 bg-white p-6 md:p-8">
+                        <h3 className="text-2xl font-serif font-bold text-[#002344] mb-3">Download Impact Reports</h3>
+                        <p className="text-zinc-600 mb-6">Access summary reports and documents for donors, partners, and CSR teams.</p>
+                        <div className="space-y-3">
+                            <a href={profilePdf} download className="w-full inline-flex justify-between items-center px-4 py-3 rounded-xl border border-zinc-200 hover:border-[#002344] hover:bg-zinc-50 transition-colors">
+                                <span className="font-semibold text-[#002344]">Download Impact Summary (PDF)</span>
+                                <FaFileDownload className="text-[#fb8500]" />
+                            </a>
+                            <Link to="/Transparency" className="w-full inline-flex justify-between items-center px-4 py-3 rounded-xl border border-zinc-200 hover:border-[#002344] hover:bg-zinc-50 transition-colors">
+                                <span className="font-semibold text-[#002344]">View Annual Reports & Disclosures</span>
+                                <FaArrowRight className="text-[#fb8500]" />
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -528,6 +744,25 @@ export default function ImpactPage() {
                         >
                             <img src="/images/cultural-event-children.jpg" alt="Cultural Enrichment" className="w-full h-full object-cover" />
                         </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* ================= IMPACT PARTICIPATION CTA ================= */}
+            <section className="py-16 px-6 bg-white">
+                <div className="max-w-5xl mx-auto rounded-[2rem] p-8 md:p-12 bg-gradient-to-r from-[#002344] to-[#001529] text-white text-center shadow-xl">
+                    <h2 className="text-3xl md:text-4xl font-serif font-bold">Join the Next Chapter of Impact</h2>
+                    <p className="mt-3 text-zinc-200">Stand with us to scale education, health, environment, and empowerment outcomes.</p>
+                    <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                        <Link to="/Volunteer" className="px-8 py-3 rounded-xl bg-[#fb8500] text-white font-bold hover:bg-[#e76f00] transition-colors inline-flex items-center justify-center gap-2">
+                            <FaHandsHelping /> Volunteer
+                        </Link>
+                        <Link to="/Donate" className="px-8 py-3 rounded-xl bg-white text-[#002344] font-bold hover:bg-zinc-100 transition-colors inline-flex items-center justify-center gap-2">
+                            <FaHeart /> Donate
+                        </Link>
+                        <Link to="/PartnerWithUs" className="px-8 py-3 rounded-xl border border-white/40 text-white font-bold hover:bg-white/10 transition-colors inline-flex items-center justify-center">
+                            Partner With Us
+                        </Link>
                     </div>
                 </div>
             </section>
