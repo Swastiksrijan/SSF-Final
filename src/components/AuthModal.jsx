@@ -3,15 +3,59 @@ import emailjs from "@emailjs/browser";
 import { FaTimes, FaUserPlus, FaSignInAlt, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import { ENDPOINTS } from "../config/api";
+                ? `New Signup\nName: ${payload.fullName}\nEmail: ${payload.email}\nPhone: ${payload.phone}`
+                : `New Login\nEmail: ${payload.email}`;
+    const submitSignupToBackend = async () => {
+        const fullName = signupData.fullName.trim();
+        const phone = signupData.phone.trim();
+        const normalizedEmail = signupData.email.trim().toLowerCase();
+        const fallbackEmail = normalizedEmail || `${phone.replace(/\D/g, "") || "user"}@swastiksrijan.local`;
 
-const initialSignup = {
-    fullName: "",
-    email: "",
-    phone: "",
-    password: ""
-};
+        const payload = {
+            fullName,
+            email: fallbackEmail,
+            confirmEmail: fallbackEmail,
+            phone,
+            memberType: "general",
+            message: "Signup submitted from website auth modal"
+        };
 
-const initialLogin = {
+        console.log("[AuthModal] Signup submit payload", payload);
+
+        const response = await fetch(ENDPOINTS.MEMBER_SIGNUP, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        console.log("[AuthModal] Signup backend response", result);
+
+        if (!response.ok || result.status !== "success") {
+            throw new Error(result.message || "Signup request failed.");
+        }
+
+        return result;
+    };
+
+            if (mode === "signup") {
+                await submitSignupToBackend();
+            }
+
+            setMessage(
+                mode === "signup"
+                    ? "Signup submitted successfully. Thank you for joining us."
+                    : "Account action successful. Admin notification links are ready below."
+            );
+            console.error("Auth submit error", error);
+            setMessage(error.message || "Login/Signup failed. Please try again.");
+                        required={mode === "login"}
+                        placeholder={mode === "signup" ? "Email (optional)" : "Email"}
+                        required={mode === "login"}
+                        placeholder={mode === "signup" ? "Password (optional)" : "Password"}
+                {message && <p className={`mt-3 text-sm ${status === "error" ? "text-red-600" : "text-zinc-600"}`}>{message}</p>}
     identifier: "",
     password: ""
 };
