@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { FaTimes, FaUserPlus, FaSignInAlt, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
+import { ENDPOINTS } from "../config/api";
 
 const initialSignup = {
     fullName: "",
@@ -33,8 +34,8 @@ export default function AuthModal({ open, onClose }) {
         const payload = mode === "signup" ? signupData : loginData;
         const text =
             mode === "signup"
-                ? `New Signup\\nName: ${payload.fullName}\\nEmail: ${payload.email}\\nPhone: ${payload.phone}`
-                : `New Login\\nEmail: ${payload.email}`;
+                ? `New Signup\nName: ${payload.fullName}\nEmail: ${payload.email}\nPhone: ${payload.phone}`
+                : `New Login\nEmail: ${payload.email}`;
         return `https://wa.me/${target}?text=${encodeURIComponent(text)}`;
     }, [mode, signupData, loginData]);
 
@@ -53,6 +54,41 @@ export default function AuthModal({ open, onClose }) {
             phone: payload.phone || "N/A",
             admin_email: CONTACT_INFO.primaryEmail
         });
+    };
+
+    const submitSignupToBackend = async () => {
+        const fullName = signupData.fullName.trim();
+        const phone = signupData.phone.trim();
+        const normalizedEmail = signupData.email.trim().toLowerCase();
+        const fallbackEmail = normalizedEmail || `${phone.replace(/\D/g, "") || "user"}@swastiksrijan.local`;
+
+        const payload = {
+            fullName,
+            email: fallbackEmail,
+            confirmEmail: fallbackEmail,
+            phone,
+            memberType: "general",
+            message: "Signup submitted from website auth modal"
+        };
+
+        console.log("[AuthModal] Signup submit payload", payload);
+
+        const response = await fetch(ENDPOINTS.MEMBER_SIGNUP, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        console.log("[AuthModal] Signup backend response", result);
+
+        if (!response.ok || result.status !== "success") {
+            throw new Error(result.message || "Signup request failed.");
+        }
+
+        return result;
     };
 
     const persistSession = () => {
@@ -74,14 +110,22 @@ export default function AuthModal({ open, onClose }) {
         setMessage("");
 
         try {
+            if (mode === "signup") {
+                await submitSignupToBackend();
+            }
+
             persistSession();
             await sendEmailNotification();
             setStatus("success");
-            setMessage("Account action successful. Admin notification links are ready below.");
+            setMessage(
+                mode === "signup"
+                    ? "Signup submitted successfully. Thank you for joining us."
+                    : "Account action successful. Admin notification links are ready below."
+            );
         } catch (error) {
-            console.error("Auth notify error", error);
+            console.error("Auth submit error", error);
             setStatus("error");
-            setMessage("Login/Signup saved, but auto-email failed. Please use WhatsApp/email buttons.");
+            setMessage(error.message || "Login/Signup failed. Please try again.");
         }
     };
 
@@ -127,9 +171,9 @@ export default function AuthModal({ open, onClose }) {
                     )}
 
                     <input
-                        required
+                        required={mode === "login"}
                         type="email"
-                        placeholder="Email"
+                        placeholder={mode === "signup" ? "Email (optional)" : "Email"}
                         value={mode === "signup" ? signupData.email : loginData.email}
                         onChange={(e) => mode === "signup"
                             ? setSignupData(prev => ({ ...prev, email: e.target.value }))
@@ -148,9 +192,9 @@ export default function AuthModal({ open, onClose }) {
                     )}
 
                     <input
-                        required
+                        required={mode === "login"}
                         type="password"
-                        placeholder="Password"
+                        placeholder={mode === "signup" ? "Password (optional)" : "Password"}
                         value={mode === "signup" ? signupData.password : loginData.password}
                         onChange={(e) => mode === "signup"
                             ? setSignupData(prev => ({ ...prev, password: e.target.value }))
@@ -168,7 +212,7 @@ export default function AuthModal({ open, onClose }) {
                     </button>
                 </form>
 
-                {message && <p className="mt-3 text-sm text-zinc-600">{message}</p>}
+                {message && <p className={`mt-3 text-sm ${status === "error" ? "text-red-600" : "text-zinc-600"}`}>{message}</p>}
 
                 <div className="grid grid-cols-2 gap-3 mt-4">
                     <a href={adminWhatsAppLink} target="_blank" rel="noreferrer" className="text-center py-2 rounded-xl bg-[#25D366] text-white font-semibold text-sm flex items-center justify-center gap-2">
