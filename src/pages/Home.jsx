@@ -15,7 +15,7 @@ import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
 
 
 // Import images
-const heroImage = "/images/uploads/community-banner.jpg";
+const heroImage = "/images/real/green-warriors-students.jpg";
 
 export default function Home() {
 
