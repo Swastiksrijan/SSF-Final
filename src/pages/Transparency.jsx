@@ -74,7 +74,7 @@ export default function Transparency() {
 
             {/* HER0 */}
             <PageHero
-                image="/images/real/academy-board-compliance.jpg"
+                image="/images/uploads/community-banner.jpg"
                 title="Transparency & Reports"
                 subtitle="Building trust through openness, accountability, and ethical governance."
                 hindiSubtitle="पारदर्शिता और रिपोर्ट - खुलेपन, जवाबदेही और नैतिक शासन के माध्यम से विश्वास का निर्माण।"

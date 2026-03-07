@@ -13,7 +13,7 @@ export default function UpcomingProjects() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/real/academy_banner_wide.jpg"
+        image="/images/uploads/community-banner.jpg"
         title="Building The Future"
         subtitle="Our vision for 2026 and beyond. Expanding our footprint, embracing technology, and deepening our impact across Bharat."
         hindiSubtitle="भविष्य का निर्माण - 2026 और उससे आगे की हमारी दृष्टि।"
@@ -399,7 +399,7 @@ export default function UpcomingProjects() {
           <div className="grid lg:grid-cols-2 gap-10 items-center bg-[#f8f9fa] p-10 rounded-[3rem] border border-zinc-100 shadow-sm">
             <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
               <img
-                src="/images/real/academy_banner_wide.jpg"
+                src="/images/uploads/community-banner.jpg"
                 alt="SSF National Academy Future Roadmap"
                 className="w-full h-auto"
               />

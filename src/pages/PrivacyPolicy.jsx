@@ -137,7 +137,7 @@ export default function PrivacyPolicy() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/real/academy-board-compliance.jpg"
+        image="/images/uploads/community-banner.jpg"
         title="Privacy Policy"
         subtitle="How Swastik Srijan Foundation protects and manages your information."
         hindiSubtitle="गोपनीयता नीति - हम आपकी जानकारी की सुरक्षा और प्रबंधन कैसे करते हैं।"

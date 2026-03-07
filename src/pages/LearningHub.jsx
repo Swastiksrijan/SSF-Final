@@ -419,7 +419,7 @@ export default function LearningHub() {
           </div>
           <div className="rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
             <img
-              src="/images/real/academy-board-compliance.jpg"
+              src="/images/uploads/community-banner.jpg"
               alt="SSF National Academy Official Board and Compliance"
               className="w-full h-auto group-hover:scale-105 transition-transform duration-1000"
             />

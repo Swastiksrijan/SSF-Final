@@ -81,7 +81,7 @@ export default function RegistrationDetails() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/real/academy-board-compliance.jpg"
+        image="/images/uploads/community-banner.jpg"
         title="Registration Details"
         subtitle="Official legal registration and governance information of Swastik Srijan Foundation."
         hindiSubtitle="पंजीकरण विवरण - स्वास्तिक सृजन फाउंडेशन की आधिकारिक कानूनी पंजीकरण और शासन जानकारी।"
@@ -161,7 +161,7 @@ export default function RegistrationDetails() {
             </p>
             <div className="max-w-4xl mx-auto rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white mb-16 group">
               <img
-                src="/images/real/academy-board-compliance.jpg"
+                src="/images/uploads/community-banner.jpg"
                 alt="SSF National Academy Official Board - Registration & Compliance"
                 className="w-full h-auto group-hover:scale-105 transition-transform duration-700"
               />

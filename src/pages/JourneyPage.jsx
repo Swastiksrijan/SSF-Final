@@ -7,7 +7,7 @@ export default function JourneyPage() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/real/ssf_event_members.jpg"
+        image="/images/uploads/community-banner.jpg"
         title="Our Journey & Impact"
         subtitle="A journey of commitment, compassion, and measurable change across communities in India."
         hindiSubtitle="हमारी यात्रा और प्रभाव - भारत के विभिन्न समुदायों में प्रतिबद्धता, करुणा और मापने योग्य परिवर्तन की एक यात्रा।"
@@ -17,7 +17,7 @@ export default function JourneyPage() {
       <section className="pb-10 px-4">
         <div className="max-w-6xl mx-auto rounded-3xl overflow-hidden shadow-2xl border border-zinc-100">
           <img
-            src="/images/real/ssf_event_members.jpg"
+            src="/images/uploads/community-banner.jpg"
             alt="Swastik Srijan Foundation Leadership and Journey"
             className="w-full h-full object-cover"
           />

@@ -123,7 +123,7 @@ export default function ImpactPage() {
             <section className="relative w-full bg-zinc-50 pt-28 pb-12 flex items-center justify-center min-h-[60vh]">
                 <div className="container mx-auto px-4 h-full flex items-center justify-center">
                     <img
-                        src="/images/real/foundation_banner.jpg"
+                        src="/images/uploads/community-banner.jpg"
                         alt="Impact - SSF Vaccine Awareness Newspaper Clipping"
                         className="w-full h-auto max-h-[80vh] object-contain shadow-lg rounded-lg"
                     />
@@ -516,7 +516,7 @@ export default function ImpactPage() {
                             whileInView={{ opacity: 1, scale: 1 }}
                             className="rounded-3xl overflow-hidden shadow-lg h-[400px]"
                         >
-                            <img src="/images/real/ssf_event_members.jpg" alt="SSF Community Group" className="w-full h-full object-cover" />
+                            <img src="/images/uploads/community-banner.jpg" alt="SSF Community Group" className="w-full h-full object-cover" />
                         </motion.div>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}

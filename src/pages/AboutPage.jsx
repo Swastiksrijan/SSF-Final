@@ -11,7 +11,7 @@ export default function AboutPage() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/real/office_banner.jpg"
+        image="/images/uploads/community-banner.jpg"
         title="Who We Are"
         subtitle="Empowering communities through grassroots governance and sustainable development."
         hindiSubtitle="शिक्षा, स्वास्थ्य और सशक्तिकरण के माध्यम से सामुदायिक विकास।"
@@ -89,7 +89,7 @@ export default function AboutPage() {
               className="rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white"
             >
               <OptimizedImage
-                src="/images/real/ssf_event_members.jpg"
+                src="/images/uploads/community-banner.jpg"
                 alt="SSF Team and Core Members"
                 className="w-full h-full object-cover"
               />
