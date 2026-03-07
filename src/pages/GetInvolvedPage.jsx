@@ -119,7 +119,7 @@ export default function GetInvolvedPage() {
             {/* ================= HERO ================= */}
             <section className="relative w-full h-[60vh] overflow-hidden pt-20">
                 <img
-                    src="/images/uploads/get-involved-banner.jpg"
+                    src="/images/real/children-mat-session.jpg"
                     alt="Get Involved"
                     className="w-full h-full object-cover"
                 />

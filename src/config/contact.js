@@ -7,9 +7,9 @@ export const CONTACT_INFO = {
     primaryEmail: "info@swastiksrijan.in",
     presidentEmail: "president@swastiksrijan.in",
     backupEmail: "swastiksrijanfoundation@gmail.com",
-    secondaryEmail: "info@swastiksrijan.org",
+    secondaryEmail: "info@swastiksrijan.in",
     techIssueNote: "Temp. Tech-issue",
-    privacyEmail: "privacy@swastiksrijan.org", // Dedicated privacy email for legal pages
+    privacyEmail: "privacy@swastiksrijan.in", // Dedicated privacy email for legal pages
 
     // Phone Numbers
     phones: {
@@ -42,7 +42,7 @@ export const CONTACT_INFO = {
     // Legal/DPO Info
     dataProtectionOfficer: {
         name: "Secretary, Swastik Srijan Foundation",
-        email: "privacy@swastiksrijan.org",
+        email: "privacy@swastiksrijan.in",
         phone: "+91 9718346691",
     }
 };
