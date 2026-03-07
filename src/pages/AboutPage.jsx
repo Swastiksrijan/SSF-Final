@@ -11,7 +11,7 @@ export default function AboutPage() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/who-we-are-hero.png"
+        image="/images/real/office_banner.jpg"
         title="Who We Are"
         subtitle="Empowering communities through grassroots governance and sustainable development."
         hindiSubtitle="शिक्षा, स्वास्थ्य और सशक्तिकरण के माध्यम से सामुदायिक विकास।"

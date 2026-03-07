@@ -57,7 +57,7 @@ export default function GetInvolvedPage() {
             {/* ================= HERO ================= */}
             <section className="relative w-full h-[60vh] overflow-hidden pt-20">
                 <img
-                    src="/images/community-team-group.jpg"
+                    src="/images/real/ssf_event_members.jpg"
                     alt="Get Involved"
                     className="w-full h-full object-cover"
                 />
@@ -157,7 +157,7 @@ export default function GetInvolvedPage() {
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <div className="lg:col-span-2 rounded-[3rem] overflow-hidden shadow-xl h-[400px]">
-                            <img src="/images/children-unity-park.jpg" alt="Children Unity" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                            <img src="/images/real/children-playing-park.jpg" alt="Children Unity" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                         </div>
                         <div className="rounded-[3rem] overflow-hidden shadow-xl h-[400px]">
                             <img src="/images/slum-outreach-children.jpg" alt="Slum Outreach" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />

@@ -44,7 +44,7 @@ export default function StoryModal({ story, isOpen, onClose, lang, onToggleLang 
                             {/* Image Section */}
                             <div className="lg:w-2/5 relative min-h-[300px] lg:min-h-full bg-zinc-100">
                                 <img
-                                    src={story.img || "/images/placeholder.jpg"}
+                                    src={story.img || "/images/real/children-gathering.jpg"}
                                     alt={story.title[lang] || story.title.en}
                                     className="absolute inset-0 w-full h-full object-cover"
                                 />

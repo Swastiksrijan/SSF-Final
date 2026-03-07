@@ -77,7 +77,7 @@ export default function Campaign() {
     <section className="bg-white font-inria min-h-screen">
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/real/children-unity-park.jpg"
+        image="/images/real/children-playing-park.jpg"
         title="Driving Holistic Change"
         subtitle="We focus on five key pillars of development to transform lives and empower communities."
         hindiSubtitle="समग्र विकास के माध्यम से जीवन परिवर्तन और सामुदायिक सशक्तिकरण।"

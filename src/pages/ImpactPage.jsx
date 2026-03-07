@@ -512,7 +512,7 @@ export default function ImpactPage() {
                             whileInView={{ opacity: 1, scale: 1 }}
                             className="rounded-3xl overflow-hidden shadow-lg h-[400px]"
                         >
-                            <img src="/images/community-team-group.jpg" alt="SSF Community Group" className="w-full h-full object-cover" />
+                            <img src="/images/real/ssf_event_members.jpg" alt="SSF Community Group" className="w-full h-full object-cover" />
                         </motion.div>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}

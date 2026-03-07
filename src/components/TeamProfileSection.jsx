@@ -38,7 +38,7 @@ export default function TeamProfileSection() {
         >
           <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto overflow-hidden rounded-full border-2 border-[#fb8500]/20 group-hover:border-[#fb8500] transition-colors duration-300 shadow-sm group-hover:shadow-md">
             <img
-              src={member.img || "/images/team/placeholder.jpg"}
+              src={member.img || "/images/real/coordinator-ramesh.jpg"}
               alt={member.name}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />

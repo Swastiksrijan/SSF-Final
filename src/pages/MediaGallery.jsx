@@ -375,7 +375,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch2_01",
-    src: "/images/community-team-group.jpg",
+    src: "/images/real/ssf_event_members.jpg",
     category: "Events",
     year: "2024",
     alt: "SSF Community members and team group photo during field visit",
@@ -447,7 +447,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch4_01",
-    src: "/images/children-unity-park.jpg",
+    src: "/images/real/children-playing-park.jpg",
     category: "Events",
     year: "2024",
     alt: "Children holding hands in a park - Unity and teamwork",

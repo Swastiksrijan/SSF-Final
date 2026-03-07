@@ -61,7 +61,7 @@ export default function Volunteer() {
     <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/volunteers.png"
+        image="/images/real/ngo_event_1.jpg"
         title="Volunteer With Us"
         subtitle="Join a community of over 500+ volunteers across Bharat who are dedicated to the wellness of every human being."
         hindiSubtitle="सेवा ही परमो धर्म:"

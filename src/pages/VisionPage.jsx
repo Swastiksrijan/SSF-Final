@@ -8,12 +8,12 @@ export default function VisionPage() {
     return (
         <div className="w-full bg-white overflow-hidden">
             <PageHero
-                image="/images/uploads/mission_vision.jpeg"
+                image="/images/real/leadership.jpg"
                 altTitle="Our Vision"
                 height="min-h-[60vh]"
-                objectFit="contain"
-                imageClass="w-full h-full bg-white"
-                overlayOpacity="bg-transparent"
+                objectFit="cover"
+                imageClass="w-full h-full"
+                overlayOpacity="bg-black/30"
             />
 
             {/* ================= VISION STATEMENT ================= */}

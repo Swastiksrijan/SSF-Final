@@ -92,7 +92,7 @@ export default function Campaigns() {
         <section className="bg-white font-inria min-h-screen">
             {/* ================= HERO ================= */}
             <PageHero
-                image="/images/uploads/childhood-hero.webp"
+                image="/images/real/children-gathering.jpg"
                 title="Our Campaigns"
                 subtitle="Swastik Srijan Foundation conducts various campaigns to raise awareness, encourage community participation, and address important social, educational, health, and environmental issues."
                 hindiSubtitle="हमारे अभियान - समुदायों का सशक्तिकरण, जीवन का परिवर्तन"
