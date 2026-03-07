@@ -227,9 +227,10 @@ export default function MissionPage() {
                   The Journey | हमारा लक्ष्य
                 </span>
 
-                <h3 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
+                <h3 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">
                   Our Mission
                 </h3>
+                <p className="text-blue-100/90 text-sm md:text-base mb-6">Our Journey – From Beginning to Impact.</p>
 
                 <div className="space-y-6">
                   <p className="text-xl md:text-2xl text-white font-medium leading-relaxed">
@@ -547,14 +548,14 @@ export default function MissionPage() {
             to="/Volunteer"
             className="w-full sm:w-auto px-8 py-4 bg-[#fb8500] text-white rounded-xl font-bold hover:bg-[#e67a00] transition-colors"
           >
-            Volunteer With Us
+            Volunteer
           </Link>
 
           <Link
             to="/Donate"
             className="w-full sm:w-auto px-8 py-4 bg-white text-[#002344] rounded-xl font-bold hover:bg-zinc-100 transition-colors"
           >
-            Support Our Work
+            Donate
           </Link>
 
           <Link
