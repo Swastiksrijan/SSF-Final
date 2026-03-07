@@ -11,12 +11,12 @@ export default function AboutPage() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/real/green-warriors-students.jpg"
+        image="/images/real/office_banner.jpg"
         title="Who We Are"
         subtitle="Empowering communities through grassroots governance and sustainable development."
         hindiSubtitle="शिक्षा, स्वास्थ्य और सशक्तिकरण के माध्यम से सामुदायिक विकास।"
         height="h-[28vh] md:min-h-[60vh]"
-        objectPosition="center"
+        objectPosition="top"
         overlayOpacity="bg-black/85 md:bg-black/50"
       />
 

@@ -15,7 +15,7 @@ import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
 
 
 // Import images
-const heroImage = "/images/real/green-warriors-students.jpg";
+const heroImage = "/images/real/foundation_banner.jpg";
 
 export default function Home() {
 
@@ -34,7 +34,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <OptimizedImage
             src={heroImage}
-            alt="Children learning and growing in rural community"
+            alt="Swastik Srijan Foundation Community"
             className="w-full h-full object-cover brightness-[0.85] contrast-[1.1]"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#001529] via-[#001529]/50 to-transparent"></div>
