@@ -7,7 +7,7 @@ import { FaEye, FaTimes, FaFilter, FaCamera } from "react-icons/fa";
 const ALL_IMAGES = [
   {
     id: "new_upload_01",
-    src: "/images/classroom-session.png",
+    src: "/images/real/classroom-floor-seating.jpg",
     category: "Education",
     year: "2024",
     alt: "Classroom interactive session with students",
@@ -23,7 +23,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_03_poster",
-    src: "/images/sthaniya-yojana-portal.png",
+    src: "/images/real/bank-account-success.jpg",
     category: "Events",
     year: "2024",
     alt: "Poster campaign for Local Planning Portal awareness",
@@ -39,7 +39,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_05",
-    src: "/images/community-meeting.jpg",
+    src: "/images/real/community-education-meeting.jpg",
     category: "Women Empowerment",
     year: "2024",
     alt: "Village community meeting and SHG discussion",
@@ -47,7 +47,7 @@ const ALL_IMAGES = [
   },
   {
     id: "riya_edu",
-    src: "/images/riya-education.png",
+    src: "/images/real/student-leadership-recitation.jpg",
     category: "Education",
     year: "2024",
     alt: "Riya and other children participating in education session",
@@ -55,7 +55,7 @@ const ALL_IMAGES = [
   },
   {
     id: "prot_eco",
-    src: "/images/protection-ecosystem.png",
+    src: "/images/real/direct-aid-mask.jpg",
     category: "Events",
     year: "2024",
     alt: "Children awareness and protection program",
@@ -63,7 +63,7 @@ const ALL_IMAGES = [
   },
   {
     id: "dis_relief",
-    src: "/images/disaster-relief.jpg",
+    src: "/images/real/hope-in-crisis-food-distribution.jpg",
     category: "Health",
     year: "2024",
     alt: "Crisis intervention and community support",
@@ -167,7 +167,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_4",
-    src: "/images/uploads/railway-initiative.jpg",
+    src: "/images/real/news_media_1.jpg",
     category: "Events",
     year: "2025",
     alt: "Institutional Initiative for Railway Reforms",
@@ -175,7 +175,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_5",
-    src: "/images/uploads/learning-hub-1.jpg",
+    src: "/images/real/classroom-floor-seating.jpg",
     category: "Education",
     year: "2024",
     alt: "SSF Learning Hub - Classroom Session",
@@ -183,7 +183,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_6",
-    src: "/images/uploads/learning-hub-2.jpg",
+    src: "/images/real/student-leadership-recitation.jpg",
     category: "Education",
     year: "2024",
     alt: "SSF Learning Hub - Study Group",
@@ -191,7 +191,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_7",
-    src: "/images/uploads/community-banner.jpg",
+    src: "/images/real/community-rally-children.jpg",
     category: "Events",
     year: "2024",
     alt: "Community Awareness Drive",
@@ -199,7 +199,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_1",
-    src: "/images/uploads/community-gathering.jpg",
+    src: "/images/real/community-education-meeting.jpg",
     category: "Events",
     year: "2024",
     alt: "Community Gathering and Cultural Event",
@@ -207,7 +207,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_2",
-    src: "/images/uploads/tree-planting.jpg",
+    src: "/images/real/tree_planting_2.jpg",
     category: "Distribution",
     year: "2024",
     alt: "Tree Plantation Drive for Environmental Sustainability",
@@ -335,7 +335,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_355_1",
-    src: "/images/rural-education.jpg",
+    src: "/images/real/classroom-floor-seating.jpg",
     category: "Education",
     year: "2024",
     alt: "Rural education session with children and workbooks",
@@ -343,7 +343,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_355_2",
-    src: "/images/cvc-certificate.jpg",
+    src: "/images/real/ncw_pledge_certificate.jpg",
     category: "Events",
     year: "2024",
     alt: "Central Vigilance Commission Pledge Certificate for SSF",
@@ -351,7 +351,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_355_3",
-    src: "/images/ssf-team.jpg",
+    src: "/images/real/ssf_event_members.jpg",
     category: "Events",
     year: "2024",
     alt: "SSF Team members and core working group",
@@ -359,7 +359,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_355_4",
-    src: "/images/tree-planting-1.jpg",
+    src: "/images/real/tree_plantation.jpg",
     category: "Distribution",
     year: "2024",
     alt: "Volunteer planting a sapling with protective cage",
@@ -375,7 +375,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch2_01",
-    src: "/images/community-team-group.jpg",
+    src: "/images/real/ssf_event_members.jpg",
     category: "Events",
     year: "2024",
     alt: "SSF Community members and team group photo during field visit",
@@ -383,7 +383,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch2_02",
-    src: "/images/health-program-masks.jpg",
+    src: "/images/real/rural-mask-distribution.jpg",
     category: "Health",
     year: "2021",
     alt: "Health awareness and protocol meeting with masks",
@@ -391,7 +391,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch2_03",
-    src: "/images/education-material-exchange.jpg",
+    src: "/images/real/classroom-group-poster.jpg",
     category: "Education",
     year: "2024",
     alt: "Children exchanging educational materials at SSF center",
@@ -407,7 +407,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch2_05",
-    src: "/images/merit-scholarship-distribution.jpg",
+    src: "/images/real/scholarship_distribution.jpg",
     category: "Education",
     year: "2024",
     alt: "Scholarship and merit award distribution to students",
@@ -415,7 +415,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch3_01",
-    src: "/images/direct-relief-women.jpg",
+    src: "/images/real/gorakhpur-woman-aid.jpg",
     category: "Women Empowerment",
     year: "2024",
     alt: "Direct material support distribution to rural women",
@@ -423,7 +423,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch3_02",
-    src: "/images/cow-rescue-mission.jpg",
+    src: "/images/real/cow-rescue.jpg",
     category: "Events",
     year: "2024",
     alt: "SSF volunteers rescuing a cow from a ditch - Animal welfare in action",
@@ -431,7 +431,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch3_03",
-    src: "/images/children-exercise-session.jpg",
+    src: "/images/real/park-activity-session.jpg",
     category: "Health",
     year: "2024",
     alt: "Morning exercise and physical health session for rural students",
@@ -439,7 +439,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch3_04",
-    src: "/images/cultural-event-children.jpg",
+    src: "/images/real/community-bhajan.jpg",
     category: "Events",
     year: "2024",
     alt: "Children participating in a cultural performance on stage",
@@ -447,7 +447,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch4_01",
-    src: "/images/children-unity-park.jpg",
+    src: "/images/real/children-playing-park.jpg",
     category: "Events",
     year: "2024",
     alt: "Children holding hands in a park - Unity and teamwork",
@@ -455,7 +455,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch4_02",
-    src: "/images/slum-outreach-children.jpg",
+    src: "/images/real/children-gathering.jpg",
     category: "Education",
     year: "2024",
     alt: "Outreach program with children in urban settlements",
@@ -463,7 +463,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch4_03",
-    src: "/images/rural-children-raising-hands.jpg",
+    src: "/images/real/green-warriors-students.jpg",
     category: "Events",
     year: "2024",
     alt: "Enthusiastic rural children raising hands during a community meet",
@@ -471,7 +471,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch4_04",
-    src: "/images/slum-area-outreach.jpg",
+    src: "/images/real/rural-awareness.jpg",
     category: "Events",
     year: "2024",
     alt: "Community outreach session in a local neighborhood",
@@ -479,7 +479,7 @@ const ALL_IMAGES = [
   },
   {
     id: "batch4_05",
-    src: "/images/classroom-mat-session.jpg",
+    src: "/images/real/children-mat-session.jpg",
     category: "Education",
     year: "2024",
     alt: "Interative learning session on mats with a teacher",

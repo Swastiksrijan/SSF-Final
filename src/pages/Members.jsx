@@ -66,7 +66,7 @@ const Members = () => {
       <section className="relative h-[80vh] flex items-center justify-center bg-[#001529] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src="/images/uploads/members-group.jpg"
+            src="/images/real/green-warriors-students.jpg"
             alt="Swastik Srijan Members Group"
             className="w-full h-full object-cover opacity-60"
           />

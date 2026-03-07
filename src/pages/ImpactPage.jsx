@@ -38,7 +38,7 @@ export default function ImpactPage() {
         },
         {
             icon: <FaUniversity />,
-            image: "/images/academy/academy-roadmap.jpg",
+            image: "/images/real/academy_banner_wide.jpg",
             title: "The SSF National Academy",
             titleHi: "एसएसएफ नेशनल अकादमी",
             desc: "Our flagship knowledge hub for future leaders, focusing on academic excellence and professional growth.",
@@ -115,14 +115,16 @@ export default function ImpactPage() {
         }
     ];
 
+    const featuredProgram = programs?.[0] || null;
+
     return (
         <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
             {/* ================= HERO ================= */}
             <section className="relative w-full bg-zinc-50 pt-28 pb-12 flex items-center justify-center min-h-[60vh]">
                 <div className="container mx-auto px-4 h-full flex items-center justify-center">
                     <img
-                        src="/images/uploads/impact-hero-banner.jpg"
-                        alt="Impact - SSF Vaccine Awareness Newspaper Clipping"
+                        src="/images/real/green-warriors-students.jpg"
+                        alt="Children learning and growing in rural community"
                         className="w-full h-auto max-h-[80vh] object-contain shadow-lg rounded-lg"
                     />
                 </div>
@@ -184,13 +186,14 @@ export default function ImpactPage() {
                     </div>
 
                     {/* Featured Program - Flagship Layout */}
+                    {featuredProgram && (
                     <div className="bg-white rounded-[3.5rem] p-4 md:p-8 border border-zinc-200 shadow-xl overflow-hidden mb-16 group">
                         <div className="flex flex-col lg:flex-row items-center gap-12">
                             {/* Image Column */}
                             <div className="lg:w-1/2 w-full h-[400px] md:h-[600px] rounded-[2.5rem] overflow-hidden relative shadow-2xl">
                                 <img
-                                    src={programs[0].image}
-                                    alt={programs[0].title}
+                                    src={featuredProgram?.image}
+                                    alt={featuredProgram?.title || "Featured Program"}
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
@@ -205,32 +208,33 @@ export default function ImpactPage() {
                                 <div className="space-y-6">
                                     <div className="space-y-2">
                                         <h3 className="text-4xl md:text-6xl font-serif font-bold text-[#002344] leading-tight group-hover:text-[#FF6600] transition-colors">
-                                            {programs[0].title}
+                                            {featuredProgram?.title || "Our Flagship Initiative"}
                                         </h3>
-                                        <h4 className="text-2xl font-hindi text-zinc-400 font-medium">{programs[0].titleHi}</h4>
+                                        <h4 className="text-2xl font-hindi text-zinc-400 font-medium">{featuredProgram?.titleHi || "हमारी प्रमुख पहल"}</h4>
                                     </div>
                                     <p className="text-xl text-zinc-600 leading-relaxed font-medium">
-                                        "{programs[0].desc}"
+                                        "{featuredProgram?.desc || "Community-led impact initiative."}"
                                     </p>
                                     <p className="text-lg font-hindi text-zinc-400 italic">
-                                        {programs[0].descHi}
+                                        {featuredProgram?.descHi || "समुदाय आधारित प्रभावशाली पहल"}
                                     </p>
                                 </div>
 
                                 <div className="pt-10 border-t border-zinc-100 flex flex-wrap gap-6 items-center">
-                                    {programs[0].customButtons.map((btn, idx) => (
+                                    {(featuredProgram?.customButtons || []).map((btn, idx) => (
                                         <Link
                                             key={idx}
-                                            to={btn.link}
+                                            to={btn?.link || "/Donate"}
                                             className={`px-8 py-4 rounded-2xl font-bold transition-all shadow-xl flex items-center gap-3 uppercase tracking-wider text-[10px] ${idx === 0 ? 'bg-[#002344] text-white hover:bg-[#FF6600]' : 'bg-white border-2 border-zinc-100 text-zinc-600 hover:border-[#002344] hover:text-[#002344]'}`}
                                         >
-                                            {btn.label.replace('🔘 ', '')} <FaArrowRight />
+                                            {(btn?.label || 'Know More').replace('🔘 ', '')} <FaArrowRight />
                                         </Link>
                                     ))}
                                 </div>
                             </div>
                         </div>
                     </div>
+                    )}
 
                     {/* Button to expand or show more */}
                     {!showAllPrograms ? (
@@ -302,15 +306,15 @@ export default function ImpactPage() {
                                                 )}
                                             </div>
 
-                                            {program.customButtons ? (
+                                            {Array.isArray(program.customButtons) && program.customButtons.length > 0 ? (
                                                 <div className="flex flex-col gap-2 mb-6">
-                                                    {program.customButtons.map((btn, idx) => (
+                                                    {program.customButtons.filter((btn) => btn?.link).map((btn, idx) => (
                                                         <Link
                                                             key={idx}
-                                                            to={btn.link}
+                                                            to={btn?.link || "/Donate"}
                                                             className="w-full py-3 px-4 bg-white/80 backdrop-blur-sm border border-zinc-200 rounded-xl text-[10px] font-black text-center text-[#002344] hover:bg-[#002344] hover:text-white transition-all flex items-center justify-center gap-2 group/btn uppercase tracking-widest shadow-sm"
                                                         >
-                                                            {btn.label.replace('🔘 ', '')}
+                                                            {(btn?.label || 'Know More').replace('🔘 ', '')}
                                                             <FaArrowRight className="text-[8px] group-hover/btn:translate-x-1 transition-transform" />
                                                         </Link>
                                                     ))}
@@ -512,21 +516,21 @@ export default function ImpactPage() {
                             whileInView={{ opacity: 1, scale: 1 }}
                             className="rounded-3xl overflow-hidden shadow-lg h-[400px]"
                         >
-                            <img src="/images/community-team-group.jpg" alt="SSF Community Group" className="w-full h-full object-cover" />
+                            <img src="/images/real/green-warriors-students.jpg" alt="SSF Community Group" className="w-full h-full object-cover" />
                         </motion.div>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             className="rounded-3xl overflow-hidden shadow-lg h-[400px]"
                         >
-                            <img src="/images/children-exercise-session.jpg" alt="Health & Fitness" className="w-full h-full object-cover" />
+                            <img src="/images/real/park-activity-session.jpg" alt="Health & Fitness" className="w-full h-full object-cover" />
                         </motion.div>
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1 }}
                             className="rounded-3xl overflow-hidden shadow-lg h-[400px]"
                         >
-                            <img src="/images/cultural-event-children.jpg" alt="Cultural Enrichment" className="w-full h-full object-cover" />
+                            <img src="/images/real/community-bhajan.jpg" alt="Cultural Enrichment" className="w-full h-full object-cover" />
                         </motion.div>
                     </div>
                 </div>

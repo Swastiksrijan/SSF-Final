@@ -9,7 +9,7 @@ export default function SkillPrograms() {
 
             {/* ================= HERO ================= */}
             <PageHero
-                image="/images/real/women_empowerment_tailoring.jpg"
+                image="/images/real/green-warriors-students.jpg"
                 title="Skill & Career Programs"
                 subtitle="Bridging the gap between education and employment. Transforming youth into industry-ready professionals."
                 hindiSubtitle="कौशल और करियर कार्यक्रम - शिक्षा और रोजगार के बीच की दूरी कम करना।"
@@ -20,7 +20,7 @@ export default function SkillPrograms() {
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                     <div className="order-2 md:order-1 relative rounded-2xl overflow-hidden shadow-2xl group">
                         <img
-                            src="/images/real/women_empowerment_tailoring.jpg"
+                            src="/images/real/green-warriors-students.jpg"
                             alt="Women receiving tailoring training"
                             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                         />

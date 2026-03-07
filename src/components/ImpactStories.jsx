@@ -10,7 +10,9 @@ export default function ImpactStories() {
     const [lang, setLang] = useState('en');
 
     // Featuring "Dreams Taking Flight" as requested
-    const featuredStory = stories[2];
+    const featuredStory = stories?.[2] || stories?.[0] || null;
+
+    if (!featuredStory) return null;
 
     const toggleLang = () => setLang(prev => prev === 'en' ? 'hi' : 'en');
 
@@ -41,13 +43,13 @@ export default function ImpactStories() {
                         {/* Image Column */}
                         <div className="lg:w-1/2 w-full h-[400px] md:h-[600px] rounded-[2.5rem] overflow-hidden relative shadow-2xl">
                             <img
-                                src={featuredStory.img}
-                                alt={featuredStory.title.en}
+                                src={featuredStory?.img || "/images/real/children-gathering.jpg"}
+                                alt={featuredStory?.title?.en || "Impact story"}
                                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                             />
                             <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent"></div>
                             <span className="absolute bottom-8 left-8 bg-[#fb8500] text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg">
-                                {featuredStory.category}
+                                {featuredStory?.category || "Impact"}
                             </span>
                         </div>
 
@@ -56,10 +58,10 @@ export default function ImpactStories() {
                             <FaQuoteLeft className="text-[#fb8500] opacity-20 text-7xl" />
                             <div className="space-y-6">
                                 <h3 className="text-4xl md:text-6xl font-serif font-bold text-[#002344] leading-tight group-hover:text-[#fb8500] transition-colors">
-                                    {featuredStory.title.en}
+                                    {featuredStory?.title?.en || "Story of Change"}
                                 </h3>
                                 <p className="text-2xl text-zinc-600 leading-relaxed font-medium italic">
-                                    "{featuredStory.desc.en}"
+                                    "{featuredStory?.desc?.en || "Real stories from the field."}"
                                 </p>
                             </div>
 

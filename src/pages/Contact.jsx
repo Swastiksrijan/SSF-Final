@@ -124,7 +124,7 @@ export default function Contact() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/real/community-team-group.jpg"
+        image="/images/real/green-warriors-students.jpg"
         title="Connect for Change"
         subtitle="Reach out to Swastik Srijan Foundation to explore collaborations and partnerships."
         hindiSubtitle="बदलाव के लिए हमसे जुड़ें - आपके सवाल और सुझाव हमारे लिए महत्वपूर्ण हैं।"

@@ -61,7 +61,7 @@ export default function Volunteer() {
     <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/volunteers.png"
+        image="/images/real/green-warriors-students.jpg"
         title="Volunteer With Us"
         subtitle="Join a community of over 500+ volunteers across Bharat who are dedicated to the wellness of every human being."
         hindiSubtitle="सेवा ही परमो धर्म:"
@@ -159,7 +159,7 @@ export default function Volunteer() {
           <div className="lg:w-1/2 relative">
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-orange-100 rounded-full blur-3xl opacity-50"></div>
             <div className="relative rounded-[3rem] overflow-hidden shadow-2xl skew-y-1">
-              <img src="/images/real/ngo_event_1.jpg" alt="Volunteer Impact" className="w-full h-auto" />
+              <img src="/images/real/green-warriors-students.jpg" alt="Volunteer Impact" className="w-full h-auto" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#001529] via-transparent to-transparent opacity-60"></div>
               <div className="absolute bottom-10 left-10 text-white">
                 <p className="text-2xl font-bold">"सेवा ही परमो धर्म:"</p>
