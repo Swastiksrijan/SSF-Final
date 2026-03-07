@@ -120,12 +120,12 @@ export default function ImpactPage() {
     return (
         <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
             {/* ================= HERO ================= */}
-            <section className="relative w-full bg-zinc-50 pt-28 pb-12 flex items-center justify-center min-h-[60vh]">
-                <div className="container mx-auto px-4 h-full flex items-center justify-center">
+            <section className="relative w-full bg-zinc-50 pt-24 md:pt-28 pb-8 md:pb-12 min-h-[55vh] md:min-h-[65vh] overflow-hidden">
+                <div className="container mx-auto px-4 h-full">
                     <img
                         src="/images/real/green-warriors-students.jpg"
                         alt="Children learning and growing in rural community"
-                        className="w-full h-auto max-h-[80vh] object-contain shadow-lg rounded-lg"
+                        className="w-full h-[55vh] md:h-[65vh] object-cover object-center shadow-lg rounded-lg"
                     />
                 </div>
             </section>

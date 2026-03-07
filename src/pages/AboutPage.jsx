@@ -16,7 +16,7 @@ export default function AboutPage() {
         subtitle="Empowering communities through grassroots governance and sustainable development."
         hindiSubtitle="शिक्षा, स्वास्थ्य और सशक्तिकरण के माध्यम से सामुदायिक विकास।"
         height="h-[28vh] md:min-h-[60vh]"
-        objectPosition="top"
+        objectPosition="center"
         overlayOpacity="bg-black/85 md:bg-black/50"
       />
 
