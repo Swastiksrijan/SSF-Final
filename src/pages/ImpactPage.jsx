@@ -115,6 +115,8 @@ export default function ImpactPage() {
         }
     ];
 
+    const featuredProgram = programs?.[0] || null;
+
     return (
         <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
             {/* ================= HERO ================= */}
@@ -184,13 +186,14 @@ export default function ImpactPage() {
                     </div>
 
                     {/* Featured Program - Flagship Layout */}
+                    {featuredProgram && (
                     <div className="bg-white rounded-[3.5rem] p-4 md:p-8 border border-zinc-200 shadow-xl overflow-hidden mb-16 group">
                         <div className="flex flex-col lg:flex-row items-center gap-12">
                             {/* Image Column */}
                             <div className="lg:w-1/2 w-full h-[400px] md:h-[600px] rounded-[2.5rem] overflow-hidden relative shadow-2xl">
                                 <img
-                                    src={programs[0].image}
-                                    alt={programs[0].title}
+                                    src={featuredProgram?.image}
+                                    alt={featuredProgram?.title || "Featured Program"}
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
@@ -205,32 +208,33 @@ export default function ImpactPage() {
                                 <div className="space-y-6">
                                     <div className="space-y-2">
                                         <h3 className="text-4xl md:text-6xl font-serif font-bold text-[#002344] leading-tight group-hover:text-[#FF6600] transition-colors">
-                                            {programs[0].title}
+                                            {featuredProgram?.title || "Our Flagship Initiative"}
                                         </h3>
-                                        <h4 className="text-2xl font-hindi text-zinc-400 font-medium">{programs[0].titleHi}</h4>
+                                        <h4 className="text-2xl font-hindi text-zinc-400 font-medium">{featuredProgram?.titleHi || "हमारी प्रमुख पहल"}</h4>
                                     </div>
                                     <p className="text-xl text-zinc-600 leading-relaxed font-medium">
-                                        "{programs[0].desc}"
+                                        "{featuredProgram?.desc || "Community-led impact initiative."}"
                                     </p>
                                     <p className="text-lg font-hindi text-zinc-400 italic">
-                                        {programs[0].descHi}
+                                        {featuredProgram?.descHi || "समुदाय आधारित प्रभावशाली पहल"}
                                     </p>
                                 </div>
 
                                 <div className="pt-10 border-t border-zinc-100 flex flex-wrap gap-6 items-center">
-                                    {(programs?.[0]?.customButtons || []).map((btn, idx) => (
+                                    {(featuredProgram?.customButtons || []).map((btn, idx) => (
                                         <Link
                                             key={idx}
                                             to={btn.link}
                                             className={`px-8 py-4 rounded-2xl font-bold transition-all shadow-xl flex items-center gap-3 uppercase tracking-wider text-[10px] ${idx === 0 ? 'bg-[#002344] text-white hover:bg-[#FF6600]' : 'bg-white border-2 border-zinc-100 text-zinc-600 hover:border-[#002344] hover:text-[#002344]'}`}
                                         >
-                                            {btn.label.replace('🔘 ', '')} <FaArrowRight />
+                                            {(btn?.label || 'Know More').replace('🔘 ', '')} <FaArrowRight />
                                         </Link>
                                     ))}
                                 </div>
                             </div>
                         </div>
                     </div>
+                    )}
 
                     {/* Button to expand or show more */}
                     {!showAllPrograms ? (
