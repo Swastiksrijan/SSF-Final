@@ -123,8 +123,8 @@ export default function ImpactPage() {
             <section className="relative w-full bg-zinc-50 pt-28 pb-12 flex items-center justify-center min-h-[60vh]">
                 <div className="container mx-auto px-4 h-full flex items-center justify-center">
                     <img
-                        src="/images/uploads/community-banner.jpg"
-                        alt="Impact - SSF Vaccine Awareness Newspaper Clipping"
+                        src="/images/real/green-warriors-students.jpg"
+                        alt="Children learning and growing in rural community"
                         className="w-full h-auto max-h-[80vh] object-contain shadow-lg rounded-lg"
                     />
                 </div>
