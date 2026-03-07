@@ -194,7 +194,7 @@ export default function Internship() {
                         >
                             <div className="aspect-video rounded-3xl overflow-hidden border-8 border-white/5 shadow-2xl relative group">
                                 <img
-                                    src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1200"
+                                    src="/images/uploads/railway-initiative.jpg"
                                     alt="Technology for NGO"
                                     className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
                                 />
