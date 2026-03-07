@@ -218,7 +218,7 @@ export default function ImpactPage() {
                                 </div>
 
                                 <div className="pt-10 border-t border-zinc-100 flex flex-wrap gap-6 items-center">
-                                    {programs[0].customButtons.map((btn, idx) => (
+                                    {(programs?.[0]?.customButtons || []).map((btn, idx) => (
                                         <Link
                                             key={idx}
                                             to={btn.link}

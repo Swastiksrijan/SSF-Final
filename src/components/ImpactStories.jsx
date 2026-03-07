@@ -10,7 +10,9 @@ export default function ImpactStories() {
     const [lang, setLang] = useState('en');
 
     // Featuring "Dreams Taking Flight" as requested
-    const featuredStory = stories[2];
+    const featuredStory = stories?.[2] || stories?.[0] || null;
+
+    if (!featuredStory) return null;
 
     const toggleLang = () => setLang(prev => prev === 'en' ? 'hi' : 'en');
 
