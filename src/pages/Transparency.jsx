@@ -229,35 +229,16 @@ export default function Transparency() {
                                     {CONTACT_INFO.primaryEmail}
                                 </button>
                             </div>
-                            <div className="pt-4 border-t border-zinc-200/60 space-y-3">
-                                <div className="flex items-center justify-center gap-4">
-                                    <button
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(CONTACT_INFO.secondaryEmail);
-                                            alert("Email copied!");
-                                        }}
-                                        className="text-[11px] text-zinc-500 font-semibold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
-                                    >
-                                        {CONTACT_INFO.secondaryEmail}
-                                    </button>
-                                    <span className="text-[7px] font-black bg-zinc-50 text-zinc-400 px-2 py-1 rounded border border-zinc-200 uppercase tracking-widest">
-                                        {CONTACT_INFO.techIssueNote}
-                                    </span>
-                                </div>
-                                <div className="flex items-center justify-center gap-4">
-                                    <button
-                                        onClick={() => {
-                                            navigator.clipboard.writeText(CONTACT_INFO.backupEmail);
-                                            alert("Email copied!");
-                                        }}
-                                        className="text-[11px] text-zinc-500 font-semibold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
-                                    >
-                                        {CONTACT_INFO.backupEmail}
-                                    </button>
-                                    <span className="text-[7px] font-black bg-zinc-50 text-zinc-400 px-2 py-1 rounded border border-zinc-200 uppercase tracking-widest">
-                                        {CONTACT_INFO.techIssueNote}
-                                    </span>
-                                </div>
+                            <div className="pt-4 border-t border-zinc-200/60">
+                                <button
+                                    onClick={() => {
+                                        navigator.clipboard.writeText(CONTACT_INFO.backupEmail);
+                                        alert("Email copied!");
+                                    }}
+                                    className="text-[11px] text-zinc-500 font-semibold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                                >
+                                    {CONTACT_INFO.backupEmail}
+                                </button>
                             </div>
                         </div>
                     </div>
