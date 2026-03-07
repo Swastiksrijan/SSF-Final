@@ -12,7 +12,7 @@ export default function MissionPage() {
       <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[40vh]">
         <div className="container mx-auto px-4 flex justify-center">
           <img
-            src="/images/uploads/mission_vision.jpeg"
+            src="/images/real/leadership.jpg"
             alt="Mission & Vision"
             className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
           />
@@ -202,7 +202,7 @@ export default function MissionPage() {
       <section className="py-12 bg-white flex justify-center border-b border-zinc-100">
         <div className="container mx-auto px-6 flex justify-center">
           <img
-            src="/images/uploads/vision-mission-goals.jpg"
+            src="/images/real/village-community-center.jpg"
             alt="Vision, Mission, and Values Diagram"
             className="w-full max-w-3xl object-contain drop-shadow-lg rounded-xl"
           />

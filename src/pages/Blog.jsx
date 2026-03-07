@@ -67,7 +67,7 @@ This initiative helped protect hundreds of families and strengthened community t
       hi: "दादर स्कूल सुधार कार्यक्रम"
     },
     date: "Jan 2022",
-    image: "/images/uploads/learning-hub-1.jpg",
+    image: "/images/real/classroom-floor-seating.jpg",
     short: {
       en: "Donation of computers and printers led to a 98% improvement in school effectiveness.",
       hi: "कंप्यूटर और प्रिंटर के दान से स्कूल की प्रभावशीलता में 98% सुधार हुआ।"
@@ -88,7 +88,7 @@ Motivational visits encouraged teachers to enhance punctuality and engagement. T
       hi: "नोएडा सेक्टर 53 शिक्षा पहल"
     },
     date: "March 2022",
-    image: "/images/uploads/learning-hub-2.jpg",
+    image: "/images/real/student-leadership-recitation.jpg",
     short: {
       en: "Modern teaching tools transformed student engagement and learning outcomes.",
       hi: "आधुनिक शिक्षण उपकरणों ने छात्र जुड़ाव और सीखने के परिणामों को बदल दिया।"
@@ -172,7 +172,7 @@ SSF पलायन को रोकने के लिए हर गांव 
       hi: "एसएसएफ: हरित भारत - हर कदम एक आशीर्वाद"
     },
     date: "Oct 2023",
-    image: "/images/uploads/tree-planting.jpg",
+    image: "/images/real/tree_planting_2.jpg",
     short: {
       en: "Join the SSF Tree Plantation Movement. Trees are the lungs of our Earth and guardians of biodiversity.",
       hi: "एसएसएफ वृक्षारोपण आंदोलन में शामिल हों। पेड़ हमारी पृथ्वी के फेफड़े और जैव विविधता के संरक्षक हैं।"

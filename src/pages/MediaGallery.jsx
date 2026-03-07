@@ -167,7 +167,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_4",
-    src: "/images/uploads/railway-initiative.jpg",
+    src: "/images/real/news_media_1.jpg",
     category: "Events",
     year: "2025",
     alt: "Institutional Initiative for Railway Reforms",
@@ -175,7 +175,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_5",
-    src: "/images/uploads/learning-hub-1.jpg",
+    src: "/images/real/classroom-floor-seating.jpg",
     category: "Education",
     year: "2024",
     alt: "SSF Learning Hub - Classroom Session",
@@ -183,7 +183,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_6",
-    src: "/images/uploads/learning-hub-2.jpg",
+    src: "/images/real/student-leadership-recitation.jpg",
     category: "Education",
     year: "2024",
     alt: "SSF Learning Hub - Study Group",
@@ -191,7 +191,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_7",
-    src: "/images/uploads/community-banner.jpg",
+    src: "/images/real/community-rally-children.jpg",
     category: "Events",
     year: "2024",
     alt: "Community Awareness Drive",
@@ -199,7 +199,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_1",
-    src: "/images/uploads/community-gathering.jpg",
+    src: "/images/real/community-education-meeting.jpg",
     category: "Events",
     year: "2024",
     alt: "Community Gathering and Cultural Event",
@@ -207,7 +207,7 @@ const ALL_IMAGES = [
   },
   {
     id: "new_upload_2",
-    src: "/images/uploads/tree-planting.jpg",
+    src: "/images/real/tree_planting_2.jpg",
     category: "Distribution",
     year: "2024",
     alt: "Tree Plantation Drive for Environmental Sustainability",
