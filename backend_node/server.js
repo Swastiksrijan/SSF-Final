@@ -30,11 +30,13 @@ app.use('/api', volunteerRoutes);
 sequelize.sync({ alter: true })
     .then(() => {
         console.log('✅ PostgreSQL Database Synced');
-        app.listen(PORT, () => {
-            console.log(`🚀 Server running on http://localhost:${PORT}`);
-        });
     })
     .catch(err => {
         console.error('❌ Database Sync Error:', err);
-        process.exit(1);
+        console.warn('⚠️ Starting server without database-dependent features.');
+    })
+    .finally(() => {
+        app.listen(PORT, () => {
+            console.log(`🚀 Server running on http://localhost:${PORT}`);
+        });
     });

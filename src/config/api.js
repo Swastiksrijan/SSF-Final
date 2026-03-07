@@ -8,6 +8,7 @@ export const ENDPOINTS = {
     REGISTER: `${API_BASE_URL}/api/register`,
     MEMBER_SIGNUP: `${API_BASE_URL}/api/member-signup`,
     ADMIN_LOGIN: `${API_BASE_URL}/api/admin/login`,
+    AUTH_SUBMIT: `${API_BASE_URL}/api/auth/submit`,
     ADMIN_VOLUNTEERS: `${API_BASE_URL}/api/admin/volunteers`,
     ADMIN_MEMBERS: `${API_BASE_URL}/api/admin/members`,
     ADMIN_APPROVE: (id) => `${API_BASE_URL}/api/admin/approve/${id}`,

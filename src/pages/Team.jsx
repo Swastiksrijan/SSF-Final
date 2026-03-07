@@ -1,4 +1,137 @@
 import { motion } from "framer-motion";
+import { FaEnvelope, FaLinkedin } from "react-icons/fa";
+const teamBioByName = {
+  "Mr. Ramesh Pandey": "Leads the foundation’s vision, partnerships, and long-term grassroots strategy across programs.",
+  "Ms. Preeti Shukla": "Supports program direction and execution to ensure quality outreach in communities.",
+  "Mr. Amit Pandey": "Coordinates operations and administration to keep projects timely and community-focused.",
+  "Ms. Divya Sharma": "Oversees finance stewardship and compliance for transparent, mission-led implementation.",
+  "Ms. Kiran Pandey": "Strengthens governance and internal systems to keep initiatives accountable and effective.",
+  "Mr. Azad Singh Adhana": "Guides regional operations and field coordination for outreach expansion.",
+  "Mr. Naresh Kumar": "Builds local volunteer networks and engagement across district-level initiatives.",
+  "Mr. Dhiraj Kumar": "Mobilizes community leadership and supports implementation in regional programs.",
+  "Mr. Surender Mishra": "Drives grassroots coordination and local partnerships for sustained impact.",
+  "Mr. Kapil Tiwari": "Provides legal advisory support and governance guidance for institutional strengthening.",
+  "Mr. Harish Kumar": "Supports legal and compliance planning for ethical and responsible operations.",
+  "Mr. Raji P. Alex": "Contributes strategic advisory inputs for national-level outreach and collaboration.",
+  "Ms. Amrita Sinha": "Supports coordination and volunteer engagement for efficient field delivery.",
+  "Mr. Ghanshyam Sharma": "Advises on community engagement and national program expansion priorities.",
+  "Mr. Chaman Rajora": "Supports partnerships and advisory collaboration to scale social initiatives.",
+  "Mr. Rajeev Pandey": "Provides advisor-level volunteer support and community mobilization inputs.",
+  "Ms. A. Gincy George": "Leads counseling-focused support and wellbeing interventions for beneficiaries.",
+  "Ms. Aayushi Tyagi": "Contributes to volunteer outreach and youth engagement on mission-driven activities.",
+  "Mr. Krishna Kumar": "Supports advisory and volunteer-led implementation across partner communities.",
+  "Ms. Sneha Ravishankar Pandey": "Provides web and technical support to strengthen digital infrastructure.",
+  "Ms. Vaishnavi Manik Chaudhari": "Contributes technical and digital support for smooth platform operations.",
+  "Mr. Sandeep Tripathi": "Contributes board-level guidance for governance and strategic decision-making.",
+  "Mr. Prameesh Singh": "Supports board oversight and institutional development priorities.",
+  "Mr. Rishi Pandey": "Provides board participation and strategic guidance to program direction.",
+  "Mr. Ritesh Tiwari": "Supports governance perspectives and collaboration from external networks.",
+  "Ms. Priya Shukla": "Supports core administration and volunteer processes for day-to-day execution.",
+};
+
+const contactByName = {
+  "Mr. Ramesh Pandey": { email: "contact@swastiksrijan.in", linkedin: "https://www.linkedin.com/company/swastik-srijan-foundation" },
+  "Ms. Preeti Shukla": { email: "contact@swastiksrijan.in" },
+  "Mr. Amit Pandey": { email: "contact@swastiksrijan.in" },
+  "Ms. Divya Sharma": { email: "contact@swastiksrijan.in" },
+  "Ms. A. Gincy George": { email: "contact@swastiksrijan.in" },
+  "Ms. Sneha Ravishankar Pandey": { email: "contact@swastiksrijan.in", linkedin: "https://www.linkedin.com/company/swastik-srijan-foundation" },
+  "Ms. Vaishnavi Manik Chaudhari": { email: "contact@swastiksrijan.in" },
+};
+
+const featuredSections = [
+  {
+    heading: "Leadership",
+    subtitle: "Strategic leaders guiding direction, governance, and institutional growth.",
+    members: [governingBody[0], governingBody[1], governingBody[2], governingBody[3], regionalLeadership[0], regionalLeadership[1]],
+  },
+  {
+    heading: "Core Team",
+    subtitle: "Program and operations team driving day-to-day implementation excellence.",
+    members: [managementTeam[1], managementTeam[2], managementTeam[3], managementTeam[4], managementTeam[5], regionalLeadership[2]],
+  },
+  {
+    heading: "Volunteers / Advisors",
+    subtitle: "Advisors and volunteers who strengthen outreach, inclusion, and field impact.",
+    members: [advisoryBoard[0], advisoryBoard[2], advisoryBoard[3], volunteersTeam[0], volunteersTeam[1], volunteersTeam[4]],
+  },
+];
+
+function TeamProfileCard({ member, delay = 0 }) {
+  const contact = contactByName[member.name] || {};
+
+  return (
+    <motion.article
+      initial={{ opacity: 0, y: 16 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay }}
+      className="group rounded-3xl border border-zinc-200 bg-white p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all duration-300"
+    >
+      <div className="w-24 h-24 rounded-2xl overflow-hidden border border-zinc-100 mb-4">
+        <img src={member.img || "/images/team/placeholder.jpg"} alt={member.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+      </div>
+
+      <h3 className="text-lg font-serif font-bold text-[#002344] leading-tight">{member.name}</h3>
+      <p className="text-xs mt-1 font-bold uppercase tracking-wider text-[#fb8500]">{member.role}</p>
+      <p className="text-xs mt-1 text-zinc-500 italic">{member.location}</p>
+
+      <p className="text-sm text-zinc-600 leading-relaxed mt-4 min-h-[48px]">
+        {teamBioByName[member.name] || "Supports Swastik Srijan Foundation’s mission through committed community service and collaboration."}
+      </p>
+
+      {(contact.linkedin || contact.email) && (
+        <div className="mt-4 flex items-center gap-2">
+          {contact.linkedin && (
+            <a
+              href={contact.linkedin}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-zinc-200 text-[#0A66C2] hover:bg-[#0A66C2] hover:text-white transition-colors"
+              aria-label={`${member.name} LinkedIn`}
+            >
+              <FaLinkedin />
+            </a>
+          )}
+          {contact.email && (
+            <a
+              href={`mailto:${contact.email}`}
+              className="inline-flex items-center justify-center w-9 h-9 rounded-lg border border-zinc-200 text-zinc-600 hover:bg-zinc-800 hover:text-white transition-colors"
+              aria-label={`${member.name} email`}
+            >
+              <FaEnvelope />
+            </a>
+          )}
+        </div>
+      )}
+    </motion.article>
+  );
+}
+
+      {/* ================= TEAM DIRECTORY ENHANCEMENT ================= */}
+      <section className="py-16 md:py-20 px-6 bg-gradient-to-b from-white to-zinc-50 border-y border-zinc-100">
+        <div className="max-w-7xl mx-auto space-y-14">
+          <div className="text-center max-w-3xl mx-auto">
+            <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#002344]">Our Team</h1>
+            <p className="mt-4 text-zinc-600 text-lg">Meet the people driving Swastik Srijan Foundation’s mission.</p>
+          </div>
+          {featuredSections.map((section, sectionIndex) => (
+            <div key={section.heading} className="space-y-6">
+              <div className="space-y-2">
+                <h2 className="text-2xl md:text-3xl font-serif font-bold text-[#002344]">{section.heading}</h2>
+                <p className="text-zinc-500">{section.subtitle}</p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {section.members.map((member, idx) => (
+                  <TeamProfileCard key={`${section.heading}-${member.name}-${idx}`} member={member} delay={sectionIndex * 0.05 + idx * 0.04} />
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+import { FaLinkedin, FaGlobe } from "react-icons/fa";
 
 const governingBody = [
   { name: "Mr. Ramesh Pandey", role: "Founder & National President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
@@ -46,17 +179,87 @@ const volunteersTeam = [
   { name: "Ms. Vaishnavi Manik Chaudhari", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/vaishnavi_manik_chaudhari.jpg" },
 ];
 
+const featuredProfiles = [
+  {
+    name: "Mr. Ramesh Pandey",
+    role: "Founder & National President",
+    bio: "Leads the foundation's long-term strategy, compliance direction, and national partnerships for grassroots development.",
+    img: "/Teams_Images/ramesh_pandey.jpg",
+    social: {
+      linkedin: "https://www.linkedin.com/company/swastiksrijan/",
+      website: "https://swastiksrijan.in",
+    },
+  },
+  {
+    name: "Ms. Preeti Shukla",
+    role: "Program Head",
+    bio: "Coordinates implementation teams and ensures community-focused delivery across education and support initiatives.",
+    img: "/Teams_Images/image_19.jpg",
+    social: {
+      linkedin: "https://www.linkedin.com/company/swastiksrijan/",
+      website: "https://swastiksrijan.in/Impact",
+    },
+  },
+  {
+    name: "Ms. Divya Sharma",
+    role: "Chief Finance Officer",
+    bio: "Oversees finance governance, donor reporting, and transparent documentation for institutional trust.",
+    img: "/Teams_Images/divya_sharma.jpg",
+    social: {
+      linkedin: "https://www.linkedin.com/company/swastiksrijan/",
+      website: "https://swastiksrijan.in/Transparency",
+    },
+  },
+];
+
 export default function Team() {
   return (
     <main className="min-h-screen bg-white">
       {/* ================= HERO SECTION ================= */}
       <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[40vh]">
-        <div className="container mx-auto px-4 flex justify-center">
+        <div className="container mx-auto px-4 flex flex-col items-center gap-6">
+          <h1 className="text-3xl md:text-5xl font-serif font-bold text-[#002344] text-center">
+            Our Team
+          </h1>
           <img
-            src="/images/uploads/MeetOurTeam.jpeg"
-            alt="Meet Our Team"
-            className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
+            src="/images/ssf-team.jpg"
+            alt="Swastik Srijan Foundation Team"
+            className="w-full h-auto max-h-[70vh] object-cover rounded-2xl shadow-xl border border-zinc-100"
           />
+        </div>
+      </section>
+
+      <section className="py-16 px-6 bg-white border-b border-zinc-100">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center space-y-3">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
+              Team Profiles
+            </h2>
+            <p className="text-zinc-600 max-w-2xl mx-auto">
+              Leadership highlights with role clarity, short bios, and professional links.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {featuredProfiles.map((member) => (
+              <article key={member.name} className="bg-zinc-50 border border-zinc-100 rounded-3xl p-6">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                  <img src={member.img} alt={`${member.name} profile`} className="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <h3 className="mt-4 text-xl font-bold text-[#002344]">{member.name}</h3>
+                <p className="text-sm font-semibold text-[#fb8500] mt-1">{member.role}</p>
+                <p className="text-sm text-zinc-600 mt-3 leading-relaxed">{member.bio}</p>
+                <div className="flex items-center gap-3 mt-4">
+                  <a href={member.social.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-[#002344] hover:text-[#fb8500]">
+                    <FaLinkedin /> LinkedIn
+                  </a>
+                  <a href={member.social.website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-[#002344] hover:text-[#fb8500]">
+                    <FaGlobe /> Profile
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
