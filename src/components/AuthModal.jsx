@@ -11,7 +11,7 @@ const initialSignup = {
 };
 
 const initialLogin = {
-    email: "",
+    identifier: "",
     password: ""
 };
 
@@ -28,43 +28,70 @@ export default function AuthModal({ open, onClose }) {
         }
     }, []);
 
+    const notificationEmail = CONTACT_INFO.backupEmail || CONTACT_INFO.primaryEmail;
+
+    const currentPayload = mode === "signup" ? signupData : loginData;
+
+    const detailsText = useMemo(() => {
+        if (mode === "signup") {
+            return [
+                "New Signup Request",
+                `Name: ${signupData.fullName || "N/A"}`,
+                `Email: ${signupData.email || "N/A"}`,
+                `Phone: ${signupData.phone || "N/A"}`,
+            ].join("\n");
+        }
+
+        return [
+            "New Login Request",
+            `User: ${loginData.identifier || "N/A"}`,
+        ].join("\n");
+    }, [mode, signupData, loginData]);
+
     const adminWhatsAppLink = useMemo(() => {
         const target = CONTACT_INFO.phones.primary.replace(/[^0-9]/g, "");
-        const payload = mode === "signup" ? signupData : loginData;
-        const text =
-            mode === "signup"
-                ? `New Signup\\nName: ${payload.fullName}\\nEmail: ${payload.email}\\nPhone: ${payload.phone}`
-                : `New Login\\nEmail: ${payload.email}`;
-        return `https://wa.me/${target}?text=${encodeURIComponent(text)}`;
-    }, [mode, signupData, loginData]);
+        return `https://wa.me/${target}?text=${encodeURIComponent(detailsText)}`;
+    }, [detailsText]);
+
+    const emailLink = useMemo(() => {
+        const subject = mode === "signup" ? "New Signup Request" : "New Login Request";
+        return `mailto:${notificationEmail}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(detailsText)}`;
+    }, [mode, notificationEmail, detailsText]);
 
     if (!open) return null;
 
     const sendEmailNotification = async () => {
         const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
         const templateId = import.meta.env.VITE_EMAILJS_AUTH_TEMPLATE_ID;
-        if (!serviceId || !templateId || !import.meta.env.VITE_EMAILJS_PUBLIC_KEY) return;
+        const publicKey = import.meta.env.VITE_EMAILJS_PUBLIC_KEY;
 
-        const payload = mode === "signup" ? signupData : loginData;
+        if (!serviceId || !templateId || !publicKey) {
+            return false;
+        }
+
         await emailjs.send(serviceId, templateId, {
             event_type: mode,
-            name: payload.fullName || "N/A",
-            email: payload.email,
-            phone: payload.phone || "N/A",
-            admin_email: CONTACT_INFO.primaryEmail
+            name: signupData.fullName || "N/A",
+            email: mode === "signup" ? signupData.email : loginData.identifier,
+            phone: signupData.phone || "N/A",
+            login_identifier: loginData.identifier || "N/A",
+            admin_email: notificationEmail,
+            details: detailsText,
         });
+
+        return true;
     };
 
     const persistSession = () => {
-        const payload = mode === "signup" ? signupData : loginData;
         const current = {
             id: crypto.randomUUID(),
             mode,
-            fullName: payload.fullName || "User",
-            email: payload.email,
-            phone: payload.phone || "",
+            fullName: mode === "signup" ? signupData.fullName || "User" : "User",
+            email: mode === "signup" ? signupData.email : loginData.identifier,
+            phone: mode === "signup" ? signupData.phone : "",
             loggedInAt: new Date().toISOString()
         };
+
         localStorage.setItem("ssf_user_session", JSON.stringify(current));
     };
 
@@ -75,13 +102,17 @@ export default function AuthModal({ open, onClose }) {
 
         try {
             persistSession();
-            await sendEmailNotification();
+            const sent = await sendEmailNotification();
             setStatus("success");
-            setMessage("Account action successful. Admin notification links are ready below.");
+            setMessage(
+                sent
+                    ? `Details submitted successfully. Notification sent to ${notificationEmail}.`
+                    : `Details submitted successfully. Use Email/WhatsApp button to share details to ${notificationEmail}.`
+            );
         } catch (error) {
             console.error("Auth notify error", error);
             setStatus("error");
-            setMessage("Login/Signup saved, but auto-email failed. Please use WhatsApp/email buttons.");
+            setMessage(`Submit failed on email service. Please use Email/WhatsApp buttons for ${notificationEmail}.`);
         }
     };
 
@@ -121,28 +152,37 @@ export default function AuthModal({ open, onClose }) {
                             required
                             placeholder="Full Name"
                             value={signupData.fullName}
-                            onChange={(e) => setSignupData(prev => ({ ...prev, fullName: e.target.value }))}
+                            onChange={(e) => setSignupData((prev) => ({ ...prev, fullName: e.target.value }))}
                             className="w-full px-4 py-3 bg-zinc-50 rounded-xl"
                         />
                     )}
 
-                    <input
-                        required
-                        type="email"
-                        placeholder="Email"
-                        value={mode === "signup" ? signupData.email : loginData.email}
-                        onChange={(e) => mode === "signup"
-                            ? setSignupData(prev => ({ ...prev, email: e.target.value }))
-                            : setLoginData(prev => ({ ...prev, email: e.target.value }))}
-                        className="w-full px-4 py-3 bg-zinc-50 rounded-xl"
-                    />
+                    {mode === "signup" ? (
+                        <input
+                            required
+                            type="email"
+                            placeholder="Email"
+                            value={signupData.email}
+                            onChange={(e) => setSignupData((prev) => ({ ...prev, email: e.target.value }))}
+                            className="w-full px-4 py-3 bg-zinc-50 rounded-xl"
+                        />
+                    ) : (
+                        <input
+                            required
+                            type="text"
+                            placeholder="Email / Username / Phone"
+                            value={loginData.identifier}
+                            onChange={(e) => setLoginData((prev) => ({ ...prev, identifier: e.target.value }))}
+                            className="w-full px-4 py-3 bg-zinc-50 rounded-xl"
+                        />
+                    )}
 
                     {mode === "signup" && (
                         <input
                             required
                             placeholder="Phone"
                             value={signupData.phone}
-                            onChange={(e) => setSignupData(prev => ({ ...prev, phone: e.target.value }))}
+                            onChange={(e) => setSignupData((prev) => ({ ...prev, phone: e.target.value }))}
                             className="w-full px-4 py-3 bg-zinc-50 rounded-xl"
                         />
                     )}
@@ -151,10 +191,12 @@ export default function AuthModal({ open, onClose }) {
                         required
                         type="password"
                         placeholder="Password"
-                        value={mode === "signup" ? signupData.password : loginData.password}
-                        onChange={(e) => mode === "signup"
-                            ? setSignupData(prev => ({ ...prev, password: e.target.value }))
-                            : setLoginData(prev => ({ ...prev, password: e.target.value }))}
+                        value={currentPayload.password}
+                        onChange={(e) =>
+                            mode === "signup"
+                                ? setSignupData((prev) => ({ ...prev, password: e.target.value }))
+                                : setLoginData((prev) => ({ ...prev, password: e.target.value }))
+                        }
                         className="w-full px-4 py-3 bg-zinc-50 rounded-xl"
                     />
 
@@ -164,7 +206,7 @@ export default function AuthModal({ open, onClose }) {
                         className="w-full bg-[#FF6600] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2"
                     >
                         {mode === "signup" ? <FaUserPlus /> : <FaSignInAlt />}
-                        {status === "submitting" ? "Please wait..." : mode === "signup" ? "Create Account" : "Login"}
+                        {status === "submitting" ? "Please wait..." : "Submit"}
                     </button>
                 </form>
 
@@ -174,7 +216,7 @@ export default function AuthModal({ open, onClose }) {
                     <a href={adminWhatsAppLink} target="_blank" rel="noreferrer" className="text-center py-2 rounded-xl bg-[#25D366] text-white font-semibold text-sm flex items-center justify-center gap-2">
                         <FaWhatsapp /> WhatsApp
                     </a>
-                    <a href={`mailto:${CONTACT_INFO.primaryEmail}?subject=${encodeURIComponent(`New ${mode} alert`)}&body=${encodeURIComponent(message || "New login/signup activity on website.")}`} className="text-center py-2 rounded-xl bg-[#002344] text-white font-semibold text-sm flex items-center justify-center gap-2">
+                    <a href={emailLink} className="text-center py-2 rounded-xl bg-[#002344] text-white font-semibold text-sm flex items-center justify-center gap-2">
                         <FaEnvelope /> Email
                     </a>
                 </div>
