@@ -7,6 +7,9 @@ const nodemailer = require('nodemailer');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 
+const authSubmissions = [];
+
+
 // --- 1. File Upload Configuration ---
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -86,6 +89,79 @@ const sendAdminNotification = async ({ subject, text, html }) => {
 };
 
 // --- 3. Routes ---
+
+// @route   POST /api/auth/submit
+// @desc    Public signup/login submission endpoint for website auth modal
+router.post('/auth/submit', async (req, res) => {
+    try {
+        const { mode, fullName, email, phone, identifier, password } = req.body || {};
+        const normalizedMode = (mode || '').trim().toLowerCase();
+
+        if (!['signup', 'login'].includes(normalizedMode)) {
+            return res.status(400).json({ status: 'error', message: 'Invalid mode. Use signup or login.' });
+        }
+
+        if (normalizedMode === 'signup') {
+            if (!fullName || !phone) {
+                return res.status(400).json({ status: 'error', message: 'Full name and phone are required for signup.' });
+            }
+
+            const signupRecord = {
+                id: `signup_${Date.now()}`,
+                mode: normalizedMode,
+                fullName: String(fullName).trim(),
+                email: String(email || '').trim().toLowerCase(),
+                phone: String(phone).trim(),
+                password: password ? String(password) : '',
+                submittedAt: new Date().toISOString(),
+            };
+
+            authSubmissions.push(signupRecord);
+            console.log('✅ Auth signup submitted:', signupRecord);
+
+            return res.status(201).json({
+                status: 'success',
+                message: 'Signup submitted successfully.',
+                data: {
+                    id: signupRecord.id,
+                    fullName: signupRecord.fullName,
+                    email: signupRecord.email,
+                    phone: signupRecord.phone,
+                    mode: signupRecord.mode,
+                }
+            });
+        }
+
+        if (!identifier || !password) {
+            return res.status(400).json({ status: 'error', message: 'Identifier and password are required for login.' });
+        }
+
+        const loginRecord = {
+            id: `login_${Date.now()}`,
+            mode: normalizedMode,
+            identifier: String(identifier).trim(),
+            submittedAt: new Date().toISOString(),
+        };
+
+        authSubmissions.push(loginRecord);
+        console.log('✅ Auth login submitted:', loginRecord);
+
+        return res.status(200).json({
+            status: 'success',
+            message: 'Login successful.',
+            data: {
+                id: loginRecord.id,
+                fullName: 'User',
+                email: loginRecord.identifier,
+                phone: '',
+                mode: loginRecord.mode,
+            }
+        });
+    } catch (error) {
+        console.error('❌ Auth submit error:', error);
+        return res.status(500).json({ status: 'error', message: 'Server Error while submitting auth form.' });
+    }
+});
 
 // @route   POST /api/admin/login
 // @desc    Simple admin login for portal access
