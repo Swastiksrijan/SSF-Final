@@ -1,10 +1,81 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { FaBullseye, FaArrowRight, FaCheckCircle, FaHandHoldingHeart, FaGlobeAmericas, FaShieldAlt, FaBriefcase, FaSeedling } from "react-icons/fa";
+import {
+  FaArrowRight,
+  FaCheckCircle,
+  FaHandHoldingHeart,
+  FaGlobeAmericas,
+  FaShieldAlt,
+  FaBriefcase,
+  FaSeedling,
+  FaSearch,
+  FaClipboardList,
+  FaTasks,
+  FaChartLine,
+  FaFileAlt,
+  FaHandshake,
+} from "react-icons/fa";
 
 export const Route = createFileRoute("/Objectives")({
   component: ObjectivesPage,
 });
+
+const objectives = [
+  {
+    en: "Promoting access to quality education",
+    hi: "शिक्षा के प्रसार एवं गुणवत्तापूर्ण शिक्षण को बढ़ावा देना",
+    icon: <FaGlobeAmericas />,
+    color: "from-blue-50 to-white text-[#003366] border-blue-100",
+    description: "We make learning more accessible through mentoring, school support, and community education drives.",
+    progress: "4,800+ students supported | 210 learning sessions",
+    action: "Example: Evening learning circles helped first-generation learners improve attendance and classroom confidence.",
+  },
+  {
+    en: "Strengthening healthcare awareness and well-being",
+    hi: "स्वास्थ्य जागरूकता, पोषण एवं कल्याण सेवाओं को सुदृढ़ करना",
+    icon: <FaHandHoldingHeart />,
+    color: "from-red-50 to-white text-[#d90429] border-red-100",
+    description: "We run awareness, prevention, and referral-oriented programs focused on families and vulnerable groups.",
+    progress: "12,500+ beneficiaries reached | 140 health & awareness camps",
+    action: "Example: Local camps connected families to hygiene guidance, basic checkups, and timely health referrals.",
+  },
+  {
+    en: "Empowering women, children, elderly, and persons with disabilities",
+    hi: "महिलाओं, बच्चों, वृद्धों एवं दिव्यांगजनों का सशक्तिकरण",
+    icon: <FaShieldAlt />,
+    color: "from-amber-50 to-white text-[#fb8500] border-amber-100",
+    description: "We strengthen dignity and inclusion through support networks, awareness, and access to social resources.",
+    progress: "3,600+ individuals supported | 95 inclusion initiatives",
+    action: "Example: Community support groups improved access to services and confidence among women and senior citizens.",
+  },
+  {
+    en: "Encouraging environmental protection and sustainability",
+    hi: "पर्यावरण संरक्षण एवं सतत विकास को प्रोत्साहित करना",
+    icon: <FaSeedling />,
+    color: "from-emerald-50 to-white text-[#2d6a4f] border-emerald-100",
+    description: "We promote sustainable habits through awareness, local drives, and youth-led environmental participation.",
+    progress: "9,000+ community participants | 75 eco-awareness activities",
+    action: "Example: Village-level awareness and clean-up activities encouraged safer waste practices and shared responsibility.",
+  },
+  {
+    en: "Creating skill development and livelihood opportunities",
+    hi: "कौशल विकास, स्वरोजगार एवं आजीविका के अवसर सृजित करना",
+    icon: <FaBriefcase />,
+    color: "from-indigo-50 to-white text-[#4361ee] border-indigo-100",
+    description: "We support youth and women with practical skilling pathways linked to employability and entrepreneurship.",
+    progress: "2,200+ youth trained | 68 livelihood workshops",
+    action: "Example: Foundational skill workshops enabled participants to pursue local employment and micro-enterprise options.",
+  },
+  {
+    en: "Promoting ethical values, social harmony, and national awareness",
+    hi: "नैतिक मूल्यों, सामाजिक समरसता एवं राष्ट्रीय चेतना का विकास",
+    icon: <FaCheckCircle />,
+    color: "from-zinc-50 to-white text-zinc-700 border-zinc-200",
+    description: "We nurture civic responsibility and unity through dialogue, volunteerism, and value-driven social engagement.",
+    progress: "18,000+ people engaged | 160 civic-value programs",
+    action: "Example: Inter-community dialogues and volunteer-led events fostered trust, participation, and social cohesion.",
+  },
+];
 
 function ObjectivesPage() {
   return (
@@ -71,54 +142,17 @@ function ObjectivesPage() {
 
             {/* Key Objectives Grid */}
             <div className="grid md:grid-cols-2 gap-8 mb-16">
-              {[
-                {
-                  en: "Promoting access to quality education",
-                  hi: "शिक्षा के प्रसार एवं गुणवत्तापूर्ण शिक्षण को बढ़ावा देना",
-                  icon: <FaGlobeAmericas />,
-                  color: "bg-blue-50 text-[#003366] border-blue-100"
-                },
-                {
-                  en: "Strengthening healthcare awareness and well-being",
-                  hi: "स्वास्थ्य जागरूकता, पोषण एवं कल्याण सेवाओं को सुदृढ़ करना",
-                  icon: <FaHandHoldingHeart />,
-                  color: "bg-red-50 text-[#d90429] border-red-100"
-                },
-                {
-                  en: "Empowering women, children, elderly, and persons with disabilities",
-                  hi: "महिलाओं, बच्चों, वृद्धों एवं दिव्यांगजनों का सशक्तिकरण",
-                  icon: <FaShieldAlt />,
-                  color: "bg-amber-50 text-[#fb8500] border-amber-100"
-                },
-                {
-                  en: "Encouraging environmental protection and sustainability",
-                  hi: "पर्यावरण संरक्षण एवं सतत विकास को प्रोत्साहित करना",
-                  icon: <FaSeedling />,
-                  color: "bg-emerald-50 text-[#2d6a4f] border-emerald-100"
-                },
-                {
-                  en: "Creating skill development and livelihood opportunities",
-                  hi: "कौशल विकास, स्वरोजगार एवं आजीविका के अवसर सृजित करना",
-                  icon: <FaBriefcase />,
-                  color: "bg-indigo-50 text-[#4361ee] border-indigo-100"
-                },
-                {
-                  en: "Promoting ethical values, social harmony, and national awareness",
-                  hi: "नैतिक मूल्यों, सामाजिक समरसता एवं राष्ट्रीय चेतना का विकास",
-                  icon: <FaCheckCircle />,
-                  color: "bg-zinc-50 text-zinc-700 border-zinc-200"
-                }
-              ].map((objective, index) => (
-                <motion.div
+              {objectives.map((objective, index) => (
+                <motion.article
                   key={index}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
-                  transition={{ delay: index * 0.1 }}
-                  className={`group p-8 rounded-3xl border ${objective.color} hover:shadow-2xl transition-all duration-300`}
+                  transition={{ delay: index * 0.08 }}
+                  className={`group p-7 rounded-3xl border bg-gradient-to-br ${objective.color} hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className="text-3xl mt-1 shrink-0">
+                  <div className="flex items-start gap-4 mb-4">
+                    <div className="w-12 h-12 rounded-xl bg-white/80 border border-white shadow-sm flex items-center justify-center text-2xl shrink-0">
                       {objective.icon}
                     </div>
                     <div className="space-y-2">
@@ -130,9 +164,46 @@ function ObjectivesPage() {
                       </p>
                     </div>
                   </div>
-                </motion.div>
+
+                  <p className="text-sm md:text-base text-zinc-700 leading-relaxed mb-4">{objective.description}</p>
+
+                  <div className="bg-white/80 border border-white rounded-xl px-4 py-3 mb-4">
+                    <p className="text-sm font-semibold text-zinc-700">Progress: {objective.progress}</p>
+                  </div>
+
+                  <p className="text-sm text-zinc-600 leading-relaxed">
+                    <span className="font-semibold text-zinc-800">Objectives in Action:</span> {objective.action}
+                  </p>
+                </motion.article>
               ))}
             </div>
+
+            {/* Our Approach Flow */}
+            <section className="mb-16 rounded-[2.5rem] border border-zinc-200 bg-zinc-50 p-8 md:p-12">
+              <div className="text-center mb-10">
+                <h3 className="text-3xl font-serif font-bold text-[#002344] mb-3">Our Approach</h3>
+                <p className="text-zinc-600">Identify Needs → Plan Programs → Implement → Monitor → Report Results</p>
+              </div>
+              <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+                {[
+                  { label: "Identify Needs", icon: <FaSearch /> },
+                  { label: "Plan Programs", icon: <FaClipboardList /> },
+                  { label: "Implement", icon: <FaTasks /> },
+                  { label: "Monitor", icon: <FaChartLine /> },
+                  { label: "Report Results", icon: <FaFileAlt /> },
+                ].map((step, idx, arr) => (
+                  <div key={step.label} className="relative">
+                    <div className="bg-white rounded-2xl border border-zinc-100 p-5 text-center h-full hover:shadow-md transition-shadow">
+                      <div className="text-2xl text-[#fb8500] mb-2 flex justify-center">{step.icon}</div>
+                      <p className="font-semibold text-[#002344] text-sm md:text-base">{step.label}</p>
+                    </div>
+                    {idx < arr.length - 1 && (
+                      <FaArrowRight className="hidden lg:block absolute -right-3 top-1/2 -translate-y-1/2 text-zinc-400" />
+                    )}
+                  </div>
+                ))}
+              </div>
+            </section>
 
             {/* Navigation Links */}
             <motion.div
@@ -151,6 +222,27 @@ function ObjectivesPage() {
                 Project Focus Areas
               </Link>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= ENHANCED OBJECTIVES CTA ================= */}
+      <section className="py-16 bg-white border-t border-zinc-100">
+        <div className="container mx-auto px-6">
+          <div className="max-w-5xl mx-auto rounded-[2rem] bg-gradient-to-r from-[#002344] to-[#001529] p-8 md:p-12 text-center text-white shadow-xl">
+            <h3 className="text-3xl md:text-4xl font-serif font-bold">Support Our Objectives</h3>
+            <p className="mt-3 text-zinc-200">Collaborate to scale education, health, inclusion, and livelihood impact across communities.</p>
+            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+              <Link to="/PartnerWithUs" className="px-8 py-3 rounded-xl font-bold bg-white text-[#002344] hover:bg-zinc-100 transition-colors inline-flex items-center justify-center gap-2">
+                <FaHandshake /> Partner With Us
+              </Link>
+              <Link to="/Volunteer" className="px-8 py-3 rounded-xl font-bold bg-[#fb8500] text-white hover:bg-[#e67a00] transition-colors inline-flex items-center justify-center">
+                Volunteer
+              </Link>
+              <Link to="/Donate" className="px-8 py-3 rounded-xl font-bold border border-white/40 text-white hover:bg-white/10 transition-colors inline-flex items-center justify-center">
+                Donate
+              </Link>
+            </div>
           </div>
         </div>
       </section>
