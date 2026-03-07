@@ -29,25 +29,13 @@ const Header = () => {
 
   const navItems = [
     { name: "Home", path: "/" },
-    {
-      name: "About Us",
-      path: "/About",
-      subItems: [
-        { name: "Mission & Vision", path: "/Mission" },
-        { name: "Our Objectives", path: "/Objectives" },
-        { name: "Meet Our Team", path: "/Team" },
-        { name: "Upcoming Projects", path: "/UpcomingProjects" } // ✅ added
-      ]
-    },
-    {
-      name: "Impact",
-      path: "/Impact"
-    },
-    {
-      name: "Get Involved",
-      path: "/GetInvolved"
-    },
+    { name: "About", path: "/About" },
+    { name: "Programs", path: "/SkillPrograms" },
+    { name: "Impact", path: "/Impact" },
+    { name: "Gallery", path: "/Media" },
+    { name: "Volunteer", path: "/Volunteer" },
     { name: "Donate", path: "/Donate", isSpecial: true },
+    { name: "Contact", path: "/Contact" },
   ];
 
 

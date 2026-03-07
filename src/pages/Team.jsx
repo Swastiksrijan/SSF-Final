@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { FaLinkedin, FaGlobe } from "react-icons/fa";
 
 const governingBody = [
   { name: "Mr. Ramesh Pandey", role: "Founder & National President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
@@ -46,6 +47,39 @@ const volunteersTeam = [
   { name: "Ms. Vaishnavi Manik Chaudhari", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/vaishnavi_manik_chaudhari.jpg" },
 ];
 
+const featuredProfiles = [
+  {
+    name: "Mr. Ramesh Pandey",
+    role: "Founder & National President",
+    bio: "Leads the foundation's long-term strategy, compliance direction, and national partnerships for grassroots development.",
+    img: "/Teams_Images/ramesh_pandey.jpg",
+    social: {
+      linkedin: "https://www.linkedin.com/company/swastiksrijan/",
+      website: "https://swastiksrijan.in",
+    },
+  },
+  {
+    name: "Ms. Preeti Shukla",
+    role: "Program Head",
+    bio: "Coordinates implementation teams and ensures community-focused delivery across education and support initiatives.",
+    img: "/Teams_Images/image_19.jpg",
+    social: {
+      linkedin: "https://www.linkedin.com/company/swastiksrijan/",
+      website: "https://swastiksrijan.in/Impact",
+    },
+  },
+  {
+    name: "Ms. Divya Sharma",
+    role: "Chief Finance Officer",
+    bio: "Oversees finance governance, donor reporting, and transparent documentation for institutional trust.",
+    img: "/Teams_Images/divya_sharma.jpg",
+    social: {
+      linkedin: "https://www.linkedin.com/company/swastiksrijan/",
+      website: "https://swastiksrijan.in/Transparency",
+    },
+  },
+];
+
 export default function Team() {
   return (
     <main className="min-h-screen bg-white">
@@ -60,6 +94,40 @@ export default function Team() {
             alt="Swastik Srijan Foundation Team"
             className="w-full h-auto max-h-[70vh] object-cover rounded-2xl shadow-xl border border-zinc-100"
           />
+        </div>
+      </section>
+
+      <section className="py-16 px-6 bg-white border-b border-zinc-100">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center space-y-3">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
+              Team Profiles
+            </h2>
+            <p className="text-zinc-600 max-w-2xl mx-auto">
+              Leadership highlights with role clarity, short bios, and professional links.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {featuredProfiles.map((member) => (
+              <article key={member.name} className="bg-zinc-50 border border-zinc-100 rounded-3xl p-6">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                  <img src={member.img} alt={`${member.name} profile`} className="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <h3 className="mt-4 text-xl font-bold text-[#002344]">{member.name}</h3>
+                <p className="text-sm font-semibold text-[#fb8500] mt-1">{member.role}</p>
+                <p className="text-sm text-zinc-600 mt-3 leading-relaxed">{member.bio}</p>
+                <div className="flex items-center gap-3 mt-4">
+                  <a href={member.social.linkedin} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-[#002344] hover:text-[#fb8500]">
+                    <FaLinkedin /> LinkedIn
+                  </a>
+                  <a href={member.social.website} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-semibold text-[#002344] hover:text-[#fb8500]">
+                    <FaGlobe /> Profile
+                  </a>
+                </div>
+              </article>
+            ))}
+          </div>
         </div>
       </section>
 
