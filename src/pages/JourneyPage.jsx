@@ -1,7 +1,25 @@
 import { motion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
+import { FaSeedling, FaHeartbeat, FaGraduationCap, FaHandsHelping, FaArrowRight, FaUsers, FaChartLine, FaGlobeAsia } from "react-icons/fa";
 import PageHero from "../components/PageHero";
 
 export default function JourneyPage() {
+
+  const milestoneSnapshots = [
+    { year: "2013", title: "Foundation Year", icon: <FaSeedling />, image: "/images/community-team-group.jpg", desc: "SSF began grassroots service with a people-first mission." },
+    { year: "2016", title: "Community Mobilization", icon: <FaUsers />, image: "/images/real/community-education-meeting.jpg", desc: "Volunteer-led local mobilization expanded our reach." },
+    { year: "2018", title: "Health & Hygiene", icon: <FaHeartbeat />, image: "/images/real/vision-health-camp.jpg", desc: "Health awareness and checkup camps were scaled." },
+    { year: "2020", title: "Crisis Response", icon: <FaHandsHelping />, image: "/images/slum-area-outreach.jpg", desc: "Relief support strengthened community resilience." },
+    { year: "2023", title: "Learning Hub", icon: <FaGraduationCap />, image: "/images/real/children-mat-session.jpg", desc: "Structured learning and mentorship programs deepened impact." },
+    { year: "2026+", title: "Future Expansion", icon: <FaChartLine />, image: "/images/academy/academy-expansion.jpg", desc: "Partnerships and innovation will scale sustainable outcomes." },
+  ];
+
+  const journeyTestimonials = [
+    { quote: "SSF programs helped my children continue learning with confidence.", author: "Parent Beneficiary, Rewa" },
+    { quote: "Volunteering here changed how I understand service and community leadership.", author: "Volunteer, Noida" },
+    { quote: "Their transparent and grassroots work made partnership easy and meaningful.", author: "Development Partner" },
+  ];
+
   return (
     <div className="w-full">
 
@@ -12,6 +30,14 @@ export default function JourneyPage() {
         subtitle="A journey of commitment, compassion, and measurable change across communities in India."
         hindiSubtitle="हमारी यात्रा और प्रभाव - भारत के विभिन्न समुदायों में प्रतिबद्धता, करुणा और मापने योग्य परिवर्तन की एक यात्रा।"
       />
+
+      {/* ================= JOURNEY HEADER ================= */}
+      <section className="py-10 px-4 bg-white border-b border-zinc-100">
+        <div className="max-w-6xl mx-auto text-center">
+          <h1 className="text-3xl md:text-5xl font-serif font-black text-[#002344]">Our Journey – From Beginning to Impact</h1>
+          <p className="mt-4 text-zinc-600 text-lg">From 2013 to today, every milestone reflects service, resilience, and measurable transformation.</p>
+        </div>
+      </section>
 
       {/* ================= TOP BANNER ================= */}
       <section className="pb-10 px-4">
@@ -113,6 +139,62 @@ export default function JourneyPage() {
                 </div>
               </div>
             </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= MILESTONE SNAPSHOTS ================= */}
+      <section className="py-16 px-4 bg-zinc-50 border-y border-zinc-100">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Milestones in Visual Storytelling</h2>
+            <p className="text-zinc-500 mt-2">Each phase from foundation to expansion, captured through people and programs.</p>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {milestoneSnapshots.map((item, idx) => (
+              <motion.article
+                key={item.year}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.06 }}
+                className="rounded-3xl bg-white border border-zinc-100 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all"
+              >
+                <div className="h-44 overflow-hidden">
+                  <img src={item.image} alt={item.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                </div>
+                <div className="p-5">
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="inline-flex items-center justify-center w-10 h-10 rounded-xl bg-zinc-50 border border-zinc-100 text-[#fb8500] text-lg">{item.icon}</span>
+                    <span className="text-sm font-black text-[#002344]">{item.year}</span>
+                  </div>
+                  <h3 className="text-xl font-bold text-[#002344]">{item.title}</h3>
+                  <p className="text-zinc-600 text-sm mt-2">{item.desc}</p>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= ADDITIONAL IMPACT IN NUMBERS ================= */}
+      <section className="py-16 px-4 bg-white">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Impact in Numbers</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            {[
+              { value: "75,000+", label: "Lives Touched", icon: <FaUsers /> },
+              { value: "100+", label: "Programs", icon: <FaChartLine /> },
+              { value: "120+", label: "Villages Reached", icon: <FaGlobeAsia /> },
+            ].map((item, i) => (
+              <div key={i} className="rounded-2xl border border-zinc-100 bg-zinc-50 p-6 text-center hover:shadow-md transition-shadow">
+                <div className="text-2xl text-[#fb8500] mb-2 flex justify-center">{item.icon}</div>
+                <p className="text-3xl font-black text-[#002344]">{item.value}</p>
+                <p className="text-zinc-500 text-sm mt-1">{item.label}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>
@@ -243,6 +325,23 @@ export default function JourneyPage() {
         </div>
       </section>
 
+      {/* ================= JOURNEY TESTIMONIALS ================= */}
+      <section className="py-16 px-4 bg-zinc-50 border-y border-zinc-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Voices from the Journey</h2>
+          </div>
+          <div className="grid md:grid-cols-3 gap-5">
+            {journeyTestimonials.map((item, idx) => (
+              <blockquote key={idx} className="rounded-2xl bg-white border border-zinc-100 p-5 shadow-sm hover:shadow-md transition-shadow">
+                <p className="text-zinc-700 italic">“{item.quote}”</p>
+                <p className="text-sm font-semibold text-[#fb8500] mt-3">— {item.author}</p>
+              </blockquote>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ================= WHY IT MATTERS ================= */}
       <section className="py-24 bg-white px-4">
         <div className="max-w-5xl mx-auto text-center">
@@ -267,15 +366,22 @@ export default function JourneyPage() {
           <p className="mb-2 text-zinc-300 text-xl max-w-2xl mx-auto">
             Your support helps us continue creating meaningful impact across India.
           </p>
-          <a
-            href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
-            target="_blank"
-            rel="noreferrer noopener"
-          >
-            <button className="btn-cta w-full sm:w-auto px-12 py-5 text-xl bg-white text-[#003366] hover:bg-zinc-200 hover:text-[#003366]">
-              Support Our Mission
-            </button>
-          </a>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Link to="/Volunteer" className="px-8 py-4 rounded-xl bg-[#fb8500] text-white font-bold hover:bg-[#e76f00] transition-colors inline-flex items-center justify-center gap-2">
+              Volunteer <FaArrowRight className="text-xs" />
+            </Link>
+            <a
+              href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
+              target="_blank"
+              rel="noreferrer noopener"
+              className="px-8 py-4 rounded-xl bg-white text-[#003366] font-bold hover:bg-zinc-200 transition-colors inline-flex items-center justify-center gap-2"
+            >
+              Donate <FaArrowRight className="text-xs" />
+            </a>
+            <Link to="/PartnerWithUs" className="px-8 py-4 rounded-xl border border-white/40 text-white font-bold hover:bg-white/10 transition-colors inline-flex items-center justify-center gap-2">
+              Partner With Us <FaArrowRight className="text-xs" />
+            </Link>
+          </div>
         </div>
       </section>
 
