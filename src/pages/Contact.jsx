@@ -327,6 +327,13 @@ export default function Contact() {
                   View Membership Plans & Benefits <FaArrowRight className="w-4 h-4" />
                 </Link>
               </div>
+
+              <div className="bg-zinc-50 p-6 rounded-2xl border border-zinc-100">
+                <p className="text-sm font-bold text-zinc-500 uppercase tracking-widest mb-2">Explore</p>
+                <a href="https://swastiksrijan.in/Humanity&Truth" target="_blank" rel="noreferrer" className="text-[#002344] font-bold hover:text-[#fb8500] flex items-center gap-2">
+                  Read Humanity & Truth <FaArrowRight className="w-4 h-4" />
+                </a>
+              </div>
             </div>
           </motion.div>
 

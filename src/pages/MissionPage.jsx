@@ -1,11 +1,58 @@
 import { motion } from "framer-motion";
 import {
   FaHandHoldingHeart,
-  FaGlobeAmericas
+  FaGlobeAmericas,
+  FaUsers,
+  FaSchool,
+  FaClinicMedical,
+  FaHandsHelping,
+  FaBullseye,
+  FaRoute,
+  FaCheckCircle,
+  FaBriefcase,
+  FaLeaf,
 } from "react-icons/fa";
 import { Link } from "@tanstack/react-router";
 
 export default function MissionPage() {
+  const missionAreaHighlights = [
+    {
+      title: "Education",
+      icon: <FaSchool />,
+      text: "Bridge learning gaps through mentorship, school support, and community classes.",
+      example: "Example: Learning circles improved attendance and confidence among first-generation learners.",
+      color: "text-blue-600",
+    },
+    {
+      title: "Healthcare",
+      icon: <FaClinicMedical />,
+      text: "Expand preventive health, awareness camps, and referral access for vulnerable families.",
+      example: "Example: Health camps connected families with hygiene guidance and timely referrals.",
+      color: "text-red-600",
+    },
+    {
+      title: "Livelihood",
+      icon: <FaBriefcase />,
+      text: "Enable youth and women with skills, employability pathways, and enterprise support.",
+      example: "Example: Skill sessions helped participants pursue local jobs and self-employment options.",
+      color: "text-indigo-600",
+    },
+    {
+      title: "Environment",
+      icon: <FaLeaf />,
+      text: "Promote sustainability through clean-up drives, eco-awareness, and local participation.",
+      example: "Example: Village awareness activities improved local waste practices and stewardship.",
+      color: "text-emerald-600",
+    },
+    {
+      title: "Women Empowerment",
+      icon: <FaHandsHelping />,
+      text: "Support women’s leadership, dignity, and social inclusion through focused initiatives.",
+      example: "Example: Support groups improved access to services and confidence among women.",
+      color: "text-orange-600",
+    },
+  ];
+
   return (
     <div className="w-full bg-white overflow-hidden">
       {/* ================= HERO SECTION ================= */}
@@ -180,9 +227,10 @@ export default function MissionPage() {
                   The Journey | हमारा लक्ष्य
                 </span>
 
-                <h3 className="text-3xl md:text-4xl font-serif font-bold text-white mb-6">
+                <h3 className="text-3xl md:text-4xl font-serif font-bold text-white mb-2">
                   Our Mission
                 </h3>
+                <p className="text-blue-100/90 text-sm md:text-base mb-6">Our Journey – From Beginning to Impact.</p>
 
                 <div className="space-y-6">
                   <p className="text-xl md:text-2xl text-white font-medium leading-relaxed">
@@ -209,6 +257,66 @@ export default function MissionPage() {
         </div>
       </section>
 
+
+
+      {/* ================= MISSION HEADER TAGLINE ================= */}
+      <section className="py-12 bg-zinc-50 border-y border-zinc-100">
+        <div className="container mx-auto px-6 max-w-5xl text-center">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#002344]">Our Mission</h2>
+          <p className="mt-4 text-zinc-600 text-lg">Empowering communities through education, healthcare, livelihood, environment stewardship, and women-led progress.</p>
+        </div>
+      </section>
+
+      {/* ================= MISSION HIGHLIGHTS (AREA CARDS) ================= */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Mission Highlights</h2>
+            <p className="text-zinc-500 mt-2">Five focus areas that define our mission on the ground.</p>
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            {missionAreaHighlights.map((item, idx) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, y: 12 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.06 }}
+                className="rounded-2xl border border-zinc-100 bg-zinc-50 p-5 hover:shadow-md transition-shadow"
+              >
+                <div className={`text-2xl mb-2 ${item.color}`}>{item.icon}</div>
+                <h3 className="text-lg font-bold text-[#002344]">{item.title}</h3>
+                <p className="text-sm text-zinc-600 mt-2">{item.text}</p>
+                <p className="text-xs text-zinc-500 mt-3 italic">{item.example}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= MISSION GOALS (2026 COUNTERS) ================= */}
+      <section className="py-16 bg-zinc-50 border-y border-zinc-100">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Mission Goals (2026)</h2>
+            <p className="text-zinc-500 mt-2">Measurable targets guiding implementation during 2026.</p>
+          </div>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              { value: "30,000+", label: "Lives Reached" },
+              { value: "60+", label: "Programs Delivered" },
+              { value: "130+", label: "Villages Covered" },
+              { value: "8,000+", label: "Women & Youth Enabled" },
+            ].map((item, idx) => (
+              <div key={idx} className="rounded-2xl bg-white border border-zinc-100 p-6 text-center hover:shadow-lg transition-shadow">
+                <p className="text-2xl md:text-3xl font-black text-[#002344]">{item.value}</p>
+                <p className="text-sm text-zinc-500 mt-1">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
       {/* ================= CORE VALUES ================= */}
       <section className="py-16 md:py-24 bg-white text-center">
         <div className="container mx-auto px-6">
@@ -276,6 +384,159 @@ export default function MissionPage() {
         </div>
       </section>
 
+      {/* ================= MISSION HIGHLIGHTS DASHBOARD ================= */}
+      <section className="py-16 md:py-24 bg-white border-y border-zinc-100">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Mission Highlights (Since 2013)</h2>
+            <p className="text-zinc-500 mt-3">Key impact numbers reflecting our mission outcomes across communities.</p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+            {[
+              { value: "20,000+", label: "Lives Reached", icon: <FaUsers /> },
+              { value: "40+", label: "Programs", icon: <FaSchool /> },
+              { value: "100+", label: "Villages Impacted", icon: <FaGlobeAmericas /> },
+              { value: "500+", label: "Active Volunteers", icon: <FaHandsHelping /> },
+            ].map((item, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08 }}
+                className="bg-zinc-50 border border-zinc-100 rounded-2xl p-6 text-center hover:shadow-lg transition-all"
+              >
+                <div className="w-12 h-12 rounded-xl bg-white border border-zinc-100 mx-auto mb-4 flex items-center justify-center text-[#fb8500] text-2xl">
+                  {item.icon}
+                </div>
+                <p className="text-2xl md:text-3xl font-black text-[#002344]">{item.value}</p>
+                <p className="text-sm text-zinc-500 mt-1">{item.label}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= MISSION GOALS (MEASURABLE) ================= */}
+      <section className="py-16 bg-zinc-50">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Mission Goals 2025-2030</h2>
+            <p className="text-zinc-500 mt-3">Specific, measurable goals that guide our mission execution.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {[
+              "Reach 50,000+ children and families through education and support programs.",
+              "Expand healthcare and awareness activities to 150+ villages.",
+              "Enable 10,000+ youth and women with livelihood and skill-development pathways.",
+              "Strengthen volunteer and community leadership network across major districts.",
+            ].map((goal, idx) => (
+              <div key={idx} className="bg-white border border-zinc-100 rounded-2xl p-6 flex items-start gap-3 hover:shadow-md transition-all">
+                <FaBullseye className="text-[#fb8500] mt-1" />
+                <p className="text-zinc-700 leading-relaxed">{goal}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= MISSION FLOW ================= */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-10">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">How Our Mission Works</h2>
+          </div>
+
+          <div className="grid md:grid-cols-4 gap-4">
+            {[
+              { title: "Identify Needs", icon: <FaRoute /> },
+              { title: "Design Programs", icon: <FaSchool /> },
+              { title: "Community Delivery", icon: <FaClinicMedical /> },
+              { title: "Measure Impact", icon: <FaCheckCircle /> },
+            ].map((step, idx) => (
+              <div key={idx} className="bg-zinc-50 border border-zinc-100 rounded-2xl p-6 text-center hover:-translate-y-1 transition-all">
+                <div className="text-2xl text-[#fb8500] mb-3 flex justify-center">{step.icon}</div>
+                <h3 className="font-bold text-[#002344]">{step.title}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= MISSION STORIES + TESTIMONIALS ================= */}
+      <section className="py-16 md:py-20 bg-zinc-50 border-y border-zinc-100">
+        <div className="container mx-auto px-6 max-w-6xl space-y-10">
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Mission Stories from the Ground</h2>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-white border border-zinc-100 rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-[#002344] mb-3">Education Support Example</h3>
+              <p className="text-zinc-600">In underserved communities, SSF learning initiatives helped children continue education with school materials, mentoring, and regular classes.</p>
+            </div>
+            <div className="bg-white border border-zinc-100 rounded-2xl p-6">
+              <h3 className="text-xl font-bold text-[#002344] mb-3">Health & Community Outreach Example</h3>
+              <p className="text-zinc-600">Through awareness camps and direct support drives, families gained access to health information, essentials, and timely referrals.</p>
+            </div>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            <div className="bg-[#002344] text-white rounded-2xl p-6">
+              <p className="text-zinc-100 italic">“As a volunteer, I witnessed real change in children’s confidence and attendance after SSF education sessions.”</p>
+              <p className="mt-3 text-sm text-orange-300 font-semibold">— Volunteer, Madhya Pradesh</p>
+            </div>
+            <div className="bg-white border border-zinc-100 rounded-2xl p-6">
+              <p className="text-zinc-700 italic">“SSF’s support gave our local community both hope and practical help during difficult times.”</p>
+              <p className="mt-3 text-sm text-[#fb8500] font-semibold">— Community Beneficiary</p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {["/images/classroom-mat-session.jpg", "/images/health-program-masks.jpg", "/images/slum-area-outreach.jpg"].map((src, idx) => (
+              <div key={idx} className="rounded-2xl overflow-hidden border border-zinc-100 shadow-sm">
+                <img src={src} alt="Mission in action" className="w-full h-52 object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+
+
+      {/* ================= MISSION WORK GALLERY ================= */}
+      <section className="py-16 bg-white">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-8">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Mission Work Gallery</h2>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            {[
+              "/images/real/education_girls.jpg",
+              "/images/real/nutrition_program.jpg",
+              "/images/real/tree_plantation.jpg",
+              "/images/real/women_empowerment_tailoring.jpg",
+            ].map((src, idx) => (
+              <div key={idx} className="rounded-2xl overflow-hidden border border-zinc-100 shadow-sm">
+                <img src={src} alt="Mission gallery" className="w-full h-52 object-cover hover:scale-105 transition-transform duration-700" loading="lazy" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= WHY THIS MISSION MATTERS ================= */}
+      <section className="py-16 bg-zinc-50 border-y border-zinc-100">
+        <div className="container mx-auto px-6 max-w-5xl text-center">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Why This Mission Matters</h2>
+          <p className="mt-4 text-zinc-600 leading-relaxed text-lg">
+            Communities thrive when education, healthcare, livelihoods, and dignity grow together. Our mission creates long-term, local capability—so children stay in school, families access care, women lead confidently, and villages move toward self-reliance.
+          </p>
+        </div>
+      </section>
+
       {/* ================= CTA ================= */}
       <section className="py-16 md:py-24 bg-[#001529] text-center px-6">
         <h2 className="text-3xl md:text-4xl font-serif font-bold text-white mb-8">
@@ -287,14 +548,21 @@ export default function MissionPage() {
             to="/Volunteer"
             className="w-full sm:w-auto px-8 py-4 bg-[#fb8500] text-white rounded-xl font-bold hover:bg-[#e67a00] transition-colors"
           >
-            Volunteer With Us
+            Volunteer
           </Link>
 
           <Link
             to="/Donate"
             className="w-full sm:w-auto px-8 py-4 bg-white text-[#002344] rounded-xl font-bold hover:bg-zinc-100 transition-colors"
           >
-            Support Our Work
+            Donate
+          </Link>
+
+          <Link
+            to="/PartnerWithUs"
+            className="w-full sm:w-auto px-8 py-4 bg-white/10 text-white rounded-xl font-bold hover:bg-white/20 transition-colors border border-white/30"
+          >
+            Partner With Us
           </Link>
         </div>
       </section>

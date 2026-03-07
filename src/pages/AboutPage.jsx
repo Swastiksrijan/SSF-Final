@@ -1,7 +1,7 @@
 
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { FaArrowRight } from "react-icons/fa";
+import { FaArrowRight, FaChartLine, FaGlobeAsia, FaHandsHelping, FaHeart, FaHandshake, FaLeaf, FaShieldAlt, FaUsers } from "react-icons/fa";
 import OptimizedImage from "../components/OptimizedImage";
 import PageHero from "../components/PageHero";
 
@@ -134,6 +134,170 @@ export default function AboutPage() {
                   <span className="text-xs text-zinc-500 uppercase font-bold tracking-wider">NGO Darpan</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= IMPACT STATISTICS ================= */}
+      <section className="py-20 bg-zinc-50 border-y border-zinc-100">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-12 space-y-4">
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-[#002344]">Impact Statistics (Since 2013)</h2>
+            <p className="text-zinc-500">Measurable outcomes that reflect our consistent grassroots work.</p>
+          </div>
+
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { value: "20,000+", label: "Lives Impacted", icon: <FaUsers /> },
+              { value: "40+", label: "Programs Conducted", icon: <FaHandsHelping /> },
+              { value: "100+", label: "Villages Reached", icon: <FaGlobeAsia /> },
+              { value: "50,000+", label: "Beneficiaries", icon: <FaHeart /> },
+            ].map((item, idx) => (
+              <motion.article
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.08 }}
+                className="bg-white p-6 rounded-2xl border border-zinc-100 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all text-center"
+              >
+                <div className="w-12 h-12 rounded-xl bg-orange-50 text-[#fb8500] mx-auto mb-4 flex items-center justify-center text-2xl">
+                  {item.icon}
+                </div>
+                <p className="text-2xl md:text-3xl font-black text-[#002344]">{item.value}</p>
+                <p className="text-sm text-zinc-500 mt-1">{item.label}</p>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= OUR JOURNEY TIMELINE ================= */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-14">
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-[#002344]">Our Journey Since 2013</h2>
+            <p className="text-zinc-500 mt-3">Milestones that shaped our mission and impact.</p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[
+              { year: "2013", title: "Foundation Established", icon: <FaLeaf /> },
+              { year: "2016", title: "Expanded Rural Outreach", icon: <FaHandsHelping /> },
+              { year: "2020", title: "Health & Relief Response", icon: <FaShieldAlt /> },
+              { year: "2025", title: "CSR & Institutional Growth", icon: <FaChartLine /> },
+            ].map((item, idx) => (
+              <div key={idx} className="rounded-2xl border border-zinc-100 bg-zinc-50 p-6 hover:bg-white hover:shadow-md transition-all">
+                <p className="text-[#fb8500] font-black text-xl">{item.year}</p>
+                <div className="text-[#002344] text-2xl mt-2">{item.icon}</div>
+                <h3 className="mt-3 font-bold text-[#002344]">{item.title}</h3>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= OUR WORK IN ACTION ================= */}
+      <section className="py-24 bg-zinc-50 border-y border-zinc-100">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-[#002344]">Our Work in Action</h2>
+            <p className="text-zinc-500 mt-3">A visual snapshot of our education, health, environment, and community programs.</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[
+              { src: "/images/tree-planting-2.jpg", alt: "Tree plantation drive" },
+              { src: "/images/classroom-mat-session.jpg", alt: "Children classroom session" },
+              { src: "/images/health-program-masks.jpg", alt: "Health awareness activity" },
+              { src: "/images/slum-area-outreach.jpg", alt: "Community outreach" },
+            ].map((img, idx) => (
+              <div key={idx} className="rounded-2xl overflow-hidden border border-zinc-100 shadow-sm group">
+                <OptimizedImage src={img.src} alt={img.alt} className="w-full h-44 md:h-56 group-hover:scale-105 transition-transform duration-700" />
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= TEAM HIGHLIGHTS ================= */}
+      <section className="py-24 bg-white">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-5xl font-serif font-bold text-[#002344]">Team Highlights</h2>
+            <p className="text-zinc-500 mt-3">Leadership and core members committed to ethical and impactful action.</p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            {[
+              {
+                name: "Mr. Ramesh Pandey",
+                role: "Founder & National President",
+                bio: "Leads organizational vision, governance, and long-term grassroots strategy.",
+                img: "/Teams_Images/ramesh_pandey.jpg",
+              },
+              {
+                name: "Ms. Preeti Shukla",
+                role: "Program Head",
+                bio: "Oversees on-ground execution and coordination across key program verticals.",
+                img: "/Teams_Images/image_19.jpg",
+              },
+              {
+                name: "Ms. Divya Sharma",
+                role: "Chief Finance Officer",
+                bio: "Ensures financial discipline, reporting quality, and donor trust compliance.",
+                img: "/Teams_Images/divya_sharma.jpg",
+              },
+            ].map((member, idx) => (
+              <div key={idx} className="bg-zinc-50 border border-zinc-100 rounded-3xl p-6 hover:shadow-lg transition-all">
+                <div className="w-24 h-24 rounded-full overflow-hidden border-2 border-white shadow-sm">
+                  <img src={member.img} alt={member.name} className="w-full h-full object-cover" loading="lazy" />
+                </div>
+                <h3 className="mt-4 text-xl font-bold text-[#002344]">{member.name}</h3>
+                <p className="text-sm font-semibold text-[#fb8500]">{member.role}</p>
+                <p className="text-sm text-zinc-600 mt-3">{member.bio}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="text-center mt-10">
+            <Link to="/Team" className="inline-flex items-center gap-2 px-8 py-3 rounded-full bg-[#002344] text-white font-bold hover:bg-[#fb8500] transition-all">
+              View Full Team <FaArrowRight />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ================= CSR PARTNERSHIP + CTA ================= */}
+      <section className="py-24 bg-gradient-to-br from-[#001529] to-[#002344] text-white">
+        <div className="container mx-auto px-6 max-w-6xl">
+          <div className="grid lg:grid-cols-2 gap-10 items-center">
+            <div className="space-y-5">
+              <h2 className="text-3xl md:text-5xl font-serif font-bold">Partner With Us / CSR Partnership</h2>
+              <p className="text-zinc-300 text-lg">
+                We collaborate with companies, institutions, and philanthropic partners to deliver scalable social impact with measurable outcomes.
+              </p>
+              <div className="inline-flex items-center gap-2 text-[#fb8500] font-bold uppercase tracking-widest text-xs">
+                <FaHandshake /> Responsible Partnerships • Transparent Reporting
+              </div>
+            </div>
+
+            <div className="bg-white/10 border border-white/15 rounded-3xl p-8 grid sm:grid-cols-2 gap-4">
+              <Link to="/Donate" className="text-center py-4 rounded-xl bg-[#fb8500] font-bold hover:bg-[#ff9f1c] transition-all">Donate</Link>
+              <Link to="/Volunteer" className="text-center py-4 rounded-xl bg-white/10 font-bold hover:bg-white/20 transition-all">Volunteer</Link>
+              <Link to="/CSRPartnership" className="text-center py-4 rounded-xl bg-white text-[#002344] font-bold hover:bg-zinc-100 transition-all">CSR Partnership</Link>
+              <Link to="/PartnerWithUs" className="text-center py-4 rounded-xl border border-white/40 font-bold hover:bg-white/10 transition-all">Partner With Us</Link>
+            </div>
+          </div>
+
+          <div className="mt-10 bg-white/5 border border-white/10 rounded-2xl p-6 text-center">
+            <h3 className="text-2xl font-bold">Financial Transparency / Audit Reports</h3>
+            <p className="text-zinc-300 mt-2">Review year-wise reports, compliance details, and accountability records.</p>
+            <div className="mt-5">
+              <Link to="/Transparency" className="inline-flex items-center gap-2 px-7 py-3 rounded-full bg-white text-[#002344] font-bold hover:bg-[#fb8500] hover:text-white transition-all">
+                Open Transparency Page <FaArrowRight />
+              </Link>
             </div>
           </div>
         </div>
