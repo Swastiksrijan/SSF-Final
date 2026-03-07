@@ -1,13 +1,94 @@
 import { Link } from "@tanstack/react-router";
+import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { FaBuilding, FaHeartbeat, FaMicrochip, FaMapMarkedAlt, FaFilePdf, FaDownload, FaCheckCircle, FaArrowRight, FaHeart } from "react-icons/fa";
+import { FaBuilding, FaHeartbeat, FaMicrochip, FaMapMarkedAlt, FaFilePdf, FaDownload, FaCheckCircle, FaArrowRight, FaHeart, FaSeedling, FaChalkboardTeacher, FaCalendarAlt, FaMapMarkerAlt, FaUsers, FaHandsHelping } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
 
 
 import PageHero from "../components/PageHero";
 
+
+const upcomingProjectCards = [
+  {
+    title: "SSF National Academy Expansion",
+    category: "Education",
+    description: "Phase-wise expansion of the academy to improve access to quality education for rural learners.",
+    startDate: "July 2026",
+    duration: "24 months",
+    location: "Rewa, Madhya Pradesh",
+    image: "/images/academy/academy-expansion.jpg",
+  },
+  {
+    title: "Rural Health Awareness Camps",
+    category: "Health",
+    description: "Preventive health sessions, nutrition counseling, and referral support for underserved families.",
+    startDate: "September 2026",
+    duration: "6 months",
+    location: "Satna & Rewa, Madhya Pradesh",
+    image: "/images/health-program-masks.jpg",
+  },
+  {
+    title: "Green Village Action Drive",
+    category: "Environment",
+    description: "Community clean-up and eco-awareness activities to promote safer and sustainable local practices.",
+    startDate: "August 2026",
+    duration: "4 months",
+    location: "Sidhi, Madhya Pradesh",
+    image: "/images/slum-area-outreach.jpg",
+  },
+  {
+    title: "Women Skill & Livelihood Circles",
+    category: "Women Empowerment",
+    description: "Skill-building and entrepreneurship-oriented workshops for women-led household resilience.",
+    startDate: "October 2026",
+    duration: "9 months",
+    location: "Noida & Rewa",
+    image: "/images/classroom-mat-session.jpg",
+  },
+  {
+    title: "Digital Learning Readiness Program",
+    category: "Education",
+    description: "Foundational digital literacy support for students and teachers in partner communities.",
+    startDate: "November 2026",
+    duration: "8 months",
+    location: "Greater Noida, Uttar Pradesh",
+    image: "/images/real/girls-study-group-mat.jpg",
+  },
+  {
+    title: "Community Nutrition Outreach",
+    category: "Health",
+    description: "Maternal and child nutrition awareness sessions with periodic follow-up and support referral.",
+    startDate: "December 2026",
+    duration: "5 months",
+    location: "Faridabad, Haryana",
+    image: "/images/real/children-playing-park.jpg",
+  },
+];
+
+const categoryIcons = {
+  Education: <FaChalkboardTeacher />,
+  Health: <FaHeartbeat />,
+  Environment: <FaSeedling />,
+  "Women Empowerment": <FaUsers />,
+};
+
+const timelineMilestones = [
+  { month: "Jul 2026", title: "SSF National Academy Expansion", summary: "Land and infrastructure development phase begins in Rewa." },
+  { month: "Aug 2026", title: "Green Village Action Drive", summary: "Village-level sustainability and clean-up campaign launch." },
+  { month: "Sep 2026", title: "Rural Health Awareness Camps", summary: "Health and wellbeing camps begin across focus villages." },
+  { month: "Oct 2026", title: "Women Skill & Livelihood Circles", summary: "Skill and livelihood batches initiated for women groups." },
+  { month: "Nov-Dec 2026", title: "Digital + Nutrition Outreach", summary: "Learning readiness and nutrition support programs roll out." },
+];
+
 export default function UpcomingProjects() {
+  const [activeCategory, setActiveCategory] = useState("All");
+
+  const filteredProjects = useMemo(() => {
+    if (activeCategory === "All") return upcomingProjectCards;
+    return upcomingProjectCards.filter((project) => project.category === activeCategory);
+  }, [activeCategory]);
+
   return (
     <div className="w-full font-inria bg-white">
 
@@ -18,6 +99,105 @@ export default function UpcomingProjects() {
         subtitle="Our vision for 2026 and beyond. Expanding our footprint, embracing technology, and deepening our impact across Bharat."
         hindiSubtitle="भविष्य का निर्माण - 2026 और उससे आगे की हमारी दृष्टि।"
       />
+
+      {/* ================= PAGE INTRO TAGLINE ================= */}
+      <section className="py-10 px-6 bg-white border-b border-zinc-100">
+        <div className="max-w-5xl mx-auto text-center">
+          <p className="text-lg md:text-xl text-zinc-600 font-medium">
+            See what’s next for Swastik Srijan Foundation and how you can be part of the change.
+          </p>
+        </div>
+      </section>
+
+      {/* ================= UPCOMING PROJECT CARDS ================= */}
+      <section className="py-16 px-6 bg-gradient-to-b from-zinc-50 to-white">
+        <div className="max-w-7xl mx-auto space-y-10">
+          <div className="text-center">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Upcoming Projects at a Glance</h2>
+            <p className="text-zinc-500 mt-3">Explore our next initiatives across education, health, environment, and women empowerment.</p>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-3">
+            {["All", "Education", "Health", "Environment", "Women Empowerment"].map((category) => (
+              <button
+                key={category}
+                onClick={() => setActiveCategory(category)}
+                className={`px-4 py-2 rounded-full text-sm font-semibold border transition-colors ${
+                  activeCategory === category
+                    ? "bg-[#002344] text-white border-[#002344]"
+                    : "bg-white text-zinc-600 border-zinc-200 hover:border-[#002344]/40"
+                }`}
+              >
+                {category}
+              </button>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {filteredProjects.map((project, idx) => (
+              <motion.article
+                key={project.title}
+                initial={{ opacity: 0, y: 18 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.06 }}
+                className="bg-white rounded-3xl border border-zinc-100 overflow-hidden shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all"
+              >
+                <div className="h-44 overflow-hidden">
+                  <img src={project.image} alt={project.title} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                </div>
+                <div className="p-6 space-y-3">
+                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-50 text-sm text-zinc-700 border border-zinc-100">
+                    <span className="text-[#fb8500]">{categoryIcons[project.category]}</span>
+                    {project.category}
+                  </div>
+                  <h3 className="text-xl font-bold text-[#002344] leading-tight">{project.title}</h3>
+                  <p className="text-zinc-600 text-sm leading-relaxed">{project.description}</p>
+
+                  <div className="space-y-2 text-sm text-zinc-600">
+                    <p className="flex items-center gap-2"><FaCalendarAlt className="text-[#fb8500]" /> Start: {project.startDate} · Duration: {project.duration}</p>
+                    <p className="flex items-center gap-2"><FaMapMarkerAlt className="text-[#fb8500]" /> {project.location}</p>
+                  </div>
+
+                  <div className="pt-2">
+                    <Link to="/Volunteer" className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-[#002344] text-white text-sm font-semibold hover:bg-[#001a33] transition-colors">
+                      Join / Volunteer <FaArrowRight className="text-xs" />
+                    </Link>
+                  </div>
+                </div>
+              </motion.article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= PROJECT TIMELINE ================= */}
+      <section className="py-16 px-6 bg-white border-y border-zinc-100">
+        <div className="max-w-6xl mx-auto">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">Upcoming Project Timeline</h2>
+            <p className="text-zinc-500 mt-3">A quick roadmap of what starts next and where impact begins.</p>
+          </div>
+
+          <div className="space-y-6">
+            {timelineMilestones.map((item, index) => (
+              <motion.div
+                key={item.title}
+                initial={{ opacity: 0, x: index % 2 === 0 ? -10 : 10 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                className="relative bg-zinc-50 border border-zinc-100 rounded-2xl p-6 hover:shadow-md transition-shadow"
+              >
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+                  <h3 className="text-lg font-bold text-[#002344]">{item.title}</h3>
+                  <span className="inline-flex items-center px-3 py-1 rounded-full bg-[#002344]/10 text-[#002344] text-sm font-semibold w-fit">{item.month}</span>
+                </div>
+                <p className="text-zinc-600 mt-2">{item.summary}</p>
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
 
       {/* ================= 1. SCHOOL DONATION APPEAL ================= */}
       <section className="py-32 px-6 bg-white">
@@ -445,6 +625,25 @@ export default function UpcomingProjects() {
         </div>
       </section>
 
+
+      {/* ================= PARTICIPATION CTA ================= */}
+      <section className="py-16 px-6 bg-white">
+        <div className="max-w-5xl mx-auto rounded-[2rem] p-8 md:p-12 bg-gradient-to-r from-[#002344] to-[#001529] text-white text-center shadow-xl">
+          <h2 className="text-3xl md:text-4xl font-serif font-bold">Be Part of Our Upcoming Projects</h2>
+          <p className="mt-3 text-zinc-200">Your support can accelerate education, health, environment, and empowerment initiatives on the ground.</p>
+          <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+            <Link to="/Volunteer" className="px-7 py-3 rounded-xl bg-[#fb8500] text-white font-bold hover:bg-[#e76f00] transition-colors inline-flex justify-center items-center gap-2">
+              <FaHandsHelping /> Volunteer
+            </Link>
+            <Link to="/Donate" className="px-7 py-3 rounded-xl bg-white text-[#002344] font-bold hover:bg-zinc-100 transition-colors inline-flex justify-center items-center gap-2">
+              <FaHeart /> Donate
+            </Link>
+            <Link to="/PartnerWithUs" className="px-7 py-3 rounded-xl border border-white/40 text-white font-bold hover:bg-white/10 transition-colors inline-flex justify-center items-center">
+              Partner With Us
+            </Link>
+          </div>
+        </div>
+      </section>
 
       {/* ================= CTA ================= */}
       <section className="py-32 bg-[#001529] text-white text-center px-6 relative overflow-hidden">
