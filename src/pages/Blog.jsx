@@ -42,7 +42,7 @@ The process involves separating plasma from the blood and returning the remainin
       hi: "सभी के लिए मास्क: सामुदायिक पहल"
     },
     date: "June 2021",
-    image: "/images/protection-ecosystem.png",
+    image: "/images/real/direct-aid-mask.jpg",
     short: {
       en: "SSF distributed free masks to vulnerable communities during the COVID-19 lockdown.",
       hi: "COVID-19 लॉकडाउन के दौरान SSF ने कमजोर समुदायों को मुफ्त मास्क वितरित किए।"
@@ -151,7 +151,7 @@ Essential supplies, hygiene kits, and educational materials were distributed. Vo
       hi: "एक मजबूत राष्ट्र के लिए गांवों का सशक्तिकरण"
     },
     date: "Aug 2023",
-    image: "/images/agriculture.png",
+    image: "/images/real/tree_plantation.jpg",
     short: {
       en: "True national strength lies in our villages. Developing them reduces migration and boosts the economy.",
       hi: "असली राष्ट्रीय शक्ति हमारे गांवों में निहित है। उनका विकास पलायन को कम करता है और अर्थव्यवस्था को बढ़ावा देता है।"
@@ -239,7 +239,7 @@ Our medical outreach programs focus on holistic well-being, while self-defense w
       hi: "प्रत्यक्ष सहायता: ग्रामीण महिलाओं का समर्थन"
     },
     date: "Feb 2024",
-    image: "/images/direct-relief-women.jpg",
+    image: "/images/real/gorakhpur-woman-aid.jpg",
     short: {
       en: "SSF reaches the doorsteps of rural families with direct material and financial support.",
       hi: "SSF प्रत्यक्ष सामग्री और वित्तीय सहायता के साथ ग्रामीण परिवारों के दरवाजे तक पहुँचता है।"
@@ -260,7 +260,7 @@ This direct interaction helps us build a deeper bond with the community and unde
       hi: "मिशन करुणा: स्थानीय पशु बचाव"
     },
     date: "March 2024",
-    image: "/images/cow-rescue-mission.jpg",
+    image: "/images/real/cow-rescue.jpg",
     short: {
       en: "Rescuing animals in distress is a core part of our commitment to a balanced ecosystem.",
       hi: "संकट में फंसे पशुओं को बचाना संतुलित पारिस्थितिकी तंत्र के प्रति हमारी प्रतिबद्धता का एक मुख्य हिस्सा है।"
@@ -281,7 +281,7 @@ Our animal welfare wing works to protect strays and wildlife, providing medical 
       hi: "फिट भारत: शारीरिक स्वास्थ्य को बढ़ावा देना"
     },
     date: "April 2024",
-    image: "/images/children-exercise-session.jpg",
+    image: "/images/real/park-activity-session.jpg",
     short: {
       en: "Starting the day with fitness programs ensures a healthy mind in a healthy body for our students.",
       hi: "फिटनेस कार्यक्रमों के साथ दिन की शुरुआत हमारे छात्रों के लिए स्वस्थ शरीर में स्वस्थ दिमाग सुनिश्चित करती है।"
@@ -302,7 +302,7 @@ From yoga to group exercises, our students learn the importance of maintaining a
       hi: "विरासत: सांस्कृतिक जड़ों का उत्सव"
     },
     date: "May 2024",
-    image: "/images/cultural-event-children.jpg",
+    image: "/images/real/community-bhajan.jpg",
     short: {
       en: "Cultural performances by our students help preserve local traditions and build stage confidence.",
       hi: "हमारे छात्रों द्वारा सांस्कृतिक प्रदर्शन स्थानीय परंपराओं को संरक्षित करने और मंच पर आत्मविश्वास बढ़ाने में मदद करते हैं।"

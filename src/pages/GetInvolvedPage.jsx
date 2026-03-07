@@ -160,16 +160,16 @@ export default function GetInvolvedPage() {
                             <img src="/images/real/children-playing-park.jpg" alt="Children Unity" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                         </div>
                         <div className="rounded-[3rem] overflow-hidden shadow-xl h-[400px]">
-                            <img src="/images/slum-outreach-children.jpg" alt="Slum Outreach" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                            <img src="/images/real/children-gathering.jpg" alt="Slum Outreach" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                         </div>
                         <div className="rounded-[3rem] overflow-hidden shadow-xl h-[400px]">
-                            <img src="/images/classroom-mat-session.jpg" alt="Classroom Session" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                            <img src="/images/real/children-mat-session.jpg" alt="Classroom Session" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                         </div>
                         <div className="rounded-[3rem] overflow-hidden shadow-xl h-[400px]">
-                            <img src="/images/rural-children-raising-hands.jpg" alt="Rural Children" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                            <img src="/images/real/green-warriors-students.jpg" alt="Rural Children" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                         </div>
                         <div className="rounded-[3rem] overflow-hidden shadow-xl h-[400px]">
-                            <img src="/images/slum-area-outreach.jpg" alt="Outreach Efforts" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
+                            <img src="/images/real/rural-awareness.jpg" alt="Outreach Efforts" className="w-full h-full object-cover hover:scale-105 transition-transform duration-700" />
                         </div>
                     </div>
                 </div>

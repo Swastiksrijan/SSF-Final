@@ -399,7 +399,7 @@ export default function UpcomingProjects() {
           <div className="grid lg:grid-cols-2 gap-10 items-center bg-[#f8f9fa] p-10 rounded-[3rem] border border-zinc-100 shadow-sm">
             <div className="rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
               <img
-                src="/images/academy/academy-roadmap.jpg"
+                src="/images/real/academy_banner_wide.jpg"
                 alt="SSF National Academy Future Roadmap"
                 className="w-full h-auto"
               />

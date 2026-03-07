@@ -99,7 +99,7 @@ export default function LearningHub() {
         <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
           <div className="order-2 md:order-1 relative rounded-2xl overflow-hidden shadow-2xl border border-zinc-200">
             <img
-              src="/images/education-material-exchange.jpg"
+              src="/images/real/classroom-group-poster.jpg"
               alt="SSF National Academy Mission - Empowering Education Through Material Support"
               className="w-full h-full object-cover"
             />

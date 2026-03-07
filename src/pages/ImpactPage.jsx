@@ -38,7 +38,7 @@ export default function ImpactPage() {
         },
         {
             icon: <FaUniversity />,
-            image: "/images/academy/academy-roadmap.jpg",
+            image: "/images/real/academy_banner_wide.jpg",
             title: "The SSF National Academy",
             titleHi: "एसएसएफ नेशनल अकादमी",
             desc: "Our flagship knowledge hub for future leaders, focusing on academic excellence and professional growth.",

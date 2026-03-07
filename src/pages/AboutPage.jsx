@@ -89,7 +89,7 @@ export default function AboutPage() {
               className="rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white"
             >
               <OptimizedImage
-                src="/images/ssf-team.jpg"
+                src="/images/real/ssf_event_members.jpg"
                 alt="SSF Team and Core Members"
                 className="w-full h-full object-cover"
               />
@@ -109,7 +109,7 @@ export default function AboutPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="order-2 md:order-1 rounded-2xl overflow-hidden shadow-xl border border-zinc-100">
               <OptimizedImage
-                src="/images/cvc-certificate.jpg"
+                src="/images/real/ncw_pledge_certificate.jpg"
                 alt="CVC Pledge Certificate"
                 className="w-full h-auto"
               />
