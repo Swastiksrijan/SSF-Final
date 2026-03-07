@@ -7,7 +7,7 @@ export default function CookiePolicy() {
         <div className="w-full font-inria bg-white">
             {/* ================= HERO ================= */}
             <PageHero
-                image="/images/uploads/community-banner.jpg"
+                image="/images/real/green-warriors-students.jpg"
                 title="Cookie Policy"
                 subtitle="How we use cookies to improve your experience."
                 hindiSubtitle="कुकी नीति - हम आपके अनुभव को बेहतर बनाने के लिए कुकीज़ का उपयोग कैसे करते हैं।"

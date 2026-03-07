@@ -53,7 +53,7 @@ export default function Team() {
       <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[40vh]">
         <div className="container mx-auto px-4 flex justify-center">
           <img
-            src="/images/uploads/community-banner.jpg"
+            src="/images/real/green-warriors-students.jpg"
             alt="Meet Our Team"
             className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
           />
@@ -273,7 +273,7 @@ export default function Team() {
             className="rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white"
           >
             <img
-              src="/images/uploads/community-banner.jpg"
+              src="/images/real/green-warriors-students.jpg"
               alt="SSF Community and Field Team"
               className="w-full h-auto object-cover"
             />

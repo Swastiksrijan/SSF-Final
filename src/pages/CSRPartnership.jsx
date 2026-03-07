@@ -58,7 +58,7 @@ export default function CSRPartnership() {
 
             {/* ================= HERO SECTION ================= */}
             <PageHero
-                image="/images/uploads/community-banner.jpg"
+                image="/images/real/green-warriors-students.jpg"
                 title="Corporate Partnership"
                 subtitle="Partner with Swastik Srijan Foundation to create deep, lasting social impact."
                 hindiSubtitle="सीएसआर से आगे, दिलों का जुड़ाव ला सकता है दुनिया में बदलाव।"

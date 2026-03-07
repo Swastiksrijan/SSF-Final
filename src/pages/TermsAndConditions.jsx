@@ -78,7 +78,7 @@ export default function TermsAndConditions() {
 
       {/* ================= HERO ================= */}
       <PageHero
-        image="/images/uploads/community-banner.jpg"
+        image="/images/real/green-warriors-students.jpg"
         title="Terms & Conditions"
         subtitle="Please read these terms carefully before using our website."
         hindiSubtitle="नियम और शर्तें - हमारी वेबसाइट का उपयोग करने से पहले कृपया इन शर्तों को ध्यान से पढ़ें।"

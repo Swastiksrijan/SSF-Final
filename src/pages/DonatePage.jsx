@@ -97,7 +97,7 @@ export default function DonatePage() {
       <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[50vh]">
         <div className="container mx-auto px-4 flex justify-center">
           <img
-            src="/images/uploads/community-banner.jpg"
+            src="/images/real/green-warriors-students.jpg"
             alt="Donate - Children holding signs"
             className="w-full h-auto max-h-[85vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
           />
@@ -499,7 +499,7 @@ export default function DonatePage() {
       <section className="py-32 px-4 relative overflow-hidden bg-black text-white text-center">
         <div className="absolute inset-0 z-0">
           <img
-            src="/images/uploads/community-banner.jpg"
+            src="/images/real/green-warriors-students.jpg"
             alt="Better Bharat"
             className="w-full h-full object-cover opacity-30"
           />

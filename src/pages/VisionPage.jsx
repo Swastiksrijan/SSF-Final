@@ -8,7 +8,7 @@ export default function VisionPage() {
     return (
         <div className="w-full bg-white overflow-hidden">
             <PageHero
-                image="/images/uploads/community-banner.jpg"
+                image="/images/real/green-warriors-students.jpg"
                 altTitle="Our Vision"
                 height="min-h-[60vh]"
                 objectFit="cover"

@@ -89,7 +89,7 @@ export default function AboutPage() {
               className="rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white"
             >
               <OptimizedImage
-                src="/images/uploads/community-banner.jpg"
+                src="/images/real/green-warriors-students.jpg"
                 alt="SSF Team and Core Members"
                 className="w-full h-full object-cover"
               />

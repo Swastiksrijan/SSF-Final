@@ -92,7 +92,7 @@ export default function Campaigns() {
         <section className="bg-white font-inria min-h-screen">
             {/* ================= HERO ================= */}
             <PageHero
-                image="/images/uploads/community-banner.jpg"
+                image="/images/real/green-warriors-students.jpg"
                 title="Our Campaigns"
                 subtitle="Swastik Srijan Foundation conducts various campaigns to raise awareness, encourage community participation, and address important social, educational, health, and environmental issues."
                 hindiSubtitle="हमारे अभियान - समुदायों का सशक्तिकरण, जीवन का परिवर्तन"
@@ -215,7 +215,7 @@ export default function Campaigns() {
                         className="relative rounded-[2.5rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.1)] border-[12px] border-white group"
                     >
                         <img
-                            src="/images/uploads/community-banner.jpg"
+                            src="/images/real/green-warriors-students.jpg"
                             alt="Our Campaigns Collage"
                             className="w-full h-auto object-cover transform transition-transform duration-700 group-hover:scale-[1.02]"
                         />
