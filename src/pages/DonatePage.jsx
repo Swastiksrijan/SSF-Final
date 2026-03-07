@@ -1,4 +1,4 @@
-import { FaHandHoldingHeart, FaChartPie, FaUniversity, FaCheckCircle, FaRupeeSign, FaQrcode, FaShieldAlt, FaQuestionCircle, FaChevronDown, FaChevronUp, FaGraduationCap, FaHeartbeat, FaBriefcase, FaRunning, FaTree, FaClipboardCheck, FaFileAlt } from "react-icons/fa";
+import { FaHandHoldingHeart, FaChartPie, FaUniversity, FaCheckCircle, FaRupeeSign, FaQrcode, FaShieldAlt, FaQuestionCircle, FaChevronDown, FaChevronUp, FaGraduationCap, FaHeartbeat, FaBriefcase, FaRunning, FaTree, FaClipboardCheck, FaFileAlt, FaLock, FaCreditCard, FaSyncAlt, FaDonate, FaProjectDiagram } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import qrCode from "../assets/barcode.jpg";
@@ -83,6 +83,55 @@ export default function DonatePage() {
     }
   ];
 
+
+
+  const donationModes = [
+    {
+      title: "One-Time Donation",
+      icon: <FaDonate className="text-[#fb8500]" />,
+      desc: "Make an immediate contribution to support current field activities.",
+      button: "Donate Now",
+      link: "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view",
+    },
+    {
+      title: "Recurring Donation",
+      icon: <FaSyncAlt className="text-[#002344]" />,
+      desc: "Create sustained impact through monthly giving and long-term support.",
+      button: "Set Recurring",
+      link: "/Contact",
+    },
+    {
+      title: "Project-Specific Donation",
+      icon: <FaProjectDiagram className="text-green-600" />,
+      desc: "Choose an education, health, livelihood, or environment project to back.",
+      button: "Support a Project",
+      link: "/UpcomingProjects",
+    },
+  ];
+
+  const donorTestimonials = [
+    {
+      quote: "The donation flow was easy, transparent, and I received updates on how funds were used.",
+      author: "Donor, Pune",
+    },
+    {
+      quote: "SSF’s team shared clear impact details, which made me confident to contribute regularly.",
+      author: "Recurring Supporter, Delhi NCR",
+    },
+    {
+      quote: "Knowing my support helps children and families directly gives me a strong sense of purpose.",
+      author: "Community Donor, Madhya Pradesh",
+    },
+  ];
+
+  const utilization = [
+    { label: "Programs", value: 85, color: "#1d4ed8" },
+    { label: "Administration", value: 10, color: "#f59e0b" },
+    { label: "Fundraising", value: 5, color: "#16a34a" },
+  ];
+
+  const utilizationPie = `conic-gradient(${utilization.map((item, index) => `${item.color} ${utilization.slice(0, index).reduce((a, c) => a + c.value, 0)}% ${utilization.slice(0, index + 1).reduce((a, c) => a + c.value, 0)}%`).join(", ")})`;
+
   const whyDonate = [
     { text: "Serving communities since 2013", textHi: "2013 से समुदाय की सेवा में" },
     { text: "Grassroots, volunteer-driven organization", textHi: "जमीनी स्तर पर स्वयंसेवकों द्वारा संचालित संगठन" },
@@ -101,6 +150,118 @@ export default function DonatePage() {
             alt="Donate - Children holding signs"
             className="w-full h-auto max-h-[85vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
           />
+        </div>
+      </section>
+
+
+
+      {/* ================= DONATE HEADER TAGLINE ================= */}
+      <section className="py-12 px-4 bg-white border-b border-zinc-100">
+        <div className="max-w-6xl mx-auto text-center">
+          <h1 className="text-3xl md:text-5xl font-serif font-black text-[#002344]">
+            Support Swastik Srijan Foundation — Your contribution can transform lives
+          </h1>
+          <p className="mt-4 text-zinc-600 text-lg">Give with confidence to power education, health, livelihood, and community transformation.</p>
+        </div>
+      </section>
+
+      {/* ================= DONATION OPTIONS CARDS ================= */}
+      <section className="py-16 px-4 bg-zinc-50">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {donationModes.map((mode, idx) => (
+              <motion.div
+                key={mode.title}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.06 }}
+                className="bg-white border border-zinc-100 rounded-3xl p-6 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all"
+              >
+                <div className="w-12 h-12 rounded-xl bg-zinc-50 border border-zinc-100 flex items-center justify-center text-2xl mb-4">
+                  {mode.icon}
+                </div>
+                <h3 className="text-2xl font-bold text-[#002344]">{mode.title}</h3>
+                <p className="text-zinc-600 mt-2">{mode.desc}</p>
+                {mode.link.startsWith("http") ? (
+                  <a href={mode.link} target="_blank" rel="noreferrer" className="mt-5 inline-flex px-5 py-3 rounded-xl bg-[#002344] text-white font-bold hover:bg-[#FF6600] transition-colors">
+                    {mode.button}
+                  </a>
+                ) : (
+                  <a href={mode.link} className="mt-5 inline-flex px-5 py-3 rounded-xl bg-[#002344] text-white font-bold hover:bg-[#FF6600] transition-colors">
+                    {mode.button}
+                  </a>
+                )}
+              </motion.div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= SECURE DONATION FORM + UTILIZATION ================= */}
+      <section className="py-16 px-4 bg-white border-y border-zinc-100">
+        <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-8">
+          <div className="rounded-3xl border border-zinc-200 p-6 md:p-8 bg-zinc-50">
+            <h2 className="text-3xl font-bold text-[#002344] mb-2">Secure Donation Form</h2>
+            <p className="text-zinc-500 mb-6">Fill this quick form and proceed to payment securely.</p>
+
+            <form className="space-y-4">
+              <div className="grid sm:grid-cols-2 gap-4">
+                <input type="text" placeholder="Full Name" className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#002344]/20" />
+                <input type="email" placeholder="Email Address" className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#002344]/20" />
+              </div>
+              <div className="grid sm:grid-cols-2 gap-4">
+                <input type="tel" placeholder="Phone Number" className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#002344]/20" />
+                <input type="number" placeholder="Donation Amount (₹)" className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#002344]/20" />
+              </div>
+              <select className="w-full px-4 py-3 rounded-xl border border-zinc-200 focus:outline-none focus:ring-2 focus:ring-[#002344]/20">
+                <option>Payment Option</option>
+                <option>UPI</option>
+                <option>Card</option>
+                <option>Net Banking</option>
+              </select>
+
+              <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noreferrer" className="w-full inline-flex justify-center items-center gap-2 px-6 py-3 rounded-xl bg-[#FF6600] text-white font-bold hover:bg-[#e76f00] transition-colors">
+                <FaCreditCard /> Proceed to Secure Payment
+              </a>
+            </form>
+
+            <div className="mt-5 grid sm:grid-cols-3 gap-3 text-xs font-semibold">
+              <div className="rounded-xl border border-zinc-200 bg-white p-3 flex items-center gap-2 text-zinc-700"><FaLock className="text-[#002344]" /> 128-bit Encryption</div>
+              <div className="rounded-xl border border-zinc-200 bg-white p-3 flex items-center gap-2 text-zinc-700"><FaShieldAlt className="text-[#2d6a4f]" /> PCI-DSS Gateway</div>
+              <div className="rounded-xl border border-zinc-200 bg-white p-3 flex items-center gap-2 text-zinc-700"><FaCheckCircle className="text-[#fb8500]" /> Verified NGO</div>
+            </div>
+          </div>
+
+          <div className="rounded-3xl border border-zinc-200 p-6 md:p-8 bg-white">
+            <h2 className="text-3xl font-bold text-[#002344] mb-2">Fund Utilization Snapshot</h2>
+            <p className="text-zinc-500 mb-6">A quick view of how your contributions are allocated for impact.</p>
+
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              <div className="w-44 h-44 rounded-full border-8 border-zinc-50" style={{ background: utilizationPie }}></div>
+              <div className="space-y-3">
+                {utilization.map((item) => (
+                  <div key={item.label} className="flex items-center gap-3">
+                    <span className="w-3 h-3 rounded-full" style={{ backgroundColor: item.color }}></span>
+                    <span className="font-semibold text-zinc-700">{item.label}</span>
+                    <span className="text-zinc-500 text-sm">{item.value}%</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div className="mt-8">
+              <h3 className="text-xl font-bold text-[#002344] mb-4">Donor Voices</h3>
+              <div className="space-y-3">
+                {donorTestimonials.map((item, idx) => (
+                  <blockquote key={idx} className="p-4 rounded-2xl bg-zinc-50 border border-zinc-100">
+                    <p className="text-zinc-700 italic">“{item.quote}”</p>
+                    <p className="text-sm mt-2 font-semibold text-[#fb8500]">— {item.author}</p>
+                  </blockquote>
+                ))}
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
