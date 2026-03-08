@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { FaGraduationCap, FaHeartbeat, FaBriefcase, FaSeedling, FaFutbol, FaChild, FaPaw, FaUsers, FaArrowRight, FaQuoteLeft, FaUniversity } from "react-icons/fa";
 import { useState } from "react";
 import ImpactStories from "../components/ImpactStories";
+import PageHero from "../components/PageHero";
+import pageHeader from "../assets/page-header.jpg";
 
 export default function ImpactPage() {
     const [showAllPrograms, setShowAllPrograms] = useState(false);
@@ -118,15 +120,14 @@ export default function ImpactPage() {
     return (
         <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
             {/* ================= HERO ================= */}
-            <section className="relative w-full bg-zinc-50 pt-28 pb-12 flex items-center justify-center min-h-[60vh]">
-                <div className="container mx-auto px-4 h-full flex items-center justify-center">
-                    <img
-                        src="/images/uploads/impact-hero-banner.jpg"
-                        alt="Impact - SSF Vaccine Awareness Newspaper Clipping"
-                        className="w-full h-auto max-h-[80vh] object-contain shadow-lg rounded-lg"
-                    />
-                </div>
-            </section>
+            <PageHero
+                image={pageHeader}
+                title="Impact"
+                subtitle="Witness the tangible transformation driven by community action and dedication."
+                hindiSubtitle="सामुदायिक सेवा और समर्पण से उपजे वास्तविक परिवर्तन की एक झलक।"
+                height="h-[40vh] md:h-[60vh]"
+                overlayOpacity="bg-black/40"
+            />
 
             {/* ================= STATS ================= */}
             <section className="py-20 px-6 relative z-20 -mt-16">

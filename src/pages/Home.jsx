@@ -15,7 +15,8 @@ import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
 
 
 // Import images
-const heroImage = "/images/hero-main.jpg";
+import pageHeader from "../assets/page-header.jpg";
+const heroImage = pageHeader;
 
 export default function Home() {
 

@@ -6,7 +6,7 @@ import { FaUserCircle } from "react-icons/fa";
 import AuthModal from "./AuthModal";
 import { useLanguage } from "../context/LanguageContext";
 
-import logoImg from "../assets/Home-logo.png";
+import logoImg from "../assets/new-logo.png";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
@@ -107,13 +107,17 @@ const Header = () => {
       <div className="bg-white border-b border-zinc-200 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between">
           {/* LOGO */}
-          <Link to="/" onClick={closeMenu} className="flex items-center gap-3 group">
+          <Link to="/" onClick={closeMenu} className="flex items-center gap-2 group">
             <img
               src={logoImg}
               alt="Swastik Srijan Foundation"
               className="w-auto object-contain"
-              style={{ height: "60px", maxHeight: "100%" }}
+              style={{ height: "55px", maxHeight: "100%" }}
             />
+            <div className="flex flex-col">
+              <span className="text-[#002344] font-black text-xl leading-none tracking-tight group-hover:text-[#FF6600] transition-colors">Swastik Srijan</span>
+              <span className="text-[#FF6600] font-bold text-[10px] leading-tight tracking-[0.3em] uppercase group-hover:text-[#002344] transition-colors">Foundation</span>
+            </div>
           </Link>
 
           {/* DESKTOP MENU */}

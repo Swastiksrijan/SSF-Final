@@ -2,6 +2,8 @@ import { motion } from "framer-motion";
 import { FaHandHoldingHeart, FaUsers, FaHeart, FaWhatsapp, FaArrowRight, FaHandsHelping, FaAward, FaUniversity, FaHandshake } from "react-icons/fa";
 import { Link } from "@tanstack/react-router";
 import { CONTACT_INFO } from "../config/contact";
+import PageHero from "../components/PageHero";
+import pageHeader from "../assets/page-header.jpg";
 
 export default function GetInvolvedPage() {
     const fadeInUp = {
@@ -55,13 +57,14 @@ export default function GetInvolvedPage() {
     return (
         <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
             {/* ================= HERO ================= */}
-            <section className="relative w-full h-[60vh] overflow-hidden pt-20">
-                <img
-                    src="/images/community-team-group.jpg"
-                    alt="Get Involved"
-                    className="w-full h-full object-cover"
-                />
-            </section>
+            <PageHero
+                image={pageHeader}
+                title="Get Involved"
+                subtitle="Join our mission to transform lives and build a better Bharat."
+                hindiSubtitle="राष्ट्र निर्माण के इस पावन लक्ष्य में अपना योगदान दें।"
+                height="h-[40vh] md:h-[60vh]"
+                overlayOpacity="bg-black/40"
+            />
 
             {/* ================= THREE PATHS GRID ================= */}
             <section className="py-24 px-6 relative">

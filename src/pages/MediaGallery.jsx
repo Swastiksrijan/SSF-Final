@@ -6,6 +6,38 @@ import { FaEye, FaTimes, FaFilter, FaCamera } from "react-icons/fa";
 
 const ALL_IMAGES = [
   {
+    id: "footer_gallery_01",
+    src: "/images/uploads/footer-gallery-1.jpg",
+    category: "Events",
+    year: "2024",
+    alt: "SSF Team and rural women in a field",
+    aspect: "horizontal"
+  },
+  {
+    id: "footer_gallery_02",
+    src: "/images/uploads/footer-gallery-2.jpg",
+    category: "Events",
+    year: "2024",
+    alt: "Community gathering at village service center",
+    aspect: "horizontal"
+  },
+  {
+    id: "footer_gallery_03",
+    src: "/images/uploads/footer-gallery-3.jpg",
+    category: "Education",
+    year: "2024",
+    alt: "Children praying and participating in session",
+    aspect: "horizontal"
+  },
+  {
+    id: "footer_gallery_04",
+    src: "/images/uploads/footer-gallery-4.png",
+    category: "Events",
+    year: "2024",
+    alt: "Support Our Cause - Volunteer, Donate, Member",
+    aspect: "horizontal"
+  },
+  {
     id: "new_upload_01",
     src: "/images/classroom-session.png",
     category: "Education",

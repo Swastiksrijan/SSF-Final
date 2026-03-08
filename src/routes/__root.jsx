@@ -10,15 +10,16 @@ import { LanguageProvider } from "../context/LanguageContext";
 export const Route = createRootRoute({
   component: () => (
     <LanguageProvider>
-    <div className="min-h-screen w-full flex flex-col font-inria overflow-x-hidden">
-      <SeoManager />
-      <Header />
-      <ScrollToHash />
-      <ScrollToTopButton />
-      <WhatsAppChatWidget />
-      <Outlet />
-      <FooterSection />
-    </div>
+      <div className="min-h-screen w-full flex flex-col font-inria overflow-x-hidden">
+        <SeoManager />
+        <Header />
+
+        <ScrollToHash />
+        <ScrollToTopButton />
+        <WhatsAppChatWidget />
+        <Outlet />
+        <FooterSection />
+      </div>
     </LanguageProvider>
   ),
 });

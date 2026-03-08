@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import OptimizedImage from "./OptimizedImage";
+import pageHeader from "../assets/page-header.jpg";
 
 /**
  * PageHero Component
@@ -36,7 +37,7 @@ export default function PageHero({
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <OptimizedImage
-                    src={image}
+                    src={pageHeader} // Consistent header photo for all pages
                     alt={altTitle || title || "Hero Image"}
                     className={imageClass}
                     objectFit={objectFit}

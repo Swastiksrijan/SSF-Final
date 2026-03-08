@@ -4,6 +4,11 @@ import { CONTACT_INFO } from "../config/contact";
 import logoImg from "../assets/footer-logo-circle-v3.png";
 import { useLanguage } from "../context/LanguageContext";
 
+import footerImg1 from "../assets/footer-gallery-1.jpg";
+import footerImg2 from "../assets/footer-gallery-2.jpg";
+import footerImg3 from "../assets/footer-gallery-3.jpg";
+import footerImg4 from "../assets/footer-gallery-4.png";
+
 
 export default function FooterSection() {
   const { lang } = useLanguage();
@@ -13,6 +18,35 @@ export default function FooterSection() {
       <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:32px_32px]"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
+
+        {/* RECENT MEDIA GALLERY SECTION */}
+        <div className="mb-16">
+          <div className="flex items-center justify-between mb-8">
+            <div>
+              <h4 className="text-white font-bold text-sm tracking-widest uppercase mb-1">Recent Media</h4>
+              <div className="h-[2px] w-12 bg-[#fb8500]"></div>
+            </div>
+            <Link to="/Media" className="text-zinc-400 hover:text-[#fb8500] text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 group">
+              View All Gallery <span className="group-hover:translate-x-1 transition-transform">→</span>
+            </Link>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[footerImg1, footerImg2, footerImg3, footerImg4].map((img, idx) => (
+              <Link key={idx} to="/Media" className="relative h-32 md:h-40 rounded-xl overflow-hidden group">
+                <img
+                  src={img}
+                  alt={`Gallery ${idx + 1}`}
+                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
+                    +
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
 
         {/* TOP: Branding & Intro */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-16">
@@ -36,17 +70,17 @@ export default function FooterSection() {
               {[
                 ...(lang === "en"
                   ? [
-                      "Since 2013: Seva, Satya aur Samarpan",
-                      "Every Donation = Direct Grassroots Impact",
-                      "CSR + Community = Sustainable Bharat",
-                      "Join Us: Volunteer • Donate • Partner",
-                    ]
+                    "Since 2013: Seva, Satya aur Samarpan",
+                    "Every Donation = Direct Grassroots Impact",
+                    "CSR + Community = Sustainable Bharat",
+                    "Join Us: Volunteer • Donate • Partner",
+                  ]
                   : [
-                      "2013 से: सेवा, सत्य और समर्पण",
-                      "हर दान = जमीनी बदलाव",
-                      "CSR + समुदाय = सतत भारत",
-                      "जुड़ें: वॉलंटियर • दान • साझेदारी",
-                    ])
+                    "2013 से: सेवा, सत्य और समर्पण",
+                    "हर दान = जमीनी बदलाव",
+                    "CSR + समुदाय = सतत भारत",
+                    "जुड़ें: वॉलंटियर • दान • साझेदारी",
+                  ])
               ].map((line) => (
                 <p key={line} className="text-[11px] text-zinc-300 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
                   {line}
