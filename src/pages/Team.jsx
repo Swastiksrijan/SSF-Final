@@ -1,6 +1,9 @@
 import { motion } from "framer-motion";
 import { FaEnvelope, FaLinkedin } from "react-icons/fa";
 
+const MotionArticle = motion.article;
+const MotionDiv = motion.div;
+
 const governingBody = [
   { name: "Mr. Ramesh Pandey", role: "Founder & National President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
   { name: "Ms. Preeti Shukla", role: "Vice President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_19.jpg" },
@@ -22,26 +25,17 @@ const managementTeam = [
   { name: "Ms. Priya Shukla", role: "Admin Support & Core Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/priya_shukla.jpg" },
 ];
 
-const regionalLeadership = [
-  { name: "Mr. Azad Singh Adhana", role: "Regional Head & Operations", location: "Greater Noida, Uttar Pradesh", img: "/Teams_Images/azad_singh.jpg" },
-  { name: "Mr. Naresh Kumar", role: "President, Faridabad Wing", location: "Faridabad, Haryana", img: "/Teams_Images/naresh_kumar.jpg" },
-  { name: "Mr. Dhiraj Kumar", role: "President, Pune Wing", location: "Pune, Maharashtra", img: "/Teams_Images/image_4.png" },
-  { name: "Mr. Surender Mishra", role: "President, Uttar Pradesh Wing", location: "Greater Noida, Uttar Pradesh", img: "/Teams_Images/surender_mishra.jpg" },
-];
+const regionalLeadership = [];
 
 const advisoryBoard = [
   { name: "Mr. Kapil Tiwari", role: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/kapil_tiwari.jpg" },
   { name: "Mr. Harish Kumar", role: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/harish_kumar.jpg" },
-  { name: "Mr. Raji P. Alex", role: "National Advisory Board", location: "Delhi NCR", img: "/Teams_Images/raji_p_alex.jpg" },
-  { name: "Ms. Amrita Sinha", role: "Coordination Officer & Volunteer", location: "Delhi", img: "/Teams_Images/image_20.jpg" },
-  { name: "Mr. Ghanshyam Sharma", role: "National Advisor", location: "Gautam Buddha Nagar, UP", img: "/Teams_Images/ghanshyam_sharma.jpg" },
   { name: "Mr. Chaman Rajora", role: "Support & National Advisory Board", location: "Haryana", img: "/Teams_Images/chaman_rajora.jpg" },
 ];
 
 const volunteersTeam = [
   { name: "Mr. Rajeev Pandey", role: "Advisor & Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/rajeev_pandey.jpg" },
   { name: "Ms. A. Gincy George", role: "Head, Counselling Services", location: "Mumbai, Maharashtra", img: "/Teams_Images/image_1.jpg" },
-  { name: "Ms. Aayushi Tyagi", role: "Volunteer", location: "Ghaziabad, Uttar Pradesh", img: "/Teams_Images/aayushi_tyagi.jpg" },
   { name: "Mr. Krishna Kumar", role: "Volunteer & Advisor", location: "Hyderabad, Telangana", img: "/Teams_Images/krishna_kumar.jpg" },
   { name: "Ms. Sneha Ravishankar Pandey", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/sneha_ravishankar_pandey.jpg" },
   { name: "Ms. Vaishnavi Manik Chaudhari", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/vaishnavi_manik_chaudhari.jpg" },
@@ -53,19 +47,11 @@ const teamBioByName = {
   "Mr. Amit Pandey": "Coordinates operations and administration to keep projects timely and community-focused.",
   "Ms. Divya Sharma": "Oversees finance stewardship and compliance for transparent, mission-led implementation.",
   "Ms. Kiran Pandey": "Strengthens governance and internal systems to keep initiatives accountable and effective.",
-  "Mr. Azad Singh Adhana": "Guides regional operations and field coordination for outreach expansion.",
-  "Mr. Naresh Kumar": "Builds local volunteer networks and engagement across district-level initiatives.",
-  "Mr. Dhiraj Kumar": "Mobilizes community leadership and supports implementation in regional programs.",
-  "Mr. Surender Mishra": "Drives grassroots coordination and local partnerships for sustained impact.",
   "Mr. Kapil Tiwari": "Provides legal advisory support and governance guidance for institutional strengthening.",
   "Mr. Harish Kumar": "Supports legal and compliance planning for ethical and responsible operations.",
-  "Mr. Raji P. Alex": "Contributes strategic advisory inputs for national-level outreach and collaboration.",
-  "Ms. Amrita Sinha": "Supports coordination and volunteer engagement for efficient field delivery.",
-  "Mr. Ghanshyam Sharma": "Advises on community engagement and national program expansion priorities.",
   "Mr. Chaman Rajora": "Supports partnerships and advisory collaboration to scale social initiatives.",
   "Mr. Rajeev Pandey": "Provides advisor-level volunteer support and community mobilization inputs.",
   "Ms. A. Gincy George": "Leads counseling-focused support and wellbeing interventions for beneficiaries.",
-  "Ms. Aayushi Tyagi": "Contributes to volunteer outreach and youth engagement on mission-driven activities.",
   "Mr. Krishna Kumar": "Supports advisory and volunteer-led implementation across partner communities.",
   "Ms. Sneha Ravishankar Pandey": "Provides web and technical support to strengthen digital infrastructure.",
   "Ms. Vaishnavi Manik Chaudhari": "Contributes technical and digital support for smooth platform operations.",
@@ -90,17 +76,17 @@ const featuredSections = [
   {
     heading: "Leadership",
     subtitle: "Strategic leaders guiding direction, governance, and institutional growth.",
-    members: [governingBody[0], governingBody[1], governingBody[2], governingBody[3], regionalLeadership[0], regionalLeadership[1]],
+    members: [governingBody[0], governingBody[1], governingBody[2], governingBody[3]],
   },
   {
     heading: "Core Team",
     subtitle: "Program and operations team driving day-to-day implementation excellence.",
-    members: [managementTeam[1], managementTeam[2], managementTeam[3], managementTeam[4], managementTeam[5], regionalLeadership[2]],
+    members: [managementTeam[1], managementTeam[2], managementTeam[3], managementTeam[4], managementTeam[5]],
   },
   {
     heading: "Volunteers / Advisors",
     subtitle: "Advisors and volunteers who strengthen outreach, inclusion, and field impact.",
-    members: [advisoryBoard[0], advisoryBoard[2], advisoryBoard[3], volunteersTeam[0], volunteersTeam[1], volunteersTeam[4]],
+    members: [advisoryBoard[0], advisoryBoard[1], advisoryBoard[2], volunteersTeam[0], volunteersTeam[1], volunteersTeam[2], volunteersTeam[3], volunteersTeam[4]],
   },
 ];
 
@@ -108,7 +94,7 @@ function TeamProfileCard({ member, delay = 0 }) {
   const contact = contactByName[member.name] || {};
 
   return (
-    <motion.article
+    <MotionArticle
       initial={{ opacity: 0, y: 16 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
@@ -151,7 +137,7 @@ function TeamProfileCard({ member, delay = 0 }) {
           )}
         </div>
       )}
-    </motion.article>
+    </MotionArticle>
   );
 }
 
@@ -162,7 +148,7 @@ export default function Team() {
       <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[40vh]">
         <div className="container mx-auto px-4 flex justify-center">
           <img
-            src="/images/uploads/MeetOurTeam.jpeg"
+            src="/images/real/leadership.jpg"
             alt="Meet Our Team"
             className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
           />
@@ -246,35 +232,41 @@ export default function Team() {
             <div className="w-24 h-1 bg-[#fb8500] mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            {regionalLeadership.map((member, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center space-y-4 group"
-              >
-                <div className="w-32 h-32 md:w-40 md:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-500">
-                  <img
-                    src={member.img}
-                    alt={member.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <h3 className="font-serif font-bold text-[#002344] group-hover:text-[#fb8500] transition-colors">
-                    {member.name}
-                  </h3>
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">
-                    {member.role}
-                  </p>
-                  <p className="text-[10px] text-zinc-400 italic mt-1">{member.location}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
+          {regionalLeadership.length > 0 ? (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
+              {regionalLeadership.map((member, i) => (
+                <MotionDiv
+                  key={i}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.1 }}
+                  className="text-center space-y-4 group"
+                >
+                  <div className="w-32 h-32 md:w-40 md:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-500">
+                    <img
+                      src={member.img}
+                      alt={member.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <div>
+                    <h3 className="font-serif font-bold text-[#002344] group-hover:text-[#fb8500] transition-colors">
+                      {member.name}
+                    </h3>
+                    <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">
+                      {member.role}
+                    </p>
+                    <p className="text-[10px] text-zinc-400 italic mt-1">{member.location}</p>
+                  </div>
+                </MotionDiv>
+              ))}
+            </div>
+          ) : (
+            <div className="max-w-3xl mx-auto rounded-3xl border border-zinc-100 bg-zinc-50 p-8 text-center shadow-sm">
+              <p className="text-zinc-600 font-medium">Regional leadership details are being updated.</p>
+            </div>
+          )}
         </div>
       </section>
 
@@ -352,7 +344,7 @@ export default function Team() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
             {governingBody.map((member, i) => (
-              <motion.div
+              <MotionDiv
                 key={i}
                 initial={{ opacity: 0, scale: 0.9 }}
                 whileInView={{ opacity: 1, scale: 1 }}
@@ -379,7 +371,7 @@ export default function Team() {
                   </p>
                   <p className="text-[10px] text-zinc-400 italic mt-1">{member.location}</p>
                 </div>
-              </motion.div>
+              </MotionDiv>
             ))}
           </div>
         </div>
@@ -398,7 +390,7 @@ export default function Team() {
             </p>
           </div>
 
-          <motion.div
+          <MotionDiv
             initial={{ opacity: 0, scale: 0.95 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
@@ -409,7 +401,7 @@ export default function Team() {
               alt="SSF Community and Field Team"
               className="w-full h-auto object-cover"
             />
-          </motion.div>
+          </MotionDiv>
         </div>
       </section>
 
