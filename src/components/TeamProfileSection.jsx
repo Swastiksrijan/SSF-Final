@@ -1,3 +1,5 @@
+import { visibleTeamMembers } from "../utils/teamFilters";
+
 const teamMembers = [
   { name: "Mr. Ramesh Pandey", position: "Founder & National President", img: "/Teams_Images/ramesh_pandey.jpg" },
   { name: "Ms. Preeti Shukla", position: "Vice President & Program Head", img: "/Teams_Images/image_19.jpg" },
@@ -22,7 +24,7 @@ const teamMembers = [
 export default function TeamProfileSection() {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 mt-10">
-      {teamMembers.map((member, idx) => (
+      {visibleTeamMembers(teamMembers).map((member, idx) => (
         <div
           key={idx}
           className="text-center group"

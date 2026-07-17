@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { FaEnvelope, FaLinkedin } from "react-icons/fa";
+import { visibleTeamMembers } from "../utils/teamFilters";
 
 const MotionArticle = motion.article;
 const MotionDiv = motion.div;
@@ -76,17 +77,17 @@ const featuredSections = [
   {
     heading: "Leadership",
     subtitle: "Strategic leaders guiding direction, governance, and institutional growth.",
-    members: [governingBody[0], governingBody[1], governingBody[2], governingBody[3]],
+    members: visibleTeamMembers([governingBody[0], governingBody[1], governingBody[2], governingBody[3]]),
   },
   {
     heading: "Core Team",
     subtitle: "Program and operations team driving day-to-day implementation excellence.",
-    members: [managementTeam[1], managementTeam[2], managementTeam[3], managementTeam[4], managementTeam[5]],
+    members: visibleTeamMembers([managementTeam[1], managementTeam[2], managementTeam[3], managementTeam[4], managementTeam[5]]),
   },
   {
     heading: "Volunteers / Advisors",
     subtitle: "Advisors and volunteers who strengthen outreach, inclusion, and field impact.",
-    members: [advisoryBoard[0], advisoryBoard[1], advisoryBoard[2], volunteersTeam[0], volunteersTeam[1], volunteersTeam[2], volunteersTeam[3], volunteersTeam[4]],
+    members: visibleTeamMembers([advisoryBoard[0], advisoryBoard[1], advisoryBoard[2], volunteersTeam[0], volunteersTeam[1], volunteersTeam[2], volunteersTeam[3], volunteersTeam[4]]),
   },
 ];
 
@@ -191,7 +192,7 @@ export default function Team() {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {managementTeam.map((member, i) => (
+            {visibleTeamMembers(managementTeam).map((member, i) => (
               <div
                 key={i}
                 className="bg-white p-6 rounded-3xl border border-zinc-100 flex flex-col items-center text-center hover:border-[#fb8500]/30 transition-all shadow-sm group"
@@ -234,7 +235,7 @@ export default function Team() {
 
           {regionalLeadership.length > 0 ? (
             <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-              {regionalLeadership.map((member, i) => (
+              {visibleTeamMembers(regionalLeadership).map((member, i) => (
                 <MotionDiv
                   key={i}
                   initial={{ opacity: 0, y: 20 }}
@@ -281,7 +282,7 @@ export default function Team() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {advisoryBoard.map((member, i) => (
+            {visibleTeamMembers(advisoryBoard).map((member, i) => (
               <div key={i} className="text-center space-y-4 group">
                 <div className="w-24 h-24 md:w-32 md:h-32 mx-auto rounded-full overflow-hidden border-4 border-white shadow-md group-hover:shadow-lg transition-all duration-500">
                   <img
@@ -312,7 +313,7 @@ export default function Team() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {volunteersTeam.map((member, i) => (
+            {visibleTeamMembers(volunteersTeam).map((member, i) => (
               <div key={i} className="text-center space-y-4 group">
                 <div className="w-32 h-32 md:w-40 md:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-500">
                   <img
@@ -343,7 +344,7 @@ export default function Team() {
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-            {governingBody.map((member, i) => (
+            {visibleTeamMembers(governingBody).map((member, i) => (
               <MotionDiv
                 key={i}
                 initial={{ opacity: 0, scale: 0.9 }}
