@@ -22,25 +22,18 @@ const managementTeam = [
 ];
 
 const regionalLeadership = [
-  { name: "Mr. Azad Singh Adhana", role: "Regional Head & Operations", location: "Greater Noida, Uttar Pradesh", img: "/Teams_Images/azad_singh.jpg" },
-  { name: "Mr. Naresh Kumar", role: "President, Faridabad Wing", location: "Faridabad, Haryana", img: "/Teams_Images/naresh_kumar.jpg" },
-  { name: "Mr. Dhiraj Kumar", role: "President, Pune Wing", location: "Pune, Maharashtra", img: "/Teams_Images/image_4.png" },
-  { name: "Mr. Surender Mishra", role: "President, Uttar Pradesh Wing", location: "Greater Noida, Uttar Pradesh", img: "/Teams_Images/surender_mishra.jpg" },
+  // Removed per request: Azad Singh Adhana, Naresh Kumar, Dhiraj Kumar, Surender Mishra
 ];
 
 const advisoryBoard = [
   { name: "Mr. Kapil Tiwari", role: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/kapil_tiwari.jpg" },
   { name: "Mr. Harish Kumar", role: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/harish_kumar.jpg" },
-  { name: "Mr. Raji P. Alex", role: "National Advisory Board", location: "Delhi NCR", img: "/Teams_Images/raji_p_alex.jpg" },
-  { name: "Ms. Amrita Sinha", role: "Coordination Officer & Volunteer", location: "Delhi", img: "/Teams_Images/image_20.jpg" },
-  { name: "Mr. Ghanshyam Sharma", role: "National Advisor", location: "Gautam Buddha Nagar, UP", img: "/Teams_Images/ghanshyam_sharma.jpg" },
   { name: "Mr. Chaman Rajora", role: "Support & National Advisory Board", location: "Haryana", img: "/Teams_Images/chaman_rajora.jpg" },
 ];
 
 const volunteersTeam = [
   { name: "Mr. Rajeev Pandey", role: "Advisor & Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/rajeev_pandey.jpg" },
   { name: "Ms. A. Gincy George", role: "Head, Counselling Services", location: "Mumbai, Maharashtra", img: "/Teams_Images/image_1.jpg" },
-  { name: "Ms. Aayushi Tyagi", role: "Volunteer", location: "Ghaziabad, Uttar Pradesh", img: "/Teams_Images/aayushi_tyagi.jpg" },
   { name: "Mr. Krishna Kumar", role: "Volunteer & Advisor", location: "Hyderabad, Telangana", img: "/Teams_Images/krishna_kumar.jpg" },
   { name: "Ms. Sneha Ravishankar Pandey", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/sneha_ravishankar_pandey.jpg" },
   { name: "Ms. Vaishnavi Manik Chaudhari", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/vaishnavi_manik_chaudhari.jpg" },
@@ -59,8 +52,6 @@ export default function Team() {
           />
         </div>
       </section>
-
-
 
       {/* ================= MANAGEMENT & OPERATIONS ================= */}
       <section className="py-24 px-6 bg-[#f8f9fa] border-y border-zinc-100">
