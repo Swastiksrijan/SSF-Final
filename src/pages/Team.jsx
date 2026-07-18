@@ -1,274 +1,236 @@
 import { motion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
+import { FaArrowRight } from "react-icons/fa";
 
-const governingBody = [
-  { name: "Mr. Ramesh Pandey", role: "Founder & National President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
-  { name: "Ms. Preeti Shukla", role: "Vice President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_19.jpg" },
-  { name: "Mr. Amit Pandey", role: "General Secretary", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_15.jpg" },
-  { name: "Ms. Divya Sharma", role: "Treasurer", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/divya_sharma.jpg" },
-  { name: "Ms. Kiran Pandey", role: "Joint Secretary", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_22.jpg" },
-  { name: "Mr. Sandeep Tripathi", role: "Board Member", location: "Satna, Madhya Pradesh", img: "/Teams_Images/sandeep_tripathi.jpg" },
-  { name: "Mr. Prameesh Singh", role: "Board Member", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/prameesh_singh.jpg" },
-  { name: "Mr. Rishi Pandey", role: "Board Member", location: "Satna, Madhya Pradesh", img: "/Teams_Images/rishi_pandey.jpg" },
-  { name: "Mr. Ritesh Tiwari", role: "Board Member", location: "Mumbai, Maharashtra", img: "/Teams_Images/ritesh_tiwari.jpg" },
-];
+// Team data - Single source of truth (no duplicates)
+const teamData = {
+  leadership: [
+    { name: "Mr. Ramesh Pandey", role: "Founder & National President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
+    { name: "Ms. Preeti Shukla", role: "Vice President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_19.jpg" },
+    { name: "Mr. Amit Pandey", role: "General Secretary", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_15.jpg" },
+    { name: "Ms. Divya Sharma", role: "Treasurer", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/divya_sharma.jpg" },
+  ],
+  management: [
+    { name: "Ms. Kiran Pandey", role: "Joint Secretary & Compliance Officer", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_22.jpg" },
+    { name: "Ms. Priya Shukla", role: "Admin Support & Core Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/priya_shukla.jpg" },
+  ],
+  board: [
+    { name: "Mr. Sandeep Tripathi", role: "Board Member", location: "Satna, Madhya Pradesh", img: "/Teams_Images/sandeep_tripathi.jpg" },
+    { name: "Mr. Prameesh Singh", role: "Board Member", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/prameesh_singh.jpg" },
+    { name: "Mr. Rishi Pandey", role: "Board Member", location: "Satna, Madhya Pradesh", img: "/Teams_Images/rishi_pandey.jpg" },
+    { name: "Mr. Ritesh Tiwari", role: "Board Member", location: "Mumbai, Maharashtra", img: "/Teams_Images/ritesh_tiwari.jpg" },
+  ],
+  advisory: [
+    { name: "Mr. Kapil Tiwari", role: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/kapil_tiwari.jpg" },
+    { name: "Mr. Harish Kumar", role: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/harish_kumar.jpg" },
+    { name: "Mr. Chaman Rajora", role: "Support & National Advisory Board", location: "Haryana", img: "/Teams_Images/chaman_rajora.jpg" },
+  ],
+  volunteers: [
+    { name: "Mr. Rajeev Pandey", role: "Advisor & Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/rajeev_pandey.jpg" },
+    { name: "Ms. A. Gincy George", role: "Head, Counselling Services", location: "Mumbai, Maharashtra", img: "/Teams_Images/image_1.jpg" },
+    { name: "Mr. Krishna Kumar", role: "Volunteer & Advisor", location: "Hyderabad, Telangana", img: "/Teams_Images/krishna_kumar.jpg" },
+    { name: "Ms. Sneha Ravishankar Pandey", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/sneha_ravishankar_pandey.jpg" },
+    { name: "Ms. Vaishnavi Manik Chaudhari", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/vaishnavi_manik_chaudhari.jpg" },
+  ],
+};
 
-const managementTeam = [
-  { name: "Mr. Ramesh Pandey", role: "Founder & National President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
-  { name: "Ms. Preeti Shukla", role: "Program Head", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_19.jpg" },
-  { name: "Mr. Amit Pandey", role: "Operations & Administration", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_15.jpg" },
-  { name: "Ms. Divya Sharma", role: "Chief Finance Officer", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/divya_sharma.jpg" },
-  { name: "Ms. Kiran Pandey", role: "Compliance Officer", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_22.jpg" },
-  { name: "Ms. Priya Shukla", role: "Admin Support & Core Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/priya_shukla.jpg" },
-];
+// Reusable team member card component
+const TeamMemberCard = ({ member }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    className="flex flex-col h-full"
+  >
+    <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm hover:shadow-md transition-all duration-300 p-6 flex flex-col h-full group">
+      {/* Image Container - Fixed height */}
+      <div className="w-32 h-32 mx-auto mb-6 rounded-full overflow-hidden border-3 border-zinc-100 shadow-sm group-hover:border-[#fb8500]/50 transition-all duration-300">
+        <img
+          src={member.img || "/images/team/placeholder.jpg"}
+          alt={`${member.name}, ${member.role}`}
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
+        />
+      </div>
 
-const regionalLeadership = [
-  // Removed per request: Azad Singh Adhana, Naresh Kumar, Dhiraj Kumar, Surender Mishra
-];
+      {/* Text Content - Flexible layout */}
+      <div className="text-center flex-grow flex flex-col justify-start">
+        <h3 className="text-sm font-bold text-[#002344] leading-snug mb-2 line-clamp-2">
+          {member.name}
+        </h3>
+        <p className="text-xs font-semibold text-[#fb8500] uppercase tracking-wide mb-3 leading-snug line-clamp-2">
+          {member.role}
+        </p>
+        <p className="text-xs text-zinc-500 italic leading-snug">
+          {member.location}
+        </p>
+      </div>
+    </div>
+  </motion.div>
+);
 
-const advisoryBoard = [
-  { name: "Mr. Kapil Tiwari", role: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/kapil_tiwari.jpg" },
-  { name: "Mr. Harish Kumar", role: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/harish_kumar.jpg" },
-  { name: "Mr. Chaman Rajora", role: "Support & National Advisory Board", location: "Haryana", img: "/Teams_Images/chaman_rajora.jpg" },
-];
-
-const volunteersTeam = [
-  { name: "Mr. Rajeev Pandey", role: "Advisor & Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/rajeev_pandey.jpg" },
-  { name: "Ms. A. Gincy George", role: "Head, Counselling Services", location: "Mumbai, Maharashtra", img: "/Teams_Images/image_1.jpg" },
-  { name: "Mr. Krishna Kumar", role: "Volunteer & Advisor", location: "Hyderabad, Telangana", img: "/Teams_Images/krishna_kumar.jpg" },
-  { name: "Ms. Sneha Ravishankar Pandey", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/sneha_ravishankar_pandey.jpg" },
-  { name: "Ms. Vaishnavi Manik Chaudhari", role: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/vaishnavi_manik_chaudhari.jpg" },
-];
+// Section header component
+const SectionHeader = ({ title, titleHi, description }) => (
+  <div className="text-center space-y-3 mb-12">
+    <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
+      {title} {titleHi && <span className="block text-lg font-hindi text-zinc-600 mt-2">{titleHi}</span>}
+    </h2>
+    <div className="w-20 h-1 bg-[#fb8500] mx-auto rounded-full"></div>
+    {description && <p className="text-zinc-600 text-base max-w-2xl mx-auto mt-4">{description}</p>}
+  </div>
+);
 
 export default function Team() {
   return (
-    <main className="min-h-screen bg-white">
+    <main className="min-h-screen bg-white font-sans">
       {/* ================= HERO SECTION ================= */}
-      <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[40vh]">
-        <div className="container mx-auto px-4 flex justify-center">
-          <img
+      <section className="relative w-full bg-gradient-to-b from-zinc-50 to-white pt-20 pb-16 flex justify-center">
+        <div className="container mx-auto px-4 flex justify-center max-w-5xl">
+          <motion.img
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
             src="/images/uploads/MeetOurTeam.jpeg"
-            alt="Meet Our Team"
-            className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
+            alt="Meet Our Team - Swastik Srijan Foundation"
+            className="w-full h-auto max-h-[60vh] object-contain rounded-2xl shadow-lg border border-zinc-200"
           />
         </div>
       </section>
 
-      {/* ================= MANAGEMENT & OPERATIONS ================= */}
-      <section className="py-24 px-6 bg-[#f8f9fa] border-y border-zinc-100">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
-              Management & Operations | प्रबंधन और संचालन
-            </h2>
-            <div className="w-24 h-1 bg-[#d90429] mx-auto rounded-full"></div>
-          </div>
+      {/* ================= LEADERSHIP & GOVERNANCE ================= */}
+      <section className="py-20 px-6 bg-[#f8f9fa] border-y border-zinc-200">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader 
+            title="Leadership" 
+            titleHi="नेतृत्व"
+            description="The visionary founders and senior leadership guiding SSF's mission."
+          />
 
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {managementTeam.map((member, i) => (
-              <div
-                key={i}
-                className="bg-white p-6 rounded-3xl border border-zinc-100 flex flex-col items-center text-center hover:border-[#fb8500]/30 transition-all shadow-sm group"
-              >
-                <div className="w-24 h-24 mb-4 rounded-full overflow-hidden border-2 border-zinc-50 shadow-sm group-hover:shadow-md transition-all">
-                  <img
-                    src={member.img || "/images/team/placeholder.jpg"}
-                    alt={member.name}
-                    className="w-full h-full object-cover transition-transform group-hover:scale-110"
-                  />
-                </div>
-                <div className="space-y-1">
-                  <p className="text-[#fb8500] text-[10px] font-bold uppercase tracking-widest leading-tight">{member.role}</p>
-                  <h4 className="text-lg font-serif font-bold text-[#002344] group-hover:text-[#d90429] transition-colors">
-                    {member.name}
-                  </h4>
-                  <p className="text-[10px] text-zinc-500 italic mt-1">{member.location}</p>
-                </div>
-              </div>
+            {teamData.leadership.map((member, i) => (
+              <TeamMemberCard key={`leadership-${i}`} member={member} />
             ))}
           </div>
 
-          <div className="text-center pt-10">
-            <p className="text-zinc-500 font-medium italic">
-              "Dedicated core team managing the foundation's day-to-day excellence and strategic growth."
+          <div className="text-center pt-12">
+            <p className="text-zinc-600 font-medium italic max-w-3xl mx-auto">
+              "Committed to empowering communities through visionary leadership and dedicated service."
             </p>
           </div>
         </div>
       </section>
 
-      {/* ================= REGIONAL LEADERSHIP ================= */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
-              Regional Leadership | क्षेत्रीय नेतृत्व
-            </h2>
-            <div className="w-24 h-1 bg-[#fb8500] mx-auto rounded-full"></div>
-          </div>
+      {/* ================= MANAGEMENT & OPERATIONS ================= */}
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader 
+            title="Management & Operations" 
+            titleHi="प्रबंधन और संचालन"
+            description="Core team members managing day-to-day excellence and strategic operations."
+          />
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            {regionalLeadership.map((member, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.1 }}
-                className="text-center space-y-4 group"
-              >
-                <div className="w-32 h-32 md:w-40 md:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-500">
-                  <img
-                    src={member.img}
-                    alt={member.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <h3 className="font-serif font-bold text-[#002344] group-hover:text-[#fb8500] transition-colors">
-                    {member.name}
-                  </h3>
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">
-                    {member.role}
-                  </p>
-                  <p className="text-[10px] text-zinc-400 italic mt-1">{member.location}</p>
-                </div>
-              </motion.div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {teamData.management.map((member, i) => (
+              <TeamMemberCard key={`management-${i}`} member={member} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ================= BOARD MEMBERS ================= */}
+      <section className="py-20 px-6 bg-[#f8f9fa] border-y border-zinc-200">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader 
+            title="Board Members" 
+            titleHi="बोर्ड सदस्य"
+            description="Governance and board representatives ensuring organizational excellence."
+          />
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {teamData.board.map((member, i) => (
+              <TeamMemberCard key={`board-${i}`} member={member} />
             ))}
           </div>
         </div>
       </section>
 
       {/* ================= ADVISORY BOARD ================= */}
-      <section className="py-24 px-6 bg-[#fdfcfb]">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
-              Advisory Board & Supporters | सलाहकार बोर्ड और समर्थक
-            </h2>
-            <div className="w-24 h-1 bg-[#2d6a4f] mx-auto rounded-full"></div>
-          </div>
+      <section className="py-20 px-6 bg-white">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader 
+            title="Advisory Board" 
+            titleHi="सलाहकार बोर्ड"
+            description="Expert advisors providing strategic guidance and specialized expertise."
+          />
 
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
-            {advisoryBoard.map((member, i) => (
-              <div key={i} className="text-center space-y-4 group">
-                <div className="w-24 h-24 md:w-32 md:h-32 mx-auto rounded-full overflow-hidden border-4 border-white shadow-md group-hover:shadow-lg transition-all duration-500">
-                  <img
-                    src={member.img}
-                    alt={member.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <h3 className="font-serif font-bold text-[#002344] text-sm md:text-base leading-tight">{member.name}</h3>
-                  <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-wider mt-1 leading-tight">{member.role}</p>
-                  <p className="text-[9px] text-zinc-400 italic mt-0.5">{member.location}</p>
-                </div>
-              </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {teamData.advisory.map((member, i) => (
+              <TeamMemberCard key={`advisory-${i}`} member={member} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ================= VOLUNTEERS ================= */}
-      <section className="py-24 px-6 bg-white">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
-              Volunteers & Extended Team | स्वयंसेवक और विस्तारित टीम
-            </h2>
-            <div className="w-24 h-1 bg-[#fb8500] mx-auto rounded-full"></div>
-          </div>
+      {/* ================= VOLUNTEERS & EXTENDED TEAM ================= */}
+      <section className="py-20 px-6 bg-[#f8f9fa] border-y border-zinc-200">
+        <div className="max-w-7xl mx-auto">
+          <SectionHeader 
+            title="Volunteers & Extended Team" 
+            titleHi="स्वयंसेवक और विस्तारित टीम"
+            description="Dedicated volunteers and specialized consultants supporting our mission."
+          />
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-            {volunteersTeam.map((member, i) => (
-              <div key={i} className="text-center space-y-4 group">
-                <div className="w-32 h-32 md:w-40 md:h-40 mx-auto rounded-full overflow-hidden border-4 border-white shadow-lg group-hover:scale-105 transition-transform duration-500">
-                  <img
-                    src={member.img}
-                    alt={member.name}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <div>
-                  <h3 className="font-serif font-bold text-[#002344]">{member.name}</h3>
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">{member.role}</p>
-                  <p className="text-[10px] text-zinc-400 italic mt-1">{member.location}</p>
-                </div>
-              </div>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+            {teamData.volunteers.map((member, i) => (
+              <TeamMemberCard key={`volunteer-${i}`} member={member} />
             ))}
           </div>
         </div>
       </section>
 
-      {/* ================= GOVERNING BODY ================= */}
-      <section className="py-24 px-6 bg-white border-t border-zinc-100">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
-              Governing Body (Governance & Compliance)
+      {/* ================= JOIN OUR TEAM CTA ================= */}
+      <section className="py-24 px-6 bg-gradient-to-br from-[#002344] to-[#003366] text-white">
+        <div className="max-w-4xl mx-auto text-center space-y-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="space-y-4"
+          >
+            <h2 className="text-4xl md:text-5xl font-serif font-bold">
+              Join Our Team
             </h2>
-            <div className="w-24 h-1 bg-[#fb8500] mx-auto rounded-full"></div>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8">
-            {governingBody.map((member, i) => (
-              <motion.div
-                key={i}
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                transition={{ delay: i * 0.05 }}
-                className="group"
-              >
-                <div className="relative aspect-square rounded-3xl overflow-hidden mb-6 border-4 border-zinc-50 shadow-sm group-hover:shadow-xl transition-all duration-500">
-                  <img
-                    src={member.img || "/images/team/placeholder.jpg"}
-                    alt={member.name}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#002344]/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity flex items-end p-4">
-                    <p className="text-white text-[10px] font-bold uppercase tracking-widest">{member.location}</p>
-                  </div>
-                </div>
-                <div className="text-center">
-                  <h3 className="text-lg font-serif font-bold text-[#002344] group-hover:text-[#fb8500] transition-colors">
-                    {member.name}
-                  </h3>
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mt-1">
-                    {member.role}
-                  </p>
-                  <p className="text-[10px] text-zinc-400 italic mt-1">{member.location}</p>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ================= FIELD TEAM & COMMUNITY ================= */}
-      <section className="py-24 px-6 bg-zinc-50 border-t border-zinc-100">
-        <div className="max-w-7xl mx-auto space-y-16">
-          <div className="text-center space-y-4">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344]">
-              Our Field Force & Community Leaders | हमारा फील्ड फोर्स और सामुदायिक नेता
-            </h2>
-            <div className="w-24 h-1 bg-[#fb8500] mx-auto rounded-full"></div>
-            <p className="text-zinc-500 max-w-2xl mx-auto mt-6">
-              The heart of Swastik Srijan Foundation – our dedicated team members who work directly with the communities on the ground.
+            <p className="text-xl text-blue-100 font-hindi">
+              हमारी टीम का हिस्सा बनें
             </p>
-          </div>
+            <p className="text-lg text-blue-50 max-w-2xl mx-auto leading-relaxed">
+              Be part of a passionate community creating meaningful change across India. Whether you're a professional, volunteer, or advocate, there's a place for you at Swastik Srijan Foundation.
+            </p>
+          </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white"
+            transition={{ delay: 0.2 }}
+            className="flex flex-col sm:flex-row gap-4 justify-center pt-4"
           >
-            <img
-              src="/images/community-team-group.jpg"
-              alt="SSF Community and Field Team"
-              className="w-full h-auto object-cover"
-            />
+            <Link to="/Volunteer">
+              <button className="px-8 py-4 bg-[#fb8500] hover:bg-[#e07600] text-[#002344] font-bold rounded-full transition-all duration-300 hover:shadow-lg flex items-center justify-center gap-2 w-full sm:w-auto">
+                Become a Volunteer <FaArrowRight className="text-sm" />
+              </button>
+            </Link>
+            <Link to="/Contact">
+              <button className="px-8 py-4 bg-white/20 hover:bg-white/30 text-white font-bold rounded-full border-2 border-white transition-all duration-300 flex items-center justify-center gap-2 w-full sm:w-auto">
+                Get in Touch <FaArrowRight className="text-sm" />
+              </button>
+            </Link>
           </motion.div>
+
+          <div className="pt-8 border-t border-white/20">
+            <p className="text-blue-200 text-sm">
+              💼 Currently hiring for specialized roles in technology, health, and education.
+            </p>
+          </div>
         </div>
       </section>
 
