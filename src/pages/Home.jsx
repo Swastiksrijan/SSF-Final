@@ -35,7 +35,7 @@ export default function Home() {
         <div className="absolute inset-0 z-0">
           <OptimizedImage
             src={heroImage}
-            alt="Swastik Srijan Foundation Community"
+            alt="Swastik Srijan Foundation Samiti Community"
             className="w-full h-full object-cover brightness-[0.85] contrast-[1.1]"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-[#001529] via-[#001529]/50 to-transparent"></div>
@@ -51,7 +51,7 @@ export default function Home() {
             <div className="flex items-center gap-3 mb-2">
               <div className="h-[2px] w-12 bg-[#FF6600]"></div>
               <h2 className="text-white font-bold tracking-widest uppercase text-sm md:text-base">
-                Swastik Srijan Foundation
+                Swastik Srijan Foundation Samiti
               </h2>
             </div>
 
