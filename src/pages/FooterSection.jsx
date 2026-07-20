@@ -198,7 +198,7 @@ export default function FooterSection() {
 </p>
 
 <p className="text-xs text-zinc-400 mt-1">
-  Regd. Society | 12AB Registered | 80G (Provisional) | CSR-1 Registered
+  Regd. Society | 12AB Registered | CSR-1 Registered | 80G (Provisional)
 </p>
 
 <p className="text-xs text-zinc-500 mt-1">
@@ -222,7 +222,7 @@ export default function FooterSection() {
 
           <div className="flex gap-3">
             <span className="px-3 py-1 rounded bg-white/5 border border-white/5 text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
-              Registered Society
+              🟦 REGISTERED SOCIETY
             </span>
           </div>
         </div>
