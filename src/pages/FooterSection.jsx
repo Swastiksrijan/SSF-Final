@@ -193,13 +193,15 @@ export default function FooterSection() {
         {/* BOTTOM: Copyright & Legal */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-xs text-zinc-500 font-medium text-center md:text-left">
-            <p>© {new Date().getFullYear()} Swastik Srijan Foundation Samiti</p>
+  <p className="text-sm md:text-base font-semibold text-white">
+  © {new Date().getFullYear()} Swastik Srijan Foundation Samiti
+</p>
 
 <p className="text-xs text-zinc-400 mt-1">
   Regd. Society | 12AB Registered | 80G (Provisional) | CSR-1 Registered
 </p>
 
-<p className="mt-1">
+<p className="text-xs text-zinc-500 mt-1">
   Established 2013 | All rights reserved.
 </p>
 
