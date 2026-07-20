@@ -193,7 +193,7 @@ export default function FooterSection() {
         {/* BOTTOM: Copyright & Legal */}
         <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
           <div className="text-xs text-zinc-500 font-medium text-center md:text-left">
-            <p>© {new Date().getFullYear()} Swastik Srijan Foundation</p>
+            <p>© {new Date().getFullYear()} Swastik Srijan Foundation Samiti</p>
             <p className="mt-1">Established 2013 | All rights reserved.</p>
             <div className="flex gap-4 mt-2 justify-center md:justify-start">
               <Link to="/PrivacyPolicy" className="hover:text-zinc-300 transition-colors">Privacy Policy</Link>
