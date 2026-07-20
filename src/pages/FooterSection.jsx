@@ -200,7 +200,7 @@ export default function FooterSection() {
             <p className="mt-1">
   Established 2013 | All rights reserved.
 </p>
-            <div className="flex gap-4 mt-2"> justify-center md:justify-start">
+            <div className="flex gap-4 mt-2" justify-center md:justify-start">
               <Link to="/PrivacyPolicy" className="hover:text-zinc-300 transition-colors">Privacy Policy</Link>
               <Link to="/TermsAndConditions" className="hover:text-zinc-300 transition-colors">Terms of Use</Link>
               <Link to="/Transparency" className="hover:text-zinc-300 transition-colors">Transparency</Link>
