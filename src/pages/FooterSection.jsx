@@ -55,7 +55,7 @@ export default function FooterSection() {
             <Link to="/" className="inline-block group mb-4">
               <img
                 src={logoImg}
-                alt="Swastik Srijan Foundation"
+                alt="Swastik Srijan Foundation Samiti"
                 className="w-16 h-16 md:w-20 md:h-20 object-contain rounded-full bg-white p-1.5 group-hover:scale-105 transition-all duration-300 shadow-md"
               />
             </Link>
