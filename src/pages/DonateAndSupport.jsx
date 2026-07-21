@@ -131,6 +131,33 @@ export default function DonateAndSupport() {
                   <FaShieldAlt /> 256-bit Secure SSL Payment
                 </p>
               </div>
+              {/* Zoho Donation Card */}
+<div className="bg-gradient-to-br from-[#0b6b3a] to-[#014421] text-white p-8 md:p-10 rounded-3xl shadow-2xl relative overflow-hidden group">
+  <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-1/4 -translate-y-1/4">
+    <FaHandHoldingHeart size={200} />
+  </div>
+
+  <h3 className="text-3xl font-bold mb-4 flex items-center gap-3">
+    <FaHandHoldingHeart /> Donate via Zoho | Zoho से दान करें
+  </h3>
+
+  <p className="text-zinc-200 mb-8 text-lg">
+    Donate securely using Zoho Payments. Supports UPI now, with Cards and Net Banking being enabled shortly.
+  </p>
+
+  <a
+    href="https://zohopy.in/sKbCa"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="inline-block w-full bg-white text-[#0b6b3a] font-black text-xl py-4 rounded-xl text-center hover:bg-zinc-200 transition-colors shadow-lg"
+  >
+    DONATE VIA ZOHO
+  </a>
+
+  <p className="text-center text-xs text-zinc-300 mt-4 flex items-center justify-center gap-1">
+    <FaShieldAlt /> Secure Payment powered by Zoho Payments
+  </p>
+</div>
 
               {/* QR Code Card */}
               <div className="bg-white border-2 border-zinc-100 p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-center gap-8">
