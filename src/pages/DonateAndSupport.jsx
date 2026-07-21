@@ -101,25 +101,20 @@ export default function DonateAndSupport() {
             <h3 className="text-2xl font-hindi text-[#003366]">योगदान के तरीके</h3>
             <p className="text-xl text-zinc-500 mt-4">Choose the method that suits you best.</p>
           </div>
-
           <div className="grid lg:grid-cols-2 gap-12 items-start">
-
             {/* LEFT COLUMN: ONLINE & QR */}
             <div className="space-y-8">
-
               {/* Online Donation Card */}
               <div className="bg-gradient-to-br from-[#003366] to-black text-white p-8 md:p-10 rounded-3xl shadow-2xl relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-1/4 -translate-y-1/4">
                   <FaHandHoldingHeart size={200} />
                 </div>
-
                 <h3 className="text-3xl font-bold mb-4 flex items-center gap-3">
                   <FaHandHoldingHeart /> Donate Online | ऑनलाइन दान करें
                 </h3>
                 <p className="text-zinc-200 mb-8 text-lg">
                   Secure, instant, and hassle-free. Supports Credit Cards, Debit Cards, Netbanking, and UPI.
                 </p>
-
                 <a
                   href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
                   target="_blank"
@@ -127,39 +122,19 @@ export default function DonateAndSupport() {
                 >
                   DONATE NOW
                 </a>
+                <a
+  href="https://zohopy.in/sKbCa"
+  target="_blank"
+  rel="noopener noreferrer"
+  className="inline-block w-full mt-4 bg-green-600 text-white font-black text-xl py-4 rounded-xl text-center hover:bg-green-700 transition-colors shadow-lg"
+>
+  DONATE VIA ZOHO
+</a>
                 <p className="text-center text-xs text-zinc-300 mt-4 flex items-center justify-center gap-1">
                   <FaShieldAlt /> 256-bit Secure SSL Payment
                 </p>
               </div>
-              {/* Zoho Donation Card */}
-<div className="bg-gradient-to-br from-[#0b6b3a] to-[#014421] text-white p-8 md:p-10 rounded-3xl shadow-2xl relative overflow-hidden group">
-  <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-1/4 -translate-y-1/4">
-    <FaHandHoldingHeart size={200} />
-  </div>
-
-  <h3 className="text-3xl font-bold mb-4 flex items-center gap-3">
-    <FaHandHoldingHeart /> Donate via Zoho | Zoho से दान करें
-  </h3>
-
-  <p className="text-zinc-200 mb-8 text-lg">
-    Donate securely using Zoho Payments. Supports UPI now, with Cards and Net Banking being enabled shortly.
-  </p>
-
-  <a
-    href="https://zohopy.in/sKbCa"
-    target="_blank"
-    rel="noopener noreferrer"
-    className="inline-block w-full bg-white text-[#0b6b3a] font-black text-xl py-4 rounded-xl text-center hover:bg-zinc-200 transition-colors shadow-lg"
-  >
-    DONATE VIA ZOHO
-  </a>
-
-  <p className="text-center text-xs text-zinc-300 mt-4 flex items-center justify-center gap-1">
-    <FaShieldAlt /> Secure Payment powered by Zoho Payments
-  </p>
-</div>
-
-              {/* QR Code Card */}
+               {/* QR Code Card */}
               <div className="bg-white border-2 border-zinc-100 p-8 rounded-3xl shadow-xl flex flex-col md:flex-row items-center gap-8">
                 <div className="w-48 h-48 bg-white p-2 border-2 border-black rounded-xl shrink-0">
                   <img src={qrCode} alt="SSF Donation QR Code" className="w-full h-full object-contain" />
