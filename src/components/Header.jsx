@@ -51,7 +51,6 @@ const Header = () => {
     { name: "Donate", path: "/Donate", isSpecial: true },
   ];
 
-
   return (
     <header className="fixed top-0 left-0 right-0 z-50 font-sans">
       {/* TOP BAR */}
@@ -68,7 +67,7 @@ const Header = () => {
               WhatsApp: +91 9718346691
             </a>
             <span className="text-white/30">|</span>
-            <span>{lang === "en" ? "Reg. Office: Rewa, Madhya Pradesh, India" : "पंजीकृत कार्यालय: रीवा, मध्य प्रदेश, भारत"}</span[...]
+            <span>{lang === "en" ? "Reg. Office: Rewa, Madhya Pradesh, India" : "पंजीकृत कार्यालय: रीवा, मध्य प्रदेश, भारत"}</span>
             <span className="text-white/30">|</span>
             <a
               href="mailto:info@swastiksrijan.in"
@@ -141,7 +140,7 @@ const Header = () => {
 
                 {/* Desktop Dropdown */}
                 {item.subItems && (
-                  <div className="absolute top-full left-0 w-64 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hove[...]
+                  <div className="absolute top-full left-0 w-64 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
                     <div className="bg-white border border-zinc-100 shadow-2xl rounded-2xl overflow-hidden p-2">
                       {item.subItems.map((sub) => (
                         <Link
