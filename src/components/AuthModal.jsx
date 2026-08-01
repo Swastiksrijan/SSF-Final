@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import emailjs from "@emailjs/browser";
 import { FaTimes, FaUserPlus, FaSignInAlt, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
+import { ENDPOINTS } from "../config/api";
 
 const initialSignup = {
     fullName: "",
@@ -74,14 +75,48 @@ export default function AuthModal({ open, onClose }) {
         setMessage("");
 
         try {
-            persistSession();
-            await sendEmailNotification();
-            setStatus("success");
-            setMessage("Account action successful. Admin notification links are ready below.");
+            if (mode === "signup") {
+                // Send signup data to backend member-signup endpoint
+                const payload = {
+                    fullName: signupData.fullName,
+                    email: signupData.email,
+                    confirmEmail: signupData.email,
+                    phone: signupData.phone,
+                    memberType: "website_signup",
+                    message: "Signup from website",
+                };
+
+                const res = await fetch(ENDPOINTS.MEMBER_SIGNUP, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(payload)
+                });
+
+                const result = await res.json().catch(() => ({}));
+                if (!res.ok) {
+                    // If backend returns error, show it
+                    throw new Error(result.message || `Signup failed with status ${res.status}`);
+                }
+
+                // Persist locally and notify admin (email/whatsapp buttons remain)
+                persistSession();
+                await sendEmailNotification().catch((err) => console.warn("Email notify failed:", err));
+
+                setStatus("success");
+                setMessage("Account created — you're signed in. Admin has been notified.");
+            } else {
+                // LOGIN: backend does not expose a member login endpoint in this repo.
+                // Fallback: persist locally and optionally notify admin.
+                // If you add a server-side login endpoint, replace this block with a POST to it.
+                persistSession();
+                await sendEmailNotification().catch(() => {});
+                setStatus("success");
+                setMessage("Logged in locally. For server-side login, add a login endpoint and update AuthModal.");
+            }
         } catch (error) {
-            console.error("Auth notify error", error);
+            console.error("Auth error", error);
             setStatus("error");
-            setMessage("Login/Signup saved, but auto-email failed. Please use WhatsApp/email buttons.");
+            setMessage(error.message || "Something went wrong during auth.");
         }
     };
 
