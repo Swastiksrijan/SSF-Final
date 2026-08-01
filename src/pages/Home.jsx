@@ -361,4 +361,22 @@ export default function Home() {
                     Building a <br /><span className="text-[#FF6600]">Better Bharat</span>
                   </h2>
 
-                  ... (file continues)
+                  <p className="text-zinc-600 text-base md:text-lg leading-relaxed italic mt-4">
+                    "Hamara maksad sirf madad karna nahi, balki samaj ke aakhri vyakti tak shiksha, swasthya aur atmanirbharta pahunchana hai."
+                  </p>
+
+                  <div className="pt-4">
+                    <p className="font-bold text-[#002344] text-lg">Ramesh Pandey</p>
+                    <p className="text-sm text-zinc-500">Founder & President, Swastik Srijan Foundation</p>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
