@@ -37,6 +37,7 @@ import { Route as HumanityChar38TruthRouteImport } from './routes/Humanity&Truth
 import { Route as GetInvolvedRouteImport } from './routes/GetInvolved'
 import { Route as DonateAndSupportRouteImport } from './routes/DonateAndSupport'
 import { Route as DonateRouteImport } from './routes/Donate'
+import { Route as DonationRefundPolicyRouteImport } from './routes/DonationRefundPolicy'
 import { Route as CookiePolicyRouteImport } from './routes/CookiePolicy'
 import { Route as ContactRouteImport } from './routes/Contact'
 import { Route as CampaignsRouteImport } from './routes/Campaigns'
@@ -188,6 +189,11 @@ const DonateRoute = DonateRouteImport.update({
   path: '/Donate',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DonationRefundPolicyRoute = DonationRefundPolicyRouteImport.update({
+  id: '/DonationRefundPolicy',
+  path: '/DonationRefundPolicy',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CookiePolicyRoute = CookiePolicyRouteImport.update({
   id: '/CookiePolicy',
   path: '/CookiePolicy',
@@ -251,6 +257,7 @@ export interface FileRoutesByFullPath {
   '/CookiePolicy': typeof CookiePolicyRoute
   '/Donate': typeof DonateRoute
   '/DonateAndSupport': typeof DonateAndSupportRoute
+  '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
   '/GetInvolved': typeof GetInvolvedRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
   '/Impact': typeof ImpactRoute
@@ -291,6 +298,7 @@ export interface FileRoutesByTo {
   '/CookiePolicy': typeof CookiePolicyRoute
   '/Donate': typeof DonateRoute
   '/DonateAndSupport': typeof DonateAndSupportRoute
+  '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
   '/GetInvolved': typeof GetInvolvedRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
   '/Impact': typeof ImpactRoute
@@ -332,6 +340,7 @@ export interface FileRoutesById {
   '/CookiePolicy': typeof CookiePolicyRoute
   '/Donate': typeof DonateRoute
   '/DonateAndSupport': typeof DonateAndSupportRoute
+  '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
   '/GetInvolved': typeof GetInvolvedRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
   '/Impact': typeof ImpactRoute
@@ -374,6 +383,7 @@ export interface FileRouteTypes {
     | '/CookiePolicy'
     | '/Donate'
     | '/DonateAndSupport'
+    | '/DonationRefundPolicy'
     | '/GetInvolved'
     | '/Humanity&Truth'
     | '/Impact'
@@ -414,6 +424,7 @@ export interface FileRouteTypes {
     | '/CookiePolicy'
     | '/Donate'
     | '/DonateAndSupport'
+    | '/DonationRefundPolicy'
     | '/GetInvolved'
     | '/Humanity&Truth'
     | '/Impact'
@@ -454,6 +465,7 @@ export interface FileRouteTypes {
     | '/CookiePolicy'
     | '/Donate'
     | '/DonateAndSupport'
+    | '/DonationRefundPolicy'
     | '/GetInvolved'
     | '/Humanity&Truth'
     | '/Impact'
@@ -495,6 +507,7 @@ export interface RootRouteChildren {
   CookiePolicyRoute: typeof CookiePolicyRoute
   DonateRoute: typeof DonateRoute
   DonateAndSupportRoute: typeof DonateAndSupportRoute
+  DonationRefundPolicyRoute: typeof DonationRefundPolicyRoute
   GetInvolvedRoute: typeof GetInvolvedRoute
   HumanityChar38TruthRoute: typeof HumanityChar38TruthRoute
   ImpactRoute: typeof ImpactRoute
@@ -722,6 +735,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DonateRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/DonationRefundPolicy': {
+      id: '/DonationRefundPolicy'
+      path: '/DonationRefundPolicy'
+      fullPath: '/DonationRefundPolicy'
+      preLoaderRoute: typeof DonationRefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/CookiePolicy': {
       id: '/CookiePolicy'
       path: '/CookiePolicy'
@@ -807,6 +827,7 @@ const rootRouteChildren: RootRouteChildren = {
   CookiePolicyRoute: CookiePolicyRoute,
   DonateRoute: DonateRoute,
   DonateAndSupportRoute: DonateAndSupportRoute,
+  DonationRefundPolicyRoute: DonationRefundPolicyRoute,
   GetInvolvedRoute: GetInvolvedRoute,
   HumanityChar38TruthRoute: HumanityChar38TruthRoute,
   ImpactRoute: ImpactRoute,
