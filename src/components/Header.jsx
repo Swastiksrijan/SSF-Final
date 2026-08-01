@@ -47,8 +47,7 @@ const Header = () => {
       name: "Get Involved",
       path: "/GetInvolved"
     },
-    { name: "Donation & Refund Policy", path: "/DonationRefundPolicy" },
-    { name: "Donate", path: "/Donate", isSpecial: true },
+    { name: "Donate", path: "/Donate", isSpecial: true }
   ];
 
   return (
