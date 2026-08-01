@@ -7,7 +7,6 @@ import ScrollToTopButton from "../components/ScrollToTopButton";
 import SeoManager from "../components/SeoManager";
 import WhatsAppChatWidget from "../components/WhatsAppChatWidget";
 import { LanguageProvider } from "../context/LanguageContext";
-import DonationBanner from "../components/DonationBanner";
 
 export const Route = createRootRoute({
   component: () => (
@@ -16,7 +15,6 @@ export const Route = createRootRoute({
         <SeoManager />
         <Header />
         <EliteDonationCard />
-        <DonationBanner />
 
         <ScrollToHash />
         <ScrollToTopButton />
