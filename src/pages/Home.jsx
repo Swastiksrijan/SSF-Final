@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
@@ -9,6 +8,7 @@ import {
 import OptimizedImage from "../components/OptimizedImage";
 import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
+import EliteDonationCard from "../components/EliteDonationCard";
 import { FaQuoteLeft } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
@@ -81,7 +81,7 @@ export default function Home() {
                   Donate Now <FaHeart className="text-sm" />
                 </button>
               </a>
-              <Link to="/Impact" className="w-full sm:w-auto px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-colors text-lg">
+              <Link to="/Impact" className="w-full sm:w-auto px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all text-lg flex items-center justify-center">
                 Our Impact
               </Link>
             </div>
@@ -142,6 +142,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Donation card (Home only) */}
+      <section className="py-8 bg-transparent">
+        <div className="container mx-auto px-4">
+          <EliteDonationCard />
+        </div>
+      </section>
+
 
       {/* 5. ABOUT US (Short & Honest) */}
       <section className="py-20 bg-white">
@@ -153,7 +160,7 @@ export default function Home() {
 
           <div className="text-lg md:text-xl text-zinc-600 leading-relaxed text-center mb-12">
             <p className="mb-6">
-              Founded in 2013, Swastik Srijan Foundation is a registered non-government organization (NGO) working at the grassroots level in Madhya Pradesh and across India. We believe that true nation-building starts from our villages.
+              Founded in 2013, Swastik Srijan Foundation is a registered non-government organization (NGO) working at the grassroots level in Madhya Pradesh and across India. We believe that true[...]
             </p>
             <ul className="text-left max-w-2xl mx-auto space-y-4 mt-8 bg-zinc-50 p-8 rounded-xl border border-zinc-100">
               <li className="flex items-start gap-3">
@@ -171,7 +178,7 @@ export default function Home() {
             </ul>
             <div className="flex justify-center mt-12">
               <Link to="/About">
-                <button className="group flex items-center gap-3 px-8 py-3 bg-white border-2 border-[#002344] text-[#002344] font-bold rounded-full hover:bg-[#002344] hover:text-white transition-all active:scale-95 shadow-lg shadow-zinc-200/50">
+                <button className="group flex items-center gap-3 px-8 py-3 bg-white border-2 border-[#002344] text-[#002344] font-bold rounded-full hover:bg-[#002344] hover:text-white transition-all">
                   Read Our Full Story | पूरी कहानी पढ़ें
                   <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -243,7 +250,7 @@ export default function Home() {
                           navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
                           alert("Email copied to clipboard!");
                         }}
-                        className="text-base md:text-xl font-semibold hover:text-[#FF6600] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#FF6600] break-all text-left"
+                        className="text-base md:text-xl font-semibold hover:text-[#FF6600] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#FF6600] break-all"
                         title="Click to copy"
                       >
                         {CONTACT_INFO.primaryEmail}
@@ -306,8 +313,8 @@ export default function Home() {
                     </button>
                   </Link>
                 </div>
-              </div>
 
+              </div>
             </div>
           </div>
         </div>
@@ -353,144 +360,5 @@ export default function Home() {
                   <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344] leading-tight">
                     Building a <br /><span className="text-[#FF6600]">Better Bharat</span>
                   </h2>
-                </div>
 
-                <div className="space-y-6">
-                  <blockquote className="text-xl md:text-2xl text-zinc-700 font-serif italic leading-relaxed">
-                    "True nation-building is possible only when service is guided by commitment and compassion."
-                  </blockquote>
-
-                  <div className="flex items-start gap-4 pt-2">
-                    <div className="w-1 h-16 bg-[#FF6600] rounded-full opacity-30 shrink-0"></div>
-                    <blockquote className="text-lg md:text-xl text-zinc-500 font-hindi leading-relaxed italic">
-                      "सेवा और समर्पण की भावना से ही एक बेहतर भारत का निर्माण संभव है।"
-                    </blockquote>
-                  </div>
-                </div>
-
-                <div className="pt-6 border-t border-zinc-100 flex items-center gap-4">
-                  <p className="text-sm text-zinc-400 font-medium">
-                    Inviting you to join our mission of service.
-                  </p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 6. PRIMARY ACTIONS SECTION (Repeat Buttons) */}
-      <section className="py-16 bg-gradient-to-br from-orange-50 to-white text-center">
-        <div className="container mx-auto px-4">
-          <h2 className="text-2xl font-bold text-[#002344] mb-8">Be a Part of the Change | बदलाव का हिस्सा बनें</h2>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
-            <a
-              href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              <button className="px-10 py-4 bg-[#FF6600] text-white font-bold rounded-full hover:bg-[#e65c00] transition-all shadow-xl shadow-orange-500/20 active:scale-95 text-lg">
-                Donate Now
-              </button>
-            </a>
-            <Link to="/Impact" className="px-10 py-4 bg-white text-[#002344] border hover:bg-zinc-50 border-zinc-200 font-bold rounded-full transition-all shadow-lg active:scale-95 text-lg">
-              Our Impact
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 7. LEGAL & COMPLIANCE SECTION */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl md:text-3xl font-bold text-[#002344] flex items-center justify-center gap-3">
-              <FaShieldAlt className="text-[#002344]" />
-              Transparency & Compliance
-            </h2>
-            <p className="text-zinc-500 mt-2">We adhere to the highest standards of legal and financial integrity.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            {[
-              { label: "Established", value: "2013", icon: <FaLandmark /> },
-              { label: "Registered Under", value: "MP Societies Registration Act, 1973", icon: <FaRegFileAlt /> },
-              { label: "Registration No", value: "05/22/03/11448/13", icon: <FaShieldAlt /> },
-              { label: "NITI Aayog (NGO Darpan)", value: "Registered", icon: <FaCheckCircle /> },
-              { label: "12A & 80G", value: "Provisionally Approved", icon: <FaCheckCircle /> },
-              { label: "CSR-1", value: "Registered", icon: <FaCheckCircle /> },
-            ].map((item, i) => (
-              <div key={i} className="flex items-center gap-4 p-6 bg-zinc-50 rounded-xl border border-zinc-100 hover:border-[#FF6600]/30 transition-colors">
-                <div className="w-10 h-10 rounded-full bg-white flex items-center justify-center text-[#FF6600] shadow-sm text-lg border border-zinc-100 shrink-0">
-                  {item.icon}
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest">{item.label}</p>
-                  <p className="text-zinc-800 font-semibold">{item.value}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 8. GET INVOLVED (Home End) */}
-      <section className="pb-24 bg-[#001529] text-white">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4 pt-24">Get Involved | हमसे जुड़ें</h2>
-          <p className="text-zinc-400 max-w-2xl mx-auto mb-12 text-lg">
-            There are many ways to contribute. Choose how you want to serve the nation.
-          </p>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {/* Join WhatsApp */}
-            <a
-              href={CONTACT_INFO.social.whatsappGroup}
-              target="_blank"
-              rel="noreferrer"
-              className="bg-white/10 hover:bg-[#25D366] hover:text-white p-8 rounded-2xl transition-all group flex flex-col items-center gap-4 backdrop-blur-sm border border-white/5"
-            >
-              <FaWhatsapp className="text-4xl text-[#25D366] group-hover:text-white transition-colors" />
-              <div className="font-bold text-xl">Join WhatsApp</div>
-            </a>
-
-            {/* Volunteer */}
-            <Link
-              to="/Volunteer"
-              className="bg-white/10 hover:bg-[#FF6600] p-8 rounded-2xl transition-all group flex flex-col items-center gap-4 backdrop-blur-sm border border-white/5"
-            >
-              <FaHandHoldingHeart className="text-4xl text-[#FF6600] group-hover:text-white transition-colors" />
-              <div className="font-bold text-xl">Volunteer</div>
-            </Link>
-
-            {/* Support Our Work */}
-            <Link
-              to="/DonateAndSupport"
-              className="bg-white/10 hover:bg-[#FF6600] p-8 rounded-2xl transition-all group flex flex-col items-center gap-4 backdrop-blur-sm border border-white/5"
-            >
-              <FaHeart className="text-4xl text-[#FF6600] group-hover:text-white transition-colors" />
-              <div className="font-bold text-xl">Support Our Work</div>
-            </Link>
-
-            {/* Become a Member */}
-            <Link
-              to="/Members"
-              className="bg-white/10 hover:bg-[#FF6600] p-8 rounded-2xl transition-all group flex flex-col items-center gap-4 backdrop-blur-sm border border-white/5"
-            >
-              <FaUsers className="text-4xl text-[#FF6600] group-hover:text-white transition-colors" />
-              <div className="font-bold text-xl">Become a Member</div>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 8.5 LAST MILESTONE (IMPACT TIMELINE) */}
-      <section className="py-24 bg-zinc-50 border-t border-zinc-100">
-        <div className="container mx-auto px-4">
-          <ImpactTimeline />
-        </div>
-      </section>
-
-    </div>
-  );
-}
+                  ... (file continues)
