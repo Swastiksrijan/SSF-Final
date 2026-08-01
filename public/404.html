@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <meta name="robots" content="noindex" />
+    <script>
+      // Single-page-app fallback for Cloudflare Pages / static hosts.
+      // Loads index.html and lets the client-side router handle the current path.
+      (function () {
+        var path = location.pathname + location.search + location.hash;
+        fetch('/index.html')
+          .then(function (r) { return r.text(); })
+          .then(function (text) {
+            document.open();
+            document.write(text);
+            document.close();
+            // Replace the location so the SPA router sees the original path
+            history.replaceState({}, '', path);
+          })
+          .catch(function () {
+            // If fetch fails, fall back to redirecting to root
+            location.replace('/');
+          });
+      })();
+    </script>
+  </head>
+  <body></body>
+</html>

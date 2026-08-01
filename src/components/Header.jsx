@@ -47,6 +47,7 @@ const Header = () => {
       name: "Get Involved",
       path: "/GetInvolved"
     },
+    { name: "Donation & Refund Policy", path: "/DonationRefundPolicy" },
     { name: "Donate", path: "/Donate", isSpecial: true },
   ];
 
@@ -67,7 +68,7 @@ const Header = () => {
               WhatsApp: +91 9718346691
             </a>
             <span className="text-white/30">|</span>
-            <span>{lang === "en" ? "Reg. Office: Rewa, Madhya Pradesh, India" : "पंजीकृत कार्यालय: रीवा, मध्य प्रदेश, भारत"}</span>
+            <span>{lang === "en" ? "Reg. Office: Rewa, Madhya Pradesh, India" : "पंजीकृत कार्यालय: रीवा, मध्य प्रदेश, भारत"}</span[...]
             <span className="text-white/30">|</span>
             <a
               href="mailto:info@swastiksrijan.in"
@@ -140,7 +141,7 @@ const Header = () => {
 
                 {/* Desktop Dropdown */}
                 {item.subItems && (
-                  <div className="absolute top-full left-0 w-64 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hover:translate-y-0">
+                  <div className="absolute top-full left-0 w-64 pt-4 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform translate-y-2 group-hove[...]
                     <div className="bg-white border border-zinc-100 shadow-2xl rounded-2xl overflow-hidden p-2">
                       {item.subItems.map((sub) => (
                         <Link
