@@ -62,8 +62,8 @@ export default function FooterSection() {
             <p className="text-zinc-400 leading-relaxed font-medium text-sm max-w-sm">
               {lang === "en"
                 ? "Empowering communities through education, health, and creative development. We are committed to grassroots governance and sustainable impact."
-                : "शिक्षा, स्वास्थ्य और रचनात्मक विकास के माध्यम से समुदायों को सशक्त बनाना हमारा संकल्प है। हम जमीनी स्तर पर टिकाऊ बदलाव के लिए काम करते हैं।"}
-              <span className="block text-xs text-zinc-500 mt-3 font-hindi opacity-70">{lang === "en" ? "समुदायों को सशक्त बनाना और यह सुनिश्चित करना कि हर बच्चे की शिक्षा, स्वास्थ्य और रचनात्मक बचपन तक पहुँच हो।" : "Empowering communities and ensuring that every child has access to education, health and a creative childhood."}</span>
+                : "शिक्षा, स्वास्थ्य और रचनात्मक विकास के माध्यम से समुदायों को सशक्त [..."
+              }
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-md">
@@ -118,7 +118,7 @@ export default function FooterSection() {
                   target="_blank"
                   rel="noreferrer noopener"
                   aria-label={Item.label}
-                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 text-zinc-400 hover:bg-[#fb8500] hover:text-white transition-all duration-300 border border-white/5 hover:border-[#fb8500]"
+                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 text-zinc-400 hover:bg-[#fb8500] hover:text-white transition-all duration-300 border border-white/5"
                 >
                   <Item.icon className="text-sm" />
                 </a>
@@ -151,9 +151,9 @@ export default function FooterSection() {
               </ul>
               <div className="space-y-2">
                 <p className="text-[10px] uppercase tracking-wider text-zinc-500">Featured Videos</p>
-                <a href="https://youtu.be/uF7rXdsHm0o?si=aIugOn4bzbXtTDMq" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">YouTube Story Film</a>
-                <a href="https://youtube.com/shorts/OqG3OxA8P_Q?si=KBYHwg7mW1sZ7KOI" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">YouTube Short 01</a>
-                <a href="https://youtube.com/shorts/COq-OKNz1ds?si=rpqN-jUVK2EgaHGl" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">YouTube Short 02</a>
+                <a href="https://youtu.be/uF7rXdsHm0o?si=aIugOn4bzbXtTDMq" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">How We Work</a>
+                <a href="https://youtube.com/shorts/OqG3OxA8P_Q?si=KBYHwg7mW1sZ7KOI" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">Field Stories</a>
+                <a href="https://youtube.com/shorts/COq-OKNz1ds?si=rpqN-jUVK2EgaHGl" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">Volunteer Moments</a>
               </div>
             </div>
 
@@ -216,6 +216,10 @@ export default function FooterSection() {
 
   <Link to="/Transparency" className="hover:text-zinc-300 transition-colors">
     Transparency
+  </Link>
+
+  <Link to="/DonationRefundPolicy" className="hover:text-zinc-300 transition-colors">
+    Donation & Refund Policy
   </Link>
 </div>
           </div>
