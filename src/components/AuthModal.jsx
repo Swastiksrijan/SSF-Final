@@ -34,8 +34,8 @@ export default function AuthModal({ open, onClose }) {
         const payload = mode === "signup" ? signupData : loginData;
         const text =
             mode === "signup"
-                ? `New Signup\\nName: ${payload.fullName}\\nEmail: ${payload.email}\\nPhone: ${payload.phone}`
-                : `New Login\\nEmail: ${payload.email}`;
+                ? `New Signup\nName: ${payload.fullName}\nEmail: ${payload.email}\nPhone: ${payload.phone}`
+                : `New Login\nEmail: ${payload.email}`;
         return `https://wa.me/${target}?text=${encodeURIComponent(text)}`;
     }, [mode, signupData, loginData]);
 
@@ -84,15 +84,26 @@ export default function AuthModal({ open, onClose }) {
                     password: loginData.password
                 };
 
-            const response = await fetch(mode === "signup" ? ENDPOINTS.MEMBER_SIGNUP : ENDPOINTS.MEMBER_LOGIN, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
+            const endpoint = mode === "signup" ? ENDPOINTS.MEMBER_SIGNUP : ENDPOINTS.MEMBER_LOGIN;
+            let response;
+
+            try {
+                response = await fetch(endpoint, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json", Accept: "application/json" },
+                    body: JSON.stringify(payload)
+                });
+            } catch (networkError) {
+                throw new Error("Account service is temporarily unavailable. Please wait a moment and try again.");
+            }
 
             const result = await response.json().catch(() => ({}));
-            if (!response.ok) throw new Error(result.message || "Unable to complete the request. Please try again.");
-            if (!result.user) throw new Error("The server did not return a valid account session.");
+            if (!response.ok) {
+                throw new Error(result.message || "Unable to complete the request. Please try again.");
+            }
+            if (!result.user) {
+                throw new Error("The server did not return a valid account session.");
+            }
 
             persistSession(result.user);
             await sendEmailNotification().catch((err) => console.warn("Email notify failed:", err));
