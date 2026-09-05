@@ -79,7 +79,7 @@ export default function MemberDashboard() {
   const downloadMembershipCertificate = async () => {
     if (!user?.certId) return;
     const date = new Date(user.certificateIssuedAt || new Date()).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
-    await generateCertificate(user.fullName, "member", date, user.certId);
+    await generateCertificate(user.fullName, "member", date, user.certId, user.memberId);
   };
 
   if (!user) return null;
