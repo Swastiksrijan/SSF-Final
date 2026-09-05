@@ -34,6 +34,24 @@ const Member = sequelize.define('Member', {
     status: {
         type: DataTypes.ENUM('pending', 'approved', 'rejected'),
         defaultValue: 'pending'
+    },
+    memberId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true
+    },
+    certId: {
+        type: DataTypes.STRING,
+        allowNull: true,
+        unique: true
+    },
+    certificateType: {
+        type: DataTypes.STRING,
+        allowNull: true
+    },
+    certificateIssuedAt: {
+        type: DataTypes.DATE,
+        allowNull: true
     }
 }, {
     timestamps: true
