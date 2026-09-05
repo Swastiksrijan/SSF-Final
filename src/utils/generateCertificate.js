@@ -1,211 +1,71 @@
-import jsPDF from 'jspdf';
+import jsPDF from "jspdf";
+
+const loadImage = (url) => new Promise((resolve, reject) => {
+  const img = new Image();
+  img.crossOrigin = "Anonymous";
+  img.onload = () => resolve(img);
+  img.onerror = reject;
+  img.src = url;
+});
 
 export const generateCertificate = async (name, role, date, certId = null) => {
-    const doc = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: 'a4',
-    });
+  const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
+  const width = doc.internal.pageSize.getWidth();
+  const height = doc.internal.pageSize.getHeight();
+  const centerX = width / 2;
+  const normalizedRole = String(role || "volunteer").toLowerCase();
+  const isMember = normalizedRole === "member" || normalizedRole.includes("membership");
+  const navy = "#002344";
+  const gold = "#C5A059";
 
-    // Colors
-    const darkBlue = '#003366';
-    const gold = '#C5A059'; // More metallic gold
-    const textDark = '#1a1a1a';
-    const borderBg = '#FDFBF7'; // Cream background for premium feel
+  doc.setFillColor("#FDFBF7"); doc.rect(0, 0, width, height, "F");
+  doc.setDrawColor(navy); doc.setLineWidth(3); doc.rect(5, 5, width - 10, height - 10);
+  doc.setDrawColor(gold); doc.setLineWidth(1.2); doc.rect(11, 11, width - 22, height - 22);
 
-    // Dimensions
-    const width = doc.internal.pageSize.getWidth();
-    const height = doc.internal.pageSize.getHeight();
-    const centerX = width / 2;
+  try {
+    const logo = await loadImage("/images/logo.png");
+    const logoWidth = 25;
+    const logoHeight = (logo.height / logo.width) * logoWidth;
+    doc.addImage(logo, "PNG", centerX - logoWidth / 2, 18, logoWidth, logoHeight);
+  } catch {
+    doc.setFont("times", "bold"); doc.setFontSize(18); doc.setTextColor(navy);
+    doc.text("SWASTIK SRIJAN FOUNDATION", centerX, 32, { align: "center" });
+  }
 
-    // --- 1. Background Fill ---
-    doc.setFillColor(borderBg);
-    doc.rect(0, 0, width, height, 'F');
+  doc.setFont("times", "bold"); doc.setFontSize(isMember ? 32 : 38); doc.setTextColor(navy);
+  doc.text(isMember ? "CERTIFICATE OF MEMBERSHIP" : "CERTIFICATE OF APPRECIATION", centerX, 58, { align: "center" });
+  doc.setFont("helvetica", "normal"); doc.setFontSize(12); doc.setTextColor("#555555");
+  doc.text("This certificate is proudly presented to", centerX, 72, { align: "center" });
+  doc.setFont("times", "bolditalic"); doc.setFontSize(36); doc.setTextColor(navy);
+  doc.text(String(name || "Recipient"), centerX, 91, { align: "center" });
+  doc.setDrawColor(gold); doc.setLineWidth(1); doc.line(centerX - 55, 97, centerX + 55, 97);
 
-    // --- 2. Ornate Border Pattern ---
-    // Outer heavy border
-    doc.setDrawColor(darkBlue);
-    doc.setLineWidth(3);
-    doc.rect(5, 5, width - 10, height - 10);
+  const body = isMember
+    ? "in recognition of their approved membership and commitment to the mission and values of Swastik Srijan Foundation."
+    : normalizedRole.includes("volunteer")
+      ? `in recognition of dedicated service as a ${String(role).toUpperCase()} and valuable contribution to the mission of Swastik Srijan Foundation.`
+      : normalizedRole === "donor"
+        ? "in sincere gratitude for generous support that helps the Foundation create positive social impact."
+        : `in recognition of valuable contribution as a ${String(role || "participant").toUpperCase()}.`;
+  doc.setFont("times", "normal"); doc.setFontSize(15); doc.setTextColor("#444444");
+  doc.text(doc.splitTextToSize(body, 185), centerX, 111, { align: "center" });
 
-    // Inner thin border
-    doc.setDrawColor(darkBlue);
-    doc.setLineWidth(0.5);
-    doc.rect(8, 8, width - 16, height - 16);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(navy);
+  if (certId) doc.text(`OFFICIAL CERTIFICATE ID: ${certId}`, 25, height - 27);
+  doc.text(`DATE OF ISSUE: ${date}`, width - 25, height - 27, { align: "right" });
+  if (certId) doc.text(`Verify: swastiksrijan.in/verify/${certId}`, centerX, height - 19, { align: "center" });
 
-    // Corner Accents (Triangles)
-    const cornerSize = 25;
-    doc.setFillColor(darkBlue);
+  try {
+    const signature = await loadImage("/images/signature.png");
+    const sigWidth = 34;
+    const sigHeight = (signature.height / signature.width) * sigWidth;
+    doc.addImage(signature, "PNG", centerX - sigWidth / 2, height - 51, sigWidth, sigHeight);
+  } catch { /* optional */ }
+  doc.setDrawColor("#333333"); doc.setLineWidth(0.5); doc.line(centerX - 28, height - 34, centerX + 28, height - 34);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.text("Authorized Signatory", centerX, height - 29, { align: "center" });
+  doc.setFont("helvetica", "normal"); doc.setFontSize(7); doc.setTextColor("#777777");
+  doc.text("Swastik Srijan Foundation Samiti", centerX, height - 24, { align: "center" });
 
-    // Top-Left
-    doc.triangle(5, 5, 5 + cornerSize, 5, 5, 5 + cornerSize, 'F');
-    // Top-Right
-    doc.triangle(width - 5, 5, width - 5 - cornerSize, 5, width - 5, 5 + cornerSize, 'F');
-    // Bottom-Left
-    doc.triangle(5, height - 5, 5 + cornerSize, height - 5, 5, height - 5 - cornerSize, 'F');
-    // Bottom-Right
-    doc.triangle(width - 5, height - 5, width - 5 - cornerSize, height - 5, width - 5, height - 5 - cornerSize, 'F');
-
-    // Gold inner frame
-    doc.setDrawColor(gold);
-    doc.setLineWidth(1.5);
-    doc.rect(12, 12, width - 24, height - 24);
-
-    // --- 3. Header Section ---
-    try {
-        const logoUrl = '/images/logo.png'; // Make sure this path is correct
-        const logoImg = await loadImage(logoUrl);
-        const logoWidth = 28;
-        const logoHeight = (logoImg.height / logoImg.width) * logoWidth;
-        doc.addImage(logoImg, 'PNG', centerX - (logoWidth / 2), 20, logoWidth, logoHeight);
-    } catch (e) {
-        // Fallback text if image fails
-        doc.setFont("times", "bold");
-        doc.setFontSize(22);
-        doc.setTextColor(darkBlue);
-        doc.text("SWASTIK SRIJAN FOUNDATION", centerX, 35, { align: 'center' });
-    }
-
-    // "Certificate of Appreciation"
-    doc.setFont("times", "bold"); // Times looks more formal
-    doc.setFontSize(42);
-    doc.setTextColor(darkBlue);
-    doc.text("CERTIFICATE", centerX, 65, { align: 'center' });
-
-    doc.setFont("times", "italic");
-    doc.setFontSize(24);
-    doc.setTextColor(gold);
-    doc.text("OF APPRECIATION", centerX, 75, { align: 'center' });
-
-    // --- 4. Recipient Section ---
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(14);
-    doc.setTextColor(textDark);
-    doc.text("PROUDLY PRESENTED TO", centerX, 95, { align: 'center' });
-
-    // Name 
-    doc.setFont("times", "bolditalic");
-    doc.setFontSize(48);
-    doc.setTextColor(darkBlue);
-    doc.text(name, centerX, 115, { align: 'center' });
-
-    // Decorative line under name
-    doc.setDrawColor(gold);
-    doc.setLineWidth(1);
-    doc.line(centerX - 50, 120, centerX + 50, 120);
-
-    // --- 5. Body Text ---
-    let roleText = "";
-    const lowerRole = role.toLowerCase();
-
-    if (lowerRole.includes('volunteer')) {
-        roleText = `In recognition of your selfless service and dedication as a ${role.toUpperCase()}. Your contribution has made a significant impact on our mission.`;
-    } else if (lowerRole === 'donor') {
-        roleText = "In sincere gratitude for your generous DONATION. Your support empowers us to bring positive change where it is needed most.";
-    } else if (lowerRole === 'member') {
-        roleText = "Acknowledging your commitment as an esteemed MEMBER of our community. Together, we are building a better future.";
-    } else {
-        roleText = `In recognition of your valuable contribution as a ${role.toUpperCase()}.`;
-    }
-
-    doc.setFont("times", "normal");
-    doc.setFontSize(16);
-    doc.setTextColor('#555555');
-    // Split text to fit width
-    const splitText = doc.splitTextToSize(roleText, 180);
-    doc.text(splitText, centerX, 135, { align: 'center' });
-
-    // --- 6. Signatures ---
-    const sigY = height - 35; // Moved down slightly
-
-    // Left Signature (Official Signature Image)
-    try {
-        const sigUrl = '/images/signature.png';
-        const sigImg = await loadImage(sigUrl);
-        const sigWidth = 35; // Made smaller
-        const sigHeight = (sigImg.height / sigImg.width) * sigWidth;
-        // Positioned clearly in the bottom left corner above the line
-        doc.addImage(sigImg, 'PNG', 30, sigY - sigHeight - 5, sigWidth, sigHeight);
-
-        // Add signature line and name below the image
-        doc.setDrawColor(textDark);
-        doc.setLineWidth(0.5);
-        doc.line(25, sigY, 70, sigY);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(10);
-        doc.setTextColor(darkBlue);
-        doc.text("Amit Kumar Pandey", 47.5, sigY + 5, { align: 'center' });
-        doc.setFont("helvetica", "normal");
-        doc.setFontSize(8);
-        doc.setTextColor('#777777');
-        doc.text("Secretary, SSF", 47.5, sigY + 9, { align: 'center' });
-    } catch (e) {
-        // Fallback if signature image fails
-        doc.setDrawColor(textDark);
-        doc.setLineWidth(0.5);
-        doc.line(25, sigY, 70, sigY);
-        doc.setFont("helvetica", "bold");
-        doc.setFontSize(10);
-        doc.setTextColor(darkBlue);
-        doc.text("Amit Kumar Pandey", 47.5, sigY + 5, { align: 'center' });
-    }
-
-    // Badge/Seal Simulation in Center (Gold Circle)
-    doc.setFillColor(gold);
-    doc.circle(centerX, sigY - 5, 12, 'F');
-    doc.setDrawColor('#fff');
-    doc.circle(centerX, sigY - 5, 10, 'S');
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(8);
-    doc.setTextColor('#ffffff');
-    doc.text("OFFICIAL", centerX, sigY - 6, { align: 'center' });
-    doc.text("SEAL", centerX, sigY - 2, { align: 'center' });
-
-    // Right Signature (Date)
-    doc.setDrawColor(textDark);
-    doc.line(width - 90, sigY, width - 40, sigY);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(12);
-    doc.setTextColor(darkBlue);
-    doc.text(date, width - 65, sigY + 6, { align: 'center' });
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor('#777777');
-    doc.text("Date of Issue", width - 65, sigY + 11, { align: 'center' });
-
-    // --- 7. Legal Disclaimer Footer ---
-    doc.setFont("helvetica", "italic");
-    doc.setFontSize(7);
-    doc.setTextColor('#999999');
-    const disclaimerEN = "This certificate is scanned from an original physically signed document. Original copy is available with the organization.";
-    doc.text(disclaimerEN, centerX, height - 12, { align: 'center' });
-
-    // Footer ID
-    const displayID = certId ? `OFFICIAL ID: ${certId}` : `ID: SSF-${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}-${new Date().getFullYear()}`;
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(8);
-    doc.setTextColor('#aaaaaa');
-    doc.text(displayID, 15, height - 7);
-
-    if (certId) {
-        doc.setFontSize(7);
-        doc.text(`Verify at: swastiksrijan.org/verify/${certId}`, centerX, height - 8, { align: 'center' });
-    }
-
-    doc.text("www.swastiksrijan.in", width - 15, height - 7, { align: 'right' });
-
-    // Save
-    const safeName = name.replace(/[^a-z0-9]/gi, '_').toLowerCase();
-    doc.save(`SSF_Certificate_${safeName}.pdf`);
-};
-
-// Helper
-const loadImage = (url) => {
-    return new Promise((resolve, reject) => {
-        const img = new Image();
-        img.crossOrigin = "Anonymous"; // Crucial for some hosting
-        img.src = url;
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-    });
+  const safeName = String(name || "recipient").replace(/[^a-z0-9]/gi, "_").toLowerCase();
+  doc.save(`SSF_Certificate_${safeName}.pdf`);
 };
