@@ -1,8 +1,13 @@
 // Centralized API Configuration
-// Uses the environment variable VITE_BACKEND_URL if available (Production)
-// Falls back to localhost:5000 (Development)
+// Uses VITE_BACKEND_URL when configured; otherwise uses the live Render backend in production.
+// Local development continues to use localhost:5000.
 
-export const API_BASE_URL = import.meta.env.VITE_BACKEND_URL || 'http://localhost:5000';
+const configuredBackendUrl = import.meta.env.VITE_BACKEND_URL?.trim();
+const defaultBackendUrl = import.meta.env.PROD
+    ? 'https://ngo-backend-03hq.onrender.com'
+    : 'http://localhost:5000';
+
+export const API_BASE_URL = (configuredBackendUrl || defaultBackendUrl).replace(/\/$/, '');
 
 export const ENDPOINTS = {
     REGISTER: `${API_BASE_URL}/api/register`,
