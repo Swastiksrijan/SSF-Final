@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const nodemailer = require('nodemailer');
+const crypto = require('crypto');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 
@@ -85,6 +86,21 @@ const sendAdminNotification = async ({ subject, text, html }) => {
     return { emailSent, warning };
 };
 
+// Passwords are stored as salted scrypt hashes; the optional pepper is only an extra server-side secret.
+const hashPassword = (password) => {
+    const salt = crypto.randomBytes(16).toString('hex');
+    const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex');
+    return `${salt}:${hash}`;
+};
+
+const verifyPassword = (password, storedValue) => {
+    const [salt, expectedHex] = String(storedValue || '').split(':');
+    if (!salt || !expectedHex) return false;
+    const derived = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64);
+    const expected = Buffer.from(expectedHex, 'hex');
+    return expected.length === derived.length && crypto.timingSafeEqual(derived, expected);
+};
+
 // --- 3. Routes ---
 
 // @route   POST /api/admin/login
@@ -149,13 +165,13 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
 });
 
 // @route   POST /api/member-signup
-// @desc    Register a new member signup request
+// @desc    Register a new member signup request OR create a website account
 router.post('/member-signup', async (req, res) => {
     try {
-        const { fullName, email, confirmEmail, phone, memberType, message } = req.body;
-
+        const { fullName, email, confirmEmail, phone, password, memberType, message } = req.body || {};
         const primaryEmail = (email || '').trim().toLowerCase();
         const secondaryEmail = (confirmEmail || '').trim().toLowerCase();
+        const isWebsiteAccount = memberType === 'website_signup';
 
         if (!fullName || !primaryEmail || !secondaryEmail || !phone || !memberType) {
             return res.status(400).json({ status: 'error', message: 'Missing required fields' });
@@ -165,30 +181,79 @@ router.post('/member-signup', async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Email fields do not match' });
         }
 
+        if (isWebsiteAccount) {
+            if (!password || password.length < 8) {
+                return res.status(400).json({ status: 'error', message: 'Password must be at least 8 characters' });
+            }
+
+            const existing = await Member.findOne({ where: { email: primaryEmail } });
+            if (existing) {
+                if (existing.passwordHash) {
+                    return res.status(409).json({ status: 'error', message: 'An account with this email already exists. Please log in.' });
+                }
+
+                await existing.update({ passwordHash: hashPassword(password) });
+                return res.status(200).json({
+                    status: 'success',
+                    message: 'Your existing membership record now has a website account. You are signed in.',
+                    user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status }
+                });
+            }
+        }
+
         const newMember = await Member.create({
             fullName,
             email: primaryEmail,
             phone,
+            passwordHash: isWebsiteAccount ? hashPassword(password) : null,
             memberType,
             message,
             status: 'pending'
         });
 
         const notify = await sendAdminNotification({
-            subject: `New Member Signup: ${fullName}`,
+            subject: isWebsiteAccount ? `New Website Account Signup: ${fullName}` : `New Member Signup: ${fullName}`,
             text: `A new member signup submitted. Name: ${fullName}, Type: ${memberType}, Email: ${primaryEmail}, Phone: ${phone}`,
-            html: `<h3>New Member Signup</h3><p><strong>Name:</strong> ${fullName}</p><p><strong>Email:</strong> ${primaryEmail}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Type:</strong> ${memberType}</p><p><strong>Message:</strong> ${message || 'N/A'}</p>`
+            html: `<h3>${isWebsiteAccount ? 'New Website Account' : 'New Member Signup'}</h3><p><strong>Name:</strong> ${fullName}</p><p><strong>Email:</strong> ${primaryEmail}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Type:</strong> ${memberType}</p><p><strong>Message:</strong> ${message || 'N/A'}</p>`
         });
 
         res.status(201).json({
             status: 'success',
-            message: 'Member signup submitted successfully',
+            message: isWebsiteAccount ? 'Account created successfully. You are now signed in.' : 'Member signup submitted successfully',
+            user: isWebsiteAccount ? { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } : undefined,
             data: newMember,
             ...notify,
             whatsapp: `https://wa.me/919718346691?text=${encodeURIComponent(`Hi, new member signup submitted: ${fullName}, ${phone}, ${primaryEmail}`)}`
         });
     } catch (error) {
         console.error('❌ Member signup error:', error);
+        res.status(500).json({ status: 'error', message: 'Server Error' });
+    }
+});
+
+// @route   POST /api/member-login
+// @desc    Authenticate an existing website account
+router.post('/member-login', async (req, res) => {
+    try {
+        const email = (req.body?.email || '').trim().toLowerCase();
+        const password = req.body?.password || '';
+
+        if (!email || !password) {
+            return res.status(400).json({ status: 'error', message: 'Email and password are required' });
+        }
+
+        const member = await Member.findOne({ where: { email } });
+        if (!member || !member.passwordHash || !verifyPassword(password, member.passwordHash)) {
+            return res.status(401).json({ status: 'error', message: 'Invalid email or password' });
+        }
+
+        return res.json({
+            status: 'success',
+            message: 'Login successful',
+            user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status }
+        });
+    } catch (error) {
+        console.error('❌ Member login error:', error);
         res.status(500).json({ status: 'error', message: 'Server Error' });
     }
 });
@@ -224,7 +289,10 @@ router.get('/admin/volunteers', requireAdminAuth, async (req, res) => {
 // @route   GET /api/admin/members
 router.get('/admin/members', requireAdminAuth, async (req, res) => {
     try {
-        const members = await Member.findAll({ order: [['createdAt', 'DESC']] });
+        const members = await Member.findAll({
+            attributes: { exclude: ['passwordHash'] },
+            order: [['createdAt', 'DESC']]
+        });
         res.json(members);
     } catch (error) {
         console.error(error);

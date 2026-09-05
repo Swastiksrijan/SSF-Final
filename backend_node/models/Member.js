@@ -19,6 +19,10 @@ const Member = sequelize.define('Member', {
         type: DataTypes.STRING,
         allowNull: false
     },
+    passwordHash: {
+        type: DataTypes.TEXT,
+        allowNull: true
+    },
     memberType: {
         type: DataTypes.STRING,
         defaultValue: 'general'
