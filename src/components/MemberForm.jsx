@@ -1,324 +1,89 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { FaCheckCircle, FaSpinner, FaExclamationCircle, FaArrowRight, FaLock } from "react-icons/fa";
+import { FaArrowRight, FaCheckCircle, FaExclamationCircle, FaSpinner, FaLock } from "react-icons/fa";
 import { ALL_COUNTRIES } from "../data/countries";
 import { ENDPOINTS } from "../config/api";
 
+const initialForm = { fullName: "", email: "", confirmEmail: "", countryCode: "+91", phone: "", password: "", memberType: "general", message: "" };
+const amounts = { general: "₹1,200/year", active: "₹2,500/year", life: "₹8,000+ one-time", advisory: "By invitation" };
+
 export default function MemberForm() {
-    const [formData, setFormData] = useState({
-        fullName: "",
-        email: "",
-        confirmEmail: "",
-        countryCode: "+91",
-        phone: "",
-        memberType: "general",
-        message: ""
-    });
-
+    const [formData, setFormData] = useState(initialForm);
     const [status, setStatus] = useState("idle");
-    const [errors, setErrors] = useState({});
-    const [certificateCode, setCertificateCode] = useState("");
-    const [whatsappLink, setWhatsappLink] = useState("");
+    const [error, setError] = useState("");
 
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const [searchTerm, setSearchTerm] = useState("");
-
-    const filteredCountries = ALL_COUNTRIES.filter(c =>
-        c.label.toLowerCase().includes(searchTerm.toLowerCase())
-    );
-
-    const currentCountry = ALL_COUNTRIES.find(c => c.code === formData.countryCode) || ALL_COUNTRIES.find(c => c.code === "+91");
-
-    const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
+    const handleChange = (e) => setFormData(prev => ({ ...prev, [e.target.name]: e.target.value }));
 
     const validate = () => {
-        const nextErrors = {};
+        if (formData.fullName.trim().length < 3) return "Please enter your full name.";
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return "Please enter a valid email address.";
+        if (formData.email.trim().toLowerCase() !== formData.confirmEmail.trim().toLowerCase()) return "Both email fields must match.";
+        if (formData.phone.replace(/\D/g, "").length < 7) return "Please enter a valid phone number.";
+        if (formData.password.length < 8) return "Password must be at least 8 characters.";
+        if (formData.memberType !== "advisory" && !formData.message.trim()) return "Please tell us why you want to join.";
+        return "";
+    };
 
-        if (!formData.fullName.trim() || formData.fullName.trim().length < 3) {
-            nextErrors.fullName = "Name must be at least 3 characters";
-        }
-
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            nextErrors.email = "Please enter a valid email address";
-        }
-
-        if (!emailRegex.test(formData.confirmEmail)) {
-            nextErrors.confirmEmail = "Please enter a valid confirmation email";
-        } else if (formData.email.trim().toLowerCase() !== formData.confirmEmail.trim().toLowerCase()) {
-            nextErrors.confirmEmail = "Both email fields must match";
-        }
-
-        const cleanPhone = formData.phone.replace(/[^0-9]/g, "");
-        if (cleanPhone.length < 7 || cleanPhone.length > 15) {
-            nextErrors.phone = "Please enter a valid phone number (7-15 digits)";
-        }
-
-        if (!formData.message.trim() || formData.message.trim().length < 10) {
-            nextErrors.message = "Please tell us a bit more (min 10 chars)";
-        }
-
-        setErrors(nextErrors);
-        return Object.keys(nextErrors).length === 0;
+    const persistSession = (user) => {
+        const session = { ...user, loggedInAt: new Date().toISOString() };
+        localStorage.setItem("ssf_user_session", JSON.stringify(session));
+        window.dispatchEvent(new CustomEvent("ssf-auth-changed", { detail: session }));
+        return session;
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!validate()) return;
-
-        setStatus("submitting");
-        const MEMBER_CODE = "SSF-MEM-2025";
-        setCertificateCode(MEMBER_CODE);
-
+        const validationError = validate();
+        if (validationError) return setError(validationError);
+        setStatus("submitting"); setError("");
         try {
-            const payload = {
-                fullName: formData.fullName,
-                email: formData.email,
-                confirmEmail: formData.confirmEmail,
-                phone: `${formData.countryCode} ${formData.phone}`,
-                memberType: formData.memberType,
-                message: formData.message
-            };
+            const payload = { ...formData, fullName: formData.fullName.trim(), email: formData.email.trim().toLowerCase(), confirmEmail: formData.confirmEmail.trim().toLowerCase(), phone: `${formData.countryCode} ${formData.phone.trim()}` };
+            const accountResponse = await fetch(ENDPOINTS.MEMBER_ACCOUNT_SIGNUP, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
+            const accountResult = await accountResponse.json().catch(() => ({}));
+            if (!accountResponse.ok || !accountResult.user) throw new Error(accountResult.message || "Unable to create membership account.");
+            const user = persistSession(accountResult.user);
 
-            const response = await fetch(ENDPOINTS.MEMBER_SIGNUP, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(payload)
-            });
-
-            const result = await response.json();
-            if (!response.ok) {
-                throw new Error(result.message || "Member signup request failed");
+            if (formData.memberType === "advisory") {
+                setStatus("success");
+                setError("Advisory membership request saved. Our team will contact you for review.");
+                setFormData(initialForm);
+                return;
             }
 
-            if (result.whatsapp) {
-                setWhatsappLink(result.whatsapp);
+            const paymentResponse = await fetch(ENDPOINTS.MEMBER_PAYMENT_LINK, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: user.id }) });
+            const paymentResult = await paymentResponse.json().catch(() => ({}));
+            if (paymentResult.paymentUrl) {
+                window.location.href = paymentResult.paymentUrl;
+                return;
             }
-
-            setStatus("success");
-            setFormData({ fullName: "", email: "", confirmEmail: "", countryCode: "+91", phone: "", memberType: "general", message: "" });
-        } catch (error) {
-            console.error("Member Signup Error:", error);
-            setStatus("error");
+            if (paymentResult.fallbackUrl) {
+                window.location.href = paymentResult.fallbackUrl;
+                return;
+            }
+            throw new Error(paymentResult.message || "Membership account created, but payment could not be started.");
+        } catch (err) {
+            console.error("Membership signup error:", err);
+            setStatus("error"); setError(err.message || "Unable to complete membership signup.");
         }
     };
 
-    if (status === "success") {
-        return (
-            <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                className="bg-white p-10 rounded-[2rem] shadow-2xl border-2 border-blue-100 text-center space-y-6"
-            >
-                <div className="w-20 h-20 bg-blue-50 text-[#002344] rounded-full flex items-center justify-center text-4xl mx-auto">
-                    <FaCheckCircle />
-                </div>
-                <h2 className="text-3xl font-bold text-[#002344]">Membership Application Sent!</h2>
-                <p className="text-zinc-600 text-lg">Welcome to the core team. Your application has been submitted for review.</p>
+    if (status === "success") return <div className="p-8 md:p-10 rounded-[2rem] bg-white border border-emerald-100 text-center space-y-5"><div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl"><FaCheckCircle /></div><h2 className="text-2xl font-black text-[#002344]">Membership Request Saved</h2><p className="text-zinc-600">{error}</p><a href="/MemberDashboard" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#002344] text-white font-bold">Open My Dashboard <FaArrowRight /></a></div>;
 
-                <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 space-y-3">
-                    <p className="text-sm font-bold text-blue-800 uppercase tracking-widest flex items-center justify-center gap-2">
-                        <FaLock /> Membership Status
-                    </p>
-                    <div className="text-xl font-bold text-[#002344]">Processing Application</div>
-                    <p className="text-sm text-blue-700">
-                        Your <strong>Membership Access Code</strong> is <strong>{certificateCode}</strong>. We will contact you after verification.
-                    </p>
-                </div>
-
-                <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
-                    {whatsappLink && (
-                        <a
-                            href={whatsappLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="px-5 py-2.5 rounded-xl bg-green-600 text-white font-bold hover:bg-green-700 transition-colors"
-                        >
-                            Send on WhatsApp (9718346691)
-                        </a>
-                    )}
-                    <button onClick={() => setStatus("idle")} className="text-zinc-400 hover:text-zinc-600 font-bold transition-colors">
-                        Apply for another member
-                    </button>
-                </div>
-            </motion.div>
-        );
-    }
-
-    return (
-        <div className="bg-white p-8 md:p-10 rounded-[2rem] shadow-xl border border-zinc-100">
-            <h3 className="text-2xl font-bold text-[#002344] mb-6">Member Application Form</h3>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-                <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Full Name</label>
-                    <input
-                        name="fullName"
-                        value={formData.fullName}
-                        onChange={handleChange}
-                        required
-                        placeholder="e.g. Rahul Sharma"
-                        className={`w-full px-5 py-3.5 bg-zinc-50 border border-zinc-100 rounded-xl focus:ring-4 focus:ring-blue-400/10 transition-all font-medium ${errors.fullName ? "ring-2 ring-red-400" : ""}`}
-                    />
-                    {errors.fullName && <p className="text-xs text-red-500 font-bold ml-2 mt-1">{errors.fullName}</p>}
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-5">
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Email</label>
-                        <input
-                            type="email"
-                            name="email"
-                            value={formData.email}
-                            onChange={handleChange}
-                            required
-                            placeholder="john@example.com"
-                            className={`w-full px-5 py-3.5 bg-zinc-50 border border-zinc-100 rounded-xl focus:ring-4 focus:ring-blue-400/10 transition-all font-medium ${errors.email ? "ring-2 ring-red-400" : ""}`}
-                        />
-                        {errors.email && <p className="text-xs text-red-500 font-bold ml-2 mt-1">{errors.email}</p>}
-                    </div>
-
-                    <div className="space-y-2">
-                        <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Confirm Email</label>
-                        <input
-                            type="email"
-                            name="confirmEmail"
-                            value={formData.confirmEmail}
-                            onChange={handleChange}
-                            required
-                            placeholder="john@example.com"
-                            className={`w-full px-5 py-3.5 bg-zinc-50 border border-zinc-100 rounded-xl focus:ring-4 focus:ring-blue-400/10 transition-all font-medium ${errors.confirmEmail ? "ring-2 ring-red-400" : ""}`}
-                        />
-                        {errors.confirmEmail && <p className="text-xs text-red-500 font-bold ml-2 mt-1">{errors.confirmEmail}</p>}
-                    </div>
-                </div>
-
-                <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Phone Number</label>
-                    <div className="flex gap-2">
-                        <div className="relative min-w-[140px]">
-                            <button
-                                type="button"
-                                onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                className="w-full flex items-center justify-between px-4 py-3.5 bg-zinc-50 border border-zinc-100 rounded-xl transition-all font-bold"
-                            >
-                                <div className="flex items-center gap-2">
-                                    <img src={`https://flagcdn.com/w40/${currentCountry.name}.png`} alt="Flag" className="w-5 h-auto rounded-sm shadow-sm" />
-                                    <span>{formData.countryCode}</span>
-                                </div>
-                                <span className={`text-[10px] transition-transform duration-300 ${isDropdownOpen ? "rotate-180" : ""}`}>▼</span>
-                            </button>
-
-                            <AnimatePresence>
-                                {isDropdownOpen && (
-                                    <>
-                                        <div className="fixed inset-0 z-[110]" onClick={() => setIsDropdownOpen(false)}></div>
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            animate={{ opacity: 1, y: 0, scale: 1 }}
-                                            exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                                            className="absolute top-full left-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-zinc-100 py-2 z-[120] flex flex-col"
-                                        >
-                                            <div className="px-3 pb-2 pt-1">
-                                                <input
-                                                    type="text"
-                                                    placeholder="Search country..."
-                                                    value={searchTerm}
-                                                    onChange={(e) => setSearchTerm(e.target.value)}
-                                                    className="w-full px-4 py-2 bg-zinc-50 border border-zinc-100 rounded-xl text-sm focus:ring-2 focus:ring-blue-400/20 outline-none"
-                                                />
-                                            </div>
-                                            <div className="max-h-60 overflow-y-auto">
-                                                {filteredCountries.map((c, i) => (
-                                                    <button
-                                                        key={`${c.name}-${i}`}
-                                                        type="button"
-                                                        onClick={() => {
-                                                            setFormData(prev => ({ ...prev, countryCode: c.code }));
-                                                            setIsDropdownOpen(false);
-                                                            setSearchTerm("");
-                                                        }}
-                                                        className="w-full flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-colors text-left"
-                                                    >
-                                                        <img src={`https://flagcdn.com/w40/${c.name}.png`} alt={c.label} className="w-5 h-auto rounded-sm" />
-                                                        <span className="text-sm font-bold text-zinc-700">{c.label}</span>
-                                                    </button>
-                                                ))}
-                                            </div>
-                                        </motion.div>
-                                    </>
-                                )}
-                            </AnimatePresence>
-                        </div>
-
-                        <input
-                            name="phone"
-                            value={formData.phone}
-                            onChange={handleChange}
-                            required
-                            placeholder="00000 00000"
-                            className={`flex-1 px-5 py-3.5 bg-zinc-50 border border-zinc-100 rounded-xl focus:ring-4 focus:ring-blue-400/10 transition-all font-medium ${errors.phone ? "ring-2 ring-red-400" : ""}`}
-                        />
-                    </div>
-                    {errors.phone && <p className="text-xs text-red-500 font-bold ml-2 mt-1">{errors.phone}</p>}
-                </div>
-
-                <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Membership Type</label>
-                    <select
-                        name="memberType"
-                        value={formData.memberType}
-                        onChange={handleChange}
-                        className="w-full px-5 py-3.5 bg-zinc-50 border border-zinc-100 rounded-xl focus:ring-4 focus:ring-blue-400/10 transition-all font-medium appearance-none"
-                    >
-                        <option value="general">General Member (₹100/mo)</option>
-                        <option value="active">Active Member (₹2500/yr)</option>
-                        <option value="life">Life Member (₹8000+)</option>
-                        <option value="advisory">Advisory Member</option>
-                    </select>
-                </div>
-
-                <div className="space-y-2">
-                    <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">Message</label>
-                    <textarea
-                        name="message"
-                        rows={4}
-                        value={formData.message}
-                        onChange={handleChange}
-                        required
-                        placeholder="Tell us why you want to join..."
-                        className={`w-full px-5 py-3.5 bg-zinc-50 border border-zinc-100 rounded-xl focus:ring-4 focus:ring-blue-400/10 transition-all font-medium resize-none ${errors.message ? "ring-2 ring-red-400" : ""}`}
-                    />
-                    {errors.message && <p className="text-xs text-red-500 font-bold ml-2 mt-1">{errors.message}</p>}
-                </div>
-
-                {status === "error" && (
-                    <div className="p-4 bg-red-50 text-red-600 rounded-xl text-sm font-bold flex items-center gap-3 border border-red-100">
-                        <FaExclamationCircle />
-                        Failed to submit. Please try again.
-                    </div>
-                )}
-
-                <button
-                    type="submit"
-                    disabled={status === "submitting"}
-                    className="w-full bg-[#002344] text-white py-4 rounded-xl font-bold text-lg hover:bg-black transition-all flex items-center justify-center gap-3 disabled:opacity-50 group shadow-lg"
-                >
-                    {status === "submitting" ? (
-                        <>
-                            <FaSpinner className="animate-spin" /> Submitting...
-                        </>
-                    ) : (
-                        <>
-                            Submit Application
-                            <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
-                        </>
-                    )}
-                </button>
-            </form>
-        </div>
-    );
+    return <div className="bg-white p-6 md:p-10 rounded-[2rem] shadow-xl border border-zinc-100">
+        <div className="mb-7"><p className="text-xs uppercase tracking-widest font-bold text-[#FF6600]">Official Membership</p><h3 className="text-2xl font-black text-[#002344] mt-1">Create Your Member Account</h3><p className="text-sm text-zinc-500 mt-2">Apply → create dashboard → pay membership fee → admin review → Member ID + Certificate.</p></div>
+        <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid md:grid-cols-2 gap-5">
+                <div><label className="field-label">Full Name</label><input name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="Your full name" className="field-input" /></div>
+                <div><label className="field-label">Phone</label><div className="flex gap-2"><select name="countryCode" value={formData.countryCode} onChange={handleChange} className="field-input w-28">{ALL_COUNTRIES.map((c, i) => <option key={`${c.name}-${i}`} value={c.code}>{c.code} {c.label.slice(0, 12)}</option>)}</select><input name="phone" value={formData.phone} onChange={handleChange} required placeholder="Phone number" className="field-input flex-1" /></div></div>
+                <div><label className="field-label">Email</label><input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="you@example.com" className="field-input" /></div>
+                <div><label className="field-label">Confirm Email</label><input type="email" name="confirmEmail" value={formData.confirmEmail} onChange={handleChange} required placeholder="Confirm email" className="field-input" /></div>
+                <div><label className="field-label">Create Password</label><input type="password" name="password" value={formData.password} onChange={handleChange} required minLength={8} placeholder="Minimum 8 characters" className="field-input" /></div>
+                <div><label className="field-label">Membership Type</label><select name="memberType" value={formData.memberType} onChange={handleChange} className="field-input"><option value="general">General Member — ₹1,200/year</option><option value="active">Active Member — ₹2,500/year</option><option value="life">Life Member — ₹8,000+ one-time</option><option value="advisory">Advisory / Expert — By invitation</option></select></div>
+            </div>
+            <div><label className="field-label">Why do you want to join?</label><textarea name="message" rows={4} value={formData.message} onChange={handleChange} placeholder="Tell us briefly about your interest and how you would like to contribute." className="field-input resize-none" /></div>
+            <div className="rounded-2xl bg-blue-50 border border-blue-100 p-4 text-sm text-blue-900"><div className="font-bold flex items-center gap-2"><FaLock /> Payment & account flow</div><p className="mt-1">Selected plan: <strong>{amounts[formData.memberType]}</strong>. For paid membership, the payment page opens immediately after account creation.</p></div>
+            {error && status === "error" && <div className="p-4 bg-red-50 text-red-700 rounded-xl text-sm font-bold flex gap-2"><FaExclamationCircle className="mt-0.5" />{error}</div>}
+            <button type="submit" disabled={status === "submitting"} className="w-full bg-[#002344] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#FF6600] transition-all flex items-center justify-center gap-3 disabled:opacity-50">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Creating account...</> : <>Create Account & Continue to Payment <FaArrowRight /></>}</button>
+        </form>
+        <style>{`.field-label{display:block;font-size:.72rem;font-weight:800;color:#a1a1aa;text-transform:uppercase;letter-spacing:.08em;margin:0 0 .45rem .25rem}.field-input{width:100%;padding:.85rem 1rem;background:#fafafa;border:1px solid #f4f4f5;border-radius:.8rem;outline:none;font-weight:500}.field-input:focus{border-color:#bfdbfe;box-shadow:0 0 0 4px rgba(59,130,246,.08)}`}</style>
+    </div>;
 }
