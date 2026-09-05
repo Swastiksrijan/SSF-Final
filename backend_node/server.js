@@ -23,7 +23,11 @@ app.get('/', (req, res) => {
 });
 
 // Import Routes
+// Member certificate routes are mounted first so /verify/:certId can handle
+// membership certificates and pass volunteer certificate IDs to the existing verifier.
+const memberCertificateRoutes = require('./routes/memberCertificateRoutes');
 const volunteerRoutes = require('./routes/volunteerRoutes');
+app.use('/api', memberCertificateRoutes);
 app.use('/api', volunteerRoutes);
 
 // Connect to Database & Start Server
