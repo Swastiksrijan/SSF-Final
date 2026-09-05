@@ -36,7 +36,7 @@ const Header = () => {
         { name: "Mission & Vision", path: "/Mission" },
         { name: "Our Objectives", path: "/Objectives" },
         { name: "Meet Our Team", path: "/Team" },
-        { name: "Upcoming Projects", path: "/UpcomingProjects" } // ✅ added
+        { name: "Upcoming Projects", path: "/UpcomingProjects" }
       ]
     },
     {
@@ -44,10 +44,11 @@ const Header = () => {
       path: "/Impact"
     },
     {
-      name: "Get Involved",
-      path: "/GetInvolved"
+      name: "Blog",
+      path: "/Blog"
     },
-    { name: "Donate", path: "/Donate", isSpecial: true }
+    { name: "Donate", path: "/Donate", isSpecial: true },
+    { name: "Contact", path: "/Contact" }
   ];
 
   return (
@@ -120,7 +121,7 @@ const Header = () => {
           </Link>
 
           {/* DESKTOP MENU */}
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
             {navItems.map((item) => (
               <div key={item.name} className="relative group">
                 <Link
@@ -156,6 +157,12 @@ const Header = () => {
               </div>
             ))}
 
+            {/* JOIN US BUTTON - PROMINENTLY PLACED */}
+            <Link to="/GetInvolved">
+              <button className="flex items-center gap-2 bg-gradient-to-r from-green-600 to-emerald-600 text-white px-7 py-2.5 rounded-full font-black hover:from-green-700 hover:to-emerald-700 shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105 -translate-y-0.5">
+                🚀 {lang === "en" ? "JOIN US" : "हमसे जुड़ें"}
+              </button>
+            </Link>
           </nav>
 
           {/* MOBILE TOGGLE */}
@@ -172,6 +179,13 @@ const Header = () => {
       {menuOpen && (
         <div className="md:hidden fixed inset-0 top-[116px] bg-white z-40 overflow-y-auto pb-20 animate-in slide-in-from-right duration-500">
           <nav className="flex flex-col p-6 space-y-2">
+            {/* JOIN US MOBILE BUTTON - TOP PRIORITY */}
+            <Link to="/GetInvolved" onClick={closeMenu}>
+              <button className="w-full mb-4 px-4 py-4 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-black text-lg">
+                🚀 {lang === "en" ? "JOIN US" : "हमसे जुड़ें"}
+              </button>
+            </Link>
+
             <button
               type="button"
               onClick={() => {
