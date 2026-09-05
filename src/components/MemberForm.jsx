@@ -36,11 +36,38 @@ export default function MemberForm() {
         if (validationError) return setError(validationError);
         setStatus("submitting"); setError("");
         try {
-            const payload = { ...formData, fullName: formData.fullName.trim(), email: formData.email.trim().toLowerCase(), confirmEmail: formData.confirmEmail.trim().toLowerCase(), phone: `${formData.countryCode} ${formData.phone.trim()}` };
-            const accountResponse = await fetch(ENDPOINTS.MEMBER_ACCOUNT_SIGNUP, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify(payload) });
+            const payload = {
+                ...formData,
+                fullName: formData.fullName.trim(),
+                email: formData.email.trim().toLowerCase(),
+                confirmEmail: formData.confirmEmail.trim().toLowerCase(),
+                phone: `${formData.countryCode} ${formData.phone.trim()}`
+            };
+
+            // First create the actual membership application with its selected membership type.
+            const applicationResponse = await fetch(ENDPOINTS.MEMBER_SIGNUP, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Accept: "application/json" },
+                body: JSON.stringify(payload)
+            });
+            const applicationResult = await applicationResponse.json().catch(() => ({}));
+            if (!applicationResponse.ok) throw new Error(applicationResult.message || "Unable to submit membership application.");
+
+            const memberRecord = applicationResult.data;
+            if (!memberRecord?.id) throw new Error("Membership application was saved, but no account ID was returned.");
+
+            // Attach the password to the same membership record using the existing account-signup compatibility path.
+            // The backend preserves the original membership type while adding the website login account.
+            const accountPayload = { ...payload, memberType: "website_signup" };
+            const accountResponse = await fetch(ENDPOINTS.MEMBER_SIGNUP, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Accept: "application/json" },
+                body: JSON.stringify(accountPayload)
+            });
             const accountResult = await accountResponse.json().catch(() => ({}));
-            if (!accountResponse.ok || !accountResult.user) throw new Error(accountResult.message || "Unable to create membership account.");
-            const user = persistSession(accountResult.user);
+            if (!accountResponse.ok || !accountResult.user) throw new Error(accountResult.message || "Membership was saved, but the dashboard account could not be created.");
+
+            const user = persistSession({ ...accountResult.user, memberType: memberRecord.memberType || formData.memberType, id: memberRecord.id });
 
             if (formData.memberType === "advisory") {
                 setStatus("success");
@@ -49,8 +76,14 @@ export default function MemberForm() {
                 return;
             }
 
-            const paymentResponse = await fetch(ENDPOINTS.MEMBER_PAYMENT_LINK, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ memberId: user.id }) });
+            // Create/open the unique Razorpay payment link for this exact membership application.
+            const paymentResponse = await fetch(ENDPOINTS.MEMBER_PAYMENT_LINK, {
+                method: "POST",
+                headers: { "Content-Type": "application/json", Accept: "application/json" },
+                body: JSON.stringify({ memberId: user.id })
+            });
             const paymentResult = await paymentResponse.json().catch(() => ({}));
+
             if (paymentResult.paymentUrl) {
                 window.location.href = paymentResult.paymentUrl;
                 return;
