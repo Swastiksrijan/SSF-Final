@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import emailjs from "@emailjs/browser";
 import { FaTimes, FaUserPlus, FaSignInAlt, FaWhatsapp, FaEnvelope } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
@@ -8,6 +9,7 @@ const initialSignup = { fullName: "", email: "", phone: "", password: "" };
 const initialLogin = { email: "", password: "" };
 
 export default function AuthModal({ open, onClose, onAuthSuccess }) {
+    const navigate = useNavigate();
     const [mode, setMode] = useState("signup");
     const [signupData, setSignupData] = useState(initialSignup);
     const [loginData, setLoginData] = useState(initialLogin);
@@ -89,11 +91,12 @@ export default function AuthModal({ open, onClose, onAuthSuccess }) {
 
             setStatus("success");
             setMessage(mode === "signup"
-                ? "Account created successfully. You are now signed in. Admin has been notified."
+                ? "Account created successfully. You are now signed in."
                 : "Login successful. Welcome back.");
 
             if (onAuthSuccess) onAuthSuccess(session);
-            setTimeout(() => onClose?.(), 700);
+            onClose?.();
+            navigate({ to: "/MemberDashboard" });
         } catch (error) {
             console.error("Auth error", error);
             setStatus("error");
