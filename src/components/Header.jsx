@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
-import { FaUserCircle, FaSignOutAlt } from "react-icons/fa";
+import { FaUserCircle, FaSignOutAlt, FaTachometerAlt, FaUserEdit, FaClipboardList, FaDonate } from "react-icons/fa";
 import AuthModal from "./AuthModal";
 import { useLanguage } from "../context/LanguageContext";
 import logoImg from "../assets/new-logo.png";
@@ -11,6 +11,7 @@ const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSubMenu, setMobileSubMenu] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
+  const [accountOpen, setAccountOpen] = useState(false);
   const [user, setUser] = useState(null);
   const { lang, toggleLang } = useLanguage();
 
@@ -33,6 +34,7 @@ const Header = () => {
   const handleLogout = () => {
     localStorage.removeItem("ssf_user_session");
     setUser(null);
+    setAccountOpen(false);
     window.dispatchEvent(new CustomEvent("ssf-auth-changed", { detail: null }));
   };
 
@@ -67,10 +69,20 @@ const Header = () => {
             <button type="button" onClick={toggleLang} className="px-2 py-0.5 rounded border border-white/20 text-[10px] sm:text-xs hover:text-[#FF6600] hover:border-[#FF6600]/50 transition-colors">{lang === "en" ? "हिन्दी" : "English"}</button>
             <span className="text-white/30">|</span>
             {user ? (
-              <div className="flex items-center gap-2">
-                <FaUserCircle />
-                <span>{user.fullName || user.email}</span>
-                <button type="button" onClick={handleLogout} className="flex items-center gap-1 hover:text-[#FF6600]" title="Logout"><FaSignOutAlt /> Logout</button>
+              <div className="relative flex items-center">
+                <button type="button" onClick={() => setAccountOpen(!accountOpen)} className="flex items-center gap-2 hover:text-[#FF6600] transition-colors" aria-expanded={accountOpen}>
+                  <FaUserCircle />
+                  <span className="max-w-[150px] truncate">{user.fullName || user.email}</span>
+                  <IoIosArrowDown className={`transition-transform ${accountOpen ? "rotate-180" : ""}`} />
+                </button>
+                {accountOpen && <div className="absolute right-0 top-8 w-60 bg-white text-[#002344] rounded-2xl shadow-2xl border border-zinc-100 p-2 z-[80]">
+                  <div className="px-3 py-3 border-b border-zinc-100 mb-1"><p className="font-black truncate">{user.fullName || "Member"}</p><p className="text-xs text-zinc-500 truncate mt-0.5">{user.email}</p></div>
+                  <Link to="/MemberDashboard" onClick={() => setAccountOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-50 font-semibold"><FaTachometerAlt /> Dashboard</Link>
+                  <a href="/MemberDashboard#profile" onClick={() => setAccountOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-50 font-semibold"><FaUserEdit /> My Profile</a>
+                  <a href="/MemberDashboard#applications" onClick={() => setAccountOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-50 font-semibold"><FaClipboardList /> My Applications</a>
+                  <a href="/MemberDashboard#contributions" onClick={() => setAccountOpen(false)} className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-zinc-50 font-semibold"><FaDonate /> My Contributions</a>
+                  <button type="button" onClick={handleLogout} className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-red-50 text-red-600 font-semibold"><FaSignOutAlt /> Logout</button>
+                </div>}
               </div>
             ) : (
               <button type="button" onClick={() => setAuthOpen(true)} className="flex items-center gap-2 hover:text-[#FF6600] transition-colors"><FaUserCircle /> {lang === "en" ? "Signup / Login" : "साइनअप / लॉगिन"}</button>
@@ -102,7 +114,7 @@ const Header = () => {
 
       {menuOpen && <div className="md:hidden fixed inset-0 top-[116px] bg-white z-40 overflow-y-auto pb-20 animate-in slide-in-from-right duration-500"><nav className="flex flex-col p-6 space-y-2">
         <Link to="/GetInvolved" onClick={closeMenu}><button className="w-full mb-4 px-4 py-4 rounded-2xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-black text-lg">🚀 {lang === "en" ? "JOIN US" : "हमसे जुड़ें"}</button></Link>
-        {user ? <button type="button" onClick={() => { handleLogout(); closeMenu(); }} className="w-full mb-2 px-4 py-3 rounded-xl bg-[#002344] text-white font-semibold">Logout ({user.fullName || user.email})</button> : <button type="button" onClick={() => { closeMenu(); setAuthOpen(true); }} className="w-full mb-2 px-4 py-3 rounded-xl bg-[#002344] text-white font-semibold">{lang === "en" ? "Signup / Login" : "साइनअप / लॉगिन"}</button>}
+        {user ? <div className="mb-2 space-y-2"><Link to="/MemberDashboard" onClick={closeMenu} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-[#002344] text-white font-semibold"><FaTachometerAlt /> Dashboard</Link><a href="/MemberDashboard#profile" onClick={closeMenu} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-50 text-[#002344] font-semibold"><FaUserEdit /> My Profile</a><a href="/MemberDashboard#applications" onClick={closeMenu} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-50 text-[#002344] font-semibold"><FaClipboardList /> My Applications</a><a href="/MemberDashboard#contributions" onClick={closeMenu} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-zinc-50 text-[#002344] font-semibold"><FaDonate /> My Contributions</a><button type="button" onClick={() => { handleLogout(); closeMenu(); }} className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 text-red-600 font-semibold"><FaSignOutAlt /> Logout ({user.fullName || user.email})</button></div> : <button type="button" onClick={() => { closeMenu(); setAuthOpen(true); }} className="w-full mb-2 px-4 py-3 rounded-xl bg-[#002344] text-white font-semibold">{lang === "en" ? "Signup / Login" : "साइनअप / लॉगिन"}</button>}
         {navItems.map((item) => <div key={item.name} className="border-b border-zinc-50 last:border-0"><div className="flex items-center justify-between py-4"><Link to={item.path} onClick={closeMenu} activeProps={{ className: "text-[#FF6600]" }} className={`text-lg font-bold flex-1 ${item.isSpecial ? "text-[#FF6600]" : "text-[#002344]"}`}>{item.name}</Link>{item.subItems && <button onClick={(e) => { e.preventDefault(); toggleMobileSubMenu(item.name); }} className="p-2 bg-zinc-50 rounded-lg text-zinc-400"><IoIosArrowDown className={`transition-transform duration-300 ${mobileSubMenu === item.name ? "rotate-180" : ""}`} /></button>}</div>{item.subItems && mobileSubMenu === item.name && <div className="mb-4 pl-4 space-y-1 animate-in slide-in-from-top-2 duration-300 border-l-2 border-[#FF6600]/10">{item.subItems.map((sub) => <Link key={sub.name} to={sub.path} onClick={closeMenu} className="block py-3 text-base font-medium text-zinc-500 hover:text-[#FF6600]">{sub.name}</Link>)}</div>}</div>)}
         <div className="pt-8 mt-4 border-t border-zinc-100"><p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-4">{lang === "en" ? "Contact Us" : "संपर्क"}</p><div className="space-y-4"><a href="mailto:info@swastiksrijan.in" className="flex items-center gap-3 text-[#002344] font-semibold"><span className="bg-zinc-100 p-2 rounded-lg">📧</span>info@swastiksrijan.in</a><a href="https://swastiksrijan.in" className="flex items-center gap-3 text-[#002344] font-semibold"><span className="bg-zinc-100 p-2 rounded-lg">🌐</span>swastiksrijan.in</a><a href="https://wa.me/919718346691" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-[#002344] font-semibold"><span className="bg-zinc-100 p-2 rounded-lg">💬</span>+91 97183 46691</a><div className="flex items-center gap-3 text-[#002344] font-semibold"><span className="bg-zinc-100 p-2 rounded-lg">📍</span>Rewa, Madhya Pradesh, India</div></div></div>
       </nav></div>}
