@@ -8,7 +8,9 @@ const loadImage = (url) => new Promise((resolve, reject) => {
   img.src = url;
 });
 
-export const generateCertificate = async (name, role, date, certId = null) => {
+const QR_CODE_API = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=";
+
+export const generateCertificate = async (name, role, date, certId = null, memberId = null) => {
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: "a4" });
   const width = doc.internal.pageSize.getWidth();
   const height = doc.internal.pageSize.getHeight();
@@ -17,6 +19,7 @@ export const generateCertificate = async (name, role, date, certId = null) => {
   const isMember = normalizedRole === "member" || normalizedRole.includes("membership");
   const navy = "#002344";
   const gold = "#C5A059";
+  const verificationUrl = certId ? `https://swastiksrijan.in/verify/${encodeURIComponent(certId)}` : null;
 
   doc.setFillColor("#FDFBF7"); doc.rect(0, 0, width, height, "F");
   doc.setDrawColor(navy); doc.setLineWidth(3); doc.rect(5, 5, width - 10, height - 10);
@@ -51,9 +54,23 @@ export const generateCertificate = async (name, role, date, certId = null) => {
   doc.text(doc.splitTextToSize(body, 185), centerX, 111, { align: "center" });
 
   doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setTextColor(navy);
+  if (memberId) doc.text(`MEMBER ID: ${memberId}`, 25, height - 35);
   if (certId) doc.text(`OFFICIAL CERTIFICATE ID: ${certId}`, 25, height - 27);
-  doc.text(`DATE OF ISSUE: ${date}`, width - 25, height - 27, { align: "right" });
-  if (certId) doc.text(`Verify: swastiksrijan.in/verify/${certId}`, centerX, height - 19, { align: "center" });
+  doc.text(`DATE OF ISSUE: ${date}`, width - 25, height - 35, { align: "right" });
+
+  if (verificationUrl) {
+    try {
+      const qr = await loadImage(`${QR_CODE_API}${encodeURIComponent(verificationUrl)}`);
+      doc.addImage(qr, "PNG", width - 48, height - 64, 25, 25);
+      doc.setFontSize(6.5);
+      doc.setTextColor("#555555");
+      doc.text("SCAN TO VERIFY", width - 35.5, height - 36, { align: "center" });
+    } catch {
+      // The printed verification URL remains available if QR generation is unavailable.
+    }
+    doc.setFontSize(7.5);
+    doc.text(`Verify: ${verificationUrl}`, centerX, height - 19, { align: "center" });
+  }
 
   try {
     const signature = await loadImage("/images/signature.png");
