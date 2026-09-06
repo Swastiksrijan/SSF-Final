@@ -1,5 +1,7 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
+const path = require('path');
+const fs = require('fs');
 const router = express.Router();
 const Volunteer = require('../models/Volunteer');
 
@@ -17,6 +19,13 @@ const sendEmail = async (to, subject, text, html) => {
     await transporter.sendMail({ from: `"Swastik Srijan Admin" <${process.env.EMAIL_USER}>`, to, subject, text, html });
 };
 
+const removeUploadedFile = (storedPath) => {
+    if (!storedPath) return;
+    const filename = path.basename(storedPath);
+    const filePath = path.join(__dirname, '..', 'uploads', filename);
+    try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Upload cleanup failed:', error.message); }
+};
+
 router.get('/admin/volunteers', requireAdminAuth, async (req, res) => {
     try {
         const volunteers = await Volunteer.findAll({ order: [['createdAt', 'DESC']] });
@@ -25,7 +34,7 @@ router.get('/admin/volunteers', requireAdminAuth, async (req, res) => {
             volunteerType: v.volunteerType, position: v.position, idType: v.idType,
             message: v.message, submittedAt: v.createdAt, status: v.status,
             volunteerId: v.volunteerId, certId: v.certId, approvedAt: v.approvedAt,
-            idDocumentUrl: v.idDocumentPath ? `/uploads/${require('path').basename(v.idDocumentPath)}` : null,
+            idDocumentUrl: v.idDocumentPath ? `/uploads/${path.basename(v.idDocumentPath)}` : null,
             profilePhotoPath: v.profilePhotoPath || null
         })));
     } catch (error) {
@@ -58,6 +67,20 @@ router.post('/admin/approve/:id', requireAdminAuth, async (req, res) => {
     } catch (error) {
         console.error('❌ Volunteer approval error:', error);
         res.status(500).json({ message: 'Server Error' });
+    }
+});
+
+router.delete('/admin/volunteers/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const volunteer = await Volunteer.findByPk(req.params.id);
+        if (!volunteer) return res.status(404).json({ message: 'Volunteer application not found' });
+        removeUploadedFile(volunteer.idDocumentPath);
+        removeUploadedFile(volunteer.profilePhotoPath);
+        await volunteer.destroy();
+        return res.json({ status: 'success', message: 'Volunteer application deleted permanently.' });
+    } catch (error) {
+        console.error('❌ Volunteer delete error:', error);
+        return res.status(500).json({ message: 'Unable to delete volunteer application.' });
     }
 });
 
