@@ -16,7 +16,7 @@ export default function MemberForm() {
         if (formData.fullName.trim().length < 3) return "Please enter your full name.";
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) return "Please enter a valid email address.";
         if (formData.email.trim().toLowerCase() !== formData.confirmEmail.trim().toLowerCase()) return "Both email fields must match.";
-        if (formData.phone.replace(/\D/g, "").length < 7) return "Please enter a valid phone number.";
+        if (formData.phone.replace(/\D/g, "").length < 7) return "Please enter a valid mobile number.";
         if (formData.password.length < 8) return "Password must be at least 8 characters.";
         if (!formData.profilePhoto) return "Please upload a recent passport-size profile photo for your official Member ID Card.";
         if (!['image/jpeg', 'image/png', 'image/webp'].includes(formData.profilePhoto.type)) return "Profile photo must be JPG, PNG or WebP.";
@@ -76,7 +76,7 @@ export default function MemberForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid md:grid-cols-2 gap-5">
                 <div><label className="field-label">Full Name</label><input name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="Your full name" className="field-input" /></div>
-                <div><label className="field-label">Phone</label><div className="flex gap-2"><select name="countryCode" value={formData.countryCode} onChange={handleChange} className="field-input w-28">{ALL_COUNTRIES.map((c, i) => <option key={`${c.name}-${i}`} value={c.code}>{c.code} {c.label.slice(0, 12)}</option>)}</select><input name="phone" value={formData.phone} onChange={handleChange} required placeholder="Phone number" className="field-input flex-1" /></div></div>
+                <div><label className="field-label">Mobile Number</label><div className="flex gap-2"><select name="countryCode" value={formData.countryCode} onChange={handleChange} className="field-input w-28 shrink-0" aria-label="Country code">{ALL_COUNTRIES.map((c, i) => <option key={`${c.name}-${i}`} value={c.code}>{c.code} {c.label.slice(0, 12)}</option>)}</select><input type="tel" inputMode="numeric" name="phone" value={formData.phone} onChange={(e) => handleChange({ target: { name: "phone", value: e.target.value.replace(/\D/g, "") } })} required placeholder="10-digit mobile number" autoComplete="tel-national" className="field-input flex-1 min-w-0" /></div></div>
                 <div><label className="field-label">Email</label><input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="you@example.com" className="field-input" /></div>
                 <div><label className="field-label">Confirm Email</label><input type="email" name="confirmEmail" value={formData.confirmEmail} onChange={handleChange} required placeholder="Confirm email" className="field-input" /></div>
                 <div><label className="field-label">Create Password</label><input type="password" name="password" value={formData.password} onChange={handleChange} required minLength={8} placeholder="Minimum 8 characters" className="field-input" /></div>
