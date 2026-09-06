@@ -7,6 +7,8 @@ const Member = sequelize.define('Member', {
     email: { type: DataTypes.STRING, allowNull: false },
     phone: { type: DataTypes.STRING, allowNull: false },
     passwordHash: { type: DataTypes.TEXT, allowNull: true },
+    resetTokenHash: { type: DataTypes.STRING, allowNull: true },
+    resetTokenExpiresAt: { type: DataTypes.DATE, allowNull: true },
     memberType: { type: DataTypes.STRING, defaultValue: 'general' },
     message: { type: DataTypes.TEXT, allowNull: true },
     profilePhotoPath: { type: DataTypes.STRING, allowNull: true },
