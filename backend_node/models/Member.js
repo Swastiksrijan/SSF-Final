@@ -24,4 +24,16 @@ const Member = sequelize.define('Member', {
     certificateIssuedAt: { type: DataTypes.DATE, allowNull: true }
 }, { timestamps: true });
 
+// A website signup creates only an SSF account. It is not a membership application.
+Member.addHook('beforeCreate', 'activateWebsiteAccount', (member) => {
+    if (String(member.memberType || '').toLowerCase() === 'website_signup') {
+        member.status = 'approved';
+        member.paymentStatus = 'not_required';
+        member.memberId = null;
+        member.certId = null;
+        member.certificateType = null;
+        member.certificateIssuedAt = null;
+    }
+});
+
 module.exports = Member;
