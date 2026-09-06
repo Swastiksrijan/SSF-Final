@@ -15,6 +15,7 @@ const profilePhotoOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'image/
 const idDocumentOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'application/pdf'].includes(file.mimetype) ? cb(null, true) : cb(new Error('ID document must be JPG, PNG or PDF.'));
 const uploadPhoto = multer({ storage, fileFilter: profilePhotoOnly, limits: { fileSize: 2 * 1024 * 1024, files: 1 } });
 const uploadVolunteerFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file, cb), limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
+const uploadMemberFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file, cb), limits: { files: 2, fileSize: 5 * 1024 * 1024 } });
 const hashPassword = (password) => { const salt = crypto.randomBytes(16).toString('hex'); const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex'); return `${salt}:${hash}`; };
 const sendAdminNotification = async (subject, text) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
@@ -38,22 +39,26 @@ router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', max
     } catch (error) { console.error('❌ Volunteer registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
 });
 
-router.post('/member-signup', uploadPhoto.single('profile_photo'), async (req, res) => {
+router.post('/member-signup', uploadMemberFiles.fields([{ name: 'profile_photo', maxCount: 1 }, { name: 'id_document', maxCount: 1 }]), async (req, res) => {
     try {
-        const { fullName, email, confirmEmail, phone, password, memberType, message } = req.body || {};
+        const { fullName, email, confirmEmail, phone, password, memberType, idProofType, message } = req.body || {};
         const primaryEmail = (email || '').trim().toLowerCase(); const secondaryEmail = (confirmEmail || '').trim().toLowerCase(); const isWebsiteAccount = memberType === 'website_signup';
-        if (!fullName || !primaryEmail || !secondaryEmail || !phone || !memberType) return res.status(400).json({ status: 'error', message: 'Missing required fields' });
+        const profilePhoto = req.files?.profile_photo?.[0]; const idDocument = req.files?.id_document?.[0];
+        if (!fullName || !primaryEmail || !secondaryEmail || !phone || !memberType || !profilePhoto || !idDocument || !idProofType) return res.status(400).json({ status: 'error', message: 'Full name, email, phone, membership type, profile photo and identity proof are required.' });
         if (primaryEmail !== secondaryEmail) return res.status(400).json({ status: 'error', message: 'Email fields do not match' });
         if (!password || password.length < 8) return res.status(400).json({ status: 'error', message: 'Password must be at least 8 characters' });
-        const photoPath = req.file ? `/uploads/${req.file.filename}` : null; const existing = await Member.findOne({ where: { email: primaryEmail } });
+        if (profilePhoto.size > 2 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' });
+        if (idDocument.size > 5 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'Identity proof must be 5MB or smaller.' });
+        const photoPath = `/uploads/${profilePhoto.filename}`; const idDocumentPath = `/uploads/${idDocument.filename}`;
+        const existing = await Member.findOne({ where: { email: primaryEmail } });
         if (existing) {
             if (existing.passwordHash && isWebsiteAccount) return res.status(409).json({ status: 'error', message: 'An account with this email already exists. Please log in.' });
             if (existing.passwordHash && !isWebsiteAccount) return res.status(409).json({ status: 'error', message: 'A membership account with this email already exists.' });
-            const updates = { passwordHash: hashPassword(password) }; if (photoPath) updates.profilePhotoPath = photoPath; await existing.update(updates);
+            await existing.update({ passwordHash: hashPassword(password), phone: phone.trim(), memberType, idProofType, idDocumentPath, profilePhotoPath: photoPath, message: message || null });
             return res.status(200).json({ status: 'success', message: 'Your membership record now has a website account.', data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
         }
-        const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: phone.trim(), passwordHash: hashPassword(password), memberType: isWebsiteAccount ? 'general' : memberType, message: message || null, profilePhotoPath: photoPath, status: 'pending' });
-        await sendAdminNotification(`New Member Signup: ${fullName}`, `New member application received. Name: ${fullName}, Type: ${isWebsiteAccount ? 'website account' : memberType}, Email: ${primaryEmail}, Phone: ${phone}`);
+        const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: phone.trim(), passwordHash: hashPassword(password), memberType: isWebsiteAccount ? 'general' : memberType, message: message || null, profilePhotoPath: photoPath, idProofType, idDocumentPath, status: 'pending', paymentStatus: isWebsiteAccount ? 'not_required' : (memberType === 'advisory' ? 'not_required' : 'pending') });
+        await sendAdminNotification(`New Member Signup: ${fullName}`, `New member application received. Name: ${fullName}, Type: ${isWebsiteAccount ? 'website account' : memberType}, Email: ${primaryEmail}, Phone: ${phone}, ID Proof: ${idProofType}`);
         return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully', data: newMember, user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
     } catch (error) { console.error('❌ Member registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
 });
@@ -61,7 +66,7 @@ router.post('/member-signup', uploadPhoto.single('profile_photo'), async (req, r
 router.get('/admin/members', requireAdminAuth, async (_req, res) => {
     try {
         const members = await Member.findAll({ attributes: { exclude: ['passwordHash'] }, order: [['createdAt', 'DESC']] });
-        return res.json(members.map(member => ({ ...member.toJSON(), profilePhotoPath: member.profilePhotoPath || null })));
+        return res.json(members.map(member => ({ ...member.toJSON(), profilePhotoPath: member.profilePhotoPath || null, idDocumentPath: member.idDocumentPath || null })));
     } catch (error) { console.error('❌ Member admin list error:', error); return res.status(500).json({ message: 'Server Error' }); }
 });
 
