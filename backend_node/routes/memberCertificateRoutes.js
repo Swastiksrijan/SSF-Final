@@ -36,6 +36,58 @@ router.post('/admin/member-approve/:id', requireAdminAuth, async (req, res) => {
     catch (error) { console.error('❌ Member approval error:', error); res.status(500).json({ message: 'Server Error' }); }
 });
 
+router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const member = await Member.findByPk(req.params.id);
+        if (!member) return res.status(404).json({ message: 'Member not found' });
+        const allowed = ['fullName', 'email', 'phone', 'memberType', 'message', 'status', 'paymentStatus'];
+        const updates = {};
+        for (const field of allowed) if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) updates[field] = req.body[field];
+        if (updates.email) updates.email = String(updates.email).trim().toLowerCase();
+        if (updates.memberType && String(updates.memberType).toLowerCase() === 'website_signup') return res.status(400).json({ message: 'website_signup is an account type, not a membership role.' });
+        if (updates.status && !['pending', 'approved', 'rejected'].includes(String(updates.status))) return res.status(400).json({ message: 'Invalid member status' });
+        if (updates.paymentStatus && !['not_required', 'pending', 'paid', 'failed'].includes(String(updates.paymentStatus))) return res.status(400).json({ message: 'Invalid payment status' });
+        if (updates.status === 'approved') {
+            const prospective = { ...member.toJSON(), ...updates };
+            if (!isRealMembership(prospective)) return res.status(400).json({ message: 'Only a submitted membership application can be approved as a member.' });
+            if (member.status !== 'approved' && !member.memberId) {
+                const number = await getMemberNumber();
+                const now = new Date();
+                const period = getMonthYearCode(now);
+                updates.memberId = `SSF-MEM-${period}-${String(number).padStart(4, '0')}`;
+                updates.certId = member.certId || `SSF-MCERT-${period}-${String(number).padStart(4, '0')}`;
+                updates.certificateType = member.certificateType || 'Membership Certificate';
+                updates.certificateIssuedAt = now;
+            }
+        }
+        if (updates.status === 'rejected') {
+            updates.memberId = null; updates.certId = null; updates.certificateType = null; updates.certificateIssuedAt = null;
+        }
+        await member.update(updates);
+        return res.json({ status: 'success', message: 'Member record updated.', member: member.toJSON() });
+    } catch (error) { console.error('❌ Member update error:', error); return res.status(500).json({ message: 'Unable to update member record.' }); }
+});
+
+router.patch('/admin/members/:id/status', requireAdminAuth, async (req, res) => {
+    try {
+        const member = await Member.findByPk(req.params.id);
+        if (!member) return res.status(404).json({ message: 'Member not found' });
+        const status = String(req.body?.status || '').trim().toLowerCase();
+        if (!['pending', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid member status' });
+        if (status === 'approved' && !isRealMembership(member)) return res.status(400).json({ message: 'This account has not submitted a membership application.' });
+        const updates = { status };
+        if (status === 'approved' && !member.memberId) {
+            const number = await getMemberNumber(); const now = new Date(); const period = getMonthYearCode(now);
+            updates.memberId = `SSF-MEM-${period}-${String(number).padStart(4, '0')}`;
+            updates.certId = member.certId || `SSF-MCERT-${period}-${String(number).padStart(4, '0')}`;
+            updates.certificateType = member.certificateType || 'Membership Certificate'; updates.certificateIssuedAt = now;
+        }
+        if (status === 'rejected') { updates.memberId = null; updates.certId = null; updates.certificateType = null; updates.certificateIssuedAt = null; }
+        await member.update(updates);
+        return res.json({ status: 'success', message: `Member status changed to ${status}.`, member: member.toJSON() });
+    } catch (error) { console.error('❌ Member status error:', error); return res.status(500).json({ message: 'Unable to change member status.' }); }
+});
+
 router.delete('/admin/members/:id', requireAdminAuth, async (req, res) => {
     try { const member = await Member.findByPk(req.params.id); if (!member) return res.status(404).json({ message: 'Member application not found' }); for (const storedPath of [member.profilePhotoPath, member.idDocumentPath]) { if (storedPath) { const filename = path.basename(storedPath); const filePath = path.join(__dirname, '..', 'uploads', filename); try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Member file cleanup failed:', error.message); } } } await member.destroy(); return res.json({ status: 'success', message: 'Member application deleted permanently.' }); }
     catch (error) { console.error('❌ Member delete error:', error); return res.status(500).json({ message: 'Unable to delete member application.' }); }
