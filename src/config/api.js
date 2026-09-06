@@ -12,6 +12,7 @@ export const ENDPOINTS = {
     MEMBER_PAYMENT_LINK: `${API_BASE_URL}/api/member-payment-link`,
     CONTACT: `${API_BASE_URL}/api/contact`,
     INTERNSHIP: `${API_BASE_URL}/api/internship`,
+    DONOR: `${API_BASE_URL}/api/donor`,
     ADMIN_LOGIN: `${API_BASE_URL}/api/admin/login`,
     ADMIN_VOLUNTEERS: `${API_BASE_URL}/api/admin/volunteers`,
     ADMIN_MEMBERS: `${API_BASE_URL}/api/admin/members`,
