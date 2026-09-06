@@ -4,7 +4,6 @@ import { ALL_COUNTRIES } from "../data/countries";
 import { ENDPOINTS } from "../config/api";
 
 const makeInitialForm = (memberType = "general") => ({ fullName: "", email: "", confirmEmail: "", countryCode: "+91", phone: "", password: "", memberType, idProofType: "Aadhaar Card", message: "", profilePhoto: null, idDocument: null });
-const amounts = { general: "₹1,200/year", active: "₹2,500/year", life: "₹8,000+ one-time", advisory: "By invitation" };
 const proofOptions = ["Aadhaar Card", "Passport", "Driving License", "Voter ID", "PAN Card", "College ID", "Other Government ID"];
 
 export default function MemberForm({ initialMemberType = "general" }) {
@@ -59,26 +58,19 @@ export default function MemberForm({ initialMemberType = "general" }) {
             const applicationResponse = await fetch(ENDPOINTS.MEMBER_SIGNUP, { method: "POST", body: payload });
             const applicationResult = await applicationResponse.json().catch(() => ({}));
             if (!applicationResponse.ok) throw new Error(applicationResult.message || `Membership application failed (HTTP ${applicationResponse.status}).`);
-            const user = persistSession(applicationResult.user || { ...applicationResult.data, id: applicationResult.data?.id });
-
-            if (formData.memberType === "advisory") {
-                setStatus("success"); setError("Advisory membership request saved. Our team will contact you for review."); setFormData(makeInitialForm(initialMemberType)); return;
-            }
-
-            const paymentResponse = await fetch(ENDPOINTS.MEMBER_PAYMENT_LINK, { method: "POST", headers: { "Content-Type": "application/json", Accept: "application/json" }, body: JSON.stringify({ memberId: user.id }) });
-            const paymentResult = await paymentResponse.json().catch(() => ({}));
-            if (paymentResult.paymentUrl) return window.location.href = paymentResult.paymentUrl;
-            if (paymentResult.fallbackUrl) return window.location.href = paymentResult.fallbackUrl;
-            throw new Error(paymentResult.message || "Membership application was saved, but the payment page could not be opened. Your application is not lost.");
+            persistSession(applicationResult.user || { ...applicationResult.data, id: applicationResult.data?.id });
+            setStatus("success");
+            setError("Your membership application and documents have been received. Our team will review them and contact you regarding approval and membership fee/payment.");
+            setFormData(makeInitialForm(initialMemberType));
         } catch (err) {
             console.error("Membership signup error:", err); setStatus("error"); setError(err.message || "Unable to complete membership signup.");
         }
     };
 
-    if (status === "success") return <div className="p-8 md:p-10 rounded-[2rem] bg-white border border-emerald-100 text-center space-y-5"><div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl"><FaCheckCircle /></div><h2 className="text-2xl font-black text-[#002344]">Membership Request Saved</h2><p className="text-zinc-600">{error}</p><a href="/MemberDashboard" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#002344] text-white font-bold">Open My Dashboard <FaArrowRight /></a></div>;
+    if (status === "success") return <div className="p-8 md:p-10 rounded-[2rem] bg-white border border-emerald-100 text-center space-y-5"><div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl"><FaCheckCircle /></div><h2 className="text-2xl font-black text-[#002344]">Membership Application Submitted</h2><p className="text-zinc-600">{error}</p><a href="/MemberDashboard" className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-[#002344] text-white font-bold">Open My Dashboard <FaArrowRight /></a></div>;
 
     return <div className="bg-white p-6 md:p-10 rounded-[2rem] shadow-xl border border-zinc-100">
-        <div className="mb-7"><p className="text-xs uppercase tracking-widest font-bold text-[#FF6600]">Official Membership</p><h3 className="text-2xl font-black text-[#002344] mt-1">Create Your Member Account</h3><p className="text-sm text-zinc-500 mt-2">Apply → identity verification → payment → admin review → Member ID Card + Membership Certificate.</p></div>
+        <div className="mb-7"><p className="text-xs uppercase tracking-widest font-bold text-[#FF6600]">Official Membership</p><h3 className="text-2xl font-black text-[#002344] mt-1">Create Your Member Account</h3><p className="text-sm text-zinc-500 mt-2">Apply → identity verification → admin review → membership approval → Member ID Card + Membership Certificate.</p></div>
         <form onSubmit={handleSubmit} className="space-y-5" noValidate>
             <div className="grid md:grid-cols-2 gap-5">
                 <div><label className="field-label">Full Name *</label><input name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="Your full name" className="field-input" /></div>
@@ -103,9 +95,9 @@ export default function MemberForm({ initialMemberType = "general" }) {
             </div>
 
             <div><label className="field-label">Why do you want to join? {formData.memberType !== "advisory" ? "*" : ""}</label><textarea name="message" rows={4} value={formData.message} onChange={handleChange} placeholder="Tell us briefly about your interest and how you would like to contribute." className="field-input resize-none" /></div>
-            <div className="rounded-2xl bg-blue-50 border border-blue-100 p-4 text-sm text-blue-900"><div className="font-bold flex items-center gap-2"><FaLock /> Payment & account flow</div><p className="mt-1">Selected plan: <strong>{amounts[formData.memberType]}</strong>. {formData.memberType === "advisory" ? "This is an invitation-based membership; no online payment is required." : "The secure payment page opens after your application is saved."}</p></div>
+            <div className="rounded-2xl bg-blue-50 border border-blue-100 p-4 text-sm text-blue-900"><div className="font-bold flex items-center gap-2"><FaLock /> Secure application flow</div><p className="mt-1">Your documents are submitted for identity verification. Membership approval and any applicable fee/payment instructions will be provided after review.</p></div>
             {error && status === "error" && <div className="p-4 bg-red-50 text-red-700 rounded-xl text-sm font-bold flex gap-2"><FaExclamationCircle className="mt-0.5" />{error}</div>}
-            <button type="submit" disabled={status === "submitting"} className="w-full bg-[#002344] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#FF6600] transition-all flex items-center justify-center gap-3 disabled:opacity-50">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting...</> : formData.memberType === "advisory" ? <>Submit Advisory Membership Request <FaArrowRight /></> : <>Create Account & Continue to Payment <FaArrowRight /></>}</button>
+            <button type="submit" disabled={status === "submitting"} className="w-full bg-[#002344] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#FF6600] transition-all flex items-center justify-center gap-3 disabled:opacity-50">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting securely...</> : formData.memberType === "advisory" ? <>Submit Advisory Membership Request <FaArrowRight /></> : <>Submit Membership Application <FaArrowRight /></>}</button>
         </form>
         <style>{`.field-label{display:block;font-size:.72rem;font-weight:800;color:#71717a;text-transform:uppercase;letter-spacing:.08em;margin:0 0 .45rem .25rem}.field-input{width:100%;padding:.85rem 1rem;background:#fafafa;border:1px solid #e4e4e7;border-radius:.8rem;outline:none;font-weight:500}.field-input:focus{border-color:#bfdbfe;box-shadow:0 0 0 4px rgba(59,130,246,.08)}`}</style>
     </div>;
