@@ -13,8 +13,9 @@ if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 const storage = multer.diskStorage({ destination: (_req, _file, cb) => cb(null, uploadDir), filename: (_req, file, cb) => cb(null, `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${path.extname(file.originalname).toLowerCase()}`) });
 const profilePhotoOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype) ? cb(null, true) : cb(new Error('Profile photo must be JPG, PNG or WebP.'));
 const idDocumentOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'application/pdf'].includes(file.mimetype) ? cb(null, true) : cb(new Error('ID document must be JPG, PNG or PDF.'));
-const uploadVolunteerFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file, cb), limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
+const uploadVolunteerFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file), limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
 const uploadMemberFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file), limits: { files: 2, fileSize: 5 * 1024 * 1024 } });
+const uploadProfilePhoto = multer({ storage, fileFilter: profilePhotoOnly, limits: { fileSize: 5 * 1024 * 1024, files: 1 } });
 const hashPassword = (password) => { const salt = crypto.randomBytes(16).toString('hex'); const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex'); return `${salt}:${hash}`; };
 const sendAdminNotification = async (subject, text) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
@@ -61,6 +62,46 @@ router.post('/member-signup', uploadMemberFiles.fields([{ name: 'profile_photo',
         await sendAdminNotification(`New ${isWebsiteAccount ? 'Website Account' : 'Member'} Signup: ${fullName}`, `New ${isWebsiteAccount ? 'website account' : 'member application'} received. Name: ${fullName}, Type: ${isWebsiteAccount ? 'website account' : memberType}, Email: ${primaryEmail}, Phone: ${phone}`);
         return res.status(201).json({ status: 'success', message: isWebsiteAccount ? 'Account created successfully. You are now signed in.' : 'Membership application submitted successfully', data: newMember, user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
     } catch (error) { console.error('❌ Member registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
+});
+
+// Logged-in website users can manage only their own profile photo.
+router.patch('/member-profile/:id/photo', uploadProfilePhoto.single('profilePhoto'), async (req, res) => {
+    try {
+        const member = await Member.findByPk(req.params.id);
+        if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' });
+        if (!req.file) return res.status(400).json({ status: 'error', message: 'Please select a JPG, PNG or WebP photo.' });
+        if (req.file.size > 2 * 1024 * 1024) {
+            try { fs.unlinkSync(req.file.path); } catch (_) {}
+            return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' });
+        }
+        const oldPath = member.profilePhotoPath;
+        const newPath = `/uploads/${req.file.filename}`;
+        await member.update({ profilePhotoPath: newPath });
+        if (oldPath && oldPath.startsWith('/uploads/')) {
+            const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, ''));
+            if (oldFile !== req.file.path && fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} }
+        }
+        const data = member.toJSON(); delete data.passwordHash;
+        return res.json({ status: 'success', message: 'Profile photo updated successfully.', profilePhotoPath: newPath, user: data });
+    } catch (error) {
+        if (req.file?.path && fs.existsSync(req.file.path)) { try { fs.unlinkSync(req.file.path); } catch (_) {} }
+        console.error('❌ Profile photo update error:', error);
+        return res.status(500).json({ status: 'error', message: error.message || 'Unable to update profile photo.' });
+    }
+});
+
+router.delete('/member-profile/:id/photo', async (req, res) => {
+    try {
+        const member = await Member.findByPk(req.params.id);
+        if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' });
+        const oldPath = member.profilePhotoPath;
+        await member.update({ profilePhotoPath: null });
+        if (oldPath && oldPath.startsWith('/uploads/')) {
+            const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, ''));
+            if (fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} }
+        }
+        return res.json({ status: 'success', message: 'Profile photo removed.', profilePhotoPath: null });
+    } catch (error) { console.error('❌ Profile photo delete error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Unable to remove profile photo.' }); }
 });
 
 router.get('/admin/members', requireAdminAuth, async (_req, res) => {
