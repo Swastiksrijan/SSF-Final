@@ -24,6 +24,7 @@ const volunteerAdminRoutes = require('./routes/volunteerAdminRoutes');
 const profileApplicationRoutes = require('./routes/profileApplicationRoutes');
 const volunteerRoutes = require('./routes/volunteerRoutes');
 const interestRoutes = require('./routes/interestRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 
 app.use('/api', memberCertificateRoutes);
 app.use('/api', volunteerAdminRoutes);
@@ -31,6 +32,7 @@ app.use('/api', volunteerAdminRoutes);
 app.use('/api', profileApplicationRoutes);
 app.use('/api', volunteerRoutes);
 app.use('/api', interestRoutes);
+app.use('/api', contactRoutes);
 
 sequelize.sync({ alter: true })
     .then(() => {
