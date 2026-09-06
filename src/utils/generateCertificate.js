@@ -6,6 +6,7 @@ const SIGNATURE_URL = "/images/signature.png";
 
 const loadImage = (url) => new Promise((resolve, reject) => {
   const img = new Image();
+  img.crossOrigin = "anonymous";
   img.onload = () => resolve(img);
   img.onerror = () => reject(new Error(`Unable to load image: ${url}`));
   img.src = url;
@@ -38,35 +39,32 @@ const getRoleLabel = (role, isMember) => {
 export const generateIdentityCard = async ({ name, role, date, officialId, certId, photoUrl }) => {
   const normalizedRole = String(role || "volunteer").toLowerCase();
   const isMember = normalizedRole === "member" || normalizedRole.includes("membership");
-  const cardType = isMember ? "MEMBERSHIP" : "VOLUNTEER";
-  const label = isMember ? "MEMBER ID" : "VOLUNTEER ID";
-  const title = isMember ? "OFFICIAL MEMBERSHIP ID CARD" : "OFFICIAL VOLUNTEER ID CARD";
+  const typeLabel = isMember ? "MEMBERSHIP" : "VOLUNTEER";
+  const idLabel = isMember ? "MEMBER ID" : "VOLUNTEER ID";
+  const roleLabel = getRoleLabel(role, isMember);
   const verificationUrl = certId ? `https://swastiksrijan.in/verify/${encodeURIComponent(certId)}` : null;
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [86, 54] });
-  const width = 86;
-  const height = 54;
-  const navy = "#002344";
-  const gold = "#C5A059";
-  const light = "#F8FAFC";
-  const roleLabel = getRoleLabel(role, isMember);
+  const W = 86; const H = 54;
+  const navy = "#002344"; const blue = "#0B3A63"; const gold = "#C5A059"; const cream = "#FBFAF6"; const ink = "#26323D"; const muted = "#697582";
 
-  // FRONT
-  doc.setFillColor(light); doc.rect(0, 0, width, height, "F");
-  doc.setFillColor(navy); doc.rect(0, 0, width, 14, "F");
-  doc.setDrawColor(gold); doc.setLineWidth(0.8); doc.rect(2.2, 2.2, width - 4.4, height - 4.4);
+  // FRONT — premium photo-ID design
+  doc.setFillColor(cream); doc.rect(0, 0, W, H, "F");
+  doc.setFillColor(navy); doc.roundedRect(0, 0, W, 15, 0, 0, "F");
+  doc.setFillColor(gold); doc.rect(0, 13.5, W, 1.5, "F");
+  doc.setDrawColor(gold); doc.setLineWidth(0.55); doc.roundedRect(2, 2, W - 4, H - 4, 2, 2);
   try {
     const logo = await loadImage(officialLogo);
-    const logoWidth = 8.5; const logoHeight = Math.min((logo.height / logo.width) * logoWidth, 8);
-    doc.addImage(logo, "PNG", 5, 2.5, logoWidth, logoHeight);
+    const logoW = 9; const logoH = Math.min((logo.height / logo.width) * logoW, 9);
+    doc.addImage(logo, "PNG", 5, 2.7, logoW, logoH);
   } catch { /* branding text remains */ }
-  doc.setFont("helvetica", "bold"); doc.setTextColor("#FFFFFF"); doc.setFontSize(6.8);
-  doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", 15, 6.7);
-  doc.setFontSize(4.5); doc.text(title, 15, 10.8);
+  doc.setFont("helvetica", "bold"); doc.setTextColor("#FFFFFF"); doc.setFontSize(6.2);
+  doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", 16, 6.6);
+  doc.setFontSize(3.8); doc.setTextColor("#DDE7F0");
+  doc.text(isMember ? "OFFICIAL MEMBERSHIP IDENTITY CARD" : "OFFICIAL VOLUNTEER IDENTITY CARD", 16, 10.7);
+  doc.setFontSize(3.1); doc.setTextColor("#FFFFFF"); doc.text(typeLabel, W - 5, 6.6, { align: "right" });
 
-  // Passport-size photo area.
-  const photoX = 5; const photoY = 18; const photoW = 23; const photoH = 27;
-  doc.setFillColor("#E5E7EB"); doc.roundedRect(photoX, photoY, photoW, photoH, 1.2, 1.2, "F");
-  doc.setDrawColor("#B8BEC7"); doc.setLineWidth(0.35); doc.roundedRect(photoX, photoY, photoW, photoH, 1.2, 1.2);
+  const photoX = 5; const photoY = 18; const photoW = 22; const photoH = 27;
+  doc.setFillColor("#E8EDF2"); doc.roundedRect(photoX, photoY, photoW, photoH, 1.8, 1.8, "F");
   if (photoUrl) {
     try {
       const photo = await loadImage(photoUrl);
@@ -75,64 +73,55 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
       if (sourceRatio > boxRatio) { drawW = photoH * sourceRatio; drawX = photoX - (drawW - photoW) / 2; }
       else { drawH = photoW / sourceRatio; drawY = photoY - (drawH - photoH) / 2; }
       doc.addImage(photo, "JPEG", drawX, drawY, drawW, drawH);
-      doc.setDrawColor(gold); doc.setLineWidth(0.6); doc.roundedRect(photoX, photoY, photoW, photoH, 1.2, 1.2);
     } catch {
-      doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#777777");
-      doc.text("PHOTO", photoX + photoW / 2, photoY + photoH / 2, { align: "center" });
+      doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#7B8490"); doc.text("PHOTO", photoX + photoW / 2, photoY + photoH / 2, { align: "center" });
     }
   } else {
-    doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#777777");
-    doc.text("PHOTO", photoX + photoW / 2, photoY + photoH / 2, { align: "center" });
+    doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#7B8490"); doc.text("PHOTO", photoX + photoW / 2, photoY + photoH / 2, { align: "center" });
   }
+  doc.setDrawColor(gold); doc.setLineWidth(0.7); doc.roundedRect(photoX, photoY, photoW, photoH, 1.8, 1.8);
+  doc.setFillColor(navy); doc.roundedRect(photoX, 42.5, photoW, 2.5, 0.8, 0.8, "F");
+  doc.setFont("helvetica", "bold"); doc.setFontSize(3.2); doc.setTextColor("#FFFFFF");
+  doc.text(isMember ? "MEMBER" : "VOLUNTEER", photoX + photoW / 2, 44.25, { align: "center" });
 
-  const detailsX = 31;
-  doc.setTextColor(navy); doc.setFont("helvetica", "bold");
-  fitText(doc, String(name || "Member"), 46, 8.8, 6.2); doc.text(String(name || "Member"), detailsX, 22.5);
-  doc.setFont("helvetica", "normal"); doc.setFontSize(4.8); doc.setTextColor("#666666"); doc.text(cardType, detailsX, 26.2);
-  doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#555555"); doc.text(`${label}:`, detailsX, 31);
-  doc.setFontSize(7); doc.setTextColor(navy); doc.text(String(officialId || "Pending"), detailsX, 35.2);
-  doc.setFont("helvetica", "normal"); doc.setFontSize(4.8); doc.setTextColor("#555555");
-  doc.text(`Role: ${roleLabel}`, detailsX, 40);
-  doc.text(`Issued: ${date || "—"}`, detailsX, 44.2);
+  const detailsX = 30;
+  doc.setFont("helvetica", "bold"); doc.setTextColor(navy); fitText(doc, String(name || "Member"), 31, 9, 6); doc.text(String(name || "Member"), detailsX, 21.8);
+  doc.setFontSize(3.4); doc.setTextColor(muted); doc.text("OFFICIAL IDENTITY", detailsX, 25.2);
+  doc.setFillColor("#EEF3F7"); doc.roundedRect(detailsX, 27, 31, 8.2, 1.4, 1.4, "F");
+  doc.setFont("helvetica", "bold"); doc.setFontSize(3.4); doc.setTextColor(muted); doc.text(idLabel, detailsX + 2.2, 30);
+  doc.setFontSize(6.1); doc.setTextColor(navy); doc.text(String(officialId || "PENDING"), detailsX + 2.2, 33.3);
+  doc.setFontSize(3.6); doc.setTextColor(muted); doc.text("ROLE", detailsX, 39.2);
+  doc.setFont("helvetica", "normal"); doc.setTextColor(ink); fitText(doc, roleLabel, 30, 4.7, 3.4); doc.text(roleLabel, detailsX, 42.1);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(3.6); doc.setTextColor(muted); doc.text("ISSUED", detailsX, 46.1);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(4.1); doc.setTextColor(ink); doc.text(String(date || "—"), detailsX, 48.7);
 
+  const qrBoxX = 64; const qrBoxY = 17.2;
+  doc.setFillColor("#FFFFFF"); doc.setDrawColor("#D8DEE5"); doc.setLineWidth(0.35); doc.roundedRect(qrBoxX, qrBoxY, 17, 23.2, 1.5, 1.5, "FD");
   if (verificationUrl) {
-    try {
-      const qr = await loadImage(`${QR_CODE_API}${encodeURIComponent(verificationUrl)}`);
-      doc.addImage(qr, "PNG", 66.5, 17.5, 14.5, 14.5);
-      doc.setFont("helvetica", "bold"); doc.setFontSize(3.8); doc.setTextColor("#555555"); doc.text("SCAN TO VERIFY", 73.75, 34, { align: "center" });
-    } catch {
-      doc.setFont("helvetica", "bold"); doc.setFontSize(4); doc.setTextColor("#777777"); doc.text("VERIFY ONLINE", 73.75, 25, { align: "center" });
-    }
+    try { const qr = await loadImage(`${QR_CODE_API}${encodeURIComponent(verificationUrl)}`); doc.addImage(qr, "PNG", qrBoxX + 1.3, qrBoxY + 1.2, 14.4, 14.4); }
+    catch { doc.setFont("helvetica", "bold"); doc.setFontSize(3.6); doc.setTextColor(muted); doc.text("VERIFY ONLINE", qrBoxX + 8.5, qrBoxY + 9, { align: "center" }); }
+    doc.setFont("helvetica", "bold"); doc.setFontSize(3.1); doc.setTextColor(blue); doc.text("SCAN TO VERIFY", qrBoxX + 8.5, qrBoxY + 20.3, { align: "center" });
+  } else {
+    doc.setFont("helvetica", "bold"); doc.setFontSize(3.5); doc.setTextColor(muted); doc.text("VERIFICATION", qrBoxX + 8.5, qrBoxY + 10, { align: "center" }); doc.text("AVAILABLE AFTER ISSUE", qrBoxX + 8.5, qrBoxY + 14, { align: "center" });
   }
-  doc.setFont("helvetica", "normal"); doc.setFontSize(3.8); doc.setTextColor("#777777");
-  doc.text("Valid only after official approval", width / 2, 50.7, { align: "center" });
+  doc.setFont("helvetica", "normal"); doc.setFontSize(3.1); doc.setTextColor(muted); doc.text("Valid after official approval", W / 2, 51.4, { align: "center" });
 
-  // BACK
+  // BACK — official instructions and signature
   doc.addPage([86, 54], "landscape");
-  doc.setFillColor("#FFFFFF"); doc.rect(0, 0, width, height, "F");
-  doc.setFillColor(navy); doc.rect(0, 0, width, 12, "F");
-  doc.setDrawColor(gold); doc.setLineWidth(0.8); doc.rect(2.2, 2.2, width - 4.4, height - 4.4);
-  doc.setFont("helvetica", "bold"); doc.setTextColor("#FFFFFF"); doc.setFontSize(6.2); doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", width / 2, 7.3, { align: "center" });
-  doc.setFontSize(4.2); doc.text("OFFICIAL ID CARD • BACK", width / 2, 10.2, { align: "center" });
-  doc.setTextColor(navy); doc.setFont("helvetica", "bold"); doc.setFontSize(5.4); doc.text("IMPORTANT", 7, 18);
-  doc.setFont("helvetica", "normal"); doc.setFontSize(4.5); doc.setTextColor("#444444");
-  const notes = [
-    "This card is the official identity card issued after approval by the Foundation.",
-    "It remains the property of Swastik Srijan Foundation Samiti and may be withdrawn when authorization ends.",
-    "If found, please return it to the Foundation. Do not alter, transfer or misuse this card."
-  ];
-  notes.forEach((text, index) => doc.text(doc.splitTextToSize(`• ${text}`, 72), 7, 23 + index * 7, { lineHeightFactor: 1.15 }));
-  if (certId) {
-    doc.setFont("helvetica", "bold"); doc.setFontSize(4.7); doc.setTextColor(navy); doc.text("CERTIFICATE ID", 7, 44);
-    doc.setFont("helvetica", "normal"); doc.setTextColor("#444444"); doc.text(String(certId), 7, 48);
-  }
-  try {
-    const signature = await loadImage(`${SIGNATURE_URL}?v=1`);
-    doc.addImage(signature, "PNG", 62, 37, 17, 8);
-  } catch { /* never fake a signature */ }
-  doc.setDrawColor("#333333"); doc.setLineWidth(0.35); doc.line(57, 46, 80, 46);
-  doc.setFont("helvetica", "bold"); doc.setFontSize(4.2); doc.setTextColor(navy); doc.text("Authorized Signatory", 68.5, 50, { align: "center" });
-
+  doc.setFillColor(cream); doc.rect(0, 0, W, H, "F"); doc.setFillColor(navy); doc.rect(0, 0, W, 12.5, "F"); doc.setFillColor(gold); doc.rect(0, 12.5, W, 1.2, "F");
+  doc.setDrawColor(gold); doc.setLineWidth(0.55); doc.roundedRect(2, 2, W - 4, H - 4, 2, 2);
+  doc.setFont("helvetica", "bold"); doc.setTextColor("#FFFFFF"); doc.setFontSize(6.1); doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", W / 2, 6.5, { align: "center" });
+  doc.setFontSize(3.6); doc.setTextColor("#DDE7F0"); doc.text("OFFICIAL ID CARD • REVERSE", W / 2, 10, { align: "center" });
+  doc.setFillColor("#EEF3F7"); doc.roundedRect(6, 17, 74, 8.8, 1.8, 1.8, "F");
+  doc.setFont("helvetica", "bold"); doc.setFontSize(4.2); doc.setTextColor(navy); doc.text("CARD STATUS", 9, 20.7);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(3.8); doc.setTextColor(ink); doc.text("Issued only after official approval by Swastik Srijan Foundation Samiti.", 9, 23.2);
+  const notes = ["This card is the property of Swastik Srijan Foundation Samiti.", "It may be withdrawn when the volunteer or membership authorization ends.", "If found, please return this card to the Foundation. Do not alter or misuse it."];
+  doc.setFont("helvetica", "normal"); doc.setFontSize(3.8); doc.setTextColor(ink); notes.forEach((note, index) => doc.text(`• ${note}`, 8, 30 + index * 4.4));
+  if (certId) { doc.setFont("helvetica", "bold"); doc.setFontSize(3.6); doc.setTextColor(muted); doc.text("CERTIFICATE ID", 8, 44.2); doc.setFont("helvetica", "normal"); doc.setTextColor(navy); doc.setFontSize(4.1); doc.text(String(certId), 8, 47.2); }
+  try { const signature = await loadImage(`${SIGNATURE_URL}?v=2`); doc.addImage(signature, "PNG", 62, 36.2, 16, 7.2); } catch { /* no fake signature */ }
+  doc.setDrawColor(navy); doc.setLineWidth(0.35); doc.line(57, 45, 80, 45);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(3.8); doc.setTextColor(navy); doc.text("Authorized Signatory", 68.5, 48.2, { align: "center" });
+  doc.setFont("helvetica", "normal"); doc.setFontSize(3.1); doc.setTextColor(muted); doc.text("Swastik Srijan Foundation Samiti", 68.5, 50.2, { align: "center" });
   doc.save(`SSF_${isMember ? "Member" : "Volunteer"}_ID_${safeFileName(name)}.pdf`);
 };
 
@@ -143,36 +132,22 @@ export const generateCertificate = async (name, role, date, certId = null, membe
   const navy = "#002344"; const gold = "#C5A059"; const ink = "#30343B";
   const verificationUrl = certId ? `https://swastiksrijan.in/verify/${encodeURIComponent(certId)}` : null;
   const officialId = memberId || (isMember ? null : deriveVolunteerId(certId)); const roleLabel = getRoleLabel(role, isMember);
-  doc.setFillColor("#FFFDF8"); doc.rect(0, 0, width, height, "F");
-  doc.setDrawColor(navy); doc.setLineWidth(1.8); doc.rect(6, 6, width - 12, height - 12);
-  doc.setDrawColor(gold); doc.setLineWidth(0.7); doc.rect(10, 10, width - 20, height - 20);
-  try { const logo = await loadImage(officialLogo); const logoWidth = 24; const logoHeight = Math.min((logo.height / logo.width) * logoWidth, 22); doc.addImage(logo, "PNG", centerX - logoWidth / 2, 14, logoWidth, logoHeight); }
-  catch { doc.setFont("times", "bold"); doc.setFontSize(17); doc.setTextColor(navy); doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", centerX, 28, { align: "center" }); }
-  doc.setFont("helvetica", "bold"); doc.setTextColor(navy); doc.setFontSize(8); doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", centerX, 40, { align: "center" });
-  doc.setFont("helvetica", "normal"); doc.setFontSize(5.8); doc.setTextColor("#666666"); doc.text("Rewa, Madhya Pradesh • Serving Communities Across India", centerX, 44.5, { align: "center" });
-  doc.setFont("times", "bold"); doc.setTextColor(navy); doc.setFontSize(isMember ? 27 : 30); doc.text(isMember ? "CERTIFICATE OF MEMBERSHIP" : "CERTIFICATE OF APPRECIATION", centerX, 60, { align: "center" });
-  doc.setDrawColor(gold); doc.setLineWidth(0.8); doc.line(centerX - 50, 64, centerX + 50, 64);
-  doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor("#555555"); doc.text("This certificate is proudly presented to", centerX, 76, { align: "center" });
-  doc.setFont("times", "bolditalic"); doc.setTextColor(navy); fitText(doc, String(name || "Recipient"), 215, 31, 19); doc.text(String(name || "Recipient"), centerX, 91, { align: "center" });
-  doc.setDrawColor(gold); doc.setLineWidth(0.6); doc.line(centerX - 58, 96, centerX + 58, 96);
+  doc.setFillColor("#FFFDF8"); doc.rect(0, 0, width, height, "F"); doc.setDrawColor(navy); doc.setLineWidth(1.8); doc.rect(6, 6, width - 12, height - 12); doc.setDrawColor(gold); doc.setLineWidth(0.7); doc.rect(10, 10, width - 20, height - 20);
+  try { const logo = await loadImage(officialLogo); const logoWidth = 24; const logoHeight = Math.min((logo.height / logo.width) * logoWidth, 22); doc.addImage(logo, "PNG", centerX - logoWidth / 2, 14, logoWidth, logoHeight); } catch { doc.setFont("times", "bold"); doc.setFontSize(17); doc.setTextColor(navy); doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", centerX, 28, { align: "center" }); }
+  doc.setFont("helvetica", "bold"); doc.setTextColor(navy); doc.setFontSize(8); doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", centerX, 40, { align: "center" }); doc.setFont("helvetica", "normal"); doc.setFontSize(5.8); doc.setTextColor("#666666"); doc.text("Rewa, Madhya Pradesh • Serving Communities Across India", centerX, 44.5, { align: "center" });
+  doc.setFont("times", "bold"); doc.setTextColor(navy); doc.setFontSize(isMember ? 27 : 30); doc.text(isMember ? "CERTIFICATE OF MEMBERSHIP" : "CERTIFICATE OF APPRECIATION", centerX, 60, { align: "center" }); doc.setDrawColor(gold); doc.setLineWidth(0.8); doc.line(centerX - 50, 64, centerX + 50, 64);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10.5); doc.setTextColor("#555555"); doc.text("This certificate is proudly presented to", centerX, 76, { align: "center" }); doc.setFont("times", "bolditalic"); doc.setTextColor(navy); fitText(doc, String(name || "Recipient"), 215, 31, 19); doc.text(String(name || "Recipient"), centerX, 91, { align: "center" }); doc.setDrawColor(gold); doc.setLineWidth(0.6); doc.line(centerX - 58, 96, centerX + 58, 96);
   const body = isMember ? "in recognition of their approved membership and commitment to the mission and values of Swastik Srijan Foundation Samiti." : normalizedRole.includes("volunteer") ? `in recognition of dedicated service as a ${roleLabel} and valuable contribution to the mission of Swastik Srijan Foundation Samiti.` : normalizedRole === "donor" ? "in sincere gratitude for generous support that helps the Foundation create positive social impact." : `in recognition of valuable contribution as a ${roleLabel}.`;
   doc.setFont("times", "normal"); doc.setFontSize(11.5); doc.setTextColor(ink); doc.text(doc.splitTextToSize(body, 205), centerX, 108, { align: "center", lineHeightFactor: 1.35 });
-  const footerTop = 137; doc.setDrawColor("#D8D2C5"); doc.setLineWidth(0.35); doc.line(25, footerTop, width - 25, footerTop);
-  doc.setFont("helvetica", "bold"); doc.setFontSize(7.2); doc.setTextColor(navy); if (officialId) doc.text(`${isMember ? "MEMBER" : "VOLUNTEER"} ID`, 27, 148); if (certId) doc.text("OFFICIAL CERTIFICATE ID", 27, 158);
-  doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(ink); if (officialId) doc.text(String(officialId), 27, 153); if (certId) doc.text(String(certId), 27, 163);
-  doc.setFont("helvetica", "bold"); doc.setFontSize(7.2); doc.setTextColor(navy); doc.text("DATE OF ISSUE", 27, 173); doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(ink); doc.text(String(date || "—"), 27, 178);
-  const signatureX = 128;
-  try { const signature = await loadImage(`${SIGNATURE_URL}?v=1`); const sigWidth = 38; const naturalHeight = (signature.height / signature.width) * sigWidth; const sigHeight = Math.min(naturalHeight, 18); doc.addImage(signature, "PNG", signatureX - sigWidth / 2, 149, sigWidth, sigHeight); } catch { /* never fake a signature */ }
-  doc.setDrawColor("#333333"); doc.setLineWidth(0.45); doc.line(signatureX - 28, 168, signatureX + 28, 168); doc.setFont("helvetica", "bold"); doc.setFontSize(7.5); doc.setTextColor(navy); doc.text("Authorized Signatory", signatureX, 174, { align: "center" }); doc.setFont("helvetica", "normal"); doc.setFontSize(6.5); doc.setTextColor("#666666"); doc.text("Swastik Srijan Foundation Samiti", signatureX, 179, { align: "center" });
-  const qrX = 244; const qrY = 144;
-  if (verificationUrl) { try { const qr = await loadImage(`${QR_CODE_API}${encodeURIComponent(verificationUrl)}`); doc.addImage(qr, "PNG", qrX, qrY, 28, 28); doc.setFont("helvetica", "bold"); doc.setFontSize(5.7); doc.setTextColor("#555555"); doc.text("SCAN TO VERIFY", qrX + 14, 176, { align: "center" }); } catch {} doc.setFont("helvetica", "normal"); doc.setFontSize(5.8); doc.setTextColor("#666666"); doc.text(`Verify: ${verificationUrl}`, centerX, 190, { align: "center" }); }
-  doc.setFont("helvetica", "normal"); doc.setFontSize(5.8); doc.setTextColor("#888888"); doc.text("This document is issued by Swastik Srijan Foundation Samiti after official approval and may be verified online.", centerX, 196, { align: "center" });
-  doc.save(`SSF_Certificate_${safeFileName(name)}.pdf`);
+  const footerTop = 137; doc.setDrawColor("#D8D2C5"); doc.setLineWidth(0.35); doc.line(25, footerTop, width - 25, footerTop); doc.setFont("helvetica", "bold"); doc.setFontSize(7.2); doc.setTextColor(navy); if (officialId) doc.text(`${isMember ? "MEMBER" : "VOLUNTEER"} ID`, 27, 148); if (certId) doc.text("OFFICIAL CERTIFICATE ID", 27, 158);
+  doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(ink); if (officialId) doc.text(String(officialId), 27, 153); if (certId) doc.text(String(certId), 27, 163); doc.setFont("helvetica", "bold"); doc.setFontSize(7.2); doc.setTextColor(navy); doc.text("DATE OF ISSUE", 27, 173); doc.setFont("helvetica", "normal"); doc.setFontSize(7.5); doc.setTextColor(ink); doc.text(String(date || "—"), 27, 178);
+  const signatureX = 128; try { const signature = await loadImage(`${SIGNATURE_URL}?v=1`); const sigWidth = 38; const naturalHeight = (signature.height / signature.width) * sigWidth; const sigHeight = Math.min(naturalHeight, 18); doc.addImage(signature, "PNG", signatureX - sigWidth / 2, 149, sigWidth, sigHeight); } catch { /* never fake a signature */ }
+  doc.setDrawColor("#333333"); doc.setLineWidth(0.45); doc.line(signatureX - 28, 168, signatureX + 28, 168); doc.setFont("helvetica", "bold"); doc.setFontSize(7.5); doc.setTextColor(navy); doc.text("Authorized Signatory", signatureX, 174, { align: "center" });
+  const qrX = 244; const qrY = 144; if (verificationUrl) { try { const qr = await loadImage(`${QR_CODE_API}${encodeURIComponent(verificationUrl)}`); doc.addImage(qr, "PNG", qrX, qrY, 28, 28); doc.setFont("helvetica", "bold"); doc.setFontSize(5.7); doc.setTextColor("#555555"); doc.text("SCAN TO VERIFY", qrX + 14, 176, { align: "center" }); } catch {} doc.setFont("helvetica", "normal"); doc.setFontSize(5.8); doc.setTextColor("#666666"); doc.text(`Verify: ${verificationUrl}`, centerX, 190, { align: "center" }); }
+  doc.setFont("helvetica", "normal"); doc.setFontSize(5.8); doc.setTextColor("#888888"); doc.text("This document is issued by Swastik Srijan Foundation Samiti after official approval and may be verified online.", centerX, 196, { align: "center" }); doc.save(`SSF_Certificate_${safeFileName(name)}.pdf`);
 };
 
 export const generateCertificateAndIdCard = async (name, role, date, certId = null, memberId = null, photoUrl = null) => {
-  const normalizedRole = String(role || "volunteer").toLowerCase(); const isMember = normalizedRole === "member" || normalizedRole.includes("membership");
-  const officialId = memberId || (isMember ? null : deriveVolunteerId(certId));
-  await generateCertificate(name, role, date, certId, memberId);
-  await generateIdentityCard({ name, role, date, officialId, certId, photoUrl });
+  const normalizedRole = String(role || "volunteer").toLowerCase(); const isMember = normalizedRole === "member" || normalizedRole.includes("membership"); const officialId = memberId || (isMember ? null : deriveVolunteerId(certId));
+  await generateCertificate(name, role, date, certId, memberId); await generateIdentityCard({ name, role, date, officialId, certId, photoUrl });
 };
