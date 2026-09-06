@@ -108,19 +108,19 @@ export default function Home() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
             {[
               {
-                text: "20,000+", sub: "Lives Impacted", subHi: "प्रभावित जीवन",
+                text: "50,000+", sub: "Lives Touched", subHi: "प्रभावित जीवन",
                 icon: <FaUsers className="text-[#FF6600] text-4xl mb-4" />
               },
               {
-                text: "100+", sub: "Villages Reached", subHi: "गाँव तक पहुँच",
+                text: "120+", sub: "Villages Reached", subHi: "गाँव तक पहुँच",
                 icon: <FaGlobeAsia className="text-[#002344] text-4xl mb-4" />
               },
               {
-                text: "12+", sub: "Years of Service", subHi: "सेवा के वर्ष",
+                text: "Since 2013", sub: "Years of Service", subHi: "2013 से सेवा",
                 icon: <FaHeart className="text-red-500 text-4xl mb-4" />
               },
               {
-                text: "Impact", sub: "Measurable Change", subHi: "मापनीय परिवर्तन",
+                text: "40+", sub: "Community Programmes", subHi: "सामुदायिक कार्यक्रम",
                 icon: <FaHandshake className="text-green-600 text-4xl mb-4" />
               }
             ].map((item, index) => (
