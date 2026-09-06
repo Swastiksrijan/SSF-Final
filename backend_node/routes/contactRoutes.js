@@ -24,6 +24,14 @@ const sendAdminNotification = async (subject, text) => {
     }
 };
 
+const requireAdminAuth = (req, res, next) => {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+    const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+    if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized admin access' });
+    next();
+};
+
 router.post('/contact', async (req, res) => {
     try {
         const { firstName, lastName, email, phone, message } = req.body || {};
@@ -32,34 +40,40 @@ router.post('/contact', async (req, res) => {
         const cleanEmail = String(email || '').trim().toLowerCase();
         const cleanPhone = String(phone || '').trim();
         const cleanMessage = String(message || '').trim();
-
         if (cleanFirstName.length < 2) return res.status(400).json({ message: 'Please enter your first name.' });
         if (!/^\S+@\S+\.\S+$/.test(cleanEmail)) return res.status(400).json({ message: 'Please enter a valid email address.' });
         if (cleanPhone && cleanPhone.replace(/\D/g, '').length < 7) return res.status(400).json({ message: 'Please enter a valid phone number.' });
         if (cleanMessage.length < 10) return res.status(400).json({ message: 'Please enter a message of at least 10 characters.' });
-
-        const contact = await ContactMessage.create({
-            firstName: cleanFirstName,
-            lastName: cleanLastName || null,
-            email: cleanEmail,
-            phone: cleanPhone || null,
-            message: cleanMessage,
-            status: 'new'
-        });
-
-        await sendAdminNotification(
-            `New Contact Inquiry: ${cleanFirstName}${cleanLastName ? ` ${cleanLastName}` : ''}`,
-            `New contact inquiry received.\n\nName: ${cleanFirstName}${cleanLastName ? ` ${cleanLastName}` : ''}\nEmail: ${cleanEmail}\nPhone: ${cleanPhone || 'Not provided'}\nMessage: ${cleanMessage}`
-        );
-
-        return res.status(201).json({
-            status: 'success',
-            message: 'Message successfully submitted!',
-            data: { id: contact.id }
-        });
+        const contact = await ContactMessage.create({ firstName: cleanFirstName, lastName: cleanLastName || null, email: cleanEmail, phone: cleanPhone || null, message: cleanMessage, status: 'new' });
+        await sendAdminNotification(`New Contact Inquiry: ${cleanFirstName}${cleanLastName ? ` ${cleanLastName}` : ''}`, `New contact inquiry received.\n\nName: ${cleanFirstName}${cleanLastName ? ` ${cleanLastName}` : ''}\nEmail: ${cleanEmail}\nPhone: ${cleanPhone || 'Not provided'}\nMessage: ${cleanMessage}`);
+        return res.status(201).json({ status: 'success', message: 'Message successfully submitted!', data: { id: contact.id } });
     } catch (error) {
         console.error('❌ Contact submission error:', error);
         return res.status(500).json({ message: 'Unable to submit right now. Please try again.' });
+    }
+});
+
+router.get('/admin/contacts', requireAdminAuth, async (_req, res) => {
+    try {
+        const contacts = await ContactMessage.findAll({ order: [['createdAt', 'DESC']] });
+        return res.json(contacts);
+    } catch (error) {
+        console.error('❌ Admin contacts fetch error:', error);
+        return res.status(500).json({ message: 'Unable to load contact inquiries.' });
+    }
+});
+
+router.patch('/admin/contacts/:id/status', requireAdminAuth, async (req, res) => {
+    try {
+        const status = String(req.body?.status || '');
+        if (!['new', 'contacted', 'closed'].includes(status)) return res.status(400).json({ message: 'Invalid status.' });
+        const contact = await ContactMessage.findByPk(req.params.id);
+        if (!contact) return res.status(404).json({ message: 'Contact inquiry not found.' });
+        await contact.update({ status });
+        return res.json({ status: 'success', data: contact });
+    } catch (error) {
+        console.error('❌ Contact status update error:', error);
+        return res.status(500).json({ message: 'Unable to update status.' });
     }
 });
 
