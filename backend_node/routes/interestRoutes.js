@@ -51,13 +51,16 @@ router.patch('/admin/interests/:id/status', requireAdminAuth, async (req, res) =
     } catch (error) { console.error('❌ Interest status update error:', error); return res.status(500).json({ message: 'Unable to update status.' }); }
 });
 
-router.delete('/admin/interests/:id', requireAdminAuth, async (req, res) => {
+const deleteInterest = async (req, res) => {
     try {
         const interest = await Interest.findByPk(req.params.id);
         if (!interest) return res.status(404).json({ message: 'Request not found.' });
         await interest.destroy();
         return res.json({ status: 'success', message: 'Request deleted permanently.' });
     } catch (error) { console.error('❌ Interest delete error:', error); return res.status(500).json({ message: 'Unable to delete request.' }); }
-});
+};
+
+router.delete('/admin/interests/:id', requireAdminAuth, deleteInterest);
+router.post('/admin/interests/:id/delete', requireAdminAuth, deleteInterest);
 
 module.exports = router;
