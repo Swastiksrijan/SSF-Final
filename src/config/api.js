@@ -29,6 +29,10 @@ export const ENDPOINTS = {
     ADMIN_APPROVE: (id) => `${API_BASE_URL}/api/admin/approve/${id}`,
     ADMIN_MEMBER_APPROVE: (id) => `${API_BASE_URL}/api/admin/member-approve/${id}`,
     ADMIN_DELETE_VOLUNTEER: (id) => `${API_BASE_URL}/api/admin/volunteers/${id}`,
+    ADMIN_UPDATE_VOLUNTEER: (id) => `${API_BASE_URL}/api/admin/volunteers/${id}`,
+    ADMIN_VOLUNTEER_STATUS: (id) => `${API_BASE_URL}/api/admin/volunteers/${id}/status`,
     ADMIN_DELETE_MEMBER: (id) => `${API_BASE_URL}/api/admin/members/${id}`,
+    ADMIN_UPDATE_MEMBER: (id) => `${API_BASE_URL}/api/admin/members/${id}`,
+    ADMIN_MEMBER_STATUS: (id) => `${API_BASE_URL}/api/admin/members/${id}/status`,
     VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`
 };
