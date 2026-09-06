@@ -29,7 +29,7 @@ router.get('/user-portal/:id', async (req, res) => {
             fullName: member.fullName,
             email: member.email,
             phone: member.phone,
-            memberType: member.memberType,
+            memberType: membershipAccount ? member.memberType : 'general',
             status: member.status,
             memberId: membershipAccount ? member.memberId : null,
             certId: membershipAccount ? member.certId : null,
