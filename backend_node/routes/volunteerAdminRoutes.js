@@ -26,6 +26,12 @@ const removeUploadedFile = (storedPath) => {
     try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Upload cleanup failed:', error.message); }
 };
 
+const getMonthYearCode = (date = new Date()) => {
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const year = String(date.getFullYear()).slice(-2);
+    return `${month}${year}`;
+};
+
 router.get('/admin/volunteers', requireAdminAuth, async (req, res) => {
     try {
         const volunteers = await Volunteer.findAll({ order: [['createdAt', 'DESC']] });
@@ -50,11 +56,11 @@ router.post('/admin/approve/:id', requireAdminAuth, async (req, res) => {
         if (volunteer.status === 'approved' && volunteer.volunteerId && volunteer.certId) return res.status(400).json({ message: 'Volunteer is already approved', volunteerId: volunteer.volunteerId, certId: volunteer.certId });
 
         const approvedCount = await Volunteer.count({ where: { status: 'approved' } });
-        const year = new Date().getFullYear();
-        const number = String(approvedCount + 1).padStart(4, '0');
-        const volunteerId = `SSF-VOL-${year}-${number}`;
-        const certId = `SSF-VCERT-${year}-${number}`;
         const approvedAt = new Date();
+        const number = String(approvedCount + 1).padStart(4, '0');
+        const period = getMonthYearCode(approvedAt);
+        const volunteerId = `SSF-VOL-${period}-${number}`;
+        const certId = `SSF-VCERT-${period}-${number}`;
         await volunteer.update({ status: 'approved', isVerified: true, volunteerId, certId, approvedAt });
 
         const frontendUrl = (process.env.FRONTEND_URL || 'https://swastiksrijan.in').replace(/\/$/, '');
