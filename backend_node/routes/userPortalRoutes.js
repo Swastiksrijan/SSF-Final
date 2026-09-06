@@ -6,6 +6,8 @@ const Donor = require('../models/Donor');
 const InternshipApplication = require('../models/InternshipApplication');
 const Interest = require('../models/Interest');
 
+const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory'];
+const isRealMembership = (memberType) => REAL_MEMBERSHIP_TYPES.includes(String(memberType || '').trim().toLowerCase());
 const backendUrl = (process.env.BACKEND_PUBLIC_URL || 'https://ngo-backend-03hq.onrender.com').replace(/\/$/, '');
 const documentUrl = (type, id, accountId) => `${backendUrl}/api/user-document/${type}/${encodeURIComponent(id)}?account=${encodeURIComponent(accountId)}`;
 
@@ -21,8 +23,22 @@ router.get('/user-portal/:id', async (req, res) => {
             Interest.findAll({ where: { email }, attributes: ['id','interestType','fullName','email','phone','message','status','createdAt'], order: [['createdAt','DESC']] })
         ]);
 
-        const account = { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status, memberId: member.memberId, certId: member.certId, certificateType: member.certificateType, certificateIssuedAt: member.certificateIssuedAt, profilePhotoPath: member.profilePhotoPath, createdAt: member.createdAt };
-        if (member.status === 'approved' && member.memberId) {
+        const membershipAccount = isRealMembership(member.memberType);
+        const account = {
+            id: member.id,
+            fullName: member.fullName,
+            email: member.email,
+            phone: member.phone,
+            memberType: member.memberType,
+            status: member.status,
+            memberId: membershipAccount ? member.memberId : null,
+            certId: membershipAccount ? member.certId : null,
+            certificateType: membershipAccount ? member.certificateType : null,
+            certificateIssuedAt: membershipAccount ? member.certificateIssuedAt : null,
+            profilePhotoPath: member.profilePhotoPath,
+            createdAt: member.createdAt
+        };
+        if (membershipAccount && member.status === 'approved' && member.memberId) {
             account.idCardUrl = documentUrl('membership-id', member.memberId, member.id);
             if (member.certId) account.certificateUrl = documentUrl('membership-certificate', member.certId, member.id);
         }
