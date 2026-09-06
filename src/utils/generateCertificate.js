@@ -12,8 +12,12 @@ const loadImage = (url) => new Promise((resolve, reject) => {
 const QR_CODE_API = "https://api.qrserver.com/v1/create-qr-code/?size=180x180&margin=8&data=";
 
 const deriveVolunteerId = (certId) => {
-  const match = String(certId || "").match(/^SSF-VCERT-(\d{4})-(\d{4})$/);
-  return match ? `SSF-VOL-${match[1]}-${match[2]}` : null;
+  const value = String(certId || "");
+  const current = value.match(/^SSF-VCERT-(\d{4})-(\d{4})$/);
+  if (current) return `SSF-VOL-${current[1]}-${current[2]}`;
+  const legacy = value.match(/^SSF-VOL-(\d{4})-(\d{4})$/);
+  if (legacy) return `SSF-VOL-${legacy[1]}-${legacy[2]}`;
+  return null;
 };
 
 const generateIdentityCard = async ({ name, role, date, officialId, certId }) => {
@@ -28,47 +32,29 @@ const generateIdentityCard = async ({ name, role, date, officialId, certId }) =>
   const navy = "#002344";
   const gold = "#C5A059";
 
-  doc.setFillColor("#FFFFFF");
-  doc.rect(0, 0, width, height, "F");
-  doc.setFillColor(navy);
-  doc.rect(0, 0, width, 13, "F");
-  doc.setDrawColor(gold);
-  doc.setLineWidth(0.8);
-  doc.rect(2.5, 2.5, width - 5, height - 5);
+  doc.setFillColor("#FFFFFF"); doc.rect(0, 0, width, height, "F");
+  doc.setFillColor(navy); doc.rect(0, 0, width, 13, "F");
+  doc.setDrawColor(gold); doc.setLineWidth(0.8); doc.rect(2.5, 2.5, width - 5, height - 5);
 
   try {
     const logo = await loadImage(officialLogo);
     const logoWidth = 9;
     const logoHeight = (logo.height / logo.width) * logoWidth;
     doc.addImage(logo, "PNG", 5, 2, logoWidth, Math.min(logoHeight, 8));
-  } catch {
-    // Text branding remains available if the logo cannot be loaded.
-  }
+  } catch { /* text branding remains */ }
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.setTextColor("#FFFFFF");
+  doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.setTextColor("#FFFFFF");
   doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", 16, 7);
-  doc.setFontSize(5.2);
-  doc.text(title, 16, 10.5);
+  doc.setFontSize(5.2); doc.text(title, 16, 10.5);
 
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(11);
-  doc.setTextColor(navy);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(navy);
   doc.text(String(name || "Member"), 5, 23);
-
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(6.5);
-  doc.setTextColor("#555555");
+  doc.setFont("helvetica", "normal"); doc.setFontSize(6.5); doc.setTextColor("#555555");
   doc.text(`${label}:`, 5, 30);
-  doc.setFont("helvetica", "bold");
-  doc.setFontSize(8);
-  doc.setTextColor(navy);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(8); doc.setTextColor(navy);
   doc.text(String(officialId || "Pending"), 5, 35);
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(6);
-  doc.setTextColor("#555555");
+  doc.setFont("helvetica", "normal"); doc.setFontSize(6); doc.setTextColor("#555555");
   doc.text(`Role: ${isMember ? "Member" : String(role || "Volunteer")}`, 5, 41);
   doc.text(`Issued: ${date}`, 5, 45);
   if (certId) doc.text(`Certificate: ${certId}`, 5, 49);
@@ -77,18 +63,12 @@ const generateIdentityCard = async ({ name, role, date, officialId, certId }) =>
     try {
       const qr = await loadImage(`${QR_CODE_API}${encodeURIComponent(verificationUrl)}`);
       doc.addImage(qr, "PNG", 65, 16, 16, 16);
-      doc.setFont("helvetica", "bold");
-      doc.setFontSize(4.5);
-      doc.setTextColor("#555555");
+      doc.setFont("helvetica", "bold"); doc.setFontSize(4.5); doc.setTextColor("#555555");
       doc.text("SCAN TO VERIFY", 73, 34, { align: "center" });
-    } catch {
-      // Printed certificate ID remains available if QR generation fails.
-    }
+    } catch { /* printed certificate ID remains */ }
   }
 
-  doc.setFont("helvetica", "normal");
-  doc.setFontSize(4.5);
-  doc.setTextColor("#777777");
+  doc.setFont("helvetica", "normal"); doc.setFontSize(4.5); doc.setTextColor("#777777");
   doc.text("This ID card is issued only after official approval.", width / 2, 52, { align: "center" });
 
   const safeName = String(name || "recipient").replace(/[^a-z0-9]/gi, "_").toLowerCase();
@@ -148,14 +128,10 @@ export const generateCertificate = async (name, role, date, certId = null, membe
     try {
       const qr = await loadImage(`${QR_CODE_API}${encodeURIComponent(verificationUrl)}`);
       doc.addImage(qr, "PNG", width - 48, height - 64, 25, 25);
-      doc.setFontSize(6.5);
-      doc.setTextColor("#555555");
+      doc.setFontSize(6.5); doc.setTextColor("#555555");
       doc.text("SCAN TO VERIFY", width - 35.5, height - 36, { align: "center" });
-    } catch {
-      // Printed verification URL remains available if QR generation is unavailable.
-    }
-    doc.setFontSize(7.5);
-    doc.text(`Verify: ${verificationUrl}`, centerX, height - 19, { align: "center" });
+    } catch { /* printed verification URL remains */ }
+    doc.setFontSize(7.5); doc.text(`Verify: ${verificationUrl}`, centerX, height - 19, { align: "center" });
   }
 
   try {
@@ -171,7 +147,5 @@ export const generateCertificate = async (name, role, date, certId = null, membe
 
   const safeName = String(name || "recipient").replace(/[^a-z0-9]/gi, "_").toLowerCase();
   doc.save(`SSF_Certificate_${safeName}.pdf`);
-
-  // Every approved person receives both documents: the certificate and the official ID card.
   await generateIdentityCard({ name, role, date, officialId, certId });
 };
