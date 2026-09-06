@@ -21,10 +21,10 @@ export default function MemberForm({ initialMemberType = "general" }) {
         if (phoneDigits.length < 7 || phoneDigits.length > 15) return "Please enter a valid mobile number.";
         if (formData.password.length < 8) return "Password must be at least 8 characters.";
         if (!formData.profilePhoto) return "Please upload a recent passport-size profile photo for your official Member ID Card.";
-        if (!["image/jpeg", "image/png", "image/webp"].includes(formData.profilePhoto.type)) return "Profile photo must be JPG, PNG or WebP.";
+        if (!["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"].includes(formData.profilePhoto.type)) return "Profile photo must be JPG, PNG, WebP or HEIC/HEIF.";
         if (formData.profilePhoto.size > 2 * 1024 * 1024) return "Profile photo must be 2MB or smaller.";
         if (!formData.idDocument) return "Please upload one identity proof for membership verification.";
-        if (!["image/jpeg", "image/png", "application/pdf"].includes(formData.idDocument.type)) return "Identity proof must be JPG, PNG or PDF.";
+        if (!["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif", "application/pdf"].includes(formData.idDocument.type)) return "Identity proof must be JPG, PNG, WebP, HEIC/HEIF or PDF.";
         if (formData.idDocument.size > 5 * 1024 * 1024) return "Identity proof must be 5MB or smaller.";
         if (formData.memberType !== "advisory" && !formData.message.trim()) return "Please tell us why you want to join.";
         return "";
@@ -32,7 +32,8 @@ export default function MemberForm({ initialMemberType = "general" }) {
 
     const persistSession = (user) => {
         const session = { ...user, loggedInAt: new Date().toISOString() };
-        localStorage.setItem("ssf_user_session", JSON.stringify(session));
+        sessionStorage.setItem("ssf_user_session", JSON.stringify(session));
+        localStorage.removeItem("ssf_user_session");
         window.dispatchEvent(new CustomEvent("ssf-auth-changed", { detail: session }));
         return session;
     };
@@ -57,7 +58,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
 
             const applicationResponse = await fetch(ENDPOINTS.MEMBER_SIGNUP, { method: "POST", body: payload });
             const applicationResult = await applicationResponse.json().catch(() => ({}));
-            if (!applicationResponse.ok) throw new Error(applicationResult.message || "Unable to submit membership application.");
+            if (!applicationResponse.ok) throw new Error(applicationResult.message || `Membership application failed (HTTP ${applicationResponse.status}).`);
             const user = persistSession(applicationResult.user || { ...applicationResult.data, id: applicationResult.data?.id });
 
             if (formData.memberType === "advisory") {
@@ -68,7 +69,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
             const paymentResult = await paymentResponse.json().catch(() => ({}));
             if (paymentResult.paymentUrl) return window.location.href = paymentResult.paymentUrl;
             if (paymentResult.fallbackUrl) return window.location.href = paymentResult.fallbackUrl;
-            throw new Error(paymentResult.message || "Membership account created, but payment could not be started.");
+            throw new Error(paymentResult.message || "Membership application was saved, but the payment page could not be opened. Your application is not lost.");
         } catch (err) {
             console.error("Membership signup error:", err); setStatus("error"); setError(err.message || "Unable to complete membership signup.");
         }
@@ -97,8 +98,8 @@ export default function MemberForm({ initialMemberType = "general" }) {
             </div>
 
             <div className="grid md:grid-cols-2 gap-5">
-                <div><label className="field-label flex items-center gap-2"><FaCamera /> Profile Photo *</label><input type="file" name="profilePhoto" accept="image/jpeg,image/png,image/webp" capture="user" onChange={(e) => setFormData(prev => ({ ...prev, profilePhoto: e.target.files?.[0] || null }))} required className="field-input file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold" />{formData.profilePhoto && <p className="mt-2 text-xs font-semibold text-emerald-600">Photo selected: {formData.profilePhoto.name}</p>}<p className="mt-1 text-xs text-zinc-400">Recent passport-size photo · JPG, PNG or WebP · maximum 2MB</p></div>
-                <div><label className="field-label flex items-center gap-2"><FaUpload /> Identity Proof *</label><select name="idProofType" value={formData.idProofType} onChange={handleChange} className="field-input mb-2">{proofOptions.map(option => <option key={option} value={option}>{option}</option>)}</select><input type="file" name="idDocument" accept=".jpg,.jpeg,.png,.pdf,application/pdf" onChange={(e) => setFormData(prev => ({ ...prev, idDocument: e.target.files?.[0] || null }))} required className="field-input file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold" />{formData.idDocument && <p className="mt-2 text-xs font-semibold text-emerald-600">Proof selected: {formData.idDocument.name}</p>}<p className="mt-1 text-xs text-zinc-400">Upload one valid proof · JPG, PNG or PDF · maximum 5MB</p></div>
+                <div><label className="field-label flex items-center gap-2"><FaCamera /> Profile Photo *</label><input type="file" name="profilePhoto" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" capture="user" onChange={(e) => setFormData(prev => ({ ...prev, profilePhoto: e.target.files?.[0] || null }))} required className="field-input file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold" />{formData.profilePhoto && <p className="mt-2 text-xs font-semibold text-emerald-600">Photo selected: {formData.profilePhoto.name}</p>}<p className="mt-1 text-xs text-zinc-400">Recent passport-size photo · JPG, PNG, WebP or HEIC/HEIF · maximum 2MB</p></div>
+                <div><label className="field-label flex items-center gap-2"><FaUpload /> Identity Proof *</label><select name="idProofType" value={formData.idProofType} onChange={handleChange} className="field-input mb-2">{proofOptions.map(option => <option key={option} value={option}>{option}</option>)}</select><input type="file" name="idDocument" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,application/pdf" onChange={(e) => setFormData(prev => ({ ...prev, idDocument: e.target.files?.[0] || null }))} required className="field-input file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold" />{formData.idDocument && <p className="mt-2 text-xs font-semibold text-emerald-600">Proof selected: {formData.idDocument.name}</p>}<p className="mt-1 text-xs text-zinc-400">Upload one valid proof · JPG, PNG, WebP, HEIC/HEIF or PDF · maximum 5MB</p></div>
             </div>
 
             <div><label className="field-label">Why do you want to join? {formData.memberType !== "advisory" ? "*" : ""}</label><textarea name="message" rows={4} value={formData.message} onChange={handleChange} placeholder="Tell us briefly about your interest and how you would like to contribute." className="field-input resize-none" /></div>
