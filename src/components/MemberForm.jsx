@@ -84,9 +84,9 @@ export default function MemberForm() {
 
             <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
                 <label className="field-label text-blue-900">📱 Mobile Number *</label>
-                <div className="flex gap-2 w-full">
-                    <select name="countryCode" value={formData.countryCode} onChange={handleChange} className="field-input w-32 shrink-0 bg-white" aria-label="Country code">{ALL_COUNTRIES.map((c, i) => <option key={`${c.name}-${i}`} value={c.code}>{c.code} {c.label.slice(0, 10)}</option>)}</select>
-                    <input type="tel" inputMode="numeric" name="phone" value={formData.phone} onChange={(e) => handleChange({ target: { name: "phone", value: e.target.value.replace(/\D/g, "") } })} required placeholder="Enter mobile number" autoComplete="tel-national" className="field-input flex-1 min-w-0 bg-white" />
+                <div className="grid grid-cols-[120px_minmax(0,1fr)] gap-2 w-full">
+                    <select name="countryCode" value={formData.countryCode} onChange={handleChange} className="field-input !w-full bg-white" aria-label="Country code">{ALL_COUNTRIES.map((c, i) => <option key={`${c.name}-${i}`} value={c.code}>{c.code} {c.label.slice(0, 10)}</option>)}</select>
+                    <input type="tel" inputMode="numeric" name="phone" value={formData.phone} onChange={(e) => handleChange({ target: { name: "phone", value: e.target.value.replace(/\D/g, "") } })} required placeholder="Enter mobile number" autoComplete="tel-national" className="field-input !w-full min-w-0 bg-white" />
                 </div>
                 <p className="mt-2 text-xs text-blue-700">Please enter the mobile number you actively use for communication.</p>
             </div>
