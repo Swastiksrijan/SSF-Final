@@ -25,6 +25,7 @@ const sendAdminNotification = async (subject, text) => {
 };
 const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
 const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.authorization || ''; const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : ''; if (!token || token !== getAdminToken()) return res.status(401).json({ message: 'Unauthorized admin access' }); next(); };
+const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
 
 router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', maxCount: 1 }, { name: 'profile_photo', maxCount: 1 }]), async (req, res) => {
     try {
@@ -55,57 +56,34 @@ router.post('/member-signup', uploadMemberFiles.fields([{ name: 'profile_photo',
         const existing = await Member.findOne({ where: { email: primaryEmail } });
         if (existing) {
             if (existing.passwordHash) return res.status(409).json({ status: 'error', message: 'An account with this email already exists. Please log in.' });
-            await existing.update({ passwordHash: hashPassword(password), phone: phone.trim(), memberType: isWebsiteAccount ? (existing.memberType || 'general') : memberType, idProofType: idProofType || existing.idProofType, idDocumentPath: idDocumentPath || existing.idDocumentPath, profilePhotoPath: photoPath || existing.profilePhotoPath, message: message || existing.message });
+            await existing.update({ passwordHash: hashPassword(password), phone: phone.trim(), memberType: isWebsiteAccount ? 'website_signup' : memberType, idProofType: idProofType || existing.idProofType, idDocumentPath: idDocumentPath || existing.idDocumentPath, profilePhotoPath: photoPath || existing.profilePhotoPath, message: isWebsiteAccount ? 'Signup from website' : (message || existing.message) });
             return res.status(200).json({ status: 'success', message: 'Your existing record now has a website account. You are signed in.', data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
         }
-        const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: phone.trim(), passwordHash: hashPassword(password), memberType: isWebsiteAccount ? 'general' : memberType, message: message || null, profilePhotoPath: photoPath, idProofType: idProofType || null, idDocumentPath, status: 'pending', paymentStatus: isWebsiteAccount ? 'not_required' : (memberType === 'advisory' ? 'not_required' : 'pending') });
+        const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: phone.trim(), passwordHash: hashPassword(password), memberType: isWebsiteAccount ? 'website_signup' : memberType, message: isWebsiteAccount ? 'Signup from website' : (message || null), profilePhotoPath: photoPath, idProofType: idProofType || null, idDocumentPath, status: isWebsiteAccount ? 'approved' : 'pending', paymentStatus: isWebsiteAccount ? 'not_required' : (memberType === 'advisory' ? 'not_required' : 'pending') });
         await sendAdminNotification(`New ${isWebsiteAccount ? 'Website Account' : 'Member'} Signup: ${fullName}`, `New ${isWebsiteAccount ? 'website account' : 'member application'} received. Name: ${fullName}, Type: ${isWebsiteAccount ? 'website account' : memberType}, Email: ${primaryEmail}, Phone: ${phone}`);
         return res.status(201).json({ status: 'success', message: isWebsiteAccount ? 'Account created successfully. You are now signed in.' : 'Membership application submitted successfully', data: newMember, user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
     } catch (error) { console.error('❌ Member registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
 });
 
-// Logged-in website users can manage only their own profile photo.
 router.patch('/member-profile/:id/photo', uploadProfilePhoto.single('profilePhoto'), async (req, res) => {
     try {
         const member = await Member.findByPk(req.params.id);
         if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' });
         if (!req.file) return res.status(400).json({ status: 'error', message: 'Please select a JPG, PNG or WebP photo.' });
-        if (req.file.size > 2 * 1024 * 1024) {
-            try { fs.unlinkSync(req.file.path); } catch (_) {}
-            return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' });
-        }
-        const oldPath = member.profilePhotoPath;
-        const newPath = `/uploads/${req.file.filename}`;
-        await member.update({ profilePhotoPath: newPath });
-        if (oldPath && oldPath.startsWith('/uploads/')) {
-            const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, ''));
-            if (oldFile !== req.file.path && fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} }
-        }
-        const data = member.toJSON(); delete data.passwordHash;
-        return res.json({ status: 'success', message: 'Profile photo updated successfully.', profilePhotoPath: newPath, user: data });
-    } catch (error) {
-        if (req.file?.path && fs.existsSync(req.file.path)) { try { fs.unlinkSync(req.file.path); } catch (_) {} }
-        console.error('❌ Profile photo update error:', error);
-        return res.status(500).json({ status: 'error', message: error.message || 'Unable to update profile photo.' });
-    }
+        if (req.file.size > 2 * 1024 * 1024) { try { fs.unlinkSync(req.file.path); } catch (_) {} return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' }); }
+        const oldPath = member.profilePhotoPath; const newPath = `/uploads/${req.file.filename}`; await member.update({ profilePhotoPath: newPath });
+        if (oldPath && oldPath.startsWith('/uploads/')) { const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, '')); if (oldFile !== req.file.path && fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} } }
+        const data = member.toJSON(); delete data.passwordHash; return res.json({ status: 'success', message: 'Profile photo updated successfully.', profilePhotoPath: newPath, user: data });
+    } catch (error) { if (req.file?.path && fs.existsSync(req.file.path)) { try { fs.unlinkSync(req.file.path); } catch (_) {} } console.error('❌ Profile photo update error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Unable to update profile photo.' }); }
 });
 
 router.delete('/member-profile/:id/photo', async (req, res) => {
-    try {
-        const member = await Member.findByPk(req.params.id);
-        if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' });
-        const oldPath = member.profilePhotoPath;
-        await member.update({ profilePhotoPath: null });
-        if (oldPath && oldPath.startsWith('/uploads/')) {
-            const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, ''));
-            if (fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} }
-        }
-        return res.json({ status: 'success', message: 'Profile photo removed.', profilePhotoPath: null });
-    } catch (error) { console.error('❌ Profile photo delete error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Unable to remove profile photo.' }); }
+    try { const member = await Member.findByPk(req.params.id); if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' }); const oldPath = member.profilePhotoPath; await member.update({ profilePhotoPath: null }); if (oldPath && oldPath.startsWith('/uploads/')) { const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, '')); if (fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} } } return res.json({ status: 'success', message: 'Profile photo removed.', profilePhotoPath: null }); }
+    catch (error) { console.error('❌ Profile photo delete error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Unable to remove photo.' }); }
 });
 
 router.get('/admin/members', requireAdminAuth, async (_req, res) => {
-    try { const members = await Member.findAll({ attributes: { exclude: ['passwordHash'] }, order: [['createdAt', 'DESC']] }); return res.json(members.map(member => ({ ...member.toJSON(), profilePhotoPath: member.profilePhotoPath || null, idDocumentPath: member.idDocumentPath || null }))); }
+    try { const members = await Member.findAll({ attributes: { exclude: ['passwordHash'] }, order: [['createdAt', 'DESC']] }); return res.json(members.filter(member => !isAccountOnly(member)).map(member => ({ ...member.toJSON(), profilePhotoPath: member.profilePhotoPath || null, idDocumentPath: member.idDocumentPath || null }))); }
     catch (error) { console.error('❌ Member admin list error:', error); return res.status(500).json({ message: 'Server Error' }); }
 });
 
