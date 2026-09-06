@@ -1,6 +1,8 @@
 const express = require('express');
 const nodemailer = require('nodemailer');
 const crypto = require('crypto');
+const path = require('path');
+const fs = require('fs');
 const router = express.Router();
 const Member = require('../models/Member');
 
@@ -87,6 +89,23 @@ router.post('/admin/member-approve/:id', requireAdminAuth, async (req, res) => {
         try { await sendEmail(member.email, 'Membership Approved - Swastik Srijan Foundation', `Congratulations! Your SSF membership has been approved. Member ID: ${memberId}. Certificate ID: ${certId}. Verify: ${verificationUrl}`, `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;padding:24px;border:1px solid #eee;border-radius:16px"><h2>Membership Approved</h2><p>Welcome, <strong>${member.fullName}</strong>.</p><p><strong>Member ID:</strong> ${memberId}</p><p><strong>Certificate ID:</strong> ${certId}</p><p><a href="${verificationUrl}">Verify Certificate</a></p></div>`); } catch (emailError) { emailSent = false; warning = 'Member approved, but the email notification failed.'; console.error('⚠️ Member approval email failed:', emailError.message); }
         return res.json({ status: 'success', memberId, certId, certificateType: 'Membership Certificate', certificateIssuedAt, verificationUrl, emailSent, warning });
     } catch (error) { console.error('❌ Member approval error:', error); return res.status(500).json({ message: 'Server Error' }); }
+});
+
+router.delete('/admin/members/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const member = await Member.findByPk(req.params.id);
+        if (!member) return res.status(404).json({ message: 'Member application not found' });
+        if (member.profilePhotoPath) {
+            const filename = path.basename(member.profilePhotoPath);
+            const filePath = path.join(__dirname, '..', 'uploads', filename);
+            try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Member photo cleanup failed:', error.message); }
+        }
+        await member.destroy();
+        return res.json({ status: 'success', message: 'Member application deleted permanently.' });
+    } catch (error) {
+        console.error('❌ Member delete error:', error);
+        return res.status(500).json({ message: 'Unable to delete member application.' });
+    }
 });
 
 router.get('/member-status/:id', async (req, res) => {
