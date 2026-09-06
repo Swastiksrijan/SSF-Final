@@ -28,6 +28,7 @@ const interestRoutes = require('./routes/interestRoutes');
 const contactRoutes = require('./routes/contactRoutes');
 const internshipRoutes = require('./routes/internshipRoutes');
 const donorRoutes = require('./routes/donorRoutes');
+const roleDocumentRoutes = require('./routes/roleDocumentRoutes');
 
 app.use('/api', memberCertificateRoutes);
 app.use('/api', volunteerAdminRoutes);
@@ -41,6 +42,8 @@ app.use('/api', interestRoutes);
 app.use('/api', contactRoutes);
 app.use('/api', internshipRoutes);
 app.use('/api', donorRoutes);
+// Reusable IDs/certificates/letters for roles that do not have a dedicated document flow yet.
+app.use('/api', roleDocumentRoutes);
 
 sequelize.sync({ alter: true })
     .then(() => {
