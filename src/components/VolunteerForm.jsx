@@ -80,37 +80,12 @@ export default function VolunteerForm() {
                 <div><label className="field-label">Email Address *</label><input type="email" className={inputClass} value={formData.email} onChange={(e) => update("email", e.target.value)} placeholder="you@example.com" autoComplete="email" required /></div>
             </div>
             <div className="grid md:grid-cols-2 gap-5">
-                <div>
-                    <label className="field-label">Phone Number *</label>
-                    <div className="flex w-full gap-2 items-stretch">
-                        <select className={`${inputClass} !w-[118px] shrink-0 px-3`} value={formData.countryCode} onChange={(e) => update("countryCode", e.target.value)} aria-label="Country code">
-                            <option value="+91">🇮🇳 +91</option>
-                            <option value="+1">🇺🇸 +1</option>
-                            <option value="+44">🇬🇧 +44</option>
-                            <option value="+61">🇦🇺 +61</option>
-                            <option value="+971">🇦🇪 +971</option>
-                        </select>
-                        <input
-                            type="tel"
-                            inputMode="numeric"
-                            pattern="[0-9 ]*"
-                            maxLength={15}
-                            className={`${inputClass} flex-1 min-w-0 !w-auto`}
-                            value={formData.phone}
-                            onChange={(e) => update("phone", e.target.value.replace(/[^0-9 ]/g, ""))}
-                            placeholder="Mobile number"
-                            autoComplete="tel-national"
-                            aria-label="Mobile number"
-                            required
-                        />
-                    </div>
-                    <p className="mt-2 text-xs text-zinc-400">Select country code, then enter your mobile number.</p>
-                </div>
+                <div><label className="field-label">Phone Number *</label><div className="flex w-full gap-2 items-stretch"><select className={`${inputClass} !w-[118px] shrink-0 px-3`} value={formData.countryCode} onChange={(e) => update("countryCode", e.target.value)} aria-label="Country code"><option value="+91">🇮🇳 +91</option><option value="+1">🇺🇸 +1</option><option value="+44">🇬🇧 +44</option><option value="+61">🇦🇺 +61</option><option value="+971">🇦🇪 +971</option></select><input type="tel" inputMode="numeric" pattern="[0-9 ]*" maxLength={15} className={`${inputClass} flex-1 min-w-0 !w-auto`} value={formData.phone} onChange={(e) => update("phone", e.target.value.replace(/[^0-9 ]/g, ""))} placeholder="Mobile number" autoComplete="tel-national" aria-label="Mobile number" required /></div><p className="mt-2 text-xs text-zinc-400">Select country code, then enter your mobile number.</p></div>
                 <div><label className="field-label">Volunteer Type *</label><select className={inputClass} value={formData.volunteerType} onChange={(e) => update("volunteerType", e.target.value)}><option value="field">Field Volunteer</option><option value="program">Program Volunteer</option><option value="professional">Professional Volunteer</option><option value="digital">Digital / Online Volunteer</option></select></div>
             </div>
             <div className="grid md:grid-cols-2 gap-5">
                 <div><label className="field-label">Position Applied For *</label><select className={inputClass} value={formData.position} onChange={(e) => update("position", e.target.value)}>{positions.map((position) => <option key={position} value={position}>{position}</option>)}</select></div>
-                <div><label className="field-label">ID Proof Type *</label><select className={inputClass} value={formData.idType} onChange={(e) => update("idType", e.target.value)}><option value="College ID">College ID</option><option value="NGO ID">NGO ID</option><option value="Driving License">Driving License</option><option value="Voter ID">Voter ID</option></select></div>
+                <div><label className="field-label">ID Proof Type *</label><select className={inputClass} value={formData.idType} onChange={(e) => update("idType", e.target.value)}><option value="College ID">College ID</option><option value="NGO ID">NGO ID</option><option value="Driving License">Driving License</option><option value="Voter ID">Voter ID</option><option value="Aadhaar Card">Aadhaar Card</option><option value="Passport">Passport</option></select></div>
             </div>
             <div className="grid md:grid-cols-2 gap-5">
                 <div><label className="field-label flex items-center gap-2"><FaCamera /> Profile Photo * <span className="font-normal normal-case tracking-normal text-zinc-400">(JPG, PNG, WebP · max 2MB)</span></label><input type="file" accept="image/jpeg,image/png,image/webp" capture="user" onChange={(e) => update("profilePhoto", e.target.files?.[0] || null)} className={`${inputClass} file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold`} required />{formData.profilePhoto && <p className="mt-2 text-xs font-semibold text-emerald-600">Photo selected: {formData.profilePhoto.name}</p>}</div>
