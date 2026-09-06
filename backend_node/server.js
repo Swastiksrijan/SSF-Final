@@ -29,6 +29,7 @@ const contactRoutes = require('./routes/contactRoutes');
 const internshipRoutes = require('./routes/internshipRoutes');
 const donorRoutes = require('./routes/donorRoutes');
 const roleDocumentRoutes = require('./routes/roleDocumentRoutes');
+const passwordResetRoutes = require('./routes/passwordResetRoutes');
 
 app.use('/api', memberCertificateRoutes);
 app.use('/api', volunteerAdminRoutes);
@@ -44,6 +45,8 @@ app.use('/api', internshipRoutes);
 app.use('/api', donorRoutes);
 // Reusable IDs/certificates/letters for roles that do not have a dedicated document flow yet.
 app.use('/api', roleDocumentRoutes);
+// Account password recovery.
+app.use('/api', passwordResetRoutes);
 
 sequelize.sync({ alter: true })
     .then(() => {
