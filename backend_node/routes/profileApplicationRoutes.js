@@ -11,8 +11,10 @@ const Member = require('../models/Member');
 const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
 const storage = multer.diskStorage({ destination: (_req, _file, cb) => cb(null, uploadDir), filename: (_req, file, cb) => cb(null, `${Date.now()}-${crypto.randomBytes(8).toString('hex')}${path.extname(file.originalname).toLowerCase()}`) });
-const imageOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype) ? cb(null, true) : cb(new Error('Profile photo must be JPG, PNG or WebP.'));
-const upload = multer({ storage, fileFilter: imageOnly, limits: { fileSize: 2 * 1024 * 1024, files: 2 } });
+const profilePhotoOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype) ? cb(null, true) : cb(new Error('Profile photo must be JPG, PNG or WebP.'));
+const idDocumentOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'application/pdf'].includes(file.mimetype) ? cb(null, true) : cb(new Error('ID document must be JPG, PNG or PDF.'));
+const uploadPhoto = multer({ storage, fileFilter: profilePhotoOnly, limits: { fileSize: 2 * 1024 * 1024, files: 1 } });
+const uploadVolunteerFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file, cb), limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
 const hashPassword = (password) => { const salt = crypto.randomBytes(16).toString('hex'); const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex'); return `${salt}:${hash}`; };
 const sendAdminNotification = async (subject, text) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
@@ -23,18 +25,20 @@ const sendAdminNotification = async (subject, text) => {
 const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
 const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.authorization || ''; const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : ''; if (!token || token !== getAdminToken()) return res.status(401).json({ message: 'Unauthorized admin access' }); next(); };
 
-router.post('/register', upload.fields([{ name: 'id_document', maxCount: 1 }, { name: 'profile_photo', maxCount: 1 }]), async (req, res) => {
+router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', maxCount: 1 }, { name: 'profile_photo', maxCount: 1 }]), async (req, res) => {
     try {
         const { name, email, phone, volunteer_type, position, id_type, message } = req.body || {};
         const idDocument = req.files?.id_document?.[0]; const profilePhoto = req.files?.profile_photo?.[0];
         if (!name || !email || !phone || !idDocument || !profilePhoto) return res.status(400).json({ status: 'error', message: 'Full name, email, phone, profile photo and ID document are required.' });
+        if (profilePhoto.size > 2 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' });
+        if (idDocument.size > 5 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'ID document must be 5MB or smaller.' });
         const newVolunteer = await Volunteer.create({ fullName: name.trim(), email: email.trim().toLowerCase(), phone: phone.trim(), volunteerType: volunteer_type || 'field', position: position || 'General Volunteer', idType: id_type || 'College ID', message: message || null, idDocumentPath: idDocument.path, profilePhotoPath: `/uploads/${profilePhoto.filename}`, status: 'pending', isVerified: false });
         await sendAdminNotification(`New Volunteer Registration: ${name}`, `New volunteer application received. Name: ${name}, Type: ${volunteer_type || 'field'}, Position: ${position || 'General Volunteer'}, Phone: ${phone}, Email: ${email}`);
         return res.status(201).json({ status: 'success', message: 'Application submitted successfully', data: newVolunteer });
     } catch (error) { console.error('❌ Volunteer registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
 });
 
-router.post('/member-signup', upload.single('profile_photo'), async (req, res) => {
+router.post('/member-signup', uploadPhoto.single('profile_photo'), async (req, res) => {
     try {
         const { fullName, email, confirmEmail, phone, password, memberType, message } = req.body || {};
         const primaryEmail = (email || '').trim().toLowerCase(); const secondaryEmail = (confirmEmail || '').trim().toLowerCase(); const isWebsiteAccount = memberType === 'website_signup';
