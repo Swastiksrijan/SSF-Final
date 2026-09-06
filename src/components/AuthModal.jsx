@@ -5,6 +5,7 @@ import { FaTimes, FaUserPlus, FaSignInAlt, FaWhatsapp, FaEnvelope } from "react-
 import { CONTACT_INFO } from "../config/contact";
 import { ENDPOINTS } from "../config/api";
 
+const SESSION_KEY = "ssf_user_session";
 const initialSignup = { fullName: "", email: "", phone: "", password: "" };
 const initialLogin = { email: "", password: "" };
 
@@ -56,11 +57,11 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
     const persistSession = (user) => {
         const session = {
             ...user,
-            // website_signup is a technical account type, not a user-facing SSF role.
             memberType: user.memberType === "website_signup" ? "general" : user.memberType,
             loggedInAt: new Date().toISOString()
         };
-        localStorage.setItem("ssf_user_session", JSON.stringify(session));
+        sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
+        localStorage.removeItem(SESSION_KEY);
         window.dispatchEvent(new CustomEvent("ssf-auth-changed", { detail: session }));
         return session;
     };
