@@ -1,4 +1,5 @@
 import jsPDF from "jspdf";
+import officialLogo from "../assets/new-logo.png";
 
 const loadImage = (url) => new Promise((resolve, reject) => {
   const img = new Image();
@@ -26,7 +27,7 @@ export const generateCertificate = async (name, role, date, certId = null, membe
   doc.setDrawColor(gold); doc.setLineWidth(1.2); doc.rect(11, 11, width - 22, height - 22);
 
   try {
-    const logo = await loadImage("/images/logo.png");
+    const logo = await loadImage(officialLogo);
     const logoWidth = 25;
     const logoHeight = (logo.height / logo.width) * logoWidth;
     doc.addImage(logo, "PNG", centerX - logoWidth / 2, 18, logoWidth, logoHeight);
