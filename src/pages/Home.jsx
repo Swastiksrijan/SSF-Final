@@ -120,7 +120,7 @@ export default function Home() {
                 icon: <FaHeart className="text-red-500 text-4xl mb-4" />
               },
               {
-                text: "Volunteer", sub: "Driven Initiatives  - (Become a volunteer)", subHi: "स्वयंसेवक संचालित",
+                text: "Impact", sub: "Measurable Change", subHi: "मापनीय परिवर्तन",
                 icon: <FaHandshake className="text-green-600 text-4xl mb-4" />
               }
             ].map((item, index) => (
@@ -160,7 +160,7 @@ export default function Home() {
 
           <div className="text-lg md:text-xl text-zinc-600 leading-relaxed text-center mb-12">
             <p className="mb-6">
-              Founded in 2013, Swastik Srijan Foundation is a registered non-government organization (NGO) working at the grassroots level in Madhya Pradesh and across India. We believe that true[...]
+              Founded in 2013, Swastik Srijan Foundation is a registered non-government organization (NGO) working at the grassroots level in Madhya Pradesh and across India. We believe that true change begins when communities come together.
             </p>
             <ul className="text-left max-w-2xl mx-auto space-y-4 mt-8 bg-zinc-50 p-8 rounded-xl border border-zinc-100">
               <li className="flex items-start gap-3">
