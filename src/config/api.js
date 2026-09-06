@@ -10,6 +10,7 @@ export const ENDPOINTS = {
     MEMBER_LOGIN: `${API_BASE_URL}/api/member-login`,
     MEMBER_STATUS: (id) => `${API_BASE_URL}/api/member-status/${id}`,
     MEMBER_PAYMENT_LINK: `${API_BASE_URL}/api/member-payment-link`,
+    CONTACT: `${API_BASE_URL}/api/contact`,
     ADMIN_LOGIN: `${API_BASE_URL}/api/admin/login`,
     ADMIN_VOLUNTEERS: `${API_BASE_URL}/api/admin/volunteers`,
     ADMIN_MEMBERS: `${API_BASE_URL}/api/admin/members`,
