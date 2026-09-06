@@ -9,6 +9,7 @@ const Member = sequelize.define('Member', {
     passwordHash: { type: DataTypes.TEXT, allowNull: true },
     memberType: { type: DataTypes.STRING, defaultValue: 'general' },
     message: { type: DataTypes.TEXT, allowNull: true },
+    profilePhotoPath: { type: DataTypes.STRING, allowNull: true },
     status: { type: DataTypes.ENUM('pending', 'approved', 'rejected'), defaultValue: 'pending' },
     paymentStatus: { type: DataTypes.ENUM('not_required', 'pending', 'paid', 'failed'), defaultValue: 'pending' },
     paymentId: { type: DataTypes.STRING, allowNull: true, unique: true },
