@@ -8,36 +8,22 @@ const InternshipApplication = require('../models/InternshipApplication');
 const router = express.Router();
 const uploadDir = path.join(__dirname, '..', 'uploads', 'internships');
 fs.mkdirSync(uploadDir, { recursive: true });
-
-const storage = multer.diskStorage({
-    destination: (_req, _file, cb) => cb(null, uploadDir),
-    filename: (_req, file, cb) => cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${path.extname(file.originalname).toLowerCase()}`)
-});
-
-const upload = multer({
-    storage,
-    limits: { fileSize: 5 * 1024 * 1024 },
-    fileFilter: (_req, file, cb) => {
-        const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
-        if (!allowed.includes(file.mimetype)) return cb(new Error('Resume must be PDF, DOC or DOCX.'));
-        cb(null, true);
-    }
-});
-
+const storage = multer.diskStorage({ destination: (_req, _file, cb) => cb(null, uploadDir), filename: (_req, file, cb) => cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${path.extname(file.originalname).toLowerCase()}`) });
+const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 }, fileFilter: (_req, file, cb) => { const allowed = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document']; if (!allowed.includes(file.mimetype)) return cb(new Error('Resume must be PDF, DOC or DOCX.')); cb(null, true); } });
 const notifyAdmin = async (application) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
     const recipients = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'swastiksrijanfoundation@gmail.com').split(',').map(v => v.trim()).filter(Boolean).join(',');
     try {
         const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
-        await transporter.sendMail({
-            from: `"SSF Internship" <${process.env.EMAIL_USER}>`,
-            to: recipients,
-            subject: `New Internship Application: ${application.fullName}`,
-            text: `New internship application received.\n\nName: ${application.fullName}\nEmail: ${application.email}\nPhone: ${application.phone}\nCollege: ${application.college}\nCourse: ${application.course}\nArea: ${application.internshipType}\nDuration: ${application.duration}\nStart Date: ${application.startDate || 'Not specified'}\nResume: ${application.resumePath}`
-        });
-    } catch (error) {
-        console.error('⚠️ Internship notification failed:', error.message);
-    }
+        await transporter.sendMail({ from: `"SSF Internship" <${process.env.EMAIL_USER}>`, to: recipients, subject: `New Internship Application: ${application.fullName}`, text: `New internship application received.\n\nName: ${application.fullName}\nEmail: ${application.email}\nPhone: ${application.phone}\nCollege: ${application.college}\nCourse: ${application.course}\nArea: ${application.internshipType}\nDuration: ${application.duration}\nStart Date: ${application.startDate || 'Not specified'}\nResume: ${application.resumePath}` });
+    } catch (error) { console.error('⚠️ Internship notification failed:', error.message); }
+};
+const requireAdminAuth = (req, res, next) => {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+    const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+    if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized admin access' });
+    next();
 };
 
 router.post('/internship', (req, res) => {
@@ -45,23 +31,12 @@ router.post('/internship', (req, res) => {
         try {
             if (uploadError) return res.status(400).json({ message: uploadError.message || 'Invalid resume upload.' });
             const { fullName, email, phone, college, course, internshipType, duration, startDate, message } = req.body || {};
-            const clean = {
-                fullName: String(fullName || '').trim(),
-                email: String(email || '').trim().toLowerCase(),
-                phone: String(phone || '').trim(),
-                college: String(college || '').trim(),
-                course: String(course || '').trim(),
-                internshipType: String(internshipType || '').trim(),
-                duration: String(duration || '').trim(),
-                startDate: String(startDate || '').trim() || null,
-                message: String(message || '').trim() || null
-            };
+            const clean = { fullName: String(fullName || '').trim(), email: String(email || '').trim().toLowerCase(), phone: String(phone || '').trim(), college: String(college || '').trim(), course: String(course || '').trim(), internshipType: String(internshipType || '').trim(), duration: String(duration || '').trim(), startDate: String(startDate || '').trim() || null, message: String(message || '').trim() || null };
             if (clean.fullName.length < 3) return res.status(400).json({ message: 'Please enter your full name.' });
             if (!/^\S+@\S+\.\S+$/.test(clean.email)) return res.status(400).json({ message: 'Please enter a valid email address.' });
             if (clean.phone.replace(/\D/g, '').length < 7) return res.status(400).json({ message: 'Please enter a valid mobile number.' });
             if (!clean.college || !clean.course || !clean.internshipType || !clean.duration) return res.status(400).json({ message: 'Please complete all required application fields.' });
             if (!req.file) return res.status(400).json({ message: 'Please upload your resume.' });
-
             const application = await InternshipApplication.create({ ...clean, resumePath: `/uploads/internships/${req.file.filename}`, status: 'pending' });
             await notifyAdmin(application);
             return res.status(201).json({ status: 'success', message: 'Internship application submitted successfully.', data: { id: application.id } });
@@ -71,6 +46,30 @@ router.post('/internship', (req, res) => {
             return res.status(500).json({ message: 'Unable to submit right now. Please try again.' });
         }
     });
+});
+
+router.get('/admin/internships', requireAdminAuth, async (_req, res) => {
+    try {
+        const applications = await InternshipApplication.findAll({ order: [['createdAt', 'DESC']] });
+        return res.json(applications);
+    } catch (error) {
+        console.error('❌ Admin internships fetch error:', error);
+        return res.status(500).json({ message: 'Unable to load internship applications.' });
+    }
+});
+
+router.patch('/admin/internships/:id/status', requireAdminAuth, async (req, res) => {
+    try {
+        const status = String(req.body?.status || '');
+        if (!['pending', 'reviewed', 'selected', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid status.' });
+        const application = await InternshipApplication.findByPk(req.params.id);
+        if (!application) return res.status(404).json({ message: 'Internship application not found.' });
+        await application.update({ status });
+        return res.json({ status: 'success', data: application });
+    } catch (error) {
+        console.error('❌ Internship status update error:', error);
+        return res.status(500).json({ message: 'Unable to update status.' });
+    }
 });
 
 module.exports = router;
