@@ -19,10 +19,14 @@ const storage = multer.diskStorage({
 
 const profileTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif']);
 const documentTypes = new Set(['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif', 'application/pdf']);
+const profileExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif']);
+const documentExtensions = new Set(['.jpg', '.jpeg', '.png', '.webp', '.heic', '.heif', '.pdf']);
 const fileFilter = (_req, file, cb) => {
-  const allowed = file.fieldname === 'profile_photo' ? profileTypes : documentTypes;
-  if (allowed.has(file.mimetype)) return cb(null, true);
-  return cb(new Error(file.fieldname === 'profile_photo'
+  const extension = path.extname(file.originalname || '').toLowerCase();
+  const isProfile = file.fieldname === 'profile_photo';
+  const allowed = isProfile ? profileTypes.has(file.mimetype) || profileExtensions.has(extension) : documentTypes.has(file.mimetype) || documentExtensions.has(extension);
+  if (allowed) return cb(null, true);
+  return cb(new Error(isProfile
     ? 'Profile photo must be JPG, PNG, WebP or HEIC/HEIF.'
     : 'Identity document must be JPG, PNG, WebP, HEIC/HEIF or PDF.'));
 };
@@ -32,6 +36,8 @@ const multipart = (fields) => (req, res, next) => {
   if (!req.is('multipart/form-data')) return next();
   upload.fields(fields)(req, res, (error) => {
     if (!error) return next();
+    const uploaded = Object.values(req.files || {}).flat();
+    uploaded.forEach(removeFile);
     if (error instanceof multer.MulterError) {
       const message = error.code === 'LIMIT_FILE_SIZE'
         ? 'One of the uploaded files is larger than 5MB.'
@@ -66,7 +72,7 @@ const notifyAdmin = async (subject, text) => {
   }
 };
 const cleanEmail = (value) => String(value || '').trim().toLowerCase();
-const cleanPhone = (value) => String(value || '').trim();
+const cleanPhone = (value) => String(value || '').replace(/\s+/g, ' ').trim();
 const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
 
 router.post('/register', multipart([
@@ -85,7 +91,7 @@ router.post('/register', multipart([
     const normalizedEmail = cleanEmail(email);
     const normalizedPhone = cleanPhone(phone);
     const duplicate = await Volunteer.findOne({ where: { [Op.or]: [{ email: normalizedEmail }, { phone: normalizedPhone }] } });
-    if (duplicate) { removeFile(profilePhoto); removeFile(idDocument); return res.status(409).json({ status: 'error', message: duplicate.email === normalizedEmail ? 'A volunteer application with this email already exists.' : 'A volunteer application with this mobile number already exists.' }); }
+    if (duplicate) { removeFile(profilePhoto); removeFile(idDocument); return res.status(409).json({ status: 'error', message: cleanEmail(duplicate.email) === normalizedEmail ? 'A volunteer application with this email already exists.' : 'A volunteer application with this mobile number already exists.' }); }
     const newVolunteer = await Volunteer.create({
       fullName: name.trim(), email: normalizedEmail, phone: normalizedPhone,
       volunteerType: volunteer_type || 'field', position: position || 'General Volunteer', idType: id_type || 'College ID',
@@ -137,7 +143,8 @@ router.post('/member-signup', multipart([
       }
       if (existing.status === 'changes_requested') {
         await existing.update({ fullName: fullName.trim(), phone: normalizedPhone, memberType, idProofType, message: message?.trim() || null, profilePhotoPath: `/uploads/${profilePhoto.filename}`, idDocumentPath: idDocument.path, status: 'pending', reviewNote: null });
-        return res.status(200).json({ status: 'success', message: 'Membership application updated and resubmitted successfully.', data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
+        const emailSent = await notifyAdmin(`Membership Application Resubmitted: ${fullName.trim()}`, `A membership application has been updated and resubmitted.\nName: ${fullName.trim()}\nType: ${memberType}\nEmail: ${primaryEmail}\nPhone: ${normalizedPhone}`);
+        return res.status(200).json({ status: 'success', message: 'Membership application updated and resubmitted successfully.', emailSent, data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
       }
       removeFile(profilePhoto); removeFile(idDocument);
       return res.status(409).json({ status: 'error', message: 'A membership application with this email already exists.' });
