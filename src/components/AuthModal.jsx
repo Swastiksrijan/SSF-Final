@@ -54,7 +54,12 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
     };
 
     const persistSession = (user) => {
-        const session = { ...user, loggedInAt: new Date().toISOString() };
+        const session = {
+            ...user,
+            // website_signup is a technical account type, not a user-facing SSF role.
+            memberType: user.memberType === "website_signup" ? "general" : user.memberType,
+            loggedInAt: new Date().toISOString()
+        };
         localStorage.setItem("ssf_user_session", JSON.stringify(session));
         window.dispatchEvent(new CustomEvent("ssf-auth-changed", { detail: session }));
         return session;
