@@ -9,6 +9,8 @@ const INITIAL_FORM = {
 };
 
 const inputClass = "w-full px-5 py-4 bg-zinc-50 border border-zinc-100 rounded-2xl focus:outline-none focus:ring-4 focus:ring-orange-400/20 focus:border-orange-300 transition-all font-medium";
+const PROFILE_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif"];
+const DOCUMENT_TYPES = ["image/jpeg", "image/png", "image/webp", "image/heic", "image/heif", "application/pdf"];
 
 export default function VolunteerForm() {
     const [formData, setFormData] = useState(INITIAL_FORM);
@@ -25,10 +27,10 @@ export default function VolunteerForm() {
         if (phoneDigits.length < 7 || phoneDigits.length > 15) return "Please enter a valid phone number.";
         if (!formData.message.trim() || formData.message.trim().length < 10) return "Please tell us briefly why you want to volunteer (minimum 10 characters).";
         if (!formData.profilePhoto) return "Please upload a recent passport-size profile photo for your official Volunteer ID Card.";
-        if (!["image/jpeg", "image/png", "image/webp"].includes(formData.profilePhoto.type)) return "Profile photo must be JPG, PNG or WebP.";
+        if (!PROFILE_TYPES.includes(formData.profilePhoto.type)) return "Profile photo must be JPG, PNG, WebP or HEIC/HEIF.";
         if (formData.profilePhoto.size > 2 * 1024 * 1024) return "Profile photo must be 2MB or smaller.";
         if (!formData.idDocument) return "Please upload your ID document for verification.";
-        if (!["image/jpeg", "image/png", "application/pdf"].includes(formData.idDocument.type)) return "ID document must be JPG, PNG or PDF.";
+        if (!DOCUMENT_TYPES.includes(formData.idDocument.type)) return "ID document must be JPG, PNG, WebP, HEIC/HEIF or PDF.";
         if (formData.idDocument.size > 5 * 1024 * 1024) return "ID document must be 5MB or smaller.";
         return "";
     };
@@ -52,7 +54,7 @@ export default function VolunteerForm() {
 
             const response = await fetch(ENDPOINTS.REGISTER, { method: "POST", body: payload });
             const result = await response.json().catch(() => ({}));
-            if (!response.ok) throw new Error(result.message || "Unable to submit your application.");
+            if (!response.ok) throw new Error(result.message || `Volunteer application failed (HTTP ${response.status}).`);
             setApplicationId(result.data?.id || ""); setStatus("success");
         } catch (submitError) {
             console.error("Volunteer submission failed:", submitError);
@@ -88,8 +90,8 @@ export default function VolunteerForm() {
                 <div><label className="field-label">ID Proof Type *</label><select className={inputClass} value={formData.idType} onChange={(e) => update("idType", e.target.value)}><option value="College ID">College ID</option><option value="NGO ID">NGO ID</option><option value="Driving License">Driving License</option><option value="Voter ID">Voter ID</option><option value="Aadhaar Card">Aadhaar Card</option><option value="Passport">Passport</option></select></div>
             </div>
             <div className="grid md:grid-cols-2 gap-5">
-                <div><label className="field-label flex items-center gap-2"><FaCamera /> Profile Photo * <span className="font-normal normal-case tracking-normal text-zinc-400">(JPG, PNG, WebP · max 2MB)</span></label><input type="file" accept="image/jpeg,image/png,image/webp" capture="user" onChange={(e) => update("profilePhoto", e.target.files?.[0] || null)} className={`${inputClass} file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold`} required />{formData.profilePhoto && <p className="mt-2 text-xs font-semibold text-emerald-600">Photo selected: {formData.profilePhoto.name}</p>}</div>
-                <div><label className="field-label flex items-center gap-2"><FaUpload /> Upload ID Document * <span className="font-normal normal-case tracking-normal text-zinc-400">(JPG, PNG or PDF · max 5MB)</span></label><input type="file" accept=".jpg,.jpeg,.png,.pdf,application/pdf" onChange={(e) => update("idDocument", e.target.files?.[0] || null)} className={`${inputClass} file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold`} required />{formData.idDocument && <p className="mt-2 text-xs font-semibold text-emerald-600">ID selected: {formData.idDocument.name}</p>}</div>
+                <div><label className="field-label flex items-center gap-2"><FaCamera /> Profile Photo * <span className="font-normal normal-case tracking-normal text-zinc-400">(JPG, PNG, WebP, HEIC/HEIF · max 2MB)</span></label><input type="file" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" capture="user" onChange={(e) => update("profilePhoto", e.target.files?.[0] || null)} className={`${inputClass} file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold`} required />{formData.profilePhoto && <p className="mt-2 text-xs font-semibold text-emerald-600">Photo selected: {formData.profilePhoto.name}</p>}</div>
+                <div><label className="field-label flex items-center gap-2"><FaUpload /> Upload ID Document * <span className="font-normal normal-case tracking-normal text-zinc-400">(JPG, PNG, WebP, HEIC/HEIF or PDF · max 5MB)</span></label><input type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,application/pdf" onChange={(e) => update("idDocument", e.target.files?.[0] || null)} className={`${inputClass} file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold`} required />{formData.idDocument && <p className="mt-2 text-xs font-semibold text-emerald-600">ID selected: {formData.idDocument.name}</p>}</div>
             </div>
             <div><label className="field-label">Why do you want to volunteer? *</label><textarea className={`${inputClass} resize-none`} rows={5} value={formData.message} onChange={(e) => update("message", e.target.value)} placeholder="Tell us about your interest, skills or availability." required /></div>
             {status === "error" && <div className="p-4 rounded-2xl bg-red-50 border border-red-100 text-red-700 text-sm font-semibold flex gap-3 items-start"><FaExclamationCircle className="mt-0.5 shrink-0" /><span>{error}</span></div>}
