@@ -76,12 +76,21 @@ export default function MemberForm() {
         <form onSubmit={handleSubmit} className="space-y-5">
             <div className="grid md:grid-cols-2 gap-5">
                 <div><label className="field-label">Full Name</label><input name="fullName" value={formData.fullName} onChange={handleChange} required placeholder="Your full name" className="field-input" /></div>
-                <div><label className="field-label">Mobile Number</label><div className="flex gap-2"><select name="countryCode" value={formData.countryCode} onChange={handleChange} className="field-input w-28 shrink-0" aria-label="Country code">{ALL_COUNTRIES.map((c, i) => <option key={`${c.name}-${i}`} value={c.code}>{c.code} {c.label.slice(0, 12)}</option>)}</select><input type="tel" inputMode="numeric" name="phone" value={formData.phone} onChange={(e) => handleChange({ target: { name: "phone", value: e.target.value.replace(/\D/g, "") } })} required placeholder="10-digit mobile number" autoComplete="tel-national" className="field-input flex-1 min-w-0" /></div></div>
                 <div><label className="field-label">Email</label><input type="email" name="email" value={formData.email} onChange={handleChange} required placeholder="you@example.com" className="field-input" /></div>
                 <div><label className="field-label">Confirm Email</label><input type="email" name="confirmEmail" value={formData.confirmEmail} onChange={handleChange} required placeholder="Confirm email" className="field-input" /></div>
                 <div><label className="field-label">Create Password</label><input type="password" name="password" value={formData.password} onChange={handleChange} required minLength={8} placeholder="Minimum 8 characters" className="field-input" /></div>
                 <div><label className="field-label">Membership Type</label><select name="memberType" value={formData.memberType} onChange={handleChange} className="field-input"><option value="general">General Member — ₹1,200/year</option><option value="active">Active Member — ₹2,500/year</option><option value="life">Life Member — ₹8,000+ one-time</option><option value="advisory">Advisory / Expert — By invitation</option></select></div>
             </div>
+
+            <div className="rounded-2xl border border-blue-100 bg-blue-50/60 p-4">
+                <label className="field-label text-blue-900">📱 Mobile Number *</label>
+                <div className="flex gap-2 w-full">
+                    <select name="countryCode" value={formData.countryCode} onChange={handleChange} className="field-input w-32 shrink-0 bg-white" aria-label="Country code">{ALL_COUNTRIES.map((c, i) => <option key={`${c.name}-${i}`} value={c.code}>{c.code} {c.label.slice(0, 10)}</option>)}</select>
+                    <input type="tel" inputMode="numeric" name="phone" value={formData.phone} onChange={(e) => handleChange({ target: { name: "phone", value: e.target.value.replace(/\D/g, "") } })} required placeholder="Enter mobile number" autoComplete="tel-national" className="field-input flex-1 min-w-0 bg-white" />
+                </div>
+                <p className="mt-2 text-xs text-blue-700">Please enter the mobile number you actively use for communication.</p>
+            </div>
+
             <div><label className="field-label flex items-center gap-2"><FaCamera /> Profile Photo *</label><input type="file" name="profilePhoto" accept="image/jpeg,image/png,image/webp" capture="user" onChange={(e) => setFormData(prev => ({ ...prev, profilePhoto: e.target.files?.[0] || null }))} required className="field-input file:mr-4 file:rounded-xl file:border-0 file:bg-zinc-200 file:px-4 file:py-2 file:font-bold" />{formData.profilePhoto && <p className="mt-2 text-xs font-semibold text-emerald-600">Photo selected: {formData.profilePhoto.name}</p>}<p className="mt-1 text-xs text-zinc-400">Recent passport-size photo · JPG, PNG or WebP · maximum 2MB</p></div>
             <div><label className="field-label">Why do you want to join?</label><textarea name="message" rows={4} value={formData.message} onChange={handleChange} placeholder="Tell us briefly about your interest and how you would like to contribute." className="field-input resize-none" /></div>
             <div className="rounded-2xl bg-blue-50 border border-blue-100 p-4 text-sm text-blue-900"><div className="font-bold flex items-center gap-2"><FaLock /> Payment & account flow</div><p className="mt-1">Selected plan: <strong>{amounts[formData.memberType]}</strong>. The payment page opens after your account and application are saved.</p></div>
