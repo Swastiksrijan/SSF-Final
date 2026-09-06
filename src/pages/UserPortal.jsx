@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { FaArrowRight, FaBell, FaBuilding, FaCheckCircle, FaClock, FaEye, FaFileAlt, FaGraduationCap, FaHandsHelping, FaHeart, FaIdCard, FaSignOutAlt, FaShieldAlt, FaUserCircle } from "react-icons/fa";
 import { API_BASE_URL, ENDPOINTS } from "../config/api";
@@ -18,7 +18,7 @@ export default function UserPortal(){
  const memberApproved=user.status==="approved"&&!!user.memberId; const approvedVolunteer=volunteers.find(v=>v.status==="approved"); const selectedIntern=internships.find(i=>["selected","completed"].includes(i.status));
  const profilePhoto=user.profilePhotoPath?( /^https?:\/\//i.test(user.profilePhotoPath)?user.profilePhotoPath:`${API_BASE_URL}${user.profilePhotoPath.startsWith("/")?"":"/"}${user.profilePhotoPath}`):null;
  const docs=[memberApproved&&user.memberId,memberApproved&&user.certId,approvedVolunteer?.volunteerId,approvedVolunteer?.certId,...donors.filter(d=>d.receiptUrl).map(d=>d.donorId),selectedIntern?.internId,selectedIntern?.joiningLetterId,selectedIntern?.completionCertId].filter(Boolean).length;
- const notifications=[...volunteers.map(v=>({key:`v-${v.id}`,title:"Volunteer application",status:v.status,date:v.approvedAt||v.createdAt,id:v.volunteerId||"Under review"})),...internships.map(i=>({key:`i-${i.id}`,title:`Internship — ${i.internshipType}`,status:i.status,date:i.completedAt||i.selectedAt||i.createdAt,id:i.internId||"Under review"})),...donors.map(d=>({key:`d-${d.id}`,title:`Donation — ${d.donationPurpose||"General"}`,status:d.paymentStatus,date:d.createdAt,id:d.donorId})),...(memberApproved?[{key:"member",title:"Membership",status:"approved",date:user.certificateIssuedAt||user.createdAt,id:user.memberId}]:[])];
+ const notifications=useMemo(()=>[...volunteers.map(v=>({key:`v-${v.id}`,title:"Volunteer application",status:v.status,date:v.approvedAt||v.createdAt,id:v.volunteerId||"Under review"})),...internships.map(i=>({key:`i-${i.id}`,title:`Internship — ${i.internshipType}`,status:i.status,date:i.completedAt||i.selectedAt||i.createdAt,id:i.internId||"Under review"})),...donors.map(d=>({key:`d-${d.id}`,title:`Donation — ${d.donationPurpose||"General"}`,status:d.paymentStatus,date:d.createdAt,id:d.donorId})),...(memberApproved?[{key:"member",title:"Membership",status:"approved",date:user.certificateIssuedAt||user.createdAt,id:user.memberId}]:[])],[volunteers,internships,donors,memberApproved,user]);
  const roles=[
   {title:"Volunteer for India",icon:FaHandsHelping,active:volunteers.length>0,detail:volunteers.length?`${volunteers.length} application(s)`:"Apply to serve with SSF",href:"/Volunteer"},
   {title:"Become a Member",icon:FaIdCard,active:memberApproved||user.memberType!=="general",detail:memberApproved?`Member ID: ${user.memberId}`:"Membership application",href:"/Members"},
