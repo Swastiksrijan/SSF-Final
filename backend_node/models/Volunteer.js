@@ -42,10 +42,14 @@ const Volunteer = sequelize.define('Volunteer', {
         type: DataTypes.ENUM('pending', 'approved', 'rejected'),
         defaultValue: 'pending'
     },
-    // For Certificate
     isVerified: {
         type: DataTypes.BOOLEAN,
         defaultValue: false
+    },
+    volunteerId: {
+        type: DataTypes.STRING,
+        unique: true,
+        allowNull: true
     },
     certId: {
         type: DataTypes.STRING,
@@ -57,7 +61,7 @@ const Volunteer = sequelize.define('Volunteer', {
         allowNull: true
     }
 }, {
-    timestamps: true // Adds createdAt and updatedAt automatically
+    timestamps: true
 });
 
 module.exports = Volunteer;
