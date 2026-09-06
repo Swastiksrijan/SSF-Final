@@ -8,6 +8,8 @@ export const ENDPOINTS = {
     MEMBER_SIGNUP: `${API_BASE_URL}/api/member-signup`,
     MEMBER_ACCOUNT_SIGNUP: `${API_BASE_URL}/api/member-account-signup`,
     MEMBER_LOGIN: `${API_BASE_URL}/api/member-login`,
+    FORGOT_PASSWORD: `${API_BASE_URL}/api/forgot-password`,
+    RESET_PASSWORD: `${API_BASE_URL}/api/reset-password`,
     MEMBER_STATUS: (id) => `${API_BASE_URL}/api/member-status/${id}`,
     USER_PORTAL: (id) => `${API_BASE_URL}/api/user-portal/${id}`,
     MEMBER_PROFILE_PHOTO: (id) => `${API_BASE_URL}/api/member-profile/${encodeURIComponent(id)}/photo`,
