@@ -67,6 +67,7 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        const returnTo = `${window.location.pathname}${window.location.search}${window.location.hash}`;
         setStatus("submitting");
         setMessage("");
         try {
@@ -89,7 +90,7 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
             setMessage(mode === "signup" ? "Account created successfully. You are now signed in." : "Login successful. Welcome back.");
             if (onAuthSuccess) onAuthSuccess(session);
             onClose?.();
-            navigate({ to: "/UserPortal" });
+            navigate({ to: returnTo && returnTo !== "/" ? returnTo : "/UserPortal" });
         } catch (error) {
             console.error("Auth error", error);
             setStatus("error");
