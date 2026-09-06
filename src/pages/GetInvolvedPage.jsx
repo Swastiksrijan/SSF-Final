@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FaUsers, FaWhatsapp, FaArrowRight, FaHandsHelping, FaAward, FaHandshake, FaTimes } from "react-icons/fa";
+import { FaUsers, FaWhatsapp, FaArrowRight, FaHandsHelping, FaAward, FaHandshake, FaHeart, FaTimes } from "react-icons/fa";
 import PageHero from "../components/PageHero";
 import VolunteerForm from "../components/VolunteerForm";
 import MemberForm from "../components/MemberForm";
@@ -15,7 +15,9 @@ export default function GetInvolvedPage() {
     const roles = [
         { id: "volunteer", title: "Volunteer for India", titleHi: "भारत के लिए स्वयंसेवक", desc: "Join our on-ground force. Give your time and skills to build a better nation.", icon: <FaHandsHelping className="text-[#FF6600]" />, color: "border-orange-100 bg-orange-50/50", btnText: "Join as Volunteer" },
         { id: "member", title: "Become a Member", titleHi: "सदस्य बनें", desc: "Be a part of the institution. Shape our governance, philosophy and future.", icon: <FaAward className="text-[#002344]" />, color: "border-blue-100 bg-blue-50/50", btnText: "Become a Member" },
+        { id: "internship", title: "Join as an Intern", titleHi: "इंटर्न के रूप में जुड़ें", desc: "Gain practical experience while contributing your skills to meaningful social-impact work.", icon: <FaUsers className="text-purple-600" />, color: "border-purple-100 bg-purple-50/50", btnText: "Join as Intern", link: "/Internship" },
         { id: "movement", title: "Join the Nation-Building Movement", titleHi: "राष्ट्र निर्माण आंदोलन", desc: "Connect with us on digital platforms. Stay updated and spread the word.", icon: <FaUsers className="text-green-600" />, color: "border-green-100 bg-green-50/50", btnText: "Join the Movement" },
+        { id: "donor", title: "Become a Donor", titleHi: "दाता बनें", desc: "Support education, health, livelihood and community initiatives through your contribution.", icon: <FaHeart className="text-[#FF6600]" />, color: "border-rose-100 bg-rose-50/50", btnText: "Become a Donor", link: "/Donor" },
         { id: "partner", title: "Partner with the Mission", titleHi: "मिशन के साथ भागीदार", desc: "CSR, Institutional alliances, and collaborations for sustainable impact.", icon: <FaHandshake className="text-[#002344]" />, color: "border-purple-100 bg-purple-50/50", btnText: "Partner With Us" }
     ];
 
@@ -40,7 +42,7 @@ export default function GetInvolvedPage() {
                                 <h3 className="text-2xl font-bold text-[#002344] mb-2">{role.title}</h3>
                                 <h4 className="text-lg font-hindi text-zinc-500 mb-6 font-bold">{role.titleHi}</h4>
                                 <p className="text-zinc-600 leading-relaxed mb-8 font-medium flex-grow">{role.desc}</p>
-                                <button type="button" onClick={() => openForm(role.id)} className="w-full flex items-center justify-center gap-3 bg-[#002344] text-white py-4 rounded-2xl font-bold hover:bg-[#FF6600] transition-colors shadow-lg">{role.btnText}<FaArrowRight /></button>
+                                {role.link ? <a href={role.link} className="w-full flex items-center justify-center gap-3 bg-[#002344] text-white py-4 rounded-2xl font-bold hover:bg-[#FF6600] transition-colors shadow-lg">{role.btnText}<FaArrowRight /></a> : <button type="button" onClick={() => openForm(role.id)} className="w-full flex items-center justify-center gap-3 bg-[#002344] text-white py-4 rounded-2xl font-bold hover:bg-[#FF6600] transition-colors shadow-lg">{role.btnText}<FaArrowRight /></button>}
                             </motion.div>
                         ))}
                     </div>
