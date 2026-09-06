@@ -26,12 +26,11 @@ const fileFilter = (_req, file, cb) => {
   const isProfile = file.fieldname === 'profile_photo';
   const allowed = isProfile ? profileTypes.has(file.mimetype) || profileExtensions.has(extension) : documentTypes.has(file.mimetype) || documentExtensions.has(extension);
   if (allowed) return cb(null, true);
-  return cb(new Error(isProfile
-    ? 'Profile photo must be JPG, PNG, WebP or HEIC/HEIF.'
-    : 'Identity document must be JPG, PNG, WebP, HEIC/HEIF or PDF.'));
+  return cb(new Error(isProfile ? 'Profile photo must be JPG, PNG, WebP or HEIC/HEIF.' : 'Identity document must be JPG, PNG, WebP, HEIC/HEIF or PDF.'));
 };
 
 const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
+const removeFile = (file) => { if (file?.path && fs.existsSync(file.path)) { try { fs.unlinkSync(file.path); } catch (_) {} } };
 const multipart = (fields) => (req, res, next) => {
   if (!req.is('multipart/form-data')) return next();
   upload.fields(fields)(req, res, (error) => {
@@ -39,18 +38,13 @@ const multipart = (fields) => (req, res, next) => {
     const uploaded = Object.values(req.files || {}).flat();
     uploaded.forEach(removeFile);
     if (error instanceof multer.MulterError) {
-      const message = error.code === 'LIMIT_FILE_SIZE'
-        ? 'One of the uploaded files is larger than 5MB.'
-        : error.code === 'LIMIT_UNEXPECTED_FILE'
-          ? 'Please upload only the requested profile photo and identity document.'
-          : `File upload error: ${error.message}`;
-      return res.status(400).json({ status: 'error', message });
+      const message = error.code === 'LIMIT_FILE_SIZE' ? 'One of the uploaded files is larger than 5MB.' : error.code === 'LIMIT_UNEXPECTED_FILE' ? 'Please upload only the requested profile photo and identity document.' : `File upload error: ${error.message}`;
+      return res.status(400).json({ status: 'error', code: error.code, message });
     }
-    return res.status(400).json({ status: 'error', message: error.message || 'Unable to process the uploaded file.' });
+    return res.status(400).json({ status: 'error', code: 'FILE_UPLOAD_ERROR', message: error.message || 'Unable to process the uploaded file.' });
   });
 };
 
-const removeFile = (file) => { if (file?.path && fs.existsSync(file.path)) { try { fs.unlinkSync(file.path); } catch (_) {} } };
 const hashPassword = (password) => {
   const salt = crypto.randomBytes(16).toString('hex');
   const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex');
@@ -85,25 +79,38 @@ router.post('/register', multipart([
     const { name, email, phone, volunteer_type, position, id_type, message } = req.body || {};
     if (!name || !email || !phone || !profilePhoto || !idDocument) {
       removeFile(profilePhoto); removeFile(idDocument);
-      return res.status(400).json({ status: 'error', message: 'Full name, email, phone, profile photo and identity document are required.' });
+      return res.status(400).json({ status: 'error', code: 'MISSING_REQUIRED_FIELDS', message: 'Full name, email, phone, profile photo and identity document are required.' });
     }
-    if (profilePhoto.size > 2 * 1024 * 1024) { removeFile(profilePhoto); removeFile(idDocument); return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' }); }
+    if (profilePhoto.size > 2 * 1024 * 1024) { removeFile(profilePhoto); removeFile(idDocument); return res.status(400).json({ status: 'error', code: 'PROFILE_TOO_LARGE', message: 'Profile photo must be 2MB or smaller.' }); }
     const normalizedEmail = cleanEmail(email);
     const normalizedPhone = cleanPhone(phone);
     const duplicate = await Volunteer.findOne({ where: { [Op.or]: [{ email: normalizedEmail }, { phone: normalizedPhone }] } });
-    if (duplicate) { removeFile(profilePhoto); removeFile(idDocument); return res.status(409).json({ status: 'error', message: cleanEmail(duplicate.email) === normalizedEmail ? 'A volunteer application with this email already exists.' : 'A volunteer application with this mobile number already exists.' }); }
+    if (duplicate) {
+      removeFile(profilePhoto); removeFile(idDocument);
+      return res.status(409).json({ status: 'error', code: 'DUPLICATE_VOLUNTEER', message: cleanEmail(duplicate.email) === normalizedEmail ? 'A volunteer application with this email already exists.' : 'A volunteer application with this mobile number already exists.' });
+    }
     const newVolunteer = await Volunteer.create({
-      fullName: name.trim(), email: normalizedEmail, phone: normalizedPhone,
-      volunteerType: volunteer_type || 'field', position: position || 'General Volunteer', idType: id_type || 'College ID',
-      message: message?.trim() || null, idDocumentPath: idDocument.path, profilePhotoPath: `/uploads/${profilePhoto.filename}`,
-      status: 'pending', isVerified: false
+      fullName: String(name).trim(),
+      email: normalizedEmail,
+      phone: normalizedPhone,
+      volunteerType: String(volunteer_type || 'field').trim() || 'field',
+      position: String(position || 'General Volunteer').trim() || 'General Volunteer',
+      idType: String(id_type || 'College ID').trim() || 'College ID',
+      message: String(message || '').trim() || null,
+      idDocumentPath: idDocument.path,
+      profilePhotoPath: `/uploads/${profilePhoto.filename}`,
+      status: 'pending',
+      isVerified: false
     });
-    const emailSent = await notifyAdmin(`New Volunteer Application: ${name.trim()}`, `New volunteer application received.\nName: ${name.trim()}\nType: ${volunteer_type || 'field'}\nPosition: ${position || 'General Volunteer'}\nPhone: ${normalizedPhone}\nEmail: ${normalizedEmail}`);
+    const emailSent = await notifyAdmin(`New Volunteer Application: ${newVolunteer.fullName}`, `New volunteer application received.\nName: ${newVolunteer.fullName}\nType: ${newVolunteer.volunteerType}\nPosition: ${newVolunteer.position}\nPhone: ${newVolunteer.phone}\nEmail: ${newVolunteer.email}`);
     return res.status(201).json({ status: 'success', message: 'Application submitted successfully', emailSent, data: newVolunteer });
   } catch (error) {
     removeFile(profilePhoto); removeFile(idDocument);
     console.error('❌ Volunteer submission error:', error);
-    return res.status(500).json({ status: 'error', message: error.message || 'Unable to submit your volunteer application.' });
+    const details = process.env.NODE_ENV === 'production'
+      ? 'The server could not save the volunteer application. Please try again after the backend deployment completes.'
+      : (error.message || 'Unable to submit your volunteer application.');
+    return res.status(500).json({ status: 'error', code: 'VOLUNTEER_SAVE_ERROR', message: details });
   }
 });
 
