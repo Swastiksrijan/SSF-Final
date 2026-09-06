@@ -23,12 +23,14 @@ const memberCertificateRoutes = require('./routes/memberCertificateRoutes');
 const volunteerAdminRoutes = require('./routes/volunteerAdminRoutes');
 const profileApplicationRoutes = require('./routes/profileApplicationRoutes');
 const volunteerRoutes = require('./routes/volunteerRoutes');
+const interestRoutes = require('./routes/interestRoutes');
 
 app.use('/api', memberCertificateRoutes);
 app.use('/api', volunteerAdminRoutes);
 // Mount before the legacy routes so volunteer/member applications support profile photos.
 app.use('/api', profileApplicationRoutes);
 app.use('/api', volunteerRoutes);
+app.use('/api', interestRoutes);
 
 sequelize.sync({ alter: true })
     .then(() => {
