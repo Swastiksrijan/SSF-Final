@@ -76,6 +76,51 @@ router.post('/admin/approve/:id', requireAdminAuth, async (req, res) => {
     }
 });
 
+router.patch('/admin/volunteers/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const volunteer = await Volunteer.findByPk(req.params.id);
+        if (!volunteer) return res.status(404).json({ message: 'Volunteer not found' });
+        const allowed = ['fullName', 'email', 'phone', 'volunteerType', 'position', 'idType', 'message', 'status', 'isVerified'];
+        const updates = {};
+        for (const field of allowed) if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) updates[field] = req.body[field];
+        if (updates.email) updates.email = String(updates.email).trim().toLowerCase();
+        if (updates.status && !['pending', 'approved', 'rejected'].includes(String(updates.status))) return res.status(400).json({ message: 'Invalid volunteer status' });
+        if (updates.status === 'approved' && volunteer.status !== 'approved') {
+            const approvedCount = await Volunteer.count({ where: { status: 'approved' } });
+            const approvedAt = new Date();
+            const period = getMonthYearCode(approvedAt);
+            updates.status = 'approved';
+            updates.isVerified = true;
+            updates.approvedAt = approvedAt;
+            updates.volunteerId = volunteer.volunteerId || `SSF-VOL-${period}-${String(approvedCount + 1).padStart(4, '0')}`;
+            updates.certId = volunteer.certId || `SSF-VCERT-${period}-${String(approvedCount + 1).padStart(4, '0')}`;
+        }
+        if (updates.status === 'rejected') updates.isVerified = false;
+        await volunteer.update(updates);
+        return res.json({ status: 'success', message: 'Volunteer record updated.', volunteer: volunteer.toJSON() });
+    } catch (error) { console.error('❌ Volunteer update error:', error); return res.status(500).json({ message: 'Unable to update volunteer record.' }); }
+});
+
+router.patch('/admin/volunteers/:id/status', requireAdminAuth, async (req, res) => {
+    try {
+        const volunteer = await Volunteer.findByPk(req.params.id);
+        if (!volunteer) return res.status(404).json({ message: 'Volunteer not found' });
+        const status = String(req.body?.status || '').trim().toLowerCase();
+        if (!['pending', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid volunteer status' });
+        const updates = { status, isVerified: status === 'approved' };
+        if (status === 'approved' && !volunteer.volunteerId) {
+            const approvedCount = await Volunteer.count({ where: { status: 'approved' } });
+            const now = new Date();
+            const period = getMonthYearCode(now);
+            updates.approvedAt = now;
+            updates.volunteerId = `SSF-VOL-${period}-${String(approvedCount + 1).padStart(4, '0')}`;
+            updates.certId = volunteer.certId || `SSF-VCERT-${period}-${String(approvedCount + 1).padStart(4, '0')}`;
+        }
+        await volunteer.update(updates);
+        return res.json({ status: 'success', message: `Volunteer status changed to ${status}.`, volunteer: volunteer.toJSON() });
+    } catch (error) { console.error('❌ Volunteer status error:', error); return res.status(500).json({ message: 'Unable to change volunteer status.' }); }
+});
+
 router.delete('/admin/volunteers/:id', requireAdminAuth, async (req, res) => {
     try {
         const volunteer = await Volunteer.findByPk(req.params.id);
