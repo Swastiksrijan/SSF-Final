@@ -25,10 +25,10 @@ export default function VolunteerForm() {
         if (phoneDigits.length < 7 || phoneDigits.length > 15) return "Please enter a valid phone number.";
         if (!formData.message.trim() || formData.message.trim().length < 10) return "Please tell us briefly why you want to volunteer (minimum 10 characters).";
         if (!formData.profilePhoto) return "Please upload a recent passport-size profile photo for your official Volunteer ID Card.";
-        if (!['image/jpeg', 'image/png', 'image/webp'].includes(formData.profilePhoto.type)) return "Profile photo must be JPG, PNG or WebP.";
+        if (!["image/jpeg", "image/png", "image/webp"].includes(formData.profilePhoto.type)) return "Profile photo must be JPG, PNG or WebP.";
         if (formData.profilePhoto.size > 2 * 1024 * 1024) return "Profile photo must be 2MB or smaller.";
         if (!formData.idDocument) return "Please upload your ID document for verification.";
-        if (!['image/jpeg', 'image/png', 'application/pdf'].includes(formData.idDocument.type)) return "ID document must be JPG, PNG or PDF.";
+        if (!["image/jpeg", "image/png", "application/pdf"].includes(formData.idDocument.type)) return "ID document must be JPG, PNG or PDF.";
         if (formData.idDocument.size > 5 * 1024 * 1024) return "ID document must be 5MB or smaller.";
         return "";
     };
@@ -80,7 +80,32 @@ export default function VolunteerForm() {
                 <div><label className="field-label">Email Address *</label><input type="email" className={inputClass} value={formData.email} onChange={(e) => update("email", e.target.value)} placeholder="you@example.com" autoComplete="email" required /></div>
             </div>
             <div className="grid md:grid-cols-2 gap-5">
-                <div><label className="field-label">Phone Number *</label><div className="flex gap-2"><select className={`${inputClass} w-28 shrink-0 px-3`} value={formData.countryCode} onChange={(e) => update("countryCode", e.target.value)} aria-label="Country code"><option value="+91">+91 IN</option><option value="+1">+1 US/CA</option><option value="+44">+44 UK</option><option value="+61">+61 AU</option><option value="+971">+971 UAE</option></select><input type="tel" inputMode="numeric" pattern="[0-9 ]*" maxLength={15} className={inputClass} value={formData.phone} onChange={(e) => update("phone", e.target.value.replace(/[^0-9 ]/g, ""))} placeholder="Enter mobile number" autoComplete="tel" required /></div><p className="mt-2 text-xs text-zinc-400">Enter digits only. Country code is selected separately.</p></div>
+                <div>
+                    <label className="field-label">Phone Number *</label>
+                    <div className="flex w-full gap-2 items-stretch">
+                        <select className={`${inputClass} !w-[118px] shrink-0 px-3`} value={formData.countryCode} onChange={(e) => update("countryCode", e.target.value)} aria-label="Country code">
+                            <option value="+91">🇮🇳 +91</option>
+                            <option value="+1">🇺🇸 +1</option>
+                            <option value="+44">🇬🇧 +44</option>
+                            <option value="+61">🇦🇺 +61</option>
+                            <option value="+971">🇦🇪 +971</option>
+                        </select>
+                        <input
+                            type="tel"
+                            inputMode="numeric"
+                            pattern="[0-9 ]*"
+                            maxLength={15}
+                            className={`${inputClass} flex-1 min-w-0 !w-auto`}
+                            value={formData.phone}
+                            onChange={(e) => update("phone", e.target.value.replace(/[^0-9 ]/g, ""))}
+                            placeholder="Mobile number"
+                            autoComplete="tel-national"
+                            aria-label="Mobile number"
+                            required
+                        />
+                    </div>
+                    <p className="mt-2 text-xs text-zinc-400">Select country code, then enter your mobile number.</p>
+                </div>
                 <div><label className="field-label">Volunteer Type *</label><select className={inputClass} value={formData.volunteerType} onChange={(e) => update("volunteerType", e.target.value)}><option value="field">Field Volunteer</option><option value="program">Program Volunteer</option><option value="professional">Professional Volunteer</option><option value="digital">Digital / Online Volunteer</option></select></div>
             </div>
             <div className="grid md:grid-cols-2 gap-5">
