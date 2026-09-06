@@ -14,7 +14,7 @@ const storage = multer.diskStorage({ destination: (_req, _file, cb) => cb(null, 
 const profilePhotoOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'image/webp'].includes(file.mimetype) ? cb(null, true) : cb(new Error('Profile photo must be JPG, PNG or WebP.'));
 const idDocumentOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'application/pdf'].includes(file.mimetype) ? cb(null, true) : cb(new Error('ID document must be JPG, PNG or PDF.'));
 const uploadVolunteerFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file, cb), limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
-const uploadMemberFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file, cb), limits: { files: 2, fileSize: 5 * 1024 * 1024 } });
+const uploadMemberFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file), limits: { files: 2, fileSize: 5 * 1024 * 1024 } });
 const hashPassword = (password) => { const salt = crypto.randomBytes(16).toString('hex'); const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex'); return `${salt}:${hash}`; };
 const sendAdminNotification = async (subject, text) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
@@ -43,9 +43,9 @@ router.post('/member-signup', uploadMemberFiles.fields([{ name: 'profile_photo',
         const { fullName, email, confirmEmail, phone, password, memberType, idProofType, message } = req.body || {};
         const primaryEmail = (email || '').trim().toLowerCase(); const secondaryEmail = (confirmEmail || '').trim().toLowerCase(); const isWebsiteAccount = memberType === 'website_signup';
         const profilePhoto = req.files?.profile_photo?.[0]; const idDocument = req.files?.id_document?.[0];
-        // A website account is only an account-creation step. Profile photo and identity proof are required later when the user applies for an official membership/role.
-        if (!fullName || !primaryEmail || !secondaryEmail || !phone || !memberType) return res.status(400).json({ status: 'error', message: 'Full name, email, phone and membership type are required.' });
-        if (primaryEmail !== secondaryEmail) return res.status(400).json({ status: 'error', message: 'Email fields do not match' });
+        if (!fullName || !primaryEmail || !phone || !memberType) return res.status(400).json({ status: 'error', message: 'Full name, email, phone and membership type are required.' });
+        if (!isWebsiteAccount && !secondaryEmail) return res.status(400).json({ status: 'error', message: 'Email confirmation is required.' });
+        if (secondaryEmail && primaryEmail !== secondaryEmail) return res.status(400).json({ status: 'error', message: 'Email fields do not match' });
         if (!password || password.length < 8) return res.status(400).json({ status: 'error', message: 'Password must be at least 8 characters' });
         if (!isWebsiteAccount && (!profilePhoto || !idDocument || !idProofType)) return res.status(400).json({ status: 'error', message: 'Full name, email, phone, membership type, profile photo and identity proof are required.' });
         if (profilePhoto && profilePhoto.size > 2 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' });
