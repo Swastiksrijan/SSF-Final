@@ -62,7 +62,19 @@ export default function GetInvolvedInterestForm({ type = "movement", onClose }) 
           <div><label className="gil-label">Full Name *</label><input className="gil-input" value={form.name} onChange={e => update("name", e.target.value)} placeholder="Your full name" required /></div>
           <div><label className="gil-label">Email Address *</label><input type="email" className="gil-input" value={form.email} onChange={e => update("email", e.target.value)} placeholder="you@example.com" required /></div>
         </div>
-        <div><label className="gil-label">Mobile Number *</label><div className="flex gap-2"><select className="gil-input w-28 shrink-0" value={form.countryCode} onChange={e => update("countryCode", e.target.value)} aria-label="Country code"><option value="+91">🇮🇳 +91</option><option value="+1">🇺🇸 +1</option><option value="+44">🇬🇧 +44</option><option value="+61">🇦🇺 +61</option><option value="+971">🇦🇪 +971</option></select><input type="tel" inputMode="numeric" className="gil-input flex-1" value={form.phone} onChange={e => update("phone", e.target.value.replace(/\D/g, ""))} placeholder="Mobile number" required /></div></div>
+        <div>
+          <label className="gil-label">Mobile Number *</label>
+          <div className="grid grid-cols-[120px_minmax(0,1fr)] gap-2 w-full">
+            <select className="gil-input !w-full" value={form.countryCode} onChange={e => update("countryCode", e.target.value)} aria-label="Country code">
+              <option value="+91">🇮🇳 +91</option>
+              <option value="+1">🇺🇸 +1</option>
+              <option value="+44">🇬🇧 +44</option>
+              <option value="+61">🇦🇺 +61</option>
+              <option value="+971">🇦🇪 +971</option>
+            </select>
+            <input type="tel" inputMode="numeric" name="phone" className="gil-input !w-full min-w-0" value={form.phone} onChange={e => update("phone", e.target.value.replace(/\D/g, ""))} placeholder="Enter mobile number" autoComplete="tel-national" required />
+          </div>
+        </div>
         <div><label className="gil-label">How would you like to contribute? *</label><textarea className="gil-input resize-none" rows={5} value={form.message} onChange={e => update("message", e.target.value)} placeholder={type === "partner" ? "Tell us about your company, CSR interest, collaboration or partnership idea." : "Tell us how you would like to participate, support or stay connected."} required /></div>
         {status === "error" && <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm font-semibold flex gap-2"><FaExclamationCircle />{error}</div>}
         <button type="submit" disabled={status === "submitting"} className="w-full bg-[#002344] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#FF6600] transition-all flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting securely...</> : <>Submit Request <FaArrowRight /></>}</button>
