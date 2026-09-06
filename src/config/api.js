@@ -15,5 +15,7 @@ export const ENDPOINTS = {
     ADMIN_MEMBERS: `${API_BASE_URL}/api/admin/members`,
     ADMIN_APPROVE: (id) => `${API_BASE_URL}/api/admin/approve/${id}`,
     ADMIN_MEMBER_APPROVE: (id) => `${API_BASE_URL}/api/admin/member-approve/${id}`,
+    ADMIN_DELETE_VOLUNTEER: (id) => `${API_BASE_URL}/api/admin/volunteers/${id}`,
+    ADMIN_DELETE_MEMBER: (id) => `${API_BASE_URL}/api/admin/members/${id}`,
     VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${code}`
 };
