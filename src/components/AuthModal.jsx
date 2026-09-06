@@ -96,7 +96,7 @@ export default function AuthModal({ open, onClose, onAuthSuccess }) {
 
             if (onAuthSuccess) onAuthSuccess(session);
             onClose?.();
-            navigate({ to: "/MemberDashboard" });
+            navigate({ to: "/UserPortal" });
         } catch (error) {
             console.error("Auth error", error);
             setStatus("error");
