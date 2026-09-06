@@ -10,6 +10,8 @@ export const ENDPOINTS = {
     MEMBER_LOGIN: `${API_BASE_URL}/api/member-login`,
     MEMBER_STATUS: (id) => `${API_BASE_URL}/api/member-status/${id}`,
     USER_PORTAL: (id) => `${API_BASE_URL}/api/user-portal/${id}`,
+    USER_DOCUMENT: (type, id, accountId) => `${API_BASE_URL}/api/user-document/${type}/${encodeURIComponent(id)}?account=${encodeURIComponent(accountId)}`,
+    VERIFY: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`,
     MEMBER_PAYMENT_LINK: `${API_BASE_URL}/api/member-payment-link`,
     CONTACT: `${API_BASE_URL}/api/contact`,
     INTERNSHIP: `${API_BASE_URL}/api/internship`,
@@ -27,5 +29,5 @@ export const ENDPOINTS = {
     ADMIN_MEMBER_APPROVE: (id) => `${API_BASE_URL}/api/admin/member-approve/${id}`,
     ADMIN_DELETE_VOLUNTEER: (id) => `${API_BASE_URL}/api/admin/volunteers/${id}`,
     ADMIN_DELETE_MEMBER: (id) => `${API_BASE_URL}/api/admin/members/${id}`,
-    VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${code}`
+    VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`
 };
