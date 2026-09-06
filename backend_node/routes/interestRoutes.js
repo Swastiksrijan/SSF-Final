@@ -32,20 +32,12 @@ router.post('/interest', async (req, res) => {
         const label = type === 'partner' ? 'CSR / Partnership' : 'Nation-Building Movement';
         await sendAdminNotification(`New ${label} Interest: ${fullName}`, `New ${label} request received.\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`);
         return res.status(201).json({ status: 'success', message: 'Request submitted successfully.', data: { id: interest.id, type: interest.interestType } });
-    } catch (error) {
-        console.error('❌ Interest submission error:', error);
-        return res.status(500).json({ message: 'Unable to submit right now. Please try again.' });
-    }
+    } catch (error) { console.error('❌ Interest submission error:', error); return res.status(500).json({ message: 'Unable to submit right now. Please try again.' }); }
 });
 
 router.get('/admin/interests', requireAdminAuth, async (_req, res) => {
-    try {
-        const interests = await Interest.findAll({ order: [['createdAt', 'DESC']] });
-        return res.json(interests);
-    } catch (error) {
-        console.error('❌ Admin interests fetch error:', error);
-        return res.status(500).json({ message: 'Unable to load movement/partnership requests.' });
-    }
+    try { return res.json(await Interest.findAll({ order: [['createdAt', 'DESC']] })); }
+    catch (error) { console.error('❌ Admin interests fetch error:', error); return res.status(500).json({ message: 'Unable to load movement/partnership requests.' }); }
 });
 
 router.patch('/admin/interests/:id/status', requireAdminAuth, async (req, res) => {
@@ -56,10 +48,16 @@ router.patch('/admin/interests/:id/status', requireAdminAuth, async (req, res) =
         if (!interest) return res.status(404).json({ message: 'Request not found.' });
         await interest.update({ status });
         return res.json({ status: 'success', data: interest });
-    } catch (error) {
-        console.error('❌ Interest status update error:', error);
-        return res.status(500).json({ message: 'Unable to update status.' });
-    }
+    } catch (error) { console.error('❌ Interest status update error:', error); return res.status(500).json({ message: 'Unable to update status.' }); }
+});
+
+router.delete('/admin/interests/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const interest = await Interest.findByPk(req.params.id);
+        if (!interest) return res.status(404).json({ message: 'Request not found.' });
+        await interest.destroy();
+        return res.json({ status: 'success', message: 'Request deleted permanently.' });
+    } catch (error) { console.error('❌ Interest delete error:', error); return res.status(500).json({ message: 'Unable to delete request.' }); }
 });
 
 module.exports = router;
