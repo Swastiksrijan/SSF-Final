@@ -26,6 +26,7 @@ const sendAdminNotification = async (subject, text) => {
 const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
 const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.authorization || ''; const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : ''; if (!token || token !== getAdminToken()) return res.status(401).json({ message: 'Unauthorized admin access' }); next(); };
 const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
+const removeStoredFile = (storedPath) => { if (!storedPath) return; const relative = String(storedPath).replace(/^\/+/, ''); const filePath = path.join(__dirname, '..', relative); try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Upload cleanup failed:', error.message); } };
 
 router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', maxCount: 1 }, { name: 'profile_photo', maxCount: 1 }]), async (req, res) => {
     try {
@@ -85,6 +86,20 @@ router.delete('/member-profile/:id/photo', async (req, res) => {
 router.get('/admin/members', requireAdminAuth, async (_req, res) => {
     try { const members = await Member.findAll({ attributes: { exclude: ['passwordHash'] }, order: [['createdAt', 'DESC']] }); return res.json(members.filter(member => !isAccountOnly(member)).map(member => ({ ...member.toJSON(), profilePhotoPath: member.profilePhotoPath || null, idDocumentPath: member.idDocumentPath || null }))); }
     catch (error) { console.error('❌ Member admin list error:', error); return res.status(500).json({ message: 'Server Error' }); }
+});
+
+router.delete('/admin/members/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const member = await Member.findByPk(req.params.id);
+        if (!member) return res.status(404).json({ message: 'Member application not found.' });
+        removeStoredFile(member.profilePhotoPath);
+        removeStoredFile(member.idDocumentPath);
+        await member.destroy();
+        return res.json({ status: 'success', message: 'Member application deleted permanently.' });
+    } catch (error) {
+        console.error('❌ Member delete error:', error);
+        return res.status(500).json({ message: 'Unable to delete member application.' });
+    }
 });
 
 module.exports = router;
