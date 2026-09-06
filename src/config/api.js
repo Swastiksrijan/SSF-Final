@@ -10,6 +10,7 @@ export const ENDPOINTS = {
     MEMBER_LOGIN: `${API_BASE_URL}/api/member-login`,
     MEMBER_STATUS: (id) => `${API_BASE_URL}/api/member-status/${id}`,
     USER_PORTAL: (id) => `${API_BASE_URL}/api/user-portal/${id}`,
+    MEMBER_PROFILE_PHOTO: (id) => `${API_BASE_URL}/api/member-profile/${encodeURIComponent(id)}/photo`,
     USER_DOCUMENT: (type, id, accountId) => `${API_BASE_URL}/api/user-document/${type}/${encodeURIComponent(id)}?account=${encodeURIComponent(accountId)}`,
     VERIFY: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`,
     MEMBER_PAYMENT_LINK: `${API_BASE_URL}/api/member-payment-link`,
