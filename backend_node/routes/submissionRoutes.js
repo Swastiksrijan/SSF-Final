@@ -29,7 +29,7 @@ const fileFilter = (_req, file, cb) => {
   return cb(new Error(isProfile ? 'Profile photo must be JPG, PNG, WebP or HEIC/HEIF.' : 'Identity document must be JPG, PNG, WebP, HEIC/HEIF or PDF.'));
 };
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024, files: 2 });
+const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
 const removeFile = (file) => { if (file?.path && fs.existsSync(file.path)) { try { fs.unlinkSync(file.path); } catch (_) {} } };
 const multipart = (fields) => (req, res, next) => {
   if (!req.is('multipart/form-data')) return next();
@@ -45,11 +45,6 @@ const multipart = (fields) => (req, res, next) => {
   });
 };
 
-const hashPassword = (password) => {
-  const salt = crypto.randomBytes(16).toString('hex');
-  const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex');
-  return `${salt}:${hash}`;
-};
 const adminRecipients = () => (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.in').split(',').map(v => v.trim()).filter(Boolean).join(',');
 const notifyAdmin = async (subject, text) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) { console.warn('⚠️ EMAIL_USER/EMAIL_PASS missing; application was saved without email notification.'); return false; }
@@ -84,10 +79,7 @@ router.post('/register', multipart([
       return res.status(409).json({ status: 'error', code: 'DUPLICATE_VOLUNTEER', message: cleanEmail(duplicate.email) === normalizedEmail ? 'A volunteer application with this email already exists.' : 'A volunteer application with this mobile number already exists.' });
     }
 
-    // Keep the database write isolated so file upload succeeds even when the
-    // optional email/member-account linking fails. The application itself is
-    // the source of truth and can be reviewed from Admin.
-    const volunteerData = {
+    const newVolunteer = await Volunteer.create({
       fullName: String(name).trim(),
       email: normalizedEmail,
       phone: normalizedPhone,
@@ -99,8 +91,7 @@ router.post('/register', multipart([
       profilePhotoPath: `/uploads/${profilePhoto.filename}`,
       status: 'pending',
       isVerified: false
-    };
-    const newVolunteer = await Volunteer.create(volunteerData);
+    });
 
     const emailSent = await notifyAdmin(
       `New Volunteer Application: ${newVolunteer.fullName}`,
