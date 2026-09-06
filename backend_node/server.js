@@ -21,13 +21,13 @@ app.get('/', (req, res) => {
 
 const memberCertificateRoutes = require('./routes/memberCertificateRoutes');
 const volunteerAdminRoutes = require('./routes/volunteerAdminRoutes');
+const profileApplicationRoutes = require('./routes/profileApplicationRoutes');
 const volunteerRoutes = require('./routes/volunteerRoutes');
 
 app.use('/api', memberCertificateRoutes);
-// This route is mounted before the legacy volunteer routes so approved volunteers
-// receive a permanent Volunteer ID and certificate ID without changing the
-// existing public registration endpoint.
 app.use('/api', volunteerAdminRoutes);
+// Mount before the legacy routes so volunteer/member applications support profile photos.
+app.use('/api', profileApplicationRoutes);
 app.use('/api', volunteerRoutes);
 
 sequelize.sync({ alter: true })
