@@ -29,7 +29,7 @@ const fileFilter = (_req, file, cb) => {
   return cb(new Error(isProfile ? 'Profile photo must be JPG, PNG, WebP or HEIC/HEIF.' : 'Identity document must be JPG, PNG, WebP, HEIC/HEIF or PDF.'));
 };
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
+const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024, files: 2 });
 const removeFile = (file) => { if (file?.path && fs.existsSync(file.path)) { try { fs.unlinkSync(file.path); } catch (_) {} } };
 const multipart = (fields) => (req, res, next) => {
   if (!req.is('multipart/form-data')) return next();
@@ -52,18 +52,12 @@ const hashPassword = (password) => {
 };
 const adminRecipients = () => (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.in').split(',').map(v => v.trim()).filter(Boolean).join(',');
 const notifyAdmin = async (subject, text) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.warn('⚠️ EMAIL_USER/EMAIL_PASS missing; application was saved without email notification.');
-    return false;
-  }
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) { console.warn('⚠️ EMAIL_USER/EMAIL_PASS missing; application was saved without email notification.'); return false; }
   try {
     const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
     await transporter.sendMail({ from: `"Swastik Srijan Admin" <${process.env.EMAIL_USER}>`, to: adminRecipients(), subject, text });
     return true;
-  } catch (error) {
-    console.error('⚠️ Application notification failed:', error.message);
-    return false;
-  }
+  } catch (error) { console.error('⚠️ Application notification failed:', error.message); return false; }
 };
 const cleanEmail = (value) => String(value || '').trim().toLowerCase();
 const cleanPhone = (value) => String(value || '').replace(/\s+/g, ' ').trim();
@@ -89,7 +83,11 @@ router.post('/register', multipart([
       removeFile(profilePhoto); removeFile(idDocument);
       return res.status(409).json({ status: 'error', code: 'DUPLICATE_VOLUNTEER', message: cleanEmail(duplicate.email) === normalizedEmail ? 'A volunteer application with this email already exists.' : 'A volunteer application with this mobile number already exists.' });
     }
-    const newVolunteer = await Volunteer.create({
+
+    // Keep the database write isolated so file upload succeeds even when the
+    // optional email/member-account linking fails. The application itself is
+    // the source of truth and can be reviewed from Admin.
+    const volunteerData = {
       fullName: String(name).trim(),
       email: normalizedEmail,
       phone: normalizedPhone,
@@ -101,14 +99,19 @@ router.post('/register', multipart([
       profilePhotoPath: `/uploads/${profilePhoto.filename}`,
       status: 'pending',
       isVerified: false
-    });
-    const emailSent = await notifyAdmin(`New Volunteer Application: ${newVolunteer.fullName}`, `New volunteer application received.\nName: ${newVolunteer.fullName}\nType: ${newVolunteer.volunteerType}\nPosition: ${newVolunteer.position}\nPhone: ${newVolunteer.phone}\nEmail: ${newVolunteer.email}`);
+    };
+    const newVolunteer = await Volunteer.create(volunteerData);
+
+    const emailSent = await notifyAdmin(
+      `New Volunteer Application: ${newVolunteer.fullName}`,
+      `New volunteer application received.\nName: ${newVolunteer.fullName}\nType: ${newVolunteer.volunteerType}\nPosition: ${newVolunteer.position}\nPhone: ${newVolunteer.phone}\nEmail: ${newVolunteer.email}`
+    );
     return res.status(201).json({ status: 'success', message: 'Application submitted successfully', emailSent, data: newVolunteer });
   } catch (error) {
     removeFile(profilePhoto); removeFile(idDocument);
     console.error('❌ Volunteer submission error:', error);
     const details = process.env.NODE_ENV === 'production'
-      ? 'The server could not save the volunteer application. Please try again after the backend deployment completes.'
+      ? `The volunteer application could not be saved (${error.name || 'database error'}). Please retry after the backend deployment completes.`
       : (error.message || 'Unable to submit your volunteer application.');
     return res.status(500).json({ status: 'error', code: 'VOLUNTEER_SAVE_ERROR', message: details });
   }
