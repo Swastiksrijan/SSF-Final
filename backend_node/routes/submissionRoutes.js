@@ -49,7 +49,7 @@ const hashPassword = (password) => {
   const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex');
   return `${salt}:${hash}`;
 };
-const adminRecipients = () => (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'swastiksrijanfoundation@gmail.com').split(',').map(v => v.trim()).filter(Boolean).join(',');
+const adminRecipients = () => (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.in').split(',').map(v => v.trim()).filter(Boolean).join(',');
 const notifyAdmin = async (subject, text) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
     console.warn('⚠️ EMAIL_USER/EMAIL_PASS missing; application was saved without email notification.');
