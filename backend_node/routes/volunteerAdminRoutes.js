@@ -21,20 +21,12 @@ router.get('/admin/volunteers', requireAdminAuth, async (req, res) => {
     try {
         const volunteers = await Volunteer.findAll({ order: [['createdAt', 'DESC']] });
         res.json(volunteers.map(v => ({
-            id: v.id,
-            fullName: v.fullName,
-            email: v.email,
-            phone: v.phone,
-            volunteerType: v.volunteerType,
-            position: v.position,
-            idType: v.idType,
-            message: v.message,
-            submittedAt: v.createdAt,
-            status: v.status,
-            volunteerId: v.volunteerId,
-            certId: v.certId,
-            approvedAt: v.approvedAt,
-            idDocumentUrl: v.idDocumentPath ? `/uploads/${require('path').basename(v.idDocumentPath)}` : null
+            id: v.id, fullName: v.fullName, email: v.email, phone: v.phone,
+            volunteerType: v.volunteerType, position: v.position, idType: v.idType,
+            message: v.message, submittedAt: v.createdAt, status: v.status,
+            volunteerId: v.volunteerId, certId: v.certId, approvedAt: v.approvedAt,
+            idDocumentUrl: v.idDocumentPath ? `/uploads/${require('path').basename(v.idDocumentPath)}` : null,
+            profilePhotoPath: v.profilePhotoPath || null
         })));
     } catch (error) {
         console.error('❌ Volunteer admin list error:', error);
@@ -46,9 +38,7 @@ router.post('/admin/approve/:id', requireAdminAuth, async (req, res) => {
     try {
         const volunteer = await Volunteer.findByPk(req.params.id);
         if (!volunteer) return res.status(404).json({ message: 'Volunteer not found' });
-        if (volunteer.status === 'approved' && volunteer.volunteerId && volunteer.certId) {
-            return res.status(400).json({ message: 'Volunteer is already approved', volunteerId: volunteer.volunteerId, certId: volunteer.certId });
-        }
+        if (volunteer.status === 'approved' && volunteer.volunteerId && volunteer.certId) return res.status(400).json({ message: 'Volunteer is already approved', volunteerId: volunteer.volunteerId, certId: volunteer.certId });
 
         const approvedCount = await Volunteer.count({ where: { status: 'approved' } });
         const year = new Date().getFullYear();
@@ -56,26 +46,14 @@ router.post('/admin/approve/:id', requireAdminAuth, async (req, res) => {
         const volunteerId = `SSF-VOL-${year}-${number}`;
         const certId = `SSF-VCERT-${year}-${number}`;
         const approvedAt = new Date();
-
         await volunteer.update({ status: 'approved', isVerified: true, volunteerId, certId, approvedAt });
 
         const frontendUrl = (process.env.FRONTEND_URL || 'https://swastiksrijan.in').replace(/\/$/, '');
         const verificationUrl = `${frontendUrl}/verify/${certId}`;
-        let emailSent = true;
-        let warning = null;
+        let emailSent = true; let warning = null;
         try {
-            await sendEmail(
-                volunteer.email,
-                'Volunteer Application Approved - Swastik Srijan Foundation',
-                `Congratulations! Your volunteer application has been approved. Volunteer ID: ${volunteerId}. Certificate ID: ${certId}. Verify: ${verificationUrl}`,
-                `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;padding:24px;border:1px solid #eee;border-radius:16px"><h2>Volunteer Application Approved</h2><p>Welcome, <strong>${volunteer.fullName}</strong>.</p><p><strong>Volunteer ID:</strong> ${volunteerId}</p><p><strong>Certificate ID:</strong> ${certId}</p><p><a href="${verificationUrl}">Verify Certificate</a></p></div>`
-            );
-        } catch (emailError) {
-            emailSent = false;
-            warning = 'Volunteer approved, but the email notification failed.';
-            console.error('⚠️ Volunteer approval email failed:', emailError.message);
-        }
-
+            await sendEmail(volunteer.email, 'Volunteer Application Approved - Swastik Srijan Foundation', `Congratulations! Your volunteer application has been approved. Volunteer ID: ${volunteerId}. Certificate ID: ${certId}. Verify: ${verificationUrl}`, `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;padding:24px;border:1px solid #eee;border-radius:16px"><h2>Volunteer Application Approved</h2><p>Welcome, <strong>${volunteer.fullName}</strong>.</p><p><strong>Volunteer ID:</strong> ${volunteerId}</p><p><strong>Certificate ID:</strong> ${certId}</p><p><a href="${verificationUrl}">Verify Certificate</a></p></div>`);
+        } catch (emailError) { emailSent = false; warning = 'Volunteer approved, but the email notification failed.'; console.error('⚠️ Volunteer approval email failed:', emailError.message); }
         return res.json({ status: 'success', volunteerId, certId, approvedAt, verificationUrl, emailSent, warning });
     } catch (error) {
         console.error('❌ Volunteer approval error:', error);
