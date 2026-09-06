@@ -25,6 +25,8 @@ const requireAdminAuth = (req, res, next) => {
     if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized admin access' });
     next();
 };
+const nextNumber = async () => (await InternshipApplication.count({ where: { internId: { [require('sequelize').Op.ne]: null } } })) + 1;
+const code = (prefix, number, date = new Date()) => `${prefix}-${String(date.getMonth()+1).padStart(2,'0')}${String(date.getFullYear()).slice(-2)}-${String(number).padStart(4,'0')}`;
 
 router.post('/internship', (req, res) => {
     upload.single('resume')(req, res, async (uploadError) => {
@@ -49,27 +51,39 @@ router.post('/internship', (req, res) => {
 });
 
 router.get('/admin/internships', requireAdminAuth, async (_req, res) => {
-    try {
-        const applications = await InternshipApplication.findAll({ order: [['createdAt', 'DESC']] });
-        return res.json(applications);
-    } catch (error) {
-        console.error('❌ Admin internships fetch error:', error);
-        return res.status(500).json({ message: 'Unable to load internship applications.' });
-    }
+    try { return res.json(await InternshipApplication.findAll({ order: [['createdAt', 'DESC']] })); }
+    catch (error) { console.error('❌ Admin internships fetch error:', error); return res.status(500).json({ message: 'Unable to load internship applications.' }); }
 });
 
 router.patch('/admin/internships/:id/status', requireAdminAuth, async (req, res) => {
     try {
         const status = String(req.body?.status || '');
-        if (!['pending', 'reviewed', 'selected', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid status.' });
+        if (!['pending', 'reviewed', 'selected', 'completed', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid status.' });
         const application = await InternshipApplication.findByPk(req.params.id);
         if (!application) return res.status(404).json({ message: 'Internship application not found.' });
-        await application.update({ status });
+        const now = new Date();
+        const updates = { status };
+        if (status === 'selected' && !application.internId) {
+            const number = await nextNumber();
+            updates.internId = code('SSF-INT', number, now);
+            updates.joiningLetterId = code('SSF-ILTR', number, now);
+            updates.selectedAt = now;
+        }
+        if (status === 'completed') {
+            if (!application.internId) {
+                const number = await nextNumber();
+                updates.internId = code('SSF-INT', number, now);
+                updates.joiningLetterId = code('SSF-ILTR', number, now);
+            }
+            if (!application.completionCertId) {
+                const number = await nextNumber();
+                updates.completionCertId = code('SSF-ICERT', number, now);
+            }
+            updates.completedAt = now;
+        }
+        await application.update(updates);
         return res.json({ status: 'success', data: application });
-    } catch (error) {
-        console.error('❌ Internship status update error:', error);
-        return res.status(500).json({ message: 'Unable to update status.' });
-    }
+    } catch (error) { console.error('❌ Internship status update error:', error); return res.status(500).json({ message: 'Unable to update status.' }); }
 });
 
 module.exports = router;
