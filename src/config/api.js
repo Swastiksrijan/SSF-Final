@@ -9,6 +9,7 @@ export const ENDPOINTS = {
     MEMBER_ACCOUNT_SIGNUP: `${API_BASE_URL}/api/member-account-signup`,
     MEMBER_LOGIN: `${API_BASE_URL}/api/member-login`,
     MEMBER_STATUS: (id) => `${API_BASE_URL}/api/member-status/${id}`,
+    USER_PORTAL: (id) => `${API_BASE_URL}/api/user-portal/${id}`,
     MEMBER_PAYMENT_LINK: `${API_BASE_URL}/api/member-payment-link`,
     CONTACT: `${API_BASE_URL}/api/contact`,
     INTERNSHIP: `${API_BASE_URL}/api/internship`,
