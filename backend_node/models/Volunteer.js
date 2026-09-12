@@ -12,7 +12,7 @@ const Volunteer = sequelize.define('Volunteer', {
     identityNumber: { type: DataTypes.STRING, allowNull: true },
     message: { type: DataTypes.TEXT },
     reviewNote: { type: DataTypes.TEXT, allowNull: true },
-    idDocumentPath: { type: DataTypes.STRING, allowNull: false },
+    idDocumentPath: { type: DataTypes.STRING, allowNull: true },
     profilePhotoPath: { type: DataTypes.STRING, allowNull: true },
     status: { type: DataTypes.ENUM('pending', 'changes_requested', 'approved', 'rejected'), defaultValue: 'pending' },
     isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
