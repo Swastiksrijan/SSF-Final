@@ -58,9 +58,6 @@ const cleanEmail = (value) => String(value || '').trim().toLowerCase();
 const cleanPhone = (value) => String(value || '').replace(/\s+/g, ' ').trim();
 const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
 
-// Keep website account passwords compatible with the existing member-login route.
-// The previous submission handler called hashPassword without defining it, causing
-// new membership submissions to fail with a server-side ReferenceError.
 const hashPassword = (password) => {
   const salt = crypto.randomBytes(16).toString('hex');
   const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex');
@@ -75,45 +72,19 @@ router.post('/register', multipart([
   const idDocument = req.files?.id_document?.[0];
   try {
     const { name, email, phone, volunteer_type, position, id_type, message } = req.body || {};
-    if (!name || !email || !phone || !profilePhoto || !idDocument) {
-      removeFile(profilePhoto); removeFile(idDocument);
-      return res.status(400).json({ status: 'error', code: 'MISSING_REQUIRED_FIELDS', message: 'Full name, email, phone, profile photo and identity document are required.' });
-    }
+    if (!name || !email || !phone || !profilePhoto || !idDocument) { removeFile(profilePhoto); removeFile(idDocument); return res.status(400).json({ status: 'error', code: 'MISSING_REQUIRED_FIELDS', message: 'Full name, email, phone, profile photo and identity document are required.' }); }
     if (profilePhoto.size > 2 * 1024 * 1024) { removeFile(profilePhoto); removeFile(idDocument); return res.status(400).json({ status: 'error', code: 'PROFILE_TOO_LARGE', message: 'Profile photo must be 2MB or smaller.' }); }
     const normalizedEmail = cleanEmail(email);
     const normalizedPhone = cleanPhone(phone);
     const duplicate = await Volunteer.findOne({ where: { [Op.or]: [{ email: normalizedEmail }, { phone: normalizedPhone }] } });
-    if (duplicate) {
-      removeFile(profilePhoto); removeFile(idDocument);
-      return res.status(409).json({ status: 'error', code: 'DUPLICATE_VOLUNTEER', message: cleanEmail(duplicate.email) === normalizedEmail ? 'A volunteer application with this email already exists.' : 'A volunteer application with this mobile number already exists.' });
-    }
-
-    const newVolunteer = await Volunteer.create({
-      fullName: String(name).trim(),
-      email: normalizedEmail,
-      phone: normalizedPhone,
-      volunteerType: String(volunteer_type || 'field').trim() || 'field',
-      position: String(position || 'General Volunteer').trim() || 'General Volunteer',
-      idType: String(id_type || 'College ID').trim() || 'College ID',
-      message: String(message || '').trim() || null,
-      idDocumentPath: idDocument.path,
-      profilePhotoPath: `/uploads/${profilePhoto.filename}`,
-      status: 'pending',
-      isVerified: false
-    });
-
-    const emailSent = await notifyAdmin(
-      `New Volunteer Application: ${newVolunteer.fullName}`,
-      `New volunteer application received.\nName: ${newVolunteer.fullName}\nType: ${newVolunteer.volunteerType}\nPosition: ${newVolunteer.position}\nPhone: ${newVolunteer.phone}\nEmail: ${newVolunteer.email}`
-    );
+    if (duplicate) { removeFile(profilePhoto); removeFile(idDocument); return res.status(409).json({ status: 'error', code: 'DUPLICATE_VOLUNTEER', message: cleanEmail(duplicate.email) === normalizedEmail ? 'A volunteer application with this email already exists.' : 'A volunteer application with this mobile number already exists.' }); }
+    const newVolunteer = await Volunteer.create({ fullName: String(name).trim(), email: normalizedEmail, phone: normalizedPhone, volunteerType: String(volunteer_type || 'field').trim() || 'field', position: String(position || 'General Volunteer').trim() || 'General Volunteer', idType: String(id_type || 'College ID').trim() || 'College ID', message: String(message || '').trim() || null, idDocumentPath: idDocument.path, profilePhotoPath: `/uploads/${profilePhoto.filename}`, status: 'pending', isVerified: false });
+    const emailSent = await notifyAdmin(`New Volunteer Application: ${newVolunteer.fullName}`, `New volunteer application received.\nName: ${newVolunteer.fullName}\nType: ${newVolunteer.volunteerType}\nPosition: ${newVolunteer.position}\nPhone: ${newVolunteer.phone}\nEmail: ${newVolunteer.email}`);
     return res.status(201).json({ status: 'success', message: 'Application submitted successfully', emailSent, data: newVolunteer });
   } catch (error) {
     removeFile(profilePhoto); removeFile(idDocument);
     console.error('❌ Volunteer submission error:', error);
-    const details = process.env.NODE_ENV === 'production'
-      ? `The volunteer application could not be saved (${error.name || 'database error'}). Please retry after the backend deployment completes.`
-      : (error.message || 'Unable to submit your volunteer application.');
-    return res.status(500).json({ status: 'error', code: 'VOLUNTEER_SAVE_ERROR', message: details });
+    return res.status(500).json({ status: 'error', code: 'VOLUNTEER_SAVE_ERROR', message: process.env.NODE_ENV === 'production' ? 'Unable to save the volunteer application right now. Please try again.' : (error.message || 'Unable to submit your volunteer application.') });
   }
 });
 
@@ -135,7 +106,6 @@ router.post('/member-signup', multipart([
     if (!password || password.length < 8) { removeFile(profilePhoto); removeFile(idDocument); return res.status(400).json({ status: 'error', message: 'Password must be at least 8 characters.' }); }
     if (!isWebsiteAccount && (!profilePhoto || !idDocument || !idProofType)) { removeFile(profilePhoto); removeFile(idDocument); return res.status(400).json({ status: 'error', message: 'Please upload both a profile photo and identity proof.' }); }
     if (profilePhoto && profilePhoto.size > 2 * 1024 * 1024) { removeFile(profilePhoto); removeFile(idDocument); return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' }); }
-
     const existing = await Member.findOne({ where: { [Op.or]: [{ email: primaryEmail }, { phone: normalizedPhone }] } });
     if (existing) {
       const sameEmail = cleanEmail(existing.email) === primaryEmail;
@@ -146,31 +116,26 @@ router.post('/member-signup', multipart([
         return res.status(200).json({ status: 'success', message: 'Account created successfully. You are now signed in.', user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
       }
       if (isAccountOnly(existing)) {
-        const updates = { fullName: fullName.trim(), phone: normalizedPhone, memberType, idProofType, message: message?.trim() || null, profilePhotoPath: `/uploads/${profilePhoto.filename}`, idDocumentPath: idDocument.path, status: 'pending', paymentStatus: memberType === 'advisory' ? 'not_required' : 'pending', reviewNote: null };
+        const updates = { fullName: fullName.trim(), phone: normalizedPhone, memberType, idProofType, message: message?.trim() || null, profilePhotoPath: profilePhoto ? `/uploads/${profilePhoto.filename}` : existing.profilePhotoPath, idDocumentPath: idDocument ? idDocument.path : existing.idDocumentPath, status: 'pending', paymentStatus: memberType === 'advisory' ? 'not_required' : 'pending', reviewNote: null };
         await existing.update(updates);
         const emailSent = await notifyAdmin(`New Membership Application: ${fullName.trim()}`, `An existing SSF account has submitted a membership application.\nName: ${fullName.trim()}\nType: ${memberType}\nEmail: ${primaryEmail}\nPhone: ${normalizedPhone}`);
         return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully', emailSent, data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
       }
       if (existing.status === 'changes_requested') {
-        await existing.update({ fullName: fullName.trim(), phone: normalizedPhone, memberType, idProofType, message: message?.trim() || null, profilePhotoPath: `/uploads/${profilePhoto.filename}`, idDocumentPath: idDocument.path, status: 'pending', reviewNote: null });
+        await existing.update({ fullName: fullName.trim(), phone: normalizedPhone, memberType, idProofType, message: message?.trim() || null, profilePhotoPath: profilePhoto ? `/uploads/${profilePhoto.filename}` : existing.profilePhotoPath, idDocumentPath: idDocument ? idDocument.path : existing.idDocumentPath, status: 'pending', reviewNote: null });
         const emailSent = await notifyAdmin(`Membership Application Resubmitted: ${fullName.trim()}`, `A membership application has been updated and resubmitted.\nName: ${fullName.trim()}\nType: ${memberType}\nEmail: ${primaryEmail}\nPhone: ${normalizedPhone}`);
         return res.status(200).json({ status: 'success', message: 'Membership application updated and resubmitted successfully.', emailSent, data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
       }
       removeFile(profilePhoto); removeFile(idDocument);
       return res.status(409).json({ status: 'error', message: 'A membership application with this email already exists.' });
     }
-
-    const newMember = await Member.create({
-      fullName: fullName.trim(), email: primaryEmail, phone: normalizedPhone, passwordHash: hashPassword(password),
-      memberType, message: message?.trim() || null, profilePhotoPath: `/uploads/${profilePhoto.filename}`,
-      idProofType, idDocumentPath: idDocument.path, status: 'pending', paymentStatus: memberType === 'advisory' ? 'not_required' : 'pending'
-    });
+    const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: normalizedPhone, passwordHash: hashPassword(password), memberType, message: message?.trim() || null, profilePhotoPath: profilePhoto ? `/uploads/${profilePhoto.filename}` : null, idProofType: idProofType || null, idDocumentPath: idDocument ? idDocument.path : null, status: 'pending', paymentStatus: memberType === 'advisory' ? 'not_required' : 'pending' });
     const emailSent = await notifyAdmin(`New Membership Application: ${fullName.trim()}`, `New membership application received.\nName: ${fullName.trim()}\nType: ${memberType}\nEmail: ${primaryEmail}\nPhone: ${normalizedPhone}`);
     return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully', emailSent, data: newMember, user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
   } catch (error) {
     removeFile(profilePhoto); removeFile(idDocument);
     console.error('❌ Membership submission error:', error);
-    return res.status(500).json({ status: 'error', message: error.message || 'Unable to submit your membership application.' });
+    return res.status(500).json({ status: 'error', message: process.env.NODE_ENV === 'production' ? 'Unable to save the membership application right now. Please try again.' : (error.message || 'Unable to submit your membership application.') });
   }
 });
 
