@@ -23,14 +23,16 @@ const requireAdminAuth = (req, res, next) => {
 router.post('/interest', async (req, res) => {
     try {
         const { type, fullName, email, phone, message } = req.body || {};
-        if (!['movement', 'partner'].includes(type)) return res.status(400).json({ message: 'Invalid interest type' });
+        if (!['movement', 'partner', 'volunteer', 'member'].includes(type)) return res.status(400).json({ message: 'Invalid interest type' });
         if (!fullName || fullName.trim().length < 3) return res.status(400).json({ message: 'Please enter your full name.' });
         if (!/^\S+@\S+\.\S+$/.test(String(email || '').trim())) return res.status(400).json({ message: 'Please enter a valid email address.' });
         if (String(phone || '').replace(/\D/g, '').length < 7) return res.status(400).json({ message: 'Please enter a valid phone number.' });
-        if (!message || message.trim().length < 10) return res.status(400).json({ message: 'Please tell us briefly how you would like to contribute.' });
-        const interest = await Interest.create({ interestType: type, fullName: fullName.trim(), email: email.trim().toLowerCase(), phone: phone.trim(), message: message.trim(), status: 'new' });
-        const label = type === 'partner' ? 'CSR / Partnership' : 'Nation-Building Movement';
-        await sendAdminNotification(`New ${label} Interest: ${fullName}`, `New ${label} request received.\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${message}`);
+        if (['movement', 'partner'].includes(type) && (!message || message.trim().length < 10)) return res.status(400).json({ message: 'Please tell us briefly how you would like to contribute.' });
+        const finalMessage = String(message || '').trim() || (type === 'volunteer' ? 'I would like to volunteer with Swastik Srijan Foundation.' : 'I am interested in SSF membership.');
+        const interest = await Interest.create({ interestType: type, fullName: fullName.trim(), email: email.trim().toLowerCase(), phone: phone.trim(), message: finalMessage, status: 'new' });
+        const labelMap = { partner: 'CSR / Partnership', movement: 'Nation-Building Movement', volunteer: 'Volunteer', member: 'Membership' };
+        const label = labelMap[type];
+        await sendAdminNotification(`New ${label} Interest: ${fullName}`, `New ${label} request received.\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nMessage: ${finalMessage}`);
         return res.status(201).json({ status: 'success', message: 'Request submitted successfully.', data: { id: interest.id, type: interest.interestType } });
     } catch (error) { console.error('❌ Interest submission error:', error); return res.status(500).json({ message: 'Unable to submit right now. Please try again.' }); }
 });
