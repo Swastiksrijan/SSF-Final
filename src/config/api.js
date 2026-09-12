@@ -16,6 +16,7 @@ export const ENDPOINTS = {
     USER_DOCUMENT: (type, id, accountId) => `${API_BASE_URL}/api/user-document/${type}/${encodeURIComponent(id)}?account=${encodeURIComponent(accountId)}`,
     VERIFY: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`,
     MEMBER_PAYMENT_LINK: `${API_BASE_URL}/api/member-payment-link`,
+    PORTAL_VOLUNTEER: `${API_BASE_URL}/api/portal-volunteer`,
     CONTACT: `${API_BASE_URL}/api/contact`,
     INTEREST: `${API_BASE_URL}/api/interest`,
     INTERNSHIP: `${API_BASE_URL}/api/internship`,
