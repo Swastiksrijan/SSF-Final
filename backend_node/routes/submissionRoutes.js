@@ -50,7 +50,7 @@ const notifyAdmin = async (subject, text) => {
   if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) { console.warn('⚠️ EMAIL_USER/EMAIL_PASS missing; application was saved without email notification.'); return false; }
   try {
     const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
-    await transporter.sendMail({ from: `"Swastik Srijan Admin" <${process.env.EMAIL_USER}>`, to: adminRecipients(), subject, text });
+    await transporter.sendMail({ from: `\"Swastik Srijan Admin\" <${process.env.EMAIL_USER}>`, to: adminRecipients(), subject, text });
     return true;
   } catch (error) { console.error('⚠️ Application notification failed:', error.message); return false; }
 };
@@ -122,7 +122,7 @@ router.post('/member-signup', multipart([
         return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully', emailSent, data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
       }
       if (existing.status === 'changes_requested') {
-        await existing.update({ fullName: fullName.trim(), phone: normalizedPhone, memberType, idProofType, message: message?.trim() || null, profilePhotoPath: profilePhoto ? `/uploads/${profilePhoto.filename}` : existing.profilePhotoPath, idDocumentPath: idDocument ? idDocument.path : existing.idDocumentPath, status: 'pending', reviewNote: null });
+        await existing.update({ fullName: fullName.trim(), phone: normalizedPhone, memberType, idProofType, message: message?.trim() || null, profilePhotoPath: profilePhoto ? `/uploads/${profilePhoto.filename}` : existing.profilePhotoPath, idDocumentPath: idDocument ? `/uploads/${idDocument.filename}` : existing.idDocumentPath, status: 'pending', reviewNote: null });
         const emailSent = await notifyAdmin(`Membership Application Resubmitted: ${fullName.trim()}`, `A membership application has been updated and resubmitted.\nName: ${fullName.trim()}\nType: ${memberType}\nEmail: ${primaryEmail}\nPhone: ${normalizedPhone}`);
         return res.status(200).json({ status: 'success', message: 'Membership application updated and resubmitted successfully.', emailSent, data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
       }
@@ -136,6 +136,41 @@ router.post('/member-signup', multipart([
     removeFile(profilePhoto); removeFile(idDocument);
     console.error('❌ Membership submission error:', error);
     return res.status(500).json({ status: 'error', message: process.env.NODE_ENV === 'production' ? 'Unable to save the membership application right now. Please try again.' : (error.message || 'Unable to submit your membership application.') });
+  }
+});
+
+// Logged-in portal membership application. It upgrades the existing SSF account and never creates a second account.
+router.post('/member-application', multipart([
+  { name: 'profile_photo', maxCount: 1 },
+  { name: 'id_document', maxCount: 1 }
+]), async (req, res) => {
+  const profilePhoto = req.files?.profile_photo?.[0];
+  const idDocument = req.files?.id_document?.[0];
+  try {
+    const { accountId, fullName, email, phone, memberType, idProofType, message } = req.body || {};
+    const normalizedEmail = cleanEmail(email);
+    const normalizedPhone = cleanPhone(phone);
+    const allowedTypes = new Set(['general', 'active', 'life', 'advisory']);
+    if (!accountId || !fullName || !normalizedEmail || !normalizedPhone || !allowedTypes.has(String(memberType || '').toLowerCase()) || !profilePhoto || !idDocument || !idProofType) {
+      removeFile(profilePhoto); removeFile(idDocument);
+      return res.status(400).json({ status: 'error', message: 'Please complete all membership fields and upload both profile photo and identity proof.' });
+    }
+    if (profilePhoto.size > 2 * 1024 * 1024) {
+      removeFile(profilePhoto); removeFile(idDocument);
+      return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' });
+    }
+    const member = await Member.findByPk(accountId);
+    if (!member) { removeFile(profilePhoto); removeFile(idDocument); return res.status(404).json({ status: 'error', message: 'SSF account not found. Please log in again.' }); }
+    if (cleanEmail(member.email) !== normalizedEmail) { removeFile(profilePhoto); removeFile(idDocument); return res.status(403).json({ status: 'error', message: 'Account verification failed. Please log in again.' }); }
+    if (!isAccountOnly(member) && member.status === 'approved' && member.memberId) { removeFile(profilePhoto); removeFile(idDocument); return res.status(409).json({ status: 'error', message: 'Your SSF membership is already approved.' }); }
+    if (!isAccountOnly(member) && !['changes_requested', 'rejected', 'pending'].includes(String(member.status || '').toLowerCase())) { removeFile(profilePhoto); removeFile(idDocument); return res.status(409).json({ status: 'error', message: 'This membership account cannot be submitted right now.' }); }
+    await member.update({ fullName: String(fullName).trim(), phone: normalizedPhone, memberType: String(memberType).toLowerCase(), idProofType: String(idProofType).trim(), message: String(message || '').trim() || null, profilePhotoPath: `/uploads/${profilePhoto.filename}`, idDocumentPath: idDocument.path, status: 'pending', paymentStatus: String(memberType).toLowerCase() === 'advisory' ? 'not_required' : 'pending', reviewNote: null, memberId: null, certId: null, certificateType: null, certificateIssuedAt: null });
+    const emailSent = await notifyAdmin(`Membership Application: ${member.fullName}`, `Membership application submitted from logged-in portal.\nName: ${member.fullName}\nType: ${member.memberType}\nEmail: ${member.email}\nPhone: ${member.phone}`);
+    return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully. It is now under review.', emailSent, user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status } });
+  } catch (error) {
+    removeFile(profilePhoto); removeFile(idDocument);
+    console.error('❌ Portal membership submission error:', error);
+    return res.status(500).json({ status: 'error', message: process.env.NODE_ENV === 'production' ? 'Unable to save the membership application right now. Please try again.' : (error.message || 'Unable to submit the membership application.') });
   }
 });
 
