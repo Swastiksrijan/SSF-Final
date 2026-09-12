@@ -65,7 +65,7 @@ export default function Contact() {
         </div>
       )}
 
-      <PageHero image="/images/real/community-team-group.jpg" title="Connect for Change" subtitle="Reach out to Swastik Srijan Foundation to explore collaborations and partnerships." hindiSubtitle="बदलाव के लिए हमसे जुड़ें - आपके सवाल और सुझाव हमारे लिए महत्वपूर्ण हैं।" />
+      <PageHero image="/images/real/community-education-meeting.jpg" title="Connect for Change" subtitle="Reach out to Swastik Srijan Foundation to explore collaborations and partnerships." hindiSubtitle="बदलाव के लिए हमसे जुड़ें - आपके सवाल और सुझाव हमारे लिए महत्वपूर्ण हैं।" />
 
       <section className="py-12 md:py-24 px-6">
         <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-10 lg:gap-16 items-start">
