@@ -55,6 +55,7 @@ export default function JoinSSFHub() {
       } else if (selected === "donor") {
         r = await fetch(`${API_BASE_URL}/api/donor`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, receiptPreference: "email", country: "India", notes: form.message }) });
       } else if (selected === "movement" || selected === "partner") {
+        if (form.message.trim().length < 10) throw new Error("Please tell us briefly how you would like to contribute (at least 10 characters).");
         r = await fetch(`${API_BASE_URL}/api/interest`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ type: selected, fullName: form.fullName, email: form.email, phone: form.phone, message: form.message }) });
       } else {
         throw new Error("Your existing SSF account is already active. Membership needs to be linked to that account instead of creating a duplicate account.");
@@ -82,7 +83,7 @@ export default function JoinSSFHub() {
               </div>
               {selected === "volunteer" && <div className="mt-4 grid gap-4 md:grid-cols-2"><FileField label="Profile photo" required accept="image/jpeg,image/png,image/webp" onChange={(f) => set("profilePhoto", f)} /><FileField label="ID document" required accept="image/jpeg,image/png,application/pdf" onChange={(f) => set("idDocument", f)} /></div>}
               {selected === "intern" && <div className="mt-4"><FileField label="Resume (PDF/DOC/DOCX)" required accept="application/pdf,.doc,.docx" onChange={(f) => set("resume", f)} /></div>}
-              <label className="mt-4 block text-sm font-semibold text-gray-700">Message / Notes<textarea value={form.message} onChange={(e) => set("message", e.target.value)} rows="4" className="mt-2 w-full rounded-xl border border-gray-300 bg-white p-3 outline-none focus:border-emerald-500" /></label>
+              <label className="mt-4 block text-sm font-semibold text-gray-700">Message / Notes{(selected === "movement" || selected === "partner") && " *"}<textarea required={selected === "movement" || selected === "partner"} minLength={selected === "movement" || selected === "partner" ? 10 : undefined} value={form.message} onChange={(e) => set("message", e.target.value)} rows="4" placeholder={selected === "movement" || selected === "partner" ? "Please tell us briefly how you would like to contribute." : "Optional notes"} className="mt-2 w-full rounded-xl border border-gray-300 bg-white p-3 outline-none focus:border-emerald-500" /></label>
               <button disabled={busy} type="submit" className="mt-5 rounded-xl bg-emerald-700 px-6 py-3 font-bold text-white shadow hover:bg-emerald-800 disabled:opacity-60">{busy ? "Submitting…" : "Submit Application"}</button>
             </>}
             {message && <div className="mt-4 rounded-xl bg-emerald-100 p-4 text-sm font-semibold text-emerald-800">{message}</div>}{error && <div className="mt-4 rounded-xl bg-red-100 p-4 text-sm font-semibold text-red-700">{error}</div>}
