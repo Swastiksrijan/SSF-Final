@@ -32,12 +32,9 @@ body {
 /* Global Responsive Fixes */
 * {
   overflow-wrap: break-word;
-  /* Standard */
   word-wrap: break-word;
-  /* IE/Edge */
 }
 
-/* Specifically for long strings like emails/IDs */
 .break-all {
   word-break: break-all !important;
 }
@@ -102,36 +99,19 @@ img {
 
 /* Animations */
 @keyframes float {
-  0% {
-    transform: translateY(0px);
-  }
-
-  50% {
-    transform: translateY(-8px);
-  }
-
-  100% {
-    transform: translateY(0px);
-  }
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-8px); }
+  100% { transform: translateY(0px); }
 }
 
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
+.animate-float { animation: float 3s ease-in-out infinite; }
 
 @keyframes scrollX {
-  0% {
-    transform: translateX(0);
-  }
-
-  100% {
-    transform: translateX(-50%);
-  }
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-.animate-scrollX {
-  animation: scrollX 20s linear infinite;
-}
+.animate-scrollX { animation: scrollX 20s linear infinite; }
 
 /* Cards */
 .premium-card {
@@ -141,4 +121,281 @@ img {
 /* Font compatibility */
 .font-inria {
   font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+/* ================================================================
+   HUMANITY & TRUTH — PREMIUM EDITORIAL PRESENTATION
+   Content is intentionally untouched; these rules only elevate the UI.
+   ================================================================ */
+
+/* Unique root of src/pages/Humanity&Truth.jsx */
+div[class*="bg-[radial-gradient"] {
+  --ht-ink: #142b45;
+  --ht-ink-soft: #35516b;
+  --ht-gold: #b8903f;
+  --ht-gold-soft: #dfc995;
+  --ht-paper: #fbfaf7;
+  --ht-line: rgba(20, 43, 69, 0.11);
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(180deg, #f8f6f0 0%, #fff 18%, #f8f6f0 100%) !important;
+}
+
+div[class*="bg-[radial-gradient"]::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(184, 144, 63, 0.13), transparent 30%),
+    linear-gradient(90deg, transparent 0%, rgba(20, 43, 69, 0.025) 50%, transparent 100%);
+}
+
+/* Hero: refined magazine / thought-leadership cover */
+div[class*="bg-[radial-gradient"] > section:first-child {
+  padding-top: clamp(5.5rem, 10vw, 9rem) !important;
+  padding-bottom: clamp(3rem, 6vw, 5rem) !important;
+}
+
+div[class*="bg-[radial-gradient"] > section:first-child > div {
+  max-width: 920px !important;
+  padding: clamp(2rem, 5vw, 4.5rem) !important;
+  border-radius: 30px !important;
+  border: 1px solid rgba(184, 144, 63, 0.25) !important;
+  background: rgba(255, 255, 255, 0.91) !important;
+  box-shadow: 0 35px 90px -48px rgba(20, 43, 69, 0.48), 0 8px 30px -24px rgba(184, 144, 63, 0.35) !important;
+}
+
+div[class*="bg-[radial-gradient"] > section:first-child h1 {
+  color: var(--ht-ink) !important;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+
+div[class*="bg-[radial-gradient"] > section:first-child p:first-child {
+  color: var(--ht-gold) !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.13em;
+  font-size: 0.82rem !important;
+}
+
+div[class*="bg-[radial-gradient"] > section:first-child p:nth-of-type(2) {
+  color: var(--ht-ink-soft) !important;
+  max-width: 760px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Elegant gold rule */
+div[class*="bg-[radial-gradient"] > section:first-child > div > div:last-child {
+  width: 92px !important;
+  height: 2px !important;
+  background: linear-gradient(90deg, transparent, var(--ht-gold), transparent) !important;
+  opacity: 1 !important;
+}
+
+/* Intro / lead statement */
+div[class*="bg-[radial-gradient"] > section:nth-child(2) > div {
+  max-width: 920px !important;
+  background: rgba(255, 255, 255, 0.78) !important;
+  border: 1px solid var(--ht-line) !important;
+  border-left: 4px solid var(--ht-gold) !important;
+  border-radius: 22px !important;
+  box-shadow: 0 25px 70px -48px rgba(20, 43, 69, 0.5) !important;
+}
+
+div[class*="bg-[radial-gradient"] > section:nth-child(2) p {
+  text-wrap: pretty;
+}
+
+/* Main article cards */
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--ht-line) !important;
+  border-radius: 24px !important;
+  background: rgba(255, 255, 255, 0.94) !important;
+  box-shadow: 0 24px 65px -52px rgba(20, 43, 69, 0.65) !important;
+  transition: transform 280ms ease, box-shadow 280ms ease, border-color 280ms ease;
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 28px;
+  bottom: 28px;
+  width: 2px;
+  background: linear-gradient(180deg, transparent, var(--ht-gold-soft), transparent);
+  opacity: 0.9;
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section:hover {
+  transform: translateY(-3px);
+  border-color: rgba(184, 144, 63, 0.3) !important;
+  box-shadow: 0 34px 80px -54px rgba(20, 43, 69, 0.72) !important;
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl h2 {
+  color: var(--ht-ink) !important;
+  letter-spacing: -0.018em;
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl h2 span {
+  color: #718096 !important;
+  letter-spacing: 0;
+}
+
+/* Improve reading rhythm without altering wording */
+div[class*="bg-[radial-gradient"] > div.max-w-5xl p,
+div[class*="bg-[radial-gradient"] > div.max-w-5xl li {
+  text-wrap: pretty;
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section > div {
+  line-height: 1.85;
+}
+
+/* Quote / conclusion panels */
+div[class*="bg-[radial-gradient"] > div.max-w-5xl [class*="bg-[#F2F1ED]"] {
+  border: 1px solid rgba(20, 43, 69, 0.07);
+  border-radius: 16px;
+  background: linear-gradient(135deg, #f8f7f3, #f1efe8) !important;
+}
+
+/* Faith / values cards */
+div[class*="bg-[radial-gradient"] > div.max-w-5xl [class*="hover:border-[#C8A24D]"] {
+  border-radius: 18px;
+  border-color: rgba(20, 43, 69, 0.09) !important;
+  box-shadow: 0 12px 30px -26px rgba(20, 43, 69, 0.7);
+  transition: all 220ms ease;
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl [class*="hover:border-[#C8A24D]"]:hover {
+  transform: translateY(-3px);
+  border-color: rgba(184, 144, 63, 0.55) !important;
+  box-shadow: 0 22px 38px -28px rgba(20, 43, 69, 0.55);
+}
+
+/* Deep-blue Foundation experience section */
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section[class*="bg-[#1F3A5F]"] {
+  background: linear-gradient(135deg, #102b47 0%, #173d61 55%, #0d243b 100%) !important;
+  border: 1px solid rgba(223, 201, 149, 0.22) !important;
+  box-shadow: 0 35px 80px -42px rgba(10, 30, 50, 0.9) !important;
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section[class*="bg-[#1F3A5F]"]::before {
+  display: none;
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section[class*="bg-[#1F3A5F]"] [class*="bg-white/5"] {
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.055) !important;
+  backdrop-filter: blur(8px);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section[class*="bg-[#1F3A5F]"] p[class*="text-[#C8A24D]"] {
+  color: #e1c36f !important;
+}
+
+/* Final conclusion becomes the visual climax */
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section:last-child {
+  border-color: rgba(184, 144, 63, 0.2) !important;
+  background: linear-gradient(145deg, rgba(255,255,255,.98), rgba(249,247,241,.96)) !important;
+  box-shadow: 0 32px 85px -55px rgba(20, 43, 69, 0.65) !important;
+}
+
+div[class*="bg-[radial-gradient"] > div.max-w-5xl > section:last-child h2 {
+  font-size: clamp(1.7rem, 4vw, 2.6rem) !important;
+}
+
+/* Signature / author footer */
+div[class*="bg-[radial-gradient"] > footer {
+  margin-top: 2rem;
+  background: linear-gradient(180deg, #f7f5ef 0%, #eeeae0 100%) !important;
+  border-top: 1px solid rgba(184, 144, 63, 0.22) !important;
+}
+
+div[class*="bg-[radial-gradient"] > footer h3 {
+  color: var(--ht-ink) !important;
+  letter-spacing: 0.01em;
+}
+
+div[class*="bg-[radial-gradient"] > footer .h-px {
+  height: 2px !important;
+  width: 76px !important;
+  background: linear-gradient(90deg, transparent, var(--ht-gold), transparent) !important;
+}
+
+/* Mobile: premium but calm, never cramped */
+@media (max-width: 640px) {
+  div[class*="bg-[radial-gradient"] > section:first-child {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+  }
+
+  div[class*="bg-[radial-gradient"] > section:first-child > div {
+    border-radius: 22px !important;
+    padding: 2rem 1.15rem !important;
+  }
+
+  div[class*="bg-[radial-gradient"] > section:first-child h1 {
+    font-size: 2rem !important;
+    line-height: 1.35 !important;
+  }
+
+  div[class*="bg-[radial-gradient"] > section:first-child p:nth-of-type(2) {
+    font-size: 1.02rem !important;
+    line-height: 1.65 !important;
+  }
+
+  div[class*="bg-[radial-gradient"] > div.max-w-5xl {
+    padding-left: 0.85rem !important;
+    padding-right: 0.85rem !important;
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+    gap: 1.25rem !important;
+  }
+
+  div[class*="bg-[radial-gradient"] > div.max-w-5xl > section {
+    border-radius: 18px !important;
+    padding: 1.25rem !important;
+  }
+
+  div[class*="bg-[radial-gradient"] > div.max-w-5xl > section::before {
+    top: 18px;
+    bottom: 18px;
+  }
+
+  div[class*="bg-[radial-gradient"] > div.max-w-5xl h2 {
+    font-size: 1.45rem !important;
+    line-height: 1.45 !important;
+  }
+
+  div[class*="bg-[radial-gradient"] > div.max-w-5xl h2 span {
+    font-size: 0.92rem !important;
+  }
+
+  div[class*="bg-[radial-gradient"] > div.max-w-5xl p,
+  div[class*="bg-[radial-gradient"] > div.max-w-5xl li {
+    font-size: 0.98rem;
+    line-height: 1.8;
+  }
+
+  div[class*="bg-[radial-gradient"] > footer {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    padding-top: 3.5rem !important;
+    padding-bottom: 3.5rem !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  div[class*="bg-[radial-gradient"] > div.max-w-5xl > section,
+  div[class*="bg-[radial-gradient"] > div.max-w-5xl [class*="hover:border-[#C8A24D]"] {
+    transition: none !important;
+  }
 }
