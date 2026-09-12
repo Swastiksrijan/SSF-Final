@@ -56,8 +56,6 @@ export default function JoinSSFHub() {
   const submit = async (e) => {
     e.preventDefault(); setBusy(true); setMessage(""); setError("");
     try {
-      const u = session();
-      if (!u?.id || !u?.email) throw new Error("Your login session is missing. Please log out and log in again.");
       let data;
       if (selected === "volunteer") {
         if (!form.profilePhoto || !form.idDocument) throw new Error("Profile photo and ID document are required.");
@@ -65,6 +63,8 @@ export default function JoinSSFHub() {
         fd.append("name", form.fullName); fd.append("email", form.email); fd.append("phone", form.phone); fd.append("volunteer_type", "field"); fd.append("position", "General Volunteer"); fd.append("id_type", form.idProofType || "ID Proof"); fd.append("message", form.message); fd.append("profile_photo", form.profilePhoto); fd.append("id_document", form.idDocument);
         data = await request(`${API_BASE_URL}/api/register`, { method: "POST", body: fd });
       } else if (selected === "member") {
+        const u = session();
+        if (!u?.id || !u?.email) throw new Error("Please log in before applying for SSF membership.");
         if (!form.memberType) throw new Error("Please select a membership type.");
         if (!form.idProofType || !form.profilePhoto || !form.idDocument) throw new Error("Membership type, ID proof type, profile photo and identity document are required.");
         const fd = new FormData();
