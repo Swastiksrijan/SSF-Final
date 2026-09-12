@@ -17,6 +17,7 @@ export const ENDPOINTS = {
     VERIFY: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`,
     MEMBER_PAYMENT_LINK: `${API_BASE_URL}/api/member-payment-link`,
     CONTACT: `${API_BASE_URL}/api/contact`,
+    INTEREST: `${API_BASE_URL}/api/interest`,
     INTERNSHIP: `${API_BASE_URL}/api/internship`,
     DONOR: `${API_BASE_URL}/api/donor`,
     ADMIN_LOGIN: `${API_BASE_URL}/api/admin/login`,
