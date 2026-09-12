@@ -45,7 +45,7 @@ router.get('/user-portal/:id', async (req, res) => {
             Volunteer.findAll({ where: { email }, attributes: ['id','fullName','email','phone','volunteerType','position','status','isVerified','volunteerId','certId','approvedAt','createdAt'], order: [['createdAt','DESC']] }),
             Donor.findAll({ where: { email }, attributes: ['id','donorId','fullName','email','amount','donationPurpose','paymentMode','paymentStatus','status','createdAt'], order: [['createdAt','DESC']] }),
             InternshipApplication.findAll({ where: { email }, attributes: ['id','fullName','email','college','course','internshipType','duration','startDate','status','internId','joiningLetterId','completionCertId','selectedAt','completedAt','createdAt'], order: [['createdAt','DESC']] }),
-            Interest.findAll({ where: { email }, attributes: ['id','interestType','fullName','email','phone','message','status','createdAt'], order: [['createdAt','DESC']] })
+            Interest.findAll({ where: { email }, attributes: ['id','interestType','fullName','email','phone','category','message','status','createdAt'], order: [['createdAt','DESC']] })
         ]);
 
         const volunteers = volunteersResult.status === 'fulfilled' ? volunteersResult.value : [];
