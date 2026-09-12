@@ -1,6 +1,8 @@
 import { useState } from 'react';
-import { FaCheckCircle, FaHeart, FaShieldAlt } from 'react-icons/fa';
+import { FaCheckCircle, FaHeart, FaShieldAlt, FaExternalLinkAlt } from 'react-icons/fa';
 import { ENDPOINTS } from '../config/api';
+
+const DONATION_PAYMENT_LINK = 'https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view';
 
 const initialForm = {
     fullName: '', email: '', countryCode: '+91', phone: '', city: '', state: '', country: 'India',
@@ -56,6 +58,19 @@ export default function DonorForm() {
                         <div><label className={labelClass}>Donation Amount</label><input type="number" min="0" className={inputClass} value={form.amount} onChange={e => update('amount', e.target.value)} placeholder="Amount in INR" /></div>
                         <div><label className={labelClass}>Donation Purpose</label><select className={inputClass} value={form.donationPurpose} onChange={e => update('donationPurpose', e.target.value)}><option>General Donation</option><option>Education</option><option>Health & Nutrition</option><option>Livelihood & Skill Development</option><option>Women Empowerment</option><option>Environment & Community Welfare</option><option>Youth & Sports</option><option>Other</option></select></div>
                         <div><label className={labelClass}>Payment Mode</label><select className={inputClass} value={form.paymentMode} onChange={e => update('paymentMode', e.target.value)}><option value="online">Online Donation</option><option value="upi">UPI</option><option value="bank_transfer">Bank Transfer</option><option value="cash">Cash / Offline</option></select></div>
+
+                        {form.paymentMode === 'online' && (
+                            <div className="md:col-span-2 rounded-2xl border border-orange-200 bg-orange-50 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                                <div>
+                                    <p className="font-black text-[#002344]">Online Donation</p>
+                                    <p className="text-sm text-zinc-600 mt-1">Pay securely through Razorpay. You can select the donation amount on the payment page.</p>
+                                </div>
+                                <a href={DONATION_PAYMENT_LINK} target="_blank" rel="noreferrer noopener" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-[#ff6600] px-5 py-3 font-black text-white hover:bg-[#e85b00] transition">
+                                    Donate Now <FaExternalLinkAlt className="text-xs" />
+                                </a>
+                            </div>
+                        )}
+
                         <div><label className={labelClass}>City</label><input className={inputClass} value={form.city} onChange={e => update('city', e.target.value)} placeholder="City" /></div>
                         <div><label className={labelClass}>State</label><input className={inputClass} value={form.state} onChange={e => update('state', e.target.value)} placeholder="State" /></div>
                         <div><label className={labelClass}>PAN (Optional)</label><input className={inputClass} value={form.pan} onChange={e => update('pan', e.target.value.toUpperCase())} placeholder="For receipt records, if applicable" maxLength={10} /></div>
