@@ -13,7 +13,7 @@ export default function OptimizedImage({
     src,
     alt,
     className = "",
-    fallback = "/images/logo.png", // Using the project logo as default fallback
+    fallback = "/images/hero-fallback.svg",
     objectFit = "cover",
     ...props
 }) {
@@ -33,10 +33,12 @@ export default function OptimizedImage({
     };
 
     const handleError = () => {
-        setHasError(true);
         if (fallback && currentSrc !== fallback) {
+            setHasError(false);
             setCurrentSrc(fallback);
+            return;
         }
+        setHasError(true);
     };
 
     return (
@@ -73,11 +75,7 @@ export default function OptimizedImage({
 
             {/* Error State Overlay (Optional simple indicator) */}
             {hasError && currentSrc === fallback && (
-                <div className="absolute inset-x-0 bottom-0 bg-black/20 backdrop-blur-sm py-1 px-2">
-                    <p className="text-[10px] text-white/80 text-center font-medium uppercase tracking-widest">
-                        Image Unavailable
-                    </p>
-                </div>
+                <div className="absolute inset-0 bg-[#001529]" aria-hidden="true" />
             )}
         </div>
     );
