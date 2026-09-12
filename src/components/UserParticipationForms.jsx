@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { FaArrowRight, FaCalendarAlt, FaCheckCircle, FaGraduationCap, FaHandshake, FaHeart, FaTimes, FaTools, FaUsers, FaUserFriends, FaSpinner } from "react-icons/fa";
+import { FaArrowRight, FaCalendarAlt, FaCheckCircle, FaGraduationCap, FaHandshake, FaHeart, FaTimes, FaTools, FaUserFriends, FaUsers, FaSpinner } from "react-icons/fa";
 import { ENDPOINTS } from "../config/api";
 import InternshipForm from "./InternshipForm";
 import DonorForm from "./DonorForm";
+import MemberForm from "./MemberForm";
 
 const FORM_CONFIG = {
   volunteer: { title: "Volunteer", icon: FaUserFriends, eyebrow: "Serve with SSF", description: "Tell us how you would like to contribute your time, skills and energy." },
@@ -27,12 +28,11 @@ function ParticipationForm({ kind }) {
     if (form.fullName.trim().length < 3) return setError("Please enter your full name.");
     if (!/^\S+@\S+\.\S+$/.test(form.email.trim())) return setError("Please enter a valid email address.");
     if (form.phone.replace(/\D/g, "").length < 7) return setError("Please enter a valid mobile number.");
-    if (kind === "membership" && !form.category) return setError("Please select a membership type.");
-    if (kind !== "membership" && !form.category) return setError("Please select an option.");
+    if (!form.category) return setError("Please select an option.");
     if (form.message.trim().length < 10) return setError("Please tell us briefly how you would like to participate.");
     setState("submitting");
     try {
-      const type = kind === "volunteer" ? "volunteer" : kind === "membership" ? "member" : kind === "partnership" || kind === "skills" ? "partner" : "movement";
+      const type = kind === "volunteer" ? "volunteer" : kind === "partnership" || kind === "skills" ? "partner" : "movement";
       const response = await fetch(ENDPOINTS.INTEREST, {
         method: "POST",
         headers: { "Content-Type": "application/json", Accept: "application/json" },
@@ -49,14 +49,13 @@ function ParticipationForm({ kind }) {
 
   if (state === "success") return <div className="text-center py-12 px-5"><FaCheckCircle className="mx-auto text-5xl text-emerald-500" /><h3 className="text-2xl font-black text-[#002344] mt-5">Request received</h3><p className="text-zinc-500 mt-2 max-w-md mx-auto">Your request has been recorded successfully. The SSF team will review it and contact you when needed.</p></div>;
 
-  const options = kind === "membership" ? ["General Member", "Active Member", "Life Member", "Advisory / Expert"]
-    : kind === "volunteer" ? ["Field Volunteer", "Programme Volunteer", "Professional Volunteer", "Digital / Online Volunteer"]
+  const options = kind === "volunteer" ? ["Field Volunteer", "Programme Volunteer", "Professional Volunteer", "Digital / Online Volunteer"]
     : kind === "activities" ? ["Awareness Campaign", "Education Activity", "Health Activity", "Environment / Plantation", "Community / Rural Development", "Event / Outreach"]
     : kind === "partnership" ? ["NGO / Institution", "Corporate / CSR", "School / College", "Professional / Organisation", "Community Partner"]
     : ["Teaching / Education", "Medical / Health", "Legal", "Finance / CA / Audit", "IT / Technology", "Design / Media", "Communications", "Other Professional Skill"];
 
-  const selectLabel = kind === "membership" ? "Membership Type *" : kind === "volunteer" ? "Volunteer Type *" : kind === "activities" ? "Activity / Event *" : kind === "partnership" ? "Partnership Type *" : "Area of Expertise *";
-  const messageLabel = kind === "membership" ? "Why do you want to join? *" : kind === "volunteer" ? "How would you like to volunteer? *" : kind === "activities" ? "How would you like to participate? *" : "How would you like to contribute? *";
+  const selectLabel = kind === "volunteer" ? "Volunteer Type *" : kind === "activities" ? "Activity / Event *" : kind === "partnership" ? "Partnership Type *" : "Area of Expertise *";
+  const messageLabel = kind === "volunteer" ? "How would you like to volunteer? *" : kind === "activities" ? "How would you like to participate? *" : "How would you like to contribute? *";
 
   return <form onSubmit={submit} className="p-5 md:p-7 space-y-5" noValidate>
     <div className="rounded-2xl bg-[#f8fafc] border border-zinc-100 p-4 text-sm text-zinc-600">{config.description}</div>
@@ -77,7 +76,9 @@ export default function UserParticipationForms({ openForm, onClose }) {
   if (!config) return null;
   const Icon = config.icon;
   const renderForm = () => {
-    if (["volunteer", "membership", "activities", "partnership", "skills"].includes(openForm)) return <ParticipationForm kind={openForm} />;
+    if (openForm === "membership") return <MemberForm />;
+    if (openForm === "volunteer") return <ParticipationForm kind="volunteer" />;
+    if (["activities", "partnership", "skills"].includes(openForm)) return <ParticipationForm kind={openForm} />;
     if (openForm === "internship") return <InternshipForm />;
     return <DonorForm />;
   };
