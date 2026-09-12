@@ -14,7 +14,7 @@ const homeImage = '/images/hero-main.jpg';
 
 const pages = {
   '/': ['Swastik Srijan Foundation | Empowering Lives Across India', 'Join Swastik Srijan Foundation, a registered NGO in India working for education, health, livelihoods, women empowerment and rural development since 2013.', '/images/hero-main.jpg'],
-  '/About': ['About Swastik Srijan Foundation | Our Mission & Vision', 'Learn about Swastik Srijan Foundation Samiti and its work in education, health and community empowerment across India since 2013.', '/images/real/community-team-group.jpg?v=20260913'],
+  '/About': ['About Swastik Srijan Foundation | Our Mission & Vision', 'Learn about Swastik Srijan Foundation Samiti and its work in education, health and community empowerment across India since 2013.', '/images/uploads/footer-gallery-1.jpg?v=20260913'],
   '/Mission': ['Mission & Vision | Swastik Srijan Foundation', 'Discover our mission to empower communities through education, health, livelihood development and sustainable social change.', '/images/uploads/mission_vision.jpeg'],
   '/Vision': ['Our Vision | Swastik Srijan Foundation', 'Our vision for a nation built on service, truth, dedication and sustainable community development.', '/images/uploads/vision-mission-goals.jpg'],
   '/Objectives': ['Objectives | Swastik Srijan Foundation', 'Explore the objectives and areas of work of Swastik Srijan Foundation across education, health, livelihoods, women empowerment, environment and social welfare.', '/images/uploads/objective-hero-v2.png'],
