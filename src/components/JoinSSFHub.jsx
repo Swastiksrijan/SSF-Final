@@ -1,9 +1,4 @@
 import { useState } from "react";
-import VolunteerForm from "./VolunteerForm";
-import MemberForm from "./MemberForm";
-import InternshipForm from "./InternshipForm";
-import DonorForm from "./DonorForm";
-import GetInvolvedInterestForm from "./GetInvolvedInterestForm";
 
 const roles = [
   { id: "volunteer", title: "Volunteer for India", icon: "🤝", text: "Serve communities and support SSF activities." },
@@ -16,24 +11,9 @@ const roles = [
 
 export default function JoinSSFHub() {
   const [selected, setSelected] = useState("");
-  const [open, setOpen] = useState(null);
 
-  const choose = (id) => {
-    setSelected(id);
-    setOpen(id);
-  };
-
-  const close = () => setOpen(null);
-
-  const renderForm = () => {
-    if (open === "volunteer") return <VolunteerForm />;
-    if (open === "member") return <MemberForm />;
-    if (open === "intern") return <InternshipForm onClose={close} />;
-    if (open === "donor") return <DonorForm />;
-    if (open === "movement") return <GetInvolvedInterestForm type="movement" onClose={close} />;
-    if (open === "partner") return <GetInvolvedInterestForm type="partner" onClose={close} />;
-    return null;
-  };
+  const choose = (id) => setSelected(id);
+  const selectedRole = roles.find((role) => role.id === selected);
 
   return (
     <section className="w-full px-4 sm:px-6 lg:px-8 py-6">
@@ -51,7 +31,7 @@ export default function JoinSSFHub() {
           <select
             id="ssf-role"
             value={selected}
-            onChange={(e) => e.target.value && choose(e.target.value)}
+            onChange={(e) => setSelected(e.target.value)}
             className="w-full rounded-2xl border border-gray-300 bg-gray-50 px-4 py-3 text-gray-800 outline-none transition focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100"
           >
             <option value="">Choose from six ways to participate…</option>
@@ -64,7 +44,7 @@ export default function JoinSSFHub() {
                 key={role.id}
                 type="button"
                 onClick={() => choose(role.id)}
-                className="group rounded-2xl border border-gray-200 bg-white p-5 text-left shadow-sm transition hover:-translate-y-1 hover:border-emerald-300 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-emerald-100"
+                className={`group rounded-2xl border p-5 text-left shadow-sm transition hover:-translate-y-1 hover:shadow-lg focus:outline-none focus:ring-4 focus:ring-emerald-100 ${selected === role.id ? "border-emerald-500 bg-emerald-50 shadow-md" : "border-gray-200 bg-white"}`}
               >
                 <div className="flex items-start gap-4">
                   <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-emerald-50 text-2xl group-hover:bg-emerald-100">{role.icon}</span>
@@ -77,23 +57,24 @@ export default function JoinSSFHub() {
               </button>
             ))}
           </div>
+
+          {selectedRole && (
+            <div className="mt-6 rounded-2xl border border-emerald-200 bg-emerald-50/60 p-5 sm:p-6">
+              <div className="flex items-center gap-3">
+                <span className="text-2xl">{selectedRole.icon}</span>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-emerald-700">SSF Participation</p>
+                  <h3 className="text-lg font-bold text-gray-900">{selectedRole.title}</h3>
+                </div>
+              </div>
+              <p className="mt-4 text-sm text-gray-600">Your selected opportunity is ready. The participation form will appear here without leaving your User Portal.</p>
+              <div className="mt-4 rounded-xl border border-dashed border-emerald-300 bg-white p-4 text-sm text-gray-500">
+                Form area — {selectedRole.title}
+              </div>
+            </div>
+          )}
         </div>
       </div>
-
-      {open && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/65 p-3 sm:p-5" role="dialog" aria-modal="true" aria-label="SSF participation form">
-          <div className="relative flex max-h-[94vh] w-full max-w-5xl flex-col overflow-hidden rounded-3xl bg-white shadow-2xl">
-            <div className="flex shrink-0 items-center justify-between border-b bg-white px-5 py-4 sm:px-7">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600">SSF Participation</p>
-                <h3 className="text-lg font-bold text-gray-900 sm:text-xl">{roles.find((r) => r.id === open)?.title}</h3>
-              </div>
-              <button type="button" onClick={close} className="rounded-full bg-gray-100 px-4 py-2 text-xl leading-none text-gray-600 hover:bg-gray-200" aria-label="Close form">×</button>
-            </div>
-            <div className="min-h-0 overflow-y-auto p-3 sm:p-6">{renderForm()}</div>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
