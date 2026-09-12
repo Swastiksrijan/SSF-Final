@@ -42,5 +42,6 @@ export const ENDPOINTS = {
     ADMIN_DELETE_CONTACT: (id) => `${API_BASE_URL}/api/admin/contacts/${id}`,
     ADMIN_DELETE_INTEREST: (id) => `${API_BASE_URL}/api/admin/interests/${id}`,
     ADMIN_DELETE_INTERNSHIP: (id) => `${API_BASE_URL}/api/admin/internships/${id}`,
+    ADMIN_DELETE_USER: (id) => `${API_BASE_URL}/api/admin/users/${encodeURIComponent(id)}`,
     VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`
 };
