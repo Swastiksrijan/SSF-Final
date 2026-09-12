@@ -32,9 +32,18 @@ export default function PageHero({
         visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
     };
 
-    // Every page can provide its own professional hero image. Keep the
-    // existing shared header as a safe fallback for pages without one.
-    const heroImage = image || pageHeader;
+    // Some legacy policy pages used one shared image. Give those pages
+    // meaningful, page-specific visuals while keeping the caller API intact.
+    const legacyHeroImages = {
+        "Cookie Policy": "/images/real/awareness-poster-viewing.jpg",
+        "Donation & Refund Policy": "/images/real/online-food-support-clipping.jpg",
+        "Privacy Policy": "/images/real/integrity-pledge.jpg",
+        "Terms & Conditions": "/images/real/academy-board-compliance.jpg",
+        "Transparency & Reports": "/images/real/ncw_pledge_certificate.jpg",
+        "Registration Details": "/images/uploads/ngo-darpan.jpg"
+    };
+
+    const heroImage = legacyHeroImages[title] || image || pageHeader;
 
     return (
         <section className={`relative ${height} flex items-center justify-center bg-[#001529] text-white overflow-hidden pt-20`}>
