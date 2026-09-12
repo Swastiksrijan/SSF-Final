@@ -37,7 +37,7 @@ const pages = {
   '/Campaigns': ['Active Campaigns | Swastik Srijan Foundation', 'Join current campaigns and initiatives making a difference in communities across India.', '/images/uploads/childhood-hero.webp'],
   '/UpcomingProjects': ['Upcoming Projects | Swastik Srijan Foundation', 'Discover planned initiatives across education, health, livelihoods and community development.', '/images/real/dreams-taking-flight.png'],
   '/LearningHub': ['SSF Learning Hub | Swastik Srijan Foundation', 'Access learning, training and educational resources from Swastik Srijan Foundation.', '/images/learningHub.png'],
-  '/SkillPrograms': ['Skill Development Programs | Swastik Srijan Foundation', 'Explore skill development, livelihood and women empowerment programs supporting sustainable community progress.', '/images/uploads/skill-development-hero.jpg'],
+  '/SkillPrograms': ['Skill Development Programs | Swastik Srijan Foundation', 'Explore skill development, livelihood and women empowerment programs supporting sustainable community progress.', '/images/real/women_empowerment_tailoring.jpg'],
   '/PrivacyPolicy': ['Privacy Policy | Swastik Srijan Foundation', 'Learn how Swastik Srijan Foundation collects, uses and protects personal information.', '/images/real/integrity-pledge.jpg'],
   '/TermsAndConditions': ['Terms & Conditions | Swastik Srijan Foundation', 'Read the terms and conditions for using the Swastik Srijan Foundation website and services.', '/images/real/academy-board-compliance.jpg'],
   '/DonationRefundPolicy': ['Donation & Refund Policy | Swastik Srijan Foundation', 'Read our transparent policy on donations, refunds and contribution handling.', '/images/real/online-food-support-clipping.jpg'],
