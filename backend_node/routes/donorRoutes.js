@@ -46,7 +46,6 @@ router.post('/donor', async (req, res) => {
     }
 });
 
-// Admin application records: every donor registration must be visible in the same Application Records screen.
 router.get('/admin/donors', requireAdminAuth, async (_req, res) => {
     try {
         const donors = await Donor.findAll({ order: [['createdAt', 'DESC']] });
@@ -54,6 +53,18 @@ router.get('/admin/donors', requireAdminAuth, async (_req, res) => {
     } catch (error) {
         console.error('❌ Admin donor list error:', error);
         return res.status(500).json({ message: 'Unable to load donor records.' });
+    }
+});
+
+router.delete('/admin/donors/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const donor = await Donor.findOne({ where: { id: req.params.id } });
+        if (!donor) return res.status(404).json({ message: 'Donor record not found.' });
+        await donor.destroy();
+        return res.json({ status: 'success', message: 'Donor record permanently deleted.' });
+    } catch (error) {
+        console.error('❌ Admin donor delete error:', error);
+        return res.status(500).json({ message: 'Unable to delete donor record.' });
     }
 });
 
