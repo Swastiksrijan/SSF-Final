@@ -5,8 +5,8 @@ import pageHeader from "../assets/page-header.jpg";
 /**
  * PageHero Component
  * A reusable hero section for subpages to maintain consistency with the home page.
- * 
- * @param {string} image - Path to the background image
+ *
+ * @param {string} image - Path to the page-specific background image
  * @param {string} title - Main title of the page
  * @param {string} subtitle - English subtitle
  * @param {string} hindiSubtitle - Hindi translation of the subtitle
@@ -32,12 +32,16 @@ export default function PageHero({
         visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
     };
 
+    // Every page can provide its own professional hero image. Keep the
+    // existing shared header as a safe fallback for pages without one.
+    const heroImage = image || pageHeader;
+
     return (
         <section className={`relative ${height} flex items-center justify-center bg-[#001529] text-white overflow-hidden pt-20`}>
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <OptimizedImage
-                    src={pageHeader} // Consistent header photo for all pages
+                    src={heroImage}
                     alt={altTitle || title || "Hero Image"}
                     className={imageClass}
                     objectFit={objectFit}
