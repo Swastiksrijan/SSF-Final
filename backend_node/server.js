@@ -19,6 +19,7 @@ app.get('/', (_req, res) => res.send('SSF NGO Backend is Running with PostgreSQL
 
 const memberCertificateRoutes = require('./routes/memberCertificateRoutes');
 const volunteerAdminRoutes = require('./routes/volunteerAdminRoutes');
+const adminUserRoutes = require('./routes/adminUserRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const profileApplicationRoutes = require('./routes/profileApplicationRoutes');
 const volunteerRoutes = require('./routes/volunteerRoutes');
@@ -34,6 +35,7 @@ const passwordResetRoutes = require('./routes/passwordResetRoutes');
 
 app.use('/api', memberCertificateRoutes);
 app.use('/api', volunteerAdminRoutes);
+app.use('/api', adminUserRoutes);
 // Hardened multipart submission routes must run before the legacy handlers.
 app.use('/api', submissionRoutes);
 app.use('/api', profileApplicationRoutes);
