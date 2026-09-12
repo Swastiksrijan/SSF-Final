@@ -16,6 +16,14 @@ const sendAdminEmail = async (donor) => {
     });
 };
 
+const requireAdminAuth = (req, res, next) => {
+    const authHeader = req.headers.authorization || '';
+    const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
+    const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+    if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized admin access' });
+    next();
+};
+
 router.post('/donor', async (req, res) => {
     try {
         const { fullName, email, phone, city, state, country, donationPurpose, amount, pan, address, paymentMode, receiptPreference, notes } = req.body || {};
@@ -35,6 +43,17 @@ router.post('/donor', async (req, res) => {
     } catch (error) {
         console.error('❌ Donor registration error:', error);
         return res.status(500).json({ message: 'Unable to save donor details right now.' });
+    }
+});
+
+// Admin application records: every donor registration must be visible in the same Application Records screen.
+router.get('/admin/donors', requireAdminAuth, async (_req, res) => {
+    try {
+        const donors = await Donor.findAll({ order: [['createdAt', 'DESC']] });
+        return res.json(donors);
+    } catch (error) {
+        console.error('❌ Admin donor list error:', error);
+        return res.status(500).json({ message: 'Unable to load donor records.' });
     }
 });
 
