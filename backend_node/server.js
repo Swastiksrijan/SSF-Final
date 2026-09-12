@@ -22,6 +22,7 @@ const volunteerAdminRoutes = require('./routes/volunteerAdminRoutes');
 const submissionRoutes = require('./routes/submissionRoutes');
 const profileApplicationRoutes = require('./routes/profileApplicationRoutes');
 const volunteerRoutes = require('./routes/volunteerRoutes');
+const portalParticipationRoutes = require('./routes/portalParticipationRoutes');
 const userPortalRoutes = require('./routes/userPortalRoutes');
 const userDocumentRoutes = require('./routes/userDocumentRoutes');
 const interestRoutes = require('./routes/interestRoutes');
@@ -37,6 +38,8 @@ app.use('/api', volunteerAdminRoutes);
 app.use('/api', submissionRoutes);
 app.use('/api', profileApplicationRoutes);
 app.use('/api', volunteerRoutes);
+// Logged-in portal participation routes (volunteer/membership applications).
+app.use('/api', portalParticipationRoutes);
 app.use('/api', userPortalRoutes);
 app.use('/api', userDocumentRoutes);
 app.use('/api', interestRoutes);
