@@ -5,8 +5,8 @@ import pageHeader from "../assets/page-header.jpg";
 /**
  * PageHero Component
  * A reusable hero section for subpages to maintain consistency with the home page.
- * 
- * @param {string} image - Path to the background image
+ *
+ * @param {string} image - Path to the page-specific background image
  * @param {string} title - Main title of the page
  * @param {string} subtitle - English subtitle
  * @param {string} hindiSubtitle - Hindi translation of the subtitle
@@ -32,12 +32,25 @@ export default function PageHero({
         visible: { opacity: 1, y: 0, transition: { duration: 0.8 } }
     };
 
+    // Some legacy policy pages used one shared image. Give those pages
+    // meaningful, page-specific visuals while keeping the caller API intact.
+    const legacyHeroImages = {
+        "Cookie Policy": "/images/real/awareness-poster-viewing.jpg",
+        "Donation & Refund Policy": "/images/real/online-food-support-clipping.jpg",
+        "Privacy Policy": "/images/real/integrity-pledge.jpg",
+        "Terms & Conditions": "/images/real/academy-board-compliance.jpg",
+        "Transparency & Reports": "/images/real/ncw_pledge_certificate.jpg",
+        "Registration Details": "/images/uploads/ngo-darpan.jpg"
+    };
+
+    const heroImage = legacyHeroImages[title] || image || pageHeader;
+
     return (
         <section className={`relative ${height} flex items-center justify-center bg-[#001529] text-white overflow-hidden pt-20`}>
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <OptimizedImage
-                    src={pageHeader} // Consistent header photo for all pages
+                    src={heroImage}
                     alt={altTitle || title || "Hero Image"}
                     className={imageClass}
                     objectFit={objectFit}
