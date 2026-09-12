@@ -9,7 +9,7 @@ const Interest = sequelize.define('Interest', {
     phone: { type: DataTypes.STRING, allowNull: false },
     category: { type: DataTypes.STRING, allowNull: true },
     message: { type: DataTypes.TEXT, allowNull: false },
-    status: { type: DataTypes.ENUM('new', 'contacted', 'closed'), defaultValue: 'new' }
+    status: { type: DataTypes.ENUM('new', 'contacted', 'approved', 'rejected', 'closed'), defaultValue: 'new' }
 }, { timestamps: true });
 
 module.exports = Interest;
