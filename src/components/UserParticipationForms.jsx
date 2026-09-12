@@ -16,7 +16,7 @@ const FORM_CONFIG = {
 };
 
 function VolunteerPortalForm({ user }) {
-  const [form, setForm] = useState({ volunteerType: "field", message: "" });
+  const [form, setForm] = useState({ volunteerType: "general", message: "" });
   const [state, setState] = useState("idle");
   const [error, setError] = useState("");
   const [reference, setReference] = useState("");
@@ -43,7 +43,7 @@ function VolunteerPortalForm({ user }) {
   return <form onSubmit={submit} className="p-5 md:p-7 space-y-5" noValidate>
     <div className="rounded-2xl bg-[#f8fafc] border border-zinc-100 p-4 text-sm text-zinc-600">Your name, email, mobile number and profile photo will come from <strong>My Profile</strong>.</div>
     <div className="grid md:grid-cols-2 gap-4"><Field label="Full Name"><input className="ssf-form-input bg-zinc-50" value={user?.fullName || ""} readOnly /></Field><Field label="Email"><input className="ssf-form-input bg-zinc-50" value={user?.email || ""} readOnly /></Field></div>
-    <div className="grid md:grid-cols-2 gap-4"><Field label="Mobile Number"><input className="ssf-form-input bg-zinc-50" value={user?.phone || ""} readOnly /></Field><Field label="Volunteer Type *"><select className="ssf-form-input" value={form.volunteerType} onChange={(e) => set("volunteerType", e.target.value)}><option value="field">Field Volunteer</option><option value="program">Program Volunteer</option><option value="professional">Professional Volunteer</option><option value="digital">Digital / Online Volunteer</option></select></Field></div>
+    <div className="grid md:grid-cols-2 gap-4"><Field label="Mobile Number"><input className="ssf-form-input bg-zinc-50" value={user?.phone || ""} readOnly /></Field><Field label="Volunteer Category *"><select className="ssf-form-input" value={form.volunteerType} onChange={(e) => set("volunteerType", e.target.value)}><option value="general">General Volunteer</option><option value="active">Active Volunteer</option><option value="professional">Professional / Expert Volunteer</option><option value="digital">Digital / Online Volunteer</option></select></Field></div>
     <Field label="Why do you want to volunteer? *"><textarea className="ssf-form-input resize-none" rows={5} value={form.message} onChange={(e) => set("message", e.target.value)} placeholder="Tell us briefly how you would like to contribute." /></Field>
     <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-4 text-sm text-emerald-800 font-semibold">✓ Profile photo: using your current My Profile photo</div>
     {error && <div className="rounded-xl bg-red-50 border border-red-200 text-red-700 p-3 text-sm font-semibold">{error}</div>}
