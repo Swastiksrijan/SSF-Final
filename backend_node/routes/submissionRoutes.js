@@ -29,7 +29,7 @@ const fileFilter = (_req, file, cb) => {
   return cb(new Error(isProfile ? 'Profile photo must be JPG, PNG, WebP or HEIC/HEIF.' : 'Identity document must be JPG, PNG, WebP, HEIC/HEIF or PDF.'));
 };
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
+const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024, files: 2 });
 const removeFile = (file) => { if (file?.path && fs.existsSync(file.path)) { try { fs.unlinkSync(file.path); } catch (_) {} } };
 const multipart = (fields) => (req, res, next) => {
   if (!req.is('multipart/form-data')) return next();
@@ -57,6 +57,15 @@ const notifyAdmin = async (subject, text) => {
 const cleanEmail = (value) => String(value || '').trim().toLowerCase();
 const cleanPhone = (value) => String(value || '').replace(/\s+/g, ' ').trim();
 const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
+
+// Keep website account passwords compatible with the existing member-login route.
+// The previous submission handler called hashPassword without defining it, causing
+// new membership submissions to fail with a server-side ReferenceError.
+const hashPassword = (password) => {
+  const salt = crypto.randomBytes(16).toString('hex');
+  const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex');
+  return `${salt}:${hash}`;
+};
 
 router.post('/register', multipart([
   { name: 'id_document', maxCount: 1 },
