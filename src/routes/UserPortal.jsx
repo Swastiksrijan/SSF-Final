@@ -5,8 +5,8 @@ import JoinSSFHub from "../components/JoinSSFHub";
 function UserPortalWithJoin() {
   return (
     <>
-      <UserPortal />
       <JoinSSFHub />
+      <UserPortal />
     </>
   );
 }
