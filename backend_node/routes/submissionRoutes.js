@@ -29,7 +29,7 @@ const fileFilter = (_req, file, cb) => {
   return cb(new Error(isProfile ? 'Profile photo must be JPG, PNG, WebP or HEIC/HEIF.' : 'Identity document must be JPG, PNG, WebP, HEIC/HEIF or PDF.'));
 };
 
-const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024, files: 2 });
+const upload = multer({ storage, fileFilter, limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
 const removeFile = (file) => { if (file?.path && fs.existsSync(file.path)) { try { fs.unlinkSync(file.path); } catch (_) {} } };
 const multipart = (fields) => (req, res, next) => {
   if (!req.is('multipart/form-data')) return next();
