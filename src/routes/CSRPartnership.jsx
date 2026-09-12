@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import CSRPartnership from "../pages/CSRPartnership";
+import CSRPartnershipWithForm from "../pages/CSRPartnershipWithForm";
 
 export const Route = createFileRoute("/CSRPartnership")({
-    component: CSRPartnership,
+    component: CSRPartnershipWithForm,
 });
