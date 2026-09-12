@@ -1,12 +1,14 @@
 import { useState } from "react";
-import { FaArrowRight, FaCalendarAlt, FaCheckCircle, FaGraduationCap, FaHandshake, FaTimes, FaTools, FaUserFriends, FaUsers, FaSpinner } from "react-icons/fa";
+import { FaArrowRight, FaCalendarAlt, FaCheckCircle, FaGraduationCap, FaHandshake, FaHeart, FaTimes, FaTools, FaUserFriends, FaUsers, FaSpinner } from "react-icons/fa";
 import { ENDPOINTS } from "../config/api";
 import InternshipForm from "./InternshipForm";
 import MemberForm from "./MemberForm";
+import DonorForm from "./DonorForm";
 
 const FORM_CONFIG = {
   volunteer: { title: "Volunteer", icon: FaUserFriends, eyebrow: "Serve with SSF", description: "Join SSF as a volunteer using the details already saved in your My Profile." },
   membership: { title: "Membership", icon: FaUsers, eyebrow: "Become part of SSF", description: "Choose the membership type that best matches your participation." },
+  donor: { title: "Donor", icon: FaHeart, eyebrow: "Support SSF", description: "Register your donor details and support Swastik Srijan Foundation through your contribution." },
   internship: { title: "Internship", icon: FaGraduationCap, eyebrow: "Learn through service", description: "Apply for an internship and gain practical experience through social work." },
   activities: { title: "Activities & Events", icon: FaCalendarAlt, eyebrow: "Participate in action", description: "Tell us which SSF activities, campaigns or events you would like to join." },
   partnership: { title: "Partnership & Collaboration", icon: FaHandshake, eyebrow: "Work together", description: "Explore collaboration with SSF as an organisation, institution, professional or community partner." },
@@ -138,7 +140,7 @@ export default function UserParticipationForms({ openForm, onClose, user }) {
   if (!openForm) return null;
   const config = FORM_CONFIG[openForm]; if (!config) return null;
   const Icon = config.icon;
-  const renderForm = () => { if (openForm === "membership") return <MemberForm />; if (openForm === "volunteer") return <VolunteerPortalForm user={user} />; if (["activities", "partnership", "skills"].includes(openForm)) return <ParticipationForm kind={openForm} />; if (openForm === "internship") return <InternshipForm />; return null; };
+  const renderForm = () => { if (openForm === "membership") return <MemberForm />; if (openForm === "volunteer") return <VolunteerPortalForm user={user} />; if (openForm === "donor") return <DonorForm />; if (["activities", "partnership", "skills"].includes(openForm)) return <ParticipationForm kind={openForm} />; if (openForm === "internship") return <InternshipForm />; return null; };
   return <div className="fixed inset-0 z-[120] bg-[#002344]/70 backdrop-blur-sm p-3 sm:p-6 flex items-center justify-center" role="dialog" aria-modal="true" aria-label={config.title}><div className="w-full max-w-3xl max-h-[94vh] overflow-y-auto rounded-[2rem] bg-white shadow-2xl border border-white/40"><div className="sticky top-0 z-10 bg-white/95 backdrop-blur border-b px-5 md:px-7 py-4 flex items-center justify-between gap-4"><div className="flex items-center gap-3 min-w-0"><div className="w-11 h-11 rounded-2xl bg-orange-50 text-[#ff6600] flex items-center justify-center shrink-0"><Icon /></div><div className="min-w-0"><p className="text-[10px] font-black uppercase tracking-[.18em] text-[#ff6600]">{config.eyebrow}</p><h2 className="text-xl font-black text-[#002344] truncate">{config.title}</h2></div></div><button type="button" onClick={onClose} className="w-10 h-10 rounded-full bg-zinc-100 text-zinc-600 hover:bg-zinc-200 flex items-center justify-center shrink-0" aria-label="Close form"><FaTimes /></button></div>{renderForm()}</div></div>;
 }
 
