@@ -25,6 +25,7 @@ export const ENDPOINTS = {
     ADMIN_VOLUNTEERS: `${API_BASE_URL}/api/admin/volunteers`,
     ADMIN_MEMBERS: `${API_BASE_URL}/api/admin/members`,
     ADMIN_DONORS: `${API_BASE_URL}/api/admin/donors`,
+    ADMIN_DELETE_DONOR: (id) => `${API_BASE_URL}/api/admin/donors/${encodeURIComponent(id)}`,
     ADMIN_CONTACTS: `${API_BASE_URL}/api/admin/contacts`,
     ADMIN_INTERESTS: `${API_BASE_URL}/api/admin/interests`,
     ADMIN_INTERNSHIPS: `${API_BASE_URL}/api/admin/internships`,
