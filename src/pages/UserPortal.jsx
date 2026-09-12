@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
-import { FaArrowRight, FaCamera, FaSignOutAlt, FaTrash, FaUserCircle, FaUserFriends, FaUsers, FaGraduationCap, FaCalendarAlt, FaHandshake, FaTools } from "react-icons/fa";
+import { FaArrowRight, FaCamera, FaHeart, FaSignOutAlt, FaTrash, FaUserCircle, FaUserFriends, FaUsers, FaGraduationCap, FaCalendarAlt, FaHandshake, FaTools } from "react-icons/fa";
 import { API_BASE_URL, ENDPOINTS } from "../config/api";
 import UserParticipationForms from "../components/UserParticipationForms";
 
@@ -13,6 +13,7 @@ const fileUrl = (path) => path ? (/^https?:\/\//i.test(path) ? path : `${API_BAS
 const participation = [
   { key: "volunteer", title: "Volunteer", icon: FaUserFriends, text: "Serve with SSF through the same working membership form and choose the appropriate member role." },
   { key: "membership", title: "Membership", icon: FaUsers, text: "Join SSF as a General, Active, Life or Advisory / Expert member." },
+  { key: "donor", title: "Donor", icon: FaHeart, text: "Support SSF through a donation and register your donor details for record and receipt support." },
   { key: "internship", title: "Internship", icon: FaGraduationCap, text: "Learn through practical social-service and community experience." },
   { key: "activities", title: "Activities & Events", icon: FaCalendarAlt, text: "Join awareness, education, health, environment and community activities." },
   { key: "partnership", title: "Partnership & Collaboration", icon: FaHandshake, text: "Build meaningful institutional, professional, CSR or community partnerships." },
