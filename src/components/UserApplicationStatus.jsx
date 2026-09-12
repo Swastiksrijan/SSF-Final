@@ -3,8 +3,49 @@ import { FaBell, FaCheckCircle, FaFileInvoiceDollar, FaIdCard } from 'react-icon
 import { ENDPOINTS } from '../config/api';
 
 const SESSION_KEY = 'ssf_user_session';
-const text = value => String(value || 'pending').replace(/_/g, ' ');
-const badge = status => ['approved', 'paid', 'offline', 'completed'].includes(String(status || '').toLowerCase()) ? 'bg-emerald-100 text-emerald-700' : ['rejected', 'failed'].includes(String(status || '').toLowerCase()) ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700';
+
+// Admin workflow states such as "contacted" and "reviewed" should not be
+// exposed as the final user-facing application state. Keep those details in
+// the admin dashboard and show a clear status to the applicant instead.
+const userStatus = (status, type) => {
+  const value = String(status || '').trim().toLowerCase();
+
+  if (type === 'donation') {
+    if (['paid', 'offline'].includes(value)) return 'paid';
+    if (['failed', 'rejected'].includes(value)) return 'failed';
+    return 'pending';
+  }
+
+  if (type === 'internship') {
+    if (value === 'completed') return 'completed';
+    if (['selected', 'approved'].includes(value)) return 'approved';
+    if (['rejected', 'failed'].includes(value)) return 'rejected';
+    return 'under_review';
+  }
+
+  if (['approved', 'active'].includes(value)) return 'approved';
+  if (['rejected', 'failed'].includes(value)) return 'rejected';
+  return 'under_review';
+};
+
+const text = value => {
+  const labels = {
+    under_review: 'Under review',
+    pending: 'Pending',
+    paid: 'Paid',
+    approved: 'Approved',
+    completed: 'Completed',
+    rejected: 'Rejected',
+    failed: 'Failed'
+  };
+  return labels[String(value || '').toLowerCase()] || 'Under review';
+};
+
+const badge = status => ['approved', 'paid', 'completed'].includes(String(status || '').toLowerCase())
+  ? 'bg-emerald-100 text-emerald-700'
+  : ['rejected', 'failed'].includes(String(status || '').toLowerCase())
+    ? 'bg-red-100 text-red-700'
+    : 'bg-amber-100 text-amber-700';
 
 export default function UserApplicationStatus() {
   const [items, setItems] = useState([]);
@@ -23,14 +64,84 @@ export default function UserApplicationStatus() {
         const donors = data.activities?.donors || [];
         const internships = data.activities?.internships || [];
         const interests = data.activities?.interests || [];
-        const volunteerRows = interests.filter(x => x.interestType === 'volunteer').map(x => { const v = volunteers.find(item => item.email === x.email); return { key: `interest-v-${x.id}`, title: `Volunteer — ${x.category || 'General Volunteer'}`, status: x.status, id: v?.volunteerId || 'Under review', date: x.createdAt, doc: v?.idCardUrl }; });
-        const memberRows = interests.filter(x => x.interestType === 'member').map(x => ({ key: `interest-m-${x.id}`, title: `Member — ${x.category || 'General Member'}`, status: x.status, id: data.account?.memberId || 'Under review', date: x.createdAt, doc: data.account?.idCardUrl }));
-        const donationRows = donors.map(d => ({ key: `don-${d.id}`, title: `Donation — ${d.donationPurpose || 'General'}`, status: d.paymentStatus, id: d.donorId || 'Receipt pending', date: d.createdAt, doc: d.receiptUrl }));
-        const internshipRows = internships.map(i => ({ key: `int-${i.id}`, title: `Internship — ${i.internshipType || 'Application'}`, status: i.status, id: i.internId || 'Under review', date: i.createdAt }));
-        const memberApproved = data.account?.status === 'approved' && data.account?.memberId ? [{ key: 'member-approved', title: `Membership — ${data.account.memberType || 'Member'}`, status: 'approved', id: data.account.memberId, date: data.account.certificateIssuedAt || data.account.createdAt, doc: data.account.idCardUrl }] : [];
-        const approvedVolunteers = volunteers.filter(v => v.status === 'approved' && !volunteerRows.some(r => r.id === v.volunteerId)).map(v => ({ key: `vol-${v.id}`, title: `Volunteer — ${v.volunteerType || 'General Volunteer'}`, status: v.status, id: v.volunteerId, date: v.approvedAt || v.createdAt, doc: v.idCardUrl }));
-        if (alive) setItems([...volunteerRows, ...memberRows, ...memberApproved, ...approvedVolunteers, ...internshipRows, ...donationRows].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)));
-      } finally { if (alive) setLoading(false); }
+
+        const volunteerRows = interests
+          .filter(x => x.interestType === 'volunteer')
+          .map(x => {
+            const v = volunteers.find(item => item.email === x.email);
+            return {
+              key: `interest-v-${x.id}`,
+              title: `Volunteer — ${x.category || 'General Volunteer'}`,
+              status: userStatus(x.status, 'volunteer'),
+              id: v?.volunteerId || 'Under review',
+              date: x.createdAt,
+              doc: v?.idCardUrl
+            };
+          });
+
+        const memberRows = interests
+          .filter(x => x.interestType === 'member')
+          .map(x => ({
+            key: `interest-m-${x.id}`,
+            title: `Member — ${x.category || 'General Member'}`,
+            status: userStatus(x.status, 'member'),
+            id: data.account?.memberId || 'Under review',
+            date: x.createdAt,
+            doc: data.account?.idCardUrl
+          }));
+
+        const donationRows = donors.map(d => ({
+          key: `don-${d.id}`,
+          title: `Donation — ${d.donationPurpose || 'General'}`,
+          status: userStatus(d.paymentStatus, 'donation'),
+          id: d.donorId || 'Receipt pending',
+          date: d.createdAt,
+          doc: d.receiptUrl
+        }));
+
+        const internshipRows = internships.map(i => ({
+          key: `int-${i.id}`,
+          title: `Internship — ${i.internshipType || 'Application'}`,
+          status: userStatus(i.status, 'internship'),
+          id: i.internId || 'Under review',
+          date: i.createdAt
+        }));
+
+        const memberApproved = data.account?.status === 'approved' && data.account?.memberId
+          ? [{
+              key: 'member-approved',
+              title: `Membership — ${data.account.memberType || 'Member'}`,
+              status: 'approved',
+              id: data.account.memberId,
+              date: data.account.certificateIssuedAt || data.account.createdAt,
+              doc: data.account.idCardUrl
+            }]
+          : [];
+
+        const approvedVolunteers = volunteers
+          .filter(v => v.status === 'approved' && !volunteerRows.some(r => r.id === v.volunteerId))
+          .map(v => ({
+            key: `vol-${v.id}`,
+            title: `Volunteer — ${v.volunteerType || 'General Volunteer'}`,
+            status: 'approved',
+            id: v.volunteerId,
+            date: v.approvedAt || v.createdAt,
+            doc: v.idCardUrl
+          }));
+
+        if (alive) {
+          setItems([
+            ...volunteerRows,
+            ...memberRows,
+            ...memberApproved,
+            ...approvedVolunteers,
+            ...internshipRows,
+            ...donationRows
+          ].sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0)));
+        }
+      } finally {
+        if (alive) setLoading(false);
+      }
     })();
     return () => { alive = false; };
   }, []);
