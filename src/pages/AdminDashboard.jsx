@@ -31,11 +31,21 @@ export default function AdminDashboard() {
 
   return <main className="min-h-screen bg-[#f6f8fb]">
     <section id="admin-overview" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24">
-      <div className="rounded-[2rem] bg-[#002344] text-white p-6 sm:p-8 shadow-sm overflow-hidden relative">
-        <div className="absolute -right-20 -top-24 w-72 h-72 rounded-full bg-white/5" />
-        <div className="relative flex flex-col xl:flex-row xl:items-end xl:justify-between gap-6">
-          <div><p className="text-xs font-black uppercase tracking-[0.22em] text-[#ffb067]">Swastik Srijan Foundation</p><h1 className="text-3xl sm:text-4xl font-black mt-2">Admin Command Center</h1><p className="text-white/70 mt-2 max-w-3xl">One place to review applications, manage people, approve roles, issue official records and keep SSF operational data organized.</p></div>
-          {loggedIn && <div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4 min-w-[220px]"><p className="text-xs uppercase tracking-widest text-white/60 font-bold">System status</p><p className="font-black mt-1">Admin session active</p><p className="text-xs text-white/60 mt-1">Protected records are available below.</p></div>}
+      <div className="rounded-[2rem] bg-[#002344] text-white shadow-sm overflow-hidden relative">
+        <div className="absolute -right-20 -top-24 w-72 h-72 rounded-full bg-white/5 pointer-events-none" />
+        <div className="relative p-6 sm:p-8 lg:p-9">
+          <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-7">
+            <div className="min-w-0 flex-1 lg:pr-8">
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-[#ffb067]">Swastik Srijan Foundation</p>
+              <h1 className="text-3xl sm:text-4xl font-black mt-2 leading-tight">Admin Command Center</h1>
+              <p className="text-white/70 mt-3 max-w-3xl leading-6">One place to review applications, manage people, approve roles, issue official records and keep SSF operational data organized.</p>
+            </div>
+            {loggedIn && <div className="w-full lg:w-[270px] shrink-0 rounded-2xl bg-white/10 border border-white/15 px-5 py-4 lg:self-center">
+              <div className="flex items-center gap-2"><span className="h-2.5 w-2.5 rounded-full bg-emerald-400 shadow-[0_0_0_4px_rgba(52,211,153,0.12)]" /><p className="text-xs uppercase tracking-widest text-white/60 font-bold">System status</p></div>
+              <p className="font-black mt-2">Admin session active</p>
+              <p className="text-xs text-white/60 mt-1 leading-5">Protected records are available below.</p>
+            </div>}
+          </div>
         </div>
       </div>
       <div className="sticky top-0 z-20 mt-4 rounded-2xl border border-zinc-200 bg-white/95 backdrop-blur shadow-sm p-2 overflow-x-auto"><div className="flex gap-2 min-w-max">{modules.map(({ id, label, icon: Icon }) => <button key={id} onClick={() => jumpTo(id)} className="inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-bold text-zinc-700 hover:bg-zinc-100 transition whitespace-nowrap"><Icon className="text-[#ff6600]" />{label}</button>)}</div></div>
