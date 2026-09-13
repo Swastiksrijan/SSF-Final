@@ -1,382 +1,48 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import {
-  FaHeart, FaArrowRight, FaShieldAlt, FaWhatsapp,
-  FaHandHoldingHeart, FaUsers, FaLandmark, FaCheckCircle,
-  FaRegFileAlt, FaGlobeAsia, FaHandshake
-} from "react-icons/fa";
+import { FaHeart, FaArrowRight, FaCheckCircle, FaUsers, FaGlobeAsia, FaHandshake, FaBullseye, FaHandsHelping, FaBookOpen, FaLaptop, FaHeartbeat, FaLeaf, FaLightbulb } from "react-icons/fa";
 import OptimizedImage from "../components/OptimizedImage";
 import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
-import { FaQuoteLeft } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
-import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
-
-
-// Import images
 import pageHeader from "../assets/page-header.jpg";
-const heroImage = pageHeader;
 
 export default function Home() {
-
-  // Animation variants
-  const fadeInUp = {
-    hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
-  };
-
+  const fadeInUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
+  const focusAreas = [
+    { title: "Education & Learning", hi: "शिक्षा एवं सीखना", icon: <FaBookOpen />, path: "/OurInitiatives" },
+    { title: "Skill & Livelihood", hi: "कौशल एवं आजीविका", icon: <FaLightbulb />, path: "/SkillPrograms" },
+    { title: "Health & Well-being", hi: "स्वास्थ्य एवं कल्याण", icon: <FaHeartbeat />, path: "/OurInitiatives#health" },
+    { title: "Women & Child Welfare", hi: "महिला एवं बाल कल्याण", icon: <FaHandsHelping />, path: "/OurInitiatives" },
+    { title: "Digital Learning", hi: "डिजिटल शिक्षा", icon: <FaLaptop />, path: "/LearningHub" },
+    { title: "Environment & Awareness", hi: "पर्यावरण एवं जागरूकता", icon: <FaLeaf />, path: "/OurInitiatives#awareness" }
+  ];
+  const quickActions = [
+    { title: "Join SSF", text: "Become part of the journey", path: "/GetInvolved", icon: <FaUsers /> },
+    { title: "Volunteer", text: "Give your time and skills", path: "/Volunteer", icon: <FaHandsHelping /> },
+    { title: "Support Our Work", text: "Help create meaningful change", path: "/Donate", icon: <FaHeart /> }
+  ];
   return (
     <div className="w-full bg-white font-sans text-zinc-800">
-
-      {/* 1. HERO SECTION */}
       <section className="relative min-h-[85vh] flex items-center pt-20 pb-20 overflow-hidden bg-[#001529]">
-        {/* Full-width real community photo with dark gradient overlay */}
-        <div className="absolute inset-0 z-0">
-          <OptimizedImage
-            src={heroImage}
-            alt="Swastik Srijan Foundation Samiti Community"
-            className="w-full h-full object-cover brightness-[0.85] contrast-[1.1]"
-          />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#001529] via-[#001529]/50 to-transparent"></div>
-        </div>
-
-        <div className="container mx-auto px-6 relative z-10 flex flex-col items-start justify-center h-full text-left">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            className="max-w-3xl space-y-8"
-          >
-            <div className="flex items-center gap-3 mb-2">
-              <div className="h-[2px] w-12 bg-[#FF6600]"></div>
-              <h2 className="text-white font-bold tracking-widest uppercase text-sm md:text-base">
-                Swastik Srijan Foundation Samiti
-              </h2>
-            </div>
-
-            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight drop-shadow-2xl">
-              Transforming Lives <br /> Across Rural India
-              <span className="block text-2xl md:text-4xl mt-3 font-normal text-zinc-100 opacity-90 drop-shadow-md">
-                ग्रामीण भारत में जीवन परिवर्तन
-              </span>
-            </h1>
-
-            {/* Impact keywords */}
-            <div className="flex flex-wrap items-center gap-6 text-white font-bold text-sm md:text-lg uppercase tracking-wide mt-2">
-              <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#FF6600]"></div>Education | शिक्षा</span>
-              <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#FF6600]"></div>Health | स्वास्थ्य</span>
-              <span className="flex items-center gap-2"><div className="w-2 h-2 rounded-full bg-[#FF6600]"></div>Livelihood | आजीविका</span>
-            </div>
-
-            {/* Two primary buttons (Stacked on mobile) */}
-            <div className="flex flex-col sm:flex-row items-start gap-4 mt-8 pt-4">
-              <a
-                href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
-                target="_blank"
-                rel="noreferrer noopener"
-                className="w-full sm:w-auto"
-              >
-                <button className="w-full sm:w-auto px-8 py-4 bg-[#FF6600] text-white font-bold rounded-full hover:bg-[#e65c00] transition-colors shadow-xl active:scale-95 text-lg flex items-center gap-2">
-                  Donate Now <FaHeart className="text-sm" />
-                </button>
-              </a>
-              <Link to="/Impact" className="w-full sm:w-auto px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all text-lg flex items-center justify-center">
-                Our Impact
-              </Link>
-            </div>
-
-          </motion.div>
-        </div>
+        <div className="absolute inset-0 z-0"><OptimizedImage src={pageHeader} alt="Swastik Srijan Foundation community activity" className="w-full h-full object-cover brightness-[0.8] contrast-[1.08]" /><div className="absolute inset-0 bg-gradient-to-r from-[#001529] via-[#001529]/70 to-[#001529]/15" /></div>
+        <div className="container mx-auto px-6 relative z-10 flex items-center h-full"><motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-4xl space-y-7">
+          <div className="flex items-center gap-3"><div className="h-[2px] w-12 bg-[#FF6600]" /><span className="text-white font-bold tracking-widest uppercase text-sm">Swastik Srijan Foundation Samiti</span></div>
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight drop-shadow-2xl">Creating Change.<br />Inspiring Lives.<span className="block text-2xl md:text-4xl mt-4 font-normal text-zinc-100">सहयोग • कौशल • जागरूकता • सृजन</span></h1>
+          <p className="max-w-2xl text-lg md:text-xl text-zinc-100 leading-relaxed">Working for inclusive community development across India through education, skills, health, awareness and meaningful partnerships.</p>
+          <div className="flex flex-col sm:flex-row gap-4 pt-2"><Link to="/GetInvolved" className="px-8 py-4 bg-[#FF6600] text-white font-bold rounded-full hover:bg-[#e65c00] transition-all shadow-xl text-lg text-center">Join SSF</Link><Link to="/Volunteer" className="px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all text-lg text-center">Volunteer</Link><a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noreferrer noopener" className="px-8 py-4 bg-white text-[#002344] font-bold rounded-full hover:bg-zinc-100 transition-all text-lg text-center">Donate <FaHeart className="inline ml-2 text-[#FF6600]" /></a></div>
+        </motion.div></div>
       </section>
-
-      {/* 2. TRUST STRIP */}
-      <div className="bg-[#002344] text-zinc-300 py-3 text-center text-xs md:text-sm font-medium border-t border-white/10">
-        <div className="container mx-auto px-4">
-          Registered NGO | Reg. No. 05/22/03/11448/13 | Serving India Since 2013
-        </div>
-      </div>
-
-      {/* 2.5 FLOATING TICKER (SEVA SAMRPAN PANEL) */}
+      <div className="bg-[#002344] text-zinc-300 py-3 text-center text-xs md:text-sm font-medium border-t border-white/10"><div className="container mx-auto px-4">Registered NGO | Registered December 2013 | Reg. No. 05/22/03/11448/13 | Rewa, Madhya Pradesh | Working Across India</div></div>
       <FloatingTicker />
-
-
-
-      {/* 4. IMPACT AT A GLANCE */}
-      <section className="py-12 bg-zinc-50 border-y border-zinc-200">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
-            {[
-              {
-                text: "50,000+", sub: "Lives Touched", subHi: "प्रभावित जीवन",
-                icon: <FaUsers className="text-[#FF6600] text-4xl mb-4" />
-              },
-              {
-                text: "120+", sub: "Villages Reached", subHi: "गाँव तक पहुँच",
-                icon: <FaGlobeAsia className="text-[#002344] text-4xl mb-4" />
-              },
-              {
-                text: "Since 2013", sub: "Years of Service", subHi: "2013 से सेवा",
-                icon: <FaHeart className="text-red-500 text-4xl mb-4" />
-              },
-              {
-                text: "40+", sub: "Community Programmes", subHi: "सामुदायिक कार्यक्रम",
-                icon: <FaHandshake className="text-green-600 text-4xl mb-4" />
-              }
-            ].map((item, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.1 }}
-                className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-md transition-shadow text-center border border-zinc-100 flex flex-col items-center"
-              >
-                {item.icon}
-                <h3 className="text-3xl font-extrabold text-zinc-800 mb-1">{item.text}</h3>
-                <p className="text-zinc-600 font-bold uppercase text-sm tracking-wider">{item.sub}</p>
-                <p className="text-zinc-400 text-xs mt-1">{item.subHi}</p>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Donation card (Home only) */}
-      <section className="py-8 bg-transparent">
-        <div className="container mx-auto px-4">
-          <EliteDonationCard />
-        </div>
-      </section>
-
-
-      {/* 5. ABOUT US (Short & Honest) */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4 max-w-5xl">
-          <div className="text-center mb-10">
-            <h2 className="text-3xl md:text-4xl font-bold text-[#002344] mb-4">About Us | हमारे बारे में</h2>
-            <div className="w-20 h-1 bg-[#FF6600] mx-auto rounded-full"></div>
-          </div>
-
-          <div className="text-lg md:text-xl text-zinc-600 leading-relaxed text-center mb-12">
-            <p className="mb-6">
-              Founded in 2013, Swastik Srijan Foundation is a registered non-government organization (NGO) working at the grassroots level in Madhya Pradesh and across India. We believe that true change begins when communities come together.
-            </p>
-            <ul className="text-left max-w-2xl mx-auto space-y-4 mt-8 bg-zinc-50 p-8 rounded-xl border border-zinc-100">
-              <li className="flex items-start gap-3">
-                <FaCheckCircle className="text-[#FF6600] mt-1 shrink-0" />
-                <span><strong className="text-[#002344]">Our Mission:</strong> To bridge the gap between privilege and poverty through education and skill development.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <FaCheckCircle className="text-[#FF6600] mt-1 shrink-0" />
-                <span><strong className="text-[#002344]">What We Do:</strong> We run community schools, health camps, and livelihood training centers for the underprivileged.</span>
-              </li>
-              <li className="flex items-start gap-3">
-                <FaCheckCircle className="text-[#FF6600] mt-1 shrink-0" />
-                <span><strong className="text-[#002344]">Why We Exist:</strong> Because every child deserves a future, regardless of their background.</span>
-              </li>
-            </ul>
-            <div className="flex justify-center mt-12">
-              <Link to="/About">
-                <button className="group flex items-center gap-3 px-8 py-3 bg-white border-2 border-[#002344] text-[#002344] font-bold rounded-full hover:bg-[#002344] hover:text-white transition-all">
-                  Read Our Full Story | पूरी कहानी पढ़ें
-                  <FaArrowRight className="group-hover:translate-x-1 transition-transform" />
-                </button>
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* 5.25 CSR APPEAL SECTION */}
-      <section className="py-12 md:py-20 bg-gradient-to-br from-[#001529] to-[#002344] text-white">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto bg-white/5 backdrop-blur-lg rounded-3xl border border-white/10 shadow-2xl p-6 sm:p-10 md:p-14">
-
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-
-              {/* LEFT CONTENT */}
-              <div className="space-y-5">
-                <span className="inline-block px-4 py-1.5 bg-[#FF6600] text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
-                  CSR Partnership
-                </span>
-
-                <h2 className="text-3xl md:text-4xl font-serif font-bold leading-tight">
-                  Become a <span className="text-[#FF6600]">Corporate Donor</span>
-                </h2>
-
-                <p className="text-zinc-300 text-lg leading-relaxed">
-                  <strong>Swastik Srijan Foundation</strong> runs
-                  <strong> 40+ community programmes</strong> across India through
-                  corporate, institutional, and individual partnerships.
-                </p>
-
-                <p className="text-zinc-300 text-lg leading-relaxed">
-                  Our work focuses on <strong>education, health & nutrition,
-                    child protection, livelihoods, humanitarian relief</strong>,
-                  and building resilient communities.
-                </p>
-              </div>
-
-              {/* RIGHT CONTENT */}
-              <div className="space-y-5">
-                <h3 className="text-2xl font-bold">
-                  Together for a Better Bharat
-                </h3>
-
-                <p className="text-zinc-300 text-lg leading-relaxed">
-                  Partner with us to help underprivileged children and youth
-                  not just survive — but truly thrive.
-                </p>
-
-                <p className="text-zinc-300 text-lg leading-relaxed">
-                  Through CSR partnerships, we create scalable,
-                  transparent, and measurable impact. Together,
-                  we can reach many more lives.
-                </p>
-
-                {/* CONTACT INFO */}
-                <div className="pt-4 space-y-1">
-                  <p className="text-xs uppercase tracking-widest text-[#FF6600] font-bold">
-                    CSR & Institutional Partnerships
-                  </p>
-                  <div className="text-zinc-300 space-y-4">
-                    <div className="group/item inline-block">
-                      <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold mb-1 opacity-60">Primary Email</p>
-                      <button
-                        onClick={() => {
-                          navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
-                          alert("Email copied to clipboard!");
-                        }}
-                        className="text-base md:text-xl font-semibold hover:text-[#FF6600] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#FF6600] break-all"
-                        title="Click to copy"
-                      >
-                        {CONTACT_INFO.primaryEmail}
-                      </button>
-                    </div>
-
-                    <div className="pt-4 border-t border-white/5 space-y-3">
-                      <p className="text-[10px] uppercase tracking-[0.2em] text-zinc-500 font-bold opacity-60">President's Office (Alternate Email)</p>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-                          <button
-                            onClick={() => {
-                              navigator.clipboard.writeText(CONTACT_INFO.presidentEmail);
-                              alert("President's Office Email copied!");
-                            }}
-                            className="text-xs md:text-sm text-zinc-400 font-medium hover:text-[#FF6600] transition-colors cursor-pointer outline-none break-all text-left"
-                            title="Click to copy"
-                          >
-                            {CONTACT_INFO.presidentEmail}
-                          </button>
-                          <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2 py-0.5 rounded border border-white/10 uppercase tracking-widest shadow-sm shrink-0">
-                            Alternate
-                          </span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* DOWNLOAD PROFILE LINK */}
-                <div className="pt-3">
-                  <a
-                    href={profilePdf}
-                    download="Swastik_Srijan_Profile_2026.pdf"
-                    className="inline-flex items-center gap-2 text-[#FF6600] font-bold text-sm hover:underline hover:text-[#ff7a1a] transition"
-                  >
-                    Download Organization Profile
-                  </a>
-                </div>
-
-                {/* BUTTONS */}
-                <div className="pt-6 flex flex-wrap gap-4">
-                  <Link to="/Contact">
-                    <button className="px-8 py-4 bg-[#FF6600] text-white font-bold rounded-full hover:bg-[#e65c00] transition-all shadow-lg active:scale-95">
-                      Partner With Us
-                    </button>
-                  </Link>
-                  <a
-                    href="https://forms.gle/ZjhgFc4By2RKnQbi8"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    <button className="px-8 py-4 bg-white border-2 border-[#FF6600] text-[#FF6600] font-bold rounded-full hover:bg-[#FF6600] hover:text-white transition-all shadow-lg active:scale-95">
-                      Apply via Google Form
-                    </button>
-                  </a>
-                  <Link to="/Impact">
-                    <button className="px-8 py-4 border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all active:scale-95">
-                      Our Impact
-                    </button>
-                  </Link>
-                </div>
-
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-
-
-      {/* 5.5 FOUNDER MESSAGE */}
-      <section className="py-20 bg-zinc-50 border-t border-zinc-100 relative overflow-hidden">
-        {/* Background decorative elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-orange-100/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none"></div>
-        <div className="absolute -bottom-12 left-0 w-72 h-72 bg-blue-100/40 rounded-full mix-blend-multiply filter blur-3xl opacity-30 pointer-events-none"></div>
-
-        <div className="container mx-auto px-4 relative z-10">
-          <div className="max-w-6xl mx-auto bg-white rounded-3xl shadow-xl border border-zinc-100 overflow-hidden flex flex-col md:flex-row items-stretch">
-
-            {/* Image Side - Dignified Portrait */}
-            <div className="md:w-5/12 relative min-h-[400px] md:min-h-full bg-zinc-200">
-              <OptimizedImage
-                src="/Teams_Images/ramesh_pandey.jpg"
-                alt="Ramesh Pandey - Founder & President"
-                className="absolute inset-0 w-full h-full object-cover object-top"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#001529]/80 via-transparent to-transparent opacity-90"></div>
-              <div className="absolute bottom-8 left-8 text-white z-10">
-                <div className="w-12 h-1 bg-[#FF6600] mb-3"></div>
-                <p className="font-bold text-2xl font-serif tracking-wide">Ramesh Pandey</p>
-                <p className="text-xs uppercase tracking-[0.2em] text-zinc-300 mt-1">Founder & President</p>
-              </div>
-            </div>
-
-            {/* Content Side */}
-            <div className="md:w-7/12 p-8 md:p-14 flex flex-col justify-center relative bg-white">
-              <FaQuoteLeft className="text-6xl text-zinc-100 absolute top-10 right-10 z-0" />
-
-              <div className="relative z-10 space-y-8">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-orange-50 border border-orange-100 text-[#FF6600] text-[10px] font-bold uppercase tracking-widest rounded-full mb-4">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF6600]"></span>
-                    Founder's Message | संस्थापक का संदेश
-                  </div>
-
-                  <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344] leading-tight">
-                    Building a <br /><span className="text-[#FF6600]">Better Bharat</span>
-                  </h2>
-
-                  <p className="text-zinc-600 text-base md:text-lg leading-relaxed italic mt-4">
-                    "Hamara maksad sirf madad karna nahi, balki samaj ke aakhri vyakti tak shiksha, swasthya aur atmanirbharta pahunchana hai."
-                  </p>
-
-                  <div className="pt-4">
-                    <p className="font-bold text-[#002344] text-lg">Ramesh Pandey</p>
-                    <p className="text-sm text-zinc-500">Founder & President, Swastik Srijan Foundation</p>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-      </section>
+      <section className="py-14 bg-zinc-50 border-y border-zinc-200"><div className="container mx-auto px-4 max-w-6xl"><div className="text-center mb-9"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">SSF at a glance</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">A Journey of Service Since 2013</h2></div><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">{[{ text: "2013–2026", sub: "Service Journey", hi: "सेवा यात्रा", icon: <FaHeart className="text-[#FF6600] text-3xl" /> },{ text: "December 2013", sub: "Registered Foundation", hi: "पंजीकृत संस्था", icon: <FaBullseye className="text-[#002344] text-3xl" /> },{ text: "Pan India", sub: "Area of Work", hi: "कार्य क्षेत्र", icon: <FaGlobeAsia className="text-[#002344] text-3xl" /> },{ text: "6 Focus Areas", sub: "Community Priorities", hi: "प्रमुख कार्य क्षेत्र", icon: <FaHandshake className="text-green-600 text-3xl" /> }].map((item,index)=><motion.div key={index} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:index*0.08}} className="bg-white p-7 rounded-2xl shadow-sm hover:shadow-lg transition-shadow text-center border border-zinc-100 flex flex-col items-center"><div className="mb-4">{item.icon}</div><h3 className="text-2xl md:text-3xl font-extrabold text-zinc-800 mb-1">{item.text}</h3><p className="text-zinc-600 font-bold uppercase text-xs md:text-sm tracking-wider">{item.sub}</p><p className="text-zinc-400 text-xs mt-1">{item.hi}</p></motion.div>)}</div></div></section>
+      <section className="py-16 bg-white"><div className="container mx-auto px-4 max-w-6xl"><div className="text-center mb-10"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">What we do</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">Our Focus Areas</h2><p className="text-zinc-500 mt-3 max-w-2xl mx-auto">Our work brings together education, skills, health, awareness and community participation to support inclusive development.</p></div><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">{focusAreas.map((item,index)=><Link key={index} to={item.path} className="group p-6 rounded-2xl border border-zinc-200 bg-white hover:border-[#FF6600]/40 hover:shadow-xl transition-all"><div className="w-12 h-12 rounded-xl bg-[#002344]/5 text-[#FF6600] flex items-center justify-center text-xl mb-5 group-hover:bg-[#FF6600] group-hover:text-white transition-colors">{item.icon}</div><h3 className="font-bold text-lg text-[#002344]">{item.title}</h3><p className="text-sm text-zinc-500 mt-1">{item.hi}</p><span className="inline-flex items-center gap-2 mt-5 text-sm font-bold text-[#FF6600]">Explore <FaArrowRight className="group-hover:translate-x-1 transition-transform" /></span></Link>)}</div></div></section>
+      <section className="py-12 bg-transparent"><div className="container mx-auto px-4"><EliteDonationCard /></div></section>
+      <section className="py-16 bg-[#f8fafc]"><div className="container mx-auto px-4 max-w-6xl"><div className="text-center mb-9"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">Get involved</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">You Can Be Part of the Change</h2></div><div className="grid md:grid-cols-3 gap-5">{quickActions.map((item,i)=><Link key={i} to={item.path} className="bg-white rounded-2xl p-7 border border-zinc-200 hover:shadow-xl hover:-translate-y-1 transition-all"><div className="text-[#FF6600] text-3xl mb-4">{item.icon}</div><h3 className="text-xl font-bold text-[#002344]">{item.title}</h3><p className="text-zinc-500 mt-2">{item.text}</p><span className="inline-flex items-center gap-2 mt-5 text-sm font-bold text-[#FF6600]">Get started <FaArrowRight /></span></Link>)}</div></div></section>
+      <section className="py-20 bg-white"><div className="container mx-auto px-4 max-w-5xl"><div className="text-center mb-10"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">About SSF</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">Serving Communities, Creating Possibilities</h2><div className="w-20 h-1 bg-[#FF6600] mx-auto rounded-full mt-5" /></div><div className="text-lg text-zinc-600 leading-relaxed text-center"><p>Swastik Srijan Foundation is a registered non-government organization established in December 2013, working with communities across India. We believe meaningful social change grows through participation, learning, skills, awareness and cooperation.</p><div className="grid md:grid-cols-3 gap-5 text-left mt-10">{[["Our Mission","To contribute to inclusive development through education, skills, health, awareness and community participation."],["Our Approach","We encourage cooperation, practical learning, responsible awareness and partnerships for sustainable social development."],["Our Values","Transparency, dignity, equal opportunity, cooperation and service without discrimination."]].map((x,i)=><div key={i} className="bg-zinc-50 p-6 rounded-2xl border border-zinc-100"><FaCheckCircle className="text-[#FF6600] mb-4"/><h3 className="font-bold text-[#002344] mb-2">{x[0]}</h3><p className="text-sm text-zinc-600 leading-relaxed">{x[1]}</p></div>)}</div><div className="flex justify-center mt-10"><Link to="/About" className="group flex items-center gap-3 px-8 py-3 bg-white border-2 border-[#002344] text-[#002344] font-bold rounded-full hover:bg-[#002344] hover:text-white transition-all">Read Our Full Story <FaArrowRight className="group-hover:translate-x-1 transition-transform" /></Link></div></div></div></section>
+      <section className="py-16 bg-[#001529] text-white"><div className="container mx-auto px-4 max-w-6xl"><div className="grid md:grid-cols-2 gap-10 items-center"><div><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">Transparency & partnership</p><h2 className="text-3xl md:text-4xl font-bold mt-3">Trust grows when information is clear.</h2><p className="text-zinc-300 text-lg leading-relaxed mt-5">Explore SSF's journey, activities, reports and partnership opportunities. We aim to keep our work clear, responsible and community-focused.</p></div><div className="grid grid-cols-2 gap-4"><Link to="/Impact" className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition"><h3 className="font-bold">Our Impact</h3><p className="text-sm text-zinc-400 mt-1">Activities & journey</p></Link><Link to="/GetInvolved#partner" className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition"><h3 className="font-bold">Partnership</h3><p className="text-sm text-zinc-400 mt-1">CSR & institutions</p></Link><Link to="/Blog" className="p-5 rounded-2xl bg-white/5 border border-white/10 hover:bg-white/10 transition"><h3 className="font-bold">SSF Updates</h3><p className="text-sm text-zinc-400 mt-1">News & awareness</p></Link><a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="p-5 rounded-2xl bg-[#FF6600] hover:bg-[#e65c00] transition"><h3 className="font-bold">Contact SSF</h3><p className="text-sm text-white/80 mt-1">Get in touch</p></a></div></div></div></section>
+      <ImpactTimeline />
     </div>
   );
 }
