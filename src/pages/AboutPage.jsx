@@ -34,7 +34,7 @@ export default function AboutPage() {
         <div className="grid lg:grid-cols-[320px_1fr] gap-10 items-center bg-white rounded-[2rem] p-7 md:p-10 shadow-xl border border-zinc-100">
           <div className="text-center">
             <div className="mx-auto w-full max-w-[280px] rounded-2xl overflow-hidden shadow-xl border-4 border-white bg-zinc-100">
-              <OptimizedImage src="/images/real/leadership.jpg" alt="Mr. Ramesh Pandey, Founder and President of Swastik Srijan Foundation" className="block w-full aspect-[4/5] object-cover object-top" />
+              <OptimizedImage src="/Teams_Images/ramesh_pandey.jpg" alt="Mr. Ramesh Pandey, Founder and President of Swastik Srijan Foundation" className="block w-full aspect-[4/5] object-cover" />
             </div>
             <h3 className="text-xl font-bold text-[#002344] mt-5">Mr. Ramesh Pandey</h3><p className="text-[#fb8500] font-semibold text-sm">Founder & President</p>
           </div>
