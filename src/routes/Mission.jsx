@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
-import MissionPageEnhanced from "../pages/MissionPageEnhanced";
+import MissionPage from "../pages/MissionPage";
 
 export const Route = createFileRoute("/Mission")({
-    component: MissionPageEnhanced,
+    component: MissionPage,
 });
 
