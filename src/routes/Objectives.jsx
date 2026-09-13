@@ -20,6 +20,26 @@ function ObjectivesPage() {
         </div>
       </section>
 
+      {/* ================= OFFICIAL IDENTITY ================= */}
+      <section className="bg-[#002344] py-8 text-white">
+        <div className="container mx-auto px-6">
+          <div className="mx-auto grid max-w-6xl grid-cols-2 gap-4 md:grid-cols-5">
+            {[
+              ["December 2013", "Established"],
+              ["05/22/03/11448/13", "Registration No."],
+              ["MP Societies Act", "Registered Under"],
+              ["Rewa, M.P.", "Registered Office"],
+              ["Across India", "Area of Work"],
+            ].map(([value, label]) => (
+              <div key={label} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-4 text-center">
+                <div className="text-sm font-black text-[#FFB066] md:text-base">{value}</div>
+                <div className="mt-1 text-[10px] font-bold uppercase tracking-[0.12em] text-white/60 md:text-xs">{label}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* ================= OBJECTIVES STATEMENT ================= */}
       <section className="py-24 bg-white">
         <div className="container mx-auto px-6">
@@ -133,6 +153,46 @@ function ObjectivesPage() {
                 </motion.div>
               ))}
             </div>
+
+            {/* ================= REGISTERED OBJECTIVE SCOPE ================= */}
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-16 rounded-[2.5rem] border border-zinc-200 bg-zinc-50 p-8 md:p-12"
+            >
+              <div className="mx-auto max-w-5xl">
+                <div className="mb-8 text-center">
+                  <p className="text-xs font-black uppercase tracking-[0.2em] text-[#fb8500]">Registered Scope</p>
+                  <h3 className="mt-2 text-3xl font-serif font-bold text-[#002344] md:text-4xl">Our Broader Areas of Work</h3>
+                  <p className="mx-auto mt-4 max-w-3xl text-zinc-600 leading-7">
+                    The summary above highlights our principal focus areas. Our registered objectives are broader and provide scope for work in education, skills, health, women and children, rural development, environment, social awareness and other community-focused areas, subject to applicable rules and available resources.
+                  </p>
+                </div>
+                <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                  {[
+                    "Education & Knowledge",
+                    "Skill Development & Livelihood",
+                    "Women & Child Development",
+                    "Health & Well-being",
+                    "Environment & Natural Resources",
+                    "Agriculture & Rural Development",
+                    "Social Justice & Awareness",
+                    "Disability, Elderly & Rehabilitation",
+                    "Animal & Wildlife Protection",
+                    "Cultural, Creative & Community Development",
+                  ].map((area) => (
+                    <div key={area} className="flex items-center gap-3 rounded-2xl bg-white p-4 shadow-sm border border-zinc-100">
+                      <FaCheckCircle className="shrink-0 text-[#fb8500]" />
+                      <span className="font-bold text-zinc-700">{area}</span>
+                    </div>
+                  ))}
+                </div>
+                <p className="mt-6 text-center text-xs leading-6 text-zinc-500">
+                  This website section is a concise public summary and does not replace the Foundation’s registration documents, memorandum or rules.
+                </p>
+              </div>
+            </motion.section>
 
             {/* Navigation Links */}
             <motion.div
