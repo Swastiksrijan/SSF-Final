@@ -17,21 +17,21 @@ const documents = [
         hindi: "12AB पंजीकरण",
         status: "Registered",
         description: "Income Tax statutory registration record available for public verification.",
-        href: "https://drive.google.com/file/d/1Nz8n-iLBexlKWSqntgyLkXiHRUhvsB8_/view?usp=sharing"
+        href: "https://drive.google.com/file/d/1MVtgKePT2WNTSrF1vrjrDIdrCZ6HaNrS/view?usp=drivesdk"
     },
     {
         title: "80G Status",
         hindi: "80G स्थिति",
         status: "Final Approval Applied",
         description: "Current status is presented as application / provisional status and is not described as final approval.",
-        href: "https://drive.google.com/file/d/1_bmk6mX-8jL0Q9tV8E87Mek4K-5rG3uj/view?usp=sharing"
+        href: "https://drive.google.com/file/d/1uUAQuXCkz6H_sEJGgDvSx2Gj_PsIIVvB/view?usp=drivesdk"
     },
     {
         title: "CSR-1 Registration",
         hindi: "CSR-1 पंजीकरण",
         status: "Registered",
         description: "CSR-1 registration record maintained for corporate partnership documentation.",
-        href: "https://drive.google.com/file/d/1oNNPnZq6M2bl9u5MOIZ1ddIK_PZFeg9x/view?usp=sharing"
+        href: "https://drive.google.com/file/d/1LdL8_IC3K6f4ZEddb68ki_393QkIBvcX/view?usp=drivesdk"
     },
     {
         title: "NGO Darpan",
