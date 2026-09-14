@@ -1,11 +1,23 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { FaFileContract, FaShieldAlt, FaUserShield, FaExternalLinkAlt, FaSyncAlt, FaExclamationTriangle, FaGavel, FaEnvelope } from "react-icons/fa";
+import {
+  FaFileContract,
+  FaShieldAlt,
+  FaUserShield,
+  FaExternalLinkAlt,
+  FaSyncAlt,
+  FaExclamationTriangle,
+  FaGavel,
+  FaEnvelope,
+  FaHandHoldingHeart,
+  FaCopyright,
+  FaBan,
+  FaChild,
+  FaCheckCircle,
+} from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
-import PageHero from "../components/PageHero";
 
 export default function TermsAndConditions() {
-  // Scroll to top on mount
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
@@ -17,154 +29,255 @@ export default function TermsAndConditions() {
       id: "acceptance",
       icon: <FaFileContract />,
       title: "1. Acceptance of Terms",
-      content: "By accessing or using this website, you agree to comply with these Terms & Conditions. If you do not agree with any part of these terms, please discontinue using our website."
+      content:
+        "By accessing or using the Swastik Srijan Foundation website, you acknowledge that you have read and understood these Terms of Use and agree to follow them. If you do not agree, please discontinue use of the website.",
+    },
+    {
+      id: "website-use",
+      icon: <FaCheckCircle />,
+      title: "2. Permitted Use",
+      content:
+        "You may use this website for lawful purposes, including learning about our work, programs, volunteering opportunities, partnerships, donations, reports, and other information made available by the Foundation. You must use the website responsibly and respectfully.",
+    },
+    {
+      id: "prohibited",
+      icon: <FaBan />,
+      title: "3. Prohibited Activities",
+      content:
+        "You must not misuse the website, attempt unauthorized access, interfere with its security or operation, introduce malicious code, impersonate another person or organization, submit knowingly false information, or use the website for any unlawful or harmful purpose.",
     },
     {
       id: "content",
-      icon: <FaShieldAlt />,
-      title: "2. Use of Website Content",
-      content: "All content on this website—including text, images, graphics, logos, and other materials—is the property of Swastik Srijan Foundation and is protected under applicable copyright and trademark laws. Unauthorized reproduction or distribution is prohibited."
+      icon: <FaCopyright />,
+      title: "4. Website Content & Intellectual Property",
+      content:
+        "Unless otherwise stated, website text, graphics, logos, photographs, designs, documents and other original materials are owned by or used by Swastik Srijan Foundation with appropriate rights. They must not be copied, reproduced, modified, distributed or commercially exploited without permission, except where permitted by applicable law.",
     },
     {
-      id: "responsibility",
+      id: "user-content",
       icon: <FaUserShield />,
-      title: "3. User Responsibilities",
-      content: "Users must not engage in activities that disrupt the website’s security, integrity, or functionality. Any unlawful or malicious usage is strictly prohibited."
+      title: "5. Information Submitted by Users",
+      content:
+        "When you submit information through a form, inquiry, volunteer application, membership request, partnership request or similar facility, you should provide information that is accurate and that you are authorized to provide. Submission of information does not by itself guarantee membership, selection, employment, volunteering, partnership or any other outcome.",
     },
     {
-      id: "links",
+      id: "donations",
+      icon: <FaHandHoldingHeart />,
+      title: "6. Donations & Financial Transactions",
+      content:
+        "Donations are voluntary contributions made to support the Foundation's charitable and social-development activities. Donation-related transactions may be subject to the separate Donation & Refund Policy and to the terms of the applicable payment service provider. Donors should review the relevant details before completing a transaction.",
+    },
+    {
+      id: "accuracy",
+      icon: <FaShieldAlt />,
+      title: "7. Information Accuracy & Availability",
+      content:
+        "We make reasonable efforts to keep website information useful and current, but information may occasionally contain errors, omissions or become outdated. Website content is provided for general information and does not constitute a guarantee that every page, service, document or feature will always be available or error-free.",
+    },
+    {
+      id: "external-links",
       icon: <FaExternalLinkAlt />,
-      title: "4. External Links",
-      content: "This website may contain links to third-party websites for convenience. Swastik Srijan Foundation is not responsible for external content or policies."
-    },
-    {
-      id: "updates",
-      icon: <FaSyncAlt />,
-      title: "5. Updates to Terms",
-      content: "We reserve the right to update or modify these Terms & Conditions at any time. Continued use of the website implies acceptance of updated terms."
-    },
-    {
-      id: "liability",
-      icon: <FaExclamationTriangle />,
-      title: "6. Limitation of Liability",
-      content: "While we strive for accuracy, we do not guarantee completeness or reliability of website content. Use of the website is at your own risk."
+      title: "8. External Links & Third-Party Services",
+      content:
+        "The website may link to external websites, portals or services for convenience, including services used for payments, documents, forms or other activities. Such third-party services operate under their own terms and policies. Swastik Srijan Foundation is not responsible for the content, availability or policies of external websites.",
     },
     {
       id: "privacy",
       icon: <FaShieldAlt />,
-      title: "7. Privacy Policy",
+      title: "9. Privacy & Personal Information",
       content: (
         <>
-          By using this website, you agree to our <Link to="/privacy-policy" className="text-[#003366] hover:text-[#002244] font-bold underline decoration-2 underline-offset-2 transition-colors">Privacy Policy</Link> regarding the collection and use of personal information.
+          Your use of this website may involve the handling of personal information as described in our {" "}
+          <Link
+            to="/PrivacyPolicy"
+            className="text-[#003366] hover:text-[#FF6600] font-bold underline decoration-2 underline-offset-2 transition-colors"
+          >
+            Privacy Policy
+          </Link>
+          . Please review that policy for information about collection, use, protection, retention and your available privacy choices.
         </>
-      )
+      ),
+    },
+    {
+      id: "children",
+      icon: <FaChild />,
+      title: "10. Children & Educational Activities",
+      content:
+        "Some Foundation activities may involve education, youth or child-development programs. Where information relating to children is involved, it should be provided only by a parent, guardian, authorized institution or other person legally permitted to provide it, and only for the relevant purpose.",
+    },
+    {
+      id: "security",
+      icon: <FaShieldAlt />,
+      title: "11. Website Security",
+      content:
+        "We take reasonable measures to support the security and reliability of the website. However, no internet-based system can be guaranteed to be completely secure or continuously available. Users should also maintain appropriate device, account and password security when using online services.",
+    },
+    {
+      id: "liability",
+      icon: <FaExclamationTriangle />,
+      title: "12. Limitation of Liability",
+      content:
+        "To the extent permitted by applicable law, the Foundation will not be responsible for losses arising solely from reliance on incomplete, outdated or temporarily unavailable website information, third-party websites or interruptions beyond our reasonable control. Nothing in these Terms is intended to exclude any liability that cannot lawfully be excluded.",
+    },
+    {
+      id: "updates",
+      icon: <FaSyncAlt />,
+      title: "13. Changes to These Terms",
+      content:
+        "We may revise these Terms of Use when our website, activities, services or applicable requirements change. Updated terms will be posted on this page with a revised update date. Your continued use of the website after an update indicates that you have reviewed the revised terms.",
     },
     {
       id: "law",
       icon: <FaGavel />,
-      title: "8. Governing Law",
-      content: "These terms are governed by the laws of India. Any disputes shall fall under the jurisdiction of Indian courts."
-    },
-    {
-      id: "donation",
-      icon: <FaFileContract />,
-      title: "9. Donation Policy",
-      content: "All donations made to Swastik Srijan Foundation are voluntary and non-refundable. We ensure responsible and transparent utilization of all donated funds towards our programs and initiatives."
+      title: "14. Governing Law & Jurisdiction",
+      content:
+        "These Terms are intended to be governed by the laws applicable in India. Subject to applicable law, disputes relating to the website or these Terms will be handled by the appropriate courts or authorities having jurisdiction.",
     },
   ];
 
   return (
     <div className="w-full bg-zinc-50 font-inria">
+      {/* ================= CODED HERO ================= */}
+      <section className="relative overflow-hidden bg-[#06182f] px-4 py-8 sm:px-6 sm:py-10 md:py-14">
+        <div className="absolute inset-0 opacity-20 bg-[linear-gradient(rgba(255,255,255,.08)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,.08)_1px,transparent_1px)] bg-[size:38px_38px]" />
+        <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full border border-[#FF6600]/30" />
+        <div className="absolute -left-24 bottom-[-180px] h-96 w-96 rounded-full border border-white/10" />
 
-      {/* ================= HERO ================= */}
-      <PageHero
-        image="/images/real/academy-board-compliance.jpg"
-        title="Terms & Conditions"
-        subtitle="Please read these terms carefully before using our website."
-        hindiSubtitle="नियम और शर्तें - हमारी वेबसाइट का उपयोग करने से पहले कृपया इन शर्तों को ध्यान से पढ़ें।"
-      />
-
-      <div className="max-w-5xl mx-auto py-16 px-4">
-
-        {/* ================= INTRODUCTION CARD ================= */}
-        <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-12 border-l-8 border-[#003366]">
-          <h2 className="text-3xl font-bold mb-6 text-zinc-900">Welcome to Swastik Srijan Foundation</h2>
-          <p className="text-lg text-zinc-600 leading-relaxed">
-            These Terms and Conditions govern your use of our website and services. By accessing our platform, you acknowledge that you have read, understood, and agree to be bound by these terms. We are committed to transparency and ethical practices in all our operations.
-          </p>
-        </div>
-
-        {/* ================= SECTIONS GRID ================= */}
-        <div className="grid md:grid-cols-2 gap-8 mb-16">
-          {sections.map((section) => (
-            <div
-              key={section.id}
-              className="bg-white rounded-xl shadow-md p-8 hover:shadow-xl transition-all duration-300 border-2 border-transparent hover:border-[#003366] group"
-              onMouseEnter={() => setActiveSection(section.id)}
-              onMouseLeave={() => setActiveSection(null)}
-            >
-              <div className="flex items-start gap-4">
-                <div className={`mt-1 p-3 rounded-full text-xl transition-colors duration-300 ${activeSection === section.id ? 'bg-[#003366] text-white' : 'bg-zinc-100 text-zinc-500'}`}>
-                  {section.icon}
+        <div className="relative mx-auto max-w-6xl rounded-[28px] border border-white/20 p-2 shadow-2xl shadow-black/30">
+          <div className="relative overflow-hidden rounded-[22px] border border-[#FF6600]/40 bg-white/[0.06] px-5 py-9 sm:px-8 md:px-12 md:py-12">
+            <div className="absolute left-0 top-0 h-1 w-32 bg-[#FF6600]" />
+            <div className="grid items-center gap-8 md:grid-cols-[1fr_auto]">
+              <div className="max-w-3xl">
+                <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-[#FF6600]/40 bg-[#FF6600]/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.2em] text-[#ff9a5c]">
+                  <FaFileContract /> Website Terms
                 </div>
-                <div>
-                  <h3 className="text-xl font-bold mb-3 text-zinc-900 group-hover:text-[#003366] transition-colors">
-                    {section.title}
-                  </h3>
-                  <p className="text-zinc-600 leading-relaxed">
-                    {section.content}
+                <div className="rounded-2xl border border-white/10 bg-black/10 p-5 sm:p-7">
+                  <h1 className="text-3xl font-black leading-tight text-white sm:text-4xl md:text-5xl">
+                    Terms <span className="text-[#FF6600]">&</span> Conditions
+                  </h1>
+                  <p className="mt-4 text-base font-medium leading-relaxed text-zinc-200 sm:text-lg">
+                    Please read these terms carefully before using the Swastik Srijan Foundation website.
+                  </p>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-400 sm:text-base">
+                    नियम और शर्तें — हमारी वेबसाइट का उपयोग करने से पहले कृपया इन शर्तों को ध्यान से पढ़ें।
                   </p>
                 </div>
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* ================= CONTACT SECTION ================= */}
-        <div className="bg-zinc-900 rounded-2xl shadow-xl overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-[#003366] opacity-10 rounded-full translate-x-1/3 -translate-y-1/3 blur-3xl"></div>
-
-          <div className="p-10 md:p-16 text-center relative z-10">
-            <div className="w-16 h-16 bg-[#003366] text-white rounded-full mx-auto flex items-center justify-center text-3xl mb-6">
-              <FaEnvelope />
-            </div>
-            <h2 className="text-3xl font-bold text-white mb-4">Questions about our Terms?</h2>
-            <p className="text-zinc-400 text-lg mb-8 max-w-xl mx-auto">
-              If you have any questions or concerns regarding these Terms & Conditions, please do not hesitate to contact our team.
-            </p>
-
-            <div className="flex flex-col md:flex-row justify-center items-center gap-6">
-              <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20 w-full md:w-auto min-w-[280px]">
-                <p className="text-xs text-zinc-400 uppercase tracking-wider mb-1">Email Us</p>
-                <div className="text-white font-bold text-lg space-y-2">
-                  <p>{CONTACT_INFO.primaryEmail}</p>
-                  <div className="pt-2 border-t border-white/10 mt-2">
-                    <p className="text-[10px] text-zinc-400 font-bold flex items-center justify-center gap-2">
-                      {CONTACT_INFO.secondaryEmail}
-                      <span className="text-[8px] bg-red-500/20 text-red-100 px-2 py-0.5 rounded-full border border-red-500/30 uppercase">
-                        {CONTACT_INFO.techIssueNote}
-                      </span>
-                    </p>
-                    <p className="text-[10px] text-zinc-400 font-bold flex items-center justify-center gap-2 mt-1">
-                      {CONTACT_INFO.thirdEmail}
-                      <span className="text-[8px] bg-red-500/20 text-red-100 px-2 py-0.5 rounded-full border border-red-500/30 uppercase">
-                        {CONTACT_INFO.techIssueNote}
-                      </span>
-                    </p>
-                  </div>
+                <div className="mt-5 flex flex-wrap gap-3 text-xs font-bold text-zinc-300 sm:text-sm">
+                  <span className="rounded-full border border-white/15 bg-white/5 px-4 py-2">Responsible Use</span>
+                  <span className="rounded-full border border-white/15 bg-white/5 px-4 py-2">Transparency</span>
+                  <span className="rounded-full border border-white/15 bg-white/5 px-4 py-2">Legal Awareness</span>
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-sm p-4 rounded-lg border border-white/20 w-full md:w-auto min-w-[250px]">
-                <p className="text-xs text-zinc-400 uppercase tracking-wider mb-1">Call Us</p>
-                <p className="text-white font-bold text-lg">
-                  {CONTACT_INFO.phones.primaryFormatted}
-                </p>
+              <div className="mx-auto flex h-32 w-32 items-center justify-center rounded-full border border-[#FF6600]/50 bg-[#FF6600]/10 shadow-[0_0_60px_rgba(255,102,0,.12)] sm:h-40 sm:w-40">
+                <div className="flex h-24 w-24 items-center justify-center rounded-full border border-white/15 bg-white/10 text-5xl text-[#FF6600] sm:h-28 sm:w-28 sm:text-6xl">
+                  <FaGavel />
+                </div>
               </div>
             </div>
           </div>
         </div>
+      </section>
 
+      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16">
+        {/* ================= INTRODUCTION ================= */}
+        <div className="mb-10 rounded-3xl border border-zinc-200 border-l-8 border-l-[#003366] bg-white p-7 shadow-lg sm:p-10">
+          <div className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em] text-[#FF6600]">Effective for website use</div>
+          <h2 className="mb-4 text-2xl font-black text-zinc-900 sm:text-3xl">Welcome to Swastik Srijan Foundation</h2>
+          <p className="text-base leading-8 text-zinc-600 sm:text-lg">
+            These Terms of Use explain the basic rules governing access to and use of our website and online facilities. They are designed to support responsible use, transparency and respectful interaction with the Foundation.
+          </p>
+          <div className="mt-6 flex flex-wrap gap-3 text-sm font-bold text-zinc-600">
+            <span className="rounded-full bg-zinc-100 px-4 py-2">India-focused nonprofit website</span>
+            <span className="rounded-full bg-zinc-100 px-4 py-2">Responsible digital use</span>
+          </div>
+        </div>
+
+        {/* ================= SECTIONS ================= */}
+        <div className="mb-14 grid gap-6 md:grid-cols-2">
+          {sections.map((section) => (
+            <article
+              key={section.id}
+              className="group rounded-2xl border border-zinc-200 bg-white p-6 shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-[#003366]/40 hover:shadow-xl sm:p-7"
+              onMouseEnter={() => setActiveSection(section.id)}
+              onMouseLeave={() => setActiveSection(null)}
+            >
+              <div className="flex items-start gap-4">
+                <div
+                  className={`mt-1 flex h-12 w-12 shrink-0 items-center justify-center rounded-xl text-xl transition-all duration-300 ${
+                    activeSection === section.id
+                      ? "bg-[#003366] text-white shadow-lg"
+                      : "bg-zinc-100 text-[#003366]"
+                  }`}
+                >
+                  {section.icon}
+                </div>
+                <div>
+                  <h3 className="mb-3 text-lg font-black leading-snug text-zinc-900 transition-colors group-hover:text-[#003366] sm:text-xl">
+                    {section.title}
+                  </h3>
+                  <div className="text-sm leading-7 text-zinc-600 sm:text-base">
+                    {section.content}
+                  </div>
+                </div>
+              </div>
+            </article>
+          ))}
+        </div>
+
+        {/* ================= LEGAL NOTE ================= */}
+        <div className="mb-10 rounded-2xl border border-[#003366]/15 bg-[#003366]/5 p-6 sm:p-8">
+          <div className="flex items-start gap-4">
+            <div className="mt-1 text-xl text-[#FF6600]"><FaGavel /></div>
+            <div>
+              <h2 className="mb-2 text-xl font-black text-zinc-900">Important Legal Note</h2>
+              <p className="text-sm leading-7 text-zinc-600 sm:text-base">
+                These Terms are intended to clearly explain website use and are not a substitute for professional legal advice. Where applicable law provides a mandatory right or protection, nothing in these Terms is intended to take that right away.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* ================= CONTACT ================= */}
+        <div className="relative overflow-hidden rounded-3xl bg-zinc-950 shadow-2xl">
+          <div className="absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#003366]/40 blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-[#FF6600]/10 blur-3xl" />
+          <div className="relative z-10 p-8 text-center sm:p-12 md:p-14">
+            <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full border border-[#FF6600]/40 bg-[#FF6600]/10 text-2xl text-[#FF6600]">
+              <FaEnvelope />
+            </div>
+            <h2 className="mb-3 text-2xl font-black text-white sm:text-3xl">Questions about our Terms?</h2>
+            <p className="mx-auto mb-8 max-w-2xl text-sm leading-7 text-zinc-400 sm:text-base">
+              If you have a question about these Terms of Use or a website-related concern, please contact the Foundation through the official contact details below.
+            </p>
+
+            <div className="mx-auto grid max-w-3xl gap-4 sm:grid-cols-2">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 text-left">
+                <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.18em] text-zinc-500">Official Email</p>
+                <p className="break-all text-base font-bold text-white">{CONTACT_INFO.primaryEmail}</p>
+              </div>
+              <div className="rounded-2xl border border-white/10 bg-white/[0.06] p-5 text-left">
+                <p className="mb-2 text-xs font-extrabold uppercase tracking-[0.18em] text-zinc-500">Official Contact</p>
+                <p className="text-base font-bold text-white">{CONTACT_INFO.phones.primaryFormatted}</p>
+              </div>
+            </div>
+
+            <div className="mt-7 flex flex-wrap justify-center gap-3">
+              <Link
+                to="/PrivacyPolicy"
+                className="rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-bold text-zinc-200 transition hover:border-[#FF6600]/50 hover:text-white"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                to="/Transparency"
+                className="rounded-full border border-white/15 bg-white/5 px-5 py-2.5 text-sm font-bold text-zinc-200 transition hover:border-[#FF6600]/50 hover:text-white"
+              >
+                Transparency & Compliance
+              </Link>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
