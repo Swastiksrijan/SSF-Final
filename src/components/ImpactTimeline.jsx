@@ -1,143 +1,90 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { FaSeedling, FaGraduationCap, FaHandHoldingHeart, FaFemale, FaBriefcase, FaUsers, FaArrowRight, FaRocket } from "react-icons/fa";
+import { FaSeedling, FaGraduationCap, FaHandHoldingHeart, FaFemale, FaBriefcase, FaUsers, FaArrowRight, FaRocket, FaHeartbeat, FaLeaf, FaBullhorn, FaLaptop } from "react-icons/fa";
 
 export default function ImpactTimeline() {
-    const milestones = [
-        {
-            year: "2013",
-            title: "Foundation & Registration",
-            desc: "Swastik Srijan Foundation began its registered journey with a commitment to social service, community participation and inclusive development.",
-            icon: <FaSeedling />,
-            color: "#FF6600"
-        },
-        {
-            year: "2014–2017",
-            title: "Building the Foundation",
-            desc: "The early years focused on strengthening community connections and developing practical social initiatives around education, health, awareness and local participation.",
-            icon: <FaHandHoldingHeart />,
-            color: "#003366"
-        },
-        {
-            year: "2018–2019",
-            title: "Expanding Social Initiatives",
-            desc: "The organisation continued to develop community-oriented efforts, with growing attention to education, health, skills, women and community empowerment.",
-            icon: <FaFemale />,
-            color: "#fb8500"
-        },
-        {
-            year: "2020",
-            title: "Standing With Communities",
-            desc: "During a difficult period, the focus remained on community awareness, support and responsible social response during the COVID-19 crisis.",
-            icon: <FaUsers />,
-            color: "#002344"
-        },
-        {
-            year: "2021–2022",
-            title: "Strengthening Community Work",
-            desc: "Social awareness, learning, support and community-focused initiatives continued while adapting to changing circumstances and needs.",
-            icon: <FaBriefcase />,
-            color: "#d90429"
-        },
-        {
-            year: "2023–2024",
-            title: "Learning & Community Development",
-            desc: "Greater emphasis was placed on learning, skills, awareness, environment and practical community development initiatives.",
-            icon: <FaGraduationCap />,
-            color: "#003366"
-        },
-        {
-            year: "2025",
-            title: "Digital & Social Outreach",
-            desc: "The organisation continued using digital tools and wider outreach to connect people with learning, awareness and social participation opportunities.",
-            icon: <FaSeedling />,
-            color: "#FF6600"
-        },
-        {
-            year: "2026",
-            title: "Continuing the Mission",
-            desc: "Current initiatives continue to focus on education, skill development, health, awareness, community support and meaningful partnerships.",
-            icon: <FaRocket />,
-            color: "#d90429"
-        }
+    const years = [
+        { year: "2013", title: "Foundation & Registration", desc: "Registered beginning of the Swastik Srijan Foundation journey in Rewa, Madhya Pradesh.", icon: <FaSeedling />, tone: "orange" },
+        { year: "2014", title: "Foundation Building", desc: "Early community connections and groundwork for education, health and social awareness.", icon: <FaHandHoldingHeart />, tone: "blue" },
+        { year: "2015", title: "Community Engagement", desc: "Continuing the foundation-building phase through community participation and social initiatives.", icon: <FaUsers />, tone: "green" },
+        { year: "2016", title: "Learning & Awareness", desc: "Continued focus on learning, awareness and practical community-oriented support.", icon: <FaGraduationCap />, tone: "purple" },
+        { year: "2017", title: "Strengthening Outreach", desc: "Building stronger connections around inclusive development and community participation.", icon: <FaBullhorn />, tone: "pink" },
+        { year: "2018", title: "Expanding Initiatives", desc: "Growing attention to education, health, skills and community empowerment.", icon: <FaBriefcase />, tone: "orange" },
+        { year: "2019", title: "Social Development", desc: "Continuing community-oriented work with emphasis on skills, wellbeing and participation.", icon: <FaFemale />, tone: "blue" },
+        { year: "2020", title: "Standing With Communities", desc: "Community awareness, support and responsible social response during the COVID-19 period.", icon: <FaHeartbeat />, tone: "red" },
+        { year: "2021", title: "Adapting & Continuing", desc: "Learning and support initiatives continued while adapting to changing community needs.", icon: <FaUsers />, tone: "green" },
+        { year: "2022", title: "Strengthening Community Work", desc: "Continued focus on awareness, learning, support and community participation.", icon: <FaHandHoldingHeart />, tone: "purple" },
+        { year: "2023", title: "Learning & Development", desc: "Greater emphasis on learning, skills, awareness and practical community development.", icon: <FaGraduationCap />, tone: "blue" },
+        { year: "2024", title: "Community Initiatives", desc: "Continuing work across education, health, environment and community development areas.", icon: <FaLeaf />, tone: "green" },
+        { year: "2025", title: "Digital & Social Outreach", desc: "Wider use of digital tools and outreach for learning, awareness and participation.", icon: <FaLaptop />, tone: "orange" },
+        { year: "2026", title: "Continuing the Mission", desc: "Current work continues around education, skills, health, awareness, community support and partnerships.", icon: <FaRocket />, tone: "red" }
     ];
 
-    const duplicatedMilestones = [...milestones, ...milestones];
+    const tone = {
+        orange: { bg: "bg-orange-500", soft: "bg-orange-50", text: "text-orange-600", border: "border-orange-200" },
+        blue: { bg: "bg-blue-600", soft: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+        green: { bg: "bg-emerald-500", soft: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
+        purple: { bg: "bg-violet-600", soft: "bg-violet-50", text: "text-violet-700", border: "border-violet-200" },
+        pink: { bg: "bg-pink-500", soft: "bg-pink-50", text: "text-pink-700", border: "border-pink-200" },
+        red: { bg: "bg-rose-600", soft: "bg-rose-50", text: "text-rose-700", border: "border-rose-200" }
+    };
 
     return (
-        <section className="py-24 bg-white overflow-hidden relative border-y border-zinc-100">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-orange-50 rounded-full blur-3xl opacity-30 -translate-y-1/2 translate-x-1/2"></div>
-            <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-50 rounded-full blur-3xl opacity-30 translate-y-1/2 -translate-x-1/2"></div>
+        <section className="py-24 bg-gradient-to-b from-white via-zinc-50 to-white overflow-hidden relative border-y border-zinc-100">
+            <div className="absolute -top-32 -right-32 w-96 h-96 bg-orange-100/50 rounded-full blur-3xl"></div>
+            <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl"></div>
 
-            <div className="container mx-auto px-4 mb-12 text-center relative z-10">
-                <h2 className="text-3xl md:text-4xl font-bold text-[#002344] mb-2 uppercase tracking-wide">
-                    OUR JOURNEY | हमारी यात्रा
-                </h2>
-                <p className="text-[#FF6600] font-bold text-sm md:text-base uppercase tracking-widest mb-6">
-                    2013–2026 • A Journey of Service & Srijan
-                </p>
-                <div className="w-20 h-1 bg-[#FF6600] mx-auto rounded-full mb-8"></div>
-                <p className="text-zinc-600 max-w-4xl mx-auto text-lg leading-relaxed">
-                    From its registered beginning in 2013 to its continuing work in 2026, Swastik Srijan Foundation has grown through community participation, service, learning and the commitment to keep creating positive social change.
-                </p>
-            </div>
+            <div className="container mx-auto px-4 relative z-10">
+                <div className="text-center max-w-4xl mx-auto mb-14">
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#002344] text-white text-[10px] font-black uppercase tracking-[0.25em] shadow-lg">
+                        2013 — 2026 • Service Journey
+                    </span>
+                    <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-[#002344]">
+                        OUR JOURNEY <span className="text-[#FF6600]">| हमारी यात्रा</span>
+                    </h2>
+                    <p className="mt-5 text-zinc-600 text-base md:text-lg leading-relaxed">
+                        Fourteen years of a continuing journey — from registration and foundation building to learning, community development, digital outreach and ongoing service.
+                    </p>
+                </div>
 
-            <div className="relative flex whitespace-nowrap py-10">
-                <motion.div
-                    className="flex gap-8 px-4"
-                    animate={{ x: ["0%", "-50%"] }}
-                    transition={{
-                        x: {
-                            repeat: Infinity,
-                            repeatType: "loop",
-                            duration: 50,
-                            ease: "linear",
-                        },
-                    }}
-                    style={{ width: "fit-content" }}
-                >
-                    {duplicatedMilestones.map((item, i) => (
-                        <div
-                            key={i}
-                            className="inline-block w-[300px] md:w-[450px] bg-white rounded-[2.5rem] p-10 shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] border border-zinc-50 transition-all hover:shadow-2xl hover:-translate-y-2 duration-300 group relative overflow-hidden"
-                        >
-                            <span className="absolute -bottom-4 -right-4 text-9xl font-black opacity-[0.03] select-none group-hover:opacity-[0.07] transition-opacity" style={{ color: item.color }}>
-                                {item.year.replace(/[+–]/g, "")}
-                            </span>
-
-                            <div className="relative z-10">
-                                <div className="flex justify-between items-start mb-10">
-                                    <div
-                                        className="w-16 h-16 rounded-2xl flex items-center justify-center text-white text-3xl shadow-lg group-hover:rotate-12 transition-transform"
-                                        style={{ backgroundColor: item.color }}
-                                    >
-                                        {item.icon}
+                <div className="flex gap-5 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide px-1">
+                    {years.map((item, index) => {
+                        const c = tone[item.tone];
+                        return (
+                            <motion.article
+                                key={item.year}
+                                initial={{ opacity: 0, y: 25 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.15 }}
+                                transition={{ delay: Math.min(index * 0.04, 0.5), duration: 0.45 }}
+                                className={`snap-start shrink-0 w-[270px] md:w-[300px] rounded-[2rem] border ${c.border} bg-white shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden relative`}
+                            >
+                                <div className={`h-2 ${c.bg}`}></div>
+                                <div className="p-6">
+                                    <div className="flex items-center justify-between mb-6">
+                                        <div className={`w-14 h-14 rounded-2xl ${c.soft} ${c.text} flex items-center justify-center text-2xl shadow-sm`}>
+                                            {item.icon}
+                                        </div>
+                                        <span className={`text-3xl font-black ${c.text}`}>{item.year}</span>
                                     </div>
-                                    <span className="text-2xl font-black tracking-tighter text-right" style={{ color: item.color }}>
-                                        {item.year}
-                                    </span>
+                                    <h3 className="text-xl font-bold text-[#002344] leading-tight min-h-[52px]">{item.title}</h3>
+                                    <p className="mt-3 text-sm text-zinc-500 leading-relaxed min-h-[82px]">{item.desc}</p>
+                                    <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center gap-2">
+                                        <span className={`w-2 h-2 rounded-full ${c.bg}`}></span>
+                                        <span className="text-[9px] font-black uppercase tracking-[0.18em] text-zinc-400">SSF Service Journey</span>
+                                    </div>
                                 </div>
+                            </motion.article>
+                        );
+                    })}
+                </div>
 
-                                <h3 className="text-2xl font-bold text-[#002344] mb-4 whitespace-normal font-serif">
-                                    {item.title}
-                                </h3>
-                                <p className="text-zinc-500 whitespace-normal text-lg font-medium leading-relaxed">
-                                    {item.desc}
-                                </p>
-                            </div>
-
-                            <div
-                                className="absolute bottom-0 left-0 h-1.5 w-0 group-hover:w-full transition-all duration-500"
-                                style={{ backgroundColor: item.color }}
-                            ></div>
-                        </div>
-                    ))}
-                </motion.div>
-            </div>
-
-            <div className="mt-8 text-center">
-                <div className="mt-4">
-                    <Link to="/Journey" className="inline-flex items-center gap-2 text-[#fb8500] font-bold hover:gap-3 transition-all uppercase tracking-widest text-sm">
+                <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-5">
+                    <div className="text-center">
+                        <div className="text-2xl font-black text-[#002344]">2013 → 2026</div>
+                        <div className="text-xs text-zinc-400 uppercase tracking-widest font-bold">A continuing journey of service</div>
+                    </div>
+                    <Link to="/Journey" className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#002344] text-white font-bold hover:bg-[#FF6600] transition-all shadow-lg uppercase tracking-widest text-[10px]">
                         View Detailed Journey <FaArrowRight className="text-xs" />
                     </Link>
                 </div>
