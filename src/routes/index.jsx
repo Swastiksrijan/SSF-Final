@@ -11,11 +11,13 @@ import Collabrations from "../pages/Collabrations";
 import ProgressSection from "../pages/ProgressSection";
 import Supportour from "../components/Supportour";
 import FAQSection from "../pages/FAQSection";
+import ServiceJourneyChart from "../components/ServiceJourneyChart";
 
 export const Route = createFileRoute("/")({
   component: () => (
     <>
       <Home />
+      <ServiceJourneyChart compact />
     </>
   ),
 });
