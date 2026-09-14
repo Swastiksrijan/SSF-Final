@@ -1,12 +1,12 @@
 import { createFileRoute } from '@tanstack/react-router'
 import ImpactPage from '../pages/ImpactPage'
-import ServiceJourneyChart from '../components/ServiceJourneyChart'
+import ImpactTimeline from '../components/ImpactTimeline'
 
 function ImpactWithJourney() {
   return (
     <>
       <ImpactPage />
-      <ServiceJourneyChart />
+      <ImpactTimeline />
     </>
   )
 }
