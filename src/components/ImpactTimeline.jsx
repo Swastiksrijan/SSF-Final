@@ -70,11 +70,10 @@ export default function ImpactTimeline() {
                             return (
                                 <motion.article
                                     key={`${item.year}-${index}`}
-                                    className="relative shrink-0 w-[88px] md:w-[105px] h-[410px] flex flex-col justify-end items-center group"
+                                    className="relative shrink-0 w-[88px] md:w-[105px] h-[410px] flex flex-col justify-end items-center"
                                     initial={{ opacity: 0.65 }}
                                     animate={{ opacity: [0.65, 1, 0.65] }}
                                     transition={{ duration: 3.8, repeat: Infinity, delay, ease: "easeInOut" }}
-                                    whileHover={{ y: -10, scale: 1.06 }}
                                 >
                                     <div className="absolute inset-x-0 bottom-[74px] h-[270px] rounded-full bg-white/60 border border-white/80 shadow-inner" />
 
@@ -93,13 +92,6 @@ export default function ImpactTimeline() {
 
                                     <div className={`mt-4 px-3 py-1.5 rounded-full ${c.soft} ${c.text} text-sm md:text-base font-black shadow-sm`}>{item.year}</div>
                                     <div className="mt-2 text-center text-[9px] md:text-[10px] font-black text-[#002344] uppercase tracking-wide leading-tight max-w-[100px] min-h-[28px]">{item.title}</div>
-
-                                    <div className="mt-2 opacity-0 group-hover:opacity-100 transition-opacity absolute bottom-0 w-[180px] md:w-[210px] z-40">
-                                        <div className="rounded-2xl bg-[#002344] text-white p-4 shadow-2xl text-center">
-                                            <div className={`text-xs font-black ${c.text} bg-white rounded-full inline-block px-2 py-1 mb-2`}>{item.year}</div>
-                                            <p className="text-[10px] leading-relaxed text-white/85">{item.desc}</p>
-                                        </div>
-                                    </div>
                                 </motion.article>
                             );
                         })}
