@@ -47,36 +47,43 @@ export default function ImpactTimeline() {
                     </p>
                 </div>
 
-                <div className="flex gap-5 overflow-x-auto pb-8 snap-x snap-mandatory scrollbar-hide px-1">
-                    {years.map((item, index) => {
-                        const c = tone[item.tone];
-                        return (
-                            <motion.article
-                                key={item.year}
-                                initial={{ opacity: 0, y: 25 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, amount: 0.15 }}
-                                transition={{ delay: Math.min(index * 0.04, 0.5), duration: 0.45 }}
-                                className={`snap-start shrink-0 w-[270px] md:w-[300px] rounded-[2rem] border ${c.border} bg-white shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden relative`}
-                            >
-                                <div className={`h-2 ${c.bg}`}></div>
-                                <div className="p-6">
-                                    <div className="flex items-center justify-between mb-6">
-                                        <div className={`w-14 h-14 rounded-2xl ${c.soft} ${c.text} flex items-center justify-center text-2xl shadow-sm`}>
-                                            {item.icon}
+                {/* Continuous auto-moving journey cards. Hover/touch pauses the track so visitors can read. */}
+                <div className="relative overflow-hidden py-4 -mx-1">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-12 md:w-24 bg-gradient-to-r from-zinc-50 to-transparent z-10"></div>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-12 md:w-24 bg-gradient-to-l from-white to-transparent z-10"></div>
+                    <motion.div
+                        className="flex gap-5 w-max px-1 hover:[animation-play-state:paused]"
+                        animate={{ x: ["0%", "-50%"] }}
+                        transition={{
+                            x: { repeat: Infinity, repeatType: "loop", duration: 48, ease: "linear" }
+                        }}
+                    >
+                        {[...years, ...years].map((item, index) => {
+                            const c = tone[item.tone];
+                            return (
+                                <article
+                                    key={`${item.year}-${index}`}
+                                    className={`shrink-0 w-[270px] md:w-[300px] rounded-[2rem] border ${c.border} bg-white shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden relative group`}
+                                >
+                                    <div className={`h-2 ${c.bg}`}></div>
+                                    <div className="p-6">
+                                        <div className="flex items-center justify-between mb-6">
+                                            <div className={`w-14 h-14 rounded-2xl ${c.soft} ${c.text} flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform`}>
+                                                {item.icon}
+                                            </div>
+                                            <span className={`text-3xl font-black ${c.text}`}>{item.year}</span>
                                         </div>
-                                        <span className={`text-3xl font-black ${c.text}`}>{item.year}</span>
+                                        <h3 className="text-xl font-bold text-[#002344] leading-tight min-h-[52px]">{item.title}</h3>
+                                        <p className="mt-3 text-sm text-zinc-500 leading-relaxed min-h-[82px]">{item.desc}</p>
+                                        <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center gap-2">
+                                            <span className={`w-2 h-2 rounded-full ${c.bg}`}></span>
+                                            <span className="text-[9px] font-black uppercase tracking-[0.18em] text-zinc-400">SSF Service Journey</span>
+                                        </div>
                                     </div>
-                                    <h3 className="text-xl font-bold text-[#002344] leading-tight min-h-[52px]">{item.title}</h3>
-                                    <p className="mt-3 text-sm text-zinc-500 leading-relaxed min-h-[82px]">{item.desc}</p>
-                                    <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center gap-2">
-                                        <span className={`w-2 h-2 rounded-full ${c.bg}`}></span>
-                                        <span className="text-[9px] font-black uppercase tracking-[0.18em] text-zinc-400">SSF Service Journey</span>
-                                    </div>
-                                </div>
-                            </motion.article>
-                        );
-                    })}
+                                </article>
+                            );
+                        })}
+                    </motion.div>
                 </div>
 
                 <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-5">
