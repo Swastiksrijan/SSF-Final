@@ -10,13 +10,13 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import AboutPage from "../pages/AboutPage";
-import ServiceJourneyChart from "../components/ServiceJourneyChart";
+import ImpactTimeline from "../components/ImpactTimeline";
 
 function AboutWithJourney() {
   return (
     <>
       <AboutPage />
-      <ServiceJourneyChart compact />
+      <ImpactTimeline />
     </>
   );
 }
