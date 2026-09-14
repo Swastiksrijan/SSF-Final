@@ -21,12 +21,12 @@ export default function ImpactTimeline() {
     ];
 
     const tone = {
-        orange: { bg: "bg-orange-500", soft: "bg-orange-50", text: "text-orange-600", border: "border-orange-200" },
-        blue: { bg: "bg-blue-600", soft: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
-        green: { bg: "bg-emerald-500", soft: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
-        purple: { bg: "bg-violet-600", soft: "bg-violet-50", text: "text-violet-700", border: "border-violet-200" },
-        pink: { bg: "bg-pink-500", soft: "bg-pink-50", text: "text-pink-700", border: "border-pink-200" },
-        red: { bg: "bg-rose-600", soft: "bg-rose-50", text: "text-rose-700", border: "border-rose-200" }
+        orange: { bg: "bg-orange-500", soft: "bg-orange-50", text: "text-orange-600", border: "border-orange-200", glow: "from-orange-500/20" },
+        blue: { bg: "bg-blue-600", soft: "bg-blue-50", text: "text-blue-700", border: "border-blue-200", glow: "from-blue-600/20" },
+        green: { bg: "bg-emerald-500", soft: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200", glow: "from-emerald-500/20" },
+        purple: { bg: "bg-violet-600", soft: "bg-violet-50", text: "text-violet-700", border: "border-violet-200", glow: "from-violet-600/20" },
+        pink: { bg: "bg-pink-500", soft: "bg-pink-50", text: "text-pink-700", border: "border-pink-200", glow: "from-pink-500/20" },
+        red: { bg: "bg-rose-600", soft: "bg-rose-50", text: "text-rose-700", border: "border-rose-200", glow: "from-rose-600/20" }
     };
 
     return (
@@ -35,52 +35,72 @@ export default function ImpactTimeline() {
             <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-blue-100/50 rounded-full blur-3xl"></div>
 
             <div className="container mx-auto px-4 relative z-10">
-                <div className="text-center max-w-4xl mx-auto mb-14">
-                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-[#002344] text-white text-[10px] font-black uppercase tracking-[0.25em] shadow-lg">
+                <div className="text-center max-w-4xl mx-auto mb-12">
+                    <span className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-[#002344] text-white text-[10px] font-black uppercase tracking-[0.25em] shadow-lg">
                         2013 — 2026 • Service Journey
                     </span>
                     <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-[#002344]">
-                        OUR JOURNEY <span className="text-[#FF6600]">| हमारी यात्रा</span>
+                        SSF SERVICE JOURNEY <span className="text-[#FF6600]">| सेवा यात्रा</span>
                     </h2>
                     <p className="mt-5 text-zinc-600 text-base md:text-lg leading-relaxed">
                         Fourteen years of a continuing journey — from registration and foundation building to learning, community development, digital outreach and ongoing service.
                     </p>
+                    <div className="mt-6 flex flex-wrap items-center justify-center gap-2 text-[9px] font-black uppercase tracking-[0.18em] text-zinc-400">
+                        <span className="px-3 py-1.5 rounded-full bg-orange-50 text-orange-600">Support</span>
+                        <span className="px-3 py-1.5 rounded-full bg-blue-50 text-blue-700">Skill</span>
+                        <span className="px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700">Awareness</span>
+                        <span className="px-3 py-1.5 rounded-full bg-violet-50 text-violet-700">Creation</span>
+                    </div>
                 </div>
 
-                {/* Continuous auto-moving journey cards. Hover/touch pauses the track so visitors can read. */}
-                <div className="relative overflow-hidden py-4 -mx-1">
-                    <div className="pointer-events-none absolute inset-y-0 left-0 w-12 md:w-24 bg-gradient-to-r from-zinc-50 to-transparent z-10"></div>
-                    <div className="pointer-events-none absolute inset-y-0 right-0 w-12 md:w-24 bg-gradient-to-l from-white to-transparent z-10"></div>
+                <div className="relative overflow-hidden py-6 -mx-1">
+                    <div className="pointer-events-none absolute inset-y-0 left-0 w-16 md:w-28 bg-gradient-to-r from-zinc-50 via-zinc-50/80 to-transparent z-20"></div>
+                    <div className="pointer-events-none absolute inset-y-0 right-0 w-16 md:w-28 bg-gradient-to-l from-white via-white/80 to-transparent z-20"></div>
+
                     <motion.div
-                        className="flex gap-5 w-max px-1 hover:[animation-play-state:paused]"
+                        className="flex gap-5 w-max px-2"
                         animate={{ x: ["0%", "-50%"] }}
-                        transition={{
-                            x: { repeat: Infinity, repeatType: "loop", duration: 48, ease: "linear" }
-                        }}
+                        transition={{ x: { repeat: Infinity, repeatType: "loop", duration: 52, ease: "linear" } }}
+                        whileHover={{ animationPlayState: "paused" }}
                     >
                         {[...years, ...years].map((item, index) => {
                             const c = tone[item.tone];
                             return (
-                                <article
+                                <motion.article
                                     key={`${item.year}-${index}`}
-                                    className={`shrink-0 w-[270px] md:w-[300px] rounded-[2rem] border ${c.border} bg-white shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 overflow-hidden relative group`}
+                                    whileHover={{ y: -10, scale: 1.025 }}
+                                    transition={{ duration: 0.25 }}
+                                    className={`shrink-0 w-[275px] md:w-[305px] rounded-[2rem] border ${c.border} bg-white shadow-[0_14px_45px_rgba(0,35,68,0.10)] hover:shadow-[0_22px_60px_rgba(0,35,68,0.18)] overflow-hidden relative group`}
                                 >
-                                    <div className={`h-2 ${c.bg}`}></div>
-                                    <div className="p-6">
-                                        <div className="flex items-center justify-between mb-6">
-                                            <div className={`w-14 h-14 rounded-2xl ${c.soft} ${c.text} flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 transition-transform`}>
+                                    <div className={`absolute inset-x-0 top-0 h-28 bg-gradient-to-br ${c.glow} to-transparent opacity-70`}></div>
+                                    <div className={`h-1.5 ${c.bg} relative z-10`}></div>
+                                    <div className="p-6 relative z-10">
+                                        <div className="flex items-center justify-between">
+                                            <div className={`w-14 h-14 rounded-2xl ${c.soft} ${c.text} flex items-center justify-center text-2xl shadow-sm ring-1 ring-black/5 group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300`}>
                                                 {item.icon}
                                             </div>
-                                            <span className={`text-3xl font-black ${c.text}`}>{item.year}</span>
+                                            <div className="text-right">
+                                                <div className={`text-4xl font-black tracking-tight ${c.text}`}>{item.year}</div>
+                                                <div className="text-[8px] font-black uppercase tracking-[0.2em] text-zinc-400">Milestone</div>
+                                            </div>
                                         </div>
-                                        <h3 className="text-xl font-bold text-[#002344] leading-tight min-h-[52px]">{item.title}</h3>
+
+                                        <div className="mt-6 flex items-center gap-2">
+                                            <span className={`w-2.5 h-2.5 rounded-full ${c.bg} ring-4 ring-white shadow-md`}></span>
+                                            <div className={`h-px flex-1 ${c.bg} opacity-20`}></div>
+                                        </div>
+
+                                        <h3 className="mt-5 text-xl font-bold text-[#002344] leading-tight min-h-[52px]">{item.title}</h3>
                                         <p className="mt-3 text-sm text-zinc-500 leading-relaxed min-h-[82px]">{item.desc}</p>
-                                        <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center gap-2">
-                                            <span className={`w-2 h-2 rounded-full ${c.bg}`}></span>
+
+                                        <div className="mt-6 pt-4 border-t border-zinc-100 flex items-center justify-between gap-3">
                                             <span className="text-[9px] font-black uppercase tracking-[0.18em] text-zinc-400">SSF Service Journey</span>
+                                            <span className={`w-7 h-7 rounded-full ${c.soft} ${c.text} flex items-center justify-center group-hover:translate-x-1 transition-transform`}>
+                                                <FaArrowRight className="text-[10px]" />
+                                            </span>
                                         </div>
                                     </div>
-                                </article>
+                                </motion.article>
                             );
                         })}
                     </motion.div>
