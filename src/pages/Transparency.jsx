@@ -73,7 +73,6 @@ const annualReports = [
 ];
 
 const reports = [
-    { title: "Annual Activity Reports", hindi: "वार्षिक गतिविधि रिपोर्ट", note: "Available upon request" },
     { title: "Program Highlights", hindi: "कार्यक्रम प्रमुख झलकियाँ", note: "Available upon request" },
     { title: "Financial Summaries", hindi: "वित्तीय सारांश", note: "Available upon request" },
     { title: "Impact Reports", hindi: "प्रभाव रिपोर्ट", note: "Available upon request" }
@@ -282,9 +281,9 @@ export default function Transparency() {
                     <div className="text-center mb-12">
                         <h2 className="text-3xl lg:text-4xl font-serif font-bold text-[#002344]">Reports & Disclosures</h2>
                         <p className="text-[#fb8500] font-serif font-bold italic mt-2">रिपोर्ट एवं सार्वजनिक प्रकटीकरण</p>
-                        <p className="text-zinc-500 max-w-2xl mx-auto mt-4">Annual activities, program highlights, financial summaries and impact documentation are maintained as part of the Foundation’s transparency practices.</p>
+                        <p className="text-zinc-500 max-w-2xl mx-auto mt-4">Program highlights, financial summaries and impact documentation are maintained as part of the Foundation’s transparency practices.</p>
                     </div>
-                    <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {reports.map((report, idx) => (
                             <motion.div key={idx} whileHover={{ y: -5 }} className="bg-zinc-50 p-8 rounded-2xl shadow-sm border border-zinc-100 hover:border-[#fb8500] transition-all group">
                                 <div className="w-14 h-14 mx-auto bg-blue-50 text-[#002344] rounded-full flex items-center justify-center text-2xl mb-6 group-hover:bg-[#fb8500] group-hover:text-white transition-colors">
