@@ -56,6 +56,22 @@ const documents = [
     }
 ];
 
+const annualReports = [
+    { year: "2013–14", href: "https://drive.google.com/file/d/1dRT8fkKgxHhPdiiiHmz8DA0ZSUYWTDDi/view?usp=drivesdk" },
+    { year: "2014–15", href: "https://drive.google.com/file/d/1D1Ak2S__z4yrZQ4ctR0qczBHdJtBcGkm/view?usp=drivesdk" },
+    { year: "2015–16", href: "https://drive.google.com/file/d/1JxbRRc3v-LAy-iBeDVO11nPuYmedy_76/view?usp=drivesdk" },
+    { year: "2016–17", href: "https://drive.google.com/file/d/1A75HkUwGyTAUzS2IrtJgv3zByw6OyrKK/view?usp=drivesdk" },
+    { year: "2017–18", href: "https://drive.google.com/file/d/1JlFCdN7dGRLAK3NXZa1WlaRV6PBRjSaJ/view?usp=drivesdk" },
+    { year: "2018–19", href: "https://drive.google.com/file/d/1u_ewjd6MUhARR_g35PRCQQX12TpmZd_F/view?usp=drivesdk" },
+    { year: "2019–20", href: "https://drive.google.com/file/d/1ogaIch6vpZXL7SDGRYokdm0ARdzif5Od/view?usp=drivesdk" },
+    { year: "2020–21", href: "https://drive.google.com/file/d/1osL_PaieAjLxLPK9lX52aNj4Gk51jgBg/view?usp=drivesdk" },
+    { year: "2021–22", href: "https://drive.google.com/file/d/1FolHQb41PjtJDbbJxDK4tz8xgEgh2744/view?usp=drivesdk" },
+    { year: "2022–23", href: "https://drive.google.com/file/d/19aC8NZ0q0-yjUxhOgJLzQFES7IIrh4tq/view?usp=drivesdk" },
+    { year: "2023–24", href: "https://drive.google.com/file/d/18U4BtmY2N7nBC7mVUZ__UEzit1Lx2kUA/view?usp=drivesdk" },
+    { year: "2024–25", href: "https://drive.google.com/file/d/1CymtYEy3BiUOpUn-enpIqyrsMbqunkRm/view?usp=drivesdk" },
+    { year: "2025–26", href: "https://drive.google.com/file/d/1tftxk1SfpHwMSifNUhnxeenw7dfizjDW/view?usp=drivesdk" }
+];
+
 const reports = [
     { title: "Annual Activity Reports", hindi: "वार्षिक गतिविधि रिपोर्ट", note: "Available upon request" },
     { title: "Program Highlights", hindi: "कार्यक्रम प्रमुख झलकियाँ", note: "Available upon request" },
@@ -218,6 +234,46 @@ export default function Transparency() {
                     </div>
 
                     <p className="text-center text-xs text-zinc-400 mt-8">For document verification or clarification, please contact the Foundation using the official contact details below.</p>
+                </div>
+            </section>
+
+            <section className="py-20 bg-[#f8fafc] border-y border-zinc-200">
+                <div className="container mx-auto px-6 max-w-6xl">
+                    <div className="text-center max-w-3xl mx-auto mb-12">
+                        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-zinc-200 text-[#fb8500] text-xs font-black uppercase tracking-widest shadow-sm">
+                            <FaFileAlt /> Annual Reports
+                        </div>
+                        <h2 className="text-3xl lg:text-4xl font-serif font-bold mt-5 text-[#002344]">Annual Reports / वार्षिक प्रतिवेदन</h2>
+                        <p className="text-zinc-500 mt-4 leading-relaxed">Year-wise annual reports of the Foundation are provided below for public reference and transparency.</p>
+                    </div>
+
+                    <div className="grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                        {annualReports.map((report, idx) => (
+                            <motion.div
+                                key={report.year}
+                                initial={{ opacity: 0, y: 18 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true }}
+                                transition={{ duration: 0.3, delay: idx * 0.03 }}
+                                whileHover={{ y: -5 }}
+                                className="bg-white rounded-2xl p-5 border border-zinc-200 shadow-sm hover:shadow-xl hover:border-[#fb8500]/50 transition-all flex flex-col"
+                            >
+                                <div className="w-12 h-12 rounded-xl bg-[#002344]/5 text-[#002344] flex items-center justify-center text-xl">
+                                    <FaFileAlt />
+                                </div>
+                                <h3 className="text-2xl font-bold mt-5 text-[#002344]">{report.year}</h3>
+                                <p className="text-sm text-[#fb8500] font-semibold mt-1">वार्षिक प्रतिवेदन</p>
+                                <a
+                                    href={report.href}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="mt-5 inline-flex items-center justify-center gap-2 rounded-xl bg-[#002344] text-white px-4 py-3 text-sm font-bold hover:bg-[#fb8500] transition-colors"
+                                >
+                                    View Report <FaExternalLinkAlt className="text-xs" />
+                                </a>
+                            </motion.div>
+                        ))}
+                    </div>
                 </div>
             </section>
 
