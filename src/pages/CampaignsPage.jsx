@@ -16,16 +16,16 @@ const RAZORPAY_CAMPAIGN_LINKS = {
 };
 
 const campaigns = [
-  { id:"education", icon:<FaGraduationCap/>, title:"Education", hindi:"शिक्षा अभियान", tagline:"ज्ञान से अवसर, अवसर से विकास", items:["प्राथमिक, माध्यमिक, उच्च माध्यमिक विद्यालय","कॉलेज","कंप्यूटर शिक्षा","नर्सिंग","तकनीकी शिक्षा","प्रतियोगी परीक्षा कोचिंग","पुस्तकालय","विज्ञान मेले"], gradient:"from-[#fb8500] to-[#e76f00]", image:"/images/real/community-education-meeting.jpg" },
-  { id:"skills", icon:<FaLaptopCode/>, title:"Skill Development", hindi:"कौशल विकास अभियान", tagline:"कौशल से आत्मनिर्भरता", items:["कंप्यूटर प्रशिक्षण","सिलाई-कढ़ाई","स्वरोजगार","व्यावसायिक प्रशिक्षण","ग्रामीण उद्योग","खादी एवं ग्रामोद्योग"], gradient:"from-[#2d6a4f] to-[#1b4332]", image:"/images/real/community-education-meeting.jpg" },
-  { id:"womenChild", icon:<FaFemale/>, title:"Women & Child Development", hindi:"महिला एवं बाल विकास अभियान", tagline:"सशक्त महिला, सुरक्षित और शिक्षित बचपन", items:["महिला सशक्तिकरण","बालिका शिक्षा","भ्रूण हत्या रोकथाम","विधवा सहायता","नारी निकेतन","बालवाड़ी","पोषण कार्यक्रम","SHG (Self Help Groups)"], gradient:"from-[#d90429] to-[#a00320]", image:"/images/real/community-education-meeting.jpg" },
-  { id:"health", icon:<FaHeartbeat/>, title:"Health", hindi:"स्वास्थ्य अभियान", tagline:"स्वस्थ समाज, जागरूक समाज", items:["AIDS जागरूकता","कैंसर जागरूकता","कुपोषण","प्राकृतिक चिकित्सा","योग","परिवार कल्याण","नशा मुक्ति","पुनर्वास"], gradient:"from-[#e63946] to-[#9d0208]", image:"/images/real/covid-awareness-banner.jpg" },
-  { id:"environment", icon:<FaLeaf/>, title:"Environment", hindi:"पर्यावरण अभियान", tagline:"प्रकृति की रक्षा, भविष्य की सुरक्षा", items:["वृक्षारोपण","जैव विविधता","वन संरक्षण","प्राकृतिक संसाधन संरक्षण","औषधीय पौधे","जैविक खेती","प्राकृतिक ऊर्जा"], gradient:"from-[#40916c] to-[#1b4332]", image:"/images/uploads/our-campaigns-collage.jpg" },
-  { id:"agriculture", icon:<FaHome/>, title:"Agriculture & Rural Development", hindi:"कृषि एवं ग्रामीण विकास अभियान", tagline:"गांव मजबूत, देश मजबूत", items:["जैविक खेती","किसानों का प्रशिक्षण","पशुपालन","गौ संरक्षण","ग्रामीण विकास","आजीविका"], gradient:"from-[#588157] to-[#344e41]", image:"/images/real/cloth-distribution.jpg" },
-  { id:"socialJustice", icon:<FaBullhorn/>, title:"Social Justice", hindi:"सामाजिक न्याय अभियान", tagline:"जागरूक नागरिक, मजबूत समाज", items:["भ्रष्टाचार जागरूकता","नैतिक शिक्षा","राष्ट्रीय एकता","सांप्रदायिक सद्भाव","मानव अधिकार"], gradient:"from-[#264653] to-[#1d3557]", image:"/images/real/covid-awareness-banner.jpg" },
-  { id:"disability", icon:<FaHandsHelping/>, title:"Disability & Rehabilitation", hindi:"दिव्यांग एवं पुनर्वास अभियान", tagline:"सहयोग, सम्मान और पुनर्वास", items:["दिव्यांग सहायता","मानसिक रूप से कमजोर बच्चों का पुनर्वास","वृद्धजन सहायता","अनाथ सहायता"], gradient:"from-[#6a4c93] to-[#3c096c]", image:"/images/real/community-education-meeting.jpg" },
-  { id:"animal", icon:<FaChild/>, title:"Animal Protection", hindi:"पशु संरक्षण अभियान", tagline:"जीवों के प्रति संवेदना और संरक्षण", items:["पशु-पक्षी संरक्षण","गौशाला","वन्यजीव संरक्षण"], gradient:"from-[#386641] to-[#1b4332]", image:"/images/real/cloth-distribution.jpg" },
-  { id:"cultural", icon:<FaMusic/>, title:"Religious & Cultural", hindi:"धार्मिक एवं सांस्कृतिक अभियान", tagline:"संस्कृति, शिक्षा और सद्भाव", items:["भजन","संस्कृत शिक्षा","संगीत","सम्मेलन","सांस्कृतिक कार्यक्रम"], gradient:"from-[#9c6644] to-[#6f4518]", image:"/images/uploads/our-campaigns-collage.jpg" },
+  { id:"education", icon:<FaGraduationCap/>, title:"Education", hindi:"शिक्षा अभियान", tagline:"ज्ञान से अवसर, अवसर से विकास", items:["प्राथमिक, माध्यमिक, उच्च माध्यमिक विद्यालय","कॉलेज","कंप्यूटर शिक्षा","नर्सिंग","तकनीकी शिक्षा","प्रतियोगी परीक्षा कोचिंग","पुस्तकालय","विज्ञान मेले"], gradient:"from-[#fb8500] to-[#e76f00]", image:"/images/rural-education.jpg" },
+  { id:"skills", icon:<FaLaptopCode/>, title:"Skill Development", hindi:"कौशल विकास अभियान", tagline:"कौशल से आत्मनिर्भरता", items:["कंप्यूटर प्रशिक्षण","सिलाई-कढ़ाई","स्वरोजगार","व्यावसायिक प्रशिक्षण","ग्रामीण उद्योग","खादी एवं ग्रामोद्योग"], gradient:"from-[#2d6a4f] to-[#1b4332]", image:"/images/real/women_empowerment_tailoring.jpg" },
+  { id:"womenChild", icon:<FaFemale/>, title:"Women & Child Development", hindi:"महिला एवं बाल विकास अभियान", tagline:"सशक्त महिला, सुरक्षित और शिक्षित बचपन", items:["महिला सशक्तिकरण","बालिका शिक्षा","भ्रूण हत्या रोकथाम","विधवा सहायता","नारी निकेतन","बालवाड़ी","पोषण कार्यक्रम","SHG (Self Help Groups)"], gradient:"from-[#d90429] to-[#a00320]", image:"/images/direct-relief-women.jpg" },
+  { id:"health", icon:<FaHeartbeat/>, title:"Health", hindi:"स्वास्थ्य अभियान", tagline:"स्वस्थ समाज, जागरूक समाज", items:["AIDS जागरूकता","कैंसर जागरूकता","कुपोषण","प्राकृतिक चिकित्सा","योग","परिवार कल्याण","नशा मुक्ति","पुनर्वास"], gradient:"from-[#e63946] to-[#9d0208]", image:"/images/real/nutrition_program.jpg" },
+  { id:"environment", icon:<FaLeaf/>, title:"Environment", hindi:"पर्यावरण अभियान", tagline:"प्रकृति की रक्षा, भविष्य की सुरक्षा", items:["वृक्षारोपण","जैव विविधता","वन संरक्षण","प्राकृतिक संसाधन संरक्षण","औषधीय पौधे","जैविक खेती","प्राकृतिक ऊर्जा"], gradient:"from-[#40916c] to-[#1b4332]", image:"/images/tree-planting-1.jpg" },
+  { id:"agriculture", icon:<FaHome/>, title:"Agriculture & Rural Development", hindi:"कृषि एवं ग्रामीण विकास अभियान", tagline:"गांव मजबूत, देश मजबूत", items:["जैविक खेती","किसानों का प्रशिक्षण","पशुपालन","गौ संरक्षण","ग्रामीण विकास","आजीविका"], gradient:"from-[#588157] to-[#344e41]", image:"/images/village-outreach.png" },
+  { id:"socialJustice", icon:<FaBullhorn/>, title:"Social Justice", hindi:"सामाजिक न्याय अभियान", tagline:"जागरूक नागरिक, मजबूत समाज", items:["भ्रष्टाचार जागरूकता","नैतिक शिक्षा","राष्ट्रीय एकता","सांप्रदायिक सद्भाव","मानव अधिकार"], gradient:"from-[#264653] to-[#1d3557]", image:"/images/real/awareness-poster-viewing.jpg" },
+  { id:"disability", icon:<FaHandsHelping/>, title:"Disability & Rehabilitation", hindi:"दिव्यांग एवं पुनर्वास अभियान", tagline:"सहयोग, सम्मान और पुनर्वास", items:["दिव्यांग सहायता","मानसिक रूप से कमजोर बच्चों का पुनर्वास","वृद्धजन सहायता","अनाथ सहायता"], gradient:"from-[#6a4c93] to-[#3c096c]", image:"/images/child-protection-support.jpg" },
+  { id:"animal", icon:<FaChild/>, title:"Animal Protection", hindi:"पशु संरक्षण अभियान", tagline:"जीवों के प्रति संवेदना और संरक्षण", items:["पशु-पक्षी संरक्षण","गौशाला","वन्यजीव संरक्षण"], gradient:"from-[#386641] to-[#1b4332]", image:"/images/cow-rescue-mission.jpg" },
+  { id:"cultural", icon:<FaMusic/>, title:"Religious & Cultural", hindi:"धार्मिक एवं सांस्कृतिक अभियान", tagline:"संस्कृति, शिक्षा और सद्भाव", items:["भजन","संस्कृत शिक्षा","संगीत","सम्मेलन","सांस्कृतिक कार्यक्रम"], gradient:"from-[#9c6644] to-[#6f4518]", image:"/images/cultural-event-children.jpg" },
 ];
 
 const shareCampaign = async (campaign) => {
@@ -43,8 +43,6 @@ const shareCampaign = async (campaign) => {
       const imageFile = new File([imageBlob], `SSF-${campaign.id}.${extension}`, { type: mime });
 
       if (navigator.canShare?.({ files: [imageFile] })) {
-        // Share the actual campaign photo as a file. WhatsApp and other apps
-        // can then receive the image itself instead of only a link preview.
         await navigator.share({
           title: `SSF | ${campaign.title}`,
           text: `${text}\n\n${url}`,
@@ -60,8 +58,6 @@ const shareCampaign = async (campaign) => {
     }
   }
 
-  // URL sharing cannot force WhatsApp to attach a photo; this fallback keeps
-  // the campaign link usable on browsers without file-sharing support.
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${text}\n\n${url}`)}`;
   window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 };
@@ -82,9 +78,5 @@ export default function Campaigns() {
           </div></motion.article> })}
       </div>
     </div></div>
-
-    <div className="bg-[#001529] py-20"><div className="mx-auto max-w-5xl px-6 text-center"><HiSparkles className="mx-auto mb-4 text-4xl text-[#fb8500]"/><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#fb8500]">Objective Map</p><h2 className="mt-3 text-4xl font-serif font-bold text-white md:text-5xl">हर उद्देश्य, एक अवसर</h2><p className="mx-auto mt-4 max-w-3xl text-lg text-zinc-400">इन सभी क्षेत्रों में campaign, volunteering, partnership या responsible donation के माध्यम से सहयोग किया जा सकता है।</p><div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{campaigns.map(c=><a key={c.id} href={`#${c.id}`} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-center text-sm font-bold text-white transition hover:-translate-y-1 hover:border-[#fb8500]/50"><span className="mb-2 block text-2xl text-[#fb8500]">{c.icon}</span>{c.title}</a>)}</div></div></div>
-
-    <div className="bg-gradient-to-br from-[#fb8500]/10 via-white to-[#002344]/5 py-20"><div className="mx-auto max-w-4xl px-6 text-center"><div className="rounded-[2rem] border border-[#fb8500]/20 bg-white p-8 shadow-2xl md:p-12"><FaHandHoldingHeart className="mx-auto mb-5 text-5xl text-[#fb8500]"/><h2 className="text-3xl font-serif font-bold text-[#002344] md:text-4xl">आप किस अभियान में सहयोग करना चाहते हैं?</h2><p className="mx-auto mt-4 max-w-2xl leading-relaxed text-zinc-600">Specific campaign के लिए donation, volunteering या CSR/partnership पर बात करने के लिए SSF से जुड़ें।</p><div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row"><a href={RAZORPAY_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#fb8500] px-7 py-3 font-bold text-white shadow-lg hover:bg-[#e76f00]"><FaRupeeSign/> Donate to SSF</a><Link to="/GetInvolved" className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#002344] px-7 py-3 font-bold text-[#002344] hover:bg-[#002344] hover:text-white">Get Involved <FaArrowRight/></Link></div></div><p className="mx-auto mt-8 max-w-3xl text-xs leading-relaxed text-zinc-500">Campaigns/programmes की availability available resources, volunteers, partnerships और local requirements पर निर्भर करती है।</p></div></div>
   </section>;
 }
