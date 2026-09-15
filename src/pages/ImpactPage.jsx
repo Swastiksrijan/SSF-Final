@@ -14,13 +14,13 @@ export default function ImpactPage() {
         visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
     };
 
-    const stats = [
-        { number: "15,000+", label: "Children Educated", labelHi: "शिक्षित बच्चे" },
-        { number: "8,000+", label: "Health Checkups", labelHi: "स्वास्थ्य जांच" },
-        { number: "3,500+", label: "Women Empowered", labelHi: "सशक्त महिलाएं" },
-        { number: "120+", label: "Villages Reached", labelHi: "गांव पहुंचे" },
-        { number: "50,000+", label: "Lives Touched", labelHi: "जीवन प्रभावित" },
-        { number: "500+", label: "Active Volunteers", labelHi: "सक्रिय स्वयंसेवक" }
+    const impactPrinciples = [
+        { icon: <FaGraduationCap />, title: "Education & Learning", titleHi: "शिक्षा एवं सीखना", desc: "Supporting access to learning, digital resources, skills and educational opportunities where support is needed." },
+        { icon: <FaHeartbeat />, title: "Health & Wellbeing", titleHi: "स्वास्थ्य एवं कल्याण", desc: "Community health awareness, preventive-care activities and support-oriented initiatives." },
+        { icon: <FaUsers />, title: "Community Participation", titleHi: "सामुदायिक सहभागिता", desc: "Working with volunteers, institutions and local communities to turn ideas into practical service." },
+        { icon: <FaBriefcase />, title: "Skills & Livelihood", titleHi: "कौशल एवं आजीविका", desc: "Encouraging practical skills, vocational learning and pathways towards greater self-reliance." },
+        { icon: <FaSeedling />, title: "Environment", titleHi: "पर्यावरण", desc: "Promoting awareness and community action around trees, cleanliness and environmental responsibility." },
+        { icon: <FaChild />, title: "Youth & Children", titleHi: "युवा एवं बाल विकास", desc: "Creating opportunities for learning, confidence, healthy activities and positive development." }
     ];
 
     const programs = [
@@ -129,7 +129,7 @@ export default function ImpactPage() {
                 overlayOpacity="bg-black/40"
             />
 
-            {/* ================= STATS ================= */}
+            {/* ================= IMPACT APPROACH ================= */}
             <section className="py-20 px-6 relative z-20 -mt-16">
                 <div className="max-w-7xl mx-auto">
                     <motion.div
@@ -137,21 +137,39 @@ export default function ImpactPage() {
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeInUp}
-                        className="bg-gradient-to-br from-zinc-50 to-white p-10 md:p-16 rounded-[4rem] shadow-2xl border border-zinc-200"
+                        className="bg-gradient-to-br from-zinc-50 to-white p-8 md:p-14 rounded-[4rem] shadow-2xl border border-zinc-200"
                     >
-                        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8">
-                            {stats.map((stat, i) => (
+                        <div className="max-w-3xl mx-auto text-center mb-12 space-y-4">
+                            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-[#002344] text-[10px] font-bold uppercase tracking-[0.2em]">
+                                Our Approach to Impact
+                            </span>
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#002344]">
+                                Impact is built through <span className="text-[#FF6600]">consistent action</span>
+                            </h2>
+                            <p className="text-lg text-zinc-500 font-medium leading-relaxed">
+                                We focus on practical community work rather than presenting unsupported headline numbers. Our impact is reflected through programmes, participation, learning opportunities, awareness activities and documented field work.
+                            </p>
+                            <p className="text-sm font-hindi text-zinc-400 font-medium">
+                                हमारा प्रभाव केवल आंकड़ों से नहीं, बल्कि निरंतर सेवा, सहभागिता और वास्तविक गतिविधियों से बनता है।
+                            </p>
+                        </div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {impactPrinciples.map((item, i) => (
                                 <motion.div
                                     key={i}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
-                                    transition={{ delay: i * 0.1 }}
-                                    className="text-center space-y-2"
+                                    transition={{ delay: i * 0.06 }}
+                                    className="rounded-3xl border border-zinc-200 bg-white p-7 hover:shadow-lg transition-all"
                                 >
-                                    <div className="text-4xl md:text-5xl font-black text-[#002344]">{stat.number}</div>
-                                    <div className="text-sm font-bold text-zinc-600 uppercase tracking-wider">{stat.label}</div>
-                                    <div className="text-xs font-hindi text-zinc-400">{stat.labelHi}</div>
+                                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#002344] flex items-center justify-center text-xl mb-5">
+                                        {item.icon}
+                                    </div>
+                                    <h3 className="text-lg font-bold text-[#002344]">{item.title}</h3>
+                                    <p className="text-xs font-hindi text-zinc-400 font-bold mt-1">{item.titleHi}</p>
+                                    <p className="text-sm text-zinc-600 leading-relaxed mt-4">{item.desc}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -187,7 +205,6 @@ export default function ImpactPage() {
                     {/* Featured Program - Flagship Layout */}
                     <div className="bg-white rounded-[3.5rem] p-4 md:p-8 border border-zinc-200 shadow-xl overflow-hidden mb-16 group">
                         <div className="flex flex-col lg:flex-row items-center gap-12">
-                            {/* Image Column */}
                             <div className="lg:w-1/2 w-full h-[400px] md:h-[600px] rounded-[2.5rem] overflow-hidden relative shadow-2xl">
                                 <img
                                     src={programs[0].image}
@@ -200,7 +217,6 @@ export default function ImpactPage() {
                                 </span>
                             </div>
 
-                            {/* Text Column */}
                             <div className="lg:w-1/2 w-full p-4 md:p-12 space-y-10 text-left">
                                 <FaQuoteLeft className="text-[#FF6600] opacity-20 text-7xl" />
                                 <div className="space-y-6">
@@ -233,14 +249,13 @@ export default function ImpactPage() {
                         </div>
                     </div>
 
-                    {/* Button to expand or show more */}
                     {!showAllPrograms ? (
                         <div className="flex justify-center">
                             <button
                                 onClick={() => setShowAllPrograms(true)}
                                 className="group px-16 py-7 bg-zinc-900 text-white rounded-[2rem] font-bold hover:bg-[#FF6600] transition-all shadow-2xl flex items-center gap-4 text-xl"
                             >
-                                Explore All 9+ Initiatives
+                                Explore All Initiatives
                                 <FaArrowRight className="text-orange-400 group-hover:translate-x-2 transition-transform" />
                             </button>
                         </div>
@@ -355,7 +370,6 @@ export default function ImpactPage() {
                 <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-50/50 rounded-full blur-[100px] -mr-[300px] -mt-[300px]"></div>
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-16">
-                        {/* Image Composition */}
                         <motion.div
                             initial={{ opacity: 0, x: -50 }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -381,20 +395,21 @@ export default function ImpactPage() {
                                 </div>
                             </div>
 
-                            {/* Floating Badge */}
                             <motion.div
                                 animate={{ y: [0, -15, 0] }}
                                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
                                 className="absolute -top-10 -right-10 bg-white p-6 rounded-3xl shadow-xl border border-blue-50 hidden md:block"
                             >
                                 <div className="text-center">
-                                    <p className="text-4xl font-black text-[#002344]">8k+</p>
-                                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest mt-1">Checkups Completed</p>
+                                    <div className="w-12 h-12 mx-auto rounded-2xl bg-blue-50 text-[#002344] flex items-center justify-center text-xl mb-2">
+                                        <FaHeartbeat />
+                                    </div>
+                                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Community Health</p>
+                                    <p className="text-sm font-black text-[#002344] mt-1">Awareness & Support</p>
                                 </div>
                             </motion.div>
                         </motion.div>
 
-                        {/* Text Content */}
                         <motion.div
                             initial={{ opacity: 0, x: 50 }}
                             whileInView={{ opacity: 1, x: 0 }}
@@ -475,15 +490,14 @@ export default function ImpactPage() {
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-r from-[#002344] via-transparent to-transparent"></div>
 
-                                {/* Overlay Badges */}
                                 <div className="absolute top-10 right-10 flex flex-col gap-4">
                                     <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white text-center">
-                                        <div className="text-2xl font-bold">10+</div>
-                                        <div className="text-[8px] uppercase tracking-widest font-black opacity-60">Sports Hubs</div>
+                                        <div className="w-10 h-10 mx-auto rounded-xl bg-white/10 flex items-center justify-center mb-2"><FaFutbol /></div>
+                                        <div className="text-[8px] uppercase tracking-widest font-black opacity-70">Sports & Fitness</div>
                                     </div>
                                     <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white text-center">
-                                        <div className="text-2xl font-bold">2k+</div>
-                                        <div className="text-[8px] uppercase tracking-widest font-black opacity-60">Young Athletes</div>
+                                        <div className="w-10 h-10 mx-auto rounded-xl bg-white/10 flex items-center justify-center mb-2"><FaUsers /></div>
+                                        <div className="text-[8px] uppercase tracking-widest font-black opacity-70">Youth Development</div>
                                     </div>
                                 </div>
                             </motion.div>
@@ -507,7 +521,6 @@ export default function ImpactPage() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {/* Interactive Gallery Cards */}
                         <motion.div
                             initial={{ opacity: 0, scale: 0.9 }}
                             whileInView={{ opacity: 1, scale: 1 }}
