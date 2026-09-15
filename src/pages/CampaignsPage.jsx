@@ -12,7 +12,6 @@ import {
   FaChild,
   FaLaptopCode,
   FaFemale,
-  FaSeedling,
   FaBullhorn,
   FaHandsHelping,
 } from "react-icons/fa";
@@ -20,7 +19,18 @@ import { HiSparkles } from "react-icons/hi2";
 import PageHero from "../components/PageHero";
 import { CONTACT_INFO } from "../config/contact";
 
+// Keep the existing general Razorpay link as the safe fallback.
+// Replace these six empty values later with the individual LIVE Razorpay
+// Payment Link / Payment Page URL for each campaign.
 const RAZORPAY_LINK = CONTACT_INFO.social.razorpay;
+const RAZORPAY_CAMPAIGN_LINKS = {
+  "education-learning": "",
+  "skills-livelihood": "",
+  "women-child": "",
+  "health-awareness": "",
+  "rural-community": "",
+  environment: "",
+};
 
 const campaigns = [
   {
@@ -43,7 +53,7 @@ const campaigns = [
     description:
       "Computer/digital skills, sewing, vocational learning, self-employment, livelihood support और skill-based volunteering को बढ़ावा देने के लिए अभियान।",
     gradient: "from-[#2d6a4f] to-[#1b4332]",
-    image: "/images/real/skill-training.jpg",
+    image: "/images/real/community-education-meeting.jpg",
   },
   {
     id: "women-child",
@@ -87,7 +97,7 @@ const campaigns = [
     description:
       "Environment awareness, tree plantation, responsible community participation और sustainable living से जुड़े awareness campaigns के लिए जनसहयोग।",
     gradient: "from-[#40916c] to-[#1b4332]",
-    image: "/images/uploads/tree-plantation.jpg",
+    image: "/images/uploads/our-campaigns-collage.jpg",
   },
 ];
 
@@ -118,7 +128,7 @@ export default function Campaigns() {
         <div className="mx-auto flex max-w-6xl flex-col items-center justify-between gap-4 px-6 text-center md:flex-row md:text-left">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#fb8500]">Support SSF Campaigns</p>
-            <p className="mt-1 text-sm text-white/80">जिस अभियान को आप support करना चाहते हैं, उसमें योगदान दें।</p>
+            <p className="mt-1 text-sm text-white/80">अपना पसंदीदा अभियान चुनें और उसी के लिए योगदान करें।</p>
           </div>
           <a
             href={RAZORPAY_LINK}
@@ -142,45 +152,61 @@ export default function Campaigns() {
           </motion.div>
 
           <div className="space-y-16">
-            {campaigns.map((campaign, index) => (
-              <motion.article
-                key={campaign.id}
-                id={campaign.id}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.5 }}
-                className="grid items-center gap-8 overflow-hidden rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-xl md:p-8 lg:grid-cols-2"
-              >
-                <div className={`${index % 2 ? "lg:order-2" : ""}`}>
-                  <div className="relative overflow-hidden rounded-3xl">
-                    <img src={campaign.image} alt={campaign.title} className="h-72 w-full object-cover transition duration-700 hover:scale-105 md:h-96" />
-                    <div className={`absolute inset-0 bg-gradient-to-tr ${campaign.gradient} opacity-20`} />
-                    <div className={`absolute left-5 top-5 rounded-2xl bg-gradient-to-br ${campaign.gradient} p-4 text-3xl text-white shadow-xl`}>
-                      {campaign.icon}
+            {campaigns.map((campaign, index) => {
+              const campaignRazorpayLink = RAZORPAY_CAMPAIGN_LINKS[campaign.id] || RAZORPAY_LINK;
+              const hasDedicatedLink = Boolean(RAZORPAY_CAMPAIGN_LINKS[campaign.id]);
+
+              return (
+                <motion.article
+                  key={campaign.id}
+                  id={campaign.id}
+                  initial={{ opacity: 0, y: 30 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{ duration: 0.5 }}
+                  className="grid items-center gap-8 overflow-hidden rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-xl md:p-8 lg:grid-cols-2"
+                >
+                  <div className={`${index % 2 ? "lg:order-2" : ""}`}>
+                    <div className="relative overflow-hidden rounded-3xl">
+                      <img src={campaign.image} alt={campaign.title} className="h-72 w-full object-cover transition duration-700 hover:scale-105 md:h-96" />
+                      <div className={`absolute inset-0 bg-gradient-to-tr ${campaign.gradient} opacity-20`} />
+                      <div className={`absolute left-5 top-5 rounded-2xl bg-gradient-to-br ${campaign.gradient} p-4 text-3xl text-white shadow-xl`}>
+                        {campaign.icon}
+                      </div>
                     </div>
                   </div>
-                </div>
 
-                <div className={`space-y-5 ${index % 2 ? "lg:order-1" : ""}`}>
-                  <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#fb8500]">Campaign {String(index + 1).padStart(2, "0")}</p>
-                  <div>
-                    <h3 className="text-3xl font-serif font-bold text-[#002344] md:text-4xl">{campaign.title}</h3>
-                    <p className="mt-2 text-sm font-semibold text-zinc-400">{campaign.hindiTitle}</p>
+                  <div className={`space-y-5 ${index % 2 ? "lg:order-1" : ""}`}>
+                    <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#fb8500]">Campaign {String(index + 1).padStart(2, "0")}</p>
+                    <div>
+                      <h3 className="text-3xl font-serif font-bold text-[#002344] md:text-4xl">{campaign.title}</h3>
+                      <p className="mt-2 text-sm font-semibold text-zinc-400">{campaign.hindiTitle}</p>
+                    </div>
+                    <p className={`bg-gradient-to-r ${campaign.gradient} bg-clip-text text-lg font-bold text-transparent`}>{campaign.tagline}</p>
+                    <p className="text-base leading-relaxed text-zinc-600 md:text-lg">{campaign.description}</p>
+
+                    <div className="rounded-2xl border border-[#fb8500]/20 bg-[#fb8500]/5 p-4">
+                      <div className="flex items-center gap-2 text-sm font-bold text-[#002344]">
+                        <FaHandHoldingHeart className="text-[#fb8500]" />
+                        {hasDedicatedLink ? "इस अभियान के लिए सीधे योगदान" : "इस अभियान के लिए dedicated donation link जल्द जोड़ा जाएगा"}
+                      </div>
+                      <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+                        Dedicated Razorpay link उपलब्ध होने तक सुरक्षित रूप से SSF के existing donation link का उपयोग किया जा सकता है।
+                      </p>
+                    </div>
+
+                    <div className="flex flex-wrap gap-3 pt-2">
+                      <a href={campaignRazorpayLink} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${campaign.gradient} px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5`}>
+                        <FaRupeeSign /> {hasDedicatedLink ? "Donate to This Campaign" : "Donate Now"}
+                      </a>
+                      <Link to="/DonateAndSupport" className="inline-flex items-center gap-2 rounded-full border-2 border-[#002344] px-6 py-3 text-sm font-bold text-[#002344] transition hover:bg-[#002344] hover:text-white">
+                        Donation Details <FaArrowRight />
+                      </Link>
+                    </div>
                   </div>
-                  <p className={`bg-gradient-to-r ${campaign.gradient} bg-clip-text text-lg font-bold text-transparent`}>{campaign.tagline}</p>
-                  <p className="text-base leading-relaxed text-zinc-600 md:text-lg">{campaign.description}</p>
-                  <div className="flex flex-wrap gap-3 pt-2">
-                    <a href={RAZORPAY_LINK} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${campaign.gradient} px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5`}>
-                      <FaRupeeSign /> Support This Campaign
-                    </a>
-                    <Link to="/DonateAndSupport" className="inline-flex items-center gap-2 rounded-full border-2 border-[#002344] px-6 py-3 text-sm font-bold text-[#002344] transition hover:bg-[#002344] hover:text-white">
-                      Donation Details <FaArrowRight />
-                    </Link>
-                  </div>
-                </div>
-              </motion.article>
-            ))}
+                </motion.article>
+              );
+            })}
           </div>
         </div>
       </div>
@@ -215,15 +241,18 @@ export default function Campaigns() {
               Donation किसी specific campaign के लिए करना हो, volunteering करनी हो या CSR/partnership पर बात करनी हो — SSF team से सीधे जुड़ें।
             </p>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
-              <a href={RAZORPAY_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#fb8500] px-8 py-4 font-bold text-white shadow-lg transition hover:bg-[#e76f00]">
-                <FaRupeeSign /> Donate Securely
+              <a href={RAZORPAY_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#fb8500] px-7 py-3 font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#e76f00]">
+                <FaRupeeSign /> Donate to SSF
               </a>
-              <a href={CONTACT_INFO.social.whatsapp} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#002344] px-8 py-4 font-bold text-[#002344] transition hover:bg-[#002344] hover:text-white">
-                <FaHandsHelping /> Talk to SSF Team
-              </a>
+              <Link to="/GetInvolved" className="inline-flex items-center justify-center gap-2 rounded-full border-2 border-[#002344] px-7 py-3 font-bold text-[#002344] transition hover:bg-[#002344] hover:text-white">
+                Get Involved <FaArrowRight />
+              </Link>
             </div>
-            <p className="mt-6 text-xs text-zinc-400">Campaigns and programme availability depend on available resources, volunteers, partnerships and local requirements.</p>
           </div>
+
+          <p className="mx-auto mt-8 max-w-3xl text-xs leading-relaxed text-zinc-500">
+            Campaigns/programmes की availability available resources, volunteers, partnerships और local requirements पर निर्भर करती है। Donation किसी campaign के लिए earmark किया गया हो तो संस्था के applicable records में उसका proper reference रखा जा सकता है।
+          </p>
         </div>
       </div>
     </section>
