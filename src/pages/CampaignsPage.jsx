@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import {
   FaGraduationCap, FaHeartbeat, FaHome, FaLeaf, FaHandHoldingHeart,
   FaRupeeSign, FaArrowRight, FaUsers, FaChild, FaLaptopCode,
-  FaFemale, FaBullhorn, FaHandsHelping, FaPrayingHands,
+  FaFemale, FaBullhorn, FaHandsHelping, FaMusic,
 } from "react-icons/fa";
 import { HiSparkles } from "react-icons/hi2";
 import PageHero from "../components/PageHero";
@@ -25,7 +25,7 @@ const campaigns = [
   { id:"socialJustice", icon:<FaBullhorn/>, title:"Social Justice", hindi:"सामाजिक न्याय अभियान", tagline:"जागरूक नागरिक, मजबूत समाज", items:["भ्रष्टाचार जागरूकता","नैतिक शिक्षा","राष्ट्रीय एकता","सांप्रदायिक सद्भाव","मानव अधिकार"], gradient:"from-[#264653] to-[#1d3557]", image:"/images/real/covid-awareness-banner.jpg" },
   { id:"disability", icon:<FaHandsHelping/>, title:"Disability & Rehabilitation", hindi:"दिव्यांग एवं पुनर्वास अभियान", tagline:"सहयोग, सम्मान और पुनर्वास", items:["दिव्यांग सहायता","मानसिक रूप से कमजोर बच्चों का पुनर्वास","वृद्धजन सहायता","अनाथ सहायता"], gradient:"from-[#6a4c93] to-[#3c096c]", image:"/images/real/community-education-meeting.jpg" },
   { id:"animal", icon:<FaChild/>, title:"Animal Protection", hindi:"पशु संरक्षण अभियान", tagline:"जीवों के प्रति संवेदना और संरक्षण", items:["पशु-पक्षी संरक्षण","गौशाला","वन्यजीव संरक्षण"], gradient:"from-[#386641] to-[#1b4332]", image:"/images/real/cloth-distribution.jpg" },
-  { id:"cultural", icon:<FaPrayingHands/>, title:"Religious & Cultural", hindi:"धार्मिक एवं सांस्कृतिक अभियान", tagline:"संस्कृति, शिक्षा और सद्भाव", items:["भजन","संस्कृत शिक्षा","संगीत","सम्मेलन","सांस्कृतिक कार्यक्रम"], gradient:"from-[#9c6644] to-[#6f4518]", image:"/images/uploads/our-campaigns-collage.jpg" },
+  { id:"cultural", icon:<FaMusic/>, title:"Religious & Cultural", hindi:"धार्मिक एवं सांस्कृतिक अभियान", tagline:"संस्कृति, शिक्षा और सद्भाव", items:["भजन","संस्कृत शिक्षा","संगीत","सम्मेलन","सांस्कृतिक कार्यक्रम"], gradient:"from-[#9c6644] to-[#6f4518]", image:"/images/uploads/our-campaigns-collage.jpg" },
 ];
 
 export default function Campaigns() {
