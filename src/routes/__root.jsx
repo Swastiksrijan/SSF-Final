@@ -5,6 +5,7 @@ import ScrollToHash from "../components/ScrollToHash";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import SeoManager from "../components/SeoManager";
 import WhatsAppChatWidget from "../components/WhatsAppChatWidget";
+import SSFSupportChatPro from "../components/SSFSupportChatPro";
 import { LanguageProvider } from "../context/LanguageContext";
 import OptimizedImage from "../components/OptimizedImage";
 import logoImg from "../assets/new-logo.png";
@@ -55,6 +56,7 @@ export const Route = createRootRoute({
         <ScrollToHash />
         <ScrollToTopButton />
         <WhatsAppChatWidget />
+        <SSFSupportChatPro />
         <BlogHero />
         <Outlet />
         <FooterSection />
