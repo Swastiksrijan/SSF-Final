@@ -6,7 +6,7 @@ const WEBSITE = "https://swastiksrijan.in/";
 const DONATE = "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view";
 
 const GROUPS = [
-  { title: "ℹ️ संस्था एवं जानकारी", items: [["🏢", "संस्था के बारे में"], ["📜", "इतिहास / स्थापना"], ["📋", "Registration Details"], ["🎯", "संस्था के Objectives"], ["🌐", "कार्य क्षेत्र / Website"]] },
+  { title: "ℹ️ संस्था एवं जानकारी", items: [["🏢", "संस्था के बारे में"], ["📜", "इतिहास / स्थापना"], ["📋", "Registration Details"], ["🎯", "संस्था के Objectives"], ["🇮🇳", "कार्य क्षेत्र — All India"], ["🌐", "Website"]] },
   { title: "🤝 Join / Connect", items: [["🤝", "Volunteer कैसे बनें?"], ["👥", "Member कैसे बनें?"], ["🎓", "Internship / Student"], ["🧑‍🏫", "Trainer / Mentor"], ["💻", "Skill-Based Volunteering"], ["📣", "Campaign / Awareness Volunteer"]] },
   { title: "🏢 Partnership", items: [["🏢", "CSR / Corporate"], ["🏫", "College / University"], ["🏛️", "Institution Partnership"], ["🤲", "NGO / Community Partner"]] },
   { title: "❤️ सेवा एवं सहयोग", items: [["🎓", "Education"], ["💻", "Computer / Digital"], ["🧵", "Skill Development"], ["👩", "Women Empowerment"], ["👶", "Child Welfare"], ["❤️", "Health"], ["🌳", "Environment"], ["🌾", "Rural Development"], ["⚖️", "Social Justice"], ["♿", "Disability / Rehabilitation"], ["🐄", "Animal Protection"], ["🎭", "Culture / Awareness"]] },
@@ -18,7 +18,9 @@ const ANSWERS = {
   "इतिहास / स्थापना": "Swastik Srijan Foundation Samiti का registration year 2013 है। संस्था का registered office Rewa, Madhya Pradesh में है।",
   "Registration Details": "SSF का Registration No. 05/22/03/11448/13 है। Registration Madhya Pradesh Societies Registration Act, 1973 के अंतर्गत है।",
   "संस्था के Objectives": "Registered objectives में education, skill development, women & child welfare, health, environment, agriculture & rural development, social justice, disability & rehabilitation, animal protection तथा cultural/social development के क्षेत्र शामिल हैं।",
-  "कार्य क्षेत्र / Website": "SSF का कार्यक्षेत्र व्यापक सामाजिक विकास से जुड़ा है। Official website: https://swastiksrijan.in/",
+  "कार्य क्षेत्र — All India": "Swastik Srijan Foundation Samiti का कार्यक्षेत्र All India है। संस्था अपने registered objectives के अनुसार भारत के विभिन्न राज्यों और क्षेत्रों में आवश्यकता, उपलब्ध संसाधनों और सहयोग के आधार पर सामाजिक विकास से जुड़े कार्य कर सकती है।",
+  "Website": "SSF की official website: https://swastiksrijan.in/",
+  "कार्य क्षेत्र / Website": "Swastik Srijan Foundation Samiti का कार्यक्षेत्र All India है। Official website: https://swastiksrijan.in/",
   "Volunteer कैसे बनें?": "Volunteer के रूप में जुड़ने के लिए अपनी रुचि, location और skills के अनुसार Join/Get Involved section से interest submit करें। WhatsApp +91 9718346691 पर भी संपर्क कर सकते हैं।",
   "Member कैसे बनें?": "Member बनने के लिए membership interest submit करें। Eligibility और उपलब्ध membership process के अनुसार team आगे guide करेगी। WhatsApp +91 9718346691 पर संपर्क किया जा सकता है।",
   "Internship / Student": "Students और youth उपलब्ध internship, learning और volunteering opportunities के लिए अपना interest submit कर सकते हैं। Opportunity के अनुसार team आगे जानकारी देगी।",
@@ -58,6 +60,8 @@ const answerFor = (question) => {
   if (direct) return ANSWERS[direct];
   const rules = [
     [["registration", "पंजीयन", "रजिस्ट्रेशन"], "Registration Details"], [["objective", "objectives", "उद्देश्य"], "संस्था के Objectives"],
+    [["all india", "all-india", "india level", "भारत स्तर", "पूरे भारत", "सम्पूर्ण भारत", "देशभर", "देश भर", "अखिल भारतीय", "कार्य क्षेत्र", "कार्य क्षेत्र क्या है", "work area", "कहां काम", "कहाँ काम"], "कार्य क्षेत्र — All India"],
+    [["website", "वेबसाइट", "official site", "swastiksrijan.in"], "Website"],
     [["volunteer", "स्वयंसेवक"], "Volunteer कैसे बनें?"], [["member", "membership", "सदस्य", "सदस्यता"], "Member कैसे बनें?"],
     [["internship", "intern", "student", "छात्र"], "Internship / Student"], [["trainer", "mentor"], "Trainer / Mentor"],
     [["skill", "कौशल", "सिलाई", "स्वरोजगार"], "Skill Development"], [["campaign", "awareness volunteer"], "Campaign / Awareness Volunteer"],
@@ -70,7 +74,6 @@ const answerFor = (question) => {
     [["animal", "पशु", "गौ", "wildlife"], "Animal Protection"], [["culture", "सांस्कृतिक", "धार्मिक", "संस्कृति"], "Culture / Awareness"],
     [["donation", "donate", "दान", "योगदान", "support", "सहयोग"], "Donor / Donation"], [["report", "reports", "transparency", "ऑडिट"], "Reports / Transparency"],
     [["activity", "activities", "गतिविधि", "photos", "फोटो", "media"], "Our Activities"], [["contact", "phone", "whatsapp", "संपर्क", "9718346691", "email", "ईमेल"], "Contact SSF Team"],
-    [["website", "वेबसाइट", "official site", "swastiksrijan.in"], "कार्य क्षेत्र / Website"],
   ];
   const match = rules.find(([keys]) => keys.some((key) => text.includes(key)));
   return match ? ANSWERS[match[1]] : UNKNOWN;
