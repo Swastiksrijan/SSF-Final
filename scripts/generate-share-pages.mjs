@@ -34,7 +34,7 @@ const pages = {
   '/Contact': ['Contact Us | Swastik Srijan Foundation', 'Get in touch with Swastik Srijan Foundation to explore collaborations, volunteering and community initiatives.', '/images/real/community-team-group.jpg'],
   '/Blog': ['Blog & Impact Stories | Swastik Srijan Foundation', 'Read real stories about education, health, community support, volunteering and social impact across India.', '/images/real/news_media_1.jpg'],
   '/Media': ['Media Gallery | Swastik Srijan Foundation', 'Photos and videos from our programs, events and community impact work.', '/images/gallery.png'],
-  '/Campaigns': ['Active Campaigns | Swastik Srijan Foundation', 'Join current campaigns and initiatives making a difference in communities across India.', '/images/uploads/childhood-hero.webp'],
+  '/Campaigns': ['SSF Campaigns | Real Activities & Ways to Support', 'Explore SSF campaigns in education, skills, women and child development, health, environment, rural development, social justice, rehabilitation, animal protection and culture.', '/images/uploads/our-campaigns-collage.jpg'],
   '/UpcomingProjects': ['Upcoming Projects | Swastik Srijan Foundation', 'Discover planned initiatives across education, health, livelihoods and community development.', '/images/real/dreams-taking-flight.png'],
   '/LearningHub': ['SSF Learning Hub | Swastik Srijan Foundation', 'Access learning, training and educational resources from Swastik Srijan Foundation.', '/images/learningHub.png'],
   '/SkillPrograms': ['Skill Development Programs | Swastik Srijan Foundation', 'Explore skill development, livelihood and women empowerment programs supporting sustainable community progress.', '/images/real/women_empowerment_tailoring.jpg'],
