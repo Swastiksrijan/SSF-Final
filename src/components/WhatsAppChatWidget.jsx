@@ -4,39 +4,81 @@ import { CONTACT_INFO } from "../config/contact";
 import { useLanguage } from "../context/LanguageContext";
 
 const QUICK_QUESTIONS = [
-  "How to donate?",
-  "CSR partnership details",
-  "Volunteer kaise bane?",
-  "Certificates / Transparency",
+  "SSF क्या है?",
+  "Registration details",
+  "Volunteer कैसे बनें?",
+  "Donation कैसे करें?",
+  "CSR partnership",
+  "Transparency / Reports",
 ];
 
 const BOT_INTRO =
-  "Namaste 🙏 Swastik Srijan Foundation mein aapka swagat hai. Main aapki help ke liye hoon. Aap donation, CSR, volunteer, campaigns, ya kisi bhi query ke liye puch sakte hain.";
+  "नमस्ते 🙏 Swastik Srijan Foundation में आपका स्वागत है। मैं SSF की उपलब्ध verified जानकारी के आधार पर सहायता कर सकता हूँ। जानकारी उपलब्ध न होने पर मैं अनुमान नहीं लगाऊँगा।";
+
+const UNKNOWN_REPLY =
+  "इस प्रश्न की verified जानकारी मेरे उपलब्ध SSF records में नहीं है। कृपया SSF से सीधे संपर्क करें: WhatsApp +91 9718346691 या swastiksrijanfoundation@gmail.com. आप चाहें तो नीचे WhatsApp Chat से टीम से जुड़ सकते हैं।";
 
 function getBotReply(message) {
-  const query = message.toLowerCase();
+  const query = message.toLowerCase().trim();
+  const hasAny = (...terms) => terms.some((term) => query.includes(term));
 
-  if (query.includes("donat")) {
-    return "Donation ke liye aap Donate page par ja sakte hain. Aapka har yogdaan education, health aur livelihood projects mein direct impact banata hai. Agar chahen to main aapko WhatsApp par donor assistance se connect kar sakta hoon.";
+  if (hasAny("ssf क्या", "ssf kya", "what is ssf", "swastik srijan foundation kya", "संस्था क्या")) {
+    return "Swastik Srijan Foundation Samiti एक registered nonprofit संस्था है, जिसका registered office Rewa, Madhya Pradesh में है। संस्था की स्थापना/registration 2013 में हुई और इसका कार्यक्षेत्र India है।";
   }
 
-  if (query.includes("csr") || query.includes("corporate")) {
-    return "CSR partnerships ke liye hum education, skilling, women empowerment aur rural development projects par kaam karte hain. Aap CSR Partnership page dekh sakte hain ya direct WhatsApp par project deck mang sakte hain.";
+  if (hasAny("registration", "रजिस्ट्रेशन", "पंजीयन", "reg no", "registration number")) {
+    return "SSF का Registration No. 05/22/03/11448/13 है। Registration Act: Madhya Pradesh Societies Registration Act, 1973. Registered office: Rewa, Madhya Pradesh. Official details Transparency page पर उपलब्ध हैं।";
   }
 
-  if (query.includes("volunteer") || query.includes("intern")) {
-    return "Volunteer/Internship ke liye Get Involved section open karein. Team aapse profile aur interest ke basis par connect karegi. Aap WhatsApp par bhi details bhej sakte hain.";
+  if (hasAny("office", "address", "पता", "कार्यालय", "rewa")) {
+    return "SSF का registered office Rewa, Madhya Pradesh में है। उपलब्ध contact के लिए +91 9718346691 या swastiksrijanfoundation@gmail.com पर संपर्क करें।";
   }
 
-  if (query.includes("certificate") || query.includes("transparency") || query.includes("trust")) {
-    return "Transparency aur trust hamari priority hai. Aap Transparency page aur registration details check kar sakte hain. Zarurat ho to hum WhatsApp par official documents share kar denge.";
+  if (hasAny("objective", "objectives", "उद्देश्य", "काम क्या", "work areas", "कार्य क्षेत्र")) {
+    return "SSF के registered objectives में education, skill development, women & child welfare, health awareness, youth/community development, rural development, environment और अन्य सामाजिक विकास से जुड़े कार्य शामिल हैं। किसी specific programme की current availability के लिए टीम से पुष्टि करें।";
   }
 
-  if (query.includes("contact") || query.includes("phone") || query.includes("call")) {
-    return "Aap direct call kar sakte hain: +91 9718346691. Ya niche WhatsApp button se instantly connect ho jaiye.";
+  if (hasAny("donat", "donation", "दान", "योगदान")) {
+    return "Donation के लिए website के Donate page का उपयोग करें। Donation/refund और applicable tax-document information के लिए Donation & Refund Policy तथा Transparency page देखें। किसी भी tax benefit को automatic या guaranteed न मानें; eligibility applicable rules और donor conditions पर निर्भर करती है।";
   }
 
-  return "Bahut accha sawal hai. Iska best personalized jawab hamari team WhatsApp par turant degi. Niche 'Start WhatsApp Chat' par click karein — hum real support denge.";
+  if (hasAny("csr", "corporate", "company", "सीएसआर")) {
+    return "SSF CSR और institutional partnerships के लिए education, skill development, women & child welfare, community/rural development, health awareness और अन्य registered objectives से जुड़े opportunities पर चर्चा कर सकता है। Partnership के लिए Get Involved/Partner section या WhatsApp team से current requirement confirm करें।";
+  }
+
+  if (hasAny("volunteer", "intern", "internship", "स्वयंसेवक", "इंटर्न")) {
+    return "Volunteer/Internship के लिए website के Get Involved section से शुरुआत करें। Volunteer, Member, Student/Youth, Intern, Trainer/Mentor, Skill-based Volunteer, Institution/NGO/Community Partner और CSR/Corporate जैसे engagement options उपलब्ध हैं। अंतिम role/availability team से confirm होती है।";
+  }
+
+  if (hasAny("member", "membership", "सदस्य", "मेंबर")) {
+    return "SSF में जुड़ने के लिए Get Involved/Members section देखें। Membership की current process, eligibility या applicable fee जैसी specific जानकारी के लिए team से पुष्टि करें; assistant अनुमान नहीं लगाएगा।";
+  }
+
+  if (hasAny("learning hub", "learninghub", "computer", "digital literacy", "शिक्षा", "learning")) {
+    return "SSF Learning HUB से जुड़े focus areas में digital literacy, computer learning, academic support, youth learning, online/community learning और guidance शामिल हैं। किसी centre की current opening, timing या admission की जानकारी team से verify करें।";
+  }
+
+  if (hasAny("skill", "silai", "sewing", "vocational", "livelihood", "कौशल")) {
+    return "SSF के skill-development focus में sewing, computer/digital skills, vocational learning, self-employment, women-focused skills, livelihood support और trainer/mentor participation जैसे areas शामिल हैं। Current batch/admission की पुष्टि team से करें।";
+  }
+
+  if (hasAny("health", "medical", "dental", "स्वास्थ्य", "चिकित्सा")) {
+    return "SSF के registered objectives में health awareness और community wellbeing से जुड़े कार्य शामिल हैं। किसी specific health camp, dental camp, date, location या service availability के बारे में मैं अनुमान नहीं लगाऊँगा—कृपया team से current confirmation लें।";
+  }
+
+  if (hasAny("transparency", "report", "annual report", "certificate", "compliance", "पारदर्शिता", "वार्षिक रिपोर्ट")) {
+    return "SSF की Transparency page पर registration/compliance documents और available annual reports दिए गए हैं। किसी document की validity/status के लिए official document और current SSF records को प्राथमिकता दें।";
+  }
+
+  if (hasAny("website", "site", "वेबसाइट")) {
+    return "SSF की official website: https://swastiksrijan.in/";
+  }
+
+  if (hasAny("contact", "phone", "call", "whatsapp", "mobile", "संपर्क", "फोन")) {
+    return "SSF से संपर्क: WhatsApp/Phone +91 9718346691 और email swastiksrijanfoundation@gmail.com. Registered office Rewa, Madhya Pradesh में है।";
+  }
+
+  return UNKNOWN_REPLY;
 }
 
 export default function WhatsAppChatWidget() {
@@ -48,7 +90,7 @@ export default function WhatsAppChatWidget() {
 
   const whatsappLink = useMemo(() => {
     const message = encodeURIComponent(
-      "Namaste Swastik Srijan Foundation team, mujhe donation/CSR/volunteer ke baare mein jankari chahiye."
+      "Namaste Swastik Srijan Foundation team, mujhe SSF ke baare mein jankari chahiye."
     );
     return `${CONTACT_INFO.social.whatsapp}?text=${message}`;
   }, []);
@@ -73,7 +115,7 @@ export default function WhatsAppChatWidget() {
         <div className="w-[min(92vw,360px)] rounded-2xl bg-white shadow-2xl border border-zinc-200 overflow-hidden">
           <div className="bg-[#0b3a64] text-white px-4 py-3">
             <p className="text-sm font-bold">Swastik Srijan Foundation Support</p>
-            <p className="text-xs text-white/80">Auto-reply assistant + real team on WhatsApp</p>
+            <p className="text-xs text-white/80">Verified information assistant + real team on WhatsApp</p>
           </div>
 
           <div className="max-h-[310px] overflow-y-auto p-3 space-y-2 bg-zinc-50">
