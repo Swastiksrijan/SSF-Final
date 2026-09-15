@@ -2,11 +2,15 @@
 import { createFileRoute } from "@tanstack/react-router";
 import Blog from "../pages/Blog";
 import BlogShareEnhancer from "../components/BlogShareEnhancer";
+import SingleKnowledgeStory from "../components/SingleKnowledgeStory";
 
 function BlogRoutePage() {
   return (
     <BlogShareEnhancer>
-      <Blog />
+      <div className="pt-28 bg-black min-h-screen text-white px-4">
+        <SingleKnowledgeStory />
+        <Blog />
+      </div>
     </BlogShareEnhancer>
   );
 }
