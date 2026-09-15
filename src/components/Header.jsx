@@ -50,7 +50,7 @@ const Header = () => {
     { name: "About Us", path: "/About", subItems: [{ name: "Mission & Vision", path: "/Mission" }, { name: "Our Objectives", path: "/Objectives" }, { name: "Meet Our Team", path: "/Team" }, { name: "Upcoming Projects", path: "/UpcomingProjects" }] },
     { name: "Our Work", path: "/OurInitiatives", subItems: [{ name: "Our Initiatives & Impact", path: "/OurInitiatives" }, { name: "SSF Learning HUB", path: "/LearningHub" }, { name: "Education & Child Development", path: "/LearningHub" }, { name: "Health & Well-being", path: "/OurInitiatives#health" }, { name: "Women Empowerment & Livelihood", path: "/SkillPrograms" }, { name: "Social Awareness", path: "/OurInitiatives#awareness" }] },
     { name: "Impact", path: "/Impact" },
-    { name: "Blog", path: "/Blog" },
+    { name: "Blog & Stories", path: "/Blog" },
     { name: "Donate", path: "/Donate", isSpecial: true }
   ];
 
