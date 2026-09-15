@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { FaSeedling, FaHandHoldingHeart, FaUsers, FaGraduationCap, FaBullhorn, FaBriefcase, FaFemale, FaHeartbeat, FaLeaf, FaLaptop, FaRocket } from "react-icons/fa";
+import { FaSeedling, FaHandHoldingHeart, FaUsers, FaGraduationCap, FaBullhorn, FaBriefcase, FaFemale, FaHeartbeat, FaLeaf, FaLaptop, FaRocket, FaExternalLinkAlt } from "react-icons/fa";
 
 const YEARS = [
   { year: "2013", title: "Foundation & Registration", hi: "स्थापना एवं पंजीयन", desc: "Registered beginning of the Swastik Srijan Foundation journey in Rewa, Madhya Pradesh.", icon: <FaSeedling />, tone: "orange" },
@@ -17,6 +17,20 @@ const YEARS = [
   { year: "2025", title: "Digital & Social Outreach", hi: "डिजिटल एवं सामाजिक जागरूकता", desc: "Wider use of digital tools and outreach for learning, awareness and participation.", icon: <FaLaptop />, tone: "violet" },
   { year: "2026", title: "Continuing the Mission", hi: "मिशन की निरंतरता", desc: "Current work continues around education, skills, health, awareness, community support and partnerships.", icon: <FaRocket />, tone: "red" }
 ];
+
+const PHOTO_HIGHLIGHTS = [
+  { id: "1QceaNSKbc8127uOvA4XJemT8y9DB93c4", label: "Activity Highlight 01" },
+  { id: "1-hRdzPQZ2doslXWrZNtCaE6MlYfwS39Y", label: "Activity Highlight 02" },
+  { id: "1bo4QhUfFgrmaSPAhBuUxYv2LiiR1u8vq", label: "Activity Highlight 03" },
+  { id: "1mnxeCcIagsPGzFcBbtekK9B5LpGbVLLG", label: "Activity Highlight 04" },
+  { id: "1a8VS3ThJNCO6_bmwlaD3bTxWd_L1123T", label: "Activity Highlight 05" },
+  { id: "1Ear_De7MWSUBZnsMGALPClAoRZQIFMf3", label: "Activity Highlight 06" },
+  { id: "1OJ9MwFO8wYEFwd8CrFpeQedBCteEDWmH", label: "Activity Highlight 07" }
+].map((item) => ({
+  ...item,
+  image: `https://drive.google.com/uc?export=view&id=${item.id}`,
+  view: `https://drive.google.com/file/d/${item.id}/view?usp=drivesdk`
+}));
 
 const TONES = {
   orange: "border-orange-200 bg-orange-50 text-orange-600",
@@ -43,6 +57,50 @@ export default function ServiceJourneyCards() {
           <span className="inline-flex px-5 py-2 rounded-full bg-[#002344] text-white text-[10px] font-black uppercase tracking-[0.25em]">2013 — 2026 • Detailed Journey</span>
           <h2 className="mt-5 text-3xl md:text-5xl font-serif font-bold text-[#002344]">SSF SERVICE JOURNEY <span className="text-[#FF6600]">| सेवा यात्रा</span></h2>
           <p className="mt-4 text-zinc-500 max-w-2xl mx-auto">Year-by-year milestones, learning and community-oriented work across the continuing journey of SSF.</p>
+        </div>
+
+        <div className="mb-14">
+          <div className="text-center max-w-3xl mx-auto mb-8">
+            <span className="text-[#FF6600] font-black text-xs uppercase tracking-[0.2em]">SSF IN ACTION</span>
+            <h3 className="mt-2 text-2xl md:text-4xl font-bold text-[#002344]">Our Work & Service Highlights</h3>
+            <p className="mt-3 text-sm md:text-base text-zinc-500">संस्था की गतिविधियों और सेवा कार्यों की झलक</p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {PHOTO_HIGHLIGHTS.map((item, index) => (
+              <motion.article
+                key={item.id}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.15 }}
+                transition={{ duration: 0.45, delay: index * 0.05 }}
+                className="group rounded-3xl border border-zinc-200 bg-white overflow-hidden shadow-sm hover:shadow-xl transition-all"
+              >
+                <div className="w-full min-h-[260px] max-h-[520px] bg-zinc-50 flex items-center justify-center p-3">
+                  <img
+                    src={item.image}
+                    alt={`Swastik Srijan Foundation ${item.label}`}
+                    loading="lazy"
+                    className="block w-full h-auto max-h-[500px] object-contain rounded-2xl"
+                  />
+                </div>
+                <div className="p-5 flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-[#FF6600]">SSF • Activity</p>
+                    <h4 className="mt-1 font-bold text-[#002344]">{item.label}</h4>
+                  </div>
+                  <a
+                    href={item.view}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="shrink-0 inline-flex items-center gap-2 rounded-full bg-[#002344] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#FF6600] transition-colors"
+                  >
+                    View Full <FaExternalLinkAlt />
+                  </a>
+                </div>
+              </motion.article>
+            ))}
+          </div>
         </div>
 
         <div className="relative overflow-hidden py-4">
