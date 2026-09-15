@@ -1,10 +1,9 @@
-import { createRootRoute, Outlet, useRouterState } from "@tanstack/react-router";
+import { createRootRoute, useRouterState, Outlet } from "@tanstack/react-router";
 import Header from "../components/Header";
 import FooterSection from "../pages/FooterSection";
 import ScrollToHash from "../components/ScrollToHash";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import SeoManager from "../components/SeoManager";
-import WhatsAppChatWidget from "../components/WhatsAppChatWidget";
 import SSFSupportChatPro from "../components/SSFSupportChatPro";
 import { LanguageProvider } from "../context/LanguageContext";
 import OptimizedImage from "../components/OptimizedImage";
@@ -52,10 +51,8 @@ export const Route = createRootRoute({
       <div className="min-h-screen w-full flex flex-col font-inria overflow-x-hidden">
         <SeoManager />
         <Header />
-
         <ScrollToHash />
         <ScrollToTopButton />
-        <WhatsAppChatWidget />
         <SSFSupportChatPro />
         <BlogHero />
         <Outlet />
