@@ -1,7 +1,7 @@
 import React from "react";
 
 const teamMembers = [
-  { name: "Mr. Ramesh Pandey", position: "Founder & National President", img: "/Teams_Images/ramesh_pandey.jpg" },
+  { name: "Mr. Ramesh Pandey", position: "Founder & National President", img: "https://drive.google.com/uc?export=view&id=1GTYxGTc951L1LjBNhuQB443Wne5OnwSl" },
   { name: "Ms. Preeti Shukla", position: "Vice President & Program Head", img: "/Teams_Images/image_19.jpg" },
   { name: "Mr. Amit Pandey", position: "General Secretary & Operations", img: "/Teams_Images/image_15.jpg" },
   { name: "Ms. Divya Sharma", position: "Treasurer & CFO", img: "/Teams_Images/divya_sharma.jpg" },
@@ -32,25 +32,12 @@ export default function TeamProfileSection() {
   return (
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 mt-10">
       {teamMembers.map((member, idx) => (
-        <div
-          key={idx}
-          className="text-center group"
-        >
+        <div key={idx} className="text-center group">
           <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto overflow-hidden rounded-full border-2 border-[#fb8500]/20 group-hover:border-[#fb8500] transition-colors duration-300 shadow-sm group-hover:shadow-md">
-            <img
-              src={member.img || "/images/team/placeholder.jpg"}
-              alt={member.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-            />
+            <img src={member.img || "/images/team/placeholder.jpg"} alt={member.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
           </div>
-
-          <h3 className="mt-4 font-serif font-bold text-zinc-900 text-sm group-hover:text-[#fb8500] transition-colors">
-            {member.name}
-          </h3>
-
-          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mt-1">
-            {member.position}
-          </p>
+          <h3 className="mt-4 font-serif font-bold text-zinc-900 text-sm group-hover:text-[#fb8500] transition-colors">{member.name}</h3>
+          <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mt-1">{member.position}</p>
         </div>
       ))}
     </div>
