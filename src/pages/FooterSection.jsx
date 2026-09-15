@@ -1,235 +1,73 @@
 import { Link } from "@tanstack/react-router";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaYoutube, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaShieldAlt } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import logoImg from "../assets/footer-logo-circle-v3.png";
 import { useLanguage } from "../context/LanguageContext";
-
 import footerImg1 from "../assets/footer-gallery-1.jpg";
 import footerImg2 from "../assets/footer-gallery-2.jpg";
 import footerImg3 from "../assets/footer-gallery-3.jpg";
 import footerImg4 from "../assets/footer-gallery-4.png";
 
+const socialItems = [
+  { icon: FaFacebookF, href: CONTACT_INFO.social.facebook, label: "Facebook" },
+  { icon: FaInstagram, href: CONTACT_INFO.social.instagram, label: "Instagram" },
+  { icon: FaLinkedinIn, href: CONTACT_INFO.social.linkedin, label: "LinkedIn" },
+  { icon: FaTwitter, href: CONTACT_INFO.social.twitter, label: "X / Twitter" },
+  { icon: FaYoutube, href: CONTACT_INFO.social.youtube, label: "YouTube" }
+];
 
 export default function FooterSection() {
   const { lang } = useLanguage();
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="w-full bg-[#002344] text-white pt-24 pb-12 relative overflow-hidden font-sans border-t border-[#003366]">
-      {/* Background patterns */}
-      <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:32px_32px]"></div>
+    <footer className="w-full bg-[#002344] text-white relative overflow-hidden font-sans border-t border-[#123f61]">
+      <div className="absolute inset-0 opacity-[0.035] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:32px_32px]" />
+      <div className="absolute -top-40 -right-40 w-96 h-96 rounded-full border border-[#FF6600]/10" />
 
-      <div className="max-w-7xl mx-auto px-6 relative z-10">
-
-        {/* RECENT MEDIA GALLERY SECTION */}
-        <div className="mb-16">
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h4 className="text-white font-bold text-sm tracking-widest uppercase mb-1">Recent Media</h4>
-              <div className="h-[2px] w-12 bg-[#fb8500]"></div>
-            </div>
-            <Link to="/Media" className="text-zinc-400 hover:text-[#fb8500] text-xs font-bold uppercase tracking-wider transition-colors flex items-center gap-2 group">
-              View All Gallery <span className="group-hover:translate-x-1 transition-transform">→</span>
-            </Link>
+      <div className="max-w-7xl mx-auto px-5 sm:px-6 relative z-10">
+        <div className="py-14 sm:py-16 border-b border-white/10">
+          <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-7">
+            <div><p className="text-[#FF9A45] text-xs font-black uppercase tracking-[0.18em]">From our work</p><h3 className="text-2xl sm:text-3xl font-black mt-1">Recent Media</h3><div className="mt-3 h-1 w-12 rounded-full bg-[#FF6600]" /></div>
+            <Link to="/Media" className="text-sm font-bold text-zinc-300 hover:text-[#FF6600] transition-colors">View Media Gallery →</Link>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
             {[footerImg1, footerImg2, footerImg3, footerImg4].map((img, idx) => (
-              <Link key={idx} to="/Media" className="relative h-32 md:h-40 rounded-xl overflow-hidden group">
-                <img
-                  src={img}
-                  alt={`Gallery ${idx + 1}`}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-                  <div className="w-8 h-8 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white">
-                    +
-                  </div>
-                </div>
+              <Link key={idx} to="/Media" className="relative h-28 sm:h-36 rounded-2xl overflow-hidden border border-white/10 group bg-black/20">
+                <img src={img} alt={`Swastik Srijan Foundation media ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70" />
+                <span className="absolute bottom-3 left-3 text-[10px] font-bold uppercase tracking-wider text-white/90">SSF • Media</span>
               </Link>
             ))}
           </div>
         </div>
 
-        {/* TOP: Branding & Intro */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 mb-16">
-
-          <div className="lg:col-span-4 space-y-6">
-            <Link to="/" className="inline-block group mb-4">
-              <img
-                src={logoImg}
-                alt="Swastik Srijan Foundation Samiti"
-                className="w-16 h-16 md:w-20 md:h-20 object-contain rounded-full bg-white p-1.5 group-hover:scale-105 transition-all duration-300 shadow-md"
-              />
+        <div className="py-14 sm:py-16 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-14">
+          <div className="lg:col-span-4">
+            <Link to="/" className="inline-flex items-center gap-3 mb-6 group">
+              <img src={logoImg} alt="Swastik Srijan Foundation Samiti" className="w-16 h-16 sm:w-20 sm:h-20 object-contain rounded-full bg-white p-1.5 shadow-lg group-hover:scale-105 transition-transform" />
+              <div><span className="block text-white font-black text-xl leading-tight">Swastik Srijan</span><span className="text-[#FF6600] font-bold text-[10px] tracking-[0.28em] uppercase">Foundation Samiti</span></div>
             </Link>
-            <p className="text-zinc-400 leading-relaxed font-medium text-sm max-w-sm">
-              {lang === "en"
-                ? "Empowering communities through education, health, and creative development. We are committed to grassroots governance and sustainable impact."
-                : "शिक्षा, स्वास्थ्य और रचनात्मक विकास के माध्यम से समुदायों को सशक्त [..."
-              }
+            <p className="text-zinc-300 leading-7 text-sm max-w-md">
+              {lang === "en" ? "A registered society working to support education, health, skills, livelihoods, awareness and community development through responsible, transparent and inclusive action." : "शिक्षा, स्वास्थ्य, कौशल, आजीविका, जागरूकता और सामुदायिक विकास के लिए जिम्मेदार, पारदर्शी और समावेशी प्रयासों के साथ कार्यरत पंजीकृत संस्था।"}
             </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-w-md">
-              {[
-                ...(lang === "en"
-                  ? [
-                    "Since 2013: Seva, Satya aur Samarpan",
-                    "Every Donation = Direct Grassroots Impact",
-                    "CSR + Community = Sustainable Bharat",
-                    "Join Us: Volunteer • Donate • Partner",
-                  ]
-                  : [
-                    "2013 से: सेवा, सत्य और समर्पण",
-                    "हर दान = जमीनी बदलाव",
-                    "CSR + समुदाय = सतत भारत",
-                    "जुड़ें: वॉलंटियर • दान • साझेदारी",
-                  ])
-              ].map((line) => (
-                <p key={line} className="text-[11px] text-zinc-300 bg-white/5 border border-white/10 rounded-lg px-3 py-2">
-                  {line}
-                </p>
-              ))}
+            <div className="mt-6 grid grid-cols-2 gap-2.5 max-w-md">
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3"><p className="text-[#FF9A45] text-[10px] font-black uppercase">Established</p><p className="text-sm font-bold mt-1">2013</p></div>
+              <div className="rounded-xl border border-white/10 bg-white/[0.04] p-3"><p className="text-[#FF9A45] text-[10px] font-black uppercase">Registered Office</p><p className="text-sm font-bold mt-1">Rewa, MP</p></div>
             </div>
-
-            <div className="flex flex-wrap gap-3 pt-1">
-              <Link
-                to="/Donate"
-                className="px-4 py-2 rounded-lg bg-[#fb8500] text-white text-xs font-bold tracking-wide hover:bg-[#ff9800] transition-colors"
-              >
-                Donate Now
-              </Link>
-              <Link
-                to="/CSRPartnership"
-                className="px-4 py-2 rounded-lg border border-white/20 text-white text-xs font-bold tracking-wide hover:bg-white/10 transition-colors"
-              >
-                CSR Partnership
-              </Link>
-            </div>
-
-            {/* Socials */}
-            <div className="flex items-center gap-3 pt-2">
-              {[
-                { icon: FaFacebookF, href: CONTACT_INFO.social.facebook, label: "Facebook" },
-                { icon: FaInstagram, href: CONTACT_INFO.social.instagram, label: "Instagram" },
-                { icon: FaLinkedinIn, href: CONTACT_INFO.social.linkedin, label: "LinkedIn" },
-                { icon: FaTwitter, href: CONTACT_INFO.social.twitter, label: "Twitter" },
-                { icon: FaYoutube, href: CONTACT_INFO.social.youtube, label: "YouTube" }
-              ].map((Item, i) => (
-                <a
-                  key={i}
-                  href={Item.href}
-                  target="_blank"
-                  rel="noreferrer noopener"
-                  aria-label={Item.label}
-                  className="w-9 h-9 flex items-center justify-center rounded-lg bg-white/5 text-zinc-400 hover:bg-[#fb8500] hover:text-white transition-all duration-300 border border-white/5"
-                >
-                  <Item.icon className="text-sm" />
-                </a>
-              ))}
-            </div>
+            <div className="flex flex-wrap gap-2 mt-6"><Link to="/Donate" className="px-5 py-2.5 rounded-xl bg-[#FF6600] text-white text-xs font-black hover:bg-[#ff7b26] transition">Donate</Link><Link to="/Volunteer" className="px-5 py-2.5 rounded-xl border border-white/15 text-white text-xs font-black hover:bg-white/10 transition">Volunteer</Link><Link to="/CSRPartnership" className="px-5 py-2.5 rounded-xl border border-white/15 text-white text-xs font-black hover:bg-white/10 transition">Partner</Link></div>
+            <div className="flex items-center gap-2.5 mt-6">{socialItems.map(({ icon: Icon, href, label }) => <a key={label} href={href} target="_blank" rel="noreferrer noopener" aria-label={label} title={label} className="w-9 h-9 rounded-xl border border-white/10 bg-white/[0.04] flex items-center justify-center text-zinc-300 hover:text-white hover:bg-[#FF6600] hover:border-[#FF6600] transition-all"><Icon className="text-sm" /></a>)}</div>
           </div>
 
-          <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-4">
-
-            {/* Column 1 */}
-            <div className="space-y-6">
-              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">Organization</h4>
-              <ul className="space-y-3 text-sm text-zinc-400">
-                <li><Link to="/About" className="hover:text-[#fb8500] transition-colors">About Us</Link></li>
-                <li><Link to="/Team" className="hover:text-[#fb8500] transition-colors">Our Team</Link></li>
-                <li><Link to="/Journey" className="hover:text-[#fb8500] transition-colors">Our Journey</Link></li>
-                <li><Link to="/Mission" className="hover:text-[#fb8500] transition-colors">Mission & Vision</Link></li>
-                <li><Link to="/Humanity&Truth" className="hover:text-[#fb8500] transition-colors">Humanity & Truth</Link></li>
-              </ul>
-            </div>
-
-            {/* Column 2 */}
-            <div className="space-y-6">
-              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">Impact</h4>
-              <ul className="space-y-3 text-sm text-zinc-400">
-                <li><Link to="/Impact" className="hover:text-[#fb8500] transition-colors">Impact Stories</Link></li>
-                <li><Link to="/Campaigns" className="hover:text-[#fb8500] transition-colors">Campaigns</Link></li>
-                <li><Link to="/UpcomingProjects" className="hover:text-[#fb8500] transition-colors">Projects</Link></li>
-                <li><Link to="/Media" className="hover:text-[#fb8500] transition-colors">Media Gallery</Link></li>
-              </ul>
-              <div className="space-y-2">
-                <p className="text-[10px] uppercase tracking-wider text-zinc-500">Featured Videos</p>
-                <a href="https://youtu.be/uF7rXdsHm0o?si=aIugOn4bzbXtTDMq" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">How We Work</a>
-                <a href="https://youtube.com/shorts/OqG3OxA8P_Q?si=KBYHwg7mW1sZ7KOI" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">Field Stories</a>
-                <a href="https://youtube.com/shorts/COq-OKNz1ds?si=rpqN-jUVK2EgaHGl" target="_blank" rel="noopener noreferrer" className="block text-xs text-zinc-400 hover:text-[#fb8500] transition-colors">Volunteer Moments</a>
-              </div>
-            </div>
-
-            {/* Column 3 */}
-            <div className="space-y-6">
-              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">Involve</h4>
-              <ul className="space-y-3 text-sm text-zinc-400">
-                <li><Link to="/Volunteer" className="hover:text-[#fb8500] transition-colors">Volunteer</Link></li>
-                <li><Link to="/Internship" className="hover:text-[#fb8500] transition-colors">Internship</Link></li>
-                <li><Link to="/Members" className="hover:text-[#fb8500] transition-colors">Membership</Link></li>
-                <li><Link to="/Donate" className="hover:text-[#fb8500] transition-colors">Donate</Link></li>
-              </ul>
-            </div>
-
-            {/* Column 4: Contact - Improved for visibility */}
-            <div className="space-y-6 col-span-2 md:col-span-1">
-              <h4 className="font-bold text-white text-sm tracking-wider uppercase border-l-2 border-[#fb8500] pl-3">Contact</h4>
-              <ul className="space-y-4 text-sm text-zinc-400">
-                <li>
-                  <a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="group flex items-start gap-3 hover:text-white transition-colors">
-                    <span className="mt-0.5 text-[#fb8500]">📧</span>
-                    <span className="whitespace-nowrap">{CONTACT_INFO.primaryEmail}</span>
-                  </a>
-                </li>
-                <li>
-                  <a href="https://swastiksrijan.in" target="_blank" rel="noopener noreferrer" className="group flex items-start gap-3 hover:text-white transition-colors">
-                    <span className="mt-0.5 text-[#fb8500]">🌐</span>
-                    <span className="whitespace-nowrap">swastiksrijan.in</span>
-                  </a>
-                </li>
-              </ul>
-            </div>
-
+          <div className="lg:col-span-8 grid grid-cols-2 md:grid-cols-4 gap-x-7 gap-y-10">
+            <div><h4 className="font-black text-sm uppercase tracking-wider border-l-2 border-[#FF6600] pl-3 mb-5">Organization</h4><ul className="space-y-3 text-sm text-zinc-400"><li><Link to="/About" className="hover:text-white transition">About Us</Link></li><li><Link to="/Mission" className="hover:text-white transition">Mission & Vision</Link></li><li><Link to="/Objectives" className="hover:text-white transition">Objectives</Link></li><li><Link to="/Team" className="hover:text-white transition">Our Team</Link></li><li><Link to="/UpcomingProjects" className="hover:text-white transition">Upcoming Projects</Link></li></ul></div>
+            <div><h4 className="font-black text-sm uppercase tracking-wider border-l-2 border-[#FF6600] pl-3 mb-5">Our Work</h4><ul className="space-y-3 text-sm text-zinc-400"><li><Link to="/OurInitiatives" className="hover:text-white transition">Initiatives</Link></li><li><Link to="/LearningHub" className="hover:text-white transition">Learning HUB</Link></li><li><Link to="/Impact" className="hover:text-white transition">Impact</Link></li><li><Link to="/Campaigns" className="hover:text-white transition">Campaigns</Link></li><li><Link to="/Media" className="hover:text-white transition">Media Gallery</Link></li></ul></div>
+            <div><h4 className="font-black text-sm uppercase tracking-wider border-l-2 border-[#FF6600] pl-3 mb-5">Get Involved</h4><ul className="space-y-3 text-sm text-zinc-400"><li><Link to="/Volunteer" className="hover:text-white transition">Volunteer</Link></li><li><Link to="/Members" className="hover:text-white transition">Membership</Link></li><li><Link to="/Internship" className="hover:text-white transition">Internship</Link></li><li><Link to="/GetInvolved#partner" className="hover:text-white transition">Partnership</Link></li><li><Link to="/Donate" className="hover:text-white transition">Donate</Link></li></ul></div>
+            <div className="col-span-2 md:col-span-1"><h4 className="font-black text-sm uppercase tracking-wider border-l-2 border-[#FF6600] pl-3 mb-5">Contact</h4><div className="space-y-4 text-sm text-zinc-400"><a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="flex items-start gap-3 hover:text-white transition"><FaEnvelope className="mt-1 text-[#FF6600] shrink-0" /><span className="break-all">{CONTACT_INFO.primaryEmail}</span></a><a href={`tel:${CONTACT_INFO.phones.primary.replace(/\s/g, "")}`} className="flex items-start gap-3 hover:text-white transition"><FaPhoneAlt className="mt-1 text-[#FF6600] shrink-0" /><span>{CONTACT_INFO.phones.primaryFormatted}</span></a><div className="flex items-start gap-3"><FaMapMarkerAlt className="mt-1 text-[#FF6600] shrink-0" /><span>Registered Office<br />Rewa, Madhya Pradesh, India</span></div><Link to="/Contact" className="inline-flex text-[#FF9A45] font-bold hover:text-white transition">Contact & Enquiry →</Link></div></div>
           </div>
         </div>
 
-        {/* BOTTOM: Copyright & Legal */}
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="text-xs text-zinc-500 font-medium text-center md:text-left">
-  <p className="text-sm md:text-base font-semibold text-white">
-  © {new Date().getFullYear()} Swastik Srijan Foundation Samiti
-</p>
-
-<p className="text-xs text-zinc-400 mt-1">
-  Regd. Society | 12AB Registered | CSR-1 Registered | 80G (Provisional)
-</p>
-
-<p className="text-xs text-zinc-500 mt-1">
-  Established 2013 | All rights reserved.
-</p>
-
-<div className="flex gap-4 mt-2 justify-center md:justify-start">
-  <Link to="/PrivacyPolicy" className="hover:text-zinc-300 transition-colors">
-    Privacy Policy
-  </Link>
-
-  <Link to="/TermsAndConditions" className="hover:text-zinc-300 transition-colors">
-    Terms of Use
-  </Link>
-
-  <Link to="/Transparency" className="hover:text-zinc-300 transition-colors">
-    Transparency
-  </Link>
-
-  <Link to="/DonationRefundPolicy" className="hover:text-zinc-300 transition-colors">
-    Donation & Refund Policy
-  </Link>
-</div>
-          </div>
-
-          <div className="flex gap-3">
-            <span className="px-3 py-1 rounded bg-white/5 border border-white/5 text-[10px] uppercase font-bold text-zinc-400 tracking-wider">
-              🟦 REGISTERED SOCIETY
-            </span>
-          </div>
-        </div>
+        <div className="py-8 border-t border-white/10"><div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6"><div className="text-center lg:text-left"><p className="text-sm font-black text-white">© {year} Swastik Srijan Foundation Samiti</p><p className="text-xs text-zinc-400 mt-1">Registered Society • Reg. No. 05/22/03/11448/13 • Established 2013</p></div><div className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-xs font-semibold text-zinc-400"><Link to="/PrivacyPolicy" className="hover:text-white transition">Privacy Policy</Link><Link to="/CookiePolicy" className="hover:text-white transition">Cookie Policy</Link><Link to="/TermsAndConditions" className="hover:text-white transition">Terms of Use</Link><Link to="/Transparency" className="hover:text-white transition">Transparency</Link><Link to="/DonationRefundPolicy" className="hover:text-white transition">Donation & Refund</Link></div></div><div className="mt-6 flex flex-col sm:flex-row items-center justify-center gap-3 text-[11px] text-zinc-500 text-center"><span className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/10 bg-white/[0.03]"><FaShieldAlt className="text-[#FF6600]" /> Official website of Swastik Srijan Foundation Samiti</span><span>Service area: India</span></div></div>
       </div>
     </footer>
   );
