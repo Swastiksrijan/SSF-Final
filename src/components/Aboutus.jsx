@@ -1,4 +1,3 @@
-
 const image1 = "/images/real/ssf_event_members.jpg";
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
@@ -46,15 +45,15 @@ function Aboutus() {
           <div className="space-y-4 pt-4">
             <div className="flex items-start gap-4">
               <div className="w-2 h-2 mt-2.5 rounded-full bg-black shrink-0"></div>
-              <p className="text-zinc-600">Empowering <strong>50,000+</strong> lives through sustainable development.</p>
+              <p className="text-zinc-600">Supporting communities through education, awareness, skills and sustainable development.</p>
             </div>
             <div className="flex items-start gap-4">
               <div className="w-2 h-2 mt-2.5 rounded-full bg-black shrink-0"></div>
-              <p className="text-zinc-600">Working in <strong>Education, Healthcare, and Livelihood</strong>.</p>
+              <p className="text-zinc-600">Working in <strong>Education, Healthcare, and Livelihood</strong>, along with other registered objectives.</p>
             </div>
             <div className="flex items-start gap-4">
               <div className="w-2 h-2 mt-2.5 rounded-full bg-black shrink-0"></div>
-              <p className="text-zinc-600">Partnering with NGOs, corporates, and volunteers like <strong>YOU</strong>.</p>
+              <p className="text-zinc-600">Partnering with NGOs, corporates, institutions, trainers, and volunteers like <strong>YOU</strong>.</p>
             </div>
           </div>
 
