@@ -40,7 +40,8 @@ export default function PageHero({
         "Privacy Policy": "/images/real/integrity-pledge.jpg",
         "Terms & Conditions": "/images/real/academy-board-compliance.jpg",
         "Transparency & Reports": "/images/real/ncw_pledge_certificate.jpg",
-        "Registration Details": "/images/uploads/ngo-darpan.jpg"
+        "Registration Details": "/images/uploads/ngo-darpan.jpg",
+        "Our Campaigns": "https://drive.google.com/uc?export=view&id=17_wzFDJggJltxlaVY6rlB2_yGAzS52F8"
     };
 
     const heroImage = legacyHeroImages[title] || image || pageHeader;
