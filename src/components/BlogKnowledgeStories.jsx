@@ -23,6 +23,12 @@ const KNOWLEDGE_STORIES = [
   {id:118,title:"स्वयंसेवा का असली अर्थ",hi:"समय, skill और सहयोग भी सेवा हैं",image:"/images/real/women_community_meeting.jpg",text:"Volunteer बनने का अर्थ केवल धन देना नहीं है। शिक्षा, digital skills, awareness, event support, translation या अपने professional skill के माध्यम से भी समाज के लिए योगदान दिया जा सकता है।"},
   {id:119,title:"सोशल मीडिया पर खबर साझा करने से पहले",hi:"Forward करने से पहले Verify करें",image:"/images/real/office_banner.jpg",text:"किसी खबर, फोटो या वीडियो को आगे भेजने से पहले source, date और context जांचें। भावनात्मक या सनसनीखेज संदेश हमेशा सही हों, यह जरूरी नहीं। गलत जानकारी का प्रसार रोकना भी जिम्मेदार नागरिकता है।"},
   {id:120,title:"समाज में सहयोग की संस्कृति",hi:"छोटे सहयोग मिलकर बड़ा बदलाव ला सकते हैं",image:"/images/cultural-event-children.jpg",text:"समाज की प्रगति केवल संस्थाओं की जिम्मेदारी नहीं है। सम्मान, सहयोग, जागरूकता, skill sharing और जरूरतमंद व्यक्ति की सही समय पर सहायता—ये सभी सकारात्मक बदलाव की नींव बन सकते हैं।"},
+  {id:121,title:"घर में First-Aid Kit क्यों जरूरी है?",hi:"छोटी चोट या अचानक जरूरत में शुरुआती मदद के लिए तैयार रहें",image:"/images/protection-ecosystem.png",text:"घर में basic First-Aid Kit रखना छोटी चोट, कटने या सामान्य आपात स्थिति में शुरुआती सहायता के लिए उपयोगी हो सकता है। इसमें जरूरी सामग्री रखें, expiry dates जांचते रहें और गंभीर स्थिति में तुरंत medical help लें।"},
+  {id:122,title:"घर में Fire Safety क्यों जरूरी है?",hi:"छोटी सावधानी और सही तैयारी जोखिम कम कर सकती है",image:"/images/real/office_banner.jpg",text:"बिजली के तार, गैस और अन्य आग के स्रोतों के आसपास सावधानी रखें। घर में emergency exit और जरूरी फोन नंबर की जानकारी रखें। आग लगने की स्थिति में घबराने के बजाय सुरक्षित स्थान पर जाएं और स्थानीय emergency services की मदद लें।"},
+  {id:123,title:"मोबाइल Battery को सुरक्षित कैसे रखें?",hi:"खराब charger और गर्म होती battery को नजरअंदाज न करें",image:"/images/real/news_media_1.jpg",text:"क्षतिग्रस्त cable या charger का उपयोग न करें और असामान्य रूप से गर्म होने वाली battery को नजरअंदाज न करें। फोन को तेज गर्मी से दूर रखें और charging के लिए manufacturer की सुरक्षित accessories व instructions का पालन करें।"},
+  {id:124,title:"जरूरी Documents की Digital Copy क्यों रखें?",hi:"जरूरत के समय महत्वपूर्ण जानकारी आसानी से उपलब्ध रहे",image:"/images/uploads/learning-hub-2.jpg",text:"पहचान और अन्य महत्वपूर्ण दस्तावेजों की सुरक्षित digital copy जरूरत के समय उपयोगी हो सकती है। इन्हें सुरक्षित storage में रखें, मजबूत password और two-factor authentication का उपयोग करें और संवेदनशील documents अनजान लोगों से साझा न करें।"},
+  {id:125,title:"बारिश के मौसम में घर को कैसे सुरक्षित रखें?",hi:"पानी का रिसाव, बिजली और फिसलन पर समय रहते ध्यान दें",image:"/images/agriculture.png",text:"बारिश के दौरान घर में पानी के रिसाव, फिसलन और बिजली से जुड़े जोखिमों पर ध्यान दें। गीले हाथों से electrical switches न छुएं, खराब wiring को नजरअंदाज न करें और जरूरत होने पर qualified electrician की मदद लें।"},
+  {id:126,title:"Emergency Contacts फोन में क्यों जरूरी हैं?",hi:"आपात स्थिति में सही व्यक्ति तक जल्दी पहुंचना आसान हो सकता है",image:"/images/protection-ecosystem.png",text:"परिवार, स्थानीय emergency services और भरोसेमंद संपर्कों के नंबर फोन में पहले से सुरक्षित रखें। जरूरत पड़ने पर फोन लॉक होने की स्थिति के लिए emergency information feature उपलब्ध हो तो उसे भी सही तरीके से सेट करें।"},
 ];
 
 async function shareStory(story) {
@@ -57,7 +63,7 @@ export default function BlogKnowledgeStories({ children }) {
       <div className="mx-auto max-w-6xl">
         <div className="text-center mb-12">
           <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#fb8500]">Knowledge & Awareness</p>
-          <h2 className="mt-2 text-4xl md:text-5xl font-serif font-bold text-[#002344]">20 नई जानकारी वाली Stories</h2>
+          <h2 className="mt-2 text-4xl md:text-5xl font-serif font-bold text-[#002344]">26 नई जानकारी वाली Stories</h2>
           <p className="mt-4 text-zinc-600 max-w-3xl mx-auto">रोजमर्रा की जिंदगी, शिक्षा, डिजिटल सुरक्षा, स्वास्थ्य, पर्यावरण और सामाजिक जागरूकता से जुड़ी उपयोगी जानकारी।</p>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-7">
