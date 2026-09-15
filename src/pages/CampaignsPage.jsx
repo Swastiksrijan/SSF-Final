@@ -35,23 +35,33 @@ const shareCampaign = async (campaign) => {
   if (navigator.share) {
     try {
       const imageUrl = new URL(campaign.image, window.location.origin).href;
-      const imageResponse = await fetch(imageUrl);
+      const imageResponse = await fetch(imageUrl, { cache: "no-cache" });
+      if (!imageResponse.ok) throw new Error("Campaign image could not be loaded");
       const imageBlob = await imageResponse.blob();
-      const extension = imageBlob.type.includes("png") ? "png" : "jpg";
-      const imageFile = new File([imageBlob], `ssf-${campaign.id}.${extension}`, { type: imageBlob.type || "image/jpeg" });
-      const shareData = { title: `SSF | ${campaign.title}`, text, url };
+      const mime = imageBlob.type || "image/jpeg";
+      const extension = mime.includes("png") ? "png" : "jpg";
+      const imageFile = new File([imageBlob], `SSF-${campaign.id}.${extension}`, { type: mime });
 
       if (navigator.canShare?.({ files: [imageFile] })) {
-        await navigator.share({ ...shareData, files: [imageFile] });
-      } else {
-        await navigator.share(shareData);
+        // Share the actual campaign photo as a file. WhatsApp and other apps
+        // can then receive the image itself instead of only a link preview.
+        await navigator.share({
+          title: `SSF | ${campaign.title}`,
+          text: `${text}\n\n${url}`,
+          files: [imageFile],
+        });
+        return;
       }
+
+      await navigator.share({ title: `SSF | ${campaign.title}`, text, url });
       return;
     } catch (error) {
       if (error?.name === "AbortError") return;
     }
   }
 
+  // URL sharing cannot force WhatsApp to attach a photo; this fallback keeps
+  // the campaign link usable on browsers without file-sharing support.
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${text}\n\n${url}`)}`;
   window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 };
@@ -68,7 +78,7 @@ export default function Campaigns() {
         {campaigns.map((c,i)=>{ const link=RAZORPAY_CAMPAIGN_LINKS[c.id]||RAZORPAY_LINK; const dedicated=Boolean(RAZORPAY_CAMPAIGN_LINKS[c.id]); return <motion.article key={c.id} id={c.id} initial={{opacity:0,y:25}} whileInView={{opacity:1,y:0}} viewport={{once:true,amount:.1}} transition={{duration:.45}} className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-xl">
           <div className="relative h-52 overflow-hidden"><img src={c.image} alt={c.title} className="h-full w-full object-cover transition duration-700 hover:scale-105"/><div className={`absolute inset-0 bg-gradient-to-tr ${c.gradient} opacity-35`}/><div className={`absolute left-5 top-5 rounded-2xl bg-gradient-to-br ${c.gradient} p-4 text-3xl text-white shadow-xl`}>{c.icon}</div><span className="absolute right-5 top-5 rounded-full bg-white/90 px-4 py-2 text-xs font-bold text-[#002344]">Campaign {String(i+1).padStart(2,"0")}</span></div>
           <div className="p-7"><h3 className="text-2xl font-serif font-bold text-[#002344] md:text-3xl">{c.title}</h3><p className="mt-1 text-sm font-semibold text-zinc-400">{c.hindi}</p><p className={`mt-3 bg-gradient-to-r ${c.gradient} bg-clip-text font-bold text-transparent`}>{c.tagline}</p><div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">{c.items.map(item=><div key={item} className="rounded-xl bg-zinc-50 px-3 py-2 text-sm text-zinc-600">✓ {item}</div>)}</div>
-            <div className="mt-5 flex flex-wrap gap-3"><a href={link} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${c.gradient} px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5`}><FaRupeeSign/>{dedicated?"Donate to This Campaign":"Donate Now"}</a><button type="button" onClick={()=>shareCampaign(c)} className="inline-flex items-center gap-2 rounded-full border-2 border-[#fb8500] px-5 py-3 text-sm font-bold text-[#002344] transition hover:bg-[#fb8500] hover:text-white" aria-label={`Share ${c.title} campaign`}><FaShareAlt/> Share Campaign</button><Link to="/DonateAndSupport" className="inline-flex items-center gap-2 rounded-full border-2 border-[#002344] px-5 py-3 text-sm font-bold text-[#002344] transition hover:bg-[#002344] hover:text-white">Details <FaArrowRight/></Link></div>
+            <div className="mt-5 flex flex-wrap gap-3"><a href={link} target="_blank" rel="noopener noreferrer" className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${c.gradient} px-6 py-3 text-sm font-bold text-white shadow-lg transition hover:-translate-y-0.5`}><FaRupeeSign/>{dedicated?"Donate to This Campaign":"Donate Now"}</a><button type="button" onClick={()=>shareCampaign(c)} className="inline-flex items-center gap-2 rounded-full border-2 border-[#fb8500] px-5 py-3 text-sm font-bold text-[#002344] transition hover:bg-[#fb8500] hover:text-white" aria-label={`Share ${c.title} campaign photo and link`}><FaShareAlt/> Share Campaign</button><Link to="/DonateAndSupport" className="inline-flex items-center gap-2 rounded-full border-2 border-[#002344] px-5 py-3 text-sm font-bold text-[#002344] transition hover:bg-[#002344] hover:text-white">Details <FaArrowRight/></Link></div>
           </div></motion.article> })}
       </div>
     </div></div>
