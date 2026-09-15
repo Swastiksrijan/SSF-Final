@@ -31,9 +31,27 @@ const campaigns = [
 const shareCampaign = async (campaign) => {
   const url = `${window.location.origin}/campaigns#${campaign.id}`;
   const text = `SSF ${campaign.hindi} — ${campaign.tagline}`;
+
   if (navigator.share) {
-    try { await navigator.share({ title: `SSF | ${campaign.title}`, text, url }); return; } catch (error) { if (error?.name === "AbortError") return; }
+    try {
+      const imageUrl = new URL(campaign.image, window.location.origin).href;
+      const imageResponse = await fetch(imageUrl);
+      const imageBlob = await imageResponse.blob();
+      const extension = imageBlob.type.includes("png") ? "png" : "jpg";
+      const imageFile = new File([imageBlob], `ssf-${campaign.id}.${extension}`, { type: imageBlob.type || "image/jpeg" });
+      const shareData = { title: `SSF | ${campaign.title}`, text, url };
+
+      if (navigator.canShare?.({ files: [imageFile] })) {
+        await navigator.share({ ...shareData, files: [imageFile] });
+      } else {
+        await navigator.share(shareData);
+      }
+      return;
+    } catch (error) {
+      if (error?.name === "AbortError") return;
+    }
   }
+
   const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(`${text}\n\n${url}`)}`;
   window.open(whatsappUrl, "_blank", "noopener,noreferrer");
 };
