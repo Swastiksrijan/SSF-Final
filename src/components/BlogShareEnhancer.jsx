@@ -1,5 +1,4 @@
 import { useEffect } from "react";
-import { Share2 } from "lucide-react";
 
 const SITE_URL = "https://swastiksrijan.in";
 
