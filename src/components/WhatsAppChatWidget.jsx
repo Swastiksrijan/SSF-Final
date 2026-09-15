@@ -1,11 +1,10 @@
-// SSF website support FAQ — refreshed 2026-09-13; deploy this commit to production.
-import { useMemo, useState } from "react";
+// SSF website support FAQ — touch-friendly quick options; deploy this commit to production.
+import { useMemo, useRef, useState, useEffect } from "react";
 import { FaWhatsapp, FaTimes, FaComments, FaPaperPlane } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import { useLanguage } from "../context/LanguageContext";
 
 const QUICK_QUESTIONS = ["SSF क्या है?","Registration details","SSF के objectives क्या हैं?","Volunteer कैसे बनें?","Member कैसे बनें?","Donation कैसे करें?","CSR partnership","Annual reports कहाँ हैं?"];
-
 const BOT_INTRO = "नमस्ते 🙏 Swastik Srijan Foundation में आपका स्वागत है। मैं SSF की उपलब्ध verified जानकारी के आधार पर सहायता कर सकता हूँ। जानकारी उपलब्ध न होने पर मैं अनुमान नहीं लगाऊँगा।";
 const UNKNOWN_REPLY = "इस प्रश्न की verified जानकारी मेरे उपलब्ध SSF records में नहीं है। मैं अनुमान लगाकर गलत जानकारी नहीं दूँगा। कृपया SSF से सीधे संपर्क करें: WhatsApp +91 9718346691 या swastiksrijanfoundation@gmail.com. आप नीचे WhatsApp Chat से टीम से भी जुड़ सकते हैं।";
 
@@ -82,7 +81,13 @@ export default function WhatsAppChatWidget() {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([{ role: "bot", text: BOT_INTRO }]);
   const [isTyping, setIsTyping] = useState(false);
+  const messagesEndRef = useRef(null);
   const whatsappLink = useMemo(() => `${CONTACT_INFO.social.whatsapp}?text=${encodeURIComponent("Namaste Swastik Srijan Foundation team, mujhe SSF ke baare mein jankari chahiye.")}`, []);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth", block: "nearest" });
+  }, [messages, isTyping]);
+
   const sendMessage = (rawMessage) => {
     const message = rawMessage.trim();
     if (!message || isTyping) return;
@@ -90,16 +95,19 @@ export default function WhatsAppChatWidget() {
     setInput(""); setIsTyping(true);
     window.setTimeout(() => { setMessages((prev) => [...prev, { role: "bot", text: getBotReply(message) }]); setIsTyping(false); }, 450);
   };
+
   return (
     <div className="fixed bottom-24 right-4 md:right-6 z-[60] flex flex-col items-end gap-3">
-      {open && <div className="w-[min(92vw,380px)] rounded-2xl bg-white shadow-2xl border border-zinc-200 overflow-hidden">
+      {open && <div className="w-[min(92vw,380px)] rounded-2xl bg-white shadow-2xl border border-zinc-200 overflow-hidden" style={{ overscrollBehavior: "contain" }}>
         <div className="bg-[#0b3a64] text-white px-4 py-3"><p className="text-sm font-bold">Swastik Srijan Foundation Support</p><p className="text-xs text-white/80">Verified information assistant + real team on WhatsApp</p></div>
-        <div className="max-h-[330px] overflow-y-auto p-3 space-y-2 bg-zinc-50">
-          {messages.map((msg, i) => <div key={`${msg.role}-${i}`} className={`max-w-[92%] rounded-xl px-3 py-2 text-xs leading-relaxed ${msg.role === "bot" ? "bg-white border border-zinc-200 text-zinc-700" : "ml-auto bg-[#0b3a64] text-white"}`}>{msg.text}</div>)}
+        <div className="max-h-[330px] overflow-y-auto overscroll-contain p-3 space-y-2 bg-zinc-50" style={{ WebkitOverflowScrolling: "touch", touchAction: "pan-y" }}>
+          {messages.map((msg, i) => <div key={`${msg.role}-${i}`} className={`max-w-[92%] rounded-xl px-3 py-2 text-xs leading-relaxed ${msg.role === "bot" ? "bg-white border border-zinc-200 text-zinc-700" : "ml-auto bg-[#0b3a64] text-white"}>{msg.text}</div>)}
           {isTyping && <div className="inline-flex items-center gap-1 rounded-xl bg-white border border-zinc-200 px-3 py-2 text-xs text-zinc-500"><span className="h-1.5 w-1.5 rounded-full bg-zinc-400 animate-pulse" /><span className="h-1.5 w-1.5 rounded-full bg-zinc-400 animate-pulse [animation-delay:100ms]" /><span className="h-1.5 w-1.5 rounded-full bg-zinc-400 animate-pulse [animation-delay:200ms]" /></div>}
+          <div ref={messagesEndRef} />
         </div>
         <div className="px-3 py-2 border-t border-zinc-100 bg-white">
-          <div className="flex flex-wrap gap-1.5 mb-2">{QUICK_QUESTIONS.map((q) => <button key={q} type="button" onClick={() => sendMessage(q)} className="text-[11px] px-2.5 py-1 rounded-full border border-zinc-200 text-zinc-600 hover:bg-zinc-100 transition-colors">{q}</button>)}</div>
+          <p className="text-[10px] font-semibold text-zinc-400 mb-1.5">किसी भी सवाल पर सीधे touch करें 👇</p>
+          <div className="grid grid-cols-2 gap-1.5 mb-2">{QUICK_QUESTIONS.map((q) => <button key={q} type="button" onClick={() => sendMessage(q)} className="min-h-9 text-[11px] px-2 py-1.5 rounded-lg border border-zinc-200 bg-zinc-50 text-zinc-700 active:scale-[0.98] hover:bg-zinc-100 transition-transform" aria-label={`Ask: ${q}`}>{q}</button>)}</div>
           <div className="flex items-center gap-2"><input type="text" value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && sendMessage(input)} placeholder={lang === "en" ? "Type your question..." : "अपना सवाल लिखें..."} className="flex-1 h-9 rounded-lg border border-zinc-200 px-3 text-xs focus:outline-none focus:ring-2 focus:ring-[#0b3a64]/20" /><button type="button" onClick={() => sendMessage(input)} className="h-9 w-9 rounded-lg bg-[#0b3a64] text-white flex items-center justify-center hover:brightness-110 transition-all" aria-label="Send message"><FaPaperPlane className="text-xs" /></button></div>
           <div className="mt-2 grid grid-cols-2 gap-2"><a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#25D366] px-2 py-2 text-[11px] font-bold text-white hover:brightness-95 transition-all"><FaWhatsapp /> {lang === "en" ? "Start WhatsApp Chat" : "व्हाट्सऐप चैट शुरू करें"}</a><a href="tel:+919718346691" className="inline-flex items-center justify-center rounded-lg border border-zinc-300 px-2 py-2 text-[11px] font-semibold text-zinc-700 hover:bg-zinc-50 transition-colors">{lang === "en" ? "Call Now" : "अभी कॉल करें"}</a></div>
         </div>
