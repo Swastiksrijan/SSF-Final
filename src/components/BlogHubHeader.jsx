@@ -21,9 +21,7 @@ function findAndScroll(queries) {
   const elements = Array.from(document.querySelectorAll("h1,h2,h3,h4,p,article,section"));
 
   for (const term of terms) {
-    const match = elements.find((el) =>
-      el.textContent?.toLowerCase().includes(term.toLowerCase())
-    );
+    const match = elements.find((el) => el.textContent?.toLowerCase().includes(term.toLowerCase()));
     if (match) {
       match.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
@@ -40,7 +38,7 @@ export default function BlogHubHeader() {
   };
 
   return (
-    <section className="mx-auto mb-12 w-full max-w-7xl px-0">
+    <section className="mx-auto mb-12 w-full max-w-7xl">
       <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.11] via-white/[0.045] to-transparent p-4 shadow-2xl sm:rounded-[2rem] sm:p-7 lg:p-9">
         <div className="pointer-events-none absolute -left-20 -top-28 h-64 w-64 rounded-full bg-white/[0.07] blur-3xl" />
         <div className="pointer-events-none absolute -bottom-32 -right-20 h-72 w-72 rounded-full bg-white/[0.06] blur-3xl" />
@@ -51,13 +49,10 @@ export default function BlogHubHeader() {
             <span className="truncate">Swastik Srijan Foundation • Blog &amp; Knowledge Hub</span>
           </div>
 
-          <h1 className="mt-5 text-3xl font-black leading-tight tracking-tight sm:mt-6 sm:text-5xl lg:text-6xl">
-            ज्ञान • जागरूकता • सेवा • सृजन
-          </h1>
+          <h1 className="mt-5 text-3xl font-black leading-tight tracking-tight sm:mt-6 sm:text-5xl lg:text-6xl">ज्ञान • जागरूकता • सेवा • सृजन</h1>
 
           <p className="mx-auto mt-4 max-w-3xl text-sm leading-7 text-white/70 sm:mt-5 sm:text-lg sm:leading-8">
-            <span className="font-semibold text-white">हर दिन कुछ नया सीखें</span> —
-            उपयोगी जानकारी, डिजिटल सुरक्षा, शिक्षा, स्वास्थ्य, पर्यावरण और सामाजिक पहल से जुड़ी कहानियाँ एक जगह।
+            <span className="font-semibold text-white">हर दिन कुछ नया सीखें</span> — उपयोगी जानकारी, डिजिटल सुरक्षा, शिक्षा, स्वास्थ्य, पर्यावरण और सामाजिक पहल से जुड़ी कहानियाँ एक जगह।
           </p>
 
           <form onSubmit={submit} className="mx-auto mt-6 w-full max-w-2xl sm:mt-8">
@@ -70,12 +65,7 @@ export default function BlogHubHeader() {
                 aria-label="Blog story search"
                 className="min-w-0 flex-1 bg-transparent px-2 py-3 text-sm text-white outline-none placeholder:text-white/40 sm:text-base"
               />
-              <button
-                type="submit"
-                className="shrink-0 rounded-xl bg-white px-4 py-3 text-sm font-bold text-black transition hover:bg-white/90 active:scale-[0.98] sm:px-5 sm:text-base"
-              >
-                खोजें
-              </button>
+              <button type="submit" className="shrink-0 rounded-xl bg-white px-4 py-3 text-sm font-bold text-black transition hover:bg-white/90 active:scale-[0.98] sm:px-5 sm:text-base">खोजें</button>
             </div>
           </form>
         </div>
@@ -89,21 +79,20 @@ export default function BlogHubHeader() {
             <span className="shrink-0 text-[11px] text-white/40 sm:text-xs">12 Categories</span>
           </div>
 
-          <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 sm:gap-3 lg:grid-cols-4">
+          {/* Every category is a compact card. Desktop: 4 columns. Tablet: 3 columns. Mobile: 2 columns. */}
+          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 sm:gap-3 lg:grid-cols-4">
             {CATEGORIES.map((category) => (
               <button
                 key={category.label}
                 type="button"
                 onClick={() => findAndScroll(category.queries)}
-                className="group flex min-h-[70px] w-full items-center gap-3 rounded-2xl border border-white/10 bg-black/25 px-3.5 py-3 text-left transition-all duration-200 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-white/30 sm:min-h-[76px] sm:px-4"
+                className="group flex min-h-[92px] w-full flex-col items-center justify-center rounded-2xl border border-white/10 bg-black/25 px-2.5 py-3 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-white/30 sm:min-h-[104px] sm:px-3"
                 aria-label={`${category.label} की संबंधित stories देखें`}
               >
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.07] text-xl transition group-hover:bg-white/[0.12] sm:h-11 sm:w-11">
-                  {category.icon}
-                </span>
-                <span className="min-w-0 flex-1">
-                  <span className="block truncate text-sm font-semibold leading-5 text-white/90">{category.label}</span>
-                  <span className="mt-0.5 block text-[11px] leading-4 text-white/35 transition group-hover:text-white/55">Stories देखें →</span>
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.07] text-xl transition group-hover:bg-white/[0.12] sm:h-11 sm:w-11">{category.icon}</span>
+                <span className="mt-2 w-full min-w-0">
+                  <span className="block truncate text-xs font-semibold leading-5 text-white/90 sm:text-sm">{category.label}</span>
+                  <span className="mt-0.5 block text-[10px] leading-4 text-white/35 transition group-hover:text-white/55 sm:text-[11px]">Stories देखें →</span>
                 </span>
               </button>
             ))}
