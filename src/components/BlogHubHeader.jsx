@@ -1,21 +1,34 @@
 import { useState } from "react";
 
 const CATEGORIES = [
-  { label: "Awareness", icon: "💡", query: "जागरूकता" },
-  { label: "Education & Skill", icon: "🎓", query: "शिक्षा" },
-  { label: "Safety", icon: "🛡️", query: "सुरक्षा" },
-  { label: "Health", icon: "❤️", query: "स्वास्थ्य" },
-  { label: "Environment", icon: "🌱", query: "पर्यावरण" },
-  { label: "SSF Activities", icon: "🤝", query: "SSF" },
-  { label: "Digital Safety", icon: "🔐", query: "OTP" },
-  { label: "Students & Youth", icon: "🚀", query: "विद्यार्थी" },
+  { label: "Awareness", icon: "💡", queries: ["जागरूकता", "awareness"] },
+  { label: "Education & Skill", icon: "🎓", queries: ["शिक्षा", "education", "skill", "कौशल"] },
+  { label: "Safety", icon: "🛡️", queries: ["सुरक्षा", "safety", "सुरक्षित"] },
+  { label: "Health", icon: "❤️", queries: ["स्वास्थ्य", "health", "चिकित्सा"] },
+  { label: "Environment", icon: "🌱", queries: ["पर्यावरण", "environment", "पेड़", "वृक्ष"] },
+  { label: "SSF Activities", icon: "🤝", queries: ["SSF", "Swastik Srijan", "गतिविधि", "पहल"] },
+  { label: "Digital Safety", icon: "🔐", queries: ["OTP", "UPI", "QR Code", "Password", "डिजिटल"] },
+  { label: "Students & Youth", icon: "🚀", queries: ["विद्यार्थी", "student", "youth", "छात्र", "युवा"] },
+  { label: "Knowledge & Awareness", icon: "📚", queries: ["Knowledge & Awareness", "First-Aid", "OTP", "जागरूकता"] },
+  { label: "Social Impact", icon: "🤝", queries: ["Social Impact", "सामाजिक", "समाज", "सहायता"] },
+  { label: "Learning & Responsibility", icon: "🌱", queries: ["Learning & Responsibility", "सीख", "सीखें", "जिम्मेदारी", "शिक्षा"] },
+  { label: "Public Awareness", icon: "📢", queries: ["Public Awareness", "जन-जागरूकता", "जागरूकता", "awareness"] },
 ];
 
-function findAndScroll(query) {
-  if (typeof document === "undefined" || !query) return;
+function findAndScroll(queries) {
+  if (typeof document === "undefined" || !queries?.length) return;
+  const terms = Array.isArray(queries) ? queries : [queries];
   const elements = Array.from(document.querySelectorAll("h1,h2,h3,h4,p,article,section"));
-  const match = elements.find((el) => el.textContent?.toLowerCase().includes(query.toLowerCase()));
-  match?.scrollIntoView({ behavior: "smooth", block: "center" });
+
+  for (const term of terms) {
+    const match = elements.find((el) =>
+      el.textContent?.toLowerCase().includes(term.toLowerCase())
+    );
+    if (match) {
+      match.scrollIntoView({ behavior: "smooth", block: "center" });
+      return;
+    }
+  }
 }
 
 export default function BlogHubHeader() {
@@ -50,25 +63,20 @@ export default function BlogHubHeader() {
           </form>
         </div>
 
-        <div className="mt-8 grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <div className="mt-8 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
           {CATEGORIES.map((category) => (
             <button
               key={category.label}
               type="button"
-              onClick={() => findAndScroll(category.query)}
+              onClick={() => findAndScroll(category.queries)}
               className="rounded-2xl border border-white/10 bg-black/25 px-3 py-3 text-left hover:bg-white/10 hover:border-white/25 transition"
+              aria-label={`${category.label} की संबंधित stories देखें`}
             >
               <span className="text-xl">{category.icon}</span>
               <span className="block mt-1 text-sm font-medium">{category.label}</span>
+              <span className="block mt-1 text-[11px] text-white/40">Stories देखें →</span>
             </button>
           ))}
-        </div>
-
-        <div className="mt-6 flex flex-wrap justify-center gap-x-6 gap-y-2 text-xs sm:text-sm text-white/50">
-          <span>📚 Knowledge & Awareness</span>
-          <span>🤝 Social Impact</span>
-          <span>🌱 Learning & Responsibility</span>
-          <span>📢 Public Awareness</span>
         </div>
       </div>
     </section>
