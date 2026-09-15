@@ -5,7 +5,7 @@ import { FaArrowRight } from "react-icons/fa";
 // Team data structure - Single source of truth
 const teamStructure = {
   leadership: [
-    { name: "Mr. Ramesh Pandey", designation: "Founder & President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg" },
+    { name: "Mr. Ramesh Pandey", designation: "Founder & President", location: "Rewa, Madhya Pradesh", img: "https://drive.google.com/uc?export=view&id=1GTYxGTc951L1LjBNhuQB443Wne5OnwSl" },
     { name: "Ms. Preeti Shukla", designation: "Vice President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_19.jpg" },
     { name: "Mr. Amit Pandey", designation: "Secretary", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_15.jpg" },
     { name: "Ms. Divya Sharma", designation: "Treasurer", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/divya_sharma.jpg" },
