@@ -19,17 +19,29 @@ const YEARS = [
 ];
 
 const PHOTO_HIGHLIGHTS = [
-  { id: "1QceaNSKbc8127uOvA4XJemT8y9DB93c4", label: "Activity Highlight 01" },
-  { id: "1-hRdzPQZ2doslXWrZNtCaE6MlYfwS39Y", label: "Activity Highlight 02" },
-  { id: "1bo4QhUfFgrmaSPAhBuUxYv2LiiR1u8vq", label: "Activity Highlight 03" },
-  { id: "1mnxeCcIagsPGzFcBbtekK9B5LpGbVLLG", label: "Activity Highlight 04" },
-  { id: "1a8VS3ThJNCO6_bmwlaD3bTxWd_L1123T", label: "Activity Highlight 05" },
-  { id: "1Ear_De7MWSUBZnsMGALPClAoRZQIFMf3", label: "Activity Highlight 06" },
-  { id: "1OJ9MwFO8wYEFwd8CrFpeQedBCteEDWmH", label: "Activity Highlight 07" }
-].map((item) => ({
-  ...item,
-  image: `https://drive.google.com/uc?export=view&id=${item.id}`,
-  view: `https://drive.google.com/file/d/${item.id}/view?usp=drivesdk`
+  "1QceaNSKbc8127uOvA4XJemT8y9DB93c4",
+  "1-hRdzPQZ2doslXWrZNtCaE6MlYfwS39Y",
+  "1bo4QhUfFgrmaSPAhBuUxYv2LiiR1u8vq",
+  "1mnxeCcIagsPGzFcBbtekK9B5LpGbVLLG",
+  "1a8VS3ThJNCO6_bmwlaD3bTxWd_L1123T",
+  "1Ear_De7MWSUBZnsMGALPClAoRZQIFMf3",
+  "1OJ9MwFO8wYEFwd8CrFpeQedBCteEDWmH",
+  "1k4IJWSaM_0qgheGs27GcMHk3NTA8_Opo",
+  "1QJiUduv85xEhiccmRDKrF_o6EpHNljq4",
+  "1HJ8kUHYgL30ZDHwiIER3N29atGsyOFPU",
+  "10dLLnc5ysZOd-Z9Lnntw7cs2d-9yXmo4",
+  "1dLGhqGKrSso7pPHkIHAtzt8N9RhPLofA",
+  "1RtDJxqZF5_yIpAA4ezix57f7UHJCITI1",
+  "1zsBnHmuN8Czk8Q9jFr-DqamPTX7I_X28",
+  "1FK1yTScwdIOri7cRdo6QzlAx9GlDIIuQ",
+  "1yiWqV-QIvlNmTUryG6ejO6Zp7uSGgp7f",
+  "16bfmSiH6gMoYgZbQGeOhSOzcuQA-oDTe",
+  "17GxCIp7Xu7OTtEBR9xqMNIiVZCaH9QYg"
+].map((id, index) => ({
+  id,
+  label: `Activity Highlight ${String(index + 1).padStart(2, "0")}`,
+  image: `https://drive.google.com/uc?export=view&id=${id}`,
+  view: `https://drive.google.com/file/d/${id}/view?usp=drivesdk`
 }));
 
 const TONES = {
@@ -73,7 +85,7 @@ export default function ServiceJourneyCards() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.15 }}
-                transition={{ duration: 0.45, delay: index * 0.05 }}
+                transition={{ duration: 0.45, delay: (index % 6) * 0.05 }}
                 className="group rounded-3xl border border-zinc-200 bg-white overflow-hidden shadow-sm hover:shadow-xl transition-all"
               >
                 <div className="w-full min-h-[260px] max-h-[520px] bg-zinc-50 flex items-center justify-center p-3">
@@ -89,12 +101,7 @@ export default function ServiceJourneyCards() {
                     <p className="text-xs font-black uppercase tracking-[0.16em] text-[#FF6600]">SSF • Activity</p>
                     <h4 className="mt-1 font-bold text-[#002344]">{item.label}</h4>
                   </div>
-                  <a
-                    href={item.view}
-                    target="_blank"
-                    rel="noreferrer noopener"
-                    className="shrink-0 inline-flex items-center gap-2 rounded-full bg-[#002344] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#FF6600] transition-colors"
-                  >
+                  <a href={item.view} target="_blank" rel="noreferrer noopener" className="shrink-0 inline-flex items-center gap-2 rounded-full bg-[#002344] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#FF6600] transition-colors">
                     View Full <FaExternalLinkAlt />
                   </a>
                 </div>
