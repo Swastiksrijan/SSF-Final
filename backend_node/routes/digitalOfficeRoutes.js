@@ -152,7 +152,7 @@ router.post('/digital-office/google/create-meeting', requireOfficeAuth, async (r
     let addedMembers=0;
     for(const email of emails){
       try{
-        await googleJson('https://meet.googleapis.com/v2/'+encodeURIComponent(space.name)+'/members',{method:'POST',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({email})});
+        await googleJson('https://meet.googleapis.com/v2/'+space.name+'/members',{method:'POST',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({email})});
         addedMembers++;
       }catch(e){console.warn('Meet member add failed for',email,e.message);}
     }
