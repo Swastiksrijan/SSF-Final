@@ -44,5 +44,11 @@ export const ENDPOINTS = {
     ADMIN_DELETE_INTEREST: (id) => `${API_BASE_URL}/api/admin/interests/${id}`,
     ADMIN_DELETE_INTERNSHIP: (id) => `${API_BASE_URL}/api/admin/internships/${id}`,
     ADMIN_DELETE_USER: (id) => `${API_BASE_URL}/api/admin/users/${encodeURIComponent(id)}`,
+    DIGITAL_OFFICE_SUMMARY: `${API_BASE_URL}/api/digital-office/summary`,
+    DIGITAL_OFFICE_RECORDS: `${API_BASE_URL}/api/digital-office/records`,
+    DIGITAL_OFFICE_DONATIONS: `${API_BASE_URL}/api/digital-office/donations`,
+    DIGITAL_OFFICE_EXPENSES: `${API_BASE_URL}/api/digital-office/expenses`,
+    DIGITAL_OFFICE_REPORTS: `${API_BASE_URL}/api/digital-office/reports`,
+    DIGITAL_OFFICE_AUDIT: `${API_BASE_URL}/api/digital-office/audit`,
     VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`
 };
