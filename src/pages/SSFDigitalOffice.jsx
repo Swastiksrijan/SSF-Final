@@ -82,7 +82,7 @@ export default function SSFDigitalOffice(){
  return <div className="min-h-screen bg-zinc-50 pt-28 pb-16 px-3 sm:px-6"><div className="max-w-[1500px] mx-auto">
   <header className="bg-[#002344] text-white rounded-[2rem] p-6 sm:p-8 mb-5"><div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5">
    <div className="flex items-start gap-4"><img src={logoImg} alt="SSF logo" className="h-16 w-16 sm:h-20 sm:w-20 object-contain rounded-2xl bg-white p-2 shrink-0"/><div><Link to="/AdminPortal" className="text-white/70 text-sm font-bold inline-flex items-center gap-2"><FaArrowLeft/> Admin Portal</Link><p className="text-xs text-orange-300 font-black uppercase tracking-[.2em] mt-4">SSF Digital Office · Secure Database Edition</p><h1 className="text-3xl sm:text-4xl font-black mt-2">Paperless NGO Office</h1><p className="text-white/70 mt-2 max-w-3xl">One source record → linked registers → reports → audit trail. Existing website records are preserved.</p></div></div>
-   <DownloadCenter active={active} rows={rows} exportRows={exportRows} exportPdf={exportPdf}/>
+   <DownloadCenter active={active} rows={rows} exportRows={exportRows} exportPdf={exportPdf} setActive={setActive}/>
   </div></header>
   {notice&&<div className="mb-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-4 py-3 font-semibold">{notice}</div>}
   <div className="grid lg:grid-cols-[245px_1fr] gap-5">
@@ -98,13 +98,14 @@ export default function SSFDigitalOffice(){
  </div></div>;
 }
 
-function DownloadCenter({active,rows,exportRows,exportPdf}){
+function DownloadCenter({active,rows,exportRows,exportPdf,setActive}){
  const [open,setOpen]=useState(false);
  const [target,setTarget]=useState(active);
  const [format,setFormat]=useState("pdf");
  const available=Object.entries(LABELS).filter(function(x){return x[0]!=="dashboard"&&x[0]!=="audit"&&x[0]!=="users";});
  const download=function(){
-  const data=target===active?rows:[];
+  if(target!==active){setActive(target);setOpen(false);return;}
+  const data=rows||[];
   if(format==="pdf")exportPdf(data,"SSF "+(LABELS[target]||"Records"));
   else exportRows(data,"ssf-"+target+"-"+new Date().toISOString().slice(0,10));
   setOpen(false);
@@ -121,7 +122,7 @@ function DownloadCenter({active,rows,exportRows,exportPdf}){
    <label className="block text-xs font-bold text-zinc-500 mt-3 mb-1">Format</label>
    <div className="grid grid-cols-2 gap-2"><button type="button" onClick={()=>setFormat("pdf")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="pdf"?"bg-[#002344] text-white":"bg-white")}>PDF</button><button type="button" onClick={()=>setFormat("csv")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="csv"?"bg-[#002344] text-white":"bg-white")}>Excel / CSV</button></div>
    {target!==active&&<p className="mt-3 text-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3">Open the selected module first to export its current records.</p>}
-   <div className="flex gap-2 mt-4"><button type="button" onClick={()=>setOpen(false)} className="flex-1 border px-3 py-2.5 rounded-xl font-bold">Cancel</button><button type="button" disabled={target!==active} onClick={download} className="flex-1 bg-[#002344] text-white px-3 py-2.5 rounded-xl font-bold disabled:opacity-40">Download</button></div>
+   <div className="flex gap-2 mt-4"><button type="button" onClick={()=>setOpen(false)} className="flex-1 border px-3 py-2.5 rounded-xl font-bold">Cancel</button><button type="button" disabled={false} onClick={download} className="flex-1 bg-[#002344] text-white px-3 py-2.5 rounded-xl font-bold disabled:opacity-40">Download</button></div>
   </div>}
  </div>;
 }
