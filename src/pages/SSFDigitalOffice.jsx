@@ -78,7 +78,7 @@ export default function SSFDigitalOffice(){
   const memberId=data.memberId||data.officialId||data.volunteerId||null;
   const photoUrl=data.photoUrl||data.photo||data.imageUrl||null;
   if(type==="certificate"){
-   await generateCertificate(name,role,date,certId,memberId);
+   await generateCertificate(name,role,date,certId,memberId,data.certificateType||"Participation");
   }else{
    await generateIdentityCard({name,role,date,officialId:memberId||certId,certId,photoUrl});
   }
@@ -170,7 +170,7 @@ function RecordForm({module,onSave}){
  };
  const money=MONEY.has(module);
  return <form onSubmit={submit} className="p-5 bg-zinc-50 border-b grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-  {input("name",module==="mou"?"Agreement / MoU title":module==="meetings"?"Meeting title":"Name / title / person",!(["cash","bank","inventory"].includes(module)))}
+  {input("name",module==="mou"?"Agreement / MoU title":module==="meetings"?"Meeting title":module==="certificates"?"Recipient Name":"Name / title / person",!(["cash","bank","inventory"].includes(module)))}
   {input("date","Date",true)}
   {money&&module!=="cash"&&module!=="bank"&&input("amount","Amount",true)}
   {money&&<select value={f.paymentMode} onChange={e=>set("paymentMode",e.target.value)} className={cls}><option>Cash</option><option>Bank</option><option>UPI</option><option>Cheque</option><option>Other</option></select>}
