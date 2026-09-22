@@ -19,7 +19,7 @@ const requireOfficeAuth = (req, res, next) => {
   next();
 };
 
-const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', mou:'MOU', certificates:'CERT', idcards:'ID' };
+const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID' };
 const makeId = async (module) => {
   const p = prefix[module] || 'REC';
   const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
@@ -42,9 +42,12 @@ router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
       return s+a;
     },0);
     const count = (module) => rows.filter(r => r.module === module).length;
+    const pending = rows.filter(r => ['pending','under_review','submitted'].includes(String(r.status||'').toLowerCase())).length;
+    const stockBalance = rows.filter(r => r.module === 'inventory').reduce((s,r)=>{ const q=Number(r.data?.qty||0); const d=String(r.direction||'in').toLowerCase(); return s + ((d==='out'||d==='debit') ? -q : q); },0);
     return res.json({
       counts: Object.assign(Object.fromEntries(Object.keys(prefix).map(m => [m, count(m)])), { members:memberCount, volunteers:volunteerCount, donors:donorCount, internships:internshipCount }),
-      totals: { donations: sum('donations'), expenses: sum('expenses'), contributions: sum('contribution'), cash: balance('cash'), bank: balance('bank'), stockEntries: count('inventory') },
+      totals: { donations: sum('donations'), expenses: sum('expenses'), contributions: sum('contribution'), cash: balance('cash'), bank: balance('bank'), stockEntries: count('inventory'), stockBalance },
+      workflow: { pending, activeMous: rows.filter(r=>r.module==='mou' && String(r.status||'').toLowerCase()==='active').length, upcomingMeetings: rows.filter(r=>r.module==='meetings' && new Date(r.recordDate)>=new Date()).length },
       recent: rows.slice(0,20)
     });
   } catch (e) { console.error(e); res.status(500).json({message:'Unable to load Digital Office summary.'}); }
