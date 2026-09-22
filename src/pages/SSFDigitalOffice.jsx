@@ -22,7 +22,8 @@ const MODULES = [
 ];
 const LABELS = Object.fromEntries(MODULES.map(function(x){return [x[0],x[1]];}));
 const MONEY = new Set(["donations","expenses","contribution","cash","bank","ledger"]);
-const SPECIAL_DOCS = new Set(["meetings","mou","certificates","idcards"]);\nconst NO_RECORD_MODULES = new Set(["dashboard","reports","audit","users"]);
+const SPECIAL_DOCS = new Set(["meetings","mou","certificates","idcards"]);
+const NO_RECORD_MODULES = new Set(["dashboard","reports","audit","users"]);
 
 const cls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#002344]/20";
 
@@ -136,7 +137,9 @@ function RecordForm({module,onSave}){
   {module==="idcards"&&<>{input("memberId","Member / Volunteer ID")}{input("role","Role / Designation",true)}{input("validUntil","Valid Until")}{input("phone","Phone")}{input("address","Address")}</>}
   {!["inventory","inward","outward","meetings","mou","certificates","idcards","cash","bank"].includes(module)&&<>{input("email","Email (optional)")}{input("phone","Phone (optional)")}{input("category","Category / Type")}{input("purpose","Purpose")}{input("projectId","Project ID (optional)")}{input("pan","PAN (optional)")}{area("address","Address / Details")}{area("notes","Notes")}</>}
   {(["cash","bank"].includes(module))&&<>{input("category","Transaction Type")}{input("purpose","Description / Purpose",true)}{input("referenceNo","Voucher / Cheque / UTR No.")}{area("notes","Remarks")}</>}
-  {module==="inventory"&&<>{input("category","Stock Category")}{area("notes","Remarks")}</>}\n  {module==="assets"&&<>{input("category","Asset Category",true)}{input("item","Asset / Equipment Name",true)}{input("source","Purchase / Donor Source")}{input("qty","Quantity")}{input("unit","Unit")}{input("validUntil","Warranty / Review Date")}{input("recipient","Custodian / Location")}{area("notes","Condition / Remarks")}</>}\n  {module==="notifications"&&<>{input("category","Alert Type",true)}{input("subject","Subject",true)}{input("validUntil","Due Date")}{input("recipient","Responsible Person")}{area("notes","Action / Follow-up")}</>}
+  {module==="inventory"&&<>{input("category","Stock Category")}{area("notes","Remarks")}</>}
+  {module==="assets"&&<>{input("category","Asset Category",true)}{input("item","Asset / Equipment Name",true)}{input("source","Purchase / Donor Source")}{input("qty","Quantity")}{input("unit","Unit")}{input("validUntil","Warranty / Review Date")}{input("recipient","Custodian / Location")}{area("notes","Condition / Remarks")}</>}
+  {module==="notifications"&&<>{input("category","Alert Type",true)}{input("subject","Subject",true)}{input("validUntil","Due Date")}{input("recipient","Responsible Person")}{area("notes","Action / Follow-up")}</>}
   {(["inward","outward","meetings","mou","certificates","idcards"].includes(module))&&area("notes","Remarks")}
   <button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold hover:opacity-95">Save {LABELS[module]||"Record"}</button>
  </form>;
