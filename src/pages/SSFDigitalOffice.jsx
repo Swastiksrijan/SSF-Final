@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory } from "react-icons/fa";
-import * as XLSX from "xlsx";
 import jsPDF from "jspdf";
 import { ENDPOINTS } from "../config/api";
 
@@ -54,7 +53,7 @@ export default function SSFDigitalOffice(){
  };
  const exportRows=function(data,name){
   const flat=(data||[]).map(function(x){return {ID:x.recordId,Module:x.module,Type:x.recordType||"",Date:new Date(x.recordDate).toLocaleDateString("en-IN"),Amount:x.amount||"",PaymentMode:x.paymentMode||"",Status:x.status,PersonID:x.personId||"",LinkedID:x.linkedRecordId||"",Details:JSON.stringify(x.data||{})};});
-  const ws=XLSX.utils.json_to_sheet(flat),wb=XLSX.utils.book_new();XLSX.utils.book_append_sheet(wb,ws,"SSF");XLSX.writeFile(wb,name+".xlsx");
+  const headers=Object.keys(flat[0]||{ID:"",Module:"",Date:"",Amount:"",Status:""}); const csv=[headers.join(","),...flat.map(function(row){return headers.map(function(h){return JSON.stringify(row[h] == null ? "" : row[h]);}).join(",");})].join("\\n"); const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name+".csv"; a.click(); URL.revokeObjectURL(a.href);
  };
  const exportPdf=function(data,title){
   const d=new jsPDF();d.setFontSize(16);d.text("Swastik Srijan Foundation Samiti",14,16);d.setFontSize(11);d.text(title,14,25);
@@ -66,7 +65,7 @@ export default function SSFDigitalOffice(){
  return <div className="min-h-screen bg-zinc-50 pt-28 pb-16 px-3 sm:px-6"><div className="max-w-[1500px] mx-auto">
   <header className="bg-[#002344] text-white rounded-[2rem] p-6 sm:p-8 mb-5"><div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5">
    <div><Link to="/AdminPortal" className="text-white/70 text-sm font-bold inline-flex items-center gap-2"><FaArrowLeft/> Admin Portal</Link><p className="text-xs text-orange-300 font-black uppercase tracking-[.2em] mt-4">SSF Digital Office · Secure Database Edition</p><h1 className="text-3xl sm:text-4xl font-black mt-2">Paperless NGO Office</h1><p className="text-white/70 mt-2 max-w-3xl">One source record → linked registers → reports → audit trail. Existing website records are preserved.</p></div>
-   <div className="flex flex-wrap gap-2"><button onClick={function(){exportRows(rows,"ssf-"+active+"-"+new Date().toISOString().slice(0,10));}} className="bg-white text-[#002344] px-4 py-3 rounded-xl font-bold flex items-center gap-2"><FaDownload/> Excel</button><button onClick={function(){exportPdf(rows,"SSF "+(LABELS[active]||"Records"));}} className="bg-white/10 border border-white/20 px-4 py-3 rounded-xl font-bold flex items-center gap-2"><FaFileAlt/> PDF</button></div>
+   <div className="flex flex-wrap gap-2"><button onClick={function(){exportRows(rows,"ssf-"+active+"-"+new Date().toISOString().slice(0,10));}} className="bg-white text-[#002344] px-4 py-3 rounded-xl font-bold flex items-center gap-2"><FaDownload/> Excel (CSV)</button><button onClick={function(){exportPdf(rows,"SSF "+(LABELS[active]||"Records"));}} className="bg-white/10 border border-white/20 px-4 py-3 rounded-xl font-bold flex items-center gap-2"><FaFileAlt/> PDF</button></div>
   </div></header>
   {notice&&<div className="mb-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-4 py-3 font-semibold">{notice}</div>}
   <div className="grid lg:grid-cols-[245px_1fr] gap-5">
