@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint } from "react-icons/fa";
+import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint, FaVideo } from "react-icons/fa";
 import jsPDF from "jspdf";
 import { ENDPOINTS } from "../config/api";
 import logoImg from "../assets/new-logo.png";
@@ -9,6 +9,7 @@ import { generateCertificate, generateIdentityCard } from "../utils/generateCert
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
  ["dashboard","Dashboard",FaChartLine],
+ ["onlineMeetings","Online Meetings",FaVideo],
  ["members","Members",FaUsers],["volunteers","Volunteers",FaUsers],["donors","Donors",FaUsers],
  ["donations","Donations",FaRupeeSign],["expenses","Expenses",FaRupeeSign],["contribution","Contribution Register",FaBook],
  ["cash","Cash Book",FaBook],["bank","Bank Book",FaBook],["ledger","Ledger",FaBalanceScale],
@@ -104,6 +105,7 @@ export default function SSFDigitalOffice(){
    <aside className="bg-white rounded-2xl border border-zinc-200 p-3 h-fit lg:sticky lg:top-24 max-h-[calc(100vh-7rem)] overflow-auto"><div className="px-4 pt-4 pb-3 border-b border-zinc-200"><div className="flex items-center gap-3"><img src={logoImg} alt="SSF logo" className="h-12 w-12 object-contain rounded-xl bg-white border border-zinc-100 p-1" /><div><div className="text-sm font-black text-[#002344]">SSF Digital Office</div><div className="text-[10px] text-zinc-500 font-semibold">Paperless Office Management</div></div></div></div>{MODULES.map(function(x){var Icon=x[2];return <button key={x[0]} onClick={function(){setActive(x[0]);}} className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left text-sm font-bold mb-1 "+(active===x[0]?"bg-[#002344] text-white":"text-zinc-700 hover:bg-zinc-100")}><Icon/> {x[1]}</button>;})}</aside>
    <main className="min-w-0">
     {active==="dashboard"&&<Dashboard summary={summary}/>}
+    {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
@@ -112,6 +114,35 @@ export default function SSFDigitalOffice(){
   </div>
  </div></div>;
 }
+function OnlineMeetings({token}){
+ const [title,setTitle]=useState("Managing Committee Meeting"),[date,setDate]=useState(new Date().toISOString().slice(0,10)),[time,setTime]=useState("19:00"),[type,setType]=useState("Managing Committee"),[agenda,setAgenda]=useState(""),[link,setLink]=useState(""),[members,setMembers]=useState([]),[selected,setSelected]=useState([]),[notice,setNotice]=useState("");
+ const headers={Authorization:"Bearer "+token,"Content-Type":"application/json"};
+ useEffect(()=>{fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers}).then(r=>r.ok?r.json():[]).then(d=>setMembers(Array.isArray(d)?d:[])).catch(()=>setMembers([]));},[]);
+ const toggle=id=>setSelected(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id]);
+ const createMeet=()=>{window.open("https://meet.google.com/new","_blank","noopener,noreferrer");setNotice("Google Meet creation page khul gaya hai. Meeting banne ke baad link copy karke neeche paste karein.");};
+ const inviteText=()=>{const names=members.filter(r=>selected.includes(r.id)).map(r=>(r.data||{}).fullName||(r.data||{}).name||"Member");return "Swastik Srijan Foundation Samiti\n\nOnline Meeting: "+title+"\nDate: "+date+"\nTime: "+time+"\nType: "+type+"\nAgenda: "+(agenda||"As per meeting notice")+"\n\nJoin Meeting: "+link+"\n\nMembers: "+(names.length?names.join(", "):"Managing Committee Members");};
+ const shareWhatsApp=()=>{if(!link){setNotice("Pehle Google Meet link add karein.");return;}window.open("https://wa.me/?text="+encodeURIComponent(inviteText()),"_blank");};
+ const sendEmail=()=>{if(!link){setNotice("Pehle Google Meet link add karein.");return;}const emails=members.filter(r=>selected.includes(r.id)).map(r=>(r.data||{}).email).filter(Boolean).join(",");window.location.href="mailto:"+encodeURIComponent(emails)+"?subject="+encodeURIComponent("SSF Online Meeting: "+title)+"&body="+encodeURIComponent(inviteText());};
+ const save=async()=>{if(!link){setNotice("Meeting link required.");return;}const data={date,title,meetingType:type,time,agenda,meetingLink:link,inviteeRecordIds:selected,platform:"Google Meet"};const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers,body:JSON.stringify({module:"onlineMeetings",recordDate:date,recordType:type,data})});const out=await r.json().catch(()=>({}));if(!r.ok){setNotice(out.message||"Meeting save failed.");return;}setNotice("Meeting saved successfully.");};
+ return <div className="space-y-5">
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="bg-[#002344] text-white p-6"><div className="flex items-center gap-3"><FaVideo className="text-2xl"/><div><h2 className="text-2xl font-black">Online Managing Committee Meeting</h2><p className="text-white/70 mt-1">SSF website se meeting prepare karein aur members ko invitation bhejein.</p></div></div></div>
+   <div className="p-6 grid md:grid-cols-2 gap-4">
+    <div><label className="text-xs font-bold text-zinc-500">Meeting Title</label><input value={title} onChange={e=>setTitle(e.target.value)} className={cls+" mt-1"}/></div>
+    <div><label className="text-xs font-bold text-zinc-500">Meeting Type</label><select value={type} onChange={e=>setType(e.target.value)} className={cls+" mt-1"}><option>Managing Committee</option><option>General Body</option><option>Emergency Meeting</option><option>Other</option></select></div>
+    <div><label className="text-xs font-bold text-zinc-500">Date</label><input type="date" value={date} onChange={e=>setDate(e.target.value)} className={cls+" mt-1"}/></div>
+    <div><label className="text-xs font-bold text-zinc-500">Time</label><input type="time" value={time} onChange={e=>setTime(e.target.value)} className={cls+" mt-1"}/></div>
+    <div className="md:col-span-2"><label className="text-xs font-bold text-zinc-500">Agenda</label><textarea value={agenda} onChange={e=>setAgenda(e.target.value)} className={cls+" mt-1 min-h-[90px]"} placeholder="Meeting agenda"/></div>
+    <div className="md:col-span-2 rounded-2xl border border-blue-100 bg-blue-50 p-4"><div className="font-black text-[#002344]">1. Google Meet Link</div><p className="text-xs text-zinc-600 mt-1">Create Google Meet par click karein, Google ka meeting page khulega. Wahan se bana hua Meet link yahan paste karein.</p><div className="flex flex-col sm:flex-row gap-2 mt-3"><button type="button" onClick={createMeet} className="bg-[#002344] text-white px-5 py-3 rounded-xl font-bold">Create Google Meet</button><input value={link} onChange={e=>setLink(e.target.value)} placeholder="https://meet.google.com/..." className={cls}/></div></div>
+    <div className="md:col-span-2"><div className="font-black text-[#002344] mb-2">2. Select Members</div><div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-64 overflow-auto">{members.length===0?<div className="text-sm text-zinc-500">No members found. Link can still be shared manually.</div>:members.map(r=>{const d=r.data||{};return <label key={r.id} className={"flex items-center gap-2 border rounded-xl p-3 cursor-pointer "+(selected.includes(r.id)?"bg-zinc-100 border-[#002344]":"bg-white")}><input type="checkbox" checked={selected.includes(r.id)} onChange={()=>toggle(r.id)}/><span><b>{d.fullName||d.name||"Member"}</b><small className="block text-zinc-500">{d.email||r.recordId||""}</small></span></label>;})}</div></div>
+    <div className="md:col-span-2 flex flex-wrap gap-2"><button type="button" onClick={save} className="bg-[#002344] text-white px-5 py-3 rounded-xl font-bold">Save Meeting</button><button type="button" onClick={sendEmail} className="border px-5 py-3 rounded-xl font-bold">Email Invitation</button><button type="button" onClick={shareWhatsApp} className="border px-5 py-3 rounded-xl font-bold">WhatsApp Share</button></div>
+    {notice&&<div className="md:col-span-2 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-4 font-semibold">{notice}</div>}
+   </div>
+  </div>
+  <div className="bg-white border rounded-2xl p-5 text-sm text-zinc-600"><b className="text-[#002344]">Note:</b> Google Meet itself remains Google's meeting service. SSF Digital Office manages the meeting details, selected members and invitation workflow.</div>
+ </div>;
+}
+
 function DownloadCenter({active,rows,exportRows,exportPdf,setActive}){
  const [open,setOpen]=useState(false);
  const [target,setTarget]=useState(active==="dashboard" ? "members" : active);
