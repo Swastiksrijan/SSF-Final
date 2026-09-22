@@ -3,7 +3,8 @@ import { Link } from "@tanstack/react-router";
 import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint } from "react-icons/fa";
 import jsPDF from "jspdf";
 import { ENDPOINTS } from "../config/api";
-import logoImg from "../assets/new-logo.png";\nimport { generateCertificate, generateIdentityCard } from "../utils/generateCertificate";
+import logoImg from "../assets/new-logo.png";
+import { generateCertificate, generateIdentityCard } from "../utils/generateCertificate";
 
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
@@ -81,7 +82,8 @@ export default function SSFDigitalOffice(){
   }else{
    await generateIdentityCard({name,role,date,officialId:memberId||certId,certId,photoUrl});
   }
- };\n const printRecord=function(r){
+ };
+ const printRecord=function(r){
   const d=new jsPDF(); const data=r.data||{}; d.setTextColor(0,35,68); d.addImage(logoImg,"PNG",16,9,18,18); d.setFontSize(18); d.text("Swastik Srijan Foundation Samiti",105,18,{align:"center"}); d.setFontSize(11); d.setTextColor(80); d.text((LABELS[r.module]||r.module)+" · "+r.recordId,105,26,{align:"center"});
   let y=42; d.setTextColor(20); d.setFontSize(11); const lines=[]; Object.entries(data).forEach(([k,v])=>{if(v!==null&&v!==undefined&&String(v).trim()!==""){let val=String(v); if(val.length>95) val=val.slice(0,95)+"…"; lines.push([k.replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()),val]);}}); lines.forEach(([k,v])=>{d.setFont(undefined,"bold");d.text(k+":",16,y);d.setFont(undefined,"normal");d.text(v,58,y);y+=7;if(y>275){d.addPage();y=20;}}); d.setFontSize(9); d.setTextColor(120); d.text("Computer-generated office record · SSF Digital Office",105,288,{align:"center"}); downloadPdf(d,r.recordId+".pdf");
  };
@@ -112,9 +114,9 @@ export default function SSFDigitalOffice(){
 }
 function DownloadCenter({active,rows,exportRows,exportPdf,setActive}){
  const [open,setOpen]=useState(false);
- const [target,setTarget]=useState(active);
+ const [target,setTarget]=useState(active==="dashboard" ? "members" : active);
  const [format,setFormat]=useState("pdf");
- const available=Object.entries(LABELS).filter(function(x){return x[0]!=="dashboard"&&x[0]!=="audit"&&x[0]!=="users";});
+ const available=Object.entries(LABELS).filter(function(x){return x[0]!=="dashboard"&&x[0]!=="audit"&&x[0]!=="users"&&x[0]!=="reports";});
  const download=function(){
   if(target!==active){setActive(target);setOpen(false);return;}
   const data=rows||[];
