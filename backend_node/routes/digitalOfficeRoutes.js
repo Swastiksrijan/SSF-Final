@@ -10,6 +10,68 @@ const Donor = require('../models/Donor');
 const InternshipApplication = require('../models/InternshipApplication');
 
 const router = express.Router();
+const GOOGLE_FRONTEND_URL = process.env.GOOGLE_FRONTEND_URL || 'https://swastiksrijan.in/SSFDigitalOffice';
+const googleTokenKey = () => crypto.createHash('sha256').update(String(process.env.GOOGLE_TOKEN_ENCRYPTION_KEY || process.env.ADMIN_PORTAL_TOKEN || 'ssf-google-token-key')).digest();
+const encryptGoogleToken = (value) => {
+  const iv = crypto.randomBytes(12);
+  const cipher = crypto.createCipheriv('aes-256-gcm', googleTokenKey(), iv);
+  const encrypted = Buffer.concat([cipher.update(String(value), 'utf8'), cipher.final()]);
+  return [iv.toString('base64url'), cipher.getAuthTag().toString('base64url'), encrypted.toString('base64url')].join('.');
+};
+const decryptGoogleToken = (value) => {
+  const [iv, tag, encrypted] = String(value || '').split('.');
+  if (!iv || !tag || !encrypted) throw new Error('Invalid Google token data.');
+  const decipher = crypto.createDecipheriv('aes-256-gcm', googleTokenKey(), Buffer.from(iv, 'base64url'));
+  decipher.setAuthTag(Buffer.from(tag, 'base64url'));
+  return Buffer.concat([decipher.update(Buffer.from(encrypted, 'base64url')), decipher.final()]).toString('utf8');
+};
+const googleState = (payload) => {
+  const raw = Buffer.from(JSON.stringify(Object.assign({ts:Date.now()}, payload))).toString('base64url');
+  const sig = crypto.createHmac('sha256', googleTokenKey()).update(raw).digest('base64url');
+  return raw + '.' + sig;
+};
+const verifyGoogleState = (state) => {
+  const [raw, sig] = String(state || '').split('.');
+  if (!raw || !sig) throw new Error('Invalid Google OAuth state.');
+  const expected = crypto.createHmac('sha256', googleTokenKey()).update(raw).digest('base64url');
+  if (!crypto.timingSafeEqual(Buffer.from(sig), Buffer.from(expected))) throw new Error('Invalid Google OAuth state.');
+  const payload = JSON.parse(Buffer.from(raw, 'base64url').toString('utf8'));
+  if (!payload.ts || Date.now() - Number(payload.ts) > 10 * 60 * 1000) throw new Error('Google OAuth state expired.');
+  return payload;
+};
+const googleConfigReady = () => Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
+const googleRedirectUri = (req) => process.env.GOOGLE_OAUTH_REDIRECT_URI || ((req.protocol || 'https') + '://' + req.get('host') + '/api/digital-office/google/callback');
+const googleJson = async (url, options={}) => {
+  const response = await fetch(url, options);
+  const text = await response.text();
+  let body = {};
+  try { body = text ? JSON.parse(text) : {}; } catch (_) { body = { raw:text }; }
+  if (!response.ok) throw new Error(body.error_description || body.error?.message || body.error || 'Google API request failed.');
+  return body;
+};
+const getGoogleConnection = async () => {
+  const row = await DigitalOfficeRecord.findOne({ where:{module:'googleOAuth',status:'active'}, order:[['updatedAt','DESC']] });
+  if (!row || !row.data?.refreshToken) return null;
+  return row;
+};
+const getGoogleAccessToken = async () => {
+  const row = await getGoogleConnection();
+  if (!row) throw new Error('Google account is not connected to SSF Digital Office.');
+  try {
+    const accessToken = row.data.accessToken ? decryptGoogleToken(row.data.accessToken) : '';
+    if (accessToken && row.data.accessTokenExpiresAt && Date.now() < Number(row.data.accessTokenExpiresAt) - 60000) return accessToken;
+  } catch (_) {}
+  const refreshToken = decryptGoogleToken(row.data.refreshToken);
+  const tokenBody = await googleJson('https://oauth2.googleapis.com/token', {
+    method:'POST',
+    headers:{'Content-Type':'application/x-www-form-urlencoded'},
+    body:new URLSearchParams({client_id:process.env.GOOGLE_CLIENT_ID,client_secret:process.env.GOOGLE_CLIENT_SECRET,refresh_token:refreshToken,grant_type:'refresh_token'})
+  });
+  row.data = Object.assign({}, row.data, {accessToken:encryptGoogleToken(tokenBody.access_token),accessTokenExpiresAt:Date.now()+Number(tokenBody.expires_in||3600)*1000});
+  await row.save();
+  return tokenBody.access_token;
+};
+
 
 const requireOfficeAuth = (req, res, next) => {
   const auth = req.headers.authorization || '';
@@ -29,6 +91,89 @@ const makeId = async (module) => {
 const audit = async (action, module, recordId, req, details={}) => {
   await DigitalOfficeAudit.create({ action, module, recordId, actor: req.headers['x-office-actor'] || 'admin', details });
 };
+
+
+router.get('/digital-office/google/connect-url', requireOfficeAuth, async (req, res) => {
+  try {
+    if (!googleConfigReady()) return res.status(503).json({message:'Google Meet integration is not configured yet. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET on the backend.'});
+    const params = new URLSearchParams({
+      client_id: process.env.GOOGLE_CLIENT_ID,
+      redirect_uri: googleRedirectUri(req),
+      response_type: 'code',
+      access_type: 'offline',
+      prompt: 'consent',
+      scope: 'https://www.googleapis.com/auth/meetings.space.created'
+    });
+    const state = googleState({purpose:'ssf-google-meet'});
+    return res.json({url:'https://accounts.google.com/o/oauth2/v2/auth?'+params.toString()+'&state='+encodeURIComponent(state)});
+  } catch (e) { console.error(e); return res.status(500).json({message:'Unable to start Google authorization.'}); }
+});
+
+router.get('/digital-office/google/callback', async (req, res) => {
+  try {
+    if (!googleConfigReady()) throw new Error('Google Meet integration is not configured.');
+    const state = verifyGoogleState(req.query.state);
+    if (state.purpose !== 'ssf-google-meet') throw new Error('Invalid Google authorization request.');
+    if (!req.query.code) throw new Error(req.query.error_description || 'Google authorization was cancelled.');
+    const tokenBody = await googleJson('https://oauth2.googleapis.com/token', {
+      method:'POST',
+      headers:{'Content-Type':'application/x-www-form-urlencoded'},
+      body:new URLSearchParams({code:req.query.code,client_id:process.env.GOOGLE_CLIENT_ID,client_secret:process.env.GOOGLE_CLIENT_SECRET,redirect_uri:googleRedirectUri(req),grant_type:'authorization_code'})
+    });
+    if (!tokenBody.refresh_token) throw new Error('Google did not return a refresh token. Please reconnect and approve offline access.');
+    const old=await getGoogleConnection();
+    const data={provider:'Google Meet',refreshToken:encryptGoogleToken(tokenBody.refresh_token),accessToken:tokenBody.access_token?encryptGoogleToken(tokenBody.access_token):null,accessTokenExpiresAt:Date.now()+Number(tokenBody.expires_in||3600)*1000,connectedAt:new Date().toISOString()};
+    if(old){old.data=data;await old.save();}
+    else await DigitalOfficeRecord.create({recordId:'SSF-GOOGLE-OAUTH-'+Date.now(),module:'googleOAuth',status:'active',recordDate:new Date(),data});
+    return res.redirect(GOOGLE_FRONTEND_URL+'?google=connected');
+  } catch (e) {
+    console.error(e);
+    return res.redirect(GOOGLE_FRONTEND_URL+'?google=error&message='+encodeURIComponent(e.message||'Google authorization failed.'));
+  }
+});
+
+router.get('/digital-office/google/status', requireOfficeAuth, async (_req,res) => {
+  try { const row=await getGoogleConnection(); return res.json({connected:Boolean(row),provider:row?.data?.provider||null,connectedAt:row?.data?.connectedAt||null}); }
+  catch(e){return res.status(500).json({message:'Unable to read Google connection status.'});}
+});
+
+router.post('/digital-office/google/create-meeting', requireOfficeAuth, async (req,res) => {
+  try {
+    if (!googleConfigReady()) return res.status(503).json({message:'Google Meet integration is not configured yet.'});
+    const b=req.body||{};
+    const title=String(b.title||'SSF Online Meeting').trim();
+    const date=String(b.date||'').trim();
+    const time=String(b.time||'').trim();
+    const agenda=String(b.agenda||'').trim();
+    const emails=Array.isArray(b.emails)?Array.from(new Set(b.emails.map(x=>String(x||'').trim().toLowerCase()).filter(x=>/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(x)))):[];
+    const accessToken=await getGoogleAccessToken();
+    const space=await googleJson('https://meet.googleapis.com/v2/spaces',{method:'POST',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({})});
+    const meetingLink=space.meetingUri;
+    let addedMembers=0;
+    for(const email of emails){
+      try{
+        await googleJson('https://meet.googleapis.com/v2/'+encodeURIComponent(space.name)+'/members',{method:'POST',headers:{Authorization:'Bearer '+accessToken,'Content-Type':'application/json'},body:JSON.stringify({email})});
+        addedMembers++;
+      }catch(e){console.warn('Meet member add failed for',email,e.message);}
+    }
+    let emailed=0;
+    const emailErrors=[];
+    if(emails.length && process.env.EMAIL_USER && process.env.EMAIL_PASS){
+      const nodemailer=require('nodemailer');
+      const transporter=nodemailer.createTransport({host:process.env.EMAIL_HOST||'smtp.gmail.com',port:Number(process.env.EMAIL_PORT||465),secure:String(process.env.EMAIL_SECURE||'true')==='true',auth:{user:process.env.EMAIL_USER,pass:process.env.EMAIL_PASS}});
+      for(const to of emails){
+        try{
+          await transporter.sendMail({from:process.env.EMAIL_FROM||process.env.EMAIL_USER,to,subject:'SSF Online Meeting: '+title,text:'Swastik Srijan Foundation Samiti\\n\\nOnline Meeting: '+title+'\\nDate: '+date+'\\nTime: '+time+'\\nAgenda: '+(agenda||'As per meeting notice')+'\\n\\nJoin Meeting: '+meetingLink+'\\n\\nPlease join using the link above.'});
+          emailed++;
+        }catch(e){emailErrors.push(to);}
+      }
+    }
+    return res.status(201).json({meetingLink,meetingName:space.name,addedMembers,emailed,emailErrors,emailConfigured:Boolean(process.env.EMAIL_USER&&process.env.EMAIL_PASS)});
+  } catch(e) {
+    console.error(e);
+    return res.status(500).json({message:e.message||'Unable to create Google Meet.'});
+  }
+});
 
 router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
   try {
