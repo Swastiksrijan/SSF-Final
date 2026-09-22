@@ -175,6 +175,42 @@ router.post('/digital-office/google/create-meeting', requireOfficeAuth, async (r
   }
 });
 
+router.post('/digital-office/online-meeting', requireOfficeAuth, async (req,res) => {
+  try {
+    const b=req.body||{};
+    const title=String(b.title||'SSF Online Meeting').trim();
+    const date=String(b.date||'').trim();
+    const time=String(b.time||'').trim();
+    const agenda=String(b.agenda||'').trim();
+    const emails=Array.isArray(b.emails)?Array.from(new Set(b.emails.map(x=>String(x||'').trim().toLowerCase()).filter(x=>/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(x)))):[];
+    if(!title || !date || !time) return res.status(400).json({message:'Meeting title, date and time are required.'});
+    const safeTitle=title.replace(/[^A-Za-z0-9]+/g,'-').replace(/^-+|-+$/g,'').slice(0,50)||'SSF-Meeting';
+    const room='SSF-'+safeTitle+'-'+Date.now().toString(36)+'-'+crypto.randomBytes(6).toString('hex');
+    const meetingLink='https://meet.jit.si/'+room;
+    let emailed=0;
+    const emailErrors=[];
+    if(emails.length && process.env.EMAIL_USER && process.env.EMAIL_PASS){
+      const nodemailer=require('nodemailer');
+      const transporter=nodemailer.createTransport({host:process.env.EMAIL_HOST||'smtp.gmail.com',port:Number(process.env.EMAIL_PORT||465),secure:String(process.env.EMAIL_SECURE||'true')==='true',auth:{user:process.env.EMAIL_USER,pass:process.env.EMAIL_PASS}});
+      for(const to of emails){
+        try{
+          await transporter.sendMail({
+            from:process.env.EMAIL_FROM||process.env.EMAIL_USER,
+            to,
+            subject:'SSF Online Meeting: '+title,
+            text:'Swastik Srijan Foundation Samiti\\n\\nOnline Meeting: '+title+'\\nDate: '+date+'\\nTime: '+time+'\\nAgenda: '+(agenda||'As per meeting notice')+'\\n\\nJoin Meeting: '+meetingLink+'\\n\\nPlease join using the link above.'
+          });
+          emailed++;
+        }catch(e){emailErrors.push(to);}
+      }
+    }
+    return res.status(201).json({meetingLink,room,emailed,emailErrors,emailConfigured:Boolean(process.env.EMAIL_USER&&process.env.EMAIL_PASS)});
+  } catch(e) {
+    console.error(e);
+    return res.status(500).json({message:e.message||'Unable to create online meeting.'});
+  }
+});
+
 router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
   try {
     const rows = await DigitalOfficeRecord.findAll({ where: { status: { [Op.ne]: 'deleted' } }, order: [['recordDate','DESC']] });
