@@ -50,5 +50,8 @@ export const ENDPOINTS = {
     DIGITAL_OFFICE_EXPENSES: `${API_BASE_URL}/api/digital-office/expenses`,
     DIGITAL_OFFICE_REPORTS: `${API_BASE_URL}/api/digital-office/reports`,
     DIGITAL_OFFICE_AUDIT: `${API_BASE_URL}/api/digital-office/audit`,
+    DIGITAL_OFFICE_GOOGLE_CONNECT_URL: `${API_BASE_URL}/api/digital-office/google/connect-url`,
+    DIGITAL_OFFICE_GOOGLE_STATUS: `${API_BASE_URL}/api/digital-office/google/status`,
+    DIGITAL_OFFICE_GOOGLE_CREATE_MEETING: `${API_BASE_URL}/api/digital-office/google/create-meeting`,
     VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`
 };
