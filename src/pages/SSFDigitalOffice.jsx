@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint } from "react-icons/fa";
 import jsPDF from "jspdf";
 import { ENDPOINTS } from "../config/api";
+import logoImg from "../assets/new-logo.png";
 
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
@@ -80,8 +81,8 @@ export default function SSFDigitalOffice(){
   </div></header>
   {notice&&<div className="mb-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-4 py-3 font-semibold">{notice}</div>}
   <div className="grid lg:grid-cols-[245px_1fr] gap-5">
-   <aside className="bg-white rounded-2xl border border-zinc-200 p-3 h-fit lg:sticky lg:top-24 max-h-[calc(100vh-7rem)] overflow-auto">{MODULES.map(function(x){var Icon=x[2];return <button key={x[0]} onClick={function(){setActive(x[0]);}} className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left text-sm font-bold mb-1 "+(active===x[0]?"bg-[#002344] text-white":"text-zinc-700 hover:bg-zinc-100")}><Icon/> {x[1]}</button>;})}</aside>
-   <main className="min-w-0">
+   <aside className="bg-white rounded-2xl border border-zinc-200 p-3 h-fit lg:sticky lg:top-24 max-h-[calc(100vh-7rem)] overflow-auto"><div className="px-4 pt-4 pb-3 border-b border-zinc-200"><div className="flex items-center gap-3"><img src={logoImg} alt="SSF logo" className="h-12 w-12 object-contain rounded-xl bg-white border border-zinc-100 p-1" /><div><div className="text-sm font-black text-[#002344]">SSF Digital Office</div><div className="text-[10px] text-zinc-500 font-semibold">Paperless Office Management</div></div></div></div>{MODULES.map(function(x){var Icon=x[2];return <button key={x[0]} onClick={function(){setActive(x[0]);}} className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left text-sm font-bold mb-1 "+(active===x[0]?"bg-[#002344] text-white":"text-zinc-700 hover:bg-zinc-100")}><Icon/> {x[1]}</button>;})}</aside>
+   <header className="sticky top-0 z-30 bg-white/95 backdrop-blur border-b border-zinc-200 shadow-sm"><div className="max-w-[1600px] mx-auto px-4 sm:px-6 h-16 flex items-center gap-3"><img src={logoImg} alt="Swastik Srijan Foundation Samiti" className="h-11 w-11 object-contain rounded-full bg-white border border-zinc-100" /><div className="min-w-0"><div className="font-black text-[#002344] leading-tight">Swastik Srijan Foundation Samiti</div><div className="text-[10px] font-bold uppercase tracking-[0.18em] text-[#FF6600]">Digital Office</div></div></div></header><main className="min-w-0">
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
