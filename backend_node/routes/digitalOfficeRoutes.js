@@ -4,6 +4,10 @@ const crypto = require('crypto');
 const sequelize = require('../config/database');
 const DigitalOfficeRecord = require('../models/DigitalOfficeRecord');
 const DigitalOfficeAudit = require('../models/DigitalOfficeAudit');
+const Member = require('../models/Member');
+const Volunteer = require('../models/Volunteer');
+const Donor = require('../models/Donor');
+const InternshipApplication = require('../models/InternshipApplication');
 
 const router = express.Router();
 
@@ -29,10 +33,11 @@ const audit = async (action, module, recordId, req, details={}) => {
 router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
   try {
     const rows = await DigitalOfficeRecord.findAll({ where: { status: { [Op.ne]: 'deleted' } }, order: [['recordDate','DESC']] });
+    const [memberCount, volunteerCount, donorCount, internshipCount] = await Promise.all([Member.count(), Volunteer.count(), Donor.count(), InternshipApplication.count()]);
     const sum = (module) => rows.filter(r => r.module === module).reduce((s,r)=>s+Number(r.amount||0),0);
     const count = (module) => rows.filter(r => r.module === module).length;
     return res.json({
-      counts: Object.fromEntries(Object.keys(prefix).map(m => [m, count(m)])),
+      counts: Object.assign(Object.fromEntries(Object.keys(prefix).map(m => [m, count(m)])), { members:memberCount, volunteers:volunteerCount, donors:donorCount, internships:internshipCount }),
       totals: { donations: sum('donations'), expenses: sum('expenses'), contributions: sum('contribution'), cash: sum('cash'), bank: sum('bank') },
       recent: rows.slice(0,20)
     });
@@ -47,7 +52,24 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
       { recordId: { [Op.iLike]: `%${String(req.query.search)}%` } },
       { personId: { [Op.iLike]: `%${String(req.query.search)}%` } }
     ];
-    const rows = await DigitalOfficeRecord.findAll({ where, order: [['recordDate','DESC'],['createdAt','DESC']] });
+    let rows = await DigitalOfficeRecord.findAll({ where, order: [['recordDate','DESC'],['createdAt','DESC']] });
+    // Existing website records are read into the office without copying or deleting them.
+    if (['members','volunteers','donors','internships'].includes(String(req.query.module || ''))) {
+      const m = String(req.query.module);
+      if (m === 'members') {
+        const existing = await Member.findAll({ order: [['createdAt','DESC']] });
+        rows = existing.map(x => ({ id:x.id, recordId:x.memberId || 'ACCOUNT-'+String(x.id).slice(0,8), module:'members', recordType:x.memberType, status:x.status, recordDate:x.createdAt, amount:x.paymentAmount, personId:x.memberId, data:x.toJSON() }));
+      } else if (m === 'volunteers') {
+        const existing = await Volunteer.findAll({ order: [['createdAt','DESC']] });
+        rows = existing.map(x => ({ id:x.id, recordId:x.volunteerId || 'VOL-'+String(x.id).slice(0,8), module:'volunteers', recordType:x.volunteerType, status:x.status, recordDate:x.createdAt, personId:x.volunteerId, data:x.toJSON() }));
+      } else if (m === 'donors') {
+        const existing = await Donor.findAll({ order: [['createdAt','DESC']] });
+        rows = existing.map(x => ({ id:x.id, recordId:x.donorId || 'DON-'+String(x.id).slice(0,8), module:'donors', recordType:'donor', status:x.status, recordDate:x.createdAt, amount:x.amount, personId:x.donorId, data:x.toJSON() }));
+      } else if (m === 'internships') {
+        const existing = await InternshipApplication.findAll({ order: [['createdAt','DESC']] });
+        rows = existing.map(x => ({ id:x.id, recordId:x.internId || 'INT-'+String(x.id).slice(0,8), module:'internships', recordType:x.internshipType, status:x.status, recordDate:x.createdAt, personId:x.internId, data:x.toJSON() }));
+      }
+    }
     return res.json(rows);
   } catch (e) { console.error(e); res.status(500).json({message:'Unable to load records.'}); }
 });
