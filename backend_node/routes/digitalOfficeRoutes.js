@@ -1,0 +1,152 @@
+const express = require('express');
+const { Op } = require('sequelize');
+const crypto = require('crypto');
+const sequelize = require('../config/database');
+const DigitalOfficeRecord = require('../models/DigitalOfficeRecord');
+const DigitalOfficeAudit = require('../models/DigitalOfficeAudit');
+
+const router = express.Router();
+
+const requireOfficeAuth = (req, res, next) => {
+  const auth = req.headers.authorization || '';
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
+  const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+  if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized digital office access' });
+  next();
+};
+
+const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR' };
+const makeId = async (module) => {
+  const p = prefix[module] || 'REC';
+  const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
+  const count = await DigitalOfficeRecord.count({ where: { module } });
+  return `SSF-${p}-${stamp}-${String(count + 1).padStart(5,'0')}`;
+};
+const audit = async (action, module, recordId, req, details={}) => {
+  await DigitalOfficeAudit.create({ action, module, recordId, actor: req.headers['x-office-actor'] || 'admin', details });
+};
+
+router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
+  try {
+    const rows = await DigitalOfficeRecord.findAll({ where: { status: { [Op.ne]: 'deleted' } }, order: [['recordDate','DESC']] });
+    const sum = (module) => rows.filter(r => r.module === module).reduce((s,r)=>s+Number(r.amount||0),0);
+    const count = (module) => rows.filter(r => r.module === module).length;
+    return res.json({
+      counts: Object.fromEntries(Object.keys(prefix).map(m => [m, count(m)])),
+      totals: { donations: sum('donations'), expenses: sum('expenses'), contributions: sum('contribution'), cash: sum('cash'), bank: sum('bank') },
+      recent: rows.slice(0,20)
+    });
+  } catch (e) { console.error(e); res.status(500).json({message:'Unable to load Digital Office summary.'}); }
+});
+
+router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
+  try {
+    const where = { status: { [Op.ne]: 'deleted' } };
+    if (req.query.module) where.module = String(req.query.module);
+    if (req.query.search) where[Op.or] = [
+      { recordId: { [Op.iLike]: `%${String(req.query.search)}%` } },
+      { personId: { [Op.iLike]: `%${String(req.query.search)}%` } }
+    ];
+    const rows = await DigitalOfficeRecord.findAll({ where, order: [['recordDate','DESC'],['createdAt','DESC']] });
+    return res.json(rows);
+  } catch (e) { console.error(e); res.status(500).json({message:'Unable to load records.'}); }
+});
+
+router.post('/digital-office/records', requireOfficeAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const body = req.body || {};
+    if (!body.module) { await t.rollback(); return res.status(400).json({message:'module is required'}); }
+    const recordId = body.recordId || await makeId(body.module);
+    const row = await DigitalOfficeRecord.create({
+      recordId, module: body.module, recordType: body.recordType || null,
+      status: body.status || 'active', recordDate: body.recordDate || new Date(),
+      amount: body.amount == null || body.amount === '' ? null : Number(body.amount),
+      paymentMode: body.paymentMode || null, direction: body.direction || null,
+      account: body.account || null, linkedRecordId: body.linkedRecordId || null,
+      personId: body.personId || null, createdBy: req.headers['x-office-actor'] || 'admin',
+      createdByName: req.headers['x-office-actor-name'] || 'SSF Admin', data: body.data || {}
+    }, { transaction: t });
+    await DigitalOfficeAudit.create({ action:'create', module:body.module, recordId, actor:req.headers['x-office-actor'] || 'admin', details:{recordType:body.recordType||null} }, {transaction:t});
+    await t.commit();
+    return res.status(201).json(row);
+  } catch (e) { await t.rollback(); console.error(e); res.status(500).json({message:'Unable to save record.'}); }
+});
+
+router.put('/digital-office/records/:id', requireOfficeAuth, async (req, res) => {
+  try {
+    const row = await DigitalOfficeRecord.findByPk(req.params.id);
+    if (!row) return res.status(404).json({message:'Record not found.'});
+    const allowed = ['recordType','status','recordDate','amount','paymentMode','direction','account','linkedRecordId','personId','data'];
+    allowed.forEach(k => { if (Object.prototype.hasOwnProperty.call(req.body,k)) row[k] = req.body[k]; });
+    await row.save();
+    await audit('update', row.module, row.recordId, req, { fields:Object.keys(req.body) });
+    return res.json(row);
+  } catch (e) { console.error(e); res.status(500).json({message:'Unable to update record.'}); }
+});
+
+router.delete('/digital-office/records/:id', requireOfficeAuth, async (req, res) => {
+  try {
+    const row = await DigitalOfficeRecord.findByPk(req.params.id);
+    if (!row) return res.status(404).json({message:'Record not found.'});
+    row.status = 'deleted';
+    await row.save();
+    await audit('archive', row.module, row.recordId, req);
+    return res.json({status:'success', recordId:row.recordId});
+  } catch (e) { console.error(e); res.status(500).json({message:'Unable to archive record.'}); }
+});
+
+router.post('/digital-office/donations', requireOfficeAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const b=req.body||{}; if(!b.donorName || !b.amount) { await t.rollback(); return res.status(400).json({message:'Donor name and amount are required.'}); }
+    const donationId=await makeId('donations');
+    const donorId=b.donorId || await makeId('donors');
+    const paid=['paid','offline','received'].includes(String(b.paymentStatus||'paid').toLowerCase());
+    await DigitalOfficeRecord.create({recordId:donorId,module:'donors',recordDate:b.date||new Date(),personId:b.personId||null,data:{fullName:b.donorName,email:b.email||'',phone:b.phone||'',pan:b.pan||'',address:b.address||''}}, {transaction:t});
+    const donation=await DigitalOfficeRecord.create({recordId:donationId,module:'donations',recordType:'donation',recordDate:b.date||new Date(),amount:Number(b.amount),paymentMode:b.paymentMode||'Cash',account:b.account||b.paymentMode||'Cash',personId:b.personId||null,data:{donorId,donorName:b.donorName,purpose:b.purpose||'General donation',paymentStatus:b.paymentStatus||'paid',receiptNo:b.receiptNo||donationId,pan:b.pan||'',address:b.address||'',email:b.email||'',notes:b.notes||''}}, {transaction:t});
+    await DigitalOfficeRecord.create({recordId:await makeId('contribution'),module:'contribution',recordType:'donation',recordDate:b.date||new Date(),amount:Number(b.amount),paymentMode:b.paymentMode||'Cash',account:b.account||'Cash',linkedRecordId:donationId,data:{source:'donation',donorId}}, {transaction:t});
+    if(paid){
+      const ledgerId=await makeId('ledger');
+      await DigitalOfficeRecord.create({recordId:ledgerId,module:'ledger',recordType:'donation',recordDate:b.date||new Date(),amount:Number(b.amount),direction:'credit',account:b.account||b.paymentMode||'Cash',linkedRecordId:donationId,data:{description:`Donation from ${b.donorName}`}}, {transaction:t});
+      const bookModule=String(b.paymentMode||'Cash').toLowerCase()==='cash'?'cash':'bank';
+      await DigitalOfficeRecord.create({recordId:await makeId(bookModule),module:bookModule,recordType:'receipt',recordDate:b.date||new Date(),amount:Number(b.amount),direction:'in',account:b.account||b.paymentMode||'Cash',linkedRecordId:donationId,data:{description:`Donation from ${b.donorName}`}}, {transaction:t});
+    }
+    await DigitalOfficeAudit.create({action:'donation_create',module:'donations',recordId:donationId,actor:req.headers['x-office-actor']||'admin',details:{donorId,amount:b.amount,paymentStatus:b.paymentStatus||'paid'}},{transaction:t});
+    await t.commit(); return res.status(201).json({donationId,donorId,receiptId:donationId});
+  } catch(e){await t.rollback();console.error(e);return res.status(500).json({message:'Unable to save donation workflow.'});}
+});
+
+router.post('/digital-office/expenses', requireOfficeAuth, async (req,res)=>{
+  const t=await sequelize.transaction();
+  try{
+    const b=req.body||{}; if(!b.payee || !b.amount){await t.rollback();return res.status(400).json({message:'Payee and amount are required.'});}
+    const expenseId=await makeId('expenses');
+    await DigitalOfficeRecord.create({recordId:expenseId,module:'expenses',recordType:b.category||'general',recordDate:b.date||new Date(),amount:Number(b.amount),paymentMode:b.paymentMode||'Cash',account:b.account||b.paymentMode||'Cash',data:{payee:b.payee,category:b.category||'General',purpose:b.purpose||'',billNo:b.billNo||'',notes:b.notes||''}}, {transaction:t});
+    await DigitalOfficeRecord.create({recordId:await makeId('ledger'),module:'ledger',recordType:'expense',recordDate:b.date||new Date(),amount:Number(b.amount),direction:'debit',account:b.account||b.paymentMode||'Cash',linkedRecordId:expenseId,data:{description:`Expense - ${b.payee}`}}, {transaction:t});
+    const bookModule=String(b.paymentMode||'Cash').toLowerCase()==='cash'?'cash':'bank';
+    await DigitalOfficeRecord.create({recordId:await makeId(bookModule),module:bookModule,recordType:'payment',recordDate:b.date||new Date(),amount:Number(b.amount),direction:'out',account:b.account||b.paymentMode||'Cash',linkedRecordId:expenseId,data:{description:`Expense - ${b.payee}`}}, {transaction:t});
+    await DigitalOfficeAudit.create({action:'expense_create',module:'expenses',recordId:expenseId,actor:req.headers['x-office-actor']||'admin',details:{amount:b.amount}},{transaction:t});
+    await t.commit(); return res.status(201).json({expenseId});
+  }catch(e){await t.rollback();console.error(e);return res.status(500).json({message:'Unable to save expense workflow.'});}
+});
+
+router.get('/digital-office/audit', requireOfficeAuth, async (_req,res)=>{
+  try{return res.json(await DigitalOfficeAudit.findAll({order:[['createdAt','DESC']],limit:500}));}
+  catch(e){console.error(e);res.status(500).json({message:'Unable to load audit trail.'});}
+});
+
+router.get('/digital-office/reports', requireOfficeAuth, async (req,res)=>{
+  try{
+    const rows=await DigitalOfficeRecord.findAll({where:{status:{[Op.ne]:'deleted'}},order:[['recordDate','DESC']]});
+    const from=req.query.from?new Date(req.query.from):null, to=req.query.to?new Date(req.query.to):null;
+    const filtered=rows.filter(r=>(!from||new Date(r.recordDate)>=from)&&(!to||new Date(r.recordDate)<=to));
+    const total=(m)=>filtered.filter(r=>r.module===m).reduce((s,r)=>s+Number(r.amount||0),0);
+    const byProject={};
+    filtered.filter(r=>r.module==='projects').forEach(p=>{byProject[p.recordId]={project:p.data?.name||p.recordId,amount:0};});
+    filtered.filter(r=>['donations','expenses'].includes(r.module)&&r.data?.projectId).forEach(r=>{if(!byProject[r.data.projectId])byProject[r.data.projectId]={project:r.data.projectId,amount:0};byProject[r.data.projectId].amount+=(r.module==='donations'?1:-1)*Number(r.amount||0);});
+    return res.json({from:req.query.from||null,to:req.query.to||null,summary:{donations:total('donations'),expenses:total('expenses'),contributions:total('contribution'),cashIn:filtered.filter(r=>r.module==='cash'&&r.direction==='in').reduce((s,r)=>s+Number(r.amount||0),0),cashOut:filtered.filter(r=>r.module==='cash'&&r.direction==='out').reduce((s,r)=>s+Number(r.amount||0),0),bankIn:filtered.filter(r=>r.module==='bank'&&r.direction==='in').reduce((s,r)=>s+Number(r.amount||0),0),bankOut:filtered.filter(r=>r.module==='bank'&&r.direction==='out').reduce((s,r)=>s+Number(r.amount||0),0)},counts:Object.fromEntries(Object.keys(prefix).map(m=>[m,filtered.filter(r=>r.module===m).length])),projectWise:Object.values(byProject),rows:filtered});
+  }catch(e){console.error(e);res.status(500).json({message:'Unable to generate report.'});}
+});
+
+module.exports=router;
