@@ -42,7 +42,7 @@ const Header = () => {
     setAccountOpen(false);
     window.dispatchEvent(new CustomEvent("ssf-auth-changed", { detail: null }));
   };
-  if (location.pathname === "/SSFDigitalOffice") return null;
+  if (location.pathname === "/SSFDigitalOffice" || location.pathname === "/admin") return null;
 
   const profilePhoto = user?.profilePhotoPath
     ? (/^(?:https?:\/\/|data:image\/)/i.test(user.profilePhotoPath) ? user.profilePhotoPath : `${API_BASE_URL}${user.profilePhotoPath.startsWith("/") ? "" : "/"}${user.profilePhotoPath}`)
