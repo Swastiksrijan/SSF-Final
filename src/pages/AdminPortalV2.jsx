@@ -28,7 +28,7 @@ export default function AdminPortalV2() {
         setApplications(response.ok && Array.isArray(data) ? data : []);
     };
     const loadMembers = async (authToken = token) => {
-        const response = await fetch(ENDPOINTS.ADMIN_MEMBERS, { headers: authHeaders(authToken) });
+        const response = await fetch(`${ENDPOINTS.ADMIN_MEMBERS}?includeAccounts=true`, { headers: authHeaders(authToken) });
         if (response.status === 401) return logout();
         const data = await response.json().catch(() => []);
         setMembers(response.ok && Array.isArray(data) ? data : []);
