@@ -83,8 +83,8 @@ router.delete('/member-profile/:id/photo', async (req, res) => {
     catch (error) { console.error('❌ Profile photo delete error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Unable to remove photo.' }); }
 });
 
-router.get('/admin/members', requireAdminAuth, async (_req, res) => {
-    try { const members = await Member.findAll({ attributes: { exclude: ['passwordHash'] }, order: [['createdAt', 'DESC']] }); return res.json(members.filter(member => !isAccountOnly(member)).map(member => ({ ...member.toJSON(), profilePhotoPath: member.profilePhotoPath || null, idDocumentPath: member.idDocumentPath || null }))); }
+router.get('/admin/members', requireAdminAuth, async (req, res) => {
+    try { const members = await Member.findAll({ attributes: { exclude: ['passwordHash'] }, order: [['createdAt', 'DESC']] }); const includeAccounts = String(req.query.includeAccounts || '').toLowerCase() === 'true'; const visible = includeAccounts ? members : members.filter(member => !isAccountOnly(member)); return res.json(visible.map(member => ({ ...member.toJSON(), profilePhotoPath: member.profilePhotoPath || null, idDocumentPath: member.idDocumentPath || null }))); }
     catch (error) { console.error('❌ Member admin list error:', error); return res.status(500).json({ message: 'Server Error' }); }
 });
 
