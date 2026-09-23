@@ -26,7 +26,7 @@ export default function AdminDashboard() {
   const handleLogout = () => {
     localStorage.removeItem(TOKEN_KEY);
     setLoggedIn(false);
-    window.location.assign("/AdminPortal");
+    window.location.assign("/Admin");
   };
 
   useEffect(() => {
