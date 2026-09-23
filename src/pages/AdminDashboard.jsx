@@ -63,7 +63,7 @@ export default function AdminDashboard() {
         <p className="text-sm text-zinc-500 mt-1 mb-5">Approval and official ID/certificate issuance remain in the existing secure management area. Account administration is available below.</p>
         <AdminPortalV2 />
       </div>
-      <div id="admin-user-management" className="scroll-mt-24 mt-6">
+      <div className="mt-6">
         <AdminUserManagement />
       </div>
     </section>
