@@ -8,7 +8,7 @@ const SESSION_KEY = "ssf_user_session";
 const statusText = (value) => { const s = String(value || "pending").toLowerCase(); const map = { approved: "Approved", selected: "Selected", completed: "Completed", paid: "Paid", offline: "Received", pending: "Under review", submitted: "Under review", rejected: "Not approved", failed: "Failed", new: "Under review", contacted: "Under review" }; return map[s] || s.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()); };
 const statusClass = (value) => { const s = String(value || "").toLowerCase(); if (["approved", "selected", "completed", "paid", "offline"].includes(s)) return "bg-emerald-50 text-emerald-700 border-emerald-200"; if (["rejected", "failed"].includes(s)) return "bg-red-50 text-red-700 border-red-200"; return "bg-amber-50 text-amber-700 border-amber-200"; };
 const dateText = (value) => value ? new Date(value).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—";
-const fileUrl = (path) => path ? (/^https?:\/\//i.test(path) ? path : `${API_BASE_URL}${path.startsWith("/") ? "" : "/"}${path}`) : null;
+const fileUrl = (path) => path ? (/^(?:https?:\/\/|data:image\/)/i.test(path) ? path : `${API_BASE_URL}${path.startsWith("/") ? "" : "/"}${path}`) : null;
 
 const participation = [
   { key: "volunteer", title: "Volunteer", icon: FaUserFriends, text: "Serve with SSF through the same working membership form and choose the appropriate member role." },
