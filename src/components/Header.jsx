@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { Link, useLocation } from "@tanstack/react-router";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
 import { FaUserCircle, FaTachometerAlt, FaUserEdit, FaClipboardList, FaDonate, FaSignOutAlt, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt } from "react-icons/fa";
@@ -16,6 +16,7 @@ const Header = () => {
   const [authMode, setAuthMode] = useState("signup");
   const [accountOpen, setAccountOpen] = useState(false);
   const [user, setUser] = useState(null);
+  const location = useLocation();
   const { lang, toggleLang } = useLanguage();
 
   useEffect(() => {
@@ -41,6 +42,8 @@ const Header = () => {
     setAccountOpen(false);
     window.dispatchEvent(new CustomEvent("ssf-auth-changed", { detail: null }));
   };
+  if (location.pathname === "/SSFDigitalOffice") return null;
+
   const profilePhoto = user?.profilePhotoPath
     ? (/^(?:https?:\/\/|data:image\/)/i.test(user.profilePhotoPath) ? user.profilePhotoPath : `${API_BASE_URL}${user.profilePhotoPath.startsWith("/") ? "" : "/"}${user.profilePhotoPath}`)
     : null;
