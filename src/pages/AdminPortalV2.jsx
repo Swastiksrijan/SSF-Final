@@ -6,7 +6,7 @@ import { API_BASE_URL, ENDPOINTS } from "../config/api";
 const TOKEN_KEY = "ssf_admin_token";
 const photoUrl = (path) => {
     if (!path) return null;
-    return /^https?:\/\//i.test(path) ? path : `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+    return /^(?:https?:\/\/|data:image\/)/i.test(path) ? path : `${API_BASE_URL}${path.startsWith("/") ? path : `/${path}`}`;
 };
 const formatDate = (person) => new Date(person.certificateIssuedAt || person.approvedAt || person.submittedAt || new Date()).toLocaleDateString("en-IN", { day: "numeric", month: "long", year: "numeric" });
 
