@@ -11,6 +11,7 @@ const InternshipApplication = require('../models/InternshipApplication');
 
 const router = express.Router();
 const GOOGLE_FRONTEND_URL = process.env.GOOGLE_FRONTEND_URL || 'https://swastiksrijan.in/SSFDigitalOffice';
+const GOOGLE_OAUTH_REDIRECT_URI = process.env.GOOGLE_OAUTH_REDIRECT_URI || 'https://swastiksrijan.in/api/digital-office/google/callback';
 const googleTokenKey = () => crypto.createHash('sha256').update(String(process.env.GOOGLE_TOKEN_ENCRYPTION_KEY || process.env.ADMIN_PORTAL_TOKEN || 'ssf-google-token-key')).digest();
 const encryptGoogleToken = (value) => {
   const iv = crypto.randomBytes(12);
@@ -41,7 +42,7 @@ const verifyGoogleState = (state) => {
 };
 const googleClientSecret = () => process.env.GOOGLE_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECERT;
 const googleConfigReady = () => Boolean(process.env.GOOGLE_CLIENT_ID && googleClientSecret());
-const googleRedirectUri = (req) => process.env.GOOGLE_OAUTH_REDIRECT_URI || ((req.protocol || 'https') + '://' + req.get('host') + '/api/digital-office/google/callback');
+const googleRedirectUri = () => GOOGLE_OAUTH_REDIRECT_URI;
 const googleJson = async (url, options={}) => {
   const response = await fetch(url, options);
   const text = await response.text();
@@ -99,7 +100,7 @@ router.get('/digital-office/google/connect-url', requireOfficeAuth, async (req, 
     if (!googleConfigReady()) return res.status(503).json({message:'Google Meet integration is not configured yet. Add GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET on the backend.'});
     const params = new URLSearchParams({
       client_id: process.env.GOOGLE_CLIENT_ID,
-      redirect_uri: googleRedirectUri(req),
+      redirect_uri: googleRedirectUri(),
       response_type: 'code',
       access_type: 'offline',
       prompt: 'consent',
@@ -119,7 +120,7 @@ router.get('/digital-office/google/callback', async (req, res) => {
     const tokenBody = await googleJson('https://oauth2.googleapis.com/token', {
       method:'POST',
       headers:{'Content-Type':'application/x-www-form-urlencoded'},
-      body:new URLSearchParams({code:req.query.code,client_id:process.env.GOOGLE_CLIENT_ID,client_secret:process.env.GOOGLE_CLIENT_SECRET,redirect_uri:googleRedirectUri(req),grant_type:'authorization_code'})
+      body:new URLSearchParams({code:req.query.code,client_id:process.env.GOOGLE_CLIENT_ID,client_secret:googleClientSecret(),redirect_uri:googleRedirectUri(),grant_type:'authorization_code'})
     });
     if (!tokenBody.refresh_token) throw new Error('Google did not return a refresh token. Please reconnect and approve offline access.');
     const old=await getGoogleConnection();
