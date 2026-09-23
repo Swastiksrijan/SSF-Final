@@ -11,7 +11,7 @@ const Member = sequelize.define('Member', {
     resetTokenExpiresAt: { type: DataTypes.DATE, allowNull: true },
     memberType: { type: DataTypes.STRING, defaultValue: 'general' },
     message: { type: DataTypes.TEXT, allowNull: true },
-    profilePhotoPath: { type: DataTypes.STRING, allowNull: true },
+    profilePhotoPath: { type: DataTypes.TEXT, allowNull: true },
     idProofType: { type: DataTypes.STRING, allowNull: true },
     identityNumber: { type: DataTypes.STRING, allowNull: true },
     idDocumentPath: { type: DataTypes.STRING, allowNull: true },
