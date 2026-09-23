@@ -131,7 +131,17 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   doc.setDrawColor(navy); doc.setLineWidth(0.35); doc.line(57, 45, 80, 45);
   doc.setFont("helvetica", "bold"); doc.setFontSize(3.8); doc.setTextColor(navy); doc.text("Authorized Signatory", 68.5, 48.2, { align: "center" });
   doc.setFont("helvetica", "normal"); doc.setFontSize(3.1); doc.setTextColor(muted); doc.text("Swastik Srijan Foundation Samiti", 68.5, 50.2, { align: "center" });
-  doc.save(`SSF_${isMember ? "Member" : "Volunteer"}_ID_${safeFileName(name)}.pdf`);
+  // Use a Blob download for the ID card so browsers do not silently ignore jsPDF's direct save.
+  const pdfBlob = doc.output("blob");
+  const blobUrl = URL.createObjectURL(pdfBlob);
+  const link = document.createElement("a");
+  link.href = blobUrl;
+  link.download = `SSF_${isMember ? "Member" : "Volunteer"}_ID_${safeFileName(name)}.pdf`;
+  link.rel = "noopener";
+  document.body.appendChild(link);
+  link.click();
+  link.remove();
+  setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
 };
 
 export const generateCertificate = async (name, role, date, certId = null, memberId = null, certificateType = "Participation") => {
