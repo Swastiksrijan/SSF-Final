@@ -9,7 +9,7 @@ export const Route = createFileRoute("/SSFDigitalOffice")({
     const token = localStorage.getItem(TOKEN_KEY) || "";
     if (!token) {
       throw redirect({
-        to: "/AdminPortal",
+        to: "/Admin",
         search: { redirect: location.href },
         replace: true,
       });
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/SSFDigitalOffice")({
       if (!response.ok) {
         localStorage.removeItem(TOKEN_KEY);
         throw redirect({
-          to: "/AdminPortal",
+          to: "/Admin",
           search: { redirect: location.href },
           replace: true,
         });
@@ -32,7 +32,7 @@ export const Route = createFileRoute("/SSFDigitalOffice")({
       if (error && typeof error === "object" && "isRedirect" in error) throw error;
       localStorage.removeItem(TOKEN_KEY);
       throw redirect({
-        to: "/AdminPortal",
+        to: "/Admin",
         search: { redirect: location.href },
         replace: true,
       });
