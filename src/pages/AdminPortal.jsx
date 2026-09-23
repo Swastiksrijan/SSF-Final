@@ -64,6 +64,7 @@ export default function AdminPortal() {
             localStorage.setItem(TOKEN_KEY, result.token);
             setToken(result.token);
             setLoginForm({ username: "", password: "" });
+            window.location.assign("/Admin");
         } catch (error) { setLoginError(error.message || "Login failed"); }
     };
 
