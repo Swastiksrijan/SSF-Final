@@ -20,7 +20,13 @@ const modules = [
 function jumpTo(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
 
 export default function AdminDashboard() {
-  const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem(TOKEN_KEY)));\n\n  const handleLogout = () => {\n    localStorage.removeItem(TOKEN_KEY);\n    setLoggedIn(false);\n    window.location.assign("/AdminPortal");\n  };
+  const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem(TOKEN_KEY)));
+
+  const handleLogout = () => {
+    localStorage.removeItem(TOKEN_KEY);
+    setLoggedIn(false);
+    window.location.assign("/AdminPortal");
+  };
 
   useEffect(() => {
     const sync = () => setLoggedIn(Boolean(localStorage.getItem(TOKEN_KEY)));
