@@ -10,6 +10,7 @@ const modules = [
   { id: 'admin-overview', label: 'Dashboard', icon: FaChartLine },
   { id: 'admin-applications', label: 'Applications', icon: FaClipboardList },
   { id: 'admin-people', label: 'People & Roles', icon: FaUsers },
+  { id: 'admin-user-management', label: 'User Management', icon: FaUsers },
   { id: 'admin-donors', label: 'Donors & Donations', icon: FaHeart },
   { id: 'admin-volunteers', label: 'Volunteers', icon: FaHandsHelping },
   { id: 'admin-members', label: 'Members', icon: FaIdCard },
@@ -62,7 +63,9 @@ export default function AdminDashboard() {
         <p className="text-sm text-zinc-500 mt-1 mb-5">Approval and official ID/certificate issuance remain in the existing secure management area. Account administration is available below.</p>
         <AdminPortalV2 />
       </div>
-      <AdminUserManagement />
+      <div className="mt-6">
+        <AdminUserManagement />
+      </div>
     </section>
 
     <section id="admin-donors" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#ff6600]">Fundraising</p><h2 className="text-2xl font-black text-[#002344] mt-1">Donors & Donations</h2><p className="text-sm text-zinc-500 mt-1">Donor submissions are available in Applications. Donation status must reflect the actual transaction state; a request or pending record is not treated as money received.</p><button onClick={() => jumpTo('admin-applications')} className="mt-4 px-4 py-2.5 rounded-xl bg-[#002344] text-white text-sm font-bold">Open donor records</button></div></section>
