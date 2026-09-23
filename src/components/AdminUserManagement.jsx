@@ -16,7 +16,7 @@ export default function AdminUserManagement() {
     if (!token) return;
     setLoading(true); setError('');
     try {
-      const response = await fetch(ENDPOINTS.ADMIN_MEMBERS, { headers: { Authorization: `Bearer ${token}` } });
+      const response = await fetch(`${ENDPOINTS.ADMIN_MEMBERS}?includeAccounts=true`, { headers: { Authorization: `Bearer ${token}` } });
       const data = await response.json().catch(() => []);
       if (response.status === 401) throw new Error('Admin session expired. Please log in again.');
       if (!response.ok) throw new Error(data.message || 'Unable to load users.');
