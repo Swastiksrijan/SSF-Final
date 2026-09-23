@@ -62,8 +62,7 @@ export default function AdminPortal() {
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || "Login failed");
             localStorage.setItem(TOKEN_KEY, result.token);
-            setToken(result.token);
-            setLoginForm({ username: "", password: "" });
+            window.location.assign("/Admin");
         } catch (error) { setLoginError(error.message || "Login failed"); }
     };
 
