@@ -108,8 +108,15 @@ export default function AdminPortalV2() {
         if (!officialId) return window.alert("Official ID has not been issued yet.");
         if (!person.profilePhotoPath) return window.alert("This application has no profile photo. A new application with a profile photo is required for a photo ID card.");
         setBusy(`id-${person.id}`);
-        try { await generateIdentityCard({ name: person.fullName, role, date: formatDate(person), officialId, certId: person.certId, photoUrl: photoUrl(person.profilePhotoPath) }); }
-        catch (error) { window.alert(`ID card generation failed: ${error.message}`); }
+        try {
+            await generateIdentityCard({ name: person.fullName, role, date: formatDate(person), officialId, certId: person.certId, photoUrl: photoUrl(person.profilePhotoPath) });
+        } catch (error) {
+            // Fallback to the same official document endpoint used by My Documents.
+            const documentType = role === "member" ? "membership-id" : "volunteer-id";
+            const fallbackUrl = `${API_BASE_URL}/api/user-document/${documentType}/${encodeURIComponent(officialId)}?account=${encodeURIComponent(person.id)}`;
+            window.open(fallbackUrl, "_blank", "noopener,noreferrer");
+            window.alert("ID Card PDF could not be generated in this browser. The official ID Card document has been opened instead.");
+        }
         finally { setBusy(""); }
     };
 
