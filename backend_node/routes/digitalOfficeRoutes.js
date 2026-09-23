@@ -39,7 +39,8 @@ const verifyGoogleState = (state) => {
   if (!payload.ts || Date.now() - Number(payload.ts) > 10 * 60 * 1000) throw new Error('Google OAuth state expired.');
   return payload;
 };
-const googleConfigReady = () => Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
+const googleClientSecret = () => process.env.GOOGLE_CLIENT_SECRET || process.env.GOOGLE_CLIENT_SECERT;
+const googleConfigReady = () => Boolean(process.env.GOOGLE_CLIENT_ID && googleClientSecret());
 const googleRedirectUri = (req) => process.env.GOOGLE_OAUTH_REDIRECT_URI || ((req.protocol || 'https') + '://' + req.get('host') + '/api/digital-office/google/callback');
 const googleJson = async (url, options={}) => {
   const response = await fetch(url, options);
@@ -65,7 +66,7 @@ const getGoogleAccessToken = async () => {
   const tokenBody = await googleJson('https://oauth2.googleapis.com/token', {
     method:'POST',
     headers:{'Content-Type':'application/x-www-form-urlencoded'},
-    body:new URLSearchParams({client_id:process.env.GOOGLE_CLIENT_ID,client_secret:process.env.GOOGLE_CLIENT_SECRET,refresh_token:refreshToken,grant_type:'refresh_token'})
+    body:new URLSearchParams({client_id:process.env.GOOGLE_CLIENT_ID,client_secret:googleClientSecret(),refresh_token:refreshToken,grant_type:'refresh_token'})
   });
   row.data = Object.assign({}, row.data, {accessToken:encryptGoogleToken(tokenBody.access_token),accessTokenExpiresAt:Date.now()+Number(tokenBody.expires_in||3600)*1000});
   await row.save();
