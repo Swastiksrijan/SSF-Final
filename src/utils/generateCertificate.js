@@ -30,6 +30,15 @@ const deriveVolunteerId = (certId) => {
   return null;
 };
 
+const getImageFormat = (url) => {
+  const match = String(url || "").match(/^data:image\/([a-z0-9.+-]+);/i);
+  if (match) {
+    const type = match[1].toLowerCase();
+    return type === "jpg" || type === "jpeg" ? "JPEG" : type === "webp" ? "WEBP" : "PNG";
+  }
+  return "JPEG";
+};
+
 const getRoleLabel = (role, isMember) => {
   if (isMember) return "Member";
   const value = String(role || "Volunteer").trim();
@@ -72,7 +81,7 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
       let drawW = photoW; let drawH = photoH; let drawX = photoX; let drawY = photoY;
       if (sourceRatio > boxRatio) { drawW = photoH * sourceRatio; drawX = photoX - (drawW - photoW) / 2; }
       else { drawH = photoW / sourceRatio; drawY = photoY - (drawH - photoH) / 2; }
-      doc.addImage(photo, "JPEG", drawX, drawY, drawW, drawH);
+      doc.addImage(photo, getImageFormat(photoUrl), drawX, drawY, drawW, drawH);
     } catch {
       doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#7B8490"); doc.text("PHOTO", photoX + photoW / 2, photoY + photoH / 2, { align: "center" });
     }
