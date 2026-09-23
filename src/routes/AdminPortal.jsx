@@ -1,7 +1,11 @@
 // src/routes/AdminPortal.jsx
-import { createFileRoute } from "@tanstack/react-router";
-import AdminPortal from "../pages/AdminPortal";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/AdminPortal")({
-    component: AdminPortal,
+    beforeLoad: () => {
+        throw redirect({
+            to: "/Admin",
+            replace: true,
+        });
+    },
 });
