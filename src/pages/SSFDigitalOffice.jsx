@@ -16,7 +16,7 @@ const MODULES = [
  ["inventory","Stock / Samaan",FaBoxes],
  ["inward","Aavak / Inward",FaFileAlt],["outward","Jaavak / Outward",FaFileAlt],
  ["meetings","Meeting / Baithak",FaCalendarAlt],["projects","Projects / Initiatives",FaTasks],["events","Events / Camps",FaCalendarAlt],
- ["mou","MoU / Agreements",FaHandshake],["documents","Documents",FaFileAlt],["officialDocuments","Official Documents",FaFileAlt],["appointmentLetters","Appointment Letters",FaUserTie],
+ ["mou","MoU / Agreements",FaHandshake],["documents","Documents",FaFileAlt],["officialDocuments","Official Documents",FaFileAlt],["donorSlips","Donor Slips / Receipts",FaFileAlt],["separations","Separation / Role Changes",FaFileAlt],["appointmentLetters","Appointment Letters",FaUserTie],
  ["certificates","Certificates",FaCertificate],["idcards","ID Cards",FaIdCard],
  ["beneficiaries","Beneficiaries",FaUsers],["internships","Internship Applications",FaTasks],["activities","Volunteer Activities",FaTasks],
  ["assets","Assets & Equipment",FaBoxes],["notifications","Alerts & Follow-ups",FaTasks],
@@ -110,7 +110,7 @@ export default function SSFDigitalOffice(){
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
@@ -368,6 +368,83 @@ function RecordForm({module,onSave}){
 }
 
 
+
+
+function DonorSlips({rows,add}){
+ const [f,setF]=useState({donorName:"",donationId:"",date:new Date().toISOString().slice(0,10),amount:"",paymentMode:"UPI",transactionNo:"",purpose:"General",email:"",phone:"",address:"",pan:"",remarks:""});
+ const [notice,setNotice]=useState("");
+ const set=(k,v)=>setF(x=>({...x,[k]:v}));
+ const makePdf=(receiptNo,data)=>{
+  const d=new jsPDF();
+  d.addImage(logoImg,"PNG",16,10,20,20);
+  d.setTextColor(0,35,68); d.setFontSize(18); d.text("Swastik Srijan Foundation Samiti",105,18,{align:"center"});
+  d.setFontSize(9); d.setTextColor(80); d.text("Registered under Madhya Pradesh Societies Registration Act, 1973",105,25,{align:"center"});
+  d.text("Reg. No. 05/22/03/11448/13 · Rewa, Madhya Pradesh",105,30,{align:"center"});
+  d.text("Ward No. 1, Village Dadar, Post Rahat, Tahsil Huzur, Rewa, MP 486446",105,35,{align:"center"});
+  d.text("swastiksrijanfoundation@gmail.com · swastiksrijan.in",105,40,{align:"center"});
+  d.setTextColor(0,35,68); d.setFontSize(17); d.text("DONATION RECEIPT / DONOR SLIP",105,54,{align:"center"});
+  d.setFontSize(10); d.setTextColor(30); d.text("Receipt No.: "+receiptNo,16,66); d.text("Donation ID: "+(data.donationId||"—"),130,66); d.text("Date: "+data.date,16,73);
+  let y=86; const fields=[["Donor Name",data.donorName],["Address",data.address],["Mobile",data.phone],["Email",data.email],["PAN",data.pan],["Amount",data.amount?"₹"+Number(data.amount).toLocaleString("en-IN"):""],["Payment Mode",data.paymentMode],["Transaction / UTR / Cheque No.",data.transactionNo],["Purpose / Project",data.purpose],["Remarks",data.remarks]];
+  fields.forEach(([k,v])=>{if(v!==undefined&&v!==null&&String(v).trim()!==""){d.setFont(undefined,"bold");d.text(k+":",16,y);d.setFont(undefined,"normal");const lines=d.splitTextToSize(String(v),145);d.text(lines,66,y);y+=Math.max(7,lines.length*5)+3;}});
+  d.setFontSize(9);d.setTextColor(80);d.text("This receipt records a donation/contribution entered in the SSF Digital Office. 80G wording is shown only where legally applicable and based on the Foundation's current tax status.",16,y+8,{maxWidth:178});d.text("Authorised Signatory: Ramesh Pandey · Founder & National President",16,y+24);d.setFontSize(8);d.text("Computer-generated receipt · Please retain this receipt for your records.",105,288,{align:"center"});
+  downloadPdf(d,receiptNo+".pdf");
+ };
+ const submit=e=>{e.preventDefault();if(!f.donorName.trim()||!f.amount){setNotice("Donor name and amount are required.");return;}const year=new Date(f.date).getFullYear();const seq=String(rows.length+1).padStart(4,"0");const receiptNo="SSF/DR/"+year+"/"+seq;add("donorSlips",{receiptNo,...f,status:"issued"});makePdf(receiptNo,f);setNotice("Donor slip saved: "+receiptNo);};
+ return <div className="bg-white rounded-2xl border overflow-hidden">
+  <div className="bg-[#002344] text-white p-6"><div className="flex items-center gap-3"><FaFileAlt className="text-2xl"/><div><h2 className="text-2xl font-black">Donor Slips / Donation Receipts</h2><p className="text-white/70 mt-1">Donation actually received and recorded hone par hi receipt issue karein.</p></div></div></div>
+  {notice&&<div className="m-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
+  <form onSubmit={submit} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-zinc-50">
+   <input value={f.donorName} onChange={e=>set("donorName",e.target.value)} placeholder="Donor Name" required className={cls}/>
+   <input value={f.donationId} onChange={e=>set("donationId",e.target.value)} placeholder="Donation ID (optional)" className={cls}/>
+   <input type="date" value={f.date} onChange={e=>set("date",e.target.value)} required className={cls}/>
+   <input type="number" min="0" step="0.01" value={f.amount} onChange={e=>set("amount",e.target.value)} placeholder="Amount" required className={cls}/>
+   <select value={f.paymentMode} onChange={e=>set("paymentMode",e.target.value)} className={cls}><option>UPI</option><option>Bank Transfer</option><option>Cash</option><option>Cheque</option><option>Other</option></select>
+   <input value={f.transactionNo} onChange={e=>set("transactionNo",e.target.value)} placeholder="Transaction / UTR / Cheque No." className={cls}/>
+   <input value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose / Project" className={cls}/>
+   <input value={f.pan} onChange={e=>set("pan",e.target.value)} placeholder="PAN (optional)" className={cls}/>
+   <input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email (optional)" className={cls}/>
+   <input value={f.phone} onChange={e=>set("phone",e.target.value)} placeholder="Mobile (optional)" className={cls}/>
+   <input value={f.address} onChange={e=>set("address",e.target.value)} placeholder="Address" className={cls}/>
+   <input value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/>
+   <div className="sm:col-span-2 lg:col-span-4 flex gap-2"><button className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">Save + Generate Donor Slip</button></div>
+  </form>
+  <div className="p-5 border-t"><h3 className="font-black text-[#002344] mb-3">Recent Receipts</h3><div className="overflow-auto"><table className="w-full text-sm"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Receipt No.</th><th className="p-3 text-left">Donor</th><th className="p-3 text-left">Date</th><th className="p-3 text-left">Amount</th><th className="p-3 text-left">Status</th></tr></thead><tbody className="divide-y">{rows.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold">{d.receiptNo||r.recordId}</td><td className="p-3">{d.donorName||"—"}</td><td className="p-3">{r.recordDate?new Date(r.recordDate).toLocaleDateString("en-IN"):"—"}</td><td className="p-3">₹{Number(d.amount||0).toLocaleString("en-IN")}</td><td className="p-3">{r.status}</td></tr>;})}</tbody></table></div></div>
+ </div>;
+}
+
+function SeparationManagement({rows,add}){
+ const [f,setF]=useState({name:"",currentRole:"",newRole:"",action:"Resignation",effectiveDate:new Date().toISOString().slice(0,10),reason:"",approvedBy:"Ramesh Pandey · Founder & National President",referenceNo:"",resolutionNo:"",meetingDate:"",remarks:""});
+ const [notice,setNotice]=useState("");
+ const set=(k,v)=>setF(x=>({...x,[k]:v}));
+ const actions=["Resignation","Role Change / Transfer","Responsibility Withdrawal","Appointment Revocation","Membership Cancellation / Removal","Volunteer Disengagement","Termination / Discontinuation","Relieving"];
+ const makePdf=(orderNo,data)=>{
+  const d=new jsPDF(); d.addImage(logoImg,"PNG",16,10,20,20); d.setTextColor(0,35,68); d.setFontSize(18); d.text("Swastik Srijan Foundation Samiti",105,18,{align:"center"}); d.setFontSize(9);d.setTextColor(80);d.text("Registered under Madhya Pradesh Societies Registration Act, 1973 · Reg. No. 05/22/03/11448/13",105,26,{align:"center"});d.text("Ward No. 1, Village Dadar, Post Rahat, Tahsil Huzur, Rewa, MP 486446",105,32,{align:"center"});d.text("swastiksrijanfoundation@gmail.com · swastiksrijan.in",105,38,{align:"center"});
+  d.setTextColor(0,35,68);d.setFontSize(17);d.text("SEPARATION / ROLE CHANGE ORDER",105,54,{align:"center"});d.setTextColor(30);d.setFontSize(10);d.text("Order No.: "+orderNo,16,66);d.text("Effective Date: "+data.effectiveDate,16,73);
+  let y=88; [["Name",data.name],["Current Role",data.currentRole],["Action",data.action],["New Role",data.newRole],["Reason",data.reason],["Reference No.",data.referenceNo],["Resolution No.",data.resolutionNo],["Meeting Date",data.meetingDate],["Approved By",data.approvedBy],["Remarks",data.remarks]].forEach(([k,v])=>{if(String(v||"").trim()){d.setFont(undefined,"bold");d.text(k+":",16,y);d.setFont(undefined,"normal");d.text(d.splitTextToSize(String(v),145),66,y);y+=9;}});
+  d.setFontSize(9);d.setTextColor(80);d.text("This order changes the person's organisational status/role from the effective date. Historical records, approvals, meeting resolutions and audit entries are retained; records are not hard-deleted.",16,y+7,{maxWidth:178});d.setTextColor(30);d.text("Authorised Signatory: "+data.approvedBy,16,y+25);d.setFontSize(8);d.setTextColor(100);d.text("Computer-generated official office document · SSF Digital Office",105,288,{align:"center"});downloadPdf(d,orderNo+".pdf");
+ };
+ const submit=e=>{e.preventDefault();if(!f.name.trim()||!f.currentRole.trim()){setNotice("Name and current role are required.");return;}const year=new Date(f.effectiveDate).getFullYear();const no="SSF/SEP/"+year+"/"+String(rows.length+1).padStart(4,"0");add("separations",{orderNo:no,...f,status:f.action==="Role Change / Transfer"?"active":"revoked"});makePdf(no,f);setNotice("Order saved: "+no);};
+ return <div className="bg-white rounded-2xl border overflow-hidden">
+  <div className="bg-[#002344] text-white p-6"><div className="flex items-center gap-3"><FaFileAlt className="text-2xl"/><div><h2 className="text-2xl font-black">Separation / Removal / Role Change</h2><p className="text-white/70 mt-1">Person ko delete karne ke bajay proper order + history maintain karein.</p></div></div></div>
+  {notice&&<div className="m-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
+  <form onSubmit={submit} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-zinc-50">
+   <input value={f.name} onChange={e=>set("name",e.target.value)} placeholder="Member / Volunteer / Person Name" required className={cls}/>
+   <input value={f.currentRole} onChange={e=>set("currentRole",e.target.value)} placeholder="Current Designation / Role" required className={cls}/>
+   <select value={f.action} onChange={e=>set("action",e.target.value)} className={cls}>{actions.map(x=><option key={x}>{x}</option>)}</select>
+   <input value={f.newRole} onChange={e=>set("newRole",e.target.value)} placeholder="New Role (if applicable)" className={cls}/>
+   <input type="date" value={f.effectiveDate} onChange={e=>set("effectiveDate",e.target.value)} required className={cls}/>
+   <input value={f.reason} onChange={e=>set("reason",e.target.value)} placeholder="Reason / Grounds" className={cls}/>
+   <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / File No." className={cls}/>
+   <input value={f.approvedBy} onChange={e=>set("approvedBy",e.target.value)} placeholder="Approved / Authorised By" className={cls}/>
+   <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No. (where applicable)" className={cls}/>
+   <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls}/>
+   <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks / Conditions" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[70px]"}/>
+   <div className="sm:col-span-2 lg:col-span-4 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900"><b>Managing Committee / Governing Body:</b> For removal or change of a committee member, first record the relevant meeting agenda/minutes and resolution as required by the Foundation's governing documents, then issue this order. Do not use a simple delete action.</div>
+   <button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save + Generate Official Order</button>
+  </form>
+  <div className="p-5 border-t"><h3 className="font-black text-[#002344] mb-3">Recent Orders</h3><div className="overflow-auto"><table className="w-full text-sm"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Order No.</th><th className="p-3 text-left">Person</th><th className="p-3 text-left">Action</th><th className="p-3 text-left">Effective</th><th className="p-3 text-left">Status</th></tr></thead><tbody className="divide-y">{rows.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold">{d.orderNo||r.recordId}</td><td className="p-3">{d.name||"—"}</td><td className="p-3">{d.action||"—"}</td><td className="p-3">{d.effectiveDate||"—"}</td><td className="p-3">{r.status}</td></tr>;})}</tbody></table></div></div>
+ </div>;
+}
 
 function Reports({token,exportRows,exportPdf}){
  const [data,setData]=useState(null),[from,setFrom]=useState(""),[to,setTo]=useState(""),[loading,setLoading]=useState(false);
