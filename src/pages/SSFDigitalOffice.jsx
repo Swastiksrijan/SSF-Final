@@ -66,7 +66,7 @@ export default function SSFDigitalOffice(){
  };
  const updateRecord=async function(id,module,data){
   try{
-   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id,{method:"PUT",headers:auth(),body:JSON.stringify({module:module,data:data,recordDate:data.eventDate,recordType:data.changeType,status:"active"})});
+   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id,{method:"PUT",headers:auth(),body:JSON.stringify({module:module,data:data,recordDate:data.eventDate||data.date||new Date().toISOString().slice(0,10),recordType:data.changeType||data.eventType||"Record",status:"active"})});
    const out=await r.json().catch(()=>({}));
    if(!r.ok)throw new Error(out.detail?(out.message+" "+out.detail):(out.message||"Update failed."));
    setNotice("Record updated successfully.");
@@ -128,7 +128,7 @@ export default function SSFDigitalOffice(){
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
     {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
-    {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} archive={archive}/>}
+    {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
     {active==="meetingResolutions"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}
