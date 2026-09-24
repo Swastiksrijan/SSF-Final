@@ -53,7 +53,7 @@ export default function SSFDigitalOffice(){
    var endpoint=module==="donations"?ENDPOINTS.DIGITAL_OFFICE_DONATIONS:module==="expenses"?ENDPOINTS.DIGITAL_OFFICE_EXPENSES:ENDPOINTS.DIGITAL_OFFICE_RECORDS;
    var body=module==="donations"||module==="expenses"?data:Object.assign({module:module},data);
    var r=await fetch(endpoint,{method:"POST",headers:auth(),body:JSON.stringify(body)}), out=await r.json();
-   if(!r.ok)throw new Error(out.message||"Save failed.");
+   if(!r.ok){throw new Error(out.detail ? (out.message+" "+out.detail) : (out.message||"Save failed."));}
    setNotice(out.donationId?"Saved. Donation ID: "+out.donationId:"Record saved successfully.");
    await load(module);
    return true;
