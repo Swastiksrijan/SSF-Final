@@ -589,7 +589,14 @@ function InstitutionalHistory({rows,add,updateRecord,archive}){
 }
 
 function OfficeHistory({rows,add,updateRecord,archive}){
- const existing=(rows||[]).filter(r=>r.module==="officeHistory"&&r.status!=="deleted").sort((a,b)=>String(a.recordDate||"").localeCompare(String(b.recordDate||"")));
+ const allExisting=(rows||[]).filter(r=>r.module==="officeHistory"&&r.status!=="deleted");
+ const [search,setSearch]=useState(""),[sortBy,setSortBy]=useState("date");
+ const existing=useMemo(()=>{
+  const q=search.trim().toLowerCase();
+  const filtered=allExisting.filter(r=>{const d=r.data||{};if(!q)return true;return [d.memberId,d.fullName,d.name,r.recordDate,d.eventDate,d.newRole,d.previousRole,d.changeType,d.referenceNo,d.resolutionNo].some(v=>String(v||"").toLowerCase().includes(q));});
+  return filtered.sort((a,b)=>{const da=a.data||{},db=b.data||{};if(sortBy==="name")return String(da.fullName||da.name||"").localeCompare(String(db.fullName||db.name||""))||String(da.eventDate||a.recordDate||"").localeCompare(String(db.eventDate||b.recordDate||""));if(sortBy==="memberId")return String(da.memberId||"").localeCompare(String(db.memberId||""))||String(da.eventDate||a.recordDate||"").localeCompare(String(db.eventDate||b.recordDate||""));return String(db.eventDate||b.recordDate||"").localeCompare(String(da.eventDate||a.recordDate||""));
+  });
+ },[allExisting,search,sortBy]);
  const blank={memberId:"",fullName:"",eventDate:new Date().toISOString().slice(0,10),changeType:"Appointment",previousRole:"",newRole:"",referenceNo:"",resolutionNo:"",meetingDate:"",details:"",remarks:""};
  const [f,setF]=useState(blank),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
@@ -619,13 +626,13 @@ function OfficeHistory({rows,add,updateRecord,archive}){
   </div>
   {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
   <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Permanent Committee / Office Role History</h3><p className="text-sm text-zinc-500 mt-1">Existing records isi register mein editable hain. Archive history ko permanently delete nahi karta.</p></div>
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Permanent Committee / Office Role History</h3><p className="text-sm text-zinc-500 mt-1">Search by Name, Member ID or Date. Sort records together by Name, ID or latest Date.</p><div className="mt-4 flex flex-col sm:flex-row gap-2"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="🔎 Search Name / Member ID / Date" className="flex-1 px-4 py-3 rounded-xl border border-zinc-200 outline-none focus:ring-2 focus:ring-[#002344]/20"/><select value={sortBy} onChange={e=>setSortBy(e.target.value)} className="px-4 py-3 rounded-xl border border-zinc-200 font-bold"><option value="date">Sort by Date</option><option value="name">Group by Name</option><option value="memberId">Group by Member ID</option></select></div><p className="text-xs text-zinc-400 mt-2">{existing.length} record{existing.length===1?"":"s"} shown{search?` for “${search}”`:""}.</p></div>
    <div className="overflow-auto"><table className="w-full text-sm min-w-[1500px]">
-    <thead className="bg-zinc-50"><tr>{["Date","Member ID","Name","Change Type","Previous Position","New / Current Position","Reference","Resolution","Meeting Date","Details","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead>
-    <tbody className="divide-y">{existing.map(r=>{const d=r.data||{};return <tr key={r.id}>
-     <td className="p-3 whitespace-nowrap">{d.eventDate||r.recordDate||"—"}</td><td className="p-3">{d.memberId||"—"}</td><td className="p-3 font-bold">{d.fullName||d.name||"—"}</td><td className="p-3">{d.changeType||d.action||r.recordType||"—"}</td><td className="p-3">{d.previousRole||"—"}</td><td className="p-3 font-bold">{d.newRole||d.designation||"—"}</td><td className="p-3">{d.referenceNo||"—"}</td><td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{d.meetingDate||"—"}</td><td className="p-3 max-w-[420px]">{d.details||d.reason||d.responsibilities||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
+    <thead className="bg-zinc-50"><tr>{["#","Date","Member ID","Name","Change Type","Previous Position","New / Current Position","Reference","Resolution","Meeting Date","Details","Remarks","Action"].map(h=><th key={h} className={`p-3 text-left ${h==="#"?"w-10 max-w-10":""}`}>{h}</th>)}</tr></thead>
+    <tbody className="divide-y">{existing.map((r,index)=>{const d=r.data||{};return <tr key={r.id}>
+     <td className="p-2 text-xs text-zinc-400 font-bold w-10 max-w-10">{index+1}</td><td className="p-3 whitespace-nowrap">{d.eventDate||r.recordDate||"—"}</td><td className="p-3">{d.memberId||"—"}</td><td className="p-3 font-bold">{d.fullName||d.name||"—"}</td><td className="p-3">{d.changeType||d.action||r.recordType||"—"}</td><td className="p-3">{d.previousRole||"—"}</td><td className="p-3 font-bold">{d.newRole||d.designation||"—"}</td><td className="p-3">{d.referenceNo||"—"}</td><td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{d.meetingDate||"—"}</td><td className="p-3 max-w-[420px]">{d.details||d.reason||d.responsibilities||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
      <td className="p-3 sticky right-0 bg-white border-l z-10 whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 mr-2">✏️ Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
-    </tr>;})}{!existing.length&&<tr><td colSpan="12" className="p-10 text-center text-zinc-500">No Office History records yet.</td></tr>}</tbody>
+    </tr>;})}{!existing.length&&<tr><td colSpan="13" className="p-10 text-center text-zinc-500">{search ? "No matching Office History records." : "No Office History records yet."}</td></tr>}</tbody>
    </table></div>
   </div>
   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900"><b>Historical record:</b> Original documents verify exact dates, reference numbers and resolutions. Approximate dates should be corrected through Edit when source documents are available.</div>
