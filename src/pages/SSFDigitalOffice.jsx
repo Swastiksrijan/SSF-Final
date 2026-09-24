@@ -494,120 +494,91 @@ function MembersRegister({rows,add,archive}){
   <div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1900px]"><thead className="bg-zinc-50"><tr>{["Member ID","Membership No.","Member Type","Full Name","Father / Husband / Guardian","DOB","Gender","Occupation","Mobile","Email","Address","City","State","PIN","PAN","Aadhaar","Joining Date","End Date","Status","Membership Fee","Receipt No.","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.map(r=>{const d=r.data||{};return <tr key={r.id}>{["memberId","membershipNo","memberType","fullName","fatherHusbandName","dob","gender","occupation","mobile","email","address","city","state","pinCode","pan","aadhaar","joiningDate","membershipEndDate","membershipStatus","membershipFee","receiptNo","remarks"].map(k=><td key={k} className="p-3">{d[k]||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="23" className="p-8 text-center text-zinc-500">No member records yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
 }
 
-function InstitutionalHistory({rows,add,archive}){
- const existing=(rows||[]).filter(r=>r.module==="institutionalHistory"&&r.status!=="deleted"); const [f,setF]=useState({date:new Date().toISOString().slice(0,10),eventType:"Institution Formation",title:"",personCommittee:"",previousRole:"",newRole:"",referenceNo:"",meetingDate:"",description:"",supportingDocument:"",remarks:""}); const [notice,setNotice]=useState(""); const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const save=async e=>{e.preventDefault();if(!f.title.trim()){setNotice("Event Title required.");return;}const ok=await add("institutionalHistory",{recordDate:f.date,recordType:f.eventType,status:"active",data:f});if(ok){setF({...f,title:"",personCommittee:"",previousRole:"",newRole:"",referenceNo:"",meetingDate:"",description:"",supportingDocument:"",remarks:""});setNotice("Institutional history event saved.");}};
- return <SimpleOfficeCard title="🏛️ संस्था इतिहास (Institutional History)" subtitle="2013 से आज तक SSF की master institutional timeline. पुराने records overwrite नहीं होंगे."><div className="bg-white border rounded-2xl p-5"><form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"><input type="date" value={f.date} onChange={e=>set("date",e.target.value)} className={cls}/><select value={f.eventType} onChange={e=>set("eventType",e.target.value)} className={cls}>{["Institution Formation","Registration","Committee Formation / Reconstitution","Organisational Change","Important Decision","Important Project / Initiative","Compliance / Registration","MoU / Partnership","Other"].map(x=><option key={x}>{x}</option>)}</select><input value={f.title} onChange={e=>set("title",e.target.value)} placeholder="Event Title" required className={cls}/><input value={f.personCommittee} onChange={e=>set("personCommittee",e.target.value)} placeholder="Person / Committee" className={cls}/><input value={f.previousRole} onChange={e=>set("previousRole",e.target.value)} placeholder="Previous Position (if any)" className={cls}/><input value={f.newRole} onChange={e=>set("newRole",e.target.value)} placeholder="New Position (if any)" className={cls}/><input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Resolution / Reference No." className={cls}/><input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/><textarea value={f.description} onChange={e=>set("description",e.target.value)} placeholder="Description / Details" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/><input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/><button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save History Event</button></form></div>{notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}<div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1500px]"><thead className="bg-zinc-50"><tr>{["Date","Event Type","Event Title","Person / Committee","Previous Position","New Position","Resolution / Reference","Meeting Date","Description","Supporting Document","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.sort((a,b)=>String(a.recordDate).localeCompare(String(b.recordDate))).map(r=>{const d=function OfficeHistory({rows,add,updateRecord,archive,moduleKey="officeHistory"}){
- const blank={
-  memberId:"",fullName:"",eventDate:"",changeType:"Appointment",
-  previousRole:"",newRole:"",referenceNo:"",resolutionNo:"",meetingDate:"",
-  details:"",remarks:""
- };
+function InstitutionalHistory({rows,add,updateRecord,archive}){
+ const existing=(rows||[]).filter(r=>r.module==="institutionalHistory"&&r.status!=="deleted").sort((a,b)=>String(a.recordDate||"").localeCompare(String(b.recordDate||"")));
+ const blank={date:new Date().toISOString().slice(0,10),eventType:"Institution Formation",title:"",personCommittee:"",previousRole:"",newRole:"",referenceNo:"",meetingDate:"",description:"",supportingDocument:"",remarks:""};
  const [f,setF]=useState(blank),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const editRecord=r=>{
-  const d=r.data||{};
-  setEditingId(r.id);
-  setF({
-   memberId:d.memberId||"",fullName:d.fullName||"",eventDate:d.eventDate||r.recordDate||"",
-   changeType:d.changeType||d.action||"Appointment",previousRole:d.previousRole||"",
-   newRole:d.newRole||d.designation||"",referenceNo:d.referenceNo||"",
-   resolutionNo:d.resolutionNo||"",meetingDate:d.meetingDate||"",details:d.details||d.reason||d.responsibilities||"",
-   remarks:d.remarks||""
-  });
-  setNotice("");
-  window.scrollTo({top:0,behavior:"smooth"});
- };
- const cancelEdit=()=>{setEditingId(null);setF(blank);setNotice("");};
- const save=async e=>{
-  e.preventDefault();
-  if(!f.fullName.trim()||!f.eventDate||!f.newRole.trim()){
-   setNotice("Full Name, Event Date aur New / Current Role required hain.");
-   return;
-  }
-  setSaving(true);setNotice("");
-  const wasEditing=Boolean(editingId);
-  const data={...f};
-  const targetModule=moduleKey; const ok=wasEditing?await updateRecord(editingId,targetModule,data):await add(targetModule,{
-   recordDate:f.eventDate,recordType:f.changeType,status:"active",data
-  });
-  setSaving(false);
-  if(ok){setNotice(wasEditing?"Office History updated successfully.":"Office History saved successfully.");setEditingId(null);setF(blank);}
- };
- const history=(rows||[]).filter(r=>r.status!=="deleted" && (r.module===moduleKey || (moduleKey==="officeHistory" && r.module==="managingCommittee"))).map(r=>{ if(r.module==="managingCommittee" && moduleKey==="officeHistory"){ const d=r.data||{}; return {...r,data:{...d,eventDate:d.eventDate||d.effectiveFrom||r.recordDate||"",changeType:d.changeType||d.action||"Appointment",previousRole:d.previousRole||"",newRole:d.newRole||d.designation||"",details:d.details||d.reason||d.responsibilities||"",remarks:d.remarks||""}};} return r; }).sort((a,b)=>String(a.recordDate||"").localeCompare(String(b.recordDate||"")));
- return <div className="space-y-5">
-  <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden">
-   <div className="bg-[#002344] text-white p-6 sm:p-7">
-    <div className="flex items-start gap-4">
-     <div className="h-12 w-12 rounded-xl bg-white/10 flex items-center justify-center text-2xl shrink-0">🏛️</div>
-     <div>
-      <h2 className="text-2xl sm:text-3xl font-black">प्रबंधकारिणी समिति / Office History</h2>
-      <p className="text-white/75 mt-2 text-sm sm:text-base">किसने कब कौन सा पद संभाला — appointment, role change, resignation और removal का permanent history record.</p>
-     </div>
-    </div>
-   </div>
-   {notice&&<div className="mx-5 mt-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-4 py-3 font-semibold">{notice}</div>}
+ const editRecord=r=>{const d=r.data||{};setEditingId(r.id);setF({...blank,date:d.date||r.recordDate||"",eventType:d.eventType||r.recordType||"Other",title:d.title||"",personCommittee:d.personCommittee||"",previousRole:d.previousRole||"",newRole:d.newRole||"",referenceNo:d.referenceNo||"",meetingDate:d.meetingDate||"",description:d.description||"",supportingDocument:d.supportingDocument||"",remarks:d.remarks||""});setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
+ const reset=()=>{setEditingId(null);setF(blank);setNotice("");};
+ const save=async e=>{e.preventDefault();if(!f.title.trim()||!f.date){setNotice("Date and Event Title required.");return;}setSaving(true);const data={...f};const ok=editingId?await updateRecord(editingId,"institutionalHistory",data):await add("institutionalHistory",{recordDate:f.date,recordType:f.eventType,status:"active",data});setSaving(false);if(ok){setNotice(editingId?"Institutional history updated successfully.":"Institutional history saved successfully.");reset();}};
+ return <SimpleOfficeCard title="🏛️ संस्था इतिहास (Institutional History)" subtitle="2013 से आज तक SSF की master institutional timeline. पुराने records overwrite नहीं होंगे.">
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 sm:p-6 border-b"><h3 className="text-xl font-black text-[#002344]">{editingId?"Edit Institutional History":"Add Institutional History"}</h3><p className="text-sm text-zinc-500 mt-1">संस्था गठन, पंजीयन, समिति गठन/पुनर्गठन, महत्वपूर्ण निर्णय, compliance और partnerships का स्थायी रिकॉर्ड।</p></div>
    <form onSubmit={save} className="p-5 sm:p-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID" className={cls}/>
-    <input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full Name" required className={cls}/>
-    <input type="date" value={f.eventDate} onChange={e=>set("eventDate",e.target.value)} title="Event Date" required className={cls}/>
-    <select value={f.changeType} onChange={e=>set("changeType",e.target.value)} className={cls}>
-     <option>Appointment</option><option>Role Change / Transfer</option><option>Re-appointment</option><option>Additional Responsibility</option><option>Resignation</option><option>Removal</option><option>Relieving</option><option>Other</option>
-    </select>
-    <input value={f.previousRole} onChange={e=>set("previousRole",e.target.value)} placeholder="Previous Position" className={cls}/>
-    <input value={f.newRole} onChange={e=>set("newRole",e.target.value)} placeholder="New / Current Position" required className={cls}/>
-    <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / File No." className={cls}/>
-    <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/>
+    <input type="date" value={f.date} onChange={e=>set("date",e.target.value)} className={cls} required/>
+    <select value={f.eventType} onChange={e=>set("eventType",e.target.value)} className={cls}>{["Institution Formation","Registration","Committee Formation / Reconstitution","Organisational Change","Important Decision","Important Project / Initiative","Compliance / Registration","MoU / Partnership","Other"].map(x=><option key={x}>{x}</option>)}</select>
+    <input value={f.title} onChange={e=>set("title",e.target.value)} placeholder="Event Title" className={cls} required/>
+    <input value={f.personCommittee} onChange={e=>set("personCommittee",e.target.value)} placeholder="Person / Committee" className={cls}/>
+    <input value={f.previousRole} onChange={e=>set("previousRole",e.target.value)} placeholder="Previous Position (if any)" className={cls}/>
+    <input value={f.newRole} onChange={e=>set("newRole",e.target.value)} placeholder="New Position (if any)" className={cls}/>
+    <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Resolution / Reference No." className={cls}/>
     <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/>
-    <textarea value={f.details} onChange={e=>set("details",e.target.value)} placeholder="Details / Reason" className={cls+" sm:col-span-2 min-h-[80px]"}/>
-    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" sm:col-span-2 min-h-[80px]"}/>
+    <textarea value={f.description} onChange={e=>set("description",e.target.value)} placeholder="Description / Details" className={cls+" sm:col-span-2 min-h-[100px]"}/>
+    <input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/>
+    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/>
     <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2">
-     <button type="submit" disabled={saving} className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold disabled:opacity-50">{saving?"Saving…":editingId?"Update Office History":"Save Office History"}</button>
-     {editingId&&<button type="button" onClick={cancelEdit} className="border border-zinc-300 px-6 py-3 rounded-xl font-bold">Cancel Edit</button>}
+     <button type="submit" disabled={saving} className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">{saving?"Saving…":editingId?"Update History":"Save History Event"}</button>
+     {editingId&&<button type="button" onClick={reset} className="border px-6 py-3 rounded-xl font-bold">Cancel Edit</button>}
     </div>
    </form>
   </div>
-
-  <div className="bg-white border border-zinc-200 rounded-2xl overflow-hidden">
-   <div className="p-5 border-b">
-    <h3 className="text-xl font-black text-[#002344]">Permanent Committee / Office Role History</h3>
-    <p className="text-sm text-zinc-500 mt-1">Existing records bhi isi register mein editable hain. Archive history ko permanently delete nahi karta.</p>
-   </div>
-   <div className="overflow-auto">
-    <table className="w-full text-sm min-w-[1500px]">
-     <thead className="bg-zinc-50">
-      <tr>
-       <th className="p-3 text-left">Date</th><th className="p-3 text-left">Member ID</th><th className="p-3 text-left">Name</th><th className="p-3 text-left">Change Type</th><th className="p-3 text-left">Previous Position</th><th className="p-3 text-left">New / Current Position</th><th className="p-3 text-left">Reference</th><th className="p-3 text-left">Resolution</th><th className="p-3 text-left">Meeting Date</th><th className="p-3 text-left">Details</th><th className="p-3 text-left sticky right-0 bg-zinc-50 border-l">Action</th>
-      </tr>
-     </thead>
-     <tbody className="divide-y">
-      {history.map(r=>{
-       const d=r.data||{};
-       return <tr key={r.id}>
-        <td className="p-3 whitespace-nowrap">{d.eventDate||r.recordDate||"—"}</td>
-        <td className="p-3">{d.memberId||"—"}</td>
-        <td className="p-3 font-bold">{d.fullName||"—"}</td>
-        <td className="p-3">{d.changeType||d.action||r.recordType||"—"}</td>
-        <td className="p-3">{d.previousRole||"—"}</td>
-        <td className="p-3 font-bold">{d.newRole||d.designation||"—"}</td>
-        <td className="p-3">{d.referenceNo||"—"}</td>
-        <td className="p-3">{d.resolutionNo||"—"}</td>
-        <td className="p-3">{d.meetingDate||"—"}</td>
-        <td className="p-3 max-w-[420px]">{d.details||d.reason||"—"}</td>
-        <td className="p-3 sticky right-0 bg-white border-l z-10 whitespace-nowrap">
-         <div className="flex gap-2">
-          <button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700">✏️ Edit</button>
-          <button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button>
-         </div>
-        </td>
-       </tr>;
-      })}
-      {!history.length&&<tr><td colSpan="11" className="p-10 text-center text-zinc-500">No Office History records yet.</td></tr>}
-     </tbody>
-    </table>
-   </div>
+  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Permanent Institutional Timeline</h3><p className="text-sm text-zinc-500 mt-1">Existing records are editable. Archive केवल record को active list से हटाता है; hard delete नहीं होता.</p></div>
+   <div className="overflow-auto"><table className="w-full text-sm min-w-[1700px]">
+    <thead className="bg-zinc-50"><tr>{["Date","Event Type","Event Title","Person / Committee","Previous Position","New Position","Reference","Meeting Date","Description","Supporting Document","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead>
+    <tbody className="divide-y">{existing.map(r=>{const d=r.data||{};return <tr key={r.id}>
+     <td className="p-3 whitespace-nowrap">{d.date||r.recordDate||"—"}</td><td className="p-3">{d.eventType||r.recordType||"—"}</td><td className="p-3 font-bold">{d.title||"—"}</td><td className="p-3">{d.personCommittee||"—"}</td><td className="p-3">{d.previousRole||"—"}</td><td className="p-3">{d.newRole||"—"}</td><td className="p-3">{d.referenceNo||"—"}</td><td className="p-3">{d.meetingDate||"—"}</td><td className="p-3 max-w-[420px]">{d.description||"—"}</td><td className="p-3">{d.supportingDocument||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
+     <td className="p-3 sticky right-0 bg-white border-l z-10 whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 mr-2">✏️ Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
+    </tr>;})}{!existing.length&&<tr><td colSpan="12" className="p-10 text-center text-zinc-500">No institutional history records yet.</td></tr>}</tbody>
+   </table></div>
   </div>
- </div>;
+ </SimpleOfficeCard>;
+}
+
+function OfficeHistory({rows,add,updateRecord,archive}){
+ const existing=(rows||[]).filter(r=>r.module==="officeHistory"&&r.status!=="deleted").sort((a,b)=>String(a.recordDate||"").localeCompare(String(b.recordDate||"")));
+ const blank={memberId:"",fullName:"",eventDate:new Date().toISOString().slice(0,10),changeType:"Appointment",previousRole:"",newRole:"",referenceNo:"",resolutionNo:"",meetingDate:"",details:"",remarks:""};
+ const [f,setF]=useState(blank),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
+ const set=(k,v)=>setF(x=>({...x,[k]:v}));
+ const editRecord=r=>{const d=r.data||{};setEditingId(r.id);setF({...blank,memberId:d.memberId||"",fullName:d.fullName||d.name||"",eventDate:d.eventDate||r.recordDate||"",changeType:d.changeType||d.action||r.recordType||"Appointment",previousRole:d.previousRole||"",newRole:d.newRole||d.designation||"",referenceNo:d.referenceNo||"",resolutionNo:d.resolutionNo||"",meetingDate:d.meetingDate||"",details:d.details||d.reason||d.responsibilities||"",remarks:d.remarks||""});setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
+ const reset=()=>{setEditingId(null);setF({...blank,eventDate:new Date().toISOString().slice(0,10)});};
+ const save=async e=>{e.preventDefault();const needsRole=!["Removal","Resignation","Relieving"].includes(f.changeType);if(!f.fullName.trim()||!f.eventDate||(needsRole&&!f.newRole.trim())){setNotice(needsRole?"Full Name, Event Date and New / Current Position required.":"Full Name and Event Date required.");return;}setSaving(true);const data={...f};const ok=editingId?await updateRecord(editingId,"officeHistory",data):await add("officeHistory",{recordDate:f.eventDate,recordType:f.changeType,status:"active",data});setSaving(false);if(ok){setNotice(editingId?"Office History updated successfully.":"Office History saved successfully.");reset();}};
+ return <SimpleOfficeCard title="🏛️ प्रबंधकारिणी समिति / Office History" subtitle="किसने कब कौन सा पद संभाला — appointment, role change, resignation और removal का permanent history record.">
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 sm:p-6 border-b"><h3 className="text-xl font-black text-[#002344]">{editingId?"Edit Office History":"Add Office History"}</h3><p className="text-sm text-zinc-500 mt-1">Appointment, role change, re-appointment, resignation, removal और relieving का permanent governance history.</p></div>
+   <form onSubmit={save} className="p-5 sm:p-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID" className={cls}/>
+    <input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full Name" required className={cls}/>
+    <input type="date" value={f.eventDate} onChange={e=>set("eventDate",e.target.value)} className={cls} required/>
+    <select value={f.changeType} onChange={e=>set("changeType",e.target.value)} className={cls}>{["Appointment","Role Change / Transfer","Re-appointment","Additional Responsibility","Resignation","Removal","Relieving","Other"].map(x=><option key={x}>{x}</option>)}</select>
+    <input value={f.previousRole} onChange={e=>set("previousRole",e.target.value)} placeholder="Previous Position" className={cls}/>
+    <input value={f.newRole} onChange={e=>set("newRole",e.target.value)} placeholder="New / Current Position" className={cls} required={!["Removal","Resignation","Relieving"].includes(f.changeType)}/>
+    <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / File No." className={cls}/>
+    <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/>
+    <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/>
+    <textarea value={f.details} onChange={e=>set("details",e.target.value)} placeholder="Details / Reason" className={cls+" sm:col-span-2 min-h-[100px]"}/>
+    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" sm:col-span-2 min-h-[100px]"}/>
+    <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2">
+     <button type="submit" disabled={saving} className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">{saving?"Saving…":editingId?"Update Office History":"Save Office History"}</button>
+     {editingId&&<button type="button" onClick={reset} className="border px-6 py-3 rounded-xl font-bold">Cancel Edit</button>}
+    </div>
+   </form>
+  </div>
+  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Permanent Committee / Office Role History</h3><p className="text-sm text-zinc-500 mt-1">Existing records isi register mein editable hain. Archive history ko permanently delete nahi karta.</p></div>
+   <div className="overflow-auto"><table className="w-full text-sm min-w-[1500px]">
+    <thead className="bg-zinc-50"><tr>{["Date","Member ID","Name","Change Type","Previous Position","New / Current Position","Reference","Resolution","Meeting Date","Details","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead>
+    <tbody className="divide-y">{existing.map(r=>{const d=r.data||{};return <tr key={r.id}>
+     <td className="p-3 whitespace-nowrap">{d.eventDate||r.recordDate||"—"}</td><td className="p-3">{d.memberId||"—"}</td><td className="p-3 font-bold">{d.fullName||d.name||"—"}</td><td className="p-3">{d.changeType||d.action||r.recordType||"—"}</td><td className="p-3">{d.previousRole||"—"}</td><td className="p-3 font-bold">{d.newRole||d.designation||"—"}</td><td className="p-3">{d.referenceNo||"—"}</td><td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{d.meetingDate||"—"}</td><td className="p-3 max-w-[420px]">{d.details||d.reason||d.responsibilities||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
+     <td className="p-3 sticky right-0 bg-white border-l z-10 whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 mr-2">✏️ Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
+    </tr>;})}{!existing.length&&<tr><td colSpan="12" className="p-10 text-center text-zinc-500">No Office History records yet.</td></tr>}</tbody>
+   </table></div>
+  </div>
+  <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900"><b>Historical record:</b> Original documents verify exact dates, reference numbers and resolutions. Approximate dates should be corrected through Edit when source documents are available.</div>
+ </SimpleOfficeCard>;
 }
 
 function MembershipContributions({rows,add,archive}){
