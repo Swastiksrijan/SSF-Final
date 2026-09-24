@@ -589,13 +589,26 @@ function InstitutionalHistory({rows,add,updateRecord,archive}){
 }
 
 function OfficeHistory({rows,add,updateRecord,archive}){
- const existing=(rows||[]).filter(r=>r.module==="officeHistory"&&r.status!=="deleted").sort((a,b)=>String(a.recordDate||"").localeCompare(String(b.recordDate||"")));
+ const allExisting=(rows||[]).filter(r=>r.module==="officeHistory"&&r.status!=="deleted");
+ const [query,setQuery]=useState(""),[sortBy,setSortBy]=useState("dateAsc");
  const blank={memberId:"",fullName:"",eventDate:new Date().toISOString().slice(0,10),changeType:"Appointment",previousRole:"",newRole:"",referenceNo:"",resolutionNo:"",meetingDate:"",details:"",remarks:""};
  const [f,setF]=useState(blank),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const editRecord=r=>{const d=r.data||{};setEditingId(r.id);setF({...blank,memberId:d.memberId||"",fullName:d.fullName||d.name||"",eventDate:d.eventDate||r.recordDate||"",changeType:d.changeType||d.action||r.recordType||"Appointment",previousRole:d.previousRole||"",newRole:d.newRole||d.designation||"",referenceNo:d.referenceNo||"",resolutionNo:d.resolutionNo||"",meetingDate:d.meetingDate||"",details:d.details||d.reason||d.responsibilities||"",remarks:d.remarks||""});setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
  const reset=()=>{setEditingId(null);setF({...blank,eventDate:new Date().toISOString().slice(0,10)});};
  const save=async e=>{e.preventDefault();const needsRole=!["Removal","Resignation","Relieving"].includes(f.changeType);if(!f.fullName.trim()||!f.eventDate||(needsRole&&!f.newRole.trim())){setNotice(needsRole?"Full Name, Event Date and New / Current Position required.":"Full Name and Event Date required.");return;}setSaving(true);const data={...f};const ok=editingId?await updateRecord(editingId,"officeHistory",data):await add("officeHistory",{recordDate:f.eventDate,recordType:f.changeType,status:"active",data});setSaving(false);if(ok){setNotice(editingId?"Office History updated successfully.":"Office History saved successfully.");reset();}};
+ const normalizedQuery=query.trim().toLowerCase();
+ const searched=allExisting.filter(r=>{const d=r.data||{};if(!normalizedQuery)return true;return [d.memberId,d.fullName,d.name].some(v=>String(v||"").toLowerCase().includes(normalizedQuery));});
+ const sorted=[...searched].sort((a,b)=>{
+  const da=a.data||{},db=b.data||{};
+  if(sortBy==="name")return String(da.fullName||da.name||"").localeCompare(String(db.fullName||db.name||""));
+  if(sortBy==="memberId")return String(da.memberId||"").localeCompare(String(db.memberId||""));
+  if(sortBy==="dateDesc")return String(b.data?.eventDate||b.recordDate||"").localeCompare(String(a.data?.eventDate||a.recordDate||""));
+  return String(a.data?.eventDate||a.recordDate||"").localeCompare(String(b.data?.eventDate||b.recordDate||""));
+ });
+ const grouped=[];
+ const groupMap=new Map();
+ sorted.forEach(r=>{const d=r.data||{};const key=String(d.memberId||"")+"|"+String(d.fullName||d.name||"").trim().toLowerCase();if(!groupMap.has(key)){const g={key,memberId:d.memberId||"",fullName:d.fullName||d.name||"—",records:[]};groupMap.set(key,g);grouped.push(g);}groupMap.get(key).records.push(r);});
  return <SimpleOfficeCard title="🏛️ प्रबंधकारिणी समिति / Office History" subtitle="किसने कब कौन सा पद संभाला — appointment, role change, resignation और removal का permanent history record.">
   <div className="bg-white border rounded-2xl overflow-hidden">
    <div className="p-5 sm:p-6 border-b"><h3 className="text-xl font-black text-[#002344]">{editingId?"Edit Office History":"Add Office History"}</h3><p className="text-sm text-zinc-500 mt-1">Appointment, role change, re-appointment, resignation, removal और relieving का permanent governance history.</p></div>
@@ -619,19 +632,44 @@ function OfficeHistory({rows,add,updateRecord,archive}){
   </div>
   {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
   <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Permanent Committee / Office Role History</h3><p className="text-sm text-zinc-500 mt-1">Existing records isi register mein editable hain. Archive history ko permanently delete nahi karta.</p></div>
-   <div className="overflow-auto"><table className="w-full text-sm min-w-[1500px]">
-    <thead className="bg-zinc-50"><tr>{["Date","Member ID","Name","Change Type","Previous Position","New / Current Position","Reference","Resolution","Meeting Date","Details","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead>
-    <tbody className="divide-y">{existing.map(r=>{const d=r.data||{};return <tr key={r.id}>
-     <td className="p-3 whitespace-nowrap">{d.eventDate||r.recordDate||"—"}</td><td className="p-3">{d.memberId||"—"}</td><td className="p-3 font-bold">{d.fullName||d.name||"—"}</td><td className="p-3">{d.changeType||d.action||r.recordType||"—"}</td><td className="p-3">{d.previousRole||"—"}</td><td className="p-3 font-bold">{d.newRole||d.designation||"—"}</td><td className="p-3">{d.referenceNo||"—"}</td><td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{d.meetingDate||"—"}</td><td className="p-3 max-w-[420px]">{d.details||d.reason||d.responsibilities||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
-     <td className="p-3 sticky right-0 bg-white border-l z-10 whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 mr-2">✏️ Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
-    </tr>;})}{!existing.length&&<tr><td colSpan="12" className="p-10 text-center text-zinc-500">No Office History records yet.</td></tr>}</tbody>
-   </table></div>
+   <div className="p-5 border-b">
+    <h3 className="text-xl font-black text-[#002344]">Permanent Committee / Office Role History</h3>
+    <p className="text-sm text-zinc-500 mt-1">Existing records isi register mein editable hain. Archive history ko permanently delete nahi karta.</p>
+    <div className="mt-4 grid lg:grid-cols-[1fr_auto] gap-3">
+     <div className="relative">
+      <FaSearch className="absolute left-3 top-3 text-zinc-400"/>
+      <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search by Member ID or Name" className="w-full pl-9 pr-10 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#002344]/20"/>
+      {query&&<button type="button" onClick={()=>setQuery("")} className="absolute right-3 top-2.5 text-zinc-400 font-bold text-lg">×</button>}
+     </div>
+     <select value={sortBy} onChange={e=>setSortBy(e.target.value)} className="px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none">
+      <option value="dateAsc">Sort: Date — Oldest First</option>
+      <option value="dateDesc">Sort: Date — Newest First</option>
+      <option value="memberId">Sort: Member ID — A to Z</option>
+      <option value="name">Sort: Name — A to Z</option>
+     </select>
+    </div>
+    <div className="mt-3 text-xs text-zinc-500">{searched.length} matching record(s) · {grouped.length} member(s)</div>
+   </div>
+   <div className="overflow-auto">
+    <table className="w-full text-sm min-w-[1500px]">
+     <thead className="bg-zinc-50"><tr><th className="p-3 text-left w-12">Sr.</th>{["Date","Member ID","Name","Change Type","Previous Position","New / Current Position","Reference","Resolution","Meeting Date","Details","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead>
+     <tbody className="divide-y">
+      {grouped.map((g,gi)=><React.Fragment key={g.key}>
+       <tr className="bg-blue-50/60"><td className="p-3 font-black text-[#002344]">{gi+1}</td><td className="p-3 font-bold" colSpan="2">{g.memberId||"—"}</td><td className="p-3 font-black" colSpan="9">{g.fullName} <span className="text-xs font-semibold text-zinc-500">· {g.records.length} history record{g.records.length===1?"":"s"}</span></td></tr>
+       {g.records.map((r,ri)=>{const d=r.data||{};return <tr key={r.id}>
+        <td className="p-3 text-zinc-400">{ri+1}</td>
+        <td className="p-3 whitespace-nowrap">{d.eventDate||r.recordDate||"—"}</td><td className="p-3">{d.memberId||"—"}</td><td className="p-3 font-bold">{d.fullName||d.name||"—"}</td><td className="p-3">{d.changeType||d.action||r.recordType||"—"}</td><td className="p-3">{d.previousRole||"—"}</td><td className="p-3 font-bold">{d.newRole||d.designation||"—"}</td><td className="p-3">{d.referenceNo||"—"}</td><td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{d.meetingDate||"—"}</td><td className="p-3 max-w-[420px]">{d.details||d.reason||d.responsibilities||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
+        <td className="p-3 sticky right-0 bg-white border-l z-10 whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 mr-2">✏️ Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
+       </tr>;})}
+      </React.Fragment>)}
+      {!grouped.length&&<tr><td colSpan="13" className="p-10 text-center text-zinc-500">{query?"No matching Name / Member ID found.":"No Office History records yet."}</td></tr>}
+     </tbody>
+    </table>
+   </div>
   </div>
   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900"><b>Historical record:</b> Original documents verify exact dates, reference numbers and resolutions. Approximate dates should be corrected through Edit when source documents are available.</div>
  </SimpleOfficeCard>;
 }
-
 function MembershipContributions({rows,add,archive}){
  const existing=(rows||[]).filter(r=>r.module==="membershipContributions"&&r.status!=="deleted"); const [f,setF]=useState({date:new Date().toISOString().slice(0,10),memberId:"",memberName:"",contributionType:"Monthly Membership Fee",amount:"",period:"",receiptNo:"",paymentMode:"Cash",transactionNo:"",purpose:"",remarks:""}); const [notice,setNotice]=useState(""); const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const save=async e=>{e.preventDefault();if(!f.memberName.trim()||!f.amount){setNotice("Member Name and Amount required.");return;}const ok=await add("membershipContributions",{recordDate:f.date,recordType:f.contributionType,status:"active",data:f});if(ok){setF({...f,memberId:"",memberName:"",amount:"",period:"",receiptNo:"",transactionNo:"",purpose:"",remarks:""});setNotice("Membership/contribution payment saved.");}};
