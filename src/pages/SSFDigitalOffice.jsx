@@ -466,18 +466,23 @@ function ManagingCommittee({rows,add,archive}){
   responsibilities:"",remarks:""
  });
  const [notice,setNotice]=useState("");
+  const [saving,setSaving]=useState(false);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Member"];
  const committeeRows=(rows||[]).filter(r=>r.module==="managingCommittee" && r.status!=="deleted");
  const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
  const save=async e=>{
+   if(saving)return;
   e.preventDefault();
   if(!f.fullName.trim()||!f.designation){setNotice("Name and designation are required.");return;}
   const role=f.designation==="Other / Custom"?f.customDesignation.trim():f.designation;
+   const duplicate=committeeRows.some(r=>{const d=r.data||{};return String(d.fullName||"").trim().toLowerCase()===f.fullName.trim().toLowerCase() && String(d.designation||"").trim()===role && String(d.effectiveFrom||"")===f.effectiveFrom && String(d.membershipNo||"").trim()===f.membershipNo.trim() && String(d.referenceNo||"").trim()===f.referenceNo.trim() && String(d.resolutionNo||"").trim()===f.resolutionNo.trim();});
+   if(duplicate){setNotice("Same committee record already exists. Duplicate record save nahi kiya gaya.");return;}
   if(!role){setNotice("Custom designation enter karein.");return;}
   const existingIds=committeeRows.map(r=>String((r.data||{}).memberId||"")).map(x=>{const m=x.match(/SSF-MBR-(\\d+)/i);return m?Number(m[1]):0;});
   const nextMemberId=`SSF-MBR-${String(Math.max(0,...existingIds)+1).padStart(5,"0")}`;
   const memberId=f.memberId.trim()||nextMemberId;
+   setSaving(true);
   const recordDate=f.effectiveFrom||new Date().toISOString().slice(0,10);
   const memberRecord={
    fullName:f.fullName.trim(),memberId,
@@ -494,8 +499,11 @@ function ManagingCommittee({rows,add,archive}){
    responsibilities:f.responsibilities,remarks:f.remarks,
    action:"Committee Member Register / Update"
   };
-  await add("managingCommittee",{recordDate,recordType:"Committee Member",status:f.status.toLowerCase(),data:memberRecord});
-  setNotice("Managing Committee record saved. Historical record delete nahi hota.");
+  const ok=await add("managingCommittee",{recordDate,recordType:"Committee Member",status:f.status.toLowerCase(),data:memberRecord});
+   if(!ok){setSaving(false);return;}
+   setF({memberId:"",memberType:"साधारण सदस्य",designation:"Member",customDesignation:"",membershipNo:"",fullName:"",fatherHusbandName:"",dob:"",occupation:"",gender:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",aadhaar:"",pan:"",joiningDate:new Date().toISOString().slice(0,10),receiptNo:"",membershipValidTill:"",membershipStatus:"Active",membershipFee:"",functionalResponsibility:"",status:"Active",effectiveFrom:new Date().toISOString().slice(0,10),validTill:"",appointmentDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",responsibilities:"",remarks:""});
+   setNotice("Record saved and form cleared. Historical record delete nahi hota.");
+   setSaving(false);
  };
  const actionOrder=async action=>{
   if(!f.fullName.trim()){setNotice("Pehle member select/enter karein.");return;}
@@ -565,7 +573,7 @@ function ManagingCommittee({rows,add,archive}){
     <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/>
     <textarea value={f.responsibilities} onChange={e=>set("responsibilities",e.target.value)} placeholder="Responsibilities / Duties" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/>
     <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/>
-    <button type="submit" disabled={saving} className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold disabled:opacity-50">{saving?"Saving…":"Save Committee Member Record"}</button>
+     <button type="submit" disabled={saving} className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold disabled:opacity-50">{saving?"Saving…":"Save Committee Member Record"}</button>
    </form>
   </div>
 
@@ -599,7 +607,7 @@ function ManagingCommittee({rows,add,archive}){
      </tr></thead>
      <tbody className="divide-y">
       {committeeRows.map(r=>{const d=r.data||{};return <tr key={r.id}>
-       <td className="p-3 font-bold">{d.memberId||"—"}</td><td className="p-3">{d.membershipNo||"—"}</td><td className="p-3">{d.memberType||"—"}</td><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.fatherHusbandName||"—"}</td><td className="p-3">{d.dob||"—"}</td><td className="p-3">{d.gender||"—"}</td><td className="p-3">{d.occupation||"—"}</td><td className="p-3">{d.mobile||d.phone||"—"}</td><td className="p-3">{d.email||"—"}</td><td className="p-3">{d.address||"—"}</td><td className="p-3">{d.city||"—"}</td><td className="p-3">{d.state||"—"}</td><td className="p-3">{d.pinCode||"—"}</td><td className="p-3">{d.pan||"—"}</td><td className="p-3">{d.aadhaar||"—"}</td><td className="p-3">{d.joiningDate||"—"}</td><td className="p-3">{d.receiptNo||"—"}</td><td className="p-3">{d.membershipValidTill||"—"}</td><td className="p-3">{d.membershipStatus||"—"}</td><td className="p-3">{d.membershipFee||"—"}</td><td className="p-3 font-bold">{d.designation||"—"}</td><td className="p-3">{d.functionalResponsibility||d.responsibilities||"—"}</td><td className="p-3">{d.effectiveFrom||"—"}</td><td className="p-3">{d.validTill||"—"}</td><td className="p-3">{d.status||"—"}</td><td className="p-3">{d.resolutionNo||d.referenceNo||"—"}</td>
+       <td className="p-3 font-bold">{d.memberId||"—"}</td><td className="p-3">{d.membershipNo||"—"}</td><td className="p-3">{d.memberType||"—"}</td><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.fatherHusbandName||"—"}</td><td className="p-3">{d.dob||"—"}</td><td className="p-3">{d.gender||"—"}</td><td className="p-3">{d.occupation||"—"}</td><td className="p-3">{d.mobile||d.phone||"—"}</td><td className="p-3">{d.email||"—"}</td><td className="p-3">{d.address||"—"}</td><td className="p-3">{d.city||"—"}</td><td className="p-3">{d.state||"—"}</td><td className="p-3">{d.pinCode||"—"}</td><td className="p-3">{d.pan||"—"}</td><td className="p-3">{d.aadhaar||"—"}</td><td className="p-3">{d.joiningDate||"—"}</td><td className="p-3">{d.receiptNo||"—"}</td><td className="p-3">{d.membershipValidTill||"—"}</td><td className="p-3">{d.membershipStatus||"—"}</td><td className="p-3">{d.membershipFee||"—"}</td><td className="p-3 font-bold">{d.designation||"—"}</td><td className="p-3">{d.functionalResponsibility||d.responsibilities||"—"}</td><td className="p-3">{d.effectiveFrom||"—"}</td><td className="p-3">{d.validTill||"—"}</td><td className="p-3">{d.status||"—"}</td><td className="p-3">{d.resolutionNo||d.referenceNo||"—"}</td><td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
       </tr>;})}
       {!committeeRows.length&&<tr><td colSpan="28" className="p-8 text-center text-zinc-500">No committee records yet.</td></tr>}
      </tbody>
