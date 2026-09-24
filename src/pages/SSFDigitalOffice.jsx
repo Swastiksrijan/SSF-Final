@@ -465,6 +465,7 @@ function ManagingCommittee({rows,add}){
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Executive Member","General Member","Other / Custom"];
  const committeeRows=(rows||[]).filter(r=>r.module==="managingCommittee" && r.status!=="deleted");
+ const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
  const save=async e=>{
   e.preventDefault();
   if(!f.fullName.trim()||!f.designation){setNotice("Name and designation are required.");return;}
@@ -486,7 +487,8 @@ function ManagingCommittee({rows,add}){
  const actionOrder=async action=>{
   if(!f.fullName.trim()){setNotice("Pehle member select/enter karein.");return;}
   const recordDate=f.effectiveFrom||new Date().toISOString().slice(0,10);
-  await add("managingCommittee",{recordDate,recordType:action,status:"active",data:{
+  const actionStatus=(action==="Resignation"||action==="Removal / Membership Cancellation"||action==="Replacement / Relieving")?"revoked":"active";
+  await add("managingCommittee",{recordDate,recordType:action,status:actionStatus,data:{
    fullName:f.fullName.trim(),memberId:f.memberId.trim(),designation:f.designation==="Other / Custom"?f.customDesignation:f.designation,
    action,effectiveFrom:f.effectiveFrom,resolutionNo:f.resolutionNo,meetingDate:f.meetingDate,
    referenceNo:f.referenceNo,remarks:f.remarks
@@ -554,13 +556,18 @@ function ManagingCommittee({rows,add}){
   </div>
 
   <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Committee Register & History</h3></div>
-   <div className="overflow-auto">
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Committee Register & Complete History</h3><p className="text-sm text-zinc-500 mt-1">2013 se ab tak har appointment, change aur separation ko chronological history mein record kiya ja sakta hai.</p></div>
+   <div className="p-5 bg-blue-50 border-b border-blue-100 text-sm text-zinc-700"><b>Historical record entry:</b> Purane 2013, 2014, 2015… records bhi manually original effective date ke saath enter karein. Agar exact date available nahi hai to jo verified date/period available ho wahi record karein; date invent na karein.</div>
+   <div className="p-5 space-y-3">
+    {timeline.map(r=>{const d=r.data||{};return <div key={r.id} className="flex gap-3"><div className="w-24 shrink-0 text-xs font-black text-[#002344]">{d.effectiveFrom||r.recordDate||"Date unavailable"}</div><div className="relative flex-1 border-l-2 border-zinc-200 pl-5 pb-3"><div className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-[#002344]"/><div className="bg-zinc-50 border rounded-xl p-4"><div className="font-black text-[#002344]">{d.fullName||"—"} · {d.designation||"—"}</div><div className="text-sm mt-1">{d.action||"Committee Member Register / Update"} · Status: {r.status}</div><div className="text-xs text-zinc-500 mt-2">Resolution: {d.resolutionNo||"—"} · Meeting: {d.meetingDate||"—"} · Reference: {d.referenceNo||"—"}</div></div></div></div>;})}
+    {!timeline.length&&<div className="p-8 text-center text-zinc-500">No committee records yet. Existing committee names have not been auto-inserted.</div>}
+   </div>
+   <div className="overflow-auto border-t">
     <table className="w-full text-sm">
      <thead className="bg-zinc-50"><tr><th className="p-3 text-left">Name</th><th className="p-3 text-left">Designation</th><th className="p-3 text-left">Effective</th><th className="p-3 text-left">Valid Till</th><th className="p-3 text-left">Action</th><th className="p-3 text-left">Resolution</th><th className="p-3 text-left">Status</th></tr></thead>
      <tbody className="divide-y">
       {committeeRows.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.designation||"—"}</td><td className="p-3">{d.effectiveFrom||r.recordDate||"—"}</td><td className="p-3">{d.validTill||"—"}</td><td className="p-3">{d.action||"—"}</td><td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{r.status}</td></tr>;})}
-      {!committeeRows.length&&<tr><td colSpan="7" className="p-8 text-center text-zinc-500">No committee records yet. Existing committee names have not been auto-inserted.</td></tr>}
+      {!committeeRows.length&&<tr><td colSpan="7" className="p-8 text-center text-zinc-500">No committee records yet.</td></tr>}
      </tbody>
     </table>
    </div>
