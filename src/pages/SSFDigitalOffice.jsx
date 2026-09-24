@@ -476,8 +476,8 @@ function ManagingCommittee({rows,add}){
   if(!role){setNotice("Custom designation enter karein.");return;}
   const recordDate=f.effectiveFrom||new Date().toISOString().slice(0,10);
   const memberRecord={
-   fullName:f.fullName.trim(),memberId:f.memberId.trim(),designation:role,
-   memberType:f.memberType,membershipNo:f.membershipNo.trim(),fullName:f.fullName.trim(),
+   fullName:f.fullName.trim(),memberId:f.memberId.trim(),
+   memberType:f.memberType,membershipNo:f.membershipNo.trim(),
    occupation:f.occupation.trim(),gender:f.gender,fatherHusbandName:f.fatherHusbandName.trim(),
    mobile:f.mobile.trim(),email:f.email.trim(),address:f.address.trim(),city:f.city.trim(),
    state:f.state.trim(),pinCode:f.pinCode.trim(),aadhaar:f.aadhaar.trim(),pan:f.pan.trim(),
