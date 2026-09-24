@@ -603,7 +603,7 @@ function ManagingCommittee({rows,add}){
       {!committeeRows.length&&<tr><td colSpan="27" className="p-8 text-center text-zinc-500">No committee records yet.</td></tr>}
      </tbody>
     </table>
-   </div>v>
+   </div>
   </div>
  </div>;
 }
