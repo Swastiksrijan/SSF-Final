@@ -74,10 +74,26 @@ export default function SSFDigitalOffice(){
    return true;
   }catch(e){setNotice(e.message||"Update failed.");return false;}
  };
+ const flattenExport=function(data){
+  return (data||[]).map(function(x){
+   const nested=x.data&&typeof x.data==="object"?x.data:{};
+   const row={ID:x.recordId||"",Module:LABELS[x.module]||x.module||"",Type:x.recordType||"",Date:x.recordDate?new Date(x.recordDate).toLocaleDateString("en-IN"):"",Amount:x.amount||"",PaymentMode:x.paymentMode||"",Status:x.status||"",PersonID:x.personId||"",LinkedID:x.linkedRecordId||""};
+   Object.entries(nested).forEach(function(entry){const key=entry[0]; const value=entry[1]; if(!(key in row))row[key]=value??"";});
+   return row;
+  });
+ };
  const exportRows=function(data,name){
-  const flat=(data||[]).map(function(x){return {ID:x.recordId,Module:x.module,Type:x.recordType||"",Date:new Date(x.recordDate).toLocaleDateString("en-IN"),Amount:x.amount||"",PaymentMode:x.paymentMode||"",Status:x.status,PersonID:x.personId||"",LinkedID:x.linkedRecordId||"",Details:JSON.stringify(x.data||{})};});
-  const headers=Object.keys(flat[0]||{ID:"",Module:"",Date:"",Amount:"",Status:""}); const csv=[headers.join(","),...flat.map(function(row){return headers.map(function(h){return JSON.stringify(row[h] == null ? "" : row[h]);}).join(",");})].join("\
-"); const blob=new Blob([csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement("a"); a.href=URL.createObjectURL(blob); a.download=name+".csv"; a.click(); URL.revokeObjectURL(a.href);
+  const flat=flattenExport(data); const headers=Array.from(new Set(flat.reduce(function(all,row){return all.concat(Object.keys(row));},[])));
+  if(!headers.length)headers=["ID","Module","Date","Status"];
+  const csv=[headers.map(function(h){return JSON.stringify(h);}).join(","),...flat.map(function(row){return headers.map(function(h){return JSON.stringify(row[h] == null ? "" : row[h]);}).join(",");})].join("\r\n");
+  const blob=new Blob(["\\uFEFF",csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement("a"); const url=URL.createObjectURL(blob); a.href=url; a.download=name+".csv"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000);
+ };
+ const exportExcel=function(data,name){
+  const flat=flattenExport(data); const headers=Array.from(new Set(flat.reduce(function(all,row){return all.concat(Object.keys(row));},[])));
+  if(!headers.length)return;
+  const esc=function(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
+  const html='<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><table border="1"><thead><tr>'+headers.map(function(h){return "<th>"+esc(h)+"</th>";}).join("")+'</tr></thead><tbody>'+flat.map(function(row){return "<tr>"+headers.map(function(h){return "<td>"+esc(row[h])+"</td>";}).join("")+"</tr>";}).join("")+'</tbody></table></body></html>';
+  const blob=new Blob(["\\uFEFF",html],{type:"application/vnd.ms-excel;charset=utf-8"}); const a=document.createElement("a"); const url=URL.createObjectURL(blob); a.href=url; a.download=name+".xls"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000);
  };
  const downloadPdf=function(d,filename){
   const blob=d.output("blob"); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=filename; a.style.display="none"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1500);
@@ -103,7 +119,7 @@ export default function SSFDigitalOffice(){
  const exportPdf=function(data,title){
   const d=new jsPDF();d.addImage(logoImg,"PNG",14,8,18,18);d.setFontSize(16);d.text("Swastik Srijan Foundation Samiti",36,16);d.setFontSize(11);d.text(title,14,32);
   let y=42;
-  (data||[]).slice(0,38).forEach(function(x,index){
+  (data||[]).forEach(function(x,index){
    const nested=x.data&&typeof x.data==="object"?x.data:{};
    const fields=[["Record ID",x.recordId],["Module",LABELS[x.module]||x.module],["Record Type",x.recordType],["Record Date",x.recordDate?new Date(x.recordDate).toLocaleDateString("en-IN"):""],["Status",x.status]];
    Object.entries(nested).forEach(function(entry){const key=entry[0],value=entry[1];if(value!==null&&value!==undefined&&String(value).trim()!==""){fields.push([key.replace(/([A-Z])/g," $1").replace(/^./,function(ch){return ch.toUpperCase();}),String(value)]);}});
@@ -119,7 +135,7 @@ export default function SSFDigitalOffice(){
  return <div className="min-h-screen bg-zinc-50 pt-28 pb-16 px-3 sm:px-6"><div className="max-w-[1500px] mx-auto">
   <header className="bg-[#002344] text-white rounded-[2rem] p-6 sm:p-8 mb-5"><div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5">
    <div className="flex items-start gap-4"><img src={logoImg} alt="SSF logo" className="h-16 w-16 sm:h-20 sm:w-20 object-contain rounded-2xl bg-white p-2 shrink-0"/><div><Link to="/Admin" className="text-white/70 text-sm font-bold inline-flex items-center gap-2"><FaArrowLeft/> Admin</Link><p className="text-xs text-orange-300 font-black uppercase tracking-[.2em] mt-4">SSF Digital Office · Secure Database Edition</p><h1 className="text-3xl sm:text-4xl font-black mt-2">Paperless NGO Office</h1><p className="text-white/70 mt-2 max-w-3xl">One source record → linked registers → reports → audit trail. Existing website records are preserved.</p></div></div>
-   <DownloadCenter active={active} rows={rows} exportRows={exportRows} exportPdf={exportPdf} setActive={setActive}/>
+   <DownloadCenter active={active} rows={rows} exportRows={exportRows} exportExcel={exportExcel} exportPdf={exportPdf} setActive={setActive}/>
   </div></header>
   {notice&&<div className="mb-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-4 py-3 font-semibold">{notice}</div>}
   <div className="grid lg:grid-cols-[245px_1fr] gap-5">
@@ -194,7 +210,7 @@ function OnlineMeetings({token}){
  </div>;
 }
 
-function DownloadCenter({active,rows,exportRows,exportPdf,setActive}){
+function DownloadCenter({active,rows,exportRows,exportExcel,exportPdf,setActive}){
  const [open,setOpen]=useState(false);
  const [target,setTarget]=useState(active==="dashboard" ? "members" : active);
  const [format,setFormat]=useState("pdf");
@@ -202,8 +218,10 @@ function DownloadCenter({active,rows,exportRows,exportPdf,setActive}){
  const download=function(){
   if(target!==active){setActive(target);setOpen(false);return;}
   const data=rows||[];
+  const filename="ssf-"+target+"-"+new Date().toISOString().slice(0,10);
   if(format==="pdf")exportPdf(data,"SSF "+(LABELS[target]||"Records"));
-  else exportRows(data,"ssf-"+target+"-"+new Date().toISOString().slice(0,10));
+  else if(format==="excel")exportExcel(data,filename);
+  else exportRows(data,filename);
   setOpen(false);
  };
  return <div className="relative">
@@ -216,7 +234,7 @@ function DownloadCenter({active,rows,exportRows,exportPdf,setActive}){
     {available.map(function(x){return <option key={x[0]} value={x[0]}>{x[1]}</option>;})}
    </select>
    <label className="block text-xs font-bold text-zinc-500 mt-3 mb-1">Format</label>
-   <div className="grid grid-cols-2 gap-2"><button type="button" onClick={()=>setFormat("pdf")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="pdf"?"bg-[#002344] text-white":"bg-white")}>PDF</button><button type="button" onClick={()=>setFormat("csv")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="csv"?"bg-[#002344] text-white":"bg-white")}>Excel / CSV</button></div>
+   <div className="grid grid-cols-3 gap-2"><button type="button" onClick={()=>setFormat("pdf")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="pdf"?"bg-[#002344] text-white":"bg-white")}>PDF</button><button type="button" onClick={()=>setFormat("excel")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="excel"?"bg-[#002344] text-white":"bg-white")}>Excel</button><button type="button" onClick={()=>setFormat("csv")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="csv"?"bg-[#002344] text-white":"bg-white")}>CSV</button></div>
    {target!==active&&<p className="mt-3 text-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3">Open the selected module first to export its current records.</p>}
    <div className="flex gap-2 mt-4"><button type="button" onClick={()=>setOpen(false)} className="flex-1 border px-3 py-2.5 rounded-xl font-bold">Cancel</button><button type="button" disabled={false} onClick={download} className="flex-1 bg-[#002344] text-white px-3 py-2.5 rounded-xl font-bold disabled:opacity-40">Download</button></div>
   </div>}
