@@ -89,11 +89,42 @@ export default function SSFDigitalOffice(){
   const blob=new Blob(["\\uFEFF",csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement("a"); const url=URL.createObjectURL(blob); a.href=url; a.download=name+".csv"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000);
  };
  const exportExcel=function(data,name){
-  const flat=flattenExport(data); const headers=Array.from(new Set(flat.reduce(function(all,row){return all.concat(Object.keys(row));},[])));
+  const flat=flattenExport(data);
+  const headers=Array.from(new Set(flat.reduce(function(all,row){return all.concat(Object.keys(row));},[])));
   if(!headers.length)return;
-  const esc=function(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");};
-  const html='<!DOCTYPE html><html><head><meta charset="utf-8"></head><body><table border="1"><thead><tr>'+headers.map(function(h){return "<th>"+esc(h)+"</th>";}).join("")+'</tr></thead><tbody>'+flat.map(function(row){return "<tr>"+headers.map(function(h){return "<td>"+esc(row[h])+"</td>";}).join("")+"</tr>";}).join("")+'</tbody></table></body></html>';
-  const blob=new Blob(["\\uFEFF",html],{type:"application/vnd.ms-excel;charset=utf-8"}); const a=document.createElement("a"); const url=URL.createObjectURL(blob); a.href=url; a.download=name+".xls"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  const escXml=function(v){
+   return String(v??"")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&apos;");
+  };
+  const cell=function(v){
+   const value=(v===null||v===undefined)?"":(typeof v==="object"?JSON.stringify(v):String(v));
+   return '<Cell><Data ss:Type="String">'+escXml(value)+'</Data></Cell>';
+  };
+  const rowsXml=[
+   '<Row>'+headers.map(function(h){return cell(h);}).join("")+'</Row>',
+   ...flat.map(function(row){
+    return '<Row>'+headers.map(function(h){return cell(row[h]);}).join("")+'</Row>';
+   })
+  ].join("");
+  const xml='<?xml version="1.0" encoding="UTF-8"?>'
+   +'<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" '
+   +'xmlns:o="urn:schemas-microsoft-com:office:office" '
+   +'xmlns:x="urn:schemas-microsoft-com:office:excel" '
+   +'xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'
+   +'<Worksheet ss:Name="SSF Digital Office"><Table>'+rowsXml+'</Table></Worksheet></Workbook>';
+  const blob=new Blob(["\\uFEFF",xml],{type:"application/vnd.ms-excel"});
+  const a=document.createElement("a");
+  const url=URL.createObjectURL(blob);
+  a.href=url;
+  a.download=name+".xls";
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1500);
  };
  const downloadPdf=function(d,filename){
   const blob=d.output("blob"); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=filename; a.style.display="none"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1500);
