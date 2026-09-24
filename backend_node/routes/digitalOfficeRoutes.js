@@ -88,8 +88,13 @@ const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT',
 const makeId = async (module) => {
   const p = prefix[module] || 'REC';
   const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
-  const count = await DigitalOfficeRecord.count({ where: { module } });
-  return `SSF-${p}-${stamp}-${String(count + 1).padStart(5,'0')}`;
+  let sequence = (await DigitalOfficeRecord.count({ where: { module } })) + 1;
+  let candidate = `SSF-${p}-${stamp}-${String(sequence).padStart(5,'0')}`;
+  while (await DigitalOfficeRecord.findOne({ where: { recordId: candidate }, attributes: ['id'] })) {
+    sequence += 1;
+    candidate = `SSF-${p}-${stamp}-${String(sequence).padStart(5,'0')}`;
+  }
+  return candidate;
 };
 const audit = async (action, module, recordId, req, details={}) => {
   await DigitalOfficeAudit.create({ action, module, recordId, actor: req.headers['x-office-actor'] || 'admin', details });
