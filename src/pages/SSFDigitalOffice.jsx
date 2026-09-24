@@ -107,6 +107,8 @@ export default function SSFDigitalOffice(){
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}\n    {active==="appointmentLetters"&&<AppointmentLetters rows={rows} add={add}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
+    {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
+    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
