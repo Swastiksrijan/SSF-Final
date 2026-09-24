@@ -455,18 +455,18 @@ function SeparationManagement({rows,add}){
 
 function ManagingCommittee({rows,add}){
  const [f,setF]=useState({
-  memberId:"",memberType:"साधारण सदस्य",designation:"General Member",customDesignation:"",
-  membershipNo:"",fullName:"",occupation:"",gender:"",fatherHusbandName:"",
+  memberId:"",memberType:"साधारण सदस्य",designation:"Member",customDesignation:"",
+  membershipNo:"",fullName:"",fatherHusbandName:"",dob:"",occupation:"",gender:"",
   mobile:"",email:"",address:"",city:"",state:"",pinCode:"",aadhaar:"",pan:"",
   joiningDate:new Date().toISOString().slice(0,10),receiptNo:"",membershipValidTill:"",
   membershipStatus:"Active",membershipFee:"",functionalResponsibility:"",
   status:"Active",effectiveFrom:new Date().toISOString().slice(0,10),validTill:"",
-  appointmentDate:"",selectionDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",
+  appointmentDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",
   responsibilities:"",remarks:""
  });
  const [notice,setNotice]=useState("");
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Executive Member","General Member","Other / Custom"];
+ const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Member"];
  const committeeRows=(rows||[]).filter(r=>r.module==="managingCommittee" && r.status!=="deleted");
  const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
  const save=async e=>{
@@ -474,18 +474,21 @@ function ManagingCommittee({rows,add}){
   if(!f.fullName.trim()||!f.designation){setNotice("Name and designation are required.");return;}
   const role=f.designation==="Other / Custom"?f.customDesignation.trim():f.designation;
   if(!role){setNotice("Custom designation enter karein.");return;}
+  const existingIds=committeeRows.map(r=>String((r.data||{}).memberId||"")).map(x=>{const m=x.match(/SSF-MBR-(\\d+)/i);return m?Number(m[1]):0;});
+  const nextMemberId=`SSF-MBR-${String(Math.max(0,...existingIds)+1).padStart(5,"0")}`;
+  const memberId=f.memberId.trim()||nextMemberId;
   const recordDate=f.effectiveFrom||new Date().toISOString().slice(0,10);
   const memberRecord={
-   fullName:f.fullName.trim(),memberId:f.memberId.trim(),
+   fullName:f.fullName.trim(),memberId,
    memberType:f.memberType,membershipNo:f.membershipNo.trim(),
-   occupation:f.occupation.trim(),gender:f.gender,fatherHusbandName:f.fatherHusbandName.trim(),
+   fatherHusbandName:f.fatherHusbandName.trim(),dob:f.dob,occupation:f.occupation.trim(),gender:f.gender,
    mobile:f.mobile.trim(),email:f.email.trim(),address:f.address.trim(),city:f.city.trim(),
    state:f.state.trim(),pinCode:f.pinCode.trim(),aadhaar:f.aadhaar.trim(),pan:f.pan.trim(),
    joiningDate:f.joiningDate,receiptNo:f.receiptNo.trim(),membershipValidTill:f.membershipValidTill,
    membershipStatus:f.membershipStatus,membershipFee:f.membershipFee,
    designation:role,functionalResponsibility:f.functionalResponsibility.trim(),
    status:f.status,effectiveFrom:f.effectiveFrom,validTill:f.validTill,
-   appointmentDate:f.appointmentDate,selectionDate:f.selectionDate,
+   appointmentDate:f.appointmentDate,
    referenceNo:f.referenceNo,resolutionNo:f.resolutionNo,meetingDate:f.meetingDate,
    responsibilities:f.responsibilities,remarks:f.remarks,
    action:"Committee Member Register / Update"
@@ -527,8 +530,8 @@ function ManagingCommittee({rows,add}){
   <div className="bg-white border rounded-2xl overflow-hidden">
    <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Committee Member Profile / Register</h3><p className="text-sm text-zinc-500 mt-1">Existing Members module ko disturb kiye bina governance-specific record yahan maintain hoga.</p></div>
    <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID" className={cls}/>
-    <select value={f.memberType} onChange={e=>set("memberType",e.target.value)} className={cls}><option>संरक्षक सदस्य</option><option>आजीवन सदस्य</option><option>साधारण सदस्य</option></select>
+    <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID (auto if blank)" className={cls}/>
+    <select value={f.memberType} onChange={e=>set("memberType",e.target.value)} className={cls}><option>Founder Member</option><option>संरक्षक सदस्य</option><option>आजीवन सदस्य</option><option>साधारण सदस्य</option><option>सम्माननीय सदस्य</option></select>
     <select value={f.designation} onChange={e=>set("designation",e.target.value)} className={cls}>{designations.map(x=><option key={x}>{x}</option>)}</select>
     {f.designation==="Other / Custom"&&<input value={f.customDesignation} onChange={e=>set("customDesignation",e.target.value)} placeholder="Custom Designation" required className={cls}/>}
     <input value={f.functionalResponsibility} onChange={e=>set("functionalResponsibility",e.target.value)} placeholder="Functional Responsibility" className={cls}/>
@@ -537,6 +540,7 @@ function ManagingCommittee({rows,add}){
     <input value={f.occupation} onChange={e=>set("occupation",e.target.value)} placeholder="Occupation / Profession" className={cls}/>
     <select value={f.gender} onChange={e=>set("gender",e.target.value)} className={cls}><option value="">Gender</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select>
     <input value={f.fatherHusbandName} onChange={e=>set("fatherHusbandName",e.target.value)} placeholder="Father / Husband Name" className={cls}/>
+    <input type="date" value={f.dob} onChange={e=>set("dob",e.target.value)} title="Date of Birth" className={cls}/>
     <input value={f.mobile} onChange={e=>set("mobile",e.target.value)} placeholder="Mobile No." className={cls}/>
     <input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email" className={cls}/>
     <input value={f.address} onChange={e=>set("address",e.target.value)} placeholder="Address" className={cls}/>
@@ -547,15 +551,15 @@ function ManagingCommittee({rows,add}){
     <input value={f.pan} onChange={e=>set("pan",e.target.value)} placeholder="PAN (Optional)" className={cls}/>
     <input type="date" value={f.joiningDate} onChange={e=>set("joiningDate",e.target.value)} title="Joining Date / Admission Date" className={cls}/>
     <input value={f.receiptNo} onChange={e=>set("receiptNo",e.target.value)} placeholder="Receipt No." className={cls}/>
-    <input type="date" value={f.membershipValidTill} onChange={e=>set("membershipValidTill",e.target.value)} title="Membership Valid Till" className={cls}/>
+    <input type="date" value={f.membershipValidTill} onChange={e=>set("membershipValidTill",e.target.value)} title="Membership End Date — only if membership ended" className={cls}/>
     <select value={f.membershipStatus} onChange={e=>set("membershipStatus",e.target.value)} className={cls}><option>Active</option><option>Inactive</option><option>Expired</option><option>Resigned</option><option>Removed</option></select>
     <input value={f.membershipFee} onChange={e=>set("membershipFee",e.target.value)} placeholder="Membership Fee (₹)" className={cls}/>
-    <select value={f.status} onChange={e=>set("status",e.target.value)} className={cls}><option>Active</option><option>Inactive</option><option>Resigned</option><option>Removed</option></select>
+    <div className="sm:col-span-2 lg:col-span-4 text-xs text-zinc-500">Membership End Date sirf tab bharein jab membership khatam ho; Active member ke liye blank rakhein.</div>
+    <select value={f.status} onChange={e=>set("status",e.target.value)} className={cls} title="Committee Status"><option>Active</option><option>Ended</option><option>Role Changed</option><option>Resigned</option><option>Removed</option></select>
     <input type="date" value={f.effectiveFrom} onChange={e=>set("effectiveFrom",e.target.value)} title="Organization Role Effective From" className={cls}/>
     <input type="date" value={f.validTill} onChange={e=>set("validTill",e.target.value)} title="Organization Role Valid Till" className={cls}/>
     <input type="date" value={f.appointmentDate} onChange={e=>set("appointmentDate",e.target.value)} title="Appointment / Selection Date" className={cls}/>
-    <input type="date" value={f.selectionDate} onChange={e=>set("selectionDate",e.target.value)} title="Selection Date" className={cls}/>
-    <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / File No." className={cls}/>
+        <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / File No." className={cls}/>
     <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/>
     <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/>
     <textarea value={f.responsibilities} onChange={e=>set("responsibilities",e.target.value)} placeholder="Responsibilities / Duties" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/>
@@ -588,18 +592,18 @@ function ManagingCommittee({rows,add}){
     {!timeline.length&&<div className="p-8 text-center text-zinc-500">No committee records yet. Existing committee names have not been auto-inserted.</div>}
    </div>
    <div className="overflow-auto border-t">
-    <table className="w-full text-sm min-w-[2200px]">
+    <table className="w-full text-sm min-w-[2600px]">
      <thead className="bg-zinc-50"><tr>
-      <th className="p-3 text-left">Member ID</th><th className="p-3 text-left">Member Type</th><th className="p-3 text-left">Organization Role</th><th className="p-3 text-left">Functional Responsibility</th><th className="p-3 text-left">Membership No.</th><th className="p-3 text-left">Full Name</th><th className="p-3 text-left">Occupation / Profession</th><th className="p-3 text-left">Gender</th><th className="p-3 text-left">Father / Husband Name</th><th className="p-3 text-left">Mobile No.</th><th className="p-3 text-left">Email</th><th className="p-3 text-left">Address</th><th className="p-3 text-left">City</th><th className="p-3 text-left">State</th><th className="p-3 text-left">PIN Code</th><th className="p-3 text-left">Aadhaar (Optional)</th><th className="p-3 text-left">PAN (Optional)</th><th className="p-3 text-left">Joining Date / Admission Date</th><th className="p-3 text-left">Receipt No.</th><th className="p-3 text-left">Membership Valid Till</th><th className="p-3 text-left">Membership Status</th><th className="p-3 text-left">Membership Fee (₹)</th><th className="p-3 text-left">Remarks</th>
+      <th className="p-3 text-left">Member ID</th><th className="p-3 text-left">Membership No.</th><th className="p-3 text-left">Member Type</th><th className="p-3 text-left">Full Name</th><th className="p-3 text-left">Father / Husband Name</th><th className="p-3 text-left">Date of Birth</th><th className="p-3 text-left">Gender</th><th className="p-3 text-left">Occupation / Profession</th><th className="p-3 text-left">Mobile No.</th><th className="p-3 text-left">Email</th><th className="p-3 text-left">Address</th><th className="p-3 text-left">City</th><th className="p-3 text-left">State</th><th className="p-3 text-left">PIN Code</th><th className="p-3 text-left">PAN (Optional)</th><th className="p-3 text-left">Aadhaar (Optional)</th><th className="p-3 text-left">Joining / Admission Date</th><th className="p-3 text-left">Receipt No.</th><th className="p-3 text-left">Membership End Date</th><th className="p-3 text-left">Membership Status</th><th className="p-3 text-left">Membership Fee (₹)</th><th className="p-3 text-left">Committee Role</th><th className="p-3 text-left">Functional Responsibility</th><th className="p-3 text-left">Committee From</th><th className="p-3 text-left">Committee Till</th><th className="p-3 text-left">Committee Status</th><th className="p-3 text-left">Resolution / Order Ref.</th>
      </tr></thead>
      <tbody className="divide-y">
       {committeeRows.map(r=>{const d=r.data||{};return <tr key={r.id}>
-       <td className="p-3">{d.memberId||"—"}</td><td className="p-3">{d.memberType||"—"}</td><td className="p-3 font-bold">{d.designation||"—"}</td><td className="p-3">{d.functionalResponsibility||d.responsibilities||"—"}</td><td className="p-3">{d.membershipNo||"—"}</td><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.occupation||"—"}</td><td className="p-3">{d.gender||"—"}</td><td className="p-3">{d.fatherHusbandName||"—"}</td><td className="p-3">{d.mobile||d.phone||"—"}</td><td className="p-3">{d.email||"—"}</td><td className="p-3">{d.address||"—"}</td><td className="p-3">{d.city||"—"}</td><td className="p-3">{d.state||"—"}</td><td className="p-3">{d.pinCode||"—"}</td><td className="p-3">{d.aadhaar||"—"}</td><td className="p-3">{d.pan||"—"}</td><td className="p-3">{d.joiningDate||"—"}</td><td className="p-3">{d.receiptNo||"—"}</td><td className="p-3">{d.membershipValidTill||"—"}</td><td className="p-3">{d.membershipStatus||"—"}</td><td className="p-3">{d.membershipFee||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
+       <td className="p-3 font-bold">{d.memberId||"—"}</td><td className="p-3">{d.membershipNo||"—"}</td><td className="p-3">{d.memberType||"—"}</td><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.fatherHusbandName||"—"}</td><td className="p-3">{d.dob||"—"}</td><td className="p-3">{d.gender||"—"}</td><td className="p-3">{d.occupation||"—"}</td><td className="p-3">{d.mobile||d.phone||"—"}</td><td className="p-3">{d.email||"—"}</td><td className="p-3">{d.address||"—"}</td><td className="p-3">{d.city||"—"}</td><td className="p-3">{d.state||"—"}</td><td className="p-3">{d.pinCode||"—"}</td><td className="p-3">{d.pan||"—"}</td><td className="p-3">{d.aadhaar||"—"}</td><td className="p-3">{d.joiningDate||"—"}</td><td className="p-3">{d.receiptNo||"—"}</td><td className="p-3">{d.membershipValidTill||"—"}</td><td className="p-3">{d.membershipStatus||"—"}</td><td className="p-3">{d.membershipFee||"—"}</td><td className="p-3 font-bold">{d.designation||"—"}</td><td className="p-3">{d.functionalResponsibility||d.responsibilities||"—"}</td><td className="p-3">{d.effectiveFrom||"—"}</td><td className="p-3">{d.validTill||"—"}</td><td className="p-3">{d.status||"—"}</td><td className="p-3">{d.resolutionNo||d.referenceNo||"—"}</td>
       </tr>;})}
-      {!committeeRows.length&&<tr><td colSpan="23" className="p-8 text-center text-zinc-500">No committee records yet.</td></tr>}
+      {!committeeRows.length&&<tr><td colSpan="27" className="p-8 text-center text-zinc-500">No committee records yet.</td></tr>}
      </tbody>
     </table>
-   </div>
+   </div>v>
   </div>
  </div>;
 }
