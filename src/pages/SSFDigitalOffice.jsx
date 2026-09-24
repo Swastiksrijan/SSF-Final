@@ -78,56 +78,58 @@ export default function SSFDigitalOffice(){
   return (data||[]).map(function(x){
    const nested=x.data&&typeof x.data==="object"?x.data:{};
    const row={ID:x.recordId||"",Module:LABELS[x.module]||x.module||"",Type:x.recordType||"",Date:x.recordDate?new Date(x.recordDate).toLocaleDateString("en-IN"):"",Amount:x.amount||"",PaymentMode:x.paymentMode||"",Status:x.status||"",PersonID:x.personId||"",LinkedID:x.linkedRecordId||""};
-   Object.entries(nested).forEach(function(entry){const key=entry[0]; const value=entry[1]; if(!(key in row))row[key]=value??"";});
+   Object.entries(nested).forEach(function(entry){
+    const key=entry[0], value=entry[1];
+    row[key]=value===null||value===undefined?"":(typeof value==="object"?JSON.stringify(value):String(value));
+   });
    return row;
   });
  };
+ const getExportHeaders=function(flat){
+  return Array.from(new Set(flat.reduce(function(all,row){return all.concat(Object.keys(row));},[])));
+ };
+ const csvEscape=function(value){
+  const s=value===null||value===undefined?"":String(value);
+  return '"'+s.replace(/"/g,'""')+'"';
+ };
  const exportRows=function(data,name){
-  const flat=flattenExport(data); const headers=Array.from(new Set(flat.reduce(function(all,row){return all.concat(Object.keys(row));},[])));
-  if(!headers.length)headers=["ID","Module","Date","Status"];
-  const csv=[headers.map(function(h){return JSON.stringify(h);}).join(","),...flat.map(function(row){return headers.map(function(h){return JSON.stringify(row[h] == null ? "" : row[h]);}).join(",");})].join("\r\n");
-  const blob=new Blob(["\\uFEFF",csv],{type:"text/csv;charset=utf-8"}); const a=document.createElement("a"); const url=URL.createObjectURL(blob); a.href=url; a.download=name+".csv"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1000);
+  const flat=flattenExport(data);
+  const headers=getExportHeaders(flat);
+  if(!headers.length)return;
+  const lines=[];
+  lines.push(headers.map(csvEscape).join(","));
+  flat.forEach(function(row){
+   lines.push(headers.map(function(h){return csvEscape(row[h]);}).join(","));
+  });
+  const csv="\\uFEFF"+lines.join("\\r\\n")+"\\r\\n";
+  const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
+  const a=document.createElement("a");
+  const url=URL.createObjectURL(blob);
+  a.href=url;a.download=name+".csv";document.body.appendChild(a);a.click();a.remove();
+  setTimeout(function(){URL.revokeObjectURL(url);},1500);
  };
  const exportExcel=function(data,name){
   const flat=flattenExport(data);
-  const headers=Array.from(new Set(flat.reduce(function(all,row){return all.concat(Object.keys(row));},[])));
+  const headers=getExportHeaders(flat);
   if(!headers.length)return;
   const escXml=function(v){
-   return String(v??"")
-    .replace(/&/g,"&amp;")
-    .replace(/</g,"&lt;")
-    .replace(/>/g,"&gt;")
-    .replace(/"/g,"&quot;")
-    .replace(/'/g,"&apos;");
+   return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");
   };
   const cell=function(v){
-   const value=(v===null||v===undefined)?"":(typeof v==="object"?JSON.stringify(v):String(v));
+   const value=v===null||v===undefined?"":String(v);
    return '<Cell><Data ss:Type="String">'+escXml(value)+'</Data></Cell>';
   };
   const rowsXml=[
-   '<Row>'+headers.map(function(h){return cell(h);}).join("")+'</Row>',
-   ...flat.map(function(row){
-    return '<Row>'+headers.map(function(h){return cell(row[h]);}).join("")+'</Row>';
-   })
+   "<Row>"+headers.map(cell).join("")+"</Row>",
+   ...flat.map(function(row){return "<Row>"+headers.map(function(h){return cell(row[h]);}).join("")+"</Row>";})
   ].join("");
   const xml='<?xml version="1.0" encoding="UTF-8"?>'
-   +'<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" '
-   +'xmlns:o="urn:schemas-microsoft-com:office:office" '
-   +'xmlns:x="urn:schemas-microsoft-com:office:excel" '
-   +'xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'
+   +'<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'
    +'<Worksheet ss:Name="SSF Digital Office"><Table>'+rowsXml+'</Table></Worksheet></Workbook>';
   const blob=new Blob(["\\uFEFF",xml],{type:"application/vnd.ms-excel"});
-  const a=document.createElement("a");
-  const url=URL.createObjectURL(blob);
-  a.href=url;
-  a.download=name+".xls";
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
+  const a=document.createElement("a");const url=URL.createObjectURL(blob);
+  a.href=url;a.download=name+".xls";document.body.appendChild(a);a.click();a.remove();
   setTimeout(function(){URL.revokeObjectURL(url);},1500);
- };
- const downloadPdf=function(d,filename){
-  const blob=d.output("blob"); const url=URL.createObjectURL(blob); const a=document.createElement("a"); a.href=url; a.download=filename; a.style.display="none"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function(){URL.revokeObjectURL(url);},1500);
  };
  const printDesignedDocument=async function(r,type){
   const data=r.data||{};
