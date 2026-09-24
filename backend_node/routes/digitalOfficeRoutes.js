@@ -285,7 +285,12 @@ router.post('/digital-office/records', requireOfficeAuth, async (req, res) => {
     await DigitalOfficeAudit.create({ action:'create', module:body.module, recordId, actor:req.headers['x-office-actor'] || 'admin', details:{recordType:body.recordType||null} }, {transaction:t});
     await t.commit();
     return res.status(201).json(row);
-  } catch (e) { await t.rollback(); console.error(e); res.status(500).json({message:'Unable to save record.'}); }
+  } catch (e) {
+    try { await t.rollback(); } catch (_) {}
+    console.error('Digital Office record save failed:', e);
+    const detail = e?.errors?.map(x => x.message).filter(Boolean).join('; ') || e?.message || 'Unknown database error.';
+    res.status(500).json({message:'Unable to save record.', detail});
+  }
 });
 
 router.put('/digital-office/records/:id', requireOfficeAuth, async (req, res) => {
