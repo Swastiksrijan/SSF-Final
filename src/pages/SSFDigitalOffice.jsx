@@ -17,6 +17,7 @@ const MODULES = [
  ["inward","Aavak / Inward",FaFileAlt],["outward","Jaavak / Outward",FaFileAlt],
  ["meetings","Meeting / Baithak",FaCalendarAlt],["projects","Projects / Initiatives",FaTasks],["events","Events / Camps",FaCalendarAlt],
  ["mou","MoU / Agreements",FaHandshake],["documents","Documents",FaFileAlt],["officialDocuments","Official Documents",FaFileAlt],["donorSlips","Donor Slips / Receipts",FaFileAlt],["separations","Separation / Role Changes",FaFileAlt],["appointmentLetters","Appointment Letters",FaUserTie],
+ ["managingCommittee","Managing Committee",FaUserTie],
  ["certificates","Certificates",FaCertificate],["idcards","ID Cards",FaIdCard],
  ["beneficiaries","Beneficiaries",FaUsers],["internships","Internship Applications",FaTasks],["activities","Volunteer Activities",FaTasks],
  ["assets","Assets & Equipment",FaBoxes],["notifications","Alerts & Follow-ups",FaTasks],
@@ -107,6 +108,7 @@ export default function SSFDigitalOffice(){
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
     {active==="appointmentLetters"&&<AppointmentLetters rows={rows} add={add}/>}
+    {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}
@@ -446,6 +448,123 @@ function SeparationManagement({rows,add}){
    <button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save + Generate Official Order</button>
   </form>
   <div className="p-5 border-t"><h3 className="font-black text-[#002344] mb-3">Recent Orders</h3><div className="overflow-auto"><table className="w-full text-sm"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Order No.</th><th className="p-3 text-left">Person</th><th className="p-3 text-left">Action</th><th className="p-3 text-left">Effective</th><th className="p-3 text-left">Status</th></tr></thead><tbody className="divide-y">{rows.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold">{d.orderNo||r.recordId}</td><td className="p-3">{d.name||"—"}</td><td className="p-3">{d.action||"—"}</td><td className="p-3">{d.effectiveDate||"—"}</td><td className="p-3">{r.status}</td></tr>;})}</tbody></table></div></div>
+ </div>;
+}
+
+
+
+function ManagingCommittee({rows,add}){
+ const [f,setF]=useState({
+  fullName:"",memberId:"",designation:"General Member",customDesignation:"",
+  email:"",phone:"",address:"",membershipType:"Managing Committee",
+  status:"Active",effectiveFrom:new Date().toISOString().slice(0,10),validTill:"",
+  appointmentDate:"",selectionDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",
+  responsibilities:"",remarks:""
+ });
+ const [notice,setNotice]=useState("");
+ const set=(k,v)=>setF(x=>({...x,[k]:v}));
+ const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Executive Member","General Member","Other / Custom"];
+ const committeeRows=(rows||[]).filter(r=>r.module==="managingCommittee" && r.status!=="deleted");
+ const save=async e=>{
+  e.preventDefault();
+  if(!f.fullName.trim()||!f.designation){setNotice("Name and designation are required.");return;}
+  const role=f.designation==="Other / Custom"?f.customDesignation.trim():f.designation;
+  if(!role){setNotice("Custom designation enter karein.");return;}
+  const recordDate=f.effectiveFrom||new Date().toISOString().slice(0,10);
+  const memberRecord={
+   fullName:f.fullName.trim(),memberId:f.memberId.trim(),designation:role,
+   email:f.email.trim(),phone:f.phone.trim(),address:f.address.trim(),
+   membershipType:f.membershipType,status:f.status,effectiveFrom:f.effectiveFrom,
+   validTill:f.validTill,appointmentDate:f.appointmentDate,selectionDate:f.selectionDate,
+   referenceNo:f.referenceNo,resolutionNo:f.resolutionNo,meetingDate:f.meetingDate,
+   responsibilities:f.responsibilities,remarks:f.remarks,
+   action:"Committee Member Register / Update"
+  };
+  await add("managingCommittee",{recordDate,recordType:"Committee Member",status:f.status.toLowerCase(),data:memberRecord});
+  setNotice("Managing Committee record saved. Historical record delete nahi hota.");
+ };
+ const actionOrder=async action=>{
+  if(!f.fullName.trim()){setNotice("Pehle member select/enter karein.");return;}
+  const recordDate=f.effectiveFrom||new Date().toISOString().slice(0,10);
+  await add("managingCommittee",{recordDate,recordType:action,status:"active",data:{
+   fullName:f.fullName.trim(),memberId:f.memberId.trim(),designation:f.designation==="Other / Custom"?f.customDesignation:f.designation,
+   action,effectiveFrom:f.effectiveFrom,resolutionNo:f.resolutionNo,meetingDate:f.meetingDate,
+   referenceNo:f.referenceNo,remarks:f.remarks
+  }});
+  setNotice(action+" recorded with history preserved.");
+ };
+ return <div className="space-y-5">
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="bg-[#002344] text-white p-6">
+    <div className="flex items-center gap-3"><FaUserTie className="text-2xl"/>
+     <div><h2 className="text-2xl font-black">Managing Committee Dashboard</h2>
+      <p className="text-white/70 mt-1">Committee register, designation, term, role history, changes and governance references — without deleting historical records.</p>
+     </div>
+    </div>
+   </div>
+   <div className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-zinc-50">
+    <div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">Total Records</div><div className="text-2xl font-black text-[#002344] mt-1">{committeeRows.length}</div></div>
+    <div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">Active</div><div className="text-2xl font-black text-emerald-700 mt-1">{committeeRows.filter(r=>String(r.status).toLowerCase()==="active").length}</div></div>
+    <div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">Role Changes / Actions</div><div className="text-2xl font-black text-[#002344] mt-1">{committeeRows.filter(r=>(r.data||{}).action && (r.data||{}).action!=="Committee Member Register / Update").length}</div></div>
+    <div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">History</div><div className="text-2xl font-black text-[#002344] mt-1">Preserved</div></div>
+   </div>
+  </div>
+
+  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
+
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Committee Member Profile / Register</h3><p className="text-sm text-zinc-500 mt-1">Existing Members module ko disturb kiye bina governance-specific record yahan maintain hoga.</p></div>
+   <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full Name" required className={cls}/>
+    <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID" className={cls}/>
+    <select value={f.designation} onChange={e=>set("designation",e.target.value)} className={cls}>{designations.map(x=><option key={x}>{x}</option>)}</select>
+    {f.designation==="Other / Custom"&&<input value={f.customDesignation} onChange={e=>set("customDesignation",e.target.value)} placeholder="Custom Designation" required className={cls}/>}
+    <select value={f.membershipType} onChange={e=>set("membershipType",e.target.value)} className={cls}><option>Managing Committee</option><option>Governing Body</option><option>Executive Committee</option><option>Other</option></select>
+    <select value={f.status} onChange={e=>set("status",e.target.value)} className={cls}><option>Active</option><option>Inactive</option><option>Resigned</option><option>Removed</option></select>
+    <input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email" className={cls}/>
+    <input value={f.phone} onChange={e=>set("phone",e.target.value)} placeholder="Phone" className={cls}/>
+    <input value={f.address} onChange={e=>set("address",e.target.value)} placeholder="Address / Area" className={cls}/>
+    <input type="date" value={f.effectiveFrom} onChange={e=>set("effectiveFrom",e.target.value)} title="Effective From" className={cls}/>
+    <input type="date" value={f.validTill} onChange={e=>set("validTill",e.target.value)} title="Valid Till" className={cls}/>
+    <input type="date" value={f.appointmentDate} onChange={e=>set("appointmentDate",e.target.value)} title="Appointment / Selection Date" className={cls}/>
+    <input type="date" value={f.selectionDate} onChange={e=>set("selectionDate",e.target.value)} title="Selection Date" className={cls}/>
+    <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / File No." className={cls}/>
+    <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/>
+    <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/>
+    <textarea value={f.responsibilities} onChange={e=>set("responsibilities",e.target.value)} placeholder="Responsibilities / Duties" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/>
+    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks / Special Conditions" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/>
+    <button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save Committee Member Record</button>
+   </form>
+  </div>
+
+  <div className="bg-white border rounded-2xl p-5">
+   <h3 className="text-xl font-black text-[#002344]">Governance Actions</h3>
+   <p className="text-sm text-zinc-500 mt-1">Resignation, role change, responsibility changes and relieving ko history ke saath record karein.</p>
+   <div className="flex flex-wrap gap-2 mt-4">
+    {["Role Change / Transfer","Additional Responsibility","Responsibility Withdrawal","Resignation","Removal / Membership Cancellation","Replacement / Relieving"].map(action=>
+      <button type="button" key={action} onClick={()=>actionOrder(action)} className="border border-[#002344]/20 text-[#002344] px-4 py-2.5 rounded-xl font-bold hover:bg-zinc-50">{action}</button>
+    )}
+   </div>
+   <div className="mt-4 bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-zinc-700">
+    <b>Governance workflow:</b> Meeting → Agenda → Attendance → Minutes → Resolution → Approval → Office Order → Committee Register update. Resolution/meeting/reference fields upar available hain.
+   </div>
+   <div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
+    <b>Important:</b> Committee member ko simple Delete se remove nahi kiya jayega. Historical records, approvals, resolutions aur audit trail retained rahenge.
+   </div>
+  </div>
+
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Committee Register & History</h3></div>
+   <div className="overflow-auto">
+    <table className="w-full text-sm">
+     <thead className="bg-zinc-50"><tr><th className="p-3 text-left">Name</th><th className="p-3 text-left">Designation</th><th className="p-3 text-left">Effective</th><th className="p-3 text-left">Valid Till</th><th className="p-3 text-left">Action</th><th className="p-3 text-left">Resolution</th><th className="p-3 text-left">Status</th></tr></thead>
+     <tbody className="divide-y">
+      {committeeRows.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.designation||"—"}</td><td className="p-3">{d.effectiveFrom||r.recordDate||"—"}</td><td className="p-3">{d.validTill||"—"}</td><td className="p-3">{d.action||"—"}</td><td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{r.status}</td></tr>;})}
+      {!committeeRows.length&&<tr><td colSpan="7" className="p-8 text-center text-zinc-500">No committee records yet. Existing committee names have not been auto-inserted.</td></tr>}
+     </tbody>
+    </table>
+   </div>
+  </div>
  </div>;
 }
 
