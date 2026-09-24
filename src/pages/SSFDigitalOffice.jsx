@@ -10,7 +10,7 @@ const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
  ["dashboard","Dashboard",FaChartLine],
  ["onlineMeetings","Online Meetings",FaVideo],
- ["members","Members Register",FaUsers],["institutionalHistory","संस्था इतिहास (Institutional History)",FaHistory],["officeHistory","प्रबंधकारिणी समिति / Office History",FaUserTie],["membershipContributions","Membership & Contribution",FaRupeeSign],["meetingResolutions","Meeting & Resolution",FaCalendarAlt],["volunteers","Volunteers",FaUsers],["donors","Donors",FaUsers],
+ ["members","Members Register",FaUsers],["institutionalHistory","संस्था इतिहास (Institutional History)",FaHistory],["officeHistory","प्रबंधकारिणी समिति / Office History",FaUserTie],["managingCommittee","प्रबंधकारिणी समिति (Managing Committee)",FaUserTie],["membershipContributions","Membership & Contribution",FaRupeeSign],["meetingResolutions","Meeting & Resolution",FaCalendarAlt],["volunteers","Volunteers",FaUsers],["donors","Donors",FaUsers],
  ["donations","Donations",FaRupeeSign],["expenses","Expenses",FaRupeeSign],["contribution","Contribution Register",FaBook],
  ["cash","Cash Book",FaBook],["bank","Bank Book",FaBook],["ledger","Ledger",FaBalanceScale],
  ["inventory","Stock / Samaan",FaBoxes],
@@ -133,7 +133,7 @@ export default function SSFDigitalOffice(){
     {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
     {active==="meetingResolutions"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}
     {active==="appointmentLetters"&&<AppointmentLetters rows={rows} add={add}/>}
-    {active==="managingCommittee"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive} moduleKey="managingCommittee"/>}
+    {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} archive={archive}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}
