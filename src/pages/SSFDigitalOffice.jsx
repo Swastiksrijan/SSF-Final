@@ -117,7 +117,12 @@ export default function SSFDigitalOffice(){
    <aside className="bg-white rounded-2xl border border-zinc-200 p-3 h-fit lg:sticky lg:top-24 max-h-[calc(100vh-7rem)] overflow-auto"><div className="px-4 pt-4 pb-3 border-b border-zinc-200"><div className="flex items-center gap-3"><img src={logoImg} alt="SSF logo" className="h-12 w-12 object-contain rounded-xl bg-white border border-zinc-100 p-1" /><div><div className="text-sm font-black text-[#002344]">SSF Digital Office</div><div className="text-[10px] text-zinc-500 font-semibold">Paperless Office Management</div></div></div></div>{MODULES.map(function(x){var Icon=x[2];return <button key={x[0]} onClick={function(){setActive(x[0]);}} className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left text-sm font-bold mb-1 "+(active===x[0]?"bg-[#002344] text-white":"text-zinc-700 hover:bg-zinc-100")}><Icon/> {x[1]}</button>;})}</aside>
    <main className="min-w-0">
     {active==="dashboard"&&<Dashboard summary={summary}/>}
-    {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}\n    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}\n    {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} archive={archive}/>}\n    {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}\n    {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}\n    {active==="meetingResolutions"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}
+    {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
+    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
+    {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} archive={archive}/>}
+    {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
+    {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
+    {active==="meetingResolutions"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}
     {active==="appointmentLetters"&&<AppointmentLetters rows={rows} add={add}/>}
     {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} archive={archive}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
@@ -567,9 +572,6 @@ function InstitutionalHistory({rows,add,archive}){
   </div>
   <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900"><b>Historical record rule:</b> 2016–17 और 2018–20 की तारीखें अभी provisional हैं। Original documents मिलने पर <b>Edit</b> से exact date डालें। पुराने records को delete न करें।</div>
  </SimpleOfficeCard>;
-}
-
-))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,d.memberId,d.name,d.changeType||r.recordType,d.previousRole,d.newRole,d.referenceNo,d.resolutionNo,d.meetingDate,d.description,d.remarks].map((v,i)=><td key={i} className="p-3">{v||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="12" className="p-8 text-center text-zinc-500">No office history yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
 }
 
 function MembershipContributions({rows,add,archive}){
