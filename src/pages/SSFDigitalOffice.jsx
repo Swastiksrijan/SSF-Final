@@ -17,7 +17,7 @@ const MODULES = [
  ["inward","Aavak / Inward",FaFileAlt],["outward","Jaavak / Outward",FaFileAlt],
  ["meetings","Meeting / Baithak",FaCalendarAlt],["projects","Projects / Initiatives",FaTasks],["events","Events / Camps",FaCalendarAlt],
  ["mou","MoU / Agreements",FaHandshake],["documents","Documents",FaFileAlt],["officialDocuments","Official Documents",FaFileAlt],["donorSlips","Donor Slips / Receipts",FaFileAlt],["separations","Separation / Role Changes",FaFileAlt],["appointmentLetters","Appointment Letters",FaUserTie],
- ["managingCommittee","🏛️ प्रबंधकारिणी समिति / Office History",FaUserTie],
+ 
  ["certificates","Certificates",FaCertificate],["idcards","ID Cards",FaIdCard],
  ["beneficiaries","Beneficiaries",FaUsers],["internships","Internship Applications",FaTasks],["activities","Volunteer Activities",FaTasks],
  ["assets","Assets & Equipment",FaBoxes],["notifications","Alerts & Follow-ups",FaTasks],
