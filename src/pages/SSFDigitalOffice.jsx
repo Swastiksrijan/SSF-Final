@@ -56,7 +56,8 @@ export default function SSFDigitalOffice(){
    if(!r.ok)throw new Error(out.message||"Save failed.");
    setNotice(out.donationId?"Saved. Donation ID: "+out.donationId:"Record saved successfully.");
    await load(module);
-  }catch(e){setNotice(e.message||"Save failed.");}
+   return true;
+  }catch(e){setNotice(e.message||"Save failed.");return false;}
  };
  const archive=async function(id){
   if(!confirm("Archive this record? Financial records are not hard-deleted."))return;
