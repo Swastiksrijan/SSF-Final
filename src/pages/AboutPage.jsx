@@ -2,13 +2,35 @@ import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { FaArrowRight, FaCalendarAlt, FaGlobeAsia, FaHeart, FaHandshake, FaShieldAlt, FaUsers, FaBullseye } from "react-icons/fa";
 import OptimizedImage from "../components/OptimizedImage";
-import PageHero from "../components/PageHero";
 import footerImg1 from "../assets/footer-gallery-1.jpg";
+import footerImg2 from "../assets/footer-gallery-2.jpg";
+import footerImg3 from "../assets/footer-gallery-3.jpg";
+import footerImg4 from "../assets/footer-gallery-4.png";
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white font-sans text-zinc-800">
-      <PageHero image={footerImg1} title="Who We Are" subtitle="Empowering communities through grassroots governance and sustainable development." hindiSubtitle="शिक्षा, स्वास्थ्य और सशक्तिकरण के माध्यम से सामुदायिक विकास।" height="h-[28vh] md:min-h-[60vh]" objectPosition="center" overlayOpacity="bg-black/85 md:bg-black/50" />
+      <section className="relative min-h-[48vh] md:min-h-[60vh] w-full overflow-hidden bg-[#001529] text-white">
+        <div className="absolute inset-0 p-2 sm:p-3 lg:p-4">
+          <div className="grid h-full grid-cols-2 md:grid-cols-4 gap-1.5 sm:gap-2 lg:gap-3">
+            {[footerImg1, footerImg2, footerImg3, footerImg4].map((img, index) => (
+              <div key={index} className="relative overflow-hidden rounded-lg lg:rounded-xl bg-[#002344]">
+                <img src={img} alt="" className="h-full w-full object-cover object-center opacity-80 scale-105" loading={index === 0 ? "eager" : "lazy"} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="absolute inset-0 bg-[#001529]/58"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#001529]/30 via-[#001529]/55 to-[#001529]/90"></div>
+        <div className="relative z-10 flex min-h-[48vh] md:min-h-[60vh] items-center justify-center px-5 py-20 lg:px-8 text-center">
+          <div className="max-w-5xl">
+            <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.22em] text-[#7dd3a8]">Swastik Srijan Foundation / स्थापना</p>
+            <h1 className="mt-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight text-white">Who We Are</h1>
+            <p className="mx-auto mt-5 max-w-3xl text-base md:text-xl text-[#e5edf4] leading-relaxed">Empowering communities through grassroots governance and sustainable development.</p>
+            <p className="mx-auto mt-2 max-w-3xl text-base md:text-lg text-[#d5e1ea] leading-relaxed">शिक्षा, स्वास्थ्य और सशक्तिकरण के माध्यम से सामुदायिक विकास।</p>
+          </div>
+        </div>
+      </section>
 
       <section className="py-10 bg-[#002344] text-white"><div className="container mx-auto px-6 max-w-6xl grid grid-cols-2 md:grid-cols-5 gap-5 text-center">
         <div><FaCalendarAlt className="mx-auto text-[#fb8500] text-2xl mb-2" /><p className="font-bold">December 2013</p><p className="text-xs text-zinc-300 mt-1">Established</p></div>
