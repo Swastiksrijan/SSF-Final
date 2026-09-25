@@ -13,6 +13,7 @@ export default function SkillPrograms() {
                 title="Skill & Career Programs"
                 subtitle="Bridging the gap between education and employment. Transforming youth into industry-ready professionals."
                 hindiSubtitle="कौशल और करियर कार्यक्रम - शिक्षा और रोजगार के बीच की दूरी कम करना।"
+                brandBelowTitle={true}
             />
 
             {/* ================= 1. YOUTH SKILL DEVELOPMENT ================= */}
