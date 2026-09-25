@@ -182,7 +182,7 @@ export default function SSFDigitalOffice(){
     {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
     {active==="meetingResolutions"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}
     {active==="appointmentLetters"&&<AppointmentLetters rows={rows} add={add}/>}
-    {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} archive={archive}/>}
+    {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}
@@ -681,7 +681,7 @@ function MeetingResolutions({rows,add,archive}){
  const save=async e=>{e.preventDefault();if(!f.meetingTitle.trim()){setNotice("Meeting Title required.");return;}const ok=await add("meetingResolutions",{recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:f});if(ok){setF({...f,meetingTitle:"",agenda:"",attendance:"",resolutionNo:"",decision:"",details:"",supportingDocument:"",remarks:""});setNotice("Meeting / resolution record saved.");}};
  return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="General Body, Managing Committee और Special Meetings — agenda, attendance, minutes/decision और supporting record."><div className="bg-white border rounded-2xl p-5"><form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"><input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls}/><select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} className={cls}><option>General Body Meeting</option><option>Managing Committee Meeting</option><option>Special Meeting</option><option>Emergency Meeting</option><option>Other</option></select><input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title" required className={cls}/><input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/><textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda" className={cls}/><textarea value={f.attendance} onChange={e=>set("attendance",e.target.value)} placeholder="Attendance / Members Present" className={cls}/><textarea value={f.decision} onChange={e=>set("decision",e.target.value)} placeholder="Decision / Resolution Text" className={cls}/><textarea value={f.details} onChange={e=>set("details",e.target.value)} placeholder="Minutes / Detailed Notes" className={cls}/><input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/><button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save Meeting / Resolution</button></form></div>{notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}<div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1300px]"><thead className="bg-zinc-50"><tr>{["Meeting Date","Type","Meeting Title","Resolution No.","Agenda","Attendance","Decision","Minutes / Notes","Supporting Document","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,d.meetingType||r.recordType,d.meetingTitle,d.resolutionNo,d.agenda,d.attendance,d.decision,d.details,d.supportingDocument,d.remarks].map((v,i)=><td key={i} className="p-3">{v||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="11" className="p-8 text-center text-zinc-500">No meeting/resolution records yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
 }
-function ManagingCommittee({rows,add,archive}){
+function ManagingCommittee({rows,add,archive,token}){
  const [f,setF]=useState({
   memberId:"",memberType:"साधारण सदस्य",designation:"Member",customDesignation:"",
   membershipNo:"",fullName:"",fatherHusbandName:"",dob:"",occupation:"",gender:"",
@@ -697,6 +697,49 @@ function ManagingCommittee({rows,add,archive}){
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Member"];
  const committeeRows=(rows||[]).filter(r=>r.module==="managingCommittee" && r.status!=="deleted");
+ const [syncing,setSyncing]=useState(false);
+ useEffect(()=>{
+  let cancelled=false;
+  const syncFromMembers=async()=>{
+   if(!token||syncing)return;
+   try{
+    const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
+    if(!r.ok)return;
+    const members=await r.json();
+    const existingIds=new Set(committeeRows.map(x=>String((x.data||{}).memberId||"").trim()).filter(Boolean));
+    const committeeRoles=new Set(["President","Vice President","Secretary","Joint Secretary","Treasurer","Member","Executive Committee Member"]);
+    const candidates=(Array.isArray(members)?members:[]).filter(x=>{
+     const d=x.data||{}; const role=String(d.organizationRole||d.designation||"").trim();
+     return d.memberId && d.fullName && role && (committeeRoles.has(role)||role.toLowerCase().includes("committee"));
+    });
+    if(!candidates.length)return;
+    setSyncing(true);
+    for(const x of candidates){
+     if(cancelled)break;
+     const d=x.data||{}, memberId=String(d.memberId).trim();
+     if(existingIds.has(memberId))continue;
+     const role=String(d.organizationRole||d.designation||"").trim();
+     const status=String(d.membershipStatus||"Active").toLowerCase()==="active"?"active":"revoked";
+     const data={
+      fullName:String(d.fullName||"").trim(),memberId,memberType:d.memberType||"General Member",membershipNo:d.membershipNo||"",
+      fatherHusbandName:d.fatherHusbandName||"",dob:d.dob||"",occupation:d.occupation||"",gender:d.gender||"",
+      mobile:d.mobile||"",email:d.email||"",address:d.address||"",city:d.city||"",state:d.state||"",pinCode:d.pinCode||"",
+      aadhaar:d.aadhaar||"",pan:d.pan||"",joiningDate:d.joiningDate||"",receiptNo:d.receiptNo||"",membershipValidTill:d.membershipValidTill||"",
+      membershipStatus:d.membershipStatus||"Active",membershipFee:d.membershipFee||"",designation:role,
+      functionalResponsibility:d.functionalResponsibility||"",status:d.membershipStatus||"Active",effectiveFrom:d.joiningDate||new Date().toISOString().slice(0,10),
+      validTill:d.membershipValidTill||"",appointmentDate:d.joiningDate||"",referenceNo:"",resolutionNo:"",meetingDate:"",
+      responsibilities:d.functionalResponsibility||"",remarks:"Imported from Members Register",action:"Committee Member Register / Update"
+     };
+     const ok=await add("managingCommittee",{recordDate:data.effectiveFrom,recordType:"Committee Member",status,data});
+     if(ok)existingIds.add(memberId);
+    }
+    if(!cancelled)setNotice("Managing Committee records synchronized from Members Register.");
+   }catch(e){ if(!cancelled)setNotice("Members Register sync could not be completed."); }
+   finally{if(!cancelled)setSyncing(false);}
+  };
+  syncFromMembers();
+  return ()=>{cancelled=true;};
+ },[token,rows.length]);
  const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
  const save=async e=>{
    if(saving)return;
@@ -706,9 +749,11 @@ function ManagingCommittee({rows,add,archive}){
    const duplicate=committeeRows.some(r=>{const d=r.data||{};return String(d.fullName||"").trim().toLowerCase()===f.fullName.trim().toLowerCase() && String(d.designation||"").trim()===role && String(d.effectiveFrom||"")===f.effectiveFrom && String(d.membershipNo||"").trim()===f.membershipNo.trim() && String(d.referenceNo||"").trim()===f.referenceNo.trim() && String(d.resolutionNo||"").trim()===f.resolutionNo.trim();});
    if(duplicate){setNotice("Same committee record already exists. Duplicate record save nahi kiya gaya.");return;}
   if(!role){setNotice("Custom designation enter karein.");return;}
-  const existingIds=committeeRows.map(r=>String((r.data||{}).memberId||"")).map(x=>{const m=x.match(/SSF-MBR-(\\d+)/i);return m?Number(m[1]):0;});
-  const nextMemberId=`SSF-MBR-${String(Math.max(0,...existingIds)+1).padStart(5,"0")}`;
-  const memberId=f.memberId.trim()||nextMemberId;
+  const suppliedMemberId=f.memberId.trim();
+   if(suppliedMemberId && committeeRows.some(r=>String((r.data||{}).memberId||"").trim().toLowerCase()===suppliedMemberId.toLowerCase())){setNotice("This Member ID already exists in Managing Committee. Duplicate ID save nahi kiya gaya.");return;}
+   const existingIds=committeeRows.map(r=>String((r.data||{}).memberId||"")).map(x=>{const m=x.match(/SSF-MBR-(\\d+)/i);return m?Number(m[1]):0;});
+   const nextMemberId=`SSF-MBR-${String(Math.max(0,...existingIds)+1).padStart(5,"0")}`;
+   const memberId=suppliedMemberId||nextMemberId;
    setSaving(true);
   const recordDate=f.effectiveFrom||new Date().toISOString().slice(0,10);
   const memberRecord={
