@@ -17,7 +17,7 @@ import {
   FaWheelchair,
   FaPaw,
   FaMusic,
-  FaShare | साझा करेंAlt,
+  FaShareAlt,
 } from "react-icons/fa";
 
 export const Route = createFileRoute("/Objectives")({
@@ -38,7 +38,7 @@ const detailedObjectives = [
 ];
 
 const shareObjective = async (objective) => {
-  const url = `${window.location.origin}/Objectives#${objective.id}`;
+  const url = `${window.location.origin}/Objectives`;
   const text = `SSF — ${objective.title}\n${objective.tagline}`;
 
   if (navigator.share) {
@@ -50,7 +50,7 @@ const shareObjective = async (objective) => {
         const mime = blob.type || "image/jpeg";
         const extension = mime.includes("png") ? "png" : "jpg";
         const file = new File([blob], `SSF-${objective.id}.${extension}`, { type: mime });
-        if (navigator.canShare | साझा करें?.({ files: [file] })) {
+        if (navigator.canShare?.({ files: [file] })) {
           await navigator.share({ title: `SSF | ${objective.title}`, text: `${text}\n\n${url}`, files: [file] });
           return;
         }
@@ -84,7 +84,7 @@ function ObjectivesPage() {
               Swastik Srijan Foundation / हमारे उद्देश्य
             </p>
             <h1 className="mt-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight text-white">
-              Our Objective | हमारा उद्देश्यs | हमारे उद्देश्य
+              Our Objectives | हमारे उद्देश्य
             </h1>
             <p className="mx-auto mt-4 max-w-3xl text-lg md:text-2xl text-[#f1f5f9] leading-relaxed">
               Education, health, skills, community development and sustainable social change. शिक्षा, स्वास्थ्य, कौशल, सामुदायिक विकास और सतत सामाजिक परिवर्तन।
@@ -166,7 +166,7 @@ function ObjectivesPage() {
                       <div className="mt-6 flex items-center justify-between gap-3 border-t border-zinc-100 pt-5">
                         <span className="text-xs font-bold text-zinc-400">SSF • Swastik Srijan Foundation</span>
                         <button type="button" onClick={() => shareObjective(objective)} className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${objective.tone} px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg active:scale-95`} aria-label={`Share | साझा करें ${objective.title} objective`}>
-                          <FaShare | साझा करेंAlt /> Share | साझा करें
+                          <FaShareAlt /> Share | साझा करें
                         </button>
                       </div>
                     </div>
