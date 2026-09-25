@@ -6,6 +6,7 @@ import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
 
 
 import PageHero from "../components/PageHero";
+import UpcomingEvidenceBanner from "../components/UpcomingEvidenceBanner";
 
 export default function UpcomingProjects() {
   return (
@@ -18,6 +19,9 @@ export default function UpcomingProjects() {
         subtitle="Our vision for 2026 and beyond. Expanding our footprint, embracing technology, and deepening our impact across Bharat."
         hindiSubtitle="भविष्य का निर्माण - 2026 और उससे आगे की हमारी दृष्टि।"
       />
+
+      {/* ================= 2026+ STRATEGIC DIRECTION ================= */}
+      <UpcomingEvidenceBanner />
 
       {/* ================= 1. SCHOOL DONATION APPEAL ================= */}
       <section className="py-32 px-6 bg-white">
