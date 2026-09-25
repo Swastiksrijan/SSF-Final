@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import pageHeader from "../assets/page-header.jpg";
 import { FaArrowRight, FaHandsHelping, FaHeart, FaHandshake, FaUsers, FaClock, FaLightbulb, FaTools, FaNetworkWired, FaBuilding, FaGraduationCap, FaStethoscope, FaLaptopCode, FaUserTie, FaPeopleCarry, FaCheckCircle } from "react-icons/fa";
 
 const roles = [
@@ -41,21 +42,23 @@ function SectionTitle({ eyebrow, children, accent = false }) {
 export default function PremiumJoinPage() {
   return (
     <main className="min-h-screen bg-white text-[#17202a] overflow-hidden">
-      <section className="relative min-h-[760px] md:min-h-[820px] flex items-center px-5 py-24 bg-[radial-gradient(circle_at_15%_20%,rgba(30,136,229,.18),transparent_35%),radial-gradient(circle_at_85%_70%,rgba(22,138,90,.18),transparent_38%),linear-gradient(135deg,#f8fcff,#ffffff_55%,#f4fbf7)]">
-        <div className="absolute inset-0 pointer-events-none opacity-40 bg-[linear-gradient(rgba(6,40,74,.04)_1px,transparent_1px),linear-gradient(90deg,rgba(6,40,74,.04)_1px,transparent_1px)] bg-[size:44px_44px]" />
+      <section className="relative min-h-[760px] md:min-h-[820px] flex items-center px-5 py-24 overflow-hidden">
+        <img src={pageHeader} alt="People coming together for community service with Swastik Srijan Foundation" className="absolute inset-0 w-full h-full object-cover object-center" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(2,24,45,.92)_0%,rgba(3,38,65,.78)_42%,rgba(3,38,65,.38)_72%,rgba(3,38,65,.62)_100%)]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/35 pointer-events-none" />
         <div className="relative z-10 max-w-7xl mx-auto w-full grid lg:grid-cols-[1.15fr_.85fr] gap-14 items-center">
           <motion.div initial={{opacity:0,y:30}} animate={{opacity:1,y:0}} transition={{duration:.7}}>
-            <div className="inline-flex items-center gap-2 rounded-full bg-white/90 border border-blue-100 px-5 py-2.5 shadow-sm text-[#06284a] font-bold mb-7">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/95 border border-white/60 px-5 py-2.5 shadow-lg text-[#06284a] font-bold mb-7">
               <span className="w-2.5 h-2.5 rounded-full bg-[#168a5a]" /> SWASTIK SRIJAN FOUNDATION
             </div>
             <h1 className="text-5xl sm:text-6xl md:text-8xl font-black tracking-[-0.045em] leading-[.95] text-[#06284a]">
               कुछ लोग बदलाव की प्रतीक्षा करते हैं।
-              <span className="block text-[#168a5a] mt-4">कुछ लोग बदलाव का हिस्सा बनते हैं।</span>
+              <span className="block text-[#7ee2ad] mt-4 drop-shadow-[0_4px_18px_rgba(0,0,0,.35)]">कुछ लोग बदलाव का हिस्सा बनते हैं।</span>
             </h1>
-            <p className="mt-8 text-lg md:text-2xl leading-relaxed text-slate-600 max-w-3xl">
+            <p className="mt-8 text-lg md:text-2xl leading-relaxed text-white/90 max-w-3xl">
               2013 से — Humanity • Truth • Education • Health • Livelihood
             </p>
-            <p className="mt-4 text-base md:text-xl leading-relaxed text-slate-600 max-w-2xl">
+            <p className="mt-4 text-base md:text-xl leading-relaxed text-white/85 max-w-2xl">
               आप सिर्फ देखने वाले नहीं हैं। Swastik Srijan Foundation की इस यात्रा में आपकी भी एक जगह हो सकती है।
             </p>
             <div className="mt-9 flex flex-wrap gap-4">
@@ -68,7 +71,7 @@ export default function PremiumJoinPage() {
             </div>
           </motion.div>
           <motion.div initial={{opacity:0,scale:.96}} animate={{opacity:1,scale:1}} transition={{duration:.8,delay:.15}} className="relative">
-            <div className="rounded-[2.5rem] bg-white/80 backdrop-blur-xl border border-white shadow-2xl p-7 md:p-9">
+            <div className="rounded-[2.5rem] bg-white/95 backdrop-blur-xl border border-white/70 shadow-2xl p-7 md:p-9">
               <p className="text-sm font-extrabold uppercase tracking-[.2em] text-[#168a5a]">Your next step</p>
               <h2 className="mt-4 text-3xl md:text-4xl font-black text-[#06284a]">आपके लिए एक रास्ता है।</h2>
               <div className="mt-7 space-y-3">
