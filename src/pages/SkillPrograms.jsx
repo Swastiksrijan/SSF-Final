@@ -9,7 +9,7 @@ export default function SkillPrograms() {
 
             {/* ================= HERO ================= */}
             <PageHero
-                image="/images/real/women_empowerment_tailoring.jpg"
+                image="/images/real/community-education-meeting.jpg"
                 title="Skill & Career Programs"
                 subtitle="Bridging the gap between education and employment. Transforming youth into industry-ready professionals."
                 hindiSubtitle="कौशल और करियर कार्यक्रम - शिक्षा और रोजगार के बीच की दूरी कम करना।"
