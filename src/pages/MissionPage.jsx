@@ -9,13 +9,29 @@ export default function MissionPage() {
   return (
     <div className="w-full bg-white overflow-hidden">
       {/* ================= HERO SECTION ================= */}
-      <section className="relative w-full bg-zinc-50 pt-24 pb-12 flex justify-center min-h-[40vh]">
-        <div className="container mx-auto px-4 flex justify-center">
-          <img
-            src="/images/uploads/mission_vision.jpeg"
-            alt="Mission & Vision"
-            className="w-full h-auto max-h-[70vh] object-contain rounded-2xl shadow-xl border border-zinc-100"
-          />
+      <section className="relative min-h-[48vh] md:min-h-[62vh] w-full overflow-hidden bg-[#001529] text-white">
+        <img
+          src="/images/real/girls-study-group-mat.jpg"
+          alt="Community education and participation"
+          className="absolute inset-0 h-full w-full object-cover object-center scale-105"
+        />
+        <div className="absolute inset-0 bg-[#001529]/55"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#001529]/25 via-[#001529]/50 to-[#001529]/90"></div>
+        <div className="relative z-10 flex min-h-[48vh] md:min-h-[62vh] items-center justify-center px-5 py-20 text-center">
+          <div className="max-w-5xl">
+            <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.22em] text-[#7dd3a8]">
+              Swastik Srijan Foundation / स्थापना
+            </p>
+            <h1 className="mt-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight text-white">
+              Mission & Vision
+            </h1>
+            <p className="mx-auto mt-4 max-w-3xl text-lg md:text-2xl text-[#f1f5f9] leading-relaxed">
+              Our direction, purpose and commitment to community development.
+            </p>
+            <p className="mx-auto mt-2 max-w-3xl text-base md:text-xl text-[#d5e1ea] leading-relaxed">
+              हमारा मिशन और विज़न — शिक्षा, स्वास्थ्य, कौशल और सामुदायिक विकास की दिशा।
+            </p>
+          </div>
         </div>
       </section>
 
