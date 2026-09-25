@@ -3,7 +3,7 @@ import SkillPrograms from '../pages/SkillPrograms'
 import WorkEvidenceBanner from '../components/WorkEvidenceBanner'
 
 function SkillProgramsWithEvidence() {
-  return <><WorkEvidenceBanner page="skills" /><SkillPrograms /></>
+  return <><SkillPrograms /><WorkEvidenceBanner page="skills" /></>
 }
 
 export const Route = createFileRoute('/SkillPrograms')({
