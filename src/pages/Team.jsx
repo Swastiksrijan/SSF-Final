@@ -64,26 +64,33 @@ const SectionHeader = ({ enTitle, hiTitle, description }) => (
 export default function Team() {
   return (
     <main className="min-h-screen bg-white font-sans">
-      <section className="relative min-h-[68vh] lg:min-h-[72vh] w-full overflow-hidden bg-[#002344] text-white">
-        <div className="absolute inset-0 grid grid-cols-2 md:grid-cols-5">
-          {teamStructure.leadership.map((member) => (
-            <div key={member.name} className="relative overflow-hidden">
-              <img src={member.img} alt="" className="h-full w-full object-cover object-center scale-105" />
-            </div>
-          ))}
+      <section className="relative min-h-[68vh] lg:min-h-[72vh] w-full overflow-hidden bg-[#001529] text-white">
+        <div className="absolute inset-0 p-2 sm:p-3 lg:p-4">
+          <div className="grid h-full grid-cols-2 md:grid-cols-5 gap-1.5 sm:gap-2 lg:gap-3">
+            {teamStructure.leadership.map((member) => (
+              <div key={member.name} className="relative overflow-hidden rounded-lg lg:rounded-xl bg-[#002344]">
+                <img
+                  src={member.img}
+                  alt=""
+                  className="h-full w-full object-cover object-center opacity-75 scale-105"
+                />
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="absolute inset-0 bg-[#001a32]/70 bg-gradient-to-b from-[#001a32]/45 via-[#001a32]/70 to-[#001a32]/95"></div>
-        <div className="relative z-10 flex min-h-[68vh] lg:min-h-[72vh] items-center justify-center px-6 py-24 lg:px-8">
+        <div className="absolute inset-0 bg-[#001529]/62"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#001529]/35 via-[#001529]/55 to-[#001529]/90"></div>
+        <div className="relative z-10 flex min-h-[68vh] lg:min-h-[72vh] items-center justify-center px-5 py-24 lg:px-8">
           <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} className="max-w-4xl text-center">
-            <div className="space-y-4">
-              <p className="text-sm md:text-base font-bold uppercase tracking-[0.25em] text-[#fb8500]">Swastik Srijan Foundation</p>
-              <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-tight">Our Team</h1>
-              <p className="text-xl md:text-2xl font-bold text-white">हमारी टीम</p>
+            <div className="mx-auto inline-block rounded-2xl border border-white/15 bg-[#001529]/55 px-6 py-6 sm:px-10 sm:py-7 backdrop-blur-sm shadow-2xl">
+              <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.22em] text-[#fb8500]">Swastik Srijan Foundation</p>
+              <h1 className="mt-3 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-tight">Our Team</h1>
+              <p className="mt-2 text-lg sm:text-xl md:text-2xl font-bold text-white">हमारी टीम</p>
+              <p className="mx-auto mt-4 max-w-3xl text-sm sm:text-base md:text-lg lg:text-xl text-zinc-100 leading-relaxed font-light">
+                Meet the people who lead, guide and strengthen the mission of Swastik Srijan Foundation across India.
+              </p>
+              <div className="flex justify-center pt-5"><div className="w-16 h-1 bg-[#fb8500] rounded-full"></div></div>
             </div>
-            <p className="mx-auto mt-6 max-w-3xl text-base md:text-lg lg:text-xl text-zinc-100 leading-relaxed font-light">
-              Meet the people who lead, guide and strengthen the mission of Swastik Srijan Foundation across India.
-            </p>
-            <div className="flex justify-center pt-6"><div className="w-16 h-1 bg-[#fb8500] rounded-full"></div></div>
           </motion.div>
         </div>
       </section>
