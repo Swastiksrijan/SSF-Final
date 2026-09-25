@@ -5,15 +5,14 @@ import OptimizedImage from "../components/OptimizedImage";
 import footerImg1 from "../assets/footer-gallery-1.jpg";
 import footerImg2 from "../assets/footer-gallery-2.jpg";
 import footerImg3 from "../assets/footer-gallery-3.jpg";
-import footerImg4 from "../assets/footer-gallery-4.png";
 
 export default function AboutPage() {
   return (
     <main className="min-h-screen bg-white font-sans text-zinc-800">
       <section className="relative min-h-[48vh] md:min-h-[60vh] w-full overflow-hidden bg-[#001529] text-white">
         <div className="absolute inset-0 p-2 sm:p-3 lg:p-4">
-          <div className="grid h-full grid-cols-2 md:grid-cols-4 gap-1.5 sm:gap-2 lg:gap-3">
-            {[footerImg1, footerImg2, footerImg3, footerImg4].map((img, index) => (
+          <div className="grid h-full grid-cols-2 md:grid-cols-3 gap-1.5 sm:gap-2 lg:gap-3">
+            {[footerImg1, footerImg2, footerImg3].map((img, index) => (
               <div key={index} className="relative overflow-hidden rounded-lg lg:rounded-xl bg-[#002344]">
                 <img src={img} alt="" className="h-full w-full object-cover object-center opacity-80 scale-105" loading={index === 0 ? "eager" : "lazy"} />
               </div>
