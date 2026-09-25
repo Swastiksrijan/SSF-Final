@@ -4,6 +4,7 @@ import {
   FaGlobeAmericas
 } from "react-icons/fa";
 import { Link } from "@tanstack/react-router";
+import pageHeader from "../assets/page-header.jpg";
 
 export default function MissionPage() {
   return (
@@ -11,7 +12,7 @@ export default function MissionPage() {
       {/* ================= HERO SECTION ================= */}
       <section className="relative min-h-[48vh] md:min-h-[62vh] w-full overflow-hidden bg-[#001529] text-white">
         <img
-          src="/src/assets/page-header.jpg"
+          src={pageHeader}
           alt="Community education and participation"
           className="absolute inset-0 h-full w-full object-cover object-center scale-105"
         />
