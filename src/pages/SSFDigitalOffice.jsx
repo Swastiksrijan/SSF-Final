@@ -703,7 +703,59 @@ function MeetingResolutions({rows,add,archive}){
   {memberId:"SSF-MBR-00017",memberType:"General Member",designation:"Member",functionalResponsibility:"Volunteer Coordinator",fullName:"Rishi Kumar Pandey",occupation:"Private Employee",gender:"Male",fatherHusbandName:"Mr. Ganga Prasad",mobile:"7987707912",email:"rishisatna01@gmail.com",address:"Village-Post Kyoti",city:"Rewa",state:"Madhya Pradesh",pinCode:"486117",aadhaar:"343406596410",pan:"EZHPP3692D",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10"},
   {memberId:"SSF-MBR-00018",memberType:"General Member",designation:"Member",functionalResponsibility:"Media & Communication Coordinator",fullName:"Ritesh Kumar Tiwari",occupation:"Private Employee",gender:"Male",fatherHusbandName:"Mr. Ramchandra Tiwari",mobile:"8422819534",email:"riteshtiwari9082@gmail.com",address:"Village Jagannathpur, Sant Ravidas Nagar",city:"Bhadohi",state:"Uttar Pradesh",pinCode:"221303",aadhaar:"362732535435",pan:"AUVPT3345G",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10"}
  ];
- const seedCommitteeRecords=async()=>{if(!token||syncing)return;setSyncing(true);try{const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});if(!r.ok)throw new Error("Managing Committee records load failed.");const payload=await r.json();const existing=Array.isArray(payload)?payload:[];const existingIds=new Set(existing.map(x=>String((x.data||{}).memberId||"").trim()).filter(Boolean));let added=0;for(const member of initialCommittee){if(existingIds.has(member.memberId))continue;const data={...member,status:"Active",responsibilities:member.functionalResponsibility,referenceNo:"",resolutionNo:"",meetingDate:"",validTill:"",remarks:"Initial Managing Committee register entry",action:"Committee Member Register / Update"};const out=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({module:"managingCommittee",recordDate:member.effectiveFrom,recordType:"Committee Member",status:"active",data})});const saved=await out.json().catch(()=>({}));if(!out.ok)throw new Error(saved.message||saved.detail||"Committee record save failed.");existingIds.add(member.memberId);added++;}const fresh=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});const freshRows=await fresh.json().catch(()=>[]);window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"managingCommittee",rows:Array.isArray(freshRows)?freshRows:[]}}));setNotice(added?added+" Managing Committee member record(s) added successfully.":"Managing Committee records already present; no duplicate entries added.");}catch(e){setNotice(e.message||"Managing Committee records could not be created.");}finally{setSyncing(false);}};
+ const seedCommitteeRecords=async()=>{
+  if(!token||syncing)return;
+  setSyncing(true);
+  try{
+   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
+   if(!r.ok)throw new Error("Managing Committee records load failed.");
+   const payload=await r.json();
+   const existing=Array.isArray(payload)?payload:[];
+   let changed=0;
+   for(const member of initialCommittee){
+    const matches=existing.filter(x=>String((x.data||{}).memberId||"").trim().toUpperCase()===member.memberId.toUpperCase());
+    const base=matches.find(x=>(x.data||{}).action==="Committee Member Register / Update")||matches[0];
+    const supplied={
+      memberId:member.memberId,memberType:member.memberType,designation:member.designation,
+      functionalResponsibility:member.functionalResponsibility,fullName:member.fullName,
+      occupation:member.occupation,gender:member.gender,fatherHusbandName:member.fatherHusbandName,
+      mobile:member.mobile,email:member.email,address:member.address,city:member.city,
+      state:member.state,pinCode:member.pinCode,aadhaar:member.aadhaar,pan:member.pan,
+      joiningDate:member.joiningDate,effectiveFrom:member.effectiveFrom,appointmentDate:member.appointmentDate
+    };
+    if(base){
+      const current=base.data||{};
+      const data={...current,...supplied,
+        status:current.status||"Active",
+        responsibilities:current.responsibilities||member.functionalResponsibility,
+        action:current.action||"Committee Member Register / Update",
+        remarks:current.remarks||"Initial Managing Committee register entry"
+      };
+      const changedFields=Object.keys(supplied).some(k=>String(current[k]??"")!==String(supplied[k]??""));
+      if(changedFields){
+       const out=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+base.id,{method:"PUT",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({
+        module:"managingCommittee",recordDate:base.recordDate||member.effectiveFrom,recordType:base.recordType||"Committee Member",
+        status:base.status||"active",data
+       })});
+       const saved=await out.json().catch(()=>({}));
+       if(!out.ok)throw new Error(saved.message||saved.detail||"Committee record update failed.");
+       changed++;
+      }
+    }else{
+      const data={...supplied,status:"Active",responsibilities:member.functionalResponsibility,referenceNo:"",resolutionNo:"",meetingDate:"",validTill:"",remarks:"Initial Managing Committee register entry",action:"Committee Member Register / Update"};
+      const out=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({module:"managingCommittee",recordDate:member.effectiveFrom,recordType:"Committee Member",status:"active",data})});
+      const saved=await out.json().catch(()=>({}));
+      if(!out.ok)throw new Error(saved.message||saved.detail||"Committee record save failed.");
+      changed++;
+    }
+   }
+   const fresh=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
+   const freshRows=await fresh.json().catch(()=>[]);
+   window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"managingCommittee",rows:Array.isArray(freshRows)?freshRows:[]}}));
+   setNotice(changed?changed+" Managing Committee record(s) synced with the supplied member details.":"Managing Committee records are already complete.");
+  }catch(e){setNotice(e.message||"Managing Committee records could not be synced.");}
+  finally{setSyncing(false);}
+ };
  useEffect(()=>{if(token)seedCommitteeRecords();},[token]);
  const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
  const save=async e=>{e.preventDefault();if(saving)return;if(!f.fullName.trim()||!f.designation){setNotice("Name and designation are required.");return;}const role=f.designation==="Other / Custom"?f.customDesignation.trim():f.designation;if(!role){setNotice("Custom designation enter karein.");return;}const supplied=f.memberId.trim();if(supplied&&committeeRows.some(r=>String((r.data||{}).memberId||"").trim().toLowerCase()===supplied.toLowerCase())){setNotice("This Member ID already exists. Duplicate ID save nahi kiya gaya.");return;}const ids=committeeRows.map(r=>{const m=String((r.data||{}).memberId||"").match(/SSF-MBR-(\\d+)/i);return m?Number(m[1]):0;});const memberId=supplied||`SSF-MBR-${String(Math.max(0,...ids)+1).padStart(5,"0")}`;setSaving(true);const data={...f,designation:role,memberId,action:"Committee Member Register / Update"};delete data.customDesignation;const ok=await add("managingCommittee",{recordDate:f.effectiveFrom||new Date().toISOString().slice(0,10),recordType:"Committee Member",status:f.status.toLowerCase(),data});if(ok){setF(blank);setNotice("Committee member record saved. Future details can be added through Edit/update.");}setSaving(false);};
