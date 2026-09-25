@@ -47,6 +47,13 @@ export default function SSFDigitalOffice(){
  };
  useEffect(function(){if(token)load(active);},[active]);
  useEffect(function(){if(token&&!NO_RECORD_MODULES.has(active)){const t=setTimeout(function(){load(active);},350);return function(){clearTimeout(t);};}},[search]);
+ useEffect(function(){
+  const refreshHandler=function(e){
+   if(e.detail&&e.detail.module==="managingCommittee"&&Array.isArray(e.detail.rows))setRows(e.detail.rows);
+  };
+  window.addEventListener("ssf-digital-office-refresh",refreshHandler);
+  return function(){window.removeEventListener("ssf-digital-office-refresh",refreshHandler);};
+ },[]);
 
  const add=async function(module,data){
   try{
