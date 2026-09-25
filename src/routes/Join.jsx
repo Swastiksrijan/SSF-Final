@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import PremiumJoinPage from "../pages/PremiumJoinPage";
+import JoinFormPage from "../pages/JoinFormPage";
 
 export const Route = createFileRoute("/Join")({
-  component: PremiumJoinPage,
+  component: JoinFormPage,
 });
