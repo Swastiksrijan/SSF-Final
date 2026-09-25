@@ -4,6 +4,10 @@ import MemberForm from "../components/MemberForm";
 import VolunteerForm from "../components/VolunteerForm";
 import DonorForm from "../components/DonorForm";
 import GetInvolvedInterestForm from "../components/GetInvolvedInterestForm";
+import footerImg1 from "../assets/footer-gallery-1.jpg";
+import footerImg2 from "../assets/footer-gallery-2.jpg";
+import footerImg3 from "../assets/footer-gallery-3.jpg";
+import footerImg4 from "../assets/footer-gallery-4.png";
 
 const ROLES = [
   { id: "member", title: "MEMBER / सदस्य", text: "Swastik Srijan Foundation / स्थापना की यात्रा का हिस्सा बनना चाहता हूँ।", icon: FaUsers, color: "blue" },
@@ -43,21 +47,10 @@ export default function JoinUsPage() {
     <main className="min-h-screen bg-[#f7fafc] text-[#17202a]">
       <section className="relative min-h-[68vh] lg:min-h-[72vh] w-full overflow-hidden bg-[#001529] text-white">
         <div className="absolute inset-0 p-2 sm:p-3 lg:p-4">
-          <div className="grid h-full grid-cols-2 md:grid-cols-5 gap-1.5 sm:gap-2 lg:gap-3">
-            {[
-              "/images/uploads/footer-gallery-1.jpg",
-              "/images/classroom-session.png",
-              "/images/village-outreach.png",
-              "/images/women-learning-session.png",
-              "/images/community-meeting.jpg",
-              "/images/real/education_girls.jpg",
-              "/images/community-team-group.jpg",
-              "/images/children-unity-park.jpg",
-              "/images/health-program-masks.jpg",
-              "/images/tree-planting.jpg"
-            ].map((src, index) => (
-              <div key={src} className="relative overflow-hidden rounded-lg lg:rounded-xl bg-[#002344]">
-                <img src={src} alt="" className="h-full w-full object-cover object-center opacity-75 scale-105" loading={index > 5 ? "lazy" : "eager"} />
+          <div className="grid h-full grid-cols-2 md:grid-cols-4 gap-1.5 sm:gap-2 lg:gap-3">
+            {[footerImg1, footerImg2, footerImg3, footerImg4].map((img, index) => (
+              <div key={index} className="relative overflow-hidden rounded-lg lg:rounded-xl bg-[#002344]">
+                <img src={img} alt="" className="h-full w-full object-cover object-center opacity-75 scale-105" loading={index === 0 ? "eager" : "lazy"} />
               </div>
             ))}
           </div>
