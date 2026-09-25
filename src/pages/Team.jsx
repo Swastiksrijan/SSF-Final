@@ -64,12 +64,26 @@ const SectionHeader = ({ enTitle, hiTitle, description }) => (
 export default function Team() {
   return (
     <main className="min-h-screen bg-white font-sans">
-      <section className="relative w-full bg-gradient-to-b from-zinc-50 via-white to-white pt-16 pb-20 lg:pt-24 lg:pb-28">
-        <div className="max-w-5xl mx-auto px-6 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} className="text-center space-y-6">
-            <div className="space-y-3"><h1 className="text-4xl lg:text-5xl xl:text-6xl font-serif font-bold text-[#002344] leading-tight">Our Team</h1><p className="text-lg lg:text-xl font-bold text-[#fb8500] uppercase tracking-widest">हमारी टीम</p></div>
-            <p className="text-lg lg:text-xl text-zinc-700 leading-relaxed max-w-3xl mx-auto font-light">Meet the people who lead, guide and strengthen the mission of Swastik Srijan Foundation across India.</p>
-            <div className="flex justify-center pt-4"><div className="w-16 h-1 bg-[#fb8500] rounded-full"></div></div>
+      <section className="relative min-h-[68vh] lg:min-h-[72vh] w-full overflow-hidden bg-[#002344] text-white">
+        <div className="absolute inset-0 grid grid-cols-2 md:grid-cols-4">
+          {["/Teams_Images/image_19.jpg","/Teams_Images/image_15.jpg","/Teams_Images/divya_sharma.jpg","/Teams_Images/image_22.jpg"].map((src, index) => (
+            <div key={src} className={`relative overflow-hidden ${index === 3 ? "hidden md:block" : ""}`}>
+              <img src={src} alt="" className="h-full w-full object-cover object-center scale-105" />
+            </div>
+          ))}
+        </div>
+        <div className="absolute inset-0 bg-[#001a32]/70 bg-gradient-to-b from-[#001a32]/45 via-[#001a32]/70 to-[#001a32]/95"></div>
+        <div className="relative z-10 flex min-h-[68vh] lg:min-h-[72vh] items-center justify-center px-6 py-24 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} className="max-w-4xl text-center">
+            <div className="space-y-4">
+              <p className="text-sm md:text-base font-bold uppercase tracking-[0.25em] text-[#fb8500]">Swastik Srijan Foundation</p>
+              <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-tight">Our Team</h1>
+              <p className="text-xl md:text-2xl font-bold text-white">हमारी टीम</p>
+            </div>
+            <p className="mx-auto mt-6 max-w-3xl text-base md:text-lg lg:text-xl text-zinc-100 leading-relaxed font-light">
+              Meet the people who lead, guide and strengthen the mission of Swastik Srijan Foundation across India.
+            </p>
+            <div className="flex justify-center pt-6"><div className="w-16 h-1 bg-[#fb8500] rounded-full"></div></div>
           </motion.div>
         </div>
       </section>
