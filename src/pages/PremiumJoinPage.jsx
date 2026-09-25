@@ -3,9 +3,9 @@ import pageHeader from "../assets/page-header.jpg";
 import { FaArrowRight, FaHandsHelping, FaHeart, FaHandshake, FaUsers, FaClock, FaLightbulb, FaTools, FaNetworkWired, FaBuilding, FaGraduationCap, FaStethoscope, FaLaptopCode, FaUserTie, FaPeopleCarry, FaCheckCircle } from "react-icons/fa";
 
 const roles = [
-  { icon: FaUsers, title: "BECOME A MEMBER", text: "Swastik Srijan Foundation की दीर्घकालिक यात्रा का हिस्सा बनिए।", href: "/GetInvolved", tone: "blue" },
-  { icon: FaHandsHelping, title: "BECOME A VOLUNTEER", text: "अपना समय, ज्ञान या skill समाज के काम में लगाइए।", href: "/Volunteer", tone: "green" },
-  { icon: FaHeart, title: "BECOME A DONOR", text: "अपनी क्षमता के अनुसार किसी पहल को support कीजिए।", href: "/Donate", tone: "emerald" },
+  { icon: FaUsers, title: "BECOME A MEMBER", text: "Swastik Srijan Foundation की दीर्घकालिक यात्रा का हिस्सा बनिए।", href: "/GetInvolved#member", tone: "blue" },
+  { icon: FaHandsHelping, title: "BECOME A VOLUNTEER", text: "अपना समय, ज्ञान या skill समाज के काम में लगाइए।", href: "/GetInvolved#volunteer", tone: "green" },
+  { icon: FaHeart, title: "BECOME A DONOR", text: "अपनी क्षमता के अनुसार किसी पहल को support कीजिए।", href: "/Donor", tone: "emerald" },
   { icon: FaHandshake, title: "COLLABORATE / PARTNER", text: "School, Hospital, Company, Institution, Professional या NGO के साथ मिलकर काम कीजिए।", href: "/PartnerWithUs", tone: "blue" },
 ];
 
@@ -136,7 +136,7 @@ export default function PremiumJoinPage() {
           </div>
           <div className="mt-10 rounded-3xl bg-[#06284a] text-white p-8 md:p-10 flex flex-col md:flex-row gap-6 md:items-center md:justify-between">
             <div><h3 className="text-2xl md:text-3xl font-black">अभी तय नहीं है?</h3><p className="mt-2 text-white/70">बस शुरुआत कीजिए। आपकी रुचि के अनुसार रास्ता चुना जा सकता है।</p></div>
-            <a href="/GetInvolved" className="inline-flex items-center justify-center gap-3 rounded-2xl bg-[#168a5a] px-7 py-4 font-extrabold whitespace-nowrap">I WANT TO HELP <FaArrowRight/></a>
+            <a href="/GetInvolved#member" className="inline-flex items-center justify-center gap-3 rounded-2xl bg-[#168a5a] px-7 py-4 font-extrabold whitespace-nowrap">I WANT TO HELP <FaArrowRight/></a>
           </div>
         </div>
       </section>
@@ -183,9 +183,9 @@ export default function PremiumJoinPage() {
           <h2 className="mt-5 text-4xl md:text-6xl font-black text-[#06284a]">आप यहाँ तक आ गए हैं।</h2>
           <p className="mt-5 text-xl md:text-2xl text-slate-600">शायद आपके लिए अगला कदम सिर्फ एक छोटा सा निर्णय है।</p>
           <div className="mt-9 flex flex-wrap justify-center gap-3">
-            <a href="/GetInvolved" className="rounded-2xl bg-[#168a5a] text-white px-6 py-4 font-black">JOIN AS MEMBER</a>
-            <a href="/Volunteer" className="rounded-2xl bg-[#06284a] text-white px-6 py-4 font-black">BECOME A VOLUNTEER</a>
-            <a href="/Donate" className="rounded-2xl bg-white text-[#168a5a] border border-emerald-200 px-6 py-4 font-black">SUPPORT / DONATE</a>
+            <a href="/GetInvolved#member" className="rounded-2xl bg-[#168a5a] text-white px-6 py-4 font-black">JOIN AS MEMBER</a>
+            <a href="/GetInvolved#volunteer" className="rounded-2xl bg-[#06284a] text-white px-6 py-4 font-black">BECOME A VOLUNTEER</a>
+            <a href="/Donor" className="rounded-2xl bg-white text-[#168a5a] border border-emerald-200 px-6 py-4 font-black">SUPPORT / DONATE</a>
             <a href="/PartnerWithUs" className="rounded-2xl bg-white text-[#06284a] border border-blue-200 px-6 py-4 font-black">COLLABORATE</a>
           </div>
           <p className="mt-9 text-sm text-slate-500">Member • Volunteer • Donor • Partner</p>

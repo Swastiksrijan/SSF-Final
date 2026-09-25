@@ -21,7 +21,7 @@ export default function GetInvolvedPage() {
     ];
     const openForm = (id) => { setActiveForm(id); document.body.style.overflow = "hidden"; };
     const closeForm = () => { setActiveForm(null); document.body.style.overflow = ""; };
-    useEffect(() => { const hash = window.location.hash.replace("#", ""); if (["movement", "partner"].includes(hash)) openForm(hash); return () => { document.body.style.overflow = ""; }; }, []);
+    useEffect(() => { const hash = window.location.hash.replace("#", ""); if (["member", "volunteer", "movement", "partner"].includes(hash)) openForm(hash); return () => { document.body.style.overflow = ""; }; }, []);
     return <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
         <PageHero image={pageHeader} title="Get Involved" subtitle="Join our mission to transform lives and build a better Bharat." hindiSubtitle="राष्ट्र निर्माण के इस पावन लक्ष्य में अपना योगदान दें।" height="h-[40vh] md:h-[60vh]" overlayOpacity="bg-black/40" />
         <section className="py-24 px-6"><div className="max-w-7xl mx-auto"><div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
