@@ -3,7 +3,7 @@ import UpcomingProjects from '../pages/UpcomingProjects'
 import UpcomingEvidenceBanner from '../components/UpcomingEvidenceBanner'
 
 function UpcomingProjectsWithEvidence() {
-  return <><UpcomingEvidenceBanner /><UpcomingProjects /></>
+  return <><UpcomingProjects /><UpcomingEvidenceBanner /></>
 }
 
 export const Route = createFileRoute('/UpcomingProjects')({
