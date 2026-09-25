@@ -538,11 +538,12 @@ function SeparationManagement({rows,add}){
 
 
 function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#002344] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
-function MembersRegister({rows,add,archive,token}){
+function MembersRegister({rows,add,updateRecord,archive,token}){
+ const blank={memberId:"",memberType:"General Member",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:"",membershipStatus:"Active",remarks:""};
+ const [f,setF]=useState(blank),[editingId,setEditingId]=useState(""),[query,setQuery]=useState(""),[sortBy,setSortBy]=useState("dateDesc"),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
  const existing=(rows||[]).filter(r=>r.module==="members"&&r.status!=="deleted");
- const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
- const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""); const initialMembers=[
-  {memberId:"SSF-MBR-00001",memberType:"Founder Member",fullName:"Ramesh Pandey",fatherHusbandName:"Mr. Babu Lal Pandey",dob:"1976-06-30",gender:"Male",occupation:"Farmer & Social Worker",mobile:"9718346691",email:"rameshpandey335@gmail.com",address:"Ward 1 Dadar",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",pan:"BDHPP6053K",aadhaar:"981164434991",joiningDate:"2013-12-30",membershipStatus:"Active",membershipFee:"10000",receiptNo:"REC-2013-001"},
+ const initialMembers=[
+  {memberId:"SSF-MBR-00001",memberType:"Founder Member",fullName:"Ramesh Pandey",fatherHusbandName:"Mr. Babu Lal Pandey",gender:"Male",occupation:"Farmer & Social Worker",joiningDate:"2013-12-30",membershipStatus:"Active"},
   {memberId:"SSF-MBR-00014",memberType:"General Member",fullName:"Preeti Shukla",fatherHusbandName:"Mr. Deepak Shukla",gender:"Female",occupation:"Homemaker & Student",joiningDate:"2021-04-30",membershipStatus:"Active"},
   {memberId:"SSF-MBR-00002",memberType:"Founder Member",fullName:"Amit Kumar Pandey",fatherHusbandName:"Late. Ramji Pandey",gender:"Male",occupation:"Farmer & Business Owner",joiningDate:"2013-12-30",membershipStatus:"Active"},
   {memberId:"SSF-MBR-00003",memberType:"Founder Member",fullName:"Divya Sharma",fatherHusbandName:"Mr. Abhimanyu Pandey",gender:"Female",occupation:"Homemaker & Social Worker",joiningDate:"2013-12-30",membershipStatus:"Active"},
@@ -550,18 +551,117 @@ function MembersRegister({rows,add,archive,token}){
   {memberId:"SSF-MBR-00015",memberType:"General Member",fullName:"Sandeep Tripathi",fatherHusbandName:"Mr. Indrabhan Tripathi",gender:"Male",occupation:"Teacher & Social Worker",joiningDate:"2025-05-10",membershipStatus:"Active"},
   {memberId:"SSF-MBR-00016",memberType:"General Member",fullName:"Prameesh Singh",fatherHusbandName:"Mr. Yogendra Singh",gender:"Male",occupation:"Fitness Trainer",joiningDate:"2025-05-10",membershipStatus:"Active"},
   {memberId:"SSF-MBR-00017",memberType:"General Member",fullName:"Rishi Kumar Pandey",fatherHusbandName:"Mr. Ganga Prasad",gender:"Male",occupation:"Private Employee",joiningDate:"2025-05-10",membershipStatus:"Active"},
-  {memberId:"SSF-MBR-00018",memberType:"General Member",fullName:"Ritesh Kumar Tiwari",fatherHusbandName:"",gender:"Male",occupation:"Private Employee",joiningDate:"2025-05-10",membershipStatus:"Active"}
+  {memberId:"SSF-MBR-00018",memberType:"General Member",fullName:"Ritesh Kumar Tiwari",fatherHusbandName:"",gender:"",occupation:"Private Employee",joiningDate:"2025-05-10",membershipStatus:"Active"}
  ];
- useEffect(()=>{if(!token)return;let cancelled=false;(async()=>{try{const res=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"}});if(!res.ok)return;const current=await res.json();const ids=new Set((Array.isArray(current)?current:[]).map(r=>String((r.data||{}).memberId||"").trim().toUpperCase()).filter(Boolean));for(const m of initialMembers){if(cancelled||ids.has(m.memberId))continue;await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"},body:JSON.stringify({module:"members",recordDate:m.joiningDate,recordType:"Member Register",status:m.membershipStatus.toLowerCase(),data:{...m,action:"Member Register"}})});ids.add(m.memberId)}const finalRes=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"}});const finalRows=finalRes.ok?await finalRes.json():[];if(!cancelled)window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"members",rows:finalRows}}))}catch(e){}})();return()=>{cancelled=true}},[token]);
- const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const save=async e=>{e.preventDefault();if(saving)return;if(!f.fullName.trim()){setNotice("Full Name required.");return;}if(existing.some(r=>String((r.data||{}).fullName||"").trim().toLowerCase()===f.fullName.trim().toLowerCase()&&String((r.data||{}).joiningDate||"")===f.joiningDate)){setNotice("Same member record already exists for this joining date.");return;}setSaving(true);const ids=existing.map(r=>String((r.data||{}).memberId||"")).map(x=>{const m=x.match(/SSF-MBR-(\d+)/i);return m?Number(m[1]):0;});const memberId=f.memberId.trim()||("SSF-MBR-"+String(Math.max(0,...ids)+1).padStart(5,"0"));const ok=await add("members",{recordDate:f.joiningDate,recordType:"Member Register",status:f.membershipStatus.toLowerCase(),data:{...f,memberId,fullName:f.fullName.trim(),action:"Member Register"}});if(ok){setF({...f,memberId:"",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",membershipEndDate:"",receiptNo:"",membershipFee:"",remarks:""});setNotice("Member saved and form cleared.");}setSaving(false);};
- return <SimpleOfficeCard title="👥 Members Register" subtitle="व्यक्ति की Master Details — membership identity ko role history se alag rakha gaya hai."><div className="bg-white border rounded-2xl p-5"><form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-  <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID (auto)" className={cls}/><input value={f.membershipNo} onChange={e=>set("membershipNo",e.target.value)} placeholder="Membership No." className={cls}/><select value={f.memberType} onChange={e=>set("memberType",e.target.value)} className={cls}><option>Founder Member</option><option>संरक्षक सदस्य</option><option>आजीवन सदस्य</option><option>साधारण सदस्य</option><option>सम्माननीय सदस्य</option></select><input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full Name" required className={cls}/>
-  <input value={f.fatherHusbandName} onChange={e=>set("fatherHusbandName",e.target.value)} placeholder="Father / Husband / Guardian Name" className={cls}/><input type="date" value={f.dob} onChange={e=>set("dob",e.target.value)} title="Date of Birth" className={cls}/><select value={f.gender} onChange={e=>set("gender",e.target.value)} className={cls}><option value="">Gender</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select><input value={f.occupation} onChange={e=>set("occupation",e.target.value)} placeholder="Main Occupation / Profession" className={cls}/><input value={f.mobile} onChange={e=>set("mobile",e.target.value)} placeholder="Mobile No." className={cls}/><input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email" className={cls}/>
-  <input value={f.address} onChange={e=>set("address",e.target.value)} placeholder="Address" className={cls}/><input value={f.city} onChange={e=>set("city",e.target.value)} placeholder="City" className={cls}/><input value={f.state} onChange={e=>set("state",e.target.value)} placeholder="State" className={cls}/><input value={f.pinCode} onChange={e=>set("pinCode",e.target.value)} placeholder="PIN Code" className={cls}/><input value={f.pan} onChange={e=>set("pan",e.target.value)} placeholder="PAN (Optional)" className={cls}/><input value={f.aadhaar} onChange={e=>set("aadhaar",e.target.value)} placeholder="Aadhaar (Optional)" className={cls}/>
-  <input type="date" value={f.joiningDate} onChange={e=>set("joiningDate",e.target.value)} title="Joining / Admission Date" className={cls}/><input value={f.receiptNo} onChange={e=>set("receiptNo",e.target.value)} placeholder="Receipt No." className={cls}/><input type="date" value={f.membershipEndDate} onChange={e=>set("membershipEndDate",e.target.value)} title="Membership End Date — only if ended" className={cls}/><select value={f.membershipStatus} onChange={e=>set("membershipStatus",e.target.value)} className={cls}><option>Active</option><option>Inactive</option><option>Expired</option><option>Resigned</option><option>Removed</option></select><input value={f.membershipFee} onChange={e=>set("membershipFee",e.target.value)} placeholder="Membership Fee (₹)" className={cls}/><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/>
-  <div className="sm:col-span-2 lg:col-span-4 text-xs text-zinc-500">Active member ke liye Membership End Date blank rakhein. Membership payments alag register mein record honge.</div><button disabled={saving} className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">{saving?"Saving…":"Save Member Record"}</button></form></div>{notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
-  <div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1900px]"><thead className="bg-zinc-50"><tr>{["Member ID","Membership No.","Member Type","Full Name","Father / Husband / Guardian","DOB","Gender","Occupation","Mobile","Email","Address","City","State","PIN","PAN","Aadhaar","Joining Date","End Date","Status","Membership Fee","Receipt No.","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.map(r=>{const d=r.data||{};return <tr key={r.id}>{["memberId","membershipNo","memberType","fullName","fatherHusbandName","dob","gender","occupation","mobile","email","address","city","state","pinCode","pan","aadhaar","joiningDate","membershipEndDate","membershipStatus","membershipFee","receiptNo","remarks"].map(k=><td key={k} className="p-3">{d[k]||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="23" className="p-8 text-center text-zinc-500">No member records yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
+ useEffect(function(){
+  if(!token)return;
+  let cancelled=false;
+  (async function(){
+   try{
+    const headers={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
+    const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers});
+    if(!r.ok)throw new Error("Members Register could not be loaded.");
+    const current=await r.json();
+    const ids=new Set((Array.isArray(current)?current:[]).map(x=>String((x.data||{}).memberId||"").trim().toUpperCase()).filter(Boolean));
+    for(const m of initialMembers){
+     if(cancelled||ids.has(m.memberId.toUpperCase()))continue;
+     const pr=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers,body:JSON.stringify({module:"members",recordDate:m.joiningDate||new Date().toISOString().slice(0,10),recordType:"Member Register",status:"active",data:Object.assign({},m,{action:"Member Register"})})});
+     if(!pr.ok){const po=await pr.json().catch(()=>({}));throw new Error(po.message||"Unable to create member "+m.memberId);}
+     ids.add(m.memberId.toUpperCase());
+    }
+    const fr=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers});
+    const finalRows=fr.ok?await fr.json():[];
+    if(!cancelled)window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"members",rows:Array.isArray(finalRows)?finalRows:[]}}));
+   }catch(e){if(!cancelled)setNotice(e.message||"Members Register seed failed.");}
+  })();
+  return function(){cancelled=true;};
+ },[token]);
+
+ const set=function(k,v){setF(function(x){return Object.assign({},x,{[k]:v});});};
+ const reset=function(){setF(blank);setEditingId("");};
+ const editRecord=function(r){
+  const d=r.data||{};
+  setF(Object.assign({},blank,d,{memberId:d.memberId||""}));
+  setEditingId(r.id);
+  window.scrollTo({top:0,behavior:"smooth"});
+ };
+ const nextMemberId=function(){
+  const nums=existing.map(r=>Number(String((r.data||{}).memberId||"").replace(/^SSF-MBR-/i,""))).filter(Number.isFinite);
+  return "SSF-MBR-"+String((nums.length?Math.max.apply(null,nums):0)+1).padStart(5,"0");
+ };
+ const save=async function(e){
+  e.preventDefault();
+  if(!f.fullName.trim()){setNotice("Full Name is required.");return;}
+  setSaving(true);setNotice("");
+  const memberId=f.memberId.trim()||nextMemberId();
+  const duplicate=existing.find(r=>String((r.data||{}).memberId||"").trim().toUpperCase()===memberId.toUpperCase()&&r.id!==editingId);
+  if(duplicate){setNotice("This Member ID already exists. Duplicate IDs are not allowed.");setSaving(false);return;}
+  const data=Object.assign({},f,{memberId,fullName:f.fullName.trim(),action:"Member Register"});
+  const ok=editingId?await updateRecord(editingId,"members",data):await add("members",{recordDate:f.joiningDate||new Date().toISOString().slice(0,10),recordType:"Member Register",status:"active",data});
+  if(ok)reset();
+  setSaving(false);
+ };
+ const visible=existing.filter(function(r){
+  const d=r.data||{},q=query.trim().toLowerCase();
+  if(!q)return true;
+  return [d.memberId,d.fullName,d.mobile,d.email,d.city,d.state,d.occupation].some(v=>String(v||"").toLowerCase().includes(q));
+ }).sort(function(a,b){
+  const da=a.data||{},db=b.data||{};
+  if(sortBy==="nameAsc")return String(da.fullName||"").localeCompare(String(db.fullName||""));
+  if(sortBy==="idAsc")return String(da.memberId||"").localeCompare(String(db.memberId||""),undefined,{numeric:true});
+  if(sortBy==="occupationAsc")return String(da.occupation||"").localeCompare(String(db.occupation||""));
+  const ad=new Date(da.joiningDate||a.recordDate||0).getTime(),bd=new Date(db.joiningDate||b.recordDate||0).getTime();
+  return sortBy==="dateAsc"?ad-bd:bd-ad;
+ });
+ return <div className="space-y-5">
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 border-b">
+    <h2 className="text-2xl font-black text-[#002344]">👥 Members Register</h2>
+    <p className="text-sm text-zinc-500 mt-1">व्यक्ति की Master Details — membership identity ko role history se alag rakha gaya hai.</p>
+    <p className="text-xs text-zinc-400 mt-2">Member ID is the permanent person-level identifier. Membership fees, receipts and contribution transactions are maintained separately.</p>
+   </div>
+   {notice&&<div className="mx-5 mt-5 bg-amber-50 border border-amber-200 text-amber-900 rounded-xl px-4 py-3 font-semibold">{notice}</div>}
+   <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <label><span className="field-label">Member ID</span><input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Auto-generated if blank" className={cls}/></label>
+    <label><span className="field-label">Member Type</span><select value={f.memberType} onChange={e=>set("memberType",e.target.value)} className={cls}><option>Founder Member</option><option>General Member</option><option>संरक्षक सदस्य</option><option>आजीवन सदस्य</option><option>साधारण सदस्य</option><option>सम्माननीय सदस्य</option></select></label>
+    <label><span className="field-label">Full Name</span><input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full name" required className={cls}/></label>
+    <label><span className="field-label">Father / Husband Name</span><input value={f.fatherHusbandName} onChange={e=>set("fatherHusbandName",e.target.value)} placeholder="Father / Husband name" className={cls}/></label>
+    <label><span className="field-label">Date of Birth</span><input type="date" value={f.dob} onChange={e=>set("dob",e.target.value)} className={cls}/></label>
+    <label><span className="field-label">Gender</span><select value={f.gender} onChange={e=>set("gender",e.target.value)} className={cls}><option value="">Select gender</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select></label>
+    <label><span className="field-label">Occupation / Profession</span><input value={f.occupation} onChange={e=>set("occupation",e.target.value)} placeholder="Occupation / profession" className={cls}/></label>
+    <label><span className="field-label">Mobile No.</span><input value={f.mobile} onChange={e=>set("mobile",e.target.value)} placeholder="Mobile number" className={cls}/></label>
+    <label><span className="field-label">Email</span><input type="email" value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email address" className={cls}/></label>
+    <label className="sm:col-span-2"><span className="field-label">Address</span><input value={f.address} onChange={e=>set("address",e.target.value)} placeholder="Full address" className={cls}/></label>
+    <label><span className="field-label">City</span><input value={f.city} onChange={e=>set("city",e.target.value)} placeholder="City" className={cls}/></label>
+    <label><span className="field-label">State</span><input value={f.state} onChange={e=>set("state",e.target.value)} placeholder="State" className={cls}/></label>
+    <label><span className="field-label">PIN Code</span><input value={f.pinCode} onChange={e=>set("pinCode",e.target.value)} placeholder="PIN code" className={cls}/></label>
+    <label><span className="field-label">PAN <span className="font-normal">(Optional)</span></span><input value={f.pan} onChange={e=>set("pan",e.target.value)} placeholder="Optional" className={cls}/></label>
+    <label><span className="field-label">Aadhaar <span className="font-normal">(Optional)</span></span><input value={f.aadhaar} onChange={e=>set("aadhaar",e.target.value)} placeholder="Optional" className={cls}/></label>
+    <label><span className="field-label">Joining / Admission Date</span><input type="date" value={f.joiningDate} onChange={e=>set("joiningDate",e.target.value)} className={cls}/></label>
+    <label><span className="field-label">Membership Status</span><select value={f.membershipStatus} onChange={e=>set("membershipStatus",e.target.value)} className={cls}><option>Active</option><option>Inactive</option><option>Ended</option><option>Resigned</option><option>Removed</option></select></label>
+    <label className="sm:col-span-2 lg:col-span-4"><span className="field-label">Remarks</span><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="General member master-data remarks" className={cls+" min-h-[80px] resize-y"}/></label>
+    <div className="sm:col-span-2 lg:col-span-4 flex gap-2">
+     <button type="submit" disabled={saving} className="flex-1 bg-[#002344] text-white py-3 rounded-xl font-bold disabled:opacity-50">{saving?(editingId?"Updating…":"Saving…"):(editingId?"Update Member":"Save Member Record")}</button>
+     {editingId&&<button type="button" onClick={reset} className="px-6 py-3 rounded-xl border border-zinc-300 font-bold">Cancel Edit</button>}
+    </div>
+   </form>
+  </div>
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 border-b flex flex-col lg:flex-row gap-3">
+    <div className="relative flex-1"><FaSearch className="absolute left-3 top-3.5 text-zinc-400"/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search by Member ID, Name, Mobile, Email or City" className={cls+" pl-10"}/></div>
+    <select value={sortBy} onChange={e=>setSortBy(e.target.value)} className={cls+" lg:w-56"}><option value="dateDesc">Latest Joining First</option><option value="dateAsc">Oldest Joining First</option><option value="nameAsc">Name A–Z</option><option value="idAsc">Member ID</option><option value="occupationAsc">Occupation A–Z</option></select>
+   </div>
+   <div className="overflow-auto"><table className="w-full text-sm min-w-[1900px]"><thead className="bg-zinc-50"><tr>
+    {["Sr. No.","Member ID","Member Type","Full Name","Father / Husband Name","Gender","Occupation / Profession","Mobile","Email","City","State","PIN","Joining Date","Membership Status","Remarks","Action"].map(h=><th key={h} className="p-3 text-left whitespace-nowrap">{h}</th>)}
+   </tr></thead><tbody className="divide-y">
+    {visible.map(function(r,i){const d=r.data||{};return <tr key={r.id}>
+     <td className="p-3 font-bold">{i+1}</td><td className="p-3 font-bold">{d.memberId||"—"}</td><td className="p-3">{d.memberType||"—"}</td><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.fatherHusbandName||"—"}</td><td className="p-3">{d.gender||"—"}</td><td className="p-3">{d.occupation||"—"}</td><td className="p-3">{d.mobile||"—"}</td><td className="p-3">{d.email||"—"}</td><td className="p-3">{d.city||"—"}</td><td className="p-3">{d.state||"—"}</td><td className="p-3">{d.pinCode||"—"}</td><td className="p-3">{d.joiningDate||"—"}</td><td className="p-3">{d.membershipStatus||r.status||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
+     <td className="p-3 whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 mr-2">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
+    </tr>})}
+    {!visible.length&&<tr><td colSpan="16" className="p-8 text-center text-zinc-500">{query?"No matching members found.":"No member records yet."}</td></tr>}
+   </tbody></table></div>
+  </div>
+ </div>;
 }
 
 function InstitutionalHistory({rows,add,updateRecord,archive}){
