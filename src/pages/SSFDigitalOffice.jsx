@@ -689,222 +689,40 @@ function MeetingResolutions({rows,add,archive}){
  return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="General Body, Managing Committee और Special Meetings — agenda, attendance, minutes/decision और supporting record."><div className="bg-white border rounded-2xl p-5"><form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"><input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls}/><select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} className={cls}><option>General Body Meeting</option><option>Managing Committee Meeting</option><option>Special Meeting</option><option>Emergency Meeting</option><option>Other</option></select><input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title" required className={cls}/><input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/><textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda" className={cls}/><textarea value={f.attendance} onChange={e=>set("attendance",e.target.value)} placeholder="Attendance / Members Present" className={cls}/><textarea value={f.decision} onChange={e=>set("decision",e.target.value)} placeholder="Decision / Resolution Text" className={cls}/><textarea value={f.details} onChange={e=>set("details",e.target.value)} placeholder="Minutes / Detailed Notes" className={cls}/><input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/><button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save Meeting / Resolution</button></form></div>{notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}<div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1300px]"><thead className="bg-zinc-50"><tr>{["Meeting Date","Type","Meeting Title","Resolution No.","Agenda","Attendance","Decision","Minutes / Notes","Supporting Document","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,d.meetingType||r.recordType,d.meetingTitle,d.resolutionNo,d.agenda,d.attendance,d.decision,d.details,d.supportingDocument,d.remarks].map((v,i)=><td key={i} className="p-3">{v||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="11" className="p-8 text-center text-zinc-500">No meeting/resolution records yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
 }
 function ManagingCommittee({rows,add,archive,token}){
- const [f,setF]=useState({
-  memberId:"",memberType:"साधारण सदस्य",designation:"Member",customDesignation:"",
-  membershipNo:"",fullName:"",fatherHusbandName:"",dob:"",occupation:"",gender:"",
-  mobile:"",email:"",address:"",city:"",state:"",pinCode:"",aadhaar:"",pan:"",
-  joiningDate:new Date().toISOString().slice(0,10),receiptNo:"",membershipValidTill:"",
-  membershipStatus:"Active",membershipFee:"",functionalResponsibility:"",
-  status:"Active",effectiveFrom:new Date().toISOString().slice(0,10),validTill:"",
-  appointmentDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",
-  responsibilities:"",remarks:""
- });
- const [notice,setNotice]=useState("");
-  const [saving,setSaving]=useState(false);
+ const blank={memberId:"",memberType:"General Member",designation:"Member",customDesignation:"",fullName:"",fatherHusbandName:"",dob:"",occupation:"",gender:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",aadhaar:"",pan:"",joiningDate:"",functionalResponsibility:"",status:"Active",effectiveFrom:"",validTill:"",appointmentDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",responsibilities:"",remarks:""};
+ const [f,setF]=useState(blank),[notice,setNotice]=useState(""),[saving,setSaving]=useState(false),[syncing,setSyncing]=useState(false);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Member"];
- const committeeRows=(rows||[]).filter(r=>r.module==="managingCommittee" && r.status!=="deleted");
- const [syncing,setSyncing]=useState(false);
+ const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Executive Committee Member","Member","Other / Custom"];
+ const committeeRows=(rows||[]).filter(r=>r.module==="managingCommittee"&&r.status!=="deleted");
  const initialCommittee=[
-  {memberId:"SSF-MBR-00001",memberType:"Founder Member",fullName:"Ramesh Pandey",designation:"President",functionalResponsibility:"Chief Executive & External Relations",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30",membershipStatus:"Active",status:"Active"},
-  {memberId:"SSF-MBR-00014",memberType:"General Member",fullName:"Preeti Shukla",designation:"Vice President",functionalResponsibility:"Project Planning & Monitoring",joiningDate:"2021-04-30",effectiveFrom:"2021-04-30",appointmentDate:"2021-04-30",membershipStatus:"Active",status:"Active"},
-  {memberId:"SSF-MBR-00002",memberType:"Founder Member",fullName:"Amit Kumar Pandey",designation:"Secretary",functionalResponsibility:"Administration & Legal Compliance",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30",membershipStatus:"Active",status:"Active"},
-  {memberId:"SSF-MBR-00003",memberType:"Founder Member",fullName:"Divya Sharma",designation:"Treasurer",functionalResponsibility:"Finance & Accounts In-charge",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30",membershipStatus:"Active",status:"Active"},
-  {memberId:"SSF-MBR-00004",memberType:"Founder Member",fullName:"Kiran Pandey",designation:"Joint Secretary",functionalResponsibility:"IT, MIS & Digital Records",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30",membershipStatus:"Active",status:"Active"},
-  {memberId:"SSF-MBR-00015",memberType:"General Member",fullName:"Sandeep Tripathi",designation:"Executive Committee Member",functionalResponsibility:"Documentation Head (Admin In-charge)",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10",membershipStatus:"Active",status:"Active"},
-  {memberId:"SSF-MBR-00016",memberType:"General Member",fullName:"Prameesh Singh",designation:"Member",functionalResponsibility:"Field Coordinator",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10",membershipValidTill:"2026-03-31",membershipStatus:"Active",status:"Active"},
-  {memberId:"SSF-MBR-00017",memberType:"General Member",fullName:"Rishi Kumar Pandey",designation:"Member",functionalResponsibility:"Volunteer Coordinator",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10",membershipValidTill:"2026-03-31",membershipStatus:"Active",status:"Active"},
-  {memberId:"SSF-MBR-00018",memberType:"General Member",fullName:"Ritesh Kumar Tiwari",designation:"Member",functionalResponsibility:"Media & Communication Coordinator",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10",membershipValidTill:"2026-03-31",membershipStatus:"Active",status:"Active"}
+  {memberId:"SSF-MBR-00001",memberType:"Founder Member",designation:"President",functionalResponsibility:"Chief Executive & External Relations",fullName:"Ramesh Pandey",occupation:"Farmer & Social Worker",gender:"Male",fatherHusbandName:"Mr. Babu Lal Pandey",mobile:"9718346691",email:"rameshpandey335@gmail.com",address:"Ward 1, Village Dadar, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",aadhaar:"981164434991",pan:"BDHPP6053K",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00014",memberType:"General Member",designation:"Vice President",functionalResponsibility:"Project Planning & Monitoring",fullName:"Preeti Shukla",occupation:"Homemaker & Student",gender:"Female",fatherHusbandName:"Mr. Deepak Shukla",mobile:"8085897964",email:"preetipandeydadar@gmail.com",address:"134/7, Gram Maidani, Shiva ji Nagar",city:"Rewa",state:"Madhya Pradesh",pinCode:"486001",aadhaar:"782500521163",pan:"ELVPP0526G",joiningDate:"2021-04-30",effectiveFrom:"2021-04-30",appointmentDate:"2021-04-30"},
+  {memberId:"SSF-MBR-00002",memberType:"Founder Member",designation:"Secretary",functionalResponsibility:"Administration & Legal Compliance",fullName:"Amit Kumar Pandey",occupation:"Farmer & Business Owner",gender:"Male",fatherHusbandName:"Late. Ramji Pandey",mobile:"9009255202",email:"amitp203@gmail.com",address:"Village Dadar, Bankuiya road, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",aadhaar:"254933650240",pan:"AWJPP7678Q",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00003",memberType:"Founder Member",designation:"Treasurer",functionalResponsibility:"Finance & Accounts In-charge",fullName:"Divya Sharma",occupation:"Homemaker & Social Worker",gender:"Female",fatherHusbandName:"Mr. Abhimanyu Pandey",mobile:"9827263231",email:"divsharma067@gmail.com",address:"Village Dadar, Bankuiya road, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",aadhaar:"847779690547",pan:"CXVPS7861P",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00004",memberType:"Founder Member",designation:"Joint Secretary",functionalResponsibility:"IT, MIS & Digital Records",fullName:"Kiran Pandey",occupation:"Homemaker & Social Worker",gender:"Female",fatherHusbandName:"Mr. SriRam Pandey",mobile:"9993495877",email:"kiranpandey1729@gmail.com",address:"26/282, Ambedkar Nagar, Pokhri tola",city:"Rewa",state:"Madhya Pradesh",pinCode:"486005",aadhaar:"226523721653",pan:"CSVPP1024L",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00015",memberType:"General Member",designation:"Executive Committee Member",functionalResponsibility:"Documentation Head (Admin In-charge)",fullName:"Sandeep Tripathi",occupation:"Teacher & Social Worker",gender:"Male",fatherHusbandName:"Mr. Indrabhan Tripathi",mobile:"7697851754",email:"tri.sandeep22@gmail.com",address:"Village Balha, Post Nayagaon",city:"Satna",state:"Madhya Pradesh",pinCode:"485221",aadhaar:"207987862530",pan:"BHUPT9347P",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10"},
+  {memberId:"SSF-MBR-00016",memberType:"General Member",designation:"Member",functionalResponsibility:"Field Coordinator",fullName:"Prameesh Singh",occupation:"Fitness Trainer",gender:"Male",fatherHusbandName:"Mr. Yogendra Singh",mobile:"9144796001",email:"prameeshs321@gmail.com",address:"Village Khaira, Khaira",city:"Rewa",state:"Madhya Pradesh",pinCode:"486441",aadhaar:"515405012638",pan:"LCOPS6802F",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10"},
+  {memberId:"SSF-MBR-00017",memberType:"General Member",designation:"Member",functionalResponsibility:"Volunteer Coordinator",fullName:"Rishi Kumar Pandey",occupation:"Private Employee",gender:"Male",fatherHusbandName:"Mr. Ganga Prasad",mobile:"7987707912",email:"rishisatna01@gmail.com",address:"Village-Post Kyoti",city:"Rewa",state:"Madhya Pradesh",pinCode:"486117",aadhaar:"343406596410",pan:"EZHPP3692D",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10"},
+  {memberId:"SSF-MBR-00018",memberType:"General Member",designation:"Member",functionalResponsibility:"Media & Communication Coordinator",fullName:"Ritesh Kumar Tiwari",occupation:"Private Employee",gender:"Male",fatherHusbandName:"Mr. Ramchandra Tiwari",mobile:"8422819534",email:"riteshtiwari9082@gmail.com",address:"Village Jagannathpur, Sant Ravidas Nagar",city:"Bhadohi",state:"Uttar Pradesh",pinCode:"221303",aadhaar:"362732535435",pan:"AUVPT3345G",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10"}
  ];
- const seedCommitteeRecords=async()=>{
-  if(!token||syncing)return;
-  setSyncing(true);
-  try{
-   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
-   if(!r.ok)throw new Error("Managing Committee records load failed.");
-   const payload=await r.json();
-   const existing=Array.isArray(payload)?payload:(Array.isArray(payload.records)?payload.records:[]);
-   const existingIds=new Set(existing.map(x=>String((x.data||{}).memberId||x.memberId||"").trim()).filter(Boolean));
-   let added=0;
-   for(const member of initialCommittee){
-    if(existingIds.has(member.memberId))continue;
-    const data={
-     ...member,
-     responsibilities:member.functionalResponsibility,
-     referenceNo:"",
-     resolutionNo:"",
-     meetingDate:"",
-     validTill:"",
-     remarks:"Initial Managing Committee register entry",
-     action:"Committee Member Register / Update"
-    };
-    const out=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{
-     method:"POST",
-     headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
-     body:JSON.stringify({module:"managingCommittee",recordDate:member.effectiveFrom,recordType:"Committee Member",status:"active",data})
-    });
-    const saved=await out.json().catch(()=>({}));
-    if(!out.ok)throw new Error(saved.message||saved.detail||"Committee record save failed.");
-    existingIds.add(member.memberId);
-    added++;
-   }
-   const fresh=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
-   const freshPayload=await fresh.json().catch(()=>[]);
-   const freshRows=Array.isArray(freshPayload)?freshPayload:[];
-   window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"managingCommittee",rows:freshRows}}));
-   setNotice(added?added+" Managing Committee member record(s) added successfully.":"Managing Committee records already present; no duplicate entries added.");
-  }catch(e){setNotice(e.message||"Managing Committee records could not be created.");}
-  finally{setSyncing(false);}
- };
- useEffect(()=>{if(token)seedCommitteeRecords();},[token]); const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
- const save=async e=>{
-   if(saving)return;
-  e.preventDefault();
-  if(!f.fullName.trim()||!f.designation){setNotice("Name and designation are required.");return;}
-  const role=f.designation==="Other / Custom"?f.customDesignation.trim():f.designation;
-   const duplicate=committeeRows.some(r=>{const d=r.data||{};return String(d.fullName||"").trim().toLowerCase()===f.fullName.trim().toLowerCase() && String(d.designation||"").trim()===role && String(d.effectiveFrom||"")===f.effectiveFrom && String(d.membershipNo||"").trim()===f.membershipNo.trim() && String(d.referenceNo||"").trim()===f.referenceNo.trim() && String(d.resolutionNo||"").trim()===f.resolutionNo.trim();});
-   if(duplicate){setNotice("Same committee record already exists. Duplicate record save nahi kiya gaya.");return;}
-  if(!role){setNotice("Custom designation enter karein.");return;}
-  const suppliedMemberId=f.memberId.trim();
-   if(suppliedMemberId && committeeRows.some(r=>String((r.data||{}).memberId||"").trim().toLowerCase()===suppliedMemberId.toLowerCase())){setNotice("This Member ID already exists in Managing Committee. Duplicate ID save nahi kiya gaya.");return;}
-   const existingIds=committeeRows.map(r=>String((r.data||{}).memberId||"")).map(x=>{const m=x.match(/SSF-MBR-(\\d+)/i);return m?Number(m[1]):0;});
-   const nextMemberId=`SSF-MBR-${String(Math.max(0,...existingIds)+1).padStart(5,"0")}`;
-   const memberId=suppliedMemberId||nextMemberId;
-   setSaving(true);
-  const recordDate=f.effectiveFrom||new Date().toISOString().slice(0,10);
-  const memberRecord={
-   fullName:f.fullName.trim(),memberId,
-   memberType:f.memberType,membershipNo:f.membershipNo.trim(),
-   fatherHusbandName:f.fatherHusbandName.trim(),dob:f.dob,occupation:f.occupation.trim(),gender:f.gender,
-   mobile:f.mobile.trim(),email:f.email.trim(),address:f.address.trim(),city:f.city.trim(),
-   state:f.state.trim(),pinCode:f.pinCode.trim(),aadhaar:f.aadhaar.trim(),pan:f.pan.trim(),
-   joiningDate:f.joiningDate,receiptNo:f.receiptNo.trim(),membershipValidTill:f.membershipValidTill,
-   membershipStatus:f.membershipStatus,membershipFee:f.membershipFee,
-   designation:role,functionalResponsibility:f.functionalResponsibility.trim(),
-   status:f.status,effectiveFrom:f.effectiveFrom,validTill:f.validTill,
-   appointmentDate:f.appointmentDate,
-   referenceNo:f.referenceNo,resolutionNo:f.resolutionNo,meetingDate:f.meetingDate,
-   responsibilities:f.responsibilities,remarks:f.remarks,
-   action:"Committee Member Register / Update"
-  };
-  const ok=await add("managingCommittee",{recordDate,recordType:"Committee Member",status:f.status.toLowerCase(),data:memberRecord});
-   if(!ok){setSaving(false);return;}
-   setF({memberId:"",memberType:"साधारण सदस्य",designation:"Member",customDesignation:"",membershipNo:"",fullName:"",fatherHusbandName:"",dob:"",occupation:"",gender:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",aadhaar:"",pan:"",joiningDate:new Date().toISOString().slice(0,10),receiptNo:"",membershipValidTill:"",membershipStatus:"Active",membershipFee:"",functionalResponsibility:"",status:"Active",effectiveFrom:new Date().toISOString().slice(0,10),validTill:"",appointmentDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",responsibilities:"",remarks:""});
-   setNotice("Record saved and form cleared. Historical record delete nahi hota.");
-   setSaving(false);
- };
- const actionOrder=async action=>{
-  if(!f.fullName.trim()){setNotice("Pehle member select/enter karein.");return;}
-  const recordDate=f.effectiveFrom||new Date().toISOString().slice(0,10);
-  const actionStatus=(action==="Resignation"||action==="Removal / Membership Cancellation"||action==="Replacement / Relieving")?"revoked":"active";
-  await add("managingCommittee",{recordDate,recordType:action,status:actionStatus,data:{
-   fullName:f.fullName.trim(),memberId:f.memberId.trim(),memberType:f.memberType,
-   membershipNo:f.membershipNo.trim(),designation:f.designation==="Other / Custom"?f.customDesignation:f.designation,
-   action,effectiveFrom:f.effectiveFrom,resolutionNo:f.resolutionNo,meetingDate:f.meetingDate,
-   referenceNo:f.referenceNo,remarks:f.remarks
-  }});
-  setNotice(action+" recorded with history preserved.");
- };
+ const seedCommitteeRecords=async()=>{if(!token||syncing)return;setSyncing(true);try{const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});if(!r.ok)throw new Error("Managing Committee records load failed.");const payload=await r.json();const existing=Array.isArray(payload)?payload:[];const existingIds=new Set(existing.map(x=>String((x.data||{}).memberId||"").trim()).filter(Boolean));let added=0;for(const member of initialCommittee){if(existingIds.has(member.memberId))continue;const data={...member,status:"Active",responsibilities:member.functionalResponsibility,referenceNo:"",resolutionNo:"",meetingDate:"",validTill:"",remarks:"Initial Managing Committee register entry",action:"Committee Member Register / Update"};const out=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},body:JSON.stringify({module:"managingCommittee",recordDate:member.effectiveFrom,recordType:"Committee Member",status:"active",data})});const saved=await out.json().catch(()=>({}));if(!out.ok)throw new Error(saved.message||saved.detail||"Committee record save failed.");existingIds.add(member.memberId);added++;}const fresh=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});const freshRows=await fresh.json().catch(()=>[]);window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"managingCommittee",rows:Array.isArray(freshRows)?freshRows:[]}}));setNotice(added?added+" Managing Committee member record(s) added successfully.":"Managing Committee records already present; no duplicate entries added.");}catch(e){setNotice(e.message||"Managing Committee records could not be created.");}finally{setSyncing(false);}};
+ useEffect(()=>{if(token)seedCommitteeRecords();},[token]);
+ const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
+ const save=async e=>{e.preventDefault();if(saving)return;if(!f.fullName.trim()||!f.designation){setNotice("Name and designation are required.");return;}const role=f.designation==="Other / Custom"?f.customDesignation.trim():f.designation;if(!role){setNotice("Custom designation enter karein.");return;}const supplied=f.memberId.trim();if(supplied&&committeeRows.some(r=>String((r.data||{}).memberId||"").trim().toLowerCase()===supplied.toLowerCase())){setNotice("This Member ID already exists. Duplicate ID save nahi kiya gaya.");return;}const ids=committeeRows.map(r=>{const m=String((r.data||{}).memberId||"").match(/SSF-MBR-(\\d+)/i);return m?Number(m[1]):0;});const memberId=supplied||`SSF-MBR-${String(Math.max(0,...ids)+1).padStart(5,"0")}`;setSaving(true);const data={...f,designation:role,memberId,action:"Committee Member Register / Update"};delete data.customDesignation;const ok=await add("managingCommittee",{recordDate:f.effectiveFrom||new Date().toISOString().slice(0,10),recordType:"Committee Member",status:f.status.toLowerCase(),data});if(ok){setF(blank);setNotice("Committee member record saved. Future details can be added through Edit/update.");}setSaving(false);};
+ const actionOrder=async action=>{if(!f.fullName.trim()||!f.memberId.trim()){setNotice("Member ID and name required.");return;}const status=["Resignation","Removal / Membership Cancellation","Replacement / Relieving"].includes(action)?"revoked":"active";await add("managingCommittee",{recordDate:f.effectiveFrom||new Date().toISOString().slice(0,10),recordType:action,status,data:{memberId:f.memberId.trim(),fullName:f.fullName.trim(),memberType:f.memberType,designation:f.designation==="Other / Custom"?f.customDesignation:f.designation,action,effectiveFrom:f.effectiveFrom,resolutionNo:f.resolutionNo,meetingDate:f.meetingDate,referenceNo:f.referenceNo,remarks:f.remarks}});setNotice(action+" recorded with history preserved.");};
  return <div className="space-y-5">
-  <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="bg-[#002344] text-white p-6">
-    <div className="flex items-center gap-3"><FaUserTie className="text-2xl"/>
-     <div><h2 className="text-2xl font-black">प्रबंधकारिणी समिति (Managing Committee)</h2>
-      <p className="text-white/70 mt-1">Committee register, designation, term, role history, changes and governance references — without deleting historical records.</p>
-     </div>
-    </div>
-   </div>
-   <div className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-zinc-50">
-    <div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">Total Records</div><div className="text-2xl font-black text-[#002344] mt-1">{committeeRows.length}</div></div>
-    <div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">Active</div><div className="text-2xl font-black text-emerald-700 mt-1">{committeeRows.filter(r=>String(r.status).toLowerCase()==="active").length}</div></div>
-    <div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">Role Changes / Actions</div><div className="text-2xl font-black text-[#002344] mt-1">{committeeRows.filter(r=>(r.data||{}).action && (r.data||{}).action!=="Committee Member Register / Update").length}</div></div>
-    <div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">History</div><div className="text-2xl font-black text-[#002344] mt-1">Preserved</div></div>
-   </div>
-  </div>
-
+  <div className="bg-white border rounded-2xl overflow-hidden"><div className="bg-[#002344] text-white p-6"><div className="flex items-center gap-3"><FaUserTie className="text-2xl"/><div><h2 className="text-2xl font-black">प्रबंधकारिणी समिति (Managing Committee)</h2><p className="text-white/70 mt-1">Committee register, designation, term, role history, changes and governance references — without deleting historical records.</p></div></div></div><div className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-zinc-50"><div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">Total Records</div><div className="text-2xl font-black text-[#002344] mt-1">{committeeRows.length}</div></div><div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">Active</div><div className="text-2xl font-black text-emerald-700 mt-1">{committeeRows.filter(r=>String(r.status).toLowerCase()==="active").length}</div></div><div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">Role Changes / Actions</div><div className="text-2xl font-black text-[#002344] mt-1">{committeeRows.filter(r=>(r.data||{}).action&&(r.data||{}).action!=="Committee Member Register / Update").length}</div></div><div className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">History</div><div className="text-2xl font-black text-[#002344] mt-1">Preserved</div></div></div></div>
   {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
-
-  <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Committee Member Profile / Register</h3><p className="text-sm text-zinc-500 mt-1">Existing Members module ko disturb kiye bina governance-specific record yahan maintain hoga.</p></div>
+  <div className="bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Committee Member Profile / Register</h3><p className="text-sm text-zinc-500 mt-1">Governance profile only. Membership fees, receipts and membership validity are maintained in Membership & Contribution Register.</p></div>
    <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID (auto if blank)" className={cls}/>
-    <select value={f.memberType} onChange={e=>set("memberType",e.target.value)} className={cls}><option>Founder Member</option><option>संरक्षक सदस्य</option><option>आजीवन सदस्य</option><option>साधारण सदस्य</option><option>सम्माननीय सदस्य</option></select>
-    <select value={f.designation} onChange={e=>set("designation",e.target.value)} className={cls}>{designations.map(x=><option key={x}>{x}</option>)}</select>
-    {f.designation==="Other / Custom"&&<input value={f.customDesignation} onChange={e=>set("customDesignation",e.target.value)} placeholder="Custom Designation" required className={cls}/>}
-    <input value={f.functionalResponsibility} onChange={e=>set("functionalResponsibility",e.target.value)} placeholder="Functional Responsibility" className={cls}/>
-    <input value={f.membershipNo} onChange={e=>set("membershipNo",e.target.value)} placeholder="Membership No." className={cls}/>
-    <input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full Name" required className={cls}/>
-    <input value={f.occupation} onChange={e=>set("occupation",e.target.value)} placeholder="Occupation / Profession" className={cls}/>
-    <select value={f.gender} onChange={e=>set("gender",e.target.value)} className={cls}><option value="">Gender</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select>
-    <input value={f.fatherHusbandName} onChange={e=>set("fatherHusbandName",e.target.value)} placeholder="Father / Husband Name" className={cls}/>
-    <input type="date" value={f.dob} onChange={e=>set("dob",e.target.value)} title="Date of Birth" className={cls}/>
-    <input value={f.mobile} onChange={e=>set("mobile",e.target.value)} placeholder="Mobile No." className={cls}/>
-    <input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email" className={cls}/>
-    <input value={f.address} onChange={e=>set("address",e.target.value)} placeholder="Address" className={cls}/>
-    <input value={f.city} onChange={e=>set("city",e.target.value)} placeholder="City" className={cls}/>
-    <input value={f.state} onChange={e=>set("state",e.target.value)} placeholder="State" className={cls}/>
-    <input value={f.pinCode} onChange={e=>set("pinCode",e.target.value)} placeholder="PIN Code" className={cls}/>
-    <input value={f.aadhaar} onChange={e=>set("aadhaar",e.target.value)} placeholder="Aadhaar (Optional)" className={cls}/>
-    <input value={f.pan} onChange={e=>set("pan",e.target.value)} placeholder="PAN (Optional)" className={cls}/>
-    <input type="date" value={f.joiningDate} onChange={e=>set("joiningDate",e.target.value)} title="Joining Date / Admission Date" className={cls}/>
-    <input value={f.receiptNo} onChange={e=>set("receiptNo",e.target.value)} placeholder="Receipt No." className={cls}/>
-    <input type="date" value={f.membershipValidTill} onChange={e=>set("membershipValidTill",e.target.value)} title="Membership End Date — only if membership ended" className={cls}/>
-    <select value={f.membershipStatus} onChange={e=>set("membershipStatus",e.target.value)} className={cls}><option>Active</option><option>Inactive</option><option>Expired</option><option>Resigned</option><option>Removed</option></select>
-    <input value={f.membershipFee} onChange={e=>set("membershipFee",e.target.value)} placeholder="Membership Fee (₹)" className={cls}/>
-    <div className="sm:col-span-2 lg:col-span-4 text-xs text-zinc-500">Membership End Date sirf tab bharein jab membership khatam ho; Active member ke liye blank rakhein.</div>
-    <select value={f.status} onChange={e=>set("status",e.target.value)} className={cls} title="Committee Status"><option>Active</option><option>Ended</option><option>Role Changed</option><option>Resigned</option><option>Removed</option></select>
-    <input type="date" value={f.effectiveFrom} onChange={e=>set("effectiveFrom",e.target.value)} title="Organization Role Effective From" className={cls}/>
-    <input type="date" value={f.validTill} onChange={e=>set("validTill",e.target.value)} title="Organization Role Valid Till" className={cls}/>
-    <input type="date" value={f.appointmentDate} onChange={e=>set("appointmentDate",e.target.value)} title="Appointment / Selection Date" className={cls}/>
-        <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / File No." className={cls}/>
-    <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/>
-    <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/>
-    <textarea value={f.responsibilities} onChange={e=>set("responsibilities",e.target.value)} placeholder="Responsibilities / Duties" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/>
-    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/>
-     <button type="submit" disabled={saving} className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold disabled:opacity-50">{saving?"Saving…":"Save Committee Member Record"}</button>
-   </form>
-  </div>
-
-  <div className="bg-white border rounded-2xl p-5">
-   <h3 className="text-xl font-black text-[#002344]">Governance Actions</h3>
-   <p className="text-sm text-zinc-500 mt-1">Resignation, role change, responsibility changes and relieving ko history ke saath record karein.</p>
-   <div className="flex flex-wrap gap-2 mt-4">
-    {["Role Change / Transfer","Additional Responsibility","Responsibility Withdrawal","Resignation","Removal / Membership Cancellation","Replacement / Relieving"].map(action=>
-      <button type="button" key={action} onClick={()=>actionOrder(action)} className="border border-[#002344]/20 text-[#002344] px-4 py-2.5 rounded-xl font-bold hover:bg-zinc-50">{action}</button>
-    )}
-   </div>
-   <div className="mt-4 bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-zinc-700">
-    <b>Governance workflow:</b> Meeting → Agenda → Attendance → Minutes → Resolution → Approval → Office Order → Committee Register update. Resolution/meeting/reference fields upar available hain.
-   </div>
-   <div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">
-    <b>Important:</b> Committee member ko simple Delete se remove nahi kiya jayega. Historical records, approvals, resolutions aur audit trail retained rahenge.
-   </div>
-  </div>
-
-  <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Committee Register & Complete History</h3><p className="text-sm text-zinc-500 mt-1">2013 se ab tak har appointment, change aur separation ko chronological history mein record kiya ja sakta hai.</p></div>
-   <div className="p-5 bg-blue-50 border-b border-blue-100 text-sm text-zinc-700"><b>Historical record entry:</b> Purane 2013, 2014, 2015… records bhi manually original effective date ke saath enter karein. Agar exact date available nahi hai to jo verified date/period available ho wahi record karein; date invent na karein.</div>
-   <div className="p-5 space-y-3">
-    {timeline.map(r=>{const d=r.data||{};return <div key={r.id} className="flex gap-3"><div className="w-24 shrink-0 text-xs font-black text-[#002344]">{d.effectiveFrom||r.recordDate||"Date unavailable"}</div><div className="relative flex-1 border-l-2 border-zinc-200 pl-5 pb-3"><div className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-[#002344]"/><div className="bg-zinc-50 border rounded-xl p-4"><div className="font-black text-[#002344]">{d.fullName||"—"} · {d.designation||"—"}</div><div className="text-sm mt-1">{d.action||"Committee Member Register / Update"} · Status: {r.status}</div><div className="text-xs text-zinc-500 mt-2">Resolution: {d.resolutionNo||"—"} · Meeting: {d.meetingDate||"—"} · Reference: {d.referenceNo||"—"}</div></div></div></div>;})}
-    {!timeline.length&&<div className="p-8 text-center text-zinc-500">No committee records yet. Existing committee names have not been auto-inserted.</div>}
-   </div>
-   <div className="overflow-auto border-t">
-    <table className="w-full text-sm min-w-[2600px]">
-     <thead className="bg-zinc-50"><tr>
-      <th className="p-3 text-left">Member ID</th><th className="p-3 text-left">Membership No.</th><th className="p-3 text-left">Member Type</th><th className="p-3 text-left">Full Name</th><th className="p-3 text-left">Father / Husband Name</th><th className="p-3 text-left">Date of Birth</th><th className="p-3 text-left">Gender</th><th className="p-3 text-left">Occupation / Profession</th><th className="p-3 text-left">Mobile No.</th><th className="p-3 text-left">Email</th><th className="p-3 text-left">Address</th><th className="p-3 text-left">City</th><th className="p-3 text-left">State</th><th className="p-3 text-left">PIN Code</th><th className="p-3 text-left">PAN (Optional)</th><th className="p-3 text-left">Aadhaar (Optional)</th><th className="p-3 text-left">Joining / Admission Date</th><th className="p-3 text-left">Receipt No.</th><th className="p-3 text-left">Membership End Date</th><th className="p-3 text-left">Membership Status</th><th className="p-3 text-left">Membership Fee (₹)</th><th className="p-3 text-left">Committee Role</th><th className="p-3 text-left">Functional Responsibility</th><th className="p-3 text-left">Committee From</th><th className="p-3 text-left">Committee Till</th><th className="p-3 text-left">Committee Status</th><th className="p-3 text-left">Resolution / Order Ref.</th><th className="p-3 text-left">Action</th>
-     </tr></thead>
-     <tbody className="divide-y">
-      {committeeRows.map(r=>{const d=r.data||{};return <tr key={r.id}>
-       <td className="p-3 font-bold">{d.memberId||"—"}</td><td className="p-3">{d.membershipNo||"—"}</td><td className="p-3">{d.memberType||"—"}</td><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.fatherHusbandName||"—"}</td><td className="p-3">{d.dob||"—"}</td><td className="p-3">{d.gender||"—"}</td><td className="p-3">{d.occupation||"—"}</td><td className="p-3">{d.mobile||d.phone||"—"}</td><td className="p-3">{d.email||"—"}</td><td className="p-3">{d.address||"—"}</td><td className="p-3">{d.city||"—"}</td><td className="p-3">{d.state||"—"}</td><td className="p-3">{d.pinCode||"—"}</td><td className="p-3">{d.pan||"—"}</td><td className="p-3">{d.aadhaar||"—"}</td><td className="p-3">{d.joiningDate||"—"}</td><td className="p-3">{d.receiptNo||"—"}</td><td className="p-3">{d.membershipValidTill||"—"}</td><td className="p-3">{d.membershipStatus||"—"}</td><td className="p-3">{d.membershipFee||"—"}</td><td className="p-3 font-bold">{d.designation||"—"}</td><td className="p-3">{d.functionalResponsibility||d.responsibilities||"—"}</td><td className="p-3">{d.effectiveFrom||"—"}</td><td className="p-3">{d.validTill||"—"}</td><td className="p-3">{d.status||"—"}</td><td className="p-3">{d.resolutionNo||d.referenceNo||"—"}</td><td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
-      </tr>;})}
-      {!committeeRows.length&&<tr><td colSpan="28" className="p-8 text-center text-zinc-500">No committee records yet.</td></tr>}
-     </tbody>
-    </table>
-   </div>
+    <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID (auto if blank)" className={cls}/><select value={f.memberType} onChange={e=>set("memberType",e.target.value)} className={cls}><option>Founder Member</option><option>General Member</option><option>संरक्षक सदस्य</option><option>आजीवन सदस्य</option><option>साधारण सदस्य</option><option>सम्माननीय सदस्य</option></select><select value={f.designation} onChange={e=>set("designation",e.target.value)} className={cls}>{designations.map(x=><option key={x}>{x}</option>)}</select>{f.designation==="Other / Custom"&&<input value={f.customDesignation} onChange={e=>set("customDesignation",e.target.value)} placeholder="Custom Designation" required className={cls}/>}<input value={f.functionalResponsibility} onChange={e=>set("functionalResponsibility",e.target.value)} placeholder="Functional Responsibility" className={cls}/><input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full Name" required className={cls}/><input value={f.occupation} onChange={e=>set("occupation",e.target.value)} placeholder="Occupation / Profession" className={cls}/><select value={f.gender} onChange={e=>set("gender",e.target.value)} className={cls}><option value="">Gender</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select><input value={f.fatherHusbandName} onChange={e=>set("fatherHusbandName",e.target.value)} placeholder="Father / Husband Name" className={cls}/><input type="date" value={f.dob} onChange={e=>set("dob",e.target.value)} title="Date of Birth" className={cls}/><input value={f.mobile} onChange={e=>set("mobile",e.target.value)} placeholder="Mobile No." className={cls}/><input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email" className={cls}/><input value={f.address} onChange={e=>set("address",e.target.value)} placeholder="Address" className={cls}/><input value={f.city} onChange={e=>set("city",e.target.value)} placeholder="City" className={cls}/><input value={f.state} onChange={e=>set("state",e.target.value)} placeholder="State" className={cls}/><input value={f.pinCode} onChange={e=>set("pinCode",e.target.value)} placeholder="PIN Code" className={cls}/><input value={f.aadhaar} onChange={e=>set("aadhaar",e.target.value)} placeholder="Aadhaar (Optional)" className={cls}/><input value={f.pan} onChange={e=>set("pan",e.target.value)} placeholder="PAN (Optional)" className={cls}/><input type="date" value={f.joiningDate} onChange={e=>set("joiningDate",e.target.value)} title="Joining / Admission Date" className={cls}/><select value={f.status} onChange={e=>set("status",e.target.value)} className={cls}><option>Active</option><option>Ended</option><option>Role Changed</option><option>Resigned</option><option>Removed</option></select><input type="date" value={f.effectiveFrom} onChange={e=>set("effectiveFrom",e.target.value)} title="Committee Effective From" className={cls}/><input type="date" value={f.validTill} onChange={e=>set("validTill",e.target.value)} title="Committee Valid Till" className={cls}/><input type="date" value={f.appointmentDate} onChange={e=>set("appointmentDate",e.target.value)} title="Appointment / Selection Date" className={cls}/><input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / File No." className={cls}/><input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/><input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/><textarea value={f.responsibilities} onChange={e=>set("responsibilities",e.target.value)} placeholder="Responsibilities / Duties" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/><button type="submit" disabled={saving} className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold disabled:opacity-50">{saving?"Saving…":"Save Committee Member Record"}</button>
+   </form></div>
+  <div className="bg-white border rounded-2xl p-5"><h3 className="text-xl font-black text-[#002344]">Governance Actions</h3><p className="text-sm text-zinc-500 mt-1">Role change, responsibility changes, resignation, removal and relieving are recorded as separate historical actions.</p><div className="flex flex-wrap gap-2 mt-4">{["Role Change / Transfer","Additional Responsibility","Responsibility Withdrawal","Resignation","Removal / Membership Cancellation","Replacement / Relieving"].map(action=><button type="button" key={action} onClick={()=>actionOrder(action)} className="border border-[#002344]/20 text-[#002344] px-4 py-2.5 rounded-xl font-bold hover:bg-zinc-50">{action}</button>)}</div><div className="mt-4 bg-blue-50 border border-blue-100 rounded-xl p-4 text-sm text-zinc-700"><b>Governance workflow:</b> Meeting → Agenda → Attendance → Minutes → Resolution → Approval → Office Order → Committee Register update.</div><div className="mt-3 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900"><b>Important:</b> Committee members are not deleted as simple records; historical governance actions remain preserved.</div></div>
+  <div className="bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Committee Register & Complete History</h3><p className="text-sm text-zinc-500 mt-1">Appointment, role change and separation history can be maintained chronologically.</p></div><div className="p-5 space-y-3">{timeline.map(r=>{const d=r.data||{};return <div key={r.id} className="flex gap-3"><div className="w-24 shrink-0 text-xs font-black text-[#002344]">{d.effectiveFrom||r.recordDate||"Date unavailable"}</div><div className="relative flex-1 border-l-2 border-zinc-200 pl-5 pb-3"><div className="absolute -left-[7px] top-1 h-3 w-3 rounded-full bg-[#002344]"/><div className="bg-zinc-50 border rounded-xl p-4"><div className="font-black text-[#002344]">{d.fullName||"—"} · {d.designation||"—"}</div><div className="text-sm mt-1">{d.action||"Committee Member Register / Update"} · Status: {r.status}</div><div className="text-xs text-zinc-500 mt-2">Resolution: {d.resolutionNo||"—"} · Meeting: {d.meetingDate||"—"} · Reference: {d.referenceNo||"—"}</div></div></div></div>})}{!timeline.length&&<div className="p-8 text-center text-zinc-500">No committee records yet.</div>}</div>
+   <div className="overflow-auto border-t"><table className="w-full text-sm min-w-[2500px]"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Member ID</th><th className="p-3 text-left">Member Type</th><th className="p-3 text-left">Organization Role</th><th className="p-3 text-left">Functional Responsibility</th><th className="p-3 text-left">Full Name</th><th className="p-3 text-left">Occupation / Profession</th><th className="p-3 text-left">Gender</th><th className="p-3 text-left">Father / Husband Name</th><th className="p-3 text-left">Mobile No.</th><th className="p-3 text-left">Email</th><th className="p-3 text-left">Address</th><th className="p-3 text-left">City</th><th className="p-3 text-left">State</th><th className="p-3 text-left">PIN Code</th><th className="p-3 text-left">Aadhaar (Optional)</th><th className="p-3 text-left">PAN (Optional)</th><th className="p-3 text-left">Joining / Admission Date</th><th className="p-3 text-left">Committee From</th><th className="p-3 text-left">Committee Till</th><th className="p-3 text-left">Committee Status</th><th className="p-3 text-left">Appointment / Selection Date</th><th className="p-3 text-left">Reference / File No.</th><th className="p-3 text-left">Resolution No.</th><th className="p-3 text-left">Meeting Date</th><th className="p-3 text-left">Responsibilities / Duties</th><th className="p-3 text-left">Action / Role History</th><th className="p-3 text-left">Remarks</th><th className="p-3 text-left">Action</th></tr></thead><tbody className="divide-y">{committeeRows.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold">{d.memberId||"—"}</td><td className="p-3">{d.memberType||"—"}</td><td className="p-3 font-bold">{d.designation||"—"}</td><td className="p-3">{d.functionalResponsibility||"—"}</td><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.occupation||"—"}</td><td className="p-3">{d.gender||"—"}</td><td className="p-3">{d.fatherHusbandName||"—"}</td><td className="p-3">{d.mobile||"—"}</td><td className="p-3">{d.email||"—"}</td><td className="p-3">{d.address||"—"}</td><td className="p-3">{d.city||"—"}</td><td className="p-3">{d.state||"—"}</td><td className="p-3">{d.pinCode||"—"}</td><td className="p-3">{d.aadhaar||"—"}</td><td className="p-3">{d.pan||"—"}</td><td className="p-3">{d.joiningDate||"—"}</td><td className="p-3">{d.effectiveFrom||"—"}</td><td className="p-3">{d.validTill||"—"}</td><td className="p-3">{d.status||"—"}</td><td className="p-3">{d.appointmentDate||"—"}</td><td className="p-3">{d.referenceNo||"—"}</td><td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{d.meetingDate||"—"}</td><td className="p-3">{d.responsibilities||"—"}</td><td className="p-3">{d.action||"Committee Member Register / Update"}</td><td className="p-3">{d.remarks||"—"}</td><td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td></tr>})}{!committeeRows.length&&<tr><td colSpan="28" className="p-8 text-center text-zinc-500">No committee records yet.</td></tr>}</tbody></table></div>
   </div>
  </div>;
 }
-
 function Reports({token,exportRows,exportPdf}){
  const [data,setData]=useState(null),[from,setFrom]=useState(""),[to,setTo]=useState(""),[loading,setLoading]=useState(false);
  const run=async()=>{setLoading(true);try{const q=ENDPOINTS.DIGITAL_OFFICE_REPORTS+((from||to)?("?from="+encodeURIComponent(from)+"&to="+encodeURIComponent(to)):"");const r=await fetch(q,{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});if(!r.ok)throw new Error("Report could not be loaded");setData(await r.json());}catch(e){setData({error:e.message});}finally{setLoading(false);}};
