@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FaGraduationCap, FaChalkboardTeacher, FaLaptopCode, FaRocket, FaBookOpen, FaUserCheck, FaRupeeSign } from "react-icons/fa";
 import { IoCheckmarkCircleSharp } from "react-icons/io5";
 import HygieneModule from "../components/HygieneModule";
+import WorkEvidenceBanner from "../components/WorkEvidenceBanner";
 import footerImg4 from "../assets/footer-gallery-4.png";
 
 export default function LearningHub() {
@@ -94,6 +95,8 @@ export default function LearningHub() {
           </div>
         </div>
       </section>
+
+      <WorkEvidenceBanner page="learning" />
 
       {/* ================= 1. MISSION & OBJECTIVE ================= */}
       <section className="py-24 px-4">
