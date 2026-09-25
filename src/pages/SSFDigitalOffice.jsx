@@ -698,46 +698,56 @@ function ManagingCommittee({rows,add,archive,token}){
  const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Member"];
  const committeeRows=(rows||[]).filter(r=>r.module==="managingCommittee" && r.status!=="deleted");
  const [syncing,setSyncing]=useState(false);
- useEffect(()=>{
-  let cancelled=false;
-  const syncFromMembers=async()=>{
-   if(!token||syncing)return;
-   try{
-    const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
-    if(!r.ok)return;
-    const members=await r.json();
-    const existingIds=new Set(committeeRows.map(x=>String((x.data||{}).memberId||"").trim()).filter(Boolean));
-    const roleById={
-     "SSF-MBR-00001":"President","SSF-MBR-00014":"Vice President","SSF-MBR-00002":"Secretary",
-     "SSF-MBR-00003":"Treasurer","SSF-MBR-00004":"Joint Secretary","SSF-MBR-00015":"Executive Committee Member",
-     "SSF-MBR-00016":"Member","SSF-MBR-00017":"Member","SSF-MBR-00018":"Member"
-    };
-    const candidates=(Array.isArray(members)?members:[]).filter(x=>{const d=x.data||{};return d.memberId&&d.fullName&&roleById[String(d.memberId).trim()];});
-    if(!candidates.length)return;
-    setSyncing(true);
-    for(const x of candidates){
-     if(cancelled)break;
-     const d=x.data||{}, memberId=String(d.memberId).trim();
-     if(existingIds.has(memberId))continue;
-     const role=roleById[memberId];
-     const effectiveFrom=d.joiningDate||new Date().toISOString().slice(0,10);
-     const data={
-      ...d,fullName:String(d.fullName||"").trim(),memberId,designation:role,
-      functionalResponsibility:d.functionalResponsibility||"",status:d.membershipStatus||"Active",
-      effectiveFrom,appointmentDate:effectiveFrom,referenceNo:"",resolutionNo:"",meetingDate:"",
-      responsibilities:d.functionalResponsibility||"",remarks:d.remarks||"Imported from Members Register",
-      action:"Committee Member Register / Update"
-     };
-     const ok=await add("managingCommittee",{recordDate:effectiveFrom,recordType:"Committee Member",status:String(d.membershipStatus||"Active").toLowerCase(),data});
-     if(ok)existingIds.add(memberId);
-    }
-    if(!cancelled)setNotice("Managing Committee records synchronized from Members Register.");
-   }catch(e){if(!cancelled)setNotice("Members Register sync could not be completed.");}
-   finally{if(!cancelled)setSyncing(false);}
-  };
-  syncFromMembers();
-  return ()=>{cancelled=true;};
- },[token,rows.length]); const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
+ const syncFromMembers=async()=>{
+  if(!token||syncing)return;
+  setSyncing(true);
+  try{
+   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
+   if(!r.ok)throw new Error("Members Register load failed.");
+   const payload=await r.json();
+   const members=Array.isArray(payload)?payload:(Array.isArray(payload.records)?payload.records:[]);
+   const existingIds=new Set(committeeRows.map(x=>String((x.data||{}).memberId||x.memberId||"").trim()).filter(Boolean));
+   const roleById={
+    "SSF-MBR-00001":"President","SSF-MBR-00014":"Vice President","SSF-MBR-00002":"Secretary",
+    "SSF-MBR-00003":"Treasurer","SSF-MBR-00004":"Joint Secretary","SSF-MBR-00015":"Executive Committee Member",
+    "SSF-MBR-00016":"Member","SSF-MBR-00017":"Member","SSF-MBR-00018":"Member"
+   };
+   const candidates=members.map(x=>({record:x,data:x.data&&typeof x.data==="object"?x.data:x})).filter(x=>{
+    const d=x.data||{}, id=String(d.memberId||x.record.memberId||"").trim();
+    return id&&d.fullName&&roleById[id];
+   });
+   let imported=0;
+   for(const x of candidates){
+    const d=x.data||{}, memberId=String(d.memberId||x.record.memberId||"").trim();
+    if(existingIds.has(memberId))continue;
+    const role=roleById[memberId];
+    const effectiveFrom=d.joiningDate||new Date().toISOString().slice(0,10);
+    const data={...d,fullName:String(d.fullName||"").trim(),memberId,designation:role,
+     functionalResponsibility:d.functionalResponsibility||"",status:d.membershipStatus||"Active",
+     effectiveFrom,appointmentDate:effectiveFrom,referenceNo:"",resolutionNo:"",meetingDate:"",
+     responsibilities:d.functionalResponsibility||"",remarks:d.remarks||"Imported from Members Register",
+     action:"Committee Member Register / Update"};
+    const out=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
+     body:JSON.stringify({module:"managingCommittee",recordDate:effectiveFrom,recordType:"Committee Member",
+      status:String(d.membershipStatus||"Active").toLowerCase(),data})});
+    const saved=await out.json().catch(()=>({}));
+    if(!out.ok)throw new Error(saved.message||saved.detail||"Managing Committee record save failed.");
+    existingIds.add(memberId); imported++;
+   }
+   if(imported){setNotice(imported+" existing Members Register record(s) added to Managing Committee.");await loadRecordsAfterSync();}
+   else setNotice("No new committee records needed. Existing Member IDs are already present.");
+  }catch(e){setNotice(e.message||"Members Register sync could not be completed.");}
+  finally{setSyncing(false);}
+ };
+ const loadRecordsAfterSync=async()=>{
+  const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
+  if(r.ok){
+   const d=await r.json(); 
+   // Parent owns the rows state; changing active back and forth is unnecessary, so force a fresh page-level reload.
+   window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"managingCommittee",rows:Array.isArray(d)?d:[]}}));
+  }
+ };
+ useEffect(()=>{if(token)syncFromMembers();},[token]); const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
  const save=async e=>{
    if(saving)return;
   e.preventDefault();
