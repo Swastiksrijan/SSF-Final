@@ -48,6 +48,32 @@ export default function Home() {
   return (
     <div className="w-full bg-white font-sans text-zinc-800">
       <section className="relative min-h-[85vh] flex items-center pt-20 pb-20 overflow-hidden bg-[#001529]"><div className="absolute inset-0 z-0"><OptimizedImage src={pageHeader} alt="Swastik Srijan Foundation community activity" className="w-full h-full object-cover brightness-[0.8] contrast-[1.08]" /><div className="absolute inset-0 bg-gradient-to-r from-[#001529] via-[#001529]/70 to-[#001529]/15" /></div><div className="container mx-auto px-6 relative z-10 flex items-center h-full"><motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-4xl space-y-7"><div className="flex items-center gap-3"><div className="h-[2px] w-12 bg-[#FF6600]" /><span className="text-white font-bold tracking-widest uppercase text-sm">Swastik Srijan Foundation Samiti</span></div><h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight drop-shadow-2xl">Creating Change.<br />Inspiring Lives.<span className="block text-2xl md:text-4xl mt-4 font-normal text-zinc-100">सहयोग • कौशल • जागरूकता • सृजन</span></h1><p className="max-w-2xl text-lg md:text-xl text-zinc-100 leading-relaxed">Working for inclusive community development across India through education, skills, health, awareness and meaningful partnerships.</p><div className="flex flex-col sm:flex-row flex-wrap gap-4 pt-2"><button type="button" onClick={() => openAuth("signup")} className="px-8 py-4 bg-[#FF6600] text-white font-bold rounded-full hover:bg-[#e65c00] transition-all shadow-xl text-lg text-center">Join SSF</button><Link to="/Members" className="px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all text-lg text-center">Member</Link><Link to="/Volunteer" className="px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white/70 text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all text-lg text-center">Volunteer</Link><a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noreferrer noopener" className="px-8 py-4 bg-white text-[#002344] font-bold rounded-full hover:bg-zinc-100 transition-all text-lg text-center">Donate <FaHeart className="inline ml-2 text-[#FF6600]" /></a></div></motion.div></div></section>
+      <section className="relative z-20 -mt-2 px-4 pb-8">
+        <div className="container mx-auto max-w-6xl">
+          <div className="rounded-[2rem] bg-white shadow-2xl border border-zinc-100 overflow-hidden">
+            <div className="px-5 pt-7 pb-4 text-center">
+              <p className="text-[#FF6600] font-bold text-xs md:text-sm tracking-[0.2em] uppercase">Be Part of the Journey</p>
+              <h2 className="text-2xl md:text-4xl font-black text-[#002344] mt-2">आज Swastik Srijan Foundation से जुड़िए।</h2>
+              <p className="text-zinc-500 mt-2 text-sm md:text-base">आपके लिए जुड़ने का एक रास्ता है — अपनी भूमिका चुनिए।</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-zinc-100">
+              {[
+                {title:"MEMBER", text:"मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", path:"/GetInvolved", icon:<FaUsers />, tone:"text-[#0b4f86] bg-blue-50"},
+                {title:"VOLUNTEER", text:"मेरे पास समय / skill है, मैं काम करना चाहता हूँ।", path:"/Volunteer", icon:<FaHandsHelping />, tone:"text-[#168a5a] bg-emerald-50"},
+                {title:"SUPPORTER / DONOR", text:"मैं किसी अच्छे काम को support करना चाहता हूँ।", path:"/Donate", icon:<FaHeart />, tone:"text-[#168a5a] bg-emerald-50"},
+                {title:"PARTNER", text:"मेरी संस्था / company / institution Swastik Srijan Foundation के साथ काम कर सकती है।", path:"/PartnerWithUs", icon:<FaHandshake />, tone:"text-[#0b4f86] bg-blue-50"}
+              ].map((item,index) => (
+                <Link key={item.title} to={item.path} className="group p-6 md:p-7 border-b sm:border-b-0 sm:border-r last:border-r-0 border-zinc-100 hover:bg-zinc-50 transition-all">
+                  <div className={`w-12 h-12 rounded-2xl ${item.tone} flex items-center justify-center text-xl`}>{item.icon}</div>
+                  <h3 className="mt-5 text-lg font-black text-[#002344]">{item.title}</h3>
+                  <p className="mt-2 text-sm leading-relaxed text-zinc-600 min-h-[56px]">{item.text}</p>
+                  <span className="mt-4 inline-flex items-center gap-2 text-sm font-extrabold text-[#FF6600]">JOIN / EXPLORE <FaArrowRight className="group-hover:translate-x-1 transition-transform" /></span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
       <div className="bg-[#002344] text-zinc-300 py-3 text-center text-xs md:text-sm font-medium border-t border-white/10"><div className="container mx-auto px-4">Registered NGO | Registered December 2013 | Reg. No. 05/22/03/11448/13 | Rewa, Madhya Pradesh | Working Across India</div></div>
       <FloatingTicker />
       <section className="py-14 bg-zinc-50 border-y border-zinc-200"><div className="container mx-auto px-4 max-w-6xl"><div className="text-center mb-9"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">SSF at a glance</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">A Journey of Service Since 2013</h2></div><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">{glanceCards.map((item,index)=><motion.div key={index} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:index*0.08}} className="bg-white p-7 rounded-2xl shadow-sm hover:shadow-lg transition-shadow text-center border border-zinc-100 flex flex-col items-center"><div className="mb-4">{item.icon}</div><h3 className="text-2xl md:text-3xl font-extrabold text-zinc-800 mb-1">{item.text}</h3><p className="text-zinc-600 font-bold uppercase text-xs md:text-sm tracking-wider">{item.sub}</p><p className="text-zinc-400 text-xs mt-1">{item.hi}</p></motion.div>)}</div></div></section>
