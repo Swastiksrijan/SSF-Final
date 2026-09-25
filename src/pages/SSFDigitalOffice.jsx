@@ -640,8 +640,8 @@ function MembersRegister({rows,add,updateRecord,archive,token}){
     <label><span className="field-label">Joining / Admission Date</span><input type="date" value={f.joiningDate} onChange={e=>set("joiningDate",e.target.value)} className={cls}/></label>
     <label><span className="field-label">Membership Status</span><select value={f.membershipStatus} onChange={e=>set("membershipStatus",e.target.value)} className={cls}><option>Active</option><option>Inactive</option><option>Ended</option><option>Resigned</option><option>Removed</option></select></label>
     <label className="sm:col-span-2 lg:col-span-4"><span className="field-label">Remarks</span><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="General member master-data remarks" className={cls+" min-h-[80px] resize-y"}/></label>
-    <div className="sm:col-span-2 lg:col-span-4 flex gap-2">
-     <button type="submit" disabled={saving} className="flex-1 bg-[#002344] text-white py-3 rounded-xl font-bold disabled:opacity-50">{saving?(editingId?"Updating…":"Saving…"):(editingId?"Update Member":"Save Member Record")}</button>
+    <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2">
+     <button type="submit" disabled={saving} className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold disabled:opacity-50">{saving?(editingId?"Updating…":"Saving…"):(editingId?"Update Member":"Save Member Record")}</button>
      {editingId&&<button type="button" onClick={reset} className="px-6 py-3 rounded-xl border border-zinc-300 font-bold">Cancel Edit</button>}
     </div>
    </form>
@@ -778,7 +778,7 @@ function OfficeHistory({rows,add,updateRecord,archive}){
        {g.records.map((r,ri)=>{const d=r.data||{};return <tr key={r.id}>
         <td className="p-3 text-zinc-400">{ri+1}</td>
         <td className="p-3 whitespace-nowrap">{d.eventDate||r.recordDate||"—"}</td><td className="p-3">{d.memberId||"—"}</td><td className="p-3 font-bold">{d.fullName||d.name||"—"}</td><td className="p-3">{d.changeType||d.action||r.recordType||"—"}</td><td className="p-3">{d.previousRole||"—"}</td><td className="p-3 font-bold">{d.newRole||d.designation||"—"}</td><td className="p-3">{d.referenceNo||"—"}</td><td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{d.meetingDate||"—"}</td><td className="p-3 max-w-[420px]">{d.details||d.reason||d.responsibilities||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
-        <td className="p-3 sticky right-0 bg-white border-l z-10 whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 mr-2">✏️ Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
+        <td className="p-3 sticky right-0 bg-white border-l z-10 whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 mr-2">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
        </tr>;})}
       </React.Fragment>)}
       {!grouped.length&&<tr><td colSpan="13" className="p-10 text-center text-zinc-500">{query?"No matching Name / Member ID found.":"No Office History records yet."}</td></tr>}
