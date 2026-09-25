@@ -215,17 +215,6 @@ export default function MissionPage() {
         </div>
       </section>
 
-      {/* ================= DIAGRAM ================= */}
-      <section className="py-12 bg-white flex justify-center border-b border-zinc-100">
-        <div className="container mx-auto px-6 flex justify-center">
-          <img
-            src="/images/uploads/vision-mission-goals.jpg"
-            alt="Vision, Mission, and Values Diagram"
-            className="w-full max-w-3xl object-contain drop-shadow-lg rounded-xl"
-          />
-        </div>
-      </section>
-
       {/* ================= CORE VALUES ================= */}
       <section className="py-16 md:py-24 bg-white text-center">
         <div className="container mx-auto px-6">
