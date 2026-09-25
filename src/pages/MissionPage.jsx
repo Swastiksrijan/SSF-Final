@@ -197,9 +197,18 @@ export default function MissionPage() {
       {/* ================= CORE VALUES ================= */}
       <section className="py-16 md:py-24 bg-white text-center">
         <div className="container mx-auto px-6">
-          <h2 className="text-3xl md:text-4xl font-serif font-bold text-[#002344] mb-4">
+          <span className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs md:text-sm">
+            Core Values & Ethics
+          </span>
+          <h2 className="mt-3 text-3xl md:text-4xl font-serif font-bold text-[#002344] mb-4">
             Our Core Values
           </h2>
+          <p className="mx-auto max-w-3xl text-base md:text-lg text-zinc-600 leading-relaxed">
+            Our Vision is realized through our Mission and guided by these core values, which shape how we work, serve communities, and build trust.
+          </p>
+          <p className="mx-auto mt-2 max-w-3xl text-base text-zinc-500 leading-relaxed">
+            हमारा विज़न हमारे मिशन के माध्यम से साकार होता है और ये मूल मूल्य हमारे कार्य, जनसेवा और विश्वास की दिशा तय करते हैं।
+          </p>
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-8 max-w-6xl mx-auto mt-12 md:mt-16">
             {[
