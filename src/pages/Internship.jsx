@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaGraduationCap, FaHandsHelping, FaLaptop, FaBullhorn, FaArrowRight, FaTimes, FaBriefcase, FaCertificate, FaCode, FaRocket, FaDatabase } from "react-icons/fa";
 import InternshipForm from "../components/InternshipForm";
+import OptimizedImage from "../components/OptimizedImage";
 
 export default function Internship() {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -14,13 +15,24 @@ export default function Internship() {
   ];
 
   return <div className="w-full bg-white text-zinc-900 font-sans overflow-hidden">
-    <section className="bg-[#001529] text-white pt-44 pb-24 px-6 relative">
-      <div className="max-w-7xl mx-auto relative z-10">
+    <section className="relative min-h-[68vh] flex items-center overflow-hidden bg-[#001529] text-white pt-36 pb-20 px-6">
+      <div className="absolute inset-0">
+        <OptimizedImage
+          src="/images/real/education_girls.jpg"
+          alt="Students learning and participating in community education"
+          className="w-full h-full"
+          objectFit="cover"
+        />
+        <div className="absolute inset-0 bg-[#001529]/65" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#001529]/95 via-[#001529]/75 to-[#001529]/35" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#001529] via-transparent to-[#001529]/30" />
+      </div>
+      <div className="max-w-7xl mx-auto w-full relative z-10">
         <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl space-y-6">
           <p className="text-[#fb8500] font-black tracking-[.2em] uppercase text-sm">Internship Opportunities</p>
           <h1 className="text-4xl sm:text-6xl md:text-7xl font-black leading-tight">Learn, Lead, <span className="text-[#fb8500]">and Serve.</span></h1>
-          <p className="text-lg md:text-2xl text-zinc-400 leading-relaxed max-w-3xl">Gain practical experience while contributing to meaningful social change with Swastik Srijan Foundation.</p>
-          <div className="flex flex-wrap gap-5 text-zinc-300 text-sm font-bold"><span>• Real Projects</span><span>• Professional Mentorship</span><span>• Impact Certification</span></div>
+          <p className="text-lg md:text-2xl text-white/90 leading-relaxed max-w-3xl">Gain practical experience while contributing to meaningful social change with Swastik Srijan Foundation.</p>
+          <div className="flex flex-wrap gap-5 text-white/90 text-sm font-bold"><span>• Real Projects</span><span>• Professional Mentorship</span><span>• Impact Certification</span></div>
         </motion.div>
       </div>
     </section>
