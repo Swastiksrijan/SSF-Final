@@ -11,87 +11,57 @@ export default function LearningHub() {
     <div className="w-full font-inria bg-white">
 
       {/* ================= HERO ================= */}
-      <section className="bg-zinc-900 text-white pt-40 pb-20 relative overflow-hidden">
-        <div className="max-w-6xl mx-auto px-4 relative z-10 grid lg:grid-cols-2 gap-12 items-center">
-          <div className="space-y-6 text-center lg:text-left max-w-2xl mx-auto">
-            {/* Banner Image for Hero */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1 }}
-              className="mb-8 rounded-2xl overflow-hidden shadow-2xl border border-zinc-700"
-            >
-              <img src={footerImg4} alt="Swastik Srijan Foundation Learning Hub" className="w-full h-auto object-cover" />
-            </motion.div>
+      <section className="relative min-h-[72vh] overflow-hidden bg-zinc-900 text-white">
+        <div className="absolute inset-0">
+          <img
+            src={footerImg4}
+            alt="Swastik Srijan Foundation Learning Hub"
+            className="h-full w-full object-cover object-center"
+          />
+          <div className="absolute inset-0 bg-[#001529]/65 bg-gradient-to-b from-[#001529]/45 via-[#001529]/60 to-[#001529]/90" />
+        </div>
 
+        <div className="relative z-10 mx-auto flex min-h-[72vh] max-w-6xl items-center px-5 py-28 text-center">
+          <div className="mx-auto max-w-4xl">
             <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              animate={{ opacity: 1, x: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8 }}
             >
-              <div className="flex flex-col lg:flex-row items-center lg:items-start gap-6 mb-6">
-                <img src="/images/academy/academy-seal.jpg" alt="Academy Seal" className="w-24 h-24 rounded-full shadow-2xl border-2 border-[#004d99]" />
-                <div>
-                  <span className="inline-block px-4 py-1.5 bg-red-600 text-white text-sm font-bold rounded-full mb-2 tracking-widest uppercase">
-                    SSF National Academy
-                  </span>
-                  <h1 className="text-5xl md:text-5xl lg:text-6xl font-extrabold leading-tight">
-                    Learning Hub
-                  </h1>
-                  <h2 className="text-3xl md:text-4xl text-[#004d99] font-bold">
-                    For Every Child.
-                  </h2>
-                </div>
+              <div className="mb-6 flex flex-col items-center gap-4">
+                <img
+                  src="/images/academy/academy-seal.jpg"
+                  alt="Academy Seal"
+                  className="h-24 w-24 rounded-full border-2 border-white/80 shadow-2xl"
+                />
+                <span className="inline-block rounded-full bg-red-600 px-4 py-1.5 text-sm font-bold uppercase tracking-widest">
+                  SSF National Academy
+                </span>
+              </div>
+
+              <h1 className="text-5xl font-extrabold leading-tight md:text-6xl lg:text-7xl">
+                Learning Hub
+              </h1>
+              <h2 className="mt-3 text-3xl font-bold text-white md:text-4xl">
+                For Every Child.
+              </h2>
+
+              <p className="mx-auto mt-6 max-w-3xl text-lg font-medium leading-relaxed text-white/90 md:text-xl">
+                A hybrid education ecosystem blending physical learning centres with a
+                state-of-the-art online learning hub for rural India.
+              </p>
+
+              <div className="flex flex-col justify-center gap-4 pt-6 sm:flex-row">
+                <Link to="/DonateAndSupport" className="sm:w-auto">
+                  <button className="btn-cta w-full sm:w-auto">Sponsor a Learner</button>
+                </Link>
+                <Link to="/Contact" className="sm:w-auto">
+                  <button className="btn-secondary w-full sm:w-auto border-white bg-transparent text-white hover:bg-white hover:text-[#003366]">
+                    Start a Centre
+                  </button>
+                </Link>
               </div>
             </motion.div>
-
-            {/* ... rest of hero stays same if possible but I need to be careful with context ... */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.8 }}
-              className="text-xl text-zinc-300 font-medium leading-relaxed"
-            >
-              A hybrid education ecosystem blending physical learning centres with a
-              state-of-the-art online learning hub for rural India.
-            </motion.p>
-
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.5, duration: 0.8 }}
-              className="flex flex-col sm:flex-row gap-4 pt-4 justify-center lg:justify-start"
-            >
-              <Link to="/DonateAndSupport" className="sm:w-auto">
-                <button className="btn-cta w-full sm:w-auto">
-                  Sponsor a Learner
-                </button>
-              </Link>
-              <Link to="/Contact" className="sm:w-auto">
-                <button className="btn-secondary w-full sm:w-auto bg-transparent text-white border-white hover:bg-white hover:text-[#003366]">
-                  Start a Centre
-                </button>
-              </Link>
-            </motion.div>
-          </div>
-
-          <div className="hidden lg:flex items-center justify-center">
-            <div className="bg-zinc-800/60 rounded-[2.5rem] p-10 shadow-2xl border border-white/10 max-w-md w-full">
-              <p className="text-sm font-bold tracking-widest uppercase text-blue-300 mb-3">
-                Program Snapshot
-              </p>
-              <p className="text-4xl font-extrabold text-white mb-4">
-                1,000+{" "}
-                <span className="text-zinc-300 text-xl font-medium">
-                  active learners
-                </span>
-              </p>
-              <ul className="space-y-3 text-zinc-300 text-sm">
-                <li>• Hybrid classrooms blended with digital content</li>
-                <li>• Mentors from across India</li>
-                <li>• Foundation to competitive preparation</li>
-              </ul>
-            </div>
           </div>
         </div>
       </section>
