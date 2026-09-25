@@ -58,12 +58,12 @@ export default function JoinUsPage() {
         <div className="absolute inset-0 bg-[#001529]/62"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-[#001529]/35 via-[#001529]/55 to-[#001529]/90"></div>
         <div className="relative z-10 flex min-h-[68vh] lg:min-h-[72vh] items-center justify-center px-5 py-24 lg:px-8">
-          <div className="max-w-4xl text-center">
-            <div className="mx-auto inline-block rounded-2xl border border-white/15 bg-[#001529]/55 px-6 py-6 sm:px-10 sm:py-7 backdrop-blur-sm shadow-2xl">
+          <div className="max-w-6xl w-full text-center">
+            <div className="mx-auto inline-block rounded-2xl border border-white/15 bg-[#001529]/55 px-6 py-5 sm:px-12 sm:py-6 backdrop-blur-sm shadow-2xl">
               <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.22em] text-[#7dd3a8]">Swastik Srijan Foundation / स्थापना • Join the Movement / जुड़िए</p>
-              <h1 className="mt-16 md:mt-20 text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight text-white">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block mt-2 text-[#7dd3a8]">Some wait for change. कुछ बदलाव का हिस्सा बनते हैं।</span></h1>
-              <p className="mx-auto mt-5 max-w-2xl text-base md:text-xl text-[#e5edf4] leading-relaxed">Find your place in Swastik Srijan Foundation / स्थापना. / Swastik Srijan Foundation / स्थापना में आपके लिए कौन-सी भूमिका है?</p>
-              <button onClick={() => document.getElementById("find-place")?.scrollIntoView({ behavior: "smooth" })} className="mt-6 inline-flex items-center gap-3 rounded-full bg-[#168a5a] px-7 py-3.5 text-white font-black shadow-xl shadow-black/20 hover:bg-[#126f4a] hover:-translate-y-1 transition">FIND YOUR PLACE / अपनी भूमिका चुनें <FaArrowRight /></button>
+              <h1 className="mt-8 md:mt-10 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block mt-2 text-[#7dd3a8]">Some wait for change. कुछ बदलाव का हिस्सा बनते हैं।</span></h1>
+              <p className="mx-auto mt-4 max-w-5xl text-base md:text-lg text-[#e5edf4] leading-relaxed">Find your place in Swastik Srijan Foundation / स्थापना. / Swastik Srijan Foundation / स्थापना में आपके लिए कौन-सी भूमिका है?</p>
+              <button onClick={() => document.getElementById("find-place")?.scrollIntoView({ behavior: "smooth" })} className="mt-5 inline-flex items-center gap-3 rounded-full bg-[#168a5a] px-7 py-3.5 text-white font-black shadow-xl shadow-black/20 hover:bg-[#126f4a] hover:-translate-y-1 transition">FIND YOUR PLACE / अपनी भूमिका चुनें <FaArrowRight /></button>
             </div>
           </div>
         </div>
