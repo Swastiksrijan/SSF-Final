@@ -26,7 +26,8 @@ export default function PageHero({
     objectFit = "cover",
     objectPosition = "center",
     brandBelowTitle = false,
-    children
+    children,
+    contentClassName = ""
 }) {
     const fadeInUp = {
         hidden: { opacity: 0, y: 30 },
@@ -73,7 +74,7 @@ export default function PageHero({
             </div>
 
             {/* Content Container */}
-            <div className="relative z-10 text-center max-w-5xl px-6 space-y-6">
+            <div className={`relative z-10 text-center max-w-5xl px-6 space-y-6 ${contentClassName}`}>
                 <motion.div
                     initial="hidden"
                     animate="visible"
