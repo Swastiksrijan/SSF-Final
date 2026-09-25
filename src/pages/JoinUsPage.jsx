@@ -8,7 +8,7 @@ import GetInvolvedInterestForm from "../components/GetInvolvedInterestForm";
 const ROLES = [
   { id: "member", title: "MEMBER", text: "Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", icon: FaUsers, color: "blue" },
   { id: "volunteer", title: "VOLUNTEER", text: "अपने समय, ज्ञान या skill से सक्रिय रूप से योगदान करना चाहता हूँ।", icon: FaHandsHelping, color: "green" },
-  { id: "donor", title: "SUPPORT", text: "अपने resources या financial support से अच्छे काम को आगे बढ़ाना चाहता हूँ।", icon: FaHeart, color: "green" },
+  { id: "donor", title: "SUPPORT", text: "अपने resources या financial support से अच्छे काम को आगे बढ़ाना चाहता हूँ।", icon: FaHeart, color: "navy" },
   { id: "partner", title: "PARTNER", text: "अपनी संस्था, company या network के साथ मिलकर काम करना चाहता हूँ।", icon: FaHandshake, color: "teal" },
 ];
 
@@ -24,8 +24,8 @@ const GIFTS = [
 const colors = {
   blue: ["text-[#0b4f86] bg-blue-50 border-blue-100", "text-[#0b4f86]"],
   green: ["text-[#168a5a] bg-emerald-50 border-emerald-100", "text-[#168a5a]"],
-  orange: ["text-[#c2410c] bg-orange-50 border-orange-100", "text-[#c2410c]"],
-  violet: ["text-[#7c3aed] bg-violet-50 border-violet-100", "text-[#7c3aed]"],
+  navy: ["text-[#06284a] bg-slate-100 border-slate-200", "text-[#06284a]"],
+  teal: ["text-[#087f73] bg-teal-50 border-teal-100", "text-[#087f73]"],
 };
 
 function RoleForm({ active }) {
@@ -62,7 +62,7 @@ export default function JoinUsPage() {
       <section className="bg-white border-y border-slate-200">
         <div className="mx-auto max-w-6xl px-5 py-16 md:py-20">
           <div className="text-center"><p className="text-emerald-600 font-extrabold tracking-[0.18em] text-xs md:text-sm uppercase">02 • What Can You Give?</p><h2 className="mt-3 text-3xl md:text-5xl font-black text-[#06284a]">आपके पास क्या है?</h2><p className="mt-4 text-slate-500 text-base md:text-lg">हर योगदान पैसे से नहीं होता। आपका समय, ज्ञान, skill या इच्छा भी शुरुआत हो सकती है।</p></div>
-          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">{GIFTS.map((item) => { const Icon=item.icon; return <button key={item.label} onClick={() => chooseGift(item)} className={"rounded-2xl border p-5 text-center font-black transition-all hover:-translate-y-1 hover:shadow-lg " + (gift===item.label ? "border-emerald-400 bg-emerald-50 text-[#168a5a]" : "border-slate-200 bg-slate-50 text-[#06284a]")}><Icon className="mx-auto text-xl mb-3" /><span className="text-xs tracking-wider">{item.label}</span></button>; })}</div>
+          <div className="mt-10 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">{GIFTS.map((item) => { const Icon=item.icon; return <button key={item.label} onClick={() => chooseGift(item)} className={"rounded-2xl border p-5 text-center font-black transition-all hover:-translate-y-1 hover:shadow-lg " + (gift===item.label ? "border-emerald-400 bg-[#eef8f5] text-[#168a5a]" : "border-slate-200 bg-slate-50 text-[#06284a]")}><Icon className="mx-auto text-xl mb-3" /><span className="text-xs tracking-wider">{item.label}</span></button>; })}</div>
         </div>
       </section>
 
