@@ -67,7 +67,7 @@ export default function Home() {
                   <div className={`w-14 h-14 rounded-2xl ${item.tone} border flex items-center justify-center text-2xl shadow-sm group-hover:scale-105 transition-transform`}>{item.icon}</div>
                   <h3 className="mt-6 text-xl md:text-2xl font-black text-[#06284a]">{item.title}</h3>
                   <p className="mt-3 text-base md:text-lg leading-relaxed text-slate-500 min-h-[84px]">{item.text}</p>
-                  <span className="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#06284a] text-white text-sm md:text-base font-extrabold shadow-md group-hover:bg-[#168a5a] transition-colors">JOIN / EXPLORE <FaArrowRight className="group-hover:translate-x-1 transition-transform" /></span>
+                  <span className="group/cta relative mt-5 inline-flex items-center gap-2 overflow-hidden px-6 py-3 rounded-full bg-gradient-to-r from-[#002344] to-[#064b78] text-white text-sm md:text-base font-extrabold tracking-[0.02em] shadow-lg shadow-[#002344]/20 border border-white/10 group-hover:-translate-y-0.5 group-hover:shadow-xl transition-all duration-200"><span className="relative z-10">JOIN / EXPLORE</span><FaArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" /><span className="absolute inset-0 opacity-0 group-hover/cta:opacity-100 bg-gradient-to-r from-[#064b78] to-[#0a668f] transition-opacity duration-200" /></span>
                 </Link>
               ))}
             </div>
