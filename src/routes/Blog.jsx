@@ -11,10 +11,10 @@ function BlogRoutePage() {
     <BlogShareEnhancer>
       <div className="pt-28 bg-black min-h-screen text-white px-4">
         <BlogHubHeader />
-        <SingleKnowledgeStory />
         <BlogKnowledgeStories>
           <Blog />
         </BlogKnowledgeStories>
+        <SingleKnowledgeStory />
       </div>
     </BlogShareEnhancer>
   );
