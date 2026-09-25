@@ -41,14 +41,14 @@ export default function JoinUsPage() {
 
   return (
     <main className="min-h-screen bg-[#f7fafc] text-[#17202a]">
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#06284a] via-[#0b4f86] to-[#168a5a] text-white">
+      <section className="relative overflow-hidden bg-gradient-to-br from-[#031b33] via-[#06284a] to-[#0b5b46] text-white">
         <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-emerald-400/10 blur-2xl" />
         <div className="absolute -left-32 bottom-0 h-72 w-72 rounded-full bg-emerald-300/10 blur-2xl" />
         <div className="relative mx-auto max-w-6xl px-6 py-20 md:py-28">
-          <p className="text-emerald-300 font-extrabold tracking-[0.2em] text-xs md:text-sm uppercase">Swastik Srijan Foundation • Join Movement</p>
-          <h1 className="mt-5 max-w-4xl text-4xl md:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block text-emerald-300">कुछ लोग बदलाव का हिस्सा बनते हैं।</span></h1>
-          <p className="mt-7 max-w-2xl text-lg md:text-2xl text-slate-100 leading-relaxed">आपके लिए Swastik Srijan Foundation में कौन-सी जगह है?</p>
-          <button onClick={() => document.getElementById("find-place")?.scrollIntoView({ behavior: "smooth" })} className="mt-8 inline-flex items-center gap-3 rounded-full bg-white px-7 py-3.5 text-[#06284a] font-black shadow-xl hover:-translate-y-1 transition">FIND YOUR PLACE <FaArrowRight /></button>
+          <p className="text-[#b7e4d0] font-extrabold tracking-[0.2em] text-xs md:text-sm uppercase">Swastik Srijan Foundation • Join Movement</p>
+          <h1 className="mt-5 max-w-4xl text-4xl md:text-6xl lg:text-7xl font-black leading-[1.05] tracking-tight text-white">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block mt-2 text-[#7dd3a8]">कुछ लोग बदलाव का हिस्सा बनते हैं।</span></h1>
+          <p className="mt-7 max-w-2xl text-lg md:text-2xl text-[#e5edf4] leading-relaxed">आपके लिए Swastik Srijan Foundation में कौन-सी जगह है?</p>
+          <button onClick={() => document.getElementById("find-place")?.scrollIntoView({ behavior: "smooth" })} className="mt-8 inline-flex items-center gap-3 rounded-full bg-[#168a5a] px-7 py-3.5 text-white font-black shadow-xl shadow-black/20 hover:bg-[#126f4a] hover:-translate-y-1 transition">FIND YOUR PLACE <FaArrowRight /></button>
         </div>
       </section>
 
