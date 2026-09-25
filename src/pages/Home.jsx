@@ -63,10 +63,10 @@ export default function Home() {
                 {title:"SUPPORTER / DONOR", text:"मैं किसी अच्छे काम को support करना चाहता हूँ।", path:"/Donate", icon:<FaHeart />, tone:"text-[#168a5a] bg-emerald-50 border-emerald-100"},
                 {title:"PARTNER", text:"मेरी संस्था / company / institution Swastik Srijan Foundation के साथ काम कर सकती है।", path:"/PartnerWithUs", icon:<FaHandshake />, tone:"text-[#0b4f86] bg-blue-50 border-blue-100"}
               ].map((item,index) => (
-                <Link key={item.title} to={item.path} className="group relative rounded-3xl border border-slate-200 bg-slate-50/70 p-6 md:p-7 hover:bg-white hover:border-slate-300 hover:shadow-[0_18px_45px_rgba(6,40,74,0.12)] hover:-translate-y-1 transition-all duration-300">
-                  <div className={`w-14 h-14 rounded-2xl ${item.tone} border flex items-center justify-center text-2xl shadow-sm group-hover:scale-105 transition-transform`}>{item.icon}</div>
-                  <h3 className="mt-6 text-xl md:text-2xl font-black text-[#06284a]">{item.title}</h3>
-                  <p className="mt-3 text-base md:text-lg leading-relaxed text-slate-500 min-h-[84px]">{item.text}</p>
+                <Link key={item.title} to={item.path} className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 md:p-7 shadow-[0_10px_30px_rgba(6,40,74,0.06)] hover:border-[#0b4f86]/30 hover:shadow-[0_22px_55px_rgba(6,40,74,0.16)] hover:-translate-y-2 transition-all duration-300 before:absolute before:inset-0 before:bg-gradient-to-br before:from-blue-50/70 before:via-transparent before:to-emerald-50/60 before:opacity-0 hover:before:opacity-100 before:transition-opacity before:duration-300">
+                  <div className={`relative z-10 w-16 h-16 rounded-2xl ${item.tone} border flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 group-hover:rotate-1 transition-all duration-300`}>{item.icon}</div>
+                  <h3 className="relative z-10 mt-6 text-xl md:text-2xl font-black text-[#06284a] group-hover:text-[#0b4f86] transition-colors">{item.title}</h3>
+                  <p className="relative z-10 mt-3 text-base md:text-lg leading-relaxed text-slate-500 min-h-[84px]">{item.text}</p>
                   <span className="group/cta relative mt-5 inline-flex items-center gap-2 overflow-hidden px-6 py-3 rounded-full bg-gradient-to-r from-[#002344] to-[#064b78] text-white text-sm md:text-base font-extrabold tracking-[0.02em] shadow-lg shadow-[#002344]/20 border border-white/10 group-hover:-translate-y-0.5 group-hover:shadow-xl transition-all duration-200"><span className="relative z-10">JOIN / EXPLORE</span><FaArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" /><span className="absolute inset-0 opacity-0 group-hover/cta:opacity-100 bg-gradient-to-r from-[#064b78] to-[#0a668f] transition-opacity duration-200" /></span>
                 </Link>
               ))}
