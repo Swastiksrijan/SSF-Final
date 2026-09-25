@@ -783,40 +783,40 @@ function MeetingResolutions({rows,add,archive}){
   {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
   <div className="bg-white border rounded-2xl overflow-hidden">
    <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">{editingId?"Edit Managing Committee":"Add Managing Committee"}</h3><p className="text-sm text-zinc-500 mt-1">Governance profile only. Membership fees, receipts and membership validity are maintained in Membership & Contribution Register.</p></div>
-   <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID (auto if blank)" className={cls}/>
-    <select value={f.memberType} onChange={e=>set("memberType",e.target.value)} className={cls}><option>Founder Member</option><option>General Member</option><option>संरक्षक सदस्य</option><option>आजीवन सदस्य</option><option>साधारण सदस्य</option><option>सम्माननीय सदस्य</option></select>
-    <select value={f.designation} onChange={e=>set("designation",e.target.value)} className={cls}>{designations.map(x=><option key={x}>{x}</option>)}</select>
-    {f.designation==="Other / Custom"&&<input value={f.customDesignation} onChange={e=>set("customDesignation",e.target.value)} placeholder="Custom Designation" required className={cls}/>}
-    <input value={f.functionalResponsibility} onChange={e=>set("functionalResponsibility",e.target.value)} placeholder="Functional Responsibility" className={cls}/>
-    <input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full Name" required className={cls}/>
-    <input value={f.occupation} onChange={e=>set("occupation",e.target.value)} placeholder="Occupation / Profession" className={cls}/>
-    <select value={f.gender} onChange={e=>set("gender",e.target.value)} className={cls}><option value="">Gender</option><option>Male</option><option>Female</option><option>Other</option><option>Prefer not to say</option></select>
-    <input value={f.fatherHusbandName} onChange={e=>set("fatherHusbandName",e.target.value)} placeholder="Father / Husband Name" className={cls}/>
-    <input type="date" value={f.dob} onChange={e=>set("dob",e.target.value)} title="Date of Birth" className={cls}/>
-    <input value={f.mobile} onChange={e=>set("mobile",e.target.value)} placeholder="Mobile No." className={cls}/>
-    <input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email" className={cls}/>
-    <input value={f.address} onChange={e=>set("address",e.target.value)} placeholder="Address" className={cls}/>
-    <input value={f.city} onChange={e=>set("city",e.target.value)} placeholder="City" className={cls}/>
-    <input value={f.state} onChange={e=>set("state",e.target.value)} placeholder="State" className={cls}/>
-    <input value={f.pinCode} onChange={e=>set("pinCode",e.target.value)} placeholder="PIN Code" className={cls}/>
-    <input value={f.aadhaar} onChange={e=>set("aadhaar",e.target.value)} placeholder="Aadhaar (Optional)" className={cls}/>
-    <input value={f.pan} onChange={e=>set("pan",e.target.value)} placeholder="PAN (Optional)" className={cls}/>
-    <input type="date" value={f.joiningDate} onChange={e=>set("joiningDate",e.target.value)} title="Joining / Admission Date" className={cls}/>
-    <select value={f.status} onChange={e=>set("status",e.target.value)} className={cls}><option>Active</option><option>Ended</option><option>Role Changed</option><option>Resigned</option><option>Removed</option></select>
-    <input type="date" value={f.effectiveFrom} onChange={e=>set("effectiveFrom",e.target.value)} title="Committee Effective From" className={cls}/>
-    <input type="date" value={f.validTill} onChange={e=>set("validTill",e.target.value)} title="Committee Valid Till" className={cls}/>
-    <input type="date" value={f.appointmentDate} onChange={e=>set("appointmentDate",e.target.value)} title="Appointment / Selection Date" className={cls}/>
-    <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / File No." className={cls}/>
-    <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/>
-    <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/>
-    <textarea value={f.responsibilities} onChange={e=>set("responsibilities",e.target.value)} placeholder="Responsibilities / Duties" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/>
-    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" sm:col-span-2 lg:col-span-2 min-h-[90px]"}/>
-    <div className="sm:col-span-2 lg:col-span-4 flex gap-2">
+   <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Member ID</span><input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Auto-generated if blank" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Member Type</span><select value={f.memberType} onChange={e=>set("memberType",e.target.value)} className={cls+" appearance-auto text-zinc-900"}><option value="Founder Member">Founder Member</option><option value="General Member">General Member</option><option value="संरक्षक सदस्य">संरक्षक सदस्य</option><option value="आजीवन सदस्य">आजीवन सदस्य</option><option value="साधारण सदस्य">साधारण सदस्य</option><option value="सम्माननीय सदस्य">सम्माननीय सदस्य</option></select></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Organization Role / Designation</span><select value={f.designation} onChange={e=>set("designation",e.target.value)} className={cls+" appearance-auto text-zinc-900"}>{designations.map(x=><option key={x} value={x}>{x}</option>)}</select></label>
+    {f.designation==="Other / Custom"&&<label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Custom Designation</span><input value={f.customDesignation} onChange={e=>set("customDesignation",e.target.value)} placeholder="Enter designation" required className={cls}/></label>}
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Functional Responsibility</span><input value={f.functionalResponsibility} onChange={e=>set("functionalResponsibility",e.target.value)} placeholder="e.g. Finance & Accounts" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Full Name</span><input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full name" required className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Occupation / Profession</span><input value={f.occupation} onChange={e=>set("occupation",e.target.value)} placeholder="Occupation / profession" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Gender</span><select value={f.gender} onChange={e=>set("gender",e.target.value)} className={cls+" appearance-auto text-zinc-900"}><option value="">Select gender</option><option value="Male">Male</option><option value="Female">Female</option><option value="Other">Other</option><option value="Prefer not to say">Prefer not to say</option></select></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Father / Husband Name</span><input value={f.fatherHusbandName} onChange={e=>set("fatherHusbandName",e.target.value)} placeholder="Father / Husband name" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Date of Birth</span><input type="date" value={f.dob} onChange={e=>set("dob",e.target.value)} className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Mobile No.</span><input value={f.mobile} onChange={e=>set("mobile",e.target.value)} placeholder="Mobile number" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Email</span><input type="email" value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email address" className={cls}/></label>
+    <label className="block sm:col-span-2"><span className="block text-xs font-bold text-zinc-600 mb-1">Address</span><input value={f.address} onChange={e=>set("address",e.target.value)} placeholder="Full address" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">City</span><input value={f.city} onChange={e=>set("city",e.target.value)} placeholder="City" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">State</span><input value={f.state} onChange={e=>set("state",e.target.value)} placeholder="State" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">PIN Code</span><input value={f.pinCode} onChange={e=>set("pinCode",e.target.value)} placeholder="PIN code" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Aadhaar <span className="font-normal">(Optional)</span></span><input value={f.aadhaar} onChange={e=>set("aadhaar",e.target.value)} placeholder="Optional" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">PAN <span className="font-normal">(Optional)</span></span><input value={f.pan} onChange={e=>set("pan",e.target.value)} placeholder="Optional" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Joining / Admission Date</span><input type="date" value={f.joiningDate} onChange={e=>set("joiningDate",e.target.value)} className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Committee Status</span><select value={f.status} onChange={e=>set("status",e.target.value)} className={cls+" appearance-auto text-zinc-900"}><option value="Active">Active</option><option value="Ended">Ended</option><option value="Role Changed">Role Changed</option><option value="Resigned">Resigned</option><option value="Removed">Removed</option></select></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Committee Effective From</span><input type="date" value={f.effectiveFrom} onChange={e=>set("effectiveFrom",e.target.value)} className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Committee Valid Till</span><input type="date" value={f.validTill} onChange={e=>set("validTill",e.target.value)} className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Appointment / Selection Date</span><input type="date" value={f.appointmentDate} onChange={e=>set("appointmentDate",e.target.value)} className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Reference / File No.</span><input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Reference / file number" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Resolution No.</span><input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution number" className={cls}/></label>
+    <label className="block"><span className="block text-xs font-bold text-zinc-600 mb-1">Meeting Date</span><input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls}/></label>
+    <label className="block sm:col-span-2"><span className="block text-xs font-bold text-zinc-600 mb-1">Responsibilities / Duties</span><textarea value={f.responsibilities} onChange={e=>set("responsibilities",e.target.value)} placeholder="Responsibilities / duties" className={cls+" min-h-[90px] resize-y"}/></label>
+    <label className="block sm:col-span-2"><span className="block text-xs font-bold text-zinc-600 mb-1">Remarks</span><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" min-h-[90px] resize-y"}/></label>
+    <div className="sm:col-span-2 lg:col-span-4 flex gap-2 pt-1">
      <button type="submit" disabled={saving} className="flex-1 bg-[#002344] text-white py-3 rounded-xl font-bold disabled:opacity-50">{saving?(editingId?"Updating…":"Saving…"):(editingId?"Update Committee Member":"Save Committee Member Record")}</button>
      {editingId&&<button type="button" onClick={reset} className="px-6 py-3 rounded-xl border border-zinc-300 font-bold">Cancel Edit</button>}
     </div>
-   </form>
+   </form>rm>
   </div>
   <div className="bg-white border rounded-2xl p-5">
    <h3 className="text-xl font-black text-[#002344]">Governance Actions</h3><p className="text-sm text-zinc-500 mt-1">Role change, responsibility changes, resignation, removal and relieving are recorded as separate historical actions.</p>
