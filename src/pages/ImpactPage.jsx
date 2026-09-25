@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FaGraduationCap, FaHeartbeat, FaBriefcase, FaSeedling, FaFutbol, FaChild, FaPaw, FaUsers, FaArrowRight, FaQuoteLeft, FaUniversity } from "react-icons/fa";
 import { useState } from "react";
 import ImpactStories from "../components/ImpactStories";
+import WorkEvidenceBanner from "../components/WorkEvidenceBanner";
 import PageHero from "../components/PageHero";
 import pageHeader from "../assets/page-header.jpg";
 
@@ -128,6 +129,9 @@ export default function ImpactPage() {
                 height="h-[40vh] md:h-[60vh]"
                 overlayOpacity="bg-black/40"
             />
+
+            {/* ================= EVIDENCE & DOCUMENTATION ================= */}
+            <WorkEvidenceBanner page="impact" />
 
             {/* ================= IMPACT APPROACH ================= */}
             <section className="py-20 px-6 relative z-20 -mt-16">
