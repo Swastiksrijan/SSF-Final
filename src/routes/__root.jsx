@@ -18,7 +18,7 @@ function BlogHero() {
     <section className="relative min-h-[48vh] md:min-h-[56vh] flex items-center justify-center overflow-hidden bg-[#001529] text-white">
       <div className="absolute inset-0">
         <OptimizedImage
-          src="/images/real/news_media_1.jpg"
+          src="/images/real/education_girls.jpg"
           alt="Swastik Srijan Foundation stories and community work"
           className="w-full h-full"
           objectFit="cover"
