@@ -61,8 +61,8 @@ const Header = () => {
     { name: "Volunteer", path: "/Volunteer" },
     { name: "Membership", path: "/Members" },
     { name: "Internship", path: "/Internship" },
-    { name: "Nation-Building Movement", path: "/GetInvolved#movement" },
-    { name: "Partnership", path: "/GetInvolved#partner" }
+    { name: "Nation-Building Movement", path: "/GetInvolved" },
+    { name: "Partnership", path: "/GetInvolved" }
   ];
 
   const account = user && (
