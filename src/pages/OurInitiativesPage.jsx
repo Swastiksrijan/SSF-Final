@@ -1,4 +1,5 @@
 import { Link } from '@tanstack/react-router'
+import WorkEvidenceBanner from '../components/WorkEvidenceBanner'
 import { FaArrowRight, FaBookOpen, FaBullhorn, FaChild, FaFemale, FaHandsHelping, FaHeartbeat, FaLeaf, FaMapMarkerAlt, FaPeopleCarry, FaSeedling, FaUserFriends, FaLaptop, FaCertificate, FaGlobeAsia, FaShieldAlt } from 'react-icons/fa'
 
 const initiatives = [
@@ -41,6 +42,8 @@ export default function OurInitiativesPage() {
         <div className="mt-9 flex flex-wrap justify-center gap-3"><Link to="/Donate" className="rounded-full bg-[#FF6600] px-7 py-3.5 font-extrabold shadow-lg transition hover:-translate-y-0.5">Support Our Work</Link><Link to="/Volunteer" className="rounded-full border border-white/30 bg-white/10 px-7 py-3.5 font-extrabold backdrop-blur transition hover:bg-white/15">Become a Volunteer</Link><Link to="/PartnerWithUs" className="rounded-full border border-white/30 px-7 py-3.5 font-extrabold transition hover:bg-white/10">Partner With Us</Link></div>
       </div>
     </section>
+
+    <WorkEvidenceBanner page="initiatives" />
 
     <section className="border-b border-zinc-200 bg-white px-6 py-7"><div className="mx-auto grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-4"><div className="rounded-2xl bg-zinc-50 p-5"><FaGlobeAsia className="text-xl text-[#FF6600]" /><p className="mt-3 text-xs font-extrabold uppercase tracking-wider text-zinc-500">Reach</p><p className="mt-1 font-black">Across India</p></div><div className="rounded-2xl bg-zinc-50 p-5"><FaCertificate className="text-xl text-[#FF6600]" /><p className="mt-3 text-xs font-extrabold uppercase tracking-wider text-zinc-500">Established</p><p className="mt-1 font-black">December 2013</p></div><div className="rounded-2xl bg-zinc-50 p-5"><FaMapMarkerAlt className="text-xl text-[#FF6600]" /><p className="mt-3 text-xs font-extrabold uppercase tracking-wider text-zinc-500">Registered Office</p><p className="mt-1 font-black">Rewa, Madhya Pradesh</p></div><div className="rounded-2xl bg-zinc-50 p-5"><FaShieldAlt className="text-xl text-[#FF6600]" /><p className="mt-3 text-xs font-extrabold uppercase tracking-wider text-zinc-500">Approach</p><p className="mt-1 font-black">Responsible & Inclusive</p></div></div></section>
 
