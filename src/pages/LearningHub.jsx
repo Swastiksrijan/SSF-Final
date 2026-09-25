@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { FaGraduationCap, FaChalkboardTeacher, FaLaptopCode, FaRocket, FaBookOpen, FaUserCheck, FaRupeeSign } from "react-icons/fa";
 import { IoCheckmarkCircleSharp } from "react-icons/io5";
 import HygieneModule from "../components/HygieneModule";
+import footerImg4 from "../assets/footer-gallery-4.png";
 
 export default function LearningHub() {
   return (
@@ -19,7 +20,7 @@ export default function LearningHub() {
               transition={{ duration: 1 }}
               className="mb-8 rounded-2xl overflow-hidden shadow-2xl border border-zinc-700"
             >
-              <img src="/images/uploads/academy-hero-banner-children.jpg" alt="The SSF National Academy - Empowering Every Child for a Stronger India" className="w-full h-auto" />
+              <img src={footerImg4} alt="Swastik Srijan Foundation Learning Hub" className="w-full h-auto object-cover" />
             </motion.div>
 
             <motion.div
