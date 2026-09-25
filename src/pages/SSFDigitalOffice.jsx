@@ -707,40 +707,37 @@ function ManagingCommittee({rows,add,archive,token}){
     if(!r.ok)return;
     const members=await r.json();
     const existingIds=new Set(committeeRows.map(x=>String((x.data||{}).memberId||"").trim()).filter(Boolean));
-    const committeeRoles=new Set(["President","Vice President","Secretary","Joint Secretary","Treasurer","Member","Executive Committee Member"]);
-    const candidates=(Array.isArray(members)?members:[]).filter(x=>{
-     const d=x.data||{}; const role=String(d.organizationRole||d.designation||"").trim();
-     return d.memberId && d.fullName && role && (committeeRoles.has(role)||role.toLowerCase().includes("committee"));
-    });
+    const roleById={
+     "SSF-MBR-00001":"President","SSF-MBR-00014":"Vice President","SSF-MBR-00002":"Secretary",
+     "SSF-MBR-00003":"Treasurer","SSF-MBR-00004":"Joint Secretary","SSF-MBR-00015":"Executive Committee Member",
+     "SSF-MBR-00016":"Member","SSF-MBR-00017":"Member","SSF-MBR-00018":"Member"
+    };
+    const candidates=(Array.isArray(members)?members:[]).filter(x=>{const d=x.data||{};return d.memberId&&d.fullName&&roleById[String(d.memberId).trim()];});
     if(!candidates.length)return;
     setSyncing(true);
     for(const x of candidates){
      if(cancelled)break;
      const d=x.data||{}, memberId=String(d.memberId).trim();
      if(existingIds.has(memberId))continue;
-     const role=String(d.organizationRole||d.designation||"").trim();
-     const status=String(d.membershipStatus||"Active").toLowerCase()==="active"?"active":"revoked";
+     const role=roleById[memberId];
+     const effectiveFrom=d.joiningDate||new Date().toISOString().slice(0,10);
      const data={
-      fullName:String(d.fullName||"").trim(),memberId,memberType:d.memberType||"General Member",membershipNo:d.membershipNo||"",
-      fatherHusbandName:d.fatherHusbandName||"",dob:d.dob||"",occupation:d.occupation||"",gender:d.gender||"",
-      mobile:d.mobile||"",email:d.email||"",address:d.address||"",city:d.city||"",state:d.state||"",pinCode:d.pinCode||"",
-      aadhaar:d.aadhaar||"",pan:d.pan||"",joiningDate:d.joiningDate||"",receiptNo:d.receiptNo||"",membershipValidTill:d.membershipValidTill||"",
-      membershipStatus:d.membershipStatus||"Active",membershipFee:d.membershipFee||"",designation:role,
-      functionalResponsibility:d.functionalResponsibility||"",status:d.membershipStatus||"Active",effectiveFrom:d.joiningDate||new Date().toISOString().slice(0,10),
-      validTill:d.membershipValidTill||"",appointmentDate:d.joiningDate||"",referenceNo:"",resolutionNo:"",meetingDate:"",
-      responsibilities:d.functionalResponsibility||"",remarks:"Imported from Members Register",action:"Committee Member Register / Update"
+      ...d,fullName:String(d.fullName||"").trim(),memberId,designation:role,
+      functionalResponsibility:d.functionalResponsibility||"",status:d.membershipStatus||"Active",
+      effectiveFrom,appointmentDate:effectiveFrom,referenceNo:"",resolutionNo:"",meetingDate:"",
+      responsibilities:d.functionalResponsibility||"",remarks:d.remarks||"Imported from Members Register",
+      action:"Committee Member Register / Update"
      };
-     const ok=await add("managingCommittee",{recordDate:data.effectiveFrom,recordType:"Committee Member",status,data});
+     const ok=await add("managingCommittee",{recordDate:effectiveFrom,recordType:"Committee Member",status:String(d.membershipStatus||"Active").toLowerCase(),data});
      if(ok)existingIds.add(memberId);
     }
     if(!cancelled)setNotice("Managing Committee records synchronized from Members Register.");
-   }catch(e){ if(!cancelled)setNotice("Members Register sync could not be completed."); }
+   }catch(e){if(!cancelled)setNotice("Members Register sync could not be completed.");}
    finally{if(!cancelled)setSyncing(false);}
   };
   syncFromMembers();
   return ()=>{cancelled=true;};
- },[token,rows.length]);
- const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
+ },[token,rows.length]); const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
  const save=async e=>{
    if(saving)return;
   e.preventDefault();
