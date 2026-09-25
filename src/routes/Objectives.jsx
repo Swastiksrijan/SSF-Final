@@ -69,9 +69,30 @@ const shareObjective = async (objective) => {
 function ObjectivesPage() {
   return (
     <div className="w-full overflow-hidden bg-white">
-      <section className="relative flex min-h-[40vh] w-full justify-center bg-zinc-50 px-4 pb-12 pt-24">
-        <div className="container mx-auto flex justify-center">
-          <motion.img src="/images/uploads/ourobjective.jpeg" alt="Our Objectives" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.7 }} className="h-auto max-h-[70vh] w-full rounded-2xl border border-zinc-100 object-contain shadow-xl" />
+      <section className="relative min-h-[58vh] md:min-h-[72vh] w-full overflow-hidden bg-[#001529] text-white">
+        <div className="absolute inset-0 grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
+          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} src="/images/real/classroom-floor-seating.jpg" alt="Community education session" className="h-full w-full object-cover" />
+          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.08 }} src="/images/real/women_empowerment_tailoring.jpg" alt="Women skill development" className="h-full w-full object-cover" />
+          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.16 }} src="/images/real/children-playing-park.jpg" alt="Children and community development" className="h-full w-full object-cover" />
+          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.24 }} src="/images/tree-planting-1.jpg" alt="Environmental sustainability activity" className="h-full w-full object-cover" />
+        </div>
+        <div className="absolute inset-0 bg-[#001529]/58"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#001529]/25 via-[#001529]/55 to-[#001529]/90"></div>
+        <div className="relative z-10 flex min-h-[58vh] md:min-h-[72vh] items-center justify-center px-5 py-24 text-center">
+          <div className="max-w-5xl">
+            <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.22em] text-[#7dd3a8]">
+              Swastik Srijan Foundation / हमारे उद्देश्य
+            </p>
+            <h1 className="mt-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight text-white">
+              Our Objectives
+            </h1>
+            <p className="mx-auto mt-4 max-w-3xl text-lg md:text-2xl text-[#f1f5f9] leading-relaxed">
+              Education, health, skills, community development and sustainable social change.
+            </p>
+            <p className="mx-auto mt-2 max-w-3xl text-base md:text-xl text-[#d5e1ea] leading-relaxed">
+              शिक्षा, स्वास्थ्य, कौशल, सामुदायिक विकास और सतत सामाजिक परिवर्तन की दिशा में हमारे उद्देश्य।
+            </p>
+          </div>
         </div>
       </section>
 
