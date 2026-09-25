@@ -11,7 +11,7 @@ export default function MissionPage() {
       {/* ================= HERO SECTION ================= */}
       <section className="relative min-h-[48vh] md:min-h-[62vh] w-full overflow-hidden bg-[#001529] text-white">
         <img
-          src="/images/real/girls-study-group-mat.jpg"
+          src="/src/assets/page-header.jpg"
           alt="Community education and participation"
           className="absolute inset-0 h-full w-full object-cover object-center scale-105"
         />
