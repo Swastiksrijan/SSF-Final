@@ -48,26 +48,26 @@ export default function Home() {
   return (
     <div className="w-full bg-white font-sans text-zinc-800">
       <section className="relative min-h-[85vh] flex items-center pt-20 pb-20 overflow-hidden bg-[#001529]"><div className="absolute inset-0 z-0"><OptimizedImage src={pageHeader} alt="Swastik Srijan Foundation community activity" className="w-full h-full object-cover brightness-[0.8] contrast-[1.08]" /><div className="absolute inset-0 bg-gradient-to-r from-[#001529] via-[#001529]/70 to-[#001529]/15" /></div><div className="container mx-auto px-6 relative z-10 flex items-center h-full"><motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-4xl space-y-7"><div className="flex items-center gap-3"><div className="h-[2px] w-12 bg-[#FF6600]" /><span className="text-white font-bold tracking-widest uppercase text-sm">Swastik Srijan Foundation Samiti</span></div><h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight drop-shadow-2xl">Creating Change.<br />Inspiring Lives.<span className="block text-2xl md:text-4xl mt-4 font-normal text-zinc-100">सहयोग • कौशल • जागरूकता • सृजन</span></h1><p className="max-w-2xl text-lg md:text-xl text-zinc-100 leading-relaxed">Working for inclusive community development across India through education, skills, health, awareness and meaningful partnerships.</p><div className="flex flex-col sm:flex-row flex-wrap gap-4 pt-2"><Link to="/Join" className="px-8 py-4 bg-[#FF6600] text-white font-bold rounded-full hover:bg-[#e65c00] transition-all shadow-xl text-lg text-center">Join SSF</Link><Link to="/Join" className="px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all text-lg text-center">Member</Link><Link to="/Join" className="px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white/70 text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all text-lg text-center">Volunteer</Link><a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noreferrer noopener" className="px-8 py-4 bg-white text-[#002344] font-bold rounded-full hover:bg-zinc-100 transition-all text-lg text-center">Donate <FaHeart className="inline ml-2 text-[#FF6600]" /></a></div></motion.div></div></section>
-      <section className="relative z-20 -mt-2 px-4 pb-8">
-        <div className="container mx-auto max-w-6xl">
-          <div className="rounded-[2rem] bg-white shadow-2xl border border-zinc-100 overflow-hidden">
-            <div className="px-5 pt-7 pb-4 text-center">
-              <p className="text-[#FF6600] font-bold text-xs md:text-sm tracking-[0.2em] uppercase">Be Part of the Journey</p>
-              <h2 className="text-2xl md:text-4xl font-black text-[#002344] mt-2">आज Swastik Srijan Foundation से जुड़िए।</h2>
-              <p className="text-zinc-500 mt-2 text-sm md:text-base">आपके लिए जुड़ने का एक रास्ता है — अपनी भूमिका चुनिए।</p>
+      <section className="relative z-20 -mt-2 px-4 pb-10">
+        <div className="container mx-auto max-w-7xl">
+          <div className="rounded-[2.25rem] bg-white shadow-[0_24px_70px_rgba(6,40,74,0.12)] border border-slate-200 overflow-hidden">
+            <div className="px-6 md:px-10 pt-9 md:pt-12 pb-8 text-center">
+              <p className="text-[#168a5a] font-extrabold text-sm md:text-base tracking-[0.18em] uppercase">Be Part of the Journey</p>
+              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#06284a] mt-3 leading-tight">आज Swastik Srijan Foundation से जुड़िए।</h2>
+              <p className="text-slate-500 mt-4 text-base md:text-xl leading-relaxed">आपके लिए जुड़ने का एक रास्ता है — अपनी भूमिका चुनिए।</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 border-t border-zinc-100">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 px-4 md:px-6 pb-6">
               {[
-                {title:"MEMBER", text:"मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", path:"/Join", icon:<FaUsers />, tone:"text-[#0b4f86] bg-blue-50"},
-                {title:"VOLUNTEER", text:"मेरे पास समय / skill है, मैं काम करना चाहता हूँ।", path:"/Join", icon:<FaHandsHelping />, tone:"text-[#168a5a] bg-emerald-50"},
-                {title:"SUPPORTER / DONOR", text:"मैं किसी अच्छे काम को support करना चाहता हूँ।", path:"/Donate", icon:<FaHeart />, tone:"text-[#168a5a] bg-emerald-50"},
-                {title:"PARTNER", text:"मेरी संस्था / company / institution Swastik Srijan Foundation के साथ काम कर सकती है।", path:"/PartnerWithUs", icon:<FaHandshake />, tone:"text-[#0b4f86] bg-blue-50"}
+                {title:"MEMBER", text:"मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", path:"/Join", icon:<FaUsers />, tone:"text-[#0b4f86] bg-blue-50 border-blue-100"},
+                {title:"VOLUNTEER", text:"मेरे पास समय / skill है, मैं काम करना चाहता हूँ।", path:"/Join", icon:<FaHandsHelping />, tone:"text-[#168a5a] bg-emerald-50 border-emerald-100"},
+                {title:"SUPPORTER / DONOR", text:"मैं किसी अच्छे काम को support करना चाहता हूँ।", path:"/Donate", icon:<FaHeart />, tone:"text-[#168a5a] bg-emerald-50 border-emerald-100"},
+                {title:"PARTNER", text:"मेरी संस्था / company / institution Swastik Srijan Foundation के साथ काम कर सकती है।", path:"/PartnerWithUs", icon:<FaHandshake />, tone:"text-[#0b4f86] bg-blue-50 border-blue-100"}
               ].map((item,index) => (
-                <Link key={item.title} to={item.path} className="group p-6 md:p-7 border-b sm:border-b-0 sm:border-r last:border-r-0 border-zinc-100 hover:bg-zinc-50 transition-all">
-                  <div className={`w-12 h-12 rounded-2xl ${item.tone} flex items-center justify-center text-xl`}>{item.icon}</div>
-                  <h3 className="mt-5 text-lg font-black text-[#002344]">{item.title}</h3>
-                  <p className="mt-2 text-sm leading-relaxed text-zinc-600 min-h-[56px]">{item.text}</p>
-                  <span className="mt-4 inline-flex items-center gap-2 text-sm font-extrabold text-[#FF6600]">JOIN / EXPLORE <FaArrowRight className="group-hover:translate-x-1 transition-transform" /></span>
+                <Link key={item.title} to={item.path} className="group relative rounded-3xl border border-slate-200 bg-slate-50/70 p-6 md:p-7 hover:bg-white hover:border-slate-300 hover:shadow-[0_18px_45px_rgba(6,40,74,0.12)] hover:-translate-y-1 transition-all duration-300">
+                  <div className={`w-14 h-14 rounded-2xl ${item.tone} border flex items-center justify-center text-2xl shadow-sm group-hover:scale-105 transition-transform`}>{item.icon}</div>
+                  <h3 className="mt-6 text-xl md:text-2xl font-black text-[#06284a]">{item.title}</h3>
+                  <p className="mt-3 text-base md:text-lg leading-relaxed text-slate-500 min-h-[84px]">{item.text}</p>
+                  <span className="mt-5 inline-flex items-center gap-2 px-5 py-3 rounded-full bg-[#06284a] text-white text-sm md:text-base font-extrabold shadow-md group-hover:bg-[#168a5a] transition-colors">JOIN / EXPLORE <FaArrowRight className="group-hover:translate-x-1 transition-transform" /></span>
                 </Link>
               ))}
             </div>
