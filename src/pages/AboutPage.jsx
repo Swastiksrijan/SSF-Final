@@ -31,13 +31,37 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="py-10 bg-[#002344] text-white"><div className="container mx-auto px-6 max-w-6xl grid grid-cols-2 md:grid-cols-5 gap-5 text-center">
-        <div><FaCalendarAlt className="mx-auto text-[#fb8500] text-2xl mb-2" /><p className="font-bold">December 2013</p><p className="text-xs text-zinc-300 mt-1">Established</p></div>
-        <div><FaShieldAlt className="mx-auto text-[#fb8500] text-2xl mb-2" /><p className="font-bold text-sm md:text-base">05/22/03/11448/13</p><p className="text-xs text-zinc-300 mt-1">Registration No.</p></div>
-        <div><FaBullseye className="mx-auto text-[#fb8500] text-2xl mb-2" /><p className="font-bold">MP Societies Act</p><p className="text-xs text-zinc-300 mt-1">1973</p></div>
-        <div><FaGlobeAsia className="mx-auto text-[#fb8500] text-2xl mb-2" /><p className="font-bold">Across India</p><p className="text-xs text-zinc-300 mt-1">Area of Work</p></div>
-        <div><FaHeart className="mx-auto text-[#fb8500] text-2xl mb-2" /><p className="font-bold">Rewa, M.P.</p><p className="text-xs text-zinc-300 mt-1">Registered Office</p></div>
-      </div></section>
+      <section className="relative py-12 md:py-16 bg-[#002344] text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-br from-[#001529] via-[#002344] to-[#00345f]"></div>
+        <div className="relative container mx-auto px-5 md:px-8 max-w-7xl">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 md:gap-6">
+            <div className="rounded-3xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-6 py-7 md:px-7 md:py-8 text-center shadow-xl">
+              <FaCalendarAlt className="mx-auto text-[#fb8500] text-3xl md:text-4xl mb-4" />
+              <p className="text-xs md:text-sm font-bold uppercase tracking-[0.18em] text-[#7dd3a8]">Established</p>
+              <p className="mt-2 text-2xl md:text-3xl lg:text-4xl font-black tracking-tight">December 2013</p>
+              <p className="mt-2 text-sm md:text-base text-zinc-300">Foundation established</p>
+            </div>
+            <div className="rounded-3xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-6 py-7 md:px-7 md:py-8 text-center shadow-xl">
+              <FaShieldAlt className="mx-auto text-[#fb8500] text-3xl md:text-4xl mb-4" />
+              <p className="text-xs md:text-sm font-bold uppercase tracking-[0.18em] text-[#7dd3a8]">Registration</p>
+              <p className="mt-2 text-xl md:text-2xl lg:text-3xl font-black tracking-tight break-words">05/22/03/11448/13</p>
+              <p className="mt-2 text-sm md:text-base text-zinc-300">MP Societies Act, 1973</p>
+            </div>
+            <div className="rounded-3xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-6 py-7 md:px-7 md:py-8 text-center shadow-xl">
+              <FaGlobeAsia className="mx-auto text-[#fb8500] text-3xl md:text-4xl mb-4" />
+              <p className="text-xs md:text-sm font-bold uppercase tracking-[0.18em] text-[#7dd3a8]">Area of Work</p>
+              <p className="mt-2 text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">PAN INDIA</p>
+              <p className="mt-2 text-sm md:text-base text-zinc-300">Working across India</p>
+            </div>
+            <div className="rounded-3xl border border-white/15 bg-white/[0.06] backdrop-blur-sm px-6 py-7 md:px-7 md:py-8 text-center shadow-xl">
+              <FaHeart className="mx-auto text-[#fb8500] text-3xl md:text-4xl mb-4" />
+              <p className="text-xs md:text-sm font-bold uppercase tracking-[0.18em] text-[#7dd3a8]">Registered Office</p>
+              <p className="mt-2 text-3xl md:text-4xl lg:text-5xl font-black tracking-tight">REWA, M.P.</p>
+              <p className="mt-2 text-sm md:text-base text-zinc-300">Madhya Pradesh, India</p>
+            </div>
+          </div>
+        </div>
+      </section>
 
       <section className="py-20 bg-white"><div className="container mx-auto px-6 max-w-4xl text-center">
         <p className="text-[#fb8500] font-bold text-sm tracking-[0.2em] uppercase">About SSF</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2 mb-8">Who We Are | हम कौन हैं</h2>
