@@ -100,8 +100,8 @@ function ObjectivesPage() {
         <div className="container mx-auto px-6">
           <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
             {[["December 2013", "Established"], ["05/22/03/11448/13", "Registration No."], ["MP Societies Act", "Registered Under"], ["Rewa, M.P.", "Registered Office"], ["Across India", "Area of Work"]].map(([value, label], index) => (
-              <motion.div key={label} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="min-h-[150px] rounded-3xl border border-white/15 bg-white/[0.08] px-5 py-7 text-center backdrop-blur-md shadow-xl flex flex-col items-center justify-center">
-                <div className="text-2xl font-black leading-tight tracking-tight text-[#FFB066] sm:text-3xl xl:text-[2rem]">{value}</div>
+              <motion.div key={label} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="min-h-[150px] min-w-0 rounded-3xl border border-white/15 bg-white/[0.08] px-4 py-7 text-center backdrop-blur-md shadow-xl flex flex-col items-center justify-center overflow-hidden">
+                <div className="w-full min-w-0 break-words text-xl font-black leading-tight tracking-tight text-[#FFB066] sm:text-2xl lg:text-xl xl:text-2xl">{value}</div>
                 <div className="mt-3 text-xs font-bold uppercase tracking-[0.16em] text-white/65 sm:text-sm">{label}</div>
               </motion.div>
             ))}
