@@ -17,7 +17,7 @@ import {
   FaWheelchair,
   FaPaw,
   FaMusic,
-  FaShareAlt,
+  FaShare | साझा करेंAlt,
 } from "react-icons/fa";
 
 export const Route = createFileRoute("/Objectives")({
@@ -50,7 +50,7 @@ const shareObjective = async (objective) => {
         const mime = blob.type || "image/jpeg";
         const extension = mime.includes("png") ? "png" : "jpg";
         const file = new File([blob], `SSF-${objective.id}.${extension}`, { type: mime });
-        if (navigator.canShare?.({ files: [file] })) {
+        if (navigator.canShare | साझा करें?.({ files: [file] })) {
           await navigator.share({ title: `SSF | ${objective.title}`, text: `${text}\n\n${url}`, files: [file] });
           return;
         }
@@ -84,10 +84,10 @@ function ObjectivesPage() {
               Swastik Srijan Foundation / हमारे उद्देश्य
             </p>
             <h1 className="mt-4 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight text-white">
-              Our Objectives
+              Our Objective | हमारा उद्देश्यs | हमारे उद्देश्य
             </h1>
             <p className="mx-auto mt-4 max-w-3xl text-lg md:text-2xl text-[#f1f5f9] leading-relaxed">
-              Education, health, skills, community development and sustainable social change.
+              Education, health, skills, community development and sustainable social change. शिक्षा, स्वास्थ्य, कौशल, सामुदायिक विकास और सतत सामाजिक परिवर्तन।
             </p>
             <p className="mx-auto mt-2 max-w-3xl text-base md:text-xl text-[#d5e1ea] leading-relaxed">
               शिक्षा, स्वास्थ्य, कौशल, सामुदायिक विकास और सतत सामाजिक परिवर्तन की दिशा में हमारे उद्देश्य।
@@ -99,7 +99,7 @@ function ObjectivesPage() {
       <section className="bg-[#002344] py-8 text-white">
         <div className="container mx-auto px-6">
           <div className="mx-auto grid max-w-7xl grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-5">
-            {[["December 2013", "Established"], ["05/22/03/11448/13", "Registration No."], ["MP Societies Act", "Registered Under"], ["Rewa, M.P.", "Registered Office"], ["Across India", "Area of Work"]].map(([value, label], index) => (
+            {[["December 2013", "Established | स्थापना"], ["05/22/03/11448/13", "Registration No. | पंजीकरण संख्या"], ["MP Societies Act", "Registered Under | पंजीकृत अधिनियम"], ["Rewa, M.P.", "Registered Office | पंजीकृत कार्यालय"], ["Across India", "Area of Work | कार्यक्षेत्र"]].map(([value, label], index) => (
               <motion.div key={label} initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.08 }} className="min-h-[150px] min-w-0 rounded-3xl border border-white/15 bg-white/[0.08] px-4 py-7 text-center backdrop-blur-md shadow-xl flex flex-col items-center justify-center overflow-hidden">
                 <div className="w-full min-w-0 break-words text-xl font-black leading-tight tracking-tight text-[#FFB066] sm:text-2xl lg:text-xl xl:text-2xl">{value}</div>
                 <div className="mt-3 text-xs font-bold uppercase tracking-[0.16em] text-white/65 sm:text-sm">{label}</div>
@@ -116,28 +116,28 @@ function ObjectivesPage() {
               <div className="grid lg:grid-cols-2">
                 <div className="h-[330px] overflow-hidden lg:h-auto"><img src="/images/real/children-playing-park.jpg" alt="Foundation objectives" className="h-full w-full object-cover" /></div>
                 <div className="flex flex-col justify-center bg-gradient-to-br from-[#002344] to-[#003366] p-9 text-white md:p-14">
-                  <p className="mb-3 text-xs font-black uppercase tracking-[0.2em] text-[#FFB066]">Our Objective</p>
-                  <h2 className="mb-6 text-3xl font-serif font-bold text-[#fb8500] md:text-4xl">Promoting Holistic Development</h2>
-                  <p className="mb-6 text-xl font-medium leading-relaxed md:text-2xl">To promote holistic development of all sections of society through education, health, empowerment, and ethical values.</p>
+                  <p className="mb-3 text-xs font-black uppercase tracking-[0.2em] text-[#FFB066]">Our Objective | हमारा उद्देश्य</p>
+                  <h2 className="mb-6 text-3xl font-serif font-bold text-[#fb8500] md:text-4xl">Promoting Holistic Development | समग्र विकास को बढ़ावा देना</h2>
+                  <p className="mb-6 text-xl font-medium leading-relaxed md:text-2xl">To promote holistic development of all sections of society through education, health, empowerment, and ethical values.<br/>शिक्षा, स्वास्थ्य, सशक्तिकरण और नैतिक मूल्यों के माध्यम से समाज के सभी वर्गों के समग्र विकास को बढ़ावा देना।</p>
                   <p className="text-lg italic leading-relaxed opacity-90">समाज के प्रत्येक वर्ग के सर्वांगीण विकास हेतु शिक्षा, स्वास्थ्य, सशक्तिकरण और नैतिक मूल्यों के माध्यम से आत्मनिर्भर भारत का निर्माण करना।</p>
                 </div>
               </div>
             </motion.div>
 
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16 text-center">
-              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#fb8500]">Purpose & Direction</p>
-              <h3 className="mt-2 mb-6 text-3xl font-serif font-bold text-[#002344] md:text-4xl">Objectives in Perspective</h3>
+              <p className="text-xs font-black uppercase tracking-[0.2em] text-[#fb8500]">Purpose & Direction | उद्देश्य एवं दिशा</p>
+              <h3 className="mt-2 mb-6 text-3xl font-serif font-bold text-[#002344] md:text-4xl">Objectives in Perspective | उद्देश्यों का परिप्रेक्ष्य</h3>
               <div className="mx-auto max-w-4xl space-y-5 text-lg font-medium leading-relaxed text-zinc-600">
-                <p>The objectives of Swastik Srijan Foundation focus on social equity, human dignity, and sustainable development. We work to create positive social change through education, healthcare, women and child welfare, environmental protection, and livelihood generation.</p>
+                <p>The objectives of Swastik Srijan Foundation focus on social equity, human dignity, and sustainable development.<br/>स्वस्तिक सृजन फाउंडेशन के उद्देश्य सामाजिक समानता, मानव गरिमा और सतत विकास पर केंद्रित हैं।<br/><br/>We work to create positive social change through education, healthcare, women and child welfare, environmental protection, and livelihood generation.<br/>हम शिक्षा, स्वास्थ्य, महिला एवं बाल कल्याण, पर्यावरण संरक्षण और आजीविका के माध्यम से सकारात्मक सामाजिक परिवर्तन के लिए कार्य करते हैं।</p>
                 <p className="italic">स्वस्तिक सृजन फाउंडेशन के उद्देश्य सामाजिक समानता, मानव गरिमा और सतत विकास पर केंद्रित हैं। हम शिक्षा, स्वास्थ्य, महिला एवं बाल कल्याण, पर्यावरण संरक्षण और रोजगार के माध्यम से सकारात्मक सामाजिक परिवर्तन हेतु कार्य करते हैं।</p>
               </div>
             </motion.div>
 
             <div className="mb-20">
               <div className="mb-10 text-center">
-                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#fb8500]">10 Objective Areas</p>
-                <h3 className="mt-2 text-3xl font-serif font-bold text-[#002344] md:text-4xl">Our Objectives | हमारे उद्देश्य</h3>
-                <p className="mx-auto mt-3 max-w-3xl text-zinc-500">हर उद्देश्य को एक स्वतंत्र, photo-based share card के रूप में प्रस्तुत किया गया है। कार्ड को सीधे WhatsApp या अन्य apps पर साझा किया जा सकता है।</p>
+                <p className="text-xs font-black uppercase tracking-[0.2em] text-[#fb8500]">10 Objective Areas | 10 प्रमुख उद्देश्य क्षेत्र</p>
+                <h3 className="mt-2 text-3xl font-serif font-bold text-[#002344] md:text-4xl">Our Objective | हमारा उद्देश्यs | हमारे उद्देश्य | हमारे उद्देश्य</h3>
+                <p className="mx-auto mt-3 max-w-3xl text-zinc-500">Each objective is presented as an independent, photo-based share card that can be shared directly on WhatsApp or other apps.<br/>प्रत्येक उद्देश्य को एक स्वतंत्र फोटो-आधारित शेयर कार्ड के रूप में प्रस्तुत किया गया है, जिसे सीधे WhatsApp या अन्य ऐप्स पर साझा किया जा सकता है।</p>
               </div>
 
               <div className="grid gap-8 md:grid-cols-2">
@@ -165,8 +165,8 @@ function ObjectivesPage() {
 
                       <div className="mt-6 flex items-center justify-between gap-3 border-t border-zinc-100 pt-5">
                         <span className="text-xs font-bold text-zinc-400">SSF • Swastik Srijan Foundation</span>
-                        <button type="button" onClick={() => shareObjective(objective)} className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${objective.tone} px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg active:scale-95`} aria-label={`Share ${objective.title} objective`}>
-                          <FaShareAlt /> Share
+                        <button type="button" onClick={() => shareObjective(objective)} className={`inline-flex items-center gap-2 rounded-full bg-gradient-to-r ${objective.tone} px-5 py-2.5 text-sm font-bold text-white shadow-md transition hover:-translate-y-0.5 hover:shadow-lg active:scale-95`} aria-label={`Share | साझा करें ${objective.title} objective`}>
+                          <FaShare | साझा करेंAlt /> Share | साझा करें
                         </button>
                       </div>
                     </div>
@@ -177,16 +177,16 @@ function ObjectivesPage() {
 
             <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16 rounded-[2.5rem] border border-zinc-200 bg-zinc-50 p-8 md:p-12">
               <div className="mx-auto max-w-5xl">
-                <div className="mb-8 text-center"><p className="text-xs font-black uppercase tracking-[0.2em] text-[#fb8500]">Registered Scope</p><h3 className="mt-2 text-3xl font-serif font-bold text-[#002344] md:text-4xl">Our Broader Areas of Work</h3><p className="mx-auto mt-4 max-w-3xl text-zinc-600 leading-7">The summary above highlights our principal focus areas. Our registered objectives are broader and provide scope for work in education, skills, health, women and children, rural development, environment, social awareness and other community-focused areas, subject to applicable rules and available resources.</p></div>
+                <div className="mb-8 text-center"><p className="text-xs font-black uppercase tracking-[0.2em] text-[#fb8500]">Registered Scope | पंजीकृत कार्यक्षेत्र</p><h3 className="mt-2 text-3xl font-serif font-bold text-[#002344] md:text-4xl">Our Broader Areas of Work | हमारे व्यापक कार्यक्षेत्र</h3><p className="mx-auto mt-4 max-w-3xl text-zinc-600 leading-7">The summary above highlights our principal focus areas. Our registered objectives are broader and provide scope for work in education, skills, health, women and children, rural development, environment, social awareness and other community-focused areas, subject to applicable rules and available resources.<br/>ऊपर दिया गया सारांश हमारे प्रमुख कार्यक्षेत्रों को दर्शाता है। हमारे पंजीकृत उद्देश्य व्यापक हैं और लागू नियमों तथा उपलब्ध संसाधनों के अनुसार शिक्षा, कौशल, स्वास्थ्य, महिला एवं बाल विकास, ग्रामीण विकास, पर्यावरण, सामाजिक जागरूकता तथा अन्य समुदाय-केंद्रित क्षेत्रों में कार्य की गुंजाइश प्रदान करते हैं।</p></div>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{["Education & Knowledge", "Skill Development & Livelihood", "Women & Child Development", "Health & Well-being", "Environment & Natural Resources", "Agriculture & Rural Development", "Social Justice & Awareness", "Disability, Elderly & Rehabilitation", "Animal & Wildlife Protection", "Cultural, Creative & Community Development"].map((area) => <div key={area} className="flex items-center gap-3 rounded-2xl border border-zinc-100 bg-white p-4 shadow-sm"><FaCheckCircle className="shrink-0 text-[#fb8500]" /><span className="font-bold text-zinc-700">{area}</span></div>)}</div>
-                <p className="mt-6 text-center text-xs leading-6 text-zinc-500">This website section is a concise public summary and does not replace the Foundation’s registration documents, memorandum or rules.</p>
+                <p className="mt-6 text-center text-xs leading-6 text-zinc-500">This website section is a concise public summary and does not replace the Foundation’s registration documents, memorandum or rules.<br/>यह वेबसाइट अनुभाग एक संक्षिप्त सार्वजनिक विवरण है और फाउंडेशन के पंजीकरण दस्तावेजों, मेमोरेंडम या नियमों का स्थान नहीं लेता।</p>
               </div>
             </motion.section>
 
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-col justify-center gap-6 rounded-[2.5rem] border border-zinc-200 bg-zinc-50 p-10 sm:flex-row md:p-12">
-              <Link to="/Mission" className="btn-secondary border-[#002344] text-[#002344] hover:bg-[#002344] hover:text-white">Our Mission</Link>
-              <Link to="/Vision" className="btn-secondary border-[#fb8500] text-[#fb8500] hover:bg-[#fb8500] hover:text-white">Our Vision</Link>
-              <Link to="/Campaign" className="btn-secondary border-[#d90429] text-[#d90429] hover:bg-[#d90429] hover:text-white">Project Focus Areas</Link>
+              <Link to="/Mission" className="btn-secondary border-[#002344] text-[#002344] hover:bg-[#002344] hover:text-white">Our Mission | हमारा मिशन</Link>
+              <Link to="/Vision" className="btn-secondary border-[#fb8500] text-[#fb8500] hover:bg-[#fb8500] hover:text-white">Our Vision | हमारा विज़न</Link>
+              <Link to="/Campaign" className="btn-secondary border-[#d90429] text-[#d90429] hover:bg-[#d90429] hover:text-white">Project Focus Areas | परियोजना के प्रमुख क्षेत्र</Link>
             </motion.div>
           </div>
         </div>
@@ -195,9 +195,9 @@ function ObjectivesPage() {
       <section className="relative overflow-hidden bg-[#001529] py-24">
         <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.03]" />
         <div className="container relative z-10 mx-auto px-6"><motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mx-auto max-w-4xl space-y-8 text-center">
-          <h2 className="text-4xl font-serif font-bold leading-tight text-white lg:text-5xl">Build a Just and Self-Reliant India With Us</h2>
-          <p className="text-xl font-medium text-zinc-400">यदि आपके विचार, सिद्धांत या उद्देश्य हमारी संस्था से कहीं भी मेल खाते हैं, तो हमसे जुड़ने में कोई संकोच न करें।</p>
-          <div className="flex flex-col justify-center gap-6 pt-6 sm:flex-row"><Link to="/Volunteer" className="btn-cta px-12 py-5 text-lg">Join Our Movement</Link><Link to="/Contact" className="btn-secondary border-white px-12 py-5 text-lg text-white hover:bg-white hover:text-[#001529]">Contact Us</Link></div>
+          <h2 className="text-4xl font-serif font-bold leading-tight text-white lg:text-5xl">Build a Just and Self-Reliant India With Us | हमारे साथ न्यायपूर्ण और आत्मनिर्भर भारत का निर्माण करें</h2>
+          <p className="text-xl font-medium text-zinc-400">If your ideas, principles, or objectives align with our Foundation in any way, we invite you to connect with us.<br/>यदि आपके विचार, सिद्धांत या उद्देश्य हमारी संस्था से कहीं भी मेल खाते हैं, तो हमसे जुड़ने में कोई संकोच न करें।</p>
+          <div className="flex flex-col justify-center gap-6 pt-6 sm:flex-row"><Link to="/Volunteer" className="btn-cta px-12 py-5 text-lg">Join Our Movement | हमारे अभियान से जुड़ें</Link><Link to="/Contact" className="btn-secondary border-white px-12 py-5 text-lg text-white hover:bg-white hover:text-[#001529]">Contact Us | संपर्क करें</Link></div>
         </motion.div></div>
       </section>
     </div>
