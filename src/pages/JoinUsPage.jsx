@@ -46,7 +46,7 @@ export default function JoinUsPage() {
         <div className="absolute -left-32 bottom-0 h-72 w-72 rounded-full bg-emerald-300/10 blur-2xl" />
         <div className="relative mx-auto max-w-6xl px-5 pt-52 pb-14 md:py-20">
           <p className="text-[#b7e4d0] font-extrabold tracking-[0.2em] text-xs md:text-sm uppercase">Swastik Srijan Foundation / स्थापना • Join the Movement / जुड़िए</p>
-          <h1 className="mt-4 max-w-4xl text-3xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block mt-2 text-[#7dd3a8]">Some wait for change. कुछ बदलाव का हिस्सा बनते हैं।</span></h1>
+          <h1 className="mt-16 md:mt-20 max-w-4xl text-3xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block mt-2 text-[#7dd3a8]">Some wait for change. कुछ बदलाव का हिस्सा बनते हैं।</span></h1>
           <p className="mt-5 max-w-2xl text-base md:text-xl text-[#e5edf4] leading-relaxed">Find your place in Swastik Srijan Foundation / स्थापना. / Swastik Srijan Foundation / स्थापना में आपके लिए कौन-सी भूमिका है?</p>
           <button onClick={() => document.getElementById("find-place")?.scrollIntoView({ behavior: "smooth" })} className="mt-6 inline-flex items-center gap-3 rounded-full bg-[#168a5a] px-7 py-3.5 text-white font-black shadow-xl shadow-black/20 hover:bg-[#126f4a] hover:-translate-y-1 transition">FIND YOUR PLACE / अपनी भूमिका चुनें <FaArrowRight /></button>
         </div>
