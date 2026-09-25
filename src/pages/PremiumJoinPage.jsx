@@ -3,9 +3,9 @@ import pageHeader from "../assets/page-header.jpg";
 import { FaArrowRight, FaHandsHelping, FaHeart, FaHandshake, FaUsers, FaClock, FaLightbulb, FaTools, FaNetworkWired, FaBuilding, FaGraduationCap, FaStethoscope, FaLaptopCode, FaUserTie, FaPeopleCarry, FaCheckCircle } from "react-icons/fa";
 
 const roles = [
-  { icon: FaUsers, title: "BECOME A MEMBER", text: "Swastik Srijan Foundation की दीर्घकालिक यात्रा का हिस्सा बनिए।", href: "/GetInvolved", tone: "blue" },
-  { icon: FaHandsHelping, title: "BECOME A VOLUNTEER", text: "अपना समय, ज्ञान या skill समाज के काम में लगाइए।", href: "/Volunteer", tone: "green" },
-  { icon: FaHeart, title: "BECOME A DONOR", text: "अपनी क्षमता के अनुसार किसी पहल को support कीजिए।", href: "/Donate", tone: "emerald" },
+  { icon: FaUsers, title: "BECOME A MEMBER", text: "Swastik Srijan Foundation की दीर्घकालिक यात्रा का हिस्सा बनिए।", href: "/GetInvolved#member", tone: "blue" },
+  { icon: FaHandsHelping, title: "BECOME A VOLUNTEER", text: "अपना समय, ज्ञान या skill समाज के काम में लगाइए।", href: "/GetInvolved#volunteer", tone: "green" },
+  { icon: FaHeart, title: "BECOME A DONOR", text: "अपनी क्षमता के अनुसार किसी पहल को support कीजिए।", href: "/Donor", tone: "emerald" },
   { icon: FaHandshake, title: "COLLABORATE / PARTNER", text: "School, Hospital, Company, Institution, Professional या NGO के साथ मिलकर काम कीजिए।", href: "/PartnerWithUs", tone: "blue" },
 ];
 
