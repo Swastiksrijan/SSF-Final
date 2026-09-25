@@ -41,14 +41,38 @@ export default function JoinUsPage() {
 
   return (
     <main className="min-h-screen bg-[#f7fafc] text-[#17202a]">
-      <section className="relative overflow-hidden bg-gradient-to-br from-[#031b33] via-[#06284a] to-[#0b5b46] text-white">
-        <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-emerald-400/10 blur-2xl" />
-        <div className="absolute -left-32 bottom-0 h-72 w-72 rounded-full bg-emerald-300/10 blur-2xl" />
-        <div className="relative mx-auto max-w-6xl px-5 pt-52 pb-14 md:py-20">
-          <p className="text-[#b7e4d0] font-extrabold tracking-[0.2em] text-xs md:text-sm uppercase">Swastik Srijan Foundation / स्थापना • Join the Movement / जुड़िए</p>
-          <h1 className="mt-16 md:mt-20 max-w-4xl text-3xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block mt-2 text-[#7dd3a8]">Some wait for change. कुछ बदलाव का हिस्सा बनते हैं।</span></h1>
-          <p className="mt-5 max-w-2xl text-base md:text-xl text-[#e5edf4] leading-relaxed">Find your place in Swastik Srijan Foundation / स्थापना. / Swastik Srijan Foundation / स्थापना में आपके लिए कौन-सी भूमिका है?</p>
-          <button onClick={() => document.getElementById("find-place")?.scrollIntoView({ behavior: "smooth" })} className="mt-6 inline-flex items-center gap-3 rounded-full bg-[#168a5a] px-7 py-3.5 text-white font-black shadow-xl shadow-black/20 hover:bg-[#126f4a] hover:-translate-y-1 transition">FIND YOUR PLACE / अपनी भूमिका चुनें <FaArrowRight /></button>
+      <section className="relative min-h-[68vh] lg:min-h-[72vh] w-full overflow-hidden bg-[#001529] text-white">
+        <div className="absolute inset-0 p-2 sm:p-3 lg:p-4">
+          <div className="grid h-full grid-cols-2 md:grid-cols-5 gap-1.5 sm:gap-2 lg:gap-3">
+            {[
+              "/images/uploads/footer-gallery-1.jpg",
+              "/images/classroom-session.png",
+              "/images/village-outreach.png",
+              "/images/women-learning-session.png",
+              "/images/community-meeting.jpg",
+              "/images/real/education_girls.jpg",
+              "/images/community-team-group.jpg",
+              "/images/children-unity-park.jpg",
+              "/images/health-program-masks.jpg",
+              "/images/tree-planting.jpg"
+            ].map((src, index) => (
+              <div key={src} className="relative overflow-hidden rounded-lg lg:rounded-xl bg-[#002344]">
+                <img src={src} alt="" className="h-full w-full object-cover object-center opacity-75 scale-105" loading={index > 5 ? "lazy" : "eager"} />
+              </div>
+            ))}
+          </div>
+        </div>
+        <div className="absolute inset-0 bg-[#001529]/62"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#001529]/35 via-[#001529]/55 to-[#001529]/90"></div>
+        <div className="relative z-10 flex min-h-[68vh] lg:min-h-[72vh] items-center justify-center px-5 py-24 lg:px-8">
+          <div className="max-w-4xl text-center">
+            <div className="mx-auto inline-block rounded-2xl border border-white/15 bg-[#001529]/55 px-6 py-6 sm:px-10 sm:py-7 backdrop-blur-sm shadow-2xl">
+              <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.22em] text-[#7dd3a8]">Swastik Srijan Foundation / स्थापना • Join the Movement / जुड़िए</p>
+              <h1 className="mt-16 md:mt-20 text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black leading-tight tracking-tight text-white">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block mt-2 text-[#7dd3a8]">Some wait for change. कुछ बदलाव का हिस्सा बनते हैं।</span></h1>
+              <p className="mx-auto mt-5 max-w-2xl text-base md:text-xl text-[#e5edf4] leading-relaxed">Find your place in Swastik Srijan Foundation / स्थापना. / Swastik Srijan Foundation / स्थापना में आपके लिए कौन-सी भूमिका है?</p>
+              <button onClick={() => document.getElementById("find-place")?.scrollIntoView({ behavior: "smooth" })} className="mt-6 inline-flex items-center gap-3 rounded-full bg-[#168a5a] px-7 py-3.5 text-white font-black shadow-xl shadow-black/20 hover:bg-[#126f4a] hover:-translate-y-1 transition">FIND YOUR PLACE / अपनी भूमिका चुनें <FaArrowRight /></button>
+            </div>
+          </div>
         </div>
       </section>
 
