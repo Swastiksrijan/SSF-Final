@@ -56,70 +56,23 @@ export default function Home() {
               <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#06284a] mt-3 leading-tight">आज Swastik Srijan Foundation से जुड़िए।</h2>
               <p className="text-slate-500 mt-4 text-base md:text-xl leading-relaxed">आपके लिए जुड़ने का एक रास्ता है — अपनी भूमिका चुनिए।</p>
             </div>
-
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 px-4 md:px-6 pb-7">
               {[
-                {
-                  title:"MEMBER",
-                  text:"मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।",
-                  path:"/Join",
-                  icon:<FaUsers />,
-                  tone:"text-[#0b4f86] bg-blue-50 border-blue-100",
-                  titleTone:"text-[#0b4f86] group-hover:text-[#2563eb]",
-                  accent:"bg-[#0b4f86]"
-                },
-                {
-                  title:"VOLUNTEER",
-                  text:"मेरे पास समय / skill है, मैं काम करना चाहता हूँ।",
-                  path:"/Join",
-                  icon:<FaHandsHelping />,
-                  tone:"text-[#168a5a] bg-emerald-50 border-emerald-100",
-                  titleTone:"text-[#168a5a] group-hover:text-[#16a34a]",
-                  accent:"bg-[#168a5a]"
-                },
-                {
-                  title:"SUPPORTER / DONOR",
-                  text:"मैं किसी अच्छे काम को support करना चाहता हूँ।",
-                  path:"/Donate",
-                  icon:<FaHeart />,
-                  tone:"text-[#c2410c] bg-orange-50 border-orange-100",
-                  titleTone:"text-[#c2410c] group-hover:text-[#ea580c]",
-                  accent:"bg-[#c2410c]"
-                },
-                {
-                  title:"PARTNER",
-                  text:"मेरी संस्था / company / institution Swastik Srijan Foundation के साथ काम कर सकती है।",
-                  path:"/PartnerWithUs",
-                  icon:<FaHandshake />,
-                  tone:"text-[#7c3aed] bg-violet-50 border-violet-100",
-                  titleTone:"text-[#7c3aed] group-hover:text-[#9333ea]",
-                  accent:"bg-[#7c3aed]"
-                }
+                {title:"MEMBER", text:"मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", path:"/Join", icon:<FaUsers />, tone:"text-[#0b4f86] bg-blue-50 border-blue-100", titleTone:"text-[#0b4f86] group-hover:text-[#2563eb]", accent:"bg-[#0b4f86]", glow:"group-hover:shadow-blue-100/80"},
+                {title:"VOLUNTEER", text:"मेरे पास समय / skill है, मैं काम करना चाहता हूँ।", path:"/Join", icon:<FaHandsHelping />, tone:"text-[#168a5a] bg-emerald-50 border-emerald-100", titleTone:"text-[#168a5a] group-hover:text-[#16a34a]", accent:"bg-[#168a5a]", glow:"group-hover:shadow-emerald-100/80"},
+                {title:"SUPPORTER / DONOR", text:"मैं किसी अच्छे काम को support करना चाहता हूँ।", path:"/Donate", icon:<FaHeart />, tone:"text-[#c2410c] bg-orange-50 border-orange-100", titleTone:"text-[#c2410c] group-hover:text-[#ea580c]", accent:"bg-[#c2410c]", glow:"group-hover:shadow-orange-100/80"},
+                {title:"PARTNER", text:"मेरी संस्था / company / institution Swastik Srijan Foundation के साथ काम कर सकती है।", path:"/PartnerWithUs", icon:<FaHandshake />, tone:"text-[#7c3aed] bg-violet-50 border-violet-100", titleTone:"text-[#7c3aed] group-hover:text-[#9333ea]", accent:"bg-[#7c3aed]", glow:"group-hover:shadow-violet-100/80"}
               ].map((item,index) => (
-                <Link
-                  key={item.title}
-                  to={item.path}
-                  className="group relative overflow-hidden rounded-3xl border border-slate-200 bg-white p-6 md:p-7 shadow-[0_10px_30px_rgba(6,40,74,0.06)] hover:-translate-y-2 hover:border-slate-300 hover:shadow-[0_24px_55px_rgba(6,40,74,0.16)] transition-all duration-300"
-                >
+                <Link key={item.title} to={item.path} className={`group relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-6 md:p-7 shadow-[0_10px_30px_rgba(6,40,74,0.06)] hover:-translate-y-2 hover:border-slate-300 hover:shadow-[0_26px_60px_rgba(6,40,74,0.14)] ${item.glow} transition-all duration-300`}>
                   <div className={`absolute inset-x-0 top-0 h-1.5 ${item.accent} opacity-80 group-hover:h-2 group-hover:opacity-100 transition-all duration-300`} />
-
-                  <div className={`relative z-10 w-16 h-16 rounded-2xl ${item.tone} border flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 group-hover:-rotate-2 transition-all duration-300`}>
-                    {item.icon}
-                  </div>
-
+                  <div className={`absolute -right-16 -top-16 h-36 w-36 rounded-full ${item.accent} opacity-[0.035] group-hover:scale-150 group-hover:opacity-[0.07] transition-all duration-500`} />
+                  <div className={`relative z-10 w-16 h-16 rounded-2xl ${item.tone} border flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 group-hover:-rotate-2 transition-all duration-300`}>{item.icon}</div>
                   <div className="relative z-10 mt-6 flex items-center gap-3">
                     <span className={`h-1 w-8 rounded-full ${item.accent} opacity-70 group-hover:w-12 transition-all duration-300`} />
                     <span className="text-[11px] font-extrabold tracking-[0.16em] text-slate-400 uppercase">Join the Journey</span>
                   </div>
-
-                  <h3 className={`relative z-10 mt-3 text-2xl md:text-3xl font-black tracking-tight transition-all duration-300 ${item.titleTone} group-hover:translate-x-1 group-hover:drop-shadow-sm`}>
-                    {item.title}
-                  </h3>
-
-                  <p className="relative z-10 mt-4 text-lg md:text-xl font-bold leading-relaxed text-[#0b4f86] min-h-[96px]">
-                    {item.text}
-                  </p>
-
+                  <h3 className={`relative z-10 mt-3 text-2xl md:text-3xl font-black tracking-tight transition-all duration-300 ${item.titleTone} group-hover:translate-x-1`}>{item.title}</h3>
+                  <p className="relative z-10 mt-4 text-lg md:text-xl font-bold leading-relaxed text-[#0b4f86] min-h-[96px]">{item.text}</p>
                   <span className="group/cta relative z-10 mt-5 inline-flex items-center gap-2 overflow-hidden px-6 py-3 rounded-full bg-gradient-to-r from-[#002344] to-[#064b78] text-white text-sm md:text-base font-extrabold tracking-[0.02em] shadow-lg shadow-[#002344]/20 border border-white/10 group-hover:-translate-y-0.5 group-hover:shadow-xl transition-all duration-200">
                     <span className="relative z-10">JOIN / EXPLORE</span>
                     <FaArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" />
