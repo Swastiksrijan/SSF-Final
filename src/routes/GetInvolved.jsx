@@ -3,7 +3,7 @@ import GetInvolvedPage from "../pages/GetInvolvedPage";
 import WorkEvidenceBanner from "../components/WorkEvidenceBanner";
 
 function GetInvolvedWithEvidence() {
-  return <><WorkEvidenceBanner page="involvement" /><GetInvolvedPage /></>
+  return <><GetInvolvedPage /><WorkEvidenceBanner page="involvement" /></>
 }
 
 export const Route = createFileRoute("/GetInvolved")({
