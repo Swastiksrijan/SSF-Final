@@ -53,7 +53,7 @@ export default function SSFDigitalOffice(){
   };
   window.addEventListener("ssf-digital-office-refresh",refreshHandler);
   return function(){window.removeEventListener("ssf-digital-office-refresh",refreshHandler);};
- },[]);
+ },[active]);
 
  const add=async function(module,data){
   try{
