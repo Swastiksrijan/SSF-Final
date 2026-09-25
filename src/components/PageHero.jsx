@@ -25,6 +25,7 @@ export default function PageHero({
     imageClass = "w-full h-full",
     objectFit = "cover",
     objectPosition = "center",
+    brandBelowTitle = false,
     children
 }) {
     const fadeInUp = {
@@ -45,6 +46,16 @@ export default function PageHero({
     };
 
     const heroImage = legacyHeroImages[title] || image || pageHeader;
+
+    const brand = (
+        <div className="flex items-center justify-center gap-3 mb-2">
+            <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
+            <h2 className="text-[#FF6600] font-bold tracking-[0.3em] uppercase text-[10px] md:text-xs">
+                Swastik Srijan Foundation
+            </h2>
+            <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
+        </div>
+    );
 
     return (
         <section className={`relative ${height} flex items-center justify-center bg-[#001529] text-white overflow-hidden pt-20`}>
@@ -69,22 +80,24 @@ export default function PageHero({
                     variants={fadeInUp}
                     className="space-y-4"
                 >
-                    {/* Tiny decorative header */}
                     {title && (
-                        <div className="flex items-center justify-center gap-3 mb-2">
-                            <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
-                            <h2 className="text-[#FF6600] font-bold tracking-[0.3em] uppercase text-[10px] md:text-xs">
-                                Swastik Srijan Foundation
-                            </h2>
-                            <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
-                        </div>
-                    )}
-
-                    {/* Main Title */}
-                    {title && (
-                        <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-2xl font-serif">
-                            {title}
-                        </h1>
+                        <>
+                            {brandBelowTitle ? (
+                                <>
+                                    <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-2xl font-serif">
+                                        {title}
+                                    </h1>
+                                    {brand}
+                                </>
+                            ) : (
+                                <>
+                                    {brand}
+                                    <h1 className="text-3xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-2xl font-serif">
+                                        {title}
+                                    </h1>
+                                </>
+                            )}
+                        </>
                     )}
 
                     {/* Subtitles - hidden on mobile, visible on md+ */}
