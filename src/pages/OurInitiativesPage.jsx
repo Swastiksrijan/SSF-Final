@@ -1,5 +1,7 @@
 import { Link } from '@tanstack/react-router'
 import WorkEvidenceBanner from '../components/WorkEvidenceBanner'
+import OptimizedImage from '../components/OptimizedImage'
+import pageHeader from '../assets/page-header.jpg'
 import { FaArrowRight, FaBookOpen, FaBullhorn, FaChild, FaFemale, FaHandsHelping, FaHeartbeat, FaLeaf, FaMapMarkerAlt, FaPeopleCarry, FaSeedling, FaUserFriends, FaLaptop, FaCertificate, FaGlobeAsia, FaShieldAlt } from 'react-icons/fa'
 
 const initiatives = [
@@ -33,9 +35,12 @@ const focusOutcomes = [
 
 export default function OurInitiativesPage() {
   return <main className="bg-white text-[#002344]">
-    <section className="relative overflow-hidden bg-[#002344] px-6 pb-24 pt-36 text-white">
-      <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-[#FF6600]/20 blur-3xl" /><div className="absolute -bottom-32 -left-20 h-72 w-72 rounded-full bg-[#0a668f]/30 blur-3xl" />
-      <div className="relative mx-auto max-w-6xl text-center">
+    <section className="relative overflow-hidden bg-[#001529] px-6 pb-24 pt-36 text-white">
+      <div className="absolute inset-0 z-0">
+        <OptimizedImage src={pageHeader} alt="Swastik Srijan Foundation community work" className="h-full w-full" objectFit="cover" />
+        <div className="absolute inset-0 bg-[#001529]/65 bg-gradient-to-b from-[#001529]/60 via-[#001529]/55 to-[#001529]/85" />
+      </div>
+      <div className="relative z-10 mx-auto max-w-6xl text-center">
         <p className="mb-4 text-sm font-extrabold uppercase tracking-[0.25em] text-[#FFB066]">Education • Health • Skills • Awareness • Community Development</p>
         <h1 className="text-4xl font-black tracking-tight md:text-6xl">Our Initiatives & Impact</h1>
         <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-white/80 md:text-xl">Swastik Srijan Foundation works to create meaningful opportunities through education, health awareness, counselling, skill development, social participation and community support.</p>
