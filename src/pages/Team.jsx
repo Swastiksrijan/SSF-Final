@@ -65,10 +65,10 @@ export default function Team() {
   return (
     <main className="min-h-screen bg-white font-sans">
       <section className="relative min-h-[68vh] lg:min-h-[72vh] w-full overflow-hidden bg-[#002344] text-white">
-        <div className="absolute inset-0 grid grid-cols-2 md:grid-cols-4">
-          {["/Teams_Images/image_19.jpg","/Teams_Images/image_15.jpg","/Teams_Images/divya_sharma.jpg","/Teams_Images/image_22.jpg"].map((src, index) => (
-            <div key={src} className={`relative overflow-hidden ${index === 3 ? "hidden md:block" : ""}`}>
-              <img src={src} alt="" className="h-full w-full object-cover object-center scale-105" />
+        <div className="absolute inset-0 grid grid-cols-2 md:grid-cols-5">
+          {teamStructure.leadership.map((member) => (
+            <div key={member.name} className="relative overflow-hidden">
+              <img src={member.img} alt="" className="h-full w-full object-cover object-center scale-105" />
             </div>
           ))}
         </div>
