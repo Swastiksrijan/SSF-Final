@@ -705,56 +705,58 @@ function ManagingCommittee({rows,add,archive,token}){
  const designations=["President","Vice President","Secretary","Joint Secretary","Treasurer","Member"];
  const committeeRows=(rows||[]).filter(r=>r.module==="managingCommittee" && r.status!=="deleted");
  const [syncing,setSyncing]=useState(false);
- const syncFromMembers=async()=>{
+ const initialCommittee=[
+  {memberId:"SSF-MBR-00001",memberType:"Founder Member",fullName:"Ramesh Pandey",designation:"President",functionalResponsibility:"Chief Executive & External Relations",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30",membershipStatus:"Active",status:"Active"},
+  {memberId:"SSF-MBR-00014",memberType:"General Member",fullName:"Preeti Shukla",designation:"Vice President",functionalResponsibility:"Project Planning & Monitoring",joiningDate:"2021-04-30",effectiveFrom:"2021-04-30",appointmentDate:"2021-04-30",membershipStatus:"Active",status:"Active"},
+  {memberId:"SSF-MBR-00002",memberType:"Founder Member",fullName:"Amit Kumar Pandey",designation:"Secretary",functionalResponsibility:"Administration & Legal Compliance",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30",membershipStatus:"Active",status:"Active"},
+  {memberId:"SSF-MBR-00003",memberType:"Founder Member",fullName:"Divya Sharma",designation:"Treasurer",functionalResponsibility:"Finance & Accounts In-charge",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30",membershipStatus:"Active",status:"Active"},
+  {memberId:"SSF-MBR-00004",memberType:"Founder Member",fullName:"Kiran Pandey",designation:"Joint Secretary",functionalResponsibility:"IT, MIS & Digital Records",joiningDate:"2013-12-30",effectiveFrom:"2013-12-30",appointmentDate:"2013-12-30",membershipStatus:"Active",status:"Active"},
+  {memberId:"SSF-MBR-00015",memberType:"General Member",fullName:"Sandeep Tripathi",designation:"Executive Committee Member",functionalResponsibility:"Documentation Head (Admin In-charge)",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10",membershipStatus:"Active",status:"Active"},
+  {memberId:"SSF-MBR-00016",memberType:"General Member",fullName:"Prameesh Singh",designation:"Member",functionalResponsibility:"Field Coordinator",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10",membershipValidTill:"2026-03-31",membershipStatus:"Active",status:"Active"},
+  {memberId:"SSF-MBR-00017",memberType:"General Member",fullName:"Rishi Kumar Pandey",designation:"Member",functionalResponsibility:"Volunteer Coordinator",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10",membershipValidTill:"2026-03-31",membershipStatus:"Active",status:"Active"},
+  {memberId:"SSF-MBR-00018",memberType:"General Member",fullName:"Ritesh Kumar Tiwari",designation:"Member",functionalResponsibility:"Media & Communication Coordinator",joiningDate:"2025-05-10",effectiveFrom:"2025-05-10",appointmentDate:"2025-05-10",membershipValidTill:"2026-03-31",membershipStatus:"Active",status:"Active"}
+ ];
+ const seedCommitteeRecords=async()=>{
   if(!token||syncing)return;
   setSyncing(true);
   try{
-   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
-   if(!r.ok)throw new Error("Members Register load failed.");
+   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
+   if(!r.ok)throw new Error("Managing Committee records load failed.");
    const payload=await r.json();
-   const members=Array.isArray(payload)?payload:(Array.isArray(payload.records)?payload.records:[]);
-   const existingIds=new Set(committeeRows.map(x=>String((x.data||{}).memberId||x.memberId||"").trim()).filter(Boolean));
-   const roleById={
-    "SSF-MBR-00001":"President","SSF-MBR-00014":"Vice President","SSF-MBR-00002":"Secretary",
-    "SSF-MBR-00003":"Treasurer","SSF-MBR-00004":"Joint Secretary","SSF-MBR-00015":"Executive Committee Member",
-    "SSF-MBR-00016":"Member","SSF-MBR-00017":"Member","SSF-MBR-00018":"Member"
-   };
-   const candidates=members.map(x=>({record:x,data:x.data&&typeof x.data==="object"?x.data:x})).filter(x=>{
-    const d=x.data||{}, id=String(d.memberId||x.record.memberId||"").trim();
-    return id&&d.fullName&&roleById[id];
-   });
-   let imported=0;
-   for(const x of candidates){
-    const d=x.data||{}, memberId=String(d.memberId||x.record.memberId||"").trim();
-    if(existingIds.has(memberId))continue;
-    const role=roleById[memberId];
-    const effectiveFrom=d.joiningDate||new Date().toISOString().slice(0,10);
-    const data={...d,fullName:String(d.fullName||"").trim(),memberId,designation:role,
-     functionalResponsibility:d.functionalResponsibility||"",status:d.membershipStatus||"Active",
-     effectiveFrom,appointmentDate:effectiveFrom,referenceNo:"",resolutionNo:"",meetingDate:"",
-     responsibilities:d.functionalResponsibility||"",remarks:d.remarks||"Imported from Members Register",
-     action:"Committee Member Register / Update"};
-    const out=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
-     body:JSON.stringify({module:"managingCommittee",recordDate:effectiveFrom,recordType:"Committee Member",
-      status:String(d.membershipStatus||"Active").toLowerCase(),data})});
+   const existing=Array.isArray(payload)?payload:(Array.isArray(payload.records)?payload.records:[]);
+   const existingIds=new Set(existing.map(x=>String((x.data||{}).memberId||x.memberId||"").trim()).filter(Boolean));
+   let added=0;
+   for(const member of initialCommittee){
+    if(existingIds.has(member.memberId))continue;
+    const data={
+     ...member,
+     responsibilities:member.functionalResponsibility,
+     referenceNo:"",
+     resolutionNo:"",
+     meetingDate:"",
+     validTill:"",
+     remarks:"Initial Managing Committee register entry",
+     action:"Committee Member Register / Update"
+    };
+    const out=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{
+     method:"POST",
+     headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"},
+     body:JSON.stringify({module:"managingCommittee",recordDate:member.effectiveFrom,recordType:"Committee Member",status:"active",data})
+    });
     const saved=await out.json().catch(()=>({}));
-    if(!out.ok)throw new Error(saved.message||saved.detail||"Managing Committee record save failed.");
-    existingIds.add(memberId); imported++;
+    if(!out.ok)throw new Error(saved.message||saved.detail||"Committee record save failed.");
+    existingIds.add(member.memberId);
+    added++;
    }
-   if(imported){setNotice(imported+" existing Members Register record(s) added to Managing Committee.");await loadRecordsAfterSync();}
-   else setNotice("No new committee records needed. Existing Member IDs are already present.");
-  }catch(e){setNotice(e.message||"Members Register sync could not be completed.");}
+   const fresh=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
+   const freshPayload=await fresh.json().catch(()=>[]);
+   const freshRows=Array.isArray(freshPayload)?freshPayload:[];
+   window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"managingCommittee",rows:freshRows}}));
+   setNotice(added?added+" Managing Committee member record(s) added successfully.":"Managing Committee records already present; no duplicate entries added.");
+  }catch(e){setNotice(e.message||"Managing Committee records could not be created.");}
   finally{setSyncing(false);}
  };
- const loadRecordsAfterSync=async()=>{
-  const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}});
-  if(r.ok){
-   const d=await r.json(); 
-   // Parent owns the rows state; changing active back and forth is unnecessary, so force a fresh page-level reload.
-   window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"managingCommittee",rows:Array.isArray(d)?d:[]}}));
-  }
- };
- useEffect(()=>{if(token)syncFromMembers();},[token]); const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
+ useEffect(()=>{if(token)seedCommitteeRecords();},[token]); const timeline=[...committeeRows].sort((a,b)=>String((a.data||{}).effectiveFrom||a.recordDate||"").localeCompare(String((b.data||{}).effectiveFrom||b.recordDate||"")));
  const save=async e=>{
    if(saving)return;
   e.preventDefault();
