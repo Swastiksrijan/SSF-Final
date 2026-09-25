@@ -44,7 +44,7 @@ export default function JoinUsPage() {
       <section className="relative overflow-hidden bg-gradient-to-br from-[#031b33] via-[#06284a] to-[#0b5b46] text-white">
         <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full bg-emerald-400/10 blur-2xl" />
         <div className="absolute -left-32 bottom-0 h-72 w-72 rounded-full bg-emerald-300/10 blur-2xl" />
-        <div className="relative mx-auto max-w-6xl px-5 pt-40 pb-14 md:py-20">
+        <div className="relative mx-auto max-w-6xl px-5 pt-52 pb-14 md:py-20">
           <p className="text-[#b7e4d0] font-extrabold tracking-[0.2em] text-xs md:text-sm uppercase">Swastik Srijan Foundation / स्थापना • Join the Movement / जुड़िए</p>
           <h1 className="mt-4 max-w-4xl text-3xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block mt-2 text-[#7dd3a8]">Some wait for change. कुछ बदलाव का हिस्सा बनते हैं।</span></h1>
           <p className="mt-5 max-w-2xl text-base md:text-xl text-[#e5edf4] leading-relaxed">Find your place in Swastik Srijan Foundation / स्थापना. / Swastik Srijan Foundation / स्थापना में आपके लिए कौन-सी भूमिका है?</p>
