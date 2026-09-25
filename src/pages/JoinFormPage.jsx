@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaUsers, FaHandsHelping, FaHeart, FaHandshake, FaCheckCircle } from "react-icons/fa";
 import MemberForm from "../components/MemberForm";
 import VolunteerForm from "../components/VolunteerForm";
@@ -13,7 +13,12 @@ const OPTIONS = [
 ];
 
 export default function JoinFormPage() {
-  const [active, setActive] = useState("member");
+  const [active, setActive] = useState(() => new URLSearchParams(window.location.search).get("tab") || "member");
+
+  useEffect(() => {
+    const tab = new URLSearchParams(window.location.search).get("tab");
+    if (["member", "volunteer", "donor", "partner"].includes(tab)) setActive(tab);
+  }, []);
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-[#f6fbff] via-white to-[#f5faf7] text-[#17202a] px-4 py-8 md:py-14">
