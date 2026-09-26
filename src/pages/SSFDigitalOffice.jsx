@@ -288,14 +288,30 @@ function DownloadCenter({active,rows,exportRows,exportExcel,exportPdf,setActive,
  const [format,setFormat]=useState("pdf");
  const [downloading,setDownloading]=useState(false);
  const available=Object.entries(LABELS).filter(function(x){return x[0]!=="dashboard"&&x[0]!=="audit"&&x[0]!=="users"&&x[0]!=="reports";});
+ const meetingOptions=[
+  ["meetingCalendar","Meeting Calendar / बैठक कैलेंडर"],
+  ["onlineMeetings","Online Meetings / ऑनलाइन बैठकें"],
+  ["meetingResolution","Meeting & Resolution / बैठक व प्रस्ताव"]
+ ];
  const authHeaders={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
+ const dataModuleFor=function(value){
+  if(value==="meetingCalendar")return "meetings";
+  if(value==="meetingResolution")return "meetingResolutions";
+  return value;
+ };
+ const labelFor=function(value){
+  if(value==="meetingCalendar")return "Meeting Calendar / बैठक कैलेंडर";
+  if(value==="onlineMeetings")return "Online Meetings / ऑनलाइन बैठकें";
+  if(value==="meetingResolution")return "Meeting & Resolution / बैठक व प्रस्ताव";
+  return LABELS[value]||"Records";
+ };
  const download=async function(){
   if(downloading)return;
   setDownloading(true);
   try{
+   const dataModule=dataModuleFor(target);
    let data=target===active ? (rows||[]) : [];
-   if(target!==active){
-    const dataModule=target==="meetingResolution"?"meetingResolutions":target;
+   if(target!==active || ["meetingCalendar","onlineMeetings","meetingResolution"].includes(target)){
     const response=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+encodeURIComponent(dataModule),{headers:authHeaders});
     const out=await response.json().catch(()=>[]);
     if(!response.ok)throw new Error(out.message||"Unable to load records for download.");
@@ -306,7 +322,7 @@ function DownloadCenter({active,rows,exportRows,exportExcel,exportPdf,setActive,
     return;
    }
    const filename="ssf-"+target+"-"+new Date().toISOString().slice(0,10);
-   if(format==="pdf")exportPdf(data,"SSF "+(LABELS[target]||"Records"));
+   if(format==="pdf")exportPdf(data,"SSF "+labelFor(target));
    else if(format==="excel")exportExcel(data,filename);
    else exportRows(data,filename);
    setOpen(false);
@@ -324,7 +340,12 @@ function DownloadCenter({active,rows,exportRows,exportExcel,exportPdf,setActive,
    <p className="text-xs text-zinc-500 mt-1">Select any register and download its current records directly.</p>
    <label className="block text-xs font-bold text-zinc-500 mt-4 mb-1">Document / Register</label>
    <select value={target} onChange={e=>setTarget(e.target.value)} className={cls}>
-    {available.map(function(x){return <option key={x[0]} value={x[0]}>{x[1]}</option>;})}
+    {available.map(function(x){
+     if(x[0]!=="meetings")return <option key={x[0]} value={x[0]}>{x[1]}</option>;
+     return <optgroup key="meetings-group" label="Meetings / बैठकें">
+      {meetingOptions.map(function(opt){return <option key={opt[0]} value={opt[0]}>{opt[1]}</option>;})}
+     </optgroup>;
+    })}
    </select>
    <label className="block text-xs font-bold text-zinc-500 mt-3 mb-1">Format</label>
    <div className="grid grid-cols-3 gap-2"><button type="button" onClick={()=>setFormat("pdf")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="pdf"?"bg-[#002344] text-white":"bg-white")}>PDF</button><button type="button" onClick={()=>setFormat("excel")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="excel"?"bg-[#002344] text-white":"bg-white")}>Excel</button><button type="button" onClick={()=>setFormat("csv")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="csv"?"bg-[#002344] text-white":"bg-white")}>CSV</button></div>
