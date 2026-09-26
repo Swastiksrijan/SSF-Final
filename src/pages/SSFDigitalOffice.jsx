@@ -77,15 +77,6 @@ export default function SSFDigitalOffice(){
   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id,{method:"PUT",headers:auth(),body:JSON.stringify({status:"active"})});
   if(r.ok){setNotice("Record restored.");load(active);}
  };
-  try{
-   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id,{method:"PUT",headers:auth(),body:JSON.stringify({module:module,data:data,recordDate:module==="meetingResolutions"?(data.meetingDate||data.date||new Date().toISOString().slice(0,10)):(data.eventDate||data.date||new Date().toISOString().slice(0,10)),recordType:data.changeType||data.eventType||"Record",status:"active"})});
-   const out=await r.json().catch(()=>({}));
-   if(!r.ok)throw new Error(out.detail?(out.message+" "+out.detail):(out.message||"Update failed."));
-   setNotice("Record updated successfully.");
-   await load(module);
-   return true;
-  }catch(e){setNotice(e.message||"Update failed.");return false;}
- };
  const flattenExport=function(data){
   return (data||[]).map(function(x){
    const nested=x.data&&typeof x.data==="object"?x.data:{};
