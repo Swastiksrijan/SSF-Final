@@ -219,14 +219,24 @@ export default function SSFDigitalOffice(){
 }
 function MeetingsHub({token,rows,add,archive,restore}){
  const [tab,setTab]=useState("calendar");
+ const [resolutionRows,setResolutionRows]=useState([]);
  const tabs=[["calendar","Meeting Calendar / बैठक कैलेंडर"],["online","Online Meetings / ऑनलाइन बैठकें"],["resolution","Meeting & Resolution / बैठक व प्रस्ताव"]];
+ const headers={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
+ const loadResolutionRows=async()=>{
+  try{
+   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=meetingResolutions",{headers});
+   const d=r.ok?await r.json():[];
+   setResolutionRows(Array.isArray(d)?d:[]);
+  }catch(e){setResolutionRows([]);}
+ };
+ useEffect(()=>{loadResolutionRows();},[]);
  return <div className="space-y-5">
   <div className="bg-white border rounded-2xl p-3 sm:p-4 shadow-sm">
-   <div className="flex flex-wrap gap-2">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);}} className={"px-4 py-3 rounded-xl font-bold transition "+(tab===t[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>
+   <div className="flex flex-wrap gap-2">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);if(t[0]==="resolution")loadResolutionRows();}} className={"px-4 py-3 rounded-xl font-bold transition "+(tab===t[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>
   </div>
   {tab==="calendar"&&<MeetingCalendar rows={rows} add={add} archive={archive}/>}
   {tab==="online"&&<OnlineMeetings token={token}/>}
-  {tab==="resolution"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}
+  {tab==="resolution"&&<MeetingResolutions rows={resolutionRows} add={async function(module,data){const ok=await add(module,data);if(ok)await loadResolutionRows();return ok;}} archive={archive} restore={restore} token={token}/>}
  </div>;
 }
 function OnlineMeetings({token}){
