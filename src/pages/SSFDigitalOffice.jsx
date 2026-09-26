@@ -43,7 +43,7 @@ export default function SSFDigitalOffice(){
    await refreshSummary();
    if(NO_RECORD_MODULES.has(module)){setRows([]);return;}
    const q=ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+encodeURIComponent(dataModule)+(search?"&search="+encodeURIComponent(search):"");
-   const r=await fetch(q,{headers:auth()}); const d=await r.json(); if(!r.ok)throw new Error(d.message||"Unable to load records."); setRows(d);
+   const r=await fetch(q,{headers:auth()}); const d=await r.json(); if(!r.ok)throw new Error(d.message||"Unable to load records."); setRows(Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]));
   }catch(e){setNotice(e.message||"Unable to load Digital Office.");}finally{setLoading(false);}
  };
  useEffect(function(){if(token)load(active);},[active]);
@@ -639,7 +639,7 @@ function SeparationManagement({rows,add}){
 
 function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#002344] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 function MembersRegister({rows,add,archive}){
- const existing=(rows||[]).filter(r=>r.module==="members"&&r.status!=="deleted");
+ const existing=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="members"&&r.status!=="deleted");
  const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
  const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""); const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const save=async e=>{e.preventDefault();if(saving)return;if(!f.fullName.trim()){setNotice("Full Name required.");return;}if(existing.some(r=>String((r.data||{}).fullName||"").trim().toLowerCase()===f.fullName.trim().toLowerCase()&&String((r.data||{}).joiningDate||"")===f.joiningDate)){setNotice("Same member record already exists for this joining date.");return;}setSaving(true);const ids=existing.map(r=>String((r.data||{}).memberId||"")).map(x=>{const m=x.match(/SSF-MBR-(\d+)/i);return m?Number(m[1]):0;});const memberId=f.memberId.trim()||("SSF-MBR-"+String(Math.max(0,...ids)+1).padStart(5,"0"));const ok=await add("members",{recordDate:f.joiningDate,recordType:"Member Register",status:f.membershipStatus.toLowerCase(),data:{...f,memberId,fullName:f.fullName.trim(),action:"Member Register"}});if(ok){setF({...f,memberId:"",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",membershipEndDate:"",receiptNo:"",membershipFee:"",remarks:""});setNotice("Member saved and form cleared.");}setSaving(false);};
