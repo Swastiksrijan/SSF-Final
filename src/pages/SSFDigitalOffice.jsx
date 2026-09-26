@@ -10,19 +10,18 @@ const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
  ["dashboard","Dashboard / डैशबोर्ड",FaChartLine],
  ["onlineMeetings","Online Meetings / ऑनलाइन बैठकें",FaVideo],
- ["members","Members Register / सदस्य रजिस्टर",FaUsers],["institutionalHistory","Institutional History / संस्था इतिहास",FaHistory],["officeHistory","Office History / कार्यालय इतिहास",FaUserTie],["managingCommittee","Managing Committee / प्रबंधकारिणी समिति",FaUserTie],["membershipContributions","Membership & Contribution / सदस्यता व योगदान",FaRupeeSign],["meetingResolutions","Meeting & Resolution / बैठक व प्रस्ताव",FaCalendarAlt],["volunteers","Volunteers / स्वयंसेवक",FaUsers],["donors","Donors / दानदाता",FaUsers],
- ["donations","Donations / दान",FaRupeeSign],["expenses","Expenses / व्यय",FaRupeeSign],["contribution","Contribution Register / योगदान रजिस्टर",FaBook],
+ ["members","Members Register / सदस्य रजिस्टर",FaUsers],["institutionalHistory","Institution Profile & Compliance / संस्था परिचय एवं अनुपालन",FaHistory],["officeHistory","Membership History / सदस्यता इतिहास",FaUserTie],["managingCommittee","Managing Committee / प्रबंधकारिणी समिति",FaUserTie],["membershipContributions","Membership & Contribution / सदस्यता व योगदान",FaRupeeSign],["meetingResolutions","Meeting & Resolution / बैठक व प्रस्ताव",FaCalendarAlt],["volunteers","Volunteers / स्वयंसेवक",FaUsers],["donors","Donors / दानदाता",FaUsers],
+ ["donations","Donations / दान",FaRupeeSign],["expenses","Expenses / व्यय",FaRupeeSign],["contribution","Contributions / योगदान रजिस्टर",FaBook],
  ["cash","Cash Book / रोकड़ बही",FaBook],["bank","Bank Book / बैंक बही",FaBook],["ledger","Ledger / लेजर",FaBalanceScale],
  ["inventory","Stock & Items / स्टॉक व सामग्री",FaBoxes],
- ["inward","Inward / आवक",FaFileAlt],["outward","Outward / जावक",FaFileAlt],
- ["meetings","Meetings / बैठकें",FaCalendarAlt],["projects","Projects & Initiatives / परियोजनाएँ व पहल",FaTasks],["events","Events & Camps / कार्यक्रम व शिविर",FaCalendarAlt],
- ["mou","MoU & Agreements / समझौते",FaHandshake],["documents","Documents / दस्तावेज़",FaFileAlt],["officialDocuments","Official Documents / आधिकारिक दस्तावेज़",FaFileAlt],["donorSlips","Donor Slips & Receipts / दान रसीदें",FaFileAlt],["separations","Role Changes & Separation / पद परिवर्तन व पृथक्करण",FaFileAlt],["appointmentLetters","Appointment Letters / नियुक्ति पत्र",FaUserTie],
+ ["inward","Inward Register / आवक रजिस्टर",FaFileAlt],["outward","Outward Register / जावक रजिस्टर",FaFileAlt],
+ ["meetings","Meeting Calendar / बैठक कैलेंडर",FaCalendarAlt],["projects","Projects & Initiatives / परियोजनाएँ व पहल",FaTasks],["events","Events & Camps / कार्यक्रम व शिविर",FaCalendarAlt],
+ ["mou","MoU & Agreements / समझौते",FaHandshake],["documents","Documents & Records / दस्तावेज़ एवं अभिलेख",FaFileAlt],["officialDocuments","Statutory & Official Documents / वैधानिक एवं आधिकारिक दस्तावेज़",FaFileAlt],["donorSlips","Donor Slips & Receipts / दान रसीदें",FaFileAlt],["separations","Role Changes & Separation / पद परिवर्तन व पृथक्करण",FaFileAlt],["appointmentLetters","Appointment Letters / नियुक्ति पत्र",FaUserTie],
  
  ["certificates","Certificates / प्रमाणपत्र",FaCertificate],["idcards","ID Cards / पहचान पत्र",FaIdCard],
  ["beneficiaries","Beneficiaries / लाभार्थी",FaUsers],["internships","Internship Applications / इंटर्नशिप आवेदन",FaTasks],["activities","Volunteer Activities / स्वयंसेवी गतिविधियाँ",FaTasks],
- ["assets","Assets & Equipment / संपत्ति व उपकरण",FaBoxes],["notifications","Alerts & Follow-ups / सूचनाएँ व अनुवर्ती कार्य",FaTasks],
- ["governanceActions","Notices & Administrative Actions / नोटिस व प्रशासनिक कार्य",FaBalanceScale],
- ["reports","Reports / रिपोर्ट",FaChartLine],["users","Users & Permissions / उपयोगकर्ता व अनुमतियाँ",FaUserShield],["audit","Audit Trail / ऑडिट ट्रेल",FaHistory]
+ ["assets","Assets & Equipment / संपत्ति व उपकरण",FaBoxes],["notifications","Notices, Alerts & Follow-ups / नोटिस, सूचनाएँ एवं अनुवर्ती कार्य",FaTasks],
+ ["reports","Reports & Statements / रिपोर्ट एवं विवरण",FaChartLine],["users","Users & Permissions / उपयोगकर्ता व अनुमतियाँ",FaUserShield],["audit","Audit Trail / ऑडिट ट्रेल",FaHistory]
 ];
 const LABELS = Object.fromEntries(MODULES.map(function(x){return [x[0],x[1]];}));
 const GOVERNANCE_MODULES = [
