@@ -186,7 +186,7 @@ export default function SSFDigitalOffice(){
  return <div className="min-h-screen bg-zinc-50 pt-28 pb-16 px-3 sm:px-6"><div className="max-w-[1500px] mx-auto">
   <header className="bg-[#002344] text-white rounded-[2rem] p-6 sm:p-8 mb-5"><div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5">
    <div className="flex items-start gap-4"><img src={logoImg} alt="SSF logo" className="h-16 w-16 sm:h-20 sm:w-20 object-contain rounded-2xl bg-white p-2 shrink-0"/><div><Link to="/Admin" className="text-white/70 text-sm font-bold inline-flex items-center gap-2"><FaArrowLeft/> Admin</Link><p className="text-xs text-orange-300 font-black uppercase tracking-[.2em] mt-4">SSF Digital Office · Secure Database Edition</p><h1 className="text-3xl sm:text-4xl font-black mt-2">Paperless NGO Office</h1><p className="text-white/70 mt-2 max-w-3xl">One source record → linked registers → reports → audit trail. Existing website records are preserved.</p></div></div>
-   <DownloadCenter active={active} rows={rows} exportRows={exportRows} exportExcel={exportExcel} exportPdf={exportPdf} setActive={setActive}/>
+   <DownloadCenter active={active} rows={rows} exportRows={exportRows} exportExcel={exportExcel} exportPdf={exportPdf} setActive={setActive} token={token}/>
   </div></header>
   {notice&&<div className="mb-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-4 py-3 font-semibold">{notice}</div>}
   <div className="grid lg:grid-cols-[245px_1fr] gap-5">
@@ -272,37 +272,56 @@ function OnlineMeetings({token}){
   </div>
  </div>;
 }
-function DownloadCenter({active,rows,exportRows,exportExcel,exportPdf,setActive}){
+function DownloadCenter({active,rows,exportRows,exportExcel,exportPdf,setActive,token}){
  const [open,setOpen]=useState(false);
  const [target,setTarget]=useState(active==="dashboard" ? "members" : active);
  const [format,setFormat]=useState("pdf");
+ const [downloading,setDownloading]=useState(false);
  const available=Object.entries(LABELS).filter(function(x){return x[0]!=="dashboard"&&x[0]!=="audit"&&x[0]!=="users"&&x[0]!=="reports";});
- const download=function(){
-  if(target!==active){setActive(target);setOpen(false);return;}
-  const data=rows||[];
-  const filename="ssf-"+target+"-"+new Date().toISOString().slice(0,10);
-  if(format==="pdf")exportPdf(data,"SSF "+(LABELS[target]||"Records"));
-  else if(format==="excel")exportExcel(data,filename);
-  else exportRows(data,filename);
-  setOpen(false);
+ const authHeaders={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
+ const download=async function(){
+  if(downloading)return;
+  setDownloading(true);
+  try{
+   let data=target===active ? (rows||[]) : [];
+   if(target!==active){
+    const dataModule=target==="meetingResolution"?"meetingResolutions":target;
+    const response=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+encodeURIComponent(dataModule),{headers:authHeaders});
+    const out=await response.json().catch(()=>[]);
+    if(!response.ok)throw new Error(out.message||"Unable to load records for download.");
+    data=Array.isArray(out)?out:[];
+   }
+   if(!data.length){
+    alert("No records available to download for the selected register.");
+    return;
+   }
+   const filename="ssf-"+target+"-"+new Date().toISOString().slice(0,10);
+   if(format==="pdf")exportPdf(data,"SSF "+(LABELS[target]||"Records"));
+   else if(format==="excel")exportExcel(data,filename);
+   else exportRows(data,filename);
+   setOpen(false);
+  }catch(e){
+   alert(e.message||"Download failed. Please try again.");
+  }finally{
+   setDownloading(false);
+  }
  };
+ useEffect(function(){if(active!=="dashboard")setTarget(active);},[active]);
  return <div className="relative">
-  <button onClick={function(){setOpen(!open);}} className="bg-white text-[#002344] px-4 py-3 rounded-xl font-bold flex items-center gap-2"><FaDownload/> Download / Export</button>
+  <button type="button" onClick={function(){setOpen(!open);}} className="bg-white text-[#002344] px-4 py-3 rounded-xl font-bold flex items-center gap-2"><FaDownload/> Download / Export</button>
   {open&&<div className="absolute right-0 top-14 z-30 w-[min(92vw,390px)] bg-white text-zinc-800 rounded-2xl shadow-2xl border p-5">
    <div className="font-black text-[#002344] text-lg">What do you want to download?</div>
-   <p className="text-xs text-zinc-500 mt-1">Select document/register and then format.</p>
+   <p className="text-xs text-zinc-500 mt-1">Select any register and download its current records directly.</p>
    <label className="block text-xs font-bold text-zinc-500 mt-4 mb-1">Document / Register</label>
    <select value={target} onChange={e=>setTarget(e.target.value)} className={cls}>
     {available.map(function(x){return <option key={x[0]} value={x[0]}>{x[1]}</option>;})}
    </select>
    <label className="block text-xs font-bold text-zinc-500 mt-3 mb-1">Format</label>
    <div className="grid grid-cols-3 gap-2"><button type="button" onClick={()=>setFormat("pdf")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="pdf"?"bg-[#002344] text-white":"bg-white")}>PDF</button><button type="button" onClick={()=>setFormat("excel")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="excel"?"bg-[#002344] text-white":"bg-white")}>Excel</button><button type="button" onClick={()=>setFormat("csv")} className={"px-3 py-3 rounded-xl border font-bold "+(format==="csv"?"bg-[#002344] text-white":"bg-white")}>CSV</button></div>
-   {target!==active&&<p className="mt-3 text-xs bg-amber-50 border border-amber-200 text-amber-800 rounded-xl p-3">Open the selected module first to export its current records.</p>}
-   <div className="flex gap-2 mt-4"><button type="button" onClick={()=>setOpen(false)} className="flex-1 border px-3 py-2.5 rounded-xl font-bold">Cancel</button><button type="button" disabled={false} onClick={download} className="flex-1 bg-[#002344] text-white px-3 py-2.5 rounded-xl font-bold disabled:opacity-40">Download</button></div>
+   <div className="flex gap-2 mt-4"><button type="button" onClick={()=>setOpen(false)} className="flex-1 border px-3 py-2.5 rounded-xl font-bold">Cancel</button><button type="button" disabled={downloading} onClick={download} className="flex-1 bg-[#002344] text-white px-3 py-2.5 rounded-xl font-bold disabled:opacity-40">{downloading?"Preparing…":"Download"}</button></div>
   </div>}
  </div>;
 }
-
 function Dashboard({summary}){
  const t=summary&&summary.totals||{},c=summary&&summary.counts||{};
  const cards=[["Members / सदस्य",c.members||0],["Volunteers / स्वयंसेवक",c.volunteers||0],["Donors / दानदाता",c.donors||0],["Beneficiaries / लाभार्थी",c.beneficiaries||0],["Donations / दान","₹"+Number(t.donations||0).toLocaleString("en-IN")],["Expenses / व्यय","₹"+Number(t.expenses||0).toLocaleString("en-IN")],["Cash / रोकड़","₹"+Number(t.cash||0).toLocaleString("en-IN")],["Bank / बैंक","₹"+Number(t.bank||0).toLocaleString("en-IN")],["Stock Balance / स्टॉक शेष",Number(t.stockBalance||0).toLocaleString("en-IN")],["Pending / लंबित",summary?.workflow?.pending||0],["Active MoUs / सक्रिय MoU",summary?.workflow?.activeMous||0],["Upcoming Meetings / आगामी बैठकें",summary?.workflow?.upcomingMeetings||0]];
