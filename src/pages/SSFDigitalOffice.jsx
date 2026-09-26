@@ -1201,6 +1201,32 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
  const set=(k,v)=>setForm(x=>({...x,[k]:v}));
  const currentRows=seed.map(m=>currentByMember.get(m.memberId)||null);
  const currentRecords=seed.map(m=>currentByMember.get(m.memberId)).filter(Boolean);
+ const seedRestoreRef=useRef(false);
+ useEffect(function(){
+  if(seedRestoreRef.current||existing.length>0)return;
+  seedRestoreRef.current=true;
+  (async function(){
+   try{
+    const headers={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
+    for(const m of seed){
+     const data={...m,committeeStatus:"Active",action:"Current Committee Register",membershipNo:"",committeeFrom:"",committeeTill:"",appointmentDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",remarks:"Current approved Managing Committee master record."};
+     const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers,body:JSON.stringify({module:"managingCommittee",recordDate:m.joiningDate||new Date().toISOString().slice(0,10),recordType:"Current Committee Register",status:"active",data})});
+     if(!r.ok){
+      const out=await r.json().catch(()=>({}));
+      throw new Error(out.message||"Committee record restore failed.");
+     }
+    }
+    const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers});
+    const out=await r.json().catch(()=>[]);
+    const restored=Array.isArray(out)?out:(Array.isArray(out.records)?out.records:[]);
+    window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"managingCommittee",rows:restored}}));
+    setNotice("9 approved current Managing Committee records restored from the SSF master register.");
+   }catch(e){
+    seedRestoreRef.current=false;
+    setNotice(e.message||"Unable to restore the current Managing Committee records.");
+   }
+  })();
+ },[existing.length,token]);
  const refresh=async()=>{
   setNotice("Current committee data refresh ho raha hai…");
   const used=new Set();
