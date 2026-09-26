@@ -488,8 +488,8 @@ function MeetingCalendar({rows,add,archive,linkedRows=[],token}){
 
  const blank={date:new Date().toISOString().slice(0,10),time:"",meetingTitle:"",meetingType:"Managing Committee Meeting",mode:"Online",venue:"",meetingLink:"",purpose:"",agenda:"",participants:"",reminder:"1 day before",status:"scheduled",notes:""};
  const [f,setF]=useState(blank),[open,setOpen]=useState(false),[notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null);
- const [allMeetingRows,setAllMeetingRows]=useState([]);
- const loadAllMeetingRows=async()=>{try{const h={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};const mods=["meetings","onlineMeetings","meetingResolutions"];const out=await Promise.all(mods.map(m=>fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+m,{headers:h}).then(async r=>{const d=await r.json().catch(()=>[]);return r.ok?(Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[])):[];})));setAllMeetingRows(out.flat().filter(r=>r&&r.status!=="deleted"));}catch(e){setAllMeetingRows([]);}};
+ const [allMeetingRows,setAllMeetingRows]=useState([]),[meetingLoadError,setMeetingLoadError]=useState("");
+ const loadAllMeetingRows=async()=>{try{setMeetingLoadError("");const h={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};const mods=["meetings","onlineMeetings","meetingResolutions"];const out=await Promise.all(mods.map(async m=>{const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+m,{headers:h});const d=await r.json().catch(()=>[]);if(!r.ok)throw new Error(m+" records could not be loaded.");return Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]);}));const merged=out.flat().filter(r=>r&&r.status!=="deleted");setAllMeetingRows(merged);}catch(e){setAllMeetingRows([]);setMeetingLoadError(e.message||"Meeting records could not be loaded.");}};
  useEffect(()=>{loadAllMeetingRows();},[token]);
  const calendarViewRows=allMeetingRows.length?allMeetingRows:((rows||[]).concat(linkedRows||[]));
  const existing=(calendarViewRows||[]).filter(r=>["meetings","onlineMeetings","meetingResolutions"].includes(r.module)&&r.status!=="deleted");
@@ -503,7 +503,7 @@ function MeetingCalendar({rows,add,archive,linkedRows=[],token}){
     <div className="bg-white border rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Completed / पूर्ण</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.filter(r=>String((r.data||{}).status||r.status).toLowerCase()==="completed").length}</div></div>
     <div className="bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Total Records / कुल</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.length}</div></div>
    </div></div>
-  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
+  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}{meetingLoadError&&<div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-3 font-semibold">{meetingLoadError} — Please refresh the Digital Office.</div>}
   {open&&<div className="bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b"><h3 className="text-xl font-black text-[#123B5D]">Schedule Meeting / बैठक निर्धारित करें</h3><p className="text-sm text-zinc-500 mt-1">Calendar planning only. Official attendance, minutes and resolutions belong in Meeting & Resolution Register.</p></div>
    <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
     <input type="date" value={f.date} onChange={e=>set("date",e.target.value)} className={cls} required/><input type="time" value={f.time} onChange={e=>set("time",e.target.value)} className={cls} required/>
