@@ -196,7 +196,7 @@ export default function SSFDigitalOffice(){
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","meetingResolutions"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {active==="governanceActions"&&<GovernanceActionsRegister rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}\n    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","meetingResolutions","governanceActions"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
@@ -408,6 +408,59 @@ function AppointmentLetters({rows,add}){
    <div className="sm:col-span-2 lg:col-span-4">{area("terms","Terms & Conduct",5)}</div>
    <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2"><button className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold"><FaFileAlt className="inline mr-2"/>Save & Generate Appointment Letter</button><span className="text-xs text-zinc-500 self-center">The PDF uses SSF letterhead, registration details, appointment number and authorised signatory.</span></div>
   </form>
+ </div>;
+}
+
+function GovernanceActionsRegister({rows,loading,search,setSearch,add,archive}){
+ const [open,setOpen]=useState(false),[status,setStatus]=useState("all"),[response,setResponse]=useState("all"),[attendance,setAttendance]=useState("all");
+ const filtered=rows.filter(function(r){
+  const d=r.data||{};
+  const q=String(search||"").toLowerCase();
+  const hay=[r.recordId,r.recordDate,r.status,d.category,d.recipient,d.subject,d.referenceNo,d.responseStatus,d.attendanceStatus,d.actionTaken,d.resolutionNo].join(" ").toLowerCase();
+  return (!q||hay.includes(q)) &&
+   (status==="all"||String(r.status||"").toLowerCase()===status) &&
+   (response==="all"||String(d.responseStatus||"").toLowerCase()===response) &&
+   (attendance==="all"||String(d.attendanceStatus||"").toLowerCase()===attendance);
+ });
+ const count=function(fn){return rows.filter(fn).length;};
+ const responsePending=count(r=>String(r.data?.responseStatus||"").toLowerCase()==="pending");
+ const noResponse=count(r=>["no response","not responded","non-response"].includes(String(r.data?.responseStatus||"").toLowerCase()));
+ const absent=count(r=>["absent","not attended"].includes(String(r.data?.attendanceStatus||"").toLowerCase()));
+ return <div className="bg-white rounded-2xl border overflow-hidden">
+  <div className="p-5 sm:p-7 border-b bg-gradient-to-r from-white to-zinc-50">
+   <div className="flex flex-col xl:flex-row xl:items-start justify-between gap-4">
+    <div><h2 className="text-2xl font-black text-[#002344]">Notices & Administrative Actions Register</h2><p className="text-sm text-zinc-500 mt-1">Notices, warnings, follow-ups, non-response, meeting participation and administrative decisions — one traceable record.</p></div>
+    <button onClick={()=>setOpen(!open)} className="bg-[#002344] text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2 shrink-0"><FaPlus/> Add Record</button>
+   </div>
+   <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-5">
+    <div className="rounded-xl border bg-white p-3"><div className="text-xs text-zinc-500">Total Records</div><div className="text-xl font-black text-[#002344]">{rows.length}</div></div>
+    <div className="rounded-xl border bg-white p-3"><div className="text-xs text-zinc-500">Response Pending</div><div className="text-xl font-black text-amber-700">{responsePending}</div></div>
+    <div className="rounded-xl border bg-white p-3"><div className="text-xs text-zinc-500">No Response</div><div className="text-xl font-black text-red-700">{noResponse}</div></div>
+    <div className="rounded-xl border bg-white p-3"><div className="text-xs text-zinc-500">Attendance Issues</div><div className="text-xl font-black text-orange-700">{absent}</div></div>
+   </div>
+  </div>
+  <div className="p-4 border-b bg-zinc-50 flex flex-wrap gap-2 items-center">
+   <div className="relative"><FaSearch className="absolute left-3 top-3 text-zinc-400"/><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search notice / person / subject / ID" className="pl-9 pr-3 py-2.5 border rounded-xl w-64 bg-white"/></div>
+   <select value={status} onChange={e=>setStatus(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm bg-white"><option value="all">All Record Status</option><option value="active">Active</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="archived">Archived</option></select>
+   <select value={response} onChange={e=>setResponse(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm bg-white"><option value="all">All Responses</option><option value="pending">Response Pending</option><option value="responded">Responded</option><option value="no response">No Response</option></select>
+   <select value={attendance} onChange={e=>setAttendance(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm bg-white"><option value="all">All Attendance</option><option value="present">Present</option><option value="absent">Absent</option><option value="not attended">Not Attended</option></select>
+  </div>
+  {open&&<RecordForm module="governanceActions" onSave={function(d){add("governanceActions",d);setOpen(false);}}/>}
+  {loading?<div className="p-10 text-center text-zinc-400">Loading…</div>:<div className="overflow-x-auto"><table className="w-full text-left text-sm">
+   <thead><tr className="bg-zinc-50 text-zinc-500 text-xs uppercase"><th className="p-3">Register ID</th><th className="p-3">Date</th><th className="p-3">Action / Notice</th><th className="p-3">Issued To</th><th className="p-3">Response</th><th className="p-3">Participation</th><th className="p-3">Next Step</th><th className="p-3">Status</th><th className="p-3"></th></tr></thead>
+   <tbody className="divide-y">{filtered.length===0?<tr><td colSpan="9" className="p-10 text-center text-zinc-400">No records found.</td></tr>:filtered.map(function(r){const d=r.data||{};return <tr key={r.id} className="align-top">
+    <td className="p-3 font-bold text-[#002344] whitespace-nowrap">{r.recordId}</td>
+    <td className="p-3 whitespace-nowrap">{new Date(r.recordDate).toLocaleDateString("en-IN")}</td>
+    <td className="p-3 min-w-[220px]"><div className="font-bold">{d.subject||"—"}</div><div className="text-xs text-zinc-500 mt-1">{d.category||r.recordType||""}</div><div className="text-xs text-zinc-400 mt-1">{d.referenceNo||""}</div></td>
+    <td className="p-3 min-w-[160px]">{d.recipient||"—"}</td>
+    <td className="p-3 whitespace-nowrap">{d.responseStatus||"—"}{d.responseDueDate&&<div className="text-xs text-zinc-400 mt-1">Due: {d.responseDueDate}</div>}</td>
+    <td className="p-3 whitespace-nowrap">{d.attendanceStatus||"—"}</td>
+    <td className="p-3 min-w-[200px]">{d.actionTaken||"—"}</td>
+    <td className="p-3 whitespace-nowrap">{r.status||"active"}</td>
+    <td className="p-3 text-right"><button onClick={()=>archive(r.id)} className="text-xs font-bold text-red-600">Archive</button></td>
+   </tr>;})}</tbody>
+  </table></div>}
+  <div className="px-5 py-4 border-t bg-zinc-50 text-xs text-zinc-500">Use this register for official notices, reminders, warnings, response tracking, repeated non-response, meeting participation issues, assigned actions and closure records. Keep facts and dates objective.</div>
  </div>;
 }
 
