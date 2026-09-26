@@ -37,11 +37,12 @@ export default function SSFDigitalOffice(){
  const auth=function(){return {Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};};
  const refreshSummary=async function(){const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_SUMMARY,{headers:auth()});if(r.ok)setSummary(await r.json());};
  const load=async function(module){
+  const dataModule=module==="meetingResolution"?"meetingResolutions":module;
   setLoading(true);
   try{
    await refreshSummary();
    if(NO_RECORD_MODULES.has(module)){setRows([]);return;}
-   const q=ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+encodeURIComponent(module)+(search?"&search="+encodeURIComponent(search):"");
+   const q=ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+encodeURIComponent(dataModule)+(search?"&search="+encodeURIComponent(search):"");
    const r=await fetch(q,{headers:auth()}); const d=await r.json(); if(!r.ok)throw new Error(d.message||"Unable to load records."); setRows(d);
   }catch(e){setNotice(e.message||"Unable to load Digital Office.");}finally{setLoading(false);}
  };
