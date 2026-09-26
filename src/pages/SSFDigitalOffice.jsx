@@ -183,7 +183,8 @@ export default function SSFDigitalOffice(){
    <main className="min-w-0">
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     
-    {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive}/>}\n    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
+    {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive}/>
+    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
@@ -202,7 +203,19 @@ export default function SSFDigitalOffice(){
   </div>
  </div></div>;
 }
-function MeetingsHub({token,rows,add,archive}){\n const [tab,setTab]=useState("calendar");\n const tabs=[["calendar","Meeting Calendar / बैठक कैलेंडर"],["online","Online Meetings / ऑनलाइन बैठकें"],["resolution","Meeting & Resolution / बैठक व प्रस्ताव"]];\n return <div className="space-y-5">\n  <div className="bg-white border rounded-2xl p-3 sm:p-4 shadow-sm">\n   <div className="flex flex-wrap gap-2">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);}} className={"px-4 py-3 rounded-xl font-bold transition "+(tab===t[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>\n  </div>\n  {tab==="calendar"&&<MeetingCalendar rows={rows} add={add} archive={archive}/>}\n  {tab==="online"&&<OnlineMeetings token={token}/>}\n  {tab==="resolution"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}\n </div>;\n}\nfunction OnlineMeetings({token}){
+function MeetingsHub({token,rows,add,archive}){
+ const [tab,setTab]=useState("calendar");
+ const tabs=[["calendar","Meeting Calendar / बैठक कैलेंडर"],["online","Online Meetings / ऑनलाइन बैठकें"],["resolution","Meeting & Resolution / बैठक व प्रस्ताव"]];
+ return <div className="space-y-5">
+  <div className="bg-white border rounded-2xl p-3 sm:p-4 shadow-sm">
+   <div className="flex flex-wrap gap-2">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);}} className={"px-4 py-3 rounded-xl font-bold transition "+(tab===t[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>
+  </div>
+  {tab==="calendar"&&<MeetingCalendar rows={rows} add={add} archive={archive}/>}
+  {tab==="online"&&<OnlineMeetings token={token}/>}
+  {tab==="resolution"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}
+ </div>;
+}
+function OnlineMeetings({token}){
  const blank={title:"",type:"Managing Committee",date:new Date().toISOString().slice(0,10),time:"15:15",purpose:"",agenda:""};
  const [form,setForm]=useState(blank),[link,setLink]=useState(""),[members,setMembers]=useState([]),[selected,setSelected]=useState([]),[records,setRecords]=useState([]),[notice,setNotice]=useState(""),[working,setWorking]=useState(false),[googleConnected,setGoogleConnected]=useState(false),[editingId,setEditingId]=useState(null);
  const headers={Authorization:"Bearer "+token,"Content-Type":"application/json"};
