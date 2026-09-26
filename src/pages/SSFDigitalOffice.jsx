@@ -188,8 +188,8 @@ export default function SSFDigitalOffice(){
    <main className="min-w-0">
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     
-    {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive} restore={restore}/>}
-    {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive} token={token}/>}
+    {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive} restore={restore} updateRecord={updateRecord}/>}
+    {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
     {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
     {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/>} 
     {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
@@ -237,7 +237,7 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
   <div className="bg-white border rounded-2xl p-3 sm:p-4 shadow-sm">
    <div className="flex flex-wrap gap-2">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);if(t[0]==="resolution")loadMeetingLinkedRows();}} className={"px-4 py-3 rounded-xl font-bold transition "+(tab===t[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>
   </div>
-  {tab==="calendar"&&<MeetingCalendar rows={calendarRows.concat(onlineRows,resolutionRows)} linkedRows={calendarRows.concat(onlineRows,resolutionRows)} add={add} archive={archive} token={token}/>}
+  {tab==="calendar"&&<MeetingCalendar rows={calendarRows.concat(onlineRows,resolutionRows)} linkedRows={calendarRows.concat(onlineRows,resolutionRows)} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
   {tab==="online"&&<OnlineMeetings token={token}/>}
   {tab==="resolution"&&<MeetingResolutions rows={calendarRows.concat(onlineRows,resolutionRows)} add={async function(module,data){const ok=await add(module,data);if(ok)await loadMeetingLinkedRows();return ok;}} archive={archive} restore={restore} token={token}/>}
  </div>;
