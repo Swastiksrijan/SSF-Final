@@ -1216,7 +1216,7 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
   }
   for(const r of existing){
    const id=String((r.data||{}).memberId||"");
-   if(id&&!seed.some(m=>m.memberId===id)&&!used.has(r.id)) await archive(r.id);
+   if(id&&!seed.some(m=>m.memberId===id)&&!used.has(r.id)) await archive(r.id,true);
   }
   setNotice("Fresh Managing Committee register prepared: 9 current members.");
  };
