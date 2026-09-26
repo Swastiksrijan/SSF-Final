@@ -484,116 +484,80 @@ function AppointmentLetters({rows,add}){
  </div>;
 }
 
-function MeetingCalendar({rows,add,archive,linkedRows=[],token,updateRecord}){
+function MeetingCalendar({rows,add,archive,token,updateRecord}){
  const blank={
-  date:new Date().toISOString().slice(0,10),time:"",meetingType:"Managing Committee Meeting",mode:"Online",meetingTitle:"",
-  purpose:"",venue:"",onlineMeetingId:"",onlineRefLink:"",platform:"Google Meet",organizerHost:"SSF Admin",
-  presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"Not recorded",attendanceSummary:"",
-  attendanceSheetRef:"",agenda:"",minutesProceedings:"",decisions:"",resolutionNo:"",resolutionStatus:"Not Applicable",
-  actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingOnlineRef:"",remarks:"",status:"scheduled"
+  date:new Date().toISOString().slice(0,10),time:"",meetingTitle:"",meetingType:"Managing Committee Meeting",mode:"Online",
+  venue:"",meetingLink:"",platform:"Google Meet",organizerHost:"SSF Admin",purpose:"",agenda:"",
+  participants:"",reminder:"1 day before",status:"Scheduled",remarks:""
  };
- const [f,setF]=useState(blank),[open,setOpen]=useState(false),[notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null);
- const [allMeetingRows,setAllMeetingRows]=useState([]),[meetingLoadError,setMeetingLoadError]=useState("");
- const loadAllMeetingRows=async()=>{
-  try{
-   setMeetingLoadError("");
-   const h={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
-   const out=await Promise.all(["meetings","onlineMeetings","meetingResolutions"].map(async m=>{
-    const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+m,{headers:h});
-    const d=await r.json().catch(()=>[]);
-    if(!r.ok)throw new Error(m+" records could not be loaded.");
-    return Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]);
-   }));
-   setAllMeetingRows(out.flat().filter(r=>r&&r.status!=="deleted"));
-  }catch(e){setAllMeetingRows([]);setMeetingLoadError(e.message||"Meeting records could not be loaded.");}
- };
- useEffect(()=>{loadAllMeetingRows();},[token]);
- const calendarViewRows=allMeetingRows.length?allMeetingRows:((rows||[]).concat(linkedRows||[]));
- const existing=(calendarViewRows||[]).filter(r=>["meetings","onlineMeetings","meetingResolutions"].includes(r.module)&&r.status!=="deleted");
+ const [f,setF]=useState(blank),[saving,setSaving]=useState(false),[editingId,setEditingId]=useState(null),[showForm,setShowForm]=useState(false);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const displayDate=r=>{const d=r.data||{};return d.date||d.meetingDate||r.recordDate||"—";};
- const displayTime=r=>{const d=r.data||{};return d.time||d.startTime||"—";};
- const save=async e=>{
+ const calendarRows=(rows||[]).filter(r=>r.module==="meetings"&&r.status!=="archived").sort((a,b)=>String(a.recordDate||"").localeCompare(String(b.recordDate||"")));
+ const today=new Date().toISOString().slice(0,10);
+ const upcoming=calendarRows.filter(r=>String((r.data||{}).date||r.recordDate||"")>=today&&String((r.data||{}).status||r.status||"").toLowerCase()!=="cancelled");
+ const scheduled=calendarRows.filter(r=>String((r.data||{}).status||r.status||"").toLowerCase()==="scheduled");
+ const completed=calendarRows.filter(r=>String((r.data||{}).status||r.status||"").toLowerCase()==="completed");
+ const submit=async e=>{
   e.preventDefault();
-  if(!f.meetingTitle.trim()||!f.date||!f.time){setNotice("Meeting Title, Meeting Date and Time are required.");return;}
-  const payload={...f,recordDate:f.date,recordType:f.meetingType,status:f.status};
-  const ok=editingId?await updateRecord(editingId,"meetings",payload):await add("meetings",{recordDate:f.date,recordType:f.meetingType,status:f.status,data:f});
-  if(ok){setEditingId(null);setF(blank);setOpen(false);setNotice(editingId?"Meeting Calendar record updated successfully.":"Meeting scheduled in Calendar.");loadAllMeetingRows();}
+  if(!f.date||!f.time||!f.meetingTitle||!f.meetingType){return;}
+  setSaving(true);
+  const payload={...f};
+  const ok=editingId
+   ? await updateRecord(editingId,"meetings",{...payload})
+   : await add("meetings",{recordDate:f.date,recordType:f.meetingType,status:f.status.toLowerCase(),data:payload});
+  if(ok){setF({...blank,date:new Date().toISOString().slice(0,10)});setEditingId(null);setShowForm(false);}
+  setSaving(false);
  };
- const beginEdit=r=>{const d=r.data||{};setEditingId(r.id);setF({...blank,...d,date:d.date||r.recordDate||blank.date,time:d.time||d.startTime||""});setOpen(true);setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
- const field=(label,key,placeholder="",type="text",required=false)=> <div><label className="block text-xs font-bold text-zinc-600 mb-1">{label}</label><input type={type} value={f[key]||""} onChange={e=>set(key,e.target.value)} placeholder={placeholder} required={required} className={cls}/></div>;
- const area=(label,key,placeholder="")=> <div className="sm:col-span-2"><label className="block text-xs font-bold text-zinc-600 mb-1">{label}</label><textarea value={f[key]||""} onChange={e=>set(key,e.target.value)} placeholder={placeholder} className={cls+" min-h-[92px]"}/></div>;
+ const edit=r=>{setF({...blank,...(r.data||{}),date:(r.data||{}).date||r.recordDate||blank.date});setEditingId(r.id);setShowForm(true);window.scrollTo({top:0,behavior:"smooth"});};
+ const displayDate=r=>{const d=r.data||{};return d.date||r.recordDate||"—";};
+ const displayStatus=r=>String((r.data||{}).status||r.status||"scheduled").replace(/^./,m=>m.toUpperCase());
  return <div className="space-y-5">
   <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="bg-[#123B5D] text-white p-6"><div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"><div><h2 className="text-2xl font-black">📅 Meeting Calendar / बैठक कैलेंडर</h2><p className="text-white/75 mt-1">Meeting scheduling, linked online records, attendance references, proceedings, decisions and follow-up tracking.</p></div><button type="button" onClick={()=>{setOpen(!open);setNotice("");}} className="bg-[#E8D39A] text-[#123B5D] px-4 py-2.5 rounded-xl font-black">{open?(editingId?"Cancel Edit":"Close"):"＋ Add Meeting"}</button></div></div>
-   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 p-5 bg-zinc-50">
-    <div className="bg-white border rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Upcoming / आगामी</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.filter(r=>{const t=new Date(displayDate(r)+"T"+String(displayTime(r)==="—"?"23:59":displayTime(r))).getTime();return !isNaN(t)&&t>=Date.now()&&String((r.data||{}).status||r.status).toLowerCase()!=="cancelled";}).length}</div></div>
-    <div className="bg-white border rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Scheduled / निर्धारित</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.filter(r=>String((r.data||{}).status||r.status).toLowerCase()==="scheduled").length}</div></div>
-    <div className="bg-white border rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Completed / पूर्ण</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.filter(r=>String((r.data||{}).status||r.status).toLowerCase()==="completed").length}</div></div>
-    <div className="bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Total Records / कुल</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.length}</div></div>
+   <div className="bg-[#002344] text-white p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div><div className="flex items-center gap-3"><FaCalendarAlt className="text-2xl"/><div><h2 className="text-2xl font-black">Meeting Calendar / बैठक कैलेंडर</h2><p className="text-white/70 mt-1">Plan and schedule meetings — date, time, purpose, venue or online details, participants and reminders.</p></div></div></div>
+    <button type="button" onClick={()=>{setShowForm(x=>!x);if(showForm){setEditingId(null);setF(blank);}}} className="bg-white text-[#002344] px-4 py-2.5 rounded-xl font-bold shrink-0"><FaPlus className="inline mr-2"/>{showForm?"Close":"Add Meeting"}</button>
+   </div>
+   <div className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-zinc-50">
+    {[["Upcoming",upcoming.length],["Scheduled",scheduled.length],["Completed",completed.length],["Total",calendarRows.length]].map(x=><div key={x[0]} className="bg-white border rounded-xl p-4"><div className="text-xs text-zinc-500 font-bold">{x[0]}</div><div className="text-2xl font-black text-[#002344] mt-1">{x[1]}</div></div>)}
    </div>
   </div>
-  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
-  {meetingLoadError&&<div className="bg-amber-50 border border-amber-200 text-amber-900 rounded-xl p-3 font-semibold">{meetingLoadError} — Please refresh the Digital Office.</div>}
-  {open&&<div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#123B5D]">{editingId?"Edit Meeting / बैठक संशोधित करें":"Schedule Meeting / बैठक निर्धारित करें"}</h3><p className="text-sm text-zinc-500 mt-1">Calendar record में meeting की पूरी lifecycle information रखी जा सकती है। Existing Meeting & Resolution / Online Meeting records को दोबारा enter करने की जरूरत नहीं है।</p></div>
-   <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    {field("Meeting Date / बैठक दिनांक","date","", "date",true)}{field("Meeting Time / समय","time","", "time",true)}
-    <div><label className="block text-xs font-bold text-zinc-600 mb-1">Meeting Type / बैठक प्रकार</label><select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} className={cls}>{["General Body Meeting","Managing Committee Meeting","Special Meeting","Emergency Meeting","MoU / Collaboration Meeting","Volunteer Meeting","Member Meeting","Donor Meeting","Project / Program Meeting","Event / Camp Meeting","Training / Workshop","Internal Office Meeting","Other"].map(x=><option key={x}>{x}</option>)}</select></div>
-    <div><label className="block text-xs font-bold text-zinc-600 mb-1">Mode / माध्यम</label><select value={f.mode} onChange={e=>set("mode",e.target.value)} className={cls}><option>Online</option><option>Offline</option><option>Hybrid</option></select></div>
-    {field("Meeting Title / बैठक शीर्षक","meetingTitle","Meeting Title", "text",true)}
-    {field("Venue / Location","venue","Venue / Location")}
-    {field("Online Meeting ID","onlineMeetingId","e.g. SSF-REC-20260923-00021")}
-    {field("Online Ref. / Link","onlineRefLink","Google Meet / Zoom / Teams link")}
-    {field("Platform / प्लेटफॉर्म","platform","Google Meet")}
-    {field("Organizer / Host","organizerHost","Organizer / Host")}
-    {area("Purpose / उद्देश्य","purpose","Purpose of the meeting")}
-    {area("Agenda / एजेंडा","agenda","Agenda / points for discussion")}
-    {area("Present Members / उपस्थित सदस्य","presentMembers","Names / roles")}
-    {area("Absent Members / अनुपस्थित सदस्य","absentMembers","Names / roles")}
-    {area("Online Participants / ऑनलाइन प्रतिभागी","onlineParticipants","Participants who joined online")}
-    {area("Offline Participants / ऑफलाइन प्रतिभागी","offlineParticipants","Participants physically present")}
-    <div><label className="block text-xs font-bold text-zinc-600 mb-1">Attendance / उपस्थिति</label><select value={f.attendance} onChange={e=>set("attendance",e.target.value)} className={cls}><option>Not recorded</option><option>Present</option><option>Absent</option><option>Partial</option><option>Recorded</option></select></div>
-    {area("Attendance Summary / उपस्थिति सारांश","attendanceSummary","Example: Present: 1 | Absent/Not Joined: 8")}
-    {field("Attendance Sheet / Signature Ref.","attendanceSheetRef","File / register / signature reference")}
-    {area("Minutes / Proceedings / कार्यवाही","minutesProceedings","Meeting proceedings / minutes")}
-    {area("Decisions / निर्णय","decisions","Decisions taken")}
-    {field("Resolution No. / प्रस्ताव संख्या","resolutionNo","e.g. SSF/RES/2026/001")}
-    <div><label className="block text-xs font-bold text-zinc-600 mb-1">Resolution Status / प्रस्ताव स्थिति</label><select value={f.resolutionStatus} onChange={e=>set("resolutionStatus",e.target.value)} className={cls}><option>Not Applicable</option><option>Draft</option><option>Proposed</option><option>Approved</option><option>Rejected</option><option>Deferred</option></select></div>
-    {area("Action Points / कार्य बिंदु","actionPoints","Action points finalized in the meeting")}
-    {area("Responsible Person(s) / जिम्मेदार व्यक्ति","responsiblePersons","Names / roles")}
-    {field("Target Date / लक्ष्य दिनांक","targetDate","", "date")}
-    {field("Supporting Document / सहायक दस्तावेज़","supportingDocument","File / document reference")}
-    {field("Recording / Online Ref.","recordingOnlineRef","Recording / online reference")}
-    {area("Remarks / टिप्पणी","remarks","Additional remarks")}
-    <div><label className="block text-xs font-bold text-zinc-600 mb-1">Status / स्थिति</label><select value={f.status} onChange={e=>set("status",e.target.value)} className={cls}><option value="scheduled">Scheduled</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select></div>
-    <button className="sm:col-span-2 lg:col-span-4 bg-[#123B5D] hover:bg-[#17665D] text-white py-3 rounded-xl font-bold">{editingId?"Update Calendar Entry":"Save Calendar Entry"}</button>
+  {showForm&&<div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">{editingId?"Edit Meeting / बैठक संपादित करें":"Schedule New Meeting / नई बैठक निर्धारित करें"}</h3><p className="text-sm text-zinc-500 mt-1">This register is for meeting planning and scheduling. Attendance, minutes, decisions and resolutions belong in Meeting & Resolution.</p></div>
+   <form onSubmit={submit} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <div><label className="text-xs font-bold text-zinc-500">Meeting Date *</label><input type="date" value={f.date} onChange={e=>set("date",e.target.value)} required className={cls}/></div>
+    <div><label className="text-xs font-bold text-zinc-500">Meeting Time *</label><input type="time" value={f.time} onChange={e=>set("time",e.target.value)} required className={cls}/></div>
+    <div><label className="text-xs font-bold text-zinc-500">Meeting Type *</label><select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} required className={cls}>
+     {["General Body Meeting","Managing Committee Meeting","Special Meeting","Emergency Meeting","MoU / Collaboration Meeting","Volunteer Meeting","Member Meeting","Donor Meeting","Project / Program Meeting","Event / Camp Meeting","Training / Workshop","Internal Office Meeting","Other"].map(x=><option key={x}>{x}</option>)}
+    </select></div>
+    <input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title *" required className={cls}/>
+    <select value={f.mode} onChange={e=>set("mode",e.target.value)} className={cls}><option>Online</option><option>Offline</option><option>Hybrid</option></select>
+    <input value={f.venue} onChange={e=>set("venue",e.target.value)} placeholder="Venue / Location" className={cls}/>
+    <input value={f.meetingLink} onChange={e=>set("meetingLink",e.target.value)} placeholder="Online Meeting Link (if applicable)" className={cls}/>
+    <select value={f.platform} onChange={e=>set("platform",e.target.value)} className={cls}><option>Google Meet</option><option>Zoom</option><option>Microsoft Teams</option><option>Other</option><option>Not applicable</option></select>
+    <input value={f.organizerHost} onChange={e=>set("organizerHost",e.target.value)} placeholder="Organizer / Host" className={cls}/>
+    <textarea value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose" className={cls+" min-h-[90px]"}/>
+    <textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda" className={cls+" min-h-[90px]"}/>
+    <textarea value={f.participants} onChange={e=>set("participants",e.target.value)} placeholder="Participants / Invited Members" className={cls+" min-h-[90px]"}/>
+    <select value={f.reminder} onChange={e=>set("reminder",e.target.value)} className={cls}><option>1 day before</option><option>2 days before</option><option>1 week before</option><option>On meeting day</option><option>No reminder</option></select>
+    <select value={f.status} onChange={e=>set("status",e.target.value)} className={cls}><option>Scheduled</option><option>Pending</option><option>Completed</option><option>Cancelled</option></select>
+    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" min-h-[90px]"}/>
+    <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2 pt-2"><button type="submit" disabled={saving} className="bg-[#002344] text-white px-5 py-3 rounded-xl font-bold disabled:opacity-50">{saving?(editingId?"Updating…":"Saving…"):(editingId?"Update Meeting":"Save Meeting")}</button>{editingId&&<button type="button" onClick={()=>{setEditingId(null);setF(blank);setShowForm(false);}} className="border px-5 py-3 rounded-xl font-bold">Cancel Edit</button>}</div>
    </form>
   </div>}
-  {linkedRows.filter(r=>["meetings","onlineMeetings","meetingResolutions"].includes(r.module)&&r.status!=="deleted").length>0&&<div className="bg-blue-50 border border-blue-200 rounded-2xl p-5"><div className="flex flex-wrap items-center justify-between gap-2"><div><h3 className="text-lg font-black text-[#123B5D]">Connected Meeting Records / जुड़े हुए बैठक रिकॉर्ड</h3><p className="text-sm text-zinc-600 mt-1">Online Meetings और Meeting & Resolution के existing records यहाँ automatically linked दिखाई दे रहे हैं। इन्हें दोबारा enter करने की जरूरत नहीं है।</p></div><div className="font-black text-[#123B5D]">{linkedRows.filter(r=>r.module!=="meetings"&&r.status!=="deleted").length} linked record(s)</div></div><div className="mt-4 overflow-auto"><table className="w-full text-sm min-w-[1100px]"><thead className="bg-white"><tr>{["Source","Date","Time","Meeting Title","Type","Mode / Platform","Meeting ID / Link","Status"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y bg-white">{linkedRows.filter(r=>r.module!=="meetings"&&r.status!=="deleted").map(r=>{const d=r.data||{};return <tr key={r.module+"-"+r.id}><td className="p-3 font-bold">{r.module==="onlineMeetings"?"Online Meetings / ऑनलाइन बैठकें":"Meeting & Resolution / बैठक व प्रस्ताव"}</td><td className="p-3">{d.date||d.meetingDate||r.recordDate||"—"}</td><td className="p-3">{d.time||d.startTime||"—"}</td><td className="p-3 font-bold">{d.title||d.meetingTitle||"—"}</td><td className="p-3">{d.type||d.meetingType||r.recordType||"—"}</td><td className="p-3">{d.mode||d.meetingMode||d.platform||"—"}</td><td className="p-3">{d.meetingId||d.onlineMeetingId||d.meetingLink||d.onlineMeetingLink||"—"}</td><td className="p-3">{d.status||d.resolutionStatus||r.status||"—"}</td></tr>})}</tbody></table></div></div>}
   <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#123B5D]">Meeting Register / बैठक रजिस्टर</h3><p className="text-sm text-zinc-500 mt-1">{existing.length} record(s) · secure database · calendar + linked meeting information</p></div>
-   <div className="overflow-auto"><table className="w-full text-sm min-w-[4200px]"><thead className="bg-zinc-50"><tr>{[
-    "Meeting Date","Time","Type","Mode","Meeting Title","Purpose","Venue / Location","Online Meeting ID","Online Ref. / Link","Platform","Organizer / Host",
-    "Present Members","Absent Members","Online Participants","Offline Participants","Attendance","Attendance Summary","Attendance Sheet / Signature Ref.",
-    "Agenda","Minutes / Proceedings","Decisions","Resolution No.","Resolution Status","Action Points","Responsible Person(s)","Target Date",
-    "Supporting Document","Recording / Online Ref.","Remarks","Status","Action"
-   ].map(h=><th key={h} className="p-3 text-left whitespace-nowrap">{h}</th>)}</tr></thead>
-   <tbody className="divide-y">{existing.slice().sort((a,b)=>(displayDate(b)+" "+displayTime(b)).localeCompare(displayDate(a)+" "+displayTime(a))).map(r=>{const d=r.data||{};return <tr key={r.id} className="align-top">
-    <td className="p-3 whitespace-nowrap">{displayDate(r)}</td><td className="p-3 whitespace-nowrap">{displayTime(r)}</td><td className="p-3">{d.meetingType||d.type||r.recordType||"—"}</td><td className="p-3">{d.mode||d.meetingMode||d.platform||"—"}</td>
-    <td className="p-3 font-bold min-w-[220px]">{d.meetingTitle||d.title||"—"}</td><td className="p-3 max-w-[260px]">{d.purpose||"—"}</td><td className="p-3">{d.venue||d.location||"—"}</td>
-    <td className="p-3">{d.onlineMeetingId||d.meetingId||"—"}</td><td className="p-3 max-w-[280px] break-all">{d.onlineRefLink||d.meetingLink||d.onlineMeetingLink||"—"}</td><td className="p-3">{d.platform||"—"}</td><td className="p-3">{d.organizerHost||d.organizer||d.host||"—"}</td>
-    <td className="p-3 min-w-[220px]">{d.presentMembers||"—"}</td><td className="p-3 min-w-[220px]">{d.absentMembers||"—"}</td><td className="p-3 min-w-[220px]">{d.onlineParticipants||"—"}</td><td className="p-3 min-w-[220px]">{d.offlineParticipants||"—"}</td>
-    <td className="p-3">{d.attendance||"—"}</td><td className="p-3 max-w-[260px]">{d.attendanceSummary||"—"}</td><td className="p-3">{d.attendanceSheetRef||"—"}</td>
-    <td className="p-3 max-w-[320px]">{d.agenda||"—"}</td><td className="p-3 max-w-[320px]">{d.minutesProceedings||d.minutes||"—"}</td><td className="p-3 max-w-[300px]">{d.decisions||d.decision||"—"}</td>
-    <td className="p-3">{d.resolutionNo||"—"}</td><td className="p-3">{d.resolutionStatus||"—"}</td><td className="p-3 max-w-[300px]">{d.actionPoints||"—"}</td><td className="p-3">{d.responsiblePersons||"—"}</td><td className="p-3 whitespace-nowrap">{d.targetDate||"—"}</td>
-    <td className="p-3">{d.supportingDocument||"—"}</td><td className="p-3">{d.recordingOnlineRef||"—"}</td><td className="p-3 max-w-[260px]">{d.remarks||"—"}</td><td className="p-3">{d.status||r.status||"—"}</td>
-    <td className="p-3 whitespace-nowrap"><button type="button" onClick={()=>beginEdit(r)} className="px-3 py-1.5 rounded-lg border border-[#1F7A70] text-[#1F7A70] font-bold mr-2">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td>
-   </tr>})}{!existing.length&&<tr><td colSpan="31" className="p-8 text-center text-zinc-500">No meeting records yet. Add a calendar meeting above.</td></tr>}</tbody></table></div>
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Meeting Schedule / बैठक कार्यक्रम</h3><p className="text-sm text-zinc-500 mt-1">Planning register only. Detailed attendance, minutes and resolutions are maintained separately.</p></div>
+   <div className="overflow-auto"><table className="w-full text-sm min-w-[1500px]"><thead className="bg-zinc-50"><tr>
+    <th className="p-3 text-left">Date</th><th className="p-3 text-left">Time</th><th className="p-3 text-left">Meeting Title</th><th className="p-3 text-left">Type</th><th className="p-3 text-left">Mode</th><th className="p-3 text-left">Venue / Online</th><th className="p-3 text-left">Purpose</th><th className="p-3 text-left">Organizer / Host</th><th className="p-3 text-left">Participants</th><th className="p-3 text-left">Reminder</th><th className="p-3 text-left">Status</th><th className="p-3 text-left">Action</th>
+   </tr></thead><tbody className="divide-y">{calendarRows.map(r=>{const d=r.data||{};const venue=d.mode==="Online"?(d.meetingLink||"Online"):(d.mode==="Hybrid"?((d.venue||"Venue")+" / "+(d.meetingLink||"Online")):(d.venue||"—"));return <tr key={r.id}>
+    <td className="p-3 font-bold whitespace-nowrap">{displayDate(r)}</td><td className="p-3 whitespace-nowrap">{d.time||"—"}</td><td className="p-3 font-bold max-w-[220px]">{d.meetingTitle||"—"}</td><td className="p-3">{d.meetingType||r.recordType||"—"}</td><td className="p-3">{d.mode||"—"}</td><td className="p-3 max-w-[260px] break-all">{venue}</td><td className="p-3 max-w-[260px]">{d.purpose||"—"}</td><td className="p-3">{d.organizerHost||"—"}</td><td className="p-3 max-w-[220px]">{d.participants||"—"}</td><td className="p-3">{d.reminder||"—"}</td><td className="p-3 font-bold">{displayStatus(r)}</td><td className="p-3 whitespace-nowrap"><button type="button" onClick={()=>edit(r)} className="px-3 py-1.5 rounded-lg border border-[#002344]/20 text-[#002344] font-bold mr-2">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td>
+   </tr>})}{!calendarRows.length&&<tr><td colSpan="12" className="p-10 text-center text-zinc-500">No meetings scheduled yet. Add a meeting above.</td></tr>}</tbody></table></div>
+  </div>
+  <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
+   <h3 className="font-black text-[#002344]">Meeting workflow / बैठक कार्यप्रवाह</h3>
+   <p className="text-sm text-zinc-700 mt-2"><b>Meeting Calendar</b> → planning & scheduling &nbsp;•&nbsp; <b>Online Meetings</b> → online meeting details &nbsp;•&nbsp; <b>Meeting & Resolution</b> → attendance, minutes, decisions, resolutions & action points.</p>
   </div>
  </div>;
 }
-
 function Register({module,rows,loading,search,setSearch,add,archive}){
  const [open,setOpen]=useState(false), [status,setStatus]=useState("all"), [from,setFrom]=useState(""), [to,setTo]=useState("");
  const filtered=rows.filter(function(r){const d=String(r.recordDate||"").slice(0,10);return (status==="all"||String(r.status||"").toLowerCase()===status)&&(from===""||d>=from)&&(to===""||d<=to);});
