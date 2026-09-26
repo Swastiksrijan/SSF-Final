@@ -863,11 +863,35 @@ function InstitutionalHistory({rows,add,updateRecord,archive}) {
   ["history","📁 Documents & Compliance History / दस्तावेज़ एवं अनुपालन इतिहास"]
  ];
  const existing=(rows||[]).filter(r=>r.module==="institutionalHistory"&&r.status!=="deleted");
+ const multiRecordTabs=new Set(["calendar","history"]);
  const [tab,setTab]=useState("profile"),[editingId,setEditingId]=useState(null),[form,setForm]=useState(seed.profile),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
  const sectionRows=existing.filter(r=>(r.data||{}).section===tab);
- useEffect(()=>{const r=sectionRows[0];if(r){setEditingId(r.id);setForm({...seed[tab],...(r.data||{})});}else{setEditingId(null);setForm({...seed[tab]});}setNotice("");},[tab,rows]);
+ useEffect(()=>{
+  if(multiRecordTabs.has(tab)){
+   if(!editingId)setForm({...seed[tab]});
+  }else{
+   const r=sectionRows[0];
+   if(r){setEditingId(r.id);setForm({...seed[tab],...(r.data||{})});}
+   else{setEditingId(null);setForm({...seed[tab]});}
+  }
+  setNotice("");
+ },[tab,rows]);
  const set=(k,v)=>setForm(x=>({...x,[k]:v}));
- const save=async e=>{e.preventDefault();setSaving(true);const data={section:tab,sectionName:labels.find(x=>x[0]===tab)?.[1]||tab,...form};const ok=editingId?await updateRecord(editingId,"institutionalHistory",data):await add("institutionalHistory",{recordDate:new Date().toISOString().slice(0,10),recordType:"Institution Profile & Compliance",status:"active",data});setSaving(false);if(ok){setNotice("Section saved successfully.");}};
+ const resetSectionForm=()=>{setEditingId(null);setForm({...seed[tab]});};
+ const save=async e=>{
+  e.preventDefault();
+  setSaving(true);
+  const data={section:tab,sectionName:labels.find(x=>x[0]===tab)?.[1]||tab,...form};
+  const isMulti=multiRecordTabs.has(tab);
+  const ok=editingId
+   ? await updateRecord(editingId,"institutionalHistory",data)
+   : await add("institutionalHistory",{recordDate:form.date||new Date().toISOString().slice(0,10),recordType:tab==="calendar"?(form.complianceName||"Compliance Calendar"):(form.eventType||"Compliance History"),status:"active",data});
+  setSaving(false);
+  if(ok){
+   setNotice(editingId?"Record updated successfully.":"Record saved successfully.");
+   if(isMulti)resetSectionForm();
+  }
+ };
  const field=(key,label,wide=false,type="text")=><div className={wide?"sm:col-span-2 lg:col-span-4":"sm:col-span-1"}><label className="block text-sm font-bold text-[#123B5D] mb-1">{label}</label>{type==="textarea"?<textarea value={form[key]??""} onChange={e=>set(key,e.target.value)} className={cls+" min-h-[95px]"} />:<input type={type} value={form[key]??""} onChange={e=>set(key,e.target.value)} className={cls}/>}</div>;
  const renderFields=()=>{
   if(tab==="profile")return <>{field("organizationName","Organization Name")}{field("shortName","Short Name")}{field("registrationNumber","Registration Number")}{field("registrationDate","Registration Date")}{field("registrationAct","Registration Act")}{field("organizationType","Organization Type")}{field("operationalScope","Operational Scope")}{field("address","Address",true)}{field("city","City")}{field("state","State")}{field("pinCode","PIN Code")}{field("mobile","Mobile Number")}{field("email","Email")}{field("website","Website")}</>;
@@ -886,11 +910,18 @@ function InstitutionalHistory({rows,add,updateRecord,archive}) {
    <div className="bg-zinc-50 border rounded-2xl p-3 h-fit">{labels.map(([id,label])=><button key={id} type="button" onClick={()=>setTab(id)} className={"w-full text-left px-3 py-3 rounded-xl mb-1 font-bold "+(tab===id?"bg-[#123B5D] text-white":"text-[#123B5D] hover:bg-white")}>{label}</button>)}</div>
    <div className="min-w-0">
     <div className="bg-white border rounded-2xl overflow-hidden">
-     <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">{labels.find(x=>x[0]===tab)?.[1]}</h3><p className="text-sm text-zinc-500 mt-1">Existing saved section data will be loaded here; unrelated Digital Office records are untouched.</p></div>
-     <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{renderFields()}<div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2 pt-2"><button disabled={saving} className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">{saving?"Saving…":"Save Section"}</button></div></form>
+     <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">{labels.find(x=>x[0]===tab)?.[1]}</h3><p className="text-sm text-zinc-500 mt-1">{multiRecordTabs.has(tab)?"Multiple records are supported here. Use Save Record for a new entry and Edit to update an existing entry.":"Existing saved section data will be loaded here; unrelated Digital Office records are untouched."}</p></div>
+     <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{renderFields()}<div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2 pt-2"><button disabled={saving} className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">{saving?(editingId?"Updating…":"Saving…"):(editingId?"Update Record":"Save Record")}</button></div></form>
     </div>
     {notice&&<div className="mt-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
-    <div className="mt-5 bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b"><h3 className="text-lg font-black text-[#002344]">Saved Records — {labels.find(x=>x[0]===tab)?.[1]}</h3></div><div className="overflow-auto"><table className="w-full text-sm min-w-[900px]"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Record ID</th><th className="p-3 text-left">Date</th><th className="p-3 text-left">Section</th><th className="p-3 text-left">Status</th><th className="p-3 text-left">Action</th></tr></thead><tbody className="divide-y">{sectionRows.map(r=><tr key={r.id}><td className="p-3">{r.recordId||r.id}</td><td className="p-3">{r.recordDate||"—"}</td><td className="p-3">{(r.data||{}).sectionName||tab}</td><td className="p-3">{r.status||"active"}</td><td className="p-3 whitespace-nowrap"><button type="button" onClick={()=>{setEditingId(r.id);setTab((r.data||{}).section||tab);setForm({...seed[(r.data||{}).section||tab],...(r.data||{})});setNotice("Editing saved section record.");window.scrollTo({top:0,behavior:"smooth"});}} className="px-3 py-2 rounded-lg border border-[#123B5D] text-[#123B5D] font-bold mr-2">✏️ Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>)}{!sectionRows.length&&<tr><td colSpan="5" className="p-8 text-center text-zinc-500">No saved record yet. The form above is pre-filled with the details currently supplied for SSF.</td></tr>}</tbody></table></div></div>
+    <div className="mt-5 bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b"><h3 className="text-lg font-black text-[#002344]">Saved Records — {labels.find(x=>x[0]===tab)?.[1]}</h3></div><div className="overflow-auto"><table className="w-full text-sm min-w-[900px]"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Record ID</th><th className="p-3 text-left">Date</th><th className="p-3 text-left">Section</th><th className="p-3 text-left">Status</th><th className="p-3 text-left">Action</th></tr></thead><tbody className="divide-y">{sectionRows.map(r=><tr key={r.id}><td className="p-3">{r.recordId||r.id}</td><td className="p-3">{r.recordDate||"—"}</td><td className="p-3">{(r.data||{}).sectionName||tab}</td><td className="p-3">{r.status||"active"}</td><td className="p-3 whitespace-nowrap"><button type="button" onClick={()=>{
+ const recordSection=(r.data||{}).section||tab;
+ setTab(recordSection);
+ setEditingId(r.id);
+ setForm({...seed[recordSection],...(r.data||{})});
+ setNotice("Editing saved record.");
+ window.scrollTo({top:0,behavior:"smooth"});
+}} className="px-3 py-2 rounded-lg border border-[#123B5D] text-[#123B5D] font-bold mr-2">✏️ Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>)}{!sectionRows.length&&<tr><td colSpan="5" className="p-8 text-center text-zinc-500">No saved record yet. The form above is pre-filled with the details currently supplied for SSF.</td></tr>}</tbody></table></div></div>
    </div>
   </div>
  </SimpleOfficeCard>;
