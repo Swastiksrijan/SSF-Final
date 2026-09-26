@@ -236,7 +236,7 @@ router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
     return res.json({
       counts: Object.assign(Object.fromEntries(Object.keys(prefix).map(m => [m, count(m)])), { members:memberCount, volunteers:volunteerCount, donors:donorCount, internships:internshipCount }),
       totals: { donations: sum('donations'), expenses: sum('expenses'), contributions: sum('contribution'), cash: balance('cash'), bank: balance('bank'), stockEntries: count('inventory'), stockBalance },
-      workflow: { pending, activeMous: rows.filter(r=>r.module==='mou' && String(r.status||'').toLowerCase()==='active').length, upcomingMeetings: rows.filter(r=>r.module==='meetings' && new Date(r.recordDate)>=new Date()).length },
+      workflow: { pending, activeMous: rows.filter(r=>r.module==='mou' && String(r.status||'').toLowerCase()==='active').length, upcomingMeetings: rows.filter(r=>r.module==='meetings' && new Date(r.recordDate)>=new Date()).length, meetingCalendar: count('meetings'), onlineMeetings: count('onlineMeetings'), meetingResolutions: count('meetingResolutions'), totalMeetings: count('meetings') + count('onlineMeetings') + count('meetingResolutions') },
       recent: rows.slice(0,20)
     });
   } catch (e) { console.error(e); res.status(500).json({message:'Unable to load Digital Office summary.'}); }
