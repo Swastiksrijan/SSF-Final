@@ -286,7 +286,7 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
 const validateMemberIdForDigitalOffice = async (memberId, currentId=null) => {
   const value = String(memberId || '').trim();
   if (!value) return { ok: true, value: '' };
-  if (!/^SSF-MBR-\\d{5}$/i.test(value)) {
+  if (!/^SSF-MBR-\d{5}$/i.test(value)) {
     return { ok: false, message: 'Invalid Member ID. Use the registered SSF Member ID format, e.g. SSF-MBR-00001.' };
   }
 
@@ -337,7 +337,7 @@ router.post('/digital-office/records', requireOfficeAuth, async (req, res) => {
       if (!memberCheck.ok) { await t.rollback(); return res.status(409).json({message: memberCheck.message}); }
     }
     if (incomingMemberId && body.module !== 'members') {
-      if (!/^SSF-MBR-\\d{5}$/i.test(incomingMemberId)) {
+      if (!/^SSF-MBR-\d{5}$/i.test(incomingMemberId)) {
         await t.rollback();
         return res.status(400).json({message:'Invalid Member ID. Use the registered SSF Member ID format, e.g. SSF-MBR-00001.'});
       }
@@ -421,7 +421,7 @@ router.put('/digital-office/records/:id', requireOfficeAuth, async (req, res) =>
       const memberCheck = await validateMemberIdForDigitalOffice(incomingMemberId, row.id);
       if (!memberCheck.ok) return res.status(409).json({message: memberCheck.message});
     }
-    if (incomingMemberId && !/^SSF-MBR-\\d{5}$/i.test(incomingMemberId)) {
+    if (incomingMemberId && !/^SSF-MBR-\d{5}$/i.test(incomingMemberId)) {
       return res.status(400).json({message:'Invalid Member ID. Use the registered SSF Member ID format, e.g. SSF-MBR-00001.'});
     }
     if (incomingMemberId && row.module !== 'members') {
