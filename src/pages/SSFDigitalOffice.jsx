@@ -409,7 +409,7 @@ function MeetingCalendar({rows,add,archive}){
  const blank={date:new Date().toISOString().slice(0,10),time:"",meetingTitle:"",meetingType:"Managing Committee Meeting",mode:"Online",venue:"",meetingLink:"",purpose:"",agenda:"",participants:"",reminder:"1 day before",status:"scheduled",notes:""};
  const [f,setF]=useState(blank),[open,setOpen]=useState(false),[notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const save=async e=>{e.preventDefault();if(!f.meetingTitle.trim()||!f.date||!f.time){setNotice("Meeting title, date and time required.");return;}const ok=await add("meetings",{id:editingId,recordDate:f.date,recordType:f.meetingType,status:f.status,data:f},editingId?"PUT":"POST");if(ok){setEditingId(null);setF(blank);setOpen(false);setNotice("Meeting scheduled in Calendar.");}};
+ const save=async e=>{e.preventDefault();if(!f.meetingTitle.trim()||!f.date||!f.time){setNotice("Meeting title, date and time required.");return;}const ok=editingId?await updateRecord(editingId,"meetings",f):await add("meetings",{recordDate:f.date,recordType:f.meetingType,status:f.status,data:f});if(ok){setEditingId(null);setF(blank);setOpen(false);setNotice("Meeting scheduled in Calendar.");}};
  return <div className="space-y-5">
   <div className="bg-white border rounded-2xl overflow-hidden"><div className="bg-[#123B5D] text-white p-6"><div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"><div><h2 className="text-2xl font-black">📅 Meeting Calendar / बैठक कैलेंडर</h2><p className="text-white/75 mt-1">Upcoming and planned meetings — schedule, agenda, venue/Google Meet, participants and reminders.</p></div><button type="button" onClick={()=>{setOpen(!open);setNotice("");}} className="bg-[#E8D39A] text-[#123B5D] px-4 py-2.5 rounded-xl font-black">{open?(editingId?"Cancel Edit":"Close"):"＋ Add Meeting"}</button></div></div>
    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 p-5 bg-zinc-50">
@@ -714,7 +714,7 @@ function MeetingResolutions({rows,add,archive}){
  const save=async e=>{
   e.preventDefault();
   if(!f.meetingTitle.trim()){setNotice("Meeting Title required.");return;}
-  const ok=await add("meetingResolutions",{id:editingId,recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:f},editingId?"PUT":"POST");
+  const ok=editingId?await updateRecord(editingId,"meetingResolutions",{...f,date:f.meetingDate}):await add("meetingResolutions",{recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:f});
   if(ok){setEditingId(null);setF({...f,meetingTitle:"",onlineMeetingId:"",resolutionNo:"",agenda:"",attendance:"",attendanceSummary:"",decision:"",minutes:"",actionPoints:"",supportingDocument:"",remarks:""});setNotice("Official meeting / resolution record saved.");}
  };
  return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="Meeting ke baad ka official record — attendance, minutes, decisions, resolutions aur supporting references. Online Meeting / Calendar records yahan official proceedings ke saath link kiye ja sakte hain.">
