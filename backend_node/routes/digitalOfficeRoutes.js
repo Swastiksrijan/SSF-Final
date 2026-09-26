@@ -244,7 +244,9 @@ router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
 
 router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
   try {
-    const where = { status: { [Op.ne]: 'deleted' } };
+    const where = {};
+    if (String(req.query.includeArchived || '') === '1') where.status = 'deleted';
+    else where.status = { [Op.ne]: 'deleted' };
     if (req.query.module) where.module = String(req.query.module);
     if (req.query.search) where[Op.or] = [
       { recordId: { [Op.iLike]: `%${String(req.query.search)}%` } },
