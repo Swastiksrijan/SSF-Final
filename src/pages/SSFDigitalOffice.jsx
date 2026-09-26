@@ -747,10 +747,14 @@ function MeetingResolutions({rows,add,archive,restore,token}){
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const save=async e=>{
   e.preventDefault();
+  if(saving)return;
   if(!f.meetingTitle.trim()){setNotice("Meeting Title required.");return;}
-  const payload={...f,date:f.meetingDate};
-  const ok=editingId?await updateRecord(editingId,"meetingResolutions",payload):await add("meetingResolutions",{recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:payload});
-  if(ok){setEditingId(null);setF({...blank,meetingDate:f.meetingDate});setNotice("Official meeting / resolution record saved.");}
+  setSaving(true);
+  try{
+   const payload={...f,date:f.meetingDate};
+   const ok=editingId?await updateRecord(editingId,"meetingResolutions",payload):await add("meetingResolutions",{recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:payload});
+   if(ok){setEditingId(null);setF({...blank,meetingDate:f.meetingDate});setNotice("Official meeting / resolution record saved.");}
+  }finally{setSaving(false);}
  };
  const editRecord=r=>{const d=r.data||{};const date=String(d.meetingDate||r.recordDate||"").slice(0,10);setEditingId(r.id);setF({...blank,...d,meetingDate:date});setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
  return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="Online, Offline और Hybrid — सभी meetings के लिए एक ही complete official record format.">
@@ -785,7 +789,7 @@ function MeetingResolutions({rows,add,archive,restore,token}){
     <input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/>
     {(f.meetingMode==="Online"||f.meetingMode==="Hybrid")&&<input value={f.recordingRef} onChange={e=>set("recordingRef",e.target.value)} placeholder="Recording / Online Reference" className={cls}/>}
     <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" min-h-[80px]"}/>
-    <button className="sm:col-span-2 lg:col-span-4 bg-[#123B5D] hover:bg-[#17665D] text-white py-3 rounded-xl font-bold transition">{editingId?"Update Official Meeting Record":"Save Official Meeting Record"}</button>
+    <button type="submit" disabled={saving} className="sm:col-span-2 lg:col-span-4 bg-[#123B5D] hover:bg-[#17665D] text-white py-3 rounded-xl font-bold transition disabled:opacity-50">{saving?"Saving…":editingId?"Update Official Meeting Record":"Save Official Meeting Record"}</button>
    </form>
   </div>
   {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
