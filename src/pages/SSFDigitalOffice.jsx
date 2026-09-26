@@ -239,7 +239,7 @@ function MeetingsHub({token,rows,add,archive,restore}){
   </div>
   {tab==="calendar"&&<MeetingCalendar rows={rows} add={add} archive={archive}/>}
   {tab==="online"&&<OnlineMeetings token={token}/>}
-  {tab==="resolution"&&<MeetingResolutions rows={calendarRows.concat(onlineRows,resolutionRows)} add={async function(module,data){const ok=await add(module,data);if(ok)await loadResolutionRows();return ok;}} archive={archive} restore={restore} token={token}/>}
+  {tab==="resolution"&&<MeetingResolutions rows={calendarRows.concat(onlineRows,resolutionRows)} add={async function(module,data){const ok=await add(module,data);if(ok)await loadMeetingLinkedRows();return ok;}} archive={archive} restore={restore} token={token}/>}
  </div>;
 }
 function OnlineMeetings({token}){
