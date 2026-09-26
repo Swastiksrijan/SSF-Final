@@ -123,9 +123,7 @@ export default function SSFDigitalOffice(){
   flat.forEach(function(row){
    lines.push(headers.map(function(h){return csvEscape(row[h]);}).join(","));
   });
-  const csv="\\uFEFF"+lines.join("\\r\
-")+"\\r\
-";
+  const csv="\\uFEFF"+lines.join("\\r\\n")+"\\r\\n";
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
   const a=document.createElement("a");
   const url=URL.createObjectURL(blob);
@@ -309,8 +307,7 @@ function Dashboard({summary}){
  <div className="bg-[#123B5D] rounded-2xl border border-[#123B5D] p-6 shadow-sm text-white"><div className="flex items-center justify-between gap-3"><div><h2 className="text-xl font-black">Automatic Financial Linking / स्वचालित वित्तीय लिंकिंग</h2><p className="text-sm text-[#D8EDE9] mt-1">एक ही database transaction में linked records</p></div><div className="px-3 py-1 rounded-full bg-[#FFF8E7] text-[#123B5D] text-xs font-black">LIVE</div></div><p className="text-[#D8EDE9] mt-4">Donation and expense workflows write linked contribution, cash/bank and ledger records in one database transaction. / दान व व्यय प्रक्रिया एक ही database transaction में जुड़े contribution, cash/bank और ledger records दर्ज करती है.</p><div className="mt-5 space-y-2 text-sm font-bold text-white"><p>Donation / दान → Donor / दानदाता → Contribution / योगदान → Cash/Bank / रोकड़-बैंक → Ledger / लेजर → Receipt / रसीद</p><p>Expense / व्यय → Expense Register / व्यय रजिस्टर → Cash/Bank / रोकड़-बैंक → Ledger / लेजर</p><p>Create/update/archive / बनाना-संशोधित-संग्रहीत → Audit Trail / ऑडिट ट्रेल</p></div><div className="mt-5 bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4 text-sm text-[#5A4510]"><strong>Compliance / अनुपालन:</strong> final statutory/tax treatment, 80G particulars and audit requirements must be verified with SSF's CA/tax advisor.</div></div></div></div>;
 }
 function OfficialDocuments({rows,add}){
- const [f,setF]=useState({docType:"Appointment Letter",name:"",designation:"",date:new Date().toISOString().slice(0,10),validFrom:"",validTill:"",reference:"",subject:"",body:"",remarks:"",signatory:"Ramesh Pandey\
-Founder & National President"});
+ const [f,setF]=useState({docType:"Appointment Letter",name:"",designation:"",date:new Date().toISOString().slice(0,10),validFrom:"",validTill:"",reference:"",subject:"",body:"",remarks:"",signatory:"Ramesh Pandey\\nFounder & National President"});
  const [notice,setNotice]=useState("");
  const [saving,setSaving]=useState(false);
  const types=[
@@ -339,9 +336,7 @@ Founder & National President"});
   if(data.subject){y+=4;d.setFont(undefined,"bold");d.text("Subject: "+data.subject,left,y);y+=10;}
   if(data.body){d.setFont(undefined,"normal");const lines=d.splitTextToSize(String(data.body),pageW-left*2);lines.forEach(line=>{if(y>pageH-45){d.addPage();y=22;}d.text(line,left,y);y+=5.5;});}
   if(data.remarks){y+=6;d.setFont(undefined,"bold");d.text("Remarks:",left,y);y+=6;d.setFont(undefined,"normal");d.splitTextToSize(String(data.remarks),pageW-left*2).forEach(line=>{if(y>pageH-45){d.addPage();y=22;}d.text(line,left,y);y+=5.5;});}
-  if(y>pageH-42){d.addPage();y=22;} y+=12;d.setFont(undefined,"bold");d.text("For Swastik Srijan Foundation Samiti",left,y);y+=14;d.text(String(data.signatory||"Ramesh Pandey").split("\
-")[0],left,y);y+=5;d.setFont(undefined,"normal");d.text(String(data.signatory||"Founder & National President").split("\
-").slice(1).join(" ")||"Founder & National President",left,y);
+  if(y>pageH-42){d.addPage();y=22;} y+=12;d.setFont(undefined,"bold");d.text("For Swastik Srijan Foundation Samiti",left,y);y+=14;d.text(String(data.signatory||"Ramesh Pandey").split("\\n")[0],left,y);y+=5;d.setFont(undefined,"normal");d.text(String(data.signatory||"Founder & National President").split("\\n").slice(1).join(" ")||"Founder & National President",left,y);
   d.setFontSize(8);d.setTextColor(120);d.text("Computer-generated official office document · Issued by authorised SSF administration",pageW/2,pageH-10,{align:"center"});
   const url=URL.createObjectURL(d.output("blob")),a=document.createElement("a");a.href=url;a.download=data.documentNo.replace(/[\\/]/g,"-")+".pdf";a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
  };
