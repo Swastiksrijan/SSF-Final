@@ -233,7 +233,16 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
   // These five existing test records were created before the section field was
   // reliable. Their record IDs are the stable fallback for the current data.
   // This changes display classification only; no database records are created/deleted.
-  const rid=String(r.recordId||"").trim();
+  // Existing five records may expose their ID under different keys depending
+  // on the API/ORM serialization. Normalize all known ID locations first.
+  const rid=String(
+   r.recordId ||
+   r.id ||
+   d.recordId ||
+   d.notificationId ||
+   d.noticeId ||
+   ""
+  ).trim();
   const legacySections={
    "SSF-NTF-20260926-00001":"information",
    "SSF-NTF-20260926-00002":"response",
@@ -242,6 +251,13 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
    "SSF-NTF-20260926-00005":"notice"
   };
   if(legacySections[rid])return legacySections[rid];
+  // Also handle an API response where only a compatible notification ID
+  // string is available with a prefix/suffix variation.
+  const legacyNo=rid.match(/SSF-NTF-20260926-(00001|00002|00003|00004|00005)$/i);
+  if(legacyNo){
+   const n=legacyNo[1];
+   return n==="00001"?"information":n==="00002"?"response":"notice";
+  }
 
   // For every other record, an explicitly saved section is authoritative.
   const explicit=String(d.section||d.communicationSection||"").trim().toLowerCase();
