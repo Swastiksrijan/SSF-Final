@@ -214,10 +214,67 @@ export default function SSFDigitalOffice(){
 }
 function NotificationsHub({rows,add,archive}){
  const [tab,setTab]=useState("information");
- const tabs=[["information","Information & Communication / सूचना एवं संचार"],["response","Response & Participation / प्रतिक्रिया एवं सहभागिता"],["followup","Reminder & Follow-up / अनुस्मारक एवं अनुवर्ती कार्य"],["notice","Notice & Explanation / नोटिस एवं स्पष्टीकरण"]];
- const typeMap={information:["Information","Communication","Announcement","Meeting Information","Responsibility / Task","Document / Information Request"],response:["Response Received","No Response","Meeting Not Attended","Online Meeting Not Joined","Task Not Responded","Task Not Completed","Non-Participation"],followup:["First Reminder","Second Reminder","Final Reminder","Follow-up","Pending Response","Pending Action"],notice:["Formal Notice","Explanation Requested","Explanation Received","Explanation Not Received","Further Clarification","Outcome / Decision Reference"]};
- const filtered=(rows||[]).filter(r=>(typeMap[tab]||[]).includes(String((r.data||{}).noticeStage||"")));
- return <div className="space-y-5"><div className="bg-white border rounded-2xl p-3 sm:p-4 shadow-sm"><div className="flex flex-wrap gap-2">{tabs.map(t=><button key={t[0]} type="button" onClick={()=>setTab(t[0])} className={"shrink-0 min-w-[245px] px-4 py-3 rounded-xl font-bold text-left transition "+(tab===t[0]?"bg-[#123B5D] text-white shadow-sm":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>)}</div></div><NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} types={typeMap[tab]||[]}/></div>;
+ const [showForm,setShowForm]=useState(false);
+ const tabs=[
+  ["information","Information & Communication / सूचना एवं संचार","Official information, communication & responsibilities","bg-sky-600"],
+  ["response","Response & Participation / प्रतिक्रिया एवं सहभागिता","Responses, attendance & participation","bg-emerald-600"],
+  ["followup","Reminder & Follow-up / अनुस्मारक एवं अनुवर्ती कार्य","Reminders, pending actions & follow-ups","bg-amber-600"],
+  ["notice","Notice & Explanation / नोटिस एवं स्पष्टीकरण","Formal notices, explanations & outcomes","bg-rose-600"]
+ ];
+ const typeMap={
+  information:["Information","Communication","Announcement","Meeting Information","Responsibility / Task","Document / Information Request"],
+  response:["Response Received","No Response","Meeting Not Attended","Online Meeting Not Joined","Task Not Responded","Task Not Completed","Non-Participation"],
+  followup:["First Reminder","Second Reminder","Final Reminder","Follow-up","Pending Response","Pending Action"],
+  notice:["Formal Notice","Explanation Requested","Explanation Received","Explanation Not Received","Further Clarification","Outcome / Decision Reference"]
+ };
+ const allRows=rows||[];
+ const countStage=key=>allRows.filter(r=>(typeMap[key]||[]).includes(String((r.data||{}).noticeStage||""))).length;
+ const pending=allRows.filter(r=>["pending","active"].includes(String(r.status||"").toLowerCase())).length;
+ const followups=allRows.filter(r=>{const d=r.data||{};return d.followUpDate&&String(r.status||"").toLowerCase()!=="closed"&&String(r.status||"").toLowerCase()!=="archived";}).length;
+ const notices=countStage("notice");
+ const activeTab=tabs.find(t=>t[0]===tab)||tabs[0];
+ const filtered=allRows.filter(r=>(typeMap[tab]||[]).includes(String((r.data||{}).noticeStage||"")));
+ return <div className="space-y-5">
+  <div className="rounded-3xl bg-gradient-to-r from-[#002344] via-[#123B5D] to-[#1b557e] text-white p-5 sm:p-7 shadow-lg">
+   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+    <div>
+     <div className="text-xs font-bold uppercase tracking-[0.18em] text-white/70">SSF Digital Office</div>
+     <h1 className="text-2xl sm:text-3xl font-black mt-1">Notices, Alerts & Follow-ups</h1>
+     <p className="text-sm sm:text-base text-white/80 mt-1">नोटिस, सूचनाएँ एवं अनुवर्ती कार्य</p>
+     <p className="text-sm text-white/70 mt-3 max-w-2xl">Information से लेकर response, reminder और formal explanation तक पूरा communication record एक ही जगह रखें।</p>
+    </div>
+    <button type="button" onClick={()=>setShowForm(true)} className="shrink-0 bg-white text-[#002344] px-5 py-3 rounded-xl font-black shadow hover:bg-zinc-100 transition flex items-center justify-center gap-2"><FaPlus/> New Communication</button>
+   </div>
+  </div>
+
+  <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
+   <div className="bg-white border rounded-2xl p-4 shadow-sm"><div className="text-xs font-bold text-zinc-500">TOTAL RECORDS</div><div className="text-3xl font-black text-[#002344] mt-1">{allRows.length}</div><div className="text-xs text-zinc-400 mt-1">सभी communication records</div></div>
+   <div className="bg-white border rounded-2xl p-4 shadow-sm"><div className="text-xs font-bold text-zinc-500">ACTIVE / PENDING</div><div className="text-3xl font-black text-amber-600 mt-1">{pending}</div><div className="text-xs text-zinc-400 mt-1">Follow-up required</div></div>
+   <div className="bg-white border rounded-2xl p-4 shadow-sm"><div className="text-xs font-bold text-zinc-500">FOLLOW-UPS</div><div className="text-3xl font-black text-sky-700 mt-1">{followups}</div><div className="text-xs text-zinc-400 mt-1">Follow-up date recorded</div></div>
+   <div className="bg-white border rounded-2xl p-4 shadow-sm"><div className="text-xs font-bold text-zinc-500">NOTICES / EXPLANATION</div><div className="text-3xl font-black text-rose-600 mt-1">{notices}</div><div className="text-xs text-zinc-400 mt-1">Formal stage records</div></div>
+  </div>
+
+  <div className="bg-white border rounded-2xl p-3 shadow-sm">
+   <div className="flex flex-wrap gap-2">
+    {tabs.map(t=><button key={t[0]} type="button" onClick={()=>setTab(t[0])} className={"flex-1 min-w-[210px] px-4 py-3 rounded-xl text-left transition border "+(tab===t[0]?"bg-[#123B5D] text-white border-[#123B5D] shadow":"bg-zinc-50 text-[#123B5D] border-zinc-200 hover:bg-zinc-100")}>
+      <div className="font-black text-sm">{t[1]}</div><div className={"text-xs mt-1 "+(tab===t[0]?"text-white/70":"text-zinc-500")}>{t[2]}</div><div className={"mt-2 text-xs font-bold "+(tab===t[0]?"text-white":"text-zinc-400")}>{countStage(t[0])} record(s)</div>
+    </button>)}
+   </div>
+  </div>
+
+  {showForm&&<div className="bg-white border rounded-2xl shadow-sm overflow-hidden"><div className="px-5 py-4 border-b flex items-center justify-between"><div><div className="font-black text-[#002344]">New Communication / नई सूचना</div><div className="text-xs text-zinc-500 mt-1">{activeTab[1]}</div></div><button type="button" onClick={()=>setShowForm(false)} className="text-zinc-500 hover:text-zinc-900 font-bold">Close</button></div><NotificationForm types={typeMap[tab]} onSave={async d=>{if(!d){setShowForm(false);return;}const ok=await add("notifications",d);if(ok)setShowForm(false);}}/></div>}
+
+  <div className="bg-zinc-50 border rounded-2xl p-4 sm:p-5">
+   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2"><div><h2 className="font-black text-[#002344]">{activeTab[1]}</h2><p className="text-xs text-zinc-500 mt-1">{activeTab[2]}</p></div><div className="text-sm font-bold text-zinc-500">{filtered.length} record(s)</div></div>
+   <div className="grid sm:grid-cols-3 gap-3 mt-4">
+    <div className="bg-white border rounded-xl p-3"><div className="text-xs text-zinc-500 font-bold">SECTION RECORDS</div><div className="text-xl font-black text-[#002344] mt-1">{filtered.length}</div></div>
+    <div className="bg-white border rounded-xl p-3"><div className="text-xs text-zinc-500 font-bold">ACTIVE</div><div className="text-xl font-black text-emerald-600 mt-1">{filtered.filter(r=>String(r.status||"").toLowerCase()==="active").length}</div></div>
+    <div className="bg-white border rounded-xl p-3"><div className="text-xs text-zinc-500 font-bold">PENDING</div><div className="text-xl font-black text-amber-600 mt-1">{filtered.filter(r=>String(r.status||"").toLowerCase()==="pending").length}</div></div>
+   </div>
+  </div>
+
+  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} types={typeMap[tab]||[]}/>
+ </div>;
 }
 function NotificationRegister({tab,rows,add,archive,types}){
  const [open,setOpen]=useState(false),[search,setSearch]=useState(""),[status,setStatus]=useState("all");
