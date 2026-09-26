@@ -75,8 +75,8 @@ export default function SSFDigitalOffice(){
    return true;
   }catch(e){setNotice(e.message||"Save failed.");return false;}
  };
- const archive=async function(id){
-  if(!confirm("Archive this record? Archived records are retained for organisational history and are not permanently deleted."))return;
+ const archive=async function(id,silent){
+  if(!silent&&!confirm("Archive this record? Archived records are retained for organisational history and are not permanently deleted."))return;
   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id,{method:"DELETE",headers:auth()});
   if(r.ok){setNotice("Record archived.");load(active);}
  };
@@ -1207,11 +1207,12 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
   const used=new Set();
   for(const m of seed){
    const matches=existing.filter(r=>String((r.data||{}).memberId)===m.memberId);
-   const r=matches[0]; used.add(r?.id);
+   const preferred=matches.find(r=>String((r.data||{}).action||"")==="Current Committee Register")||matches.find(r=>String(r.status).toLowerCase()==="active")||matches[0];
+   const r=preferred; if(r) used.add(r.id);
    const data={...blank,...m,committeeFrom:m.joiningDate,committeeStatus:"Active",responsibility:m.responsibility,duties:m.responsibility,action:"Current Committee Register"};
    if(r) await updateRecord(r.id,"managingCommittee",data);
    else await add("managingCommittee",{recordDate:m.joiningDate,recordType:"Committee Member",status:"active",data});
-   for(const dup of matches.slice(1)) await archive(dup.id);
+   for(const dup of matches) if(!r||dup.id!==r.id) await archive(dup.id,true);
   }
   for(const r of existing){
    const id=String((r.data||{}).memberId||"");
@@ -1220,7 +1221,11 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
   setNotice("Fresh Managing Committee register prepared: 9 current members.");
  };
  const syncStarted=useRef(false);
- useEffect(()=>{if(token&&!syncStarted.current){syncStarted.current=true;refresh();}},[token]);
+ useEffect(()=>{
+  if(!token||syncStarted.current||existing.length===0)return;
+  syncStarted.current=true;
+  refresh();
+ },[token,existing.length]);
  const edit=r=>{setEditId(r.id);setForm({...blank,...(r.data||{})});setTab("profile");setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
  const newRecord=()=>{setEditId(null);setForm({...blank});setTab("profile");setNotice("");};
  const save=async e=>{
