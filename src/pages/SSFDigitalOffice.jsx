@@ -837,45 +837,61 @@ function MembersRegister({rows,add,archive}){
   <div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1900px]"><thead className="bg-zinc-50"><tr>{["Member ID","Membership No.","Member Type","Full Name","Father / Husband / Guardian","DOB","Gender","Occupation","Mobile","Email","Address","City","State","PIN","PAN","Aadhaar","Joining Date","End Date","Status","Membership Fee","Receipt No.","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.map(r=>{const d=r.data||{};return <tr key={r.id}>{["memberId","membershipNo","memberType","fullName","fatherHusbandName","dob","gender","occupation","mobile","email","address","city","state","pinCode","pan","aadhaar","joiningDate","membershipEndDate","membershipStatus","membershipFee","receiptNo","remarks"].map(k=><td key={k} className="p-3">{d[k]||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="23" className="p-8 text-center text-zinc-500">No member records yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
 }
 
-function InstitutionalHistory({rows,add,updateRecord,archive}){
- const existing=(rows||[]).filter(r=>r.module==="institutionalHistory"&&r.status!=="deleted").sort((a,b)=>String(a.recordDate||"").localeCompare(String(b.recordDate||"")));
- const blank={date:new Date().toISOString().slice(0,10),eventType:"Institution Formation",title:"",personCommittee:"",previousRole:"",newRole:"",referenceNo:"",meetingDate:"",description:"",supportingDocument:"",remarks:""};
- const [f,setF]=useState(blank),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
- const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const editRecord=r=>{const d=r.data||{};setEditingId(r.id);setF({...blank,date:d.date||r.recordDate||"",eventType:d.eventType||r.recordType||"Other",title:d.title||"",personCommittee:d.personCommittee||"",previousRole:d.previousRole||"",newRole:d.newRole||"",referenceNo:d.referenceNo||"",meetingDate:d.meetingDate||"",description:d.description||"",supportingDocument:d.supportingDocument||"",remarks:d.remarks||""});setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
- const reset=()=>{setEditingId(null);setF(blank);setNotice("");};
- const save=async e=>{e.preventDefault();if(!f.title.trim()||!f.date){setNotice("Date and Event Title required.");return;}setSaving(true);const data={...f};const ok=editingId?await updateRecord(editingId,"institutionalHistory",data):await add("institutionalHistory",{recordDate:f.date,recordType:f.eventType,status:"active",data});setSaving(false);if(ok){setNotice(editingId?"Institutional history updated successfully.":"Institutional history saved successfully.");reset();}};
- return <SimpleOfficeCard title="🏛️ संस्था इतिहास (Institutional History)" subtitle="2013 से आज तक SSF की master institutional timeline. पुराने records overwrite नहीं होंगे.">
-  <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 sm:p-6 border-b"><h3 className="text-xl font-black text-[#002344]">{editingId?"Edit Institutional History":"Add Institutional History"}</h3><p className="text-sm text-zinc-500 mt-1">संस्था गठन, पंजीयन, समिति गठन/पुनर्गठन, महत्वपूर्ण निर्णय, compliance और partnerships का स्थायी रिकॉर्ड।</p></div>
-   <form onSubmit={save} className="p-5 sm:p-6 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    <input type="date" value={f.date} onChange={e=>set("date",e.target.value)} className={cls} required/>
-    <select value={f.eventType} onChange={e=>set("eventType",e.target.value)} className={cls}>{["Institution Formation","Registration","Committee Formation / Reconstitution","Organisational Change","Important Decision","Important Project / Initiative","Compliance / Registration","MoU / Partnership","Other"].map(x=><option key={x}>{x}</option>)}</select>
-    <input value={f.title} onChange={e=>set("title",e.target.value)} placeholder="Event Title" className={cls} required/>
-    <input value={f.personCommittee} onChange={e=>set("personCommittee",e.target.value)} placeholder="Person / Committee" className={cls}/>
-    <input value={f.previousRole} onChange={e=>set("previousRole",e.target.value)} placeholder="Previous Position (if any)" className={cls}/>
-    <input value={f.newRole} onChange={e=>set("newRole",e.target.value)} placeholder="New Position (if any)" className={cls}/>
-    <input value={f.referenceNo} onChange={e=>set("referenceNo",e.target.value)} placeholder="Resolution / Reference No." className={cls}/>
-    <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} title="Meeting Date" className={cls}/>
-    <textarea value={f.description} onChange={e=>set("description",e.target.value)} placeholder="Description / Details" className={cls+" sm:col-span-2 min-h-[100px]"}/>
-    <input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/>
-    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/>
-    <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2">
-     <button type="submit" disabled={saving} className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">{saving?"Saving…":editingId?"Update History":"Save History Event"}</button>
-     {editingId&&<button type="button" onClick={reset} className="border px-6 py-3 rounded-xl font-bold">Cancel Edit</button>}
+function InstitutionalHistory({rows,add,updateRecord,archive}) {
+ const seed={
+  profile:{organizationName:"Swastik Srijan Foundation Samiti",shortName:"SSF",registrationNumber:"05/22/03/11448/13",registrationDate:"30-12-2013",registrationAct:"MP Society Act 1973",organizationType:"Society",operationalScope:"Pan India",address:"Ward No. 1, Dadar, Post Rahat, Dist. Rewa",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",mobile:"9718346691",email:"swastiksrijanfoundation@gmail.com",website:"www.swastiksrijan.in"},
+  objectives:{vision:"",mission:"",objectives:"",areasOfWork:"Education; Health; Livelihood; Rural Development",targetBeneficiaries:"",statesDistricts:"Pan India"},
+  legal:{registrationNumber:"05/22/03/11448/13",registrationDate:"30-12-2013",registrationAct:"MP Society Act 1973",district:"Rewa",state:"Madhya Pradesh",pan:"AAKAS7123H",governingDocument:"",amendmentHistory:""},
+  tax:{pan:"AAKAS7123H",twelveAB:"AAKAS7123H25BP01",twelveABStatus:"Available",eightyG:"AAKAS7123HF20231",eightyGStatus:"Provisional / Final status to be updated",assessmentYear:"2025-26",incomeTaxFiling:"",effectiveDates:""},
+  darpan:{ngoDarpanId:"MP/2017/0169529",darpanStatus:"Active",csr1Number:"CSR00093974",csrStatus:"Registered",mcaCsrRecords:""},
+  governance:{president:"Ramesh Pandey",secretary:"Amit Kumar Pandey",treasurer:"Divya Sharma",vicePresident:"",jointSecretary:"",members:"",rolesTenure:""},
+  finance:{financialYear:"2025-26",bankName:"Union Bank of India",branch:"Transport Nagar, Rewa",accountNumber:"481401010036579",ifsc:"UBIN0548146",upi:"9718346691@ptyes",auditorName:"CA Kapil Tiwari",auditorContact:"8527067812",booksStatus:""},
+  government:{udyam:"UDYAM-MP-38-0042763",msmeType:"Micro (2025-26), Services",udyogAadhaar:"MP38D0003317",esic:"81000588360001399",epfo:"MPJBP3643700000",digitalIndia:"REG2025070722444819",ncsEmployerId:"F7900E570628",ncsOrganizationId:"P20G74-0022474929830",lin:"1-2984-2321-4",mpJanAbhiyan:"NV2022REW0004",startupRegistration:"OI-0825-9266HS"},
+  calendar:{complianceName:"",authority:"",dueDate:"",financialYear:"2025-26",status:"Pending",filingDate:"",acknowledgement:"",responsiblePerson:"",remarks:""},
+  history:{date:new Date().toISOString().slice(0,10),eventType:"Institution Formation",title:"",referenceNo:"",description:"",supportingDocument:"",remarks:""}
+ };
+ const labels=[
+  ["profile","🏢 Organization Profile / संस्था परिचय"],
+  ["objectives","🎯 Objectives & Areas of Work / उद्देश्य एवं कार्यक्षेत्र"],
+  ["legal","⚖️ Legal Registration & Identity / कानूनी पंजीकरण"],
+  ["tax","🧾 Tax & Exemption / कर एवं छूट अनुपालन"],
+  ["darpan","🏛️ NGO Darpan & CSR / NGO दर्पण एवं CSR"],
+  ["governance","👥 Governance & Office Bearers / शासन एवं पदाधिकारी"],
+  ["finance","🏦 Financial & Banking Profile / वित्तीय एवं बैंकिंग विवरण"],
+  ["government","🏛️ Government & Institutional Registrations / शासकीय एवं संस्थागत पंजीकरण"],
+  ["calendar","📅 Compliance Calendar / अनुपालन कैलेंडर"],
+  ["history","📁 Documents & Compliance History / दस्तावेज़ एवं अनुपालन इतिहास"]
+ ];
+ const existing=(rows||[]).filter(r=>r.module==="institutionalHistory"&&r.status!=="deleted");
+ const [tab,setTab]=useState("profile"),[editingId,setEditingId]=useState(null),[form,setForm]=useState(seed.profile),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
+ const sectionRows=existing.filter(r=>(r.data||{}).section===tab);
+ useEffect(()=>{const r=sectionRows[0];if(r){setEditingId(r.id);setForm({...seed[tab],...(r.data||{})});}else{setEditingId(null);setForm({...seed[tab]});}setNotice("");},[tab,rows]);
+ const set=(k,v)=>setForm(x=>({...x,[k]:v}));
+ const save=async e=>{e.preventDefault();setSaving(true);const data={section:tab,sectionName:labels.find(x=>x[0]===tab)?.[1]||tab,...form};const ok=editingId?await updateRecord(editingId,"institutionalHistory",data):await add("institutionalHistory",{recordDate:new Date().toISOString().slice(0,10),recordType:"Institution Profile & Compliance",status:"active",data});setSaving(false);if(ok){setNotice("Section saved successfully.");}};
+ const field=(key,label,wide=false,type="text")=><div className={wide?"sm:col-span-2 lg:col-span-4":"sm:col-span-1"}><label className="block text-sm font-bold text-[#123B5D] mb-1">{label}</label>{type==="textarea"?<textarea value={form[key]??""} onChange={e=>set(key,e.target.value)} className={cls+" min-h-[95px]"} />:<input type={type} value={form[key]??""} onChange={e=>set(key,e.target.value)} className={cls}/>}</div>;
+ const renderFields=()=>{
+  if(tab==="profile")return <>{field("organizationName","Organization Name")}{field("shortName","Short Name")}{field("registrationNumber","Registration Number")}{field("registrationDate","Registration Date")}{field("registrationAct","Registration Act")}{field("organizationType","Organization Type")}{field("operationalScope","Operational Scope")}{field("address","Address",true)}{field("city","City")}{field("state","State")}{field("pinCode","PIN Code")}{field("mobile","Mobile Number")}{field("email","Email")}{field("website","Website")}</>;
+  if(tab==="objectives")return <>{field("vision","Vision",true,"textarea")}{field("mission","Mission",true,"textarea")}{field("objectives","Objectives",true,"textarea")}{field("areasOfWork","Areas of Work",true,"textarea")}{field("targetBeneficiaries","Target Beneficiaries",true,"textarea")}{field("statesDistricts","States / Districts / Operational Area",true,"textarea")}</>;
+  if(tab==="legal")return <>{field("registrationNumber","Registration Number")}{field("registrationDate","Registration Date")}{field("registrationAct","Registration Act")}{field("district","District")}{field("state","State")}{field("pan","PAN Number")}{field("governingDocument","Governing Document / Rules / Memorandum",true)}{field("amendmentHistory","Amendment History",true,"textarea")}</>;
+  if(tab==="tax")return <>{field("pan","PAN Number")}{field("twelveAB","12AB Registration No.")}{field("twelveABStatus","12AB Status")}{field("eightyG","80G Registration No.")}{field("eightyGStatus","80G Status")}{field("assessmentYear","Assessment Year")}{field("effectiveDates","Effective / Valid Dates")}{field("incomeTaxFiling","Income-tax Filing / Acknowledgement",true)}</>;
+  if(tab==="darpan")return <>{field("ngoDarpanId","NGO DARPAN ID")}{field("darpanStatus","DARPAN Status")}{field("csr1Number","CSR-1 Registration No.")}{field("csrStatus","CSR Status")}{field("mcaCsrRecords","MCA / CSR Records & Remarks",true,"textarea")}</>;
+  if(tab==="governance")return <>{field("president","President")}{field("vicePresident","Vice President")}{field("secretary","Secretary")}{field("jointSecretary","Joint Secretary")}{field("treasurer","Treasurer")}{field("members","Other Governing Body Members",true,"textarea")}{field("rolesTenure","Roles / Tenure / Appointment Reference",true,"textarea")}</>;
+  if(tab==="finance")return <>{field("financialYear","Financial Year")}{field("bankName","Bank Name")}{field("branch","Branch")}{field("accountNumber","Account Number")}{field("ifsc","IFSC Code")}{field("upi","UPI ID")}{field("auditorName","Auditor / CA")}{field("auditorContact","Auditor / CA Contact")}{field("booksStatus","Books of Accounts / Audit Status",true,"textarea")}</>;
+  if(tab==="government")return <>{field("udyam","MSME (Udyam Registration)")}{field("msmeType","MSME Type")}{field("udyogAadhaar","Udyog Aadhaar No.")}{field("esic","ESIC No.")}{field("epfo","EPFO No.")}{field("digitalIndia","Digital India Registration")}{field("ncsEmployerId","NCS Employer ID")}{field("ncsOrganizationId","NCS Organization ID [SSF GROUP]")}{field("lin","LIN")}{field("mpJanAbhiyan","MP Jan Abhiyan Parishad")}{field("startupRegistration","Startup Registration")}</>;
+  if(tab==="calendar")return <>{field("complianceName","Compliance / Return Name")}{field("authority","Authority")}{field("dueDate","Due Date","", "date")}{field("financialYear","Financial Year")}{field("status","Status")}{field("filingDate","Filing Date","","date")}{field("acknowledgement","Acknowledgement No.")}{field("responsiblePerson","Responsible Person")}{field("remarks","Remarks",true,"textarea")}</>;
+  return <>{field("date","Date","","date")}{field("eventType","Document / Compliance Event Type")}{field("title","Document / Event Title")}{field("referenceNo","Document / Reference No.")}{field("description","Description / Details",true,"textarea")}{field("supportingDocument","Supporting Document / File Reference",true)}{field("remarks","Remarks",true,"textarea")}</>;
+ };
+ return <SimpleOfficeCard title="🏛️ Institution Profile & Compliance / संस्था परिचय एवं अनुपालन" subtitle="SSF Digital Office — master organisational profile, statutory registrations, governance, finance and compliance records.">
+  <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-5">
+   <div className="bg-zinc-50 border rounded-2xl p-3 h-fit">{labels.map(([id,label])=><button key={id} type="button" onClick={()=>setTab(id)} className={"w-full text-left px-3 py-3 rounded-xl mb-1 font-bold "+(tab===id?"bg-[#123B5D] text-white":"text-[#123B5D] hover:bg-white")}>{label}</button>)}</div>
+   <div className="min-w-0">
+    <div className="bg-white border rounded-2xl overflow-hidden">
+     <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">{labels.find(x=>x[0]===tab)?.[1]}</h3><p className="text-sm text-zinc-500 mt-1">Existing saved section data will be loaded here; unrelated Digital Office records are untouched.</p></div>
+     <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{renderFields()}<div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2 pt-2"><button disabled={saving} className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">{saving?"Saving…":"Save Section"}</button></div></form>
     </div>
-   </form>
-  </div>
-  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
-  <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Permanent Institutional Timeline</h3><p className="text-sm text-zinc-500 mt-1">Existing records are editable. Archive केवल record को active list से हटाता है; hard delete नहीं होता.</p></div>
-   <div className="overflow-auto"><table className="w-full text-sm min-w-[1700px]">
-    <thead className="bg-zinc-50"><tr>{["Date","Event Type","Event Title","Person / Committee","Previous Position","New Position","Reference","Meeting Date","Description","Supporting Document","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead>
-    <tbody className="divide-y">{existing.map(r=>{const d=r.data||{};return <tr key={r.id}>
-     <td className="p-3 whitespace-nowrap">{d.date||r.recordDate||"—"}</td><td className="p-3">{d.eventType||r.recordType||"—"}</td><td className="p-3 font-bold">{d.title||"—"}</td><td className="p-3">{d.personCommittee||"—"}</td><td className="p-3">{d.previousRole||"—"}</td><td className="p-3">{d.newRole||"—"}</td><td className="p-3">{d.referenceNo||"—"}</td><td className="p-3">{d.meetingDate||"—"}</td><td className="p-3 max-w-[420px]">{d.description||"—"}</td><td className="p-3">{d.supportingDocument||"—"}</td><td className="p-3">{d.remarks||"—"}</td>
-     <td className="p-3 sticky right-0 bg-white border-l z-10 whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-2 rounded-lg bg-blue-600 text-white font-bold hover:bg-blue-700 mr-2">✏️ Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold hover:bg-red-50">Archive</button></td>
-    </tr>;})}{!existing.length&&<tr><td colSpan="12" className="p-10 text-center text-zinc-500">No institutional history records yet.</td></tr>}</tbody>
-   </table></div>
+    {notice&&<div className="mt-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
+    <div className="mt-5 bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b"><h3 className="text-lg font-black text-[#002344]">Saved Records — {labels.find(x=>x[0]===tab)?.[1]}</h3></div><div className="overflow-auto"><table className="w-full text-sm min-w-[900px]"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Record ID</th><th className="p-3 text-left">Date</th><th className="p-3 text-left">Section</th><th className="p-3 text-left">Status</th><th className="p-3 text-left">Action</th></tr></thead><tbody className="divide-y">{sectionRows.map(r=><tr key={r.id}><td className="p-3">{r.recordId||r.id}</td><td className="p-3">{r.recordDate||"—"}</td><td className="p-3">{(r.data||{}).sectionName||tab}</td><td className="p-3">{r.status||"active"}</td><td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-2 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>)}{!sectionRows.length&&<tr><td colSpan="5" className="p-8 text-center text-zinc-500">No saved record yet. The form above is pre-filled with the details currently supplied for SSF.</td></tr>}</tbody></table></div></div>
+   </div>
   </div>
  </SimpleOfficeCard>;
 }
