@@ -376,6 +376,29 @@ router.delete('/digital-office/records/:id', requireOfficeAuth, async (req, res)
   } catch (e) { console.error(e); res.status(500).json({message:'Unable to archive record.'}); }
 });
 
+router.delete('/digital-office/records/:id/permanent', requireOfficeAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    const row = await DigitalOfficeRecord.findByPk(req.params.id, { transaction: t, lock: t.LOCK.UPDATE });
+    if (!row) { await t.rollback(); return res.status(404).json({message:'Record not found.'}); }
+    if (row.status !== 'deleted') { await t.rollback(); return res.status(400).json({message:'Only archived records can be permanently deleted.'}); }
+    await DigitalOfficeAudit.create({
+      action:'permanent_delete',
+      module:row.module,
+      recordId:row.recordId,
+      actor:req.headers['x-office-actor'] || 'admin',
+      details:{permanentDelete:true}
+    }, {transaction:t});
+    await row.destroy({ transaction:t });
+    await t.commit();
+    return res.json({status:'success', recordId:row.recordId});
+  } catch (e) {
+    try { await t.rollback(); } catch (_) {}
+    console.error('Digital Office permanent delete failed:', e);
+    return res.status(500).json({message:'Unable to permanently delete record.'});
+  }
+});
+
 router.post('/digital-office/donations', requireOfficeAuth, async (req, res) => {
   const t = await sequelize.transaction();
   try {
