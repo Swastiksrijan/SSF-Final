@@ -9,13 +9,13 @@ import { generateCertificate, generateIdentityCard } from "../utils/generateCert
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
  ["dashboard","Dashboard / डैशबोर्ड",FaChartLine],
- ["onlineMeetings","Online Meetings / ऑनलाइन बैठकें",FaVideo],
+ ["meetings","Meetings / बैठकें",FaCalendarAlt],
  ["members","Members Register / सदस्य रजिस्टर",FaUsers],["institutionalHistory","Institution Profile & Compliance / संस्था परिचय एवं अनुपालन",FaHistory],["officeHistory","Membership History / सदस्यता इतिहास",FaUserTie],["managingCommittee","Managing Committee / प्रबंधकारिणी समिति",FaUserTie],["membershipContributions","Membership & Contribution / सदस्यता व योगदान",FaRupeeSign],["meetingResolutions","Meeting & Resolution / बैठक व प्रस्ताव",FaCalendarAlt],["volunteers","Volunteers / स्वयंसेवक",FaUsers],["donors","Donors / दानदाता",FaUsers],
  ["donations","Donations / दान",FaRupeeSign],["expenses","Expenses / व्यय",FaRupeeSign],["contribution","Contributions / योगदान रजिस्टर",FaBook],
  ["cash","Cash Book / रोकड़ बही",FaBook],["bank","Bank Book / बैंक बही",FaBook],["ledger","Ledger / लेजर",FaBalanceScale],
  ["inventory","Stock & Items / स्टॉक व सामग्री",FaBoxes],
  ["inward","Inward Register / आवक रजिस्टर",FaFileAlt],["outward","Outward Register / जावक रजिस्टर",FaFileAlt],
- ["meetings","Meeting Calendar / बैठक कैलेंडर",FaCalendarAlt],["projects","Projects & Initiatives / परियोजनाएँ व पहल",FaTasks],["events","Events & Camps / कार्यक्रम व शिविर",FaCalendarAlt],
+["projects","Projects & Initiatives / परियोजनाएँ व पहल",FaTasks],["events","Events & Camps / कार्यक्रम व शिविर",FaCalendarAlt],
  ["mou","MoU & Agreements / समझौते",FaHandshake],["documents","Documents & Records / दस्तावेज़ एवं अभिलेख",FaFileAlt],["officialDocuments","Statutory & Official Documents / वैधानिक एवं आधिकारिक दस्तावेज़",FaFileAlt],["donorSlips","Donor Slips & Receipts / दान रसीदें",FaFileAlt],["separations","Role Changes & Separation / पद परिवर्तन व पृथक्करण",FaFileAlt],["appointmentLetters","Appointment Letters / नियुक्ति पत्र",FaUserTie],
  
  ["certificates","Certificates / प्रमाणपत्र",FaCertificate],["idcards","ID Cards / पहचान पत्र",FaIdCard],
@@ -182,13 +182,13 @@ export default function SSFDigitalOffice(){
    <aside className="bg-white rounded-2xl border border-zinc-200 p-3 h-fit lg:sticky lg:top-24 max-h-[calc(100vh-7rem)] overflow-auto"><div className="px-4 pt-4 pb-3 border-b border-zinc-200"><div className="flex items-center gap-3"><img src={logoImg} alt="SSF logo" className="h-12 w-12 object-contain rounded-xl bg-white border border-zinc-100 p-1" /><div><div className="text-sm font-black text-[#002344]">SSF Digital Office</div><div className="text-[10px] text-zinc-500 font-semibold">Paperless Office Management</div></div></div></div>{MODULES.map(function(x){var Icon=x[2];return <button key={x[0]} onClick={function(){setActive(x[0]);}} className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left font-bold mb-1 "+(active===x[0]?"bg-[#123B5D] text-white":"text-zinc-700 hover:bg-zinc-100")}><Icon/><span className="min-w-0 flex-1 leading-tight"><span className={"block text-[15px] sm:text-base font-extrabold "+(active===x[0]?"text-white":"text-[#123B5D]")}>{x[1].split(" / ")[0]}</span><span className={"block text-[14px] sm:text-[15px] font-semibold mt-0.5 "+(active===x[0]?"text-[#FFF8E7]":"text-[#1F7A70]")}>{x[1].split(" / ").slice(1).join(" / ")}</span></span></button>;})}</aside>
    <main className="min-w-0">
     {active==="dashboard"&&<Dashboard summary={summary}/>}
-    {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
-    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
+    
+    {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive}/>}\n    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
-    {active==="meetingResolutions"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}
-    {active==="meetings"&&<MeetingCalendar rows={rows} add={add} archive={archive}/>}
+    
+    
     {active==="appointmentLetters"&&<AppointmentLetters rows={rows} add={add}/>}
     {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
@@ -197,12 +197,12 @@ export default function SSFDigitalOffice(){
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","meetingResolutions","meetings"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","meetings"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
 }
-function OnlineMeetings({token}){
+function MeetingsHub({token,rows,add,archive}){\n const [tab,setTab]=useState("calendar");\n const tabs=[["calendar","Meeting Calendar / बैठक कैलेंडर"],["online","Online Meetings / ऑनलाइन बैठकें"],["resolution","Meeting & Resolution / बैठक व प्रस्ताव"]];\n return <div className="space-y-5">\n  <div className="bg-white border rounded-2xl p-3 sm:p-4 shadow-sm">\n   <div className="flex flex-wrap gap-2">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);}} className={"px-4 py-3 rounded-xl font-bold transition "+(tab===t[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>\n  </div>\n  {tab==="calendar"&&<MeetingCalendar rows={rows} add={add} archive={archive}/>}\n  {tab==="online"&&<OnlineMeetings token={token}/>}\n  {tab==="resolution"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}\n </div>;\n}\nfunction OnlineMeetings({token}){
  const blank={title:"",type:"Managing Committee",date:new Date().toISOString().slice(0,10),time:"15:15",purpose:"",agenda:""};
  const [form,setForm]=useState(blank),[link,setLink]=useState(""),[members,setMembers]=useState([]),[selected,setSelected]=useState([]),[records,setRecords]=useState([]),[notice,setNotice]=useState(""),[working,setWorking]=useState(false),[googleConnected,setGoogleConnected]=useState(false),[editingId,setEditingId]=useState(null);
  const headers={Authorization:"Bearer "+token,"Content-Type":"application/json"};
