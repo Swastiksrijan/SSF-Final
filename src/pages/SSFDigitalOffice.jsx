@@ -755,7 +755,53 @@ function MembershipContributions({rows,add,archive}){
 }
 
 function MeetingResolutions({rows,add,archive,restore,token}){
- const existing=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
+ const resolutionRows=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
+ const calendarRows=(rows||[]).filter(r=>r.module==="meetings"&&r.status!=="deleted");
+ const existing=resolutionRows;
+ useEffect(()=>{
+  const legacy=calendarRows.find(r=>{
+   const d=r.data||{};
+   return String(d.meetingTitle||"").trim()==="Annual Review & Planning Meeting – 2026–27" && String(d.date||r.recordDate||"").slice(0,10)==="2026-09-26";
+  });
+  if(!legacy || resolutionRows.some(r=>String((r.data||{}).meetingTitle||"").trim()==="Annual Review & Planning Meeting – 2026–27")) return;
+  const d=legacy.data||{};
+  add("meetingResolutions",{
+   recordDate:d.date||legacy.recordDate,
+   recordType:d.meetingType||"Managing Committee Meeting",
+   status:"active",
+   data:{
+    meetingDate:String(d.date||legacy.recordDate||"").slice(0,10),
+    startTime:d.time||"",
+    endTime:"",
+    meetingType:d.meetingType||"Managing Committee Meeting",
+    meetingMode:d.mode||"Online",
+    meetingTitle:d.meetingTitle||"",
+    purpose:d.purpose||"",
+    venue:d.venue||"",
+    onlineMeetingId:"",
+    onlineMeetingLink:d.meetingLink||"",
+    onlinePlatform:d.meetingLink?"Google Meet":"",
+    organizer:"",
+    presentMembers:d.participants||"",
+    absentMembers:"",
+    onlineParticipants:"",
+    offlineParticipants:"",
+    attendance:"",
+    attendanceSummary:"",
+    attendanceSheetRef:"",
+    agenda:d.agenda||"",
+    decision:"",
+    resolutionNo:"",
+    resolutionStatus:"Not Applicable",
+    actionPoints:"",
+    responsiblePersons:"",
+    targetDate:"",
+    supportingDocument:"",
+    recordingRef:"",
+    remarks:"Imported from Meeting Calendar record. Complete the official attendance, minutes, decisions and resolution fields after the meeting."
+   }
+  });
+ },[calendarRows.length,resolutionRows.length]);
  const [archived,setArchived]=useState([]);
  const loadArchived=async()=>{
   try{
