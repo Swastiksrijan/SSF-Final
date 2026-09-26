@@ -851,8 +851,34 @@ function MembersRegister({rows,add,archive}){
   {memberId:"SSF-MBR-00018",memberType:"General Member",fullName:"Ritesh Kumar Tiwari",fatherHusbandName:"Mr. Ramchandra Tiwari",mobile:"8422819534",email:"riteshtiwari9082@gmail.com",address:"Village Jagannathpur, Sant Ravidas Nagar",city:"Bhadohi",state:"Uttar Pradesh",pinCode:"221303",aadhaar:"362732535435",pan:"AUVPT3345G",joiningDate:"2025-05-10",membershipEndDate:"2026-03-31",membershipStatus:"Active",membershipFee:"NA",receiptNo:"NA",gender:"Male",occupation:"Private Employee",memberRole:"Member",responsibility:"Media & Communication Coordinator",membershipValidTill:"31/3/2026"}
  ];
  const savedMembers=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="members"&&r.status!=="deleted");
- const committeeSeeds=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="managingCommittee"&&r.status!=="deleted");
- const existing=savedMembers.length?savedMembers:committeeSeeds.map(r=>{const d=r.data||{};return {id:"committee-seed-"+r.id,recordId:r.recordId,module:"members",status:"active",recordDate:d.joiningDate||d.appointmentDate||r.recordDate,data:{memberId:d.memberId||"",membershipNo:d.membershipNo||"",memberType:d.memberType||"साधारण सदस्य",fullName:d.fullName||"",fatherHusbandName:d.fatherHusbandName||"",dob:d.dob||"",gender:d.gender||"",occupation:d.occupation||d.occupationProfession||"",mobile:d.mobile||d.mobileNo||"",email:d.email||"",address:d.address||"",city:d.city||"",state:d.state||"",pinCode:d.pinCode||"",pan:d.pan||"",aadhaar:d.aadhaar||"",joiningDate:d.joiningDate||d.appointmentDate||"",membershipEndDate:d.membershipEndDate||"",membershipStatus:d.membershipStatus||"Active",membershipFee:d.membershipFee||"",receiptNo:d.receiptNo||"",remarks:d.remarks||d.responsibility||""}});
+ const committeeSeeds=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="managingCommittee"&&r.status!=="deleted").map(r=>{
+  const d=r.data||{};
+  const seed=MASTER_MEMBER_DATA.find(m=>m.memberId===String(d.memberId||""))||{};
+  const data={...seed,...d};
+  data.memberId=seed.memberId||d.memberId||"";
+  data.memberRole=seed.memberRole||d.designation||"";
+  data.responsibility=seed.responsibility||d.responsibility||"";
+  data.fullName=seed.fullName||d.fullName||"";
+  data.memberType=seed.memberType||d.memberType||"General Member";
+  data.fatherHusbandName=seed.fatherHusbandName||d.fatherHusbandName||"";
+  data.gender=seed.gender||d.gender||"";
+  data.occupation=seed.occupation||d.occupation||d.occupationProfession||"";
+  data.mobile=seed.mobile||d.mobile||d.mobileNo||"";
+  data.email=seed.email||d.email||"";
+  data.address=seed.address||d.address||"";
+  data.city=seed.city||d.city||"";
+  data.state=seed.state||d.state||"";
+  data.pinCode=seed.pinCode||d.pinCode||"";
+  data.pan=seed.pan||d.pan||"";
+  data.aadhaar=seed.aadhaar||d.aadhaar||"";
+  data.joiningDate=seed.joiningDate||d.joiningDate||d.appointmentDate||"";
+  data.membershipEndDate=seed.membershipEndDate||d.membershipEndDate||"";
+  data.membershipStatus=seed.membershipStatus||d.membershipStatus||"Active";
+  data.membershipFee=seed.membershipFee||d.membershipFee||"";
+  data.receiptNo=seed.receiptNo||d.receiptNo||"NA";
+  data.remarks=seed.responsibility||d.remarks||d.responsibility||"";
+  return {id:"committee-seed-"+r.id,recordId:r.recordId,module:"members",status:"active",recordDate:data.joiningDate||r.recordDate,data};
+ });
  const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
  const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[tab,setTab]=useState("dashboard");
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
