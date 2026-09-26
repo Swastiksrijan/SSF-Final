@@ -20,7 +20,7 @@ const MODULES = [
  
  ["certificates","Certificates",FaCertificate],["idcards","ID Cards",FaIdCard],
  ["beneficiaries","Beneficiaries",FaUsers],["internships","Internship Applications",FaTasks],["activities","Volunteer Activities",FaTasks],
- ["assets","Assets & Equipment",FaBoxes],["notifications","Alerts & Follow-ups",FaTasks],
+ ["assets","Assets & Equipment",FaBoxes],["notifications","Alerts & Follow-ups",FaTasks],["governanceActions","Notices & Administrative Actions",FaFileAlt],
  ["reports","Reports",FaChartLine],["users","Users & Permissions",FaUserShield],["audit","Audit Trail",FaHistory]
 ];
 const LABELS = Object.fromEntries(MODULES.map(function(x){return [x[0],x[1]];}));
@@ -451,7 +451,13 @@ function RecordForm({module,onSave}){
   {module==="inventory"&&<>{input("category","Stock Category")}{area("notes","Remarks")}</>}
   {module==="assets"&&<>{input("category","Asset Category",true)}{input("item","Asset / Equipment Name",true)}{input("source","Purchase / Donor Source")}{input("qty","Quantity")}{input("unit","Unit")}{input("validUntil","Warranty / Review Date")}{input("recipient","Custodian / Location")}{area("notes","Condition / Remarks")}</>}
   {module==="notifications"&&<>{input("category","Alert Type",true)}{input("subject","Subject",true)}{input("validUntil","Due Date")}{input("recipient","Responsible Person")}{area("notes","Action / Follow-up")}</>}
-  {(["inward","outward","meetings","mou","certificates","idcards"].includes(module))&&area("notes","Remarks")}
+  {module==="governanceActions"&&<>
+   {input("category","Action Type",true)}{input("recipient","Issued To / Member",true)}{input("subject","Subject / Matter",true)}
+   {input("referenceNo","Notice / Letter / File No.")}{input("meetingDate","Related Meeting Date")}{input("responseDueDate","Response Due Date")}{input("responseStatus","Response Status")}
+   {input("attendanceStatus","Meeting Attendance / Participation")}{input("actionTaken","Action Taken / Next Step")}{input("resolutionNo","Resolution No.")}{input("effectiveDate","Effective Date")}
+   {area("purpose","Reason / Issue / Matter")}{area("notes","Response / Follow-up / Remarks")}
+  </>}
+  {(["inward","outward","meetings","mou","certificates","idcards","governanceActions"].includes(module))&&area("notes","Remarks")}
   <button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold hover:opacity-95">Save {LABELS[module]||"Record"}</button>
  </form>;
 }

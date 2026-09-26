@@ -84,7 +84,7 @@ const requireOfficeAuth = (req, res, next) => {
   next();
 };
 
-const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID' };
+const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID', governanceActions:'GOV' };
 const makeId = async (module) => {
   const p = prefix[module] || 'REC';
   const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
