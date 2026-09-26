@@ -216,7 +216,24 @@ export default function SSFDigitalOffice(){
 function NotificationsHub({token,rows,add,archive}){
  const [tab,setTab]=useState("information");
  const [showForm,setShowForm]=useState(false);
- const [members,setMembers]=useState([]);\n useEffect(()=>{if(!token)return;fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}}).then(r=>r.ok?r.json():[]).then(d=>setMembers(Array.isArray(d)?d:[])).catch(()=>setMembers([]));},[token]);
+ const [members,setMembers]=useState([]);
+ useEffect(()=>{
+  if(!token)return;
+  const headers={Authorization:"Bearer "+token,"Content-Type":"application/json"};
+  const loadRecipients=async()=>{
+   try{
+    const mr=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers});
+    const md=mr.ok?await mr.json():[];
+    const memberRows=Array.isArray(md)?md:(Array.isArray(md.records)?md.records:[]);
+    if(memberRows.length){setMembers(memberRows);return;}
+    const cr=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers});
+    const cd=cr.ok?await cr.json():[];
+    const committeeRows=Array.isArray(cd)?cd:(Array.isArray(cd.records)?cd.records:[]);
+    setMembers(committeeRows);
+   }catch(_){setMembers([]);}
+  };
+  loadRecipients();
+ },[token]);
  const tabs=[
   ["information","Information & Communication / सूचना एवं संचार","Official information, communication & responsibilities","bg-sky-600"],
   ["response","Response & Participation / प्रतिक्रिया एवं सहभागिता","Responses, attendance & participation","bg-emerald-600"],
@@ -275,14 +292,14 @@ function NotificationsHub({token,rows,add,archive}){
    </div>
   </div>
 
-  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} types={typeMap[tab]||[]}/>
+  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} types={typeMap[tab]||[]} members={members}/>
  </div>;
 }
-function NotificationRegister({tab,rows,add,archive,types}){
+function NotificationRegister({tab,rows,add,archive,types,members=[]}){
  const [open,setOpen]=useState(false),[search,setSearch]=useState(""),[status,setStatus]=useState("all");
  const filtered=(rows||[]).filter(r=>{const d=r.data||{},q=search.toLowerCase(),hay=[r.recordId,r.recordDate,d.name,d.role,d.subject,d.details,d.noticeStage,d.channel].join(" ").toLowerCase();return (!q||hay.includes(q))&&(status==="all"||String(r.status||"").toLowerCase()===status);});
  const title=tab==="information"?"Information & Communication / सूचना एवं संचार":tab==="response"?"Response & Participation / प्रतिक्रिया एवं सहभागिता":tab==="followup"?"Reminder & Follow-up / अनुस्मारक एवं अनुवर्ती कार्य":"Notice & Explanation / नोटिस एवं स्पष्टीकरण";
- return <div className="bg-white rounded-2xl border overflow-hidden"><div className="p-5 sm:p-7 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-4"><div><h2 className="text-2xl font-black text-[#002344]">{title}</h2><p className="text-sm text-zinc-500 mt-1">{filtered.length} record(s) · secure database</p></div><div className="flex flex-wrap gap-2 items-center"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search person / subject / ID" className="px-3 py-2.5 border rounded-xl w-56"/><select value={status} onChange={e=>setStatus(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Status</option><option value="active">Active</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="closed">Closed</option><option value="archived">Archived</option></select><button onClick={()=>setOpen(!open)} className="bg-[#002344] text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2"><FaPlus/> Add</button></div></div>{open&&<NotificationForm types={types} onSave={async d=>{if(!d){setOpen(false);return;}const ok=await add("notifications",d);if(ok)setOpen(false);}}/>}<div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="bg-zinc-50 text-zinc-500 text-xs uppercase"><th className="p-3">ID</th><th className="p-3">Date</th><th className="p-3">Person / Role</th><th className="p-3">Matter</th><th className="p-3">Response / Action</th><th className="p-3">Status</th><th className="p-3"></th></tr></thead><tbody className="divide-y">{filtered.length===0?<tr><td colSpan="7" className="p-10 text-center text-zinc-400">No records yet.</td></tr>:filtered.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold text-[#002344] whitespace-nowrap">{r.recordId}</td><td className="p-3 whitespace-nowrap">{new Date(r.recordDate).toLocaleDateString("en-IN")}</td><td className="p-3"><b>{d.name||"—"}</b><div className="text-xs text-zinc-400">{d.role||""}</div></td><td className="p-3 min-w-[260px]"><b>{d.noticeStage||"—"}</b><div className="text-xs text-zinc-400 mt-1">{d.subject||d.details||""}</div></td><td className="p-3">{d.responseStatus||d.responseDetails||d.followUpResult||"—"}</td><td className="p-3">{r.status}</td><td className="p-3 text-right"><button onClick={()=>archive(r.id)} className="text-xs font-bold text-red-600">Archive</button></td></tr>})}</tbody></table></div></div>;
+ return <div className="bg-white rounded-2xl border overflow-hidden"><div className="p-5 sm:p-7 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-4"><div><h2 className="text-2xl font-black text-[#002344]">{title}</h2><p className="text-sm text-zinc-500 mt-1">{filtered.length} record(s) · secure database</p></div><div className="flex flex-wrap gap-2 items-center"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search person / subject / ID" className="px-3 py-2.5 border rounded-xl w-56"/><select value={status} onChange={e=>setStatus(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Status</option><option value="active">Active</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="closed">Closed</option><option value="archived">Archived</option></select><button onClick={()=>setOpen(!open)} className="bg-[#002344] text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2"><FaPlus/> Add</button></div></div>{open&&<NotificationForm members={members} types={types} onSave={async d=>{if(!d){setOpen(false);return;}const ok=await add("notifications",d);if(ok)setOpen(false);}}/>}<div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="bg-zinc-50 text-zinc-500 text-xs uppercase"><th className="p-3">ID</th><th className="p-3">Date</th><th className="p-3">Person / Role</th><th className="p-3">Matter</th><th className="p-3">Response / Action</th><th className="p-3">Status</th><th className="p-3"></th></tr></thead><tbody className="divide-y">{filtered.length===0?<tr><td colSpan="7" className="p-10 text-center text-zinc-400">No records yet.</td></tr>:filtered.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold text-[#002344] whitespace-nowrap">{r.recordId}</td><td className="p-3 whitespace-nowrap">{new Date(r.recordDate).toLocaleDateString("en-IN")}</td><td className="p-3"><b>{d.recipientCount?String(d.recipientCount)+" recipient(s)":(d.name||"—")}</b><div className="text-xs text-zinc-400">{Array.isArray(d.recipients)&&d.recipients.length?d.recipients.slice(0,2).map(x=>x.name).filter(Boolean).join(", ")+(d.recipients.length>2?" + more":""):(d.role||"")}</div></td><td className="p-3 min-w-[260px]"><b>{d.noticeStage||"—"}</b><div className="text-xs text-zinc-400 mt-1">{d.subject||d.details||""}</div></td><td className="p-3">{d.responseStatus||d.responseDetails||d.followUpResult||"—"}</td><td className="p-3">{r.status}</td><td className="p-3 text-right"><button onClick={()=>archive(r.id)} className="text-xs font-bold text-red-600">Archive</button></td></tr>})}</tbody></table></div></div>;
 }
 function NotificationForm({types,onSave,members=[]}){
  const [f,setF]=useState({date:new Date().toISOString().slice(0,10),selectedMemberIds:[],name:"",role:"",mobile:"",email:"",noticeStage:types[0]||"",subject:"",details:"",channel:"WhatsApp",expectedAction:"",expectedDate:"",responseStatus:"Not Applicable",responseDate:"",responseDetails:"",participationStatus:"Not Applicable",followUpDate:"",followUpResult:"",status:"active",relatedRecordId:"",evidenceRef:""});
@@ -295,7 +312,7 @@ function NotificationForm({types,onSave,members=[]}){
  const message=()=>[f.subject&&("Subject: "+f.subject),f.details,f.expectedAction&&("Expected Action: "+f.expectedAction),f.expectedDate&&("Expected Date: "+f.expectedDate),f.followUpDate&&("Follow-up Date: "+f.followUpDate)].filter(Boolean).join("\n");
  const sendWhatsApp=()=>{const rs=recipients().filter(x=>x.mobile);if(!rs.length){alert("Mobile number is required.");return;}rs.forEach((x,i)=>setTimeout(()=>window.open("https://wa.me/"+String(x.mobile).replace(/\D/g,"")+"?text="+encodeURIComponent(message()),"_blank","noopener,noreferrer"),i*250));};
  const sendEmail=()=>{const rs=recipients().filter(x=>x.email);if(!rs.length){alert("Email address is required.");return;}window.location.href="mailto:"+rs.map(x=>x.email).join(",")+"?subject="+encodeURIComponent(f.subject||"SSF Official Communication")+"&body="+encodeURIComponent(message());};
- const sendBoth=()=>{if(f.channel==="Email"){sendEmail();}else if(f.channel==="WhatsApp"){sendWhatsApp();}else{sendWhatsApp();setTimeout(sendEmail,700);}};
+ const sendBoth=()=>{sendWhatsApp();if(recipients().some(x=>x.email))setTimeout(sendEmail,700);};
  const handleSubmit=e=>{e.preventDefault();const rs=recipients();if(!rs.length||!rs[0].name){alert("Please select member(s) or enter a manual recipient.");return;}if(!rs.some(x=>x.mobile||x.email)){alert("At least one Mobile or Email is required.");return;}onSave({recordDate:f.date,recordType:f.noticeStage,status:f.status,data:{...f,recipients:rs,recipientCount:rs.length,sendAction:"Saved communication record"}});};
  const input=(k,p,req=false)=><input value={f[k]} onChange={e=>set(k,e.target.value)} placeholder={p} required={req} className={cls}/>;
  const area=(k,p)=><textarea value={f[k]} onChange={e=>set(k,e.target.value)} placeholder={p} className={cls+" min-h-[90px]"}/>;
