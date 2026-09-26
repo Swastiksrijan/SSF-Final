@@ -230,12 +230,9 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
  const allRows=rows||[];
  const classifySection=r=>{
   const d=r.data||{};
-  // Explicit section saved with the record is authoritative.
-  const explicit=String(d.section||d.communicationSection||"").trim().toLowerCase();
-  if(["information","response","followup","notice"].includes(explicit))return explicit;
-
-  // Preserve the five existing test records in their intended sections.
-  // This is only a display/classification fallback; it does not create or modify records.
+  // These five existing test records were created before the section field was
+  // reliable. Their record IDs are the stable fallback for the current data.
+  // This changes display classification only; no database records are created/deleted.
   const rid=String(r.recordId||"").trim();
   const legacySections={
    "SSF-NTF-20260926-00001":"information",
@@ -245,6 +242,10 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
    "SSF-NTF-20260926-00005":"notice"
   };
   if(legacySections[rid])return legacySections[rid];
+
+  // For every other record, an explicitly saved section is authoritative.
+  const explicit=String(d.section||d.communicationSection||"").trim().toLowerCase();
+  if(["information","response","followup","notice"].includes(explicit))return explicit;
 
   const stage=String(d.noticeStage||d.sectionStage||d.communicationStage||d.recordType||"").trim();
   if((typeMap.notice||[]).includes(stage))return "notice";
