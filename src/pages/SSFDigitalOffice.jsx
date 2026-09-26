@@ -748,7 +748,25 @@ function MeetingResolutions({rows,add,archive,restore,token}){
  const save=async e=>{
   e.preventDefault();
   if(saving)return;
-  if(!f.meetingTitle.trim()){setNotice("Meeting Title required.");return;}
+  const title=String(f.meetingTitle||"").trim();
+  const date=String(f.meetingDate||"").slice(0,10);
+  const start=String(f.startTime||"").trim();
+  const onlineId=String(f.onlineMeetingId||"").trim();
+  if(!title){setNotice("Meeting Title required.");return;}
+  if(!date){setNotice("Meeting Date required.");return;}
+  const duplicate=(rows||[]).find(r=>{
+   if(editingId&&String(r.id)===String(editingId))return false;
+   if(r.module!=="meetingResolutions"||r.status==="deleted")return false;
+   const d=r.data||{};
+   const sameTitle=String(d.meetingTitle||"").trim().toLowerCase()===title.toLowerCase();
+   const sameDate=String(d.meetingDate||r.recordDate||"").slice(0,10)===date;
+   const savedStart=String(d.startTime||"").trim();
+   const savedOnlineId=String(d.onlineMeetingId||"").trim();
+   const sameTime=start?savedStart===start:!savedStart;
+   const sameOnlineId=onlineId&&savedOnlineId?onlineId===savedOnlineId:false;
+   return sameTitle&&sameDate&&(sameOnlineId||sameTime);
+  });
+  if(!editingId&&duplicate){setNotice("Duplicate meeting prevented. This meeting is already saved.");return;}
   setSaving(true);
   try{
    const payload={...f,date:f.meetingDate};
