@@ -136,7 +136,7 @@ function ObjectivesPage() {
             <div className="mb-20">
               <div className="mb-10 text-center">
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-[#fb8500]">10 Objective Areas | 10 प्रमुख उद्देश्य क्षेत्र</p>
-                <h3 className="mt-2 text-3xl font-serif font-bold text-[#002344] md:text-4xl">Our Objectives | हमारे उद्देश्य | हमारे उद्देश्य</h3>
+                <h3 className="mt-2 text-3xl font-serif font-bold text-[#002344] md:text-4xl">Our Objective | हमारा उद्देश्यs | हमारे उद्देश्य | हमारे उद्देश्य</h3>
                 <p className="mx-auto mt-3 max-w-3xl text-zinc-500">Each objective is presented as an independent, photo-based share card that can be shared directly on WhatsApp or other apps.<br/>प्रत्येक उद्देश्य को एक स्वतंत्र फोटो-आधारित शेयर कार्ड के रूप में प्रस्तुत किया गया है, जिसे सीधे WhatsApp या अन्य ऐप्स पर साझा किया जा सकता है।</p>
               </div>
 
