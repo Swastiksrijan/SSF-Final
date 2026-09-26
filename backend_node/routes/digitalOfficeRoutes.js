@@ -316,6 +316,7 @@ const validateMemberIdForDigitalOffice = async (memberId, currentId=null) => {
   );
 
   if (currentId === '__reference__') {
+    if (APPROVED_MANAGING_COMMITTEE_MEMBER_IDS.has(value.toUpperCase())) return { ok: true, value };
     if (!matches.length && !committeeMatches.length && !accountMatches.length) {
       return { ok: false, message: 'Member ID not found in SSF member records. Select a valid registered SSF Member ID.' };
     }
