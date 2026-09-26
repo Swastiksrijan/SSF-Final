@@ -749,6 +749,16 @@ function MeetingResolutions({rows,add,archive,restore,token}){
  const blank={meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",meetingTitle:"",purpose:"",venue:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:"",presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"",attendanceSummary:"",attendanceSheetRef:"",agenda:"",decision:"",minutes:"",resolutionNo:"",resolutionStatus:"Passed",actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",remarks:""};
  const [f,setF]=useState(blank);
  const [notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false);
+ const permanentDelete=async function(id){
+  if(!confirm("Permanently delete this archived meeting record? This cannot be undone."))return;
+  try{
+   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id+"/permanent",{method:"DELETE",headers:{Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"}});
+   const out=await r.json().catch(()=>({}));
+   if(!r.ok)throw new Error(out.message||"Permanent deletion failed.");
+   setArchived(x=>x.filter(a=>a.id!==id));
+   setNotice("Archived meeting record permanently deleted.");
+  }catch(e){setNotice(e.message||"Permanent deletion failed.");}
+ };
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const save=async e=>{
   e.preventDefault();
@@ -822,7 +832,10 @@ function MeetingResolutions({rows,add,archive,restore,token}){
     <button type="button" onClick={loadArchived} className="px-4 py-2 rounded-lg bg-[#123B5D] text-white font-bold">Refresh Archived / आर्काइव रिफ्रेश</button>
    </div>
    <div className="mt-3 text-sm font-semibold">Found: {archived.length}</div>
-   {archived.length>0&&<div className="mt-3 space-y-2">{archived.map(r=>{const d=r.data||{};return <div key={r.id} className="bg-white border rounded-xl p-3 flex flex-wrap items-center justify-between gap-3"><div><b>{d.meetingTitle||"Meeting Record"}</b><div className="text-sm text-zinc-600">{r.recordDate||d.meetingDate||"—"} · ID: {r.id}</div></div><button type="button" onClick={async()=>{if(restore){await restore(r.id);setArchived(x=>x.filter(a=>a.id!==r.id));}}} className="px-4 py-2 rounded-lg border border-[#1F7A70] text-[#1F7A70] font-bold">Restore / वापस लाएँ</button></div>})}</div>}
+   {archived.length>0&&<div className="mt-3 space-y-2">{archived.map(r=>{const d=r.data||{};return <div key={r.id} className="bg-white border rounded-xl p-3 flex flex-wrap items-center justify-between gap-3"><div><b>{d.meetingTitle||"Meeting Record"}</b><div className="text-sm text-zinc-600">{r.recordDate||d.meetingDate||"—"} · ID: {r.id}</div></div><div className="flex gap-2 flex-wrap">
+ <button type="button" onClick={async()=>{if(restore){await restore(r.id);setArchived(x=>x.filter(a=>a.id!==r.id));}}} className="px-4 py-2 rounded-lg border border-[#1F7A70] text-[#1F7A70] font-bold">Restore / वापस लाएँ</button>
+ <button type="button" onClick={()=>permanentDelete(r.id)} className="px-4 py-2 rounded-lg border border-red-200 text-red-700 font-bold">Delete Permanently / स्थायी रूप से हटाएँ</button>
+</div></div>})}</div>}
   </div>
   <div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[3200px]"><thead className="bg-zinc-50"><tr>{["Meeting Date","Time","Type","Mode","Meeting Title","Purpose","Venue / Location","Online Meeting ID","Online Ref. / Link","Platform","Organizer / Host","Present Members","Absent Members","Online Participants","Offline Participants","Attendance","Attendance Summary","Attendance Sheet / Signature Ref.","Agenda","Minutes / Proceedings","Decisions","Resolution No.","Resolution Status","Action Points","Responsible Person(s)","Target Date","Supporting Document","Recording / Online Ref.","Remarks","Action"].map(h=><th key={h} className="p-3 text-left whitespace-nowrap">{h}</th>)}</tr></thead><tbody className="divide-y">
    {existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[String(d.meetingDate||r.recordDate||"").slice(0,10),[d.startTime,d.endTime].filter(Boolean).join(" – "),d.meetingType||r.recordType,d.meetingMode,d.meetingTitle,d.purpose,d.venue,d.onlineMeetingId,d.onlineMeetingLink,d.onlinePlatform,d.organizer,d.presentMembers,d.absentMembers,d.onlineParticipants,d.offlineParticipants,d.attendance,d.attendanceSummary,d.attendanceSheetRef,d.agenda,d.minutes||d.details,d.decision,d.resolutionNo,d.resolutionStatus,d.actionPoints,d.responsiblePersons,d.targetDate,d.supportingDocument,d.recordingRef,d.remarks].map((v,i)=><td key={i} className="p-3 align-top max-w-[320px] whitespace-pre-wrap">{v||"—"}</td>)}<td className="p-3 align-top whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-1.5 rounded-lg border border-[#1F7A70] text-[#1F7A70] font-bold mr-2">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}
