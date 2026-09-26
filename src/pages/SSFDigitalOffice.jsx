@@ -236,7 +236,7 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
  useEffect(()=>{loadMeetingLinkedRows();},[]);
  return <div className="space-y-5">
   <div className="bg-white border rounded-2xl p-3 sm:p-4 shadow-sm">
-   <div className="flex flex-wrap gap-2">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);if(t[0]==="resolution")loadMeetingLinkedRows();}} className={"px-4 py-3 rounded-xl font-bold transition "+(tab===t[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>
+   <div className="flex flex-col sm:flex-row gap-2 overflow-x-auto">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);loadMeetingLinkedRows();}} className={"shrink-0 min-w-[220px] px-4 py-3 rounded-xl font-bold text-left transition "+(tab===t[0]?"bg-[#123B5D] text-white shadow-sm":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>
   </div>
   {tab==="calendar"&&<MeetingCalendar rows={calendarRows.concat(onlineRows,resolutionRows)} linkedRows={calendarRows.concat(onlineRows,resolutionRows)} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
   {tab==="online"&&<OnlineMeetings token={token}/>}
