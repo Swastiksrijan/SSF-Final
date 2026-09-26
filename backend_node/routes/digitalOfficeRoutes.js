@@ -283,11 +283,42 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({message:'Unable to load records.'}); }
 });
 
+const validateMemberIdForDigitalOffice = async (memberId, currentId=null) => {
+  const value = String(memberId || '').trim();
+  if (!value) return { ok: true, value: '' };
+  if (!/^SSF-MBR-\\d{5}$/i.test(value)) {
+    return { ok: false, message: 'Invalid Member ID. Use the registered SSF Member ID format, e.g. SSF-MBR-00001.' };
+  }
+  const masterRows = await DigitalOfficeRecord.findAll({
+    where: { module: 'members' },
+    attributes: ['id','recordId','status','data']
+  });
+  const duplicate = masterRows.find(row =>
+    String(row.id) !== String(currentId || '') &&
+    String(row.data?.memberId || '').trim().toLowerCase() === value.toLowerCase()
+  );
+  if (duplicate) {
+    return { ok: false, message: 'This Member ID is already registered. A duplicate Member ID cannot be created.' };
+  }
+  return { ok: true, value };
+};
+
 router.post('/digital-office/records', requireOfficeAuth, async (req, res) => {
   const t = await sequelize.transaction();
   try {
     const body = req.body || {};
     if (!body.module) { await t.rollback(); return res.status(400).json({message:'module is required'}); }
+    const incomingMemberId = body.data && typeof body.data === 'object' ? String(body.data.memberId || '').trim() : '';
+    if (incomingMemberId && body.module === 'members') {
+      const memberCheck = await validateMemberIdForDigitalOffice(incomingMemberId, null);
+      if (!memberCheck.ok) { await t.rollback(); return res.status(409).json({message: memberCheck.message}); }
+    }
+    if (incomingMemberId && body.module !== 'members') {
+      if (!/^SSF-MBR-\\d{5}$/i.test(incomingMemberId)) {
+        await t.rollback();
+        return res.status(400).json({message:'Invalid Member ID. Use the registered SSF Member ID format, e.g. SSF-MBR-00001.'});
+      }
+    }
     let existingMeeting = null;
     if (body.module === 'meetingResolutions' && body.data && typeof body.data === 'object') {
       const incoming = body.data;
@@ -357,6 +388,15 @@ router.put('/digital-office/records/:id', requireOfficeAuth, async (req, res) =>
   try {
     const row = await DigitalOfficeRecord.findByPk(req.params.id);
     if (!row) return res.status(404).json({message:'Record not found.'});
+    const incomingData = req.body.data && typeof req.body.data === 'object' ? req.body.data : row.data || {};
+    const incomingMemberId = String(incomingData.memberId || '').trim();
+    if (incomingMemberId && row.module === 'members') {
+      const memberCheck = await validateMemberIdForDigitalOffice(incomingMemberId, row.id);
+      if (!memberCheck.ok) return res.status(409).json({message: memberCheck.message});
+    }
+    if (incomingMemberId && !/^SSF-MBR-\\d{5}$/i.test(incomingMemberId)) {
+      return res.status(400).json({message:'Invalid Member ID. Use the registered SSF Member ID format, e.g. SSF-MBR-00001.'});
+    }
     const allowed = ['recordType','status','recordDate','amount','paymentMode','direction','account','linkedRecordId','personId','data'];
     allowed.forEach(k => { if (Object.prototype.hasOwnProperty.call(req.body,k)) row[k] = req.body[k]; });
     await row.save();
