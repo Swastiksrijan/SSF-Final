@@ -292,15 +292,17 @@ router.post('/digital-office/records', requireOfficeAuth, async (req, res) => {
     if (body.module === 'meetingResolutions' && body.data && typeof body.data === 'object') {
       const incoming = body.data;
       const title = String(incoming.meetingTitle || '').trim();
+      const titleKey = title.toLowerCase();
       const date = String(incoming.meetingDate || body.recordDate || '').slice(0,10);
       const start = String(incoming.startTime || '').trim();
       const onlineId = String(incoming.onlineMeetingId || '').trim();
-      if (title && date && start) {
-        // Serialize identical meeting saves so two simultaneous requests cannot both pass
-        // the duplicate check before either transaction commits.
+      if (title && date) {
+        // Serialize every save for the same meeting identity. This closes the race where
+        // two POSTs arrive together and both pass the duplicate check before either commits.
+        const lockKey = ["meetingResolutions", titleKey, date, start || "*", onlineId || "*"].join("|");
         await sequelize.query(
           "SELECT pg_advisory_xact_lock(hashtext(:lockKey))",
-          { replacements: { lockKey: ["meetingResolutions", title.toLowerCase(), date, start, onlineId].join("|") }, transaction: t }
+          { replacements: { lockKey }, transaction: t }
         );
         const candidates = await DigitalOfficeRecord.findAll({
           where: { module: 'meetingResolutions', status: { [Op.ne]: 'deleted' } },
@@ -308,10 +310,15 @@ router.post('/digital-office/records', requireOfficeAuth, async (req, res) => {
         });
         existingMeeting = candidates.find(x => {
           const d = x.data || {};
-          return String(d.meetingTitle || '').trim() === title &&
-            String(d.meetingDate || x.recordDate || '').slice(0,10) === date &&
-            String(d.startTime || '').trim() === start &&
-            (!onlineId || String(d.onlineMeetingId || '').trim() === onlineId);
+          const savedTitle = String(d.meetingTitle || '').trim().toLowerCase();
+          const savedDate = String(d.meetingDate || x.recordDate || '').slice(0,10);
+          const savedStart = String(d.startTime || '').trim();
+          const savedOnlineId = String(d.onlineMeetingId || '').trim();
+          const sameTitle = savedTitle === titleKey;
+          const sameDate = savedDate === date;
+          const sameTime = start ? savedStart === start : !savedStart;
+          const sameOnlineId = onlineId && savedOnlineId && onlineId === savedOnlineId;
+          return sameTitle && sameDate && (sameOnlineId || sameTime);
         }) || null;
       }
     }
