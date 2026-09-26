@@ -515,7 +515,7 @@ function MeetingCalendar({rows,add,archive,token,updateRecord}){
  return <div className="space-y-5">
   <div className="bg-white border rounded-2xl overflow-hidden">
    <div className="bg-[#002344] text-white p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-    <div><div className="flex items-center gap-3"><FaCalendarAlt className="text-2xl"/><div><h2 className="text-2xl font-black">Meeting Calendar / बैठक कैलेंडर</h2><p className="text-white/70 mt-1">Plan and schedule meetings — date, time, purpose, venue or online details, participants and reminders.</p></div></div></div>
+    <div><div className="flex items-center gap-3"><FaCalendarAlt className="text-2xl"/><div><h2 className="text-2xl font-black">Meeting Calendar / बैठक कैलेंडर</h2><p className="text-white/70 mt-1">Plan upcoming meetings in one place — when, where, why, who is invited, and reminder/status.</p></div></div></div>
     <button type="button" onClick={()=>{setShowForm(x=>!x);if(showForm){setEditingId(null);setF(blank);}}} className="bg-white text-[#002344] px-4 py-2.5 rounded-xl font-bold shrink-0"><FaPlus className="inline mr-2"/>{showForm?"Close":"Add Meeting"}</button>
    </div>
    <div className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-zinc-50">
@@ -545,12 +545,12 @@ function MeetingCalendar({rows,add,archive,token,updateRecord}){
    </form>
   </div>}
   <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Meeting Schedule / बैठक कार्यक्रम</h3><p className="text-sm text-zinc-500 mt-1">Planning register only. Detailed attendance, minutes and resolutions are maintained separately.</p></div>
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">Meeting Schedule / बैठक सूची</h3><p className="text-sm text-zinc-500 mt-1">Upcoming and planned meetings · {calendarRows.length} record(s) · secure database</p></div>
    <div className="overflow-auto"><table className="w-full text-sm min-w-[1500px]"><thead className="bg-zinc-50"><tr>
-    <th className="p-3 text-left">Date</th><th className="p-3 text-left">Time</th><th className="p-3 text-left">Meeting Title</th><th className="p-3 text-left">Type</th><th className="p-3 text-left">Mode</th><th className="p-3 text-left">Venue / Online</th><th className="p-3 text-left">Purpose</th><th className="p-3 text-left">Organizer / Host</th><th className="p-3 text-left">Participants</th><th className="p-3 text-left">Reminder</th><th className="p-3 text-left">Status</th><th className="p-3 text-left">Action</th>
+    <th className="p-3 text-left">Date</th><th className="p-3 text-left">Time</th><th className="p-3 text-left">Meeting Title</th><th className="p-3 text-left">Type</th><th className="p-3 text-left">Mode</th><th className="p-3 text-left">Venue / Meet</th><th className="p-3 text-left">Purpose</th><th className="p-3 text-left">Agenda</th><th className="p-3 text-left">Participants</th><th className="p-3 text-left">Reminder</th><th className="p-3 text-left">Status</th><th className="p-3 text-left">Action</th>
    </tr></thead><tbody className="divide-y">{calendarRows.map(r=>{const d=r.data||{};const venue=d.mode==="Online"?(d.meetingLink||"Online"):(d.mode==="Hybrid"?((d.venue||"Venue")+" / "+(d.meetingLink||"Online")):(d.venue||"—"));return <tr key={r.id}>
     <td className="p-3 font-bold whitespace-nowrap">{displayDate(r)}</td><td className="p-3 whitespace-nowrap">{d.time||"—"}</td><td className="p-3 font-bold max-w-[220px]">{d.meetingTitle||"—"}</td><td className="p-3">{d.meetingType||r.recordType||"—"}</td><td className="p-3">{d.mode||"—"}</td><td className="p-3 max-w-[260px] break-all">{venue}</td><td className="p-3 max-w-[260px]">{d.purpose||"—"}</td><td className="p-3">{d.organizerHost||"—"}</td><td className="p-3 max-w-[220px]">{d.participants||"—"}</td><td className="p-3">{d.reminder||"—"}</td><td className="p-3 font-bold">{displayStatus(r)}</td><td className="p-3 whitespace-nowrap"><button type="button" onClick={()=>edit(r)} className="px-3 py-1.5 rounded-lg border border-[#002344]/20 text-[#002344] font-bold mr-2">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td>
-   </tr>})}{!calendarRows.length&&<tr><td colSpan="12" className="p-10 text-center text-zinc-500">No meetings scheduled yet. Add a meeting above.</td></tr>}</tbody></table></div>
+   </tr>})}{!calendarRows.length&&<tr><td colSpan="12" className="p-10 text-center text-zinc-500">No calendar records yet.<br/><span className="text-xs">Add a meeting above to create the schedule.</span></td></tr>}</tbody></table></div>
   </div>
   <div className="bg-blue-50 border border-blue-100 rounded-2xl p-5">
    <h3 className="font-black text-[#002344]">Meeting workflow / बैठक कार्यप्रवाह</h3>
