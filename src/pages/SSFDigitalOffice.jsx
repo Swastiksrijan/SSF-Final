@@ -832,7 +832,7 @@ function SeparationManagement({rows,add}){
 function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#002344] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 function MembersRegister({rows,add,archive,updateRecord}){
  const all=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="members"&&r.status!=="deleted");
- const master=all.filter(r=>String((r.data||{}).action||"Member Register")==="Member Register");
+ const master=all.filter(r=>{const a=String((r.data||{}).action||"");return a===""||a==="Member Register";});
  const historyRecords=all.filter(r=>String((r.data||{}).action||"")==="Membership History");
  const seed=[
   {memberId:"SSF-MBR-00001",membershipNo:"",memberType:"Founder Member",fullName:"Ramesh Pandey",fatherHusbandName:"Mr. Babu Lal Pandey",gender:"Male",occupation:"Farmer & Social Worker",mobile:"9718346691",email:"rameshpandey335@gmail.com",address:"Ward 1, Village Dadar, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",joiningDate:"2013-12-30",membershipValidity:"Life Member",membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"NA",remarks:"Founder Member"},
@@ -845,7 +845,7 @@ function MembersRegister({rows,add,archive,updateRecord}){
   {memberId:"SSF-MBR-00017",membershipNo:"",memberType:"General Member",fullName:"Rishi Kumar Pandey",fatherHusbandName:"Mr. Ganga Prasad",gender:"Male",occupation:"Private Employee",mobile:"7987707912",email:"rishisatna01@gmail.com",address:"Village-Post Kyoti",city:"Rewa",state:"Madhya Pradesh",pinCode:"486117",joiningDate:"2025-05-10",membershipValidity:"31/03/2026",membershipEndDate:"2026-03-31",membershipStatus:"Active",membershipFee:"",receiptNo:"NA",remarks:"Validity shown as supplied; review required before renewal/continuation."},
   {memberId:"SSF-MBR-00018",membershipNo:"",memberType:"General Member",fullName:"Ritesh Kumar Tiwari",fatherHusbandName:"Mr. Ramchandra Tiwari",gender:"Male",occupation:"Private Employee",mobile:"8422819534",email:"riteshtiwari9082@gmail.com",address:"Village Jagannathpur, Sant Ravidas Nagar",city:"Bhadohi",state:"Uttar Pradesh",pinCode:"221303",joiningDate:"2025-05-10",membershipValidity:"31/03/2026",membershipEndDate:"2026-03-31",membershipStatus:"Active",membershipFee:"",receiptNo:"NA",remarks:"Validity shown as supplied; review required before renewal/continuation."}
  ];
- const [tab,setTab]=useState("dashboard"),[editing,setEditing]=useState(null),[search,setSearch]=useState(""),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
+ const [tab,setTab]=useState("dashboard"),[editing,setEditing]=useState(null),[search,setSearch]=useState(""),[saving,setSaving]=useState(false),[notice,setNotice]=useState(""); const seededRef=useRef(false);
  const blank=()=>({memberId:"",membershipNo:"",memberType:"General Member",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),receiptNo:"",membershipValidity:"",membershipEndDate:"",membershipStatus:"Active",membershipFee:"",remarks:"",citizenship:"Indian",rulesAccepted:"",goodCharacterDeclaration:"",alcoholDeclaration:"",applicationReceivedDate:"",idVerified:"",documentsNote:"",communicationNote:""});
  const [form,setForm]=useState(blank());
  const MField=({k,label,type="text",wide=false})=><div className={wide?"sm:col-span-2 lg:col-span-4":""}><label className="block text-xs font-bold text-slate-600 mb-1">{label}</label>{type==="textarea"?<textarea value={form[k]||""} onChange={e=>set(k,e.target.value)} className={cls+" min-h-[100px]"}/>:<input type={type} value={form[k]||""} onChange={e=>set(k,e.target.value)} className={cls}/>}</div>;
@@ -874,6 +874,7 @@ function MembersRegister({rows,add,archive,updateRecord}){
   for(const d of missing){await add("members",{recordDate:d.joiningDate,recordType:"Member Register",status:"active",data:{...blank(),...d,action:"Member Register"}});}
   setNotice("Current 9-member master list synced. Missing details can be completed through Edit.");
  };
+ useEffect(()=>{if(!seededRef.current&&master.length===0){seededRef.current=true;syncCurrent();}},[master.length]);
  const recordHistory=async (member,event)=>{
   const d=member.data||{};
   const payload={memberId:d.memberId,fullName:d.fullName,eventType:event,eventDate:new Date().toISOString().slice(0,10),notes:""};
