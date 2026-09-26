@@ -242,6 +242,15 @@ router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
   } catch (e) { console.error(e); res.status(500).json({message:'Unable to load Digital Office summary.'}); }
 });
 
+router.get('/digital-office/archived-records', requireOfficeAuth, async (req, res) => {
+  try {
+    const where = { status: 'deleted' };
+    if (req.query.module) where.module = String(req.query.module);
+    const rows = await DigitalOfficeRecord.findAll({ where, order: [['recordDate','DESC'],['updatedAt','DESC']] });
+    return res.json(rows);
+  } catch (e) { console.error(e); res.status(500).json({message:'Unable to load archived records.'}); }
+});
+
 router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
   try {
     const where = {};
