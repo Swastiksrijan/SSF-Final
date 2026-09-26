@@ -269,7 +269,7 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
 
   <div className="bg-white border rounded-2xl p-3 shadow-sm">
    <div className="flex flex-wrap gap-2">
-    {tabs.map(t=><button key={t[0]} type="button" onClick={()=>{setTab(t[0]);setShowForm(true);}} className={"flex-1 min-w-[210px] px-4 py-3 rounded-xl text-left transition border "+(tab===t[0]?"bg-[#123B5D] text-white border-[#123B5D] shadow":"bg-zinc-50 text-[#123B5D] border-zinc-200 hover:bg-zinc-100")}>
+    {tabs.map(t=><button key={t[0]} type="button" onClick={()=>setTab(t[0])} className={"flex-1 min-w-[210px] px-4 py-3 rounded-xl text-left transition border "+(tab===t[0]?"bg-[#123B5D] text-white border-[#123B5D] shadow":"bg-zinc-50 text-[#123B5D] border-zinc-200 hover:bg-zinc-100")}>
       <div className="font-black text-sm">{t[1]}</div><div className={"text-xs mt-1 "+(tab===t[0]?"text-white/70":"text-zinc-500")}>{t[2]}</div><div className={"mt-2 text-xs font-bold "+(tab===t[0]?"text-white":"text-zinc-400")}>{countStage(t[0])} record(s)</div>
     </button>)}
    </div>
