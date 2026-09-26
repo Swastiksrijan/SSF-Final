@@ -275,7 +275,7 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
    </div>
   </div>
 
-  {showForm&&<div className="bg-white border rounded-2xl shadow-sm overflow-hidden"><div className="px-5 py-4 border-b flex items-center justify-between"><div><div className="font-black text-[#002344]">New Communication / नई सूचना</div><div className="text-xs text-zinc-500 mt-1">{activeTab[1]}</div></div><button type="button" onClick={()=>setShowForm(false)} className="text-zinc-500 hover:text-zinc-900 font-bold">Close</button></div><NotificationForm members={members} types={typeMap[tab]} onSave={async d=>{if(!d){setShowForm(false);return;}const ok=await add("notifications",d);if(ok)setShowForm(false);}}/></div>}
+  {showForm&&<div className="bg-white border rounded-2xl shadow-sm overflow-hidden"><div className="px-5 py-4 border-b flex items-center justify-between"><div><div className="font-black text-[#002344]">New Communication / नई सूचना</div><div className="text-xs text-zinc-500 mt-1">{activeTab[1]}</div></div><button type="button" onClick={()=>setShowForm(false)} className="text-zinc-500 hover:text-zinc-900 font-bold">Close</button></div><NotificationForm members={members} section={tab} types={typeMap[tab]} onSave={async d=>{if(!d){setShowForm(false);return;}const ok=await add("notifications",d);if(ok)setShowForm(false);}}/></div>}
 
   <div className="bg-zinc-50 border rounded-2xl p-4 sm:p-5">
    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2"><div><h2 className="font-black text-[#002344]">{activeTab[1]}</h2><p className="text-xs text-zinc-500 mt-1">{activeTab[2]}</p></div><div className="text-sm font-bold text-zinc-500">{filtered.length} record(s)</div></div>
