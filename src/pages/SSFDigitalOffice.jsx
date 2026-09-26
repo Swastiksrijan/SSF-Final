@@ -479,7 +479,7 @@ function RecordForm({module,onSave}){
    <select value={f.responseStatus} onChange={e=>set("responseStatus",e.target.value)} className={cls}><option value="">Response Status</option><option>Pending</option><option>Responded</option><option>No Response</option><option>Not Required</option></select>
    <select value={f.attendanceStatus} onChange={e=>set("attendanceStatus",e.target.value)} className={cls}><option value="">Meeting Participation</option><option>Present</option><option>Absent</option><option>Not Attended</option><option>Not Applicable</option></select>{input("actionTaken","Action Taken / Next Step")}{input("resolutionNo","Resolution No.")}{input("effectiveDate","Effective Date")}
    {area("purpose","Reason / Issue / Matter")}{area("notes","Response / Follow-up / Outcome / Remarks")}
-  </>}}
+  </>}
   {(["inward","outward","meetings","mou","certificates","idcards","governanceActions"].includes(module))&&area("notes","Remarks")}
   <button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold hover:opacity-95">Save {LABELS[module]||"Record"}</button>
  </form>;
