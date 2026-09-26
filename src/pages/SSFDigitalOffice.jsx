@@ -1220,7 +1220,13 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
   }
   setNotice("Fresh Managing Committee register prepared: 9 current members.");
  };
- // Deliberately no automatic sync here. Refresh is manual so opening the module can never create duplicate records.
+ const syncStarted=useRef(false);
+ useEffect(()=>{
+  const hasLoadedCommittee=existing.length>0;
+  if(!token||syncStarted.current||!hasLoadedCommittee)return;
+  syncStarted.current=true;
+  refresh();
+ },[token,existing.length>0]);
  const edit=r=>{setEditId(r.id);setForm({...blank,...(r.data||{})});setTab("profile");setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
  const newRecord=()=>{setEditId(null);setForm({...blank});setTab("profile");setNotice("");};
  const save=async e=>{
