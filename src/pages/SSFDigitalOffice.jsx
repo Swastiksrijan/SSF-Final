@@ -76,7 +76,7 @@ export default function SSFDigitalOffice(){
   }catch(e){setNotice(e.message||"Save failed.");return false;}
  };
  const archive=async function(id,silent){
-  if(!silent&&!confirm("Archive this record? Archived records are retained for organisational history and are not permanently deleted."))return;
+  if(!silent&&!confirm("Archive this record? This record will be retained in organisational history and hidden from the active register. It will not be permanently deleted."))return;
   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id,{method:"DELETE",headers:auth()});
   if(r.ok){setNotice("Record archived.");load(active);}
  };
