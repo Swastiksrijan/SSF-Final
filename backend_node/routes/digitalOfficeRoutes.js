@@ -288,6 +288,37 @@ router.post('/digital-office/records', requireOfficeAuth, async (req, res) => {
   try {
     const body = req.body || {};
     if (!body.module) { await t.rollback(); return res.status(400).json({message:'module is required'}); }
+    let existingMeeting = null;
+    if (body.module === 'meetingResolutions' && body.data && typeof body.data === 'object') {
+      const incoming = body.data;
+      const title = String(incoming.meetingTitle || '').trim();
+      const date = String(incoming.meetingDate || body.recordDate || '').slice(0,10);
+      const start = String(incoming.startTime || '').trim();
+      const onlineId = String(incoming.onlineMeetingId || '').trim();
+      if (title && date && start) {
+        const candidates = await DigitalOfficeRecord.findAll({
+          where: { module: 'meetingResolutions', status: { [Op.ne]: 'deleted' } },
+          order: [['updatedAt','DESC']]
+        });
+        existingMeeting = candidates.find(x => {
+          const d = x.data || {};
+          return String(d.meetingTitle || '').trim() === title &&
+            String(d.meetingDate || x.recordDate || '').slice(0,10) === date &&
+            String(d.startTime || '').trim() === start &&
+            (!onlineId || String(d.onlineMeetingId || '').trim() === onlineId);
+        }) || null;
+      }
+    }
+    if (existingMeeting) {
+      existingMeeting.recordType = body.recordType || existingMeeting.recordType;
+      existingMeeting.status = body.status || 'active';
+      existingMeeting.recordDate = body.recordDate || existingMeeting.recordDate;
+      existingMeeting.data = body.data || existingMeeting.data || {};
+      await existingMeeting.save({ transaction: t });
+      await DigitalOfficeAudit.create({ action:'update', module:body.module, recordId:existingMeeting.recordId, actor:req.headers['x-office-actor'] || 'admin', details:{deduplicatedSave:true} }, {transaction:t});
+      await t.commit();
+      return res.status(200).json(existingMeeting);
+    }
     const recordId = body.recordId || await makeId(body.module);
     const row = await DigitalOfficeRecord.create({
       recordId, module: body.module, recordType: body.recordType || null,
