@@ -283,6 +283,11 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
   } catch (e) { console.error(e); res.status(500).json({message:'Unable to load records.'}); }
 });
 
+const APPROVED_MANAGING_COMMITTEE_MEMBER_IDS = new Set([
+  'SSF-MBR-00001','SSF-MBR-00014','SSF-MBR-00002','SSF-MBR-00003','SSF-MBR-00004',
+  'SSF-MBR-00015','SSF-MBR-00016','SSF-MBR-00017','SSF-MBR-00018'
+]);
+
 const validateMemberIdForDigitalOffice = async (memberId, currentId=null) => {
   const value = String(memberId || '').trim();
   if (!value) return { ok: true, value: '' };
