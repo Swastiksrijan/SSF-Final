@@ -293,13 +293,15 @@ const validateMemberIdForDigitalOffice = async (memberId, currentId=null) => {
     where: { module: 'members' },
     attributes: ['id','recordId','status','data']
   });
-  const duplicate = masterRows.find(row =>
-    String(row.id) !== String(currentId || '') &&
+  const matches = masterRows.filter(row =>
     String(row.data?.memberId || '').trim().toLowerCase() === value.toLowerCase()
   );
-  if (duplicate) {
-    return { ok: false, message: 'This Member ID is already registered. A duplicate Member ID cannot be created.' };
+  if (currentId === '__reference__') {
+    if (!matches.length) return { ok: false, message: 'Member ID not found in Members Register. Select a valid registered SSF Member ID.' };
+    return { ok: true, value };
   }
+  const duplicate = matches.find(row => String(row.id) !== String(currentId || ''));
+  if (duplicate) return { ok: false, message: 'This Member ID is already registered. A duplicate Member ID cannot be created.' };
   return { ok: true, value };
 };
 
@@ -318,6 +320,10 @@ router.post('/digital-office/records', requireOfficeAuth, async (req, res) => {
         await t.rollback();
         return res.status(400).json({message:'Invalid Member ID. Use the registered SSF Member ID format, e.g. SSF-MBR-00001.'});
       }
+    }
+    if (incomingMemberId && body.module !== 'members') {
+      const memberReferenceCheck = await validateMemberIdForDigitalOffice(incomingMemberId, '__reference__');
+      if (!memberReferenceCheck.ok) { await t.rollback(); return res.status(409).json({message: memberReferenceCheck.message}); }
     }
     let existingMeeting = null;
     if (body.module === 'meetingResolutions' && body.data && typeof body.data === 'object') {
@@ -396,6 +402,10 @@ router.put('/digital-office/records/:id', requireOfficeAuth, async (req, res) =>
     }
     if (incomingMemberId && !/^SSF-MBR-\\d{5}$/i.test(incomingMemberId)) {
       return res.status(400).json({message:'Invalid Member ID. Use the registered SSF Member ID format, e.g. SSF-MBR-00001.'});
+    }
+    if (incomingMemberId && row.module !== 'members') {
+      const memberReferenceCheck = await validateMemberIdForDigitalOffice(incomingMemberId, '__reference__');
+      if (!memberReferenceCheck.ok) return res.status(409).json({message: memberReferenceCheck.message});
     }
     const allowed = ['recordType','status','recordDate','amount','paymentMode','direction','account','linkedRecordId','personId','data'];
     allowed.forEach(k => { if (Object.prototype.hasOwnProperty.call(req.body,k)) row[k] = req.body[k]; });
