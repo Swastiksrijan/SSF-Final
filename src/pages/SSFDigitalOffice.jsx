@@ -189,7 +189,7 @@ export default function SSFDigitalOffice(){
    <main className="min-w-0">
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     
-    {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive}/>}
+    {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive} restore={restore}/>}
     {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive}/>}
     {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
     {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/>} 
@@ -212,7 +212,7 @@ export default function SSFDigitalOffice(){
   </div>
  </div></div>;
 }
-function MeetingsHub({token,rows,add,archive}){
+function MeetingsHub({token,rows,add,archive,restore}){
  const [tab,setTab]=useState("calendar");
  const tabs=[["calendar","Meeting Calendar / बैठक कैलेंडर"],["online","Online Meetings / ऑनलाइन बैठकें"],["resolution","Meeting & Resolution / बैठक व प्रस्ताव"]];
  return <div className="space-y-5">
@@ -735,8 +735,8 @@ function MeetingResolutions({rows,add,archive,restore,token}){
  const [archived,setArchived]=useState([]);
  const loadArchived=async()=>{
   try{
-   let r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=meetingResolutions&includeArchived=1",{headers:auth()});
-   if(!r.ok) r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=meetingResolutions&status=deleted",{headers:auth()});
+   let r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=meetingResolutions&includeArchived=1",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"}});
+   if(!r.ok) r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=meetingResolutions&includeArchived=1",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"}});
    const d=await r.json(); setArchived(Array.isArray(d)?d.filter(x=>x.status==="deleted"):[]);
   }catch(e){setArchived([]);}
  };
