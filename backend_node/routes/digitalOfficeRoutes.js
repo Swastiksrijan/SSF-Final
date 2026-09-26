@@ -296,6 +296,12 @@ router.post('/digital-office/records', requireOfficeAuth, async (req, res) => {
       const start = String(incoming.startTime || '').trim();
       const onlineId = String(incoming.onlineMeetingId || '').trim();
       if (title && date && start) {
+        // Serialize identical meeting saves so two simultaneous requests cannot both pass
+        // the duplicate check before either transaction commits.
+        await sequelize.query(
+          "SELECT pg_advisory_xact_lock(hashtext(:lockKey))",
+          { replacements: { lockKey: ["meetingResolutions", title.toLowerCase(), date, start, onlineId].join("|") }, transaction: t }
+        );
         const candidates = await DigitalOfficeRecord.findAll({
           where: { module: 'meetingResolutions', status: { [Op.ne]: 'deleted' } },
           order: [['updatedAt','DESC']]
