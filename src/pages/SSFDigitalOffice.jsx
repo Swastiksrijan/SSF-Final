@@ -724,40 +724,57 @@ function MembershipContributions({rows,add,archive}){
 
 function MeetingResolutions({rows,add,archive}){
  const existing=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
- const [f,setF]=useState({meetingDate:new Date().toISOString().slice(0,10),meetingType:"Managing Committee Meeting",meetingTitle:"",onlineMeetingId:"",resolutionNo:"",agenda:"",attendance:"",attendanceSummary:"",decision:"",minutes:"",resolutionStatus:"Passed",actionPoints:"",supportingDocument:"",remarks:""});
+ const blank={meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",meetingTitle:"",purpose:"",venue:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:"",presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"",attendanceSummary:"",attendanceSheetRef:"",agenda:"",decision:"",minutes:"",resolutionNo:"",resolutionStatus:"Passed",actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",remarks:""};
+ const [f,setF]=useState(blank);
  const [notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const save=async e=>{
   e.preventDefault();
   if(!f.meetingTitle.trim()){setNotice("Meeting Title required.");return;}
-  const ok=editingId?await updateRecord(editingId,"meetingResolutions",{...f,date:f.meetingDate}):await add("meetingResolutions",{recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:f});
-  if(ok){setEditingId(null);setF({...f,meetingTitle:"",onlineMeetingId:"",resolutionNo:"",agenda:"",attendance:"",attendanceSummary:"",decision:"",minutes:"",actionPoints:"",supportingDocument:"",remarks:""});setNotice("Official meeting / resolution record saved.");}
+  const payload={...f,date:f.meetingDate};
+  const ok=editingId?await updateRecord(editingId,"meetingResolutions",payload):await add("meetingResolutions",{recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:payload});
+  if(ok){setEditingId(null);setF({...blank,meetingDate:f.meetingDate});setNotice("Official meeting / resolution record saved.");}
  };
- return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="Meeting ke baad ka official record — attendance, minutes, decisions, resolutions aur supporting references. Online Meeting / Calendar records yahan official proceedings ke saath link kiye ja sakte hain.">
+ const editRecord=r=>{const d=r.data||{};setEditingId(r.id);setF({...blank,...d,meetingDate:r.recordDate||d.meetingDate});window.scrollTo({top:0,behavior:"smooth"});};
+ return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="Online, Offline और Hybrid — सभी meetings के लिए एक ही complete official record format.">
   <div className="bg-white border rounded-2xl p-5">
-   <div className="bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4 mb-4 text-sm text-[#123B5D]"><b>Official Record:</b> Meeting complete hone ke baad hi attendance, minutes, decision aur resolution yahan finalize karein.</div>
+   <div className="bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4 mb-4 text-sm text-[#123B5D]"><b>Official Record:</b> Meeting mode के अनुसार Online / Offline / Hybrid details भरें. Meeting complete होने के बाद attendance, minutes, decisions और resolutions finalize करें.</div>
    <form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls}/>
+    <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls} placeholder="Meeting Date"/>
+    <input type="time" value={f.startTime} onChange={e=>set("startTime",e.target.value)} className={cls} placeholder="Start Time"/>
+    <input type="time" value={f.endTime} onChange={e=>set("endTime",e.target.value)} className={cls} placeholder="End Time"/>
     <select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} className={cls}><option>General Body Meeting</option><option>Managing Committee Meeting</option><option>Special Meeting</option><option>Emergency Meeting</option><option>MoU / Collaboration Meeting</option><option>Project / Program Meeting</option><option>Other</option></select>
+    <select value={f.meetingMode} onChange={e=>set("meetingMode",e.target.value)} className={cls}><option>Online</option><option>Offline</option><option>Hybrid</option></select>
     <input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title" required className={cls}/>
-    <input value={f.onlineMeetingId} onChange={e=>set("onlineMeetingId",e.target.value)} placeholder="Online Meeting ID / Reference (optional)" className={cls}/>
+    <input value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose / उद्देश्य" className={cls}/>
+    {(f.meetingMode==="Offline"||f.meetingMode==="Hybrid")&&<input value={f.venue} onChange={e=>set("venue",e.target.value)} placeholder="Venue / Location" className={cls}/>}
+    {(f.meetingMode==="Online"||f.meetingMode==="Hybrid")&&<><input value={f.onlineMeetingId} onChange={e=>set("onlineMeetingId",e.target.value)} placeholder="Online Meeting ID / Reference" className={cls}/><input value={f.onlineMeetingLink} onChange={e=>set("onlineMeetingLink",e.target.value)} placeholder="Online Meeting Ref. / Link" className={cls}/><select value={f.onlinePlatform} onChange={e=>set("onlinePlatform",e.target.value)} className={cls}><option>Google Meet</option><option>Zoom</option><option>Microsoft Teams</option><option>Other</option></select></>}
+    <input value={f.organizer} onChange={e=>set("organizer",e.target.value)} placeholder="Organizer / Host" className={cls}/>
+    <textarea value={f.presentMembers} onChange={e=>set("presentMembers",e.target.value)} placeholder="Present Members" className={cls+" min-h-[80px]"}/>
+    <textarea value={f.absentMembers} onChange={e=>set("absentMembers",e.target.value)} placeholder="Absent Members" className={cls+" min-h-[80px]"}/>
+    {(f.meetingMode==="Online"||f.meetingMode==="Hybrid")&&<textarea value={f.onlineParticipants} onChange={e=>set("onlineParticipants",e.target.value)} placeholder="Online Participants / उपस्थित ऑनलाइन सदस्य" className={cls+" min-h-[80px]"}/>}
+    {(f.meetingMode==="Offline"||f.meetingMode==="Hybrid")&&<textarea value={f.offlineParticipants} onChange={e=>set("offlineParticipants",e.target.value)} placeholder="Offline Participants / उपस्थित भौतिक सदस्य" className={cls+" min-h-[80px]"}/>}
+    <textarea value={f.attendance} onChange={e=>set("attendance",e.target.value)} placeholder="Attendance Details" className={cls+" min-h-[80px]"}/>
+    <input value={f.attendanceSummary} onChange={e=>set("attendanceSummary",e.target.value)} placeholder="Attendance Summary" className={cls}/>
+    {(f.meetingMode==="Offline"||f.meetingMode==="Hybrid")&&<input value={f.attendanceSheetRef} onChange={e=>set("attendanceSheetRef",e.target.value)} placeholder="Attendance Sheet / Signature Ref." className={cls}/>}
+    <textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda / मुख्य एजेंडा" className={cls+" min-h-[100px]"}/>
+    <textarea value={f.minutes} onChange={e=>set("minutes",e.target.value)} placeholder="Minutes / Proceedings / कार्यवाही" className={cls+" min-h-[110px]"}/>
+    <textarea value={f.decision} onChange={e=>set("decision",e.target.value)} placeholder="Decisions / निर्णय" className={cls+" min-h-[100px]"}/>
     <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No. (if applicable)" className={cls}/>
     <select value={f.resolutionStatus} onChange={e=>set("resolutionStatus",e.target.value)} className={cls}><option>Passed</option><option>Not Passed</option><option>Deferred</option><option>Not Applicable</option></select>
-    <textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda / मुख्य एजेंडा" className={cls+" min-h-[92px]"}/>
-    <textarea value={f.attendance} onChange={e=>set("attendance",e.target.value)} placeholder="Attendance — Present / Absent members" className={cls+" min-h-[92px]"}/>
-    <input value={f.attendanceSummary} onChange={e=>set("attendanceSummary",e.target.value)} placeholder="Attendance Summary (e.g. Present 7 / Absent 2)" className={cls}/>
-    <textarea value={f.minutes} onChange={e=>set("minutes",e.target.value)} placeholder="Minutes / कार्यवाही" className={cls+" min-h-[110px]"}/>
-    <textarea value={f.decision} onChange={e=>set("decision",e.target.value)} placeholder="Decision / निर्णय" className={cls+" min-h-[110px]"}/>
     <textarea value={f.actionPoints} onChange={e=>set("actionPoints",e.target.value)} placeholder="Action Points / जिम्मेदारी एवं अगला कार्य" className={cls+" min-h-[92px]"}/>
+    <textarea value={f.responsiblePersons} onChange={e=>set("responsiblePersons",e.target.value)} placeholder="Responsible Person(s)" className={cls+" min-h-[80px]"}/>
+    <input type="date" value={f.targetDate} onChange={e=>set("targetDate",e.target.value)} className={cls} placeholder="Target Date"/>
     <input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/>
-    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" min-h-[92px]"}/>
+    {(f.meetingMode==="Online"||f.meetingMode==="Hybrid")&&<input value={f.recordingRef} onChange={e=>set("recordingRef",e.target.value)} placeholder="Recording / Online Reference" className={cls}/>}
+    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" min-h-[80px]"}/>
     <button className="sm:col-span-2 lg:col-span-4 bg-[#123B5D] hover:bg-[#17665D] text-white py-3 rounded-xl font-bold transition">{editingId?"Update Official Meeting Record":"Save Official Meeting Record"}</button>
    </form>
   </div>
   {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
-  <div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1700px]"><thead className="bg-zinc-50"><tr>{["Meeting Date","Type","Meeting Title","Online Meeting Ref.","Resolution No.","Resolution Status","Attendance","Minutes / Notes","Decision","Action Points","Supporting Document","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">
-   {existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,d.meetingType||r.recordType,d.meetingTitle,d.onlineMeetingId,d.resolutionNo,d.resolutionStatus,d.attendanceSummary||d.attendance,d.minutes||d.details,d.decision,d.actionPoints,d.supportingDocument,d.remarks].map((v,i)=><td key={i} className="p-3 align-top max-w-[280px]">{v||"—"}</td>)}<td className="p-3 align-top whitespace-nowrap"><button type="button" onClick={()=>{const d=r.data||{};setEditingId(r.id);setF({...f,...d,meetingDate:r.recordDate||d.meetingDate});window.scrollTo({top:0,behavior:"smooth"});}} className="px-3 py-1.5 rounded-lg border border-[#1F7A70] text-[#1F7A70] font-bold mr-2">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}
-   {!existing.length&&<tr><td colSpan="13" className="p-8 text-center text-zinc-500">No official meeting/resolution records yet.</td></tr>}
+  <div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[3200px]"><thead className="bg-zinc-50"><tr>{["Meeting Date","Time","Type","Mode","Meeting Title","Purpose","Venue / Location","Online Meeting ID","Online Ref. / Link","Platform","Organizer / Host","Present Members","Absent Members","Online Participants","Offline Participants","Attendance","Attendance Summary","Attendance Sheet / Signature Ref.","Agenda","Minutes / Proceedings","Decisions","Resolution No.","Resolution Status","Action Points","Responsible Person(s)","Target Date","Supporting Document","Recording / Online Ref.","Remarks","Action"].map(h=><th key={h} className="p-3 text-left whitespace-nowrap">{h}</th>)}</tr></thead><tbody className="divide-y">
+   {existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,[d.startTime,d.endTime].filter(Boolean).join(" – "),d.meetingType||r.recordType,d.meetingMode,d.meetingTitle,d.purpose,d.venue,d.onlineMeetingId,d.onlineMeetingLink,d.onlinePlatform,d.organizer,d.presentMembers,d.absentMembers,d.onlineParticipants,d.offlineParticipants,d.attendance,d.attendanceSummary,d.attendanceSheetRef,d.agenda,d.minutes||d.details,d.decision,d.resolutionNo,d.resolutionStatus,d.actionPoints,d.responsiblePersons,d.targetDate,d.supportingDocument,d.recordingRef,d.remarks].map((v,i)=><td key={i} className="p-3 align-top max-w-[320px] whitespace-pre-wrap">{v||"—"}</td>)}<td className="p-3 align-top whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-1.5 rounded-lg border border-[#1F7A70] text-[#1F7A70] font-bold mr-2">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}
+   {!existing.length&&<tr><td colSpan="30" className="p-8 text-center text-zinc-500">No official meeting/resolution records yet.</td></tr>}
   </tbody></table></div>
  </SimpleOfficeCard>;
 }
