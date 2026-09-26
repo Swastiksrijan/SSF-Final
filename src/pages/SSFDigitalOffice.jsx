@@ -523,25 +523,24 @@ function MeetingCalendar({rows,add,archive,token,updateRecord}){
    </div>
   </div>
   {showForm&&<div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">{editingId?"Edit Meeting / बैठक संपादित करें":"Schedule New Meeting / नई बैठक निर्धारित करें"}</h3><p className="text-sm text-zinc-500 mt-1">This register is for meeting planning and scheduling. Attendance, minutes, decisions and resolutions belong in Meeting & Resolution.</p></div>
-   <form onSubmit={submit} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    <div><label className="text-xs font-bold text-zinc-500">Meeting Date *</label><input type="date" value={f.date} onChange={e=>set("date",e.target.value)} required className={cls}/></div>
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">{editingId?"Edit Meeting / बैठक संपादित करें":"Schedule Meeting / बैठक निर्धारित करें"}</h3><p className="text-sm text-zinc-500 mt-1">Calendar planning only. Official attendance, minutes and resolutions belong in Meeting & Resolution Register.</p></div>
+   <form onSubmit={submit} className="p-5 space-y-5">
+    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"><div><label className="text-xs font-bold text-zinc-500">Meeting Date *</label><input type="date" value={f.date} onChange={e=>set("date",e.target.value)} required className={cls}/></div>
     <div><label className="text-xs font-bold text-zinc-500">Meeting Time *</label><input type="time" value={f.time} onChange={e=>set("time",e.target.value)} required className={cls}/></div>
     <div><label className="text-xs font-bold text-zinc-500">Meeting Type *</label><select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} required className={cls}>
      {["General Body Meeting","Managing Committee Meeting","Special Meeting","Emergency Meeting","MoU / Collaboration Meeting","Volunteer Meeting","Member Meeting","Donor Meeting","Project / Program Meeting","Event / Camp Meeting","Training / Workshop","Internal Office Meeting","Other"].map(x=><option key={x}>{x}</option>)}
     </select></div>
-    <input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title *" required className={cls}/>
-    <select value={f.mode} onChange={e=>set("mode",e.target.value)} className={cls}><option>Online</option><option>Offline</option><option>Hybrid</option></select>
+    </div><input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title *" required className={cls}/></div><select value={f.mode} onChange={e=>set("mode",e.target.value)} className={cls}><option>Online</option><option>Offline</option><option>Hybrid</option></select>
     <input value={f.venue} onChange={e=>set("venue",e.target.value)} placeholder="Venue / Location" className={cls}/>
     <input value={f.meetingLink} onChange={e=>set("meetingLink",e.target.value)} placeholder="Online Meeting Link (if applicable)" className={cls}/>
     <select value={f.platform} onChange={e=>set("platform",e.target.value)} className={cls}><option>Google Meet</option><option>Zoom</option><option>Microsoft Teams</option><option>Other</option><option>Not applicable</option></select>
-    <input value={f.organizerHost} onChange={e=>set("organizerHost",e.target.value)} placeholder="Organizer / Host" className={cls}/>
-    <textarea value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose" className={cls+" min-h-[90px]"}/>
-    <textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda" className={cls+" min-h-[90px]"}/>
-    <textarea value={f.participants} onChange={e=>set("participants",e.target.value)} placeholder="Participants / Invited Members" className={cls+" min-h-[90px]"}/>
+    <div className="sm:col-span-2 lg:col-span-4"><input value={f.organizerHost} onChange={e=>set("organizerHost",e.target.value)} placeholder="Organizer / Host" className={cls}/></div>
+    <div className="sm:col-span-2 lg:col-span-4"><textarea value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose" className={cls+" min-h-[90px]"}/></div>
+    <div className="sm:col-span-2 lg:col-span-4"><textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda" className={cls+" min-h-[90px]"}/></div>
+    <div className="sm:col-span-2 lg:col-span-4"><textarea value={f.participants} onChange={e=>set("participants",e.target.value)} placeholder="Participants / Invited Members" className={cls+" min-h-[90px]"}/></div>
     <select value={f.reminder} onChange={e=>set("reminder",e.target.value)} className={cls}><option>1 day before</option><option>2 days before</option><option>1 week before</option><option>On meeting day</option><option>No reminder</option></select>
     <select value={f.status} onChange={e=>set("status",e.target.value)} className={cls}><option>Scheduled</option><option>Pending</option><option>Completed</option><option>Cancelled</option></select>
-    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" min-h-[90px]"}/>
+    <div className="sm:col-span-2 lg:col-span-4"><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" min-h-[90px]"}/></div>
     <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2 pt-2"><button type="submit" disabled={saving} className="bg-[#002344] text-white px-5 py-3 rounded-xl font-bold disabled:opacity-50">{saving?(editingId?"Updating…":"Saving…"):(editingId?"Update Meeting":"Save Meeting")}</button>{editingId&&<button type="button" onClick={()=>{setEditingId(null);setF(blank);setShowForm(false);}} className="border px-5 py-3 rounded-xl font-bold">Cancel Edit</button>}</div>
    </form>
   </div>}
