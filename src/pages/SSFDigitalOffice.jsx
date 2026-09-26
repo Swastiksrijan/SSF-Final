@@ -200,7 +200,7 @@ export default function SSFDigitalOffice(){
     {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
     {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
     {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/>} 
-    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
+    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive} updateRecord={updateRecord}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
