@@ -289,19 +289,40 @@ const validateMemberIdForDigitalOffice = async (memberId, currentId=null) => {
   if (!/^SSF-MBR-\\d{5}$/i.test(value)) {
     return { ok: false, message: 'Invalid Member ID. Use the registered SSF Member ID format, e.g. SSF-MBR-00001.' };
   }
+
   const masterRows = await DigitalOfficeRecord.findAll({
     where: { module: 'members' },
     attributes: ['id','recordId','status','data']
   });
+  const managingRows = await DigitalOfficeRecord.findAll({
+    where: { module: 'managingCommittee', status: { [Op.ne]: 'deleted' } },
+    attributes: ['id','recordId','status','data']
+  });
+  const websiteMembers = await Member.findAll({ attributes: ['id','memberId','status'] });
+
   const matches = masterRows.filter(row =>
     String(row.data?.memberId || '').trim().toLowerCase() === value.toLowerCase()
   );
+  const committeeMatches = managingRows.filter(row =>
+    String(row.data?.memberId || '').trim().toLowerCase() === value.toLowerCase()
+  );
+  const accountMatches = websiteMembers.filter(row =>
+    String(row.memberId || '').trim().toLowerCase() === value.toLowerCase()
+  );
+
   if (currentId === '__reference__') {
-    if (!matches.length) return { ok: false, message: 'Member ID not found in Members Register. Select a valid registered SSF Member ID.' };
+    if (!matches.length && !committeeMatches.length && !accountMatches.length) {
+      return { ok: false, message: 'Member ID not found in SSF member records. Select a valid registered SSF Member ID.' };
+    }
     return { ok: true, value };
   }
-  const duplicate = matches.find(row => String(row.id) !== String(currentId || ''));
-  if (duplicate) return { ok: false, message: 'This Member ID is already registered. A duplicate Member ID cannot be created.' };
+
+  const duplicateMaster = matches.find(row => String(row.id) !== String(currentId || ''));
+  const duplicateAccount = accountMatches.length > 0;
+  if (duplicateMaster || duplicateAccount) {
+    return { ok: false, message: 'This Member ID is already registered. A duplicate Member ID cannot be created.' };
+  }
+
   return { ok: true, value };
 };
 
