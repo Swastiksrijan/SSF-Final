@@ -21,6 +21,7 @@ const MODULES = [
  ["certificates","Certificates / प्रमाणपत्र",FaCertificate],["idcards","ID Cards / पहचान पत्र",FaIdCard],
  ["beneficiaries","Beneficiaries / लाभार्थी",FaUsers],["internships","Internship Applications / इंटर्नशिप आवेदन",FaTasks],["activities","Volunteer Activities / स्वयंसेवी गतिविधियाँ",FaTasks],
  ["assets","Assets & Equipment / संपत्ति व उपकरण",FaBoxes],["notifications","Alerts & Follow-ups / सूचनाएँ व अनुवर्ती कार्य",FaTasks],
+ ["governanceActions","Notices & Administrative Actions / नोटिस व प्रशासनिक कार्य",FaBalanceScale],
  ["reports","Reports / रिपोर्ट",FaChartLine],["users","Users & Permissions / उपयोगकर्ता व अनुमतियाँ",FaUserShield],["audit","Audit Trail / ऑडिट ट्रेल",FaHistory]
 ];
 const LABELS = Object.fromEntries(MODULES.map(function(x){return [x[0],x[1]];}));
