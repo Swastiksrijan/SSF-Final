@@ -256,7 +256,7 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
      <p className="text-sm sm:text-base text-white/80 mt-1">नोटिस, सूचनाएँ एवं अनुवर्ती कार्य</p>
      <p className="text-sm text-white/70 mt-3 max-w-2xl">Information से लेकर response, reminder और formal explanation तक पूरा communication record एक ही जगह रखें।</p>
     </div>
-    <button type="button" className="hidden" aria-hidden="true"><FaPlus/> New Communication</button>
+    <button type="button" onClick={()=>setShowForm(true)} className="shrink-0 bg-white text-[#002344] px-5 py-3 rounded-xl font-black shadow hover:bg-zinc-100 transition flex items-center justify-center gap-2"><FaPlus/> New Communication</button>
    </div>
   </div>
 
@@ -286,7 +286,7 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
    </div>
   </div>
 
-  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} updateRecord={updateRecord} types={typeMap[tab]||[]} members={members} hideAdd={true}/>
+  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} updateRecord={updateRecord} types={typeMap[tab]||[]} members={members}/>
  </div>;
 }
 function NotificationRegister({tab,rows,add,archive,updateRecord,types,members=[],hideAdd=false}){
