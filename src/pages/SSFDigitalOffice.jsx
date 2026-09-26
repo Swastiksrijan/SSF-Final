@@ -183,7 +183,7 @@ export default function SSFDigitalOffice(){
    <main className="min-w-0">
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     
-    {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive}/>
+    {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive}/>}
     {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
