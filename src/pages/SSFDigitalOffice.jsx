@@ -228,12 +228,25 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
   notice:["Formal Notice","Explanation Requested","Explanation Received","Explanation Not Received","Further Clarification","Outcome / Decision Reference"]
  };
  const allRows=rows||[];
- const countStage=key=>allRows.filter(r=>(typeMap[key]||[]).includes(String((r.data||{}).noticeStage||""))).length;
+ const classifySection=r=>{
+  const d=r.data||{};
+  const stage=String(d.noticeStage||d.sectionStage||d.communicationStage||"").trim();
+  if((typeMap.information||[]).includes(stage))return "information";
+  if((typeMap.response||[]).includes(stage))return "response";
+  if((typeMap.followup||[]).includes(stage))return "followup";
+  if((typeMap.notice||[]).includes(stage))return "notice";
+  if(d.section==="information"||d.section==="response"||d.section==="followup"||d.section==="notice")return d.section;
+  if(d.participationStatus&&d.participationStatus!=="Not Applicable")return "response";
+  if(d.responseStatus&&d.responseStatus!=="Not Applicable")return "response";
+  if(d.followUpDate||d.followUpResult) return "followup";
+  return "information";
+ };
+ const countStage=key=>allRows.filter(r=>classifySection(r)===key).length;
  const pending=allRows.filter(r=>["pending","active"].includes(String(r.status||"").toLowerCase())).length;
  const followups=allRows.filter(r=>{const d=r.data||{};return d.followUpDate&&String(r.status||"").toLowerCase()!=="closed"&&String(r.status||"").toLowerCase()!=="archived";}).length;
  const notices=countStage("notice");
  const activeTab=tabs.find(t=>t[0]===tab)||tabs[0];
- const filtered=allRows.filter(r=>(typeMap[tab]||[]).includes(String((r.data||{}).noticeStage||"")));
+ const filtered=allRows.filter(r=>classifySection(r)===tab);
  return <div className="space-y-5">
   <div className="rounded-3xl bg-gradient-to-r from-[#002344] via-[#123B5D] to-[#1b557e] text-white p-5 sm:p-7 shadow-lg">
    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
@@ -273,18 +286,18 @@ function NotificationsHub({rows,add,archive,updateRecord,token}){
    </div>
   </div>
 
-  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} updateRecord={updateRecord} types={typeMap[tab]||[]}/>
+  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} updateRecord={updateRecord} types={typeMap[tab]||[]} members={members}/>
  </div>;
 }
-function NotificationRegister({tab,rows,add,archive,updateRecord,types}){
+function NotificationRegister({tab,rows,add,archive,updateRecord,types,members=[]}){
  const [open,setOpen]=useState(false),[search,setSearch]=useState(""),[status,setStatus]=useState("all"),[editing,setEditing]=useState(null);
  const filtered=(rows||[]).filter(r=>{const d=r.data||{},q=search.toLowerCase(),hay=[r.recordId,r.recordDate,d.name,d.role,d.subject,d.details,d.noticeStage,d.channel].join(" ").toLowerCase();return (!q||hay.includes(q))&&(status==="all"||String(r.status||"").toLowerCase()===status);});
  const title=tab==="information"?"Information & Communication / सूचना एवं संचार":tab==="response"?"Response & Participation / प्रतिक्रिया एवं सहभागिता":tab==="followup"?"Reminder & Follow-up / अनुस्मारक एवं अनुवर्ती कार्य":"Notice & Explanation / नोटिस एवं स्पष्टीकरण";
  const shareRecord=r=>{
   const d=r.data||{};
-  const msg=[d.subject&&("Subject: "+d.subject),d.details,d.expectedAction&&("Expected Action: "+d.expectedAction),d.expectedDate&&("Expected Date: "+d.expectedDate),d.responseDetails&&("Response / Explanation: "+d.responseDetails),d.followUpDate&&("Follow-up Date: "+d.followUpDate)].filter(Boolean).join("\\n");
+  const msg=[d.subject&&("Subject: "+d.subject),d.details,d.expectedAction&&("Expected Action: "+d.expectedAction),d.expectedDate&&("Expected Date: "+d.expectedDate),d.responseDetails&&("Response / Explanation: "+d.responseDetails),d.followUpDate&&("Follow-up Date: "+d.followUpDate)].filter(Boolean).join("\n");
   if(navigator.share){navigator.share({title:d.subject||"SSF Official Communication",text:msg}).catch(()=>{});return;}
-  const phone=String(d.mobile||d.phone||"").replace(/\\D/g,"");
+  const phone=String(d.mobile||d.phone||"").replace(/\D/g,"");
   if(phone){window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank","noopener,noreferrer");return;}
   if(d.email){window.location.href="mailto:"+d.email+"?subject="+encodeURIComponent(d.subject||"SSF Official Communication")+"&body="+encodeURIComponent(msg);return;}
   navigator.clipboard?.writeText(msg).then(()=>alert("Communication copied to clipboard.")).catch(()=>alert(msg));
