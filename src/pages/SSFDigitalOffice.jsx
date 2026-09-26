@@ -203,7 +203,7 @@ export default function SSFDigitalOffice(){
     {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
-    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive}/>}
+    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
@@ -212,7 +212,7 @@ export default function SSFDigitalOffice(){
   </div>
  </div></div>;
 }
-function NotificationsHub({rows,add,archive}){
+function NotificationsHub({rows,add,archive,updateRecord}){
  const [tab,setTab]=useState("information");
  const [showForm,setShowForm]=useState(false);
  const tabs=[
@@ -273,10 +273,10 @@ function NotificationsHub({rows,add,archive}){
    </div>
   </div>
 
-  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} types={typeMap[tab]||[]}/>
+  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} updateRecord={updateRecord} types={typeMap[tab]||[]}/>
  </div>;
 }
-function NotificationRegister({tab,rows,add,archive,types}){
+function NotificationRegister({tab,rows,add,archive,updateRecord,types}){
  const [open,setOpen]=useState(false),[search,setSearch]=useState(""),[status,setStatus]=useState("all"),[editing,setEditing]=useState(null);
  const filtered=(rows||[]).filter(r=>{const d=r.data||{},q=search.toLowerCase(),hay=[r.recordId,r.recordDate,d.name,d.role,d.subject,d.details,d.noticeStage,d.channel].join(" ").toLowerCase();return (!q||hay.includes(q))&&(status==="all"||String(r.status||"").toLowerCase()===status);});
  const title=tab==="information"?"Information & Communication / सूचना एवं संचार":tab==="response"?"Response & Participation / प्रतिक्रिया एवं सहभागिता":tab==="followup"?"Reminder & Follow-up / अनुस्मारक एवं अनुवर्ती कार्य":"Notice & Explanation / नोटिस एवं स्पष्टीकरण";
@@ -292,7 +292,7 @@ function NotificationRegister({tab,rows,add,archive,types}){
  return <div className="bg-white rounded-2xl border overflow-hidden">
   <div className="p-5 sm:p-7 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-4"><div><h2 className="text-2xl font-black text-[#002344]">{title}</h2><p className="text-sm text-zinc-500 mt-1">{filtered.length} record(s) · secure database</p></div><div className="flex flex-wrap gap-2 items-center"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search person / subject / ID" className="px-3 py-2.5 border rounded-xl w-56"/><select value={status} onChange={e=>setStatus(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Status</option><option value="active">Active</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="closed">Closed</option><option value="archived">Archived</option></select><button onClick={()=>setOpen(!open)} className="bg-[#002344] text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2"><FaPlus/> Add</button></div></div>
   {open&&<NotificationForm types={types} onSave={async d=>{if(!d){setOpen(false);return;}const ok=await add("notifications",d);if(ok)setOpen(false);}}/>}
-  {editing&&<div className="border-b"><div className="px-5 py-4 bg-blue-50 border-b font-black text-[#002344]">Edit Communication / सूचना संपादित करें — {editing.recordId}</div><NotificationForm types={types} initial={editing.data||{}} onCancel={()=>setEditing(null)} onSave={async d=>{if(!d){setEditing(null);return;}const ok=await window.__ssfUpdateNotification?.(editing.id,d);if(ok)setEditing(null);}}/></div>}
+  {editing&&<div className="border-b"><div className="px-5 py-4 bg-blue-50 border-b font-black text-[#002344]">Edit Communication / सूचना संपादित करें — {editing.recordId}</div><NotificationForm types={types} initial={editing.data||{}} onCancel={()=>setEditing(null)} onSave={async d=>{if(!d){setEditing(null);return;}const ok=await updateRecord(editing.id,"notifications",d);if(ok)setEditing(null);}}/></div>}
   <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="bg-zinc-50 text-zinc-500 text-xs uppercase"><th className="p-3">ID</th><th className="p-3">Date</th><th className="p-3">Person / Role</th><th className="p-3">Matter</th><th className="p-3">Response / Action</th><th className="p-3">Status</th><th className="p-3">Actions</th></tr></thead><tbody className="divide-y">{filtered.length===0?<tr><td colSpan="7" className="p-10 text-center text-zinc-400">No records yet.</td></tr>:filtered.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold text-[#002344] whitespace-nowrap">{r.recordId}</td><td className="p-3 whitespace-nowrap">{new Date(r.recordDate).toLocaleDateString("en-IN")}</td><td className="p-3"><b>{d.name||"—"}</b><div className="text-xs text-zinc-400">{d.role||""}</div></td><td className="p-3 min-w-[260px]"><b>{d.noticeStage||"—"}</b><div className="text-xs text-zinc-400 mt-1">{d.subject||d.details||""}</div></td><td className="p-3">{d.responseStatus||d.responseDetails||d.followUpResult||"—"}</td><td className="p-3">{r.status}</td><td className="p-3"><div className="flex flex-wrap gap-2 justify-end"><button onClick={()=>setEditing(r)} className="text-xs font-bold text-[#123B5D] border border-[#123B5D]/20 px-2.5 py-1.5 rounded-lg">Edit</button><button onClick={()=>shareRecord(r)} className="text-xs font-bold text-emerald-700 border border-emerald-200 px-2.5 py-1.5 rounded-lg">Share</button><button onClick={()=>archive(r.id)} className="text-xs font-bold text-red-600 border border-red-200 px-2.5 py-1.5 rounded-lg">Archive</button></div></td></tr>})}</tbody></table></div>
  </div>;
 }
