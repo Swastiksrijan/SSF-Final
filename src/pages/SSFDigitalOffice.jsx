@@ -189,7 +189,7 @@ export default function SSFDigitalOffice(){
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     
     {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive} restore={restore}/>}
-    {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive}/>}
+    {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive} token={token}/>}
     {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
     {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/>} 
     {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
@@ -237,7 +237,7 @@ function MeetingsHub({token,rows,add,archive,restore}){
   <div className="bg-white border rounded-2xl p-3 sm:p-4 shadow-sm">
    <div className="flex flex-wrap gap-2">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);if(t[0]==="resolution")loadMeetingLinkedRows();}} className={"px-4 py-3 rounded-xl font-bold transition "+(tab===t[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>
   </div>
-  {tab==="calendar"&&<MeetingCalendar rows={calendarRows.concat(onlineRows,resolutionRows)} linkedRows={calendarRows.concat(onlineRows,resolutionRows)} add={add} archive={archive}/>}
+  {tab==="calendar"&&<MeetingCalendar rows={calendarRows.concat(onlineRows,resolutionRows)} linkedRows={calendarRows.concat(onlineRows,resolutionRows)} add={add} archive={archive} token={token}/>}
   {tab==="online"&&<OnlineMeetings token={token}/>}
   {tab==="resolution"&&<MeetingResolutions rows={calendarRows.concat(onlineRows,resolutionRows)} add={async function(module,data){const ok=await add(module,data);if(ok)await loadMeetingLinkedRows();return ok;}} archive={archive} restore={restore} token={token}/>}
  </div>;
@@ -484,10 +484,15 @@ function AppointmentLetters({rows,add}){
  </div>;
 }
 
-function MeetingCalendar({rows,add,archive,linkedRows=[]}){
- const existing=(rows||[]).filter(r=>["meetings","onlineMeetings","meetingResolutions"].includes(r.module)&&r.status!=="deleted");
+function MeetingCalendar({rows,add,archive,linkedRows=[],token}){
+
  const blank={date:new Date().toISOString().slice(0,10),time:"",meetingTitle:"",meetingType:"Managing Committee Meeting",mode:"Online",venue:"",meetingLink:"",purpose:"",agenda:"",participants:"",reminder:"1 day before",status:"scheduled",notes:""};
  const [f,setF]=useState(blank),[open,setOpen]=useState(false),[notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null);
+ const [allMeetingRows,setAllMeetingRows]=useState([]);
+ const loadAllMeetingRows=async()=>{try{const h={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};const mods=["meetings","onlineMeetings","meetingResolutions"];const out=await Promise.all(mods.map(m=>fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+m,{headers:h}).then(async r=>{const d=await r.json().catch(()=>[]);return r.ok?(Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[])):[];})));setAllMeetingRows(out.flat().filter(r=>r&&r.status!=="deleted"));}catch(e){setAllMeetingRows([]);}};
+ useEffect(()=>{loadAllMeetingRows();},[token]);
+ const calendarViewRows=allMeetingRows.length?allMeetingRows:((rows||[]).concat(linkedRows||[]));
+ const existing=(calendarViewRows||[]).filter(r=>["meetings","onlineMeetings","meetingResolutions"].includes(r.module)&&r.status!=="deleted");
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const save=async e=>{e.preventDefault();if(!f.meetingTitle.trim()||!f.date||!f.time){setNotice("Meeting title, date and time required.");return;}const ok=editingId?await updateRecord(editingId,"meetings",f):await add("meetings",{recordDate:f.date,recordType:f.meetingType,status:f.status,data:f});if(ok){setEditingId(null);setF(blank);setOpen(false);setNotice("Meeting scheduled in Calendar.");}};
  return <div className="space-y-5">
