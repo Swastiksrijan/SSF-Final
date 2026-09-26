@@ -188,6 +188,7 @@ export default function SSFDigitalOffice(){
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
     {active==="meetingResolutions"&&<MeetingResolutions rows={rows} add={add} archive={archive}/>}
+    {active==="meetings"&&<MeetingCalendar rows={rows} add={add} archive={archive}/>}
     {active==="appointmentLetters"&&<AppointmentLetters rows={rows} add={add}/>}
     {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
@@ -196,7 +197,7 @@ export default function SSFDigitalOffice(){
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","meetingResolutions"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","meetingResolutions","meetings"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
@@ -400,6 +401,36 @@ function AppointmentLetters({rows,add}){
    <div className="sm:col-span-2 lg:col-span-4">{area("terms","Terms & Conduct",5)}</div>
    <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2"><button className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold"><FaFileAlt className="inline mr-2"/>Save & Generate Appointment Letter</button><span className="text-xs text-zinc-500 self-center">The PDF uses SSF letterhead, registration details, appointment number and authorised signatory.</span></div>
   </form>
+ </div>;
+}
+
+function MeetingCalendar({rows,add,archive}){
+ const existing=(rows||[]).filter(r=>r.module==="meetings"&&r.status!=="deleted");
+ const blank={date:new Date().toISOString().slice(0,10),time:"",meetingTitle:"",meetingType:"Managing Committee Meeting",mode:"Online",venue:"",meetingLink:"",purpose:"",agenda:"",participants:"",reminder:"1 day before",status:"scheduled",notes:""};
+ const [f,setF]=useState(blank),[open,setOpen]=useState(false),[notice,setNotice]=useState("");
+ const set=(k,v)=>setF(x=>({...x,[k]:v}));
+ const save=async e=>{e.preventDefault();if(!f.meetingTitle.trim()||!f.date||!f.time){setNotice("Meeting title, date and time required.");return;}const ok=await add("meetings",{recordDate:f.date,recordType:f.meetingType,status:f.status,data:f});if(ok){setF(blank);setOpen(false);setNotice("Meeting scheduled in Calendar.");}};
+ return <div className="space-y-5">
+  <div className="bg-white border rounded-2xl overflow-hidden"><div className="bg-[#123B5D] text-white p-6"><div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4"><div><h2 className="text-2xl font-black">📅 Meeting Calendar / बैठक कैलेंडर</h2><p className="text-white/75 mt-1">Upcoming and planned meetings — schedule, agenda, venue/Google Meet, participants and reminders.</p></div><button type="button" onClick={()=>{setOpen(!open);setNotice("");}} className="bg-[#E8D39A] text-[#123B5D] px-4 py-2.5 rounded-xl font-black">{open?"Close":"＋ Add Meeting"}</button></div></div>
+   <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3 p-5 bg-zinc-50">
+    <div className="bg-white border rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Upcoming / आगामी</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.filter(r=>{const d=r.data||{};return new Date(String(d.date||r.recordDate)+"T"+String(d.time||"23:59")).getTime()>=Date.now()&&r.status!=="archived";}).length}</div></div>
+    <div className="bg-white border rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Scheduled / निर्धारित</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.filter(r=>String(r.status).toLowerCase()==="scheduled").length}</div></div>
+    <div className="bg-white border rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Completed / पूर्ण</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.filter(r=>String(r.status).toLowerCase()==="completed").length}</div></div>
+    <div className="bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4"><div className="text-xs font-bold text-[#1F7A70]">Total Records / कुल</div><div className="text-2xl font-black text-[#123B5D] mt-1">{existing.length}</div></div>
+   </div></div>
+  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
+  {open&&<div className="bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b"><h3 className="text-xl font-black text-[#123B5D]">Schedule Meeting / बैठक निर्धारित करें</h3><p className="text-sm text-zinc-500 mt-1">Calendar planning only. Official attendance, minutes and resolutions belong in Meeting & Resolution Register.</p></div>
+   <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <input type="date" value={f.date} onChange={e=>set("date",e.target.value)} className={cls} required/><input type="time" value={f.time} onChange={e=>set("time",e.target.value)} className={cls} required/>
+    <input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title" className={cls} required/>
+    <select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} className={cls}><option>General Body Meeting</option><option>Managing Committee Meeting</option><option>Special Meeting</option><option>Emergency Meeting</option><option>MoU / Collaboration Meeting</option><option>Volunteer Meeting</option><option>Member Meeting</option><option>Donor Meeting</option><option>Project / Program Meeting</option><option>Event / Camp Meeting</option><option>Training / Workshop</option><option>Internal Office Meeting</option><option>Other</option></select>
+    <select value={f.mode} onChange={e=>set("mode",e.target.value)} className={cls}><option>Online</option><option>Offline</option><option>Hybrid</option></select><input value={f.venue} onChange={e=>set("venue",e.target.value)} placeholder="Venue / स्थान" className={cls}/><input value={f.meetingLink} onChange={e=>set("meetingLink",e.target.value)} placeholder="Google Meet / Online Link (optional)" className={cls}/>
+    <select value={f.reminder} onChange={e=>set("reminder",e.target.value)} className={cls}><option>1 day before</option><option>2 days before</option><option>1 week before</option><option>On meeting day</option><option>No reminder</option></select>
+    <textarea value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose / उद्देश्य" className={cls+" min-h-[92px]"}/><textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda / एजेंडा" className={cls+" min-h-[110px]"}/><textarea value={f.participants} onChange={e=>set("participants",e.target.value)} placeholder="Participants / आमंत्रित सदस्य" className={cls+" min-h-[92px]"}/><textarea value={f.notes} onChange={e=>set("notes",e.target.value)} placeholder="Planning Notes / Remarks" className={cls+" min-h-[92px]"}/>
+    <select value={f.status} onChange={e=>set("status",e.target.value)} className={cls}><option value="scheduled">Scheduled</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="cancelled">Cancelled</option></select>
+    <button className="sm:col-span-2 lg:col-span-4 bg-[#123B5D] hover:bg-[#17665D] text-white py-3 rounded-xl font-bold">Save Calendar Entry</button>
+   </form></div>}
+  <div className="bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b"><h3 className="text-xl font-black text-[#123B5D]">Meeting Schedule / बैठक सूची</h3><p className="text-sm text-zinc-500 mt-1">{existing.length} record(s) · secure database</p></div><div className="overflow-auto"><table className="w-full text-sm min-w-[1450px]"><thead className="bg-zinc-50"><tr>{["Date","Time","Meeting Title","Type","Mode","Venue / Meet","Purpose","Agenda","Participants","Reminder","Status","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.sort((a,b)=>String((a.data||{}).date||a.recordDate).localeCompare(String((b.data||{}).date||b.recordDate))||String((a.data||{}).time||"").localeCompare(String((b.data||{}).time||""))).map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 whitespace-nowrap">{d.date||r.recordDate||"—"}</td><td className="p-3 whitespace-nowrap">{d.time||"—"}</td><td className="p-3 font-bold">{d.meetingTitle||"—"}</td><td className="p-3">{d.meetingType||r.recordType||"—"}</td><td className="p-3">{d.mode||"—"}</td><td className="p-3">{d.venue||d.meetingLink||"—"}</td><td className="p-3 max-w-[240px]">{d.purpose||"—"}</td><td className="p-3 max-w-[280px]">{d.agenda||"—"}</td><td className="p-3 max-w-[240px]">{d.participants||"—"}</td><td className="p-3 whitespace-nowrap">{d.reminder||"—"}</td><td className="p-3">{d.status||r.status||"—"}</td><td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="12" className="p-8 text-center text-zinc-500">No calendar records yet.</td></tr>}</tbody></table></div></div>
  </div>;
 }
 
@@ -676,9 +707,43 @@ function MembershipContributions({rows,add,archive}){
 }
 
 function MeetingResolutions({rows,add,archive}){
- const existing=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted"); const [f,setF]=useState({meetingDate:new Date().toISOString().slice(0,10),meetingType:"Managing Committee Meeting",meetingTitle:"",agenda:"",attendance:"",resolutionNo:"",decision:"",details:"",supportingDocument:"",remarks:""}); const [notice,setNotice]=useState(""); const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const save=async e=>{e.preventDefault();if(!f.meetingTitle.trim()){setNotice("Meeting Title required.");return;}const ok=await add("meetingResolutions",{recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:f});if(ok){setF({...f,meetingTitle:"",agenda:"",attendance:"",resolutionNo:"",decision:"",details:"",supportingDocument:"",remarks:""});setNotice("Meeting / resolution record saved.");}};
- return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="General Body, Managing Committee और Special Meetings — agenda, attendance, minutes/decision और supporting record."><div className="bg-white border rounded-2xl p-5"><form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"><input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls}/><select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} className={cls}><option>General Body Meeting</option><option>Managing Committee Meeting</option><option>Special Meeting</option><option>Emergency Meeting</option><option>Other</option></select><input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title" required className={cls}/><input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No." className={cls}/><textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda" className={cls}/><textarea value={f.attendance} onChange={e=>set("attendance",e.target.value)} placeholder="Attendance / Members Present" className={cls}/><textarea value={f.decision} onChange={e=>set("decision",e.target.value)} placeholder="Decision / Resolution Text" className={cls}/><textarea value={f.details} onChange={e=>set("details",e.target.value)} placeholder="Minutes / Detailed Notes" className={cls}/><input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/><button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save Meeting / Resolution</button></form></div>{notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}<div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1300px]"><thead className="bg-zinc-50"><tr>{["Meeting Date","Type","Meeting Title","Resolution No.","Agenda","Attendance","Decision","Minutes / Notes","Supporting Document","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,d.meetingType||r.recordType,d.meetingTitle,d.resolutionNo,d.agenda,d.attendance,d.decision,d.details,d.supportingDocument,d.remarks].map((v,i)=><td key={i} className="p-3">{v||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="11" className="p-8 text-center text-zinc-500">No meeting/resolution records yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
+ const existing=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
+ const [f,setF]=useState({meetingDate:new Date().toISOString().slice(0,10),meetingType:"Managing Committee Meeting",meetingTitle:"",onlineMeetingId:"",resolutionNo:"",agenda:"",attendance:"",attendanceSummary:"",decision:"",minutes:"",resolutionStatus:"Passed",actionPoints:"",supportingDocument:"",remarks:""});
+ const [notice,setNotice]=useState("");
+ const set=(k,v)=>setF(x=>({...x,[k]:v}));
+ const save=async e=>{
+  e.preventDefault();
+  if(!f.meetingTitle.trim()){setNotice("Meeting Title required.");return;}
+  const ok=await add("meetingResolutions",{recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:f});
+  if(ok){setF({...f,meetingTitle:"",onlineMeetingId:"",resolutionNo:"",agenda:"",attendance:"",attendanceSummary:"",decision:"",minutes:"",actionPoints:"",supportingDocument:"",remarks:""});setNotice("Official meeting / resolution record saved.");}
+ };
+ return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="Meeting ke baad ka official record — attendance, minutes, decisions, resolutions aur supporting references. Online Meeting / Calendar records yahan official proceedings ke saath link kiye ja sakte hain.">
+  <div className="bg-white border rounded-2xl p-5">
+   <div className="bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4 mb-4 text-sm text-[#123B5D]"><b>Official Record:</b> Meeting complete hone ke baad hi attendance, minutes, decision aur resolution yahan finalize karein.</div>
+   <form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls}/>
+    <select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} className={cls}><option>General Body Meeting</option><option>Managing Committee Meeting</option><option>Special Meeting</option><option>Emergency Meeting</option><option>MoU / Collaboration Meeting</option><option>Project / Program Meeting</option><option>Other</option></select>
+    <input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title" required className={cls}/>
+    <input value={f.onlineMeetingId} onChange={e=>set("onlineMeetingId",e.target.value)} placeholder="Online Meeting ID / Reference (optional)" className={cls}/>
+    <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No. (if applicable)" className={cls}/>
+    <select value={f.resolutionStatus} onChange={e=>set("resolutionStatus",e.target.value)} className={cls}><option>Passed</option><option>Not Passed</option><option>Deferred</option><option>Not Applicable</option></select>
+    <textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda / मुख्य एजेंडा" className={cls+" min-h-[92px]"}/>
+    <textarea value={f.attendance} onChange={e=>set("attendance",e.target.value)} placeholder="Attendance — Present / Absent members" className={cls+" min-h-[92px]"}/>
+    <input value={f.attendanceSummary} onChange={e=>set("attendanceSummary",e.target.value)} placeholder="Attendance Summary (e.g. Present 7 / Absent 2)" className={cls}/>
+    <textarea value={f.minutes} onChange={e=>set("minutes",e.target.value)} placeholder="Minutes / कार्यवाही" className={cls+" min-h-[110px]"}/>
+    <textarea value={f.decision} onChange={e=>set("decision",e.target.value)} placeholder="Decision / निर्णय" className={cls+" min-h-[110px]"}/>
+    <textarea value={f.actionPoints} onChange={e=>set("actionPoints",e.target.value)} placeholder="Action Points / जिम्मेदारी एवं अगला कार्य" className={cls+" min-h-[92px]"}/>
+    <input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/>
+    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" min-h-[92px]"}/>
+    <button className="sm:col-span-2 lg:col-span-4 bg-[#123B5D] hover:bg-[#17665D] text-white py-3 rounded-xl font-bold transition">Save Official Meeting Record</button>
+   </form>
+  </div>
+  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}
+  <div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1700px]"><thead className="bg-zinc-50"><tr>{["Meeting Date","Type","Meeting Title","Online Meeting Ref.","Resolution No.","Resolution Status","Attendance","Minutes / Notes","Decision","Action Points","Supporting Document","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">
+   {existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,d.meetingType||r.recordType,d.meetingTitle,d.onlineMeetingId,d.resolutionNo,d.resolutionStatus,d.attendanceSummary||d.attendance,d.minutes||d.details,d.decision,d.actionPoints,d.supportingDocument,d.remarks].map((v,i)=><td key={i} className="p-3 align-top max-w-[280px]">{v||"—"}</td>)}<td className="p-3 align-top"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}
+   {!existing.length&&<tr><td colSpan="13" className="p-8 text-center text-zinc-500">No official meeting/resolution records yet.</td></tr>}
+  </tbody></table></div>
+ </SimpleOfficeCard>;
 }
 
 function ManagingCommittee({rows,add,archive,token}){
