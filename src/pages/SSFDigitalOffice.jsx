@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint, FaVideo, FaUserTie } from "react-icons/fa";
 import jsPDF from "jspdf";
@@ -76,7 +76,7 @@ export default function SSFDigitalOffice(){
   }catch(e){setNotice(e.message||"Save failed.");return false;}
  };
  const archive=async function(id){
-  if(!confirm("Archive this record? Financial records are not hard-deleted."))return;
+  if(!confirm("Archive this record? Archived records are retained for organisational history and are not permanently deleted."))return;
   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id,{method:"DELETE",headers:auth()});
   if(r.ok){setNotice("Record archived.");load(active);}
  };
@@ -1192,10 +1192,16 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
  ];
  const blank={memberId:"",memberType:"General Member",designation:"Member",responsibility:"",fullName:"",occupation:"",gender:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",joiningDate:"",committeeFrom:"",committeeTill:"",committeeStatus:"Active",appointmentDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",duties:"",remarks:""};
  const existing=(rows||[]).filter(r=>r.module==="managingCommittee"&&r.status!=="deleted");
+ const currentByMember=new Map();
+ for(const m of seed){
+  const matches=existing.filter(r=>String((r.data||{}).memberId)===m.memberId);
+  const preferred=matches.find(r=>String((r.data||{}).action||"")==="Current Committee Register")||matches.find(r=>String(r.status).toLowerCase()==="active")||matches[0];
+  if(preferred) currentByMember.set(m.memberId,preferred);
+ }
  const [tab,setTab]=useState("dashboard"),[editId,setEditId]=useState(null),[form,setForm]=useState(blank),[saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[search,setSearch]=useState("");
  const set=(k,v)=>setForm(x=>({...x,[k]:v}));
- const currentRows=seed.map(m=>existing.find(r=>String((r.data||{}).memberId)===m.memberId)||null);
- const currentRecords=existing.filter(r=>seed.some(m=>m.memberId===String((r.data||{}).memberId))&&String((r.data||{}).action||"")!=="Governance Action");
+ const currentRows=seed.map(m=>currentByMember.get(m.memberId)||null);
+ const currentRecords=seed.map(m=>currentByMember.get(m.memberId)).filter(Boolean);
  const refresh=async()=>{
   setNotice("Current committee data refresh ho raha hai…");
   const used=new Set();
@@ -1213,7 +1219,8 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
   }
   setNotice("Fresh Managing Committee register prepared: 9 current members.");
  };
- useEffect(()=>{if(token&&existing.length===0)refresh();},[token]);
+ const syncStarted=useRef(false);
+ useEffect(()=>{if(token&&!syncStarted.current){syncStarted.current=true;refresh();}},[token]);
  const edit=r=>{setEditId(r.id);setForm({...blank,...(r.data||{})});setTab("profile");setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
  const newRecord=()=>{setEditId(null);setForm({...blank});setTab("profile");setNotice("");};
  const save=async e=>{
