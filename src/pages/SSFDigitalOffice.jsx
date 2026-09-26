@@ -203,7 +203,8 @@ export default function SSFDigitalOffice(){
     {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
-    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub token={token} rows={rows} add={add} archive={archive}/>}
+    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}
+    {active==="notifications"&&<NotificationsHub token={token} rows={rows} add={add} archive={archive}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
@@ -214,7 +215,8 @@ export default function SSFDigitalOffice(){
 }
 function NotificationsHub({token,rows,add,archive}){
  const [tab,setTab]=useState("information");
- const [showForm,setShowForm]=useState(false);\n const [members,setMembers]=useState([]);\n useEffect(()=>{if(!token)return;fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}}).then(r=>r.ok?r.json():[]).then(d=>setMembers(Array.isArray(d)?d:[])).catch(()=>setMembers([]));},[token]);
+ const [showForm,setShowForm]=useState(false);
+ const [members,setMembers]=useState([]);\n useEffect(()=>{if(!token)return;fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}}).then(r=>r.ok?r.json():[]).then(d=>setMembers(Array.isArray(d)?d:[])).catch(()=>setMembers([]));},[token]);
  const tabs=[
   ["information","Information & Communication / सूचना एवं संचार","Official information, communication & responsibilities","bg-sky-600"],
   ["response","Response & Participation / प्रतिक्रिया एवं सहभागिता","Responses, attendance & participation","bg-emerald-600"],
