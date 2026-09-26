@@ -1207,19 +1207,11 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
   seedRestoreRef.current=true;
   (async function(){
    try{
-    const headers={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
     for(const m of seed){
      const data={...m,committeeStatus:"Active",action:"Current Committee Register",membershipNo:"",committeeFrom:"",committeeTill:"",appointmentDate:"",referenceNo:"",resolutionNo:"",meetingDate:"",remarks:"Current approved Managing Committee master record."};
-     const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS,{method:"POST",headers,body:JSON.stringify({module:"managingCommittee",recordDate:m.joiningDate||new Date().toISOString().slice(0,10),recordType:"Current Committee Register",status:"active",data})});
-     if(!r.ok){
-      const out=await r.json().catch(()=>({}));
-      throw new Error(out.message||"Committee record restore failed.");
-     }
+     const ok=await add("managingCommittee",{recordDate:m.joiningDate||new Date().toISOString().slice(0,10),recordType:"Current Committee Register",status:"active",data});
+     if(!ok)throw new Error("Committee record restore failed while saving "+m.memberId+".");
     }
-    const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=managingCommittee",{headers});
-    const out=await r.json().catch(()=>[]);
-    const restored=Array.isArray(out)?out:(Array.isArray(out.records)?out.records:[]);
-    window.dispatchEvent(new CustomEvent("ssf-digital-office-refresh",{detail:{module:"managingCommittee",rows:restored}}));
     setNotice("9 approved current Managing Committee records restored from the SSF master register.");
    }catch(e){
     seedRestoreRef.current=false;
