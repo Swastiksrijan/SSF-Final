@@ -452,7 +452,7 @@ function RecordForm({module,onSave}){
   {module==="assets"&&<>{input("category","Asset Category",true)}{input("item","Asset / Equipment Name",true)}{input("source","Purchase / Donor Source")}{input("qty","Quantity")}{input("unit","Unit")}{input("validUntil","Warranty / Review Date")}{input("recipient","Custodian / Location")}{area("notes","Condition / Remarks")}</>}
   {module==="notifications"&&<>{input("category","Alert Type",true)}{input("subject","Subject",true)}{input("validUntil","Due Date")}{input("recipient","Responsible Person")}{area("notes","Action / Follow-up")}</>}
   {module==="governanceActions"&&<>
-   {input("category","Action Type",true)}{input("date","Action / Notice Date",true)}{input("recipient","Issued To / Member",true)}{input("subject","Subject / Matter",true)}
+   {input("category","Action Type",true)}{input("recipient","Issued To / Member",true)}{input("subject","Subject / Matter",true)}
    {input("referenceNo","Notice / Letter / File No.")}{input("meetingDate","Related Meeting Date")}{input("responseDueDate","Response Due Date")}{input("responseStatus","Response Status")}
    {input("attendanceStatus","Meeting Attendance / Participation")}{input("actionTaken","Action Taken / Next Step")}{input("resolutionNo","Resolution No.")}{input("effectiveDate","Effective Date")}
    {area("purpose","Reason / Issue / Matter")}{area("notes","Response / Follow-up / Remarks")}
