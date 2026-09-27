@@ -45,7 +45,7 @@ export default function SSFDigitalOffice(){
  const auth=function(){return {Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};};
  const refreshSummary=async function(){const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_SUMMARY,{headers:auth()});if(r.ok)setSummary(await r.json());};
  const load=async function(module){
-  const dataModule=module==="meetingResolution"?"meetingResolutions":module;
+  const dataModule=module==="meetingResolution"?"meetingResolutions":module==="meetingCalendar"?"meetings":module;
   setLoading(true);
   try{
    await refreshSummary();
