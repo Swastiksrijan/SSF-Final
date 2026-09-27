@@ -278,10 +278,26 @@ function NotificationForm({types,onSave,initial={},onCancel,members=[],section="
 }
 
 function MeetingsNavigation({navigate}){
- return <div className="grid md:grid-cols-3 gap-3 mb-5">
-  <button type="button" onClick={()=>navigate("meetingCalendar")} className="bg-white border rounded-2xl p-5 text-left hover:shadow-md transition"><div className="text-2xl">📅</div><div className="font-black text-[#002344] mt-2">Meeting Calendar / बैठक कैलेंडर</div><div className="text-sm text-zinc-500 mt-1">बैठकों की योजना, समय और शेड्यूल</div></button>
-  <button type="button" onClick={()=>navigate("meetingResolution")} className="bg-white border rounded-2xl p-5 text-left hover:shadow-md transition"><div className="text-2xl">📄</div><div className="font-black text-[#002344] mt-2">Meeting & Resolution / बैठक एवं प्रस्ताव</div><div className="text-sm text-zinc-500 mt-1">उपस्थिति, कार्यवाही और प्रस्ताव</div></button>
-  <button type="button" onClick={()=>navigate("onlineMeetings")} className="bg-white border rounded-2xl p-5 text-left hover:shadow-md transition"><div className="text-2xl">🎥</div><div className="font-black text-[#002344] mt-2">Online Meeting / ऑनलाइन बैठक</div><div className="text-sm text-zinc-500 mt-1">Google Meet बनाएं और साझा करें</div></button>
+ const cards=[
+  {id:"meetingCalendar",icon:"📅",eyebrow:"PLAN & SCHEDULE",title:"Meeting Calendar",hi:"बैठक कैलेंडर",desc:"Plan meetings, set dates and times, manage the meeting schedule.",tone:"from-[#0B4F6C] to-[#137C8B]"},
+  {id:"meetingResolution",icon:"📄",eyebrow:"ATTENDANCE & RECORD",title:"Meeting & Resolution",hi:"बैठक एवं प्रस्ताव",desc:"Record attendance, proceedings, resolutions and pending action items.",tone:"from-[#7A4E00] to-[#B87900]"},
+  {id:"onlineMeetings",icon:"🎥",eyebrow:"CONNECT ONLINE",title:"Online Meeting",hi:"ऑनलाइन बैठक",desc:"Create and share Google Meet meetings with selected participants.",tone:"from-[#3B2E72] to-[#6955B8]"}
+ ];
+ return <div className="space-y-5 mb-6">
+  <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#002344] via-[#123B5D] to-[#1F7A70] text-white p-6 sm:p-8 shadow-sm">
+   <div className="absolute -right-16 -top-20 h-56 w-56 rounded-full bg-white/10"></div><div className="absolute right-20 -bottom-28 h-64 w-64 rounded-full bg-white/5"></div>
+   <div className="relative flex flex-col lg:flex-row lg:items-end justify-between gap-5">
+    <div><div className="text-xs font-black tracking-[.22em] text-amber-300 uppercase">SSF Digital Office · Governance Workspace</div><h2 className="text-3xl sm:text-4xl font-black mt-2">Meetings & Governance</h2><p className="text-xl sm:text-2xl font-bold text-white/90 mt-1">बैठकें एवं शासन</p><p className="text-white/75 mt-3 max-w-3xl">Plan → Connect → Record → Resolve. Meeting records stay organised and can be completed or edited later.</p></div>
+    <div className="rounded-2xl bg-white/10 border border-white/15 px-5 py-4 min-w-[210px]"><div className="text-xs text-white/60 font-bold uppercase">Meeting Workspace</div><div className="font-black text-lg mt-1">SSF Digital Office</div><div className="text-sm text-white/70 mt-1">One linked meeting record</div></div>
+   </div>
+  </div>
+  <div className="grid md:grid-cols-3 gap-4">
+   {cards.map(c=><button type="button" key={c.id} onClick={()=>navigate(c.id)} className="group text-left bg-white border border-zinc-200 rounded-[1.5rem] overflow-hidden hover:-translate-y-0.5 hover:shadow-lg transition-all focus:outline-none focus:ring-2 focus:ring-[#1F7A70]/30">
+    <div className={"bg-gradient-to-r "+c.tone+" text-white p-5 flex items-center justify-between"}><div className="text-4xl">{c.icon}</div><span className="text-[10px] font-black tracking-[.16em] bg-white/15 border border-white/20 rounded-full px-3 py-1.5">{c.eyebrow}</span></div>
+    <div className="p-5"><h3 className="text-xl font-black text-[#002344]">{c.title}</h3><div className="text-base font-bold text-[#1F7A70] mt-1">{c.hi}</div><p className="text-sm text-zinc-600 leading-6 mt-3 min-h-[48px]">{c.desc}</p><div className="mt-4 inline-flex items-center gap-2 text-sm font-black text-[#002344] group-hover:text-[#1F7A70]">Open Module <span className="transition-transform group-hover:translate-x-1">→</span></div></div>
+   </button>)}
+  </div>
+  <div className="bg-white border border-zinc-200 rounded-2xl p-4 sm:p-5"><div className="flex flex-wrap items-center justify-between gap-3"><div><div className="font-black text-[#002344]">Meeting Record Flow</div><div className="text-sm text-zinc-500 mt-1">एक meeting से जुड़े records को क्रमबद्ध तरीके से पूरा किया जा सकेगा।</div></div><div className="flex flex-wrap gap-2 text-xs font-bold"><span className="px-3 py-2 rounded-full bg-slate-50 text-[#123B5D]">1. Schedule</span><span className="text-zinc-300 self-center">→</span><span className="px-3 py-2 rounded-full bg-slate-50 text-[#123B5D]">2. Participants</span><span className="text-zinc-300 self-center">→</span><span className="px-3 py-2 rounded-full bg-slate-50 text-[#123B5D]">3. Attendance</span><span className="text-zinc-300 self-center">→</span><span className="px-3 py-2 rounded-full bg-slate-50 text-[#123B5D]">4. Resolution</span><span className="text-zinc-300 self-center">→</span><span className="px-3 py-2 rounded-full bg-slate-50 text-[#123B5D]">5. Follow-up</span></div></div></div>
  </div>;
 }
 function MeetingsHub({token,navigate}){
