@@ -310,6 +310,7 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
   status:"Scheduled",remarks:""
  };
  const [form,setForm]=useState(blank);
+ const [googleConnected,setGoogleConnected]=useState(false),[googleWorking,setGoogleWorking]=useState(false),[googleNotice,setGoogleNotice]=useState("");
  const memberNames=(d)=>Array.isArray(d)?d.map(x=>typeof x==="string"?x:(x.name||x.fullName||x.memberId||"")).filter(Boolean):[];
  const memberDirectory=useMemo(()=>((rows||[]).filter(r=>r.module==="members"&&r.status!=="deleted").map(r=>{const d=r.data||{};return {id:r.id,memberId:r.recordId||d.memberId||"",name:d.fullName||d.name||"",role:d.organizationRole||d.designation||"",mobile:d.mobile||d.phone||d.mobileNo||"",email:d.email||""};}).filter(x=>x.name)),[rows]);
  const selectedDirectory=(ids)=>memberDirectory.filter(m=>ids.includes(m.id));
@@ -318,16 +319,37 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
  const makeId=()=>{const day=form.date.replace(/-/g,""),stamp=String(Date.now()).slice(-4);return "SSF-Meeting-"+day+"-"+stamp;};
  const openNew=()=>{setEditing(null);setForm({...blank,meetingId:"SSF-Meeting-"+new Date().toISOString().slice(0,10).replace(/-/g,"")+"-"+String(Date.now()).slice(-4)});setShowForm(true);};
  const edit=(r)=>{setEditing(r);setForm({...blank,...(r.data||{}),meetingId:(r.data||{}).meetingId||r.recordId});setShowForm(true);};
- const save=async()=>{
-  if(!form.meetingTitle||!form.date)return;
-  const normalized={...form,
-   invitedMembers:form.invitedMemberDetails?.length?form.invitedMemberDetails:form.invitedMembers,
-   presentMembers:form.presentMemberDetails?.length?form.presentMemberDetails:form.presentMembers,
-   absentMembers:form.absentMemberDetails?.length?form.absentMemberDetails:form.absentMembers
+ const save=async(overrides={})=>{
+  const source={...form,...overrides};
+  if(!source.meetingTitle||!source.date)return false;
+  const normalized={...source,
+   invitedMembers:source.invitedMemberDetails?.length?source.invitedMemberDetails:source.invitedMembers,
+   presentMembers:source.presentMemberDetails?.length?source.presentMemberDetails:source.presentMembers,
+   absentMembers:source.absentMemberDetails?.length?source.absentMemberDetails:source.absentMembers,
+   onlineParticipants:source.mode!=="Offline"?(source.onlineParticipants?.length?source.onlineParticipants:source.presentMemberDetails?.length?source.presentMemberDetails:source.presentMembers):[]
   };
-  const data={...normalized,meetingId:form.meetingId||makeId(),recordDate:form.date,recordType:form.meetingType,status:form.status};
+  const data={...normalized,meetingId:source.meetingId||makeId(),recordDate:source.date,recordType:source.meetingType,status:source.status};
   const ok=editing?await updateRecord(editing.id,"meetings",data):await add("meetings",data);
   if(ok){setShowForm(false);setEditing(null);await load();}
+  return Boolean(ok);
+ };
+ useEffect(()=>{fetch(ENDPOINTS.DIGITAL_OFFICE_GOOGLE_STATUS,{headers}).then(r=>r.ok?r.json():{connected:false}).then(d=>setGoogleConnected(Boolean(d.connected))).catch(()=>setGoogleConnected(false));},[]);
+ const connectMasterGoogle=async()=>{setGoogleWorking(true);setGoogleNotice("Google authorization page khola ja raha hai…");try{const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_GOOGLE_CONNECT_URL,{headers});const out=await r.json();if(!r.ok)throw new Error(out.message||"Google Meet integration is not configured.");window.location.href=out.url;}catch(e){setGoogleNotice(e.message||"Unable to start Google authorization.");setGoogleWorking(false);}};
+ const createMasterGoogleMeeting=async()=>{
+  if(!form.meetingTitle.trim()||!form.date||!form.startTime){setGoogleNotice("Meeting title, date and start time required.");return;}
+  if(form.mode==="Offline"){await save();return;}
+  if(form.platform!=="Google Meet"){await save();return;}
+  if(editing&&form.meetingLink){await save();setGoogleNotice("Master Meeting updated successfully.");return;}
+  if(!googleConnected){await connectMasterGoogle();return;}
+  setGoogleWorking(true);setGoogleNotice("Google Meet link banaya ja raha hai…");
+  try{
+   const emails=selectedDirectory(form.invitedMemberIds||[]).map(m=>m.email).filter(Boolean);
+   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_GOOGLE_CREATE_MEETING,{method:"POST",headers,body:JSON.stringify({title:form.meetingTitle,date:form.date,time:form.startTime,agenda:form.agenda,emails})});
+   const out=await r.json();if(!r.ok)throw new Error(out.message||"Google Meet creation failed.");
+   const ok=await save({meetingLink:out.meetingLink||""});
+   if(ok)setGoogleNotice(out.emailConfigured?("Google Meet created, Master Meeting saved. "+(out.emailed||0)+" invitation(s) sent."): "Google Meet created and Master Meeting saved.");
+  }catch(e){setGoogleNotice(e.message||"Unable to create Google Meet.");}
+  finally{setGoogleWorking(false);}
  };
  const filtered=meetings.filter(r=>{
   const d=r.data||{},q=search.toLowerCase();
@@ -354,7 +376,7 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
   <input type="time" value={form.startTime} onChange={e=>setForm({...form,startTime:e.target.value})} className={cls}/>
   <input type="time" value={form.endTime} onChange={e=>setForm({...form,endTime:e.target.value})} className={cls}/>
   {form.mode!=="Online"&&<input value={form.venue} onChange={e=>setForm({...form,venue:e.target.value})} placeholder="Venue / Location" className={cls}/>}
-  {form.mode!=="Offline"&&<><select value={form.platform} onChange={e=>setForm({...form,platform:e.target.value})} className={cls}><option>Google Meet</option><option>Zoom</option><option>Microsoft Teams</option><option>Other</option></select><input value={form.meetingLink} onChange={e=>setForm({...form,meetingLink:e.target.value})} placeholder="Online Meeting Link" className={cls}/></>}
+  {form.mode!=="Offline"&&<><select value={form.platform} onChange={e=>setForm({...form,platform:e.target.value})} className={cls}><option>Google Meet</option><option>Zoom</option><option>Microsoft Teams</option><option>Other</option></select><input value={form.meetingLink} onChange={e=>setForm({...form,meetingLink:e.target.value})} placeholder="Online Meeting Link" className={cls}/><div className="sm:col-span-2 lg:col-span-4 rounded-2xl border border-blue-100 bg-blue-50 p-4"><div className="font-black text-[#002344]">Google Meet</div><p className="text-xs text-zinc-600 mt-1">{googleConnected?"Google account connected. Ab isi Master Meeting se meeting link create hoga.":"Pehli baar Google authorization karna hoga. Uske baad isi Master Meeting se Google Meet link banega."}</p><div className="flex flex-wrap gap-2 mt-3"><button type="button" disabled={googleWorking} onClick={createMasterGoogleMeeting} className="bg-[#002344] text-white px-5 py-3 rounded-xl font-bold disabled:opacity-50">{googleWorking?"Please wait…":editing?"Update Master Meeting & Link":"Create Google Meet & Save Master Meeting"}</button>{googleNotice&&<span className="text-sm font-semibold text-zinc-700 self-center">{googleNotice}</span>}</div></div></>}
   <input value={form.organizerHost} onChange={e=>setForm({...form,organizerHost:e.target.value})} placeholder="Organizer / Host" className={cls}/>
   <input value={form.purpose} onChange={e=>setForm({...form,purpose:e.target.value})} placeholder="Purpose / Why this meeting" className={cls+" sm:col-span-2 lg:col-span-3"}/>
   <textarea value={form.agenda} onChange={e=>setForm({...form,agenda:e.target.value})} placeholder="Agenda / Discussion Points" className={cls+" min-h-[100px] sm:col-span-2 lg:col-span-4"}/>
@@ -384,7 +406,7 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
   <input value={form.supportingDocument} onChange={e=>setForm({...form,supportingDocument:e.target.value})} placeholder="Supporting Document Reference" className={cls}/>
   <input value={form.recordingRef} onChange={e=>setForm({...form,recordingRef:e.target.value})} placeholder="Recording / Online Reference" className={cls}/>
   <textarea value={form.remarks} onChange={e=>setForm({...form,remarks:e.target.value})} placeholder="Remarks" className={cls+" min-h-[80px] sm:col-span-2"}/>
-  <div className="sm:col-span-2 lg:col-span-4 flex gap-2 pt-2"><button type="button" onClick={save} className="bg-[#002344] text-white px-5 py-3 rounded-xl font-black">{editing?"Update Master Record":"Create Master Meeting"}</button><button type="button" onClick={()=>setShowForm(false)} className="border px-5 py-3 rounded-xl font-bold">Cancel</button></div>
+  <div className="sm:col-span-2 lg:col-span-4 flex gap-2 pt-2">{form.mode==="Offline"||form.platform!=="Google Meet"?<button type="button" onClick={()=>save()} className="bg-[#002344] text-white px-5 py-3 rounded-xl font-black">{editing?"Update Master Record":"Create Master Meeting"}</button>:<button type="button" onClick={()=>createMasterGoogleMeeting()} className="bg-[#002344] text-white px-5 py-3 rounded-xl font-black">{editing?"Update Master Record":"Create Google Meet & Save Master Meeting"}</button>}<button type="button" onClick={()=>setShowForm(false)} className="border px-5 py-3 rounded-xl font-bold">Cancel</button></div>
  </div></div>;
 
  const table=(mode)=> <div className="bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b flex flex-col lg:flex-row gap-3 lg:items-center justify-between"><div><h2 className="text-xl font-black text-[#002344]">{mode==="calendar"?"Meeting Calendar / बैठक कैलेंडर":mode==="online"?"Online Meetings / ऑनलाइन बैठकें":"Meeting & Resolution / बैठक व प्रस्ताव"}</h2><p className="text-sm text-zinc-500 mt-1">{mode==="calendar"?"Planning and scheduling view":"Linked view of the same master meeting record — no duplicate entry."}</p></div><div className="flex flex-wrap gap-2"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search Meeting ID / title" className="px-3 py-2.5 border rounded-xl"/><select value={filter} onChange={e=>setFilter(e.target.value)} className="px-3 py-2.5 border rounded-xl"><option value="all">All Status</option><option>Scheduled</option><option>Completed</option><option>Cancelled</option><option>Postponed</option></select><button type="button" onClick={openNew} className="bg-[#002344] text-white px-4 py-2.5 rounded-xl font-bold"><FaPlus className="inline mr-2"/>New Meeting</button></div></div>
