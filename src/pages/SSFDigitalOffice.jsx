@@ -209,7 +209,7 @@ export default function SSFDigitalOffice(){
     {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive} restore={restore} updateRecord={updateRecord} navigate={setActive}/>}
     {active==="meetingCalendar"&&<><MeetingsNavigation navigate={setActive}/><MeetingCalendar rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/></>}
     {active==="onlineMeetings"&&<><MeetingsNavigation navigate={setActive}/><OnlineMeetings token={token}/></>}
-    {active==="meetingResolution"&&<><MeetingsNavigation navigate={setActive}/><MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/></>} 
+    {active==="meetingResolution"&&<><MeetingsNavigation navigate={setActive}/><MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} updateRecord={updateRecord} token={token}/></>} 
     {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
@@ -980,53 +980,69 @@ function MembershipContributions({rows,add,archive}){
  return <SimpleOfficeCard title="💰 Membership & Contribution Register" subtitle="Monthly, annual, lifetime, patron membership और अन्य actual receipts/payments का अलग transaction record."><div className="bg-white border rounded-2xl p-5"><form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"><input type="date" value={f.date} onChange={e=>set("date",e.target.value)} className={cls}/><input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID" className={cls}/><input value={f.memberName} onChange={e=>set("memberName",e.target.value)} placeholder="Member Name" required className={cls}/><select value={f.contributionType} onChange={e=>set("contributionType",e.target.value)} className={cls}><option>Monthly Membership Fee</option><option>Annual Membership Fee</option><option>Lifetime Membership</option><option>Patron Membership</option><option>Other Member Contribution</option></select><input value={f.amount} onChange={e=>set("amount",e.target.value)} type="number" min="0" step="0.01" placeholder="Amount (₹)" required className={cls}/><input value={f.period} onChange={e=>set("period",e.target.value)} placeholder="Membership Period (e.g. Apr-2026)" className={cls}/><input value={f.receiptNo} onChange={e=>set("receiptNo",e.target.value)} placeholder="Receipt No." className={cls}/><select value={f.paymentMode} onChange={e=>set("paymentMode",e.target.value)} className={cls}><option>Cash</option><option>UPI</option><option>Bank Transfer</option><option>Cheque</option><option>Other</option></select><input value={f.transactionNo} onChange={e=>set("transactionNo",e.target.value)} placeholder="Transaction / Cheque No." className={cls}/><input value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose / Note" className={cls}/><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/><button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save Payment / Contribution</button></form></div>{notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}<div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1300px]"><thead className="bg-zinc-50"><tr>{["Date","Member ID","Member Name","Type","Amount","Period","Receipt No.","Payment Mode","Transaction No.","Purpose","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,d.memberId,d.memberName,d.contributionType||r.recordType,d.amount,d.period,d.receiptNo,d.paymentMode,d.transactionNo,d.purpose,d.remarks].map((v,i)=><td key={i} className="p-3">{v||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="12" className="p-8 text-center text-zinc-500">No membership/contribution transactions yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
 }
 
-function MeetingResolutions({rows,add,archive,restore,token}){
+function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
  const resolutionRows=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
  const calendarRows=(rows||[]).filter(r=>r.module==="meetings"&&r.status!=="deleted");
  const existing=resolutionRows;
  useEffect(()=>{
-  const legacy=calendarRows.find(r=>{
+  const pending=calendarRows.filter(r=>{
    const d=r.data||{};
-   return String(d.meetingTitle||"").trim()==="Annual Review & Planning Meeting – 2026–27" && String(d.date||r.recordDate||"").slice(0,10)==="2026-09-26";
+   const title=String(d.meetingTitle||"").trim().toLowerCase();
+   const date=String(d.date||r.recordDate||"").slice(0,10);
+   return title && date && !resolutionRows.some(x=>{
+    const xd=x.data||{};
+    return String(xd.sourceMeetingRecordId||"")===String(r.id)
+      || (String(xd.meetingTitle||"").trim().toLowerCase()===title && String(xd.meetingDate||x.recordDate||"").slice(0,10)===date);
+   });
   });
-  if(!legacy || resolutionRows.some(r=>String((r.data||{}).meetingTitle||"").trim()==="Annual Review & Planning Meeting – 2026–27")) return;
-  const d=legacy.data||{};
-  add("meetingResolutions",{
-   recordDate:d.date||legacy.recordDate,
-   recordType:d.meetingType||"Managing Committee Meeting",
-   status:"active",
-   data:{
-    meetingDate:String(d.date||legacy.recordDate||"").slice(0,10),
-    startTime:d.time||"",
-    endTime:"",
-    meetingType:d.meetingType||"Managing Committee Meeting",
-    meetingMode:d.mode||"Online",
-    meetingTitle:d.meetingTitle||"",
-    purpose:d.purpose||"",
-    venue:d.venue||"",
-    onlineMeetingId:"",
-    onlineMeetingLink:d.meetingLink||"",
-    onlinePlatform:d.meetingLink?"Google Meet":"",
-    organizer:"",
-    presentMembers:d.participants||"",
-    absentMembers:"",
-    onlineParticipants:"",
-    offlineParticipants:"",
-    attendance:"",
-    attendanceSummary:"",
-    attendanceSheetRef:"",
-    agenda:d.agenda||"",
-    decision:"",
-    resolutionNo:"",
-    resolutionStatus:"Not Applicable",
-    actionPoints:"",
-    responsiblePersons:"",
-    targetDate:"",
-    supportingDocument:"",
-    recordingRef:"",
-    remarks:"Imported from Meeting Calendar record. Complete the official attendance, minutes, decisions and resolution fields after the meeting."
+  if(!pending.length)return;
+  (async function(){
+   for(const meeting of pending){
+    const d=meeting.data||{};
+    await add("meetingResolutions",{
+     recordDate:d.date||meeting.recordDate,
+     recordType:d.meetingType||"Meeting",
+     status:"active",
+     data:{
+      sourceMeetingRecordId:meeting.id,
+      meetingDate:String(d.date||meeting.recordDate||"").slice(0,10),
+      startTime:d.time||"",
+      endTime:"",
+      meetingType:d.meetingType||"Managing Committee Meeting",
+      meetingMode:d.mode||"Online",
+      meetingTitle:d.meetingTitle||"",
+      purpose:d.purpose||"",
+      venue:d.venue||"",
+      onlineMeetingId:"",
+      onlineMeetingLink:d.meetingLink||"",
+      onlinePlatform:d.meetingLink?(d.platform||"Google Meet"):"",
+      organizer:d.organizerHost||"",
+      invitedParticipants:d.participants||"",
+      presentMembers:"",
+      absentMembers:"",
+      onlineParticipants:"",
+      offlineParticipants:"",
+      attendance:"",
+      attendanceSummary:"",
+      attendanceSheetRef:"",
+      agenda:d.agenda||"",
+      decision:"",
+      resolutionNo:"",
+      resolutionStatus:"Not Applicable",
+      actionPoints:"",
+      responsiblePersons:"",
+      targetDate:"",
+      supportingDocument:"",
+      recordingRef:"",
+      followUpRequired:"No",
+      followUpStatus:"Not Required",
+      followUpChannel:"Manual Review",
+      followUpNotes:"",
+      remarks:"Automatically created from Meeting Calendar. Complete attendance, minutes, decisions and resolution details after the meeting."
+     }
+    });
    }
-  });
+  })();
  },[calendarRows.length,resolutionRows.length]);
  const [archived,setArchived]=useState([]);
  const loadArchived=async()=>{
@@ -1037,7 +1053,7 @@ function MeetingResolutions({rows,add,archive,restore,token}){
   }catch(e){setArchived([]);}
  };
  useEffect(()=>{loadArchived();},[rows]);
- const blank={meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",meetingTitle:"",purpose:"",venue:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:"",presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"",attendanceSummary:"",attendanceSheetRef:"",agenda:"",decision:"",minutes:"",resolutionNo:"",resolutionStatus:"Passed",actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",remarks:""};
+ const blank={meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",meetingTitle:"",purpose:"",venue:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:"",presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"",attendanceSummary:"",attendanceSheetRef:"",agenda:"",decision:"",minutes:"",resolutionNo:"",resolutionStatus:"Passed",actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",followUpRequired:"No",followUpStatus:"Not Required",followUpChannel:"Manual Review",followUpNotes:"",remarks:""};
  const [f,setF]=useState(blank);
  const [notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false);
  const permanentDelete=async function(id){
@@ -1110,8 +1126,12 @@ function MeetingResolutions({rows,add,archive,restore,token}){
     <textarea value={f.actionPoints} onChange={e=>set("actionPoints",e.target.value)} placeholder="Action Points / जिम्मेदारी एवं अगला कार्य" className={cls+" min-h-[92px]"}/>
     <textarea value={f.responsiblePersons} onChange={e=>set("responsiblePersons",e.target.value)} placeholder="Responsible Person(s)" className={cls+" min-h-[80px]"}/>
     <input type="date" value={f.targetDate} onChange={e=>set("targetDate",e.target.value)} className={cls} placeholder="Target Date"/>
+    <select value={f.followUpRequired} onChange={e=>set("followUpRequired",e.target.value)} className={cls}><option>No</option><option>Yes</option></select>
+    <select value={f.followUpStatus} onChange={e=>set("followUpStatus",e.target.value)} className={cls}><option>Not Required</option><option>Pending</option><option>Reminder Due</option><option>Response Received</option><option>Closed</option></select>
+    <select value={f.followUpChannel} onChange={e=>set("followUpChannel",e.target.value)} className={cls}><option>Manual Review</option><option>WhatsApp</option><option>Email</option><option>WhatsApp + Email</option></select>
     <input value={f.supportingDocument} onChange={e=>set("supportingDocument",e.target.value)} placeholder="Supporting Document / File Reference" className={cls}/>
     {(f.meetingMode==="Online"||f.meetingMode==="Hybrid")&&<input value={f.recordingRef} onChange={e=>set("recordingRef",e.target.value)} placeholder="Recording / Online Reference" className={cls}/>}
+    <textarea value={f.followUpNotes} onChange={e=>set("followUpNotes",e.target.value)} placeholder="Follow-up Notes / Reminder Note" className={cls+" min-h-[80px]"}/>
     <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" min-h-[80px]"}/>
     <button type="submit" disabled={saving} className="sm:col-span-2 lg:col-span-4 bg-[#123B5D] hover:bg-[#17665D] text-white py-3 rounded-xl font-bold transition disabled:opacity-50">{saving?"Saving…":editingId?"Update Official Meeting Record":"Save Official Meeting Record"}</button>
    </form>
