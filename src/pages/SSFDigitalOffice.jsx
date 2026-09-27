@@ -305,7 +305,7 @@ function MeetingsHub({token,navigate}){
  const copyMeetingDetails=async(r)=>{const msg=meetingMessage(r);try{await navigator.clipboard.writeText(msg);setNotice("Complete meeting details copied.");}catch(e){setNotice("Copy nahi ho saki. Please manually copy karein.");}};
  const shareEmail=()=>{if(!link){setNotice("Pehle Google Meet create karein.");return;}window.location.href="mailto:?subject="+encodeURIComponent("SSF Online Meeting: "+form.title)+"&body="+encodeURIComponent(meetingMessage());};
  const join=r=>{const url=r?.data?.meetingLink||link;if(url)window.open(url,"_blank");};
- return <div className="space-y-5">
+ return <div className="space-y-5">\n  <MeetingsNavigation navigate={navigate}/>
   <div className="bg-white border rounded-2xl overflow-hidden">
    <div className="bg-[#002344] text-white p-6"><div className="flex items-center gap-3"><FaVideo className="text-2xl"/><div><h2 className="text-2xl font-black">Online Meeting / ऑनलाइन बैठक</h2><p className="text-white/70 mt-1">SSF Digital Office se direct Google Meet link create karein aur selected participants ko invitation/share bhejein.</p></div></div></div>
    <div className="p-6 grid md:grid-cols-2 gap-4">
