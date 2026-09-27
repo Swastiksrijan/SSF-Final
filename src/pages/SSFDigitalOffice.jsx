@@ -1041,6 +1041,7 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
       meetingTitle:d.meetingTitle||"",
       purpose:d.purpose||"",
       venue:d.venue||"",
+      meetingId:od.meetingId||"",
       onlineMeetingId:od.meetingId||"",
       onlineMeetingLink:od.meetingLink||d.meetingLink||"",
       onlinePlatform:od.meetingLink?(od.platform||"Google Meet"):(d.meetingLink?(d.platform||"Google Meet"):""),
@@ -1081,7 +1082,7 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
   }catch(e){setArchived([]);}
  };
  useEffect(()=>{loadArchived();},[rows]);
- const blank={meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",meetingTitle:"",purpose:"",venue:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:"",presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"",attendanceSummary:"",attendanceSheetRef:"",agenda:"",decision:"",minutes:"",resolutionNo:"",resolutionStatus:"Passed",actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",followUpRequired:"No",followUpStatus:"Not Required",followUpChannel:"Manual Review",followUpNotes:"",remarks:""};
+ const blank={meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",meetingTitle:"",purpose:"",venue:"",meetingId:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:"",presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"",attendanceSummary:"",attendanceSheetRef:"",agenda:"",decision:"",minutes:"",resolutionNo:"",resolutionStatus:"Passed",actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",followUpRequired:"No",followUpStatus:"Not Required",followUpChannel:"Manual Review",followUpNotes:"",remarks:""};
  const [f,setF]=useState(blank);
  const [memberOptions,setMemberOptions]=useState(MEETING_MEMBER_OPTIONS.map(x=>({id:"master-"+x.memberId,recordId:x.memberId,data:x})));
  const [selectedMeetingMembers,setSelectedMeetingMembers]=useState([]),[attendanceMembers,setAttendanceMembers]=useState([]),[attendanceStatus,setAttendanceStatus]=useState({});
@@ -1149,6 +1150,7 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
     {(f.meetingMode==="Offline"||f.meetingMode==="Hybrid")&&<input value={f.venue} onChange={e=>set("venue",e.target.value)} placeholder="Venue / Location" className={cls}/>}
     {(f.meetingMode==="Online"||f.meetingMode==="Hybrid")&&<><input value={f.onlineMeetingId} onChange={e=>set("onlineMeetingId",e.target.value)} placeholder="Online Meeting ID / Reference" className={cls}/><input value={f.onlineMeetingLink} onChange={e=>set("onlineMeetingLink",e.target.value)} placeholder="Online Meeting Ref. / Link" className={cls}/><select value={f.onlinePlatform} onChange={e=>set("onlinePlatform",e.target.value)} className={cls}><option>Google Meet</option><option>Zoom</option><option>Microsoft Teams</option><option>Other</option></select></>}
     <input value={f.organizer} onChange={e=>set("organizer",e.target.value)} placeholder="Organizer / Host" className={cls}/>
+    <input value={f.meetingId} onChange={e=>set("meetingId",e.target.value)} placeholder="Meeting ID / Meeting Reference" className={cls}/>
     <div className="sm:col-span-2 lg:col-span-4 bg-[#F8FBFF] border border-[#C9DDEC] rounded-2xl p-4">
      <div className="font-black text-[#002344]">Meeting Members / बैठक सदस्य</div><div className="text-xs text-zinc-500 mt-1 mb-3">Calendar से meeting आई है तो selected members अपने-आप यहाँ आएँगे. Direct entry में यहाँ से members चुनें.</div>
      <select multiple value={selectedMeetingMembers} onChange={e=>selectMeetingMembers(Array.from(e.target.selectedOptions).map(o=>o.value))} className={cls+" min-h-[150px]"}>{memberOptions.map(r=>{const d=r.data||{};const id=String(r.recordId||d.memberId||r.id);return <option key={id} value={id}>{d.fullName||d.name||"Member"}{d.memberId?" — "+d.memberId:""}</option>;})}</select>
@@ -1166,14 +1168,17 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
     <textarea value={f.attendance} onChange={e=>set("attendance",e.target.value)} placeholder="Attendance Details" className={cls+" min-h-[80px]"}/>
     <input value={f.attendanceSummary} onChange={e=>set("attendanceSummary",e.target.value)} placeholder="Attendance Summary" className={cls}/>
     {(f.meetingMode==="Offline"||f.meetingMode==="Hybrid")&&<input value={f.attendanceSheetRef} onChange={e=>set("attendanceSheetRef",e.target.value)} placeholder="Attendance Sheet / Signature Ref." className={cls}/>}
+    <div className="sm:col-span-2 lg:col-span-4 bg-[#F8FBFF] border border-[#C9DDEC] rounded-2xl p-4"><div className="font-black text-[#002344]">Minutes & Decisions / कार्यवृत्त एवं निर्णय</div><div className="text-xs text-zinc-500 mt-1 mb-3">Meeting के बाद official proceedings, decisions और resolution यहाँ finalize करें.</div></div>
     <textarea value={f.agenda} onChange={e=>set("agenda",e.target.value)} placeholder="Agenda / मुख्य एजेंडा" className={cls+" min-h-[100px]"}/>
     <textarea value={f.minutes} onChange={e=>set("minutes",e.target.value)} placeholder="Minutes / Proceedings / कार्यवाही" className={cls+" min-h-[110px]"}/>
     <textarea value={f.decision} onChange={e=>set("decision",e.target.value)} placeholder="Decisions / निर्णय" className={cls+" min-h-[100px]"}/>
     <input value={f.resolutionNo} onChange={e=>set("resolutionNo",e.target.value)} placeholder="Resolution No. (if applicable)" className={cls}/>
     <select value={f.resolutionStatus} onChange={e=>set("resolutionStatus",e.target.value)} className={cls}><option>Passed</option><option>Not Passed</option><option>Deferred</option><option>Not Applicable</option></select>
+    <div className="sm:col-span-2 lg:col-span-4 bg-[#FFF8E7] border border-[#E8D39A] rounded-2xl p-4"><div className="font-black text-[#123B5D]">Resolution & Action Points / प्रस्ताव एवं कार्य बिंदु</div><div className="text-xs text-zinc-600 mt-1 mb-3">Approved decision को resolution और जिम्मेदार व्यक्ति/target date के साथ record करें.</div></div>
     <textarea value={f.actionPoints} onChange={e=>set("actionPoints",e.target.value)} placeholder="Action Points / जिम्मेदारी एवं अगला कार्य" className={cls+" min-h-[92px]"}/>
     <textarea value={f.responsiblePersons} onChange={e=>set("responsiblePersons",e.target.value)} placeholder="Responsible Person(s)" className={cls+" min-h-[80px]"}/>
     <input type="date" value={f.targetDate} onChange={e=>set("targetDate",e.target.value)} className={cls} placeholder="Target Date"/>
+    <div className="sm:col-span-2 lg:col-span-4 bg-[#F0FDF4] border border-emerald-200 rounded-2xl p-4"><div className="font-black text-emerald-900">Follow-up / अनुवर्ती कार्य</div><div className="text-xs text-emerald-800 mt-1 mb-3">Did Not Attend या No Response होने पर system follow-up को Pending रखेगा. Formal communication अभी manual review के बाद ही करें.</div></div>
     <select value={f.followUpRequired} onChange={e=>set("followUpRequired",e.target.value)} className={cls}><option>No</option><option>Yes</option></select>
     <select value={f.followUpStatus} onChange={e=>set("followUpStatus",e.target.value)} className={cls}><option>Not Required</option><option>Pending</option><option>Reminder Due</option><option>Response Received</option><option>Closed</option></select>
     <select value={f.followUpChannel} onChange={e=>set("followUpChannel",e.target.value)} className={cls}><option>Manual Review</option><option>WhatsApp</option><option>Email</option><option>WhatsApp + Email</option></select>
