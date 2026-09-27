@@ -377,18 +377,7 @@ function OnlineMeetings({token,navigate}){
    <div className="p-5 border-b"><div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div><h3 className="text-xl font-black text-[#002344]">Online Meetings / ऑनलाइन बैठकें</h3><p className="text-sm text-zinc-500 mt-1">{records.length} record(s) · secure database · pre-meeting edits only</p></div><div className="text-xs text-zinc-500">Meeting ID format: <b>SSF-Meeting-DDMMYYYY-001</b></div></div></div>
    <div className="overflow-auto"><table className="w-full text-sm min-w-[1100px]"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Meeting ID</th><th className="p-3 text-left">Date & Time</th><th className="p-3 text-left">Meeting</th><th className="p-3 text-left">Type</th><th className="p-3 text-left">Google Meet</th><th className="p-3 text-left">Status</th><th className="p-3 text-left">Actions</th></tr></thead><tbody className="divide-y">{records.map(r=>{const d=r.data||{};const locked=isLocked(r);return <tr key={r.id}><td className="p-3 font-bold text-[#002344]">{d.meetingId||r.recordId}</td><td className="p-3">{d.date||r.recordDate||"—"}<br/><span className="text-zinc-500">{d.time||"—"}</span></td><td className="p-3 font-bold">{d.title||"—"}</td><td className="p-3">{d.meetingType||r.recordType||"—"}</td><td className="p-3">{d.meetingLink?(locked?<span className="text-zinc-400 font-semibold">Meeting ended</span>:<button type="button" onClick={()=>join(r)} className="text-emerald-700 font-bold underline">Join Google Meet</button>):"—"}</td><td className="p-3"><span className={"px-2.5 py-1 rounded-full text-xs font-bold "+(locked?"bg-zinc-100 text-zinc-600":"bg-emerald-50 text-emerald-700")}>{locked?"Locked":"Scheduled"}</span></td><td className="p-3"><div className="flex flex-wrap gap-2"><button type="button" onClick={()=>copyMeetingDetails(r)} className="px-3 py-1.5 rounded-lg border font-bold">Copy</button>{d.meetingLink&&<button type="button" onClick={()=>{setLink(d.meetingLink);setForm({title:d.title||"",type:d.meetingType||r.recordType||"Other",date:d.date||r.recordDate||"",time:d.time||"",purpose:d.purpose||"",agenda:d.agenda||""});}} className="px-3 py-1.5 rounded-lg border font-bold">View</button>}{!locked&&<button type="button" onClick={()=>editMeeting(r)} className="px-3 py-1.5 rounded-lg bg-[#002344] text-white font-bold">Edit</button>}</div></td></tr>})}{!records.length&&<tr><td colSpan="7" className="p-8 text-center text-zinc-500">No online meetings yet.</td></tr>}</tbody></table></div>
   </div>
-  <div className="bg-white border rounded-2xl overflow-hidden">
-   <div className="p-4 border-b bg-zinc-50">
-    <div className="text-lg font-black text-[#002344]">Meetings / बैठकें</div>
-    <p className="text-sm text-zinc-500 mt-1">Meeting Calendar और Meeting & Resolution इसी Meetings module के अंदर उपलब्ध हैं.</p>
-   </div>
-   <div className="p-4 flex flex-wrap gap-3">
-    <button type="button" onClick={()=>document.getElementById("ssf-meeting-calendar")?.scrollIntoView({behavior:"smooth"})} className="px-5 py-3 rounded-xl border-2 border-[#123B5D] text-[#123B5D] font-bold">📅 Meeting Calendar / बैठक कैलेंडर</button>
-    <button type="button" onClick={()=>document.getElementById("ssf-meeting-resolution")?.scrollIntoView({behavior:"smooth"})} className="px-5 py-3 rounded-xl border-2 border-[#1F7A70] text-[#1F7A70] font-bold">📄 Meeting & Resolution / बैठक एवं प्रस्ताव</button>
-   </div>
-  </div>
-  <div id="ssf-meeting-calendar" className="scroll-mt-24"><MeetingCalendar rows={rows||[]} add={add} archive={archive} updateRecord={updateRecord} token={token}/></div>
-  <div id="ssf-meeting-resolution" className="scroll-mt-24"><MeetingResolutions rows={rows||[]} add={add} archive={archive} restore={restore} token={token}/></div>
+
  </div>;
 }
 function DownloadCenter({active,rows,exportRows,exportExcel,exportPdf,setActive,token}){
