@@ -1076,7 +1076,7 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
  const [notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false);
  useEffect(()=>{fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}}).then(r=>r.ok?r.json():[]).then(d=>setAttendanceMembers(Array.isArray(d)?d:[])).catch(()=>setAttendanceMembers([]));},[]);
  const setAttendance=(id,status)=>setAttendanceStatus(x=>({...x,[id]:status}));
- const attendanceSummaryText=()=>{const vals=Object.values(attendanceStatus);return "Attended: "+vals.filter(x=>x==="Attended").length+" · Did Not Attend: "+vals.filter(x=>x==="Did Not Attend").length+" · No Response: "+vals.filter(x=>x==="No Response").length+" · Excused: "+vals.filter(x=>x==="Excused").length;};
+ const attendanceSummaryText=()=>{const vals=attendanceJson().map(x=>x.status);return "Attended: "+vals.filter(x=>x==="Attended").length+" · Did Not Attend: "+vals.filter(x=>x==="Did Not Attend").length+" · No Response: "+vals.filter(x=>x==="No Response").length+" · Excused: "+vals.filter(x=>x==="Excused").length;};
  const attendanceJson=()=>attendanceMembers.map(r=>{const d=r.data||{};const id=String(r.id);return {memberId:d.memberId||r.personId||r.recordId||id,fullName:d.fullName||d.name||"Member",email:d.email||"",status:attendanceStatus[id]||"No Response"};});
  const permanentDelete=async function(id){
   if(!confirm("Permanently delete this archived meeting record? This cannot be undone."))return;
