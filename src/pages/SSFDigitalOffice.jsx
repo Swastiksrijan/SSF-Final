@@ -207,9 +207,9 @@ export default function SSFDigitalOffice(){
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     
     {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive} restore={restore} updateRecord={updateRecord} navigate={setActive}/>}
-    {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
-    {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
-    {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/>} 
+    {active==="meetingCalendar"&&<><MeetingsNavigation navigate={setActive}/><MeetingCalendar rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/></>}
+    {active==="onlineMeetings"&&<><MeetingsNavigation navigate={setActive}/><OnlineMeetings token={token}/></>}
+    {active==="meetingResolution"&&<><MeetingsNavigation navigate={setActive}/><MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/></>} 
     {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
