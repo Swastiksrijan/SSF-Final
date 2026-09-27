@@ -595,7 +595,7 @@ const MEETING_MEMBER_OPTIONS=[{memberId:"SSF-MBR-00001",fullName:"Ramesh Pandey"
   participants:"",reminder:"1 day before",status:"Scheduled",remarks:""
  };
  const [f,setF]=useState(blank),[saving,setSaving]=useState(false),[editingId,setEditingId]=useState(null),[showForm,setShowForm]=useState(false);
- const [memberOptions,setMemberOptions]=useState([]),[participantOpen,setParticipantOpen]=useState(false);
+ const [memberOptions,setMemberOptions]=useState(MEETING_MEMBER_OPTIONS.map(x=>({id:"master-"+x.memberId,recordId:x.memberId,data:x}))),[participantOpen,setParticipantOpen]=useState(false);
  useEffect(()=>{let alive=true;const headers={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers}).then(r=>r.ok?r.json():[]).then(d=>{if(!alive)return;const list=Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]);const apiMembers=list.map(r=>{const x=r.data||{};return {id:r.id,recordId:r.recordId,personId:r.personId,data:{memberId:x.memberId||r.recordId||r.id,fullName:x.fullName||x.name||"Member",email:x.email||"",mobile:x.mobile||x.phone||x.mobileNo||""}};});const merged=[...apiMembers,...MEETING_MEMBER_OPTIONS.map(x=>({id:"master-"+x.memberId,recordId:x.memberId,data:x}))];const unique=merged.filter((r,i,a)=>a.findIndex(x=>String(x.data?.memberId)===String(r.data?.memberId))===i);setMemberOptions(unique);}).catch(()=>{if(alive)setMemberOptions([]);});return()=>{alive=false;};},[token]);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const selectedParticipants=()=>{try{const v=JSON.parse(f.participants||"[]");return Array.isArray(v)?v:[];}catch{return [];}};
