@@ -877,7 +877,7 @@ function MembersRegister({rows,add,archive}){
   data.remarks=seed.responsibility||d.remarks||d.responsibility||"";
   return {id:"committee-seed-"+r.id,recordId:r.recordId,module:"members",status:"active",recordDate:data.joiningDate||r.recordDate,data};
  });
- const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
+ const existing=[...savedMembers,...committeeSeeds].filter((r,i,a)=>a.findIndex(x=>String(x.recordId||x.data?.memberId||x.id)===String(r.recordId||r.data?.memberId||r.id))===i);\n const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
  const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[tab,setTab]=useState("dashboard");
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const active=existing.filter(r=>String((r.data||{}).membershipStatus||r.status||"").toLowerCase()==="active");
