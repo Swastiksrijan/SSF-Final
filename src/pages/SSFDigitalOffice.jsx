@@ -202,14 +202,14 @@ export default function SSFDigitalOffice(){
   </div></header>
   {notice&&<div className="mb-5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl px-4 py-3 font-semibold">{notice}</div>}
   <div className="grid lg:grid-cols-[245px_1fr] gap-5">
-   <aside className="bg-white rounded-2xl border border-zinc-200 p-3 h-fit lg:sticky lg:top-24 max-h-[calc(100vh-7rem)] overflow-auto"><div className="px-4 pt-4 pb-3 border-b border-zinc-200"><div className="flex items-center gap-3"><img src={logoImg} alt="SSF logo" className="h-12 w-12 object-contain rounded-xl bg-white border border-zinc-100 p-1" /><div><div className="text-sm font-black text-[#002344]">SSF Digital Office</div><div className="text-[10px] text-zinc-500 font-semibold">Paperless Office Management</div></div></div></div>{MODULES.map(function(x){var Icon=x[2];return <React.Fragment key={x[0]}><button onClick={function(){setActive(x[0]);}} className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left font-bold mb-1 "+(active===x[0]?"bg-[#123B5D] text-white":"text-zinc-700 hover:bg-zinc-100")}><Icon/><span className="min-w-0 flex-1 leading-tight"><span className={"block text-[15px] sm:text-base font-extrabold "+(active===x[0]?"text-white":"text-[#123B5D]")}>{x[1].split(" / ")[0]}</span><span className={"block text-[14px] sm:text-[15px] font-semibold mt-0.5 "+(active===x[0]?"text-[#FFF8E7]":"text-[#1F7A70]")}>{x[1].split(" / ").slice(1).join(" / ")}</span></span></button></React.Fragment>;})}</aside>
+   <aside className="bg-white rounded-2xl border border-zinc-200 p-3 h-fit lg:sticky lg:top-24 max-h-[calc(100vh-7rem)] overflow-auto"><div className="px-4 pt-4 pb-3 border-b border-zinc-200"><div className="flex items-center gap-3"><img src={logoImg} alt="SSF logo" className="h-12 w-12 object-contain rounded-xl bg-white border border-zinc-100 p-1" /><div><div className="text-sm font-black text-[#002344]">SSF Digital Office</div><div className="text-[10px] text-zinc-500 font-semibold">Paperless Office Management</div></div></div></div>{MODULES.map(function(x){var Icon=x[2];return <React.Fragment key={x[0]}><button onClick={function(){setActive(x[0]);}} className={"w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left font-bold mb-1 "+((active===x[0]||(x[0]==="meetings"&&["meetingCalendar","onlineMeetings","meetingResolution"].includes(active)))?"bg-[#123B5D] text-white":"text-zinc-700 hover:bg-zinc-100")}><Icon/><span className="min-w-0 flex-1 leading-tight"><span className={"block text-[15px] sm:text-base font-extrabold "+((active===x[0]||(x[0]==="meetings"&&["meetingCalendar","onlineMeetings","meetingResolution"].includes(active)))?"text-white":"text-[#123B5D]")}>{x[1].split(" / ")[0]}</span><span className={"block text-[14px] sm:text-[15px] font-semibold mt-0.5 "+((active===x[0]||(x[0]==="meetings"&&["meetingCalendar","onlineMeetings","meetingResolution"].includes(active)))?"text-[#FFF8E7]":"text-[#1F7A70]")}>{x[1].split(" / ").slice(1).join(" / ")}</span></span></button></React.Fragment>;})}</aside>
    <main className="min-w-0">
     {active==="dashboard"&&<Dashboard summary={summary}/>}
     
     {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive} restore={restore} updateRecord={updateRecord} navigate={setActive}/>}
-    {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
-    {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
-    {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/>} 
+    {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token} navigate={setActive}/>}
+    {active==="onlineMeetings"&&<OnlineMeetings token={token} navigate={setActive}/>}
+    {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token} navigate={setActive}/>} 
     {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
@@ -303,7 +303,7 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord,navigate}){
    <div className="grid sm:grid-cols-3 gap-3">
     <button type="button" onClick={()=>navigate("meetingCalendar")} className="text-left border rounded-xl p-4 hover:border-[#1F7A70] hover:bg-slate-50"><div className="text-2xl">📅</div><div className="font-black text-[#002344] mt-2">Meeting Calendar / बैठक कैलेंडर</div><div className="text-xs text-zinc-500 mt-1">Scheduled meetings, dates, time, venue and reminders.</div></button>
     <button type="button" onClick={()=>navigate("meetingResolution")} className="text-left border rounded-xl p-4 hover:border-[#1F7A70] hover:bg-slate-50"><div className="text-2xl">📄</div><div className="font-black text-[#002344] mt-2">Meeting & Resolution / बैठक एवं प्रस्ताव</div><div className="text-xs text-zinc-500 mt-1">Official attendance, minutes, decisions and resolutions.</div></button>
-    <button type="button" onClick={()=>navigate("meetings")} className="text-left border rounded-xl p-4 bg-slate-50"><div className="text-2xl">🎥</div><div className="font-black text-[#002344] mt-2">Online Meeting / ऑनलाइन बैठक</div><div className="text-xs text-zinc-500 mt-1">Create and manage Google Meet links.</div></button>
+    <button type="button" onClick={()=>navigate("onlineMeetings")} className="text-left border rounded-xl p-4 bg-slate-50"><div className="text-2xl">🎥</div><div className="font-black text-[#002344] mt-2">Online Meeting / ऑनलाइन बैठक</div><div className="text-xs text-zinc-500 mt-1">Create and manage Google Meet links.</div></button>
    </div>
   </div>
   <div className="bg-white border rounded-2xl overflow-hidden">
@@ -327,7 +327,16 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord,navigate}){
   </div>
  </div>;
 }
-function OnlineMeetings({token}){
+function MeetingsNavigation({navigate,active}){ 
+ return <div className="bg-white border rounded-2xl p-4">
+  <div className="grid sm:grid-cols-3 gap-3">
+   <button type="button" onClick={()=>navigate("meetingCalendar")} className={"text-left border rounded-xl p-4 hover:border-[#1F7A70] hover:bg-slate-50 "+(active==="meetingCalendar"?"border-[#1F7A70] bg-slate-50":"")}><div className="text-2xl">📅</div><div className="font-black text-[#002344] mt-2">Meeting Calendar / बैठक कैलेंडर</div><div className="text-xs text-zinc-500 mt-1">Scheduled meetings, dates, time, venue and reminders.</div></button>
+   <button type="button" onClick={()=>navigate("meetingResolution")} className={"text-left border rounded-xl p-4 hover:border-[#1F7A70] hover:bg-slate-50 "+(active==="meetingResolution"?"border-[#1F7A70] bg-slate-50":"")}><div className="text-2xl">📄</div><div className="font-black text-[#002344] mt-2">Meeting & Resolution / बैठक एवं प्रस्ताव</div><div className="text-xs text-zinc-500 mt-1">Official attendance, minutes, decisions and resolutions.</div></button>
+   <button type="button" onClick={()=>navigate("onlineMeetings")} className={"text-left border rounded-xl p-4 hover:border-[#1F7A70] hover:bg-slate-50 "+(active==="onlineMeetings"?"border-[#1F7A70] bg-slate-50":"")}><div className="text-2xl">🎥</div><div className="font-black text-[#002344] mt-2">Online Meeting / ऑनलाइन बैठक</div><div className="text-xs text-zinc-500 mt-1">Create and manage Google Meet links.</div></button>
+  </div>
+ </div>;
+}
+function OnlineMeetings({token,navigate}){
  const blank={title:"",type:"Managing Committee",date:new Date().toISOString().slice(0,10),time:"15:15",purpose:"",agenda:""};
  const [form,setForm]=useState(blank),[link,setLink]=useState(""),[members,setMembers]=useState([]),[selected,setSelected]=useState([]),[records,setRecords]=useState([]),[notice,setNotice]=useState(""),[working,setWorking]=useState(false),[googleConnected,setGoogleConnected]=useState(false),[editingId,setEditingId]=useState(null);
  const headers={Authorization:"Bearer "+token,"Content-Type":"application/json"};
@@ -348,7 +357,7 @@ function OnlineMeetings({token}){
  const copyMeetingDetails=async(r)=>{const msg=meetingMessage(r);try{await navigator.clipboard.writeText(msg);setNotice("Complete meeting details copied.");}catch(e){setNotice("Copy nahi ho saki. Please manually copy karein.");}};
  const shareEmail=()=>{if(!link){setNotice("Pehle Google Meet create karein.");return;}window.location.href="mailto:?subject="+encodeURIComponent("SSF Online Meeting: "+form.title)+"&body="+encodeURIComponent(meetingMessage());};
  const join=r=>{if(isLocked(r)){setNotice("Meeting time khatam ho chuka hai. Join link ab available nahi hai.");return;}const url=r?.data?.meetingLink||link;if(url)window.open(url,"_blank");};
- return <div className="space-y-5">
+ return <div className="space-y-5"><MeetingsNavigation navigate={navigate} active="onlineMeetings"/>
   <div className="bg-white border rounded-2xl overflow-hidden">
    <div className="bg-[#002344] text-white p-6"><div className="flex items-center gap-3"><FaVideo className="text-2xl"/><div><h2 className="text-2xl font-black">Online Meeting / ऑनलाइन बैठक</h2><p className="text-white/70 mt-1">SSF Digital Office se direct Google Meet link create karein aur selected participants ko invitation/share bhejein.</p></div></div></div>
    <div className="p-6 grid md:grid-cols-2 gap-4">
@@ -584,7 +593,7 @@ function AppointmentLetters({rows,add}){
  </div>;
 }
 
-function MeetingCalendar({rows,add,archive,token,updateRecord}){
+function MeetingCalendar({rows,add,archive,token,updateRecord,navigate}){
  const blank={
   date:new Date().toISOString().slice(0,10),time:"",meetingTitle:"",meetingType:"Managing Committee Meeting",mode:"Online",
   venue:"",meetingLink:"",platform:"Google Meet",organizerHost:"SSF Admin",purpose:"",agenda:"",
@@ -611,7 +620,7 @@ function MeetingCalendar({rows,add,archive,token,updateRecord}){
  const edit=r=>{setF({...blank,...(r.data||{}),date:(r.data||{}).date||r.recordDate||blank.date});setEditingId(r.id);setShowForm(true);window.scrollTo({top:0,behavior:"smooth"});};
  const displayDate=r=>{const d=r.data||{};return d.date||r.recordDate||"—";};
  const displayStatus=r=>String((r.data||{}).status||r.status||"scheduled").replace(/^./,m=>m.toUpperCase());
- return <div className="space-y-5">
+ return <div className="space-y-5"><MeetingsNavigation navigate={navigate} active="meetingCalendar"/>
   <div className="bg-white border rounded-2xl overflow-hidden">
    <div className="bg-[#002344] text-white p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
     <div><div className="flex items-center gap-3"><FaCalendarAlt className="text-2xl"/><div><h2 className="text-2xl font-black">Meeting Calendar / बैठक कैलेंडर</h2><p className="text-white/70 mt-1">Plan upcoming meetings in one place — when, where, why, who is invited, and reminder/status.</p></div></div></div>
@@ -976,7 +985,7 @@ function MembershipContributions({rows,add,archive}){
  return <SimpleOfficeCard title="💰 Membership & Contribution Register" subtitle="Monthly, annual, lifetime, patron membership और अन्य actual receipts/payments का अलग transaction record."><div className="bg-white border rounded-2xl p-5"><form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"><input type="date" value={f.date} onChange={e=>set("date",e.target.value)} className={cls}/><input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID" className={cls}/><input value={f.memberName} onChange={e=>set("memberName",e.target.value)} placeholder="Member Name" required className={cls}/><select value={f.contributionType} onChange={e=>set("contributionType",e.target.value)} className={cls}><option>Monthly Membership Fee</option><option>Annual Membership Fee</option><option>Lifetime Membership</option><option>Patron Membership</option><option>Other Member Contribution</option></select><input value={f.amount} onChange={e=>set("amount",e.target.value)} type="number" min="0" step="0.01" placeholder="Amount (₹)" required className={cls}/><input value={f.period} onChange={e=>set("period",e.target.value)} placeholder="Membership Period (e.g. Apr-2026)" className={cls}/><input value={f.receiptNo} onChange={e=>set("receiptNo",e.target.value)} placeholder="Receipt No." className={cls}/><select value={f.paymentMode} onChange={e=>set("paymentMode",e.target.value)} className={cls}><option>Cash</option><option>UPI</option><option>Bank Transfer</option><option>Cheque</option><option>Other</option></select><input value={f.transactionNo} onChange={e=>set("transactionNo",e.target.value)} placeholder="Transaction / Cheque No." className={cls}/><input value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose / Note" className={cls}/><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/><button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save Payment / Contribution</button></form></div>{notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}<div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1300px]"><thead className="bg-zinc-50"><tr>{["Date","Member ID","Member Name","Type","Amount","Period","Receipt No.","Payment Mode","Transaction No.","Purpose","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,d.memberId,d.memberName,d.contributionType||r.recordType,d.amount,d.period,d.receiptNo,d.paymentMode,d.transactionNo,d.purpose,d.remarks].map((v,i)=><td key={i} className="p-3">{v||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="12" className="p-8 text-center text-zinc-500">No membership/contribution transactions yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
 }
 
-function MeetingResolutions({rows,add,archive,restore,token}){
+function MeetingResolutions({rows,add,archive,restore,token,navigate}){
  const resolutionRows=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
  const calendarRows=(rows||[]).filter(r=>r.module==="meetings"&&r.status!=="deleted");
  const existing=resolutionRows;
@@ -1077,7 +1086,7 @@ function MeetingResolutions({rows,add,archive,restore,token}){
   }finally{setSaving(false);}
  };
  const editRecord=r=>{const d=r.data||{};const date=String(d.meetingDate||r.recordDate||"").slice(0,10);setEditingId(r.id);setF({...blank,...d,meetingDate:date});setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
- return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="Online, Offline और Hybrid — सभी meetings के लिए एक ही complete official record format.">
+ return <div className="space-y-5"><MeetingsNavigation navigate={navigate} active="meetingResolution"/><SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="Online, Offline और Hybrid — सभी meetings के लिए एक ही complete official record format.">
   <div className="bg-white border rounded-2xl p-5">
    <div className="bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4 mb-4 text-sm text-[#123B5D]"><b>Official Record:</b> Meeting mode के अनुसार Online / Offline / Hybrid details भरें. Meeting complete होने के बाद attendance, minutes, decisions और resolutions finalize करें.</div>
    <form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
@@ -1128,7 +1137,7 @@ function MeetingResolutions({rows,add,archive,restore,token}){
    {existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[String(d.meetingDate||r.recordDate||"").slice(0,10),[d.startTime,d.endTime].filter(Boolean).join(" – "),d.meetingType||r.recordType,d.meetingMode,d.meetingTitle,d.purpose,d.venue,d.onlineMeetingId,d.onlineMeetingLink,d.onlinePlatform,d.organizer,d.presentMembers,d.absentMembers,d.onlineParticipants,d.offlineParticipants,d.attendance,d.attendanceSummary,d.attendanceSheetRef,d.agenda,d.minutes||d.details,d.decision,d.resolutionNo,d.resolutionStatus,d.actionPoints,d.responsiblePersons,d.targetDate,d.supportingDocument,d.recordingRef,d.remarks].map((v,i)=><td key={i} className="p-3 align-top max-w-[320px] whitespace-pre-wrap">{v||"—"}</td>)}<td className="p-3 align-top whitespace-nowrap"><button type="button" onClick={()=>editRecord(r)} className="px-3 py-1.5 rounded-lg border border-[#1F7A70] text-[#1F7A70] font-bold mr-2">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}
    {!existing.length&&<tr><td colSpan="30" className="p-8 text-center text-zinc-500">No official meeting/resolution records yet.</td></tr>}
   </tbody></table></div>
- </SimpleOfficeCard>;
+ </SimpleOfficeCard></div>;
 }
 
 function ManagingCommittee({rows,add,updateRecord,archive,token}){
