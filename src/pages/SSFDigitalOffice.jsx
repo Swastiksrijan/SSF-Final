@@ -1003,6 +1003,7 @@ function MembershipContributions({rows,add,archive}){
 function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
  const resolutionRows=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
  const calendarRows=(rows||[]).filter(r=>r.module==="meetings"&&r.status!=="deleted");
+ const onlineRows=(rows||[]).filter(r=>r.module==="onlineMeetings"&&r.status!=="deleted");
  const existing=resolutionRows;
  useEffect(()=>{
   const pending=calendarRows.filter(r=>{
@@ -1019,6 +1020,13 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
   (async function(){
    for(const meeting of pending){
     const d=meeting.data||{};
+    const titleKey=String(d.meetingTitle||"").trim().toLowerCase();
+    const dateKey=String(d.date||meeting.recordDate||"").slice(0,10);
+    const onlineSource=onlineRows.find(x=>{
+     const od=x.data||{};
+     return String(od.title||"").trim().toLowerCase()===titleKey && String(od.date||x.recordDate||"").slice(0,10)===dateKey;
+    });
+    const od=onlineSource?.data||{};
     await add("meetingResolutions",{
      recordDate:d.date||meeting.recordDate,
      recordType:d.meetingType||"Meeting",
@@ -1033,9 +1041,9 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
       meetingTitle:d.meetingTitle||"",
       purpose:d.purpose||"",
       venue:d.venue||"",
-      onlineMeetingId:"",
-      onlineMeetingLink:d.meetingLink||"",
-      onlinePlatform:d.meetingLink?(d.platform||"Google Meet"):"",
+      onlineMeetingId:od.meetingId||"",
+      onlineMeetingLink:od.meetingLink||d.meetingLink||"",
+      onlinePlatform:od.meetingLink?(od.platform||"Google Meet"):(d.meetingLink?(d.platform||"Google Meet"):""),
       organizer:d.organizerHost||"",
       invitedParticipants:d.participants||"",
       presentMembers:"",
@@ -1063,7 +1071,7 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
     });
    }
   })();
- },[calendarRows.length,resolutionRows.length]);
+ },[calendarRows.length,resolutionRows.length,onlineRows.length]);
  const [archived,setArchived]=useState([]);
  const loadArchived=async()=>{
   try{
