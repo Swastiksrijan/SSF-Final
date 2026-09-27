@@ -228,136 +228,40 @@ export default function SSFDigitalOffice(){
  </div></div>;
 }
 function NotificationsHub({rows,add,archive,updateRecord,token}){
- const [tab,setTab]=useState("information");
- const [showForm,setShowForm]=useState(false),[members,setMembers]=useState([]); useEffect(()=>{if(!token)return;fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}}).then(r=>r.ok?r.json():[]).then(d=>setMembers(Array.isArray(d)?d:[])).catch(()=>setMembers([]));},[token]);
- const tabs=[
-  ["information","Information & Communication / सूचना एवं संचार","Official information, communication & responsibilities","bg-sky-600"],
-  ["response","Response & Participation / प्रतिक्रिया एवं सहभागिता","Responses, attendance & participation","bg-emerald-600"],
-  ["followup","Reminder & Follow-up / अनुस्मारक एवं अनुवर्ती कार्य","Reminders, pending actions & follow-ups","bg-amber-600"],
-  ["notice","Notice & Explanation / नोटिस एवं स्पष्टीकरण","Formal notices, explanations & outcomes","bg-rose-600"]
- ];
+ const [tab,setTab]=useState("dashboard"),[members,setMembers]=useState([]),[showForm,setShowForm]=useState(false),[editing,setEditing]=useState(null);
+ const [search,setSearch]=useState(""),[status,setStatus]=useState("all");
+ const headers={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
+ const loadMembers=async()=>{try{const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers});const d=r.ok?await r.json():[];setMembers(Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]));}catch(e){setMembers([]);}};
+ useEffect(()=>{loadMembers();},[]);
+ const allRows=rows||[];
  const typeMap={
-  information:["Information","Communication","Announcement","Meeting Information","Responsibility / Task","Document / Information Request"],
-  response:["Response Received","No Response","Meeting Not Attended","Online Meeting Not Joined","Task Not Responded","Task Not Completed","Non-Participation"],
+  information:["Information","Meeting Information","Announcement","Responsibility / Task","Document / Information Request"],
+  response:["Response Received","No Response","Meeting Not Attended","Online Meeting Not Joined","Non-Participation","Task Not Completed"],
   followup:["First Reminder","Second Reminder","Final Reminder","Follow-up","Pending Response","Pending Action"],
   notice:["Formal Notice","Explanation Requested","Explanation Received","Explanation Not Received","Further Clarification","Outcome / Decision Reference"]
  };
- const allRows=rows||[];
- const classifySection=r=>{
-  const d=r.data||{};
-  // These five existing test records were created before the section field was
-  // reliable. Their record IDs are the stable fallback for the current data.
-  // This changes display classification only; no database records are created/deleted.
-  // Existing five records may expose their ID under different keys depending
-  // on the API/ORM serialization. Normalize all known ID locations first.
-  const rid=String(
-   r.recordId ||
-   r.id ||
-   d.recordId ||
-   d.notificationId ||
-   d.noticeId ||
-   ""
-  ).trim();
-  const legacySections={
-   "SSF-NTF-20260926-00001":"information",
-   "SSF-NTF-20260926-00002":"response",
-   "SSF-NTF-20260926-00003":"notice",
-   "SSF-NTF-20260926-00004":"notice",
-   "SSF-NTF-20260926-00005":"notice"
-  };
-  if(legacySections[rid])return legacySections[rid];
-  // Also handle an API response where only a compatible notification ID
-  // string is available with a prefix/suffix variation.
-  const legacyNo=rid.match(/SSF-NTF-20260926-(00001|00002|00003|00004|00005)$/i);
-  if(legacyNo){
-   const n=legacyNo[1];
-   return n==="00001"?"information":n==="00002"?"response":"notice";
-  }
-
-  // For every other record, an explicitly saved section is authoritative.
-  const explicit=String(d.section||d.communicationSection||"").trim().toLowerCase();
-  if(["information","response","followup","notice"].includes(explicit))return explicit;
-
-  const stage=String(d.noticeStage||d.sectionStage||d.communicationStage||d.recordType||"").trim();
-  if((typeMap.notice||[]).includes(stage))return "notice";
-  if((typeMap.followup||[]).includes(stage))return "followup";
-  if((typeMap.response||[]).includes(stage))return "response";
-  if((typeMap.information||[]).includes(stage))return "information";
-  const text=[d.subject,d.details,d.responseDetails].filter(Boolean).join(" ").toLowerCase();
-  if(/formal notice|explanation requested|explanation received|explanation not received|further clarification|outcome|decision reference/.test(text))return "notice";
-  if(d.followUpDate||d.followUpResult)return "followup";
-  if(d.participationStatus&&d.participationStatus!=="Not Applicable")return "response";
-  if(d.responseStatus&&d.responseStatus!=="Not Applicable")return "response";
-  return "information";
- };
- const countStage=key=>allRows.filter(r=>classifySection(r)===key).length;
- const pending=allRows.filter(r=>["pending","active"].includes(String(r.status||"").toLowerCase())).length;
- const followups=allRows.filter(r=>{const d=r.data||{};return d.followUpDate&&String(r.status||"").toLowerCase()!=="closed"&&String(r.status||"").toLowerCase()!=="archived";}).length;
- const notices=countStage("notice");
- const activeTab=tabs.find(t=>t[0]===tab)||tabs[0];
- const filtered=allRows.filter(r=>classifySection(r)===tab);
+ const classify=r=>{const d=r.data||{},s=String(d.section||d.communicationSection||"").toLowerCase(),stage=String(d.noticeStage||d.recordType||"");if(["information","response","followup","notice"].includes(s))return s;if(typeMap.notice.includes(stage))return "notice";if(typeMap.followup.includes(stage))return "followup";if(typeMap.response.includes(stage))return "response";return "information";};
+ const count=k=>allRows.filter(r=>classify(r)===k).length;
+ const active=allRows.filter(r=>["active","pending"].includes(String(r.status||"").toLowerCase())).length;
+ const due=allRows.filter(r=>{const d=r.data||{};return d.followUpDate&&String(r.status||"").toLowerCase()!=="closed";}).length;
+ const formal=count("notice");
+ const filtered=allRows.filter(r=>{const d=r.data||{},q=search.toLowerCase(),hay=[r.recordId,r.recordDate,d.caseId,d.name,d.role,d.subject,d.details,d.noticeStage,d.channel,d.relatedRecordId,Array.isArray(d.recipients)?d.recipients.map(x=>x.name).join(" "):""].join(" ").toLowerCase();return (!q||hay.includes(q))&&(status==="all"||String(r.status||"").toLowerCase()===status)&&(tab==="dashboard"||classify(r)===tab);});
+ const openNew=(section)=>{setEditing(null);setTab(section||"information");setShowForm(true);};
+ const edit=r=>{setEditing(r);setTab(classify(r));setShowForm(true);};
+ const save=async d=>{if(!d){setShowForm(false);setEditing(null);return;}const ok=editing?await updateRecord(editing.id,"notifications",d):await add("notifications",d);if(ok){setShowForm(false);setEditing(null);}};
+ const sendPreview=(r)=>{const d=r.data||{},msg=d.message||d.details||"",phone=String(d.mobile||"").replace(/\D/g,"");if(phone)window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank","noopener,noreferrer");else if(d.email)window.location.href="mailto:"+d.email+"?subject="+encodeURIComponent(d.subject||"SSF Communication")+"&body="+encodeURIComponent(msg);else navigator.clipboard?.writeText(msg).then(()=>alert("Message copied."));};
+ const recipientOptions=members.map(r=>{const d=r.data||{};return {id:r.id,memberId:r.recordId,name:d.fullName||d.name||"Member",role:d.designation||d.organizationRole||"",mobile:d.mobile||d.phone||d.mobileNo||"",email:d.email||""};});
  return <div className="space-y-5">
-  <div className="rounded-3xl bg-gradient-to-r from-[#002344] via-[#123B5D] to-[#1b557e] text-white p-5 sm:p-7 shadow-lg">
-   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-    <div>
-     <div className="text-xs font-bold uppercase tracking-[0.18em] text-white/70">SSF Digital Office</div>
-     <h1 className="text-2xl sm:text-3xl font-black mt-1">Notices, Alerts & Follow-ups</h1>
-     <p className="text-sm sm:text-base text-white/80 mt-1">नोटिस, सूचनाएँ एवं अनुवर्ती कार्य</p>
-     <p className="text-sm text-white/70 mt-3 max-w-2xl">Information से लेकर response, reminder और formal explanation तक पूरा communication record एक ही जगह रखें।</p>
-    </div>
-    <button type="button" onClick={()=>setShowForm(true)} className="shrink-0 bg-white text-[#002344] px-5 py-3 rounded-xl font-black shadow hover:bg-zinc-100 transition flex items-center justify-center gap-2"><FaPlus/> New Communication</button>
-   </div>
-  </div>
-
-  <div className="grid grid-cols-2 xl:grid-cols-4 gap-3">
-   <div className="bg-white border rounded-2xl p-4 shadow-sm"><div className="text-xs font-bold text-zinc-500">TOTAL RECORDS</div><div className="text-3xl font-black text-[#002344] mt-1">{allRows.length}</div><div className="text-xs text-zinc-400 mt-1">सभी communication records</div></div>
-   <div className="bg-white border rounded-2xl p-4 shadow-sm"><div className="text-xs font-bold text-zinc-500">ACTIVE / PENDING</div><div className="text-3xl font-black text-amber-600 mt-1">{pending}</div><div className="text-xs text-zinc-400 mt-1">Follow-up required</div></div>
-   <div className="bg-white border rounded-2xl p-4 shadow-sm"><div className="text-xs font-bold text-zinc-500">FOLLOW-UPS</div><div className="text-3xl font-black text-sky-700 mt-1">{followups}</div><div className="text-xs text-zinc-400 mt-1">Follow-up date recorded</div></div>
-   <div className="bg-white border rounded-2xl p-4 shadow-sm"><div className="text-xs font-bold text-zinc-500">NOTICES / EXPLANATION</div><div className="text-3xl font-black text-rose-600 mt-1">{notices}</div><div className="text-xs text-zinc-400 mt-1">Formal stage records</div></div>
-  </div>
-
-  <div className="bg-white border rounded-2xl p-3 shadow-sm">
-   <div className="flex flex-wrap gap-2">
-    {tabs.map(t=><button key={t[0]} type="button" onClick={()=>setTab(t[0])} className={"flex-1 min-w-[210px] px-4 py-3 rounded-xl text-left transition border "+(tab===t[0]?"bg-[#123B5D] text-white border-[#123B5D] shadow":"bg-zinc-50 text-[#123B5D] border-zinc-200 hover:bg-zinc-100")}>
-      <div className="font-black text-sm">{t[1]}</div><div className={"text-xs mt-1 "+(tab===t[0]?"text-white/70":"text-zinc-500")}>{t[2]}</div><div className={"mt-2 text-xs font-bold "+(tab===t[0]?"text-white":"text-zinc-400")}>{countStage(t[0])} record(s)</div>
-    </button>)}
-   </div>
-  </div>
-
-  {showForm&&<div className="bg-white border rounded-2xl shadow-sm overflow-hidden"><div className="px-5 py-4 border-b flex items-center justify-between"><div><div className="font-black text-[#002344]">New Communication / नई सूचना</div><div className="text-xs text-zinc-500 mt-1">{activeTab[1]}</div></div><button type="button" onClick={()=>setShowForm(false)} className="text-zinc-500 hover:text-zinc-900 font-bold">Close</button></div><NotificationForm members={members} section={tab} types={typeMap[tab]} onSave={async d=>{if(!d){setShowForm(false);return;}const ok=await add("notifications",d);if(ok)setShowForm(false);}}/></div>}
-
-  <div className="bg-zinc-50 border rounded-2xl p-4 sm:p-5">
-   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2"><div><h2 className="font-black text-[#002344]">{activeTab[1]}</h2><p className="text-xs text-zinc-500 mt-1">{activeTab[2]}</p></div><div className="text-sm font-bold text-zinc-500">{filtered.length} record(s)</div></div>
-   <div className="grid sm:grid-cols-3 gap-3 mt-4">
-    <div className="bg-white border rounded-xl p-3"><div className="text-xs text-zinc-500 font-bold">SECTION RECORDS</div><div className="text-xl font-black text-[#002344] mt-1">{filtered.length}</div></div>
-    <div className="bg-white border rounded-xl p-3"><div className="text-xs text-zinc-500 font-bold">ACTIVE</div><div className="text-xl font-black text-emerald-600 mt-1">{filtered.filter(r=>String(r.status||"").toLowerCase()==="active").length}</div></div>
-    <div className="bg-white border rounded-xl p-3"><div className="text-xs text-zinc-500 font-bold">PENDING</div><div className="text-xl font-black text-amber-600 mt-1">{filtered.filter(r=>String(r.status||"").toLowerCase()==="pending").length}</div></div>
-   </div>
-  </div>
-
-  <NotificationRegister tab={tab} rows={filtered} add={add} archive={archive} updateRecord={updateRecord} types={typeMap[tab]||[]} members={members}/>
+  <div className="rounded-3xl bg-gradient-to-r from-[#002344] via-[#123B5D] to-[#7c2946] text-white p-6 sm:p-8 shadow-lg"><div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5"><div><div className="text-xs font-black uppercase tracking-[.18em] text-white/60">SSF Digital Office · Communication Control</div><h1 className="text-3xl sm:text-4xl font-black mt-1">Notices, Alerts & Follow-ups</h1><p className="text-white/80 mt-1">नोटिस, सूचनाएँ एवं अनुवर्ती कार्य</p><p className="text-sm text-white/70 mt-3 max-w-3xl">Information → Response → Reminder → Follow-up → Formal Notice/Explanation — हर communication का linked record.</p></div><button type="button" onClick={()=>openNew("information")} className="bg-white text-[#002344] px-5 py-3 rounded-xl font-black"><FaPlus className="inline mr-2"/> New Communication</button></div></div>
+  <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3"><div className="bg-white border rounded-2xl p-4"><div className="text-[11px] font-black text-zinc-500">TOTAL</div><div className="text-3xl font-black text-[#002344]">{allRows.length}</div></div><div className="bg-white border rounded-2xl p-4"><div className="text-[11px] font-black text-zinc-500">ACTIVE / PENDING</div><div className="text-3xl font-black text-amber-600">{active}</div></div><div className="bg-white border rounded-2xl p-4"><div className="text-[11px] font-black text-zinc-500">FOLLOW-UPS DUE</div><div className="text-3xl font-black text-sky-700">{due}</div></div><div className="bg-white border rounded-2xl p-4"><div className="text-[11px] font-black text-zinc-500">FORMAL</div><div className="text-3xl font-black text-rose-600">{formal}</div></div><div className="bg-white border rounded-2xl p-4"><div className="text-[11px] font-black text-zinc-500">INFORMATION</div><div className="text-3xl font-black text-[#002344]">{count("information")}</div></div><div className="bg-white border rounded-2xl p-4"><div className="text-[11px] font-black text-zinc-500">RESPONSES</div><div className="text-3xl font-black text-emerald-700">{count("response")}</div></div><div className="bg-white border rounded-2xl p-4"><div className="text-[11px] font-black text-zinc-500">REMINDERS</div><div className="text-3xl font-black text-amber-700">{count("followup")}</div></div><div className="bg-white border rounded-2xl p-4"><div className="text-[11px] font-black text-zinc-500">CASES</div><div className="text-3xl font-black text-[#123B5D]">{new Set(allRows.map(r=>(r.data||{}).caseId).filter(Boolean)).size}</div></div></div>
+  <div className="bg-white border rounded-2xl p-2"><div className="grid grid-cols-2 sm:grid-cols-5 gap-2">{[["dashboard","Dashboard"],["information","Information & Communication"],["response","Response & Participation"],["followup","Reminder & Follow-up"],["notice","Notice & Explanation"]].map(x=><button key={x[0]} type="button" onClick={()=>setTab(x[0])} className={"px-3 py-3 rounded-xl font-black text-sm "+(tab===x[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D]")}>{x[1]}</button>)}</div></div>
+  {showForm&&<NotificationForm members={members} section={tab==="dashboard"?"information":tab} types={typeMap[tab==="dashboard"?"information":tab]} initial={editing?.data||{recordId:editing?.recordId}} onCancel={()=>{setShowForm(false);setEditing(null);}} onSave={save}/>}
+  {tab==="dashboard"&&<div className="grid lg:grid-cols-2 gap-5"><div className="bg-white border rounded-2xl p-5"><h2 className="text-xl font-black text-[#002344]">Action Required</h2><div className="space-y-2 mt-4">{allRows.filter(r=>["active","pending"].includes(String(r.status||"").toLowerCase())).slice(0,10).map(r=><button type="button" key={r.id} onClick={()=>edit(r)} className="w-full text-left border rounded-xl p-3 hover:bg-zinc-50"><b>{(r.data||{}).subject||"Communication"}</b><div className="text-xs text-zinc-500 mt-1">{(r.data||{}).name||"Multiple recipients"} · {(r.data||{}).noticeStage||"Information"} · {formatOfficeDate(r.recordDate)}</div></button>)}{!active&&<p className="text-sm text-zinc-400">No active follow-up records.</p>}</div></div><div className="bg-white border rounded-2xl p-5"><h2 className="text-xl font-black text-[#002344]">Workflow</h2><div className="space-y-2 mt-4 text-sm">{["Information / सूचना","Response / प्रतिक्रिया","Reminder / अनुस्मारक","Follow-up / अनुवर्ती कार्य","Notice / Explanation / नोटिस व स्पष्टीकरण","Outcome / Closure / परिणाम"].map((x,i)=><div key={x} className="flex items-center gap-3"><span className="h-7 w-7 rounded-full bg-[#123B5D] text-white text-xs font-black flex items-center justify-center">{i+1}</span><span>{x}</span></div>)}</div><p className="text-xs text-zinc-500 mt-4">Meeting attendance, membership contribution and other source registers can be linked through Meeting ID / Member ID / Related Record ID.</p></div></div>}
+  {tab!=="dashboard"&&<div className="bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b flex flex-col xl:flex-row gap-3 xl:items-center justify-between"><div><h2 className="text-xl font-black text-[#002344]">{tab==="information"?"Information & Communication":tab==="response"?"Response & Participation":tab==="followup"?"Reminder & Follow-up":"Notice & Explanation"}</h2><p className="text-sm text-zinc-500 mt-1">{filtered.length} record(s) · linked communication history</p></div><div className="flex flex-wrap gap-2"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search name / ID / matter" className="px-3 py-2.5 border rounded-xl"/><select value={status} onChange={e=>setStatus(e.target.value)} className="px-3 py-2.5 border rounded-xl"><option value="all">All Status</option><option value="active">Active</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="closed">Closed</option><option value="archived">Archived</option></select><button type="button" onClick={()=>openNew(tab)} className="bg-[#002344] text-white px-4 py-2.5 rounded-xl font-bold"><FaPlus className="inline mr-2"/>Add</button></div></div>
+  <div className="overflow-auto"><table className="w-full text-sm min-w-[1250px]"><thead className="bg-zinc-50"><tr>{["Case / Record ID","Date","Person / Recipients","Stage","Matter","Channel","Response","Participation","Follow-up","Status","Actions"].map(h=><th key={h} className="p-3 text-left whitespace-nowrap">{h}</th>)}</tr></thead><tbody className="divide-y">{filtered.map(r=>{const d=r.data||{},rec=Array.isArray(d.recipients)?d.recipients.map(x=>x.name).filter(Boolean).join(", "):"";return <tr key={r.id}><td className="p-3 font-black text-[#002344] whitespace-nowrap">{d.caseId||r.recordId}</td><td className="p-3 whitespace-nowrap">{formatOfficeDate(r.recordDate||d.date)}</td><td className="p-3 min-w-[220px]"><b>{d.name||rec||"—"}</b><div className="text-xs text-zinc-400">{d.role||""}</div></td><td className="p-3 font-bold">{d.noticeStage||"Information"}</td><td className="p-3 min-w-[240px]"><b>{d.subject||"—"}</b><div className="text-xs text-zinc-400 mt-1">{d.relatedRecordId||""}</div></td><td className="p-3">{d.channel||"—"}</td><td className="p-3">{d.responseStatus||"—"}</td><td className="p-3">{d.participationStatus||"—"}</td><td className="p-3">{d.followUpDate||"—"}</td><td className="p-3">{r.status}</td><td className="p-3 whitespace-nowrap"><button type="button" onClick={()=>edit(r)} className="px-3 py-1.5 rounded-lg border text-[#123B5D] font-bold">Edit</button><button type="button" onClick={()=>sendPreview(r)} className="ml-2 px-3 py-1.5 rounded-lg border border-emerald-200 text-emerald-700 font-bold">Send</button><button type="button" onClick={()=>archive(r.id)} className="ml-2 px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!filtered.length&&<tr><td colSpan="11" className="p-10 text-center text-zinc-400">No records found.</td></tr>}</tbody></table></div></div>}
  </div>;
 }
-function NotificationRegister({tab,rows,add,archive,updateRecord,types,members=[],hideAdd=false}){
- const [open,setOpen]=useState(false),[search,setSearch]=useState(""),[status,setStatus]=useState("all"),[editing,setEditing]=useState(null);
- const filtered=(rows||[]).filter(r=>{const d=r.data||{},q=search.toLowerCase(),hay=[r.recordId,r.recordDate,d.name,d.role,d.subject,d.details,d.noticeStage,d.channel,d.section,Array.isArray(d.recipients)?d.recipients.map(x=>x.name).join(" "):""].join(" ").toLowerCase();return (!q||hay.includes(q))&&(status==="all"||String(r.status||"").toLowerCase()===status);});
- const title=tab==="information"?"Information & Communication / सूचना एवं संचार":tab==="response"?"Response & Participation / प्रतिक्रिया एवं सहभागिता":tab==="followup"?"Reminder & Follow-up / अनुस्मारक एवं अनुवर्ती कार्य":"Notice & Explanation / नोटिस एवं स्पष्टीकरण";
- const shareRecord=r=>{
-  const d=r.data||{};
-  const msg=[d.subject&&("Subject: "+d.subject),d.details,d.expectedAction&&("Expected Action: "+d.expectedAction),d.expectedDate&&("Expected Date: "+d.expectedDate),d.responseDetails&&("Response / Explanation: "+d.responseDetails),d.followUpDate&&("Follow-up Date: "+d.followUpDate)].filter(Boolean).join("\n");
-  if(navigator.share){navigator.share({title:d.subject||"SSF Official Communication",text:msg}).catch(()=>{});return;}
-  const phone=String(d.mobile||d.phone||"").replace(/\D/g,"");
-  if(phone){window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank","noopener,noreferrer");return;}
-  if(d.email){window.location.href="mailto:"+d.email+"?subject="+encodeURIComponent(d.subject||"SSF Official Communication")+"&body="+encodeURIComponent(msg);return;}
-  navigator.clipboard?.writeText(msg).then(()=>alert("Communication copied to clipboard.")).catch(()=>alert(msg));
- };
- return <div className="bg-white rounded-2xl border overflow-hidden">
-  <div className="p-5 sm:p-7 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-4"><div><h2 className="text-2xl font-black text-[#002344]">{title}</h2><p className="text-sm text-zinc-500 mt-1">{filtered.length} record(s) · secure database</p></div><div className="flex flex-wrap gap-2 items-center"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search person / subject / ID" className="px-3 py-2.5 border rounded-xl w-56"/><select value={status} onChange={e=>setStatus(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Status</option><option value="active">Active</option><option value="pending">Pending</option><option value="completed">Completed</option><option value="closed">Closed</option><option value="archived">Archived</option></select>{!hideAdd&&<button onClick={()=>setOpen(!open)} className="bg-[#002344] text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2"><FaPlus/> Add</button>}</div></div>
-  {open&&<NotificationForm members={members} section={tab} types={types} onSave={async d=>{if(!d){setOpen(false);return;}const ok=await add("notifications",d);if(ok)setOpen(false);}}/>}
-  {editing&&<div className="border-b"><div className="px-5 py-4 bg-blue-50 border-b font-black text-[#002344]">Edit Communication / सूचना संपादित करें — {editing.recordId}</div><NotificationForm members={members} section={tab} types={types} initial={editing.data||{}} onCancel={()=>setEditing(null)} onSave={async d=>{if(!d){setEditing(null);return;}const ok=await updateRecord(editing.id,"notifications",d);if(ok)setEditing(null);}}/></div>}
-  <div className="overflow-x-auto"><table className="w-full text-left text-sm"><thead><tr className="bg-zinc-50 text-zinc-500 text-xs uppercase"><th className="p-3">ID</th><th className="p-3">Date</th><th className="p-3">Person / Role</th><th className="p-3">Matter</th><th className="p-3">Response / Action</th><th className="p-3">Status</th><th className="p-3">Actions</th></tr></thead><tbody className="divide-y">{filtered.length===0?<tr><td colSpan="7" className="p-10 text-center text-zinc-400">No records yet.</td></tr>:filtered.map(r=>{const d=r.data||{};return <tr key={r.id}><td className="p-3 font-bold text-[#002344] whitespace-nowrap">{r.recordId}</td><td className="p-3 whitespace-nowrap">{formatOfficeDate(r.recordDate)}</td><td className="p-3"><b>{d.name||(Array.isArray(d.recipients)&&d.recipients.length?d.recipients.map(x=>x.name).filter(Boolean).join(", "):"—")}</b><div className="text-xs text-zinc-400">{d.role||(Array.isArray(d.recipients)&&d.recipients.length?d.recipients.map(x=>x.role).filter(Boolean).join(", "):"")}</div></td><td className="p-3 min-w-[260px]"><b>{d.noticeStage||"—"}</b><div className="text-xs text-zinc-400 mt-1">{d.subject||d.details||""}</div></td><td className="p-3">{d.responseStatus||d.responseDetails||d.followUpResult||"—"}</td><td className="p-3">{r.status}</td><td className="p-3"><div className="flex flex-wrap gap-2 justify-end"><button onClick={()=>setEditing(r)} className="text-xs font-bold text-[#123B5D] border border-[#123B5D]/20 px-2.5 py-1.5 rounded-lg">Edit</button><button onClick={()=>shareRecord(r)} className="text-xs font-bold text-emerald-700 border border-emerald-200 px-2.5 py-1.5 rounded-lg">Share</button><button onClick={()=>archive(r.id)} className="text-xs font-bold text-red-600 border border-red-200 px-2.5 py-1.5 rounded-lg">Archive</button></div></td></tr>})}</tbody></table></div>
- </div>;
-}
+
 function NotificationForm({types,onSave,initial={},onCancel,members=[],section=""}){
  const [f,setF]=useState({date:initial.date||new Date().toISOString().slice(0,10),section:initial.section||section,selectedMemberIds:initial.selectedMemberIds||[],name:initial.name||"",role:initial.role||"",noticeStage:initial.noticeStage||types[0]||"",subject:initial.subject||"",details:initial.details||"",channel:initial.channel||"Official WhatsApp Group",expectedAction:initial.expectedAction||"",expectedDate:initial.expectedDate||"",responseStatus:initial.responseStatus||"Not Applicable",responseDate:initial.responseDate||"",responseDetails:initial.responseDetails||"",participationStatus:initial.participationStatus||"Not Applicable",followUpDate:initial.followUpDate||"",followUpResult:initial.followUpResult||"",status:initial.status||"active",relatedRecordId:initial.relatedRecordId||"",evidenceRef:initial.evidenceRef||"",mobile:initial.mobile||initial.phone||"",email:initial.email||""});
  const set=(k,v)=>setF(x=>({...x,[k]:v})); const toggleMember=id=>setF(x=>({...x,selectedMemberIds:x.selectedMemberIds.includes(id)?x.selectedMemberIds.filter(v=>v!==id):[...x.selectedMemberIds,id]})); const selectedMembers=members.filter(r=>f.selectedMemberIds.includes(r.id)); const selectAll=()=>setF(x=>({...x,selectedMemberIds:x.selectedMemberIds.length===members.length?[]:members.map(r=>r.id)})); const input=(k,p,req=false)=><input value={f[k]} onChange={e=>set(k,e.target.value)} placeholder={p} required={req} className={cls}/>; const area=(k,p)=><textarea value={f[k]} onChange={e=>set(k,e.target.value)} placeholder={p} className={cls+" min-h-[90px]"}/>;
@@ -365,36 +269,99 @@ function NotificationForm({types,onSave,initial={},onCancel,members=[],section="
 }
 
 function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
- const [tab,setTab]=useState("calendar");
- const [resolutionRows,setResolutionRows]=useState([]);
- const [calendarRows,setCalendarRows]=useState([]);
- const [onlineRows,setOnlineRows]=useState([]);
- const tabs=[["calendar","Meeting Calendar / बैठक कैलेंडर"],["online","Online Meetings / ऑनलाइन बैठकें"],["resolution","Meeting & Resolution / बैठक व प्रस्ताव"]];
+ const [tab,setTab]=useState("dashboard");
+ const [meetings,setMeetings]=useState([]);
+ const [showForm,setShowForm]=useState(false),[editing,setEditing]=useState(null);
+ const [search,setSearch]=useState(""),[filter,setFilter]=useState("all");
  const headers={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
- const loadMeetingLinkedRows=async()=>{
+ const load=async()=>{
   try{
-   const h={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
-   const [cr,or,rr]=await Promise.all(["meetings","onlineMeetings","meetingResolutions"].map(function(m){return fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+m,{headers:h}).then(function(x){return x.ok?x.json():[];});}));
-   setCalendarRows(Array.isArray(cr)?cr:[]); setOnlineRows(Array.isArray(or)?or:[]); setResolutionRows(Array.isArray(rr)?rr:[]);
-  }catch(e){setCalendarRows([]);setOnlineRows([]);setResolutionRows([]);}
- };
- const loadResolutionRows=async()=>{
-  try{
-   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=meetingResolutions",{headers});
+   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=meetings",{headers});
    const d=r.ok?await r.json():[];
-   setResolutionRows(Array.isArray(d)?d:[]);
-  }catch(e){setResolutionRows([]);}
+   setMeetings(Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]));
+  }catch(e){setMeetings([]);}
  };
- useEffect(()=>{loadMeetingLinkedRows();},[]);
+ useEffect(()=>{load();},[]);
+ const blank={
+  meetingId:"",date:new Date().toISOString().slice(0,10),startTime:"",endTime:"",
+  meetingTitle:"",meetingType:"Managing Committee Meeting",mode:"Online",platform:"Google Meet",
+  venue:"",meetingLink:"",organizerHost:"Ramesh Pandey",purpose:"",agenda:"",
+  invitedMembers:[],presentMembers:[],absentMembers:[],onlineParticipants:[],
+  minutes:"",decisions:"",resolutionNo:"",resolutionStatus:"Not Applicable",
+  actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",
+  status:"Scheduled",remarks:""
+ };
+ const [form,setForm]=useState(blank);
+ const memberNames=(d)=>Array.isArray(d)?d.map(x=>typeof x==="string"?x:(x.name||x.fullName||x.memberId||"")).filter(Boolean):[];
+ const makeId=()=>{const day=form.date.replace(/-/g,""),stamp=String(Date.now()).slice(-4);return "SSF-Meeting-"+day+"-"+stamp;};
+ const openNew=()=>{setEditing(null);setForm({...blank,meetingId:"SSF-Meeting-"+new Date().toISOString().slice(0,10).replace(/-/g,"")+"-"+String(Date.now()).slice(-4)});setShowForm(true);};
+ const edit=(r)=>{setEditing(r);setForm({...blank,...(r.data||{}),meetingId:(r.data||{}).meetingId||r.recordId});setShowForm(true);};
+ const save=async()=>{
+  if(!form.meetingTitle||!form.date)return;
+  const data={...form,meetingId:form.meetingId||makeId(),recordDate:form.date,recordType:form.meetingType,status:form.status};
+  const ok=editing?await updateRecord(editing.id,"meetings",data):await add("meetings",data);
+  if(ok){setShowForm(false);setEditing(null);await load();}
+ };
+ const filtered=meetings.filter(r=>{
+  const d=r.data||{},q=search.toLowerCase();
+  const hay=[r.recordId,r.recordDate,d.meetingId,d.meetingTitle,d.meetingType,d.mode,d.platform,d.venue,d.organizerHost,d.purpose].join(" ").toLowerCase();
+  return (!q||hay.includes(q))&&(filter==="all"||String(d.status||r.status||"").toLowerCase()===filter);
+ });
+ const today=new Date().toISOString().slice(0,10);
+ const total=meetings.length,upcoming=meetings.filter(r=>{const d=r.data||{};return String(d.date||"")>=today&&String(d.status||"").toLowerCase()==="scheduled";}).length;
+ const completed=meetings.filter(r=>String((r.data||{}).status||r.status||"").toLowerCase()==="completed").length;
+ const online=meetings.filter(r=>String((r.data||{}).mode||"").toLowerCase()==="online").length;
+ const offline=meetings.filter(r=>String((r.data||{}).mode||"").toLowerCase()==="offline").length;
+ const hybrid=meetings.filter(r=>String((r.data||{}).mode||"").toLowerCase()==="hybrid").length;
+ const pendingMinutes=meetings.filter(r=>String((r.data||{}).status||"").toLowerCase()==="completed"&&!String((r.data||{}).minutes||"").trim()).length;
+ const pendingActions=meetings.filter(r=>String((r.data||{}).actionPoints||"").trim()&&(!String((r.data||{}).targetDate||"").trim()||String((r.data||{}).status||"").toLowerCase()!=="completed")).length;
+ const card=(label,value,sub)=> <div className="bg-white border rounded-2xl p-4 shadow-sm"><div className="text-[11px] font-black uppercase tracking-wide text-zinc-500">{label}</div><div className="text-3xl font-black text-[#002344] mt-1">{value}</div><div className="text-xs text-zinc-400 mt-1">{sub}</div></div>;
+ const meetingForm=<div className="bg-white border rounded-2xl overflow-hidden shadow-sm"><div className="p-5 bg-[#002344] text-white flex flex-col sm:flex-row sm:items-center justify-between gap-3"><div><div className="text-xs uppercase tracking-[.16em] text-white/60">Master Meeting Record</div><h2 className="text-xl font-black mt-1">{editing?"Edit Meeting":"Create Meeting"}</h2><p className="text-sm text-white/70 mt-1">एक बार दर्ज करें — Calendar, Online Meeting और Official Record में यही data रहेगा.</p></div><button type="button" onClick={()=>setShowForm(false)} className="border border-white/30 px-4 py-2 rounded-xl font-bold">Close</button></div>
+ <div className="p-5 bg-zinc-50 grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+  <div className="lg:col-span-2"><label className="text-xs font-bold text-zinc-500">Meeting ID</label><input value={form.meetingId} readOnly className={cls+" mt-1 bg-zinc-100"}/></div>
+  <div><label className="text-xs font-bold text-zinc-500">Date *</label><input type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})} className={cls+" mt-1"}/></div>
+  <div><label className="text-xs font-bold text-zinc-500">Status</label><select value={form.status} onChange={e=>setForm({...form,status:e.target.value})} className={cls+" mt-1"}><option>Scheduled</option><option>Completed</option><option>Cancelled</option><option>Postponed</option></select></div>
+  <input value={form.meetingTitle} onChange={e=>setForm({...form,meetingTitle:e.target.value})} placeholder="Meeting Title *" className={cls+" sm:col-span-2 lg:col-span-4"}/>
+  <select value={form.meetingType} onChange={e=>setForm({...form,meetingType:e.target.value})} className={cls}><option>Managing Committee Meeting</option><option>General Body Meeting</option><option>Special Meeting</option><option>Emergency Meeting</option><option>MoU / Collaboration Meeting</option><option>Project / Program Meeting</option><option>Other</option></select>
+  <select value={form.mode} onChange={e=>setForm({...form,mode:e.target.value})} className={cls}><option>Online</option><option>Offline</option><option>Hybrid</option></select>
+  <input type="time" value={form.startTime} onChange={e=>setForm({...form,startTime:e.target.value})} className={cls}/>
+  <input type="time" value={form.endTime} onChange={e=>setForm({...form,endTime:e.target.value})} className={cls}/>
+  {form.mode!=="Online"&&<input value={form.venue} onChange={e=>setForm({...form,venue:e.target.value})} placeholder="Venue / Location" className={cls}/>}
+  {form.mode!=="Offline"&&<><select value={form.platform} onChange={e=>setForm({...form,platform:e.target.value})} className={cls}><option>Google Meet</option><option>Zoom</option><option>Microsoft Teams</option><option>Other</option></select><input value={form.meetingLink} onChange={e=>setForm({...form,meetingLink:e.target.value})} placeholder="Online Meeting Link" className={cls}/></>}
+  <input value={form.organizerHost} onChange={e=>setForm({...form,organizerHost:e.target.value})} placeholder="Organizer / Host" className={cls}/>
+  <input value={form.purpose} onChange={e=>setForm({...form,purpose:e.target.value})} placeholder="Purpose / Why this meeting" className={cls+" sm:col-span-2 lg:col-span-3"}/>
+  <textarea value={form.agenda} onChange={e=>setForm({...form,agenda:e.target.value})} placeholder="Agenda / Discussion Points" className={cls+" min-h-[100px] sm:col-span-2 lg:col-span-4"}/>
+  <textarea value={form.invitedMembers.join("\n")} onChange={e=>setForm({...form,invitedMembers:e.target.value.split("\n").map(x=>x.trim()).filter(Boolean)})} placeholder="Invited Members — one per line" className={cls+" min-h-[90px]"}/>
+  <textarea value={form.presentMembers.join("\n")} onChange={e=>setForm({...form,presentMembers:e.target.value.split("\n").map(x=>x.trim()).filter(Boolean)})} placeholder="Present Members — after meeting" className={cls+" min-h-[90px]"}/>
+  <textarea value={form.absentMembers.join("\n")} onChange={e=>setForm({...form,absentMembers:e.target.value.split("\n").map(x=>x.trim()).filter(Boolean)})} placeholder="Absent / Did Not Join — after meeting" className={cls+" min-h-[90px]"}/>
+  <textarea value={form.onlineParticipants.join("\n")} onChange={e=>setForm({...form,onlineParticipants:e.target.value.split("\n").map(x=>x.trim()).filter(Boolean)})} placeholder="Actual Online Participants" className={cls+" min-h-[90px]"}/>
+  <div className="sm:col-span-2 lg:col-span-4 border-t pt-4 mt-1"><div className="font-black text-[#002344] mb-2">Official Record — Post Meeting</div></div>
+  <textarea value={form.minutes} onChange={e=>setForm({...form,minutes:e.target.value})} placeholder="Minutes / Proceedings" className={cls+" min-h-[110px] sm:col-span-2"}/>
+  <textarea value={form.decisions} onChange={e=>setForm({...form,decisions:e.target.value})} placeholder="Decisions" className={cls+" min-h-[110px] sm:col-span-2"}/>
+  <input value={form.resolutionNo} onChange={e=>setForm({...form,resolutionNo:e.target.value})} placeholder="Resolution No." className={cls}/>
+  <select value={form.resolutionStatus} onChange={e=>setForm({...form,resolutionStatus:e.target.value})} className={cls}><option>Passed</option><option>Not Passed</option><option>Deferred</option><option>Not Applicable</option></select>
+  <textarea value={form.actionPoints} onChange={e=>setForm({...form,actionPoints:e.target.value})} placeholder="Action Points" className={cls+" min-h-[90px] sm:col-span-2"}/>
+  <input value={form.responsiblePersons} onChange={e=>setForm({...form,responsiblePersons:e.target.value})} placeholder="Responsible Person(s)" className={cls}/>
+  <input type="date" value={form.targetDate} onChange={e=>setForm({...form,targetDate:e.target.value})} className={cls}/>
+  <input value={form.supportingDocument} onChange={e=>setForm({...form,supportingDocument:e.target.value})} placeholder="Supporting Document Reference" className={cls}/>
+  <input value={form.recordingRef} onChange={e=>setForm({...form,recordingRef:e.target.value})} placeholder="Recording / Online Reference" className={cls}/>
+  <textarea value={form.remarks} onChange={e=>setForm({...form,remarks:e.target.value})} placeholder="Remarks" className={cls+" min-h-[80px] sm:col-span-2"}/>
+  <div className="sm:col-span-2 lg:col-span-4 flex gap-2 pt-2"><button type="button" onClick={save} className="bg-[#002344] text-white px-5 py-3 rounded-xl font-black">{editing?"Update Master Record":"Create Master Meeting"}</button><button type="button" onClick={()=>setShowForm(false)} className="border px-5 py-3 rounded-xl font-bold">Cancel</button></div>
+ </div></div>;
+
+ const table=(mode)=> <div className="bg-white border rounded-2xl overflow-hidden"><div className="p-5 border-b flex flex-col lg:flex-row gap-3 lg:items-center justify-between"><div><h2 className="text-xl font-black text-[#002344]">{mode==="calendar"?"Meeting Calendar / बैठक कैलेंडर":mode==="online"?"Online Meetings / ऑनलाइन बैठकें":"Meeting & Resolution / बैठक व प्रस्ताव"}</h2><p className="text-sm text-zinc-500 mt-1">{mode==="calendar"?"Planning and scheduling view":"Linked view of the same master meeting record — no duplicate entry."}</p></div><div className="flex flex-wrap gap-2"><input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search Meeting ID / title" className="px-3 py-2.5 border rounded-xl"/><select value={filter} onChange={e=>setFilter(e.target.value)} className="px-3 py-2.5 border rounded-xl"><option value="all">All Status</option><option>Scheduled</option><option>Completed</option><option>Cancelled</option><option>Postponed</option></select><button type="button" onClick={openNew} className="bg-[#002344] text-white px-4 py-2.5 rounded-xl font-bold"><FaPlus className="inline mr-2"/>New Meeting</button></div></div>
+ <div className="overflow-auto"><table className="w-full text-sm min-w-[1100px]"><thead className="bg-zinc-50"><tr>{(mode==="calendar"?["Date","Time","Meeting ID","Meeting Title","Type","Mode","Platform / Venue","Host","Status","Action"]:mode==="online"?["Date","Meeting ID","Meeting","Platform","Meeting Link","Host","Participants","Status","Action"]:["Date","Meeting ID","Meeting","Type","Attendance","Minutes","Decision / Resolution","Action Points","Status","Action"]).map(h=><th key={h} className="p-3 text-left whitespace-nowrap">{h}</th>)}</tr></thead><tbody className="divide-y">{filtered.map(r=>{const d=r.data||{};const id=d.meetingId||r.recordId;return <tr key={r.id}><td className="p-3 whitespace-nowrap">{formatOfficeDate(d.date||r.recordDate)}</td>{mode==="calendar"?<><td className="p-3 whitespace-nowrap">{d.startTime||"—"}{d.endTime?" – "+d.endTime:""}</td><td className="p-3 font-black text-[#002344]">{id}</td><td className="p-3 font-bold min-w-[260px]">{d.meetingTitle||"—"}<div className="text-xs text-zinc-400 mt-1">{d.purpose||""}</div></td><td className="p-3">{d.meetingType||"—"}</td><td className="p-3">{d.mode||"—"}</td><td className="p-3">{d.mode==="Online"?d.platform:d.venue||d.platform||"—"}</td><td className="p-3">{d.organizerHost||"—"}</td><td className="p-3">{d.status||r.status}</td></>:mode==="online"?<><td className="p-3 font-black">{id}</td><td className="p-3 font-bold">{d.meetingTitle||"—"}</td><td className="p-3">{d.platform||"—"}</td><td className="p-3">{d.meetingLink?<a href={d.meetingLink} target="_blank" rel="noreferrer" className="text-blue-700 font-bold">Join / Open</a>:"—"}</td><td className="p-3">{d.organizerHost||"—"}</td><td className="p-3">{memberNames(d.onlineParticipants).length||memberNames(d.presentMembers).length}</td><td className="p-3">{d.status||r.status}</td></>:<><td className="p-3 font-black">{id}</td><td className="p-3 font-bold">{d.meetingTitle||"—"}</td><td className="p-3">{d.meetingType||"—"}</td><td className="p-3 min-w-[220px]">Present: {memberNames(d.presentMembers).join(", ")||"—"}<div className="text-xs text-zinc-400 mt-1">Absent/Not Joined: {memberNames(d.absentMembers).join(", ")||"—"}</div></td><td className="p-3">{d.minutes?"Recorded":"Pending"}</td><td className="p-3">{d.decisions||d.resolutionNo||"—"}<div className="text-xs text-zinc-400">{d.resolutionStatus||""}</div></td><td className="p-3">{d.actionPoints||"—"}</td><td className="p-3">{d.status||r.status}</td></>}<td className="p-3 whitespace-nowrap"><button type="button" onClick={()=>edit(r)} className="px-3 py-1.5 rounded-lg border text-[#123B5D] font-bold">Edit</button><button type="button" onClick={()=>archive(r.id)} className="ml-2 px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!filtered.length&&<tr><td colSpan="10" className="p-10 text-center text-zinc-400">No meetings found.</td></tr>}</tbody></table></div></div>;
+
  return <div className="space-y-5">
-  <div className="bg-white border rounded-2xl p-3 sm:p-4 shadow-sm">
-   <div className="flex flex-col sm:flex-row gap-2 overflow-x-auto">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);loadMeetingLinkedRows();}} className={"shrink-0 min-w-[220px] px-4 py-3 rounded-xl font-bold text-left transition "+(tab===t[0]?"bg-[#123B5D] text-white shadow-sm":"bg-zinc-50 text-[#123B5D] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>
-  </div>
-  {tab==="calendar"&&<MeetingCalendar rows={calendarRows.concat(onlineRows,resolutionRows)} linkedRows={calendarRows.concat(onlineRows,resolutionRows)} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
-  {tab==="online"&&<OnlineMeetings token={token}/>}
-  {tab==="resolution"&&<MeetingResolutions rows={calendarRows.concat(onlineRows,resolutionRows)} add={async function(module,data){const ok=await add(module,data);if(ok)await loadMeetingLinkedRows();return ok;}} archive={archive} restore={restore} token={token}/>}
+  <div className="rounded-3xl bg-gradient-to-r from-[#002344] via-[#123B5D] to-[#1F7A70] text-white p-6 sm:p-8 shadow-lg"><div className="flex flex-col xl:flex-row xl:items-center justify-between gap-5"><div><div className="text-xs font-black uppercase tracking-[.18em] text-white/60">SSF Digital Office · Governance</div><h1 className="text-3xl sm:text-4xl font-black mt-1">Meetings / बैठकें</h1><p className="text-white/80 mt-2 max-w-3xl">One master meeting record → Calendar → Online Meeting → Official Minutes & Resolution. Duplicate entry नहीं.</p></div><button type="button" onClick={openNew} className="bg-white text-[#002344] px-5 py-3 rounded-xl font-black"><FaPlus className="inline mr-2"/> New Meeting</button></div></div>
+  <div className="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-8 gap-3">{card("Total Meetings",total,"All master records")}{card("Upcoming",upcoming,"Scheduled")}{card("Completed",completed,"Completed meetings")}{card("Online",online,"Mode")}{card("Offline",offline,"Mode")}{card("Hybrid",hybrid,"Mode")}{card("Pending Minutes",pendingMinutes,"Official record")}{card("Action Points",pendingActions,"Requires follow-up")}</div>
+  <div className="bg-white border rounded-2xl p-2"><div className="grid sm:grid-cols-4 gap-2">{[["dashboard","Dashboard"],["calendar","Meeting Calendar"],["online","Online Meetings"],["resolution","Meeting & Resolution"]].map(x=><button key={x[0]} type="button" onClick={()=>setTab(x[0])} className={"px-3 py-3 rounded-xl font-black "+(tab===x[0]?"bg-[#123B5D] text-white":"bg-zinc-50 text-[#123B5D]")}>{x[1]}</button>)}</div></div>
+  {showForm&&meetingForm}
+  {tab==="dashboard"&&<div className="grid lg:grid-cols-2 gap-5"><div className="bg-white border rounded-2xl p-5"><h2 className="text-xl font-black text-[#002344]">Upcoming Meetings</h2><div className="mt-4 space-y-2">{filtered.filter(r=>String((r.data||{}).date||"")>=today&&String((r.data||{}).status||"").toLowerCase()==="scheduled").slice(0,8).map(r=><button type="button" key={r.id} onClick={()=>edit(r)} className="w-full text-left border rounded-xl p-3 hover:bg-zinc-50"><b>{r.data?.meetingTitle}</b><div className="text-xs text-zinc-500 mt-1">{formatOfficeDate(r.data?.date)} · {r.data?.startTime||"—"} · {r.data?.mode||"—"} · {r.data?.meetingId||r.recordId}</div></button>)}{!upcoming&&<p className="text-sm text-zinc-400">No upcoming meetings.</p>}</div></div><div className="bg-white border rounded-2xl p-5"><h2 className="text-xl font-black text-[#002344]">Official Record Control</h2><div className="space-y-3 mt-4"><div className="p-3 rounded-xl bg-amber-50 border border-amber-200"><b>{pendingMinutes}</b> completed meeting(s) have minutes pending.</div><div className="p-3 rounded-xl bg-sky-50 border border-sky-200"><b>{pendingActions}</b> meeting(s) have action-point follow-up data.</div><p className="text-sm text-zinc-500">Post-meeting facts remain manually editable because attendance, minutes and decisions must reflect what actually happened.</p></div></div></div>}
+  {tab==="calendar"&&table("calendar")}{tab==="online"&&table("online")}{tab==="resolution"&&table("resolution")}
  </div>;
 }
+
 function OnlineMeetings({token}){
  const blank={title:"",type:"Managing Committee",date:new Date().toISOString().slice(0,10),time:"15:15",purpose:"",agenda:""};
  const [form,setForm]=useState(blank),[link,setLink]=useState(""),[members,setMembers]=useState([]),[selected,setSelected]=useState([]),[records,setRecords]=useState([]),[notice,setNotice]=useState(""),[working,setWorking]=useState(false),[googleConnected,setGoogleConnected]=useState(false),[editingId,setEditingId]=useState(null);
