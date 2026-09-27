@@ -1055,7 +1055,12 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
  useEffect(()=>{loadArchived();},[rows]);
  const blank={meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",meetingTitle:"",purpose:"",venue:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:"",presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"",attendanceSummary:"",attendanceSheetRef:"",agenda:"",decision:"",minutes:"",resolutionNo:"",resolutionStatus:"Passed",actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",followUpRequired:"No",followUpStatus:"Not Required",followUpChannel:"Manual Review",followUpNotes:"",remarks:""};
  const [f,setF]=useState(blank);
+ const [attendanceMembers,setAttendanceMembers]=useState([]),[attendanceStatus,setAttendanceStatus]=useState({});
  const [notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false);
+ useEffect(()=>{fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}}).then(r=>r.ok?r.json():[]).then(d=>setAttendanceMembers(Array.isArray(d)?d:[])).catch(()=>setAttendanceMembers([]));},[]);
+ const setAttendance=(id,status)=>setAttendanceStatus(x=>({...x,[id]:status}));
+ const attendanceSummaryText=()=>{const vals=Object.values(attendanceStatus);return "Attended: "+vals.filter(x=>x==="Attended").length+" · Did Not Attend: "+vals.filter(x=>x==="Did Not Attend").length+" · No Response: "+vals.filter(x=>x==="No Response").length+" · Excused: "+vals.filter(x=>x==="Excused").length;};
+ const attendanceJson=()=>attendanceMembers.map(r=>{const d=r.data||{};const id=String(r.id);return {memberId:d.memberId||r.personId||r.recordId||id,fullName:d.fullName||d.name||"Member",email:d.email||"",status:attendanceStatus[id]||"No Response"};});
  const permanentDelete=async function(id){
   if(!confirm("Permanently delete this archived meeting record? This cannot be undone."))return;
   try{
@@ -1091,12 +1096,15 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
   if(!editingId&&duplicate){setNotice("Duplicate meeting prevented. This meeting is already saved.");return;}
   setSaving(true);
   try{
-   const payload={...f,date:f.meetingDate};
+   const attendance=attendanceJson();
+   const nonAttended=attendance.filter(x=>x.status==="Did Not Attend"||x.status==="No Response");
+   const attended=attendance.filter(x=>x.status==="Attended");
+   const payload={...f,date:f.meetingDate,attendance:JSON.stringify(attendance),attendanceSummary:attendanceSummaryText(),presentMembers:attended.map(x=>x.fullName).join(", "),absentMembers:attendance.filter(x=>x.status==="Did Not Attend"||x.status==="Excused").map(x=>x.fullName).join(", "),followUpRequired:nonAttended.length?"Yes":f.followUpRequired,followUpStatus:nonAttended.length?"Pending":f.followUpStatus,followUpNotes:nonAttended.length?("Follow-up due for: "+nonAttended.map(x=>x.fullName).join(", ")):f.followUpNotes};
    const ok=editingId?await updateRecord(editingId,"meetingResolutions",payload):await add("meetingResolutions",{recordDate:f.meetingDate,recordType:f.meetingType,status:"active",data:payload});
    if(ok){setEditingId(null);setF({...blank,meetingDate:f.meetingDate});setNotice("Official meeting / resolution record saved.");}
   }finally{setSaving(false);}
  };
- const editRecord=r=>{const d=r.data||{};const date=String(d.meetingDate||r.recordDate||"").slice(0,10);setEditingId(r.id);setF({...blank,...d,meetingDate:date});setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
+ const editRecord=r=>{const d=r.data||{};const date=String(d.meetingDate||r.recordDate||"").slice(0,10);let parsed={};try{parsed=typeof d.attendance==="string"?JSON.parse(d.attendance):Array.isArray(d.attendance)?d.attendance:[];}catch(e){parsed=[];}const next={};parsed.forEach(x=>{const m=attendanceMembers.find(r=>String((r.data||{}).memberId||r.personId||r.recordId||r.id)===String(x.memberId)||String((r.data||{}).fullName||r.data?.name||"")===String(x.fullName));if(m)next[String(m.id)]=x.status||"No Response";});setAttendanceStatus(next);setEditingId(r.id);setF({...blank,...d,meetingDate:date});setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
  return <SimpleOfficeCard title="📜 Meeting & Resolution Register" subtitle="Online, Offline और Hybrid — सभी meetings के लिए एक ही complete official record format.">
   <div className="bg-white border rounded-2xl p-5">
    <div className="bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4 mb-4 text-sm text-[#123B5D]"><b>Official Record:</b> Meeting mode के अनुसार Online / Offline / Hybrid details भरें. Meeting complete होने के बाद attendance, minutes, decisions और resolutions finalize करें.</div>
@@ -1111,6 +1119,11 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
     {(f.meetingMode==="Offline"||f.meetingMode==="Hybrid")&&<input value={f.venue} onChange={e=>set("venue",e.target.value)} placeholder="Venue / Location" className={cls}/>}
     {(f.meetingMode==="Online"||f.meetingMode==="Hybrid")&&<><input value={f.onlineMeetingId} onChange={e=>set("onlineMeetingId",e.target.value)} placeholder="Online Meeting ID / Reference" className={cls}/><input value={f.onlineMeetingLink} onChange={e=>set("onlineMeetingLink",e.target.value)} placeholder="Online Meeting Ref. / Link" className={cls}/><select value={f.onlinePlatform} onChange={e=>set("onlinePlatform",e.target.value)} className={cls}><option>Google Meet</option><option>Zoom</option><option>Microsoft Teams</option><option>Other</option></select></>}
     <input value={f.organizer} onChange={e=>set("organizer",e.target.value)} placeholder="Organizer / Host" className={cls}/>
+    <div className="sm:col-span-2 lg:col-span-4 bg-slate-50 border rounded-2xl p-4">
+     <div className="flex flex-wrap items-center justify-between gap-2"><div><div className="font-black text-[#002344]">Attendance Control / उपस्थिति नियंत्रण</div><div className="text-xs text-zinc-500 mt-1">हर invited/member record को Attended, Did Not Attend, No Response या Excused mark करें. Non-attendance होने पर follow-up automatically Pending होगा.</div></div><div className="flex gap-2"><button type="button" onClick={()=>{const n={};attendanceMembers.forEach(r=>n[String(r.id)]="Attended");setAttendanceStatus(n);}} className="px-3 py-2 rounded-lg border font-bold text-xs">Mark All Attended</button><button type="button" onClick={()=>{const n={};attendanceMembers.forEach(r=>n[String(r.id)]="No Response");setAttendanceStatus(n);}} className="px-3 py-2 rounded-lg border font-bold text-xs">Mark All No Response</button></div></div>
+     <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-2 mt-3">{attendanceMembers.length===0?<div className="text-sm text-zinc-500">Members load नहीं हुए.</div>:attendanceMembers.map(r=>{const d=r.data||{};const id=String(r.id);const status=attendanceStatus[id]||"No Response";return <div key={id} className="bg-white border rounded-xl p-3"><div className="font-bold text-[#002344]">{d.fullName||d.name||"Member"}</div><div className="text-xs text-zinc-500 mb-2">{d.memberId||r.recordId||""}</div><select value={status} onChange={e=>setAttendance(id,e.target.value)} className="w-full border rounded-lg px-2 py-2 text-sm"><option>Attended</option><option>Did Not Attend</option><option>No Response</option><option>Excused</option></select></div>})}</div>
+     <div className="mt-3 text-sm font-bold text-[#123B5D]">{attendanceSummaryText()}</div>
+    </div>
     <textarea value={f.presentMembers} onChange={e=>set("presentMembers",e.target.value)} placeholder="Present Members" className={cls+" min-h-[80px]"}/>
     <textarea value={f.absentMembers} onChange={e=>set("absentMembers",e.target.value)} placeholder="Absent Members" className={cls+" min-h-[80px]"}/>
     {(f.meetingMode==="Online"||f.meetingMode==="Hybrid")&&<textarea value={f.onlineParticipants} onChange={e=>set("onlineParticipants",e.target.value)} placeholder="Online Participants / उपस्थित ऑनलाइन सदस्य" className={cls+" min-h-[80px]"}/>}
