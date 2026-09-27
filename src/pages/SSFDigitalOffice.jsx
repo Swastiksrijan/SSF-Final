@@ -129,7 +129,9 @@ export default function SSFDigitalOffice(){
   flat.forEach(function(row){
    lines.push(headers.map(function(h){return csvEscape(row[h]);}).join(","));
   });
-  const csv="\\uFEFF"+lines.join("\\r\\n")+"\\r\\n";
+  const csv="\\uFEFF"+lines.join("\\r\
+")+"\\r\
+";
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
   const a=document.createElement("a");
   const url=URL.createObjectURL(blob);
@@ -218,7 +220,8 @@ export default function SSFDigitalOffice(){
     {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
-    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
+    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}
+    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
@@ -364,7 +367,11 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
     <div><label className="text-xs font-bold text-zinc-600">Absent / Did Not Join / अनुपस्थित</label><div className="mt-2 max-h-48 overflow-y-auto space-y-1 border rounded-xl p-2">{memberDirectory.map(m=><label key={m.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-zinc-50"><input type="checkbox" checked={(form.absentMemberIds||[]).includes(m.id)} onChange={e=>{const ids=e.target.checked?[...(form.absentMemberIds||[]),m.id]:(form.absentMemberIds||[]).filter(x=>x!==m.id);setForm({...form,absentMemberIds:ids,absentMemberDetails:memberObjects(ids),absentMembers:memberObjects(ids)});}}/><span className="text-sm"><b>{m.name}</b> <span className="text-zinc-400">({m.memberId})</span><span className="block text-xs text-zinc-500">{m.role} · {m.mobile||"No mobile"} · {m.email||"No email"}</span></span></label>)}</div></div>
     <div><label className="text-xs font-bold text-zinc-600">Actual Online Participants / वास्तविक ऑनलाइन उपस्थिति</label><div className="mt-2 max-h-48 overflow-y-auto space-y-1 border rounded-xl p-2">{memberDirectory.map(m=><label key={m.id} className="flex items-center gap-2 p-2 rounded-lg hover:bg-zinc-50"><input type="checkbox" checked={(form.presentMemberIds||[]).includes(m.id)&&form.mode!=="Offline"} readOnly/><span className="text-sm"><b>{m.name}</b> <span className="text-zinc-400">({m.memberId})</span></span></label>)}</div><p className="text-xs text-zinc-400 mt-1">Online mode में Present members से synced.</p></div>
    </div>
-   <div className="grid sm:grid-cols-2 gap-3 mt-4"><textarea value={memberText(form.invitedMembers).filter(n=>!memberDirectory.some(m=>m.name===n)).join("\n")} onChange={e=>setForm({...form,invitedMembers:e.target.value.split("\n").map(x=>x.trim()).filter(Boolean)})} placeholder="Manual invited person(s): Name / Mobile / Email" className={cls+" min-h-[80px]"}/><textarea value={memberText(form.absentMembers).filter(n=>!memberDirectory.some(m=>m.name===n)).join("\n")} onChange={e=>setForm({...form,absentMembers:e.target.value.split("\n").map(x=>x.trim()).filter(Boolean)})} placeholder="Manual absent person(s): Name / Mobile / Email" className={cls+" min-h-[80px]"}/></div>
+   <div className="grid sm:grid-cols-2 gap-3 mt-4"><textarea value={memberText(form.invitedMembers).filter(n=>!memberDirectory.some(m=>m.name===n)).join("
+")} onChange={e=>setForm({...form,invitedMembers:e.target.value.split("
+").map(x=>x.trim()).filter(Boolean)})} placeholder="Manual invited person(s): Name / Mobile / Email" className={cls+" min-h-[80px]"}/><textarea value={memberText(form.absentMembers).filter(n=>!memberDirectory.some(m=>m.name===n)).join("
+")} onChange={e=>setForm({...form,absentMembers:e.target.value.split("
+").map(x=>x.trim()).filter(Boolean)})} placeholder="Manual absent person(s): Name / Mobile / Email" className={cls+" min-h-[80px]"}/></div>
   </div>
   <div className="sm:col-span-2 lg:col-span-4 border-t pt-4 mt-1"><div className="font-black text-[#002344] mb-2">Official Record — Post Meeting</div></div>
   <textarea value={form.minutes} onChange={e=>setForm({...form,minutes:e.target.value})} placeholder="Minutes / Proceedings" className={cls+" min-h-[110px] sm:col-span-2"}/>
@@ -408,7 +415,8 @@ function OnlineMeetings({token}){
  const createMeeting=async()=>{if(!form.title.trim()||!form.date||!form.time){setNotice("Meeting title, date and time required.");return;}if(!googleConnected){await connectGoogle();return;}setWorking(true);setNotice(editingId?"Meeting update ho raha hai…":"Google Meet link banaya ja raha hai…");try{const emails=selectedEmails();const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_GOOGLE_CREATE_MEETING,{method:"POST",headers,body:JSON.stringify({title:form.title,date:form.date,time:form.time,agenda:form.agenda,emails})});const out=await r.json();if(!r.ok)throw new Error(out.message||"Google Meet creation failed.");const meetingLink=out.meetingLink||link;const meetingId=editingId?(records.find(x=>x.id===editingId)?.data?.meetingId||meetingIdForDate(form.date)):meetingIdForDate(form.date);await saveMeeting(meetingLink,{emailed:out.emailed,emailErrors:out.emailErrors||[],addedMembers:out.addedMembers||0},meetingId,editingId);setLink(meetingLink);setEditingId(null);setNotice(out.emailConfigured?("Google Meet link created and record saved. "+out.emailed+" member(s) ko email invitation bhej diya gaya."): "Google Meet link created and record saved. WhatsApp se bhi share kar sakte hain.");await loadRecords();}catch(e){setNotice(e.message||"Unable to create Google Meet.");}finally{setWorking(false);}};
  const editMeeting=r=>{if(isLocked(r)){setNotice("Meeting time pass ho chuka hai. Ab Online Meeting record edit nahi kiya ja sakta.");return;}const d=r.data||{};setEditingId(r.id);setForm({title:d.title||"",type:d.meetingType||r.recordType||"Other",date:d.date||r.recordDate||"",time:d.time||"",purpose:d.purpose||"",agenda:d.agenda||""});setLink(d.meetingLink||"");setSelected(Array.isArray(d.inviteeRecordIds)?d.inviteeRecordIds:[]);setNotice("Pre-meeting edit mode: changes save karne ke baad updated details share karein.");window.scrollTo({top:0,behavior:"smooth"});};
  const cancelEdit=()=>{setEditingId(null);setLink("");setSelected([]);setForm(blank);setNotice("");};
- const meetingMessage=r=>{const d=r?.data||form||{};return ["Swastik Srijan Foundation Samiti","","Online Meeting Details","", "Meeting ID: "+(d.meetingId||"—"),"Meeting Title: "+(d.title||"—"),"Meeting Type: "+(d.meetingType||d.type||"—"),"Date: "+(d.date||"—"),"Time: "+(d.time||"—"),"","Purpose:",d.purpose||"—","","Agenda:",d.agenda||"As per meeting notice","","Google Meet Link:",d.meetingLink||"—"].join("\n");};
+ const meetingMessage=r=>{const d=r?.data||form||{};return ["Swastik Srijan Foundation Samiti","","Online Meeting Details","", "Meeting ID: "+(d.meetingId||"—"),"Meeting Title: "+(d.title||"—"),"Meeting Type: "+(d.meetingType||d.type||"—"),"Date: "+(d.date||"—"),"Time: "+(d.time||"—"),"","Purpose:",d.purpose||"—","","Agenda:",d.agenda||"As per meeting notice","","Google Meet Link:",d.meetingLink||"—"].join("
+");};
  const shareWhatsApp=()=>{if(!link){setNotice("Pehle Google Meet create karein.");return;}window.open("https://wa.me/?text="+encodeURIComponent(meetingMessage()),"_blank");};
  const shareGroup=()=>{if(!link){setNotice("Pehle Google Meet create karein.");return;}const group="https://chat.whatsapp.com/HFcpYBQpMGlFTGmVzMSXZZ";window.open(group,"_blank");setNotice("SSF WhatsApp Group khol diya gaya. Meeting details Copy karke group me share karein.");};
  const copyMeetingDetails=async(r)=>{const msg=meetingMessage(r);try{await navigator.clipboard.writeText(msg);setNotice("Complete meeting details copied.");}catch(e){setNotice("Copy nahi ho saki. Please manually copy karein.");}};
@@ -515,7 +523,8 @@ function Dashboard({summary}){
  <div className="bg-[#123B5D] rounded-2xl border border-[#123B5D] p-6 shadow-sm text-white"><div className="flex items-center justify-between gap-3"><div><h2 className="text-xl font-black">Automatic Financial Linking / स्वचालित वित्तीय लिंकिंग</h2><p className="text-sm text-[#D8EDE9] mt-1">एक ही database transaction में linked records</p></div><div className="px-3 py-1 rounded-full bg-[#FFF8E7] text-[#123B5D] text-xs font-black">LIVE</div></div><p className="text-[#D8EDE9] mt-4">Donation and expense workflows write linked contribution, cash/bank and ledger records in one database transaction. / दान व व्यय प्रक्रिया एक ही database transaction में जुड़े contribution, cash/bank और ledger records दर्ज करती है.</p><div className="mt-5 space-y-2 text-sm font-bold text-white"><p>Donation / दान → Donor / दानदाता → Contribution / योगदान → Cash/Bank / रोकड़-बैंक → Ledger / लेजर → Receipt / रसीद</p><p>Expense / व्यय → Expense Register / व्यय रजिस्टर → Cash/Bank / रोकड़-बैंक → Ledger / लेजर</p><p>Create/update/archive / बनाना-संशोधित-संग्रहीत → Audit Trail / ऑडिट ट्रेल</p></div><div className="mt-5 bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4 text-sm text-[#5A4510]"><strong>Compliance / अनुपालन:</strong> final statutory/tax treatment, 80G particulars and audit requirements must be verified with SSF's CA/tax advisor.</div></div></div></div>;
 }
 function OfficialDocuments({rows,add}){
- const [f,setF]=useState({docType:"Appointment Letter",name:"",designation:"",date:new Date().toISOString().slice(0,10),validFrom:"",validTill:"",reference:"",subject:"",body:"",remarks:"",signatory:"Ramesh Pandey\\nFounder & National President"});
+ const [f,setF]=useState({docType:"Appointment Letter",name:"",designation:"",date:new Date().toISOString().slice(0,10),validFrom:"",validTill:"",reference:"",subject:"",body:"",remarks:"",signatory:"Ramesh Pandey\
+Founder & National President"});
  const [notice,setNotice]=useState("");
  const [saving,setSaving]=useState(false);
  const types=[
@@ -544,7 +553,9 @@ function OfficialDocuments({rows,add}){
   if(data.subject){y+=4;d.setFont(undefined,"bold");d.text("Subject: "+data.subject,left,y);y+=10;}
   if(data.body){d.setFont(undefined,"normal");const lines=d.splitTextToSize(String(data.body),pageW-left*2);lines.forEach(line=>{if(y>pageH-45){d.addPage();y=22;}d.text(line,left,y);y+=5.5;});}
   if(data.remarks){y+=6;d.setFont(undefined,"bold");d.text("Remarks:",left,y);y+=6;d.setFont(undefined,"normal");d.splitTextToSize(String(data.remarks),pageW-left*2).forEach(line=>{if(y>pageH-45){d.addPage();y=22;}d.text(line,left,y);y+=5.5;});}
-  if(y>pageH-42){d.addPage();y=22;} y+=12;d.setFont(undefined,"bold");d.text("For Swastik Srijan Foundation Samiti",left,y);y+=14;d.text(String(data.signatory||"Ramesh Pandey").split("\\n")[0],left,y);y+=5;d.setFont(undefined,"normal");d.text(String(data.signatory||"Founder & National President").split("\\n").slice(1).join(" ")||"Founder & National President",left,y);
+  if(y>pageH-42){d.addPage();y=22;} y+=12;d.setFont(undefined,"bold");d.text("For Swastik Srijan Foundation Samiti",left,y);y+=14;d.text(String(data.signatory||"Ramesh Pandey").split("\
+")[0],left,y);y+=5;d.setFont(undefined,"normal");d.text(String(data.signatory||"Founder & National President").split("\
+").slice(1).join(" ")||"Founder & National President",left,y);
   d.setFontSize(8);d.setTextColor(120);d.text("Computer-generated official office document · Issued by authorised SSF administration",pageW/2,pageH-10,{align:"center"});
   const url=URL.createObjectURL(d.output("blob")),a=document.createElement("a");a.href=url;a.download=data.documentNo.replace(/[\\/]/g,"-")+".pdf";a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
  };
@@ -575,7 +586,13 @@ function AppointmentLetters({rows,add}){
  const [f,setF]=useState({
   date:today,name:"",email:"",phone:"",designation:"",department:"",engagement:"Volunteer",
   joiningDate:today,validUntil:"",reportingTo:"",location:"",reference:"",
-  responsibilities:"• Work in accordance with the objectives, rules and approved plans of Swastik Srijan Foundation Samiti.\n• Support assigned programmes, projects, meetings, camps and community activities.\n• Coordinate with members, volunteers, beneficiaries and relevant stakeholders as required.\n• Maintain timely activity information, attendance, photographs and other assigned records.\n• Submit activity/progress updates and communicate important issues to the competent authority.\n• Protect organisational records, confidentiality, reputation and resources.\n• Do not make financial commitments, sign agreements or represent the Foundation beyond the authority assigned.",
+  responsibilities:"• Work in accordance with the objectives, rules and approved plans of Swastik Srijan Foundation Samiti.
+• Support assigned programmes, projects, meetings, camps and community activities.
+• Coordinate with members, volunteers, beneficiaries and relevant stakeholders as required.
+• Maintain timely activity information, attendance, photographs and other assigned records.
+• Submit activity/progress updates and communicate important issues to the competent authority.
+• Protect organisational records, confidentiality, reputation and resources.
+• Do not make financial commitments, sign agreements or represent the Foundation beyond the authority assigned.",
   terms:"The appointee shall perform the assigned responsibilities with integrity, confidentiality and due care, and follow the applicable policies, instructions and approved plans of the Foundation.",
  });
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
@@ -877,7 +894,8 @@ function MembersRegister({rows,add,archive}){
   data.remarks=seed.responsibility||d.remarks||d.responsibility||"";
   return {id:"committee-seed-"+r.id,recordId:r.recordId,module:"members",status:"active",recordDate:data.joiningDate||r.recordDate,data};
  });
- const existing=[...savedMembers,...committeeSeeds].filter((r,i,a)=>a.findIndex(x=>String(x.recordId||x.data?.memberId||x.id)===String(r.recordId||r.data?.memberId||r.id))===i);\n const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
+ const existing=[...savedMembers,...committeeSeeds].filter((r,i,a)=>a.findIndex(x=>String(x.recordId||x.data?.memberId||x.id)===String(r.recordId||r.data?.memberId||r.id))===i);
+ const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
  const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[tab,setTab]=useState("dashboard");
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const active=existing.filter(r=>String((r.data||{}).membershipStatus||r.status||"").toLowerCase()==="active");
