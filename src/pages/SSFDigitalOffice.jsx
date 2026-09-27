@@ -596,7 +596,7 @@ function MeetingCalendar({rows,add,archive,token,updateRecord}){
  };
  const [f,setF]=useState(blank),[saving,setSaving]=useState(false),[editingId,setEditingId]=useState(null),[showForm,setShowForm]=useState(false);
  const [memberOptions,setMemberOptions]=useState([]),[participantOpen,setParticipantOpen]=useState(false);
- useEffect(()=>{let alive=true;fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}}).then(r=>r.json()).then(d=>{if(!alive)return;const list=Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]);setMemberOptions(list);}).catch(()=>{if(alive)setMemberOptions([]);});return()=>{alive=false;};},[token]);
+ useEffect(()=>{let alive=true;const headers={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers}).then(r=>r.ok?r.json():[]).then(d=>{if(!alive)return;const list=Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]);setMemberOptions(list);}).catch(()=>{if(alive)setMemberOptions([]);});return()=>{alive=false;};},[token]);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const selectedParticipants=()=>{try{const v=JSON.parse(f.participants||"[]");return Array.isArray(v)?v:[];}catch{return [];}};
  const toggleParticipant=(r)=>{const d=r.data||{};const id=String(d.memberId||r.personId||r.recordId||r.id);const current=selectedParticipants();const exists=current.some(x=>String(x.memberId)===id);const next=exists?current.filter(x=>String(x.memberId)!==id):current.concat([{memberId:id,fullName:d.fullName||d.name||"Member",email:d.email||"",mobile:d.mobile||""}]);set("participants",JSON.stringify(next));};
