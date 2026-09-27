@@ -282,9 +282,18 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
  const headers={Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};
  const load=async()=>{
   try{
-   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=meetings",{headers});
-   const d=r.ok?await r.json():[];
-   setMeetings(Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]));
+   const parse=async(module)=>{const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+module,{headers});if(!r.ok)return [];const d=await r.json();return Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]);};
+   const [masters,legacyOnline,legacyResolution]=await Promise.all([parse("meetings"),parse("onlineMeetings"),parse("meetingResolutions")]);
+   const out=[...masters], keys=new Set(out.map(r=>{const d=r.data||{};return String(d.meetingId||r.recordId||"").toLowerCase();}).filter(Boolean));
+   const norm=(r,source)=>{
+    const d=r.data||{};
+    const id=d.meetingId||d.onlineMeetingId||r.recordId||("SSF-LEGACY-"+String(r.id).slice(-8));
+    const title=d.meetingTitle||d.title||d.name||"Meeting";
+    const date=d.date||r.recordDate||"";
+    return {...r,module:"meetings",recordType:d.meetingType||d.type||"Meeting",data:{...d,meetingId:id,meetingTitle:title,date,meetingType:d.meetingType||d.type||"Managing Committee Meeting",status:d.status||"Completed",legacySource:source,legacyRecordId:r.recordId||r.id}};
+   };
+   [...legacyOnline,...legacyResolution].forEach(r=>{const n=norm(r,r.module||"legacy");const d=n.data||{};const key=String(d.meetingId||"").toLowerCase();const same=out.find(x=>String((x.data||{}).meetingId||x.recordId||"").toLowerCase()===key||((x.data||{}).meetingTitle||"")===(d.meetingTitle||"")&&String((x.data||{}).date||"")===String(d.date||""));if(same){same.data={...(same.data||{}),...d,meetingId:(same.data||{}).meetingId||d.meetingId};}else if(!keys.has(key)){out.push(n);keys.add(key);}});
+   setMeetings(out);
   }catch(e){setMeetings([]);}
  };
  useEffect(()=>{load();},[]);
