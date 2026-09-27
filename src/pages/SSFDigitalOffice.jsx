@@ -505,13 +505,7 @@ function AppointmentLetters({rows,add}){
  const [f,setF]=useState({
   date:today,name:"",email:"",phone:"",designation:"",department:"",engagement:"Volunteer",
   joiningDate:today,validUntil:"",reportingTo:"",location:"",reference:"",
-  responsibilities:"• Work in accordance with the objectives, rules and approved plans of Swastik Srijan Foundation Samiti.
-• Support assigned programmes, projects, meetings, camps and community activities.
-• Coordinate with members, volunteers, beneficiaries and relevant stakeholders as required.
-• Maintain timely activity information, attendance, photographs and other assigned records.
-• Submit activity/progress updates and communicate important issues to the competent authority.
-• Protect organisational records, confidentiality, reputation and resources.
-• Do not make financial commitments, sign agreements or represent the Foundation beyond the authority assigned.",
+  responsibilities:"• Work in accordance with the objectives, rules and approved plans of Swastik Srijan Foundation Samiti.\\n• Support assigned programmes, projects, meetings, camps and community activities.\\n• Coordinate with members, volunteers, beneficiaries and relevant stakeholders as required.\\n• Maintain timely activity information, attendance, photographs and other assigned records.\\n• Submit activity/progress updates and communicate important issues to the competent authority.\\n• Protect organisational records, confidentiality, reputation and resources.\\n• Do not make financial commitments, sign agreements or represent the Foundation beyond the authority assigned.",
   terms:"The appointee shall perform the assigned responsibilities with integrity, confidentiality and due care, and follow the applicable policies, instructions and approved plans of the Foundation.",
  });
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
