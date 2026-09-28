@@ -1216,6 +1216,32 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
  const displayPhoto=r=>{const d=r?.data||{};return photoOverrides[d.memberId]||d.photoUrl||"";};
  const choosePhoto=e=>{const f=e.target.files?.[0];if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){setNotice("Photo must be JPG, PNG or WebP.");e.target.value="";return;}if(f.size>2*1024*1024){setNotice("Photo must be 2MB or smaller.");e.target.value="";return;}setPhotoFile(f);setPhotoPreview(URL.createObjectURL(f));};
  const clearPhoto=()=>{setPhotoFile(null);setPhotoPreview("");};
+ const savePhoto=async()=>{
+  if(!editId||!photoFile||saving)return;
+  setSaving(true);
+  try{
+   const fd=new FormData();
+   fd.append("profilePhoto",photoFile);
+   fd.append("memberId",String(form.memberId||""));
+   fd.append("fullName",String(form.fullName||""));
+   fd.append("sourceModule","managingCommittee");
+   fd.append("recordId",String(editId));
+   const pr=await fetch(ENDPOINTS.DIGITAL_OFFICE_MEMBER_PHOTO,{method:"POST",headers:{Authorization:`Bearer ${token}`,"X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"},body:fd});
+   const pj=await pr.json().catch(()=>({}));
+   if(!pr.ok)throw new Error(pj.message||"Photo upload failed.");
+   const saved=pj.photoUrl||"";
+   if(saved&&form.memberId)setPhotoOverrides(x=>({...x,[String(form.memberId)]:saved}));
+   setPhotoFile(null);
+   setPhotoPreview(saved||photoPreview);
+   setNotice("Photo saved successfully. Refresh karne par bhi photo rahegi.");
+   await load("managingCommittee");
+  }catch(e){
+   setNotice(e.message||"Photo save failed.");
+  }finally{
+   setSaving(false);
+  }
+ };
+
  const currentRows=seed.map(m=>currentByMember.get(m.memberId)||null);
  const currentRecords=seed.map(m=>currentByMember.get(m.memberId)).filter(Boolean);
  const seedRestoreRef=useRef(false);
