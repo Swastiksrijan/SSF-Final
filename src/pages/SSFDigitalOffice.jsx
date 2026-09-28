@@ -832,8 +832,21 @@ function SeparationManagement({rows,add}){
 function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#002344] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 function MembersRegister({rows,add,archive,updateRecord}){
  // Members Register is intentionally independent from Managing Committee data.
+ const MASTER_MEMBER_DATA=[
+  {memberId:"SSF-MBR-00001",memberType:"Founder Member",designation:"President",responsibility:"Chief Executive & External Relations",fullName:"Ramesh Pandey",occupation:"Farmer & Social Worker",gender:"Male",mobile:"9718346691",email:"rameshpandey335@gmail.com",address:"Ward 1, Village Dadar, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",joiningDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00014",memberType:"General Member",designation:"Vice President",responsibility:"Project Planning & Monitoring",fullName:"Preeti Shukla",occupation:"Homemaker & Student",gender:"Female",mobile:"8085897964",email:"preetipandeydadar@gmail.com",address:"134/7, Gram Maidani, Shiva ji Nagar",city:"Rewa",state:"Madhya Pradesh",pinCode:"486001",joiningDate:"2021-04-30"},
+  {memberId:"SSF-MBR-00002",memberType:"Founder Member",designation:"Secretary",responsibility:"Administration & Legal Compliance",fullName:"Amit Kumar Pandey",occupation:"Farmer & Business Owner",gender:"Male",mobile:"9009255202",email:"amitp203@gmail.com",address:"Village Dadar, Bankuiya road, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",joiningDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00003",memberType:"Founder Member",designation:"Treasurer",responsibility:"Finance & Accounts In-charge",fullName:"Divya Sharma",occupation:"Homemaker & Social Worker",gender:"Female",mobile:"9827263231",email:"divsharma067@gmail.com",address:"Village Dadar, Bankuiya road, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",joiningDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00004",memberType:"Founder Member",designation:"Joint Secretary",responsibility:"IT, MIS & Digital Records",fullName:"Kiran Pandey",occupation:"Homemaker & Social Worker",gender:"Female",mobile:"9993495877",email:"kiranpandey1729@gmail.com",address:"26/282, Ambedkar Nagar, Pokhri tola",city:"Rewa",state:"Madhya Pradesh",pinCode:"486005",joiningDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00015",memberType:"General Member",designation:"Executive Committee Member",responsibility:"Documentation Head (Admin In-charge)",fullName:"Sandeep Tripathi",occupation:"Teacher & Social Worker",gender:"Male",mobile:"7697851754",email:"tri.sandeep22@gmail.com",address:"Village Balha, Post Nayagaon",city:"Satna",state:"Madhya Pradesh",pinCode:"485221",joiningDate:"2025-05-10"},
+  {memberId:"SSF-MBR-00016",memberType:"General Member",designation:"Member",responsibility:"Field Coordinator",fullName:"Prameesh Singh",occupation:"Fitness Trainer",gender:"Male",mobile:"9144796001",email:"prameeshs321@gmail.com",address:"Village Khaira, Khaira",city:"Rewa",state:"Madhya Pradesh",pinCode:"486441",joiningDate:"2025-05-10"},
+  {memberId:"SSF-MBR-00017",memberType:"General Member",designation:"Member",responsibility:"Volunteer Coordinator",fullName:"Rishi Kumar Pandey",occupation:"Private Employee",gender:"Male",mobile:"7987707912",email:"rishisatna01@gmail.com",address:"Village-Post Kyoti",city:"Rewa",state:"Madhya Pradesh",pinCode:"486117",joiningDate:"2025-05-10"},
+  {memberId:"SSF-MBR-00018",memberType:"General Member",designation:"Member",responsibility:"Media & Communication Coordinator",fullName:"Ritesh Kumar Tiwari",occupation:"Private Employee",gender:"Male",mobile:"8422819534",email:"riteshtiwari9082@gmail.com",address:"Village Jagannathpur, Sant Ravidas Nagar",city:"Bhadohi",state:"Uttar Pradesh",pinCode:"221303",joiningDate:"2025-05-10"}
+ ];
  const savedMembers=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="members"&&r.status!=="deleted");
- const existing=savedMembers;
+ const masterSeeds=MASTER_MEMBER_DATA.map(d=>({id:"master-member-"+d.memberId,recordId:d.memberId,module:"members",status:"active",recordDate:d.joiningDate,data:{...d,membershipNo:"",membershipStatus:"Active",membershipFee:"",feeFrequency:"Monthly",feeDueAmount:"",feeLastPaidDate:"",feeNextDueDate:"",feeStatus:"Pending",receiptNo:"NA",remarks:d.remarks||d.responsibility||""}}));
+ const savedByMemberId=new Map(savedMembers.map(r=>[String(r.data?.memberId||"").toUpperCase(),r]));
+ const existing=[...masterSeeds.map(r=>savedByMemberId.get(String(r.data.memberId).toUpperCase())||r),...savedMembers.filter(r=>!MASTER_MEMBER_DATA.some(m=>String(m.memberId).toUpperCase()===String(r.data?.memberId||"").toUpperCase()))];
 const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
  const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[tab,setTab]=useState("dashboard"),[editingId,setEditingId]=useState(null),[editingSeed,setEditingSeed]=useState(false);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
@@ -1199,6 +1212,30 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
  const displayPhoto=r=>{const d=r?.data||{};return photoOverrides[d.memberId]||d.photoUrl||"";};
  const choosePhoto=e=>{const f=e.target.files?.[0];if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){setNotice("Photo must be JPG, PNG or WebP.");e.target.value="";return;}if(f.size>2*1024*1024){setNotice("Photo must be 2MB or smaller.");e.target.value="";return;}setPhotoFile(f);setPhotoPreview(URL.createObjectURL(f));};
  const clearPhoto=()=>{setPhotoFile(null);setPhotoPreview("");};
+ const savePhoto=async()=>{
+  if(!editId||!photoFile||saving)return;
+  setSaving(true);
+  try{
+   const fd=new FormData();
+   fd.append("profilePhoto",photoFile);
+   fd.append("memberId",String(form.memberId||""));
+   fd.append("fullName",String(form.fullName||""));
+   fd.append("sourceModule","managingCommittee");
+   fd.append("recordId",String(editId));
+   const pr=await fetch(ENDPOINTS.DIGITAL_OFFICE_MEMBER_PHOTO,{method:"POST",headers:{Authorization:`Bearer ${token}`,"X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"},body:fd});
+   const pj=await pr.json().catch(()=>({}));
+   if(!pr.ok)throw new Error(pj.message||"Photo upload failed.");
+   const saved=pj.photoUrl||"";
+   if(saved&&form.memberId)setPhotoOverrides(x=>({...x,[String(form.memberId)]:saved}));
+   setPhotoFile(null);
+   setPhotoPreview(saved);
+   setNotice("Photo saved successfully. Refresh/reload ke baad bhi photo rahegi.");
+  }catch(e){
+   setNotice(e.message||"Photo save failed.");
+  }finally{
+   setSaving(false);
+  }
+ };
  const currentRows=seed.map(m=>currentByMember.get(m.memberId)||null);
  const currentRecords=seed.map(m=>currentByMember.get(m.memberId)).filter(Boolean);
  const seedRestoreRef=useRef(false);
