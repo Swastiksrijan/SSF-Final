@@ -337,32 +337,6 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
             const unique = new Map();
             officeMembers.forEach(row => { const d=row.data||{}; const key=String(d.memberId||row.recordId||row.id).trim().toUpperCase(); if(!unique.has(key)) unique.set(key,row); });
             rows = Array.from(unique.values());
-          } else {
-            // Final compatibility path for the existing Managing Committee master.
-            // This restores the member-register view without creating duplicate records.
-            const committeeMembers = await DigitalOfficeRecord.findAll({
-              where: { module:'managingCommittee', status:{ [Op.ne]:'deleted' } },
-              order: [['recordDate','DESC'],['createdAt','DESC']]
-            });
-            const unique = new Map();
-            committeeMembers.forEach(x => { const d=x.data||{}; const key=String(d.memberId||x.recordId||x.id).trim().toUpperCase(); if(unique.has(key)) return; unique.set(key, x); });
-            rows = Array.from(unique.values()).map(x => {
-              const d = x.data || {};
-              return {
-                id: 'committee-member-'+String(x.id),
-                recordId: d.memberId || x.recordId,
-                module:'members',
-                recordType:d.memberType || 'Member Register',
-                status:'active',
-                recordDate:d.joiningDate || d.appointmentDate || x.recordDate,
-                personId:d.memberId || null,
-                data:Object.assign({}, d, {
-                  memberId:d.memberId || '',
-                  membershipStatus:d.membershipStatus || 'Active',
-                  joiningDate:d.joiningDate || d.appointmentDate || ''
-                })
-              };
-            });
           }
         }
       } else if (m === 'volunteers') {
