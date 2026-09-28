@@ -1,6 +1,9 @@
 const express = require('express');
 const { Op } = require('sequelize');
 const crypto = require('crypto');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const sequelize = require('../config/database');
 const DigitalOfficeRecord = require('../models/DigitalOfficeRecord');
 const DigitalOfficeAudit = require('../models/DigitalOfficeAudit');
@@ -84,6 +87,21 @@ const requireOfficeAuth = (req, res, next) => {
   next();
 };
 
+const memberPhotoDir = path.join(__dirname, '../uploads/member-profiles');
+if (!fs.existsSync(memberPhotoDir)) fs.mkdirSync(memberPhotoDir, { recursive: true });
+const memberPhotoStorage = multer.diskStorage({
+  destination: (_req, _file, cb) => cb(null, memberPhotoDir),
+  filename: (_req, file, cb) => cb(null, `member-${Date.now()}-${crypto.randomBytes(8).toString('hex')}${path.extname(file.originalname || '').toLowerCase()}`)
+});
+const memberPhotoUpload = multer({
+  storage: memberPhotoStorage,
+  fileFilter: (_req, file, cb) => {
+    if (new Set(['image/jpeg','image/png','image/webp']).has(file.mimetype)) return cb(null, true);
+    return cb(new Error('Profile photo must be JPG, PNG or WebP.'));
+  },
+  limits: { fileSize: 2 * 1024 * 1024, files: 1 }
+});
+
 const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID' };
 const makeId = async (module) => {
   const p = prefix[module] || 'REC';
@@ -100,6 +118,41 @@ const audit = async (action, module, recordId, req, details={}) => {
   await DigitalOfficeAudit.create({ action, module, recordId, actor: req.headers['x-office-actor'] || 'admin', details });
 };
 
+
+router.post('/digital-office/member-photo', requireOfficeAuth, (req, res) => {
+  memberPhotoUpload.single('profilePhoto')(req, res, async (error) => {
+    if (error) return res.status(400).json({ message: error.code === 'LIMIT_FILE_SIZE' ? 'Profile photo must be 2MB or smaller.' : (error.message || 'Unable to upload profile photo.') });
+    const file = req.file;
+    try {
+      const memberId = String(req.body.memberId || '').trim();
+      const recordId = String(req.body.recordId || '').trim();
+      const sourceModule = String(req.body.sourceModule || 'members').trim();
+      if (!memberId || !/^SSF-MBR-\d{5}$/i.test(memberId)) {
+        if (file?.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        return res.status(400).json({ message: 'Valid SSF Member ID is required.' });
+      }
+      let row = null;
+      if (recordId) row = await DigitalOfficeRecord.findOne({ where: { recordId, status: { [Op.ne]: 'deleted' } } });
+      if (!row) row = await DigitalOfficeRecord.findOne({ where: { module: sourceModule, status: { [Op.ne]: 'deleted' } }, order: [['updatedAt','DESC']] }).then(x => x && String(x.data?.memberId || '').toUpperCase() === memberId.toUpperCase() ? x : null);
+      if (!row && sourceModule === 'members') {
+        row = await DigitalOfficeRecord.create({ recordId: await makeId('members'), module: 'members', recordType: 'Member Register', status: 'active', recordDate: new Date(), data: { memberId, fullName: String(req.body.fullName || '').trim(), photoUrl: '/uploads/member-profiles/' + file.filename, action: 'Member Register' } });
+      } else if (row) {
+        row.data = Object.assign({}, row.data || {}, { photoUrl: '/uploads/member-profiles/' + file.filename });
+        await row.save();
+      } else {
+        if (file?.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
+        return res.status(404).json({ message: 'Member master record not found. Save the member record first.' });
+      }
+      const photoUrl = row.data.photoUrl;
+      await audit('UPDATE', row.module, row.recordId, req, { field: 'photoUrl', memberId });
+      return res.json({ message: 'Member photo updated successfully.', photoUrl, recordId: row.recordId, module: row.module });
+    } catch (e) {
+      if (file?.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
+      console.error('Digital Office member photo upload error:', e);
+      return res.status(500).json({ message: 'Unable to save member photo.' });
+    }
+  });
+});
 
 router.get('/digital-office/google/connect-url', requireOfficeAuth, async (req, res) => {
   try {
