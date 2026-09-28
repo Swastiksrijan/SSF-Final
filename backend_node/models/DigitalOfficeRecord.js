@@ -16,7 +16,8 @@ const DigitalOfficeRecord = sequelize.define('DigitalOfficeRecord', {
   personId: { type: DataTypes.STRING, allowNull: true },
   createdBy: { type: DataTypes.STRING, allowNull: true },
   createdByName: { type: DataTypes.STRING, allowNull: true },
-  data: { type: DataTypes.JSONB, allowNull: false, defaultValue: {} }
+  data: { type: DataTypes.JSONB, allowNull: false, defaultValue: {} },
+  profilePhotoData: { type: DataTypes.TEXT, allowNull: true }
 }, { timestamps: true, indexes: [
   { fields: ['module'] }, { fields: ['recordDate'] }, { fields: ['status'] },
   { fields: ['linkedRecordId'] }, { fields: ['personId'] }
