@@ -87,14 +87,10 @@ const requireOfficeAuth = (req, res, next) => {
   next();
 };
 
-const memberPhotoDir = path.join(__dirname, '../uploads/member-profiles');
-if (!fs.existsSync(memberPhotoDir)) fs.mkdirSync(memberPhotoDir, { recursive: true });
-const memberPhotoStorage = multer.diskStorage({
-  destination: (_req, _file, cb) => cb(null, memberPhotoDir),
-  filename: (_req, file, cb) => cb(null, `member-${Date.now()}-${crypto.randomBytes(8).toString('hex')}${path.extname(file.originalname || '').toLowerCase()}`)
-});
+// Member profile photos are stored in the DigitalOfficeRecord JSONB data as data URLs.
+// This avoids Render's ephemeral local filesystem, so photos survive restarts/redeploys.
 const memberPhotoUpload = multer({
-  storage: memberPhotoStorage,
+  storage: multer.memoryStorage(),
   fileFilter: (_req, file, cb) => {
     if (new Set(['image/jpeg','image/png','image/webp']).has(file.mimetype)) return cb(null, true);
     return cb(new Error('Profile photo must be JPG, PNG or WebP.'));
@@ -128,12 +124,18 @@ router.post('/digital-office/member-photo', requireOfficeAuth, (req, res) => {
       const recordId = String(req.body.recordId || '').trim();
       const sourceModule = String(req.body.sourceModule || 'members').trim();
       if (!memberId || !/^SSF-MBR-\d{5}$/i.test(memberId)) {
-        if (file?.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
         return res.status(400).json({ message: 'Valid SSF Member ID is required.' });
       }
+      if (!file?.buffer) {
+        return res.status(400).json({ message: 'Profile photo file is required.' });
+      }
+
+      // Persist the actual image bytes in PostgreSQL JSONB. The frontend already
+      // supports data:image/... URLs, so no filesystem or external storage is needed.
+      const photoUrl = `data:${file.mimetype};base64,${file.buffer.toString('base64')}`;
+
       let row = null;
       // The frontend may send either the database row id or the public recordId.
-      // Accept both so an uploaded committee photo is always attached to the exact member record.
       if (recordId) {
         row = await DigitalOfficeRecord.findOne({ where: { recordId, status: { [Op.ne]: 'deleted' } } });
         if (!row) {
@@ -148,19 +150,28 @@ router.post('/digital-office/member-photo', requireOfficeAuth, (req, res) => {
         row = candidates.find(x => String(x.data?.memberId || '').toUpperCase() === memberId.toUpperCase()) || null;
       }
       if (!row && sourceModule === 'members') {
-        row = await DigitalOfficeRecord.create({ recordId: await makeId('members'), module: 'members', recordType: 'Member Register', status: 'active', recordDate: new Date(), data: { memberId, fullName: String(req.body.fullName || '').trim(), photoUrl: '/uploads/member-profiles/' + file.filename, action: 'Member Register' } });
+        row = await DigitalOfficeRecord.create({
+          recordId: await makeId('members'),
+          module: 'members',
+          recordType: 'Member Register',
+          status: 'active',
+          recordDate: new Date(),
+          data: { memberId, fullName: String(req.body.fullName || '').trim(), photoUrl, action: 'Member Register' }
+        });
       } else if (row) {
-        row.data = Object.assign({}, row.data || {}, { photoUrl: '/uploads/member-profiles/' + file.filename });
+        row.data = Object.assign({}, row.data || {}, { photoUrl });
         await row.save();
       } else {
-        if (file?.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
         return res.status(404).json({ message: 'Member master record not found. Save the member record first.' });
       }
-      const photoUrl = row.data.photoUrl;
-      await audit('UPDATE', row.module, row.recordId, req, { field: 'photoUrl', memberId });
+
+      await audit('UPDATE', row.module, row.recordId, req, {
+        field: 'photoUrl',
+        memberId,
+        storage: 'database'
+      });
       return res.json({ message: 'Member photo updated successfully.', photoUrl, recordId: row.recordId, module: row.module });
     } catch (e) {
-      if (file?.path && fs.existsSync(file.path)) fs.unlinkSync(file.path);
       console.error('Digital Office member photo upload error:', e);
       return res.status(500).json({ message: 'Unable to save member photo.' });
     }
