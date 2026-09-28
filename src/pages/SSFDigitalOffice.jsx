@@ -1201,7 +1201,7 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
    const matches=existing.filter(r=>String((r.data||{}).memberId)===m.memberId);
    const preferred=matches.find(r=>String((r.data||{}).action||"")==="Current Committee Register")||matches.find(r=>String(r.status).toLowerCase()==="active")||matches[0];
    const r=preferred; if(r) used.add(r.id);
-   const data={...blank,...m,committeeFrom:m.joiningDate,committeeStatus:"Active",responsibility:m.responsibility,duties:m.responsibility,action:"Current Committee Register"};
+   const data={...blank,...m,committeeFrom:m.joiningDate,committeeStatus:"Active",responsibility:m.responsibility,duties:m.responsibility,action:"Current Committee Register",photoUrl:r?.data?.photoUrl||""};
    if(r) await updateRecord(r.id,"managingCommittee",data);
    else await add("managingCommittee",{recordDate:m.joiningDate,recordType:"Committee Member",status:"active",data});
    for(const dup of matches) if(!r||dup.id!==r.id) await archive(dup.id,true);
