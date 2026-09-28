@@ -1072,6 +1072,32 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
  const resolutionRows=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
  const calendarRows=(rows||[]).filter(r=>r.module==="meetings"&&r.status!=="deleted");
  const onlineRows=(rows||[]).filter(r=>r.module==="onlineMeetings"&&r.status!=="deleted");
+ const [scheduledCalendarMeetings,setScheduledCalendarMeetings]=useState([]);
+ useEffect(()=>{
+  let alive=true;
+  const headers={Authorization:"Bearer "+token,"Content-Type":"application/json"};
+  fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=meetings",{headers})
+   .then(r=>r.ok?r.json():[])
+   .then(d=>{
+    if(!alive)return;
+    const list=Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]);
+    const meetings=list.filter(x=>x.status!=="archived"&&String((x.data||{}).status||x.status||"").toLowerCase()==="scheduled");
+    const now=Date.now();
+    const upcoming=meetings.filter(x=>{
+     const md=x.data||{};
+     const when=new Date(String(md.date||x.recordDate||"")+"T"+String(md.time||"23:59")).getTime();
+     return !Number.isNaN(when)&&when>=now;
+    });
+    upcoming.sort((a,b)=>{
+     const ad=a.data||{},bd=b.data||{};
+     return new Date(String(ad.date||a.recordDate||"")+"T"+String(ad.time||"23:59")).getTime()-new Date(String(bd.date||b.recordDate||"")+"T"+String(bd.time||"23:59")).getTime();
+    });
+    setScheduledCalendarMeetings(upcoming);
+   })
+   .catch(()=>{if(alive)setScheduledCalendarMeetings([]);});
+  return()=>{alive=false;};
+ },[token]);
+ const calendarSourceRows=scheduledCalendarMeetings.length?scheduledCalendarMeetings:calendarRows;
  const existing=resolutionRows;
  useEffect(()=>{
   const pending=calendarRows.filter(r=>{
@@ -1239,7 +1265,7 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
        setF(x=>({...x,sourceMeetingRecordId:"",meetingMasterId:"",meetingTitle:"",meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",purpose:"",venue:"",meetingId:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:""}));
        setSelectedMeetingMembers([]);setAttendanceMembers([]);setAttendanceStatus({});return;
       }
-      const source=calendarRows.find(r=>String(r.id)===String(id));
+      const source=calendarSourceRows.find(r=>String(r.id)===String(id))||calendarRows.find(r=>String(r.id)===String(id));
       if(!source)return;
       const d=source.data||{};
       let participants=[];try{participants=typeof d.participants==="string"?JSON.parse(d.participants):(Array.isArray(d.participants)?d.participants:[]);}catch(e){participants=[];}
@@ -1249,7 +1275,7 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
       if(ids.length){selectMeetingMembers(ids);}else{setSelectedMeetingMembers([]);setAttendanceMembers([]);setAttendanceStatus({});}
      }} className={cls} required>
       <option value="">New Meeting & Resolution / नई बैठक एवं प्रस्ताव</option>
-      {calendarRows.filter(x=>x.status!=="archived"&&String((x.data||{}).status||x.status||"").toLowerCase()==="scheduled").filter(x=>{const d=x.data||{};const when=new Date(String(d.date||x.recordDate||"")+"T"+String(d.time||"23:59")).getTime();return !Number.isNaN(when)&&when>=Date.now();}).sort((a,b)=>{const ad=a.data||{},bd=b.data||{};return new Date(String(ad.date||a.recordDate||"")+"T"+String(ad.time||"23:59")).getTime()-new Date(String(bd.date||b.recordDate||"")+"T"+String(bd.time||"23:59")).getTime();}).map(x=>{const d=x.data||{};return <option key={x.id} value={x.id}>{d.meetingTitle||"Meeting"} · {d.date||x.recordDate||""} {d.time||""}</option>})}
+      {calendarSourceRows.map(x=>{const d=x.data||{};return <option key={x.id} value={x.id}>{d.meetingTitle||"Meeting"} · {d.date||x.recordDate||""} {d.time||""}</option>})}
       <option value="__other">Other / अन्य (manual entry)</option>
      </select>
      <div className="text-xs text-zinc-500 mt-2">Calendar meeting चुनने पर उसकी details और participants यहाँ load होंगे। Existing Meeting & Resolution record मिले तो वही record edit mode में खुलेगा.</div>
