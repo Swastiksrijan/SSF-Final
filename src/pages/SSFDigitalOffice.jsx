@@ -1230,19 +1230,27 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
 
     <select value={MEETING_MODES.includes(f.meetingMode)?f.meetingMode:"Other"} onChange={e=>set("meetingMode",e.target.value==="Other"?"":e.target.value)} className={cls}><option value="">Select meeting mode / बैठक माध्यम चुनें</option>{MEETING_MODES.map(x=><option key={x}>{x}</option>)}<option>Other</option></select>{!MEETING_MODES.includes(f.meetingMode)&&<input value={f.meetingMode||""} onChange={e=>set("meetingMode",e.target.value)} placeholder="Other Meeting Mode / अन्य माध्यम" className={cls}/>} 
 
-    <select value={calendarMeetingId||"__other"} onChange={e=>{
-     const id=e.target.value;
-     setCalendarMeetingId(id==="__other"?"":id);
-     if(id==="__other"){setF(x=>({...x,sourceMeetingRecordId:"",meetingTitle:"",meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",purpose:"",venue:"",meetingId:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:""}));setSelectedMeetingMembers([]);setAttendanceMembers([]);setAttendanceStatus({});return;}
-     const source=calendarRows.find(r=>String(r.id)===String(id));
-     if(!source)return;
-     const d=source.data||{};
-     let participants=[];try{participants=typeof d.participants==="string"?JSON.parse(d.participants):(Array.isArray(d.participants)?d.participants:[]);}catch(e){participants=[];}
-     const ids=participants.map(x=>String(x.memberId||"")).filter(Boolean);
-     setCalendarMeetingId(String(source.id));
-     setF(x=>({...x,meetingMasterId:String(d.meetingMasterId||legacyMeetingMasterId(d.date||source.recordDate,source.id)),sourceMeetingRecordId:String(source.id),meetingDate:String(d.date||source.recordDate||"").slice(0,10),startTime:d.time||"",endTime:d.endTime||"",meetingType:d.meetingType||"Managing Committee Meeting",meetingMode:d.mode||"Online",meetingTitle:d.meetingTitle||"",purpose:d.purpose||"",venue:d.venue||"",meetingId:d.meetingId||"",onlineMeetingId:d.onlineMeetingId||"",onlineMeetingLink:d.meetingLink||"",onlinePlatform:d.platform||"Google Meet",organizer:d.organizerHost||"",agenda:d.agenda||""}));
-     if(ids.length){selectMeetingMembers(ids);}else{setSelectedMeetingMembers([]);setAttendanceMembers([]);setAttendanceStatus({});}
-   }} className={cls} required><option value="">Select Meeting / बैठक चुनें</option>{calendarRows.map(r=><option key={r.id} value={r.id}>{r.data?.meetingTitle||"Meeting"} — {String(r.data?.date||r.recordDate||"").slice(0,10)}</option>)}<option value="__other">Other / अन्य</option></select>
+    <div className="sm:col-span-2 lg:col-span-4 bg-slate-50 border border-slate-200 rounded-xl p-4">
+     <label className="block text-sm font-black text-[#002344] mb-2">Scheduled Meeting / निर्धारित बैठक चुनें</label>
+     <select value={calendarMeetingId||"__other"} onChange={e=>{
+      const id=e.target.value;
+      setCalendarMeetingId(id==="__other"?"":id);
+      if(id==="__other"){setF(x=>({...x,sourceMeetingRecordId:"",meetingMasterId:"",meetingTitle:"",meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",purpose:"",venue:"",meetingId:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:""}));setSelectedMeetingMembers([]);setAttendanceMembers([]);setAttendanceStatus({});return;}
+      const source=calendarRows.find(r=>String(r.id)===String(id));
+      if(!source)return;
+      const d=source.data||{};
+      let participants=[];try{participants=typeof d.participants==="string"?JSON.parse(d.participants):(Array.isArray(d.participants)?d.participants:[]);}catch(e){participants=[];}
+      const ids=participants.map(x=>String(x.memberId||"")).filter(Boolean);
+      setCalendarMeetingId(String(source.id));
+      setF(x=>({...x,meetingMasterId:String(d.meetingMasterId||legacyMeetingMasterId(d.date||source.recordDate,source.id)),sourceMeetingRecordId:String(source.id),meetingDate:String(d.date||source.recordDate||"").slice(0,10),startTime:d.time||"",endTime:d.endTime||"",meetingType:d.meetingType||"Managing Committee Meeting",meetingMode:d.mode||"Online",meetingTitle:d.meetingTitle||"",purpose:d.purpose||"",venue:d.venue||"",meetingId:d.meetingId||"",onlineMeetingId:d.onlineMeetingId||"",onlineMeetingLink:d.meetingLink||"",onlinePlatform:d.platform||"Google Meet",organizer:d.organizerHost||"",agenda:d.agenda||""}));
+      if(ids.length){selectMeetingMembers(ids);}else{setSelectedMeetingMembers([]);setAttendanceMembers([]);setAttendanceStatus({});}
+    }} className={cls} required>
+      <option value="">Select scheduled meeting / scheduled meeting चुनें</option>
+      {calendarRows.map(r=><option key={r.id} value={r.id}>{r.data?.meetingTitle||"Meeting"} — {String(r.data?.date||r.recordDate||"").slice(0,10)} {r.data?.time?(" · "+r.data.time):""}</option>)}
+      <option value="__other">Other / अन्य (manual entry)</option>
+     </select>
+     <div className="text-xs text-slate-500 mt-2">Meeting Calendar में पहले schedule की गई meeting यहाँ चुनें। Select करने पर Meeting ID, title, date, time, mode, participants, purpose और agenda अपने-आप भरेंगे.</div>
+    </div>
     <div><label className="block text-xs font-bold text-zinc-500 mb-1">Meeting Title / बैठक शीर्षक</label><select value={MEETING_TITLES.includes(f.meetingTitle)?f.meetingTitle:""} onChange={e=>set("meetingTitle",e.target.value)} className={cls} required={!calendarMeetingId}><option value="">Select meeting title / बैठक का शीर्षक चुनें</option>{MEETING_TITLES.map(x=><option key={x}>{x}</option>)}</select><input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Or enter title manually / या शीर्षक स्वयं लिखें" className={cls+" mt-2"} readOnly={!!calendarMeetingId}/>{calendarMeetingId&&<div className="text-[11px] text-zinc-500 mt-1">Calendar से linked title / कैलेंडर से जुड़ा शीर्षक</div>}</div>
 
     <div><label className="block text-xs font-bold text-zinc-500 mb-1">Purpose / उद्देश्य</label><select value={MEETING_PURPOSES.includes(f.purpose)?f.purpose:""} onChange={e=>set("purpose",e.target.value)} className={cls}><option value="">Select purpose / उद्देश्य चुनें</option>{MEETING_PURPOSES.map(x=><option key={x}>{x}</option>)}</select><input value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Or enter purpose manually / या उद्देश्य स्वयं लिखें" className={cls+" mt-2"}/></div>
