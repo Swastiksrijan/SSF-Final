@@ -377,8 +377,9 @@ const validateMemberIdForDigitalOffice = async (memberId, currentId=null) => {
   }
 
   const duplicateMaster = matches.find(row => String(row.id) !== String(currentId || ''));
-  const duplicateAccount = accountMatches.length > 0;
-  if (duplicateMaster || duplicateAccount) {
+  // Website Member accounts may already use the same official SSF Member ID. They are
+  // the identity source, not duplicate Digital Office member-register records.
+  if (duplicateMaster) {
     return { ok: false, message: 'This Member ID is already registered. A duplicate Member ID cannot be created.' };
   }
 
