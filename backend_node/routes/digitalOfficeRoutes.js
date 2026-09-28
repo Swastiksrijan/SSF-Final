@@ -320,7 +320,44 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
       const m = String(req.query.module);
       if (m === 'members') {
         const existing = await Member.findAll({ order: [['createdAt','DESC']] });
-        rows = existing.map(x => ({ id:x.id, recordId:x.memberId || 'ACCOUNT-'+String(x.id).slice(0,8), module:'members', recordType:x.memberType, status:x.status, recordDate:x.createdAt, amount:x.paymentAmount, personId:x.memberId, data:x.toJSON() }));
+        if (existing.length) {
+          // Website Member accounts are the preferred live source when available.
+          rows = existing.map(x => ({ id:x.id, recordId:x.memberId || 'ACCOUNT-'+String(x.id).slice(0,8), module:'members', recordType:x.memberType, status:x.status, recordDate:x.createdAt, amount:x.paymentAmount, personId:x.memberId, data:x.toJSON() }));
+        } else {
+          // Recovery path: older SSF Digital Office member records must remain visible
+          // when the website Member table is empty. Never replace or delete them.
+          const officeMembers = await DigitalOfficeRecord.findAll({
+            where: { module:'members', status:{ [Op.ne]:'deleted' } },
+            order: [['recordDate','DESC'],['createdAt','DESC']]
+          });
+          if (officeMembers.length) {
+            rows = officeMembers;
+          } else {
+            // Final compatibility path for the existing Managing Committee master.
+            // This restores the member-register view without creating duplicate records.
+            const committeeMembers = await DigitalOfficeRecord.findAll({
+              where: { module:'managingCommittee', status:{ [Op.ne]:'deleted' } },
+              order: [['recordDate','DESC'],['createdAt','DESC']]
+            });
+            rows = committeeMembers.map(x => {
+              const d = x.data || {};
+              return {
+                id: 'committee-member-'+String(x.id),
+                recordId: d.memberId || x.recordId,
+                module:'members',
+                recordType:d.memberType || 'Member Register',
+                status:'active',
+                recordDate:d.joiningDate || d.appointmentDate || x.recordDate,
+                personId:d.memberId || null,
+                data:Object.assign({}, d, {
+                  memberId:d.memberId || '',
+                  membershipStatus:d.membershipStatus || 'Active',
+                  joiningDate:d.joiningDate || d.appointmentDate || ''
+                })
+              };
+            });
+          }
+        }
       } else if (m === 'volunteers') {
         const existing = await Volunteer.findAll({ order: [['createdAt','DESC']] });
         rows = existing.map(x => ({ id:x.id, recordId:x.volunteerId || 'VOL-'+String(x.id).slice(0,8), module:'volunteers', recordType:x.volunteerType, status:x.status, recordDate:x.createdAt, personId:x.volunteerId, data:x.toJSON() }));
