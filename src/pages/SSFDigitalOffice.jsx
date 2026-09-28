@@ -1161,6 +1161,9 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
  }
  const [tab,setTab]=useState("dashboard"),[editId,setEditId]=useState(null),[form,setForm]=useState(blank),[saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[search,setSearch]=useState(""),[photoFile,setPhotoFile]=useState(null),[photoPreview,setPhotoPreview]=useState("");
  const set=(k,v)=>setForm(x=>({...x,[k]:v}));
+ const photoSrc=p=>p?(String(p).startsWith("http")?String(p):API_BASE_URL+String(p)):"";
+ const choosePhoto=e=>{const f=e.target.files?.[0];if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){setNotice("Photo must be JPG, PNG or WebP.");e.target.value="";return;}if(f.size>2*1024*1024){setNotice("Photo must be 2MB or smaller.");e.target.value="";return;}setPhotoFile(f);setPhotoPreview(URL.createObjectURL(f));};
+ const clearPhoto=()=>{setPhotoFile(null);setPhotoPreview("");};
  const currentRows=seed.map(m=>currentByMember.get(m.memberId)||null);
  const currentRecords=seed.map(m=>currentByMember.get(m.memberId)).filter(Boolean);
  const seedRestoreRef=useRef(false);
