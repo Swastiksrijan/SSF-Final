@@ -322,7 +322,10 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
         const existing = await Member.findAll({ order: [['createdAt','DESC']] });
         if (existing.length) {
           // Website Member accounts are the preferred live source when available.
-          rows = existing.map(x => ({ id:x.id, recordId:x.memberId || 'ACCOUNT-'+String(x.id).slice(0,8), module:'members', recordType:x.memberType, status:x.status, recordDate:x.createdAt, amount:x.paymentAmount, personId:x.memberId, data:x.toJSON() }));
+          const mapped = existing.map(x => ({ id:x.id, recordId:x.memberId || 'ACCOUNT-'+String(x.id).slice(0,8), module:'members', recordType:x.memberType, status:x.status, recordDate:x.createdAt, amount:x.paymentAmount, personId:x.memberId, data:x.toJSON() }));
+          const unique = new Map();
+          mapped.forEach(row => { const key=String(row.personId||row.data?.memberId||row.recordId||row.id).trim().toUpperCase(); if(!unique.has(key)) unique.set(key,row); });
+          rows = Array.from(unique.values());
         } else {
           // Recovery path: older SSF Digital Office member records must remain visible
           // when the website Member table is empty. Never replace or delete them.
@@ -331,7 +334,9 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
             order: [['recordDate','DESC'],['createdAt','DESC']]
           });
           if (officeMembers.length) {
-            rows = officeMembers;
+            const unique = new Map();
+            officeMembers.forEach(row => { const d=row.data||{}; const key=String(d.memberId||row.recordId||row.id).trim().toUpperCase(); if(!unique.has(key)) unique.set(key,row); });
+            rows = Array.from(unique.values());
           } else {
             // Final compatibility path for the existing Managing Committee master.
             // This restores the member-register view without creating duplicate records.
@@ -339,7 +344,9 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
               where: { module:'managingCommittee', status:{ [Op.ne]:'deleted' } },
               order: [['recordDate','DESC'],['createdAt','DESC']]
             });
-            rows = committeeMembers.map(x => {
+            const unique = new Map();
+            committeeMembers.forEach(x => { const d=x.data||{}; const key=String(d.memberId||x.recordId||x.id).trim().toUpperCase(); if(unique.has(key)) return; unique.set(key, x); });
+            rows = Array.from(unique.values()).map(x => {
               const d = x.data || {};
               return {
                 id: 'committee-member-'+String(x.id),
