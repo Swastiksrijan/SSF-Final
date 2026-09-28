@@ -132,8 +132,21 @@ router.post('/digital-office/member-photo', requireOfficeAuth, (req, res) => {
         return res.status(400).json({ message: 'Valid SSF Member ID is required.' });
       }
       let row = null;
-      if (recordId) row = await DigitalOfficeRecord.findOne({ where: { recordId, status: { [Op.ne]: 'deleted' } } });
-      if (!row) row = await DigitalOfficeRecord.findOne({ where: { module: sourceModule, status: { [Op.ne]: 'deleted' } }, order: [['updatedAt','DESC']] }).then(x => x && String(x.data?.memberId || '').toUpperCase() === memberId.toUpperCase() ? x : null);
+      // The frontend may send either the database row id or the public recordId.
+      // Accept both so an uploaded committee photo is always attached to the exact member record.
+      if (recordId) {
+        row = await DigitalOfficeRecord.findOne({ where: { recordId, status: { [Op.ne]: 'deleted' } } });
+        if (!row) {
+          row = await DigitalOfficeRecord.findOne({ where: { id: recordId, status: { [Op.ne]: 'deleted' } } });
+        }
+      }
+      if (!row) {
+        const candidates = await DigitalOfficeRecord.findAll({
+          where: { module: sourceModule, status: { [Op.ne]: 'deleted' } },
+          order: [['updatedAt','DESC']]
+        });
+        row = candidates.find(x => String(x.data?.memberId || '').toUpperCase() === memberId.toUpperCase()) || null;
+      }
       if (!row && sourceModule === 'members') {
         row = await DigitalOfficeRecord.create({ recordId: await makeId('members'), module: 'members', recordType: 'Member Register', status: 'active', recordDate: new Date(), data: { memberId, fullName: String(req.body.fullName || '').trim(), photoUrl: '/uploads/member-profiles/' + file.filename, action: 'Member Register' } });
       } else if (row) {
