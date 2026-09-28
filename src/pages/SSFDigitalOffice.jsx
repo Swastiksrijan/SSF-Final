@@ -927,17 +927,33 @@ function InstitutionalHistory({rows,add,updateRecord,archive}) {
   if(!editId||!photoFile||saving)return;
   setSaving(true);
   try{
-   const fd=new FormData();
-   fd.append("profilePhoto",photoFile);
-   fd.append("memberId",String(form.memberId||""));
-   fd.append("fullName",String(form.fullName||""));
-   fd.append("sourceModule","managingCommittee");
-   fd.append("recordId",String(editId));
-   const pr=await fetch(ENDPOINTS.DIGITAL_OFFICE_MEMBER_PHOTO,{method:"POST",headers:{Authorization:`Bearer ${token}`,"X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"},body:fd});
-   const pj=await pr.json().catch(()=>({}));
-   if(!pr.ok)throw new Error(pj.message||"Photo upload failed.");
-   const saved=pj.photoUrl||"";
-   if(saved&&form.memberId)setPhotoOverrides(x=>({...x,[String(form.memberId)]:saved}));
+   const saved=await new Promise((resolve,reject)=>{
+    const reader=new FileReader();
+    reader.onload=()=>{
+     const img=new Image();
+     img.onload=()=>{
+      const max=900;
+      const scale=Math.min(1,max/Math.max(img.width,img.height));
+      const canvas=document.createElement("canvas");
+      canvas.width=Math.max(1,Math.round(img.width*scale));
+      canvas.height=Math.max(1,Math.round(img.height*scale));
+      const ctx=canvas.getContext("2d");
+      if(!ctx)return reject(new Error("Unable to process photo."));
+      ctx.drawImage(img,0,0,canvas.width,canvas.height);
+      const dataUrl=canvas.toDataURL("image/jpeg",0.82);
+      if(!dataUrl||dataUrl.length<100)reject(new Error("Unable to process photo."));
+      else resolve(dataUrl);
+     };
+     img.onerror=()=>reject(new Error("Unable to read photo."));
+     img.src=String(reader.result||"");
+    };
+    reader.onerror=()=>reject(new Error("Unable to read photo."));
+    reader.readAsDataURL(photoFile);
+   });
+   const data={...form,action:"Committee Member Update",committeeStatus:form.committeeStatus||"Active",photoUrl:saved};
+   const ok=await updateRecord(editId,"managingCommittee",data,true);
+   if(!ok)throw new Error("Photo could not be saved to the Digital Office.");
+   if(form.memberId)setPhotoOverrides(x=>({...x,[String(form.memberId)]:saved}));
    setPhotoFile(null);
    setPhotoPreview(saved);
    setNotice("Photo saved successfully. Refresh/reload ke baad bhi photo rahegi.");
