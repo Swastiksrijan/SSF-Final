@@ -1232,10 +1232,13 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
 
     <div className="sm:col-span-2 lg:col-span-4 bg-slate-50 border border-slate-200 rounded-xl p-4">
      <label className="block text-xs font-bold text-zinc-500">Scheduled Calendar Meeting / कैलेंडर से बैठक चुनें</label>
-     <select value={calendarMeetingId||"__other"} onChange={e=>{
+     <select value={calendarMeetingId} onChange={e=>{
       const id=e.target.value;
-      setCalendarMeetingId(id==="__other"?"":id);
-      if(id==="__other"){setF(x=>({...x,sourceMeetingRecordId:"",meetingMasterId:"",meetingTitle:"",meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",purpose:"",venue:"",meetingId:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:""}));setSelectedMeetingMembers([]);setAttendanceMembers([]);setAttendanceStatus({});return;}
+      if(!id||id==="__other"){
+       setCalendarMeetingId("");
+       setF(x=>({...x,sourceMeetingRecordId:"",meetingMasterId:"",meetingTitle:"",meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",purpose:"",venue:"",meetingId:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:""}));
+       setSelectedMeetingMembers([]);setAttendanceMembers([]);setAttendanceStatus({});return;
+      }
       const source=calendarRows.find(r=>String(r.id)===String(id));
       if(!source)return;
       const d=source.data||{};
@@ -1244,9 +1247,9 @@ function MeetingResolutions({rows,add,archive,restore,updateRecord,token}){
       setCalendarMeetingId(String(source.id));
       setF(x=>({...x,meetingMasterId:String(d.meetingMasterId||legacyMeetingMasterId(d.date||source.recordDate,source.id)),sourceMeetingRecordId:String(source.id),meetingDate:String(d.date||source.recordDate||"").slice(0,10),startTime:d.time||"",endTime:d.endTime||"",meetingType:d.meetingType||"Managing Committee Meeting",meetingMode:d.mode||"Online",meetingTitle:d.meetingTitle||"",purpose:d.purpose||"",venue:d.venue||"",meetingId:d.meetingId||"",onlineMeetingId:d.onlineMeetingId||"",onlineMeetingLink:d.meetingLink||"",onlinePlatform:d.platform||"Google Meet",organizer:d.organizerHost||"",agenda:d.agenda||""}));
       if(ids.length){selectMeetingMembers(ids);}else{setSelectedMeetingMembers([]);setAttendanceMembers([]);setAttendanceStatus({});}
-    }} className={cls} required>
+     }} className={cls} required>
       <option value="">New Meeting & Resolution / नई बैठक एवं प्रस्ताव</option>
-      {calendarRows.filter(r=>String(r.data?.status||r.status||"").toLowerCase()==="scheduled").sort((a,b)=>String(a.data?.date||a.recordDate||"").localeCompare(String(b.data?.date||b.recordDate||""))).map(r=><option key={r.id} value={r.id}>{r.data?.meetingTitle||"Meeting"} · {String(r.data?.date||r.recordDate||"").slice(0,10)} {r.data?.time||""}</option>)}
+      {calendarRows.filter(x=>x.status!=="archived"&&String((x.data||{}).status||x.status||"").toLowerCase()==="scheduled").filter(x=>{const d=x.data||{};const when=new Date(String(d.date||x.recordDate||"")+"T"+String(d.time||"23:59")).getTime();return !Number.isNaN(when)&&when>=Date.now();}).sort((a,b)=>{const ad=a.data||{},bd=b.data||{};return new Date(String(ad.date||a.recordDate||"")+"T"+String(ad.time||"23:59")).getTime()-new Date(String(bd.date||b.recordDate||"")+"T"+String(bd.time||"23:59")).getTime();}).map(x=>{const d=x.data||{};return <option key={x.id} value={x.id}>{d.meetingTitle||"Meeting"} · {d.date||x.recordDate||""} {d.time||""}</option>})}
       <option value="__other">Other / अन्य (manual entry)</option>
      </select>
      <div className="text-xs text-zinc-500 mt-2">Calendar meeting चुनने पर उसकी details और participants यहाँ load होंगे। Existing Meeting & Resolution record मिले तो वही record edit mode में खुलेगा.</div>
