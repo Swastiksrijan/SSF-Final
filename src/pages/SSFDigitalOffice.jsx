@@ -833,7 +833,38 @@ function SimpleOfficeCard({title,subtitle,children}){return <div className="spac
 function MembersRegister({rows,add,archive,updateRecord}){
  // Members Register is intentionally independent from Managing Committee data.
  const savedMembers=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="members"&&r.status!=="deleted");
- const existing=savedMembers;
+ // Initial Master Member recovery: show the existing approved committee identities as
+ // the original Members Register seed when dedicated member-register records are absent.
+ // This does not delete, overwrite, or modify Managing Committee records.
+ const committeeSeeds=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="managingCommittee"&&r.status!=="deleted").map(r=>{
+  const d=r.data||{};
+  const data={
+   memberId:d.memberId||"",
+   membershipNo:d.membershipNo||"",
+   memberType:d.memberType||d.designation||"General Member",
+   fullName:d.fullName||"",
+   fatherHusbandName:d.fatherHusbandName||"",
+   dob:d.dob||"",
+   gender:d.gender||"",
+   occupation:d.occupation||d.occupationProfession||"",
+   mobile:d.mobile||d.mobileNo||"",
+   email:d.email||"",
+   address:d.address||"",
+   city:d.city||"",
+   state:d.state||"",
+   pinCode:d.pinCode||"",
+   pan:d.pan||"",
+   aadhaar:d.aadhaar||"",
+   joiningDate:d.joiningDate||d.appointmentDate||r.recordDate||"",
+   membershipEndDate:d.membershipEndDate||"",
+   membershipStatus:d.membershipStatus||"Active",
+   membershipFee:d.membershipFee||"",
+   receiptNo:d.receiptNo||"NA",
+   remarks:d.remarks||d.responsibility||""
+  };
+  return {id:"committee-seed-"+r.id,recordId:r.recordId,module:"members",status:"active",recordDate:data.joiningDate||r.recordDate,data};
+ });
+ const existing=savedMembers.length?savedMembers:committeeSeeds;
 const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
  const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[tab,setTab]=useState("dashboard"),[editingId,setEditingId]=useState(null),[editingSeed,setEditingSeed]=useState(false);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
