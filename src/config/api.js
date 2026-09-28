@@ -46,6 +46,7 @@ export const ENDPOINTS = {
     ADMIN_DELETE_USER: (id) => `${API_BASE_URL}/api/admin/users/${encodeURIComponent(id)}`,
     DIGITAL_OFFICE_SUMMARY: `${API_BASE_URL}/api/digital-office/summary`,
     DIGITAL_OFFICE_RECORDS: `${API_BASE_URL}/api/digital-office/records`,
+    DIGITAL_OFFICE_MEMBER_PHOTO: `${API_BASE_URL}/api/digital-office/member-photo`,
     DIGITAL_OFFICE_DONATIONS: `${API_BASE_URL}/api/digital-office/donations`,
     DIGITAL_OFFICE_EXPENSES: `${API_BASE_URL}/api/digital-office/expenses`,
     DIGITAL_OFFICE_REPORTS: `${API_BASE_URL}/api/digital-office/reports`,
