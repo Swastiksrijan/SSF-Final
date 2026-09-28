@@ -832,36 +832,8 @@ function SeparationManagement({rows,add}){
 function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#002344] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 function MembersRegister({rows,add,archive,updateRecord}){
  const savedMembers=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="members"&&r.status!=="deleted");
- const committeeSeeds=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="managingCommittee"&&r.status!=="deleted").map(r=>{
-  const d=r.data||{};
-  const seed=MASTER_MEMBER_DATA.find(m=>m.memberId===String(d.memberId||""))||{};
-  const data={...seed,...d};
-  data.memberId=seed.memberId||d.memberId||"";
-  data.memberRole=seed.memberRole||d.designation||"";
-  data.responsibility=seed.responsibility||d.responsibility||"";
-  data.fullName=seed.fullName||d.fullName||"";
-  data.memberType=seed.memberType||d.memberType||"General Member";
-  data.fatherHusbandName=seed.fatherHusbandName||d.fatherHusbandName||"";
-  data.gender=seed.gender||d.gender||"";
-  data.occupation=seed.occupation||d.occupation||d.occupationProfession||"";
-  data.mobile=seed.mobile||d.mobile||d.mobileNo||"";
-  data.email=seed.email||d.email||"";
-  data.address=seed.address||d.address||"";
-  data.city=seed.city||d.city||"";
-  data.state=seed.state||d.state||"";
-  data.pinCode=seed.pinCode||d.pinCode||"";
-  data.pan=seed.pan||d.pan||"";
-  data.aadhaar=seed.aadhaar||d.aadhaar||"";
-  data.joiningDate=seed.joiningDate||d.joiningDate||d.appointmentDate||"";
-  data.membershipEndDate=seed.membershipEndDate||d.membershipEndDate||"";
-  data.membershipStatus=seed.membershipStatus||d.membershipStatus||"Active";
-  data.membershipFee=seed.membershipFee||d.membershipFee||"";
-  data.receiptNo=seed.receiptNo||d.receiptNo||"NA";
-  data.remarks=seed.responsibility||d.remarks||d.responsibility||"";
-  return {id:"committee-seed-"+r.id,recordId:r.recordId,module:"members",status:"active",recordDate:data.joiningDate||r.recordDate,data};
- });
- const existing=[...savedMembers,...committeeSeeds].filter((r,i,a)=>{const key=String(r.data?.memberId||r.recordId||r.id||"");return a.findIndex(x=>String(x.data?.memberId||x.recordId||x.id||"")===key)===i;});
- const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
+ const existing=savedMembers;
+const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:""});
  const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[tab,setTab]=useState("dashboard"),[editingId,setEditingId]=useState(null),[editingSeed,setEditingSeed]=useState(false);
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
  const active=existing.filter(r=>String((r.data||{}).membershipStatus||r.status||"").toLowerCase()==="active");
