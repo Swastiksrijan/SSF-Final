@@ -464,7 +464,7 @@ export default function LearningHub() {
       <section className="relative overflow-hidden bg-[#002344] px-4 py-20 text-white md:py-28">
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(#fff 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
         <div className="relative mx-auto max-w-6xl">
-          <div className="max-w-4xl">
+          <div className="max-w-4xl pt-4 md:pt-6">
             <div className="mb-8 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest">
               <FaGraduationCap /> Swastik Srijan Foundation
             </div>
