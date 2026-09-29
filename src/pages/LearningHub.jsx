@@ -792,8 +792,8 @@ export default function LearningHub() {
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              ["34", "Learning Paths", "Learning Paths"],
-              ["12", "Ready Now", "Ready Now"],
+              [String(COURSES.length), "Learning Paths", "Learning Paths"],
+              [String(COURSES.filter((course) => course.ready).length), "Ready Now", "Ready Now"],
               ["Hindi + English", "Languages", "Languages"],
               ["Free", "Access", "Access"],
             ].map(([value, en, hi]) => (
