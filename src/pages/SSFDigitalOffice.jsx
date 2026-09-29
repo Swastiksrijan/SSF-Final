@@ -200,7 +200,7 @@ export default function SSFDigitalOffice(){
     {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
     {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
     {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/>} 
-    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
+    {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive} updateRecord={updateRecord}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
@@ -832,8 +832,21 @@ function SeparationManagement({rows,add}){
 function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#002344] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 function MembersRegister({rows,add,archive,updateRecord}){
  // Members Register is intentionally independent from Managing Committee data.
+ const MASTER_MEMBER_DATA=[
+  {memberId:"SSF-MBR-00001",memberType:"Founder Member",designation:"President",responsibility:"Chief Executive & External Relations",fullName:"Ramesh Pandey",occupation:"Farmer & Social Worker",gender:"Male",mobile:"9718346691",email:"rameshpandey335@gmail.com",address:"Ward 1, Village Dadar, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",joiningDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00014",memberType:"General Member",designation:"Vice President",responsibility:"Project Planning & Monitoring",fullName:"Preeti Shukla",occupation:"Homemaker & Student",gender:"Female",mobile:"8085897964",email:"preetipandeydadar@gmail.com",address:"134/7, Gram Maidani, Shiva ji Nagar",city:"Rewa",state:"Madhya Pradesh",pinCode:"486001",joiningDate:"2021-04-30"},
+  {memberId:"SSF-MBR-00002",memberType:"Founder Member",designation:"Secretary",responsibility:"Administration & Legal Compliance",fullName:"Amit Kumar Pandey",occupation:"Farmer & Business Owner",gender:"Male",mobile:"9009255202",email:"amitp203@gmail.com",address:"Village Dadar, Bankuiya road, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",joiningDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00003",memberType:"Founder Member",designation:"Treasurer",responsibility:"Finance & Accounts In-charge",fullName:"Divya Sharma",occupation:"Homemaker & Social Worker",gender:"Female",mobile:"9827263231",email:"divsharma067@gmail.com",address:"Village Dadar, Bankuiya road, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",joiningDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00004",memberType:"Founder Member",designation:"Joint Secretary",responsibility:"IT, MIS & Digital Records",fullName:"Kiran Pandey",occupation:"Homemaker & Social Worker",gender:"Female",mobile:"9993495877",email:"kiranpandey1729@gmail.com",address:"26/282, Ambedkar Nagar, Pokhri tola",city:"Rewa",state:"Madhya Pradesh",pinCode:"486005",joiningDate:"2013-12-30"},
+  {memberId:"SSF-MBR-00015",memberType:"General Member",designation:"Executive Committee Member",responsibility:"Documentation Head (Admin In-charge)",fullName:"Sandeep Tripathi",occupation:"Teacher & Social Worker",gender:"Male",mobile:"7697851754",email:"tri.sandeep22@gmail.com",address:"Village Balha, Post Nayagaon",city:"Satna",state:"Madhya Pradesh",pinCode:"485221",joiningDate:"2025-05-10"},
+  {memberId:"SSF-MBR-00016",memberType:"General Member",designation:"Member",responsibility:"Field Coordinator",fullName:"Prameesh Singh",occupation:"Fitness Trainer",gender:"Male",mobile:"9144796001",email:"prameeshs321@gmail.com",address:"Village Khaira, Khaira",city:"Rewa",state:"Madhya Pradesh",pinCode:"486441",joiningDate:"2025-05-10"},
+  {memberId:"SSF-MBR-00017",memberType:"General Member",designation:"Member",responsibility:"Volunteer Coordinator",fullName:"Rishi Kumar Pandey",occupation:"Private Employee",gender:"Male",mobile:"7987707912",email:"rishisatna01@gmail.com",address:"Village-Post Kyoti",city:"Rewa",state:"Madhya Pradesh",pinCode:"486117",joiningDate:"2025-05-10"},
+  {memberId:"SSF-MBR-00018",memberType:"General Member",designation:"Member",responsibility:"Media & Communication Coordinator",fullName:"Ritesh Kumar Tiwari",occupation:"Private Employee",gender:"Male",mobile:"8422819534",email:"riteshtiwari9082@gmail.com",address:"Village Jagannathpur, Sant Ravidas Nagar",city:"Bhadohi",state:"Uttar Pradesh",pinCode:"221303",joiningDate:"2025-05-10"}
+ ];
  const savedMembers=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="members"&&r.status!=="deleted");
- const existing=savedMembers;
+ const usingRecoverySeed=savedMembers.length===0;
+ const masterSeeds=usingRecoverySeed?MASTER_MEMBER_DATA.map(d=>({id:"recovery-member-"+d.memberId,recordId:d.memberId,module:"members",status:"active",recordDate:d.joiningDate,data:{...d,membershipNo:"",membershipStatus:"Active",membershipFee:"",feeFrequency:"Monthly",feeDueAmount:"",feeLastPaidDate:"",feeNextDueDate:"",feeStatus:"Pending",receiptNo:"NA",remarks:d.remarks||d.responsibility||""}})):[];
+ const existing=usingRecoverySeed?masterSeeds:savedMembers;
 const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:"",photoUrl:""});
  const [photoUploading,setPhotoUploading]=useState(false);
  const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[tab,setTab]=useState("dashboard"),[editingId,setEditingId]=useState(null),[editingSeed,setEditingSeed]=useState(false);
