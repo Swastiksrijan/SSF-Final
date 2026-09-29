@@ -108,7 +108,6 @@ export default function BlogHubHeader() {
         </div>
       </div>
     </section>
-  );
 
       {activeCategory && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 px-4 py-6" onClick={() => setActiveCategory(null)}>
@@ -126,3 +125,5 @@ export default function BlogHubHeader() {
         </div>
       )}
 }
+
+  );
