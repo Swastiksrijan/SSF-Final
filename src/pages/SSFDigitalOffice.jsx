@@ -339,8 +339,7 @@ function NotificationRegister({tab,rows,add,archive,updateRecord,types,members=[
  const title=tab==="information"?"Information & Communication / सूचना एवं संचार":tab==="response"?"Response & Participation / प्रतिक्रिया एवं सहभागिता":tab==="followup"?"Reminder & Follow-up / अनुस्मारक एवं अनुवर्ती कार्य":"Notice & Explanation / नोटिस एवं स्पष्टीकरण";
  const shareRecord=r=>{
   const d=r.data||{};
-  const msg=[d.subject&&("Subject: "+d.subject),d.details,d.expectedAction&&("Expected Action: "+d.expectedAction),d.expectedDate&&("Expected Date: "+d.expectedDate),d.responseDetails&&("Response / Explanation: "+d.responseDetails),d.followUpDate&&("Follow-up Date: "+d.followUpDate)].filter(Boolean).join("
-");
+  const msg=[d.subject&&("Subject: "+d.subject),d.details,d.expectedAction&&("Expected Action: "+d.expectedAction),d.expectedDate&&("Expected Date: "+d.expectedDate),d.responseDetails&&("Response / Explanation: "+d.responseDetails),d.followUpDate&&("Follow-up Date: "+d.followUpDate)].filter(Boolean).join("\\n");
   if(navigator.share){navigator.share({title:d.subject||"SSF Official Communication",text:msg}).catch(()=>{});return;}
   const phone=String(d.mobile||d.phone||"").replace(/\D/g,"");
   if(phone){window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank","noopener,noreferrer");return;}
