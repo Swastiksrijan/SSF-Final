@@ -299,7 +299,7 @@ router.post('/digital-office/online-meeting', requireOfficeAuth, async (req,res)
 router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
   try {
     const rows = await DigitalOfficeRecord.findAll({ where: { status: { [Op.ne]: 'deleted' } }, order: [['recordDate','DESC']] });
-    const [memberCount, volunteerCount, donorCount, internshipCount] = await Promise.all([Member.count(), Volunteer.count(), Donor.count(), InternshipApplication.count()]);
+    // Website sign-up accounts are not official members. Keep them out of the Members Register count.\n    const [memberCount, volunteerCount, donorCount, internshipCount] = await Promise.all([\n      Member.count({ where: { memberType: { [Op.ne]: 'website_signup' } } }),\n      Volunteer.count(), Donor.count(), InternshipApplication.count()\n    ]);
     const sum = (module) => rows.filter(r => r.module === module).reduce((s,r)=>s+Number(r.amount||0),0);
     const balance = (module) => rows.filter(r => r.module === module).reduce((s,r)=>{
       const d=String(r.direction||'in').toLowerCase();
@@ -343,7 +343,7 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
     if (['members','volunteers','donors','internships'].includes(String(req.query.module || ''))) {
       const m = String(req.query.module);
       if (m === 'members') {
-        const existing = await Member.findAll({ order: [['createdAt','DESC']] });
+        // Website login/signup accounts are separate from the official Member Register.\n        // They must never replace, reduce, or become master member records.\n        const existing = await Member.findAll({\n          where: { memberType: { [Op.ne]: 'website_signup' } },\n          order: [['createdAt','DESC']]\n        });
         if (existing.length) {
           // Website Member accounts remain the identity source when available.
           // Merge the Digital Office master photo by Member ID so the photo is
