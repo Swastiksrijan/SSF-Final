@@ -51,14 +51,14 @@ export default function SSFDigitalOffice(){
    await refreshSummary();
    if(NO_RECORD_MODULES.has(module)){setRows([]);return;}
    const q=ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+encodeURIComponent(dataModule)+(search?"&search="+encodeURIComponent(search):"");
-   const r=await fetch(q,{headers:auth()}); const d=await r.json(); if(!r.ok)throw new Error(d.message||"Unable to load records."); const loadedRows=Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]); setModuleRows(function(prev){return Object.assign({},prev,{[dataModule]:loadedRows});}); setRows(loadedRows);
+   const r=await fetch(q,{headers:auth()}); const d=await r.json(); if(!r.ok)throw new Error(d.message||"Unable to load records."); const rawRows=Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]); const loadedRows=rawRows.filter(function(row){return String(row?.module||"")===String(dataModule);}); setModuleRows(function(prev){return Object.assign({},prev,{[dataModule]:loadedRows});}); setRows(loadedRows);
   }catch(e){setNotice(e.message||"Unable to load Digital Office.");}finally{setLoading(false);}
  };
  useEffect(function(){if(token)load(active);},[active]);
  useEffect(function(){if(token&&!NO_RECORD_MODULES.has(active)){const t=setTimeout(function(){load(active);},350);return function(){clearTimeout(t);};}},[search]);
  useEffect(function(){
   const refreshHandler=function(e){
-   if(e.detail&&e.detail.module==="managingCommittee"&&Array.isArray(e.detail.rows))setRows(e.detail.rows);
+   if(e.detail&&e.detail.module==="managingCommittee"&&Array.isArray(e.detail.rows)){setRows(e.detail.rows);setModuleRows(function(prev){return Object.assign({},prev,{managingCommittee:e.detail.rows});});}
   };
   window.addEventListener("ssf-digital-office-refresh",refreshHandler);
   return function(){window.removeEventListener("ssf-digital-office-refresh",refreshHandler);};
@@ -1008,27 +1008,8 @@ function OfficeHistory({rows,add,updateRecord,archive}){
  const allExisting=(rows||[]).filter(r=>r.module==="officeHistory"&&r.status!=="deleted");
  const [tab,setTab]=useState("dashboard"),[query,setQuery]=useState(""),[sortBy,setSortBy]=useState("dateAsc");
  const [editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
- const recoverySeedRef=useRef(false);
- const RECOVERY_HISTORY=[
-  ["SSF-MBR-00001","Ramesh Pandey","2013-12-30","Appointment","","President","Founder / Constitution of the Society"],
-  ["SSF-MBR-00002","Amit Kumar Pandey","2013-12-30","Appointment","","Secretary","Founder / Constitution of the Society"],
-  ["SSF-MBR-00003","Divya Sharma","2013-12-30","Appointment","","Treasurer","Founder / Constitution of the Society"],
-  ["SSF-MBR-00004","Kiran Pandey","2013-12-30","Appointment","","Joint Secretary","Founder / Constitution of the Society"],
-  ["SSF-MBR-00014","Preeti Shukla","2021-04-30","Appointment","","Vice President","Committee appointment / continuation of organisational governance"],
-  ["SSF-MBR-00015","Sandeep Tripathi","2025-05-10","Appointment","","Executive Committee Member","Managing Committee appointment"],
-  ["SSF-MBR-00016","Prameesh Singh","2025-05-10","Appointment","","Member","Managing Committee appointment"],
-  ["SSF-MBR-00017","Rishi Kumar Pandey","2025-05-10","Appointment","","Member","Managing Committee appointment"],
-  ["SSF-MBR-00018","Ritesh Kumar Tiwari","2025-05-10","Appointment","","Member","Managing Committee appointment"]
- ];
- useEffect(function(){
-  if(allExisting.length||recoverySeedRef.current||!add)return;
-  recoverySeedRef.current=true;
-  Promise.all(RECOVERY_HISTORY.map(function(x){
-   return add("officeHistory",{recordDate:x[2],recordType:x[3],status:"active",data:{memberId:x[0],fullName:x[1],eventDate:x[2],changeType:x[3],previousRole:x[4],newRole:x[5],referenceNo:"",resolutionNo:"",meetingDate:"",details:x[6],remarks:"Recovered baseline governance history; can be corrected or supplemented with formal records."}});
-  })).catch(function(){recoverySeedRef.current=false;});
- },[allExisting.length]);
  const blank={memberId:"",fullName:"",eventDate:new Date().toISOString().slice(0,10),changeType:"Appointment",previousRole:"",newRole:"",referenceNo:"",resolutionNo:"",meetingDate:"",details:"",remarks:""};
- const historyRows=allExisting.length?allExisting:RECOVERY_HISTORY.map(function(x,i){return {id:"history-seed-"+i,module:"officeHistory",recordDate:x[2],recordType:x[3],status:"active",data:{memberId:x[0],fullName:x[1],eventDate:x[2],changeType:x[3],previousRole:x[4],newRole:x[5],referenceNo:"",resolutionNo:"",meetingDate:"",details:x[6],remarks:"Baseline governance history record."}};});
+ const historyRows=allExisting;
  const [f,setF]=useState(blank);
  const reset=()=>{setEditingId(null);setF({...blank,eventDate:new Date().toISOString().slice(0,10)});};
  const edit=(r)=>{setEditingId(r.id);setF({...blank,...(r.data||{}),eventDate:(r.data||{}).eventDate||r.recordDate||blank.eventDate});setTab("history");window.scrollTo({top:0,behavior:"smooth"});};
