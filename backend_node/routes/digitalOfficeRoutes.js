@@ -150,14 +150,7 @@ router.post('/digital-office/member-photo', requireOfficeAuth, (req, res) => {
         row = candidates.find(x => String(x.data?.memberId || '').toUpperCase() === memberId.toUpperCase()) || null;
       }
       if (!row && sourceModule === 'members') {
-        row = await DigitalOfficeRecord.create({
-          recordId: await makeId('members'),
-          module: 'members',
-          recordType: 'Member Register',
-          status: 'active',
-          recordDate: new Date(),
-          data: { memberId, fullName: String(req.body.fullName || '').trim(), photoUrl, action: 'Member Register' }
-        });
+        return res.status(404).json({ message: 'Member master record not found. Save the Member Register record before uploading a photo.' });
       } else if (row) {
         row.data = Object.assign({}, row.data || {}, { photoUrl });
         await row.save();
