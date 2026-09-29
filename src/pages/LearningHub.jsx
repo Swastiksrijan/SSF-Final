@@ -468,10 +468,10 @@ export default function LearningHub() {
             <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest">
               <FaGraduationCap /> Swastik Srijan Foundation
             </div>
-            <h1 className="text-5xl font-black leading-tight md:text-7xl">Learning Hub</h1>
-            <h2 className="mt-3 text-2xl font-bold text-white/80 md:text-3xl">ज्ञान एवं सीख • Learn. Practise. Grow.</h2>
+            <h1 className="text-5xl font-black leading-tight md:text-7xl">SSF Learning Hub</h1>
+            <h2 className="mt-3 text-2xl font-bold text-white/80 md:text-3xl">ज्ञान • कौशल • अवसर | Learn • Practise • Grow</h2>
             <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80 md:text-xl">
-              Free, practical and accessible learning resources for students, young people, volunteers, members and anyone who wants to learn useful skills.
+              Free, practical and accessible learning for education, career, communication, digital skills and personal development.
             </p>
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
