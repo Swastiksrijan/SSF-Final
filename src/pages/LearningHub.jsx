@@ -14,6 +14,69 @@ const FREE_RESOURCES = {
   openLearn: "https://www.open.edu/openlearn/",
 };
 
+const LEARNING_MATERIAL = {
+  default: {
+    what: "इस lesson में विषय की मूल समझ और practical approach सीखें। जानकारी को अपनी परिस्थिति के अनुसार जिम्मेदारी से लागू करें।",
+    steps: ["उद्देश्य समझें और अपनी वर्तमान जानकारी लिखें।","मुख्य concepts और शब्द नोट करें।","एक छोटा practical task स्वयं करें।","परिणाम जाँचें और कमी होने पर दोबारा अभ्यास करें।"],
+    example: "एक वास्तविक छोटी स्थिति चुनें, पहले अपना समाधान लिखें और फिर lesson की जानकारी से उसे सुधारें।",
+    avoid: "बिना जाँच के copy करना, गलत दावा करना या आवश्यकता होने पर official/expert guidance को नज़रअंदाज़ करना।",
+    check: ["मैं विषय को अपने शब्दों में समझा सकता/सकती हूँ।","मैं practical example दे सकता/सकती हूँ।","मैं जानता/जानती हूँ कि कब verification जरूरी है।"]
+  },
+  communication: {
+    what: "Communication में clarity, listening, सही शब्द, context और respect शामिल हैं। अच्छा संदेश वही है जिसे पढ़कर/सुनकर सामने वाला सही अर्थ और अगला कदम समझ सके।",
+    steps: ["पहले उद्देश्य तय करें: information, request, question या discussion।","छोटे और स्पष्ट वाक्यों का प्रयोग करें।","सामने वाले की बात पूरी सुनें और clarification पूछें।","अंत में action या next step स्पष्ट करें।"],
+    example: "मदद माँगते समय समस्या, आवश्यक मदद और अपेक्षित समय साफ लिखें।",
+    avoid: "गुस्से में जवाब, assumptions, अपमानजनक भाषा और अस्पष्ट लंबे messages।",
+    check: ["मेरा उद्देश्य स्पष्ट है।","मैं सक्रिय रूप से सुनता/सुनती हूँ।","मेरी भाषा respectful और actionable है।"]
+  },
+  career: {
+    what: "Career learning का उद्देश्य अपनी वास्तविक education, skills और experience को सही अवसर से जोड़ना है। Resume और application में जानकारी truthful और verifiable होनी चाहिए।",
+    steps: ["अपनी education, skills और experience की सूची बनाएँ।","Opportunity की requirements पढ़ें।","Relevant documents और examples तैयार करें।","Application और follow-up का record रखें।"],
+    example: "Job description में Excel माँगा है तो अपने वास्तविक Excel skill और उससे किए गए काम का उदाहरण दें।",
+    avoid: "Fake certificate, झूठा experience, suspicious recruitment में पैसे देना या OTP/password साझा करना।",
+    check: ["मैं अपनी वास्तविक skills पहचान सकता/सकती हूँ।","मैं job requirements पढ़ता/पढ़ती हूँ।","मैं recruitment fraud के संकेत पहचान सकता/सकती हूँ।"]
+  },
+  digital: {
+    what: "Digital literacy में devices, files, browser, accounts, search, online services, privacy और security की practical समझ शामिल है।",
+    steps: ["Strong unique passwords और available security controls रखें।","Unknown links/files का source जाँचें।","Important files का backup रखें।","Online information को source और date देखकर verify करें।"],
+    example: "Account बंद होने का message मिले तो link पर click करने के बजाय official website/app खुद खोलकर status देखें।",
+    avoid: "OTP/password साझा करना, unknown software install करना और बिना verification misinformation forward करना।",
+    check: ["मैं suspicious link पहचान सकता/सकती हूँ।","मैं privacy और account security समझता/समझती हूँ।","मैं information verify करता/करती हूँ।"]
+  },
+  health: {
+    what: "Health awareness preventive habits, early attention और सही समय पर qualified healthcare help लेने की समझ बढ़ाता है। यह व्यक्तिगत diagnosis या treatment का विकल्प नहीं है।",
+    steps: ["Healthy diet, activity, sleep और hygiene पर ध्यान दें।","अपने risk factors और warning signs समझें।","Persistent/serious symptoms में qualified healthcare professional से सलाह लें।","Emergency में स्थानीय emergency services/अस्पताल की मदद लें।"],
+    example: "Internet symptom search को diagnosis मानने के बजाय लगातार समस्या में qualified clinician से assessment लें।",
+    avoid: "बिना सलाह दवा शुरू/बंद करना, unverified cure मानना या emergency को delay करना।",
+    check: ["मैं prevention और treatment में अंतर समझता/समझती हूँ।","मैं credible health source पहचान सकता/सकती हूँ।","मैं जानता/जानती हूँ कब professional help चाहिए।"]
+  },
+  environment: {
+    what: "Environment learning में water, soil, waste, energy, biodiversity और sustainable choices के संबंध को समझना शामिल है।",
+    steps: ["अपने क्षेत्र में water, waste और energy use देखें।","Reduce, reuse और responsible recycling अपनाएँ।","Local biodiversity और native species का सम्मान करें।","Environmental claims को reliable official/scientific sources से verify करें।"],
+    example: "एक सप्ताह water wastage note करके दो practical सुधार लागू करें और परिणाम देखें।",
+    avoid: "कचरा जलाना, जलस्रोत प्रदूषित करना, wildlife को परेशान करना या local rules जाने बिना intervention करना।",
+    check: ["मैं conservation के तीन तरीके बता सकता/सकती हूँ।","मैं local environmental risk पहचान सकता/सकती हूँ।","मैं responsible action समझता/समझती हूँ।"]
+  },
+  disaster: {
+    what: "Disaster preparedness का उद्देश्य hazards पहचानना, official warning पर timely action लेना और परिवार/समुदाय की readiness बढ़ाना है।",
+    steps: ["अपने क्षेत्र के प्रमुख hazards पहचानें।","Emergency contacts और family meeting point तय करें।","Documents, medicines, torch, water और जरूरी supplies की kit रखें।","Official warnings और evacuation instructions का पालन करें।"],
+    example: "Flood या severe weather alert पर official instructions देखें, vulnerable family members की सहायता करें और अनावश्यक यात्रा से बचें।",
+    avoid: "अफवाह forward करना, evacuation instruction ignore करना या बिना training rescue करने जाना।",
+    check: ["मेरे पास emergency contacts हैं।","मैं official alerts का source जानता/जानती हूँ।","मेरे पास basic family preparedness plan है।"]
+  }
+};
+
+function getLearningMaterial(course, title, description) {
+  const value=(course.title+" "+title+" "+description).toLowerCase();
+  if (/english|communication|email|message|speaking|conversation/.test(value)) return LEARNING_MATERIAL.communication;
+  if (/job|resume|cv|interview|career|professional/.test(value)) return LEARNING_MATERIAL.career;
+  if (/digital|internet|computer|google|online|workspace/.test(value)) return LEARNING_MATERIAL.digital;
+  if (/health|nutrition|yoga|wellbeing|cancer|aids|de-addiction/.test(value)) return LEARNING_MATERIAL.health;
+  if (/environment|organic|farming|biodiversity|energy|rural|animal|forest/.test(value)) return LEARNING_MATERIAL.environment;
+  if (/disaster|emergency|preparedness/.test(value)) return LEARNING_MATERIAL.disaster;
+  return LEARNING_MATERIAL.default;
+}
+
 const COURSES = [
   {
     slug: "basic-english",
@@ -132,7 +195,7 @@ const COURSES = [
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
       ["OpenLearn", FREE_RESOURCES.openLearn],
     ],
-  }
+  },
   {
     slug: "job-search",
     category: "Career & Jobs",
@@ -158,7 +221,7 @@ const COURSES = [
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
       ["OpenLearn", FREE_RESOURCES.openLearn],
     ],
-  }
+  },
   {
     slug: "professional-email",
     category: "Professional Writing",
@@ -184,7 +247,7 @@ const COURSES = [
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
       ["British Council LearnEnglish", FREE_RESOURCES.britishCouncil],
     ],
-  }
+  },
   {
     slug: "professional-messages",
     category: "Professional Writing",
@@ -209,7 +272,7 @@ const COURSES = [
     resources: [
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
     ],
-  }
+  },
   {
     slug: "computer-digital-basics",
     category: "Digital Skills",
@@ -235,7 +298,7 @@ const COURSES = [
       ["Google Applied Digital Skills", FREE_RESOURCES.googleDigital],
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
     ],
-  }
+  },
   {
     slug: "google-workspace",
     category: "Digital Skills",
@@ -261,7 +324,7 @@ const COURSES = [
       ["Google Applied Digital Skills", FREE_RESOURCES.googleDigital],
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
     ],
-  }
+  },
   {
     slug: "internet-safety",
     category: "Digital Skills",
@@ -287,7 +350,7 @@ const COURSES = [
       ["Google Applied Digital Skills", FREE_RESOURCES.googleDigital],
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
     ],
-  }
+  },
   {
     slug: "workplace-etiquette",
     category: "Workplace Skills",
@@ -312,7 +375,7 @@ const COURSES = [
     resources: [
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
     ],
-  }
+  },
   {
     slug: "teamwork-leadership",
     category: "Workplace Skills",
@@ -338,7 +401,7 @@ const COURSES = [
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
       ["OpenLearn", FREE_RESOURCES.openLearn],
     ],
-  }
+  },
   {
     slug: "public-speaking",
     category: "Personal Development",
@@ -364,7 +427,7 @@ const COURSES = [
       ["British Council LearnEnglish", FREE_RESOURCES.britishCouncil],
       ["OpenLearn", FREE_RESOURCES.openLearn],
     ],
-  }
+  },
   {
     slug: "time-management",
     category: "Personal Development",
@@ -390,7 +453,7 @@ const COURSES = [
       ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
       ["OpenLearn", FREE_RESOURCES.openLearn],
     ],
-  }
+  },
   {
     slug: "education-awareness",
     category: "SSF Knowledge & Awareness",
@@ -522,7 +585,7 @@ const COURSES = [
       ["07", "Limits & Professional Care", "Recognise that persistent or serious symptoms require qualified medical or mental-health support rather than self-treatment."],
       ["08", "Personal Wellbeing Plan", "Create a realistic weekly routine and track habits without making medical claims about outcomes."],
     ],
-  }
+  },
   {
     slug: "environment-conservation",
     category: "SSF Knowledge & Awareness",
@@ -588,7 +651,7 @@ const COURSES = [
       ["07", "Project Planning & Monitoring", "Build a simple need-objective-activity-output-outcome-indicator framework with records and review."],
       ["08", "Community Action Plan", "Create a practical, evidence-based action plan that separates existing work, proposed work and future possibilities."],
     ],
-  }
+  },
   {
     slug: "renewable-energy",
     category: "SSF Knowledge & Awareness",
@@ -610,7 +673,7 @@ const COURSES = [
       ["07", "Project & Cost Thinking", "Compare need, site, technology, lifecycle cost, maintenance, financing and expected use before proposing a project."],
       ["08", "Community Energy Plan", "Create an awareness-level energy checklist and identify official technical or government sources for current options."],
     ],
-  }
+  },
   {
     slug: "social-justice-rights",
     category: "SSF Knowledge & Awareness",
@@ -654,7 +717,7 @@ const COURSES = [
       ["07", "Family & Community Support", "Explore practical support that preserves choice, privacy, independence and dignity."],
       ["08", "Inclusion Action Checklist", "Assess a community activity for accessibility, communication, participation, safety and follow-up."],
     ],
-  }
+  },
   {
     slug: "elderly-support",
     category: "SSF Knowledge & Awareness",
@@ -676,7 +739,7 @@ const COURSES = [
       ["07", "Family & Community Support", "Plan respectful visits, practical assistance, referrals and emergency contacts while protecting privacy."],
       ["08", "Elder Support Checklist", "Create a simple, person-centred checklist covering safety, social connection, health coordination and follow-up."],
     ],
-  }
+  },
   {
     slug: "animal-welfare",
     category: "SSF Knowledge & Awareness",
@@ -698,7 +761,7 @@ const COURSES = [
       ["07", "Community Animal Programme Planning", "Learn how awareness, rescue referral, records, volunteers and local veterinary links can be organised responsibly."],
       ["08", "Responsible Care Checklist", "Review daily welfare needs, safety, records, referral contacts and humane conduct."],
     ],
-  }
+  },
   {
     slug: "youth-digital-literacy",
     category: "SSF Knowledge & Awareness",
@@ -746,7 +809,7 @@ const COURSES = [
       ["NDMA SACHET", "https://sachet.ndma.gov.in/"],
       ["NDMA Dos & Don'ts", "https://sachet.ndma.gov.in/DosDont"],
     ],
-  }
+  },
   {
     slug: "culture-heritage",
     category: "SSF Knowledge & Awareness",
@@ -768,7 +831,7 @@ const COURSES = [
       ["07", "Cultural Events & Ethics", "Plan cultural programmes with safety, consent, respectful representation, accessibility and proper acknowledgement."],
       ["08", "Community Heritage Plan", "Create a simple plan to identify, document, learn and share local heritage without misrepresentation or unauthorised use."],
     ],
-  }
+  },
   {
     slug: "grant-project-literacy",
     category: "SSF Knowledge & Awareness",
@@ -923,6 +986,18 @@ function CourseDetail({ course, onBack }) {
                         <div className="flex-1">
                           <h3 className="text-lg font-black text-zinc-900">{title}</h3>
                           <p className="mt-1 text-sm leading-6 text-zinc-600">{description}</p>
+                          {(() => { const material=getLearningMaterial(course,title,description); return (
+                            <div className="mt-5 rounded-2xl border border-[#003366]/10 bg-[#003366]/5 p-5">
+                              <div className="text-xs font-black uppercase tracking-widest text-[#003366]">Learning Material / अध्ययन सामग्री</div>
+                              <p className="mt-2 text-sm leading-7 text-zinc-700">{material.what}</p>
+                              <h4 className="mt-4 font-black">Practical Steps / व्यावहारिक चरण</h4>
+                              <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-6 text-zinc-700">{material.steps.map((step,i)=><li key={i}>{step}</li>)}</ol>
+                              <h4 className="mt-4 font-black">Example / उदाहरण</h4><p className="mt-1 text-sm leading-6 text-zinc-700">{material.example}</p>
+                              <h4 className="mt-4 font-black">Avoid / क्या न करें</h4><p className="mt-1 text-sm leading-6 text-zinc-700">{material.avoid}</p>
+                              <h4 className="mt-4 font-black">Self-Check / स्वयं जाँच</h4>
+                              <ul className="mt-2 space-y-1 text-sm leading-6 text-zinc-700">{material.check.map((item,i)=><li key={i}>✓ {item}</li>)}</ul>
+                            </div>
+                          ); })()}
                           <div className="mt-4 flex flex-wrap gap-2">
                             <button onClick={() => toggleLesson(index)} className={`rounded-lg px-4 py-2 text-xs font-bold ${done ? "bg-green-50 text-green-700" : "bg-[#003366] text-white"}`}>
                               {done ? "Completed ✓" : "Mark Complete"}
