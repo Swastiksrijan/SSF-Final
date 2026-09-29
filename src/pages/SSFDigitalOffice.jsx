@@ -1002,6 +1002,25 @@ function OfficeHistory({rows,add,updateRecord,archive}){
  const allExisting=(rows||[]).filter(r=>r.module==="officeHistory"&&r.status!=="deleted");
  const [tab,setTab]=useState("dashboard"),[query,setQuery]=useState(""),[sortBy,setSortBy]=useState("dateAsc");
  const [editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false),[notice,setNotice]=useState("");
+ const recoverySeedRef=useRef(false);
+ const RECOVERY_HISTORY=[
+  ["SSF-MBR-00001","Ramesh Pandey","2013-12-30","Appointment","","President","Founder / Constitution of the Society"],
+  ["SSF-MBR-00002","Amit Kumar Pandey","2013-12-30","Appointment","","Secretary","Founder / Constitution of the Society"],
+  ["SSF-MBR-00003","Divya Sharma","2013-12-30","Appointment","","Treasurer","Founder / Constitution of the Society"],
+  ["SSF-MBR-00004","Kiran Pandey","2013-12-30","Appointment","","Joint Secretary","Founder / Constitution of the Society"],
+  ["SSF-MBR-00014","Preeti Shukla","2021-04-30","Appointment","","Vice President","Committee appointment / continuation of organisational governance"],
+  ["SSF-MBR-00015","Sandeep Tripathi","2025-05-10","Appointment","","Executive Committee Member","Managing Committee appointment"],
+  ["SSF-MBR-00016","Prameesh Singh","2025-05-10","Appointment","","Member","Managing Committee appointment"],
+  ["SSF-MBR-00017","Rishi Kumar Pandey","2025-05-10","Appointment","","Member","Managing Committee appointment"],
+  ["SSF-MBR-00018","Ritesh Kumar Tiwari","2025-05-10","Appointment","","Member","Managing Committee appointment"]
+ ];
+ useEffect(function(){
+  if(allExisting.length||recoverySeedRef.current||!add)return;
+  recoverySeedRef.current=true;
+  Promise.all(RECOVERY_HISTORY.map(function(x){
+   return add("officeHistory",{recordDate:x[2],recordType:x[3],status:"active",data:{memberId:x[0],fullName:x[1],eventDate:x[2],changeType:x[3],previousRole:x[4],newRole:x[5],referenceNo:"",resolutionNo:"",meetingDate:"",details:x[6],remarks:"Recovered baseline governance history; can be corrected or supplemented with formal records."}});
+  })).catch(function(){recoverySeedRef.current=false;});
+ },[allExisting.length]);
  const blank={memberId:"",fullName:"",eventDate:new Date().toISOString().slice(0,10),changeType:"Appointment",previousRole:"",newRole:"",referenceNo:"",resolutionNo:"",meetingDate:"",details:"",remarks:""};
  const [f,setF]=useState(blank);
  const reset=()=>{setEditingId(null);setF({...blank,eventDate:new Date().toISOString().slice(0,10)});};
