@@ -843,7 +843,7 @@ function MembersRegister({rows,add,archive,updateRecord}){
   {memberId:"SSF-MBR-00017",memberType:"General Member",designation:"Member",responsibility:"Volunteer Coordinator",fullName:"Rishi Kumar Pandey",occupation:"Private Employee",gender:"Male",mobile:"7987707912",email:"rishisatna01@gmail.com",address:"Village-Post Kyoti",city:"Rewa",state:"Madhya Pradesh",pinCode:"486117",joiningDate:"2025-05-10"},
   {memberId:"SSF-MBR-00018",memberType:"General Member",designation:"Member",responsibility:"Media & Communication Coordinator",fullName:"Ritesh Kumar Tiwari",occupation:"Private Employee",gender:"Male",mobile:"8422819534",email:"riteshtiwari9082@gmail.com",address:"Village Jagannathpur, Sant Ravidas Nagar",city:"Bhadohi",state:"Uttar Pradesh",pinCode:"221303",joiningDate:"2025-05-10"}
  ];
- const savedMembers=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="members"&&r.status!=="deleted");
+ // Website login/signup accounts are not official Member Register records.\n const savedMembers=(Array.isArray(rows)?rows:[]).filter(r=>{\n  if(!r||r.module!=="members"||r.status==="deleted")return false;\n  const d=r.data||{};\n  const type=String(d.memberType||r.recordType||"").trim().toLowerCase();\n  return type!=="website_signup";\n });
  const usingRecoverySeed=savedMembers.length===0;
  const masterSeeds=usingRecoverySeed?MASTER_MEMBER_DATA.map(d=>({id:"recovery-member-"+d.memberId,recordId:d.memberId,module:"members",status:"active",recordDate:d.joiningDate,data:{...d,membershipNo:"",membershipStatus:"Active",membershipFee:"",feeFrequency:"Monthly",feeDueAmount:"",feeLastPaidDate:"",feeNextDueDate:"",feeStatus:"Pending",receiptNo:"NA",remarks:d.remarks||d.responsibility||""}})):[];
  const existing=usingRecoverySeed?masterSeeds:savedMembers;
