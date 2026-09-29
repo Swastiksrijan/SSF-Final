@@ -115,10 +115,24 @@ const COURSES = [
     hi: "Resume एवं CV बनाना",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Build a clear, truthful and professional resume for jobs, internships and opportunities.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "A complete practical guide to preparing a truthful, clear and job-ready Resume or CV for employment, internships, volunteering and further opportunities.",
+    lessons: [
+      ["01", "Resume vs CV", "Understand the purpose, difference, typical sections and when a short resume or longer CV may be appropriate."],
+      ["02", "Collect Your Information", "Prepare education, skills, experience, projects, certificates, contact details and achievements before writing."],
+      ["03", "Write a Strong Profile", "Create a short, truthful professional summary that matches your actual skills and the opportunity."],
+      ["04", "Education, Skills & Experience", "Present qualifications, technical skills, soft skills, internships, volunteering and experience clearly and consistently."],
+      ["05", "Projects & Achievements", "Describe genuine projects and achievements using specific responsibilities, outputs and measurable facts where available."],
+      ["06", "Formatting & Accuracy", "Use readable structure, consistent dates, correct spelling and professional formatting; avoid false claims."],
+      ["07", "Job-Specific Customisation", "Read the opportunity, identify relevant requirements and tailor the document without copying misleading keywords."],
+      ["08", "Final Checklist & Application", "Check contact details, attachments, file name, privacy, references and the final application before sending."],
+    ],
+    resources: [
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+      ["OpenLearn", FREE_RESOURCES.openLearn],
+    ],
+  }
   {
     slug: "job-search",
     category: "Career & Jobs",
@@ -127,10 +141,24 @@ const COURSES = [
     hi: "नौकरी खोजने की तैयारी",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Understand job descriptions, applications, follow-ups and professional profiles.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "A complete guide to finding opportunities, reading job descriptions, preparing applications, networking safely and following up professionally.",
+    lessons: [
+      ["01", "Know What You Want", "Define the type of work, location, schedule, qualification level and skills that match your real situation."],
+      ["02", "Find Reliable Opportunities", "Use official employer pages, trusted job platforms, professional networks and verified recruitment channels."],
+      ["03", "Read a Job Description", "Separate essential qualifications, preferred skills, responsibilities, location, pay information and application requirements."],
+      ["04", "Prepare Your Application", "Match your truthful resume and cover message to the role and organise documents before applying."],
+      ["05", "Professional Networking", "Build genuine professional connections, ask useful questions and avoid spam or misleading requests."],
+      ["06", "Interview & Follow-up", "Prepare for interviews, record applications and send concise, respectful follow-ups when appropriate."],
+      ["07", "Fraud & Recruitment Safety", "Recognise requests for money, suspicious links, fake offers, identity theft and other recruitment scams."],
+      ["08", "Job Search Plan", "Create a weekly search routine, track applications, learn from responses and continuously improve your skills."],
+    ],
+    resources: [
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+      ["OpenLearn", FREE_RESOURCES.openLearn],
+    ],
+  }
   {
     slug: "professional-email",
     category: "Professional Writing",
@@ -139,10 +167,24 @@ const COURSES = [
     hi: "Professional Email कैसे लिखें",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Learn subject lines, openings, requests, follow-ups, attachments and professional closing.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "A complete guide to writing clear, respectful and useful professional emails for requests, updates, applications, meetings and follow-ups.",
+    lessons: [
+      ["01", "Purpose & Recipient", "Decide why the email is needed, who must receive it and what action or information is required."],
+      ["02", "Subject Line", "Write a short subject that lets the reader understand the purpose without opening the message."],
+      ["03", "Opening & Context", "Use an appropriate greeting and explain the relevant context briefly and clearly."],
+      ["04", "Main Request or Information", "Write the important message in logical paragraphs, bullets or numbered points."],
+      ["05", "Attachments & Links", "Name files clearly, mention attachments, check permissions and avoid unsafe or unnecessary links."],
+      ["06", "Follow-up & Reminders", "Follow up politely, refer to the earlier message and state the next action needed."],
+      ["07", "Professional Tone & Privacy", "Avoid anger, unnecessary personal information, ALL CAPS, slang and accidental disclosure of sensitive data."],
+      ["08", "Final Email Checklist", "Check recipient, subject, spelling, facts, attachments, links and tone before pressing Send."],
+    ],
+    resources: [
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+      ["British Council LearnEnglish", FREE_RESOURCES.britishCouncil],
+    ],
+  }
   {
     slug: "professional-messages",
     category: "Professional Writing",
@@ -151,10 +193,23 @@ const COURSES = [
     hi: "Professional Messages एवं WhatsApp",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Write short, respectful and useful official messages, reminders and follow-ups.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn how to write short, respectful and actionable official messages, reminders, notices and follow-ups without creating confusion or pressure.",
+    lessons: [
+      ["01", "Purpose of a Short Message", "Know when a message is appropriate and when a formal email, notice or call is better."],
+      ["02", "Clear Message Structure", "Use greeting, context, key information, required action and deadline in a simple order."],
+      ["03", "Meeting & Event Messages", "Share date, time, venue or link, agenda, participation instructions and contact information."],
+      ["04", "Reminder & Follow-up", "Send respectful reminders that record the purpose and expected response without harassment."],
+      ["05", "Official WhatsApp Groups", "Use groups responsibly, avoid unnecessary forwarding and keep official conversations organised."],
+      ["06", "Attachments, Links & Privacy", "Check documents, links and recipients before sharing personal or confidential information."],
+      ["07", "Conflict & Sensitive Communication", "Respond calmly, factually and privately when a message concerns disagreement, absence or accountability."],
+      ["08", "Message Checklist", "Before sending, verify recipient, facts, date, time, link, language and the exact action requested."],
+    ],
+    resources: [
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+    ],
+  }
   {
     slug: "computer-digital-basics",
     category: "Digital Skills",
@@ -163,10 +218,24 @@ const COURSES = [
     hi: "Computer एवं Digital Basics",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Essential computer, files, browser, typing and everyday digital skills.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "A complete beginner pathway covering computer hardware, operating systems, files, typing, browsers, documents, storage and safe everyday digital work.",
+    lessons: [
+      ["01", "Computer & Device Basics", "Understand desktop, laptop, mobile devices, keyboard, mouse, screen, ports, storage and basic hardware terms."],
+      ["02", "Operating System & Settings", "Learn applications, windows, folders, settings, updates, accessibility options and basic troubleshooting."],
+      ["03", "Files & Folders", "Create, rename, copy, move, organise, search, back up and safely delete files."],
+      ["04", "Typing & Documents", "Practise typing, text formatting, saving documents and using basic office productivity features."],
+      ["05", "Internet & Browser Basics", "Use browsers, tabs, search, downloads, bookmarks and safe website practices."],
+      ["06", "Email & Online Services", "Create and manage email messages, attachments, accounts and common online forms."],
+      ["07", "Security & Maintenance", "Use updates, strong authentication, backups and safe downloads; recognise suspicious activity."],
+      ["08", "Practical Digital Task", "Complete an end-to-end exercise: create a document, save it, find it, attach it to an email and back it up."],
+    ],
+    resources: [
+      ["Google Applied Digital Skills", FREE_RESOURCES.googleDigital],
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+    ],
+  }
   {
     slug: "google-workspace",
     category: "Digital Skills",
@@ -175,10 +244,24 @@ const COURSES = [
     hi: "Google Workspace एवं Office Productivity",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Learn practical workflows using email, documents, sheets, forms, drive and calendars.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn practical workflows for Gmail, Drive, Docs, Sheets, Forms and Calendar with safe sharing, collaboration and record-keeping.",
+    lessons: [
+      ["01", "Workspace Basics", "Understand accounts, applications, files, permissions and the difference between personal and shared work."],
+      ["02", "Gmail", "Write professional emails, organise conversations, use labels, attachments, signatures and search effectively."],
+      ["03", "Google Drive", "Create folders, upload files, organise records, manage sharing and avoid accidental public access."],
+      ["04", "Google Docs", "Create structured documents, collaborate, comment, use version history and prepare clean printable records."],
+      ["05", "Google Sheets", "Enter data, use basic formulas, filters, sorting, validation and simple record-management workflows."],
+      ["06", "Google Forms", "Create forms, collect responses responsibly, review data and protect personal information."],
+      ["07", "Google Calendar & Meetings", "Schedule events, invite participants, add agendas and manage online meeting information."],
+      ["08", "Integrated Office Workflow", "Practise a complete workflow from form response to sheet, document, email, calendar event and organised Drive record."],
+    ],
+    resources: [
+      ["Google Applied Digital Skills", FREE_RESOURCES.googleDigital],
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+    ],
+  }
   {
     slug: "internet-safety",
     category: "Digital Skills",
@@ -187,10 +270,24 @@ const COURSES = [
     hi: "Internet एवं Online Safety",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Passwords, phishing, scams, privacy and safe online behaviour.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "A practical digital-safety guide covering accounts, passwords, phishing, scams, privacy, devices, social media and responsible reporting.",
+    lessons: [
+      ["01", "Digital Risk Basics", "Understand common online risks including account takeover, fraud, malware, impersonation and privacy loss."],
+      ["02", "Passwords & Authentication", "Create unique passwords, use a password manager where appropriate and enable multi-factor authentication."],
+      ["03", "Phishing & Suspicious Links", "Check sender, domain, context and urgency before opening links, files or sharing information."],
+      ["04", "Online Payments & Scams", "Learn safe payment habits, verify requests independently and never share OTPs, PINs or authentication codes."],
+      ["05", "Privacy & Personal Data", "Understand what personal information can be sensitive and how apps, websites and social platforms use it."],
+      ["06", "Device & App Security", "Keep systems updated, install apps from trusted sources and review permissions and backups."],
+      ["07", "Social Media & Misinformation", "Verify claims, protect identity, seek consent before sharing others' information and avoid harmful forwarding."],
+      ["08", "Incident Response Checklist", "Learn what to do after a suspected compromise: stop, secure accounts, preserve evidence and use official reporting channels."],
+    ],
+    resources: [
+      ["Google Applied Digital Skills", FREE_RESOURCES.googleDigital],
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+    ],
+  }
   {
     slug: "workplace-etiquette",
     category: "Workplace Skills",
@@ -199,10 +296,23 @@ const COURSES = [
     hi: "कार्यस्थल व्यवहार",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Professional behaviour, punctuality, meetings, respect and responsibility.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn professional behaviour, punctuality, communication, meetings, responsibility, teamwork, boundaries and respectful workplace conduct.",
+    lessons: [
+      ["01", "Professional Conduct", "Understand respect, honesty, reliability, appropriate language and responsibility at work."],
+      ["02", "Time & Punctuality", "Plan arrival, deadlines, breaks and commitments so colleagues can depend on you."],
+      ["03", "Communication Etiquette", "Listen actively, speak clearly, ask questions and avoid unnecessary conflict or gossip."],
+      ["04", "Meetings & Participation", "Prepare, join on time, follow the agenda, contribute constructively and record agreed actions."],
+      ["05", "Email & Digital Etiquette", "Use professional messages, appropriate channels, privacy-aware sharing and clear subject lines."],
+      ["06", "Feedback & Disagreement", "Receive feedback without defensiveness and raise disagreements respectfully with facts and solutions."],
+      ["07", "Boundaries, Safety & Inclusion", "Respect personal boundaries, dignity, accessibility and applicable workplace rules and reporting mechanisms."],
+      ["08", "Professional Habit Checklist", "Build a daily checklist for punctuality, communication, task tracking, learning and follow-through."],
+    ],
+    resources: [
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+    ],
+  }
   {
     slug: "teamwork-leadership",
     category: "Workplace Skills",
@@ -211,10 +321,24 @@ const COURSES = [
     hi: "Teamwork एवं Leadership Basics",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Team participation, responsibility, problem solving, delegation and leadership basics.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "A practical introduction to teamwork, responsibility, communication, problem-solving, delegation, leadership and ethical decision-making.",
+    lessons: [
+      ["01", "What Makes a Team", "Understand shared goals, roles, trust, communication and accountability."],
+      ["02", "Your Role & Responsibility", "Clarify responsibilities, deadlines, dependencies and how individual work affects the team."],
+      ["03", "Communication & Listening", "Use clear updates, active listening, questions and respectful disagreement."],
+      ["04", "Problem Solving", "Define the problem, identify causes, compare options and agree on practical actions."],
+      ["05", "Delegation & Follow-up", "Assign tasks according to capability, explain expectations and review progress without micromanaging."],
+      ["06", "Leadership & Decision-Making", "Learn service-oriented leadership, evidence-based decisions, fairness and transparent communication."],
+      ["07", "Conflict & Team Trust", "Recognise misunderstandings early, separate people from problems and seek constructive resolution."],
+      ["08", "Team Action Plan", "Create a simple team goal, responsibility matrix, timeline, review method and learning loop."],
+    ],
+    resources: [
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+      ["OpenLearn", FREE_RESOURCES.openLearn],
+    ],
+  }
   {
     slug: "public-speaking",
     category: "Personal Development",
@@ -223,10 +347,24 @@ const COURSES = [
     hi: "आत्मविश्वास एवं Public Speaking",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Build confidence, structure a speech and practise clear public speaking.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "Build practical confidence and learn how to prepare, structure, deliver and improve speeches, presentations and community communication.",
+    lessons: [
+      ["01", "Confidence & Mindset", "Understand preparation, practice and gradual exposure as practical ways to improve speaking confidence."],
+      ["02", "Know Your Audience", "Identify who is listening, what they need and what level of language and detail is appropriate."],
+      ["03", "Structure a Speech", "Build an opening, clear points, examples, transitions, conclusion and call to action where appropriate."],
+      ["04", "Voice & Body Language", "Practise pace, volume, pauses, posture, eye contact and natural gestures."],
+      ["05", "Stories & Examples", "Use truthful examples, simple explanations and relevant stories without exaggeration or invented claims."],
+      ["06", "Questions & Difficult Moments", "Handle questions, uncertainty and mistakes calmly; say when you do not know an answer."],
+      ["07", "Presentation Practice", "Record or rehearse a short presentation and review clarity, timing and audience engagement."],
+      ["08", "Final Speaking Checklist", "Prepare topic, facts, structure, visual aids, timing, pronunciation and a respectful closing."],
+    ],
+    resources: [
+      ["British Council LearnEnglish", FREE_RESOURCES.britishCouncil],
+      ["OpenLearn", FREE_RESOURCES.openLearn],
+    ],
+  }
   {
     slug: "time-management",
     category: "Personal Development",
@@ -235,10 +373,24 @@ const COURSES = [
     hi: "Time Management एवं Productivity",
     level: "Beginner",
     language: "Hindi + English",
-    duration: "Coming soon",
-    ready: false,
-    description: "Plan your day, set priorities and build practical work habits.",
-  },
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn practical planning, prioritisation, focus, scheduling, task tracking, review and sustainable work habits.",
+    lessons: [
+      ["01", "Understand Your Time", "Identify fixed commitments, recurring tasks, interruptions, energy patterns and time-wasting habits."],
+      ["02", "Goals & Priorities", "Turn broad goals into clear tasks and distinguish urgent, important and low-value work."],
+      ["03", "Daily & Weekly Planning", "Create realistic schedules with buffers, breaks, dependencies and time for unexpected work."],
+      ["04", "Focus & Distraction Control", "Use focused work periods, notifications control, clean workspaces and single-tasking where practical."],
+      ["05", "Task Lists & Tracking", "Break work into next actions, assign deadlines and track progress without creating an unmanageable list."],
+      ["06", "Delegation & Saying No", "Understand what can be delegated, deferred or declined and communicate capacity respectfully."],
+      ["07", "Review & Improve", "Compare planned versus actual time, identify bottlenecks and adjust the next plan."],
+      ["08", "Build a Sustainable Routine", "Create a simple weekly system balancing work, learning, rest, health and important responsibilities."],
+    ],
+    resources: [
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+      ["OpenLearn", FREE_RESOURCES.openLearn],
+    ],
+  }
   {
     slug: "education-awareness",
     category: "SSF Knowledge & Awareness",
@@ -358,9 +510,19 @@ const COURSES = [
     level: "Awareness",
     language: "Hindi + English",
     duration: "Self-paced",
-    ready: false,
-    description: "Learn general wellbeing concepts and responsible use of yoga and healthy-living practices without presenting them as medical treatment.",
-  },
+    ready: true,
+    description: "A general education module on wellbeing, movement, breathing, sleep, stress management and responsible use of yoga practices; it is not a substitute for medical care.",
+    lessons: [
+      ["01", "Wellbeing Basics", "Understand physical, mental, social and everyday wellbeing and why healthy habits are individual and contextual."],
+      ["02", "Yoga as a Practice", "Learn basic concepts of yoga, mindful movement, breathing and relaxation without treating yoga as a guaranteed cure."],
+      ["03", "Safe Practice", "Understand warm-up, gradual progression, suitable space, hydration and the need to stop when something feels unsafe."],
+      ["04", "Breathing & Relaxation", "Explore simple, non-strenuous breathing and relaxation practices and understand when professional advice is appropriate."],
+      ["05", "Sleep, Food & Activity", "Learn how regular sleep, balanced nutrition and appropriate physical activity contribute to general wellbeing."],
+      ["06", "Stress & Daily Routine", "Identify common stressors and build practical routines using rest, movement, social support and healthy coping."],
+      ["07", "Limits & Professional Care", "Recognise that persistent or serious symptoms require qualified medical or mental-health support rather than self-treatment."],
+      ["08", "Personal Wellbeing Plan", "Create a realistic weekly routine and track habits without making medical claims about outcomes."],
+    ],
+  }
   {
     slug: "environment-conservation",
     category: "SSF Knowledge & Awareness",
@@ -414,9 +576,19 @@ const COURSES = [
     level: "Awareness",
     language: "Hindi + English",
     duration: "Self-paced",
-    ready: false,
-    description: "Understand community needs, local resources, participation, livelihoods and responsible rural programme planning.",
-  },
+    ready: true,
+    description: "A complete introduction to rural development, community needs assessment, local resources, participation, livelihoods, infrastructure and responsible programme planning.",
+    lessons: [
+      ["01", "What Is Rural Development?", "Understand development as a combination of social, economic, human, environmental and institutional progress."],
+      ["02", "Community Needs Assessment", "Learn how to identify needs, assets, priorities and local constraints through respectful consultation and evidence."],
+      ["03", "Participation & Inclusion", "Understand why women, youth, older persons, persons with disabilities and marginalised groups should be included in planning."],
+      ["04", "Livelihoods & Local Economy", "Explore agriculture, skills, small enterprises, services, producer groups and other local livelihood pathways."],
+      ["05", "Basic Services & Infrastructure", "Understand the role of education, health, sanitation, water, roads, connectivity and digital access in community development."],
+      ["06", "Natural Resources & Sustainability", "Learn how land, water, forests, biodiversity and climate risks affect rural planning."],
+      ["07", "Project Planning & Monitoring", "Build a simple need-objective-activity-output-outcome-indicator framework with records and review."],
+      ["08", "Community Action Plan", "Create a practical, evidence-based action plan that separates existing work, proposed work and future possibilities."],
+    ],
+  }
   {
     slug: "renewable-energy",
     category: "SSF Knowledge & Awareness",
@@ -426,9 +598,19 @@ const COURSES = [
     level: "Awareness",
     language: "Hindi + English",
     duration: "Self-paced",
-    ready: false,
-    description: "Learn the basics of solar, wind, biomass, energy efficiency and responsible community energy awareness.",
-  },
+    ready: true,
+    description: "Learn the fundamentals of solar, wind, biomass and other renewable energy systems, energy efficiency, safety and responsible project thinking.",
+    lessons: [
+      ["01", "Energy Basics", "Understand energy, electricity, power, demand, generation and why energy efficiency matters."],
+      ["02", "Solar Energy", "Learn basic solar photovoltaic concepts, components, suitable applications, limitations and maintenance considerations."],
+      ["03", "Wind & Other Renewables", "Understand wind, small hydro, biomass and other renewable-energy approaches at a basic awareness level."],
+      ["04", "Energy Efficiency", "Learn practical ways to reduce unnecessary energy use in homes, offices, farms and community spaces."],
+      ["05", "Storage & Reliability", "Understand batteries, storage, intermittent generation and the importance of system design by qualified professionals."],
+      ["06", "Safety & Responsible Use", "Learn electrical safety, installation boundaries and why technical work should be handled by qualified personnel."],
+      ["07", "Project & Cost Thinking", "Compare need, site, technology, lifecycle cost, maintenance, financing and expected use before proposing a project."],
+      ["08", "Community Energy Plan", "Create an awareness-level energy checklist and identify official technical or government sources for current options."],
+    ],
+  }
   {
     slug: "social-justice-rights",
     category: "SSF Knowledge & Awareness",
@@ -460,9 +642,19 @@ const COURSES = [
     level: "Awareness",
     language: "Hindi + English",
     duration: "Self-paced",
-    ready: false,
-    description: "Understand inclusion, accessibility, dignity, assistive support and rehabilitation pathways.",
-  },
+    ready: true,
+    description: "Learn disability inclusion, accessibility, dignity, reasonable support, assistive technologies and rehabilitation pathways without stereotyping or exclusion.",
+    lessons: [
+      ["01", "Understanding Disability", "Learn the difference between impairment, disability and environmental barriers and use respectful, person-centred language."],
+      ["02", "Rights, Dignity & Inclusion", "Understand equality, participation, accessibility and the importance of removing barriers rather than blaming individuals."],
+      ["03", "Accessible Communication", "Practise respectful communication, accessible information, consent and asking before providing assistance."],
+      ["04", "Physical & Digital Accessibility", "Learn basic principles for accessible buildings, transport, documents, websites, forms and communication."],
+      ["05", "Education & Employment", "Understand inclusive learning, skills development, workplace participation and reasonable support."],
+      ["06", "Assistive Support & Rehabilitation", "Learn the roles of rehabilitation professionals, assistive devices and referral pathways; avoid unqualified treatment advice."],
+      ["07", "Family & Community Support", "Explore practical support that preserves choice, privacy, independence and dignity."],
+      ["08", "Inclusion Action Checklist", "Assess a community activity for accessibility, communication, participation, safety and follow-up."],
+    ],
+  }
   {
     slug: "elderly-support",
     category: "SSF Knowledge & Awareness",
@@ -472,9 +664,19 @@ const COURSES = [
     level: "Awareness",
     language: "Hindi + English",
     duration: "Self-paced",
-    ready: false,
-    description: "Learn about ageing, dignity, social connection, safety and responsible community support for older persons.",
-  },
+    ready: true,
+    description: "Learn about ageing, dignity, social connection, safety, health-support coordination and responsible community care for older persons.",
+    lessons: [
+      ["01", "Ageing with Dignity", "Understand ageing as a normal life stage and focus on autonomy, respect, participation and individual preferences."],
+      ["02", "Daily Support & Independence", "Learn how to support everyday needs while avoiding unnecessary dependence and respecting personal choices."],
+      ["03", "Health & Medication Awareness", "Understand the importance of professional healthcare, medication instructions and keeping reliable records without self-prescribing."],
+      ["04", "Nutrition, Mobility & Safety", "Learn general awareness about food, hydration, movement, fall risks and safe living environments."],
+      ["05", "Social Connection & Mental Wellbeing", "Recognise the value of relationships, meaningful activity, communication and timely professional support when needed."],
+      ["06", "Financial & Digital Safety", "Help older persons recognise fraud, protect documents and use digital services safely without taking control of their accounts."],
+      ["07", "Family & Community Support", "Plan respectful visits, practical assistance, referrals and emergency contacts while protecting privacy."],
+      ["08", "Elder Support Checklist", "Create a simple, person-centred checklist covering safety, social connection, health coordination and follow-up."],
+    ],
+  }
   {
     slug: "animal-welfare",
     category: "SSF Knowledge & Awareness",
@@ -484,9 +686,19 @@ const COURSES = [
     level: "Awareness",
     language: "Hindi + English",
     duration: "Self-paced",
-    ready: false,
-    description: "Understand humane treatment, basic welfare principles, responsible animal care and wildlife awareness.",
-  },
+    ready: true,
+    description: "Learn humane animal care, basic welfare needs, responsible ownership, community animal support and wildlife protection awareness.",
+    lessons: [
+      ["01", "Animal Welfare Basics", "Understand humane treatment, freedom from unnecessary suffering and the basic needs of animals."],
+      ["02", "Responsible Care", "Learn about food, clean water, shelter, hygiene, safe handling and appropriate veterinary support."],
+      ["03", "Companion & Community Animals", "Understand responsible ownership, vaccination and sterilisation awareness, identification and safe community interaction."],
+      ["04", "Livestock & Working Animals", "Learn basic welfare considerations for housing, nutrition, workload, rest and professional veterinary care."],
+      ["05", "Injured or Distressed Animals", "Use safe observation and referral practices; avoid unsafe handling or unqualified treatment."],
+      ["06", "Wildlife Awareness", "Understand the difference between domestic, community and wild animals and why wildlife should not be treated as pets."],
+      ["07", "Community Animal Programme Planning", "Learn how awareness, rescue referral, records, volunteers and local veterinary links can be organised responsibly."],
+      ["08", "Responsible Care Checklist", "Review daily welfare needs, safety, records, referral contacts and humane conduct."],
+    ],
+  }
   {
     slug: "youth-digital-literacy",
     category: "SSF Knowledge & Awareness",
@@ -518,9 +730,23 @@ const COURSES = [
     level: "Awareness",
     language: "Hindi + English",
     duration: "Self-paced",
-    ready: false,
-    description: "Learn preparedness, risk awareness, emergency planning, communication and responsible community response.",
-  },
+    ready: true,
+    description: "Learn disaster-risk awareness, household preparedness, early warnings, emergency communication, evacuation planning and responsible community response.",
+    lessons: [
+      ["01", "Know the Risk", "Identify hazards relevant to your area such as floods, heat, lightning, fire, earthquakes, storms and other emergencies."],
+      ["02", "Household Preparedness", "Prepare emergency contacts, essential documents, medicines, water, basic supplies and a family communication plan."],
+      ["03", "Early Warning & Official Information", "Use authorised alerts and local authorities; avoid forwarding unverified emergency information."],
+      ["04", "Evacuation & Safe Movement", "Know exits, assembly points, safe routes and the principle of following official instructions."],
+      ["05", "First Aid & Emergency Limits", "Understand basic preparedness while recognising that advanced rescue, medical care and technical response require trained personnel."],
+      ["06", "Community Volunteers", "Learn safe volunteer roles, coordination, attendance, communication and the importance of not creating additional risk."],
+      ["07", "Recovery & Documentation", "Understand needs assessment, safe assistance, records, referrals and safeguarding after an incident."],
+      ["08", "Personal Disaster Plan", "Create and practise a household/community checklist for contacts, warnings, evacuation, essential supplies and review."],
+    ],
+    resources: [
+      ["NDMA SACHET", "https://sachet.ndma.gov.in/"],
+      ["NDMA Dos & Don'ts", "https://sachet.ndma.gov.in/DosDont"],
+    ],
+  }
   {
     slug: "culture-heritage",
     category: "SSF Knowledge & Awareness",
@@ -530,9 +756,19 @@ const COURSES = [
     level: "Awareness",
     language: "Hindi + English",
     duration: "Self-paced",
-    ready: false,
-    description: "Learn how communities can understand, document and responsibly preserve cultural knowledge, language, arts and heritage.",
-  },
+    ready: true,
+    description: "Learn how communities can understand, document and responsibly preserve language, music, literature, arts, traditions, local knowledge and heritage.",
+    lessons: [
+      ["01", "What Is Culture?", "Understand culture as living knowledge expressed through language, food, music, art, customs, stories and community practices."],
+      ["02", "Language & Oral Traditions", "Learn why local languages, dialects, songs, stories and oral histories matter and how they can be documented respectfully."],
+      ["03", "Music, Art & Craft", "Explore traditional and contemporary arts and the importance of recognising creators and cultural context."],
+      ["04", "Tangible & Intangible Heritage", "Understand places, objects, rituals, skills, knowledge and practices and the difference between preservation and display."],
+      ["05", "Documentation & Digital Archives", "Learn basic methods for recording interviews, photographs, audio and documents with consent, attribution and good metadata."],
+      ["06", "Sanskrit & Classical Learning", "Understand how language and classical texts can be studied through reliable teachers, editions and contextual learning."],
+      ["07", "Cultural Events & Ethics", "Plan cultural programmes with safety, consent, respectful representation, accessibility and proper acknowledgement."],
+      ["08", "Community Heritage Plan", "Create a simple plan to identify, document, learn and share local heritage without misrepresentation or unauthorised use."],
+    ],
+  }
   {
     slug: "grant-project-literacy",
     category: "SSF Knowledge & Awareness",
@@ -565,6 +801,7 @@ const CATEGORIES = [
   ["Digital Skills", "Digital Skills"],
   ["Workplace Skills", "Workplace Skills"],
   ["Personal Development", "Personal Development"],
+  ["SSF Knowledge & Awareness", "SSF Knowledge & Awareness"],
 ];
 
 function getCourseFromUrl() {
@@ -660,12 +897,12 @@ function CourseDetail({ course, onBack }) {
       </section>
 
       <main className="mx-auto max-w-6xl px-4 py-12">
-        {!course.ready ? (
+        {!course.lessons?.length ? (
           <div className="rounded-3xl border border-zinc-200 bg-white p-10 text-center shadow-sm">
             <FaGraduationCap className="mx-auto text-5xl text-[#003366]" />
-            <h2 className="mt-5 text-3xl font-black">This learning path is being prepared</h2>
-            <p className="mx-auto mt-3 max-w-2xl text-zinc-600">The structure is already reserved so SSF can add lessons, videos, practice activities and resources without changing the public Learning Hub.</p>
-            <button onClick={onBack} className="mt-7 rounded-xl bg-[#003366] px-6 py-3 font-bold text-white">Browse Ready Courses</button>
+            <h2 className="mt-5 text-3xl font-black">Learning content is being prepared</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-zinc-600">This path will appear here only after its learning content is added and reviewed.</p>
+            <button onClick={onBack} className="mt-7 rounded-xl bg-[#003366] px-6 py-3 font-bold text-white">Browse Learning Paths</button>
           </div>
         ) : (
           <div className="grid gap-10 lg:grid-cols-[1fr_330px]">
