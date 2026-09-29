@@ -357,77 +357,31 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
     else where.status = { [Op.ne]: 'deleted' };
     if (req.query.module) where.module = String(req.query.module);
     if (req.query.search) where[Op.or] = [
-      { recordId: { [Op.iLike]: `%${String(req.query.search)}%` } },
-      { personId: { [Op.iLike]: `%${String(req.query.search)}%` } }
+      { recordId: { [Op.iLike]: '%' + String(req.query.search) + '%' } },
+      { personId: { [Op.iLike]: '%' + String(req.query.search) + '%' } }
     ];
+
     let rows = await DigitalOfficeRecord.findAll({ where, order: [['recordDate','DESC'],['createdAt','DESC']] });
-    // Existing website records are read into the office without copying or deleting them.
-    if (['members','volunteers','donors','internships'].includes(String(req.query.module || ''))) {
+
+    // IMPORTANT: The official Member Register is a Digital Office master register.
+    // Website login/signup accounts are a separate identity system and must NEVER
+    // be mapped into this endpoint. This prevents a website account from replacing
+    // or changing the official Member Register.
+    if (String(req.query.module || '') === 'members') {
+      const officeMembers = await DigitalOfficeRecord.findAll({
+        where: { module:'members', status:{ [Op.ne]:'deleted' } },
+        order: [['updatedAt','DESC'],['createdAt','DESC']]
+      });
+      const unique = new Map();
+      officeMembers.forEach(row => {
+        const d = row.data || {};
+        const key = String(d.memberId || row.recordId || row.id).trim().toUpperCase();
+        if (key && !unique.has(key)) unique.set(key, row);
+      });
+      rows = Array.from(unique.values());
+    } else if (['volunteers','donors','internships'].includes(String(req.query.module || ''))) {
       const m = String(req.query.module);
-      if (m === 'members') {
-        // Website login/signup accounts are separate from the official Member Register.
-        // They must never replace, reduce, or become master member records.
-        const existing = await Member.findAll({
-          where: { memberType: { [Op.ne]: 'website_signup' } },
-          order: [['createdAt','DESC']]
-        });
-        if (existing.length) {
-          // Website Member accounts remain the identity source when available.
-          // Merge the Digital Office master photo by Member ID so the photo is
-          // available everywhere without creating a second profile identity.
-          const officeMembers = await DigitalOfficeRecord.findAll({
-            where: { module:'members', status:{ [Op.ne]:'deleted' } },
-            order: [['updatedAt','DESC'],['createdAt','DESC']]
-          });
-          const officeByMemberId = new Map();
-          officeMembers.forEach(row => {
-            const key=String(row.data?.memberId||'').trim().toUpperCase();
-            if (key && !officeByMemberId.has(key)) officeByMemberId.set(key,row);
-          });
-          const mapped = existing.map(x => {
-            const data=x.toJSON();
-            const key=String(x.memberId||'').trim().toUpperCase();
-            const office=officeByMemberId.get(key);
-            return {
-              id:x.id,
-              recordId:x.memberId || 'ACCOUNT-'+String(x.id).slice(0,8),
-              module:'members',
-              recordType:x.memberType,
-              status:x.status,
-              recordDate:x.createdAt,
-              amount:x.paymentAmount,
-              personId:x.memberId,
-              data:Object.assign({}, data, office?.data?.photoUrl ? {photoUrl:office.data.photoUrl} : {})
-            };
-          });
-          const unique = new Map();
-          mapped.forEach(row => {
-            const key=String(row.personId||row.data?.memberId||row.recordId||row.id).trim().toUpperCase();
-            if(key && !unique.has(key)) unique.set(key,row);
-          });
-          // Keep legacy Digital Office member records that are not yet represented
-          // by a website Member account. This prevents the Master Register from
-          // silently losing older member records while still using one identity per Member ID.
-          officeMembers.forEach(row => {
-            const d=row.data||{};
-            const key=String(d.memberId||row.recordId||'').trim().toUpperCase();
-            if(key && !unique.has(key)) unique.set(key,row);
-          });
-          rows = Array.from(unique.values());
-        } else {
-          // Recovery path: older SSF Digital Office member records must remain visible
-          // when the website Member table is empty. Never replace or delete them.
-          const officeMembers = await DigitalOfficeRecord.findAll({
-            where: { module:'members', status:{ [Op.ne]:'deleted' } },
-            order: [['recordDate','DESC'],['createdAt','DESC']]
-          });
-          if (officeMembers.length) {
-            const unique = new Map();
-            officeMembers.forEach(row => { const d=row.data||{}; const key=String(d.memberId||row.recordId||row.id).trim().toUpperCase(); if(!unique.has(key)) unique.set(key,row); });
-            rows = Array.from(unique.values());
-          }
-        }
-      } else if (m === 'volunteers') {
+      if (m === 'volunteers') {
         const existing = await Volunteer.findAll({ order: [['createdAt','DESC']] });
         rows = existing.map(x => ({ id:x.id, recordId:x.volunteerId || 'VOL-'+String(x.id).slice(0,8), module:'volunteers', recordType:x.volunteerType, status:x.status, recordDate:x.createdAt, personId:x.volunteerId, data:x.toJSON() }));
       } else if (m === 'donors') {
@@ -441,7 +395,6 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
     return res.json(rows);
   } catch (e) { console.error(e); res.status(500).json({message:'Unable to load records.'}); }
 });
-
 const APPROVED_MANAGING_COMMITTEE_MEMBER_IDS = new Set([
   'SSF-MBR-00001','SSF-MBR-00014','SSF-MBR-00002','SSF-MBR-00003','SSF-MBR-00004',
   'SSF-MBR-00015','SSF-MBR-00016','SSF-MBR-00017','SSF-MBR-00018'
