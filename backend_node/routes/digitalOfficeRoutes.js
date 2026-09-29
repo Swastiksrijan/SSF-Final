@@ -248,7 +248,16 @@ router.post('/digital-office/google/create-meeting', requireOfficeAuth, async (r
       const transporter=nodemailer.createTransport({host:process.env.EMAIL_HOST||'smtp.gmail.com',port:Number(process.env.EMAIL_PORT||465),secure:String(process.env.EMAIL_SECURE||'true')==='true',auth:{user:process.env.EMAIL_USER,pass:process.env.EMAIL_PASS}});
       for(const to of emails){
         try{
-          await transporter.sendMail({from:process.env.EMAIL_FROM||process.env.EMAIL_USER,to,subject:'SSF Online Meeting: '+title,text:'Swastik Srijan Foundation Samiti\\n\\nOnline Meeting: '+title+'\\nDate: '+date+'\\nTime: '+time+'\\nAgenda: '+(agenda||'As per meeting notice')+'\\n\\nJoin Meeting: '+meetingLink+'\\n\\nPlease join using the link above.'});
+          await transporter.sendMail({from:process.env.EMAIL_FROM||process.env.EMAIL_USER,to,subject:'SSF Online Meeting: '+title,text:'Swastik Srijan Foundation Samiti\
+\
+Online Meeting: '+title+'\
+Date: '+date+'\
+Time: '+time+'\
+Agenda: '+(agenda||'As per meeting notice')+'\
+\
+Join Meeting: '+meetingLink+'\
+\
+Please join using the link above.'});
           emailed++;
         }catch(e){emailErrors.push(to);}
       }
@@ -283,7 +292,16 @@ router.post('/digital-office/online-meeting', requireOfficeAuth, async (req,res)
             from:process.env.EMAIL_FROM||process.env.EMAIL_USER,
             to,
             subject:'SSF Online Meeting: '+title,
-            text:'Swastik Srijan Foundation Samiti\\n\\nOnline Meeting: '+title+'\\nDate: '+date+'\\nTime: '+time+'\\nAgenda: '+(agenda||'As per meeting notice')+'\\n\\nJoin Meeting: '+meetingLink+'\\n\\nPlease join using the link above.'
+            text:'Swastik Srijan Foundation Samiti\
+\
+Online Meeting: '+title+'\
+Date: '+date+'\
+Time: '+time+'\
+Agenda: '+(agenda||'As per meeting notice')+'\
+\
+Join Meeting: '+meetingLink+'\
+\
+Please join using the link above.'
           });
           emailed++;
         }catch(e){emailErrors.push(to);}
@@ -299,7 +317,11 @@ router.post('/digital-office/online-meeting', requireOfficeAuth, async (req,res)
 router.get('/digital-office/summary', requireOfficeAuth, async (_req, res) => {
   try {
     const rows = await DigitalOfficeRecord.findAll({ where: { status: { [Op.ne]: 'deleted' } }, order: [['recordDate','DESC']] });
-    // Website sign-up accounts are not official members. Keep them out of the Members Register count.\n    const [memberCount, volunteerCount, donorCount, internshipCount] = await Promise.all([\n      Member.count({ where: { memberType: { [Op.ne]: 'website_signup' } } }),\n      Volunteer.count(), Donor.count(), InternshipApplication.count()\n    ]);
+    // Website sign-up accounts are not official members. Keep them out of the Members Register count.
+    const [memberCount, volunteerCount, donorCount, internshipCount] = await Promise.all([
+      Member.count({ where: { memberType: { [Op.ne]: 'website_signup' } } }),
+      Volunteer.count(), Donor.count(), InternshipApplication.count()
+    ]);
     const sum = (module) => rows.filter(r => r.module === module).reduce((s,r)=>s+Number(r.amount||0),0);
     const balance = (module) => rows.filter(r => r.module === module).reduce((s,r)=>{
       const d=String(r.direction||'in').toLowerCase();
@@ -343,7 +365,12 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
     if (['members','volunteers','donors','internships'].includes(String(req.query.module || ''))) {
       const m = String(req.query.module);
       if (m === 'members') {
-        // Website login/signup accounts are separate from the official Member Register.\n        // They must never replace, reduce, or become master member records.\n        const existing = await Member.findAll({\n          where: { memberType: { [Op.ne]: 'website_signup' } },\n          order: [['createdAt','DESC']]\n        });
+        // Website login/signup accounts are separate from the official Member Register.
+        // They must never replace, reduce, or become master member records.
+        const existing = await Member.findAll({
+          where: { memberType: { [Op.ne]: 'website_signup' } },
+          order: [['createdAt','DESC']]
+        });
         if (existing.length) {
           // Website Member accounts remain the identity source when available.
           // Merge the Digital Office master photo by Member ID so the photo is
