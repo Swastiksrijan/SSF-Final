@@ -1,474 +1,562 @@
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { FaGraduationCap, FaChalkboardTeacher, FaLaptopCode, FaRocket, FaBookOpen, FaUserCheck, FaRupeeSign } from "react-icons/fa";
-import { IoCheckmarkCircleSharp } from "react-icons/io5";
-import HygieneModule from "../components/HygieneModule";
-import WorkEvidenceBanner from "../components/WorkEvidenceBanner";
-import footerImg4 from "../assets/footer-gallery-4.png";
+import { useEffect, useMemo, useState } from "react";
+import {
+  FaArrowRight, FaBookOpen, FaBriefcase, FaCheckCircle, FaChevronLeft,
+  FaClock, FaComments, FaDesktop, FaEnvelope, FaExternalLinkAlt,
+  FaGraduationCap, FaLaptopCode, FaPlayCircle, FaSearch, FaShareAlt,
+  FaShieldAlt, FaStar, FaUserTie
+} from "react-icons/fa";
+
+const FREE_RESOURCES = {
+  britishCouncil: "https://learnenglish.britishcouncil.org/",
+  googleDigital: "https://applieddigitalskills.withgoogle.com/s/en/learn",
+  microsoftLearn: "https://learn.microsoft.com/training/",
+  openLearn: "https://www.open.edu/openlearn/",
+};
+
+const COURSES = [
+  {
+    slug: "basic-english",
+    category: "English & Communication",
+    icon: FaComments,
+    title: "English from Basics",
+    hi: "मूल अंग्रेज़ी से शुरुआत",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Daily English vocabulary, sentences, reading, listening and speaking practice for beginners.",
+    lessons: [
+      ["01", "Introduction & Everyday Words", "Common words and simple sentence patterns."],
+      ["02", "Build Your First Sentences", "Subject, verb, object and useful daily expressions."],
+      ["03", "Daily Conversation", "Greetings, introductions, questions and replies."],
+      ["04", "Reading & Listening Practice", "Short texts, pronunciation and comprehension."],
+      ["05", "Speaking Practice", "Repeat, record, compare and improve."],
+    ],
+    resources: [
+      ["British Council LearnEnglish", FREE_RESOURCES.britishCouncil],
+      ["Free digital learning practice", FREE_RESOURCES.googleDigital],
+    ],
+  },
+  {
+    slug: "spoken-english",
+    category: "English & Communication",
+    icon: FaComments,
+    title: "Spoken English for Everyday Life",
+    hi: "दैनिक बोलचाल की अंग्रेज़ी",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Practical speaking situations for home, travel, phone calls, shopping and meeting people.",
+    lessons: [
+      ["01", "Self Introduction", "Name, place, education, work and interests."],
+      ["02", "Questions & Answers", "How to ask clearly and respond naturally."],
+      ["03", "Phone & Online Conversation", "Useful phrases for calls and online meetings."],
+      ["04", "Travel & Public Places", "Directions, tickets, requests and polite conversation."],
+      ["05", "Confidence Practice", "Short speaking tasks for daily practice."],
+    ],
+    resources: [
+      ["British Council Speaking Practice", FREE_RESOURCES.britishCouncil],
+      ["OpenLearn Free Courses", FREE_RESOURCES.openLearn],
+    ],
+  },
+  {
+    slug: "professional-communication",
+    category: "English & Communication",
+    icon: FaUserTie,
+    title: "Professional Communication",
+    hi: "प्रोफेशनल बातचीत एवं संवाद",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn how to speak clearly, respectfully and professionally with colleagues, seniors and clients.",
+    lessons: [
+      ["01", "Professional Introduction", "How to introduce yourself in an office or meeting."],
+      ["02", "Speaking with Seniors", "Respectful language, clarity and confidence."],
+      ["03", "Meetings & Discussion", "How to make a point, ask a question and disagree respectfully."],
+      ["04", "Telephone Etiquette", "Professional opening, listening and closing."],
+      ["05", "Difficult Conversations", "Stay calm, factual and solution-focused."],
+    ],
+    resources: [
+      ["Microsoft Learn", FREE_RESOURCES.microsoftLearn],
+      ["British Council LearnEnglish", FREE_RESOURCES.britishCouncil],
+    ],
+  },
+  {
+    slug: "interview-preparation",
+    category: "Career & Jobs",
+    icon: FaBriefcase,
+    title: "Interview Preparation",
+    hi: "साक्षात्कार की तैयारी",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "A practical interview path covering preparation, introduction, common questions, communication and mock practice.",
+    lessons: [
+      ["01", "Know the Interview", "Understand the role, organisation and interview format."],
+      ["02", "Your Self Introduction", "Create and practise a clear 30–60 second introduction."],
+      ["03", "Common Interview Questions", "Prepare honest, structured answers without memorising scripts."],
+      ["04", "Body Language & Communication", "Eye contact, posture, listening and concise answers."],
+      ["05", "Mock Interview", "Practice questions, review answers and improve."],
+    ],
+    resources: [
+      ["Microsoft Learn Career & Skills Training", FREE_RESOURCES.microsoftLearn],
+      ["OpenLearn", FREE_RESOURCES.openLearn],
+    ],
+  },
+  {
+    slug: "resume-cv",
+    category: "Career & Jobs",
+    icon: FaBookOpen,
+    title: "Resume & CV Writing",
+    hi: "Resume एवं CV बनाना",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Build a clear, truthful and professional resume for jobs, internships and opportunities.",
+  },
+  {
+    slug: "job-search",
+    category: "Career & Jobs",
+    icon: FaBriefcase,
+    title: "Job Search Skills",
+    hi: "नौकरी खोजने की तैयारी",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Understand job descriptions, applications, follow-ups and professional profiles.",
+  },
+  {
+    slug: "professional-email",
+    category: "Professional Writing",
+    icon: FaEnvelope,
+    title: "Professional Email Writing",
+    hi: "Professional Email कैसे लिखें",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Learn subject lines, openings, requests, follow-ups, attachments and professional closing.",
+  },
+  {
+    slug: "professional-messages",
+    category: "Professional Writing",
+    icon: FaEnvelope,
+    title: "Professional Messages & WhatsApp",
+    hi: "Professional Messages एवं WhatsApp",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Write short, respectful and useful official messages, reminders and follow-ups.",
+  },
+  {
+    slug: "computer-digital-basics",
+    category: "Digital Skills",
+    icon: FaDesktop,
+    title: "Computer & Digital Basics",
+    hi: "Computer एवं Digital Basics",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Essential computer, files, browser, typing and everyday digital skills.",
+  },
+  {
+    slug: "google-workspace",
+    category: "Digital Skills",
+    icon: FaLaptopCode,
+    title: "Google Workspace & Office Productivity",
+    hi: "Google Workspace एवं Office Productivity",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Learn practical workflows using email, documents, sheets, forms, drive and calendars.",
+  },
+  {
+    slug: "internet-safety",
+    category: "Digital Skills",
+    icon: FaShieldAlt,
+    title: "Internet & Online Safety",
+    hi: "Internet एवं Online Safety",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Passwords, phishing, scams, privacy and safe online behaviour.",
+  },
+  {
+    slug: "workplace-etiquette",
+    category: "Workplace Skills",
+    icon: FaUserTie,
+    title: "Workplace Etiquette",
+    hi: "कार्यस्थल व्यवहार",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Professional behaviour, punctuality, meetings, respect and responsibility.",
+  },
+  {
+    slug: "teamwork-leadership",
+    category: "Workplace Skills",
+    icon: FaStar,
+    title: "Teamwork & Leadership Basics",
+    hi: "Teamwork एवं Leadership Basics",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Team participation, responsibility, problem solving, delegation and leadership basics.",
+  },
+  {
+    slug: "public-speaking",
+    category: "Personal Development",
+    icon: FaComments,
+    title: "Confidence & Public Speaking",
+    hi: "आत्मविश्वास एवं Public Speaking",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Build confidence, structure a speech and practise clear public speaking.",
+  },
+  {
+    slug: "time-management",
+    category: "Personal Development",
+    icon: FaClock,
+    title: "Time Management & Productivity",
+    hi: "Time Management एवं Productivity",
+    level: "Beginner",
+    language: "Hindi + English",
+    duration: "Coming soon",
+    ready: false,
+    description: "Plan your day, set priorities and build practical work habits.",
+  },
+];
+
+const CATEGORIES = [
+  ["All", "सभी"],
+  ["English & Communication", "अंग्रेज़ी एवं संवाद"],
+  ["Career & Jobs", "Career एवं Jobs"],
+  ["Professional Writing", "Professional Writing"],
+  ["Digital Skills", "Digital Skills"],
+  ["Workplace Skills", "Workplace Skills"],
+  ["Personal Development", "Personal Development"],
+];
+
+function getCourseFromUrl() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get("course") || "";
+}
+
+function shareCourse(course) {
+  const url = `${window.location.origin}/LearningHub?course=${encodeURIComponent(course.slug)}`;
+  if (navigator.share) {
+    navigator.share({ title: `${course.title} | Swastik Srijan Foundation`, text: course.hi, url }).catch(() => {});
+    return;
+  }
+  navigator.clipboard?.writeText(url).then(() => window.alert("Learning Path link copied."));
+}
+
+function CourseCard({ course, onOpen }) {
+  const Icon = course.icon;
+  return (
+    <article className="group flex h-full flex-col rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
+      <div className="mb-5 flex items-start justify-between gap-3">
+        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#003366]/10 text-xl text-[#003366]">
+          <Icon />
+        </div>
+        <span className={`rounded-full px-3 py-1 text-xs font-bold ${course.ready ? "bg-green-50 text-green-700" : "bg-zinc-100 text-zinc-500"}`}>
+          {course.ready ? "Ready to Learn" : "Coming Soon"}
+        </span>
+      </div>
+      <h3 className="text-xl font-black text-zinc-900">{course.title}</h3>
+      <p className="mt-1 text-sm font-semibold text-[#003366]">{course.hi}</p>
+      <p className="mt-4 flex-1 text-sm leading-6 text-zinc-600">{course.description}</p>
+      <div className="mt-5 flex flex-wrap gap-2 text-xs font-semibold text-zinc-500">
+        <span className="rounded-full bg-zinc-100 px-3 py-1">{course.level}</span>
+        <span className="rounded-full bg-zinc-100 px-3 py-1">{course.language}</span>
+      </div>
+      <div className="mt-6 flex gap-2">
+        <button onClick={() => onOpen(course)} className="flex-1 rounded-xl bg-[#003366] px-4 py-3 text-sm font-bold text-white hover:bg-[#002344]">
+          {course.ready ? "Start Learning" : "View Path"} <FaArrowRight className="ml-1 inline" />
+        </button>
+        <button onClick={() => shareCourse(course)} aria-label="Share learning path" className="rounded-xl border border-zinc-200 px-4 py-3 text-[#003366] hover:bg-zinc-50">
+          <FaShareAlt />
+        </button>
+      </div>
+    </article>
+  );
+}
+
+function CourseDetail({ course, onBack }) {
+  const [completed, setCompleted] = useState([]);
+  const [learnerName, setLearnerName] = useState("");
+
+  useEffect(() => {
+    const key = `ssf-learning-${course.slug}`;
+    try { setCompleted(JSON.parse(localStorage.getItem(key) || "[]")); } catch { setCompleted([]); }
+  }, [course.slug]);
+
+  const toggleLesson = (index) => {
+    const next = completed.includes(index) ? completed.filter((x) => x !== index) : [...completed, index];
+    setCompleted(next);
+    localStorage.setItem(`ssf-learning-${course.slug}`, JSON.stringify(next));
+  };
+
+  const progress = course.lessons?.length ? Math.round((completed.length / course.lessons.length) * 100) : 0;
+  const certificateReady = course.ready && course.lessons?.length && progress === 100;
+
+  return (
+    <div className="min-h-screen bg-zinc-50">
+      <section className="bg-[#002344] px-4 py-16 text-white">
+        <div className="mx-auto max-w-6xl">
+          <button onClick={onBack} className="mb-8 inline-flex items-center gap-2 text-sm font-bold text-white/80 hover:text-white"><FaChevronLeft /> Back to Learning Hub</button>
+          <div className="grid gap-8 lg:grid-cols-[1fr_320px]">
+            <div>
+              <span className="rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest">{course.category}</span>
+              <h1 className="mt-6 text-4xl font-black md:text-6xl">{course.title}</h1>
+              <p className="mt-3 text-xl font-semibold text-white/80">{course.hi}</p>
+              <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80">{course.description}</p>
+              <div className="mt-7 flex flex-wrap gap-3 text-sm font-semibold">
+                <span className="rounded-full bg-white/10 px-4 py-2">{course.level}</span>
+                <span className="rounded-full bg-white/10 px-4 py-2">{course.language}</span>
+                <span className="rounded-full bg-white/10 px-4 py-2">{course.duration}</span>
+              </div>
+            </div>
+            <div className="rounded-2xl bg-white/10 p-6 backdrop-blur">
+              <div className="text-sm font-bold text-white/70">YOUR PROGRESS</div>
+              <div className="mt-4 text-4xl font-black">{progress}%</div>
+              <div className="mt-4 h-3 overflow-hidden rounded-full bg-white/10">
+                <div className="h-full rounded-full bg-white transition-all" style={{ width: `${progress}%` }} />
+              </div>
+              <p className="mt-3 text-sm text-white/70">{completed.length} of {course.lessons?.length || 0} lessons completed</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <main className="mx-auto max-w-6xl px-4 py-12">
+        {!course.ready ? (
+          <div className="rounded-3xl border border-zinc-200 bg-white p-10 text-center shadow-sm">
+            <FaGraduationCap className="mx-auto text-5xl text-[#003366]" />
+            <h2 className="mt-5 text-3xl font-black">This learning path is being prepared</h2>
+            <p className="mx-auto mt-3 max-w-2xl text-zinc-600">The structure is already reserved so SSF can add lessons, videos, practice activities and resources without changing the public Learning Hub.</p>
+            <button onClick={onBack} className="mt-7 rounded-xl bg-[#003366] px-6 py-3 font-bold text-white">Browse Ready Courses</button>
+          </div>
+        ) : (
+          <div className="grid gap-10 lg:grid-cols-[1fr_330px]">
+            <section>
+              <div className="mb-8">
+                <h2 className="text-3xl font-black">Course Lessons <span className="text-[#003366]">/ पाठ</span></h2>
+                <p className="mt-2 text-zinc-600">Read the lesson, practise it, then mark it complete. Your progress is saved on this device.</p>
+              </div>
+              <div className="space-y-4">
+                {(course.lessons || []).map(([no, title, description], index) => {
+                  const done = completed.includes(index);
+                  return (
+                    <div key={no} className={`rounded-2xl border bg-white p-5 shadow-sm ${done ? "border-green-200" : "border-zinc-200"}`}>
+                      <div className="flex items-start gap-4">
+                        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl font-black ${done ? "bg-green-100 text-green-700" : "bg-[#003366]/10 text-[#003366]"}`}>
+                          {done ? <FaCheckCircle /> : no}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-lg font-black text-zinc-900">{title}</h3>
+                          <p className="mt-1 text-sm leading-6 text-zinc-600">{description}</p>
+                          <div className="mt-4 flex flex-wrap gap-2">
+                            <button onClick={() => toggleLesson(index)} className={`rounded-lg px-4 py-2 text-xs font-bold ${done ? "bg-green-50 text-green-700" : "bg-[#003366] text-white"}`}>
+                              {done ? "Completed ✓" : "Mark Complete"}
+                            </button>
+                            <button onClick={() => window.alert("Video lesson placeholder — SSF can attach an official/free video from the Admin Learning Content module.")} className="rounded-lg border border-zinc-200 px-4 py-2 text-xs font-bold text-zinc-700">
+                              <FaPlayCircle className="mr-1 inline" /> Video
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </section>
+
+            <aside className="space-y-5">
+              <div className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm">
+                <h3 className="text-xl font-black">Free Resources</h3>
+                <p className="mt-2 text-sm text-zinc-600">Curated links can supplement SSF's own learning material.</p>
+                <div className="mt-5 space-y-3">
+                  {(course.resources || []).map(([label, url]) => (
+                    <a key={label} href={url} target="_blank" rel="noreferrer" className="flex items-center justify-between rounded-xl bg-zinc-50 px-4 py-3 text-sm font-bold text-[#003366] hover:bg-zinc-100">
+                      {label}<FaExternalLinkAlt className="text-xs" />
+                    </a>
+                  ))}
+                </div>
+              </div>
+
+              <div className="rounded-2xl border border-[#003366]/10 bg-[#003366]/5 p-6">
+                <FaCertificate className="text-3xl text-[#003366]" />
+                <h3 className="mt-3 text-xl font-black">Completion Certificate</h3>
+                <p className="mt-2 text-sm leading-6 text-zinc-600">After all lessons and the required assessment are completed, SSF can issue a Certificate of Completion with a unique verification ID.</p>
+                {certificateReady && (
+                  <div className="mt-5 rounded-xl bg-white p-4">
+                    <label className="text-xs font-bold text-zinc-500">Learner Name</label>
+                    <input value={learnerName} onChange={(e) => setLearnerName(e.target.value)} placeholder="Enter your full name" className="mt-2 w-full rounded-lg border border-zinc-200 px-3 py-2 text-sm outline-none focus:border-[#003366]" />
+                    <button disabled={!learnerName.trim()} onClick={() => window.alert("Certificate issuance will be connected to the SSF verified certificate register and Admin approval workflow.")} className="mt-3 w-full rounded-lg bg-[#003366] px-4 py-3 text-sm font-bold text-white disabled:opacity-40">
+                      Request Certificate
+                    </button>
+                  </div>
+                )}
+                {!certificateReady && <div className="mt-4 rounded-xl bg-white p-4 text-xs font-semibold text-zinc-500">Complete 100% of the lessons first.</div>}
+              </div>
+
+              <button onClick={() => shareCourse(course)} className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-bold text-[#003366]">
+                <FaShareAlt /> Share this Learning Path
+              </button>
+            </aside>
+          </div>
+        )}
+      </main>
+    </div>
+  );
+}
 
 export default function LearningHub() {
+  const [courseSlug, setCourseSlug] = useState(getCourseFromUrl);
+  const [category, setCategory] = useState("All");
+  const [query, setQuery] = useState("");
+
+  useEffect(() => {
+    const sync = () => setCourseSlug(getCourseFromUrl());
+    window.addEventListener("popstate", sync);
+    return () => window.removeEventListener("popstate", sync);
+  }, []);
+
+  const openCourse = (course) => {
+    const url = `/LearningHub?course=${encodeURIComponent(course.slug)}`;
+    window.history.pushState({}, "", url);
+    setCourseSlug(course.slug);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const backToHub = () => {
+    window.history.pushState({}, "", "/LearningHub");
+    setCourseSlug("");
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const selectedCourse = COURSES.find((c) => c.slug === courseSlug);
+
+  const filtered = useMemo(() => COURSES.filter((course) => {
+    const text = `${course.title} ${course.hi} ${course.category} ${course.description}`.toLowerCase();
+    return (category === "All" || course.category === category) && text.includes(query.toLowerCase().trim());
+  }), [category, query]);
+
+  if (selectedCourse) return <CourseDetail course={selectedCourse} onBack={backToHub} />;
+
   return (
-    <div className="w-full font-inria bg-white">
-
-      {/* ================= HERO ================= */}
-      <section className="relative min-h-[72vh] overflow-hidden bg-zinc-900 text-white">
-        <div className="absolute inset-0">
-          <img
-            src={footerImg4}
-            alt="Swastik Srijan Foundation Learning Hub"
-            className="h-full w-full object-cover object-center"
-          />
-          <div className="absolute inset-0 bg-[#001529]/65 bg-gradient-to-b from-[#001529]/45 via-[#001529]/60 to-[#001529]/90" />
-        </div>
-
-        <div className="relative z-10 mx-auto flex min-h-[72vh] max-w-6xl items-center px-5 py-28 text-center">
-          <div className="mx-auto max-w-4xl">
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8 }}
-            >
-              <div className="mb-6 flex flex-col items-center gap-4">
-                <img
-                  src="/images/academy/academy-seal.jpg"
-                  alt="Academy Seal"
-                  className="h-24 w-24 rounded-full border-2 border-white/80 shadow-2xl"
-                />
-                <span className="inline-block rounded-full bg-red-600 px-4 py-1.5 text-sm font-bold uppercase tracking-widest">
-                  SSF National Academy
-                </span>
-              </div>
-
-              <h1 className="text-5xl font-extrabold leading-tight md:text-6xl lg:text-7xl">
-                Learning Hub
-              </h1>
-              <h2 className="mt-3 text-3xl font-bold text-white md:text-4xl">
-                For Every Child.
-              </h2>
-
-              <p className="mx-auto mt-6 max-w-3xl text-lg font-medium leading-relaxed text-white/90 md:text-xl">
-                A hybrid education ecosystem blending physical learning centres with a
-                state-of-the-art online learning hub for rural India.
-              </p>
-
-              <div className="flex flex-col justify-center gap-4 pt-6 sm:flex-row">
-                <Link to="/DonateAndSupport" className="sm:w-auto">
-                  <button className="btn-cta w-full sm:w-auto">Sponsor a Learner</button>
-                </Link>
-                <Link to="/Contact" className="sm:w-auto">
-                  <button className="btn-secondary w-full sm:w-auto border-white bg-transparent text-white hover:bg-white hover:text-[#003366]">
-                    Start a Centre
-                  </button>
-                </Link>
-              </div>
-            </motion.div>
-          </div>
-        </div>
-      </section>
-
-      <WorkEvidenceBanner page="learning" />
-
-      {/* ================= 1. MISSION & OBJECTIVE ================= */}
-      <section className="py-24 px-4">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
-          <div className="order-2 md:order-1 relative rounded-2xl overflow-hidden shadow-2xl border border-zinc-200">
-            <img
-              src="/images/education-material-exchange.jpg"
-              alt="SSF National Academy Mission - Empowering Education Through Material Support"
-              className="w-full h-full object-cover"
-            />
-          </div>
-          <div className="order-1 md:order-2">
-            <div className="w-16 h-16 bg-[#003366]/10 text-[#003366] rounded-2xl flex items-center justify-center text-3xl mb-6">
-              <FaGraduationCap />
+    <div className="min-h-screen bg-zinc-50 font-inria text-zinc-900">
+      <section className="relative overflow-hidden bg-[#002344] px-4 py-20 text-white md:py-28">
+        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "radial-gradient(#fff 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+        <div className="relative mx-auto max-w-6xl">
+          <div className="max-w-4xl">
+            <div className="mb-5 inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-widest">
+              <FaGraduationCap /> Swastik Srijan Foundation
             </div>
-            <h2 className="text-4xl font-black text-black mb-6">Our Objective</h2>
-            <p className="text-lg text-zinc-600 leading-relaxed mb-6">
-              To provide high-quality, free, and accessible education to underprivileged students across India. We aim to remove financial barriers and create a level playing field where every child can dream of a professional career.
-            </p>
-            <ul className="space-y-4">
-              {[
-                "Democratizing quality education",
-                "Mentorship by industry experts",
-                "Focus on holistic development"
-              ].map((item, i) => (
-                <li key={i} className="flex items-center gap-3 font-bold text-zinc-800">
-                  <IoCheckmarkCircleSharp className="text-[#003366] text-xl" /> {item}
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 1.1 IMPACT & VISION (NEW) ================= */}
-      <section className="py-24 bg-white px-4 border-t border-zinc-100">
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-2 gap-16 items-center">
-            <div className="space-y-6">
-              <h2 className="text-[#003366] font-bold tracking-widest uppercase text-sm">Our Impact</h2>
-              <h3 className="text-4xl font-black text-black leading-tight">Why We Built This Academy</h3>
-              <p className="text-lg text-zinc-600 leading-relaxed">
-                In districts like Rewa, thousands of children lack access to quality education due to unaffordable schools and poor infrastructure. The SSF National Academy addresses this gap directly.
-              </p>
-              <p className="text-lg text-zinc-600 leading-relaxed">
-                Our model reduces dropout rates by 50% and ensures that every child, regardless of financial status, gets a world-class environment to learn and grow. We are not just building a school; we are building a generation.
-              </p>
-            </div>
-            <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-200">
-              <img src="/images/uploads/academy-impact-reason.jpg" alt="Why This School and Its Impact" className="w-full h-auto" />
-            </div>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-8 mt-16 items-center">
-            <div className="rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 order-2 md:order-1">
-              <img src="/images/village-outreach-children.jpg" alt="Grassroots Education Session" className="w-full h-auto" />
-            </div>
-            <div className="space-y-4 order-1 md:order-2">
-              <h3 className="text-2xl font-black text-black leading-tight italic">"Where there is a will, there is a way."</h3>
-              <p className="text-lg text-zinc-600 leading-relaxed">
-                Our journey began on simple mats under open skies. These raw grassroots sessions remain the heartbeat of our foundation, reaching children who have never stepped into a formal classroom.
-              </p>
-            </div>
-          </div>
-
-          {/* Education Challenges Infographic */}
-          <div className="mt-20">
-            <div className="text-center mb-8">
-              <h3 className="text-3xl font-black text-black mb-4">The Challenges We Address</h3>
-              <p className="text-lg text-zinc-600 max-w-2xl mx-auto">
-                Understanding the educational gaps in rural India that drive our mission
-              </p>
-            </div>
-            <div className="rounded-3xl overflow-hidden shadow-xl border border-zinc-200">
-              <img src="/images/uploads/academy-education-challenges.jpg" alt="Education Challenges - Affordability, Dropout Rates, Digital Access" className="w-full h-auto" />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 2. COURSES (NEW) ================= */}
-      <section className="py-24 bg-zinc-50 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-[#003366] font-bold tracking-widest uppercase text-sm mb-4">What We Teach</h2>
-            <h3 className="text-4xl md:text-5xl font-black text-black">Academic Framework</h3>
-          </div>
-
-          {/* Academic Banner */}
-          <div className="mb-16 rounded-3xl overflow-hidden shadow-xl border border-zinc-200">
-            <img src="/images/uploads/academy-academic-banner.jpg" alt="Academic Framework Nursery to Class 8" className="w-full h-auto" />
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 mb-24">
-            <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
-              <div className="text-[#003366] text-4xl mb-6"><FaBookOpen /></div>
-              <h4 className="text-xl font-bold mb-3">Foundational Learning</h4>
-              <p className="text-zinc-500 mb-4 text-sm">Classes 6 to 10</p>
-              <ul className="space-y-2 text-zinc-700 text-sm">
-                <li>• Mathematics & Science</li>
-                <li>• English Grammar</li>
-                <li>• Social Studies</li>
-              </ul>
-            </div>
-            <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
-              <div className="text-[#003366] text-4xl mb-6"><FaLaptopCode /></div>
-              <h4 className="text-xl font-bold mb-3">Skill Development</h4>
-              <p className="text-zinc-500 mb-4 text-sm">Vocational & Digital</p>
-              <ul className="space-y-2 text-zinc-700 text-sm">
-                <li>• Basic Computer Course (BCC)</li>
-                <li>• Coding for Kids</li>
-                <li>• Spoken English & Personality</li>
-              </ul>
-            </div>
-            <div className="bg-white p-8 rounded-xl shadow-sm hover:shadow-md transition">
-              <div className="text-green-600 text-4xl mb-6"><FaRocket /></div>
-              <h4 className="text-xl font-bold mb-3">Competitive Prep</h4>
-              <p className="text-zinc-500 mb-4 text-sm">Career Focus</p>
-              <ul className="space-y-2 text-zinc-700 text-sm">
-                <li>• Navodaya / Sainik School</li>
-                <li>• NTSE & Olympiads</li>
-                <li>• Govt. Job Foundation</li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Programs Infographic */}
-          <div className="grid lg:grid-cols-2 gap-12 items-center mb-24">
-            <div className="order-2 lg:order-1">
-              <h3 className="text-3xl font-black text-black mb-6">Holistic Programs</h3>
-              <p className="text-lg text-zinc-600 mb-6">
-                Our curriculum is designed not just for academic success but for life. From digital literacy to sports leadership, we nurture every aspect of a child's potential.
-              </p>
-              <ul className="space-y-4">
-                <li className="flex items-start gap-3">
-                  <span className="mt-1 text-[#003366]"><IoCheckmarkCircleSharp size={20} /></span>
-                  <span className="font-medium text-zinc-700"><strong>Smart Classrooms:</strong> Interactive digital learning tools.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="mt-1 text-[#003366]"><IoCheckmarkCircleSharp size={20} /></span>
-                  <span className="font-medium text-zinc-700"><strong>Talent Development:</strong> Annual sports and cultural events.</span>
-                </li>
-                <li className="flex items-start gap-3">
-                  <span className="mt-1 text-[#003366]"><IoCheckmarkCircleSharp size={20} /></span>
-                  <span className="font-medium text-zinc-700"><strong>Nature Clubs:</strong> Environmental awareness and plantation drives.</span>
-                </li>
-              </ul>
-            </div>
-            <div className="order-1 lg:order-2 rounded-2xl overflow-hidden shadow-2xl border border-zinc-200">
-              <img src="/images/uploads/academy-programs-infographic.jpg" alt="SSF Academy Programs Infographic" className="w-full h-auto" />
-            </div>
-          </div>
-
-          {/* Framework & Roadmap */}
-          <div className="space-y-8 text-center">
-            <h3 className="text-3xl font-black text-black">Future Roadmap & Framework</h3>
-            <div className="rounded-3xl overflow-hidden shadow-xl border border-zinc-200">
-              <img src="/images/uploads/academy-framework-roadmap.jpg" alt="Academy Framework and Future Roadmap" className="w-full h-auto" />
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ================= 2.1 DIGITAL LESSONS SHOWCASE (NEW) ================= */}
-      <HygieneModule />
-
-      {/* ================= 3. REGISTRATION & FEE (NEW) ================= */}
-      <section className="py-24 bg-white px-4">
-        <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16">
-
-          {/* Registration Process */}
-          <div>
-            <h3 className="text-3xl font-black text-black mb-8">Registration Process</h3>
-            <div className="space-y-8">
-              <div className="flex gap-4">
-                <div className="w-12 h-12 bg-zinc-900 text-white rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">1</div>
-                <div>
-                  <h4 className="text-xl font-bold mb-2">Apply</h4>
-                  <p className="text-zinc-600">Fill out our simple online form or visit your nearest SSF Center to register.</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-12 h-12 bg-zinc-900 text-white rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">2</div>
-                <div>
-                  <h4 className="text-xl font-bold mb-2">Assessment</h4>
-                  <p className="text-zinc-600">Take a basic baseline test so we can understand your current learning level.</p>
-                </div>
-              </div>
-              <div className="flex gap-4">
-                <div className="w-12 h-12 bg-[#003366] text-white rounded-full flex items-center justify-center font-bold text-xl flex-shrink-0">3</div>
-                <div>
-                  <h4 className="text-xl font-bold mb-2">Start Learning</h4>
-                  <p className="text-zinc-600">Get allocated to a batch, receive your ID card, and begin your journey!</p>
-                </div>
-              </div>
-            </div>
-            <div className="mt-8">
-              <Link to="/Contact" className="inline-block px-8 py-3 bg-[#003366] text-white font-bold rounded-lg hover:bg-zinc-800 transition">
-                Register Now
-              </Link>
-            </div>
-          </div>
-
-          {/* Fee Model */}
-          <div className="bg-zinc-50 p-8 rounded-2xl border border-zinc-200">
-            <div className="flex items-center gap-4 mb-6">
-              <div className="bg-green-100 p-3 rounded-full text-green-600 text-2xl"><FaRupeeSign /></div>
-              <h3 className="text-3xl font-black text-black">Affordable Model</h3>
-            </div>
-            <p className="text-zinc-600 mb-8 leading-relaxed">
-              We believe cost should never be a barrier. Our dual-model ensures sustainability while serving the neediest.
-            </p>
-
-            <div className="space-y-6">
-              <div className="bg-white p-6 rounded-xl border-l-4 border-green-500 shadow-sm">
-                <h4 className="text-xl font-bold text-black mb-1">100% Free</h4>
-                <p className="text-zinc-500 text-sm mb-3">For Extreme Need</p>
-                <p className="text-zinc-700 text-sm">
-                  Orphans, children of widows, and Antyodaya card holders receive education, materials, and support completely free of cost.
-                </p>
-              </div>
-              <div className="bg-white p-6 rounded-xl border-l-4 border-[#003366] shadow-sm">
-                <h4 className="text-xl font-bold text-black mb-1">Nominal Fee</h4>
-                <p className="text-zinc-500 text-sm mb-3">For Sustainability</p>
-                <p className="text-zinc-700 text-sm">
-                  A highly subsidized monthly fee for others to help cover center rent, electricity, and teacher stipends.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 4. EDUCATIONAL MODEL (EXISTING) ================= */}
-      <section className="py-24 bg-zinc-900 text-white px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-white font-bold tracking-widest uppercase text-sm mb-4">Delivery Modes</h2>
-            <h3 className="text-4xl md:text-5xl font-black">How We Teach</h3>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-8 text-black">
-            {/* Offline */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border-t-4 border-black hover:-translate-y-2 transition-transform duration-300">
-              <div className="text-4xl text-black mb-6"><FaChalkboardTeacher /></div>
-              <h4 className="text-2xl font-bold mb-4">Offline Centers</h4>
-              <p className="text-zinc-600">
-                Physical learning centers in rural villages providing direct mentorship and discipline.
-              </p>
-            </div>
-
-            {/* Online */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border-t-4 border-[#003366] hover:-translate-y-2 transition-transform duration-300">
-              <div className="text-4xl text-[#003366] mb-6"><FaLaptopCode /></div>
-              <h4 className="text-2xl font-bold mb-4">Online Hub</h4>
-              <p className="text-zinc-600">
-                Access to recorded lectures, live webinars, and digital notes via our app/portal.
-              </p>
-            </div>
-
-            {/* Hybrid */}
-            <div className="bg-white p-8 rounded-xl shadow-sm border-t-4 border-[#003366] hover:-translate-y-2 transition-transform duration-300">
-              <div className="text-4xl text-[#003366] mb-6"><FaRocket /></div>
-              <h4 className="text-2xl font-bold mb-4">Hybrid Learning</h4>
-              <p className="text-zinc-600">
-                Regular doubt-clearing sessions locally, supported by digital expert classes.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 5.1 STUDENT ENRICHMENT (NEW) ================= */}
-      <section className="py-0 bg-white">
-        <div className="w-full">
-          <img
-            src="/images/uploads/academy-interior-enrichment.jpg"
-            alt="Student Enrichment and Infrastructure"
-            className="w-full object-cover max-h-[600px]"
-          />
-        </div>
-        <div className="max-w-6xl mx-auto px-4 py-12 -mt-24 relative z-10">
-          <div className="bg-white p-10 rounded-2xl shadow-2xl border-t-8 border-[#003366]">
-            <h3 className="text-3xl font-black text-[#003366] mb-4">Holistic Student Enrichment</h3>
-            <p className="text-lg text-zinc-600 leading-relaxed">
-              Beyond academics, we focus on the complete development of the child. Our centers are equipped with smart classrooms, libraries, and sports facilities. We regularly organize Olympiads, talent shows, and cultural programs to nurture confidence and creativity.
+            <h1 className="text-5xl font-black leading-tight md:text-7xl">Learning Hub</h1>
+            <h2 className="mt-3 text-2xl font-bold text-white/80 md:text-3xl">ज्ञान एवं सीख • Learn. Practise. Grow.</h2>
+            <p className="mt-6 max-w-3xl text-lg leading-8 text-white/80 md:text-xl">
+              Free, practical and accessible learning resources for students, young people, volunteers, members and anyone who wants to learn useful skills.
             </p>
           </div>
-        </div>
-      </section>
-
-      {/* ================= 5.2 BUDGET & SUPPORT (NEW) ================= */}
-      <section className="py-24 bg-zinc-50 px-4">
-        <div className="max-w-5xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-[#003366] font-bold tracking-widest uppercase text-sm mb-4">Transparency</h2>
-            <h3 className="text-4xl font-black text-black">Projected Budget & Requirements</h3>
-            <p className="text-zinc-600 max-w-2xl mx-auto mt-4">
-              To realize this vision of a stronger India, we rely on the generous support of our partners. Here is an overview of the investment required for the first year.
-            </p>
-          </div>
-          <div className="bg-white p-4 rounded-3xl shadow-lg border border-zinc-200">
-            <img
-              src="/images/uploads/academy-budget-2.jpg"
-              alt="Academy First Year Estimated Budget"
-              className="w-full h-auto rounded-2xl"
-            />
-          </div>
-          <div className="mt-8 text-center">
-            <p className="text-sm text-zinc-500 italic">
-              *Estimated budget for initial setup and operations. Detailed proposal available upon request.
-            </p>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["15", "Learning Paths", "Learning Paths"],
+              ["4", "Ready Now", "Ready Now"],
+              ["Hindi + English", "Languages", "Languages"],
+              ["Free", "Access", "Access"],
+            ].map(([value, en, hi]) => (
+              <div key={en} className="rounded-2xl border border-white/10 bg-white/10 p-5">
+                <div className="text-2xl font-black">{value}</div>
+                <div className="mt-1 text-sm font-bold">{en}</div>
+                <div className="text-xs text-white/60">{hi}</div>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ================= 5.0 OFFICIAL PRESENCE (NEW) ================= */}
-      <section className="py-24 bg-white px-4 border-t border-zinc-100">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-[#003366] font-bold tracking-widest uppercase text-sm mb-4">Official Presence</h2>
-            <h3 className="text-4xl font-black text-black">Institutional Branding & Trust</h3>
-          </div>
-          <div className="rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white group">
-            <img
-              src="/images/real/academy-board-compliance.jpg"
-              alt="SSF National Academy Official Board and Compliance"
-              className="w-full h-auto group-hover:scale-105 transition-transform duration-1000"
-            />
-          </div>
-        </div>
-      </section>
-
-      {/* ================= 5. EXPANSION PLAN ================= */}
-      <section className="py-24 bg-white px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-[#003366] font-bold tracking-widest uppercase text-sm mb-4">Growth Strategy</h2>
-            <h3 className="text-4xl md:text-5xl font-black text-black">Expansion & Value Proposition</h3>
-          </div>
-
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="relative rounded-2xl overflow-hidden shadow-2xl border border-zinc-200 group">
-              <img
-                src="/images/uploads/academy-map-value.jpg"
-                alt="SSF Academy Expansion Map and Value Proposition"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-              />
+      <main className="mx-auto max-w-7xl px-4 py-12">
+        <section className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm md:p-7">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
+            <div className="relative flex-1">
+              <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search learning paths / learning resources..." className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 outline-none focus:border-[#003366]" />
             </div>
+            <Link to="/Contact" className="rounded-xl bg-[#003366] px-6 py-4 text-center text-sm font-bold text-white">Want to Teach / Volunteer?</Link>
+          </div>
+          <div className="mt-5 flex gap-2 overflow-x-auto pb-1">
+            {CATEGORIES.map(([en, hi]) => (
+              <button key={en} onClick={() => setCategory(en)} className={`shrink-0 rounded-full px-4 py-2 text-xs font-bold ${category === en ? "bg-[#003366] text-white" : "bg-zinc-100 text-zinc-600"}`}>
+                {en}<span className="ml-1 opacity-70">/ {hi}</span>
+              </button>
+            ))}
+          </div>
+        </section>
+
+        <section className="py-14">
+          <div className="mb-8 flex flex-col justify-between gap-4 md:flex-row md:items-end">
             <div>
-              <div className="space-y-12 border-l-4 border-zinc-100 pl-8">
-                {/* Item 1 */}
-                <div className="relative">
-                  <div className="absolute top-0 left-[-43px] w-6 h-6 bg-black rounded-full border-4 border-white shadow-sm"></div>
-                  <h4 className="text-2xl font-bold mb-2">2025: Establish 50 Centers</h4>
-                  <p className="text-zinc-600">Targeting 50 rural districts in Bihar and UP to create a robust initial network.</p>
-                </div>
-                {/* Item 2 */}
-                <div className="relative">
-                  <div className="absolute top-0 left-[-43px] w-6 h-6 bg-[#003366] rounded-full border-4 border-white shadow-sm"></div>
-                  <h4 className="text-2xl font-bold mb-2">2027: Digital Integrated Grid</h4>
-                  <p className="text-zinc-600">Connecting all centers via a centralized digital learning grid for standardized quality.</p>
-                </div>
-                {/* Item 3 */}
-                <div className="relative">
-                  <div className="absolute top-0 left-[-43px] w-6 h-6 bg-zinc-400 rounded-full border-4 border-white shadow-sm"></div>
-                  <h4 className="text-2xl font-bold mb-2">2030: Pan-India Academy</h4>
-                  <p className="text-zinc-600">Reaching 100,000+ students across 20 states, creating a national movement for education.</p>
-                </div>
-              </div>
+              <div className="text-sm font-bold uppercase tracking-widest text-[#003366]">Start Learning</div>
+              <h2 className="mt-2 text-4xl font-black">Choose Your Learning Path</h2>
+              <p className="mt-2 text-zinc-600">अभी 4 paths में structured lessons हैं; बाकी paths के लिए framework तैयार है।</p>
+            </div>
+            <div className="text-sm font-bold text-zinc-500">{filtered.length} paths</div>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {filtered.map((course) => <CourseCard key={course.slug} course={course} onOpen={openCourse} />)}
+          </div>
+        </section>
+
+        <section className="grid gap-6 py-6 md:grid-cols-3">
+          <div className="rounded-2xl bg-white p-7 shadow-sm border border-zinc-200">
+            <FaBookOpen className="text-3xl text-[#003366]" />
+            <h3 className="mt-4 text-xl font-black">Text + Practice</h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">हर learning path में step-by-step content, practice और progress tracking का आधार रहेगा।</p>
+          </div>
+          <div className="rounded-2xl bg-white p-7 shadow-sm border border-zinc-200">
+            <FaPlayCircle className="text-3xl text-[#003366]" />
+            <h3 className="mt-4 text-xl font-black">Video Learning</h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">Admin से official/free videos जोड़ने की जगह तैयार है; हर lesson अलग video resource ले सकेगा।</p>
+          </div>
+          <div className="rounded-2xl bg-white p-7 shadow-sm border border-zinc-200">
+            <FaShieldAlt className="text-3xl text-[#003366]" />
+            <h3 className="mt-4 text-xl font-black">Certificate & Verification</h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">Course completion के बाद verified Certificate of Completion और future QR verification workflow जोड़ा जाएगा।</p>
+          </div>
+        </section>
+
+        <section className="mt-12 rounded-3xl bg-[#003366] p-8 text-white md:p-12">
+          <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <div className="text-sm font-bold uppercase tracking-widest text-white/60">Next Stage</div>
+              <h2 className="mt-2 text-3xl font-black md:text-4xl">200–300 learning resources के लिए तैयार architecture</h2>
+              <p className="mt-4 max-w-3xl leading-7 text-white/75">
+                Learning paths को बाद में Admin से lessons, PDFs, videos, quizzes, external free resources, thumbnails और publish status के साथ बढ़ाया जा सकेगा। Public page पर केवल published content दिखेगा।
+              </p>
+            </div>
+            <div className="rounded-2xl bg-white/10 p-6 text-center">
+              <div className="text-4xl font-black">∞</div>
+              <div className="mt-1 text-xs font-bold uppercase tracking-widest text-white/70">Expandable</div>
             </div>
           </div>
-        </div>
-      </section>
-
-      {/* ================= CTA ================= */}
-      <section className="py-24 bg-[#003366] relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:30px_30px]"></div>
-        <div className="container mx-auto px-6 text-center relative z-10 space-y-6">
-          <h2 className="text-4xl lg:text-6xl font-bold text-white max-w-3xl mx-auto leading-tight">
-            Help Build the Future of Learning.
-          </h2>
-          <p className="text-zinc-300 text-xl max-w-2xl mx-auto">
-            Sponsor a child’s journey at SSF National Academy or partner with us
-            to start a new learning hub in your community.
-          </p>
-          <div className="flex flex-col sm:flex-row justify-center gap-6 pt-4">
-            <Link to="/DonateAndSupport">
-              <button className="btn-cta w-full sm:w-auto px-12 py-5 text-xl">
-                Donate to Academy
-              </button>
-            </Link>
-            <Link to="/PartnerWithUs">
-              <button className="btn-secondary w-full sm:w-auto px-12 py-5 text-xl border-white text-white hover:bg-white hover:text-[#003366]">
-                Partner for a Centre
-              </button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
+        </section>
+      </main>
     </div>
   );
 }
