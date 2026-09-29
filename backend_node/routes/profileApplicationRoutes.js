@@ -72,14 +72,18 @@ router.patch('/member-profile/:id/photo', uploadProfilePhoto.single('profilePhot
         if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' });
         if (!req.file) return res.status(400).json({ status: 'error', message: 'Please select a JPG, PNG or WebP photo.' });
         if (req.file.size > 2 * 1024 * 1024) { try { fs.unlinkSync(req.file.path); } catch (_) {} return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' }); }
-        const oldPath = member.profilePhotoPath; const newPath = `/uploads/${req.file.filename}`; await member.update({ profilePhotoPath: newPath });
+        const oldPath = member.profilePhotoPath;
+        const photoData = `data:${req.file.mimetype};base64,${fs.readFileSync(req.file.path).toString("base64")}`;
+        // Persist the actual photo in PostgreSQL so it survives Render restarts/redeploys.
+        await member.update({ profilePhotoPath: null, profilePhotoData: photoData });
         if (oldPath && oldPath.startsWith('/uploads/')) { const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, '')); if (oldFile !== req.file.path && fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} } }
-        const data = member.toJSON(); delete data.passwordHash; return res.json({ status: 'success', message: 'Profile photo updated successfully.', profilePhotoPath: newPath, user: data });
+        try { if (fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path); } catch (_) {}
+        const data = member.toJSON(); delete data.passwordHash; data.profilePhotoPath = member.profilePhotoData; return res.json({ status: 'success', message: 'Profile photo updated successfully.', profilePhotoPath: member.profilePhotoData, user: data });
     } catch (error) { if (req.file?.path && fs.existsSync(req.file.path)) { try { fs.unlinkSync(req.file.path); } catch (_) {} } console.error('❌ Profile photo update error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Unable to update profile photo.' }); }
 });
 
 router.delete('/member-profile/:id/photo', async (req, res) => {
-    try { const member = await Member.findByPk(req.params.id); if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' }); const oldPath = member.profilePhotoPath; await member.update({ profilePhotoPath: null }); if (oldPath && oldPath.startsWith('/uploads/')) { const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, '')); if (fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} } } return res.json({ status: 'success', message: 'Profile photo removed.', profilePhotoPath: null }); }
+    try { const member = await Member.findByPk(req.params.id); if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' }); const oldPath = member.profilePhotoPath; await member.update({ profilePhotoPath: null, profilePhotoData: null }); if (oldPath && oldPath.startsWith('/uploads/')) { const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, '')); if (fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} } } return res.json({ status: 'success', message: 'Profile photo removed.', profilePhotoPath: null }); }
     catch (error) { console.error('❌ Profile photo delete error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Unable to remove photo.' }); }
 });
 
