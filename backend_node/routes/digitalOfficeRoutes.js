@@ -345,8 +345,33 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
       if (m === 'members') {
         const existing = await Member.findAll({ order: [['createdAt','DESC']] });
         if (existing.length) {
-          // Website Member accounts are the preferred live source when available.
-          const mapped = existing.map(x => ({ id:x.id, recordId:x.memberId || 'ACCOUNT-'+String(x.id).slice(0,8), module:'members', recordType:x.memberType, status:x.status, recordDate:x.createdAt, amount:x.paymentAmount, personId:x.memberId, data:x.toJSON() }));
+          // Website Member accounts remain the identity source when available.
+          // Merge the Digital Office master photo by Member ID so the photo is
+          // available everywhere without creating a second profile identity.
+          const officeMembers = await DigitalOfficeRecord.findAll({
+            where: { module:'members', status:{ [Op.ne]:'deleted' } },
+            order: [['updatedAt','DESC'],['createdAt','DESC']]
+          });
+          const officeByMemberId = new Map();
+          officeMembers.forEach(row => {
+            const key=String(row.data?.memberId||'').trim().toUpperCase();
+            if (key && !officeByMemberId.has(key)) officeByMemberId.set(key,row);
+          });
+          const mapped = existing.map(x => {
+            const data=x.toJSON();
+            const office=officeByMemberId.get(String(x.memberId||'').trim().toUpperCase());
+            return {
+              id:x.id,
+              recordId:x.memberId || 'ACCOUNT-'+String(x.id).slice(0,8),
+              module:'members',
+              recordType:x.memberType,
+              status:x.status,
+              recordDate:x.createdAt,
+              amount:x.paymentAmount,
+              personId:x.memberId,
+              data:Object.assign({}, data, office?.data?.photoUrl ? {photoUrl:office.data.photoUrl} : {})
+            };
+          });
           const unique = new Map();
           mapped.forEach(row => { const key=String(row.personId||row.data?.memberId||row.recordId||row.id).trim().toUpperCase(); if(!unique.has(key)) unique.set(key,row); });
           rows = Array.from(unique.values());
