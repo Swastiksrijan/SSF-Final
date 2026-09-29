@@ -152,6 +152,10 @@ router.post('/digital-office/member-photo', requireOfficeAuth, (req, res) => {
       if (!row && sourceModule === 'members') {
         return res.status(404).json({ message: 'Member master record not found. Save the Member Register record before uploading a photo.' });
       } else if (row) {
+        // Keep the image in a dedicated TEXT column, using the same durable
+        // database-backed persistence principle as Website User Profile photos.
+        // Do not depend on Render's ephemeral /uploads filesystem.
+        row.profilePhotoData = photoUrl;
         row.data = Object.assign({}, row.data || {}, { photoUrl });
         await row.save();
       } else {
@@ -371,7 +375,13 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
         const key = String(d.memberId || row.recordId || row.id).trim().toUpperCase();
         if (key && !unique.has(key)) unique.set(key, row);
       });
-      rows = Array.from(unique.values());
+      rows = Array.from(unique.values()).map(row => {
+        const plain = row.toJSON();
+        if (row.profilePhotoData) {
+          plain.data = Object.assign({}, plain.data || {}, { photoUrl: row.profilePhotoData });
+        }
+        return plain;
+      });
     } else if (['volunteers','donors','internships'].includes(String(req.query.module || ''))) {
       const m = String(req.query.module);
       if (m === 'volunteers') {
