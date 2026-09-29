@@ -1217,7 +1217,7 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
  const [tab,setTab]=useState("dashboard"),[editId,setEditId]=useState(null),[form,setForm]=useState(blank),[saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[search,setSearch]=useState(""),[photoFile,setPhotoFile]=useState(null),[photoPreview,setPhotoPreview]=useState(""),[photoOverrides,setPhotoOverrides]=useState({});
  const set=(k,v)=>setForm(x=>({...x,[k]:v}));
  const photoSrc=p=>{const value=String(p||"").trim();if(!value)return "";if(/^(https?:\/\/|data:image\/|blob:)/i.test(value))return value;return `${API_BASE_URL}${value.startsWith("/")?"":"/"}${value}`;};
- const displayPhoto=r=>{const d=r?.data||{};return photoOverrides[d.memberId]||d.photoUrl||"";};
+ const displayPhoto=r=>{const d=r?.data||{};const seedMember=seed.find(m=>m.memberId===String(d.memberId||""));return photoOverrides[d.memberId]||d.photoUrl||seedMember?.photoUrl||"";};
  const choosePhoto=e=>{const f=e.target.files?.[0];if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){setNotice("Photo must be JPG, PNG or WebP.");e.target.value="";return;}if(f.size>2*1024*1024){setNotice("Photo must be 2MB or smaller.");e.target.value="";return;}setPhotoFile(f);setPhotoPreview(URL.createObjectURL(f));};
  const clearPhoto=()=>{setPhotoFile(null);setPhotoPreview("");};
  const currentRows=seed.map(m=>currentByMember.get(m.memberId)||null);
@@ -1260,13 +1260,6 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
   }
   setNotice("Fresh Managing Committee register prepared: 9 current members. Existing profile data and photos were preserved.");
  };
- const syncStarted=useRef(false);
- useEffect(()=>{
-  const hasLoadedCommittee=existing.length>0;
-  if(!token||syncStarted.current||!hasLoadedCommittee)return;
-  syncStarted.current=true;
-  refresh();
- },[token,existing.length>0]);
  const edit=r=>{setEditId(r.id);const d={...blank,...(r.data||{})};setForm(d);setPhotoFile(null);setPhotoPreview(photoSrc(displayPhoto(r)));setTab("profile");setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
  const newRecord=()=>{setEditId(null);setForm({...blank});clearPhoto();setTab("profile");setNotice("");};
  const save=async e=>{
@@ -1285,7 +1278,7 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
   }
  };
  const doArchive=async id=>{await archive(id);};
- const allCurrent=(currentRecords.filter(r=>String(r.status).toLowerCase()==="active").length?currentRecords.filter(r=>String(r.status).toLowerCase()==="active"):seed.map((m,i)=>({id:"seed-"+m.memberId,module:"managingCommittee",status:"active",data:{...m,committeeStatus:"Active",action:"Current Committee Register",remarks:"Current approved Managing Committee master record."}})));
+ const activeCurrent=currentRecords.filter(r=>String(r.status).toLowerCase()==="active"); const allCurrent=seed.map(m=>currentByMember.get(m.memberId)||({id:"seed-"+m.memberId,module:"managingCommittee",status:"active",data:{...m,committeeStatus:"Active",action:"Current Committee Register",remarks:"Current approved Managing Committee master record."}}));
  const roleCards=["President","Vice President","Secretary","Treasurer","Joint Secretary"];
  const filtered=allCurrent.filter(r=>{const d=r.data||{};const q=search.trim().toLowerCase();return !q||[d.fullName,d.memberId,d.designation,d.responsibility].some(v=>String(v||"").toLowerCase().includes(q));});
  const Field=({k,label,type="text",wide=false})=><div className={wide?"sm:col-span-2 lg:col-span-4":""}><label className="block text-xs font-bold text-slate-600 mb-1">{label}</label>{type==="textarea"?<textarea value={form[k]||""} onChange={e=>set(k,e.target.value)} className={cls+" min-h-[100px]"}/>:<input type={type} value={form[k]||""} onChange={e=>set(k,e.target.value)} className={cls}/>}</div>;
