@@ -32,7 +32,7 @@ const pages = {
   '/CSRPartnership': ['CSR Partnership | Corporate Social Responsibility', 'Partner with Swastik Srijan Foundation for meaningful CSR initiatives and sustainable community impact.', '/images/csr-hero.png'],
   '/PartnerWithUs': ['Partner With Us | Swastik Srijan Foundation', 'Explore partnership opportunities for institutions, NGOs, healthcare organizations, companies and community initiatives.', '/images/uploads/csr-unity.jpg'],
   '/Contact': ['Contact Us | Swastik Srijan Foundation', 'Get in touch with Swastik Srijan Foundation to explore collaborations, volunteering and community initiatives.', '/images/real/community-team-group.jpg'],
-  '/Blog': ['Blog & Impact Stories | Swastik Srijan Foundation', 'Read real stories about education, health, community support, volunteering and social impact across India.', '/images/real/news_media_1.jpg'],
+  '/Blog': ['Blog & Impact Stories | Swastik Srijan Foundation', 'Read real stories about education, health, community support, volunteering and social impact across India.', '/images/real/community-education-meeting.jpg'],
   '/Blog/awareness': ['Awareness / जागरूकता | SSF Knowledge & Awareness', 'Practical public-interest awareness, responsible information sharing and everyday civic learning from SSF.', '/images/real/awareness-poster-viewing.jpg'],
   '/Blog/education-and-skill': ['Education & Skill / शिक्षा एवं कौशल | SSF Knowledge & Awareness', 'Learning, English, communication, digital skills and practical career development resources.', '/images/uploads/learning-hub-1.jpg'],
   '/Blog/safety': ['Safety / सुरक्षा | SSF Knowledge & Awareness', 'Practical safety awareness covering everyday risks, emergency preparedness and family safety.', '/images/protection-ecosystem.png'],
