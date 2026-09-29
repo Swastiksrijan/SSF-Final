@@ -1303,7 +1303,7 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
   }
  };
  const doArchive=async id=>{await archive(id);};
- const allCurrent=currentRecords.filter(r=>String(r.status).toLowerCase()==="active");
+ const allCurrent=(currentRecords.filter(r=>String(r.status).toLowerCase()==="active").length?currentRecords.filter(r=>String(r.status).toLowerCase()==="active"):seed.map((m,i)=>({id:"seed-"+m.memberId,module:"managingCommittee",status:"active",data:{...m,committeeStatus:"Active",action:"Current Committee Register",remarks:"Current approved Managing Committee master record."}})));
  const roleCards=["President","Vice President","Secretary","Treasurer","Joint Secretary"];
  const filtered=allCurrent.filter(r=>{const d=r.data||{};const q=search.trim().toLowerCase();return !q||[d.fullName,d.memberId,d.designation,d.responsibility].some(v=>String(v||"").toLowerCase().includes(q));});
  const Field=({k,label,type="text",wide=false})=><div className={wide?"sm:col-span-2 lg:col-span-4":""}><label className="block text-xs font-bold text-slate-600 mb-1">{label}</label>{type==="textarea"?<textarea value={form[k]||""} onChange={e=>set(k,e.target.value)} className={cls+" min-h-[100px]"}/>:<input type={type} value={form[k]||""} onChange={e=>set(k,e.target.value)} className={cls}/>}</div>;
