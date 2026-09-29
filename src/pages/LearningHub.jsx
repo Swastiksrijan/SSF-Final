@@ -77,6 +77,101 @@ function getLearningMaterial(course, title, description) {
   return LEARNING_MATERIAL.default;
 }
 
+const TOPIC_LIBRARY = [
+  { category:"Education / शिक्षा", topics:[
+    ["Primary Education / प्राथमिक शिक्षा","बुनियादी पढ़ना, लिखना, गणना, समझ और सीखने की आदतें विकसित करना।","आयु/कक्षा के अनुसार foundational literacy, numeracy, भाषा, गणित, पर्यावरण और सुरक्षित learning environment को समझें।"],
+    ["Secondary & Higher Secondary / माध्यमिक एवं उच्च माध्यमिक","स्कूल स्तर पर विषय ज्ञान के साथ critical thinking और आगे की पढ़ाई/career की तैयारी।","विषय चयन, नियमित अध्ययन, परीक्षा तैयारी, digital resources, career awareness और आगे के विकल्प समझें।"],
+    ["College & Higher Education / उच्च शिक्षा","Higher education में subject knowledge, research, communication और employability skills विकसित करना।","course selection, eligibility, admission information, scholarships, academic discipline, internships और lifelong learning पर ध्यान दें।"],
+    ["Computer Education / कंप्यूटर शिक्षा","कंप्यूटर hardware, operating system, files, software और safe digital work की आधारभूत समझ।","typing, files/folders, documents, spreadsheets, presentations, printing, backup और basic troubleshooting सीखें।"],
+    ["Nursing Education / नर्सिंग शिक्षा","Nursing में patient care, hygiene, observation, communication और professional ethics की समझ।","मान्यता प्राप्त संस्थान/प्रशिक्षण की जानकारी official sources से verify करें; clinical procedures बिना प्रशिक्षित supervision के न करें।"],
+    ["Technical Education / तकनीकी शिक्षा","Engineering, IT, trades और अन्य technical fields में theory के साथ practical skill development।","अपनी रुचि और aptitude पहचानें, recognised course की eligibility जाँचें और practical projects/skills पर काम करें।"],
+    ["Competitive Exam Preparation / प्रतियोगी परीक्षा तैयारी","परीक्षाओं के syllabus, strategy, practice और time management को व्यवस्थित करना।","official notification से syllabus देखें, study plan बनाएँ, previous papers और mock tests करें, गलतियों की revision करें।"],
+    ["Library & Reading / पुस्तकालय एवं पठन","पुस्तकों, reference material और नियमित reading से knowledge तथा critical thinking बढ़ाना।","reading goal, source evaluation, notes, indexing और शांत अध्ययन की आदत विकसित करें।"],
+    ["Science Fairs / विज्ञान मेले","Observation, question, experiment और evidence के माध्यम से science सीखना।","समस्या चुनें, hypothesis बनाएं, safe experiment करें, data record करें और result को ईमानदारी से प्रस्तुत करें।"]
+  ]},
+  { category:"Skill Development / कौशल विकास", topics:[
+    ["Computer Training / कंप्यूटर प्रशिक्षण","Digital workplace के लिए practical computer skills विकसित करना।","typing, documents, spreadsheets, email, file management, online forms और cyber safety का अभ्यास करें।"],
+    ["Tailoring & Embroidery / सिलाई एवं कढ़ाई","सिलाई, measurement, pattern, finishing और embroidery को livelihood skill के रूप में समझना।","basic tools सीखें, छोटे projects बनाएं, costing और quality check करें और ग्राहक की आवश्यकता समझें।"],
+    ["Self-Employment / स्वरोजगार","अपनी skill को sustainable small business या service में बदलने की समझ।","problem पहचानें, customer समझें, cost/revenue estimate करें, छोटा pilot करें और records रखें।"],
+    ["Vocational Training / व्यावसायिक प्रशिक्षण","Job-oriented practical skills और recognised training pathways की जानकारी।","occupation चुनें, eligibility देखें, recognised training provider verify करें और practical competency विकसित करें।"],
+    ["Rural Industries / ग्रामीण उद्योग","स्थानीय संसाधन, कौशल और बाजार पर आधारित ग्रामीण enterprise की समझ।","local raw material, value addition, market, quality, packaging और basic business records समझें।"],
+    ["Khadi & Village Industries / खादी एवं ग्रामोद्योग","Traditional production, local employment और village-based enterprise concepts समझना।","product selection, quality, branding, market linkage और applicable rules/schemes की official जानकारी देखें।"]
+  ]},
+  { category:"Women & Child Development / महिला एवं बाल विकास", topics:[
+    ["Women Empowerment / महिला सशक्तिकरण","शिक्षा, आर्थिक भागीदारी, decision-making, safety और rights के माध्यम से agency मजबूत करना।","skills, financial awareness, legal awareness, digital safety और collective participation पर सीखें।"],
+    ["Girls' Education / बालिका शिक्षा","बालिकाओं की निरंतर शिक्षा, सुरक्षित learning environment और future opportunities की समझ।","attendance, learning support, career guidance, digital access और safety barriers पहचानें।"],
+    ["Prevention of Female Foeticide / भ्रूण लिंग चयन की रोकथाम","लिंग-आधारित भेदभाव और sex selection के सामाजिक, नैतिक और कानूनी पहलुओं को समझना।","gender equality, lawful healthcare practices और official legal information को समझें; किसी भी illegal sex-selection practice से दूर रहें।"],
+    ["Widow Support / विधवा सहयोग","सम्मान, social inclusion, livelihood, documentation और available support systems की जानकारी।","व्यक्ति की इच्छा और dignity का सम्मान करें; documents, livelihood options और official welfare information खोजें।"],
+    ["Nari Niketan / महिला आश्रय एवं संरक्षण","संकटग्रस्त महिलाओं के लिए shelter, safety, counselling और rehabilitation concepts समझना।","संकट में trained authorities/helplines से संपर्क, privacy और informed consent का ध्यान रखें।"],
+    ["Balwadi / प्रारंभिक बाल शिक्षा","छोटे बच्चों के लिए play-based learning, language, motor skills और social development की समझ।","age-appropriate play, stories, songs, nutrition, hygiene और safe environment को महत्व दें।"],
+    ["Nutrition / पोषण","Balanced diet, nutrients, food safety और life-stage nutrition की आधारभूत समझ।","स्थानीय उपलब्ध खाद्य पदार्थों से balanced plate समझें, hygiene रखें और विशेष medical needs में professional advice लें।"],
+    ["Self-Help Groups (SHGs) / स्वयं सहायता समूह","बचत, collective decision-making, records और livelihood activities के माध्यम से समूह learning।","clear rules, regular meetings, transparent records, bank processes और member participation समझें।"]
+  ]},
+  { category:"Health / स्वास्थ्य", topics:[
+    ["AIDS Awareness / HIV-AIDS जागरूकता","HIV transmission, prevention, testing, treatment और stigma reduction की evidence-based जानकारी।","official health sources से facts सीखें, misinformation न फैलाएँ और confidentiality/respect रखें।"],
+    ["Cancer Awareness / कैंसर जागरूकता","Cancer के risk factors, prevention, warning signs, screening concepts और treatment pathways की जानकारी।","tobacco avoidance, healthy habits और appropriate medical consultation पर ध्यान दें; symptoms को self-diagnose न करें।"],
+    ["Malnutrition / कुपोषण","कुपोषण के कारण, signs, prevention और nutrition support की समझ।","diet diversity, hygiene, child growth monitoring और जरूरत पर qualified health/nutrition services की मदद लें।"],
+    ["Naturopathy / प्राकृतिक स्वास्थ्य पद्धतियाँ","Natural/lifestyle approaches के concepts और उनकी सीमाओं को समझना।","evidence, safety और qualified professional guidance को प्राथमिकता दें; proven treatment को बिना सलाह replace न करें।"],
+    ["Yoga / योग","Yoga के movement, breathing, relaxation और wellbeing aspects की सामान्य जानकारी।","basic practice धीरे करें, सही technique सीखें और medical conditions/limitations में qualified guidance लें।"],
+    ["Family Welfare / परिवार कल्याण","परिवार स्वास्थ्य, reproductive health, informed choice और responsible parenthood की समझ।","confidential, respectful और evidence-based information लें तथा qualified health provider से appropriate advice लें।"],
+    ["De-addiction / नशामुक्ति","Substance use के health, family और social effects तथा recovery support को समझना।","stigma-free support, professional treatment, relapse awareness और emergency response सीखें।"],
+    ["Rehabilitation / पुनर्वास","Illness, disability, injury या social vulnerability के बाद functional और social participation support की समझ।","individual goals, accessibility, family support और trained professionals की coordinated care समझें।"]
+  ]},
+  { category:"Environment / पर्यावरण", topics:[
+    ["Tree Plantation / वृक्षारोपण","पेड़ लगाने से आगे species selection, survival, watering और long-term care को समझना।","स्थानीय परिस्थितियों के अनुरूप species चुनें, planting season और after-care समझें तथा survival record रखें।"],
+    ["Biodiversity / जैव विविधता","Plants, animals, microorganisms और ecosystems की विविधता तथा उनका महत्व।","local species पहचानें, habitat disturbance कम करें और wildlife को बिना अनुमति handle न करें।"],
+    ["Forest Conservation / वन संरक्षण","Forests के ecological, social और livelihood roles तथा conservation principles।","fire prevention, responsible resource use, local rules और community stewardship समझें।"],
+    ["Natural Resource Conservation / प्राकृतिक संसाधन संरक्षण","Water, soil, land, forests और minerals के responsible use की समझ।","use measure करें, wastage घटाएँ, recharge/reuse options समझें और local conditions के अनुसार action लें।"],
+    ["Medicinal Plants / औषधीय पौधे","Medicinal plants की पहचान, traditional knowledge और safety limitations समझना।","सही botanical identification और reliable references जरूरी हैं; unknown plant को medicine मानकर सेवन न करें।"],
+    ["Organic Farming / जैविक खेती","Soil health, organic inputs, biodiversity और chemical-input management के principles।","soil testing, composting, crop planning, pest management और applicable certification/standards समझें।"],
+    ["Natural & Renewable Energy / प्राकृतिक एवं नवीकरणीय ऊर्जा","Solar, wind, biomass और अन्य renewable energy concepts तथा energy efficiency।","energy use audit करें, suitable technology की लागत/maintenance समझें और technical installation trained provider से कराएँ।"]
+  ]},
+  { category:"Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", topics:[
+    ["Farmer Training / किसान प्रशिक्षण","Crop planning, soil, water, inputs, market and risk management की practical learning।","local agro-climate के अनुसार planning करें, records रखें और official agriculture advisories देखें।"],
+    ["Animal Husbandry / पशुपालन","Nutrition, housing, hygiene, breeding, vaccination and basic animal health management।","species-specific care समझें और बीमारी/दवा के लिए veterinary professional की सलाह लें।"],
+    ["Cow Protection / गौ संरक्षण","Cattle welfare, shelter, feeding, water, hygiene और responsible care की जानकारी।","adequate space, feed, water, veterinary care और humane handling सुनिश्चित करने के principles समझें।"],
+    ["Rural Development / ग्रामीण विकास","Village infrastructure, education, health, livelihoods, participation and local institutions के बीच संबंध।","community needs mapping, inclusive participation, local planning और measurable outcomes समझें।"],
+    ["Rural Livelihood / ग्रामीण आजीविका","Farm और non-farm livelihood options को household resources और market से जोड़ना।","skill, demand, cost, risk और market linkage का छोटा assessment करके शुरुआत करें।"]
+  ]},
+  { category:"Social Justice / सामाजिक न्याय", topics:[
+    ["Corruption Awareness / भ्रष्टाचार जागरूकता","Public integrity, transparency, accountability और lawful grievance mechanisms की समझ।","records रखें, official process follow करें और शिकायत के लिए authorised channels का उपयोग करें।"],
+    ["Moral Education / नैतिक शिक्षा","ईमानदारी, जिम्मेदारी, empathy, fairness और consequences पर practical learning।","daily situations में choices का परिणाम सोचें और दूसरों के अधिकार/सम्मान का ध्यान रखें।"],
+    ["National Unity / राष्ट्रीय एकता","विविधता में एकता, constitutional values और responsible citizenship की समझ।","भाषा, क्षेत्र, समुदाय और पृष्ठभूमि की विविधता का सम्मान करते हुए civic responsibilities निभाएँ।"],
+    ["Communal Harmony / सामाजिक एवं सामुदायिक सद्भाव","विभिन्न communities के बीच respect, dialogue और peaceful coexistence।","अफवाह verify करें, hate/abuse से बचें और disagreement में respectful dialogue रखें।"],
+    ["Human Rights / मानवाधिकार","गरिमा, समानता, स्वतंत्रता, सुरक्षा और अधिकारों के मूल concepts।","rights के साथ duties समझें और serious violations में appropriate legal/help channels की जानकारी लें।"]
+  ]},
+  { category:"Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास", topics:[
+    ["Disability Assistance / दिव्यांगता सहयोग","Accessibility, assistive support, inclusive education/employment और dignity की समझ।","व्यक्ति से उसकी जरूरत पूछें, accessibility barriers पहचानें और उपलब्ध official services की जानकारी लें।"],
+    ["Rehabilitation of Vulnerable Children / संवेदनशील बच्चों का पुनर्वास","Protection, education, psychosocial support और safe reintegration के principles।","child safety, confidentiality और trained child-protection professionals/authorities की भूमिका समझें।"],
+    ["Elderly Support / वरिष्ठ नागरिक सहयोग","Ageing में health, dignity, social connection, safety और financial awareness।","respectful communication, medication/appointment support, fall safety और social inclusion पर ध्यान दें।"],
+    ["Orphan & Vulnerable Child Support / अनाथ एवं असुरक्षित बच्चों का सहयोग","Children's protection, education, nutrition, identity documents और safe care systems की समझ।","child-first approach रखें; placement या care decisions authorised child-protection systems के अनुसार हों।"]
+  ]},
+  { category:"Animal Protection / पशु संरक्षण", topics:[
+    ["Animal & Bird Protection / पशु-पक्षी संरक्षण","Animal welfare, habitat, humane treatment और responsible coexistence की समझ।","पानी/food support करते समय hygiene रखें, घायल wildlife को खुद handle न करें और authorised rescue services से संपर्क करें।"],
+    ["Gaushala / गौशाला प्रबंधन","Cattle shelter में nutrition, sanitation, veterinary care, records और humane management।","capacity के अनुसार animals रखें, daily care records रखें और veterinary support सुनिश्चित करें।"],
+    ["Wildlife Conservation / वन्यजीव संरक्षण","Wildlife, habitat, ecological balance और responsible human-wildlife coexistence।","wildlife को पकड़ना/पालना/छेड़ना नहीं; conflict में authorised forest/wildlife authorities की सहायता लें।"]
+  ]},
+  { category:"Culture & Heritage / संस्कृति एवं विरासत", topics:[
+    ["Bhajan & Devotional Music / भजन एवं भक्तिमय संगीत","भक्ति संगीत की परंपरा, भाषा, ताल, सामूहिक गायन और सांस्कृतिक भूमिका।","स्रोत/परंपरा का सम्मान करें, lyrics के अर्थ समझें और inclusive वातावरण रखें।"],
+    ["Sanskrit Education / संस्कृत शिक्षा","Sanskrit script, vocabulary, grammar, literature और भारतीय ज्ञान परंपरा का अध्ययन।","basic pronunciation, reading practice, grammar और authentic texts से सीखने की आदत बनाएं।"],
+    ["Music / संगीत","स्वर, ताल, लय, अभ्यास, listening और विभिन्न संगीत परंपराओं की समझ।","regular practice, ear training और basic notation/recording का उपयोग करें।"],
+    ["Conferences & Knowledge Events / सम्मेलन एवं ज्ञान कार्यक्रम","विचार-विनिमय, expert sessions, documentation और responsible event learning।","agenda, speaker credentials, notes, questions और post-event learning record रखें।"],
+    ["Cultural Programmes / सांस्कृतिक कार्यक्रम","स्थानीय कला, भाषा, परंपरा और heritage को सम्मानपूर्वक समझना व साझा करना।","consent, attribution, cultural sensitivity और accurate historical context का ध्यान रखें।"]
+  ]},
+  { category:"Youth, Digital Literacy & Disaster / युवा, डिजिटल साक्षरता एवं आपदा तैयारी", topics:[
+    ["Youth Development / युवा विकास","Skills, confidence, career awareness, civic responsibility और healthy participation का विकास।","career goals, communication, digital skills, volunteering और personal planning पर काम करें।"],
+    ["Digital Literacy / डिजिटल साक्षरता","Devices, internet, online services, privacy, cyber safety और information verification।","strong passwords, 2-step security जहाँ उपलब्ध हो, safe browsing और source verification सीखें।"],
+    ["Disaster Relief & Preparedness / आपदा राहत एवं तैयारी","Preparedness, warning, evacuation, emergency kit, first response और community coordination।","official alerts देखें, family plan बनाएं और बिना training के risky rescue न करें।"]
+  ]},
+  { category:"Grant & Project Literacy / अनुदान एवं परियोजना समझ", topics:[
+    ["Project Planning / परियोजना योजना","Problem, objective, activities, timeline, budget, indicators और responsibilities को structured plan में बदलना।","problem statement, target group, baseline, activities, outputs/outcomes और monitoring plan लिखें।"],
+    ["Grant Literacy / अनुदान की समझ","Grant opportunities को पढ़ना, eligibility समझना और compliant application तैयार करना।","official guidelines पढ़ें, eligibility documents verify करें और unsupported claims न लिखें।"],
+    ["Budget & Financial Planning / बजट एवं वित्तीय योजना","Project costs को realistic, documented और activity-linked तरीके से plan करना।","unit cost, quantity, assumptions, supporting documents और budget variance समझें।"],
+    ["Monitoring, Evaluation & Reporting / निगरानी एवं रिपोर्टिंग","Activities, outputs, outcomes और evidence को systematically record करना।","attendance, photos/documents where appropriate, expenditure records और outcome evidence को organised रखें।"],
+    ["Safeguarding & Ethics / सुरक्षा एवं नैतिकता","Children, vulnerable persons, privacy, consent, dignity और safe participation के principles।","informed consent, confidentiality, safe reporting channels और do-no-harm approach अपनाएँ।"]
+  ]}
+];
+
 const COURSES = [
   {
     slug: "basic-english",
@@ -1105,6 +1200,7 @@ export default function LearningHub() {
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               [String(COURSES.length), "Learning Paths", "Learning Paths"],
+              [String(TOPIC_LIBRARY.reduce((n, group) => n + group.topics.length, 0)), "Knowledge Topics", "Knowledge Topics"],
               [String(COURSES.filter((course) => course.ready).length), "Ready Now", "Ready Now"],
               ["Hindi + English", "Languages", "Languages"],
               ["Free", "Access", "Access"],
@@ -1177,6 +1273,44 @@ export default function LearningHub() {
                 ))}
               </div>
             </div>
+          </div>
+        </section>
+
+        <section className="mb-12 rounded-3xl border border-[#003366]/10 bg-white p-7 shadow-sm md:p-9">
+          <div className="mb-7">
+            <div className="text-sm font-bold uppercase tracking-widest text-[#003366]">Complete Topic Library / सम्पूर्ण विषय-सामग्री</div>
+            <h2 className="mt-2 text-3xl font-black md:text-4xl">विषय को A–Z समझें</h2>
+            <p className="mt-3 max-w-5xl leading-7 text-zinc-600">
+              यहाँ SSF के learning और awareness objectives से जुड़े विषयों को पढ़ने योग्य knowledge topics के रूप में रखा गया है। हर topic में परिचय, क्या सीखना है और practical दिशा दी गई है। यह section educational/awareness purpose के लिए है; इससे यह दावा नहीं होता कि SSF ने उस विषय पर field programme पूरा किया है।
+            </p>
+          </div>
+          <div className="space-y-4">
+            {TOPIC_LIBRARY.map((group) => {
+              const topics = group.topics.filter(([title, hi, detail]) => {
+                const q=query.toLowerCase().trim();
+                return !q || (group.category+" "+title+" "+hi+" "+detail).toLowerCase().includes(q);
+              });
+              if (!topics.length) return null;
+              return (
+                <div key={group.category} className="rounded-2xl border border-zinc-200 overflow-hidden">
+                  <div className="bg-[#003366]/5 px-5 py-4 font-black text-[#003366]">{group.category}</div>
+                  <div className="divide-y divide-zinc-100">
+                    {topics.map(([title, intro, detail]) => (
+                      <details key={title} className="group p-5">
+                        <summary className="cursor-pointer list-none pr-8 font-black text-zinc-900">
+                          <span>{title}</span><span className="float-right text-[#003366] group-open:rotate-45 text-2xl leading-none">+</span>
+                        </summary>
+                        <div className="mt-5 grid gap-5 lg:grid-cols-3">
+                          <div><div className="text-xs font-black uppercase tracking-widest text-[#003366]">Introduction / परिचय</div><p className="mt-2 text-sm leading-7 text-zinc-700">{intro}</p></div>
+                          <div><div className="text-xs font-black uppercase tracking-widest text-[#003366]">What to Learn / क्या सीखें</div><p className="mt-2 text-sm leading-7 text-zinc-700">{detail}</p></div>
+                          <div><div className="text-xs font-black uppercase tracking-widest text-[#003366]">Practical Checklist / अभ्यास सूची</div><ul className="mt-2 space-y-2 text-sm leading-6 text-zinc-700"><li>✓ विषय के मूल शब्द और concepts समझें</li><li>✓ एक छोटा practical exercise करें</li><li>✓ क्या करें और क्या न करें लिखें</li><li>✓ आवश्यकता पर official/expert source से verify करें</li></ul></div>
+                        </div>
+                      </details>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </section>
 
