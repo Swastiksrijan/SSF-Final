@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import {
-  FaArrowRight, FaBookOpen, FaBriefcase, FaCheckCircle, FaChevronLeft,
+  FaArrowRight, FaBookOpen, FaBriefcase, FaCertificate, FaCheckCircle, FaChevronLeft,
   FaClock, FaComments, FaDesktop, FaEnvelope, FaExternalLinkAlt,
   FaGraduationCap, FaLaptopCode, FaPlayCircle, FaSearch, FaShareAlt,
   FaShieldAlt, FaStar, FaUserTie
