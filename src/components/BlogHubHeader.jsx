@@ -29,9 +29,14 @@ function findAndScroll(queries) {
   }
 }
 
-export default function BlogHubHeader() {
+export const getCategorySlug = (label) => label.toLowerCase().replace(/&/g, "and").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
+export default function BlogHubHeader({ initialTopic = "" }) {
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState(null);
+  const [activeCategory, setActiveCategory] = useState(() => {
+    if (!initialTopic) return null;
+    return CATEGORIES.find((category) => getCategorySlug(category.label) === initialTopic) || null;
+  });
 
   const submit = (event) => {
     event.preventDefault();
@@ -125,7 +130,7 @@ export default function BlogHubHeader() {
                 <p className="mt-2 text-sm text-zinc-500">इस विषय की जानकारी दूसरों तक पहुँचाएँ / Share this learning with others.</p>
                 <div className="mt-4 flex flex-wrap gap-2">
                   <button type="button" onClick={async () => {
-                    const url = window.location.href;
+                    const url = `${window.location.origin}/Blog/${getCategorySlug(activeCategory.label)}`;
                     const text = `${activeCategory.label} / ${activeCategory.hi} — SSF Knowledge & Awareness`;
                     if (navigator.share) {
                       try { await navigator.share({ title: text, text: `${text}\n${activeCategory.intro}`, url }); } catch {}
@@ -135,10 +140,10 @@ export default function BlogHubHeader() {
                     }
                   }} className="rounded-xl bg-[#002344] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#00365f]">↗ Share / शेयर</button>
                   <button type="button" onClick={async () => {
-                    await navigator.clipboard?.writeText(window.location.href);
+                    await navigator.clipboard?.writeText(`${window.location.origin}/Blog/${getCategorySlug(activeCategory.label)}`);
                     alert("Link copied / लिंक कॉपी हो गया");
                   }} className="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-700 hover:bg-zinc-100">🔗 Copy Link / लिंक कॉपी</button>
-                  <a href={`https://wa.me/?text=${encodeURIComponent(`${activeCategory.label} / ${activeCategory.hi} — SSF Knowledge & Awareness\n${window.location.href}`)}`} target="_blank" rel="noreferrer" className="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-700 hover:bg-zinc-100">WhatsApp</a>
+                  <a href={`https://wa.me/?text=${encodeURIComponent(`${activeCategory.label} / ${activeCategory.hi} — SSF Knowledge & Awareness\n${window.location.origin}/Blog/${getCategorySlug(activeCategory.label)}`)}`} target="_blank" rel="noreferrer" className="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-700 hover:bg-zinc-100">WhatsApp</a>
                 </div>
               </div>
               <p className="mt-6 text-sm leading-6 text-zinc-500">इस विषय से संबंधित SSF Blog stories और Learning Hub resources को आगे पढ़ें / Explore related SSF Blog stories and Learning Hub resources. जानकारी को अपने संदर्भ में उपयोग करते समय उचित स्रोत और विशेषज्ञ सलाह को प्राथमिकता दें / Use reliable sources and professional advice where appropriate.</p>
