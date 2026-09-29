@@ -202,12 +202,12 @@ export default function SSFDigitalOffice(){
     {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/>} 
     {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
-    {active==="officeHistory"&&<OfficeHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
+    {active==="officeHistory"&&<OfficeHistory rows={moduleRows.officeHistory||[]} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="membershipContributions"&&<MembershipContributions rows={rows} add={add} archive={archive}/>}
     
     
     {active==="appointmentLetters"&&<AppointmentLetters rows={rows} add={add}/>}
-    {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
+    {active==="managingCommittee"&&<ManagingCommittee rows={moduleRows.managingCommittee||[]} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
