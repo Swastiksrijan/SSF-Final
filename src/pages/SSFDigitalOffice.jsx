@@ -40,7 +40,7 @@ const formatOfficeDate=function(value){
 
 export default function SSFDigitalOffice(){
  const token=localStorage.getItem(TOKEN_KEY)||"";
- const [active,setActive]=useState("dashboard"), [summary,setSummary]=useState(null), [rows,setRows]=useState([]);
+ const [active,setActive]=useState("dashboard"), [summary,setSummary]=useState(null), [rows,setRows]=useState([]), [moduleRows,setModuleRows]=useState({});
  const [loading,setLoading]=useState(false), [search,setSearch]=useState(""), [notice,setNotice]=useState("");
  const auth=function(){return {Authorization:"Bearer "+token,"Content-Type":"application/json","X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"};};
  const refreshSummary=async function(){const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_SUMMARY,{headers:auth()});if(r.ok)setSummary(await r.json());};
@@ -51,7 +51,7 @@ export default function SSFDigitalOffice(){
    await refreshSummary();
    if(NO_RECORD_MODULES.has(module)){setRows([]);return;}
    const q=ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+encodeURIComponent(dataModule)+(search?"&search="+encodeURIComponent(search):"");
-   const r=await fetch(q,{headers:auth()}); const d=await r.json(); if(!r.ok)throw new Error(d.message||"Unable to load records."); setRows(Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]));
+   const r=await fetch(q,{headers:auth()}); const d=await r.json(); if(!r.ok)throw new Error(d.message||"Unable to load records."); const loadedRows=Array.isArray(d)?d:(Array.isArray(d.records)?d.records:[]); setModuleRows(function(prev){return Object.assign({},prev,{[dataModule]:loadedRows});}); setRows(loadedRows);
   }catch(e){setNotice(e.message||"Unable to load Digital Office.");}finally{setLoading(false);}
  };
  useEffect(function(){if(token)load(active);},[active]);
