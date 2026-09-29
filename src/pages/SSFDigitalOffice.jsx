@@ -858,7 +858,9 @@ const CENTRAL_MEMBER_TEAM_PHOTOS={
 const getCentralMemberPhoto=(data)=>{
  const d=data||{};
  const id=String(d.memberId||"").trim().toUpperCase();
- return String(d.photoUrl||"").trim()||CENTRAL_MEMBER_TEAM_PHOTOS[id]||"";
+ // The existing Meet Our Team photo is the approved central photo for these members.
+ // This prevents an old/broken photoUrl from hiding the correct member photo.
+ return CENTRAL_MEMBER_TEAM_PHOTOS[id]||String(d.photoUrl||"").trim()||"";
 };
 
 function MembersRegister({rows,add,archive,updateRecord}){
