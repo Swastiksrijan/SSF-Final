@@ -239,6 +239,322 @@ const COURSES = [
     ready: false,
     description: "Plan your day, set priorities and build practical work habits.",
   },
+  {
+    slug: "education-awareness",
+    category: "SSF Knowledge & Awareness",
+    icon: FaGraduationCap,
+    title: "Education: Understanding the Right to Learn",
+    hi: "शिक्षा: सीखने के अधिकार और अवसर को समझें",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "A complete awareness module on education, learning opportunities, inclusion, libraries, digital learning and responsible educational support.",
+    lessons: [
+      ["01", "Why Education Matters", "Understand education as a foundation for knowledge, opportunity, participation and personal development."],
+      ["02", "Schooling & Lifelong Learning", "Learn the difference between formal education, vocational learning, self-learning and lifelong learning."],
+      ["03", "Inclusive Education", "Understand barriers faced by girls, children with disabilities, rural learners and disadvantaged communities."],
+      ["04", "Digital & Library Learning", "Learn how libraries, open educational resources and safe digital tools can support learning."],
+      ["05", "Supporting a Learner", "Practical ways families, volunteers and communities can encourage attendance, reading and learning habits."],
+      ["06", "Education Programme Planning", "Understand how an education awareness or support programme can be designed without claiming unverified beneficiaries."],
+      ["07", "Common Mistakes", "Avoid misinformation, unsupported success claims and sharing outdated education information."],
+      ["08", "Knowledge Check", "Review key concepts and identify responsible next steps for continued learning."],
+    ],
+  },
+  {
+    slug: "skill-development",
+    category: "SSF Knowledge & Awareness",
+    icon: FaBriefcase,
+    title: "Skill Development & Livelihood",
+    hi: "कौशल विकास एवं आजीविका",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn how practical skills, vocational training, entrepreneurship and livelihood planning can support self-reliance.",
+    lessons: [
+      ["01", "What Is Skill Development?", "Understand technical, digital, vocational, communication and workplace skills."],
+      ["02", "Choosing a Useful Skill", "Assess interest, local demand, learning time, cost and realistic opportunities."],
+      ["03", "Vocational & Practical Training", "Explore examples such as tailoring, computing, repair, food processing and rural skills."],
+      ["04", "From Skill to Livelihood", "Understand the steps from learning and practice to service, employment or self-employment."],
+      ["05", "Basic Business Thinking", "Learn about customers, pricing, quality, records, savings and responsible growth."],
+      ["06", "Rural & Traditional Skills", "Understand how local crafts, village industries and traditional knowledge may support livelihoods."],
+      ["07", "Training Programme Planning", "Learn how a skill-development awareness or training project can be structured."],
+      ["08", "Knowledge Check", "Review the complete skill-to-livelihood pathway."],
+    ],
+  },
+  {
+    slug: "women-empowerment",
+    category: "SSF Knowledge & Awareness",
+    icon: FaUsers,
+    title: "Women Empowerment & Economic Participation",
+    hi: "महिला सशक्तिकरण एवं आर्थिक सहभागिता",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Understand education, safety, financial awareness, skills, self-help groups and participation without presenting planned work as completed activity.",
+    lessons: [
+      ["01", "Meaning of Empowerment", "Understand empowerment through education, agency, skills, safety, economic participation and informed decisions."],
+      ["02", "Education & Skills", "Learn why education, digital literacy and practical skills can expand opportunities."],
+      ["03", "Financial Awareness", "Understand budgeting, savings, documentation and safe financial decision-making."],
+      ["04", "Self-Help Groups", "Learn the basic purpose, functioning and responsibilities of SHGs."],
+      ["05", "Safety & Dignity", "Understand respectful communication, safety awareness and where to seek appropriate help."],
+      ["06", "Livelihood Opportunities", "Explore employment, entrepreneurship, home-based and community-based livelihood models."],
+      ["07", "Designing an Awareness Programme", "Learn how a responsible women-focused learning programme can be planned and documented."],
+      ["08", "Knowledge Check", "Review key concepts and practical actions."],
+    ],
+  },
+  {
+    slug: "child-development",
+    category: "SSF Knowledge & Awareness",
+    icon: FaGraduationCap,
+    title: "Child Development, Education & Protection",
+    hi: "बाल विकास, शिक्षा एवं संरक्षण",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn the fundamentals of child development, education, nutrition awareness, safety and responsible community support.",
+    lessons: [
+      ["01", "Understanding Childhood", "Learn about physical, emotional, social and educational development."],
+      ["02", "Learning & Early Development", "Understand the importance of supportive environments, play, reading and age-appropriate learning."],
+      ["03", "Nutrition Awareness", "Learn basic concepts of balanced nutrition and the importance of professional guidance when needed."],
+      ["04", "Child Safety", "Recognise common safety risks and the importance of trusted adults and appropriate reporting channels."],
+      ["05", "Girls' Education", "Understand barriers to education and ways communities can encourage continued learning."],
+      ["06", "Inclusive Support", "Learn how to avoid exclusion and support children with different needs respectfully."],
+      ["07", "Responsible Community Programme", "Understand safe planning, safeguarding, consent, documentation and referral principles."],
+      ["08", "Knowledge Check", "Review the complete learning module."],
+    ],
+  },
+  {
+    slug: "health-awareness",
+    category: "SSF Knowledge & Awareness",
+    icon: FaHeartbeat,
+    title: "Health & Preventive Health Awareness",
+    hi: "स्वास्थ्य एवं निवारक स्वास्थ्य जागरूकता",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn health-awareness fundamentals, prevention, healthy habits, screening awareness and when professional medical care is needed.",
+    lessons: [
+      ["01", "Health Is More Than Treatment", "Understand prevention, healthy habits, early attention and access to appropriate care."],
+      ["02", "Everyday Healthy Practices", "Learn practical principles around hygiene, nutrition, physical activity, sleep and wellbeing."],
+      ["03", "Screening Awareness", "Understand why screening can identify risks early and why results should be interpreted by qualified professionals."],
+      ["04", "Common Health Risks", "Learn how awareness programmes can address non-communicable diseases and other public-health concerns."],
+      ["05", "Nutrition & Malnutrition", "Understand basic nutrition concepts and the importance of professional assessment for suspected malnutrition."],
+      ["06", "Substance Misuse Awareness", "Learn prevention, stigma reduction and the importance of professional de-addiction and rehabilitation services."],
+      ["07", "Health Programme Ethics", "Avoid diagnosis, unsupported medical claims and unqualified treatment advice."],
+      ["08", "Knowledge Check", "Review responsible health-awareness practices."],
+    ],
+  },
+  {
+    slug: "yoga-wellbeing",
+    category: "SSF Knowledge & Awareness",
+    icon: FaStar,
+    title: "Yoga, Wellbeing & Healthy Living",
+    hi: "योग, स्वास्थ्य एवं स्वस्थ जीवनशैली",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: false,
+    description: "Learn general wellbeing concepts and responsible use of yoga and healthy-living practices without presenting them as medical treatment.",
+  },
+  {
+    slug: "environment-conservation",
+    category: "SSF Knowledge & Awareness",
+    icon: FaLeaf,
+    title: "Environment, Conservation & Biodiversity",
+    hi: "पर्यावरण, संरक्षण एवं जैव विविधता",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Understand ecosystems, biodiversity, trees, natural resources, pollution prevention and community conservation.",
+    lessons: [
+      ["01", "Our Environment", "Understand ecosystems, air, water, soil and the relationship between people and nature."],
+      ["02", "Biodiversity", "Learn what biodiversity means and why species and habitats matter."],
+      ["03", "Trees & Forests", "Understand tree planting, survival, native species and long-term care—not just plantation counts."],
+      ["04", "Water Conservation", "Learn practical approaches to water saving, groundwater awareness and community responsibility."],
+      ["05", "Waste & Pollution", "Understand waste reduction, segregation, recycling and pollution-prevention principles."],
+      ["06", "Climate Awareness", "Learn basic climate concepts, adaptation and responsible community action."],
+      ["07", "Planning a Conservation Activity", "Learn how to design, document and monitor a genuine environmental activity."],
+      ["08", "Knowledge Check", "Review the complete conservation learning pathway."],
+    ],
+  },
+  {
+    slug: "organic-farming",
+    category: "SSF Knowledge & Awareness",
+    icon: FaLeaf,
+    title: "Organic Farming & Sustainable Agriculture",
+    hi: "जैविक खेती एवं टिकाऊ कृषि",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn the principles of organic and sustainable farming, soil care, farm planning and responsible agricultural decision-making.",
+    lessons: [
+      ["01", "What Is Organic Farming?", "Understand the basic principles and how organic practices differ from conventional approaches."],
+      ["02", "Soil Health", "Learn about soil organic matter, fertility, crop rotation and responsible soil management."],
+      ["03", "Natural Inputs", "Understand common categories of organic inputs and why quality and correct use matter."],
+      ["04", "Pest & Disease Management", "Learn integrated and preventive approaches rather than relying on unverified remedies."],
+      ["05", "Water & Resource Efficiency", "Understand irrigation efficiency, water conservation and resource planning."],
+      ["06", "Farm Economics", "Learn to consider costs, labour, yield, market access and risk before adopting a practice."],
+      ["07", "Farmer Learning Programme", "Understand how a farmer-awareness or training programme can be designed and documented."],
+      ["08", "Knowledge Check", "Review the sustainable agriculture pathway."],
+    ],
+  },
+  {
+    slug: "rural-development",
+    category: "SSF Knowledge & Awareness",
+    icon: FaUsers,
+    title: "Rural Development & Community Development",
+    hi: "ग्रामीण विकास एवं सामुदायिक विकास",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: false,
+    description: "Understand community needs, local resources, participation, livelihoods and responsible rural programme planning.",
+  },
+  {
+    slug: "renewable-energy",
+    category: "SSF Knowledge & Awareness",
+    icon: FaStar,
+    title: "Renewable Energy & Energy Awareness",
+    hi: "नवीकरणीय ऊर्जा एवं ऊर्जा जागरूकता",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: false,
+    description: "Learn the basics of solar, wind, biomass, energy efficiency and responsible community energy awareness.",
+  },
+  {
+    slug: "social-justice-rights",
+    category: "SSF Knowledge & Awareness",
+    icon: FaShieldAlt,
+    title: "Social Justice, Human Rights & Civic Responsibility",
+    hi: "सामाजिक न्याय, मानवाधिकार एवं नागरिक जिम्मेदारी",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Build foundational awareness of dignity, equality, rights, responsibilities, inclusion and peaceful community participation.",
+    lessons: [
+      ["01", "Dignity & Equality", "Understand the principles of equal dignity, non-discrimination and respectful participation."],
+      ["02", "Human Rights Basics", "Learn the basic idea of rights and why reliable information matters."],
+      ["03", "Responsibilities", "Understand that rights and social responsibilities operate together in a healthy community."],
+      ["04", "Inclusion", "Learn how communities can reduce barriers faced by vulnerable and excluded groups."],
+      ["05", "Ethics & Integrity", "Understand honesty, transparency and responsible communication in social work."],
+      ["06", "Peace & Harmony", "Learn practical principles for respectful dialogue and community harmony."],
+      ["07", "Awareness Campaign Planning", "Learn how to communicate social issues without misinformation, harassment or unsupported claims."],
+      ["08", "Knowledge Check", "Review the complete module."],
+    ],
+  },
+  {
+    slug: "disability-inclusion",
+    category: "SSF Knowledge & Awareness",
+    icon: FaShieldAlt,
+    title: "Disability Inclusion & Rehabilitation Awareness",
+    hi: "दिव्यांग समावेशन एवं पुनर्वास जागरूकता",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: false,
+    description: "Understand inclusion, accessibility, dignity, assistive support and rehabilitation pathways.",
+  },
+  {
+    slug: "elderly-support",
+    category: "SSF Knowledge & Awareness",
+    icon: FaUsers,
+    title: "Elderly Care & Dignity",
+    hi: "वृद्धजन सहायता एवं सम्मान",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: false,
+    description: "Learn about ageing, dignity, social connection, safety and responsible community support for older persons.",
+  },
+  {
+    slug: "animal-welfare",
+    category: "SSF Knowledge & Awareness",
+    icon: FaShieldAlt,
+    title: "Animal Welfare & Responsible Care",
+    hi: "पशु कल्याण एवं जिम्मेदार देखभाल",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: false,
+    description: "Understand humane treatment, basic welfare principles, responsible animal care and wildlife awareness.",
+  },
+  {
+    slug: "youth-digital-literacy",
+    category: "SSF Knowledge & Awareness",
+    icon: FaLaptopCode,
+    title: "Youth, Digital Literacy & Responsible Internet Use",
+    hi: "युवा, डिजिटल साक्षरता एवं जिम्मेदार इंटरनेट उपयोग",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn digital basics, online safety, information literacy, responsible sharing and practical digital skills for young people.",
+    lessons: [
+      ["01", "Digital Literacy", "Understand devices, apps, browsers, files, accounts and basic online services."],
+      ["02", "Information Literacy", "Learn how to check sources, dates, context and evidence before believing or sharing information."],
+      ["03", "Passwords & Account Safety", "Understand strong passwords, multi-factor authentication and account recovery."],
+      ["04", "Phishing & Scams", "Recognise suspicious messages, fake links, impersonation and common online fraud patterns."],
+      ["05", "Privacy & Digital Footprint", "Learn what personal information should be protected and how online actions can persist."],
+      ["06", "Responsible Social Media", "Learn respectful communication, consent before sharing others' information and avoiding misinformation."],
+      ["07", "Digital Learning & Careers", "Explore safe use of online learning and professional resources."],
+      ["08", "Knowledge Check", "Review practical digital-safety habits."],
+    ],
+  },
+  {
+    slug: "disaster-preparedness",
+    category: "SSF Knowledge & Awareness",
+    icon: FaShieldAlt,
+    title: "Disaster Preparedness & Community Safety",
+    hi: "आपदा तैयारी एवं सामुदायिक सुरक्षा",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: false,
+    description: "Learn preparedness, risk awareness, emergency planning, communication and responsible community response.",
+  },
+  {
+    slug: "culture-heritage",
+    category: "SSF Knowledge & Awareness",
+    icon: FaBookOpen,
+    title: "Culture, Language, Arts & Heritage",
+    hi: "संस्कृति, भाषा, कला एवं विरासत",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: false,
+    description: "Learn how communities can understand, document and responsibly preserve cultural knowledge, language, arts and heritage.",
+  },
+  {
+    slug: "grant-project-literacy",
+    category: "SSF Knowledge & Awareness",
+    icon: FaCertificate,
+    title: "NGO Project & Grant Literacy",
+    hi: "NGO Project एवं Grant की समझ",
+    level: "Awareness",
+    language: "Hindi + English",
+    duration: "Self-paced",
+    ready: true,
+    description: "Learn the difference between registered objectives, real activities, project design, eligibility, evidence, budgeting and grant applications.",
+    lessons: [
+      ["01", "Objectives vs Activities", "Understand why a registered objective does not by itself prove that an activity has been conducted."],
+      ["02", "From Need to Project", "Learn the sequence: need assessment, target group, objective, activities, outputs and outcomes."],
+      ["03", "Eligibility Is Scheme-Specific", "Understand why each government, CSR or donor opportunity has its own conditions."],
+      ["04", "Documents & Compliance", "Learn why registrations, financial records, reports, policies and supporting documents may be required."],
+      ["05", "Budget & Costing", "Understand realistic project budgeting and the importance of evidence for expenditure."],
+      ["06", "Monitoring & Evidence", "Learn how attendance, photographs, reports, outputs and other records can support genuine programme documentation."],
+      ["07", "Truthful Communication", "Never present planned, proposed or educational content as completed field impact."],
+      ["08", "Knowledge Check", "Review the complete project-and-grant learning pathway."],
+    ],
+  },
 ];
 
 const CATEGORIES = [
@@ -270,7 +586,7 @@ function CourseCard({ course, onOpen }) {
   return (
     <article className="group flex h-full flex-col rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-xl">
       <div className="mb-5 flex items-start justify-between gap-3">
-        <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#003366]/10 text-xl text-[#003366]">
+        <div className="flex h-20 w-20 items-center justify-center rounded-2xl border border-[#003366]/10 bg-[#003366]/10 text-4xl text-[#003366] shadow-inner" aria-hidden="true">
           <Icon />
         </div>
         <span className={`rounded-full px-3 py-1 text-xs font-bold ${course.ready ? "bg-green-50 text-green-700" : "bg-zinc-100 text-zinc-500"}`}>
@@ -476,8 +792,8 @@ export default function LearningHub() {
           </div>
           <div className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
-              ["15", "Learning Paths", "Learning Paths"],
-              ["4", "Ready Now", "Ready Now"],
+              ["34", "Learning Paths", "Learning Paths"],
+              ["12", "Ready Now", "Ready Now"],
               ["Hindi + English", "Languages", "Languages"],
               ["Free", "Access", "Access"],
             ].map(([value, en, hi]) => (
@@ -514,12 +830,41 @@ export default function LearningHub() {
             <div>
               <div className="text-sm font-bold uppercase tracking-widest text-[#003366]">Start Learning</div>
               <h2 className="mt-2 text-4xl font-black">Choose Your Learning Path</h2>
-              <p className="mt-2 text-zinc-600">अभी 4 paths में structured lessons हैं; बाकी paths के लिए framework तैयार है।</p>
+              <p className="mt-2 text-zinc-600">हर विषय को केवल एक label नहीं, बल्कि क्रमबद्ध learning path बनाया गया है—Introduction से Practical Learning, सावधानियों, examples और knowledge check तक।</p>
             </div>
             <div className="text-sm font-bold text-zinc-500">{filtered.length} paths</div>
           </div>
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {filtered.map((course) => <CourseCard key={course.slug} course={course} onOpen={openCourse} />)}
+          </div>
+        </section>
+
+        <section className="mb-8 rounded-3xl border border-[#003366]/10 bg-white p-7 shadow-sm md:p-9">
+          <div className="flex flex-col gap-5 md:flex-row md:items-start">
+            <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-2xl bg-[#003366]/10 text-4xl text-[#003366]">
+              <FaBookOpen />
+            </div>
+            <div>
+              <div className="text-sm font-bold uppercase tracking-widest text-[#003366]">Knowledge • Awareness • Responsible Learning</div>
+              <h2 className="mt-2 text-3xl font-black">जानिए • समझिए • जिम्मेदारी से सीखिए</h2>
+              <p className="mt-3 max-w-4xl leading-7 text-zinc-600">
+                SSF Learning Hub में संस्था के व्यापक objectives से जुड़े विषयों को learning modules के रूप में प्रस्तुत किया जा रहा है। जहाँ SSF की कोई field activity अभी नहीं हुई है, वहाँ सामग्री को केवल educational और awareness purpose के लिए रखा गया है—completed work या impact claim के रूप में नहीं।
+              </p>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                {[
+                  ["01", "Understand", "विषय को समझें"],
+                  ["02", "Learn", "पूरी जानकारी पढ़ें"],
+                  ["03", "Practise", "व्यावहारिक रूप से सीखें"],
+                  ["04", "Verify", "आगे के स्रोत जाँचें"],
+                ].map(([n, en, hi]) => (
+                  <div key={n} className="rounded-2xl bg-zinc-50 p-4">
+                    <div className="text-xs font-black text-[#003366]">{n}</div>
+                    <div className="mt-1 font-black text-zinc-900">{en}</div>
+                    <div className="text-xs text-zinc-500">{hi}</div>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         </section>
 
