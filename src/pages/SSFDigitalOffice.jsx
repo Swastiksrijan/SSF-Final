@@ -121,7 +121,9 @@ export default function SSFDigitalOffice(){
   flat.forEach(function(row){
    lines.push(headers.map(function(h){return csvEscape(row[h]);}).join(","));
   });
-  const csv="\\uFEFF"+lines.join("\\r\\n")+"\\r\\n";
+  const csv="\\uFEFF"+lines.join("\\r\
+")+"\\r\
+";
   const blob=new Blob([csv],{type:"text/csv;charset=utf-8"});
   const a=document.createElement("a");
   const url=URL.createObjectURL(blob);
@@ -210,7 +212,8 @@ export default function SSFDigitalOffice(){
     {active==="managingCommittee"&&<ManagingCommittee rows={rows} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
-    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
+    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}
+    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
@@ -336,7 +339,8 @@ function NotificationRegister({tab,rows,add,archive,updateRecord,types,members=[
  const title=tab==="information"?"Information & Communication / सूचना एवं संचार":tab==="response"?"Response & Participation / प्रतिक्रिया एवं सहभागिता":tab==="followup"?"Reminder & Follow-up / अनुस्मारक एवं अनुवर्ती कार्य":"Notice & Explanation / नोटिस एवं स्पष्टीकरण";
  const shareRecord=r=>{
   const d=r.data||{};
-  const msg=[d.subject&&("Subject: "+d.subject),d.details,d.expectedAction&&("Expected Action: "+d.expectedAction),d.expectedDate&&("Expected Date: "+d.expectedDate),d.responseDetails&&("Response / Explanation: "+d.responseDetails),d.followUpDate&&("Follow-up Date: "+d.followUpDate)].filter(Boolean).join("\n");
+  const msg=[d.subject&&("Subject: "+d.subject),d.details,d.expectedAction&&("Expected Action: "+d.expectedAction),d.expectedDate&&("Expected Date: "+d.expectedDate),d.responseDetails&&("Response / Explanation: "+d.responseDetails),d.followUpDate&&("Follow-up Date: "+d.followUpDate)].filter(Boolean).join("
+");
   if(navigator.share){navigator.share({title:d.subject||"SSF Official Communication",text:msg}).catch(()=>{});return;}
   const phone=String(d.mobile||d.phone||"").replace(/\D/g,"");
   if(phone){window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(msg),"_blank","noopener,noreferrer");return;}
@@ -402,7 +406,8 @@ function OnlineMeetings({token}){
  const createMeeting=async()=>{if(!form.title.trim()||!form.date||!form.time){setNotice("Meeting title, date and time required.");return;}if(!googleConnected){await connectGoogle();return;}setWorking(true);setNotice(editingId?"Meeting update ho raha hai…":"Google Meet link banaya ja raha hai…");try{const emails=selectedEmails();const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_GOOGLE_CREATE_MEETING,{method:"POST",headers,body:JSON.stringify({title:form.title,date:form.date,time:form.time,agenda:form.agenda,emails})});const out=await r.json();if(!r.ok)throw new Error(out.message||"Google Meet creation failed.");const meetingLink=out.meetingLink||link;const meetingId=editingId?(records.find(x=>x.id===editingId)?.data?.meetingId||meetingIdForDate(form.date)):meetingIdForDate(form.date);await saveMeeting(meetingLink,{emailed:out.emailed,emailErrors:out.emailErrors||[],addedMembers:out.addedMembers||0},meetingId,editingId);setLink(meetingLink);setEditingId(null);setNotice(out.emailConfigured?("Google Meet link created and record saved. "+out.emailed+" member(s) ko email invitation bhej diya gaya."): "Google Meet link created and record saved. WhatsApp se bhi share kar sakte hain.");await loadRecords();}catch(e){setNotice(e.message||"Unable to create Google Meet.");}finally{setWorking(false);}};
  const editMeeting=r=>{if(isLocked(r)){setNotice("Meeting time pass ho chuka hai. Ab Online Meeting record edit nahi kiya ja sakta.");return;}const d=r.data||{};setEditingId(r.id);setForm({title:d.title||"",type:d.meetingType||r.recordType||"Other",date:d.date||r.recordDate||"",time:d.time||"",purpose:d.purpose||"",agenda:d.agenda||""});setLink(d.meetingLink||"");setSelected(Array.isArray(d.inviteeRecordIds)?d.inviteeRecordIds:[]);setNotice("Pre-meeting edit mode: changes save karne ke baad updated details share karein.");window.scrollTo({top:0,behavior:"smooth"});};
  const cancelEdit=()=>{setEditingId(null);setLink("");setSelected([]);setForm(blank);setNotice("");};
- const meetingMessage=r=>{const d=r?.data||form||{};return ["Swastik Srijan Foundation Samiti","","Online Meeting Details","", "Meeting ID: "+(d.meetingId||"—"),"Meeting Title: "+(d.title||"—"),"Meeting Type: "+(d.meetingType||d.type||"—"),"Date: "+(d.date||"—"),"Time: "+(d.time||"—"),"","Purpose:",d.purpose||"—","","Agenda:",d.agenda||"As per meeting notice","","Google Meet Link:",d.meetingLink||"—"].join("\n");};
+ const meetingMessage=r=>{const d=r?.data||form||{};return ["Swastik Srijan Foundation Samiti","","Online Meeting Details","", "Meeting ID: "+(d.meetingId||"—"),"Meeting Title: "+(d.title||"—"),"Meeting Type: "+(d.meetingType||d.type||"—"),"Date: "+(d.date||"—"),"Time: "+(d.time||"—"),"","Purpose:",d.purpose||"—","","Agenda:",d.agenda||"As per meeting notice","","Google Meet Link:",d.meetingLink||"—"].join("
+");};
  const shareWhatsApp=()=>{if(!link){setNotice("Pehle Google Meet create karein.");return;}window.open("https://wa.me/?text="+encodeURIComponent(meetingMessage()),"_blank");};
  const shareGroup=()=>{if(!link){setNotice("Pehle Google Meet create karein.");return;}const group="https://chat.whatsapp.com/HFcpYBQpMGlFTGmVzMSXZZ";window.open(group,"_blank");setNotice("SSF WhatsApp Group khol diya gaya. Meeting details Copy karke group me share karein.");};
  const copyMeetingDetails=async(r)=>{const msg=meetingMessage(r);try{await navigator.clipboard.writeText(msg);setNotice("Complete meeting details copied.");}catch(e){setNotice("Copy nahi ho saki. Please manually copy karein.");}};
@@ -509,7 +514,8 @@ function Dashboard({summary}){
  <div className="bg-[#123B5D] rounded-2xl border border-[#123B5D] p-6 shadow-sm text-white"><div className="flex items-center justify-between gap-3"><div><h2 className="text-xl font-black">Automatic Financial Linking / स्वचालित वित्तीय लिंकिंग</h2><p className="text-sm text-[#D8EDE9] mt-1">एक ही database transaction में linked records</p></div><div className="px-3 py-1 rounded-full bg-[#FFF8E7] text-[#123B5D] text-xs font-black">LIVE</div></div><p className="text-[#D8EDE9] mt-4">Donation and expense workflows write linked contribution, cash/bank and ledger records in one database transaction. / दान व व्यय प्रक्रिया एक ही database transaction में जुड़े contribution, cash/bank और ledger records दर्ज करती है.</p><div className="mt-5 space-y-2 text-sm font-bold text-white"><p>Donation / दान → Donor / दानदाता → Contribution / योगदान → Cash/Bank / रोकड़-बैंक → Ledger / लेजर → Receipt / रसीद</p><p>Expense / व्यय → Expense Register / व्यय रजिस्टर → Cash/Bank / रोकड़-बैंक → Ledger / लेजर</p><p>Create/update/archive / बनाना-संशोधित-संग्रहीत → Audit Trail / ऑडिट ट्रेल</p></div><div className="mt-5 bg-[#FFF8E7] border border-[#E8D39A] rounded-xl p-4 text-sm text-[#5A4510]"><strong>Compliance / अनुपालन:</strong> final statutory/tax treatment, 80G particulars and audit requirements must be verified with SSF's CA/tax advisor.</div></div></div></div>;
 }
 function OfficialDocuments({rows,add}){
- const [f,setF]=useState({docType:"Appointment Letter",name:"",designation:"",date:new Date().toISOString().slice(0,10),validFrom:"",validTill:"",reference:"",subject:"",body:"",remarks:"",signatory:"Ramesh Pandey\\nFounder & National President"});
+ const [f,setF]=useState({docType:"Appointment Letter",name:"",designation:"",date:new Date().toISOString().slice(0,10),validFrom:"",validTill:"",reference:"",subject:"",body:"",remarks:"",signatory:"Ramesh Pandey\
+Founder & National President"});
  const [notice,setNotice]=useState("");
  const [saving,setSaving]=useState(false);
  const types=[
@@ -538,7 +544,9 @@ function OfficialDocuments({rows,add}){
   if(data.subject){y+=4;d.setFont(undefined,"bold");d.text("Subject: "+data.subject,left,y);y+=10;}
   if(data.body){d.setFont(undefined,"normal");const lines=d.splitTextToSize(String(data.body),pageW-left*2);lines.forEach(line=>{if(y>pageH-45){d.addPage();y=22;}d.text(line,left,y);y+=5.5;});}
   if(data.remarks){y+=6;d.setFont(undefined,"bold");d.text("Remarks:",left,y);y+=6;d.setFont(undefined,"normal");d.splitTextToSize(String(data.remarks),pageW-left*2).forEach(line=>{if(y>pageH-45){d.addPage();y=22;}d.text(line,left,y);y+=5.5;});}
-  if(y>pageH-42){d.addPage();y=22;} y+=12;d.setFont(undefined,"bold");d.text("For Swastik Srijan Foundation Samiti",left,y);y+=14;d.text(String(data.signatory||"Ramesh Pandey").split("\\n")[0],left,y);y+=5;d.setFont(undefined,"normal");d.text(String(data.signatory||"Founder & National President").split("\\n").slice(1).join(" ")||"Founder & National President",left,y);
+  if(y>pageH-42){d.addPage();y=22;} y+=12;d.setFont(undefined,"bold");d.text("For Swastik Srijan Foundation Samiti",left,y);y+=14;d.text(String(data.signatory||"Ramesh Pandey").split("\
+")[0],left,y);y+=5;d.setFont(undefined,"normal");d.text(String(data.signatory||"Founder & National President").split("\
+").slice(1).join(" ")||"Founder & National President",left,y);
   d.setFontSize(8);d.setTextColor(120);d.text("Computer-generated official office document · Issued by authorised SSF administration",pageW/2,pageH-10,{align:"center"});
   const url=URL.createObjectURL(d.output("blob")),a=document.createElement("a");a.href=url;a.download=data.documentNo.replace(/[\\/]/g,"-")+".pdf";a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
  };
@@ -569,7 +577,13 @@ function AppointmentLetters({rows,add}){
  const [f,setF]=useState({
   date:today,name:"",email:"",phone:"",designation:"",department:"",engagement:"Volunteer",
   joiningDate:today,validUntil:"",reportingTo:"",location:"",reference:"",
-  responsibilities:"• Work in accordance with the objectives, rules and approved plans of Swastik Srijan Foundation Samiti.\n• Support assigned programmes, projects, meetings, camps and community activities.\n• Coordinate with members, volunteers, beneficiaries and relevant stakeholders as required.\n• Maintain timely activity information, attendance, photographs and other assigned records.\n• Submit activity/progress updates and communicate important issues to the competent authority.\n• Protect organisational records, confidentiality, reputation and resources.\n• Do not make financial commitments, sign agreements or represent the Foundation beyond the authority assigned.",
+  responsibilities:"• Work in accordance with the objectives, rules and approved plans of Swastik Srijan Foundation Samiti.
+• Support assigned programmes, projects, meetings, camps and community activities.
+• Coordinate with members, volunteers, beneficiaries and relevant stakeholders as required.
+• Maintain timely activity information, attendance, photographs and other assigned records.
+• Submit activity/progress updates and communicate important issues to the competent authority.
+• Protect organisational records, confidentiality, reputation and resources.
+• Do not make financial commitments, sign agreements or represent the Foundation beyond the authority assigned.",
   terms:"The appointee shall perform the assigned responsibilities with integrity, confidentiality and due care, and follow the applicable policies, instructions and approved plans of the Foundation.",
  });
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
@@ -843,7 +857,13 @@ function MembersRegister({rows,add,archive,updateRecord}){
   {memberId:"SSF-MBR-00017",memberType:"General Member",designation:"Member",responsibility:"Volunteer Coordinator",fullName:"Rishi Kumar Pandey",occupation:"Private Employee",gender:"Male",mobile:"7987707912",email:"rishisatna01@gmail.com",address:"Village-Post Kyoti",city:"Rewa",state:"Madhya Pradesh",pinCode:"486117",joiningDate:"2025-05-10"},
   {memberId:"SSF-MBR-00018",memberType:"General Member",designation:"Member",responsibility:"Media & Communication Coordinator",fullName:"Ritesh Kumar Tiwari",occupation:"Private Employee",gender:"Male",mobile:"8422819534",email:"riteshtiwari9082@gmail.com",address:"Village Jagannathpur, Sant Ravidas Nagar",city:"Bhadohi",state:"Uttar Pradesh",pinCode:"221303",joiningDate:"2025-05-10"}
  ];
- const savedMembers=(Array.isArray(rows)?rows:[]).filter(r=>r&&r.module==="members"&&r.status!=="deleted");
+ // Website login/signup accounts are not official Member Register records.
+ const savedMembers=(Array.isArray(rows)?rows:[]).filter(r=>{
+  if(!r||r.module!=="members"||r.status==="deleted")return false;
+  const d=r.data||{};
+  const type=String(d.memberType||r.recordType||"").trim().toLowerCase();
+  return type!=="website_signup";
+ });
  const usingRecoverySeed=savedMembers.length===0;
  const masterSeeds=usingRecoverySeed?MASTER_MEMBER_DATA.map(d=>({id:"recovery-member-"+d.memberId,recordId:d.memberId,module:"members",status:"active",recordDate:d.joiningDate,data:{...d,membershipNo:"",membershipStatus:"Active",membershipFee:"",feeFrequency:"Monthly",feeDueAmount:"",feeLastPaidDate:"",feeNextDueDate:"",feeStatus:"Pending",receiptNo:"NA",remarks:d.remarks||d.responsibility||""}})):[];
  const existing=usingRecoverySeed?masterSeeds:savedMembers;
@@ -860,7 +880,8 @@ const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधार
  const membershipPaymentUrl="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view";
  const getFeeSchedule=r=>{const d=r.data||{};const t=String(d.memberType||"").toLowerCase();if(t.includes("संरक्षक")||t.includes("protector"))return "₹10,000+ one-time OR 12 instalments";if(t.includes("आजीवन")||t.includes("lifetime"))return "₹8,000+ one-time";if(t.includes("साधारण")||t.includes("general"))return "₹100 monthly OR ₹1,200 yearly";if(t.includes("सम्मान")||t.includes("honorary"))return "No membership fee";if(t.includes("founder"))return "As recorded / approved for the member";return "As recorded in Membership Details";};
  const getFeeFrequencyLabel=r=>{const d=r.data||{};if(d.feeFrequency)return d.feeFrequency;const t=String(d.memberType||"").toLowerCase();if(t.includes("सम्मान")||t.includes("honorary"))return "Not Applicable";if(t.includes("आजीवन")||t.includes("lifetime"))return "One-time";if(t.includes("संरक्षक")||t.includes("protector"))return "One-time / 12 Instalments";if(t.includes("साधारण")||t.includes("general"))return "Monthly / Yearly";return "As recorded";};
- const feeReminderMessage=r=>{const d=r.data||{};const fee=d.feeDueAmount||d.membershipFee||"";const freq=getFeeFrequencyLabel(r);const due=d.feeNextDueDate||"Please confirm with SSF office";const schedule=getFeeSchedule(r);const amountLine=fee?"Current amount due: ₹"+fee:"Current amount due: Please confirm";return ["Swastik Srijan Foundation Samiti","","Membership Fee Reminder / सदस्यता शुल्क अनुस्मारक","","Dear "+(d.fullName||"Member")+",","","This is a gentle reminder regarding your SSF membership fee. Please arrange the applicable payment or contact the SSF office if the payment has already been made.","",amountLine,"Membership fee schedule: "+schedule,"Payment frequency: "+freq,"Due date: "+due,"Fee status: "+(d.feeStatus||"Pending"),"","Online payment: "+membershipPaymentUrl,"","Member ID: "+(d.memberId||"—"),"Membership Type: "+(d.memberType||"—"),"","If you have already paid, please share the payment/receipt details with the SSF office for record update.","","Thank you.","Swastik Srijan Foundation Samiti"].join("\n");};
+ const feeReminderMessage=r=>{const d=r.data||{};const fee=d.feeDueAmount||d.membershipFee||"";const freq=getFeeFrequencyLabel(r);const due=d.feeNextDueDate||"Please confirm with SSF office";const schedule=getFeeSchedule(r);const amountLine=fee?"Current amount due: ₹"+fee:"Current amount due: Please confirm";return ["Swastik Srijan Foundation Samiti","","Membership Fee Reminder / सदस्यता शुल्क अनुस्मारक","","Dear "+(d.fullName||"Member")+",","","This is a gentle reminder regarding your SSF membership fee. Please arrange the applicable payment or contact the SSF office if the payment has already been made.","",amountLine,"Membership fee schedule: "+schedule,"Payment frequency: "+freq,"Due date: "+due,"Fee status: "+(d.feeStatus||"Pending"),"","Online payment: "+membershipPaymentUrl,"","Member ID: "+(d.memberId||"—"),"Membership Type: "+(d.memberType||"—"),"","If you have already paid, please share the payment/receipt details with the SSF office for record update.","","Thank you.","Swastik Srijan Foundation Samiti"].join("
+");};
  const sendFeeWhatsApp=r=>{const d=r.data||{};const mobile=String(d.mobile||"").replace(/\\D/g,"");if(!mobile){setNotice("Mobile number is not available for "+(d.fullName||"member")+"." );return;}const phone=mobile.length===10?"91"+mobile:mobile;window.open("https://wa.me/"+phone+"?text="+encodeURIComponent(feeReminderMessage(r)),"_blank");};
  const sendFeeEmail=r=>{const d=r.data||{};if(!d.email){setNotice("Email address is not available for "+(d.fullName||"member")+"." );return;}const subject="Membership Fee Reminder — "+(d.memberId||"SSF Member");window.location.href="mailto:"+d.email+"?subject="+encodeURIComponent(subject)+"&body="+encodeURIComponent(feeReminderMessage(r));};
  const save=async e=>{e.preventDefault();if(saving)return;if(!f.memberId.trim()){setNotice("Member ID required. Existing SSF Member IDs must be entered exactly as registered; IDs will not be renumbered.");return;}if(!/^SSF-MBR-\\d{5}$/i.test(f.memberId.trim())){setNotice("Invalid Member ID. Use format SSF-MBR-00001.");return;}if(!f.fullName.trim()){setNotice("Full Name required.");return;}setSaving(true);const memberId=f.memberId.trim();let ok=false;if(editingId&&!editingSeed){ok=await updateRecord(editingId,"members",{...f,memberId,fullName:f.fullName.trim(),action:"Member Register"});}else{const duplicate=existing.find(r=>String(r.data?.memberId||"").toUpperCase()===memberId.toUpperCase()&&String(r.id)!==String(editingId||""));if(duplicate&&!editingSeed){setNotice("This Member ID already exists.");setSaving(false);return;}ok=await add("members",{recordDate:f.joiningDate,recordType:"Member Register",status:f.membershipStatus.toLowerCase(),data:{...f,memberId,fullName:f.fullName.trim(),action:"Member Register"}});}if(ok){setNotice(editingId?"Member record updated successfully.":"Member saved successfully.");resetForm();}setSaving(false);};
