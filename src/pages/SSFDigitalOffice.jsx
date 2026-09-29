@@ -845,6 +845,19 @@ function SeparationManagement({rows,add}){
 
 function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#002344] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 function MembersRegister({rows,add,archive,updateRecord}){
+ const TEAM_PHOTO_BY_MEMBER_ID={
+  "SSF-MBR-00001":"/Teams_Images/ramesh_pandey.jpg",
+  "SSF-MBR-00014":"/Teams_Images/image_19.jpg",
+  "SSF-MBR-00002":"/Teams_Images/image_15.jpg",
+  "SSF-MBR-00003":"/Teams_Images/divya_sharma.jpg",
+  "SSF-MBR-00004":"/Teams_Images/image_22.jpg",
+  "SSF-MBR-00015":"/Teams_Images/sandeep_tripathi.jpg",
+  "SSF-MBR-00016":"/Teams_Images/prameesh_singh.jpg",
+  "SSF-MBR-00017":"/Teams_Images/rishi_pandey.jpg",
+  "SSF-MBR-00018":"/Teams_Images/ritesh_tiwari.jpg"
+ };
+ // The existing public Meet Our Team photos are the initial central Member Register photos.
+
  // Members Register is intentionally independent from Managing Committee data.
  const MASTER_MEMBER_DATA=[
   {memberId:"SSF-MBR-00001",memberType:"Founder Member",designation:"President",responsibility:"Chief Executive & External Relations",fullName:"Ramesh Pandey",occupation:"Farmer & Social Worker",gender:"Male",mobile:"9718346691",email:"rameshpandey335@gmail.com",address:"Ward 1, Village Dadar, P.O. Rahat",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",joiningDate:"2013-12-30"},
@@ -866,7 +879,12 @@ function MembersRegister({rows,add,archive,updateRecord}){
  });
  const usingRecoverySeed=savedMembers.length===0;
  const masterSeeds=usingRecoverySeed?MASTER_MEMBER_DATA.map(d=>({id:"recovery-member-"+d.memberId,recordId:d.memberId,module:"members",status:"active",recordDate:d.joiningDate,data:{...d,membershipNo:"",membershipStatus:"Active",membershipFee:"",feeFrequency:"Monthly",feeDueAmount:"",feeLastPaidDate:"",feeNextDueDate:"",feeStatus:"Pending",receiptNo:"NA",remarks:d.remarks||d.responsibility||""}})):[];
- const existing=usingRecoverySeed?masterSeeds:savedMembers;
+ const existing=(usingRecoverySeed?masterSeeds:savedMembers).map(r=>{
+  const d=r.data||{};
+  const memberId=String(d.memberId||"").trim();
+  if(d.photoUrl||!TEAM_PHOTO_BY_MEMBER_ID[memberId]) return r;
+  return {...r,data:{...d,photoUrl:TEAM_PHOTO_BY_MEMBER_ID[memberId]}};
+ });
 const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधारण सदस्य",fullName:"",fatherHusbandName:"",dob:"",gender:"",occupation:"",mobile:"",email:"",address:"",city:"",state:"",pinCode:"",pan:"",aadhaar:"",joiningDate:new Date().toISOString().slice(0,10),membershipEndDate:"",membershipStatus:"Active",membershipFee:"",receiptNo:"",remarks:"",photoUrl:""});
  const [photoUploading,setPhotoUploading]=useState(false);
  const [saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[tab,setTab]=useState("dashboard"),[editingId,setEditingId]=useState(null),[editingSeed,setEditingSeed]=useState(false);
