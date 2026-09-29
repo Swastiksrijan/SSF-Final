@@ -638,6 +638,62 @@ function AppointmentLetters({rows,add}){
  </div>;
 }
 
+function ManagingCommittee({rows,add,updateRecord,archive,token}){
+ const existing=(rows||[]).filter(r=>r.module==="managingCommittee"&&r.status!=="archived");
+ const blank={memberId:"",fullName:"",position:"",functionalResponsibility:"",membershipNo:"",memberType:"",joiningDate:"",termStart:"",termEnd:"",status:"Active",mobile:"",email:"",photoUrl:"",remarks:""};
+ const [f,setF]=useState(blank),[editing,setEditing]=useState(null),[notice,setNotice]=useState("");
+ const set=(k,v)=>setF(x=>({...x,[k]:v}));
+ const reset=()=>{setF(blank);setEditing(null);};
+ const submit=async e=>{
+  e.preventDefault();
+  if(!f.fullName.trim()||!f.position.trim()){setNotice("Full Name and Position are required.");return;}
+  const data={...f,memberId:f.memberId.trim()||"SSF-MBR-"+String(existing.length+1).padStart(5,"0")};
+  const ok=editing?await updateRecord(editing.id,"managingCommittee",data):await add("managingCommittee",{recordDate:f.termStart||f.joiningDate||new Date().toISOString().slice(0,10),recordType:"Managing Committee Member",status:"active",data});
+  if(ok){setNotice(editing?"Committee record updated successfully.":"Committee member saved successfully.");reset();}
+ };
+ const edit=r=>{setEditing(r);setF({...blank,...(r.data||{})});setNotice("");window.scrollTo({top:0,behavior:"smooth"});};
+ return <div className="space-y-5">
+  <div className="bg-gradient-to-r from-[#002344] via-[#123B5D] to-[#1F7A70] text-white rounded-2xl p-6">
+   <div className="flex items-center gap-3"><FaUserTie className="text-2xl"/><div><h2 className="text-2xl font-black">Managing Committee / प्रबंधकारिणी समिति</h2><p className="text-white/75 mt-1">Current governance record, role, responsibility and term history.</p></div></div>
+  </div>
+  {notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-4 font-semibold">{notice}</div>}
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 border-b"><h3 className="text-xl font-black text-[#002344]">{editing?"Edit Committee Member / सदस्य संपादित करें":"Add Committee Member / सदस्य जोड़ें"}</h3><p className="text-sm text-zinc-500 mt-1">This register stores the current committee record. Role changes and separation remain in their dedicated history modules.</p></div>
+   <form onSubmit={submit} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-zinc-50">
+    <input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID" className={cls}/>
+    <input value={f.fullName} onChange={e=>set("fullName",e.target.value)} placeholder="Full Name *" required className={cls}/>
+    <input value={f.position} onChange={e=>set("position",e.target.value)} placeholder="Position / पद *" required className={cls}/>
+    <input value={f.memberType} onChange={e=>set("memberType",e.target.value)} placeholder="Member Type" className={cls}/>
+    <input value={f.membershipNo} onChange={e=>set("membershipNo",e.target.value)} placeholder="Membership No." className={cls}/>
+    <input value={f.functionalResponsibility} onChange={e=>set("functionalResponsibility",e.target.value)} placeholder="Functional Responsibility" className={cls}/>
+    <input type="date" value={f.joiningDate} onChange={e=>set("joiningDate",e.target.value)} className={cls}/>
+    <input type="date" value={f.termStart} onChange={e=>set("termStart",e.target.value)} className={cls}/>
+    <input type="date" value={f.termEnd} onChange={e=>set("termEnd",e.target.value)} className={cls}/>
+    <select value={f.status} onChange={e=>set("status",e.target.value)} className={cls}><option>Active</option><option>Inactive</option><option>Term Completed</option><option>Separated</option></select>
+    <input value={f.mobile} onChange={e=>set("mobile",e.target.value)} placeholder="Mobile" className={cls}/>
+    <input value={f.email} onChange={e=>set("email",e.target.value)} placeholder="Email" className={cls}/>
+    <input value={f.photoUrl} onChange={e=>set("photoUrl",e.target.value)} placeholder="Photo URL (optional)" className={cls+" sm:col-span-2"}/>
+    <textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls+" sm:col-span-2 lg:col-span-4 min-h-[80px]"}/>
+    <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2">
+     <button type="submit" className="bg-[#002344] text-white px-5 py-3 rounded-xl font-bold">{editing?"Update Member / अपडेट":"Save Member / सुरक्षित करें"}</button>
+     {editing&&<button type="button" onClick={reset} className="border px-5 py-3 rounded-xl font-bold">Cancel</button>}
+    </div>
+   </form>
+  </div>
+  <div className="bg-white border rounded-2xl overflow-hidden">
+   <div className="p-5 border-b flex items-center justify-between gap-3"><div><h3 className="text-xl font-black text-[#002344]">Committee Register / समिति रजिस्टर</h3><p className="text-sm text-zinc-500 mt-1">{existing.length} active/current record(s)</p></div></div>
+   <div className="overflow-x-auto"><table className="w-full text-sm min-w-[1200px]"><thead className="bg-zinc-50"><tr>{["Photo","Member ID","Name","Position","Functional Responsibility","Member Type","Term","Status","Contact","Actions"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead>
+    <tbody className="divide-y">{existing.length===0?<tr><td colSpan="10" className="p-10 text-center text-zinc-400">No Managing Committee records yet.</td></tr>:existing.map(r=>{const d=r.data||{};return <tr key={r.id}>
+     <td className="p-3">{d.photoUrl?<img src={d.photoUrl} alt={d.fullName||"Member"} className="w-12 h-12 rounded-xl object-cover border"/>:<div className="w-12 h-12 rounded-xl bg-slate-100 flex items-center justify-center text-[10px] text-slate-400">No Photo</div>}</td>
+     <td className="p-3 font-bold text-[#002344]">{d.memberId||r.recordId}</td><td className="p-3 font-bold">{d.fullName||"—"}</td><td className="p-3">{d.position||d.organizationRole||"—"}</td><td className="p-3 min-w-[220px]">{d.functionalResponsibility||"—"}</td><td className="p-3">{d.memberType||"—"}</td>
+     <td className="p-3 whitespace-nowrap">{d.termStart||"—"} → {d.termEnd||"—"}</td><td className="p-3">{d.status||r.status||"—"}</td><td className="p-3">{d.mobile||"—"}<br/><span className="text-xs text-zinc-500">{d.email||""}</span></td>
+     <td className="p-3"><div className="flex flex-wrap gap-2"><button type="button" onClick={()=>edit(r)} className="px-3 py-1.5 rounded-lg border border-blue-200 text-blue-700 font-bold">Edit</button><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-600 font-bold">Archive</button></div></td>
+    </tr>})}</tbody>
+   </table></div>
+  </div>
+ </div>;
+}
+
 function MeetingCalendar({rows,add,archive,token,updateRecord}){
  const blank={
   date:new Date().toISOString().slice(0,10),time:"",meetingTitle:"",meetingType:"Managing Committee Meeting",mode:"Online",
