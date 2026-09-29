@@ -1216,7 +1216,7 @@ function ManagingCommittee({rows,add,updateRecord,archive,token}){
  }
  const [tab,setTab]=useState("dashboard"),[editId,setEditId]=useState(null),[form,setForm]=useState(blank),[saving,setSaving]=useState(false),[notice,setNotice]=useState(""),[search,setSearch]=useState(""),[photoFile,setPhotoFile]=useState(null),[photoPreview,setPhotoPreview]=useState(""),[photoOverrides,setPhotoOverrides]=useState({});
  const set=(k,v)=>setForm(x=>({...x,[k]:v}));
- const photoSrc=p=>{const value=String(p||"").trim();if(!value)return "";if(/^(https?:\/\/|data:image\/|blob:)/i.test(value))return value;return `${API_BASE_URL}${value.startsWith("/")?"":"/"}${value}`;};
+ const photoSrc=p=>{const value=String(p||"").trim();if(!value)return "";if(/^(https?:\/\/|data:image\/|blob:)/i.test(value))return value;if(/^\/Teams_Images\//i.test(value)||/^\/assets\//i.test(value))return value;return `${API_BASE_URL}${value.startsWith("/")?"":"/"}${value}`;};
  const displayPhoto=r=>{const d=r?.data||{};const seedMember=seed.find(m=>m.memberId===String(d.memberId||""));return photoOverrides[d.memberId]||d.photoUrl||seedMember?.photoUrl||"";};
  const choosePhoto=e=>{const f=e.target.files?.[0];if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){setNotice("Photo must be JPG, PNG or WebP.");e.target.value="";return;}if(f.size>2*1024*1024){setNotice("Photo must be 2MB or smaller.");e.target.value="";return;}setPhotoFile(f);setPhotoPreview(URL.createObjectURL(f));};
  const clearPhoto=()=>{setPhotoFile(null);setPhotoPreview("");};
