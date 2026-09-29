@@ -4,7 +4,7 @@ import {
   FaArrowRight, FaBookOpen, FaBriefcase, FaCertificate, FaCheckCircle, FaChevronLeft,
   FaClock, FaComments, FaDesktop, FaEnvelope, FaExternalLinkAlt,
   FaGraduationCap, FaLaptopCode, FaPlayCircle, FaSearch, FaShareAlt,
-  FaShieldAlt, FaStar, FaUserTie
+  FaShieldAlt, FaStar, FaUserTie, FaUsers, FaHeartbeat, FaLeaf
 } from "react-icons/fa";
 
 const FREE_RESOURCES = {
