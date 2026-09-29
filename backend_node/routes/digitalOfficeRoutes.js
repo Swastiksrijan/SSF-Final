@@ -359,7 +359,8 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
           });
           const mapped = existing.map(x => {
             const data=x.toJSON();
-            const office=officeByMemberId.get(String(x.memberId||'').trim().toUpperCase());
+            const key=String(x.memberId||'').trim().toUpperCase();
+            const office=officeByMemberId.get(key);
             return {
               id:x.id,
               recordId:x.memberId || 'ACCOUNT-'+String(x.id).slice(0,8),
@@ -373,7 +374,18 @@ router.get('/digital-office/records', requireOfficeAuth, async (req, res) => {
             };
           });
           const unique = new Map();
-          mapped.forEach(row => { const key=String(row.personId||row.data?.memberId||row.recordId||row.id).trim().toUpperCase(); if(!unique.has(key)) unique.set(key,row); });
+          mapped.forEach(row => {
+            const key=String(row.personId||row.data?.memberId||row.recordId||row.id).trim().toUpperCase();
+            if(key && !unique.has(key)) unique.set(key,row);
+          });
+          // Keep legacy Digital Office member records that are not yet represented
+          // by a website Member account. This prevents the Master Register from
+          // silently losing older member records while still using one identity per Member ID.
+          officeMembers.forEach(row => {
+            const d=row.data||{};
+            const key=String(d.memberId||row.recordId||'').trim().toUpperCase();
+            if(key && !unique.has(key)) unique.set(key,row);
+          });
           rows = Array.from(unique.values());
         } else {
           // Recovery path: older SSF Digital Office member records must remain visible
