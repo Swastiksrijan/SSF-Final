@@ -30,7 +30,7 @@ router.get('/user-portal/:id', async (req, res) => {
             certId: membershipAccount ? member.certId : null,
             certificateType: membershipAccount ? member.certificateType : null,
             certificateIssuedAt: membershipAccount ? member.certificateIssuedAt : null,
-            profilePhotoPath: member.profilePhotoPath,
+            profilePhotoPath: member.profilePhotoData || member.profilePhotoPath,
             createdAt: member.createdAt
         };
 
