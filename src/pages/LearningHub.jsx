@@ -1220,7 +1220,7 @@ export default function LearningHub() {
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center">
             <div className="relative flex-1">
               <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
-              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search learning paths / learning resources..." className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 outline-none focus:border-[#003366]" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Search learning paths, topics and resources / learning paths, topics और resources खोजें..." className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 outline-none focus:border-[#003366]" />
             </div>
             <Link to="/Contact" className="rounded-xl bg-[#003366] px-6 py-4 text-center text-sm font-bold text-white">Want to Teach / Volunteer?</Link>
           </div>
