@@ -39,6 +39,7 @@ export default function BlogHubHeader() {
   };
 
   return (
+    <>
     <section className="mx-auto mb-12 w-full max-w-7xl">
       <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-gradient-to-br from-white/[0.11] via-white/[0.045] to-transparent p-4 shadow-2xl sm:rounded-[2rem] sm:p-7 lg:p-9">
         <div className="pointer-events-none absolute -left-20 -top-28 h-64 w-64 rounded-full bg-white/[0.07] blur-3xl" />
@@ -124,6 +125,8 @@ export default function BlogHubHeader() {
           </div>
         </div>
       )}
+    </>
+  );
 }
 
   );
