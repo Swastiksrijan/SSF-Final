@@ -89,12 +89,12 @@ export default function BlogHubHeader() {
                 type="button"
                 onClick={() => setActiveCategory(category)}
                 className="group flex min-h-[92px] w-full flex-col items-center justify-center rounded-2xl border border-white/10 bg-black/25 px-2.5 py-3 text-center transition-all duration-200 hover:-translate-y-0.5 hover:border-white/25 hover:bg-white/[0.09] focus:outline-none focus:ring-2 focus:ring-white/30 sm:min-h-[104px] sm:px-3"
-                aria-label={`${category.label} की पूरी जानकारी और सीख देखें`}
+                aria-label={`${category.label} / ${category.hi} — पूरी जानकारी और सीख देखें / View full information and learning`}
               >
                 <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.07] text-xl transition group-hover:bg-white/[0.12] sm:h-11 sm:w-11">{category.icon}</span>
                 <span className="mt-2 w-full min-w-0">
                   <span className="block truncate text-xs font-semibold leading-5 text-white/90 sm:text-sm">{category.label}</span>
-                  <span className="mt-0.5 block text-[10px] leading-4 text-white/35 transition group-hover:text-white/55 sm:text-[11px]">पूरी जानकारी →</span>
+                  <span className="mt-0.5 block text-[10px] leading-4 text-white/35 transition group-hover:text-white/55 sm:text-[11px]">पूरी जानकारी / Full Info →</span>
                 </span>
               </button>
             ))}
@@ -114,13 +114,34 @@ export default function BlogHubHeader() {
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 px-4 py-6" onClick={() => setActiveCategory(null)}>
           <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-white/10 bg-white text-[#002344] shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-7">
-              <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#002344]/[0.06] text-2xl">{activeCategory.icon}</span><div><p className="text-xs font-bold uppercase tracking-wider text-[#fb8500]">SSF Knowledge & Awareness</p><h2 className="text-xl font-black sm:text-2xl">{activeCategory.label} / {activeCategory.hi}</h2></div></div>
-              <button type="button" onClick={() => setActiveCategory(null)} aria-label="Close" className="rounded-full border border-zinc-200 px-3 py-2 text-xl leading-none text-zinc-600 hover:bg-zinc-100">×</button>
+              <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#002344]/[0.06] text-2xl">{activeCategory.icon}</span><div><p className="text-xs font-bold uppercase tracking-wider text-[#fb8500]">SSF Knowledge & Awareness / ज्ञान एवं जागरूकता</p><h2 className="text-xl font-black sm:text-2xl">{activeCategory.label} / {activeCategory.hi}</h2></div></div>
+              <button type="button" onClick={() => setActiveCategory(null)} aria-label="Close / बंद करें" className="rounded-full border border-zinc-200 px-3 py-2 text-xl leading-none text-zinc-600 hover:bg-zinc-100">×</button>
             </div>
             <div className="p-6 sm:p-8"><p className="text-base leading-8 text-zinc-700 sm:text-lg">{activeCategory.intro}</p>
               <div className="mt-7 rounded-2xl bg-[#F4F8FB] p-5 sm:p-6"><h3 className="text-lg font-extrabold">क्या जानें / What you will learn</h3><ul className="mt-4 space-y-3 text-sm leading-6 text-zinc-700 sm:text-base">{activeCategory.points.map((point) => <li key={point} className="flex gap-3"><span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#fb8500]" />{point}</li>)}</ul></div>
               <div className="mt-6 rounded-2xl border border-[#fb8500]/25 bg-[#fff8f1] p-5 sm:p-6"><h3 className="text-lg font-extrabold">मुख्य सीख / Practical Learning</h3><p className="mt-3 leading-7 text-zinc-700">{activeCategory.action}</p></div>
-              <p className="mt-6 text-sm leading-6 text-zinc-500">इस विषय से संबंधित SSF Blog stories और Learning Hub resources को आगे पढ़ें। जानकारी को अपने संदर्भ में उपयोग करते समय उचित स्रोत और विशेषज्ञ सलाह को प्राथमिकता दें।</p>
+              <div className="mt-7 border-t border-zinc-200 pt-6">
+                <h3 className="text-lg font-extrabold">शेयर करें / Share this Topic</h3>
+                <p className="mt-2 text-sm text-zinc-500">इस विषय की जानकारी दूसरों तक पहुँचाएँ / Share this learning with others.</p>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  <button type="button" onClick={async () => {
+                    const url = window.location.href;
+                    const text = `${activeCategory.label} / ${activeCategory.hi} — SSF Knowledge & Awareness`;
+                    if (navigator.share) {
+                      try { await navigator.share({ title: text, text: `${text}\n${activeCategory.intro}`, url }); } catch {}
+                    } else if (navigator.clipboard) {
+                      await navigator.clipboard.writeText(url);
+                      alert("Link copied / लिंक कॉपी हो गया");
+                    }
+                  }} className="rounded-xl bg-[#002344] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#00365f]">↗ Share / शेयर</button>
+                  <button type="button" onClick={async () => {
+                    await navigator.clipboard?.writeText(window.location.href);
+                    alert("Link copied / लिंक कॉपी हो गया");
+                  }} className="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-700 hover:bg-zinc-100">🔗 Copy Link / लिंक कॉपी</button>
+                  <a href={`https://wa.me/?text=${encodeURIComponent(`${activeCategory.label} / ${activeCategory.hi} — SSF Knowledge & Awareness\n${window.location.href}`)}`} target="_blank" rel="noreferrer" className="rounded-xl border border-zinc-300 px-4 py-2.5 text-sm font-bold text-zinc-700 hover:bg-zinc-100">WhatsApp</a>
+                </div>
+              </div>
+              <p className="mt-6 text-sm leading-6 text-zinc-500">इस विषय से संबंधित SSF Blog stories और Learning Hub resources को आगे पढ़ें / Explore related SSF Blog stories and Learning Hub resources. जानकारी को अपने संदर्भ में उपयोग करते समय उचित स्रोत और विशेषज्ञ सलाह को प्राथमिकता दें / Use reliable sources and professional advice where appropriate.</p>
             </div>
           </div>
         </div>
