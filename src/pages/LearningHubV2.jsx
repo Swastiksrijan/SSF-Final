@@ -8,7 +8,6 @@ import {
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
 import { ENDPOINTS } from "../config/api";
 import { makeLearningVisual } from "../utils/learningHubVisuals";
-import EnglishHindiDictionary from "../components/EnglishHindiDictionary";
 
 const HUB_IMAGES = {
   education: "/images/real/classroom-floor-seating.jpg",
@@ -59,7 +58,6 @@ const TOPICS = [
   ["Education / शिक्षा", "Library & Reading / पुस्तकालय एवं पठन", "Reading habits, reference material, notes और critical thinking।"],
   ["Education / शिक्षा", "Science Fairs / विज्ञान मेले", "Observation, questions, safe experiments, data और evidence-based presentation।"],
 
-  ["English & Communication / अंग्रेज़ी एवं संचार", "English ↔ Hindi Dictionary / अंग्रेज़ी ↔ हिन्दी शब्दकोश", "English और Hindi में शब्द खोजें, अर्थ, उच्चारण, समानार्थी, विलोम और उदाहरण सीखें तथा 30-day vocabulary practice करें।"],
   ["English & Communication / अंग्रेज़ी एवं संचार", "English from Basics / मूल अंग्रेज़ी", "Alphabet, vocabulary, sentence formation, reading, listening और speaking की शुरुआत।"],
   ["English & Communication / अंग्रेज़ी एवं संचार", "Spoken English / बोलचाल की अंग्रेज़ी", "दैनिक जीवन, introductions, questions, phone, travel और conversation practice।"],
   ["English & Communication / अंग्रेज़ी एवं संचार", "English Grammar / अंग्रेज़ी व्याकरण", "Words, sentence structure, tense, articles, prepositions और common errors।"],
@@ -681,36 +679,18 @@ function LearningSubject({ subject, onBack }) {
 
 export default function LearningHubV2() {
   const [subjectId, setSubjectId] = useState(getSubjectFromUrl);
-  const [dictionaryOpen, setDictionaryOpen] = useState(new URLSearchParams(window.location.search).get("dictionary") === "1");
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
 
-  const openDictionary = () => {
-    window.history.pushState({}, "", "/LearningHub?dictionary=1");
-    setSubjectId("");
-    setDictionaryOpen(true);
-    window.scrollTo({top:0, behavior:"smooth"});
-  };
-  const closeDictionary = () => {
-    window.history.pushState({}, "", "/LearningHub");
-    setDictionaryOpen(false);
-    window.scrollTo({top:0, behavior:"smooth"});
-  };
   const openSubject = (subject) => {
-    if (subject.id === slugify("English ↔ Hindi Dictionary")) {
-      openDictionary();
-      return;
-    }
     const url = "/LearningHub?subject=" + encodeURIComponent(subject.id);
     window.history.pushState({}, "", url);
     setSubjectId(subject.id);
-    setDictionaryOpen(false);
     window.scrollTo({top:0, behavior:"smooth"});
   };
   const back = () => {
     window.history.pushState({}, "", "/LearningHub");
     setSubjectId("");
-    setDictionaryOpen(false);
     window.scrollTo({top:0, behavior:"smooth"});
   };
   const filtered = useMemo(() => SUBJECTS.filter(s => {
@@ -719,7 +699,6 @@ export default function LearningHubV2() {
   }), [category, query]);
   const selected = SUBJECTS.find(s => s.id === subjectId);
   if (selected) return <LearningSubject subject={selected} onBack={back} />;
-  if (dictionaryOpen) return <EnglishHindiDictionary onBack={closeDictionary} />;
 
   const categories = ["All", ...Object.keys(CATEGORY_META)];
   const visibleCategories = category === "All" ? Object.keys(CATEGORY_META) : [category];
@@ -740,10 +719,6 @@ export default function LearningHubV2() {
             एक विषय चुनिए और उसके लिए क्रमबद्ध learning journey शुरू कीजिए। हमारा लक्ष्य केवल जानकारी देना नहीं,
             बल्कि समझ, अभ्यास, application और assessment के माध्यम से गहरी learning विकसित करना है।
           </p>
-        </div>
-
-        <div className="mt-8 flex flex-wrap gap-3">
-          <button onClick={openDictionary} className="inline-flex items-center gap-2 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#003366] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#eef7fb]"><FaBookOpen /> English ↔ Hindi Dictionary / अंग्रेज़ी ↔ हिन्दी शब्दकोश</button>
         </div>
 
         <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
