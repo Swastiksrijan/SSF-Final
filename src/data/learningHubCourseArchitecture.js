@@ -413,6 +413,29 @@ export const FLAGSHIP_COMPUTER_COURSE = createCourseDefinition({
   ]
 });
 
+export const FLAGSHIP_COURSE_ASSESSMENTS = {
+  "computer-foundation": [
+    { q: "Computer का मुख्य काम क्या है?", options: ["Data को process करके useful output देना", "केवल internet चलाना", "केवल games चलाना", "केवल files print करना"], answer: 0 },
+    { q: "Operating system का एक प्रमुख काम क्या है?", options: ["Hardware और software resources को manage करना", "हर website को सुरक्षित बनाना", "केवल email भेजना", "केवल documents लिखना"], answer: 0 }
+  ],
+  "files-documents": [
+    { q: "File और folder में मुख्य अंतर क्या है?", options: ["File में content/data होता है; folder files को organize कर सकता है", "दोनों हमेशा एक ही चीज हैं", "Folder केवल internet पर होता है", "File में कभी data नहीं होता"], answer: 0 },
+    { q: "Backup का उद्देश्य क्या है?", options: ["महत्वपूर्ण data की अतिरिक्त सुरक्षित copy रखना", "Files को हमेशा delete करना", "Password को public करना", "Storage को बिना कारण भरना"], answer: 0 }
+  ],
+  "internet-communication": [
+    { q: "Search result की reliability जाँचते समय क्या देखना चाहिए?", options: ["Source, date, evidence और context", "केवल headline", "केवल forward count", "केवल anonymous comment"], answer: 0 },
+    { q: "Professional email में क्या उपयोगी है?", options: ["Clear subject, respectful message और appropriate attachment", "Blank subject", "सिर्फ capital letters", "Unrelated attachments"], answer: 0 }
+  ],
+  "cyber-safety": [
+    { q: "Phishing क्या है?", options: ["धोखे से sensitive information प्राप्त करने का प्रयास", "Computer cleaning", "Normal software update", "File compression"], answer: 0 },
+    { q: "Strong account security में क्या मदद करता है?", options: ["Unique passwords और multi-factor authentication", "एक ही password हर जगह", "Password share करना", "Unknown links खोलना"], answer: 0 }
+  ],
+  "practical-digital-work": [
+    { q: "Digital task शुरू करने से पहले क्या करना चाहिए?", options: ["Goal, required information और expected output स्पष्ट करना", "Randomly click करना", "Backup हटाना", "हर warning ignore करना"], answer: 0 },
+    { q: "Basic troubleshooting में पहला उपयोगी कदम क्या है?", options: ["Problem को reproduce और clearly identify करना", "तुरंत device reset करना", "सब data delete करना", "बिना जाँचे hardware बदलना"], answer: 0 }
+  ]
+};
+
 export const FLAGSHIP_COURSES = {
   [FLAGSHIP_COURSE_ID]: FLAGSHIP_COMPUTER_COURSE,
 };
