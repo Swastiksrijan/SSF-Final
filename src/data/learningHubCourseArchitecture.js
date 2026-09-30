@@ -192,12 +192,12 @@ MOBILE_BALANCE_ASSESSMENTS.final = makeQuestions([
   ["Healthy entertainment का संकेत क्या है?",["It fits within sleep, work/study, relationships and responsibilities","It replaces sleep","It has no stopping point","It continues whenever a notification appears"],0]
 ]);
 
+const makeQuestions = (pairs) => pairs.map(([q,options,answer=0]) => ({q,options,answer}));
+
 const FLAGSHIP_COURSES = {
   [MOBILE_PHONE_COURSE.id]: MOBILE_PHONE_COURSE,
   [MOBILE_BALANCE_COURSE.id]: MOBILE_BALANCE_COURSE
 };
-
-const makeQuestions = (pairs) => pairs.map(([q,options,answer=0]) => ({q,options,answer}));
 
 const FLAGSHIP_COURSE_ASSESSMENTS = {
   [MOBILE_BALANCE_COURSE.id]: MOBILE_BALANCE_ASSESSMENTS
