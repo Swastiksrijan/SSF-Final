@@ -218,7 +218,6 @@ function LearningSubject({ subject, onBack }) {
   });
   const [activeLesson, setActiveLesson] = useState(null);
   const lessonContentRef = useRef(null);
-  const currentLesson = activeLesson === null ? null : lessons?.[activeLesson];
   const [quizOpen, setQuizOpen] = useState(false);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -345,6 +344,7 @@ function LearningSubject({ subject, onBack }) {
     body: lesson[1],
     detail: lesson[2] || null
   })));
+  const currentLesson = activeLesson === null ? null : lessons[activeLesson];
 
   const quizQuestions = [
     {q:"अच्छी learning का उद्देश्य क्या है?", options:["समझकर और अभ्यास करके capability विकसित करना","केवल title याद करना","केवल video देखना","केवल certificate लेना"], answer:0},
