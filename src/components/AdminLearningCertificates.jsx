@@ -127,7 +127,7 @@ export default function AdminLearningCertificates() {
           const modules = Array.isArray(item.moduleAssessments) ? item.moduleAssessments : [];
           const passed = modules.filter(x => x?.passed).length;
           return <tr key={item.id} className="border-b border-zinc-100 align-top">
-            <td className="p-3"><div className="font-black text-[#002344]">{item.learnerName || "—"}</div><div className="text-xs text-zinc-500 mt-1">{item.email || "—"}</div></td>
+            <td className="p-3"><div className="font-black text-[#002344]">{item.learnerName || "—"}</div><div className="text-xs text-zinc-500 mt-1">{item.learnerEmail || item.email || "—"}</div></td>
             <td className="p-3"><div className="font-bold max-w-[250px]">{item.courseTitle || item.courseId || "—"}</div><div className="text-xs text-zinc-500 mt-1">{item.learningHours || 0} learning hours</div></td>
             <td className="p-3 font-black">{item.completionPercent ?? 0}%</td>
             <td className="p-3"><div>{passed}/{modules.length || 0} modules passed</div><div className="text-xs mt-1">{item.finalAssessment?.passed ? "Final: Passed" : "Final: Not passed"}</div></td>
