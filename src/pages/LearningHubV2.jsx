@@ -500,6 +500,22 @@ function LearningSubject({ subject, onBack }) {
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_330px]">
         <div className="space-y-7">
+          {activeLesson !== null && currentLesson && <section ref={lessonContentRef} className="rounded-[2rem] border border-[#cfe0ea] bg-white p-6 shadow-sm md:p-8">
+            <div className="flex items-center justify-between gap-4 border-b border-zinc-200 pb-5">
+              <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">{currentLesson.module}</div><h2 className="mt-2 text-3xl font-black text-[#003366]">{currentLesson.title}</h2></div>
+              <button type="button" onClick={()=>setActiveLesson(null)} className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-black text-[#003366]">← Modules / मॉड्यूल</button>
+            </div>
+            <p className="mt-6 text-base leading-8 text-zinc-700">{currentLesson.body}</p>
+            {currentLesson.detail && <div className="mt-7 space-y-6">
+              {[["Objectives / उद्देश्य",currentLesson.detail.objectives],["Deep Understanding / गहरी समझ",currentLesson.detail.content?.deepUnderstanding],["Examples / उदाहरण",currentLesson.detail.content?.examples],["Practice / अभ्यास",currentLesson.detail.practice],["Activity / गतिविधि",currentLesson.detail.activity],["Common Mistakes / सामान्य गलतियाँ",currentLesson.detail.content?.commonMistakes],["Summary / सार",currentLesson.detail.content?.summary]].map(([label,value])=>value && <div key={label} className="rounded-2xl bg-[#f7fafc] p-5"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">{label}</div>{Array.isArray(value)?<ul className="mt-3 list-disc space-y-2 pl-5 text-sm leading-7 text-zinc-700">{value.map((x,i)=><li key={i}>{x}</li>)}</ul>:<p className="mt-3 text-sm leading-7 text-zinc-700">{value}</p>}</div>)}
+            </div>}
+            <div className="mt-7 flex flex-col gap-3 border-t border-zinc-200 pt-5 sm:flex-row">
+              <button type="button" onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-4 py-3 text-sm font-black text-[#003366] disabled:opacity-40">← Previous / पिछला</button>
+              <button type="button" onClick={()=>markDone(activeLesson)} disabled={done.includes(activeLesson)} className={"flex-1 rounded-xl px-4 py-3 text-sm font-black "+(done.includes(activeLesson)?"bg-[#e7f7ef] text-[#177245]":"bg-[#003366] text-white")}>{done.includes(activeLesson)?"✓ Completed / पूरा":"Mark Lesson Complete / पाठ पूरा करें"}</button>
+              <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Next / अगला →</button>
+            </div>
+          </section>}
+          <div className={activeLesson !== null ? "hidden" : ""}>
           {activeModules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
             <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#003366] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
             <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=activeModules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);const detail=l[2];return <div key={l[0]} className={"overflow-hidden rounded-2xl border border-zinc-200 bg-white " + (activeLesson !== null && activeLesson !== global ? "hidden" : "")}>
@@ -544,6 +560,7 @@ function LearningSubject({ subject, onBack }) {
               </div>}
             </div>})}</div>
           </section>)}
+          </div>
         </div>
 
         <aside className="space-y-5">
