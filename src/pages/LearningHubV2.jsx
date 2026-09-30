@@ -68,6 +68,7 @@ const TOPICS = [
   ["English & Communication / अंग्रेज़ी एवं संचार", "Email & Message Writing / ईमेल एवं संदेश लेखन", "Clear subject, context, request, attachments, follow-up और privacy।"],
 
   ["Digital Skills / डिजिटल कौशल", "Computer & Digital Basics / कंप्यूटर एवं डिजिटल बेसिक्स", "Devices, operating systems, files, typing, browser और everyday digital work।"],
+  ["Digital Skills / डिजिटल कौशल", "Mobile Phone, Digital Life & Safety / मोबाइल फोन, डिजिटल जीवन एवं सुरक्षा", "मोबाइल फोन क्या है, कैसे काम करता है, जीवन में इतना महत्वपूर्ण क्यों हो गया है, और इसे सुरक्षित, समझदारी से तथा बच्चों सहित परिवार के साथ कैसे उपयोग करें—hardware से AI, privacy, scams, payments, learning, work, wellbeing और future तक विस्तृत सीख।"],
   ["Digital Skills / डिजिटल कौशल", "Internet Basics / इंटरनेट की मूल जानकारी", "Browser, search, websites, downloads, bookmarks और safe browsing।"],
   ["Digital Skills / डिजिटल कौशल", "Google Workspace / Google Workspace", "Gmail, Drive, Docs, Sheets, Forms, Calendar और collaboration।"],
   ["Digital Skills / डिजिटल कौशल", "Digital Literacy / डिजिटल साक्षरता", "Devices, online services, information verification और responsible digital behaviour।"],
