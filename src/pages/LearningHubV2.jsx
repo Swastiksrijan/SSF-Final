@@ -290,6 +290,17 @@ function LearningSubject({ subject, onBack }) {
       ]
     }
   ];
+
+  // Flatten module lessons into the structure used by the active-lesson panel.
+  // This is required for every course, including the generic courses that do not
+  // have a flagship architecture entry yet.
+  const lessons = modules.flatMap((module) => module.lessons.map((lesson) => ({
+    module: module.title,
+    title: lesson[0],
+    body: lesson[1],
+    detail: lesson[2] || null
+  })));
+
   const quizQuestions = [
     {q:"अच्छी learning का उद्देश्य क्या है?", options:["समझकर और अभ्यास करके capability विकसित करना","केवल title याद करना","केवल video देखना","केवल certificate लेना"], answer:0},
     {q:"किसी concept को मजबूत करने का उपयोगी तरीका क्या है?", options:["Example + Practice + Review","बिना पढ़े अनुमान लगाना","बिना जाँचे जानकारी share करना","केवल एक definition याद करना"], answer:0},
