@@ -59,6 +59,7 @@ const TOPICS = [
   ["Education / शिक्षा", "Library & Reading / पुस्तकालय एवं पठन", "Reading habits, reference material, notes और critical thinking।"],
   ["Education / शिक्षा", "Science Fairs / विज्ञान मेले", "Observation, questions, safe experiments, data और evidence-based presentation।"],
 
+  ["English & Communication / अंग्रेज़ी एवं संचार", "English ↔ Hindi Dictionary / अंग्रेज़ी ↔ हिन्दी शब्दकोश", "English और Hindi में शब्द खोजें, अर्थ, उच्चारण, समानार्थी, विलोम और उदाहरण सीखें तथा 30-day vocabulary practice करें।"],
   ["English & Communication / अंग्रेज़ी एवं संचार", "English from Basics / मूल अंग्रेज़ी", "Alphabet, vocabulary, sentence formation, reading, listening और speaking की शुरुआत।"],
   ["English & Communication / अंग्रेज़ी एवं संचार", "Spoken English / बोलचाल की अंग्रेज़ी", "दैनिक जीवन, introductions, questions, phone, travel और conversation practice।"],
   ["English & Communication / अंग्रेज़ी एवं संचार", "English Grammar / अंग्रेज़ी व्याकरण", "Words, sentence structure, tense, articles, prepositions और common errors।"],
@@ -696,6 +697,10 @@ export default function LearningHubV2() {
     window.scrollTo({top:0, behavior:"smooth"});
   };
   const openSubject = (subject) => {
+    if (subject.id === slugify("English ↔ Hindi Dictionary")) {
+      openDictionary();
+      return;
+    }
     const url = "/LearningHub?subject=" + encodeURIComponent(subject.id);
     window.history.pushState({}, "", url);
     setSubjectId(subject.id);
