@@ -55,5 +55,7 @@ export const ENDPOINTS = {
     DIGITAL_OFFICE_GOOGLE_STATUS: `${API_BASE_URL}/api/digital-office/google/status`,
     DIGITAL_OFFICE_GOOGLE_CREATE_MEETING: `${API_BASE_URL}/api/digital-office/google/create-meeting`,
     DIGITAL_OFFICE_ONLINE_MEETING: `${API_BASE_URL}/api/digital-office/online-meeting`,
-    VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`
+    VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`,
+    LEARNING_CERTIFICATE_REQUEST: `${API_BASE_URL}/api/learning-certificates/request`,
+    LEARNING_CERTIFICATE_VERIFY: (code) => `${API_BASE_URL}/api/learning-certificates/verify/${encodeURIComponent(code)}`
 };
