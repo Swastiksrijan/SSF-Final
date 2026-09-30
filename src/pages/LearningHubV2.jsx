@@ -387,7 +387,6 @@ function LearningSubject({ subject, onBack }) {
     setQuizOpen(false);
     setAnswers({});
     setSubmitted(false);
-    markDone(safe);
     window.setTimeout(() => {
       const node = lessonContentRef.current;
       if (!node) return;
@@ -469,7 +468,8 @@ function LearningSubject({ subject, onBack }) {
       </div>
     </section>
 
-    <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">\n      <div id="ssf-course-library" className="scroll-mt-24">
+    <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
+      <div id="ssf-course-library" className="scroll-mt-24">
       <section className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-8">
         <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
           <div>
@@ -560,6 +560,7 @@ function LearningSubject({ subject, onBack }) {
                 <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#003366] px-3 py-2 text-xs font-black text-white disabled:opacity-40">Next / अगला →</button>
               </div>
               {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
+                  <button type="button" onClick={()=>markDone(activeLesson)} disabled={done.includes(activeLesson)} className={"w-full rounded-xl px-4 py-3 text-sm font-black "+(done.includes(activeLesson)?"bg-[#e7f7ef] text-[#177245]":"bg-[#003366] text-white")}>{done.includes(activeLesson)?"✓ Lesson Completed / पाठ पूरा":"Mark Lesson Complete / पाठ पूरा करें"}</button>
                 {[
                   ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
                   ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
