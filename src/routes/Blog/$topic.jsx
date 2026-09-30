@@ -1,9 +1,9 @@
 import { createFileRoute, useParams } from "@tanstack/react-router";
 import Blog from "../../pages/Blog";
-import BlogShareEnhancer from "../components/BlogShareEnhancer";
-import SingleKnowledgeStory from "../components/SingleKnowledgeStory";
-import BlogKnowledgeStories from "../components/BlogKnowledgeStories";
-import BlogHubHeader from "../components/BlogHubHeader";
+import BlogShareEnhancer from "../../components/BlogShareEnhancer";
+import SingleKnowledgeStory from "../../components/SingleKnowledgeStory";
+import BlogKnowledgeStories from "../../components/BlogKnowledgeStories";
+import BlogHubHeader from "../../components/BlogHubHeader";
 
 function BlogTopicRoutePage() {
   const { topic } = useParams({ from: "/Blog/$topic" });
