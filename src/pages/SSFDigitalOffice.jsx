@@ -210,14 +210,41 @@ export default function SSFDigitalOffice(){
     {active==="managingCommittee"&&<ManagingCommittee rows={moduleRows.managingCommittee||[]} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
-    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
+    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}\n    {active==="certificates"&&<LearningCertificates token={token}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
+}
+function LearningCertificates({token}){
+ const [items,setItems]=useState([]),[busy,setBusy]=useState(false),[error,setError]=useState("");
+ const auth={Authorization:"Bearer "+token,"Content-Type":"application/json"};
+ const load=async()=>{setBusy(true);setError("");try{const r=await fetch(ENDPOINTS.LEARNING_CERTIFICATE_ADMIN,{headers:auth});const d=await r.json().catch(()=>[]);if(!r.ok)throw new Error(d.message||"Unable to load certificate requests.");setItems(Array.isArray(d)?d:[]);}catch(e){setError(e.message||"Unable to load certificate requests.");}finally{setBusy(false);}};
+ useEffect(()=>{load();},[]);
+ const issue=async(id)=>{if(!confirm("Issue this certificate after SSF review? This will create a permanent Certificate ID and make it verifiable online."))return;setBusy(true);setError("");try{const r=await fetch(ENDPOINTS.LEARNING_CERTIFICATE_ADMIN_ISSUE(id),{method:"PATCH",headers:auth});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||"Certificate could not be issued.");setNotice("Certificate issued: "+d.certificateId);await load();}catch(e){setError(e.message||"Certificate issue failed.");}finally{setBusy(false);}};
+ const statusClass=s=>s==="issued"?"bg-emerald-100 text-emerald-800":s==="requested"?"bg-amber-100 text-amber-800":"bg-zinc-100 text-zinc-700";
+ return <div className="space-y-5">
+  <div className="rounded-3xl bg-gradient-to-r from-[#002344] via-[#123B5D] to-[#1b557e] text-white p-6 sm:p-8">
+   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><div className="text-xs font-black uppercase tracking-[.18em] text-orange-300">SSF Learning Hub · Digital Office</div><h2 className="text-2xl sm:text-3xl font-black mt-1">Learning Certificates / शिक्षण प्रमाणपत्र</h2><p className="text-white/75 mt-2">Review certificate requests, issue official Certificate IDs and maintain a verifiable record.</p></div><button onClick={load} disabled={busy} className="rounded-xl bg-white text-[#002344] px-5 py-3 font-black disabled:opacity-50">↻ Refresh / ताज़ा करें</button></div>
+  </div>
+  {error&&<div className="rounded-xl border border-red-200 bg-red-50 p-4 font-semibold text-red-700">{error}</div>}
+  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+   {[["Total",items.length],["Requested",items.filter(x=>x.status==="requested").length],["Issued",items.filter(x=>x.status==="issued").length],["Approved",items.filter(x=>x.status==="approved").length]].map(x=><div key={x[0]} className="rounded-2xl bg-white border border-zinc-200 p-4"><div className="text-xs font-bold text-zinc-500">{x[0]}</div><div className="text-3xl font-black text-[#002344]">{x[1]}</div></div>)}
+  </div>
+  <div className="rounded-3xl bg-white border border-zinc-200 overflow-hidden">
+   <div className="px-5 py-4 border-b font-black text-[#002344]">Certificate Requests / प्रमाणपत्र अनुरोध</div>
+   {busy&&items.length===0?<div className="p-8 text-zinc-500">Loading…</div>:items.length===0?<div className="p-10 text-center text-zinc-500">No certificate requests yet / अभी कोई प्रमाणपत्र अनुरोध नहीं है।</div>:
+   <div className="divide-y">{items.map(x=><div key={x.id} className="p-5"><div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
+    <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><span className="font-black text-lg text-[#002344]">{x.learnerName}</span><span className={"px-2 py-1 rounded-full text-xs font-black "+statusClass(x.status)}>{x.status}</span>{x.certificateId&&<span className="px-2 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-black">{x.certificateId}</span>}</div>
+     <div className="mt-2 grid sm:grid-cols-2 gap-x-8 gap-y-1 text-sm text-zinc-600"><div><b>Course:</b> {x.courseTitle}</div><div><b>Email:</b> {x.learnerEmail}</div><div><b>Completion:</b> {x.completionPercent}%</div><div><b>Learning Hours:</b> {x.learningHours??"—"}</div><div><b>Requested:</b> {x.createdAt?formatOfficeDate(x.createdAt):"—"}</div><div><b>Final Assessment:</b> {x.finalAssessment?.passed?"Passed":"Not passed"}</div></div>
+    </div>
+    <div className="flex flex-wrap gap-2 shrink-0">{x.status==="requested"&&<button onClick={()=>issue(x.id)} disabled={busy} className="rounded-xl bg-[#177245] text-white px-4 py-2.5 font-black disabled:opacity-50">Issue Certificate / जारी करें</button>}{x.certificateId&&<a href={"/LearningCertificateVerify?code="+encodeURIComponent(x.certificateId)} target="_blank" rel="noreferrer" className="rounded-xl border border-[#123B5D] text-[#123B5D] px-4 py-2.5 font-black">Verify / सत्यापन</a>}</div>
+   </div></div>)}</div>}
+  </div>
+ </div>;
 }
 function NotificationsHub({rows,add,archive,updateRecord,token}){
  const [tab,setTab]=useState("information");
