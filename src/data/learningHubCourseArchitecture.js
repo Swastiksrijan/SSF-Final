@@ -15,7 +15,9 @@ const makeLesson = (en, hi, easy, deep, examples, practice, activity, mistakes, 
   objectives:[easy, "समझ को वास्तविक जीवन में सुरक्षित और जिम्मेदारी से लागू करना सीखें।"]
 });
 
-const makeModule = (id, en, hi, description, lessons) => ({
+
+const makeQuestions = (pairs) => pairs.map(([q,options,answer=0]) => ({q,options,answer}));
+\nconst makeModule = (id, en, hi, description, lessons) => ({
   id,
   title:{en,hi},
   description,
@@ -133,7 +135,316 @@ const MOBILE_BALANCE_LESSONS = [
   makeLesson("Digital Balance Plan","अपना Digital Balance Plan बनाना","A sustainable plan combines useful phone time, focused work, family time, sleep, movement, offline activities and intentional entertainment.","Start with observation, choose a few changes, measure results and adjust. Extreme rules are often less practical than consistent habits.","7-day notification reduction, bedtime routine, study blocks.","अपना current pattern लिखकर तीन changes चुनें।","एक personal 7-day Digital Balance Plan बनाएं और daily review करें।","एक दिन में बहुत सारे कठोर नियम लगाना।","Small measurable changes, repeated consistently, can create a more sustainable routine।")
 ];
 
-const MOBILE_BALANCE_COURSE = {
+
+
+const DIRECTION_14_22_LESSONS = [
+  makeLesson(
+    "Why 14–22 Is a Direction-Building Age",
+    "14–22 की उम्र दिशा बनाने की उम्र क्यों है?",
+    "यह उम्र बचपन से जिम्मेदार वयस्क जीवन की ओर बढ़ने की होती है। इस समय पढ़ाई, मित्र, मोबाइल, प्रेम, परिवार, पैसा और करियर से जुड़े कई नए निर्णय सामने आते हैं।",
+    "हर निर्णय जीवन का अंतिम फैसला नहीं होता, लेकिन छोटे-छोटे निर्णय आदत बनाते हैं। इसलिए लक्ष्य 'हर बार perfect decision' नहीं, बल्कि सोचकर निर्णय लेना, गलती से सीखना और जरूरत पर सही व्यक्ति से सलाह लेना है।",
+    "उदाहरण: 16 साल का विद्यार्थी पढ़ाई छोड़कर केवल online entertainment में समय लगाने लगे; 18 साल का युवा बिना जांच किसी नौकरी/कमाई के प्रस्ताव में पैसा भेज दे; 20 साल का युवा केवल दोस्तों के दबाव में course चुन ले।",
+    "पिछले 7 दिनों के अपने तीन महत्वपूर्ण निर्णय लिखें और बताएं: मैंने क्यों चुना, परिणाम क्या हुआ, अगली बार क्या बदलूंगा?",
+    "एक 'मेरी दिशा' पृष्ठ बनाएं: मेरी ताकतें, मेरी रुचियां, मेरी जिम्मेदारियां, मेरे लक्ष्य और मुझे किन लोगों से सलाह लेनी चाहिए।",
+    ["हर गलती को जीवन की बर्बादी मानना","दूसरों की life देखकर अपनी दिशा तय करना","तुरंत परिणाम को ही सफलता समझना"],
+    "दिशा एक दिन में नहीं बनती। जागरूक निर्णय, अच्छे संबंध, कौशल, अनुशासन और लगातार सुधार मिलकर दिशा बनाते हैं।"
+  ),
+  makeLesson(
+    "Know Yourself: Values, Strengths & Interests",
+    "अपने आप को समझना: मूल्य, ताकत और रुचि",
+    "सही दिशा चुनने से पहले यह समझना जरूरी है कि आपको क्या महत्वपूर्ण लगता है, आप किन कामों में अच्छे हैं और किन विषयों को सीखने में वास्तविक रुचि है।",
+    "रुचि और क्षमता हमेशा एक जैसी नहीं होतीं। कोई काम पसंद होना उपयोगी संकेत है, लेकिन career decision के लिए aptitude, learning effort, अवसर, आर्थिक वास्तविकता और long-term fit भी देखना चाहिए।",
+    "किसी को drawing पसंद है लेकिन graphic design के साथ communication और software skills भी सीखनी होंगी; किसी को science पसंद है लेकिन नियमित study और practical work भी जरूरी होगा।",
+    "एक table बनाएं: मुझे पसंद है / मैं कर सकता हूं / मुझे सीखना है / इसके लिए कौन-से अवसर हैं।",
+    "तीन trusted लोगों से पूछें कि वे आपकी दो strengths और एक improvement area क्या मानते हैं।",
+    ["केवल personality test को अंतिम सत्य मानना","दूसरों की प्रशंसा को skill का प्रमाण मानना","अपनी कमजोरी देखकर पूरी क्षमता नकार देना"],
+    "Self-awareness का अर्थ खुद को label करना नहीं, बल्कि अपने व्यवहार, क्षमता, values और learning needs को ईमानदारी से समझना है।"
+  ),
+  makeLesson(
+    "Good Direction vs Wrong Direction",
+    "सही दिशा और गलत दिशा को कैसे पहचानें?",
+    "किसी रास्ते को केवल इसलिए सही नहीं माना जा सकता क्योंकि उसमें मजा, पैसा या popularity दिखाई देती है। दिशा का मूल्य उसके परिणाम, जोखिम, जिम्मेदारी और भविष्य पर असर से भी समझें।",
+    "एक उपयोगी test है: क्या यह रास्ता मुझे सीखने, स्वास्थ्यकर दिनचर्या, सम्मानजनक संबंध, lawful काम और भविष्य की क्षमता की ओर ले जा रहा है या धीरे-धीरे मेरी पढ़ाई, भरोसा, पैसा, समय और अवसर कम कर रहा है?",
+    "बार-बार पढ़ाई छोड़ना, रातभर अनियंत्रित scrolling, नशे या गैरकानूनी गतिविधियों की ओर साथियों का दबाव, online fraud में शामिल होना—ये warning signs हो सकते हैं।",
+    "किसी भी नई activity के लिए Benefit / Cost / Risk / Learning / Future Opportunity के पांच कॉलम भरें।",
+    "दो काल्पनिक युवाओं की weekly routine compare करें और identify करें कि कौन-सी आदतें future options बढ़ा रही हैं।",
+    ["'सही' को केवल पैसा मानना","'गलत' को केवल डांट या समाज की राय से तय करना","warning signs को लगातार ignore करना"],
+    "सही दिशा वह है जो व्यक्ति की गरिमा, सुरक्षा, सीखने, जिम्मेदारी और भविष्य के विकल्पों को मजबूत करे।"
+  ),
+  makeLesson(
+    "Decision-Making Framework",
+    "निर्णय लेने की वैज्ञानिक और व्यावहारिक विधि",
+    "बड़ा निर्णय लेने से पहले समस्या स्पष्ट करें, विकल्प लिखें, तथ्य जुटाएं, परिणाम सोचें, जोखिम देखें और फिर निर्णय लें।",
+    "एक simple framework: STOP → DEFINE → OPTIONS → EVIDENCE → RISKS → ADVICE → DECIDE → REVIEW. हर निर्णय में certainty नहीं होगी; अच्छी प्रक्रिया uncertainty को manage करती है।",
+    "Course चुनना, job offer लेना, शहर बदलना, expensive phone खरीदना, दोस्ती की सीमा तय करना।",
+    "अगले किसी छोटे निर्णय पर framework लागू करें और decision journal लिखें।",
+    "परिवार/mentor से सलाह लें, लेकिन अंतिम जिम्मेदारी और उपलब्ध जानकारी को भी समझें।",
+    ["जल्दबाजी में निर्णय","एक ही व्यक्ति की बात पर निर्भर रहना","सिर्फ emotion या peer pressure पर फैसला करना"],
+    "अच्छा निर्णय भविष्य की guarantee नहीं देता; वह उपलब्ध जानकारी के आधार पर जिम्मेदार प्रक्रिया देता है।"
+  ),
+  makeLesson(
+    "Peer Pressure & Influence",
+    "दोस्तों का दबाव और प्रभाव",
+    "मित्रों का प्रभाव सामान्य है। समस्या तब शुरू होती है जब व्यक्ति अपनी values, safety, पढ़ाई, पैसा या कानून के विरुद्ध केवल स्वीकार किए जाने के लिए कुछ करने लगे।",
+    "Peer pressure direct भी हो सकता है और indirect भी: 'सब कर रहे हैं', मजाक उड़ाना, group से निकालने की धमकी, social media trends या status competition।",
+    "नशे की शुरुआत के लिए दबाव, risky driving, cheating, private photo share करना, betting/gambling-like activities या किसी को online परेशान करने के लिए group pressure।",
+    "तीन respectful refusal sentences तैयार करें: 'नहीं, मैं इसमें comfortable नहीं हूं'; 'मैं पहले verify करूंगा'; 'यह मेरे लक्ष्य के खिलाफ है।'",
+    "एक role-play करें जिसमें दोस्त दबाव डालते हैं और learner बिना झगड़े स्पष्ट सीमा रखता है।",
+    ["हर refusal को कमजोरी समझना","group approval को self-worth बनाना","risk समझकर भी 'एक बार' कहकर करना"],
+    "सच्ची स्वतंत्रता केवल अपनी इच्छा करना नहीं; दबाव में भी अपने values और safety के अनुसार निर्णय कर पाना है।"
+  ),
+
+  makeLesson(
+    "Friendship, Relationships & Boundaries",
+    "दोस्ती, संबंध और व्यक्तिगत सीमाएं",
+    "अच्छे संबंध सम्मान, consent, trust, communication और boundaries पर टिके होते हैं।",
+    "14–22 की उम्र में friendship और romantic relationships दोनों भावनात्मक रूप से महत्वपूर्ण हो सकते हैं। लेकिन किसी संबंध के नाम पर control, threats, humiliation, money pressure, private content मांगना या isolation स्वीकार करना जरूरी नहीं है।",
+    "फोन password मांगना, हर समय location मांगना, 'अगर दोस्त हो तो photo भेजो' कहना, पढ़ाई रोकने का दबाव या पैसे मांगना boundary concerns हो सकते हैं।",
+    "अपने लिए five boundaries लिखें: privacy, time, money, online sharing और respectful communication।",
+    "किसी trusted adult/mentor के साथ healthy vs unhealthy relationship scenarios पर चर्चा करें।",
+    ["Jealousy को प्यार का प्रमाण मानना","private content share करके trust prove करना","अपनी boundary बताने में शर्म करना"],
+    "Healthy relationship में सम्मान और स्वतंत्रता दोनों के लिए जगह होती है। असुरक्षित या coercive स्थिति में trusted support लेना महत्वपूर्ण है।"
+  ),
+  makeLesson(
+    "Family Communication & Asking for Help",
+    "परिवार से संवाद और मदद मांगना",
+    "जब युवा कोई कठिन निर्णय, गलती, डर या confusion महसूस करे तो अकेले छिपाने के बजाय किसी भरोसेमंद व्यक्ति से बात करना उपयोगी हो सकता है।",
+    "हर परिवार एक जैसा नहीं होता। इसलिए trusted support केवल माता-पिता तक सीमित नहीं: teacher, relative, mentor, counsellor, responsible elder या appropriate professional भी हो सकता है।",
+    "Career confusion, exam failure, online scam, relationship conflict, bullying, money problem या unsafe situation।",
+    "एक 'मेरे 3 भरोसेमंद लोग' list बनाएं और लिखें कि किस समस्या में किससे संपर्क करेंगे।",
+    "एक कठिन बातचीत का rehearsal करें: तथ्य बताना, अपनी भावना बताना, मदद स्पष्ट रूप से मांगना और next step तय करना।",
+    ["मदद मांगना कमजोरी समझना","समस्या बहुत बड़ी होने तक छिपाना","हर समस्या का समाधान केवल दोस्त से मांगना"],
+    "समय पर सही व्यक्ति से मदद मांगना जिम्मेदारी है। यदि कोई स्थिति unsafe हो, तो immediate safety को प्राथमिकता दें।"
+  ),
+  makeLesson(
+    "Digital Life, Social Media & Algorithms",
+    "डिजिटल जीवन, सोशल मीडिया और algorithms",
+    "मोबाइल और social media सीखने, जुड़ने और अवसर पाने के साधन हैं, लेकिन platforms attention पाने के लिए recommendations और notifications का उपयोग करते हैं।",
+    "आप जो देखते हैं वह पूरी दुनिया का neutral sample नहीं होता। Algorithms आपके previous interactions के आधार पर content दिखा सकते हैं, जिससे comparison, outrage या endless scrolling बढ़ सकता है।",
+    "Short-video feed, influencer lifestyle, viral challenge, targeted advertisement, repeated recommendation।",
+    "एक सप्ताह notifications और social media opening triggers observe करें।",
+    "अपने phone में non-essential notifications बंद करें और एक focused study/work block बिना social media पूरा करें।",
+    ["हर viral content को reality मानना","online popularity को personal success मानना","privacy settings और audience को ignore करना"],
+    "Digital tool को control में रखने के लिए intentional use, verification, privacy और time boundaries जरूरी हैं।"
+  ),
+  makeLesson(
+    "Online Safety, Scams & Digital Reputation",
+    "ऑनलाइन सुरक्षा, scams और digital reputation",
+    "युवा job, study, gaming, shopping, payments और social media के कारण online fraud के target बन सकते हैं।",
+    "Common warning signs में urgency, guaranteed money, advance payment, OTP/PIN मांगना, fake identity, suspicious links और unrealistic offers शामिल हैं। Digital reputation भी long-term asset है।",
+    "Fake job registration fee, scholarship scam, fake account recovery, investment/earning promise, private photo blackmail या impersonation।",
+    "किसी suspicious message को STOP → CHECK → VERIFY → REPORT के अनुसार handle करें।",
+    "अपने लिए cyber safety card बनाएं: screen lock, MFA, backup, privacy, no OTP/PIN sharing, official verification।",
+    ["Caller ID को proof मानना","'guaranteed income' देखकर payment करना","private image/video भेजकर threat के दबाव में रहना"],
+    "Online दुनिया में speed से ज्यादा verification महत्वपूर्ण है। गंभीर threat या exploitation में trusted support और appropriate official help लें।"
+  ),
+  makeLesson(
+    "Study, Skill & Career Direction",
+    "पढ़ाई, कौशल और करियर की दिशा",
+    "Career केवल एक job title नहीं है। Education, skills, experience, communication, digital ability और character मिलकर employability बनाते हैं।",
+    "14–22 में career को final lock करने की जरूरत नहीं, लेकिन directionless रहने की भी जरूरत नहीं। छोटे experiments—course, project, internship, volunteering, practical skill—information बढ़ाते हैं।",
+    "Commerce student spreadsheet skill सीखता है; rural youth agriculture value-addition project करता है; college student internship से field fit समझता है।",
+    "अपनी रुचि से जुड़े तीन career options चुनें और प्रत्येक के लिए qualification, skills, cost, duration, earning reality और next step खोजें।",
+    "30-day skill experiment चुनें और weekly evidence रखें: मैंने क्या सीखा, क्या बनाया, क्या कठिन लगा।",
+    ["केवल salary देखकर career चुनना","fake coaching/job promises पर भरोसा करना","skill सीखने के बजाय केवल certificate जमा करना"],
+    "Career clarity अक्सर action और evidence से आती है। छोटे वास्तविक experiments uncertainty को कम करते हैं।"
+  ),
+  makeLesson(
+    "Money, Spending & First Financial Habits",
+    "पैसा, खर्च और पहली वित्तीय आदतें",
+    "कम उम्र में money habits बनना शुरू होती हैं। कमाई चाहे कम हो, budgeting, saving, record keeping और fraud awareness सीखी जा सकती है।",
+    "Needs, wants, goals और risks अलग करें। Credit/loan, online offers, subscriptions, betting/gambling और impulsive purchases को long-term consequences के साथ देखें।",
+    "Phone upgrade के लिए loan लेना, gaming purchase, subscription भूल जाना, emergency saving न रखना।",
+    "एक महीने के काल्पनिक ₹10,000 budget में needs, learning, savings और discretionary spending allocate करें।",
+    "अपने वास्तविक खर्च का 7-day record बनाएं और तीन unnecessary expenses identify करें।",
+    ["दिखावे के लिए खर्च","दोस्तों से financial comparison","OTP/PIN share करना","quick money schemes पर भरोसा करना"],
+    "Financial maturity का पहला कदम ज्यादा पैसा नहीं, बल्कि पैसे को समझकर जिम्मेदारी से संभालना है।"
+  ),
+
+  makeLesson(
+    "Habits, Discipline & Time",
+    "आदतें, अनुशासन और समय",
+    "दिशा को daily routine में बदलने के लिए छोटे consistent habits जरूरी हैं। Motivation हमेशा नहीं रहती; systems मदद करते हैं।",
+    "Habit loop में cue, routine और reward जैसे patterns हो सकते हैं। Environment बदलना—phone दूर रखना, study place तय करना, reminders—self-control को आसान बना सकता है।",
+    "सुबह उठते ही social media, exam से पहले random browsing, रात देर तक gaming, या रोज 30-minute skill practice।",
+    "एक 'one habit at a time' 7-day experiment करें।",
+    "Daily 3 priorities लिखें और रात को केवल यह review करें कि क्या हुआ और क्यों।",
+    ["एक साथ 10 habits शुरू करना","एक दिन fail होने पर पूरा plan छोड़ देना","अनुशासन को केवल कठोरता समझना"],
+    "Discipline का उद्देश्य जीवन को कैद करना नहीं, बल्कि जरूरी कामों के लिए समय और ध्यान सुरक्षित करना है।"
+  ),
+  makeLesson(
+    "Physical Activity, Sleep & Everyday Well-being",
+    "शारीरिक गतिविधि, नींद और दैनिक wellbeing",
+    "अच्छी दिशा केवल career नहीं; शरीर, नींद, भोजन, movement, relationships और rest भी daily functioning को प्रभावित करते हैं।",
+    "बहुत देर तक screen use, irregular sleep और inactivity study/work performance को प्रभावित कर सकते हैं। व्यक्तिगत जरूरतें अलग हो सकती हैं, इसलिए severe or persistent problems में qualified professional की सलाह उचित है।",
+    "Late-night scrolling से सुबह देर होना; पूरे दिन बैठना; exam के समय sleep sacrifice करना।",
+    "एक सप्ताह sleep, movement और screen timing का simple observation log रखें।",
+    "एक realistic evening wind-down routine बनाएं जिसमें phone-free period शामिल हो।",
+    ["नींद को 'waste of time' मानना","अत्यधिक कठोर fitness rules","लगातार समस्या होने पर मदद न लेना"],
+    "Wellbeing कोई luxury नहीं; सीखने, काम करने और जिम्मेदार निर्णय लेने की क्षमता के लिए daily foundation है।"
+  ),
+  makeLesson(
+    "Handling Failure, Mistakes & Setbacks",
+    "असफलता, गलती और setback से सीखना",
+    "Exam failure, rejected application, broken friendship या गलत decision जीवन का अंत नहीं। घटना से सीखना और अगला कदम तय करना महत्वपूर्ण है।",
+    "Reflection में तीन प्रश्न उपयोगी हैं: क्या हुआ? मेरे control में क्या था? अगली बार कौन-सा specific change करूंगा? Shame और learning को अलग रखें।",
+    "कम marks के बाद study method बदलना; interview reject होने के बाद mock interview करना; गलत purchase के बाद budget rule बनाना।",
+    "एक पुरानी गलती लिखें और उसे 'lesson → change → test' में बदलें।",
+    "किसी trusted person से constructive feedback मांगें।",
+    ["एक failure से identity तय करना","दूसरों को हर बार blame करना","सिर्फ regret करना, action न बदलना"],
+    "Failure information दे सकता है। Responsible learner feedback को next experiment में बदलता है।"
+  ),
+  makeLesson(
+    "Critical Thinking & Misinformation",
+    "आलोचनात्मक सोच और गलत जानकारी",
+    "हर confident statement सच नहीं होता। Young learners को claim, evidence, source, date और context की जांच करना सीखना चाहिए।",
+    "Emotional headlines, edited screenshots, fake experts, cherry-picked examples और forwarded messages misleading हो सकते हैं। किसी claim को verify करने के लिए primary/official source और independent credible sources देखें।",
+    "Fake scholarship notice, false exam date, health claim, political rumour, fake job vacancy।",
+    "एक online claim चुनें और Source / Date / Evidence / Other sources / What remains uncertain लिखें।",
+    "परिवार में एक 'forward करने से पहले verify' rule बनाएं।",
+    ["पहले result को final evidence मानना","केवल अपने पसंद के source देखना","uncertainty को failure समझना"],
+    "Critical thinking का अर्थ हर बात पर शक करना नहीं; evidence के अनुसार विश्वास की मात्रा तय करना है।"
+  ),
+  makeLesson(
+    "Choosing Friends, Mentors & Environments",
+    "दोस्त, mentor और environment कैसे चुनें?",
+    "आप जिन लोगों और environments में बार-बार रहते हैं, वे आपकी habits और opportunities को प्रभावित कर सकते हैं।",
+    "Friendship का मतलब identical होना नहीं। अच्छे peer group में respect, learning, honesty और boundaries के लिए जगह होती है। Mentor वह व्यक्ति हो सकता है जो experience के आधार पर प्रश्न पूछने और सोचने में मदद करे।",
+    "Study group जो regular practice करता है; sports group जो discipline बढ़ाता है; online group जो केवल risky challenges और abuse को encourage करता है।",
+    "अपने current circles को तीन categories में देखें: मुझे आगे बढ़ाते हैं / neutral / मुझे नुकसान की ओर धकेलते हैं।",
+    "एक positive learning community खोजें और उसमें एक constructive activity join करें।",
+    ["लोकप्रियता को quality मानना","एक ही group को पूरी identity बनाना","toxic behavior को loyalty के नाम पर सहना"],
+    "Environment को पूरी तरह control करना संभव नहीं, लेकिन किन लोगों और activities को अधिक समय देना है, इस पर काफी agency होती है।"
+  ),
+
+  makeLesson(
+    "Consent, Respect, Safety & Personal Boundaries",
+    "सहमति, सम्मान, सुरक्षा और व्यक्तिगत सीमाएं",
+    "किसी व्यक्ति की privacy, body, time, money, device और personal information का सम्मान करना healthy relationships का आधार है।",
+    "Consent clear, voluntary और situation-specific होना चाहिए। Pressure, threats, deception या fear में मिली 'हाँ' को healthy consent नहीं माना जाना चाहिए।",
+    "Private photo मांगना, phone check करने के लिए pressure, unwanted touch, money demand या personal information share करने का दबाव।",
+    "Boundary sentence practice करें: 'मैं यह share नहीं करना चाहता/चाहती', 'कृपया मेरी permission के बिना ऐसा न करें।'",
+    "Trusted support map बनाएं कि unsafe situation में किससे और कैसे संपर्क करेंगे।",
+    ["'नहीं' का सम्मान न करना","private information को relationship proof मानना","unsafe situation को अकेले handle करने की कोशिश"],
+    "Respect और safety दोनों दिशाओं में काम करते हैं। Unsafe or coercive situations में support लेना उचित है।"
+  ),
+  makeLesson(
+    "Substance Use, Risky Activities & Law",
+    "नशा, जोखिमपूर्ण गतिविधियां और कानून",
+    "कुछ activities short-term excitement या peer acceptance दे सकती हैं लेकिन health, education, money, relationships और legal consequences पर गंभीर असर डाल सकती हैं।",
+    "14–22 की उम्र में 'बस एक बार' या 'सब करते हैं' जैसे arguments risk को छोटा दिखा सकते हैं। Illegal substances, dangerous driving, violence, fraud, cybercrime और betting/gambling-like activities से दूर रहना जरूरी है।",
+    "नशे के लिए group pressure, बिना licence/rules के dangerous driving, online fraud में account देने का प्रस्ताव।",
+    "Risky invitation के लिए refusal + exit plan बनाएं: कौन-सा वाक्य बोलेंगे, किसे call करेंगे, सुरक्षित जगह कैसे जाएंगे।",
+    "एक trusted adult/mentor को पहले से emergency contact बनाएं।",
+    ["Risk को challenge समझना","legal consequences को ignore करना","group छोड़ने में शर्म करना"],
+    "Courage का अर्थ अनावश्यक जोखिम लेना नहीं; सुरक्षित निर्णय लेकर भविष्य बचाना भी courage है।"
+  ),
+  makeLesson(
+    "Career Choices, Courses & Avoiding False Promises",
+    "Career और course चुनना: झूठे वादों से बचें",
+    "Course या job चुनते समय recognition, eligibility, curriculum, cost, duration, practical outcomes और credible placement information की जांच करें।",
+    "Guaranteed job, guaranteed income या '100% success' जैसे claims को evidence के बिना स्वीकार न करें। Official institution details और written terms पढ़ें।",
+    "Fake training institute, paid registration for fake job, certificate-only course, misleading placement advertisement।",
+    "किसी course के लिए verification checklist बनाएं: provider, recognition, syllabus, fees, refund terms, outcomes, independent evidence।",
+    "दो courses की evidence-based comparison sheet बनाएं और assumptions अलग लिखें।",
+    ["केवल advertisement देखकर admission","loan लेकर बिना research course खरीदना","certificate को skill का substitute मानना"],
+    "Career investment में information और verification उतने ही महत्वपूर्ण हैं जितना enthusiasm।"
+  ),
+  makeLesson(
+    "Building a 1-Year Personal Roadmap",
+    "अपना 1-वर्षीय Personal Roadmap बनाना",
+    "एक वर्ष की दिशा को छोटे quarterly और monthly goals में बदलने से बड़े लक्ष्य actionable बनते हैं।",
+    "Roadmap में education, one employable skill, wellbeing, relationships, money habits, digital habits और contribution जैसे areas शामिल किए जा सकते हैं।",
+    "12 महीने में English communication improve करना, spreadsheet सीखना, board/college preparation, internship project या local community volunteering।",
+    "एक page roadmap बनाएं: 1-year goal → 90-day target → monthly milestones → weekly action → evidence of progress।",
+    "हर Sunday 15-minute review: क्या सीखा, क्या पूरा हुआ, क्या बदलना है?",
+    ["बहुत बड़े vague goals","केवल outcome लिखना, process नहीं","review न करना"],
+    "Direction becomes practical when a goal has a next action, a time frame and evidence of progress."
+  ),
+  makeLesson(
+    "Emergency Decision Plan & Trusted Support",
+    "मुश्किल स्थिति के लिए Emergency Decision Plan",
+    "जब situation अचानक बिगड़े—scam, threat, accident, bullying, unsafe gathering या serious conflict—तब पहले से तय plan मदद करता है।",
+    "Emergency में priority order रखें: immediate physical safety → trusted person → appropriate local/emergency support → evidence/documentation where safe → follow-up.",
+    "Unsafe ride से निकलना, scam payment रोकना, online threat का evidence रखना, lost phone secure करना।",
+    "अपने phone में trusted contacts और important recovery information व्यवस्थित रखें।",
+    "एक family/mentor emergency card बनाएं: contacts, safe place, essential information और first actions।",
+    ["खतरे में evidence लेने के लिए खुद को risk में डालना","अकेले सामना करना","emergency को 'शर्म' के कारण छिपाना"],
+    "Emergency plan का उद्देश्य panic कम करना और safe, timely action को आसान बनाना है।"
+  ),
+  makeLesson(
+    "My Direction Charter: Values, Goals & Rules",
+    "मेरी दिशा-पत्रिका: मूल्य, लक्ष्य और व्यक्तिगत नियम",
+    "Course के अंत में learner अपनी personal direction charter बनाता है—मैं कौन बनना चाहता हूं, किन values पर चलूंगा, क्या सीखूंगा और किन risks से बचूंगा।",
+    "यह कोई motivational poster नहीं बल्कि practical decision filter है। नया अवसर मिलने पर पूछें: क्या यह मेरे values, goals, safety और responsibilities के साथ fit है?",
+    "Rules: झूठे shortcut नहीं; OTP/PIN नहीं share करूंगा; risky peer pressure में 'ना' कहूंगा; हर महीने skill evidence बनाऊंगा; जरूरत पर mentor से पूछूंगा।",
+    "अपने पांच personal rules लिखें और उन्हें अगले 30 दिनों में test करें।",
+    "एक final self-review करें: मेरी दिशा क्या है? मेरे top 3 goals क्या हैं? मेरे top 3 risks क्या हैं? मेरी support system कौन है?",
+    ["बहुत generic promises","दूसरों के rules copy करना","charter लिखकर कभी review न करना"],
+    "दिशा कोई एक मंजिल नहीं; यह values, choices, habits, learning और review से लगातार बनती रहने वाली प्रक्रिया है।"
+  )
+];
+
+const DIRECTION_14_22_COURSE = {
+  id:"direction-decision-life-14-22",
+  title:{en:"14–22: Direction, Decisions & Life Skills",hi:"14–22: सही दिशा, सही निर्णय एवं जीवन-कौशल"},
+  category:"Youth & Disaster Preparedness / युवा एवं आपदा तैयारी",
+  type:"certificate",
+  level:"foundation",
+  description:"A complete, practical life-direction course for young people aged roughly 14–22: self-understanding, decision-making, peer pressure, friendships and boundaries, digital life, study and career direction, money habits, discipline, wellbeing, critical thinking, safety, risky situations and a one-year personal roadmap.",
+  audience:"Adolescents, students, college learners, first-time job seekers, volunteers and young people who feel confused about studies, friends, career, mobile use or their next step.",
+  prerequisites:["No academic prerequisite.","Best completed with a notebook or digital journal for exercises and reflection."],
+  learningHours:30,
+  version:"1.0",
+  lastReviewed:"2026-10-01",
+  outcomes:[
+    "Understand common decision points and pressures faced between approximately 14 and 22.",
+    "Identify personal values, strengths, interests, responsibilities and areas for growth.",
+    "Use a repeatable decision framework instead of acting only from emotion or peer pressure.",
+    "Recognize warning signs in harmful peer influence, unsafe relationships, scams and risky activities.",
+    "Build healthier study, skill, digital, money and daily-life habits.",
+    "Evaluate education and career opportunities using evidence instead of promises alone.",
+    "Create a trusted-support network and an emergency decision plan.",
+    "Complete a one-year personal roadmap and a practical personal direction charter."
+  ],
+  modules:[
+    makeModule("d1422-self","Know Yourself & Build Your Direction","अपने आप को समझें और अपनी दिशा बनाएं","Understand identity, values, strengths, interests and what a healthy direction looks like.",DIRECTION_14_22_LESSONS.slice(0,3)),
+    makeModule("d1422-decisions","Decision-Making & Independent Thinking","निर्णय लेना और स्वतंत्र सोच","Learn structured decision-making, evidence, peer pressure and critical thinking.",DIRECTION_14_22_LESSONS.slice(3,6)),
+    makeModule("d1422-relationships","Friends, Family, Relationships & Boundaries","दोस्त, परिवार, संबंध और सीमाएं","Build respectful relationships, communication skills, boundaries and support systems.",DIRECTION_14_22_LESSONS.slice(6,9)),
+    makeModule("d1422-digital","Digital Life, Safety & Reputation","डिजिटल जीवन, सुरक्षा और पहचान","Understand social media, algorithms, scams, privacy and digital reputation.",DIRECTION_14_22_LESSONS.slice(9,11)),
+    makeModule("d1422-study-career","Study, Skills, Career & Money","पढ़ाई, कौशल, करियर और पैसा","Turn confusion into practical education, skill, career and financial experiments.",DIRECTION_14_22_LESSONS.slice(11,14)),
+    makeModule("d1422-habits","Habits, Well-being & Setbacks","आदतें, wellbeing और असफलताओं से सीखना","Build routines, protect everyday wellbeing and convert mistakes into learning.",DIRECTION_14_22_LESSONS.slice(14,17)),
+    makeModule("d1422-risk","Risk, Safety, Law & Real-World Choices","जोखिम, सुरक्षा, कानून और वास्तविक जीवन के निर्णय","Recognize unsafe situations, risky activities, false promises and how to exit safely.",DIRECTION_14_22_LESSONS.slice(17,21)),
+    makeModule("d1422-roadmap","Personal Roadmap & Life Direction Charter","व्यक्तिगत रोडमैप और जीवन-दिशा पत्र","Create a one-year roadmap, emergency plan and personal rules for the next stage of life.",DIRECTION_14_22_LESSONS.slice(21))
+  ]
+};
+
+const DIRECTION_14_22_ASSESSMENTS = {};
+DIRECTION_14_22_COURSE.modules.forEach((m) => {
+  DIRECTION_14_22_ASSESSMENTS[m.id] = makeQuestions([
+    ["बड़ा निर्णय लेते समय पहला उपयोगी कदम क्या है?",["समस्या को स्पष्ट करना","तुरंत फैसला करना","दोस्तों की नकल करना","केवल social media poll देखना"],0],
+    ["Peer pressure में सही प्रतिक्रिया क्या हो सकती है?",["अपनी सीमा स्पष्ट करना और जरूरत पर safe exit लेना","सिर्फ group को खुश करना","जोखिम को ignore करना","अपनी values छोड़ देना"],0],
+    ["Career course चुनते समय क्या verify करना चाहिए?",["Provider, eligibility, curriculum, cost और evidence","केवल advertisement","केवल certificate design","केवल दोस्त की राय"],0],
+    ["Online financial scam में क्या करना चाहिए?",["रुकें और official channel से verify करें","OTP/PIN बताएं","जल्दी payment करें","screen share करें"],0],
+    ["Healthy relationship में क्या जरूरी है?",["Respect, consent, trust और boundaries","Control और threats","Password मांगना","Isolation"],0],
+    ["गलती के बाद constructive approach क्या है?",["क्या हुआ समझकर specific change test करना","खुद को हमेशा failure मानना","कुछ न बदलना","सिर्फ blame करना"],0]
+  ]);
+});
+DIRECTION_14_22_ASSESSMENTS.final = makeQuestions([
+  ["14–22 की उम्र में दिशा बनाने का practical अर्थ क्या है?",["Values, skills, habits और responsible decisions को धीरे-धीरे मजबूत करना","एक ही दिन में पूरा career तय करना","हर trend follow करना","केवल ज्यादा पैसा कमाना"],0],
+  ["Decision framework में evidence क्यों जरूरी है?",["क्योंकि assumptions और facts अलग हो सकते हैं","क्योंकि friends हमेशा गलत होते हैं","क्योंकि decision कभी uncertain नहीं होना चाहिए","क्योंकि emotion हमेशा बेकार है"],0],
+  ["Peer pressure का warning sign क्या हो सकता है?",["'सब कर रहे हैं' कहकर safety या values के खिलाफ दबाव","सम्मानपूर्वक सलाह","स्वतंत्र विकल्प देना","सवाल पूछने देना"],0],
+  ["Healthy boundary का उदाहरण क्या है?",["'मैं यह personal information share नहीं करना चाहता/चाहती'","'अगर दोस्त हो तो password दो'","'तुम्हें हर समय location share करनी होगी'","'ना कहने की अनुमति नहीं'"],0],
+  ["Career decision में किससे बचना चाहिए?",["Guaranteed job/income जैसे unverified promises","Written terms","Course syllabus","Eligibility check"],0],
+  ["Digital safety में कौन-सा नियम सही है?",["OTP/PIN secret रखें और suspicious requests verify करें","OTP caller को बताएं","Unknown link खोलें","Public post में personal documents डालें"],0],
+  ["Financial maturity का शुरुआती संकेत क्या है?",["Needs, wants, goals और spending को समझना","दिखावे के लिए खर्च करना","Quick-money schemes","दोस्तों से खर्च की तुलना"],0],
+  ["Failure के बाद useful response क्या है?",["Feedback लेकर अगला specific experiment करना","पूरी identity तय कर लेना","हर बार दूसरों को blame करना","कुछ न सीखना"],0],
+  ["Critical thinking का अर्थ क्या है?",["Evidence, source, date और context देखकर belief update करना","हर बात को झूठ मानना","केवल अपनी पसंद की बात मानना","पहला search result मान लेना"],0],
+  ["Unsafe situation में priority क्या है?",["Immediate safety और trusted/appropriate support","Video बनाना","अकेले confrontation","शर्म के कारण छिपाना"],0],
+  ["Personal roadmap में क्या होना चाहिए?",["Goal, timeline, next actions और evidence of progress","केवल motivational quote","केवल final result","दूसरों की copied plan"],0],
+  ["My Direction Charter किस काम आएगी?",["नए अवसरों और दबावों के बीच अपने values और goals के अनुसार निर्णय लेने में","दूसरों को control करने में","हर risk को खत्म करने में","career की guarantee देने में"],0]
+]);
+\nconst MOBILE_BALANCE_COURSE = {
   id:"mobile-use-digital-balance-smart-life",
   title:{en:"Mobile Use, Digital Balance & Smart Life",hi:"मोबाइल उपयोग, डिजिटल संतुलन एवं स्मार्ट जीवन"},
   category:"Digital Skills / डिजिटल कौशल",
@@ -192,8 +503,6 @@ MOBILE_BALANCE_ASSESSMENTS.final = makeQuestions([
   ["Healthy entertainment का संकेत क्या है?",["It fits within sleep, work/study, relationships and responsibilities","It replaces sleep","It has no stopping point","It continues whenever a notification appears"],0]
 ]);
 
-const makeQuestions = (pairs) => pairs.map(([q,options,answer=0]) => ({q,options,answer}));
-
 const FLAGSHIP_COURSES = {
   [MOBILE_PHONE_COURSE.id]: MOBILE_PHONE_COURSE,
   [MOBILE_BALANCE_COURSE.id]: MOBILE_BALANCE_COURSE
@@ -239,4 +548,4 @@ FLAGSHIP_COURSE_ASSESSMENTS.final = makeQuestions([
   ["Course mastery का सही संकेत क्या है?",["Understand, practise, apply, assess and reflect","Only open pages","Only watch videos","Only receive a certificate"],0]
 ]);
 
-export { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS, MOBILE_PHONE_COURSE, MOBILE_BALANCE_COURSE };
+export { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS, MOBILE_PHONE_COURSE, MOBILE_BALANCE_COURSE, DIRECTION_14_22_COURSE };
