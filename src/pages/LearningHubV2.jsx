@@ -710,4 +710,4 @@ export default function LearningHubV2() {
       </section>
     </main>
   </div>;
-}\n
+}
