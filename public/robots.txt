@@ -1,0 +1,20 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /.git
+Disallow: /.github
+
+Sitemap: https://swastiksrijan.in/sitemap.xml
+
+# Crawl delay for respectful crawling
+Crawl-delay: 1
+
+# Google Search Console
+User-agent: Googlebot
+Allow: /
+
+# Specific rules
+User-agent: *
+Allow: /
+Disallow: /private/
+Disallow: /temp/
