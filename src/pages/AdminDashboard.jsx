@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
-import { FaChartLine, FaClipboardList, FaUsers, FaHeart, FaHandsHelping, FaIdCard, FaFileAlt, FaShieldAlt, FaSignOutAlt } from 'react-icons/fa';
+import { FaChartLine, FaClipboardList, FaUsers, FaHeart, FaHandsHelping, FaIdCard, FaFileAlt, FaShieldAlt, FaSignOutAlt, FaCertificate } from 'react-icons/fa';
 import AdminPortalV2 from './AdminPortalV2';
 import AdminApplicationDashboard from '../components/AdminApplicationDashboard';
 import AdminUserManagement from '../components/AdminUserManagement';
+import AdminLearningCertificates from '../components/AdminLearningCertificates';
 
 const TOKEN_KEY = 'ssf_admin_token';
 
@@ -15,6 +16,7 @@ const modules = [
   { id: 'admin-volunteers', label: 'Volunteers', icon: FaHandsHelping },
   { id: 'admin-members', label: 'Members', icon: FaIdCard },
   { id: 'admin-reports', label: 'Reports & Records', icon: FaFileAlt },
+  { id: 'admin-learning-certificates', label: 'Learning Certificates / प्रमाणपत्र', icon: FaCertificate },
   { id: 'admin-compliance', label: 'Compliance', icon: FaShieldAlt }
 ];
 
@@ -71,7 +73,7 @@ export default function AdminDashboard() {
     <section id="admin-donors" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#ff6600]">Fundraising</p><h2 className="text-2xl font-black text-[#002344] mt-1">Donors & Donations</h2><p className="text-sm text-zinc-500 mt-1">Donor submissions are available in Applications. Donation status must reflect the actual transaction state; a request or pending record is not treated as money received.</p><button onClick={() => jumpTo('admin-applications')} className="mt-4 px-4 py-2.5 rounded-xl bg-[#002344] text-white text-sm font-bold">Open donor records</button></div></section>
     <section id="admin-volunteers" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#ff6600]">Volunteer Management</p><h2 className="text-2xl font-black text-[#002344] mt-1">Volunteer workflow</h2><p className="text-sm text-zinc-500 mt-1">Use Applications for intake/status and the secure management area for approval and official volunteer ID/certificate actions.</p><button onClick={() => jumpTo('admin-applications')} className="mt-4 px-4 py-2.5 rounded-xl bg-[#002344] text-white text-sm font-bold">Open volunteer applications</button></div></section>
     <section id="admin-members" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#ff6600]">Membership</p><h2 className="text-2xl font-black text-[#002344] mt-1">Member management</h2><p className="text-sm text-zinc-500 mt-1">Review membership submissions and use the secure management area to approve members and issue official records.</p><button onClick={() => jumpTo('admin-applications')} className="mt-4 px-4 py-2.5 rounded-xl bg-[#002344] text-white text-sm font-bold">Open member applications</button></div></section>
-    <section id="admin-reports" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#ff6600]">Records</p><h2 className="text-2xl font-black text-[#002344] mt-1">Reports & official records</h2><p className="text-sm text-zinc-500 mt-1">This section is intentionally factual: no funding, donation or impact figure is treated as confirmed until the underlying record supports it.</p></div></section>
+    <section id="admin-learning-certificates" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><AdminLearningCertificates /></section>\n    <section id="admin-reports" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#ff6600]">Records</p><h2 className="text-2xl font-black text-[#002344] mt-1">Reports & official records</h2><p className="text-sm text-zinc-500 mt-1">This section is intentionally factual: no funding, donation or impact figure is treated as confirmed until the underlying record supports it.</p></div></section>
     <section id="admin-compliance" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 scroll-mt-24"><div className="rounded-[2rem] bg-[#002344] text-white p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#ffb067]">Governance</p><h2 className="text-2xl font-black mt-1">Compliance & audit readiness</h2><p className="text-sm text-white/70 mt-2 max-w-4xl">The admin architecture is prepared for future modules such as audit logs, document records, programme reporting, CSR/partnership pipeline and grant tracking. These should be added only when the corresponding backend records and permissions exist.</p></div></section>
   </main>;
 }

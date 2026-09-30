@@ -5,6 +5,8 @@ import {
   FaShieldAlt, FaUsers, FaHeartbeat, FaSeedling, FaPaw, FaBalanceScale, FaChild,
   FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping
 } from "react-icons/fa";
+import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
+import { ENDPOINTS } from "../config/api";
 
 const HUB_IMAGES = {
   education: "/images/real/classroom-floor-seating.jpg",
@@ -208,95 +210,331 @@ function getSubjectFromUrl() {
 }
 
 function LearningSubject({ subject, onBack }) {
-  const progressKey = "ssf-learning-progress-" + subject.id;
+  const progressKey = "ssf-learning-course-progress-" + subject.id;
   const [done, setDone] = useState(() => {
     try { return JSON.parse(localStorage.getItem(progressKey) || "[]"); } catch { return []; }
   });
-  const [quiz, setQuiz] = useState(false);
-  const [quizAnswers, setQuizAnswers] = useState({});
-  const [quizSubmitted, setQuizSubmitted] = useState(false);
-  const [quizScore, setQuizScore] = useState(0);
-  const sections = [
-    ["01","Learning Objective / सीखने का उद्देश्य","इस lesson का उद्देश्य " + subject.title + " को सरल bilingual भाषा में समझना, सही जानकारी पहचानना और सुरक्षित practical use सीखना है।"],
-    ["02","Introduction / परिचय",subject.intro],
-    ["03","What is it? / यह क्या है?",subject.title + " का अर्थ, मूल अवधारणा और इसके प्रमुख शब्दों को सरल भाषा में समझें।"],
-    ["04","Meaning & Definition / अर्थ एवं परिभाषा","मुख्य शब्दों का सरल अर्थ समझें और अपनी भाषा में लिखें। विषय को उसके उद्देश्य, प्रक्रिया, उपयोग और सीमाओं के साथ देखें।"],
-    ["05","Why is it important? / यह क्यों जरूरी है?","यह विषय व्यक्ति, परिवार और समुदाय की समझ, अवसर, सुरक्षा, सीखने या विकास से कैसे जुड़ता है—इसे वास्तविक उदाहरणों के साथ समझें।"],
-    ["06","Background / History / पृष्ठभूमि एवं इतिहास","विषय का विकास लोगों की जरूरतों, ज्ञान, तकनीक, समाज और संस्थागत अनुभवों के साथ हुआ है। पुराने और वर्तमान संदर्भ में अंतर समझें।"],
-    ["07","Types / Categories / प्रकार एवं श्रेणियाँ","Basic / मूल स्तर, Practical / व्यावहारिक स्तर और Advanced / उन्नत स्तर—तीनों को समझें तथा विषय के अनुसार वास्तविक categories पहचानें।"],
-    ["08","Basic Concepts / मूल अवधारणाएँ","मुख्य vocabulary, purpose, roles, process और expected result पहले समझें। कठिन शब्दों को अपनी भाषा में लिखकर दोहराएँ।"],
-    ["09","Detailed Explanation / विस्तृत समझ","Concept → process → example → practice → review की श्रृंखला अपनाएँ। केवल definition याद करने के बजाय देखें कि विषय वास्तविक परिस्थिति में कैसे काम करता है।"],
-    ["10","Real-life Examples / वास्तविक जीवन के उदाहरण","घर, स्कूल, खेत, workplace, digital environment या community से एक वास्तविक स्थिति चुनें। समस्या, action और result अलग-अलग पहचानें।"],
-    ["11","Step-by-step Learning / चरणबद्ध सीखना","1) उद्देश्य तय करें। 2) मुख्य concepts सीखें। 3) विश्वसनीय material पढ़ें। 4) छोटा practical task करें। 5) परिणाम जाँचें। 6) feedback लेकर सुधारें।"],
-    ["12","Practical Use / व्यावहारिक उपयोग","सीखी जानकारी को छोटे, सुरक्षित और measurable task में लागू करें। उपयोग के बाद परिणाम लिखें और जरूरत होने पर तरीका सुधारें।"],
-    ["13","Do & Don’t / क्या करें और क्या न करें","क्या करें: facts verify करें, privacy/consent/safety रखें, official guidance लें और records रखें। क्या न करें: misinformation forward न करें, निजी जानकारी साझा न करें और बिना training high-risk काम न करें।"],
-    ["14","Activities / गतिविधियाँ","एक notebook activity करें: आपने क्या जाना, कौन-सी समस्या दिखी, क्या विकल्प हैं, आपने क्या action चुना और आगे क्या सीखना है।"],
-    ["15","Practice / अभ्यास","अपने शब्दों में 5-line summary लिखें। फिर एक example, एक practical use, एक सावधानी और एक next step लिखें।"],
-    ["16","Questions & Answers / प्रश्नोत्तर","यह क्या है? क्यों जरूरी है? इसका एक real-life example क्या है? practical use क्या है? कौन-सी सावधानी जरूरी है? अपने उत्तर lesson के आधार पर लिखें।"],
-    ["17","Quiz / Assessment / प्रश्नोत्तरी एवं आकलन","नीचे दिए गए 5 प्रश्नों का उत्तर दें। प्रत्येक प्रश्न lesson की समझ, responsible use और practical learning को जाँचता है।"] ,
-    ["18","Key Points / मुख्य बिंदु","अर्थ समझें • मुख्य concepts पहचानें • example देखें • सुरक्षित practice करें • source verify करें • सीख record करें • जरूरत पर expert/official guidance लें।"],
-    ["19","Related Topics / संबंधित विषय","इसी category के अन्य subjects पढ़ें। Search box से related keyword खोजें और अगला lesson चुनें।"],
-    ["20","Useful Resources / उपयोगी संसाधन","Current information के लिए official government portals, recognised educational resources और trusted subject organisations का उपयोग करें। Current rules/eligibility हमेशा official source से verify करें।"],
-    ["21","Government Schemes & Services / सरकारी योजनाएँ एवं सेवाएँ","इस विषय से संबंधित scheme/service उपलब्ध हो सकती है। Eligibility, dates और benefits बदल सकते हैं; इसलिए संबंधित Central/State official portal पर current guideline verify करें। Learning Hub eligibility या benefit की guarantee नहीं करता।"],
-    ["22","SSF Learning & Community Perspective / SSF की सीख एवं सामुदायिक दृष्टि","SSF Learning Hub knowledge को practical, responsible और community-oriented learning में बदलने पर जोर देता है—सत्य, सहभागिता, सम्मान, self-reliance और lifelong learning के साथ।"],
-    ["23","Video Lesson / वीडियो पाठ","Video sequence: Opening → Topic Introduction → Explanation → Visual Examples → Practical Example → Recap → Questions → Conclusion. Verified SSF video उपलब्ध होने पर इसी slot में जोड़ा जाएगा।"],
-    ["24","What will be learned in video? / वीडियो में क्या सीखेंगे?","Topic introduction, key concepts, visual example, practical illustration, common mistakes, safety/verification points और final recap।"],
-    ["25","Summary / सारांश",subject.title + " को पूरा करने के बाद learner को इसका अर्थ, महत्व, concepts, practical use और responsible learning approach स्पष्ट होना चाहिए।"],
-    ["26","Conclusion / निष्कर्ष","अच्छी learning केवल information याद करना नहीं है। सही समझ, अभ्यास, verification, reflection और जिम्मेदार उपयोग से knowledge को useful skill में बदला जाता है।"],
-    ["27","Next Lesson / अगला पाठ","इस category में अगला संबंधित subject चुनें या Search से अपनी learning जरूरत के अनुसार नया lesson शुरू करें।"]
+  const [activeLesson, setActiveLesson] = useState(0);
+  const [quizOpen, setQuizOpen] = useState(false);
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+  const [finalResult, setFinalResult] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(progressKey + "-final") || "null"); } catch { return null; }
+  });
+  const [moduleAnswers, setModuleAnswers] = useState({});
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("login");
+  const [authForm, setAuthForm] = useState({ fullName:"", email:"", confirmEmail:"", phone:"", password:"" });
+  const [authStatus, setAuthStatus] = useState("idle");
+  const [authError, setAuthError] = useState("");
+  const [accountUser, setAccountUser] = useState(() => { try { return JSON.parse(localStorage.getItem("ssf-learning-account") || "null"); } catch { return null; } });
+  const [moduleResults, setModuleResults] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
+  });
+
+  const structuredCourse = FLAGSHIP_COURSES[subject.id];
+  const modules = structuredCourse
+    ? structuredCourse.modules.map((m) => ({
+        title: m.title.en + " / " + m.title.hi,
+        subtitle: m.description,
+        lessons: m.lessons.map((l) => [
+          l.title.en + " / " + l.title.hi,
+          l.content?.easyExplanation || "",
+          l
+        ])
+      }))
+    : [
+    {
+      title:"Foundation / आधार",
+      subtitle:"Meaning, background, purpose and essential vocabulary",
+      lessons:[
+        ["What is it? / यह क्या है?","विषय का अर्थ, परिभाषा, उद्देश्य और प्रमुख शब्द समझें।"],
+        ["Why does it matter? / यह क्यों महत्वपूर्ण है?","वास्तविक जीवन में इसकी भूमिका, उपयोग, अवसर और सीमाएँ समझें।"],
+        ["Background & Development / पृष्ठभूमि एवं विकास","विषय कैसे विकसित हुआ और आज के संदर्भ में इसे कैसे समझना चाहिए।"]
+      ]
+    },
+    {
+      title:"Core Knowledge / मूल ज्ञान",
+      subtitle:"Concepts, categories, principles and examples",
+      lessons:[
+        ["Key Concepts / प्रमुख अवधारणाएँ","मुख्य concepts को आसान भाषा, उदाहरण और तुलना के साथ समझें।"],
+        ["Types & Components / प्रकार एवं घटक","विषय के प्रमुख प्रकार, parts, roles और relationships पहचानें।"],
+        ["Examples & Case Thinking / उदाहरण एवं केस","वास्तविक परिस्थितियों में concept कैसे दिखाई देता है, इसका अभ्यास करें।"]
+      ]
+    },
+    {
+      title:"Practice & Application / अभ्यास एवं प्रयोग",
+      subtitle:"Turn knowledge into useful capability",
+      lessons:[
+        ["Step-by-step Practice / चरणबद्ध अभ्यास","छोटे practical tasks करके सीखी बात को लागू करें।"],
+        ["Common Mistakes / सामान्य गलतियाँ","गलत approaches पहचानें, कारण समझें और सुधार करना सीखें।"],
+        ["Real-world Application / वास्तविक उपयोग","समस्या पहचानें, विकल्प देखें, action लें और परिणाम review करें।"]
+      ]
+    },
+    {
+      title:"Advanced Learning / उन्नत सीख",
+      subtitle:"Analysis, problem solving and deeper understanding",
+      lessons:[
+        ["Analysis / विश्लेषण","Information को evidence, context और cause-effect के साथ analyse करें।"],
+        ["Problem Solving / समस्या समाधान","Complex situation को define, break down, solve और review करें।"],
+        ["Professional Practice / व्यावहारिक दक्षता","Responsible professional use, quality, ethics, safety और continuous improvement समझें।"]
+      ]
+    },
+    {
+      title:"Assessment & Next Step / आकलन एवं अगला चरण",
+      subtitle:"Check, reflect, complete and continue",
+      lessons:[
+        ["Revision / पुनरावृत्ति","पूरे course के concepts, examples और practical points को दोहराएँ।"],
+        ["Final Assessment / अंतिम आकलन","Knowledge, understanding, application और responsible use की जाँच करें।"],
+        ["Learning Path / आगे की सीख","अगले level और related subjects के लिए अपना learning path चुनें।"]
+      ]
+    }
   ];
-  const toggle=(i)=>setDone(d=>{
-    const next=d.includes(i)?d.filter(x=>x!==i):[...d,i];
+  const quizQuestions = [
+    {q:"अच्छी learning का उद्देश्य क्या है?", options:["समझकर और अभ्यास करके capability विकसित करना","केवल title याद करना","केवल video देखना","केवल certificate लेना"], answer:0},
+    {q:"किसी concept को मजबूत करने का उपयोगी तरीका क्या है?", options:["Example + Practice + Review","बिना पढ़े अनुमान लगाना","बिना जाँचे जानकारी share करना","केवल एक definition याद करना"], answer:0},
+    {q:"Current rules या schemes को कहाँ verify करना चाहिए?", options:["संबंधित official source","random forwarded message","unverified social post","anonymous screenshot"], answer:0},
+    {q:"Practical learning में क्या महत्वपूर्ण है?", options:["सुरक्षित task, परिणाम और सुधार","केवल memorisation","बिना training high-risk action","दूसरे का work copy करना"], answer:0},
+    {q:"Course पूरा करने के बाद अगला कदम क्या हो सकता है?", options:["Assessment, reflection और next learning path","सीखना बंद करना","बिना समझे certificate claim करना","सभी sources ignore करना"], answer:0}
+  ];
+  const completed = done.length;
+  const total = lessons.length;
+  const progress = Math.round((completed / total) * 100);
+  const allLearningComplete = progress === 100;
+  const modulePassCount = moduleAssessments.filter(m => moduleResults[m.id]?.passed).length;
+  const moduleAssessmentComplete = moduleAssessments.length === 0 || modulePassCount === moduleAssessments.length;
+  const finalAssessmentPassed = Boolean(finalResult?.passed);
+  const certificateEligible = allLearningComplete && moduleAssessmentComplete && finalAssessmentPassed;
+  const courseMeta = structuredCourse || {
+    title: { en: subject.en, hi: subject.hi },
+    level: "foundation",
+    learningHours: 0,
+    version: "1.0",
+    lastReviewed: "2026-09-30",
+    audience: "Learners, students, volunteers and community learners.",
+    prerequisites: ["No special prerequisite stated for this learning resource."],
+    outcomes: [
+      "Understand the subject from foundation to practical application.",
+      "Use examples and activities to connect knowledge with real situations.",
+      "Review learning through practice and assessment before claiming completion."
+    ]
+  };
+  const markDone = (i) => setDone(current => {
+    const next = current.includes(i) ? current : [...current, i];
     try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch {}
     return next;
   });
-  const progress=Math.round((done.length/sections.length)*100);
-  const videoSearch="https://www.youtube.com/results?search_query="+encodeURIComponent(subject.title+" educational Hindi English lesson");
-  const quizQuestions = [
-    { q: "इस lesson का मुख्य विषय क्या है?", options: [subject.en, "केवल मनोरंजन", "केवल विज्ञापन", "इनमें से कोई नहीं"], answer: 0 },
-    { q: "सीखी हुई जानकारी का जिम्मेदार उपयोग कैसे करें?", options: ["तथ्य verify करके और सुरक्षित तरीके से", "बिना जाँचे share करके", "बिना training high-risk काम करके", "निजी जानकारी public करके"], answer: 0 },
-    { q: "अच्छी learning में कौन-सा क्रम उपयोगी है?", options: ["समझ → उदाहरण → अभ्यास → review", "केवल याद करना", "केवल video देखना", "बिना अभ्यास आगे बढ़ना"], answer: 0 },
-    { q: "Current scheme/rule की जानकारी कहाँ verify करनी चाहिए?", options: ["संबंधित official source", "random forwarded message", "अनजान social post", "असत्यापित screenshot"], answer: 0 },
-    { q: "इस lesson का practical लक्ष्य क्या है?", options: ["ज्ञान को समझकर सुरक्षित और उपयोगी skill में बदलना", "केवल title याद करना", "केवल certificate लेना", "बिना समझे copy करना"], answer: 0 }
-  ];
-  const submitQuiz = () => {
-    const score = quizQuestions.reduce((sum, item, i) => sum + (quizAnswers[i] === item.answer ? 1 : 0), 0);
-    setQuizScore(score);
-    setQuizSubmitted(true);
+  const goLesson = (nextIndex) => {
+    const safe = Math.max(0, Math.min(nextIndex, total - 1));
+    setActiveLesson(safe);
+    setQuizOpen(false);
+    setAnswers({});
+    setSubmitted(false);
+    markDone(safe);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const share=()=>{const url=window.location.href.split("?")[0]+"?subject="+encodeURIComponent(subject.id);if(navigator.share)navigator.share({title:subject.title+" | SSF Learning Hub",text:subject.intro,url}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>window.alert("Learning link copied."));};
-  return <div className="min-h-screen bg-zinc-50 text-zinc-900 font-inria">
-    <section className={"relative overflow-hidden bg-gradient-to-r "+subject.color+" text-white"}><img src={subject.image} alt={subject.title} className="absolute inset-0 h-full w-full object-cover"/><div className="absolute inset-0 bg-[#001529]/60"/><div className="relative mx-auto max-w-7xl px-4 py-12 md:py-18">
-      <button onClick={onBack} className="mb-7 inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-bold"><FaArrowLeft/> Back / वापस</button>
-      <div className="flex flex-col gap-6 md:flex-row md:items-end"><div className="flex-1"><div className="text-xs font-black uppercase tracking-widest text-white/75">SSF Learning Hub • Subject {subject.number}</div><h1 className="mt-3 text-4xl font-black leading-tight md:text-6xl">{subject.en}</h1><h2 className="mt-2 text-2xl font-bold md:text-3xl">{subject.hi}</h2><p className="mt-5 max-w-4xl text-lg leading-8 text-white/90">{subject.intro}</p></div><button onClick={share} className="inline-flex items-center justify-center gap-2 rounded-xl bg-white px-5 py-3 font-black text-[#003366]"><FaShareAlt/> Share / साझा करें</button></div>
-    </div></section>
-    <main className="mx-auto max-w-7xl px-4 py-10"><div className="mb-8 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><div><div className="text-sm font-black text-[#003366]">Course Progress / पाठ्यक्रम प्रगति</div><div className="mt-1 text-xs text-zinc-500">{done.length} / {sections.length} sections completed</div></div><div className="text-2xl font-black text-[#003366]">{progress}%</div></div><div className="mt-4 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full bg-[#003366]" style={{width:progress+"%"}}/></div></div>
-    <div className="grid gap-8 lg:grid-cols-[1fr_330px]"><div className="space-y-5">{sections.map(([n,title,body],i)=><article key={n} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><div className="flex gap-4"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#003366]/10 text-[#003366] font-black">{done.includes(i)?<FaCheckCircle/>:n}</div><div className="flex-1"><h3 className="text-xl font-black">{title}</h3><p className="mt-3 leading-8 text-zinc-700">{body}</p><button onClick={()=>toggle(i)} className="mt-5 rounded-lg bg-[#003366] px-4 py-2 text-xs font-bold text-white">{done.includes(i)?"Completed ✓ / पूर्ण":"Mark complete / पूर्ण करें"}</button></div></div></article>)}</div>
-    <aside className="space-y-5">
-      <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
-        <h3 className="font-black text-[#003366]">Quiz / प्रश्नोत्तरी</h3>
-        <p className="mt-2 text-sm leading-6 text-zinc-600">5 प्रश्न • तुरंत score • गलत उत्तर पर lesson दोबारा पढ़ें।</p>
-        <button onClick={()=>{setQuiz(v=>!v);setQuizSubmitted(false);}} className="mt-4 w-full rounded-xl bg-[#003366] px-4 py-3 text-sm font-bold text-white">{quiz ? "Close Quiz / बंद करें" : "Start Quiz / शुरू करें"}</button>
-        {quiz && <div className="mt-5 space-y-5">
-          {quizQuestions.map((item,i)=><div key={i} className="rounded-xl bg-zinc-50 p-4">
-            <div className="text-sm font-black">{i+1}. {item.q}</div>
-            <div className="mt-3 space-y-2">{item.options.map((option,j)=><label key={j} className="flex cursor-pointer gap-2 text-sm leading-5">
-              <input type="radio" name={"quiz-"+i} checked={quizAnswers[i]===j} onChange={()=>setQuizAnswers(a=>({...a,[i]:j}))} />
-              <span>{option}</span>
-            </label>)}</div>
-          </div>)}
-          <button onClick={submitQuiz} disabled={Object.keys(quizAnswers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-bold text-white disabled:opacity-40">Submit Quiz / जमा करें</button>
-          {quizSubmitted && <div className="rounded-xl border border-zinc-200 bg-white p-4 text-center">
-            <div className="text-2xl font-black text-[#003366]">{quizScore}/5</div>
-            <p className="mt-1 text-sm text-zinc-600">{quizScore>=4 ? "Excellent — lesson understood. / बहुत अच्छा — lesson की अच्छी समझ है।" : "Review the lesson and try again. / lesson दोबारा पढ़ें और फिर प्रयास करें।"}</p>
-          </div>}
-        </div>}
-      </div><div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"><img src={subject.image} alt={subject.title} className="h-52 w-full object-cover"/><div className="p-5"><div className="text-xs font-black uppercase tracking-widest text-[#003366]">Visual Learning / दृश्य सीख</div><p className="mt-2 text-sm leading-6 text-zinc-600">इस subject की visual identity इसी lesson से जुड़ी है।</p></div></div>
-      <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"><h3 className="font-black text-[#003366]">Practice + Quiz + Certificate</h3><p className="mt-2 text-sm leading-6 text-zinc-600">Lesson पढ़ें → Practice करें → Quiz पूरा करें → Course complete करें → certificate workflow के लिए record तैयार होगा।</p></div>
-      <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"><h3 className="font-black text-[#003366]">Video Lesson / वीडियो पाठ</h3><p className="mt-2 text-sm leading-6 text-zinc-600">Opening → Introduction → Explanation → Visual Examples → Practical Example → Recap → Questions → Conclusion.</p><a href={videoSearch} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#003366] px-4 py-3 text-sm font-bold text-white">Find Related Video <FaArrowRight/></a></div>
-      <button onClick={share} className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-bold text-[#003366]"><FaShareAlt/> Share this subject</button>
-    </aside></div></main></div>;
+  const submitQuiz = () => {
+    const passed = score >= 4;
+    const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
+    setSubmitted(true);
+    setFinalResult(result);
+    try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
+  };
+  const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
+  const moduleAssessments = structuredCourse
+    ? structuredCourse.modules.map((m) => ({ ...m, questions: FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] || [] })).filter(m => m.questions.length)
+    : [];
+  const submitModuleAssessment = (moduleId, questions) => {
+    const result = questions.reduce((n,q,i)=>n+(moduleAnswers[moduleId]?.[i]===q.answer?1:0),0);
+    setModuleResults(r => {
+      const next = { ...r, [moduleId]: { score: result, total: questions.length, passed: result / questions.length >= 0.7 } };
+      try { localStorage.setItem(progressKey + "-assessments", JSON.stringify(next)); } catch {}
+      return next;
+    });
+  };
+
+  return <div className="min-h-screen bg-[#f6f8fb] text-zinc-900 font-inria">
+    <section className={"relative overflow-hidden bg-gradient-to-r "+subject.color+" text-white"}>
+      <img src={subject.image} alt={subject.title} className="absolute inset-0 h-full w-full object-cover opacity-35"/>
+      <div className="absolute inset-0 bg-[#001529]/75"/>
+      <div className="relative mx-auto max-w-7xl px-4 py-10 md:py-16">
+        <button onClick={onBack} className="mb-7 inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-bold hover:bg-white/20"><FaArrowLeft/> Back / वापस</button>
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-4xl">
+            <div className="text-xs font-black uppercase tracking-widest text-white/70">SSF Learning Hub • Course {subject.number}</div>
+            <h1 className="mt-3 text-4xl font-black leading-tight md:text-6xl">{subject.en}</h1>
+            <h2 className="mt-2 text-2xl font-bold text-white/90">{subject.hi}</h2>
+            <p className="mt-5 text-lg leading-8 text-white/85">{subject.intro}</p>
+          </div>
+          <div className="rounded-2xl border border-white/20 bg-white/10 p-5 backdrop-blur lg:w-72">
+            <div className="text-xs font-black uppercase tracking-widest text-white/70">Course Journey</div>
+            <div className="mt-2 text-xl font-black">Foundation → Advanced</div>
+            <div className="mt-1 text-sm text-white/75">Learn → Practise → Assess → Complete</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
+      <section className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-8">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Official Course / आधिकारिक पाठ्यक्रम</div>
+            <h2 className="mt-2 text-2xl font-black">{courseMeta.title.en}</h2>
+            <div className="text-base font-bold text-zinc-500">{courseMeta.title.hi}</div>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-zinc-600">{courseMeta.description || subject.intro}</p>
+          </div>
+          <div className="rounded-2xl bg-[#eef7fb] px-5 py-4 text-sm font-black text-[#003366]">Version {courseMeta.version}<br/>Reviewed {courseMeta.lastReviewed || "—"}</div>
+        </div>
+        <div className="mt-7 grid gap-5 md:grid-cols-4">
+          <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Level</div><div className="mt-1 font-black">{structuredCourse ? "Foundation" : "Foundation → Practical"}</div></div>
+          <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Language</div><div className="mt-1 font-black">Hindi + English</div></div>
+          <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Lessons</div><div className="mt-1 font-black">{total} structured lessons</div></div>
+          <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Learning Time</div><div className="mt-1 font-black">{courseMeta.learningHours ? courseMeta.learningHours + " hours" : "Self-paced"}</div></div>
+        </div>
+        <div className="mt-7 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#003366]">Who is this for? / किसके लिए?</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{courseMeta.audience}</p><h3 className="mt-5 font-black text-[#003366]">Prerequisites / पूर्व-आवश्यकताएँ</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.prerequisites.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
+          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#003366]">What you will learn / आप क्या सीखेंगे</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.outcomes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
+        </div>
+        <div className="mt-7 rounded-2xl bg-[#f1f7fa] p-5">
+          <div className="flex items-center justify-between"><div><div className="text-sm font-black text-[#003366]">Course Progress / प्रगति</div><div className="text-xs text-zinc-500">{completed} / {total} lessons completed</div></div><div className="text-2xl font-black text-[#003366]">{progress}%</div></div>
+          <div className="mt-3 h-3 overflow-hidden rounded-full bg-white"><div className="h-full bg-gradient-to-r from-[#003366] to-[#0a9396]" style={{width:progress+"%"}}/></div>
+        </div>
+      </section>
+
+      <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_330px]">
+        <div className="space-y-7">
+          {modules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+            <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#003366] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
+            <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=modules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);return <button key={l[0]} onClick={()=>goLesson(global)} className={"flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition "+(activeLesson===global?"border-[#0f4c81] bg-[#eef7fb]":"border-zinc-200 hover:border-[#b9cfdd] hover:bg-zinc-50")}>
+              <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#003366]")}>{isDone?<FaCheckCircle/>:li+1}</div>
+              <div className="min-w-0 flex-1"><div className="font-black">{l[0]}</div><div className="mt-1 text-xs leading-5 text-zinc-500">{l[1]}</div></div><FaArrowRight className="shrink-0 text-zinc-400"/>
+            </button>})}</div>
+          </section>)}
+        </div>
+
+        <aside className="space-y-5">
+          <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
+            <img src={subject.image} alt={subject.title} className="h-52 w-full object-cover"/>
+            <div className="p-5"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Visual Learning / दृश्य सीख</div><p className="mt-2 text-sm leading-6 text-zinc-600">इस course का visual उसी विषय से जुड़ा है।</p></div>
+          </div>
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
+            <h3 className="font-black text-[#003366]">Current Lesson / वर्तमान पाठ</h3>
+            <div className="mt-3 rounded-xl bg-zinc-50 p-4">
+              <div className="text-xs text-zinc-500">{lessons[activeLesson].module}</div>
+              <div className="mt-1 font-black">{lessons[activeLesson].title}</div>
+              <p className="mt-2 text-sm leading-6 text-zinc-600">{lessons[activeLesson].body}</p>
+              <div className="mt-5 flex gap-2 border-t border-zinc-200 pt-4">
+                <button onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-black text-[#003366] disabled:opacity-40">← Previous / पिछला</button>
+                <button onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#003366] px-3 py-2 text-xs font-black text-white disabled:opacity-40">Next / अगला →</button>
+              </div>
+              {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
+                {[
+                  ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
+                  ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
+                  ["Examples / उदाहरण", lessons[activeLesson].detail.content?.examples],
+                  ["Practice / अभ्यास", lessons[activeLesson].detail.practice],
+                  ["Activity / गतिविधि", lessons[activeLesson].detail.activity],
+                  ["Common Mistakes / सामान्य गलतियाँ", lessons[activeLesson].detail.content?.commonMistakes],
+                  ["Summary / सार", lessons[activeLesson].detail.content?.summary]
+                ].map(([label,value]) => value && <div key={label}>
+                  <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">{label}</div>
+                  {Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{value.map((x,i)=><li key={i}>{x}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-600">{value}</p>}
+                </div>)}
+              </div>}
+            </div>
+          </div>
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
+            <h3 className="font-black text-[#003366]">Course Assessment / आकलन</h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">पहले learning और practice पूरा करें, फिर self-check करें। Final certification अभी इस foundation stage में fake नहीं की जा रही है।</p>
+            <button onClick={()=>setQuizOpen(v=>!v)} className="mt-4 w-full rounded-xl bg-[#003366] px-4 py-3 text-sm font-black text-white">{quizOpen?"Close Check / बंद करें":"Start Knowledge Check / शुरू करें"}</button>
+            {quizOpen && <div className="mt-4 space-y-4">
+              {quizQuestions.map((q,i)=><div key={i} className="rounded-xl bg-zinc-50 p-4"><div className="text-sm font-black">{i+1}. {q.q}</div><div className="mt-3 space-y-2">{q.options.map((o,j)=><label key={j} className="flex gap-2 text-xs leading-5"><input type="radio" name={"course-q-"+i} checked={answers[i]===j} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/><span>{o}</span></label>)}</div></div>)}
+              <button onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
+              {(submitted || finalResult) && <div className={"rounded-xl border p-4 text-center "+(finalResult?.passed?"border-[#cfe5d8] bg-[#f3fbf6]":"border-[#f2dfbd] bg-[#fffaf0]")}><div className={"text-2xl font-black "+(finalResult?.passed?"text-[#177245]":"text-[#9a5b00]")}>{finalResult?.score ?? score}/{finalResult?.total ?? 5}</div><div className="mt-1 text-xs text-zinc-600">{finalResult?.passed?"Final assessment passed / अंतिम आकलन पास":"Review and retry / दोबारा पढ़ें और प्रयास करें"}</div></div>}
+            </div>}
+          </div>
+        </aside>
+      </div>
+
+      <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-white p-6 md:p-8">
+        <div className="flex items-center gap-3"><FaGraduationCap className="text-3xl text-[#003366]"/><div><h2 className="text-2xl font-black">Certificate Pathway / प्रमाणन मार्ग</h2><p className="text-sm text-zinc-500">Learning first. Certification after genuine completion and assessment.</p></div></div>
+        <div className="mt-6 grid gap-3 md:grid-cols-5">{[
+          ["Learn / सीखें", progress > 0],
+          ["Practise / अभ्यास", completed > 0],
+          ["Complete / पूर्ण करें", allLearningComplete],
+          ["Assess / आकलन", moduleAssessmentComplete && finalAssessmentPassed],
+          ["Certificate / प्रमाणपत्र", certificateEligible]
+        ].map(([x,ok],i)=><div key={x} className={"rounded-xl p-4 text-center text-xs font-black "+(ok?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-zinc-600")}>{i+1}. {x}</div>)}</div>
+        <div className="mt-6 rounded-2xl bg-[#f7fafc] p-5">
+          <div className="text-sm font-black text-[#003366]">Certificate request / प्रमाणपत्र अनुरोध</div>
+          <p className="mt-2 text-sm leading-6 text-zinc-600">Certificate issuance will be enabled only after the required learning, activities and assessments are complete. Opening lessons or creating an account alone does not issue a certificate.</p>
+          <button
+            onClick={() => {
+              if (!certificateEligible) {
+                window.alert("Certificate is not yet available. Complete all lessons, pass every module assessment, and pass the final assessment first.");
+                return;
+              }
+              setAuthError("");
+              setAuthStatus("idle");
+              setAccountOpen(true);
+            }}
+            className={"mt-4 rounded-xl px-5 py-3 text-sm font-black text-white "+(certificateEligible?"bg-[#177245]":"bg-[#003366]")}
+          >{certificateEligible ? "Proceed to Certificate / प्रमाणपत्र के लिए आगे बढ़ें" : "Get Certificate / प्रमाणपत्र प्राप्त करें"}</button>
+        </div>
+      </section>
+
+      {accountOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#001529]/70 p-4 backdrop-blur-sm">
+        <div className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl md:p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Certificate Account Stage / प्रमाणपत्र खाता चरण</div><h2 className="mt-2 text-2xl font-black text-[#003366]">{accountUser ? "Account ready / खाता तैयार है" : authMode === "login" ? "Login to continue / आगे बढ़ने के लिए लॉगिन" : "Create learning account / लर्निंग अकाउंट बनाएं"}</h2></div>
+            <button type="button" onClick={()=>setAccountOpen(false)} className="rounded-xl bg-zinc-100 px-3 py-2 font-black text-zinc-500">✕</button>
+          </div>
+          {accountUser ? <div className="mt-6 space-y-4">
+            <div className="rounded-2xl bg-[#f1f7fa] p-5"><div className="font-black text-[#003366]">{accountUser.fullName}</div><div className="mt-1 text-sm text-zinc-500">{accountUser.email}</div></div>
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-sm leading-6 text-emerald-800"><strong>Learning completion verified.</strong> Your course completion and assessment record is ready for the certificate request stage. Certificate issuance remains subject to SSF's certificate workflow.</div>
+            <button type="button" disabled={authStatus==="submitting"} onClick={async()=>{
+              setAuthStatus("submitting"); setAuthError("");
+              try {
+                const response=await fetch(ENDPOINTS.LEARNING_CERTIFICATE_REQUEST,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({accountId:accountUser.id,learner:accountUser,courseId:subject.id,courseTitle:courseMeta.title,completionPercent:progress,moduleAssessments:moduleResults,finalAssessment:finalResult,learningHours:courseMeta.learningHours})});
+                const result=await response.json().catch(()=>({}));
+                if(!response.ok) throw new Error(result.message||"Certificate request could not be submitted.");
+                try { localStorage.setItem("ssf-learning-certificate-request",JSON.stringify(result.request)); } catch {}
+                setAccountOpen(false);
+                window.alert("Certificate request submitted successfully. SSF will review the request before issuing the certificate.");
+              } catch(err){ setAuthStatus("error"); setAuthError(err.message||"Unable to submit certificate request."); }
+            }} className="w-full rounded-xl bg-[#177245] px-5 py-3 font-black text-white disabled:opacity-50">{authStatus==="submitting"?"Submitting...":"Request Certificate / प्रमाणपत्र का अनुरोध करें"}</button>
+            {authError && <div className="rounded-xl bg-red-50 p-4 text-sm font-bold text-red-700">{authError}</div>}
+          </div> : <form className="mt-6 space-y-4" onSubmit={async e=>{
+            e.preventDefault(); setAuthError(""); setAuthStatus("submitting");
+            try {
+              const payload = authMode === "login"
+                ? { email:authForm.email.trim().toLowerCase(), password:authForm.password }
+                : { fullName:authForm.fullName.trim(), email:authForm.email.trim().toLowerCase(), confirmEmail:authForm.confirmEmail.trim().toLowerCase(), phone:authForm.phone.trim(), password:authForm.password, memberType:"website_signup", message:"SSF Learning Hub certificate account" };
+              if(authMode==="signup" && (!payload.fullName || payload.fullName.length<3 || !payload.phone || payload.password.length<8 || payload.email!==payload.confirmEmail)) throw new Error("Please complete all account fields correctly.");
+              const response=await fetch(authMode==="login"?ENDPOINTS.MEMBER_LOGIN:ENDPOINTS.MEMBER_SIGNUP,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+              const result=await response.json().catch(()=>({}));
+              if(!response.ok) throw new Error(result.message || "Account request failed.");
+              const user=result.user;
+              setAccountUser(user);
+              try { localStorage.setItem("ssf-learning-account",JSON.stringify(user)); } catch {}
+              setAuthStatus("success");
+            } catch(err){ setAuthStatus("error"); setAuthError(err.message || "Unable to continue."); }
+          }}>
+            {authMode==="signup" && <><div><label className="text-xs font-black text-zinc-500">Full Name / पूरा नाम</label><input className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.fullName} onChange={e=>setAuthForm(v=>({...v,fullName:e.target.value}))} required/></div><div><label className="text-xs font-black text-zinc-500">Mobile / मोबाइल</label><input className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.phone} onChange={e=>setAuthForm(v=>({...v,phone:e.target.value}))} required/></div></>}
+            <div><label className="text-xs font-black text-zinc-500">Email / ईमेल</label><input type="email" className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.email} onChange={e=>setAuthForm(v=>({...v,email:e.target.value}))} required/></div>
+            {authMode==="signup" && <div><label className="text-xs font-black text-zinc-500">Confirm Email / ईमेल पुष्टि</label><input type="email" className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.confirmEmail} onChange={e=>setAuthForm(v=>({...v,confirmEmail:e.target.value}))} required/></div>}
+            <div><label className="text-xs font-black text-zinc-500">Password / पासवर्ड</label><input type="password" minLength={8} className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.password} onChange={e=>setAuthForm(v=>({...v,password:e.target.value}))} required/></div>
+            {authError && <div className="rounded-xl bg-red-50 p-4 text-sm font-bold text-red-700">{authError}</div>}
+            <button disabled={authStatus==="submitting"} className="w-full rounded-xl bg-[#003366] px-5 py-3 font-black text-white disabled:opacity-50">{authStatus==="submitting"?"Please wait...":authMode==="login"?"Login & Continue / लॉगिन करें":"Create Account & Continue / अकाउंट बनाएं"}</button>
+            <button type="button" onClick={()=>{setAuthMode(authMode==="login"?"signup":"login");setAuthError("");}} className="w-full rounded-xl bg-zinc-100 px-5 py-3 text-sm font-black text-[#003366]">{authMode==="login"?"Create Account / नया अकाउंट बनाएं":"Already have an account? Login / पहले से अकाउंट है? लॉगिन"}</button>
+          </form>}
+        </div>
+      </div>}
+    </main>
+  </div>;
 }
+
 export default function LearningHubV2() {
   const [subjectId, setSubjectId] = useState(getSubjectFromUrl);
   const [category, setCategory] = useState("All");
@@ -321,44 +559,155 @@ export default function LearningHubV2() {
   if (selected) return <LearningSubject subject={selected} onBack={back} />;
 
   const categories = ["All", ...Object.keys(CATEGORY_META)];
-  return <div className="min-h-screen bg-zinc-50 font-inria text-zinc-900">
+  const visibleCategories = category === "All" ? Object.keys(CATEGORY_META) : [category];
+
+  return <div className="min-h-screen bg-[#f6f8fb] font-inria text-zinc-900">
     <section className="relative overflow-hidden bg-[#002344] text-white">
-      <img src="/images/real/education_girls.jpg" alt="Students learning" className="absolute inset-0 h-full w-full object-cover opacity-20" />
-      <div className="absolute inset-0 bg-[#002344]/80" />
-      <div className="relative mx-auto max-w-7xl px-4 py-16 md:py-24">
-        <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest"><FaGraduationCap /> Swastik Srijan Foundation</div>
-        <h1 className="mt-6 text-5xl font-black leading-tight md:text-7xl">SSF Learning Hub</h1>
-        <h2 className="mt-3 text-2xl font-bold text-white/80">सीखिए • समझिए • अभ्यास कीजिए | Learn • Understand • Practise</h2>
-        <p className="mt-6 max-w-4xl text-lg leading-8 text-white/80">A free bilingual learning space where SSF objectives are converted into subjects that people can actually read, understand, practise and share.</p>
-        <div className="mt-10 grid gap-4 sm:grid-cols-3"><div className="rounded-2xl bg-white/10 p-5"><div className="text-3xl font-black">{SUBJECTS.length}</div><div className="text-sm font-bold">Subjects / विषय</div></div><div className="rounded-2xl bg-white/10 p-5"><div className="text-3xl font-black">{Object.keys(CATEGORY_META).length}</div><div className="text-sm font-bold">Learning Areas / क्षेत्र</div></div><div className="rounded-2xl bg-white/10 p-5"><div className="text-3xl font-black">Hindi + English</div><div className="text-sm font-bold">Bilingual Learning</div></div></div>
+      <img src="/images/real/education_girls.jpg" alt="Students learning together" className="absolute inset-0 h-full w-full object-cover opacity-20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#001a33]/95 via-[#003b63]/90 to-[#005b7a]/80" />
+      <div className="relative mx-auto max-w-7xl px-4 py-14 md:py-20">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest">
+          <FaGraduationCap /> Swastik Srijan Foundation • SSF Learning Hub
+        </div>
+        <div className="mt-7 max-w-5xl">
+          <div className="text-sm font-bold text-white/70">ज्ञान से कौशल तक • From Knowledge to Capability</div>
+          <h1 className="mt-2 text-5xl font-black leading-tight md:text-7xl">Learn. Understand. Practise. Master.</h1>
+          <h2 className="mt-3 text-2xl font-bold text-white/85 md:text-3xl">सीखिए • समझिए • अभ्यास कीजिए • आगे बढ़िए</h2>
+          <p className="mt-5 max-w-4xl text-lg leading-8 text-white/80">
+            एक विषय चुनिए और उसके लिए क्रमबद्ध learning journey शुरू कीजिए। हमारा लक्ष्य केवल जानकारी देना नहीं,
+            बल्कि समझ, अभ्यास, application और assessment के माध्यम से गहरी learning विकसित करना है।
+          </p>
+        </div>
+
+        <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
+            <div className="text-3xl font-black">{SUBJECTS.length}+</div>
+            <div className="mt-1 text-sm font-bold text-white/75">Subjects / विषय</div>
+          </div>
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
+            <div className="text-3xl font-black">{Object.keys(CATEGORY_META).length}</div>
+            <div className="mt-1 text-sm font-bold text-white/75">Learning Areas / क्षेत्र</div>
+          </div>
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
+            <div className="text-3xl font-black">A → Z</div>
+            <div className="mt-1 text-sm font-bold text-white/75">Structured Learning / क्रमबद्ध सीख</div>
+          </div>
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
+            <div className="text-3xl font-black">हिन्दी + English</div>
+            <div className="mt-1 text-sm font-bold text-white/75">Bilingual / द्विभाषी</div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <main className="mx-auto max-w-7xl px-4 py-10">
-      <section className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm md:p-7">
-        <div className="flex flex-col gap-4 lg:flex-row"><div className="relative flex-1"><FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" /><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search subjects / विषय खोजें..." className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 outline-none focus:border-[#003366]" /></div><button onClick={()=>{setQuery("");setCategory("All")}} className="rounded-xl border border-zinc-200 px-5 py-3 text-sm font-bold text-[#003366]">Reset</button></div>
-        <div className="mt-5 flex gap-2 overflow-x-auto pb-1">{categories.map(c=><button key={c} onClick={()=>setCategory(c)} className={"shrink-0 rounded-full px-4 py-2 text-xs font-bold " + (category===c ? "bg-[#003366] text-white" : "bg-zinc-100 text-zinc-600")}>{c}</button>)}</div>
-      </section>
-
-      <section className="py-12">
-        <div className="mb-8"><div className="text-sm font-black uppercase tracking-widest text-[#003366]">Learning Library / अध्ययन पुस्तकालय</div><h2 className="mt-2 text-4xl font-black">हर विषय को पढ़ें, समझें और सीखें</h2><p className="mt-3 max-w-4xl leading-7 text-zinc-600">हर card एक अलग shareable subject page खोलता है। Subject में introduction, meaning, importance, core concepts, practical learning, activity, do/don't, self-check, questions, video section और conclusion दिया गया है।</p></div>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map(s=><article key={s.id} className="group overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-            <div className="relative h-48 overflow-hidden"><img src={s.image} alt={s.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" /><div className="absolute bottom-4 left-4 right-4 text-white"><div className="text-xs font-black uppercase tracking-widest opacity-80">{s.category}</div><h3 className="mt-1 text-xl font-black">{s.en}</h3><div className="text-sm font-bold opacity-90">{s.hi}</div></div></div>
-            <div className="p-5"><p className="min-h-20 text-sm leading-6 text-zinc-600">{s.intro}</p><div className="mt-5 flex gap-2"><button onClick={()=>openSubject(s)} className="flex-1 rounded-xl bg-[#003366] px-4 py-3 text-sm font-black text-white">Start Learning <FaArrowRight className="ml-1 inline" /></button><button onClick={()=>shareSubject(s)} title="Share" className="rounded-xl border border-zinc-200 px-4 py-3 text-[#003366]"><FaShareAlt /></button></div></div>
-          </article>)}
+    <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
+      <section className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-[0_15px_50px_rgba(0,35,68,.08)] md:p-7">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
+          <div className="flex-1">
+            <div className="text-xs font-black uppercase tracking-[.18em] text-[#0f4c81]">Explore the Learning Library</div>
+            <h2 className="mt-2 text-3xl font-black md:text-4xl">अपना विषय चुनिए</h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">Search करें या learning area चुनें। हर course card से सीधे उसके learning journey पर जाएँ।</p>
+          </div>
+          <div className="relative w-full lg:max-w-xl">
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+            <input
+              value={query}
+              onChange={e=>setQuery(e.target.value)}
+              placeholder="Search course / विषय खोजें..."
+              aria-label="Search courses"
+              className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 text-base outline-none transition focus:border-[#0f4c81] focus:bg-white focus:ring-4 focus:ring-[#0f4c81]/10"
+            />
+          </div>
+          <button onClick={()=>{setQuery("");setCategory("All")}} className="rounded-2xl border border-zinc-200 px-5 py-4 text-sm font-black text-[#003366] hover:bg-zinc-50">
+            Reset / रीसेट
+          </button>
         </div>
-        {!filtered.length && <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center text-zinc-500">No subject found. Try another search.</div>}
+
+        <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
+          {categories.map(c => {
+            const Meta = CATEGORY_META[c];
+            const Icon = Meta?.icon || FaBookOpen;
+            return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-black transition " + (category===c ? "bg-[#003366] text-white shadow-md" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200")}>
+              <Icon /> {c}
+            </button>;
+          })}
+        </div>
       </section>
 
-      <section className="grid gap-6 pb-12 md:grid-cols-4">
+      <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-gradient-to-r from-white to-[#eef7fb] p-6 md:p-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-sm font-black text-[#0f4c81]"><FaBookOpen /> HOW LEARNING WORKS / सीखने की प्रक्रिया</div>
+            <h2 className="mt-2 text-2xl font-black md:text-3xl">हर course एक learning journey होगा</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-7 text-zinc-600">Explore → Learn → Understand → Practise → Check → Apply → Assess → Complete → Certificate</p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-center text-xs font-bold text-[#003366] sm:grid-cols-4">
+            {[
+              [FaBookOpen,"Learn","सीखें"],
+              [FaPlayCircle,"Practise","अभ्यास"],
+              [FaCheckCircle,"Assess","आकलन"],
+              [FaGraduationCap,"Certify","प्रमाणन"]
+            ].map(([Icon,en,hi])=><div key={en} className="rounded-xl bg-white px-4 py-3 shadow-sm"><Icon className="mx-auto text-lg"/><div className="mt-1">{en}</div><div className="text-[10px] text-zinc-500">{hi}</div></div>)}
+          </div>
+        </div>
+      </section>
+
+      {visibleCategories.map(cat => {
+        const meta = CATEGORY_META[cat];
+        const Icon = meta?.icon || FaBookOpen;
+        const courses = filtered.filter(s => s.category === cat);
+        if (!courses.length) return null;
+        return <section key={cat} className="mt-12">
+          <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-[#0f4c81]"><Icon /> {cat}</div>
+              <h2 className="mt-2 text-3xl font-black">Courses / पाठ्यक्रम</h2>
+              <p className="mt-1 text-sm text-zinc-500">{courses.length} learning options available in this area / इस क्षेत्र में उपलब्ध learning options</p>
+            </div>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-zinc-200 bg-white shadow-[0_10px_35px_rgba(0,35,68,.07)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(0,35,68,.14)]">
+              <div className="relative h-52 overflow-hidden">
+                <img src={s.categoryImage || s.image} alt={s.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <div className={"absolute inset-0 bg-gradient-to-t "+s.color+" opacity-75"} />
+                <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur">
+                  <Icon /> Course {s.number}
+                </div>
+                <div className="absolute bottom-4 left-5 right-5 text-white">
+                  <h3 className="text-2xl font-black leading-tight">{s.en}</h3>
+                  <div className="mt-1 text-sm font-bold text-white/90">{s.hi}</div>
+                </div>
+              </div>
+              <div className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-wrap gap-2">
+                  <span className="rounded-full bg-[#edf5fa] px-3 py-1 text-[10px] font-black text-[#0f4c81]">Foundation → Practical</span>
+                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-[10px] font-black text-zinc-600">Hindi + English</span>
+                </div>
+                <p className="flex-1 text-sm leading-7 text-zinc-600">{s.intro}</p>
+                <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-zinc-500">
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaBookOpen className="mx-auto mb-1 text-[#0f4c81]"/>Lessons</div>
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaCheckCircle className="mx-auto mb-1 text-[#0f4c81]"/>Practice</div>
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaGraduationCap className="mx-auto mb-1 text-[#0f4c81]"/>Certificate</div>
+                </div>
+                <button onClick={()=>openSubject(s)} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:from-[#0f4c81] hover:to-[#007c91] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
+                  Join SSF Course <span className="text-base">/</span> कोर्स शुरू करें <FaArrowRight />
+                </button>
+              </div>
+            </article>)}
+          </div>
+        </section>;
+      })}
+
+      {!filtered.length && <div className="mt-10 rounded-3xl border border-dashed border-zinc-300 bg-white p-12 text-center text-zinc-500">No course found. Try another search / कोई दूसरा विषय खोजें।</div>}
+
+      <section className="mt-14 grid gap-5 pb-8 md:grid-cols-4">
         {[
-          [FaBookOpen, "Read / पढ़ें", "हर subject को सरल भाषा में विस्तार से समझें।"],
-          [FaPlayCircle, "Watch / देखें", "हर subject में related video learning slot।"],
-          [FaCheckCircle, "Practise / अभ्यास", "Activities, self-check और questions से सीखें।"],
-          [FaShareAlt, "Share / साझा करें", "हर subject का अलग link share करें।"]
-        ].map(([Icon,title,desc])=><div key={title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><Icon className="text-3xl text-[#003366]" /><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{desc}</p></div>)}
+          [FaBookOpen, "Learn / सीखें", "Concepts, examples and reliable learning material."],
+          [FaPlayCircle, "Practise / अभ्यास", "Activities and practical application."],
+          [FaCheckCircle, "Assess / आकलन", "Quizzes and meaningful assessments."],
+          [FaGraduationCap, "Certify / प्रमाणन", "Completion-based certificate pathway."]
+        ].map(([Icon,title,desc])=><div key={title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><Icon className="text-3xl text-[#003366]"/><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{desc}</p></div>)}
       </section>
     </main>
   </div>;
-}
+}\n
