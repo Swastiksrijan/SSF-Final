@@ -463,9 +463,23 @@ function LearningSubject({ subject, onBack }) {
           <div className="text-sm font-black text-[#003366]">Certificate request / प्रमाणपत्र अनुरोध</div>
           <p className="mt-2 text-sm leading-6 text-zinc-600">Certificate issuance will be enabled only after the required learning, activities and assessments are complete. Opening lessons or creating an account alone does not issue a certificate.</p>
           <button
-            onClick={() => window.alert(certificateEligible
-              ? "Certificate eligibility confirmed. Login/Create Account is required at the certificate stage."
-              : "Certificate is not yet available. Complete all lessons, pass every module assessment, and pass the final assessment first.")}
+            onClick={() => {
+              if (!certificateEligible) {
+                window.alert("Certificate is not yet available. Complete all lessons, pass every module assessment, and pass the final assessment first.");
+                return;
+              }
+              try {
+                localStorage.setItem("ssf-learning-certificate-request", JSON.stringify({
+                  courseId: subject.id,
+                  courseTitle: courseMeta.title,
+                  completionPercent: progress,
+                  moduleAssessments: moduleResults,
+                  finalAssessment: finalResult,
+                  requestedAt: new Date().toISOString()
+                }));
+              } catch {}
+              window.location.href = "/Join?tab=member";
+            }}
             className={"mt-4 rounded-xl px-5 py-3 text-sm font-black text-white "+(certificateEligible?"bg-[#177245]":"bg-[#003366]")}
           >{certificateEligible ? "Proceed to Certificate / प्रमाणपत्र के लिए आगे बढ़ें" : "Get Certificate / प्रमाणपत्र प्राप्त करें"}</button>
         </div>
