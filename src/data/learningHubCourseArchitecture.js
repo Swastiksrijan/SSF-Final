@@ -1,243 +1,441 @@
-// SSF Learning Hub course architecture
-// Curated, bilingual course definitions for structured learning and assessment.
+/**
+ * SSF Learning Hub — Master Course Architecture
+ *
+ * This file defines the stable learning contract used by future courses.
+ * Existing LearningHubV2 content is intentionally not removed or rewritten here.
+ *
+ * Flow:
+ * Explore -> Course Overview -> Modules -> Lessons -> Practice -> Assessment
+ * -> Completion -> Certificate -> Verification
+ */
 
-const makeLesson = (en, hi, easy, deep, examples, practice, activity, mistakes, summary) => ({
-  title:{en,hi},
-  content:{
-    easyExplanation:easy,
-    deepUnderstanding:deep,
-    examples,
-    commonMistakes:mistakes,
-    summary
-  },
-  practice,
-  activity,
-  objectives:[easy, "समझ को वास्तविक जीवन में सुरक्षित और जिम्मेदारी से लागू करना सीखें।"]
-});
+export const LEARNING_LEVELS = [
+  { id: "foundation", en: "Foundation", hi: "आधार स्तर" },
+  { id: "beginner", en: "Beginner", hi: "प्रारंभिक स्तर" },
+  { id: "intermediate", en: "Intermediate", hi: "मध्यवर्ती स्तर" },
+  { id: "advanced", en: "Advanced", hi: "उन्नत स्तर" },
+  { id: "practical", en: "Practical / Professional", hi: "व्यावहारिक / व्यावसायिक स्तर" },
+];
 
-const makeModule = (id, en, hi, description, lessons) => ({
+export const LESSON_COMPONENTS = [
+  "objectives", "prerequisites", "learn", "easyExplanation",
+  "deepUnderstanding", "examples", "visual", "video", "audio",
+  "practicalApplication", "activity", "practice", "commonMistakes",
+  "knowledgeCheck", "reflection", "summary",
+];
+
+export const ASSESSMENT_TYPES = [
+  "diagnostic", "formative", "module", "practical", "final",
+];
+
+export const CERTIFICATE_REQUIREMENTS = {
+  lessons: "required",
+  activities: "required",
+  assessments: "required",
+  finalAssessment: "required",
+  completion: 100,
+  accountAtCertificateStage: true,
+};
+
+export const COURSE_TYPES = [
+  { id: "awareness", en: "Awareness", hi: "जागरूकता पाठ्यक्रम" },
+  { id: "foundation", en: "Foundation Course", hi: "आधार पाठ्यक्रम" },
+  { id: "skill", en: "Skill Course", hi: "कौशल पाठ्यक्रम" },
+  { id: "advanced", en: "Advanced Course", hi: "उन्नत पाठ्यक्रम" },
+  { id: "certificate", en: "Certificate Course", hi: "प्रमाणपत्र पाठ्यक्रम" },
+  { id: "resource", en: "Learning Resource", hi: "अध्ययन संसाधन" },
+];
+
+/*
+ * Official course identity.
+ * The id must remain stable once a course is published.
+ * The title is the canonical display name used on cards, learning pages,
+ * dashboards, assessments, certificates and verification records.
+ */
+export function createCourseDefinition({
   id,
-  title:{en,hi},
-  description,
-  lessons
+  title,
+  category,
+  type = "skill",
+  level = "beginner",
+  description = "",
+  audience = "",
+  prerequisites = [],
+  outcomes = [],
+  learningHours = 0,
+  modules = [],
+  resources = [],
+  version = "1.0",
+  lastReviewed = "",
+}) {
+  if (!id || !title || !category) {
+    throw new Error("Course id, title and category are required.");
+  }
+
+  return {
+    id, title, category, type, level, description, audience,
+    prerequisites, outcomes, learningHours, modules, resources,
+    version, lastReviewed,
+    certificate: { ...CERTIFICATE_REQUIREMENTS },
+  };
+}
+
+export function createModule({ id, title, description = "", lessons = [], assessment = null }) {
+  return { id, title, description, lessons, assessment };
+}
+
+export function createLesson({
+  id,
+  title,
+  objectives = [],
+  prerequisites = [],
+  content = {},
+  practice = [],
+  activity = null,
+  assessment = null,
+}) {
+  return {
+    id, title, objectives, prerequisites, content,
+    practice, activity, assessment,
+  };
+}
+
+/*
+ * Visual identity contract for every shareable learning section.
+ * A section should use a topic-relevant photo, approved illustration,
+ * or meaningful subject icon — never a random decorative image.
+ */
+export function createLearningVisual({
+  type = "icon",
+  src = "",
+  alt = "",
+  icon = "",
+  credit = "",
+}) {
+  return { type, src, alt, icon, credit };
+}
+
+/*
+ * Learning stays open to visitors. Account creation/login is required
+ * only when the learner requests a certificate.
+ */
+export function canRequestCertificate({ completion = 0, finalPassed = false }) {
+  return completion >= CERTIFICATE_REQUIREMENTS.completion && finalPassed;
+}
+
+
+/*
+ * Flagship end-to-end course: Computer & Digital Basics.
+ * This is the reference implementation for the full SSF learning pattern.
+ * The same contract can be reused for the remaining subjects.
+ */
+export const FLAGSHIP_COURSE_ID = "computer-education";
+
+export const FLAGSHIP_COMPUTER_COURSE = createCourseDefinition({
+  id: FLAGSHIP_COURSE_ID,
+  title: {
+    en: "Computer & Digital Basics",
+    hi: "कंप्यूटर एवं डिजिटल बेसिक्स",
+  },
+  category: "Education / शिक्षा",
+  type: "certificate",
+  level: "foundation",
+  description: "A structured beginner-to-practical course covering computer fundamentals, files, documents, internet use, digital communication, cyber safety and everyday digital problem solving.",
+  audience: "Students, first-time computer learners, volunteers, community learners and anyone building practical digital confidence.",
+  prerequisites: ["No prior computer experience required."],
+  outcomes: [
+    "Identify basic computer hardware, software and common digital terms.",
+    "Create, organize, rename, move and safely store files and folders.",
+    "Use a browser, search effectively and evaluate basic online information.",
+    "Create and manage simple digital documents and communicate professionally.",
+    "Apply passwords, privacy, phishing awareness, updates and backup habits.",
+    "Complete everyday digital tasks using a safe, step-by-step problem-solving approach.",
+  ],
+  learningHours: 12,
+  version: "1.0",
+  lastReviewed: "2026-09-30",
+  modules: [
+    createModule({
+      id: "computer-foundation",
+      title: { en: "Computer Foundations", hi: "कंप्यूटर की आधारभूत समझ" },
+      description: "Understand what a computer is, how its major parts work together, and the vocabulary needed for practical use.",
+      lessons: [
+        createLesson({
+          id: "what-is-a-computer",
+          title: { en: "What is a Computer?", hi: "कंप्यूटर क्या है?" },
+          objectives: ["Explain the basic purpose of a computer.", "Distinguish input, processing, storage and output."],
+          content: {
+            easyExplanation: "कंप्यूटर एक electronic system है जो input लेता है, instructions के अनुसार processing करता है, information को store कर सकता है और output देता है।",
+            deepUnderstanding: "किसी भी digital task को Input → Processing → Storage/Memory → Output के रूप में समझने से अलग-अलग devices और applications को समझना आसान होता है।",
+            examples: ["Keyboard से text input", "CPU द्वारा processing", "SSD में file storage", "Screen पर result"],
+            commonMistakes: ["Computer को केवल CPU समझना", "RAM और permanent storage को एक ही मानना"],
+            summary: "Computer को उसके parts से नहीं, बल्कि उसके complete information-processing cycle से समझें।"
+          },
+          practice: ["अपने आसपास 5 digital devices पहचानें और लिखें कि उनका input और output क्या है।"],
+          activity: "एक simple Input → Process → Output diagram स्वयं बनाइए।"
+        }),
+        createLesson({
+          id: "hardware-software",
+          title: { en: "Hardware, Software & Operating Systems", hi: "हार्डवेयर, सॉफ्टवेयर एवं ऑपरेटिंग सिस्टम" },
+          objectives: ["Differentiate hardware and software.", "Explain the role of an operating system."],
+          content: {
+            easyExplanation: "Hardware वे physical parts हैं जिन्हें छू सकते हैं; software instructions/programs हैं जो hardware से काम करवाते हैं। Operating system दोनों के बीच मुख्य working layer है।",
+            deepUnderstanding: "Application, operating system, drivers और hardware अलग layers की तरह काम करते हैं; समस्या पहचानने में यह distinction बहुत उपयोगी है।",
+            examples: ["Keyboard = hardware", "Browser = application software", "Windows/Linux/Android = operating system"],
+            commonMistakes: ["हर software को operating system कहना", "hardware problem और application problem को एक समझना"],
+            summary: "Hardware resources देता है; software instructions देता है; operating system resources को manage करता है।"
+          },
+          practice: ["अपने device के 5 hardware और 5 software examples लिखें।"],
+          activity: "किसी एक common computer problem को hardware/software/OS category में classify करें।"
+        }),
+        createLesson({
+          id: "computer-settings",
+          title: { en: "Basic Settings & Responsible Use", hi: "मूल सेटिंग्स एवं जिम्मेदार उपयोग" },
+          objectives: ["Locate common settings.", "Use updates and settings responsibly."],
+          content: {
+            easyExplanation: "Settings से language, display, network, accounts, privacy और security जैसी सुविधाएँ manage की जाती हैं।",
+            deepUnderstanding: "हर setting बदलना जरूरी नहीं है; पहले उद्देश्य समझें, फिर change करें और sensitive options में सावधानी रखें।",
+            examples: ["Language", "Wi‑Fi", "screen brightness", "user account", "software updates"],
+            commonMistakes: ["अनजान security setting बदल देना", "updates को हमेशा बंद रखना"],
+            summary: "Settings का उपयोग समझकर करें और security/privacy options को विशेष सावधानी से संभालें।"
+          },
+          practice: ["अपने device में 3 safe settings खोजें और उनका purpose लिखें।"],
+          activity: "एक checklist बनाइए: language, network, update, account और privacy।"
+        })
+      ],
+      assessment: { type: "module", passPercent: 70, questions: 10 }
+    }),
+    createModule({
+      id: "files-documents",
+      title: { en: "Files, Folders & Documents", hi: "फाइल, फोल्डर एवं दस्तावेज़" },
+      description: "Build practical file-management and document skills.",
+      lessons: [
+        createLesson({
+          id: "files-folders",
+          title: { en: "Files & Folders", hi: "फाइल एवं फोल्डर" },
+          objectives: ["Create an organized folder structure.", "Rename, copy, move and delete files safely."],
+          content: {
+            easyExplanation: "Folder को digital cupboard की तरह और file को उसके अंदर रखी चीज़ की तरह समझ सकते हैं।",
+            deepUnderstanding: "Consistent naming and folder structure खोजने, backup लेने और गलत file share होने का risk कम करते हैं।",
+            examples: ["SSF/Training/2026/Attendance", "Documents/Certificates/2026"],
+            commonMistakes: ["सभी files Desktop पर रखना", "एक ही नाम की कई unclear copies बनाना"],
+            summary: "Good file management = clear names + logical folders + safe backup."
+          },
+          practice: ["अपने learning material के लिए Year → Course → Module folders बनाइए।"],
+          activity: "10 sample files को meaningful names और folders में organize करें।"
+        }),
+        createLesson({
+          id: "documents-basics",
+          title: { en: "Creating Useful Documents", hi: "उपयोगी डिजिटल दस्तावेज़ बनाना" },
+          objectives: ["Create a readable document.", "Use headings, lists and consistent formatting."],
+          content: {
+            easyExplanation: "A good document is readable, structured and easy for another person to understand.",
+            deepUnderstanding: "Heading hierarchy, spacing, tables and descriptive filenames make information reusable and accessible.",
+            examples: ["Meeting note", "application letter", "simple report", "learning notes"],
+            commonMistakes: ["बहुत सारे fonts", "heading hierarchy न रखना", "file version का नाम अस्पष्ट रखना"],
+            summary: "Document design should serve clarity, not decoration."
+          },
+          practice: ["एक one-page bilingual learning note तैयार करें।"],
+          activity: "एक खराब formatted paragraph को headings और bullets से सुधारें।"
+        }),
+        createLesson({
+          id: "backup-storage",
+          title: { en: "Storage & Backup", hi: "स्टोरेज एवं बैकअप" },
+          objectives: ["Explain why backups matter.", "Choose an appropriate backup location."],
+          content: {
+            easyExplanation: "Backup का अर्थ important data की अलग सुरक्षित copy रखना है।",
+            deepUnderstanding: "एक ही device पर एक ही copy रखना single point of failure बनाता है। Backup strategy में frequency, location और restore test महत्वपूर्ण हैं।",
+            examples: ["External storage", "trusted cloud storage", "institutional backup"],
+            commonMistakes: ["Backup बना कर कभी restore test न करना", "हर file को बिना सोच के public cloud पर डालना"],
+            summary: "Backup तभी उपयोगी है जब copy सुरक्षित हो और जरूरत पर वापस लाई जा सके।"
+          },
+          practice: ["अपने 5 सबसे महत्वपूर्ण files चुनकर backup plan लिखें।"],
+          activity: "एक restore-check checklist बनाइए।"
+        })
+      ],
+      assessment: { type: "module", passPercent: 70, questions: 10 }
+    }),
+    createModule({
+      id: "internet-communication",
+      title: { en: "Internet & Digital Communication", hi: "इंटरनेट एवं डिजिटल संचार" },
+      description: "Use the web, search information and communicate responsibly.",
+      lessons: [
+        createLesson({
+          id: "internet-browser-search",
+          title: { en: "Internet, Browser & Search", hi: "इंटरनेट, ब्राउज़र एवं खोज" },
+          objectives: ["Explain browser vs search engine.", "Use focused search terms."],
+          content: {
+            easyExplanation: "Internet connected systems का network है; browser web pages खोलता है; search engine information खोजने में मदद करता है।",
+            deepUnderstanding: "Search result मिलना और information सही होना अलग बातें हैं; source, date, author and evidence देखें।",
+            examples: ["Official government site", "institutional website", "documentation"],
+            commonMistakes: ["पहले result को automatically true मानना", "search query बहुत vague रखना"],
+            summary: "Search skill का दूसरा भाग source evaluation है।"
+          },
+          practice: ["एक ही प्रश्न को 3 अलग search queries से खोजें और results compare करें।"],
+          activity: "एक official source और एक unverified source के संकेतों की तुलना करें।"
+        }),
+        createLesson({
+          id: "email-messaging",
+          title: { en: "Email & Professional Messaging", hi: "ईमेल एवं पेशेवर संदेश" },
+          objectives: ["Write a clear email.", "Use subject, greeting, context and action request."],
+          content: {
+            easyExplanation: "Professional message छोटा, स्पष्ट, respectful और action-oriented होना चाहिए।",
+            deepUnderstanding: "Subject line, recipient, attachments and privacy सभी communication quality का हिस्सा हैं।",
+            examples: ["Request for information", "meeting confirmation", "document submission"],
+            commonMistakes: ["blank subject", "unclear request", "wrong attachment", "sensitive data खुले में भेजना"],
+            summary: "Good digital communication reduces ambiguity and protects information."
+          },
+          practice: ["एक professional bilingual email draft करें।"],
+          activity: "एक unclear message को clear action-request में बदलें।"
+        }),
+        createLesson({
+          id: "online-information",
+          title: { en: "Evaluating Online Information", hi: "ऑनलाइन जानकारी की जाँच" },
+          objectives: ["Identify basic credibility signals.", "Cross-check important claims."],
+          content: {
+            easyExplanation: "Online information को source, date, evidence, purpose और corroboration के आधार पर जाँचें।",
+            deepUnderstanding: "Urgency, emotional language, unsupported certainty और missing source verification के warning signs हो सकते हैं।",
+            examples: ["Official notice vs forwarded screenshot", "primary source vs repost"],
+            commonMistakes: ["forward को evidence मानना", "old information को current मानना"],
+            summary: "Important information को original/official source तक trace करना बेहतर practice है।"
+          },
+          practice: ["किसी public claim को उसके original source तक trace करें।"],
+          activity: "Source-check checklist: Who? When? Evidence? Original? Current?"
+        })
+      ],
+      assessment: { type: "module", passPercent: 70, questions: 10 }
+    }),
+    createModule({
+      id: "cyber-safety",
+      title: { en: "Cyber Safety, Privacy & Security", hi: "साइबर सुरक्षा, गोपनीयता एवं सुरक्षा" },
+      description: "Develop practical habits for safer digital use.",
+      lessons: [
+        createLesson({
+          id: "passwords-accounts",
+          title: { en: "Passwords & Accounts", hi: "पासवर्ड एवं खाते" },
+          objectives: ["Explain strong password principles.", "Recognize account-security risks."],
+          content: {
+            easyExplanation: "Strong, unique credentials और available multi-factor authentication account protection मजबूत करते हैं।",
+            deepUnderstanding: "एक password के leak होने पर multiple accounts प्रभावित हो सकते हैं; इसलिए reuse से बचना महत्वपूर्ण है।",
+            examples: ["Unique passwords", "MFA", "account recovery options"],
+            commonMistakes: ["एक password कई जगह रखना", "OTP/PIN share करना"],
+            summary: "Credentials निजी सुरक्षा information हैं; इन्हें share नहीं करना चाहिए।"
+          },
+          practice: ["अपने accounts के लिए security checklist बनाइए—password reuse, MFA, recovery।"],
+          activity: "एक imaginary phishing request में कौन-सी जानकारी नहीं देनी चाहिए, चिन्हित करें।"
+        }),
+        createLesson({
+          id: "phishing-scams",
+          title: { en: "Phishing, Scams & Social Engineering", hi: "फिशिंग, धोखाधड़ी एवं सोशल इंजीनियरिंग" },
+          objectives: ["Recognize common phishing patterns.", "Pause and verify before acting."],
+          content: {
+            easyExplanation: "Phishing में attacker trusted person/service बनकर sensitive information या action लेने के लिए धोखा दे सकता है।",
+            deepUnderstanding: "Fear, urgency, reward and authority जैसे psychological triggers का उपयोग हो सकता है।",
+            examples: ["Fake login page", "urgent payment request", "fake support call"],
+            commonMistakes: ["link देखकर तुरंत click करना", "caller identity verify न करना"],
+            summary: "Stop → Inspect → Verify → Act is safer than instant response."
+          },
+          practice: ["3 hypothetical messages में phishing indicators चिन्हित करें।"],
+          activity: "अपना personal verification rule लिखें: sensitive request आने पर किस independent channel से verify करेंगे?"
+        }),
+        createLesson({
+          id: "privacy-updates-device-safety",
+          title: { en: "Privacy, Updates & Device Safety", hi: "गोपनीयता, अपडेट एवं डिवाइस सुरक्षा" },
+          objectives: ["Use sensible privacy settings.", "Understand why updates matter."],
+          content: {
+            easyExplanation: "Privacy का अर्थ यह समझना भी है कि कौन-सा data किस purpose से share हो रहा है। Updates security fixes और improvements ला सकते हैं।",
+            deepUnderstanding: "Privacy और security एक ही चीज़ नहीं हैं: security protects systems/data; privacy concerns appropriate collection and use of personal information.",
+            examples: ["App permissions", "screen lock", "updates", "secure Wi‑Fi habits"],
+            commonMistakes: ["हर app को unnecessary permissions देना", "unknown software install करना"],
+            summary: "Least-necessary access और timely updates safer defaults हैं।"
+          },
+          practice: ["अपने device पर unnecessary permissions की सूची बनाकर review करें।"],
+          activity: "एक safe-device checklist तैयार करें।"
+        })
+      ],
+      assessment: { type: "module", passPercent: 70, questions: 10 }
+    }),
+    createModule({
+      id: "practical-digital-work",
+      title: { en: "Practical Digital Work & Problem Solving", hi: "व्यावहारिक डिजिटल कार्य एवं समस्या समाधान" },
+      description: "Apply the learning to real tasks and prepare for final assessment.",
+      lessons: [
+        createLesson({
+          id: "digital-task-workflow",
+          title: { en: "Plan a Digital Task", hi: "डिजिटल कार्य की योजना" },
+          objectives: ["Break a task into steps.", "Check inputs, outputs and risks before acting."],
+          content: {
+            easyExplanation: "पहले goal स्पष्ट करें, फिर required information/tools, steps, expected result और risks लिखें।",
+            deepUnderstanding: "Structured workflow errors कम करता है और troubleshooting आसान बनाता है।",
+            examples: ["Prepare a report", "send an official email", "organize project files"],
+            commonMistakes: ["बिना plan शुरू करना", "final check छोड़ देना"],
+            summary: "Plan → Do → Check → Improve."
+          },
+          practice: ["एक वास्तविक low-risk digital task का 5-step plan बनाइए।"],
+          activity: "अपने plan में एक quality-check step जोड़ें।"
+        }),
+        createLesson({
+          id: "troubleshooting",
+          title: { en: "Basic Troubleshooting", hi: "मूल समस्या समाधान" },
+          objectives: ["Describe a problem clearly.", "Use safe troubleshooting steps."],
+          content: {
+            easyExplanation: "Problem को observe करें, reproduce करें, simple causes check करें और एक समय में एक safe change करें।",
+            deepUnderstanding: "Guessing की जगह evidence-based troubleshooting से unnecessary changes और data loss का risk कम होता है।",
+            examples: ["No internet", "application not responding", "file not found"],
+            commonMistakes: ["बार-बार random settings बदलना", "important data बिना backup के risky repair करना"],
+            summary: "Observe → Define → Check basics → Test → Document result."
+          },
+          practice: ["एक hypothetical 'internet not working' problem के लिए troubleshooting tree बनाइए।"],
+          activity: "किसी solved problem का छोटा incident note बनाइए।"
+        }),
+        createLesson({
+          id: "capstone-practical",
+          title: { en: "Capstone: Complete a Digital Work Package", hi: "कैपस्टोन: डिजिटल कार्य पैकेज पूरा करें" },
+          objectives: ["Combine file management, document creation, communication and safety.", "Review your own work against a checklist."],
+          content: {
+            easyExplanation: "Capstone में अलग-अलग skills को एक meaningful task में जोड़कर दिखाया जाता है।",
+            deepUnderstanding: "Capability केवल अलग-अलग facts जानने से नहीं, बल्कि सही sequence में skills apply करने से दिखाई देती है।",
+            examples: ["Create a one-page report, save it in a structured folder, back it up and send a professional email with the correct attachment."],
+            commonMistakes: ["wrong file attachment", "unclear filename", "missing final review", "unsafe sharing"],
+            summary: "A complete digital task should be accurate, organized, safe and communicable."
+          },
+          practice: ["Capstone package पूरा करें और self-checklist से review करें।"],
+          activity: "Final self-review: Accuracy, Organization, Communication, Safety, Backup."
+        })
+      ],
+      assessment: { type: "final", passPercent: 70, questions: 20, practicalRequired: true }
+    })
+  ],
+  resources: [
+    "Use official operating-system/device documentation for current settings.",
+    "Use official cybersecurity guidance for current security recommendations.",
+    "Check official government or institutional sources for current digital-service rules."
+  ]
 });
 
-const mobileLessons = [
-  makeLesson("What Is a Mobile Phone?","मोबाइल फोन क्या है?","मोबाइल फोन एक portable computing और communication device है जो cellular network, Wi-Fi, Bluetooth और apps के माध्यम से काम कर सकता है।","आज का smartphone केवल फोन नहीं है; यह camera, map, payment interface, library, television, office और social connection का मिश्रण है।","Call, message, camera, maps, learning app, banking app.","अपने फोन में Communication, Camera, Maps और Settings जैसे चार काम पहचानें।","लिखें कि आप एक दिन में फोन से कौन-कौन से 10 काम करते हैं।","फोन को केवल entertainment device समझना और security settings को नजरअंदाज करना।","फोन की असली शक्ति उसके hardware, software, connectivity और user choices के संयोजन में है।"),
-  makeLesson("How Mobile Networks Work","मोबाइल नेटवर्क कैसे काम करता है?","फोन radio signals के माध्यम से nearby cellular network से जुड़ता है और network आपकी voice/data को आगे route करता है।","SIM/eSIM पहचान, radio access, cell towers, core network और internet services मिलकर mobile communication बनाते हैं।","4G/5G data, VoLTE calls, roaming.","अपने phone में network type और preferred network setting देखें।","घर और बाहर signal strength बदलने के कारण observe करें।","Network bars को हमेशा internet speed का exact measure मानना।","Connectivity एक पूरी system chain है; केवल signal bars पूरी कहानी नहीं बताते।"),
-  makeLesson("SIM, eSIM, IMEI & Mobile Identity","SIM, eSIM, IMEI और मोबाइल पहचान","SIM/eSIM network subscriber identity से जुड़ी होती है जबकि IMEI device की पहचान से जुड़ा identifier है।","इन identifiers को समझना account recovery, lost-phone reporting और device management में उपयोगी है।","Physical SIM, eSIM, dual-SIM, IMEI information screen.","अपने phone के official settings में device information देखें और sensitive identifiers सार्वजनिक न करें।","एक सुरक्षित जगह पर जरूरी recovery information रखने की checklist बनाएं।","IMEI, OTP या SIM details को strangers के साथ share करना।","Device identity और subscriber/account identity अलग concepts हैं और दोनों की सुरक्षा जरूरी है।"),
-  makeLesson("Smartphone Hardware","स्मार्टफोन हार्डवेयर","Display, battery, processor, memory, storage, camera, microphones, speakers, sensors और connectivity hardware मिलकर फोन बनाते हैं।","Specifications तभी meaningful हैं जब उन्हें वास्तविक use-case से जोड़ा जाए। अधिक megapixels या RAM अकेले बेहतर user experience की guarantee नहीं हैं।","Battery capacity, storage, refresh rate, camera sensors.","अपने फोन की specification sheet पढ़ें और हर specification का practical purpose लिखें।","एक पुराने और नए फोन की जरूरत-आधारित तुलना करें।","केवल numbers देखकर phone खरीदना।","Hardware को जरूरत, reliability, repairability और total cost के संदर्भ में समझें।"),
-  makeLesson("Operating System & Apps","ऑपरेटिंग सिस्टम और ऐप्स","Operating system phone के hardware और apps के बीच मुख्य software layer है।","Android/iOS जैसे systems permissions, updates, storage, notifications, accounts और app execution manage करते हैं।","Settings, app store, permissions, notifications.","एक unused app की permissions review करें।","App को install करने से पहले developer, reviews, permissions और purpose की checklist बनाएं।","Unknown sources से random APK/install files लेना।","App safety का पहला नियम है: source, permissions और purpose समझकर install करें।"),
-  makeLesson("Touch, Gestures & Accessibility","टच, gestures और accessibility","Tap, swipe, long press, drag, pinch और keyboard input smartphone interaction के basic तरीके हैं।","Accessibility features जैसे text size, screen reader, captions, magnification और assistive options अलग-अलग users को phone usable बनाते हैं।","Zoom, voice input, screen reader, captions.","अपने phone की accessibility settings explore करें।","एक परिवार सदस्य के लिए आसान accessibility setup बनाएं।","Accessibility को केवल disability feature समझना; यह कई लोगों के लिए usability सुधारता है।","अच्छा mobile use inclusive और user-controlled होना चाहिए।"),
-  makeLesson("Battery, Charging & Heat","बैटरी, चार्जिंग और गर्म होना","Battery एक consumable component है और charging habits, temperature तथा workload उसके व्यवहार को प्रभावित कर सकते हैं।","Heat, damaged chargers, poor cables और heavy workloads safety तथा battery health को प्रभावित कर सकते हैं।","Gaming while charging, sunlight, fast charging.","फोन को charging के दौरान असामान्य heat होने पर usage रोककर कारण देखें।","अपने charging routine और battery usage screen का weekly review करें।","Damaged cable/charger का उपयोग या extreme heat को ignore करना।","Battery health के लिए सुरक्षित charging, ventilation और reliable accessories महत्वपूर्ण हैं।"),
-  makeLesson("Storage, Files & Backups","स्टोरेज, फाइलें और बैकअप","Photos, videos, documents, downloads और app data storage लेते हैं; backup अलग copy बनाता है।","Storage और backup अलग समस्याएँ हैं: file phone में होना backup नहीं कहलाता।","Cloud backup, computer copy, memory management.","Large videos और duplicate files review करें।","एक simple 3-step backup plan बनाएं: important data identify, backup location choose, restore test।","Backup है मान लेना लेकिन restore कभी test न करना।","महत्वपूर्ण data की कम-से-कम एक सुरक्षित अतिरिक्त copy रखें और restore प्रक्रिया समझें।")
-];
-
-const mobileLessons2 = [
-  makeLesson("Calls, Contacts & Emergency Calling","कॉल, contacts और emergency calling","Phone calling features में contacts, call history, blocking और emergency options शामिल होते हैं।","Emergency communication में सही contact, local emergency number और accurate location information महत्वपूर्ण हो सकते हैं।","Family contacts, blocked numbers, emergency contacts.","अपने emergency/contact settings की समीक्षा करें।","परिवार के साथ एक emergency communication plan लिखें।","Unknown caller को personal information देना।","फोन का communication layer safety planning का हिस्सा भी हो सकता है।"),
-  makeLesson("SMS, RCS & Messaging Apps","SMS, RCS और messaging apps","SMS, richer messaging systems और internet-based apps अलग technologies और privacy models का उपयोग करते हैं।","Message content, metadata, backups, encryption, contact discovery और account security को अलग-अलग समझना चाहिए।","SMS, WhatsApp-like messaging, group chats.","किसी messaging app की privacy/security settings review करें।","एक family group के लिए safe-sharing rules बनाएं।","OTP, password या sensitive documents को careless group में भेजना।","Convenient messaging को secure messaging समझ लेना सही नहीं है।"),
-  makeLesson("Camera, Photos & Digital Memory","कैमरा, photos और digital memory","Phone camera photo/video capture, editing और sharing को आसान बनाता है।","Photos में location metadata, faces, documents और background details जैसी sensitive information हो सकती है।","School ID photo, home location, family image, document scan.","एक photo share करने से पहले background और metadata-related settings review करें।","Photo-sharing privacy checklist बनाएं।","हर photo को public social media पर डालना।","Photo केवल image नहीं; उसमें पहचान और context की जानकारी भी हो सकती है।"),
-  makeLesson("Internet, Browser & Search","इंटरनेट, browser और search","Browser websites तक पहुंच देता है और search engines information खोजने में मदद करते हैं।","Search result और trustworthy evidence अलग चीजें हैं; source, date, author और corroboration देखना जरूरी है।","Official site, news article, social post, forwarded message.","एक claim के लिए कम-से-कम दो credible sources compare करें।","एक viral message की verification exercise करें।","पहले search result को automatically true मानना।","Digital literacy में information verification केंद्रीय skill है।"),
-  makeLesson("Maps, Location & Navigation","Maps, location और navigation","GPS और network-assisted location services route planning और location sharing में मदद करते हैं।","Location access useful भी हो सकता है और privacy-sensitive भी; app permissions को purpose के अनुसार सीमित करें।","Maps, ride apps, location sharing.","अपने apps की location permissions review करें।","Location sharing कब useful है और कब unnecessary, इसकी table बनाएं।","हर app को always-on location access देना।","Location एक valuable personal data type है; इसे purpose-based तरीके से control करें।"),
-  makeLesson("Email on Mobile","मोबाइल पर ईमेल","Mobile email से messages, files, calendars और professional communication manage की जा सकती है।","Subject, recipient verification, attachment safety, phishing awareness और account security professional email के आधार हैं।","Job application, school message, NGO communication.","एक sample professional email लिखें और भेजने से पहले checklist लगाएं।","Before-send checklist बनाएं।","गलत recipient को sensitive attachment भेजना।","Mobile convenience के बावजूद professional email में वही accuracy standards लागू होते हैं।"),
-  makeLesson("Mobile Documents & Productivity","मोबाइल पर documents और productivity","Phones पर documents read, edit, scan, sign और share किए जा सकते हैं।","Mobile productivity के लिए file naming, version control, permissions और backup जरूरी हैं।","PDF, document scan, spreadsheet, cloud folder.","एक document को सही नाम देकर folder में organize करें।","एक छोटा mobile work package बनाएं: document + photo + PDF + share link।","Sensitive files को public link से share करना।","Mobile office useful है, लेकिन organization और access control जरूरी हैं।"),
-  makeLesson("Digital Payments & Banking Safety","डिजिटल भुगतान और बैंकिंग सुरक्षा","Mobile banking और digital payments तेज सुविधा देते हैं लेकिन authentication और fraud awareness जरूरी है।","PIN, OTP, UPI credentials, device lock और transaction verification को अलग सुरक्षा layers की तरह समझें।","QR payment, UPI PIN, bank app, transaction alert.","Payment से पहले recipient और amount verify करने का अभ्यास करें।","एक payment safety checklist लिखें।","OTP/PIN बताना या screen-share करके payment कराना।","Payment convenience के साथ identity और transaction verification अनिवार्य है।")
-];
-
-const mobileLessons3 = [
-  makeLesson("Passwords, Passkeys & MFA","पासवर्ड, passkeys और MFA","Strong authentication account access को unauthorized users से बचाने में मदद करती है।","Unique passwords, password managers, passkeys और multi-factor authentication अलग security mechanisms हैं।","Password manager, authenticator, device biometric.","दो important accounts में available MFA settings review करें।","अपने accounts की authentication inventory बनाएं।","एक password कई accounts में reuse करना।","Authentication को layered security की तरह सोचें।"),
-  makeLesson("Phishing & Social Engineering","फिशिंग और social engineering","Attackers अक्सर technology से ज्यादा human trust और urgency का फायदा उठाते हैं।","Unexpected links, fake support, prize scams, impersonation और urgent requests के संकेत पहचानना जरूरी है।","Fake bank message, fake delivery link, fake job offer.","किसी suspicious message में sender, link, urgency और request identify करें।","तीन scam scenarios का safe response लिखें।","घबराकर तुरंत link खोलना या payment करना।","रुकना, verify करना और official channel से संपर्क करना core defense है।"),
-  makeLesson("OTP, PIN & Financial Fraud","OTP, PIN और वित्तीय धोखाधड़ी","OTP/PIN authentication secrets हैं जिन्हें दूसरे व्यक्ति को नहीं देना चाहिए।","Legitimate support भी आम तौर पर आपके secret authentication code की मांग नहीं करनी चाहिए; fraud अक्सर urgency और authority का दिखावा करता है।","Fake KYC call, refund scam, remote-support scam.","एक simulated scam message में red flags mark करें।","परिवार के लिए 'never share' list बनाएं।","Caller ID को proof of identity मानना।","Authentication secret केवल authorized transaction flow में स्वयं enter करें।"),
-  makeLesson("App Permissions & Tracking","ऐप permissions और tracking","Apps camera, microphone, contacts, location और files जैसी permissions मांग सकते हैं।","Permission का purpose, timing और necessity समझना privacy management का practical हिस्सा है।","Camera permission for camera app vs flashlight app.","कम-जरूरी permissions disable/review करें।","अपने top 10 apps की permission audit करें।","हर permission को बिना पढ़े allow करना।","Minimum necessary access एक उपयोगी privacy principle है।"),
-  makeLesson("Social Media & Digital Footprint","सोशल मीडिया और digital footprint","Posts, comments, photos और interactions लंबे समय तक copy, archive या resurface हो सकते हैं।","Privacy settings मदद करती हैं लेकिन perfect control की guarantee नहीं; audience, context और permanence पर सोचें।","Public post, private group, story, screenshot.","एक पुराने public post की audience और personal information review करें।","Post करने से पहले STOP checklist बनाएं।","Anger या pressure में तुरंत पोस्ट करना।","Share करने से पहले सोचें: audience, purpose, permanence, harm।"),
-  makeLesson("Cyberbullying, Abuse & Reporting","साइबरबुलिंग, abuse और reporting","Online harassment या abuse में evidence preserve करना, block/report tools और trusted support उपयोगी हो सकते हैं।","Victim को blame नहीं करना चाहिए; serious threats, exploitation या child-safety concerns में appropriate trusted adults और authorities/support services तक पहुंचना जरूरी है।","Harassing messages, impersonation, unwanted contact.","Evidence सुरक्षित रखने और account security सुधारने की basic checklist बनाएं।","एक safe reporting pathway लिखें।","Abuser से लंबी बहस करना या evidence delete कर देना।","Safety, evidence और trusted support को प्राथमिकता दें।"),
-  makeLesson("Children & Smartphone Use","बच्चे और स्मार्टफोन","बच्चों के लिए phone learning और connection का साधन हो सकता है, लेकिन privacy, harmful content, bullying और exploitation के risks भी होते हैं।","UNICEF guidance privacy settings, parental controls, age-appropriate rules, open conversation और digital literacy पर जोर देती है।","Family rules, safe search, app permissions, trusted adult.","एक age-appropriate family digital agreement बनाएं।","बच्चे के साथ एक privacy setting मिलकर review करें।","केवल screen-time number पर ध्यान देकर content और experience ignore करना।","बच्चों की safety technology + education + trusted communication से मजबूत होती है।"),
-  makeLesson("Screen Habits, Sleep & Well-being","स्क्रीन आदतें, नींद और wellbeing","Phone use attention, routine और sleep के साथ interact कर सकता है।","Evidence सभी screen use को समान नहीं मानता; activity, content, timing, individual context और online harms मायने रखते हैं।","Late-night scrolling, study use, social connection, gaming.","एक सप्ताह अपनी phone routine observe करें।","एक personal digital wellbeing plan बनाएं जिसमें sleep, study/work और offline time शामिल हों।","हर व्यक्ति के लिए एक ही rigid screen-time rule को universal solution मानना।","Healthy use का लक्ष्य meaningful use और wellbeing का संतुलन है।")
-];
-
-const mobileLessons4 = [
-  makeLesson("AI on the Phone","फोन में AI","Modern phones और apps में AI photo tools, assistants, search, translation और content generation जैसी सुविधाएं दे सकते हैं।","AI output हमेशा सही नहीं होता; privacy, hallucination, bias, copyright और verification पर ध्यान देना चाहिए।","AI writing assistant, translation, image enhancement.","AI से मिली information को authoritative source से verify करें।","एक AI answer के लिए verification checklist लागू करें।","Private documents या sensitive personal data बिना जरूरत AI service में डालना।","AI helpful tool है, final authority नहीं।"),
-  makeLesson("Online Learning from a Phone","फोन से ऑनलाइन सीखना","Phone से courses, videos, ebooks, practice और communities तक पहुंच मिल सकती है।","Effective learning में active recall, practice, reflection, assessment और reliable sources शामिल होने चाहिए।","SSF Learning Hub, educational video, quiz, PDF.","एक 30-minute mobile learning session करें और notes बनाएं।","अपना weekly learning path बनाएं।","केवल videos देखना और practice न करना।","Mobile learning को active learning में बदलना जरूरी है।"),
-  makeLesson("Jobs, Work & Business on Mobile","मोबाइल से नौकरी, काम और व्यवसाय","Phone job search, customer communication, records, marketing और remote work में उपयोगी हो सकता है।","Professional mobile work में identity protection, document management, truthful communication और fraud awareness जरूरी हैं।","Job portal, business WhatsApp, invoices, cloud documents.","एक safe professional profile checklist बनाएं।","एक small business के लिए mobile workflow design करें।","Fake job offers या advance-fee scams पर भरोसा करना।","Mobile can expand opportunity, but verification and professionalism remain essential."),
-  makeLesson("Mobile Accessibility & Inclusion","मोबाइल accessibility और inclusion","Accessibility features लोगों को vision, hearing, motor, learning या language needs के अनुसार phone उपयोग करने में मदद कर सकती हैं।","Inclusive design में captions, text scaling, voice control, screen readers, contrast और simple interaction उपयोगी हैं।","Voice input, captions, magnification, switch access.","एक accessibility feature enable करके test करें।","किसी community learner के लिए accessible setup checklist बनाएं।","User needs जाने बिना assumptions करना।","Accessibility phone को अधिक लोगों के लिए usable बनाती है।"),
-  makeLesson("Lost or Stolen Phone Response","फोन खो जाए या चोरी हो जाए तो क्या करें","Lost device में पहले personal safety, account protection और device recovery steps महत्वपूर्ण हैं।","Remote lock/wipe, account sign-out, SIM blocking और official reporting जैसे options provider/device के अनुसार बदल सकते हैं।","Find-my-device service, SIM block, account password change.","अपने device ecosystem की official lost-device settings locate करें।","एक emergency recovery card बनाएं जिसमें sensitive secrets न हों।","घबराकर unknown person को OTP देना।","पहले accounts और device को सुरक्षित करें, फिर recovery/reporting steps लें।"),
-  makeLesson("Updates, Antivirus & Security Hygiene","अपडेट, antivirus और security hygiene","Software updates security fixes और improvements ला सकते हैं।","Security hygiene में updates, app source control, screen lock, backups, permission review और phishing awareness शामिल हैं।","OS update, app update, security patch.","Pending updates review करें।","Monthly security checklist बनाएं।","Updates को हमेशा indefinitely postpone करना।","Security एक one-time setting नहीं बल्कि continuous practice है।"),
-  makeLesson("Privacy, Data & Your Digital Rights","गोपनीयता, data और digital rights","Personal data में identity, contact, location, photos, activity और other information शामिल हो सकती है।","Different jurisdictions provide different rights and rules; users should read relevant platform notices and applicable law rather than assume one universal rule.","Privacy policy, account data export, permission controls.","किसी major app की privacy settings review करें।","एक personal data map बनाएं: क्या data, कौन access, क्यों, कब तक।","हर free app को automatically harmless मानना।","Data literacy informed digital choices की आधारशिला है।"),
-  makeLesson("Responsible Mobile Citizenship","जिम्मेदार मोबाइल नागरिकता","Digital citizenship का मतलब respectful, lawful, informed और safe participation है।","Forwarding, commenting, recording, sharing और reporting के real-world consequences हो सकते हैं।","Misinformation, privacy violation, respectful debate, community help.","एक doubtful message को forward करने से पहले verification करें।","अपना Digital Citizen Code लिखें।","Private content बिना consent share करना।","Technology का अच्छा उपयोग knowledge, dignity, safety और responsibility से जुड़ा है।")
-];
-
-const mobileLessons5 = [
-  makeLesson("How the Smartphone Changed Daily Life","स्मार्टफोन ने दैनिक जीवन कैसे बदला","Smartphones ने communication, navigation, entertainment, education, commerce और services को एक device में ला दिया है।","Convenience के साथ dependency, distraction, privacy और inequality के questions भी आए हैं।","Maps replacing paper directions, mobile banking, online classes.","अपने दिन के phone-dependent tasks map करें।","एक task का low-tech alternative identify करें।","Convenience को necessity समझ लेना।","Technology useful है, लेकिन resilience के लिए alternatives भी जानना अच्छा है।"),
-  makeLesson("Attention, Notifications & Habit Loops","ध्यान, notifications और habit loops","Notifications और variable rewards attention को बार-बार phone की ओर खींच सकते हैं।","User-controlled notification settings, intentional checking और distraction-free periods attention management में मदद कर सकते हैं।","Social notifications, autoplay, streaks.","Non-essential notifications बंद करके एक दिन observe करें।","Notification audit करें: keep, reduce, mute. ","हर notification को urgent समझना।","Phone को अपने attention का controller नहीं बल्कि tool बनाना बेहतर है।"),
-  makeLesson("Family Digital Rules","परिवार के डिजिटल नियम","Family rules को age, safety, school/work needs और mutual trust के अनुसार बनाना चाहिए।","Rules केवल punishment नहीं; explanation, participation, review और modelling से बेहतर काम कर सकते हैं।","No-phone dinner, privacy rule, emergency access.","परिवार के लिए 8–10 practical rules draft करें।","सभी सदस्यों के साथ rules review करें।","एकतरफा अस्पष्ट नियम बनाना।","Clear, age-appropriate और revisable rules अधिक उपयोगी होते हैं।"),
-  makeLesson("Children, Privacy & Consent","बच्चे, privacy और consent","बच्चों की photos, names, school details और location sensitive information हो सकती है।","Parents/caregivers को भी child's privacy, dignity और long-term digital footprint पर विचार करना चाहिए।","School event photo, public post, family group.","किस information को private रखना चाहिए उसकी list बनाएं।","Child-friendly privacy conversation का अभ्यास करें।","बच्चे की image/details को बिना सोचे public करना।","बच्चों की digital dignity भी privacy और safety का हिस्सा है।"),
-  makeLesson("Digital Balance for Students","विद्यार्थियों के लिए digital balance","Phone study, communication और creativity में मदद कर सकता है लेकिन distraction भी बन सकता है।","Task-based use, focused sessions, notifications control और sleep-friendly routines study quality में मदद कर सकते हैं।","Study mode, timer, notes, educational apps.","एक focused study block करें और distractions record करें।","अपना study-phone protocol बनाएं।","Study के नाम पर लगातार social media switching।","Technology का learning value उसके intentional use से बढ़ता है।"),
-  makeLesson("Mobile Use for Older Adults","वरिष्ठ नागरिकों के लिए मोबाइल","Simple interface, larger text, voice features और trusted contacts older adults के लिए useful हो सकते हैं।","Scam awareness, privacy, emergency contacts और patient learning महत्वपूर्ण हैं।","Voice calling, magnification, contact favorites.","किसी older adult के साथ accessibility और scam-safety settings review करें।","Senior-friendly setup checklist बनाएं।","Technical jargon से सीखने को कठिन बनाना।","Inclusive teaching patient, simple और practical होनी चाहिए।"),
-  makeLesson("Digital Divide & Responsible Access","डिजिटल divide और जिम्मेदार access","हर व्यक्ति के पास समान device, connectivity, skills या affordability नहीं होती।","Digital inclusion में device access के साथ skills, language, accessibility, connectivity और safe participation भी जरूरी हैं।","Shared device, low-data learning, community digital centre.","एक low-bandwidth learning plan बनाएं।","अपने क्षेत्र के learners के लिए device-sharing guidelines सोचें।","केवल smartphone होना digital inclusion मान लेना।","Access + affordability + skills + safety मिलकर meaningful digital inclusion बनाते हैं।"),
-  makeLesson("The Future of Mobile Life","मोबाइल जीवन का भविष्य","Mobile computing AI, wearables, connected services और new interfaces के साथ बदलता रहेगा।","Future readiness का मतलब हर new feature अपनाना नहीं, बल्कि benefits, risks, evidence और personal need देखकर निर्णय लेना है।","AI assistants, wearables, eSIM, passkeys, connected devices.","किसी नए mobile feature का benefit-risk analysis करें।","एक personal technology adoption checklist बनाएं।","Novelty को usefulness का प्रमाण मानना।","Future-ready user curious भी है और cautious भी।")
-];
-
-const MOBILE_PHONE_COURSE = {
-  id:"mobile-phone-digital-life-safety",
-  title:{en:"Mobile Phone, Digital Life & Safety",hi:"मोबाइल फोन, डिजिटल जीवन एवं सुरक्षा"},
-  category:"Digital Skills / डिजिटल कौशल",
-  type:"certificate",
-  level:"foundation",
-  description:"A comprehensive, practical course about how mobile phones work, how people use them for communication, learning, work, money, health and daily life, and how to protect privacy, children, accounts and wellbeing.",
-  audience:"Students, parents, children with age-appropriate guidance, volunteers, community learners, workers, older adults and anyone who wants to use a mobile phone confidently and safely.",
-  prerequisites:["No prior technical knowledge required.","Children should learn with age-appropriate guidance and a trusted adult where needed."],
-  learningHours:30,
-  version:"1.0",
-  lastReviewed:"2026-09-30",
-  outcomes:[
-    "Understand what a modern mobile phone is and how networks, hardware, software and apps work together.",
-    "Use communication, camera, internet, maps, email, documents and digital payment features more safely.",
-    "Protect passwords, OTPs, privacy, accounts, devices and personal data.",
-    "Recognise phishing, scams, misinformation, cyberbullying and unsafe requests.",
-    "Build healthier, more intentional mobile habits for learning, work, family and wellbeing.",
-    "Guide children and older adults toward safer and more inclusive mobile use.",
-    "Evaluate new mobile technologies such as AI features using benefits, risks, evidence and need."
+export const FLAGSHIP_COURSE_ASSESSMENTS = {
+  "computer-foundation": [
+    { q: "Computer का मुख्य काम क्या है?", options: ["Data को process करके useful output देना", "केवल internet चलाना", "केवल games चलाना", "केवल files print करना"], answer: 0 },
+    { q: "Operating system का एक प्रमुख काम क्या है?", options: ["Hardware और software resources को manage करना", "हर website को सुरक्षित बनाना", "केवल email भेजना", "केवल documents लिखना"], answer: 0 }
   ],
-  modules:[
-    makeModule("mobile-foundations","Mobile Foundations","मोबाइल की बुनियाद","Understand the device, network, software, identity, hardware and basic maintenance.",mobileLessons),
-    makeModule("mobile-communication","Communication & Everyday Mobile Use","संचार एवं दैनिक मोबाइल उपयोग","Use calls, messages, camera, internet, maps, email, documents and payments with care.",mobileLessons2),
-    makeModule("mobile-security","Cyber Safety, Privacy & Children","साइबर सुरक्षा, गोपनीयता एवं बच्चे","Protect accounts and data while understanding online harms, child safety and digital wellbeing.",mobileLessons3),
-    makeModule("mobile-learning-work","Learning, Work & Inclusion","सीखना, काम एवं समावेशन","Use the phone as a learning, work and accessibility tool without losing safety and critical thinking.",mobileLessons4),
-    makeModule("mobile-life","Mobile Life, Habits & Future","मोबाइल जीवन, आदतें एवं भविष्य","Think critically about attention, family rules, digital inclusion and the future of mobile life.",mobileLessons5)
+  "files-documents": [
+    { q: "File और folder में मुख्य अंतर क्या है?", options: ["File में content/data होता है; folder files को organize कर सकता है", "दोनों हमेशा एक ही चीज हैं", "Folder केवल internet पर होता है", "File में कभी data नहीं होता"], answer: 0 },
+    { q: "Backup का उद्देश्य क्या है?", options: ["महत्वपूर्ण data की अतिरिक्त सुरक्षित copy रखना", "Files को हमेशा delete करना", "Password को public करना", "Storage को बिना कारण भरना"], answer: 0 }
+  ],
+  "internet-communication": [
+    { q: "Search result की reliability जाँचते समय क्या देखना चाहिए?", options: ["Source, date, evidence और context", "केवल headline", "केवल forward count", "केवल anonymous comment"], answer: 0 },
+    { q: "Professional email में क्या उपयोगी है?", options: ["Clear subject, respectful message और appropriate attachment", "Blank subject", "सिर्फ capital letters", "Unrelated attachments"], answer: 0 }
+  ],
+  "cyber-safety": [
+    { q: "Phishing क्या है?", options: ["धोखे से sensitive information प्राप्त करने का प्रयास", "Computer cleaning", "Normal software update", "File compression"], answer: 0 },
+    { q: "Strong account security में क्या मदद करता है?", options: ["Unique passwords और multi-factor authentication", "एक ही password हर जगह", "Password share करना", "Unknown links खोलना"], answer: 0 }
+  ],
+  "practical-digital-work": [
+    { q: "Digital task शुरू करने से पहले क्या करना चाहिए?", options: ["Goal, required information और expected output स्पष्ट करना", "Randomly click करना", "Backup हटाना", "हर warning ignore करना"], answer: 0 },
+    { q: "Basic troubleshooting में पहला उपयोगी कदम क्या है?", options: ["Problem को reproduce और clearly identify करना", "तुरंत device reset करना", "सब data delete करना", "बिना जाँचे hardware बदलना"], answer: 0 }
   ]
 };
 
-
-const MOBILE_BALANCE_LESSONS = [
-  makeLesson("Why Are We So Busy on the Phone?","हम मोबाइल में इतने व्यस्त क्यों रहते हैं?","Mobile combines communication, entertainment, information, shopping, work and social connection in one device, so checking it can become frequent and automatic.","Notifications, infinite feeds, autoplay, social feedback, convenience and habit loops can repeatedly attract attention. The goal is not to blame the user, but to understand the system and regain intentional control.","A person opens the phone for one message and then spends 30 minutes switching between apps.","अपने पिछले दिन के सबसे ज्यादा इस्तेमाल किए गए 5 apps देखें और हर app का वास्तविक उद्देश्य लिखें।","एक दिन में बिना सोचे phone उठाने के कम-से-कम 5 अवसर नोट करें।","हर बार phone उठाने को जरूरी मानना; notification को urgency समझना।","पहचानना कि phone use need, habit और design—तीनों का परिणाम हो सकता है।"),
-  makeLesson("Benefits of a Mobile Phone","मोबाइल फोन के फायदे","A mobile phone can provide communication, learning, navigation, emergency access, banking, work tools and creative opportunities.","Its value depends on purpose and context. The same device can save time when used intentionally and consume time when used without a clear purpose.","Online class, digital payment, map navigation, emergency call, small business communication.","अपने फोन के 10 उपयोग लिखकर उन्हें learning, work, communication, safety और entertainment में बाँटें।","एक ऐसा काम पहचानें जिसमें mobile ने आपका समय या मेहनत बचाई।","हर mobile use को केवल फायदा या केवल नुकसान मान लेना।","Mobile एक tool है; benefit उसके उपयोग के उद्देश्य और तरीके से तय होता है।"),
-  makeLesson("Harms of Excessive Use","अत्यधिक उपयोग के नुकसान","Excessive or poorly timed use can interfere with sleep, attention, study, work, relationships and offline activities.","Impact varies by person and activity. The important question is not only total hours but what the phone replaces, when it is used and whether the user can stop intentionally.","Late-night scrolling, repeated checking during study, phone at meals, constant social-media switching.","अपने phone use के कारण छूटने वाली एक offline activity पहचानें।","एक 24-hour observation sheet बनाएं: time, app, purpose, duration, feeling/result।","हर समस्या को केवल screen-time number से समझना।","Healthy digital use requires looking at duration, timing, purpose, content and consequences together।"),
-  makeLesson("Screen Time: What Does the Number Mean?","Screen Time: संख्या का अर्थ क्या है?","Screen-time statistics show device or app usage, but the number alone does not tell whether use was useful or harmful.","Compare categories such as work, study, communication and entertainment. Look for patterns, peak times and unnecessary repetition rather than chasing an arbitrary universal number.","Three hours of learning and three hours of uncontrolled scrolling are not equivalent uses.","अपने phone का weekly screen-time report देखें और categories बनाएं।","एक target तय करें: unnecessary entertainment use को धीरे-धीरे कम करना और useful use को organised रखना।","एक fixed hour limit को हर व्यक्ति के लिए universal rule मानना।","Screen time is a measurement for reflection, not the complete definition of digital wellbeing।"),
-  makeLesson("When and How Much Should We Use a Phone?","मोबाइल कब और कितना इस्तेमाल करें?","There is no single useful number for every person or every day; appropriate use depends on age, work, study, sleep, health, responsibilities and purpose.","Instead of asking only 'how many hours?', ask 'for what purpose, at what time, with what effect, and could I stop when I intended?' Build personal rules around sleep, focused work, meals, exercise, family time and safety.","Student study session, worker using phone for work, parent managing children, older adult using calls.","अपने लिए five-zone routine बनाएं: essential, learning/work, communication, entertainment, screen-free time.","एक 7-day personal phone-use plan बनाएं और हर दिन review करें।","दूसरों के hours देखकर अपनी जरूरत तय करना।","Balanced use is intentional, context-aware and reviewable rather than a single universal number।"),
-  makeLesson("Signs of Unhealthy Phone Habits","अस्वस्थ मोबाइल आदतों के संकेत","Warning signs can include repeatedly checking without purpose, losing sleep, difficulty stopping, neglecting responsibilities or becoming distracted during important activities.","A pattern matters more than one unusual day. If phone use is causing serious distress or functional problems, trusted support or qualified professional help may be appropriate.","Phone checking during conversations, study, meals or bedtime.","एक सप्ताह में अपने 3 सबसे common distraction patterns लिखें।","Habit trigger → phone action → immediate reward → consequence का छोटा map बनाएं।","हर frequent user को automatically addicted कहना।","Observe patterns without labels, then change specific behaviours one step at a time।"),
-  makeLesson("Notifications and Distraction","Notifications और ध्यान भटकना","Notifications are useful alerts, but many non-essential alerts create repeated interruptions.","Turn off, group or delay notifications that do not require immediate attention. Keep safety, family and genuinely important work alerts available.","Social likes, shopping offers, game alerts versus emergency contacts.","आज केवल essential notifications रखें और difference observe करें।","Notifications को Keep / Reduce / Mute तीन groups में बाँटें।","हर notification को तुरंत खोलना।","Notification control is one of the simplest ways to return control of attention to the user।"),
-  makeLesson("Social Media: Connection or Time Trap?","सोशल मीडिया: जुड़ाव या समय का जाल?","Social media can support communication, learning, communities and creativity, while feeds can also encourage prolonged passive consumption.","Algorithms and social feedback may shape what appears in the feed. Users can reduce passive scrolling by choosing specific purposes, following useful sources and taking intentional breaks.","Learning group, community information, creator content, endless short-video feed.","अपने social apps में top followed accounts को review करें।","एक 'purpose before opening' rule बनाएं: सीखना, संदेश, काम या specific search।","Scroll शुरू करने से पहले कोई उद्देश्य न होना।","Social media becomes more useful when the user chooses the purpose instead of simply following the feed।"),
-  makeLesson("Gaming and Entertainment","Gaming और मनोरंजन","Games and entertainment can provide relaxation, creativity and social connection, but unplanned sessions can displace sleep, study, work or relationships.","Look at duration, stopping ability, spending, emotional effect and timing. Build clear start/stop conditions rather than relying only on willpower.","Online games, streaming, short videos, music.","एक entertainment session शुरू करने से पहले stop time तय करें।","एक सप्ताह का entertainment budget बनाएं: time, money and sleep boundaries।","रात में बिना सीमा entertainment जारी रखना।","Entertainment is healthiest when it fits inside a wider routine rather than replacing essential activities।"),
-  makeLesson("Mobile and Sleep","मोबाइल और नींद","Late-night phone use can delay bedtime and keep attention active when the body should be preparing for sleep.","Create a consistent wind-down routine, reduce stimulating content late at night, use device controls where helpful and keep the bedroom routine intentional.","Short videos in bed, late messages, gaming before sleep.","अपने सोने से पहले के 60 मिनट observe करें।","एक screen-free wind-down routine बनाकर सात दिन test करें।","बिस्तर में लगातार scrolling को normal routine मानना।","Protecting sleep is an important part of responsible mobile use।"),
-  makeLesson("Mobile and Study","मोबाइल और पढ़ाई","Mobile can provide lessons, dictionaries, research, notes and educational tools, but switching between study and entertainment can fragment attention.","Use focused sessions, relevant apps, notification control and clear study goals. Keep distracting apps out of the study workflow where possible.","Video lesson plus notes versus study interrupted by social media.","एक 30–45 minute focused study session करें।","Study Mode checklist बनाएं: goal, materials, notifications, timer, review।","हर study break को social-media session बना देना।","The phone should support the learning task rather than compete with it।"),
-  makeLesson("Mobile and Work","मोबाइल और काम","Mobile enables calls, email, documents, payments, meetings and field work.","Productive use still needs boundaries: verify recipients, protect files, manage notifications and separate urgent work from constant availability.","Field worker, small business owner, NGO volunteer, remote worker.","अपने work apps और personal apps की notification needs अलग करें।","एक mobile work routine बनाएं जिसमें start, focus, response and shutdown periods हों।","हर work message को instantly urgent मानना।","Professional mobile use requires both productivity and boundaries।"),
-  makeLesson("Family and Relationships","परिवार और रिश्तों में मोबाइल","Phones can connect families across distance, but constant checking during shared time can reduce attention to people nearby.","Agree on practical shared rules such as device-free meals, focused conversations and emergency exceptions.","Family dinner, meeting, parent-child conversation.","एक family interaction के दौरान phone-free period रखें।","परिवार के साथ 5 simple digital rules बनाएं।","दूसरे व्यक्ति के सामने लगातार screen देखना।","Digital balance includes giving people real attention, not only managing screen time।"),
-  makeLesson("Children and Age-Appropriate Use","बच्चों और उम्र के अनुसार उपयोग","Children need age-appropriate guidance, privacy protection, safe content, clear routines and trusted adults who model healthy behaviour.","Rules should consider age, maturity, school needs, safety and family circumstances. Parents should explain reasons and review rules rather than relying only on punishment.","Study device, supervised video, family communication, online game.","बच्चे के साथ 'safe, useful, private, not allowed' categories बनाएं।","एक child-friendly family digital agreement तैयार करें।","बच्चे को बिना guidance unrestricted access देना या केवल punishment पर निर्भर रहना।","Children learn digital habits partly by watching adults, so adult behaviour matters too।"),
-  makeLesson("Privacy in Everyday Mobile Use","दैनिक मोबाइल उपयोग में गोपनीयता","Phones contain contacts, photos, location, messages, documents and account information.","Review permissions, lock the device, use secure authentication and think before sharing photos, documents or live location.","Public photo with home address visible, unnecessary location permission, shared documents.","अपने top apps की camera, microphone, contacts, location permissions review करें।","एक personal privacy checklist बनाएं।","हर app को हर permission देना।","Privacy is not a single setting; it is a series of everyday choices।"),
-  makeLesson("Scams, OTP and UPI Safety","Scam, OTP और UPI सुरक्षा","Fraudsters may use urgency, fear, authority or attractive offers to make people reveal secrets or send money.","Never share OTP, PIN or passwords with callers. Verify unexpected requests through official channels and stop when something feels unusual.","Fake KYC call, fake refund, fake delivery message, remote-support request.","तीन suspicious messages में red flags पहचानें।","घर के लिए 'STOP–VERIFY–THEN ACT' rule लिखें।","Caller ID को proof मानना या pressure में payment करना।","Slow verification is safer than fast reaction when money or accounts are involved।"),
-  makeLesson("Phone Lost or Stolen","मोबाइल खो जाए या चोरी हो जाए तो क्या करें?","A lost phone can expose accounts, messages, photos and payment access, so preparation matters.","Use screen lock, account recovery options, backups and device-finding/security features where available. If lost, protect accounts and contact relevant providers or authorities as appropriate.","Lost phone at market, travel or public transport.","अपने important accounts की recovery options review करें।","एक 'Lost Phone Action Card' बनाएं: lock, locate, account protection, SIM/provider, reporting।","Backup और recovery options पहले से न रखना।","Preparation reduces the damage a lost device can cause।"),
-  makeLesson("AI on the Mobile","मोबाइल में AI का उपयोग","AI tools can help with writing, learning, translation, ideas, summaries and productivity.","AI output can be wrong or incomplete. Important information should be checked, and sensitive personal or confidential data should not be shared carelessly.","Study explanation, translation, draft message, brainstorming.","एक simple question AI से पूछें और answer को reliable source से verify करें।","AI use checklist बनाएं: purpose, privacy, verification, human judgement।","AI को हमेशा सही मानना।","AI is an assistant, not a substitute for verification and responsible judgement।"),
-  makeLesson("Mobile for Learning and Skills","मोबाइल से सीखना और कौशल विकास","A phone can make learning accessible through courses, videos, documents, practice and communication.","Good learning requires active practice, notes, assessment and application—not endless content consumption.","SSF Learning Hub, language practice, vocational tutorials.","एक learning goal चुनकर 30-minute focused session करें।","Learn → Practise → Check → Apply का routine बनाएं।","वीडियो देखकर practice न करना।","Learning value comes from active use and application, not simply screen time।"),
-  makeLesson("Mobile for Work and Income","मोबाइल से काम और आय के अवसर","Phones can support job search, small business, customer communication, digital payments and content creation.","Opportunities also carry scams, platform fees, privacy risks and unrealistic earning claims. Verify opportunities and calculate real costs.","Online application, local service business, digital catalogue.","एक genuine work use-case का cost-benefit लिखें।","किसी earning offer के लिए verification checklist बनाएं।","'घर बैठे guaranteed income' जैसे claims पर तुरंत भरोसा करना।","Mobile can enable opportunity, but opportunity should be verified and evaluated realistically।"),
-  makeLesson("Accessibility and Senior-Friendly Use","Accessibility और वरिष्ठ नागरिकों के लिए उपयोग","Larger text, voice input, magnification, captions and simplified contacts can make phones easier for many users.","Inclusive setup should match the person's needs and preserve privacy and independence.","Large text, voice calling, emergency contacts, hearing-related features.","किसी परिवार सदस्य के लिए accessibility settings review करें।","Senior-friendly phone setup checklist बनाएं।","तकनीकी भाषा में समझाना या settings बिना consent बदलना।","Good digital support is patient, understandable, respectful and user-controlled।"),
-  makeLesson("Digital Balance Plan","अपना Digital Balance Plan बनाना","A sustainable plan combines useful phone time, focused work, family time, sleep, movement, offline activities and intentional entertainment.","Start with observation, choose a few changes, measure results and adjust. Extreme rules are often less practical than consistent habits.","7-day notification reduction, bedtime routine, study blocks.","अपना current pattern लिखकर तीन changes चुनें।","एक personal 7-day Digital Balance Plan बनाएं और daily review करें।","एक दिन में बहुत सारे कठोर नियम लगाना।","Small measurable changes, repeated consistently, can create a more sustainable routine।")
-];
-
-const MOBILE_BALANCE_COURSE = {
-  id:"mobile-use-digital-balance-smart-life",
-  title:{en:"Mobile Use, Digital Balance & Smart Life",hi:"मोबाइल उपयोग, डिजिटल संतुलन एवं स्मार्ट जीवन"},
-  category:"Digital Skills / डिजिटल कौशल",
-  type:"certificate",
-  level:"foundation",
-  description:"A practical course for people who spend a large part of daily life on a mobile phone: understand the benefits and risks, measure use, build healthy routines, protect privacy and money, support children and family, and use the phone for learning, work and opportunity.",
-  audience:"Students, parents, workers, young people, older adults, volunteers and community learners who want a practical relationship with their mobile phone.",
-  prerequisites:["No technical prerequisite.","Learners should have access to a smartphone or can follow the exercises with a family member's device."],
-  learningHours:20,
-  version:"1.0",
-  lastReviewed:"2026-10-01",
-  outcomes:[
-    "Understand why modern mobile use can become frequent and how to regain intentional control.",
-    "Identify useful mobile activities and distinguish them from unnecessary or harmful patterns.",
-    "Measure screen time by purpose, timing and consequences rather than relying on one number.",
-    "Create practical routines for sleep, study, work, family time and entertainment.",
-    "Improve privacy, scam, OTP, UPI, account and lost-phone safety.",
-    "Use mobile phones more effectively for learning, work, accessibility and AI-assisted tasks.",
-    "Create and test a personal 7-day Digital Balance Plan."
-  ],
-  modules:[
-    makeModule("balance-foundation","Mobile Life: Benefits, Risks & Habits","मोबाइल जीवन: फायदे, नुकसान एवं आदतें","Understand why mobile phones are useful, why they can consume attention, and how to observe your own pattern.",MOBILE_BALANCE_LESSONS.slice(0,8)),
-    makeModule("balance-time","Time, Attention, Sleep & Study","समय, ध्यान, नींद एवं पढ़ाई","Learn practical ways to manage notifications, social media, entertainment, sleep and study.",MOBILE_BALANCE_LESSONS.slice(8,12)),
-    makeModule("balance-family","Work, Family, Children & Privacy","काम, परिवार, बच्चे एवं गोपनीयता","Build healthier family use, age-appropriate child guidance, work boundaries and everyday privacy habits.",MOBILE_BALANCE_LESSONS.slice(12,17)),
-    makeModule("balance-safety","Scams, Money, Lost Phone & AI","Scam, पैसा, खोया फोन एवं AI","Practise financial safety, account protection, recovery preparation and responsible AI use.",MOBILE_BALANCE_LESSONS.slice(17,21)),
-    makeModule("balance-growth","Learning, Work & Digital Balance Plan","सीखना, काम एवं डिजिटल संतुलन योजना","Turn the phone into a useful learning and work tool and complete a personal 7-day balance plan.",MOBILE_BALANCE_LESSONS.slice(21))
-  ]
+export const FLAGSHIP_COURSES = {
+  [FLAGSHIP_COURSE_ID]: FLAGSHIP_COMPUTER_COURSE,
 };
-
-const makeQuestions = (pairs) => pairs.map(([q,options,answer=0]) => ({q,options,answer}));
-
-const MOBILE_BALANCE_ASSESSMENTS = {};
-MOBILE_BALANCE_COURSE.modules.forEach((m) => {
-  MOBILE_BALANCE_ASSESSMENTS[m.id] = makeQuestions([
-    ["मोबाइल उपयोग का balanced approach क्या है?",["Purpose, timing, effect और personal needs देखकर use करना","हर समय phone बंद रखना","हर notification तुरंत देखना","सिर्फ entertainment"],0],
-    ["Screen-time number को कैसे समझना चाहिए?",["Context और purpose के साथ","Universal rule की तरह","केवल दूसरों से तुलना करके","Ignore करके"],0],
-    ["Suspicious financial request पर क्या करें?",["रुकें और official source से verify करें","OTP दें","जल्दी payment करें","Screen share करें"],0],
-    ["Healthy digital routine में क्या शामिल हो सकता है?",["Sleep, focused work/study, family time और intentional entertainment","रातभर scrolling","हर meal में phone","हर notification का तुरंत जवाब"],0],
-    ["AI output के साथ क्या करना चाहिए?",["Important information verify करें और sensitive data protect करें","हमेशा सही मानें","Passwords upload करें","बिना पढ़े forward करें"],0],
-    ["Children के digital use में क्या जरूरी है?",["Age-appropriate guidance, privacy और trusted conversation","केवल punishment","Unlimited access","Public sharing"],0]
-  ]);
-});
-MOBILE_BALANCE_ASSESSMENTS.final = makeQuestions([
-  ["मोबाइल फोन का सबसे अच्छा उपयोग कैसे तय करें?",["Purpose, benefit, risk, timing और consequences देखकर","केवल hours देखकर","Advertisement देखकर","दूसरों की आदत देखकर"],0],
-  ["क्या हर व्यक्ति के लिए एक ही screen-time limit सही है?",["नहीं; context और individual needs अलग होती हैं","हाँ, हमेशा","केवल students के लिए","केवल adults के लिए"],0],
-  ["Notification management का उद्देश्य क्या है?",["अनावश्यक interruptions कम करना","सभी alerts बढ़ाना","हर message को urgent बनाना","Phone को slow करना"],0],
-  ["Sleep के लिए practical habit क्या है?",["Consistent wind-down और late-night stimulation कम करना","बिस्तर में scrolling बढ़ाना","हर रात gaming करना","Notifications हमेशा loud रखना"],0],
-  ["Study के दौरान mobile का अच्छा उपयोग क्या है?",["Focused learning और relevant tools","हर कुछ मिनट में social media","Random notifications खोलना","Entertainment switching"],0],
-  ["Social media के balanced use में क्या मदद करता है?",["Purpose before opening और intentional breaks","Infinite scrolling","हर trend follow करना","हर post पर तुरंत प्रतिक्रिया"],0],
-  ["Family digital balance में क्या जरूरी है?",["Clear, discussed and practical rules","केवल punishment","Secret rules","No conversation"],0],
-  ["Privacy के लिए कौन सा principle उपयोगी है?",["Minimum necessary access और thoughtful sharing","हर permission allow करना","Location हमेशा public करना","Passwords share करना"],0],
-  ["OTP/PIN के बारे में सही नियम क्या है?",["Secret रखें और किसी caller को न बताएं","Customer care को बताएं","Friend को बताएं","Message में भेजें"],0],
-  ["Lost phone की तैयारी में क्या उपयोगी है?",["Screen lock, recovery options, backup और device protection","कोई preparation नहीं","Passwords public करना","Unknown links खोलना"],0],
-  ["AI का responsible use क्या है?",["Useful assistance + privacy + verification + human judgement","AI को हमेशा सही मानना","Sensitive data freely upload करना","हर output forward करना"],0],
-  ["Mobile से learning का अच्छा model क्या है?",["Learn → Practise → Check → Apply","Watch → Forget","Scroll → Scroll","Download → Never practise"],0],
-  ["Digital balance plan कैसे बनाना चाहिए?",["Observe → choose a few changes → measure → adjust","एक दिन में कठोर सारे rules","बिना measurement","दूसरों की routine copy करके"],0],
-  ["Mobile use का नुकसान समझते समय क्या देखें?",["Duration, timing, purpose, content and what it replaces","केवल phone model","केवल battery","केवल number of apps"],0],
-  ["Healthy entertainment का संकेत क्या है?",["It fits within sleep, work/study, relationships and responsibilities","It replaces sleep","It has no stopping point","It continues whenever a notification appears"],0]
-]);
-
-
-const FLAGSHIP_COURSES = {
-  [MOBILE_PHONE_COURSE.id]: MOBILE_PHONE_COURSE,
-  [MOBILE_BALANCE_COURSE.id]: MOBILE_BALANCE_COURSE
-};
-
-const FLAGSHIP_COURSE_ASSESSMENTS = {
-  [MOBILE_BALANCE_COURSE.id]: MOBILE_BALANCE_ASSESSMENTS
-};
-
-MOBILE_PHONE_COURSE.modules.forEach((m) => {
-  FLAGSHIP_COURSE_ASSESSMENTS[m.id] = makeQuestions([
-    ["इस module में सुरक्षित learning का मुख्य उद्देश्य क्या है?",["समझ + practice + responsible use","केवल title याद करना","हर app install करना","हर message forward करना"],0],
-    ["किसी mobile feature को अपनाने से पहले क्या देखना चाहिए?",["Need, benefit, risk and evidence","केवल popularity","केवल advertisement","केवल price"],0],
-    ["Personal data के बारे में सही approach क्या है?",["Purpose और access समझकर minimum necessary sharing","हर जगह public sharing","OTP share करना","Unknown links खोलना"],0],
-    ["Suspicious message पर पहला कदम क्या होना चाहिए?",["रुकें और official source से verify करें","तुरंत payment करें","link खोलें","OTP भेजें"],0],
-    ["Children के online safety में क्या जरूरी है?",["Age-appropriate guidance, privacy, safety and open conversation","केवल punishment","केवल phone छीन लेना","सिर्फ screen-time number"],0],
-    ["Backup का सही अर्थ क्या है?",["Important data की अलग सुरक्षित copy जिसे restore किया जा सके","Phone में file होना","Screenshot लेना ही पर्याप्त होना","Message forward करना"],0],
-    ["Mobile wellbeing में क्या महत्वपूर्ण है?",["Intentional use, healthy routines, content and context","हर notification तुरंत देखना","पूरी रात scrolling","हर app को notification देना"],0],
-    ["Digital citizenship का अच्छा उदाहरण क्या है?",["Respectful, lawful, informed and safe participation","Private photo बिना consent share करना","Rumour forward करना","Fake account से harassment"],0]
-  ]);
-});
-
-FLAGSHIP_COURSE_ASSESSMENTS.final = makeQuestions([
-  ["Modern smartphone को सबसे सही तरीके से कैसे समझेंगे?",["Portable computing, communication and service platform","केवल calling machine","केवल camera","केवल gaming device"],0],
-  ["OTP/PIN के बारे में सही rule क्या है?",["इसे secret रखें और किसी व्यक्ति को न बताएं","Customer care को बताएं","Friend को बताएं","Social media पर लिखें"],0],
-  ["Suspicious payment request मिलने पर क्या करें?",["Transaction रोककर official channel से verify करें","जल्दी payment करें","screen share करें","OTP दें"],0],
-  ["App permission का अच्छा principle क्या है?",["Purpose के अनुसार minimum necessary access","हर permission allow","Contacts हमेशा allow","Location हमेशा allow"],0],
-  ["Photo share करने से पहले क्या देखना चाहिए?",["Audience, consent, location/context और sensitive details","केवल photo quality","केवल likes","केवल filter"],0],
-  ["Information verification में क्या जरूरी है?",["Source, date, evidence और credible cross-check","Forward count","पहला search result","Anonymous comment"],0],
-  ["Lost phone में प्राथमिकता क्या हो सकती है?",["Personal safety और accounts/device protection","Unknown caller को OTP देना","हर password public करना","Suspicious link खोलना"],0],
-  ["Children के digital safety approach में क्या शामिल है?",["Privacy, age-appropriate guidance, safety tools and trusted conversation","केवल punishment","हर app public","Passwords share करना"],0],
-  ["AI mobile feature के output को कैसे देखें?",["Useful assistance, but verify important claims and protect sensitive data","Always correct","Never verify","Private documents freely upload"],0],
-  ["Healthy phone habit का उदाहरण क्या है?",["Intentional use, notification control and balanced routines","हर notification तुरंत खोलना","सोते समय लगातार scrolling","हर task के बीच social media check"],0],
-  ["Digital inclusion में क्या शामिल है?",["Access, affordability, skills, language, accessibility and safety","केवल expensive phone","केवल fast internet","केवल app count"],0],
-  ["Professional mobile work में क्या जरूरी है?",["Accurate communication, file organisation, privacy and verification","Unknown links","Sensitive public links","Unverified job offers"],0],
-  ["Misinformation मिलने पर क्या करें?",["Verify before sharing and use reliable sources","Forward immediately","Edit screenshot and share","Hide source"],0],
-  ["Children की photo sharing में क्या सोचें?",["Privacy, dignity, consent/context and long-term footprint","Only likes","Public by default","No need to think"],0],
-  ["Battery safety में क्या जरूरी है?",["Reliable accessories, reasonable temperature and attention to damage/heat","Damaged cable use","Extreme heat ignore","Phone under unsafe conditions"],0],
-  ["Accessibility features क्यों महत्वपूर्ण हैं?",["They can make phones more usable for diverse needs","Only for one group","Only for gaming","They reduce all privacy automatically"],0],
-  ["Digital footprint का अर्थ क्या है?",["Online actions and information can persist, spread or be copied","Only phone storage","Battery history","SIM balance"],0],
-  ["Family digital rules का अच्छा तरीका क्या है?",["Clear, age-appropriate, discussed and revisable rules","Secret rules","Only punishment","No emergency access"],0],
-  ["New technology को अपनाने का balanced तरीका क्या है?",["Evaluate need, benefit, risk, evidence and alternatives","Use everything immediately","Reject everything automatically","Follow advertisements only"],0],
-  ["Course mastery का सही संकेत क्या है?",["Understand, practise, apply, assess and reflect","Only open pages","Only watch videos","Only receive a certificate"],0]
-]);
-
-export { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS, MOBILE_PHONE_COURSE, MOBILE_BALANCE_COURSE };

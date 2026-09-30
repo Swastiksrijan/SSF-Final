@@ -1,5 +1,9 @@
 {
-  "installCommand": "npm install",
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "rewrites": [
+    {
+      "source": "/api/digital-office/google/callback",
+      "destination": "https://ngo-backend-03hq.onrender.com/api/digital-office/google/callback"
+    }
+  ]
 }
