@@ -348,7 +348,25 @@ function LearningSubject({ subject, onBack }) {
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
             <h3 className="font-black text-[#003366]">Current Lesson / वर्तमान पाठ</h3>
-            <div className="mt-3 rounded-xl bg-zinc-50 p-4"><div className="text-xs text-zinc-500">{lessons[activeLesson].module}</div><div className="mt-1 font-black">{lessons[activeLesson].title}</div><p className="mt-2 text-sm leading-6 text-zinc-600">{lessons[activeLesson].body}</p></div>
+            <div className="mt-3 rounded-xl bg-zinc-50 p-4">
+              <div className="text-xs text-zinc-500">{lessons[activeLesson].module}</div>
+              <div className="mt-1 font-black">{lessons[activeLesson].title}</div>
+              <p className="mt-2 text-sm leading-6 text-zinc-600">{lessons[activeLesson].body}</p>
+              {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
+                {[
+                  ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
+                  ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
+                  ["Examples / उदाहरण", lessons[activeLesson].detail.content?.examples],
+                  ["Practice / अभ्यास", lessons[activeLesson].detail.practice],
+                  ["Activity / गतिविधि", lessons[activeLesson].detail.activity],
+                  ["Common Mistakes / सामान्य गलतियाँ", lessons[activeLesson].detail.content?.commonMistakes],
+                  ["Summary / सार", lessons[activeLesson].detail.content?.summary]
+                ].map(([label,value]) => value && <div key={label}>
+                  <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">{label}</div>
+                  {Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{value.map((x,i)=><li key={i}>{x}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-600">{value}</p>}
+                </div>)}
+              </div>}
+            </div>
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
             <h3 className="font-black text-[#003366]">Course Assessment / आकलन</h3>
