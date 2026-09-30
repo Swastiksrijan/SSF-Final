@@ -218,7 +218,9 @@ function LearningSubject({ subject, onBack }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [moduleAnswers, setModuleAnswers] = useState({});
-  const [moduleResults, setModuleResults] = useState({});
+  const [moduleResults, setModuleResults] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
+  });
 
   const structuredCourse = FLAGSHIP_COURSES[subject.id];
   const modules = structuredCourse
@@ -328,7 +330,11 @@ function LearningSubject({ subject, onBack }) {
     : [];
   const submitModuleAssessment = (moduleId, questions) => {
     const result = questions.reduce((n,q,i)=>n+(moduleAnswers[moduleId]?.[i]===q.answer?1:0),0);
-    setModuleResults(r => ({ ...r, [moduleId]: { score: result, total: questions.length, passed: result / questions.length >= 0.7 } }));
+    setModuleResults(r => {
+      const next = { ...r, [moduleId]: { score: result, total: questions.length, passed: result / questions.length >= 0.7 } };
+      try { localStorage.setItem(progressKey + "-assessments", JSON.stringify(next)); } catch {}
+      return next;
+    });
   };
 
   return <div className="min-h-screen bg-[#f6f8fb] text-zinc-900 font-inria">
