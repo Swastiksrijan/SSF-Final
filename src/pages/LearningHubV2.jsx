@@ -15,7 +15,7 @@ const HUB_IMAGES = {
   agriculture: "/images/real/journey-seeds.jpg",
   justice: "/images/real/integrity-pledge.jpg",
   disability: "/images/real/community-education-meeting.jpg",
-  animal: "/images/real/animal.jpg",
+  animal: "/images/real/foundation_banner.jpg",
   culture: "/images/real/foundation_banner.jpg",
   digital: "/images/real/computer-donation-clipping.jpg",
   disaster: "/images/real/office_banner.jpg",
