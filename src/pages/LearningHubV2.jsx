@@ -8,23 +8,13 @@ import {
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
 import { ENDPOINTS } from "../config/api";
 
-const HUB_IMAGES = {
-  education: "/images/real/classroom-floor-seating.jpg",
-  skills: "/images/real/women_empowerment_tailoring.jpg",
-  women: "/images/real/women_community_meeting.jpg",
-  health: "/images/real/nutrition_program.jpg",
-  environment: "/images/real/tree_plantation.jpg",
-  agriculture: "/images/real/journey-seeds.jpg",
-  justice: "/images/real/integrity-pledge.jpg",
-  disability: "/images/real/community-education-meeting.jpg",
-  animal: "/images/real/foundation_banner.jpg",
-  culture: "/images/real/foundation_banner.jpg",
-  digital: "/images/real/computer-donation-clipping.jpg",
-  disaster: "/images/real/office_banner.jpg",
-  career: "/images/real/academy_banner_wide.jpg",
-  community: "/images/real/ngo_event_1.jpg",
-  children: "/images/real/children-gathering.jpg"
-};
+// One consistent, professional Learning Hub photo across every category and course.
+const LEARNING_HUB_IMAGE = "/images/real/education_girls.jpg";
+const HUB_IMAGES = Object.fromEntries([
+  "education", "skills", "women", "health", "environment", "agriculture",
+  "justice", "disability", "animal", "culture", "digital", "disaster",
+  "career", "community", "children"
+].map((key) => [key, LEARNING_HUB_IMAGE]));
 
 const CATEGORY_META = {
   "Education / शिक्षा": { key:"education", icon:FaGraduationCap, color:"from-[#003366] to-[#1d4f7a]" },
@@ -189,8 +179,8 @@ const buildSubject = ([category, title, intro], index) => {
   return {
     id: slugify(title),
     category, title, intro, en, hi,
-    image: makeSubjectVisual(category,title,index),
-    categoryImage: HUB_IMAGES[meta.key],
+    image: LEARNING_HUB_IMAGE,
+    categoryImage: LEARNING_HUB_IMAGE,
     icon: meta.icon,
     color: meta.color,
     number: String(index + 1).padStart(2, "0")
