@@ -17,7 +17,7 @@ const makeLesson = (en, hi, easy, deep, examples, practice, activity, mistakes, 
 
 
 const makeQuestions = (pairs) => pairs.map(([q,options,answer=0]) => ({q,options,answer}));
-\nconst makeModule = (id, en, hi, description, lessons) => ({
+const makeModule = (id, en, hi, description, lessons) => ({
   id,
   title:{en,hi},
   description,
@@ -444,7 +444,7 @@ DIRECTION_14_22_ASSESSMENTS.final = makeQuestions([
   ["Personal roadmap में क्या होना चाहिए?",["Goal, timeline, next actions और evidence of progress","केवल motivational quote","केवल final result","दूसरों की copied plan"],0],
   ["My Direction Charter किस काम आएगी?",["नए अवसरों और दबावों के बीच अपने values और goals के अनुसार निर्णय लेने में","दूसरों को control करने में","हर risk को खत्म करने में","career की guarantee देने में"],0]
 ]);
-\nconst MOBILE_BALANCE_COURSE = {
+const MOBILE_BALANCE_COURSE = {
   id:"mobile-use-digital-balance-smart-life",
   title:{en:"Mobile Use, Digital Balance & Smart Life",hi:"मोबाइल उपयोग, डिजिटल संतुलन एवं स्मार्ट जीवन"},
   category:"Digital Skills / डिजिटल कौशल",
