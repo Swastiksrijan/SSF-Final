@@ -1,0 +1,33 @@
+const VISUALS = {
+  education:["#003366","#4ea8de","book"], communication:["#0f4c81","#48cae4","chat"], digital:["#17324d","#3a86ff","computer"],
+  career:["#374151","#6b7280","briefcase"], skills:["#2d6a4f","#74c69d","tools"], women:["#8b1e3f","#e76f8f","women"],
+  health:["#9d0208","#e63946","health"], environment:["#1b4332","#74c69d","tree"], agriculture:["#386641","#a7c957","crop"],
+  justice:["#463f3a","#b08968","scale"], disability:["#264653","#2a9d8f","access"], animal:["#6b4f3a","#c08457","paw"],
+  culture:["#6d597a","#b56576","heritage"], disaster:["#33415c","#5c677d","kit"], personal:["#005f73","#0a9396","target"],
+  community:["#003049","#669bbc","people"]
+};
+const ICON = {
+ book:`<path d="M510 245c-55-35-105-35-150-8v205c48-27 98-27 150 8zM510 245c55-35 105-35 150-8v205c-48-27-98-27-150 8zM510 245v205" fill="none" stroke="${COLOR}" stroke-width="24" stroke-linejoin="round"/>`,
+ chat:`<path d="M395 255h410a55 55 0 0 1 55 55v115a55 55 0 0 1-55 55H570l-95 65 20-65h-100a55 55 0 0 1-55-55V310a55 55 0 0 1 55-55z" fill="none" stroke="${COLOR}" stroke-width="24"/><circle cx="485" cy="365" r="13" fill="${COLOR}"/><circle cx="600" cy="365" r="13" fill="${COLOR}"/><circle cx="715" cy="365" r="13" fill="${COLOR}"/>`,
+ computer:`<rect x="390" y="245" width="420" height="270" rx="25" fill="none" stroke="${COLOR}" stroke-width="24"/><path d="M500 565h200M555 515v50m90-50v50" stroke="${COLOR}" stroke-width="24" stroke-linecap="round"/>`,
+ briefcase:`<rect x="355" y="285" width="490" height="290" rx="35" fill="none" stroke="${COLOR}" stroke-width="24"/><path d="M500 285v-45h200v45M355 390h490M560 390v45h80v-45" fill="none" stroke="${COLOR}" stroke-width="24"/>`,
+ tools:`<path d="M420 500l330-250M500 560l250-250" stroke="${COLOR}" stroke-width="28" stroke-linecap="round"/><circle cx="420" cy="500" r="48" fill="none" stroke="${COLOR}" stroke-width="20"/><circle cx="750" cy="310" r="48" fill="none" stroke="${COLOR}" stroke-width="20"/>`,
+ women:`<circle cx="600" cy="300" r="70" fill="none" stroke="${COLOR}" stroke-width="22"/><path d="M475 510c20-105 230-105 250 0M475 510c-30 55-70 65-110 65M725 510c30 55 70 65 110 65" fill="none" stroke="${COLOR}" stroke-width="22"/>`,
+ health:`<path d="M600 520S390 390 390 285c0-70 95-100 210-5 115-95 210-65 210 5 0 105-210 235-210 235z" fill="none" stroke="${COLOR}" stroke-width="24"/><path d="M520 355h55l25-55 40 110 25-55h55" fill="none" stroke="${COLOR}" stroke-width="20"/>`,
+ tree:`<path d="M600 555V405" stroke="${COLOR}" stroke-width="28"/><circle cx="500" cy="335" r="90" fill="none" stroke="${COLOR}" stroke-width="22"/><circle cx="700" cy="335" r="90" fill="none" stroke="${COLOR}" stroke-width="22"/><circle cx="600" cy="270" r="105" fill="none" stroke="${COLOR}" stroke-width="22"/>`,
+ crop:`<path d="M600 555V350M600 420c-85-20-145-70-155-145 85 5 145 40 155 120M600 455c85-20 145-70 155-145-85 5-145 40-155 120" fill="none" stroke="${COLOR}" stroke-width="24"/>`,
+ scale:`<path d="M600 225v330M490 285h220M430 585h340M485 285l-80 145h160zM715 285l-80 145h160z" fill="none" stroke="${COLOR}" stroke-width="22"/>`,
+ access:`<circle cx="600" cy="245" r="45" fill="none" stroke="${COLOR}" stroke-width="20"/><circle cx="600" cy="430" r="115" fill="none" stroke="${COLOR}" stroke-width="20"/><path d="M600 290v95M505 350h190M545 430l-75 100M655 430l75 100" fill="none" stroke="${COLOR}" stroke-width="20"/>`,
+ paw:`<circle cx="600" cy="410" r="75" fill="none" stroke="${COLOR}" stroke-width="22"/><circle cx="475" cy="310" r="38" fill="none" stroke="${COLOR}" stroke-width="18"/><circle cx="565" cy="255" r="38" fill="none" stroke="${COLOR}" stroke-width="18"/><circle cx="655" cy="255" r="38" fill="none" stroke="${COLOR}" stroke-width="18"/><circle cx="745" cy="310" r="38" fill="none" stroke="${COLOR}" stroke-width="18"/>`,
+ heritage:`<path d="M380 525h440M420 525V330h360v195M360 330l240-125 240 125M470 330v195M600 330v195M730 330v195" fill="none" stroke="${COLOR}" stroke-width="22"/>`,
+ kit:`<rect x="390" y="315" width="420" height="250" rx="30" fill="none" stroke="${COLOR}" stroke-width="24"/><path d="M510 315v-55h180v55M600 375v130M535 440h130" fill="none" stroke="${COLOR}" stroke-width="24"/>`,
+ target:`<circle cx="600" cy="385" r="150" fill="none" stroke="${COLOR}" stroke-width="22"/><circle cx="600" cy="385" r="85" fill="none" stroke="${COLOR}" stroke-width="22"/><circle cx="600" cy="385" r="25" fill="${COLOR}"/>`,
+ people:`<circle cx="600" cy="260" r="55" fill="none" stroke="${COLOR}" stroke-width="20"/><circle cx="470" cy="325" r="45" fill="none" stroke="${COLOR}" stroke-width="18"/><circle cx="730" cy="325" r="45" fill="none" stroke="${COLOR}" stroke-width="18"/><path d="M470 525c0-95 260-95 260 0M385 535c0-70 170-70 170 0M645 535c0-70 170-70 170 0" fill="none" stroke="${COLOR}" stroke-width="20"/>`
+};
+export function makeLearningVisual(category,title,index){
+ const key=category==="English & Communication / अंग्रेज़ी एवं संचार"?"communication":({"Education / शिक्षा":"education","Digital Skills / डिजिटल कौशल":"digital","Career & Workplace / करियर एवं कार्यस्थल":"career","Skill Development / कौशल विकास":"skills","Women & Child Development / महिला एवं बाल विकास":"women","Health / स्वास्थ्य":"health","Environment / पर्यावरण":"environment","Agriculture & Rural Development / कृषि एवं ग्रामीण विकास":"agriculture","Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य":"justice","Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास":"disability","Animal Protection / पशु संरक्षण":"animal","Culture & Heritage / संस्कृति एवं विरासत":"culture","Youth & Disaster Preparedness / युवा एवं आपदा तैयारी":"disaster","Personal Development / व्यक्तिगत विकास":"personal"}[category]||"community");
+ const [a,b,shape]=VISUALS[key]||VISUALS.education; const esc=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+ const art=(ICON[shape]||ICON.book).replaceAll("${COLOR}",a);
+ const svg=`<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="700"><defs><linearGradient id="g" x2="1"><stop stop-color="${a}"/><stop offset="1" stop-color="${b}"/></linearGradient></defs><rect width="1200" height="700" fill="url(#g)"/><circle cx="600" cy="350" r="205" fill="white" opacity=".96"/>${art}<text x="70" y="95" font-family="Arial" font-size="25" font-weight="700" fill="white">SSF LEARNING HUB • ${esc(category.split(" / ")[0])}</text><text x="70" y="625" font-family="Arial" font-size="42" font-weight="800" fill="white">${esc(title.split(" / ")[0])}</text><text x="70" y="660" font-family="Arial" font-size="18" fill="white">Learn • Understand • Practise • Apply</text></svg>`;
+ return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg);
+}
