@@ -286,6 +286,20 @@ function LearningSubject({ subject, onBack }) {
   const completed = done.length;
   const total = lessons.length;
   const progress = Math.round((completed / total) * 100);
+  const courseMeta = structuredCourse || {
+    title: { en: subject.en, hi: subject.hi },
+    level: "foundation",
+    learningHours: 0,
+    version: "1.0",
+    lastReviewed: "2026-09-30",
+    audience: "Learners, students, volunteers and community learners.",
+    prerequisites: ["No special prerequisite stated for this learning resource."],
+    outcomes: [
+      "Understand the subject from foundation to practical application.",
+      "Use examples and activities to connect knowledge with real situations.",
+      "Review learning through practice and assessment before claiming completion."
+    ]
+  };
   const markDone = (i) => setDone(current => {
     const next = current.includes(i) ? current : [...current, i];
     try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch {}
@@ -318,11 +332,24 @@ function LearningSubject({ subject, onBack }) {
 
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
       <section className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-8">
-        <div className="grid gap-5 md:grid-cols-4">
-          <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Level</div><div className="mt-1 font-black">Foundation → Practical</div></div>
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+          <div>
+            <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Official Course / आधिकारिक पाठ्यक्रम</div>
+            <h2 className="mt-2 text-2xl font-black">{courseMeta.title.en}</h2>
+            <div className="text-base font-bold text-zinc-500">{courseMeta.title.hi}</div>
+            <p className="mt-3 max-w-3xl text-sm leading-7 text-zinc-600">{courseMeta.description || subject.intro}</p>
+          </div>
+          <div className="rounded-2xl bg-[#eef7fb] px-5 py-4 text-sm font-black text-[#003366]">Version {courseMeta.version}<br/>Reviewed {courseMeta.lastReviewed || "—"}</div>
+        </div>
+        <div className="mt-7 grid gap-5 md:grid-cols-4">
+          <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Level</div><div className="mt-1 font-black">{structuredCourse ? "Foundation" : "Foundation → Practical"}</div></div>
           <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Language</div><div className="mt-1 font-black">Hindi + English</div></div>
           <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Lessons</div><div className="mt-1 font-black">{total} structured lessons</div></div>
-          <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Certificate</div><div className="mt-1 font-black">Completion + assessment pathway</div></div>
+          <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Learning Time</div><div className="mt-1 font-black">{courseMeta.learningHours ? courseMeta.learningHours + " hours" : "Self-paced"}</div></div>
+        </div>
+        <div className="mt-7 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#003366]">Who is this for? / किसके लिए?</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{courseMeta.audience}</p><h3 className="mt-5 font-black text-[#003366]">Prerequisites / पूर्व-आवश्यकताएँ</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.prerequisites.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
+          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#003366]">What you will learn / आप क्या सीखेंगे</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.outcomes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
         </div>
         <div className="mt-7 rounded-2xl bg-[#f1f7fa] p-5">
           <div className="flex items-center justify-between"><div><div className="text-sm font-black text-[#003366]">Course Progress / प्रगति</div><div className="text-xs text-zinc-500">{completed} / {total} lessons completed</div></div><div className="text-2xl font-black text-[#003366]">{progress}%</div></div>
@@ -384,6 +411,11 @@ function LearningSubject({ subject, onBack }) {
       <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-white p-6 md:p-8">
         <div className="flex items-center gap-3"><FaGraduationCap className="text-3xl text-[#003366]"/><div><h2 className="text-2xl font-black">Certificate Pathway / प्रमाणन मार्ग</h2><p className="text-sm text-zinc-500">Learning first. Certification after genuine completion and assessment.</p></div></div>
         <div className="mt-6 grid gap-3 md:grid-cols-5">{["Learn / सीखें","Practise / अभ्यास","Complete / पूर्ण करें","Assess / आकलन","Certificate / प्रमाणपत्र"].map((x,i)=><div key={x} className={"rounded-xl p-4 text-center text-xs font-black "+(i===0?"bg-[#003366] text-white":"bg-zinc-100 text-zinc-600")}>{i+1}. {x}</div>)}</div>
+        <div className="mt-6 rounded-2xl bg-[#f7fafc] p-5">
+          <div className="text-sm font-black text-[#003366]">Certificate request / प्रमाणपत्र अनुरोध</div>
+          <p className="mt-2 text-sm leading-6 text-zinc-600">Certificate issuance will be enabled only after the required learning, activities and assessments are complete. Opening lessons or creating an account alone does not issue a certificate.</p>
+          <button onClick={()=>window.alert("Certificate request will be available after the complete assessment and account flow is connected.")} className="mt-4 rounded-xl bg-[#003366] px-5 py-3 text-sm font-black text-white">Get Certificate / प्रमाणपत्र प्राप्त करें</button>
+        </div>
       </section>
     </main>
   </div>;
