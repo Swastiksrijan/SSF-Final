@@ -205,8 +205,14 @@ function getSubjectFromUrl() {
 }
 
 function LearningSubject({ subject, onBack }) {
-  const [done, setDone] = useState([]);
+  const progressKey = "ssf-learning-progress-" + subject.id;
+  const [done, setDone] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(progressKey) || "[]"); } catch { return []; }
+  });
   const [quiz, setQuiz] = useState(false);
+  const [quizAnswers, setQuizAnswers] = useState({});
+  const [quizSubmitted, setQuizSubmitted] = useState(false);
+  const [quizScore, setQuizScore] = useState(0);
   const sections = [
     ["01","Learning Objective / सीखने का उद्देश्य","इस lesson का उद्देश्य " + subject.title + " को सरल bilingual भाषा में समझना, सही जानकारी पहचानना और सुरक्षित practical use सीखना है।"],
     ["02","Introduction / परिचय",subject.intro],
@@ -224,7 +230,7 @@ function LearningSubject({ subject, onBack }) {
     ["14","Activities / गतिविधियाँ","एक notebook activity करें: आपने क्या जाना, कौन-सी समस्या दिखी, क्या विकल्प हैं, आपने क्या action चुना और आगे क्या सीखना है।"],
     ["15","Practice / अभ्यास","अपने शब्दों में 5-line summary लिखें। फिर एक example, एक practical use, एक सावधानी और एक next step लिखें।"],
     ["16","Questions & Answers / प्रश्नोत्तर","यह क्या है? क्यों जरूरी है? इसका एक real-life example क्या है? practical use क्या है? कौन-सी सावधानी जरूरी है? अपने उत्तर lesson के आधार पर लिखें।"],
-    ["17","Quiz / Assessment / प्रश्नोत्तरी एवं आकलन","1) सरल परिभाषा लिखें। 2) दो मुख्य concepts बताएं। 3) एक example दें। 4) एक practical use बताएं। 5) एक safety/verification point लिखें। 5/5 = ready; 3–4 = revise; 0–2 = lesson दोबारा पढ़ें।"],
+    ["17","Quiz / Assessment / प्रश्नोत्तरी एवं आकलन","नीचे दिए गए 5 प्रश्नों का उत्तर दें। प्रत्येक प्रश्न lesson की समझ, responsible use और practical learning को जाँचता है।"] ,
     ["18","Key Points / मुख्य बिंदु","अर्थ समझें • मुख्य concepts पहचानें • example देखें • सुरक्षित practice करें • source verify करें • सीख record करें • जरूरत पर expert/official guidance लें।"],
     ["19","Related Topics / संबंधित विषय","इसी category के अन्य subjects पढ़ें। Search box से related keyword खोजें और अगला lesson चुनें।"],
     ["20","Useful Resources / उपयोगी संसाधन","Current information के लिए official government portals, recognised educational resources और trusted subject organisations का उपयोग करें। Current rules/eligibility हमेशा official source से verify करें।"],
@@ -236,9 +242,25 @@ function LearningSubject({ subject, onBack }) {
     ["26","Conclusion / निष्कर्ष","अच्छी learning केवल information याद करना नहीं है। सही समझ, अभ्यास, verification, reflection और जिम्मेदार उपयोग से knowledge को useful skill में बदला जाता है।"],
     ["27","Next Lesson / अगला पाठ","इस category में अगला संबंधित subject चुनें या Search से अपनी learning जरूरत के अनुसार नया lesson शुरू करें।"]
   ];
-  const toggle=(i)=>setDone(d=>d.includes(i)?d.filter(x=>x!==i):[...d,i]);
+  const toggle=(i)=>setDone(d=>{
+    const next=d.includes(i)?d.filter(x=>x!==i):[...d,i];
+    try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch {}
+    return next;
+  });
   const progress=Math.round((done.length/sections.length)*100);
   const videoSearch="https://www.youtube.com/results?search_query="+encodeURIComponent(subject.title+" educational Hindi English lesson");
+  const quizQuestions = [
+    { q: "इस lesson का मुख्य विषय क्या है?", options: [subject.en, "केवल मनोरंजन", "केवल विज्ञापन", "इनमें से कोई नहीं"], answer: 0 },
+    { q: "सीखी हुई जानकारी का जिम्मेदार उपयोग कैसे करें?", options: ["तथ्य verify करके और सुरक्षित तरीके से", "बिना जाँचे share करके", "बिना training high-risk काम करके", "निजी जानकारी public करके"], answer: 0 },
+    { q: "अच्छी learning में कौन-सा क्रम उपयोगी है?", options: ["समझ → उदाहरण → अभ्यास → review", "केवल याद करना", "केवल video देखना", "बिना अभ्यास आगे बढ़ना"], answer: 0 },
+    { q: "Current scheme/rule की जानकारी कहाँ verify करनी चाहिए?", options: ["संबंधित official source", "random forwarded message", "अनजान social post", "असत्यापित screenshot"], answer: 0 },
+    { q: "इस lesson का practical लक्ष्य क्या है?", options: ["ज्ञान को समझकर सुरक्षित और उपयोगी skill में बदलना", "केवल title याद करना", "केवल certificate लेना", "बिना समझे copy करना"], answer: 0 }
+  ];
+  const submitQuiz = () => {
+    const score = quizQuestions.reduce((sum, item, i) => sum + (quizAnswers[i] === item.answer ? 1 : 0), 0);
+    setQuizScore(score);
+    setQuizSubmitted(true);
+  };
   const share=()=>{const url=window.location.href.split("?")[0]+"?subject="+encodeURIComponent(subject.id);if(navigator.share)navigator.share({title:subject.title+" | SSF Learning Hub",text:subject.intro,url}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(url).then(()=>window.alert("Learning link copied."));};
   return <div className="min-h-screen bg-zinc-50 text-zinc-900 font-inria">
     <section className={"relative overflow-hidden bg-gradient-to-r "+subject.color+" text-white"}><img src={subject.image} alt={subject.title} className="absolute inset-0 h-full w-full object-cover"/><div className="absolute inset-0 bg-[#001529]/60"/><div className="relative mx-auto max-w-7xl px-4 py-12 md:py-18">
@@ -247,7 +269,26 @@ function LearningSubject({ subject, onBack }) {
     </div></section>
     <main className="mx-auto max-w-7xl px-4 py-10"><div className="mb-8 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"><div className="flex items-center justify-between"><div><div className="text-sm font-black text-[#003366]">Course Progress / पाठ्यक्रम प्रगति</div><div className="mt-1 text-xs text-zinc-500">{done.length} / {sections.length} sections completed</div></div><div className="text-2xl font-black text-[#003366]">{progress}%</div></div><div className="mt-4 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full bg-[#003366]" style={{width:progress+"%"}}/></div></div>
     <div className="grid gap-8 lg:grid-cols-[1fr_330px]"><div className="space-y-5">{sections.map(([n,title,body],i)=><article key={n} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><div className="flex gap-4"><div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-[#003366]/10 text-[#003366] font-black">{done.includes(i)?<FaCheckCircle/>:n}</div><div className="flex-1"><h3 className="text-xl font-black">{title}</h3><p className="mt-3 leading-8 text-zinc-700">{body}</p><button onClick={()=>toggle(i)} className="mt-5 rounded-lg bg-[#003366] px-4 py-2 text-xs font-bold text-white">{done.includes(i)?"Completed ✓ / पूर्ण":"Mark complete / पूर्ण करें"}</button></div></div></article>)}</div>
-    <aside className="space-y-5"><div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"><img src={subject.image} alt={subject.title} className="h-52 w-full object-cover"/><div className="p-5"><div className="text-xs font-black uppercase tracking-widest text-[#003366]">Visual Learning / दृश्य सीख</div><p className="mt-2 text-sm leading-6 text-zinc-600">इस subject की visual identity इसी lesson से जुड़ी है।</p></div></div>
+    <aside className="space-y-5">
+      <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm">
+        <h3 className="font-black text-[#003366]">Quiz / प्रश्नोत्तरी</h3>
+        <p className="mt-2 text-sm leading-6 text-zinc-600">5 प्रश्न • तुरंत score • गलत उत्तर पर lesson दोबारा पढ़ें।</p>
+        <button onClick={()=>{setQuiz(v=>!v);setQuizSubmitted(false);}} className="mt-4 w-full rounded-xl bg-[#003366] px-4 py-3 text-sm font-bold text-white">{quiz ? "Close Quiz / बंद करें" : "Start Quiz / शुरू करें"}</button>
+        {quiz && <div className="mt-5 space-y-5">
+          {quizQuestions.map((item,i)=><div key={i} className="rounded-xl bg-zinc-50 p-4">
+            <div className="text-sm font-black">{i+1}. {item.q}</div>
+            <div className="mt-3 space-y-2">{item.options.map((option,j)=><label key={j} className="flex cursor-pointer gap-2 text-sm leading-5">
+              <input type="radio" name={"quiz-"+i} checked={quizAnswers[i]===j} onChange={()=>setQuizAnswers(a=>({...a,[i]:j}))} />
+              <span>{option}</span>
+            </label>)}</div>
+          </div>)}
+          <button onClick={submitQuiz} disabled={Object.keys(quizAnswers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-bold text-white disabled:opacity-40">Submit Quiz / जमा करें</button>
+          {quizSubmitted && <div className="rounded-xl border border-zinc-200 bg-white p-4 text-center">
+            <div className="text-2xl font-black text-[#003366]">{quizScore}/5</div>
+            <p className="mt-1 text-sm text-zinc-600">{quizScore>=4 ? "Excellent — lesson understood. / बहुत अच्छा — lesson की अच्छी समझ है।" : "Review the lesson and try again. / lesson दोबारा पढ़ें और फिर प्रयास करें।"}</p>
+          </div>}
+        </div>}
+      </div><div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm"><img src={subject.image} alt={subject.title} className="h-52 w-full object-cover"/><div className="p-5"><div className="text-xs font-black uppercase tracking-widest text-[#003366]">Visual Learning / दृश्य सीख</div><p className="mt-2 text-sm leading-6 text-zinc-600">इस subject की visual identity इसी lesson से जुड़ी है।</p></div></div>
       <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"><h3 className="font-black text-[#003366]">Practice + Quiz + Certificate</h3><p className="mt-2 text-sm leading-6 text-zinc-600">Lesson पढ़ें → Practice करें → Quiz पूरा करें → Course complete करें → certificate workflow के लिए record तैयार होगा।</p></div>
       <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm"><h3 className="font-black text-[#003366]">Video Lesson / वीडियो पाठ</h3><p className="mt-2 text-sm leading-6 text-zinc-600">Opening → Introduction → Explanation → Visual Examples → Practical Example → Recap → Questions → Conclusion.</p><a href={videoSearch} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#003366] px-4 py-3 text-sm font-bold text-white">Find Related Video <FaArrowRight/></a></div>
       <button onClick={share} className="flex w-full items-center justify-center gap-2 rounded-xl border border-zinc-200 bg-white px-5 py-3 text-sm font-bold text-[#003366]"><FaShareAlt/> Share this subject</button>
