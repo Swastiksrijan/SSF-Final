@@ -78,7 +78,7 @@ const mobileLessons5 = [
 ];
 
 const MOBILE_PHONE_COURSE = {
-  id:"mobile-phone-life-and-digital-safety",
+  id:"mobile-phone-digital-life-safety",
   title:{en:"Mobile Phone, Digital Life & Safety",hi:"मोबाइल फोन, डिजिटल जीवन एवं सुरक्षा"},
   category:"Digital Skills / डिजिटल कौशल",
   type:"certificate",
