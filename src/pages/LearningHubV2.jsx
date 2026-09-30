@@ -311,6 +311,9 @@ function LearningSubject({ subject, onBack }) {
   const completed = done.length;
   const total = lessons.length;
   const progress = Math.round((completed / total) * 100);
+  const moduleAssessments = structuredCourse
+    ? structuredCourse.modules.map((m) => ({ ...m, questions: FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] || [] })).filter(m => m.questions.length)
+    : [];
   const allLearningComplete = progress === 100;
   const modulePassCount = moduleAssessments.filter(m => moduleResults[m.id]?.passed).length;
   const moduleAssessmentComplete = moduleAssessments.length === 0 || modulePassCount === moduleAssessments.length;
@@ -352,9 +355,6 @@ function LearningSubject({ subject, onBack }) {
     try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
   };
   const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
-  const moduleAssessments = structuredCourse
-    ? structuredCourse.modules.map((m) => ({ ...m, questions: FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] || [] })).filter(m => m.questions.length)
-    : [];
   const submitModuleAssessment = (moduleId, questions) => {
     const result = questions.reduce((n,q,i)=>n+(moduleAnswers[moduleId]?.[i]===q.answer?1:0),0);
     setModuleResults(r => {
