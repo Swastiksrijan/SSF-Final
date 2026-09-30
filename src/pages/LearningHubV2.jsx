@@ -5,7 +5,7 @@ import {
   FaShieldAlt, FaUsers, FaHeartbeat, FaSeedling, FaPaw, FaBalanceScale, FaChild,
   FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping
 } from "react-icons/fa";
-import { FLAGSHIP_COURSES } from "../data/learningHubCourseArchitecture";
+import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
 
 const HUB_IMAGES = {
   education: "/images/real/classroom-floor-seating.jpg",
@@ -217,6 +217,8 @@ function LearningSubject({ subject, onBack }) {
   const [quizOpen, setQuizOpen] = useState(false);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [moduleAnswers, setModuleAnswers] = useState({});
+  const [moduleResults, setModuleResults] = useState({});
 
   const structuredCourse = FLAGSHIP_COURSES[subject.id];
   const modules = structuredCourse
@@ -316,6 +318,13 @@ function LearningSubject({ subject, onBack }) {
   };
   const submitQuiz = () => setSubmitted(true);
   const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
+  const moduleAssessments = structuredCourse
+    ? structuredCourse.modules.map((m) => ({ ...m, questions: FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] || [] })).filter(m => m.questions.length)
+    : [];
+  const submitModuleAssessment = (moduleId, questions) => {
+    const result = questions.reduce((n,q,i)=>n+(moduleAnswers[moduleId]?.[i]===q.answer?1:0),0);
+    setModuleResults(r => ({ ...r, [moduleId]: { score: result, total: questions.length, passed: result / questions.length >= 0.7 } }));
+  };
 
   return <div className="min-h-screen bg-[#f6f8fb] text-zinc-900 font-inria">
     <section className={"relative overflow-hidden bg-gradient-to-r "+subject.color+" text-white"}>
