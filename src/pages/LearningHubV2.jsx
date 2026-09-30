@@ -305,6 +305,15 @@ function LearningSubject({ subject, onBack }) {
     try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch {}
     return next;
   });
+  const goLesson = (nextIndex) => {
+    const safe = Math.max(0, Math.min(nextIndex, total - 1));
+    setActiveLesson(safe);
+    setQuizOpen(false);
+    setAnswers({});
+    setSubmitted(false);
+    markDone(safe);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   const submitQuiz = () => setSubmitted(true);
   const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
 
@@ -361,7 +370,7 @@ function LearningSubject({ subject, onBack }) {
         <div className="space-y-7">
           {modules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
             <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#003366] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
-            <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=modules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);return <button key={l[0]} onClick={()=>{setActiveLesson(global);markDone(global);}} className={"flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition "+(activeLesson===global?"border-[#0f4c81] bg-[#eef7fb]":"border-zinc-200 hover:border-[#b9cfdd] hover:bg-zinc-50")}>
+            <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=modules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);return <button key={l[0]} onClick={()=>goLesson(global)} className={"flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition "+(activeLesson===global?"border-[#0f4c81] bg-[#eef7fb]":"border-zinc-200 hover:border-[#b9cfdd] hover:bg-zinc-50")}>
               <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#003366]")}>{isDone?<FaCheckCircle/>:li+1}</div>
               <div className="min-w-0 flex-1"><div className="font-black">{l[0]}</div><div className="mt-1 text-xs leading-5 text-zinc-500">{l[1]}</div></div><FaArrowRight className="shrink-0 text-zinc-400"/>
             </button>})}</div>
@@ -379,6 +388,10 @@ function LearningSubject({ subject, onBack }) {
               <div className="text-xs text-zinc-500">{lessons[activeLesson].module}</div>
               <div className="mt-1 font-black">{lessons[activeLesson].title}</div>
               <p className="mt-2 text-sm leading-6 text-zinc-600">{lessons[activeLesson].body}</p>
+              <div className="mt-5 flex gap-2 border-t border-zinc-200 pt-4">
+                <button onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-black text-[#003366] disabled:opacity-40">← Previous / पिछला</button>
+                <button onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#003366] px-3 py-2 text-xs font-black text-white disabled:opacity-40">Next / अगला →</button>
+              </div>
               {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
                 {[
                   ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
