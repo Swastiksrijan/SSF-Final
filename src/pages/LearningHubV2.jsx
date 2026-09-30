@@ -500,10 +500,47 @@ function LearningSubject({ subject, onBack }) {
         <div className="space-y-7">
           {activeModules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
             <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#003366] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
-            <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=modules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);return <button type="button" key={l[0]} onClick={()=>goLesson(global)} className={"flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition "+(activeLesson===global?"border-[#0f4c81] bg-[#eef7fb]":"border-zinc-200 hover:border-[#b9cfdd] hover:bg-zinc-50")}>
-              <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#003366]")}>{isDone?<FaCheckCircle/>:li+1}</div>
-              <div className="min-w-0 flex-1"><div className="font-black">{l[0]}</div><div className="mt-1 text-xs leading-5 text-zinc-500">{l[1]}</div></div><FaArrowRight className="shrink-0 text-zinc-400"/>
-            </button>})}</div>
+            <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=activeModules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);const detail=l[2];return <div key={l[0]} className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
+              <button type="button" onClick={()=>goLesson(global)} className={"flex w-full items-center gap-4 p-4 text-left transition "+(activeLesson===global?"bg-[#eef7fb]":"hover:bg-zinc-50")}>
+                <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#003366]")}>{isDone?<FaCheckCircle/>:li+1}</div>
+                <div className="min-w-0 flex-1"><div className="font-black">{l[0]}</div><div className="mt-1 text-xs leading-5 text-zinc-500">{l[1]}</div></div>
+                <span className={"shrink-0 text-xs font-black "+(activeLesson===global?"text-[#0f4c81]":"text-zinc-400")}>{activeLesson===global?"OPEN / खुला":"OPEN / खोलें"} <FaArrowRight className="inline"/></span>
+              </button>
+              {activeLesson===global && detail && <div className="border-t border-[#dceaf1] bg-[#f8fbfd] p-5 md:p-6">
+                <div className="grid gap-5 md:grid-cols-2">
+                  <div>
+                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Objectives / उद्देश्य</div>
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-700">{(detail.objectives||[]).map((x,i)=><li key={i}>{x}</li>)}</ul>
+                  </div>
+                  <div>
+                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Deep Understanding / गहरी समझ</div>
+                    <p className="mt-2 text-sm leading-7 text-zinc-700">{detail.content?.deepUnderstanding}</p>
+                  </div>
+                </div>
+                <div className="mt-5 grid gap-5 md:grid-cols-2">
+                  <div className="rounded-xl bg-white p-4">
+                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Examples / उदाहरण</div>
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-700">{(detail.content?.examples||[]).map((x,i)=><li key={i}>{x}</li>)}</ul>
+                  </div>
+                  <div className="rounded-xl bg-white p-4">
+                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Practice / अभ्यास</div>
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-700">{(detail.practice||[]).map((x,i)=><li key={i}>{x}</li>)}</ul>
+                  </div>
+                  <div className="rounded-xl bg-white p-4">
+                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Activity / गतिविधि</div>
+                    <p className="mt-2 text-sm leading-6 text-zinc-700">{detail.activity}</p>
+                  </div>
+                  <div className="rounded-xl bg-white p-4">
+                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Common Mistakes / सामान्य गलतियाँ</div>
+                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-700">{(detail.content?.commonMistakes||[]).map((x,i)=><li key={i}>{x}</li>)}</ul>
+                  </div>
+                </div>
+                <div className="mt-5 rounded-xl bg-[#003366] p-4 text-white">
+                  <div className="text-xs font-black uppercase tracking-widest text-white/60">Summary / सार</div>
+                  <p className="mt-2 text-sm leading-7 text-white/90">{detail.content?.summary}</p>
+                </div>
+              </div>}
+            </div>})}</div>
           </section>)}
         </div>
 
