@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import LearningHub from "../pages/LearningHub";
+import LearningHub from "../pages/LearningHubV2";
 
 function LearningHubWithEvidence() {
   return <LearningHub />
