@@ -7,6 +7,7 @@ import {
 } from "react-icons/fa";
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
 import { ENDPOINTS } from "../config/api";
+import { makeLearningVisual } from "../utils/learningHubVisuals";
 
 const HUB_IMAGES = {
   education: "/images/real/classroom-floor-seating.jpg",
@@ -181,30 +182,7 @@ const TOPICS = [
 ];
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9\u0900-\u097f]+/g, "-").replace(/^-|-$/g, "");
-const makeSubjectVisual = (category, title, index) => {
-  const key = CATEGORY_META[category]?.key || "education";
-  const visuals = {
-    education:["#003366","#4ea8de","📚"], communication:["#0f4c81","#48cae4","💬"], digital:["#17324d","#3a86ff","💻"],
-    career:["#374151","#6b7280","💼"], skills:["#2d6a4f","#74c69d","🛠️"], women:["#8b1e3f","#e76f8f","👩‍👧"],
-    health:["#9d0208","#e63946","❤"], environment:["#1b4332","#74c69d","🌱"], agriculture:["#386641","#a7c957","🌾"],
-    justice:["#463f3a","#b08968","⚖"], disability:["#264653","#2a9d8f","♿"], animal:["#6b4f3a","#c08457","🐾"],
-    culture:["#6d597a","#b56576","🏛"], disaster:["#33415c","#5c677d","🧰"], personal:["#005f73","#0a9396","🎯"],
-    community:["#003049","#669bbc","🤝"], children:["#7b2cbf","#c77dff","🧒"]
-  };
-  const [a,b,icon] = visuals[key] || visuals.education;
-  const esc = (s) => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
-  const svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"700\" viewBox=\"0 0 1200 700\">"
-    + "<defs><linearGradient id=\"g" + index + "\" x1=\"0\" x2=\"1\"><stop stop-color=\"" + a + "\"/><stop offset=\"1\" stop-color=\"" + b + "\"/></linearGradient></defs>"
-    + "<rect width=\"1200\" height=\"700\" fill=\"url(#g" + index + ")\"/>"
-    + "<circle cx=\"1030\" cy=\"100\" r=\"230\" fill=\"white\" opacity=\".08\"/><circle cx=\"90\" cy=\"650\" r=\"260\" fill=\"white\" opacity=\".06\"/>"
-    + "<rect x=\"55\" y=\"55\" width=\"1090\" height=\"590\" rx=\"42\" fill=\"none\" stroke=\"white\" stroke-opacity=\".18\" stroke-width=\"3\"/>"
-    + "<circle cx=\"600\" cy=\"330\" r=\"175\" fill=\"white\" opacity=\".96\"/>"
-    + "<text x=\"600\" y=\"390\" text-anchor=\"middle\" font-family=\"Arial,sans-serif\" font-size=\"150\" font-weight=\"700\" fill=\"" + a + "\">" + icon + "</text>"
-    + "<text x=\"90\" y=\"105\" font-family=\"Arial,sans-serif\" font-size=\"25\" font-weight=\"700\" fill=\"white\" opacity=\".82\">SSF LEARNING HUB • " + esc(category.split(" / ")[0]) + "</text>"
-    + "<text x=\"90\" y=\"610\" font-family=\"Arial,sans-serif\" font-size=\"42\" font-weight=\"800\" fill=\"white\">" + esc(title.split(" / ")[0]) + "</text>"
-    + "<text x=\"90\" y=\"642\" font-family=\"Arial,sans-serif\" font-size=\"18\" fill=\"white\" opacity=\".78\">Learn • Understand • Practise • Apply</text></svg>";
-  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
-};
+const makeSubjectVisual = (category, title, index) => makeLearningVisual(category, title, index);
 const buildSubject = ([category, title, intro], index) => {
   const meta = CATEGORY_META[category] || CATEGORY_META["Education / शिक्षा"];
   const [en, hi] = title.split(" / ");
