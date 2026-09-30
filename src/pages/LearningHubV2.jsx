@@ -217,6 +217,9 @@ function LearningSubject({ subject, onBack }) {
   const [quizOpen, setQuizOpen] = useState(false);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
+  const [finalResult, setFinalResult] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(progressKey + "-final") || "null"); } catch { return null; }
+  });
   const [moduleAnswers, setModuleAnswers] = useState({});
   const [moduleResults, setModuleResults] = useState(() => {
     try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
@@ -290,10 +293,10 @@ function LearningSubject({ subject, onBack }) {
   const completed = done.length;
   const total = lessons.length;
   const progress = Math.round((completed / total) * 100);
+  const allLearningComplete = progress === 100;
   const modulePassCount = moduleAssessments.filter(m => moduleResults[m.id]?.passed).length;
   const moduleAssessmentComplete = moduleAssessments.length === 0 || modulePassCount === moduleAssessments.length;
-  const finalAssessmentPassed = submitted && score >= 4;
-  const allLearningComplete = progress === 100;
+  const finalAssessmentPassed = Boolean(finalResult?.passed);
   const certificateEligible = allLearningComplete && moduleAssessmentComplete && finalAssessmentPassed;
   const courseMeta = structuredCourse || {
     title: { en: subject.en, hi: subject.hi },
@@ -323,7 +326,13 @@ function LearningSubject({ subject, onBack }) {
     markDone(safe);
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
-  const submitQuiz = () => setSubmitted(true);
+  const submitQuiz = () => {
+    const passed = score >= 4;
+    const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
+    setSubmitted(true);
+    setFinalResult(result);
+    try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
+  };
   const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
   const moduleAssessments = structuredCourse
     ? structuredCourse.modules.map((m) => ({ ...m, questions: FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] || [] })).filter(m => m.questions.length)
@@ -435,7 +444,7 @@ function LearningSubject({ subject, onBack }) {
             {quizOpen && <div className="mt-4 space-y-4">
               {quizQuestions.map((q,i)=><div key={i} className="rounded-xl bg-zinc-50 p-4"><div className="text-sm font-black">{i+1}. {q.q}</div><div className="mt-3 space-y-2">{q.options.map((o,j)=><label key={j} className="flex gap-2 text-xs leading-5"><input type="radio" name={"course-q-"+i} checked={answers[i]===j} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/><span>{o}</span></label>)}</div></div>)}
               <button onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
-              {submitted && <div className="rounded-xl border border-[#cfe5d8] bg-[#f3fbf6] p-4 text-center"><div className="text-2xl font-black text-[#177245]">{score}/5</div><div className="mt-1 text-xs text-zinc-600">{score>=4?"Strong understanding / अच्छी समझ":"Review and try again / दोबारा पढ़ें और प्रयास करें"}</div></div>}
+              {(submitted || finalResult) && <div className={"rounded-xl border p-4 text-center "+(finalResult?.passed?"border-[#cfe5d8] bg-[#f3fbf6]":"border-[#f2dfbd] bg-[#fffaf0]")}><div className={"text-2xl font-black "+(finalResult?.passed?"text-[#177245]":"text-[#9a5b00]")}>{finalResult?.score ?? score}/{finalResult?.total ?? 5}</div><div className="mt-1 text-xs text-zinc-600">{finalResult?.passed?"Final assessment passed / अंतिम आकलन पास":"Review and retry / दोबारा पढ़ें और प्रयास करें"}</div></div>}
             </div>}
           </div>
         </aside>
