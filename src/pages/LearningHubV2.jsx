@@ -293,10 +293,51 @@ function LearningSubject({ subject, onBack }) {
     }
   ];
 
-  // Flatten module lessons into the structure used by the active-lesson panel.
-  // This is required for every course, including the generic courses that do not
-  // have a flagship architecture entry yet.
-  const lessons = modules.flatMap((module) => module.lessons.map((lesson) => ({
+  // Every course must contain actual learning material. Flagship courses have
+  // curated lesson objects; all other subjects receive a structured lesson pack
+  // instead of showing only the one-line module description.
+  const enrichedModules = modules.map((module) => ({
+    ...module,
+    lessons: module.lessons.map((lesson) => {
+      if (lesson[2]) return lesson;
+      const lessonTitle = lesson[0];
+      const lessonBody = lesson[1];
+      const subjectName = subject.en;
+      const detail = {
+        objectives: [
+          `${subjectName} में “${lessonTitle}” का अर्थ और इसका practical purpose समझना।`,
+          "मुख्य बातों को उदाहरण, अभ्यास और वास्तविक जीवन के संदर्भ से जोड़ना।"
+        ],
+        content: {
+          deepUnderstanding:
+            `${lessonTitle} को केवल परिभाषा की तरह याद न करें। ${subjectName} के संदर्भ में इसका उद्देश्य, प्रमुख तत्व, उपयोग, सीमाएँ और दूसरे concepts से इसका संबंध समझें। पहले मूल idea पहचानें, फिर “क्यों”, “कैसे”, “कब” और “किस परिस्थिति में” जैसे प्रश्नों से उसे गहराई दें। ${lessonBody}`,
+          examples: [
+            `${subjectName} में ${lessonTitle} का एक सामान्य real-life उदाहरण पहचानें और बताएं कि उसमें यह concept कहाँ दिखाई देता है।`,
+            `अपने घर, स्कूल, काम या समुदाय में ${lessonTitle} से जुड़ी किसी वास्तविक स्थिति को देखें और उसके 2–3 प्रमुख points लिखें।`,
+            "एक सही उदाहरण और एक गलत/अधूरा उदाहरण की तुलना करके अंतर समझें।"
+          ],
+          commonMistakes: [
+            "केवल definition याद करके concept को समझा हुआ मान लेना।",
+            "Context, evidence और वास्तविक परिस्थिति को देखे बिना तुरंत निष्कर्ष निकालना।",
+            "एक उदाहरण को हर परिस्थिति पर लागू होने वाला universal rule मान लेना।"
+          ],
+          summary:
+            `${lessonTitle} का उद्देश्य ${subjectName} से जुड़ी जानकारी को समझ, practice और responsible application में बदलना है। इस lesson के बाद learner को concept को अपने शब्दों में समझाने, उदाहरण देने और वास्तविक स्थिति में उसका उपयोग/मूल्यांकन करने में सक्षम होना चाहिए।`
+        },
+        practice: [
+          `अपने शब्दों में “${lessonTitle}” की 3–5 पंक्तियों की explanation लिखें।`,
+          "एक वास्तविक उदाहरण लें और उसमें concept के कम-से-कम तीन elements पहचानें।",
+          "अपने उत्तर को review करके देखें कि क्या कोई assumption या unsupported claim रह गया है।"
+        ],
+        activity:
+          `Mini Activity: ${subjectName} में “${lessonTitle}” से जुड़ी एक वास्तविक समस्या/स्थिति चुनें। Problem → Information → Options → Action → Result/Review के पाँच चरण लिखें।`,
+      };
+      return [lessonTitle, lessonBody, { ...detail, title: { en: lessonTitle, hi: lessonTitle } }];
+    })
+  }));
+
+  const activeModules = enrichedModules;
+  const lessons = activeModules.flatMap((module) => module.lessons.map((lesson) => ({
     module: module.title,
     title: lesson[0],
     body: lesson[1],
@@ -457,7 +498,7 @@ function LearningSubject({ subject, onBack }) {
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_330px]">
         <div className="space-y-7">
-          {modules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+          {activeModules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
             <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#003366] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
             <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=modules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);return <button type="button" key={l[0]} onClick={()=>goLesson(global)} className={"flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition "+(activeLesson===global?"border-[#0f4c81] bg-[#eef7fb]":"border-zinc-200 hover:border-[#b9cfdd] hover:bg-zinc-50")}>
               <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#003366]")}>{isDone?<FaCheckCircle/>:li+1}</div>
