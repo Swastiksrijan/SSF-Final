@@ -217,6 +217,7 @@ function LearningSubject({ subject, onBack }) {
     try { return JSON.parse(localStorage.getItem(progressKey) || "[]"); } catch { return []; }
   });
   const [activeLesson, setActiveLesson] = useState(null);
+  const [activeModule, setActiveModule] = useState(null);
   const lessonContentRef = useRef(null);
   const [quizOpen, setQuizOpen] = useState(false);
   const [answers, setAnswers] = useState({});
@@ -383,9 +384,18 @@ function LearningSubject({ subject, onBack }) {
     try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch {}
     return next;
   });
+  const openModule = (moduleIndex) => {
+    setActiveModule(moduleIndex);
+    setActiveLesson(null);
+    window.setTimeout(() => {
+      const node = document.getElementById("ssf-module-" + moduleIndex);
+      if (node) window.scrollTo({ top: node.getBoundingClientRect().top + window.scrollY - 100, behavior: "smooth" });
+    }, 60);
+  };
   const goLesson = (nextIndex) => {
     const safe = Math.max(0, Math.min(nextIndex, total - 1));
     setActiveLesson(safe);
+    setActiveModule(null);
     setQuizOpen(false);
     setAnswers({});
     setSubmitted(false);
@@ -444,6 +454,7 @@ function LearningSubject({ subject, onBack }) {
             <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600">एक ही जगह से course खोजें, सीखना जारी रखें, अपनी progress देखें और completion के बाद certificate pathway तक पहुँचें।</p>
           </div>
           <button type="button" onClick={()=>document.getElementById("ssf-course-library")?.scrollIntoView({behavior:"smooth",block:"start"})} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-6 py-3.5 text-sm font-black text-white shadow-lg hover:from-[#0f4c81] hover:to-[#007c91]">Explore Courses / कोर्स देखें <FaArrowRight /></button>
+          <button type="button" onClick={()=>shareSubject(subject)} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#b9d3e1] bg-white px-6 py-3.5 text-sm font-black text-[#003366] shadow-sm hover:bg-[#f4f9fc]"><FaShareAlt/> Share Course / कोर्स साझा करें</button>
         </div>
         <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
@@ -515,51 +526,30 @@ function LearningSubject({ subject, onBack }) {
               <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Next / अगला →</button>
             </div>
           </section>}
-          <div className={activeLesson !== null ? "hidden" : ""}>
-          {activeModules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
-            <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#003366] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
-            <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=activeModules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);const detail=l[2];return <div key={l[0]} className={"overflow-hidden rounded-2xl border border-zinc-200 bg-white " + (activeLesson !== null && activeLesson !== global ? "hidden" : "")}>
-              <button type="button" onClick={()=>goLesson(global)} className={"flex w-full items-center gap-4 p-4 text-left transition "+(activeLesson===global?"bg-[#eef7fb]":"hover:bg-zinc-50")}>
-                <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#003366]")}>{isDone?<FaCheckCircle/>:li+1}</div>
-                <div className="min-w-0 flex-1"><div className="font-black">{l[0]}</div><div className="mt-1 text-xs leading-5 text-zinc-500">{l[1]}</div></div>
-                <span className={"shrink-0 text-xs font-black "+(activeLesson===global?"text-[#0f4c81]":"text-zinc-400")}>{activeLesson===global?"OPEN / खुला":"OPEN / खोलें"} <FaArrowRight className="inline"/></span>
-              </button>
-              {activeLesson===global && detail && <div className="border-t border-[#dceaf1] bg-[#f8fbfd] p-5 md:p-6">
-                <div className="grid gap-5 md:grid-cols-2">
-                  <div>
-                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Objectives / उद्देश्य</div>
-                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-700">{(detail.objectives||[]).map((x,i)=><li key={i}>{x}</li>)}</ul>
-                  </div>
-                  <div>
-                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Deep Understanding / गहरी समझ</div>
-                    <p className="mt-2 text-sm leading-7 text-zinc-700">{detail.content?.deepUnderstanding}</p>
-                  </div>
+          <div className={activeLesson !== null || activeModule !== null ? "hidden" : ""}>
+            <div className="mb-5 rounded-2xl border border-[#d9e7f0] bg-[#f7fbfd] p-5">
+              <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Course Modules / पाठ्यक्रम मॉड्यूल</div>
+              <p className="mt-2 text-sm leading-6 text-zinc-600">हर module एक learning card है। Module खोलिए, फिर lesson card पर क्लिक करके पूरा lesson पढ़िए।</p>
+            </div>
+            <div className="grid gap-5 md:grid-cols-2">
+              {activeModules.map((m,mi)=>{const base=activeModules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0);const moduleDone=m.lessons.filter((_,li)=>done.includes(base+li)).length;return <article id={"ssf-module-"+mi} key={m.title} className="group overflow-hidden rounded-[1.6rem] border border-zinc-200 bg-white shadow-[0_10px_35px_rgba(0,35,68,.07)] transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(0,35,68,.12)]">
+                <div className={"h-3 bg-gradient-to-r "+subject.color}/>
+                <div className="p-6">
+                  <div className="flex items-start gap-4"><div className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-[#003366] text-white font-black">{mi+1}</div><div className="min-w-0 flex-1"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-xl font-black text-[#003366]">{m.title}</h2><p className="mt-2 text-sm leading-6 text-zinc-500">{m.subtitle}</p></div></div>
+                  <div className="mt-5 flex items-center justify-between rounded-xl bg-zinc-50 px-4 py-3 text-xs font-bold text-zinc-600"><span>{m.lessons.length} Lessons / पाठ</span><span>{moduleDone}/{m.lessons.length} Complete</span></div>
+                  <button type="button" onClick={()=>openModule(mi)} className="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-4 py-3.5 text-sm font-black text-white">Open Module / मॉड्यूल खोलें <FaArrowRight/></button>
                 </div>
-                <div className="mt-5 grid gap-5 md:grid-cols-2">
-                  <div className="rounded-xl bg-white p-4">
-                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Examples / उदाहरण</div>
-                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-700">{(detail.content?.examples||[]).map((x,i)=><li key={i}>{x}</li>)}</ul>
-                  </div>
-                  <div className="rounded-xl bg-white p-4">
-                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Practice / अभ्यास</div>
-                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-700">{(detail.practice||[]).map((x,i)=><li key={i}>{x}</li>)}</ul>
-                  </div>
-                  <div className="rounded-xl bg-white p-4">
-                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Activity / गतिविधि</div>
-                    <p className="mt-2 text-sm leading-6 text-zinc-700">{detail.activity}</p>
-                  </div>
-                  <div className="rounded-xl bg-white p-4">
-                    <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Common Mistakes / सामान्य गलतियाँ</div>
-                    <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-700">{(detail.content?.commonMistakes||[]).map((x,i)=><li key={i}>{x}</li>)}</ul>
-                  </div>
-                </div>
-                <div className="mt-5 rounded-xl bg-[#003366] p-4 text-white">
-                  <div className="text-xs font-black uppercase tracking-widest text-white/60">Summary / सार</div>
-                  <p className="mt-2 text-sm leading-7 text-white/90">{detail.content?.summary}</p>
-                </div>
-              </div>}
-            </div>})}</div>
-          </section>)}
+              </article>})}
+            </div>
+          </div>
+
+          {activeModule !== null && activeLesson === null && <section className="rounded-[2rem] border border-[#cfe0ea] bg-white p-6 shadow-sm md:p-8">
+            <div className="flex items-start justify-between gap-4 border-b border-zinc-200 pb-5"><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {activeModule+1} / मॉड्यूल</div><h2 className="mt-2 text-2xl font-black text-[#003366]">{activeModules[activeModule].title}</h2><p className="mt-2 text-sm leading-6 text-zinc-500">{activeModules[activeModule].subtitle}</p></div><button type="button" onClick={()=>setActiveModule(null)} className="rounded-xl border border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-black text-[#003366]">← Modules / मॉड्यूल</button></div>
+            <div className="mt-6 grid gap-4 md:grid-cols-2">
+              {activeModules[activeModule].lessons.map((l,li)=>{const global=activeModules.slice(0,activeModule).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);return <button type="button" key={l[0]} onClick={()=>goLesson(global)} className="group rounded-2xl border border-zinc-200 bg-white p-5 text-left transition hover:-translate-y-0.5 hover:border-[#9cc6da] hover:bg-[#f7fbfd] hover:shadow-md"><div className="flex items-start gap-4"><div className={"grid h-10 w-10 shrink-0 place-items-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-[#eef5f9] text-[#003366]")}>{isDone?<FaCheckCircle/>:li+1}</div><div className="min-w-0 flex-1"><div className="font-black text-[#003366]">{l[0]}</div><div className="mt-2 text-sm leading-6 text-zinc-500">{l[1]}</div></div><FaArrowRight className="mt-1 shrink-0 text-zinc-400 transition group-hover:translate-x-1 group-hover:text-[#0f4c81]"/></div><div className="mt-4 text-xs font-black text-[#0f4c81]">Read Full Lesson / पूरा पाठ पढ़ें</div></button>})}
+            </div>
+          </section>}
+
           </div>
         </div>
 
