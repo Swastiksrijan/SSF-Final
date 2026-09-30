@@ -6,6 +6,7 @@ import {
   FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping
 } from "react-icons/fa";
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
+import { ENDPOINTS } from "../config/api";
 
 const HUB_IMAGES = {
   education: "/images/real/classroom-floor-seating.jpg",
@@ -221,6 +222,12 @@ function LearningSubject({ subject, onBack }) {
     try { return JSON.parse(localStorage.getItem(progressKey + "-final") || "null"); } catch { return null; }
   });
   const [moduleAnswers, setModuleAnswers] = useState({});
+  const [accountOpen, setAccountOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("login");
+  const [authForm, setAuthForm] = useState({ fullName:"", email:"", confirmEmail:"", phone:"", password:"" });
+  const [authStatus, setAuthStatus] = useState("idle");
+  const [authError, setAuthError] = useState("");
+  const [accountUser, setAccountUser] = useState(() => { try { return JSON.parse(localStorage.getItem("ssf-learning-account") || "null"); } catch { return null; } });
   const [moduleResults, setModuleResults] = useState(() => {
     try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
   });
@@ -468,22 +475,55 @@ function LearningSubject({ subject, onBack }) {
                 window.alert("Certificate is not yet available. Complete all lessons, pass every module assessment, and pass the final assessment first.");
                 return;
               }
-              try {
-                localStorage.setItem("ssf-learning-certificate-request", JSON.stringify({
-                  courseId: subject.id,
-                  courseTitle: courseMeta.title,
-                  completionPercent: progress,
-                  moduleAssessments: moduleResults,
-                  finalAssessment: finalResult,
-                  requestedAt: new Date().toISOString()
-                }));
-              } catch {}
-              window.location.href = "/Join?tab=member";
+              setAuthError("");
+              setAuthStatus("idle");
+              setAccountOpen(true);
             }}
             className={"mt-4 rounded-xl px-5 py-3 text-sm font-black text-white "+(certificateEligible?"bg-[#177245]":"bg-[#003366]")}
           >{certificateEligible ? "Proceed to Certificate / प्रमाणपत्र के लिए आगे बढ़ें" : "Get Certificate / प्रमाणपत्र प्राप्त करें"}</button>
         </div>
       </section>
+
+      {accountOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#001529]/70 p-4 backdrop-blur-sm">
+        <div className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl md:p-8">
+          <div className="flex items-start justify-between gap-4">
+            <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Certificate Account Stage / प्रमाणपत्र खाता चरण</div><h2 className="mt-2 text-2xl font-black text-[#003366]">{accountUser ? "Account ready / खाता तैयार है" : authMode === "login" ? "Login to continue / आगे बढ़ने के लिए लॉगिन" : "Create learning account / लर्निंग अकाउंट बनाएं"}</h2></div>
+            <button type="button" onClick={()=>setAccountOpen(false)} className="rounded-xl bg-zinc-100 px-3 py-2 font-black text-zinc-500">✕</button>
+          </div>
+          {accountUser ? <div className="mt-6 space-y-4">
+            <div className="rounded-2xl bg-[#f1f7fa] p-5"><div className="font-black text-[#003366]">{accountUser.fullName}</div><div className="mt-1 text-sm text-zinc-500">{accountUser.email}</div></div>
+            <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-sm leading-6 text-emerald-800"><strong>Learning completion verified.</strong> Your course completion and assessment record is ready for the certificate request stage. Certificate issuance remains subject to SSF's certificate workflow.</div>
+            <button type="button" onClick={()=>{
+              try { localStorage.setItem("ssf-learning-certificate-request", JSON.stringify({ accountId:accountUser.id, learner:accountUser, courseId:subject.id, courseTitle:courseMeta.title, completionPercent:progress, moduleAssessments:moduleResults, finalAssessment:finalResult, requestedAt:new Date().toISOString() })); } catch {}
+              setAccountOpen(false);
+              window.alert("Certificate request record saved for this learning account. SSF certificate issuance/verification will be connected to the official backend workflow next.");
+            }} className="w-full rounded-xl bg-[#177245] px-5 py-3 font-black text-white">Request Certificate / प्रमाणपत्र का अनुरोध करें</button>
+          </div> : <form className="mt-6 space-y-4" onSubmit={async e=>{
+            e.preventDefault(); setAuthError(""); setAuthStatus("submitting");
+            try {
+              const payload = authMode === "login"
+                ? { email:authForm.email.trim().toLowerCase(), password:authForm.password }
+                : { fullName:authForm.fullName.trim(), email:authForm.email.trim().toLowerCase(), confirmEmail:authForm.confirmEmail.trim().toLowerCase(), phone:authForm.phone.trim(), password:authForm.password, memberType:"website_signup", message:"SSF Learning Hub certificate account" };
+              if(authMode==="signup" && (!payload.fullName || payload.fullName.length<3 || !payload.phone || payload.password.length<8 || payload.email!==payload.confirmEmail)) throw new Error("Please complete all account fields correctly.");
+              const response=await fetch(authMode==="login"?ENDPOINTS.MEMBER_LOGIN:ENDPOINTS.MEMBER_SIGNUP,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(payload)});
+              const result=await response.json().catch(()=>({}));
+              if(!response.ok) throw new Error(result.message || "Account request failed.");
+              const user=result.user;
+              setAccountUser(user);
+              try { localStorage.setItem("ssf-learning-account",JSON.stringify(user)); } catch {}
+              setAuthStatus("success");
+            } catch(err){ setAuthStatus("error"); setAuthError(err.message || "Unable to continue."); }
+          }}>
+            {authMode==="signup" && <><div><label className="text-xs font-black text-zinc-500">Full Name / पूरा नाम</label><input className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.fullName} onChange={e=>setAuthForm(v=>({...v,fullName:e.target.value}))} required/></div><div><label className="text-xs font-black text-zinc-500">Mobile / मोबाइल</label><input className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.phone} onChange={e=>setAuthForm(v=>({...v,phone:e.target.value}))} required/></div></>}
+            <div><label className="text-xs font-black text-zinc-500">Email / ईमेल</label><input type="email" className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.email} onChange={e=>setAuthForm(v=>({...v,email:e.target.value}))} required/></div>
+            {authMode==="signup" && <div><label className="text-xs font-black text-zinc-500">Confirm Email / ईमेल पुष्टि</label><input type="email" className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.confirmEmail} onChange={e=>setAuthForm(v=>({...v,confirmEmail:e.target.value}))} required/></div>}
+            <div><label className="text-xs font-black text-zinc-500">Password / पासवर्ड</label><input type="password" minLength={8} className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.password} onChange={e=>setAuthForm(v=>({...v,password:e.target.value}))} required/></div>
+            {authError && <div className="rounded-xl bg-red-50 p-4 text-sm font-bold text-red-700">{authError}</div>}
+            <button disabled={authStatus==="submitting"} className="w-full rounded-xl bg-[#003366] px-5 py-3 font-black text-white disabled:opacity-50">{authStatus==="submitting"?"Please wait...":authMode==="login"?"Login & Continue / लॉगिन करें":"Create Account & Continue / अकाउंट बनाएं"}</button>
+            <button type="button" onClick={()=>{setAuthMode(authMode==="login"?"signup":"login");setAuthError("");}} className="w-full rounded-xl bg-zinc-100 px-5 py-3 text-sm font-black text-[#003366]">{authMode==="login"?"Create Account / नया अकाउंट बनाएं":"Already have an account? Login / पहले से अकाउंट है? लॉगिन"}</button>
+          </form>}
+        </div>
+      </div>}
     </main>
   </div>;
 }
