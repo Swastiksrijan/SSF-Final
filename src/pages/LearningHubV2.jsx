@@ -288,6 +288,11 @@ function LearningSubject({ subject, onBack }) {
   const completed = done.length;
   const total = lessons.length;
   const progress = Math.round((completed / total) * 100);
+  const modulePassCount = moduleAssessments.filter(m => moduleResults[m.id]?.passed).length;
+  const moduleAssessmentComplete = moduleAssessments.length === 0 || modulePassCount === moduleAssessments.length;
+  const finalAssessmentPassed = submitted && score >= 4;
+  const allLearningComplete = progress === 100;
+  const certificateEligible = allLearningComplete && moduleAssessmentComplete && finalAssessmentPassed;
   const courseMeta = structuredCourse || {
     title: { en: subject.en, hi: subject.hi },
     level: "foundation",
@@ -432,11 +437,22 @@ function LearningSubject({ subject, onBack }) {
 
       <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-white p-6 md:p-8">
         <div className="flex items-center gap-3"><FaGraduationCap className="text-3xl text-[#003366]"/><div><h2 className="text-2xl font-black">Certificate Pathway / प्रमाणन मार्ग</h2><p className="text-sm text-zinc-500">Learning first. Certification after genuine completion and assessment.</p></div></div>
-        <div className="mt-6 grid gap-3 md:grid-cols-5">{["Learn / सीखें","Practise / अभ्यास","Complete / पूर्ण करें","Assess / आकलन","Certificate / प्रमाणपत्र"].map((x,i)=><div key={x} className={"rounded-xl p-4 text-center text-xs font-black "+(i===0?"bg-[#003366] text-white":"bg-zinc-100 text-zinc-600")}>{i+1}. {x}</div>)}</div>
+        <div className="mt-6 grid gap-3 md:grid-cols-5">{[
+          ["Learn / सीखें", progress > 0],
+          ["Practise / अभ्यास", completed > 0],
+          ["Complete / पूर्ण करें", allLearningComplete],
+          ["Assess / आकलन", moduleAssessmentComplete && finalAssessmentPassed],
+          ["Certificate / प्रमाणपत्र", certificateEligible]
+        ].map(([x,ok],i)=><div key={x} className={"rounded-xl p-4 text-center text-xs font-black "+(ok?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-zinc-600")}>{i+1}. {x}</div>)}</div>
         <div className="mt-6 rounded-2xl bg-[#f7fafc] p-5">
           <div className="text-sm font-black text-[#003366]">Certificate request / प्रमाणपत्र अनुरोध</div>
           <p className="mt-2 text-sm leading-6 text-zinc-600">Certificate issuance will be enabled only after the required learning, activities and assessments are complete. Opening lessons or creating an account alone does not issue a certificate.</p>
-          <button onClick={()=>window.alert("Certificate request will be available after the complete assessment and account flow is connected.")} className="mt-4 rounded-xl bg-[#003366] px-5 py-3 text-sm font-black text-white">Get Certificate / प्रमाणपत्र प्राप्त करें</button>
+          <button
+            onClick={() => window.alert(certificateEligible
+              ? "Certificate eligibility confirmed. Login/Create Account is required at the certificate stage."
+              : "Certificate is not yet available. Complete all lessons, pass every module assessment, and pass the final assessment first.")}
+            className={"mt-4 rounded-xl px-5 py-3 text-sm font-black text-white "+(certificateEligible?"bg-[#177245]":"bg-[#003366]")}
+          >{certificateEligible ? "Proceed to Certificate / प्रमाणपत्र के लिए आगे बढ़ें" : "Get Certificate / प्रमाणपत्र प्राप्त करें"}</button>
         </div>
       </section>
     </main>
