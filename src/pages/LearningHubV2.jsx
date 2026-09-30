@@ -321,44 +321,155 @@ export default function LearningHubV2() {
   if (selected) return <LearningSubject subject={selected} onBack={back} />;
 
   const categories = ["All", ...Object.keys(CATEGORY_META)];
-  return <div className="min-h-screen bg-zinc-50 font-inria text-zinc-900">
+  const visibleCategories = category === "All" ? Object.keys(CATEGORY_META) : [category];
+
+  return <div className="min-h-screen bg-[#f6f8fb] font-inria text-zinc-900">
     <section className="relative overflow-hidden bg-[#002344] text-white">
-      <img src="/images/real/education_girls.jpg" alt="Students learning" className="absolute inset-0 h-full w-full object-cover opacity-20" />
-      <div className="absolute inset-0 bg-[#002344]/80" />
-      <div className="relative mx-auto max-w-7xl px-4 py-16 md:py-24">
-        <div className="inline-flex items-center gap-2 rounded-full bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest"><FaGraduationCap /> Swastik Srijan Foundation</div>
-        <h1 className="mt-6 text-5xl font-black leading-tight md:text-7xl">SSF Learning Hub</h1>
-        <h2 className="mt-3 text-2xl font-bold text-white/80">सीखिए • समझिए • अभ्यास कीजिए | Learn • Understand • Practise</h2>
-        <p className="mt-6 max-w-4xl text-lg leading-8 text-white/80">A free bilingual learning space where SSF objectives are converted into subjects that people can actually read, understand, practise and share.</p>
-        <div className="mt-10 grid gap-4 sm:grid-cols-3"><div className="rounded-2xl bg-white/10 p-5"><div className="text-3xl font-black">{SUBJECTS.length}</div><div className="text-sm font-bold">Subjects / विषय</div></div><div className="rounded-2xl bg-white/10 p-5"><div className="text-3xl font-black">{Object.keys(CATEGORY_META).length}</div><div className="text-sm font-bold">Learning Areas / क्षेत्र</div></div><div className="rounded-2xl bg-white/10 p-5"><div className="text-3xl font-black">Hindi + English</div><div className="text-sm font-bold">Bilingual Learning</div></div></div>
+      <img src="/images/real/education_girls.jpg" alt="Students learning together" className="absolute inset-0 h-full w-full object-cover opacity-20" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#001a33]/95 via-[#003b63]/90 to-[#005b7a]/80" />
+      <div className="relative mx-auto max-w-7xl px-4 py-14 md:py-20">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest">
+          <FaGraduationCap /> Swastik Srijan Foundation • SSF Learning Hub
+        </div>
+        <div className="mt-7 max-w-5xl">
+          <div className="text-sm font-bold text-white/70">ज्ञान से कौशल तक • From Knowledge to Capability</div>
+          <h1 className="mt-2 text-5xl font-black leading-tight md:text-7xl">Learn. Understand. Practise. Master.</h1>
+          <h2 className="mt-3 text-2xl font-bold text-white/85 md:text-3xl">सीखिए • समझिए • अभ्यास कीजिए • आगे बढ़िए</h2>
+          <p className="mt-5 max-w-4xl text-lg leading-8 text-white/80">
+            एक विषय चुनिए और उसके लिए क्रमबद्ध learning journey शुरू कीजिए। हमारा लक्ष्य केवल जानकारी देना नहीं,
+            बल्कि समझ, अभ्यास, application और assessment के माध्यम से गहरी learning विकसित करना है।
+          </p>
+        </div>
+
+        <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
+            <div className="text-3xl font-black">{SUBJECTS.length}+</div>
+            <div className="mt-1 text-sm font-bold text-white/75">Subjects / विषय</div>
+          </div>
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
+            <div className="text-3xl font-black">{Object.keys(CATEGORY_META).length}</div>
+            <div className="mt-1 text-sm font-bold text-white/75">Learning Areas / क्षेत्र</div>
+          </div>
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
+            <div className="text-3xl font-black">A → Z</div>
+            <div className="mt-1 text-sm font-bold text-white/75">Structured Learning / क्रमबद्ध सीख</div>
+          </div>
+          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
+            <div className="text-3xl font-black">हिन्दी + English</div>
+            <div className="mt-1 text-sm font-bold text-white/75">Bilingual / द्विभाषी</div>
+          </div>
+        </div>
       </div>
     </section>
 
-    <main className="mx-auto max-w-7xl px-4 py-10">
-      <section className="rounded-3xl border border-zinc-200 bg-white p-5 shadow-sm md:p-7">
-        <div className="flex flex-col gap-4 lg:flex-row"><div className="relative flex-1"><FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" /><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search subjects / विषय खोजें..." className="w-full rounded-xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 outline-none focus:border-[#003366]" /></div><button onClick={()=>{setQuery("");setCategory("All")}} className="rounded-xl border border-zinc-200 px-5 py-3 text-sm font-bold text-[#003366]">Reset</button></div>
-        <div className="mt-5 flex gap-2 overflow-x-auto pb-1">{categories.map(c=><button key={c} onClick={()=>setCategory(c)} className={"shrink-0 rounded-full px-4 py-2 text-xs font-bold " + (category===c ? "bg-[#003366] text-white" : "bg-zinc-100 text-zinc-600")}>{c}</button>)}</div>
-      </section>
-
-      <section className="py-12">
-        <div className="mb-8"><div className="text-sm font-black uppercase tracking-widest text-[#003366]">Learning Library / अध्ययन पुस्तकालय</div><h2 className="mt-2 text-4xl font-black">हर विषय को पढ़ें, समझें और सीखें</h2><p className="mt-3 max-w-4xl leading-7 text-zinc-600">हर card एक अलग shareable subject page खोलता है। Subject में introduction, meaning, importance, core concepts, practical learning, activity, do/don't, self-check, questions, video section और conclusion दिया गया है।</p></div>
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {filtered.map(s=><article key={s.id} className="group overflow-hidden rounded-3xl border border-zinc-200 bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-            <div className="relative h-48 overflow-hidden"><img src={s.image} alt={s.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" /><div className="absolute bottom-4 left-4 right-4 text-white"><div className="text-xs font-black uppercase tracking-widest opacity-80">{s.category}</div><h3 className="mt-1 text-xl font-black">{s.en}</h3><div className="text-sm font-bold opacity-90">{s.hi}</div></div></div>
-            <div className="p-5"><p className="min-h-20 text-sm leading-6 text-zinc-600">{s.intro}</p><div className="mt-5 flex gap-2"><button onClick={()=>openSubject(s)} className="flex-1 rounded-xl bg-[#003366] px-4 py-3 text-sm font-black text-white">Start Learning <FaArrowRight className="ml-1 inline" /></button><button onClick={()=>shareSubject(s)} title="Share" className="rounded-xl border border-zinc-200 px-4 py-3 text-[#003366]"><FaShareAlt /></button></div></div>
-          </article>)}
+    <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
+      <section className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-[0_15px_50px_rgba(0,35,68,.08)] md:p-7">
+        <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
+          <div className="flex-1">
+            <div className="text-xs font-black uppercase tracking-[.18em] text-[#0f4c81]">Explore the Learning Library</div>
+            <h2 className="mt-2 text-3xl font-black md:text-4xl">अपना विषय चुनिए</h2>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">Search करें या learning area चुनें। हर course card से सीधे उसके learning journey पर जाएँ।</p>
+          </div>
+          <div className="relative w-full lg:max-w-xl">
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+            <input
+              value={query}
+              onChange={e=>setQuery(e.target.value)}
+              placeholder="Search course / विषय खोजें..."
+              aria-label="Search courses"
+              className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 text-base outline-none transition focus:border-[#0f4c81] focus:bg-white focus:ring-4 focus:ring-[#0f4c81]/10"
+            />
+          </div>
+          <button onClick={()=>{setQuery("");setCategory("All")}} className="rounded-2xl border border-zinc-200 px-5 py-4 text-sm font-black text-[#003366] hover:bg-zinc-50">
+            Reset / रीसेट
+          </button>
         </div>
-        {!filtered.length && <div className="rounded-2xl border border-dashed border-zinc-300 bg-white p-10 text-center text-zinc-500">No subject found. Try another search.</div>}
+
+        <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
+          {categories.map(c => {
+            const Meta = CATEGORY_META[c];
+            const Icon = Meta?.icon || FaBookOpen;
+            return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-black transition " + (category===c ? "bg-[#003366] text-white shadow-md" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200")}>
+              <Icon /> {c}
+            </button>;
+          })}
+        </div>
       </section>
 
-      <section className="grid gap-6 pb-12 md:grid-cols-4">
+      <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-gradient-to-r from-white to-[#eef7fb] p-6 md:p-8">
+        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+          <div>
+            <div className="flex items-center gap-2 text-sm font-black text-[#0f4c81]"><FaBookOpen /> HOW LEARNING WORKS / सीखने की प्रक्रिया</div>
+            <h2 className="mt-2 text-2xl font-black md:text-3xl">हर course एक learning journey होगा</h2>
+            <p className="mt-2 max-w-3xl text-sm leading-7 text-zinc-600">Explore → Learn → Understand → Practise → Check → Apply → Assess → Complete → Certificate</p>
+          </div>
+          <div className="grid grid-cols-2 gap-2 text-center text-xs font-bold text-[#003366] sm:grid-cols-4">
+            {[
+              [FaBookOpen,"Learn","सीखें"],
+              [FaPlayCircle,"Practise","अभ्यास"],
+              [FaCheckCircle,"Assess","आकलन"],
+              [FaGraduationCap,"Certify","प्रमाणन"]
+            ].map(([Icon,en,hi])=><div key={en} className="rounded-xl bg-white px-4 py-3 shadow-sm"><Icon className="mx-auto text-lg"/><div className="mt-1">{en}</div><div className="text-[10px] text-zinc-500">{hi}</div></div>)}
+          </div>
+        </div>
+      </section>
+
+      {visibleCategories.map(cat => {
+        const meta = CATEGORY_META[cat];
+        const Icon = meta?.icon || FaBookOpen;
+        const courses = filtered.filter(s => s.category === cat);
+        if (!courses.length) return null;
+        return <section key={cat} className="mt-12">
+          <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-[#0f4c81]"><Icon /> {cat}</div>
+              <h2 className="mt-2 text-3xl font-black">Courses / पाठ्यक्रम</h2>
+              <p className="mt-1 text-sm text-zinc-500">{courses.length} learning options available in this area / इस क्षेत्र में उपलब्ध learning options</p>
+            </div>
+          </div>
+          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+            {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-zinc-200 bg-white shadow-[0_10px_35px_rgba(0,35,68,.07)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(0,35,68,.14)]">
+              <div className="relative h-52 overflow-hidden">
+                <img src={s.categoryImage || s.image} alt={s.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+                <div className={"absolute inset-0 bg-gradient-to-t "+s.color+" opacity-75"} />
+                <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur">
+                  <Icon /> Course {s.number}
+                </div>
+                <div className="absolute bottom-4 left-5 right-5 text-white">
+                  <h3 className="text-2xl font-black leading-tight">{s.en}</h3>
+                  <div className="mt-1 text-sm font-bold text-white/90">{s.hi}</div>
+                </div>
+              </div>
+              <div className="flex flex-1 flex-col p-6">
+                <div className="mb-4 flex flex-wrap gap-2">
+                  <span className="rounded-full bg-[#edf5fa] px-3 py-1 text-[10px] font-black text-[#0f4c81]">Foundation → Practical</span>
+                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-[10px] font-black text-zinc-600">Hindi + English</span>
+                </div>
+                <p className="flex-1 text-sm leading-7 text-zinc-600">{s.intro}</p>
+                <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-zinc-500">
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaBookOpen className="mx-auto mb-1 text-[#0f4c81]"/>Lessons</div>
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaCheckCircle className="mx-auto mb-1 text-[#0f4c81]"/>Practice</div>
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaGraduationCap className="mx-auto mb-1 text-[#0f4c81]"/>Certificate</div>
+                </div>
+                <button onClick={()=>openSubject(s)} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:from-[#0f4c81] hover:to-[#007c91] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
+                  Join SSF Course <span className="text-base">/</span> कोर्स शुरू करें <FaArrowRight />
+                </button>
+              </div>
+            </article>)}
+          </div>
+        </section>;
+      })}
+
+      {!filtered.length && <div className="mt-10 rounded-3xl border border-dashed border-zinc-300 bg-white p-12 text-center text-zinc-500">No course found. Try another search / कोई दूसरा विषय खोजें।</div>}
+
+      <section className="mt-14 grid gap-5 pb-8 md:grid-cols-4">
         {[
-          [FaBookOpen, "Read / पढ़ें", "हर subject को सरल भाषा में विस्तार से समझें।"],
-          [FaPlayCircle, "Watch / देखें", "हर subject में related video learning slot।"],
-          [FaCheckCircle, "Practise / अभ्यास", "Activities, self-check और questions से सीखें।"],
-          [FaShareAlt, "Share / साझा करें", "हर subject का अलग link share करें।"]
-        ].map(([Icon,title,desc])=><div key={title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><Icon className="text-3xl text-[#003366]" /><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{desc}</p></div>)}
+          [FaBookOpen, "Learn / सीखें", "Concepts, examples and reliable learning material."],
+          [FaPlayCircle, "Practise / अभ्यास", "Activities and practical application."],
+          [FaCheckCircle, "Assess / आकलन", "Quizzes and meaningful assessments."],
+          [FaGraduationCap, "Certify / प्रमाणन", "Completion-based certificate pathway."]
+        ].map(([Icon,title,desc])=><div key={title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><Icon className="text-3xl text-[#003366]"/><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{desc}</p></div>)}
       </section>
     </main>
   </div>;
-}
+}\n
