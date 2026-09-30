@@ -393,54 +393,37 @@ function LearningSubject({ subject, onBack }) {
       </div>
     </section>
 
-    <section className="relative z-20 -mt-14 mx-auto max-w-7xl px-4">
-      <div className="overflow-hidden rounded-[2.25rem] border border-white/60 bg-white/95 shadow-[0_30px_90px_rgba(0,35,68,.18)] backdrop-blur">
-        <div className="grid lg:grid-cols-[1.35fr_.65fr]">
-          <div className="relative overflow-hidden bg-gradient-to-br from-[#001d36] via-[#003b63] to-[#087f8f] p-7 text-white md:p-10">
-            <div className="absolute -right-16 -top-16 h-52 w-52 rounded-full border border-white/10"></div>
-            <div className="absolute -bottom-24 -left-12 h-64 w-64 rounded-full border border-white/10"></div>
-            <div className="relative">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3.5 py-2 text-[10px] font-black uppercase tracking-[.18em] backdrop-blur">
-                <FaGraduationCap /> SSF Learning Hub • Learning Dashboard
-              </div>
-              <h2 className="mt-6 max-w-2xl text-3xl font-black leading-tight md:text-5xl">Your Learning Journey,<br/><span className="text-white/80">Beautifully Organised.</span></h2>
-              <p className="mt-4 max-w-2xl text-sm leading-7 text-white/75 md:text-base">अपनी सीखने की यात्रा को एक professional dashboard से शुरू करें — course खोजें, सीखना जारी रखें, practice करें, assessment दें और completion के बाद certificate pathway तक पहुँचें।</p>
-              <div className="mt-7 flex flex-wrap gap-3">
-                <button type="button" onClick={()=>document.getElementById("ssf-course-library")?.scrollIntoView({behavior:"smooth",block:"start"})} className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3.5 text-sm font-black text-[#003366] shadow-lg transition hover:-translate-y-0.5">Explore Courses <FaArrowRight /></button>
-                <button type="button" onClick={()=>document.getElementById("ssf-course-library")?.scrollIntoView({behavior:"smooth",block:"start"})} className="inline-flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-5 py-3.5 text-sm font-black text-white backdrop-blur transition hover:bg-white/15">Continue Learning <FaPlayCircle /></button>
-              </div>
-              <div className="mt-8 flex flex-wrap gap-x-7 gap-y-3 text-xs font-bold text-white/65">
-                <span><b className="text-white">{SUBJECTS.length}+</b> Courses / कोर्स</span>
-                <span><b className="text-white">{Object.keys(CATEGORY_META).length}</b> Learning Areas / क्षेत्र</span>
-                <span><b className="text-white">Hindi + English</b> / द्विभाषी</span>
-              </div>
-            </div>
+    <section className="relative -mt-10 z-10 mx-auto max-w-7xl px-4">
+      <div className="rounded-[2rem] border border-white/20 bg-white p-5 shadow-[0_20px_60px_rgba(0,35,68,.16)] md:p-7">
+        <div className="flex flex-col gap-6 lg:flex-row lg:items-center lg:justify-between">
+          <div>
+            <div className="text-xs font-black uppercase tracking-[.2em] text-[#0f4c81]">SSF LEARNING DASHBOARD / सीखने का डैशबोर्ड</div>
+            <h2 className="mt-2 text-2xl font-black text-[#003366] md:text-3xl">Your Learning Journey / आपकी सीखने की यात्रा</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-zinc-600">एक ही जगह से course खोजें, सीखना जारी रखें, अपनी progress देखें और completion के बाद certificate pathway तक पहुँचें।</p>
           </div>
-          <div className="bg-[#f7fafc] p-5 md:p-7">
-            <div className="text-xs font-black uppercase tracking-[.18em] text-[#0f4c81]">Quick Access / त्वरित पहुँच</div>
-            <div className="mt-4 space-y-3">
-              {[
-                [FaBookOpen,"Explore Courses","कोर्स खोजें","Browse all learning subjects"],
-                [FaPlayCircle,"Continue Learning","सीखना जारी रखें","Pick up from your learning path"],
-                [FaCheckCircle,"My Progress","मेरी प्रगति","Track lessons, practice & assessment"],
-                [FaGraduationCap,"My Certificates","मेरे प्रमाणपत्र","View completed learning records"]
-              ].map(([Icon,en,hi,desc])=><button type="button" key={en} onClick={()=>document.getElementById("ssf-course-library")?.scrollIntoView({behavior:"smooth",block:"start"})} className="group flex w-full items-center gap-3 rounded-2xl border border-zinc-200 bg-white p-3.5 text-left shadow-sm transition hover:-translate-y-0.5 hover:border-[#9cc6da] hover:shadow-md">
-                <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-[#edf6fa] text-[#003366]"><Icon /></span>
-                <span className="min-w-0 flex-1"><span className="block text-sm font-black text-[#003366]">{en}</span><span className="block text-[11px] font-bold text-[#0f4c81]">{hi}</span><span className="mt-0.5 block truncate text-[10px] text-zinc-500">{desc}</span></span>
-                <FaArrowRight className="text-xs text-zinc-300 transition group-hover:translate-x-1 group-hover:text-[#0f4c81]"/>
-              </button>)}
-            </div>
-          </div>
+          <button type="button" onClick={()=>document.getElementById("ssf-course-library")?.scrollIntoView({behavior:"smooth",block:"start"})} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-6 py-3.5 text-sm font-black text-white shadow-lg hover:from-[#0f4c81] hover:to-[#007c91]">Explore Courses / कोर्स देखें <FaArrowRight /></button>
         </div>
-        <div className="grid border-t border-zinc-200 bg-white sm:grid-cols-3">
+        <div className="mt-7 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
           {[
-            [FaBookOpen,"Explore → Learn","ज्ञान से सीख तक","Structured courses"],
-            [FaPlayCircle,"Practise → Apply","अभ्यास से प्रयोग तक","Practical activities"],
-            [FaGraduationCap,"Assess → Certificate","आकलन से प्रमाणन तक","Completion pathway"]
-          ].map(([Icon,en,hi,desc],i)=><div key={en} className={"p-4 md:p-5 "+(i<2?"border-b sm:border-b-0 sm:border-r border-zinc-200":"")}>
-            <div className="flex items-center gap-3"><Icon className="text-lg text-[#177245]"/><div><div className="text-xs font-black text-[#003366]">{en}</div><div className="text-[10px] font-bold text-[#0f4c81]">{hi}</div></div></div>
-            <div className="mt-1 pl-7 text-[10px] text-zinc-500">{desc}</div>
-          </div>)}
+            [FaBookOpen,"Explore Courses","कोर्स खोजें","सभी learning areas और subjects"],
+            [FaPlayCircle,"Continue Learning","सीखना जारी रखें","जहाँ छोड़ा था वहीं से आगे"],
+            [FaCheckCircle,"My Progress","मेरी प्रगति","Lessons, practice और assessment"],
+            [FaGraduationCap,"My Certificates","मेरे प्रमाणपत्र","Completion के बाद certificate records"]
+          ].map(([Icon,en,hi,desc])=><button type="button" key={en} onClick={()=>document.getElementById("ssf-course-library")?.scrollIntoView({behavior:"smooth",block:"start"})} className="group rounded-2xl border border-zinc-200 bg-zinc-50 p-4 text-left transition hover:-translate-y-0.5 hover:border-[#9cc6da] hover:bg-white hover:shadow-md">
+            <div className="flex items-center gap-3"><span className="grid h-11 w-11 place-items-center rounded-xl bg-[#eaf4f9] text-lg text-[#003366]"><Icon /></span><div><div className="font-black text-[#003366]">{en}</div><div className="text-xs font-bold text-[#0f4c81]">{hi}</div></div></div>
+            <div className="mt-3 text-xs leading-5 text-zinc-500">{desc}</div>
+          </button>)}
+        </div>
+        <div className="mt-5 grid gap-4 md:grid-cols-[1.4fr_.6fr]">
+          <div className="rounded-2xl bg-gradient-to-r from-[#f0f7fb] to-[#f7fbfd] p-5">
+            <div className="flex items-center justify-between gap-4"><div><div className="text-xs font-black uppercase tracking-wider text-[#0f4c81]">Learning Path / सीखने का मार्ग</div><div className="mt-1 font-black text-[#003366]">Explore → Learn → Practise → Assess → Complete → Certificate</div></div><FaGraduationCap className="text-3xl text-[#177245]"/></div>
+            <div className="mt-4 h-2 overflow-hidden rounded-full bg-white"><div className="h-full w-[12%] rounded-full bg-[#177245]"/></div>
+            <div className="mt-2 flex justify-between text-[11px] font-bold text-zinc-500"><span>Start / शुरुआत</span><span>Certificate / प्रमाणपत्र</span></div>
+          </div>
+          <div className="rounded-2xl bg-[#003366] p-5 text-white">
+            <div className="text-xs font-black uppercase tracking-wider text-white/60">Learning at a glance</div>
+            <div className="mt-3 grid grid-cols-3 gap-2 text-center"><div><div className="text-2xl font-black">{SUBJECTS.length}+</div><div className="text-[10px] text-white/65">Courses</div></div><div><div className="text-2xl font-black">{Object.keys(CATEGORY_META).length}</div><div className="text-[10px] text-white/65">Areas</div></div><div><div className="text-2xl font-black">2</div><div className="text-[10px] text-white/65">Languages</div></div></div>
+          </div>
         </div>
       </div>
     </section>
@@ -770,7 +753,7 @@ export default function LearningHubV2() {
 
       {!filtered.length && <div className="mt-10 rounded-3xl border border-dashed border-zinc-300 bg-white p-12 text-center text-zinc-500">No course found. Try another search / कोई दूसरा विषय खोजें।</div>}
 
-      </div>\n\n      <section className="mt-14 grid gap-5 pb-8 md:grid-cols-4">
+      <section className="mt-14 grid gap-5 pb-8 md:grid-cols-4">
         {[
           [FaBookOpen, "Learn / सीखें", "Concepts, examples and reliable learning material."],
           [FaPlayCircle, "Practise / अभ्यास", "Activities and practical application."],
