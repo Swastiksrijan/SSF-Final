@@ -493,11 +493,18 @@ function LearningSubject({ subject, onBack }) {
           {accountUser ? <div className="mt-6 space-y-4">
             <div className="rounded-2xl bg-[#f1f7fa] p-5"><div className="font-black text-[#003366]">{accountUser.fullName}</div><div className="mt-1 text-sm text-zinc-500">{accountUser.email}</div></div>
             <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-sm leading-6 text-emerald-800"><strong>Learning completion verified.</strong> Your course completion and assessment record is ready for the certificate request stage. Certificate issuance remains subject to SSF's certificate workflow.</div>
-            <button type="button" onClick={()=>{
-              try { localStorage.setItem("ssf-learning-certificate-request", JSON.stringify({ accountId:accountUser.id, learner:accountUser, courseId:subject.id, courseTitle:courseMeta.title, completionPercent:progress, moduleAssessments:moduleResults, finalAssessment:finalResult, requestedAt:new Date().toISOString() })); } catch {}
-              setAccountOpen(false);
-              window.alert("Certificate request record saved for this learning account. SSF certificate issuance/verification will be connected to the official backend workflow next.");
-            }} className="w-full rounded-xl bg-[#177245] px-5 py-3 font-black text-white">Request Certificate / प्रमाणपत्र का अनुरोध करें</button>
+            <button type="button" disabled={authStatus==="submitting"} onClick={async()=>{
+              setAuthStatus("submitting"); setAuthError("");
+              try {
+                const response=await fetch(ENDPOINTS.LEARNING_CERTIFICATE_REQUEST,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({accountId:accountUser.id,learner:accountUser,courseId:subject.id,courseTitle:courseMeta.title,completionPercent:progress,moduleAssessments:moduleResults,finalAssessment:finalResult,learningHours:courseMeta.learningHours})});
+                const result=await response.json().catch(()=>({}));
+                if(!response.ok) throw new Error(result.message||"Certificate request could not be submitted.");
+                try { localStorage.setItem("ssf-learning-certificate-request",JSON.stringify(result.request)); } catch {}
+                setAccountOpen(false);
+                window.alert("Certificate request submitted successfully. SSF will review the request before issuing the certificate.");
+              } catch(err){ setAuthStatus("error"); setAuthError(err.message||"Unable to submit certificate request."); }
+            }} className="w-full rounded-xl bg-[#177245] px-5 py-3 font-black text-white disabled:opacity-50">{authStatus==="submitting"?"Submitting...":"Request Certificate / प्रमाणपत्र का अनुरोध करें"}</button>
+            {authError && <div className="rounded-xl bg-red-50 p-4 text-sm font-bold text-red-700">{authError}</div>}
           </div> : <form className="mt-6 space-y-4" onSubmit={async e=>{
             e.preventDefault(); setAuthError(""); setAuthStatus("submitting");
             try {
