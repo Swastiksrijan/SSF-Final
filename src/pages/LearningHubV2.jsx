@@ -5,6 +5,7 @@ import {
   FaShieldAlt, FaUsers, FaHeartbeat, FaSeedling, FaPaw, FaBalanceScale, FaChild,
   FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping
 } from "react-icons/fa";
+import { FLAGSHIP_COURSES } from "../data/learningHubCourseArchitecture";
 
 const HUB_IMAGES = {
   education: "/images/real/classroom-floor-seating.jpg",
@@ -217,7 +218,18 @@ function LearningSubject({ subject, onBack }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
 
-  const modules = [
+  const structuredCourse = FLAGSHIP_COURSES[subject.id];
+  const modules = structuredCourse
+    ? structuredCourse.modules.map((m) => ({
+        title: m.title.en + " / " + m.title.hi,
+        subtitle: m.description,
+        lessons: m.lessons.map((l) => [
+          l.title.en + " / " + l.title.hi,
+          l.content?.easyExplanation || "",
+          l
+        ])
+      }))
+    : [
     {
       title:"Foundation / आधार",
       subtitle:"Meaning, background, purpose and essential vocabulary",
@@ -264,10 +276,6 @@ function LearningSubject({ subject, onBack }) {
       ]
     }
   ];
-
-  const lessons = modules.flatMap((m, mi) => m.lessons.map((l, li) => ({
-    id: mi + "-" + li, module: m.title, title: l[0], body: l[1]
-  })));
   const quizQuestions = [
     {q:"अच्छी learning का उद्देश्य क्या है?", options:["समझकर और अभ्यास करके capability विकसित करना","केवल title याद करना","केवल video देखना","केवल certificate लेना"], answer:0},
     {q:"किसी concept को मजबूत करने का उपयोगी तरीका क्या है?", options:["Example + Practice + Review","बिना पढ़े अनुमान लगाना","बिना जाँचे जानकारी share करना","केवल एक definition याद करना"], answer:0},
