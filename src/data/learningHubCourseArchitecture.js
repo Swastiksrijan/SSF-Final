@@ -113,12 +113,10 @@ const FLAGSHIP_COURSES = {
 
 const makeQuestions = (pairs) => pairs.map(([q,options,answer=0]) => ({q,options,answer}));
 
-const FLAGSHIP_COURSE_ASSESSMENTS = {
-  [MOBILE_PHONE_COURSE.id]: {}
-};
+const FLAGSHIP_COURSE_ASSESSMENTS = {};
 
 MOBILE_PHONE_COURSE.modules.forEach((m) => {
-  FLAGSHIP_COURSE_ASSESSMENTS[MOBILE_PHONE_COURSE.id][m.id] = makeQuestions([
+  FLAGSHIP_COURSE_ASSESSMENTS[m.id] = makeQuestions([
     ["इस module में सुरक्षित learning का मुख्य उद्देश्य क्या है?",["समझ + practice + responsible use","केवल title याद करना","हर app install करना","हर message forward करना"],0],
     ["किसी mobile feature को अपनाने से पहले क्या देखना चाहिए?",["Need, benefit, risk and evidence","केवल popularity","केवल advertisement","केवल price"],0],
     ["Personal data के बारे में सही approach क्या है?",["Purpose और access समझकर minimum necessary sharing","हर जगह public sharing","OTP share करना","Unknown links खोलना"],0],
@@ -130,7 +128,7 @@ MOBILE_PHONE_COURSE.modules.forEach((m) => {
   ]);
 });
 
-FLAGSHIP_COURSE_ASSESSMENTS[MOBILE_PHONE_COURSE.id].final = makeQuestions([
+FLAGSHIP_COURSE_ASSESSMENTS.final = makeQuestions([
   ["Modern smartphone को सबसे सही तरीके से कैसे समझेंगे?",["Portable computing, communication and service platform","केवल calling machine","केवल camera","केवल gaming device"],0],
   ["OTP/PIN के बारे में सही rule क्या है?",["इसे secret रखें और किसी व्यक्ति को न बताएं","Customer care को बताएं","Friend को बताएं","Social media पर लिखें"],0],
   ["Suspicious payment request मिलने पर क्या करें?",["Transaction रोककर official channel से verify करें","जल्दी payment करें","screen share करें","OTP दें"],0],
