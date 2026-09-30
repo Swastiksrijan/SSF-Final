@@ -216,8 +216,9 @@ function LearningSubject({ subject, onBack }) {
   const [done, setDone] = useState(() => {
     try { return JSON.parse(localStorage.getItem(progressKey) || "[]"); } catch { return []; }
   });
-  const [activeLesson, setActiveLesson] = useState(0);
+  const [activeLesson, setActiveLesson] = useState(null);
   const lessonContentRef = useRef(null);
+  const currentLesson = activeLesson === null ? null : lessons?.[activeLesson];
   const [quizOpen, setQuizOpen] = useState(false);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
@@ -501,7 +502,7 @@ function LearningSubject({ subject, onBack }) {
         <div className="space-y-7">
           {activeModules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
             <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#003366] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
-            <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=activeModules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);const detail=l[2];return <div key={l[0]} className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
+            <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=activeModules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);const detail=l[2];return <div key={l[0]} className={"overflow-hidden rounded-2xl border border-zinc-200 bg-white " + (activeLesson !== null && activeLesson !== global ? "hidden" : "")}>
               <button type="button" onClick={()=>goLesson(global)} className={"flex w-full items-center gap-4 p-4 text-left transition "+(activeLesson===global?"bg-[#eef7fb]":"hover:bg-zinc-50")}>
                 <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#003366]")}>{isDone?<FaCheckCircle/>:li+1}</div>
                 <div className="min-w-0 flex-1"><div className="font-black">{l[0]}</div><div className="mt-1 text-xs leading-5 text-zinc-500">{l[1]}</div></div>
@@ -552,30 +553,31 @@ function LearningSubject({ subject, onBack }) {
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
             <h3 className="font-black text-[#003366]">Current Lesson / वर्तमान पाठ</h3>
-            <div ref={lessonContentRef} id="current-lesson-content" className="mt-3 rounded-xl bg-zinc-50 p-4 scroll-mt-28">
-              <div className="text-xs text-zinc-500">{lessons[activeLesson].module}</div>
-              <div className="mt-1 font-black">{lessons[activeLesson].title}</div>
-              <p className="mt-2 text-sm leading-6 text-zinc-600">{lessons[activeLesson].body}</p>
+            {currentLesson ? <div ref={lessonContentRef} id="current-lesson-content" className="mt-3 rounded-xl bg-zinc-50 p-4 scroll-mt-28">
+              <div className="text-xs text-zinc-500">{currentLesson.module}</div>
+              <div className="mt-1 font-black">{currentLesson.title}</div>
+              <p className="mt-2 text-sm leading-6 text-zinc-600">{currentLesson.body}</p>
               <div className="mt-5 flex gap-2 border-t border-zinc-200 pt-4">
                 <button type="button" onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-black text-[#003366] disabled:opacity-40">← Previous / पिछला</button>
                 <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#003366] px-3 py-2 text-xs font-black text-white disabled:opacity-40">Next / अगला →</button>
               </div>
-              {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
-                  <button type="button" onClick={()=>markDone(activeLesson)} disabled={done.includes(activeLesson)} className={"w-full rounded-xl px-4 py-3 text-sm font-black "+(done.includes(activeLesson)?"bg-[#e7f7ef] text-[#177245]":"bg-[#003366] text-white")}>{done.includes(activeLesson)?"✓ Lesson Completed / पाठ पूरा":"Mark Lesson Complete / पाठ पूरा करें"}</button>
+              {currentLesson.detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
+                <button type="button" onClick={()=>markDone(activeLesson)} disabled={done.includes(activeLesson)} className={"w-full rounded-xl px-4 py-3 text-sm font-black "+(done.includes(activeLesson)?"bg-[#e7f7ef] text-[#177245]":"bg-[#003366] text-white")}>{done.includes(activeLesson)?"✓ Lesson Completed / पाठ पूरा":"Mark Lesson Complete / पाठ पूरा करें"}</button>
                 {[
-                  ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
-                  ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
-                  ["Examples / उदाहरण", lessons[activeLesson].detail.content?.examples],
-                  ["Practice / अभ्यास", lessons[activeLesson].detail.practice],
-                  ["Activity / गतिविधि", lessons[activeLesson].detail.activity],
-                  ["Common Mistakes / सामान्य गलतियाँ", lessons[activeLesson].detail.content?.commonMistakes],
-                  ["Summary / सार", lessons[activeLesson].detail.content?.summary]
+                  ["Objectives / उद्देश्य", currentLesson.detail.objectives],
+                  ["Deep Understanding / गहरी समझ", currentLesson.detail.content?.deepUnderstanding],
+                  ["Examples / उदाहरण", currentLesson.detail.content?.examples],
+                  ["Practice / अभ्यास", currentLesson.detail.practice],
+                  ["Activity / गतिविधि", currentLesson.detail.activity],
+                  ["Common Mistakes / सामान्य गलतियाँ", currentLesson.detail.content?.commonMistakes],
+                  ["Summary / सार", currentLesson.detail.content?.summary]
                 ].map(([label,value]) => value && <div key={label}>
                   <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">{label}</div>
                   {Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{value.map((x,i)=><li key={i}>{x}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-600">{value}</p>}
                 </div>)}
               </div>}
-            </div>
+              <button type="button" onClick={()=>setActiveLesson(null)} className="mt-5 w-full rounded-xl border border-zinc-200 bg-white px-4 py-2.5 text-xs font-black text-[#003366]">← Back to Module Lessons / मॉड्यूल पर वापस</button>
+            </div> : <div className="mt-3 rounded-xl bg-zinc-50 p-5 text-sm leading-6 text-zinc-600">ऊपर किसी lesson पर क्लिक करें। वह lesson यहाँ खुलेगा और फिर Previous / Next arrow से आगे-पीछे जा सकते हैं।</div>}
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
             <h3 className="font-black text-[#003366]">Course Assessment / आकलन</h3>
