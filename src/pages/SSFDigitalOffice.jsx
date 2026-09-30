@@ -5,6 +5,7 @@ import jsPDF from "jspdf";
 import { API_BASE_URL, ENDPOINTS } from "../config/api";
 import logoImg from "../assets/new-logo.png";
 import { generateCertificate, generateIdentityCard } from "../utils/generateCertificate";
+import AdminLearningCertificates from "../components/AdminLearningCertificates";
 
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
@@ -210,7 +211,7 @@ export default function SSFDigitalOffice(){
     {active==="managingCommittee"&&<ManagingCommittee rows={moduleRows.managingCommittee||[]} add={add} updateRecord={updateRecord} archive={archive} token={token}/>}
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
-    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}\n    {active==="certificates"&&<LearningCertificates token={token}/>}
+    {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}\n    {active==="certificates"&&<AdminLearningCertificates token={token}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
