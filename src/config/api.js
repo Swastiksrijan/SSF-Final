@@ -57,5 +57,7 @@ export const ENDPOINTS = {
     DIGITAL_OFFICE_ONLINE_MEETING: `${API_BASE_URL}/api/digital-office/online-meeting`,
     VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`,
     LEARNING_CERTIFICATE_REQUEST: `${API_BASE_URL}/api/learning-certificates/request`,
-    LEARNING_CERTIFICATE_VERIFY: (code) => `${API_BASE_URL}/api/learning-certificates/verify/${encodeURIComponent(code)}`
+    LEARNING_CERTIFICATE_VERIFY: (code) => `${API_BASE_URL}/api/learning-certificates/verify/${encodeURIComponent(code)}`,
+    LEARNING_CERTIFICATE_ADMIN: `${API_BASE_URL}/api/admin/learning-certificates`,
+    LEARNING_CERTIFICATE_ADMIN_ISSUE: (id) => `${API_BASE_URL}/api/admin/learning-certificates/${encodeURIComponent(id)}/approve`
 };
