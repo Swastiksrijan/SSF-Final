@@ -689,7 +689,9 @@ const SUBJECT_PROFILE_RULES = [
 ];
 
 const getSubjectProfile = (subject) => {
-  const hit = SUBJECT_PROFILE_RULES.find((p) => p.test.test(subject.en + " " + subject.hi));
+  const hay = subject.en + " " + subject.hi;
+  const matches = SUBJECT_PROFILE_RULES.filter((p) => p.test.test(hay));
+  const hit = matches.sort((a, b) => b.test.source.length - a.test.source.length)[0];
   if (hit) return hit;
   const blueprint = CATEGORY_BLUEPRINTS[subject.category] || CATEGORY_BLUEPRINTS["Personal Development / व्यक्तिगत विकास"];
   return {
