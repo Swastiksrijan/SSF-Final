@@ -576,6 +576,40 @@ export default function LearningHubV2() {
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
 
+  const courseMetaBySubject = useMemo(() => {
+    const map = {};
+    const aliases = {
+      "english-from-basics": "english-communication",
+      "health-well-being": "health-wellness",
+      "environment-basics": "environment-sustainability",
+      "career-planning": "career-workplace",
+      "computer-training": "computer-education"
+    };
+    SUBJECTS.forEach(s => {
+      const course = ALL_STRUCTURED_COURSES?.[aliases[s.id] || s.id];
+      if (course) map[s.id] = course;
+    });
+    return map;
+  }, []);
+
+  const progressSummary = useMemo(() => {
+    let active = null;
+    let completedCount = 0;
+    SUBJECTS.forEach(s => {
+      try {
+        const done = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + s.id) || "[]");
+        const course = courseMetaBySubject[s.id];
+        const total = course?.modules?.reduce((n,m) => n + (m.lessons?.length || 0), 0) || 0;
+        if (total && done.length) {
+          const percent = Math.min(100, Math.round(done.length / total * 100));
+          if (percent >= 100) completedCount += 1;
+          else if (!active || percent > active.percent) active = { subject:s, percent };
+        }
+      } catch {}
+    });
+    return { active, completedCount };
+  }, [courseMetaBySubject]);
+
   const openSubject = (subject) => {
     const url = "/LearningHub?subject=" + encodeURIComponent(subject.id);
     window.history.pushState({}, "", url);
@@ -599,93 +633,41 @@ export default function LearningHubV2() {
 
   return <div className="min-h-screen bg-[#f6f8fb] font-inria text-zinc-900">
     <section className="relative overflow-hidden bg-[#002344] text-white">
-      <img src="/images/real/education_girls.jpg" alt="Students learning together" className="absolute inset-0 h-full w-full object-cover opacity-20" />
-      <div className="absolute inset-0 bg-gradient-to-br from-[#001a33]/95 via-[#003b63]/90 to-[#005b7a]/80" />
-      <div className="relative mx-auto max-w-7xl px-4 py-14 md:py-20">
-        <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest">
-          <FaGraduationCap /> Swastik Srijan Foundation • SSF Learning Hub
-        </div>
-        <div className="mt-7 max-w-5xl">
-          <div className="text-sm font-bold text-white/70">ज्ञान से कौशल तक • From Knowledge to Capability</div>
-          <h1 className="mt-2 text-5xl font-black leading-tight md:text-7xl">Learn. Understand. Practise. Master.</h1>
-          <h2 className="mt-3 text-2xl font-bold text-white/85 md:text-3xl">सीखिए • समझिए • अभ्यास कीजिए • आगे बढ़िए</h2>
-          <p className="mt-5 max-w-4xl text-lg leading-8 text-white/80">
-            एक विषय चुनिए और उसके लिए क्रमबद्ध learning journey शुरू कीजिए। हमारा लक्ष्य केवल जानकारी देना नहीं,
-            बल्कि समझ, अभ्यास, application और assessment के माध्यम से गहरी learning विकसित करना है।
-          </p>
-        </div>
-
-        <div className="mt-9 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
-            <div className="text-3xl font-black">{SUBJECTS.length}+</div>
-            <div className="mt-1 text-sm font-bold text-white/75">Subjects / विषय</div>
+      <img src="/images/real/education_girls.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-15" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#001426]/95 via-[#003b63]/92 to-[#007c91]/80" />
+      <div className="relative mx-auto max-w-7xl px-4 py-12 md:py-16">
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-4xl">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest"><FaGraduationCap /> SSF Learning Hub</div>
+            <div className="mt-5 text-sm font-bold text-white/70">ज्ञान से कौशल तक • From Knowledge to Capability</div>
+            <h1 className="mt-2 text-4xl font-black leading-tight md:text-6xl">सीखिए। अभ्यास कीजिए। आगे बढ़िए।</h1>
+            <p className="mt-4 max-w-3xl text-base leading-7 text-white/80 md:text-lg">विषय चुनें, structured lessons पूरा करें, practice करें और assessment के साथ अपनी learning progress आगे बढ़ाएँ।</p>
           </div>
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
-            <div className="text-3xl font-black">{Object.keys(CATEGORY_META).length}</div>
-            <div className="mt-1 text-sm font-bold text-white/75">Learning Areas / क्षेत्र</div>
-          </div>
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
-            <div className="text-3xl font-black">A → Z</div>
-            <div className="mt-1 text-sm font-bold text-white/75">Structured Learning / क्रमबद्ध सीख</div>
-          </div>
-          <div className="rounded-2xl border border-white/15 bg-white/10 p-5 backdrop-blur">
-            <div className="text-3xl font-black">हिन्दी + English</div>
-            <div className="mt-1 text-sm font-bold text-white/75">Bilingual / द्विभाषी</div>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:w-[430px]">
+            <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur"><div className="text-2xl font-black">{SUBJECTS.length}</div><div className="mt-1 text-xs font-bold text-white/70">Subjects</div></div>
+            <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur"><div className="text-2xl font-black">{Object.keys(CATEGORY_META).length}</div><div className="mt-1 text-xs font-bold text-white/70">Learning Areas</div></div>
+            <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur"><div className="text-2xl font-black">{Object.keys(ALL_STRUCTURED_COURSES || {}).length}</div><div className="mt-1 text-xs font-bold text-white/70">Structured</div></div>
+            <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur"><div className="text-2xl font-black">{progressSummary.completedCount}</div><div className="mt-1 text-xs font-bold text-white/70">Completed</div></div>
           </div>
         </div>
       </div>
     </section>
-
-    <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
-      <section className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-[0_15px_50px_rgba(0,35,68,.08)] md:p-7">
-        <div className="flex flex-col gap-5 lg:flex-row lg:items-center">
-          <div className="flex-1">
-            <div className="text-xs font-black uppercase tracking-[.18em] text-[#0f4c81]">Explore the Learning Library</div>
-            <h2 className="mt-2 text-3xl font-black md:text-4xl">अपना विषय चुनिए</h2>
-            <p className="mt-2 text-sm leading-6 text-zinc-600">Search करें या learning area चुनें। हर course card से सीधे उसके learning journey पर जाएँ।</p>
-          </div>
-          <div className="relative w-full lg:max-w-xl">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
-            <input
-              value={query}
-              onChange={e=>setQuery(e.target.value)}
-              placeholder="Search course / विषय खोजें..."
-              aria-label="Search courses"
-              className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 text-base outline-none transition focus:border-[#0f4c81] focus:bg-white focus:ring-4 focus:ring-[#0f4c81]/10"
-            />
-          </div>
-          <button onClick={()=>{setQuery("");setCategory("All")}} className="rounded-2xl border border-zinc-200 px-5 py-4 text-sm font-black text-[#003366] hover:bg-zinc-50">
-            Reset / रीसेट
-          </button>
+      <section className="mt-8 grid gap-5 lg:grid-cols-[1fr_auto]">
+        <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaBookOpen /> Start here / यहाँ से शुरू करें</div>
+          <h2 className="mt-2 text-2xl font-black md:text-3xl">अपनी learning journey चुनिए</h2>
+          <p className="mt-2 text-sm leading-6 text-zinc-600">Search करें या learning area चुनें। Available structured courses को स्पष्ट course status के साथ देखें।</p>
+          <div className="relative mt-5"><FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" /><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 outline-none focus:border-[#0f4c81] focus:bg-white focus:ring-4 focus:ring-[#0f4c81]/10" /></div>
+          <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-black transition "+(category===c?"bg-[#003366] text-white shadow-md":"bg-zinc-100 text-zinc-600 hover:bg-zinc-200")}><Icon/> {c}</button>; })}</div>
         </div>
-
-        <div className="mt-6 flex gap-2 overflow-x-auto pb-1">
-          {categories.map(c => {
-            const Meta = CATEGORY_META[c];
-            const Icon = Meta?.icon || FaBookOpen;
-            return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-black transition " + (category===c ? "bg-[#003366] text-white shadow-md" : "bg-zinc-100 text-zinc-600 hover:bg-zinc-200")}>
-              <Icon /> {c}
-            </button>;
-          })}
+        <div className="rounded-[2rem] bg-[#003366] p-6 text-white shadow-sm lg:w-[330px]">
+          <div className="text-xs font-black uppercase tracking-widest text-white/60">Your learning / आपकी प्रगति</div>
+          {progressSummary.active ? <button onClick={()=>openSubject(progressSummary.active.subject)} className="mt-4 w-full text-left"><div className="text-lg font-black">{progressSummary.active.subject.en}</div><div className="mt-1 text-sm text-white/70">{progressSummary.active.subject.hi}</div><div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-white" style={{width:progressSummary.active.percent+"%"}}/></div><div className="mt-2 flex justify-between text-xs font-bold"><span>{progressSummary.active.percent}% complete</span><span>Continue →</span></div></button> : <div className="mt-4"><div className="text-lg font-black">Start your first course</div><div className="mt-2 text-sm leading-6 text-white/70">अपना पहला structured course चुनें और progress track करें।</div></div>}
         </div>
       </section>
 
       <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-gradient-to-r from-white to-[#eef7fb] p-6 md:p-8">
-        <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
-          <div>
-            <div className="flex items-center gap-2 text-sm font-black text-[#0f4c81]"><FaBookOpen /> HOW LEARNING WORKS / सीखने की प्रक्रिया</div>
-            <h2 className="mt-2 text-2xl font-black md:text-3xl">हर course एक learning journey होगा</h2>
-            <p className="mt-2 max-w-3xl text-sm leading-7 text-zinc-600">Explore → Learn → Understand → Practise → Check → Apply → Assess → Complete → Certificate</p>
-          </div>
-          <div className="grid grid-cols-2 gap-2 text-center text-xs font-bold text-[#003366] sm:grid-cols-4">
-            {[
-              [FaBookOpen,"Learn","सीखें"],
-              [FaPlayCircle,"Practise","अभ्यास"],
-              [FaCheckCircle,"Assess","आकलन"],
-              [FaGraduationCap,"Certify","प्रमाणन"]
-            ].map(([Icon,en,hi])=><div key={en} className="rounded-xl bg-white px-4 py-3 shadow-sm"><Icon className="mx-auto text-lg"/><div className="mt-1">{en}</div><div className="text-[10px] text-zinc-500">{hi}</div></div>)}
-          </div>
-        </div>
+        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"><div><div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaGraduationCap/> LEARNING PATH / सीखने का रास्ता</div><h2 className="mt-2 text-2xl font-black md:text-3xl">Learn → Practise → Assess → Complete</h2><p className="mt-2 text-sm text-zinc-600">Learning को छोटे, स्पष्ट steps में पूरा करें।</p></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{[[FaBookOpen,"Learn","सीखें"],[FaPlayCircle,"Practise","अभ्यास"],[FaCheckCircle,"Assess","आकलन"],[FaGraduationCap,"Certificate","प्रमाणपत्र"]].map(([Icon,en,hi])=><div key={en} className="rounded-xl bg-white px-4 py-3 text-center shadow-sm"><Icon className="mx-auto text-lg text-[#003366]"/><div className="mt-1 text-xs font-black">{en}</div><div className="text-[10px] text-zinc-500">{hi}</div></div>)}</div></div>
       </section>
 
       {visibleCategories.map(cat => {
@@ -716,17 +698,17 @@ export default function LearningHubV2() {
               </div>
               <div className="flex flex-1 flex-col p-6">
                 <div className="mb-4 flex flex-wrap gap-2">
-                  <span className="rounded-full bg-[#edf5fa] px-3 py-1 text-[10px] font-black text-[#0f4c81]">Foundation → Practical</span>
+                  <span className="rounded-full bg-[#edf5fa] px-3 py-1 text-[10px] font-black text-[#0f4c81]">{courseMetaBySubject[s.id] ? "Structured Course" : "Learning Topic"}</span>
                   <span className="rounded-full bg-zinc-100 px-3 py-1 text-[10px] font-black text-zinc-600">Hindi + English</span>
                 </div>
                 <p className="flex-1 text-sm leading-7 text-zinc-600">{s.intro}</p>
                 <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-zinc-500">
-                  <div className="rounded-xl bg-zinc-50 p-2"><FaBookOpen className="mx-auto mb-1 text-[#0f4c81]"/>Lessons</div>
-                  <div className="rounded-xl bg-zinc-50 p-2"><FaCheckCircle className="mx-auto mb-1 text-[#0f4c81]"/>Practice</div>
-                  <div className="rounded-xl bg-zinc-50 p-2"><FaGraduationCap className="mx-auto mb-1 text-[#0f4c81]"/>Certificate</div>
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaBookOpen className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.modules?.length || "—"}<span className="block text-[9px] font-normal">Modules</span></div>
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaClock className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal">Hours</span></div>
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaGraduationCap className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id] ? "Certificate" : "Coming Soon"}<span className="block text-[9px] font-normal">{courseMetaBySubject[s.id] ? "Pathway" : "Status"}</span></div>
                 </div>
                 <button onClick={()=>openSubject(s)} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:from-[#0f4c81] hover:to-[#007c91] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
-                  Join SSF Course <span className="text-base">/</span> कोर्स शुरू करें <FaArrowRight />
+                  {courseMetaBySubject[s.id] ? "Start Learning / सीखना शुरू करें" : "Explore Topic / विषय देखें"} <FaArrowRight />
                 </button>
               </div>
             </article>)}
