@@ -210,6 +210,54 @@ function getSubjectFromUrl() {
   return new URLSearchParams(window.location.search).get("subject") || "";
 }
 
+const buildTopicModules = (subject) => {
+  const topic = subject.en;
+  const intro = subject.intro;
+  const bilingual = (en, hi) => en + " / " + hi;
+  const makeLesson = (en, hi, body, practice, examples) => [
+    bilingual(en, hi),
+    body,
+    {
+      objectives: "Understand " + en.toLowerCase() + " in the context of " + topic + ".",
+      content: {
+        deepUnderstanding: body + " इसे " + topic + " के वास्तविक संदर्भ, उपलब्ध संसाधनों और स्थानीय परिस्थितियों से जोड़कर समझें।",
+        examples,
+        commonMistakes: ["केवल definition याद करके practical use को छोड़ देना", "बिना context या evidence के निष्कर्ष निकालना", "सीखी बात को review और practice के बिना complete मान लेना"],
+        summary: "मुख्य विचार को समझें, उदाहरण देखें, सुरक्षित अभ्यास करें और परिणाम की समीक्षा करें।"
+      },
+      practice: [practice, "अपने शब्दों में 3 मुख्य बातें लिखें और " + topic + " से जुड़ा एक वास्तविक उदाहरण दें।"],
+      activity: practice
+    }
+  ];
+  return [
+    { title: bilingual("Foundation","आधार"), subtitle:"अर्थ, उद्देश्य, पृष्ठभूमि और मूल शब्दावली", lessons:[
+      makeLesson("What is " + topic + "?","यह विषय क्या है?",intro+" इस पाठ में विषय का अर्थ, scope और basic vocabulary समझें।","विषय के 5 प्रमुख शब्द लिखें और प्रत्येक का सरल अर्थ बताएं।",[topic+" की सरल परिभाषा","मुख्य उद्देश्य","प्रमुख शब्द","विषय की सीमा"]),
+      makeLesson("Why does it matter?","यह क्यों महत्वपूर्ण है?",topic+" का महत्व उसके practical use, लोगों पर प्रभाव, अवसरों और सीमाओं से समझा जाता है।","अपने आसपास "+topic+" से जुड़ी 3 वास्तविक स्थितियाँ पहचानें।",["दैनिक जीवन","समुदाय","शिक्षा/काम","अवसर और सीमाएँ"]),
+      makeLesson("Background & Development","पृष्ठभूमि एवं विकास",topic+" समय के साथ जरूरतों, अनुभवों, तकनीक और सामाजिक परिस्थितियों के अनुसार विकसित हुआ है। विकास समझने से current practices का context स्पष्ट होता है।","विषय के विकास की एक छोटी timeline बनाएं: पहले, बदलाव और आज।",["पृष्ठभूमि","मुख्य बदलाव","आज का संदर्भ","भविष्य की जरूरतें"])
+    ]},
+    { title:bilingual("Core Knowledge","मूल ज्ञान"), subtitle:"मुख्य concepts, प्रकार, घटक और relationships", lessons:[
+      makeLesson("Key Concepts","प्रमुख अवधारणाएँ",topic+" को समझने के लिए उसके मुख्य concepts को अलग-अलग पहचानना और फिर उनके बीच संबंध देखना जरूरी है।","कम-से-कम 5 concepts की mind-map बनाएं और उनके बीच arrows से संबंध दिखाएं।",["मुख्य concept","उद्देश्य","कारण-परिणाम","आपसी संबंध"]),
+      makeLesson("Types & Components","प्रकार एवं घटक",topic+" में अलग-अलग types, components, roles या approaches हो सकते हैं। इन्हें category और purpose के आधार पर compare करना सीखें।","विषय के 3 types/components की तुलना table में करें।",["Type A/B/C","भूमिका","उपयोग","अंतर"]),
+      makeLesson("Examples & Case Thinking","उदाहरण एवं केस","किसी concept को वास्तविक case में पहचानना learning को मजबूत करता है। Case को facts, context, problem, options और outcome के आधार पर पढ़ें।","एक वास्तविक या काल्पनिक case लिखें और उसमें problem, options और expected outcome पहचानें।",["Situation","Problem","Possible options","Outcome"])
+    ]},
+    { title:bilingual("Practice & Application","अभ्यास एवं प्रयोग"), subtitle:"ज्ञान को practical capability में बदलना", lessons:[
+      makeLesson("Step-by-step Practice","चरणबद्ध अभ्यास",topic+" सीखते समय task को छोटे steps में बाँटें: उद्देश्य तय करें, जानकारी जुटाएं, सुरक्षित तरीके से practice करें और result देखें।","एक छोटा task चुनकर उसके 5 steps लिखें और पूरा होने के बाद result note करें।",["Goal","Resources","Steps","Result"]),
+      makeLesson("Common Mistakes","सामान्य गलतियाँ",topic+" में mistakes अक्सर अधूरी जानकारी, गलत assumptions, जल्दबाजी या review की कमी से होती हैं। गलती को failure नहीं बल्कि feedback की तरह देखें।","विषय से जुड़ी 5 संभावित गलतियाँ लिखें और प्रत्येक के सामने सुधार का तरीका लिखें।",["Mistake","Possible cause","Correction","Prevention"]),
+      makeLesson("Real-world Application","वास्तविक उपयोग",topic+" का practical application करते समय local context, available resources, safety, ethics और measurable results पर ध्यान दें।","अपने क्षेत्र में topic का एक छोटा उपयोग चुनें और action → result → review लिखें।",["Context","Action","Result","Improvement"])
+    ]},
+    { title:bilingual("Advanced Learning","उन्नत सीख"), subtitle:"विश्लेषण, समस्या समाधान और जिम्मेदार practice", lessons:[
+      makeLesson("Analysis","विश्लेषण",topic+" से जुड़ी information को source, evidence, context और cause-effect के आधार पर analyse करें। अलग facts और opinions को पहचानें।","एक claim चुनें और लिखें: evidence क्या है, source कौन है और कौन-सी information अभी missing है।",["Facts vs opinions","Evidence","Context","Cause-effect"]),
+      makeLesson("Problem Solving","समस्या समाधान",topic+" की समस्या को पहले स्पष्ट रूप से define करें, फिर root cause, constraints और possible solutions की तुलना करें।","एक problem को Why? पूछते हुए root cause तक break down करें और 2 solutions compare करें।",["Problem definition","Root cause","Options","Review"]),
+      makeLesson("Professional Practice","व्यावहारिक दक्षता",topic+" को responsible तरीके से लागू करने में quality, communication, ethics, safety, documentation और continuous improvement महत्वपूर्ण हैं।","एक professional checklist बनाएं जिसमें quality, safety, ethics, documentation और review शामिल हों।",["Quality","Ethics","Safety","Documentation"])
+    ]},
+    { title:bilingual("Assessment & Next Step","आकलन एवं अगला चरण"), subtitle:"Revision, assessment और आगे की learning", lessons:[
+      makeLesson("Revision","पुनरावृत्ति","Revision का उद्देश्य केवल पढ़ना दोहराना नहीं बल्कि recall, examples, practice और weak areas की पहचान करना है।","बिना notes देखे 10 points लिखें, फिर notes से मिलाकर missing points जोड़ें।",["Recall","Weak areas","Practice","Review"]),
+      makeLesson("Final Assessment","अंतिम आकलन","Final assessment में definition के साथ understanding, application, analysis और responsible use की जाँच करें।","अपने लिए 10 questions बनाएं: 3 knowledge, 3 understanding, 2 application और 2 analysis।",["Knowledge","Understanding","Application","Analysis"]),
+      makeLesson("Learning Path","आगे की सीख","Course के बाद अगले level का चुनाव आपकी रुचि, current skill, practice needs और learning goal पर निर्भर होना चाहिए।","अपने लिए 30-day next-learning plan बनाएं जिसमें topic, practice, resource और review date हो।",["Next level","Practice goal","Resource","Review date"])
+    ]}
+  ];
+};
+
 function LearningSubject({ subject, onBack }) {
   const progressKey = "ssf-learning-course-progress-" + subject.id;
   const [done, setDone] = useState(() => {
@@ -250,53 +298,7 @@ function LearningSubject({ subject, onBack }) {
           l
         ])
       }))
-    : [
-    {
-      title:"Foundation / आधार",
-      subtitle:"Meaning, background, purpose and essential vocabulary",
-      lessons:[
-        ["What is it? / यह क्या है?","विषय का अर्थ, परिभाषा, उद्देश्य और प्रमुख शब्द समझें।"],
-        ["Why does it matter? / यह क्यों महत्वपूर्ण है?","वास्तविक जीवन में इसकी भूमिका, उपयोग, अवसर और सीमाएँ समझें।"],
-        ["Background & Development / पृष्ठभूमि एवं विकास","विषय कैसे विकसित हुआ और आज के संदर्भ में इसे कैसे समझना चाहिए।"]
-      ]
-    },
-    {
-      title:"Core Knowledge / मूल ज्ञान",
-      subtitle:"Concepts, categories, principles and examples",
-      lessons:[
-        ["Key Concepts / प्रमुख अवधारणाएँ","मुख्य concepts को आसान भाषा, उदाहरण और तुलना के साथ समझें।"],
-        ["Types & Components / प्रकार एवं घटक","विषय के प्रमुख प्रकार, parts, roles और relationships पहचानें।"],
-        ["Examples & Case Thinking / उदाहरण एवं केस","वास्तविक परिस्थितियों में concept कैसे दिखाई देता है, इसका अभ्यास करें।"]
-      ]
-    },
-    {
-      title:"Practice & Application / अभ्यास एवं प्रयोग",
-      subtitle:"Turn knowledge into useful capability",
-      lessons:[
-        ["Step-by-step Practice / चरणबद्ध अभ्यास","छोटे practical tasks करके सीखी बात को लागू करें।"],
-        ["Common Mistakes / सामान्य गलतियाँ","गलत approaches पहचानें, कारण समझें और सुधार करना सीखें।"],
-        ["Real-world Application / वास्तविक उपयोग","समस्या पहचानें, विकल्प देखें, action लें और परिणाम review करें।"]
-      ]
-    },
-    {
-      title:"Advanced Learning / उन्नत सीख",
-      subtitle:"Analysis, problem solving and deeper understanding",
-      lessons:[
-        ["Analysis / विश्लेषण","Information को evidence, context और cause-effect के साथ analyse करें।"],
-        ["Problem Solving / समस्या समाधान","Complex situation को define, break down, solve और review करें।"],
-        ["Professional Practice / व्यावहारिक दक्षता","Responsible professional use, quality, ethics, safety और continuous improvement समझें।"]
-      ]
-    },
-    {
-      title:"Assessment & Next Step / आकलन एवं अगला चरण",
-      subtitle:"Check, reflect, complete and continue",
-      lessons:[
-        ["Revision / पुनरावृत्ति","पूरे course के concepts, examples और practical points को दोहराएँ।"],
-        ["Final Assessment / अंतिम आकलन","Knowledge, understanding, application और responsible use की जाँच करें।"],
-        ["Learning Path / आगे की सीख","अगले level और related subjects के लिए अपना learning path चुनें।"]
-      ]
-    }
-  ];
+    : buildTopicModules(subject);
 
   // Flatten module lessons into the structure used by the active-lesson panel.
   // This is required for every course, including the generic courses that do not
@@ -509,7 +511,7 @@ function LearningSubject({ subject, onBack }) {
           <div className="overflow-y-auto p-5 md:p-8">
             <p className="text-base leading-8 text-zinc-700">{lessons[activeLesson].body}</p>
             {lessons[activeLesson].detail && <div className="mt-7 space-y-5 border-t border-zinc-200 pt-6">
-              [
+              {[
                 ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
                 ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
                 ["Examples / उदाहरण", lessons[activeLesson].detail.content?.examples],
