@@ -1176,6 +1176,7 @@ const KNOWLEDGE_WORLD_MODULES = {
 
 const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
   const clean = label.replace(/^[^\s]+\s/, "");
+  const subjectName = subject.en;
   if (/^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi)) {
     const primary = PRIMARY_EDUCATION_LESSON_CONTENT[clean + ""] || PRIMARY_EDUCATION_LESSON_CONTENT[label];
     if (primary) {
@@ -1243,7 +1244,6 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
     }];
   }
 
-  const subjectName = subject.en;
   const domainGuide = ({
     "Education / शिक्षा": { focus:"शिक्षार्थी को विषय का अर्थ, मुख्य concepts, examples, अभ्यास, प्रश्न हल करना, revision और आगे की learning समझाना।", examples:["एक concept को आसान भाषा में समझाएँ, फिर textbook/real-life example दिखाएँ।","सीखे हुए point पर छोटा प्रश्न दें और बच्चे से कारण सहित उत्तर लें।","एक topic को पढ़ने के बाद 3-line summary और 5-question self-check कराएँ।"], practice:["मुख्य concept अपने शब्दों में समझाएँ।","3 आसान + 2 application questions हल करें।","एक छोटा revision/error-log बनाएं।"], activity:"एक छोटा concept चुनकर Learn → Example → Practice → Explain वाला mini learning sheet बनाएं।", mistakes:["सिर्फ परिभाषा याद करना।","उत्तर याद करके कारण/समझ न बता पाना।","revision और error correction छोड़ देना।"] },
     "English & Communication / अंग्रेज़ी एवं संचार": { focus:"शब्दावली, pronunciation, grammar in context, reading, listening, speaking, writing और real conversation के साथ भाषा सिखाना।", examples:["नया word देखें → pronunciation सुनें → meaning समझें → sentence में बोलें।","एक daily situation में question-answer का छोटा dialogue करें।","एक short paragraph पढ़कर main idea बताएं और फिर 2–3 sentences लिखें।"], practice:["5 नए words बोलकर sentences बनाएं।","एक short dialogue सुनकर repeat और paraphrase करें।","छोटा message/email लिखकर grammar और tone check करें।"], activity:"Listen → Repeat → Speak → Write चार-step communication practice करें।", mistakes:["Hindi से word-by-word translation करना।","pronunciation सुने बिना spelling अनुमान लगाना।","grammar सही रखते हुए भी context और polite tone भूल जाना।"] },
