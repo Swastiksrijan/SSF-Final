@@ -2025,6 +2025,5 @@ export default function LearningHubV2() {
           [FaGraduationCap, "Certify / प्रमाणन", "Completion-based certificate pathway."]
         ].map(([Icon,title,desc])=><div key={title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><Icon className="text-3xl text-[#003366]"/><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{desc}</p></div>)}
       </section>
-    </main>
   </div>;
 }
