@@ -1110,36 +1110,81 @@ const PRIMARY_EDUCATION_LESSON_CONTENT = {
   }
 };
 
+const PRIMARY_TEACHING_MODE = {
+  "Foundation / आधार": {
+    steps:["👀 वस्तु/चित्र दिखाएँ और नाम पूछें।","🔊 शिक्षक सही शब्द/ध्वनि बोले; बच्चा सुने।","👄 बच्चा अकेले और समूह में दोहराए।","👉 सही अक्षर/संख्या/वस्तु चुनवाएँ।","✍️ tracing के बाद बिना guide लिखवाएँ।","🎯 रोजमर्रा की वस्तुओं से पुनरावृत्ति कराएँ।"],
+    checks:["बच्चे को बिना संकेत के पहचानना और बोलना चाहिए।","देखी/सुनी चीज को सही चिन्ह से मिलाना चाहिए।"]
+  },
+  "Hindi Language / हिंदी भाषा": {
+    steps:["👀 अक्षर/मात्रा बड़ा करके दिखाएँ।","🔊 उसकी ध्वनि स्पष्ट रूप से सुनाएँ।","👄 बच्चा ध्वनि और शब्द दोहराए।","🧩 अक्षर/मात्रा को शब्द में खोजवाएँ।","📖 शब्द/वाक्य पढ़वाएँ।","✍️ देखकर और फिर memory से लिखवाएँ।"],
+    checks:["अक्षर/मात्रा को सुनकर पहचान सके।","शब्द पढ़कर उसका अर्थ या चित्र बता सके।"]
+  },
+  "English Foundation / अंग्रेज़ी आधार": {
+    steps:["👀 uppercase/lowercase और picture दिखाएँ।","🔊 letter name और sound सुनाएँ।","👄 बच्चा sound/word दोहराए।","🧩 beginning sound से picture match कराएँ।","📖 sounds blend करके छोटा word पढ़ाएँ।","✍️ letter/word लिखवाकर बोलने को कहें।"],
+    checks:["letter को देखकर नाम/sound बता सके।","simple word को sound-by-sound blend कर सके।"]
+  },
+  "Reading & Writing / पठन एवं लेखन": {
+    steps:["👀 title/picture देखकर prediction कराएँ।","🔊 passage/word का model reading सुनाएँ।","👄 बच्चा phrase-by-phrase पढ़े।","❓ कौन, क्या, कहाँ, क्यों जैसे प्रश्न पूछें।","✍️ उत्तर/वाक्य अपने शब्दों में लिखवाएँ।","🔎 spelling, punctuation और meaning check कराएँ।"],
+    checks:["पढ़े हुए का मुख्य अर्थ बता सके।","उत्तर text/evidence से जोड़ सके।"]
+  },
+  "Mathematics / गणित": {
+    steps:["🧮 वास्तविक वस्तुओं से concept दिखाएँ।","👀 picture/number line/shape model दिखाएँ।","🗣️ mathematical language में बोलवाएँ।","✋ teacher के साथ guided example कराएँ।","✍️ similar और फिर new problems करवाएँ।","🔎 answer के साथ method भी जाँचें।"],
+    checks:["उत्तर के साथ तरीका समझा सके।","नए उदाहरण में वही concept लागू कर सके।"]
+  },
+  "Measurement & Money / मापन एवं धन": {
+    steps:["📏 वास्तविक scale/container/clock/coins दिखाएँ।","👀 unit और quantity का संबंध समझाएँ।","🗣️ तुलना करवाएँ—लंबा/छोटा, भारी/हल्का, पहले/बाद।","✋ वास्तविक वस्तुओं से measurement/counting करवाएँ।","🧮 word problem करवाएँ।","🏠 घर की सुरक्षित स्थिति से application करवाएँ।"],
+    checks:["सही unit/tool चुन सके।","real-life problem में सही operation/choice कर सके।"]
+  },
+  "EVS & Science / पर्यावरण एवं विज्ञान": {
+    steps:["🔎 आसपास की वास्तविक चीज/चित्र दिखाएँ।","👀 observation करवाकर 'क्या दिख रहा है?' पूछें।","🗣️ अनुमान और कारण अलग-अलग बोलवाएँ।","🧪 सुरक्षित छोटा demonstration करें।","📝 observation/result record करवाएँ।","🌱 सीख को घर/प्रकृति से जोड़ें।"],
+    checks:["observation और guess में अंतर बता सके।","सुरक्षित activity के result को सरल शब्दों में बता सके।"]
+  },
+  "Health & Safety / स्वास्थ्य एवं सुरक्षा": {
+    steps:["🖼️ सही और गलत situation का चित्र दिखाएँ।","🗣️ बच्चे से खतरा/healthy habit पहचानवाएँ।","🔊 सही action और emergency words बोलवाएँ।","🎭 safe role-play करवाएँ।","🧼 वास्तविक safe habit practice करवाएँ।","🔁 'क्या करेंगे?' scenarios से revision करें।"],
+    checks:["unsafe और safe behaviour अलग कर सके।","जरूरत पर trusted adult/emergency help लेने का सही तरीका बता सके।"]
+  },
+  "Life Skills & Values / जीवन कौशल एवं मूल्य": {
+    steps:["🎭 daily-life situation का role-play करें।","👀 feelings और problem पहचानें।","🗣️ अपनी बात और दूसरे की बात सुनें।","🧩 2–3 possible responses सोचें।","🤝 respectful response चुनकर practice करें।","🔁 result और सीख पर reflection करें।"],
+    checks:["अपना कारण समझाकर बता सके।","दूसरे व्यक्ति के perspective को कम से कम एक वाक्य में बता सके।"]
+  },
+  "Creativity & Digital Learning / रचनात्मकता एवं डिजिटल सीख": {
+    steps:["👀 example/demo दिखाएँ।","💡 बच्चे से अपना idea सोचवाएँ।","🛠️ material/device का सुरक्षित उपयोग दिखाएँ।","🎨 बच्चा guided और फिर स्वतंत्र काम करे।","🗣️ अपने काम के बारे में बताए।","🔎 feedback लेकर सुधार करे।"],
+    checks:["काम की प्रक्रिया समझा सके।","digital activity में basic safety rule follow करे।"]
+  }
+};
+
 const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
   const clean = label.replace(/^[^\s]+\s/, "");
   if (/^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi)) {
     const primary = PRIMARY_EDUCATION_LESSON_CONTENT[clean + ""] || PRIMARY_EDUCATION_LESSON_CONTENT[label];
     if (primary) {
+      const mode = PRIMARY_TEACHING_MODE[moduleTitle.replace(/^[^/]+\s/, "").trim()] || PRIMARY_TEACHING_MODE["Foundation / आधार"];
       const check = [
-        {question: clean + " में केवल रटना पर्याप्त क्यों नहीं है?", options:["Concept समझकर example, practice और application करना जरूरी है","केवल heading याद करना पर्याप्त है","बिना समझे copy करना बेहतर है","practice की जरूरत नहीं"], answer:0},
-        {question:"सीखने के बाद उपयोगी अगला कदम क्या है?",options:["Practical task करके result review करना","बिना जाँचे answer देना","सिर्फ certificate देखना","गलती को ignore करना"],answer:0}
+        {question: "👀 देखकर " + clean + " में क्या पहचान सकते हैं?", options:["मुख्य concept/उदाहरण को पहचानना","सिर्फ heading पढ़ना","बिना देखे अनुमान लगाना","practice छोड़ देना"], answer:0},
+        {question: "🛠️ " + clean + " सीखने के बाद क्या करना चाहिए?", options:["स्वयं example/practice करके answer जाँचना","केवल याद करना","गलत answer को छोड़ देना","बिना समझे copy करना"], answer:0},
+        {question: "🗣️ क्या बच्चा " + clean + " को अपने शब्दों में समझा सकता है?", options:["हाँ, example के साथ समझाना चाहिए","नहीं, केवल notes पढ़ने चाहिए","केवल certificate देखना चाहिए","practice की जरूरत नहीं"], answer:0}
       ];
       return [
         label,
-        primary.body,
+        primary.body + " इसे सुनकर, देखकर, बोलकर, करके और दोहराकर सीखें।",
         {
           objectives: primary.objectives,
           content:{
-            easyExplanation:"सरल समझ / Simple meaning: " + primary.body,
-            deepUnderstanding:"Deep understanding / गहरी समझ: " + primary.deep,
-            whyItMatters:"क्यों जरूरी है / Why it matters: इस skill की मजबूत नींव आगे की reading, writing, mathematics, reasoning, communication और daily-life learning को support करती है।",
-            keyPoints:[clean,moduleTitle,"Example + Practice","Application + Review"],
-            examples:primary.examples,
-            steps:["🎯 उद्देश्य समझें / Understand the goal","👀 देखें-सुनें / Observe & listen","📖 Concept समझें / Learn the concept","🛠️ स्वयं करें / Practice","🔎 जाँचें / Review","🔄 सुधारें / Improve"],
-            practicalApplication:"व्यावहारिक उपयोग / Practical application: " + primary.activity,
-            memoryHook:"🧠 याद रखें / Remember: समझो → करके देखो → जाँचो → सुधारो → फिर समझाकर बताओ।",
+            easyExplanation:"📖 सरल समझ / Simple meaning: " + primary.body,
+            deepUnderstanding:"🧠 गहरी समझ / Deep understanding: " + primary.deep,
+            whyItMatters:"🎯 क्यों जरूरी है / Why it matters: " + primary.summary,
+            keyPoints:[clean,...primary.objectives],
+            examples:[...primary.examples,"🔎 नया उदाहरण: अपने आसपास की एक वास्तविक वस्तु/स्थिति चुनें और बताएं कि " + clean + " उससे कैसे जुड़ता है।"],
+            steps:mode.steps,
+            practicalApplication:"🏠 व्यावहारिक उपयोग / Practical application: " + primary.activity,
+            memoryHook:"🧠 याद रखें / Remember: " + primary.summary,
             commonMistakes:primary.mistakes,
-            summary:"📌 सार / Summary: " + primary.summary
+            summary:"📌 " + primary.summary
           },
-          practice:primary.practice,
+          practice:[...primary.practice,"🗣️ किसी साथी/परिजन को " + clean + " का एक उदाहरण बोलकर समझाएँ।","🔁 बिना notes देखे एक बार फिर करके देखें।"],
           activity:"🎯 गतिविधि / Activity: " + primary.activity,
           knowledgeCheck:check,
-          reflection:["आज मैंने क्या नया सीखा?","मैं इसे वास्तविक जीवन में कहाँ उपयोग कर सकता/सकती हूँ?","मुझे किस हिस्से में और practice चाहिए?"]
+          reflection:["आज मैंने क्या देखा, सुना और बोला?","मैंने खुद करके क्या सीखा?","कौन-सी गलती हुई और मैंने उसे कैसे सुधारा?"]
         }
       ];
     }
