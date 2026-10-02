@@ -1940,15 +1940,17 @@ export default function LearningHubV2() {
       </div>
     </section>
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
-      <section className="mt-8 grid gap-5 lg:grid-cols-[1fr_auto]">
-        <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+      <section className="mt-8">
+        <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-8">
           <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaBookOpen /> Start here / यहाँ से शुरू करें</div>
           <h2 className="mt-2 text-2xl font-black md:text-3xl">अपनी learning journey चुनिए</h2>
-          <p className="mt-2 text-sm leading-6 text-zinc-600">Search करें या learning area चुनें। Available structured courses को स्पष्ट course status के साथ देखें।</p>
-          <div className="relative mt-5"><FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" /><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 outline-none focus:border-[#0f4c81] focus:bg-white focus:ring-4 focus:ring-[#0f4c81]/10" /></div>
+          <div className="relative mt-4">
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
+            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 text-sm outline-none transition focus:border-[#0f4c81] focus:bg-white focus:ring-4 focus:ring-[#0f4c81]/10" />
+          </div>
           <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-black transition "+(category===c?"bg-[#003366] text-white shadow-md":"bg-zinc-100 text-zinc-600 hover:bg-zinc-200")}><Icon/> {c}</button>; })}</div>
         </div>
-        <div className="rounded-[2rem] bg-[#003366] p-6 text-white shadow-sm lg:w-[330px]">
+        <div className="mt-5 rounded-[2rem] bg-[#003366] p-6 text-white shadow-sm md:p-7">
           <div className="text-xs font-black uppercase tracking-widest text-white/60">Your learning / आपकी प्रगति</div>
           {progressSummary.active ? <button onClick={()=>openSubject(progressSummary.active.subject)} className="mt-4 w-full text-left"><div className="text-lg font-black">{progressSummary.active.subject.en}</div><div className="mt-1 text-sm text-white/70">{progressSummary.active.subject.hi}</div><div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-white" style={{width:progressSummary.active.percent+"%"}}/></div><div className="mt-2 flex justify-between text-xs font-bold"><span>{progressSummary.active.percent}% complete</span><span>Continue →</span></div></button> : <div className="mt-4"><div className="text-lg font-black">Start your first course</div><div className="mt-2 text-sm leading-6 text-white/70">अपना पहला structured course चुनें और progress track करें।</div></div>}
         </div>
