@@ -1423,7 +1423,8 @@ function LearningSubject({ subject, onBack }) {
   const [authStatus, setAuthStatus] = useState("idle");
   const [authError, setAuthError] = useState("");
   const [accountUser, setAccountUser] = useState(() => { try { return JSON.parse(localStorage.getItem("ssf-learning-account") || "null"); } catch { return null; } });
-  const isPrimaryEducation = /^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi);\n  const [moduleResults, setModuleResults] = useState(() => {
+  const isPrimaryEducation = /^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi);
+  const [moduleResults, setModuleResults] = useState(() => {
     try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
   });
 
