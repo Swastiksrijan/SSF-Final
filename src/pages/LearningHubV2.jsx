@@ -8,6 +8,7 @@ import {
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
 import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../data/coursesData";
 import { ENDPOINTS } from "../config/api";
+import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../data/englishFromBasicsContent";
 
 const HUB_IMAGES = {
   education: "/images/real/classroom-floor-seating.jpg",
@@ -287,7 +288,9 @@ function LearningSubject({ subject, onBack }) {
     "health-well-being": "health-wellness",
     "computer-training": "computer-education"
   }[subject.id] || subject.id;
-  const structuredCourse = FLAGSHIP_COURSES[subject.id] || ALL_STRUCTURED_COURSES[structuredCourseId];
+  const structuredCourse = subject.id === "english-from-basics"
+    ? ENGLISH_FROM_BASICS_COURSE
+    : (FLAGSHIP_COURSES[subject.id] || ALL_STRUCTURED_COURSES[structuredCourseId]);
   const modules = structuredCourse
     ? structuredCourse.modules.map((m) => ({
         title: m.title.en + " / " + m.title.hi,
@@ -312,9 +315,11 @@ function LearningSubject({ subject, onBack }) {
 
   const structuredAssessmentPool = structuredCourse
     ? Object.values(
-        FLAGSHIP_COURSE_ASSESSMENTS && FLAGSHIP_COURSE_ASSESSMENTS[structuredCourseId]
-          ? FLAGSHIP_COURSE_ASSESSMENTS[structuredCourseId]
-          : COURSE_ASSESSMENTS?.[structuredCourseId] || {}
+        subject.id === "english-from-basics"
+          ? ENGLISH_FROM_BASICS_ASSESSMENTS
+          : (FLAGSHIP_COURSE_ASSESSMENTS && FLAGSHIP_COURSE_ASSESSMENTS[structuredCourseId]
+              ? FLAGSHIP_COURSE_ASSESSMENTS[structuredCourseId]
+              : COURSE_ASSESSMENTS?.[structuredCourseId] || {})
       ).flat()
     : [];
   const quizQuestions = structuredAssessmentPool.length
@@ -338,7 +343,8 @@ function LearningSubject({ subject, onBack }) {
         ...m,
         questions:
           (FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] ||
-            COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id] ||
+            (subject.id === "english-from-basics" ? ENGLISH_FROM_BASICS_ASSESSMENTS?.[m.id] : COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id]) ||
+            m.assessment?.questions ||
             [])
       })).filter(m => m.questions.length)
     : [];
