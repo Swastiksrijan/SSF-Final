@@ -1226,6 +1226,61 @@ const buildTopicModules = (subject) => {
   });
 };
 
+function speakLessonText(text) {
+  try {
+    if (!("speechSynthesis" in window)) {
+      window.alert("Audio is not supported in this browser.");
+      return;
+    }
+    window.speechSynthesis.cancel();
+    const clean = String(text || "").replace(/\s+/g, " ").trim();
+    const utterance = new SpeechSynthesisUtterance(clean);
+    utterance.lang = /[\u0900-\u097F]/.test(clean) ? "hi-IN" : "en-IN";
+    utterance.rate = 0.82;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  } catch {}
+}
+
+function PrimaryLessonVisual({ lesson }) {
+  if (!lesson) return null;
+  const title = String(lesson.title || "").replace(/\s*\/\s*/g, " • ");
+  const examples = Array.isArray(lesson.detail?.content?.examples) ? lesson.detail.content.examples : [];
+  const practice = Array.isArray(lesson.detail?.practice) ? lesson.detail.practice : [];
+  const isLetters = /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(title);
+  const isWords = /vocabulary|शब्द|reading|पठन|phonics|मात्राएँ|matras/i.test(title);
+  return <div className="mt-6 overflow-hidden rounded-[1.8rem] border-2 border-[#d9e7f0] bg-gradient-to-br from-[#fffdf5] via-white to-[#eef8ff] shadow-sm">
+    <div className="border-b border-[#d9e7f0] bg-white/80 p-4 md:p-5">
+      <div className="flex flex-wrap items-center justify-between gap-3">
+        <div>
+          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0f4c81]">Visual Teaching Board / दृश्य शिक्षण बोर्ड</div>
+          <div className="mt-1 text-lg font-black text-[#003366]">देखो • सुनो • बोलो • पहचानो • लिखो</div>
+        </div>
+        <button type="button" onClick={()=>speakLessonText([lesson.title,lesson.body,...examples].join(". "))} className="inline-flex items-center gap-2 rounded-full bg-[#003366] px-4 py-2 text-xs font-black text-white shadow-md">
+          🔊 Listen & Repeat / सुनें और बोलें
+        </button>
+      </div>
+    </div>
+    <div className="p-5 md:p-7">
+      <div className="rounded-[1.5rem] bg-gradient-to-r from-[#003366] via-[#0f4c81] to-[#007c91] p-5 text-center text-white md:p-7">
+        <div className="text-sm font-bold text-white/75">Current concept / वर्तमान अवधारणा</div>
+        <div className={"mt-2 font-black leading-none tracking-tight "+(isLetters ? "text-6xl md:text-8xl" : isWords ? "text-4xl md:text-6xl" : "text-3xl md:text-5xl")}>{title}</div>
+        <div className="mt-4 text-sm font-bold text-white/85">🔊 पहले सुनें • 👄 फिर बोलें • ✍️ फिर करके देखें</div>
+      </div>
+      {examples.length > 0 && <div className="mt-5 grid gap-4 sm:grid-cols-2">
+        {examples.map((x,i)=><div key={i} className="rounded-2xl border-2 border-white bg-white p-5 text-center shadow-sm">
+          <div className={"font-black leading-tight "+(isLetters ? "text-3xl md:text-5xl" : isWords ? "text-2xl md:text-4xl" : "text-lg md:text-2xl")}>{x}</div>
+          <button type="button" onClick={()=>speakLessonText(x)} className="mt-3 rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#003366]">🔊 Speak / बोलें</button>
+        </div>)}
+      </div>}
+      {practice.length > 0 && <div className="mt-5 rounded-2xl bg-[#f7fafc] p-5">
+        <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Try it now / अभी करके देखें</div>
+        <ul className="mt-3 space-y-2 text-sm font-bold leading-6 text-zinc-700">{practice.slice(0,4).map((x,i)=><li key={i}>👉 {x}</li>)}</ul>
+      </div>}
+    </div>
+  </div>;
+}
+
 function LearningSubject({ subject, onBack }) {
   const progressKey = "ssf-learning-course-progress-" + subject.id;
   const [done, setDone] = useState(() => {
@@ -1246,7 +1301,7 @@ function LearningSubject({ subject, onBack }) {
   const [authStatus, setAuthStatus] = useState("idle");
   const [authError, setAuthError] = useState("");
   const [accountUser, setAccountUser] = useState(() => { try { return JSON.parse(localStorage.getItem("ssf-learning-account") || "null"); } catch { return null; } });
-  const [moduleResults, setModuleResults] = useState(() => {
+  const isPrimaryEducation = /^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi);\n  const [moduleResults, setModuleResults] = useState(() => {
     try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
   });
 
@@ -1437,6 +1492,12 @@ function LearningSubject({ subject, onBack }) {
               <div className="text-xs text-zinc-500">{lessons[activeLesson].module}</div>
               <div className="mt-1 font-black">{lessons[activeLesson].title}</div>
               <p className="mt-2 text-sm leading-6 text-zinc-600">{lessons[activeLesson].body}</p>
+              <div className="mt-3 flex flex-wrap gap-2">
+                <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-[#003366] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
+                <span className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#0f4c81]">👄 Repeat / बोलें</span>
+              </div>
+              {isPrimaryEducation && <PrimaryLessonVisual lesson={lessons[activeLesson]} />}
+
               <div className="mt-5 flex gap-2 border-t border-zinc-200 pt-4">
                 <button onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-black text-[#003366] disabled:opacity-40">← Previous / पिछला</button>
                 <button onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#003366] px-3 py-2 text-xs font-black text-white disabled:opacity-40">Next / अगला →</button>
@@ -1486,6 +1547,12 @@ function LearningSubject({ subject, onBack }) {
           </div>
           <div className="overflow-y-auto p-5 md:p-8">
             <p className="text-base leading-8 text-zinc-700">{lessons[activeLesson].body}</p>
+            <div className="mt-4 flex flex-wrap gap-2">
+              <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-[#003366] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
+              <span className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#0f4c81]">👄 Repeat / बोलें</span>
+            </div>
+            {isPrimaryEducation && <PrimaryLessonVisual lesson={lessons[activeLesson]} />}
+
             {lessons[activeLesson].detail && <div className="mt-7 space-y-5 border-t border-zinc-200 pt-6">
               {[
                 ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
