@@ -217,6 +217,7 @@ function LearningSubject({ subject, onBack }) {
   });
   const [activeLesson, setActiveLesson] = useState(0);
   const [quizOpen, setQuizOpen] = useState(false);
+  const [lessonOpen, setLessonOpen] = useState(false);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [finalResult, setFinalResult] = useState(() => {
@@ -369,6 +370,7 @@ function LearningSubject({ subject, onBack }) {
     setQuizOpen(false);
     setAnswers({});
     setSubmitted(false);
+    setLessonOpen(true);
     markDone(safe);
     requestAnimationFrame(() => document.getElementById("current-lesson-content")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
@@ -492,6 +494,44 @@ function LearningSubject({ subject, onBack }) {
           </div>
         </aside>
       </div>
+
+      {lessonOpen && lessons[activeLesson] && <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[#001529]/75 p-3 backdrop-blur-sm md:p-6" role="dialog" aria-modal="true" aria-label="Current lesson">
+        <div className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-[2rem] bg-white shadow-2xl">
+          <div className={"shrink-0 bg-gradient-to-r "+subject.color+" p-5 text-white md:p-7"}>
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="text-xs font-black uppercase tracking-widest text-white/70">{lessons[activeLesson].module}</div>
+                <h2 className="mt-2 text-2xl font-black leading-tight md:text-3xl">{lessons[activeLesson].title}</h2>
+              </div>
+              <button type="button" onClick={()=>{setLessonOpen(false);}} className="rounded-xl bg-white/15 px-3 py-2 text-lg font-black text-white hover:bg-white/25" aria-label="Close lesson">✕</button>
+            </div>
+          </div>
+          <div className="overflow-y-auto p-5 md:p-8">
+            <p className="text-base leading-8 text-zinc-700">{lessons[activeLesson].body}</p>
+            {lessons[activeLesson].detail && <div className="mt-7 space-y-5 border-t border-zinc-200 pt-6">
+              [
+                ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
+                ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
+                ["Examples / उदाहरण", lessons[activeLesson].detail.content?.examples],
+                ["Practice / अभ्यास", lessons[activeLesson].detail.practice],
+                ["Activity / गतिविधि", lessons[activeLesson].detail.activity],
+                ["Common Mistakes / सामान्य गलतियाँ", lessons[activeLesson].detail.content?.commonMistakes],
+                ["Summary / सार", lessons[activeLesson].detail.content?.summary]
+              ].map(([label,value]) => value && <div key={label}>
+                <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">{label}</div>
+                {Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-7 text-zinc-700">{value.map((x,i)=><li key={i}>{x}</li>)}</ul> : <p className="mt-2 text-sm leading-7 text-zinc-700">{value}</p>}
+              </div>)}
+            </div>}
+          </div>
+          <div className="shrink-0 border-t border-zinc-200 bg-white p-4 md:p-5">
+            <div className="mb-3 text-center text-xs font-bold text-zinc-500">Lesson {activeLesson + 1} of {total} • पूरा पढ़ें, फिर आगे बढ़ें</div>
+            <div className="grid grid-cols-2 gap-3">
+              <button type="button" onClick={()=>setLessonOpen(false)} className="rounded-xl border border-zinc-200 px-4 py-3 text-sm font-black text-[#003366]">Close / बंद करें</button>
+              <button type="button" disabled={activeLesson===total-1} onClick={()=>goLesson(activeLesson+1)} className="rounded-xl bg-[#003366] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Next Lesson / अगला पाठ →</button>
+            </div>
+          </div>
+        </div>
+      </div>}
 
       <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-white p-6 md:p-8">
         <div className="flex items-center gap-3"><FaGraduationCap className="text-3xl text-[#003366]"/><div><h2 className="text-2xl font-black">Certificate Pathway / प्रमाणन मार्ग</h2><p className="text-sm text-zinc-500">Learning first. Certification after genuine completion and assessment.</p></div></div>
