@@ -652,6 +652,7 @@ export default function LearningHubV2() {
         </div>
       </div>
     </section>
+    <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
       <section className="mt-8 grid gap-5 lg:grid-cols-[1fr_auto]">
         <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
           <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaBookOpen /> Start here / यहाँ से शुरू करें</div>
