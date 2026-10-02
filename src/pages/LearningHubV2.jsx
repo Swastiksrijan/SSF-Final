@@ -657,8 +657,9 @@ export default function LearningHubV2() {
 
   return <div className="min-h-screen bg-[#f6f8fb] font-inria text-zinc-900">
     <section className="relative overflow-hidden bg-[#002344] text-white">
-      <img src="/images/real/education_girls.jpg" alt="" className="absolute inset-0 h-full w-full object-cover opacity-15" />
-      <div className="absolute inset-0 bg-gradient-to-br from-[#001426]/95 via-[#003b63]/92 to-[#007c91]/80" />
+      <div className="absolute inset-0 bg-gradient-to-br from-[#001426] via-[#003b63] to-[#007c91]" />
+      <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full border border-white/10 bg-white/5" />
+      <div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full border border-white/10 bg-white/5" />
       <div className="relative mx-auto max-w-7xl px-4 py-12 md:py-16">
         <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-4xl">
@@ -711,8 +712,13 @@ export default function LearningHubV2() {
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-zinc-200 bg-white shadow-[0_10px_35px_rgba(0,35,68,.07)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(0,35,68,.14)]">
               <div className="relative h-52 overflow-hidden">
-                <img src={s.categoryImage || s.image} alt={s.title} className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
-                <div className={"absolute inset-0 bg-gradient-to-t "+s.color+" opacity-75"} />
+                <div className={"absolute inset-0 bg-gradient-to-br "+s.color} />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="flex h-24 w-24 items-center justify-center rounded-3xl border border-white/25 bg-white/10 text-5xl text-white shadow-2xl backdrop-blur">
+                    <Icon aria-hidden="true" />
+                  </div>
+                </div>
+                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/45 to-transparent" />
                 <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur">
                   <Icon /> Course {s.number}
                 </div>
