@@ -479,8 +479,11 @@ function LearningSubject({ subject, onBack }) {
                   ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
                   ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
                   ["Examples / उदाहरण", lessons[activeLesson].detail.content?.examples],
+                  ["Practical Application / वास्तविक उपयोग", lessons[activeLesson].detail.content?.practicalApplication],
                   ["Practice / अभ्यास", lessons[activeLesson].detail.practice],
                   ["Activity / गतिविधि", lessons[activeLesson].detail.activity],
+                  ["Knowledge Check / ज्ञान जाँच", lessons[activeLesson].detail.content?.knowledgeCheck],
+                  ["Reflection / स्वयं विचार", lessons[activeLesson].detail.content?.reflection],
                   ["Common Mistakes / सामान्य गलतियाँ", lessons[activeLesson].detail.content?.commonMistakes],
                   ["Summary / सार", lessons[activeLesson].detail.content?.summary]
                 ].map(([label,value]) => value && <div key={label}>
