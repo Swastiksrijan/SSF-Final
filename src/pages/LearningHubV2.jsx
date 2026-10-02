@@ -6,6 +6,7 @@ import {
   FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping
 } from "react-icons/fa";
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
+import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../data/coursesData";
 import { ENDPOINTS } from "../config/api";
 
 const HUB_IMAGES = {
@@ -232,7 +233,12 @@ function LearningSubject({ subject, onBack }) {
     try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
   });
 
-  const structuredCourse = FLAGSHIP_COURSES[subject.id];
+  const structuredCourseId = {
+    "english-from-basics": "english-communication",
+    "health-well-being": "health-wellness",
+    "computer-training": "computer-education"
+  }[subject.id] || subject.id;
+  const structuredCourse = FLAGSHIP_COURSES[subject.id] || ALL_STRUCTURED_COURSES[structuredCourseId];
   const modules = structuredCourse
     ? structuredCourse.modules.map((m) => ({
         title: m.title.en + " / " + m.title.hi,
@@ -301,18 +307,37 @@ function LearningSubject({ subject, onBack }) {
     detail: lesson[2] || null
   })));
 
-  const quizQuestions = [
-    {q:"अच्छी learning का उद्देश्य क्या है?", options:["समझकर और अभ्यास करके capability विकसित करना","केवल title याद करना","केवल video देखना","केवल certificate लेना"], answer:0},
-    {q:"किसी concept को मजबूत करने का उपयोगी तरीका क्या है?", options:["Example + Practice + Review","बिना पढ़े अनुमान लगाना","बिना जाँचे जानकारी share करना","केवल एक definition याद करना"], answer:0},
-    {q:"Current rules या schemes को कहाँ verify करना चाहिए?", options:["संबंधित official source","random forwarded message","unverified social post","anonymous screenshot"], answer:0},
-    {q:"Practical learning में क्या महत्वपूर्ण है?", options:["सुरक्षित task, परिणाम और सुधार","केवल memorisation","बिना training high-risk action","दूसरे का work copy करना"], answer:0},
-    {q:"Course पूरा करने के बाद अगला कदम क्या हो सकता है?", options:["Assessment, reflection और next learning path","सीखना बंद करना","बिना समझे certificate claim करना","सभी sources ignore करना"], answer:0}
-  ];
+  const structuredAssessmentPool = structuredCourse
+    ? Object.values(
+        FLAGSHIP_COURSE_ASSESSMENTS && FLAGSHIP_COURSE_ASSESSMENTS[structuredCourseId]
+          ? FLAGSHIP_COURSE_ASSESSMENTS[structuredCourseId]
+          : COURSE_ASSESSMENTS?.[structuredCourseId] || {}
+      ).flat()
+    : [];
+  const quizQuestions = structuredAssessmentPool.length
+    ? structuredAssessmentPool.slice(0, 5).map(q => ({
+        q: q.q || q.question,
+        options: q.options || [],
+        answer: typeof q.answer === "number" ? q.answer : 0
+      }))
+    : [
+        {q:"अच्छी learning का उद्देश्य क्या है?", options:["समझकर और अभ्यास करके capability विकसित करना","केवल title याद करना","केवल video देखना","केवल certificate लेना"], answer:0},
+        {q:"किसी concept को मजबूत करने का उपयोगी तरीका क्या है?", options:["Example + Practice + Review","बिना पढ़े अनुमान लगाना","बिना जाँचे जानकारी share करना","केवल एक definition याद करना"], answer:0},
+        {q:"Current rules या schemes को कहाँ verify करना चाहिए?", options:["संबंधित official source","random forwarded message","unverified social post","anonymous screenshot"], answer:0},
+        {q:"Practical learning में क्या महत्वपूर्ण है?", options:["सुरक्षित task, परिणाम और सुधार","केवल memorisation","बिना training high-risk action","दूसरे का work copy करना"], answer:0},
+        {q:"Course पूरा करने के बाद अगला कदम क्या हो सकता है?", options:["Assessment, reflection और next learning path","सीखना बंद करना","बिना समझे certificate claim करना","सभी sources ignore करना"], answer:0}
+      ];
   const completed = done.length;
   const total = lessons.length;
   const progress = Math.round((completed / total) * 100);
   const moduleAssessments = structuredCourse
-    ? structuredCourse.modules.map((m) => ({ ...m, questions: FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] || [] })).filter(m => m.questions.length)
+    ? structuredCourse.modules.map((m) => ({
+        ...m,
+        questions:
+          (FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] ||
+            COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id] ||
+            [])
+      })).filter(m => m.questions.length)
     : [];
   const allLearningComplete = progress === 100;
   const modulePassCount = moduleAssessments.filter(m => moduleResults[m.id]?.passed).length;
