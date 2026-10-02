@@ -1243,40 +1243,117 @@ function speakLessonText(text) {
 }
 
 function PrimaryLessonVisual({ lesson }) {
-  if (!lesson) return null;
-  const title = String(lesson.title || "").replace(/\s*\/\s*/g, " • ");
-  const examples = Array.isArray(lesson.detail?.content?.examples) ? lesson.detail.content.examples : [];
-  const practice = Array.isArray(lesson.detail?.practice) ? lesson.detail.practice : [];
+  const detail = lesson.detail?.content || {};
+  const examples = detail.examples || [];
+  const practice = lesson.detail?.practice || [];
+  const title = lesson.title || "";
+  const cleanTitle = title.replace(/^([^/]+)\\s\\/\\s/, "$1").trim();
   const isLetters = /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(title);
-  const isWords = /vocabulary|शब्द|reading|पठन|phonics|मात्राएँ|matras/i.test(title);
-  return <div className="mt-6 overflow-hidden rounded-[1.8rem] border-2 border-[#d9e7f0] bg-gradient-to-br from-[#fffdf5] via-white to-[#eef8ff] shadow-sm">
-    <div className="border-b border-[#d9e7f0] bg-white/80 p-4 md:p-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+  const isNumbers = /numbers|counting|संख्या|गिनती|number sense|जोड़|घटाव|गुणा|भाग|fractions|भिन्न/i.test(title);
+  const isLanguage = /hindi|english|शब्द|reading|writing|vocabulary|phonics|मात्रा|वाक्य|पठन|लेखन/i.test(title);
+
+  const conceptSets = {
+    letters: [
+      ["🔤 A a", "🍎 Apple", "A → Apple"],
+      ["🔤 B b", "⚽ Ball", "B → Ball"],
+      ["🔤 C c", "🐱 Cat", "C → Cat"],
+      ["🔤 D d", "🐶 Dog", "D → Dog"]
+    ],
+    numbers: [
+      ["1️⃣ One", "🍎", "1 object = 1"],
+      ["2️⃣ Two", "🍎🍎", "2 objects = 2"],
+      ["3️⃣ Three", "🍎🍎🍎", "3 objects = 3"],
+      ["🔟 Ten", "●●●●●●●●●●", "10 objects = 10"]
+    ]
+  };
+  const cards = isLetters ? conceptSets.letters : isNumbers ? conceptSets.numbers : [];
+
+  return <div className="mt-6 overflow-hidden rounded-[1.8rem] border-2 border-[#cfe3ef] bg-white shadow-lg">
+    <div className="border-b-2 border-[#dbeaf2] bg-gradient-to-r from-[#fff7d6] via-[#eefaff] to-[#f5efff] p-4 md:p-6">
+      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
-          <div className="text-[10px] font-black uppercase tracking-[0.2em] text-[#0f4c81]">Visual Teaching Board / दृश्य शिक्षण बोर्ड</div>
-          <div className="mt-1 text-lg font-black text-[#003366]">देखो • सुनो • बोलो • पहचानो • लिखो</div>
+          <div className="text-xs font-black uppercase tracking-[0.2em] text-[#0f4c81]">Interactive Teaching Board / इंटरैक्टिव शिक्षण बोर्ड</div>
+          <div className="mt-1 text-xl font-black text-[#003366]">👀 देखो → 🔊 सुनो → 👄 बोलो → 👉 पहचानो → ✍️ करो</div>
         </div>
-        <button type="button" onClick={()=>speakLessonText([lesson.title,lesson.body,...examples].join(". "))} className="inline-flex items-center gap-2 rounded-full bg-[#003366] px-4 py-2 text-xs font-black text-white shadow-md">
-          🔊 Listen & Repeat / सुनें और बोलें
+        <button type="button" onClick={()=>speakLessonText([lesson.title,lesson.body,...examples,...practice].join(". "))} className="rounded-full bg-[#003366] px-5 py-3 text-sm font-black text-white shadow-md">
+          🔊 Listen All / सब सुनें
         </button>
       </div>
     </div>
-    <div className="p-5 md:p-7">
-      <div className="rounded-[1.5rem] bg-gradient-to-r from-[#003366] via-[#0f4c81] to-[#007c91] p-5 text-center text-white md:p-7">
-        <div className="text-sm font-bold text-white/75">Current concept / वर्तमान अवधारणा</div>
-        <div className={"mt-2 font-black leading-none tracking-tight "+(isLetters ? "text-6xl md:text-8xl" : isWords ? "text-4xl md:text-6xl" : "text-3xl md:text-5xl")}>{title}</div>
-        <div className="mt-4 text-sm font-bold text-white/85">🔊 पहले सुनें • 👄 फिर बोलें • ✍️ फिर करके देखें</div>
+
+    <div className="p-4 md:p-7">
+      <div className="rounded-[1.5rem] border-2 border-white bg-gradient-to-br from-[#003366] via-[#0f4c81] to-[#007c91] p-5 text-center text-white shadow-inner md:p-8">
+        <div className="text-sm font-bold text-white/80">Today we learn / आज हम सीखेंगे</div>
+        <div className={(isLetters ? "text-6xl md:text-9xl " : isLanguage ? "text-4xl md:text-6xl " : "text-3xl md:text-5xl ")+"mt-2 font-black leading-tight tracking-tight"}>{cleanTitle}</div>
+        <div className="mt-4 text-base font-black">🔊 सुनें • 👄 दोहराएँ • 👉 पहचानें • ✍️ करके सीखें</div>
       </div>
-      {examples.length > 0 && <div className="mt-5 grid gap-4 sm:grid-cols-2">
-        {examples.map((x,i)=><div key={i} className="rounded-2xl border-2 border-white bg-white p-5 text-center shadow-sm">
-          <div className={"font-black leading-tight "+(isLetters ? "text-3xl md:text-5xl" : isWords ? "text-2xl md:text-4xl" : "text-lg md:text-2xl")}>{x}</div>
-          <button type="button" onClick={()=>speakLessonText(x)} className="mt-3 rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#003366]">🔊 Speak / बोलें</button>
+
+      {cards.length>0 && <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {cards.map(([big,visual,meaning],i)=><div key={i} className="rounded-[1.4rem] border-2 border-[#e4d9ff] bg-gradient-to-b from-white to-[#faf7ff] p-4 text-center shadow-sm">
+          <div className="text-4xl font-black text-[#7b2cbf] md:text-5xl">{big}</div>
+          <div className="my-3 text-3xl md:text-4xl">{visual}</div>
+          <div className="text-base font-black text-[#003366]">{meaning}</div>
+          <button type="button" onClick={()=>speakLessonText(big+" "+meaning)} className="mt-3 rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#003366]">🔊 बोलें</button>
         </div>)}
       </div>}
-      {practice.length > 0 && <div className="mt-5 rounded-2xl bg-[#f7fafc] p-5">
-        <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Try it now / अभी करके देखें</div>
-        <ul className="mt-3 space-y-2 text-sm font-bold leading-6 text-zinc-700">{practice.slice(0,4).map((x,i)=><li key={i}>👉 {x}</li>)}</ul>
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="rounded-[1.4rem] border-2 border-[#d8eadf] bg-[#f4fff7] p-5">
+          <div className="text-sm font-black uppercase tracking-widest text-[#177245]">📖 Concept / अवधारणा</div>
+          <p className="mt-3 text-base font-semibold leading-7 text-zinc-700">{detail.easyExplanation || lesson.body}</p>
+          {detail.deepUnderstanding && <p className="mt-3 rounded-xl bg-white p-3 text-sm leading-6 text-zinc-600">{detail.deepUnderstanding}</p>}
+        </div>
+        <div className="rounded-[1.4rem] border-2 border-[#f0dfc2] bg-[#fffaf0] p-5">
+          <div className="text-sm font-black uppercase tracking-widest text-[#9a5b00]">🎯 Why & Goal / क्यों और लक्ष्य</div>
+          <ul className="mt-3 space-y-2 text-sm font-bold leading-6 text-zinc-700">
+            {(lesson.detail?.objectives || []).map((x,i)=><li key={i}>✅ {x}</li>)}
+          </ul>
+          {detail.whyItMatters && <p className="mt-3 text-sm leading-6 text-zinc-600">{detail.whyItMatters}</p>}
+        </div>
+      </div>
+
+      {examples.length>0 && <div className="mt-6 rounded-[1.4rem] border-2 border-[#dbe3f7] bg-[#f8faff] p-5">
+        <div className="text-sm font-black uppercase tracking-widest text-[#0f4c81]">🧩 Many Examples / कई उदाहरण</div>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          {examples.map((x,i)=><div key={i} className="flex items-start gap-3 rounded-xl bg-white p-4 shadow-sm">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#e8f4fa] font-black text-[#003366]">{i+1}</div>
+            <div className="flex-1 text-sm font-bold leading-6 text-zinc-700">{x}</div>
+            <button type="button" onClick={()=>speakLessonText(x)} className="shrink-0 rounded-full bg-[#003366] px-3 py-2 text-xs font-black text-white">🔊</button>
+          </div>)}
+        </div>
       </div>}
+
+      <div className="mt-6 rounded-[1.4rem] border-2 border-[#e8d9d9] bg-[#fff8f8] p-5">
+        <div className="text-sm font-black uppercase tracking-widest text-[#9d0208]">🪜 Step-by-Step / चरणबद्ध सीखना</div>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {(detail.steps || ["🎯 उद्देश्य समझें","👀 उदाहरण देखें","🔊 सुनें और बोलें","✍️ स्वयं करें","🔎 उत्तर जाँचें","🔁 दोबारा अभ्यास करें"]).map((x,i)=><div key={i} className="rounded-xl bg-white p-4 text-sm font-black leading-6 text-zinc-700 shadow-sm"><span className="mr-2 text-[#d90429]">{i+1}.</span>{x}</div>)}
+        </div>
+      </div>
+
+      <div className="mt-6 grid gap-4 md:grid-cols-2">
+        <div className="rounded-[1.4rem] border-2 border-[#dce8f5] bg-white p-5">
+          <div className="text-sm font-black uppercase tracking-widest text-[#003366]">🎮 Do It / करके देखें</div>
+          <ul className="mt-3 space-y-2 text-sm font-bold leading-6 text-zinc-700">{practice.slice(0,6).map((x,i)=><li key={i}>👉 {x}</li>)}</ul>
+          {lesson.detail?.activity && <div className="mt-4 rounded-xl bg-[#eef7fb] p-4 text-sm font-bold leading-6 text-[#003366]">🎯 {lesson.detail.activity}</div>}
+        </div>
+        <div className="rounded-[1.4rem] border-2 border-[#e4e4e4] bg-[#fafafa] p-5">
+          <div className="text-sm font-black uppercase tracking-widest text-[#463f3a]">🧠 Remember & Correct / याद रखें और सुधारें</div>
+          {detail.memoryHook && <p className="mt-3 text-sm font-black leading-6 text-zinc-700">{detail.memoryHook}</p>}
+          <ul className="mt-3 space-y-2 text-sm font-bold leading-6 text-zinc-700">{(detail.commonMistakes || []).map((x,i)=><li key={i}>{x}</li>)}</ul>
+        </div>
+      </div>
+
+      {detail.knowledgeCheck && <div className="mt-6 rounded-[1.4rem] border-2 border-[#d9e7f0] bg-gradient-to-r from-[#f7fbff] to-[#fffdf5] p-5">
+        <div className="text-sm font-black uppercase tracking-widest text-[#0f4c81]">❓ Quick Check / तुरंत जाँच</div>
+        <div className="mt-4 space-y-3">
+          {detail.knowledgeCheck.map((q,i)=><div key={i} className="rounded-xl bg-white p-4"><div className="text-sm font-black text-zinc-800">{i+1}. {q.question}</div><div className="mt-2 text-xs font-bold text-zinc-500">सोचकर उत्तर दें: {q.options?.join(" • ")}</div></div>)}
+        </div>
+      </div>}
+
+      <div className="mt-6 rounded-[1.4rem] bg-[#003366] p-5 text-center text-white">
+        <div className="text-xs font-black uppercase tracking-widest text-white/70">🔁 Speak & Repeat / सुनें और दोहराएँ</div>
+        <button type="button" onClick={()=>speakLessonText([cleanTitle,...examples].join(". "))} className="mt-3 rounded-full bg-white px-5 py-3 text-sm font-black text-[#003366]">🔊 फिर से सुनें और बोलें</button>
+      </div>
     </div>
   </div>;
 }
