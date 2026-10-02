@@ -706,8 +706,445 @@ const getSubjectProfile = (subject) => {
   };
 };
 
+
+const PRIMARY_EDUCATION_LESSON_CONTENT = {
+  "Letters & Sounds / अक्षर एवं ध्वनि": {
+    body:"बच्चे अक्षर की पहचान, उसका सही नाम और उससे जुड़ी ध्वनि सीखते हैं। हिंदी में स्वर-व्यंजन और अंग्रेज़ी में letter-sound connection को सुनना, बोलना, पहचानना और लिखना सिखाया जाता है।",
+    objectives:["अक्षरों को देखकर पहचानना और नाम बताना।","सही ध्वनि सुनकर संबंधित अक्षर पहचानना।","अक्षर को सही दिशा और आकार में लिखने का अभ्यास करना।"],
+    deep:"अक्षर केवल चित्र नहीं हैं; ध्वनि और लिखित चिन्ह के बीच संबंध पढ़ने की नींव है। समान दिखने या सुनने वाले अक्षरों को अलग पहचानना भी जरूरी है।",
+    examples:["A → /a/ → Apple; B → /b/ → Ball.","क → कमल, म → मछली; अक्षर देखें, ध्वनि बोलें और शब्द में पहचानें।"],
+    practice:["5 अक्षर देखकर नाम और ध्वनि बताइए।","सुनी हुई 5 ध्वनियों के सही अक्षर चुनिए.","अक्षर tracing और स्वतंत्र writing करें."],
+    activity:"घर/कक्षा में 10 वस्तुएँ चुनकर उनके नाम का पहला अक्षर खोजें और बोलकर दिखाएँ।",
+    mistakes:["अक्षर का नाम और उसकी ध्वनि एक ही मान लेना।","सिर्फ tracing करना, बिना स्वयं लिखे।"],
+    summary:"पहचान → ध्वनि → बोलना → शब्द में पहचानना → लिखना।"
+  },
+  "Numbers & Counting / संख्या एवं गिनती": {
+    body:"बच्चे वस्तुओं को एक-एक करके गिनना, संख्या पहचानना, संख्या लिखना और quantity से numeral का संबंध समझते हैं। 0 से आगे की संख्या-बोध को वास्तविक वस्तुओं और खेलों से विकसित किया जाता है।",
+    objectives:["1 से आगे संख्याएँ क्रम में बोलना।","वस्तुओं की संख्या और लिखी हुई संख्या मिलाना।","कम, अधिक और बराबर मात्रा पहचानना।"],
+    deep:"गिनती में हर वस्तु को एक संख्या देना और अंतिम संख्या को कुल मात्रा समझना महत्वपूर्ण है। केवल संख्या याद करना number sense नहीं है।",
+    examples:["7 pencils गिनें और numeral 7 चुनें.","●●●● और ●● की तुलना करके बताएं कौन अधिक है।"],
+    practice:["1–20 counting करें.","10 वस्तुओं के समूह बनाकर संख्या लिखें.","दो समूहों में more/less/equal बताएं."],
+    activity:"रसोई या कक्षा की वस्तुओं की गिनती करके तीन अलग संख्या-सूचियाँ बनाएं।",
+    mistakes:["एक वस्तु को दो बार गिनना।","अंतिम गिनी संख्या को कुल मात्रा न समझना।"],
+    summary:"देखो → एक-एक गिनो → कुल बताओ → संख्या लिखो → तुलना करो।"
+  },
+  "Fine Motor & Writing Readiness / लेखन तैयारी": {
+    body:"लेखन से पहले हाथ, उँगलियों और आँख-हाथ समन्वय को तैयार किया जाता है। tracing, line patterns, colouring, bead/string activities और pencil grip से लिखने की तैयारी होती है।",
+    objectives:["सही और आरामदायक pencil grip विकसित करना।","सीधी, टेढ़ी, गोल और pattern lines बनाना।","आँख और हाथ के movement का coordination बढ़ाना।"],
+    deep:"सुंदर handwriting केवल दबाव से नहीं आती; posture, grip, movement control और पर्याप्त practice मिलकर writing readiness बनाते हैं।",
+    examples:["Standing lines → sleeping lines → curves → circles → letter strokes.","बिंदुओं को जोड़कर pattern पूरा करना।"],
+    practice:["5 line patterns trace और फिर बिना guide के बनाएं.","चित्र में निर्धारित भाग colour करें.","छोटी-बड़ी shapes copy करें."],
+    activity:"कागज पर 4 प्रकार की lines और 4 shapes बनाकर एक pattern book तैयार करें।",
+    mistakes:["pencil बहुत कसकर पकड़ना।","बहुत देर तक बिना break लिखना।"],
+    summary:"सही बैठना → grip → movement control → pattern → अक्षर लेखन।"
+  },
+  "Observation & Classification / अवलोकन एवं वर्गीकरण": {
+    body:"बच्चे वस्तुओं, चित्रों, पौधों और जीवों को ध्यान से देखकर रंग, आकार, आकारमान, उपयोग और समानता-अंतर के आधार पर समूह बनाना सीखते हैं।",
+    objectives:["वस्तु की कम से कम दो विशेषताएँ बताना।","समान और अलग वस्तुओं को पहचानना।","सरल नियम के आधार पर वस्तुओं को वर्गीकृत करना।"],
+    deep:"Observation में केवल देखना नहीं, ध्यान से विवरण पहचानना और evidence के आधार पर group बनाना शामिल है।",
+    examples:["लाल/नीली वस्तुएँ अलग करें.","पत्तियों को आकार या किनारे के आधार पर समूहित करें."],
+    practice:["10 वस्तुओं में 2 classification rules बनाएं.","दो चित्रों में कम से कम 5 differences खोजें."],
+    activity:"कक्षा में उपलब्ध वस्तुओं का 'किस आधार पर समूह बनाया?' चार्ट बनाएं।",
+    mistakes:["बिना कारण group बनाना।","सिर्फ रंग देखकर हर वस्तु को एक ही तरह समझना।"],
+    summary:"देखो → विशेषता पहचानो → तुलना करो → नियम बनाओ → समूह बनाओ।"
+  },
+  "अ — स्वर / Vowels": {
+    body:"हिंदी के स्वर बच्चों को स्वतंत्र ध्वनि के रूप में पहचानने, बोलने, सुनने और लिखने सिखाए जाते हैं। अ, आ, इ, ई, उ, ऊ आदि को चित्र और शब्दों से जोड़ा जाता है।",
+    objectives:["मुख्य स्वरों की पहचान करना।","स्वर की ध्वनि सही बोलना।","स्वर से शुरू होने वाले सरल शब्द पहचानना।"],
+    deep:"स्वर की स्पष्ट ध्वनि आगे मात्राओं और शब्द-पठन को समझने की आधारशिला है।",
+    examples:["अ → अनार, आ → आम, इ → इमली.","चित्र देखकर शुरुआती स्वर बताना।"],
+    practice:["स्वर cards मिलाएँ.","हर स्वर के दो शब्द बोलें.","स्वर लिखने का अभ्यास करें."],
+    activity:"घर से ऐसे चित्र/वस्तुएँ लाएँ जिनके नाम अलग-अलग स्वरों से शुरू होते हों।",
+    mistakes:["स्वर की मात्रा और स्वतंत्र स्वर में भ्रम करना।","चित्र का नाम गलत बोलकर अक्षर चुनना।"],
+    summary:"स्वर पहचानो → ध्वनि बोलो → शब्द से जोड़ो → लिखो।"
+  },
+  "क — व्यंजन / Consonants": {
+    body:"व्यंजन जैसे क, ख, ग, घ आदि की पहचान, उच्चारण और शब्दों में स्थिति सिखाई जाती है। बच्चों को समान ध्वनियों के बीच अंतर सुनने और बोलने का अभ्यास कराया जाता है।",
+    objectives:["व्यंजन देखकर नाम/ध्वनि पहचानना।","सरल शब्दों में व्यंजन ढूँढना।","सही stroke से व्यंजन लिखना।"],
+    deep:"व्यंजन को अलग-अलग सुनना और शब्द में पहचानना phonological awareness बढ़ाता है; आगे मात्रा जोड़कर शब्द पढ़ने में यही आधार काम आता है।",
+    examples:["क → कमल, ग → गमला, म → मछली.","'कमल' में क और म पहचानें."],
+    practice:["5 व्यंजन सुनकर चुनें.","दिए शब्द में पहला/अंतिम व्यंजन खोजें.","copy और free writing करें."],
+    activity:"अक्षर कार्ड से 5 छोटे शब्द बनाकर पढ़ें।",
+    mistakes:["मिलती ध्वनियों को बिना सुने अनुमान से चुनना।","अक्षर का आकार उल्टा लिखना।"],
+    summary:"ध्वनि सुनो → व्यंजन पहचानो → शब्द में खोजो → लिखो।"
+  },
+  "म — मात्राएँ / Matras": {
+    body:"मात्राएँ व्यंजन के साथ स्वर ध्वनि बदलकर नए शब्द बनाती हैं। ा, ि, ी, ु, ू, े, ै, ो, ौ आदि को बोलकर, जोड़कर, पढ़कर और लिखकर समझाया जाता है।",
+    objectives:["मात्रा का चिन्ह और उसकी ध्वनि पहचानना।","व्यंजन में मात्रा जोड़कर शब्द पढ़ना।","मात्रा की स्थिति सही लिखना।"],
+    deep:"मात्रा को केवल याद नहीं करना; यह समझना जरूरी है कि मात्रा लगने पर अक्षर की आवाज कैसे बदलती है।",
+    examples:["क + ा = का, क + ि = कि, क + ी = की.","कमल और कामल जैसे शब्दों में मात्रा का प्रभाव देखें."],
+    practice:["एक व्यंजन पर अलग-अलग मात्राएँ लगाएँ.","10 मात्रा वाले शब्द पढ़ें.","सुने शब्द की सही मात्रा चुनें."],
+    activity:"मात्रा chart बनाकर हर मात्रा के 3 सरल शब्द लिखें।",
+    mistakes:["ि की मात्रा की स्थिति गलत लिखना।","मात्रा देखकर ध्वनि न बदलना।"],
+    summary:"व्यंजन → मात्रा जोड़ो → नई ध्वनि → शब्द पढ़ो → लिखो।"
+  },
+  "शब्द, वाक्य एवं पठन / Words, Sentences & Reading": {
+    body:"अक्षर और मात्राओं से बने शब्दों को पढ़कर अर्थ समझना और उन्हीं शब्दों से छोटे वाक्य बनाना सिखाया जाता है। चित्र, कहानी और बोलचाल को reading से जोड़ा जाता है।",
+    objectives:["सरल शब्दों को बिना अक्षर-अक्षर अटककर पढ़ना।","पढ़े शब्द का अर्थ बताना।","2–5 शब्दों के सरल वाक्य बनाना।"],
+    deep:"पठन का लक्ष्य केवल आवाज निकालना नहीं, अर्थ समझना है। इसलिए decoding के साथ vocabulary और comprehension भी विकसित की जाती है।",
+    examples:["'राम आम खाता है।' पढ़ें और पूछें—कौन? क्या?","चित्र देखकर 3 शब्द और एक वाक्य लिखें."],
+    practice:["10 सरल शब्द पढ़ें.","एक छोटा passage पढ़कर 3 प्रश्नों के उत्तर दें.","चित्र से वाक्य बनाएं."],
+    activity:"बच्चे की पसंद की छोटी कहानी सुनाकर उसे 3 मुख्य शब्द और एक वाक्य बोलने दें।",
+    mistakes:["हर शब्द का अर्थ समझे बिना केवल पढ़ जाना।","वाक्य में शब्दों का क्रम बिगाड़ना।"],
+    summary:"शब्द पढ़ो → अर्थ समझो → वाक्य बनाओ → प्रश्न का उत्तर दो।"
+  },
+  "Alphabet A–Z / वर्णमाला": {
+    body:"English alphabet A–Z में uppercase और lowercase letters, letter names और basic sound association सिखाई जाती है। Alphabet को केवल क्रम से बोलने के बजाय शब्दों और pictures से जोड़ा जाता है।",
+    objectives:["A–Z पहचानना और क्रम बताना।","uppercase/lowercase pair मिलाना।","letter से जुड़े सरल शब्द पहचानना।"],
+    deep:"Alphabet knowledge में visual form, letter name और sound—तीनों का connection जरूरी है।",
+    examples:["A/a → apple, B/b → ball, C/c → cat.","Random letters दिखाकर नाम बताना."],
+    practice:["A–Z flashcards मिलाएँ.","10 random letters पहचानें.","uppercase को lowercase से match करें."],
+    activity:"घर की वस्तुओं में A–Z से शुरू होने वाले 5 English words खोजें।",
+    mistakes:["B/d या p/q जैसे visually similar letters में भ्रम।","alphabet order याद होना ही reading मान लेना।"],
+    summary:"देखो → नाम बोलो → uppercase/lowercase मिलाओ → word से जोड़ो।"
+  },
+  "Phonics & Sounds / ध्वनि": {
+    body:"Phonics में letter और sound के संबंध को सुनकर पहचानना, बोलना और शब्द में प्रयोग करना सिखाया जाता है। शुरुआती CVC जैसे cat, sun, map शब्दों से blending की शुरुआत होती है।",
+    objectives:["common letter sounds पहचानना।","अलग sounds को जोड़कर सरल शब्द पढ़ना।","शब्द के beginning sound पहचानना।"],
+    deep:"Reading में sound blending बहुत महत्वपूर्ण है: /c/ /a/ /t/ को जोड़कर 'cat' बनाना decoding का practical आधार है।",
+    examples:["m-a-t → mat; s-u-n → sun.","'ball' में शुरुआती /b/ sound पहचानें."],
+    practice:["5 sound cards बोलें.","CVC words blend करें.","सुने sound से सही letter चुनें."],
+    activity:"तीन अक्षरों के cards से शब्द बनाकर हर sound अलग और फिर पूरा शब्द बोलें।",
+    mistakes:["letter name बोलना जहाँ sound चाहिए।","sounds को जोड़ते समय बीच में अनावश्यक vowel जोड़ना।"],
+    summary:"Sound सुनो → letter पहचानो → blend करो → word पढ़ो।"
+  },
+  "Everyday Vocabulary / दैनिक शब्दावली": {
+    body:"बच्चों के आसपास के परिवार, घर, स्कूल, शरीर, रंग, भोजन, वस्तुएँ, actions और common places के शब्द सिखाए जाते हैं। शब्द picture, pronunciation और sentence में प्रयोग से मजबूत होते हैं।",
+    objectives:["दैनिक जीवन के common English words समझना।","वस्तु/चित्र देखकर सही शब्द बोलना।","नए शब्द को छोटे वाक्य में प्रयोग करना।"],
+    deep:"Vocabulary केवल सूची याद करना नहीं है; बच्चे को word का meaning, pronunciation, context और usage समझना चाहिए।",
+    examples:["book, pen, water, mother, school, red.","This is a book. / यह एक किताब है।"],
+    practice:["10 picture-word matches करें.","5 नए words से sentences बोलें.","पुराने words की spaced revision करें."],
+    activity:"एक 'My Day' picture chart बनाकर 8 English words label करें।",
+    mistakes:["Hindi meaning याद करके English word का use न करना।","pronunciation सुने बिना spelling अनुमान लगाना।"],
+    summary:"देखो → नाम सीखो → बोलो → sentence में लगाओ → दोहराओ।"
+  },
+  "Simple Sentences / सरल वाक्य": {
+    body:"बच्चे subject, action और object की basic idea से सरल English sentences बनाना सीखते हैं। am/is/are और common verbs को daily situations से जोड़ा जाता है।",
+    objectives:["सरल sentence की basic structure समझना।","I am, This is, I have जैसे patterns का सही प्रयोग करना।","affirmative और simple question बोलना।"],
+    deep:"Sentence formation में शब्दों का सही क्रम अर्थ बदल सकता है। इसलिए pattern को समझकर अलग examples बनाना memorisation से बेहतर है।",
+    examples:["I am a student. / मैं विद्यार्थी हूँ।","This is my book. / यह मेरी किताब है।"],
+    practice:["5 picture sentences बनाएं.","I am / This is / I have के 3-3 sentences बोलें.","एक statement को simple question में बदलें."],
+    activity:"कक्षा की 5 वस्तुओं पर English sentences बोलकर partner से check कराएँ।",
+    mistakes:["Subject और verb का mismatch।","हर sentence को Hindi word-order से बनाना।"],
+    summary:"Subject चुनो → verb/pattern लगाओ → meaning check करो → बोलो/लिखो।"
+  },
+  "Reading Fluency / प्रवाहपूर्ण पठन": {
+    body:"बच्चे परिचित शब्दों और छोटे passages को accuracy, appropriate pace और expression के साथ पढ़ते हैं। बार-बार guided reading और meaningful text fluency बढ़ाते हैं।",
+    objectives:["शब्दों को अधिक automatic रूप से पढ़ना।","विराम चिन्ह के अनुसार रुकना।","छोटे passage को समझते हुए पढ़ना।"],
+    deep:"Fluency का अर्थ तेज पढ़ना मात्र नहीं; accuracy, उचित गति और expression के साथ अर्थ समझना जरूरी है।",
+    examples:["Full stop पर pause, question mark पर questioning tone.","एक ही छोटा passage पहले teacher के साथ, फिर independently पढ़ें."],
+    practice:["1-minute reading करें और गलत शब्द note करें.","अगली बार उसी passage को बेहतर accuracy से पढ़ें.","3 punctuation-based pauses mark करें."],
+    activity:"Pair reading: एक बच्चा पढ़े, दूसरा केवल supportive feedback दे।",
+    mistakes:["बहुत तेज पढ़ना और अर्थ खो देना।","हर शब्द पर रुकना जबकि वह परिचित हो।"],
+    summary:"सही पढ़ो → अर्थ समझो → expression रखो → repeated practice करो।"
+  },
+  "Comprehension / पठन-बोध": {
+    body:"पठन-बोध में बच्चा passage का मुख्य विचार, पात्र, क्रम, कारण-परिणाम और सीधे/अनुमान आधारित उत्तर समझना सीखता है।",
+    objectives:["कौन, क्या, कब, कहाँ जैसे प्रश्नों का उत्तर देना।","मुख्य विचार पहचानना।","text से evidence लेकर उत्तर देना।"],
+    deep:"Comprehension में पाठ को दोहराना पर्याप्त नहीं; बच्चा text से जानकारी निकालकर उसे अपने शब्दों में समझा सके।",
+    examples:["कहानी पढ़ें → मुख्य पात्र बताएं → घटना का कारण बताएं.","'क्यों?' प्रश्न का उत्तर text के आधार पर दें."],
+    practice:["एक छोटा passage और 5 questions करें.","एक sentence में main idea लिखें.","एक उत्तर के लिए text में evidence underline करें."],
+    activity:"कहानी का 4-box sequence बनाएं: शुरुआत → घटना → समाधान → सीख।",
+    mistakes:["अपनी कल्पना को text का answer मान लेना।","केवल एक शब्द देखकर पूरा उत्तर बना देना।"],
+    summary:"पढ़ो → प्रश्न समझो → text में evidence खोजो → अपने शब्दों में उत्तर दो।"
+  },
+  "Sentence Writing / वाक्य लेखन": {
+    body:"बच्चे capital letter, word spacing, punctuation और meaningful sentence formation का अभ्यास करते हैं। बोलकर sentence बनाना और फिर उसे लिखना writing development को आसान बनाता है।",
+    objectives:["एक स्पष्ट, अर्थपूर्ण sentence लिखना।","capital letter और full stop का सही उपयोग करना।","शब्दों के बीच उचित spacing रखना।"],
+    deep:"Writing में विचार पहले स्पष्ट होना चाहिए; फिर grammar, spelling और punctuation की जाँच की जाती है।",
+    examples:["I play outside. / मैं बाहर खेलता हूँ।","चित्र: boy + ball → The boy has a ball."],
+    practice:["5 picture sentences लिखें.","गलत punctuation वाले 3 sentences सुधारें.","अपना sentence पढ़कर self-check करें."],
+    activity:"'See → Think → Write' worksheet: picture देखें, 3 words लिखें, 2 sentences बनाएं।",
+    mistakes:["हर शब्द जोड़कर एक लंबी string लिखना।","sentence शुरू करते समय capital letter भूलना।"],
+    summary:"विचार → शब्द → sentence → punctuation → पढ़कर जाँच।"
+  },
+  "Paragraph & Picture Writing / अनुच्छेद एवं चित्र लेखन": {
+    body:"बच्चे चित्र या अनुभव से ideas collect करके क्रमबद्ध 4–8 वाक्यों का छोटा paragraph लिखना सीखते हैं। beginning, middle और ending का सरल ढाँचा दिया जाता है।",
+    objectives:["चित्र से relevant details चुनना।","वाक्यों को logical order में रखना।","छोटा paragraph लिखकर revise करना।"],
+    deep:"अच्छा paragraph अलग-अलग sentences का ढेर नहीं; एक मुख्य idea से जुड़े वाक्यों का क्रम होता है।",
+    examples:["Park picture → place, people, actions, ending sentence.","My School पर 5 connected sentences लिखें."],
+    practice:["चित्र से 8 keywords निकालें.","उनमें से 5 से paragraph बनाएं.","spelling और punctuation check करें."],
+    activity:"एक picture story को 3 parts में बाँटकर mini paragraph तैयार करें।",
+    mistakes:["चित्र में न दिखने वाली बातें तथ्य की तरह लिखना।","sentences के बीच connection न रखना।"],
+    summary:"देखो → keywords चुनो → क्रम बनाओ → paragraph लिखो → revise करो।"
+  },
+  "Number Sense / संख्या-बोध": {
+    body:"Number sense में place value, number comparison, ordering, skip counting, odd-even की शुरुआती समझ और numbers को अलग तरीकों से represent करना शामिल है।",
+    objectives:["संख्या को quantity से जोड़ना।","छोटी-बड़ी संख्या compare और order करना।","10s/1s जैसी place-value idea समझना।"],
+    deep:"Number sense में संख्या का आकार और संबंध समझना मुख्य है; केवल counting sequence याद करना पर्याप्त नहीं।",
+    examples:["34 = 3 tens + 4 ones.","27 और 72 में कौन बड़ा है? Place value से समझाएँ."],
+    practice:["0–100 numbers order करें.","10s में count करें.","bundles of ten से 2-digit numbers बनाएं."],
+    activity:"sticks/buttons से tens और ones के bundles बनाकर 5 numbers represent करें।",
+    mistakes:["digits की जगह देखकर हमेशा संख्या बड़ी मान लेना।","place value को केवल नाम से याद करना।"],
+    summary:"Quantity → tens/ones → compare → order → explain।"
+  },
+  "Addition & Subtraction / जोड़ एवं घटाव": {
+    body:"जोड़ और घटाव को concrete objects, number line, drawings और equations से सिखाया जाता है। बच्चे 'कुल कितना?' और 'कितना बचा/कम हुआ?' जैसी वास्तविक स्थितियों से operations समझते हैं।",
+    objectives:["addition और subtraction का अर्थ समझना।","basic facts और written method का अभ्यास करना।","word problem में सही operation चुनना।"],
+    deep:"Operation चुनने से पहले स्थिति समझना जरूरी है। Addition हमेशा 'बड़ा number' नहीं और subtraction केवल 'minus sign' नहीं; context निर्णय कराता है।",
+    examples:["3 apples + 2 apples = 5.","8 pencils में से 3 देने पर 5 बचते हैं."],
+    practice:["objects से 5 sums करें.","number line पर jumps दिखाएँ.","5 word problems में operation चुनें."],
+    activity:"कक्षा में वस्तुओं का छोटा shop game बनाकर खरीद/बची वस्तुओं के sums करें।",
+    mistakes:["place value align न करना।","word problem पढ़े बिना plus/minus चुनना।"],
+    summary:"स्थिति समझो → वस्तु/चित्र से model बनाओ → equation → answer check।"
+  },
+  "Multiplication & Division / गुणा एवं भाग": {
+    body:"गुणा को equal groups और repeated addition से तथा भाग को sharing और grouping से समझाया जाता है। Tables को meaning के साथ सिखाया जाता है, केवल रटने के रूप में नहीं।",
+    objectives:["equal groups बनाकर multiplication समझना।","सरल division में equal sharing करना।","basic multiplication facts का उपयोग करना।"],
+    deep:"3 × 4 का अर्थ 3 groups of 4 या 4+4+4 जैसे representations से समझा जा सकता है। Division में remainder की शुरुआती समझ भी practical sharing से आती है।",
+    examples:["3 plates में 4-4 biscuits → 12 biscuits.","12 biscuits को 3 बच्चों में बराबर बाँटें → 4 each."],
+    practice:["arrays बनाएं.","tables को repeated addition से verify करें.","sharing problems हल करें."],
+    activity:"buttons/blocks से 2, 3, 4 equal groups बनाकर multiplication और division दोनों लिखें।",
+    mistakes:["multiplication को केवल table chant मानना।","division में groups बराबर न बनाना।"],
+    summary:"Groups बनाओ → repeated addition/share करो → equation लिखो → check करो।"
+  },
+  "Fractions, Patterns & Problems / भिन्न, पैटर्न एवं समस्याएँ": {
+    body:"बच्चे whole को equal parts में बाँटकर half, third, quarter जैसी fractions समझते हैं और repeating/growing patterns पहचानते हैं। Multi-step word problems में जानकारी छाँटना सिखाया जाता है।",
+    objectives:["whole और equal parts का संबंध समझना।","सरल fractions identify करना।","pattern rule पहचानना और आगे बढ़ाना।"],
+    deep:"Fraction तभी meaningful है जब parts equal हों। Pattern में अगला item guess नहीं, rule देखकर तय किया जाता है।",
+    examples:["एक रोटी को 4 equal parts → each part is one-fourth.","2,4,6,8 → rule +2."],
+    practice:["paper shapes fold करके halves/quarters बनाएं.","3 patterns complete करें.","एक word problem में given/required लिखें."],
+    activity:"कागज की circle को equal parts में बाँटकर fraction label करें।",
+    mistakes:["unequal parts को fraction समझना।","pattern में केवल last two terms देखकर rule मान लेना।"],
+    summary:"Whole समझो → equal parts → fraction; pattern देखो → rule खोजो → आगे बढ़ाओ।"
+  },
+  "Length & Distance / लंबाई एवं दूरी": {
+    body:"बच्चे लंबाई और दूरी को तुलना, standard/non-standard units और सरल measurement tools से समझते हैं। वस्तुओं को estimate करके फिर measure करने से measurement sense विकसित होता है।",
+    objectives:["longer/shorter पहचानना।","ruler का शुरुआती सही उपयोग करना।","cm/m जैसी units का basic context समझना।"],
+    deep:"Measurement में unit बार-बार समान size की होनी चाहिए और ruler में zero point से शुरुआत समझना जरूरी है।",
+    examples:["pencil की अनुमानित length → ruler से measure.","classroom में door और desk की length compare करें."],
+    practice:["5 objects measure करें.","estimate और actual value compare करें.","cm और m के appropriate examples चुनें."],
+    activity:"'Estimate vs Measure' chart बनाकर 5 classroom objects record करें।",
+    mistakes:["ruler को object के edge से हटाकर शुरू करना।","unit लिखना भूलना।"],
+    summary:"Estimate → सही unit/tool → measure → unit सहित record → compare।"
+  },
+  "Weight & Capacity / भार एवं क्षमता": {
+    body:"बच्चे हल्का-भारी, अधिक-कम capacity और containers की तुलना practical objects से सीखते हैं। आगे gram/kilogram और litre/millilitre का परिचय रोजमर्रा की वस्तुओं से कराया जाता है।",
+    objectives:["heavy/light और more/less capacity पहचानना।","basic units को context से जोड़ना।","simple comparison record करना।"],
+    deep:"Weight और capacity अलग concepts हैं: कोई वस्तु बड़ी दिख सकती है पर हल्की हो सकती है; container का size capacity से जुड़ा है।",
+    examples:["पानी की bottle और bucket की capacity compare करें.","school bag और pencil box का weight compare करें."],
+    practice:["5 वस्तुओं को heavy→light order करें.","2 containers में अधिक पानी वाला पहचानें.","g/kg और L/mL के examples match करें."],
+    activity:"घर की 5 वस्तुओं का अनुमान और उपलब्ध scale/container से comparison करें।",
+    mistakes:["size को weight मान लेना।","capacity और weight को एक ही चीज समझना।"],
+    summary:"तुलना → अनुमान → सही unit/tool → measure → record।"
+  },
+  "Time & Calendar / समय एवं कैलेंडर": {
+    body:"बच्चे दिन, सप्ताह, महीने, तारीख, घड़ी के घंटे/मिनट और daily routine को समय से जोड़ते हैं। पहले familiar events से शुरू करके clock reading तक बढ़ाया जाता है।",
+    objectives:["दिन/महीने का क्रम बताना।","घड़ी में hour और minute hand पहचानना।","simple elapsed time और routine समझना।"],
+    deep:"Time को केवल clock देखकर नहीं; घटनाओं के क्रम, duration और before/after संबंध से भी समझना चाहिए।",
+    examples:["School starts 8:00, lunch 12:30.","आज Monday है तो 3 days बाद कौन सा day होगा?"],
+    practice:["calendar में dates खोजें.","घड़ी पर full/half hour पढ़ें.","अपनी दिनचर्या का time chart बनाएं."],
+    activity:"'My Day' timetable बनाकर कम से कम 6 activities और उनके times लिखें।",
+    mistakes:["hour और minute hand को उल्टा पढ़ना।","12-hour clock में AM/PM का context न देखना।"],
+    summary:"क्रम → duration → clock → calendar → daily planning।"
+  },
+  "Money & Simple Budget / पैसा एवं सरल बजट": {
+    body:"बच्चे coins/notes की पहचान, price comparison, जोड़-घटाव और जरूरत/इच्छा के सरल अंतर से money literacy शुरू करते हैं। बजट को छोटी वास्तविक राशि के उदाहरण से समझाया जाता है।",
+    objectives:["basic denominations पहचानना।","simple purchase का total और change निकालना।","जरूरी खर्च और saving का basic idea समझना।"],
+    deep:"Money learning में गणित के साथ decision-making आता है: उपलब्ध राशि, कीमत और प्राथमिकता तीनों देखना जरूरी है।",
+    examples:["₹20 + ₹10 = ₹30.","₹50 में ₹32 की वस्तु लेने पर ₹18 बचते हैं."],
+    practice:["shop cards से 5 purchases करें.","total और change निकालें.","₹100 का simple needs/saving budget बनाएं."],
+    activity:"classroom pretend shop में buyer-seller role play करें और receipt लिखें।",
+    mistakes:["price जोड़ते समय denomination भूलना।","change बिना calculation के अनुमान से बताना।"],
+    summary:"राशि पहचानो → कीमत देखो → total/change निकालो → जरूरत/बचत सोचो।"
+  },
+  "Myself, Family & School / मैं, परिवार एवं विद्यालय": {
+    body:"EVS में बच्चा अपने शरीर, परिवार, घर और विद्यालय को पहचानता है तथा roles, routines, relationships और सुरक्षित व्यवहार समझता है।",
+    objectives:["अपने बारे में basic जानकारी बताना।","परिवार और school roles पहचानना।","school rules और safe behaviour समझना।"],
+    deep:"EVS का उद्देश्य आसपास की दुनिया को observe करके language, social understanding और responsible behaviour विकसित करना है।",
+    examples:["My name, age, favourite activity.","Teacher, helper, parent और student की responsibilities पर चर्चा."],
+    practice:["My Family tree/chart बनाएं.","school के 5 safe rules लिखें.","अपने daily routine का sequence बताएं."],
+    activity:"कक्षा का 'People who help us' poster बनाएं।",
+    mistakes:["हर परिवार एक जैसा मानना।","role और person को stereotype से जोड़ना।"],
+    summary:"मैं → मेरा परिवार → मेरा विद्यालय → roles → सुरक्षित जिम्मेदारी।"
+  },
+  "Plants & Animals / पौधे एवं पशु": {
+    body:"बच्चे पौधों और पशुओं की basic needs, parts, habitats और उपयोगी/सुरक्षित interaction समझते हैं। observation से classification और care की आदत विकसित की जाती है।",
+    objectives:["पौधे के मुख्य parts पहचानना।","पशु और उनके habitats के उदाहरण देना।","जीवों की basic needs बताना।"],
+    deep:"Plants और animals जीवित systems हैं; food, water, air और suitable habitat उनकी survival needs से जुड़े हैं।",
+    examples:["root, stem, leaf, flower.","fish → water habitat; bird → nest/tree environment."],
+    practice:["एक पौधे का weekly observation record रखें.","5 animals को habitat से match करें.","plant care checklist बनाएं."],
+    activity:"school/घर के पौधे की height/leaf changes का picture log बनाएं।",
+    mistakes:["हर पौधे को रोज समान मात्रा में पानी चाहिए मानना।","wild animals को pets की तरह handle करना।"],
+    summary:"पहचान → parts/needs → habitat → observation → responsible care।"
+  },
+  "Water, Air & Weather / जल, वायु एवं मौसम": {
+    body:"बच्चे पानी और हवा की रोजमर्रा की भूमिका, मौसम के basic बदलाव और water conservation की जरूरत समझते हैं। observation और simple records से science thinking विकसित होती है।",
+    objectives:["जल और वायु के मुख्य उपयोग बताना।","weather observations record करना।","पानी बचाने के practical तरीके पहचानना।"],
+    deep:"Weather रोज बदल सकता है; climate अलग अवधारणा है। प्राथमिक स्तर पर बच्चे visible observations—cloud, wind, rain, heat—से शुरुआत करते हैं।",
+    examples:["आज cloudy/sunny/windy record करें.","tap बंद रखना, leaking tap report करना."],
+    practice:["7-day weather chart बनाएं.","घर में water-use के 5 points खोजें.","air/water uses की सूची बनाएं."],
+    activity:"'Save Water' classroom audit करके 3 measurable improvements सुझाएँ।",
+    mistakes:["weather और climate को एक ही मानना।","water conservation को केवल slogan रखना, action न करना।"],
+    summary:"Observe → record → understand use → conserve → review।"
+  },
+  "Simple Experiments / सरल प्रयोग": {
+    body:"प्राथमिक science में सुरक्षित, कम-जोखिम वाले experiments से prediction, observation, comparison और conclusion सिखाया जाता है। बच्चों को 'क्या होगा?' पूछने और evidence देखने की आदत दी जाती है।",
+    objectives:["simple prediction करना।","एक experiment को step-by-step करना।","observation और conclusion अलग लिखना।"],
+    deep:"Experiment में परिणाम पहले से तय नहीं माना जाता; observation evidence देता है और conclusion उसी evidence पर आधारित होना चाहिए।",
+    examples:["कौन-सी वस्तु पानी में तैरेगी? prediction → test → record.","sunlight में रखे और छाया में रखे objects का temperature observation."],
+    practice:["prediction लिखें.","materials और steps list करें.","result को table/चित्र में record करें."],
+    activity:"Teacher-guided sink/float activity करें और हर बच्चे से evidence-based conclusion लिखवाएँ।",
+    mistakes:["prediction को result समझ लेना।","unsafe chemicals/fire जैसी गतिविधियाँ बिना trained adult के करना।"],
+    summary:"Question → prediction → safe test → observation → conclusion।"
+  },
+  "Hygiene & Nutrition / स्वच्छता एवं पोषण": {
+    body:"बच्चे हाथ धोने, साफ पानी, दाँतों की देखभाल, साफ भोजन और balanced food choices की basic समझ सीखते हैं। संदेश डर पर नहीं, healthy daily habits पर आधारित होना चाहिए।",
+    objectives:["महत्वपूर्ण hygiene habits पहचानना।","food groups और विविध भोजन का basic idea समझना।","safe water और food handling की आदत बनाना।"],
+    deep:"Nutrition में केवल पेट भरना नहीं; growth और health के लिए विविध nutrients जरूरी हैं। Hygiene infection risk घटाने में मदद करती है।",
+    examples:["खाने से पहले और toilet के बाद हाथ धोना.","थाली में अनाज + दाल/अन्य protein + सब्जी/फल जैसे विविध food शामिल करना."],
+    practice:["handwashing steps क्रम में लगाएं.","एक दिन का food diary बनाएं.","safe/unsafe food practices पहचानें."],
+    activity:"कक्षा में healthy plate poster बनाएं और local foods के examples जोड़ें।",
+    mistakes:["एक food को हर समस्या का इलाज मानना।","हाथ धोने में बहुत कम समय देना।"],
+    summary:"साफ हाथ → सुरक्षित भोजन/जल → विविध पोषण → नियमित healthy habits।"
+  },
+  "Dental & Physical Health / दंत एवं शारीरिक स्वास्थ्य": {
+    body:"बच्चे दाँत साफ करने, oral hygiene, शरीर की देखभाल, physical activity, rest और चोट से बचाव की उम्रानुकूल जानकारी सीखते हैं।",
+    objectives:["दिन में oral care routine समझना।","physical activity और rest का महत्व बताना।","basic warning signs पर trusted adult को बताना।"],
+    deep:"Health education का उद्देश्य self-care habits और help-seeking behaviour बनाना है, diagnosis करना नहीं।",
+    examples:["सुबह-रात brushing routine.","दर्द/चोट होने पर छिपाने के बजाय parent/teacher को बताना."],
+    practice:["daily self-care checklist बनाएं.","safe physical activities की सूची बनाएं.","oral hygiene steps क्रम में लगाएं."],
+    activity:"एक सप्ताह का healthy routine chart बनाकर पूरा होने पर tick करें।",
+    mistakes:["दर्द को लगातार ignore करना।","खेल और physical activity को बिना safety rules के करना।"],
+    summary:"Daily care → movement → rest → safe reporting → qualified help।"
+  },
+  "Road & Home Safety / सड़क एवं घर सुरक्षा": {
+    body:"बच्चों को road crossing, traffic signals, seat belt/helmet awareness और घर में बिजली, आग, sharp objects, medicines तथा strangers से जुड़ी basic safety सिखाई जाती है।",
+    objectives:["safe road crossing steps बताना।","घर के common hazards पहचानना।","emergency में trusted adult को सूचना देना।"],
+    deep:"Safety में खतरा पहचानना, जोखिम कम करना और सही व्यक्ति से मदद लेना मुख्य है; बच्चे को high-risk rescue करने के लिए नहीं कहा जाता।",
+    examples:["Stop → Look → Listen → cross with adult when needed.","अज्ञात medicine को बिना adult के न छूना."],
+    practice:["home safety picture में 10 hazards खोजें.","traffic signs match करें.","trusted contacts की list बनाएं."],
+    activity:"classroom road-safety role play करें जिसमें pedestrian और traffic signals हों।",
+    mistakes:["चलते समय phone/attention distract करना।","घर में medicine/chemical को curiosity से खोलना।"],
+    summary:"खतरा पहचानो → रुककर सोचो → सुरक्षित नियम अपनाओ → adult help लो।"
+  },
+  "Personal & Emergency Safety / व्यक्तिगत एवं आपात सुरक्षा": {
+    body:"बच्चे body boundaries, trusted adults, emergency contacts, safe/unsafe situations और help-seeking behaviour की age-appropriate understanding सीखते हैं।",
+    objectives:["अपने trusted adults पहचानना।","unsafe situation में 'No/Stop' और help-seeking का basic response जानना।","emergency में सही जानकारी देना।"],
+    deep:"Personal safety का उद्देश्य डर पैदा करना नहीं, बच्चे को अपनी boundaries समझने और मदद माँगने का confidence देना है।",
+    examples:["Lost होने पर uniformed/identified helper या trusted adult से सहायता लेना.","असहज touch/situation को trusted adult को बताना."],
+    practice:["3 trusted adults लिखें.","emergency contact practice करें.","safe/unsafe scenario cards discuss करें."],
+    activity:"Teacher-guided safety circle बनाएं—किससे मदद माँगनी है और कैसे बताना है।",
+    mistakes:["बच्चे को हर स्थिति में अकेले solve करने को कहना।","बच्चे की disclosure को blame करना।"],
+    summary:"Boundary → safe choice → trusted adult → clear help request।"
+  },
+  "Empathy & Kindness / सहानुभूति एवं दया": {
+    body:"बच्चे दूसरे व्यक्ति की feelings पहचानना, मदद करना, बिना मज़ाक उड़ाए सुनना और जरूरत के समय kindness दिखाना सीखते हैं।",
+    objectives:["basic emotions पहचानना।","दूसरे की स्थिति समझकर respectful response देना।","छोटे helpful actions करना।"],
+    deep:"Empathy का अर्थ दूसरे की भावना को समझने की कोशिश करना है, जरूरी नहीं कि हम उसी तरह महसूस करें।",
+    examples:["किसी मित्र के गिरने पर हँसने के बजाय मदद करना.","'तुम ठीक हो?' पूछना."],
+    practice:["emotion cards match करें.","3 kind actions plan करें.","role-play में supportive response दें."],
+    activity:"एक सप्ताह 'Kindness Log' रखें और हर दिन एक वास्तविक helpful action लिखें।",
+    mistakes:["मदद करते समय सामने वाले को शर्मिंदा करना।","हर व्यक्ति की जरूरत का अनुमान बिना पूछे लगा लेना।"],
+    summary:"देखो → समझो → सम्मान से सुनो → मदद करो → dignity बनाए रखो।"
+  },
+  "Cooperation & Respect / सहयोग एवं सम्मान": {
+    body:"बच्चे sharing, turn-taking, listening, group rules और अलग-अलग लोगों का सम्मान करना सीखते हैं। समूह गतिविधियों में जिम्मेदारियाँ बाँटकर cooperation को practical बनाया जाता है।",
+    objectives:["अपनी turn का इंतजार करना।","दूसरे की बात सुनना और सम्मानपूर्वक disagree करना।","group task में assigned responsibility निभाना।"],
+    deep:"Cooperation का मतलब हर बात में सहमत होना नहीं; common goal के लिए respectful communication और fair participation जरूरी है।",
+    examples:["चार बच्चों को poster के अलग-अलग roles देना.","'मैं अलग सोचता/सोचती हूँ क्योंकि…' कहना."],
+    practice:["team puzzle करें.","एक group rule list बनाएं.","partner की बात बिना interrupt किए सुनें."],
+    activity:"चार सदस्य मिलकर classroom improvement poster बनाएं और roles rotate करें।",
+    mistakes:["एक बच्चा पूरा काम कर लेना।","असहमति को personal insult बनाना।"],
+    summary:"सुनो → turn दो → role निभाओ → सम्मान रखो → साझा लक्ष्य पूरा करो।"
+  },
+  "Communication & Asking Questions / संवाद एवं प्रश्न": {
+    body:"बच्चों को स्पष्ट बोलना, ध्यान से सुनना, मदद माँगना और 'क्या, क्यों, कैसे?' जैसे प्रश्न पूछना सिखाया जाता है। Curiosity को learning का हिस्सा माना जाता है।",
+    objectives:["अपनी जरूरत स्पष्ट शब्दों में बताना।","उत्तर सुनकर relevant follow-up question पूछना।","अनिश्चित होने पर help माँगना।"],
+    deep:"अच्छा communication दोतरफा है: बोलना जितना जरूरी है, उतना ही सुनना और समझना भी।",
+    examples:["'मुझे यह step समझ नहीं आया, क्या आप फिर समझा सकते हैं?'","'यह क्यों होता है?' पूछना."],
+    practice:["5 question words का उपयोग करें.","partner की बात दोहराकर confirm करें.","एक classroom problem पर 3 questions बनाएं."],
+    activity:"Question Wall बनाएं जहाँ बच्चे रोज एक genuine learning question लगाएँ।",
+    mistakes:["उत्तर न सुनकर अगला प्रश्न पूछना।","'मुझे नहीं पता' कहने में शर्म करना।"],
+    summary:"साफ बोलो → ध्यान से सुनो → clarification पूछो → सीखो।"
+  },
+  "Problem Solving & Decision Making / समस्या समाधान एवं निर्णय": {
+    body:"बच्चे समस्या को पहचानना, जानकारी जुटाना, दो-तीन विकल्प सोचना, सुरक्षित विकल्प चुनना और परिणाम की समीक्षा करना सीखते हैं।",
+    objectives:["समस्या को स्पष्ट शब्दों में बताना।","एक से अधिक possible solutions सोचना।","सुरक्षित और उचित विकल्प चुनने का कारण बताना।"],
+    deep:"Decision-making में impulse के बजाय situation, safety, available information और consequences देखना जरूरी है।",
+    examples:["दो बच्चों के बीच एक toy: turn-taking, timer या shared play options.","किताब खो जाए तो खोजने के steps बनाएं."],
+    practice:["एक daily problem के 3 solutions लिखें.","हर option के benefit/risk पर बात करें.","चुने solution का result review करें."],
+    activity:"'Problem → Options → Choice → Result' worksheet पूरा करें।",
+    mistakes:["पहला idea ही final मान लेना।","unsafe solution को केवल आसान होने के कारण चुनना।"],
+    summary:"समस्या समझो → विकल्प बनाओ → सुरक्षित विकल्प चुनो → परिणाम देखो।"
+  },
+  "Drawing, Music & Craft / कला, संगीत एवं शिल्प": {
+    body:"रचनात्मक learning में drawing, colouring, rhythm, singing, paper craft और local art forms के माध्यम से expression, fine-motor skills और imagination विकसित की जाती है।",
+    objectives:["विभिन्न materials का सुरक्षित उपयोग करना।","pattern, colour और rhythm से creative work बनाना।","अपने work के बारे में 2–3 बातें बताना।"],
+    deep:"Creative work का लक्ष्य केवल सुंदर final product नहीं; planning, experimentation, expression और reflection भी learning हैं।",
+    examples:["shape collage, simple rhythm clapping, paper folding.","एक ही object के दो अलग creative designs बनाना."],
+    practice:["एक drawing को तीन shapes से बनाएं.","4-beat rhythm repeat करें.","reusable paper से craft बनाएं."],
+    activity:"'My Local Culture' theme पर drawing/craft तैयार करें और छोटा oral presentation दें।",
+    mistakes:["हर बच्चे से एक जैसा output अपेक्षित करना।","sharp tools बिना supervision के देना।"],
+    summary:"Idea → material → create → explain → improve।"
+  },
+  "Stories, Poems & Role Play / कहानी, कविता एवं अभिनय": {
+    body:"कहानी, कविता और role play से language, imagination, sequencing, listening और social-emotional learning विकसित होती है। बच्चे characters और events को अपने शब्दों में व्यक्त करते हैं।",
+    objectives:["कहानी का beginning-middle-end पहचानना।","poem में rhythm/repetition का आनंद लेना।","role play में dialogue और respectful turn-taking करना।"],
+    deep:"Story learning में prediction, vocabulary, moral/values और comprehension को जोड़ना चाहिए; केवल कहानी सुनाकर समाप्त करना पर्याप्त नहीं।",
+    examples:["कहानी रोककर पूछें—अब आगे क्या होगा?","दो characters का short dialogue enact करें."],
+    practice:["एक कहानी का 4-step sequence बनाएं.","3 नए words से sentences बनाएं.","role play में 4 lines बोलें."],
+    activity:"बच्चे समूह में एक छोटी local story enact करें और अंत में 'मैंने क्या सीखा?' बताएं।",
+    mistakes:["हर story का केवल एक 'correct' interpretation मानना।","role play में किसी बच्चे को शर्मिंदा करना।"],
+    summary:"सुनो → सोचो → sequence करो → enact करो → सीख बताओ।"
+  },
+  "Devices & Basic Digital Skills / उपकरण एवं डिजिटल कौशल": {
+    body:"प्राथमिक digital learning में device की पहचान, safe handling, mouse/touch, keyboard की basic keys, opening/closing an app और digital responsibility सिखाई जाती है।",
+    objectives:["computer/tablet के basic parts पहचानना।","device को साफ और सुरक्षित तरीके से उपयोग करना।","keyboard/mouse या touch का basic control करना।"],
+    deep:"Digital skill में technical action के साथ safety, privacy और responsible use भी शुरू से शामिल होना चाहिए।",
+    examples:["monitor, keyboard, mouse पहचानें.","spacebar, enter और backspace का उपयोग करें."],
+    practice:["guided typing में अपना नाम लिखें.","एक app खोलकर properly close करें.","device handling rules repeat करें."],
+    activity:"'Digital Lab Rules' poster बनाएं: clean hands, careful handling, no unknown clicks, ask before changing settings.",
+    mistakes:["screen/device पर जोर से दबाना।","unknown links/apps पर बिना adult guidance click करना।"],
+    summary:"पहचानो → सुरक्षित पकड़ो → basic controls → responsible use।"
+  },
+  "Projects, Revision & Assessment / प्रोजेक्ट, पुनरावृत्ति एवं आकलन": {
+    body:"सीखी हुई भाषा, गणित, EVS, life skills और creativity को छोटे projects में जोड़कर revise किया जाता है। Assessment में केवल marks नहीं, understanding, application और improvement भी देखी जाती है।",
+    objectives:["सीखे concepts को एक practical task में जोड़ना।","अपनी गलतियाँ पहचानकर सुधारना।","assessment के बाद next learning goal तय करना।"],
+    deep:"अच्छा assessment learner को label करने के लिए नहीं; यह बताने के लिए है कि क्या समझ आया, कहाँ support चाहिए और आगे क्या सीखना है।",
+    examples:["'My Healthy Day' poster में writing + time + health habits जोड़ें.","10-question self-check के बाद error log बनाएं."],
+    practice:["हर module की 3 key बातें बिना notes लिखें.","एक mini project पूरा करें.","गलत answers की वजह लिखें."],
+    activity:"Final primary portfolio: reading sample + maths work + EVS observation + creative work + reflection.",
+    mistakes:["केवल score देखकर learning मान लेना।","गलती छिपाना, error से सीखना नहीं।"],
+    summary:"Revise → apply → assess → error समझो → improve → next goal।"
+  }
+};
+
 const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
   const clean = label.replace(/^[^\s]+\s/, "");
+  if (/^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi)) {
+    const primary = PRIMARY_EDUCATION_LESSON_CONTENT[clean + ""] || PRIMARY_EDUCATION_LESSON_CONTENT[label];
+    if (primary) {
+      const check = [
+        {question: clean + " में केवल रटना पर्याप्त क्यों नहीं है?", options:["Concept समझकर example, practice और application करना जरूरी है","केवल heading याद करना पर्याप्त है","बिना समझे copy करना बेहतर है","practice की जरूरत नहीं"], answer:0},
+        {question:"सीखने के बाद उपयोगी अगला कदम क्या है?",options:["Practical task करके result review करना","बिना जाँचे answer देना","सिर्फ certificate देखना","गलती को ignore करना"],answer:0}
+      ];
+      return [
+        label,
+        primary.body,
+        {
+          objectives: primary.objectives,
+          content:{
+            easyExplanation:"सरल समझ / Simple meaning: " + primary.body,
+            deepUnderstanding:"Deep understanding / गहरी समझ: " + primary.deep,
+            whyItMatters:"क्यों जरूरी है / Why it matters: इस skill की मजबूत नींव आगे की reading, writing, mathematics, reasoning, communication और daily-life learning को support करती है।",
+            keyPoints:[clean,moduleTitle,"Example + Practice","Application + Review"],
+            examples:primary.examples,
+            steps:["🎯 उद्देश्य समझें / Understand the goal","👀 देखें-सुनें / Observe & listen","📖 Concept समझें / Learn the concept","🛠️ स्वयं करें / Practice","🔎 जाँचें / Review","🔄 सुधारें / Improve"],
+            practicalApplication:"व्यावहारिक उपयोग / Practical application: " + primary.activity,
+            memoryHook:"🧠 याद रखें / Remember: समझो → करके देखो → जाँचो → सुधारो → फिर समझाकर बताओ।",
+            commonMistakes:primary.mistakes,
+            summary:"📌 सार / Summary: " + primary.summary
+          },
+          practice:primary.practice,
+          activity:"🎯 गतिविधि / Activity: " + primary.activity,
+          knowledgeCheck:check,
+          reflection:["आज मैंने क्या नया सीखा?","मैं इसे वास्तविक जीवन में कहाँ उपयोग कर सकता/सकती हूँ?","मुझे किस हिस्से में और practice चाहिए?"]
+        }
+      ];
+    }
+  }
+
   const subjectName = subject.en;
   const examplesByWord = [
     ["Letters","Example / उदाहरण: A → Apple; अ → अनार. पहले पहचानें, फिर बोलें, फिर लिखें।"],
@@ -744,11 +1181,7 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
     label,
     body,
     {
-      objectives:[
-        clean + " का अर्थ और उद्देश्य समझना।",
-        subjectName + " के संदर्भ में इसका उपयोग पहचानना।",
-        example + " के आधार पर खुद practice करना।"
-      ],
+      objectives:[clean + " का अर्थ और उद्देश्य समझना।",subjectName + " के संदर्भ में इसका उपयोग पहचानना।",example + " के आधार पर खुद practice करना।"],
       content:{
         easyExplanation:"सरल समझ / Simple meaning: " + clean + " को पहले आसान भाषा में समझें, फिर subject-specific example से जोड़ें।",
         deepUnderstanding:"Deep understanding / गहरी समझ: concept के पीछे कारण, context, limitations और सही उपयोग समझें। केवल याद करने के बजाय बताएं कि कब, क्यों और कैसे इसका उपयोग होगा।",
@@ -761,12 +1194,7 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
         commonMistakes:["❌ केवल definition याद करना","❌ example को बिना समझे copy करना","❌ practice के बाद result review न करना","❌ जरूरत होने पर reliable source/qualified person से पुष्टि न करना"],
         summary:"📌 सार / Summary: " + clean + " को समझने का लक्ष्य knowledge को practical capability में बदलना है।"
       },
-      practice:[
-        "✍️ बिना notes देखे 3 मुख्य बातें लिखें।",
-        "🔎 एक real-life example खोजें।",
-        "🛠️ एक छोटा practical task करें।",
-        "🗣️ किसी दूसरे व्यक्ति को 60 seconds में समझाएँ।"
-      ],
+      practice:["✍️ बिना notes देखे 3 मुख्य बातें लिखें।","🔎 एक real-life example खोजें।","🛠️ एक छोटा practical task करें।","🗣️ किसी दूसरे व्यक्ति को 60 seconds में समझाएँ।"],
       activity,
       knowledgeCheck:check,
       reflection:["आज मैंने क्या नया सीखा?","मुझे किस हिस्से में और practice चाहिए?","मैं इसे वास्तविक जीवन में कहाँ उपयोग कर सकता/सकती हूँ?"]
