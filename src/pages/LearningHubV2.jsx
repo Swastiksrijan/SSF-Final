@@ -1247,7 +1247,7 @@ function PrimaryLessonVisual({ lesson }) {
   const examples = detail.examples || [];
   const practice = lesson.detail?.practice || [];
   const title = lesson.title || "";
-  const cleanTitle = title.replace(/^([^/]+)\\s\\/\\s/, "$1").trim();
+  const cleanTitle = title.split(" / ")[0].trim();
   const isLetters = /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(title);
   const isNumbers = /numbers|counting|संख्या|गिनती|number sense|जोड़|घटाव|गुणा|भाग|fractions|भिन्न/i.test(title);
   const isLanguage = /hindi|english|शब्द|reading|writing|vocabulary|phonics|मात्रा|वाक्य|पठन|लेखन/i.test(title);
