@@ -326,56 +326,464 @@ const CATEGORY_BLUEPRINTS = {
   ]
 };
 
-const buildTopicModules = (subject) => {
-  const topic = subject.en;
-  const topicHi = subject.hi;
-  const intro = subject.intro;
+const SUBJECT_PROFILE_RULES = [
+  {
+    test: /primary education|प्राथमिक शिक्षा/i,
+    icon:"📚",
+    modules:[
+      ["Foundation / आधार",["🔤 Letters & Sounds / अक्षर एवं ध्वनि","🔢 Numbers & Counting / संख्या एवं गिनती","✍️ Fine Motor & Writing Readiness / लेखन तैयारी","👀 Observation & Classification / अवलोकन एवं वर्गीकरण"]],
+      ["Hindi Language / हिंदी भाषा",["अ — स्वर / Vowels","क — व्यंजन / Consonants","म — मात्राएँ / Matras","📖 शब्द, वाक्य एवं पठन / Words, Sentences & Reading"]],
+      ["English Foundation / अंग्रेज़ी आधार",["🔤 Alphabet A–Z / वर्णमाला","🔊 Phonics & Sounds / ध्वनि","🧠 Everyday Vocabulary / दैनिक शब्दावली","💬 Simple Sentences / सरल वाक्य"]],
+      ["Reading & Writing / पठन एवं लेखन",["📖 Reading Fluency / प्रवाहपूर्ण पठन","🧩 Comprehension / पठन-बोध","✍️ Sentence Writing / वाक्य लेखन","📝 Paragraph & Picture Writing / अनुच्छेद एवं चित्र लेखन"]],
+      ["Mathematics / गणित",["🔢 Number Sense / संख्या-बोध","➕ Addition & Subtraction / जोड़ एवं घटाव","✖️ Multiplication & Division / गुणा एवं भाग","🍕 Fractions, Patterns & Problems / भिन्न, पैटर्न एवं समस्याएँ"]],
+      ["Measurement & Money / मापन एवं धन",["📏 Length & Distance / लंबाई एवं दूरी","⚖️ Weight & Capacity / भार एवं क्षमता","⏰ Time & Calendar / समय एवं कैलेंडर","💰 Money & Simple Budget / पैसा एवं सरल बजट"]],
+      ["EVS & Science / पर्यावरण एवं विज्ञान",["👨‍👩‍👧 Myself, Family & School / मैं, परिवार एवं विद्यालय","🌱 Plants & Animals / पौधे एवं पशु","💧 Water, Air & Weather / जल, वायु एवं मौसम","🔬 Simple Experiments / सरल प्रयोग"]],
+      ["Health & Safety / स्वास्थ्य एवं सुरक्षा",["🧼 Hygiene & Nutrition / स्वच्छता एवं पोषण","🦷 Dental & Physical Health / दंत एवं शारीरिक स्वास्थ्य","🚦 Road & Home Safety / सड़क एवं घर सुरक्षा","🛡️ Personal & Emergency Safety / व्यक्तिगत एवं आपात सुरक्षा"]],
+      ["Life Skills & Values / जीवन कौशल एवं मूल्य",["❤️ Empathy & Kindness / सहानुभूति एवं दया","🤝 Cooperation & Respect / सहयोग एवं सम्मान","🗣️ Communication & Asking Questions / संवाद एवं प्रश्न","🧠 Problem Solving & Decision Making / समस्या समाधान एवं निर्णय"]],
+      ["Creativity & Digital Learning / रचनात्मकता एवं डिजिटल सीख",["🎨 Drawing, Music & Craft / कला, संगीत एवं शिल्प","📖 Stories, Poems & Role Play / कहानी, कविता एवं अभिनय","💻 Devices & Basic Digital Skills / उपकरण एवं डिजिटल कौशल","🏆 Projects, Revision & Assessment / प्रोजेक्ट, पुनरावृत्ति एवं आकलन"]]
+    ]
+  },
+  {
+    test:/secondary education|माध्यमिक शिक्षा/i,icon:"🎓",
+    modules:[
+      ["Academic Foundation / शैक्षणिक आधार",["📚 Subject Basics / विषय आधार","🧠 Concept Building / अवधारणा निर्माण","📝 Notes & Textbook Skills / नोट्स एवं पाठ्यपुस्तक कौशल","🎯 Learning Goals / सीखने के लक्ष्य"]],
+      ["Language & Communication / भाषा एवं संचार",["📖 Reading Comprehension / पठन-बोध","✍️ Structured Writing / संरचित लेखन","🗣️ Speaking & Presentation / बोलना एवं प्रस्तुति","🔤 Grammar & Vocabulary / व्याकरण एवं शब्दावली"]],
+      ["Mathematics / गणित",["🔢 Number & Algebra / संख्या एवं बीजगणित","📐 Geometry / ज्यामिति","📊 Data & Graphs / डेटा एवं ग्राफ","🧩 Problem Solving / समस्या समाधान"]],
+      ["Science / विज्ञान",["⚛️ Physics Foundations / भौतिकी आधार","🧪 Chemistry Foundations / रसायन आधार","🌱 Biology Foundations / जीवविज्ञान आधार","🔬 Experiment & Evidence / प्रयोग एवं प्रमाण"]],
+      ["Social Science / सामाजिक विज्ञान",["🌍 Geography / भूगोल","📜 History / इतिहास","🏛️ Civics / नागरिक शास्त्र","💹 Economics Basics / अर्थशास्त्र आधार"]],
+      ["Study & Examination / अध्ययन एवं परीक्षा",["⏱️ Time Management / समय प्रबंधन","📝 Answer Writing / उत्तर लेखन","📋 Mock Tests / मॉक टेस्ट","🔄 Revision & Error Analysis / पुनरावृत्ति एवं त्रुटि विश्लेषण"]]
+    ]
+  },
+  {
+    test:/higher secondary education|उच्च माध्यमिक शिक्षा/i,icon:"🎓",
+    modules:[
+      ["Stream Foundation / विषय-धारा आधार",["🧭 Subject Selection / विषय चयन","📚 Core Concepts / मुख्य अवधारणाएँ","🧪 Practical Orientation / प्रायोगिक आधार","🎯 Learning Outcomes / learning outcomes"]],
+      ["Academic Mastery / अकादमिक दक्षता",["📖 Deep Reading / गहन पठन","📝 Notes & Answer Writing / नोट्स एवं उत्तर लेखन","🧠 Critical Thinking / आलोचनात्मक सोच","📊 Data & Evidence / डेटा एवं प्रमाण"]],
+      ["Practical & Projects / प्रायोगिक एवं प्रोजेक्ट",["🔬 Practical Work / प्रायोगिक कार्य","📁 Project Planning / प्रोजेक्ट योजना","📊 Observation & Reporting / अवलोकन एवं रिपोर्ट","🎤 Presentation / प्रस्तुति"]],
+      ["Examination / परीक्षा तैयारी",["📋 Syllabus Mapping / पाठ्यक्रम मानचित्रण","⏱️ Study Plan / अध्ययन योजना","📝 Mock Tests / मॉक टेस्ट","🔄 Revision & Error Log / पुनरावृत्ति एवं त्रुटि लॉग"]],
+      ["Higher Study & Career / उच्च शिक्षा एवं करियर",["🎓 Courses & Pathways / पाठ्यक्रम एवं मार्ग","🧭 Career Exploration / करियर खोज","📝 Applications & Documents / आवेदन एवं दस्तावेज़","💡 Skills & Portfolio / कौशल एवं portfolio"]]
+    ]
+  },
+  {
+    test:/college|higher education|उच्च शिक्षा/i,icon:"🎓",
+    modules:[
+      ["Academic Skills / अकादमिक कौशल",["📚 Academic Reading / अकादमिक पठन","📝 Academic Writing / अकादमिक लेखन","🔎 Research Basics / शोध आधार","📑 Referencing & Sources / संदर्भ एवं स्रोत"]],
+      ["Subject Mastery / विषय दक्षता",["🧠 Core Concepts / मुख्य अवधारणाएँ","📊 Evidence & Analysis / प्रमाण एवं विश्लेषण","💬 Discussion & Seminar / चर्चा एवं seminar","📝 Assignment Skills / assignment कौशल"]],
+      ["Research & Projects / शोध एवं प्रोजेक्ट",["❓ Research Question / शोध प्रश्न","🧪 Method & Data / विधि एवं डेटा","📊 Analysis / विश्लेषण","📄 Report & Presentation / रिपोर्ट एवं प्रस्तुति"]],
+      ["Professional Exposure / पेशेवर अनुभव",["💼 Internship Readiness / internship तैयारी","🤝 Teamwork / teamwork","📧 Professional Communication / professional communication","📁 Portfolio / portfolio"]],
+      ["Career & Lifelong Learning / करियर एवं आजीवन सीख",["🧭 Career Options / करियर विकल्प","📜 Certifications / प्रमाणन","🧠 Upskilling / upskilling","🌐 Lifelong Learning / आजीवन सीख"]]
+    ]
+  },
+  {
+    test:/computer education|computer training|कंप्यूटर शिक्षा|कंप्यूटर प्रशिक्षण/i,icon:"💻",
+    modules:[
+      ["Computer Foundation / कंप्यूटर आधार",["🖥️ Hardware / हार्डवेयर","⚙️ Software / सॉफ्टवेयर","🪟 Operating System / ऑपरेटिंग सिस्टम","⌨️ Keyboard & Mouse / कीबोर्ड एवं माउस"]],
+      ["Files & Productivity / फाइल एवं उत्पादकता",["📁 Files & Folders / फाइल एवं फोल्डर","📝 Documents / दस्तावेज़","📊 Spreadsheets / स्प्रेडशीट","📽️ Presentations / प्रस्तुति"]],
+      ["Internet / इंटरनेट",["🌐 Browser / ब्राउज़र","🔎 Search / खोज","⬇️ Download & Upload / डाउनलोड एवं अपलोड","📝 Online Forms / ऑनलाइन फॉर्म"]],
+      ["Communication / डिजिटल संचार",["📧 Email / ईमेल","☁️ Cloud Storage / cloud storage","🤝 Online Collaboration / online collaboration","📅 Calendar & Meetings / कैलेंडर एवं meetings"]],
+      ["Digital Safety / डिजिटल सुरक्षा",["🔐 Passwords & MFA / पासवर्ड एवं MFA","🎣 Phishing & Scams / phishing एवं scams","🛡️ Privacy / गोपनीयता","💳 Safe Digital Payments / सुरक्षित डिजिटल भुगतान"]],
+      ["Troubleshooting / समस्या समाधान",["🧰 Basic Troubleshooting / मूल troubleshooting","💾 Backup / backup","🔄 Recovery / recovery","🧑‍💻 Responsible Use / जिम्मेदार उपयोग"]]
+    ]
+  },
+  {
+    test:/nursing/i,icon:"🩺",
+    modules:[
+      ["Nursing Foundation / नर्सिंग आधार",["🩺 Role of Nursing / नर्सिंग की भूमिका","🧼 Infection Prevention / संक्रमण रोकथाम","🛏️ Patient Comfort / रोगी सुविधा","⚖️ Ethics & Dignity / नैतिकता एवं गरिमा"]],
+      ["Patient Assessment / रोगी आकलन",["👁️ Observation / अवलोकन","🌡️ Vital Signs / vital signs","📝 History & Records / इतिहास एवं रिकॉर्ड","🚨 Warning Signs / चेतावनी संकेत"]],
+      ["Basic Care / मूल रोगी देखभाल",["🛏️ Hygiene & Positioning / स्वच्छता एवं स्थिति","🍲 Nutrition & Hydration / पोषण एवं hydration","💊 Medication Safety / दवा सुरक्षा","🧴 Wound & Skin Care / घाव एवं त्वचा देखभाल"]],
+      ["Communication / संचार",["🗣️ Patient Communication / रोगी संवाद","👨‍👩‍👧 Family Support / परिवार सहयोग","🔒 Privacy & Confidentiality / गोपनीयता","📋 Handover & Teamwork / handover एवं teamwork"]],
+      ["Documentation & Safety / दस्तावेज़ एवं सुरक्षा",["📑 Nursing Records / नर्सिंग रिकॉर्ड","🧤 PPE & Safety / PPE एवं सुरक्षा","🚑 Emergency Awareness / आपात जागरूकता","🔄 Review & Quality / समीक्षा एवं गुणवत्ता"]]
+    ]
+  },
+  {
+    test:/competitive exam|प्रतियोगी परीक्षा/i,icon:"📝",
+    modules:[
+      ["Exam Foundation / परीक्षा आधार",["📋 Syllabus Mapping / पाठ्यक्रम मानचित्रण","🎯 Exam Pattern / परीक्षा पैटर्न","📚 Resources / अध्ययन सामग्री","📊 Baseline Test / प्रारंभिक परीक्षण"]],
+      ["Quantitative Aptitude / मात्रात्मक योग्यता",["🔢 Number System / संख्या पद्धति","➕ Arithmetic / अंकगणित","📊 Data Interpretation / डेटा व्याख्या","⏱️ Speed & Accuracy / गति एवं शुद्धता"]],
+      ["Reasoning / तर्कशक्ति",["🧩 Series / श्रृंखला","🔗 Analogy & Classification / analogy एवं वर्गीकरण","🧭 Direction & Relation / दिशा एवं संबंध","🧠 Logical Puzzles / तार्किक पहेलियाँ"]],
+      ["Language & General Awareness / भाषा एवं सामान्य ज्ञान",["📖 Comprehension / comprehension","🔤 Grammar & Vocabulary / व्याकरण एवं शब्दावली","🌍 General Awareness / सामान्य जागरूकता","📰 Current Affairs Method / current affairs method"]],
+      ["Mocks & Revision / मॉक एवं पुनरावृत्ति",["📝 Previous Papers / previous papers","⏱️ Timed Mock / timed mock","📊 Error Analysis / त्रुटि विश्लेषण","🔄 Revision Plan / पुनरावृत्ति योजना"]]
+    ]
+  },
+  {
+    test:/library|पुस्तकालय/i,icon:"📚",
+    modules:[
+      ["Reading Foundation / पठन आधार",["📖 Reading Habit / पठन आदत","🔎 Finding a Book / पुस्तक खोज","📚 Book Structure / पुस्तक संरचना","📝 Reading Notes / पठन नोट्स"]],
+      ["Information Skills / सूचना कौशल",["🔎 Search & Keywords / खोज एवं keywords","📑 Reference Sources / संदर्भ स्रोत","🧭 Reliable Information / विश्वसनीय जानकारी","©️ Responsible Use / जिम्मेदार उपयोग"]],
+      ["Critical Reading / आलोचनात्मक पठन",["💡 Main Idea / मुख्य विचार","🧩 Evidence / प्रमाण","⚖️ Compare Sources / स्रोत तुलना","📝 Summarise / सार लेखन"]],
+      ["Library Practice / पुस्तकालय अभ्यास",["🏷️ Classification / वर्गीकरण","📇 Catalogue / catalogue","📅 Issue & Return / issue एवं return","🤝 Library Etiquette / पुस्तकालय शिष्टाचार"]],
+      ["Reading Project / पठन प्रोजेक्ट",["📕 Book Review / पुस्तक समीक्षा","🗣️ Book Talk / book talk","📁 Reading Portfolio / reading portfolio","🏆 Reading Challenge / reading challenge"]]
+    ]
+  },
+  {
+    test:/science fair|विज्ञान मेले/i,icon:"🔬",
+    modules:[
+      ["Question & Idea / प्रश्न एवं विचार",["❓ Observation / अवलोकन","💡 Problem Identification / समस्या पहचान","🧠 Research Question / शोध प्रश्न","🎯 Project Objective / उद्देश्य"]],
+      ["Experiment / प्रयोग",["🧪 Hypothesis / परिकल्पना","🧰 Materials & Safety / सामग्री एवं सुरक्षा","🔬 Procedure / प्रक्रिया","👀 Observation / अवलोकन"]],
+      ["Data & Evidence / डेटा एवं प्रमाण",["📊 Data Recording / डेटा रिकॉर्डिंग","📈 Tables & Graphs / तालिका एवं ग्राफ","🔎 Evidence / प्रमाण","🧠 Conclusion / निष्कर्ष"]],
+      ["Model & Presentation / मॉडल एवं प्रस्तुति",["🧱 Model Building / मॉडल निर्माण","🪧 Display Board / display board","🎤 Presentation / प्रस्तुति","❓ Question Handling / प्रश्नों का उत्तर"]],
+      ["Reflection / समीक्षा",["⚠️ Errors & Limitations / त्रुटियाँ एवं सीमाएँ","🔄 Improvements / सुधार","🌍 Real-world Application / वास्तविक उपयोग","📄 Final Report / अंतिम रिपोर्ट"]]
+    ]
+  },
+  {
+    test:/spoken english|बोलचाल की अंग्रेज़ी/i,icon:"🗣️",
+    modules:[
+      ["Speaking Foundation / बोलने की नींव",["🔊 Pronunciation / उच्चारण","👋 Greetings & Introduction / अभिवादन एवं परिचय","🧠 Everyday Vocabulary / दैनिक शब्दावली","💬 Basic Sentences / मूल वाक्य"]],
+      ["Daily Conversation / दैनिक बातचीत",["🏠 Home Talk / घर की बातचीत","🏫 School & Work Talk / school एवं work","🛒 Shopping & Services / खरीदारी एवं सेवाएँ","📞 Phone Conversation / फोन बातचीत"]],
+      ["Listening & Response / सुनना एवं प्रतिक्रिया",["👂 Listening for Meaning / अर्थ के लिए सुनना","❓ Questions & Answers / प्रश्नोत्तर","🔁 Repeat & Paraphrase / दोहराना एवं अपने शब्दों में कहना","🧩 Clarification / clarification"]],
+      ["Fluency / प्रवाह",["⏱️ Speaking Practice / speaking अभ्यास","🗣️ Storytelling / कहानी कहना","🎤 Presentation / प्रस्तुति","😊 Confidence & Body Language / confidence एवं body language"]],
+      ["Practical English / व्यावहारिक अंग्रेज़ी",["✈️ Travel / यात्रा","💼 Workplace / कार्यस्थल","📧 Messages & Email / संदेश एवं email","🤝 Polite English / विनम्र अंग्रेज़ी"]]
+    ]
+  },
+  {
+    test:/grammar|व्याकरण/i,icon:"🔤",
+    modules:[
+      ["Word Classes / शब्द-भेद",["🧱 Noun / संज्ञा","👤 Pronoun / सर्वनाम","🏃 Verb / क्रिया","🎨 Adjective & Adverb / विशेषण एवं क्रिया-विशेषण"]],
+      ["Sentence Structure / वाक्य संरचना",["🧩 Subject & Predicate / subject एवं predicate","🔗 Subject-Verb Agreement / subject-verb agreement","❓ Questions / प्रश्न","🚫 Negatives / नकारात्मक वाक्य"]],
+      ["Tense & Time / काल",["⏮️ Present / वर्तमान","⏪ Past / भूत","⏩ Future / भविष्य","🔄 Mixed Practice / मिश्रित अभ्यास"]],
+      ["Usage / प्रयोग",["📌 Articles / articles","📍 Prepositions / prepositions","🔗 Conjunctions / conjunctions","📝 Punctuation / विराम चिह्न"]],
+      ["Error Correction / त्रुटि सुधार",["🔎 Common Errors / सामान्य गलतियाँ","✍️ Editing / editing","🧠 Rule + Example / नियम एवं उदाहरण","📝 Practice Test / अभ्यास परीक्षण"]]
+    ]
+  },
+  {
+    test:/vocabulary|शब्द भंडार/i,icon:"📖",
+    modules:[
+      ["Word Foundations / शब्द आधार",["🔤 Word Families / word families","🧩 Prefix & Suffix / उपसर्ग एवं प्रत्यय","🔊 Pronunciation / उच्चारण","✍️ Spelling / spelling"]],
+      ["Meaning & Context / अर्थ एवं संदर्भ",["📖 Meaning / अर्थ","🧠 Context Clues / context clues","🔄 Synonyms & Antonyms / समानार्थी एवं विलोम","🧩 Multiple Meanings / बहुअर्थी शब्द"]],
+      ["Usage / प्रयोग",["💬 Sentence Use / वाक्य प्रयोग","🗣️ Conversation Words / बातचीत शब्द","💼 Workplace Vocabulary / workplace vocabulary","📚 Academic Vocabulary / academic vocabulary"]],
+      ["Memory / स्मृति",["🧠 Active Recall / active recall","🃏 Flashcards / flashcards","🔁 Spaced Review / spaced review","📝 Word Journal / word journal"]],
+      ["Application / उपयोग",["📖 Reading Practice / पठन अभ्यास","✍️ Writing Practice / लेखन अभ्यास","🎯 Topic Word Lists / विषयवार शब्द सूची","🏆 Vocabulary Quiz / शब्दावली quiz"]]
+    ]
+  },
+  {
+    test:/email|message writing|संदेश लेखन/i,icon:"📧",
+    modules:[
+      ["Message Foundation / संदेश आधार",["🎯 Purpose & Audience / उद्देश्य एवं पाठक","🧾 Subject Line / विषय पंक्ति","📝 Clear Sentences / स्पष्ट वाक्य","🙏 Polite Tone / विनम्र tone"]],
+      ["Email Structure / ईमेल संरचना",["👋 Greeting / अभिवादन","📌 Context / संदर्भ","🙏 Request or Information / अनुरोध या सूचना","👋 Closing & Signature / समापन एवं हस्ताक्षर"]],
+      ["Practical Messages / व्यावहारिक संदेश",["📅 Meeting Request / meeting request","📄 Application / आवेदन","📦 Follow-up / follow-up","🚨 Urgent but Clear Message / जरूरी संदेश"]],
+      ["Attachments & Privacy / attachment एवं privacy",["📎 Attachments / attachments","🔒 Personal Information / निजी जानकारी","🔗 Links & Verification / links एवं सत्यापन","🧹 Proofreading / proofreading"]],
+      ["Practice / अभ्यास",["✍️ Rewrite Poor Message / गलत संदेश सुधारें","📧 Write a Formal Email / formal email","💬 Write a Short Message / छोटा संदेश","🏆 Review Checklist / review checklist"]]
+    ]
+  },
+  {
+    test:/cyber safety|online safety|privacy|साइबर सुरक्षा|ऑनलाइन सुरक्षा/i,icon:"🛡️",
+    modules:[
+      ["Digital Identity / डिजिटल पहचान",["👤 Personal Information / व्यक्तिगत जानकारी","🔐 Passwords / पासवर्ड","2️⃣ MFA / बहु-कारक प्रमाणीकरण","🧾 Account Recovery / account recovery"]],
+      ["Threat Awareness / खतरे पहचानना",["🎣 Phishing / phishing","💸 Scams / scams","🦠 Malware Awareness / malware awareness","🎭 Impersonation / नकली पहचान"]],
+      ["Safe Browsing / सुरक्षित browsing",["🌐 Website Checks / website जाँच","🔗 Link Safety / link safety","⬇️ Safe Downloads / सुरक्षित downloads","📱 App Permissions / app permissions"]],
+      ["Privacy / गोपनीयता",["🔒 Data Sharing / data sharing","📍 Location Privacy / location privacy","📸 Photo & Social Sharing / photo एवं social sharing","🧹 Digital Footprint / digital footprint"]],
+      ["Incident Response / घटना के बाद",["🚨 Recognise a Problem / समस्या पहचानें","⛔ Stop & Secure / रोकें एवं सुरक्षित करें","📣 Report / report करें","🔄 Recover & Learn / recovery एवं learning"]]
+    ]
+  },
+  {
+    test:/digital payment|डिजिटल भुगतान/i,icon:"💳",
+    modules:[
+      ["Payment Basics / भुगतान आधार",["💳 UPI & Digital Payments / UPI एवं डिजिटल भुगतान","🏦 Bank Account Basics / बैंक खाता आधार","📱 Payment Apps / payment apps","🧾 Transaction Records / लेनदेन रिकॉर्ड"]],
+      ["Safe Transactions / सुरक्षित लेनदेन",["🔐 PIN & Password / PIN एवं password","🔢 OTP Safety / OTP सुरक्षा","👤 Verify Receiver / प्राप्तकर्ता सत्यापन","📲 QR Safety / QR सुरक्षा"]],
+      ["Fraud Awareness / धोखाधड़ी जागरूकता",["🎣 Phishing / phishing","📞 Fake Calls / fake calls","💸 Payment Request Scams / payment scams","🚨 Suspicious Transaction / संदिग्ध लेनदेन"]],
+      ["After Payment / भुगतान के बाद",["🧾 Receipt / receipt","🔎 Statement Check / statement check","📣 Report Fraud / fraud report","🔄 Dispute & Follow-up / dispute एवं follow-up"]],
+      ["Practice / अभ्यास",["🧠 Spot the Scam / scam पहचानें","📋 Safe Payment Checklist / सुरक्षित checklist","💬 Role Play / role play","🏆 Knowledge Check / ज्ञान जाँच"]]
+    ]
+  },
+  {
+    test:/resume|cv|रिज्यूमे/i,icon:"📄",
+    modules:[
+      ["Profile Foundation / प्रोफाइल आधार",["👤 Contact Details / संपर्क विवरण","🎓 Education / शिक्षा","🛠️ Skills / कौशल","🏆 Achievements / उपलब्धियाँ"]],
+      ["Experience & Evidence / अनुभव एवं प्रमाण",["💼 Experience / अनुभव","📁 Projects / projects","📜 Certificates / certificates","🔗 Portfolio Evidence / portfolio प्रमाण"]],
+      ["Resume Structure / resume संरचना",["🧾 Summary / summary","📋 Sections / sections","📐 Formatting / formatting","🔎 Relevance / relevance"]],
+      ["Job-Specific Resume / job अनुसार resume",["🎯 Job Description Match / job description match","🔑 Keywords / keywords","🧹 Remove Unnecessary Detail / अनावश्यक detail हटाएँ","✅ Accuracy / accuracy"]],
+      ["Review & Application / समीक्षा एवं आवेदन",["🔍 Proofreading / proofreading","📧 Cover Message / cover message","📤 Submit & Track / submit एवं track","🚫 Common Mistakes / सामान्य गलतियाँ"]]
+    ]
+  },
+  {
+    test:/interview|साक्षात्कार/i,icon:"🎤",
+    modules:[
+      ["Interview Foundation / इंटरव्यू आधार",["🎯 Purpose & Role / उद्देश्य एवं role","📄 Job Description / job description","👤 Self Introduction / परिचय","🧠 Research / research"]],
+      ["Question Practice / प्रश्न अभ्यास",["❓ Common Questions / सामान्य प्रश्न","⭐ Strengths / strengths","🧩 Situation Questions / situation questions","📈 Experience Examples / अनुभव examples"]],
+      ["Communication / संचार",["🗣️ Clear Answers / स्पष्ट उत्तर","👀 Body Language / body language","👂 Listening / listening","⏱️ Concise Responses / संक्षिप्त उत्तर"]],
+      ["Mock Interview / mock interview",["🎭 Role Play / role play","📹 Record & Review / record एवं review","📝 Feedback / feedback","🔄 Improve Answers / answers सुधारें"]],
+      ["Professional Follow-up / follow-up",["📧 Thank-you Message / thank-you message","📌 Clarification / clarification","📅 Next Steps / next steps","🧭 Learning from Rejection / rejection से learning"]]
+    ]
+  },
+  {
+    test:/career planning|करियर योजना/i,icon:"🧭",
+    modules:[
+      ["Self Discovery / आत्म-खोज",["❤️ Interests / रुचियाँ","💪 Strengths / strengths","🛠️ Skills / कौशल","🎯 Values & Priorities / values एवं priorities"]],
+      ["Career Information / करियर जानकारी",["🔎 Occupations / occupations","🎓 Education Pathways / शिक्षा मार्ग","📜 Qualifications / qualifications","💼 Work Reality / काम की वास्तविकता"]],
+      ["Decision Making / निर्णय",["⚖️ Compare Options / विकल्प तुलना","📊 Evidence / evidence","🧩 Constraints / सीमाएँ","🎯 Shortlist / shortlist"]],
+      ["Career Roadmap / करियर roadmap",["🗺️ Short-term Goal / अल्पकालिक लक्ष्य","📅 Action Plan / action plan","🧠 Skill Gap / skill gap","📈 Progress Review / progress review"]],
+      ["Practical Preparation / व्यावहारिक तैयारी",["📄 Resume / resume","🎤 Interview / interview","🤝 Networking / networking","🔄 Continuous Learning / continuous learning"]]
+    ]
+  },
+  {
+    test:/tailoring|embroidery|सिलाई|कढ़ाई/i,icon:"🧵",
+    modules:[
+      ["Tools & Safety / उपकरण एवं सुरक्षा",["🧵 Sewing Machine / सिलाई मशीन","✂️ Tools / औजार","📏 Measurement / नाप","🛡️ Work Safety / कार्य सुरक्षा"]],
+      ["Basic Techniques / मूल तकनीक",["🪡 Stitching / सिलाई","🧷 Seams & Finishing / seams एवं finishing","🧵 Embroidery Basics / कढ़ाई आधार","🧶 Thread & Fabric / धागा एवं कपड़ा"]],
+      ["Measurement & Pattern / नाप एवं pattern",["📏 Body Measurement / body measurement","📐 Pattern Basics / pattern आधार","✂️ Cutting / cutting","🧩 Fitting / fitting"]],
+      ["Practice Projects / अभ्यास प्रोजेक्ट",["👗 Simple Garment / सरल परिधान","👜 Utility Item / उपयोगी वस्तु","🎨 Design & Finishing / design एवं finishing","🔎 Quality Check / quality check"]],
+      ["Enterprise / उद्यम",["💰 Costing / costing","🏷️ Pricing / pricing","📦 Packaging / packaging","🤝 Customer Service / customer service"]]
+    ]
+  },
+  {
+    test:/self-employment|entrepreneurship|उद्यमिता|स्वरोजगार/i,icon:"💼",
+    modules:[
+      ["Idea & Problem / विचार एवं समस्या",["💡 Business Idea / business idea","👥 Customer Need / customer need","🔎 Local Opportunity / स्थानीय अवसर","🎯 Value Proposition / value proposition"]],
+      ["Product & Service / उत्पाद एवं सेवा",["🛠️ Product Design / product design","📋 Service Process / service process","✅ Quality / quality","📦 Packaging / packaging"]],
+      ["Money / धन प्रबंधन",["💰 Cost / cost","🏷️ Price / price","📊 Revenue & Profit / आय एवं लाभ","🧾 Records / records"]],
+      ["Customer & Market / ग्राहक एवं बाजार",["🗣️ Customer Communication / ग्राहक संवाद","📣 Marketing / marketing","🤝 Repeat Customers / repeat customers","🔎 Feedback / feedback"]],
+      ["Small Pilot / छोटा pilot",["🧪 Test the Idea / idea test","📈 Measure Results / परिणाम मापें","🔄 Improve / सुधारें","🗺️ Next Plan / अगली योजना"]]
+    ]
+  },
+  {
+    test:/women empowerment|महिला सशक्तिकरण/i,icon:"👩",
+    modules:[
+      ["Education & Confidence / शिक्षा एवं आत्मविश्वास",["📚 Education / शिक्षा","🗣️ Communication / संचार","💪 Self-Confidence / आत्मविश्वास","🎯 Goal Setting / लक्ष्य निर्धारण"]],
+      ["Rights & Dignity / अधिकार एवं गरिमा",["⚖️ Equality / समानता","🧾 Identity & Documents / पहचान एवं दस्तावेज़","🛡️ Safety / सुरक्षा","🤝 Support Systems / सहयोग प्रणालियाँ"]],
+      ["Economic Participation / आर्थिक भागीदारी",["🛠️ Skills / कौशल","💼 Work Opportunities / काम के अवसर","💰 Financial Awareness / वित्तीय जागरूकता","👥 SHG & Collective Action / SHG एवं सामूहिक action"]],
+      ["Health & Well-being / स्वास्थ्य एवं कल्याण",["🥗 Nutrition / पोषण","🧼 Hygiene / स्वच्छता","🩺 Healthcare Access / स्वास्थ्य सेवा","🧠 Mental Well-being / मानसिक कल्याण"]],
+      ["Leadership & Participation / नेतृत्व एवं भागीदारी",["🗣️ Voice & Decision Making / आवाज एवं निर्णय","🤝 Community Participation / सामुदायिक भागीदारी","📋 Planning / योजना","🌱 Sustainable Growth / सतत विकास"]]
+    ]
+  },
+  {
+    test:/child rights|बाल अधिकार/i,icon:"🧒",
+    modules:[
+      ["Child Rights / बाल अधिकार",["🛡️ Protection / संरक्षण","📚 Education / शिक्षा","❤️ Development / विकास","🗣️ Participation / भागीदारी"]],
+      ["Safety / सुरक्षा",["🏠 Safe Home / सुरक्षित घर","🏫 Safe School / सुरक्षित विद्यालय","📱 Digital Safety / डिजिटल सुरक्षा","🚨 Help Seeking / सहायता लेना"]],
+      ["Health & Nutrition / स्वास्थ्य एवं पोषण",["🥗 Nutrition / पोषण","🧼 Hygiene / स्वच्छता","🩺 Health Care / स्वास्थ्य देखभाल","📈 Growth / विकास"]],
+      ["Learning & Inclusion / सीखना एवं समावेशन",["📖 Learning Support / learning support","♿ Inclusion / समावेशन","👩‍🏫 Teacher Support / teacher support","👨‍👩‍👧 Family Support / family support"]],
+      ["Awareness & Referral / जागरूकता एवं सहायता",["🔎 Recognise Concern / चिंता पहचानें","🗣️ Safe Disclosure / सुरक्षित रूप से बताना","🤝 Trusted Adult / भरोसेमंद वयस्क","📋 Referral & Follow-up / referral एवं follow-up"]]
+    ]
+  },
+  {
+    test:/health|well-being|स्वास्थ्य|कल्याण/i,icon:"❤️",
+    modules:[
+      ["Health Foundation / स्वास्थ्य आधार",["❤️ Well-being / कल्याण","🧠 Health Literacy / health literacy","⚠️ Risk Factors / जोखिम कारक","🩺 When to Seek Care / कब care लें"]],
+      ["Nutrition & Hygiene / पोषण एवं स्वच्छता",["🥗 Balanced Nutrition / संतुलित पोषण","💧 Safe Water / सुरक्षित जल","🧼 Hygiene / स्वच्छता","🍎 Food Safety / food safety"]],
+      ["Prevention / रोकथाम",["💉 Prevention & Vaccination Awareness / रोकथाम एवं टीकाकरण जागरूकता","🦠 Infection Prevention / संक्रमण रोकथाम","🏃 Physical Activity / physical activity","😴 Sleep & Recovery / नींद एवं recovery"]],
+      ["Condition Awareness / रोग जागरूकता",["🔎 Symptoms & Risk / लक्षण एवं जोखिम","📋 Screening Awareness / screening awareness","🧑‍⚕️ Professional Care / professional care","🤝 Stigma-free Support / stigma-free support"]],
+      ["Healthy Living / स्वस्थ जीवन",["🧘 Yoga & Movement / योग एवं movement","🧠 Stress Management / stress management","🚭 De-addiction Awareness / नशामुक्ति जागरूकता","📚 Reliable Health Information / विश्वसनीय health information"]]
+    ]
+  },
+  {
+    test:/aids|hiv/i,icon:"🧬",
+    modules:[
+      ["HIV Basics / HIV की मूल जानकारी",["🧬 HIV क्या है? / What is HIV?","🦠 Transmission / संक्रमण के मार्ग","🚫 What Does Not Transmit / किनसे नहीं फैलता","🧠 Facts vs Myths / तथ्य एवं मिथक"]],
+      ["Prevention / रोकथाम",["🛡️ Prevention / बचाव","🩺 Testing Awareness / परीक्षण जागरूकता","💊 Treatment & Care / उपचार एवं care","🤝 Safe & Respectful Support / सुरक्षित सहयोग"]],
+      ["Testing & Treatment / परीक्षण एवं उपचार",["🔎 Testing / testing","📋 Confirmatory Care / confirmatory care","💊 ART Awareness / ART awareness","📅 Follow-up / follow-up"]],
+      ["Stigma & Rights / stigma एवं अधिकार",["❤️ Dignity / गरिमा","🚫 Stigma Reduction / stigma reduction","🔒 Privacy / privacy","🤝 Support / support"]],
+      ["Community Awareness / सामुदायिक जागरूकता",["📣 Correct Information / सही जानकारी","🧑‍🏫 Awareness Session / awareness session","❓ Questions / questions","📝 Knowledge Check / knowledge check"]]
+    ]
+  },
+  {
+    test:/cancer|कैंसर/i,icon:"🎗️",
+    modules:[
+      ["Cancer Basics / कैंसर आधार",["🧬 What is Cancer? / कैंसर क्या है?","🔎 Risk Factors / जोखिम कारक","🧠 Myths & Facts / मिथक एवं तथ्य","🩺 Why Early Care Matters / early care"]],
+      ["Prevention / रोकथाम",["🚭 Tobacco Risk / तंबाकू जोखिम","🍎 Healthy Lifestyle / स्वस्थ जीवन","☀️ Relevant Exposure Awareness / exposure awareness","🩺 Screening Concepts / screening concepts"]],
+      ["Warning Signs / चेतावनी संकेत",["🔎 Persistent Changes / लगातार बदलाव","🩸 Unusual Symptoms / असामान्य लक्षण","🩺 Professional Evaluation / medical evaluation","📋 Records & Follow-up / records एवं follow-up"]],
+      ["Care Journey / care journey",["👨‍⚕️ Diagnosis Awareness / diagnosis awareness","💊 Treatment Awareness / treatment awareness","❤️ Supportive Care / supportive care","🧠 Emotional Support / emotional support"]],
+      ["Community Awareness / सामुदायिक जागरूकता",["📣 Evidence-based Information / प्रमाण-आधारित जानकारी","🚫 Stigma Reduction / stigma reduction","🤝 Family Support / family support","📝 Knowledge Check / knowledge check"]]
+    ]
+  },
+  {
+    test:/malnutrition|कुपोषण|nutrition|पोषण/i,icon:"🥗",
+    modules:[
+      ["Nutrition Foundation / पोषण आधार",["🥗 Macronutrients / प्रमुख पोषक तत्व","🧬 Micronutrients / सूक्ष्म पोषक तत्व","💧 Hydration / hydration","🍽️ Balanced Plate / balanced plate"]],
+      ["Child & Family Nutrition / बाल एवं परिवार पोषण",["👶 Growth Needs / वृद्धि की जरूरत","🤱 Age-appropriate Feeding / उम्रानुसार feeding","🏠 Family Food Diversity / family food diversity","📈 Growth Monitoring Awareness / growth monitoring"]],
+      ["Food Safety / खाद्य सुरक्षा",["🧼 Hygiene / hygiene","💧 Safe Water / safe water","🍲 Safe Cooking & Storage / cooking एवं storage","🚫 Contamination Awareness / contamination awareness"]],
+      ["Deficiency & Risk / कमी एवं जोखिम",["🩸 Iron Awareness / iron awareness","☀️ Vitamin D Awareness / vitamin D awareness","🧠 Iodine & Other Micronutrients / iodine एवं micronutrients","⚠️ Risk Recognition / risk recognition"]],
+      ["Action & Support / action एवं support",["📋 Food Diary / food diary","🥕 Local Nutritious Foods / स्थानीय पौष्टिक भोजन","🩺 Professional Support / professional support","📊 Review & Improve / review एवं सुधार"]]
+    ]
+  },
+  {
+    test:/yoga|योग/i,icon:"🧘",
+    modules:[
+      ["Yoga Foundation / योग आधार",["🧘 What is Yoga? / योग क्या है?","🫁 Breath Awareness / श्वास जागरूकता","🧍 Posture & Alignment / मुद्रा एवं alignment","🛡️ Safety / सुरक्षा"]],
+      ["Movement / movement",["🌅 Warm-up / warm-up","🧍 Basic Asanas / मूल आसन","🤸 Mobility / mobility","🧘 Relaxation / relaxation"]],
+      ["Breathing / प्राणायाम आधार",["🌬️ Natural Breathing / सामान्य श्वास","⏱️ Breath Awareness / श्वास पर ध्यान","🧘 Simple Practices / सरल अभ्यास","⚠️ Contraindication Awareness / सावधानी"]],
+      ["Mind & Well-being / मन एवं कल्याण",["🧠 Attention / ध्यान","😌 Relaxation / relaxation","❤️ Emotional Balance / भावनात्मक संतुलन","😴 Sleep Support / नींद support"]],
+      ["Practice Plan / अभ्यास योजना",["📅 Daily Routine / दैनिक routine","📝 Practice Log / अभ्यास log","🔄 Progress Review / progress review","👨‍🏫 Guided Learning / guided learning"]]
+    ]
+  },
+  {
+    test:/de-addiction|नशामुक्ति/i,icon:"🚭",
+    modules:[
+      ["Understanding Substance Use / पदार्थ उपयोग की समझ",["🧠 What is Dependence? / निर्भरता क्या है?","🚭 Tobacco / तंबाकू","🍺 Alcohol Awareness / alcohol awareness","💊 Other Substances / अन्य पदार्थ"]],
+      ["Risk & Impact / जोखिम एवं प्रभाव",["❤️ Physical Health / शारीरिक स्वास्थ्य","🧠 Mental & Social Impact / मानसिक एवं सामाजिक प्रभाव","👨‍👩‍👧 Family Impact / परिवार पर प्रभाव","💰 Financial Impact / आर्थिक प्रभाव"]],
+      ["Recovery / recovery",["🤝 Asking for Help / मदद लेना","🧑‍⚕️ Professional Treatment / professional treatment","📅 Recovery Plan / recovery plan","🔄 Relapse Awareness / relapse awareness"]],
+      ["Family & Community / परिवार एवं समुदाय",["❤️ Supportive Communication / supportive communication","🚫 Stigma Reduction / stigma reduction","🛡️ Safe Environment / सुरक्षित वातावरण","🤝 Community Support / community support"]],
+      ["Action / action",["📋 Personal Trigger Awareness / triggers","☎️ Help-Seeking Plan / help-seeking plan","📝 Recovery Journal / recovery journal","🏆 Review / review"]]
+    ]
+  },
+  {
+    test:/environment basics|tree plantation|biodiversity|forest conservation|natural resource|medicinal plant|organic farming|renewable energy|climate change|waste management|water conservation|पर्यावरण|वृक्षारोपण|जैव विविधता|वन संरक्षण|प्राकृतिक संसाधन|औषधीय पौधे|जैविक खेती|नवीकरणीय ऊर्जा|जलवायु परिवर्तन|कचरा प्रबंधन|जल संरक्षण/i,
+    icon:"🌱",
+    modules:[
+      ["Ecology Foundation / पारिस्थितिकी आधार",["🌍 Ecosystems / ecosystem","🌬️ Air / वायु","💧 Water / जल","🌱 Soil & Land / मिट्टी एवं भूमि"]],
+      ["Topic Knowledge / विषय की मुख्य समझ",["🔎 Identification & Observation / पहचान एवं अवलोकन","🧩 Causes & Processes / कारण एवं प्रक्रियाएँ","📊 Evidence & Measurement / प्रमाण एवं मापन","⚠️ Risks & Impacts / जोखिम एवं प्रभाव"]],
+      ["Conservation / संरक्षण",["🌳 Protection / संरक्षण","♻️ Reduce-Reuse-Recycle / reduce-reuse-recycle","💧 Resource Efficiency / संसाधन दक्षता","🤝 Community Participation / सामुदायिक भागीदारी"]],
+      ["Practical Action / व्यावहारिक action",["🧪 Field Activity / field activity","📋 Local Audit / local audit","📸 Observation Record / observation record","🗺️ Action Plan / action plan"]],
+      ["Project & Assessment / प्रोजेक्ट एवं आकलन",["📁 Project / project","📊 Data & Results / डेटा एवं परिणाम","🗣️ Presentation / प्रस्तुति","🏆 Knowledge Check / ज्ञान जाँच"]]
+    ]
+  },
+  {
+    test:/agriculture|farmer|organic farming|animal husbandry|rural|कृषि|किसान|जैविक खेती|पशुपालन|ग्रामीण/i,icon:"🌾",
+    modules:[
+      ["Farm Foundation / कृषि आधार",["🌱 Soil Health / मृदा स्वास्थ्य","🌦️ Season & Climate / मौसम एवं जलवायु","🌾 Crop Planning / फसल योजना","🌱 Seed & Planting / बीज एवं बुवाई"]],
+      ["Crop Management / फसल प्रबंधन",["💧 Irrigation / सिंचाई","🥗 Plant Nutrition / पौध पोषण","🐛 Pest & Disease Awareness / कीट एवं रोग जागरूकता","🌿 Weed Management / खरपतवार प्रबंधन"]],
+      ["Livestock & Rural Livelihood / पशुपालन एवं आजीविका",["🐄 Animal Nutrition / पशु पोषण","🏠 Housing & Hygiene / आवास एवं hygiene","🩺 Veterinary Care / veterinary care","🧺 Rural Livelihoods / ग्रामीण आजीविका"]],
+      ["Post-Harvest & Market / कटाई बाद एवं बाजार",["🌾 Harvest / कटाई","📦 Storage / भंडारण","💰 Costing / लागत","🤝 Market Linkage / बाजार linkage"]],
+      ["Sustainable Agriculture / टिकाऊ कृषि",["♻️ Resource Conservation / संसाधन संरक्षण","🌍 Climate-smart Practice / climate-smart practice","📒 Farm Records / farm records","📈 Farm Improvement Plan / farm improvement plan"]]
+    ]
+  },
+  {
+    test:/disability|rehabilitation|दिव्यांगता|पुनर्वास/i,icon:"♿",
+    modules:[
+      ["Understanding Disability / दिव्यांगता की समझ",["♿ Types & Diversity / विविधता","❤️ Dignity / गरिमा","🚧 Barriers / बाधाएँ","🗣️ Person-first Communication / सम्मानजनक communication"]],
+      ["Accessibility / accessibility",["🏫 Accessible Learning / accessible learning","🏢 Accessible Spaces / accessible spaces","📱 Digital Accessibility / digital accessibility","🦯 Assistive Support / सहायक support"]],
+      ["Rehabilitation / पुनर्वास",["🧑‍⚕️ Functional Support / functional support","🏃 Daily Activities / दैनिक गतिविधियाँ","🗣️ Communication Support / communication support","🤝 Community Participation / सामुदायिक भागीदारी"]],
+      ["Family & Education / परिवार एवं शिक्षा",["👨‍👩‍👧 Family Support / family support","👩‍🏫 Teacher Support / teacher support","📚 Individual Learning Needs / learning needs","📝 Documentation / documentation"]],
+      ["Inclusion / समावेशन",["⚖️ Rights & Inclusion / अधिकार एवं समावेशन","🤝 Participation / participation","📋 Accessibility Plan / accessibility plan","🌱 Continuous Improvement / निरंतर सुधार"]]
+    ]
+  },
+  {
+    test:/animal|gaushala|wildlife|birds|पशु|गौशाला|वन्यजीव|पक्षी/i,icon:"🐾",
+    modules:[
+      ["Animal Welfare / पशु कल्याण",["❤️ Humane Care / मानवीय देखभाल","🍚 Food & Water / भोजन एवं जल","🏠 Shelter / आश्रय","👐 Humane Handling / मानवीय handling"]],
+      ["Health & Hygiene / स्वास्थ्य एवं स्वच्छता",["🧼 Sanitation / स्वच्छता","👀 Observation / observation","🩺 Veterinary Support / veterinary support","📋 Health Records / health records"]],
+      ["Livestock / पशुधन",["🐄 Nutrition / पोषण","🏠 Housing / housing","💉 Preventive Care Awareness / preventive care","📈 Production & Welfare Balance / welfare balance"]],
+      ["Wildlife & Birds / वन्यजीव एवं पक्षी",["🌳 Habitat / habitat","🦅 Bird Care Awareness / पक्षी care","🚫 Illegal Harm Awareness / अवैध harm awareness","🤝 Coexistence / सह-अस्तित्व"]],
+      ["Community Action / सामुदायिक action",["🚨 Rescue Awareness / rescue awareness","🛡️ Volunteer Safety / volunteer safety","📣 Awareness / awareness","📊 Monitoring / monitoring"]]
+    ]
+  },
+  {
+    test:/culture|heritage|sanskrit|music|cultural|संस्कृति|विरासत|संस्कृत|संगीत/i,icon:"🏛️",
+    modules:[
+      ["Heritage Foundation / विरासत आधार",["🏛️ Tangible Heritage / भौतिक विरासत","📜 Intangible Heritage / अमूर्त विरासत","🗺️ Local History / स्थानीय इतिहास","🧾 Documentation / documentation"]],
+      ["Language & Literature / भाषा एवं साहित्य",["🔤 Language Basics / भाषा आधार","📖 Reading Texts / पाठ पठन","🧠 Meaning & Context / अर्थ एवं संदर्भ","✍️ Writing & Recitation / लेखन एवं वाचन"]],
+      ["Arts & Performance / कला एवं प्रस्तुति",["🎵 Music / संगीत","🥁 Rhythm & Taal / लय एवं ताल","🎭 Performance / प्रस्तुति","🎨 Visual Arts / दृश्य कला"]],
+      ["Culture in Community / समुदाय में संस्कृति",["🤝 Participation / participation","🎪 Event Planning / event planning","🙏 Cultural Sensitivity / cultural sensitivity","📸 Documentation / documentation"]],
+      ["Preservation / संरक्षण",["🛡️ Conservation / संरक्षण","💾 Digital Archive / digital archive","📚 Responsible Sharing / responsible sharing","🌱 Community Heritage Project / community project"]]
+    ]
+  },
+  {
+    test:/disaster|youth|आपदा|युवा/i,icon:"🛡️",
+    modules:[
+      ["Preparedness / तैयारी",["⚠️ Hazards / hazards","📢 Warning Systems / warning systems","🎒 Emergency Kit / emergency kit","📞 Emergency Contacts / emergency contacts"]],
+      ["Family & Community Plan / परिवार एवं समुदाय योजना",["🏠 Family Plan / family plan","🗺️ Evacuation Route / evacuation route","👥 Community Roles / community roles","♿ Inclusion / inclusion"]],
+      ["Response / प्रतिक्रिया",["🚨 Immediate Safety / immediate safety","🏃 Evacuation / evacuation","🤝 Coordination / coordination","🛡️ Volunteer Safety / volunteer safety"]],
+      ["Relief & Recovery / राहत एवं recovery",["📦 Relief Needs / राहत जरूरत","📋 Needs Assessment / जरूरत assessment","🏠 Recovery / recovery","🧠 Psychosocial Support Awareness / psychosocial support awareness"]],
+      ["Drill & Improvement / drill एवं सुधार",["🎯 Mock Drill / mock drill","📝 After-Action Review / review","🔄 Improve Plan / plan सुधार","📊 Community Resilience / resilience"]]
+    ]
+  },
+  {
+    test:/ngo|project|grant|csr|non-profit|social project|एनजीओ|परियोजना|अनुदान/i,icon:"🤝",
+    modules:[
+      ["NGO Foundation / NGO आधार",["🏛️ Purpose & Governance / उद्देश्य एवं governance","👥 Roles & Responsibilities / roles एवं जिम्मेदारी","📜 Registration & Compliance Awareness / registration एवं compliance","🤝 Accountability / जवाबदेही"]],
+      ["Needs & Project Design / जरूरत एवं project design",["🔎 Needs Assessment / जरूरत assessment","🎯 Problem Statement / समस्या कथन","📌 Objectives / objectives","🗓️ Activities & Timeline / activities एवं timeline"]],
+      ["Budget & Grant / बजट एवं grant",["💰 Budget / budget","📋 Eligibility / eligibility","🧾 Financial Records / financial records","📤 Grant Application / grant application"]],
+      ["Implementation & Monitoring / implementation एवं monitoring",["🚀 Activity Delivery / activity delivery","📊 Indicators / indicators","📸 Evidence / evidence","📝 Progress Review / progress review"]],
+      ["Reporting & Sustainability / reporting एवं sustainability",["📄 Report Writing / report writing","📊 Outcomes / outcomes","🔍 Transparency / transparency","🌱 Sustainability & Next Project / sustainability एवं अगला project"]]
+    ]
+  }
+];
+
+const getSubjectProfile = (subject) => {
+  const hit = SUBJECT_PROFILE_RULES.find((p) => p.test.test(subject.en + " " + subject.hi));
+  if (hit) return hit;
   const blueprint = CATEGORY_BLUEPRINTS[subject.category] || CATEGORY_BLUEPRINTS["Personal Development / व्यक्तिगत विकास"];
-  const bilingual = (en, hi) => en + " / " + hi;
-  const makeLesson = (lessonTitle, focus, moduleTitle, moduleHi, moduleIndex, lessonIndex) => {
-    const practical = [
-      "अपने आसपास " + topic + " से जुड़ी एक वास्तविक स्थिति पहचानें और उसमें सीखी बात लागू करें।",
-      "एक 5-step checklist बनाकर task को सुरक्षित और क्रमबद्ध तरीके से करें।",
-      "सीखी बात किसी दूसरे व्यक्ति को सरल Hindi + English में समझाकर teach-back करें।"
-    ][lessonIndex % 3];
-    const examples = [
-      topic + ": " + intro,
-      focus + " को " + topic + " के वास्तविक संदर्भ में पहचानना।",
-      "स्थिति → विकल्प → कार्रवाई → परिणाम → सुधार"
-    ];
-    const body = topic + " में " + focus + " को समझना इस course का महत्वपूर्ण हिस्सा है। " + intro + " इस lesson में concept का अर्थ, उसका purpose, किन परिस्थितियों में उपयोग होता है और किन बातों पर सावधानी रखनी चाहिए—इन सभी को step-by-step जोड़ा गया है।";
-    return [
-      lessonTitle,
-      body,
-      {
-        objectives: focus + " को " + topic + " के संदर्भ में समझना, उदाहरणों से पहचानना और practical task में लागू करना।",
-        content: {
-          easyExplanation: "सरल भाषा में: " + focus + " का मतलब है " + topic + " से जुड़ी जानकारी को सही context में समझकर उपयोग करना।",
-          deepUnderstanding: body + " केवल definition याद करना पर्याप्त नहीं है; कारण, context, example, practice और result review को साथ देखें।",
-          whyItMatters: "यह knowledge वास्तविक जीवन, पढ़ाई, काम या community practice में बेहतर निर्णय और अधिक स्पष्ट action लेने में मदद करती है।",
-          keyPoints: [focus, moduleTitle, "Context और evidence", "Practice और review"],
-          examples,
-          steps: ["स्थिति/उद्देश्य स्पष्ट करें","जरूरी जानकारी और resources पहचानें","छोटे steps में practice करें","परिणाम जाँचें और सुधार लिखें"],
-          practicalApplication: practical,
-          memoryHook: "REMEMBER: समझें → उदाहरण देखें → खुद करें → बिना देखे दोहराएँ → सुधारें।",
-          commonMistakes: ["सिर्फ definition पढ़कर practical use छोड़ देना","बिना context/evidence के conclusion निकालना","पहली कोशिश के बाद review और correction न करना"],
-          summary: topic + " में " + focus + " की अच्छी समझ का अर्थ है concept को पहचानना, सही context में लागू करना और परिणाम से सीखना।"
-        },
-        practice: [practical, "Notes बंद करके 3 मुख्य बातें लिखें और एक अपना example बनाएं।"],
-        activity: practical,
-        knowledgeCheck: [
-          { question: topic + " में " + focus + " को सीखने का बेहतर तरीका क्या है?", options: ["समझकर, उदाहरण देखकर और practice करके", "केवल heading याद करना", "बिना context के अनुमान लगाना", "review को छोड़ देना"], answer: 0 },
-          { question: "सीखने के बाद अगला उपयोगी कदम क्या है?", options: ["Practice और result review", "तुरंत भूल जाना", "बिना जाँच के share करना", "सिर्फ score देखना"], answer: 0 }
-        ]
-      }
-    ];
+  return {
+    icon:"📘",
+    modules: blueprint.map((m, i) => [
+      m[0],
+      m[2].map((x, j) => {
+        const icons = ["📘","🔎","🧠","🛠️","📝","🎯"];
+        return icons[j % icons.length] + " " + x;
+      })
+    ])
   };
-  return blueprint.map((module, mi) => ({
-    id: subject.id + "-module-" + (mi + 1),
-    title: module[0],
-    subtitle: module[1],
-    lessons: module[2].map((lesson, li) => makeLesson(lesson[0], lesson[1], module[0], module[1], mi, li))
-  }));
+};
+
+const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
+  const clean = label.replace(/^[^\s]+\s/, "");
+  const subjectName = subject.en;
+  const examplesByWord = [
+    ["Letters","Example / उदाहरण: A → Apple; अ → अनार. पहले पहचानें, फिर बोलें, फिर लिखें।"],
+    ["Numbers","Example / उदाहरण: 4 objects गिनें → संख्या 4 लिखें → 4 का उपयोग वास्तविक स्थिति में करें।"],
+    ["Addition","Example / उदाहरण: 2 apples + 3 apples = 5 apples. वस्तुओं से शुरू करके equation तक जाएँ।"],
+    ["Subtraction","Example / उदाहरण: 8 वस्तुओं में से 3 हटाएँ → 5 बचें।"],
+    ["Reading","Example / उदाहरण: छोटा passage पढ़ें → मुख्य विचार खोजें → 3 प्रश्नों के उत्तर दें।"],
+    ["Writing","Example / उदाहरण: चित्र देखें → keywords लिखें → 3–5 वाक्य बनाएं → proofreading करें।"],
+    ["Grammar","Example / उदाहरण: rule पढ़ें → 3 सही sentences बनाएं → एक common error सुधारें।"],
+    ["Hardware","Example / उदाहरण: keyboard, mouse और monitor पहचानें और उनके उपयोग बताएं।"],
+    ["Software","Example / उदाहरण: operating system और application में अंतर पहचानें।"],
+    ["Internet","Example / उदाहरण: search करें → source देखें → information को दूसरे reliable source से verify करें।"],
+    ["Password","Example / उदाहरण: मजबूत, अलग password रखें और उसे किसी से share न करें।"],
+    ["Phishing","Example / उदाहरण: urgent message में link खोलने से पहले sender, URL और request verify करें।"],
+    ["Soil","Example / उदाहरण: अलग मिट्टी देखें, रंग/texture लिखें और crop के लिए उपयुक्तता पर चर्चा करें।"],
+    ["Water","Example / उदाहरण: घर/खेत में पानी कहाँ खर्च होता है, सूची बनाकर बचत के 3 तरीके खोजें।"],
+    ["Health","Example / उदाहरण: symptom देखकर स्वयं diagnosis न करें; reliable information और qualified care का उपयोग करें।"],
+    ["Safety","Example / उदाहरण: खतरा पहचानें → सुरक्षित स्थान लें → trusted adult/professional help लें।"],
+    ["Resume","Example / उदाहरण: job description पढ़ें और केवल relevant, truthful skills को resume में रखें।"],
+    ["Interview","Example / उदाहरण: 60-second self-introduction record करें और clarity, accuracy, body language review करें।"],
+    ["Budget","Example / उदाहरण: income लिखें → जरूरी खर्च अलग करें → saving रखें → records maintain करें।"],
+    ["Project","Example / उदाहरण: problem → objective → activity → evidence → result → learning report करें।"],
+    ["Assessment","Example / उदाहरण: answer देने के बाद गलतियों को error-log में लिखें और targeted revision करें।"]
+  ];
+  const found = examplesByWord.find(([k]) => clean.toLowerCase().includes(k.toLowerCase()));
+  const example = found?.[1] || ("Example / उदाहरण: " + clean + " को " + subjectName + " के वास्तविक संदर्भ में देखें, एक छोटा उदाहरण बनाएं और उसे स्वयं करके verify करें।");
+  const activity = "Activity / गतिविधि: " + clean + " से जुड़ा एक छोटा, सुरक्षित task करें; उसका परिणाम 3–5 points में लिखें और किसी दूसरे व्यक्ति को Hindi + English में समझाएँ।";
+  const body = subjectName + " में " + clean + " को केवल definition की तरह नहीं, बल्कि concept → example → practice → application → review के क्रम में सीखें। " + subject.intro;
+  const check = [
+    {question: subjectName + " में " + clean + " को सीखने का बेहतर तरीका क्या है?", options:["समझना, उदाहरण देखना, practice करना और result review करना","केवल heading याद करना","बिना context के अनुमान लगाना","practice छोड़ देना"], answer:0},
+    {question:"सीखने के बाद सबसे उपयोगी अगला कदम क्या है?",options:["एक छोटा practical task और self-check","बिना पढ़े answer देना","source verify न करना","केवल certificate देखना"],answer:0}
+  ];
+  return [
+    label,
+    body,
+    {
+      objectives:[
+        clean + " का अर्थ और उद्देश्य समझना।",
+        subjectName + " के संदर्भ में इसका उपयोग पहचानना।",
+        example + " के आधार पर खुद practice करना।"
+      ],
+      content:{
+        easyExplanation:"सरल समझ / Simple meaning: " + clean + " को पहले आसान भाषा में समझें, फिर subject-specific example से जोड़ें।",
+        deepUnderstanding:"Deep understanding / गहरी समझ: concept के पीछे कारण, context, limitations और सही उपयोग समझें। केवल याद करने के बजाय बताएं कि कब, क्यों और कैसे इसका उपयोग होगा।",
+        whyItMatters:"क्यों जरूरी है / Why it matters: " + clean + " की सही समझ learner को अधिक स्पष्ट, सुरक्षित और practical decision लेने में मदद करती है।",
+        keyPoints:[clean,moduleTitle,"Example + Practice","Application + Review"],
+        examples:[example,"एक अपना example बनाइए और बताइए कि वह सही क्यों है।"],
+        steps:["🎯 उद्देश्य स्पष्ट करें / Define the goal","📖 concept पढ़ें / Learn the concept","👀 example देखें / Study examples","🛠️ खुद करके देखें / Practice","🔎 result जाँचें / Review","🔄 गलती हो तो सुधारें / Improve"],
+        practicalApplication:activity,
+        memoryHook:"🧠 याद रखें / Remember: समझो → देखो → करो → जाँचो → समझाकर बताओ।",
+        commonMistakes:["❌ केवल definition याद करना","❌ example को बिना समझे copy करना","❌ practice के बाद result review न करना","❌ जरूरत होने पर reliable source/qualified person से पुष्टि न करना"],
+        summary:"📌 सार / Summary: " + clean + " को समझने का लक्ष्य knowledge को practical capability में बदलना है।"
+      },
+      practice:[
+        "✍️ बिना notes देखे 3 मुख्य बातें लिखें।",
+        "🔎 एक real-life example खोजें।",
+        "🛠️ एक छोटा practical task करें।",
+        "🗣️ किसी दूसरे व्यक्ति को 60 seconds में समझाएँ।"
+      ],
+      activity,
+      knowledgeCheck:check,
+      reflection:["आज मैंने क्या नया सीखा?","मुझे किस हिस्से में और practice चाहिए?","मैं इसे वास्तविक जीवन में कहाँ उपयोग कर सकता/सकती हूँ?"]
+    }
+  ];
+};
+
+const buildTopicModules = (subject) => {
+  const profile = getSubjectProfile(subject);
+  return profile.modules.map((module, mi) => {
+    const moduleTitle = module[0];
+    const lessonLabels = module[1];
+    return {
+      id: subject.id + "-module-" + (mi + 1),
+      title: profile.icon + " " + moduleTitle,
+      subtitle: "🎯 इस module में " + subject.en + " के " + moduleTitle.replace(/\/.*/, "").trim() + " से जुड़े वास्तविक concepts, examples, practice और application सीखें।",
+      lessons: lessonLabels.map((label, li) => makeRichSubjectLesson(subject, moduleTitle, label, mi, li))
+    };
+  });
 };
 
 function LearningSubject({ subject, onBack }) {
