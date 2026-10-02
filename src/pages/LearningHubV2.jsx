@@ -634,7 +634,7 @@ export default function LearningHubV2() {
       "computer-training": "computer-education"
     };
     SUBJECTS.forEach(s => {
-      const course = ALL_STRUCTURED_COURSES?.[aliases[s.id] || s.id];
+      const course = s.id === "english-from-basics" ? ENGLISH_FROM_BASICS_COURSE : ALL_STRUCTURED_COURSES?.[aliases[s.id] || s.id];
       if (course) map[s.id] = course;
     });
     return map;
