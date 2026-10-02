@@ -772,6 +772,12 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
   ];
 };
 
+const formatBilingual = (text) => {
+  if (typeof text !== "string") return text;
+  const m = text.match(/^(.*)\s\/\s([^/]+)$/);
+  return m ? m[1] + " (" + m[2].trim() + ")" : text;
+};
+
 const buildTopicModules = (subject) => {
   const profile = getSubjectProfile(subject);
   return profile.modules.map((module, mi) => {
@@ -779,9 +785,13 @@ const buildTopicModules = (subject) => {
     const lessonLabels = module[1];
     return {
       id: subject.id + "-module-" + (mi + 1),
-      title: profile.icon + " " + moduleTitle,
+      title: profile.icon + " " + formatBilingual(moduleTitle),
       subtitle: "🎯 इस module में " + subject.en + " के " + moduleTitle.replace(/\/.*/, "").trim() + " से जुड़े वास्तविक concepts, examples, practice और application सीखें।",
-      lessons: lessonLabels.map((label, li) => makeRichSubjectLesson(subject, moduleTitle, label, mi, li))
+      lessons: lessonLabels.map((label, li) => {
+        const lesson = makeRichSubjectLesson(subject, moduleTitle, label, mi, li);
+        lesson[0] = formatBilingual(lesson[0]);
+        return lesson;
+      })
     };
   });
 };
@@ -820,7 +830,7 @@ function LearningSubject({ subject, onBack }) {
     : (FLAGSHIP_COURSES[subject.id] || ALL_STRUCTURED_COURSES[structuredCourseId]);
   const modules = structuredCourse
     ? structuredCourse.modules.map((m) => ({
-        title: m.title.en + " / " + m.title.hi,
+        title: formatBilingual(m.title.en + " / " + m.title.hi),
         subtitle: m.description,
         lessons: m.lessons.map((l) => [
           l.title.en + " / " + l.title.hi,
