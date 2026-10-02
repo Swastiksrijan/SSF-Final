@@ -1249,8 +1249,9 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
 
 const formatBilingual = (text) => {
   if (typeof text !== "string") return text;
-  const m = text.match(/^(.*)\s\/\s([^/]+)$/);
-  return m ? m[1] + " (" + m[2].trim() + ")" : text;
+  const parts = text.split(" / ");
+  if (parts.length < 2) return text;
+  return parts.slice(0, -1).join(" / ") + " (" + parts[parts.length - 1].trim() + ")";
 };
 
 const buildTopicModules = (subject) => {
