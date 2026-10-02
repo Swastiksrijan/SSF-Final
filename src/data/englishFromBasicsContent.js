@@ -455,7 +455,7 @@ export const ENGLISH_FROM_BASICS_COURSE = {
     },
     {
       id:"capstone-assessment",
-      title:{en:"Module 10 — Practice, Revision and Final Assessment","मॉड्यूल 10 — अभ्यास, पुनरावृत्ति और अंतिम आकलन"},
+      title:{en:"Module 10 — Practice, Revision and Final Assessment",hi:"मॉड्यूल 10 — अभ्यास, पुनरावृत्ति और अंतिम आकलन"},
       description:"Combine vocabulary, grammar, reading, writing, listening and speaking into one practical learning cycle.",
       lessons:[
         L("integrated-practice","Integrated English Practice","समेकित अंग्रेज़ी अभ्यास",
