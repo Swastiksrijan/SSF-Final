@@ -1211,7 +1211,6 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
     }
   }
 
-  const subjectName = subject.en;
   if (subject.category === "Knowledge World / ज्ञान संसार" && KNOWLEDGE_WORLD_MODULES[subject.en]) {
     const modules = KNOWLEDGE_WORLD_MODULES[subject.en];
     const module = modules[mi] || modules[0];
@@ -1220,7 +1219,7 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
       ? ["⚠️ सामान्य जानकारी को व्यक्तिगत diagnosis/treatment न मानें।","🧑‍⚕️ जरूरत पर qualified professional/help service लें।"]
       : ["🔎 तथ्य और उदाहरण को ध्यान से जाँचें।","🛠️ practical activity सुरक्षित तरीके से करें।"];
     return [label,lessonText,{
-      objectives:[""" + clean + "" का अर्थ और मुख्य भाग समझना।","इसके वास्तविक उदाहरण और उपयोग पहचानना।","अभ्यास करके सही समझ को स्वयं explain करना।"],
+      objectives:[clean + " का अर्थ और मुख्य भाग समझना।","इसके वास्तविक उदाहरण और उपयोग पहचानना।","अभ्यास करके सही समझ को स्वयं explain करना।"],
       content:{
         easyExplanation:"📖 सरल समझ: " + clean + " को आसान भाषा और आसपास के उदाहरणों से सीखें।",
         deepUnderstanding:"🧠 गहरी समझ: " + clean + " क्या है, कैसे/क्यों होता है, कहाँ मिलता है, किस काम आता है और किन सीमाओं/सावधानियों को समझना चाहिए।",
@@ -1236,7 +1235,7 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
       practice:["एक पहचान/समझ वाला प्रश्न हल करें।","एक real-life example लिखें।","बिना notes देखे 3 मुख्य बातें बोलें।"],
       activity:"🎯 Mini Activity: " + clean + " का एक उदाहरण/चित्र/वस्तु चुनें और उसका नाम, मुख्य विशेषता, उपयोग तथा एक सावधानी लिखें।",
       knowledgeCheck:[
-        {question:""" + clean + "" के बारे में सही learning क्या है?",options:["अर्थ + उदाहरण + उपयोग + practice समझना","सिर्फ नाम याद करना","बिना जाँच अनुमान लगाना","activity छोड़ देना"],answer:0},
+        {question:clean + " के बारे में सही learning क्या है?",options:["अर्थ + उदाहरण + उपयोग + practice समझना","सिर्फ नाम याद करना","बिना जाँच अनुमान लगाना","activity छोड़ देना"],answer:0},
         {question:"सीखी बात को कैसे verify करेंगे?",options:["example/activity से और जहाँ जरूरी हो reliable source से जाँचेंगे","केवल forward message मानेंगे","सिर्फ guess करेंगे","बिना context copy करेंगे"],answer:0},
         {question:"सीखने के बाद क्या करें?",options:["Explain, practice और revision","केवल heading पढ़ें","गलती छोड़ दें","practice न करें"],answer:0}
       ],
