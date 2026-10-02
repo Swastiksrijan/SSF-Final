@@ -610,6 +610,30 @@ export default function LearningHubV2() {
     return { active, completedCount };
   }, [courseMetaBySubject]);
 
+  const shareLearningBox = async ({ title, text, url }) => {
+    const shareUrl = url || window.location.href;
+    const shareData = { title, text, url: shareUrl };
+    try {
+      if (navigator.share) {
+        await navigator.share(shareData);
+        return;
+      }
+      await navigator.clipboard.writeText(shareUrl);
+      window.alert("Share link copied. अब आप इसे WhatsApp, Facebook या किसी भी app में share कर सकते हैं.");
+    } catch (err) {
+      if (err?.name !== "AbortError") {
+        try {
+          await navigator.clipboard.writeText(shareUrl);
+          window.alert("Share link copied.");
+        } catch {}
+      }
+    }
+  };
+  const shareSubject = (subject) => shareLearningBox({
+    title: subject.en + " | SSF Learning Hub",
+    text: subject.intro + " — SSF Learning Hub",
+    url: window.location.origin + "/LearningHub?subject=" + encodeURIComponent(subject.id)
+  });
   const openSubject = (subject) => {
     const url = "/LearningHub?subject=" + encodeURIComponent(subject.id);
     window.history.pushState({}, "", url);
@@ -708,9 +732,14 @@ export default function LearningHubV2() {
                   <div className="rounded-xl bg-zinc-50 p-2"><FaClock className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal">Hours</span></div>
                   <div className="rounded-xl bg-zinc-50 p-2"><FaGraduationCap className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id] ? "Certificate" : "Coming Soon"}<span className="block text-[9px] font-normal">{courseMetaBySubject[s.id] ? "Pathway" : "Status"}</span></div>
                 </div>
-                <button onClick={()=>openSubject(s)} className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:from-[#0f4c81] hover:to-[#007c91] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
-                  {courseMetaBySubject[s.id] ? "Start Learning / सीखना शुरू करें" : "Explore Topic / विषय देखें"} <FaArrowRight />
-                </button>
+                <div className="mt-5 grid grid-cols-[1fr_auto] gap-2">
+                  <button onClick={()=>openSubject(s)} className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:from-[#0f4c81] hover:to-[#007c91] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
+                    {courseMetaBySubject[s.id] ? "Start Learning / सीखना शुरू करें" : "Explore Topic / विषय देखें"} <FaArrowRight />
+                  </button>
+                  <button type="button" onClick={()=>shareSubject(s)} aria-label={"Share " + s.en} title="Share this course" className="inline-flex min-w-14 items-center justify-center gap-2 rounded-2xl border border-[#0f4c81]/20 bg-[#eef7fb] px-4 text-[#003366] transition hover:bg-[#dceff7] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
+                    <FaShareAlt /> <span className="sr-only">Share</span>
+                  </button>
+                </div>
               </div>
             </article>)}
           </div>
