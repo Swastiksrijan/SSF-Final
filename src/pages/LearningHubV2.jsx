@@ -1,8 +1,8 @@
 import { useMemo, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import {
-  FaArrowLeft, FaArrowRight, FaBookOpen, FaCheckCircle, FaClock, FaGraduationCap,
-  FaLeaf, FaLaptop, FaPlayCircle, FaQuestionCircle, FaSearch, FaShareAlt,
+  FaArrowLeft, FaArrowRight, FaBookOpen, FaCheckCircle, FaGraduationCap,
+  FaLeaf, FaLaptop, FaQuestionCircle, FaSearch,
   FaShieldAlt, FaUsers, FaHeartbeat, FaSeedling, FaPaw, FaBalanceScale, FaChild,
   FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping, FaGlobe,
   FaWhatsapp, FaEnvelope
@@ -19,7 +19,9 @@ import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGOR
 import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
 import PrimaryLessonFresh from "../components/learning/PrimaryLessonFresh";
-import { LearningHubLanding, LearningHubDashboard } from "../components/learning/LearningHubDashboard";
+import LearningHubHome from "../components/learning/LearningHubHome";
+import SubjectCard from "../components/learning/SubjectCard";
+import { courseBadge } from "../data/learningWorld";
 import { SUBJECT_CONTENT } from "../data/learningHubSubjectContent";
 import { SUBJECT_CONTENT_EXTRA } from "../data/learningSubjectContentExtra";
 
@@ -70,6 +72,18 @@ const TOPICS = [
 ];
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9\u0900-\u097f]+/g, "-").replace(/^-|-$/g, "");
+
+const KW_CATEGORY_NAME = "Knowledge World / ज्ञान संसार";
+
+// Home and Explore are separate routes, so React remounts LearningHubV2 between
+// them and component state is lost. This tiny module-level handoff carries a
+// dashboard choice (intent/path/search) into the freshly-mounted Explore view.
+const PENDING_FILTERS = { category: null, query: "", level: "All", type: "All" };
+function takePendingFilters() {
+  const p = { ...PENDING_FILTERS };
+  PENDING_FILTERS.category = null; PENDING_FILTERS.query = ""; PENDING_FILTERS.level = "All"; PENDING_FILTERS.type = "All";
+  return p;
+}
 
 // Subject ids are slugified from "English / Hindi", so they include the Hindi
 // suffix (e.g. "english-from-basics-मूल-अंग्रेज़ी"). Structured-course registries
@@ -190,12 +204,6 @@ const buildSubject = ([category, title, intro], index) => {
 };
 
 const SUBJECTS = TOPICS.map(buildSubject);
-
-function shareSubject(subject) {
-  const url = window.location.href.split("?")[0] + "?subject=" + encodeURIComponent(subject.id);
-  if (navigator.share) navigator.share({ title: subject.title + " | SSF Learning Hub", text: subject.intro, url }).catch(() => {});
-  else if (navigator.clipboard) navigator.clipboard.writeText(url).then(() => window.alert("Learning link copied."));
-}
 
 function getSubjectFromUrl() {
   return new URLSearchParams(window.location.search).get("subject") || "";
@@ -2744,10 +2752,20 @@ function LearningSubject({ subject, onBack }) {
 
 export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
   const navigate = useNavigate();
+  // Only the Explore view consumes a dashboard handoff; other views discard it
+  // so an intent choice can't leak into My Learning or Knowledge World.
+  const [pending] = useState(() => {
+    if (view === "explore") return takePendingFilters();
+    takePendingFilters();
+    return { category: null, query: "", level: "All", type: "All" };
+  });
   const [subjectId, setSubjectId] = useState(subjectIdParam || "");
-  const [category, setCategory] = useState(view === "knowledge-world" ? "Knowledge World / ज्ञान संसार" : "All");
-  const [query, setQuery] = useState("");
+  const [category, setCategory] = useState(pending.category || (view === "knowledge-world" ? KW_CATEGORY_NAME : "All"));
+  const [query, setQuery] = useState(pending.query || "");
   const [progressTick, setProgressTick] = useState(0);
+  const [levelFilter, setLevelFilter] = useState(pending.level || "All");
+  const [typeFilter, setTypeFilter] = useState(pending.type || "All");
+  const [sortBy, setSortBy] = useState("default");
 
   const courseMetaBySubject = useMemo(() => {
     const map = {};
@@ -2784,6 +2802,55 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     } catch { return 0; }
   };
 
+  // Recently viewed — a lightweight, real signal recorded when a learner opens a
+  // course. Used for the "Find Your Next Step" / Recently Viewed surfaces.
+  const recentSubjects = useMemo(() => {
+    let ids = [];
+    try { ids = JSON.parse(localStorage.getItem("ssf-learning-recent") || "[]"); } catch {}
+    return (Array.isArray(ids) ? ids : []).map((id) => SUBJECTS.find((s) => s.id === id)).filter(Boolean);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [progressTick]);
+
+  // Normalised course metadata used by the shared card so the dashboard never
+  // hard-codes levels/hours/badges. Values come from real course data only.
+  const cardInfo = (s) => {
+    const c = getSubjectModules(s);
+    const meta = courseMetaBySubject[s.id];
+    const level =
+      (isOfficeSkillsSubject(s) && getOfficeSkillsCourse(s)?.level) ||
+      (isEducationSubject(s) && getEducationCourse(s)?.level) ||
+      (isKnowledgeWorldSubject(s) && getKnowledgeWorldCourse(s)?.level) ||
+      (meta && (meta.level === "foundation" ? "Foundation" : meta.level)) ||
+      "";
+    const hours = meta && meta.learningHours ? meta.learningHours : "";
+    const kind = isKnowledgeWorldSubject(s) ? "Knowledge World" : getOfficeSkillsCourse(s) ? "Course Shell" : "Full Course";
+    return {
+      kind,
+      badge: courseBadge(kind),
+      level: level ? String(level).replace(/\b\w/g, (m) => m.toUpperCase()) : "",
+      moduleCount: c.moduleCount || 0,
+      hours,
+    };
+  };
+
+  const matchSubjects = (q, limit = 8) => {
+    const needle = String(q || "").toLowerCase().trim();
+    if (!needle) return [];
+    return SUBJECTS.filter((s) => {
+      const c = SUBJECT_CONTENT_ALL[s.en];
+      const extra = c ? [c.focus, (c.concepts || []).join(" "), (c.keywords || []).join(" "), (c.examples || []).join(" ")].join(" ") : "";
+      return (s.title + " " + s.category + " " + s.intro + " " + extra).toLowerCase().includes(needle);
+    }).slice(0, limit);
+  };
+
+  const pushRecent = (id) => {
+    try {
+      const prev = JSON.parse(localStorage.getItem("ssf-learning-recent") || "[]");
+      const next = [id, ...(Array.isArray(prev) ? prev : []).filter((x) => x !== id)].slice(0, 12);
+      localStorage.setItem("ssf-learning-recent", JSON.stringify(next));
+    } catch {}
+  };
+
   const shareLearningBox = async ({ title, text, url }) => {
     const shareUrl = url || window.location.href;
     const shareData = { title, text, url: shareUrl };
@@ -2809,6 +2876,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     url: window.location.origin + "/LearningHub/course/" + encodeURIComponent(subject.id)
   });
   const openSubject = (subject) => {
+    pushRecent(subject.id);
     navigate({ to: "/LearningHub/course/$subjectId", params: { subjectId: subject.id } });
     try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {}
   };
@@ -2817,16 +2885,41 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     setProgressTick(t => t + 1);
     try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {}
   };
+  // Explore can be opened pre-filtered to a real category, an intent or a path.
+  const exploreFor = (cats) => {
+    const first = Array.isArray(cats) ? cats[0] : cats;
+    PENDING_FILTERS.category = first || null;
+    PENDING_FILTERS.query = ""; PENDING_FILTERS.level = "All"; PENDING_FILTERS.type = "All";
+    setCategory(first || "All"); setQuery(""); setLevelFilter("All"); setTypeFilter("All");
+    navigate({ to: "/LearningHub/explore" });
+    try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {}
+  };
+  const goExplore = ({ query: q = "", category: cat = "All" } = {}) => {
+    PENDING_FILTERS.category = cat; PENDING_FILTERS.query = q; PENDING_FILTERS.level = "All"; PENDING_FILTERS.type = "All";
+    setCategory(cat); setQuery(q); setLevelFilter("All"); setTypeFilter("All");
+    navigate({ to: "/LearningHub/explore" });
+    try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {}
+  };
+  const openVerify = () => { try { window.location.href = "/LearningCertificateVerify"; } catch {} };
   const filtered = useMemo(() => {
     const q = query.toLowerCase().trim();
-    if (!q) return SUBJECTS.filter(s => category === "All" || s.category === category);
     const hayFor = (s) => {
       const c = SUBJECT_CONTENT_ALL[s.en];
-      const extra = c ? [c.focus, (c.concepts||[]).join(" "), (c.keywords||[]).join(" "), (c.examples||[]).join(" ")].join(" ") : "";
+      const extra = c ? [c.focus, (c.concepts || []).join(" "), (c.keywords || []).join(" "), (c.examples || []).join(" ")].join(" ") : "";
       return (s.title + " " + s.category + " " + s.intro + " " + extra).toLowerCase();
     };
-    return SUBJECTS.filter(s => (category === "All" || s.category === category) && hayFor(s).includes(q));
-  }, [category, query]);
+    const levelOf = (s) => (cardInfo(s).level || "").toLowerCase();
+    let list = SUBJECTS.filter((s) => category === "All" || s.category === category);
+    if (q) list = list.filter((s) => hayFor(s).includes(q));
+    if (levelFilter !== "All") {
+      const want = levelFilter.toLowerCase();
+      list = list.filter((s) => levelOf(s).includes(want) || (want === "foundation" && (!levelOf(s) || levelOf(s) === "foundation")));
+    }
+    if (typeFilter !== "All") list = list.filter((s) => cardInfo(s).kind === typeFilter);
+    if (sortBy === "az") list = [...list].sort((a, b) => a.en.localeCompare(b.en));
+    else if (sortBy === "za") list = [...list].sort((a, b) => b.en.localeCompare(a.en));
+    return list;
+  }, [category, query, levelFilter, typeFilter, sortBy]);
   const selected = SUBJECTS.find(s => s.id === subjectId);
   if (view === "course" && selected) return <LearningSubject subject={selected} onBack={back} />;
   if (view === "course" && !selected) return <div className="mx-auto max-w-3xl px-4 py-16 text-center">
@@ -2845,34 +2938,90 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     const subjects = SUBJECTS.filter((s) => s.category === name);
     return { name, icon: meta.icon || FaBookOpen, color: meta.color || "from-[#003366] to-[#0f4c81]", image: makeCategoryVisual(name, subjects.length, SUBJECT_VISUAL_GLYPH[name] || "🎓", ci + 40), count: subjects.length, subjects };
   });
-  const openCategory = (name) => { setCategory(name); navigate({ to: "/LearningHub/explore" }); try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {} };
+  const openCategory = (name) => { PENDING_FILTERS.category = name; PENDING_FILTERS.query = ""; setCategory(name); setQuery(""); navigate({ to: "/LearningHub/explore" }); try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {} };
   const myLearningSubjects = filtered.filter((s) => cardProgress(s) > 0);
   const gridSubjects = view === "my-learning" ? myLearningSubjects : filtered;
+  const isExploreLike = view === "explore" || view === "knowledge-world" || view === "my-learning";
+  const hasActiveFilters = Boolean(query) || category !== "All" || levelFilter !== "All" || typeFilter !== "All" || sortBy !== "default";
+  const clearFilters = () => { setQuery(""); setLevelFilter("All"); setTypeFilter("All"); setSortBy("default"); setCategory(view === "knowledge-world" ? KW_CATEGORY : "All"); };
 
   return <div className="ssf-hub font-inria text-[#142b45]">
-    {view === "home" && <LearningHubLanding
-      onStart={() => navigate({ to: "/LearningHub/explore" })}
-      onExplore={() => navigate({ to: "/LearningHub/explore" })}
-      onContinue={() => navigate({ to: "/LearningHub/my-learning" })}
-      onOpenSubject={openSubject}
-      onOpenKnowledge={() => navigate({ to: "/LearningHub/knowledge-world" })}
+    {view === "home" && <LearningHubHome
+      subjects={SUBJECTS}
+      categoryCards={categoryCards}
+      knowledgeWorldSubjects={knowledgeWorldSubjects}
       progressSummary={progressSummary}
-      totalSubjects={SUBJECTS.length}
-      totalAreas={CATEGORY_ORDER.length}
+      recentSubjects={recentSubjects}
+      cardProgress={cardProgress}
+      cardInfo={cardInfo}
+      matchSubjects={matchSubjects}
+      onOpenSubject={openSubject}
+      onShareSubject={shareSubject}
+      onSearch={(q) => goExplore({ query: q })}
+      onCategory={openCategory}
+      onExplore={() => goExplore({})}
+      onKnowledge={() => navigate({ to: "/LearningHub/knowledge-world" })}
+      onMyLearning={() => navigate({ to: "/LearningHub/my-learning" })}
+      onIntent={(it) => exploreFor(it.categories)}
+      onPath={(p) => exploreFor(p.categories)}
+      onVerify={openVerify}
     />}
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
-      {view === "home" && <LearningHubDashboard
-        progressSummary={progressSummary}
-        categories={categoryCards}
-        knowledgeWorldSubjects={knowledgeWorldSubjects}
-        onStart={() => navigate({ to: "/LearningHub/explore" })}
-        onOpenSubject={openSubject}
-        onExplore={() => navigate({ to: "/LearningHub/explore" })}
-        onKnowledge={() => navigate({ to: "/LearningHub/knowledge-world" })}
-        onContinue={() => navigate({ to: "/LearningHub/my-learning" })}
-        onCategory={openCategory}
-        cardProgress={cardProgress}
-      />}
+      {isExploreLike && <div className="mt-2 rounded-3xl border border-[#EADFCC] bg-white p-5 shadow-sm md:p-6">
+        <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+          <div>
+            <h1 className="font-serif text-3xl font-bold text-[#142b45] md:text-4xl">{view === "my-learning" ? "My Learning / मेरी सीख" : view === "knowledge-world" ? "Knowledge World / ज्ञान संसार" : "Explore All Learning / सारी सीख"}</h1>
+            <p className="mt-1 text-sm text-[#5b6b7c]">{view === "my-learning" ? "आपके शुरू किए courses — यहीं से जारी रखें।" : `${gridSubjects.length} learning options — search, category, level, type और sort से filter करें।`}</p>
+          </div>
+          <button type="button" onClick={() => navigate({ to: "/LearningHub" })} className="self-start rounded-full border border-[#FF6600]/30 px-4 py-2 text-xs font-bold text-[#c2410c] transition hover:bg-[#FFF3D6]">← Learning Hub home</button>
+        </div>
+        <div className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
+          <label className="lg:col-span-2">
+            <span className="sr-only">Search learning</span>
+            <div className="flex items-center gap-2 rounded-xl border border-[#EADFCC] bg-[#fbfaf7] px-3">
+              <FaSearch className="text-[#FF6600]" aria-hidden="true" />
+              <input value={query} onChange={(e) => setQuery(e.target.value)} type="search" placeholder="Search subject, skill or topic..." className="min-w-0 flex-1 bg-transparent py-2.5 text-sm focus:outline-none" />
+            </div>
+          </label>
+          <label>
+            <span className="sr-only">Category</span>
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="w-full rounded-xl border border-[#EADFCC] bg-[#fbfaf7] px-3 py-2.5 text-sm font-semibold focus:outline-none">
+              <option value="All">All categories</option>
+              {CATEGORY_ORDER.map((c) => <option key={c} value={c}>{c}</option>)}
+            </select>
+          </label>
+          <label>
+            <span className="sr-only">Learning type</span>
+            <select value={typeFilter} onChange={(e) => setTypeFilter(e.target.value)} className="w-full rounded-xl border border-[#EADFCC] bg-[#fbfaf7] px-3 py-2.5 text-sm font-semibold focus:outline-none">
+              <option value="All">All learning types</option>
+              <option value="Full Course">Full Course</option>
+              <option value="Course Shell">Course Shell</option>
+              <option value="Knowledge World">Knowledge World</option>
+            </select>
+          </label>
+          <label>
+            <span className="sr-only">Level</span>
+            <select value={levelFilter} onChange={(e) => setLevelFilter(e.target.value)} className="w-full rounded-xl border border-[#EADFCC] bg-[#fbfaf7] px-3 py-2.5 text-sm font-semibold focus:outline-none">
+              <option value="All">All levels</option>
+              <option value="Beginner">Beginner</option>
+              <option value="Foundation">Foundation</option>
+              <option value="Applied">Applied / Practical</option>
+              <option value="Advanced">Advanced</option>
+            </select>
+          </label>
+          <label>
+            <span className="sr-only">Sort</span>
+            <select value={sortBy} onChange={(e) => setSortBy(e.target.value)} className="w-full rounded-xl border border-[#EADFCC] bg-[#fbfaf7] px-3 py-2.5 text-sm font-semibold focus:outline-none">
+              <option value="default">Sort: Default</option>
+              <option value="az">Sort: A → Z</option>
+              <option value="za">Sort: Z → A</option>
+            </select>
+          </label>
+          <div className="flex items-end">
+            <button type="button" onClick={clearFilters} disabled={!hasActiveFilters} className={"w-full rounded-xl px-4 py-2.5 text-sm font-bold transition " + (hasActiveFilters ? "border border-[#FF6600]/40 bg-[#FFF7EA] text-[#B34A00] hover:bg-[#FFEFD6]" : "border border-zinc-200 bg-zinc-50 text-zinc-400")}>Clear filters</button>
+          </div>
+        </div>
+      </div>}
 
       {view !== "home" && <div className="mt-10">
         {visibleCategories.map(cat => {
@@ -2893,49 +3042,10 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
               <span className="block h-px flex-1 bg-gradient-to-r from-[#FF6600]/50 to-transparent md:mb-3" aria-hidden="true" />
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-[#e3ddcd] bg-white shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1.5 hover:border-[#FF6600]/45 hover:shadow-[0_32px_65px_-40px_rgba(20,43,69,0.7)]">
-                <div className="relative h-52 overflow-hidden ssf-shine">
-                  <div className={"absolute inset-0 bg-gradient-to-br "+s.color} />
-                  <img src={s.photo || s.image} alt={s.en} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-[900ms] group-hover:scale-110" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e33]/88 via-[#0a1e33]/25 to-transparent" />
-                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-[#FFD166]/40 bg-[#0d243b]/60 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#FFD166] backdrop-blur">
-                    <Icon aria-hidden="true" /> Course {s.number}
-                  </div>
-                  <div className="absolute bottom-4 left-5 right-5 text-white">
-                    <h3 className="font-serif text-2xl font-bold leading-tight">{s.en}</h3>
-                    <div className="mt-1 text-sm font-semibold text-[#FFD166]">{s.hi}</div>
-                  </div>
-                </div>
-                <div className="flex flex-1 flex-col p-6">
-                  <div className="mb-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-[#FFF7EA] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#B34A00]">{getOfficeSkillsCourse(s) ? "Course Shell" : "Full Course"}</span>
-                    <span className="rounded-full bg-[#f1efe8] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#5b6b7c]">Hindi + English</span>
-                  </div>
-                  <p className="flex-1 text-sm leading-7 text-[#5b6b7c]">{s.intro}</p>
-                  {(() => { const oc = getOfficeSkillsCourse(s); if (!oc?.levels?.length) return null; return (
-                    <div className="mt-4 flex flex-wrap gap-1.5">{oc.levels.map(l => <span key={l} className="rounded-full bg-[#eef7fb] px-2.5 py-1 text-[10px] font-bold text-[#0f4c81]">{l}</span>)}</div>
-                  ); })()}
-                  {(() => { const pct = cardProgress(s); if (!pct) return null; return (
-                    <div className="mt-4">
-                      <div className="flex items-center justify-between text-[11px] font-bold text-[#FF6600]"><span>{pct >= 100 ? "Completed" : "In progress"}</span><span>{pct}%</span></div>
-                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#F3E7D5]"><div className="h-full rounded-full bg-gradient-to-r from-[#FF6600] to-[#FFD166]" style={{width:pct+"%"}}/></div>
-                    </div>
-                  ); })()}
-                  <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-[#7286a0]">
-                    <div className="rounded-xl border border-[#F3E7D5] bg-[#fbfaf7] p-2"><FaBookOpen className="mx-auto mb-1 text-[#FF6600]"/>{courseMetaBySubject[s.id]?.modules?.length ?? getSubjectModules(s).moduleCount}<span className="block text-[9px] font-normal text-[#9aa7b4]">Modules</span></div>
-                    <div className="rounded-xl border border-[#F3E7D5] bg-[#fbfaf7] p-2"><FaClock className="mx-auto mb-1 text-[#FF6600]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal text-[#9aa7b4]">Hours</span></div>
-                    <div className="rounded-xl border border-[#F3E7D5] bg-[#fbfaf7] p-2"><FaGraduationCap className="mx-auto mb-1 text-[#FF6600]"/>Certificate<span className="block text-[9px] font-normal text-[#9aa7b4]">Pathway</span></div>
-                  </div>
-                  <div className="mt-5 grid grid-cols-[1fr_auto] gap-2">
-                    <button onClick={()=>openSubject(s)} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-5 py-4 text-sm font-bold text-[#142b45] shadow-[0_16px_36px_-22px_rgba(184,144,63,0.95)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#FF6600]/25">
-                      Start Learning / सीखना शुरू करें <FaArrowRight />
-                    </button>
-                    <button type="button" onClick={()=>shareSubject(s)} aria-label={"Share " + s.en} title="Share this course" className="inline-flex min-w-14 items-center justify-center gap-2 rounded-full border border-[#FF6600]/30 bg-[#FFF7EA] px-4 text-[#B34A00] transition hover:bg-[#FFEFD6] focus:outline-none focus:ring-4 focus:ring-[#FF6600]/20">
-                      <FaShareAlt /> <span className="sr-only">Share</span>
-                    </button>
-                  </div>
-                </div>
-              </article>)}
+              {courses.map(s => { const info = cardInfo(s); return (
+                <SubjectCard key={s.id} subject={s} onOpen={openSubject} onShare={shareSubject}
+                  progress={cardProgress(s)} badge={info.badge} level={info.level} moduleCount={info.moduleCount} hours={info.hours} />
+              ); })}
             </div>
           </section>;
         })}
