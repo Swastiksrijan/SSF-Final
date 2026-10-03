@@ -90,3 +90,25 @@ div[class*="bg-[radial-gradient"] > div.max-w-5xl > section:nth-child(14)::after
 div[class*="bg-[radial-gradient"] > footer { padding-top:clamp(4rem,8vw,7rem) !important; padding-bottom:clamp(4rem,8vw,7rem) !important; }
 @media (max-width:640px) { div[class*="bg-[radial-gradient"] > section:first-child { min-height:unset; padding-left:1rem !important; padding-right:1rem !important; } div[class*="bg-[radial-gradient"] > section:first-child > div { border-radius:22px !important; padding:2.25rem 1.15rem !important; } div[class*="bg-[radial-gradient"] > section:first-child h1 { font-size:2rem !important; line-height:1.35 !important; } div[class*="bg-[radial-gradient"] > section:first-child p:nth-of-type(2) { font-size:1.02rem !important; line-height:1.65 !important; } div[class*="bg-[radial-gradient"] > section:first-child::after { width:92vw; height:92vw; } div[class*="bg-[radial-gradient"] > div.max-w-5xl { padding-left:.85rem !important; padding-right:.85rem !important; padding-top:2rem !important; padding-bottom:2rem !important; gap:1.25rem !important; } div[class*="bg-[radial-gradient"] > div.max-w-5xl > section { border-radius:18px !important; padding:1.25rem !important; } div[class*="bg-[radial-gradient"] > div.max-w-5xl > section::before { top:18px; bottom:18px; } div[class*="bg-[radial-gradient"] > div.max-w-5xl h2 { font-size:1.45rem !important; line-height:1.45 !important; } div[class*="bg-[radial-gradient"] > div.max-w-5xl h2 span { font-size:.92rem !important; } div[class*="bg-[radial-gradient"] > div.max-w-5xl p,div[class*="bg-[radial-gradient"] > div.max-w-5xl li { font-size:.98rem; line-height:1.8; } div[class*="bg-[radial-gradient"] > div.max-w-5xl > section:nth-child(14) h2 { font-size:1.9rem !important; } div[class*="bg-[radial-gradient"] > footer { padding-left:1rem !important; padding-right:1rem !important; padding-top:3.5rem !important; padding-bottom:3.5rem !important; } }
 @media (prefers-reduced-motion:reduce) { div[class*="bg-[radial-gradient"] > div.max-w-5xl > section, div[class*="bg-[radial-gradient"] > div.max-w-5xl [class*="hover:border-[#C8A24D]"] { transition:none !important; } }
+/* ============ SSF LEARNING HUB — PREMIUM ACADEMY THEME ============ */
+.ssf-hub {
+  --hub-ink:#142b45; --hub-ink-soft:#5b6b7c; --hub-gold:#b8903f; --hub-gold-soft:#dfc995;
+  --hub-paper:#fbfaf7; --hub-cream:#f1efe8; --hub-line:rgba(20,43,69,.11); --hub-line-warm:rgba(184,144,63,.28);
+  background:linear-gradient(180deg,#f8f6f0 0%,#fff 22%,#f8f6f0 100%);
+  color:var(--hub-ink);
+}
+.ssf-hub .ssf-panel {
+  position:relative; border:1px solid var(--hub-line); border-radius:26px; padding:clamp(1.5rem,4vw,2.5rem);
+  background:rgba(255,255,255,.94);
+  box-shadow:0 30px 75px -55px rgba(20,43,69,.65);
+}
+.ssf-hub .ssf-panel::before {
+  content:""; position:absolute; left:0; top:34px; bottom:34px; width:2px;
+  background:linear-gradient(180deg,transparent,var(--hub-gold-soft),transparent);
+}
+.ssf-hub .ssf-panel::after {
+  content:"◆"; position:absolute; right:1.4rem; top:1.2rem; color:var(--hub-gold-soft); font-size:.7rem; opacity:.85;
+}
+.ssf-hub h1,.ssf-hub h2,.ssf-hub h3 { text-wrap:balance; }
+.ssf-hub p { text-wrap:pretty; }
+@media (max-width:640px){ .ssf-hub .ssf-panel{ border-radius:20px; padding:1.35rem; } .ssf-hub .ssf-panel::before{ top:22px; bottom:22px; } }

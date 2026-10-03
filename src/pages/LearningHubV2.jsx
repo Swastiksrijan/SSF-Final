@@ -23,12 +23,12 @@ const HUB_IMAGES = {
   health: "/images/real/nutrition_program.jpg",
   environment: "/images/real/tree_plantation.jpg",
   agriculture: "/images/real/journey-seeds.jpg",
-  justice: "/images/real/integrity-pledge.jpg",
+  justice: "/images/real/ncw_pledge_certificate.jpg",
   disability: "/images/real/community-education-meeting.jpg",
-  animal: "/images/real/foundation_banner.jpg",
-  culture: "/images/real/foundation_banner.jpg",
+  animal: "/images/real/cow-rescue.jpg",
+  culture: "/images/real/community-bhajan.jpg",
   digital: "/images/real/computer-donation-clipping.jpg",
-  disaster: "/images/real/office_banner.jpg",
+  disaster: "/images/real/rural-mask-distribution.jpg",
   career: "/images/real/academy_banner_wide.jpg",
   community: "/images/real/ngo_event_1.jpg",
   children: "/images/real/children-gathering.jpg"
@@ -191,7 +191,18 @@ const TOPICS = [
 ];
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9\u0900-\u097f]+/g, "-").replace(/^-|-$/g, "");
-const makeSubjectVisual = (category, title, index) => { const bg=["#003366","#0f4c81","#2d6a4f","#8b1e3f","#9d0208","#386641","#463f3a","#264653","#6b4f3a","#6d597a","#33415c","#005f73","#003049"][index%13]; const esc=(s)=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); const svg="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"700\"><rect width=\"1200\" height=\"700\" fill=\""+bg+"\"/><circle cx=\"1000\" cy=\"110\" r=\"180\" fill=\"white\" opacity=\".08\"/><circle cx=\"170\" cy=\"590\" r=\"240\" fill=\"white\" opacity=\".06\"/><text x=\"80\" y=\"120\" font-family=\"Arial\" font-size=\"28\" font-weight=\"700\" fill=\"white\" opacity=\".8\">SSF LEARNING HUB • "+esc(category.split(" / ")[0])+"</text><text x=\"80\" y=\"270\" font-family=\"Arial\" font-size=\"56\" font-weight=\"800\" fill=\"white\">"+esc(title.split(" / ")[0])+"</text><text x=\"80\" y=\"340\" font-family=\"Arial\" font-size=\"28\" fill=\"white\" opacity=\".82\">Learn • Understand • Practise • Share</text><path d=\"M80 420H1120\" stroke=\"white\" stroke-opacity=\".2\" stroke-width=\"3\"/><text x=\"80\" y=\"500\" font-family=\"Arial\" font-size=\"22\" fill=\"white\" opacity=\".72\">Subject "+String(index+1).padStart(3,"0")+"</text><text x=\"80\" y=\"550\" font-family=\"Arial\" font-size=\"22\" fill=\"white\" opacity=\".65\">Swastik Srijan Foundation</text></svg>"; return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg); };
+const SUBJECT_VISUAL_GLYPH = {
+  "Education / शिक्षा": "📚", "English & Communication / अंग्रेज़ी एवं संचार": "🗣️",
+  "Digital Skills / डिजिटल कौशल": "💻", "Career & Workplace / करियर एवं कार्यस्थल": "💼",
+  "Skill Development / कौशल विकास": "🛠️", "Women & Child Development / महिला एवं बाल विकास": "👩‍👧",
+  "Health / स्वास्थ्य": "🩺", "Environment / पर्यावरण": "🌳",
+  "Agriculture & Rural Development / कृषि एवं ग्रामीण विकास": "🌾", "Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य": "⚖️",
+  "Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास": "♿", "Animal Protection / पशु संरक्षण": "🐄",
+  "Culture & Heritage / संस्कृति एवं विरासत": "🪔", "Youth & Disaster Preparedness / युवा एवं आपदा तैयारी": "🛡️",
+  "Personal Development / व्यक्तिगत विकास": "🌱", "NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान": "🤝",
+  "Knowledge World / ज्ञान संसार": "🌍"
+};
+const makeSubjectVisual = (category, title, index) => { const bg=["#003366","#0f4c81","#2d6a4f","#8b1e3f","#9d0208","#386641","#463f3a","#264653","#6b4f3a","#6d597a","#33415c","#005f73","#003049"][index%13]; const esc=(s)=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); const en=esc(title.split(" / ")[0]); const hi=esc((title.split(" / ")[1]||"")); const cat=esc(category.split(" / ")[0]); const glyph=SUBJECT_VISUAL_GLYPH[category]||"🎓"; const svg="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"700\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\""+bg+"\"/><stop offset=\"1\" stop-color=\"#0b2e59\"/></linearGradient></defs><rect width=\"1200\" height=\"700\" fill=\"url(#g)\"/><circle cx=\"1010\" cy=\"120\" r=\"190\" fill=\"white\" opacity=\".08\"/><circle cx=\"160\" cy=\"600\" r=\"250\" fill=\"white\" opacity=\".06\"/><g opacity=\".5\"><circle cx=\"900\" cy=\"520\" r=\"6\" fill=\"#ffd166\"/><circle cx=\"1080\" cy=\"430\" r=\"5\" fill=\"#8ecae6\"/><circle cx=\"760\" cy=\"140\" r=\"5\" fill=\"#95d5b2\"/></g><text x=\"1020\" y=\"300\" font-size=\"220\" text-anchor=\"middle\" opacity=\".28\">"+glyph+"</text><text x=\"80\" y=\"120\" font-family=\"Arial\" font-size=\"28\" font-weight=\"700\" fill=\"white\" opacity=\".8\">SSF LEARNING HUB • "+cat+"</text><text x=\"80\" y=\"285\" font-family=\"Arial\" font-size=\"58\" font-weight=\"800\" fill=\"white\">"+en+"</text><text x=\"80\" y=\"352\" font-family=\"Arial\" font-size=\"34\" font-weight=\"700\" fill=\"#ffd166\">"+hi+"</text><path d=\"M80 430H1120\" stroke=\"white\" stroke-opacity=\".2\" stroke-width=\"3\"/><text x=\"80\" y=\"512\" font-family=\"Arial\" font-size=\"22\" fill=\"white\" opacity=\".72\">Subject "+String(index+1).padStart(3,"0")+"</text><text x=\"80\" y=\"560\" font-family=\"Arial\" font-size=\"22\" fill=\"white\" opacity=\".65\">Swastik Srijan Foundation</text></svg>"; return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg); };
 
 const buildSubject = ([category, title, intro], index) => {
   const meta = CATEGORY_META[category] || CATEGORY_META["Education / शिक्षा"];
@@ -200,6 +211,7 @@ const buildSubject = ([category, title, intro], index) => {
     id: slugify(title),
     category, title, intro, en, hi,
     image: makeSubjectVisual(category,title,index),
+    photo: HUB_IMAGES[meta.key] || HUB_IMAGES.education,
     categoryImage: HUB_IMAGES[meta.key],
     icon: meta.icon,
     color: meta.color,
@@ -2211,7 +2223,7 @@ function LearningSubject({ subject, onBack }) {
 
   return <div className="min-h-screen bg-[#f6f8fb] pt-4 text-zinc-900 font-inria md:pt-6">
     <section className={"relative overflow-hidden bg-gradient-to-r "+subject.color+" text-white"}>
-      <img src={subject.image} alt={subject.title} className="absolute inset-0 h-full w-full object-cover opacity-35"/>
+      <img src={subject.photo || subject.image} alt={subject.title} className="absolute inset-0 h-full w-full object-cover opacity-30"/>
       <div className="absolute inset-0 bg-[#001529]/75"/>
       <div className="relative mx-auto max-w-7xl px-4 py-10 md:py-16">
         <button onClick={onBack} className="mb-7 inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-bold hover:bg-white/20"><FaArrowLeft/> Back / वापस</button>
@@ -2271,7 +2283,7 @@ function LearningSubject({ subject, onBack }) {
 
         <aside className="space-y-5">
           <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
-            <img src={subject.image} alt={subject.title} className="h-52 w-full object-cover"/>
+            <img src={subject.photo || subject.image} alt={subject.title} className="h-52 w-full object-cover"/>
             <div className="p-5"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Visual Learning / दृश्य सीख</div><p className="mt-2 text-sm leading-6 text-zinc-600">इस course का visual उसी विषय से जुड़ा है।</p></div>
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
@@ -2555,13 +2567,13 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
   const categoryCards = CATEGORY_ORDER.map((name) => {
     const meta = CATEGORY_META[name] || {};
     const subjects = SUBJECTS.filter((s) => s.category === name);
-    return { name, icon: meta.icon || FaBookOpen, color: meta.color || "from-[#003366] to-[#0f4c81]", count: subjects.length, subjects };
+    return { name, icon: meta.icon || FaBookOpen, color: meta.color || "from-[#003366] to-[#0f4c81]", image: HUB_IMAGES[meta.key] || HUB_IMAGES.education, count: subjects.length, subjects };
   });
   const openCategory = (name) => { setCategory(name); navigate({ to: "/LearningHub/explore" }); try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {} };
   const myLearningSubjects = filtered.filter((s) => cardProgress(s) > 0);
   const gridSubjects = view === "my-learning" ? myLearningSubjects : filtered;
 
-  return <div className="font-inria text-zinc-900">
+  return <div className="ssf-hub font-inria text-[#142b45]">
     {view === "home" && <LearningHubLanding
       onStart={() => navigate({ to: "/LearningHub/explore" })}
       onExplore={() => navigate({ to: "/LearningHub/explore" })}
@@ -2574,16 +2586,16 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     />}
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
       {view === "explore" && <section className="mt-2">
-        <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-8">
-          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaBookOpen /> Explore All Subjects / सभी विषय देखें</div>
-          <h2 className="mt-2 text-2xl font-black md:text-3xl">{SUBJECTS.length} Subjects across {CATEGORY_ORDER.length} Learning Areas</h2>
-          <p className="mt-1 text-sm text-zinc-500">पहले Learning Area चुनें, फिर subject। हर subject का अपना course, modules, lessons, practice और quiz है।</p>
-          <div className="relative mt-4">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
-            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 text-sm outline-none transition focus:border-[#0f4c81] focus:bg-white focus:ring-4 focus:ring-[#0f4c81]/10" />
+        <div className="ssf-panel">
+          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#b8903f]"><FaBookOpen /> Explore All Subjects / सभी विषय देखें</div>
+          <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">{SUBJECTS.length} Subjects across {CATEGORY_ORDER.length} Learning Areas</h2>
+          <p className="mt-2 text-sm leading-7 text-[#5b6b7c]">पहले Learning Area चुनें, फिर subject। हर subject का अपना course, modules, lessons, practice और quiz है।</p>
+          <div className="relative mt-5">
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#b8903f]" />
+            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-[#e3ddcd] bg-[#fbfaf7] py-4 pl-11 pr-4 text-sm text-[#142b45] outline-none transition focus:border-[#b8903f] focus:bg-white focus:ring-4 focus:ring-[#b8903f]/15" />
           </div>
-          <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-black transition "+(category===c?"bg-[#003366] text-white shadow-md":"bg-zinc-100 text-zinc-600 hover:bg-zinc-200")}><Icon/> {c}</button>; })}</div>
-          <div className="mt-3 text-xs font-bold text-zinc-500">{filtered.length} {filtered.length === 1 ? "course" : "courses"} {query.trim() ? "matching your search" : "available"} {category !== "All" ? "in " + category : ""} / {filtered.length} विषय उपलब्ध</div>
+          <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold transition "+(category===c?"bg-gradient-to-r from-[#d9b25f] to-[#b8903f] text-[#142b45] shadow-md":"bg-[#f1efe8] text-[#5b6b7c] hover:bg-[#e7e2d6]")}><Icon/> {c}</button>; })}</div>
+          <div className="mt-3 text-xs font-semibold text-[#9aa7b4]">{filtered.length} {filtered.length === 1 ? "course" : "courses"} {query.trim() ? "matching your search" : "available"} {category !== "All" ? "in " + category : ""} / {filtered.length} विषय उपलब्ध</div>
         </div>
       </section>}
 
@@ -2650,54 +2662,51 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
           const Icon = meta?.icon || FaBookOpen;
           const courses = gridSubjects.filter(s => s.category === cat);
           if (!courses.length) return null;
-          return <section key={cat} className="mt-12">
-            <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          return <section key={cat} className="mt-14">
+            <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
-                <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-[#0f4c81]"><Icon /> {cat}</div>
-                <h2 className="mt-2 text-3xl font-black">Courses / पाठ्यक्रम</h2>
-                <p className="mt-1 text-sm text-zinc-500">{courses.length} learning options available in this area / इस क्षेत्र में उपलब्ध learning options</p>
+                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#b8903f]"><Icon aria-hidden="true" /> {cat}</div>
+                <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">Courses / पाठ्यक्रम</h2>
+                <p className="mt-2 text-sm text-[#9aa7b4]">{courses.length} learning options available in this area / इस क्षेत्र में उपलब्ध learning options</p>
               </div>
+              <span className="block h-px flex-1 bg-gradient-to-r from-[#b8903f]/50 to-transparent md:mb-3" aria-hidden="true" />
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-zinc-200 bg-white shadow-[0_10px_35px_rgba(0,35,68,.07)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(0,35,68,.14)]">
+              {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-[#e3ddcd] bg-white shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1.5 hover:border-[#b8903f]/45 hover:shadow-[0_32px_65px_-40px_rgba(20,43,69,0.7)]">
                 <div className="relative h-52 overflow-hidden">
                   <div className={"absolute inset-0 bg-gradient-to-br "+s.color} />
-                  <div className="absolute inset-0 flex items-center justify-center">
-                    <div className="flex h-24 w-24 items-center justify-center rounded-3xl border border-white/25 bg-white/10 text-5xl text-white shadow-2xl backdrop-blur">
-                      <Icon aria-hidden="true" />
-                    </div>
-                  </div>
-                  <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/45 to-transparent" />
-                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur">
-                    <Icon /> Course {s.number}
+                  <img src={s.photo || s.image} alt={s.en} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-[900ms] group-hover:scale-110" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e33]/88 via-[#0a1e33]/25 to-transparent" />
+                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-[#dfc995]/40 bg-[#0d243b]/60 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#e1c36f] backdrop-blur">
+                    <Icon aria-hidden="true" /> Course {s.number}
                   </div>
                   <div className="absolute bottom-4 left-5 right-5 text-white">
-                    <h3 className="text-2xl font-black leading-tight">{s.en}</h3>
-                    <div className="mt-1 text-sm font-bold text-white/90">{s.hi}</div>
+                    <h3 className="font-serif text-2xl font-bold leading-tight">{s.en}</h3>
+                    <div className="mt-1 text-sm font-semibold text-[#e1c36f]">{s.hi}</div>
                   </div>
                 </div>
                 <div className="flex flex-1 flex-col p-6">
                   <div className="mb-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-[#edf5fa] px-3 py-1 text-[10px] font-black text-[#0f4c81]">{courseMetaBySubject[s.id] ? "Structured Course" : "Learning Topic"}</span>
-                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-[10px] font-black text-zinc-600">Hindi + English</span>
+                    <span className="rounded-full bg-[#fbf7ec] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#8a6a24]">{courseMetaBySubject[s.id] ? "Structured Course" : "Learning Topic"}</span>
+                    <span className="rounded-full bg-[#f1efe8] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#5b6b7c]">Hindi + English</span>
                   </div>
-                  <p className="flex-1 text-sm leading-7 text-zinc-600">{s.intro}</p>
+                  <p className="flex-1 text-sm leading-7 text-[#5b6b7c]">{s.intro}</p>
                   {(() => { const pct = cardProgress(s); if (!pct) return null; return (
                     <div className="mt-4">
-                      <div className="flex items-center justify-between text-[11px] font-black text-[#0f4c81]"><span>{pct >= 100 ? "Completed" : "In progress"}</span><span>{pct}%</span></div>
-                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#0f4c81] to-[#0a9396]" style={{width:pct+"%"}}/></div>
+                      <div className="flex items-center justify-between text-[11px] font-bold text-[#b8903f]"><span>{pct >= 100 ? "Completed" : "In progress"}</span><span>{pct}%</span></div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#eeeae0]"><div className="h-full rounded-full bg-gradient-to-r from-[#b8903f] to-[#e1c36f]" style={{width:pct+"%"}}/></div>
                     </div>
                   ); })()}
-                  <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-zinc-500">
-                    <div className="rounded-xl bg-zinc-50 p-2"><FaBookOpen className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.modules?.length ?? getSubjectModules(s).moduleCount}<span className="block text-[9px] font-normal">Modules</span></div>
-                    <div className="rounded-xl bg-zinc-50 p-2"><FaClock className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal">Hours</span></div>
-                    <div className="rounded-xl bg-zinc-50 p-2"><FaGraduationCap className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id] ? "Certificate" : "Coming Soon"}<span className="block text-[9px] font-normal">{courseMetaBySubject[s.id] ? "Pathway" : "Status"}</span></div>
+                  <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-[#7286a0]">
+                    <div className="rounded-xl border border-[#eeeae0] bg-[#fbfaf7] p-2"><FaBookOpen className="mx-auto mb-1 text-[#b8903f]"/>{courseMetaBySubject[s.id]?.modules?.length ?? getSubjectModules(s).moduleCount}<span className="block text-[9px] font-normal text-[#9aa7b4]">Modules</span></div>
+                    <div className="rounded-xl border border-[#eeeae0] bg-[#fbfaf7] p-2"><FaClock className="mx-auto mb-1 text-[#b8903f]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal text-[#9aa7b4]">Hours</span></div>
+                    <div className="rounded-xl border border-[#eeeae0] bg-[#fbfaf7] p-2"><FaGraduationCap className="mx-auto mb-1 text-[#b8903f]"/>{courseMetaBySubject[s.id] ? "Certificate" : "Coming Soon"}<span className="block text-[9px] font-normal text-[#9aa7b4]">{courseMetaBySubject[s.id] ? "Pathway" : "Status"}</span></div>
                   </div>
                   <div className="mt-5 grid grid-cols-[1fr_auto] gap-2">
-                    <button onClick={()=>openSubject(s)} className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:from-[#0f4c81] hover:to-[#007c91] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
+                    <button onClick={()=>openSubject(s)} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#d9b25f] to-[#b8903f] px-5 py-4 text-sm font-bold text-[#142b45] shadow-[0_16px_36px_-22px_rgba(184,144,63,0.95)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#b8903f]/25">
                       {courseMetaBySubject[s.id] ? "Start Learning / सीखना शुरू करें" : "Explore Topic / विषय देखें"} <FaArrowRight />
                     </button>
-                    <button type="button" onClick={()=>shareSubject(s)} aria-label={"Share " + s.en} title="Share this course" className="inline-flex min-w-14 items-center justify-center gap-2 rounded-2xl border border-[#0f4c81]/20 bg-[#eef7fb] px-4 text-[#003366] transition hover:bg-[#dceff7] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
+                    <button type="button" onClick={()=>shareSubject(s)} aria-label={"Share " + s.en} title="Share this course" className="inline-flex min-w-14 items-center justify-center gap-2 rounded-full border border-[#b8903f]/30 bg-[#fbf7ec] px-4 text-[#8a6a24] transition hover:bg-[#f4ecd8] focus:outline-none focus:ring-4 focus:ring-[#b8903f]/20">
                       <FaShareAlt /> <span className="sr-only">Share</span>
                     </button>
                   </div>
