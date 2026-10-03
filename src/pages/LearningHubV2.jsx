@@ -1603,7 +1603,20 @@ function LearningSubject({ subject, onBack }) {
   const structuredCourse = subject.id === "english-from-basics"
     ? ENGLISH_FROM_BASICS_COURSE
     : (FLAGSHIP_COURSES[subject.id] || ALL_STRUCTURED_COURSES[structuredCourseId]);
-  const modules = structuredCourse
+  const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
+  const secondaryModules = isSecondaryEducation
+    ? SECONDARY_EDUCATION_MODULES.map((module, mi) => ({
+        id: subject.id + "-secondary-module-" + (mi + 1),
+        title: formatBilingual(module.title),
+        subtitle: "इस module में " + module.title.split(" / ")[0] + " के core concepts, examples, practice, application और assessment को step-by-step सीखें।",
+        lessons: module.lessons.map((label, li) => {
+          const lesson = makeRichSubjectLesson(subject, module.title, label, mi, li);
+          lesson[0] = formatBilingual(lesson[0]);
+          return lesson;
+        })
+      }))
+    : null;
+  const modules = secondaryModules || (structuredCourse
     ? structuredCourse.modules.map((m) => ({
         title: formatBilingual(m.title.en + " / " + m.title.hi),
         subtitle: m.description,
@@ -1613,7 +1626,7 @@ function LearningSubject({ subject, onBack }) {
           l
         ])
       }))
-    : buildTopicModules(subject);
+    : buildTopicModules(subject));
 
   // Flatten module lessons into the structure used by the active-lesson panel.
   // This is required for every course, including the generic courses that do not
