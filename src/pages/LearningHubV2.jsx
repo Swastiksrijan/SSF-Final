@@ -12,7 +12,7 @@ import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../data/coursesData"
 import { ENDPOINTS } from "../config/api";
 import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../data/englishFromBasicsContent";
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
-import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA } from "../data/learningCurriculum";
+import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGORY } from "../data/learningCurriculum";
 import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
 import PrimaryLessonFresh from "../components/learning/PrimaryLessonFresh";
@@ -66,6 +66,33 @@ const TOPICS = [
 ];
 
 const slugify = (s) => s.toLowerCase().replace(/[^a-z0-9\u0900-\u097f]+/g, "-").replace(/^-|-$/g, "");
+
+// Subject ids are slugified from "English / Hindi", so they include the Hindi
+// suffix (e.g. "english-from-basics-मूल-अंग्रेज़ी"). Structured-course registries
+// are keyed by the ENGLISH course id only ("english-from-basics",
+// "health-wellness", ...). Resolve by the English half so the lookups actually
+// match; otherwise the rich structured courses become dead code and learners
+// only ever see the generic topic template.
+const STRUCTURED_COURSE_ALIASES = {
+  "english-from-basics": "english-communication",
+  "health-well-being": "health-wellness",
+  "computer-training": "computer-education",
+  "environment-basics": "environment-sustainability",
+  "career-planning": "career-workplace",
+};
+const englishBaseId = (subject) => slugify((subject && subject.en) || subject.id || "");
+const isEnglishFromBasics = (subject) => englishBaseId(subject) === "english-from-basics";
+const resolveStructuredCourse = (subject) => {
+  if (isEnglishFromBasics(subject)) return { course: ENGLISH_FROM_BASICS_COURSE, id: "english-communication" };
+  const base = englishBaseId(subject);
+  const id = STRUCTURED_COURSE_ALIASES[base] || base;
+  const course = FLAGSHIP_COURSES[id] || ALL_STRUCTURED_COURSES[id];
+  return { course: course || null, id };
+};
+// Knowledge World topics are not curriculum subjects and must never match a
+// structured course registry.
+const hasStructuredCourse = (subject) =>
+  subject && subject.category !== KNOWLEDGE_WORLD_CATEGORY && Boolean(resolveStructuredCourse(subject).course);
 const SUBJECT_VISUAL_GLYPH = {
   "Education / शिक्षा": "📚", "English & Communication / अंग्रेज़ी एवं संचार": "🗣️",
   "Digital Skills / डिजिटल कौशल": "💻", "Career & Workplace / करियर एवं कार्यस्थल": "💼",
@@ -1828,10 +1855,7 @@ const resolveSubjectModules = (subject, structuredCourse, buildStructuredModules
 const SUBJECT_MODULES_CACHE = new Map();
 const getSubjectModules = (subject) => {
   if (SUBJECT_MODULES_CACHE.has(subject.id)) return SUBJECT_MODULES_CACHE.get(subject.id);
-  const structuredCourseId = { "english-from-basics": "english-communication", "health-well-being": "health-wellness", "computer-training": "computer-education" }[subject.id] || subject.id;
-  const structuredCourse = subject.id === "english-from-basics"
-    ? ENGLISH_FROM_BASICS_COURSE
-    : (FLAGSHIP_COURSES[subject.id] || ALL_STRUCTURED_COURSES[structuredCourseId]);
+  const structuredCourse = hasStructuredCourse(subject) ? resolveStructuredCourse(subject).course : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const secondaryModules = isSecondaryEducation
     ? SECONDARY_EDUCATION_MODULES.map((module, mi) => ({
@@ -2010,14 +2034,9 @@ function LearningSubject({ subject, onBack }) {
     try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
   });
 
-  const structuredCourseId = {
-    "english-from-basics": "english-communication",
-    "health-well-being": "health-wellness",
-    "computer-training": "computer-education"
-  }[subject.id] || subject.id;
-  const structuredCourse = subject.id === "english-from-basics"
-    ? ENGLISH_FROM_BASICS_COURSE
-    : (FLAGSHIP_COURSES[subject.id] || ALL_STRUCTURED_COURSES[structuredCourseId]);
+  const structuredResolution = resolveStructuredCourse(subject);
+  const structuredCourseId = structuredResolution.id;
+  const structuredCourse = hasStructuredCourse(subject) ? structuredResolution.course : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const secondaryModules = isSecondaryEducation
     ? SECONDARY_EDUCATION_MODULES.map((module, mi) => ({
@@ -2059,7 +2078,7 @@ function LearningSubject({ subject, onBack }) {
 
   const structuredAssessmentPool = structuredCourse
     ? Object.values(
-        subject.id === "english-from-basics"
+        isEnglishFromBasics(subject)
           ? ENGLISH_FROM_BASICS_ASSESSMENTS
           : (FLAGSHIP_COURSE_ASSESSMENTS && FLAGSHIP_COURSE_ASSESSMENTS[structuredCourseId]
               ? FLAGSHIP_COURSE_ASSESSMENTS[structuredCourseId]
@@ -2092,7 +2111,7 @@ function LearningSubject({ subject, onBack }) {
         ...m,
         questions:
           (FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] ||
-            (subject.id === "english-from-basics" ? ENGLISH_FROM_BASICS_ASSESSMENTS?.[m.id] : COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id]) ||
+            (isEnglishFromBasics(subject) ? ENGLISH_FROM_BASICS_ASSESSMENTS?.[m.id] : COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id]) ||
             m.assessment?.questions ||
             [])
       })).filter(m => m.questions.length)
@@ -2440,15 +2459,8 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
 
   const courseMetaBySubject = useMemo(() => {
     const map = {};
-    const aliases = {
-      "english-from-basics": "english-communication",
-      "health-well-being": "health-wellness",
-      "environment-basics": "environment-sustainability",
-      "career-planning": "career-workplace",
-      "computer-training": "computer-education"
-    };
     SUBJECTS.forEach(s => {
-      const course = s.id === "english-from-basics" ? ENGLISH_FROM_BASICS_COURSE : ALL_STRUCTURED_COURSES?.[aliases[s.id] || s.id];
+      const course = hasStructuredCourse(s) ? resolveStructuredCourse(s).course : null;
       if (course) map[s.id] = course;
     });
     return map;
