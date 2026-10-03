@@ -1,14 +1,11 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { FaHome, FaBookOpen, FaGlobe, FaChartLine, FaSearch } from "react-icons/fa";
+import { FaHome } from "react-icons/fa";
 
 const LINKS = [
-  { to: "/LearningHub", label: "Welcome", hi: "स्वागत", icon: FaHome, match: (p) => p === "/LearningHub" },
-  { to: "/LearningHub/explore", label: "Explore Subjects", hi: "विषय खोजें", icon: FaBookOpen, match: (p) => p.startsWith("/LearningHub/explore") || p.startsWith("/LearningHub/course") },
-  { to: "/LearningHub/knowledge-world", label: "Knowledge World", hi: "ज्ञान संसार", icon: FaGlobe, match: (p) => p.startsWith("/LearningHub/knowledge-world") },
-  { to: "/LearningHub/my-learning", label: "My Learning", hi: "मेरी सीख", icon: FaChartLine, match: (p) => p.startsWith("/LearningHub/my-learning") }
+  { to: "/LearningHub", label: "Welcome", hi: "स्वागत", icon: FaHome, match: (p) => p === "/LearningHub" }
 ];
 
-export default function LearningHubNav({ onSearch }) {
+export default function LearningHubNav() {
   const pathname = useRouterState({ select: (s) => s.location.pathname });
 
   return <nav aria-label="SSF Learning Hub navigation"
@@ -34,12 +31,6 @@ export default function LearningHubNav({ onSearch }) {
           </Link>;
         })}
       </div>
-
-      <button type="button" onClick={onSearch}
-        className="flex shrink-0 items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-3 py-2 text-xs font-black text-white transition hover:bg-white/20 md:px-3.5"
-        aria-label="Search subjects">
-        <FaSearch aria-hidden="true" /> <span className="hidden sm:inline">Search</span>
-      </button>
     </div>
   </nav>;
 }

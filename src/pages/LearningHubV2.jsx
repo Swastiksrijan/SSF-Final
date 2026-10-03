@@ -2775,7 +2775,6 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
 
   const KW_CATEGORY = "Knowledge World / ज्ञान संसार";
   const CATEGORY_ORDER = [KW_CATEGORY, ...Object.keys(CATEGORY_META).filter(c => c !== KW_CATEGORY)];
-  const categories = ["All", ...CATEGORY_ORDER];
   const visibleCategories = category === "All" ? CATEGORY_ORDER : [category];
   const knowledgeWorldSubjects = SUBJECTS.filter(s => s.category === KW_CATEGORY);
   const categoryCards = CATEGORY_ORDER.map((name, ci) => {
