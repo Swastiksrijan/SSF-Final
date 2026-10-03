@@ -1,5 +1,6 @@
 // SSF Learning Hub – curriculum source of truth (categories + subjects).
 // Auto-preserves all existing SSF subject names/intros. Add new subjects here.
+import { OFFICE_SKILLS_CARDS } from "./officeSkillsCourse.js";
 
 export const LEARNING_CATEGORIES = {
   "Education / शिक्षा": [
@@ -151,9 +152,13 @@ export const LEARNING_CATEGORIES = {
     ["Reporting & Documentation / रिपोर्टिंग एवं दस्तावेजीकरण", "Accurate records, evidence, narrative reports and responsible claims।"],
     ["Safeguarding & Ethics / सुरक्षा एवं नैतिकता", "Consent, privacy, dignity, child safety and do-no-harm principles।"],
   ],
+  "Office Skills / ऑफिस कौशल": OFFICE_SKILLS_CARDS.map((c) => [c.title, c.intro]),
 };
 
 export const KNOWLEDGE_WORLD_CATEGORY = "Knowledge World / ज्ञान संसार";
+
+// Office Skills / ऑफिस कौशल — card layer added now; detailed lessons later.
+export const OFFICE_SKILLS_CATEGORY = "Office Skills / ऑफिस कौशल";
 
 // Added major learning areas: Mathematics/Financial, Science, Languages, AI,
 // Media & Information Literacy, Life Skills, Practical Everyday Life,

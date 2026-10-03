@@ -14,6 +14,7 @@ import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
 import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCount } from "../data/knowledgeWorldCourse";
 import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
+import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_SKILLS_CATEGORY, OFFICE_SKILLS_SECTION, OFFICE_SKILLS_CARDS } from "../data/officeSkillsCourse";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGORY } from "../data/learningCurriculum";
 import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
@@ -54,7 +55,8 @@ const CATEGORY_META = {
   "Entrepreneurship & Work / उद्यमिता एवं कार्य": { key:"skills", icon:FaBriefcase, color:"from-[#374151] to-[#111827]" },
   "Research & Mastery Skills / शोध एवं दक्षता कौशल": { key:"education", icon:FaBookOpen, color:"from-[#003049] to-[#669bbc]" },
   "Arts, Creativity & Culture / कला, रचनात्मकता एवं संस्कृति": { key:"culture", icon:FaBookOpen, color:"from-[#6d597a] to-[#b56576]" },
-  "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": { key:"health", icon:FaHeartbeat, color:"from-[#1b4332] to-[#40916c]" }
+  "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": { key:"health", icon:FaHeartbeat, color:"from-[#1b4332] to-[#40916c]" },
+  "Office Skills / ऑफिस कौशल": { key:"digital", icon:FaBriefcase, color:"from-[#0b3a63] to-[#1f6f8b]" }
 };
 
 const TOPICS = [
@@ -115,7 +117,8 @@ const SUBJECT_VISUAL_GLYPH = {
   "Entrepreneurship & Work / उद्यमिता एवं कार्य": "📈",
   "Research & Mastery Skills / शोध एवं दक्षता कौशल": "🎓",
   "Arts, Creativity & Culture / कला, रचनात्मकता एवं संस्कृति": "🎨",
-  "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": "🏅"
+  "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": "🏅",
+  "Office Skills / ऑफिस कौशल": "🏢"
 };
 const HUB_ACCENTS = ["#FF6600","#FFD166","#8ecae6","#95d5b2","#f4a261","#e9c46a","#48cae4","#a7c957"];
 const HUB_PALETTES = [
@@ -168,10 +171,12 @@ const makeCategoryVisual = (category, count, glyph, index) =>
     count + " subjects"
   );
 
+const OFFICE_EMOJI_BY_TITLE = Object.fromEntries(OFFICE_SKILLS_CARDS.map((c) => [c.title, c.emoji]));
+
 const buildSubject = ([category, title, intro], index) => {
   const meta = CATEGORY_META[category] || CATEGORY_META["Education / शिक्षा"];
   const [en, hi] = title.split(" / ");
-  const visual = makeSubjectVisual(category, title, index);
+  const visual = makeSubjectVisual(category, title, index, OFFICE_EMOJI_BY_TITLE[title]);
   return {
     id: slugify(title),
     category, title, intro, en, hi,
@@ -1973,6 +1978,48 @@ const buildEducationModules = (subject) => {
   }));
 };
 
+// Office Skills: card-first subjects. Detailed lessons arrive later, so this
+// builder turns the ready-to-fill shell into the same module/lesson structure
+// the course UI renders (Getting Started → Course Structure → Detailed Lessons).
+const buildOfficeSkillsModules = (subject) => {
+  const course = getOfficeSkillsCourse(subject);
+  if (!course) return null;
+  return course.modules.map((module, mi) => ({
+    id: subject.id + "-office-module-" + (mi + 1),
+    title: course.icon + " " + formatBilingual(module.title),
+    subtitle: module.summary,
+    lessons: module.topics.map((topic) => {
+      const t = topic.title;
+      const plain = t.split(" / ")[0].trim();
+      const { question: q, options, answer, explain } = topic.quiz;
+      return [formatBilingual(t), topic.learn, {
+        objectives: course.outcomes,
+        content: {
+          easyExplanation: topic.learn,
+          deepUnderstanding: course.overview.what,
+          whyItMatters: course.overview.why,
+          keyPoints: [plain, course.level, subject.en],
+          examples: [topic.example],
+          practicalApplication: topic.activity,
+          commonMistakes: [
+            plain + " को केवल नाम तक सीमित रखना।",
+            "practice और real-life application न जोड़ना।"
+          ],
+          summary: topic.learn,
+          knowledgeCheck: [{ question: q, options, answer, explain }]
+        },
+        practice: [topic.activity],
+        activity: topic.activity,
+        reflection: [
+          "आज मैंने " + plain + " के बारे में क्या सीखा?",
+          "इसका उपयोग मैं अपने office काम में कहाँ करूँगा?",
+          "कौन-सी बात दोहरानी या अभ्यास करनी है?"
+        ]
+      }];
+    })
+  }));
+};
+
 // Single source of truth for a subject's module structure. Both the lesson viewer
 // and the dashboard progress summary use this so that progress is tracked
 // consistently for structured courses, Secondary Education and topic-based subjects.
@@ -1999,7 +2046,8 @@ const getSubjectModules = (subject) => {
       }))
     : buildTopicModules(subject);
   const kwModules = isKnowledgeWorldSubject(subject) ? buildKnowledgeWorldModules(subject) : null;
-  const resolved = resolveSubjectModules(subject, structuredCourse, buildStructuredModules, eduModules || secondaryModules || kwModules);
+  const officeModules = isOfficeSkillsSubject(subject) ? buildOfficeSkillsModules(subject) : null;
+  const resolved = resolveSubjectModules(subject, structuredCourse, buildStructuredModules, eduModules || secondaryModules || kwModules || officeModules);
   const total = resolved.reduce((n, m) => n + (m.lessons?.length || 0), 0);
   const result = { total, moduleCount: resolved.length, hasStructured: Boolean(structuredCourse) };
   SUBJECT_MODULES_CACHE.set(subject.id, result);
@@ -2168,8 +2216,10 @@ function LearningSubject({ subject, onBack }) {
   const structuredCourse = hasStructuredCourse(subject) ? structuredResolution.course : null;
   const kwCourse = isKnowledgeWorldSubject(subject) ? getKnowledgeWorldCourse(subject) : null;
   const eduCourse = isEducationSubject(subject) ? getEducationCourse(subject) : null;
+  const officeCourse = isOfficeSkillsSubject(subject) ? getOfficeSkillsCourse(subject) : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const eduModules = eduCourse ? buildEducationModules(subject) : null;
+  const officeModules = officeCourse ? buildOfficeSkillsModules(subject) : null;
   const secondaryModules = !eduModules && isSecondaryEducation
     ? SECONDARY_EDUCATION_MODULES.map((module, mi) => ({
         id: subject.id + "-secondary-module-" + (mi + 1),
@@ -2198,7 +2248,7 @@ function LearningSubject({ subject, onBack }) {
       subject,
       structuredCourse,
       buildStructuredModules,
-      eduModules || secondaryModules || (isKnowledgeWorldSubject(subject) ? buildKnowledgeWorldModules(subject) : null)
+      eduModules || secondaryModules || (isKnowledgeWorldSubject(subject) ? buildKnowledgeWorldModules(subject) : null) || officeModules
     ),
     [subject, structuredCourse, secondaryModules, eduModules]
   );
@@ -2225,11 +2275,12 @@ function LearningSubject({ subject, onBack }) {
   const subjectQuiz = (SUBJECT_CONTENT_ALL[subject.en] && SUBJECT_CONTENT_ALL[subject.en].quiz) || [];
   const kwQuiz = kwCourse ? kwCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
   const eduQuiz = eduCourse ? eduCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
-  // Education and Knowledge World share the same rich course UI (overview,
-  // modules, glossary, project, revision, mastery). `richCourse` selects
-  // whichever applies so the sections below stay single-sourced.
-  const richCourse = eduCourse || kwCourse;
-  const richTopicCount = eduCourse ? educationTopicCount(eduCourse) : knowledgeWorldTopicCount(kwCourse);
+  const officeQuiz = officeCourse ? officeCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
+  // Education, Knowledge World and Office Skills share the same rich course UI
+  // (overview, modules, glossary, project, revision, mastery). `richCourse`
+  // selects whichever applies so the sections below stay single-sourced.
+  const richCourse = eduCourse || kwCourse || officeCourse;
+  const richTopicCount = eduCourse ? educationTopicCount(eduCourse) : kwCourse ? knowledgeWorldTopicCount(kwCourse) : officeCourse ? officeTopicCount(officeCourse) : 0;
   const quizQuestions = structuredAssessmentPool.length
     ? structuredAssessmentPool.slice(0, 5).map(q => ({
         q: q.q || q.question,
@@ -2240,6 +2291,8 @@ function LearningSubject({ subject, onBack }) {
       ? eduQuiz.slice(0, 5)
     : kwQuiz.length
       ? kwQuiz.slice(0, 5)
+    : officeQuiz.length
+      ? officeQuiz.slice(0, 5)
     : subjectQuiz.length
       ? subjectQuiz.slice(0, 5).map(q => ({ q: q.question, options: q.options, answer: q.answer }))
       : [
@@ -2287,6 +2340,16 @@ function LearningSubject({ subject, onBack }) {
     audience: kwCourse.overview.what,
     prerequisites: ["किसी पूर्व ज्ञान की जरूरत नहीं — यह beginner से शुरू होता है।"],
     outcomes: [kwCourse.overview.outcome, kwCourse.overview.why, kwCourse.overview.where]
+  } : officeCourse ? {
+    title: { en: subject.en, hi: subject.hi },
+    level: officeCourse.level,
+    description: officeCourse.learningLine,
+    learningHours: Math.max(1, Math.round(officeTopicCount(officeCourse) * 0.5)),
+    version: "1.0",
+    lastReviewed: "2026-10-03",
+    audience: officeCourse.overview.what,
+    prerequisites: ["किसी पूर्व ज्ञान की जरूरत नहीं — यह beginner से शुरू होता है।"],
+    outcomes: officeCourse.outcomes.length ? officeCourse.outcomes : [officeCourse.overview.outcome, officeCourse.overview.why, officeCourse.overview.where]
   } : {
     title: { en: subject.en, hi: subject.hi },
     level: "foundation",
@@ -2564,7 +2627,7 @@ function LearningSubject({ subject, onBack }) {
           <div className="mt-4 grid gap-3 sm:grid-cols-2">{richCourse.glossary.map((g,i)=><div key={i} className="rounded-xl bg-[#f7fafc] p-3"><div className="text-sm font-black text-[#002344]">{g.term} <span className="text-[#0f4c81]">/ {g.hi}</span></div><div className="mt-1 text-xs leading-5 text-zinc-600">{g.meaning}</div></div>)}</div>
         </div>
         <div className="space-y-6">
-          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+          {richCourse.project && <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
             <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Project / परियोजना</div>
             <h3 className="mt-2 text-xl font-black text-[#002344]">{richCourse.project.objective}</h3>
             <div className="mt-3 grid gap-3 text-sm leading-6 text-zinc-600 md:grid-cols-2">
@@ -2573,16 +2636,16 @@ function LearningSubject({ subject, onBack }) {
             </div>
             <div className="mt-3"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Steps</div><ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-6 text-zinc-600">{richCourse.project.steps.map((s,i)=><li key={i}>{s}</li>)}</ol></div>
             <div className="mt-3 grid gap-2 text-sm leading-6 text-zinc-600 md:grid-cols-2"><div><span className="font-black text-[#002344]">Result:</span> {richCourse.project.result}</div><div><span className="font-black text-[#002344]">Reflection:</span> {richCourse.project.reflection}</div></div>
-          </div>
-          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+          </div>}
+          {richCourse.revision?.length > 0 && <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
             <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Quick Revision / द्रुत पुनरावृत्ति</div>
             <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{richCourse.revision.map((r,i)=><li key={i}>{r}</li>)}</ul>
-          </div>
-          <div className="rounded-[2rem] border border-[#d9e7f0] bg-[#f7fafc] p-6 shadow-sm md:p-7">
+          </div>}
+          {richCourse.related?.length > 0 && <div className="rounded-[2rem] border border-[#d9e7f0] bg-[#f7fafc] p-6 shadow-sm md:p-7">
             <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Related Knowledge / संबंधित ज्ञान</div>
             <p className="mt-1 text-xs text-zinc-500">Knowledge World आपस में जुड़ा है — इन विषयों से यह topic गहरा होता है।</p>
             <div className="mt-3 flex flex-wrap gap-2">{richCourse.related.map((r,i)=><span key={i} className="rounded-full bg-white px-4 py-2 text-xs font-black text-[#002344] shadow-sm">🔗 {r}</span>)}</div>
-          </div>
+          </div>}
         </div>
       </section>}
 
@@ -2817,11 +2880,14 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
           const Icon = meta?.icon || FaBookOpen;
           const courses = gridSubjects.filter(s => s.category === cat);
           if (!courses.length) return null;
+          const isOfficeCat = cat === OFFICE_SKILLS_CATEGORY;
           return <section key={cat} className="mt-14">
             <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
                 <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#FF6600]"><Icon aria-hidden="true" /> {cat}</div>
-                <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">Courses / पाठ्यक्रम</h2>
+                <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">{isOfficeCat ? "Learning Cards / लर्निंग कार्ड" : "Courses / पाठ्यक्रम"}</h2>
+                {isOfficeCat && <p className="mt-2 text-sm font-semibold text-[#5b6b7c]">{OFFICE_SKILLS_SECTION.taglineEn} • {OFFICE_SKILLS_SECTION.taglineHi}</p>}
+                {isOfficeCat && <p className="mt-1 text-sm leading-7 text-[#5b6b7c]">{OFFICE_SKILLS_SECTION.description}</p>}
                 <p className="mt-2 text-sm text-[#9aa7b4]">{courses.length} learning options available in this area / इस क्षेत्र में उपलब्ध learning options</p>
               </div>
               <span className="block h-px flex-1 bg-gradient-to-r from-[#FF6600]/50 to-transparent md:mb-3" aria-hidden="true" />
@@ -2842,10 +2908,13 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
                 </div>
                 <div className="flex flex-1 flex-col p-6">
                   <div className="mb-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-[#FFF7EA] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#B34A00]">Full Course</span>
+                    <span className="rounded-full bg-[#FFF7EA] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#B34A00]">{getOfficeSkillsCourse(s) ? "Course Shell" : "Full Course"}</span>
                     <span className="rounded-full bg-[#f1efe8] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#5b6b7c]">Hindi + English</span>
                   </div>
                   <p className="flex-1 text-sm leading-7 text-[#5b6b7c]">{s.intro}</p>
+                  {(() => { const oc = getOfficeSkillsCourse(s); if (!oc?.levels?.length) return null; return (
+                    <div className="mt-4 flex flex-wrap gap-1.5">{oc.levels.map(l => <span key={l} className="rounded-full bg-[#eef7fb] px-2.5 py-1 text-[10px] font-bold text-[#0f4c81]">{l}</span>)}</div>
+                  ); })()}
                   {(() => { const pct = cardProgress(s); if (!pct) return null; return (
                     <div className="mt-4">
                       <div className="flex items-center justify-between text-[11px] font-bold text-[#FF6600]"><span>{pct >= 100 ? "Completed" : "In progress"}</span><span>{pct}%</span></div>
