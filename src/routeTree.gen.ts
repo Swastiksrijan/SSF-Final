@@ -9,224 +9,67 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as InstitutionalDnaRouteImport } from './routes/institutional-dna'
-import { Route as VolunteerRouteImport } from './routes/Volunteer'
-import { Route as VisionRouteImport } from './routes/Vision'
-import { Route as UpcomingProjectsRouteImport } from './routes/UpcomingProjects'
-import { Route as TransparencyRouteImport } from './routes/Transparency'
-import { Route as TermsAndConditionsRouteImport } from './routes/TermsAndConditions'
-import { Route as TeamRouteImport } from './routes/Team'
-import { Route as StoriesRouteImport } from './routes/Stories'
-import { Route as SkillProgramsRouteImport } from './routes/SkillPrograms'
-import { Route as SSFNationalAcademyRouteImport } from './routes/SSFNationalAcademy'
-import { Route as RegistrationDetailsRouteImport } from './routes/RegistrationDetails'
-import { Route as RefundPolicyRouteImport } from './routes/RefundPolicy'
-import { Route as PrivacyPolicyRouteImport } from './routes/PrivacyPolicy'
-import { Route as PartnerWithUsRouteImport } from './routes/PartnerWithUs'
-import { Route as ObjectivesRouteImport } from './routes/Objectives'
-import { Route as MissionRouteImport } from './routes/Mission'
-import { Route as MemorandumAndRulesRouteImport } from './routes/MemorandumAndRules'
-import { Route as MembersRouteImport } from './routes/Members'
-import { Route as MediaRouteImport } from './routes/Media'
-import { Route as LegalPoliciesRouteImport } from './routes/LegalPolicies'
-import { Route as LearningHubRouteImport } from './routes/LearningHub'
-import { Route as JourneyRouteImport } from './routes/Journey'
-import { Route as InternshipRouteImport } from './routes/Internship'
-import { Route as ImpactRouteImport } from './routes/Impact'
-import { Route as HumanityChar38TruthRouteImport } from './routes/Humanity&Truth'
-import { Route as GetInvolvedRouteImport } from './routes/GetInvolved'
-import { Route as DonateAndSupportRouteImport } from './routes/DonateAndSupport'
-import { Route as DonateRouteImport } from './routes/Donate'
-import { Route as DonationRefundPolicyRouteImport } from './routes/DonationRefundPolicy'
-import { Route as CookiePolicyRouteImport } from './routes/CookiePolicy'
-import { Route as ContactRouteImport } from './routes/Contact'
-import { Route as CampaignsRouteImport } from './routes/Campaigns'
-import { Route as CampaignRouteImport } from './routes/Campaign'
-import { Route as CSRPartnershipRouteImport } from './routes/CSRPartnership'
-import { Route as BlogRouteImport } from './routes/Blog'
-import { Route as AdminPortalRouteImport } from './routes/AdminPortal'
-import { Route as AboutRouteImport } from './routes/About'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AboutRouteImport } from './routes/About'
+import { Route as AdminPortalRouteImport } from './routes/AdminPortal'
+import { Route as BlogRouteImport } from './routes/Blog'
+import { Route as CSRPartnershipRouteImport } from './routes/CSRPartnership'
+import { Route as CampaignRouteImport } from './routes/Campaign'
+import { Route as CampaignsRouteImport } from './routes/Campaigns'
+import { Route as ContactRouteImport } from './routes/Contact'
+import { Route as CookiePolicyRouteImport } from './routes/CookiePolicy'
+import { Route as DonateRouteImport } from './routes/Donate'
+import { Route as DonateAndSupportRouteImport } from './routes/DonateAndSupport'
+import { Route as DonationRefundPolicyRouteImport } from './routes/DonationRefundPolicy'
+import { Route as DonorRouteImport } from './routes/Donor'
+import { Route as GetInvolvedRouteImport } from './routes/GetInvolved'
+import { Route as HumanityChar38TruthRouteImport } from './routes/Humanity&Truth'
+import { Route as ImpactRouteImport } from './routes/Impact'
+import { Route as InternshipRouteImport } from './routes/Internship'
+import { Route as JoinRouteImport } from './routes/Join'
+import { Route as JoinUsRouteImport } from './routes/JoinUs'
+import { Route as JourneyRouteImport } from './routes/Journey'
+import { Route as LearningCertificateVerifyRouteImport } from './routes/LearningCertificateVerify'
+import { Route as LearningHubRouteImport } from './routes/LearningHub'
+import { Route as LegalPoliciesRouteImport } from './routes/LegalPolicies'
+import { Route as MediaRouteImport } from './routes/Media'
+import { Route as MemberDashboardRouteImport } from './routes/MemberDashboard'
+import { Route as MembersRouteImport } from './routes/Members'
+import { Route as MemorandumAndRulesRouteImport } from './routes/MemorandumAndRules'
+import { Route as MissionRouteImport } from './routes/Mission'
+import { Route as ObjectivesRouteImport } from './routes/Objectives'
+import { Route as OurInitiativesRouteImport } from './routes/OurInitiatives'
+import { Route as PartnerWithUsRouteImport } from './routes/PartnerWithUs'
+import { Route as PrivacyPolicyRouteImport } from './routes/PrivacyPolicy'
+import { Route as RefundAndCancellationRouteImport } from './routes/RefundAndCancellation'
+import { Route as RefundPolicyRouteImport } from './routes/RefundPolicy'
+import { Route as RegistrationDetailsRouteImport } from './routes/RegistrationDetails'
+import { Route as SSFDigitalOfficeRouteImport } from './routes/SSFDigitalOffice'
+import { Route as SSFNationalAcademyRouteImport } from './routes/SSFNationalAcademy'
+import { Route as SkillProgramsRouteImport } from './routes/SkillPrograms'
+import { Route as StoriesRouteImport } from './routes/Stories'
+import { Route as TeamRouteImport } from './routes/Team'
+import { Route as TermsAndConditionsRouteImport } from './routes/TermsAndConditions'
+import { Route as TransparencyRouteImport } from './routes/Transparency'
+import { Route as UpcomingProjectsRouteImport } from './routes/UpcomingProjects'
+import { Route as UserPortalRouteImport } from './routes/UserPortal'
+import { Route as VisionRouteImport } from './routes/Vision'
+import { Route as VolunteerRouteImport } from './routes/Volunteer'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as InstitutionalDnaRouteImport } from './routes/institutional-dna'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as BlogTopicRouteImport } from './routes/Blog/$topic'
+import { Route as LearningHubIndexRouteImport } from './routes/LearningHub/index'
+import { Route as LearningHubExploreRouteImport } from './routes/LearningHub/explore'
+import { Route as LearningHubKnowledgeWorldRouteImport } from './routes/LearningHub/knowledge-world'
+import { Route as LearningHubMyLearningRouteImport } from './routes/LearningHub/my-learning'
 import { Route as VerifyCertIdRouteImport } from './routes/verify.$certId'
+import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
+import { Route as LearningHubCourseSubjectIdRouteImport } from './routes/LearningHub/course.$subjectId'
 
-const InstitutionalDnaRoute = InstitutionalDnaRouteImport.update({
-  id: '/institutional-dna',
-  path: '/institutional-dna',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VolunteerRoute = VolunteerRouteImport.update({
-  id: '/Volunteer',
-  path: '/Volunteer',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const VisionRoute = VisionRouteImport.update({
-  id: '/Vision',
-  path: '/Vision',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UpcomingProjectsRoute = UpcomingProjectsRouteImport.update({
-  id: '/UpcomingProjects',
-  path: '/UpcomingProjects',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TransparencyRoute = TransparencyRouteImport.update({
-  id: '/Transparency',
-  path: '/Transparency',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TermsAndConditionsRoute = TermsAndConditionsRouteImport.update({
-  id: '/TermsAndConditions',
-  path: '/TermsAndConditions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const TeamRoute = TeamRouteImport.update({
-  id: '/Team',
-  path: '/Team',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const StoriesRoute = StoriesRouteImport.update({
-  id: '/Stories',
-  path: '/Stories',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SkillProgramsRoute = SkillProgramsRouteImport.update({
-  id: '/SkillPrograms',
-  path: '/SkillPrograms',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SSFNationalAcademyRoute = SSFNationalAcademyRouteImport.update({
-  id: '/SSFNationalAcademy',
-  path: '/SSFNationalAcademy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RegistrationDetailsRoute = RegistrationDetailsRouteImport.update({
-  id: '/RegistrationDetails',
-  path: '/RegistrationDetails',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RefundPolicyRoute = RefundPolicyRouteImport.update({
-  id: '/RefundPolicy',
-  path: '/RefundPolicy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
-  id: '/PrivacyPolicy',
-  path: '/PrivacyPolicy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PartnerWithUsRoute = PartnerWithUsRouteImport.update({
-  id: '/PartnerWithUs',
-  path: '/PartnerWithUs',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ObjectivesRoute = ObjectivesRouteImport.update({
-  id: '/Objectives',
-  path: '/Objectives',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MissionRoute = MissionRouteImport.update({
-  id: '/Mission',
-  path: '/Mission',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MemorandumAndRulesRoute = MemorandumAndRulesRouteImport.update({
-  id: '/MemorandumAndRules',
-  path: '/MemorandumAndRules',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MembersRoute = MembersRouteImport.update({
-  id: '/Members',
-  path: '/Members',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MediaRoute = MediaRouteImport.update({
-  id: '/Media',
-  path: '/Media',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LegalPoliciesRoute = LegalPoliciesRouteImport.update({
-  id: '/LegalPolicies',
-  path: '/LegalPolicies',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LearningHubRoute = LearningHubRouteImport.update({
-  id: '/LearningHub',
-  path: '/LearningHub',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const JourneyRoute = JourneyRouteImport.update({
-  id: '/Journey',
-  path: '/Journey',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const InternshipRoute = InternshipRouteImport.update({
-  id: '/Internship',
-  path: '/Internship',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImpactRoute = ImpactRouteImport.update({
-  id: '/Impact',
-  path: '/Impact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HumanityChar38TruthRoute = HumanityChar38TruthRouteImport.update({
-  id: '/Humanity&Truth',
-  path: '/Humanity&Truth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const GetInvolvedRoute = GetInvolvedRouteImport.update({
-  id: '/GetInvolved',
-  path: '/GetInvolved',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DonateAndSupportRoute = DonateAndSupportRouteImport.update({
-  id: '/DonateAndSupport',
-  path: '/DonateAndSupport',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DonateRoute = DonateRouteImport.update({
-  id: '/Donate',
-  path: '/Donate',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const DonationRefundPolicyRoute = DonationRefundPolicyRouteImport.update({
-  id: '/DonationRefundPolicy',
-  path: '/DonationRefundPolicy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CookiePolicyRoute = CookiePolicyRouteImport.update({
-  id: '/CookiePolicy',
-  path: '/CookiePolicy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ContactRoute = ContactRouteImport.update({
-  id: '/Contact',
-  path: '/Contact',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CampaignsRoute = CampaignsRouteImport.update({
-  id: '/Campaigns',
-  path: '/Campaigns',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CampaignRoute = CampaignRouteImport.update({
-  id: '/Campaign',
-  path: '/Campaign',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CSRPartnershipRoute = CSRPartnershipRouteImport.update({
-  id: '/CSRPartnership',
-  path: '/CSRPartnership',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const BlogRoute = BlogRouteImport.update({
-  id: '/Blog',
-  path: '/Blog',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminPortalRoute = AdminPortalRouteImport.update({
-  id: '/AdminPortal',
-  path: '/AdminPortal',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -234,22 +77,290 @@ const AboutRoute = AboutRouteImport.update({
   path: '/About',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
+const AdminPortalRoute = AdminPortalRouteImport.update({
+  id: '/AdminPortal',
+  path: '/AdminPortal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/Blog',
+  path: '/Blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CSRPartnershipRoute = CSRPartnershipRouteImport.update({
+  id: '/CSRPartnership',
+  path: '/CSRPartnership',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CampaignRoute = CampaignRouteImport.update({
+  id: '/Campaign',
+  path: '/Campaign',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CampaignsRoute = CampaignsRouteImport.update({
+  id: '/Campaigns',
+  path: '/Campaigns',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactRoute = ContactRouteImport.update({
+  id: '/Contact',
+  path: '/Contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CookiePolicyRoute = CookiePolicyRouteImport.update({
+  id: '/CookiePolicy',
+  path: '/CookiePolicy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonateRoute = DonateRouteImport.update({
+  id: '/Donate',
+  path: '/Donate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonateAndSupportRoute = DonateAndSupportRouteImport.update({
+  id: '/DonateAndSupport',
+  path: '/DonateAndSupport',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonationRefundPolicyRoute = DonationRefundPolicyRouteImport.update({
+  id: '/DonationRefundPolicy',
+  path: '/DonationRefundPolicy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DonorRoute = DonorRouteImport.update({
+  id: '/Donor',
+  path: '/Donor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const GetInvolvedRoute = GetInvolvedRouteImport.update({
+  id: '/GetInvolved',
+  path: '/GetInvolved',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HumanityChar38TruthRoute = HumanityChar38TruthRouteImport.update({
+  id: '/Humanity&Truth',
+  path: '/Humanity&Truth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImpactRoute = ImpactRouteImport.update({
+  id: '/Impact',
+  path: '/Impact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InternshipRoute = InternshipRouteImport.update({
+  id: '/Internship',
+  path: '/Internship',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinRoute = JoinRouteImport.update({
+  id: '/Join',
+  path: '/Join',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JoinUsRoute = JoinUsRouteImport.update({
+  id: '/JoinUs',
+  path: '/JoinUs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const JourneyRoute = JourneyRouteImport.update({
+  id: '/Journey',
+  path: '/Journey',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningCertificateVerifyRoute =
+  LearningCertificateVerifyRouteImport.update({
+    id: '/LearningCertificateVerify',
+    path: '/LearningCertificateVerify',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LearningHubRoute = LearningHubRouteImport.update({
+  id: '/LearningHub',
+  path: '/LearningHub',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LegalPoliciesRoute = LegalPoliciesRouteImport.update({
+  id: '/LegalPolicies',
+  path: '/LegalPolicies',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaRoute = MediaRouteImport.update({
+  id: '/Media',
+  path: '/Media',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemberDashboardRoute = MemberDashboardRouteImport.update({
+  id: '/MemberDashboard',
+  path: '/MemberDashboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembersRoute = MembersRouteImport.update({
+  id: '/Members',
+  path: '/Members',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MemorandumAndRulesRoute = MemorandumAndRulesRouteImport.update({
+  id: '/MemorandumAndRules',
+  path: '/MemorandumAndRules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MissionRoute = MissionRouteImport.update({
+  id: '/Mission',
+  path: '/Mission',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ObjectivesRoute = ObjectivesRouteImport.update({
+  id: '/Objectives',
+  path: '/Objectives',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OurInitiativesRoute = OurInitiativesRouteImport.update({
+  id: '/OurInitiatives',
+  path: '/OurInitiatives',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnerWithUsRoute = PartnerWithUsRouteImport.update({
+  id: '/PartnerWithUs',
+  path: '/PartnerWithUs',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyPolicyRoute = PrivacyPolicyRouteImport.update({
+  id: '/PrivacyPolicy',
+  path: '/PrivacyPolicy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundAndCancellationRoute = RefundAndCancellationRouteImport.update({
+  id: '/RefundAndCancellation',
+  path: '/RefundAndCancellation',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RefundPolicyRoute = RefundPolicyRouteImport.update({
+  id: '/RefundPolicy',
+  path: '/RefundPolicy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegistrationDetailsRoute = RegistrationDetailsRouteImport.update({
+  id: '/RegistrationDetails',
+  path: '/RegistrationDetails',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SSFDigitalOfficeRoute = SSFDigitalOfficeRouteImport.update({
+  id: '/SSFDigitalOffice',
+  path: '/SSFDigitalOffice',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SSFNationalAcademyRoute = SSFNationalAcademyRouteImport.update({
+  id: '/SSFNationalAcademy',
+  path: '/SSFNationalAcademy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SkillProgramsRoute = SkillProgramsRouteImport.update({
+  id: '/SkillPrograms',
+  path: '/SkillPrograms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StoriesRoute = StoriesRouteImport.update({
+  id: '/Stories',
+  path: '/Stories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TeamRoute = TeamRouteImport.update({
+  id: '/Team',
+  path: '/Team',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TermsAndConditionsRoute = TermsAndConditionsRouteImport.update({
+  id: '/TermsAndConditions',
+  path: '/TermsAndConditions',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TransparencyRoute = TransparencyRouteImport.update({
+  id: '/Transparency',
+  path: '/Transparency',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UpcomingProjectsRoute = UpcomingProjectsRouteImport.update({
+  id: '/UpcomingProjects',
+  path: '/UpcomingProjects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UserPortalRoute = UserPortalRouteImport.update({
+  id: '/UserPortal',
+  path: '/UserPortal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VisionRoute = VisionRouteImport.update({
+  id: '/Vision',
+  path: '/Vision',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VolunteerRoute = VolunteerRouteImport.update({
+  id: '/Volunteer',
+  path: '/Volunteer',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InstitutionalDnaRoute = InstitutionalDnaRouteImport.update({
+  id: '/institutional-dna',
+  path: '/institutional-dna',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogTopicRoute = BlogTopicRouteImport.update({
+  id: '/$topic',
+  path: '/$topic',
+  getParentRoute: () => BlogRoute,
+} as any)
+const LearningHubIndexRoute = LearningHubIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => rootRouteImport,
+  getParentRoute: () => LearningHubRoute,
+} as any)
+const LearningHubExploreRoute = LearningHubExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
+  getParentRoute: () => LearningHubRoute,
+} as any)
+const LearningHubKnowledgeWorldRoute =
+  LearningHubKnowledgeWorldRouteImport.update({
+    id: '/knowledge-world',
+    path: '/knowledge-world',
+    getParentRoute: () => LearningHubRoute,
+  } as any)
+const LearningHubMyLearningRoute = LearningHubMyLearningRouteImport.update({
+  id: '/my-learning',
+  path: '/my-learning',
+  getParentRoute: () => LearningHubRoute,
 } as any)
 const VerifyCertIdRoute = VerifyCertIdRouteImport.update({
   id: '/verify/$certId',
   path: '/verify/$certId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VerifyCodeRoute = VerifyCodeRouteImport.update({
+  id: '/verify/$code',
+  path: '/verify/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LearningHubCourseSubjectIdRoute =
+  LearningHubCourseSubjectIdRouteImport.update({
+    id: '/course/$subjectId',
+    path: '/course/$subjectId',
+    getParentRoute: () => LearningHubRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/About': typeof AboutRoute
   '/AdminPortal': typeof AdminPortalRoute
-  '/Blog': typeof BlogRoute
+  '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
   '/Campaigns': typeof CampaignsRoute
@@ -258,22 +369,30 @@ export interface FileRoutesByFullPath {
   '/Donate': typeof DonateRoute
   '/DonateAndSupport': typeof DonateAndSupportRoute
   '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
+  '/Donor': typeof DonorRoute
   '/GetInvolved': typeof GetInvolvedRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
   '/Impact': typeof ImpactRoute
   '/Internship': typeof InternshipRoute
+  '/Join': typeof JoinRoute
+  '/JoinUs': typeof JoinUsRoute
   '/Journey': typeof JourneyRoute
-  '/LearningHub': typeof LearningHubRoute
+  '/LearningCertificateVerify': typeof LearningCertificateVerifyRoute
+  '/LearningHub': typeof LearningHubRouteWithChildren
   '/LegalPolicies': typeof LegalPoliciesRoute
   '/Media': typeof MediaRoute
+  '/MemberDashboard': typeof MemberDashboardRoute
   '/Members': typeof MembersRoute
   '/MemorandumAndRules': typeof MemorandumAndRulesRoute
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
+  '/OurInitiatives': typeof OurInitiativesRoute
   '/PartnerWithUs': typeof PartnerWithUsRoute
   '/PrivacyPolicy': typeof PrivacyPolicyRoute
+  '/RefundAndCancellation': typeof RefundAndCancellationRoute
   '/RefundPolicy': typeof RefundPolicyRoute
   '/RegistrationDetails': typeof RegistrationDetailsRoute
+  '/SSFDigitalOffice': typeof SSFDigitalOfficeRoute
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
   '/SkillPrograms': typeof SkillProgramsRoute
   '/Stories': typeof StoriesRoute
@@ -281,16 +400,26 @@ export interface FileRoutesByFullPath {
   '/TermsAndConditions': typeof TermsAndConditionsRoute
   '/Transparency': typeof TransparencyRoute
   '/UpcomingProjects': typeof UpcomingProjectsRoute
+  '/UserPortal': typeof UserPortalRoute
   '/Vision': typeof VisionRoute
   '/Volunteer': typeof VolunteerRoute
+  '/admin': typeof AdminRoute
   '/institutional-dna': typeof InstitutionalDnaRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/Blog/$topic': typeof BlogTopicRoute
+  '/LearningHub/explore': typeof LearningHubExploreRoute
+  '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
+  '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
   '/verify/$certId': typeof VerifyCertIdRoute
+  '/verify/$code': typeof VerifyCodeRoute
+  '/LearningHub/': typeof LearningHubIndexRoute
+  '/LearningHub/course/$subjectId': typeof LearningHubCourseSubjectIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/About': typeof AboutRoute
   '/AdminPortal': typeof AdminPortalRoute
-  '/Blog': typeof BlogRoute
+  '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
   '/Campaigns': typeof CampaignsRoute
@@ -299,22 +428,29 @@ export interface FileRoutesByTo {
   '/Donate': typeof DonateRoute
   '/DonateAndSupport': typeof DonateAndSupportRoute
   '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
+  '/Donor': typeof DonorRoute
   '/GetInvolved': typeof GetInvolvedRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
   '/Impact': typeof ImpactRoute
   '/Internship': typeof InternshipRoute
+  '/Join': typeof JoinRoute
+  '/JoinUs': typeof JoinUsRoute
   '/Journey': typeof JourneyRoute
-  '/LearningHub': typeof LearningHubRoute
+  '/LearningCertificateVerify': typeof LearningCertificateVerifyRoute
   '/LegalPolicies': typeof LegalPoliciesRoute
   '/Media': typeof MediaRoute
+  '/MemberDashboard': typeof MemberDashboardRoute
   '/Members': typeof MembersRoute
   '/MemorandumAndRules': typeof MemorandumAndRulesRoute
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
+  '/OurInitiatives': typeof OurInitiativesRoute
   '/PartnerWithUs': typeof PartnerWithUsRoute
   '/PrivacyPolicy': typeof PrivacyPolicyRoute
+  '/RefundAndCancellation': typeof RefundAndCancellationRoute
   '/RefundPolicy': typeof RefundPolicyRoute
   '/RegistrationDetails': typeof RegistrationDetailsRoute
+  '/SSFDigitalOffice': typeof SSFDigitalOfficeRoute
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
   '/SkillPrograms': typeof SkillProgramsRoute
   '/Stories': typeof StoriesRoute
@@ -322,17 +458,27 @@ export interface FileRoutesByTo {
   '/TermsAndConditions': typeof TermsAndConditionsRoute
   '/Transparency': typeof TransparencyRoute
   '/UpcomingProjects': typeof UpcomingProjectsRoute
+  '/UserPortal': typeof UserPortalRoute
   '/Vision': typeof VisionRoute
   '/Volunteer': typeof VolunteerRoute
+  '/admin': typeof AdminRoute
   '/institutional-dna': typeof InstitutionalDnaRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/Blog/$topic': typeof BlogTopicRoute
+  '/LearningHub/explore': typeof LearningHubExploreRoute
+  '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
+  '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
   '/verify/$certId': typeof VerifyCertIdRoute
+  '/verify/$code': typeof VerifyCodeRoute
+  '/LearningHub': typeof LearningHubIndexRoute
+  '/LearningHub/course/$subjectId': typeof LearningHubCourseSubjectIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/About': typeof AboutRoute
   '/AdminPortal': typeof AdminPortalRoute
-  '/Blog': typeof BlogRoute
+  '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
   '/Campaigns': typeof CampaignsRoute
@@ -341,22 +487,30 @@ export interface FileRoutesById {
   '/Donate': typeof DonateRoute
   '/DonateAndSupport': typeof DonateAndSupportRoute
   '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
+  '/Donor': typeof DonorRoute
   '/GetInvolved': typeof GetInvolvedRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
   '/Impact': typeof ImpactRoute
   '/Internship': typeof InternshipRoute
+  '/Join': typeof JoinRoute
+  '/JoinUs': typeof JoinUsRoute
   '/Journey': typeof JourneyRoute
-  '/LearningHub': typeof LearningHubRoute
+  '/LearningCertificateVerify': typeof LearningCertificateVerifyRoute
+  '/LearningHub': typeof LearningHubRouteWithChildren
   '/LegalPolicies': typeof LegalPoliciesRoute
   '/Media': typeof MediaRoute
+  '/MemberDashboard': typeof MemberDashboardRoute
   '/Members': typeof MembersRoute
   '/MemorandumAndRules': typeof MemorandumAndRulesRoute
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
+  '/OurInitiatives': typeof OurInitiativesRoute
   '/PartnerWithUs': typeof PartnerWithUsRoute
   '/PrivacyPolicy': typeof PrivacyPolicyRoute
+  '/RefundAndCancellation': typeof RefundAndCancellationRoute
   '/RefundPolicy': typeof RefundPolicyRoute
   '/RegistrationDetails': typeof RegistrationDetailsRoute
+  '/SSFDigitalOffice': typeof SSFDigitalOfficeRoute
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
   '/SkillPrograms': typeof SkillProgramsRoute
   '/Stories': typeof StoriesRoute
@@ -364,10 +518,20 @@ export interface FileRoutesById {
   '/TermsAndConditions': typeof TermsAndConditionsRoute
   '/Transparency': typeof TransparencyRoute
   '/UpcomingProjects': typeof UpcomingProjectsRoute
+  '/UserPortal': typeof UserPortalRoute
   '/Vision': typeof VisionRoute
   '/Volunteer': typeof VolunteerRoute
+  '/admin': typeof AdminRoute
   '/institutional-dna': typeof InstitutionalDnaRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/Blog/$topic': typeof BlogTopicRoute
+  '/LearningHub/explore': typeof LearningHubExploreRoute
+  '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
+  '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
   '/verify/$certId': typeof VerifyCertIdRoute
+  '/verify/$code': typeof VerifyCodeRoute
+  '/LearningHub/': typeof LearningHubIndexRoute
+  '/LearningHub/course/$subjectId': typeof LearningHubCourseSubjectIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -384,22 +548,30 @@ export interface FileRouteTypes {
     | '/Donate'
     | '/DonateAndSupport'
     | '/DonationRefundPolicy'
+    | '/Donor'
     | '/GetInvolved'
     | '/Humanity&Truth'
     | '/Impact'
     | '/Internship'
+    | '/Join'
+    | '/JoinUs'
     | '/Journey'
+    | '/LearningCertificateVerify'
     | '/LearningHub'
     | '/LegalPolicies'
     | '/Media'
+    | '/MemberDashboard'
     | '/Members'
     | '/MemorandumAndRules'
     | '/Mission'
     | '/Objectives'
+    | '/OurInitiatives'
     | '/PartnerWithUs'
     | '/PrivacyPolicy'
+    | '/RefundAndCancellation'
     | '/RefundPolicy'
     | '/RegistrationDetails'
+    | '/SSFDigitalOffice'
     | '/SSFNationalAcademy'
     | '/SkillPrograms'
     | '/Stories'
@@ -407,10 +579,20 @@ export interface FileRouteTypes {
     | '/TermsAndConditions'
     | '/Transparency'
     | '/UpcomingProjects'
+    | '/UserPortal'
     | '/Vision'
     | '/Volunteer'
+    | '/admin'
     | '/institutional-dna'
+    | '/reset-password'
+    | '/Blog/$topic'
+    | '/LearningHub/explore'
+    | '/LearningHub/knowledge-world'
+    | '/LearningHub/my-learning'
     | '/verify/$certId'
+    | '/verify/$code'
+    | '/LearningHub/'
+    | '/LearningHub/course/$subjectId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -425,22 +607,29 @@ export interface FileRouteTypes {
     | '/Donate'
     | '/DonateAndSupport'
     | '/DonationRefundPolicy'
+    | '/Donor'
     | '/GetInvolved'
     | '/Humanity&Truth'
     | '/Impact'
     | '/Internship'
+    | '/Join'
+    | '/JoinUs'
     | '/Journey'
-    | '/LearningHub'
+    | '/LearningCertificateVerify'
     | '/LegalPolicies'
     | '/Media'
+    | '/MemberDashboard'
     | '/Members'
     | '/MemorandumAndRules'
     | '/Mission'
     | '/Objectives'
+    | '/OurInitiatives'
     | '/PartnerWithUs'
     | '/PrivacyPolicy'
+    | '/RefundAndCancellation'
     | '/RefundPolicy'
     | '/RegistrationDetails'
+    | '/SSFDigitalOffice'
     | '/SSFNationalAcademy'
     | '/SkillPrograms'
     | '/Stories'
@@ -448,10 +637,20 @@ export interface FileRouteTypes {
     | '/TermsAndConditions'
     | '/Transparency'
     | '/UpcomingProjects'
+    | '/UserPortal'
     | '/Vision'
     | '/Volunteer'
+    | '/admin'
     | '/institutional-dna'
+    | '/reset-password'
+    | '/Blog/$topic'
+    | '/LearningHub/explore'
+    | '/LearningHub/knowledge-world'
+    | '/LearningHub/my-learning'
     | '/verify/$certId'
+    | '/verify/$code'
+    | '/LearningHub'
+    | '/LearningHub/course/$subjectId'
   id:
     | '__root__'
     | '/'
@@ -466,22 +665,30 @@ export interface FileRouteTypes {
     | '/Donate'
     | '/DonateAndSupport'
     | '/DonationRefundPolicy'
+    | '/Donor'
     | '/GetInvolved'
     | '/Humanity&Truth'
     | '/Impact'
     | '/Internship'
+    | '/Join'
+    | '/JoinUs'
     | '/Journey'
+    | '/LearningCertificateVerify'
     | '/LearningHub'
     | '/LegalPolicies'
     | '/Media'
+    | '/MemberDashboard'
     | '/Members'
     | '/MemorandumAndRules'
     | '/Mission'
     | '/Objectives'
+    | '/OurInitiatives'
     | '/PartnerWithUs'
     | '/PrivacyPolicy'
+    | '/RefundAndCancellation'
     | '/RefundPolicy'
     | '/RegistrationDetails'
+    | '/SSFDigitalOffice'
     | '/SSFNationalAcademy'
     | '/SkillPrograms'
     | '/Stories'
@@ -489,17 +696,27 @@ export interface FileRouteTypes {
     | '/TermsAndConditions'
     | '/Transparency'
     | '/UpcomingProjects'
+    | '/UserPortal'
     | '/Vision'
     | '/Volunteer'
+    | '/admin'
     | '/institutional-dna'
+    | '/reset-password'
+    | '/Blog/$topic'
+    | '/LearningHub/explore'
+    | '/LearningHub/knowledge-world'
+    | '/LearningHub/my-learning'
     | '/verify/$certId'
+    | '/verify/$code'
+    | '/LearningHub/'
+    | '/LearningHub/course/$subjectId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminPortalRoute: typeof AdminPortalRoute
-  BlogRoute: typeof BlogRoute
+  BlogRoute: typeof BlogRouteWithChildren
   CSRPartnershipRoute: typeof CSRPartnershipRoute
   CampaignRoute: typeof CampaignRoute
   CampaignsRoute: typeof CampaignsRoute
@@ -508,22 +725,30 @@ export interface RootRouteChildren {
   DonateRoute: typeof DonateRoute
   DonateAndSupportRoute: typeof DonateAndSupportRoute
   DonationRefundPolicyRoute: typeof DonationRefundPolicyRoute
+  DonorRoute: typeof DonorRoute
   GetInvolvedRoute: typeof GetInvolvedRoute
   HumanityChar38TruthRoute: typeof HumanityChar38TruthRoute
   ImpactRoute: typeof ImpactRoute
   InternshipRoute: typeof InternshipRoute
+  JoinRoute: typeof JoinRoute
+  JoinUsRoute: typeof JoinUsRoute
   JourneyRoute: typeof JourneyRoute
-  LearningHubRoute: typeof LearningHubRoute
+  LearningCertificateVerifyRoute: typeof LearningCertificateVerifyRoute
+  LearningHubRoute: typeof LearningHubRouteWithChildren
   LegalPoliciesRoute: typeof LegalPoliciesRoute
   MediaRoute: typeof MediaRoute
+  MemberDashboardRoute: typeof MemberDashboardRoute
   MembersRoute: typeof MembersRoute
   MemorandumAndRulesRoute: typeof MemorandumAndRulesRoute
   MissionRoute: typeof MissionRoute
   ObjectivesRoute: typeof ObjectivesRoute
+  OurInitiativesRoute: typeof OurInitiativesRoute
   PartnerWithUsRoute: typeof PartnerWithUsRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
+  RefundAndCancellationRoute: typeof RefundAndCancellationRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
   RegistrationDetailsRoute: typeof RegistrationDetailsRoute
+  SSFDigitalOfficeRoute: typeof SSFDigitalOfficeRoute
   SSFNationalAcademyRoute: typeof SSFNationalAcademyRoute
   SkillProgramsRoute: typeof SkillProgramsRoute
   StoriesRoute: typeof StoriesRoute
@@ -531,264 +756,23 @@ export interface RootRouteChildren {
   TermsAndConditionsRoute: typeof TermsAndConditionsRoute
   TransparencyRoute: typeof TransparencyRoute
   UpcomingProjectsRoute: typeof UpcomingProjectsRoute
+  UserPortalRoute: typeof UserPortalRoute
   VisionRoute: typeof VisionRoute
   VolunteerRoute: typeof VolunteerRoute
+  AdminRoute: typeof AdminRoute
   InstitutionalDnaRoute: typeof InstitutionalDnaRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   VerifyCertIdRoute: typeof VerifyCertIdRoute
+  VerifyCodeRoute: typeof VerifyCodeRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/institutional-dna': {
-      id: '/institutional-dna'
-      path: '/institutional-dna'
-      fullPath: '/institutional-dna'
-      preLoaderRoute: typeof InstitutionalDnaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Volunteer': {
-      id: '/Volunteer'
-      path: '/Volunteer'
-      fullPath: '/Volunteer'
-      preLoaderRoute: typeof VolunteerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Vision': {
-      id: '/Vision'
-      path: '/Vision'
-      fullPath: '/Vision'
-      preLoaderRoute: typeof VisionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/UpcomingProjects': {
-      id: '/UpcomingProjects'
-      path: '/UpcomingProjects'
-      fullPath: '/UpcomingProjects'
-      preLoaderRoute: typeof UpcomingProjectsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Transparency': {
-      id: '/Transparency'
-      path: '/Transparency'
-      fullPath: '/Transparency'
-      preLoaderRoute: typeof TransparencyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/TermsAndConditions': {
-      id: '/TermsAndConditions'
-      path: '/TermsAndConditions'
-      fullPath: '/TermsAndConditions'
-      preLoaderRoute: typeof TermsAndConditionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Team': {
-      id: '/Team'
-      path: '/Team'
-      fullPath: '/Team'
-      preLoaderRoute: typeof TeamRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Stories': {
-      id: '/Stories'
-      path: '/Stories'
-      fullPath: '/Stories'
-      preLoaderRoute: typeof StoriesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/SkillPrograms': {
-      id: '/SkillPrograms'
-      path: '/SkillPrograms'
-      fullPath: '/SkillPrograms'
-      preLoaderRoute: typeof SkillProgramsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/SSFNationalAcademy': {
-      id: '/SSFNationalAcademy'
-      path: '/SSFNationalAcademy'
-      fullPath: '/SSFNationalAcademy'
-      preLoaderRoute: typeof SSFNationalAcademyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/RegistrationDetails': {
-      id: '/RegistrationDetails'
-      path: '/RegistrationDetails'
-      fullPath: '/RegistrationDetails'
-      preLoaderRoute: typeof RegistrationDetailsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/RefundPolicy': {
-      id: '/RefundPolicy'
-      path: '/RefundPolicy'
-      fullPath: '/RefundPolicy'
-      preLoaderRoute: typeof RefundPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/PrivacyPolicy': {
-      id: '/PrivacyPolicy'
-      path: '/PrivacyPolicy'
-      fullPath: '/PrivacyPolicy'
-      preLoaderRoute: typeof PrivacyPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/PartnerWithUs': {
-      id: '/PartnerWithUs'
-      path: '/PartnerWithUs'
-      fullPath: '/PartnerWithUs'
-      preLoaderRoute: typeof PartnerWithUsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Objectives': {
-      id: '/Objectives'
-      path: '/Objectives'
-      fullPath: '/Objectives'
-      preLoaderRoute: typeof ObjectivesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Mission': {
-      id: '/Mission'
-      path: '/Mission'
-      fullPath: '/Mission'
-      preLoaderRoute: typeof MissionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/MemorandumAndRules': {
-      id: '/MemorandumAndRules'
-      path: '/MemorandumAndRules'
-      fullPath: '/MemorandumAndRules'
-      preLoaderRoute: typeof MemorandumAndRulesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Members': {
-      id: '/Members'
-      path: '/Members'
-      fullPath: '/Members'
-      preLoaderRoute: typeof MembersRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Media': {
-      id: '/Media'
-      path: '/Media'
-      fullPath: '/Media'
-      preLoaderRoute: typeof MediaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/LegalPolicies': {
-      id: '/LegalPolicies'
-      path: '/LegalPolicies'
-      fullPath: '/LegalPolicies'
-      preLoaderRoute: typeof LegalPoliciesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/LearningHub': {
-      id: '/LearningHub'
-      path: '/LearningHub'
-      fullPath: '/LearningHub'
-      preLoaderRoute: typeof LearningHubRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Journey': {
-      id: '/Journey'
-      path: '/Journey'
-      fullPath: '/Journey'
-      preLoaderRoute: typeof JourneyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Internship': {
-      id: '/Internship'
-      path: '/Internship'
-      fullPath: '/Internship'
-      preLoaderRoute: typeof InternshipRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Impact': {
-      id: '/Impact'
-      path: '/Impact'
-      fullPath: '/Impact'
-      preLoaderRoute: typeof ImpactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Humanity&Truth': {
-      id: '/Humanity&Truth'
-      path: '/Humanity&Truth'
-      fullPath: '/Humanity&Truth'
-      preLoaderRoute: typeof HumanityChar38TruthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/GetInvolved': {
-      id: '/GetInvolved'
-      path: '/GetInvolved'
-      fullPath: '/GetInvolved'
-      preLoaderRoute: typeof GetInvolvedRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/DonateAndSupport': {
-      id: '/DonateAndSupport'
-      path: '/DonateAndSupport'
-      fullPath: '/DonateAndSupport'
-      preLoaderRoute: typeof DonateAndSupportRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Donate': {
-      id: '/Donate'
-      path: '/Donate'
-      fullPath: '/Donate'
-      preLoaderRoute: typeof DonateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/DonationRefundPolicy': {
-      id: '/DonationRefundPolicy'
-      path: '/DonationRefundPolicy'
-      fullPath: '/DonationRefundPolicy'
-      preLoaderRoute: typeof DonationRefundPolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/CookiePolicy': {
-      id: '/CookiePolicy'
-      path: '/CookiePolicy'
-      fullPath: '/CookiePolicy'
-      preLoaderRoute: typeof CookiePolicyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Contact': {
-      id: '/Contact'
-      path: '/Contact'
-      fullPath: '/Contact'
-      preLoaderRoute: typeof ContactRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Campaigns': {
-      id: '/Campaigns'
-      path: '/Campaigns'
-      fullPath: '/Campaigns'
-      preLoaderRoute: typeof CampaignsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Campaign': {
-      id: '/Campaign'
-      path: '/Campaign'
-      fullPath: '/Campaign'
-      preLoaderRoute: typeof CampaignRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/CSRPartnership': {
-      id: '/CSRPartnership'
-      path: '/CSRPartnership'
-      fullPath: '/CSRPartnership'
-      preLoaderRoute: typeof CSRPartnershipRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/Blog': {
-      id: '/Blog'
-      path: '/Blog'
-      fullPath: '/Blog'
-      preLoaderRoute: typeof BlogRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/AdminPortal': {
-      id: '/AdminPortal'
-      path: '/AdminPortal'
-      fullPath: '/AdminPortal'
-      preLoaderRoute: typeof AdminPortalRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/About': {
@@ -798,12 +782,369 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/AdminPortal': {
+      id: '/AdminPortal'
+      path: '/AdminPortal'
+      fullPath: '/AdminPortal'
+      preLoaderRoute: typeof AdminPortalRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/Blog': {
+      id: '/Blog'
+      path: '/Blog'
+      fullPath: '/Blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/CSRPartnership': {
+      id: '/CSRPartnership'
+      path: '/CSRPartnership'
+      fullPath: '/CSRPartnership'
+      preLoaderRoute: typeof CSRPartnershipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Campaign': {
+      id: '/Campaign'
+      path: '/Campaign'
+      fullPath: '/Campaign'
+      preLoaderRoute: typeof CampaignRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Campaigns': {
+      id: '/Campaigns'
+      path: '/Campaigns'
+      fullPath: '/Campaigns'
+      preLoaderRoute: typeof CampaignsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Contact': {
+      id: '/Contact'
+      path: '/Contact'
+      fullPath: '/Contact'
+      preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/CookiePolicy': {
+      id: '/CookiePolicy'
+      path: '/CookiePolicy'
+      fullPath: '/CookiePolicy'
+      preLoaderRoute: typeof CookiePolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Donate': {
+      id: '/Donate'
+      path: '/Donate'
+      fullPath: '/Donate'
+      preLoaderRoute: typeof DonateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/DonateAndSupport': {
+      id: '/DonateAndSupport'
+      path: '/DonateAndSupport'
+      fullPath: '/DonateAndSupport'
+      preLoaderRoute: typeof DonateAndSupportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/DonationRefundPolicy': {
+      id: '/DonationRefundPolicy'
+      path: '/DonationRefundPolicy'
+      fullPath: '/DonationRefundPolicy'
+      preLoaderRoute: typeof DonationRefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Donor': {
+      id: '/Donor'
+      path: '/Donor'
+      fullPath: '/Donor'
+      preLoaderRoute: typeof DonorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/GetInvolved': {
+      id: '/GetInvolved'
+      path: '/GetInvolved'
+      fullPath: '/GetInvolved'
+      preLoaderRoute: typeof GetInvolvedRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Humanity&Truth': {
+      id: '/Humanity&Truth'
+      path: '/Humanity&Truth'
+      fullPath: '/Humanity&Truth'
+      preLoaderRoute: typeof HumanityChar38TruthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Impact': {
+      id: '/Impact'
+      path: '/Impact'
+      fullPath: '/Impact'
+      preLoaderRoute: typeof ImpactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Internship': {
+      id: '/Internship'
+      path: '/Internship'
+      fullPath: '/Internship'
+      preLoaderRoute: typeof InternshipRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Join': {
+      id: '/Join'
+      path: '/Join'
+      fullPath: '/Join'
+      preLoaderRoute: typeof JoinRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/JoinUs': {
+      id: '/JoinUs'
+      path: '/JoinUs'
+      fullPath: '/JoinUs'
+      preLoaderRoute: typeof JoinUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Journey': {
+      id: '/Journey'
+      path: '/Journey'
+      fullPath: '/Journey'
+      preLoaderRoute: typeof JourneyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/LearningCertificateVerify': {
+      id: '/LearningCertificateVerify'
+      path: '/LearningCertificateVerify'
+      fullPath: '/LearningCertificateVerify'
+      preLoaderRoute: typeof LearningCertificateVerifyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/LearningHub': {
+      id: '/LearningHub'
+      path: '/LearningHub'
+      fullPath: '/LearningHub'
+      preLoaderRoute: typeof LearningHubRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/LegalPolicies': {
+      id: '/LegalPolicies'
+      path: '/LegalPolicies'
+      fullPath: '/LegalPolicies'
+      preLoaderRoute: typeof LegalPoliciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Media': {
+      id: '/Media'
+      path: '/Media'
+      fullPath: '/Media'
+      preLoaderRoute: typeof MediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/MemberDashboard': {
+      id: '/MemberDashboard'
+      path: '/MemberDashboard'
+      fullPath: '/MemberDashboard'
+      preLoaderRoute: typeof MemberDashboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Members': {
+      id: '/Members'
+      path: '/Members'
+      fullPath: '/Members'
+      preLoaderRoute: typeof MembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/MemorandumAndRules': {
+      id: '/MemorandumAndRules'
+      path: '/MemorandumAndRules'
+      fullPath: '/MemorandumAndRules'
+      preLoaderRoute: typeof MemorandumAndRulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Mission': {
+      id: '/Mission'
+      path: '/Mission'
+      fullPath: '/Mission'
+      preLoaderRoute: typeof MissionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Objectives': {
+      id: '/Objectives'
+      path: '/Objectives'
+      fullPath: '/Objectives'
+      preLoaderRoute: typeof ObjectivesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/OurInitiatives': {
+      id: '/OurInitiatives'
+      path: '/OurInitiatives'
+      fullPath: '/OurInitiatives'
+      preLoaderRoute: typeof OurInitiativesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/PartnerWithUs': {
+      id: '/PartnerWithUs'
+      path: '/PartnerWithUs'
+      fullPath: '/PartnerWithUs'
+      preLoaderRoute: typeof PartnerWithUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/PrivacyPolicy': {
+      id: '/PrivacyPolicy'
+      path: '/PrivacyPolicy'
+      fullPath: '/PrivacyPolicy'
+      preLoaderRoute: typeof PrivacyPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/RefundAndCancellation': {
+      id: '/RefundAndCancellation'
+      path: '/RefundAndCancellation'
+      fullPath: '/RefundAndCancellation'
+      preLoaderRoute: typeof RefundAndCancellationRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/RefundPolicy': {
+      id: '/RefundPolicy'
+      path: '/RefundPolicy'
+      fullPath: '/RefundPolicy'
+      preLoaderRoute: typeof RefundPolicyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/RegistrationDetails': {
+      id: '/RegistrationDetails'
+      path: '/RegistrationDetails'
+      fullPath: '/RegistrationDetails'
+      preLoaderRoute: typeof RegistrationDetailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/SSFDigitalOffice': {
+      id: '/SSFDigitalOffice'
+      path: '/SSFDigitalOffice'
+      fullPath: '/SSFDigitalOffice'
+      preLoaderRoute: typeof SSFDigitalOfficeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/SSFNationalAcademy': {
+      id: '/SSFNationalAcademy'
+      path: '/SSFNationalAcademy'
+      fullPath: '/SSFNationalAcademy'
+      preLoaderRoute: typeof SSFNationalAcademyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/SkillPrograms': {
+      id: '/SkillPrograms'
+      path: '/SkillPrograms'
+      fullPath: '/SkillPrograms'
+      preLoaderRoute: typeof SkillProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Stories': {
+      id: '/Stories'
+      path: '/Stories'
+      fullPath: '/Stories'
+      preLoaderRoute: typeof StoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Team': {
+      id: '/Team'
+      path: '/Team'
+      fullPath: '/Team'
+      preLoaderRoute: typeof TeamRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/TermsAndConditions': {
+      id: '/TermsAndConditions'
+      path: '/TermsAndConditions'
+      fullPath: '/TermsAndConditions'
+      preLoaderRoute: typeof TermsAndConditionsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Transparency': {
+      id: '/Transparency'
+      path: '/Transparency'
+      fullPath: '/Transparency'
+      preLoaderRoute: typeof TransparencyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/UpcomingProjects': {
+      id: '/UpcomingProjects'
+      path: '/UpcomingProjects'
+      fullPath: '/UpcomingProjects'
+      preLoaderRoute: typeof UpcomingProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/UserPortal': {
+      id: '/UserPortal'
+      path: '/UserPortal'
+      fullPath: '/UserPortal'
+      preLoaderRoute: typeof UserPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Vision': {
+      id: '/Vision'
+      path: '/Vision'
+      fullPath: '/Vision'
+      preLoaderRoute: typeof VisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Volunteer': {
+      id: '/Volunteer'
+      path: '/Volunteer'
+      fullPath: '/Volunteer'
+      preLoaderRoute: typeof VolunteerRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/institutional-dna': {
+      id: '/institutional-dna'
+      path: '/institutional-dna'
+      fullPath: '/institutional-dna'
+      preLoaderRoute: typeof InstitutionalDnaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Blog/$topic': {
+      id: '/Blog/$topic'
+      path: '/$topic'
+      fullPath: '/Blog/$topic'
+      preLoaderRoute: typeof BlogTopicRouteImport
+      parentRoute: typeof BlogRoute
+    }
+    '/LearningHub/': {
+      id: '/LearningHub/'
+      path: '/'
+      fullPath: '/LearningHub/'
+      preLoaderRoute: typeof LearningHubIndexRouteImport
+      parentRoute: typeof LearningHubRoute
+    }
+    '/LearningHub/explore': {
+      id: '/LearningHub/explore'
+      path: '/explore'
+      fullPath: '/LearningHub/explore'
+      preLoaderRoute: typeof LearningHubExploreRouteImport
+      parentRoute: typeof LearningHubRoute
+    }
+    '/LearningHub/knowledge-world': {
+      id: '/LearningHub/knowledge-world'
+      path: '/knowledge-world'
+      fullPath: '/LearningHub/knowledge-world'
+      preLoaderRoute: typeof LearningHubKnowledgeWorldRouteImport
+      parentRoute: typeof LearningHubRoute
+    }
+    '/LearningHub/my-learning': {
+      id: '/LearningHub/my-learning'
+      path: '/my-learning'
+      fullPath: '/LearningHub/my-learning'
+      preLoaderRoute: typeof LearningHubMyLearningRouteImport
+      parentRoute: typeof LearningHubRoute
     }
     '/verify/$certId': {
       id: '/verify/$certId'
@@ -812,14 +1153,58 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyCertIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/verify/$code': {
+      id: '/verify/$code'
+      path: '/verify/$code'
+      fullPath: '/verify/$code'
+      preLoaderRoute: typeof VerifyCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/LearningHub/course/$subjectId': {
+      id: '/LearningHub/course/$subjectId'
+      path: '/course/$subjectId'
+      fullPath: '/LearningHub/course/$subjectId'
+      preLoaderRoute: typeof LearningHubCourseSubjectIdRouteImport
+      parentRoute: typeof LearningHubRoute
+    }
   }
 }
+
+interface BlogRouteChildren {
+  BlogTopicRoute: typeof BlogTopicRoute
+}
+
+const BlogRouteChildren: BlogRouteChildren = {
+  BlogTopicRoute: BlogTopicRoute,
+}
+
+const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
+
+interface LearningHubRouteChildren {
+  LearningHubExploreRoute: typeof LearningHubExploreRoute
+  LearningHubKnowledgeWorldRoute: typeof LearningHubKnowledgeWorldRoute
+  LearningHubMyLearningRoute: typeof LearningHubMyLearningRoute
+  LearningHubIndexRoute: typeof LearningHubIndexRoute
+  LearningHubCourseSubjectIdRoute: typeof LearningHubCourseSubjectIdRoute
+}
+
+const LearningHubRouteChildren: LearningHubRouteChildren = {
+  LearningHubExploreRoute: LearningHubExploreRoute,
+  LearningHubKnowledgeWorldRoute: LearningHubKnowledgeWorldRoute,
+  LearningHubMyLearningRoute: LearningHubMyLearningRoute,
+  LearningHubIndexRoute: LearningHubIndexRoute,
+  LearningHubCourseSubjectIdRoute: LearningHubCourseSubjectIdRoute,
+}
+
+const LearningHubRouteWithChildren = LearningHubRoute._addFileChildren(
+  LearningHubRouteChildren,
+)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminPortalRoute: AdminPortalRoute,
-  BlogRoute: BlogRoute,
+  BlogRoute: BlogRouteWithChildren,
   CSRPartnershipRoute: CSRPartnershipRoute,
   CampaignRoute: CampaignRoute,
   CampaignsRoute: CampaignsRoute,
@@ -828,22 +1213,30 @@ const rootRouteChildren: RootRouteChildren = {
   DonateRoute: DonateRoute,
   DonateAndSupportRoute: DonateAndSupportRoute,
   DonationRefundPolicyRoute: DonationRefundPolicyRoute,
+  DonorRoute: DonorRoute,
   GetInvolvedRoute: GetInvolvedRoute,
   HumanityChar38TruthRoute: HumanityChar38TruthRoute,
   ImpactRoute: ImpactRoute,
   InternshipRoute: InternshipRoute,
+  JoinRoute: JoinRoute,
+  JoinUsRoute: JoinUsRoute,
   JourneyRoute: JourneyRoute,
-  LearningHubRoute: LearningHubRoute,
+  LearningCertificateVerifyRoute: LearningCertificateVerifyRoute,
+  LearningHubRoute: LearningHubRouteWithChildren,
   LegalPoliciesRoute: LegalPoliciesRoute,
   MediaRoute: MediaRoute,
+  MemberDashboardRoute: MemberDashboardRoute,
   MembersRoute: MembersRoute,
   MemorandumAndRulesRoute: MemorandumAndRulesRoute,
   MissionRoute: MissionRoute,
   ObjectivesRoute: ObjectivesRoute,
+  OurInitiativesRoute: OurInitiativesRoute,
   PartnerWithUsRoute: PartnerWithUsRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
+  RefundAndCancellationRoute: RefundAndCancellationRoute,
   RefundPolicyRoute: RefundPolicyRoute,
   RegistrationDetailsRoute: RegistrationDetailsRoute,
+  SSFDigitalOfficeRoute: SSFDigitalOfficeRoute,
   SSFNationalAcademyRoute: SSFNationalAcademyRoute,
   SkillProgramsRoute: SkillProgramsRoute,
   StoriesRoute: StoriesRoute,
@@ -851,10 +1244,14 @@ const rootRouteChildren: RootRouteChildren = {
   TermsAndConditionsRoute: TermsAndConditionsRoute,
   TransparencyRoute: TransparencyRoute,
   UpcomingProjectsRoute: UpcomingProjectsRoute,
+  UserPortalRoute: UserPortalRoute,
   VisionRoute: VisionRoute,
   VolunteerRoute: VolunteerRoute,
+  AdminRoute: AdminRoute,
   InstitutionalDnaRoute: InstitutionalDnaRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   VerifyCertIdRoute: VerifyCertIdRoute,
+  VerifyCodeRoute: VerifyCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -43,7 +43,7 @@ export function HeroPattern({ className = "" }) {
 function Block({ x, y, size, fill, letter, rotate = 0, dark = "#0b2e59" }) {
   return <g transform={`translate(${x} ${y}) rotate(${rotate})`}>
     <rect width={size} height={size} rx={size * 0.22} fill={fill} />
-    <rect width={size} height={size} rx={size * 0.22} fill="#ffffff" opacity="0.12" x={size * 0.08} y={size * 0.08} width={size * 0.84} height={size * 0.4} />
+    <rect width={size * 0.84} height={size * 0.4} rx={size * 0.22} fill="#ffffff" opacity="0.12" x={size * 0.08} y={size * 0.08} />
     <text x={size / 2} y={size / 2} textAnchor="middle" dominantBaseline="central" fontSize={size * 0.55} fontWeight="800" fill={dark} fontFamily="Georgia, serif">{letter}</text>
   </g>;
 }

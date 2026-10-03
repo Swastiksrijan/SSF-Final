@@ -1,9 +1,10 @@
 import { useMemo, useState } from "react";
+import { useNavigate } from "@tanstack/react-router";
 import {
   FaArrowLeft, FaArrowRight, FaBookOpen, FaCheckCircle, FaClock, FaGraduationCap,
   FaLeaf, FaLaptop, FaPlayCircle, FaQuestionCircle, FaSearch, FaShareAlt,
   FaShieldAlt, FaUsers, FaHeartbeat, FaSeedling, FaPaw, FaBalanceScale, FaChild,
-  FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping
+  FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping, FaGlobe
 } from "react-icons/fa";
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
 import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../data/coursesData";
@@ -12,6 +13,7 @@ import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
 import PrimaryLessonFresh from "../components/learning/PrimaryLessonFresh";
+import { LearningHubLanding, LearningHubDashboard } from "../components/learning/LearningHubDashboard";
 import { SUBJECT_CONTENT } from "../data/learningHubSubjectContent";
 
 const HUB_IMAGES = {
@@ -116,7 +118,7 @@ const TOPICS = [
   ["Health / स्वास्थ्य", "Yoga / योग", "Movement, breathing, relaxation और safe wellbeing practice की basic understanding।"],
   ["Health / स्वास्थ्य", "Family Welfare / परिवार कल्याण", "Family health, reproductive health, informed choice और responsible parenthood।"],
   ["Health / स्वास्थ्य", "De-addiction / नशामुक्ति", "Substance use effects, recovery support, professional help और stigma-free approach।"],
-  ["Health / स्वास्थ्य", "Rehabilitation / पुनर्वास", "Functional recovery, accessibility, social participation और coordinated support।"],
+  ["Health / स्वास्थ्य", "Rehabilitation / पुनर्वास एवं पुनर्लाभ", "Functional recovery, accessibility, social participation और coordinated support।"],
   ["Health / स्वास्थ्य", "Personal Hygiene / व्यक्तिगत स्वच्छता", "Hand hygiene, sanitation, oral care, safe food and daily habits।"],
 
   ["Environment / पर्यावरण", "Environment Basics / पर्यावरण की मूल बातें", "Air, water, soil, ecosystems और human-environment relationship।"],
@@ -133,7 +135,7 @@ const TOPICS = [
 
   ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Agriculture Basics / कृषि की मूल बातें", "Crops, soil, water, inputs, seasons and farm planning।"],
   ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Farmer Training / किसान प्रशिक्षण", "Crop planning, soil, water, inputs, market and risk management।"],
-  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Organic Farming / जैविक खेती", "Soil health, compost, crop planning and ecological practices।"],
+  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Organic Farming / जैविक खेती एवं कृषि", "Soil health, compost, crop planning and ecological practices।"],
   ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Animal Husbandry / पशुपालन", "Nutrition, housing, hygiene, vaccination and veterinary care।"],
   ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Cow Protection / गौ संरक्षण", "Cattle welfare, shelter, feeding, water, hygiene and humane care।"],
   ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Rural Development / ग्रामीण विकास", "Education, health, infrastructure, livelihoods, participation and local institutions।"],
@@ -216,6 +218,346 @@ function shareSubject(subject) {
 function getSubjectFromUrl() {
   return new URLSearchParams(window.location.search).get("subject") || "";
 }
+
+// Legacy /LearningHub?subject=<id> links (old shares, bookmarks) -> new course route.
+function LegacySubjectRedirect() {
+  const navigate = useNavigate();
+  const id = getSubjectFromUrl();
+  if (id) {
+    navigate({ to: "/LearningHub/course/$subjectId", params: { subjectId: id }, replace: true });
+    return null;
+  }
+  navigate({ to: "/LearningHub", replace: true });
+  return null;
+}
+
+// Subject-specific module structures for subjects that previously fell back to the
+// generic per-category blueprint. These are prepended so getSubjectProfile() picks
+// the most specific rule first (SUBJECT_PROFILE_RULES.filter keeps source order).
+const SUBJECT_SPECIFIC_MODULES = [
+  {
+    test:/technical education|तकनीकी शिक्षा|\biti\b|polytechnic|vocational course/i,icon:"⚙️",
+    modules:[
+      ["Technical Foundation / तकनीकी आधार",["🔧 Tools, Safety & Measurement / उपकरण, सुरक्षा एवं मापन","📐 Technical Drawing & Symbols / तकनीकी चित्रण एवं संकेत","🔌 Basic Electricity & Machines / विद्युत एवं मशीन","🧱 Materials & Workshop Practice / सामग्री एवं कार्यशाला"]],
+      ["Trade Skills / व्यवसाय कौशल",["🛠️ Fitting, Wiring & Assembly / फिटिंग, वायरिंग एवं असेंबली","⚙️ Machine Operation & Maintenance / मशीन संचालन एवं रखरखाव","📏 Quality & Accuracy / गुणवत्ता एवं सटीकता","🧰 Fault Finding & Repair / खराबी पहचान एवं मरम्मत"]],
+      ["Workplace Readiness / कार्यस्थल तैयारी",["📋 Job Card & Work Order / कार्य कार्ड एवं ऑर्डर","🦺 Safety, PPE & First Aid / सुरक्षा, PPE एवं प्राथमिक चिकित्सा","🤝 Teamwork & Supervision / टीमवर्क एवं पर्यवेक्षण","💼 Self-employment & Billing / स्वरोजगार एवं बिलिंग"]]
+    ]
+  },
+  {
+    test:/english from basics|मूल अंग्रेज़ी/i,icon:"🔤",
+    modules:[
+      ["English Foundation / अंग्रेज़ी आधार",["🔤 Alphabet & Letter Sounds / वर्णमाला एवं ध्वनि","🔊 Phonics & Pronunciation / ध्वनि एवं उच्चारण","📖 Sight Words & Word Families / दृष्टि शब्द एवं शब्द परिवार","✍️ Capital & Small Letters / बड़े-छोटे अक्षर"]],
+      ["Everyday Vocabulary / दैनिक शब्दावली",["🧠 Colours, Numbers & Shapes / रंग, संख्या एवं आकार","👨‍👩‍👧 Family, Home & School / परिवार, घर एवं विद्यालय","🍎 Food, Body & Clothes / भोजन, शरीर एवं वस्त्र","🌦️ Weather, Animals & Places / मौसम, पशु एवं स्थान"]],
+      ["Grammar Basics / व्याकरण आधार",["🧩 Nouns & Pronouns / संज्ञा एवं सर्वनाम","⚡ Action Words (Verbs) / क्रिया","🎨 Describing Words (Adjectives) / विशेषण","🔗 Simple Sentence Structure / सरल वाक्य संरचना"]],
+      ["Reading & Writing / पठन एवं लेखन",["📖 Short Reading Passages / लघु पठन अंश","❓ Question & Answer Practice / प्रश्न-उत्तर अभ्यास","💬 Simple Conversations / सरल संवाद","📝 Paragraph & Diary Writing / अनुच्छेद एवं डायरी"]]
+    ]
+  },
+  {
+    test:/reading & writing|पठन एवं लेखन/i,icon:"📖",
+    modules:[
+      ["Reading Skills / पठन कौशल",["👀 Skimming & Scanning / सरसरी एवं सूक्ष्म पठन","🎯 Main Idea & Details / मुख्य विचार एवं विवरण","🧩 Context Clues / संदर्भ से अर्थ","📚 Reading Fluency / प्रवाहपूर्ण पठन"]],
+      ["Comprehension / पठन-बोध",["❓ Question Types / प्रश्न के प्रकार","🧠 Inference & Prediction / अनुमान एवं पूर्वानुमान","🗂️ Summarising / सारांश लेखन","🔎 Fact vs Opinion / तथ्य एवं राय"]],
+      ["Writing Skills / लेखन कौशल",["🧱 Sentence Building / वाक्य निर्माण","📄 Paragraph Structure / अनुच्छेद संरचना","✍️ Letters & Notices / पत्र एवं सूचना","📝 Essays & Reports / निबंध एवं रिपोर्ट"]],
+      ["Editing & Style / संशोधन एवं शैली",["🔤 Spelling & Punctuation / वर्तनी एवं विराम","🔁 Cohesion & Linking / सुसंगति एवं संयोजन","🎨 Word Choice & Tone / शब्द चयन एवं लहजा","✅ Proofreading / प्रूफ़रीडिंग"]]
+    ]
+  },
+  {
+    test:/professional communication|व्यावसायिक संचार/i,icon:"💼",
+    modules:[
+      ["Communication Foundation / संचार आधार",["🧩 Elements of Communication / संचार के तत्व","🗣️ Verbal & Non-verbal / मौखिक एवं अमौखिक","👂 Active Listening / सक्रिय श्रवण","🚧 Barriers & Fixes / बाधाएँ एवं समाधान"]],
+      ["Workplace Writing / कार्यस्थल लेखन",["📧 Professional Email / व्यावसायिक ईमेल","📄 Reports & Notes / रिपोर्ट एवं नोट्स","📅 Meeting & Minutes / बैठक एवं कार्यवृत्त","💬 Chat & Message Etiquette / चैट एवं संदेश शिष्टाचार"]],
+      ["Speaking & Presence / बोलना एवं उपस्थिति",["🎤 Presentations / प्रस्तुति","📞 Phone & Video Calls / फोन एवं वीडियो कॉल","🤝 Client & Team Talk / ग्राहक एवं टीम संवाद","🌐 Cross-cultural Etiquette / अंतर-सांस्कृतिक शिष्टाचार"]]
+    ]
+  },
+  {
+    test:/public speaking|वक्तृत्व|speech delivery|भाषण कौशल/i,icon:"🎤",
+    modules:[
+      ["Speaking Foundation / बोलने का आधार",["🫁 Breathing & Voice / श्वास एवं स्वर","🗣️ Pronunciation & Clarity / उच्चारण एवं स्पष्टता","😌 Confidence & Nervousness / आत्मविश्वास एवं घबराहट","👀 Eye Contact & Body Language / नेत्र संपर्क एवं भाव-भंगिमा"]],
+      ["Speech Craft / भाषण कौशल",["📝 Structure: Opening-Body-Close / संरचना: प्रारंभ-मध्य-अंत","🎯 Knowing Your Audience / श्रोता को समझना","📊 Storytelling & Examples / कहानी एवं उदाहरण","⏱️ Timing & Pacing / समय एवं गति"]],
+      ["Delivery & Handling / प्रस्तुति एवं प्रबंधन",["🎙️ Mic, Stage & Slides / माइक, मंच एवं स्लाइड","❓ Handling Questions / प्रश्नों का उत्तर","🚨 Managing Mistakes / गलतियाँ संभालना","🏆 Practice & Feedback / अभ्यास एवं प्रतिक्रिया"]]
+    ]
+  },
+  {
+    test:/computer & digital basics|कंप्यूटर एवं डिजिटल बेसिक्स|computer basics/i,icon:"💻",
+    modules:[
+      ["Computer Foundation / कंप्यूटर आधार",["🖥️ Parts of a Computer / कंप्यूटर के भाग","🖱️ Keyboard & Mouse / कीबोर्ड एवं माउस","🗂️ Files & Folders / फाइल एवं फोल्डर","⌨️ Typing Basics / टाइपिंग आधार"]],
+      ["Everyday Digital Tools / दैनिक डिजिटल उपकरण",["📝 Documents & Notes / दस्तावेज़ एवं नोट्स","🖼️ Images & Screenshots / चित्र एवं स्क्रीनशॉट","📄 Print, Save & Share / प्रिंट, सेव एवं शेयर","🔋 Care & Storage / देखभाल एवं भंडारण"]],
+      ["Safe Digital Use / सुरक्षित डिजिटल उपयोग",["🔐 Passwords & Login / पासवर्ड एवं लॉगिन","⚠️ Scams & Frauds / ठगी एवं धोखा","🧹 Files, Updates & Antivirus / फाइल, अपडेट एवं एंटीवायरस","♻️ Responsible Use / जिम्मेदार उपयोग"]]
+    ]
+  },
+  {
+    test:/internet basics|इंटरनेट बेसिक्स/i,icon:"🌐",
+    modules:[
+      ["Getting Online / ऑनलाइन जुड़ना",["🔌 Network, Wi-Fi & Data / नेटवर्क, वाई-फाई एवं डेटा","🌐 Browser & Website / ब्राउज़र एवं वेबसाइट","🔗 Links, Tabs & Bookmarks / लिंक, टैब एवं बुकमार्क","🔎 Search Effectively / प्रभावी खोज"]],
+      ["Using the Web Well / वेब का सही उपयोग",["📧 Email & Forms / ईमेल एवं फॉर्म","⬇️ Safe Downloads / सुरक्षित डाउनलोड","🎥 Video & Voice / वीडियो एवं आवाज़","🗺️ Maps & Payments / मैप एवं भुगतान"]],
+      ["Safety & Reliability / सुरक्षा एवं विश्वसनीयता",["🎣 Fake Links & Phishing / फर्जी लिंक एवं फिशिंग","🔒 Privacy & Permissions / गोपनीयता एवं अनुमति","✅ Verifying Information / जानकारी जाँचना","📶 Data Saving / डेटा बचत"]]
+    ]
+  },
+  {
+    test:/google workspace|gmail|google docs|google sheets/i,icon:"🧰",
+    modules:[
+      ["Google Basics / गूगल आधार",["👤 Account & Sign-in / खाता एवं लॉगिन","📧 Gmail: Compose & Reply / जीमेल: लिखें एवं उत्तर","📁 Drive: Upload & Organise / ड्राइव: अपलोड एवं व्यवस्थित","🔗 Sharing & Permissions / शेयरिंग एवं अनुमति"]],
+      ["Documents & Sheets / दस्तावेज़ एवं शीट",["📝 Docs: Format & Edit / डॉक्स: स्वरूपण एवं संपादन","📊 Sheets: Data & Formulas / शीट: डेटा एवं सूत्र","🖼️ Slides: Presentation / स्लाइड: प्रस्तुति","🗓️ Calendar & Meet / कैलेंडर एवं मीट"]],
+      ["Productivity Habits / उत्पादकता",["🧩 Templates / टेम्पलेट","🤝 Collaborative Editing / सहयोगी संपादन","🔎 Search & Shortcuts / खोज एवं शॉर्टकट","☁️ Offline & Sync / ऑफलाइन एवं सिंक"]]
+    ]
+  },
+  {
+    test:/digital literacy|डिजिटल साक्षरता/i,icon:"📱",
+    modules:[
+      ["Digital Foundation / डिजिटल आधार",["📱 Devices & Screens / उपकरण एवं स्क्रीन","👆 Touch, Type & Navigate / स्पर्श, टाइप एवं नेविगेशन","🔋 Charging & Care / चार्जिंग एवं देखभाल","🗣️ Voice & Accessibility / आवाज़ एवं सुगम्यता"]],
+      ["Digital Services / डिजिटल सेवाएँ",["🏦 Banking & UPI / बैंकिंग एवं यूपीआई","🏛️ Government Portals / सरकारी पोर्टल","🩺 Health & Education Apps / स्वास्थ्य एवं शिक्षा ऐप","🛒 Buying & Selling Online / ऑनलाइन खरीद-बिक्री"]],
+      ["Responsible Digital Life / जिम्मेदार डिजिटल जीवन",["🔐 Privacy & Passwords / गोपनीयता एवं पासवर्ड","⚠️ Fraud Awareness / धोखाधड़ी जागरूकता","🗣️ Respectful Behaviour / सम्मानजनक व्यवहार","📰 Fake News & Fact-check / फर्जी खबर एवं तथ्य-जाँच"]]
+    ]
+  },
+  {
+    test:/job search|नौकरी खोज/i,icon:"🔎",
+    modules:[
+      ["Preparation / तैयारी",["🎯 Knowing Your Skills / अपने कौशल की पहचान","📄 Resume & Portfolio / रिज्यूमे एवं पोर्टफोलियो","🔑 Keywords & Profiles / कीवर्ड एवं प्रोफ़ाइल","🌐 Online Presence / ऑनलाइन उपस्थिति"]],
+      ["Finding Opportunities / अवसर खोजना",["📰 Job Portals & Ads / जॉब पोर्टल एवं विज्ञापन","🤝 Networking & Referrals / नेटवर्किंग एवं संदर्भ","🏢 Local & Government Jobs / स्थानीय एवं सरकारी नौकरी","🚨 Avoiding Job Scams / नौकरी ठगी से बचाव"]],
+      ["Applying & Following Up / आवेदन एवं पीछा",["📤 Applying Correctly / सही आवेदन","✉️ Cover Message / कवर संदेश","📞 Follow-up / फॉलो-अप","🗂️ Tracking Applications / आवेदन ट्रैक करना"]]
+    ]
+  },
+  {
+    test:/workplace etiquette|कार्यस्थल शिष्टाचार/i,icon:"🏢",
+    modules:[
+      ["Professional Conduct / पेशेवर आचरण",["⏰ Punctuality & Attendance / समयपालन एवं उपस्थिति","👔 Dress & Grooming / वेशभूषा एवं शिष्टता","🤝 Respect & Courtesy / सम्मान एवं शिष्टाचार","🗣️ Language & Tone / भाषा एवं लहजा"]],
+      ["Working with Others / दूसरों के साथ कार्य",["👥 Team Behaviour / टीम व्यवहार","📢 Communication Chain / संचार श्रृंखला","🚧 Conflict Handling / टकराव प्रबंधन","🔒 Confidentiality / गोपनीयता"]],
+      ["Workplace Systems / कार्यस्थल प्रणाली",["📋 Duties & Reporting / कर्तव्य एवं रिपोर्टिंग","🦺 Safety Rules / सुरक्षा नियम","📱 Phone & Email Etiquette / फोन एवं ईमेल शिष्टाचार","🌱 Growth & Feedback / विकास एवं प्रतिक्रिया"]]
+    ]
+  },
+  {
+    test:/teamwork|leadership|नेतृत्व|टीमवर्क/i,icon:"🤝",
+    modules:[
+      ["Team Foundation / टीम आधार",["🎯 Shared Goals / साझा लक्ष्य","🧩 Roles & Strengths / भूमिका एवं क्षमता","💬 Trust & Communication / विश्वास एवं संवाद","🤗 Diversity & Inclusion / विविधता एवं समावेश"]],
+      ["Leadership Skills / नेतृत्व कौशल",["🧭 Vision & Direction / दृष्टि एवं दिशा","🗣️ Motivation & Feedback / प्रेरणा एवं प्रतिक्रिया","⚖️ Fair Decision Making / निष्पक्ष निर्णय","🚧 Problem Solving / समस्या समाधान"]],
+      ["Team Performance / टीम प्रदर्शन",["📅 Planning & Delegation / योजना एवं कार्य-विभाजन","📊 Review & Recognition / समीक्षा एवं सम्मान","🧯 Handling Conflict / टकराव संभालना","🌱 Building Future Leaders / भावी नेतृत्व"]]
+    ]
+  },
+  {
+    test:/time management|समय प्रबंधन/i,icon:"⏰",
+    modules:[
+      ["Time Awareness / समय की समझ",["🧠 Time & Priorities / समय एवं प्राथमिकता","🕵️ Finding Time Leaks / समय की हानि पहचानना","🎯 Goal & Deadline / लक्ष्य एवं समयसीमा","📝 To-do & Lists / कार्य-सूची"]],
+      ["Planning Tools / योजना उपकरण",["📅 Daily & Weekly Plan / दैनिक एवं साप्ताहिक योजना","🍅 Focus & Pomodoro / ध्यान एवं पोमोडोरो","🔢 Important vs Urgent / महत्वपूर्ण एवं अत्यावश्यक","📵 Avoiding Distractions / ध्यान भटकाव से बचाव"]],
+      ["Consistency / निरंतरता",["🔁 Habits & Routines / आदत एवं दिनचर्या","⚖️ Work-Life Balance / कार्य-जीवन संतुलन","📈 Review & Adjust / समीक्षा एवं सुधार","🚫 Beating Procrastination / टालमटोल पर विजय"]]
+    ]
+  },
+  {
+    test:/vocational training|व्यावसायिक प्रशिक्षण|skill training/i,icon:"🛠️",
+    modules:[
+      ["Trade Foundation / व्यवसाय आधार",["🧰 Tools & Equipment / उपकरण एवं औज़ार","📏 Measurement & Accuracy / मापन एवं सटीकता","🦺 Safety & First Aid / सुरक्षा एवं प्राथमिक चिकित्सा","🧱 Materials & Handling / सामग्री एवं संभाल"]],
+      ["Core Practical Skills / मुख्य व्यावहारिक कौशल",["🔧 Step-by-step Practice / चरणबद्ध अभ्यास","🎯 Quality Standards / गुणवत्ता मानक","🧩 Common Faults & Fixes / सामान्य खराबी एवं समाधान","⏱️ Speed & Finish / गति एवं अंतिम रूप"]],
+      ["Work & Enterprise / कार्य एवं उद्यम",["📋 Customer Requirement / ग्राहक की आवश्यकता","💰 Costing & Pricing / लागत एवं मूल्य","📈 Marketing & Records / विपणन एवं रिकॉर्ड","🌱 Self-employment / स्वरोजगार"]]
+    ]
+  },
+  {
+    test:/girls' education|girls education|बालिका शिक्षा|कन्या शिक्षा/i,icon:"👧",
+    modules:[
+      ["Why Girls' Education / बालिका शिक्षा क्यों",["🌍 Right to Education / शिक्षा का अधिकार","📈 Benefits to Family & Society / परिवार एवं समाज को लाभ","🚧 Barriers & Myths / बाधाएँ एवं भ्रांतियाँ","🏆 Role Models / आदर्श उदाहरण"]],
+      ["Supporting Learning / सीखने में सहयोग",["🏫 School Access & Attendance / विद्यालय पहुँच एवं उपस्थिति","🏠 Family & Community Support / परिवार एवं समुदाय सहयोग","📚 Study Environment / अध्ययन वातावरण","🧠 Confidence & Aspiration / आत्मविश्वास एवं आकांक्षा"]],
+      ["Safety & Continuity / सुरक्षा एवं निरंतरता",["🛡️ Safe Journey & School / सुरक्षित यात्रा एवं विद्यालय","🩺 Health & Hygiene / स्वास्थ्य एवं स्वच्छता","🔄 Continuing After Gaps / अंतराल के बाद पढ़ाई","🎯 Career Pathways / करियर मार्ग"]]
+    ]
+  },
+  {
+    test:/female foeticide|कन्या भ्रूण|भ्रूण हत्या/i,icon:"⚖️",
+    modules:[
+      ["Understanding the Issue / समस्या को समझना",["📉 Sex Ratio Basics / लिंग अनुपात","🧬 Girl Child Value / बालिका का महत्व","❌ Causes & Myths / कारण एवं भ्रांतियाँ","📜 Law & Rights / कानून एवं अधिकार"]],
+      ["Prevention & Awareness / रोकथाम एवं जागरूकता",["📢 Awareness Campaigns / जागरूकता अभियान","🏥 Safe Pregnancy & Care / सुरक्षित गर्भावस्था","📞 Reporting & Helplines / शिकायत एवं हेल्पलाइन","🤝 Community Role / समुदाय की भूमिका"]],
+      ["Supporting Families / परिवारों का सहयोग",["👨‍👩‍👧 Family Counselling / परिवार परामर्श","🎓 Educating Girls / बालिकाओं की शिक्षा","🏆 Celebrating Girl Child / बालिका का सम्मान","🌱 Long-term Change / दीर्घकालिक बदलाव"]]
+    ]
+  },
+  {
+    test:/balwadi|early childhood|बालवाड़ी|प्रारंभिक बाल्यावस्था|anganwadi/i,icon:"🧸",
+    modules:[
+      ["Child Development / बाल विकास",["🧠 Stages of Development / विकास के चरण","🗣️ Language & Speech / भाषा एवं वाणी","🤸 Motor Skills / गति कौशल","❤️ Social-Emotional Growth / सामाजिक-भावनात्मक विकास"]],
+      ["Early Learning Activities / प्रारंभिक सीख",["🎵 Rhymes, Songs & Stories / कविता, गीत एवं कहानी","🔢 Pre-number & Shapes / पूर्व-संख्या एवं आकार","🎨 Art, Craft & Play / कला, शिल्प एवं खेल","📖 Pre-reading Skills / पूर्व-पठन कौशल"]],
+      ["Care & Nutrition / देखभाल एवं पोषण",["🍎 Nutrition & Meals / पोषण एवं भोजन","🩺 Health & Hygiene / स्वास्थ्य एवं स्वच्छता","🛡️ Safety & First Aid / सुरक्षा एवं प्राथमिक चिकित्सा","🤝 Parents & Anganwadi Link / माता-पिता एवं आंगनवाड़ी"]]
+    ]
+  },
+  {
+    test:/self-help group|self help group|स्वयं सहायता समूह|shg/i,icon:"👭",
+    modules:[
+      ["Group Foundation / समूह आधार",["🤝 What is an SHG / स्वयं सहायता समूह क्या है","📜 Rules & Registration / नियम एवं पंजीकरण","👥 Roles & Meetings / भूमिका एवं बैठक","💰 Savings & Contribution / बचत एवं अंशदान"]],
+      ["Money & Credit / धन एवं ऋण",["🏦 Bank Linkage / बैंक जुड़ाव","📊 Interest & Repayment / ब्याज एवं भुगतान","📒 Record Keeping / रिकॉर्ड रखना","🛒 Group Purchasing / सामूहिक खरीद"]],
+      ["Enterprise & Growth / उद्यम एवं विकास",["💡 Choosing an Activity / गतिविधि चुनना","📈 Cost, Price & Profit / लागत, मूल्य एवं लाभ","📣 Marketing / विपणन","🌱 Federation & Sustainability / संघ एवं स्थायित्व"]]
+    ]
+  },
+  {
+    test:/personal hygiene|व्यक्तिगत स्वच्छता|स्वच्छता/i,icon:"🧼",
+    modules:[
+      ["Daily Hygiene / दैनिक स्वच्छता",["✋ Hand Hygiene / हाथ की स्वच्छता","🦷 Oral & Body Care / दाँत एवं शरीर देखभाल","🚿 Bathing & Clean Clothes / स्नान एवं स्वच्छ वस्त्र","💧 Safe Drinking Water / सुरक्षित पेयजल"]],
+      ["Home & Food Hygiene / घर एवं भोजन स्वच्छता",["🍳 Safe Food Handling / सुरक्षित भोजन","🧽 Kitchen & Utensils / रसोई एवं बर्तन","🚽 Toilet & Sanitation / शौचालय एवं स्वच्छता","🗑️ Waste Disposal / कचरा निपटान"]],
+      ["Health & Prevention / स्वास्थ्य एवं रोकथाम",["🦟 Vector & Germ Control / कीट एवं कीटाणु नियंत्रण","🤧 Cough, Cold & Prevention / खाँसी, जुकाम एवं रोकथाम","🩺 When to See a Doctor / डॉक्टर कब दिखाएँ","🌿 Healthy Habits / स्वस्थ आदतें"]]
+    ]
+  },
+  {
+    test:/cow protection|गौ संरक्षण|गौशाला/i,icon:"🐄",
+    modules:[
+      ["Cattle Care / पशु देखभाल",["🐄 Breeds & Identification / नस्ल एवं पहचान","🌾 Feeding & Water / चारा एवं जल","🏠 Shelter & Ventilation / आश्रय एवं हवादारी","🧹 Cleanliness / स्वच्छता"]],
+      ["Health & Welfare / स्वास्थ्य एवं कल्याण",["💉 Vaccination & Deworming / टीकाकरण एवं कृमिनाशन","🩺 Common Diseases / सामान्य रोग","🐮 Breeding & Pregnancy Care / प्रजनन एवं गर्भ देखभाल","🚨 Emergency Care / आपात देखभाल"]],
+      ["Products & Sustainability / उत्पाद एवं स्थायित्व",["🥛 Milk & Hygiene / दूध एवं स्वच्छता","♻️ Cow Dung & Urine Uses / गोबर एवं गोमूत्र उपयोग","💰 Gaushala Management / गौशाला प्रबंधन","🌱 Humane & Ethical Care / मानवीय एवं नैतिक देखभाल"]]
+    ]
+  },
+  {
+    test:/self-reliant village|आत्मनिर्भर गाँव|आत्मनिर्भर ग्राम/i,icon:"🏘️",
+    modules:[
+      ["Village Foundation / गाँव का आधार",["🗺️ Village Resources / गाँव के संसाधन","👥 People & Institutions / जन एवं संस्थाएँ","🧩 Needs Assessment / आवश्यकता आकलन","🎯 Vision & Goals / दृष्टि एवं लक्ष्य"]],
+      ["Livelihood & Services / आजीविका एवं सेवाएँ",["🌾 Farming & Allied Work / कृषि एवं सहयोगी कार्य","💼 Local Enterprise / स्थानीय उद्यम","🏫 Education & Health Access / शिक्षा एवं स्वास्थ्य पहुँच","🏗️ Basic Infrastructure / बुनियादी ढाँचा"]],
+      ["Collective Action / सामूहिक कार्य",["🤝 Panchayat & Groups / पंचायत एवं समूह","💰 Funds & Schemes / निधि एवं योजनाएँ","📊 Planning & Review / योजना एवं समीक्षा","🌱 Sustainability / स्थायित्व"]]
+    ]
+  },
+  {
+    test:/social justice|सामाजिक न्याय/i,icon:"⚖️",
+    modules:[
+      ["Justice Foundation / न्याय आधार",["📖 Meaning of Social Justice / सामाजिक न्याय का अर्थ","⚖️ Equality & Equity / समानता एवं न्यायसंगतता","🚫 Discrimination Types / भेदभाव के प्रकार","📜 Constitutional Values / संवैधानिक मूल्य"]],
+      ["Rights & Entitlements / अधिकार एवं पात्रता",["📋 Fundamental Rights / मौलिक अधिकार","🎓 Education & Work Rights / शिक्षा एवं कार्य अधिकार","🏥 Welfare Schemes / कल्याण योजनाएँ","📞 Grievance Redressal / शिकायत निवारण"]],
+      ["Building Fairness / निष्पक्षता का निर्माण",["🤝 Inclusion in Practice / व्यवहार में समावेश","📢 Awareness & Advocacy / जागरूकता एवं पैरवी","🛡️ Protecting the Vulnerable / कमजोर की सुरक्षा","🌱 Community Responsibility / सामुदायिक जिम्मेदारी"]]
+    ]
+  },
+  {
+    test:/human rights|मानवाधिकार|मानव अधिकार/i,icon:"🕊️",
+    modules:[
+      ["Rights Foundation / अधिकार आधार",["📖 What are Human Rights / मानवाधिकार क्या हैं","🌍 Universal Declaration / सार्वभौमिक घोषणा","🧩 Categories of Rights / अधिकारों की श्रेणियाँ","⚖️ Rights & Duties / अधिकार एवं कर्तव्य"]],
+      ["Rights in Daily Life / दैनिक जीवन में अधिकार",["🎓 Education & Health / शिक्षा एवं स्वास्थ्य","👷 Work & Fair Wage / कार्य एवं उचित वेतन","👩 Women & Child Rights / महिला एवं बाल अधिकार","🧑‍🦽 Disability & Inclusion / दिव्यांगता एवं समावेश"]],
+      ["Protection & Action / संरक्षण एवं कार्रवाई",["📜 Laws & Institutions / कानून एवं संस्थाएँ","📞 Helplines & Complaints / हेल्पलाइन एवं शिकायत","🛡️ Preventing Violations / उल्लंघन की रोकथाम","🤝 Community Action / सामुदायिक कार्रवाई"]]
+    ]
+  },
+  {
+    test:/moral education|नैतिक शिक्षा/i,icon:"🌼",
+    modules:[
+      ["Values Foundation / मूल्य आधार",["💛 Honesty & Truth / ईमानदारी एवं सत्य","🤝 Respect & Kindness / सम्मान एवं दया","🕊️ Peace & Non-violence / शांति एवं अहिंसा","🙏 Gratitude / कृतज्ञता"]],
+      ["Values in Action / मूल्य व्यवहार में",["👨‍👩‍👧 At Home & Family / घर एवं परिवार","🏫 At School & Work / विद्यालय एवं कार्य","🤲 Helping Others / दूसरों की सहायता","🌍 Responsibility to Society / समाज के प्रति जिम्मेदारी"]],
+      ["Building Character / चरित्र निर्माण",["🧠 Self-control & Discipline / आत्म-संयम एवं अनुशासन","⚖️ Right & Wrong Choices / सही-गलत चयन","🔄 Admitting Mistakes / गलती स्वीकारना","🌱 Daily Practice / दैनिक अभ्यास"]]
+    ]
+  },
+  {
+    test:/corruption awareness|भ्रष्टाचार/i,icon:"🚫",
+    modules:[
+      ["Understanding Corruption / भ्रष्टाचार को समझना",["📖 What is Corruption / भ्रष्टाचार क्या है","🧾 Common Forms / सामान्य रूप","🌍 Causes & Effects / कारण एवं प्रभाव","📉 Impact on Society / समाज पर प्रभाव"]],
+      ["Prevention / रोकथाम",["📜 Laws & Anti-corruption Bodies / कानून एवं एजेंसियाँ","📞 Reporting Channels / शिकायत के माध्यम","📄 Right to Information / सूचना का अधिकार","🔍 Transparency in Services / सेवाओं में पारदर्शिता"]],
+      ["Building Integrity / ईमानदारी का निर्माण",["💛 Personal Integrity / व्यक्तिगत ईमानदारी","🏛️ Ethical Institutions / नैतिक संस्थाएँ","👥 Citizen Vigilance / नागरिक सतर्कता","🌱 Long-term Culture / दीर्घकालिक संस्कृति"]]
+    ]
+  },
+  {
+    test:/national unity|राष्ट्रीय एकता/i,icon:"🇮🇳",
+    modules:[
+      ["Unity Foundation / एकता आधार",["📖 Unity in Diversity / विविधता में एकता","🗺️ States & Cultures / राज्य एवं संस्कृतियाँ","🤝 Common Values / साझा मूल्य","🏳️ National Symbols / राष्ट्रीय प्रतीक"]],
+      ["Historical & Civic Bond / ऐतिहासिक एवं नागरिक बंधन",["📜 Freedom Movement / स्वतंत्रता आंदोलन","⚖️ Constitution & Equality / संविधान एवं समानता","🪖 Role of Institutions / संस्थाओं की भूमिका","🌐 India in the World / विश्व में भारत"]],
+      ["Practising Unity / एकता का अभ्यास",["🗣️ Respecting Languages & Faiths / भाषा एवं आस्था का सम्मान","🚫 Opposing Division / विभाजन का विरोध","🤝 Community Programmes / सामुदायिक कार्यक्रम","🌱 Nation Building / राष्ट्र निर्माण"]]
+    ]
+  },
+  {
+    test:/communal harmony|सांप्रदायिक सद्भाव|साम्प्रदायिक/i,icon:"🕊️",
+    modules:[
+      ["Harmony Foundation / सद्भाव आधार",["📖 Meaning of Harmony / सद्भाव का अर्थ","🌍 Diversity of Faiths / आस्थाओं की विविधता","🤝 Shared Humanity / साझा मानवता","⚖️ Secular Values / धर्मनिरपेक्ष मूल्य"]],
+      ["Understanding Conflict / टकराव को समझना",["🧩 Causes of Division / विभाजन के कारण","📰 Rumours & Misinformation / अफवाह एवं भ्रांति","🚨 Warning Signs / चेतावनी संकेत","🗣️ Peaceful Dialogue / शांतिपूर्ण संवाद"]],
+      ["Building Peace / शांति का निर्माण",["🤝 Inter-community Activities / अंतर-समुदाय गतिविधियाँ","🛡️ Protection of All / सबकी सुरक्षा","📢 Responsible Media Use / जिम्मेदार मीडिया","🌱 Long-term Coexistence / दीर्घकालिक सहअस्तित्व"]]
+    ]
+  },
+  {
+    test:/civic responsibility|नागरिक जिम्मेदारी|नागरिक कर्तव्य/i,icon:"🏛️",
+    modules:[
+      ["Citizenship Foundation / नागरिकता आधार",["📖 Who is a Citizen / नागरिक कौन है","⚖️ Rights & Duties / अधिकार एवं कर्तव्य","🗳️ Voting & Democracy / मतदान एवं लोकतंत्र","🏛️ Local Governance / स्थानीय शासन"]],
+      ["Civic Participation / नागरिक भागीदारी",["🤝 Community Service / सामुदायिक सेवा","📢 Raising Issues / समस्याएँ उठाना","🧹 Public Spaces & Hygiene / सार्वजनिक स्थान एवं स्वच्छता","💧 Water, Roads & Facilities / जल, सड़क एवं सुविधाएँ"]],
+      ["Responsible Living / जिम्मेदार जीवन",["📜 Following Laws / कानून का पालन","💳 Paying Taxes / कर भुगतान","🌍 Environment Duty / पर्यावरण कर्तव्य","🌱 Inspiring Others / दूसरों को प्रेरित करना"]]
+    ]
+  },
+  {
+    test:/inclusive education|समावेशी शिक्षा/i,icon:"🧑‍🏫",
+    modules:[
+      ["Inclusion Foundation / समावेश आधार",["📖 What is Inclusive Education / समावेशी शिक्षा क्या है","🧑‍🦽 Diversity of Learners / शिक्षार्थियों की विविधता","⚖️ Right to Education for All / सबके लिए शिक्षा का अधिकार","🚫 Barriers & Attitudes / बाधाएँ एवं दृष्टिकोण"]],
+      ["Classroom Practice / कक्षा व्यवहार",["♿ Accessibility & Seating / सुगम्यता एवं बैठक","🧩 Differentiated Teaching / विभेदित शिक्षण","🗣️ Communication Support / संचार सहयोग","📝 Flexible Assessment / लचीला मूल्यांकन"]],
+      ["Support Systems / सहयोग प्रणाली",["🤝 Parents & Special Educators / अभिभावक एवं विशेष शिक्षक","🛠️ Assistive Tools / सहायक उपकरण","🧠 Peer Sensitivity / साथियों की संवेदनशीलता","🌱 Inclusive Culture / समावेशी संस्कृति"]]
+    ]
+  },
+  {
+    test:/conferences|knowledge events|सम्मेलन|ज्ञान कार्यक्रम|seminar/i,icon:"🎪",
+    modules:[
+      ["Event Basics / कार्यक्रम आधार",["🎯 Purpose & Theme / उद्देश्य एवं विषय","👥 Audience & Speakers / श्रोता एवं वक्ता","🗓️ Planning & Schedule / योजना एवं समय-सारिणी","📣 Promotion & Invites / प्रचार एवं आमंत्रण"]],
+      ["Organising / आयोजन",["🏛️ Venue & Logistics / स्थल एवं व्यवस्था","🎤 Sessions & Panels / सत्र एवं पैनल","📸 Documentation / दस्तावेज़ीकरण","🤝 Partnerships / साझेदारी"]],
+      ["Learning & Follow-up / सीख एवं अनुवर्ती",["📝 Note-taking / नोट लेना","💬 Networking / नेटवर्किंग","📊 Feedback & Report / प्रतिक्रिया एवं रिपोर्ट","🌱 Applying Learnings / सीख लागू करना"]]
+    ]
+  },
+  {
+    test:/self awareness|आत्म जागरूकता|आत्म-जागरूकता/i,icon:"🪞",
+    modules:[
+      ["Knowing Yourself / स्वयं को जानना",["🧠 Strengths & Weaknesses / शक्ति एवं कमजोरी","❤️ Values & Beliefs / मूल्य एवं विश्वास","🎭 Emotions & Triggers / भावनाएँ एवं कारण","🪞 Self-image / आत्म-छवि"]],
+      ["Reflection Tools / चिंतन उपकरण",["📓 Journaling / डायरी लेखन","🧘 Mindfulness / सजगता","❓ Self-questioning / आत्म-प्रश्न","📊 Feedback from Others / दूसरों की प्रतिक्रिया"]],
+      ["Growth / विकास",["🎯 Setting Personal Goals / व्यक्तिगत लक्ष्य","🔄 Breaking Old Habits / पुरानी आदतें बदलना","🌱 Self-compassion / आत्म-करुणा","📈 Continuous Improvement / निरंतर सुधार"]]
+    ]
+  },
+  {
+    test:/confidence building|आत्मविश्वास/i,icon:"💪",
+    modules:[
+      ["Confidence Foundation / आत्मविश्वास आधार",["🧠 Understanding Confidence / आत्मविश्वास को समझना","🎯 Strengths & Achievements / शक्ति एवं उपलब्धि","🗣️ Self-talk / आत्म-संवाद","😌 Managing Fear / भय प्रबंधन"]],
+      ["Confident Actions / आत्मविश्वासी कार्य",["👀 Body Language / भाव-भंगिमा","🗣️ Speaking Up / बोलने का साहस","🤝 Saying No Politely / विनम्र मना करना","❓ Asking for Help / सहायता माँगना"]],
+      ["Sustaining Confidence / निरंतर आत्मविश्वास",["📈 Small Wins / छोटी सफलताएँ","🔄 Learning from Failure / असफलता से सीख","👥 Supportive Circle / सहयोगी वातावरण","🌱 Daily Practice / दैनिक अभ्यास"]]
+    ]
+  },
+  {
+    test:/goal setting|लक्ष्य निर्धारण|लक्ष्य/i,icon:"🎯",
+    modules:[
+      ["Goal Basics / लक्ष्य आधार",["📖 Why Goals Matter / लक्ष्य क्यों जरूरी","🧩 Short vs Long Term / अल्पकालिक एवं दीर्घकालिक","✍️ SMART Goals / स्मार्ट लक्ष्य","💡 Values & Goals / मूल्य एवं लक्ष्य"]],
+      ["Planning / योजना",["🗺️ Breaking into Steps / चरणों में बाँटना","⏱️ Timeline & Milestones / समय-सीमा एवं पड़ाव","🚧 Anticipating Obstacles / बाधाओं का अनुमान","🧰 Resources & Support / संसाधन एवं सहयोग"]],
+      ["Achieving / प्राप्ति",["📅 Daily Action / दैनिक कार्य","📊 Tracking Progress / प्रगति ट्रैक","🔄 Adjusting Plans / योजना बदलना","🏆 Celebrating Success / सफलता का उत्सव"]]
+    ]
+  },
+  {
+    test:/problem solving|समस्या समाधान/i,icon:"🧩",
+    modules:[
+      ["Understanding Problems / समस्या को समझना",["🔍 Defining the Problem / समस्या परिभाषित करना","🧾 Facts vs Assumptions / तथ्य एवं अनुमान","🎯 Root Cause / मूल कारण","📋 Impact / प्रभाव"]],
+      ["Finding Solutions / समाधान खोजना",["💡 Brainstorming / विचार-मंथन","⚖️ Weighing Options / विकल्प तौलना","🧪 Testing Ideas / विचार परखना","🤝 Seeking Input / सलाह लेना"]],
+      ["Implementing / क्रियान्वयन",["📝 Action Plan / कार्य योजना","🚀 Executing Steps / चरण पूरे करना","📊 Reviewing Results / परिणाम समीक्षा","🌱 Learning & Improving / सीख एवं सुधार"]]
+    ]
+  },
+  {
+    test:/decision making|निर्णय लेना|निर्णय/i,icon:"⚖️",
+    modules:[
+      ["Decision Basics / निर्णय आधार",["📖 Types of Decisions / निर्णय के प्रकार","🧩 Factors that Matter / महत्वपूर्ण कारक","⚖️ Pros & Cons / लाभ एवं हानि","❤️ Values & Ethics / मूल्य एवं नैतिकता"]],
+      ["Making the Choice / चयन करना",["📊 Gathering Information / जानकारी जुटाना","🧠 Thinking Clearly / स्पष्ट सोच","👥 Consulting Others / दूसरों से परामर्श","⏱️ Timing / समय"]],
+      ["After the Decision / निर्णय के बाद",["🚀 Acting Confidently / आत्मविश्वास से कार्य","📈 Reviewing Outcome / परिणाम समीक्षा","🔄 Learning from Mistakes / गलती से सीख","🌱 Responsibility / जिम्मेदारी"]]
+    ]
+  },
+  {
+    test:/creativity|रचनात्मकता|सृजनात्मकता/i,icon:"🎨",
+    modules:[
+      ["Creative Foundation / रचनात्मक आधार",["🧠 Imagination & Curiosity / कल्पना एवं जिज्ञासा","👀 Observation / अवलोकन","❓ Asking Questions / प्रश्न पूछना","🌐 Open Mindset / खुली सोच"]],
+      ["Creative Skills / रचनात्मक कौशल",["💡 Idea Generation / विचार उत्पन्न करना","🎨 Drawing, Craft & Design / चित्र, शिल्प एवं डिज़ाइन","✍️ Story & Writing / कहानी एवं लेखन","🎵 Music, Rhythm & Movement / संगीत, लय एवं गति"]],
+      ["Turning Ideas into Reality / विचार से वास्तविकता",["🧪 Experimenting / प्रयोग","🛠️ Making & Prototyping / निर्माण एवं नमूना","🤝 Collaboration / सहयोग","🏆 Showcasing Work / कार्य प्रदर्शन"]]
+    ]
+  },
+  {
+    test:/budget & financial planning|बजट एवं वित्तीय योजना/i,icon:"💰",
+    modules:[
+      ["Budget Foundation / बजट आधार",["📖 What is a Budget / बजट क्या है","💵 Income & Expenses / आय एवं व्यय","🎯 Needs vs Wants / आवश्यकता एवं इच्छा","📊 Categories & Units / श्रेणियाँ एवं इकाइयाँ"]],
+      ["Preparing a Budget / बजट बनाना",["🧮 Estimating Costs / लागत अनुमान","📋 Assumptions / मान्यताएँ","🕒 Timeline & Phases / समय-सीमा एवं चरण","🛟 Contingency / आकस्मिक निधि"]],
+      ["Monitoring / निगरानी",["📒 Recording Actuals / वास्तविक व्यय","📉 Variance Analysis / अंतर विश्लेषण","🔄 Reallocation / पुनः आवंटन","📄 Reporting / रिपोर्टिंग"]]
+    ]
+  },
+  {
+    test:/monitoring & evaluation|निगरानी एवं मूल्यांकन/i,icon:"📊",
+    modules:[
+      ["M&E Foundation / निगरानी आधार",["📖 Monitoring vs Evaluation / निगरानी एवं मूल्यांकन","🎯 Objectives & Results / उद्देश्य एवं परिणाम","🧩 Inputs-Activities-Outputs / निवेश-गतिविधि-उत्पाद","📐 Indicators / संकेतक"]],
+      ["Data & Evidence / डेटा एवं प्रमाण",["📋 Data Collection Tools / डेटा संग्रह उपकरण","🔢 Quantitative & Qualitative / मात्रात्मक एवं गुणात्मक","📸 Evidence Records / प्रमाण अभिलेख","✅ Data Quality / डेटा गुणवत्ता"]],
+      ["Learning & Reporting / सीख एवं रिपोर्टिंग",["📊 Analysis / विश्लेषण","📝 Progress Reports / प्रगति रिपोर्ट","🔁 Feedback Loops / प्रतिक्रिया चक्र","🌱 Adaptive Management / अनुकूली प्रबंधन"]]
+    ]
+  },
+  {
+    test:/reporting & documentation|रिपोर्टिंग एवं दस्तावेज|दस्तावेज़ीकरण/i,icon:"📄",
+    modules:[
+      ["Documentation Basics / दस्तावेज़ीकरण आधार",["📖 Why Document / दस्तावेज़ क्यों","🗂️ Types of Records / रिकॉर्ड के प्रकार","✍️ Accurate Writing / सटीक लेखन","📸 Evidence & Photos / प्रमाण एवं चित्र"]],
+      ["Writing Reports / रिपोर्ट लेखन",["🧱 Report Structure / रिपोर्ट संरचना","📊 Data & Tables / डेटा एवं तालिका","📝 Narrative & Findings / विवरण एवं निष्कर्ष","🎯 Recommendations / सुझाव"]],
+      ["Responsible Reporting / जिम्मेदार रिपोर्टिंग",["✅ Honest Claims / सच्चे दावे","🔒 Privacy & Consent / गोपनीयता एवं सहमति","📅 Timely Submission / समय पर प्रस्तुति","📚 Archiving / अभिलेखन"]]
+    ]
+  },
+  {
+    test:/safeguarding & ethics|सुरक्षा एवं नैतिकता|safeguarding/i,icon:"🛡️",
+    modules:[
+      ["Safeguarding Foundation / सुरक्षा आधार",["📖 What is Safeguarding / सुरक्षा क्या है","👶 Child Protection / बाल संरक्षण","🧑 Vulnerable Adults / असुरक्षित वयस्क","📜 Code of Conduct / आचार संहिता"]],
+      ["Ethics in Practice / व्यवहार में नैतिकता",["🤝 Consent & Privacy / सहमति एवं गोपनीयता","⚖️ Do No Harm / नुकसान न करें","🚫 Power & Boundaries / शक्ति एवं सीमाएँ","📸 Responsible Images / जिम्मेदार चित्र"]],
+      ["Reporting & Response / रिपोर्टिंग एवं प्रतिक्रिया",["🚨 Recognising Concerns / चिंता पहचानना","📞 Reporting Channels / शिकायत माध्यम","🤲 Supporting Survivors / पीड़ित की सहायता","🔄 Learning & Improvement / सीख एवं सुधार"]]
+    ]
+  }
+];
 
 const CATEGORY_BLUEPRINTS = {
   "Education / शिक्षा": [
@@ -693,6 +1035,11 @@ const SUBJECT_PROFILE_RULES = [
     ]
   }
 ];
+
+// Prepend the subject-specific module structures so they win over the generic
+// per-category blueprints. filter() preserves source order, and getSubjectProfile()
+// picks the first match, so the most specific rule must come first.
+SUBJECT_PROFILE_RULES.unshift(...SUBJECT_SPECIFIC_MODULES);
 
 // KNOWLEDGE_WORLD_MODULES is keyed by the full "English / Hindi" title, while the
 // subject exposes only the English part, so match on the English prefix.
@@ -1754,13 +2101,16 @@ function LearningSubject({ subject, onBack }) {
               : COURSE_ASSESSMENTS?.[structuredCourseId] || {})
       ).flat()
     : [];
+  const subjectQuiz = (SUBJECT_CONTENT[subject.en] && SUBJECT_CONTENT[subject.en].quiz) || [];
   const quizQuestions = structuredAssessmentPool.length
     ? structuredAssessmentPool.slice(0, 5).map(q => ({
         q: q.q || q.question,
         options: q.options || [],
         answer: typeof q.answer === "number" ? q.answer : 0
       }))
-    : [
+    : subjectQuiz.length
+      ? subjectQuiz.slice(0, 5).map(q => ({ q: q.question, options: q.options, answer: q.answer }))
+      : [
         {q:"अच्छी learning का उद्देश्य क्या है?", options:["समझकर और अभ्यास करके capability विकसित करना","केवल title याद करना","केवल video देखना","केवल certificate लेना"], answer:0},
         {q:"किसी concept को मजबूत करने का उपयोगी तरीका क्या है?", options:["Example + Practice + Review","बिना पढ़े अनुमान लगाना","बिना जाँचे जानकारी share करना","केवल एक definition याद करना"], answer:0},
         {q:"Current rules या schemes को कहाँ verify करना चाहिए?", options:["संबंधित official source","random forwarded message","unverified social post","anonymous screenshot"], answer:0},
@@ -1859,7 +2209,7 @@ function LearningSubject({ subject, onBack }) {
     });
   };
 
-  return <div className="min-h-screen bg-[#f6f8fb] pt-20 text-zinc-900 font-inria md:pt-28">
+  return <div className="min-h-screen bg-[#f6f8fb] pt-4 text-zinc-900 font-inria md:pt-6">
     <section className={"relative overflow-hidden bg-gradient-to-r "+subject.color+" text-white"}>
       <img src={subject.image} alt={subject.title} className="absolute inset-0 h-full w-full object-cover opacity-35"/>
       <div className="absolute inset-0 bg-[#001529]/75"/>
@@ -2101,9 +2451,10 @@ function LearningSubject({ subject, onBack }) {
   </div>;
 }
 
-export default function LearningHubV2() {
-  const [subjectId, setSubjectId] = useState(getSubjectFromUrl);
-  const [category, setCategory] = useState("All");
+export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
+  const navigate = useNavigate();
+  const [subjectId, setSubjectId] = useState(subjectIdParam || "");
+  const [category, setCategory] = useState(view === "knowledge-world" ? "Knowledge World / ज्ञान संसार" : "All");
   const [query, setQuery] = useState("");
   const [progressTick, setProgressTick] = useState(0);
 
@@ -2172,60 +2523,61 @@ export default function LearningHubV2() {
   const shareSubject = (subject) => shareLearningBox({
     title: subject.en + " | SSF Learning Hub",
     text: subject.intro + " — SSF Learning Hub",
-    url: window.location.origin + "/LearningHub?subject=" + encodeURIComponent(subject.id)
+    url: window.location.origin + "/LearningHub/course/" + encodeURIComponent(subject.id)
   });
   const openSubject = (subject) => {
-    const url = "/LearningHub?subject=" + encodeURIComponent(subject.id);
-    window.history.pushState({}, "", url);
-    setSubjectId(subject.id);
-    window.scrollTo({top:0, behavior:"smooth"});
+    navigate({ to: "/LearningHub/course/$subjectId", params: { subjectId: subject.id } });
+    try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {}
   };
   const back = () => {
-    window.history.pushState({}, "", "/LearningHub");
-    setSubjectId("");
+    navigate({ to: "/LearningHub" });
     setProgressTick(t => t + 1);
-    window.scrollTo({top:0, behavior:"smooth"});
+    try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {}
   };
   const filtered = useMemo(() => SUBJECTS.filter(s => {
     const hay = (s.title + " " + s.category + " " + s.intro).toLowerCase();
     return (category === "All" || s.category === category) && hay.includes(query.toLowerCase().trim());
   }), [category, query]);
   const selected = SUBJECTS.find(s => s.id === subjectId);
-  if (selected) return <LearningSubject subject={selected} onBack={back} />;
+  if (view === "course" && selected) return <LearningSubject subject={selected} onBack={back} />;
+  if (view === "course" && !selected) return <div className="mx-auto max-w-3xl px-4 py-16 text-center">
+    <h1 className="text-2xl font-black text-[#062a52]">Subject not found / विषय नहीं मिला</h1>
+    <p className="mt-2 text-sm text-zinc-600">यह course उपलब्ध नहीं है। कृपया Subjects list से चुनें।</p>
+    <button type="button" onClick={() => navigate({ to: "/LearningHub/explore" })} className="mt-6 rounded-2xl bg-[#003366] px-6 py-3 text-sm font-black text-white">Explore Subjects →</button>
+  </div>;
+  if (view === "home" && getSubjectFromUrl()) return <LegacySubjectRedirect />;
 
   const KW_CATEGORY = "Knowledge World / ज्ञान संसार";
   const CATEGORY_ORDER = [KW_CATEGORY, ...Object.keys(CATEGORY_META).filter(c => c !== KW_CATEGORY)];
   const categories = ["All", ...CATEGORY_ORDER];
   const visibleCategories = category === "All" ? CATEGORY_ORDER : [category];
   const knowledgeWorldSubjects = SUBJECTS.filter(s => s.category === KW_CATEGORY);
+  const categoryCards = CATEGORY_ORDER.map((name) => {
+    const meta = CATEGORY_META[name] || {};
+    const subjects = SUBJECTS.filter((s) => s.category === name);
+    return { name, icon: meta.icon || FaBookOpen, color: meta.color || "from-[#003366] to-[#0f4c81]", count: subjects.length, subjects };
+  });
+  const openCategory = (name) => { setCategory(name); navigate({ to: "/LearningHub/explore" }); try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {} };
+  const myLearningSubjects = filtered.filter((s) => cardProgress(s) > 0);
+  const gridSubjects = view === "my-learning" ? myLearningSubjects : filtered;
 
-  return <div className="min-h-screen bg-[#f6f8fb] pt-20 font-inria text-zinc-900 md:pt-28">
-    <section className="relative overflow-hidden bg-[#002344] text-white">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#001426] via-[#003b63] to-[#007c91]" />
-      <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full border border-white/10 bg-white/5" />
-      <div className="absolute -bottom-32 left-1/3 h-80 w-80 rounded-full border border-white/10 bg-white/5" />
-      <div className="relative mx-auto max-w-7xl px-4 py-12 md:py-16">
-        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-4xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-black uppercase tracking-widest"><FaGraduationCap /> SSF Learning Hub</div>
-            <div className="mt-5 text-sm font-bold text-white/70">ज्ञान से कौशल तक • From Knowledge to Capability</div>
-            <h1 className="mt-2 text-4xl font-black leading-tight md:text-6xl">सीखिए। अभ्यास कीजिए। आगे बढ़िए।</h1>
-            <p className="mt-4 max-w-3xl text-base leading-7 text-white/80 md:text-lg">विषय चुनें, structured lessons पूरा करें, practice करें और assessment के साथ अपनी learning progress आगे बढ़ाएँ।</p>
-          </div>
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:w-[430px]">
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur"><div className="text-2xl font-black">{SUBJECTS.length}</div><div className="mt-1 text-xs font-bold text-white/70">Subjects</div></div>
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur"><div className="text-2xl font-black">{Object.keys(CATEGORY_META).length}</div><div className="mt-1 text-xs font-bold text-white/70">Learning Areas</div></div>
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur"><div className="text-2xl font-black">{Object.keys(ALL_STRUCTURED_COURSES || {}).length}</div><div className="mt-1 text-xs font-bold text-white/70">Structured</div></div>
-            <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur"><div className="text-2xl font-black">{progressSummary.completedCount}</div><div className="mt-1 text-xs font-bold text-white/70">Completed</div></div>
-          </div>
-        </div>
-      </div>
-    </section>
+  return <div className="font-inria text-zinc-900">
+    {view === "home" && <LearningHubLanding
+      onStart={() => navigate({ to: "/LearningHub/explore" })}
+      onExplore={() => navigate({ to: "/LearningHub/explore" })}
+      onContinue={() => navigate({ to: "/LearningHub/my-learning" })}
+      onOpenSubject={openSubject}
+      onOpenKnowledge={() => navigate({ to: "/LearningHub/knowledge-world" })}
+      progressSummary={progressSummary}
+      totalSubjects={SUBJECTS.length}
+      totalAreas={CATEGORY_ORDER.length}
+    />}
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
-      <section className="mt-8">
+      {view === "explore" && <section className="mt-2">
         <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-8">
-          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaBookOpen /> Start here / यहाँ से शुरू करें</div>
-          <h2 className="mt-2 text-2xl font-black md:text-3xl">अपनी learning journey चुनिए</h2>
+          <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaBookOpen /> Explore All Subjects / सभी विषय देखें</div>
+          <h2 className="mt-2 text-2xl font-black md:text-3xl">{SUBJECTS.length} Subjects across {CATEGORY_ORDER.length} Learning Areas</h2>
+          <p className="mt-1 text-sm text-zinc-500">पहले Learning Area चुनें, फिर subject। हर subject का अपना course, modules, lessons, practice और quiz है।</p>
           <div className="relative mt-4">
             <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-zinc-400" />
             <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 text-sm outline-none transition focus:border-[#0f4c81] focus:bg-white focus:ring-4 focus:ring-[#0f4c81]/10" />
@@ -2233,15 +2585,30 @@ export default function LearningHubV2() {
           <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-black transition "+(category===c?"bg-[#003366] text-white shadow-md":"bg-zinc-100 text-zinc-600 hover:bg-zinc-200")}><Icon/> {c}</button>; })}</div>
           <div className="mt-3 text-xs font-bold text-zinc-500">{filtered.length} {filtered.length === 1 ? "course" : "courses"} {query.trim() ? "matching your search" : "available"} {category !== "All" ? "in " + category : ""} / {filtered.length} विषय उपलब्ध</div>
         </div>
+      </section>}
 
-        {category === "All" && !query.trim() && <div className="mt-5 overflow-hidden rounded-[2rem] border border-[#cfe6ef] bg-gradient-to-br from-[#1d3557] to-[#457b9d] p-6 text-white shadow-sm md:p-8">
+      {view === "home" && <LearningHubDashboard
+        progressSummary={progressSummary}
+        categories={categoryCards}
+        knowledgeWorldSubjects={knowledgeWorldSubjects}
+        onStart={() => navigate({ to: "/LearningHub/explore" })}
+        onOpenSubject={openSubject}
+        onExplore={() => navigate({ to: "/LearningHub/explore" })}
+        onKnowledge={() => navigate({ to: "/LearningHub/knowledge-world" })}
+        onContinue={() => navigate({ to: "/LearningHub/my-learning" })}
+        onCategory={openCategory}
+        cardProgress={cardProgress}
+      />}
+
+      {view !== "home" && <section className="mt-5">
+        {view === "explore" && category === "All" && !query.trim() && <div className="overflow-hidden rounded-[2rem] border border-[#cfe6ef] bg-gradient-to-br from-[#1d3557] to-[#457b9d] p-6 text-white shadow-sm md:p-8">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest"><FaBookOpen /> Knowledge World / ज्ञान संसार</div>
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest"><FaGlobe /> Knowledge World / ज्ञान संसार</div>
               <h2 className="mt-3 text-2xl font-black md:text-3xl">दुनिया को जानिए। ज्ञान बढ़ाइए।</h2>
               <p className="mt-2 text-sm leading-6 text-white/80">समय, प्रकृति, विज्ञान, भारत और विश्व — रोज़मर्रा के ज्ञान के {knowledgeWorldSubjects.length} विषय, आसान भाषा और उदाहरणों के साथ।</p>
             </div>
-            <button onClick={()=>setCategory(KW_CATEGORY)} className="shrink-0 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#1d3557] shadow-md transition hover:bg-white/90">Explore Knowledge World / ज्ञान संसार देखें →</button>
+            <button onClick={()=>setCategory(KW_CATEGORY)} className="shrink-0 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#1d3557] shadow-md transition hover:bg-white/90">Explore Knowledge World →</button>
           </div>
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {knowledgeWorldSubjects.slice(0, 6).map(s => <button key={s.id} onClick={()=>openSubject(s)} className="flex items-center justify-between gap-3 rounded-2xl bg-white/10 px-4 py-3 text-left transition hover:bg-white/15">
@@ -2250,7 +2617,8 @@ export default function LearningHubV2() {
             </button>)}
           </div>
         </div>}
-        <div className="mt-5 rounded-[2rem] bg-[#003366] p-6 text-white shadow-sm md:p-7">
+
+        {view !== "knowledge-world" && <div className="mt-5 rounded-[2rem] bg-[#003366] p-6 text-white shadow-sm md:p-7">
           <div className="text-xs font-black uppercase tracking-widest text-white/60">Your learning / आपकी प्रगति</div>
           {progressSummary.active ? <div className="mt-4">
             <button onClick={()=>openSubject(progressSummary.active.subject)} className="w-full text-left">
@@ -2268,86 +2636,88 @@ export default function LearningHubV2() {
                 </button>)}
               </div>
             </div>}
-          </div> : <div className="mt-4"><div className="text-lg font-black">Start your first course</div><div className="mt-2 text-sm leading-6 text-white/70">अपना पहला course चुनें और progress track करें।</div></div>}
-        </div>
-      </section>
+          </div> : <div className="mt-4"><div className="text-lg font-black">Start your first course</div><div className="mt-2 text-sm leading-6 text-white/70">अपना पहला course चुनें और progress track करें।</div><button onClick={()=>navigate({ to: "/LearningHub/explore" })} className="mt-4 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#003366]">Explore Subjects →</button></div>}
+        </div>}
+      </section>}
 
-      <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-gradient-to-r from-white to-[#eef7fb] p-6 md:p-8">
+      {view !== "home" && <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-gradient-to-r from-white to-[#eef7fb] p-6 md:p-8">
         <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"><div><div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaGraduationCap/> LEARNING PATH / सीखने का रास्ता</div><h2 className="mt-2 text-2xl font-black md:text-3xl">Learn → Practise → Assess → Complete</h2><p className="mt-2 text-sm text-zinc-600">Learning को छोटे, स्पष्ट steps में पूरा करें।</p></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{[[FaBookOpen,"Learn","सीखें"],[FaPlayCircle,"Practise","अभ्यास"],[FaCheckCircle,"Assess","आकलन"],[FaGraduationCap,"Certificate","प्रमाणपत्र"]].map(([Icon,en,hi])=><div key={en} className="rounded-xl bg-white px-4 py-3 text-center shadow-sm"><Icon className="mx-auto text-lg text-[#003366]"/><div className="mt-1 text-xs font-black">{en}</div><div className="text-[10px] text-zinc-500">{hi}</div></div>)}</div></div>
-      </section>
+      </section>}
 
-      {visibleCategories.map(cat => {
-        const meta = CATEGORY_META[cat];
-        const Icon = meta?.icon || FaBookOpen;
-        const courses = filtered.filter(s => s.category === cat);
-        if (!courses.length) return null;
-        return <section key={cat} className="mt-12">
-          <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
-            <div>
-              <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-[#0f4c81]"><Icon /> {cat}</div>
-              <h2 className="mt-2 text-3xl font-black">Courses / पाठ्यक्रम</h2>
-              <p className="mt-1 text-sm text-zinc-500">{courses.length} learning options available in this area / इस क्षेत्र में उपलब्ध learning options</p>
+      {view !== "home" && <div className="mt-10">
+        {visibleCategories.map(cat => {
+          const meta = CATEGORY_META[cat];
+          const Icon = meta?.icon || FaBookOpen;
+          const courses = gridSubjects.filter(s => s.category === cat);
+          if (!courses.length) return null;
+          return <section key={cat} className="mt-12">
+            <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+              <div>
+                <div className="flex items-center gap-2 text-sm font-black uppercase tracking-widest text-[#0f4c81]"><Icon /> {cat}</div>
+                <h2 className="mt-2 text-3xl font-black">Courses / पाठ्यक्रम</h2>
+                <p className="mt-1 text-sm text-zinc-500">{courses.length} learning options available in this area / इस क्षेत्र में उपलब्ध learning options</p>
+              </div>
             </div>
-          </div>
-          <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-            {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-zinc-200 bg-white shadow-[0_10px_35px_rgba(0,35,68,.07)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(0,35,68,.14)]">
-              <div className="relative h-52 overflow-hidden">
-                <div className={"absolute inset-0 bg-gradient-to-br "+s.color} />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="flex h-24 w-24 items-center justify-center rounded-3xl border border-white/25 bg-white/10 text-5xl text-white shadow-2xl backdrop-blur">
-                    <Icon aria-hidden="true" />
+            <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+              {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-zinc-200 bg-white shadow-[0_10px_35px_rgba(0,35,68,.07)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_50px_rgba(0,35,68,.14)]">
+                <div className="relative h-52 overflow-hidden">
+                  <div className={"absolute inset-0 bg-gradient-to-br "+s.color} />
+                  <div className="absolute inset-0 flex items-center justify-center">
+                    <div className="flex h-24 w-24 items-center justify-center rounded-3xl border border-white/25 bg-white/10 text-5xl text-white shadow-2xl backdrop-blur">
+                      <Icon aria-hidden="true" />
+                    </div>
+                  </div>
+                  <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/45 to-transparent" />
+                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur">
+                    <Icon /> Course {s.number}
+                  </div>
+                  <div className="absolute bottom-4 left-5 right-5 text-white">
+                    <h3 className="text-2xl font-black leading-tight">{s.en}</h3>
+                    <div className="mt-1 text-sm font-bold text-white/90">{s.hi}</div>
                   </div>
                 </div>
-                <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-black/45 to-transparent" />
-                <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest text-white backdrop-blur">
-                  <Icon /> Course {s.number}
-                </div>
-                <div className="absolute bottom-4 left-5 right-5 text-white">
-                  <h3 className="text-2xl font-black leading-tight">{s.en}</h3>
-                  <div className="mt-1 text-sm font-bold text-white/90">{s.hi}</div>
-                </div>
-              </div>
-              <div className="flex flex-1 flex-col p-6">
-                <div className="mb-4 flex flex-wrap gap-2">
-                  <span className="rounded-full bg-[#edf5fa] px-3 py-1 text-[10px] font-black text-[#0f4c81]">{courseMetaBySubject[s.id] ? "Structured Course" : "Learning Topic"}</span>
-                  <span className="rounded-full bg-zinc-100 px-3 py-1 text-[10px] font-black text-zinc-600">Hindi + English</span>
-                </div>
-                <p className="flex-1 text-sm leading-7 text-zinc-600">{s.intro}</p>
-                {(() => { const pct = cardProgress(s); if (!pct) return null; return (
-                  <div className="mt-4">
-                    <div className="flex items-center justify-between text-[11px] font-black text-[#0f4c81]"><span>{pct >= 100 ? "Completed" : "In progress"}</span><span>{pct}%</span></div>
-                    <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#0f4c81] to-[#0a9396]" style={{width:pct+"%"}}/></div>
+                <div className="flex flex-1 flex-col p-6">
+                  <div className="mb-4 flex flex-wrap gap-2">
+                    <span className="rounded-full bg-[#edf5fa] px-3 py-1 text-[10px] font-black text-[#0f4c81]">{courseMetaBySubject[s.id] ? "Structured Course" : "Learning Topic"}</span>
+                    <span className="rounded-full bg-zinc-100 px-3 py-1 text-[10px] font-black text-zinc-600">Hindi + English</span>
                   </div>
-                ); })()}
-                <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-zinc-500">
-                  <div className="rounded-xl bg-zinc-50 p-2"><FaBookOpen className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.modules?.length ?? getSubjectModules(s).moduleCount}<span className="block text-[9px] font-normal">Modules</span></div>
-                  <div className="rounded-xl bg-zinc-50 p-2"><FaClock className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal">Hours</span></div>
-                  <div className="rounded-xl bg-zinc-50 p-2"><FaGraduationCap className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id] ? "Certificate" : "Coming Soon"}<span className="block text-[9px] font-normal">{courseMetaBySubject[s.id] ? "Pathway" : "Status"}</span></div>
+                  <p className="flex-1 text-sm leading-7 text-zinc-600">{s.intro}</p>
+                  {(() => { const pct = cardProgress(s); if (!pct) return null; return (
+                    <div className="mt-4">
+                      <div className="flex items-center justify-between text-[11px] font-black text-[#0f4c81]"><span>{pct >= 100 ? "Completed" : "In progress"}</span><span>{pct}%</span></div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#0f4c81] to-[#0a9396]" style={{width:pct+"%"}}/></div>
+                    </div>
+                  ); })()}
+                  <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-zinc-500">
+                    <div className="rounded-xl bg-zinc-50 p-2"><FaBookOpen className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.modules?.length ?? getSubjectModules(s).moduleCount}<span className="block text-[9px] font-normal">Modules</span></div>
+                    <div className="rounded-xl bg-zinc-50 p-2"><FaClock className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal">Hours</span></div>
+                    <div className="rounded-xl bg-zinc-50 p-2"><FaGraduationCap className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id] ? "Certificate" : "Coming Soon"}<span className="block text-[9px] font-normal">{courseMetaBySubject[s.id] ? "Pathway" : "Status"}</span></div>
+                  </div>
+                  <div className="mt-5 grid grid-cols-[1fr_auto] gap-2">
+                    <button onClick={()=>openSubject(s)} className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:from-[#0f4c81] hover:to-[#007c91] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
+                      {courseMetaBySubject[s.id] ? "Start Learning / सीखना शुरू करें" : "Explore Topic / विषय देखें"} <FaArrowRight />
+                    </button>
+                    <button type="button" onClick={()=>shareSubject(s)} aria-label={"Share " + s.en} title="Share this course" className="inline-flex min-w-14 items-center justify-center gap-2 rounded-2xl border border-[#0f4c81]/20 bg-[#eef7fb] px-4 text-[#003366] transition hover:bg-[#dceff7] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
+                      <FaShareAlt /> <span className="sr-only">Share</span>
+                    </button>
+                  </div>
                 </div>
-                <div className="mt-5 grid grid-cols-[1fr_auto] gap-2">
-                  <button onClick={()=>openSubject(s)} className="inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#003366] to-[#0f4c81] px-5 py-4 text-sm font-black text-white shadow-lg transition hover:from-[#0f4c81] hover:to-[#007c91] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
-                    {courseMetaBySubject[s.id] ? "Start Learning / सीखना शुरू करें" : "Explore Topic / विषय देखें"} <FaArrowRight />
-                  </button>
-                  <button type="button" onClick={()=>shareSubject(s)} aria-label={"Share " + s.en} title="Share this course" className="inline-flex min-w-14 items-center justify-center gap-2 rounded-2xl border border-[#0f4c81]/20 bg-[#eef7fb] px-4 text-[#003366] transition hover:bg-[#dceff7] focus:outline-none focus:ring-4 focus:ring-[#0f4c81]/20">
-                    <FaShareAlt /> <span className="sr-only">Share</span>
-                  </button>
-                </div>
-              </div>
-            </article>)}
-          </div>
-        </section>;
-      })}
+              </article>)}
+            </div>
+          </section>;
+        })}
 
-      {!filtered.length && <div className="mt-10 rounded-3xl border border-dashed border-zinc-300 bg-white p-12 text-center text-zinc-500">No course found. Try another search / कोई दूसरा विषय खोजें।</div>}
+        {!gridSubjects.length && <div className="mt-10 rounded-3xl border border-dashed border-zinc-300 bg-white p-12 text-center text-zinc-500">{view === "my-learning" ? "अभी कोई course शुरू नहीं हुआ। Explore Subjects से अपना पहला course चुनें।" : "No course found. Try another search / कोई दूसरा विषय खोजें।"}</div>}
+      </div>}
 
-      <section className="mt-14 grid gap-5 pb-8 md:grid-cols-4">
+      {view !== "home" && <section className="mt-14 grid gap-5 pb-8 md:grid-cols-4">
         {[
           [FaBookOpen, "Learn / सीखें", "Concepts, examples and reliable learning material."],
           [FaPlayCircle, "Practise / अभ्यास", "Activities and practical application."],
           [FaCheckCircle, "Assess / आकलन", "Quizzes and meaningful assessments."],
           [FaGraduationCap, "Certify / प्रमाणन", "Completion-based certificate pathway."]
         ].map(([Icon,title,desc])=><div key={title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><Icon className="text-3xl text-[#003366]"/><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{desc}</p></div>)}
-      </section>
+      </section>}
     </main>
   </div>;
 }
