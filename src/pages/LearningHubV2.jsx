@@ -1770,8 +1770,6 @@ function LearningSubject({ subject, onBack }) {
   const total = lessons.length;
   const isRichLesson = isPrimaryEducation && /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(lessons[activeLesson]?.title || "");
 
-  if (isRichLesson) return <PrimaryLettersCourse subject={subject} />;
-
   const progress = Math.round((completed / total) * 100);
   const moduleAssessments = structuredCourse
     ? structuredCourse.modules.map((m) => ({
@@ -1817,6 +1815,13 @@ function LearningSubject({ subject, onBack }) {
     markDone(safe);
     requestAnimationFrame(() => document.getElementById("current-lesson-content")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
+
+  if (isRichLesson) return <PrimaryLettersCourse
+    subject={subject}
+    nextLessonTitle={lessons[activeLesson + 1]?.title}
+    onMarkDone={() => markDone(activeLesson)}
+    onNextLesson={activeLesson < total - 1 ? () => goLesson(activeLesson + 1) : undefined}
+  />;
   const submitQuiz = () => {
     const passed = score >= 4;
     const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
