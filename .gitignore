@@ -29,3 +29,6 @@ lint_output.txt
 build_output.txt
 dev_output.txt
 output.txt
+
+# agent memory
+.openhands/

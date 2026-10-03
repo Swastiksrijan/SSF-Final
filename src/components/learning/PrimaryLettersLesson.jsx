@@ -247,6 +247,20 @@ export default function PrimaryLettersLesson() {
       </div>
     </Section>
 
+    <Section icon="📚" title="कहानी — राम और बंदर (Story)" subtitle="आसान शब्दों में कहानी पढ़ो और सुनो" tone="rose">
+      <div className="rounded-2xl bg-white p-5 shadow-sm">
+        <p className="text-base leading-8 text-zinc-700">
+          एक था <b>राम</b>। राम के पास एक <b>बंदर</b> था। बंदर को <b>आम</b> बहुत पसंद था।<br/>
+          एक दिन राम ने बंदर को <b>आम</b> दिया। बंदर खुश हुआ और <b>नाच</b>ने लगा।<br/>
+          राम हँसा और बोला — “बंदर, तुम <b>अच्छे</b> हो!”
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          {["राम","बंदर","आम","नाच","अच्छे"].map(w => <button key={w} type="button" onClick={() => speak(w)} className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#003366]">🔊 {w}</button>)}
+        </div>
+        <div className="mt-3"><SoundButton text="एक था राम। राम के पास एक बंदर था। बंदर को आम बहुत पसंद था।" label="🔊 पूरी कहानी सुनें" /></div>
+      </div>
+    </Section>
+
     <Section icon="🧱" title="Module 10 — Word Building" subtitle="Letters जोड़कर शब्द बनाओ" tone="amber">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
         {[...BLENDS, ["क","म","ल","🌸","कमल"], ["घ","र","","🏠","घर"]].map((x) => {
@@ -321,6 +335,15 @@ export default function PrimaryLettersLesson() {
           <SoundButton text="शाबाश! अक्षर और ध्वनि पूरा हुआ।" label="Next: Reading Practice →" />
         </div>
       </div>
+    </Section>
+
+    <Section icon="🧑‍🏫" title="Parents & Teachers Guide / मार्गदर्शिका" subtitle="घर और कक्षा में कैसे सिखाएँ" tone="sky">
+      <div className="grid gap-3 md:grid-cols-3">
+        <div className="rounded-2xl bg-white p-5 shadow-sm"><div className="text-sm font-black text-[#003366]">रोज़ 15 मिनट</div><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600"><li>5 मिनट अक्षर दोहराएँ</li><li>5 मिनट 🔇 बोलकर ध्वनि</li><li>5 मिनट लिखने का अभ्यास</li></ul></div>
+        <div className="rounded-2xl bg-white p-5 shadow-sm"><div className="text-sm font-black text-[#003366]">घर पर अभ्यास</div><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600"><li>आसपास की चीज़ों के नाम बोलो</li><li>अनाज/ढक्कन गिनकर गिनती</li><li>बच्चे को 🔊 सुनें button दबाने दो</li></ul></div>
+        <div className="rounded-2xl bg-white p-5 shadow-sm"><div className="text-sm font-black text-[#003366]">प्रगति जाँच</div><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600"><li>हर module बाद worksheet</li><li>10 में से 8 सही = आगे बढ़ें</li><li>गलती पर हँसें नहीं, दोबारा कराएँ</li></ul></div>
+      </div>
+      <p className="mt-4 rounded-xl bg-white p-4 text-sm font-bold text-zinc-700 shadow-sm">🎯 सिद्धांत: <b>Learn → See → Listen → Example → Practice → Activity → Quiz → Revision → Assessment → Completion</b>. बच्चे को लगे कि teacher step-by-step पढ़ा रहा है।</p>
     </Section>
   </div>;
 }
