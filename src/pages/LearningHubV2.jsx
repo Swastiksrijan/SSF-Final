@@ -1156,6 +1156,15 @@ const PRIMARY_TEACHING_MODE = {
   }
 };
 
+const SECONDARY_EDUCATION_MODULES = [
+  { title:"Language & Communication / भाषा एवं संचार", lessons:["Hindi: व्याकरण एवं भाषा-प्रयोग","English: grammar, vocabulary & comprehension","Reading: passage, inference & main idea","Writing: paragraph, letter, report & structured answer"] },
+  { title:"Mathematics / गणित", lessons:["Number system, integers, fractions & decimals","Algebra: expressions, equations & identities","Geometry: lines, angles, triangles & circles","Data handling, graphs, ratio, percentage & practical problems"] },
+  { title:"Science / विज्ञान", lessons:["Physics: motion, force, work, energy & basic electricity","Chemistry: matter, atoms, mixtures, reactions & everyday chemistry","Biology: cells, tissues, life processes & health","Scientific method: observation, hypothesis, experiment, evidence & conclusion"] },
+  { title:"Social Science / सामाजिक विज्ञान", lessons:["History: chronology, sources, causes, events & consequences","Geography: maps, resources, climate, population & human activities","Civics: democracy, rights, duties, institutions & participation","Economics: needs, production, markets, money, employment & basic budgeting"] },
+  { title:"Study Skills & Examination / अध्ययन एवं परीक्षा कौशल", lessons:["Syllabus mapping & chapter-wise study plan","Active reading, notes, recall & spaced revision","Question understanding, answer structure & time management","Mock test, error analysis & final revision"] },
+  { title:"Life, Digital & Career Readiness / जीवन, डिजिटल एवं करियर तैयारी", lessons:["Communication, teamwork & responsible behaviour","Digital literacy, online safety & information verification","Career awareness: interests, subjects, skills & pathways","Goal setting, projects, presentation & continuous improvement"] }
+];
+
 const KNOWLEDGE_WORLD_MODULES = {
   "Time & Calendar / समय एवं कैलेंडर":[["Units of Time / समय की इकाइयाँ",["⏱️ Second / सेकंड","⏱️ Minute / मिनट","🕐 Hour / घंटा","📅 Day, Week, Month, Year / दिन, सप्ताह, महीना, वर्ष"]],["Clock / घड़ी",["🕐 Hour Hand / घंटे की सुई","🕑 Minute Hand / मिनट की सुई","⏰ Analog Clock / एनालॉग घड़ी","📱 Digital Clock / डिजिटल घड़ी"]],["Calendar / कैलेंडर",["📆 Date & Day / तारीख एवं दिन","🗓️ Months / महीने","🌦️ Seasons / ऋतुएँ","🔁 Leap Year / लीप वर्ष"]],["Time Practice / समय अभ्यास",["➕ Add Time / समय जोड़ना","➖ Subtract Time / समय घटाना","⏳ Duration / अवधि","🎯 Timetable & Planning / समय योजना"]]],
   "Fruits / फल":[["Fruit Identification / फल पहचान",["🍎 Names & Pictures / नाम एवं चित्र","🎨 Colours & Shapes / रंग एवं आकार","🍃 Edible Parts / खाने योग्य भाग","🌱 Fruit Plants / फलदार पौधे"]],["Growth & Seasons / वृद्धि एवं मौसम",["🌱 Seed / बीज","🌸 Flower to Fruit / फूल से फल","🌦️ Fruit Seasons / फलों का मौसम","👨‍🌾 Harvest / तुड़ाई"]],["Food & Nutrition / भोजन एवं पोषण",["🥗 Nutrients / पोषक तत्व","💧 Washing & Hygiene / धुलाई एवं स्वच्छता","🍽️ Serving & Eating / भोजन करना","🧺 Storage / भंडारण"]],["Learning Practice / अभ्यास",["🔎 Identify / पहचानें","🧩 Match Fruit to Plant / फल-पौधा मिलाएँ","📊 Compare / तुलना करें","❓ Quiz / प्रश्नोत्तरी"]]],
@@ -1175,6 +1184,35 @@ const KNOWLEDGE_WORLD_MODULES = {
 };
 
 const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
+  if (subject.en === "Secondary Education") {
+    const m = SECONDARY_EDUCATION_MODULES[mi % SECONDARY_EDUCATION_MODULES.length];
+    const lesson = m.lessons[li % m.lessons.length];
+    return {
+      label,
+      body: "माध्यमिक शिक्षा में " + lesson + " को concept → example → guided practice → independent practice → revision के क्रम में सीखें।",
+      objectives:["Concept को स्पष्ट समझना।","Example देखकर method/कारण पहचानना।","नया practice task स्वयं पूरा करके self-check करना।"],
+      easy:"पहले concept को सरल भाषा और उदाहरण से समझें, फिर guided example करें और अंत में बिना मदद के नया प्रश्न/कार्य पूरा करें।",
+      deep:"माध्यमिक स्तर पर केवल उत्तर याद करना पर्याप्त नहीं है। कारण, method, evidence, calculation और answer presentation को समझना जरूरी है।",
+      why:"यह lesson school learning, परीक्षा, आगे की पढ़ाई और वास्तविक जीवन की problem-solving क्षमता मजबूत करता है।",
+      keyPoints:["Concept को अपने शब्दों में समझाएँ।","Solved example का method पहचानें।","नया example स्वयं करें।","गलती का कारण पहचानकर सुधारें।"],
+      examples:["Textbook example को step-by-step समझाएँ।","उसी concept पर नया प्रश्न स्वयं हल करें।","Answer को question की मांग और method से verify करें।"],
+      steps:["Topic और objective पढ़ें।","Model example देखें।","Guided practice में हर step करें।","Independent task बिना notes के करें।","Answer check करके error सुधारें।"],
+      practice:["3 key points बिना किताब देखे लिखें।","2 guided और 2 independent questions करें।","एक real-life application example लिखें।"],
+      activity:"Mini study card बनाएं: Concept → Example → Method → Practice → Mistake → Correct Method.",
+      memoryHook:"समझो → उदाहरण देखो → खुद करो → जाँचो → सुधारो → दोहराओ।",
+      mistakes:["सिर्फ answer याद करना और method न समझना।","Question की मांग ठीक से न पढ़ना।","गलत answer के बाद error analysis न करना।"],
+      safety:"Science/practical activity में teacher guidance और safe equipment use जरूरी है। Online study में unknown links, downloads, OTP या personal information share न करें।",
+      summary:"Concept को समझकर, example देखकर, practice करके और self-check से mastery विकसित करें।",
+      knowledgeCheck:[
+        {question:"सही learning sequence क्या है?",options:["Concept → Example → Practice → Self-check → Revision","केवल answer याद करना","सिर्फ video देखना","सिर्फ notes copy करना"],answer:0},
+        {question:"गलत answer मिलने पर सबसे उपयोगी कदम क्या है?",options:["गलती का कारण पहचानकर method दोबारा करना","उत्तर छोड़ देना","बिना समझे याद करना","practice छोड़ देना"],answer:0},
+        {question:"अच्छी learning का प्रमाण क्या है?",options:["नए प्रश्न में concept का सही उपयोग कर पाना","सिर्फ definition बोलना","केवल notebook भरना","सिर्फ marks याद रखना"],answer:0}
+      ],
+      reflection:["आज मैंने कौन-सा concept अपने शब्दों में समझाया?","किस step में गलती हुई और कैसे सुधारी?","इस knowledge का real-life उपयोग कहाँ हो सकता है?"]
+    };
+  }
+
+
   const clean = label.replace(/^[^\s]+\s/, "");
   const subjectName = subject.en;
   if (/^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi)) {
