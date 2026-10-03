@@ -2163,8 +2163,11 @@ export default function LearningHubV2() {
   const selected = SUBJECTS.find(s => s.id === subjectId);
   if (selected) return <LearningSubject subject={selected} onBack={back} />;
 
-  const categories = ["All", ...Object.keys(CATEGORY_META)];
-  const visibleCategories = category === "All" ? Object.keys(CATEGORY_META) : [category];
+  const KW_CATEGORY = "Knowledge World / ज्ञान संसार";
+  const CATEGORY_ORDER = [KW_CATEGORY, ...Object.keys(CATEGORY_META).filter(c => c !== KW_CATEGORY)];
+  const categories = ["All", ...CATEGORY_ORDER];
+  const visibleCategories = category === "All" ? CATEGORY_ORDER : [category];
+  const knowledgeWorldSubjects = SUBJECTS.filter(s => s.category === KW_CATEGORY);
 
   return <div className="min-h-screen bg-[#f6f8fb] font-inria text-zinc-900">
     <section className="relative overflow-hidden bg-[#002344] text-white">
@@ -2200,6 +2203,23 @@ export default function LearningHubV2() {
           <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-black transition "+(category===c?"bg-[#003366] text-white shadow-md":"bg-zinc-100 text-zinc-600 hover:bg-zinc-200")}><Icon/> {c}</button>; })}</div>
           <div className="mt-3 text-xs font-bold text-zinc-500">{filtered.length} {filtered.length === 1 ? "course" : "courses"} {query.trim() ? "matching your search" : "available"} {category !== "All" ? "in " + category : ""} / {filtered.length} विषय उपलब्ध</div>
         </div>
+
+        {category === "All" && !query.trim() && <div className="mt-5 overflow-hidden rounded-[2rem] border border-[#cfe6ef] bg-gradient-to-br from-[#1d3557] to-[#457b9d] p-6 text-white shadow-sm md:p-8">
+          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
+            <div className="max-w-2xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest"><FaBookOpen /> Knowledge World / ज्ञान संसार</div>
+              <h2 className="mt-3 text-2xl font-black md:text-3xl">दुनिया को जानिए। ज्ञान बढ़ाइए।</h2>
+              <p className="mt-2 text-sm leading-6 text-white/80">समय, प्रकृति, विज्ञान, भारत और विश्व — रोज़मर्रा के ज्ञान के {knowledgeWorldSubjects.length} विषय, आसान भाषा और उदाहरणों के साथ।</p>
+            </div>
+            <button onClick={()=>setCategory(KW_CATEGORY)} className="shrink-0 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#1d3557] shadow-md transition hover:bg-white/90">Explore Knowledge World / ज्ञान संसार देखें →</button>
+          </div>
+          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {knowledgeWorldSubjects.slice(0, 6).map(s => <button key={s.id} onClick={()=>openSubject(s)} className="flex items-center justify-between gap-3 rounded-2xl bg-white/10 px-4 py-3 text-left transition hover:bg-white/15">
+              <span className="min-w-0"><span className="block truncate text-sm font-black">{s.en}</span><span className="block truncate text-[11px] text-white/70">{s.hi}</span></span>
+              <span className="shrink-0 text-sm font-black text-white/80">→</span>
+            </button>)}
+          </div>
+        </div>}
         <div className="mt-5 rounded-[2rem] bg-[#003366] p-6 text-white shadow-sm md:p-7">
           <div className="text-xs font-black uppercase tracking-widest text-white/60">Your learning / आपकी प्रगति</div>
           {progressSummary.active ? <div className="mt-4">
