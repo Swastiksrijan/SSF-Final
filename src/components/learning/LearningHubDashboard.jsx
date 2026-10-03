@@ -170,7 +170,7 @@ export function LearningHubDashboard({
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {categories.map((c) => <button key={c.name} type="button" onClick={() => onCategory && onCategory(c.name)}
           className="group flex h-full flex-col overflow-hidden rounded-2xl border border-[#EADFCC] bg-white text-left shadow-[0_16px_40px_-34px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1.5 hover:border-[#FF6600]/45 hover:shadow-[0_30px_60px_-38px_rgba(20,43,69,0.7)]">
-          <span className="relative block h-36 w-full overflow-hidden">
+          <span className="ssf-shine relative block h-36 w-full overflow-hidden">
             <img src={c.image} alt={c.name} loading="lazy" className="h-full w-full object-cover transition duration-[900ms] group-hover:scale-110" />
             <span className="absolute inset-0 bg-gradient-to-t from-[#001529]/90 via-[#001529]/25 to-transparent" />
             <span className="absolute bottom-3 left-4 flex h-11 w-11 items-center justify-center rounded-xl border border-[#FFD166]/40 bg-[#001529]/70 text-lg text-[#FFD166] shadow-lg backdrop-blur">

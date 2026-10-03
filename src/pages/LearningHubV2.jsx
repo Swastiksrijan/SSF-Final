@@ -4,35 +4,25 @@ import {
   FaArrowLeft, FaArrowRight, FaBookOpen, FaCheckCircle, FaClock, FaGraduationCap,
   FaLeaf, FaLaptop, FaPlayCircle, FaQuestionCircle, FaSearch, FaShareAlt,
   FaShieldAlt, FaUsers, FaHeartbeat, FaSeedling, FaPaw, FaBalanceScale, FaChild,
-  FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping, FaGlobe
+  FaBriefcase, FaComments, FaUniversalAccess, FaHandsHelping, FaGlobe,
+  FaWhatsapp, FaEnvelope
 } from "react-icons/fa";
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../data/learningHubCourseArchitecture";
 import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../data/coursesData";
 import { ENDPOINTS } from "../config/api";
 import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../data/englishFromBasicsContent";
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
+import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA } from "../data/learningCurriculum";
+import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
 import PrimaryLessonFresh from "../components/learning/PrimaryLessonFresh";
 import { LearningHubLanding, LearningHubDashboard } from "../components/learning/LearningHubDashboard";
 import { SUBJECT_CONTENT } from "../data/learningHubSubjectContent";
+import { SUBJECT_CONTENT_EXTRA } from "../data/learningSubjectContentExtra";
 
-const HUB_IMAGES = {
-  education: "/images/real/classroom-floor-seating.jpg",
-  skills: "/images/real/women_empowerment_tailoring.jpg",
-  women: "/images/real/women_community_meeting.jpg",
-  health: "/images/real/nutrition_program.jpg",
-  environment: "/images/real/tree_plantation.jpg",
-  agriculture: "/images/real/journey-seeds.jpg",
-  justice: "/images/real/ncw_pledge_certificate.jpg",
-  disability: "/images/real/community-education-meeting.jpg",
-  animal: "/images/real/cow-rescue.jpg",
-  culture: "/images/real/community-bhajan.jpg",
-  digital: "/images/real/computer-donation-clipping.jpg",
-  disaster: "/images/real/rural-mask-distribution.jpg",
-  career: "/images/real/academy_banner_wide.jpg",
-  community: "/images/real/ngo_event_1.jpg",
-  children: "/images/real/children-gathering.jpg"
-};
+// Single registry lookup: hand-written content first, then the discipline-
+// specific content added for the new learning areas.
+const SUBJECT_CONTENT_ALL = { ...SUBJECT_CONTENT, ...SUBJECT_CONTENT_EXTRA };
 
 const CATEGORY_META = {
   "Education / शिक्षा": { key:"education", icon:FaGraduationCap, color:"from-[#003366] to-[#1d4f7a]" },
@@ -51,142 +41,27 @@ const CATEGORY_META = {
   "Youth & Disaster Preparedness / युवा एवं आपदा तैयारी": { key:"disaster", icon:FaShieldAlt, color:"from-[#33415c] to-[#5c677d]" },
   "Personal Development / व्यक्तिगत विकास": { key:"community", icon:FaUsers, color:"from-[#005f73] to-[#0a9396]" },
   "NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान": { key:"community", icon:FaBookOpen, color:"from-[#003049] to-[#669bbc]" },
-  "Knowledge World / ज्ञान संसार": { key:"community", icon:FaBookOpen, color:"from-[#1d3557] to-[#457b9d]" }
+  "Knowledge World / ज्ञान संसार": { key:"community", icon:FaBookOpen, color:"from-[#0b3a63] to-[#001529]" },
+  "Mathematics & Financial Literacy / गणित एवं वित्तीय साक्षरता": { key:"education", icon:FaBalanceScale, color:"from-[#0b3a63] to-[#002344]" },
+  "Science / विज्ञान": { key:"education", icon:FaLeaf, color:"from-[#0b3a63] to-[#1b4332]" },
+  "Languages / भाषाएँ": { key:"career", icon:FaComments, color:"from-[#0f4c81] to-[#2c7da0]" },
+  "AI & Future Technology / AI एवं भविष्य की तकनीक": { key:"digital", icon:FaLaptop, color:"from-[#17324d] to-[#2563eb]" },
+  "Media & Information Literacy / मीडिया एवं सूचना साक्षरता": { key:"digital", icon:FaShieldAlt, color:"from-[#0b3a63] to-[#005f73]" },
+  "Life Skills / जीवन कौशल": { key:"community", icon:FaHandsHelping, color:"from-[#005f73] to-[#0a9396]" },
+  "Practical Everyday Life / दैनिक व्यावहारिक जीवन": { key:"health", icon:FaChild, color:"from-[#9d0208] to-[#e63946]" },
+  "Entrepreneurship & Work / उद्यमिता एवं कार्य": { key:"skills", icon:FaBriefcase, color:"from-[#374151] to-[#111827]" },
+  "Research & Mastery Skills / शोध एवं दक्षता कौशल": { key:"education", icon:FaBookOpen, color:"from-[#003049] to-[#669bbc]" },
+  "Arts, Creativity & Culture / कला, रचनात्मकता एवं संस्कृति": { key:"culture", icon:FaBookOpen, color:"from-[#6d597a] to-[#b56576]" },
+  "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": { key:"health", icon:FaHeartbeat, color:"from-[#1b4332] to-[#40916c]" }
 };
 
 const TOPICS = [
-  ["Education / शिक्षा", "Primary Education / प्राथमिक शिक्षा", "बुनियादी पढ़ना, लिखना, गणना, समझ और सीखने की मजबूत आदतें।"],
-  ["Education / शिक्षा", "Secondary Education / माध्यमिक शिक्षा", "विषय ज्ञान, critical thinking, परीक्षा और आगे की पढ़ाई की तैयारी।"],
-  ["Education / शिक्षा", "Higher Secondary Education / उच्च माध्यमिक शिक्षा", "विषय चयन, परीक्षा तैयारी, career awareness और आगे के विकल्प।"],
-  ["Education / शिक्षा", "College & Higher Education / कॉलेज एवं उच्च शिक्षा", "Higher education, academic discipline, research, internships और lifelong learning।"],
-  ["Education / शिक्षा", "Computer Education / कंप्यूटर शिक्षा", "Computer hardware, software, files और सुरक्षित digital work की आधारभूत समझ।"],
-  ["Education / शिक्षा", "Nursing Education / नर्सिंग शिक्षा", "Nursing education, patient care, hygiene, observation और professional ethics की शैक्षिक समझ।"],
-  ["Education / शिक्षा", "Technical Education / तकनीकी शिक्षा", "Technical fields, recognised training pathways और practical skill development।"],
-  ["Education / शिक्षा", "Competitive Exam Preparation / प्रतियोगी परीक्षा तैयारी", "Syllabus, study plan, previous papers, mock tests और revision strategy।"],
-  ["Education / शिक्षा", "Library & Reading / पुस्तकालय एवं पठन", "Reading habits, reference material, notes और critical thinking।"],
-  ["Education / शिक्षा", "Science Fairs / विज्ञान मेले", "Observation, questions, safe experiments, data और evidence-based presentation।"],
-
-  ["English & Communication / अंग्रेज़ी एवं संचार", "English from Basics / मूल अंग्रेज़ी", "Alphabet, vocabulary, sentence formation, reading, listening और speaking की शुरुआत।"],
-  ["English & Communication / अंग्रेज़ी एवं संचार", "Spoken English / बोलचाल की अंग्रेज़ी", "दैनिक जीवन, introductions, questions, phone, travel और conversation practice।"],
-  ["English & Communication / अंग्रेज़ी एवं संचार", "English Grammar / अंग्रेज़ी व्याकरण", "Words, sentence structure, tense, articles, prepositions और common errors।"],
-  ["English & Communication / अंग्रेज़ी एवं संचार", "Vocabulary Building / शब्द भंडार", "नए शब्द समझना, याद रखना, context में प्रयोग और revision।"],
-  ["English & Communication / अंग्रेज़ी एवं संचार", "Reading & Writing / पठन एवं लेखन", "Short texts समझना, ideas organise करना और स्पष्ट writing।"],
-  ["English & Communication / अंग्रेज़ी एवं संचार", "Professional Communication / प्रोफेशनल संचार", "Office, meetings, clients और colleagues के साथ respectful communication।"],
-  ["English & Communication / अंग्रेज़ी एवं संचार", "Public Speaking / सार्वजनिक बोलना", "Speech structure, voice, body language, examples और audience handling।"],
-  ["English & Communication / अंग्रेज़ी एवं संचार", "Email & Message Writing / ईमेल एवं संदेश लेखन", "Clear subject, context, request, attachments, follow-up और privacy।"],
-
-  ["Digital Skills / डिजिटल कौशल", "Computer & Digital Basics / कंप्यूटर एवं डिजिटल बेसिक्स", "Devices, operating systems, files, typing, browser और everyday digital work।"],
-  ["Digital Skills / डिजिटल कौशल", "Internet Basics / इंटरनेट की मूल जानकारी", "Browser, search, websites, downloads, bookmarks और safe browsing।"],
-  ["Digital Skills / डिजिटल कौशल", "Google Workspace / Google Workspace", "Gmail, Drive, Docs, Sheets, Forms, Calendar और collaboration।"],
-  ["Digital Skills / डिजिटल कौशल", "Digital Literacy / डिजिटल साक्षरता", "Devices, online services, information verification और responsible digital behaviour।"],
-  ["Digital Skills / डिजिटल कौशल", "Cyber Safety / साइबर सुरक्षा", "Passwords, MFA, phishing, scams, privacy और incident response।"],
-  ["Digital Skills / डिजिटल कौशल", "Online Safety & Privacy / ऑनलाइन सुरक्षा एवं गोपनीयता", "Personal data, permissions, social media और safe sharing।"],
-  ["Digital Skills / डिजिटल कौशल", "Digital Payments Awareness / डिजिटल भुगतान जागरूकता", "Safe payment habits, verification और OTP/PIN सुरक्षा की basic awareness।"],
-
-  ["Career & Workplace / करियर एवं कार्यस्थल", "Career Planning / करियर योजना", "अपनी education, skills, interests और opportunities को समझकर योजना बनाना।"],
-  ["Career & Workplace / करियर एवं कार्यस्थल", "Job Search / नौकरी खोजने की तैयारी", "Reliable opportunities, job descriptions, applications, networking और fraud awareness।"],
-  ["Career & Workplace / करियर एवं कार्यस्थल", "Resume & CV / Resume एवं CV", "Truthful profile, education, skills, projects, experience और formatting।"],
-  ["Career & Workplace / करियर एवं कार्यस्थल", "Interview Preparation / साक्षात्कार तैयारी", "Introduction, common questions, body language और mock interview।"],
-  ["Career & Workplace / करियर एवं कार्यस्थल", "Workplace Etiquette / कार्यस्थल व्यवहार", "Punctuality, communication, meetings, boundaries और professional conduct।"],
-  ["Career & Workplace / करियर एवं कार्यस्थल", "Teamwork & Leadership / टीमवर्क एवं नेतृत्व", "Roles, responsibility, listening, problem solving, delegation और ethical leadership।"],
-  ["Career & Workplace / करियर एवं कार्यस्थल", "Time Management / समय प्रबंधन", "Priorities, planning, deadlines, routines और review।"],
-  ["Career & Workplace / करियर एवं कार्यस्थल", "Professional Email / Professional Email लेखन", "Requests, updates, applications, meetings और follow-ups के लिए email।"],
-
-  ["Skill Development / कौशल विकास", "Computer Training / कंप्यूटर प्रशिक्षण", "Practical digital workplace skills और सुरक्षित everyday workflows।"],
-  ["Skill Development / कौशल विकास", "Tailoring & Embroidery / सिलाई एवं कढ़ाई", "Tools, measurement, basic patterns, finishing, costing और practice projects।"],
-  ["Skill Development / कौशल विकास", "Self-Employment / स्वरोजगार", "Skill को service/product में बदलने, customer, cost और records की समझ।"],
-  ["Skill Development / कौशल विकास", "Vocational Training / व्यावसायिक प्रशिक्षण", "Job-oriented training, eligibility, recognised providers और competency development।"],
-  ["Skill Development / कौशल विकास", "Rural Industries / ग्रामीण उद्योग", "Local resources, value addition, quality, packaging और market linkage।"],
-  ["Skill Development / कौशल विकास", "Khadi & Village Industries / खादी एवं ग्रामोद्योग", "Traditional production, local employment, quality और enterprise concepts।"],
-  ["Skill Development / कौशल विकास", "Entrepreneurship Basics / उद्यमिता की मूल बातें", "Problem, customer, value, cost, risk और small pilot business।"],
-
-  ["Women & Child Development / महिला एवं बाल विकास", "Women Empowerment / महिला सशक्तिकरण", "Education, economic participation, safety, rights और decision-making।"],
-  ["Women & Child Development / महिला एवं बाल विकास", "Girls' Education / बालिका शिक्षा", "Education continuity, safe learning, digital access और future opportunities।"],
-  ["Women & Child Development / महिला एवं बाल विकास", "Prevention of Female Foeticide / भ्रूण लिंग चयन की रोकथाम", "Gender equality, discrimination और lawful healthcare practices की awareness।"],
-  ["Women & Child Development / महिला एवं बाल विकास", "Widow Support / विधवा सहयोग", "Dignity, inclusion, livelihood, documentation और available support systems।"],
-  ["Women & Child Development / महिला एवं बाल विकास", "Women Shelter & Support / महिला आश्रय एवं सहयोग", "Safety, shelter, counselling, privacy और rehabilitation concepts।"],
-  ["Women & Child Development / महिला एवं बाल विकास", "Balwadi & Early Childhood / बालवाड़ी एवं प्रारंभिक बाल शिक्षा", "Play-based learning, language, motor skills, nutrition और safe environment।"],
-  ["Women & Child Development / महिला एवं बाल विकास", "Child Rights / बाल अधिकार", "Protection, participation, development, education और dignity।"],
-  ["Women & Child Development / महिला एवं बाल विकास", "Child Nutrition / बाल पोषण", "Age-appropriate nutrition, hygiene, growth and nutrition awareness।"],
-  ["Women & Child Development / महिला एवं बाल विकास", "Self-Help Groups / स्वयं सहायता समूह", "Savings, meetings, records, collective decisions और livelihood learning।"],
-
-  ["Health / स्वास्थ्य", "Health & Well-being / स्वास्थ्य एवं कल्याण", "Preventive habits, healthy lifestyle और qualified care कब लेना है।"],
-  ["Health / स्वास्थ्य", "AIDS Awareness / HIV-AIDS जागरूकता", "Transmission, prevention, testing, treatment और stigma reduction।"],
-  ["Health / स्वास्थ्य", "Cancer Awareness / कैंसर जागरूकता", "Risk factors, prevention, warning signs और screening concepts।"],
-  ["Health / स्वास्थ्य", "Malnutrition / कुपोषण", "Causes, signs, prevention, food diversity और nutrition support।"],
-  ["Health / स्वास्थ्य", "Naturopathy / प्राकृतिक स्वास्थ्य पद्धतियाँ", "Lifestyle and natural approaches के concepts और safety limitations।"],
-  ["Health / स्वास्थ्य", "Yoga / योग", "Movement, breathing, relaxation और safe wellbeing practice की basic understanding।"],
-  ["Health / स्वास्थ्य", "Family Welfare / परिवार कल्याण", "Family health, reproductive health, informed choice और responsible parenthood।"],
-  ["Health / स्वास्थ्य", "De-addiction / नशामुक्ति", "Substance use effects, recovery support, professional help और stigma-free approach।"],
-  ["Health / स्वास्थ्य", "Rehabilitation / पुनर्वास एवं पुनर्लाभ", "Functional recovery, accessibility, social participation और coordinated support।"],
-  ["Health / स्वास्थ्य", "Personal Hygiene / व्यक्तिगत स्वच्छता", "Hand hygiene, sanitation, oral care, safe food and daily habits।"],
-
-  ["Environment / पर्यावरण", "Environment Basics / पर्यावरण की मूल बातें", "Air, water, soil, ecosystems और human-environment relationship।"],
-  ["Environment / पर्यावरण", "Tree Plantation / वृक्षारोपण", "Right species, planting, watering, survival और long-term care।"],
-  ["Environment / पर्यावरण", "Biodiversity / जैव विविधता", "Plants, animals, microorganisms, habitats और ecological balance।"],
-  ["Environment / पर्यावरण", "Forest Conservation / वन संरक्षण", "Ecological, social and livelihood roles of forests।"],
-  ["Environment / पर्यावरण", "Natural Resource Conservation / प्राकृतिक संसाधन संरक्षण", "Water, soil, land, forests और responsible use।"],
-  ["Environment / पर्यावरण", "Medicinal Plants / औषधीय पौधे", "Identification, traditional knowledge और safe evidence-aware use।"],
-  ["Environment / पर्यावरण", "Organic Farming / जैविक खेती", "Soil health, organic inputs, biodiversity और crop planning।"],
-  ["Environment / पर्यावरण", "Renewable Energy / नवीकरणीय ऊर्जा", "Solar, wind, biomass, energy efficiency और responsible adoption।"],
-  ["Environment / पर्यावरण", "Climate Change / जलवायु परिवर्तन", "Causes, impacts, adaptation, mitigation और local action।"],
-  ["Environment / पर्यावरण", "Waste Management / कचरा प्रबंधन", "Reduce, reuse, segregation, recycling और safe disposal।"],
-  ["Environment / पर्यावरण", "Water Conservation / जल संरक्षण", "Water use, rainwater, recharge, reuse और community responsibility।"],
-
-  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Agriculture Basics / कृषि की मूल बातें", "Crops, soil, water, inputs, seasons and farm planning।"],
-  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Farmer Training / किसान प्रशिक्षण", "Crop planning, soil, water, inputs, market and risk management।"],
-  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Organic Farming / जैविक खेती एवं कृषि", "Soil health, compost, crop planning and ecological practices।"],
-  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Animal Husbandry / पशुपालन", "Nutrition, housing, hygiene, vaccination and veterinary care।"],
-  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Cow Protection / गौ संरक्षण", "Cattle welfare, shelter, feeding, water, hygiene and humane care।"],
-  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Rural Development / ग्रामीण विकास", "Education, health, infrastructure, livelihoods, participation and local institutions।"],
-  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Rural Livelihood / ग्रामीण आजीविका", "Farm and non-farm livelihood options, skills, demand, cost and market linkage।"],
-  ["Agriculture & Rural Development / कृषि एवं ग्रामीण विकास", "Self-Reliant Village / आत्मनिर्भर गाँव", "Local resources, skills, services, participation and sustainable development।"],
-
-  ["Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य", "Social Justice / सामाजिक न्याय", "Equality, dignity, opportunity and responsible participation।"],
-  ["Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य", "Human Rights / मानवाधिकार", "Dignity, equality, liberty, safety and basic rights concepts।"],
-  ["Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य", "Moral Education / नैतिक शिक्षा", "Honesty, responsibility, empathy, fairness and consequences।"],
-  ["Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य", "Corruption Awareness / भ्रष्टाचार जागरूकता", "Transparency, accountability, lawful processes and grievance awareness।"],
-  ["Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य", "National Unity / राष्ट्रीय एकता", "Diversity, constitutional values and responsible citizenship।"],
-  ["Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य", "Communal Harmony / सामुदायिक सद्भाव", "Respect, dialogue, coexistence and responsible information sharing।"],
-  ["Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य", "Civic Responsibility / नागरिक जिम्मेदारी", "Rights, duties, public spaces, participation and lawful conduct।"],
-
-  ["Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास", "Disability Awareness / दिव्यांगता जागरूकता", "Disability, accessibility, dignity and inclusion।"],
-  ["Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास", "Disability Assistance / दिव्यांगता सहयोग", "Accessible services, assistive support and person-centred help।"],
-  ["Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास", "Inclusive Education / समावेशी शिक्षा", "Learning access, reasonable support and inclusive classroom practices।"],
-  ["Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास", "Rehabilitation / पुनर्वास", "Functional, social and community participation support।"],
-  ["Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास", "Elderly Support / वरिष्ठ नागरिक सहयोग", "Dignity, safety, health support, social connection and inclusion।"],
-  ["Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास", "Vulnerable Child Support / असुरक्षित बच्चों का सहयोग", "Child protection, education, nutrition, identity and safe care systems।"],
-
-  ["Animal Protection / पशु संरक्षण", "Animal & Bird Protection / पशु-पक्षी संरक्षण", "Animal welfare, humane treatment and responsible coexistence।"],
-  ["Animal Protection / पशु संरक्षण", "Gaushala / गौशाला", "Nutrition, sanitation, veterinary care, capacity and records।"],
-  ["Animal Protection / पशु संरक्षण", "Wildlife Conservation / वन्यजीव संरक्षण", "Wildlife, habitat, ecological balance and safe coexistence।"],
-  ["Animal Protection / पशु संरक्षण", "Responsible Animal Care / जिम्मेदार पशु देखभाल", "Food, water, shelter, hygiene, humane handling and veterinary support।"],
-
-  ["Culture & Heritage / संस्कृति एवं विरासत", "Bhajan & Devotional Music / भजन एवं भक्तिमय संगीत", "Tradition, language, rhythm, meaning and cultural role।"],
-  ["Culture & Heritage / संस्कृति एवं विरासत", "Sanskrit Education / संस्कृत शिक्षा", "Script, vocabulary, grammar, literature and authentic texts।"],
-  ["Culture & Heritage / संस्कृति एवं विरासत", "Music / संगीत", "Swar, taal, rhythm, listening, practice and musical traditions।"],
-  ["Culture & Heritage / संस्कृति एवं विरासत", "Conferences & Knowledge Events / सम्मेलन एवं ज्ञान कार्यक्रम", "Agenda, speakers, questions, documentation and learning records।"],
-  ["Culture & Heritage / संस्कृति एवं विरासत", "Cultural Programmes / सांस्कृतिक कार्यक्रम", "Local art, language, heritage, consent and cultural sensitivity।"],
-
-  ["Youth & Disaster Preparedness / युवा एवं आपदा तैयारी", "Youth Development / युवा विकास", "Skills, confidence, career awareness, civic responsibility and participation।"],
-  ["Youth & Disaster Preparedness / युवा एवं आपदा तैयारी", "Disaster Preparedness / आपदा तैयारी", "Hazards, warnings, emergency kit, family plan and evacuation।"],
-  ["Youth & Disaster Preparedness / युवा एवं आपदा तैयारी", "Disaster Relief / आपदा राहत", "Safe response, coordination, documentation and rehabilitation principles।"],
-  ["Youth & Disaster Preparedness / युवा एवं आपदा तैयारी", "Community Emergency Planning / सामुदायिक आपदा योजना", "Local hazards, contacts, vulnerable groups, resources and drills।"],
-
-  ["Personal Development / व्यक्तिगत विकास", "Self Awareness / आत्म-जागरूकता", "Strengths, limitations, values, interests and learning goals।"],
-  ["Personal Development / व्यक्तिगत विकास", "Confidence Building / आत्मविश्वास", "Preparation, practice, gradual exposure and constructive feedback।"],
-  ["Personal Development / व्यक्तिगत विकास", "Goal Setting / लक्ष्य निर्धारण", "Clear goals, priorities, timelines, action and review।"],
-  ["Personal Development / व्यक्तिगत विकास", "Problem Solving / समस्या समाधान", "Define, analyse, compare options, act and review।"],
-  ["Personal Development / व्यक्तिगत विकास", "Decision Making / निर्णय लेना", "Facts, options, risks, values and consequences।"],
-  ["Personal Development / व्यक्तिगत विकास", "Creativity / रचनात्मकता", "Observation, ideas, experimentation and improvement।"],
-
-  ["NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान", "What is an NGO? / NGO क्या है?", "NGO purpose, governance, community work and accountability।"],
-  ["NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान", "Project Planning / परियोजना योजना", "Problem, objectives, activities, timeline, budget and indicators।"],
-  ["NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान", "Grant Literacy / अनुदान की समझ", "Eligibility, guidelines, documents, application and compliance।"],
-  ["NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान", "Budget & Financial Planning / बजट एवं वित्तीय योजना", "Units, quantities, assumptions, costs, records and variance।"],
-  ["NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान", "Monitoring & Evaluation / निगरानी एवं मूल्यांकन", "Outputs, outcomes, indicators, evidence and learning loops।"],
-  ["NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान", "Reporting & Documentation / रिपोर्टिंग एवं दस्तावेजीकरण", "Accurate records, evidence, narrative reports and responsible claims।"],
-  ["NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान", "Safeguarding & Ethics / सुरक्षा एवं नैतिकता", "Consent, privacy, dignity, child safety and do-no-harm principles।"],
+  ...Object.entries(LEARNING_CATEGORIES).flatMap(([category, subjects]) =>
+    subjects.map(([title, intro]) => [category, title, intro])
+  ),
+  ...Object.entries(LEARNING_CATEGORIES_EXTRA).flatMap(([category, subjects]) =>
+    subjects.map(([title, intro]) => [category, title, intro])
+  ),
   ...KNOWLEDGE_WORLD_TOPICS,
 ];
 
@@ -200,19 +75,80 @@ const SUBJECT_VISUAL_GLYPH = {
   "Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास": "♿", "Animal Protection / पशु संरक्षण": "🐄",
   "Culture & Heritage / संस्कृति एवं विरासत": "🪔", "Youth & Disaster Preparedness / युवा एवं आपदा तैयारी": "🛡️",
   "Personal Development / व्यक्तिगत विकास": "🌱", "NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान": "🤝",
-  "Knowledge World / ज्ञान संसार": "🌍"
+  "Knowledge World / ज्ञान संसार": "🌍",
+  "Mathematics & Financial Literacy / गणित एवं वित्तीय साक्षरता": "🔢",
+  "Science / विज्ञान": "🔬",
+  "Languages / भाषाएँ": "🈯",
+  "AI & Future Technology / AI एवं भविष्य की तकनीक": "🤖",
+  "Media & Information Literacy / मीडिया एवं सूचना साक्षरता": "📰",
+  "Life Skills / जीवन कौशल": "🧭",
+  "Practical Everyday Life / दैनिक व्यावहारिक जीवन": "🏠",
+  "Entrepreneurship & Work / उद्यमिता एवं कार्य": "📈",
+  "Research & Mastery Skills / शोध एवं दक्षता कौशल": "🎓",
+  "Arts, Creativity & Culture / कला, रचनात्मकता एवं संस्कृति": "🎨",
+  "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": "🏅"
 };
-const makeSubjectVisual = (category, title, index) => { const bg=["#003366","#0f4c81","#2d6a4f","#8b1e3f","#9d0208","#386641","#463f3a","#264653","#6b4f3a","#6d597a","#33415c","#005f73","#003049"][index%13]; const esc=(s)=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); const en=esc(title.split(" / ")[0]); const hi=esc((title.split(" / ")[1]||"")); const cat=esc(category.split(" / ")[0]); const glyph=SUBJECT_VISUAL_GLYPH[category]||"🎓"; const svg="<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"700\"><defs><linearGradient id=\"g\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\""+bg+"\"/><stop offset=\"1\" stop-color=\"#0b2e59\"/></linearGradient></defs><rect width=\"1200\" height=\"700\" fill=\"url(#g)\"/><circle cx=\"1010\" cy=\"120\" r=\"190\" fill=\"white\" opacity=\".08\"/><circle cx=\"160\" cy=\"600\" r=\"250\" fill=\"white\" opacity=\".06\"/><g opacity=\".5\"><circle cx=\"900\" cy=\"520\" r=\"6\" fill=\"#ffd166\"/><circle cx=\"1080\" cy=\"430\" r=\"5\" fill=\"#8ecae6\"/><circle cx=\"760\" cy=\"140\" r=\"5\" fill=\"#95d5b2\"/></g><text x=\"1020\" y=\"300\" font-size=\"220\" text-anchor=\"middle\" opacity=\".28\">"+glyph+"</text><text x=\"80\" y=\"120\" font-family=\"Arial\" font-size=\"28\" font-weight=\"700\" fill=\"white\" opacity=\".8\">SSF LEARNING HUB • "+cat+"</text><text x=\"80\" y=\"285\" font-family=\"Arial\" font-size=\"58\" font-weight=\"800\" fill=\"white\">"+en+"</text><text x=\"80\" y=\"352\" font-family=\"Arial\" font-size=\"34\" font-weight=\"700\" fill=\"#ffd166\">"+hi+"</text><path d=\"M80 430H1120\" stroke=\"white\" stroke-opacity=\".2\" stroke-width=\"3\"/><text x=\"80\" y=\"512\" font-family=\"Arial\" font-size=\"22\" fill=\"white\" opacity=\".72\">Subject "+String(index+1).padStart(3,"0")+"</text><text x=\"80\" y=\"560\" font-family=\"Arial\" font-size=\"22\" fill=\"white\" opacity=\".65\">Swastik Srijan Foundation</text></svg>"; return "data:image/svg+xml;charset=UTF-8,"+encodeURIComponent(svg); };
+const HUB_ACCENTS = ["#FF6600","#FFD166","#8ecae6","#95d5b2","#f4a261","#e9c46a","#48cae4","#a7c957"];
+const HUB_PALETTES = [
+  ["#003366","#0b2e59"],["#0f4c81","#052a4a"],["#2d6a4f","#0b2e59"],["#8b1e3f","#2a0a18"],
+  ["#9d0208","#2b0504"],["#386641","#132a13"],["#6d597a","#2b1f33"],["#264653","#0b2e59"],
+  ["#6b4f3a","#241a12"],["#33415c","#111a29"],["#005f73","#002733"],["#003049","#001529"],["#7a4b1e","#2b1a08"]
+];
+// Hand-coded SVG cover art (no stock photos). Kept inline so every subject and
+// learning area gets a unique, on-brand visual that animates even inside <img>.
+const makeSubjectVisual = (category, title, index, bigGlyph) => {
+  const [c1, c2] = HUB_PALETTES[index % HUB_PALETTES.length];
+  const esc = (s) => String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  const en = esc(title.split(" / ")[0]);
+  const hi = esc(title.split(" / ")[1] || "");
+  const cat = esc(category.split(" / ")[0]);
+  const glyph = bigGlyph || SUBJECT_VISUAL_GLYPH[category] || "🎓";
+  const accent = HUB_ACCENTS[index % HUB_ACCENTS.length];
+  const num = String(index + 1).padStart(3, "0");
+  const enSize = en.length > 30 ? 40 : en.length > 22 ? 48 : en.length > 15 ? 56 : 62;
+  const svg = "<svg xmlns=\"http://www.w3.org/2000/svg\" width=\"1200\" height=\"700\" viewBox=\"0 0 1200 700\">"
+    + "<defs>"
+    + "<linearGradient id=\"bg\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"1\"><stop offset=\"0\" stop-color=\""+c1+"\"/><stop offset=\"1\" stop-color=\""+c2+"\"/></linearGradient>"
+    + "<radialGradient id=\"glow\" cx=\"0.82\" cy=\"0.18\" r=\"0.75\"><stop offset=\"0\" stop-color=\""+accent+"\" stop-opacity=\"0.30\"/><stop offset=\"1\" stop-color=\""+accent+"\" stop-opacity=\"0\"/></radialGradient>"
+    + "<linearGradient id=\"sheen\" x1=\"0\" y1=\"0\" x2=\"1\" y2=\"0\"><stop offset=\"0\" stop-color=\"#fff\" stop-opacity=\"0\"/><stop offset=\"0.5\" stop-color=\"#fff\" stop-opacity=\"0.16\"/><stop offset=\"1\" stop-color=\"#fff\" stop-opacity=\"0\"/></linearGradient>"
+    + "</defs>"
+    + "<rect width=\"1200\" height=\"700\" fill=\"url(#bg)\"/>"
+    + "<rect width=\"1200\" height=\"700\" fill=\"url(#glow)\"/>"
+    + "<circle cx=\"150\" cy=\"620\" r=\"260\" fill=\"#fff\" opacity=\"0.05\"/>"
+    + "<circle cx=\"1040\" cy=\"110\" r=\"190\" fill=\"#fff\" opacity=\"0.06\"/>"
+    + "<g opacity=\"0.65\">"
+    + "<circle cx=\"880\" cy=\"540\" r=\"7\" fill=\""+accent+"\"><animate attributeName=\"cy\" values=\"540;495;540\" dur=\"6s\" repeatCount=\"indefinite\"/></circle>"
+    + "<circle cx=\"1090\" cy=\"420\" r=\"5\" fill=\"#8ecae6\"><animate attributeName=\"cy\" values=\"420;370;420\" dur=\"7.6s\" repeatCount=\"indefinite\"/></circle>"
+    + "<circle cx=\"720\" cy=\"150\" r=\"5\" fill=\"#95d5b2\"><animate attributeName=\"cy\" values=\"150;108;150\" dur=\"5.4s\" repeatCount=\"indefinite\"/></circle>"
+    + "<circle cx=\"980\" cy=\"260\" r=\"4\" fill=\""+accent+"\"><animate attributeName=\"cy\" values=\"260;222;260\" dur=\"8.2s\" repeatCount=\"indefinite\"/></circle>"
+    + "</g>"
+    + "<text x=\"1030\" y=\"330\" font-size=\"246\" text-anchor=\"middle\" opacity=\"0.22\">"+glyph+"</text>"
+    + "<path d=\"M-260 380 L180 0 L660 0 L220 500 Z\" fill=\"url(#sheen)\"><animateTransform attributeName=\"transform\" type=\"translate\" values=\"0,0;1500,0\" dur=\"9s\" repeatCount=\"indefinite\"/></path>"
+    + "<text x=\"80\" y=\"116\" font-family=\"Arial, sans-serif\" font-size=\"26\" font-weight=\"700\" fill=\"#fff\" opacity=\"0.82\" letter-spacing=\"2\">SSF LEARNING HUB • "+cat+"</text>"
+    + "<text x=\"80\" y=\"288\" font-family=\"Arial, sans-serif\" font-size=\""+enSize+"\" font-weight=\"800\" fill=\"#fff\">"+en+"</text>"
+    + "<text x=\"80\" y=\"352\" font-family=\"Arial, sans-serif\" font-size=\"34\" font-weight=\"700\" fill=\"#FFD166\">"+hi+"</text>"
+    + "<rect x=\"80\" y=\"398\" width=\"120\" height=\"6\" rx=\"3\" fill=\""+accent+"\"><animate attributeName=\"width\" values=\"120;270;120\" dur=\"6s\" repeatCount=\"indefinite\"/></rect>"
+    + "<text x=\"80\" y=\"520\" font-family=\"Arial, sans-serif\" font-size=\"22\" fill=\"#fff\" opacity=\"0.72\">Subject "+num+"</text>"
+    + "<text x=\"80\" y=\"562\" font-family=\"Arial, sans-serif\" font-size=\"22\" fill=\"#fff\" opacity=\"0.62\">Swastik Srijan Foundation</text>"
+    + "</svg>";
+  return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+};
+const makeCategoryVisual = (category, count, glyph, index) =>
+  makeSubjectVisual(category, category, index, glyph).replace(
+    "Subject " + String(index + 1).padStart(3, "0"),
+    count + " subjects"
+  );
 
 const buildSubject = ([category, title, intro], index) => {
   const meta = CATEGORY_META[category] || CATEGORY_META["Education / शिक्षा"];
   const [en, hi] = title.split(" / ");
+  const visual = makeSubjectVisual(category, title, index);
   return {
     id: slugify(title),
     category, title, intro, en, hi,
-    image: makeSubjectVisual(category,title,index),
-    photo: HUB_IMAGES[meta.key] || HUB_IMAGES.education,
-    categoryImage: HUB_IMAGES[meta.key],
+    image: visual,
+    photo: visual,
+    categoryImage: visual,
     icon: meta.icon,
     color: meta.color,
     number: String(index + 1).padStart(2, "0")
@@ -242,6 +178,20 @@ function LegacySubjectRedirect() {
   navigate({ to: "/LearningHub", replace: true });
   return null;
 }
+
+// Certificate follow-up helpers: a pre-filled WhatsApp and an email draft so a
+// learner can reach SSF about their certificate without hunting for the number.
+const SSF_CERT_WHATSAPP = "919718346691";
+const SSF_CERT_EMAIL = "info@swastiksrijan.in";
+const certificateWhatsAppHref = (user, subject, courseMeta, progress) => {
+  const text = "Namaste SSF Learning Hub. Certificate request: " + subject.en + " (" + (courseMeta?.title || subject.title) + "). Learner: " + (user?.fullName || "") + ", email: " + (user?.email || "") + ", progress: " + progress + "%.";
+  return "https://wa.me/" + SSF_CERT_WHATSAPP + "?text=" + encodeURIComponent(text);
+};
+const certificateEmailHref = (user, subject, courseMeta, progress) => {
+  const subjectLine = "Certificate request – " + subject.en;
+  const body = "Namaste SSF Team,\n\nI have completed the learning and assessment for: " + subject.en + " (" + (courseMeta?.title || subject.title) + ").\n\nLearner name: " + (user?.fullName || "") + "\nAccount email: " + (user?.email || "") + "\nProgress: " + progress + "%\n\nPlease review my certificate request.\n\nThank you.";
+  return "mailto:" + SSF_CERT_EMAIL + "?subject=" + encodeURIComponent(subjectLine) + "&body=" + encodeURIComponent(body);
+};
 
 // Subject-specific module structures for subjects that previously fell back to the
 // generic per-category blueprint. These are prepended so getSubjectProfile() picks
@@ -1069,6 +1019,9 @@ const getSubjectProfile = (subject) => {
   const matches = SUBJECT_PROFILE_RULES.filter((p) => p.test.test(hay));
   const hit = matches.sort((a, b) => b.test.source.length - a.test.source.length)[0];
   if (hit) return hit;
+  const disciplineMatches = DISCIPLINE_PROFILES.filter((p) => p.test.test(hay));
+  const discipline = disciplineMatches.sort((a, b) => b.test.source.length - a.test.source.length)[0];
+  if (discipline) return discipline;
   const blueprint = CATEGORY_BLUEPRINTS[subject.category] || CATEGORY_BLUEPRINTS["Personal Development / व्यक्तिगत विकास"];
   return {
     icon:"📘",
@@ -1593,7 +1546,7 @@ const KNOWLEDGE_WORLD_MODULES = {
 // Rotation over the registry's own concept/example/practice/quiz material keeps
 // every module and lesson of a subject distinct while staying on-topic.
 const buildSpecificLesson = (subject, content, moduleTitle, label, mi, li) => {
-  const clean = String(label || "").replace(/^[^\s]+\s/, "");
+  const clean = String(label || "").replace(/^[^\p{L}\p{N}]+/u, "");
   const en = subject.en;
   const pick = (arr, n) => (arr && arr.length ? arr[n % arr.length] : "");
   const rotate = (arr, n, count) => {
@@ -1640,8 +1593,8 @@ const buildSpecificLesson = (subject, content, moduleTitle, label, mi, li) => {
 };
 
 const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
-  if (SUBJECT_CONTENT[subject.en]) {
-    return buildSpecificLesson(subject, SUBJECT_CONTENT[subject.en], moduleTitle, label, mi, li);
+  if (SUBJECT_CONTENT_ALL[subject.en]) {
+    return buildSpecificLesson(subject, SUBJECT_CONTENT_ALL[subject.en], moduleTitle, label, mi, li);
   }
   if (subject.en === "Secondary Education") {
     const m = SECONDARY_EDUCATION_MODULES[mi % SECONDARY_EDUCATION_MODULES.length];
@@ -1672,7 +1625,7 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
   }
 
 
-  const clean = label.replace(/^[^\s]+\s/, "");
+  const clean = String(label || "").replace(/^[^\p{L}\p{N}]+/u, "");
   const subjectName = subject.en;
   if (/^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi)) {
     const primary = PRIMARY_EDUCATION_LESSON_CONTENT[clean + ""] || PRIMARY_EDUCATION_LESSON_CONTENT[label];
@@ -1947,9 +1900,9 @@ function PrimaryLessonVisual({ lesson }) {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="text-xs font-black uppercase tracking-[0.2em] text-[#0f4c81]">Interactive Teaching Board / इंटरैक्टिव शिक्षण बोर्ड</div>
-          <div className="mt-1 text-xl font-black text-[#003366]">👀 देखो → 🔊 सुनो → 👄 बोलो → 👉 पहचानो → ✍️ करो</div>
+          <div className="mt-1 text-xl font-black text-[#002344]">👀 देखो → 🔊 सुनो → 👄 बोलो → 👉 पहचानो → ✍️ करो</div>
         </div>
-        <button type="button" onClick={()=>speakLessonText([lesson.title,lesson.body,...examples,...practice].join(". "))} className="rounded-full bg-[#003366] px-5 py-3 text-sm font-black text-white shadow-md">
+        <button type="button" onClick={()=>speakLessonText([lesson.title,lesson.body,...examples,...practice].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 text-sm font-black text-white shadow-md">
           🔊 Listen All / सब सुनें
         </button>
       </div>
@@ -1966,8 +1919,8 @@ function PrimaryLessonVisual({ lesson }) {
         {cards.map(([big,visual,meaning],i)=><div key={i} className="rounded-[1.4rem] border-2 border-[#e4d9ff] bg-gradient-to-b from-white to-[#faf7ff] p-4 text-center shadow-sm">
           <div className="text-4xl font-black text-[#7b2cbf] md:text-5xl">{big}</div>
           <div className="my-3 text-3xl md:text-4xl">{visual}</div>
-          <div className="text-base font-black text-[#003366]">{meaning}</div>
-          <button type="button" onClick={()=>speakLessonText(big+" "+meaning)} className="mt-3 rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#003366]">🔊 बोलें</button>
+          <div className="text-base font-black text-[#002344]">{meaning}</div>
+          <button type="button" onClick={()=>speakLessonText(big+" "+meaning)} className="mt-3 rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#002344]">🔊 बोलें</button>
         </div>)}
       </div>}
 
@@ -1990,9 +1943,9 @@ function PrimaryLessonVisual({ lesson }) {
         <div className="text-sm font-black uppercase tracking-widest text-[#0f4c81]">🧩 Many Examples / कई उदाहरण</div>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {examples.map((x,i)=><div key={i} className="flex items-start gap-3 rounded-xl bg-white p-4 shadow-sm">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#e8f4fa] font-black text-[#003366]">{i+1}</div>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#e8f4fa] font-black text-[#002344]">{i+1}</div>
             <div className="flex-1 text-sm font-bold leading-6 text-zinc-700">{x}</div>
-            <button type="button" onClick={()=>speakLessonText(x)} className="shrink-0 rounded-full bg-[#003366] px-3 py-2 text-xs font-black text-white">🔊</button>
+            <button type="button" onClick={()=>speakLessonText(x)} className="shrink-0 rounded-full bg-gradient-to-br from-[#0b3a63] to-[#001529] px-3 py-2 text-xs font-black text-white">🔊</button>
           </div>)}
         </div>
       </div>}
@@ -2006,9 +1959,9 @@ function PrimaryLessonVisual({ lesson }) {
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="rounded-[1.4rem] border-2 border-[#dce8f5] bg-white p-5">
-          <div className="text-sm font-black uppercase tracking-widest text-[#003366]">🎮 Do It / करके देखें</div>
+          <div className="text-sm font-black uppercase tracking-widest text-[#002344]">🎮 Do It / करके देखें</div>
           <ul className="mt-3 space-y-2 text-sm font-bold leading-6 text-zinc-700">{practice.slice(0,6).map((x,i)=><li key={i}>👉 {x}</li>)}</ul>
-          {lesson.detail?.activity && <div className="mt-4 rounded-xl bg-[#eef7fb] p-4 text-sm font-bold leading-6 text-[#003366]">🎯 {lesson.detail.activity}</div>}
+          {lesson.detail?.activity && <div className="mt-4 rounded-xl bg-[#eef7fb] p-4 text-sm font-bold leading-6 text-[#002344]">🎯 {lesson.detail.activity}</div>}
         </div>
         <div className="rounded-[1.4rem] border-2 border-[#e4e4e4] bg-[#fafafa] p-5">
           <div className="text-sm font-black uppercase tracking-widest text-[#463f3a]">🧠 Remember & Correct / याद रखें और सुधारें</div>
@@ -2024,9 +1977,9 @@ function PrimaryLessonVisual({ lesson }) {
         </div>
       </div>}
 
-      <div className="mt-6 rounded-[1.4rem] bg-[#003366] p-5 text-center text-white">
+      <div className="mt-6 rounded-[1.4rem] bg-gradient-to-br from-[#0b3a63] to-[#001529] p-5 text-center text-white">
         <div className="text-xs font-black uppercase tracking-widest text-white/70">🔁 Speak & Repeat / सुनें और दोहराएँ</div>
-        <button type="button" onClick={()=>speakLessonText([cleanTitle,...examples].join(". "))} className="mt-3 rounded-full bg-white px-5 py-3 text-sm font-black text-[#003366]">🔊 फिर से सुनें और बोलें</button>
+        <button type="button" onClick={()=>speakLessonText([cleanTitle,...examples].join(". "))} className="mt-3 rounded-full bg-white px-5 py-3 text-sm font-black text-[#002344]">🔊 फिर से सुनें और बोलें</button>
       </div>
     </div>
   </div>;
@@ -2113,7 +2066,7 @@ function LearningSubject({ subject, onBack }) {
               : COURSE_ASSESSMENTS?.[structuredCourseId] || {})
       ).flat()
     : [];
-  const subjectQuiz = (SUBJECT_CONTENT[subject.en] && SUBJECT_CONTENT[subject.en].quiz) || [];
+  const subjectQuiz = (SUBJECT_CONTENT_ALL[subject.en] && SUBJECT_CONTENT_ALL[subject.en].quiz) || [];
   const quizQuestions = structuredAssessmentPool.length
     ? structuredAssessmentPool.slice(0, 5).map(q => ({
         q: q.q || q.question,
@@ -2252,7 +2205,7 @@ function LearningSubject({ subject, onBack }) {
             <div className="text-base font-bold text-zinc-500">{courseMeta.title.hi}</div>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-zinc-600">{courseMeta.description || subject.intro}</p>
           </div>
-          <div className="rounded-2xl bg-[#eef7fb] px-5 py-4 text-sm font-black text-[#003366]">Version {courseMeta.version}<br/>Reviewed {courseMeta.lastReviewed || "—"}</div>
+          <div className="rounded-2xl bg-[#eef7fb] px-5 py-4 text-sm font-black text-[#002344]">Version {courseMeta.version}<br/>Reviewed {courseMeta.lastReviewed || "—"}</div>
         </div>
         <div className="mt-7 grid gap-5 md:grid-cols-4">
           <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Level</div><div className="mt-1 font-black">{structuredCourse ? "Foundation" : "Foundation → Practical"}</div></div>
@@ -2261,11 +2214,11 @@ function LearningSubject({ subject, onBack }) {
           <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Learning Time</div><div className="mt-1 font-black">{courseMeta.learningHours ? courseMeta.learningHours + " hours" : "Self-paced"}</div></div>
         </div>
         <div className="mt-7 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#003366]">Who is this for? / किसके लिए?</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{courseMeta.audience}</p><h3 className="mt-5 font-black text-[#003366]">Prerequisites / पूर्व-आवश्यकताएँ</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.prerequisites.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
-          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#003366]">What you will learn / आप क्या सीखेंगे</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.outcomes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
+          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#002344]">Who is this for? / किसके लिए?</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{courseMeta.audience}</p><h3 className="mt-5 font-black text-[#002344]">Prerequisites / पूर्व-आवश्यकताएँ</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.prerequisites.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
+          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#002344]">What you will learn / आप क्या सीखेंगे</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.outcomes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
         </div>
         <div className="mt-7 rounded-2xl bg-[#f1f7fa] p-5">
-          <div className="flex items-center justify-between"><div><div className="text-sm font-black text-[#003366]">Course Progress / प्रगति</div><div className="text-xs text-zinc-500">{completed} / {total} lessons completed</div></div><div className="text-2xl font-black text-[#003366]">{progress}%</div></div>
+          <div className="flex items-center justify-between"><div><div className="text-sm font-black text-[#002344]">Course Progress / प्रगति</div><div className="text-xs text-zinc-500">{completed} / {total} lessons completed</div></div><div className="text-2xl font-black text-[#002344]">{progress}%</div></div>
           <div className="mt-3 h-3 overflow-hidden rounded-full bg-white"><div className="h-full bg-gradient-to-r from-[#003366] to-[#0a9396]" style={{width:progress+"%"}}/></div>
         </div>
       </section>
@@ -2273,9 +2226,9 @@ function LearningSubject({ subject, onBack }) {
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_330px]">
         <div className="space-y-7">
           {modules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
-            <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#003366] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
+            <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#001529] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
             <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=modules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);return <button key={l[0]} onClick={()=>goLesson(global)} className={"flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition "+(activeLesson===global?"border-[#0f4c81] bg-[#eef7fb]":"border-zinc-200 hover:border-[#b9cfdd] hover:bg-zinc-50")}>
-              <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#003366]")}>{isDone?<FaCheckCircle/>:li+1}</div>
+              <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#002344]")}>{isDone?<FaCheckCircle/>:li+1}</div>
               <div className="min-w-0 flex-1"><div className="font-black">{l[0]}</div><div className="mt-1 text-xs leading-5 text-zinc-500">{l[1]}</div></div><FaArrowRight className="shrink-0 text-zinc-400"/>
             </button>})}</div>
           </section>)}
@@ -2287,13 +2240,13 @@ function LearningSubject({ subject, onBack }) {
             <div className="p-5"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Visual Learning / दृश्य सीख</div><p className="mt-2 text-sm leading-6 text-zinc-600">इस course का visual उसी विषय से जुड़ा है।</p></div>
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
-            <h3 className="font-black text-[#003366]">Current Lesson / वर्तमान पाठ</h3>
+            <h3 className="font-black text-[#002344]">Current Lesson / वर्तमान पाठ</h3>
             <div id="current-lesson-content" className="mt-3 rounded-xl bg-zinc-50 p-4 scroll-mt-6">
               <div className="text-xs text-zinc-500">{lessons[activeLesson].module}</div>
               <div className="mt-1 font-black">{lessons[activeLesson].title}</div>
               <p className="mt-2 text-sm leading-6 text-zinc-600">{lessons[activeLesson].body}</p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-[#003366] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
+                <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
                 <span className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#0f4c81]">👄 Repeat / बोलें</span>
               </div>
               {isPrimaryEducation && <PrimaryLessonVisual lesson={lessons[activeLesson]} />}
@@ -2305,8 +2258,8 @@ function LearningSubject({ subject, onBack }) {
                 </div>
                 <div className="mb-3 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#003366] to-[#0a9396]" style={{width:(((activeLesson + 1) / total) * 100)+"%"}}/></div>
                 <div className="flex gap-2">
-                  <button type="button" onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-3 text-xs font-black text-[#003366] disabled:cursor-not-allowed disabled:opacity-40">← Previous / पिछला</button>
-                  <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#003366] px-3 py-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Next Lesson / अगला पाठ →</button>
+                  <button type="button" onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-3 text-xs font-black text-[#002344] disabled:cursor-not-allowed disabled:opacity-40">← Previous / पिछला</button>
+                  <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-3 py-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Next Lesson / अगला पाठ →</button>
                 </div>
               </div>
               {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
@@ -2329,9 +2282,9 @@ function LearningSubject({ subject, onBack }) {
             </div>
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
-            <h3 className="font-black text-[#003366]">Course Assessment / आकलन</h3>
+            <h3 className="font-black text-[#002344]">Course Assessment / आकलन</h3>
             <p className="mt-2 text-sm leading-6 text-zinc-600">पहले learning और practice पूरा करें, फिर self-check करें। Final certification अभी इस foundation stage में fake नहीं की जा रही है।</p>
-            <button onClick={()=>setQuizOpen(v=>!v)} className="mt-4 w-full rounded-xl bg-[#003366] px-4 py-3 text-sm font-black text-white">{quizOpen?"Close Check / बंद करें":"Start Knowledge Check / शुरू करें"}</button>
+            <button onClick={()=>setQuizOpen(v=>!v)} className="mt-4 w-full rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-3 text-sm font-black text-white">{quizOpen?"Close Check / बंद करें":"Start Knowledge Check / शुरू करें"}</button>
             {quizOpen && <div className="mt-4 space-y-4">
               {quizQuestions.map((q,i)=><div key={i} className="rounded-xl bg-zinc-50 p-4"><div className="text-sm font-black">{i+1}. {q.q}</div><div className="mt-3 space-y-2">{q.options.map((o,j)=><label key={j} className="flex gap-2 text-xs leading-5"><input type="radio" name={"course-q-"+i} checked={answers[i]===j} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/><span>{o}</span></label>)}</div></div>)}
               <button onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
@@ -2355,7 +2308,7 @@ function LearningSubject({ subject, onBack }) {
           <div className="overflow-y-auto p-5 md:p-8">
             <p className="text-base leading-8 text-zinc-700">{lessons[activeLesson].body}</p>
             <div className="mt-4 flex flex-wrap gap-2">
-              <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-[#003366] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
+              <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
               <span className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#0f4c81]">👄 Repeat / बोलें</span>
             </div>
             {isPrimaryEducation && <PrimaryLessonVisual lesson={lessons[activeLesson]} />}
@@ -2378,15 +2331,15 @@ function LearningSubject({ subject, onBack }) {
           <div className="shrink-0 border-t border-zinc-200 bg-white p-4 md:p-5">
             <div className="mb-3 text-center text-xs font-bold text-zinc-500">Lesson {activeLesson + 1} of {total} • पूरा पढ़ें, फिर आगे बढ़ें</div>
             <div className="grid grid-cols-2 gap-3">
-              <button type="button" onClick={()=>setLessonOpen(false)} className="rounded-xl border border-zinc-200 px-4 py-3 text-sm font-black text-[#003366]">Close / बंद करें</button>
-              <button type="button" disabled={activeLesson===total-1} onClick={()=>goLesson(activeLesson+1)} className="rounded-xl bg-[#003366] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Next Lesson / अगला पाठ →</button>
+              <button type="button" onClick={()=>setLessonOpen(false)} className="rounded-xl border border-zinc-200 px-4 py-3 text-sm font-black text-[#002344]">Close / बंद करें</button>
+              <button type="button" disabled={activeLesson===total-1} onClick={()=>goLesson(activeLesson+1)} className="rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Next Lesson / अगला पाठ →</button>
             </div>
           </div>
         </div>
       </div>}
 
       <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-white p-6 md:p-8">
-        <div className="flex items-center gap-3"><FaGraduationCap className="text-3xl text-[#003366]"/><div><h2 className="text-2xl font-black">Certificate Pathway / प्रमाणन मार्ग</h2><p className="text-sm text-zinc-500">Learning first. Certification after genuine completion and assessment.</p></div></div>
+        <div className="flex items-center gap-3"><FaGraduationCap className="text-3xl text-[#002344]"/><div><h2 className="text-2xl font-black">Certificate Pathway / प्रमाणन मार्ग</h2><p className="text-sm text-zinc-500">Learning first. Certification after genuine completion and assessment.</p></div></div>
         <div className="mt-6 grid gap-3 md:grid-cols-5">{[
           ["Learn / सीखें", progress > 0],
           ["Practise / अभ्यास", completed > 0],
@@ -2395,7 +2348,7 @@ function LearningSubject({ subject, onBack }) {
           ["Certificate / प्रमाणपत्र", certificateEligible]
         ].map(([x,ok],i)=><div key={x} className={"rounded-xl p-4 text-center text-xs font-black "+(ok?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-zinc-600")}>{i+1}. {x}</div>)}</div>
         <div className="mt-6 rounded-2xl bg-[#f7fafc] p-5">
-          <div className="text-sm font-black text-[#003366]">Certificate request / प्रमाणपत्र अनुरोध</div>
+          <div className="text-sm font-black text-[#002344]">Certificate request / प्रमाणपत्र अनुरोध</div>
           <p className="mt-2 text-sm leading-6 text-zinc-600">Certificate issuance will be enabled only after the required learning, activities and assessments are complete. Opening lessons or creating an account alone does not issue a certificate.</p>
           <button
             onClick={() => {
@@ -2407,19 +2360,26 @@ function LearningSubject({ subject, onBack }) {
               setAuthStatus("idle");
               setAccountOpen(true);
             }}
-            className={"mt-4 rounded-xl px-5 py-3 text-sm font-black text-white "+(certificateEligible?"bg-[#177245]":"bg-[#003366]")}
+            className={"mt-4 rounded-xl px-5 py-3 text-sm font-black text-white "+(certificateEligible?"bg-[#177245]":"bg-gradient-to-br from-[#0b3a63] to-[#001529]")}
           >{certificateEligible ? "Proceed to Certificate / प्रमाणपत्र के लिए आगे बढ़ें" : "Get Certificate / प्रमाणपत्र प्राप्त करें"}</button>
+          <div className="mt-5 border-t border-zinc-200 pt-4">
+            <div className="text-xs font-black uppercase tracking-widest text-zinc-400">Or reach SSF directly / सीधे संपर्क करें</div>
+            <div className="mt-3 grid gap-2 sm:grid-cols-2">
+              <a href={certificateWhatsAppHref(accountUser, subject, courseMeta, progress)} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-black text-white"><FaWhatsapp/> WhatsApp</a>
+              <a href={certificateEmailHref(accountUser, subject, courseMeta, progress)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0f4c81]/25 bg-[#f1f7fa] px-4 py-3 text-sm font-black text-[#0f4c81]"><FaEnvelope/> Email</a>
+            </div>
+          </div>
         </div>
       </section>
 
       {accountOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#001529]/70 p-4 backdrop-blur-sm">
         <div className="max-h-[92vh] w-full max-w-xl overflow-y-auto rounded-[2rem] bg-white p-6 shadow-2xl md:p-8">
           <div className="flex items-start justify-between gap-4">
-            <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Certificate Account Stage / प्रमाणपत्र खाता चरण</div><h2 className="mt-2 text-2xl font-black text-[#003366]">{accountUser ? "Account ready / खाता तैयार है" : authMode === "login" ? "Login to continue / आगे बढ़ने के लिए लॉगिन" : "Create learning account / लर्निंग अकाउंट बनाएं"}</h2></div>
+            <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Certificate Account Stage / प्रमाणपत्र खाता चरण</div><h2 className="mt-2 text-2xl font-black text-[#002344]">{accountUser ? "Account ready / खाता तैयार है" : authMode === "login" ? "Login to continue / आगे बढ़ने के लिए लॉगिन" : "Create learning account / लर्निंग अकाउंट बनाएं"}</h2></div>
             <button type="button" onClick={()=>setAccountOpen(false)} className="rounded-xl bg-zinc-100 px-3 py-2 font-black text-zinc-500">✕</button>
           </div>
           {accountUser ? <div className="mt-6 space-y-4">
-            <div className="rounded-2xl bg-[#f1f7fa] p-5"><div className="font-black text-[#003366]">{accountUser.fullName}</div><div className="mt-1 text-sm text-zinc-500">{accountUser.email}</div></div>
+            <div className="rounded-2xl bg-[#f1f7fa] p-5"><div className="font-black text-[#002344]">{accountUser.fullName}</div><div className="mt-1 text-sm text-zinc-500">{accountUser.email}</div></div>
             <div className="rounded-2xl border border-emerald-100 bg-emerald-50 p-5 text-sm leading-6 text-emerald-800"><strong>Learning completion verified.</strong> Your course completion and assessment record is ready for the certificate request stage. Certificate issuance remains subject to SSF's certificate workflow.</div>
             <button type="button" disabled={authStatus==="submitting"} onClick={async()=>{
               setAuthStatus("submitting"); setAuthError("");
@@ -2433,6 +2393,14 @@ function LearningSubject({ subject, onBack }) {
               } catch(err){ setAuthStatus("error"); setAuthError(err.message||"Unable to submit certificate request."); }
             }} className="w-full rounded-xl bg-[#177245] px-5 py-3 font-black text-white disabled:opacity-50">{authStatus==="submitting"?"Submitting...":"Request Certificate / प्रमाणपत्र का अनुरोध करें"}</button>
             {authError && <div className="rounded-xl bg-red-50 p-4 text-sm font-bold text-red-700">{authError}</div>}
+            <div className="rounded-2xl border border-zinc-200 bg-white p-5">
+              <div className="text-sm font-black text-[#002344]">Need help or a quick update? / मदद या जानकारी चाहिए?</div>
+              <p className="mt-1 text-xs leading-5 text-zinc-500">Certificate status लेने के लिए SSF से सीधे संपर्क करें — अपना course नाम और account email बताएँ।</p>
+              <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                <a href={certificateWhatsAppHref(accountUser, subject, courseMeta, progress)} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-black text-white"><FaWhatsapp/> WhatsApp</a>
+                <a href={certificateEmailHref(accountUser, subject, courseMeta, progress)} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0f4c81]/25 bg-[#f1f7fa] px-4 py-3 text-sm font-black text-[#0f4c81]"><FaEnvelope/> Email</a>
+              </div>
+            </div>
           </div> : <form className="mt-6 space-y-4" onSubmit={async e=>{
             e.preventDefault(); setAuthError(""); setAuthStatus("submitting");
             try {
@@ -2454,8 +2422,8 @@ function LearningSubject({ subject, onBack }) {
             {authMode==="signup" && <div><label className="text-xs font-black text-zinc-500">Confirm Email / ईमेल पुष्टि</label><input type="email" className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.confirmEmail} onChange={e=>setAuthForm(v=>({...v,confirmEmail:e.target.value}))} required/></div>}
             <div><label className="text-xs font-black text-zinc-500">Password / पासवर्ड</label><input type="password" minLength={8} className="mt-1 w-full rounded-xl border border-zinc-200 px-4 py-3" value={authForm.password} onChange={e=>setAuthForm(v=>({...v,password:e.target.value}))} required/></div>
             {authError && <div className="rounded-xl bg-red-50 p-4 text-sm font-bold text-red-700">{authError}</div>}
-            <button disabled={authStatus==="submitting"} className="w-full rounded-xl bg-[#003366] px-5 py-3 font-black text-white disabled:opacity-50">{authStatus==="submitting"?"Please wait...":authMode==="login"?"Login & Continue / लॉगिन करें":"Create Account & Continue / अकाउंट बनाएं"}</button>
-            <button type="button" onClick={()=>{setAuthMode(authMode==="login"?"signup":"login");setAuthError("");}} className="w-full rounded-xl bg-zinc-100 px-5 py-3 text-sm font-black text-[#003366]">{authMode==="login"?"Create Account / नया अकाउंट बनाएं":"Already have an account? Login / पहले से अकाउंट है? लॉगिन"}</button>
+            <button disabled={authStatus==="submitting"} className="w-full rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 font-black text-white disabled:opacity-50">{authStatus==="submitting"?"Please wait...":authMode==="login"?"Login & Continue / लॉगिन करें":"Create Account & Continue / अकाउंट बनाएं"}</button>
+            <button type="button" onClick={()=>{setAuthMode(authMode==="login"?"signup":"login");setAuthError("");}} className="w-full rounded-xl bg-zinc-100 px-5 py-3 text-sm font-black text-[#002344]">{authMode==="login"?"Create Account / नया अकाउंट बनाएं":"Already have an account? Login / पहले से अकाउंट है? लॉगिन"}</button>
           </form>}
         </div>
       </div>}
@@ -2546,16 +2514,22 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     setProgressTick(t => t + 1);
     try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {}
   };
-  const filtered = useMemo(() => SUBJECTS.filter(s => {
-    const hay = (s.title + " " + s.category + " " + s.intro).toLowerCase();
-    return (category === "All" || s.category === category) && hay.includes(query.toLowerCase().trim());
-  }), [category, query]);
+  const filtered = useMemo(() => {
+    const q = query.toLowerCase().trim();
+    if (!q) return SUBJECTS.filter(s => category === "All" || s.category === category);
+    const hayFor = (s) => {
+      const c = SUBJECT_CONTENT_ALL[s.en];
+      const extra = c ? [c.focus, (c.concepts||[]).join(" "), (c.keywords||[]).join(" "), (c.examples||[]).join(" ")].join(" ") : "";
+      return (s.title + " " + s.category + " " + s.intro + " " + extra).toLowerCase();
+    };
+    return SUBJECTS.filter(s => (category === "All" || s.category === category) && hayFor(s).includes(q));
+  }, [category, query]);
   const selected = SUBJECTS.find(s => s.id === subjectId);
   if (view === "course" && selected) return <LearningSubject subject={selected} onBack={back} />;
   if (view === "course" && !selected) return <div className="mx-auto max-w-3xl px-4 py-16 text-center">
     <h1 className="text-2xl font-black text-[#062a52]">Subject not found / विषय नहीं मिला</h1>
     <p className="mt-2 text-sm text-zinc-600">यह course उपलब्ध नहीं है। कृपया Subjects list से चुनें।</p>
-    <button type="button" onClick={() => navigate({ to: "/LearningHub/explore" })} className="mt-6 rounded-2xl bg-[#003366] px-6 py-3 text-sm font-black text-white">Explore Subjects →</button>
+    <button type="button" onClick={() => navigate({ to: "/LearningHub/explore" })} className="mt-6 rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-6 py-3 text-sm font-black text-white">Explore Subjects →</button>
   </div>;
   if (view === "home" && getSubjectFromUrl()) return <LegacySubjectRedirect />;
 
@@ -2564,10 +2538,10 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
   const categories = ["All", ...CATEGORY_ORDER];
   const visibleCategories = category === "All" ? CATEGORY_ORDER : [category];
   const knowledgeWorldSubjects = SUBJECTS.filter(s => s.category === KW_CATEGORY);
-  const categoryCards = CATEGORY_ORDER.map((name) => {
+  const categoryCards = CATEGORY_ORDER.map((name, ci) => {
     const meta = CATEGORY_META[name] || {};
     const subjects = SUBJECTS.filter((s) => s.category === name);
-    return { name, icon: meta.icon || FaBookOpen, color: meta.color || "from-[#003366] to-[#0f4c81]", image: HUB_IMAGES[meta.key] || HUB_IMAGES.education, count: subjects.length, subjects };
+    return { name, icon: meta.icon || FaBookOpen, color: meta.color || "from-[#003366] to-[#0f4c81]", image: makeCategoryVisual(name, subjects.length, SUBJECT_VISUAL_GLYPH[name] || "🎓", ci + 40), count: subjects.length, subjects };
   });
   const openCategory = (name) => { setCategory(name); navigate({ to: "/LearningHub/explore" }); try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {} };
   const myLearningSubjects = filtered.filter((s) => cardProgress(s) > 0);
@@ -2587,14 +2561,14 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
       {view === "explore" && <section className="mt-2">
         <div className="ssf-panel">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#b8903f]"><FaBookOpen /> Explore All Subjects / सभी विषय देखें</div>
+          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#FF6600]"><FaBookOpen /> Explore All Subjects / सभी विषय देखें</div>
           <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">{SUBJECTS.length} Subjects across {CATEGORY_ORDER.length} Learning Areas</h2>
           <p className="mt-2 text-sm leading-7 text-[#5b6b7c]">पहले Learning Area चुनें, फिर subject। हर subject का अपना course, modules, lessons, practice और quiz है।</p>
           <div className="relative mt-5">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#b8903f]" />
-            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-[#e3ddcd] bg-[#fbfaf7] py-4 pl-11 pr-4 text-sm text-[#142b45] outline-none transition focus:border-[#b8903f] focus:bg-white focus:ring-4 focus:ring-[#b8903f]/15" />
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#FF6600]" />
+            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-[#e3ddcd] bg-[#fbfaf7] py-4 pl-11 pr-4 text-sm text-[#142b45] outline-none transition focus:border-[#FF6600] focus:bg-white focus:ring-4 focus:ring-[#FF6600]/15" />
           </div>
-          <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold transition "+(category===c?"bg-gradient-to-r from-[#d9b25f] to-[#b8903f] text-[#142b45] shadow-md":"bg-[#f1efe8] text-[#5b6b7c] hover:bg-[#e7e2d6]")}><Icon/> {c}</button>; })}</div>
+          <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold transition "+(category===c?"bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] text-[#142b45] shadow-md":"bg-[#f1efe8] text-[#5b6b7c] hover:bg-[#e7e2d6]")}><Icon/> {c}</button>; })}</div>
           <div className="mt-3 text-xs font-semibold text-[#9aa7b4]">{filtered.length} {filtered.length === 1 ? "course" : "courses"} {query.trim() ? "matching your search" : "available"} {category !== "All" ? "in " + category : ""} / {filtered.length} विषय उपलब्ध</div>
         </div>
       </section>}
@@ -2612,8 +2586,38 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
         cardProgress={cardProgress}
       />}
 
+      {view === "explore" && category === "All" && !query.trim() && <section className="mt-5 ssf-panel">
+        <div className="flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#B34A00]"><FaHandsHelping /> Common SSF Learning Foundation / साझा सीख आधार</div>
+        <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">हर उम्र और हर स्तर के लिए छह साझा आधार</h2>
+        <p className="mt-2 text-sm leading-7 text-[#5b6b7c]">यही foundation बच्चे, विद्यार्थी, युवा, किसान, महिला, वरिष्ठ नागरिक और पेशेवर — सभी के लिए साझा है। किसी भी विषय में जाने से पहले यह आधार मजबूत करें।</p>
+        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { t:"Learn / सीखें", d:"Reading, Writing, Mathematics, Digital Literacy, Information Literacy.", c:"#FF6600" },
+            { t:"Think / सोचें", d:"Critical Thinking, Problem Solving, Decision Making, Creativity, Reasoning.", c:"#2563eb" },
+            { t:"Live / जिएँ", d:"Health Literacy, Safety, Financial Literacy, Communication, Life Skills.", c:"#0a9396" },
+            { t:"Work / काम करें", d:"Career Skills, Employability, Professional Behaviour, Entrepreneurship, Workplace Skills.", c:"#003049" },
+            { t:"Participate / सहभागी बनें", d:"Civic Responsibility, Environment, Community, Culture, Social Responsibility.", c:"#6d597a" },
+            { t:"Create / बनाएँ", d:"Projects, Portfolio, Presentation, Teaching Others, Mentoring.", c:"#177245" }
+          ].map(x => <div key={x.t} className="rounded-2xl border border-[#F3E7D5] bg-[#FFF7EA] p-5 transition hover:-translate-y-1 hover:border-[#FF6600]/40 hover:shadow-lg">
+            <span className="inline-block h-1.5 w-10 rounded-full" style={{ background:x.c }} />
+            <h3 className="mt-3 text-lg font-black text-[#142b45]">{x.t}</h3>
+            <p className="mt-2 text-sm leading-6 text-[#5b6b7c]">{x.d}</p>
+          </div>)}
+        </div>
+        <div className="mt-7 rounded-2xl border border-[#FFD166]/40 bg-gradient-to-r from-[#FFF7EA] to-white p-5">
+          <div className="text-xs font-black uppercase tracking-[0.2em] text-[#B34A00]">Learner Pathway / सीखने का मार्ग</div>
+          <div className="mt-4 grid gap-2 sm:grid-cols-4 lg:grid-cols-7">
+            {["Foundation","Beginner","Intermediate","Advanced","Applied Project","Assessment","Mastery"].map((step,i)=>(
+              <div key={step} className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs font-black text-[#142b45] shadow-sm">
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#FF6600] text-[11px] text-white">{i+1}</span> {step}
+              </div>))}
+          </div>
+          <p className="mt-3 text-xs leading-6 text-[#5b6b7c]">Mastery के बाद <strong>Teach Others / Mentor Path</strong> — सीखी हुई चीज़ दूसरों को सिखाइए। आप अपनी उम्र, पूर्व ज्ञान, रुचि या करियर लक्ष्य के अनुसार किसी भी स्तर से शुरू कर सकते हैं।</p>
+        </div>
+      </section>}
+
       {view !== "home" && <section className="mt-5">
-        {view === "explore" && category === "All" && !query.trim() && <div className="overflow-hidden rounded-[2rem] border border-[#cfe6ef] bg-gradient-to-br from-[#1d3557] to-[#457b9d] p-6 text-white shadow-sm md:p-8">
+        {view === "explore" && category === "All" && !query.trim() && <div className="overflow-hidden rounded-[2rem] border border-[#cfe6ef] bg-gradient-to-br from-[#0b3a63] to-[#001529] p-6 text-white shadow-sm md:p-8">
           <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
             <div className="max-w-2xl">
               <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest"><FaGlobe /> Knowledge World / ज्ञान संसार</div>
@@ -2630,7 +2634,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
           </div>
         </div>}
 
-        {view !== "knowledge-world" && <div className="mt-5 rounded-[2rem] bg-[#003366] p-6 text-white shadow-sm md:p-7">
+        {view !== "knowledge-world" && <div className="mt-5 rounded-[2rem] bg-gradient-to-br from-[#0b3a63] to-[#001529] p-6 text-white shadow-sm md:p-7">
           <div className="text-xs font-black uppercase tracking-widest text-white/60">Your learning / आपकी प्रगति</div>
           {progressSummary.active ? <div className="mt-4">
             <button onClick={()=>openSubject(progressSummary.active.subject)} className="w-full text-left">
@@ -2648,12 +2652,12 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
                 </button>)}
               </div>
             </div>}
-          </div> : <div className="mt-4"><div className="text-lg font-black">Start your first course</div><div className="mt-2 text-sm leading-6 text-white/70">अपना पहला course चुनें और progress track करें।</div><button onClick={()=>navigate({ to: "/LearningHub/explore" })} className="mt-4 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#003366]">Explore Subjects →</button></div>}
+          </div> : <div className="mt-4"><div className="text-lg font-black">Start your first course</div><div className="mt-2 text-sm leading-6 text-white/70">अपना पहला course चुनें और progress track करें।</div><button onClick={()=>navigate({ to: "/LearningHub/explore" })} className="mt-4 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#002344]">Explore Subjects →</button></div>}
         </div>}
       </section>}
 
       {view !== "home" && <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-gradient-to-r from-white to-[#eef7fb] p-6 md:p-8">
-        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"><div><div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaGraduationCap/> LEARNING PATH / सीखने का रास्ता</div><h2 className="mt-2 text-2xl font-black md:text-3xl">Learn → Practise → Assess → Complete</h2><p className="mt-2 text-sm text-zinc-600">Learning को छोटे, स्पष्ट steps में पूरा करें।</p></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{[[FaBookOpen,"Learn","सीखें"],[FaPlayCircle,"Practise","अभ्यास"],[FaCheckCircle,"Assess","आकलन"],[FaGraduationCap,"Certificate","प्रमाणपत्र"]].map(([Icon,en,hi])=><div key={en} className="rounded-xl bg-white px-4 py-3 text-center shadow-sm"><Icon className="mx-auto text-lg text-[#003366]"/><div className="mt-1 text-xs font-black">{en}</div><div className="text-[10px] text-zinc-500">{hi}</div></div>)}</div></div>
+        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"><div><div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaGraduationCap/> LEARNING PATH / सीखने का रास्ता</div><h2 className="mt-2 text-2xl font-black md:text-3xl">Learn → Practise → Assess → Complete</h2><p className="mt-2 text-sm text-zinc-600">Learning को छोटे, स्पष्ट steps में पूरा करें।</p></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{[[FaBookOpen,"Learn","सीखें"],[FaPlayCircle,"Practise","अभ्यास"],[FaCheckCircle,"Assess","आकलन"],[FaGraduationCap,"Certificate","प्रमाणपत्र"]].map(([Icon,en,hi])=><div key={en} className="rounded-xl bg-white px-4 py-3 text-center shadow-sm"><Icon className="mx-auto text-lg text-[#002344]"/><div className="mt-1 text-xs font-black">{en}</div><div className="text-[10px] text-zinc-500">{hi}</div></div>)}</div></div>
       </section>}
 
       {view !== "home" && <div className="mt-10">
@@ -2665,48 +2669,48 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
           return <section key={cat} className="mt-14">
             <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
-                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#b8903f]"><Icon aria-hidden="true" /> {cat}</div>
+                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#FF6600]"><Icon aria-hidden="true" /> {cat}</div>
                 <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">Courses / पाठ्यक्रम</h2>
                 <p className="mt-2 text-sm text-[#9aa7b4]">{courses.length} learning options available in this area / इस क्षेत्र में उपलब्ध learning options</p>
               </div>
-              <span className="block h-px flex-1 bg-gradient-to-r from-[#b8903f]/50 to-transparent md:mb-3" aria-hidden="true" />
+              <span className="block h-px flex-1 bg-gradient-to-r from-[#FF6600]/50 to-transparent md:mb-3" aria-hidden="true" />
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-[#e3ddcd] bg-white shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1.5 hover:border-[#b8903f]/45 hover:shadow-[0_32px_65px_-40px_rgba(20,43,69,0.7)]">
-                <div className="relative h-52 overflow-hidden">
+              {courses.map(s => <article key={s.id} className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-[#e3ddcd] bg-white shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1.5 hover:border-[#FF6600]/45 hover:shadow-[0_32px_65px_-40px_rgba(20,43,69,0.7)]">
+                <div className="relative h-52 overflow-hidden ssf-shine">
                   <div className={"absolute inset-0 bg-gradient-to-br "+s.color} />
                   <img src={s.photo || s.image} alt={s.en} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-[900ms] group-hover:scale-110" />
                   <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e33]/88 via-[#0a1e33]/25 to-transparent" />
-                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-[#dfc995]/40 bg-[#0d243b]/60 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#e1c36f] backdrop-blur">
+                  <div className="absolute left-4 top-4 flex items-center gap-2 rounded-full border border-[#FFD166]/40 bg-[#0d243b]/60 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.16em] text-[#FFD166] backdrop-blur">
                     <Icon aria-hidden="true" /> Course {s.number}
                   </div>
                   <div className="absolute bottom-4 left-5 right-5 text-white">
                     <h3 className="font-serif text-2xl font-bold leading-tight">{s.en}</h3>
-                    <div className="mt-1 text-sm font-semibold text-[#e1c36f]">{s.hi}</div>
+                    <div className="mt-1 text-sm font-semibold text-[#FFD166]">{s.hi}</div>
                   </div>
                 </div>
                 <div className="flex flex-1 flex-col p-6">
                   <div className="mb-4 flex flex-wrap gap-2">
-                    <span className="rounded-full bg-[#fbf7ec] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#8a6a24]">{courseMetaBySubject[s.id] ? "Structured Course" : "Learning Topic"}</span>
+                    <span className="rounded-full bg-[#FFF7EA] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#B34A00]">Full Course</span>
                     <span className="rounded-full bg-[#f1efe8] px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-[#5b6b7c]">Hindi + English</span>
                   </div>
                   <p className="flex-1 text-sm leading-7 text-[#5b6b7c]">{s.intro}</p>
                   {(() => { const pct = cardProgress(s); if (!pct) return null; return (
                     <div className="mt-4">
-                      <div className="flex items-center justify-between text-[11px] font-bold text-[#b8903f]"><span>{pct >= 100 ? "Completed" : "In progress"}</span><span>{pct}%</span></div>
-                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#eeeae0]"><div className="h-full rounded-full bg-gradient-to-r from-[#b8903f] to-[#e1c36f]" style={{width:pct+"%"}}/></div>
+                      <div className="flex items-center justify-between text-[11px] font-bold text-[#FF6600]"><span>{pct >= 100 ? "Completed" : "In progress"}</span><span>{pct}%</span></div>
+                      <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#F3E7D5]"><div className="h-full rounded-full bg-gradient-to-r from-[#FF6600] to-[#FFD166]" style={{width:pct+"%"}}/></div>
                     </div>
                   ); })()}
                   <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-[#7286a0]">
-                    <div className="rounded-xl border border-[#eeeae0] bg-[#fbfaf7] p-2"><FaBookOpen className="mx-auto mb-1 text-[#b8903f]"/>{courseMetaBySubject[s.id]?.modules?.length ?? getSubjectModules(s).moduleCount}<span className="block text-[9px] font-normal text-[#9aa7b4]">Modules</span></div>
-                    <div className="rounded-xl border border-[#eeeae0] bg-[#fbfaf7] p-2"><FaClock className="mx-auto mb-1 text-[#b8903f]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal text-[#9aa7b4]">Hours</span></div>
-                    <div className="rounded-xl border border-[#eeeae0] bg-[#fbfaf7] p-2"><FaGraduationCap className="mx-auto mb-1 text-[#b8903f]"/>{courseMetaBySubject[s.id] ? "Certificate" : "Coming Soon"}<span className="block text-[9px] font-normal text-[#9aa7b4]">{courseMetaBySubject[s.id] ? "Pathway" : "Status"}</span></div>
+                    <div className="rounded-xl border border-[#F3E7D5] bg-[#fbfaf7] p-2"><FaBookOpen className="mx-auto mb-1 text-[#FF6600]"/>{courseMetaBySubject[s.id]?.modules?.length ?? getSubjectModules(s).moduleCount}<span className="block text-[9px] font-normal text-[#9aa7b4]">Modules</span></div>
+                    <div className="rounded-xl border border-[#F3E7D5] bg-[#fbfaf7] p-2"><FaClock className="mx-auto mb-1 text-[#FF6600]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal text-[#9aa7b4]">Hours</span></div>
+                    <div className="rounded-xl border border-[#F3E7D5] bg-[#fbfaf7] p-2"><FaGraduationCap className="mx-auto mb-1 text-[#FF6600]"/>Certificate<span className="block text-[9px] font-normal text-[#9aa7b4]">Pathway</span></div>
                   </div>
                   <div className="mt-5 grid grid-cols-[1fr_auto] gap-2">
-                    <button onClick={()=>openSubject(s)} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#d9b25f] to-[#b8903f] px-5 py-4 text-sm font-bold text-[#142b45] shadow-[0_16px_36px_-22px_rgba(184,144,63,0.95)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#b8903f]/25">
-                      {courseMetaBySubject[s.id] ? "Start Learning / सीखना शुरू करें" : "Explore Topic / विषय देखें"} <FaArrowRight />
+                    <button onClick={()=>openSubject(s)} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-5 py-4 text-sm font-bold text-[#142b45] shadow-[0_16px_36px_-22px_rgba(184,144,63,0.95)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#FF6600]/25">
+                      Start Learning / सीखना शुरू करें <FaArrowRight />
                     </button>
-                    <button type="button" onClick={()=>shareSubject(s)} aria-label={"Share " + s.en} title="Share this course" className="inline-flex min-w-14 items-center justify-center gap-2 rounded-full border border-[#b8903f]/30 bg-[#fbf7ec] px-4 text-[#8a6a24] transition hover:bg-[#f4ecd8] focus:outline-none focus:ring-4 focus:ring-[#b8903f]/20">
+                    <button type="button" onClick={()=>shareSubject(s)} aria-label={"Share " + s.en} title="Share this course" className="inline-flex min-w-14 items-center justify-center gap-2 rounded-full border border-[#FF6600]/30 bg-[#FFF7EA] px-4 text-[#B34A00] transition hover:bg-[#FFEFD6] focus:outline-none focus:ring-4 focus:ring-[#FF6600]/20">
                       <FaShareAlt /> <span className="sr-only">Share</span>
                     </button>
                   </div>
@@ -2725,7 +2729,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
           [FaPlayCircle, "Practise / अभ्यास", "Activities and practical application."],
           [FaCheckCircle, "Assess / आकलन", "Quizzes and meaningful assessments."],
           [FaGraduationCap, "Certify / प्रमाणन", "Completion-based certificate pathway."]
-        ].map(([Icon,title,desc])=><div key={title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><Icon className="text-3xl text-[#003366]"/><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{desc}</p></div>)}
+        ].map(([Icon,title,desc])=><div key={title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><Icon className="text-3xl text-[#002344]"/><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{desc}</p></div>)}
       </section>}
     </main>
   </div>;

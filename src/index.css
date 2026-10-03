@@ -112,3 +112,30 @@ div[class*="bg-[radial-gradient"] > footer { padding-top:clamp(4rem,8vw,7rem) !i
 .ssf-hub h1,.ssf-hub h2,.ssf-hub h3 { text-wrap:balance; }
 .ssf-hub p { text-wrap:pretty; }
 @media (max-width:640px){ .ssf-hub .ssf-panel{ border-radius:20px; padding:1.35rem; } .ssf-hub .ssf-panel::before{ top:22px; bottom:22px; } }
+
+/* ============ SSF LEARNING HUB — CODED MOTION LAYER ============ */
+@keyframes ssfhub-rise { from { opacity:0; transform:translateY(22px); } to { opacity:1; transform:none; } }
+@keyframes ssfhub-softFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-9px); } }
+@keyframes ssfhub-sheen { from { background-position:-160% 0; } to { background-position:260% 0; } }
+@keyframes ssfhub-pulseRing { 0% { box-shadow:0 0 0 0 rgba(255,102,0,.35); } 70% { box-shadow:0 0 0 16px rgba(255,102,0,0); } 100% { box-shadow:0 0 0 0 rgba(255,102,0,0); } }
+@keyframes ssfhub-draw { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+
+.ssf-hub .ssf-anim-rise { animation:ssfhub-rise .6s cubic-bezier(.22,.61,.36,1) both; }
+.ssf-hub article { animation:ssfhub-rise .55s cubic-bezier(.22,.61,.36,1) both; }
+.ssf-hub article:nth-child(3n+2) { animation-delay:.08s; }
+.ssf-hub article:nth-child(3n+3) { animation-delay:.16s; }
+.ssf-hub .ssf-float { animation:ssfhub-softFloat 5.5s ease-in-out infinite; }
+.ssf-hub .ssf-shine { position:relative; overflow:hidden; }
+.ssf-hub .ssf-shine::after {
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.34) 48%,transparent 66%);
+  background-size:220% 100%; animation:ssfhub-sheen 3.4s ease-in-out infinite;
+}
+.ssf-hub .ssf-ring { animation:ssfhub-pulseRing 2.6s ease-out infinite; }
+.ssf-hub .ssf-underline { transform-origin:left; animation:ssfhub-draw .8s ease-out both; }
+.ssf-hub img { transition:transform .6s cubic-bezier(.22,.61,.36,1); }
+.ssf-hub article:hover img { transform:scale(1.06); }
+@media (prefers-reduced-motion:reduce) {
+  .ssf-hub .ssf-anim-rise, .ssf-hub article, .ssf-hub .ssf-float,
+  .ssf-hub .ssf-shine::after, .ssf-hub .ssf-ring, .ssf-hub .ssf-underline { animation:none !important; }
+}
