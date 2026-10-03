@@ -92,9 +92,9 @@ div[class*="bg-[radial-gradient"] > footer { padding-top:clamp(4rem,8vw,7rem) !i
 @media (prefers-reduced-motion:reduce) { div[class*="bg-[radial-gradient"] > div.max-w-5xl > section, div[class*="bg-[radial-gradient"] > div.max-w-5xl [class*="hover:border-[#C8A24D]"] { transition:none !important; } }
 /* ============ SSF LEARNING HUB — PREMIUM ACADEMY THEME ============ */
 .ssf-hub {
-  --hub-ink:#142b45; --hub-ink-soft:#5b6b7c; --hub-gold:#b8903f; --hub-gold-soft:#dfc995;
-  --hub-paper:#fbfaf7; --hub-cream:#f1efe8; --hub-line:rgba(20,43,69,.11); --hub-line-warm:rgba(184,144,63,.28);
-  background:linear-gradient(180deg,#f8f6f0 0%,#fff 22%,#f8f6f0 100%);
+  --hub-ink:#142b45; --hub-ink-soft:#5b6b7c; --hub-gold:#FF6600; --hub-gold-soft:#FFD166;
+  --hub-paper:#FDF6E9; --hub-cream:#FBEFDD; --hub-line:rgba(20,43,69,.11); --hub-line-warm:rgba(255,102,0,.30);
+  background:linear-gradient(180deg,#fff8ec 0%,#fff 22%,#fff8ec 100%);
   color:var(--hub-ink);
 }
 .ssf-hub .ssf-panel {
