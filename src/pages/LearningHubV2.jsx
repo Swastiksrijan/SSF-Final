@@ -10,6 +10,7 @@ import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../data/coursesData"
 import { ENDPOINTS } from "../config/api";
 import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../data/englishFromBasicsContent";
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
+import PrimaryLettersLesson from "../components/learning/PrimaryLettersLesson";
 import { SUBJECT_CONTENT } from "../data/learningHubSubjectContent";
 
 const HUB_IMAGES = {
@@ -1767,6 +1768,7 @@ function LearningSubject({ subject, onBack }) {
       ];
   const completed = done.length;
   const total = lessons.length;
+  const isRichLesson = isPrimaryEducation && /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(lessons[activeLesson]?.title || "");
   const progress = Math.round((completed / total) * 100);
   const moduleAssessments = structuredCourse
     ? structuredCourse.modules.map((m) => ({
@@ -1829,7 +1831,7 @@ function LearningSubject({ subject, onBack }) {
     });
   };
 
-  return <div className="min-h-screen bg-[#f6f8fb] text-zinc-900 font-inria">
+  return <div className="min-h-screen bg-[#f6f8fb] pt-20 text-zinc-900 font-inria md:pt-28">
     <section className={"relative overflow-hidden bg-gradient-to-r "+subject.color+" text-white"}>
       <img src={subject.image} alt={subject.title} className="absolute inset-0 h-full w-full object-cover opacity-35"/>
       <div className="absolute inset-0 bg-[#001529]/75"/>
@@ -1905,6 +1907,7 @@ function LearningSubject({ subject, onBack }) {
                 <span className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#0f4c81]">👄 Repeat / बोलें</span>
               </div>
               {isPrimaryEducation && <PrimaryLessonVisual lesson={lessons[activeLesson]} />}
+              {isRichLesson && <PrimaryLettersLesson />}
 
               <div className="mt-5 border-t border-zinc-200 pt-4">
                 <div className="mb-3 flex items-center justify-between text-[11px] font-black text-zinc-500">
@@ -1917,7 +1920,7 @@ function LearningSubject({ subject, onBack }) {
                   <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#003366] px-3 py-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Next Lesson / अगला पाठ →</button>
                 </div>
               </div>
-              {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
+              {lessons[activeLesson].detail && !isRichLesson && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
                 {[
                   ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
                   ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
@@ -1967,8 +1970,9 @@ function LearningSubject({ subject, onBack }) {
               <span className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#0f4c81]">👄 Repeat / बोलें</span>
             </div>
             {isPrimaryEducation && <PrimaryLessonVisual lesson={lessons[activeLesson]} />}
+            {isRichLesson && <PrimaryLettersLesson />}
 
-            {lessons[activeLesson].detail && <div className="mt-7 space-y-5 border-t border-zinc-200 pt-6">
+            {lessons[activeLesson].detail && !isRichLesson && <div className="mt-7 space-y-5 border-t border-zinc-200 pt-6">
               {[
                 ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
                 ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
@@ -2169,7 +2173,7 @@ export default function LearningHubV2() {
   const visibleCategories = category === "All" ? CATEGORY_ORDER : [category];
   const knowledgeWorldSubjects = SUBJECTS.filter(s => s.category === KW_CATEGORY);
 
-  return <div className="min-h-screen bg-[#f6f8fb] font-inria text-zinc-900">
+  return <div className="min-h-screen bg-[#f6f8fb] pt-20 font-inria text-zinc-900 md:pt-28">
     <section className="relative overflow-hidden bg-[#002344] text-white">
       <div className="absolute inset-0 bg-gradient-to-br from-[#001426] via-[#003b63] to-[#007c91]" />
       <div className="absolute -right-20 -top-24 h-72 w-72 rounded-full border border-white/10 bg-white/5" />
