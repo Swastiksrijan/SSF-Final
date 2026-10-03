@@ -2799,20 +2799,6 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
       totalAreas={CATEGORY_ORDER.length}
     />}
     <main className="mx-auto max-w-7xl px-4 py-8 md:py-12">
-      {view === "explore" && <section className="mt-2">
-        <div className="ssf-panel">
-          <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#FF6600]"><FaBookOpen /> Explore All Subjects / सभी विषय देखें</div>
-          <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">{SUBJECTS.length} Subjects across {CATEGORY_ORDER.length} Learning Areas</h2>
-          <p className="mt-2 text-sm leading-7 text-[#5b6b7c]">पहले Learning Area चुनें, फिर subject। हर subject का अपना course, modules, lessons, practice और quiz है।</p>
-          <div className="relative mt-5">
-            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-[#FF6600]" />
-            <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-[#e3ddcd] bg-[#fbfaf7] py-4 pl-11 pr-4 text-sm text-[#142b45] outline-none transition focus:border-[#FF6600] focus:bg-white focus:ring-4 focus:ring-[#FF6600]/15" />
-          </div>
-          <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-bold transition "+(category===c?"bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] text-[#142b45] shadow-md":"bg-[#f1efe8] text-[#5b6b7c] hover:bg-[#e7e2d6]")}><Icon/> {c}</button>; })}</div>
-          <div className="mt-3 text-xs font-semibold text-[#9aa7b4]">{filtered.length} {filtered.length === 1 ? "course" : "courses"} {query.trim() ? "matching your search" : "available"} {category !== "All" ? "in " + category : ""} / {filtered.length} विषय उपलब्ध</div>
-        </div>
-      </section>}
-
       {view === "home" && <LearningHubDashboard
         progressSummary={progressSummary}
         categories={categoryCards}
@@ -2825,80 +2811,6 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
         onCategory={openCategory}
         cardProgress={cardProgress}
       />}
-
-      {view === "explore" && category === "All" && !query.trim() && <section className="mt-5 ssf-panel">
-        <div className="flex flex-wrap items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#B34A00]"><FaHandsHelping /> Common SSF Learning Foundation / साझा सीख आधार</div>
-        <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">हर उम्र और हर स्तर के लिए छह साझा आधार</h2>
-        <p className="mt-2 text-sm leading-7 text-[#5b6b7c]">यही foundation बच्चे, विद्यार्थी, युवा, किसान, महिला, वरिष्ठ नागरिक और पेशेवर — सभी के लिए साझा है। किसी भी विषय में जाने से पहले यह आधार मजबूत करें।</p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {[
-            { t:"Learn / सीखें", d:"Reading, Writing, Mathematics, Digital Literacy, Information Literacy.", c:"#FF6600" },
-            { t:"Think / सोचें", d:"Critical Thinking, Problem Solving, Decision Making, Creativity, Reasoning.", c:"#2563eb" },
-            { t:"Live / जिएँ", d:"Health Literacy, Safety, Financial Literacy, Communication, Life Skills.", c:"#0a9396" },
-            { t:"Work / काम करें", d:"Career Skills, Employability, Professional Behaviour, Entrepreneurship, Workplace Skills.", c:"#003049" },
-            { t:"Participate / सहभागी बनें", d:"Civic Responsibility, Environment, Community, Culture, Social Responsibility.", c:"#6d597a" },
-            { t:"Create / बनाएँ", d:"Projects, Portfolio, Presentation, Teaching Others, Mentoring.", c:"#177245" }
-          ].map(x => <div key={x.t} className="rounded-2xl border border-[#F3E7D5] bg-[#FFF7EA] p-5 transition hover:-translate-y-1 hover:border-[#FF6600]/40 hover:shadow-lg">
-            <span className="inline-block h-1.5 w-10 rounded-full" style={{ background:x.c }} />
-            <h3 className="mt-3 text-lg font-black text-[#142b45]">{x.t}</h3>
-            <p className="mt-2 text-sm leading-6 text-[#5b6b7c]">{x.d}</p>
-          </div>)}
-        </div>
-        <div className="mt-7 rounded-2xl border border-[#FFD166]/40 bg-gradient-to-r from-[#FFF7EA] to-white p-5">
-          <div className="text-xs font-black uppercase tracking-[0.2em] text-[#B34A00]">Learner Pathway / सीखने का मार्ग</div>
-          <div className="mt-4 grid gap-2 sm:grid-cols-4 lg:grid-cols-7">
-            {["Foundation","Beginner","Intermediate","Advanced","Applied Project","Assessment","Mastery"].map((step,i)=>(
-              <div key={step} className="flex items-center gap-2 rounded-xl bg-white px-3 py-2 text-xs font-black text-[#142b45] shadow-sm">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#FF6600] text-[11px] text-white">{i+1}</span> {step}
-              </div>))}
-          </div>
-          <p className="mt-3 text-xs leading-6 text-[#5b6b7c]">Mastery के बाद <strong>Teach Others / Mentor Path</strong> — सीखी हुई चीज़ दूसरों को सिखाइए। आप अपनी उम्र, पूर्व ज्ञान, रुचि या करियर लक्ष्य के अनुसार किसी भी स्तर से शुरू कर सकते हैं।</p>
-        </div>
-      </section>}
-
-      {view !== "home" && <section className="mt-5">
-        {view === "explore" && category === "All" && !query.trim() && <div className="overflow-hidden rounded-[2rem] border border-[#cfe6ef] bg-gradient-to-br from-[#0b3a63] to-[#001529] p-6 text-white shadow-sm md:p-8">
-          <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between">
-            <div className="max-w-2xl">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-widest"><FaGlobe /> Knowledge World / ज्ञान संसार</div>
-              <h2 className="mt-3 text-2xl font-black md:text-3xl">दुनिया को जानिए। ज्ञान बढ़ाइए।</h2>
-              <p className="mt-2 text-sm leading-6 text-white/80">समय, प्रकृति, विज्ञान, भारत और विश्व — रोज़मर्रा के ज्ञान के {knowledgeWorldSubjects.length} विषय, आसान भाषा और उदाहरणों के साथ।</p>
-            </div>
-            <button onClick={()=>setCategory(KW_CATEGORY)} className="shrink-0 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#1d3557] shadow-md transition hover:bg-white/90">Explore Knowledge World →</button>
-          </div>
-          <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-            {knowledgeWorldSubjects.slice(0, 6).map(s => <button key={s.id} onClick={()=>openSubject(s)} className="flex items-center justify-between gap-3 rounded-2xl bg-white/10 px-4 py-3 text-left transition hover:bg-white/15">
-              <span className="min-w-0"><span className="block truncate text-sm font-black">{s.en}</span><span className="block truncate text-[11px] text-white/70">{s.hi}</span></span>
-              <span className="shrink-0 text-sm font-black text-white/80">→</span>
-            </button>)}
-          </div>
-        </div>}
-
-        {view !== "knowledge-world" && <div className="mt-5 rounded-[2rem] bg-gradient-to-br from-[#0b3a63] to-[#001529] p-6 text-white shadow-sm md:p-7">
-          <div className="text-xs font-black uppercase tracking-widest text-white/60">Your learning / आपकी प्रगति</div>
-          {progressSummary.active ? <div className="mt-4">
-            <button onClick={()=>openSubject(progressSummary.active.subject)} className="w-full text-left">
-              <div className="text-lg font-black">{progressSummary.active.subject.en}</div>
-              <div className="mt-1 text-sm text-white/70">{progressSummary.active.subject.hi}</div>
-              <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-white" style={{width:progressSummary.active.percent+"%"}}/></div>
-              <div className="mt-2 flex justify-between text-xs font-bold"><span>{progressSummary.active.percent}% complete</span><span>Continue →</span></div>
-            </button>
-            {progressSummary.inProgress.length > 1 && <div className="mt-5 border-t border-white/15 pt-4">
-              <div className="text-xs font-black uppercase tracking-widest text-white/50">Resume other courses / अन्य courses जारी रखें</div>
-              <div className="mt-3 space-y-2">{progressSummary.inProgress.slice(1,4).map(item =>
-                <button key={item.subject.id} onClick={()=>openSubject(item.subject)} className="flex w-full items-center justify-between gap-3 rounded-xl bg-white/10 px-4 py-3 text-left transition hover:bg-white/15">
-                  <span className="min-w-0"><span className="block truncate text-sm font-bold">{item.subject.en}</span><span className="block truncate text-[11px] text-white/60">{item.subject.hi}</span></span>
-                  <span className="shrink-0 text-xs font-black text-white/80">{item.percent}% →</span>
-                </button>)}
-              </div>
-            </div>}
-          </div> : <div className="mt-4"><div className="text-lg font-black">Start your first course</div><div className="mt-2 text-sm leading-6 text-white/70">अपना पहला course चुनें और progress track करें।</div><button onClick={()=>navigate({ to: "/LearningHub/explore" })} className="mt-4 rounded-2xl bg-white px-5 py-3 text-sm font-black text-[#002344]">Explore Subjects →</button></div>}
-        </div>}
-      </section>}
-
-      {view !== "home" && <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-gradient-to-r from-white to-[#eef7fb] p-6 md:p-8">
-        <div className="flex flex-col gap-5 md:flex-row md:items-center md:justify-between"><div><div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0f4c81]"><FaGraduationCap/> LEARNING PATH / सीखने का रास्ता</div><h2 className="mt-2 text-2xl font-black md:text-3xl">Learn → Practise → Assess → Complete</h2><p className="mt-2 text-sm text-zinc-600">Learning को छोटे, स्पष्ट steps में पूरा करें।</p></div><div className="grid grid-cols-2 gap-2 sm:grid-cols-4">{[[FaBookOpen,"Learn","सीखें"],[FaPlayCircle,"Practise","अभ्यास"],[FaCheckCircle,"Assess","आकलन"],[FaGraduationCap,"Certificate","प्रमाणपत्र"]].map(([Icon,en,hi])=><div key={en} className="rounded-xl bg-white px-4 py-3 text-center shadow-sm"><Icon className="mx-auto text-lg text-[#002344]"/><div className="mt-1 text-xs font-black">{en}</div><div className="text-[10px] text-zinc-500">{hi}</div></div>)}</div></div>
-      </section>}
 
       {view !== "home" && <div className="mt-10">
         {visibleCategories.map(cat => {
@@ -2962,15 +2874,6 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
 
         {!gridSubjects.length && <div className="mt-10 rounded-3xl border border-dashed border-zinc-300 bg-white p-12 text-center text-zinc-500">{view === "my-learning" ? "अभी कोई course शुरू नहीं हुआ। Explore Subjects से अपना पहला course चुनें।" : "No course found. Try another search / कोई दूसरा विषय खोजें।"}</div>}
       </div>}
-
-      {view !== "home" && <section className="mt-14 grid gap-5 pb-8 md:grid-cols-4">
-        {[
-          [FaBookOpen, "Learn / सीखें", "Concepts, examples and reliable learning material."],
-          [FaPlayCircle, "Practise / अभ्यास", "Activities and practical application."],
-          [FaCheckCircle, "Assess / आकलन", "Quizzes and meaningful assessments."],
-          [FaGraduationCap, "Certify / प्रमाणन", "Completion-based certificate pathway."]
-        ].map(([Icon,title,desc])=><div key={title} className="rounded-2xl border border-zinc-200 bg-white p-6 shadow-sm"><Icon className="text-3xl text-[#002344]"/><h3 className="mt-4 text-lg font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{desc}</p></div>)}
-      </section>}
     </main>
   </div>;
 }

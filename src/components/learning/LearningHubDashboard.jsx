@@ -99,9 +99,7 @@ export function LearningHubDashboard({
   progressSummary, categories = [], knowledgeWorldSubjects = [],
   onStart, onOpenSubject, onExplore, onKnowledge, onContinue, onCategory, cardProgress
 }) {
-  const active = progressSummary?.active;
   const inProgress = progressSummary?.inProgress || [];
-  const completedCount = progressSummary?.completedCount || 0;
 
   // "Recommended" prefers genuinely in-progress courses the learner has not just
   // opened, and falls back to featured flagship courses for a first-time learner.
@@ -120,47 +118,6 @@ export function LearningHubDashboard({
     : featured.map((s) => ({ subject: s, percent: cardProgress ? cardProgress(s) : 0 }));
 
   return <>
-    {/* Start Here */}
-    <section className="ssf-panel mt-10">
-      <div className="grid gap-8 lg:grid-cols-[1.5fr_1fr]">
-        <div>
-          <div className="flex items-center gap-3 text-[11px] font-bold uppercase tracking-[0.2em] text-[#FF6600]"><span>◆</span> Start Here / यहाँ से शुरू करें <GoldRule className="flex-1" /></div>
-          <h2 className="mt-4 font-serif text-3xl font-bold leading-tight text-[#142b45] md:text-4xl">अपनी Learning Journey चुनिए</h2>
-          <p className="mt-3 max-w-2xl text-sm leading-7 text-[#5b6b7c]">Learning Area चुनें → subject देखें → course overview → modules → lessons → practice → quiz. हर step स्पष्ट और क्रमबद्ध है।</p>
-
-          <div className="mt-7 rounded-2xl border border-[#FFD166]/40 bg-gradient-to-br from-[#FFF3D6] to-white p-5">
-            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FF6600]">{active ? "Continue Learning" : "Recommended first step"}</div>
-            <div className="mt-2 font-serif text-xl font-bold text-[#142b45]">{active ? active.subject.en : "Primary Education"}</div>
-            <div className="text-sm font-semibold text-[#7286a0]">{active ? active.subject.hi : "प्राथमिक शिक्षा — letters, sounds, numbers, reading and writing"}</div>
-            {active && <div className="mt-4 h-2 overflow-hidden rounded-full bg-[#F5E6CE]"><div className="h-full rounded-full bg-gradient-to-r from-[#FF6600] to-[#FFD166]" style={{ width: active.percent + "%" }} /></div>}
-            {active && <div className="mt-2 flex items-center justify-between text-xs font-bold text-[#FF6600]"><span>{active.percent}% Complete</span><span>In progress</span></div>}
-            <button type="button" onClick={() => active ? onOpenSubject(active.subject) : onStart()} className="mt-5 inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-6 py-3 text-sm font-bold text-[#142b45] shadow-[0_16px_36px_-20px_rgba(184,144,63,0.9)] transition hover:brightness-110">
-              {active ? "Continue" : "Start Learning"} <FaArrowRight aria-hidden="true" />
-            </button>
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-5">
-          <div className="rounded-2xl border border-[#EADFCC] bg-[#FDF6E9] p-5">
-            <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FF6600]">Your snapshot / आपकी प्रगति</div>
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              <div className="rounded-xl border border-[#EADFCC] bg-white p-4 text-center"><div className="font-serif text-3xl font-bold text-[#142b45]">{inProgress.length}</div><div className="mt-1 text-[10px] font-bold uppercase tracking-wider text-[#8a97a5]">In progress</div></div>
-              <div className="rounded-xl border border-[#EADFCC] bg-white p-4 text-center"><div className="font-serif text-3xl font-bold text-[#142b45]">{completedCount}</div><div className="mt-1 text-[10px] font-bold uppercase tracking-wider text-[#8a97a5]">Completed</div></div>
-            </div>
-            <button type="button" onClick={onKnowledge} className="mt-4 w-full rounded-full border border-[#FF6600]/30 bg-white px-4 py-3 text-sm font-bold text-[#c2410c] transition hover:bg-[#FFF3D6]">🌍 Explore Knowledge World</button>
-          </div>
-          <button type="button" onClick={onExplore} className="group flex items-center justify-between gap-4 rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#001529] p-5 text-left text-white shadow-[0_24px_50px_-30px_rgba(13,36,59,0.9)] transition hover:brightness-110">
-            <span>
-              <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#FFD166]">Explore</span>
-              <span className="mt-1 block font-serif text-lg font-bold">सभी Subjects देखें</span>
-              <span className="mt-1 block text-xs text-white/60">Learning Areas के अनुसार</span>
-            </span>
-            <FaArrowRight className="shrink-0 text-[#FFD166] transition group-hover:translate-x-1" />
-          </button>
-        </div>
-      </div>
-    </section>
-
     {/* Learning Areas */}
     <section className="mt-14">
       <SectionTitle icon={<FaLayerGroup aria-hidden="true" />} eyebrow="Learning Areas / सीखने के क्षेत्र"
