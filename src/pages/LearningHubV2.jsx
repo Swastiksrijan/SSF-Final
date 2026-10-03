@@ -1830,6 +1830,29 @@ const formatBilingual = (text) => {
   return parts.slice(0, -1).join(" / ") + " (" + parts[parts.length - 1].trim() + ")";
 };
 
+// Renders authored lesson notes: blank-line paragraphs, "- " bullets and
+// **bold** spans. Plain strings without markup render as a single paragraph.
+const LessonNotes = ({ text, className }) => {
+  if (!text) return null;
+  const lines = String(text).split("\n");
+  const blocks = [];
+  let list = null;
+  const inline = (s) => s.split(/(\*\*[^*]+\*\*)/g).filter(Boolean).map((part, i) =>
+    part.startsWith("**") && part.endsWith("**")
+      ? <strong key={i} className="font-black text-[#002344]">{part.slice(2, -2)}</strong>
+      : <span key={i}>{part}</span>
+  );
+  lines.forEach((raw, i) => {
+    const line = raw.trim();
+    if (!line) { if (list) { blocks.push(<ul key={"u" + i} className="list-disc space-y-1 pl-5">{list}</ul>); list = null; } return; }
+    if (line.startsWith("- ")) { (list = list || []).push(<li key={i}>{inline(line.slice(2))}</li>); return; }
+    if (list) { blocks.push(<ul key={"u" + i} className="list-disc space-y-1 pl-5">{list}</ul>); list = null; }
+    blocks.push(<p key={i} className="leading-8">{inline(line)}</p>);
+  });
+  if (list) blocks.push(<ul key="u-end" className="list-disc space-y-1 pl-5">{list}</ul>);
+  return <div className={className}>{blocks}</div>;
+};
+
 const buildTopicModules = (subject) => {
   const profile = getSubjectProfile(subject);
   return profile.modules.map((module, mi) => {
@@ -1908,29 +1931,39 @@ const buildEducationModules = (subject) => {
       const t = topic.title;
       const plain = t.split(" / ")[0].trim();
       const { question: q, options, answer, explain } = topic.quiz;
-      return [formatBilingual(t), topic.learn, {
-        objectives: [
+      // Enriched subjects author the full Primary-level field set on each topic
+      // (body, objectives, deep, why, examples, practice, mistakes, summary).
+      // Subjects that are not yet enriched fall back to the generic shape.
+      const rich = Boolean(topic.body && topic.objectives && topic.mistakes);
+      return [formatBilingual(t), rich ? topic.body : topic.learn, {
+        objectives: rich ? topic.objectives : [
           plain + " को " + subject.en + " के संदर्भ में समझना।",
           "इसका एक वास्तविक उदाहरण पहचानना और समझाना।",
           "activity करके सीखी बात को लागू करना।"
         ],
         content: {
           easyExplanation: topic.learn,
-          deepUnderstanding: explain,
-          whyItMatters: subject.en + " में यह ज्ञान सीखने, निर्णय लेने और आगे बढ़ने में मदद करता है।",
-          keyPoints: [plain, module.title.split(" / ")[0], subject.en],
-          examples: [topic.example],
+          deepUnderstanding: rich ? topic.deep : explain,
+          whyItMatters: rich ? topic.why : subject.en + " में यह ज्ञान सीखने, निर्णय लेने और आगे बढ़ने में मदद करता है।",
+          keyPoints: rich ? (topic.keyPoints || [plain, module.title.split(" / ")[0], subject.en]) : [plain, module.title.split(" / ")[0], subject.en],
+          examples: rich ? topic.examples : [topic.example],
+          steps: rich ? (module.steps || undefined) : undefined,
+          checks: rich ? (module.checks || undefined) : undefined,
           practicalApplication: topic.activity,
-          commonMistakes: [
+          commonMistakes: rich ? topic.mistakes : [
             plain + " को केवल नाम/definition तक सीमित रखना।",
             "example और real-life application न जोड़ना।"
           ],
-          summary: topic.learn,
+          summary: rich ? topic.summary : topic.learn,
           knowledgeCheck: [{ question: q, options, answer, explain }]
         },
-        practice: [topic.activity],
+        practice: rich ? topic.practice : [topic.activity],
         activity: topic.activity,
-        reflection: [
+        reflection: rich ? (topic.reflection || [
+          "आज मैंने " + plain + " के बारे में क्या नया सीखा?",
+          "इसका एक और उदाहरण कहाँ मिलेगा?",
+          "कौन-सी बात दोहरानी या अभ्यास करनी है?"
+        ]) : [
           "आज मैंने " + plain + " के बारे में क्या नया सीखा?",
           "इसका एक और उदाहरण कहाँ मिलेगा?",
           "कौन-सी बात दोहरानी या अभ्यास करनी है?"
@@ -2482,7 +2515,16 @@ function LearningSubject({ subject, onBack }) {
             </div>
           </div>
           <div className="overflow-y-auto p-5 md:p-8">
-            <p className="text-base leading-8 text-zinc-700">{lessons[activeLesson].body}</p>
+            {(lessons[activeLesson].detail?.content?.steps?.length > 0 || lessons[activeLesson].detail?.content?.checks?.length > 0) && (
+              <div className="mb-5 rounded-2xl bg-[#f1f7fa] p-4">
+                <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">How to Learn It / कैसे सीखें</div>
+                {lessons[activeLesson].detail.content.steps?.length > 0 && <ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-7 text-zinc-700">{lessons[activeLesson].detail.content.steps.map((s,i)=><li key={i}>{s}</li>)}</ol>}
+                {lessons[activeLesson].detail.content.checks?.length > 0 && <div className="mt-3"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Check your understanding / समझ जाँचें</div><ul className="mt-1 list-disc space-y-1 pl-5 text-sm leading-7 text-zinc-700">{lessons[activeLesson].detail.content.checks.map((s,i)=><li key={i}>{s}</li>)}</ul></div>}
+              </div>
+            )}
+            {/[\n]|\*\*|^-\s/m.test(String(lessons[activeLesson].body || ""))
+              ? <LessonNotes text={lessons[activeLesson].body} className="space-y-3 text-base text-zinc-700" />
+              : <p className="text-base leading-8 text-zinc-700">{lessons[activeLesson].body}</p>}
             <div className="mt-4 flex flex-wrap gap-2">
               <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
               <span className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#0f4c81]">👄 Repeat / बोलें</span>
@@ -2493,6 +2535,7 @@ function LearningSubject({ subject, onBack }) {
               {[
                 ["Objectives / उद्देश्य", lessons[activeLesson].detail.objectives],
                 ["Deep Understanding / गहरी समझ", lessons[activeLesson].detail.content?.deepUnderstanding],
+                ["Why It Matters / क्यों जरूरी है", lessons[activeLesson].detail.content?.whyItMatters],
                 ["Examples / उदाहरण", lessons[activeLesson].detail.content?.examples],
                 ["Practice / अभ्यास", lessons[activeLesson].detail.practice],
                 ["Activity / गतिविधि", lessons[activeLesson].detail.activity],
