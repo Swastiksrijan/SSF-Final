@@ -12,6 +12,8 @@ import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../data/coursesData"
 import { ENDPOINTS } from "../config/api";
 import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../data/englishFromBasicsContent";
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
+import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCount } from "../data/knowledgeWorldCourse";
+import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGORY } from "../data/learningCurriculum";
 import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
@@ -1846,6 +1848,98 @@ const buildTopicModules = (subject) => {
   });
 };
 
+// Knowledge World: turns a subject-specific KW course into the module/lesson
+// structure the course UI renders. Each topic becomes a rich lesson built from
+// that topic's own learn / example / activity / quiz material.
+const buildKnowledgeWorldModules = (subject) => {
+  const course = getKnowledgeWorldCourse(subject);
+  if (!course) return null;
+  return course.modules.map((module, mi) => ({
+    id: subject.id + "-kw-module-" + (mi + 1),
+    title: course.icon + " " + formatBilingual(module.title),
+    subtitle: module.summary,
+    lessons: module.topics.map((topic) => {
+      const t = topic.title;
+      const plain = t.split(" / ")[0].trim();
+      const { question: q, options, answer, explain } = topic.quiz;
+      return [formatBilingual(t), topic.learn, {
+        objectives: [
+          plain + " को " + subject.en + " के संदर्भ में समझना।",
+          "इसका एक वास्तविक उदाहरण पहचानना और समझाना।",
+          "activity करके सीखी बात को लागू करना।"
+        ],
+        content: {
+          easyExplanation: topic.learn,
+          deepUnderstanding: explain,
+          whyItMatters: subject.en + " में यह ज्ञान रोज़मर्रा की समझ और सही निर्णय में मदद करता है।",
+          keyPoints: [plain, module.title.split(" / ")[0], subject.en],
+          examples: [topic.example],
+          practicalApplication: topic.activity,
+          commonMistakes: [
+            plain + " को केवल नाम/definition तक सीमित रखना।",
+            "example और real-life application न जोड़ना।"
+          ],
+          summary: topic.learn,
+          knowledgeCheck: [{ question: q, options, answer, explain }]
+        },
+        practice: [topic.activity],
+        activity: topic.activity,
+        reflection: [
+          "आज मैंने " + plain + " के बारे में क्या नया सीखा?",
+          "इसका एक और उदाहरण कहाँ मिलेगा?",
+          "कौन-सी बात दोहरानी या अभ्यास करनी है?"
+        ]
+      }];
+    })
+  }));
+};
+
+// Education: turns a subject-specific Education course into the module/lesson
+// structure the course UI renders. Same proven shape as Knowledge World, but
+// Education subjects get their own subject-specific content (no generic filler).
+const buildEducationModules = (subject) => {
+  const course = getEducationCourse(subject);
+  if (!course) return null;
+  return course.modules.map((module, mi) => ({
+    id: subject.id + "-edu-module-" + (mi + 1),
+    title: course.icon + " " + formatBilingual(module.title),
+    subtitle: module.summary,
+    lessons: module.topics.map((topic) => {
+      const t = topic.title;
+      const plain = t.split(" / ")[0].trim();
+      const { question: q, options, answer, explain } = topic.quiz;
+      return [formatBilingual(t), topic.learn, {
+        objectives: [
+          plain + " को " + subject.en + " के संदर्भ में समझना।",
+          "इसका एक वास्तविक उदाहरण पहचानना और समझाना।",
+          "activity करके सीखी बात को लागू करना।"
+        ],
+        content: {
+          easyExplanation: topic.learn,
+          deepUnderstanding: explain,
+          whyItMatters: subject.en + " में यह ज्ञान सीखने, निर्णय लेने और आगे बढ़ने में मदद करता है।",
+          keyPoints: [plain, module.title.split(" / ")[0], subject.en],
+          examples: [topic.example],
+          practicalApplication: topic.activity,
+          commonMistakes: [
+            plain + " को केवल नाम/definition तक सीमित रखना।",
+            "example और real-life application न जोड़ना।"
+          ],
+          summary: topic.learn,
+          knowledgeCheck: [{ question: q, options, answer, explain }]
+        },
+        practice: [topic.activity],
+        activity: topic.activity,
+        reflection: [
+          "आज मैंने " + plain + " के बारे में क्या नया सीखा?",
+          "इसका एक और उदाहरण कहाँ मिलेगा?",
+          "कौन-सी बात दोहरानी या अभ्यास करनी है?"
+        ]
+      }];
+    })
+  }));
+};
+
 // Single source of truth for a subject's module structure. Both the lesson viewer
 // and the dashboard progress summary use this so that progress is tracked
 // consistently for structured courses, Secondary Education and topic-based subjects.
@@ -1857,7 +1951,8 @@ const getSubjectModules = (subject) => {
   if (SUBJECT_MODULES_CACHE.has(subject.id)) return SUBJECT_MODULES_CACHE.get(subject.id);
   const structuredCourse = hasStructuredCourse(subject) ? resolveStructuredCourse(subject).course : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
-  const secondaryModules = isSecondaryEducation
+  const eduModules = isEducationSubject(subject) ? buildEducationModules(subject) : null;
+  const secondaryModules = !eduModules && isSecondaryEducation
     ? SECONDARY_EDUCATION_MODULES.map((module, mi) => ({
         id: subject.id + "-secondary-module-" + (mi + 1),
         title: formatBilingual(module.title),
@@ -1870,7 +1965,8 @@ const getSubjectModules = (subject) => {
         lessons: m.lessons.map((l) => [l.title.en + " / " + l.title.hi, l.content?.easyExplanation || ""])
       }))
     : buildTopicModules(subject);
-  const resolved = resolveSubjectModules(subject, structuredCourse, buildStructuredModules, secondaryModules);
+  const kwModules = isKnowledgeWorldSubject(subject) ? buildKnowledgeWorldModules(subject) : null;
+  const resolved = resolveSubjectModules(subject, structuredCourse, buildStructuredModules, eduModules || secondaryModules || kwModules);
   const total = resolved.reduce((n, m) => n + (m.lessons?.length || 0), 0);
   const result = { total, moduleCount: resolved.length, hasStructured: Boolean(structuredCourse) };
   SUBJECT_MODULES_CACHE.set(subject.id, result);
@@ -2037,8 +2133,11 @@ function LearningSubject({ subject, onBack }) {
   const structuredResolution = resolveStructuredCourse(subject);
   const structuredCourseId = structuredResolution.id;
   const structuredCourse = hasStructuredCourse(subject) ? structuredResolution.course : null;
+  const kwCourse = isKnowledgeWorldSubject(subject) ? getKnowledgeWorldCourse(subject) : null;
+  const eduCourse = isEducationSubject(subject) ? getEducationCourse(subject) : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
-  const secondaryModules = isSecondaryEducation
+  const eduModules = eduCourse ? buildEducationModules(subject) : null;
+  const secondaryModules = !eduModules && isSecondaryEducation
     ? SECONDARY_EDUCATION_MODULES.map((module, mi) => ({
         id: subject.id + "-secondary-module-" + (mi + 1),
         title: formatBilingual(module.title),
@@ -2062,8 +2161,13 @@ function LearningSubject({ subject, onBack }) {
       }))
     : buildTopicModules(subject);
   const modules = useMemo(
-    () => resolveSubjectModules(subject, structuredCourse, buildStructuredModules, secondaryModules),
-    [subject, structuredCourse, secondaryModules]
+    () => resolveSubjectModules(
+      subject,
+      structuredCourse,
+      buildStructuredModules,
+      eduModules || secondaryModules || (isKnowledgeWorldSubject(subject) ? buildKnowledgeWorldModules(subject) : null)
+    ),
+    [subject, structuredCourse, secondaryModules, eduModules]
   );
 
   // Flatten module lessons into the structure used by the active-lesson panel.
@@ -2086,12 +2190,23 @@ function LearningSubject({ subject, onBack }) {
       ).flat()
     : [];
   const subjectQuiz = (SUBJECT_CONTENT_ALL[subject.en] && SUBJECT_CONTENT_ALL[subject.en].quiz) || [];
+  const kwQuiz = kwCourse ? kwCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
+  const eduQuiz = eduCourse ? eduCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
+  // Education and Knowledge World share the same rich course UI (overview,
+  // modules, glossary, project, revision, mastery). `richCourse` selects
+  // whichever applies so the sections below stay single-sourced.
+  const richCourse = eduCourse || kwCourse;
+  const richTopicCount = eduCourse ? educationTopicCount(eduCourse) : knowledgeWorldTopicCount(kwCourse);
   const quizQuestions = structuredAssessmentPool.length
     ? structuredAssessmentPool.slice(0, 5).map(q => ({
         q: q.q || q.question,
         options: q.options || [],
         answer: typeof q.answer === "number" ? q.answer : 0
       }))
+    : eduQuiz.length
+      ? eduQuiz.slice(0, 5)
+    : kwQuiz.length
+      ? kwQuiz.slice(0, 5)
     : subjectQuiz.length
       ? subjectQuiz.slice(0, 5).map(q => ({ q: q.question, options: q.options, answer: q.answer }))
       : [
@@ -2121,7 +2236,25 @@ function LearningSubject({ subject, onBack }) {
   const moduleAssessmentComplete = moduleAssessments.length === 0 || modulePassCount === moduleAssessments.length;
   const finalAssessmentPassed = Boolean(finalResult?.passed);
   const certificateEligible = allLearningComplete && moduleAssessmentComplete && finalAssessmentPassed;
-  const courseMeta = structuredCourse || {
+  const courseMeta = structuredCourse || (eduCourse ? {
+    title: { en: subject.en, hi: subject.hi },
+    level: eduCourse.level,
+    learningHours: Math.max(1, Math.round(educationTopicCount(eduCourse) * 0.5)),
+    version: "1.0",
+    lastReviewed: "2026-10-03",
+    audience: eduCourse.overview.what,
+    prerequisites: ["किसी पूर्व ज्ञान की जरूरत नहीं — यह beginner से शुरू होता है।"],
+    outcomes: [eduCourse.overview.outcome, eduCourse.overview.why, eduCourse.overview.where]
+  } : kwCourse ? {
+    title: { en: subject.en, hi: subject.hi },
+    level: kwCourse.level,
+    learningHours: Math.max(1, Math.round(knowledgeWorldTopicCount(kwCourse) * 0.5)),
+    version: "1.0",
+    lastReviewed: "2026-10-03",
+    audience: kwCourse.overview.what,
+    prerequisites: ["किसी पूर्व ज्ञान की जरूरत नहीं — यह beginner से शुरू होता है।"],
+    outcomes: [kwCourse.overview.outcome, kwCourse.overview.why, kwCourse.overview.where]
+  } : {
     title: { en: subject.en, hi: subject.hi },
     level: "foundation",
     learningHours: 0,
@@ -2134,7 +2267,7 @@ function LearningSubject({ subject, onBack }) {
       "Use examples and activities to connect knowledge with real situations.",
       "Review learning through practice and assessment before claiming completion."
     ]
-  };
+  });
   const markDone = (i) => setDone(current => {
     const next = current.includes(i) ? current : [...current, i];
     try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch {}
@@ -2241,6 +2374,30 @@ function LearningSubject({ subject, onBack }) {
           <div className="mt-3 h-3 overflow-hidden rounded-full bg-white"><div className="h-full bg-gradient-to-r from-[#003366] to-[#0a9396]" style={{width:progress+"%"}}/></div>
         </div>
       </section>
+
+      {richCourse && <section className="mt-8 grid gap-6 md:grid-cols-2">
+        <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+          <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">About this subject / इस विषय के बारे में</div>
+          <h3 className="mt-2 text-xl font-black text-[#002344]">यह विषय क्या है? / What is it?</h3>
+          <p className="mt-2 text-sm leading-7 text-zinc-600">{richCourse.overview.what}</p>
+          <h3 className="mt-5 text-xl font-black text-[#002344]">क्यों महत्वपूर्ण है? / Why it matters</h3>
+          <p className="mt-2 text-sm leading-7 text-zinc-600">{richCourse.overview.why}</p>
+        </div>
+        <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+          <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Where we see it / कहाँ दिखता है</div>
+          <p className="mt-2 text-sm leading-7 text-zinc-600">{richCourse.overview.where}</p>
+          <h3 className="mt-5 text-xl font-black text-[#002344]">सीखने के बाद आप समझ पाएँगे / What you will understand</h3>
+          <p className="mt-2 text-sm leading-7 text-zinc-600">{richCourse.overview.outcome}</p>
+          <div className="mt-5 rounded-2xl bg-[#f1f7fa] p-4 text-sm font-bold text-[#002344]">
+            🧭 Learning Map: {richCourse.modules.length} modules • {richTopicCount} topics • {richCourse.glossary.length} key words • quiz + activity + project
+          </div>
+        </div>
+      </section>}
+
+      {richCourse && richCourse.facts?.length > 0 && <section className="mt-6 rounded-[2rem] border border-[#ffe6b3] bg-[#fffaf0] p-6 shadow-sm md:p-7">
+        <div className="text-xs font-black uppercase tracking-widest text-[#b8860b]">Did You Know? / क्या आप जानते हैं?</div>
+        <ul className="mt-3 grid gap-3 md:grid-cols-2">{richCourse.facts.map((f,i)=><li key={i} className="rounded-2xl bg-white p-4 text-sm font-semibold leading-6 text-[#5a3e00] shadow-sm">💡 {f}</li>)}</ul>
+      </section>}
 
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_330px]">
         <div className="space-y-7">
@@ -2357,6 +2514,35 @@ function LearningSubject({ subject, onBack }) {
         </div>
       </div>}
 
+      {richCourse && <section className="mt-8 grid gap-6 lg:grid-cols-2">
+        <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+          <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Key Words / मुख्य शब्द</div>
+          <h3 className="mt-2 text-xl font-black text-[#002344]">Glossary</h3>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">{richCourse.glossary.map((g,i)=><div key={i} className="rounded-xl bg-[#f7fafc] p-3"><div className="text-sm font-black text-[#002344]">{g.term} <span className="text-[#0f4c81]">/ {g.hi}</span></div><div className="mt-1 text-xs leading-5 text-zinc-600">{g.meaning}</div></div>)}</div>
+        </div>
+        <div className="space-y-6">
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+            <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Project / परियोजना</div>
+            <h3 className="mt-2 text-xl font-black text-[#002344]">{richCourse.project.objective}</h3>
+            <div className="mt-3 grid gap-3 text-sm leading-6 text-zinc-600 md:grid-cols-2">
+              <div><span className="font-black text-[#002344]">Materials:</span> {richCourse.project.materials}</div>
+              <div><span className="font-black text-[#002344]">Observation:</span> {richCourse.project.observation}</div>
+            </div>
+            <div className="mt-3"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Steps</div><ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-6 text-zinc-600">{richCourse.project.steps.map((s,i)=><li key={i}>{s}</li>)}</ol></div>
+            <div className="mt-3 grid gap-2 text-sm leading-6 text-zinc-600 md:grid-cols-2"><div><span className="font-black text-[#002344]">Result:</span> {richCourse.project.result}</div><div><span className="font-black text-[#002344]">Reflection:</span> {richCourse.project.reflection}</div></div>
+          </div>
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
+            <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Quick Revision / द्रुत पुनरावृत्ति</div>
+            <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{richCourse.revision.map((r,i)=><li key={i}>{r}</li>)}</ul>
+          </div>
+          <div className="rounded-[2rem] border border-[#d9e7f0] bg-[#f7fafc] p-6 shadow-sm md:p-7">
+            <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Related Knowledge / संबंधित ज्ञान</div>
+            <p className="mt-1 text-xs text-zinc-500">Knowledge World आपस में जुड़ा है — इन विषयों से यह topic गहरा होता है।</p>
+            <div className="mt-3 flex flex-wrap gap-2">{richCourse.related.map((r,i)=><span key={i} className="rounded-full bg-white px-4 py-2 text-xs font-black text-[#002344] shadow-sm">🔗 {r}</span>)}</div>
+          </div>
+        </div>
+      </section>}
+
       <section className="mt-8 rounded-[2rem] border border-[#d9e7f0] bg-white p-6 md:p-8">
         <div className="flex items-center gap-3"><FaGraduationCap className="text-3xl text-[#002344]"/><div><h2 className="text-2xl font-black">Certificate Pathway / प्रमाणन मार्ग</h2><p className="text-sm text-zinc-500">Learning first. Certification after genuine completion and assessment.</p></div></div>
         <div className="mt-6 grid gap-3 md:grid-cols-5">{[
@@ -2465,7 +2651,6 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     });
     return map;
   }, []);
-
   const progressSummary = useMemo(() => {
     const inProgress = [];
     let completedCount = 0;
