@@ -1157,13 +1157,46 @@ const PRIMARY_TEACHING_MODE = {
 };
 
 const SECONDARY_EDUCATION_MODULES = [
-  { title:"Language & Communication / भाषा एवं संचार", lessons:["Hindi: व्याकरण एवं भाषा-प्रयोग","English: grammar, vocabulary & comprehension","Reading: passage, inference & main idea","Writing: paragraph, letter, report & structured answer"] },
-  { title:"Mathematics / गणित", lessons:["Number system, integers, fractions & decimals","Algebra: expressions, equations & identities","Geometry: lines, angles, triangles & circles","Data handling, graphs, ratio, percentage & practical problems"] },
-  { title:"Science / विज्ञान", lessons:["Physics: motion, force, work, energy & basic electricity","Chemistry: matter, atoms, mixtures, reactions & everyday chemistry","Biology: cells, tissues, life processes & health","Scientific method: observation, hypothesis, experiment, evidence & conclusion"] },
-  { title:"Social Science / सामाजिक विज्ञान", lessons:["History: chronology, sources, causes, events & consequences","Geography: maps, resources, climate, population & human activities","Civics: democracy, rights, duties, institutions & participation","Economics: needs, production, markets, money, employment & basic budgeting"] },
-  { title:"Study Skills & Examination / अध्ययन एवं परीक्षा कौशल", lessons:["Syllabus mapping & chapter-wise study plan","Active reading, notes, recall & spaced revision","Question understanding, answer structure & time management","Mock test, error analysis & final revision"] },
-  { title:"Life, Digital & Career Readiness / जीवन, डिजिटल एवं करियर तैयारी", lessons:["Communication, teamwork & responsible behaviour","Digital literacy, online safety & information verification","Career awareness: interests, subjects, skills & pathways","Goal setting, projects, presentation & continuous improvement"] }
+  { title:"Hindi Language & Literature / हिंदी भाषा एवं साहित्य", lessons:["वर्ण, शब्द, वाक्य एवं भाषा-प्रयोग","संज्ञा, सर्वनाम, विशेषण, क्रिया, काल एवं वाक्य-रचना","संधि, समास, उपसर्ग, प्रत्यय, पर्यायवाची, विलोम एवं मुहावरे","अपठित गद्यांश, पद्यांश, निबंध, पत्र, आवेदन, संवाद एवं रिपोर्ट लेखन"] },
+  { title:"English Language & Communication / अंग्रेज़ी भाषा एवं संचार", lessons:["Parts of Speech, sentence structure एवं vocabulary","Tenses, articles, prepositions, modals एवं subject-verb agreement","Reading comprehension, inference, main idea एवं vocabulary in context","Paragraph, letter, email, report, story, speaking एवं listening practice"] },
+  { title:"Mathematics Foundations / गणित की आधारशिला", lessons:["Number system, real numbers, integers, fractions एवं decimals","Exponents, powers, ratio, proportion एवं percentage","Algebraic expressions, identities एवं factorisation","Linear equations, word problems एवं mathematical reasoning"] },
+  { title:"Advanced Algebra / बीजगणित", lessons:["Polynomials एवं operations","Linear equations एवं pairs of equations","Quadratic equations एवं applications","Arithmetic progression, sequences एवं patterns"] },
+  { title:"Geometry / ज्यामिति", lessons:["Lines, angles एवं basic geometric reasoning","Triangles, congruence एवं similarity","Quadrilaterals, polygons एवं constructions","Circles, theorems एवं proof-based questions"] },
+  { title:"Mensuration, Trigonometry & Coordinate Geometry / क्षेत्रमिति, त्रिकोणमिति एवं निर्देशांक", lessons:["Perimeter, area एवं practical mensuration","Surface area एवं volume","Coordinate geometry एवं graphs","Trigonometric ratios, identities एवं applications"] },
+  { title:"Statistics, Probability & Data / सांख्यिकी, प्रायिकता एवं आँकड़े", lessons:["Data collection, tables एवं frequency","Mean, median, mode एवं interpretation","Graphs, charts एवं data comparison","Probability basics एवं real-life decision making"] },
+  { title:"Physics / भौतिक विज्ञान", lessons:["Units, measurement, motion, distance, displacement, speed एवं velocity","Force, Newton's laws, gravitation एवं pressure","Work, energy, power, heat एवं temperature","Sound, light, reflection, refraction एवं everyday physics"] },
+  { title:"Electricity, Magnetism & Energy / विद्युत, चुंबकत्व एवं ऊर्जा", lessons:["Electric current, voltage, resistance एवं circuits","Series/parallel circuits एवं electrical safety","Magnetism, electromagnetic effects एवं applications","Renewable/non-renewable energy एवं energy conservation"] },
+  { title:"Chemistry / रसायन विज्ञान", lessons:["Matter, states, physical/chemical changes एवं separation","Elements, compounds, mixtures, atoms एवं molecules","Atomic structure, valency, formulas एवं periodic table basics","Chemical reactions, acids, bases, salts, metals एवं non-metals"] },
+  { title:"Biology / जीव विज्ञान", lessons:["Cell, organelles, tissues एवं organisation","Nutrition, respiration, transport एवं excretion","Control, coordination, reproduction एवं heredity basics","Microorganisms, diseases, immunity, health एवं hygiene"] },
+  { title:"Environment & Life Science / पर्यावरण एवं जीवन विज्ञान", lessons:["Ecosystems, food chains, habitats एवं biodiversity","Air, water, soil एवं pollution","Natural resources, conservation एवं climate change","Sustainable living, waste management एवं environmental projects"] },
+  { title:"History / इतिहास", lessons:["Historical sources, chronology एवं evidence","Ancient and medieval India: society, culture एवं developments","Modern India, colonialism एवं social-economic change","Freedom movement, major events, causes, consequences एवं historical reasoning"] },
+  { title:"Geography / भूगोल", lessons:["Earth, globe, latitude, longitude, maps एवं scale","Physical features, mountains, plateaus, plains एवं rivers","Climate, weather, natural resources एवं agriculture","Population, settlements, industries, transport एवं map practice"] },
+  { title:"Civics & Constitution / नागरिक शास्त्र एवं संविधान", lessons:["Society, government, democracy एवं Constitution","Fundamental Rights, Duties, equality एवं justice","Parliament, executive, judiciary एवं rule of law","Elections, local government, Panchayati Raj, media एवं citizen participation"] },
+  { title:"Economics & Financial Literacy / अर्थशास्त्र एवं वित्तीय साक्षरता", lessons:["Needs, wants, resources, production एवं economic activities","Money, banking, markets, demand-supply एवं prices","Income, expenditure, savings, budget एवं responsible spending","Employment, poverty, development, consumers एवं digital payment safety"] },
+  { title:"Computer & Digital Skills / कंप्यूटर एवं डिजिटल कौशल", lessons:["Computer hardware, software, operating system, files एवं typing","Word processing, spreadsheets, presentations एवं digital documents","Internet, search, email, cloud tools एवं online services","Cyber safety, passwords, phishing, privacy, misinformation एवं AI awareness"] },
+  { title:"Study Skills, Career & Life Readiness / अध्ययन, करियर एवं जीवन तैयारी", lessons:["Syllabus mapping, notes, active reading, recall एवं revision","Question solving, answer writing, time management, mock tests एवं error analysis","Communication, teamwork, problem solving, goals एवं presentation","Career awareness, subject pathways, scholarships, skills, resume एवं interview basics"] }
 ];
+
+const SECONDARY_DOMAIN_GUIDE = {
+  "Hindi Language & Literature / हिंदी भाषा एवं साहित्य":"भाषा को नियम रटने के बजाय उदाहरण, पाठ, लेखन और अभिव्यक्ति के साथ सीखें।",
+  "English Language & Communication / अंग्रेज़ी भाषा एवं संचार":"English को grammar, vocabulary, reading, listening, speaking और writing के integrated practice से सीखें।",
+  "Mathematics Foundations / गणित की आधारशिला":"गणित में concept, worked example, calculation और word problem को क्रम से समझें।",
+  "Advanced Algebra / बीजगणित":"Algebra में symbols, rules, transformations और real problems के बीच संबंध समझें।",
+  "Geometry / ज्यामिति":"आकृतियों, properties, constructions और reasoning/proof को diagram के साथ समझें।",
+  "Mensuration, Trigonometry & Coordinate Geometry / क्षेत्रमिति, त्रिकोणमिति एवं निर्देशांक":"Formula को याद करने से पहले उसका अर्थ, units, diagram और practical application समझें।",
+  "Statistics, Probability & Data / सांख्यिकी, प्रायिकता एवं आँकड़े":"Data को collect, organise, calculate, interpret और evidence के आधार पर explain करना सीखें।",
+  "Physics / भौतिक विज्ञान":"Physics में observation, units, law, formula, diagram, numerical और experiment को जोड़कर सीखें।",
+  "Electricity, Magnetism & Energy / विद्युत, चुंबकत्व एवं ऊर्जा":"Electrical और energy concepts को safe demonstrations, circuits, diagrams और calculations से समझें।",
+  "Chemistry / रसायन विज्ञान":"Chemistry में पदार्थ, संरचना, properties, reactions, equations और laboratory safety को साथ समझें।",
+  "Biology / जीव विज्ञान":"Biology में structure, function, process, diagram, health connection और observation पर जोर दें।",
+  "Environment & Life Science / पर्यावरण एवं जीवन विज्ञान":"Environment को local observation, ecosystem relationships, evidence और conservation action से समझें।",
+  "History / इतिहास":"History को dates की list नहीं, बल्कि sources, chronology, causes, consequences और perspectives से समझें।",
+  "Geography / भूगोल":"Geography में map, location, physical processes, human activity और data को जोड़कर सीखें।",
+  "Civics & Constitution / नागरिक शास्त्र एवं संविधान":"Civics में institutions, rights, duties, constitutional values और citizen participation को examples से समझें।",
+  "Economics & Financial Literacy / अर्थशास्त्र एवं वित्तीय साक्षरता":"Economics को household, market, employment, banking, budgeting और consumer situations से जोड़ें।",
+  "Computer & Digital Skills / कंप्यूटर एवं डिजिटल कौशल":"Digital learning में करके सीखना, safe workflow, privacy और information verification जरूरी है।",
+  "Study Skills, Career & Life Readiness / अध्ययन, करियर एवं जीवन तैयारी":"Learning को plan, practice, assessment, reflection, career exploration और practical life skills से जोड़ें।"
+};
 
 const KNOWLEDGE_WORLD_MODULES = {
   "Time & Calendar / समय एवं कैलेंडर":[["Units of Time / समय की इकाइयाँ",["⏱️ Second / सेकंड","⏱️ Minute / मिनट","🕐 Hour / घंटा","📅 Day, Week, Month, Year / दिन, सप्ताह, महीना, वर्ष"]],["Clock / घड़ी",["🕐 Hour Hand / घंटे की सुई","🕑 Minute Hand / मिनट की सुई","⏰ Analog Clock / एनालॉग घड़ी","📱 Digital Clock / डिजिटल घड़ी"]],["Calendar / कैलेंडर",["📆 Date & Day / तारीख एवं दिन","🗓️ Months / महीने","🌦️ Seasons / ऋतुएँ","🔁 Leap Year / लीप वर्ष"]],["Time Practice / समय अभ्यास",["➕ Add Time / समय जोड़ना","➖ Subtract Time / समय घटाना","⏳ Duration / अवधि","🎯 Timetable & Planning / समय योजना"]]],
@@ -1248,6 +1281,48 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
         }
       ];
     }
+  }
+
+  if (subject.en === "Secondary Education") {
+    const module = SECONDARY_EDUCATION_MODULES[mi % SECONDARY_EDUCATION_MODULES.length];
+    const focus = SECONDARY_DOMAIN_GUIDE[module.title] || "Concept, example, guided practice, independent practice, application और assessment के साथ सीखें।";
+    const lesson = module.lessons[li % module.lessons.length];
+    const body = "माध्यमिक शिक्षा में " + lesson + " को " + focus;
+    return [label, body, {
+      objectives:[
+        lesson + " के मुख्य concepts और vocabulary समझना।",
+        "Solved examples देखकर method/reasoning पहचानना।",
+        "नए प्रश्न या practical situation में concept स्वयं लागू करना।"
+      ],
+      content:{
+        easyExplanation:"📖 सरल समझ: " + lesson + " को पहले आसान भाषा में समझें, फिर textbook-style example और real-life connection से जोड़ें।",
+        deepUnderstanding:"🧠 गहरी समझ: क्या है, क्यों है, कैसे काम करता है, कब लागू होता है और answer/result को कैसे verify करेंगे—इन सवालों से topic को समझें।",
+        whyItMatters:"🎯 महत्व: यह lesson school learning, examination, आगे की पढ़ाई और practical problem-solving को मजबूत करता है।",
+        keyPoints:[module.title, lesson, focus],
+        examples:[
+          "एक solved example को step-by-step पढ़ें और हर step का कारण बताएं।",
+          "उसी concept पर एक नया example स्वयं करें।",
+          "इस topic का एक real-life या school-level application पहचानें।"
+        ],
+        steps:["🎯 Learning objective समझें","📖 concept और vocabulary सीखें","👀 example/diagram/model देखें","🗣️ method अपने शब्दों में समझाएँ","🛠️ guided practice करें","✍️ independent question/task करें","🔎 answer, calculation या evidence check करें","🔄 error सुधारकर revision करें"],
+        practicalApplication:"🏠/🏫 इस lesson से जुड़ा एक छोटा real-life या classroom task करें और उसका result लिखें।",
+        memoryHook:"🧠 समझो → उदाहरण देखो → तरीका समझाओ → खुद करो → जाँचो → सुधारो → दोहराओ।",
+        commonMistakes:["सिर्फ definition/formula याद करके application न करना।","Question की मांग या units/evidence को ignore करना।","गलत answer के बाद error analysis न करना।"],
+        summary:"Concept + Example + Practice + Application + Self-check = मजबूत learning."
+      },
+      practice:[
+        "3 मुख्य points बिना notes देखे लिखें।",
+        "2 guided और 2 independent questions/tasks करें।",
+        "एक application example अपने शब्दों में समझाएँ।"
+      ],
+      activity:"Mini Learning Task: " + lesson + " का concept → example → practice → result → reflection एक page पर पूरा करें।",
+      knowledgeCheck:[
+        {question:"" + lesson + " सीखने का सही तरीका क्या है?",options:["Concept समझना, example देखना, practice और self-check करना","केवल heading याद करना","सिर्फ notes copy करना","practice छोड़ देना"],answer:0},
+        {question:"गलत answer मिलने पर क्या करना चाहिए?",options:["Error का कारण पहचानकर method दोबारा करना","गलती छोड़ देना","बिना समझे answer याद करना","अगला topic छोड़ देना"],answer:0},
+        {question:"Learning का practical evidence क्या है?",options:["नए question/situation में concept सही लागू कर पाना","केवल definition बोलना","सिर्फ notebook भरना","केवल marks याद रखना"],answer:0}
+      ],
+      reflection:["आज मैंने कौन-सा concept अपने शब्दों में समझाया?","किस step में मेरी गलती हुई?","इस lesson को वास्तविक जीवन या अगले subject topic से कैसे जोड़ सकता/सकती हूँ?"]
+    }];
   }
 
   if (subject.category === "Knowledge World / ज्ञान संसार" && KNOWLEDGE_WORLD_MODULES[subject.en]) {
@@ -1713,9 +1788,16 @@ function LearningSubject({ subject, onBack }) {
               </div>
               {isPrimaryEducation && <PrimaryLessonVisual lesson={lessons[activeLesson]} />}
 
-              <div className="mt-5 flex gap-2 border-t border-zinc-200 pt-4">
-                <button onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-2 text-xs font-black text-[#003366] disabled:opacity-40">← Previous / पिछला</button>
-                <button onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#003366] px-3 py-2 text-xs font-black text-white disabled:opacity-40">Next / अगला →</button>
+              <div className="mt-5 border-t border-zinc-200 pt-4">
+                <div className="mb-3 flex items-center justify-between text-[11px] font-black text-zinc-500">
+                  <span>Lesson {activeLesson + 1} of {total} / पाठ {activeLesson + 1} / {total}</span>
+                  <span>{Math.round(((activeLesson + 1) / total) * 100)}% path</span>
+                </div>
+                <div className="mb-3 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#003366] to-[#0a9396]" style={{width:(((activeLesson + 1) / total) * 100)+"%"}}/></div>
+                <div className="flex gap-2">
+                  <button type="button" onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-3 text-xs font-black text-[#003366] disabled:cursor-not-allowed disabled:opacity-40">← Previous / पिछला</button>
+                  <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-[#003366] px-3 py-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Next Lesson / अगला पाठ →</button>
+                </div>
               </div>
               {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
                 {[
