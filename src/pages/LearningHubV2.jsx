@@ -1412,6 +1412,7 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
       reflection:["आज मैंने इस topic के बारे में क्या नया समझा?","मैंने कौन-सा example खुद करके देखा?","कहाँ गलती हुई और अगली बार उसे कैसे सुधारूँगा/सुधारूँगी?"]
     }
   ];
+};
 
 
 const formatBilingual = (text) => {
