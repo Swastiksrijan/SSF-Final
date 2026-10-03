@@ -11,6 +11,7 @@ import { ENDPOINTS } from "../config/api";
 import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../data/englishFromBasicsContent";
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
+import PrimaryLessonFresh from "../components/learning/PrimaryLessonFresh";
 import { SUBJECT_CONTENT } from "../data/learningHubSubjectContent";
 
 const HUB_IMAGES = {
@@ -1768,7 +1769,7 @@ function LearningSubject({ subject, onBack }) {
       ];
   const completed = done.length;
   const total = lessons.length;
-  const isRichLesson = isPrimaryEducation && /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(lessons[activeLesson]?.title || "");
+  const isRichLesson = isPrimaryEducation && /letters\s*&\s*sounds|अक्षर एवं ध्वनि/i.test(lessons[activeLesson]?.title || "");
 
   const progress = Math.round((completed / total) * 100);
   const moduleAssessments = structuredCourse
@@ -1816,12 +1817,31 @@ function LearningSubject({ subject, onBack }) {
     requestAnimationFrame(() => document.getElementById("current-lesson-content")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
 
-  if (isRichLesson) return <PrimaryLettersCourse
-    subject={subject}
-    nextLessonTitle={lessons[activeLesson + 1]?.title}
-    onMarkDone={() => markDone(activeLesson)}
-    onNextLesson={activeLesson < total - 1 ? () => goLesson(activeLesson + 1) : undefined}
-  />;
+  if (isPrimaryEducation) {
+    const cur = lessons[activeLesson];
+    const common = {
+      lessonLabel: cur.title,
+      moduleTitle: cur.module,
+      nextLessonTitle: lessons[activeLesson + 1]?.title,
+      onNextLesson: activeLesson < total - 1 ? () => goLesson(activeLesson + 1) : undefined,
+      onMarkDone: () => markDone(activeLesson)
+    };
+    if (isRichLesson) return <PrimaryLettersCourse subject={subject} {...common} />;
+    const d = cur.detail || {};
+    return <PrimaryLessonFresh {...common}
+      content={{
+        body: cur.body,
+        deep: d.content?.deepUnderstanding,
+        objectives: d.objectives,
+        examples: d.content?.examples,
+        practice: d.practice,
+        mistakes: d.content?.commonMistakes,
+        activity: d.activity,
+        summary: d.content?.summary
+      }}
+      check={d.knowledgeCheck}
+    />;
+  }
   const submitQuiz = () => {
     const passed = score >= 4;
     const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
