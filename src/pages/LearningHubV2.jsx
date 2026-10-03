@@ -10,6 +10,7 @@ import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../data/coursesData"
 import { ENDPOINTS } from "../config/api";
 import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../data/englishFromBasicsContent";
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
+import { SUBJECT_CONTENT } from "../data/learningHubSubjectContent";
 
 const HUB_IMAGES = {
   education: "/images/real/classroom-floor-seating.jpg",
@@ -691,7 +692,18 @@ const SUBJECT_PROFILE_RULES = [
   }
 ];
 
+// KNOWLEDGE_WORLD_MODULES is keyed by the full "English / Hindi" title, while the
+// subject exposes only the English part, so match on the English prefix.
+const knowledgeWorldModulesFor = (subject) => {
+  if (KNOWLEDGE_WORLD_MODULES[subject.en]) return KNOWLEDGE_WORLD_MODULES[subject.en];
+  const key = Object.keys(KNOWLEDGE_WORLD_MODULES).find((k) => k.split(" / ")[0].trim() === subject.en);
+  return key ? KNOWLEDGE_WORLD_MODULES[key] : null;
+};
+
 const getSubjectProfile = (subject) => {
+  if (subject.category === "Knowledge World / ज्ञान संसार" && knowledgeWorldModulesFor(subject)) {
+    return { icon:"🌍", modules: knowledgeWorldModulesFor(subject) };
+  }
   const hay = subject.en + " " + subject.hi;
   const matches = SUBJECT_PROFILE_RULES.filter((p) => p.test.test(hay));
   const hit = matches.sort((a, b) => b.test.source.length - a.test.source.length)[0];
@@ -1216,7 +1228,60 @@ const KNOWLEDGE_WORLD_MODULES = {
   "Science Around Us / हमारे आसपास का विज्ञान":[["Everyday Physics / रोज़मर्रा की भौतिकी",["⚖️ Force & Motion / बल एवं गति","💡 Light / प्रकाश","🔊 Sound / ध्वनि","🌡️ Heat / ऊष्मा"]],["Everyday Chemistry / रोज़मर्रा की रसायन",["💧 Mixtures / मिश्रण","🧂 Solutions / विलयन","🧼 Acids & Bases Basics / अम्ल एवं क्षार आधार","🔄 Physical & Chemical Change / भौतिक एवं रासायनिक परिवर्तन"]],["Everyday Biology / रोज़मर्रा की जीवविज्ञान",["🌱 Plants / पौधे","🦠 Microbes / सूक्ष्मजीव","🧍 Body / शरीर","🍽️ Food / भोजन"]],["Energy & Experiments / ऊर्जा एवं प्रयोग",["⚡ Electricity / बिजली","☀️ Solar Energy / सौर ऊर्जा","🌀 Wind / पवन ऊर्जा","🧪 Safe Experiment / सुरक्षित प्रयोग"]]]
 };
 
+// Builds a lesson from the subject-specific content registry (SUBJECT_CONTENT).
+// Rotation over the registry's own concept/example/practice/quiz material keeps
+// every module and lesson of a subject distinct while staying on-topic.
+const buildSpecificLesson = (subject, content, moduleTitle, label, mi, li) => {
+  const clean = String(label || "").replace(/^[^\s]+\s/, "");
+  const en = subject.en;
+  const pick = (arr, n) => (arr && arr.length ? arr[n % arr.length] : "");
+  const rotate = (arr, n, count) => {
+    if (!arr || !arr.length) return [];
+    const out = [];
+    for (let i = 0; i < Math.min(count, arr.length); i++) out.push(arr[(n + i) % arr.length]);
+    return out;
+  };
+  const concept = pick(content.concepts, mi * 3 + li);
+  const example = pick(content.examples, mi + li);
+  const practiceItem = pick(content.practice, mi + li);
+  const activityItem = pick(content.activities, mi + li);
+  const mistake = pick(content.mistakes, mi + li);
+  const safetyList = (content.safety || []).slice(0, 3);
+  const quiz = rotate(content.quiz, mi + li, 4);
+  const body = (moduleTitle ? "📘 " + moduleTitle + " • " : "") + clean + ": " + content.focus;
+  return [label, body, {
+    objectives: [
+      clean + " को " + en + " के संदर्भ में समझना। / Understand " + clean + " within " + en + ".",
+      concept,
+      "सीखे गए concept को उदाहरण और अभ्यास से लागू करना। / Apply the concept through example and practice."
+    ],
+    content: {
+      easyExplanation: "📖 सरल समझ / Simple meaning: " + clean + " — " + content.focus,
+      deepUnderstanding: "🧠 गहरी समझ / Deep understanding: " + concept,
+      whyItMatters: "🎯 क्यों जरूरी है / Why it matters: " + en + " में यह ज्ञान रोज़मर्रा की समझ और सही निर्णय में मदद करता है।",
+      keyPoints: rotate(content.concepts, mi, 4),
+      examples: [example, "🔎 अपने आसपास से एक और उदाहरण खोजें और समझाएँ।"],
+      steps: ["🎯 उद्देश्य समझें","📖 concept पढ़ें","👀 उदाहरण देखें","🔊 सुनें और बोलें","🛠️ guided practice करें","✍️ स्वयं अभ्यास करें","🔎 उत्तर जाँचें","🔁 revision करें"],
+      practicalApplication: "🏠 व्यावहारिक उपयोग / Practical application: " + (content.practical || activityItem),
+      memoryHook: "🧠 याद रखें / Remember: समझो → उदाहरण देखो → करो → जाँचो → दोहराओ।",
+      commonMistakes: [mistake, ...(content.mistakes || []).filter((x) => x !== mistake).slice(0, 1), ...safetyList],
+      summary: "📌 सार / Summary: " + clean + " — " + concept,
+      knowledgeCheck: quiz,
+      reflection: [
+        "आज मैंने " + clean + " के बारे में क्या नया सीखा?",
+        "इसका एक वास्तविक उदाहरण क्या हो सकता है?",
+        "कौन-सी बात मुझे दोहरानी या अभ्यास करनी है?"
+      ]
+    },
+    practice: [practiceItem, ...rotate(content.practice, mi + li + 1, 2), "🔁 बिना notes देखे एक बार फिर दोहराएँ।"],
+    activity: "🎯 गतिविधि / Activity: " + (content.practical ? activityItem + " (लक्ष्य: " + content.practical + ")" : activityItem)
+  }];
+};
+
 const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
+  if (SUBJECT_CONTENT[subject.en]) {
+    return buildSpecificLesson(subject, SUBJECT_CONTENT[subject.en], moduleTitle, label, mi, li);
+  }
   if (subject.en === "Secondary Education") {
     const m = SECONDARY_EDUCATION_MODULES[mi % SECONDARY_EDUCATION_MODULES.length];
     const lesson = m.lessons[li % m.lessons.length];
@@ -1325,8 +1390,8 @@ const makeRichSubjectLesson = (subject, moduleTitle, label, mi, li) => {
     }];
   }
 
-  if (subject.category === "Knowledge World / ज्ञान संसार" && KNOWLEDGE_WORLD_MODULES[subject.en]) {
-    const modules = KNOWLEDGE_WORLD_MODULES[subject.en];
+  if (subject.category === "Knowledge World / ज्ञान संसार" && knowledgeWorldModulesFor(subject)) {
+    const modules = knowledgeWorldModulesFor(subject);
     const module = modules[mi] || modules[0];
     const lessonText = clean + " को " + subjectName + " के संदर्भ में पहचान, कारण, उपयोग, उदाहरण, सुरक्षित अभ्यास और वास्तविक जीवन के प्रयोग के साथ समझें।";
     const safety = /health|violence|peace|health knowledge/i.test(subject.en)
@@ -1438,6 +1503,40 @@ const buildTopicModules = (subject) => {
       })
     };
   });
+};
+
+// Single source of truth for a subject's module structure. Both the lesson viewer
+// and the dashboard progress summary use this so that progress is tracked
+// consistently for structured courses, Secondary Education and topic-based subjects.
+const resolveSubjectModules = (subject, structuredCourse, buildStructuredModules, secondaryModules) =>
+  secondaryModules || (structuredCourse ? buildStructuredModules() : buildTopicModules(subject));
+
+const SUBJECT_MODULES_CACHE = new Map();
+const getSubjectModules = (subject) => {
+  if (SUBJECT_MODULES_CACHE.has(subject.id)) return SUBJECT_MODULES_CACHE.get(subject.id);
+  const structuredCourseId = { "english-from-basics": "english-communication", "health-well-being": "health-wellness", "computer-training": "computer-education" }[subject.id] || subject.id;
+  const structuredCourse = subject.id === "english-from-basics"
+    ? ENGLISH_FROM_BASICS_COURSE
+    : (FLAGSHIP_COURSES[subject.id] || ALL_STRUCTURED_COURSES[structuredCourseId]);
+  const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
+  const secondaryModules = isSecondaryEducation
+    ? SECONDARY_EDUCATION_MODULES.map((module, mi) => ({
+        id: subject.id + "-secondary-module-" + (mi + 1),
+        title: formatBilingual(module.title),
+        lessons: module.lessons.map((label, li) => makeRichSubjectLesson(subject, module.title, label, mi, li))
+      }))
+    : null;
+  const buildStructuredModules = () => structuredCourse
+    ? structuredCourse.modules.map((m) => ({
+        title: formatBilingual(m.title.en + " / " + m.title.hi),
+        lessons: m.lessons.map((l) => [l.title.en + " / " + l.title.hi, l.content?.easyExplanation || ""])
+      }))
+    : buildTopicModules(subject);
+  const resolved = resolveSubjectModules(subject, structuredCourse, buildStructuredModules, secondaryModules);
+  const total = resolved.reduce((n, m) => n + (m.lessons?.length || 0), 0);
+  const result = { total, moduleCount: resolved.length, hasStructured: Boolean(structuredCourse) };
+  SUBJECT_MODULES_CACHE.set(subject.id, result);
+  return result;
 };
 
 function speakLessonText(text) {
@@ -1618,7 +1717,7 @@ function LearningSubject({ subject, onBack }) {
         })
       }))
     : null;
-  const modules = secondaryModules || (structuredCourse
+  const buildStructuredModules = () => structuredCourse
     ? structuredCourse.modules.map((m) => ({
         title: formatBilingual(m.title.en + " / " + m.title.hi),
         subtitle: m.description,
@@ -1628,7 +1727,11 @@ function LearningSubject({ subject, onBack }) {
           l
         ])
       }))
-    : buildTopicModules(subject));
+    : buildTopicModules(subject);
+  const modules = useMemo(
+    () => resolveSubjectModules(subject, structuredCourse, buildStructuredModules, secondaryModules),
+    [subject, structuredCourse, secondaryModules]
+  );
 
   // Flatten module lessons into the structure used by the active-lesson panel.
   // This is required for every course, including the generic courses that do not
@@ -1828,7 +1931,7 @@ function LearningSubject({ subject, onBack }) {
                   ["Summary / सार", lessons[activeLesson].detail.content?.summary]
                 ].map(([label,value]) => value && <div key={label}>
                   <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">{label}</div>
-                  {Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{value.map((x,i)=><li key={i}>{x}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-600">{value}</p>}
+                  {Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{value.map((x,i)=><li key={i}>{x && typeof x === "object" ? [x.question || x.title || x.text || "", x.options ? x.options.join(" • ") : ""].filter(Boolean).join(" — ") : x}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-600">{value}</p>}
                 </div>)}
               </div>}
             </div>
@@ -1972,6 +2075,7 @@ export default function LearningHubV2() {
   const [subjectId, setSubjectId] = useState(getSubjectFromUrl);
   const [category, setCategory] = useState("All");
   const [query, setQuery] = useState("");
+  const [progressTick, setProgressTick] = useState(0);
 
   const courseMetaBySubject = useMemo(() => {
     const map = {};
@@ -1990,22 +2094,31 @@ export default function LearningHubV2() {
   }, []);
 
   const progressSummary = useMemo(() => {
-    let active = null;
+    const inProgress = [];
     let completedCount = 0;
     SUBJECTS.forEach(s => {
       try {
         const done = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + s.id) || "[]");
-        const course = courseMetaBySubject[s.id];
-        const total = course?.modules?.reduce((n,m) => n + (m.lessons?.length || 0), 0) || 0;
-        if (total && done.length) {
-          const percent = Math.min(100, Math.round(done.length / total * 100));
-          if (percent >= 100) completedCount += 1;
-          else if (!active || percent > active.percent) active = { subject:s, percent };
-        }
+        if (!done.length) return;
+        const { total } = getSubjectModules(s);
+        if (!total) return;
+        const percent = Math.min(100, Math.round(done.length / total * 100));
+        if (percent >= 100) completedCount += 1;
+        else inProgress.push({ subject: s, percent });
       } catch {}
     });
-    return { active, completedCount };
-  }, [courseMetaBySubject]);
+    inProgress.sort((a, b) => b.percent - a.percent);
+    return { active: inProgress[0] || null, inProgress, completedCount };
+  }, [progressTick]);
+
+  const cardProgress = (s) => {
+    try {
+      const done = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + s.id) || "[]");
+      if (!done.length) return 0;
+      const { total } = getSubjectModules(s);
+      return total ? Math.min(100, Math.round(done.length / total * 100)) : 0;
+    } catch { return 0; }
+  };
 
   const shareLearningBox = async ({ title, text, url }) => {
     const shareUrl = url || window.location.href;
@@ -2040,6 +2153,7 @@ export default function LearningHubV2() {
   const back = () => {
     window.history.pushState({}, "", "/LearningHub");
     setSubjectId("");
+    setProgressTick(t => t + 1);
     window.scrollTo({top:0, behavior:"smooth"});
   };
   const filtered = useMemo(() => SUBJECTS.filter(s => {
@@ -2084,10 +2198,27 @@ export default function LearningHubV2() {
             <input value={query} onChange={e=>setQuery(e.target.value)} placeholder="आप क्या सीखना चाहते हैं? / Search courses..." aria-label="Search courses" className="w-full rounded-2xl border border-zinc-200 bg-zinc-50 py-4 pl-11 pr-4 text-sm outline-none transition focus:border-[#0f4c81] focus:bg-white focus:ring-4 focus:ring-[#0f4c81]/10" />
           </div>
           <div className="mt-4 flex gap-2 overflow-x-auto pb-1">{categories.map(c => { const Meta=CATEGORY_META[c]; const Icon=Meta?.icon||FaBookOpen; return <button key={c} onClick={()=>setCategory(c)} className={"flex shrink-0 items-center gap-2 rounded-full px-4 py-2.5 text-xs font-black transition "+(category===c?"bg-[#003366] text-white shadow-md":"bg-zinc-100 text-zinc-600 hover:bg-zinc-200")}><Icon/> {c}</button>; })}</div>
+          <div className="mt-3 text-xs font-bold text-zinc-500">{filtered.length} {filtered.length === 1 ? "course" : "courses"} {query.trim() ? "matching your search" : "available"} {category !== "All" ? "in " + category : ""} / {filtered.length} विषय उपलब्ध</div>
         </div>
         <div className="mt-5 rounded-[2rem] bg-[#003366] p-6 text-white shadow-sm md:p-7">
           <div className="text-xs font-black uppercase tracking-widest text-white/60">Your learning / आपकी प्रगति</div>
-          {progressSummary.active ? <button onClick={()=>openSubject(progressSummary.active.subject)} className="mt-4 w-full text-left"><div className="text-lg font-black">{progressSummary.active.subject.en}</div><div className="mt-1 text-sm text-white/70">{progressSummary.active.subject.hi}</div><div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-white" style={{width:progressSummary.active.percent+"%"}}/></div><div className="mt-2 flex justify-between text-xs font-bold"><span>{progressSummary.active.percent}% complete</span><span>Continue →</span></div></button> : <div className="mt-4"><div className="text-lg font-black">Start your first course</div><div className="mt-2 text-sm leading-6 text-white/70">अपना पहला structured course चुनें और progress track करें।</div></div>}
+          {progressSummary.active ? <div className="mt-4">
+            <button onClick={()=>openSubject(progressSummary.active.subject)} className="w-full text-left">
+              <div className="text-lg font-black">{progressSummary.active.subject.en}</div>
+              <div className="mt-1 text-sm text-white/70">{progressSummary.active.subject.hi}</div>
+              <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/15"><div className="h-full rounded-full bg-white" style={{width:progressSummary.active.percent+"%"}}/></div>
+              <div className="mt-2 flex justify-between text-xs font-bold"><span>{progressSummary.active.percent}% complete</span><span>Continue →</span></div>
+            </button>
+            {progressSummary.inProgress.length > 1 && <div className="mt-5 border-t border-white/15 pt-4">
+              <div className="text-xs font-black uppercase tracking-widest text-white/50">Resume other courses / अन्य courses जारी रखें</div>
+              <div className="mt-3 space-y-2">{progressSummary.inProgress.slice(1,4).map(item =>
+                <button key={item.subject.id} onClick={()=>openSubject(item.subject)} className="flex w-full items-center justify-between gap-3 rounded-xl bg-white/10 px-4 py-3 text-left transition hover:bg-white/15">
+                  <span className="min-w-0"><span className="block truncate text-sm font-bold">{item.subject.en}</span><span className="block truncate text-[11px] text-white/60">{item.subject.hi}</span></span>
+                  <span className="shrink-0 text-xs font-black text-white/80">{item.percent}% →</span>
+                </button>)}
+              </div>
+            </div>}
+          </div> : <div className="mt-4"><div className="text-lg font-black">Start your first course</div><div className="mt-2 text-sm leading-6 text-white/70">अपना पहला course चुनें और progress track करें।</div></div>}
         </div>
       </section>
 
@@ -2132,8 +2263,14 @@ export default function LearningHubV2() {
                   <span className="rounded-full bg-zinc-100 px-3 py-1 text-[10px] font-black text-zinc-600">Hindi + English</span>
                 </div>
                 <p className="flex-1 text-sm leading-7 text-zinc-600">{s.intro}</p>
+                {(() => { const pct = cardProgress(s); if (!pct) return null; return (
+                  <div className="mt-4">
+                    <div className="flex items-center justify-between text-[11px] font-black text-[#0f4c81]"><span>{pct >= 100 ? "Completed" : "In progress"}</span><span>{pct}%</span></div>
+                    <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#0f4c81] to-[#0a9396]" style={{width:pct+"%"}}/></div>
+                  </div>
+                ); })()}
                 <div className="mt-6 grid grid-cols-3 gap-2 text-center text-[11px] font-bold text-zinc-500">
-                  <div className="rounded-xl bg-zinc-50 p-2"><FaBookOpen className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.modules?.length || "—"}<span className="block text-[9px] font-normal">Modules</span></div>
+                  <div className="rounded-xl bg-zinc-50 p-2"><FaBookOpen className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.modules?.length ?? getSubjectModules(s).moduleCount}<span className="block text-[9px] font-normal">Modules</span></div>
                   <div className="rounded-xl bg-zinc-50 p-2"><FaClock className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id]?.learningHours || "—"}<span className="block text-[9px] font-normal">Hours</span></div>
                   <div className="rounded-xl bg-zinc-50 p-2"><FaGraduationCap className="mx-auto mb-1 text-[#0f4c81]"/>{courseMetaBySubject[s.id] ? "Certificate" : "Coming Soon"}<span className="block text-[9px] font-normal">{courseMetaBySubject[s.id] ? "Pathway" : "Status"}</span></div>
                 </div>
