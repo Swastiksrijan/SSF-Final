@@ -129,6 +129,7 @@ const readStoredProgress = (subject) => {
   if (isFruitsSubject(subject)) return readFruitsProgress(subject);
   if (isVocabularySubject(subject)) return readVocabularyProgress(subject);
   if (isTreesForestsSubject(subject)) return readTreesForestsProgress(subject);
+  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject)) return readMigratedProgress(subject, curriculumChapterIdsFor(subject));
   try {
     const raw = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + subject.id) || "[]");
     return Array.isArray(raw) ? raw : [];
@@ -1907,6 +1908,142 @@ const buildTopicModules = (subject) => {
   });
 };
 
+// Subjects that still use the generated topic blueprint (i.e. NOT one of the
+// hand-authored master courses, Knowledge World, education, office skills or
+// structured courses). These are the cards this upgrade lifts to a Master Course.
+const isGenericTopicSubject = (subject) => {
+  if (!subject) return false;
+  if (isTimeCalendarSubject(subject) || isFruitsSubject(subject) || isVocabularySubject(subject) || isTreesForestsSubject(subject)) return false;
+  if (isKnowledgeWorldSubject(subject)) return false;
+  if (isEducationSubject(subject) || isOfficeSkillsSubject(subject)) return false;
+  if (hasStructuredCourse(subject)) return false;
+  if (/^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi)) return false;
+  if (/secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi)) return false;
+  return true;
+};
+
+// Stable chapter ids for a generic subject: subject.id + "-c<globalIndex>".
+// Keeping the global order lets legacy numeric progress migrate onto ids.
+const curriculumChapterIds = (subject) => {
+  const profile = getSubjectProfile(subject);
+  const ids = [];
+  profile.modules.forEach((m) => (m[1] || []).forEach(() => ids.push(subject.id + "-c" + ids.length)));
+  return ids;
+};
+
+// Chapter-id list for any subject rendered through the generated/Knowledge World
+// master path — used to migrate legacy numeric progress onto stable ids.
+function curriculumChapterIdsFor(subject) {
+  if (isKnowledgeWorldSubject(subject)) {
+    const kwc = knowledgeWorldToMasterCourse(subject, getKnowledgeWorldCourse(subject));
+    return kwc ? kwc.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
+  }
+  return curriculumChapterIds(subject);
+}
+
+// Turn a generated topic profile + subject content into the Master Course shape.
+const curriculumToMasterCourse = (subject) => {
+  const profile = getSubjectProfile(subject);
+  const content = SUBJECT_CONTENT_ALL[subject.en] || {};
+  const modules = profile.modules;
+  const chapterMeta = [];
+  let gi = 0;
+  modules.forEach((m, mi) => (m[1] || []).forEach((label, li) => { chapterMeta.push({ mi, li, label, moduleTitle: m[0], id: subject.id + "-c" + gi }); gi++; }));
+
+  const chapters = chapterMeta.map((cm, idx) => {
+    const lesson = makeRichSubjectLesson(subject, cm.moduleTitle, cm.label, cm.mi, cm.li);
+    const d = (lesson && lesson[2]) || {};
+    const c = d.content || {};
+    const clean = String(cm.label || "").replace(/^[^\p{L}\p{N}]+/u, "");
+    const check = (c.knowledgeCheck || [])[0];
+    const blocks = [
+      { t: "note", k: "goal", title: "इस chapter का लक्ष्य / Goal", items: d.objectives || [] },
+      { t: "p", x: lesson[1] || c.easyExplanation || "" },
+      { t: "note", k: "concept", title: "गहरी समझ / Deep understanding", x: c.deepUnderstanding },
+      { t: "note", k: "info", title: "क्यों जरूरी है / Why it matters", x: c.whyItMatters },
+      { t: "h", x: "मुख्य बिंदु / Key points" },
+      { t: "ul", items: c.keyPoints || [] },
+      { t: "h", x: "उदाहरण / Examples" },
+      { t: "ul", items: c.examples || [] },
+      { t: "h", x: "सीखने के चरण / Steps" },
+      { t: "ol", items: c.steps || [] },
+      { t: "note", k: "tip", title: "व्यावहारिक उपयोग / Practical application", x: c.practicalApplication },
+      { t: "note", k: "remember", title: "याद रखें / Memory hook", x: c.memoryHook },
+      { t: "note", k: "warn", title: "सामान्य गलतियाँ / Common mistakes", items: c.commonMistakes || [] },
+      { t: "act", title: "गतिविधि / Activity", x: d.activity || c.practicalApplication, items: d.practice || [] },
+      check ? { t: "note", k: "goal", title: "स्वयं जाँचें / Self-check", x: check.question, items: check.options } : null,
+      { t: "note", k: "info", title: "सार / Summary", x: c.summary },
+    ].filter(Boolean);
+    return { id: cm.id, number: idx + 1, title: clean, titleHi: String(cm.label).split(" / ")[1] || "", icon: (clean.match(/^\p{Emoji}/u) || ["📘"])[0], blocks };
+  });
+
+  // One mastery question per chapter (first knowledge check), up to 10.
+  const masteryQuiz = [];
+  for (const cm of chapterMeta) {
+    if (masteryQuiz.length >= 10) break;
+    const lesson = makeRichSubjectLesson(subject, cm.moduleTitle, cm.label, cm.mi, cm.li);
+    const c = lesson?.[2]?.content || {};
+    const q = (c.knowledgeCheck || [])[0];
+    if (q) masteryQuiz.push({ q: q.question, options: q.options, answer: q.answer, explain: q.explain || (q.options?.[q.answer] ? q.options[q.answer] + " सही उत्तर है।" : "") });
+  }
+  if (masteryQuiz.length < 5 && Array.isArray(content.quiz)) {
+    for (const q of content.quiz) { if (masteryQuiz.length >= 10) break; masteryQuiz.push({ q: q.question, options: q.options, answer: q.answer, explain: q.options?.[q.answer] ? q.options[q.answer] + " सही उत्तर है।" : "" }); }
+  }
+
+  const moduleList = modules.map((m, mi) => ({
+    id: subject.id + "-cm-" + (mi + 1),
+    title: String(m[0]).split(" / ")[0],
+    titleHi: String(m[0]).split(" / ")[1] || "",
+    icon: profile.icon || "📘",
+    chapters: chapters.filter((_, i) => chapterMeta[i].mi === mi),
+  }));
+
+  const focus = content.focus || subject.intro || ("इस विषय को समझ, उदाहरण और अभ्यास के साथ सीखें।");
+
+  return {
+    meta: {
+      icon: profile.icon || "📘",
+      title: [subject.en, subject.hi],
+      level: subject.level || "Foundation → Intermediate",
+      tag: subject.category,
+      tagline: focus.length > 120 ? focus.slice(0, 118) + "…" : focus,
+      heroSubtitle: subject.intro || focus,
+    },
+    overview: {
+      what: content.focus || subject.intro || focus,
+      why: "यह ज्ञान " + subject.en + " में रोज़मर्रा की समझ, सही निर्णय और practical capability के लिए जरूरी है।",
+      where: "घर, स्कूल, कार्यस्थल और रोज़मर्रा की वास्तविक स्थितियों में।",
+      outcome: "Learner " + subject.en + " के मुख्य concepts समझेगा, उदाहरण देखेगा, अभ्यास करेगा और नई स्थितियों में लागू कर सकेगा।",
+    },
+    courseStart: {
+      title: "इस course को कैसे सीखें",
+      blocks: [
+        { t: "p", x: focus },
+        { t: "note", k: "goal", title: "सीखने का लक्ष्य / Outcome", x: "अंत तक हर module के concepts, examples और practice को स्वयं समझा और कर पाएँ।" },
+        { t: "note", k: "tip", title: "सीखने का flow", x: "हर chapter में: Goal → Concept → Example → Steps → Activity → Practice → Self-check → Revision।" },
+      ],
+    },
+    modules: moduleList,
+    revision: {
+      title: "पूरा course एक नज़र में",
+      groups: [
+        ...(Array.isArray(content.revision) ? [{ title: "🔄 याद रखें / Revise", items: content.revision }] : []),
+        ...(Array.isArray(content.concepts) ? [{ title: "🧠 मुख्य अवधारणाएँ / Concepts", items: content.concepts }] : []),
+        ...(Array.isArray(content.keywords) ? [{ title: "🔑 मुख्य शब्द / Key words", items: content.keywords }] : []),
+      ].filter((g) => g.items.length),
+    },
+    mastery: {
+      title: "Final Test / अंतिम परीक्षा",
+      note: "इस course के modules से चुने गए प्रश्न।",
+      tasks: moduleList.map((m) => ({ icon: m.icon, title: m.title, x: (modules.find((x) => String(x[0]).startsWith(m.title))?.[1]) || "" })),
+      quiz: masteryQuiz,
+    },
+    outcomeIntro: "इस course के बाद learner:",
+    outcome: [content.practical, ...(content.concepts || []).slice(0, 4)].filter(Boolean),
+    outcomeClose: "समझ + उदाहरण + अभ्यास + जाँच + revision — यही असली mastery है।",
+  };
+};
+
 // Knowledge World: turns a subject-specific KW course into the module/lesson
 // structure the course UI renders. Each topic becomes a rich lesson built from
 // that topic's own learn / example / activity / quiz material.
@@ -2077,6 +2214,14 @@ const getSubjectModules = (subject) => {
   }
   if (isTreesForestsSubject(subject)) {
     const result = { total: TREES_FORESTS_COURSE.modules.reduce((n, m) => n + m.chapters.length, 0), moduleCount: TREES_FORESTS_COURSE.modules.length, hasStructured: true };
+    SUBJECT_MODULES_CACHE.set(subject.id, result);
+    return result;
+  }
+  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject)) {
+    const mc = isKnowledgeWorldSubject(subject)
+      ? knowledgeWorldToMasterCourse(subject, getKnowledgeWorldCourse(subject))
+      : curriculumToMasterCourse(subject);
+    const result = { total: mc.modules.reduce((n, m) => n + m.chapters.length, 0), moduleCount: mc.modules.length, hasStructured: true };
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
   }
@@ -2463,6 +2608,11 @@ function LearningSubject({ subject, onBack }) {
   if (isKnowledgeWorldSubject(subject)) {
     const kwc = knowledgeWorldToMasterCourse(subject, getKnowledgeWorldCourse(subject));
     if (kwc) { const a = makeCourseArt(kwc); return <MasterCourse course={kwc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
+  }
+  if (isGenericTopicSubject(subject)) {
+    const mc = curriculumToMasterCourse(subject);
+    const a = makeCourseArt(mc);
+    return <MasterCourse course={mc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />;
   }
   const submitQuiz = () => {
     const passed = score >= 4;

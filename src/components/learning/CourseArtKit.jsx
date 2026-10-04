@@ -103,6 +103,36 @@ export function GlyphHero({ icon = "📘", glyphs = [], title = "", className = 
   );
 }
 
+/** Category → emoji, so every subject card gets coded art even without a photo. */
+const CATEGORY_EMOJI = {
+  "Education / शिक्षा": "📚",
+  "English & Communication / अंग्रेज़ी एवं संचार": "🗣️",
+  "Digital Skills / डिजिटल कौशल": "💻",
+  "Career & Workplace / करियर एवं कार्यस्थल": "💼",
+  "Skill Development / कौशल विकास": "🛠️",
+  "Women & Child Development / महिला एवं बाल विकास": "👩‍👧",
+  "Health / स्वास्थ्य": "🩺",
+  "Environment / पर्यावरण": "🌱",
+  "Agriculture & Rural Development / कृषि एवं ग्रामीण विकास": "🌾",
+  "Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य": "⚖️",
+  "Disability & Rehabilitation / दिव्यांगता एवं पुनर्वास": "♿",
+  "Animal Protection / पशु संरक्षण": "🐾",
+  "Culture & Heritage / संस्कृति एवं विरासत": "🏛️",
+  "Youth & Disaster Preparedness / युवा एवं आपदा तैयारी": "🚨",
+  "Personal Development / व्यक्तिगत विकास": "🌱",
+  "NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान": "🤝",
+  "Knowledge World / ज्ञान संसार": "🌍",
+  "Office Skills / कार्यालय कौशल": "🗂️",
+  "Computer Education / कंप्यूटर शिक्षा": "🖥️",
+};
+
+/** Coded card art derived only from the subject's own fields. */
+export function subjectCardArt(subject) {
+  const emoji = CATEGORY_EMOJI[subject.category] || "📘";
+  const glyphs = [emoji, ...(String(subject.en || "").match(/^\p{Emoji}/u) || [])];
+  return <GlyphCard glyphs={glyphs} label={subject.hi || ""} />;
+}
+
 /**
  * Build the three art surfaces for a Master Course straight from its data.
  * chapters' `icon` drive the scene art; `meta.icon` drives hero/card.
