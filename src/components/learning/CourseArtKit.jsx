@@ -124,6 +124,17 @@ const CATEGORY_EMOJI = {
   "Knowledge World / ज्ञान संसार": "🌍",
   "Office Skills / कार्यालय कौशल": "🗂️",
   "Computer Education / कंप्यूटर शिक्षा": "🖥️",
+  "Entrepreneurship & Work / उद्यमिता एवं कार्य": "🚀",
+  "Research & Mastery Skills / शोध एवं दक्षता कौशल": "🔍",
+  "Arts, Creativity & Culture / कला, रचनात्मकता एवं संस्कृति": "🎨",
+  "Media & Information Literacy / मीडिया एवं सूचना साक्षरता": "📰",
+  "Practical Everyday Life / दैनिक व्यावहारिक जीवन": "🧰",
+  "AI & Future Technology / AI एवं भविष्य की तकनीक": "🤖",
+  "Life Skills / जीवन कौशल": "🌟",
+  "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": "🏃",
+  "Mathematics & Financial Literacy / गणित एवं वित्तीय साक्षरता": "➗",
+  "Languages / भाषाएँ": "🌐",
+  "Science / विज्ञान": "🔬",
 };
 
 /** Coded card art derived only from the subject's own fields. */

@@ -16,10 +16,12 @@ import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCo
 import { makeCourseArt } from "../components/learning/CourseArtKit";
 import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
 import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_SKILLS_CATEGORY, OFFICE_SKILLS_SECTION, OFFICE_SKILLS_CARDS, OFFICE_SKILLS_CONTENT } from "../data/officeSkillsCourse";
+import { ENTREPRENEURSHIP_CONTENT } from "../data/entrepreneurshipContent";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGORY } from "../data/learningCurriculum";
 import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
 import PrimaryLessonFresh from "../components/learning/PrimaryLessonFresh";
+
 import MasterCourse from "../components/learning/MasterCourse";
 import { isTimeCalendarSubject, TIME_CALENDAR_COURSE, readTimeCalendarProgress } from "../data/timeCalendarCourse";
 import { HeroArt as TimeHeroArt, chapterArt as timeChapterArt } from "../components/learning/TimeCalendarArt";
@@ -34,6 +36,8 @@ import SubjectCard from "../components/learning/SubjectCard";
 import { courseBadge } from "../data/learningWorld";
 import { SUBJECT_CONTENT } from "../data/learningHubSubjectContent";
 import { SUBJECT_CONTENT_EXTRA } from "../data/learningSubjectContentExtra";
+
+const ENTREPRENEURSHIP_CATEGORY = "Entrepreneurship & Work / उद्यमिता एवं कार्य";
 
 // Single registry lookup: hand-written content first, then the discipline-
 // specific content added for the new learning areas.
@@ -129,7 +133,7 @@ const readStoredProgress = (subject) => {
   if (isFruitsSubject(subject)) return readFruitsProgress(subject);
   if (isVocabularySubject(subject)) return readVocabularyProgress(subject);
   if (isTreesForestsSubject(subject)) return readTreesForestsProgress(subject);
-  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en])) return readMigratedProgress(subject, curriculumChapterIdsFor(subject));
+  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isEntrepreneurshipAuthored(subject)) return readMigratedProgress(subject, curriculumChapterIdsFor(subject));
   try {
     const raw = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + subject.id) || "[]");
     return Array.isArray(raw) ? raw : [];
@@ -1942,6 +1946,10 @@ function curriculumChapterIdsFor(subject) {
     const oc = officeToMasterCourse(subject);
     return oc ? oc.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
   }
+  if (isEntrepreneurshipAuthored(subject)) {
+    const ec = entrepreneurshipToMasterCourse(subject);
+    return ec ? ec.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
+  }
   return curriculumChapterIds(subject);
 }
 
@@ -2049,23 +2057,27 @@ const curriculumToMasterCourse = (subject) => {
   };
 };
 
-// Office Skills: real authored content (officeSkillsContent.js) rendered as a
-// Master Course. Falls back to the shell modules when a course has no content.
-const officeToMasterCourse = (subject) => {
-  const shell = getOfficeSkillsCourse(subject);
-  const content = OFFICE_SKILLS_CONTENT[subject.en];
-  if (!shell || !content) return null;
+// Shared renderer for hand-authored category content (officeSkillsContent.js,
+// entrepreneurshipContent.js, ...). All those files share one shape — modules ->
+// topics with learn/example/activity/quiz plus glossary/facts/mastery — so a
+// single builder keeps the premium MasterCourse UI without duplicating code.
+const authoredContentToMasterCourse = (subject, content, opts = {}) => {
+  if (!content) return null;
+  const icon = opts.icon || "🏢";
+  const level = opts.level || "Beginner → Advanced";
+  const tag = opts.tag || subject.category;
+  const overview = opts.overview || {};
   let gi = 0;
   const modules = content.modules.map((m, mi) => ({
     id: subject.id + "-om-" + (mi + 1),
     title: String(m.title).split(" / ")[0],
     titleHi: String(m.title).split(" / ")[1] || "",
-    icon: shell.icon || "🏢",
+    icon,
     chapters: m.topics.map((t) => {
       const clean = String(t.title).replace(/^[^\p{L}\p{N}]+/u, "");
       const id = subject.id + "-c" + gi; gi++;
       return {
-        id, number: 0, title: clean, titleHi: "", icon: (clean.match(/^\p{Emoji}/u) || [shell.icon || "🏢"])[0],
+        id, number: 0, title: clean, titleHi: "", icon: (clean.match(/^\p{Emoji}/u) || [icon])[0],
         blocks: [
           { t: "note", k: "goal", title: "इस chapter का लक्ष्य", items: ["इस topic को समझना, उदाहरण देखना और खुद करके सीखना।"] },
           { t: "p", x: t.learn },
@@ -2081,16 +2093,22 @@ const officeToMasterCourse = (subject) => {
 
   const mastery = (content.mastery || []).map(([q, options, answer, explain]) => ({ q, options, answer, explain }));
   const firstQuiz = content.modules.flatMap((m) => m.topics).slice(0, 10).map((t) => ({ q: t.quiz.q, options: t.quiz.options, answer: t.quiz.answer, explain: t.quiz.explain }));
+  const focus = content.tagline || subject.intro || ("इस विषय को समझ, उदाहरण और अभ्यास के साथ सीखें।");
 
   return {
-    meta: { icon: shell.icon || "🏢", title: [subject.en, subject.hi], level: shell.level, tag: OFFICE_SKILLS_CATEGORY, tagline: content.tagline, heroSubtitle: shell.overview.what },
-    overview: shell.overview,
+    meta: { icon, title: [subject.en, subject.hi], level, tag, tagline: content.tagline, heroSubtitle: overview.what || subject.intro || content.tagline },
+    overview: {
+      what: overview.what || subject.intro || content.tagline,
+      why: overview.why || ("यह ज्ञान " + subject.en + " में रोज़मर्रा की समझ, सही निर्णय और practical capability के लिए जरूरी है।"),
+      where: overview.where || "घर, काम और रोज़मर्रा की वास्तविक स्थितियों में।",
+      outcome: overview.outcome || ("Learner " + subject.en + " के मुख्य concepts समझेगा, उदाहरण देखेगा, अभ्यास करेगा और नई स्थितियों में लागू कर सकेगा।"),
+    },
     courseStart: {
       title: "इस course को कैसे सीखें",
       blocks: [
-        { t: "p", x: content.tagline },
-        { t: "note", k: "goal", title: "सीखने के बाद / Outcome", x: shell.overview.outcome },
-        { t: "note", k: "info", title: "कहाँ दिखता है / Where", x: shell.overview.where },
+        { t: "p", x: focus },
+        { t: "note", k: "goal", title: "सीखने के बाद / Outcome", x: overview.outcome || ("Learner " + subject.en + " को व्यवहार में लागू कर पाएगा।") },
+        { t: "note", k: "info", title: "कहाँ दिखता है / Where", x: overview.where || "रोज़मर्रा की वास्तविक स्थितियों में।" },
         { t: "note", k: "tip", title: "सीखने का flow", x: "हर chapter में: Learn → Example → Activity → Self-check।" },
       ],
     },
@@ -2101,10 +2119,22 @@ const officeToMasterCourse = (subject) => {
     ].filter((g) => g.items.length) },
     mastery: { title: "Final Test / अंतिम परीक्षा", note: "इस course के modules से चुने गए प्रश्न।", tasks: modules.map((m) => ({ icon: m.icon, title: m.title, x: "" })), quiz: [...mastery, ...firstQuiz].slice(0, 10) },
     outcomeIntro: "इस course के बाद learner:",
-    outcome: shell.outcomes && shell.outcomes.length ? shell.outcomes : [content.tagline],
-    outcomeClose: "अभ्यास + वास्तविक उदाहरण + जाँच — यही असली office skill है।",
+    outcome: (opts.outcomes && opts.outcomes.length) ? opts.outcomes : [content.tagline],
+    outcomeClose: opts.outcomeClose || "अभ्यास + वास्तविक उदाहरण + जाँच — यही असली skill है।",
   };
 };
+
+// Office Skills: authored content rendered through the shared builder.
+const officeToMasterCourse = (subject) => {
+  const shell = getOfficeSkillsCourse(subject);
+  const content = OFFICE_SKILLS_CONTENT[subject.en];
+  if (!shell || !content) return null;
+  return authoredContentToMasterCourse(subject, content, { icon: shell.icon, level: shell.level, tag: OFFICE_SKILLS_CATEGORY, overview: shell.overview, outcomes: shell.outcomes, outcomeClose: "अभ्यास + वास्तविक उदाहरण + जाँच — यही असली office skill है।" });
+};
+
+// Entrepreneurship & Work: authored content rendered through the shared builder.
+const isEntrepreneurshipAuthored = (subject) => Boolean(subject && subject.category === ENTREPRENEURSHIP_CATEGORY && ENTREPRENEURSHIP_CONTENT[subject.en]);
+const entrepreneurshipToMasterCourse = (subject) => authoredContentToMasterCourse(subject, ENTREPRENEURSHIP_CONTENT[subject.en], { icon: "🚀", tag: ENTREPRENEURSHIP_CATEGORY, outcomeClose: "Idea + ग्राहक + हिसाब + ईमानदारी — यही टिकाऊ व्यवसाय है।" });
 
 // Knowledge World: turns a subject-specific KW course into the module/lesson
 // structure the course UI renders. Each topic becomes a rich lesson built from
@@ -2279,10 +2309,10 @@ const getSubjectModules = (subject) => {
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
   }
-  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en])) {
+  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isEntrepreneurshipAuthored(subject)) {
     const mc = isKnowledgeWorldSubject(subject)
       ? knowledgeWorldToMasterCourse(subject, getKnowledgeWorldCourse(subject))
-      : (isOfficeSkillsSubject(subject) ? officeToMasterCourse(subject) : curriculumToMasterCourse(subject));
+      : (isOfficeSkillsSubject(subject) ? officeToMasterCourse(subject) : (isEntrepreneurshipAuthored(subject) ? entrepreneurshipToMasterCourse(subject) : curriculumToMasterCourse(subject)));
     const result = { total: mc.modules.reduce((n, m) => n + m.chapters.length, 0), moduleCount: mc.modules.length, hasStructured: true };
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
@@ -2674,6 +2704,10 @@ function LearningSubject({ subject, onBack }) {
   if (isOfficeSkillsSubject(subject)) {
     const oc = officeToMasterCourse(subject);
     if (oc) { const a = makeCourseArt(oc); return <MasterCourse course={oc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
+  }
+  if (isEntrepreneurshipAuthored(subject)) {
+    const ec = entrepreneurshipToMasterCourse(subject);
+    if (ec) { const a = makeCourseArt(ec); return <MasterCourse course={ec} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
   }
   if (isGenericTopicSubject(subject)) {
     const mc = curriculumToMasterCourse(subject);
@@ -3089,12 +3123,13 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
       (isVocabularySubject(s) && VOCABULARY_COURSE.meta.level) ||
       (isTreesForestsSubject(s) && TREES_FORESTS_COURSE.meta.level) ||
       (isOfficeSkillsSubject(s) && getOfficeSkillsCourse(s)?.level) ||
+      (isEntrepreneurshipAuthored(s) && "Foundation → Advanced") ||
       (isEducationSubject(s) && getEducationCourse(s)?.level) ||
       (isKnowledgeWorldSubject(s) && getKnowledgeWorldCourse(s)?.level) ||
       (meta && (meta.level === "foundation" ? "Foundation" : meta.level)) ||
       "";
     const hours = meta && meta.learningHours ? meta.learningHours : "";
-    const kind = isKnowledgeWorldSubject(s) ? "Knowledge World" : getOfficeSkillsCourse(s) ? "Course Shell" : "Full Course";
+    const kind = isKnowledgeWorldSubject(s) ? "Knowledge World" : (isOfficeSkillsSubject(s) && !OFFICE_SKILLS_CONTENT[s.en]) ? "Course Shell" : "Full Course";
     return {
       kind,
       badge: courseBadge(kind),
