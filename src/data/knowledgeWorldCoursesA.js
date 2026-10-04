@@ -1,50 +1,13 @@
 /**
- * Knowledge World courses — Part A (5 subjects).
- * Fruits · Flowers · Trees & Forests · Animals & Birds ·
- * Rivers, Mountains & Seas
+ * Knowledge World courses — Part A.
+ * Flowers · Trees & Forests · Animals & Birds · Rivers, Mountains & Seas
  *
- * NOTE: "Time & Calendar" is a full Master Course authored in
- * src/data/timeCalendarCourse.js (rendered by TimeCalendarCourse.jsx), so it is
- * intentionally NOT defined here.
+ * NOTE: "Time & Calendar" and "Fruits" are full Master Courses authored in
+ * src/data/timeCalendarCourse.js and src/data/fruitsCourse.js (rendered by
+ * MasterCourse.jsx), so they are intentionally NOT defined here.
  */
 
 export const KW_PART_A = {
-  "Fruits": {
-    icon: "🍎", level: "Beginner → Practical", tag: "Nature & Nutrition",
-    tagline: "फलों को पहचानो, बनावट जानो, पोषण समझो।",
-    what: "A fruit is the seed-bearing part of a flowering plant. It develops from the flower after pollination and protects the seeds for the next generation.",
-    why: "Fruits give vitamins, fibre and energy. Knowing them helps you choose healthy food, identify plants and understand how seeds form.",
-    where: "Kitchen, market, garden, festivals and the trees around your home.",
-    outcome: "Learners can identify common and local fruits, explain parts of a fruit, describe how fruits grow and make safe food choices.",
-    modules: [
-      ["What is a Fruit? / फल क्या है?", "फूल से फल बनने की कहानी।", [
-        ["Fruit and Flower / फूल से फल तक", "Pollination के बाद flower का ovary फल और ovule बीज बन जाता है।", "आम का फूल धीरे-धीरे छोटा आम बनता है।", "एक फल के बीज ढूँढकर गिनें।", ["फल किससे बनता है?", ["Flower के ovary", "जड़", "पत्ती", "तना"], 0, "Ovary से।"]],
-        ["Parts of a Fruit / फल के भाग", "मुख्य भाग — peel, flesh, seeds, कभी core/stone।", "आम में peel, रसीला flesh, बड़ा stone।", "सेब और आम काटकर भाग पहचानें।", ["आम का बड़ा भाग?", ["Stone/Seed", "Peel", "Leaf", "Root"], 0, "Stone/Seed।"]],
-        ["Edible and Non-Edible / खाने योग्य भाग", "हर भाग खाने योग्य नहीं होता; कुछ peel/seeds नहीं खाने चाहिए।", "Litchi का बीज नहीं खाते।", "तीन फलों के खाने/न खाने योग्य भाग लिखें।", ["सभी भाग खाने योग्य?", ["नहीं", "हाँ", "केवल seeds", "केवल peel"], 0, "नहीं।"]],
-      ]],
-      ["Types of Fruits / फलों के प्रकार", "Seasonal, tropical, citrus, berries।", [
-        ["Seasonal Fruits / मौसमी फल", "कुछ फल विशेष मौसम में मिलते हैं, जैसे आम (गर्मी)।", "गर्मी में आम-लीची, सर्दी में संतरा-अमरूद।", "वर्ष-भर का seasonal fruit calendar बनाएँ।", ["आम का मौसम?", ["गर्मी", "सर्दी", "मानसून", "बसंत"], 0, "गर्मी।"]],
-        ["Tropical & Citrus / उष्णकटिबंधीय एवं खट्टे", "Tropical (केला, अनानास) गर्म-नम climate; citrus (संतरा, नींबू) में vitamin C अधिक।", "संतरा vitamin C देता है।", "Tropical और citrus के दो-दो नाम लिखें।", ["Citrus fruit?", ["संतरा", "आम", "सेब", "केला"], 0, "संतरा।"]],
-        ["Berries & Seeds / बेरी एवं बीज", "Berries छोटे, रसीले, अनेक छोटे seeds वाले — antioxidants देते हैं।", "Strawberry व amla berries।", "तीन बेरी-जैसे फल व रंग लिखें।", ["Berry seeds?", ["छोटे-अनेक", "बड़ा एक", "कोई नहीं", "छिलका"], 0, "छोटे-अनेक।"]],
-      ]],
-      ["Nutrition & Safety / पोषण एवं सुरक्षा", "Vitamins, धुलाई, भंडारण।", [
-        ["Vitamins and Fibre / विटामिन एवं रेशा", "Fruits vitamins (A, B, C), minerals और fibre देते हैं।", "संतरा vitamin C, नारंगी फल vitamin A।", "पाँच फल-विटामिन मिलाएँ।", ["Fibre पाचन में?", ["आंतों की सफाई", "नींद", "दृष्टि", "हड्डी"], 0, "आंतों के लिए अच्छा।"]],
-        ["Washing and Hygiene / धुलाई एवं स्वच्छता", "फल खाने से पहले साफ पानी से धोएँ, वरना कीटाणु पेट में जा सकते हैं।", "अंगूर-सेब धोकर खाएँ।", "आज के फल धोकर खाएँ।", ["फल खाने से पहले?", ["साफ पानी से धोना", "सीधे खाना", "गर्म करना", "रखना"], 0, "धोना जरूरी।"]],
-        ["Storage & Serving / भंडारण एवं सेवन", "कुछ फल ठंडे स्थान, कुछ refrigerator में; कटे फल जल्दी खराब।", "केला fridge में जल्दी काला पड़ता है।", "फल सही रखकर सप्ताह भर टिकना देखें।", ["कटे फल?", ["जल्दी खाने चाहिए", "कई दिन", "सप्ताह", "कोई सीमा नहीं"], 0, "जल्दी खाएँ।"]],
-      ]],
-      ["Fruits Around Us / आसपास के फल", "Local-imported, तुड़ाई, पहचान।", [
-        ["Local and Imported / स्थानीय एवं आयातित", "Local फल मौसम में ताज़े-सस्ते; imported pack होकर महँगे।", "Kiwi imported, अमरूद local।", "पाँच local और पाँच imported फल लिखें।", ["Local fruit लाभ?", ["ताज़े-सस्ते", "महँगे", "कभी नहीं", "सूखे"], 0, "ताज़े-सस्ते।"]],
-        ["Harvest and Farming / तुड़ाई एवं खेती", "पकने पर फल tree से तोड़े जाते हैं; ज़्यादा पके फल जल्दी खराब।", "कच्चे आम तोड़े जाते हैं, पके गिरते हैं।", "एक fruit tree का पकने का चक्र लिखें।", ["ज़्यादा पके फल?", ["जल्दी खराब", "लंबे चलते", "मीठे नहीं", "रंग बदलते"], 0, "जल्दी खराब।"]],
-        ["Identify and Compare / पहचान एवं तुलना", "रंग, आकार, स्वाद, बनावट से फल पहचानें व तुलना करें।", "सेब लाल-गोल-कुरकुरा, केला पीला-लंबा-मुलायम।", "पाँच फलों का compare chart बनाएँ।", ["तुलना में नहीं आता?", ["पता", "रंग", "आकार", "स्वाद"], 0, "पता।"]],
-      ]],
-    ],
-    glossary: [["Fruit", "फल", "फूल से बनने वाला बीजयुक्त भाग।"], ["Seed", "बीज", "नया पौधा बनाने वाला भाग।"], ["Pollination", "परागण", "पराग का फूल तक पहुँचना।"], ["Citrus", "खट्टे फल", "संतरा, नींबू।"], ["Vitamin", "विटामिन", "जरूरी पोषक तत्व।"], ["Fibre", "रेशा", "पाचन में मददगार।"], ["Tropical", "उष्णकटिबंधीय", "गर्म-नम क्षेत्र का।"], ["Harvest", "तुड़ाई", "फल तोड़ने का समय।"]],
-    facts: ["भारत दुनिया का दूसरा सबसे बड़ा फल उत्पादक देश है।", "Strawberry के बाहर दिखने वाले 'बीज' छोटे फल होते हैं।", "आम भारत का राष्ट्रीय फल है।", "→Plants सीखें तो फलदार पौधों की कहानी समझेंगे।"],
-    project: { objective: "पाँच local फलों की पहचान और तुलना।", materials: "कागज़, पेन, रंग।", steps: ["पाँच फल चुनें।", "रंग, आकार, स्वाद, बीज लिखें।", "मौसम व local/imported लिखें।", "तुलना चार्ट बनाएँ।"], observation: "कौन-सा फल कई महीने मिलता है?", result: "Fruit Identification Chart।", reflection: "सबसे अच्छा healthy choice?" },
-    revision: ["Fruit = flower का ovary", "Parts: peel, flesh, seeds", "Types: seasonal, tropical, citrus, berries", "Vitamins + fibre देते हैं", "खाने से पहले धोएँ"],
-    mastery: [["Fruit का कार्य?", ["बीज की रक्षा व प्रसार", "जड़ बनाना", "फूल बनाना", "पानी देना"], 0, "बीज रक्षा-प्रसार।"], ["Citrus में भरपूर?", ["Vitamin C", "Iron", "Calcium", "Protein"], 0, "Vitamin C।"], ["खराब फल?", ["अलग कर फेंकें", "खाना", "मिलाना", "रखना"], 0, "अलग करें।"]],
-    related: ["Plants & Natural Health Knowledge", "Healthy Food & Nutrition", "Trees & Forests", "Flowers"],
-  },
 
   "Flowers": {
     icon: "🌸", level: "Beginner → Practical", tag: "Nature & Life Cycles",

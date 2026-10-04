@@ -20,9 +20,12 @@
  *   mistakes { items: [{ w, c }] }
  */
 
+import { readMigratedProgress } from "./courseProgress";
+
 export const TIME_CALENDAR_COURSE = {
   meta: {
     icon: "🕐",
+    title: ["Time & Calendar", "समय एवं कैलेंडर"],
     level: "Beginner → Practical → Mastery",
     tag: "Everyday Skills",
     tagline: "समय को समझना, घड़ी पढ़ना, कैलेंडर चलाना और समय का सही उपयोग करना।",
@@ -401,6 +404,7 @@ export const TIME_CALENDAR_COURSE = {
     ],
   },
 
+  outcomeIntro: "इस course को पूरा करने के बाद learner केवल यह नहीं कहेगा “मुझे time पढ़ना आता है”, बल्कि वह:",
   outcome: [
     "analog clock पढ़ सकेगा", "digital clock समझ सकेगा", "AM/PM सही इस्तेमाल करेगा",
     "12-hour और 24-hour time बदल सकेगा", "seconds/minutes/hours convert कर सकेगा",
@@ -410,6 +414,7 @@ export const TIME_CALENDAR_COURSE = {
     "travel duration निकाल सकेगा", "basic time-zone calculations समझ सकेगा",
     "time-related mistakes पहचान सकेगा", "और अपने वास्तविक जीवन में समय का बेहतर उपयोग कर सकेगा",
   ],
+  outcomeClose: "यही Time & Calendar की वास्तविक mastery है।",
 };
 
 export const isTimeCalendarSubject = (subject) => {
@@ -422,22 +427,5 @@ export const isTimeCalendarSubject = (subject) => {
 // course (numeric lesson indices) onto the new chapter ids.
 export const TIME_CALENDAR_CHAPTER_IDS = TIME_CALENDAR_COURSE.modules.flatMap((m) => m.chapters.map((c) => c.id));
 
-/**
- * Read a subject's saved progress as an array of ids, migrating legacy numeric
- * entries (from the old generic course) onto chapter ids. Pure read — callers
- * own persistence. Keeps "My Learning" and the card % correct after the rewrite.
- */
-export const readTimeCalendarProgress = (subject) => {
-  try {
-    const raw = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + subject.id) || "[]");
-    if (!Array.isArray(raw)) return [];
-    const ids = TIME_CALENDAR_CHAPTER_IDS;
-    const valid = new Set(ids);
-    const migrated = raw.map((x) => {
-      if (valid.has(x)) return x;
-      const n = typeof x === "number" ? x : (/^\d+$/.test(String(x)) ? Number(x) : NaN);
-      return !Number.isNaN(n) && ids[n] ? ids[n] : null;
-    }).filter(Boolean);
-    return [...new Set(migrated)];
-  } catch { return []; }
-};
+/** Read Time & Calendar progress with legacy numeric entries migrated. */
+export const readTimeCalendarProgress = (subject) => readMigratedProgress(subject, TIME_CALENDAR_CHAPTER_IDS);

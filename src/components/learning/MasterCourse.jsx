@@ -1,10 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { TIME_CALENDAR_COURSE, readTimeCalendarProgress } from "../../data/timeCalendarCourse";
-import { HeroArt, chapterArt } from "./TimeCalendarArt";
+import { readMigratedProgress } from "../../data/courseProgress";
 
 const stripEmoji = (s) => String(s).replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF\u2190-\u21FF\u2B00-\u2BFF]/gu, "").trim();
 
-/** Read the whole chapter aloud (Hindi/English) via the browser's speech engine. */
+/** Read a whole chapter aloud (Hindi/English) via the browser's speech engine. */
 function chapterNarration(chapter) {
   const parts = [chapter.title, chapter.titleHi];
   for (const b of chapter.blocks) {
@@ -53,8 +52,8 @@ const NOTE_STYLE = {
 function Note({ b }) {
   const s = NOTE_STYLE[b.k] || NOTE_STYLE.info;
   const title = b.title || "";
-  // Titles already carry their own emoji in the authored content; only add the
-  // semantic icon when the title is plain text (or absent).
+  // Titles often carry their own emoji already; only add the semantic icon when
+  // the title is plain text (or absent), else it would render doubled.
   const lead = title && /^[^\p{L}\p{N}]/u.test(title) ? title : (s.icon + " " + (title || s.def));
   return <div className={"rounded-2xl border p-4 md:p-6 " + s.box}>
     <div className={"flex items-center gap-2 text-xs font-black uppercase tracking-widest md:text-sm " + s.label}>{lead}</div>
@@ -122,11 +121,11 @@ function Block({ b }) {
   }
 }
 
-function Chapter({ chapter, index, total, done, onToggleDone, speaking, onSpeak }) {
-  return <section id={"tc-" + chapter.id} className="scroll-mt-28 overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
+function Chapter({ chapter, index, total, done, onToggleDone, speaking, onSpeak, art }) {
+  return <section id={"mc-" + chapter.id} className="scroll-mt-28 overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
     {/* colourful chapter banner */}
     <div className="flex items-center gap-4 bg-gradient-to-r from-[#001529] via-[#0b3a63] to-[#0b3a63] p-5 md:p-6">
-      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl ring-2 ring-white/15 md:h-24 md:w-24" aria-hidden="true">{chapterArt(chapter.id)}</div>
+      <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl ring-2 ring-white/15 md:h-24 md:w-24" aria-hidden="true">{art(chapter.id)}</div>
       <div className="min-w-0 flex-1">
         <div className="text-[11px] font-black uppercase tracking-[0.2em] text-[#FFD166] md:text-xs">{chapter.moduleIcon} {chapter.moduleTitle} · Chapter {chapter.number}</div>
         <h3 className="mt-1 text-2xl font-black leading-tight text-white md:text-3xl">{chapter.title}</h3>
@@ -164,7 +163,7 @@ function MasteryTest({ mastery }) {
   const answered = Object.keys(answers).length;
   const pct = total ? Math.min(100, Math.round((score / total) * 100)) : 0;
 
-  return <section id="tc-mastery" className="scroll-mt-28 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-5 shadow-sm md:p-8">
+  return <section id="mc-mastery" className="scroll-mt-28 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-5 shadow-sm md:p-8">
     <div className="flex items-center gap-3">
       <span className="text-3xl" aria-hidden="true">🎓</span>
       <h3 className="text-2xl font-black text-[#062a52] md:text-3xl">{mastery.title}</h3>
@@ -187,7 +186,7 @@ function MasteryTest({ mastery }) {
             const correct = submitted && j === q.answer;
             const wrong = submitted && chosen && j !== q.answer;
             return <label key={j} className={"flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 text-base transition md:text-lg " + (correct ? "border-emerald-300 bg-emerald-50 font-bold text-emerald-800" : wrong ? "border-rose-300 bg-rose-50 font-bold text-rose-700" : chosen ? "border-[#0b3a63] bg-[#eef4f9]" : "border-zinc-200 hover:bg-zinc-50")}>
-              <input type="radio" name={"tc-q-" + i} checked={chosen} onChange={() => !submitted && setAnswers(a => ({ ...a, [i]: j }))} />
+              <input type="radio" name={"mc-q-" + i} checked={chosen} onChange={() => !submitted && setAnswers(a => ({ ...a, [i]: j }))} />
               <span>{o}</span>
             </label>;
           })}
@@ -204,14 +203,17 @@ function MasteryTest({ mastery }) {
   </section>;
 }
 
-export default function TimeCalendarCourse({ subject, onBack }) {
-  const course = TIME_CALENDAR_COURSE;
+/**
+ * Generic renderer for the hand-authored "Master Courses". All content comes
+ * from `course`; `art` maps a chapter id to its coded SVG illustration and
+ * `HeroArt` is the header illustration. Progress uses the shared hub key.
+ */
+export default function MasterCourse({ course, subject, onBack, art, HeroArt }) {
   const chapters = useMemo(() => course.modules.flatMap((m) => m.chapters.map((c) => ({ ...c, moduleTitle: m.title, moduleIcon: m.icon }))), [course]);
   const total = chapters.length;
-  // Use the same progress key the hub cards read so completion is consistent
-  // across the dashboard and this course view.
+  const chapterIds = useMemo(() => chapters.map((c) => c.id), [chapters]);
   const progressKey = "ssf-learning-course-progress-" + subject.id;
-  const [done, setDone] = useState(() => readTimeCalendarProgress(subject));
+  const [done, setDone] = useState(() => readMigratedProgress(subject, chapterIds));
   const topRef = useRef(null);
 
   useEffect(() => { try { localStorage.setItem(progressKey, JSON.stringify(done)); } catch {} }, [done, progressKey]);
@@ -220,8 +222,9 @@ export default function TimeCalendarCourse({ subject, onBack }) {
   const pct = total ? Math.min(100, Math.round((completed / total) * 100)) : 0;
 
   const toggleDone = (id) => setDone((cur) => cur.includes(id) ? cur.filter((x) => x !== id) : [...cur, id]);
-  const goTo = (id) => { try { document.getElementById("tc-" + id)?.scrollIntoView({ behavior: "smooth", block: "start" }); } catch {} };
+  const goTo = (id) => { try { document.getElementById("mc-" + id)?.scrollIntoView({ behavior: "smooth", block: "start" }); } catch {} };
   const { speaking, toggle: onSpeak } = useSpeaker();
+  const [titleEn, titleHi] = course.meta.title || [course.meta.tag || "", ""];
 
   return <div className="min-h-screen bg-[#f4f7fb] font-inria text-zinc-900">
     <section className="relative overflow-hidden bg-[#001529] text-white">
@@ -231,7 +234,7 @@ export default function TimeCalendarCourse({ subject, onBack }) {
         <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#FFD166]/30 bg-white/10 px-4 py-2 text-[11px] font-black uppercase tracking-[0.18em] text-[#FFD166] backdrop-blur">{course.meta.icon} Knowledge World • Master Course</div>
-            <h1 className="mt-5 text-4xl font-black leading-[1.1] md:text-6xl">Time &amp; Calendar<br /><span className="text-2xl text-white/90 md:text-4xl">समय एवं कैलेंडर</span></h1>
+            <h1 className="mt-5 text-4xl font-black leading-[1.1] md:text-6xl">{titleEn}<br /><span className="text-2xl text-white/90 md:text-4xl">{titleHi}</span></h1>
             <p className="mt-4 text-lg font-bold text-[#FFD166] md:text-xl">{course.meta.tagline}</p>
             <p className="mt-4 max-w-2xl text-base leading-8 text-white/85">{course.meta.heroSubtitle}</p>
             <div className="mt-7 flex flex-wrap gap-3">
@@ -242,7 +245,7 @@ export default function TimeCalendarCourse({ subject, onBack }) {
               </button>
             </div>
           </div>
-          <div className="mx-auto w-full max-w-sm lg:max-w-none"><HeroArt className="h-auto w-full drop-shadow-2xl" /></div>
+          <div className="mx-auto w-full max-w-sm lg:max-w-none">{HeroArt && <HeroArt className="h-auto w-full drop-shadow-2xl" />}</div>
         </div>
       </div>
       <div className="relative border-t border-white/10 bg-[#062a52]/70 backdrop-blur">
@@ -295,7 +298,7 @@ export default function TimeCalendarCourse({ subject, onBack }) {
 
       {/* Chapters */}
       <div className="mt-8 space-y-6">
-        {chapters.map((c, i) => <Chapter key={c.id} chapter={c} index={i} total={total} done={done.includes(c.id)} onToggleDone={toggleDone} speaking={speaking} onSpeak={onSpeak} />)}
+        {chapters.map((c, i) => <Chapter key={c.id} chapter={c} index={i} total={total} done={done.includes(c.id)} onToggleDone={toggleDone} speaking={speaking} onSpeak={onSpeak} art={art} />)}
       </div>
 
       {/* Revision */}
@@ -315,9 +318,9 @@ export default function TimeCalendarCourse({ subject, onBack }) {
       {/* Outcome */}
       <section className="mt-8 rounded-[2rem] border border-[#d7ecdd] bg-gradient-to-br from-[#f4fdf7] to-white p-6 shadow-sm md:p-8">
         <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🌟</span><h2 className="text-2xl font-black text-[#14532d] md:text-3xl">Course Outcome</h2></div>
-        <p className="mt-2 text-base leading-8 text-zinc-600 md:text-lg">इस course को पूरा करने के बाद learner केवल यह नहीं कहेगा “मुझे time पढ़ना आता है”, बल्कि वह:</p>
+        <p className="mt-2 text-base leading-8 text-zinc-600 md:text-lg">{course.outcomeIntro}</p>
         <ul className="mt-4 grid gap-2 sm:grid-cols-2">{course.outcome.map((x, i) => <li key={i} className="flex items-start gap-2 text-base font-bold text-zinc-700 md:text-lg"><span className="mt-0.5 text-[#177245]">✅</span>{x}</li>)}</ul>
-        <p className="mt-5 rounded-2xl bg-[#eaf7f0] p-4 text-base font-black text-[#177245] md:text-lg">यही Time &amp; Calendar की वास्तविक mastery है।</p>
+        <p className="mt-5 rounded-2xl bg-[#eaf7f0] p-4 text-base font-black text-[#177245] md:text-lg">{course.outcomeClose}</p>
       </section>
 
       <div className="py-10 text-center">

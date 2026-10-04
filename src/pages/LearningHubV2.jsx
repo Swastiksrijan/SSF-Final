@@ -19,8 +19,11 @@ import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGOR
 import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
 import PrimaryLessonFresh from "../components/learning/PrimaryLessonFresh";
-import TimeCalendarCourse from "../components/learning/TimeCalendarCourse";
+import MasterCourse from "../components/learning/MasterCourse";
 import { isTimeCalendarSubject, TIME_CALENDAR_COURSE, readTimeCalendarProgress } from "../data/timeCalendarCourse";
+import { HeroArt as TimeHeroArt, chapterArt as timeChapterArt } from "../components/learning/TimeCalendarArt";
+import { isFruitsSubject, FRUITS_COURSE, readFruitsProgress } from "../data/fruitsCourse";
+import { HeroArt as FruitHeroArt, chapterArt as fruitChapterArt } from "../components/learning/FruitsArt";
 import LearningHubHome from "../components/learning/LearningHubHome";
 import SubjectCard from "../components/learning/SubjectCard";
 import { courseBadge } from "../data/learningWorld";
@@ -2044,6 +2047,11 @@ const getSubjectModules = (subject) => {
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
   }
+  if (isFruitsSubject(subject)) {
+    const result = { total: FRUITS_COURSE.modules.reduce((n, m) => n + m.chapters.length, 0), moduleCount: FRUITS_COURSE.modules.length, hasStructured: true };
+    SUBJECT_MODULES_CACHE.set(subject.id, result);
+    return result;
+  }
   const structuredCourse = hasStructuredCourse(subject) ? resolveStructuredCourse(subject).course : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const eduModules = isEducationSubject(subject) ? buildEducationModules(subject) : null;
@@ -2420,7 +2428,8 @@ function LearningSubject({ subject, onBack }) {
       check={d.knowledgeCheck}
     />;
   }
-  if (isTimeCalendarSubject(subject)) return <TimeCalendarCourse subject={subject} onBack={onBack} />;
+  if (isTimeCalendarSubject(subject)) return <MasterCourse course={TIME_CALENDAR_COURSE} subject={subject} onBack={onBack} art={timeChapterArt} HeroArt={TimeHeroArt} />;
+  if (isFruitsSubject(subject)) return <MasterCourse course={FRUITS_COURSE} subject={subject} onBack={onBack} art={fruitChapterArt} HeroArt={FruitHeroArt} />;
   const submitQuiz = () => {
     const passed = score >= 4;
     const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
@@ -2830,6 +2839,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     const meta = courseMetaBySubject[s.id];
     const level =
       (isTimeCalendarSubject(s) && TIME_CALENDAR_COURSE.meta.level) ||
+      (isFruitsSubject(s) && FRUITS_COURSE.meta.level) ||
       (isOfficeSkillsSubject(s) && getOfficeSkillsCourse(s)?.level) ||
       (isEducationSubject(s) && getEducationCourse(s)?.level) ||
       (isKnowledgeWorldSubject(s) && getKnowledgeWorldCourse(s)?.level) ||

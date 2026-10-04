@@ -1,6 +1,8 @@
 import { FaArrowRight, FaBookOpen, FaClock, FaGraduationCap, FaShareAlt } from "react-icons/fa";
 import { isTimeCalendarSubject } from "../../data/timeCalendarCourse";
-import { CardArt } from "./TimeCalendarArt";
+import { isFruitsSubject } from "../../data/fruitsCourse";
+import { CardArt as TimeCardArt } from "./TimeCalendarArt";
+import { CardArt as FruitCardArt } from "./FruitsArt";
 
 const TONE = {
   gold: "border-[#FFD166]/50 bg-[#FFF7EA] text-[#B34A00]",
@@ -15,11 +17,13 @@ export default function SubjectCard({ subject, onOpen, onShare, progress = 0, ba
   const pct = Math.max(0, Math.min(100, Math.round(progress || 0)));
   const meta = badge || (subject && subject.category === "Knowledge World / ज्ञान संसार" ? { icon: "🌍", label: "Knowledge", tone: "green" } : null);
   const isTC = isTimeCalendarSubject(subject);
+  const isFruit = isFruitsSubject(subject);
+  const cardArt = isTC ? <TimeCardArt /> : isFruit ? <FruitCardArt /> : null;
   return <article className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-[#e3ddcd] bg-white shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1.5 hover:border-[#FF6600]/45 hover:shadow-[0_32px_65px_-40px_rgba(20,43,69,0.7)]">
     <div className="ssf-shine relative h-44 overflow-hidden">
       <div className={"absolute inset-0 bg-gradient-to-br " + (subject.color || "from-[#003366] to-[#0f4c81]")} />
-      {isTC
-        ? <div className="absolute inset-0 flex items-center justify-center p-4"><div className="h-full w-full max-w-[15rem]"><CardArt /></div></div>
+      {cardArt
+        ? <div className="absolute inset-0 flex items-center justify-center p-4"><div className="h-full w-full max-w-[15rem]">{cardArt}</div></div>
         : <img src={subject.photo || subject.image} alt={subject.en} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-[900ms] group-hover:scale-110" />}
       <div className="absolute inset-0 bg-gradient-to-t from-[#0a1e33]/88 via-[#0a1e33]/20 to-transparent" />
       <div className="absolute left-3.5 top-3.5 flex flex-wrap gap-1.5">
