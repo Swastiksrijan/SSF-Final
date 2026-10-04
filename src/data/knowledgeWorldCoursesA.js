@@ -1,47 +1,14 @@
 /**
- * Knowledge World courses — Part A (6 subjects).
- * Time & Calendar · Fruits · Flowers · Trees & Forests · Animals & Birds ·
+ * Knowledge World courses — Part A (5 subjects).
+ * Fruits · Flowers · Trees & Forests · Animals & Birds ·
  * Rivers, Mountains & Seas
+ *
+ * NOTE: "Time & Calendar" is a full Master Course authored in
+ * src/data/timeCalendarCourse.js (rendered by TimeCalendarCourse.jsx), so it is
+ * intentionally NOT defined here.
  */
 
 export const KW_PART_A = {
-  "Time & Calendar": {
-    icon: "⏱️", level: "Beginner → Practical", tag: "Everyday Skills",
-    tagline: "Time समझो, clock पढ़ो, calendar plan करो।",
-    what: "Time is the continuous measurement of change — how long things take and in what order they happen. A calendar organises days into weeks, months and years.",
-    why: "Time sense helps you reach places on time, plan work, respect others' schedules and understand seasons, history and the future.",
-    where: "School timetable, bus/train timings, office hours, festivals, birthdays, farming seasons and every clock on a wall or phone.",
-    outcome: "Learners can read any clock, convert units of time, use a calendar, plan a schedule and calculate durations and ages.",
-    modules: [
-      ["Understanding Time / समय की समझ", "Day, night और past से future तक का प्रवाह।", [
-        ["What is Time? / समय क्या है?", "Time बताता है कोई घटना कब हुई, कितनी देर चली और किस क्रम में हुई।", "सुबह 7 बजे उठना, 8 बजे school — यही daily time sequence है।", "आज के पाँच मुख्य काम घड़ी के समय के साथ लिखें।", ["1 hour में कितने minutes?", ["30", "60", "100", "24"], 1, "1 hour = 60 minutes।"]],
-        ["Day & Night / दिन एवं रात", "पृथ्वी 24 घंटे में axis पर एक rotation लगाती है, जिससे दिन-रात बनते हैं।", "हमारा हिस्सा सूर्य की ओर हो तो दिन, दूर हो तो रात।", "एक दिन के sunrise-sunset से दिन की लंबाई निकालें।", ["Day-night किससे बनते हैं?", ["Earth का rotation", "Moon", "बादल", "हवा"], 0, "Earth के rotation से।"]],
-        ["Yesterday, Today, Tomorrow / कल, आज, परसों", "Yesterday बीता दिन, Today वर्तमान, Tomorrow आने वाला दिन — past, present, future के प्रतीक।", "आज English, कल गणित, परसों परीक्षा।", "कल, आज, परसों के तीन-तीन काम लिखें।", ["Tomorrow किसे कहते हैं?", ["आने वाला दिन", "बीता दिन", "आज", "सप्ताह"], 0, "Tomorrow = आने वाला दिन।"]],
-      ]],
-      ["Units of Time / समय की इकाइयाँ", "Second से millennium तक की इकाइयाँ।", [
-        ["Second, Minute, Hour / सेकंड, मिनट, घंटा", "60 seconds = 1 minute, 60 minutes = 1 hour, 24 hours = 1 day।", "1 घंटे की class = 3600 seconds।", "तीन कामों का समय मिनटों में बदलें।", ["3600 seconds = ?", ["1 hour", "1 minute", "1 day", "30 min"], 0, "3600 s = 60 min = 1 hour।"]],
-        ["Day, Week, Month, Year / दिन, सप्ताह, महीना, वर्ष", "7 days = 1 week, ~30 days = 1 month, 12 months = 1 year (365/366 दिन)।", "April में 30, February में 28 या 29 दिन।", "इस महीने के दिन गिनकर weeks निकालें।", ["1 year में कितने months?", ["10", "12", "7", "24"], 1, "1 year = 12 months।"]],
-        ["Decade, Century, Millennium / दशक, शताब्दी, सहस्राब्दी", "10 years = 1 decade, 100 years = 1 century, 1000 years = 1 millennium।", "1947 = 20वीं century।", "अपने जन्म से अब तक के decades लिखें।", ["100 years = ?", ["1 century", "1 decade", "1 millennium", "10 years"], 0, "100 years = 1 century।"]],
-      ]],
-      ["Reading a Clock / घड़ी पढ़ना", "Analog और digital clock से समय पढ़ना।", [
-        ["Analog Clock / एनालॉग घड़ी", "12 numbers वाली घड़ी में छोटी hour hand और लंबी minute hand होती है।", "Hour hand 3 पर, minute hand 12 पर = 3:00।", "कागज़ पर clock बनाकर अलग-अलग समय दिखाएँ।", ["छोटी सुई क्या बताती है?", ["Hour", "Minute", "Second", "Day"], 0, "छोटी hour hand घंटे बताती है।"]],
-        ["Digital Clock / डिजिटल घड़ी", "Digital clock सीधे numbers में घंटे-मिनट दिखाती है, जैसे 09:45 या 21:45।", "Phone पर 14:30 = 2:30 PM।", "पाँच times 12-hour व 24-hour में लिखें।", ["18:00 का मतलब?", ["6:00 PM", "6:00 AM", "8:00 PM", "8:00 AM"], 0, "18:00 = 6:00 PM।"]],
-        ["AM, PM & 24-Hour / AM, PM एवं 24 घंटे", "Midnight–noon AM, noon–midnight PM; 24-hour format में दोपहर बाद 12 जोड़ें।", "1 PM = 13:00, 12 AM = 00:00।", "अपने routine को 24-hour format में लिखें।", ["Noon = 24-hour में?", ["12:00", "00:00", "24:00", "13:00"], 0, "Noon = 12:00।"]],
-      ]],
-      ["Calendar & Planning / कैलेंडर एवं योजना", "Calendar से तारीख, season और planning।", [
-        ["Days & Months / दिन एवं महीने", "सप्ताह के 7 दिन, वर्ष के 12 महीने; हर महीने दिनों की संख्या अलग।", "1 Jan 2026 = गुरुवार।", "इस महीने के सभी Monday लिखें।", ["1 week = ?", ["5", "6", "7", "8"], 2, "1 week = 7 days।"]],
-        ["Seasons & Leap Year / ऋतुएँ एवं लीप वर्ष", "Revolution से seasons; हर 4 वर्ष में February 29 दिन = leap year।", "2024 leap year, 366 दिन।", "अगले तीन leap years लिखें।", ["Leap year = ?", ["365", "366", "360", "364"], 1, "Leap year = 366 days।"]],
-        ["Duration & Planning / अवधि एवं योजना", "Duration = end − start; planning से काम समय पर होता है।", "9:15–11:00 = 1 घंटा 45 मिनट।", "Weekly timetable बनाकर study hours निकालें।", ["10:00–1:30 = ?", ["3 घं 30 मि", "1 घं", "2 घं", "4 घं"], 0, "3 घंटे 30 मिनट।"]],
-      ]],
-    ],
-    glossary: [["Second", "सेकंड", "समय की छोटी इकाई।"], ["Minute", "मिनट", "60 seconds।"], ["Hour", "घंटा", "60 minutes।"], ["AM", "पूर्वाह्न", "Midnight से noon।"], ["PM", "अपराह्न", "Noon से midnight।"], ["Duration", "अवधि", "काम में लगा समय।"], ["Leap Year", "लीप वर्ष", "366 दिनों वाला वर्ष।"], ["Century", "शताब्दी", "100 वर्ष।"]],
-    facts: ["एक दिन में 86,400 seconds होते हैं।", "पृथ्वी हर 4 मिनट में लगभग 1° घूमती है।", "ISRO भारत का अंतरिक्ष संगठन 1969 में बना।", "→Time Zones सीखें तो दुनिया की घड़ियाँ समझेंगे।"],
-    project: { objective: "एक सप्ताह का personal timetable बनाना।", materials: "कागज़, पेन, calendar।", steps: ["7 दिन लिखें।", "Study, play, rest, sleep का समय भरें।", "Total study hours निकालें।", "समय बचने की जगह देखें।"], observation: "कौन-से दिन सबसे productive?", result: "एक balanced weekly plan।", reflection: "पहले से बेहतर planning हुई?" },
-    revision: ["60s=1min, 60min=1hr", "24hr=1day, 7day=1week", "12 months=1 year (365/366 दिन)", "Duration = end − start", "AM: midnight–noon, PM: noon–midnight"],
-    mastery: [["1 दिन में मिनट?", ["1440", "60", "24", "360"], 0, "24×60=1440।"], ["Leap year हर?", ["4 वर्ष", "2", "10", "100"], 0, "लगभग 4 वर्ष में।"], ["3घं 45मि = ?", ["225 मिनट", "345", "180", "245"], 0, "3×60+45=225।"]],
-    related: ["Planets & Stars", "Weather & Seasons", "Inventions & Discoveries", "Indian States & Capital Cities"],
-  },
-
   "Fruits": {
     icon: "🍎", level: "Beginner → Practical", tag: "Nature & Nutrition",
     tagline: "फलों को पहचानो, बनावट जानो, पोषण समझो।",
