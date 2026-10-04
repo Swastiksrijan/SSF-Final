@@ -8,14 +8,15 @@ import { generateCertificate, generateIdentityCard } from "../utils/generateCert
 import AdminLearningCertificates from "../components/AdminLearningCertificates";
 import { BANK_ACCOUNTS, listBankStatements, getBankStatement, bankStatementRecords } from "../data/bankStatements";
 import { CASH_BOOKS, listCashStatements, getCashStatement, cashStatementRecords } from "../data/cashBook";
+import { FIN_REGISTERS, FIN_AUDIT_SUMMARY, FIN_FY_LIST, getFinRegister } from "../data/financialRecords";
 
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
  ["dashboard","Dashboard / डैशबोर्ड",FaChartLine],
  ["meetings","Meetings / बैठकें",FaCalendarAlt],
  ["members","Members Register / सदस्य रजिस्टर",FaUsers],["institutionalHistory","Institution Profile & Compliance / संस्था परिचय एवं अनुपालन",FaHistory],["officeHistory","Managing Committee History / प्रबंधकारिणी समिति इतिहास",FaUserTie],["managingCommittee","Managing Committee / प्रबंधकारिणी समिति",FaUserTie],["membershipContributions","Membership & Contribution / सदस्यता व योगदान",FaRupeeSign],["volunteers","Volunteers / स्वयंसेवक",FaUsers],["donors","Donors / दानदाता",FaUsers],
- ["donations","Donations / दान",FaRupeeSign],["expenses","Expenses / व्यय",FaRupeeSign],["contribution","Contributions / योगदान रजिस्टर",FaBook],
- ["cash","Cash Book / रोकड़ बही",FaBook],["bank","Bank Book / बैंक बही",FaBook],["ledger","Ledger / लेजर",FaBalanceScale],
+ ["donations","Donation & Contribution / दान एवं योगदान",FaRupeeSign],["expenses","Expenses / व्यय",FaRupeeSign],["contribution","Contributions / योगदान रजिस्टर",FaBook],
+ ["cash","Cash Book / रोकड़ बही",FaBook],["bank","Bank Book / बैंक बही",FaBook],["vouchers","Master Voucher Register / मास्टर वाउचर",FaFileAlt],["ledger","Ledger / लेजर",FaBalanceScale],
  ["inventory","Stock & Items / स्टॉक व सामग्री",FaBoxes],
  ["inward","Inward Register / आवक रजिस्टर",FaFileAlt],["outward","Outward Register / जावक रजिस्टर",FaFileAlt],
 ["projects","Projects & Initiatives / परियोजनाएँ व पहल",FaTasks],["events","Events & Camps / कार्यक्रम व शिविर",FaCalendarAlt],
@@ -30,6 +31,8 @@ const LABELS = Object.fromEntries(MODULES.map(function(x){return [x[0],x[1]];}))
 const MONEY = new Set(["donations","expenses","contribution","cash","bank","ledger"]);
 const SPECIAL_DOCS = new Set(["meetings","mou","certificates","idcards"]);
 const NO_RECORD_MODULES = new Set(["dashboard","reports","audit","users"]);
+// Office module -> official financial-records register id.
+const FIN_MODULE_MAP = {donations:"donations", contribution:"membership", membershipContributions:"membership", expenses:"expenses", vouchers:"vouchers", members:"members", meetings:"meetings"};
 
 const cls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#002344]/20";
 const downloadPdf=function(doc,filename){
@@ -229,10 +232,11 @@ export default function SSFDigitalOffice(){
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}\n    {active==="certificates"&&<AdminLearningCertificates token={token}/>}
     {active==="bank"&&<BankBook rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token} reload={()=>load("bank")}/>}
     {active==="cash"&&<CashBook rows={rows} add={add} archive={archive} token={token} reload={()=>load("cash")}/>}
+    {FIN_MODULE_MAP[active]&&<FinRegister regId={FIN_MODULE_MAP[active]}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
@@ -1001,6 +1005,70 @@ function CashBook({ rows, add, archive, token, reload }){
  </div>;
 }
 
+
+// Generic viewer for the official financial-records workbook registers
+// (Donation & Contribution, Membership Fee, Expense, Master Voucher, Member,
+// Meeting). Renders the workbook columns as-is, with search, CSV and PDF export.
+function FinRegister({ regId }){
+ const [fy,setFy]=useState(FIN_FY_LIST[0]||"");
+ const reg=useMemo(()=>getFinRegister(regId,fy)||FIN_REGISTERS.find(r=>r.id===regId)||null,[regId,fy]);
+ const [search,setSearch]=useState("");
+ const dateCol=useMemo(()=>reg?reg.columns.findIndex(c=>/date/i.test(c)): -1,[reg]);
+ const money=function(v){return "₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});};
+ const isNum=function(v){return v!==""&&v!==null&&v!==undefined&&!isNaN(Number(v))&&/amount|receipt|payment|balance|withdrawal|deposit/i.test(reg?.columns?.join(" ")||"");};
+ const rows=useMemo(()=>{
+   if(!reg)return [];
+   if(!search)return reg.rows;
+   const q=search.toLowerCase();
+   return reg.rows.filter(r=>r.some(c=>String(c).toLowerCase().includes(q)));
+ },[reg,search]);
+ if(!reg) return <div className="bg-white border rounded-2xl p-10 text-center text-zinc-400">Register not found.</div>;
+ const isMoneyCol=(c)=>/amount|receipt|payment|balance|withdrawal|deposit/i.test(c);
+ const exportCsv=function(){
+   const esc=function(v){return '"'+String(v??"").replace(/"/g,'""')+'"';};
+   const lines=[reg.columns.map(esc).join(",")];
+   rows.forEach(r=>lines.push(r.map(esc).join(",")));
+   const blob=new Blob(["\uFEFF"+lines.join("\r\n")+"\r\n"],{type:"text/csv;charset=utf-8"});
+   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ssf-"+regId+"-"+fy+".csv";document.body.appendChild(a);a.click();a.remove();
+ };
+ const printPdf=function(){
+   const d=new jsPDF({orientation:"landscape"}); d.addImage(logoImg,"PNG",10,7,12,12); d.setTextColor(0,35,68); d.setFontSize(13); d.text("Swastik Srijan Foundation Samiti",26,13); d.setFontSize(9); d.setTextColor(60); d.text(reg.title+" · FY "+fy,26,19);
+   let y=28; const maxW=270; const colW=reg.columns.map((c,i)=>Math.max(20,Math.min(60,maxW/reg.columns.length)));
+   d.setFontSize(7); d.setTextColor(0,35,68); let x=10; reg.columns.forEach((c,i)=>{d.text(String(c).slice(0,26),x,y);x+=colW[i];}); y+=4;
+   d.setTextColor(30);
+   rows.forEach(r=>{x=10; r.forEach((v,i)=>{d.text(String(v==null?"":v).slice(0,30),x,y);x+=colW[i];}); y+=4; if(y>195){d.addPage();y=20;}});
+   d.setFontSize(7); d.setTextColor(120); d.text("Computer-generated from SSF financial records · SSF Digital Office",148,205,{align:"center"});
+   downloadPdf(d,"ssf-"+regId+"-"+fy+".pdf");
+ };
+ return <div className="space-y-5">
+  <div className="bg-[#002344] text-white rounded-2xl p-6">
+   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h2 className="text-2xl font-black">{reg.title}</h2><p className="text-white/70 mt-1">Official financial records workbook · {reg.rows.length} entries · FY {fy}</p></div></div>
+    <div className="flex flex-wrap gap-2 items-center">
+     {FIN_FY_LIST.length>1&&<select value={fy} onChange={e=>setFy(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{FIN_FY_LIST.map(f=><option key={f} value={f}>FY {f}</option>)}</select>}
+     <span className="bg-white/10 rounded-xl px-3 py-2.5 font-bold">FY {fy}</span>
+    </div>
+   </div>
+  </div>
+  <div className="bg-white rounded-2xl border overflow-hidden">
+   <div className="p-5 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+    <div><h3 className="text-xl font-black text-[#002344]">{rows.length} of {reg.rows.length} entries</h3><p className="text-sm text-zinc-500 mt-1">Source: SSF Financial Records (FY {fy}) · read-only reference register</p></div>
+    <div className="flex flex-wrap gap-2 items-center">
+     <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search any column" className="px-3 py-2.5 border rounded-xl w-56"/>
+     <button type="button" onClick={exportCsv} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">CSV</button>
+     <button type="button" onClick={printPdf} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">PDF</button>
+    </div>
+   </div>
+   <div className="overflow-x-auto"><table className="w-full text-sm">
+    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr>{reg.columns.map((c,i)=><th key={i} className={"p-3 whitespace-nowrap "+(isMoneyCol(c)?"text-right":"text-left")}>{c}</th>)}</tr></thead>
+    <tbody className="divide-y">
+     {rows.map((r,ri)=><tr key={ri}>{r.map((v,ci)=><td key={ci} className={"p-3 "+(isMoneyCol(reg.columns[ci])?"text-right font-semibold whitespace-nowrap":"")+ (dateCol===ci?" whitespace-nowrap":"")}>{isMoneyCol(reg.columns[ci])&&v!==""?money(v):(v===""?"—":v)}</td>)}</tr>)}
+     {!rows.length&&<tr><td colSpan={reg.columns.length} className="p-10 text-center text-zinc-400">No entries found.</td></tr>}
+    </tbody>
+   </table></div>
+  </div>
+ </div>;
+}
 
 function Register({module,rows,loading,search,setSearch,add,archive}){
  const [open,setOpen]=useState(false), [status,setStatus]=useState("all"), [from,setFrom]=useState(""), [to,setTo]=useState("");
