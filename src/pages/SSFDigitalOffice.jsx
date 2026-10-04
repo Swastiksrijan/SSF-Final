@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint, FaVideo, FaUserTie } from "react-icons/fa";
+import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint, FaVideo, FaUserTie, FaCheckCircle } from "react-icons/fa";
 import jsPDF from "jspdf";
 import { API_BASE_URL, ENDPOINTS } from "../config/api";
 import logoImg from "../assets/new-logo.png";
@@ -9,6 +9,7 @@ import AdminLearningCertificates from "../components/AdminLearningCertificates";
 import { BANK_ACCOUNTS, listBankStatements, getBankStatement, bankStatementRecords } from "../data/bankStatements";
 import { CASH_BOOKS, listCashStatements, getCashStatement, cashStatementRecords } from "../data/cashBook";
 import { FIN_REGISTERS, FIN_AUDIT_SUMMARY, FIN_FY_LIST, getFinRegister } from "../data/financialRecords";
+import { FinanceDashboard, FinanceStatements, IntegrityCheck } from "../components/FinanceOffice";
 
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
@@ -25,7 +26,7 @@ const MODULES = [
  ["certificates","Certificates / प्रमाणपत्र",FaCertificate],["idcards","ID Cards / पहचान पत्र",FaIdCard],
  ["beneficiaries","Beneficiaries / लाभार्थी",FaUsers],["internships","Internship Applications / इंटर्नशिप आवेदन",FaTasks],["activities","Volunteer Activities / स्वयंसेवी गतिविधियाँ",FaTasks],
  ["assets","Assets & Equipment / संपत्ति व उपकरण",FaBoxes],["notifications","Notices, Alerts & Follow-ups / नोटिस, सूचनाएँ एवं अनुवर्ती कार्य",FaTasks],
- ["reports","Reports & Statements / रिपोर्ट एवं विवरण",FaChartLine],["users","Users & Permissions / उपयोगकर्ता व अनुमतियाँ",FaUserShield],["audit","Audit Trail / ऑडिट ट्रेल",FaHistory]
+ ["reports","Reports & Statements / रिपोर्ट एवं विवरण",FaChartLine],["finDashboard","Finance Dashboard / वित्तीय डैशबोर्ड",FaChartLine],["finStatements","Financial Statements / वित्तीय विवरण",FaBalanceScale],["integrity","Data Integrity Check / डेटा जाँच",FaCheckCircle],["users","Users & Permissions / उपयोगकर्ता व अनुमतियाँ",FaUserShield],["audit","Audit Trail / ऑडिट ट्रेल",FaHistory]
 ];
 const LABELS = Object.fromEntries(MODULES.map(function(x){return [x[0],x[1]];}));
 const MONEY = new Set(["donations","expenses","contribution","cash","bank","ledger"]);
@@ -234,9 +235,12 @@ export default function SSFDigitalOffice(){
     {active==="cash"&&<CashBook rows={rows} add={add} archive={archive} token={token} reload={()=>load("cash")}/>}
     {FIN_MODULE_MAP[active]&&<FinRegister regId={FIN_MODULE_MAP[active]}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
+    {active==="finDashboard"&&<FinanceDashboard fy={FIN_FY_LIST[0]||"2025-26"}/>}
+    {active==="finStatements"&&<FinanceStatements fy={FIN_FY_LIST[0]||"2025-26"}/>}
+    {active==="integrity"&&<IntegrityCheck/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","cashbank","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","finDashboard","finStatements","integrity","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","cashbank","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
