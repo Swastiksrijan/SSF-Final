@@ -1,10 +1,9 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import {
   FaArrowRight, FaBookOpen, FaCompass, FaGraduationCap, FaPlayCircle,
   FaSearch, FaLayerGroup, FaGlobe, FaCheckCircle, FaCertificate, FaBullseye,
   FaTools, FaRoute, FaHistory, FaStar
 } from "react-icons/fa";
-import { HubHeroArt } from "./LearningIllustrations";
 import SubjectCard from "./SubjectCard";
 import { buildLearningWorld, LEARNING_INTENTS, LEARNING_PATHS } from "../../data/learningWorld";
 
@@ -28,6 +27,36 @@ const MODES = [
   { icon: <FaCheckCircle aria-hidden="true" />, title: "Assessment", hi: "आकलन", text: "Module checks and final quiz.", cta: "See your progress", route: "myLearning" },
   { icon: <FaCertificate aria-hidden="true" />, title: "Certificates", hi: "प्रमाणपत्र", text: "Recognise genuinely completed learning.", cta: "Verify a certificate", route: "verify" },
 ];
+
+// Real SSF classroom and community moments shown inside the animated hero
+// frame. Photos auto-crossfade so the frame feels alive without looking busy.
+const HERO_PHOTOS = [
+  { src: "/images/real/student-leadership-recitation.jpg", alt: "Student leadership and recitation programme" },
+  { src: "/images/real/education_girls.jpg", alt: "Girl child education programme" },
+  { src: "/images/real/community-education-meeting.jpg", alt: "Community education meeting" },
+];
+
+function HeroPhoto() {
+  const [idx, setIdx] = useState(0);
+  useEffect(() => {
+    if (HERO_PHOTOS.length < 2) return;
+    const reduce = typeof window !== "undefined" && window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduce) return;
+    const t = setInterval(() => setIdx((i) => (i + 1) % HERO_PHOTOS.length), 5200);
+    return () => clearInterval(t);
+  }, []);
+  return <div className="absolute inset-0">
+    {HERO_PHOTOS.map((p, i) => (
+      <img key={p.src} src={p.src} alt={p.alt} loading={i === 0 ? "eager" : "lazy"} decoding="async"
+        className={"absolute inset-0 h-full w-full object-cover object-center transition-opacity duration-[1200ms] ease-out " + (i === idx ? "opacity-100" : "opacity-0")} />
+    ))}
+    <div className="absolute inset-0 bg-gradient-to-t from-[#001529] via-[#001529]/35 to-transparent" />
+    <div className="absolute inset-0 bg-gradient-to-br from-[#001529]/55 via-transparent to-transparent" />
+    <div className="absolute right-4 top-4 flex gap-1.5" aria-hidden="true">
+      {HERO_PHOTOS.map((p, i) => <span key={p.src} className={"h-1.5 rounded-full transition-all duration-500 " + (i === idx ? "w-5 bg-[#FFD166]" : "w-1.5 bg-white/40")} />)}
+    </div>
+  </div>;
+}
 
 function HeroSearch({ matchSubjects, onOpenSubject, onSubmit }) {
   const [q, setQ] = useState("");
@@ -114,7 +143,7 @@ export default function LearningHubHome({
     {/* ── HERO ─────────────────────────────────────────────── */}
     <section className="relative overflow-hidden bg-[#001529] text-white">
       <div className="absolute inset-0 bg-gradient-to-br from-[#001529] via-[#0b3a63] to-[#001529]" />
-      <div className="absolute inset-0 opacity-50" style={{ backgroundImage: "radial-gradient(circle at 78% 22%, rgba(184,144,63,0.22), transparent 45%)" }} />
+      <div className="absolute inset-0 opacity-70" style={{ backgroundImage: "radial-gradient(circle at 76% 20%, rgba(255,140,26,0.20), transparent 46%), radial-gradient(circle at 18% 88%, rgba(255,209,102,0.14), transparent 44%)" }} />
       <div className="absolute -right-40 -top-40 h-[30rem] w-[30rem] rounded-full border border-[#FFD166]/15" />
       <div className="absolute -bottom-48 -left-24 h-[34rem] w-[34rem] rounded-full border border-white/[0.06]" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FF6600]/60 to-transparent" />
@@ -124,12 +153,16 @@ export default function LearningHubHome({
           <div className="inline-flex items-center gap-2.5 rounded-full border border-[#FFD166]/30 bg-white/[0.04] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[#FFD166] backdrop-blur">
             <span aria-hidden="true">◆</span> SSF Learning Hub
           </div>
-          <h1 className="mt-6 font-serif text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl">
-            Welcome to Your <span className="text-[#FFD166]">Learning Journey</span> 🚀
+          <h1 className="mt-6 font-hindi text-4xl font-bold leading-[1.2] tracking-tight text-white md:text-6xl">
+            हर बच्चा सीख सकता है —<br className="hidden sm:block" /> <span className="text-[#FFD166]">आप भी</span>
           </h1>
-          <div className="mt-4 text-lg font-semibold tracking-wide text-[#FFD166] md:text-2xl">Discover • Learn • Practice • Grow</div>
-          <p className="mt-5 max-w-xl text-sm leading-7 text-white/70 md:text-base">
-            ज्ञान से कौशल तक — एक structured digital learning space। हर subject को Learning Area → Course → Modules → Lessons के स्पष्ट क्रम में सीखें, practice करें और अपनी गति से आगे बढ़ें।
+          <div className="mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 font-hindi text-base font-bold tracking-[0.1em] text-[#FFD166] md:text-xl">
+            <span>ज्ञान</span><span className="text-[#FF6600]" aria-hidden="true">•</span>
+            <span>कौशल</span><span className="text-[#FF6600]" aria-hidden="true">•</span>
+            <span>स्वावलंबन</span>
+          </div>
+          <p className="mt-5 max-w-xl text-sm leading-7 text-white/75 md:text-base">
+            एक structured digital learning space — हर subject को Learning Area → Course → Modules → Lessons के स्पष्ट क्रम में सीखें, practice करें और अपनी गति से आगे बढ़ें।
           </p>
 
           <HeroSearch matchSubjects={matchSubjects} onOpenSubject={onOpenSubject} onSubmit={onSearch} />
@@ -166,21 +199,23 @@ export default function LearningHubHome({
         </div>
 
         <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
-          <div className="absolute -inset-5 rounded-[2.6rem] bg-[#FF6600]/10 blur-3xl" aria-hidden="true" />
-          <div className="relative rounded-[2rem] border border-[#FFD166]/25 p-2.5 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
-            <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10">
-              <HubHeroArt className="block h-auto w-full" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#001529]/70 via-transparent to-transparent" />
-              <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] backdrop-blur">◆ हर बच्चा सीख सकता है</div>
-              <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/15 bg-white/[0.08] p-4 backdrop-blur">
+          <div className="absolute -inset-5 rounded-[2.6rem] bg-[#FF6600]/12 blur-3xl" aria-hidden="true" />
+          <div className="ssf-float relative rounded-[2rem] border border-[#FFD166]/30 bg-white/[0.04] p-2.5 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.85)] backdrop-blur">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-[1.6rem] border border-white/10">
+              <HeroPhoto />
+              <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/40 px-3 py-1.5 font-hindi text-[10px] font-bold tracking-[0.14em] text-white backdrop-blur">◆ हर बच्चा सीख सकता है</div>
+              <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/15 bg-black/35 p-4 backdrop-blur-md">
                 <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FFD166]">Swastik Srijan Foundation</div>
-                <div className="mt-1 text-sm font-bold text-white">शिक्षा • कौशल • स्वावलंबन</div>
+                <div className="mt-1 font-hindi text-sm font-bold text-white">शिक्षा • कौशल • स्वावलंबन</div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </section>
+
+    {/* ── DASHBOARD (contained to the same 7xl grid as the hero) ── */}
+    <div className="mx-auto max-w-7xl px-4 pb-16 md:pb-20">
 
     {/* ── WHAT BRINGS YOU HERE TODAY ───────────────────────── */}
     <section className="mt-14">
@@ -357,5 +392,7 @@ export default function LearningHubHome({
         ); })}
       </div>
     </section>
+
+    </div>
   </>;
 }

@@ -5,10 +5,10 @@
   --primary: #002344; --primary-light: #004d99; --secondary: #d90429; --accent-gold: #fb8500; --accent-green: #2d6a4f;
   --bg-soft: #f8f9fa; --text-dark: #1a1c1e; --text-muted: #64748b; --white: #ffffff; --glass: rgba(255,255,255,.7);
 }
-body { font-family:"Plus Jakarta Sans",sans-serif; color:var(--text-dark); background-color:var(--white); overflow-x:hidden; line-height:1.6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+body { font-family:"Plus Jakarta Sans","Mukta",sans-serif; color:var(--text-dark); background-color:var(--white); overflow-x:hidden; line-height:1.6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 * { overflow-wrap:break-word; word-wrap:break-word; }
 .break-all { word-break:break-all !important; } .break-words { overflow-wrap:break-word !important; word-wrap:break-word !important; } img { max-width:100%; height:auto; }
-.font-serif { font-family:"Playfair Display",serif; } .font-hindi { font-family:"Noto Serif Devanagari",serif; } .font-merriweather { font-family:"Merriweather",serif; } .font-mukta { font-family:"Mukta",sans-serif; }
+.font-serif { font-family:"Playfair Display","Noto Serif Devanagari",serif; } .font-hindi { font-family:"Noto Serif Devanagari",serif; } .font-merriweather { font-family:"Merriweather",serif; } .font-mukta { font-family:"Mukta",sans-serif; }
 .glass-effect { background:var(--glass); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.3); }
 .text-gradient { background:linear-gradient(135deg,var(--primary) 0%,#001a33 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
 .bg-gradient-premium { background:linear-gradient(135deg,#001a33 0%,var(--primary) 100%); }
