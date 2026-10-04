@@ -211,3 +211,5 @@ export const isOfficeSkillsSubject = (subject) =>
 
 export const officeTopicCount = (course) =>
   course ? course.modules.reduce((n, m) => n + m.topics.length, 0) : 0;
+
+export { OFFICE_SKILLS_CONTENT } from "./officeSkillsContent.js";
