@@ -17,6 +17,7 @@ import { makeCourseArt } from "../components/learning/CourseArtKit";
 import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
 import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_SKILLS_CATEGORY, OFFICE_SKILLS_SECTION, OFFICE_SKILLS_CARDS, OFFICE_SKILLS_CONTENT } from "../data/officeSkillsCourse";
 import { ENTREPRENEURSHIP_CONTENT } from "../data/entrepreneurshipContent";
+import { RESEARCH_CONTENT } from "../data/researchSkillsContent";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGORY } from "../data/learningCurriculum";
 import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
@@ -38,6 +39,7 @@ import { SUBJECT_CONTENT } from "../data/learningHubSubjectContent";
 import { SUBJECT_CONTENT_EXTRA } from "../data/learningSubjectContentExtra";
 
 const ENTREPRENEURSHIP_CATEGORY = "Entrepreneurship & Work / उद्यमिता एवं कार्य";
+const RESEARCH_CATEGORY = "Research & Mastery Skills / शोध एवं दक्षता कौशल";
 
 // Single registry lookup: hand-written content first, then the discipline-
 // specific content added for the new learning areas.
@@ -133,7 +135,7 @@ const readStoredProgress = (subject) => {
   if (isFruitsSubject(subject)) return readFruitsProgress(subject);
   if (isVocabularySubject(subject)) return readVocabularyProgress(subject);
   if (isTreesForestsSubject(subject)) return readTreesForestsProgress(subject);
-  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isEntrepreneurshipAuthored(subject)) return readMigratedProgress(subject, curriculumChapterIdsFor(subject));
+  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isEntrepreneurshipAuthored(subject) || isResearchAuthored(subject)) return readMigratedProgress(subject, curriculumChapterIdsFor(subject));
   try {
     const raw = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + subject.id) || "[]");
     return Array.isArray(raw) ? raw : [];
@@ -1950,6 +1952,10 @@ function curriculumChapterIdsFor(subject) {
     const ec = entrepreneurshipToMasterCourse(subject);
     return ec ? ec.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
   }
+  if (isResearchAuthored(subject)) {
+    const rc = researchToMasterCourse(subject);
+    return rc ? rc.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
+  }
   return curriculumChapterIds(subject);
 }
 
@@ -2136,6 +2142,10 @@ const officeToMasterCourse = (subject) => {
 const isEntrepreneurshipAuthored = (subject) => Boolean(subject && subject.category === ENTREPRENEURSHIP_CATEGORY && ENTREPRENEURSHIP_CONTENT[subject.en]);
 const entrepreneurshipToMasterCourse = (subject) => authoredContentToMasterCourse(subject, ENTREPRENEURSHIP_CONTENT[subject.en], { icon: "🚀", tag: ENTREPRENEURSHIP_CATEGORY, outcomeClose: "Idea + ग्राहक + हिसाब + ईमानदारी — यही टिकाऊ व्यवसाय है।" });
 
+// Research & Mastery Skills: authored content rendered through the shared builder.
+const isResearchAuthored = (subject) => Boolean(subject && subject.category === RESEARCH_CATEGORY && RESEARCH_CONTENT[subject.en]);
+const researchToMasterCourse = (subject) => authoredContentToMasterCourse(subject, RESEARCH_CONTENT[subject.en], { icon: "🔍", tag: RESEARCH_CATEGORY, outcomeClose: "सवाल + खोज + जाँच + अभ्यास — यही असली mastery है।" });
+
 // Knowledge World: turns a subject-specific KW course into the module/lesson
 // structure the course UI renders. Each topic becomes a rich lesson built from
 // that topic's own learn / example / activity / quiz material.
@@ -2309,10 +2319,10 @@ const getSubjectModules = (subject) => {
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
   }
-  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isEntrepreneurshipAuthored(subject)) {
+  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isEntrepreneurshipAuthored(subject) || isResearchAuthored(subject)) {
     const mc = isKnowledgeWorldSubject(subject)
       ? knowledgeWorldToMasterCourse(subject, getKnowledgeWorldCourse(subject))
-      : (isOfficeSkillsSubject(subject) ? officeToMasterCourse(subject) : (isEntrepreneurshipAuthored(subject) ? entrepreneurshipToMasterCourse(subject) : curriculumToMasterCourse(subject)));
+      : (isOfficeSkillsSubject(subject) ? officeToMasterCourse(subject) : (isEntrepreneurshipAuthored(subject) ? entrepreneurshipToMasterCourse(subject) : (isResearchAuthored(subject) ? researchToMasterCourse(subject) : curriculumToMasterCourse(subject))));
     const result = { total: mc.modules.reduce((n, m) => n + m.chapters.length, 0), moduleCount: mc.modules.length, hasStructured: true };
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
@@ -2708,6 +2718,10 @@ function LearningSubject({ subject, onBack }) {
   if (isEntrepreneurshipAuthored(subject)) {
     const ec = entrepreneurshipToMasterCourse(subject);
     if (ec) { const a = makeCourseArt(ec); return <MasterCourse course={ec} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
+  }
+  if (isResearchAuthored(subject)) {
+    const rc = researchToMasterCourse(subject);
+    if (rc) { const a = makeCourseArt(rc); return <MasterCourse course={rc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
   }
   if (isGenericTopicSubject(subject)) {
     const mc = curriculumToMasterCourse(subject);
