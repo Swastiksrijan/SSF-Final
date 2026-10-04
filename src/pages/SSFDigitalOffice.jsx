@@ -16,7 +16,7 @@ const MODULES = [
  ["meetings","Meetings / बैठकें",FaCalendarAlt],
  ["members","Members Register / सदस्य रजिस्टर",FaUsers],["institutionalHistory","Institution Profile & Compliance / संस्था परिचय एवं अनुपालन",FaHistory],["officeHistory","Managing Committee History / प्रबंधकारिणी समिति इतिहास",FaUserTie],["managingCommittee","Managing Committee / प्रबंधकारिणी समिति",FaUserTie],["membershipContributions","Membership & Contribution / सदस्यता व योगदान",FaRupeeSign],["volunteers","Volunteers / स्वयंसेवक",FaUsers],["donors","Donors / दानदाता",FaUsers],
  ["donations","Donation & Contribution / दान एवं योगदान",FaRupeeSign],["expenses","Expenses / व्यय",FaRupeeSign],["contribution","Contributions / योगदान रजिस्टर",FaBook],
- ["cash","Cash Book / रोकड़ बही",FaBook],["bank","Bank Book / बैंक बही",FaBook],["vouchers","Master Voucher Register / मास्टर वाउचर",FaFileAlt],["ledger","Ledger / लेजर",FaBalanceScale],
+ ["cash","Cash Book / रोकड़ बही",FaBook],["bank","Bank Book / बैंक बही",FaBook],["cashbank","Cash & Bank Book / रोकड़ एवं बैंक बही",FaBook],["vouchers","Master Voucher Register / मास्टर वाउचर",FaFileAlt],["ledger","Ledger / लेजर",FaBalanceScale],
  ["inventory","Stock & Items / स्टॉक व सामग्री",FaBoxes],
  ["inward","Inward Register / आवक रजिस्टर",FaFileAlt],["outward","Outward Register / जावक रजिस्टर",FaFileAlt],
 ["projects","Projects & Initiatives / परियोजनाएँ व पहल",FaTasks],["events","Events & Camps / कार्यक्रम व शिविर",FaCalendarAlt],
@@ -32,7 +32,7 @@ const MONEY = new Set(["donations","expenses","contribution","cash","bank","ledg
 const SPECIAL_DOCS = new Set(["meetings","mou","certificates","idcards"]);
 const NO_RECORD_MODULES = new Set(["dashboard","reports","audit","users"]);
 // Office module -> official financial-records register id.
-const FIN_MODULE_MAP = {donations:"donations", contribution:"membership", membershipContributions:"membership", expenses:"expenses", vouchers:"vouchers", members:"members", meetings:"meetings"};
+const FIN_MODULE_MAP = {donations:"donations", contribution:"membership", membershipContributions:"membership", expenses:"expenses", vouchers:"vouchers", cashbank:"cashbank", members:"members", meetings:"meetings"};
 
 const cls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#002344]/20";
 const downloadPdf=function(doc,filename){
@@ -236,7 +236,7 @@ export default function SSFDigitalOffice(){
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","cashbank","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
