@@ -20,7 +20,7 @@ import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
 import PrimaryLessonFresh from "../components/learning/PrimaryLessonFresh";
 import TimeCalendarCourse from "../components/learning/TimeCalendarCourse";
-import { isTimeCalendarSubject, TIME_CALENDAR_COURSE } from "../data/timeCalendarCourse";
+import { isTimeCalendarSubject, TIME_CALENDAR_COURSE, readTimeCalendarProgress } from "../data/timeCalendarCourse";
 import LearningHubHome from "../components/learning/LearningHubHome";
 import SubjectCard from "../components/learning/SubjectCard";
 import { courseBadge } from "../data/learningWorld";
@@ -2788,7 +2788,9 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     let completedCount = 0;
     SUBJECTS.forEach(s => {
       try {
-        const done = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + s.id) || "[]");
+        const done = isTimeCalendarSubject(s)
+          ? readTimeCalendarProgress(s)
+          : JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + s.id) || "[]");
         if (!done.length) return;
         const { total } = getSubjectModules(s);
         if (!total) return;
@@ -2803,7 +2805,9 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
 
   const cardProgress = (s) => {
     try {
-      const done = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + s.id) || "[]");
+      const done = isTimeCalendarSubject(s)
+        ? readTimeCalendarProgress(s)
+        : JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + s.id) || "[]");
       if (!done.length) return 0;
       const { total } = getSubjectModules(s);
       return total ? Math.min(100, Math.round(done.length / total * 100)) : 0;

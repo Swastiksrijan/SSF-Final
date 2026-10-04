@@ -417,3 +417,27 @@ export const isTimeCalendarSubject = (subject) => {
   const base = String(subject.en || "").toLowerCase().trim();
   return base === "time & calendar" || base === "time and calendar" || /समय एवं कैलेंडर/.test(subject.hi || subject.title || "");
 };
+
+// Chapter ids in order, used to migrate progress saved by the previous generic
+// course (numeric lesson indices) onto the new chapter ids.
+export const TIME_CALENDAR_CHAPTER_IDS = TIME_CALENDAR_COURSE.modules.flatMap((m) => m.chapters.map((c) => c.id));
+
+/**
+ * Read a subject's saved progress as an array of ids, migrating legacy numeric
+ * entries (from the old generic course) onto chapter ids. Pure read — callers
+ * own persistence. Keeps "My Learning" and the card % correct after the rewrite.
+ */
+export const readTimeCalendarProgress = (subject) => {
+  try {
+    const raw = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + subject.id) || "[]");
+    if (!Array.isArray(raw)) return [];
+    const ids = TIME_CALENDAR_CHAPTER_IDS;
+    const valid = new Set(ids);
+    const migrated = raw.map((x) => {
+      if (valid.has(x)) return x;
+      const n = typeof x === "number" ? x : (/^\d+$/.test(String(x)) ? Number(x) : NaN);
+      return !Number.isNaN(n) && ids[n] ? ids[n] : null;
+    }).filter(Boolean);
+    return [...new Set(migrated)];
+  } catch { return []; }
+};

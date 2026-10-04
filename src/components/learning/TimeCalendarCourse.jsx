@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { TIME_CALENDAR_COURSE } from "../../data/timeCalendarCourse";
+import { TIME_CALENDAR_COURSE, readTimeCalendarProgress } from "../../data/timeCalendarCourse";
 import { HeroArt, chapterArt } from "./TimeCalendarArt";
 
 const stripEmoji = (s) => String(s).replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF\u2190-\u21FF\u2B00-\u2BFF]/gu, "").trim();
@@ -211,15 +211,7 @@ export default function TimeCalendarCourse({ subject, onBack }) {
   // Use the same progress key the hub cards read so completion is consistent
   // across the dashboard and this course view.
   const progressKey = "ssf-learning-course-progress-" + subject.id;
-  const [done, setDone] = useState(() => {
-    try {
-      const raw = JSON.parse(localStorage.getItem(progressKey) || "[]");
-      // Heal stale data from the previous generic course (numeric indices) so the
-      // count stays truthful after the content rewrite.
-      const valid = new Set(chapters.map((c) => c.id));
-      return Array.isArray(raw) ? raw.filter((id) => valid.has(id)) : [];
-    } catch { return []; }
-  });
+  const [done, setDone] = useState(() => readTimeCalendarProgress(subject));
   const topRef = useRef(null);
 
   useEffect(() => { try { localStorage.setItem(progressKey, JSON.stringify(done)); } catch {} }, [done, progressKey]);
