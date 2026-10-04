@@ -12,7 +12,8 @@ import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../data/coursesData"
 import { ENDPOINTS } from "../config/api";
 import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../data/englishFromBasicsContent";
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
-import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCount } from "../data/knowledgeWorldCourse";
+import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCount, knowledgeWorldToMasterCourse } from "../data/knowledgeWorldCourse";
+import { makeCourseArt } from "../components/learning/CourseArtKit";
 import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
 import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_SKILLS_CATEGORY, OFFICE_SKILLS_SECTION, OFFICE_SKILLS_CARDS } from "../data/officeSkillsCourse";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGORY } from "../data/learningCurriculum";
@@ -2459,6 +2460,10 @@ function LearningSubject({ subject, onBack }) {
   if (isFruitsSubject(subject)) return <MasterCourse course={FRUITS_COURSE} subject={subject} onBack={onBack} art={fruitChapterArt} HeroArt={FruitHeroArt} />;
   if (isVocabularySubject(subject)) return <MasterCourse course={VOCABULARY_COURSE} subject={subject} onBack={onBack} art={vocabChapterArt} HeroArt={VocabHeroArt} />;
   if (isTreesForestsSubject(subject)) return <MasterCourse course={TREES_FORESTS_COURSE} subject={subject} onBack={onBack} art={treesChapterArt} HeroArt={TreesHeroArt} />;
+  if (isKnowledgeWorldSubject(subject)) {
+    const kwc = knowledgeWorldToMasterCourse(subject, getKnowledgeWorldCourse(subject));
+    if (kwc) { const a = makeCourseArt(kwc); return <MasterCourse course={kwc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
+  }
   const submitQuiz = () => {
     const passed = score >= 4;
     const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };

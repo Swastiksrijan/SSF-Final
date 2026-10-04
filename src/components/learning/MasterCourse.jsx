@@ -336,6 +336,18 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
       {/* Mastery */}
       <div className="mt-8"><MasteryTest mastery={course.mastery} /></div>
 
+      {/* Project (optional — Knowledge World courses carry a field project) */}
+      {course.project && <section className="mt-8 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-6 shadow-sm md:p-8">
+        <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🧪</span><h2 className="text-2xl font-black text-[#062a52] md:text-3xl">Project — {course.project.objective}</h2></div>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          {course.project.materials && <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-base font-black text-[#0b3a63] md:text-lg">Materials / सामग्री</div><p className="mt-1 text-base leading-8 text-zinc-600 md:text-lg">{course.project.materials}</p></div>}
+          {course.project.observation && <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-base font-black text-[#0b3a63] md:text-lg">Observe / निरीक्षण</div><p className="mt-1 text-base leading-8 text-zinc-600 md:text-lg">{course.project.observation}</p></div>}
+        </div>
+        {course.project.steps && <ol className="mt-4 space-y-2 pl-1 text-base leading-8 text-zinc-700 md:text-lg">{course.project.steps.map((s, i) => <li key={i} className="flex gap-3"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef4f9] text-sm font-black text-[#0b3a63]">{i + 1}</span><span>{s}</span></li>)}</ol>}
+        {course.project.result && <p className="mt-4 rounded-2xl bg-[#eaf7f0] p-4 text-base font-black text-[#177245] md:text-lg">Result: {course.project.result}</p>}
+        {course.project.reflection && <p className="mt-2 text-base italic leading-8 text-zinc-600 md:text-lg">Reflection: {course.project.reflection}</p>}
+      </section>}
+
       {/* Outcome */}
       <section className="mt-8 rounded-[2rem] border border-[#d7ecdd] bg-gradient-to-br from-[#f4fdf7] to-white p-6 shadow-sm md:p-8">
         <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🌟</span><h2 className="text-2xl font-black text-[#14532d] md:text-3xl">Course Outcome</h2></div>

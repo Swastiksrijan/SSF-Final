@@ -7,6 +7,8 @@ import { CardArt as TimeCardArt } from "./TimeCalendarArt";
 import { CardArt as FruitCardArt } from "./FruitsArt";
 import { CardArt as VocabCardArt } from "./VocabularyArt";
 import { CardArt as TreesCardArt } from "./TreesForestsArt";
+import { GlyphCard } from "./CourseArtKit";
+import { getKnowledgeWorldCourse, isKnowledgeWorldSubject } from "../../data/knowledgeWorldCourse";
 
 const TONE = {
   gold: "border-[#FFD166]/50 bg-[#FFF7EA] text-[#B34A00]",
@@ -24,7 +26,9 @@ export default function SubjectCard({ subject, onOpen, onShare, progress = 0, ba
   const isFruit = isFruitsSubject(subject);
   const isVocab = isVocabularySubject(subject);
   const isTrees = isTreesForestsSubject(subject);
-  const cardArt = isTC ? <TimeCardArt /> : isFruit ? <FruitCardArt /> : isVocab ? <VocabCardArt /> : isTrees ? <TreesCardArt /> : null;
+  const kwCourse = isKnowledgeWorldSubject(subject) ? getKnowledgeWorldCourse(subject) : null;
+  const kwCardArt = kwCourse ? <GlyphCard glyphs={[kwCourse.icon, ...kwCourse.modules.slice(0, 2).map((m) => (m.title.match(/^\p{Emoji}/u) || [kwCourse.icon])[0])]} label={subject.hi || ""} /> : null;
+  const cardArt = isTC ? <TimeCardArt /> : isFruit ? <FruitCardArt /> : isVocab ? <VocabCardArt /> : isTrees ? <TreesCardArt /> : kwCardArt;
   return <article className="group flex h-full flex-col overflow-hidden rounded-[1.6rem] border border-[#e3ddcd] bg-white shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1.5 hover:border-[#FF6600]/45 hover:shadow-[0_32px_65px_-40px_rgba(20,43,69,0.7)]">
     <div className="ssf-shine relative h-44 overflow-hidden">
       <div className={"absolute inset-0 bg-gradient-to-br " + (subject.color || "from-[#003366] to-[#0f4c81]")} />

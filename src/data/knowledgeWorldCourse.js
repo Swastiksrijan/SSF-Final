@@ -82,3 +82,89 @@ export const isKnowledgeWorldSubject = (subject) =>
 // ADULT-GRADE: every Knowledge World course is a full learning path.
 export const knowledgeWorldTopicCount = (course) =>
   course ? course.modules.reduce((n, m) => n + m.topics.length, 0) : 0;
+
+/** Glossary entries come in as strings from buildCourse; normalise for the UI. */
+const kwGlossary = (course) =>
+  (course.glossary || []).map((g) => (typeof g === "string" ? { term: g, hi: "", meaning: "" } : g));
+
+/**
+ * Adapt a Knowledge World course (module → topic with learn/example/activity/
+ * quiz) into the Master Course shape consumed by MasterCourse.jsx. This lets
+ * every KW subject render through the same premium renderer instead of the
+ * older flat topic list. Chapter ids stay `kw-mX-tY` so saved progress maps
+ * across the two renderers.
+ */
+export const knowledgeWorldToMasterCourse = (subject, course) => {
+  if (!course) return null;
+  const [en, hi] = String(subject.en || course.tagline || "").split(" / ");
+  const topic = (t) => ({ ...t, id: t.id, icon: (t.title.match(/^\p{Emoji}/u) || ["📘"])[0] });
+  return {
+    meta: {
+      icon: course.icon,
+      title: [en || course.tagline || "", hi || subject.hi || ""],
+      level: course.level,
+      tag: course.tag || "Knowledge World",
+      tagline: course.tagline,
+      heroSubtitle: course.overview?.what || course.tagline,
+    },
+    overview: course.overview,
+    courseStart: {
+      title: "इस course को कैसे सीखें",
+      blocks: [
+        { t: "p", x: course.overview?.what },
+        { t: "note", k: "goal", title: "सीखने के बाद / Outcome", x: course.overview?.outcome },
+        { t: "note", k: "info", title: "कहाँ दिखता है / Where we see it", x: course.overview?.where },
+        { t: "note", k: "tip", title: "सीखने का flow", x: "हर chapter में: Learn → Example → Activity → Practice Quiz।" },
+      ],
+    },
+    modules: course.modules.map((m) => {
+      const mIcon = (m.title.match(/^\p{Emoji}/u) || [course.icon])[0];
+      return {
+        id: m.id,
+        title: m.title.split(" / ")[0],
+        titleHi: m.title.split(" / ")[1] || "",
+        icon: mIcon,
+        chapters: m.topics.map((t) => {
+          const tt = topic(t);
+          return {
+            id: tt.id,
+            number: 0,
+            title: tt.title.split(" / ")[0],
+            titleHi: tt.title.split(" / ")[1] || "",
+            icon: tt.icon,
+            blocks: [
+              { t: "p", x: tt.learn },
+              { t: "ex", title: "Example / उदाहरण", x: tt.example },
+              { t: "act", title: "Activity / गतिविधि", x: tt.activity },
+              { t: "note", k: "tip", title: "Quiz / अभ्यास", x: tt.quiz?.question, items: tt.quiz?.options },
+              { t: "note", k: "remember", title: "सही उत्तर", x: tt.quiz ? `${tt.quiz.options[tt.quiz.answer]} — ${tt.quiz.explain}` : "" },
+            ],
+          };
+        }),
+      };
+    }).map((m, mi, arr) => {
+      let n = 0;
+      for (let i = 0; i < mi; i++) n += arr[i].chapters.length;
+      m.chapters.forEach((c, ci) => { c.number = n + ci + 1; });
+      return m;
+    }),
+    revision: {
+      title: "पूरा course एक नज़र में",
+      groups: [
+        ...(course.revision ? [{ title: "🔄 याद रखें", items: course.revision }] : []),
+        { title: "📖 मुख्य शब्द / Key Words", items: kwGlossary(course).map((g) => `${g.term}${g.hi ? " (" + g.hi + ")" : ""}${g.meaning ? " — " + g.meaning : ""}`) },
+        { title: "💡 Did You Know?", items: course.facts || [] },
+      ].filter((g) => g.items.length),
+    },
+    mastery: {
+      title: "Final Test / अंतिम परीक्षा",
+      note: "इस course के सभी modules से चुने गए प्रश्न।",
+      tasks: course.modules.map((m) => ({ icon: "📘", title: m.title.split(" / ")[0], x: m.summary })),
+      quiz: (course.mastery || []).map((q) => ({ q: q.question, options: q.options, answer: q.answer, explain: q.explain })),
+    },
+    outcomeIntro: "इस course के बाद learner:",
+    outcome: [course.overview?.outcome, course.overview?.why].filter(Boolean),
+    outcomeClose: "समझ + अभ्यास + वास्तविक उदाहरण — यही असली learning है।",
+    project: course.project,
+  };
+};
