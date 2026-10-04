@@ -24,6 +24,8 @@ import { isTimeCalendarSubject, TIME_CALENDAR_COURSE, readTimeCalendarProgress }
 import { HeroArt as TimeHeroArt, chapterArt as timeChapterArt } from "../components/learning/TimeCalendarArt";
 import { isFruitsSubject, FRUITS_COURSE, readFruitsProgress } from "../data/fruitsCourse";
 import { HeroArt as FruitHeroArt, chapterArt as fruitChapterArt } from "../components/learning/FruitsArt";
+import { isVocabularySubject, VOCABULARY_COURSE, readVocabularyProgress } from "../data/vocabularyCourse";
+import { HeroArt as VocabHeroArt, chapterArt as vocabChapterArt } from "../components/learning/VocabularyArt";
 import LearningHubHome from "../components/learning/LearningHubHome";
 import SubjectCard from "../components/learning/SubjectCard";
 import { courseBadge } from "../data/learningWorld";
@@ -116,6 +118,18 @@ const resolveStructuredCourse = (subject) => {
 // structured course registry.
 const hasStructuredCourse = (subject) =>
   subject && subject.category !== KNOWLEDGE_WORLD_CATEGORY && Boolean(resolveStructuredCourse(subject).course);
+
+// Single source of truth for a subject's saved progress, applying the legacy
+// numeric → chapter-id migration for every hand-authored Master Course.
+const readStoredProgress = (subject) => {
+  if (isTimeCalendarSubject(subject)) return readTimeCalendarProgress(subject);
+  if (isFruitsSubject(subject)) return readFruitsProgress(subject);
+  if (isVocabularySubject(subject)) return readVocabularyProgress(subject);
+  try {
+    const raw = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + subject.id) || "[]");
+    return Array.isArray(raw) ? raw : [];
+  } catch { return []; }
+};
 const SUBJECT_VISUAL_GLYPH = {
   "Education / शिक्षा": "📚", "English & Communication / अंग्रेज़ी एवं संचार": "🗣️",
   "Digital Skills / डिजिटल कौशल": "💻", "Career & Workplace / करियर एवं कार्यस्थल": "💼",
@@ -2052,6 +2066,11 @@ const getSubjectModules = (subject) => {
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
   }
+  if (isVocabularySubject(subject)) {
+    const result = { total: VOCABULARY_COURSE.modules.reduce((n, m) => n + m.chapters.length, 0), moduleCount: VOCABULARY_COURSE.modules.length, hasStructured: true };
+    SUBJECT_MODULES_CACHE.set(subject.id, result);
+    return result;
+  }
   const structuredCourse = hasStructuredCourse(subject) ? resolveStructuredCourse(subject).course : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const eduModules = isEducationSubject(subject) ? buildEducationModules(subject) : null;
@@ -2430,6 +2449,7 @@ function LearningSubject({ subject, onBack }) {
   }
   if (isTimeCalendarSubject(subject)) return <MasterCourse course={TIME_CALENDAR_COURSE} subject={subject} onBack={onBack} art={timeChapterArt} HeroArt={TimeHeroArt} />;
   if (isFruitsSubject(subject)) return <MasterCourse course={FRUITS_COURSE} subject={subject} onBack={onBack} art={fruitChapterArt} HeroArt={FruitHeroArt} />;
+  if (isVocabularySubject(subject)) return <MasterCourse course={VOCABULARY_COURSE} subject={subject} onBack={onBack} art={vocabChapterArt} HeroArt={VocabHeroArt} />;
   const submitQuiz = () => {
     const passed = score >= 4;
     const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
@@ -2797,9 +2817,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     let completedCount = 0;
     SUBJECTS.forEach(s => {
       try {
-        const done = isTimeCalendarSubject(s)
-          ? readTimeCalendarProgress(s)
-          : JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + s.id) || "[]");
+        const done = readStoredProgress(s);
         if (!done.length) return;
         const { total } = getSubjectModules(s);
         if (!total) return;
@@ -2814,9 +2832,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
 
   const cardProgress = (s) => {
     try {
-      const done = isTimeCalendarSubject(s)
-        ? readTimeCalendarProgress(s)
-        : JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + s.id) || "[]");
+      const done = readStoredProgress(s);
       if (!done.length) return 0;
       const { total } = getSubjectModules(s);
       return total ? Math.min(100, Math.round(done.length / total * 100)) : 0;
@@ -2840,6 +2856,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
     const level =
       (isTimeCalendarSubject(s) && TIME_CALENDAR_COURSE.meta.level) ||
       (isFruitsSubject(s) && FRUITS_COURSE.meta.level) ||
+      (isVocabularySubject(s) && VOCABULARY_COURSE.meta.level) ||
       (isOfficeSkillsSubject(s) && getOfficeSkillsCourse(s)?.level) ||
       (isEducationSubject(s) && getEducationCourse(s)?.level) ||
       (isKnowledgeWorldSubject(s) && getKnowledgeWorldCourse(s)?.level) ||

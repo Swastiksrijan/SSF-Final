@@ -1241,47 +1241,6 @@ export const SUBJECT_CONTENT = {
     practical: "एक page लिखकर उसकी grammar और punctuation स्वयं जाँचें।",
     keywords: ["grammar","parts of speech","tense","usage","error correction"]
   },
-  "Vocabulary Building": {
-    focus: "शब्द-भंडार, अर्थ-संदर्भ, उपयोग, स्मृति और application बढ़ाना। / Expand word bank, meaning in context, usage, memory and application.",
-    concepts: [
-      "Word families और prefix/suffix।",
-      "Meaning और context clues।",
-      "Synonyms, antonyms और multiple meanings।",
-      "Pronunciation और spelling।",
-      "Memory: flashcards, spaced review।",
-      "Academic और workplace vocabulary।"
-    ],
-    examples: [
-      "Prefix 'un-' = not (happy → unhappy)।",
-      "'Bank' के दो अर्थ: पैसा और नदी किनारा।",
-      "Synonym: big → large; antonym: big → small।",
-      "Word journal में शब्द + वाक्य + चित्र।"
-    ],
-    practice: [
-      "10 नए शब्द अर्थ सहित लिखें।",
-      "5 synonyms और antonyms बनाएँ।",
-      "5 prefixes/suffixes के उदाहरण लिखें।",
-      "नए शब्दों से 5 वाक्य बनाएँ।"
-    ],
-    activities: [
-      "Flashcards बनाकर दोहराएँ।",
-      "एक 'word journal' बनाएँ।"
-    ],
-    mistakes: [
-      "अर्थ सुने बिना रटना।",
-      "Context को न देखना।",
-      "Practice शब्दों का उपयोग न करना।"
-    ],
-    safety: ["शब्दों का उपयोग सही context में करें; बिना अर्थ जाने दुरुपयोग से बचें।"],
-    quiz: [
-      {question:"'Unhappy' में 'un-' का अर्थ?",options:["not","very","again","before"],answer:0},
-      {question:"'Big' का antonym?",options:["small","large","huge","tall"],answer:0},
-      {question:"Vocabulary याद रखने का अच्छा तरीका?",options:["Flashcards और दोहराव","केवल एक बार पढ़ना","कुछ न करना","केवल सुनना"],answer:0}
-    ],
-    revision: ["हर दिन 5 शब्द दोहराएँ।","Synonyms/antonyms की list बनाएँ।","Word journal update रखें।"],
-    practical: "एक हफ्ते में 25 नए शब्द सीखकर उनका word journal बनाएँ।",
-    keywords: ["vocabulary","prefix","suffix","synonyms","memory"]
-  },
   "Reading & Writing": {
     focus: "पठन-बोध, प्रवाह, वाक्य-अनुच्छेद लेखन और structured writing विकसित करना। / Reading comprehension, fluency, sentence-paragraph writing and structured writing.",
     concepts: [
