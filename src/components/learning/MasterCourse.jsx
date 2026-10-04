@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { readMigratedProgress } from "../../data/courseProgress";
+import CourseCertificate from "./CourseCertificate";
 import ssfLogo from "../../assets/new-logo.png";
 
 const stripEmoji = (s) => String(s).replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF\u2190-\u21FF\u2B00-\u2BFF]/gu, "").trim();
@@ -460,6 +461,13 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
         <ul className="mt-4 grid gap-2 sm:grid-cols-2">{course.outcome.map((x, i) => <li key={i} className="flex items-start gap-2 text-base font-bold text-zinc-700 md:text-lg"><span className="mt-0.5 text-[#177245]">✅</span>{x}</li>)}</ul>
         <p className="mt-5 rounded-2xl bg-[#eaf7f0] p-4 text-base font-black text-[#177245] md:text-lg">{course.outcomeClose}</p>
       </section>
+
+      <CourseCertificate
+        subject={subject}
+        courseTitle={(course.meta.title && course.meta.title[0]) || course.meta.tag || subject.en}
+        courseMeta={course.meta}
+        progress={pct}
+      />
 
       <div className="py-10 text-center">
         <button type="button" onClick={onBack} className="rounded-2xl border border-zinc-300 bg-white px-6 py-3 text-sm font-black text-[#0b3a63] hover:bg-zinc-50">← Back to Learning Hub / वापस</button>

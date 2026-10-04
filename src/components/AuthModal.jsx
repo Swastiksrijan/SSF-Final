@@ -10,7 +10,7 @@ const initialSignup = { fullName: "", email: "", phone: "", password: "" };
 const initialLogin = { email: "", password: "" };
 const initialForgot = { email: "" };
 
-export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = "signup" }) {
+export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = "signup", stayOnSuccess = false }) {
     const navigate = useNavigate();
     const [mode, setMode] = useState(initialMode);
     const [signupData, setSignupData] = useState(initialSignup);
@@ -113,7 +113,7 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
             setMessage(mode === "signup" ? "Account created successfully. You are now signed in." : "Login successful. Welcome back.");
             if (onAuthSuccess) onAuthSuccess(session);
             onClose?.();
-            navigate({ to: returnTo && returnTo !== "/" ? returnTo : "/UserPortal" });
+            if (!stayOnSuccess) navigate({ to: returnTo && returnTo !== "/" ? returnTo : "/UserPortal" });
         } catch (error) {
             console.error("Auth error", error);
             setStatus("error");
