@@ -36,6 +36,7 @@ export const VOCABULARY_COURSE = {
       { t: "note", k: "goal", title: "इस course का लक्ष्य", x: "नया शब्द देखना → context समझना → अर्थ पहचानना → dictionary से verify करना → अनेक अर्थ समझना → synonyms/antonyms का सही प्रयोग → word family समझना → sentence बनाना → बोलना/लिखना → revision → unfamiliar शब्द independently सीखना।" },
       { t: "note", k: "warn", title: "यह क्या नहीं है", x: "यह केवल vocabulary list नहीं है और कोई “What is Vocabulary” वाला खोखला chapter नहीं है। हर lesson में असली teaching, example, practice और feedback है।" },
       { t: "note", k: "info", title: "सीखने का flow", x: "हर lesson में: Concept → Teacher Explanation → Example → Worked Example → Guided Practice → Independent Practice → Feedback → Real-life Application → Revision।" },
+      { t: "dict", title: "📚 Online Dictionary — हर नया शब्द यहीं जाँचें", x: "कोई भी English शब्द टाइप करके उसका अर्थ, उच्चारण (pronunciation), example और speech सुनें। नया शब्द सीखने के बाद तुरंत यहाँ verify करना आदत बनाएँ।", suggest: ["courage", "curious", "improve", "honest", "achieve", "confident", "context"] },
     ],
   },
 

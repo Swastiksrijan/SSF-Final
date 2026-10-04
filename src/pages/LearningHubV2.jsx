@@ -19,6 +19,14 @@ import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_
 import { ENTREPRENEURSHIP_CONTENT } from "../data/entrepreneurshipContent";
 import { RESEARCH_CONTENT } from "../data/researchSkillsContent";
 import { MEDIA_CONTENT } from "../data/mediaLiteracyContent";
+import { ARTS_CONTENT } from "../data/artsCultureContent";
+import { PRACTICAL_CONTENT } from "../data/practicalLifeContent";
+import { AI_CONTENT } from "../data/aiTechContent";
+import { LIFESKILLS_CONTENT } from "../data/lifeSkillsContent";
+import { SPORTS_CONTENT } from "../data/sportsWellnessContent";
+import { MATH_CONTENT } from "../data/mathFinanceContent";
+import { LANGUAGES_CONTENT } from "../data/languagesContent";
+import { SCIENCE_CONTENT } from "../data/scienceContent";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGORY } from "../data/learningCurriculum";
 import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
@@ -42,6 +50,14 @@ import { SUBJECT_CONTENT_EXTRA } from "../data/learningSubjectContentExtra";
 const ENTREPRENEURSHIP_CATEGORY = "Entrepreneurship & Work / उद्यमिता एवं कार्य";
 const RESEARCH_CATEGORY = "Research & Mastery Skills / शोध एवं दक्षता कौशल";
 const MEDIA_CATEGORY = "Media & Information Literacy / मीडिया एवं सूचना साक्षरता";
+const ARTS_CATEGORY = "Arts, Creativity & Culture / कला, रचनात्मकता एवं संस्कृति";
+const PRACTICAL_CATEGORY = "Practical Everyday Life / दैनिक व्यावहारिक जीवन";
+const AI_CATEGORY = "AI & Future Technology / AI एवं भविष्य की तकनीक";
+const LIFESKILLS_CATEGORY = "Life Skills / जीवन कौशल";
+const SPORTS_CATEGORY = "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण";
+const MATH_CATEGORY = "Mathematics & Financial Literacy / गणित एवं वित्तीय साक्षरता";
+const LANGUAGES_CATEGORY = "Languages / भाषाएँ";
+const SCIENCE_CATEGORY = "Science / विज्ञान";
 
 // Single registry lookup: hand-written content first, then the discipline-
 // specific content added for the new learning areas.
@@ -137,7 +153,7 @@ const readStoredProgress = (subject) => {
   if (isFruitsSubject(subject)) return readFruitsProgress(subject);
   if (isVocabularySubject(subject)) return readVocabularyProgress(subject);
   if (isTreesForestsSubject(subject)) return readTreesForestsProgress(subject);
-  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isEntrepreneurshipAuthored(subject) || isResearchAuthored(subject) || isMediaAuthored(subject)) return readMigratedProgress(subject, curriculumChapterIdsFor(subject));
+  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isAuthoredCategory(subject)) return readMigratedProgress(subject, curriculumChapterIdsFor(subject));
   try {
     const raw = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + subject.id) || "[]");
     return Array.isArray(raw) ? raw : [];
@@ -1950,17 +1966,9 @@ function curriculumChapterIdsFor(subject) {
     const oc = officeToMasterCourse(subject);
     return oc ? oc.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
   }
-  if (isEntrepreneurshipAuthored(subject)) {
-    const ec = entrepreneurshipToMasterCourse(subject);
-    return ec ? ec.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
-  }
-  if (isResearchAuthored(subject)) {
-    const rc = researchToMasterCourse(subject);
-    return rc ? rc.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
-  }
-  if (isMediaAuthored(subject)) {
-    const mc = mediaToMasterCourse(subject);
-    return mc ? mc.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
+  if (isAuthoredCategory(subject)) {
+    const ac = authoredToMasterCourse(subject);
+    return ac ? ac.modules.flatMap((m) => m.chapters.map((c) => c.id)) : [];
   }
   return curriculumChapterIds(subject);
 }
@@ -2144,17 +2152,34 @@ const officeToMasterCourse = (subject) => {
   return authoredContentToMasterCourse(subject, content, { icon: shell.icon, level: shell.level, tag: OFFICE_SKILLS_CATEGORY, overview: shell.overview, outcomes: shell.outcomes, outcomeClose: "अभ्यास + वास्तविक उदाहरण + जाँच — यही असली office skill है।" });
 };
 
-// Entrepreneurship & Work: authored content rendered through the shared builder.
-const isEntrepreneurshipAuthored = (subject) => Boolean(subject && subject.category === ENTREPRENEURSHIP_CATEGORY && ENTREPRENEURSHIP_CONTENT[subject.en]);
-const entrepreneurshipToMasterCourse = (subject) => authoredContentToMasterCourse(subject, ENTREPRENEURSHIP_CONTENT[subject.en], { icon: "🚀", tag: ENTREPRENEURSHIP_CATEGORY, outcomeClose: "Idea + ग्राहक + हिसाब + ईमानदारी — यही टिकाऊ व्यवसाय है।" });
+// Unified registry for every hand-authored category content file. Adding a new
+// category = import its map here; all hooks below (render, progress, chapter
+// ids, module count, card level) then pick it up automatically.
+const CATEGORY_CONTENT = {
+  [ENTREPRENEURSHIP_CATEGORY]: { content: ENTREPRENEURSHIP_CONTENT, icon: "🚀", outcomeClose: "Idea + ग्राहक + हिसाब + ईमानदारी — यही टिकाऊ व्यवसाय है।" },
+  [RESEARCH_CATEGORY]: { content: RESEARCH_CONTENT, icon: "🔍", outcomeClose: "सवाल + खोज + जाँच + अभ्यास — यही असली mastery है।" },
+  [MEDIA_CATEGORY]: { content: MEDIA_CONTENT, icon: "📰", outcomeClose: "जाँच + सोच + स्रोत + ज़िम्मेदारी — यही सही सूचना-नागरिकता है।" },
+  [ARTS_CATEGORY]: { content: ARTS_CONTENT, icon: "🎨", outcomeClose: "कल्पना + अभ्यास + अभिव्यक्ति — यही असली कला है।" },
+  [PRACTICAL_CATEGORY]: { content: PRACTICAL_CONTENT, icon: "🧰", outcomeClose: "सावधानी + जानकारी + सही कदम — यही रोज़ की समझदारी है।" },
+  [AI_CATEGORY]: { content: AI_CONTENT, icon: "🤖", outcomeClose: "जाँच + ईमानदारी + सुरक्षा — यही ज़िम्मेदार AI का इस्तेमाल है।" },
+  [LIFESKILLS_CATEGORY]: { content: LIFESKILLS_CONTENT, icon: "🌟", outcomeClose: "समझ + संतुलन + अभ्यास — यही असली जीवन कौशल है।" },
+  [SPORTS_CATEGORY]: { content: SPORTS_CONTENT, icon: "🏃", outcomeClose: "गतिविधि + संतुलन + आराम — यही स्वस्थ जीवन है।" },
+  [MATH_CATEGORY]: { content: MATH_CONTENT, icon: "➗", outcomeClose: "समझ + अभ्यास + योजना — यही वित्तीय समझदारी है।" },
+  [LANGUAGES_CATEGORY]: { content: LANGUAGES_CONTENT, icon: "🌐", outcomeClose: "सुनना + बोलना + सम्मान — यही भाषा की समझ है।" },
+  [SCIENCE_CATEGORY]: { content: SCIENCE_CONTENT, icon: "🔬", outcomeClose: "प्रश्न + सबूत + जाँच — यही वैज्ञानिक सोच है।" },
+};
 
-// Research & Mastery Skills: authored content rendered through the shared builder.
-const isResearchAuthored = (subject) => Boolean(subject && subject.category === RESEARCH_CATEGORY && RESEARCH_CONTENT[subject.en]);
-const researchToMasterCourse = (subject) => authoredContentToMasterCourse(subject, RESEARCH_CONTENT[subject.en], { icon: "🔍", tag: RESEARCH_CATEGORY, outcomeClose: "सवाल + खोज + जाँच + अभ्यास — यही असली mastery है।" });
-
-// Media & Information Literacy: authored content rendered through the shared builder.
-const isMediaAuthored = (subject) => Boolean(subject && subject.category === MEDIA_CATEGORY && MEDIA_CONTENT[subject.en]);
-const mediaToMasterCourse = (subject) => authoredContentToMasterCourse(subject, MEDIA_CONTENT[subject.en], { icon: "📰", tag: MEDIA_CATEGORY, outcomeClose: "जाँच + सोच + स्रोत + ज़िम्मेदारी — यही सही सूचना-नागरिकता है।" });
+const authoredEntryFor = (subject) => {
+  if (!subject) return null;
+  const entry = CATEGORY_CONTENT[subject.category];
+  return entry && entry.content[subject.en] ? entry : null;
+};
+const isAuthoredCategory = (subject) => Boolean(authoredEntryFor(subject));
+const authoredToMasterCourse = (subject) => {
+  const entry = authoredEntryFor(subject);
+  if (!entry) return null;
+  return authoredContentToMasterCourse(subject, entry.content[subject.en], { icon: entry.icon, tag: subject.category, outcomeClose: entry.outcomeClose });
+};
 
 // Knowledge World: turns a subject-specific KW course into the module/lesson
 // structure the course UI renders. Each topic becomes a rich lesson built from
@@ -2329,10 +2354,10 @@ const getSubjectModules = (subject) => {
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
   }
-  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isEntrepreneurshipAuthored(subject) || isResearchAuthored(subject) || isMediaAuthored(subject)) {
+  if (isKnowledgeWorldSubject(subject) || isGenericTopicSubject(subject) || (isOfficeSkillsSubject(subject) && OFFICE_SKILLS_CONTENT[subject.en]) || isAuthoredCategory(subject)) {
     const mc = isKnowledgeWorldSubject(subject)
       ? knowledgeWorldToMasterCourse(subject, getKnowledgeWorldCourse(subject))
-      : (isOfficeSkillsSubject(subject) ? officeToMasterCourse(subject) : (isEntrepreneurshipAuthored(subject) ? entrepreneurshipToMasterCourse(subject) : (isResearchAuthored(subject) ? researchToMasterCourse(subject) : (isMediaAuthored(subject) ? mediaToMasterCourse(subject) : curriculumToMasterCourse(subject)))));
+      : (isOfficeSkillsSubject(subject) ? officeToMasterCourse(subject) : (isAuthoredCategory(subject) ? authoredToMasterCourse(subject) : curriculumToMasterCourse(subject)));
     const result = { total: mc.modules.reduce((n, m) => n + m.chapters.length, 0), moduleCount: mc.modules.length, hasStructured: true };
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
@@ -2725,17 +2750,9 @@ function LearningSubject({ subject, onBack }) {
     const oc = officeToMasterCourse(subject);
     if (oc) { const a = makeCourseArt(oc); return <MasterCourse course={oc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
   }
-  if (isEntrepreneurshipAuthored(subject)) {
-    const ec = entrepreneurshipToMasterCourse(subject);
-    if (ec) { const a = makeCourseArt(ec); return <MasterCourse course={ec} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
-  }
-  if (isResearchAuthored(subject)) {
-    const rc = researchToMasterCourse(subject);
-    if (rc) { const a = makeCourseArt(rc); return <MasterCourse course={rc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
-  }
-  if (isMediaAuthored(subject)) {
-    const mc2 = mediaToMasterCourse(subject);
-    if (mc2) { const a = makeCourseArt(mc2); return <MasterCourse course={mc2} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
+  if (isAuthoredCategory(subject)) {
+    const ac = authoredToMasterCourse(subject);
+    if (ac) { const a = makeCourseArt(ac); return <MasterCourse course={ac} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />; }
   }
   if (isGenericTopicSubject(subject)) {
     const mc = curriculumToMasterCourse(subject);
@@ -3151,7 +3168,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
       (isVocabularySubject(s) && VOCABULARY_COURSE.meta.level) ||
       (isTreesForestsSubject(s) && TREES_FORESTS_COURSE.meta.level) ||
       (isOfficeSkillsSubject(s) && getOfficeSkillsCourse(s)?.level) ||
-      (isEntrepreneurshipAuthored(s) && "Foundation → Advanced") ||
+      (isAuthoredCategory(s) && "Foundation → Advanced") ||
       (isEducationSubject(s) && getEducationCourse(s)?.level) ||
       (isKnowledgeWorldSubject(s) && getKnowledgeWorldCourse(s)?.level) ||
       (meta && (meta.level === "foundation" ? "Foundation" : meta.level)) ||

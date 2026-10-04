@@ -63,6 +63,103 @@ function Note({ b }) {
   </div>;
 }
 
+/** Live English dictionary lookup. Primary: Wiktionary REST (CORS-enabled);
+ *  fallback: dictionaryapi.dev. Definitions are HTML-stripped for display. */
+const stripHtml = (s) => String(s || "")
+  .replace(/<[^>]*>/g, "")
+  .replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&#39;/g, "'")
+  .replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&nbsp;/g, " ")
+  .replace(/\s+/g, " ").trim();
+
+async function lookupWord(q) {
+  try {
+    const res = await fetch("https://en.wiktionary.org/api/rest_v1/page/definition/" + encodeURIComponent(q));
+    if (res.ok) {
+      const json = await res.json();
+      const en = (json.en || []).filter((m) => !m.language || m.language === "English");
+      const meanings = en.slice(0, 4).map((m) => ({
+        partOfSpeech: m.partOfSpeech,
+        definitions: (m.definitions || []).slice(0, 3).map((d) => ({
+          definition: stripHtml(d.definition),
+          example: stripHtml((d.parsedExamples && d.parsedExamples[0] && d.parsedExamples[0].example) || (d.examples && d.examples[0]) || ""),
+        })),
+      })).filter((m) => m.definitions.length);
+      if (meanings.length) return { word: q, meanings };
+    }
+  } catch { /* try fallback below */ }
+  try {
+    const res = await fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(q));
+    if (res.ok) {
+      const json = await res.json();
+      const d = Array.isArray(json) ? json[0] : null;
+      if (d) return {
+        word: d.word || q,
+        phonetic: d.phonetic || (d.phonetics || []).find((p) => p.text)?.text,
+        meanings: (d.meanings || []).slice(0, 4).map((m) => ({
+          partOfSpeech: m.partOfSpeech,
+          definitions: (m.definitions || []).slice(0, 3).map((x) => ({ definition: x.definition, example: x.example || "" })),
+        })),
+      };
+    }
+  } catch { /* unreachable */ }
+  return null;
+}
+
+function DictionaryWidget({ b }) {
+  const [word, setWord] = useState("");
+  const [data, setData] = useState(null);
+  const [status, setStatus] = useState("idle"); // idle | loading | ok | notfound | error
+  const speak = useSpeaker();
+
+  const search = async (raw) => {
+    const q = String(raw || word || "").trim();
+    if (!q) return;
+    setStatus("loading"); setData(null);
+    let result = null;
+    try { result = await lookupWord(q); } catch { result = null; }
+    if (result) { setData(result); setStatus("ok"); }
+    else setStatus("notfound");
+  };
+
+  const suggest = b.suggest || ["courage", "honest", "improve", "curious", "achieve", "confident"];
+
+  return <div className="rounded-2xl border border-[#cfe0ee] bg-gradient-to-br from-[#f4f9fd] to-white p-4 md:p-6">
+    <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0b4a86] md:text-sm"><span aria-hidden="true">📚</span>{b.title || "Online Dictionary / ऑनलाइन शब्दकोश"}</div>
+    {b.x && <p className="mt-2 text-base leading-8 text-zinc-700 md:text-lg">{b.x}</p>}
+    <form className="mt-3 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); search(); }}>
+      <input value={word} onChange={(e) => setWord(e.target.value)} placeholder="English word टाइप करें…" aria-label="Look up an English word"
+        className="min-w-0 flex-1 rounded-xl border border-[#cfe0ee] bg-white px-4 py-3 text-base font-bold text-[#0b3a63] outline-none focus:border-[#FF6600] md:text-lg" />
+      <button type="submit" className="rounded-xl bg-[#0b3a63] px-5 py-3 text-base font-black text-white transition hover:bg-[#0b4a86] md:text-lg">Search</button>
+    </form>
+    <div className="mt-2 flex flex-wrap gap-2">
+      {suggest.map((w) => <button key={w} type="button" onClick={() => { setWord(w); search(w); }}
+        className="rounded-full border border-[#cfe0ee] bg-white px-3 py-1 text-sm font-bold text-[#0b4a86] transition hover:border-[#FF6600] hover:text-[#FF6600]">{w}</button>)}
+    </div>
+    {status === "loading" && <p className="mt-3 text-base font-bold text-zinc-500 md:text-lg">खोज रहे हैं… / Looking up…</p>}
+    {status === "notfound" && <p className="mt-3 rounded-xl bg-amber-50 p-3 text-base font-bold text-amber-700 md:text-lg">यह शब्द नहीं मिला। Spelling जाँचें और दोबारा कोशिश करें।</p>}
+    {status === "error" && <p className="mt-3 rounded-xl bg-rose-50 p-3 text-base font-bold text-rose-700 md:text-lg">Dictionary से connect नहीं हो पाए — internet जाँचकर दोबारा कोशिश करें।</p>}
+    {status === "ok" && data && <div className="mt-4 rounded-xl border border-zinc-200 bg-white p-4">
+      <div className="flex flex-wrap items-center gap-3">
+        <span className="text-2xl font-black text-[#062a52] md:text-3xl">{data.word}</span>
+        {data.phonetic && <span className="text-base font-bold text-zinc-500 md:text-lg">{data.phonetic}</span>}
+        <button type="button" onClick={() => speak.toggle(data.word)} className="rounded-full border border-[#cfe0ee] px-3 py-1 text-sm font-bold text-[#0b4a86] transition hover:border-[#FF6600]">{speak.speaking ? "⏹ Stop" : "🔊 सुनें"}</button>
+      </div>
+      <ul className="mt-3 space-y-3">
+        {data.meanings.map((m, i) => <li key={i}>
+          <div className="text-sm font-black uppercase tracking-wide text-[#FF6600] md:text-base">{m.partOfSpeech}</div>
+          <ol className="mt-1 space-y-1.5 pl-1">
+            {m.definitions.map((d, j) => <li key={j} className="flex gap-2 text-base leading-8 text-zinc-700 md:text-lg">
+              <span className="font-black text-[#0b3a63]">{j + 1}.</span>
+              <span>{d.definition}{d.example ? <em className="block text-zinc-500">e.g. {d.example}</em> : null}</span>
+            </li>)}
+          </ol>
+        </li>)}
+      </ul>
+      <p className="mt-3 text-sm font-bold text-zinc-400 md:text-base">Source: en.wiktionary.org</p>
+    </div>}
+  </div>;
+}
+
 function Block({ b }) {
   if (!b) return null;
   switch (b.t) {
@@ -93,6 +190,8 @@ function Block({ b }) {
       </div>;
     case "note":
       return <Note b={b} />;
+    case "dict":
+      return <DictionaryWidget b={b} />;
     case "ex":
       return <div className="rounded-2xl border border-[#cfe0ee] bg-gradient-to-br from-[#f4f9fd] to-white p-4 md:p-6">
         <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0b4a86] md:text-sm"><span aria-hidden="true">📖</span>{b.title || "Example"}</div>
