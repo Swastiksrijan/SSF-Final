@@ -36,14 +36,24 @@ const downloadPdf=function(doc,filename){
  try{ doc.save(filename||"ssf-document.pdf"); }
  catch(e){ try{ const url=doc.output("bloburl"); const a=document.createElement("a"); a.href=url; a.download=filename||"ssf-document.pdf"; document.body.appendChild(a); a.click(); a.remove(); }catch(err){ console.error("PDF download failed",err); } }
 };
-const formatOfficeDate=function(value){
- if(!value)return "—";
+const formatOfficeDate=function(value){ if(!value)return "—";
  const s=String(value);
  const m=s.match(/^(\\d{4})-(\\d{2})-(\\d{2})/);
  if(m)return m[3]+"-"+m[2]+"-"+m[1];
  const d=new Date(value);
  return Number.isNaN(d.getTime())?s:d.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
 };
+// Financial year label for a date, e.g. 2025-04-01..2026-03-31 -> "2025-26".
+const fyOf=function(value){
+ const s=String(value||"").slice(0,10); const y=Number(s.slice(0,4)), m=Number(s.slice(5,7));
+ if(!y||!m) return "";
+ const start=m>=4?y:y-1;
+ return start+"-"+String((start+1)%100).padStart(2,"0");
+};
+const ALL_FY=[];
+for(let y=2022;y<=2027;y++) ALL_FY.push(y+"-"+String((y+1)%100).padStart(2,"0"));
+// Last 12 months as YYYY-MM (used for the year-wise monthly chart).
+const lastMonths=function(n){const out=[];const d=new Date();d.setDate(1);for(let i=n-1;i>=0;i--){const x=new Date(d.getFullYear(),d.getMonth()-i,1);out.push(x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0"));}return out;};
 
 export default function SSFDigitalOffice(){
  const token=localStorage.getItem(TOKEN_KEY)||"";
@@ -217,7 +227,7 @@ export default function SSFDigitalOffice(){
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}\n    {active==="certificates"&&<AdminLearningCertificates token={token}/>}
-    {active==="bank"&&<BankBook rows={rows} add={add} archive={archive} token={token} reload={()=>load("bank")}/>}
+    {active==="bank"&&<BankBook rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token} reload={()=>load("bank")}/>}
     {active==="cash"&&<CashBook rows={rows} add={add} archive={archive} token={token} reload={()=>load("cash")}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
@@ -742,71 +752,68 @@ function MeetingCalendar({rows,add,archive,token,updateRecord}){
 // balance, every transaction with a running balance, and the FY totals. A
 // bundled statement can be imported into the Digital Office database, after
 // which the records become the source for linked registers (ledger, reports).
-function BankBook({ rows, add, archive, token, reload }){
- const [accountId,setAccountId]=useState(Object.keys(BANK_ACCOUNTS)[0]);
- const [fy,setFy]=useState("");
- const statements=useMemo(()=>listBankStatements(accountId),[accountId]);
- useEffect(()=>{ if(!statements.some(s=>s.fy===fy)) setFy(statements[0]?.fy||""); },[accountId,statements]);
- const statement=useMemo(()=>getBankStatement(accountId,fy),[accountId,fy]);
+// Bank Book — financial-year-wise बैंक बही. All years are listed together, so
+// every year's entries are always visible without hunting through a dropdown.
+// Years with a bundled statement load automatically; any year without one (or
+// any new year) can be filled in by hand. Each year shows a mini dashboard.
+function BankBook({ rows, add, archive, updateRecord, token, reload }){
+ const accountId=Object.keys(BANK_ACCOUNTS)[0];
  const account=BANK_ACCOUNTS[accountId]||{};
- const [search,setSearch]=useState(""),[type,setType]=useState("all"),[importing,setImporting]=useState(false);
+ const statements=useMemo(()=>listBankStatements(accountId),[accountId]);
+ const [fy,setFy]=useState("");
+ const [search,setSearch]=useState(""),[type,setType]=useState("all");
+ const [showAdd,setShowAdd]=useState(false),[editId,setEditId]=useState(null),[form,setForm]=useState({});
  const money=function(v){return "₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});};
  const sigOf=function(date,withdrawal,deposit,particulars){return [String(date||"").slice(0,10),withdrawal==null?"":Number(withdrawal),deposit==null?"":Number(deposit),String(particulars||"").trim().toLowerCase()].join("|");};
- const dbRows=useMemo(()=>(rows||[]).filter(r=>{
-   const d=r.data||{};
-   if(String(d.fy||"")===String(fy)) return true;
-   if(!d.fy&&r.recordDate){ const s=String(r.recordDate).slice(0,10); if(s>=statement?.periodFrom&&s<=statement?.periodTo) return true; }
-   return false;
- }),[rows,fy,statement]);
+ const allDbRows=useMemo(()=>(rows||[]).map(r=>({r,fy:fyOf(r.recordDate)})).filter(x=>x.fy),[rows]);
+ const dbFor=function(f){return allDbRows.filter(x=>x.fy===f).map(x=>x.r);};
+ // Every financial year we know about, newest first: bundled statements + any year with database records.
+ const fyList=useMemo(()=>Array.from(new Set([...statements.map(s=>s.fy),...allDbRows.map(x=>x.fy)])).sort().reverse(),[statements,allDbRows]);
+ useEffect(()=>{ if(!fyList.includes(fy)) setFy(fyList[0]||""); },[fyList,fy]);
+ const statement=useMemo(()=>getBankStatement(accountId,fy),[accountId,fy]);
+ const dbRows=useMemo(()=>dbFor(fy),[allDbRows,fy]);
  const entries=useMemo(()=>{
-   const extra=dbRows.map(r=>{const d=r.data||{};const dep=Number(d.deposit||(d.direction==="in"?r.amount:0))||null;const wd=Number(d.withdrawal||(d.direction==="out"?r.amount:0))||null;return {key:r.id||r.recordId,slNo:"",date:String(r.recordDate||d.date||"").slice(0,10),particulars:d.purpose||d.particulars||d.notes||r.recordType||"",chqNum:d.chqNum||d.referenceNo||"",withdrawal:wd,deposit:dep,balance:null,source:"Digital Office"};});
+   const extra=dbRows.map(r=>{const d=r.data||{};const dep=Number(d.deposit||(d.direction==="in"?r.amount:0))||null;const wd=Number(d.withdrawal||(d.direction==="out"?r.amount:0))||null;return {key:r.id||r.recordId,dbId:r.id,date:String(r.recordDate||d.date||"").slice(0,10),particulars:d.purpose||d.particulars||d.notes||r.recordType||"",chqNum:d.chqNum||d.referenceNo||"",withdrawal:wd,deposit:dep,source:"Entered"};});
    const dbSig=new Set(extra.map(e=>sigOf(e.date,e.withdrawal,e.deposit,e.particulars)));
-   const base=statement?statement.transactions.map((t,i)=>({key:"s"+(i+1),slNo:i+1,date:t.date,particulars:t.particulars,chqNum:t.chqNum,withdrawal:t.withdrawal,deposit:t.deposit,balance:t.balance,source:"Statement"})).filter(e=>!dbSig.has(sigOf(e.date,e.withdrawal,e.deposit,e.particulars))):[];
-   return base.concat(extra);
+   const base=statement?statement.transactions.map((t,i)=>({key:"s"+(i+1),date:t.date,particulars:t.particulars,chqNum:t.chqNum,withdrawal:t.withdrawal,deposit:t.deposit,source:"Statement"})).filter(e=>!dbSig.has(sigOf(e.date,e.withdrawal,e.deposit,e.particulars))):[];
+   return base.concat(extra).sort((a,b)=>(a.date<b.date?-1:a.date>b.date?1:0));
  },[statement,dbRows]);
- const pendingNew=useMemo(()=>{
-   if(!statement)return [];
-   const dbSig=new Set(dbRows.map(r=>{const d=r.data||{};const dep=d.deposit!=null?d.deposit:(d.direction==="in"?r.amount:null);const wd=d.withdrawal!=null?d.withdrawal:(d.direction==="out"?r.amount:null);return sigOf(r.recordDate,wd,dep, d.purpose||d.particulars);}));
-   return bankStatementRecords(accountId,fy).filter(p=>!dbSig.has(sigOf(p.recordDate,p.data.withdrawal,p.data.deposit,p.data.particulars)));
- },[statement,dbRows,accountId,fy]);
+ const opening=statement?statement.openingBalance:0;
+ const totals=entries.reduce(function(a,e){a.deposit+=Number(e.deposit||0);a.withdrawal+=Number(e.withdrawal||0);return a;},{deposit:0,withdrawal:0});
+ const closing=opening+totals.deposit-totals.withdrawal;
+ const balByKey={}; let run=opening; entries.forEach(function(e){ run+=Number(e.deposit||0)-Number(e.withdrawal||0); balByKey[e.key]=run; });
+ const chartMonths=useMemo(()=>lastMonths(12),[]);
+ const chart=useMemo(()=>{const map={};dbFor(fy).forEach(r=>{const d=r.data||{};const dep=Number(d.deposit||(d.direction==="in"?r.amount:0));const wd=Number(d.withdrawal||(d.direction==="out"?r.amount:0));const mo=String(r.recordDate||"").slice(0,7);if(!mo)return;map[mo]=map[mo]||{deposit:0,withdrawal:0};map[mo].deposit+=dep;map[mo].withdrawal+=wd;});return chartMonths.map(m=>({m,deposit:map[m]?.deposit||0,withdrawal:map[m]?.withdrawal||0}));},[fy,allDbRows,chartMonths]);
+ const maxBar=Math.max(1,...chart.map(c=>Math.max(c.deposit,c.withdrawal)));
  const filtered=entries.filter(function(e){
    if(type==="deposit"&&e.deposit==null)return false;
    if(type==="withdrawal"&&e.withdrawal==null)return false;
    if(search&&!(String(e.particulars).toLowerCase().includes(search.toLowerCase())||String(e.chqNum).toLowerCase().includes(search.toLowerCase())))return false;
    return true;
  });
- const opening=statement?statement.openingBalance:0;
- let running=opening;
- const withBalance=filtered.map(function(e){ running=running+(Number(e.deposit||0)-Number(e.withdrawal||0)); return Object.assign({},e,{runningBalance:running}); });
- const totals=entries.reduce(function(a,e){a.deposit+=Number(e.deposit||0);a.withdrawal+=Number(e.withdrawal||0);return a;},{deposit:0,withdrawal:0});
- const closing=opening+totals.deposit-totals.withdrawal;
- const importStatement=async function(){
-   if(!statement)return;
-   if(!pendingNew.length){ alert("All entries for FY "+fy+" are already saved in the Digital Office database."); return; }
-   if(!confirm("Import "+pendingNew.length+" bank entr"+(pendingNew.length===1?"y":"ies")+" for FY "+fy+" into the Digital Office database? Already-saved entries are skipped."))return;
-   setImporting(true);
-   let ok=0,fail=0;
-   for(const p of pendingNew){ const r=await add("bank",{recordDate:p.recordDate,recordType:p.recordType,amount:p.amount,paymentMode:p.paymentMode,direction:p.direction,data:p.data},true); if(r)ok++; else fail++; }
-   setImporting(false);
-   if(typeof reload==="function") await reload();
-   alert("Import finished. Saved: "+ok+(fail?("  Failed: "+fail):""));
+ const startForm=function(){setEditId(null);setForm({date:new Date().toISOString().slice(0,10),particulars:"",deposit:"",withdrawal:"",chqNum:""});setShowAdd(true);};
+ const startEdit=function(e){setEditId(e.dbId);setForm({date:e.date,particulars:e.particulars,deposit:e.deposit!=null?String(e.deposit):"",withdrawal:e.withdrawal!=null?String(e.withdrawal):"",chqNum:e.chqNum||""});setShowAdd(true);};
+ const submitForm=async function(ev){ev.preventDefault();const dep=Number(form.deposit||0),wd=Number(form.withdrawal||0);
+   if(!form.date||(!dep&&!wd)){alert("Date aur Deposit ya Withdrawal me se kam se kam ek amount daalein.");return;}
+   const payload={recordDate:form.date,recordType:dep?"Deposit":"Withdrawal",amount:dep||wd,paymentMode:"Bank",direction:dep?"in":"out",data:{category:"Bank Transaction",direction:dep?"in":"out",purpose:form.particulars,particulars:form.particulars,chqNum:form.chqNum||"",referenceNo:form.chqNum||"",deposit:dep||null,withdrawal:wd||null,amount:dep||wd,fy:fy}};
+   let ok; if(editId) ok=await updateRecord(editId,"bank",payload,true); else ok=await add("bank",payload,true);
+   if(ok){setShowAdd(false);setEditId(null);if(typeof reload==="function")await reload();}
  };
  const exportCsv=function(){
-   const head=["Sl No","Date","Particulars","Chq Num","Withdrawal","Deposit","Balance"];
    const esc=function(v){return '"'+String(v??"").replace(/"/g,'""')+'"';};
-   const lines=[head.map(esc).join(",")];
-   lines.push(["","Opening Balance","","","","",opening.toFixed(2)].map(esc).join(","));
-   withBalance.forEach(function(e){lines.push([e.slNo,e.date,e.particulars,e.chqNum,e.withdrawal!=null?Number(e.withdrawal).toFixed(2):"",e.deposit!=null?Number(e.deposit).toFixed(2):"",Number(e.runningBalance).toFixed(2)].map(esc).join(","));});
-   lines.push(["","Total","","",totals.withdrawal.toFixed(2),totals.deposit.toFixed(2),closing.toFixed(2)].map(esc).join(","));
+   const lines=[["Date","Particulars","Chq No.","Withdrawal","Deposit","Balance"].map(esc).join(",")];
+   lines.push(["","Opening Balance","","","",opening.toFixed(2)].map(esc).join(","));
+   entries.forEach(function(e){lines.push([e.date,e.particulars,e.chqNum,e.withdrawal!=null?Number(e.withdrawal).toFixed(2):"",e.deposit!=null?Number(e.deposit).toFixed(2):"",Number(balByKey[e.key]).toFixed(2)].map(esc).join(","));});
+   lines.push(["","Total","",totals.withdrawal.toFixed(2),totals.deposit.toFixed(2),closing.toFixed(2)].map(esc).join(","));
    const blob=new Blob(["\uFEFF"+lines.join("\r\n")+"\r\n"],{type:"text/csv;charset=utf-8"});
    const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ssf-bank-book-"+fy+".csv";document.body.appendChild(a);a.click();a.remove();
  };
  const printPdf=function(){
-   const d=new jsPDF(); d.addImage(logoImg,"PNG",14,8,16,16); d.setTextColor(0,35,68); d.setFontSize(15); d.text("Swastik Srijan Foundation Samiti",36,15); d.setFontSize(10); d.setTextColor(60); d.text(account.bank+" · "+account.branch+" · A/c "+account.accountNumber,14,24); d.setTextColor(0,35,68); d.setFontSize(13); d.text("Bank Book / Statement of Account · FY "+fy,14,33); d.setFontSize(9); d.setTextColor(90); d.text("Period: "+formatOfficeDate(statement?.periodFrom)+" to "+formatOfficeDate(statement?.periodTo),14,39);
-   let y=48; const cols=[14,26,96,116,140,164];
+   const d=new jsPDF(); d.addImage(logoImg,"PNG",14,8,16,16); d.setTextColor(0,35,68); d.setFontSize(15); d.text("Swastik Srijan Foundation Samiti",36,15); d.setFontSize(10); d.setTextColor(60); d.text(account.bank+" · "+account.branch+" · A/c "+account.accountNumber,14,24); d.setTextColor(0,35,68); d.setFontSize(13); d.text("Bank Book / Statement of Account · FY "+fy,14,33);
+   let y=44; const cols=[14,26,96,116,140,164];
    d.setFontSize(9); d.setTextColor(0,35,68); ["Date","Particulars","Chq","Withdrawal","Deposit","Balance"].forEach(function(h,i){d.text(h,cols[i],y);}); y+=5;
    d.setTextColor(30); d.text("Opening Balance",cols[1],y); d.text(opening.toFixed(2),cols[5],y); y+=5;
-   withBalance.forEach(function(e){ const par=d.splitTextToSize(String(e.particulars||""),66)[0]||""; d.text(String(e.date),cols[0],y); d.text(par,cols[1],y); d.text(String(e.chqNum||""),cols[2],y); if(e.withdrawal!=null)d.text(Number(e.withdrawal).toFixed(2),cols[3],y); if(e.deposit!=null)d.text(Number(e.deposit).toFixed(2),cols[4],y); d.text(Number(e.runningBalance).toFixed(2),cols[5],y); y+=5; if(y>280){d.addPage();y=20;} });
+   entries.forEach(function(e){ const par=d.splitTextToSize(String(e.particulars||""),66)[0]||""; d.text(String(e.date),cols[0],y); d.text(par,cols[1],y); d.text(String(e.chqNum||""),cols[2],y); if(e.withdrawal!=null)d.text(Number(e.withdrawal).toFixed(2),cols[3],y); if(e.deposit!=null)d.text(Number(e.deposit).toFixed(2),cols[4],y); d.text(Number(balByKey[e.key]).toFixed(2),cols[5],y); y+=5; if(y>280){d.addPage();y=20;} });
    d.setFont(undefined,"bold"); d.text("Total",cols[1],y); d.text(totals.withdrawal.toFixed(2),cols[3],y); d.text(totals.deposit.toFixed(2),cols[4],y); d.text("Closing "+closing.toFixed(2),cols[5],y);
    d.setFontSize(8); d.setTextColor(120); d.text("Computer-generated bank book · SSF Digital Office",105,288,{align:"center"});
    downloadPdf(d,"ssf-bank-book-"+fy+".pdf");
@@ -814,49 +821,72 @@ function BankBook({ rows, add, archive, token, reload }){
  return <div className="space-y-5">
   <div className="bg-[#002344] text-white rounded-2xl p-6">
    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h2 className="text-2xl font-black">Bank Book / बैंक बही</h2><p className="text-white/70 mt-1">Financial-year-wise statement with opening balance, entries and running balance.</p></div></div>
+    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h2 className="text-2xl font-black">Bank Book / बैंक बही</h2><p className="text-white/70 mt-1">Financial-year-wise statement · saal ke hisaab se entries</p></div></div>
     <div className="flex flex-wrap gap-2 items-center">
-     <select value={accountId} onChange={e=>setAccountId(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{Object.values(BANK_ACCOUNTS).map(a=><option key={a.id} value={a.id}>{a.bank} · {a.accountNumber}</option>)}</select>
-     <select value={fy} onChange={e=>setFy(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{(statements.length?statements:[{fy:"2025-26"}]).map(s=><option key={s.fy} value={s.fy}>FY {s.fy}</option>)}</select>
+     <select value={fy} onChange={e=>setFy(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{(fyList.length?fyList:[fy].filter(Boolean)).map(f=><option key={f} value={f}>FY {f}</option>)}</select>
+     <button type="button" onClick={startForm} className="bg-[#177245] text-white px-4 py-2.5 rounded-xl font-bold">+ Add Entry</button>
     </div>
    </div>
    <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
     <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Account</div><div className="font-black mt-1">{account.accountNumber}</div><div className="text-white/70 text-xs">{account.accountType} · {account.ifsc}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Branch</div><div className="font-black mt-1">{account.branch}</div><div className="text-white/70 text-xs">MICR {account.micr}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Period</div><div className="font-black mt-1">{formatOfficeDate(statement?.periodFrom)} to {formatOfficeDate(statement?.periodTo)}</div><div className="text-white/70 text-xs">FY {fy}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Opening Balance</div><div className="font-black mt-1">{money(opening)} Cr</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Opening Balance</div><div className="font-black mt-1">{money(opening)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Deposits</div><div className="font-black mt-1 text-emerald-300">{money(totals.deposit)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Withdrawals</div><div className="font-black mt-1 text-red-300">{money(totals.withdrawal)}</div></div>
    </div>
+   <div className="mt-3 bg-white/10 rounded-xl p-3 text-sm flex items-center justify-between"><span className="text-white/70 font-bold uppercase text-xs">Closing Balance · FY {fy}</span><span className="font-black text-lg">{money(closing)} Cr</span></div>
+  </div>
+
+  <div className="bg-white rounded-2xl border overflow-hidden">
+   <div className="p-5 border-b"><h3 className="text-lg font-black text-[#002344]">Year-wise Summary / वर्षवार सारांश</h3><p className="text-sm text-zinc-500 mt-1">Har saal ka opening, deposits, withdrawals aur closing — ek nazar me.</p></div>
+   <div className="overflow-x-auto"><table className="w-full text-sm min-w-[820px]">
+    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Financial Year</th><th className="p-3 text-right">Opening</th><th className="p-3 text-right">Deposits</th><th className="p-3 text-right">Withdrawals</th><th className="p-3 text-right">Closing</th><th className="p-3 text-left">Source</th><th className="p-3"></th></tr></thead>
+    <tbody className="divide-y">
+     {fyList.map(function(f){const s2=getBankStatement(accountId,f);const recs=dbFor(f);const stDep=s2?s2.transactions.reduce((a,t)=>a+Number(t.deposit||0),0):0;const stWd=s2?s2.transactions.reduce((a,t)=>a+Number(t.withdrawal||0),0):0;const dbDep=recs.reduce((a,r)=>{const d=r.data||{};return a+Number(d.deposit||(d.direction==="in"?r.amount:0));},0);const dbWd=recs.reduce((a,r)=>{const d=r.data||{};return a+Number(d.withdrawal||(d.direction==="out"?r.amount:0));},0);const dep=stDep+dbDep,wd=stWd+dbWd;const o=s2?s2.openingBalance:0;const c=o+dep-wd;const src=s2&&recs.length?"Statement + Entered":s2?"Statement":recs.length?"Entered":"Empty";return <tr key={f} className={f===fy?"bg-[#f0f6fb] font-bold":""}><td className="p-3 font-black text-[#002344]">FY {f}</td><td className="p-3 text-right">{money(o)}</td><td className="p-3 text-right text-emerald-700">{money(dep)}</td><td className="p-3 text-right text-red-700">{money(wd)}</td><td className="p-3 text-right font-black">{money(c)}</td><td className="p-3"><span className="px-2 py-1 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-600">{src}</span></td><td className="p-3 text-right"><button type="button" onClick={()=>setFy(f)} className="text-xs font-bold text-[#123B5D] border border-[#123B5D]/20 px-2.5 py-1.5 rounded-lg">{f===fy?"Viewing":"View"}</button></td></tr>;})}
+     {!fyList.length&&<tr><td colSpan="7" className="p-8 text-center text-zinc-400">Koi entry nahi. "+ Add Entry" se shuru karein.</td></tr>}
+    </tbody>
+   </table></div>
+  </div>
+
+  <div className="bg-white rounded-2xl border p-5">
+   <div className="flex items-center justify-between"><h3 className="text-lg font-black text-[#002344]">Monthly View · FY {fy}</h3><div className="flex gap-4 text-xs font-bold"><span className="text-emerald-700">■ Deposit</span><span className="text-red-600">■ Withdrawal</span></div></div>
+   <div className="mt-4 flex items-end gap-2 h-40 overflow-x-auto">
+    {chart.map(function(c){return <div key={c.m} className="flex-1 min-w-[34px] flex flex-col items-center justify-end gap-0.5"><div className="flex items-end gap-0.5 h-32"><div className="w-3 bg-emerald-500 rounded-t" style={{height:Math.round((c.deposit/maxBar)*100)+"%",minHeight:c.deposit?3:0}} title={"Deposit "+money(c.deposit)}></div><div className="w-3 bg-red-500 rounded-t" style={{height:Math.round((c.withdrawal/maxBar)*100)+"%",minHeight:c.withdrawal?3:0}} title={"Withdrawal "+money(c.withdrawal)}></div></div><div className="text-[9px] text-zinc-500">{c.m.slice(5)}</div></div>;})}
+   </div>
+   <p className="text-xs text-zinc-400 mt-2">Sirf Digital Office me darj entries par based (selected year ke month-wise).</p>
   </div>
 
   <div className="bg-white rounded-2xl border overflow-hidden">
    <div className="p-5 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-    <div><h3 className="text-xl font-black text-[#002344]">Statement of Account · FY {fy}</h3><p className="text-sm text-zinc-500 mt-1">{withBalance.length} entr{withBalance.length===1?"y":"ies"} shown · {entries.length} total · {dbRows.length} in Digital Office database</p></div>
+    <div><h3 className="text-xl font-black text-[#002344]">Statement of Account · FY {fy}</h3><p className="text-sm text-zinc-500 mt-1">{filtered.length} of {entries.length} entries{statement?" · includes bundled statement":""}</p></div>
     <div className="flex flex-wrap gap-2 items-center">
      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search particulars / cheque" className="px-3 py-2.5 border rounded-xl w-56"/>
      <select value={type} onChange={e=>setType(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Entries</option><option value="deposit">Deposits</option><option value="withdrawal">Withdrawals</option></select>
-     {statement&&<button type="button" disabled={importing||!pendingNew.length} onClick={importStatement} title={pendingNew.length?("Save "+pendingNew.length+" remaining entries"):"All entries already saved"} className={"px-4 py-2.5 rounded-xl font-bold disabled:opacity-60 "+(pendingNew.length?"bg-[#177245] text-white":"bg-zinc-100 text-zinc-500")}>{importing?"Importing…":(pendingNew.length?("Import "+pendingNew.length+" Entries"):"All Entries Saved ✓")}</button>}
      <button type="button" onClick={exportCsv} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">CSV</button>
      <button type="button" onClick={printPdf} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">PDF</button>
     </div>
    </div>
+   {showAdd&&<div className="p-5 bg-zinc-50 border-b"><div className="font-black text-[#002344] mb-3">{editId?"Edit Bank Entry / प्रविष्टि संपादित करें":"Add Bank Entry / नई बैंक प्रविष्टि"} · FY {fy}</div>
+    <form onSubmit={submitForm} className="grid sm:grid-cols-2 lg:grid-cols-5 gap-3">
+     <input type="date" required value={form.date||""} onChange={e=>setForm(f=>({...f,date:e.target.value}))} className={cls}/>
+     <input value={form.particulars||""} onChange={e=>setForm(f=>({...f,particulars:e.target.value}))} placeholder="Particulars / विवरण" className={cls}/>
+     <input type="number" min="0" step="0.01" value={form.deposit||""} onChange={e=>setForm(f=>({...f,deposit:e.target.value}))} placeholder="Deposit (₹)" className={cls}/>
+     <input type="number" min="0" step="0.01" value={form.withdrawal||""} onChange={e=>setForm(f=>({...f,withdrawal:e.target.value}))} placeholder="Withdrawal (₹)" className={cls}/>
+     <input value={form.chqNum||""} onChange={e=>setForm(f=>({...f,chqNum:e.target.value}))} placeholder="Chq / Ref No." className={cls}/>
+     <div className="sm:col-span-2 lg:col-span-5 flex gap-2"><button className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">{editId?"Update Entry":"Save Entry"}</button><button type="button" onClick={()=>{setShowAdd(false);setEditId(null);}} className="border px-6 py-3 rounded-xl font-bold">Cancel</button></div>
+    </form></div>}
    <div className="overflow-x-auto"><table className="w-full text-sm min-w-[900px]">
-    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Sl</th><th className="p-3 text-left">Date</th><th className="p-3 text-left">Particulars</th><th className="p-3 text-left">Chq No.</th><th className="p-3 text-right">Withdrawal</th><th className="p-3 text-right">Deposit</th><th className="p-3 text-right">Balance</th><th className="p-3 text-left">Source</th></tr></thead>
+    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Date</th><th className="p-3 text-left">Particulars</th><th className="p-3 text-left">Chq No.</th><th className="p-3 text-right">Withdrawal</th><th className="p-3 text-right">Deposit</th><th className="p-3 text-right">Balance</th><th className="p-3 text-left">Source</th><th className="p-3"></th></tr></thead>
     <tbody className="divide-y">
-     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="6">Opening Balance</td><td className="p-3 text-right">{money(opening)}</td><td className="p-3"></td></tr>
-     {withBalance.map(function(e){return <tr key={e.key}><td className="p-3 text-zinc-500">{e.slNo}</td><td className="p-3 whitespace-nowrap">{formatOfficeDate(e.date)}</td><td className="p-3 min-w-[300px]">{e.particulars}</td><td className="p-3">{e.chqNum||"—"}</td><td className="p-3 text-right text-red-700">{e.withdrawal!=null?money(e.withdrawal):""}</td><td className="p-3 text-right text-emerald-700">{e.deposit!=null?money(e.deposit):""}</td><td className="p-3 text-right font-bold">{money(e.runningBalance)}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.source==="Statement"?"bg-zinc-100 text-zinc-600":"bg-emerald-50 text-emerald-700")}>{e.source}</span></td></tr>;})}
-     {!withBalance.length&&<tr><td colSpan="8" className="p-10 text-center text-zinc-400">No entries for FY {fy}.</td></tr>}
-     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="4">Total</td><td className="p-3 text-right text-red-700">{money(totals.withdrawal)}</td><td className="p-3 text-right text-emerald-700">{money(totals.deposit)}</td><td className="p-3 text-right">{money(closing)}</td><td className="p-3 text-xs text-zinc-500">Closing</td></tr>
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="5">Opening Balance</td><td className="p-3 text-right">{money(opening)}</td><td className="p-3" colSpan="2"></td></tr>
+     {filtered.map(function(e){return <tr key={e.key}><td className="p-3 whitespace-nowrap">{formatOfficeDate(e.date)}</td><td className="p-3 min-w-[300px]">{e.particulars}</td><td className="p-3">{e.chqNum||"—"}</td><td className="p-3 text-right text-red-700">{e.withdrawal!=null?money(e.withdrawal):""}</td><td className="p-3 text-right text-emerald-700">{e.deposit!=null?money(e.deposit):""}</td><td className="p-3 text-right font-bold">{money(balByKey[e.key])}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.source==="Statement"?"bg-zinc-100 text-zinc-600":"bg-emerald-50 text-emerald-700")}>{e.source}</span></td><td className="p-3 text-right whitespace-nowrap">{e.dbId&&<><button onClick={()=>startEdit(e)} className="text-xs font-bold text-[#123B5D] border border-[#123B5D]/20 px-2 py-1 rounded-lg mr-2">Edit</button><button onClick={()=>archive(e.dbId)} className="text-xs font-bold text-red-600">Archive</button></>}</td></tr>;})}
+     {!filtered.length&&<tr><td colSpan="8" className="p-10 text-center text-zinc-400">FY {fy} me abhi koi entry nahi. "+ Add Entry" se entry karein.</td></tr>}
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="3">Total</td><td className="p-3 text-right text-red-700">{money(totals.withdrawal)}</td><td className="p-3 text-right text-emerald-700">{money(totals.deposit)}</td><td className="p-3 text-right">{money(closing)}</td><td className="p-3 text-xs text-zinc-500" colSpan="2">Closing</td></tr>
     </tbody>
    </table></div>
-   <div className="p-5 border-t"><div className="font-black text-[#002344] mb-3">Add Bank Entry / बैंक प्रविष्टि जोड़ें</div><RecordForm module="bank" onSave={async d=>{const ok=await add("bank",d);if(ok){d.data=Object.assign({},(d.data||{}),{fy:fy});}return ok;}}/></div>
   </div>
  </div>;
 }
 
-
-// Cash Book — financial-year-wise रोकड़ बही. Manual/collected-cash entries with
-// receipts, payments, running balance, category and voucher columns. A bundled
-// year can be imported into the Digital Office database for linked registers.
 function CashBook({ rows, add, archive, token, reload }){
  const [bookId,setBookId]=useState(Object.keys(CASH_BOOKS)[0]);
  const [fy,setFy]=useState("");
@@ -970,7 +1000,6 @@ function CashBook({ rows, add, archive, token, reload }){
   </div>
  </div>;
 }
-
 
 
 function Register({module,rows,loading,search,setSearch,add,archive}){
@@ -1573,7 +1602,7 @@ function Reports({token,exportRows,exportPdf}){
  return <div className="space-y-5"><div className="bg-white border rounded-2xl p-5 flex flex-wrap gap-3 items-end"><div><label className="text-xs font-bold text-zinc-500">From</label><input type="date" value={from} onChange={e=>setFrom(e.target.value)} className="block mt-1 px-3 py-2.5 border rounded-xl"/></div><div><label className="text-xs font-bold text-zinc-500">To</label><input type="date" value={to} onChange={e=>setTo(e.target.value)} className="block mt-1 px-3 py-2.5 border rounded-xl"/></div><button onClick={run} className="bg-[#002344] text-white px-5 py-2.5 rounded-xl font-bold">Generate Report</button><button onClick={()=>exportRows(rows,"ssf-report")} className="border px-4 py-2.5 rounded-xl font-bold">CSV</button><button onClick={()=>exportPdf(rows,"SSF Financial / Office Report")} className="border px-4 py-2.5 rounded-xl font-bold">PDF</button></div><div className="grid sm:grid-cols-2 xl:grid-cols-4 gap-4">{[["Donations",s.donations], ["Expenses",s.expenses],["Cash In",s.cashIn],["Cash Out",s.cashOut],["Bank In",s.bankIn],["Bank Out",s.bankOut],["Contributions",s.contributions]].map(x=><div className="bg-white border rounded-2xl p-5" key={x[0]}><div className="text-xs text-zinc-400 font-bold uppercase">{x[0]}</div><div className="text-2xl font-black text-[#002344] mt-2">₹{Number(x[1]||0).toLocaleString("en-IN")}</div></div>)}</div><div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">ID</th><th className="p-3 text-left">Module</th><th className="p-3 text-left">Date</th><th className="p-3 text-left">Amount</th><th className="p-3 text-left">Status</th></tr></thead><tbody className="divide-y">{rows.slice(0,100).map(r=><tr key={r.id}><td className="p-3 font-bold">{r.recordId}</td><td className="p-3">{LABELS[r.module]||r.module}</td><td className="p-3">{formatOfficeDate(r.recordDate)}</td><td className="p-3">{r.amount?"₹"+Number(r.amount).toLocaleString("en-IN"):"—"}</td><td className="p-3">{r.status}</td></tr>)}</tbody></table></div></div>;
 }
 
-function Audit({token}){const [rows,setRows]=useState([]);useEffect(()=>{fetch(ENDPOINTS.DIGITAL_OFFICE_AUDIT,{headers:{Authorization:"Bearer "+token}}).then(r=>r.json()).then(setRows).catch(()=>setRows([]));},[]);return <div className="bg-white border rounded-2xl overflow-auto"><div className="p-6 border-b"><h2 className="text-2xl font-black text-[#002344]">Audit Trail</h2><p className="text-sm text-zinc-500 mt-1">Create, update and archive activity is retained.</p></div><table className="w-full text-sm"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Time</th><th className="p-3 text-left">Action</th><th className="p-3 text-left">Module</th><th className="p-3 text-left">Record</th><th className="p-3 text-left">Actor</th></tr></thead><tbody className="divide-y">{rows.map(r=><tr key={r.id}><td className="p-3">{new Date(r.createdAt).toLocaleString("en-IN")}</td><td className="p-3 font-bold">{r.action}</td><td className="p-3">{LABELS[r.module]||r.module}</td><td className="p-3">{r.recordId||"—"}</td><td className="p-3">{r.actor||"—"}</td></tr>)}</tbody></table></div>}
+function Audit({token}){const [rows,setRows]=useState([]);useEffect(()=>{fetch(ENDPOINTS.DIGITAL_OFFICE_AUDIT,{headers:{Authorization:"Bearer "+token}}).then(r=>r.ok?r.json():[]).then(d=>setRows(Array.isArray(d)?d:(Array.isArray(d?.records)?d.records:[]))).catch(()=>setRows([]));},[token]);return <div className="bg-white border rounded-2xl overflow-auto"><div className="p-6 border-b"><h2 className="text-2xl font-black text-[#002344]">Audit Trail</h2><p className="text-sm text-zinc-500 mt-1">Create, update and archive activity is retained.</p></div><table className="w-full text-sm"><thead className="bg-zinc-50"><tr><th className="p-3 text-left">Time</th><th className="p-3 text-left">Action</th><th className="p-3 text-left">Module</th><th className="p-3 text-left">Record</th><th className="p-3 text-left">Actor</th></tr></thead><tbody className="divide-y">{rows.map(r=><tr key={r.id}><td className="p-3">{new Date(r.createdAt).toLocaleString("en-IN")}</td><td className="p-3 font-bold">{r.action}</td><td className="p-3">{LABELS[r.module]||r.module}</td><td className="p-3">{r.recordId||"—"}</td><td className="p-3">{r.actor||"—"}</td></tr>)}</tbody></table></div>}
 
 function Users({add}){const [role,setRole]=useState("Office Admin"),[name,setName]=useState(""),[email,setEmail]=useState(""),[saved,setSaved]=useState(false);const save=async()=>{if(!name||!email)return;await add("users",{recordDate:new Date().toISOString().slice(0,10),recordType:role,status:"active",data:{name,email,role,permissions:"View, Create, Update, Archive, Reports"}});setSaved(true);setName("");setEmail("");};return <div className="bg-white border rounded-2xl p-6"><h2 className="text-2xl font-black text-[#002344]">Users & Permissions</h2><p className="text-zinc-500 mt-1">Office-level role record. Existing admin authentication remains unchanged.</p><div className="grid sm:grid-cols-3 gap-3 mt-6"><input value={name} onChange={e=>setName(e.target.value)} placeholder="Name" className={cls}/><input value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email" className={cls}/><select value={role} onChange={e=>setRole(e.target.value)} className={cls}><option>Office Admin</option><option>President</option><option>Secretary</option><option>Treasurer</option><option>Data Entry</option><option>Viewer / Auditor</option></select></div><button onClick={save} className="mt-4 bg-[#002344] text-white px-5 py-3 rounded-xl font-bold">Save Office Role</button>{saved&&<p className="mt-3 text-emerald-700 font-semibold">Role record saved.</p>}<div className="mt-5 bg-amber-50 border border-amber-200 rounded-xl p-4 text-sm text-amber-900">This module records office roles and permissions. It does not create a new website login or change existing Admin Portal authentication.</div></div>}
 {/* deployment sync marker: SSF Digital Office archived-record permanent delete UI */}
