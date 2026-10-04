@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint, FaVideo, FaUserTie } from "react-icons/fa";
 import jsPDF from "jspdf";
@@ -6,6 +6,7 @@ import { API_BASE_URL, ENDPOINTS } from "../config/api";
 import logoImg from "../assets/new-logo.png";
 import { generateCertificate, generateIdentityCard } from "../utils/generateCertificate";
 import AdminLearningCertificates from "../components/AdminLearningCertificates";
+import { BANK_ACCOUNTS, listBankStatements, getBankStatement, bankStatementRecords } from "../data/bankStatements";
 
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
@@ -30,6 +31,10 @@ const SPECIAL_DOCS = new Set(["meetings","mou","certificates","idcards"]);
 const NO_RECORD_MODULES = new Set(["dashboard","reports","audit","users"]);
 
 const cls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#002344]/20";
+const downloadPdf=function(doc,filename){
+ try{ doc.save(filename||"ssf-document.pdf"); }
+ catch(e){ try{ const url=doc.output("bloburl"); const a=document.createElement("a"); a.href=url; a.download=filename||"ssf-document.pdf"; document.body.appendChild(a); a.click(); a.remove(); }catch(err){ console.error("PDF download failed",err); } }
+};
 const formatOfficeDate=function(value){
  if(!value)return "—";
  const s=String(value);
@@ -212,10 +217,11 @@ export default function SSFDigitalOffice(){
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}\n    {active==="certificates"&&<AdminLearningCertificates token={token}/>}
+    {active==="bank"&&<BankBook rows={rows} add={add} archive={archive} token={token}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
@@ -731,6 +737,114 @@ function MeetingCalendar({rows,add,archive,token,updateRecord}){
   </div>
  </div>;
 }
+// Bank Book — financial-year-wise statement view. Shows the bank's opening
+// balance, every transaction with a running balance, and the FY totals. A
+// bundled statement can be imported into the Digital Office database, after
+// which the records become the source for linked registers (ledger, reports).
+function BankBook({ rows, add, archive, token }){
+ const [accountId,setAccountId]=useState(Object.keys(BANK_ACCOUNTS)[0]);
+ const [fy,setFy]=useState("");
+ const statements=useMemo(()=>listBankStatements(accountId),[accountId]);
+ useEffect(()=>{ if(!statements.some(s=>s.fy===fy)) setFy(statements[0]?.fy||""); },[accountId,statements]);
+ const statement=useMemo(()=>getBankStatement(accountId,fy),[accountId,fy]);
+ const account=BANK_ACCOUNTS[accountId]||{};
+ const [search,setSearch]=useState(""),[type,setType]=useState("all"),[importing,setImporting]=useState(false);
+ const money=function(v){return "₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});};
+ const dbRows=useMemo(()=>(rows||[]).filter(r=>{
+   const d=r.data||{};
+   if(String(d.fy||"")===String(fy)) return true;
+   if(!d.fy&&r.recordDate){ const s=String(r.recordDate).slice(0,10); if(s>=statement?.periodFrom&&s<=statement?.periodTo) return true; }
+   return false;
+ }),[rows,fy,statement]);
+ const entries=useMemo(()=>{
+   const base=statement?statement.transactions.map((t,i)=>({key:"s"+(i+1),slNo:i+1,date:t.date,particulars:t.particulars,chqNum:t.chqNum,withdrawal:t.withdrawal,deposit:t.deposit,balance:t.balance,source:"Statement"})):[];
+   const extra=dbRows.map(r=>{const d=r.data||{};const dep=Number(d.deposit||(d.direction==="in"?r.amount:0))||null;const wd=Number(d.withdrawal||(d.direction==="out"?r.amount:0))||null;return {key:r.id||r.recordId,slNo:"",date:String(r.recordDate||d.date||"").slice(0,10),particulars:d.purpose||d.particulars||d.notes||r.recordType||"",chqNum:d.chqNum||d.referenceNo||"",withdrawal:wd,deposit:dep,balance:null,source:"Digital Office"};});
+   return base.concat(extra);
+ },[statement,dbRows]);
+ const filtered=entries.filter(function(e){
+   if(type==="deposit"&&e.deposit==null)return false;
+   if(type==="withdrawal"&&e.withdrawal==null)return false;
+   if(search&&!(String(e.particulars).toLowerCase().includes(search.toLowerCase())||String(e.chqNum).toLowerCase().includes(search.toLowerCase())))return false;
+   return true;
+ });
+ const opening=statement?statement.openingBalance:0;
+ let running=opening;
+ const withBalance=filtered.map(function(e){ running=running+(Number(e.deposit||0)-Number(e.withdrawal||0)); return Object.assign({},e,{runningBalance:running}); });
+ const totals=entries.reduce(function(a,e){a.deposit+=Number(e.deposit||0);a.withdrawal+=Number(e.withdrawal||0);return a;},{deposit:0,withdrawal:0});
+ const closing=opening+totals.deposit-totals.withdrawal;
+ const importStatement=async function(){
+   if(!statement)return;
+   if(!confirm("Import "+statement.transactions.length+" bank entries for FY "+fy+" into the Digital Office database? Existing entries are not removed."))return;
+   setImporting(true);
+   const payloads=bankStatementRecords(accountId,fy);
+   let ok=0,fail=0;
+   for(const p of payloads){ const r=await add("bank",{recordDate:p.recordDate,recordType:p.recordType,amount:p.amount,paymentMode:p.paymentMode,direction:p.direction,data:p.data}); if(r)ok++; else fail++; }
+   setImporting(false);
+   alert("Import finished. Saved: "+ok+(fail?("  Failed: "+fail):""));
+ };
+ const exportCsv=function(){
+   const head=["Sl No","Date","Particulars","Chq Num","Withdrawal","Deposit","Balance"];
+   const esc=function(v){return '"'+String(v??"").replace(/"/g,'""')+'"';};
+   const lines=[head.map(esc).join(",")];
+   lines.push(["","Opening Balance","","","","",opening.toFixed(2)].map(esc).join(","));
+   withBalance.forEach(function(e){lines.push([e.slNo,e.date,e.particulars,e.chqNum,e.withdrawal!=null?Number(e.withdrawal).toFixed(2):"",e.deposit!=null?Number(e.deposit).toFixed(2):"",Number(e.runningBalance).toFixed(2)].map(esc).join(","));});
+   lines.push(["","Total","","",totals.withdrawal.toFixed(2),totals.deposit.toFixed(2),closing.toFixed(2)].map(esc).join(","));
+   const blob=new Blob(["\uFEFF"+lines.join("\r\n")+"\r\n"],{type:"text/csv;charset=utf-8"});
+   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ssf-bank-book-"+fy+".csv";document.body.appendChild(a);a.click();a.remove();
+ };
+ const printPdf=function(){
+   const d=new jsPDF(); d.addImage(logoImg,"PNG",14,8,16,16); d.setTextColor(0,35,68); d.setFontSize(15); d.text("Swastik Srijan Foundation Samiti",36,15); d.setFontSize(10); d.setTextColor(60); d.text(account.bank+" · "+account.branch+" · A/c "+account.accountNumber,14,24); d.setTextColor(0,35,68); d.setFontSize(13); d.text("Bank Book / Statement of Account · FY "+fy,14,33); d.setFontSize(9); d.setTextColor(90); d.text("Period: "+formatOfficeDate(statement?.periodFrom)+" to "+formatOfficeDate(statement?.periodTo),14,39);
+   let y=48; const cols=[14,26,96,116,140,164];
+   d.setFontSize(9); d.setTextColor(0,35,68); ["Date","Particulars","Chq","Withdrawal","Deposit","Balance"].forEach(function(h,i){d.text(h,cols[i],y);}); y+=5;
+   d.setTextColor(30); d.text("Opening Balance",cols[1],y); d.text(opening.toFixed(2),cols[5],y); y+=5;
+   withBalance.forEach(function(e){ const par=d.splitTextToSize(String(e.particulars||""),66)[0]||""; d.text(String(e.date),cols[0],y); d.text(par,cols[1],y); d.text(String(e.chqNum||""),cols[2],y); if(e.withdrawal!=null)d.text(Number(e.withdrawal).toFixed(2),cols[3],y); if(e.deposit!=null)d.text(Number(e.deposit).toFixed(2),cols[4],y); d.text(Number(e.runningBalance).toFixed(2),cols[5],y); y+=5; if(y>280){d.addPage();y=20;} });
+   d.setFont(undefined,"bold"); d.text("Total",cols[1],y); d.text(totals.withdrawal.toFixed(2),cols[3],y); d.text(totals.deposit.toFixed(2),cols[4],y); d.text("Closing "+closing.toFixed(2),cols[5],y);
+   d.setFontSize(8); d.setTextColor(120); d.text("Computer-generated bank book · SSF Digital Office",105,288,{align:"center"});
+   downloadPdf(d,"ssf-bank-book-"+fy+".pdf");
+ };
+ return <div className="space-y-5">
+  <div className="bg-[#002344] text-white rounded-2xl p-6">
+   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h2 className="text-2xl font-black">Bank Book / बैंक बही</h2><p className="text-white/70 mt-1">Financial-year-wise statement with opening balance, entries and running balance.</p></div></div>
+    <div className="flex flex-wrap gap-2 items-center">
+     <select value={accountId} onChange={e=>setAccountId(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{Object.values(BANK_ACCOUNTS).map(a=><option key={a.id} value={a.id}>{a.bank} · {a.accountNumber}</option>)}</select>
+     <select value={fy} onChange={e=>setFy(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{(statements.length?statements:[{fy:"2025-26"}]).map(s=><option key={s.fy} value={s.fy}>FY {s.fy}</option>)}</select>
+    </div>
+   </div>
+   <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Account</div><div className="font-black mt-1">{account.accountNumber}</div><div className="text-white/70 text-xs">{account.accountType} · {account.ifsc}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Branch</div><div className="font-black mt-1">{account.branch}</div><div className="text-white/70 text-xs">MICR {account.micr}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Period</div><div className="font-black mt-1">01-04-2025 to 31-03-2026</div><div className="text-white/70 text-xs">FY {fy}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Opening Balance</div><div className="font-black mt-1">{money(opening)} Cr</div></div>
+   </div>
+  </div>
+
+  <div className="bg-white rounded-2xl border overflow-hidden">
+   <div className="p-5 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+    <div><h3 className="text-xl font-black text-[#002344]">Statement of Account · FY {fy}</h3><p className="text-sm text-zinc-500 mt-1">{withBalance.length} entr{withBalance.length===1?"y":"ies"} shown · {entries.length} total · {dbRows.length} in Digital Office database</p></div>
+    <div className="flex flex-wrap gap-2 items-center">
+     <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search particulars / cheque" className="px-3 py-2.5 border rounded-xl w-56"/>
+     <select value={type} onChange={e=>setType(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Entries</option><option value="deposit">Deposits</option><option value="withdrawal">Withdrawals</option></select>
+     {statement&&<button type="button" disabled={importing} onClick={importStatement} className="bg-[#177245] text-white px-4 py-2.5 rounded-xl font-bold disabled:opacity-50">{importing?"Importing…":"Import FY "+fy+" Entries"}</button>}
+     <button type="button" onClick={exportCsv} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">CSV</button>
+     <button type="button" onClick={printPdf} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">PDF</button>
+    </div>
+   </div>
+   <div className="overflow-x-auto"><table className="w-full text-sm min-w-[900px]">
+    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Sl</th><th className="p-3 text-left">Date</th><th className="p-3 text-left">Particulars</th><th className="p-3 text-left">Chq No.</th><th className="p-3 text-right">Withdrawal</th><th className="p-3 text-right">Deposit</th><th className="p-3 text-right">Balance</th><th className="p-3 text-left">Source</th></tr></thead>
+    <tbody className="divide-y">
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="6">Opening Balance</td><td className="p-3 text-right">{money(opening)}</td><td className="p-3"></td></tr>
+     {withBalance.map(function(e){return <tr key={e.key}><td className="p-3 text-zinc-500">{e.slNo}</td><td className="p-3 whitespace-nowrap">{formatOfficeDate(e.date)}</td><td className="p-3 min-w-[300px]">{e.particulars}</td><td className="p-3">{e.chqNum||"—"}</td><td className="p-3 text-right text-red-700">{e.withdrawal!=null?money(e.withdrawal):""}</td><td className="p-3 text-right text-emerald-700">{e.deposit!=null?money(e.deposit):""}</td><td className="p-3 text-right font-bold">{money(e.runningBalance)}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.source==="Statement"?"bg-zinc-100 text-zinc-600":"bg-emerald-50 text-emerald-700")}>{e.source}</span></td></tr>;})}
+     {!withBalance.length&&<tr><td colSpan="8" className="p-10 text-center text-zinc-400">No entries for FY {fy}.</td></tr>}
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="4">Total</td><td className="p-3 text-right text-red-700">{money(totals.withdrawal)}</td><td className="p-3 text-right text-emerald-700">{money(totals.deposit)}</td><td className="p-3 text-right">{money(closing)}</td><td className="p-3 text-xs text-zinc-500">Closing</td></tr>
+    </tbody>
+   </table></div>
+   <div className="p-5 border-t"><div className="font-black text-[#002344] mb-3">Add Bank Entry / बैंक प्रविष्टि जोड़ें</div><RecordForm module="bank" onSave={async d=>{const ok=await add("bank",d);if(ok){d.data=Object.assign({},(d.data||{}),{fy:fy});}return ok;}}/></div>
+  </div>
+ </div>;
+}
+
+
 function Register({module,rows,loading,search,setSearch,add,archive}){
  const [open,setOpen]=useState(false), [status,setStatus]=useState("all"), [from,setFrom]=useState(""), [to,setTo]=useState("");
  const filtered=rows.filter(function(r){const d=String(r.recordDate||"").slice(0,10);return (status==="all"||String(r.status||"").toLowerCase()===status)&&(from===""||d>=from)&&(to===""||d<=to);});
