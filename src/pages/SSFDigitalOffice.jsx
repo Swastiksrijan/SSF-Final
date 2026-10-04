@@ -70,14 +70,13 @@ export default function SSFDigitalOffice(){
   return function(){window.removeEventListener("ssf-digital-office-refresh",refreshHandler);};
  },[]);
 
- const add=async function(module,data){
+ const add=async function(module,data,silent){
   try{
    var endpoint=module==="donations"?ENDPOINTS.DIGITAL_OFFICE_DONATIONS:module==="expenses"?ENDPOINTS.DIGITAL_OFFICE_EXPENSES:ENDPOINTS.DIGITAL_OFFICE_RECORDS;
    var body=module==="donations"||module==="expenses"?data:Object.assign({module:module},data);
    var r=await fetch(endpoint,{method:"POST",headers:auth(),body:JSON.stringify(body)}), out=await r.json();
    if(!r.ok){throw new Error(out.detail ? (out.message+" "+out.detail) : (out.message||"Save failed."));}
-   setNotice(out.donationId?"Saved. Donation ID: "+out.donationId:"Record saved successfully.");
-   await load(module);
+   if(!silent){ setNotice(out.donationId?"Saved. Donation ID: "+out.donationId:"Record saved successfully."); await load(module); }
    return true;
   }catch(e){setNotice(e.message||"Save failed.");return false;}
  };
@@ -217,7 +216,7 @@ export default function SSFDigitalOffice(){
     {active==="officialDocuments"&&<OfficialDocuments rows={rows} add={add}/>}
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}\n    {active==="certificates"&&<AdminLearningCertificates token={token}/>}
-    {active==="bank"&&<BankBook rows={rows} add={add} archive={archive} token={token}/>}
+    {active==="bank"&&<BankBook rows={rows} add={add} archive={archive} token={token} reload={()=>load("bank")}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
@@ -741,7 +740,7 @@ function MeetingCalendar({rows,add,archive,token,updateRecord}){
 // balance, every transaction with a running balance, and the FY totals. A
 // bundled statement can be imported into the Digital Office database, after
 // which the records become the source for linked registers (ledger, reports).
-function BankBook({ rows, add, archive, token }){
+function BankBook({ rows, add, archive, token, reload }){
  const [accountId,setAccountId]=useState(Object.keys(BANK_ACCOUNTS)[0]);
  const [fy,setFy]=useState("");
  const statements=useMemo(()=>listBankStatements(accountId),[accountId]);
@@ -750,6 +749,7 @@ function BankBook({ rows, add, archive, token }){
  const account=BANK_ACCOUNTS[accountId]||{};
  const [search,setSearch]=useState(""),[type,setType]=useState("all"),[importing,setImporting]=useState(false);
  const money=function(v){return "₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});};
+ const sigOf=function(date,withdrawal,deposit,particulars){return [String(date||"").slice(0,10),withdrawal==null?"":Number(withdrawal),deposit==null?"":Number(deposit),String(particulars||"").trim().toLowerCase()].join("|");};
  const dbRows=useMemo(()=>(rows||[]).filter(r=>{
    const d=r.data||{};
    if(String(d.fy||"")===String(fy)) return true;
@@ -757,10 +757,16 @@ function BankBook({ rows, add, archive, token }){
    return false;
  }),[rows,fy,statement]);
  const entries=useMemo(()=>{
-   const base=statement?statement.transactions.map((t,i)=>({key:"s"+(i+1),slNo:i+1,date:t.date,particulars:t.particulars,chqNum:t.chqNum,withdrawal:t.withdrawal,deposit:t.deposit,balance:t.balance,source:"Statement"})):[];
    const extra=dbRows.map(r=>{const d=r.data||{};const dep=Number(d.deposit||(d.direction==="in"?r.amount:0))||null;const wd=Number(d.withdrawal||(d.direction==="out"?r.amount:0))||null;return {key:r.id||r.recordId,slNo:"",date:String(r.recordDate||d.date||"").slice(0,10),particulars:d.purpose||d.particulars||d.notes||r.recordType||"",chqNum:d.chqNum||d.referenceNo||"",withdrawal:wd,deposit:dep,balance:null,source:"Digital Office"};});
+   const dbSig=new Set(extra.map(e=>sigOf(e.date,e.withdrawal,e.deposit,e.particulars)));
+   const base=statement?statement.transactions.map((t,i)=>({key:"s"+(i+1),slNo:i+1,date:t.date,particulars:t.particulars,chqNum:t.chqNum,withdrawal:t.withdrawal,deposit:t.deposit,balance:t.balance,source:"Statement"})).filter(e=>!dbSig.has(sigOf(e.date,e.withdrawal,e.deposit,e.particulars))):[];
    return base.concat(extra);
  },[statement,dbRows]);
+ const pendingNew=useMemo(()=>{
+   if(!statement)return [];
+   const dbSig=new Set(dbRows.map(r=>{const d=r.data||{};const dep=d.deposit!=null?d.deposit:(d.direction==="in"?r.amount:null);const wd=d.withdrawal!=null?d.withdrawal:(d.direction==="out"?r.amount:null);return sigOf(r.recordDate,wd,dep, d.purpose||d.particulars);}));
+   return bankStatementRecords(accountId,fy).filter(p=>!dbSig.has(sigOf(p.recordDate,p.data.withdrawal,p.data.deposit,p.data.particulars)));
+ },[statement,dbRows,accountId,fy]);
  const filtered=entries.filter(function(e){
    if(type==="deposit"&&e.deposit==null)return false;
    if(type==="withdrawal"&&e.withdrawal==null)return false;
@@ -774,12 +780,13 @@ function BankBook({ rows, add, archive, token }){
  const closing=opening+totals.deposit-totals.withdrawal;
  const importStatement=async function(){
    if(!statement)return;
-   if(!confirm("Import "+statement.transactions.length+" bank entries for FY "+fy+" into the Digital Office database? Existing entries are not removed."))return;
+   if(!pendingNew.length){ alert("All entries for FY "+fy+" are already saved in the Digital Office database."); return; }
+   if(!confirm("Import "+pendingNew.length+" bank entr"+(pendingNew.length===1?"y":"ies")+" for FY "+fy+" into the Digital Office database? Already-saved entries are skipped."))return;
    setImporting(true);
-   const payloads=bankStatementRecords(accountId,fy);
    let ok=0,fail=0;
-   for(const p of payloads){ const r=await add("bank",{recordDate:p.recordDate,recordType:p.recordType,amount:p.amount,paymentMode:p.paymentMode,direction:p.direction,data:p.data}); if(r)ok++; else fail++; }
+   for(const p of pendingNew){ const r=await add("bank",{recordDate:p.recordDate,recordType:p.recordType,amount:p.amount,paymentMode:p.paymentMode,direction:p.direction,data:p.data},true); if(r)ok++; else fail++; }
    setImporting(false);
+   if(typeof reload==="function") await reload();
    alert("Import finished. Saved: "+ok+(fail?("  Failed: "+fail):""));
  };
  const exportCsv=function(){
@@ -814,7 +821,7 @@ function BankBook({ rows, add, archive, token }){
    <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
     <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Account</div><div className="font-black mt-1">{account.accountNumber}</div><div className="text-white/70 text-xs">{account.accountType} · {account.ifsc}</div></div>
     <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Branch</div><div className="font-black mt-1">{account.branch}</div><div className="text-white/70 text-xs">MICR {account.micr}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Period</div><div className="font-black mt-1">01-04-2025 to 31-03-2026</div><div className="text-white/70 text-xs">FY {fy}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Period</div><div className="font-black mt-1">{formatOfficeDate(statement?.periodFrom)} to {formatOfficeDate(statement?.periodTo)}</div><div className="text-white/70 text-xs">FY {fy}</div></div>
     <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Opening Balance</div><div className="font-black mt-1">{money(opening)} Cr</div></div>
    </div>
   </div>
@@ -825,7 +832,7 @@ function BankBook({ rows, add, archive, token }){
     <div className="flex flex-wrap gap-2 items-center">
      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search particulars / cheque" className="px-3 py-2.5 border rounded-xl w-56"/>
      <select value={type} onChange={e=>setType(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Entries</option><option value="deposit">Deposits</option><option value="withdrawal">Withdrawals</option></select>
-     {statement&&<button type="button" disabled={importing} onClick={importStatement} className="bg-[#177245] text-white px-4 py-2.5 rounded-xl font-bold disabled:opacity-50">{importing?"Importing…":"Import FY "+fy+" Entries"}</button>}
+     {statement&&<button type="button" disabled={importing||!pendingNew.length} onClick={importStatement} title={pendingNew.length?("Save "+pendingNew.length+" remaining entries"):"All entries already saved"} className={"px-4 py-2.5 rounded-xl font-bold disabled:opacity-60 "+(pendingNew.length?"bg-[#177245] text-white":"bg-zinc-100 text-zinc-500")}>{importing?"Importing…":(pendingNew.length?("Import "+pendingNew.length+" Entries"):"All Entries Saved ✓")}</button>}
      <button type="button" onClick={exportCsv} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">CSV</button>
      <button type="button" onClick={printPdf} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">PDF</button>
     </div>
