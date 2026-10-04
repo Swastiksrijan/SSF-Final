@@ -27,6 +27,7 @@ import { SPORTS_CONTENT } from "../data/sportsWellnessContent";
 import { MATH_CONTENT } from "../data/mathFinanceContent";
 import { LANGUAGES_CONTENT } from "../data/languagesContent";
 import { SCIENCE_CONTENT } from "../data/scienceContent";
+import { CORPORATE_CONTENT } from "../data/corporateMasteryContent";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA, KNOWLEDGE_WORLD_CATEGORY } from "../data/learningCurriculum";
 import { DISCIPLINE_PROFILES } from "../data/learningMethodology";
 import PrimaryLettersCourse from "../components/learning/PrimaryLettersCourse";
@@ -58,6 +59,7 @@ const SPORTS_CATEGORY = "Sports, Fitness & Wellness / खेल, फिटने
 const MATH_CATEGORY = "Mathematics & Financial Literacy / गणित एवं वित्तीय साक्षरता";
 const LANGUAGES_CATEGORY = "Languages / भाषाएँ";
 const SCIENCE_CATEGORY = "Science / विज्ञान";
+const CORPORATE_CATEGORY = "Corporate Mastery / कॉर्पोरेट दक्षता";
 
 // Single registry lookup: hand-written content first, then the discipline-
 // specific content added for the new learning areas.
@@ -92,7 +94,8 @@ const CATEGORY_META = {
   "Research & Mastery Skills / शोध एवं दक्षता कौशल": { key:"education", icon:FaBookOpen, color:"from-[#003049] to-[#669bbc]" },
   "Arts, Creativity & Culture / कला, रचनात्मकता एवं संस्कृति": { key:"culture", icon:FaBookOpen, color:"from-[#6d597a] to-[#b56576]" },
   "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": { key:"health", icon:FaHeartbeat, color:"from-[#1b4332] to-[#40916c]" },
-  "Office Skills / ऑफिस कौशल": { key:"digital", icon:FaBriefcase, color:"from-[#0b3a63] to-[#1f6f8b]" }
+  "Office Skills / ऑफिस कौशल": { key:"digital", icon:FaBriefcase, color:"from-[#0b3a63] to-[#1f6f8b]" },
+  "Corporate Mastery / कॉर्पोरेट दक्षता": { key:"career", icon:FaBriefcase, color:"from-[#001529] to-[#0b3a63]" }
 };
 
 const TOPICS = [
@@ -2167,6 +2170,7 @@ const CATEGORY_CONTENT = {
   [MATH_CATEGORY]: { content: MATH_CONTENT, icon: "➗", outcomeClose: "समझ + अभ्यास + योजना — यही वित्तीय समझदारी है।" },
   [LANGUAGES_CATEGORY]: { content: LANGUAGES_CONTENT, icon: "🌐", outcomeClose: "सुनना + बोलना + सम्मान — यही भाषा की समझ है।" },
   [SCIENCE_CATEGORY]: { content: SCIENCE_CONTENT, icon: "🔬", outcomeClose: "प्रश्न + सबूत + जाँच — यही वैज्ञानिक सोच है।" },
+  [CORPORATE_CATEGORY]: { content: CORPORATE_CONTENT, icon: "🏢", outcomeClose: "Profit ↔ People ↔ Ethics ↔ Society ↔ Sustainability — यही ज़िम्मेदार corporate सोच है।" },
 };
 
 const authoredEntryFor = (subject) => {

@@ -135,6 +135,7 @@ const CATEGORY_EMOJI = {
   "Mathematics & Financial Literacy / गणित एवं वित्तीय साक्षरता": "➗",
   "Languages / भाषाएँ": "🌐",
   "Science / विज्ञान": "🔬",
+  "Corporate Mastery / कॉर्पोरेट दक्षता": "🏢",
 };
 
 /** Coded card art derived only from the subject's own fields. */

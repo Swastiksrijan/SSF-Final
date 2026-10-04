@@ -298,4 +298,7 @@ export const LEARNING_CATEGORIES_EXTRA = {
     ["Mental Well-being / मानसिक कल्याण", "भावनाएँ, तनाव प्रबंधन और सहायता। / Emotions, stress management and seeking support."],
     ["Healthy Lifestyle / स्वस्थ जीवनशैली", "संतुलित दिनचर्या, आदतें और कल्याण। / Balanced routine, habits and well-being."],
   ],
+  "Corporate Mastery / कॉर्पोरेट दक्षता": [
+    ["Corporate Mastery / कॉर्पोरेट दक्षता", "Organisation, प्रबंधन, नेतृत्व, कर्मचारी, अधिकार, जिम्मेदारी, नैतिकता, CSR और सामाजिक उत्तरदायित्व की पूरी समझ। / A complete understanding of organisation, management, leadership, employees, rights, duties, ethics, CSR and social responsibility."],
+  ],
 };

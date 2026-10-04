@@ -46,6 +46,7 @@ export const LEARNING_WORLD_GROUPS = [
       "English & Communication / अंग्रेज़ी एवं संचार",
       "Skill Development / कौशल विकास",
       "Entrepreneurship & Work / उद्यमिता एवं कार्य",
+      "Corporate Mastery / कॉर्पोरेट दक्षता",
       "NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान",
     ],
   },
