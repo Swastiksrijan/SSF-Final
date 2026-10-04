@@ -72,8 +72,14 @@ const stripHtml = (s) => String(s || "")
   .replace(/\s+/g, " ").trim();
 
 async function lookupWord(q) {
+  const withTimeout = async (url) => {
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 6000);
+    try { return await fetch(url, { signal: ctrl.signal }); }
+    finally { clearTimeout(timer); }
+  };
   try {
-    const res = await fetch("https://en.wiktionary.org/api/rest_v1/page/definition/" + encodeURIComponent(q));
+    const res = await withTimeout("https://en.wiktionary.org/api/rest_v1/page/definition/" + encodeURIComponent(q));
     if (res.ok) {
       const json = await res.json();
       const en = (json.en || []).filter((m) => !m.language || m.language === "English");
@@ -88,7 +94,7 @@ async function lookupWord(q) {
     }
   } catch { /* try fallback below */ }
   try {
-    const res = await fetch("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(q));
+    const res = await withTimeout("https://api.dictionaryapi.dev/api/v2/entries/en/" + encodeURIComponent(q));
     if (res.ok) {
       const json = await res.json();
       const d = Array.isArray(json) ? json[0] : null;
