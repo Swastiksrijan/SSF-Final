@@ -230,7 +230,7 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
   return <div className="min-h-screen bg-[#f4f7fb] font-inria text-zinc-900">
     {/* Brand strip — SSF logo + official line, kept on every Master Course */}
     <div className="bg-[#001529]">
-      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 pt-24 pb-3 md:pt-28">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 pt-28 pb-3 md:pt-32">
         <a href="/LearningHub" className="flex items-center gap-2.5">
           <img src={ssfLogo} alt="Swastik Srijan Foundation" className="h-11 w-11 object-contain drop-shadow md:h-12 md:w-12" />
           <span className="leading-none">
