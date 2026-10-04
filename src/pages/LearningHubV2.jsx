@@ -26,6 +26,8 @@ import { isFruitsSubject, FRUITS_COURSE, readFruitsProgress } from "../data/frui
 import { HeroArt as FruitHeroArt, chapterArt as fruitChapterArt } from "../components/learning/FruitsArt";
 import { isVocabularySubject, VOCABULARY_COURSE, readVocabularyProgress } from "../data/vocabularyCourse";
 import { HeroArt as VocabHeroArt, chapterArt as vocabChapterArt } from "../components/learning/VocabularyArt";
+import { isTreesForestsSubject, TREES_FORESTS_COURSE, readTreesForestsProgress } from "../data/treesForestsCourse";
+import { HeroArt as TreesHeroArt, chapterArt as treesChapterArt } from "../components/learning/TreesForestsArt";
 import LearningHubHome from "../components/learning/LearningHubHome";
 import SubjectCard from "../components/learning/SubjectCard";
 import { courseBadge } from "../data/learningWorld";
@@ -125,6 +127,7 @@ const readStoredProgress = (subject) => {
   if (isTimeCalendarSubject(subject)) return readTimeCalendarProgress(subject);
   if (isFruitsSubject(subject)) return readFruitsProgress(subject);
   if (isVocabularySubject(subject)) return readVocabularyProgress(subject);
+  if (isTreesForestsSubject(subject)) return readTreesForestsProgress(subject);
   try {
     const raw = JSON.parse(localStorage.getItem("ssf-learning-course-progress-" + subject.id) || "[]");
     return Array.isArray(raw) ? raw : [];
@@ -2071,6 +2074,11 @@ const getSubjectModules = (subject) => {
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
   }
+  if (isTreesForestsSubject(subject)) {
+    const result = { total: TREES_FORESTS_COURSE.modules.reduce((n, m) => n + m.chapters.length, 0), moduleCount: TREES_FORESTS_COURSE.modules.length, hasStructured: true };
+    SUBJECT_MODULES_CACHE.set(subject.id, result);
+    return result;
+  }
   const structuredCourse = hasStructuredCourse(subject) ? resolveStructuredCourse(subject).course : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const eduModules = isEducationSubject(subject) ? buildEducationModules(subject) : null;
@@ -2450,6 +2458,7 @@ function LearningSubject({ subject, onBack }) {
   if (isTimeCalendarSubject(subject)) return <MasterCourse course={TIME_CALENDAR_COURSE} subject={subject} onBack={onBack} art={timeChapterArt} HeroArt={TimeHeroArt} />;
   if (isFruitsSubject(subject)) return <MasterCourse course={FRUITS_COURSE} subject={subject} onBack={onBack} art={fruitChapterArt} HeroArt={FruitHeroArt} />;
   if (isVocabularySubject(subject)) return <MasterCourse course={VOCABULARY_COURSE} subject={subject} onBack={onBack} art={vocabChapterArt} HeroArt={VocabHeroArt} />;
+  if (isTreesForestsSubject(subject)) return <MasterCourse course={TREES_FORESTS_COURSE} subject={subject} onBack={onBack} art={treesChapterArt} HeroArt={TreesHeroArt} />;
   const submitQuiz = () => {
     const passed = score >= 4;
     const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
@@ -2857,6 +2866,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
       (isTimeCalendarSubject(s) && TIME_CALENDAR_COURSE.meta.level) ||
       (isFruitsSubject(s) && FRUITS_COURSE.meta.level) ||
       (isVocabularySubject(s) && VOCABULARY_COURSE.meta.level) ||
+      (isTreesForestsSubject(s) && TREES_FORESTS_COURSE.meta.level) ||
       (isOfficeSkillsSubject(s) && getOfficeSkillsCourse(s)?.level) ||
       (isEducationSubject(s) && getEducationCourse(s)?.level) ||
       (isKnowledgeWorldSubject(s) && getKnowledgeWorldCourse(s)?.level) ||

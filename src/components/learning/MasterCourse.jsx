@@ -117,6 +117,11 @@ function Block({ b }) {
         <div className="text-base font-bold text-rose-600 md:text-lg">❌ {m.w}</div>
         <div className="mt-2 text-base font-bold text-emerald-700 md:text-lg">✅ {m.c}</div>
       </div>)}</div>;
+    case "img":
+      return <figure className="overflow-hidden rounded-2xl border border-zinc-200 bg-white">
+        <img src={b.src} alt={b.alt || b.cap || "course illustration"} loading="lazy" className="h-auto w-full object-cover" />
+        {b.cap && <figcaption className="px-4 py-3 text-sm font-bold text-zinc-600 md:text-base">{b.cap}</figcaption>}
+      </figure>;
     default:
       return null;
   }
