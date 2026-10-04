@@ -7,6 +7,7 @@ import logoImg from "../assets/new-logo.png";
 import { generateCertificate, generateIdentityCard } from "../utils/generateCertificate";
 import AdminLearningCertificates from "../components/AdminLearningCertificates";
 import { BANK_ACCOUNTS, listBankStatements, getBankStatement, bankStatementRecords } from "../data/bankStatements";
+import { CASH_BOOKS, listCashStatements, getCashStatement, cashStatementRecords } from "../data/cashBook";
 
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
@@ -217,10 +218,11 @@ export default function SSFDigitalOffice(){
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}\n    {active==="certificates"&&<AdminLearningCertificates token={token}/>}
     {active==="bank"&&<BankBook rows={rows} add={add} archive={archive} token={token} reload={()=>load("bank")}/>}
+    {active==="cash"&&<CashBook rows={rows} add={add} archive={archive} token={token} reload={()=>load("cash")}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
@@ -850,6 +852,125 @@ function BankBook({ rows, add, archive, token, reload }){
   </div>
  </div>;
 }
+
+
+// Cash Book — financial-year-wise रोकड़ बही. Manual/collected-cash entries with
+// receipts, payments, running balance, category and voucher columns. A bundled
+// year can be imported into the Digital Office database for linked registers.
+function CashBook({ rows, add, archive, token, reload }){
+ const [bookId,setBookId]=useState(Object.keys(CASH_BOOKS)[0]);
+ const [fy,setFy]=useState("");
+ const statements=useMemo(()=>listCashStatements(bookId),[bookId]);
+ useEffect(()=>{ if(!statements.some(s=>s.fy===fy)) setFy(statements[0]?.fy||""); },[bookId,statements]);
+ const statement=useMemo(()=>getCashStatement(bookId,fy),[bookId,fy]);
+ const book=CASH_BOOKS[bookId]||{};
+ const [search,setSearch]=useState(""),[type,setType]=useState("all"),[importing,setImporting]=useState(false);
+ const money=function(v){return "₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});};
+ const sigOf=function(date,receipt,payment,particulars){return [String(date||"").slice(0,10),receipt==null?"":Number(receipt),payment==null?"":Number(payment),String(particulars||"").trim().toLowerCase()].join("|");};
+ const dbRows=useMemo(()=>(rows||[]).filter(r=>{
+   const d=r.data||{};
+   if(String(d.fy||"")===String(fy)) return true;
+   if(!d.fy&&r.recordDate){ const s=String(r.recordDate).slice(0,10); if(s>=statement?.periodFrom&&s<=statement?.periodTo) return true; }
+   return false;
+ }),[rows,fy,statement]);
+ const entries=useMemo(()=>{
+   const extra=dbRows.map(r=>{const d=r.data||{};const receipt=Number(d.receipt||(d.direction==="in"?r.amount:0))||null;const payment=Number(d.payment||(d.direction==="out"?r.amount:0))||null;return {key:r.id||r.recordId,dbId:r.id,date:String(r.recordDate||d.date||"").slice(0,10),particulars:d.purpose||d.particulars||d.notes||r.recordType||"",type:d.type||r.recordType||"",category:d.category||"",mode:d.mode||d.paymentMode||"Cash",receipt:receipt,payment:payment,voucherNo:d.voucherNo||d.referenceNo||"",remarks:d.remarks||"",verifiedBy:d.verifiedBy||"",source:"Digital Office"};});
+   const dbSig=new Set(extra.map(e=>sigOf(e.date,e.receipt,e.payment,e.particulars)));
+   const base=statement?statement.transactions.map((t,i)=>({key:"s"+(i+1),slNo:i+1,date:t.date,particulars:t.particulars,type:t.type,category:t.category,mode:t.mode,receipt:t.receipt||null,payment:t.payment||null,voucherNo:t.voucherNo,remarks:t.remarks,verifiedBy:t.verifiedBy,source:"Cash Book"})).filter(e=>!dbSig.has(sigOf(e.date,e.receipt,e.payment,e.particulars))):[];
+   return base.concat(extra).sort((a,b)=>(a.date<b.date?-1:a.date>b.date?1:0));
+ },[statement,dbRows]);
+ const pendingNew=useMemo(()=>{
+   if(!statement)return [];
+   const dbSig=new Set(dbRows.map(r=>{const d=r.data||{};const receipt=d.receipt!=null?d.receipt:(d.direction==="in"?r.amount:null);const payment=d.payment!=null?d.payment:(d.direction==="out"?r.amount:null);return sigOf(r.recordDate,receipt,payment,d.purpose||d.particulars);}));
+   return cashStatementRecords(bookId,fy).filter(p=>!dbSig.has(sigOf(p.recordDate,p.data.receipt,p.data.payment,p.data.particulars)));
+ },[statement,dbRows,bookId,fy]);
+ const opening=statement?statement.openingBalance:0;
+ let run=opening, minRun=opening, minDate="";
+ entries.forEach(function(e){ run+=(Number(e.receipt||0)-Number(e.payment||0)); if(run<minRun){minRun=run;minDate=e.date;} });
+ const balanceByKey={}; run=opening; entries.forEach(function(e){ run+=(Number(e.receipt||0)-Number(e.payment||0)); balanceByKey[e.key]=run; });
+ const totals=entries.reduce(function(a,e){a.receipt+=Number(e.receipt||0);a.payment+=Number(e.payment||0);return a;},{receipt:0,payment:0});
+ const closing=opening+totals.receipt-totals.payment;
+ const filtered=entries.filter(function(e){
+   if(type==="income"&&e.type!=="Income")return false;
+   if(type==="expence"&&e.type!=="Expence")return false;
+   if(search){const h=(String(e.particulars)+" "+String(e.category)+" "+String(e.remarks)+" "+String(e.voucherNo)).toLowerCase();if(!h.includes(search.toLowerCase()))return false;}
+   return true;
+ });
+ const importStatement=async function(){
+   if(!statement)return;
+   if(!pendingNew.length){ alert("All entries for FY "+fy+" are already saved in the Digital Office database."); return; }
+   if(!confirm("Import "+pendingNew.length+" cash entr"+(pendingNew.length===1?"y":"ies")+" for FY "+fy+" into the Digital Office database? Already-saved entries are skipped."))return;
+   setImporting(true);
+   let ok=0,fail=0;
+   for(const p of pendingNew){ const r=await add("cash",{recordDate:p.recordDate,recordType:p.recordType,amount:p.amount,paymentMode:p.paymentMode,direction:p.direction,data:p.data},true); if(r)ok++; else fail++; }
+   setImporting(false);
+   if(typeof reload==="function") await reload();
+   alert("Import finished. Saved: "+ok+(fail?("  Failed: "+fail):""));
+ };
+ const exportCsv=function(){
+   const head=["Date","Particulars","Type","Category","Mode","Receipts","Payments","Balance","Voucher No.","Remarks","Verified By"];
+   const esc=function(v){return '"'+String(v??"").replace(/"/g,'""')+'"';};
+   const lines=[head.map(esc).join(",")];
+   lines.push(["","Opening Balance","","","","","",opening.toFixed(2),"","",""].map(esc).join(","));
+   entries.forEach(function(e){lines.push([e.date,e.particulars,e.type,e.category,e.mode,e.receipt!=null?Number(e.receipt).toFixed(2):"",e.payment!=null?Number(e.payment).toFixed(2):"",Number(balanceByKey[e.key]).toFixed(2),e.voucherNo,e.remarks,e.verifiedBy].map(esc).join(","));});
+   lines.push(["","Total","","","",totals.receipt.toFixed(2),totals.payment.toFixed(2),closing.toFixed(2),"","",""].map(esc).join(","));
+   const blob=new Blob(["\uFEFF"+lines.join("\r\n")+"\r\n"],{type:"text/csv;charset=utf-8"});
+   const a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="ssf-cash-book-"+fy+".csv";document.body.appendChild(a);a.click();a.remove();
+ };
+ const printPdf=function(){
+   const d=new jsPDF(); d.addImage(logoImg,"PNG",14,8,16,16); d.setTextColor(0,35,68); d.setFontSize(15); d.text("Swastik Srijan Foundation Samiti",36,15); d.setFontSize(10); d.setTextColor(60); d.text((book.name||"SSF Cash Book")+" · FY "+fy,14,24); d.setTextColor(0,35,68); d.setFontSize(13); d.text("Cash Book / रोकड़ बही",14,33); d.setFontSize(9); d.setTextColor(90); d.text("Period: "+formatOfficeDate(statement?.periodFrom)+" to "+formatOfficeDate(statement?.periodTo),14,39);
+   let y=48; const cols=[14,26,92,110,128,150,172];
+   d.setFontSize(8); d.setTextColor(0,35,68); ["Date","Particulars","Type","Receipts","Payments","Balance","Voucher"].forEach(function(h,i){d.text(h,cols[i],y);}); y+=5;
+   d.setTextColor(30); d.text("Opening Balance",cols[1],y); d.text(opening.toFixed(2),cols[5],y); y+=5;
+   entries.forEach(function(e){ const par=d.splitTextToSize(String(e.particulars||""),62)[0]||""; d.text(String(e.date),cols[0],y); d.text(par,cols[1],y); d.text(String(e.type||""),cols[2],y); if(e.receipt)d.text(Number(e.receipt).toFixed(2),cols[3],y); if(e.payment)d.text(Number(e.payment).toFixed(2),cols[4],y); d.text(Number(balanceByKey[e.key]).toFixed(2),cols[5],y); d.text(String(e.voucherNo||""),cols[6],y); y+=5; if(y>280){d.addPage();y=20;} });
+   d.setFont(undefined,"bold"); d.text("Total",cols[1],y); d.text(totals.receipt.toFixed(2),cols[3],y); d.text(totals.payment.toFixed(2),cols[4],y); d.text("Closing "+closing.toFixed(2),cols[5],y);
+   d.setFontSize(8); d.setTextColor(120); d.text("Computer-generated cash book · SSF Digital Office",105,288,{align:"center"});
+   downloadPdf(d,"ssf-cash-book-"+fy+".pdf");
+ };
+ return <div className="space-y-5">
+  <div className="bg-[#002344] text-white rounded-2xl p-6">
+   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h2 className="text-2xl font-black">Cash Book / रोकड़ बही</h2><p className="text-white/70 mt-1">Financial-year-wise cash receipts & payments with running balance.</p></div></div>
+    <div className="flex flex-wrap gap-2 items-center">
+     <select value={bookId} onChange={e=>setBookId(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{Object.values(CASH_BOOKS).map(b=><option key={b.id} value={b.id}>{b.name}</option>)}</select>
+     <select value={fy} onChange={e=>setFy(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{(statements.length?statements:[{fy:"2025-26"}]).map(s=><option key={s.fy} value={s.fy}>FY {s.fy}</option>)}</select>
+    </div>
+   </div>
+   <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Opening Balance</div><div className="font-black mt-1">{money(opening)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Receipts</div><div className="font-black mt-1 text-emerald-300">{money(totals.receipt)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Payments</div><div className="font-black mt-1 text-red-300">{money(totals.payment)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Closing Balance</div><div className="font-black mt-1">{money(closing)}</div></div>
+   </div>
+  </div>
+
+  {minRun<0&&<div className="bg-amber-50 border border-amber-300 text-amber-900 rounded-2xl px-5 py-4 text-sm"><b>Cash shortfall noticed / नकद कमी:</b> By date the running balance goes as low as <b>{money(minRun)}</b> on {formatOfficeDate(minDate)}. This usually means a receipt is missing or the opening balance needs revision — please verify before finalising.</div>}
+
+  <div className="bg-white rounded-2xl border overflow-hidden">
+   <div className="p-5 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-3">
+    <div><h3 className="text-xl font-black text-[#002344]">Cash Book · FY {fy}</h3><p className="text-sm text-zinc-500 mt-1">{filtered.length} of {entries.length} entries · {dbRows.length} in Digital Office database</p></div>
+    <div className="flex flex-wrap gap-2 items-center">
+     <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search particulars / category / voucher" className="px-3 py-2.5 border rounded-xl w-60"/>
+     <select value={type} onChange={e=>setType(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Entries</option><option value="income">Receipts (Income)</option><option value="expence">Payments (Expence)</option></select>
+     {statement&&<button type="button" disabled={importing||!pendingNew.length} onClick={importStatement} title={pendingNew.length?("Save "+pendingNew.length+" remaining entries"):"All entries already saved"} className={"px-4 py-2.5 rounded-xl font-bold disabled:opacity-60 "+(pendingNew.length?"bg-[#177245] text-white":"bg-zinc-100 text-zinc-500")}>{importing?"Importing…":(pendingNew.length?("Import "+pendingNew.length+" Entries"):"All Entries Saved ✓")}</button>}
+     <button type="button" onClick={exportCsv} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">CSV</button>
+     <button type="button" onClick={printPdf} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">PDF</button>
+    </div>
+   </div>
+   <div className="overflow-x-auto"><table className="w-full text-sm min-w-[1200px]">
+    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Date</th><th className="p-3 text-left">Particulars</th><th className="p-3 text-left">Type</th><th className="p-3 text-left">Category</th><th className="p-3 text-left">Mode</th><th className="p-3 text-right">Receipts</th><th className="p-3 text-right">Payments</th><th className="p-3 text-right">Balance</th><th className="p-3 text-left">Voucher No.</th><th className="p-3 text-left">Remarks</th><th className="p-3 text-left">Verified By</th><th className="p-3 text-left">Source</th><th className="p-3"></th></tr></thead>
+    <tbody className="divide-y">
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="7">Opening Balance</td><td className="p-3 text-right">{money(opening)}</td><td className="p-3" colSpan="5"></td></tr>
+     {filtered.map(function(e){return <tr key={e.key}><td className="p-3 whitespace-nowrap">{formatOfficeDate(e.date)}</td><td className="p-3 min-w-[220px]">{e.particulars}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.type==="Income"?"bg-emerald-50 text-emerald-700":"bg-red-50 text-red-700")}>{e.type||"—"}</span></td><td className="p-3 whitespace-nowrap">{e.category||"—"}</td><td className="p-3">{e.mode||"Cash"}</td><td className="p-3 text-right text-emerald-700">{e.receipt!=null?money(e.receipt):""}</td><td className="p-3 text-right text-red-700">{e.payment!=null?money(e.payment):""}</td><td className="p-3 text-right font-bold">{money(balanceByKey[e.key])}</td><td className="p-3">{e.voucherNo||"—"}</td><td className="p-3 min-w-[150px] text-zinc-500">{e.remarks||"—"}</td><td className="p-3">{e.verifiedBy||"NA"}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.source==="Cash Book"?"bg-zinc-100 text-zinc-600":"bg-emerald-50 text-emerald-700")}>{e.source}</span></td><td className="p-3 text-right">{e.dbId&&<button onClick={()=>archive(e.dbId)} className="text-xs font-bold text-red-600">Archive</button>}</td></tr>;})}
+     {!filtered.length&&<tr><td colSpan="13" className="p-10 text-center text-zinc-400">No entries for FY {fy}.</td></tr>}
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="5">Total</td><td className="p-3 text-right text-emerald-700">{money(totals.receipt)}</td><td className="p-3 text-right text-red-700">{money(totals.payment)}</td><td className="p-3 text-right">{money(closing)}</td><td className="p-3 text-xs text-zinc-500" colSpan="5">Closing</td></tr>
+    </tbody>
+   </table></div>
+   <div className="p-5 border-t"><div className="font-black text-[#002344] mb-3">Add Cash Entry / रोकड़ प्रविष्टि जोड़ें</div><RecordForm module="cash" onSave={async d=>{d.data=Object.assign({},(d.data||{}),{fy:fy});const ok=await add("cash",d);return ok;}}/></div>
+  </div>
+ </div>;
+}
+
 
 
 function Register({module,rows,loading,search,setSearch,add,archive}){
