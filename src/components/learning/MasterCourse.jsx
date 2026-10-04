@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { readMigratedProgress } from "../../data/courseProgress";
+import ssfLogo from "../../assets/new-logo.png";
 
 const stripEmoji = (s) => String(s).replace(/[\u{1F000}-\u{1FAFF}\u2600-\u27BF\u2190-\u21FF\u2B00-\u2BFF]/gu, "").trim();
 
@@ -227,9 +228,24 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
   const [titleEn, titleHi] = course.meta.title || [course.meta.tag || "", ""];
 
   return <div className="min-h-screen bg-[#f4f7fb] font-inria text-zinc-900">
+    {/* Brand strip — SSF logo + official line, kept on every Master Course */}
+    <div className="bg-[#001529]">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 pt-24 pb-3 md:pt-28">
+        <a href="/LearningHub" className="flex items-center gap-2.5">
+          <img src={ssfLogo} alt="Swastik Srijan Foundation" className="h-11 w-11 object-contain drop-shadow md:h-12 md:w-12" />
+          <span className="leading-none">
+            <span className="block text-sm font-black text-white md:text-base">Swastik Srijan</span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.28em] text-[#FF6600] md:text-[10px]">Foundation</span>
+          </span>
+        </a>
+        <span className="hidden text-right text-[11px] font-bold text-white/70 sm:block md:text-sm">
+          SSF Learning Hub <span className="mx-1 text-[#FFD166]">•</span> Empowering Lives Since 2013
+        </span>
+      </div>
+    </div>
     <section className="relative overflow-hidden bg-[#001529] text-white">
       <div className="absolute inset-0 bg-gradient-to-br from-[#001529] via-[#0b3a63] to-[#001529]" />
-      <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-28 md:pb-16 md:pt-32">
+      <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-8 md:pb-16 md:pt-10">
         <button type="button" onClick={onBack} className="mb-6 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold backdrop-blur transition hover:bg-white/20">← Back to Learning Hub / वापस</button>
         <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
           <div className="max-w-3xl">
