@@ -33,7 +33,15 @@ export default function ImsCostCentres() {
   const load = useCallback(async () => {
     setRows(null);
     try {
-      const [d, l] = await Promise.all([ims.costCentreDashboard({}), ims.costCentres({})]);
+      let [d, l] = await Promise.all([ims.costCentreDashboard({}), ims.costCentres({})]);
+      // Fresh install: the default master may never have been seeded. Load it
+      // once so this register is never empty (idempotent on the server).
+      if ((!l.records || l.records.length === 0) && !(d && d.kpis && d.kpis.total)) {
+        try {
+          await ims.costCentreSeed();
+          [d, l] = await Promise.all([ims.costCentreDashboard({}), ims.costCentres({})]);
+        } catch { /* seed is best-effort */ }
+      }
       setDash(d);
       setRows(l.records || []);
     } catch (e) { setErr(e.message); setRows([]); }

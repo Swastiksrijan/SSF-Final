@@ -28,7 +28,15 @@ export default function ImsResource() {
   const load = useCallback(async () => {
     setRows(null);
     try {
-      const r = await ims.list(resource, { search, limit: 100 });
+      let r = await ims.list(resource, { search, limit: 100 });
+      // Fresh install: the default cost-centre master may never have been
+      // seeded; load it once so the register is never empty (idempotent).
+      if (resource === 'costCentres' && (r.records || []).length === 0 && !search) {
+        try {
+          await ims.costCentreSeed();
+          r = await ims.list(resource, { search, limit: 100 });
+        } catch { /* best-effort */ }
+      }
       setRows(r.records || []);
       setTotal(r.total || 0);
     } catch (e) { setErr(e.message); setRows([]); }

@@ -66,8 +66,20 @@ app.use('/api', auditRoutes);
 app.use('/api', imsRoutes);
 
 sequelize.sync({ alter: true })
-    .then(() => {
+    .then(async () => {
         console.log('✅ PostgreSQL Database Synced');
+        // Fresh install: seed the default Cost Centre master so the finance
+        // classification dimension is never empty on first load (idempotent).
+        try {
+            const { models } = require('./models/ims');
+            if (await models.ImsCostCentre.count() === 0) {
+                const { seedCostCentres } = require('./services/ims/costCentreSeed');
+                const seeded = await seedCostCentres();
+                console.log(`✅ Seeded ${seeded.created} default cost centres`);
+            }
+        } catch (e) {
+            console.error('⚠️ Cost centre seed skipped:', e.message);
+        }
         app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
     })
     .catch(err => {
