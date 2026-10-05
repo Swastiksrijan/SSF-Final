@@ -1,0 +1,640 @@
+{
+  "organization": "Swastik Srijan Foundation Samiti",
+  "address": "Ward-1, Vill- Dadar, Post- Rahat, Rewa (M.P.)",
+  "inceptionFinancialYear": "2013-14",
+  "currency": "INR",
+  "note": "Figures transcribed from the CA-signed audited statements (Receipt & Payment, Income & Expenditure, Balance Sheet). Each year is internally reconciled against the General Fund roll-forward and the opening/closing cash & bank balances.",
+  "reports": [
+    {
+      "financialYear": "2021-22",
+      "assessmentYear": "2022-23",
+      "status": "Audited",
+      "opinion": "excess of income over expenditure",
+      "auditor": {
+        "firm": "S R S N & Associates",
+        "partner": "Ramdas Rajpal",
+        "reportDate": "2024-08-08",
+        "udin": "24425081BKEGIY7266"
+      },
+      "income": [
+        {
+          "head": "Donation Received",
+          "amount": 64130.0
+        },
+        {
+          "head": "Membership Fees Received",
+          "amount": 15240.0
+        }
+      ],
+      "incomeTotal": 79370.0,
+      "expenditure": [
+        {
+          "head": "Stationery & Printing",
+          "amount": 1450.0
+        },
+        {
+          "head": "Education",
+          "amount": 3261.0
+        },
+        {
+          "head": "Refreshment",
+          "amount": 856.0
+        },
+        {
+          "head": "Phone & Mobile",
+          "amount": 630.0
+        },
+        {
+          "head": "Travelling",
+          "amount": 852.0
+        },
+        {
+          "head": "Miscellaneous",
+          "amount": 420.94
+        },
+        {
+          "head": "Bank Charges",
+          "amount": 1608.73
+        }
+      ],
+      "expenditureTotal": 9078.67,
+      "capitalExpenditure": [
+        {
+          "head": "Lap Top",
+          "amount": 30500.0
+        }
+      ],
+      "result": {
+        "type": "surplus",
+        "amount": 70291.33
+      },
+      "openingBalances": {
+        "cash": 1040.94,
+        "bank": 15894.06,
+        "total": 16935.0
+      },
+      "closingBalances": {
+        "cash": 2253.0,
+        "bank": 54473.33,
+        "total": 56726.33,
+        "breakup": {
+          "MGB": 16521.06,
+          "UBI": 37952.27
+        }
+      },
+      "generalFund": {
+        "opening": 57567.0,
+        "closing": 127858.33
+      },
+      "fixedAssets": [
+        {
+          "head": "Furniture & Fixture",
+          "amount": 25456.0
+        },
+        {
+          "head": "Almirah",
+          "amount": 6999.0
+        },
+        {
+          "head": "Fan",
+          "amount": 8177.0
+        },
+        {
+          "head": "Lap Top",
+          "amount": 30500.0
+        }
+      ],
+      "sourceFile": "audit-reports/fy-2021-22/SSF-Audit-Report_FY-2021-2022.pdf",
+      "notes": "Audited by S R S N & Associates; report dated 08/08/2024."
+    },
+    {
+      "financialYear": "2022-23",
+      "assessmentYear": "2023-24",
+      "status": "Audited",
+      "opinion": "excess of income over expenditure",
+      "auditor": {
+        "firm": "S R S N & Associates",
+        "partner": "Ramdas Rajpal",
+        "reportDate": "2024-08-08",
+        "udin": "24425081BKEGIZ3825"
+      },
+      "income": [
+        {
+          "head": "Donation Received",
+          "amount": 37736.67
+        },
+        {
+          "head": "Membership Fees Received",
+          "amount": 15240.0
+        }
+      ],
+      "incomeTotal": 52976.67,
+      "expenditure": [
+        {
+          "head": "Stationery & Printing",
+          "amount": 2020.0
+        },
+        {
+          "head": "Education",
+          "amount": 5230.0
+        },
+        {
+          "head": "Yoga Training",
+          "amount": 8515.0
+        },
+        {
+          "head": "Banner & Poster",
+          "amount": 5891.0
+        },
+        {
+          "head": "Rent",
+          "amount": 24000.0
+        },
+        {
+          "head": "Refreshment",
+          "amount": 520.0
+        },
+        {
+          "head": "Phone & Mobile",
+          "amount": 888.0
+        },
+        {
+          "head": "Travelling",
+          "amount": 1050.0
+        },
+        {
+          "head": "Miscellaneous",
+          "amount": 221.0
+        },
+        {
+          "head": "Bank Charges",
+          "amount": 719.8
+        }
+      ],
+      "expenditureTotal": 49054.8,
+      "capitalExpenditure": [
+        {
+          "head": "Furniture",
+          "amount": 15234.0
+        },
+        {
+          "head": "Water Tank",
+          "amount": 8956.0
+        },
+        {
+          "head": "Dari",
+          "amount": 4250.0
+        },
+        {
+          "head": "Crockery",
+          "amount": 2286.0
+        }
+      ],
+      "result": {
+        "type": "surplus",
+        "amount": 3921.87
+      },
+      "openingBalances": {
+        "cash": 2253.0,
+        "bank": 54473.33,
+        "total": 56726.33
+      },
+      "closingBalances": {
+        "cash": 1139.0,
+        "bank": 28783.2,
+        "total": 29922.2,
+        "breakup": {
+          "MGB": 15873.06,
+          "UBI": 12910.14
+        }
+      },
+      "generalFund": {
+        "opening": 127858.33,
+        "closing": 131780.2
+      },
+      "fixedAssets": [
+        {
+          "head": "Furniture & Fixture",
+          "amount": 40690.0
+        },
+        {
+          "head": "Almirah",
+          "amount": 6999.0
+        },
+        {
+          "head": "Fan",
+          "amount": 8177.0
+        },
+        {
+          "head": "Lap Top",
+          "amount": 30500.0
+        },
+        {
+          "head": "Water Tank",
+          "amount": 8956.0
+        },
+        {
+          "head": "Dari",
+          "amount": 4250.0
+        },
+        {
+          "head": "Crockery",
+          "amount": 2286.0
+        }
+      ],
+      "sourceFile": "audit-reports/fy-2022-23/SSF-Audit-Report_FY-2022-2023.pdf"
+    },
+    {
+      "financialYear": "2023-24",
+      "assessmentYear": "2024-25",
+      "status": "Audited",
+      "opinion": "excess of income over expenditure",
+      "auditor": {
+        "firm": "S R S N & Associates",
+        "partner": "Ramdas Rajpal",
+        "reportDate": "2024-08-08",
+        "udin": "24425081BKEGJA3908"
+      },
+      "income": [
+        {
+          "head": "Donation Received",
+          "amount": 48321.57
+        },
+        {
+          "head": "Membership Fees Received",
+          "amount": 15850.0
+        }
+      ],
+      "incomeTotal": 64171.57,
+      "expenditure": [
+        {
+          "head": "Stationery & Printing",
+          "amount": 1620.0
+        },
+        {
+          "head": "Education",
+          "amount": 3262.0
+        },
+        {
+          "head": "Yoga Training",
+          "amount": 5981.0
+        },
+        {
+          "head": "Banner & Poster",
+          "amount": 3256.0
+        },
+        {
+          "head": "Rent",
+          "amount": 24000.0
+        },
+        {
+          "head": "Refreshment",
+          "amount": 600.0
+        },
+        {
+          "head": "Phone & Mobile",
+          "amount": 935.0
+        },
+        {
+          "head": "Travelling",
+          "amount": 1250.0
+        },
+        {
+          "head": "Miscellaneous",
+          "amount": 330.0
+        },
+        {
+          "head": "Bank Charges",
+          "amount": 656.68
+        }
+      ],
+      "expenditureTotal": 41890.68,
+      "capitalExpenditure": [
+        {
+          "head": "Furniture",
+          "amount": 12360.0
+        },
+        {
+          "head": "Almirah",
+          "amount": 8990.0
+        }
+      ],
+      "result": {
+        "type": "surplus",
+        "amount": 22280.89
+      },
+      "openingBalances": {
+        "cash": 1139.0,
+        "bank": 28783.2,
+        "total": 29922.2
+      },
+      "closingBalances": {
+        "cash": 1515.0,
+        "bank": 29338.09,
+        "total": 30853.09,
+        "breakup": {
+          "MGB": 15224.06,
+          "UBI": 14114.03
+        }
+      },
+      "generalFund": {
+        "opening": 131780.2,
+        "closing": 154061.09
+      },
+      "fixedAssets": [
+        {
+          "head": "Furniture & Fixture",
+          "amount": 53050.0
+        },
+        {
+          "head": "Almirah",
+          "amount": 15989.0
+        },
+        {
+          "head": "Fan",
+          "amount": 8177.0
+        },
+        {
+          "head": "Lap Top",
+          "amount": 30500.0
+        },
+        {
+          "head": "Water Tank",
+          "amount": 8956.0
+        },
+        {
+          "head": "Dari",
+          "amount": 4250.0
+        },
+        {
+          "head": "Crockery",
+          "amount": 2286.0
+        }
+      ],
+      "sourceFile": "audit-reports/fy-2023-24/SSF-Audit-Report_FY-2023-2024.pdf"
+    },
+    {
+      "financialYear": "2024-25",
+      "assessmentYear": "2025-26",
+      "status": "Audited",
+      "opinion": "excess of expenditure over income",
+      "auditor": {
+        "firm": "Kapil Tiwari & Associates",
+        "partner": "CA Kapil Tiwari",
+        "membershipNo": "447133",
+        "reportDate": "2025-06-12",
+        "udin": "25447133BMNSBZ2237"
+      },
+      "income": [
+        {
+          "head": "Donation Received",
+          "amount": 61514.0
+        },
+        {
+          "head": "Membership Fees Received",
+          "amount": 15850.0
+        }
+      ],
+      "incomeTotal": 77364.0,
+      "expenditure": [
+        {
+          "head": "Banner & Poster",
+          "amount": 3518.0
+        },
+        {
+          "head": "Education",
+          "amount": 6425.0
+        },
+        {
+          "head": "Environment Protection & Awareness",
+          "amount": 8746.0
+        },
+        {
+          "head": "Yoga Training",
+          "amount": 7180.0
+        },
+        {
+          "head": "Phone & Mobile",
+          "amount": 980.0
+        },
+        {
+          "head": "Refreshment",
+          "amount": 650.0
+        },
+        {
+          "head": "Rent",
+          "amount": 27200.0
+        },
+        {
+          "head": "Stationery & Printing",
+          "amount": 2101.0
+        },
+        {
+          "head": "Travelling",
+          "amount": 1596.0
+        },
+        {
+          "head": "Miscellaneous",
+          "amount": 345.0
+        },
+        {
+          "head": "Bank Charges",
+          "amount": 242.25
+        },
+        {
+          "head": "Admin Expenses",
+          "amount": 28152.0
+        }
+      ],
+      "expenditureTotal": 87135.25,
+      "capitalExpenditure": [],
+      "result": {
+        "type": "deficit",
+        "amount": 9771.25
+      },
+      "openingBalances": {
+        "cash": 1515.0,
+        "bank": 29338.09,
+        "total": 30853.09
+      },
+      "closingBalances": {
+        "cash": 1265.0,
+        "bank": 19816.84,
+        "total": 21081.84,
+        "breakup": {
+          "UBI": 19816.84
+        }
+      },
+      "generalFund": {
+        "opening": 154061.09,
+        "closing": 144289.84
+      },
+      "fixedAssets": [
+        {
+          "head": "Furniture & Fixture",
+          "amount": 53050.0
+        },
+        {
+          "head": "Almirah",
+          "amount": 15989.0
+        },
+        {
+          "head": "Fan",
+          "amount": 8177.0
+        },
+        {
+          "head": "Lap Top",
+          "amount": 30500.0
+        },
+        {
+          "head": "Water Tank",
+          "amount": 8956.0
+        },
+        {
+          "head": "Dari",
+          "amount": 4250.0
+        },
+        {
+          "head": "Crockery",
+          "amount": 2286.0
+        }
+      ],
+      "sourceFile": "audit-reports/fy-2024-25/SSF-Audit-Report_FY-2024-2025.pdf"
+    },
+    {
+      "financialYear": "2025-26",
+      "assessmentYear": "2026-27",
+      "status": "Audited",
+      "opinion": "excess of expenditure over income",
+      "auditor": {
+        "firm": "Kapil Tiwari & Associates",
+        "partner": "CA Kapil Tiwari",
+        "membershipNo": "447133",
+        "reportDate": "2026-06-30",
+        "udin": "26447133DYFGHU7036"
+      },
+      "income": [
+        {
+          "head": "Donation Received",
+          "amount": 50715.0
+        },
+        {
+          "head": "Membership Fees Received",
+          "amount": 25900.0
+        }
+      ],
+      "incomeTotal": 76615.0,
+      "expenditure": [
+        {
+          "head": "Banner & Poster",
+          "amount": 3000.0
+        },
+        {
+          "head": "Education",
+          "amount": 1000.0
+        },
+        {
+          "head": "Environment Protection & Awareness",
+          "amount": 15200.0
+        },
+        {
+          "head": "Phone & Mobile",
+          "amount": 7200.0
+        },
+        {
+          "head": "Refreshment",
+          "amount": 2400.0
+        },
+        {
+          "head": "Rent",
+          "amount": 26000.0
+        },
+        {
+          "head": "Stationery & Printing",
+          "amount": 1900.0
+        },
+        {
+          "head": "Travelling",
+          "amount": 3900.0
+        },
+        {
+          "head": "Miscellaneous",
+          "amount": 2600.0
+        },
+        {
+          "head": "Bank Charges",
+          "amount": 236.58
+        },
+        {
+          "head": "Admin Expenses",
+          "amount": 15959.75
+        }
+      ],
+      "expenditureTotal": 79396.33,
+      "capitalExpenditure": [],
+      "result": {
+        "type": "deficit",
+        "amount": 2781.33
+      },
+      "openingBalances": {
+        "cash": 1265.0,
+        "bank": 19816.84,
+        "total": 21081.84
+      },
+      "closingBalances": {
+        "cash": 2700.0,
+        "bank": 15600.51,
+        "total": 18300.51,
+        "breakup": {
+          "UBI": 15600.51
+        }
+      },
+      "generalFund": {
+        "opening": 144289.84,
+        "closing": 141508.51
+      },
+      "fixedAssets": [
+        {
+          "head": "Furniture & Fixture",
+          "amount": 53050.0
+        },
+        {
+          "head": "Almirah",
+          "amount": 15989.0
+        },
+        {
+          "head": "Fan",
+          "amount": 8177.0
+        },
+        {
+          "head": "Lap Top",
+          "amount": 30500.0
+        },
+        {
+          "head": "Water Tank",
+          "amount": 8956.0
+        },
+        {
+          "head": "Dari",
+          "amount": 4250.0
+        },
+        {
+          "head": "Crockery",
+          "amount": 2286.0
+        }
+      ],
+      "sourceFile": "audit-reports/fy-2025-26/SSF-Audit-Report_FY-2025-2026.pdf",
+      "notes": "Latest audited year."
+    }
+  ],
+  "pendingYears": [
+    "2013-14",
+    "2014-15",
+    "2015-16",
+    "2016-17",
+    "2017-18",
+    "2018-19",
+    "2019-20",
+    "2020-21"
+  ]
+}

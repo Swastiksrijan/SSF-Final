@@ -67,6 +67,7 @@ export const ENDPOINTS = {
     AUDIT_SUMMARY: `${API_BASE_URL}/api/digital-office/audit/summary`,
     AUDIT_COMPARISON: `${API_BASE_URL}/api/digital-office/audit/comparison`,
     AUDIT_PACK: `${API_BASE_URL}/api/digital-office/audit/pack`,
+    AUDIT_REPORTS: `${API_BASE_URL}/api/digital-office/audit/reports`,
     VERIFY_CERT: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`,
     LEARNING_CERTIFICATE_REQUEST: `${API_BASE_URL}/api/learning-certificates/request`,
     LEARNING_CERTIFICATE_VERIFY: (code) => `${API_BASE_URL}/api/learning-certificates/verify/${encodeURIComponent(code)}`,

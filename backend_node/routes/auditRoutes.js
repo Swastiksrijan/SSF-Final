@@ -155,17 +155,73 @@ router.get('/digital-office/audit/summary', requireOfficeAuth, async (req, res) 
   } catch (e) { console.error(e); res.status(500).json({ message: 'Unable to build audit summary.' }); }
 });
 
+// ---- Audited financial reports (transcribed from CA-signed statements) ------
+// One canonical dataset of every audited year (Income & Expenditure, Receipts
+// & Payments, Balance Sheet). Served as-is so the UI can show the actual
+// CA-certified figures alongside the computed ledger.
+router.get('/digital-office/audit/reports', requireOfficeAuth, async (req, res) => {
+  try {
+    let data;
+    try { data = require('../data/auditReports.json'); }
+    catch (_) { return res.status(404).json({ message: 'auditReports.json not found.' }); }
+    const reports = data.reports || [];
+    const years = [];
+    for (let i = 0; i < reports.length; i += 1) {
+      const r = reports[i];
+      const prev = reports[i - 1];
+      const receiptTotal = num(r.openingBalances && r.openingBalances.total) + num(r.incomeTotal);
+      years.push({
+        financialYear: r.financialYear,
+        status: r.status,
+        opinion: r.opinion,
+        auditor: r.auditor && (r.auditor.firm || r.auditor.partner),
+        income: num(r.incomeTotal),
+        expenditure: num(r.expenditureTotal),
+        capitalExpenditure: (r.capitalExpenditure || []).reduce((a, c) => a + num(c.amount), 0),
+        result: r.result,
+        receiptsTotal: receiptTotal,
+        opening: r.openingBalances,
+        closing: r.closingBalances,
+        generalFund: r.generalFund,
+        fixedAssets: r.fixedAssets,
+        sourceFile: r.sourceFile,
+        yoy: prev ? {
+          income: num(r.incomeTotal) - num(prev.incomeTotal),
+          expenditure: num(r.expenditureTotal) - num(prev.expenditureTotal)
+        } : null
+      });
+    }
+    return res.json({ organization: data.organization, inceptionFinancialYear: data.inceptionFinancialYear, note: data.note, years, pendingYears: data.pendingYears || [], reports });
+  } catch (e) { console.error(e); res.status(500).json({ message: 'Unable to load audited reports.' }); }
+});
+
 // ---- Year comparison (previous vs current) ---------------------------------
 router.get('/digital-office/audit/comparison', requireOfficeAuth, async (req, res) => {
   try {
     const years = await AuditYear.findAll({ order: [['financialYear', 'ASC']] });
     const out = [];
-    for (const y of years) {
-      const tx = await FinanceTransaction.findAll({ where: { financialYear: y.financialYear, status: { [Op.ne]: 'archived' } } });
-      const receipts = tx.filter((r) => r.direction === 'in' && r.transactionType !== 'opening').reduce((a, r) => a + num(r.amount), 0);
-      const payments = tx.filter((r) => r.direction === 'out').reduce((a, r) => a + num(r.amount), 0);
-      const findings = await AuditRecord.count({ where: { kind: 'observation', financialYear: y.financialYear, status: { [Op.ne]: 'deleted' } } });
-      out.push({ financialYear: y.financialYear, receipts, payments, surplus: receipts - payments, findings, status: y.auditStatus });
+    const auditedByFy = {};
+    try {
+      const rep = require('../data/auditReports.json');
+      (rep.reports || []).forEach((r) => { auditedByFy[r.financialYear] = r; });
+    } catch (_) {}
+    const fys = Array.from(new Set([].concat(years.map((y) => y.financialYear), Object.keys(auditedByFy)))).sort();
+    for (const fy of fys) {
+      const year = years.find((y) => y.financialYear === fy);
+      const tx = await FinanceTransaction.findAll({ where: { financialYear: fy, status: { [Op.ne]: 'archived' } } });
+      const bookReceipts = tx.filter((r) => r.direction === 'in' && r.transactionType !== 'opening').reduce((a, r) => a + num(r.amount), 0);
+      const bookPayments = tx.filter((r) => r.direction === 'out').reduce((a, r) => a + num(r.amount), 0);
+      const audited = auditedByFy[fy];
+      const hasBooks = tx.length > 0;
+      const receipts = hasBooks ? bookReceipts : (audited ? num(audited.incomeTotal) : 0);
+      const payments = hasBooks ? bookPayments : (audited ? num(audited.expenditureTotal) : 0);
+      const findings = await AuditRecord.count({ where: { kind: 'observation', financialYear: fy, status: { [Op.ne]: 'deleted' } } });
+      out.push({
+        financialYear: fy, receipts, payments, surplus: receipts - payments, findings,
+        status: year ? year.auditStatus : (audited ? audited.status : 'Not Started'),
+        source: hasBooks ? 'books' : (audited ? 'audited' : 'none'),
+        resultType: audited ? audited.result.type : (receipts - payments >= 0 ? 'surplus' : 'deficit')
+      });
     }
     return res.json({ years: out });
   } catch (e) { console.error(e); res.status(500).json({ message: 'Unable to build comparison.' }); }
@@ -335,8 +391,43 @@ router.post('/digital-office/finance/seed', requireOfficeAuth, async (req, res) 
         summary, createdBy: req.headers['x-office-actor'] || 'admin'
       }, { transaction: t });
     }
+    // Seed every audited year (from the CA-signed statements) into the audit
+    // year master + audit report records, so the whole history lives in fields.
+    let auditYearsCreated = 0;
+    try {
+      const reports = require('../data/auditReports.json');
+      for (const r of (reports.reports || [])) {
+        const exists = await AuditYear.findOne({ where: { financialYear: r.financialYear }, transaction: t });
+        if (exists) continue;
+        const summary = {
+          'Income for the year': r.incomeTotal,
+          'Expenditure for the year': r.expenditureTotal,
+          'Opening Cash Balance': r.openingBalances && r.openingBalances.cash,
+          'Opening Bank Balance (UBI)': r.openingBalances && r.openingBalances.bank,
+          'Total Opening Balance': r.openingBalances && r.openingBalances.total,
+          'Closing Cash Balance': r.closingBalances && r.closingBalances.cash,
+          'Closing Bank Balance (UBI)': r.closingBalances && r.closingBalances.bank,
+          'General Fund Opening Balance': r.generalFund && r.generalFund.opening,
+          'General Fund Closing Balance': r.generalFund && r.generalFund.closing,
+          'Surplus/Deficit transferred to Balance Sheet': r.result && (r.result.type === 'surplus' ? r.result.amount : -r.result.amount)
+        };
+        const auditId = await nextSeqId(AuditYear, 'auditId', 'AUD-' + r.financialYear + '-');
+        await AuditYear.create({
+          auditId, financialYear: r.financialYear, assessmentYear: r.assessmentYear || null,
+          auditStatus: r.status || 'Audited', auditType: 'Statutory',
+          auditorName: (r.auditor && r.auditor.partner) || null, auditFirm: (r.auditor && r.auditor.firm) || null,
+          membershipNo: (r.auditor && r.auditor.membershipNo) || null, auditorContact: (r.auditor && r.auditor.phone) || null,
+          auditorEmail: (r.auditor && r.auditor.email) || null,
+          reportDate: (r.auditor && r.auditor.reportDate) || null,
+          submissionStatus: 'Filed', currentVersion: 'Final',
+          remarks: 'Transcribed from CA-signed audited statements (' + r.sourceFile + ').',
+          summary, createdBy: req.headers['x-office-actor'] || 'admin'
+        }, { transaction: t });
+        auditYearsCreated += 1;
+      }
+    } catch (e) { console.error('auditReports seed skipped:', e.message); }
     await t.commit();
-    return res.json({ status: 'ok', created, skipped, auditYear: year ? year.auditId : null });
+    return res.json({ status: 'ok', created, skipped, auditYear: year ? year.auditId : null, auditYearsCreated });
   } catch (e) {
     try { await t.rollback(); } catch (_) {}
     console.error('Finance seed failed:', e);

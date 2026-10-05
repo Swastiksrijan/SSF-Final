@@ -9,7 +9,7 @@ import { API_BASE_URL, ENDPOINTS } from "../config/api";
 const TOKEN_KEY = "ssf_admin_token";
 const money = (n) => "₹" + (Number(n) || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const day = (d) => (d ? new Date(d).toISOString().slice(0, 10) : "—");
-const FY_OPTIONS = ["2024-25", "2025-26", "2026-27"];
+const FY_OPTIONS = ["2021-22", "2022-23", "2023-24", "2024-25", "2025-26", "2026-27"];
 
 const authHeaders = () => {
   const token = localStorage.getItem(TOKEN_KEY) || "";
@@ -332,12 +332,16 @@ export function FinanceAudit() {
   const { data: summary, reload } = useFetch(ENDPOINTS.AUDIT_SUMMARY, fy);
   const { data: comparison } = useFetch(ENDPOINTS.AUDIT_COMPARISON, "");
   const { data: pack } = useFetch(ENDPOINTS.AUDIT_PACK, fy);
+  const { data: audited } = useFetch(ENDPOINTS.AUDIT_REPORTS, "");
   const [kind, setKind] = useState("observation");
   const [text, setText] = useState("");
   const [amount, setAmount] = useState("");
   const [msg, setMsg] = useState("");
+  const [openFy, setOpenFy] = useState("2025-26");
   const yearList = Array.isArray(years) ? years : [];
   const auditId = yearList.find((y) => y.financialYear === fy)?.auditId || (yearList[0]?.auditId);
+  const auditedYears = audited?.years || [];
+  const selectedReport = (audited?.reports || []).find((r) => r.financialYear === openFy);
 
   const add = async (e) => {
     e.preventDefault(); setMsg("");
@@ -391,16 +395,84 @@ export function FinanceAudit() {
       <Panel title="Year-on-year comparison" right={comparison && <Chip tone="navy">{(comparison.years || []).length} FY</Chip>}>
         <div className="overflow-auto">
           <table className="w-full text-sm">
-            <thead className="bg-zinc-50 text-zinc-500"><tr><th className="p-2 text-left">FY</th><th className="p-2 text-right">Receipts</th><th className="p-2 text-right">Payments</th><th className="p-2 text-right">Surplus</th><th className="p-2 text-left">Status</th></tr></thead>
+            <thead className="bg-zinc-50 text-zinc-500"><tr><th className="p-2 text-left">FY</th><th className="p-2 text-right">Receipts</th><th className="p-2 text-right">Payments</th><th className="p-2 text-right">Surplus</th><th className="p-2 text-left">Source</th><th className="p-2 text-left">Status</th></tr></thead>
             <tbody className="divide-y">
               {(comparison?.years || []).map((y) => (
-                <tr key={y.financialYear}><td className="p-2 font-bold">{y.financialYear}</td><td className="p-2 text-right">{money(y.receipts)}</td><td className="p-2 text-right">{money(y.payments)}</td><td className={"p-2 text-right font-bold " + (y.surplus < 0 ? "text-rose-600" : "text-emerald-700")}>{money(y.surplus)}</td><td className="p-2">{y.status}</td></tr>
+                <tr key={y.financialYear}><td className="p-2 font-bold">{y.financialYear}</td><td className="p-2 text-right">{money(y.receipts)}</td><td className="p-2 text-right">{money(y.payments)}</td><td className={"p-2 text-right font-bold " + (y.surplus < 0 ? "text-rose-600" : "text-emerald-700")}>{money(y.surplus)}</td><td className="p-2 text-xs"><Chip tone={y.source === "books" ? "green" : "blue"}>{y.source === "books" ? "books" : "audited"}</Chip></td><td className="p-2">{y.status}</td></tr>
               ))}
-              {!(comparison?.years || []).length && <tr><td colSpan="5" className="p-4 text-center text-zinc-400">No years yet.</td></tr>}
+              {!(comparison?.years || []).length && <tr><td colSpan="6" className="p-4 text-center text-zinc-400">No years yet.</td></tr>}
             </tbody>
           </table>
         </div>
       </Panel>
+
+      <Panel title="Audited Financial Statements" subtitle={audited ? `${audited.organization || ""} · CA-certified, transcribed from signed statements` : "Loading audited reports…"} right={audited && <Chip tone="navy">{auditedYears.length} audited FY</Chip>}>
+        <div className="overflow-auto">
+          <table className="w-full text-sm">
+            <thead className="bg-zinc-50 text-zinc-500"><tr>
+              <th className="p-2 text-left">FY</th><th className="p-2 text-right">Receipts (incl. opening)</th><th className="p-2 text-right">Income</th>
+              <th className="p-2 text-right">Expenditure</th><th className="p-2 text-left">Result</th><th className="p-2 text-right">Closing cash + bank</th><th className="p-2 text-left">Auditor</th>
+            </tr></thead>
+            <tbody className="divide-y">
+              {auditedYears.map((y) => (
+                <tr key={y.financialYear} className={"hover:bg-zinc-50 cursor-pointer " + (openFy === y.financialYear ? "bg-amber-50/60" : "")} onClick={() => setOpenFy(y.financialYear)}>
+                  <td className="p-2 font-bold text-[#002344]">{y.financialYear}</td>
+                  <td className="p-2 text-right">{money(y.receiptsTotal)}</td>
+                  <td className="p-2 text-right text-emerald-700">{money(y.income)}</td>
+                  <td className="p-2 text-right text-rose-600">{money(y.expenditure)}</td>
+                  <td className="p-2"><Chip tone={y.result.type === "surplus" ? "green" : "red"}>{y.result.type} {money(y.result.amount)}</Chip></td>
+                  <td className="p-2 text-right font-bold">{money(y.closing?.total)}</td>
+                  <td className="p-2 text-xs text-zinc-500">{y.auditor}</td>
+                </tr>
+              ))}
+              {(audited?.pendingYears || []).map((p) => (
+                <tr key={p} className="text-zinc-400"><td className="p-2 font-bold">{p}</td><td className="p-2 text-right" colSpan="6">Audit report pending</td></tr>
+              ))}
+              {!auditedYears.length && <tr><td colSpan="7" className="p-4 text-center text-zinc-400">No audited reports loaded.</td></tr>}
+            </tbody>
+          </table>
+        </div>
+        {audited?.note && <p className="text-[11px] text-zinc-400 mt-3">{audited.note} Inception FY {audited.inceptionFinancialYear}; earlier years pending.</p>}
+      </Panel>
+
+      {selectedReport && (
+        <Panel title={"FY " + selectedReport.financialYear + " — Audited statements"} subtitle={selectedReport.opinion} right={<Chip tone={selectedReport.result.type === "surplus" ? "green" : "red"}>{selectedReport.result.type}</Chip>}>
+          <div className="grid lg:grid-cols-2 gap-4">
+            <div className="border border-zinc-200 rounded-xl overflow-hidden">
+              <div className="bg-zinc-50 px-3 py-2 font-black text-[#002344] text-sm">Income &amp; Expenditure Account</div>
+              <table className="w-full text-sm">
+                <tbody className="divide-y">
+                  {selectedReport.income.map((i) => (
+                    <tr key={"i" + i.head}><td className="p-1.5">{i.head}</td><td className="p-1.5 text-right text-emerald-700">{money(i.amount)}</td></tr>
+                  ))}
+                  {selectedReport.expenditure.map((e) => (
+                    <tr key={"e" + e.head}><td className="p-1.5">{e.head}</td><td className="p-1.5 text-right text-rose-600">{money(e.amount)}</td></tr>
+                  ))}
+                  <tr className="bg-zinc-50 font-bold"><td className="p-1.5">Total income / expenditure</td><td className="p-1.5 text-right">{money(selectedReport.incomeTotal)} / {money(selectedReport.expenditureTotal)}</td></tr>
+                  <tr className="font-black text-[#002344]"><td className="p-1.5 capitalize">{selectedReport.result.type} to Balance Sheet</td><td className="p-1.5 text-right">{money(selectedReport.result.amount)}</td></tr>
+                </tbody>
+              </table>
+            </div>
+            <div className="border border-zinc-200 rounded-xl overflow-hidden">
+              <div className="bg-zinc-50 px-3 py-2 font-black text-[#002344] text-sm">Balance Sheet (as at 31 March)</div>
+              <table className="w-full text-sm">
+                <tbody className="divide-y">
+                  <tr><td className="p-1.5">General Fund — opening</td><td className="p-1.5 text-right">{money(selectedReport.generalFund.opening)}</td></tr>
+                  <tr><td className="p-1.5 capitalize">{selectedReport.result.type === "surplus" ? "Add: surplus" : "Less: deficit"}</td><td className="p-1.5 text-right">{money(selectedReport.result.amount)}</td></tr>
+                  <tr className="bg-zinc-50 font-bold"><td className="p-1.5">General Fund — closing</td><td className="p-1.5 text-right">{money(selectedReport.generalFund.closing)}</td></tr>
+                  {selectedReport.fixedAssets.map((f) => (
+                    <tr key={"f" + f.head}><td className="p-1.5 text-zinc-500">{f.head}</td><td className="p-1.5 text-right text-zinc-500">{money(f.amount)}</td></tr>
+                  ))}
+                  <tr><td className="p-1.5">Closing cash in hand</td><td className="p-1.5 text-right">{money(selectedReport.closingBalances.cash)}</td></tr>
+                  <tr><td className="p-1.5">Closing cash at bank{selectedReport.closingBalances.breakup ? " (" + Object.keys(selectedReport.closingBalances.breakup).join(", ") + ")" : ""}</td><td className="p-1.5 text-right">{money(selectedReport.closingBalances.bank)}</td></tr>
+                  <tr className="bg-zinc-50 font-bold"><td className="p-1.5">Closing cash + bank</td><td className="p-1.5 text-right">{money(selectedReport.closingBalances.total)}</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <p className="text-[11px] text-zinc-400 mt-3 font-mono">{selectedReport.sourceFile}</p>
+        </Panel>
+      )}
 
       <Panel title="Audit Pack" subtitle={"Organized index of everything for FY " + fy} right={<button onClick={downloadPack} className="bg-[#FF6600] text-white px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaDownload /> Download pack</button>}>
         <div className="grid sm:grid-cols-2 gap-3">
