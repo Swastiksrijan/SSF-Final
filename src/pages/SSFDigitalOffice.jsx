@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint, FaVideo, FaUserTie, FaCheckCircle } from "react-icons/fa";
+import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint, FaVideo, FaUserTie, FaCheckCircle, FaPiggyBank } from "react-icons/fa";
 import jsPDF from "jspdf";
 import { API_BASE_URL, ENDPOINTS } from "../config/api";
 import logoImg from "../assets/new-logo.png";
@@ -21,6 +21,7 @@ import GrantRegister from "../components/GrantRegister";
 import TransferRegister from "../components/TransferRegister";
 import AdjustmentRegister from "../components/AdjustmentRegister";
 import { AuditedStatements, AuditObservations, StatutoryRegistrations, TaxReturns, Form10BD } from "../components/AuditComplianceRegisters";
+import { DepreciationSchedule, CorpusFund, FundClassification, ProcurementRegister, PayrollRegister, HonorariumRegister, FundUtilisation } from "../components/AssetsFundsRegisters";
 
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
@@ -38,7 +39,7 @@ const MODULES = [
  ["beneficiaries","Beneficiaries / लाभार्थी",FaUsers],["internships","Internship Applications / इंटर्नशिप आवेदन",FaTasks],["activities","Volunteer Activities / स्वयंसेवी गतिविधियाँ",FaTasks],
  ["assets","Assets & Equipment / संपत्ति व उपकरण",FaBoxes],["notifications","Notices, Alerts & Follow-ups / नोटिस, सूचनाएँ एवं अनुवर्ती कार्य",FaTasks],
  ["reports","Reports & Statements / रिपोर्ट एवं विवरण",FaChartLine],["chartOfAccounts","Chart of Accounts / लेखा-शीर्ष मास्टर",FaBook],["fundMaster","Fund / Project Master / निधि मास्टर",FaBook],["fyMaster","Financial Year Master / वित्तीय वर्ष मास्टर",FaCalendarAlt],["sahyog","Sahyog Register / सहयोग रजिस्टर",FaHandshake],["pettyCash","Petty Cash / Imprest / फुटकर रोकड़",FaRupeeSign],["grant","Grant Register / अनुदान रजिस्टर",FaHandshake],["transfer","Bank / Cash Transfer / अंतरण रजिस्टर",FaBalanceScale],["adjustment","Adjustment / Prior-period Entry / समायोजन रजिस्टर",FaHistory],["finDashboard","Finance Dashboard / वित्तीय डैशबोर्ड",FaChartLine],["finStatements","Financial Statements / वित्तीय विवरण",FaBalanceScale],["finTransactions","Finance Transactions / वित्तीय लेनदेन",FaBook],["finLedger","Ledger & Journal / लेजर एवं जर्नल",FaBalanceScale],["finIntegrity","Finance Integrity / वित्तीय जाँच",FaCheckCircle],["finAudit","Audit & Compliance / लेखा परीक्षा एवं अनुपालन",FaHistory],["integrity","Data Integrity Check / डेटा जाँच",FaCheckCircle],
- ["fixedAssets","Fixed Asset Register / स्थायी संपत्ति रजिस्टर",FaBoxes],["tds","TDS Register / टी.डी.एस. रजिस्टर",FaFileAlt],["statutoryDues","Statutory Dues / सांविधिक देय",FaUserShield],["brs","Bank Reconciliation / बैंक मिलान",FaBalanceScale],["budget","Budget vs Actual / बजट एवं वास्तविक",FaChartLine],["loans","Loan Register / ऋण रजिस्टर",FaRupeeSign],["investments","Investment Register / निवेश रजिस्टर",FaBoxes],["audits","Audit Register / लेखा परीक्षा रजिस्टर",FaHistory],["auditedStatements","Audited Statements Archive / लेखा-परीक्षित विवरण संग्रह",FaFileAlt],["auditObservations","Audit Observation & Compliance / लेखा टिप्पणी एवं अनुपालन",FaCheckCircle],["statutoryRegistrations","Statutory Registrations / सांविधिक पंजीकरण",FaUserShield],["taxReturns","Tax & Return Filing / कर एवं विवरणी",FaFileAlt],["form10bd","Form 10BD / 10BE Donation Reporting / दान सूचना",FaFileAlt],
+ ["fixedAssets","Fixed Asset Register / स्थायी संपत्ति रजिस्टर",FaBoxes],["depreciation","Depreciation Schedule / मूल्यह्रास अनुसूची",FaChartLine],["corpusFund","Corpus / Endowment Fund / कोष निधि",FaPiggyBank],["fundClassification","Restricted & Unrestricted Fund / निधि वर्गीकरण",FaBalanceScale],["procurement","Procurement / Purchase / क्रय रजिस्टर",FaBoxes],["payroll","Salary & Payroll / वेतन रजिस्टर",FaUsers],["honorarium","Honorarium & Stipend / मानदेय रजिस्टर",FaRupeeSign],["fundUtilisation","Fund Balance / Utilisation / निधि उपयोग",FaChartLine],["tds","TDS Register / टी.डी.एस. रजिस्टर",FaFileAlt],["statutoryDues","Statutory Dues / सांविधिक देय",FaUserShield],["brs","Bank Reconciliation / बैंक मिलान",FaBalanceScale],["budget","Budget vs Actual / बजट एवं वास्तविक",FaChartLine],["loans","Loan Register / ऋण रजिस्टर",FaRupeeSign],["investments","Investment Register / निवेश रजिस्टर",FaBoxes],["audits","Audit Register / लेखा परीक्षा रजिस्टर",FaHistory],["auditedStatements","Audited Statements Archive / लेखा-परीक्षित विवरण संग्रह",FaFileAlt],["auditObservations","Audit Observation & Compliance / लेखा टिप्पणी एवं अनुपालन",FaCheckCircle],["statutoryRegistrations","Statutory Registrations / सांविधिक पंजीकरण",FaUserShield],["taxReturns","Tax & Return Filing / कर एवं विवरणी",FaFileAlt],["form10bd","Form 10BD / 10BE Donation Reporting / दान सूचना",FaFileAlt],
  ["users","Users & Permissions / उपयोगकर्ता व अनुमतियाँ",FaUserShield],["audit","Audit Trail / ऑडिट ट्रेल",FaHistory]
 ];
 const LABELS = Object.fromEntries(MODULES.map(function(x){return [x[0],x[1]];}));
@@ -269,6 +270,13 @@ export default function SSFDigitalOffice(){
     {active==="statutoryRegistrations"&&<StatutoryRegistrations rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("statutoryRegistrations")}/>}
     {active==="taxReturns"&&<TaxReturns rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("taxReturns")}/>}
     {active==="form10bd"&&<Form10BD rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("form10bd")}/>}
+    {active==="depreciation"&&<DepreciationSchedule rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("depreciation")}/>}
+    {active==="corpusFund"&&<CorpusFund rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("corpusFund")}/>}
+    {active==="fundClassification"&&<FundClassification rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("fundClassification")}/>}
+    {active==="procurement"&&<ProcurementRegister rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("procurement")}/>}
+    {active==="payroll"&&<PayrollRegister rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("payroll")}/>}
+    {active==="honorarium"&&<HonorariumRegister rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("honorarium")}/>}
+    {active==="fundUtilisation"&&<FundUtilisation rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("fundUtilisation")}/>}
     {active==="finDashboard"&&<FinanceDashboard fy={FIN_FY_LIST[0]||"2025-26"}/>}
     {active==="finStatements"&&<FinanceStatements fy={FIN_FY_LIST[0]||"2025-26"}/>}
     {active==="finTransactions"&&<FinanceTransactions token={token}/>}
@@ -279,7 +287,7 @@ export default function SSFDigitalOffice(){
     {FIN_REG_DEFS[active]&&<FinanceRegister regId={active} rows={rows} add={add} archive={archive}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","chartOfAccounts","fundMaster","fyMaster","sahyog","pettyCash","grant","transfer","adjustment","auditedStatements","auditObservations","statutoryRegistrations","taxReturns","form10bd","finDashboard","finStatements","finTransactions","finLedger","finIntegrity","finAudit","integrity",...FIN_REG_IDS,"appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","cashbank","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","chartOfAccounts","fundMaster","fyMaster","sahyog","pettyCash","grant","transfer","adjustment","auditedStatements","auditObservations","statutoryRegistrations","taxReturns","form10bd","depreciation","corpusFund","fundClassification","procurement","payroll","honorarium","fundUtilisation","finDashboard","finStatements","finTransactions","finLedger","finIntegrity","finAudit","integrity",...FIN_REG_IDS,"appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","cashbank","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;
