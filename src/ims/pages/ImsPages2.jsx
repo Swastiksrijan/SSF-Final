@@ -6,6 +6,7 @@ import { Card, PageHeader, Spinner, Empty, Button, Badge } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { API_BASE_URL } from '../../config/api';
+import { exportRecordsPdf } from '../pdf';
 
 const TOKEN = () => localStorage.getItem('ssf_admin_token') || '';
 const get = (path) => fetch(`${API_BASE_URL}${path}`, { headers: { Authorization: `Bearer ${TOKEN()}` } }).then(r => r.json());
@@ -15,9 +16,9 @@ const post = (path, body) => fetch(`${API_BASE_URL}${path}`, {
   body: JSON.stringify(body || {}),
 }).then(r => r.json());
 
-/** Reports Centre — real links to report datasets + CSV export. */
+/** Reports Centre — real links to report datasets + CSV/PDF export. */
 export function ImsReports() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const navigate = useNavigate();
   const reports = [
     ['members', 'Members'], ['committees', 'Committee'], ['committeeMembers', 'Office Bearers'],
@@ -35,6 +36,7 @@ export function ImsReports() {
             <span className="text-sm font-semibold text-slate-700">{label}</span>
             <div className="flex gap-1">
               <button title="CSV" className="rounded p-1.5 text-slate-500 hover:bg-slate-100" onClick={() => exportCsv(res)}><Icons.Download size={16} /></button>
+              <button title="PDF" className="rounded p-1.5 text-slate-500 hover:bg-slate-100" onClick={() => exportPdf(res, label, lang)}><Icons.FileText size={16} /></button>
               <button title="Open" className="rounded p-1.5 text-[#FF6600] hover:bg-orange-50" onClick={() => navigate({ to: '/ims/r/$resource', params: { resource: res } })}><Icons.ExternalLink size={16} /></button>
             </div>
           </Card>
@@ -42,6 +44,13 @@ export function ImsReports() {
       </div>
     </ImsLayout>
   );
+}
+
+async function exportPdf(resource, label, lang) {
+  try {
+    const { records } = await ims.list(resource, { limit: 1000 });
+    exportRecordsPdf({ title: label, subtitle: `${resource} register`, records: records || [], lang });
+  } catch { /* ignore */ }
 }
 
 async function exportCsv(resource) {

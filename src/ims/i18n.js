@@ -112,6 +112,8 @@ export const DICT = {
   created_by: { en: 'Created by', hi: 'बनाया' },
   archived_by: { en: 'Archived by', hi: 'संग्रहित किया' },
   registers_required: { en: 'Registers Required', hi: 'आवश्यक पंजिकाएँ' },
+  download: { en: 'Download', hi: 'डाउनलोड' },
+  charts: { en: 'Charts', hi: 'चार्ट' },
   alerts: { en: 'Alerts', hi: 'चेतावनियाँ' },
   recent_activity: { en: 'Recent Activity', hi: 'हाल की गतिविधि' },
   quick_actions: { en: 'Quick Actions', hi: 'तत्काल कार्य' },

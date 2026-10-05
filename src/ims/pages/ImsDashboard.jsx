@@ -5,6 +5,8 @@ import ImsLayout from '../ImsLayout';
 import { Card, Kpi, PageHeader, Empty, Spinner, Button } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
+import { BarChart, DonutChart, ColumnChart } from '../charts';
+import { exportRecordsPdf } from '../pdf';
 
 const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
 
@@ -30,7 +32,25 @@ export default function ImsDashboard() {
 
   return (
     <ImsLayout active="main_dashboard">
-      <PageHeader title={t('main_dashboard')} subtitle={t('tagline')} />
+      <PageHeader title={t('main_dashboard')} subtitle={t('tagline')}
+        actions={data ? (
+          <Button icon="FileText" onClick={() => exportRecordsPdf({
+            title: t('main_dashboard'), subtitle: t('app_full'),
+            records: [
+              { Section: 'Organisation', Metric: 'Persons', Value: data.organisation.persons },
+              { Section: 'Organisation', Metric: 'Members', Value: data.organisation.members },
+              { Section: 'Organisation', Metric: 'Donors', Value: data.organisation.donors },
+              { Section: 'Organisation', Metric: 'Volunteers', Value: data.organisation.volunteers },
+              { Section: 'Organisation', Metric: 'Employees', Value: data.organisation.employees },
+              { Section: 'Finance', Metric: 'Income', Value: money(data.finance.income) },
+              { Section: 'Finance', Metric: 'Expenses', Value: money(data.finance.expense) },
+              { Section: 'Finance', Metric: 'Net', Value: money(data.finance.net) },
+              { Section: 'Governance', Metric: 'Meetings', Value: data.governance.meetings },
+              { Section: 'Governance', Metric: 'Resolutions', Value: data.governance.pendingResolutions },
+              { Section: 'Governance', Metric: 'Actions', Value: data.governance.pendingActions },
+            ],
+          }) }>{t('download')} PDF</Button>
+        ) : null} />
 
       {err && <Card className="mb-4 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</Card>}
       {!data && !err && <Spinner />}
@@ -69,6 +89,40 @@ export default function ImsDashboard() {
               <Kpi icon="Wallet" label={t('funds')} value={data.finance.funds} tone="navy" />
             </div>
           </Section>
+
+          <div className="grid gap-6 lg:grid-cols-3">
+            <Section title={t('organisation')} icon="PieChart">
+              <Card className="p-4">
+                <DonutChart data={[
+                  { label: t('persons'), value: data.organisation.persons, color: '#002344' },
+                  { label: t('members'), value: data.organisation.members, color: '#FF6600' },
+                  { label: t('donors'), value: data.organisation.donors, color: '#FFD166' },
+                  { label: t('volunteers'), value: data.organisation.volunteers, color: '#15803d' },
+                  { label: t('employees'), value: data.organisation.employees, color: '#0e7490' },
+                ]} />
+              </Card>
+            </Section>
+            <Section title={t('finance')} icon="BarChart3">
+              <Card className="p-4">
+                <BarChart data={[
+                  { label: t('income'), value: data.finance.income, color: '#15803d' },
+                  { label: t('expenses'), value: data.finance.expense, color: '#be123c' },
+                  { label: t('donations'), value: data.finance.donationsTotal, color: '#FF6600' },
+                  { label: t('statements'), value: data.finance.net, color: '#002344' },
+                ]} valueFmt={money} />
+              </Card>
+            </Section>
+            <Section title={t('governance')} icon="Activity">
+              <Card className="p-4">
+                <ColumnChart data={[
+                  { label: t('meetings'), value: data.governance.meetings, color: '#002344' },
+                  { label: t('resolutions'), value: data.governance.pendingResolutions, color: '#FF6600' },
+                  { label: t('actions'), value: data.governance.pendingActions, color: '#FFD166' },
+                  { label: t('cases'), value: data.governance.openCases, color: '#be123c' },
+                ]} />
+              </Card>
+            </Section>
+          </div>
 
           <div className="grid gap-6 lg:grid-cols-2">
             <Section title={t('alerts')} icon="Bell">
