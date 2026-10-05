@@ -31,10 +31,12 @@ const ROLES = [
 ];
 
 const ORG = {
-  name: 'Swastik Srijan Foundation', legalName: 'Swastik Srijan Foundation (SSF)',
-  regNumber: '', regAuthority: 'Madhya Pradesh Societies Registration Act, 1973',
-  areaOfOperation: 'Madhya Pradesh, India', website: 'https://swastiksrijan.in',
-  contactEmail: 'info@swastiksrijan.in',
+  name: 'Swastik Srijan Foundation Samiti', legalName: 'Swastik Srijan Foundation Samiti (SSF)',
+  regNumber: '05/22/03/11448/13', regAuthority: 'Madhya Pradesh Societies Registration Act, 1973',
+  regDate: '2013-12-30', pan: 'AAKAS7123H',
+  address: 'Ward No. 1, Dadar, Post Rahat, Dist. Rewa, Madhya Pradesh - 486446',
+  areaOfOperation: 'Pan India', website: 'https://swastiksrijan.in',
+  contactEmail: 'swastiksrijanfoundation@gmail.com', contactPhone: '9718346691',
 };
 
 const CURRENT_COMMITTEE = [

@@ -13,7 +13,6 @@ export const NAV = [
     group: 'organisation', items: [
       { key: 'organisation_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/organisation' },
       { key: 'org_profile', icon: 'Building2', path: '/ims/org-profile' },
-      { key: 'organisations', icon: 'Building2', resource: 'organisations' },
       { key: 'constitution', icon: 'ScrollText', path: '/ims/constitution' },
       { key: 'governanceRules', icon: 'Scale', resource: 'governanceRules' },
       { key: 'registers_required', icon: 'BookMarked', path: '/ims/registers' },

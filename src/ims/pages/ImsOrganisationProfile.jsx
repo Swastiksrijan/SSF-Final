@@ -9,6 +9,23 @@ import { ims } from '../api';
 
 const SECTIONS = [
   {
+    id: 'master', icon: 'Building2', en: 'Organisation Master', hi: 'संस्था मास्टर', master: true,
+    fields: [
+      ['name', 'Name', 'नाम'],
+      ['legalName', 'Legal Name', 'विधिक नाम'],
+      ['regNumber', 'Registration Number', 'पंजीकरण संख्या'],
+      ['regAuthority', 'Registering Authority', 'पंजीकरण प्राधिकारी'],
+      ['regDate', 'Registration Date', 'पंजीकरण तिथि', 'date'],
+      ['pan', 'PAN', 'पैन'],
+      ['tan', 'TAN', 'टैन'],
+      ['address', 'Address', 'पता', 'textarea'],
+      ['areaOfOperation', 'Area of Operation', 'कार्यक्षेत्र', 'textarea'],
+      ['contactEmail', 'Contact Email', 'संपर्क ईमेल'],
+      ['contactPhone', 'Contact Phone', 'संपर्क फ़ोन'],
+      ['website', 'Website', 'वेबसाइट'],
+    ],
+  },
+  {
     id: 'profile', icon: 'Building2', en: 'Organisation Profile', hi: 'संस्था परिचय',
     fields: [
       ['organizationName', 'Organisation Name', 'संस्था का नाम'],
@@ -174,8 +191,9 @@ const inputCls = 'w-full rounded-lg border border-slate-300 px-3 py-2 text-sm ou
 export function ImsOrganisationProfile() {
   const { lang } = useLang();
   const hi = lang === 'hi';
-  const [tab, setTab] = useState('profile');
+  const [tab, setTab] = useState('master');
   const [rows, setRows] = useState(null);
+  const [master, setMaster] = useState(null);
   const [form, setForm] = useState({});
   const [editingId, setEditingId] = useState(null);
   const [saving, setSaving] = useState(false);
@@ -192,8 +210,20 @@ export function ImsOrganisationProfile() {
     return records;
   };
 
-  const applySection = (records) => {
+  const fetchMaster = async () => {
+    try {
+      const d = await ims.list('organisations', { limit: 1 });
+      return (d.records || [])[0] || null;
+    } catch { return null; }
+  };
+
+  const applySection = (records, masterRec) => {
     const section = SECTIONS.find(s => s.id === tab);
+    if (section && section.master) {
+      setEditingId(masterRec ? masterRec.id : null);
+      setForm(masterRec ? { ...masterRec } : {});
+      return;
+    }
     const current = records.find(r => r.section === tab);
     // Multi-record sections (calendar/history) start blank for a fresh entry;
     // single-record sections load the saved master record.
@@ -204,10 +234,11 @@ export function ImsOrganisationProfile() {
   useEffect(() => {
     let active = true;
     (async () => {
-      const records = await fetchRecords();
+      const [records, masterRec] = await Promise.all([fetchRecords(), fetchMaster()]);
       if (!active) return;
       setRows(records);
-      applySection(records);
+      setMaster(masterRec);
+      applySection(records, masterRec);
     })();
     return () => { active = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -215,6 +246,7 @@ export function ImsOrganisationProfile() {
 
   const section = useMemo(() => SECTIONS.find(s => s.id === tab), [tab]);
   const sectionRows = useMemo(() => (rows || []).filter(r => r.section === tab), [rows, tab]);
+  const sectionHas = (s) => s.master ? !!master : rows.some(r => r.section === s.id);
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
   const startNew = () => { setEditingId(null); setForm({}); setNotice(''); };
@@ -223,13 +255,20 @@ export function ImsOrganisationProfile() {
   const save = async () => {
     setSaving(true); setNotice('');
     try {
+      if (section.master) {
+        const rec = master;
+        if (rec) await ims.update('organisations', rec.id, form);
+        else setMaster(await ims.create('organisations', form, true));
+        setNotice(hi ? 'संस्था मास्टर सफलतापूर्वक सहेजा गया।' : 'Organisation Master saved successfully.');
+        return;
+      }
       const payload = { section: tab, data: form, ...form };
       if (editingId) await ims.update('orgProfile', editingId, payload);
       else await ims.create('orgProfile', { ...payload, recordId: 'SSF-ORG-' + tab.toUpperCase() + (section.multi ? '-' + Date.now() : '') }, true);
       setNotice(hi ? 'विवरण सफलतापूर्वक सहेजा गया।' : 'Details saved successfully.');
       const records = await fetchRecords();
       setRows(records);
-      applySection(records);
+      applySection(records, master);
     } catch (e) { setNotice(e.message || 'Save failed'); }
     finally { setSaving(false); }
   };
@@ -248,7 +287,7 @@ export function ImsOrganisationProfile() {
         icon="Building2"
         tone="navy"
       >
-        {rows && <StatStrip items={SECTIONS.map(s => ({ label: hi ? s.hi : s.en, value: rows.some(r => r.section === s.id) ? '✓' : '—' }))} />}
+        {rows && <StatStrip items={SECTIONS.map(s => ({ label: hi ? s.hi : s.en, value: sectionHas(s) ? '✓' : '—' }))} />}
       </SectionHero>
 
       {!rows && <Spinner />}
@@ -260,7 +299,7 @@ export function ImsOrganisationProfile() {
               <button key={s.id} type="button" onClick={() => setTab(s.id)}
                 className={`mb-1 flex w-full items-center gap-2 rounded-xl px-3 py-2.5 text-left text-sm font-bold ${tab === s.id ? 'bg-[#002344] text-white' : 'text-[#002344] hover:bg-slate-100'}`}>
                 <span>{hi ? s.hi : s.en}</span>
-                {rows.some(r => r.section === s.id) && <span className="ml-auto text-xs opacity-70">✓</span>}
+                {sectionHas(s) && <span className="ml-auto text-xs opacity-70">✓</span>}
               </button>
             ))}
           </Card>
