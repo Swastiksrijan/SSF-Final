@@ -20,7 +20,7 @@ const SECTIONS = {
       { resource: 'governanceRules', key: 'governanceRules', icon: 'Scale' },
       { path: '/ims/registers', key: 'registers_required', icon: 'BookMarked' },
       { resource: 'policies', key: 'policies', icon: 'FileText' },
-      { path: '/ims/history', key: 'history', icon: 'History' },
+      { path: '/ims/history', key: 'office_history', icon: 'History' },
     ],
     chart: ['governanceRules', 'policies', 'committees', 'organisations'],
   },

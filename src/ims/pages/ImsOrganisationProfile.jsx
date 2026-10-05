@@ -188,10 +188,10 @@ const SECTIONS = [
 
 const inputCls = 'w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#FF6600]';
 
-export function ImsOrganisationProfile() {
+export function ImsOrganisationProfile({ initialTab }) {
   const { lang } = useLang();
   const hi = lang === 'hi';
-  const [tab, setTab] = useState('master');
+  const [tab, setTab] = useState(SECTIONS.some(s => s.id === initialTab) ? initialTab : 'master');
   const [rows, setRows] = useState(null);
   const [master, setMaster] = useState(null);
   const [form, setForm] = useState({});

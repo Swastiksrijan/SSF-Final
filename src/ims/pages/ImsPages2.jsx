@@ -115,14 +115,14 @@ export function ImsKnowledge() {
   );
 }
 
-/** Institutional History — committees over time. */
+/** Managing Committee History — committees over time. */
 export function ImsHistory() {
   const { t } = useLang();
   const [rows, setRows] = useState(null);
   useEffect(() => { ims.list('committees', { limit: 100 }).then(d => setRows(d.records || [])).catch(() => setRows([])); }, []);
   return (
     <ImsLayout active="history">
-      <PageHeader title={t('history')} subtitle={t('tagline')} />
+      <PageHeader title={t('office_history')} subtitle={t('office_history_sub')} />
       {!rows ? <Spinner /> : rows.length === 0 ? <Card><Empty /></Card> : (
         <div className="space-y-3">
           {rows.map(c => (

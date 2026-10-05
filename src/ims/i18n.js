@@ -40,6 +40,8 @@ export const DICT = {
   organisation: { en: 'Organisation', hi: 'संस्था' },
   constitution: { en: 'Constitution & Bylaws', hi: 'संविधान एवं नियमावली' },
   history: { en: 'Institutional History', hi: 'संस्थागत इतिहास' },
+  office_history: { en: 'Managing Committee History', hi: 'प्रबंधकारिणी समिति इतिहास' },
+  office_history_sub: { en: 'Committees over time — tenure, members and formation.', hi: 'समय के साथ समितियाँ — कार्यकाल, सदस्य एवं गठन।' },
   governance: { en: 'Governance', hi: 'शासन' },
   people: { en: 'People & Members', hi: 'व्यक्ति एवं सदस्य' },
   committee: { en: 'Committee', hi: 'समिति' },
