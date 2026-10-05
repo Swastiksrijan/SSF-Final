@@ -11,6 +11,7 @@ const Member = require('../models/Member');
 const Volunteer = require('../models/Volunteer');
 const Donor = require('../models/Donor');
 const InternshipApplication = require('../models/InternshipApplication');
+const FinanceTransaction = require('../models/FinanceTransaction');
 
 const router = express.Router();
 const GOOGLE_FRONTEND_URL = String(process.env.GOOGLE_FRONTEND_URL || 'https://swastiksrijan.in/SSFDigitalOffice').trim();
@@ -99,6 +100,13 @@ const memberPhotoUpload = multer({
 });
 
 const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID' };
+const _norm = (s) => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, ' ').trim();
+const _day = (d) => { try { return new Date(d).toISOString().slice(0, 10); } catch (_) { return String(d || '').slice(0, 10); } };
+// Strong duplicate probe shared by the money workflows: same party + amount + day.
+const findMoneyDuplicate = async (module, amount, day, partyField, partyValue, transaction) => {
+  const recent = await DigitalOfficeRecord.findAll({ where: { module, status: { [Op.ne]: 'deleted' } }, order: [['createdAt', 'DESC']], limit: 500, transaction });
+  return recent.find((x) => Number(x.amount) === Number(amount) && _day(x.recordDate) === day && _norm(x.data && x.data[partyField]) === _norm(partyValue)) || null;
+};
 const makeId = async (module) => {
   const p = prefix[module] || 'REC';
   const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
@@ -107,6 +115,24 @@ const makeId = async (module) => {
   while (await DigitalOfficeRecord.findOne({ where: { recordId: candidate }, attributes: ['id'] })) {
     sequence += 1;
     candidate = `SSF-${p}-${stamp}-${String(sequence).padStart(5,'0')}`;
+  }
+  return candidate;
+};
+// Canonical transaction id: FIN-YYYY-NNNNNN (financial year of the date).
+const _fyOf = (value) => {
+  const s = String(value || '').slice(0, 10);
+  const y = Number(s.slice(0, 4)), m = Number(s.slice(5, 7));
+  if (!y || !m) return '';
+  const start = m >= 4 ? y : y - 1;
+  return start + '-' + String((start + 1) % 100).padStart(2, '0');
+};
+const makeFinId = async (fy, t) => {
+  const last = await FinanceTransaction.findOne({ where: { transactionId: { [Op.like]: 'FIN-' + fy + '-%' } }, order: [['transactionId', 'DESC']], transaction: t });
+  let seq = last ? parseInt(String(last.transactionId).replace(/^.*-/, ''), 10) + 1 : 1;
+  if (!isFinite(seq) || seq < 1) seq = 1;
+  let candidate = 'FIN-' + fy + '-' + String(seq).padStart(6, '0');
+  while (await FinanceTransaction.findOne({ where: { transactionId: candidate }, attributes: ['id'], transaction: t })) {
+    seq += 1; candidate = 'FIN-' + fy + '-' + String(seq).padStart(6, '0');
   }
   return candidate;
 };
@@ -586,20 +612,36 @@ router.post('/digital-office/donations', requireOfficeAuth, async (req, res) => 
   const t = await sequelize.transaction();
   try {
     const b=req.body||{}; if(!b.donorName || !b.amount) { await t.rollback(); return res.status(400).json({message:'Donor name and amount are required.'}); }
+    if(!b.allowDuplicate){
+      const dupe=await findMoneyDuplicate('donations',b.amount,String(b.date||new Date().toISOString().slice(0,10)),'donorName',b.donorName,t);
+      if(dupe){ await t.rollback(); return res.status(409).json({duplicate:true,message:'Possible duplicate donation.',existing:{recordId:dupe.recordId,amount:dupe.amount,date:_day(dupe.recordDate),donorName:(dupe.data||{}).donorName,receiptNo:(dupe.data||{}).receiptNo}}); }
+    }
     const donationId=await makeId('donations');
     const donorId=b.donorId || await makeId('donors');
     const paid=['paid','offline','received'].includes(String(b.paymentStatus||'paid').toLowerCase());
-    await DigitalOfficeRecord.create({recordId:donorId,module:'donors',recordDate:b.date||new Date(),personId:b.personId||null,data:{fullName:b.donorName,email:b.email||'',phone:b.phone||'',pan:b.pan||'',address:b.address||''}}, {transaction:t});
-    const donation=await DigitalOfficeRecord.create({recordId:donationId,module:'donations',recordType:'donation',recordDate:b.date||new Date(),amount:Number(b.amount),paymentMode:b.paymentMode||'Cash',account:b.account||b.paymentMode||'Cash',personId:b.personId||null,data:{donorId,donorName:b.donorName,purpose:b.purpose||'General donation',paymentStatus:b.paymentStatus||'paid',receiptNo:b.receiptNo||donationId,pan:b.pan||'',address:b.address||'',email:b.email||'',notes:b.notes||''}}, {transaction:t});
-    await DigitalOfficeRecord.create({recordId:await makeId('contribution'),module:'contribution',recordType:'donation',recordDate:b.date||new Date(),amount:Number(b.amount),paymentMode:b.paymentMode||'Cash',account:b.account||'Cash',linkedRecordId:donationId,data:{source:'donation',donorId}}, {transaction:t});
+    const txDate=b.date||new Date();
+    const fy=_fyOf(txDate);
+    const transactionId=await makeFinId(fy,t);
+    const mode=b.paymentMode||'Cash';
+    const bookModule=String(mode).toLowerCase()==='cash'?'cash':'bank';
+    const linked=[
+      {module:'donations',recordId:donationId},
+      {module:'donors',recordId:donorId},
+      {module:bookModule,recordId:null},
+      {module:'ledger',recordId:null}
+    ];
+    await FinanceTransaction.create({transactionId,financialYear:fy,transactionDate:txDate,transactionType:'donation',amount:Number(b.amount),direction:'in',paymentMode:mode,accountId:b.account||mode,donorId,partyId:donorId,receiptId:donationId,referenceNumber:b.receiptNo||null,sourceModule:'donations',sourceRecordId:donationId,linkedRecords:linked,createdBy:req.headers['x-office-actor']||'admin',createdByName:req.headers['x-office-actor-name']||'SSF Admin',data:{donorName:b.donorName,purpose:b.purpose||'General donation'}},{transaction:t});
+    await DigitalOfficeRecord.create({recordId:donorId,module:'donors',recordDate:txDate,personId:b.personId||null,data:{fullName:b.donorName,email:b.email||'',phone:b.phone||'',pan:b.pan||'',address:b.address||''}}, {transaction:t});
+    const donation=await DigitalOfficeRecord.create({recordId:donationId,module:'donations',recordType:'donation',recordDate:txDate,amount:Number(b.amount),paymentMode:mode,account:b.account||mode,personId:b.personId||null,data:{donorId,donorName:b.donorName,purpose:b.purpose||'General donation',paymentStatus:b.paymentStatus||'paid',receiptNo:b.receiptNo||donationId,transactionId,pan:b.pan||'',address:b.address||'',email:b.email||'',notes:b.notes||''}}, {transaction:t});
+    await DigitalOfficeRecord.create({recordId:await makeId('contribution'),module:'contribution',recordType:'donation',recordDate:txDate,amount:Number(b.amount),paymentMode:mode,account:b.account||'Cash',linkedRecordId:donationId,data:{source:'donation',donorId,transactionId}}, {transaction:t});
     if(paid){
       const ledgerId=await makeId('ledger');
-      await DigitalOfficeRecord.create({recordId:ledgerId,module:'ledger',recordType:'donation',recordDate:b.date||new Date(),amount:Number(b.amount),direction:'credit',account:b.account||b.paymentMode||'Cash',linkedRecordId:donationId,data:{description:`Donation from ${b.donorName}`}}, {transaction:t});
-      const bookModule=String(b.paymentMode||'Cash').toLowerCase()==='cash'?'cash':'bank';
-      await DigitalOfficeRecord.create({recordId:await makeId(bookModule),module:bookModule,recordType:'receipt',recordDate:b.date||new Date(),amount:Number(b.amount),direction:'in',account:b.account||b.paymentMode||'Cash',linkedRecordId:donationId,data:{description:`Donation from ${b.donorName}`}}, {transaction:t});
+      await DigitalOfficeRecord.create({recordId:ledgerId,module:'ledger',recordType:'donation',recordDate:txDate,amount:Number(b.amount),direction:'credit',account:b.account||mode,linkedRecordId:donationId,data:{description:`Donation from ${b.donorName}`,transactionId}}, {transaction:t});
+      const bookId=await makeId(bookModule);
+      await DigitalOfficeRecord.create({recordId:bookId,module:bookModule,recordType:'receipt',recordDate:txDate,amount:Number(b.amount),direction:'in',account:b.account||mode,linkedRecordId:donationId,data:{description:`Donation from ${b.donorName}`,transactionId}}, {transaction:t});
     }
-    await DigitalOfficeAudit.create({action:'donation_create',module:'donations',recordId:donationId,actor:req.headers['x-office-actor']||'admin',details:{donorId,amount:b.amount,paymentStatus:b.paymentStatus||'paid'}},{transaction:t});
-    await t.commit(); return res.status(201).json({donationId,donorId,receiptId:donationId});
+    await DigitalOfficeAudit.create({action:'donation_create',module:'donations',recordId:donationId,actor:req.headers['x-office-actor']||'admin',details:{donorId,amount:b.amount,transactionId,paymentStatus:b.paymentStatus||'paid'}},{transaction:t});
+    await t.commit(); return res.status(201).json({donationId,donorId,receiptId:donationId,transactionId});
   } catch(e){await t.rollback();console.error(e);return res.status(500).json({message:'Unable to save donation workflow.'});}
 });
 
@@ -607,13 +649,23 @@ router.post('/digital-office/expenses', requireOfficeAuth, async (req,res)=>{
   const t=await sequelize.transaction();
   try{
     const b=req.body||{}; if(!b.payee || !b.amount){await t.rollback();return res.status(400).json({message:'Payee and amount are required.'});}
+    if(!b.allowDuplicate){
+      const dupe=await findMoneyDuplicate('expenses',b.amount,String(b.date||new Date().toISOString().slice(0,10)),'payee',b.payee,t);
+      if(dupe){await t.rollback();return res.status(409).json({duplicate:true,message:'Possible duplicate expense.',existing:{recordId:dupe.recordId,amount:dupe.amount,date:_day(dupe.recordDate),payee:(dupe.data||{}).payee,category:(dupe.data||{}).category}});}
+    }
     const expenseId=await makeId('expenses');
-    await DigitalOfficeRecord.create({recordId:expenseId,module:'expenses',recordType:b.category||'general',recordDate:b.date||new Date(),amount:Number(b.amount),paymentMode:b.paymentMode||'Cash',account:b.account||b.paymentMode||'Cash',data:{payee:b.payee,category:b.category||'General',purpose:b.purpose||'',billNo:b.billNo||'',notes:b.notes||''}}, {transaction:t});
-    await DigitalOfficeRecord.create({recordId:await makeId('ledger'),module:'ledger',recordType:'expense',recordDate:b.date||new Date(),amount:Number(b.amount),direction:'debit',account:b.account||b.paymentMode||'Cash',linkedRecordId:expenseId,data:{description:`Expense - ${b.payee}`}}, {transaction:t});
-    const bookModule=String(b.paymentMode||'Cash').toLowerCase()==='cash'?'cash':'bank';
-    await DigitalOfficeRecord.create({recordId:await makeId(bookModule),module:bookModule,recordType:'payment',recordDate:b.date||new Date(),amount:Number(b.amount),direction:'out',account:b.account||b.paymentMode||'Cash',linkedRecordId:expenseId,data:{description:`Expense - ${b.payee}`}}, {transaction:t});
-    await DigitalOfficeAudit.create({action:'expense_create',module:'expenses',recordId:expenseId,actor:req.headers['x-office-actor']||'admin',details:{amount:b.amount}},{transaction:t});
-    await t.commit(); return res.status(201).json({expenseId});
+    const txDate=b.date||new Date();
+    const fy=_fyOf(txDate);
+    const transactionId=await makeFinId(fy,t);
+    const mode=b.paymentMode||'Cash';
+    const bookModule=String(mode).toLowerCase()==='cash'?'cash':'bank';
+    await FinanceTransaction.create({transactionId,financialYear:fy,transactionDate:txDate,transactionType:'expense',amount:Number(b.amount),direction:'out',paymentMode:mode,accountId:b.account||mode,partyId:b.payee,projectId:b.projectId||null,sourceModule:'expenses',sourceRecordId:expenseId,linkedRecords:[{module:'expenses',recordId:expenseId},{module:bookModule,recordId:null},{module:'ledger',recordId:null}],createdBy:req.headers['x-office-actor']||'admin',createdByName:req.headers['x-office-actor-name']||'SSF Admin',data:{payee:b.payee,category:b.category||'General'}},{transaction:t});
+    await DigitalOfficeRecord.create({recordId:expenseId,module:'expenses',recordType:b.category||'general',recordDate:txDate,amount:Number(b.amount),paymentMode:mode,account:b.account||mode,data:{payee:b.payee,category:b.category||'General',purpose:b.purpose||'',billNo:b.billNo||'',notes:b.notes||'',transactionId}}, {transaction:t});
+    await DigitalOfficeRecord.create({recordId:await makeId('ledger'),module:'ledger',recordType:'expense',recordDate:txDate,amount:Number(b.amount),direction:'debit',account:b.account||mode,linkedRecordId:expenseId,data:{description:`Expense - ${b.payee}`,transactionId}}, {transaction:t});
+    const bookId=await makeId(bookModule);
+    await DigitalOfficeRecord.create({recordId:bookId,module:bookModule,recordType:'payment',recordDate:txDate,amount:Number(b.amount),direction:'out',account:b.account||mode,linkedRecordId:expenseId,data:{description:`Expense - ${b.payee}`,transactionId}}, {transaction:t});
+    await DigitalOfficeAudit.create({action:'expense_create',module:'expenses',recordId:expenseId,actor:req.headers['x-office-actor']||'admin',details:{amount:b.amount,transactionId}},{transaction:t});
+    await t.commit(); return res.status(201).json({expenseId,transactionId});
   }catch(e){await t.rollback();console.error(e);return res.status(500).json({message:'Unable to save expense workflow.'});}
 });
 

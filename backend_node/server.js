@@ -34,6 +34,8 @@ const donorRoutes = require('./routes/donorRoutes');
 const roleDocumentRoutes = require('./routes/roleDocumentRoutes');
 const passwordResetRoutes = require('./routes/passwordResetRoutes');
 const digitalOfficeRoutes = require('./routes/digitalOfficeRoutes');
+const financeRoutes = require('./routes/financeRoutes');
+const auditRoutes = require('./routes/auditRoutes');
 
 app.use('/api', memberCertificateRoutes);
 app.use('/api', learningCertificateRoutes);
@@ -56,6 +58,8 @@ app.use('/api', roleDocumentRoutes);
 // Account password recovery.
 app.use('/api', passwordResetRoutes);
 app.use('/api', digitalOfficeRoutes);
+app.use('/api', financeRoutes);
+app.use('/api', auditRoutes);
 
 sequelize.sync({ alter: true })
     .then(() => {
