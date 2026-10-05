@@ -114,7 +114,15 @@ export default function SSFDigitalOffice(){
  };
  const updateRecord=async function(id,module,data,silent){
   try{
-   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id,{method:"PUT",headers:auth(),body:JSON.stringify({module:module,data:data,recordDate:module==="meetingResolutions"?(data.meetingDate||data.date||new Date().toISOString().slice(0,10)):(data.eventDate||data.date||new Date().toISOString().slice(0,10)),recordType:data.changeType||data.eventType||"Record",status:"active"})});
+   const hasWrap=data&&typeof data.data==="object"&&data.data!==null;
+   const inner=hasWrap?data.data:data;
+   const body={module:module,data:inner,status:"active",
+    recordDate:data.recordDate||data.meetingDate||data.eventDate||data.date||new Date().toISOString().slice(0,10),
+    recordType:data.recordType||data.changeType||data.eventType||"Record"};
+   if(data.amount!=null&&data.amount!=="")body.amount=data.amount;
+   if(data.paymentMode!=null)body.paymentMode=data.paymentMode;
+   if(data.direction!=null)body.direction=data.direction;
+   const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"/"+id,{method:"PUT",headers:auth(),body:JSON.stringify(body)});
    const out=await r.json().catch(()=>({}));
    if(!r.ok)throw new Error(out.detail?(out.message+" "+out.detail):(out.message||"Update failed."));
    if(!silent){setNotice("Record updated successfully.");await load(module);}
@@ -239,7 +247,7 @@ export default function SSFDigitalOffice(){
     {active==="donorSlips"&&<DonorSlips rows={rows} add={add}/>} 
     {active==="separations"&&<SeparationManagement rows={rows} add={add}/>}\n    {active==="notifications"&&<NotificationsHub rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}\n    {active==="certificates"&&<AdminLearningCertificates token={token}/>}
     {active==="bank"&&<BankBook rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token} reload={()=>load("bank")}/>}
-    {active==="cash"&&<CashBook rows={rows} add={add} archive={archive} token={token} reload={()=>load("cash")}/>}
+    {active==="cash"&&<CashBook rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token} reload={()=>load("cash")}/>}
     {FIN_MODULE_MAP[active]&&<FinRegister regId={FIN_MODULE_MAP[active]}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="chartOfAccounts"&&<ChartOfAccounts rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("chartOfAccounts")}/>}
@@ -818,8 +826,8 @@ function BankBook({ rows, add, archive, updateRecord, token, reload }){
  const startEdit=function(e){setEditId(e.dbId);setForm({date:e.date,particulars:e.particulars,deposit:e.deposit!=null?String(e.deposit):"",withdrawal:e.withdrawal!=null?String(e.withdrawal):"",chqNum:e.chqNum||""});setShowAdd(true);};
  const submitForm=async function(ev){ev.preventDefault();const dep=Number(form.deposit||0),wd=Number(form.withdrawal||0);
    if(!form.date||(!dep&&!wd)){alert("Date aur Deposit ya Withdrawal me se kam se kam ek amount daalein.");return;}
-   const payload={recordDate:form.date,recordType:dep?"Deposit":"Withdrawal",amount:dep||wd,paymentMode:"Bank",direction:dep?"in":"out",data:{category:"Bank Transaction",direction:dep?"in":"out",purpose:form.particulars,particulars:form.particulars,chqNum:form.chqNum||"",referenceNo:form.chqNum||"",deposit:dep||null,withdrawal:wd||null,amount:dep||wd,fy:fy}};
-   let ok; if(editId) ok=await updateRecord(editId,"bank",payload,true); else ok=await add("bank",payload,true);
+   const payload={recordDate:form.date,recordType:dep?"Deposit":"Withdrawal",amount:dep||wd,paymentMode:"Bank",direction:dep?"in":"out",data:{category:"Bank Transaction",direction:dep?"in":"out",purpose:form.particulars,particulars:form.particulars,chqNum:form.chqNum||"",referenceNo:form.chqNum||"",deposit:dep||null,withdrawal:wd||null,amount:dep||wd,fy:fyOf(form.date)||fy}};
+   let ok; if(editId) ok=await updateRecord(editId,"bank",{...payload,date:form.date,changeType:payload.recordType},true); else ok=await add("bank",payload,true);
    if(ok){setShowAdd(false);setEditId(null);if(typeof reload==="function")await reload();}
  };
  const exportCsv=function(){
@@ -851,18 +859,18 @@ function BankBook({ rows, add, archive, updateRecord, token, reload }){
     </div>
    </div>
    <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Account</div><div className="font-black mt-1">{account.accountNumber}</div><div className="text-white/70 text-xs">{account.accountType} · {account.ifsc}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Opening Balance</div><div className="font-black mt-1">{money(opening)}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Deposits</div><div className="font-black mt-1 text-emerald-300">{money(totals.deposit)}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Withdrawals</div><div className="font-black mt-1 text-red-300">{money(totals.withdrawal)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Account / खाता</div><div className="font-black mt-1">{account.accountNumber}</div><div className="text-white/70 text-xs">{account.accountType} · {account.ifsc}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Opening Balance / प्रारंभिक शेष</div><div className="font-black mt-1">{money(opening)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Deposits / कुल जमा</div><div className="font-black mt-1 text-emerald-300">{money(totals.deposit)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Withdrawals / कुल निकासी</div><div className="font-black mt-1 text-red-300">{money(totals.withdrawal)}</div></div>
    </div>
-   <div className="mt-3 bg-white/10 rounded-xl p-3 text-sm flex items-center justify-between"><span className="text-white/70 font-bold uppercase text-xs">Closing Balance · FY {fy}</span><span className="font-black text-lg">{money(closing)} Cr</span></div>
+   <div className="mt-3 bg-white/10 rounded-xl p-3 text-sm flex items-center justify-between"><span className="text-white/70 font-bold uppercase text-xs">Closing Balance / अंतिम शेष · FY {fy}</span><span className="font-black text-lg">{money(closing)} Cr</span></div>
   </div>
 
   <div className="bg-white rounded-2xl border overflow-hidden">
    <div className="p-5 border-b"><h3 className="text-lg font-black text-[#002344]">Year-wise Summary / वर्षवार सारांश</h3><p className="text-sm text-zinc-500 mt-1">Har saal ka opening, deposits, withdrawals aur closing — ek nazar me.</p></div>
    <div className="overflow-x-auto"><table className="w-full text-sm min-w-[820px]">
-    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Financial Year</th><th className="p-3 text-right">Opening</th><th className="p-3 text-right">Deposits</th><th className="p-3 text-right">Withdrawals</th><th className="p-3 text-right">Closing</th><th className="p-3 text-left">Source</th><th className="p-3"></th></tr></thead>
+    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Financial Year / वित्तीय वर्ष</th><th className="p-3 text-right">Opening / प्रारंभिक</th><th className="p-3 text-right">Deposits / जमा</th><th className="p-3 text-right">Withdrawals / निकासी</th><th className="p-3 text-right">Closing / अंतिम</th><th className="p-3 text-left">Source / स्रोत</th><th className="p-3 text-left">Action / कार्य</th></tr></thead>
     <tbody className="divide-y">
      {fyList.map(function(f){const s2=getBankStatement(accountId,f);const recs=dbFor(f);const stDep=s2?s2.transactions.reduce((a,t)=>a+Number(t.deposit||0),0):0;const stWd=s2?s2.transactions.reduce((a,t)=>a+Number(t.withdrawal||0),0):0;const dbDep=recs.reduce((a,r)=>{const d=r.data||{};return a+Number(d.deposit||(d.direction==="in"?r.amount:0));},0);const dbWd=recs.reduce((a,r)=>{const d=r.data||{};return a+Number(d.withdrawal||(d.direction==="out"?r.amount:0));},0);const dep=stDep+dbDep,wd=stWd+dbWd;const o=s2?s2.openingBalance:0;const c=o+dep-wd;const src=s2&&recs.length?"Statement + Entered":s2?"Statement":recs.length?"Entered":"Empty";return <tr key={f} className={f===fy?"bg-[#f0f6fb] font-bold":""}><td className="p-3 font-black text-[#002344]">FY {f}</td><td className="p-3 text-right">{money(o)}</td><td className="p-3 text-right text-emerald-700">{money(dep)}</td><td className="p-3 text-right text-red-700">{money(wd)}</td><td className="p-3 text-right font-black">{money(c)}</td><td className="p-3"><span className="px-2 py-1 rounded-full text-[10px] font-bold bg-zinc-100 text-zinc-600">{src}</span></td><td className="p-3 text-right"><button type="button" onClick={()=>setFy(f)} className="text-xs font-bold text-[#123B5D] border border-[#123B5D]/20 px-2.5 py-1.5 rounded-lg">{f===fy?"Viewing":"View"}</button></td></tr>;})}
      {!fyList.length&&<tr><td colSpan="7" className="p-8 text-center text-zinc-400">Koi entry nahi. "+ Add Entry" se shuru karein.</td></tr>}
@@ -895,29 +903,31 @@ function BankBook({ rows, add, archive, updateRecord, token, reload }){
      <input type="number" min="0" step="0.01" value={form.deposit||""} onChange={e=>setForm(f=>({...f,deposit:e.target.value}))} placeholder="Deposit (₹)" className={cls}/>
      <input type="number" min="0" step="0.01" value={form.withdrawal||""} onChange={e=>setForm(f=>({...f,withdrawal:e.target.value}))} placeholder="Withdrawal (₹)" className={cls}/>
      <input value={form.chqNum||""} onChange={e=>setForm(f=>({...f,chqNum:e.target.value}))} placeholder="Chq / Ref No." className={cls}/>
-     <div className="sm:col-span-2 lg:col-span-5 flex gap-2"><button className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">{editId?"Update Entry":"Save Entry"}</button><button type="button" onClick={()=>{setShowAdd(false);setEditId(null);}} className="border px-6 py-3 rounded-xl font-bold">Cancel</button></div>
+     <div className="sm:col-span-2 lg:col-span-5 flex gap-2"><button className="bg-[#002344] text-white px-6 py-3 rounded-xl font-bold">{editId?"Update Entry / अद्यतन करें":"Save Entry / सहेजें"}</button><button type="button" onClick={()=>{setShowAdd(false);setEditId(null);}} className="border px-6 py-3 rounded-xl font-bold">Cancel / रद्द करें</button></div>
     </form></div>}
    <div className="overflow-x-auto"><table className="w-full text-sm min-w-[900px]">
-    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Date</th><th className="p-3 text-left">Particulars</th><th className="p-3 text-left">Chq No.</th><th className="p-3 text-right">Withdrawal</th><th className="p-3 text-right">Deposit</th><th className="p-3 text-right">Balance</th><th className="p-3 text-left">Source</th><th className="p-3"></th></tr></thead>
+    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Date / दिनांक</th><th className="p-3 text-left">Particulars / विवरण</th><th className="p-3 text-left">Chq No. / चेक</th><th className="p-3 text-right">Withdrawal / निकासी</th><th className="p-3 text-right">Deposit / जमा</th><th className="p-3 text-right">Balance / शेष</th><th className="p-3 text-left">Source / स्रोत</th><th className="p-3 text-left">Action / कार्य</th></tr></thead>
     <tbody className="divide-y">
-     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="5">Opening Balance</td><td className="p-3 text-right">{money(opening)}</td><td className="p-3" colSpan="2"></td></tr>
-     {filtered.map(function(e){return <tr key={e.key}><td className="p-3 whitespace-nowrap">{formatOfficeDate(e.date)}</td><td className="p-3 min-w-[300px]">{e.particulars}</td><td className="p-3">{e.chqNum||"—"}</td><td className="p-3 text-right text-red-700">{e.withdrawal!=null?money(e.withdrawal):""}</td><td className="p-3 text-right text-emerald-700">{e.deposit!=null?money(e.deposit):""}</td><td className="p-3 text-right font-bold">{money(balByKey[e.key])}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.source==="Statement"?"bg-zinc-100 text-zinc-600":"bg-emerald-50 text-emerald-700")}>{e.source}</span></td><td className="p-3 text-right whitespace-nowrap">{e.dbId&&<><button onClick={()=>startEdit(e)} className="text-xs font-bold text-[#123B5D] border border-[#123B5D]/20 px-2 py-1 rounded-lg mr-2">Edit</button><button onClick={()=>{if(window.confirm("Sirf yahi entry archive hogi - baaki entries safe rahengi. Archive karein?"))archive(e.dbId);}} className="text-xs font-bold text-red-600">Archive</button></>}</td></tr>;})}
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="5">Opening Balance / प्रारंभिक शेष</td><td className="p-3 text-right">{money(opening)}</td><td className="p-3" colSpan="2"></td></tr>
+     {filtered.map(function(e){return <tr key={e.key}><td className="p-3 whitespace-nowrap">{formatOfficeDate(e.date)}</td><td className="p-3 min-w-[300px]">{e.particulars}</td><td className="p-3">{e.chqNum||"—"}</td><td className="p-3 text-right text-red-700">{e.withdrawal!=null?money(e.withdrawal):""}</td><td className="p-3 text-right text-emerald-700">{e.deposit!=null?money(e.deposit):""}</td><td className="p-3 text-right font-bold">{money(balByKey[e.key])}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.source==="Statement"?"bg-zinc-100 text-zinc-600":"bg-emerald-50 text-emerald-700")}>{e.source}</span></td><td className="p-3 text-right whitespace-nowrap">{e.dbId&&<><button onClick={()=>startEdit(e)} className="text-xs font-bold text-[#123B5D] border border-[#123B5D]/20 px-2 py-1 rounded-lg mr-2">Edit / संपादित</button><button onClick={()=>{if(window.confirm("Sirf yahi entry archive hogi - baaki entries safe rahengi. Archive karein?"))archive(e.dbId);}} className="text-xs font-bold text-red-600">Archive / संग्रह</button></>}</td></tr>;})}
      {!filtered.length&&<tr><td colSpan="8" className="p-10 text-center text-zinc-400">FY {fy} me abhi koi entry nahi. "+ Add Entry" se entry karein.</td></tr>}
-     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="3">Total</td><td className="p-3 text-right text-red-700">{money(totals.withdrawal)}</td><td className="p-3 text-right text-emerald-700">{money(totals.deposit)}</td><td className="p-3 text-right">{money(closing)}</td><td className="p-3 text-xs text-zinc-500" colSpan="2">Closing</td></tr>
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="3">Total / कुल</td><td className="p-3 text-right text-red-700">{money(totals.withdrawal)}</td><td className="p-3 text-right text-emerald-700">{money(totals.deposit)}</td><td className="p-3 text-right">{money(closing)}</td><td className="p-3 text-xs text-zinc-500" colSpan="2">Closing / अंतिम शेष</td></tr>
     </tbody>
    </table></div>
   </div>
  </div>;
 }
 
-function CashBook({ rows, add, archive, token, reload }){
+function CashBook({ rows, add, archive, updateRecord, token, reload }){
  const [bookId,setBookId]=useState(Object.keys(CASH_BOOKS)[0]);
  const [fy,setFy]=useState("");
  const statements=useMemo(()=>listCashStatements(bookId),[bookId]);
- useEffect(()=>{ if(!statements.some(s=>s.fy===fy)) setFy(statements[0]?.fy||""); },[bookId,statements]);
+ const dbFy=useMemo(()=>Array.from(new Set((rows||[]).map(r=>fyOf(r.recordDate)).filter(Boolean))),[rows]);
+ const fyList=useMemo(()=>Array.from(new Set([...statements.map(s=>s.fy),...dbFy])).sort().reverse(),[statements,dbFy]);
+ useEffect(()=>{ if(!fyList.includes(fy)) setFy(fyList[0]||""); },[fyList,fy]);
  const statement=useMemo(()=>getCashStatement(bookId,fy),[bookId,fy]);
  const book=CASH_BOOKS[bookId]||{};
- const [search,setSearch]=useState(""),[type,setType]=useState("all"),[importing,setImporting]=useState(false);
+ const [search,setSearch]=useState(""),[type,setType]=useState("all"),[importing,setImporting]=useState(false),[editing,setEditing]=useState(null);
  const money=function(v){return "₹"+Number(v||0).toLocaleString("en-IN",{minimumFractionDigits:2,maximumFractionDigits:2});};
  const sigOf=function(date,receipt,payment,particulars){return [String(date||"").slice(0,10),receipt==null?"":Number(receipt),payment==null?"":Number(payment),String(particulars||"").trim().toLowerCase()].join("|");};
  const dbRows=useMemo(()=>(rows||[]).filter(r=>{
@@ -927,7 +937,7 @@ function CashBook({ rows, add, archive, token, reload }){
    return false;
  }),[rows,fy,statement]);
  const entries=useMemo(()=>{
-   const extra=dbRows.map(r=>{const d=r.data||{};const receipt=Number(d.receipt||(d.direction==="in"?r.amount:0))||null;const payment=Number(d.payment||(d.direction==="out"?r.amount:0))||null;return {key:r.id||r.recordId,dbId:r.id,date:String(r.recordDate||d.date||"").slice(0,10),particulars:d.purpose||d.particulars||d.notes||r.recordType||"",type:d.type||r.recordType||"",category:d.category||"",mode:d.mode||d.paymentMode||"Cash",receipt:receipt,payment:payment,voucherNo:d.voucherNo||d.referenceNo||"",remarks:d.remarks||"",verifiedBy:d.verifiedBy||"",source:"Digital Office"};});
+   const extra=dbRows.map(r=>{const d=r.data||{};const receipt=Number(d.receipt||(d.direction==="in"?r.amount:0))||null;const payment=Number(d.payment||(d.direction==="out"?r.amount:0))||null;return {key:r.id||r.recordId,dbId:r.id,raw:r,date:String(r.recordDate||d.date||"").slice(0,10),particulars:d.purpose||d.particulars||d.notes||r.recordType||"",type:d.type||r.recordType||"",category:d.category||"",mode:d.mode||d.paymentMode||"Cash",receipt:receipt,payment:payment,voucherNo:d.voucherNo||d.referenceNo||"",remarks:d.remarks||"",verifiedBy:d.verifiedBy||"",source:"Digital Office"};});
    const dbSig=new Set(extra.map(e=>sigOf(e.date,e.receipt,e.payment,e.particulars)));
    const base=statement?statement.transactions.map((t,i)=>({key:"s"+(i+1),slNo:i+1,date:t.date,particulars:t.particulars,type:t.type,category:t.category,mode:t.mode,receipt:t.receipt||null,payment:t.payment||null,voucherNo:t.voucherNo,remarks:t.remarks,verifiedBy:t.verifiedBy,source:"Cash Book"})).filter(e=>!dbSig.has(sigOf(e.date,e.receipt,e.payment,e.particulars))):[];
    return base.concat(extra).sort((a,b)=>(a.date<b.date?-1:a.date>b.date?1:0));
@@ -983,17 +993,17 @@ function CashBook({ rows, add, archive, token, reload }){
  return <div className="space-y-5">
   <div className="bg-[#002344] text-white rounded-2xl p-6">
    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h2 className="text-2xl font-black">Cash Book / रोकड़ बही</h2><p className="text-white/70 mt-1">Financial-year-wise cash receipts & payments with running balance.</p></div></div>
+    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h2 className="text-2xl font-black">Cash Book / रोकड़ बही</h2><p className="text-white/70 mt-1">Financial-year-wise cash receipts &amp; payments with running balance · वित्तीय वर्ष अनुसार नकद प्राप्ति एवं भुगतान</p></div></div>
     <div className="flex flex-wrap gap-2 items-center">
      <select value={bookId} onChange={e=>setBookId(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{Object.values(CASH_BOOKS).map(b=><option key={b.id} value={b.id}>{b.name}</option>)}</select>
-     <select value={fy} onChange={e=>setFy(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{(statements.length?statements:[{fy:"2025-26"}]).map(s=><option key={s.fy} value={s.fy}>FY {s.fy}</option>)}</select>
+     <select value={fy} onChange={e=>setFy(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#002344] font-bold">{(fyList.length?fyList:[fy].filter(Boolean)).map(s=><option key={s} value={s}>FY {s}</option>)}</select>
     </div>
    </div>
    <div className="mt-4 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Opening Balance</div><div className="font-black mt-1">{money(opening)}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Receipts</div><div className="font-black mt-1 text-emerald-300">{money(totals.receipt)}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Payments</div><div className="font-black mt-1 text-red-300">{money(totals.payment)}</div></div>
-    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Closing Balance</div><div className="font-black mt-1">{money(closing)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Opening Balance / प्रारंभिक शेष</div><div className="font-black mt-1">{money(opening)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Receipts / कुल प्राप्ति</div><div className="font-black mt-1 text-emerald-300">{money(totals.receipt)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Total Payments / कुल भुगतान</div><div className="font-black mt-1 text-red-300">{money(totals.payment)}</div></div>
+    <div className="bg-white/10 rounded-xl p-3"><div className="text-white/60 text-xs font-bold uppercase">Closing Balance / अंतिम शेष</div><div className="font-black mt-1">{money(closing)}</div></div>
    </div>
   </div>
 
@@ -1001,25 +1011,26 @@ function CashBook({ rows, add, archive, token, reload }){
 
   <div className="bg-white rounded-2xl border overflow-hidden">
    <div className="p-5 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-    <div><h3 className="text-xl font-black text-[#002344]">Cash Book · FY {fy}</h3><p className="text-sm text-zinc-500 mt-1">{filtered.length} of {entries.length} entries · {dbRows.length} in Digital Office database</p></div>
+    <div><h3 className="text-xl font-black text-[#002344]">Cash Book / रोकड़ बही · FY {fy}</h3><p className="text-sm text-zinc-500 mt-1">{filtered.length} of {entries.length} entries · {dbRows.length} in Digital Office database</p></div>
     <div className="flex flex-wrap gap-2 items-center">
-     <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search particulars / category / voucher" className="px-3 py-2.5 border rounded-xl w-60"/>
-     <select value={type} onChange={e=>setType(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Entries</option><option value="income">Receipts (Income)</option><option value="expence">Payments (Expence)</option></select>
-     {statement&&<button type="button" disabled={importing||!pendingNew.length} onClick={importStatement} title={pendingNew.length?("Save "+pendingNew.length+" remaining entries"):"All entries already saved"} className={"px-4 py-2.5 rounded-xl font-bold disabled:opacity-60 "+(pendingNew.length?"bg-[#177245] text-white":"bg-zinc-100 text-zinc-500")}>{importing?"Importing…":(pendingNew.length?("Import "+pendingNew.length+" Entries"):"All Entries Saved ✓")}</button>}
+     <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search / खोजें — particulars / category / voucher" className="px-3 py-2.5 border rounded-xl w-60"/>
+     <select value={type} onChange={e=>setType(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Entries / सभी</option><option value="income">Receipts (Income) / प्राप्ति</option><option value="expence">Payments (Expence) / भुगतान</option></select>
+     {statement&&<button type="button" disabled={importing||!pendingNew.length} onClick={importStatement} title={pendingNew.length?("Save "+pendingNew.length+" remaining entries"):"All entries already saved"} className={"px-4 py-2.5 rounded-xl font-bold disabled:opacity-60 "+(pendingNew.length?"bg-[#177245] text-white":"bg-zinc-100 text-zinc-500")}>{importing?"Importing…":(pendingNew.length?("Import "+pendingNew.length+" Entries / आयात करें"):"All Entries Saved ✓")}</button>}
      <button type="button" onClick={exportCsv} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">CSV</button>
      <button type="button" onClick={printPdf} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">PDF</button>
     </div>
    </div>
    <div className="overflow-x-auto"><table className="w-full text-sm min-w-[1200px]">
-    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Date</th><th className="p-3 text-left">Particulars</th><th className="p-3 text-left">Type</th><th className="p-3 text-left">Category</th><th className="p-3 text-left">Mode</th><th className="p-3 text-right">Receipts</th><th className="p-3 text-right">Payments</th><th className="p-3 text-right">Balance</th><th className="p-3 text-left">Voucher No.</th><th className="p-3 text-left">Remarks</th><th className="p-3 text-left">Verified By</th><th className="p-3 text-left">Source</th><th className="p-3"></th></tr></thead>
+    <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Date / दिनांक</th><th className="p-3 text-left">Particulars / विवरण</th><th className="p-3 text-left">Type / प्रकार</th><th className="p-3 text-left">Category / श्रेणी</th><th className="p-3 text-left">Mode / माध्यम</th><th className="p-3 text-right">Receipts / प्राप्ति</th><th className="p-3 text-right">Payments / भुगतान</th><th className="p-3 text-right">Balance / शेष</th><th className="p-3 text-left">Voucher No. / वाउचर</th><th className="p-3 text-left">Remarks / टिप्पणी</th><th className="p-3 text-left">Verified By / सत्यापित</th><th className="p-3 text-left">Source / स्रोत</th><th className="p-3 text-left">Action / कार्य</th></tr></thead>
     <tbody className="divide-y">
-     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="7">Opening Balance</td><td className="p-3 text-right">{money(opening)}</td><td className="p-3" colSpan="5"></td></tr>
-     {filtered.map(function(e){return <tr key={e.key}><td className="p-3 whitespace-nowrap">{formatOfficeDate(e.date)}</td><td className="p-3 min-w-[220px]">{e.particulars}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.type==="Income"?"bg-emerald-50 text-emerald-700":"bg-red-50 text-red-700")}>{e.type||"—"}</span></td><td className="p-3 whitespace-nowrap">{e.category||"—"}</td><td className="p-3">{e.mode||"Cash"}</td><td className="p-3 text-right text-emerald-700">{e.receipt!=null?money(e.receipt):""}</td><td className="p-3 text-right text-red-700">{e.payment!=null?money(e.payment):""}</td><td className="p-3 text-right font-bold">{money(balanceByKey[e.key])}</td><td className="p-3">{e.voucherNo||"—"}</td><td className="p-3 min-w-[150px] text-zinc-500">{e.remarks||"—"}</td><td className="p-3">{e.verifiedBy||"NA"}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.source==="Cash Book"?"bg-zinc-100 text-zinc-600":"bg-emerald-50 text-emerald-700")}>{e.source}</span></td><td className="p-3 text-right">{e.dbId&&<button onClick={()=>{if(window.confirm("Sirf yahi entry archive hogi - baaki entries safe rahengi. Archive karein?"))archive(e.dbId);}} className="text-xs font-bold text-red-600">Archive</button>}</td></tr>;})}
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="7">Opening Balance / प्रारंभिक शेष</td><td className="p-3 text-right">{money(opening)}</td><td className="p-3" colSpan="5"></td></tr>
+     {filtered.map(function(e){return <tr key={e.key}><td className="p-3 whitespace-nowrap">{formatOfficeDate(e.date)}</td><td className="p-3 min-w-[220px]">{e.particulars}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.type==="Income"?"bg-emerald-50 text-emerald-700":"bg-red-50 text-red-700")}>{e.type||"—"}</span></td><td className="p-3 whitespace-nowrap">{e.category||"—"}</td><td className="p-3">{e.mode||"Cash"}</td><td className="p-3 text-right text-emerald-700">{e.receipt!=null?money(e.receipt):""}</td><td className="p-3 text-right text-red-700">{e.payment!=null?money(e.payment):""}</td><td className="p-3 text-right font-bold">{money(balanceByKey[e.key])}</td><td className="p-3">{e.voucherNo||"—"}</td><td className="p-3 min-w-[150px] text-zinc-500">{e.remarks||"—"}</td><td className="p-3">{e.verifiedBy||"NA"}</td><td className="p-3"><span className={"px-2 py-1 rounded-full text-[10px] font-bold "+(e.source==="Cash Book"?"bg-zinc-100 text-zinc-600":"bg-emerald-50 text-emerald-700")}>{e.source}</span></td><td className="p-3 text-right whitespace-nowrap">{e.dbId&&<><button onClick={()=>setEditing(e)} className="text-xs font-bold text-[#123B5D] border border-[#123B5D]/20 px-2 py-1 rounded-lg mr-2">Edit / संपादित</button><button onClick={()=>{if(window.confirm("Sirf yahi entry archive hogi - baaki entries safe rahengi. Archive karein?"))archive(e.dbId);}} className="text-xs font-bold text-red-600">Archive / संग्रह</button></>}</td></tr>;})}
      {!filtered.length&&<tr><td colSpan="13" className="p-10 text-center text-zinc-400">No entries for FY {fy}.</td></tr>}
-     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="5">Total</td><td className="p-3 text-right text-emerald-700">{money(totals.receipt)}</td><td className="p-3 text-right text-red-700">{money(totals.payment)}</td><td className="p-3 text-right">{money(closing)}</td><td className="p-3 text-xs text-zinc-500" colSpan="5">Closing</td></tr>
+     <tr className="bg-[#f7fafc] font-black"><td className="p-3" colSpan="5">Total / कुल</td><td className="p-3 text-right text-emerald-700">{money(totals.receipt)}</td><td className="p-3 text-right text-red-700">{money(totals.payment)}</td><td className="p-3 text-right">{money(closing)}</td><td className="p-3 text-xs text-zinc-500" colSpan="5">Closing / अंतिम शेष</td></tr>
     </tbody>
    </table></div>
-   <div className="p-5 border-t"><div className="font-black text-[#002344] mb-3">Add Cash Entry / रोकड़ प्रविष्टि जोड़ें</div><RecordForm module="cash" onSave={async d=>{d.data=Object.assign({},(d.data||{}),{fy:fy});const ok=await add("cash",d);return ok;}}/></div>
+   {editing&&<div className="p-5 bg-blue-50 border-t"><div className="font-black text-[#002344] mb-3">Edit Cash Entry / प्रविष्टि संपादित करें · {editing.dbId}</div><RecordForm module="cash" initial={editing.raw||editing} submitLabel="Update Entry / अद्यतन करें" onSave={async d=>{if(!d)return;const prev=(editing.raw&&editing.raw.data)||editing.data||{};const inner=Object.assign({},prev,{purpose:d.data.purpose,category:d.data.category,referenceNo:d.data.referenceNo,notes:d.data.notes,paymentMode:d.data.paymentMode,direction:d.data.direction,type:d.recordType,receipt:d.direction==="in"?(d.amount||null):null,payment:d.direction==="out"?(d.amount||null):null,fy:prev.fy||fy});const ok=await updateRecord(editing.dbId,"cash",{date:d.recordDate,changeType:d.recordType,amount:d.amount,data:inner},true);if(ok){setEditing(null);if(typeof reload==="function")await reload();}}}/><button type="button" onClick={()=>setEditing(null)} className="mt-2 border px-5 py-2 rounded-xl font-bold text-sm">Cancel / रद्द करें</button></div>}
+   <div className="p-5 border-t"><div className="font-black text-[#002344] mb-3">Add Cash Entry / रोकड़ प्रविष्टि जोड़ें</div><RecordForm module="cash" onSave={async d=>{d.data=Object.assign({},(d.data||{}),{fy:fyOf(d.recordDate)||fy});const ok=await add("cash",d);return ok;}}/></div>
   </div>
  </div>;
 }
@@ -1098,8 +1109,10 @@ function Register({module,rows,loading,search,setSearch,add,archive}){
  </div>;
 }
 
-function RecordForm({module,onSave}){
- const [f,setF]=useState({date:new Date().toISOString().slice(0,10),name:"",email:"",phone:"",amount:"",paymentMode:"Cash",purpose:"",category:"General",notes:"",projectId:"",pan:"",address:"",direction:"in",item:"",qty:"",unit:"Nos",source:"",recipient:"",subject:"",referenceNo:"",agenda:"",participants:"",decision:"",actionPoints:"",parties:"",terms:"",startDate:"",endDate:"",role:"",validUntil:"",certificateType:"Participation",memberId:"",sourceRecordId:""});
+function RecordForm({module,onSave,initial,submitLabel}){
+ const blank={date:new Date().toISOString().slice(0,10),name:"",email:"",phone:"",amount:"",paymentMode:"Cash",purpose:"",category:"General",notes:"",projectId:"",pan:"",address:"",direction:"in",item:"",qty:"",unit:"Nos",source:"",recipient:"",subject:"",referenceNo:"",agenda:"",participants:"",decision:"",actionPoints:"",parties:"",terms:"",startDate:"",endDate:"",role:"",validUntil:"",certificateType:"Participation",memberId:"",sourceRecordId:""};
+ const seed=initial?{...blank,date:String(initial.recordDate||"").slice(0,10)||blank.date,amount:initial.amount!=null?String(initial.amount):"",paymentMode:(initial.data&&initial.data.paymentMode)||"Cash",purpose:(initial.data&&initial.data.purpose)||"",category:(initial.data&&initial.data.category)||"General",notes:(initial.data&&initial.data.notes)||"",referenceNo:(initial.data&&(initial.data.referenceNo||initial.data.voucherNo))||"",direction:(initial.data&&initial.data.direction)||"in"}:blank;
+ const [f,setF]=useState(seed);
  const [people,setPeople]=useState([]);
  useEffect(()=>{if(module!=="certificates")return; const token=localStorage.getItem(TOKEN_KEY)||""; const headers={Authorization:"Bearer "+token,"Content-Type":"application/json"}; Promise.all(["members","volunteers"].map(m=>fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module="+m,{headers}).then(r=>r.ok?r.json():[]).catch(()=>[]))).then(([members,volunteers])=>setPeople([...(Array.isArray(members)?members:[]).map(r=>({...r,_source:"Member"})),...(Array.isArray(volunteers)?volunteers:[]).map(r=>({...r,_source:"Volunteer"}))]));},[module]);
  const selectPerson=(id)=>{const r=people.find(x=>String(x.id)===String(id));if(!r)return;const d=r.data||{};const personId=r.personId||d.memberId||d.volunteerId||d.officialId||"";setF(x=>({...x,name:d.fullName||d.name||d.title||"",role:d.role||d.position||(r._source==="Member"?"Member":"Volunteer"),memberId:personId,sourceRecordId:r.recordId||""}));};
@@ -1109,15 +1122,17 @@ function RecordForm({module,onSave}){
  const submit=e=>{e.preventDefault();
    if(module==="donations") return onSave({date:f.date,donorName:f.name,amount:f.amount,paymentMode:f.paymentMode,purpose:f.purpose,paymentStatus:"paid",email:f.email,phone:f.phone,pan:f.pan,address:f.address,notes:f.notes,projectId:f.projectId});
    if(module==="expenses") return onSave({date:f.date,payee:f.name,amount:f.amount,paymentMode:f.paymentMode,category:f.category,purpose:f.purpose,notes:f.notes,projectId:f.projectId});
+   if(["cash","bank"].includes(module)){const dir=f.direction;const rt=dir==="in"?"Income":dir==="out"?"Expence":"Opening";const data={purpose:f.purpose,category:f.category,referenceNo:f.referenceNo,notes:f.notes,paymentMode:f.paymentMode,direction:dir,type:rt,amount:f.amount||null,receipt:dir==="in"?(f.amount||null):null,payment:dir==="out"?(f.amount||null):null};return onSave({recordDate:f.date,recordType:rt,amount:f.amount||null,paymentMode:f.paymentMode,direction:dir,data});}
    const data={...f}; onSave({recordDate:f.date,recordType:f.category,amount:f.amount||null,paymentMode:f.paymentMode,direction:f.direction,linkedRecordId:f.sourceRecordId||null,data});
  };
  const money=MONEY.has(module);
  return <form onSubmit={submit} className="p-5 bg-zinc-50 border-b grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-  {input("name",module==="mou"?"Agreement / MoU title":module==="meetings"?"Meeting title":module==="certificates"?"Recipient Name":"Name / title / person",!(["cash","bank","inventory"].includes(module)))}
+  {!(["cash","bank","inventory"].includes(module))&&input("name",module==="mou"?"Agreement / MoU title":module==="meetings"?"Meeting title":module==="certificates"?"Recipient Name":"Name / title / person",true)}
   {input("date","Date",true)}
   {money&&module!=="cash"&&module!=="bank"&&input("amount","Amount",true)}
+  {["cash","bank"].includes(module)&&f.direction!=="opening"&&input("amount",module==="cash"?"Amount (₹)":"Amount (₹)",true)}
   {money&&<select value={f.paymentMode} onChange={e=>set("paymentMode",e.target.value)} className={cls}><option>Cash</option><option>Bank</option><option>UPI</option><option>Cheque</option><option>Other</option></select>}
-  {money&&["cash","bank"].includes(module)&&<select value={f.direction} onChange={e=>set("direction",e.target.value)} className={cls}><option value="opening">Opening Balance</option><option value="in">Money In</option><option value="out">Money Out</option></select>}
+  {money&&["cash","bank"].includes(module)&&<select value={f.direction} onChange={e=>set("direction",e.target.value)} className={cls}><option value="opening">Opening Balance / प्रारंभिक शेष</option><option value="in">Money In / प्राप्ति</option><option value="out">Money Out / भुगतान</option></select>}
   {module==="inventory"&&<>{input("item","Item / Samaan",true)}{input("qty","Quantity",true)}{input("unit","Unit (Nos/Kg/etc.)")}<select value={f.direction} onChange={e=>set("direction",e.target.value)} className={cls}><option value="in">Samaan Aaya</option><option value="out">Samaan Gaya / Diya</option></select>{input("source","Source / From whom")}{input("recipient","Given to / Recipient")}</>}
   {["inward","outward"].includes(module)&&<>{input("referenceNo","Letter / Reference No.")}{input("subject","Subject",true)}{input(module==="inward"?"source":"recipient",module==="inward"?"From whom":"To whom",true)}{input("category","Document Type")}</>}
   {module==="meetings"&&<>{input("category","Meeting Type (Board/General/etc.)")}{area("agenda","Agenda")}{area("participants","Members / Participants Present")}{area("decision","Minutes / Decisions")}{area("actionPoints","Action Points / Responsibility")}</>}
@@ -1130,7 +1145,7 @@ function RecordForm({module,onSave}){
   {module==="assets"&&<>{input("category","Asset Category",true)}{input("item","Asset / Equipment Name",true)}{input("source","Purchase / Donor Source")}{input("qty","Quantity")}{input("unit","Unit")}{input("validUntil","Warranty / Review Date")}{input("recipient","Custodian / Location")}{area("notes","Condition / Remarks")}</>}
   {module==="notifications"&&<>{input("category","Alert Type",true)}{input("subject","Subject",true)}{input("validUntil","Due Date")}{input("recipient","Responsible Person")}{area("notes","Action / Follow-up")}</>}
   {(["inward","outward","meetings","mou","certificates","idcards"].includes(module))&&area("notes","Remarks")}
-  <button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold hover:opacity-95">Save {LABELS[module]||"Record"}</button>
+  <button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold hover:opacity-95">{submitLabel||("Save "+(LABELS[module]||"Record"))}</button>
  </form>;
 }
 

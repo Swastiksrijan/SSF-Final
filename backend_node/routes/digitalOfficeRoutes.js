@@ -567,9 +567,10 @@ router.put('/digital-office/records/:id', requireOfficeAuth, async (req, res) =>
       if (!memberReferenceCheck.ok) return res.status(409).json({message: memberReferenceCheck.message});
     }
     const allowed = ['recordType','status','recordDate','amount','paymentMode','direction','account','linkedRecordId','personId','data'];
+    const before = {}; allowed.forEach(k => { before[k] = row[k]; });
     allowed.forEach(k => { if (Object.prototype.hasOwnProperty.call(req.body,k)) row[k] = req.body[k]; });
     await row.save();
-    await audit('update', row.module, row.recordId, req, { fields:Object.keys(req.body) });
+    await audit('update', row.module, row.recordId, req, { fields:Object.keys(req.body), before });
     return res.json(row);
   } catch (e) { console.error(e); res.status(500).json({message:'Unable to update record.'}); }
 });
