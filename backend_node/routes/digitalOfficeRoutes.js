@@ -99,7 +99,7 @@ const memberPhotoUpload = multer({
   limits: { fileSize: 2 * 1024 * 1024, files: 1 }
 });
 
-const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID', chartOfAccounts:'COA', fyMaster:'FY', sahyog:'SYG' };
+const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID', chartOfAccounts:'COA', fyMaster:'FY', sahyog:'SYG', fundMaster:'FND', pettyCash:'PCT', grant:'GRN', transfer:'TRF', adjustment:'ADJ' };
 const _norm = (s) => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, ' ').trim();
 const _day = (d) => { try { return new Date(d).toISOString().slice(0, 10); } catch (_) { return String(d || '').slice(0, 10); } };
 // Strong duplicate probe shared by the money workflows: same party + amount + day.
