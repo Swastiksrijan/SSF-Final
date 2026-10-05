@@ -35,7 +35,7 @@ const fmt = (d) => {
   if (!d) return '—';
   const s = String(d).slice(0, 10);
   const [y, m, dd] = s.split('-');
-  return y && m && dd ? `${dd}-${m}-${y}` : s;
+  return y && m && dd ? `${dd}/${m}/${y}` : s;
 };
 const memberKey = (r) => String(r.memberId || r.fullName || r.recordId);
 const roleKey = (r) => String(r.newRole || r.previousRole || 'Unspecified');
@@ -132,7 +132,7 @@ export function ImsOfficeHistory() {
       <td className="max-w-[320px] p-3 text-slate-600">{r.details || '—'}</td>
       <td className="max-w-[280px] p-3 text-slate-500">{r.remarks || '—'}</td>
       <td className="whitespace-nowrap p-3">
-        <button type="button" onClick={() => startEdit(r)} className="mr-2 rounded-lg bg-[#002344] px-3 py-1.5 text-xs font-bold text-white">{L('Edit', 'संपादित')}</button>
+        <button type="button" onClick={() => startEdit(r)} className="mr-2 rounded-lg bg-[#002344] px-3 py-1.5 text-xs font-bold text-white">✏️ {L('Edit', 'संपादित')}</button>
         <button type="button" onClick={() => archive(r.id)} className="rounded-lg border border-rose-200 px-3 py-1.5 text-xs font-bold text-rose-700">{L('Archive', 'संग्रह')}</button>
       </td>
     </tr>
@@ -296,7 +296,23 @@ export function ImsOfficeHistory() {
     </div>
   );
 
-  const register = <div className="space-y-5">{formCard}{table}</div>;
+  const register = (
+    <div className="space-y-5">
+      {formCard}
+      <Card className="overflow-hidden">
+        <div className="border-b border-slate-200 p-5">
+          <div className="flex flex-col justify-between gap-2 sm:flex-row sm:items-center">
+            <div>
+              <h3 className="text-xl font-black text-[#002344]">{L('Complete Register', 'पूर्ण रजिस्टर')}</h3>
+              <p className="mt-1 text-sm text-slate-500">{L('All preserved Managing Committee History records — edit any existing entry without creating a duplicate.', 'सभी सुरक्षित प्रबंधकारिणी समिति इतिहास अभिलेख — बिना नकल बनाए किसी भी मौजूदा प्रविष्टि को संपादित करें।')}</p>
+            </div>
+            <div className="text-sm font-bold text-[#1F7A70]">{all.length} {L('historical record(s)', 'ऐतिहासिक अभिलेख')}</div>
+          </div>
+        </div>
+      </Card>
+      {table}
+    </div>
+  );
 
   const tabs = [
     ['dashboard', 'Dashboard', 'डैशबोर्ड', 'LayoutDashboard'],
