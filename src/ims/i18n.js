@@ -5,6 +5,10 @@ export const DICT = {
   app_full: { en: 'Swastik Srijan Foundation — Integrated Management System', hi: 'स्वस्तिक सृजन फाउंडेशन — एकीकृत प्रबंधन प्रणाली' },
   working_name: { en: 'SSF OneOffice', hi: 'एस.एस.एफ. वनऑफिस' },
   tagline: { en: 'One Organisation • One Record • Complete Accountability', hi: 'एक संस्था • एक रिकॉर्ड • पूर्ण जवाबदेही' },
+  management_system: { en: 'Integrated Management System', hi: 'एकीकृत प्रबंधन प्रणाली' },
+  overview: { en: 'Overview', hi: 'अवलोकन' },
+  main: { en: 'Main', hi: 'मुख्य' },
+  updated: { en: 'Updated', hi: 'अद्यतन' },
 
   main_dashboard: { en: 'Main Dashboard', hi: 'मुख्य डैशबोर्ड' },
   global_search: { en: 'Global Search', hi: 'खोज' },
@@ -128,4 +132,11 @@ export function t(key, lang = 'en') {
   const e = DICT[key];
   if (!e) return key;
   return e[lang] || e.en || key;
+}
+
+/** Both languages for a key, so labels can be shown bilingually at once. */
+export function tBoth(key) {
+  const e = DICT[key];
+  if (!e) return [key, key];
+  return [e.en, e.hi || e.en];
 }

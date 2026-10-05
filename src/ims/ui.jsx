@@ -21,20 +21,20 @@ export function PageHeader({ title, subtitle, actions }) {
 
 export function Kpi({ icon, label, value, tone = 'navy' }) {
   const tones = {
-    navy: 'bg-[#002344] text-white',
-    orange: 'bg-[#FF6600] text-white',
-    green: 'bg-emerald-600 text-white',
-    red: 'bg-rose-600 text-white',
-    amber: 'bg-amber-500 text-white',
-    slate: 'bg-slate-700 text-white',
+    navy: 'from-[#002344] to-[#0b3a63] text-white',
+    orange: 'from-[#FF6600] to-[#ff8a3d] text-white',
+    green: 'from-emerald-600 to-emerald-500 text-white',
+    red: 'from-rose-600 to-rose-500 text-white',
+    amber: 'from-amber-500 to-amber-400 text-white',
+    slate: 'from-slate-700 to-slate-600 text-white',
   };
   const I = Icons[icon] || Icons.Activity;
   return (
-    <Card className="flex items-center gap-3 p-4">
-      <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-lg ${tones[tone]}`}><I size={20} /></span>
+    <Card className="group flex items-center gap-3 p-4 transition-shadow hover:shadow-md">
+      <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br shadow-sm ${tones[tone]}`}><I size={20} /></span>
       <span className="min-w-0">
-        <span className="block truncate text-xs font-medium uppercase tracking-wide text-slate-400">{label}</span>
-        <span className="block text-xl font-bold text-slate-900">{value}</span>
+        <span className="block truncate text-[11px] font-semibold uppercase tracking-wide text-slate-400">{label}</span>
+        <span className="block truncate text-xl font-black tracking-tight text-slate-900">{value}</span>
       </span>
     </Card>
   );

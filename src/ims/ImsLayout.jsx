@@ -4,6 +4,8 @@ import * as Icons from 'lucide-react';
 import { NAV } from '../ims/nav';
 import { useLang } from '../ims/LangContext';
 import { ims } from '../ims/api';
+import { tBoth } from '../ims/i18n';
+import logoImg from '../assets/new-logo.png';
 
 function Icon({ name, size = 18, className = '' }) {
   const C = Icons[name] || Icons.Circle;
@@ -46,7 +48,7 @@ export default function ImsLayout({ children, active }) {
             <Icons.Menu size={22} />
           </button>
           <Link to="/ims" className="flex items-center gap-2">
-            <span className="grid h-9 w-9 place-items-center rounded-lg bg-[#FF6600] font-bold">S</span>
+            <img src={logoImg} alt="SSF logo" className="h-10 w-10 rounded-lg bg-white p-1 object-contain" />
             <span className="leading-tight">
               <span className="block text-sm font-bold tracking-wide">SSF-IMS</span>
               <span className="block text-[10px] text-white/70">{t('working_name')}</span>
@@ -100,13 +102,17 @@ export default function ImsLayout({ children, active }) {
                   <div className="px-3 pb-1 pt-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">{t(g)}</div>
                   {group.items.map(item => {
                     const isActive = active === item.key;
+                    const both = tBoth(item.key);
                     return (
                       <button key={item.key}
                         onClick={() => item.path ? (setOpen(false), navigate({ to: item.path })) : openResource(item)}
-                        className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm transition
-                          ${isActive ? 'bg-[#FF6600] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}>
-                        <Icon name={item.icon} size={17} className={isActive ? 'text-white' : 'text-slate-400'} />
-                        <span className="font-medium">{t(item.key)}</span>
+                        className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition
+                          ${isActive ? 'bg-[#002344] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}>
+                        <Icon name={item.icon} size={17} className={isActive ? 'text-[#FFD166]' : 'text-slate-400'} />
+                        <span className="min-w-0 flex-1 leading-tight">
+                          <span className={`block truncate text-sm font-semibold ${isActive ? 'text-white' : 'text-[#002344]'}`}>{both[0]}</span>
+                          <span className={`block truncate text-[11px] font-medium ${isActive ? 'text-[#FFF8E7]' : 'text-[#1F7A70]'}`}>{both[1]}</span>
+                        </span>
                       </button>
                     );
                   })}

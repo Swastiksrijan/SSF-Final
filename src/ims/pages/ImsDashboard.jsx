@@ -2,12 +2,13 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, Kpi, PageHeader, Empty, Spinner, Button } from '../ui';
+import { Card, Kpi, Empty, Spinner, Button } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { BarChart, DonutChart, ColumnChart } from '../charts';
 import { exportRecordsPdf } from '../pdf';
 import { exportRecordsExcel } from '../excel';
+import logoImg from '../../assets/new-logo.png';
 
 const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
 
@@ -49,13 +50,18 @@ export default function ImsDashboard() {
 
   return (
     <ImsLayout active="main_dashboard">
-      <PageHeader title={t('main_dashboard')} subtitle={t('tagline')}
+      <Hero
+        title={t('app_full')}
+        eyebrow={`${t('working_name')} · ${t('management_system')}`}
+        tagline={t('tagline')}
+        updated={data ? new Date().toLocaleString('en-IN') : ''}
         actions={data ? (
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             <Button icon="FileText" onClick={() => exportRecordsPdf({ title: t('main_dashboard'), subtitle: t('app_full'), records: summaryRows(data, money) })}>{t('download')} PDF</Button>
             <Button icon="Table2" variant="ghost" onClick={() => exportRecordsExcel({ title: t('main_dashboard'), records: summaryRows(data, money), sheetName: 'Dashboard' })}>{t('download')} Excel</Button>
           </div>
-        ) : null} />
+        ) : null}
+      />
 
       {err && <Card className="mb-4 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</Card>}
       {!data && !err && <Spinner />}
@@ -160,6 +166,27 @@ export default function ImsDashboard() {
         </div>
       )}
     </ImsLayout>
+  );
+}
+
+function Hero({ title, eyebrow, tagline, updated, actions }) {
+  return (
+    <section className="relative overflow-hidden rounded-3xl bg-[#002344] p-6 text-white shadow-lg sm:p-8">
+      <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[#FF6600]/20 blur-2xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-20 right-24 h-48 w-48 rounded-full bg-[#FFD166]/10 blur-2xl" />
+      <div className="relative flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex items-start gap-4">
+          <img src={logoImg} alt="SSF logo" className="h-16 w-16 shrink-0 rounded-2xl bg-white p-2 object-contain sm:h-20 sm:w-20" />
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[.2em] text-[#FFD166]">{eyebrow}</p>
+            <h1 className="mt-2 text-2xl font-black leading-tight sm:text-3xl">{title}</h1>
+            <p className="mt-2 max-w-3xl text-sm text-white/75">{tagline}</p>
+            {updated && <p className="mt-2 text-[11px] font-semibold text-white/50">{updated}</p>}
+          </div>
+        </div>
+        {actions && <div className="shrink-0">{actions}</div>}
+      </div>
+    </section>
   );
 }
 
