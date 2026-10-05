@@ -1,138 +1,266 @@
-# SSF Digital Office — Finance Registers Master Plan
+# SSF Digital Office — Finance & Compliance Register Master (v2)
 
-> Goal: ek aisa MIS jo 50 saal bina structural badlav chale.
-> Rule: **kuch hatana nahi** — jo hai wo rahega, sirf sahi/expand karenge.
-> NGO hai — **loan register ki zarurat nahi**, par delete nahi karenge (deprioritize).
+> Mission: ek aisa MIS jise **50 saal** tak structurally badalna na pade.
+> Rule: **kuch hatana nahi** — jo hai wo rahega, sirf sahi / expand karenge.
+> Nature: NGO / Society (pan-India) — **loan register ki zarurat nahi**, par hatayenge nahi.
+> Basis: Mango NGO financial-management guide, ICAI / Societies Act, Income-Tax 12A/80G/10B/10BD,
+> FCRA 2010 (FC-4), CSR Rules 2014 (CSR-1), NITI Darpan, and standard internal-control frameworks
+> (segregation of duties, maker-checker, asset safeguarding).
 
-Legend: ✅ = app me already hai · 🔧 = hai par FY-wise / structure sahi karna hai · 🆕 = banana hai
-
----
-
-## 0. 50-saal MIS ke 5 design rules (sabse pehle ye tay)
-
-1. **Chart of Accounts (COA)** — har income/expense ka ek sthir head code (e.g. `INC-100 Donation`,
-   `EXP-210 Rent`). 50 saal tak code nahi badlega, sirf naye head add honge.
-2. **FY-wise partition** — har register har FY ka alag. Purana FY lock (read-only), naya FY kholna.
-3. **Fund accounting** — Restricted (project/donor-bound) vs Unrestricted (general) har entry par.
-4. **Sahyog / in-kind alag** — non-cash support bhi record ho, par cash book na badle.
-5. **Audit trail** — har entry par: kaun, kab, FY, voucher no., source document ref.
+Legend: ✅ already hai · 🔧 hai par FY-wise / structure sahi karna · 🆕 banana hai
 
 ---
 
-## A. Core Books (मूल बहियाँ) — legal books
+## 0. Design principles (ye pehle freeze karenge — inhe 50 saal nahi badlenge)
 
-| # | Register | Hindi | Status |
-|---|----------|-------|--------|
-| A1 | Cash Book (FY-wise) | रोकड़ बही | 🔧 (cash) |
-| A2 | Bank Book (FY-wise, multi-account) | बैंक बही | 🔧 (bank) |
-| A3 | Cash–Bank Combined Book | रोकड़-बैंक संयुक्त बही | 🔧 (cashbank) |
-| A4 | Journal (double entry) | रोजनामचा | ✅ (finance/journal) |
-| A5 | Ledger (head-wise) | खाता बही | ✅ (finance/ledger) |
-| A6 | Voucher Register | वाउचर रजिस्टर | ✅ (vouchers) |
-| A7 | Receipt & Payment A/c (auto, FY) | प्राप्ति-भुगतान खाता | 🆕 |
-| A8 | Income & Expenditure A/c (auto, FY) | आय-व्यय खाता | 🆕 |
-| A9 | Balance Sheet (auto, FY) | तुलन-पत्र | 🆕 |
-| A10 | Trial Balance (auto, FY) | शेष-सूची | 🆕 |
-
-## B. Income / Receipts (आय रजिस्टर)
-
-| # | Register | Hindi | Status |
-|---|----------|-------|--------|
-| B1 | Donation Register | दान रजिस्टर | ✅ (donations) |
-| B2 | Membership Fee Register | सदस्यता शुल्क | ✅ (membership) |
-| B3 | **Founder / Sahyog Register** | संस्थापक सहयोग | 🆕 (key) |
-| B4 | In-kind & Voluntary Support Register | वस्तु-रूप / स्वयंसेवी सहयोग | 🆕 |
-| B5 | Grant Register | अनुदान रजिस्टर | 🆕 |
-| B6 | CSR Fund Register | सीएसआर कोष | 🆕 |
-| B7 | Foreign Contribution (FCRA) Register | विदेशी अंशदान | 🆕 (agar FCRA) |
-| B8 | Interest & Other Income Register | ब्याज एवं अन्य आय | 🆕 |
-| B9 | Fund / Project-wise Income Register | निधि-वार आय | 🆕 |
-
-## C. Expenditure (व्यय)
-
-| # | Register | Hindi | Status |
-|---|----------|-------|--------|
-| C1 | Expense Register | व्यय रजिस्टर | ✅ (expenses) |
-| C2 | Payment Voucher Register | भुगतान वाउचर | ✅ (vouchers) |
-| C3 | Petty Cash Register | फुटकर रोकड़ | 🆕 |
-| C4 | Procurement / Purchase Register | क्रय रजिस्टर | 🆕 |
-| C5 | Salary, Honorarium & Stipend Register | वेतन / मानदेय | 🆕 |
-| C6 | Rent Register (incl. Sahyog-supported) | किराया रजिस्टर | 🆕 |
-| C7 | Program / Project Expense Register | कार्यक्रम व्यय | 🆕 |
-| C8 | TDS Register | टी.डी.एस. | ✅ (tds) |
-| C9 | Statutory Dues Register (PF/ESI/GST) | सांविधिक देय | ✅ (statutoryDues) |
-
-## D. Assets & Liabilities (संपत्ति एवं दायित्व)
-
-| # | Register | Hindi | Status |
-|---|----------|-------|--------|
-| D1 | Fixed Asset Register | स्थायी संपत्ति | ✅ (fixedAssets) |
-| D2 | Depreciation Schedule | मूल्यह्रास | 🆕 (FA ka hissa) |
-| D3 | Investment Register | निवेश रजिस्टर | ✅ (investments) |
-| D4 | Loan / Borrowing Register | ऋण रजिस्टर | ✅ (loans) — *rakha, par NGO me zarurat nahi* |
-| D5 | Security Deposit & Advances Register | जमा एवं अग्रिम | 🆕 |
-| D6 | Creditors / Payables Register | लेनदार | 🆕 |
-| D7 | Debtors / Receivables Register | देनदार | 🆕 |
-
-## E. Banking (बैंकिंग)
-
-| # | Register | Hindi | Status |
-|---|----------|-------|--------|
-| E1 | Bank Reconciliation Register | बैंक मिलान | ✅ (brs) |
-| E2 | Bank Account Master | बैंक खाता मास्टर | 🆕 |
-| E3 | Cheque / DD Issue & Receipt Register | चेक/डी.डी. | 🆕 |
-
-## F. Budget & Control (बजट एवं नियंत्रण)
-
-| # | Register | Hindi | Status |
-|---|----------|-------|--------|
-| F1 | Budget vs Actual Register | बजट एवं वास्तविक | ✅ (budget) |
-| F2 | Fund Balance / Reserve Register | निधि शेष | 🆕 |
-| F3 | Cash Flow Statement (auto) | रोकड़ प्रवाह | 🆕 |
-
-## G. Compliance & Audit (अनुपालन एवं लेखा परीक्षा)
-
-| # | Register | Hindi | Status |
-|---|----------|-------|--------|
-| G1 | Audit Register | लेखा परीक्षा | ✅ (audits) |
-| G2 | Audited Statements Archive (FY-wise) | लेखा-परीक्षित विवरण | ✅ (audit-reports + auditReports.json) |
-| G3 | Statutory Registration Register (12A/80G/FCRA/CSR-1/Darpan/ROC) | वैधानिक पंजीकरण | 🆕 |
-| G4 | Tax & Return Filing Register (ITR-7, TDS returns, GST) | कर विवरणी | 🆕 |
-| G5 | Donor 80G Receipt / Certificate Register | दान रसीद | 🔧 (donorSlips) |
-| G6 | Related-Party & Conflict of Interest Register | संबंधित-पक्ष | 🆕 |
-
-## H. MIS Masters (मास्टर)
-
-| # | Register | Hindi | Status |
-|---|----------|-------|--------|
-| H1 | Chart of Accounts (Head Master) | लेखा-शीर्ष मास्टर | 🆕 |
-| H2 | Fund / Project Master | निधि मास्टर | 🆕 |
-| H3 | Party Master (Donor / Vendor / Member) | पक्षकार मास्टर | 🆕 |
-| H4 | FY Master & Year-Close Register | वित्त-वर्ष मास्टर | 🔧 (AuditYear) |
-| H5 | Opening Balance / Carry-forward Register | प्रारंभिक शेष | 🆕 |
+1. **Chart of Accounts (COA)** — har income/expense ka sthir code: `INC-100`, `EXP-210`… Naye head add honge, purane code kabhi nahi badlenge.
+2. **FY partition + Year-close** — har register har FY ka alag; FY close hone par **lock** (read-only), naya FY kholna. Opening balance auto carry-forward.
+3. **Dual view** — Cash basis (Receipt & Payment A/c) aur Mercantile/accrual (Income & Expenditure A/c) dono support; donor/auditor dono ko chahiye.
+4. **Fund accounting** — har entry par: Restricted (project/donor-bound) vs Unrestricted (general), aur Corpus vs General.
+5. **Cost-centre / Programme code** — har kharch/income par programme/project tag.
+6. **Sahyog & In-kind alag ledger** — non-cash support bhi record ho, par Cash Book na badle (dual entry: income + matching expense → net zero, transparency bane).
+7. **Audit trail & immutability** — har entry par: kaun, kab, FY, voucher no., source-document ref; post-close edit allowed nahi, sirf reversal/adjustment entry.
+8. **Maker–checker** — banane wala aur approve karne wala alag; approval log.
+9. **Source-document vault** — har entry ke saath bill/receipt/UTR attach (document index).
+10. **Statutory mapping** — har register kis law/return se juda hai, wo tag hoga (audit-ready).
 
 ---
 
-## Founder / Sahyog Register — concept (B3)
+## 1. CORE BOOKS (मूल बहियाँ) — legal books of account
 
-Sahyog = koi bhi vyakti/institution SSF ke kaam me **bina rashi/rasid ke** jo sahyog de —
-Founder cash de, advance de, office rent de, member fee na de to founder de,
-IT vibhag, auditor, ya koi bhi. Ye **loan nahi** hai — ye contribution/sahyog hai.
+| Code | Register | Hindi | Why / Basis | Frequency | Status |
+|------|----------|-------|-------------|-----------|:------:|
+| CORE-01 | Cash Book | रोकड़ बही | Societies Act / IT 12A books | Daily | 🔧 |
+| CORE-02 | Bank Book (multi-account) | बैंक बही | IT / FCRA (separate a/c) | Daily | 🔧 |
+| CORE-03 | Cash–Bank Combined Book | रोकड़-बैंक संयुक्त | Daily cash position | Daily | 🔧 |
+| CORE-04 | Journal | रोजनामचा | Double-entry | Daily | ✅ |
+| CORE-05 | General Ledger (head-wise) | खाता बही | Books of account | Monthly | ✅ |
+| CORE-06 | Voucher Register | वाउचर रजिस्टर | Voucher numbering | Daily | ✅ |
+| CORE-07 | Petty Cash / Imprest | फुटकर रोकड़ | Small-expense control | Daily | 🆕 |
+| CORE-08 | Bank/Cash Transfer Register | अंतरण रजिस्टर | Inter-account / inter-project | Per event | 🆕 |
+| CORE-09 | Receipt & Payment A/c (auto) | प्राप्ति-भुगतान खाता | Cash-basis statement | Annual (auto) | 🆕 |
+| CORE-10 | Income & Expenditure A/c (auto) | आय-व्यय खाता | Accrual statement | Annual (auto) | 🆕 |
+| CORE-11 | Balance Sheet (auto) | तुलन-पत्र | Position statement | Annual (auto) | 🆕 |
+| CORE-12 | Trial Balance (auto) | शेष-सूची | Books correctness | Monthly | 🆕 |
+| CORE-13 | Adjustment / Prior-period Entry | समायोजन प्रविष्टि | Audit adjustments | Per event | 🆕 |
 
-- Kisi receipt/proof ki zarurat nahi. Sirf SSF internally record rakhe.
-- Accounting: I&E me income (Sahyog) + uske saamne corresponding expense (rent/service) —
-  net par asar nahi, par transparency + audit trail bane.
+## 2. INCOME & RECEIPTS (आय एवं प्राप्तियाँ)
 
-Suggested columns (final hum baad me tay karenge):
-Sahyog ID · Date · FY · Sahyog Karta (Founder / Office Bearer / IT / Auditor / Other) · Name ·
-Sahyog Type (Cash / Advance / Rent / Fee / Utility / Service / Goods / Space) · Description ·
-Amount/Value (₹) · Mode (Cash / UPI / Bank / In-kind) · Kiske paksh me (SSF) · Recovered/Adjusted? (Y/N + date) ·
-Balance · Remarks · Verified By.
+| Code | Register | Hindi | Why / Basis | Key fields (direction) |
+|------|----------|-------|-------------|------------------------|
+| INCM-01 | Donation Register | दान रजिस्टर | IT 80G / 10BD | donor, PAN, receipt no., mode, amount, 80G?, purpose |
+| INCM-02 | Corpus Donation Register | कोष दान | IT 11(1)(d) corpus direction | donor, corpus-direction letter, amount |
+| INCM-03 | Membership Fee Register | सदस्यता शुल्क | Society rules | member, fee type, period, receipt no. |
+| INCM-04 | **Founder / Sahyog Register** | संस्थापक सहयोग | Internal + transparency | see §14 |
+| INCM-05 | In-kind & Voluntary Support | वस्तु-रूप सहयोग | AS/in-kind | item/service, fair value, donor, usage |
+| INCM-06 | Grant Register (domestic) | अनुदान | Grant agreement | grantor, agreement no., sanctioned, received, UC due |
+| INCM-07 | CSR Fund Register | सीएसआर | CSR Rules 2014 / CSR-1 | company, CSR-2 ref, project, amount |
+| INCM-08 | Foreign Contribution (FCRA) Register | विदेशी अंशदान | FCRA 2010, FC-4 | donor country, designated SBI a/c, purpose, utilisation |
+| INCM-09 | Interest & Other Income | ब्याज एवं अन्य आय | IT | source, TDS, amount |
+| INCM-10 | Donation-in-kind (Goods) | वस्तु दान | IT / in-kind | item, qty, value, donor |
+| INCM-11 | Event / Programme Income | कार्यक्रम आय | IT | event, receipts, expenses |
+| INCM-12 | Anonymous Donation Register | गुमनाम दान | IT (taxable!) | date, amount, mode |
+| INCM-13 | Fund/Project-wise Income | निधि-वार आय | Fund accounting | fund, project, amount |
+| INCM-14 | Pledge / Commitment Register | प्रतिज्ञा | Donor management | donor, pledged, received, balance |
+
+## 3. EXPENDITURE & PAYMENTS (व्यय एवं भुगतान)
+
+| Code | Register | Hindi | Why / Basis | Key fields |
+|------|----------|-------|-------------|-----------|
+| EXPN-01 | Expense Register | व्यय रजिस्टर | Books | date, head, party, amount, mode, bill no. |
+| EXPN-02 | Payment Voucher Register | भुगतान वाउचर | Internal control | voucher no., approver, payee, UTR |
+| EXPN-03 | Procurement / Purchase Register | क्रय रजिस्टर | Best value / IT 40A(3) | quotation, vendor, PO, GRN, amount |
+| EXPN-04 | Salary & Payroll Register | वेतन रजिस्टर | PF/ESI/TDS | employee, gross, deductions, net, bank |
+| EXPN-05 | Honorarium & Stipend Register | मानदेय | Interns/volunteers | name, role, period, amount, TDS |
+| EXPN-06 | Rent Register (incl. Sahyog) | किराया | TDS 194I | premises, rent, TDS, Sahyog portion |
+| EXPN-07 | Programme / Project Expense | कार्यक्रम व्यय | Fund accounting | project, activity, amount, fund |
+| EXPN-08 | Travel & Reimbursement Register | यात्रा/प्रतिपूर्ति | IT | claimant, purpose, amount, bills |
+| EXPN-09 | Advance to Staff/Vendor + Settlement | अग्रिम एवं निपटान | Internal control | payee, advance, settled, balance |
+| EXPN-10 | Capital Expenditure Register | पूँजीगत व्यय | Capitalisation | asset, cost, date, vendor |
+| EXPN-11 | TDS Register | टी.डी.एस. | 194C/J/I/H/A | party, section, rate, challan, quarter |
+| EXPN-12 | Statutory Dues (PF/ESI/GST/PT) | सांविधिक देय | PF/ESI/GST | type, period, due, paid, challan |
+| EXPN-13 | Bank Charges & Misc Register | बैंक शुल्क | Books | date, nature, amount |
+
+## 4. ASSETS & LIABILITIES (संपत्ति एवं दायित्व)
+
+| Code | Register | Hindi | Why / Basis |
+|------|----------|-------|-------------|
+| ASST-01 | Fixed Asset Register | स्थायी संपत्ति | Cost, dep, WDV (ICAI) |
+| ASST-02 | Depreciation Schedule | मूल्यह्रास | IT Act rates / AS |
+| ASST-03 | Investment Register | निवेश रजिस्टर | FD/RD/MF, maturity |
+| ASST-04 | Loan / Borrowing Register | ऋण रजिस्टर | *rakha — NGO me zarurat nahi* |
+| ASST-05 | Security Deposit & Advances | जमा/अग्रिम | Recoverable tracking |
+| ASST-06 | Creditors / Payables | लेनदार | Outstanding bills |
+| ASST-07 | Debtors / Receivables | देनदार | Grant/pledge receivable |
+| ASST-08 | Corpus / Endowment Fund Register | कोष निधि | IT 11(1)(d) |
+| ASST-09 | Restricted & Unrestricted Fund Register | निधि वर्गीकरण | Fund accounting |
+| ASST-10 | Reserve Fund Register | संचित कोष | Board-approved reserves |
+| ASST-11 | Contingent Liability & Commitments | आकस्मिक दायित्व | Disclosure |
+| ASST-12 | Asset Physical Verification Register | भौतिक सत्यापन | Asset safeguarding |
+| ASST-13 | Insurance Register | बीमा | Asset/liability cover |
+
+## 5. BANKING & TREASURY (बैंकिंग एवं कोषागार)
+
+| Code | Register | Hindi | Why / Basis |
+|------|----------|-------|-------------|
+| BANK-01 | Bank Account Master | बैंक खाता मास्टर | All accounts + FCRA designated |
+| BANK-02 | Bank Reconciliation Register | बैंक मिलान | Monthly BRS |
+| BANK-03 | Cheque / DD Issue Register | चेक जारी | Control, stop-payment |
+| BANK-04 | Cheque Book & Stationery Register | चेक पुस्तिका | Control |
+| BANK-05 | Signatory / Authority Register | हस्ताक्षर अधिकार | Board-resolution ref |
+| BANK-06 | FD / Investment Receipt Register | सावधि जमा | Maturity, interest |
+
+## 6. BUDGET & CONTROL (बजट एवं नियंत्रण)
+
+| Code | Register | Hindi | Why |
+|------|----------|-------|-----|
+| BUDG-01 | Budget vs Actual Register | बजट एवं वास्तविक | Board-approved budget |
+| BUDG-02 | Budget Revision Register | बजट संशोधन | Approval trail |
+| BUDG-03 | Cash Flow Statement (auto) | रोकड़ प्रवाह | Liquidity |
+| BUDG-04 | Fund Balance / Utilisation Register | निधि उपयोग | Restricted-fund tracking |
+| BUDG-05 | Variance & Exception Register | अंतर विश्लेषण | Management review |
+
+## 7. COMPLIANCE & STATUTORY (अनुपालन एवं सांविधिक)
+
+| Code | Register | Hindi | Why / Basis |
+|------|----------|-------|-------------|
+| COMP-01 | Statutory Registration Register | पंजीकरण | Society/12A/80G/FCRA/CSR-1/Darpan/PAN/TAN/ROC |
+| COMP-02 | Tax & Return Filing Register | कर विवरणी | ITR-7, 10B/10BB, 10BD/10BE, 24Q/26Q, GST |
+| COMP-03 | Form 10BD / 10BE Donation Reporting | दान सूचना | IT (since FY 2021-22) |
+| COMP-04 | FCRA FC-4 / FC-3 Register | एफ.सी.आर.ए. | FCRA annual/quarterly |
+| COMP-05 | Donor 80G Receipt Register | 80G रसीद | Donor certificate |
+| COMP-06 | Compliance Calendar / Due-date Register | अनुपालन कैलेंडर | Deadlines |
+| COMP-07 | Legal & Statutory Case Register | विधिक वाद | Litigation |
+| COMP-08 | Property / Lease & Utilities Register | संपत्ति/पट्टा | Ownership, NOC, bills |
+| COMP-09 | Related-Party & Conflict of Interest | संबंधित पक्ष | Governance/audit |
+| COMP-10 | Licence & Renewal Register | अनुज्ञप्ति | Expiry tracking |
+
+## 8. GOVERNANCE & MINUTES (शासन एवं कार्यवृत्त)
+
+| Code | Register | Hindi | Why |
+|------|----------|-------|-----|
+| GOVN-01 | AGM / General Body Minutes | आम सभा कार्यवृत्त | Societies Act |
+| GOVN-02 | Executive Committee Minutes | कार्यकारिणी कार्यवृत्त | Governance |
+| GOVN-03 | Resolution Register | संकल्प रजिस्टर | Approvals (rent, budget…) |
+| GOVN-04 | Delegation of Authority Register | अधिकार प्रत्यायोजन | Maker–checker |
+| GOVN-05 | Policy Register | नीति रजिस्टर | Finance/HR/procurement policies |
+| GOVN-06 | Member Register | सदस्य रजिस्टर | Society annual list |
+| GOVN-07 | Office-Bearer / Committee Register | पदाधिकारी | Signatories |
+
+## 9. AUDIT & ASSURANCE (लेखा परीक्षा एवं आश्वासन)
+
+| Code | Register | Hindi | Why |
+|------|----------|-------|-----|
+| AUDT-01 | Audit Register | लेखा परीक्षा | Statutory/Internal/Donor audit |
+| AUDT-02 | Audited Statements Archive (FY-wise) | लेखा-परीक्षित विवरण | CA-signed set |
+| AUDT-03 | Audit Observation & Compliance | लेखा टिप्पणी | Finding → action |
+| AUDT-04 | Internal Audit Register | आंतरिक लेखा परीक्षा | Periodic |
+| AUDT-05 | Management Response / Action Taken | प्रबंधन उत्तर | Closure trail |
+
+## 10. DONOR & GRANTOR MANAGEMENT (दानदाता प्रबंधन)
+
+| Code | Register | Hindi | Why |
+|------|----------|-------|-----|
+| DONR-01 | Donor Master | दानदाता मास्टर | 80G, PAN, history |
+| DONR-02 | Grant Agreement Register | अनुदान करार | Terms, conditions |
+| DONR-03 | Utilisation Certificate Register | उपयोग प्रमाणपत्र | Grantor UC |
+| DONR-04 | Donor Reporting Calendar | दानदाता रिपोर्टिंग | Deadlines |
+| DONR-05 | Foreign Donor Register | विदेशी दानदाता | FCRA |
+
+## 11. HR & PAYROLL INTERFACE (मानव संसाधन)
+
+| Code | Register | Hindi | Why |
+|------|----------|-------|-----|
+| HRPY-01 | Employee Master | कर्मचारी मास्टर | Payroll link |
+| HRPY-02 | Attendance / Leave Register | उपस्थिति | Salary calc |
+| HRPY-03 | Volunteer & Intern Register | स्वयंसेवी | Honorarium link |
+| HRPY-04 | Reimbursement & Advance Register | प्रतिपूर्ति | Control |
+
+## 12. MIS MASTERS (मास्टर)
+
+| Code | Register | Hindi | Why |
+|------|----------|-------|-----|
+| MSTR-01 | Chart of Accounts (Head Master) | लेखा-शीर्ष | COA codes |
+| MSTR-02 | Fund / Project Master | निधि मास्टर | Restricted/unrestricted |
+| MSTR-03 | Party Master (Donor/Vendor/Member) | पक्षकार | 360° view |
+| MSTR-04 | Cost-centre / Programme Master | लागत केंद्र | Allocation |
+| MSTR-05 | FY Master & Year-Close Register | वित्त-वर्ष | Lock/open |
+| MSTR-06 | Opening Balance / Carry-forward | प्रारंभिक शेष | Year roll |
+| MSTR-07 | Document / Attachment Index | दस्तावेज़ सूची | Source vault |
+
+## 13. RISK & FRAUD CONTROL (जोखिम एवं धोखाधड़ी)
+
+| Code | Register | Hindi | Why |
+|------|----------|-------|-----|
+| RISK-01 | Segregation-of-Duties Matrix | कार्य पृथक्करण | Internal control |
+| RISK-02 | Maker–Checker / Approval Log | स्वीकृति लॉग | Control |
+| RISK-03 | Access & Change Log | पहुँच लॉग | IT control |
+| RISK-04 | Fraud / Whistleblower Register | शिकायत | Governance |
+| RISK-05 | Risk Register | जोखिम रजिस्टर | Enterprise risk |
 
 ---
 
-## Next steps (one-by-one)
+## 14. Founder / Sahyog Register — detailed spec (INCM-04)
 
-1. User is list ko confirm/edit kare.
-2. Phir register-by-register: columns/rows tay karke, ek-ek karke banayenge.
-3. Pehla target: **A1 Cash Book (FY-wise)** + **A2 Bank Book (FY-wise)** + **B3 Founder Sahyog**.
+**Sahyog** = koi bhi vyakti/institution SSF ke kaam me bina rashi/rasid ke jo sahyog de —
+Founder cash de, advance de, office rent de, member fee na de to founder de, IT vibhag,
+auditor, ya koi bhi. **Ye loan nahi hai** — ye contribution/sahyog hai. Kisi proof ki zarurat nahi;
+SSF internally record rakhe (transparency + audit trail).
+
+**Accounting treatment:** dual entry — `Income: Sahyog` + `Expense: <us kaam ka head>` → net par
+asar nahi, par I&E dono taraf saaf dikhe (auditor ko "kaise diya" samajh aaye).
+
+**Suggested columns:** `Sahyog ID · Date · FY · Sahyog Karta (Founder / Office Bearer / IT / Auditor /
+Volunteer / Other) · Name · Sahyog Type (Cash / Advance / Rent / Fee / Utility / Service / Goods / Space) ·
+Description · Amount/Value (₹) · Mode (Cash / UPI / Bank / In-kind) · Kiske paksh me (SSF / project) ·
+Fund (Restricted/Unrestricted) · Recovered/Adjusted? (Y/N + date) · Balance · Voucher ref · Remarks · Verified By`
+
+---
+
+## 15. Compliance calendar (India-specific due dates)
+
+| Return / Filing | Law | Due |
+|-----------------|-----|-----|
+| ITR-7 + Form 10B/10BB | Income Tax | 31 Oct (audit case) |
+| Form 10BD / 10BE (donations) | Income Tax | 31 May / certificates issue |
+| Form 10A / 10AB (12A/80G renewal) | Income Tax | As per cycle |
+| TDS returns 24Q / 26Q | Income Tax | Quarterly |
+| FC-4 annual return | FCRA | 31 Dec (prev FY) |
+| FC quarterly return (>₹1 cr) | FCRA | 15 days after quarter |
+| CSR-1 / CSR reporting | Companies Act | As applicable |
+| Society annual return + audit | Societies Act | State-specific |
+| GST returns | GST | If registered |
+| PF / ESI returns | PF/ESI | Monthly |
+
+---
+
+## 16. Build order (one-by-one, tiers)
+
+**Tier 1 (foundation):** MSTR-01 COA · MSTR-02 Fund Master · MSTR-05 FY Master/Year-Close · MSTR-06 Opening Balance · CORE-01/02/03 Cash & Bank (FY-wise) · INCM-04 Founder Sahyog.
+
+**Tier 2 (core registers):** INCM-01 Donation · INCM-03 Membership · INCM-06 Grant · EXPN-01 Expense · CORE-06 Voucher · CORE-07 Petty Cash · BANK-02 BRS.
+
+**Tier 3 (statements & audit):** CORE-09..13 auto statements · AUDT-01/02/03 · COMP-01/02/03.
+
+**Tier 4 (assets & funds):** ASST-01/02/08/09 · EXPN-03/04/05 · BUDG-01/04.
+
+**Tier 5 (compliance & governance):** COMP-04..10 · GOVN-01..07 · DONR-01..05 · RISK-01..05.
+
+---
+
+## 17. Current coverage map (kuch hatana nahi)
+
+Already ✅: cash, bank, cashbank, vouchers, donations, membership, expenses, members, meetings,
+donorSlips, FinanceTransaction (canonical ledger + journal/ledger/integrity), AuditYear/AuditRecord,
+auditReports.json, fixedAssets, tds, statutoryDues, brs, budget, loans, investments, audits.
+Baaki sab 🆕 upar list me.
+
+---
+
+## 18. Open questions for user
+
+1. FCRA registration hai? (nahi → INCM-08, DONR-05, COMP-04 defer)
+2. GST registration hai? (nahi → GST head defer)
+3. Payroll / PF-ESI hai? (nahi → HRPY, EXPN-04 defer)
+4. Corpus donation alag rakhna hai?
+5. Restricted vs Unrestricted fund tracking chahiye ya simple general fund?
