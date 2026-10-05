@@ -13,6 +13,7 @@ import { FinanceDashboard, FinanceStatements, IntegrityCheck } from "../componen
 import { FinanceRegister, FIN_REG_DEFS, FIN_REG_IDS } from "../components/FinanceRegisters";
 import { FinanceTransactions, FinanceLedger, FinanceIntegrity, FinanceAudit } from "../components/FinanceOps";
 import ChartOfAccounts from "../components/ChartOfAccounts";
+import FYMaster from "../components/FYMaster";
 
 const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
@@ -29,7 +30,7 @@ const MODULES = [
  ["certificates","Certificates / प्रमाणपत्र",FaCertificate],["idcards","ID Cards / पहचान पत्र",FaIdCard],
  ["beneficiaries","Beneficiaries / लाभार्थी",FaUsers],["internships","Internship Applications / इंटर्नशिप आवेदन",FaTasks],["activities","Volunteer Activities / स्वयंसेवी गतिविधियाँ",FaTasks],
  ["assets","Assets & Equipment / संपत्ति व उपकरण",FaBoxes],["notifications","Notices, Alerts & Follow-ups / नोटिस, सूचनाएँ एवं अनुवर्ती कार्य",FaTasks],
- ["reports","Reports & Statements / रिपोर्ट एवं विवरण",FaChartLine],["chartOfAccounts","Chart of Accounts / लेखा-शीर्ष मास्टर",FaBook],["finDashboard","Finance Dashboard / वित्तीय डैशबोर्ड",FaChartLine],["finStatements","Financial Statements / वित्तीय विवरण",FaBalanceScale],["finTransactions","Finance Transactions / वित्तीय लेनदेन",FaBook],["finLedger","Ledger & Journal / लेजर एवं जर्नल",FaBalanceScale],["finIntegrity","Finance Integrity / वित्तीय जाँच",FaCheckCircle],["finAudit","Audit & Compliance / लेखा परीक्षा एवं अनुपालन",FaHistory],["integrity","Data Integrity Check / डेटा जाँच",FaCheckCircle],
+ ["reports","Reports & Statements / रिपोर्ट एवं विवरण",FaChartLine],["chartOfAccounts","Chart of Accounts / लेखा-शीर्ष मास्टर",FaBook],["fyMaster","Financial Year Master / वित्तीय वर्ष मास्टर",FaCalendarAlt],["finDashboard","Finance Dashboard / वित्तीय डैशबोर्ड",FaChartLine],["finStatements","Financial Statements / वित्तीय विवरण",FaBalanceScale],["finTransactions","Finance Transactions / वित्तीय लेनदेन",FaBook],["finLedger","Ledger & Journal / लेजर एवं जर्नल",FaBalanceScale],["finIntegrity","Finance Integrity / वित्तीय जाँच",FaCheckCircle],["finAudit","Audit & Compliance / लेखा परीक्षा एवं अनुपालन",FaHistory],["integrity","Data Integrity Check / डेटा जाँच",FaCheckCircle],
  ["fixedAssets","Fixed Asset Register / स्थायी संपत्ति रजिस्टर",FaBoxes],["tds","TDS Register / टी.डी.एस. रजिस्टर",FaFileAlt],["statutoryDues","Statutory Dues / सांविधिक देय",FaUserShield],["brs","Bank Reconciliation / बैंक मिलान",FaBalanceScale],["budget","Budget vs Actual / बजट एवं वास्तविक",FaChartLine],["loans","Loan Register / ऋण रजिस्टर",FaRupeeSign],["investments","Investment Register / निवेश रजिस्टर",FaBoxes],["audits","Audit Register / लेखा परीक्षा रजिस्टर",FaHistory],
  ["users","Users & Permissions / उपयोगकर्ता व अनुमतियाँ",FaUserShield],["audit","Audit Trail / ऑडिट ट्रेल",FaHistory]
 ];
@@ -241,6 +242,7 @@ export default function SSFDigitalOffice(){
     {FIN_MODULE_MAP[active]&&<FinRegister regId={FIN_MODULE_MAP[active]}/>}
     {active==="reports"&&<Reports token={token} exportRows={exportRows} exportPdf={exportPdf}/>}
     {active==="chartOfAccounts"&&<ChartOfAccounts rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("chartOfAccounts")}/>}
+    {active==="fyMaster"&&<FYMaster rows={rows} add={add} archive={archive} restore={restore} loading={loading} reload={()=>load("fyMaster")}/>}
     {active==="finDashboard"&&<FinanceDashboard fy={FIN_FY_LIST[0]||"2025-26"}/>}
     {active==="finStatements"&&<FinanceStatements fy={FIN_FY_LIST[0]||"2025-26"}/>}
     {active==="finTransactions"&&<FinanceTransactions token={token}/>}
@@ -251,7 +253,7 @@ export default function SSFDigitalOffice(){
     {FIN_REG_DEFS[active]&&<FinanceRegister regId={active} rows={rows} add={add} archive={archive}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","chartOfAccounts","finDashboard","finStatements","finTransactions","finLedger","finIntegrity","finAudit","integrity",...FIN_REG_IDS,"appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","cashbank","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","chartOfAccounts","fyMaster","finDashboard","finStatements","finTransactions","finLedger","finIntegrity","finAudit","integrity",...FIN_REG_IDS,"appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","cashbank","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
    </main>
   </div>
  </div></div>;

@@ -99,7 +99,7 @@ const memberPhotoUpload = multer({
   limits: { fileSize: 2 * 1024 * 1024, files: 1 }
 });
 
-const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID', chartOfAccounts:'COA' };
+const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID', chartOfAccounts:'COA', fyMaster:'FY' };
 const _norm = (s) => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, ' ').trim();
 const _day = (d) => { try { return new Date(d).toISOString().slice(0, 10); } catch (_) { return String(d || '').slice(0, 10); } };
 // Strong duplicate probe shared by the money workflows: same party + amount + day.
@@ -700,6 +700,70 @@ router.post('/digital-office/chart-of-accounts/seed', requireOfficeAuth, async (
     try { await t.rollback(); } catch (_) {}
     console.error('COA seed failed:', e);
     return res.status(500).json({ message: 'COA seed failed.', detail: e.message });
+  }
+});
+
+// ---- FY Master + Opening Balance seed ---------------------------------------
+// Builds the financial-year master and its opening balances from the canonical
+// audited dataset. Idempotent — matched on FY; a re-seed never duplicates.
+// Opening = the previous audited year's closing (cash / bank / general fund).
+router.post('/digital-office/fy-master/seed', requireOfficeAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    let audit;
+    try { audit = require('../data/auditReports.json'); }
+    catch (_) { await t.rollback(); return res.status(404).json({ message: 'auditReports.json not found.' }); }
+    const reports = [...(audit.reports || [])].sort((a, b) => String(a.financialYear).localeCompare(String(b.financialYear)));
+    const existing = await DigitalOfficeRecord.findAll({ where: { module: 'fyMaster' }, transaction: t });
+    const have = new Set(existing.map((r) => String((r.data && r.data.fy) || '').trim()));
+    let created = 0;
+    const fyEndDate = (fy) => { const [a, b] = String(fy).split('-'); const endY = 2000 + Number(b); return endY + '-03-31'; };
+    const carryRows = [];
+    for (const rep of reports) {
+      const fy = rep.financialYear;
+      const ob = rep.openingBalances || {};
+      const cb = rep.closingBalances || {};
+      const gf = rep.generalFund || {};
+      carryRows.push({ fy, source: 'opening', opening: { cash: ob.cash || 0, bank: ob.bank || 0, total: ob.total || 0 }, closing: { cash: cb.cash || 0, bank: cb.bank || 0, total: cb.total || 0 }, generalFund: gf, status: rep.status || 'Audited', auditor: rep.auditor || null });
+    }
+    // The FY immediately after the last audited year opens with that year's closing.
+    const last = reports[reports.length - 1];
+    if (last) {
+      const [a, b] = String(last.financialYear).split('-');
+      const nextStart = 2000 + Number(b);
+      const nextFy = nextStart + '-' + String((nextStart + 1) % 100).padStart(2, '0');
+      const cb = last.closingBalances || {};
+      carryRows.push({ fy: nextFy, source: 'opening', opening: { cash: cb.cash || 0, bank: cb.bank || 0, total: cb.total || 0 }, closing: null, generalFund: { opening: (last.generalFund || {}).closing || 0 }, status: 'Books', auditor: null });
+    }
+    for (const row of carryRows) {
+      if (have.has(row.fy)) continue;
+      const recordId = await makeId('fyMaster', t);
+      await DigitalOfficeRecord.create({
+        recordId, module: 'fyMaster', recordType: 'Financial Year', status: 'active',
+        recordDate: new Date(fyEndDate(row.fy)), personId: null,
+        createdBy: req.headers['x-office-actor'] || 'admin', createdByName: req.headers['x-office-actor-name'] || 'SSF Admin',
+        data: {
+          fy: row.fy,
+          labelEn: 'Financial Year ' + row.fy,
+          labelHi: 'वित्तीय वर्ष ' + row.fy,
+          openingCash: row.opening.cash, openingBank: row.opening.bank, openingTotal: row.opening.total,
+          closingCash: row.closing ? row.closing.cash : null, closingBank: row.closing ? row.closing.bank : null, closingTotal: row.closing ? row.closing.total : null,
+          generalFundOpening: (row.generalFund || {}).opening || null, generalFundClosing: (row.generalFund || {}).closing || null,
+          carrySource: 'Audited closing of previous year',
+          fyStatus: row.status, lockState: 'Open',
+          auditor: row.auditor ? (row.auditor.firm || '') : '',
+          effectiveDate: fyEndDate(row.fy), remarks: 'Seeded from audited dataset'
+        }
+      }, { transaction: t });
+      created += 1;
+    }
+    await DigitalOfficeAudit.create({ action: 'seed', module: 'fyMaster', recordId: 'FYMASTER', actor: req.headers['x-office-actor'] || 'admin', details: { created } }, { transaction: t });
+    await t.commit();
+    return res.json({ status: 'ok', created, skipped: carryRows.length - created });
+  } catch (e) {
+    try { await t.rollback(); } catch (_) {}
+    console.error('FY master seed failed:', e);
+    return res.status(500).json({ message: 'FY master seed failed.', detail: e.message });
   }
 });
 
