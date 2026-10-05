@@ -7,8 +7,25 @@ import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { BarChart, DonutChart, ColumnChart } from '../charts';
 import { exportRecordsPdf } from '../pdf';
+import { exportRecordsExcel } from '../excel';
 
 const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
+
+function summaryRows(data, money) {
+  return [
+    { Section: 'Organisation', Metric: 'Persons', Value: data.organisation.persons },
+    { Section: 'Organisation', Metric: 'Members', Value: data.organisation.members },
+    { Section: 'Organisation', Metric: 'Donors', Value: data.organisation.donors },
+    { Section: 'Organisation', Metric: 'Volunteers', Value: data.organisation.volunteers },
+    { Section: 'Organisation', Metric: 'Employees', Value: data.organisation.employees },
+    { Section: 'Finance', Metric: 'Income', Value: money(data.finance.income) },
+    { Section: 'Finance', Metric: 'Expenses', Value: money(data.finance.expense) },
+    { Section: 'Finance', Metric: 'Net', Value: money(data.finance.net) },
+    { Section: 'Governance', Metric: 'Meetings', Value: data.governance.meetings },
+    { Section: 'Governance', Metric: 'Resolutions', Value: data.governance.pendingResolutions },
+    { Section: 'Governance', Metric: 'Actions', Value: data.governance.pendingActions },
+  ];
+}
 
 export default function ImsDashboard() {
   const { t } = useLang();
@@ -34,22 +51,10 @@ export default function ImsDashboard() {
     <ImsLayout active="main_dashboard">
       <PageHeader title={t('main_dashboard')} subtitle={t('tagline')}
         actions={data ? (
-          <Button icon="FileText" onClick={() => exportRecordsPdf({
-            title: t('main_dashboard'), subtitle: t('app_full'),
-            records: [
-              { Section: 'Organisation', Metric: 'Persons', Value: data.organisation.persons },
-              { Section: 'Organisation', Metric: 'Members', Value: data.organisation.members },
-              { Section: 'Organisation', Metric: 'Donors', Value: data.organisation.donors },
-              { Section: 'Organisation', Metric: 'Volunteers', Value: data.organisation.volunteers },
-              { Section: 'Organisation', Metric: 'Employees', Value: data.organisation.employees },
-              { Section: 'Finance', Metric: 'Income', Value: money(data.finance.income) },
-              { Section: 'Finance', Metric: 'Expenses', Value: money(data.finance.expense) },
-              { Section: 'Finance', Metric: 'Net', Value: money(data.finance.net) },
-              { Section: 'Governance', Metric: 'Meetings', Value: data.governance.meetings },
-              { Section: 'Governance', Metric: 'Resolutions', Value: data.governance.pendingResolutions },
-              { Section: 'Governance', Metric: 'Actions', Value: data.governance.pendingActions },
-            ],
-          }) }>{t('download')} PDF</Button>
+          <div className="flex gap-2">
+            <Button icon="FileText" onClick={() => exportRecordsPdf({ title: t('main_dashboard'), subtitle: t('app_full'), records: summaryRows(data, money) })}>{t('download')} PDF</Button>
+            <Button icon="Table2" variant="ghost" onClick={() => exportRecordsExcel({ title: t('main_dashboard'), records: summaryRows(data, money), sheetName: 'Dashboard' })}>{t('download')} Excel</Button>
+          </div>
         ) : null} />
 
       {err && <Card className="mb-4 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</Card>}

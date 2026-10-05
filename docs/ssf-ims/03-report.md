@@ -107,6 +107,8 @@ Isi hisaab se:
    ya CLI `node scripts/migrate-legacy.js [--apply]`, ya
    `GET/POST /api/ims/migrate-legacy`. Purana data kabhi badla/nahi hataya
    jaata. Detail: `docs/ssf-ims/05-migration.md`.
-3. Report PDF/download options, aur charts.
+3. Report exports — ✅ PDF **aur** Excel (.xlsx) dono ban gaye (dashboard
+   summary + har report row par CSV / Excel / PDF). Charts bhi dashboard par
+   live hain (code-generated SVG).
 
 *Report khatam.*
