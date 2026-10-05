@@ -6,7 +6,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, PageHeader, SectionHero, Button, Spinner, Empty, Badge } from '../ui';
+import { Card, Button, Spinner, Empty } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 
@@ -35,10 +35,23 @@ const fmt = (d) => {
   if (!d) return '—';
   const s = String(d).slice(0, 10);
   const [y, m, dd] = s.split('-');
-  return y && m && dd ? `${dd}/${m}/${y}` : s;
+  return y && m && dd ? `${dd}-${m}-${y}` : s;
 };
 const memberKey = (r) => String(r.memberId || r.fullName || r.recordId);
 const roleKey = (r) => String(r.newRole || r.previousRole || 'Unspecified');
+
+// Navy title card identical to the SSF Digital Office "SimpleOfficeCard".
+function SimpleOfficeCard({ title, subtitle, children }) {
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl bg-[#002344] p-6 text-white">
+        <h2 className="text-2xl font-black">{title}</h2>
+        <p className="mt-1 text-white/70">{subtitle}</p>
+      </div>
+      {children}
+    </div>
+  );
+}
 
 export function ImsOfficeHistory() {
   const { lang } = useLang();
@@ -182,7 +195,7 @@ export function ImsOfficeHistory() {
         {DASH.map(([en, h], i) => {
           const vals = [all.length, members.length, all.filter(r => r.changeType === 'Appointment').length, all.filter(r => String(r.changeType || '').includes('Role Change')).length];
           return (
-            <Card key={en} className="p-5">
+            <Card key={en} className="border-slate-200 bg-slate-50 p-5">
               <div className="text-xs font-bold text-slate-500">{L(en, h)}</div>
               <div className="mt-1 text-3xl font-black text-[#002344]">{vals[i]}</div>
             </Card>
@@ -203,14 +216,14 @@ export function ImsOfficeHistory() {
       </div>
       <Card className="p-5">
         <h3 className="text-xl font-black text-[#002344]">{L('Historical Committee Members', 'ऐतिहासिक समिति सदस्य')}</h3>
-        <p className="mt-1 text-sm text-slate-500">{L('Old and current committee members remain preserved here. This register does not replace Membership History.', 'पुराने एवं वर्तमान समिति सदस्य यहाँ सुरक्षित रहते हैं। यह रजिस्टर सदस्यता इतिहास का स्थान नहीं लेता।')}</p>
+        <p className="mt-1 text-sm text-slate-500">{L('Old and current committee members remain preserved here. Records can be corrected later; this register does not replace Membership History.', 'पुराने एवं वर्तमान समिति सदस्य यहाँ सुरक्षित रहते हैं। अभिलेख बाद में सुधारे जा सकते हैं; यह रजिस्टर सदस्यता इतिहास का स्थान नहीं लेता।')}</p>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
           {members.slice(0, 12).map((r, i) => (
             <div key={i} className="rounded-xl border border-slate-200 p-4">
               <div className="font-black text-[#002344]">{r.fullName || '—'}</div>
               <div className="mt-1 text-xs font-bold text-[#1F7A70]">{r.memberId || '—'}</div>
               <div className="mt-2 text-sm text-slate-600">{r.newRole || r.previousRole || '—'}</div>
-              <button type="button" onClick={() => startEdit(r)} className="mt-3 rounded-lg bg-[#002344] px-3 py-2 text-xs font-bold text-white">{L('Edit History', 'इतिहास संपादित')}</button>
+              <button type="button" onClick={() => startEdit(r)} className="mt-3 rounded-lg bg-[#002344] px-3 py-2 text-xs font-bold text-white">✏️ {L('Edit History', 'इतिहास संपादित')}</button>
             </div>
           ))}
         </div>
@@ -276,7 +289,7 @@ export function ImsOfficeHistory() {
             <h3 className="mt-1 font-black text-[#002344]">{r.fullName || '—'}</h3>
             <p className="mt-2 text-sm text-slate-600">{r.changeType || '—'} · {fmt(r.eventDate)}</p>
             <p className="mt-2 text-xs text-slate-500">{r.details || r.remarks || '—'}</p>
-            <button type="button" onClick={() => startEdit(r)} className="mt-3 rounded-lg bg-[#002344] px-3 py-2 text-xs font-bold text-white">{L('Edit History', 'इतिहास संपादित')}</button>
+            <button type="button" onClick={() => startEdit(r)} className="mt-3 rounded-lg bg-[#002344] px-3 py-2 text-xs font-bold text-white">✏️ {L('Edit History', 'इतिहास संपादित')}</button>
           </Card>
         ))}
       </div>
@@ -315,53 +328,38 @@ export function ImsOfficeHistory() {
   );
 
   const tabs = [
-    ['dashboard', 'Dashboard', 'डैशबोर्ड', 'LayoutDashboard'],
-    ['history', 'Committee & Office History', 'समिति एवं पद इतिहास', 'Landmark'],
-    ['member', 'Member-wise History', 'सदस्य-वार इतिहास', 'Users'],
-    ['position', 'Position History', 'पद इतिहास', 'Target'],
-    ['actions', 'Governance Actions', 'शासन कार्रवाई', 'Settings2'],
-    ['register', 'Complete Register', 'पूर्ण रजिस्टर', 'ClipboardList'],
+    ['dashboard', '📊 Dashboard / डैशबोर्ड'],
+    ['history', '🏛️ Committee & Office History / समिति एवं पद इतिहास'],
+    ['member', '👤 Member-wise History / सदस्य-वार इतिहास'],
+    ['position', '🎯 Position History / पद इतिहास'],
+    ['actions', '⚙️ Governance Actions / शासन कार्रवाई'],
+    ['register', '📋 Complete Register / पूर्ण रजिस्टर'],
   ];
 
   return (
     <ImsLayout active="office_history">
-      <PageHeader
-        title={L('Managing Committee History', 'प्रबंधकारिणी समिति इतिहास')}
-        subtitle={L('Permanent record of appointments, role changes, re-appointments, resignations, removals and relieving in the Foundation.', 'संस्था में समय-समय पर हुए नियुक्ति, पद परिवर्तन, पुनर्नियुक्ति, त्यागपत्र, हटाव एवं मुक्ति का स्थायी ऐतिहासिक अभिलेख।')}
-      />
-      <SectionHero
-        title={L('Managing Committee History', 'प्रबंधकारिणी समिति इतिहास')}
-        hi={hi ? '' : 'प्रबंधकारिणी समिति इतिहास'}
-        eyebrow="SSF-IMS · Governance"
-        icon="History"
-        tone="navy"
+      <SimpleOfficeCard
+        title={L('🏛️ Managing Committee History / प्रबंधकारिणी समिति इतिहास', '🏛️ प्रबंधकारिणी समिति इतिहास / Managing Committee History')}
+        subtitle={L('Permanent record of appointment, role change, re-appointment, resignation, removal and relieving in the Foundation over time.', 'संस्था में समय-समय पर हुए appointment, role change, re-appointment, resignation, removal और relieving का permanent historical record.')}
       >
-        {rows && <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-          {[['Historical Records', all.length], ['Members in History', members.length], ['Appointments', all.filter(r => r.changeType === 'Appointment').length], ['Role Changes', all.filter(r => String(r.changeType || '').includes('Role Change')).length]].map(([en, v]) => (
-            <div key={en} className="rounded-xl bg-white/10 p-3"><div className="text-[11px] font-bold uppercase tracking-wide text-white/70">{L(en, en)}</div><div className="text-2xl font-black">{v}</div></div>
-          ))}
-        </div>}
-      </SectionHero>
-
-      {!rows ? <Spinner /> : (
-        <div className="space-y-5">
-          {notice && <Card className="border-emerald-200 bg-emerald-50 p-3 text-sm font-semibold text-emerald-800">{notice}</Card>}
-          <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
-            {tabs.map(([id, en, h, icon]) => {
-              const I = Icons[icon] || Icons.FileText;
-              const on = tab === id;
-              return (
-                <button key={id} type="button" onClick={() => setTab(id)}
-                  className={`flex min-h-[54px] items-center justify-center gap-2 rounded-xl px-2.5 py-2.5 text-center text-xs font-bold leading-tight transition sm:text-sm ${on ? 'bg-[#002344] text-white shadow-sm' : 'bg-slate-100 text-[#123B5D] hover:bg-slate-200'}`}>
-                  <I size={15} className="shrink-0" /><span>{L(en, h)}</span>
-                </button>
-              );
-            })}
+        {notice && <Card className="border-emerald-200 bg-emerald-50 p-3 text-sm font-semibold text-emerald-800">{notice}</Card>}
+        {!rows ? <Spinner /> : (
+          <div className="space-y-5">
+            <Card className="p-2">
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+                {tabs.map(([id, label]) => (
+                  <button key={id} type="button" onClick={() => setTab(id)}
+                    className={`min-h-[52px] rounded-xl px-2.5 py-2.5 text-center text-xs font-bold leading-tight transition sm:text-sm ${tab === id ? 'bg-[#002344] text-white' : 'bg-slate-100 text-[#123B5D] hover:bg-slate-200'}`}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+            </Card>
+            {tab === 'dashboard' ? dashboard : tab === 'history' ? history : tab === 'member' ? memberView : tab === 'position' ? position : tab === 'actions' ? actions : register}
+            {!all.length && <Card><Empty label={L('No history records found.', 'कोई इतिहास अभिलेख नहीं मिला।')} /></Card>}
           </div>
-          {tab === 'dashboard' ? dashboard : tab === 'history' ? history : tab === 'member' ? memberView : tab === 'position' ? position : tab === 'actions' ? actions : register}
-          {!all.length && <Card><Empty label={L('No history records found.', 'कोई इतिहास अभिलेख नहीं मिला।')} /></Card>}
-        </div>
-      )}
+        )}
+      </SimpleOfficeCard>
     </ImsLayout>
   );
 }
