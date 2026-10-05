@@ -302,24 +302,26 @@ export function ImsOrganisationProfile() {
                   <h4 className="font-bold text-[#002344]">{hi ? 'सहेजे गए रिकॉर्ड' : 'Saved Records'} · {sectionRows.length}</h4>
                 </div>
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[720px] text-sm">
+                  <table className="w-full text-sm">
                     <thead>
                       <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
-                        <th className="px-4 py-2.5 font-semibold">ID</th>
-                        {section.fields.slice(0, 5).map(([key, en, hiLabel]) => (
-                          <th key={key} className="px-4 py-2.5 font-semibold">{hi ? hiLabel : en}</th>
+                        <th className="whitespace-nowrap px-4 py-2.5 font-semibold">Record ID</th>
+                        <th className="whitespace-nowrap px-4 py-2.5 font-semibold">{hi ? 'रिकॉर्ड दिनांक' : 'Record Date'}</th>
+                        {section.fields.map(([key, en, hiLabel]) => (
+                          <th key={key} className="whitespace-nowrap px-4 py-2.5 font-semibold">{hi ? hiLabel : en}</th>
                         ))}
-                        <th className="px-4 py-2.5 text-right font-semibold">{hi ? 'कार्रवाई' : 'Action'}</th>
+                        <th className="whitespace-nowrap px-4 py-2.5 text-right font-semibold">{hi ? 'कार्रवाई' : 'Action'}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                       {sectionRows.map(r => {
                         const d = r.data || {};
                         return (
-                          <tr key={r.id} className="hover:bg-slate-50">
+                          <tr key={r.id} className="align-top hover:bg-slate-50">
                             <td className="whitespace-nowrap px-4 py-2.5 font-mono text-xs text-slate-500">{r.recordId}</td>
-                            {section.fields.slice(0, 5).map(([key]) => (
-                              <td key={key} className="max-w-[240px] truncate px-4 py-2.5 text-slate-700">{d[key] || '—'}</td>
+                            <td className="whitespace-nowrap px-4 py-2.5 text-slate-500">{(r.createdAt || '').slice(0, 10) || '—'}</td>
+                            {section.fields.map(([key]) => (
+                              <td key={key} className="max-w-[260px] whitespace-pre-line px-4 py-2.5 text-slate-700">{d[key] || '—'}</td>
                             ))}
                             <td className="whitespace-nowrap px-4 py-2.5 text-right">
                               <button onClick={() => startEdit(r)} className="font-semibold text-[#002344] hover:text-[#FF6600]">{hi ? 'संपादित करें' : 'Edit'}</button>
@@ -328,7 +330,7 @@ export function ImsOrganisationProfile() {
                         );
                       })}
                       {sectionRows.length === 0 && (
-                        <tr><td colSpan={7} className="px-4 py-8 text-center text-slate-400">{hi ? 'अभी कोई रिकॉर्ड नहीं।' : 'No records yet.'}</td></tr>
+                        <tr><td colSpan={section.fields.length + 3} className="px-4 py-8 text-center text-slate-400">{hi ? 'अभी कोई रिकॉर्ड नहीं।' : 'No records yet.'}</td></tr>
                       )}
                     </tbody>
                   </table>
