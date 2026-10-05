@@ -38,7 +38,7 @@ export default function AdminDashboard() {
     return () => { window.removeEventListener('storage', sync); window.clearInterval(timer); };
   }, []);
 
-  return <main className="min-h-screen bg-[#f6f8fb]">
+  return <main className="min-h-screen bg-[#f6f8fb] pt-20 md:pt-[116px]">
     <section id="admin-overview" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24">
       <div className="rounded-[2rem] bg-[#002344] text-white p-6 sm:p-8 shadow-sm overflow-hidden relative">
         <div className="absolute -right-20 -top-24 w-72 h-72 rounded-full bg-white/5" />
@@ -47,7 +47,7 @@ export default function AdminDashboard() {
           {loggedIn && <div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4 min-w-[220px]"><p className="text-xs uppercase tracking-widest text-white/60 font-bold">System status</p><p className="font-black mt-1">Admin session active</p><p className="text-xs text-white/60 mt-1">Protected records are available below.</p></div>}
         </div>
       </div>
-      <div className="sticky top-0 z-20 mt-4 rounded-2xl border border-zinc-200 bg-white/95 backdrop-blur shadow-sm p-2 overflow-x-auto"><div className="flex gap-2 min-w-max">{modules.map(({ id, label, icon: Icon }) => <button key={id} onClick={() => jumpTo(id)} className="inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-bold text-zinc-700 hover:bg-zinc-100 transition whitespace-nowrap"><Icon className="text-[#ff6600]" />{label}</button>)}</div></div>
+      <div className="sticky top-20 z-20 mt-4 rounded-2xl border border-zinc-200 bg-white/95 backdrop-blur shadow-sm p-2 overflow-x-auto md:top-[116px]"><div className="flex gap-2 min-w-max">{modules.map(({ id, label, icon: Icon }) => <button key={id} onClick={() => jumpTo(id)} className="inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-bold text-zinc-700 hover:bg-zinc-100 transition whitespace-nowrap"><Icon className="text-[#ff6600]" />{label}</button>)}</div></div>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
         <button onClick={() => jumpTo('admin-applications')} className="text-left rounded-2xl bg-white border border-zinc-100 p-5 shadow-sm hover:shadow-md transition"><p className="text-xs uppercase tracking-widest text-zinc-400 font-black">Workflow</p><p className="text-lg font-black text-[#002344] mt-1">Applications</p><p className="text-xs text-zinc-500 mt-1">Review every portal/public submission</p></button>
         <button onClick={() => jumpTo('admin-people')} className="text-left rounded-2xl bg-white border border-zinc-100 p-5 shadow-sm hover:shadow-md transition"><p className="text-xs uppercase tracking-widest text-zinc-400 font-black">CRM</p><p className="text-lg font-black text-[#002344] mt-1">People & Roles</p><p className="text-xs text-zinc-500 mt-1">Members, volunteers and applicants</p></button>
