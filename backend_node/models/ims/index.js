@@ -695,6 +695,14 @@ const ImsOfficeHistory = sequelize.define('ImsOfficeHistory', {
   remarks: DataTypes.TEXT,
 }, S);
 
+const ImsInstitutionHistory = sequelize.define('ImsInstitutionHistory', {
+  ...idCols,
+  recordDate: DataTypes.DATEONLY,
+  recordType: DataTypes.STRING,
+  section: DataTypes.STRING,
+  sectionName: DataTypes.STRING,
+}, S);
+
 const ImsRelation = sequelize.define('ImsRelation', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   fromType: DataTypes.STRING,
@@ -749,6 +757,7 @@ const models = {
   ImsGrant, ImsAsset, ImsInventoryItem, ImsEmployee, ImsVolunteer, ImsAttendance,
   ImsCompliance, ImsAgreement, ImsAudit, ImsRisk, ImsDocument, ImsCommunication,
   ImsOfficeHistory,
+  ImsInstitutionHistory,
   ImsRelation, ImsAuditTrail, ImsUser, ImsRolePermission,
 };
 

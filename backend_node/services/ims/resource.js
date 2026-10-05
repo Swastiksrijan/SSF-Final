@@ -50,6 +50,7 @@ const RESOURCES = {
   policies:     { model: models.ImsPolicy,        prefix: 'POL',     name: 'title', dup: [] },
   governanceRules:{ model: models.ImsGovernanceRule, prefix: 'RULE', name: 'key', dup: [] },
   officeHistory:{ model: models.ImsOfficeHistory, prefix: 'OFH',  name: 'fullName', dup: [], flatData: true },
+  institutionalHistory:{ model: models.ImsInstitutionHistory, prefix: 'INS', name: 'sectionName', dup: [] },
   users:        { model: models.ImsUser,          prefix: 'USR',     name: 'username', dup: ['username', 'email'] },
 };
 
