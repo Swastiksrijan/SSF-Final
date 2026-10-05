@@ -6,6 +6,7 @@ import { useLang } from '../ims/LangContext';
 import { ims } from '../ims/api';
 import { tBoth } from '../ims/i18n';
 import logoImg from '../assets/new-logo.png';
+import DownloadCenter from '../ims/DownloadCenter';
 
 function Icon({ name, size = 18, className = '' }) {
   const C = Icons[name] || Icons.Circle;
@@ -85,6 +86,7 @@ export default function ImsLayout({ children, active }) {
               className="rounded-lg border border-white/25 px-3 py-1.5 text-xs font-semibold hover:bg-white/10">
               {lang === 'en' ? 'हिंदी' : 'English'}
             </button>
+            <DownloadCenter defaultResource={active} />
             <span className="hidden text-xs text-white/70 sm:block">{t('tagline')}</span>
           </div>
         </div>

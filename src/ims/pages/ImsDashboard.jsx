@@ -7,6 +7,7 @@ import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { BarChart, DonutChart, ColumnChart } from '../charts';
 import { exportRecordsPdf } from '../pdf';
+import DownloadCenter from '../DownloadCenter';
 import { exportRecordsExcel } from '../excel';
 import logoImg from '../../assets/new-logo.png';
 
@@ -57,6 +58,7 @@ export default function ImsDashboard() {
         updated={data ? new Date().toLocaleString('en-IN') : ''}
         actions={data ? (
           <div className="flex flex-wrap gap-2">
+            <DownloadCenter variant="hero" defaultResource="members" />
             <Button icon="FileText" onClick={() => exportRecordsPdf({ title: t('main_dashboard'), subtitle: t('app_full'), records: summaryRows(data, money) })}>{t('download')} PDF</Button>
             <Button icon="Table2" variant="ghost" onClick={() => exportRecordsExcel({ title: t('main_dashboard'), records: summaryRows(data, money), sheetName: 'Dashboard' })}>{t('download')} Excel</Button>
           </div>
