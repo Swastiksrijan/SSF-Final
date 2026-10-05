@@ -49,7 +49,7 @@ const RESOURCES = {
   communications:{ model: models.ImsCommunication,prefix: 'COM',     name: 'subject', dup: [] },
   policies:     { model: models.ImsPolicy,        prefix: 'POL',     name: 'title', dup: [] },
   governanceRules:{ model: models.ImsGovernanceRule, prefix: 'RULE', name: 'key', dup: [] },
-  officeHistory:{ model: models.ImsOfficeHistory, prefix: 'OFH',  name: 'fullName', dup: [] },
+  officeHistory:{ model: models.ImsOfficeHistory, prefix: 'OFH',  name: 'fullName', dup: [], flatData: true },
   users:        { model: models.ImsUser,          prefix: 'USR',     name: 'username', dup: ['username', 'email'] },
 };
 
@@ -102,6 +102,19 @@ async function grantRole(key, row) {
   });
 }
 
+// Office-history style resources keep the full record nested under `data`
+// (old Digital Office contract) while also mirroring the fields onto real
+// columns so the register can be listed/filtered. Empty DATEONLY values are
+// normalised to null so Postgres never sees '' / 'Invalid date'.
+function flatColumns(r, payload) {
+  if (!r.flatData || !payload || typeof payload.data !== 'object' || payload.data === null) return {};
+  const out = { ...payload.data };
+  for (const k of ['eventDate', 'meetingDate', 'recordDate']) {
+    if (k in out && (out[k] === '' || out[k] === 'Invalid date')) out[k] = null;
+  }
+  return out;
+}
+
 async function create(key, payload, req, opts = {}) {
   const r = getResource(key);
   const dupes = opts.skipDuplicateCheck ? [] : await findDuplicates(key, payload);
@@ -114,6 +127,7 @@ async function create(key, payload, req, opts = {}) {
   const recordId = payload.recordId || await nextId(r.prefix, opts.year, r.model);
   const row = await r.model.create({
     ...payload,
+    ...flatColumns(r, payload),
     recordId,
     createdBy: req && req.imsRole ? req.imsRole : (payload.createdBy || 'system'),
     createdByName: payload.createdByName || (req && req.headers && req.headers['x-office-actor-name']) || 'SSF Admin',
@@ -129,7 +143,7 @@ async function update(key, idOrRecordId, payload, req) {
   const row = await r.model.findOne({ where });
   if (!row) { const e = new Error('Record not found'); e.status = 404; throw e; }
   const before = row.toJSON();
-  Object.assign(row, payload);
+  Object.assign(row, payload, flatColumns(r, payload));
   row.updatedBy = req && req.imsRole ? req.imsRole : 'system';
   await row.save();
   await logAudit({ entityType: key, entityId: row.recordId, action: 'update', oldValue: before, newValue: row.toJSON(), req });

@@ -18,6 +18,7 @@ async function seedOfficeHistory() {
       ...rec.data,
       eventDate: date(rec.data.eventDate),
       meetingDate: date(rec.data.meetingDate),
+      data: { ...rec.data, eventDate: date(rec.data.eventDate) || '', meetingDate: date(rec.data.meetingDate) || '' },
       createdByName: 'SSF Admin',
     });
     out.officeHistory++;
