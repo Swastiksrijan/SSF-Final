@@ -22,6 +22,8 @@ export default function ImsResource() {
   const [pendingPayload, setPendingPayload] = useState(null);
   const [history, setHistory] = useState(null); // { recordId, history }
   const [err, setErr] = useState('');
+  const [importing, setImporting] = useState(false);
+  const [notice, setNotice] = useState('');
 
   const load = useCallback(async () => {
     setRows(null);
@@ -87,6 +89,15 @@ export default function ImsResource() {
     try { await ims.archive(resource, row.id); await load(); } catch (e) { setErr(e.message); }
   };
 
+  const importForm = async () => {
+    setImporting(true); setErr(''); setNotice('');
+    try {
+      const r = await ims.volunteerSeed();
+      setNotice(`${t('volunteer_imported_ok')}: ${r.volunteersCreated} / ${r.total}`);
+      await load();
+    } catch (e) { setErr(e.message); } finally { setImporting(false); }
+  };
+
   return (
     <ImsLayout active={resource}>
       <PageHeader
@@ -100,10 +111,19 @@ export default function ImsResource() {
               className="rounded-lg border border-slate-300 py-2 pl-8 pr-3 text-sm outline-none focus:border-[#FF6600]" />
           </div>
           <Button icon="Plus" onClick={openNew}>{t('new_record')}</Button>
+          {resource === 'volunteers' && (
+            <Button icon="Upload" variant="ghost" onClick={importForm} disabled={importing}>
+              {importing ? '…' : t('import_form_responses')}
+            </Button>
+          )}
         </>}
       />
 
       {err && <Card className="mb-3 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</Card>}
+      {notice && <Card className="mb-3 border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{notice}</Card>}
+      {resource === 'volunteers' && (
+        <p className="mb-3 text-xs text-slate-500">{t('volunteer_import_hint')}</p>
+      )}
       {!rows && <Spinner />}
 
       {rows && rows.length === 0 && (

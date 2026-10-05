@@ -273,6 +273,12 @@ export const DICT = {
   audit_history: { en: 'Audit History', hi: 'लेखा इतिहास' },
   cc_txn_note: { en: 'All transactions linked to this cost centre — derived automatically from Receipts & Payments (no duplicate entry).', hi: 'इस लागत केंद्र से जुड़े सभी लेन-देन — प्राप्तियाँ एवं भुगतान से स्वतः प्राप्त (कोई दोहरी प्रविष्टि नहीं)।' },
   cc_doc_note: { en: 'Supporting bills/invoices stay linked to their financial transaction; cost-centre documents are additional references.', hi: 'सहायक बिल/चालान अपने वित्तीय लेन-देन से जुड़े रहते हैं; लागत केंद्र दस्तावेज़ अतिरिक्त संदर्भ हैं।' },
+  import_form_responses: { en: 'Import Form Responses', hi: 'फ़ॉर्म प्रतिक्रियाएँ आयात करें' },
+  volunteer_import_hint: { en: 'Load the volunteer & leadership applications submitted through the SSF form.', hi: 'SSF फ़ॉर्म से प्राप्त स्वयंसेवक एवं नेतृत्व आवेदन लोड करें।' },
+  volunteer_imported_ok: { en: 'Volunteer form responses imported', hi: 'स्वयंसेवक फ़ॉर्म प्रतिक्रियाएँ आयात हो गईं' },
+  volunteer_import_none: { en: 'All form responses are already imported', hi: 'सभी फ़ॉर्म प्रतिक्रियाएँ पहले से आयातित हैं' },
+  field_volunteer: { en: 'Field Volunteer', hi: 'क्षेत्रीय स्वयंसेवक' },
+  leadership_volunteer: { en: 'Leadership / Honorary', hi: 'नेतृत्व / मानद' },
 };
 
 export function t(key, lang = 'en') {

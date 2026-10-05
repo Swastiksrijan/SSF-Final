@@ -279,7 +279,9 @@ router.get('/ims/finance/ledger/:accountId', wrap(async (req, r) => r.json(await
 // ---- COST CENTRES (classification & reporting dimension) -------------------
 const cc = require('../services/ims/costCentre');
 const { seedCostCentres } = require('../services/ims/costCentreSeed');
+const { seedVolunteers } = require('../services/ims/volunteerSeed');
 
+router.post('/ims/volunteers/seed', wrap(async (req, r) => r.json(await seedVolunteers(req))));
 router.post('/ims/finance/cost-centres/seed', wrap(async (_req, r) => r.json(await seedCostCentres())));
 router.get('/ims/finance/cost-centres/meta', (_req, r) => r.json({ types: cc.COST_CENTRE_TYPES, categories: cc.COST_CENTRE_CATEGORIES }));
 router.get('/ims/finance/cost-centres/dashboard', wrap(async (req, r) => r.json(await cc.costCentreDashboard({

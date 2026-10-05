@@ -529,8 +529,28 @@ const ImsEmployee = sequelize.define('ImsEmployee', {
 const ImsVolunteer = sequelize.define('ImsVolunteer', {
   ...idCols,
   personId: DataTypes.INTEGER,
+  fullName: DataTypes.STRING,
+  fullNameHi: DataTypes.STRING,
+  email: DataTypes.STRING,
+  mobile: DataTypes.STRING,
+  gender: DataTypes.STRING,
+  dob: DataTypes.DATEONLY,
+  city: DataTypes.STRING,
+  state: DataTypes.STRING,
+  volunteerType: DataTypes.STRING, // field / leadership
+  roleApplied: DataTypes.STRING,
+  preferredArea: DataTypes.TEXT,
+  timeCommitment: DataTypes.STRING,
+  financiallyIndependent: DataTypes.STRING,
+  experienceCapacity: DataTypes.TEXT,
+  contribution: DataTypes.TEXT,
+  motivation: DataTypes.TEXT,
+  fundraisingSupport: DataTypes.TEXT,
+  declaration: DataTypes.TEXT,
   skills: DataTypes.TEXT,
   availability: DataTypes.STRING,
+  source: DataTypes.STRING,
+  sourceTimestamp: DataTypes.STRING,
   joinDate: DataTypes.DATEONLY,
 }, S);
 
