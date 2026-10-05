@@ -23,6 +23,7 @@ const emptyForm = () => ({
   accountId: '',
   fundId: '',
   projectId: '',
+  costCentreId: '',
   partyId: '',
   narration: '',
 });
@@ -37,12 +38,14 @@ export default function ImsFinanceEntry() {
   const [msg, setMsg] = useState('');
   const [err, setErr] = useState('');
   const [detail, setDetail] = useState(null);
+  const [ccMap, setCcMap] = useState({});
 
   const load = async () => {
     try {
-      const [d, r] = await Promise.all([ims.financeDashboard(), ims.receiptsPayments()]);
+      const [d, r, cc] = await Promise.all([ims.financeDashboard(), ims.receiptsPayments(), ims.costCentres({})]);
       setDash(d);
       setRows(r.records || []);
+      setCcMap(Object.fromEntries((cc.records || []).map((x) => [x.id, x.name])));
     } catch (e) { setErr(e.message); setRows([]); }
   };
   useEffect(() => { load(); }, []);
@@ -59,7 +62,7 @@ export default function ImsFinanceEntry() {
     setSaving(true);
     try {
       const payload = { ...form, amount: Number(form.amount) };
-      for (const k of ['cashAccountId', 'bankAccountId', 'accountId', 'fundId', 'projectId', 'partyId']) {
+      for (const k of ['cashAccountId', 'bankAccountId', 'accountId', 'fundId', 'projectId', 'partyId', 'costCentreId']) {
         if (!payload[k]) delete payload[k];
       }
       if (kind === 'receipt' && !payload.cashAccountId && !payload.bankAccountId) {
@@ -81,6 +84,7 @@ export default function ImsFinanceEntry() {
       ? <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-[11px] font-bold text-emerald-700">In · Dr</span>
       : <span className="rounded-full bg-rose-100 px-2 py-0.5 text-[11px] font-bold text-rose-700">Out · Cr</span> },
     { key: 'paymentMode', en: 'Mode', hi: 'माध्यम' },
+    { key: 'costCentreId', en: 'Cost Centre', hi: 'लागत केंद्र', render: (r) => (r.costCentreId && ccMap[r.costCentreId]) ? <span className="text-xs font-semibold text-[#002344]">{ccMap[r.costCentreId]}</span> : '—' },
     { key: 'narration', en: 'Narration', hi: 'विवरण', render: (r) => (r.narration ? String(r.narration).slice(0, 34) : '—') },
   ];
 
@@ -149,6 +153,8 @@ export default function ImsFinanceEntry() {
               <RefSelect label={[t('parties'), 'पक्ष']} resource="parties" value={form.partyId} onChange={(v) => set('partyId', v)} nameKey="name" />
               <RefSelect label={['Project', 'परियोजना']} resource="projects" value={form.projectId} onChange={(v) => set('projectId', v)} nameKey="name" />
             </div>
+
+            <RefSelect label={[t('cost_centres'), 'लागत केंद्र']} resource="costCentres" value={form.costCentreId} onChange={(v) => set('costCentreId', v)} nameKey="name" />
 
             <L label={[t('narration'), 'विवरण']}>
               <textarea rows={2} className={inp} value={form.narration} onChange={(e) => set('narration', e.target.value)} />

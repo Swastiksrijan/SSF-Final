@@ -48,6 +48,20 @@ export const ims = {
   budgetVariance: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/budget-variance?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
   accountLedger: (accountId, params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/ledger/${accountId}?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
 
+  // ---- COST CENTRES (classification & reporting dimension) ----
+  costCentreMeta: () => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/meta`, { headers: headers() }).then(handle),
+  costCentreSeed: () => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/seed`, { method: 'POST', headers: headers() }).then(handle),
+  costCentreDashboard: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/dashboard?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+  costCentres: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+  costCentre: (id) => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/${id}`, { headers: headers() }).then(handle),
+  costCentreMonthly: (id, params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/${id}/monthly?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+  costCentreQuarterly: (id, params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/${id}/quarterly?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+  costCentreCloseCheck: (id) => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/${id}/close-check`, { headers: headers() }).then(handle),
+  costCentreSetStatus: (id, status) => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/${id}/status`, {
+    method: 'POST', headers: headers(), body: JSON.stringify({ status }),
+  }).then(handle),
+  costCentreAnnual: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/reports/annual?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+
   list: (resource, params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return fetch(`${API_BASE_URL}/api/ims/${resource}${qs ? '?' + qs : ''}`, { headers: headers() }).then(handle);

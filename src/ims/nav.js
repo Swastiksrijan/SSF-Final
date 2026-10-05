@@ -51,7 +51,7 @@ export const NAV = [
       { key: 'financialYears', icon: 'CalendarRange', resource: 'financialYears' },
       { key: 'funds', icon: 'Wallet', resource: 'funds' },
       { key: 'chart_of_accounts', icon: 'BookOpen', resource: 'accounts' },
-      { key: 'cost_centres', icon: 'Target', resource: 'costCentres' },
+      { key: 'cost_centres', icon: 'Target', path: '/ims/finance/cost-centres' },
       { key: 'bank_accounts', icon: 'Landmark', resource: 'bankAccounts' },
       { key: 'cash_accounts', icon: 'Banknote', resource: 'cashAccounts' },
       { key: 'parties', icon: 'Handshake', resource: 'parties' },

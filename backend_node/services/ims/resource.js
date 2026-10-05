@@ -23,7 +23,7 @@ const RESOURCES = {
   beneficiaries:{ model: models.ImsBeneficiary,   prefix: 'BEN',     name: 'household', dup: [] },
   financialYears:{ model: models.ImsFinancialYear, prefix: 'FY',     name: 'label', dup: [] },
   funds:        { model: models.ImsFund,          prefix: 'FUND',    name: 'name', dup: [] },
-  costCentres:  { model: models.ImsCostCentre,    prefix: 'CC',      name: 'name', dup: [] },
+  costCentres:  { model: models.ImsCostCentre,    prefix: 'CC',      name: 'name', dup: ['name'] },
   accounts:     { model: models.ImsAccount,       prefix: 'COA',     name: 'name', dup: ['code'] },
   parties:      { model: models.ImsParty,         prefix: 'PTY',     name: 'name', dup: [] },
   bankAccounts: { model: models.ImsBankAccount,   prefix: 'BNK',     name: 'accountNo', dup: [] },

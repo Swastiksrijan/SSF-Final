@@ -293,12 +293,14 @@ async function book(kind, { from, to } = {}) {
 }
 
 /** Budget vs actual (ledger spend) variance. */
-async function budgetVariance({ financialYearId } = {}) {
+async function budgetVariance({ financialYearId, costCentreId } = {}) {
   const where = { ...active };
   if (financialYearId) where.financialYearId = financialYearId;
+  if (costCentreId) where.costCentreId = costCentreId;
   const budgets = await models.ImsBudget.findAll({ where });
   const ledgerWhere = { ...active };
   if (financialYearId) ledgerWhere.financialYearId = financialYearId;
+  if (costCentreId) ledgerWhere.costCentreId = costCentreId;
   const ledger = await models.ImsLedgerEntry.findAll({ where: ledgerWhere, attributes: ['accountId', 'debit', 'credit'] });
   const actual = new Map();
   for (const l of ledger) {

@@ -312,7 +312,34 @@ const ImsFund = sequelize.define('ImsFund', {
 const ImsCostCentre = sequelize.define('ImsCostCentre', {
   ...idCols,
   name: DataTypes.STRING,
+  nameHi: DataTypes.STRING,
+  shortCode: DataTypes.STRING,
+  description: DataTypes.TEXT,
+  category: DataTypes.STRING,
+  centreType: DataTypes.STRING, // programme/project/department/location/activity/institutional
+  purpose: DataTypes.TEXT,
+  // Organisation mapping
+  programmeId: DataTypes.INTEGER,
   projectId: DataTypes.INTEGER,
+  department: DataTypes.STRING,
+  location: DataTypes.STRING,
+  district: DataTypes.STRING,
+  state: DataTypes.STRING,
+  responsiblePersonId: DataTypes.INTEGER,
+  // Financial control
+  financialYearId: DataTypes.INTEGER,
+  fundId: DataTypes.INTEGER,
+  budgetHead: DataTypes.STRING,
+  approvedBudget: DataTypes.DECIMAL(14, 2),
+  currentBudget: DataTypes.DECIMAL(14, 2),
+  startDate: DataTypes.DATEONLY,
+  endDate: DataTypes.DATEONLY,
+  // Control / approval
+  approvalAuthority: DataTypes.STRING,
+  approvalDate: DataTypes.DATEONLY,
+  resolutionReference: DataTypes.STRING,
+  notes: DataTypes.TEXT,
+  isClosed: { type: DataTypes.BOOLEAN, defaultValue: false },
 }, S);
 
 const ImsAccount = sequelize.define('ImsAccount', {

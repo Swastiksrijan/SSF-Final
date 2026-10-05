@@ -76,6 +76,7 @@ router.get('/ims/search', wrap(async (req, r) => {
     ['case', models.ImsCase, ['title', 'recordId']],
     ['transaction', models.ImsTransaction, ['transactionNo', 'recordId']],
     ['policy', models.ImsPolicy, ['title', 'category', 'recordId', 'body']],
+    ['costCentre', models.ImsCostCentre, ['name', 'recordId', 'shortCode', 'category', 'location', 'district']],
   ];
   const results = [];
   for (const [type, model, fields] of searches) {
@@ -268,12 +269,36 @@ router.get('/ims/finance/bank-book', wrap(async (req, r) => r.json(await account
 }))));
 
 router.get('/ims/finance/budget-variance', wrap(async (req, r) => r.json(await accounting.budgetVariance({
-  financialYearId: req.query.financialYearId,
+  financialYearId: req.query.financialYearId, costCentreId: req.query.costCentreId,
 }))));
 
 router.get('/ims/finance/ledger/:accountId', wrap(async (req, r) => r.json(await accounting.accountLedger(
   req.params.accountId, { from: req.query.from, to: req.query.to, limit: req.query.limit },
 ))));
+
+// ---- COST CENTRES (classification & reporting dimension) -------------------
+const cc = require('../services/ims/costCentre');
+const { seedCostCentres } = require('../services/ims/costCentreSeed');
+
+router.post('/ims/finance/cost-centres/seed', wrap(async (_req, r) => r.json(await seedCostCentres())));
+router.get('/ims/finance/cost-centres/meta', (_req, r) => r.json({ types: cc.COST_CENTRE_TYPES, categories: cc.COST_CENTRE_CATEGORIES }));
+router.get('/ims/finance/cost-centres/dashboard', wrap(async (req, r) => r.json(await cc.costCentreDashboard({
+  financialYearId: req.query.financialYearId,
+}))));
+router.get('/ims/finance/cost-centres/reports/annual', wrap(async (req, r) => r.json(await cc.annualReport({
+  financialYearId: req.query.financialYearId,
+}))));
+router.get('/ims/finance/cost-centres', wrap(async (req, r) => r.json({ records: await cc.listCostCentres({
+  financialYearId: req.query.financialYearId, centreType: req.query.centreType, category: req.query.category,
+  programmeId: req.query.programmeId, projectId: req.query.projectId, status: req.query.status,
+  location: req.query.location, from: req.query.from, to: req.query.to,
+}) })));
+router.get('/ims/finance/cost-centres/:id', wrap(async (req, r) => r.json(await cc.costCentre360(req.params.id))));
+router.get('/ims/finance/cost-centres/:id/monthly', wrap(async (req, r) => r.json(await cc.monthlyReport(req.params.id, { financialYearId: req.query.financialYearId }))));
+router.get('/ims/finance/cost-centres/:id/quarterly', wrap(async (req, r) => r.json(await cc.quarterlyReport(req.params.id, { financialYearId: req.query.financialYearId }))));
+router.get('/ims/finance/cost-centres/:id/close-check', wrap(async (req, r) => r.json(await cc.costCentreCloseCheck(req.params.id))));
+router.post('/ims/finance/cost-centres/:id/status', wrap(async (req, r) => r.json(await cc.setCostCentreStatus(req.params.id, (req.body || {}).status, req))));
+
 
 // ---- generic CRUD for every resource --------------------------------------
 router.get('/ims/:resource', wrap(async (req, r) => r.json(await res.list(req.params.resource, req.query))));

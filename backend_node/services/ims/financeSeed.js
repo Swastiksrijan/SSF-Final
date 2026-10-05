@@ -75,6 +75,9 @@ async function financeSeed() {
   });
   if (bankCreated) out.bankAccounts++;
 
+  const { seedCostCentres } = require('./costCentreSeed');
+  out.costCentres = await seedCostCentres();
+
   return out;
 }
 

@@ -91,6 +91,7 @@ import { Route as ImsPersonIdRouteImport } from './routes/ims/person/$id'
 import { Route as ImsMemberIdRouteImport } from './routes/ims/member/$id'
 import { Route as ImsFinanceReceiptsPaymentsRouteImport } from './routes/ims/finance/receipts-payments'
 import { Route as ImsFinanceLedgerRouteImport } from './routes/ims/finance/ledger'
+import { Route as ImsFinanceCostCentresRouteImport } from './routes/ims/finance/cost-centres'
 import { Route as LearningHubCourseSubjectIdRouteImport } from './routes/LearningHub/course.$subjectId'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -506,6 +507,11 @@ const ImsFinanceLedgerRoute = ImsFinanceLedgerRouteImport.update({
   path: '/ims/finance/ledger',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsFinanceCostCentresRoute = ImsFinanceCostCentresRouteImport.update({
+  id: '/ims/finance/cost-centres',
+  path: '/ims/finance/cost-centres',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LearningHubCourseSubjectIdRoute =
   LearningHubCourseSubjectIdRouteImport.update({
     id: '/course/$subjectId',
@@ -590,6 +596,7 @@ export interface FileRoutesByFullPath {
   '/LearningHub/': typeof LearningHubIndexRoute
   '/ims': typeof ImsIndexRoute
   '/LearningHub/course/$subjectId': typeof LearningHubCourseSubjectIdRoute
+  '/ims/finance/cost-centres': typeof ImsFinanceCostCentresRoute
   '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
   '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
   '/ims/member/$id': typeof ImsMemberIdRoute
@@ -674,6 +681,7 @@ export interface FileRoutesByTo {
   '/LearningHub': typeof LearningHubIndexRoute
   '/ims': typeof ImsIndexRoute
   '/LearningHub/course/$subjectId': typeof LearningHubCourseSubjectIdRoute
+  '/ims/finance/cost-centres': typeof ImsFinanceCostCentresRoute
   '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
   '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
   '/ims/member/$id': typeof ImsMemberIdRoute
@@ -760,6 +768,7 @@ export interface FileRoutesById {
   '/LearningHub/': typeof LearningHubIndexRoute
   '/ims/': typeof ImsIndexRoute
   '/LearningHub/course/$subjectId': typeof LearningHubCourseSubjectIdRoute
+  '/ims/finance/cost-centres': typeof ImsFinanceCostCentresRoute
   '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
   '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
   '/ims/member/$id': typeof ImsMemberIdRoute
@@ -847,6 +856,7 @@ export interface FileRouteTypes {
     | '/LearningHub/'
     | '/ims'
     | '/LearningHub/course/$subjectId'
+    | '/ims/finance/cost-centres'
     | '/ims/finance/ledger'
     | '/ims/finance/receipts-payments'
     | '/ims/member/$id'
@@ -931,6 +941,7 @@ export interface FileRouteTypes {
     | '/LearningHub'
     | '/ims'
     | '/LearningHub/course/$subjectId'
+    | '/ims/finance/cost-centres'
     | '/ims/finance/ledger'
     | '/ims/finance/receipts-payments'
     | '/ims/member/$id'
@@ -1016,6 +1027,7 @@ export interface FileRouteTypes {
     | '/LearningHub/'
     | '/ims/'
     | '/LearningHub/course/$subjectId'
+    | '/ims/finance/cost-centres'
     | '/ims/finance/ledger'
     | '/ims/finance/receipts-payments'
     | '/ims/member/$id'
@@ -1096,6 +1108,7 @@ export interface RootRouteChildren {
   VerifyCertIdRoute: typeof VerifyCertIdRoute
   VerifyCodeRoute: typeof VerifyCodeRoute
   ImsIndexRoute: typeof ImsIndexRoute
+  ImsFinanceCostCentresRoute: typeof ImsFinanceCostCentresRoute
   ImsFinanceLedgerRoute: typeof ImsFinanceLedgerRoute
   ImsFinanceReceiptsPaymentsRoute: typeof ImsFinanceReceiptsPaymentsRoute
   ImsMemberIdRoute: typeof ImsMemberIdRoute
@@ -1681,6 +1694,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsFinanceLedgerRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/finance/cost-centres': {
+      id: '/ims/finance/cost-centres'
+      path: '/ims/finance/cost-centres'
+      fullPath: '/ims/finance/cost-centres'
+      preLoaderRoute: typeof ImsFinanceCostCentresRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/LearningHub/course/$subjectId': {
       id: '/LearningHub/course/$subjectId'
       path: '/course/$subjectId'
@@ -1792,6 +1812,7 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyCertIdRoute: VerifyCertIdRoute,
   VerifyCodeRoute: VerifyCodeRoute,
   ImsIndexRoute: ImsIndexRoute,
+  ImsFinanceCostCentresRoute: ImsFinanceCostCentresRoute,
   ImsFinanceLedgerRoute: ImsFinanceLedgerRoute,
   ImsFinanceReceiptsPaymentsRoute: ImsFinanceReceiptsPaymentsRoute,
   ImsMemberIdRoute: ImsMemberIdRoute,
