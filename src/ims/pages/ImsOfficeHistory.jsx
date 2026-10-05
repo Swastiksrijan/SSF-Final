@@ -15,7 +15,7 @@ const cls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline
 
 const formatOfficeDate=function(value){ if(!value)return "—";
  const s=String(value);
- const m=s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+ const m=s.match(/^(\\d{4})-(\\d{2})-(\\d{2})/);
  if(m)return m[3]+"-"+m[2]+"-"+m[1];
  const d=new Date(value);
  return Number.isNaN(d.getTime())?s:d.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
