@@ -1,39 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, Kpi, Empty, Spinner, Button } from '../ui';
+import { Card, Kpi, Empty, Spinner } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { BarChart, DonutChart, ColumnChart } from '../charts';
-import { exportRecordsPdf } from '../pdf';
 import DownloadCenter from '../DownloadCenter';
-import { exportRecordsExcel } from '../excel';
 import logoImg from '../../assets/new-logo.png';
 
 const money = (n) => '₹' + Number(n || 0).toLocaleString('en-IN');
-
-function summaryRows(data, money) {
-  return [
-    { Section: 'Organisation', Metric: 'Persons', Value: data.organisation.persons },
-    { Section: 'Organisation', Metric: 'Members', Value: data.organisation.members },
-    { Section: 'Organisation', Metric: 'Donors', Value: data.organisation.donors },
-    { Section: 'Organisation', Metric: 'Volunteers', Value: data.organisation.volunteers },
-    { Section: 'Organisation', Metric: 'Employees', Value: data.organisation.employees },
-    { Section: 'Finance', Metric: 'Income', Value: money(data.finance.income) },
-    { Section: 'Finance', Metric: 'Expenses', Value: money(data.finance.expense) },
-    { Section: 'Finance', Metric: 'Net', Value: money(data.finance.net) },
-    { Section: 'Governance', Metric: 'Meetings', Value: data.governance.meetings },
-    { Section: 'Governance', Metric: 'Resolutions', Value: data.governance.pendingResolutions },
-    { Section: 'Governance', Metric: 'Actions', Value: data.governance.pendingActions },
-  ];
-}
 
 export default function ImsDashboard() {
   const { t } = useLang();
   const [data, setData] = useState(null);
   const [err, setErr] = useState('');
-  const navigate = useNavigate();
 
   useEffect(() => {
     (async () => {
@@ -59,8 +39,6 @@ export default function ImsDashboard() {
         actions={data ? (
           <div className="flex flex-wrap gap-2">
             <DownloadCenter variant="hero" defaultResource="members" />
-            <Button variant="hero" icon="FileText" onClick={() => exportRecordsPdf({ title: t('main_dashboard'), subtitle: t('app_full'), records: summaryRows(data, money) })}>{t('download')} PDF</Button>
-            <Button variant="hero" icon="Table2" onClick={() => exportRecordsExcel({ title: t('main_dashboard'), records: summaryRows(data, money), sheetName: 'Dashboard' })}>{t('download')} Excel</Button>
           </div>
         ) : null}
       />
