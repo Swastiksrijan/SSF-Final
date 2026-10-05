@@ -1,6 +1,11 @@
 // SSF-IMS Download Center — pick any register + format (CSV / Excel / PDF),
 // mirroring the legacy SSF Digital Office "Download / Export" dropdown.
+//
+// The panel is rendered in a portal with fixed positioning (anchored to the
+// trigger) so it is never clipped by a parent's overflow-hidden (e.g. the
+// dashboard hero card) or trapped under the sticky header.
 import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import * as Icons from 'lucide-react';
 import { NAV } from './nav';
 import { useLang } from './LangContext';
@@ -32,31 +37,53 @@ function downloadBlob(name, content, type) {
 }
 
 const FORMATS = [
-  { id: 'csv', label: 'CSV', icon: 'Download' },
-  { id: 'excel', label: 'Excel', icon: 'Table2' },
-  { id: 'pdf', label: 'PDF', icon: 'FileText' },
+  { id: 'csv', label: 'CSV' },
+  { id: 'excel', label: 'Excel' },
+  { id: 'pdf', label: 'PDF' },
 ];
 
 const isResource = (r) => RESOURCES.some((x) => x.resource === r);
 
-export default function DownloadCenter({ defaultResource, align = 'right', variant = 'bar' }) {
+export default function DownloadCenter({ defaultResource, variant = 'bar' }) {
   const { t, lang } = useLang();
   const [open, setOpen] = useState(false);
   const [target, setTarget] = useState(isResource(defaultResource) ? defaultResource : RESOURCES[0]?.resource || 'persons');
   const [format, setFormat] = useState('pdf');
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
-  const ref = useRef(null);
+  const [rect, setRect] = useState(null);
+  const triggerRef = useRef(null);
+  const panelRef = useRef(null);
 
   useEffect(() => {
     if (isResource(defaultResource)) setTarget(defaultResource);
   }, [defaultResource]);
 
+  const toggle = () => {
+    if (!open) {
+      setRect(triggerRef.current.getBoundingClientRect());
+      setMsg('');
+    }
+    setOpen((o) => !o);
+  };
+
   useEffect(() => {
-    const onDoc = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+    if (!open) return;
+    const close = () => setOpen(false);
+    const onDoc = (e) => {
+      if (triggerRef.current?.contains(e.target)) return;
+      if (panelRef.current?.contains(e.target)) return;
+      close();
+    };
     document.addEventListener('mousedown', onDoc);
-    return () => document.removeEventListener('mousedown', onDoc);
-  }, []);
+    window.addEventListener('resize', close);
+    window.addEventListener('scroll', close, true);
+    return () => {
+      document.removeEventListener('mousedown', onDoc);
+      window.removeEventListener('resize', close);
+      window.removeEventListener('scroll', close, true);
+    };
+  }, [open]);
 
   const labelFor = (resource) => {
     const item = RESOURCES.find((r) => r.resource === resource);
@@ -75,10 +102,9 @@ export default function DownloadCenter({ defaultResource, align = 'right', varia
         return;
       }
       const label = labelFor(target);
-      const stamp = new Date().toISOString().slice(0, 10);
       if (format === 'pdf') exportRecordsPdf({ title: label, subtitle: `${target} register`, records: rows, lang });
       else if (format === 'excel') await exportRecordsExcel({ title: label, records: rows, sheetName: label });
-      else downloadBlob(`${target}-${stamp}.csv`, toCsv(rows), 'text/csv');
+      else downloadBlob(`${target}.csv`, toCsv(rows), 'text/csv');
       setOpen(false);
     } catch (e) {
       setMsg(e.message || 'Download failed.');
@@ -91,13 +117,21 @@ export default function DownloadCenter({ defaultResource, align = 'right', varia
     ? 'inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-[#002344] hover:bg-zinc-100'
     : 'inline-flex items-center gap-2 rounded-xl bg-white/10 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/15';
 
+  const panelStyle = rect ? {
+    position: 'fixed',
+    top: Math.min(rect.bottom + 8, window.innerHeight - 40),
+    right: Math.max(8, window.innerWidth - rect.right),
+    zIndex: 1000,
+  } : null;
+
   return (
-    <div className="relative" ref={ref}>
-      <button type="button" onClick={() => setOpen((o) => !o)} className={triggerClass}>
+    <div className="relative inline-block" ref={triggerRef}>
+      <button type="button" onClick={toggle} className={triggerClass}>
         <Icons.Download size={variant === 'hero' ? 16 : 14} /> {variant === 'hero' ? t('download_export') : t('download')}
       </button>
-      {open && (
-        <div className={`absolute ${align === 'right' ? 'right-0' : 'left-0'} top-11 z-[70] w-[min(92vw,390px)] rounded-2xl border border-slate-200 bg-white p-5 text-slate-800 shadow-2xl`}>
+
+      {open && panelStyle && createPortal(
+        <div ref={panelRef} style={panelStyle} className="w-[min(92vw,390px)] rounded-2xl border border-slate-200 bg-white p-5 text-slate-800 shadow-2xl">
           <div className="text-lg font-black text-[#002344]">{t('what_download')}</div>
           <p className="mt-1 text-xs text-slate-500">{t('select_register_hint')}</p>
 
@@ -134,7 +168,8 @@ export default function DownloadCenter({ defaultResource, align = 'right', varia
             <button type="button" onClick={() => setOpen(false)} className="flex-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50">{t('cancel')}</button>
             <button type="button" disabled={busy} onClick={download} className="flex-1 rounded-xl bg-[#002344] px-3 py-2.5 text-sm font-bold text-white disabled:opacity-40">{busy ? t('preparing') : t('download')}</button>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );

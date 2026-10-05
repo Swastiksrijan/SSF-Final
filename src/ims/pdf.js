@@ -78,6 +78,6 @@ export function exportRecordsPdf({ title, subtitle, records, columns, lang = 'en
     doc.text(`SSF-IMS · ${p} / ${pages}`, pageW - 14, pageH - 6, { align: 'right' });
   }
 
-  doc.save(`ssf-ims-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${Date.now()}.pdf`);
+  doc.save(`ssf-ims-${String(title).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${new Date().toISOString().slice(0, 10)}.pdf`);
   return true;
 }

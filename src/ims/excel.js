@@ -45,7 +45,7 @@ export async function exportRecordsExcel({ title, records, columns, sheetName })
   const buf = await wb.xlsx.writeBuffer();
   downloadBlob(
     new Blob([buf], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' }),
-    `ssf-ims-${slug(title)}-${Date.now()}.xlsx`
+    `ssf-ims-${slug(title)}-${new Date().toISOString().slice(0, 10)}.xlsx`
   );
   return true;
 }
