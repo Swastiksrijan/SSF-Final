@@ -92,6 +92,22 @@ for (const [route, data] of Object.entries(pages)) {
   fs.writeFileSync(path.join(targetDir, 'index.html'), buildHtml(route, data));
 }
 
+// SSF-IMS (OneOffice) and the admin/office apps are client-rendered. Emit a
+// static shell for each fixed route so direct URLs and refreshes don't 404 on
+// static hosts (Vercel serves dist/<route>/index.html for /<route>).
+const appRoutes = [
+  '/ims', '/ims/registers', '/ims/reports', '/ims/finance', '/ims/history',
+  '/ims/constitution', '/ims/data', '/ims/impact', '/ims/integrity',
+  '/ims/knowledge', '/ims/notifications', '/ims/permissions',
+  '/ims/procurement', '/ims/audit-trail', '/ims/search',
+  '/admin', '/SSFDigitalOffice', '/AdminPortal',
+];
+for (const route of appRoutes) {
+  const targetDir = path.join(distDir, route.slice(1));
+  fs.mkdirSync(targetDir, { recursive: true });
+  fs.writeFileSync(path.join(targetDir, 'index.html'), source);
+}
+
 fs.writeFileSync(indexPath, buildHtml('/', pages['/']));
-console.log(`Generated ${Object.keys(pages).length} static route pages with route-specific social preview metadata.`);
+console.log(`Generated ${Object.keys(pages).length} SEO route pages + ${appRoutes.length} app route shells.`);
 console.log(`Home fallback image: ${site}${homeImage}`);
