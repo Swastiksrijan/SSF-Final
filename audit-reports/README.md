@@ -20,17 +20,21 @@ Notes:
 - FY 2024-25 arrived last (file `SSF Audit 2025 Scan ...`, year ended 31-03-2025).
 
 ## Status
-- Still receiving years from the user ("har saal ka").
-- Processing (extract figures → canonical audit data / reconciliation) will be done once the full set is received.
+- FY 2025-26 set received; processed into the canonical audit dataset on 2026-10-04.
+- Earlier years (inception 2013-14 onwards) still to be provided.
 
-## What each report contains (all are scanned, image-only; figures via OCR)
-Prepared by **Kapil Tiwari & Associates, Chartered Accountants** (CA Kapil Tiwari, M.No. 447133).
-Each report = Audit Report + Receipt & Payment Account + Income & Expenditure Account + Balance Sheet.
+## Extracted summary (figures now in `backend_node/data/auditReports.json`)
 
-| FY | Opinion | Income & Expenditure A/c surplus, moved to Balance Sheet |
-|----|---------|----------------------------------------------------------|
-| 2021-22 | excess of income over expenditure | ~₹70,290.43 (to confirm) |
-| 2022-23 | excess of income over expenditure | to confirm |
-| 2023-24 | excess of income over expenditure | to confirm |
-| 2025-26 | excess of expenditure over income | deficit (₹2,781.33 seen; to confirm vs ₹4,660.80 in model) |
+| FY | Auditor | Income | Expenditure | Result | Closing cash+bank | Closing General Fund |
+|----|---------|-------:|------------:|--------|------------------:|---------------------:|
+| 2021-22 | S R S N & Associates | 79,370.00 | 9,078.67 | surplus 70,291.33 | 56,726.33 | 1,27,858.33 |
+| 2022-23 | S R S N & Associates | 52,976.67 | 49,054.80 | surplus 3,921.87 | 29,922.20 | 1,31,780.20 |
+| 2023-24 | S R S N & Associates | 64,171.57 | 41,890.68 | surplus 22,280.89 | 30,853.09 | 1,54,061.09 |
+| 2024-25 | Kapil Tiwari & Associates | 77,364.00 | 87,135.25 | deficit 9,771.25 | 21,081.84 | 1,44,289.84 |
+| 2025-26 | Kapil Tiwari & Associates | 76,615.00 | 79,396.33 | deficit 2,781.33 | 18,300.51 | 1,41,508.51 |
+
+Each year reconciles: General Fund roll-forward = opening ± result = closing, and each year's opening cash/bank equals the prior year's closing.
+
+## Earlier years
+The Samiti was formed in **2013** (inception FY 2013-14). FY **2013-14 to 2020-21** reports are still pending and are recorded as a placeholder (`pendingYears` in `auditReports.json`).
 
