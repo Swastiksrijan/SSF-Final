@@ -264,3 +264,35 @@ Baaki sab 🆕 upar list me.
 3. Payroll / PF-ESI hai? (nahi → HRPY, EXPN-04 defer)
 4. Corpus donation alag rakhna hai?
 5. Restricted vs Unrestricted fund tracking chahiye ya simple general fund?
+
+---
+
+## 19. DECISION LOG (user-confirmed, 2026-10-04)
+
+1. **Sab registers rahenge** — kuch bhi hataana nahi, chahe abhi applicable na ho.
+2. **GST** — abhi nahi. **FCRA** — abhi nahi. **ESI/EPFO** — registered hain par abhi koi
+   salary/project diya-leta nahi; bhavishya me hoga.
+   → In registers ko **"Dormant / Not Applicable Yet / भविष्य हेतु"** status ke saath **rakhenge**
+   (delete nahi). Jab GST/FCRA/payroll shuru ho, sirf status Active karenge — structure badalna nahi padega.
+3. **Bilingual (English + Hindi)** — har register, har label, har field, har button dono bhasha me.
+4. **Har entry par EDIT button** — plus Add / View / Archive / Restore / Export. Silent overwrite
+   allowed nahi: **Edit = naya version** (audit trail me purana value bhi rahega) — isse 50 saal baad
+   bhi "kab, kisne, kya badla" pata chale.
+
+### Register status model (har register ke liye ek status)
+| Status | Meaning | Example abhi |
+|--------|---------|--------------|
+| Active | Abhi use ho raha hai | Cash Book, Bank Book, Donation, Sahyog |
+| Dormant / N.A. Yet | Structure ready, abhi entry nahi | GST, FCRA, Payroll, PF/ESI |
+| Future | Bhavishya me shuru hoga | Grant, CSR, Foreign Donor |
+
+### Reusable Register Engine (ek hi pattern sab registers ke liye)
+Har register me ye sab hoga — taaki 50 saal ek jaisa rahe:
+`List view (bilingual headers) · Add · Edit (versioned) · View · Archive/Restore · Search · FY filter ·
+Fund/Project filter · CSV export · PDF print · Audit trail (kaun/kab/kya) · Attachment link`
+
+### Build order — updated
+Tier 1 me pehle **Register Engine** banayenge (upar wala pattern), phir usi engine se ek-ek register:
+Cash Book → Bank Book → Founder/Sahyog. Dormant registers (GST/FCRA/Payroll) Tier 5 me "Not Applicable
+Yet" status ke saath add honge.
+
