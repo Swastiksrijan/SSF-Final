@@ -102,8 +102,11 @@ Isi hisaab se:
 
 1. **Production deploy** — Render (backend) + Vercel (frontend). Render DB ka
    backup pehle lena hai.
-2. **Legacy data import** — purane `DigitalOfficeRecords` ko IMS masters me
-   map karna (ek migration script).
+2. **Legacy data import** — ✅ ban gaya (additive, idempotent). Chalane ke
+   tarike: `/ims/data` page par "Preview (dry run)" + "Import now" button,
+   ya CLI `node scripts/migrate-legacy.js [--apply]`, ya
+   `GET/POST /api/ims/migrate-legacy`. Purana data kabhi badla/nahi hataya
+   jaata. Detail: `docs/ssf-ims/05-migration.md`.
 3. Report PDF/download options, aur charts.
 
 *Report khatam.*

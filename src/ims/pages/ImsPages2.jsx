@@ -9,6 +9,11 @@ import { API_BASE_URL } from '../../config/api';
 
 const TOKEN = () => localStorage.getItem('ssf_admin_token') || '';
 const get = (path) => fetch(`${API_BASE_URL}${path}`, { headers: { Authorization: `Bearer ${TOKEN()}` } }).then(r => r.json());
+const post = (path, body) => fetch(`${API_BASE_URL}${path}`, {
+  method: 'POST',
+  headers: { Authorization: `Bearer ${TOKEN()}`, 'Content-Type': 'application/json' },
+  body: JSON.stringify(body || {}),
+}).then(r => r.json());
 
 /** Reports Centre — real links to report datasets + CSV export. */
 export function ImsReports() {
@@ -184,11 +189,12 @@ export function ImsPermissions() {
   );
 }
 
-/** Data Import/Export — portable backup (JSON) + CSV per resource. */
+/** Data Import/Export — portable backup (JSON) + legacy migration + CSV per resource. */
 export function ImsData() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState('');
+  const [mig, setMig] = useState(null);
   const resources = ['persons', 'members', 'committees', 'committeeMembers', 'meetings', 'resolutions', 'actions', 'cases', 'projects', 'activities', 'beneficiaries', 'funds', 'accounts', 'transactions', 'vouchers', 'donors', 'donations', 'grants', 'assets', 'documents', 'compliance', 'audits', 'risks', 'policies', 'governanceRules'];
 
   const exportAll = async () => {
@@ -203,6 +209,23 @@ export function ImsData() {
     } finally { setBusy(false); }
   };
 
+  const dryRunMigration = async () => {
+    setBusy(true); setMsg(''); setMig(null);
+    try { setMig(await get('/api/ims/migrate-legacy')); }
+    catch (e) { setMsg(e.message); }
+    finally { setBusy(false); }
+  };
+
+  const runMigration = async () => {
+    setBusy(true); setMsg(''); setMig(null);
+    try { setMig(await post('/api/ims/migrate-legacy', {})); setMsg('Legacy data imported (additive only).'); }
+    catch (e) { setMsg(e.message); }
+    finally { setBusy(false); }
+  };
+
+  const hi = lang === 'hi';
+  const counts = mig ? Object.entries(mig.dryRun ? (mig.wouldCreate || {}) : (mig.created || {})) : [];
+
   return (
     <ImsLayout active="import_export">
       <PageHeader title={t('import_export')} subtitle={t('tagline')} />
@@ -210,6 +233,31 @@ export function ImsData() {
         <p className="mb-3 text-sm text-slate-600">Export a complete, portable, machine-readable backup of SSF-IMS records. No vendor lock-in.</p>
         <Button icon="Database" onClick={exportAll} disabled={busy}>{busy ? '…' : 'Export full backup (JSON)'}</Button>
         {msg && <p className="mt-2 text-sm text-emerald-600">{msg}</p>}
+      </Card>
+
+      <Card className="mt-4 p-5">
+        <h2 className="text-sm font-bold text-slate-800">{hi ? 'पुराने Digital Office डेटा को IMS में लाएँ' : 'Import legacy Digital Office data into IMS'}</h2>
+        <p className="mt-1 text-sm text-slate-600">
+          {hi
+            ? 'यह केवल नए IMS अभिलेख जोड़ता है — पुराने किसी डेटा को बदलता या हटाता नहीं ("कुछ हटाना नहीं")। दोबारा चलाने पर दोहराव नहीं होता।'
+            : 'This only adds new IMS records — it never changes or deletes legacy data ("kuch hatana nhi"). Re-running is safe (idempotent).'}
+        </p>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <Button icon="Search" onClick={dryRunMigration} disabled={busy}>{hi ? 'पहले जाँचें (dry run)' : 'Preview (dry run)'}</Button>
+          <Button icon="Upload" onClick={runMigration} disabled={busy}>{hi ? 'अब आयात करें' : 'Import now'}</Button>
+        </div>
+        {mig && (
+          <div className="mt-3 rounded-xl bg-slate-50 p-3 text-sm">
+            <p className="font-medium text-slate-700">
+              {mig.dryRun ? (hi ? 'पूर्वावलोकन' : 'Preview') : (hi ? 'आयात पूर्ण' : 'Import done')} — {hi ? 'स्रोत' : 'sources'}: {JSON.stringify(mig.sources)}
+            </p>
+            <p className="mt-1 text-slate-600">
+              {hi ? 'बनाए जाएँगे/बनाए गए' : 'created/would-create'}: {counts.length ? counts.map(([k, v]) => `${k} ${v}`).join(', ') : '—'}
+            </p>
+            {mig.skipped > 0 && <p className="text-slate-500">{hi ? 'पहले से आयातित (छोड़े गए)' : 'already imported (skipped)'}: {mig.skipped}</p>}
+            {mig.unmapped && mig.unmapped.length > 0 && <p className="text-amber-600">{hi ? 'अमैप्ड' : 'unmapped'}: {mig.unmapped.slice(0, 8).join(', ')}</p>}
+          </div>
+        )}
       </Card>
     </ImsLayout>
   );

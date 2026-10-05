@@ -7,6 +7,7 @@ const res = require('../services/ims/resource');
 const { mainDashboard, moduleDashboard } = require('../services/ims/dashboard');
 const { person360 } = require('../services/ims/person360');
 const { seedGovernance } = require('../services/ims/seed');
+const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { ROLES, DEFAULT_GRANTS } = require('../services/ims/rbac');
 
 // Auth: reuse the office bearer token so the existing admin session works.
@@ -184,6 +185,18 @@ router.get('/ims/coverage', wrap(async (_req, r) => {
     covered,
     missing: covered.filter(c => c.count === 0).length,
   });
+}));
+
+// ---- legacy -> IMS migration (additive, idempotent) ------------------------
+// GET  = dry run report (nothing written). POST = actual import.
+router.get('/ims/migrate-legacy', wrap(async (req, r) => {
+  const stats = await migrateLegacy({ dryRun: true, limit: Number(req.query.limit) || 5000 });
+  r.json({ mode: 'dry-run', note: 'Nothing written. POST to this URL to import.', ...stats });
+}));
+
+router.post('/ims/migrate-legacy', wrap(async (req, r) => {
+  const stats = await migrateLegacy({ dryRun: false, limit: Number((req.body && req.body.limit) || req.query.limit) || 5000 });
+  r.json({ mode: 'import', ...stats });
 }));
 
 // ---- generic CRUD for every resource --------------------------------------
