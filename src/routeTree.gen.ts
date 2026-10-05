@@ -66,6 +66,7 @@ import { Route as ImsSearchRouteImport } from './routes/ims/search'
 import { Route as ImsReportsRouteImport } from './routes/ims/reports'
 import { Route as ImsRegistersRouteImport } from './routes/ims/registers'
 import { Route as ImsProcurementRouteImport } from './routes/ims/procurement'
+import { Route as ImsPoliciesRouteImport } from './routes/ims/policies'
 import { Route as ImsPermissionsRouteImport } from './routes/ims/permissions'
 import { Route as ImsNotificationsRouteImport } from './routes/ims/notifications'
 import { Route as ImsMembersRouteImport } from './routes/ims/members'
@@ -378,6 +379,11 @@ const ImsProcurementRoute = ImsProcurementRouteImport.update({
   path: '/ims/procurement',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsPoliciesRoute = ImsPoliciesRouteImport.update({
+  id: '/ims/policies',
+  path: '/ims/policies',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsPermissionsRoute = ImsPermissionsRouteImport.update({
   id: '/ims/permissions',
   path: '/ims/permissions',
@@ -574,6 +580,7 @@ export interface FileRoutesByFullPath {
   '/ims/members': typeof ImsMembersRoute
   '/ims/notifications': typeof ImsNotificationsRoute
   '/ims/permissions': typeof ImsPermissionsRoute
+  '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
   '/ims/registers': typeof ImsRegistersRoute
   '/ims/reports': typeof ImsReportsRoute
@@ -657,6 +664,7 @@ export interface FileRoutesByTo {
   '/ims/members': typeof ImsMembersRoute
   '/ims/notifications': typeof ImsNotificationsRoute
   '/ims/permissions': typeof ImsPermissionsRoute
+  '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
   '/ims/registers': typeof ImsRegistersRoute
   '/ims/reports': typeof ImsReportsRoute
@@ -742,6 +750,7 @@ export interface FileRoutesById {
   '/ims/members': typeof ImsMembersRoute
   '/ims/notifications': typeof ImsNotificationsRoute
   '/ims/permissions': typeof ImsPermissionsRoute
+  '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
   '/ims/registers': typeof ImsRegistersRoute
   '/ims/reports': typeof ImsReportsRoute
@@ -828,6 +837,7 @@ export interface FileRouteTypes {
     | '/ims/members'
     | '/ims/notifications'
     | '/ims/permissions'
+    | '/ims/policies'
     | '/ims/procurement'
     | '/ims/registers'
     | '/ims/reports'
@@ -911,6 +921,7 @@ export interface FileRouteTypes {
     | '/ims/members'
     | '/ims/notifications'
     | '/ims/permissions'
+    | '/ims/policies'
     | '/ims/procurement'
     | '/ims/registers'
     | '/ims/reports'
@@ -995,6 +1006,7 @@ export interface FileRouteTypes {
     | '/ims/members'
     | '/ims/notifications'
     | '/ims/permissions'
+    | '/ims/policies'
     | '/ims/procurement'
     | '/ims/registers'
     | '/ims/reports'
@@ -1076,6 +1088,7 @@ export interface RootRouteChildren {
   ImsMembersRoute: typeof ImsMembersRoute
   ImsNotificationsRoute: typeof ImsNotificationsRoute
   ImsPermissionsRoute: typeof ImsPermissionsRoute
+  ImsPoliciesRoute: typeof ImsPoliciesRoute
   ImsProcurementRoute: typeof ImsProcurementRoute
   ImsRegistersRoute: typeof ImsRegistersRoute
   ImsReportsRoute: typeof ImsReportsRoute
@@ -1493,6 +1506,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsProcurementRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/policies': {
+      id: '/ims/policies'
+      path: '/ims/policies'
+      fullPath: '/ims/policies'
+      preLoaderRoute: typeof ImsPoliciesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/permissions': {
       id: '/ims/permissions'
       path: '/ims/permissions'
@@ -1764,6 +1784,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsMembersRoute: ImsMembersRoute,
   ImsNotificationsRoute: ImsNotificationsRoute,
   ImsPermissionsRoute: ImsPermissionsRoute,
+  ImsPoliciesRoute: ImsPoliciesRoute,
   ImsProcurementRoute: ImsProcurementRoute,
   ImsRegistersRoute: ImsRegistersRoute,
   ImsReportsRoute: ImsReportsRoute,
