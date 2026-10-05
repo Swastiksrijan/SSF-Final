@@ -13,6 +13,11 @@ export const NAV = [
     group: 'organisation', items: [
       { key: 'organisation_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/organisation' },
       { key: 'org_profile', icon: 'Building2', path: '/ims/org-profile' },
+      { key: 'membership_contributions', icon: 'Coins', path: '/ims/membership-contributions', resource: 'membershipContributions' },
+      { key: 'appointment_letters', icon: 'Mail', path: '/ims/appointment-letters', resource: 'appointmentLetters' },
+      { key: 'official_documents', icon: 'FileCheck2', path: '/ims/official-documents', resource: 'officialDocuments' },
+      { key: 'donor_slips', icon: 'Receipt', path: '/ims/donor-slips', resource: 'donorSlips' },
+      { key: 'separations', icon: 'UserMinus', path: '/ims/separations', resource: 'separations' },
       { key: 'constitution', icon: 'ScrollText', path: '/ims/constitution' },
       { key: 'governanceRules', icon: 'Scale', resource: 'governanceRules' },
       { key: 'registers_required', icon: 'BookMarked', path: '/ims/registers' },
@@ -25,6 +30,7 @@ export const NAV = [
       { key: 'governance_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/governance' },
       { key: 'persons', icon: 'UserRound', resource: 'persons' },
       { key: 'members', icon: 'IdCard', path: '/ims/members', resource: 'members' },
+      { key: 'managing_committee', icon: 'UserTie', path: '/ims/managing-committee', resource: 'managingCommittee' },
       { key: 'committee', icon: 'Users', resource: 'committeeMembers' },
       { key: 'committees', icon: 'Landmark', resource: 'committees' },
       { key: 'meetings', icon: 'CalendarClock', path: '/ims/meetings', resource: 'meetings' },
@@ -95,7 +101,7 @@ export const NAV = [
   },
   {
     group: 'admin', items: [
-      { key: 'users', icon: 'UserCog', resource: 'users' },
+      { key: 'users', icon: 'UserCog', path: '/ims/users', resource: 'users' },
       { key: 'users_perms', icon: 'KeyRound', path: '/ims/permissions' },
       { key: 'audit_trail', icon: 'ClipboardList', path: '/ims/audit-trail' },
       { key: 'import_export', icon: 'Database', path: '/ims/data' },

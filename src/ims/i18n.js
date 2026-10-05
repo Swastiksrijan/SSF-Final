@@ -176,6 +176,13 @@ export const DICT = {
   committees: { en: 'Committees', hi: 'समितियाँ' },
   organisations: { en: 'Organisation Master', hi: 'संस्था मास्टर' },
   org_profile: { en: 'Organisation Profile', hi: 'संस्था परिचय' },
+  managing_committee: { en: 'Managing Committee', hi: 'प्रबंधकारिणी समिति' },
+  membership_contributions: { en: 'Membership & Contribution', hi: 'सदस्यता व योगदान' },
+  appointment_letters: { en: 'Appointment Letters', hi: 'नियुक्ति पत्र' },
+  official_documents: { en: 'Official Documents', hi: 'वैधानिक दस्तावेज़' },
+  donor_slips: { en: 'Donor Slips & Receipts', hi: 'दान रसीदें' },
+  separations: { en: 'Role Changes & Separation', hi: 'पद परिवर्तन व पृथक्करण' },
+  download_center: { en: 'Download / Export', hi: 'डाउनलोड / निर्यात' },
   users: { en: 'Users', hi: 'उपयोगकर्ता' },
 
   active: { en: 'Active', hi: 'सक्रिय' },

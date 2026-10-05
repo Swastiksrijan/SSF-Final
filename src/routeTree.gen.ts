@@ -62,6 +62,8 @@ import { Route as ImsIndexRouteImport } from './routes/ims/index'
 import { Route as LearningHubIndexRouteImport } from './routes/LearningHub/index'
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as VerifyCertIdRouteImport } from './routes/verify.$certId'
+import { Route as ImsUsersRouteImport } from './routes/ims/users'
+import { Route as ImsSeparationsRouteImport } from './routes/ims/separations'
 import { Route as ImsSearchRouteImport } from './routes/ims/search'
 import { Route as ImsReportsRouteImport } from './routes/ims/reports'
 import { Route as ImsRegistersRouteImport } from './routes/ims/registers'
@@ -69,17 +71,23 @@ import { Route as ImsProcurementRouteImport } from './routes/ims/procurement'
 import { Route as ImsPoliciesRouteImport } from './routes/ims/policies'
 import { Route as ImsPermissionsRouteImport } from './routes/ims/permissions'
 import { Route as ImsOrgProfileRouteImport } from './routes/ims/org-profile'
+import { Route as ImsOfficialDocumentsRouteImport } from './routes/ims/official-documents'
 import { Route as ImsNotificationsRouteImport } from './routes/ims/notifications'
+import { Route as ImsMembershipContributionsRouteImport } from './routes/ims/membership-contributions'
 import { Route as ImsMembersRouteImport } from './routes/ims/members'
 import { Route as ImsMeetingsRouteImport } from './routes/ims/meetings'
+import { Route as ImsManagingCommitteeRouteImport } from './routes/ims/managing-committee'
 import { Route as ImsKnowledgeRouteImport } from './routes/ims/knowledge'
 import { Route as ImsIntegrityRouteImport } from './routes/ims/integrity'
 import { Route as ImsImpactRouteImport } from './routes/ims/impact'
 import { Route as ImsHistoryRouteImport } from './routes/ims/history'
+import { Route as ImsDownloadCenterRouteImport } from './routes/ims/download-center'
+import { Route as ImsDonorSlipsRouteImport } from './routes/ims/donor-slips'
 import { Route as ImsDataRouteImport } from './routes/ims/data'
 import { Route as ImsConstitutionRouteImport } from './routes/ims/constitution'
 import { Route as ImsCasesRouteImport } from './routes/ims/cases'
 import { Route as ImsAuditTrailRouteImport } from './routes/ims/audit-trail'
+import { Route as ImsAppointmentLettersRouteImport } from './routes/ims/appointment-letters'
 import { Route as ImsActivitiesRouteImport } from './routes/ims/activities'
 import { Route as LearningHubMyLearningRouteImport } from './routes/LearningHub/my-learning'
 import { Route as LearningHubKnowledgeWorldRouteImport } from './routes/LearningHub/knowledge-world'
@@ -361,6 +369,16 @@ const VerifyCertIdRoute = VerifyCertIdRouteImport.update({
   path: '/verify/$certId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsUsersRoute = ImsUsersRouteImport.update({
+  id: '/ims/users',
+  path: '/ims/users',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsSeparationsRoute = ImsSeparationsRouteImport.update({
+  id: '/ims/separations',
+  path: '/ims/separations',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsSearchRoute = ImsSearchRouteImport.update({
   id: '/ims/search',
   path: '/ims/search',
@@ -396,11 +414,22 @@ const ImsOrgProfileRoute = ImsOrgProfileRouteImport.update({
   path: '/ims/org-profile',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsOfficialDocumentsRoute = ImsOfficialDocumentsRouteImport.update({
+  id: '/ims/official-documents',
+  path: '/ims/official-documents',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsNotificationsRoute = ImsNotificationsRouteImport.update({
   id: '/ims/notifications',
   path: '/ims/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsMembershipContributionsRoute =
+  ImsMembershipContributionsRouteImport.update({
+    id: '/ims/membership-contributions',
+    path: '/ims/membership-contributions',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ImsMembersRoute = ImsMembersRouteImport.update({
   id: '/ims/members',
   path: '/ims/members',
@@ -409,6 +438,11 @@ const ImsMembersRoute = ImsMembersRouteImport.update({
 const ImsMeetingsRoute = ImsMeetingsRouteImport.update({
   id: '/ims/meetings',
   path: '/ims/meetings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsManagingCommitteeRoute = ImsManagingCommitteeRouteImport.update({
+  id: '/ims/managing-committee',
+  path: '/ims/managing-committee',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImsKnowledgeRoute = ImsKnowledgeRouteImport.update({
@@ -431,6 +465,16 @@ const ImsHistoryRoute = ImsHistoryRouteImport.update({
   path: '/ims/history',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsDownloadCenterRoute = ImsDownloadCenterRouteImport.update({
+  id: '/ims/download-center',
+  path: '/ims/download-center',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsDonorSlipsRoute = ImsDonorSlipsRouteImport.update({
+  id: '/ims/donor-slips',
+  path: '/ims/donor-slips',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsDataRoute = ImsDataRouteImport.update({
   id: '/ims/data',
   path: '/ims/data',
@@ -449,6 +493,11 @@ const ImsCasesRoute = ImsCasesRouteImport.update({
 const ImsAuditTrailRoute = ImsAuditTrailRouteImport.update({
   id: '/ims/audit-trail',
   path: '/ims/audit-trail',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsAppointmentLettersRoute = ImsAppointmentLettersRouteImport.update({
+  id: '/ims/appointment-letters',
+  path: '/ims/appointment-letters',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImsActivitiesRoute = ImsActivitiesRouteImport.update({
@@ -580,17 +629,23 @@ export interface FileRoutesByFullPath {
   '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
   '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
   '/ims/activities': typeof ImsActivitiesRoute
+  '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
   '/ims/cases': typeof ImsCasesRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/data': typeof ImsDataRoute
+  '/ims/donor-slips': typeof ImsDonorSlipsRoute
+  '/ims/download-center': typeof ImsDownloadCenterRoute
   '/ims/history': typeof ImsHistoryRoute
   '/ims/impact': typeof ImsImpactRoute
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
+  '/ims/managing-committee': typeof ImsManagingCommitteeRoute
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
+  '/ims/membership-contributions': typeof ImsMembershipContributionsRoute
   '/ims/notifications': typeof ImsNotificationsRoute
+  '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
@@ -598,6 +653,8 @@ export interface FileRoutesByFullPath {
   '/ims/registers': typeof ImsRegistersRoute
   '/ims/reports': typeof ImsReportsRoute
   '/ims/search': typeof ImsSearchRoute
+  '/ims/separations': typeof ImsSeparationsRoute
+  '/ims/users': typeof ImsUsersRoute
   '/verify/$certId': typeof VerifyCertIdRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/LearningHub/': typeof LearningHubIndexRoute
@@ -666,17 +723,23 @@ export interface FileRoutesByTo {
   '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
   '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
   '/ims/activities': typeof ImsActivitiesRoute
+  '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
   '/ims/cases': typeof ImsCasesRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/data': typeof ImsDataRoute
+  '/ims/donor-slips': typeof ImsDonorSlipsRoute
+  '/ims/download-center': typeof ImsDownloadCenterRoute
   '/ims/history': typeof ImsHistoryRoute
   '/ims/impact': typeof ImsImpactRoute
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
+  '/ims/managing-committee': typeof ImsManagingCommitteeRoute
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
+  '/ims/membership-contributions': typeof ImsMembershipContributionsRoute
   '/ims/notifications': typeof ImsNotificationsRoute
+  '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
@@ -684,6 +747,8 @@ export interface FileRoutesByTo {
   '/ims/registers': typeof ImsRegistersRoute
   '/ims/reports': typeof ImsReportsRoute
   '/ims/search': typeof ImsSearchRoute
+  '/ims/separations': typeof ImsSeparationsRoute
+  '/ims/users': typeof ImsUsersRoute
   '/verify/$certId': typeof VerifyCertIdRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/LearningHub': typeof LearningHubIndexRoute
@@ -754,17 +819,23 @@ export interface FileRoutesById {
   '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
   '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
   '/ims/activities': typeof ImsActivitiesRoute
+  '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
   '/ims/cases': typeof ImsCasesRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/data': typeof ImsDataRoute
+  '/ims/donor-slips': typeof ImsDonorSlipsRoute
+  '/ims/download-center': typeof ImsDownloadCenterRoute
   '/ims/history': typeof ImsHistoryRoute
   '/ims/impact': typeof ImsImpactRoute
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
+  '/ims/managing-committee': typeof ImsManagingCommitteeRoute
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
+  '/ims/membership-contributions': typeof ImsMembershipContributionsRoute
   '/ims/notifications': typeof ImsNotificationsRoute
+  '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
@@ -772,6 +843,8 @@ export interface FileRoutesById {
   '/ims/registers': typeof ImsRegistersRoute
   '/ims/reports': typeof ImsReportsRoute
   '/ims/search': typeof ImsSearchRoute
+  '/ims/separations': typeof ImsSeparationsRoute
+  '/ims/users': typeof ImsUsersRoute
   '/verify/$certId': typeof VerifyCertIdRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/LearningHub/': typeof LearningHubIndexRoute
@@ -843,17 +916,23 @@ export interface FileRouteTypes {
     | '/LearningHub/knowledge-world'
     | '/LearningHub/my-learning'
     | '/ims/activities'
+    | '/ims/appointment-letters'
     | '/ims/audit-trail'
     | '/ims/cases'
     | '/ims/constitution'
     | '/ims/data'
+    | '/ims/donor-slips'
+    | '/ims/download-center'
     | '/ims/history'
     | '/ims/impact'
     | '/ims/integrity'
     | '/ims/knowledge'
+    | '/ims/managing-committee'
     | '/ims/meetings'
     | '/ims/members'
+    | '/ims/membership-contributions'
     | '/ims/notifications'
+    | '/ims/official-documents'
     | '/ims/org-profile'
     | '/ims/permissions'
     | '/ims/policies'
@@ -861,6 +940,8 @@ export interface FileRouteTypes {
     | '/ims/registers'
     | '/ims/reports'
     | '/ims/search'
+    | '/ims/separations'
+    | '/ims/users'
     | '/verify/$certId'
     | '/verify/$code'
     | '/LearningHub/'
@@ -929,17 +1010,23 @@ export interface FileRouteTypes {
     | '/LearningHub/knowledge-world'
     | '/LearningHub/my-learning'
     | '/ims/activities'
+    | '/ims/appointment-letters'
     | '/ims/audit-trail'
     | '/ims/cases'
     | '/ims/constitution'
     | '/ims/data'
+    | '/ims/donor-slips'
+    | '/ims/download-center'
     | '/ims/history'
     | '/ims/impact'
     | '/ims/integrity'
     | '/ims/knowledge'
+    | '/ims/managing-committee'
     | '/ims/meetings'
     | '/ims/members'
+    | '/ims/membership-contributions'
     | '/ims/notifications'
+    | '/ims/official-documents'
     | '/ims/org-profile'
     | '/ims/permissions'
     | '/ims/policies'
@@ -947,6 +1034,8 @@ export interface FileRouteTypes {
     | '/ims/registers'
     | '/ims/reports'
     | '/ims/search'
+    | '/ims/separations'
+    | '/ims/users'
     | '/verify/$certId'
     | '/verify/$code'
     | '/LearningHub'
@@ -1016,17 +1105,23 @@ export interface FileRouteTypes {
     | '/LearningHub/knowledge-world'
     | '/LearningHub/my-learning'
     | '/ims/activities'
+    | '/ims/appointment-letters'
     | '/ims/audit-trail'
     | '/ims/cases'
     | '/ims/constitution'
     | '/ims/data'
+    | '/ims/donor-slips'
+    | '/ims/download-center'
     | '/ims/history'
     | '/ims/impact'
     | '/ims/integrity'
     | '/ims/knowledge'
+    | '/ims/managing-committee'
     | '/ims/meetings'
     | '/ims/members'
+    | '/ims/membership-contributions'
     | '/ims/notifications'
+    | '/ims/official-documents'
     | '/ims/org-profile'
     | '/ims/permissions'
     | '/ims/policies'
@@ -1034,6 +1129,8 @@ export interface FileRouteTypes {
     | '/ims/registers'
     | '/ims/reports'
     | '/ims/search'
+    | '/ims/separations'
+    | '/ims/users'
     | '/verify/$certId'
     | '/verify/$code'
     | '/LearningHub/'
@@ -1100,17 +1197,23 @@ export interface RootRouteChildren {
   InstitutionalDnaRoute: typeof InstitutionalDnaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ImsActivitiesRoute: typeof ImsActivitiesRoute
+  ImsAppointmentLettersRoute: typeof ImsAppointmentLettersRoute
   ImsAuditTrailRoute: typeof ImsAuditTrailRoute
   ImsCasesRoute: typeof ImsCasesRoute
   ImsConstitutionRoute: typeof ImsConstitutionRoute
   ImsDataRoute: typeof ImsDataRoute
+  ImsDonorSlipsRoute: typeof ImsDonorSlipsRoute
+  ImsDownloadCenterRoute: typeof ImsDownloadCenterRoute
   ImsHistoryRoute: typeof ImsHistoryRoute
   ImsImpactRoute: typeof ImsImpactRoute
   ImsIntegrityRoute: typeof ImsIntegrityRoute
   ImsKnowledgeRoute: typeof ImsKnowledgeRoute
+  ImsManagingCommitteeRoute: typeof ImsManagingCommitteeRoute
   ImsMeetingsRoute: typeof ImsMeetingsRoute
   ImsMembersRoute: typeof ImsMembersRoute
+  ImsMembershipContributionsRoute: typeof ImsMembershipContributionsRoute
   ImsNotificationsRoute: typeof ImsNotificationsRoute
+  ImsOfficialDocumentsRoute: typeof ImsOfficialDocumentsRoute
   ImsOrgProfileRoute: typeof ImsOrgProfileRoute
   ImsPermissionsRoute: typeof ImsPermissionsRoute
   ImsPoliciesRoute: typeof ImsPoliciesRoute
@@ -1118,6 +1221,8 @@ export interface RootRouteChildren {
   ImsRegistersRoute: typeof ImsRegistersRoute
   ImsReportsRoute: typeof ImsReportsRoute
   ImsSearchRoute: typeof ImsSearchRoute
+  ImsSeparationsRoute: typeof ImsSeparationsRoute
+  ImsUsersRoute: typeof ImsUsersRoute
   VerifyCertIdRoute: typeof VerifyCertIdRoute
   VerifyCodeRoute: typeof VerifyCodeRoute
   ImsIndexRoute: typeof ImsIndexRoute
@@ -1504,6 +1609,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VerifyCertIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/users': {
+      id: '/ims/users'
+      path: '/ims/users'
+      fullPath: '/ims/users'
+      preLoaderRoute: typeof ImsUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/separations': {
+      id: '/ims/separations'
+      path: '/ims/separations'
+      fullPath: '/ims/separations'
+      preLoaderRoute: typeof ImsSeparationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/search': {
       id: '/ims/search'
       path: '/ims/search'
@@ -1553,11 +1672,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsOrgProfileRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/official-documents': {
+      id: '/ims/official-documents'
+      path: '/ims/official-documents'
+      fullPath: '/ims/official-documents'
+      preLoaderRoute: typeof ImsOfficialDocumentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/notifications': {
       id: '/ims/notifications'
       path: '/ims/notifications'
       fullPath: '/ims/notifications'
       preLoaderRoute: typeof ImsNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/membership-contributions': {
+      id: '/ims/membership-contributions'
+      path: '/ims/membership-contributions'
+      fullPath: '/ims/membership-contributions'
+      preLoaderRoute: typeof ImsMembershipContributionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ims/members': {
@@ -1572,6 +1705,13 @@ declare module '@tanstack/react-router' {
       path: '/ims/meetings'
       fullPath: '/ims/meetings'
       preLoaderRoute: typeof ImsMeetingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/managing-committee': {
+      id: '/ims/managing-committee'
+      path: '/ims/managing-committee'
+      fullPath: '/ims/managing-committee'
+      preLoaderRoute: typeof ImsManagingCommitteeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ims/knowledge': {
@@ -1602,6 +1742,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/download-center': {
+      id: '/ims/download-center'
+      path: '/ims/download-center'
+      fullPath: '/ims/download-center'
+      preLoaderRoute: typeof ImsDownloadCenterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/donor-slips': {
+      id: '/ims/donor-slips'
+      path: '/ims/donor-slips'
+      fullPath: '/ims/donor-slips'
+      preLoaderRoute: typeof ImsDonorSlipsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/data': {
       id: '/ims/data'
       path: '/ims/data'
@@ -1628,6 +1782,13 @@ declare module '@tanstack/react-router' {
       path: '/ims/audit-trail'
       fullPath: '/ims/audit-trail'
       preLoaderRoute: typeof ImsAuditTrailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/appointment-letters': {
+      id: '/ims/appointment-letters'
+      path: '/ims/appointment-letters'
+      fullPath: '/ims/appointment-letters'
+      preLoaderRoute: typeof ImsAppointmentLettersRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ims/activities': {
@@ -1812,17 +1973,23 @@ const rootRouteChildren: RootRouteChildren = {
   InstitutionalDnaRoute: InstitutionalDnaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ImsActivitiesRoute: ImsActivitiesRoute,
+  ImsAppointmentLettersRoute: ImsAppointmentLettersRoute,
   ImsAuditTrailRoute: ImsAuditTrailRoute,
   ImsCasesRoute: ImsCasesRoute,
   ImsConstitutionRoute: ImsConstitutionRoute,
   ImsDataRoute: ImsDataRoute,
+  ImsDonorSlipsRoute: ImsDonorSlipsRoute,
+  ImsDownloadCenterRoute: ImsDownloadCenterRoute,
   ImsHistoryRoute: ImsHistoryRoute,
   ImsImpactRoute: ImsImpactRoute,
   ImsIntegrityRoute: ImsIntegrityRoute,
   ImsKnowledgeRoute: ImsKnowledgeRoute,
+  ImsManagingCommitteeRoute: ImsManagingCommitteeRoute,
   ImsMeetingsRoute: ImsMeetingsRoute,
   ImsMembersRoute: ImsMembersRoute,
+  ImsMembershipContributionsRoute: ImsMembershipContributionsRoute,
   ImsNotificationsRoute: ImsNotificationsRoute,
+  ImsOfficialDocumentsRoute: ImsOfficialDocumentsRoute,
   ImsOrgProfileRoute: ImsOrgProfileRoute,
   ImsPermissionsRoute: ImsPermissionsRoute,
   ImsPoliciesRoute: ImsPoliciesRoute,
@@ -1830,6 +1997,8 @@ const rootRouteChildren: RootRouteChildren = {
   ImsRegistersRoute: ImsRegistersRoute,
   ImsReportsRoute: ImsReportsRoute,
   ImsSearchRoute: ImsSearchRoute,
+  ImsSeparationsRoute: ImsSeparationsRoute,
+  ImsUsersRoute: ImsUsersRoute,
   VerifyCertIdRoute: VerifyCertIdRoute,
   VerifyCodeRoute: VerifyCodeRoute,
   ImsIndexRoute: ImsIndexRoute,
