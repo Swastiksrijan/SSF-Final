@@ -6,6 +6,7 @@ const { Op } = require('sequelize');
 const res = require('../services/ims/resource');
 const { mainDashboard, moduleDashboard } = require('../services/ims/dashboard');
 const { person360 } = require('../services/ims/person360');
+const { meetingDossier, member360 } = require('../services/ims/workspaces');
 const { seedGovernance } = require('../services/ims/seed');
 const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { ROLES, DEFAULT_GRANTS } = require('../services/ims/rbac');
@@ -37,6 +38,19 @@ router.post('/ims/seed', wrap(async (_req, r) => r.json(await seedGovernance()))
 router.get('/ims/person360/:id', wrap(async (req, r) => {
   const out = await person360(req.params.id);
   if (!out) return r.status(404).json({ message: 'Person not found' });
+  r.json(out);
+}));
+
+// ---- meeting dossier + member 360 -----------------------------------------
+router.get('/ims/meeting-dossier/:id', wrap(async (req, r) => {
+  const out = await meetingDossier(req.params.id);
+  if (!out) return r.status(404).json({ message: 'Meeting not found' });
+  r.json(out);
+}));
+
+router.get('/ims/member360/:id', wrap(async (req, r) => {
+  const out = await member360(req.params.id);
+  if (!out) return r.status(404).json({ message: 'Member not found' });
   r.json(out);
 }));
 
@@ -198,6 +212,62 @@ router.post('/ims/migrate-legacy', wrap(async (req, r) => {
   const stats = await migrateLegacy({ dryRun: false, limit: Number((req.body && req.body.limit) || req.query.limit) || 5000 });
   r.json({ mode: 'import', ...stats });
 }));
+
+// ---- FINANCE: one entry point + professional accounting --------------------
+// "Receipts & Payments" records a financial transaction ONCE; the engine posts
+// balanced double-entry ledger lines so Ledger/Journal/Trial Balance follow.
+const accounting = require('../services/ims/accounting');
+const { financeSeed } = require('../services/ims/financeSeed');
+const { financeDashboard } = require('../services/ims/financeDashboard');
+
+router.post('/ims/finance/seed', wrap(async (_req, r) => r.json(await financeSeed())));
+router.get('/ims/finance/dashboard', wrap(async (_req, r) => r.json(await financeDashboard())));
+
+// Single entry point: create a receipt / payment / journal voucher.
+router.post('/ims/finance/receipts-payments', wrap(async (req, r) => {
+  const out = await accounting.postVoucher(req.body || {}, req);
+  r.status(201).json({
+    voucher: out.voucher,
+    transaction: out.transaction,
+    entries: out.entries,
+  });
+}));
+
+// List vouchers + their single-entry transactions (the Receipts & Payments register).
+router.get('/ims/finance/receipts-payments', wrap(async (req, r) => {
+  const limit = Math.min(Number(req.query.limit) || 100, 500);
+  const rows = await models.ImsTransaction.findAll({
+    where: { status: { [Op.ne]: 'archived' } },
+    order: [['id', 'DESC']],
+    limit,
+  });
+  r.json({ records: rows, total: rows.length });
+}));
+
+router.get('/ims/finance/trial-balance', wrap(async (req, r) => r.json(await accounting.trialBalance({
+  asOf: req.query.asOf, financialYearId: req.query.financialYearId,
+}))));
+
+router.get('/ims/finance/day-book', wrap(async (req, r) => r.json(await accounting.dayBook({
+  from: req.query.from, to: req.query.to, voucherType: req.query.voucherType,
+  voucherNo: req.query.voucherNo, transactionNo: req.query.transactionNo, limit: req.query.limit,
+}))));
+
+router.get('/ims/finance/cash-book', wrap(async (req, r) => r.json(await accounting.book('cash', {
+  cashAccountId: req.query.cashAccountId, from: req.query.from, to: req.query.to,
+}))));
+
+router.get('/ims/finance/bank-book', wrap(async (req, r) => r.json(await accounting.book('bank', {
+  bankAccountId: req.query.bankAccountId, from: req.query.from, to: req.query.to,
+}))));
+
+router.get('/ims/finance/budget-variance', wrap(async (req, r) => r.json(await accounting.budgetVariance({
+  financialYearId: req.query.financialYearId,
+}))));
+
+router.get('/ims/finance/ledger/:accountId', wrap(async (req, r) => r.json(await accounting.accountLedger(
+  req.params.accountId, { from: req.query.from, to: req.query.to, limit: req.query.limit },
+))));
 
 // ---- generic CRUD for every resource --------------------------------------
 router.get('/ims/:resource', wrap(async (req, r) => r.json(await res.list(req.params.resource, req.query))));

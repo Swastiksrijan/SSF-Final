@@ -4,7 +4,7 @@ const { models, sequelize } = require('../../models/ims');
 
 const YEAR_PREFIXES = new Set([
   'MEM', 'DON', 'VOL', 'EMP', 'BEN', 'PROJECT', 'PROGRAM', 'MEET', 'RES',
-  'ACTION', 'CASE', 'DOC', 'TXN', 'VCH', 'ASSET', 'AUDIT', 'GRANT', 'DONATION',
+  'ACTION', 'CASE', 'DOC', 'TXN', 'VCH', 'LED', 'BUD', 'ASSET', 'AUDIT', 'GRANT', 'DONATION',
   'CMP', 'AGM', 'RPT', 'INV', 'POL', 'AGR',
 ]);
 

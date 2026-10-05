@@ -11,6 +11,7 @@ export const NAV = [
   },
   {
     group: 'organisation', items: [
+      { key: 'organisation_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/organisation' },
       { key: 'organisations', icon: 'Building2', resource: 'organisations' },
       { key: 'constitution', icon: 'ScrollText', path: '/ims/constitution' },
       { key: 'governanceRules', icon: 'Scale', resource: 'governanceRules' },
@@ -21,21 +22,23 @@ export const NAV = [
   },
   {
     group: 'governance', items: [
+      { key: 'governance_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/governance' },
       { key: 'persons', icon: 'UserRound', resource: 'persons' },
-      { key: 'members', icon: 'IdCard', resource: 'members' },
+      { key: 'members', icon: 'IdCard', path: '/ims/members', resource: 'members' },
       { key: 'committee', icon: 'Users', resource: 'committeeMembers' },
       { key: 'committees', icon: 'Landmark', resource: 'committees' },
-      { key: 'meetings', icon: 'CalendarClock', resource: 'meetings' },
+      { key: 'meetings', icon: 'CalendarClock', path: '/ims/meetings', resource: 'meetings' },
       { key: 'resolutions', icon: 'Gavel', resource: 'resolutions' },
       { key: 'actions', icon: 'ListChecks', resource: 'actions' },
-      { key: 'notices_cases', icon: 'AlertTriangle', resource: 'cases' },
+      { key: 'notices_cases', icon: 'AlertTriangle', path: '/ims/cases', resource: 'cases' },
     ],
   },
   {
     group: 'programmes', items: [
+      { key: 'programmes_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/programmes' },
       { key: 'programmes', icon: 'Layers', resource: 'programmes' },
       { key: 'projects', icon: 'FolderKanban', resource: 'projects' },
-      { key: 'activities', icon: 'Activity', resource: 'activities' },
+      { key: 'activities', icon: 'Activity', path: '/ims/activities', resource: 'activities' },
       { key: 'beneficiaries', icon: 'HeartHandshake', resource: 'beneficiaries' },
       { key: 'impact', icon: 'TrendingUp', path: '/ims/impact' },
     ],
@@ -43,19 +46,23 @@ export const NAV = [
   {
     group: 'finance', items: [
       { key: 'finance_dashboard', icon: 'PieChart', path: '/ims/finance' },
+      { key: 'receipts_payments', icon: 'ReceiptText', path: '/ims/finance/receipts-payments' },
+      { key: 'ledger_journal', icon: 'BookOpen', path: '/ims/finance/ledger' },
       { key: 'financialYears', icon: 'CalendarRange', resource: 'financialYears' },
       { key: 'funds', icon: 'Wallet', resource: 'funds' },
-      { key: 'accounts', icon: 'BookOpen', resource: 'accounts' },
-      { key: 'costCentres', icon: 'Target', resource: 'costCentres' },
-      { key: 'transactions', icon: 'ArrowLeftRight', resource: 'transactions' },
-      { key: 'vouchers', icon: 'ReceiptText', resource: 'vouchers' },
-      { key: 'bankAccounts', icon: 'Landmark', resource: 'bankAccounts' },
-      { key: 'cashAccounts', icon: 'Banknote', resource: 'cashAccounts' },
+      { key: 'chart_of_accounts', icon: 'BookOpen', resource: 'accounts' },
+      { key: 'cost_centres', icon: 'Target', resource: 'costCentres' },
+      { key: 'bank_accounts', icon: 'Landmark', resource: 'bankAccounts' },
+      { key: 'cash_accounts', icon: 'Banknote', resource: 'cashAccounts' },
       { key: 'parties', icon: 'Handshake', resource: 'parties' },
+      { key: 'vouchers', icon: 'ReceiptText', resource: 'vouchers' },
+      { key: 'budgets', icon: 'Target', resource: 'budgets' },
+      { key: 'transactions', icon: 'ArrowLeftRight', resource: 'transactions' },
     ],
   },
   {
     group: 'resources', items: [
+      { key: 'resources_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/resources' },
       { key: 'donors', icon: 'Heart', resource: 'donors' },
       { key: 'donations', icon: 'Gift', resource: 'donations' },
       { key: 'grants', icon: 'BadgeDollarSign', resource: 'grants' },
@@ -69,6 +76,7 @@ export const NAV = [
   },
   {
     group: 'compliance', items: [
+      { key: 'compliance_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/compliance' },
       { key: 'compliance', icon: 'ShieldCheck', resource: 'compliance' },
       { key: 'legal', icon: 'Scale', resource: 'agreements' },
       { key: 'audit_risk', icon: 'SearchCheck', resource: 'audits' },
@@ -78,6 +86,7 @@ export const NAV = [
   },
   {
     group: 'records', items: [
+      { key: 'records_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/records' },
       { key: 'documents', icon: 'Files', resource: 'documents' },
       { key: 'communications', icon: 'MessageSquare', resource: 'communications' },
       { key: 'reports', icon: 'BarChart3', path: '/ims/reports' },

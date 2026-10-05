@@ -31,6 +31,22 @@ export const ims = {
   seed: () => fetch(`${API_BASE_URL}/api/ims/seed`, { method: 'POST', headers: headers() }).then(handle),
   search: (q) => fetch(`${API_BASE_URL}/api/ims/search?q=${encodeURIComponent(q)}`, { headers: headers() }).then(handle),
   person360: (id) => fetch(`${API_BASE_URL}/api/ims/person360/${id}`, { headers: headers() }).then(handle),
+  meetingDossier: (id) => fetch(`${API_BASE_URL}/api/ims/meeting-dossier/${id}`, { headers: headers() }).then(handle),
+  member360: (id) => fetch(`${API_BASE_URL}/api/ims/member360/${id}`, { headers: headers() }).then(handle),
+
+  // ---- FINANCE: one entry point + professional accounting ----
+  financeSeed: () => fetch(`${API_BASE_URL}/api/ims/finance/seed`, { method: 'POST', headers: headers() }).then(handle),
+  financeDashboard: () => fetch(`${API_BASE_URL}/api/ims/finance/dashboard`, { headers: headers() }).then(handle),
+  receiptsPayments: () => fetch(`${API_BASE_URL}/api/ims/finance/receipts-payments`, { headers: headers() }).then(handle),
+  postVoucher: (payload) => fetch(`${API_BASE_URL}/api/ims/finance/receipts-payments`, {
+    method: 'POST', headers: headers(), body: JSON.stringify(payload),
+  }).then(handle),
+  trialBalance: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/trial-balance?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+  dayBook: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/day-book?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+  cashBook: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/cash-book?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+  bankBook: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/bank-book?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+  budgetVariance: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/budget-variance?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
+  accountLedger: (accountId, params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/ledger/${accountId}?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
 
   list: (resource, params = {}) => {
     const qs = new URLSearchParams(params).toString();

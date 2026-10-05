@@ -30,6 +30,8 @@ const RESOURCES = {
   cashAccounts: { model: models.ImsCashAccount,   prefix: 'CSH',     name: 'name', dup: [] },
   transactions: { model: models.ImsTransaction,   prefix: 'TXN',     name: 'transactionNo', dup: [] },
   vouchers:     { model: models.ImsVoucher,       prefix: 'VCH',     name: 'voucherNo', dup: [] },
+  ledger:       { model: models.ImsLedgerEntry,   prefix: 'LED',     name: 'entryNo', dup: [] },
+  budgets:      { model: models.ImsBudget,        prefix: 'BUD',     name: 'period', dup: [] },
   donors:       { model: models.ImsDonor,         prefix: 'DON',     name: 'donorType', dup: [] },
   donations:    { model: models.ImsDonation,      prefix: 'DONATION',name: 'receiptNo', dup: [] },
   grants:       { model: models.ImsGrant,         prefix: 'GRANT',   name: 'utilisationCertNo', dup: [] },

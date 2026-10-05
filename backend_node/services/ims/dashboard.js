@@ -110,12 +110,15 @@ async function moduleDashboard(moduleKey) {
       return { kpis: { persons, members, donors, volunteers, employees, beneficiaries } };
     }
     case 'compliance': {
-      const [pending, overdue, filed] = await Promise.all([
+      const [pending, overdue, filed, auditsOpen, highRisks, agreements] = await Promise.all([
         count(models.ImsCompliance, { complianceStatus: 'pending' }),
         count(models.ImsCompliance, { dueDate: { [Op.lt]: today }, complianceStatus: { [Op.ne]: 'filed' } }),
         count(models.ImsCompliance, { complianceStatus: 'filed' }),
+        count(models.ImsAudit, { closureDate: null }),
+        count(models.ImsRisk, { rating: { [Op.in]: ['high', 'critical'] } }),
+        count(models.ImsAgreement),
       ]);
-      return { kpis: { pending, overdue, filed } };
+      return { kpis: { pending, overdue, filed, auditsOpen, highRisks, agreements } };
     }
     case 'impact': {
       const [programmes, projects, activities, beneficiaries, freeActivities, outcomes] = await Promise.all([
@@ -131,6 +134,63 @@ async function moduleDashboard(moduleKey) {
         count(models.ImsInventoryItem), count(models.ImsAsset, { insuranceDue: { [Op.lt]: today } }),
       ]);
       return { kpis: { vendors, assets, inventory, insuranceDue } };
+    }
+    case 'governance': {
+      const [persons, members, committeeMembers, committees, meetings, upcoming, pendingActions, openCases, pendingMinutes, pendingResolutions, notices] = await Promise.all([
+        count(models.ImsPerson), count(models.ImsMembership), count(models.ImsCommitteeMember),
+        count(models.ImsCommittee), count(models.ImsMeeting),
+        count(models.ImsMeeting, { meetingDate: { [Op.gte]: today } }),
+        count(models.ImsAction, { actionStatus: { [Op.notIn]: ['completed', 'cancelled'] } }),
+        count(models.ImsCase, { stage: { [Op.ne]: 'closed' } }),
+        count(models.ImsMeeting, { minutesStatus: { [Op.ne]: 'approved' } }),
+        count(models.ImsResolution, { status: { [Op.ne]: 'approved' } }),
+        count(models.ImsNotice),
+      ]);
+      return { kpis: { members, committeeMembers, committees, meetings, upcoming, pendingActions, openCases, pendingMinutes, pendingResolutions, notices, persons } };
+    }
+    case 'programmes': {
+      const [programmes, projects, activeProjects, activities, freeActivities, beneficiaries, outcomes] = await Promise.all([
+        count(models.ImsProgramme), count(models.ImsProject),
+        count(models.ImsProject, { projectStatus: 'active' }), count(models.ImsActivity),
+        count(models.ImsActivity, { isFree: true }), count(models.ImsBeneficiary),
+        models.ImsActivity.count({ where: { ...active, outcome: { [Op.ne]: null } } }),
+      ]);
+      return { kpis: { programmes, projects, activeProjects, activities, freeActivities, beneficiaries, outcomes } };
+    }
+    case 'resources': {
+      const [donors, grants, vendors, assets, inventory, employees, volunteers, attendance, insuranceDue, donationsTotal] = await Promise.all([
+        count(models.ImsDonor), count(models.ImsGrant),
+        count(models.ImsParty, { partyType: 'vendor' }), count(models.ImsAsset),
+        count(models.ImsInventoryItem), count(models.ImsEmployee), count(models.ImsVolunteer),
+        count(models.ImsAttendance), count(models.ImsAsset, { insuranceDue: { [Op.lt]: today } }),
+        sum(models.ImsDonation, 'amount'),
+      ]);
+      return { kpis: { donors, donationsTotal, grants, vendors, assets, inventory, employees, volunteers, attendance, insuranceDue } };
+    }
+    case 'compliance': {
+      const [pending, overdue, filed, auditsOpen, highRisks] = await Promise.all([
+        count(models.ImsCompliance, { complianceStatus: 'pending' }),
+        count(models.ImsCompliance, { dueDate: { [Op.lt]: today }, complianceStatus: { [Op.ne]: 'filed' } }),
+        count(models.ImsCompliance, { complianceStatus: 'filed' }),
+        count(models.ImsAudit, { closureDate: null }),
+        count(models.ImsRisk, { rating: { [Op.in]: ['high', 'critical'] } }),
+      ]);
+      return { kpis: { pending, overdue, filed, auditsOpen, highRisks, agreements: await count(models.ImsAgreement) } };
+    }
+    case 'records': {
+      const [documents, communications, policies, governanceRules] = await Promise.all([
+        count(models.ImsDocument), count(models.ImsCommunication),
+        count(models.ImsPolicy), count(models.ImsGovernanceRule),
+      ]);
+      return { kpis: { documents, communications, policies, governanceRules } };
+    }
+    case 'organisation': {
+      const [organisations, governanceRules, policies, committees, history] = await Promise.all([
+        count(models.ImsOrganisation), count(models.ImsGovernanceRule),
+        count(models.ImsPolicy), count(models.ImsCommittee),
+        models.ImsAuditTrail.count(),
+      ]);
+      return { kpis: { organisations, governanceRules, policies, committees, history } };
     }
     default:
       return { kpis: {} };

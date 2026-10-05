@@ -384,6 +384,47 @@ const ImsVoucher = sequelize.define('ImsVoucher', {
   approvedBy: DataTypes.STRING,
 }, S);
 
+// Double-entry ledger. A voucher's postings live here (>=2 lines per voucher);
+// the trial balance / ledger / cash-book / bank-book are all derived from this.
+const ImsLedgerEntry = sequelize.define('ImsLedgerEntry', {
+  ...idCols,
+  entryNo: DataTypes.STRING, // LED-2026-0001
+  entryDate: DataTypes.DATEONLY,
+  financialYearId: DataTypes.INTEGER,
+  voucherId: DataTypes.INTEGER,
+  voucherNo: DataTypes.STRING,
+  voucherType: DataTypes.STRING, // receipt/payment/journal/contra
+  accountId: DataTypes.INTEGER,
+  accountCode: DataTypes.STRING,
+  accountName: DataTypes.STRING,
+  debit: { type: DataTypes.DECIMAL(14, 2), defaultValue: 0 },
+  credit: { type: DataTypes.DECIMAL(14, 2), defaultValue: 0 },
+  narration: DataTypes.TEXT,
+  fundId: DataTypes.INTEGER,
+  projectId: DataTypes.INTEGER,
+  costCentreId: DataTypes.INTEGER,
+  partyId: DataTypes.INTEGER,
+  bankAccountId: DataTypes.INTEGER,
+  cashAccountId: DataTypes.INTEGER,
+  transactionId: DataTypes.INTEGER,
+  transactionNo: DataTypes.STRING,
+  sourceModule: DataTypes.STRING,
+  sourceRecordId: DataTypes.STRING,
+}, S);
+
+// Budget lines, compared against actual ledger spend for variance reporting.
+const ImsBudget = sequelize.define('ImsBudget', {
+  ...idCols,
+  financialYearId: DataTypes.INTEGER,
+  accountId: DataTypes.INTEGER,
+  fundId: DataTypes.INTEGER,
+  projectId: DataTypes.INTEGER,
+  costCentreId: DataTypes.INTEGER,
+  amount: DataTypes.DECIMAL(14, 2),
+  period: DataTypes.STRING, // annual/quarterly/monthly
+  notes: DataTypes.TEXT,
+}, S);
+
 // ---- 10. Donors / Donations / Grants --------------------------------------
 const ImsDonor = sequelize.define('ImsDonor', {
   ...idCols,
@@ -614,7 +655,8 @@ const models = {
   ImsPolicy, ImsMembership, ImsCommittee, ImsCommitteeMember, ImsMeeting, ImsMeetingAttendee,
   ImsResolution, ImsAction, ImsNotice, ImsCase, ImsProgramme, ImsProject, ImsActivity,
   ImsBeneficiary, ImsFinancialYear, ImsFund, ImsCostCentre, ImsAccount, ImsParty,
-  ImsBankAccount, ImsCashAccount, ImsTransaction, ImsVoucher, ImsDonor, ImsDonation,
+  ImsBankAccount, ImsCashAccount, ImsTransaction, ImsVoucher, ImsLedgerEntry, ImsBudget,
+  ImsDonor, ImsDonation,
   ImsGrant, ImsAsset, ImsInventoryItem, ImsEmployee, ImsVolunteer, ImsAttendance,
   ImsCompliance, ImsAgreement, ImsAudit, ImsRisk, ImsDocument, ImsCommunication,
   ImsRelation, ImsAuditTrail, ImsUser, ImsRolePermission,

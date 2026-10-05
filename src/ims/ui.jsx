@@ -57,6 +57,7 @@ export function Button({ children, icon, variant = 'primary', ...rest }) {
     primary: 'bg-[#FF6600] text-white hover:bg-[#e65c00]',
     navy: 'bg-[#002344] text-white hover:bg-[#001529]',
     ghost: 'border border-slate-300 text-slate-700 hover:bg-slate-100',
+    hero: 'bg-white text-[#002344] hover:bg-zinc-100',
     danger: 'border border-rose-300 text-rose-600 hover:bg-rose-50',
   };
   const I = icon ? Icons[icon] : null;
@@ -89,7 +90,6 @@ export function Spinner() {
 export function FormDrawer({ open, title, schema, initial, onClose, onSubmit, saving, duplicates, onUseExisting, onCreateAnyway }) {
   const { t, lang } = useLang();
   const [form, setForm] = useState(initial || {});
-  const [opts, setOpts] = useState({}); // ref:xxx option lists
 
   if (!open) return null;
   const fields = (schema && schema.fields) || [];
@@ -199,3 +199,208 @@ function RefField({ label, required, resource, value, onChange }) {
     </Field>
   );
 }
+
+// ---- premium section primitives -------------------------------------------
+// Bilingual tab strip used by every module workspace (Meetings, Members,
+// Notices & Cases, Activities). Hindi shown in brackets so nothing is lost.
+export function Tabs({ tabs = [], value, onChange }) {
+  const { lang } = useLang();
+  return (
+    <div className="mb-4 flex gap-1.5 overflow-x-auto pb-1">
+      {tabs.map((tb) => {
+        const on = tb.id === value;
+        const label = lang === 'hi' && tb.hi ? `${tb.hi} (${tb.en})` : tb.en;
+        return (
+          <button key={tb.id} type="button" onClick={() => onChange(tb.id)}
+            className={`whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-bold transition ${on ? 'bg-[#002344] text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+            {label}
+            {tb.count != null && (
+              <span className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[11px] font-black ${on ? 'bg-white/20 text-white' : 'bg-white text-slate-500'}`}>{tb.count}</span>
+            )}
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+// Small strip of metric tiles (used under a section hero).
+export function StatStrip({ items = [] }) {
+  const { t } = useLang();
+  return (
+    <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
+      {items.map((s, i) => (
+        <Kpi key={i} icon={s.icon || 'Activity'} label={s.labelKey ? t(s.labelKey) : s.label} value={s.value} tone={s.tone || 'navy'} />
+      ))}
+    </div>
+  );
+}
+
+// Premium navy hero for a section/workspace page.
+export function SectionHero({ title, hi, eyebrow, icon = 'LayoutDashboard', tone = 'navy', actions, children }) {
+  const { lang } = useLang();
+  const I = Icons[icon] || Icons.LayoutDashboard;
+  const tones = {
+    navy: 'from-[#002344] to-[#0b3a63]',
+    orange: 'from-[#c2410c] to-[#FF6600]',
+    teal: 'from-[#134e4a] to-[#0e7490]',
+    green: 'from-[#065f46] to-emerald-600',
+  };
+  return (
+    <section className={`relative mb-5 overflow-hidden rounded-3xl bg-gradient-to-br ${tones[tone] || tones.navy} p-5 text-white shadow-lg sm:p-6`}>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-3">
+          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/15"><I size={22} /></span>
+          <div>
+            {eyebrow && <p className="text-[11px] font-black uppercase tracking-[.2em] text-[#FFD166]">{eyebrow}</p>}
+            <h1 className="mt-1 text-2xl font-black leading-tight sm:text-3xl">{title}</h1>
+            {hi && lang !== 'hi' && <p className="mt-0.5 text-sm font-semibold text-white/70">{hi}</p>}
+          </div>
+        </div>
+        {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+      </div>
+      {children && <div className="mt-4">{children}</div>}
+    </section>
+  );
+}
+
+// Data table: columns = [{ key, en, hi, render?, className?, align? }]
+export function DataTable({ columns = [], rows = [], loading, empty, onRowClick }) {
+  const { lang } = useLang();
+  if (loading) return <Spinner />;
+  if (!rows || rows.length === 0) return <Card><Empty label={empty} /></Card>;
+  return (
+    <Card className="overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full min-w-[640px] text-sm">
+          <thead>
+            <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+              {columns.map((c, i) => (
+                <th key={i} className={`px-4 py-2.5 font-semibold ${c.align === 'right' ? 'text-right' : ''}`}>
+                  {lang === 'hi' && c.hi ? c.hi : c.en}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100">
+            {rows.map((r, ri) => (
+              <tr key={r.id || ri} className={`hover:bg-slate-50 ${onRowClick ? 'cursor-pointer' : ''}`}
+                onClick={onRowClick ? () => onRowClick(r) : undefined}>
+                {columns.map((c, ci) => (
+                  <td key={ci} className={`px-4 py-2.5 ${c.className || ''} ${c.align === 'right' ? 'text-right' : ''}`}>
+                    {c.render ? c.render(r) : (r[c.key] ?? '—')}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </Card>
+  );
+}
+
+// Horizontal lifecycle / status strip (e.g. case stages, due chain).
+export function Lifecycle({ steps = [], value }) {
+  const { lang } = useLang();
+  const idx = Math.max(0, steps.findIndex((s) => s.id === value));
+  return (
+    <div className="flex flex-wrap items-center gap-1.5">
+      {steps.map((s, i) => {
+        const done = i < idx;
+        const on = i === idx;
+        const label = lang === 'hi' && s.hi ? s.hi : s.en;
+        return (
+          <span key={s.id} className="flex items-center gap-1.5">
+            <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${on ? 'bg-[#FF6600] text-white' : done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'}`}>
+              {label}
+            </span>
+            {i < steps.length - 1 && <Icons.ChevronRight size={13} className="text-slate-300" />}
+          </span>
+        );
+      })}
+    </div>
+  );
+}
+
+// Detail modal with a title, subtitle, actions and body.
+export function DetailModal({ open, onClose, title, subtitle, badge, actions, children, wide }) {
+  if (!open) return null;
+  return (
+    <div className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/40 p-3 sm:p-6" onClick={onClose}>
+      <div className={`w-full ${wide ? 'max-w-4xl' : 'max-w-2xl'} rounded-2xl bg-white shadow-2xl`} onClick={(e) => e.stopPropagation()}>
+        <div className="flex items-start justify-between gap-3 border-b border-slate-200 px-5 py-4">
+          <div className="min-w-0">
+            <div className="flex items-center gap-2">
+              <h2 className="truncate text-lg font-black text-[#002344]">{title}</h2>
+              {badge}
+            </div>
+            {subtitle && <p className="mt-0.5 truncate text-xs font-semibold text-slate-400">{subtitle}</p>}
+          </div>
+          <div className="flex items-center gap-2">
+            {actions}
+            <button onClick={onClose} className="rounded p-1.5 hover:bg-slate-100"><Icons.X size={18} /></button>
+          </div>
+        </div>
+        <div className="max-h-[72vh] overflow-y-auto p-5">{children}</div>
+      </div>
+    </div>
+  );
+}
+
+// Label/value pair used inside detail modals.
+export function Field2({ label, value, full }) {
+  const { lang } = useLang();
+  const l = Array.isArray(label) ? (lang === 'hi' ? label[1] : label[0]) : label;
+  return (
+    <div className={full ? 'col-span-2' : ''}>
+      <div className="text-[11px] font-bold uppercase tracking-wide text-slate-400">{l}</div>
+      <div className="mt-0.5 text-sm text-slate-800">{value === null || value === undefined || value === '' ? '—' : String(value)}</div>
+    </div>
+  );
+}
+
+// Small record card (list item) with a click target.
+export function RecordCard({ title, subtitle, right, onClick, icon = 'FileText' }) {
+  const I = Icons[icon] || Icons.FileText;
+  return (
+    <button type="button" onClick={onClick}
+      className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-left transition hover:border-[#002344]/30 hover:shadow-sm">
+      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-100 text-[#002344]"><I size={17} /></span>
+      <span className="min-w-0 flex-1">
+        <span className="block truncate text-sm font-semibold text-slate-800">{title}</span>
+        {subtitle && <span className="block truncate text-xs text-slate-400">{subtitle}</span>}
+      </span>
+      {right}
+      <Icons.ChevronRight size={16} className="shrink-0 text-slate-300" />
+    </button>
+  );
+}
+
+// Pill toggle for quick filters (e.g. "Only ₹0 activities").
+export function Toggle({ on, onChange, label }) {
+  return (
+    <button type="button" onClick={() => onChange(!on)}
+      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold transition ${on ? 'border-[#002344] bg-[#002344] text-white' : 'border-slate-300 bg-white text-slate-600'}`}>
+      <span className={`h-2 w-2 rounded-full ${on ? 'bg-[#FFD166]' : 'bg-slate-300'}`} />
+      {label}
+    </button>
+  );
+}
+
+// Read-only relation list (Related Records) for a detail view.
+export function RelatedList({ relations = [], onOpen }) {
+  const { t } = useLang();
+  if (!relations.length) return <p className="text-sm text-slate-400">{t('no_records')}</p>;
+  return (
+    <div className="flex flex-wrap gap-2">
+      {relations.map((r, i) => (
+        <button key={i} type="button" onClick={() => onOpen && onOpen(r)}
+          className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-200">
+          {r.relation}: <b>{r.type}</b> #{r.id}
+        </button>
+      ))}
+    </div>
+  );
+}
+

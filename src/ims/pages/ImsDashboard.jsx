@@ -59,8 +59,8 @@ export default function ImsDashboard() {
         actions={data ? (
           <div className="flex flex-wrap gap-2">
             <DownloadCenter variant="hero" defaultResource="members" />
-            <Button icon="FileText" onClick={() => exportRecordsPdf({ title: t('main_dashboard'), subtitle: t('app_full'), records: summaryRows(data, money) })}>{t('download')} PDF</Button>
-            <Button icon="Table2" variant="ghost" onClick={() => exportRecordsExcel({ title: t('main_dashboard'), records: summaryRows(data, money), sheetName: 'Dashboard' })}>{t('download')} Excel</Button>
+            <Button variant="hero" icon="FileText" onClick={() => exportRecordsPdf({ title: t('main_dashboard'), subtitle: t('app_full'), records: summaryRows(data, money) })}>{t('download')} PDF</Button>
+            <Button variant="hero" icon="Table2" onClick={() => exportRecordsExcel({ title: t('main_dashboard'), records: summaryRows(data, money), sheetName: 'Dashboard' })}>{t('download')} Excel</Button>
           </div>
         ) : null}
       />

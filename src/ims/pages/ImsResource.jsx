@@ -128,7 +128,10 @@ export default function ImsResource() {
                     <td className="whitespace-nowrap px-4 py-2.5 font-mono text-xs text-slate-500">{row.recordId}</td>
                     <td className="px-4 py-2.5">
                       <button className="font-medium text-[#002344] hover:underline"
-                        onClick={() => resource === 'persons' && navigate({ to: '/ims/person/$id', params: { id: String(row.id) } })}>
+                        onClick={() => {
+                          if (resource === 'persons') navigate({ to: '/ims/person/$id', params: { id: String(row.id) } });
+                          else if (resource === 'members') navigate({ to: '/ims/member/$id', params: { id: String(row.id) } });
+                        }}>
                         {labelFor(row)}
                       </button>
                     </td>

@@ -520,6 +520,34 @@ export const SCHEMAS = {
       F('evidence', 'Evidence', 'प्रमाण', 'textarea'),
     ],
   },
+  budgets: {
+    titleKey: 'budgets', icon: 'Target',
+    fields: [
+      F('financialYearId', 'Financial Year', 'वित्तीय वर्ष', 'ref:financialYears'),
+      F('accountId', 'Account', 'खाता', 'ref:accounts'),
+      F('fundId', 'Fund', 'निधि', 'ref:funds'),
+      F('projectId', 'Project', 'परियोजना', 'ref:projects'),
+      F('costCentreId', 'Cost Centre', 'लागत केंद्र', 'ref:costCentres'),
+      F('amount', 'Budget Amount', 'बजट राशि', 'number', { required: true }),
+      F('period', 'Period', 'अवधि', 'select', { options: ['annual', 'quarterly', 'monthly'] }),
+      F('notes', 'Notes', 'टिप्पणी', 'textarea'),
+    ],
+  },
+  ledger: {
+    titleKey: 'ledger', icon: 'BookOpen',
+    fields: [
+      F('entryDate', 'Date', 'दिनांक', 'date'),
+      F('voucherNo', 'Voucher No.', 'वाउचर संख्या'),
+      F('voucherType', 'Voucher Type', 'वाउचर प्रकार', 'select', { options: ['receipt', 'payment', 'journal', 'contra'] }),
+      F('accountId', 'Account', 'खाता', 'ref:accounts'),
+      F('debit', 'Debit', 'नामे', 'number'),
+      F('credit', 'Credit', 'जमा', 'number'),
+      F('narration', 'Narration', 'विवरण', 'textarea'),
+      F('fundId', 'Fund', 'निधि', 'ref:funds'),
+      F('projectId', 'Project', 'परियोजना', 'ref:projects'),
+      F('partyId', 'Party', 'पक्ष', 'ref:parties'),
+    ],
+  },
 };
 
 // Generic fallback: show any field returned by the API.
@@ -537,5 +565,5 @@ export const PRIMARY_FIELD = {
   programmes: 'name', beneficiaries: 'household', employees: 'designation', volunteers: 'skills',
   attendance: 'attStatus', parties: 'name', bankAccounts: 'accountNo', cashAccounts: 'name',
   costCentres: 'name', inventory: 'name', agreements: 'title', communications: 'subject',
-  users: 'username', notices: 'subject', attendees: 'attendance',
+  users: 'username', notices: 'subject', attendees: 'attendance', budgets: 'period', ledger: 'entryNo',
 };

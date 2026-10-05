@@ -68,20 +68,28 @@ import { Route as ImsRegistersRouteImport } from './routes/ims/registers'
 import { Route as ImsProcurementRouteImport } from './routes/ims/procurement'
 import { Route as ImsPermissionsRouteImport } from './routes/ims/permissions'
 import { Route as ImsNotificationsRouteImport } from './routes/ims/notifications'
+import { Route as ImsMembersRouteImport } from './routes/ims/members'
+import { Route as ImsMeetingsRouteImport } from './routes/ims/meetings'
 import { Route as ImsKnowledgeRouteImport } from './routes/ims/knowledge'
 import { Route as ImsIntegrityRouteImport } from './routes/ims/integrity'
 import { Route as ImsImpactRouteImport } from './routes/ims/impact'
 import { Route as ImsHistoryRouteImport } from './routes/ims/history'
-import { Route as ImsFinanceRouteImport } from './routes/ims/finance'
 import { Route as ImsDataRouteImport } from './routes/ims/data'
 import { Route as ImsConstitutionRouteImport } from './routes/ims/constitution'
+import { Route as ImsCasesRouteImport } from './routes/ims/cases'
 import { Route as ImsAuditTrailRouteImport } from './routes/ims/audit-trail'
+import { Route as ImsActivitiesRouteImport } from './routes/ims/activities'
 import { Route as LearningHubMyLearningRouteImport } from './routes/LearningHub/my-learning'
 import { Route as LearningHubKnowledgeWorldRouteImport } from './routes/LearningHub/knowledge-world'
 import { Route as LearningHubExploreRouteImport } from './routes/LearningHub/explore'
 import { Route as BlogTopicRouteImport } from './routes/Blog/$topic'
+import { Route as ImsFinanceIndexRouteImport } from './routes/ims/finance/index'
+import { Route as ImsSectionsSectionRouteImport } from './routes/ims/sections/$section'
 import { Route as ImsRResourceRouteImport } from './routes/ims/r/$resource'
 import { Route as ImsPersonIdRouteImport } from './routes/ims/person/$id'
+import { Route as ImsMemberIdRouteImport } from './routes/ims/member/$id'
+import { Route as ImsFinanceReceiptsPaymentsRouteImport } from './routes/ims/finance/receipts-payments'
+import { Route as ImsFinanceLedgerRouteImport } from './routes/ims/finance/ledger'
 import { Route as LearningHubCourseSubjectIdRouteImport } from './routes/LearningHub/course.$subjectId'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
@@ -380,6 +388,16 @@ const ImsNotificationsRoute = ImsNotificationsRouteImport.update({
   path: '/ims/notifications',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsMembersRoute = ImsMembersRouteImport.update({
+  id: '/ims/members',
+  path: '/ims/members',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsMeetingsRoute = ImsMeetingsRouteImport.update({
+  id: '/ims/meetings',
+  path: '/ims/meetings',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsKnowledgeRoute = ImsKnowledgeRouteImport.update({
   id: '/ims/knowledge',
   path: '/ims/knowledge',
@@ -400,11 +418,6 @@ const ImsHistoryRoute = ImsHistoryRouteImport.update({
   path: '/ims/history',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ImsFinanceRoute = ImsFinanceRouteImport.update({
-  id: '/ims/finance',
-  path: '/ims/finance',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ImsDataRoute = ImsDataRouteImport.update({
   id: '/ims/data',
   path: '/ims/data',
@@ -415,9 +428,19 @@ const ImsConstitutionRoute = ImsConstitutionRouteImport.update({
   path: '/ims/constitution',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsCasesRoute = ImsCasesRouteImport.update({
+  id: '/ims/cases',
+  path: '/ims/cases',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsAuditTrailRoute = ImsAuditTrailRouteImport.update({
   id: '/ims/audit-trail',
   path: '/ims/audit-trail',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsActivitiesRoute = ImsActivitiesRouteImport.update({
+  id: '/ims/activities',
+  path: '/ims/activities',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearningHubMyLearningRoute = LearningHubMyLearningRouteImport.update({
@@ -441,6 +464,16 @@ const BlogTopicRoute = BlogTopicRouteImport.update({
   path: '/$topic',
   getParentRoute: () => BlogRoute,
 } as any)
+const ImsFinanceIndexRoute = ImsFinanceIndexRouteImport.update({
+  id: '/ims/finance/',
+  path: '/ims/finance/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsSectionsSectionRoute = ImsSectionsSectionRouteImport.update({
+  id: '/ims/sections/$section',
+  path: '/ims/sections/$section',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsRResourceRoute = ImsRResourceRouteImport.update({
   id: '/ims/r/$resource',
   path: '/ims/r/$resource',
@@ -449,6 +482,22 @@ const ImsRResourceRoute = ImsRResourceRouteImport.update({
 const ImsPersonIdRoute = ImsPersonIdRouteImport.update({
   id: '/ims/person/$id',
   path: '/ims/person/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsMemberIdRoute = ImsMemberIdRouteImport.update({
+  id: '/ims/member/$id',
+  path: '/ims/member/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsFinanceReceiptsPaymentsRoute =
+  ImsFinanceReceiptsPaymentsRouteImport.update({
+    id: '/ims/finance/receipts-payments',
+    path: '/ims/finance/receipts-payments',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ImsFinanceLedgerRoute = ImsFinanceLedgerRouteImport.update({
+  id: '/ims/finance/ledger',
+  path: '/ims/finance/ledger',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LearningHubCourseSubjectIdRoute =
@@ -512,14 +561,17 @@ export interface FileRoutesByFullPath {
   '/LearningHub/explore': typeof LearningHubExploreRoute
   '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
   '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
+  '/ims/activities': typeof ImsActivitiesRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
+  '/ims/cases': typeof ImsCasesRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/data': typeof ImsDataRoute
-  '/ims/finance': typeof ImsFinanceRoute
   '/ims/history': typeof ImsHistoryRoute
   '/ims/impact': typeof ImsImpactRoute
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
+  '/ims/meetings': typeof ImsMeetingsRoute
+  '/ims/members': typeof ImsMembersRoute
   '/ims/notifications': typeof ImsNotificationsRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -531,8 +583,13 @@ export interface FileRoutesByFullPath {
   '/LearningHub/': typeof LearningHubIndexRoute
   '/ims': typeof ImsIndexRoute
   '/LearningHub/course/$subjectId': typeof LearningHubCourseSubjectIdRoute
+  '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
+  '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
+  '/ims/member/$id': typeof ImsMemberIdRoute
   '/ims/person/$id': typeof ImsPersonIdRoute
   '/ims/r/$resource': typeof ImsRResourceRoute
+  '/ims/sections/$section': typeof ImsSectionsSectionRoute
+  '/ims/finance': typeof ImsFinanceIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -587,14 +644,17 @@ export interface FileRoutesByTo {
   '/LearningHub/explore': typeof LearningHubExploreRoute
   '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
   '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
+  '/ims/activities': typeof ImsActivitiesRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
+  '/ims/cases': typeof ImsCasesRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/data': typeof ImsDataRoute
-  '/ims/finance': typeof ImsFinanceRoute
   '/ims/history': typeof ImsHistoryRoute
   '/ims/impact': typeof ImsImpactRoute
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
+  '/ims/meetings': typeof ImsMeetingsRoute
+  '/ims/members': typeof ImsMembersRoute
   '/ims/notifications': typeof ImsNotificationsRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -606,8 +666,13 @@ export interface FileRoutesByTo {
   '/LearningHub': typeof LearningHubIndexRoute
   '/ims': typeof ImsIndexRoute
   '/LearningHub/course/$subjectId': typeof LearningHubCourseSubjectIdRoute
+  '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
+  '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
+  '/ims/member/$id': typeof ImsMemberIdRoute
   '/ims/person/$id': typeof ImsPersonIdRoute
   '/ims/r/$resource': typeof ImsRResourceRoute
+  '/ims/sections/$section': typeof ImsSectionsSectionRoute
+  '/ims/finance': typeof ImsFinanceIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -664,14 +729,17 @@ export interface FileRoutesById {
   '/LearningHub/explore': typeof LearningHubExploreRoute
   '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
   '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
+  '/ims/activities': typeof ImsActivitiesRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
+  '/ims/cases': typeof ImsCasesRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/data': typeof ImsDataRoute
-  '/ims/finance': typeof ImsFinanceRoute
   '/ims/history': typeof ImsHistoryRoute
   '/ims/impact': typeof ImsImpactRoute
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
+  '/ims/meetings': typeof ImsMeetingsRoute
+  '/ims/members': typeof ImsMembersRoute
   '/ims/notifications': typeof ImsNotificationsRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -683,8 +751,13 @@ export interface FileRoutesById {
   '/LearningHub/': typeof LearningHubIndexRoute
   '/ims/': typeof ImsIndexRoute
   '/LearningHub/course/$subjectId': typeof LearningHubCourseSubjectIdRoute
+  '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
+  '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
+  '/ims/member/$id': typeof ImsMemberIdRoute
   '/ims/person/$id': typeof ImsPersonIdRoute
   '/ims/r/$resource': typeof ImsRResourceRoute
+  '/ims/sections/$section': typeof ImsSectionsSectionRoute
+  '/ims/finance/': typeof ImsFinanceIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -742,14 +815,17 @@ export interface FileRouteTypes {
     | '/LearningHub/explore'
     | '/LearningHub/knowledge-world'
     | '/LearningHub/my-learning'
+    | '/ims/activities'
     | '/ims/audit-trail'
+    | '/ims/cases'
     | '/ims/constitution'
     | '/ims/data'
-    | '/ims/finance'
     | '/ims/history'
     | '/ims/impact'
     | '/ims/integrity'
     | '/ims/knowledge'
+    | '/ims/meetings'
+    | '/ims/members'
     | '/ims/notifications'
     | '/ims/permissions'
     | '/ims/procurement'
@@ -761,8 +837,13 @@ export interface FileRouteTypes {
     | '/LearningHub/'
     | '/ims'
     | '/LearningHub/course/$subjectId'
+    | '/ims/finance/ledger'
+    | '/ims/finance/receipts-payments'
+    | '/ims/member/$id'
     | '/ims/person/$id'
     | '/ims/r/$resource'
+    | '/ims/sections/$section'
+    | '/ims/finance'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -817,14 +898,17 @@ export interface FileRouteTypes {
     | '/LearningHub/explore'
     | '/LearningHub/knowledge-world'
     | '/LearningHub/my-learning'
+    | '/ims/activities'
     | '/ims/audit-trail'
+    | '/ims/cases'
     | '/ims/constitution'
     | '/ims/data'
-    | '/ims/finance'
     | '/ims/history'
     | '/ims/impact'
     | '/ims/integrity'
     | '/ims/knowledge'
+    | '/ims/meetings'
+    | '/ims/members'
     | '/ims/notifications'
     | '/ims/permissions'
     | '/ims/procurement'
@@ -836,8 +920,13 @@ export interface FileRouteTypes {
     | '/LearningHub'
     | '/ims'
     | '/LearningHub/course/$subjectId'
+    | '/ims/finance/ledger'
+    | '/ims/finance/receipts-payments'
+    | '/ims/member/$id'
     | '/ims/person/$id'
     | '/ims/r/$resource'
+    | '/ims/sections/$section'
+    | '/ims/finance'
   id:
     | '__root__'
     | '/'
@@ -893,14 +982,17 @@ export interface FileRouteTypes {
     | '/LearningHub/explore'
     | '/LearningHub/knowledge-world'
     | '/LearningHub/my-learning'
+    | '/ims/activities'
     | '/ims/audit-trail'
+    | '/ims/cases'
     | '/ims/constitution'
     | '/ims/data'
-    | '/ims/finance'
     | '/ims/history'
     | '/ims/impact'
     | '/ims/integrity'
     | '/ims/knowledge'
+    | '/ims/meetings'
+    | '/ims/members'
     | '/ims/notifications'
     | '/ims/permissions'
     | '/ims/procurement'
@@ -912,8 +1004,13 @@ export interface FileRouteTypes {
     | '/LearningHub/'
     | '/ims/'
     | '/LearningHub/course/$subjectId'
+    | '/ims/finance/ledger'
+    | '/ims/finance/receipts-payments'
+    | '/ims/member/$id'
     | '/ims/person/$id'
     | '/ims/r/$resource'
+    | '/ims/sections/$section'
+    | '/ims/finance/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -966,14 +1063,17 @@ export interface RootRouteChildren {
   AdminRoute: typeof AdminRoute
   InstitutionalDnaRoute: typeof InstitutionalDnaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  ImsActivitiesRoute: typeof ImsActivitiesRoute
   ImsAuditTrailRoute: typeof ImsAuditTrailRoute
+  ImsCasesRoute: typeof ImsCasesRoute
   ImsConstitutionRoute: typeof ImsConstitutionRoute
   ImsDataRoute: typeof ImsDataRoute
-  ImsFinanceRoute: typeof ImsFinanceRoute
   ImsHistoryRoute: typeof ImsHistoryRoute
   ImsImpactRoute: typeof ImsImpactRoute
   ImsIntegrityRoute: typeof ImsIntegrityRoute
   ImsKnowledgeRoute: typeof ImsKnowledgeRoute
+  ImsMeetingsRoute: typeof ImsMeetingsRoute
+  ImsMembersRoute: typeof ImsMembersRoute
   ImsNotificationsRoute: typeof ImsNotificationsRoute
   ImsPermissionsRoute: typeof ImsPermissionsRoute
   ImsProcurementRoute: typeof ImsProcurementRoute
@@ -983,8 +1083,13 @@ export interface RootRouteChildren {
   VerifyCertIdRoute: typeof VerifyCertIdRoute
   VerifyCodeRoute: typeof VerifyCodeRoute
   ImsIndexRoute: typeof ImsIndexRoute
+  ImsFinanceLedgerRoute: typeof ImsFinanceLedgerRoute
+  ImsFinanceReceiptsPaymentsRoute: typeof ImsFinanceReceiptsPaymentsRoute
+  ImsMemberIdRoute: typeof ImsMemberIdRoute
   ImsPersonIdRoute: typeof ImsPersonIdRoute
   ImsRResourceRoute: typeof ImsRResourceRoute
+  ImsSectionsSectionRoute: typeof ImsSectionsSectionRoute
+  ImsFinanceIndexRoute: typeof ImsFinanceIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -1402,6 +1507,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsNotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/members': {
+      id: '/ims/members'
+      path: '/ims/members'
+      fullPath: '/ims/members'
+      preLoaderRoute: typeof ImsMembersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/meetings': {
+      id: '/ims/meetings'
+      path: '/ims/meetings'
+      fullPath: '/ims/meetings'
+      preLoaderRoute: typeof ImsMeetingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/knowledge': {
       id: '/ims/knowledge'
       path: '/ims/knowledge'
@@ -1430,13 +1549,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsHistoryRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ims/finance': {
-      id: '/ims/finance'
-      path: '/ims/finance'
-      fullPath: '/ims/finance'
-      preLoaderRoute: typeof ImsFinanceRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/ims/data': {
       id: '/ims/data'
       path: '/ims/data'
@@ -1451,11 +1563,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsConstitutionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/cases': {
+      id: '/ims/cases'
+      path: '/ims/cases'
+      fullPath: '/ims/cases'
+      preLoaderRoute: typeof ImsCasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/audit-trail': {
       id: '/ims/audit-trail'
       path: '/ims/audit-trail'
       fullPath: '/ims/audit-trail'
       preLoaderRoute: typeof ImsAuditTrailRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/activities': {
+      id: '/ims/activities'
+      path: '/ims/activities'
+      fullPath: '/ims/activities'
+      preLoaderRoute: typeof ImsActivitiesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/LearningHub/my-learning': {
@@ -1486,6 +1612,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogTopicRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/ims/finance/': {
+      id: '/ims/finance/'
+      path: '/ims/finance'
+      fullPath: '/ims/finance'
+      preLoaderRoute: typeof ImsFinanceIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/sections/$section': {
+      id: '/ims/sections/$section'
+      path: '/ims/sections/$section'
+      fullPath: '/ims/sections/$section'
+      preLoaderRoute: typeof ImsSectionsSectionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/r/$resource': {
       id: '/ims/r/$resource'
       path: '/ims/r/$resource'
@@ -1498,6 +1638,27 @@ declare module '@tanstack/react-router' {
       path: '/ims/person/$id'
       fullPath: '/ims/person/$id'
       preLoaderRoute: typeof ImsPersonIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/member/$id': {
+      id: '/ims/member/$id'
+      path: '/ims/member/$id'
+      fullPath: '/ims/member/$id'
+      preLoaderRoute: typeof ImsMemberIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/finance/receipts-payments': {
+      id: '/ims/finance/receipts-payments'
+      path: '/ims/finance/receipts-payments'
+      fullPath: '/ims/finance/receipts-payments'
+      preLoaderRoute: typeof ImsFinanceReceiptsPaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/finance/ledger': {
+      id: '/ims/finance/ledger'
+      path: '/ims/finance/ledger'
+      fullPath: '/ims/finance/ledger'
+      preLoaderRoute: typeof ImsFinanceLedgerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/LearningHub/course/$subjectId': {
@@ -1590,14 +1751,17 @@ const rootRouteChildren: RootRouteChildren = {
   AdminRoute: AdminRoute,
   InstitutionalDnaRoute: InstitutionalDnaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  ImsActivitiesRoute: ImsActivitiesRoute,
   ImsAuditTrailRoute: ImsAuditTrailRoute,
+  ImsCasesRoute: ImsCasesRoute,
   ImsConstitutionRoute: ImsConstitutionRoute,
   ImsDataRoute: ImsDataRoute,
-  ImsFinanceRoute: ImsFinanceRoute,
   ImsHistoryRoute: ImsHistoryRoute,
   ImsImpactRoute: ImsImpactRoute,
   ImsIntegrityRoute: ImsIntegrityRoute,
   ImsKnowledgeRoute: ImsKnowledgeRoute,
+  ImsMeetingsRoute: ImsMeetingsRoute,
+  ImsMembersRoute: ImsMembersRoute,
   ImsNotificationsRoute: ImsNotificationsRoute,
   ImsPermissionsRoute: ImsPermissionsRoute,
   ImsProcurementRoute: ImsProcurementRoute,
@@ -1607,8 +1771,13 @@ const rootRouteChildren: RootRouteChildren = {
   VerifyCertIdRoute: VerifyCertIdRoute,
   VerifyCodeRoute: VerifyCodeRoute,
   ImsIndexRoute: ImsIndexRoute,
+  ImsFinanceLedgerRoute: ImsFinanceLedgerRoute,
+  ImsFinanceReceiptsPaymentsRoute: ImsFinanceReceiptsPaymentsRoute,
+  ImsMemberIdRoute: ImsMemberIdRoute,
   ImsPersonIdRoute: ImsPersonIdRoute,
   ImsRResourceRoute: ImsRResourceRoute,
+  ImsSectionsSectionRoute: ImsSectionsSectionRoute,
+  ImsFinanceIndexRoute: ImsFinanceIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
