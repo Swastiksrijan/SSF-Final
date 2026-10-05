@@ -1,0 +1,48 @@
+{
+  "note": "SSF Chart of Accounts (COA) head master — bilingual. Codes are permanent: naye head add honge, purane code kabhi nahi badlenge. Seeded from SSF audited heads + statutory registers.",
+  "heads": [
+    { "code": "INC-100", "nameEn": "Donation Received", "nameHi": "दान प्राप्त", "type": "income", "group": "Income" },
+    { "code": "INC-110", "nameEn": "Sahyog — Founder & Well-wisher Support", "nameHi": "सहयोग — संस्थापक एवं शुभचिंतक सहयोग", "type": "income", "group": "Income" },
+    { "code": "INC-120", "nameEn": "Membership Fees", "nameHi": "सदस्यता शुल्क", "type": "income", "group": "Income" },
+    { "code": "INC-130", "nameEn": "Grant (Domestic)", "nameHi": "अनुदान (घरेलू)", "type": "income", "group": "Income" },
+    { "code": "INC-140", "nameEn": "CSR Fund", "nameHi": "सीएसआर कोष", "type": "income", "group": "Income" },
+    { "code": "INC-150", "nameEn": "Foreign Contribution (FCRA)", "nameHi": "विदेशी अंशदान", "type": "income", "group": "Income" },
+    { "code": "INC-160", "nameEn": "Interest & Other Income", "nameHi": "ब्याज एवं अन्य आय", "type": "income", "group": "Income" },
+    { "code": "INC-170", "nameEn": "Event / Programme Income", "nameHi": "कार्यक्रम आय", "type": "income", "group": "Income" },
+    { "code": "INC-180", "nameEn": "In-kind Support (Goods/Services/Space)", "nameHi": "वस्तु-रूप सहयोग (सामग्री/सेवा/स्थान)", "type": "income", "group": "Income" },
+
+    { "code": "EXP-200", "nameEn": "Education", "nameHi": "शिक्षा", "type": "expense", "group": "Programme" },
+    { "code": "EXP-210", "nameEn": "Environment Protection & Awareness", "nameHi": "पर्यावरण संरक्षण एवं जागरूकता", "type": "expense", "group": "Programme" },
+    { "code": "EXP-220", "nameEn": "Yoga Training", "nameHi": "योग प्रशिक्षण", "type": "expense", "group": "Programme" },
+    { "code": "EXP-230", "nameEn": "Health & Wellness", "nameHi": "स्वास्थ्य एवं कल्याण", "type": "expense", "group": "Programme" },
+    { "code": "EXP-240", "nameEn": "Stationery & Printing", "nameHi": "लेखन सामग्री एवं छपाई", "type": "expense", "group": "Administrative" },
+    { "code": "EXP-250", "nameEn": "Banner & Poster", "nameHi": "बैनर एवं पोस्टर", "type": "expense", "group": "Programme" },
+    { "code": "EXP-260", "nameEn": "Refreshment", "nameHi": "जलपान", "type": "expense", "group": "Administrative" },
+    { "code": "EXP-270", "nameEn": "Phone & Mobile", "nameHi": "दूरभाष एवं मोबाइल", "type": "expense", "group": "Administrative" },
+    { "code": "EXP-280", "nameEn": "Travelling", "nameHi": "यात्रा", "type": "expense", "group": "Administrative" },
+    { "code": "EXP-290", "nameEn": "Rent", "nameHi": "किराया", "type": "expense", "group": "Administrative" },
+    { "code": "EXP-300", "nameEn": "Bank Charges", "nameHi": "बैंक शुल्क", "type": "expense", "group": "Administrative" },
+    { "code": "EXP-310", "nameEn": "Admin Expenses", "nameHi": "प्रशासनिक व्यय", "type": "expense", "group": "Administrative" },
+    { "code": "EXP-320", "nameEn": "Salary & Honorarium", "nameHi": "वेतन एवं मानदेय", "type": "expense", "group": "Administrative" },
+    { "code": "EXP-330", "nameEn": "Miscellaneous", "nameHi": "विविध", "type": "expense", "group": "Administrative" },
+    { "code": "EXP-340", "nameEn": "Programme / Project Expense", "nameHi": "कार्यक्रम / परियोजना व्यय", "type": "expense", "group": "Programme" },
+    { "code": "EXP-350", "nameEn": "Depreciation", "nameHi": "मूल्यह्रास", "type": "expense", "group": "Non-cash" },
+
+    { "code": "AST-400", "nameEn": "Cash in Hand", "nameHi": "नकद शेष", "type": "asset", "group": "Current Asset" },
+    { "code": "AST-410", "nameEn": "Bank Balance", "nameHi": "बैंक शेष", "type": "asset", "group": "Current Asset" },
+    { "code": "AST-420", "nameEn": "Furniture & Fixtures", "nameHi": "फर्नीचर एवं सज्जा", "type": "asset", "group": "Fixed Asset" },
+    { "code": "AST-430", "nameEn": "Office Equipment", "nameHi": "कार्यालय उपकरण", "type": "asset", "group": "Fixed Asset" },
+    { "code": "AST-440", "nameEn": "Computer & IT Equipment", "nameHi": "कंप्यूटर एवं आई.टी. उपकरण", "type": "asset", "group": "Fixed Asset" },
+    { "code": "AST-450", "nameEn": "Investments", "nameHi": "निवेश", "type": "asset", "group": "Investment" },
+    { "code": "AST-460", "nameEn": "Advances & Deposits", "nameHi": "अग्रिम एवं जमा", "type": "asset", "group": "Current Asset" },
+    { "code": "AST-470", "nameEn": "Receivables", "nameHi": "देनदार", "type": "asset", "group": "Current Asset" },
+
+    { "code": "LIA-500", "nameEn": "General Fund", "nameHi": "सामान्य निधि", "type": "fund", "group": "Fund" },
+    { "code": "LIA-510", "nameEn": "Corpus Fund", "nameHi": "कोष निधि", "type": "fund", "group": "Fund" },
+    { "code": "LIA-520", "nameEn": "Restricted Fund", "nameHi": "प्रतिबंधित निधि", "type": "fund", "group": "Fund" },
+    { "code": "LIA-530", "nameEn": "Statutory Dues Payable", "nameHi": "सांविधिक देय", "type": "liability", "group": "Liability" },
+    { "code": "LIA-540", "nameEn": "Loans", "nameHi": "ऋण", "type": "liability", "group": "Liability" },
+    { "code": "LIA-550", "nameEn": "Payables", "nameHi": "लेनदार", "type": "liability", "group": "Liability" },
+    { "code": "LIA-560", "nameEn": "Surplus / (Deficit)", "nameHi": "अधिशेष / (घाटा)", "type": "fund", "group": "Fund" }
+  ]
+}

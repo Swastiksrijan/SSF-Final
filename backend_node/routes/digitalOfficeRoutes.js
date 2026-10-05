@@ -99,7 +99,7 @@ const memberPhotoUpload = multer({
   limits: { fileSize: 2 * 1024 * 1024, files: 1 }
 });
 
-const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID' };
+const prefix = { members:'MEM', volunteers:'VOL', donors:'DON', donations:'DNT', internships:'INT', beneficiaries:'BEN', events:'EVT', projects:'PRJ', documents:'DOC', expenses:'EXP', contribution:'CON', cash:'CSH', bank:'BNK', ledger:'LED', inward:'INW', outward:'OUT', meetings:'MTG', activities:'ACT', notifications:'NTF', users:'USR', inventory:'STK', assets:'AST', mou:'MOU', certificates:'CERT', idcards:'ID', chartOfAccounts:'COA' };
 const _norm = (s) => String(s == null ? '' : s).toLowerCase().replace(/\s+/g, ' ').trim();
 const _day = (d) => { try { return new Date(d).toISOString().slice(0, 10); } catch (_) { return String(d || '').slice(0, 10); } };
 // Strong duplicate probe shared by the money workflows: same party + amount + day.
@@ -107,12 +107,12 @@ const findMoneyDuplicate = async (module, amount, day, partyField, partyValue, t
   const recent = await DigitalOfficeRecord.findAll({ where: { module, status: { [Op.ne]: 'deleted' } }, order: [['createdAt', 'DESC']], limit: 500, transaction });
   return recent.find((x) => Number(x.amount) === Number(amount) && _day(x.recordDate) === day && _norm(x.data && x.data[partyField]) === _norm(partyValue)) || null;
 };
-const makeId = async (module) => {
+const makeId = async (module, transaction) => {
   const p = prefix[module] || 'REC';
   const stamp = new Date().toISOString().slice(0,10).replace(/-/g,'');
-  let sequence = (await DigitalOfficeRecord.count({ where: { module } })) + 1;
+  let sequence = (await DigitalOfficeRecord.count({ where: { module }, transaction })) + 1;
   let candidate = `SSF-${p}-${stamp}-${String(sequence).padStart(5,'0')}`;
-  while (await DigitalOfficeRecord.findOne({ where: { recordId: candidate }, attributes: ['id'] })) {
+  while (await DigitalOfficeRecord.findOne({ where: { recordId: candidate }, attributes: ['id'], transaction })) {
     sequence += 1;
     candidate = `SSF-${p}-${stamp}-${String(sequence).padStart(5,'0')}`;
   }
@@ -667,6 +667,40 @@ router.post('/digital-office/expenses', requireOfficeAuth, async (req,res)=>{
     await DigitalOfficeAudit.create({action:'expense_create',module:'expenses',recordId:expenseId,actor:req.headers['x-office-actor']||'admin',details:{amount:b.amount,transactionId}},{transaction:t});
     await t.commit(); return res.status(201).json({expenseId,transactionId});
   }catch(e){await t.rollback();console.error(e);return res.status(500).json({message:'Unable to save expense workflow.'});}
+});
+
+// ---- Chart of Accounts (COA) seed ------------------------------------------
+// Idempotent: creates any missing head master rows from data/chartOfAccounts.json.
+// Re-running never duplicates — matched on the permanent head code.
+router.post('/digital-office/chart-of-accounts/seed', requireOfficeAuth, async (req, res) => {
+  const t = await sequelize.transaction();
+  try {
+    let coa;
+    try { coa = require('../data/chartOfAccounts.json'); }
+    catch (_) { await t.rollback(); return res.status(404).json({ message: 'chartOfAccounts.json not found.' }); }
+    const existing = await DigitalOfficeRecord.findAll({ where: { module: 'chartOfAccounts' }, transaction: t });
+    // Include archived heads too: an archived head must never be resurrected by a re-seed.
+    const have = new Set(existing.map((r) => String(r.data && r.data.code || '').toUpperCase()));
+    let created = 0;
+    for (const h of (coa.heads || [])) {
+      if (have.has(String(h.code).toUpperCase())) continue;
+      const recordId = await makeId('chartOfAccounts', t);
+      await DigitalOfficeRecord.create({
+        recordId, module: 'chartOfAccounts', recordType: h.type || 'head', status: 'active',
+        recordDate: new Date(), personId: null, createdBy: req.headers['x-office-actor'] || 'admin',
+        createdByName: req.headers['x-office-actor-name'] || 'SSF Admin',
+        data: { code: h.code, nameEn: h.nameEn, nameHi: h.nameHi, type: h.type, group: h.group, status: 'Active', effectiveDate: new Date().toISOString().slice(0, 10), remarks: 'Seeded from SSF Chart of Accounts' }
+      }, { transaction: t });
+      created += 1;
+    }
+    await DigitalOfficeAudit.create({ action: 'seed', module: 'chartOfAccounts', recordId: 'COA', actor: req.headers['x-office-actor'] || 'admin', details: { created } }, { transaction: t });
+    await t.commit();
+    return res.json({ status: 'ok', created, skipped: (coa.heads || []).length - created });
+  } catch (e) {
+    try { await t.rollback(); } catch (_) {}
+    console.error('COA seed failed:', e);
+    return res.status(500).json({ message: 'COA seed failed.', detail: e.message });
+  }
 });
 
 router.get('/digital-office/audit', requireOfficeAuth, async (_req,res)=>{

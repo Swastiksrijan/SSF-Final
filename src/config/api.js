@@ -62,6 +62,7 @@ export const ENDPOINTS = {
     FINANCE_DUPLICATES: `${API_BASE_URL}/api/digital-office/finance/duplicates`,
     FINANCE_YEAR_CLOSE: `${API_BASE_URL}/api/digital-office/finance/year-close/check`,
     FINANCE_SEED: `${API_BASE_URL}/api/digital-office/finance/seed`,
+    COA_SEED: `${API_BASE_URL}/api/digital-office/chart-of-accounts/seed`,
     AUDIT_YEARS: `${API_BASE_URL}/api/digital-office/audit/years`,
     AUDIT_RECORDS: `${API_BASE_URL}/api/digital-office/audit/records`,
     AUDIT_SUMMARY: `${API_BASE_URL}/api/digital-office/audit/summary`,
