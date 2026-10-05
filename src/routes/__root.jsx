@@ -45,19 +45,27 @@ function BlogHero() {
   );
 }
 
-export const Route = createRootRoute({
-  component: () => (
+function RootChrome() {
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  // SSF-IMS (OneOffice) is a standalone app with its own chrome; the public
+  // site header/footer would overlap it, so they are hidden on /ims routes.
+  const isIms = pathname === "/ims" || pathname.startsWith("/ims/");
+  return (
     <LanguageProvider>
       <div className="min-h-screen w-full flex flex-col font-inria overflow-x-hidden">
         <SeoManager />
-        <Header />
-        <ScrollToHash />
-        <ScrollToTopButton />
-        <SSFSupportChatPro />
+        {!isIms && <Header />}
+        {!isIms && <ScrollToHash />}
+        {!isIms && <ScrollToTopButton />}
+        {!isIms && <SSFSupportChatPro />}
         <BlogHero />
         <Outlet />
-        <FooterSection />
+        {!isIms && <FooterSection />}
       </div>
     </LanguageProvider>
-  ),
+  );
+}
+
+export const Route = createRootRoute({
+  component: RootChrome,
 });

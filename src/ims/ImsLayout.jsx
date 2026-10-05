@@ -75,6 +75,10 @@ export default function ImsLayout({ children, active }) {
           </form>
 
           <div className="ml-auto flex items-center gap-2">
+            <a href="/" title="Back to website · वेबसाइट पर वापस"
+              className="hidden items-center gap-1.5 rounded-lg border border-white/25 px-3 py-1.5 text-xs font-semibold hover:bg-white/10 sm:inline-flex">
+              <Icons.Globe size={14} /> {lang === 'en' ? 'Website' : 'वेबसाइट'}
+            </a>
             <button onClick={() => setLang(lang === 'en' ? 'hi' : 'en')}
               className="rounded-lg border border-white/25 px-3 py-1.5 text-xs font-semibold hover:bg-white/10">
               {lang === 'en' ? 'हिंदी' : 'English'}
