@@ -36,6 +36,9 @@ const passwordResetRoutes = require('./routes/passwordResetRoutes');
 const digitalOfficeRoutes = require('./routes/digitalOfficeRoutes');
 const financeRoutes = require('./routes/financeRoutes');
 const auditRoutes = require('./routes/auditRoutes');
+const imsRoutes = require('./routes/imsRoutes');
+// Register SSF-IMS models so sequelize.sync creates their tables.
+require('./models/ims');
 
 app.use('/api', memberCertificateRoutes);
 app.use('/api', learningCertificateRoutes);
@@ -60,6 +63,7 @@ app.use('/api', passwordResetRoutes);
 app.use('/api', digitalOfficeRoutes);
 app.use('/api', financeRoutes);
 app.use('/api', auditRoutes);
+app.use('/api', imsRoutes);
 
 sequelize.sync({ alter: true })
     .then(() => {
