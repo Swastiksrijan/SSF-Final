@@ -296,3 +296,109 @@ Tier 1 me pehle **Register Engine** banayenge (upar wala pattern), phir usi engi
 Cash Book → Bank Book → Founder/Sahyog. Dormant registers (GST/FCRA/Payroll) Tier 5 me "Not Applicable
 Yet" status ke saath add honge.
 
+---
+
+## 20. FINALIZED build order (2026-10-04) — "kya pehle ho"
+
+Professional accounting sequence (cash-basis NGO books):
+
+| Step | Kya | Kyun pehle |
+|------|-----|-----------|
+| 0 | **Chart of Accounts (COA) / लेखा-शीर्ष मास्टर** | Ye poore system ki reedh ki haddi hai. Har register entry, har statement isi head par tikega. Agar COA pehle freeze na ho, to Cash/Bank/Sahyog entries free-text heads me jayengi → baad me sab redo → "50 saal no change" toot jayega. |
+| 0b | **FY Master + Opening Balance / वित्त-वर्ष एवं प्रारंभिक शेष** | Audited FY 2024-25 closing (Cash ₹1,265 + Bank ₹19,816.84 = ₹21,081.84) ko FY 2025-26 ke opening ke roop me carry-forward karna. |
+| 1 | **Cash Book (रोकड़ बही)** | Pehli asli register — sabse primary book (R&P base). |
+| 2 | **Bank Book (बैंक बही)** | Doosri primary book, multi-account (MGB/UBI). |
+| 3 | **Sahyog Register (सहयोग रजिस्टर)** | Founder/well-wisher support — cash + in-kind. |
+| 4+ | Donation, Expense, Voucher, Petty Cash, BRS, statements… | Uske baad. |
+
+> **Sahyog ko pehle NAHI banayenge** — kyunki uski entry ko bhi ek COA head chahiye
+> (`INC-110 Sahyog`). Foundation (COA) pehle, warna baad me sab redo.
+
+---
+
+## 21. Naming — Founder / Sahyog register (FINAL)
+
+Concept: koi bhi vyakti/institution (Founder, Office-Bearer, IT dept, Auditor, Well-wisher) SSF ke
+kaam me **bina rashi/rasid** jo sahyog de — cash, advance, rent, fee, utility, service, goods, space.
+Ye **loan nahi**, **contribution/sahyog** hai.
+
+**Recommended name (bilingual):**
+
+- **English:** `Sahyog Register — Founder & Well-wisher Support`
+- **Hindi:** `सहयोग रजिस्टर — संस्थापक एवं शुभचिंतक सहयोग`
+- **Short / internal:** `Sahyog / सहयोग`
+- **Code:** `INCM-04`
+
+Kyun yahi naam: "Sahyog" user ki bhasha hai aur bhaav pakadta hai; "Founder & Well-wisher Support"
+statutory/audit ke liye clear rakhta hai ki ye voluntary, non-receipt support hai (loan nahi).
+Ek hi register me **cash sahyog** aur **in-kind sahyog** dono — kyunki user koi rasid/proof nahi chahta.
+
+**Alternatives (agar pasand aaye):**
+1. `Voluntary Support & Contribution Register` / `स्वैच्छिक सहयोग एवं अंशदान रजिस्टर` (zyada formal/audit)
+2. `Founder & Patron Support Register` / `संस्थापक एवं संरक्षक सहयोग रजिस्टर`
+3. `Support-in-Kind & Contribution Register` / `वस्तु-रूप एवं अंशदान रजिस्टर`
+
+---
+
+## 22. Chart of Accounts — proposed head master (bilingual, FY-proof)
+
+### Income / आय
+| Code | English | Hindi |
+|------|---------|-------|
+| INC-100 | Donation Received | दान प्राप्त |
+| INC-110 | Sahyog — Founder & Well-wisher Support | सहयोग — संस्थापक एवं शुभचिंतक |
+| INC-120 | Membership Fees | सदस्यता शुल्क |
+| INC-130 | Grant (Domestic) | अनुदान (घरेलू) |
+| INC-140 | CSR Fund | सीएसआर कोष |
+| INC-150 | Foreign Contribution (FCRA) | विदेशी अंशदान |
+| INC-160 | Interest & Other Income | ब्याज एवं अन्य आय |
+| INC-170 | Event / Programme Income | कार्यक्रम आय |
+| INC-180 | In-kind Support (Goods/Services/Space) | वस्तु-रूप सहयोग |
+
+### Expenditure / व्यय
+| Code | English | Hindi |
+|------|---------|-------|
+| EXP-200 | Education | शिक्षा |
+| EXP-210 | Environment Protection & Awareness | पर्यावरण संरक्षण एवं जागरूकता |
+| EXP-220 | Yoga Training | योग प्रशिक्षण |
+| EXP-230 | Health & Wellness | स्वास्थ्य एवं कल्याण |
+| EXP-240 | Stationery & Printing | लेखन सामग्री एवं छपाई |
+| EXP-250 | Banner & Poster | बैनर एवं पोस्टर |
+| EXP-260 | Refreshment | जलपान |
+| EXP-270 | Phone & Mobile | दूरभाष एवं मोबाइल |
+| EXP-280 | Travelling | यात्रा |
+| EXP-290 | Rent | किराया |
+| EXP-300 | Bank Charges | बैंक शुल्क |
+| EXP-310 | Admin Expenses | प्रशासनिक व्यय |
+| EXP-320 | Salary & Honorarium | वेतन एवं मानदेय |
+| EXP-330 | Miscellaneous | विविध |
+| EXP-340 | Programme / Project Expense | कार्यक्रम व्यय |
+| EXP-350 | Depreciation | मूल्यह्रास |
+
+### Assets / संपत्ति
+| Code | English | Hindi |
+|------|---------|-------|
+| AST-400 | Cash in Hand | नकद शेष |
+| AST-410 | Bank Balance | बैंक शेष |
+| AST-420 | Furniture & Fixtures | फर्नीचर एवं सज्जा |
+| AST-430 | Office Equipment | कार्यालय उपकरण |
+| AST-440 | Computer & IT Equipment | कंप्यूटर एवं आई.टी. |
+| AST-450 | Investments | निवेश |
+| AST-460 | Advances & Deposits | अग्रिम एवं जमा |
+| AST-470 | Receivables | देनदार |
+
+### Liabilities & Funds / दायित्व एवं निधि
+| Code | English | Hindi |
+|------|---------|-------|
+| LIA-500 | General Fund | सामान्य निधि |
+| LIA-510 | Corpus Fund | कोष निधि |
+| LIA-520 | Restricted Fund | प्रतिबंधित निधि |
+| LIA-530 | Statutory Dues Payable | सांविधिक देय |
+| LIA-540 | Loans | ऋण |
+| LIA-550 | Payables | लेनदार |
+| LIA-560 | Surplus / (Deficit) | अधिशेष / (घाटा) |
+
+> Ye COA SSF ke asli audited heads (Education, Environment, Yoga, Rent, Admin, Bank Charges…)
+> se banaya gaya hai. Naye head **add** ho sakte hain, purane code kabhi nahi badlenge.
+
+
