@@ -37,6 +37,14 @@ export default function ImsResource() {
           r = await ims.list(resource, { search, limit: 100 });
         } catch { /* best-effort */ }
       }
+      // Managing Committee History is ported from the real office register;
+      // load it once on a fresh install so the register is never empty.
+      if (resource === 'officeHistory' && (r.records || []).length === 0 && !search) {
+        try {
+          await ims.officeHistorySeed();
+          r = await ims.list(resource, { search, limit: 100 });
+        } catch { /* best-effort */ }
+      }
       setRows(r.records || []);
       setTotal(r.total || 0);
     } catch (e) { setErr(e.message); setRows([]); }

@@ -10,6 +10,7 @@ const { meetingDossier, member360 } = require('../services/ims/workspaces');
 const { seedGovernance } = require('../services/ims/seed');
 const { seedPolicy } = require('../services/ims/policySeed');
 const { seedOrgProfile } = require('../services/ims/orgProfileSeed');
+const { seedOfficeHistory } = require('../services/ims/officeHistorySeed');
 const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { ROLES, DEFAULT_GRANTS } = require('../services/ims/rbac');
 
@@ -38,11 +39,15 @@ router.post('/ims/seed', wrap(async (_req, r) => {
   const governance = await seedGovernance();
   const policy = await seedPolicy();
   const orgProfile = await seedOrgProfile();
-  r.json({ ...governance, policy, orgProfile });
+  const officeHistory = await seedOfficeHistory();
+  r.json({ ...governance, policy, orgProfile, officeHistory });
 }));
 
 // ---- organisation profile (master identity, seeded) ------------------------
 router.post('/ims/org-profile/seed', wrap(async (_req, r) => r.json(await seedOrgProfile())));
+
+// ---- managing committee history (seeded from real office data) -------------
+router.post('/ims/office-history/seed', wrap(async (_req, r) => r.json(await seedOfficeHistory())));
 
 // ---- person 360 ------------------------------------------------------------
 router.get('/ims/person360/:id', wrap(async (req, r) => {

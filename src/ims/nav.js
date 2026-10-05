@@ -17,7 +17,7 @@ export const NAV = [
       { key: 'governanceRules', icon: 'Scale', resource: 'governanceRules' },
       { key: 'registers_required', icon: 'BookMarked', path: '/ims/registers' },
       { key: 'policies', icon: 'FileText', path: '/ims/policies', resource: 'policies' },
-      { key: 'office_history', icon: 'History', path: '/ims/history' },
+      { key: 'office_history', icon: 'History', resource: 'officeHistory' },
     ],
   },
   {

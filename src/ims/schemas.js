@@ -588,6 +588,22 @@ export const SCHEMAS = {
       F('partyId', 'Party', 'पक्ष', 'ref:parties'),
     ],
   },
+  officeHistory: {
+    titleKey: 'office_history', icon: 'History', dup: [],
+    fields: [
+      F('eventDate', 'Event Date', 'घटना दिनांक', 'date'),
+      F('memberId', 'Member ID', 'सदस्य आईडी'),
+      F('fullName', 'Full Name', 'पूरा नाम'),
+      F('changeType', 'Type', 'प्रकार', 'select', { options: ['Appointment', 'Role Change / Transfer', 'Re-appointment', 'Additional Responsibility', 'Resignation', 'Removal', 'Relieving', 'Other'] }),
+      F('previousRole', 'Previous Position', 'पूर्व पद'),
+      F('newRole', 'New / Current Position', 'नया / वर्तमान पद'),
+      F('referenceNo', 'Reference / File No.', 'संदर्भ / फ़ाइल संख्या'),
+      F('resolutionNo', 'Resolution No.', 'संकल्प संख्या'),
+      F('meetingDate', 'Meeting Date', 'बैठक दिनांक', 'date'),
+      F('details', 'Details', 'विवरण', 'textarea'),
+      F('remarks', 'Remarks', 'टिप्पणी', 'textarea'),
+    ],
+  },
 };
 
 // Generic fallback: show any field returned by the API.
@@ -606,4 +622,5 @@ export const PRIMARY_FIELD = {
   attendance: 'attStatus', parties: 'name', bankAccounts: 'accountNo', cashAccounts: 'name',
   costCentres: 'name', inventory: 'name', agreements: 'title', communications: 'subject',
   users: 'username', notices: 'subject', attendees: 'attendance', budgets: 'period', ledger: 'entryNo',
+  officeHistory: 'fullName',
 };

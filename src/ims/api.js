@@ -67,6 +67,7 @@ export const ims = {
 
   // ---- ORGANISATION PROFILE: master identity (seeded) ----
   orgProfileSeed: () => fetch(`${API_BASE_URL}/api/ims/org-profile/seed`, { method: 'POST', headers: headers() }).then(handle),
+  officeHistorySeed: () => fetch(`${API_BASE_URL}/api/ims/office-history/seed`, { method: 'POST', headers: headers() }).then(handle),
 
   list: (resource, params = {}) => {
     const qs = new URLSearchParams(params).toString();

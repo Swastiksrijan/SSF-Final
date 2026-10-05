@@ -675,6 +675,26 @@ const ImsCommunication = sequelize.define('ImsCommunication', {
   sentAt: DataTypes.DATE,
 }, S);
 
+// Managing Committee History — permanent record of committee appointments,
+// role changes, re-appointments, resignations, removals and relieving over time.
+// Ported from the SSF Digital Office "officeHistory" register.
+const ImsOfficeHistory = sequelize.define('ImsOfficeHistory', {
+  ...idCols,
+  recordDate: DataTypes.DATEONLY,
+  recordType: DataTypes.STRING, // Appointment / Role Change / Re-appointment / ...
+  memberId: DataTypes.STRING,
+  fullName: DataTypes.STRING,
+  eventDate: DataTypes.DATEONLY,
+  changeType: DataTypes.STRING,
+  previousRole: DataTypes.STRING,
+  newRole: DataTypes.STRING,
+  referenceNo: DataTypes.STRING,
+  resolutionNo: DataTypes.STRING,
+  meetingDate: DataTypes.DATEONLY,
+  details: DataTypes.TEXT,
+  remarks: DataTypes.TEXT,
+}, S);
+
 const ImsRelation = sequelize.define('ImsRelation', {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
   fromType: DataTypes.STRING,
@@ -728,6 +748,7 @@ const models = {
   ImsDonor, ImsDonation,
   ImsGrant, ImsAsset, ImsInventoryItem, ImsEmployee, ImsVolunteer, ImsAttendance,
   ImsCompliance, ImsAgreement, ImsAudit, ImsRisk, ImsDocument, ImsCommunication,
+  ImsOfficeHistory,
   ImsRelation, ImsAuditTrail, ImsUser, ImsRolePermission,
 };
 
