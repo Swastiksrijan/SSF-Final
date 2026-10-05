@@ -172,7 +172,8 @@ export const DICT = {
   inventory: { en: 'Inventory', hi: 'स्टॉक' },
   committeeMembers: { en: 'Committee Members', hi: 'समिति सदस्य' },
   committees: { en: 'Committees', hi: 'समितियाँ' },
-  organisations: { en: 'Organisation Profile', hi: 'संस्था प्रोफ़ाइल' },
+  organisations: { en: 'Organisation Master', hi: 'संस्था मास्टर' },
+  org_profile: { en: 'Organisation Profile', hi: 'संस्था परिचय' },
   users: { en: 'Users', hi: 'उपयोगकर्ता' },
 
   active: { en: 'Active', hi: 'सक्रिय' },

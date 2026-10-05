@@ -9,6 +9,7 @@ const { person360 } = require('../services/ims/person360');
 const { meetingDossier, member360 } = require('../services/ims/workspaces');
 const { seedGovernance } = require('../services/ims/seed');
 const { seedPolicy } = require('../services/ims/policySeed');
+const { seedOrgProfile } = require('../services/ims/orgProfileSeed');
 const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { ROLES, DEFAULT_GRANTS } = require('../services/ims/rbac');
 
@@ -36,8 +37,12 @@ router.get('/ims/roles', (_req, r) => r.json({ roles: ROLES, grants: DEFAULT_GRA
 router.post('/ims/seed', wrap(async (_req, r) => {
   const governance = await seedGovernance();
   const policy = await seedPolicy();
-  r.json({ ...governance, policy });
+  const orgProfile = await seedOrgProfile();
+  r.json({ ...governance, policy, orgProfile });
 }));
+
+// ---- organisation profile (master identity, seeded) ------------------------
+router.post('/ims/org-profile/seed', wrap(async (_req, r) => r.json(await seedOrgProfile())));
 
 // ---- person 360 ------------------------------------------------------------
 router.get('/ims/person360/:id', wrap(async (req, r) => {
@@ -76,6 +81,7 @@ router.get('/ims/search', wrap(async (req, r) => {
     ['case', models.ImsCase, ['title', 'recordId']],
     ['transaction', models.ImsTransaction, ['transactionNo', 'recordId']],
     ['policy', models.ImsPolicy, ['title', 'category', 'recordId', 'body']],
+    ['orgProfile', models.ImsOrgProfile, ['organizationName', 'shortName', 'registrationNumber', 'section', 'recordId']],
     ['costCentre', models.ImsCostCentre, ['name', 'recordId', 'shortCode', 'category', 'location', 'district']],
   ];
   const results = [];

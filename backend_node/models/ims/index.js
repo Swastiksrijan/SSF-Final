@@ -109,6 +109,28 @@ const ImsPolicy = sequelize.define('ImsPolicy', {
   body: DataTypes.TEXT,
 }, S);
 
+// ---- 3b. Organisation profile (single master identity of the Foundation) ----
+// One record per section (profile/objectives/legal/tax/darpan/governance/
+// finance/government); the structured columns are filled from `data` on save.
+const ImsOrgProfile = sequelize.define('ImsOrgProfile', {
+  ...idCols,
+  section: DataTypes.STRING, // profile/objectives/legal/tax/darpan/governance/finance/government
+  organizationName: DataTypes.STRING,
+  shortName: DataTypes.STRING,
+  registrationNumber: DataTypes.STRING,
+  registrationDate: DataTypes.STRING,
+  registrationAct: DataTypes.STRING,
+  organizationType: DataTypes.STRING,
+  operationalScope: DataTypes.STRING,
+  address: DataTypes.TEXT,
+  city: DataTypes.STRING,
+  state: DataTypes.STRING,
+  pinCode: DataTypes.STRING,
+  mobile: DataTypes.STRING,
+  email: DataTypes.STRING,
+  website: DataTypes.STRING,
+}, S);
+
 // ---- 4. Membership ---------------------------------------------------------
 const ImsMembership = sequelize.define('ImsMembership', {
   ...idCols,
@@ -699,7 +721,7 @@ const ImsRolePermission = sequelize.define('ImsRolePermission', {
 
 const models = {
   ImsIdSequence, ImsPerson, ImsRole, ImsPersonRole, ImsOrganisation, ImsGovernanceRule,
-  ImsPolicy, ImsMembership, ImsCommittee, ImsCommitteeMember, ImsMeeting, ImsMeetingAttendee,
+  ImsPolicy, ImsOrgProfile, ImsMembership, ImsCommittee, ImsCommitteeMember, ImsMeeting, ImsMeetingAttendee,
   ImsResolution, ImsAction, ImsNotice, ImsCase, ImsProgramme, ImsProject, ImsActivity,
   ImsBeneficiary, ImsFinancialYear, ImsFund, ImsCostCentre, ImsAccount, ImsParty,
   ImsBankAccount, ImsCashAccount, ImsTransaction, ImsVoucher, ImsLedgerEntry, ImsBudget,

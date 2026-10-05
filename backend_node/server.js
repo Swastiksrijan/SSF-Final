@@ -80,6 +80,15 @@ sequelize.sync({ alter: true })
         } catch (e) {
             console.error('⚠️ Cost centre seed skipped:', e.message);
         }
+        // Fresh install / upgrade: seed any missing Organisation Profile
+        // section (idempotent — existing, user-edited sections are untouched).
+        try {
+            const { seedOrgProfile } = require('./services/ims/orgProfileSeed');
+            const seeded = await seedOrgProfile();
+            if (seeded.created) console.log(`✅ Seeded ${seeded.created} organisation profile sections`);
+        } catch (e) {
+            console.error('⚠️ Organisation profile seed skipped:', e.message);
+        }
         app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
     })
     .catch(err => {

@@ -9,6 +9,7 @@ const RESOURCES = {
   persons:      { model: models.ImsPerson,        prefix: 'PERSON',  name: 'fullName', dup: ['mobile', 'email'] },
   members:      { model: models.ImsMembership,    prefix: 'MEM',     name: 'memberNo', dup: [] },
   organisations:{ model: models.ImsOrganisation,  prefix: 'ORG',     name: 'name', dup: [] },
+  orgProfile:   { model: models.ImsOrgProfile,    prefix: 'ORGP',    name: 'organizationName', dup: [] },
   committees:   { model: models.ImsCommittee,     prefix: 'CMT',     name: 'name', dup: [] },
   committeeMembers: { model: models.ImsCommitteeMember, prefix: 'CMM', name: 'position', dup: [] },
   meetings:     { model: models.ImsMeeting,       prefix: 'MEET',    name: 'title', dup: [] },

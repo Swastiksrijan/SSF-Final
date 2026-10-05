@@ -65,6 +65,9 @@ export const ims = {
   // ---- VOLUNTEERS: import from the Leadership / Volunteer form ----
   volunteerSeed: () => fetch(`${API_BASE_URL}/api/ims/volunteers/seed`, { method: 'POST', headers: headers() }).then(handle),
 
+  // ---- ORGANISATION PROFILE: master identity (seeded) ----
+  orgProfileSeed: () => fetch(`${API_BASE_URL}/api/ims/org-profile/seed`, { method: 'POST', headers: headers() }).then(handle),
+
   list: (resource, params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return fetch(`${API_BASE_URL}/api/ims/${resource}${qs ? '?' + qs : ''}`, { headers: headers() }).then(handle);

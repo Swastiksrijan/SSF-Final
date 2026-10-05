@@ -68,6 +68,7 @@ import { Route as ImsRegistersRouteImport } from './routes/ims/registers'
 import { Route as ImsProcurementRouteImport } from './routes/ims/procurement'
 import { Route as ImsPoliciesRouteImport } from './routes/ims/policies'
 import { Route as ImsPermissionsRouteImport } from './routes/ims/permissions'
+import { Route as ImsOrgProfileRouteImport } from './routes/ims/org-profile'
 import { Route as ImsNotificationsRouteImport } from './routes/ims/notifications'
 import { Route as ImsMembersRouteImport } from './routes/ims/members'
 import { Route as ImsMeetingsRouteImport } from './routes/ims/meetings'
@@ -390,6 +391,11 @@ const ImsPermissionsRoute = ImsPermissionsRouteImport.update({
   path: '/ims/permissions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsOrgProfileRoute = ImsOrgProfileRouteImport.update({
+  id: '/ims/org-profile',
+  path: '/ims/org-profile',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsNotificationsRoute = ImsNotificationsRouteImport.update({
   id: '/ims/notifications',
   path: '/ims/notifications',
@@ -585,6 +591,7 @@ export interface FileRoutesByFullPath {
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
   '/ims/notifications': typeof ImsNotificationsRoute
+  '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -670,6 +677,7 @@ export interface FileRoutesByTo {
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
   '/ims/notifications': typeof ImsNotificationsRoute
+  '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -757,6 +765,7 @@ export interface FileRoutesById {
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
   '/ims/notifications': typeof ImsNotificationsRoute
+  '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -845,6 +854,7 @@ export interface FileRouteTypes {
     | '/ims/meetings'
     | '/ims/members'
     | '/ims/notifications'
+    | '/ims/org-profile'
     | '/ims/permissions'
     | '/ims/policies'
     | '/ims/procurement'
@@ -930,6 +940,7 @@ export interface FileRouteTypes {
     | '/ims/meetings'
     | '/ims/members'
     | '/ims/notifications'
+    | '/ims/org-profile'
     | '/ims/permissions'
     | '/ims/policies'
     | '/ims/procurement'
@@ -1016,6 +1027,7 @@ export interface FileRouteTypes {
     | '/ims/meetings'
     | '/ims/members'
     | '/ims/notifications'
+    | '/ims/org-profile'
     | '/ims/permissions'
     | '/ims/policies'
     | '/ims/procurement'
@@ -1099,6 +1111,7 @@ export interface RootRouteChildren {
   ImsMeetingsRoute: typeof ImsMeetingsRoute
   ImsMembersRoute: typeof ImsMembersRoute
   ImsNotificationsRoute: typeof ImsNotificationsRoute
+  ImsOrgProfileRoute: typeof ImsOrgProfileRoute
   ImsPermissionsRoute: typeof ImsPermissionsRoute
   ImsPoliciesRoute: typeof ImsPoliciesRoute
   ImsProcurementRoute: typeof ImsProcurementRoute
@@ -1533,6 +1546,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsPermissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/org-profile': {
+      id: '/ims/org-profile'
+      path: '/ims/org-profile'
+      fullPath: '/ims/org-profile'
+      preLoaderRoute: typeof ImsOrgProfileRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/notifications': {
       id: '/ims/notifications'
       path: '/ims/notifications'
@@ -1803,6 +1823,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsMeetingsRoute: ImsMeetingsRoute,
   ImsMembersRoute: ImsMembersRoute,
   ImsNotificationsRoute: ImsNotificationsRoute,
+  ImsOrgProfileRoute: ImsOrgProfileRoute,
   ImsPermissionsRoute: ImsPermissionsRoute,
   ImsPoliciesRoute: ImsPoliciesRoute,
   ImsProcurementRoute: ImsProcurementRoute,

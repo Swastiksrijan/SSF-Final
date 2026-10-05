@@ -1,5 +1,5 @@
 // SSF-IMS shared UI primitives (KPI cards, badges, tables, drawer form).
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import * as Icons from 'lucide-react';
 import { useLang } from './LangContext';
 
@@ -90,6 +90,14 @@ export function Spinner() {
 export function FormDrawer({ open, title, schema, initial, onClose, onSubmit, saving, duplicates, onUseExisting, onCreateAnyway }) {
   const { t, lang } = useLang();
   const [form, setForm] = useState(initial || {});
+  // The drawer stays mounted between records, so reset the form whenever a
+  // different record (or create mode) is opened. Without this the fields keep
+  // the previous/empty state and an edit would blank out the record on save.
+  const initialKey = initial && initial.id != null ? `id:${initial.id}` : 'new';
+  useEffect(() => {
+    setForm(initial || {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [initialKey, open]);
 
   if (!open) return null;
   const fields = (schema && schema.fields) || [];
