@@ -101,8 +101,10 @@ async function runSeeds() {
     }
 }
 
-async function syncDatabase() {
-    for (let attempt = 1; attempt <= 3; attempt++) {
+let dbSynced = false;
+
+async function syncDatabase(attempts = 3) {
+    for (let attempt = 1; attempt <= attempts; attempt++) {
         try {
             await sequelize.sync();
             console.log('✅ PostgreSQL Database Synced');
@@ -115,16 +117,33 @@ async function syncDatabase() {
                     console.error('⚠️ Schema alter skipped:', e.message);
                 }
             }
-            return;
+            dbSynced = true;
+            return true;
         } catch (err) {
-            console.error(`⚠️ Database sync attempt ${attempt}/3 failed:`, err.message || err);
-            if (attempt < 3) await new Promise(r => setTimeout(r, 5000));
+            console.error(`⚠️ Database sync attempt ${attempt}/${attempts} failed:`, err.message || err);
+            if (attempt < attempts) await new Promise(r => setTimeout(r, 5000));
         }
     }
-    console.error('❌ Database unavailable at startup — API is serving without sync and will recover once the DB is reachable.');
+    return false;
+}
+
+// If the database is unreachable at boot (e.g. a stale DB_URL or a database
+// that is still waking up), keep retrying in the background so the service
+// heals on its own once the database becomes reachable — no redeploy needed.
+async function syncWithRecovery() {
+    if (await syncDatabase()) return;
+    console.error('❌ Database unavailable at startup — API is serving without sync; retrying every 60s until it recovers.');
+    const timer = setInterval(async () => {
+        if (dbSynced) return clearInterval(timer);
+        if (await syncDatabase(1)) {
+            console.log('✅ Database recovered');
+            clearInterval(timer);
+        }
+    }, 60000);
+    if (timer.unref) timer.unref();
 }
 
 // Bind the port first so the platform sees a healthy service even if the
 // database is slow or down.
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
-syncDatabase();
+syncWithRecovery();
