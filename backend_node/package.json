@@ -4,6 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node server.js",
+    "bootstrap-db": "node scripts/bootstrap-database.js",
+    "restore-digital-office": "node scripts/restore-digital-office.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
