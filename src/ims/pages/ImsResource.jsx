@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from 'react';
-import { useParams, useNavigate } from '@tanstack/react-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { useParams, useNavigate, useSearch } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
 import { Card, PageHeader, Badge, Empty, Spinner, Button, FormDrawer } from '../ui';
@@ -9,9 +9,12 @@ import { schemaFor, PRIMARY_FIELD } from '../schemas';
 
 export default function ImsResource() {
   const { resource } = useParams({ from: '/ims/r/$resource' });
+  const { open: openId } = useSearch({ from: '/ims/r/$resource' });
+  const openRef = String(openId || '').replace(/^"|"$/g, '');
   const { t, lang } = useLang();
   const navigate = useNavigate();
   const schema = schemaFor(resource);
+  const openHandled = useRef('');
 
   const [rows, setRows] = useState(null);
   const [total, setTotal] = useState(0);
@@ -51,6 +54,16 @@ export default function ImsResource() {
   }, [resource, search]);
 
   useEffect(() => { load(); }, [load]);
+
+  // Deep link from Global Search: ?open=<id> opens that record's drawer.
+  useEffect(() => {
+    if (!openRef || !rows || openHandled.current === openRef) return;
+    openHandled.current = openRef;
+    const row = rows.find((r) => String(r.id) === openRef);
+    if (row) { openEdit(row); return; }
+    // The record may be outside the first page of the register; fetch it directly.
+    ims.get(resource, openRef).then((full) => { if (full && full.id) openEdit(full); }).catch(() => {});
+  }, [openRef, rows, resource]);
 
   const primary = PRIMARY_FIELD[resource] || 'recordId';
   const title = schema ? t(schema.titleKey) : resource;

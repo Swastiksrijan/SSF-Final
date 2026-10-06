@@ -29,7 +29,12 @@ export const ims = {
   moduleDashboard: (m) => fetch(`${API_BASE_URL}/api/ims/module-dashboard/${m}`, { headers: headers() }).then(handle),
   roles: () => fetch(`${API_BASE_URL}/api/ims/roles`, { headers: headers() }).then(handle),
   seed: () => fetch(`${API_BASE_URL}/api/ims/seed`, { method: 'POST', headers: headers() }).then(handle),
-  search: (q) => fetch(`${API_BASE_URL}/api/ims/search?q=${encodeURIComponent(q)}`, { headers: headers() }).then(handle),
+  search: (q, filters = {}) => {
+    const params = new URLSearchParams({ q: q || '' });
+    for (const [k, v] of Object.entries(filters)) if (v) params.set(k, v);
+    return fetch(`${API_BASE_URL}/api/ims/search?${params.toString()}`, { headers: headers() }).then(handle);
+  },
+  searchMeta: () => fetch(`${API_BASE_URL}/api/ims/search/meta`, { headers: headers() }).then(handle),
   person360: (id) => fetch(`${API_BASE_URL}/api/ims/person360/${id}`, { headers: headers() }).then(handle),
   meetingDossier: (id) => fetch(`${API_BASE_URL}/api/ims/meeting-dossier/${id}`, { headers: headers() }).then(handle),
   member360: (id) => fetch(`${API_BASE_URL}/api/ims/member360/${id}`, { headers: headers() }).then(handle),

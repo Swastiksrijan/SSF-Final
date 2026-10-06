@@ -12,6 +12,7 @@ const { seedPolicy } = require('../services/ims/policySeed');
 const { seedOrgProfile } = require('../services/ims/orgProfileSeed');
 const { seedOfficeHistory } = require('../services/ims/officeHistorySeed');
 const { migrateLegacy } = require('../services/ims/migrateLegacy');
+const { universalSearch, meta: searchMeta } = require('../services/ims/search');
 const { ROLES, DEFAULT_GRANTS } = require('../services/ims/rbac');
 
 // Auth: reuse the office bearer token so the existing admin session works.
@@ -69,33 +70,26 @@ router.get('/ims/member360/:id', wrap(async (req, r) => {
   r.json(out);
 }));
 
-// ---- global search ---------------------------------------------------------
+// ---- global search (universal, across every module) ------------------------
+// Filters: q, module, type, status, dateFrom, dateTo.
+// `type=persons` / `type=meetings` also work, so older links stay valid.
 router.get('/ims/search', wrap(async (req, r) => {
-  const q = String(req.query.q || '').trim();
-  if (!q) return r.json({ results: [] });
-  const like = { [Op.iLike]: '%' + q + '%' };
-  const searches = [
-    ['person', models.ImsPerson, ['fullName', 'mobile', 'email', 'recordId']],
-    ['member', models.ImsMembership, ['memberNo', 'recordId']],
-    ['donor', models.ImsDonor, ['donorType', 'recordId']],
-    ['project', models.ImsProject, ['name', 'recordId']],
-    ['meeting', models.ImsMeeting, ['title', 'recordId']],
-    ['resolution', models.ImsResolution, ['title', 'recordId']],
-    ['action', models.ImsAction, ['title', 'recordId']],
-    ['document', models.ImsDocument, ['title', 'recordId']],
-    ['case', models.ImsCase, ['title', 'recordId']],
-    ['transaction', models.ImsTransaction, ['transactionNo', 'recordId']],
-    ['policy', models.ImsPolicy, ['title', 'category', 'recordId', 'body']],
-    ['orgProfile', models.ImsOrgProfile, ['organizationName', 'shortName', 'registrationNumber', 'section', 'recordId']],
-    ['costCentre', models.ImsCostCentre, ['name', 'recordId', 'shortCode', 'category', 'location', 'district']],
-  ];
-  const results = [];
-  for (const [type, model, fields] of searches) {
-    const rows = await model.findAll({ where: { [Op.or]: fields.map(f => ({ [f]: like })) }, limit: 5 });
-    for (const row of rows) results.push({ type, id: row.id, recordId: row.recordId, title: row[fields[0]] || row.recordId });
-  }
-  r.json({ results });
+  const filters = {
+    module: req.query.module || '',
+    type: req.query.type || req.query.recordType || '',
+    status: req.query.status || '',
+    dateFrom: req.query.dateFrom || '',
+    dateTo: req.query.dateTo || '',
+  };
+  // Legacy type aliases (resource plural -> search key) so old links never 404.
+  const ALIAS = { persons: 'persons', members: 'members', donors: 'donors', volunteers: 'volunteers', employees: 'employees', beneficiaries: 'beneficiaries', meetings: 'meetings', resolutions: 'resolutions', actions: 'actions', documents: 'documents', cases: 'cases', transactions: 'transactions', projects: 'projects', donations: 'donations', grants: 'grants' };
+  if (filters.type && ALIAS[filters.type]) filters.type = ALIAS[filters.type];
+  r.json(await universalSearch(req.query.q || '', filters));
 }));
+
+// Filter metadata for the Global Search UI (modules + record types).
+router.get('/ims/search/meta', wrap(async (_req, r) => r.json(searchMeta())));
+
 
 // ---- relationship linking (must precede the generic POST /ims/:resource) ----
 router.post('/ims/link', wrap(async (req, r) => {
