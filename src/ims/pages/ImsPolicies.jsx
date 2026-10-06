@@ -86,7 +86,7 @@ export default function ImsPolicies() {
   };
 
   return (
-    <ImsLayout>
+    <ImsLayout active="policies">
       <SectionHero
         title={t('policy_manual')}
         hi={meta.titleHi}

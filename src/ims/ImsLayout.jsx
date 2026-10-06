@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import { SIDEBAR } from '../ims/sectionModules';
+import SectionNav from './SectionNav';
 import { useLang } from '../ims/LangContext';
 import { ims } from '../ims/api';
 import { tBoth } from '../ims/i18n';
@@ -85,9 +86,11 @@ export default function ImsLayout({ children, active }) {
         </div>
       </header>
 
+      <SectionNav active={active} />
+
       <div className="mx-auto flex max-w-[1600px]">
         {/* sidebar */}
-        <aside className={`${open ? 'block' : 'hidden'} fixed inset-y-16 left-0 z-30 w-72 overflow-y-auto border-r border-slate-200 bg-white pb-24 lg:sticky lg:top-16 lg:block lg:h-[calc(100vh-4rem)]`}>
+        <aside className={`${open ? 'block' : 'hidden'} fixed top-[7rem] bottom-0 left-0 z-20 w-72 overflow-y-auto border-r border-slate-200 bg-white pb-24 lg:sticky lg:top-[7rem] lg:block lg:h-[calc(100vh-7rem)]`}>
           <nav className="p-3">
             {SIDEBAR.map((item) => {
               const isActive = active === (item.activeKey || item.key);

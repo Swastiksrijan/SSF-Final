@@ -440,6 +440,23 @@ export const DICT = {
   grp_learning_admin: { en: 'Learning Hub Management', hi: 'शिक्षण केंद्र प्रबंधन' },
   coming_soon: { en: 'Coming soon', hi: 'जल्द आ रहा है' },
   investments: { en: 'Investments', hi: 'निवेश' },
+  certificates_letters: { en: 'Certificates & Letters', hi: 'प्रमाणपत्र एवं पत्र' },
+  member_certificates: { en: 'Membership Certificates', hi: 'सदस्यता प्रमाणपत्र' },
+  donor_certificates: { en: 'Donor Certificates', hi: 'दानकर्ता प्रमाणपत्र' },
+  volunteer_certificates: { en: 'Volunteer Certificates', hi: 'स्वयंसेवक प्रमाणपत्र' },
+  participation_certificates: { en: 'Participation Certificates', hi: 'सहभागिता प्रमाणपत्र' },
+  internship_certificates: { en: 'Internship Certificates', hi: 'इंटर्नशिप प्रमाणपत्र' },
+  training_certificates: { en: 'Training Certificates', hi: 'प्रशिक्षण प्रमाणपत्र' },
+  programme_certificates: { en: 'Programme Certificates', hi: 'कार्यक्रम प्रमाणपत्र' },
+  recognition_certificates: { en: 'Recognition & Awards', hi: 'सम्मान एवं पुरस्कार' },
+  service_certificates: { en: 'Service Certificates', hi: 'सेवा प्रमाणपत्र' },
+  learning_admin: { en: 'Learning Hub Admin', hi: 'शिक्षण केंद्र प्रबंधन' },
+  subjects: { en: 'Subjects', hi: 'विषय' },
+  courses: { en: 'Courses', hi: 'पाठ्यक्रम' },
+  lessons: { en: 'Lessons', hi: 'पाठ' },
+  certificate_templates: { en: 'Certificate Templates', hi: 'प्रमाणपत्र टेम्पलेट' },
+  content_management: { en: 'Content Management', hi: 'सामग्री प्रबंधन' },
+  attendance_register: { en: 'Attendance Register', hi: 'उपस्थिति पंजिका' },
 };
 
 

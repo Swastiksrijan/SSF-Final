@@ -106,5 +106,5 @@ export function ImsCashBookLegacy(){
 // dedicated AdminLearningCertificates screen; the inline LearningCertificates
 // copy inside SSFDigitalOffice.jsx was dead code and is not ported.
 export function ImsLearningCertificatesLegacy(){
-  return <Shell active="certificates"><AdminLearningCertificates token={token()}/></Shell>;
+  return <Shell active="learning_certificates"><AdminLearningCertificates token={token()}/></Shell>;
 }
