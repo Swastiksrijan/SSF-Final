@@ -2,7 +2,6 @@
 // the IMS layout. Each page wires the legacy data contract (rows + add /
 // updateRecord / archive / restore / summary) to the ported component so the
 // screens behave exactly like the old SSF Digital Office.
-/* eslint-disable react-refresh/only-export-components */
 import { useNavigate } from '@tanstack/react-router';
 import ImsLayout from './ImsLayout';
 import { useOfficeRows, exportRows, exportExcel, exportPdf } from './oldOfficeCore';
@@ -13,6 +12,7 @@ import {
   DownloadCenter,
 } from './oldOfficeComponents';
 import { BankBook, CashBook } from './oldOfficeFinance';
+import AdminLearningCertificates from '../components/AdminLearningCertificates';
 
 const token = () => localStorage.getItem('ssf_admin_token') || '';
 
@@ -100,4 +100,11 @@ export function ImsBankBookLegacy(){
 export function ImsCashBookLegacy(){
   const { rows, add, archive, updateRecord, reload } = useOfficeRows('cash');
   return <Shell active="cash_accounts"><CashBook rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token()} reload={reload}/></Shell>;
+}
+
+// Certificate requests raised from the Learning Hub. The old office rendered the
+// dedicated AdminLearningCertificates screen; the inline LearningCertificates
+// copy inside SSFDigitalOffice.jsx was dead code and is not ported.
+export function ImsLearningCertificatesLegacy(){
+  return <Shell active="certificates"><AdminLearningCertificates token={token()}/></Shell>;
 }

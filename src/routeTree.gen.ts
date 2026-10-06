@@ -77,6 +77,7 @@ import { Route as ImsMembershipContributionsRouteImport } from './routes/ims/mem
 import { Route as ImsMembersRouteImport } from './routes/ims/members'
 import { Route as ImsMeetingsRouteImport } from './routes/ims/meetings'
 import { Route as ImsManagingCommitteeRouteImport } from './routes/ims/managing-committee'
+import { Route as ImsLearningCertificatesRouteImport } from './routes/ims/learning-certificates'
 import { Route as ImsKnowledgeRouteImport } from './routes/ims/knowledge'
 import { Route as ImsIntegrityRouteImport } from './routes/ims/integrity'
 import { Route as ImsImpactRouteImport } from './routes/ims/impact'
@@ -447,6 +448,11 @@ const ImsManagingCommitteeRoute = ImsManagingCommitteeRouteImport.update({
   path: '/ims/managing-committee',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsLearningCertificatesRoute = ImsLearningCertificatesRouteImport.update({
+  id: '/ims/learning-certificates',
+  path: '/ims/learning-certificates',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsKnowledgeRoute = ImsKnowledgeRouteImport.update({
   id: '/ims/knowledge',
   path: '/ims/knowledge',
@@ -654,6 +660,7 @@ export interface FileRoutesByFullPath {
   '/ims/impact': typeof ImsImpactRoute
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
+  '/ims/learning-certificates': typeof ImsLearningCertificatesRoute
   '/ims/managing-committee': typeof ImsManagingCommitteeRoute
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
@@ -750,6 +757,7 @@ export interface FileRoutesByTo {
   '/ims/impact': typeof ImsImpactRoute
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
+  '/ims/learning-certificates': typeof ImsLearningCertificatesRoute
   '/ims/managing-committee': typeof ImsManagingCommitteeRoute
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
@@ -848,6 +856,7 @@ export interface FileRoutesById {
   '/ims/impact': typeof ImsImpactRoute
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
+  '/ims/learning-certificates': typeof ImsLearningCertificatesRoute
   '/ims/managing-committee': typeof ImsManagingCommitteeRoute
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
@@ -947,6 +956,7 @@ export interface FileRouteTypes {
     | '/ims/impact'
     | '/ims/integrity'
     | '/ims/knowledge'
+    | '/ims/learning-certificates'
     | '/ims/managing-committee'
     | '/ims/meetings'
     | '/ims/members'
@@ -1043,6 +1053,7 @@ export interface FileRouteTypes {
     | '/ims/impact'
     | '/ims/integrity'
     | '/ims/knowledge'
+    | '/ims/learning-certificates'
     | '/ims/managing-committee'
     | '/ims/meetings'
     | '/ims/members'
@@ -1140,6 +1151,7 @@ export interface FileRouteTypes {
     | '/ims/impact'
     | '/ims/integrity'
     | '/ims/knowledge'
+    | '/ims/learning-certificates'
     | '/ims/managing-committee'
     | '/ims/meetings'
     | '/ims/members'
@@ -1234,6 +1246,7 @@ export interface RootRouteChildren {
   ImsImpactRoute: typeof ImsImpactRoute
   ImsIntegrityRoute: typeof ImsIntegrityRoute
   ImsKnowledgeRoute: typeof ImsKnowledgeRoute
+  ImsLearningCertificatesRoute: typeof ImsLearningCertificatesRoute
   ImsManagingCommitteeRoute: typeof ImsManagingCommitteeRoute
   ImsMeetingsRoute: typeof ImsMeetingsRoute
   ImsMembersRoute: typeof ImsMembersRoute
@@ -1740,6 +1753,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsManagingCommitteeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/learning-certificates': {
+      id: '/ims/learning-certificates'
+      path: '/ims/learning-certificates'
+      fullPath: '/ims/learning-certificates'
+      preLoaderRoute: typeof ImsLearningCertificatesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/knowledge': {
       id: '/ims/knowledge'
       path: '/ims/knowledge'
@@ -2026,6 +2046,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsImpactRoute: ImsImpactRoute,
   ImsIntegrityRoute: ImsIntegrityRoute,
   ImsKnowledgeRoute: ImsKnowledgeRoute,
+  ImsLearningCertificatesRoute: ImsLearningCertificatesRoute,
   ImsManagingCommitteeRoute: ImsManagingCommitteeRoute,
   ImsMeetingsRoute: ImsMeetingsRoute,
   ImsMembersRoute: ImsMembersRoute,

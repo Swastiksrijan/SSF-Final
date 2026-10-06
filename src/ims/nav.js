@@ -7,6 +7,7 @@ export const NAV = [
       { key: 'main_dashboard', icon: 'LayoutDashboard', path: '/ims' },
       { key: 'global_search', icon: 'Search', path: '/ims/search' },
       { key: 'notifications', icon: 'Bell', path: '/ims/notifications' },
+      { key: 'learning_certificates', icon: 'Award', path: '/ims/learning-certificates' },
     ],
   },
   {
