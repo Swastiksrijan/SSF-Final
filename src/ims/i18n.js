@@ -1,7 +1,7 @@
 // SSF-IMS bilingual dictionary (English + natural Hindi).
 // Data is language-neutral; only fixed labels/messages live here.
 export const DICT = {
-  app_name: { en: 'SSF Digital Office', hi: 'एस.एस.एफ. डिजिटल ऑफिस' },
+  app_name: { en: 'SSF OneOffice', hi: 'एस.एस.एफ. वनऑफिस' },
   app_full: { en: 'Swastik Srijan Foundation — Integrated Management System', hi: 'स्वस्तिक सृजन फाउंडेशन — एकीकृत प्रबंधन प्रणाली' },
   working_name: { en: 'SSF OneOffice', hi: 'एस.एस.एफ. वनऑफिस' },
   tagline: { en: 'One Organisation • One Record • Complete Accountability', hi: 'एक संस्था • एक रिकॉर्ड • पूर्ण जवाबदेही' },
@@ -457,6 +457,22 @@ export const DICT = {
   certificate_templates: { en: 'Certificate Templates', hi: 'प्रमाणपत्र टेम्पलेट' },
   content_management: { en: 'Content Management', hi: 'सामग्री प्रबंधन' },
   attendance_register: { en: 'Attendance Register', hi: 'उपस्थिति पंजिका' },
+  // ---- Universal money transaction ----
+  money_transaction: { en: 'Money Transaction', hi: 'धन लेन-देन' },
+  money_transaction_hint: { en: 'Record any income or expense once — the Cash Book, Bank Book, Ledger, Vouchers and Reports update automatically.', hi: 'कोई भी आय या व्यय एक ही बार दर्ज करें — रोकड़ बही, बैंक बही, खाता बही, वाउचर एवं रिपोर्टें स्वतः अद्यतन होती हैं।' },
+  sub_category: { en: 'Sub-category', hi: 'उप-श्रेणी' },
+  remarks: { en: 'Remarks', hi: 'टिप्पणी' },
+  reference_no: { en: 'Ref / Voucher No.', hi: 'संदर्भ / वाउचर क्र.' },
+  particulars: { en: 'Particulars', hi: 'विवरण' },
+  party: { en: 'Party', hi: 'पक्ष' },
+  voucher_no: { en: 'Voucher No.', hi: 'वाउचर क्र.' },
+  cash_bank: { en: 'Cash / Bank', hi: 'रोकड़ / बैंक' },
+  direction: { en: 'Income / Expense', hi: 'आय / व्यय' },
+  select_category: { en: 'Select category', hi: 'श्रेणी चुनें' },
+  optional: { en: 'optional', hi: 'वैकल्पिक' },
+  in_dr: { en: 'In · Dr', hi: 'आवक · नामे' },
+  out_cr: { en: 'Out · Cr', hi: 'जावक · जमा' },
+  auto_updated: { en: 'Cash Book, Bank Book, Ledger & Vouchers updated automatically', hi: 'रोकड़ बही, बैंक बही, खाता बही एवं वाउचर स्वतः अद्यतन' },
 };
 
 

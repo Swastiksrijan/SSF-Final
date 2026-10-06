@@ -91,27 +91,30 @@ export default function ImsLayout({ children, active }) {
       <div className="mx-auto flex max-w-[1600px]">
         {/* sidebar */}
         <aside className={`${open ? 'block' : 'hidden'} fixed top-[7rem] bottom-0 left-0 z-20 w-72 overflow-y-auto border-r border-slate-200 bg-white pb-24 lg:sticky lg:top-[7rem] lg:block lg:h-[calc(100vh-7rem)]`}>
-          <nav className="p-3">
+          <nav className="space-y-1 p-3">
             {SIDEBAR.map((item) => {
               const isActive = active === (item.activeKey || item.key);
               const both = tBoth(item.key);
               return (
                 <button key={item.key}
                   onClick={() => (setOpen(false), navigate({ to: item.path }))}
-                  className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition
-                    ${isActive ? 'bg-[#002344] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}>
-                  <Icon name={item.icon} size={17} className={isActive ? 'text-[#FFD166]' : 'text-slate-400'} />
+                  className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-150
+                    ${isActive ? 'bg-gradient-to-r from-[#002344] to-[#0b3a63] text-white shadow-[0_8px_20px_-10px_rgba(2,35,68,0.7)]' : 'text-slate-600 hover:bg-slate-100'}`}>
+                  <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg transition-colors ${isActive ? 'bg-white/15' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
+                    <Icon name={item.icon} size={16} className={isActive ? 'text-[#FFD166]' : 'text-slate-500'} />
+                  </span>
                   <span className="min-w-0 flex-1 leading-tight">
                     <span className={`block truncate text-sm font-semibold ${isActive ? 'text-white' : 'text-[#002344]'}`}>{both[0]}</span>
-                    <span className={`block truncate text-[11px] font-medium ${isActive ? 'text-[#FFF8E7]' : 'text-[#1F7A70]'}`}>{both[1]}</span>
+                    <span className={`block truncate text-[11px] font-medium ${isActive ? 'text-[#FFF8E7]/90' : 'text-[#1F7A70]'}`}>{both[1]}</span>
                   </span>
+                  {isActive && <Icons.ChevronRight size={15} className="shrink-0 text-white/60" />}
                 </button>
               );
             })}
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 px-4 py-6 lg:px-8">{children}</main>
+        <main className="min-w-0 flex-1 px-4 py-6 lg:px-8 lg:py-8">{children}</main>
       </div>
     </div>
   );

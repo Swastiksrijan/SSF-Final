@@ -75,12 +75,12 @@ export default function SectionNav({ active }) {
 
   const tabClass = (on, planned) =>
     [
-      'flex shrink-0 items-center gap-1.5 rounded-md px-2.5 py-1.5 text-xs font-semibold transition',
+      'flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all duration-150',
       on
-        ? 'bg-[#002344] text-white shadow-sm'
+        ? 'bg-[#002344] text-white shadow-[0_4px_12px_-4px_rgba(2,35,68,0.6)]'
         : planned
           ? 'cursor-not-allowed text-slate-300'
-          : 'text-slate-600 hover:bg-slate-100',
+          : 'text-slate-600 hover:bg-slate-100 hover:text-[#002344]',
     ].join(' ');
 
   return (

@@ -4,15 +4,15 @@ import * as Icons from 'lucide-react';
 import { useLang } from './LangContext';
 
 export function Card({ children, className = '' }) {
-  return <div className={`rounded-xl border border-slate-200 bg-white shadow-sm ${className}`}>{children}</div>;
+  return <div className={`rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(2,35,68,0.04),0_8px_24px_-12px_rgba(2,35,68,0.12)] ${className}`}>{children}</div>;
 }
 
 export function PageHeader({ title, subtitle, actions }) {
   return (
-    <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
-      <div>
-        <h1 className="text-xl font-bold text-slate-900">{title}</h1>
-        {subtitle && <p className="mt-0.5 text-sm text-slate-500">{subtitle}</p>}
+    <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
+      <div className="min-w-0">
+        <h1 className="text-2xl font-black tracking-tight text-[#002344]">{title}</h1>
+        {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
     </div>
@@ -34,12 +34,15 @@ export function Kpi({ icon, label, value, tone = 'navy' }) {
   };
   const I = Icons[icon] || Icons.Activity;
   return (
-    <Card className="group flex items-center gap-3 p-4 transition-shadow hover:shadow-md">
-      <span className={`grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-gradient-to-br shadow-sm ${tones[tone]}`}><I size={20} /></span>
-      <span className="min-w-0">
-        <span className="block truncate text-[11px] font-semibold uppercase tracking-wide text-slate-400">{label}</span>
-        <span className="block truncate text-xl font-black tracking-tight text-slate-900">{value}</span>
-      </span>
+    <Card className="group relative overflow-hidden p-4 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_12px_30px_-12px_rgba(2,35,68,0.28)]">
+      <span className="pointer-events-none absolute -right-6 -top-6 h-20 w-20 rounded-full bg-slate-50 transition-colors group-hover:bg-slate-100/80" />
+      <div className="relative flex items-center gap-3.5">
+        <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br shadow-sm ring-1 ring-black/5 ${tones[tone]}`}><I size={21} /></span>
+        <span className="min-w-0">
+          <span className="block truncate text-[11px] font-semibold uppercase tracking-wider text-slate-400">{label}</span>
+          <span className="block truncate text-[22px] font-black leading-tight tracking-tight text-[#002344]">{value}</span>
+        </span>
+      </div>
     </Card>
   );
 }
@@ -53,20 +56,25 @@ const BADGE = {
 
 export function Badge({ status }) {
   const cls = BADGE[status] || 'bg-slate-100 text-slate-600';
-  return <span className={`inline-block rounded-full px-2 py-0.5 text-[11px] font-semibold ${cls}`}>{status || '—'}</span>;
+  return (
+    <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${cls}`}>
+      <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
+      {status || '—'}
+    </span>
+  );
 }
 
 export function Button({ children, icon, variant = 'primary', ...rest }) {
   const variants = {
-    primary: 'bg-[#FF6600] text-white hover:bg-[#e65c00]',
-    navy: 'bg-[#002344] text-white hover:bg-[#001529]',
-    ghost: 'border border-slate-300 text-slate-700 hover:bg-slate-100',
-    hero: 'bg-white text-[#002344] hover:bg-zinc-100',
-    danger: 'border border-rose-300 text-rose-600 hover:bg-rose-50',
+    primary: 'bg-[#FF6600] text-white hover:bg-[#e65c00] shadow-sm shadow-orange-500/20',
+    navy: 'bg-[#002344] text-white hover:bg-[#001529] shadow-sm shadow-[#002344]/20',
+    ghost: 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-400',
+    hero: 'bg-white text-[#002344] hover:bg-zinc-100 shadow-sm',
+    danger: 'border border-rose-300 bg-white text-rose-600 hover:bg-rose-50',
   };
   const I = icon ? Icons[icon] : null;
   return (
-    <button {...rest} className={`inline-flex items-center gap-1.5 rounded-lg px-3 py-2 text-sm font-semibold transition ${variants[variant]} ${rest.className || ''}`}>
+    <button {...rest} className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6600]/40 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${rest.className || ''}`}>
       {I && <I size={16} />}{children}
     </button>
   );
@@ -218,13 +226,13 @@ function RefField({ label, required, resource, value, onChange }) {
 export function Tabs({ tabs = [], value, onChange }) {
   const { lang } = useLang();
   return (
-    <div className="mb-4 flex gap-1.5 overflow-x-auto pb-1">
+    <div className="mb-5 flex gap-2 overflow-x-auto pb-1">
       {tabs.map((tb) => {
         const on = tb.id === value;
         const label = lang === 'hi' && tb.hi ? `${tb.hi} (${tb.en})` : tb.en;
         return (
           <button key={tb.id} type="button" onClick={() => onChange(tb.id)}
-            className={`whitespace-nowrap rounded-full px-3.5 py-2 text-sm font-bold transition ${on ? 'bg-[#002344] text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-all duration-150 ${on ? 'bg-[#002344] text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
             {label}
             {tb.count != null && (
               <span className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[11px] font-black ${on ? 'bg-white/20 text-white' : 'bg-white text-slate-500'}`}>{tb.count}</span>
@@ -264,19 +272,21 @@ export function SectionHero({ title, hi, eyebrow, icon = 'LayoutDashboard', tone
     slate: 'from-slate-700 to-slate-600',
   };
   return (
-    <section className={`relative mb-5 overflow-hidden rounded-3xl bg-gradient-to-br ${tones[tone] || tones.navy} p-5 text-white shadow-lg sm:p-6`}>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div className="flex items-start gap-3">
-          <span className="grid h-11 w-11 shrink-0 place-items-center rounded-2xl bg-white/15"><I size={22} /></span>
+    <section className={`relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br ${tones[tone] || tones.navy} p-6 text-white shadow-[0_18px_40px_-20px_rgba(2,35,68,0.55)] sm:p-7`}>
+      <span className="pointer-events-none absolute -right-16 -top-20 h-56 w-56 rounded-full bg-white/10" />
+      <span className="pointer-events-none absolute -bottom-24 right-24 h-44 w-44 rounded-full bg-white/5" />
+      <div className="relative flex flex-wrap items-start justify-between gap-4">
+        <div className="flex items-start gap-4">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20"><I size={24} /></span>
           <div>
-            {eyebrow && <p className="text-[11px] font-black uppercase tracking-[.2em] text-[#FFD166]">{eyebrow}</p>}
-            <h1 className="mt-1 text-2xl font-black leading-tight sm:text-3xl">{title}</h1>
-            {hi && lang !== 'hi' && <p className="mt-0.5 text-sm font-semibold text-white/70">{hi}</p>}
+            {eyebrow && <p className="text-[11px] font-black uppercase tracking-[.22em] text-[#FFD166]">{eyebrow}</p>}
+            <h1 className="mt-1.5 text-2xl font-black leading-tight tracking-tight sm:text-[32px]">{title}</h1>
+            {hi && lang !== 'hi' && <p className="mt-1 text-sm font-semibold text-white/70">{hi}</p>}
           </div>
         </div>
         {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
       </div>
-      {children && <div className="mt-4">{children}</div>}
+      {children && <div className="relative mt-5">{children}</div>}
     </section>
   );
 }
@@ -291,9 +301,9 @@ export function DataTable({ columns = [], rows = [], loading, empty, onRowClick 
       <div className="overflow-x-auto">
         <table className="w-full min-w-[640px] text-sm">
           <thead>
-            <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
+            <tr className="border-b border-slate-200 bg-slate-50/80 text-left text-[11px] font-bold uppercase tracking-wider text-slate-500">
               {columns.map((c, i) => (
-                <th key={i} className={`px-4 py-2.5 font-semibold ${c.align === 'right' ? 'text-right' : ''}`}>
+                <th key={i} className={`px-4 py-3 font-bold ${c.align === 'right' ? 'text-right' : ''}`}>
                   {lang === 'hi' && c.hi ? c.hi : c.en}
                 </th>
               ))}
@@ -301,10 +311,10 @@ export function DataTable({ columns = [], rows = [], loading, empty, onRowClick 
           </thead>
           <tbody className="divide-y divide-slate-100">
             {rows.map((r, ri) => (
-              <tr key={r.id || ri} className={`hover:bg-slate-50 ${onRowClick ? 'cursor-pointer' : ''}`}
+              <tr key={r.id || ri} className={`transition-colors hover:bg-[#F5F8FC] ${onRowClick ? 'cursor-pointer' : ''}`}
                 onClick={onRowClick ? () => onRowClick(r) : undefined}>
                 {columns.map((c, ci) => (
-                  <td key={ci} className={`px-4 py-2.5 ${c.className || ''} ${c.align === 'right' ? 'text-right' : ''}`}>
+                  <td key={ci} className={`px-4 py-3 text-slate-700 ${c.className || ''} ${c.align === 'right' ? 'text-right' : ''}`}>
                     {c.render ? c.render(r) : (r[c.key] ?? '—')}
                   </td>
                 ))}
@@ -382,8 +392,8 @@ export function RecordCard({ title, subtitle, right, onClick, icon = 'FileText' 
   const I = Icons[icon] || Icons.FileText;
   return (
     <button type="button" onClick={onClick}
-      className="flex w-full items-center gap-3 rounded-xl border border-slate-200 bg-white px-3.5 py-3 text-left transition hover:border-[#002344]/30 hover:shadow-sm">
-      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-slate-100 text-[#002344]"><I size={17} /></span>
+      className="flex w-full items-center gap-3.5 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-left transition-all duration-150 hover:border-[#002344]/25 hover:shadow-[0_10px_26px_-14px_rgba(2,35,68,0.3)]">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-100 text-[#002344]"><I size={18} /></span>
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold text-slate-800">{title}</span>
         {subtitle && <span className="block truncate text-xs text-slate-400">{subtitle}</span>}
