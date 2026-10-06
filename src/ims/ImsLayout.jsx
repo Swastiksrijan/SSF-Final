@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, useNavigate } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
-import { NAV } from '../ims/nav';
+import { SIDEBAR } from '../ims/sectionModules';
 import { useLang } from '../ims/LangContext';
 import { ims } from '../ims/api';
 import { tBoth } from '../ims/i18n';
@@ -12,8 +12,6 @@ function Icon({ name, size = 18, className = '' }) {
   const C = Icons[name] || Icons.Circle;
   return <C size={size} className={className} />;
 }
-
-const GROUP_ORDER = ['main', 'organisation', 'governance', 'programmes', 'finance', 'resources', 'compliance', 'records', 'admin'];
 
 export default function ImsLayout({ children, active }) {
   const { t, lang, setLang } = useLang();
@@ -33,11 +31,6 @@ export default function ImsLayout({ children, active }) {
   const onSearchSubmit = (e) => {
     e.preventDefault();
     if (q.trim()) { navigate({ to: '/ims/search', search: { q: q.trim() } }); setResults(null); }
-  };
-
-  const openResource = (item) => {
-    setOpen(false);
-    navigate({ to: '/ims/r/$resource', params: { resource: item.resource } });
   };
 
   return (
@@ -96,29 +89,20 @@ export default function ImsLayout({ children, active }) {
         {/* sidebar */}
         <aside className={`${open ? 'block' : 'hidden'} fixed inset-y-16 left-0 z-30 w-72 overflow-y-auto border-r border-slate-200 bg-white pb-24 lg:sticky lg:top-16 lg:block lg:h-[calc(100vh-4rem)]`}>
           <nav className="p-3">
-            {GROUP_ORDER.map(g => {
-              const group = NAV.find(n => n.group === g);
-              if (!group) return null;
+            {SIDEBAR.map((item) => {
+              const isActive = active === (item.activeKey || item.key);
+              const both = tBoth(item.key);
               return (
-                <div key={g} className="mb-3">
-                  <div className="px-3 pb-1 pt-2 text-[10px] font-bold uppercase tracking-widest text-slate-400">{t(g)}</div>
-                  {group.items.map(item => {
-                    const isActive = active === item.key;
-                    const both = tBoth(item.key);
-                    return (
-                      <button key={item.key}
-                        onClick={() => item.path ? (setOpen(false), navigate({ to: item.path })) : openResource(item)}
-                        className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition
-                          ${isActive ? 'bg-[#002344] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}>
-                        <Icon name={item.icon} size={17} className={isActive ? 'text-[#FFD166]' : 'text-slate-400'} />
-                        <span className="min-w-0 flex-1 leading-tight">
-                          <span className={`block truncate text-sm font-semibold ${isActive ? 'text-white' : 'text-[#002344]'}`}>{both[0]}</span>
-                          <span className={`block truncate text-[11px] font-medium ${isActive ? 'text-[#FFF8E7]' : 'text-[#1F7A70]'}`}>{both[1]}</span>
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
+                <button key={item.key}
+                  onClick={() => (setOpen(false), navigate({ to: item.path }))}
+                  className={`flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left transition
+                    ${isActive ? 'bg-[#002344] text-white shadow-sm' : 'text-slate-600 hover:bg-slate-100'}`}>
+                  <Icon name={item.icon} size={17} className={isActive ? 'text-[#FFD166]' : 'text-slate-400'} />
+                  <span className="min-w-0 flex-1 leading-tight">
+                    <span className={`block truncate text-sm font-semibold ${isActive ? 'text-white' : 'text-[#002344]'}`}>{both[0]}</span>
+                    <span className={`block truncate text-[11px] font-medium ${isActive ? 'text-[#FFF8E7]' : 'text-[#1F7A70]'}`}>{both[1]}</span>
+                  </span>
+                </button>
               );
             })}
           </nav>

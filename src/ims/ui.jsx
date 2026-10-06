@@ -22,10 +22,14 @@ export function PageHeader({ title, subtitle, actions }) {
 export function Kpi({ icon, label, value, tone = 'navy' }) {
   const tones = {
     navy: 'from-[#002344] to-[#0b3a63] text-white',
+    blue: 'from-[#2563EB] to-[#3b82f6] text-white',
+    deepblue: 'from-[#1E3A8A] to-[#2563EB] text-white',
+    purple: 'from-[#7C3AED] to-[#9333ea] text-white',
     orange: 'from-[#FF6600] to-[#ff8a3d] text-white',
-    green: 'from-emerald-600 to-emerald-500 text-white',
-    red: 'from-rose-600 to-rose-500 text-white',
-    amber: 'from-amber-500 to-amber-400 text-white',
+    green: 'from-[#16A34A] to-emerald-500 text-white',
+    teal: 'from-[#0F766E] to-[#0e7490] text-white',
+    red: 'from-[#DC2626] to-rose-500 text-white',
+    amber: 'from-[#D97706] to-amber-400 text-white',
     slate: 'from-slate-700 to-slate-600 text-white',
   };
   const I = Icons[icon] || Icons.Activity;
@@ -250,9 +254,14 @@ export function SectionHero({ title, hi, eyebrow, icon = 'LayoutDashboard', tone
   const I = Icons[icon] || Icons.LayoutDashboard;
   const tones = {
     navy: 'from-[#002344] to-[#0b3a63]',
+    blue: 'from-[#1E3A8A] to-[#2563EB]',
+    deepblue: 'from-[#1E3A8A] to-[#1d4ed8]',
+    purple: 'from-[#6d28d9] to-[#7C3AED]',
     orange: 'from-[#c2410c] to-[#FF6600]',
     teal: 'from-[#134e4a] to-[#0e7490]',
     green: 'from-[#065f46] to-emerald-600',
+    amber: 'from-[#b45309] to-[#D97706]',
+    slate: 'from-slate-700 to-slate-600',
   };
   return (
     <section className={`relative mb-5 overflow-hidden rounded-3xl bg-gradient-to-br ${tones[tone] || tones.navy} p-5 text-white shadow-lg sm:p-6`}>

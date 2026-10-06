@@ -72,6 +72,7 @@ import { Route as ImsPoliciesRouteImport } from './routes/ims/policies'
 import { Route as ImsPermissionsRouteImport } from './routes/ims/permissions'
 import { Route as ImsOrgProfileRouteImport } from './routes/ims/org-profile'
 import { Route as ImsOfficialDocumentsRouteImport } from './routes/ims/official-documents'
+import { Route as ImsOfficeRouteImport } from './routes/ims/office'
 import { Route as ImsNotificationsRouteImport } from './routes/ims/notifications'
 import { Route as ImsMembershipContributionsRouteImport } from './routes/ims/membership-contributions'
 import { Route as ImsMembersRouteImport } from './routes/ims/members'
@@ -423,6 +424,11 @@ const ImsOfficialDocumentsRoute = ImsOfficialDocumentsRouteImport.update({
   path: '/ims/official-documents',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsOfficeRoute = ImsOfficeRouteImport.update({
+  id: '/ims/office',
+  path: '/ims/office',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsNotificationsRoute = ImsNotificationsRouteImport.update({
   id: '/ims/notifications',
   path: '/ims/notifications',
@@ -672,6 +678,7 @@ export interface FileRoutesByFullPath {
   '/ims/members': typeof ImsMembersRoute
   '/ims/membership-contributions': typeof ImsMembershipContributionsRoute
   '/ims/notifications': typeof ImsNotificationsRoute
+  '/ims/office': typeof ImsOfficeRoute
   '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/permissions': typeof ImsPermissionsRoute
@@ -770,6 +777,7 @@ export interface FileRoutesByTo {
   '/ims/members': typeof ImsMembersRoute
   '/ims/membership-contributions': typeof ImsMembershipContributionsRoute
   '/ims/notifications': typeof ImsNotificationsRoute
+  '/ims/office': typeof ImsOfficeRoute
   '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/permissions': typeof ImsPermissionsRoute
@@ -870,6 +878,7 @@ export interface FileRoutesById {
   '/ims/members': typeof ImsMembersRoute
   '/ims/membership-contributions': typeof ImsMembershipContributionsRoute
   '/ims/notifications': typeof ImsNotificationsRoute
+  '/ims/office': typeof ImsOfficeRoute
   '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/permissions': typeof ImsPermissionsRoute
@@ -971,6 +980,7 @@ export interface FileRouteTypes {
     | '/ims/members'
     | '/ims/membership-contributions'
     | '/ims/notifications'
+    | '/ims/office'
     | '/ims/official-documents'
     | '/ims/org-profile'
     | '/ims/permissions'
@@ -1069,6 +1079,7 @@ export interface FileRouteTypes {
     | '/ims/members'
     | '/ims/membership-contributions'
     | '/ims/notifications'
+    | '/ims/office'
     | '/ims/official-documents'
     | '/ims/org-profile'
     | '/ims/permissions'
@@ -1168,6 +1179,7 @@ export interface FileRouteTypes {
     | '/ims/members'
     | '/ims/membership-contributions'
     | '/ims/notifications'
+    | '/ims/office'
     | '/ims/official-documents'
     | '/ims/org-profile'
     | '/ims/permissions'
@@ -1264,6 +1276,7 @@ export interface RootRouteChildren {
   ImsMembersRoute: typeof ImsMembersRoute
   ImsMembershipContributionsRoute: typeof ImsMembershipContributionsRoute
   ImsNotificationsRoute: typeof ImsNotificationsRoute
+  ImsOfficeRoute: typeof ImsOfficeRoute
   ImsOfficialDocumentsRoute: typeof ImsOfficialDocumentsRoute
   ImsOrgProfileRoute: typeof ImsOrgProfileRoute
   ImsPermissionsRoute: typeof ImsPermissionsRoute
@@ -1731,6 +1744,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsOfficialDocumentsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/office': {
+      id: '/ims/office'
+      path: '/ims/office'
+      fullPath: '/ims/office'
+      preLoaderRoute: typeof ImsOfficeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/notifications': {
       id: '/ims/notifications'
       path: '/ims/notifications'
@@ -2072,6 +2092,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsMembersRoute: ImsMembersRoute,
   ImsMembershipContributionsRoute: ImsMembershipContributionsRoute,
   ImsNotificationsRoute: ImsNotificationsRoute,
+  ImsOfficeRoute: ImsOfficeRoute,
   ImsOfficialDocumentsRoute: ImsOfficialDocumentsRoute,
   ImsOrgProfileRoute: ImsOrgProfileRoute,
   ImsPermissionsRoute: ImsPermissionsRoute,
