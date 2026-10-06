@@ -3,6 +3,7 @@ const { models } = require('../../models/ims');
 const { Op, fn, col, literal } = require('sequelize');
 
 const active = { status: { [Op.ne]: 'archived' } };
+const money = (n) => Number(n || 0);
 
 async function count(model, extra = {}) {
   return model.count({ where: { ...active, ...extra } });
@@ -13,12 +14,55 @@ async function sum(model, field, extra = {}) {
   return Number(v || 0);
 }
 
-/** One organisation-wide dashboard payload. */
+/** Money control-account codes (must match accounting.js ensureMoneyCoa). */
+const CASH_CODE = '1000';
+const BANK_CODE = '1100';
+
+/** Ledger balance of one account code (debit - credit; asset => positive). */
+async function ledgerBalance(code) {
+  const acct = await models.ImsAccount.findOne({ where: { ...active, code } });
+  if (!acct) return null;
+  const [debit, credit] = await Promise.all([
+    models.ImsLedgerEntry.sum('debit', { where: { ...active, accountId: acct.id } }),
+    models.ImsLedgerEntry.sum('credit', { where: { ...active, accountId: acct.id } }),
+  ]);
+  return Number(debit || 0) - Number(credit || 0);
+}
+
+/**
+ * Cash / Bank balance from the real books.
+ * 1. Prefer the double-entry money control account (1000 / 1100) when it has postings.
+ * 2. Otherwise fall back to how transactions are actually routed (cashAccountId vs
+ *    bankAccountId), which is how legacy-imported money was tagged.
+ * 3. Last resort: show net movement so the figure is never blank.
+ */
+async function moneySplit(income, expense) {
+  const cash = await ledgerBalance(CASH_CODE);
+  const bank = await ledgerBalance(BANK_CODE);
+  if (cash !== null || bank !== null) return { cash: cash || 0, bank: bank || 0, basis: 'ledger' };
+
+  const cashAcctIds = (await models.ImsCashAccount.findAll({ where: active, attributes: ['id'] })).map(a => a.id);
+  const where = { ...active, direction: { [Op.in]: ['in', 'out'] } };
+  const rows = await models.ImsTransaction.findAll({
+    where, attributes: ['amount', 'direction', 'cashAccountId', 'bankAccountId', 'sourceModule'],
+  });
+  let cashBal = 0, bankBal = 0;
+  for (const r of rows) {
+    const amt = money(r.amount) * (r.direction === 'in' ? 1 : -1);
+    if (r.cashAccountId && cashAcctIds.includes(r.cashAccountId)) cashBal += amt;
+    else if (r.bankAccountId) bankBal += amt;
+    else if (['bank'].includes(r.sourceModule)) bankBal += amt;
+    else cashBal += amt;
+  }
+  return { cash: cashBal, bank: bankBal, basis: 'routing' };
+}
+
+/** One organisation-wide dashboard payload (control centre). */
 async function mainDashboard() {
   const today = new Date().toISOString().slice(0, 10);
   const [persons, members, donors, volunteers, employees, beneficiaries,
          projects, activities, meetings, openCases, pendingActions,
-         funds, complianceDue, complianceOverdue, auditsOpen] = await Promise.all([
+         funds, complianceDue, complianceOverdue, auditsOpen, committeeMembers] = await Promise.all([
     count(models.ImsPerson),
     count(models.ImsMembership),
     count(models.ImsDonor),
@@ -34,13 +78,33 @@ async function mainDashboard() {
     count(models.ImsCompliance, { complianceStatus: 'pending' }),
     count(models.ImsCompliance, { dueDate: { [Op.lt]: today }, complianceStatus: { [Op.ne]: 'filed' } }),
     count(models.ImsAudit, { closureDate: null }),
+    count(models.ImsCommitteeMember),
   ]);
 
-  const [income, expense, donationsTotal] = await Promise.all([
+  const [income, expense, grantsTotal, membershipTotal] = await Promise.all([
     sum(models.ImsTransaction, 'amount', { direction: 'in' }),
     sum(models.ImsTransaction, 'amount', { direction: 'out' }),
-    sum(models.ImsDonation, 'amount'),
+    sum(models.ImsGrant, 'amount'),
+    sum(models.ImsMembership, 'feeAmount'),
   ]);
+
+  // Donations must reflect the ACTUAL donation income of the current period,
+  // not an all-time / legacy-duplicated total. Prefer the current financial year;
+  // if none is marked current, use the latest donation date on record.
+  const fy = await models.ImsFinancialYear.findOne({ where: { ...active, isCurrent: true } });
+  let donationWhere = { ...active };
+  if (fy && fy.startDate && fy.endDate) {
+    donationWhere.donationDate = { [Op.gte]: fy.startDate, [Op.lte]: fy.endDate };
+  } else {
+    const latest = await models.ImsDonation.findOne({ where: active, order: [['donationDate', 'DESC']] });
+    if (latest && latest.donationDate) {
+      const d = String(latest.donationDate);
+      donationWhere.donationDate = { [Op.gte]: d.slice(0, 4) + '-04-01', [Op.lte]: d.slice(0, 4) + '-03-31' };
+    }
+  }
+  const donationsTotal = await sum(models.ImsDonation, 'amount', donationWhere);
+
+  const { cash: cashBalance, bank: bankBalance } = await moneySplit(income, expense);
 
   const nextMeeting = await models.ImsMeeting.findOne({
     where: { ...active, meetingDate: { [Op.gte]: today } },
@@ -49,17 +113,31 @@ async function mainDashboard() {
 
   const recent = await models.ImsAuditTrail.findAll({ order: [['id', 'DESC']], limit: 15 });
 
+  // Extra counts the control-centre sections ask for.
+  const [pendingResolutions, pendingDocuments, expiringDocuments, pendingAudit] = await Promise.all([
+    count(models.ImsResolution, { status: { [Op.ne]: 'approved' } }),
+    count(models.ImsDocument, { status: { [Op.in]: ['draft', 'pending', 'review'] } }),
+    count(models.ImsDocument, { expiryDate: { [Op.ne]: null, [Op.lt]: new Date(Date.now() + 60 * 864e5).toISOString().slice(0, 10) } }),
+    count(models.ImsAudit, { closureDate: null }),
+  ]);
+
   return {
-    organisation: { persons, members, donors, volunteers, employees, beneficiaries, currentCommittee: await count(models.ImsCommitteeMember) },
+    organisation: { persons, members, donors, volunteers, employees, beneficiaries, currentCommittee: committeeMembers },
     governance: {
       meetings, openCases, pendingActions,
+      upcomingMeetings: await count(models.ImsMeeting, { meetingDate: { [Op.gte]: today } }),
       nextMeeting: nextMeeting ? nextMeeting.toJSON() : null,
       pendingMinutes: await count(models.ImsMeeting, { minutesStatus: { [Op.ne]: 'approved' } }),
-      pendingResolutions: await count(models.ImsResolution, { status: { [Op.ne]: 'approved' } }),
+      pendingResolutions,
+      pendingDocuments,
     },
     programmes: { activeProjects: projects, activities, beneficiaries },
-    finance: { income, expense, net: income - expense, donationsTotal, funds: funds.length },
-    compliance: { complianceDue, complianceOverdue, auditsOpen },
+    finance: {
+      income, expense, net: income - expense,
+      cashBalance, bankBalance,
+      donationsTotal, membershipTotal, grantsTotal, funds: funds.length,
+    },
+    compliance: { complianceDue, complianceOverdue, auditsOpen, pendingAudit, expiringDocuments },
     alerts: {
       critical: complianceOverdue,
       high: openCases,
