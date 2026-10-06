@@ -2,8 +2,10 @@
 // lived in a standalone component under src/components/. Each register is
 // rendered unchanged; only the legacy data contract is wired to the IMS API.
 import { useParams } from '@tanstack/react-router';
+import { useState } from 'react';
 import ImsLayout from './ImsLayout';
 import { useOfficeRows } from './oldOfficeCore';
+import { Register } from './oldOfficeFinance';
 
 import SahyogRegister from '../components/SahyogRegister';
 import PettyCashRegister from '../components/PettyCashRegister';
@@ -122,6 +124,15 @@ const REGISTERS = {
   documentIndex: { C: DocumentIndex, nav: 'document_index' },
 };
 
+// Old sections that rendered the shared generic `Register` component. These
+// need their own search state, so they are handled by LegacyGenericRegister.
+const GENERIC_REGISTERS = new Set([
+  'activities', 'assets', 'audits', 'beneficiaries', 'brs', 'budget', 'cashbank',
+  'contribution', 'documents', 'donations', 'donors', 'events', 'expenses',
+  'fixedAssets', 'internships', 'inventory', 'investments', 'inward', 'ledger',
+  'loans', 'mou', 'outward', 'projects', 'statutoryDues', 'tds', 'volunteers', 'vouchers',
+]);
+
 // Finance-only screens that read live data with a token (no rows contract).
 const FINANCE_SCREENS = {
   finDashboard: { C: FinanceDashboard, nav: 'finance_dashboard', token: false },
@@ -153,9 +164,16 @@ function LegacyFinance({ module }){
   return <Shell active={def.nav}><C fy={FY} token={token()}/></Shell>;
 }
 
+function LegacyGenericRegister({ module }){
+  const { rows, add, archive, loading } = useOfficeRows(module);
+  const [search, setSearch] = useState('');
+  return <Shell active="main_dashboard"><Register module={module} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/></Shell>;
+}
+
 export function ImsLegacyRegister(){
   const { module } = useParams({ from: '/ims/legacy/$module' });
   if(REGISTERS[module]) return <LegacyRegister module={module}/>;
+  if(GENERIC_REGISTERS.has(module)) return <LegacyGenericRegister module={module}/>;
   if(FINANCE_SCREENS[module]) return <LegacyFinance module={module}/>;
   return <Shell active="main_dashboard"><div className="bg-white border rounded-2xl p-8"><h2 className="text-2xl font-black text-[#002344]">Section not found</h2><p className="text-zinc-500 mt-2">Unknown legacy module: {module}</p></div></Shell>;
 }

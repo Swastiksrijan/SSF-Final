@@ -78,32 +78,68 @@ async function grantRole(personId, roleCode, refType, refId) {
 }
 
 // ---- module map: legacy DigitalOfficeRecord.module -> IMS resource ----------
+// Every legacy Digital Office register maps to the closest IMS master so the
+// full old-office dataset lands in the new system (ADDITIVE ONLY). Registers
+// that are pure statements/views (dashboard, reports, audit, integrity, fin*)
+// carry no rows of their own and are intentionally absent.
 const MODULE_MAP = {
+  // governance
   meetings: 'meetings', meeting: 'meetings', agmMinutes: 'meetings', ecMinutes: 'meetings',
   resolution: 'resolutions', resolutions: 'resolutions',
   members: 'members', memberRegister: 'members',
   officeBearer: 'committeeMembers', managingCommittee: 'committeeMembers', officeHistory: 'committeeMembers',
-  volunteers: 'volunteers', volunteerIntern: 'volunteers',
-  donors: 'donors', donorMaster: 'donors', foreignDonor: 'donors',
-  donations: 'donations', contribution: 'donations', corpusDonation: 'donations',
-  anonymousDonation: 'donations', donor80g: 'donations', inKind: 'donations',
-  expenses: 'transactions', programmeExpense: 'transactions', capitalExpenditure: 'transactions',
-  rent: 'transactions', travel: 'transactions', advance: 'transactions', bankCharges: 'transactions',
-  pettyCash: 'transactions', cash: 'transactions', bank: 'transactions', cashbank: 'transactions',
-  ledger: 'transactions', transfer: 'transactions', adjustment: 'transactions',
-  vouchers: 'vouchers', paymentVoucher: 'vouchers',
-  projects: 'projects', events: 'activities', activities: 'activities',
-  beneficiaries: 'beneficiaries',
-  assets: 'assets', fixedAssets: 'assets', inventory: 'inventory',
+  // people
+  volunteers: 'volunteers', volunteerIntern: 'volunteers', internships: 'volunteers',
   employees: 'employees', employeeMaster: 'employees', payroll: 'employees', honorarium: 'employees',
   attendance: 'attendance',
-  mou: 'agreements', grantAgreement: 'agreements',
+  // donors & donations
+  donors: 'donors', donorMaster: 'donors', foreignDonor: 'donors',
+  donations: 'donations', contribution: 'donations', corpusDonation: 'donations',
+  anonymousDonation: 'donations', donor80g: 'donations', inKind: 'donations', csrFund: 'donations',
+  // finance masters
+  chartOfAccounts: 'accounts', fyMaster: 'financialYears', fundMaster: 'funds',
+  fundClassification: 'funds', corpusFund: 'funds', reserveFund: 'funds',
+  costCentre: 'costCentres', bankAccountMaster: 'bankAccounts', partyMaster: 'parties',
+  cash: 'cashAccounts', cashbank: 'cashAccounts',
+  // finance entries
+  expenses: 'transactions', programmeExpense: 'transactions', capitalExpenditure: 'transactions',
+  rent: 'transactions', travel: 'transactions', advance: 'transactions', bankCharges: 'transactions',
+  pettyCash: 'transactions', bank: 'transactions', ledger: 'transactions', transfer: 'transactions',
+  adjustment: 'transactions', sahyog: 'transactions', pledge: 'transactions', securityDeposit: 'transactions',
+  interestIncome: 'transactions', eventIncome: 'transactions', fundWiseIncome: 'transactions',
+  reimbursementAdvance: 'transactions', brs: 'transactions', incomeExpenditure: 'transactions',
+  balanceSheet: 'transactions', trialBalance: 'transactions', cashFlow: 'transactions', variance: 'transactions',
+  chequeIssue: 'transactions', chequeBook: 'transactions', signatoryAuthority: 'transactions', fdReceipt: 'transactions',
+  creditors: 'parties', debtors: 'parties',
+  vouchers: 'vouchers', paymentVoucher: 'vouchers',
+  budget: 'budgets', budgetRevision: 'budgets',
+  // assets & stores
+  assets: 'assets', fixedAssets: 'assets', investments: 'assets', depreciation: 'assets',
+  physicalVerification: 'assets', insurance: 'assets', inventory: 'inventory',
+  // programmes
+  projects: 'projects', events: 'activities', activities: 'activities', beneficiaries: 'beneficiaries',
+  // agreements & grants
+  mou: 'agreements', grantAgreement: 'agreements', propertyLease: 'agreements', loans: 'agreements',
+  procurement: 'agreements', grant: 'grants', utilisationCertificate: 'grants', fundUtilisation: 'grants',
+  // documents & compliance
   documents: 'documents', officialDocuments: 'documents', documentIndex: 'documents',
-  grant: 'grants', utilisationCertificate: 'grants',
+  inward: 'documents', outward: 'documents',
   compliance: 'compliance', complianceCalendar: 'compliance', statutoryRegistrations: 'compliance',
-  licence: 'compliance', legalCase: 'compliance', fcra: 'compliance', taxReturns: 'compliance',
+  licence: 'compliance', fcra: 'compliance', taxReturns: 'compliance', tds: 'compliance',
+  statutoryDues: 'compliance', segregationOfDuties: 'compliance', makerChecker: 'compliance',
+  accessLog: 'compliance', whistleblower: 'compliance', donorReporting: 'compliance', relatedParty: 'compliance',
+  legalCase: 'cases',
+  policy: 'policies', delegation: 'policies',
   audits: 'audits', internalAudit: 'audits', auditedStatements: 'audits', auditObservations: 'audits',
-  risk: 'risks', policy: 'policies', notifications: 'notices',
+  managementResponse: 'audits',
+  risk: 'risks', contingentLiability: 'risks',
+  notifications: 'notices',
+  // legacy-only screens
+  institutionalHistory: 'institutionalHistory',
+  membershipContributions: 'donations', donorSlips: 'donations',
+  separations: 'employees',
+  appointmentLetters: 'documents', idcards: 'documents',
+  users: 'users',
 };
 
 // Some resources need a required-ish text field derived from legacy JSON.
@@ -124,6 +160,17 @@ const TEXT_FIELD = {
   audits: ['auditor', ['auditor', 'name', 'agency']],
   grants: ['utilisationCertNo', ['utilisationCertNo', 'ucNo', 'certNo']],
   vouchers: ['voucherNo', ['voucherNo', 'number', 'no']],
+  accounts: ['name', ['name', 'accountName', 'title', 'particulars']],
+  parties: ['name', ['name', 'partyName', 'title', 'particulars']],
+  funds: ['name', ['name', 'fundName', 'title']],
+  financialYears: ['label', ['label', 'fy', 'year', 'name']],
+  cashAccounts: ['name', ['name', 'accountName', 'title']],
+  budgets: ['period', ['period', 'fy', 'year', 'name']],
+  assets: ['name', ['name', 'assetName', 'title', 'description']],
+  inventory: ['name', ['name', 'itemName', 'title']],
+  cases: ['title', ['title', 'subject', 'caseTitle', 'name']],
+  committeeMembers: ['position', ['position', 'designation', 'role', 'name']],
+  attendance: ['attStatus', ['attStatus', 'status', 'attendance']],
 };
 
 function pickText(module, data) {

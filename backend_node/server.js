@@ -101,6 +101,22 @@ async function runSeeds() {
     }
 }
 
+// Copy the entire legacy SSF Digital Office dataset into the IMS masters.
+// ADDITIVE ONLY and idempotent (each imported row is stamped in ImsRelation),
+// so this is safe to run on every boot and skips anything already migrated.
+async function runLegacyMigration() {
+    if (String(process.env.IMS_AUTO_MIGRATE || 'true').toLowerCase() === 'false') return;
+    try {
+        const { migrateLegacy } = require('./services/ims/migrateLegacy');
+        const stats = await migrateLegacy({ dryRun: false });
+        const created = Object.entries(stats.created).map(([k, v]) => `${k}:${v}`).join(', ') || 'none';
+        console.log(`✅ Legacy data migrated into IMS — created ${created}; skipped ${stats.skipped}; unmapped ${stats.unmapped.length}`);
+        if (stats.unmapped.length) console.log('⚠️ Unmapped legacy modules:', stats.unmapped.slice(0, 20).join(', '));
+    } catch (e) {
+        console.error('⚠️ Legacy migration skipped:', e.message);
+    }
+}
+
 let dbSynced = false;
 
 async function syncDatabase(attempts = 3) {
@@ -109,6 +125,7 @@ async function syncDatabase(attempts = 3) {
             await sequelize.sync();
             console.log('✅ PostgreSQL Database Synced');
             await runSeeds();
+            await runLegacyMigration();
             if (SYNC_ALTER) {
                 try {
                     await sequelize.sync({ alter: true });
