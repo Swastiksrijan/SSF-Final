@@ -44,8 +44,8 @@ export default function ImsLayout({ children, active }) {
           <Link to="/ims" className="flex items-center gap-2">
             <img src={logoImg} alt="SSF logo" className="h-10 w-10 rounded-lg bg-white p-1 object-contain" />
             <span className="leading-tight">
-              <span className="block text-sm font-bold tracking-wide">SSF-IMS</span>
-              <span className="block text-[10px] text-white/70">{t('working_name')}</span>
+              <span className="block text-sm font-bold tracking-wide">{t('app_name')}</span>
+              <span className="block text-[10px] text-white/70">{t('management_system')}</span>
             </span>
           </Link>
 

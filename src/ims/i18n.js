@@ -1,7 +1,7 @@
 // SSF-IMS bilingual dictionary (English + natural Hindi).
 // Data is language-neutral; only fixed labels/messages live here.
 export const DICT = {
-  app_name: { en: 'SSF-IMS', hi: 'एस.एस.एफ.-आई.एम.एस.' },
+  app_name: { en: 'SSF Digital Office', hi: 'एस.एस.एफ. डिजिटल ऑफिस' },
   app_full: { en: 'Swastik Srijan Foundation — Integrated Management System', hi: 'स्वस्तिक सृजन फाउंडेशन — एकीकृत प्रबंधन प्रणाली' },
   working_name: { en: 'SSF OneOffice', hi: 'एस.एस.एफ. वनऑफिस' },
   tagline: { en: 'One Organisation • One Record • Complete Accountability', hi: 'एक संस्था • एक रिकॉर्ड • पूर्ण जवाबदेही' },
@@ -307,7 +307,7 @@ export const DICT = {
   archive: { en: 'Archive', hi: 'संग्रहित करें' },
   view: { en: 'View', hi: 'देखें' },
   new_record: { en: 'New', hi: 'नया' },
-  search_placeholder: { en: 'Search…', hi: 'खोजें…' },
+  search_placeholder: { en: 'Search people, documents, transactions, meetings…', hi: 'व्यक्ति, दस्तावेज़, लेन-देन, बैठकें खोजें…' },
   related_records: { en: 'Related Records', hi: 'संबंधित अभिलेख' },
   history_tab: { en: 'History', hi: 'इतिहास' },
   person_360: { en: 'Person 360', hi: 'व्यक्ति 360' },
