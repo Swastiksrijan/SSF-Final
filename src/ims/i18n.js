@@ -183,6 +183,8 @@ export const DICT = {
   donor_slips: { en: 'Donor Slips & Receipts', hi: 'दान रसीदें' },
   separations: { en: 'Role Changes & Separation', hi: 'पद परिवर्तन व पृथक्करण' },
   download_center: { en: 'Download / Export', hi: 'डाउनलोड / निर्यात' },
+  bank_book: { en: 'Bank Book', hi: 'बैंक बही' },
+  cash_book: { en: 'Cash Book', hi: 'रोकड़ बही' },
   users: { en: 'Users', hi: 'उपयोगकर्ता' },
 
   active: { en: 'Active', hi: 'सक्रिय' },

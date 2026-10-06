@@ -60,6 +60,8 @@ export const NAV = [
       { key: 'cost_centres', icon: 'Target', path: '/ims/finance/cost-centres' },
       { key: 'bank_accounts', icon: 'Landmark', resource: 'bankAccounts' },
       { key: 'cash_accounts', icon: 'Banknote', resource: 'cashAccounts' },
+      { key: 'bank_book', icon: 'BookText', path: '/ims/bank-book', resource: 'bank' },
+      { key: 'cash_book', icon: 'BookText', path: '/ims/cash-book', resource: 'cash' },
       { key: 'parties', icon: 'Handshake', resource: 'parties' },
       { key: 'vouchers', icon: 'ReceiptText', resource: 'vouchers' },
       { key: 'budgets', icon: 'Target', resource: 'budgets' },

@@ -12,6 +12,7 @@ import {
   OfficialDocuments, AppointmentLetters, DonorSlips, SeparationManagement,
   DownloadCenter,
 } from './oldOfficeComponents';
+import { BankBook, CashBook } from './oldOfficeFinance';
 
 const token = () => localStorage.getItem('ssf_admin_token') || '';
 
@@ -89,4 +90,14 @@ export function ImsDownloadCenterLegacy(){
   const { rows } = useOfficeRows('documents');
   const setActive = (id) => { if(id) navigate({ to: '/ims/r/$resource', params: { resource: id } }).catch(()=>{}); };
   return <Shell active="download_center"><DownloadCenter active="documents" rows={rows} exportRows={exportRows} exportExcel={exportExcel} exportPdf={exportPdf} setActive={setActive} token={token()}/></Shell>;
+}
+
+export function ImsBankBookLegacy(){
+  const { rows, add, archive, updateRecord, reload } = useOfficeRows('bank');
+  return <Shell active="bank_accounts"><BankBook rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token()} reload={reload}/></Shell>;
+}
+
+export function ImsCashBookLegacy(){
+  const { rows, add, archive, updateRecord, reload } = useOfficeRows('cash');
+  return <Shell active="cash_accounts"><CashBook rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token()} reload={reload}/></Shell>;
 }

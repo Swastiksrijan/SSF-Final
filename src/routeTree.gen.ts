@@ -85,7 +85,9 @@ import { Route as ImsDownloadCenterRouteImport } from './routes/ims/download-cen
 import { Route as ImsDonorSlipsRouteImport } from './routes/ims/donor-slips'
 import { Route as ImsDataRouteImport } from './routes/ims/data'
 import { Route as ImsConstitutionRouteImport } from './routes/ims/constitution'
+import { Route as ImsCashBookRouteImport } from './routes/ims/cash-book'
 import { Route as ImsCasesRouteImport } from './routes/ims/cases'
+import { Route as ImsBankBookRouteImport } from './routes/ims/bank-book'
 import { Route as ImsAuditTrailRouteImport } from './routes/ims/audit-trail'
 import { Route as ImsAppointmentLettersRouteImport } from './routes/ims/appointment-letters'
 import { Route as ImsActivitiesRouteImport } from './routes/ims/activities'
@@ -485,9 +487,19 @@ const ImsConstitutionRoute = ImsConstitutionRouteImport.update({
   path: '/ims/constitution',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsCashBookRoute = ImsCashBookRouteImport.update({
+  id: '/ims/cash-book',
+  path: '/ims/cash-book',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsCasesRoute = ImsCasesRouteImport.update({
   id: '/ims/cases',
   path: '/ims/cases',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsBankBookRoute = ImsBankBookRouteImport.update({
+  id: '/ims/bank-book',
+  path: '/ims/bank-book',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImsAuditTrailRoute = ImsAuditTrailRouteImport.update({
@@ -631,7 +643,9 @@ export interface FileRoutesByFullPath {
   '/ims/activities': typeof ImsActivitiesRoute
   '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
+  '/ims/bank-book': typeof ImsBankBookRoute
   '/ims/cases': typeof ImsCasesRoute
+  '/ims/cash-book': typeof ImsCashBookRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/data': typeof ImsDataRoute
   '/ims/donor-slips': typeof ImsDonorSlipsRoute
@@ -725,7 +739,9 @@ export interface FileRoutesByTo {
   '/ims/activities': typeof ImsActivitiesRoute
   '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
+  '/ims/bank-book': typeof ImsBankBookRoute
   '/ims/cases': typeof ImsCasesRoute
+  '/ims/cash-book': typeof ImsCashBookRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/data': typeof ImsDataRoute
   '/ims/donor-slips': typeof ImsDonorSlipsRoute
@@ -821,7 +837,9 @@ export interface FileRoutesById {
   '/ims/activities': typeof ImsActivitiesRoute
   '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
+  '/ims/bank-book': typeof ImsBankBookRoute
   '/ims/cases': typeof ImsCasesRoute
+  '/ims/cash-book': typeof ImsCashBookRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/data': typeof ImsDataRoute
   '/ims/donor-slips': typeof ImsDonorSlipsRoute
@@ -918,7 +936,9 @@ export interface FileRouteTypes {
     | '/ims/activities'
     | '/ims/appointment-letters'
     | '/ims/audit-trail'
+    | '/ims/bank-book'
     | '/ims/cases'
+    | '/ims/cash-book'
     | '/ims/constitution'
     | '/ims/data'
     | '/ims/donor-slips'
@@ -1012,7 +1032,9 @@ export interface FileRouteTypes {
     | '/ims/activities'
     | '/ims/appointment-letters'
     | '/ims/audit-trail'
+    | '/ims/bank-book'
     | '/ims/cases'
+    | '/ims/cash-book'
     | '/ims/constitution'
     | '/ims/data'
     | '/ims/donor-slips'
@@ -1107,7 +1129,9 @@ export interface FileRouteTypes {
     | '/ims/activities'
     | '/ims/appointment-letters'
     | '/ims/audit-trail'
+    | '/ims/bank-book'
     | '/ims/cases'
+    | '/ims/cash-book'
     | '/ims/constitution'
     | '/ims/data'
     | '/ims/donor-slips'
@@ -1199,7 +1223,9 @@ export interface RootRouteChildren {
   ImsActivitiesRoute: typeof ImsActivitiesRoute
   ImsAppointmentLettersRoute: typeof ImsAppointmentLettersRoute
   ImsAuditTrailRoute: typeof ImsAuditTrailRoute
+  ImsBankBookRoute: typeof ImsBankBookRoute
   ImsCasesRoute: typeof ImsCasesRoute
+  ImsCashBookRoute: typeof ImsCashBookRoute
   ImsConstitutionRoute: typeof ImsConstitutionRoute
   ImsDataRoute: typeof ImsDataRoute
   ImsDonorSlipsRoute: typeof ImsDonorSlipsRoute
@@ -1770,11 +1796,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsConstitutionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/cash-book': {
+      id: '/ims/cash-book'
+      path: '/ims/cash-book'
+      fullPath: '/ims/cash-book'
+      preLoaderRoute: typeof ImsCashBookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/cases': {
       id: '/ims/cases'
       path: '/ims/cases'
       fullPath: '/ims/cases'
       preLoaderRoute: typeof ImsCasesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/bank-book': {
+      id: '/ims/bank-book'
+      path: '/ims/bank-book'
+      fullPath: '/ims/bank-book'
+      preLoaderRoute: typeof ImsBankBookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ims/audit-trail': {
@@ -1975,7 +2015,9 @@ const rootRouteChildren: RootRouteChildren = {
   ImsActivitiesRoute: ImsActivitiesRoute,
   ImsAppointmentLettersRoute: ImsAppointmentLettersRoute,
   ImsAuditTrailRoute: ImsAuditTrailRoute,
+  ImsBankBookRoute: ImsBankBookRoute,
   ImsCasesRoute: ImsCasesRoute,
+  ImsCashBookRoute: ImsCashBookRoute,
   ImsConstitutionRoute: ImsConstitutionRoute,
   ImsDataRoute: ImsDataRoute,
   ImsDonorSlipsRoute: ImsDonorSlipsRoute,
