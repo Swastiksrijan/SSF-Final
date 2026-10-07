@@ -19,6 +19,15 @@ app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (_req, res) => res.send('SSF NGO Backend is Running with PostgreSQL!'));
 
+// Lightweight diagnostics: confirm which mail transport the running process
+// picked up, without exposing any secret value.
+app.get('/api/health/email', (_req, res) => res.json({
+    provider: process.env.BREVO_API_KEY ? 'brevo' : ((process.env.EMAIL_USER && process.env.EMAIL_PASS) ? 'gmail' : 'none'),
+    brevoConfigured: Boolean(process.env.BREVO_API_KEY),
+    from: process.env.EMAIL_FROM || process.env.EMAIL_USER || null,
+    fromName: process.env.EMAIL_FROM_NAME || null,
+}));
+
 const memberCertificateRoutes = require('./routes/memberCertificateRoutes');
 const learningCertificateRoutes = require('./routes/learningCertificateRoutes');
 const volunteerAdminRoutes = require('./routes/volunteerAdminRoutes');
