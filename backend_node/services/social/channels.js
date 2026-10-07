@@ -150,11 +150,14 @@ async function publishInstagram(post, creds) {
   const igUserId = pick(creds, 'igUserId');
   const token = pick(creds, 'accessToken');
   if (!igUserId || !token) return missing('Instagram');
-  const publicBase = process.env.PUBLIC_BASE_URL || '';
-  if (!publicBase) return { ok: false, error: 'public_image_url_unavailable' };
+  // Instagram fetches the image itself, so it must be a public URL.
+  let img = pick(post, 'imageUrl');
+  if (img && !/^https?:\/\//i.test(img)) {
+    img = `${(process.env.PUBLIC_BASE_URL || '').replace(/\/$/, '')}${img}`;
+  }
+  if (!img) return { ok: false, error: 'public_image_url_unavailable' };
   try {
-    const img = `${publicBase.replace(/\/$/, '')}${post.imageUrl}`;
-    const container = await formCall(`${GRAPH}/${igUserId}/media`, { image_url: img, caption: post.bodyEn, access_token: token });
+    const container = await formCall(`${GRAPH}/${igUserId}/media`, { image_url: img, caption: caption(post), access_token: token });
     const created = container?.id;
     if (!created) return { ok: false, error: 'container_failed' };
     const out = await formCall(`${GRAPH}/${igUserId}/media_publish`, { creation_id: created, access_token: token });
@@ -163,22 +166,41 @@ async function publishInstagram(post, creds) {
 }
 
 // ---- LinkedIn --------------------------------------------------------------
+// Uploads the generated PNG as a LinkedIn image asset, then posts it with the
+// bilingual caption. Falls back to a text-only post if the upload fails.
 async function publishLinkedIn(post, creds) {
   const author = pick(creds, 'authorUrn');
   const token = pick(creds, 'accessToken');
   if (!author || !token) return missing('LinkedIn');
+  const headers = { Authorization: `Bearer ${token}`, 'LinkedIn-Version': '202405', 'X-Restli-Protocol-Version': '2.0.0' };
   try {
-    const out = await jsonCall('https://api.linkedin.com/rest/posts', {
-      headers: { Authorization: `Bearer ${token}`, 'LinkedIn-Version': '202405', 'X-Restli-Protocol-Version': '2.0.0' },
-      body: {
-        author,
-        commentary: post.bodyEn,
-        visibility: 'PUBLIC',
-        distribution: { feedDistribution: 'MAIN_FEED', targetEntities: [], thirdPartyDistributionChannels: [] },
-        lifecycleState: 'PUBLISHED',
-        isReshareDisabledByAuthor: false,
-      },
-    });
+    const body = {
+      author,
+      commentary: caption(post),
+      visibility: 'PUBLIC',
+      distribution: { feedDistribution: 'MAIN_FEED', targetEntities: [], thirdPartyDistributionChannels: [] },
+      lifecycleState: 'PUBLISHED',
+      isReshareDisabledByAuthor: false,
+    };
+
+    const png = safePng(post);
+    if (png) {
+      const init = await jsonCall('https://api.linkedin.com/rest/images?action=initializeUpload', {
+        headers, body: { initializeUploadRequest: { owner: author } },
+      });
+      const uploadUrl = init?.value?.uploadUrl;
+      const imageUrn = init?.value?.image;
+      if (uploadUrl && imageUrn) {
+        const up = await fetch(uploadUrl, {
+          method: 'PUT',
+          headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/octet-stream' },
+          body: png,
+        });
+        if (up.ok) body.content = { media: { id: imageUrn, title: post.titleEn || 'SSF' } };
+      }
+    }
+
+    const out = await jsonCall('https://api.linkedin.com/rest/posts', { headers, body });
     return { ok: true, url: out?.id ? `https://www.linkedin.com/feed/update/${out.id}` : null };
   } catch (e) { return { ok: false, error: e.message }; }
 }

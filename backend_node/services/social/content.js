@@ -202,7 +202,7 @@ function planPost(date, slot = 'morning', extraSeed = 0) {
     headingEn, headingHi, subtitleEn, subtitleHi,
     exampleEn, exampleHi, takeawayEn, takeawayHi, ctaEn, ctaHi,
     catLabelEn, catLabelHi,
-    dateEn, dateHi, imageUrl: `/api/social/image/daily?date=${ymd(date)}&slot=${slot}`,
+    dateEn, dateHi, imageUrl: `${(process.env.PUBLIC_BASE_URL || '').replace(/\/$/, '')}/api/social/image/daily?date=${ymd(date)}&slot=${slot}&format=png`,
   };
 }
 

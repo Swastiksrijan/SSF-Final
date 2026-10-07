@@ -42,6 +42,10 @@ services:
         sync: false
       - key: "FRONTEND_URL"
         sync: false
+      # Public base URL of THIS backend, used to build image URLs that
+      # Instagram / LinkedIn / WhatsApp can fetch (they need a reachable URL).
+      - key: "PUBLIC_BASE_URL"
+        value: "https://ngo-backend-03hq.onrender.com"
 
 # Database is now external (Neon free tier). The Render free Postgres below
 # expired after 30 days, so it is intentionally removed. DB_URL is set in the
