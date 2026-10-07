@@ -159,6 +159,18 @@ router.delete('/social/channels/:platform', requireAuth, wrap(async (req, r) => 
   r.json({ ok: true });
 }));
 
+// Send a live test message using the SAVED credentials (no publish needed).
+router.post('/social/channels/:platform/test', requireAuth, wrap(async (req, r) => {
+  const row = await SocialChannel.findOne({ where: { platform: req.params.platform } });
+  if (!row || !row.credentials || !Object.keys(row.credentials).length) {
+    return r.status(400).json({ ok: false, error: 'not_connected', message: 'Connect the channel first.' });
+  }
+  const { testChannel } = require('../services/social/channels');
+  const out = await testChannel(req.params.platform, row.credentials);
+  await row.update({ lastError: out.ok ? null : (out.error || 'test failed') });
+  r.json(out);
+}));
+
 // ---- public ----------------------------------------------------------------
 router.get('/social/posts', wrap(async (req, r) => {
   const limit = Math.min(Number(req.query.limit || 20), 50);

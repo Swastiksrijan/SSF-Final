@@ -52,16 +52,30 @@ function KpiBox({ icon, en, hi, value, tone = 'text-[#002344]' }) {
   );
 }
 
-function ChannelCard({ ch, onSave, onDisconnect, busy }) {
+function ChannelCard({ ch, onSave, onDisconnect, onTest, busy }) {
   const { lang } = useLang();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({});
   const [copied, setCopied] = useState('');
+  const [testing, setTesting] = useState(false);
+  const [testMsg, setTestMsg] = useState('');
   const required = ch.fields || [];
   const profileUrl = profileUrlFor(ch.platform);
 
   const copyProfile = async () => {
     try { await navigator.clipboard.writeText(profileUrl); setCopied('url'); setTimeout(() => setCopied(''), 1500); } catch { /* clipboard blocked */ }
+  };
+
+  const runTest = async () => {
+    setTesting(true); setTestMsg('');
+    try {
+      const out = await onTest(ch.platform);
+      setTestMsg(out && out.ok
+        ? (lang === 'hi' ? '✅ भेज दिया — अपने चैनल में देखें' : '✅ Sent — check your channel')
+        : `⚠️ ${(out && (out.error || out.hint)) || 'failed'}`);
+    } catch (e) {
+      setTestMsg(`⚠️ ${e.message}`);
+    } finally { setTesting(false); }
   };
 
   return (
@@ -114,16 +128,22 @@ function ChannelCard({ ch, onSave, onDisconnect, busy }) {
                   )}
                 </label>
               ))}
-              <div className="flex items-center gap-2 pt-1">
+              <div className="flex flex-wrap items-center gap-2 pt-1">
                 <Button disabled={busy} icon="Check" onClick={() => { onSave(ch.platform, { ...form, enabled: true }); setForm({}); setOpen(false); }}>
                   {lang === 'hi' ? 'सहेजें' : 'Save & connect'}
                 </Button>
                 {ch.configured && (
-                  <Button variant="danger" icon="Trash2" disabled={busy} onClick={() => onDisconnect(ch.platform)}>
-                    {lang === 'hi' ? 'हटाएँ' : 'Disconnect'}
-                  </Button>
+                  <>
+                    <Button variant="ghost" icon="FlaskConical" disabled={testing} onClick={runTest}>
+                      {testing ? (lang === 'hi' ? 'भेज रहे हैं…' : 'Sending…') : (lang === 'hi' ? 'टेस्ट भेजें' : 'Send test')}
+                    </Button>
+                    <Button variant="danger" icon="Trash2" disabled={busy} onClick={() => onDisconnect(ch.platform)}>
+                      {lang === 'hi' ? 'हटाएँ' : 'Disconnect'}
+                    </Button>
+                  </>
                 )}
               </div>
+              {testMsg && <div className="pt-1 text-[11px] font-semibold text-slate-600">{testMsg}</div>}
             </div>
           )}
         </div>
@@ -301,6 +321,7 @@ export default function ImsSocial() {
               {data.channels.map((ch) => (
                 <ChannelCard key={ch.platform} ch={ch} busy={busy}
                   onSave={(p, payload) => run(() => ims.socialConnect(p, payload), lang === 'hi' ? 'चैनल अपडेट' : 'Channel updated')}
+                  onTest={(p) => ims.socialTestChannel(p)}
                   onDisconnect={(p) => run(() => ims.socialDisconnect(p), lang === 'hi' ? 'डिसकनेक्ट' : 'Disconnected')} />
               ))}
             </div>

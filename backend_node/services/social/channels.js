@@ -185,4 +185,26 @@ const ADAPTERS = {
   x: publishX,
 };
 
-module.exports = { ADAPTERS };
+// Send a small "it works" message so the admin can confirm the saved credentials
+// are live without waiting for the next scheduled post. Only Telegram is wired
+// today (it needs no public image and no review); other platforms report that a
+// test is not available yet instead of failing silently.
+async function testChannel(platform, creds) {
+  if (platform === 'telegram') {
+    const token = pick(creds, 'botToken');
+    const chatId = pick(creds, 'chatId');
+    if (!token || !chatId) return missing('Telegram');
+    try {
+      const out = await jsonCall(`https://api.telegram.org/bot${token}/sendMessage`, {
+        body: {
+          chat_id: chatId,
+          text: '✅ SSF OneOffice — Telegram connected.\nAwareness posts will arrive here.\n\n✅ एसएसएफ वनऑफिस — टेलीग्राम जुड़ गया।\nजागरूकता पोस्ट यहाँ आएँगे।',
+        },
+      });
+      return { ok: true, platform, url: out?.result?.message_id ? `https://t.me/c/${chatId}/${out.result.message_id}` : null };
+    } catch (e) { return { ok: false, platform, error: e.message }; }
+  }
+  return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };
+}
+
+module.exports = { ADAPTERS, testChannel };
