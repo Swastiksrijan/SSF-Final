@@ -518,6 +518,11 @@ export const DICT = {
   income_minus_expense: { en: 'Income', hi: 'आय' },
   updated_label: { en: 'Updated', hi: 'अद्यतन' },
   live_from_transactions: { en: 'Live from central money transactions', hi: 'केंद्रीय धन लेन-देन से सीधे' },
+
+  // ---- Social Awareness Publisher ----
+  social_publisher: { en: 'Social Media', hi: 'सोशल मीडिया' },
+  grp_communications: { en: 'Communications', hi: 'संचार' },
+  awareness_publisher: { en: 'Awareness Publisher', hi: 'जागरूकता प्रकाशक' },
 };
 
 

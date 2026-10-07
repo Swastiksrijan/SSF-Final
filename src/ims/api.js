@@ -96,4 +96,22 @@ export const ims = {
     fetch(`${API_BASE_URL}/api/ims/link`, {
       method: 'POST', headers: headers(), body: JSON.stringify({ fromType, fromId, toType, toId, relation }),
     }).then(handle),
+
+  // ---- SOCIAL AWARENESS PUBLISHER ----
+  socialDashboard: () => fetch(`${API_BASE_URL}/api/social/dashboard`, { headers: headers() }).then(handle),
+  socialConfig: () => fetch(`${API_BASE_URL}/api/social/config`, { headers: headers() }).then(handle),
+  socialSaveConfig: (payload) => fetch(`${API_BASE_URL}/api/social/config`, { method: 'POST', headers: headers(), body: JSON.stringify(payload) }).then(handle),
+  socialPlan: (rebuild = false) => fetch(`${API_BASE_URL}/api/social/plan`, { method: 'POST', headers: headers(), body: JSON.stringify({ rebuild }) }).then(handle),
+  socialRun: (force = true) => fetch(`${API_BASE_URL}/api/social/run`, { method: 'POST', headers: headers(), body: JSON.stringify({ force }) }).then(handle),
+  socialPostNow: () => fetch(`${API_BASE_URL}/api/social/post-now`, { method: 'POST', headers: headers() }).then(handle),
+  socialEditPost: (id, payload) => fetch(`${API_BASE_URL}/api/social/posts/${id}`, { method: 'PATCH', headers: headers(), body: JSON.stringify(payload) }).then(handle),
+  socialPublishPost: (id) => fetch(`${API_BASE_URL}/api/social/posts/${id}/publish`, { method: 'POST', headers: headers() }).then(handle),
+  socialConnect: (platform, payload) => fetch(`${API_BASE_URL}/api/social/channels/${platform}`, { method: 'POST', headers: headers(), body: JSON.stringify(payload) }).then(handle),
+  socialDisconnect: (platform) => fetch(`${API_BASE_URL}/api/social/channels/${platform}`, { method: 'DELETE', headers: headers() }).then(handle),
+};
+
+// Public (no auth) social feed for the website News/Blog section.
+export const publicSocial = {
+  posts: (limit = 20) => fetch(`${API_BASE_URL}/api/social/posts?limit=${limit}`).then(handle),
+  imageUrl: (post) => `${API_BASE_URL}/api/social/image/daily?postId=${post.id}`,
 };

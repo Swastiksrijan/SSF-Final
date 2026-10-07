@@ -287,6 +287,9 @@ export const SECTIONS = {
         { key: 'import_export', icon: 'Database', path: '/ims/data' },
         { key: 'legacy_office', icon: 'Archive', path: '/ims/office' },
       ] },
+      { labelKey: 'grp_communications', items: [
+        { key: 'social_publisher', icon: 'Megaphone', path: '/ims/social' },
+      ] },
       { labelKey: 'grp_learning_admin', items: [
         { key: 'learning_certificates', icon: 'Award', path: '/ims/learning-certificates' },
         P('learning_admin', 'GraduationCap'),
@@ -319,6 +322,7 @@ export const SIDEBAR = [
   { key: 'main_dashboard', icon: 'LayoutDashboard', path: '/ims' },
   { key: 'global_search', icon: 'Search', path: '/ims/search' },
   { key: 'notifications', icon: 'Bell', path: '/ims/notifications' },
+  { key: 'social_publisher', icon: 'Megaphone', path: '/ims/social' },
   { key: 'organisation', icon: 'Building2', path: '/ims/sections/organisation', activeKey: 'organisation_dashboard' },
   { key: 'governance', icon: 'Scale', path: '/ims/sections/governance', activeKey: 'governance_dashboard' },
   { key: 'programmes', icon: 'Layers', path: '/ims/sections/programmes', activeKey: 'programmes_dashboard' },

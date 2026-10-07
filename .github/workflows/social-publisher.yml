@@ -1,0 +1,44 @@
+name: SSF Social Awareness Publisher
+
+# Reliable daily scheduler for awareness posts (2 per day: morning + evening IST).
+# GitHub Actions cron runs in UTC; IST = UTC + 5:30, so this fires on the hour in
+# India. The backend decides which slot is actually due and never double-posts
+# (a post flips from draft -> published once, then is skipped).
+on:
+  schedule:
+    - cron: '30 * * * *'   # every hour at :30 UTC === on the hour IST
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Publish today''s pending posts immediately (ignore scheduled time)'
+        type: boolean
+        default: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger social publisher
+        env:
+          BACKEND_URL: ${{ secrets.SOCIAL_BACKEND_URL }}
+          SCHEDULER_SECRET: ${{ secrets.SCHEDULER_SECRET }}
+          FORCE: ${{ github.event.inputs.force }}
+        run: |
+          BASE="${BACKEND_URL:-https://ngo-backend-03hq.onrender.com}"
+          FORCE_Q=""
+          if [ "$FORCE" = "true" ]; then FORCE_Q="&force=1"; fi
+          echo "Calling $BASE/api/social/cron ..."
+          code=$(curl -s -o /tmp/out.json -w "%{http_code}" \
+            --max-time 60 --retry 3 --retry-delay 10 --retry-all-errors \
+            "$BASE/api/social/cron?key=${SCHEDULER_SECRET}${FORCE_Q}")
+          echo "HTTP $code"
+          cat /tmp/out.json || true
+          # The free Render instance may be cold-starting; a warm-up then one retry.
+          if [ "$code" != "200" ]; then
+            echo "First attempt failed ($code); warming up and retrying once..."
+            curl -s -o /dev/null --max-time 90 "$BASE/" || true
+            sleep 20
+            curl -s -o /tmp/out.json -w "HTTP %{http_code}\n" \
+              --max-time 90 "$BASE/api/social/cron?key=${SCHEDULER_SECRET}${FORCE_Q}"
+            cat /tmp/out.json || true
+          fi

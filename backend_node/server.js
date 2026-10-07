@@ -37,8 +37,11 @@ const digitalOfficeRoutes = require('./routes/digitalOfficeRoutes');
 const financeRoutes = require('./routes/financeRoutes');
 const auditRoutes = require('./routes/auditRoutes');
 const imsRoutes = require('./routes/imsRoutes');
+const socialRoutes = require('./routes/socialRoutes');
 // Register SSF-IMS models so sequelize.sync creates their tables.
 require('./models/ims');
+// Register Social Publisher models (separate file, same sync pass).
+require('./models/social');
 
 app.use('/api', memberCertificateRoutes);
 app.use('/api', learningCertificateRoutes);
@@ -64,6 +67,7 @@ app.use('/api', digitalOfficeRoutes);
 app.use('/api', financeRoutes);
 app.use('/api', auditRoutes);
 app.use('/api', imsRoutes);
+app.use('/api', socialRoutes);
 
 // `alter: true` re-introspects every foreign key on every boot. On a free-tier
 // Postgres that can exceed the provider's statement/connection timeout and get
@@ -164,3 +168,20 @@ async function syncWithRecovery() {
 // database is slow or down.
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
 syncWithRecovery();
+
+// Make sure today's awareness drafts always exist. Publishing itself is driven
+// by the scheduler endpoint (GitHub Actions cron) so it works even while this
+// free instance is asleep between requests.
+setTimeout(async () => {
+    try {
+        const { planDue, runPending } = require('./services/social/publisher');
+        const created = await planDue({});
+        if (created.length) console.log(`✅ Social publisher planned ${created.length} post(s) for today`);
+        // If the instance woke up after a slot time, publish what is due.
+        const out = await runPending({});
+        if (out.published.length) console.log(`✅ Social publisher published ${out.published.length} due post(s)`);
+    } catch (e) {
+        console.error('⚠️ Social publisher startup skipped:', e.message);
+    }
+}, 15000);
+

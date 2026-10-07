@@ -1,0 +1,188 @@
+// SSF Social Publisher — channel adapters.
+// One function per platform. Each returns {platform, ok, url, error}. Missing
+// credentials are reported as {ok:false, error:'not_connected'} instead of
+// throwing, so a post can succeed on the channels that ARE connected while the
+// rest wait for tokens. Uses global fetch (Node 18+).
+//
+// Token/credential keys expected inside SocialChannel.credentials:
+//   telegram : { botToken, chatId }
+//   facebook : { pageId, accessToken }
+//   instagram: { igUserId, accessToken }
+//   linkedin : { authorUrn, accessToken }
+//   whatsapp : { phoneNumberId, accessToken, to }
+//   youtube  : { accessToken }  (upload scope) — auto publish when provided
+//   x        : { accessToken }  (X API v2 + OAuth1) — auto publish when provided
+
+const GRAPH = 'https://graph.facebook.com/v21.0';
+
+async function jsonCall(url, { method = 'POST', headers = {}, body } = {}) {
+  const res = await fetch(url, {
+    method,
+    headers: { 'Content-Type': 'application/json', ...headers },
+    body: body ? JSON.stringify(body) : undefined,
+  });
+  let data = null;
+  try { data = await res.json(); } catch { /* non-JSON */ }
+  if (!res.ok) {
+    const msg = (data && (data.error?.message || data.error_description || data.message)) || `HTTP ${res.status}`;
+    const err = new Error(msg);
+    err.status = res.status;
+    throw err;
+  }
+  return data || {};
+}
+
+async function formCall(url, form) {
+  const params = new URLSearchParams(form);
+  const res = await fetch(url, { method: 'POST', body: params });
+  let data = null;
+  try { data = await res.json(); } catch { /* ignore */ }
+  if (!res.ok) {
+    const msg = (data && (data.description || data.error?.message || data.error_description)) || `HTTP ${res.status}`;
+    const err = new Error(msg); err.status = res.status; throw err;
+  }
+  return data || {};
+}
+
+const pick = (o, k) => (o && o[k]) || '';
+const missing = (name) => ({ ok: false, error: 'not_connected', hint: `${name} credentials missing` });
+
+// ---- website (always available) -------------------------------------------
+async function publishWebsite(post) {
+  // The website "blog" is rendered from the SocialPost table itself, so this is
+  // always considered connected. The admin screen lists these as site posts.
+  return { ok: true, url: `https://swastiksrijan.in/Blog#social-${post.postDate}-${post.slot}` };
+}
+
+// ---- Telegram --------------------------------------------------------------
+async function publishTelegram(post, creds) {
+  const token = pick(creds, 'botToken');
+  const chatId = pick(creds, 'chatId');
+  if (!token || !chatId) return missing('Telegram');
+  const text = `${post.bodyEn}\n\n————\n${post.bodyHi}`;
+  // Try a photo post when a public image URL exists, else plain text.
+  const publicBase = process.env.PUBLIC_BASE_URL || '';
+  try {
+    if (publicBase) {
+      const photo = `${publicBase.replace(/\/$/, '')}${post.imageUrl}`;
+      const out = await jsonCall(`https://api.telegram.org/bot${token}/sendPhoto`, {
+        body: { chat_id: chatId, photo, caption: text.slice(0, 1024) },
+      });
+      return { ok: true, url: out?.result?.message_id ? `https://t.me/c/${chatId}/${out.result.message_id}` : null };
+    }
+    const out = await jsonCall(`https://api.telegram.org/bot${token}/sendMessage`, {
+      body: { chat_id: chatId, text, disable_web_page_preview: false },
+    });
+    return { ok: true, url: out?.result?.message_id ? `https://t.me/c/${chatId}/${out.result.message_id}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+// ---- Facebook Page ---------------------------------------------------------
+async function publishFacebook(post, creds) {
+  const pageId = pick(creds, 'pageId');
+  const token = pick(creds, 'accessToken');
+  if (!pageId || !token) return missing('Facebook');
+  const publicBase = process.env.PUBLIC_BASE_URL || '';
+  try {
+    if (publicBase) {
+      const out = await formCall(`${GRAPH}/${pageId}/photos`, {
+        url: `${publicBase.replace(/\/$/, '')}${post.imageUrl}`,
+        message: post.bodyEn,
+        caption: post.bodyEn,
+        access_token: token,
+      });
+      const id = out?.post_id || out?.id;
+      return { ok: true, url: id ? `https://facebook.com/${pageId}/posts/${String(id).split('_').pop()}` : null };
+    }
+    const out = await formCall(`${GRAPH}/${pageId}/feed`, { message: post.bodyEn, access_token: token });
+    return { ok: true, url: out?.id ? `https://facebook.com/${out.id}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+// ---- Instagram (Business) --------------------------------------------------
+async function publishInstagram(post, creds) {
+  const igUserId = pick(creds, 'igUserId');
+  const token = pick(creds, 'accessToken');
+  if (!igUserId || !token) return missing('Instagram');
+  const publicBase = process.env.PUBLIC_BASE_URL || '';
+  if (!publicBase) return { ok: false, error: 'public_image_url_unavailable' };
+  try {
+    const img = `${publicBase.replace(/\/$/, '')}${post.imageUrl}`;
+    const container = await formCall(`${GRAPH}/${igUserId}/media`, { image_url: img, caption: post.bodyEn, access_token: token });
+    const created = container?.id;
+    if (!created) return { ok: false, error: 'container_failed' };
+    const out = await formCall(`${GRAPH}/${igUserId}/media_publish`, { creation_id: created, access_token: token });
+    return { ok: true, url: out?.id ? `https://instagram.com/p/${out.id}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+// ---- LinkedIn --------------------------------------------------------------
+async function publishLinkedIn(post, creds) {
+  const author = pick(creds, 'authorUrn');
+  const token = pick(creds, 'accessToken');
+  if (!author || !token) return missing('LinkedIn');
+  try {
+    const out = await jsonCall('https://api.linkedin.com/rest/posts', {
+      headers: { Authorization: `Bearer ${token}`, 'LinkedIn-Version': '202405', 'X-Restli-Protocol-Version': '2.0.0' },
+      body: {
+        author,
+        commentary: post.bodyEn,
+        visibility: 'PUBLIC',
+        distribution: { feedDistribution: 'MAIN_FEED', targetEntities: [], thirdPartyDistributionChannels: [] },
+        lifecycleState: 'PUBLISHED',
+        isReshareDisabledByAuthor: false,
+      },
+    });
+    return { ok: true, url: out?.id ? `https://www.linkedin.com/feed/update/${out.id}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+// ---- WhatsApp Cloud API ----------------------------------------------------
+async function publishWhatsApp(post, creds) {
+  const phoneNumberId = pick(creds, 'phoneNumberId');
+  const token = pick(creds, 'accessToken');
+  const to = pick(creds, 'to');
+  if (!phoneNumberId || !token || !to) return missing('WhatsApp');
+  try {
+    const out = await jsonCall(`${GRAPH}/${phoneNumberId}/messages`, {
+      headers: { Authorization: `Bearer ${token}` },
+      body: { messaging_product: 'whatsapp', to, type: 'text', text: { body: post.bodyEn } },
+    });
+    return { ok: true, url: out?.messages?.[0]?.id ? `wa://${to}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+// ---- YouTube (Community post via Data API is limited) ----------------------
+async function publishYouTube(post, creds) {
+  const token = pick(creds, 'accessToken');
+  if (!token) return missing('YouTube');
+  // Community posts are not exposed by the public YouTube Data API; keep this a
+  // clearly-reported no-op rather than a silent success.
+  return { ok: false, error: 'youtube_community_api_unavailable', hint: 'Post manually; connect a video workflow to enable.' };
+}
+
+// ---- X (Twitter) -----------------------------------------------------------
+async function publishX(post, creds) {
+  const token = pick(creds, 'accessToken');
+  if (!token) return missing('X');
+  try {
+    const out = await jsonCall('https://api.twitter.com/2/tweets', {
+      headers: { Authorization: `Bearer ${token}` },
+      body: { text: post.bodyEn.slice(0, 280) },
+    });
+    return { ok: true, url: out?.data?.id ? `https://x.com/i/web/status/${out.data.id}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+const ADAPTERS = {
+  website: publishWebsite,
+  telegram: publishTelegram,
+  facebook: publishFacebook,
+  instagram: publishInstagram,
+  linkedin: publishLinkedIn,
+  whatsapp: publishWhatsApp,
+  youtube: publishYouTube,
+  x: publishX,
+};
+
+module.exports = { ADAPTERS };

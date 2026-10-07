@@ -63,6 +63,7 @@ import { Route as LearningHubIndexRouteImport } from './routes/LearningHub/index
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as VerifyCertIdRouteImport } from './routes/verify.$certId'
 import { Route as ImsUsersRouteImport } from './routes/ims/users'
+import { Route as ImsSocialRouteImport } from './routes/ims/social'
 import { Route as ImsSeparationsRouteImport } from './routes/ims/separations'
 import { Route as ImsSearchRouteImport } from './routes/ims/search'
 import { Route as ImsReportsRouteImport } from './routes/ims/reports'
@@ -379,6 +380,11 @@ const ImsUsersRoute = ImsUsersRouteImport.update({
   path: '/ims/users',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsSocialRoute = ImsSocialRouteImport.update({
+  id: '/ims/social',
+  path: '/ims/social',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsSeparationsRoute = ImsSeparationsRouteImport.update({
   id: '/ims/separations',
   path: '/ims/separations',
@@ -688,6 +694,7 @@ export interface FileRoutesByFullPath {
   '/ims/reports': typeof ImsReportsRoute
   '/ims/search': typeof ImsSearchRoute
   '/ims/separations': typeof ImsSeparationsRoute
+  '/ims/social': typeof ImsSocialRoute
   '/ims/users': typeof ImsUsersRoute
   '/verify/$certId': typeof VerifyCertIdRoute
   '/verify/$code': typeof VerifyCodeRoute
@@ -787,6 +794,7 @@ export interface FileRoutesByTo {
   '/ims/reports': typeof ImsReportsRoute
   '/ims/search': typeof ImsSearchRoute
   '/ims/separations': typeof ImsSeparationsRoute
+  '/ims/social': typeof ImsSocialRoute
   '/ims/users': typeof ImsUsersRoute
   '/verify/$certId': typeof VerifyCertIdRoute
   '/verify/$code': typeof VerifyCodeRoute
@@ -888,6 +896,7 @@ export interface FileRoutesById {
   '/ims/reports': typeof ImsReportsRoute
   '/ims/search': typeof ImsSearchRoute
   '/ims/separations': typeof ImsSeparationsRoute
+  '/ims/social': typeof ImsSocialRoute
   '/ims/users': typeof ImsUsersRoute
   '/verify/$certId': typeof VerifyCertIdRoute
   '/verify/$code': typeof VerifyCodeRoute
@@ -990,6 +999,7 @@ export interface FileRouteTypes {
     | '/ims/reports'
     | '/ims/search'
     | '/ims/separations'
+    | '/ims/social'
     | '/ims/users'
     | '/verify/$certId'
     | '/verify/$code'
@@ -1089,6 +1099,7 @@ export interface FileRouteTypes {
     | '/ims/reports'
     | '/ims/search'
     | '/ims/separations'
+    | '/ims/social'
     | '/ims/users'
     | '/verify/$certId'
     | '/verify/$code'
@@ -1189,6 +1200,7 @@ export interface FileRouteTypes {
     | '/ims/reports'
     | '/ims/search'
     | '/ims/separations'
+    | '/ims/social'
     | '/ims/users'
     | '/verify/$certId'
     | '/verify/$code'
@@ -1286,6 +1298,7 @@ export interface RootRouteChildren {
   ImsReportsRoute: typeof ImsReportsRoute
   ImsSearchRoute: typeof ImsSearchRoute
   ImsSeparationsRoute: typeof ImsSeparationsRoute
+  ImsSocialRoute: typeof ImsSocialRoute
   ImsUsersRoute: typeof ImsUsersRoute
   VerifyCertIdRoute: typeof VerifyCertIdRoute
   VerifyCodeRoute: typeof VerifyCodeRoute
@@ -1679,6 +1692,13 @@ declare module '@tanstack/react-router' {
       path: '/ims/users'
       fullPath: '/ims/users'
       preLoaderRoute: typeof ImsUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/social': {
+      id: '/ims/social'
+      path: '/ims/social'
+      fullPath: '/ims/social'
+      preLoaderRoute: typeof ImsSocialRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ims/separations': {
@@ -2102,6 +2122,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsReportsRoute: ImsReportsRoute,
   ImsSearchRoute: ImsSearchRoute,
   ImsSeparationsRoute: ImsSeparationsRoute,
+  ImsSocialRoute: ImsSocialRoute,
   ImsUsersRoute: ImsUsersRoute,
   VerifyCertIdRoute: VerifyCertIdRoute,
   VerifyCodeRoute: VerifyCodeRoute,
