@@ -4,7 +4,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 
@@ -18,9 +18,9 @@ const uploadMemberFiles = multer({ storage, fileFilter: (req, file, cb) => file.
 const uploadProfilePhoto = multer({ storage, fileFilter: profilePhotoOnly, limits: { fileSize: 5 * 1024 * 1024, files: 1 } });
 const hashPassword = (password) => { const salt = crypto.randomBytes(16).toString('hex'); const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex'); return `${salt}:${hash}`; };
 const sendAdminNotification = async (subject, text) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
+    if (!emailConfigured()) return;
     const recipients = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'swastiksrijanfoundation@gmail.com').split(',').map((email) => email.trim()).filter(Boolean).join(',');
-    try { const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } }); await transporter.sendMail({ from: `"Swastik Srijan Admin" <${process.env.EMAIL_USER}>`, to: recipients, subject, text }); }
+    try { await sendMail({ from: '"Swastik Srijan Admin"', to: recipients, subject, text }); }
     catch (error) { console.error('⚠️ Admin notification failed:', error.message); }
 };
 const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';

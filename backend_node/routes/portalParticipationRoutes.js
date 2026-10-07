@@ -1,6 +1,6 @@
 const express = require('express');
 const { Op } = require('sequelize');
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 
@@ -8,10 +8,9 @@ const router = express.Router();
 const cleanEmail = (value) => String(value || '').trim().toLowerCase();
 const cleanPhone = (value) => String(value || '').replace(/\s+/g, ' ').trim();
 const notifyAdmin = async (subject, text) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return false;
+  if (!emailConfigured()) return false;
   try {
-    const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
-    await transporter.sendMail({ from: `\"Swastik Srijan Admin\" <${process.env.EMAIL_USER}>`, to: (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.in'), subject, text });
+    await sendMail({ from: '"Swastik Srijan Admin"', to: (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.in'), subject, text });
     return true;
   } catch (error) {
     console.error('Portal participation notification failed:', error.message);

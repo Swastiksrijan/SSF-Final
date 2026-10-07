@@ -1,6 +1,6 @@
 const express = require('express');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const Member = require('../models/Member');
 
 const router = express.Router();
@@ -8,13 +8,10 @@ const FRONTEND_URL = (process.env.FRONTEND_URL || process.env.FRONTEND_PUBLIC_UR
 const emailRecipients = () => String(process.env.EMAIL_USER || '').trim();
 
 const sendResetEmail = async (member, resetToken) => {
-    const user = emailRecipients();
-    const pass = String(process.env.EMAIL_PASS || '').trim();
-    if (!user || !pass) throw new Error('EMAIL_USER/EMAIL_PASS is not configured on the backend');
-    const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user, pass } });
+    if (!emailConfigured()) throw new Error('EMAIL_USER/EMAIL_PASS is not configured on the backend');
     const link = `${FRONTEND_URL}/reset-password?token=${encodeURIComponent(resetToken)}`;
-    await transporter.sendMail({
-        from: `"Swastik Srijan Foundation" <${user}>`,
+    await sendMail({
+        from: '"Swastik Srijan Foundation"',
         to: member.email,
         subject: 'Reset your SSF account password',
         text: `Hello ${member.fullName},\n\nUse this link to reset your SSF account password:\n${link}\n\nThis link expires in 30 minutes. If you did not request this, you can ignore this email.`,

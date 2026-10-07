@@ -3,7 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const crypto = require('crypto');
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const { Op } = require('sequelize');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
@@ -47,10 +47,9 @@ const multipart = (fields) => (req, res, next) => {
 
 const adminRecipients = () => (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.in').split(',').map(v => v.trim()).filter(Boolean).join(',');
 const notifyAdmin = async (subject, text) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) { console.warn('⚠️ EMAIL_USER/EMAIL_PASS missing; application was saved without email notification.'); return false; }
+  if (!emailConfigured()) { console.warn('⚠️ Email credentials missing; application was saved without email notification.'); return false; }
   try {
-    const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
-    await transporter.sendMail({ from: `\"Swastik Srijan Admin\" <${process.env.EMAIL_USER}>`, to: adminRecipients(), subject, text });
+    await sendMail({ from: '"Swastik Srijan Admin"', to: adminRecipients(), subject, text });
     return true;
   } catch (error) { console.error('⚠️ Application notification failed:', error.message); return false; }
 };

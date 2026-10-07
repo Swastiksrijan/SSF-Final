@@ -7,8 +7,10 @@ const sequelize = require('./config/database');
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
-    console.warn('⚠️ WARNING: EMAIL_USER or EMAIL_PASS missing in .env. Automated emails will not work.');
+const { emailConfigured } = require('./services/mailer');
+
+if (!emailConfigured()) {
+    console.warn('⚠️ WARNING: no BREVO_API_KEY and no EMAIL_USER/EMAIL_PASS in .env. Automated emails will not work.');
 }
 
 app.use(cors());

@@ -1,5 +1,5 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const crypto = require('crypto');
 const path = require('path');
 const fs = require('fs');
@@ -11,7 +11,7 @@ const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowe
 const isRealMembership = (member) => !isAccountOnly(member) && REAL_MEMBERSHIP_TYPES.includes(String(member?.memberType || '').trim().toLowerCase());
 const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
 const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.authorization || ''; const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : ''; if (!token || token !== getAdminToken()) return res.status(401).json({ message: 'Unauthorized admin access' }); next(); };
-const sendEmail = async (to, subject, text, html) => { if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) throw new Error('Email credentials missing in .env file'); const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } }); await transporter.sendMail({ from: `"Swastik Srijan Admin" <${process.env.EMAIL_USER}>`, to, subject, text, html }); };
+const sendEmail = async (to, subject, text, html) => { if (!emailConfigured()) throw new Error('Email credentials missing in .env file'); await sendMail({ from: '"Swastik Srijan Admin"', to, subject, text, html }); };
 const getMemberNumber = async () => (await Member.count({ where: { status: 'approved', memberType: REAL_MEMBERSHIP_TYPES } })) + 1;
 const getMonthYearCode = (date = new Date()) => { const month = String(date.getMonth() + 1).padStart(2, '0'); const year = String(date.getFullYear()).slice(-2); return `${month}${year}`; };
 const membershipAmounts = { general: 1200, active: 2500, life: 8000 };

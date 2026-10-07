@@ -1,5 +1,5 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const path = require('path');
 const fs = require('fs');
 const router = express.Router();
@@ -14,9 +14,8 @@ const requireAdminAuth = (req, res, next) => {
 };
 
 const sendEmail = async (to, subject, text, html) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) throw new Error('Email credentials missing');
-    const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
-    await transporter.sendMail({ from: `"Swastik Srijan Admin" <${process.env.EMAIL_USER}>`, to, subject, text, html });
+    if (!emailConfigured()) throw new Error('Email credentials missing');
+    await sendMail({ from: '"Swastik Srijan Admin"', to, subject, text, html });
 };
 
 const removeUploadedFile = (storedPath) => {

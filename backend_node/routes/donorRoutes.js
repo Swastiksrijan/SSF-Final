@@ -1,15 +1,14 @@
 const express = require('express');
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const router = express.Router();
 const Donor = require('../models/Donor');
 
 const getDonorNumber = async () => (await Donor.count()) + 1;
 
 const sendAdminEmail = async (donor) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
-    const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
-    await transporter.sendMail({
-        from: `"Swastik Srijan Website" <${process.env.EMAIL_USER}>`,
+    if (!emailConfigured()) return;
+    await sendMail({
+        from: '"Swastik Srijan Website"',
         to: process.env.EMAIL_USER,
         subject: `New Donor Registration - ${donor.donorId}`,
         text: `New donor registered.\nDonor ID: ${donor.donorId}\nName: ${donor.fullName}\nEmail: ${donor.email}\nPhone: ${donor.phone}\nAmount: ${donor.amount || 'Not specified'}\nPurpose: ${donor.donationPurpose || 'General donation'}`

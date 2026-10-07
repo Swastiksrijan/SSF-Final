@@ -1,24 +1,22 @@
 const express = require('express');
 const router = express.Router();
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const Interest = require('../models/Interest');
 const Member = require('../models/Member');
 const Volunteer = require('../models/Volunteer');
 
 const sendAdminNotification = async (subject, text) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
+    if (!emailConfigured()) return;
     const recipients = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'swastiksrijanfoundation@gmail.com').split(',').map((email) => email.trim()).filter(Boolean).join(',');
     try {
-        const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
-        await transporter.sendMail({ from: `"Swastik Srijan Admin" <${process.env.EMAIL_USER}>`, to: recipients, subject, text });
+        await sendMail({ from: '"Swastik Srijan Admin"', to: recipients, subject, text });
     } catch (error) { console.error('⚠️ Interest notification failed:', error.message); }
 };
 
 const sendApplicantEmail = async (to, subject, text) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !to) return;
+    if (!emailConfigured() || !to) return;
     try {
-        const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } });
-        await transporter.sendMail({ from: `"Swastik Srijan Foundation" <${process.env.EMAIL_USER}>`, to, subject, text });
+        await sendMail({ from: '"Swastik Srijan Foundation"', to, subject, text });
     } catch (error) { console.error('⚠️ Applicant notification failed:', error.message); }
 };
 

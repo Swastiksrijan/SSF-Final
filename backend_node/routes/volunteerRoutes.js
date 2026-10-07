@@ -3,7 +3,7 @@ const router = express.Router();
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const crypto = require('crypto');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
@@ -26,20 +26,12 @@ const upload = multer({
 
 // --- 2. Shared Helpers ---
 const sendEmail = async (to, subject, text, html) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
+    if (!emailConfigured()) {
         throw new Error('Email credentials missing in .env file');
     }
 
-    const transporter = nodemailer.createTransport({
-        service: 'gmail',
-        auth: {
-            user: process.env.EMAIL_USER,
-            pass: process.env.EMAIL_PASS
-        }
-    });
-
-    await transporter.sendMail({
-        from: `"Swastik Srijan Admin" <${process.env.EMAIL_USER}>`,
+    await sendMail({
+        from: '"Swastik Srijan Admin"',
         to,
         subject,
         text,

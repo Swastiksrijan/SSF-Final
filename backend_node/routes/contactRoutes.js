@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const nodemailer = require('nodemailer');
+const { sendMail, emailConfigured } = require('../services/mailer');
 const ContactMessage = require('../models/ContactMessage');
 
 const sendAdminNotification = async (subject, text) => {
-    if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) return;
+    if (!emailConfigured()) return;
     const recipients = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'swastiksrijanfoundation@gmail.com').split(',').map((email) => email.trim()).filter(Boolean).join(',');
-    try { const transporter = nodemailer.createTransport({ service: 'gmail', auth: { user: process.env.EMAIL_USER, pass: process.env.EMAIL_PASS } }); await transporter.sendMail({ from: `"Swastik Srijan Contact" <${process.env.EMAIL_USER}>`, to: recipients, replyTo: undefined, subject, text }); }
+    try { await sendMail({ from: '"Swastik Srijan Contact"', to: recipients, subject, text }); }
     catch (error) { console.error('⚠️ Contact notification failed:', error.message); }
 };
 const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.authorization || ''; const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : ''; const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token'; if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized admin access' }); next(); };

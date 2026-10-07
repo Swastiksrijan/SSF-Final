@@ -32,6 +32,14 @@ services:
         sync: false
       - key: "EMAIL_PASS"
         sync: false
+      # Brevo HTTPS API key (xkeysib-...). When set, all automated emails are
+      # sent via Brevo instead of Gmail SMTP (which Render's free tier blocks).
+      - key: "BREVO_API_KEY"
+        sync: false
+      - key: "EMAIL_FROM"
+        sync: false
+      - key: "EMAIL_FROM_NAME"
+        sync: false
       - key: "FRONTEND_URL"
         sync: false
 

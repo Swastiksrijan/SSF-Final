@@ -12,6 +12,7 @@ const Volunteer = require('../models/Volunteer');
 const Donor = require('../models/Donor');
 const InternshipApplication = require('../models/InternshipApplication');
 const FinanceTransaction = require('../models/FinanceTransaction');
+const { sendMail, emailConfigured } = require('../services/mailer');
 
 const router = express.Router();
 const GOOGLE_FRONTEND_URL = String(process.env.GOOGLE_FRONTEND_URL || 'https://swastiksrijan.in/SSFDigitalOffice').trim();
@@ -262,12 +263,10 @@ router.post('/digital-office/google/create-meeting', requireOfficeAuth, async (r
     }
     let emailed=0;
     const emailErrors=[];
-    if(emails.length && process.env.EMAIL_USER && process.env.EMAIL_PASS){
-      const nodemailer=require('nodemailer');
-      const transporter=nodemailer.createTransport({host:process.env.EMAIL_HOST||'smtp.gmail.com',port:Number(process.env.EMAIL_PORT||465),secure:String(process.env.EMAIL_SECURE||'true')==='true',auth:{user:process.env.EMAIL_USER,pass:process.env.EMAIL_PASS}});
+    if(emails.length && emailConfigured()){
       for(const to of emails){
         try{
-          await transporter.sendMail({from:process.env.EMAIL_FROM||process.env.EMAIL_USER,to,subject:'SSF Online Meeting: '+title,text:'Swastik Srijan Foundation Samiti\
+          await sendMail({from:process.env.EMAIL_FROM||process.env.EMAIL_USER,to,subject:'SSF Online Meeting: '+title,text:'Swastik Srijan Foundation Samiti\
 \
 Online Meeting: '+title+'\
 Date: '+date+'\
@@ -281,7 +280,7 @@ Please join using the link above.'});
         }catch(e){emailErrors.push(to);}
       }
     }
-    return res.status(201).json({meetingLink,meetingName:space.name,addedMembers,emailed,emailErrors,emailConfigured:Boolean(process.env.EMAIL_USER&&process.env.EMAIL_PASS)});
+    return res.status(201).json({meetingLink,meetingName:space.name,addedMembers,emailed,emailErrors,emailConfigured:emailConfigured()});
   } catch(e) {
     console.error(e);
     return res.status(500).json({message:e.message||'Unable to create Google Meet.'});
@@ -302,12 +301,10 @@ router.post('/digital-office/online-meeting', requireOfficeAuth, async (req,res)
     const meetingLink='https://meet.jit.si/'+room;
     let emailed=0;
     const emailErrors=[];
-    if(emails.length && process.env.EMAIL_USER && process.env.EMAIL_PASS){
-      const nodemailer=require('nodemailer');
-      const transporter=nodemailer.createTransport({host:process.env.EMAIL_HOST||'smtp.gmail.com',port:Number(process.env.EMAIL_PORT||465),secure:String(process.env.EMAIL_SECURE||'true')==='true',auth:{user:process.env.EMAIL_USER,pass:process.env.EMAIL_PASS}});
+    if(emails.length && emailConfigured()){
       for(const to of emails){
         try{
-          await transporter.sendMail({
+          await sendMail({
             from:process.env.EMAIL_FROM||process.env.EMAIL_USER,
             to,
             subject:'SSF Online Meeting: '+title,
@@ -326,7 +323,7 @@ Please join using the link above.'
         }catch(e){emailErrors.push(to);}
       }
     }
-    return res.status(201).json({meetingLink,room,emailed,emailErrors,emailConfigured:Boolean(process.env.EMAIL_USER&&process.env.EMAIL_PASS)});
+    return res.status(201).json({meetingLink,room,emailed,emailErrors,emailConfigured:emailConfigured()});
   } catch(e) {
     console.error(e);
     return res.status(500).json({message:e.message||'Unable to create online meeting.'});
