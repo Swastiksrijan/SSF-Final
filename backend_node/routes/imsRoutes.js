@@ -13,6 +13,7 @@ const { seedOrgProfile } = require('../services/ims/orgProfileSeed');
 const { seedOfficeHistory } = require('../services/ims/officeHistorySeed');
 const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { universalSearch, meta: searchMeta } = require('../services/ims/search');
+const { volunteerDashboard } = require('../services/ims/volunteerNetwork');
 const { ROLES, DEFAULT_GRANTS } = require('../services/ims/rbac');
 
 // Auth: reuse the office bearer token so the existing admin session works.
@@ -33,6 +34,8 @@ const wrap = (fn) => (req, r) => fn(req, r).catch(e => {
 // ---- dashboards ------------------------------------------------------------
 router.get('/ims/main-dashboard', wrap(async (_req, r) => r.json(await mainDashboard())));
 router.get('/ims/module-dashboard/:module', wrap(async (req, r) => r.json(await moduleDashboard(req.params.module))));
+// Pan-India volunteer network: chapters, leadership ladder, tasks and funds.
+router.get('/ims/volunteer-network', wrap(async (_req, r) => r.json(await volunteerDashboard())));
 router.get('/ims/roles', (_req, r) => r.json({ roles: ROLES, grants: DEFAULT_GRANTS }));
 
 // ---- seed ------------------------------------------------------------------

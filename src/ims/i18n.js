@@ -521,6 +521,10 @@ export const DICT = {
 
   // ---- Social Awareness Publisher ----
   social_publisher: { en: 'Social Media', hi: 'सोशल मीडिया' },
+  volunteer_network: { en: 'Volunteer Network', hi: 'स्वयंसेवक नेटवर्क' },
+  volunteer_tasks: { en: 'Volunteer Tasks', hi: 'स्वयंसेवक कार्य' },
+  volunteer_funds: { en: 'Volunteer Funds', hi: 'स्वयंसेवक निधि' },
+  chapterMembers: { en: 'Chapter Members', hi: 'अध्याय सदस्य' },
   grp_communications: { en: 'Communications', hi: 'संचार' },
   awareness_publisher: { en: 'Awareness Publisher', hi: 'जागरूकता प्रकाशक' },
 };

@@ -6,7 +6,7 @@
 
 const { Op } = require('sequelize');
 const { SocialChannel, SocialPost, SocialConfig } = require('../../models/social');
-const { planPost } = require('./content');
+const { planPost, splitPlan } = require('./content');
 const { ADAPTERS } = require('./channels');
 
 const DEFAULT_PLATFORMS = ['website', 'facebook', 'instagram', 'telegram', 'linkedin', 'whatsapp', 'x', 'youtube'];
@@ -49,16 +49,17 @@ async function planDue({ date = new Date(), rebuild = false } = {}) {
     const existing = await SocialPost.findOne({ where: { postDate, slot } });
     if (existing && !rebuild) continue;
     const plan = planPost(day, slot);
+    const { row, extra } = splitPlan(plan);
     seq += 1;
     if (existing && rebuild) {
-      await existing.update({ ...plan, status: 'draft', platformResults: [] });
+      await existing.update({ ...row, data: { ...(existing.data || {}), ...extra }, status: 'draft', platformResults: [] });
       created.push(existing);
     } else {
-      const row = await SocialPost.create({
-        ...plan, postRef: nextRef(seq), status: 'draft', scheduledFor: new Date(),
+      const row2 = await SocialPost.create({
+        ...row, data: extra, postRef: nextRef(seq), status: 'draft', scheduledFor: new Date(),
         createdBy: 'scheduler', createdByName: 'Social Scheduler',
       });
-      created.push(row);
+      created.push(row2);
     }
   }
   await setConfig('post_seq', seq);
@@ -70,10 +71,11 @@ async function planExtra({ date = new Date(), seed = Math.floor(Math.random() * 
   const { y, m, d } = istDateParts(date);
   const day = new Date(y, m - 1, d);
   const plan = planPost(day, 'extra', seed % 14);
+  const { row, extra } = splitPlan(plan);
   const seq = Number((await getConfig('post_seq', 0)) || 0) + 1;
   await setConfig('post_seq', seq);
   const postDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-  return SocialPost.create({ ...plan, postDate, status: 'draft', scheduledFor: new Date(), createdBy: 'manual', createdByName: 'Admin' });
+  return SocialPost.create({ ...row, data: extra, postDate, status: 'draft', scheduledFor: new Date(), createdBy: 'manual', createdByName: 'Admin' });
 }
 
 async function enabledPlatforms() {

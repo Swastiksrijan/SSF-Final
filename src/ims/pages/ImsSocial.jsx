@@ -8,6 +8,7 @@ import ImsLayout from '../ImsLayout';
 import { Card, SectionHero, Button, Badge, Spinner, Toggle } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
+import { makeReel, speakPost, downloadBlob } from '../reelMaker';
 
 const FIELD_LABELS = {
   pageId: { en: 'Page ID', hi: 'पेज ID' },
@@ -115,8 +116,22 @@ function PostCard({ post, onPublish, onEdit, busy }) {
   const { lang } = useLang();
   const [editing, setEditing] = useState(false);
   const [body, setBody] = useState(lang === 'hi' ? post.bodyHi : post.bodyEn);
+  const [reelBusy, setReelBusy] = useState(false);
+  const [reelPct, setReelPct] = useState(0);
   const img = `${import.meta.env.VITE_BACKEND_URL || ''}/api/social/image/daily?postId=${post.id}`;
   const imgSrc = img.startsWith('/') ? `${(import.meta.env.VITE_BACKEND_URL || '').replace(/\/$/, '')}${img}` : img;
+
+  const genReel = async () => {
+    setReelBusy(true); setReelPct(0);
+    try {
+      const blob = await makeReel(post, lang, { seconds: 18, onProgress: setReelPct });
+      downloadBlob(blob, `ssf-reel-${post.postRef || post.id}.webm`);
+    } catch (e) {
+      alert(e.message);
+    } finally {
+      setReelBusy(false); setReelPct(0);
+    }
+  };
 
   return (
     <Card className="overflow-hidden">
@@ -148,6 +163,12 @@ function PostCard({ post, onPublish, onEdit, busy }) {
             ) : (
               <Button variant="ghost" icon="Pencil" onClick={() => setEditing(true)}>{lang === 'hi' ? 'संपादित करें' : 'Edit'}</Button>
             )}
+            <Button variant="ghost" icon="Video" disabled={reelBusy} onClick={genReel}>
+              {reelBusy ? `${Math.round(reelPct * 100)}%` : (lang === 'hi' ? 'रील बनाएँ' : 'Make reel')}
+            </Button>
+            <Button variant="ghost" icon="Volume2" disabled={reelBusy} onClick={() => speakPost(post, lang)}>
+              {lang === 'hi' ? 'सुनें (हिंदी)' : 'Listen'}
+            </Button>
           </div>
           {post.results && post.results.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">

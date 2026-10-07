@@ -576,6 +576,77 @@ const ImsVolunteer = sequelize.define('ImsVolunteer', {
   joinDate: DataTypes.DATEONLY,
 }, S);
 
+// ---- 12b. Volunteer chapters, leadership ladder, tasks & funds -------------
+// A Pan-India structure: Chapter (state/district/block) -> leadership role ->
+// member -> task. Fund/donation records link money to activity and chapter, so
+// "kaam dikhe to interest bane, paisa aaye to kaam dikhe".
+const ImsChapter = sequelize.define('ImsChapter', {
+  ...idCols,
+  name: DataTypes.STRING,
+  nameHi: DataTypes.STRING,
+  level: DataTypes.STRING, // state / district / block
+  parentId: DataTypes.INTEGER,
+  state: DataTypes.STRING,
+  district: DataTypes.STRING,
+  block: DataTypes.STRING,
+  coordinatorId: DataTypes.INTEGER,
+  coordinatorName: DataTypes.STRING,
+  memberCount: { type: DataTypes.INTEGER, defaultValue: 0 },
+  target: DataTypes.STRING,
+  notes: DataTypes.TEXT,
+}, S);
+
+const ImsChapterMember = sequelize.define('ImsChapterMember', {
+  ...idCols,
+  chapterId: DataTypes.INTEGER,
+  volunteerId: DataTypes.INTEGER,
+  personId: DataTypes.INTEGER,
+  fullName: DataTypes.STRING,
+  mobile: DataTypes.STRING,
+  email: DataTypes.STRING,
+  city: DataTypes.STRING,
+  state: DataTypes.STRING,
+  level: DataTypes.STRING, // state / district / block
+  designation: DataTypes.STRING, // State Coordinator / District Coordinator / Block Lead / Member
+  skills: DataTypes.TEXT,
+  availability: DataTypes.STRING,
+  joinDate: DataTypes.DATEONLY,
+  isActive: { type: DataTypes.BOOLEAN, defaultValue: true },
+}, S);
+
+const ImsVolunteerTask = sequelize.define('ImsVolunteerTask', {
+  ...idCols,
+  title: DataTypes.STRING,
+  titleHi: DataTypes.STRING,
+  description: DataTypes.TEXT,
+  chapterId: DataTypes.INTEGER,
+  assigneeId: DataTypes.INTEGER, // volunteerId
+  assigneeName: DataTypes.STRING,
+  assigneeRole: DataTypes.STRING,
+  activityId: DataTypes.INTEGER,
+  dueDate: DataTypes.DATEONLY,
+  priority: DataTypes.STRING, // low / normal / high
+  taskStatus: { type: DataTypes.STRING, defaultValue: 'pending' }, // pending / in_progress / done / dropped
+  fundRequired: DataTypes.DECIMAL(14, 2),
+  fundRaised: DataTypes.DECIMAL(14, 2),
+  completedAt: DataTypes.DATE,
+  notes: DataTypes.TEXT,
+}, S);
+
+const ImsVolunteerFund = sequelize.define('ImsVolunteerFund', {
+  ...idCols,
+  chapterId: DataTypes.INTEGER,
+  volunteerId: DataTypes.INTEGER,
+  donorName: DataTypes.STRING,
+  donorMobile: DataTypes.STRING,
+  amount: DataTypes.DECIMAL(14, 2),
+  purpose: DataTypes.TEXT,
+  refNo: DataTypes.STRING,
+  fundDate: DataTypes.DATEONLY,
+  channel: DataTypes.STRING, // cash / upi / bank / cheque
+  received: { type: DataTypes.BOOLEAN, defaultValue: false },
+}, S);
+
 const ImsAttendance = sequelize.define('ImsAttendance', {
   ...idCols,
   personId: DataTypes.INTEGER,
@@ -755,6 +826,7 @@ const models = {
   ImsBankAccount, ImsCashAccount, ImsTransaction, ImsVoucher, ImsLedgerEntry, ImsBudget,
   ImsDonor, ImsDonation,
   ImsGrant, ImsAsset, ImsInventoryItem, ImsEmployee, ImsVolunteer, ImsAttendance,
+  ImsChapter, ImsChapterMember, ImsVolunteerTask, ImsVolunteerFund,
   ImsCompliance, ImsAgreement, ImsAudit, ImsRisk, ImsDocument, ImsCommunication,
   ImsOfficeHistory,
   ImsInstitutionHistory,

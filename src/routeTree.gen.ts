@@ -62,6 +62,7 @@ import { Route as ImsIndexRouteImport } from './routes/ims/index'
 import { Route as LearningHubIndexRouteImport } from './routes/LearningHub/index'
 import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as VerifyCertIdRouteImport } from './routes/verify.$certId'
+import { Route as ImsVolunteerNetworkRouteImport } from './routes/ims/volunteer-network'
 import { Route as ImsUsersRouteImport } from './routes/ims/users'
 import { Route as ImsSocialRouteImport } from './routes/ims/social'
 import { Route as ImsSeparationsRouteImport } from './routes/ims/separations'
@@ -373,6 +374,11 @@ const VerifyCodeRoute = VerifyCodeRouteImport.update({
 const VerifyCertIdRoute = VerifyCertIdRouteImport.update({
   id: '/verify/$certId',
   path: '/verify/$certId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ImsVolunteerNetworkRoute = ImsVolunteerNetworkRouteImport.update({
+  id: '/ims/volunteer-network',
+  path: '/ims/volunteer-network',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImsUsersRoute = ImsUsersRouteImport.update({
@@ -696,6 +702,7 @@ export interface FileRoutesByFullPath {
   '/ims/separations': typeof ImsSeparationsRoute
   '/ims/social': typeof ImsSocialRoute
   '/ims/users': typeof ImsUsersRoute
+  '/ims/volunteer-network': typeof ImsVolunteerNetworkRoute
   '/verify/$certId': typeof VerifyCertIdRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/LearningHub/': typeof LearningHubIndexRoute
@@ -796,6 +803,7 @@ export interface FileRoutesByTo {
   '/ims/separations': typeof ImsSeparationsRoute
   '/ims/social': typeof ImsSocialRoute
   '/ims/users': typeof ImsUsersRoute
+  '/ims/volunteer-network': typeof ImsVolunteerNetworkRoute
   '/verify/$certId': typeof VerifyCertIdRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/LearningHub': typeof LearningHubIndexRoute
@@ -898,6 +906,7 @@ export interface FileRoutesById {
   '/ims/separations': typeof ImsSeparationsRoute
   '/ims/social': typeof ImsSocialRoute
   '/ims/users': typeof ImsUsersRoute
+  '/ims/volunteer-network': typeof ImsVolunteerNetworkRoute
   '/verify/$certId': typeof VerifyCertIdRoute
   '/verify/$code': typeof VerifyCodeRoute
   '/LearningHub/': typeof LearningHubIndexRoute
@@ -1001,6 +1010,7 @@ export interface FileRouteTypes {
     | '/ims/separations'
     | '/ims/social'
     | '/ims/users'
+    | '/ims/volunteer-network'
     | '/verify/$certId'
     | '/verify/$code'
     | '/LearningHub/'
@@ -1101,6 +1111,7 @@ export interface FileRouteTypes {
     | '/ims/separations'
     | '/ims/social'
     | '/ims/users'
+    | '/ims/volunteer-network'
     | '/verify/$certId'
     | '/verify/$code'
     | '/LearningHub'
@@ -1202,6 +1213,7 @@ export interface FileRouteTypes {
     | '/ims/separations'
     | '/ims/social'
     | '/ims/users'
+    | '/ims/volunteer-network'
     | '/verify/$certId'
     | '/verify/$code'
     | '/LearningHub/'
@@ -1300,6 +1312,7 @@ export interface RootRouteChildren {
   ImsSeparationsRoute: typeof ImsSeparationsRoute
   ImsSocialRoute: typeof ImsSocialRoute
   ImsUsersRoute: typeof ImsUsersRoute
+  ImsVolunteerNetworkRoute: typeof ImsVolunteerNetworkRoute
   VerifyCertIdRoute: typeof VerifyCertIdRoute
   VerifyCodeRoute: typeof VerifyCodeRoute
   ImsIndexRoute: typeof ImsIndexRoute
@@ -1685,6 +1698,13 @@ declare module '@tanstack/react-router' {
       path: '/verify/$certId'
       fullPath: '/verify/$certId'
       preLoaderRoute: typeof VerifyCertIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/volunteer-network': {
+      id: '/ims/volunteer-network'
+      path: '/ims/volunteer-network'
+      fullPath: '/ims/volunteer-network'
+      preLoaderRoute: typeof ImsVolunteerNetworkRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ims/users': {
@@ -2124,6 +2144,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsSeparationsRoute: ImsSeparationsRoute,
   ImsSocialRoute: ImsSocialRoute,
   ImsUsersRoute: ImsUsersRoute,
+  ImsVolunteerNetworkRoute: ImsVolunteerNetworkRoute,
   VerifyCertIdRoute: VerifyCertIdRoute,
   VerifyCodeRoute: VerifyCodeRoute,
   ImsIndexRoute: ImsIndexRoute,

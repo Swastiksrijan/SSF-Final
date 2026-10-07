@@ -59,11 +59,19 @@ async function dashboard() {
     channels: startups,
     scheduledPerDay: 2,
     stats: { total: all.length, published, partial, draft, failed },
-    recent: all.slice(0, 40).map((p) => ({
-      id: p.id, postRef: p.postRef, postDate: p.postDate, slot: p.slot, status: p.status,
-      titleEn: p.titleEn, titleHi: p.titleHi, kind: p.kind, category: p.category, imageUrl: p.imageUrl,
-      publishedAt: p.publishedAt, results: p.platformResults,
-    })),
+    recent: all.slice(0, 40).map((row) => {
+      const p = content.mergePost(row);
+      return {
+        id: p.id, postRef: p.postRef, postDate: p.postDate, slot: p.slot, status: p.status,
+        titleEn: p.titleEn, titleHi: p.titleHi, kind: p.kind, category: p.category, imageUrl: p.imageUrl,
+        subtitleEn: p.subtitleEn, subtitleHi: p.subtitleHi,
+        exampleEn: p.exampleEn, exampleHi: p.exampleHi,
+        takeawayEn: p.takeawayEn, takeawayHi: p.takeawayHi,
+        ctaEn: p.ctaEn, ctaHi: p.ctaHi,
+        bodyEn: p.bodyEn, bodyHi: p.bodyHi, hashtags: p.hashtags,
+        publishedAt: p.publishedAt, results: p.platformResults,
+      };
+    }),
     calendar: content.AWARENESS_DAYS,
   };
 }
@@ -107,11 +115,16 @@ router.post('/social/post-now', requireAuth, wrap(async (req, r) => {
 router.patch('/social/posts/:id', requireAuth, wrap(async (req, r) => {
   const post = await SocialPost.findByPk(req.params.id);
   if (!post) return r.status(404).json({ message: 'Post not found' });
-  const allowed = ['titleEn', 'titleHi', 'bodyEn', 'bodyHi', 'hashtags', 'imageUrl', 'status'];
+  const columns = ['titleEn', 'titleHi', 'bodyEn', 'bodyHi', 'hashtags', 'imageUrl', 'status'];
+  const dataFields = ['headingEn', 'headingHi', 'subtitleEn', 'subtitleHi', 'exampleEn', 'exampleHi',
+    'takeawayEn', 'takeawayHi', 'ctaEn', 'ctaHi'];
   const patch = {};
-  for (const k of allowed) if (req.body && req.body[k] != null) patch[k] = req.body[k];
+  const dataPatch = { ...(post.data || {}) };
+  for (const k of columns) if (req.body && req.body[k] != null) patch[k] = req.body[k];
+  for (const k of dataFields) if (req.body && req.body[k] != null) dataPatch[k] = req.body[k];
+  patch.data = dataPatch;
   await post.update(patch);
-  r.json({ ok: true, post: post.toJSON() });
+  r.json({ ok: true, post: content.mergePost(post) });
 }));
 
 // Publish one specific post.
@@ -150,11 +163,13 @@ router.delete('/social/channels/:platform', requireAuth, wrap(async (req, r) => 
 router.get('/social/posts', wrap(async (req, r) => {
   const limit = Math.min(Number(req.query.limit || 20), 50);
   const rows = await SocialPost.findAll({ where: { status: { [Op.in]: ['published', 'partial'] } }, order: [['publishedAt', 'DESC']], limit });
-  r.json({ posts: rows.map((p) => ({
+  r.json({ posts: rows.map((row) => { const p = content.mergePost(row); return {
     id: p.id, ref: p.postRef, date: p.postDate, slot: p.slot, category: p.category, kind: p.kind,
     titleEn: p.titleEn, titleHi: p.titleHi, bodyEn: p.bodyEn, bodyHi: p.bodyHi, hashtags: p.hashtags,
+    subtitleEn: p.subtitleEn, subtitleHi: p.subtitleHi, exampleEn: p.exampleEn, exampleHi: p.exampleHi,
+    takeawayEn: p.takeawayEn, takeawayHi: p.takeawayHi, ctaEn: p.ctaEn, ctaHi: p.ctaHi,
     image: p.imageUrl, publishedAt: p.publishedAt,
-  })) });
+  }; }) });
 }));
 
 // Generated SVG image for a date/slot (or a saved post id).

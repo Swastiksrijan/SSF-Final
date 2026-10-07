@@ -82,6 +82,68 @@ const THEMES = [
 const MONTHS_EN = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
 const MONTHS_HI = ['जनवरी', 'फरवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त', 'सितंबर', 'अक्टूबर', 'नवंबर', 'दिसंबर'];
 
+// Category-level "sub-title, real-life example, positive takeaway and call to
+// action". The example is deliberately ordinary and true-to-life (an unnamed
+// person, school or village), so it inspires without being controversial or
+// making an unverifiable claim.
+const SUBTITLES = {
+  education: { en: 'A small step for a big future', hi: 'बड़े भविष्य के लिए एक छोटा कदम' },
+  health: { en: 'Small habits, strong families', hi: 'छोटी आदतें, मजबूत परिवार' },
+  environment: { en: 'Protect today, breathe tomorrow', hi: 'आज बचाएँ, कल साँस लें' },
+  women: { en: 'Her progress lifts everyone', hi: 'उसकी प्रगति सबको ऊपर उठाती है' },
+  youth: { en: 'Energy that builds the nation', hi: 'ऊर्जा जो राष्ट्र बनाती है' },
+  community: { en: 'Together we rise', hi: 'साथ मिलकर हम बढ़ते हैं' },
+};
+const EXAMPLES = {
+  education: { en: 'In a village school, a teacher gave one struggling girl 15 extra minutes each day for a month. She was reading fluently by year-end — and now helps two juniors read.', hi: 'एक गाँव के स्कूल में शिक्षक ने एक कमज़ोर बच्ची को महीने भर रोज़ 15 मिनट अतिरिक्त दिए। साल के अंत तक वह सहज पढ़ने लगी — और अब दो छोटों को पढ़ाती है।' },
+  health: { en: 'A family began washing hands before every meal and boiling drinking water. In one year, the children’s visits to the doctor dropped sharply — the change cost nothing.', hi: 'एक परिवार ने हर भोजन से पहले हाथ धोना और पानी उबालकर पीना शुरू किया। एक साल में बच्चों के डॉक्टर तक जाने की संख्या तेज़ी से घटी — और यह बदलाव बिना खर्च हुआ।' },
+  environment: { en: 'Students planted saplings on their school boundary and took turns watering them. Within two years the dusty edge of the ground turned into cool shade for the whole assembly.', hi: 'विद्यार्थियों ने स्कूल की सीमा पर पौधे लगाए और बारी-बारी पानी दिया। दो साल में वह धूल भरा किनारा पूरी सभा के लिए ठंडी छाया बन गया।' },
+  women: { en: 'A woman learned tailoring in a three-month course and began stitching at home. Her earnings paid her daughter’s school fees — and her opinion now counts in family decisions.', hi: 'एक महिला ने तीन महीने के कोर्स में सिलाई सीखी और घर पर सिलने लगीं। उनकी कमाई से बेटी की फीस भरी — और अब परिवार के फैसलों में उनकी राय मायने रखती है।' },
+  youth: { en: 'A college student volunteered two hours each Sunday to teach a neighbourhood child. Six months later, three friends had joined — and a small weekend class had begun.', hi: 'एक कॉलेज छात्र हर रविवार दो घंटे मोहल्ले के बच्चे को पढ़ाने लगा। छह महीने बाद तीन दोस्त जुड़ गए — और एक छोटी सप्ताहांत कक्षा शुरू हो गई।' },
+  community: { en: 'A group of neighbours began sharing one cooked meal with an elderly person living alone. That one plate turned into a daily routine five families now take turns to keep.', hi: 'पड़ोसियों का एक समूह अकेले रह रहे बुज़ुर्ग के साथ एक पका भोजन बाँटने लगा। वह एक थाली ऐसी आदत बन गई जिसे अब पाँच परिवार बारी-बारी निभाते हैं।' },
+};
+const TAKEAWAYS = {
+  education: { en: 'Every hour you give to a learner returns to society many times over.', hi: 'आप जो घंटा किसी सीखने वाले को देते हैं, वह समाज को कई गुना लौटता है।' },
+  health: { en: 'Prevention is the cheapest medicine — start today, not tomorrow.', hi: 'बचाव सबसे सस्ती दवा है — आज ही शुरू करें, कल नहीं।' },
+  environment: { en: 'Nature repays every small act of care with clean air and shade.', hi: 'प्रकृति देखभाल के हर छोटे काम का बदला स्वच्छ हवा और छाया से देती है।' },
+  women: { en: 'When one woman rises, she quietly lifts an entire generation.', hi: 'जब एक महिला उठती है, वह चुपचाप पूरी पीढ़ी को उठा लेती है।' },
+  youth: { en: 'Your few hours are someone’s turning point — begin this week.', hi: 'आपके कुछ घंटे किसी का जीवन-मोड़ हैं — इसी सप्ताह शुरू करें।' },
+  community: { en: 'Service is a habit, not an event. Do one small thing today.', hi: 'सेवा एक आदत है, आयोजन नहीं। आज एक छोटा काम करें।' },
+};
+const CTAS = {
+  education: { en: 'Support a child’s learning — sponsor a book or give an hour.', hi: 'बच्चे की पढ़ाई में साथ दें — किताब दें या एक घंटा दें।' },
+  health: { en: 'Bring one healthy habit home today, and share this message.', hi: 'आज एक सेहतमंद आदत घर लाएँ, और यह संदेश आगे बढ़ाएँ।' },
+  environment: { en: 'Plant or protect one tree this week — and tell us about it.', hi: 'इस सप्ताह एक पेड़ लगाएँ या बचाएँ — और हमें बताएँ।' },
+  women: { en: 'Support a woman’s skill or education — it changes a full family.', hi: 'किसी महिला के कौशल या शिक्षा में साथ दें — इससे पूरा परिवार बदलता है।' },
+  youth: { en: 'Give two hours this week to a cause you care about.', hi: 'इस सप्ताह दो घंटे किसी अच्छे काम को दें।' },
+  community: { en: 'Join hands with SSF — volunteer, donate or simply spread this.', hi: 'SSF से जुड़ें — स्वयंसेवा करें, दान दें या यह संदेश फैलाएँ।' },
+};
+const DEFAULT_SUB = { en: 'A small step for a better India', hi: 'बेहतर भारत के लिए एक छोटा कदम' };
+const DEFAULT_EXAMPLE = { en: 'An ordinary person chose to help one neighbour in one small way — and that single act encouraged others around them to do the same.', hi: 'एक साधारण व्यक्ति ने एक पड़ोसी की एक छोटी मदद की — और उस एक काम ने आसपास के लोगों को भी प्रेरित किया।' };
+const DEFAULT_TAKEAWAY = { en: 'Change starts small, but it starts with someone. Let that someone be you.', hi: 'बदलाव छोटा होता है, पर किसी से शुरू होता है। वह कोई आप हों।' };
+const DEFAULT_CTA = { en: 'Do one good thing today and pass this message on.', hi: 'आज एक अच्छा काम करें और यह संदेश आगे बढ़ाएँ।' };
+
+// Category display labels (used in the video and for reference).
+const CAT_LABELS = {
+  education: { en: 'Education', hi: 'शिक्षा' },
+  health: { en: 'Health', hi: 'स्वास्थ्य' },
+  environment: { en: 'Environment', hi: 'पर्यावरण' },
+  women: { en: 'Women', hi: 'महिला' },
+  youth: { en: 'Youth & Skills', hi: 'युवा एवं कौशल' },
+  community: { en: 'Community', hi: 'समुदाय' },
+};
+
+// Assemble the extra sections for a given category.
+function buildSections(cat) {
+  return {
+    sub: SUBTITLES[cat] || DEFAULT_SUB,
+    ex: EXAMPLES[cat] || DEFAULT_EXAMPLE,
+    tk: TAKEAWAYS[cat] || DEFAULT_TAKEAWAY,
+    ct: CTAS[cat] || DEFAULT_CTA,
+    label: CAT_LABELS[cat] || CAT_LABELS.community,
+  };
+}
+
 const pad = (n) => String(n).padStart(2, '0');
 const ymd = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
 // day-of-year, used as a stable rotation index so the same date always yields
@@ -116,18 +178,58 @@ function planPost(date, slot = 'morning', extraSeed = 0) {
 
   const tags = [useAware ? aware.tags : theme.tags, ORG.baseHashtags].filter(Boolean).join(' ').replace(/\s+/g, ' ');
 
+  // Structured content: heading + sub-title + real-life example + positive
+  // takeaway + call to action. This is what the video/reel renders.
+  const sec = buildSections(cat);
+  const headingEn = titleEn, headingHi = titleHi;
+  const subtitleEn = sec.sub.en, subtitleHi = sec.sub.hi;
+  const exampleEn = sec.ex.en, exampleHi = sec.ex.hi;
+  const takeawayEn = sec.tk.en, takeawayHi = sec.tk.hi;
+  const ctaEn = sec.ct.en, ctaHi = sec.ct.hi;
+  const catLabelEn = sec.label.en, catLabelHi = sec.label.hi;
+
   // Slot greeting keeps the two daily posts visibly different.
   const greetEn = slot === 'morning' ? 'Good morning! ☀️' : slot === 'evening' ? 'Good evening! 🌙' : 'A quick reminder 💡';
   const greetHi = slot === 'morning' ? 'सुप्रभात! ☀️' : slot === 'evening' ? 'शुभ संध्या! 🌙' : 'एक छोटी याद 💡';
 
-  const bodyEn = `${greetEn}\n\n${titleEn}\n\n${angleEn}\n\nAt ${ORG.name}, every day is about people, dignity and accountability. Together we can do more.\n\n🌐 ${ORG.website}  |  📞 ${ORG.phone}\n${tags}`;
-  const bodyHi = `${greetHi}\n\n${titleHi}\n\n${angleHi}\n\n${ORG.name} में हर दिन लोगों, गरिमा और जवाबदेही के बारे में है। साथ मिलकर हम और कर सकते हैं।\n\n🌐 ${ORG.website}  |  📞 ${ORG.phone}\n${tags}`;
+  // Social caption: greeting, heading, sub-title, idea, example, takeaway, CTA.
+  const bodyEn = `${greetEn}\n\n${headingEn}\n${subtitleEn}\n\n${angleEn}\n\n${exampleEn}\n\n✅ ${takeawayEn}\n\n👉 ${ctaEn}\n\n🌐 ${ORG.website}  |  📞 ${ORG.phone}\n${tags}`;
+  const bodyHi = `${greetHi}\n\n${headingHi}\n${subtitleHi}\n\n${angleHi}\n\n${exampleHi}\n\n✅ ${takeawayHi}\n\n👉 ${ctaHi}\n\n🌐 ${ORG.website}  |  📞 ${ORG.phone}\n${tags}`;
 
   return {
     postDate: ymd(date), slot, topicKey: key, category: cat, kind,
     titleEn, titleHi, bodyEn, bodyHi, hashtags: tags,
+    headingEn, headingHi, subtitleEn, subtitleHi,
+    exampleEn, exampleHi, takeawayEn, takeawayHi, ctaEn, ctaHi,
+    catLabelEn, catLabelHi,
     dateEn, dateHi, imageUrl: `/api/social/image/daily?date=${ymd(date)}&slot=${slot}`,
   };
 }
 
-module.exports = { ORG, AWARENESS_DAYS, THEMES, planPost, awarenessFor, dayOfYear, ymd, MONTHS_EN, MONTHS_HI };
+// Fields that have no dedicated column and are stored inside SocialPost.data
+// (JSONB). Keeping them here means a plain `sequelize.sync()` — which does not
+// add new columns on an existing table — still persists and returns them.
+const EXTRA_FIELDS = [
+  'headingEn', 'headingHi', 'subtitleEn', 'subtitleHi',
+  'exampleEn', 'exampleHi', 'takeawayEn', 'takeawayHi',
+  'ctaEn', 'ctaHi', 'catLabelEn', 'catLabelHi',
+];
+
+// Split a planned post into the row columns and the JSONB `data` payload.
+function splitPlan(plan) {
+  const row = { ...plan };
+  const extra = {};
+  for (const k of EXTRA_FIELDS) {
+    if (row[k] !== undefined) { extra[k] = row[k]; delete row[k]; }
+  }
+  return { row, extra };
+}
+
+// Re-merge `data` back onto a SocialPost instance / plain row for API output.
+function mergePost(p) {
+  const base = typeof p.toJSON === 'function' ? p.toJSON() : p;
+  return { ...base, ...(base.data || {}) };
+}
+
+module.exports = { ORG, AWARENESS_DAYS, THEMES, planPost, awarenessFor, dayOfYear, ymd, MONTHS_EN, MONTHS_HI,
+  SUBTITLES, EXAMPLES, TAKEAWAYS, CTAS, buildSections, splitPlan, mergePost, EXTRA_FIELDS };
