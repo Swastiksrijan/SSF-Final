@@ -39,7 +39,7 @@ export const SOCIAL_PROFILES = {
     },
   },
   telegram: {
-    profileUrl: '',
+    profileUrl: CONTACT_INFO.social.telegram,
     idHint: {
       botToken: {
         en: 'Open @BotFather in Telegram → /newbot → copy the token',

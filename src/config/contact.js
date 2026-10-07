@@ -36,6 +36,7 @@ export const CONTACT_INFO = {
         facebook: "https://www.facebook.com/swastiksrijanfoundationofficial",
         linkedin: "https://www.linkedin.com/company/swastiksrijan/",
         twitter: "https://x.com/swastik_srijan",
+        telegram: "https://t.me/swastiksrijan_official",
         youtube: "https://www.youtube.com/@SwastikSrijanOfficial",
     },
 
