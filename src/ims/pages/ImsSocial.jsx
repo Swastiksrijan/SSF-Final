@@ -20,6 +20,9 @@ const FIELD_LABELS = {
   accessToken: { en: 'Access Token', hi: 'एक्सेस टोकन' },
   phoneNumberId: { en: 'Phone Number ID', hi: 'फ़ोन नंबर ID' },
   to: { en: 'Send-to number', hi: 'भेजने का नंबर' },
+  consumerKey: { en: 'API Key (Consumer Key)', hi: 'API Key (कंज़्यूमर Key)' },
+  consumerSecret: { en: 'API Key Secret', hi: 'API Key Secret' },
+  accessTokenSecret: { en: 'Access Token Secret', hi: 'Access Token Secret' },
 };
 
 const STATUS_STYLE = {

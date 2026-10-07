@@ -329,6 +329,15 @@ async function testChannel(platform, creds) {
       return { ok: true, platform, page: out?.name || null, url: `https://facebook.com/${pageId}` };
     } catch (e) { return { ok: false, platform, error: e.message }; }
   }
+  if (platform === 'instagram') {
+    const igUserId = pick(creds, 'igUserId');
+    const token = pick(creds, 'accessToken');
+    if (!igUserId || !token) return missing('Instagram');
+    try {
+      const out = await jsonCall(`${GRAPH}/${igUserId}?fields=username,name&access_token=${encodeURIComponent(token)}`, { method: 'GET' });
+      return { ok: true, platform, user: out?.username || out?.name || null, url: out?.username ? `https://instagram.com/${out.username}` : null };
+    } catch (e) { return { ok: false, platform, error: e.message }; }
+  }
   if (platform === 'x') {
     const consumerKey = pick(creds, 'consumerKey');
     const consumerSecret = pick(creds, 'consumerSecret');
