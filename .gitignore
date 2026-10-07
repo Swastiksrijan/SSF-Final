@@ -32,3 +32,6 @@ output.txt
 
 # agent memory
 .openhands/
+
+# agent scratch
+.agent_tmp/

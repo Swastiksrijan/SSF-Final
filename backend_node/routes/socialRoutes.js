@@ -195,6 +195,15 @@ router.get('/social/image/daily', wrap(async (req, r) => {
     const date = req.query.date ? new Date(req.query.date + 'T06:00:00') : new Date();
     post = content.planPost(date, req.query.slot || 'morning');
   }
+  const { postPng } = require('../services/social/image');
+  if (String(req.query.format).toLowerCase() === 'png') {
+    const png = postPng(post);
+    if (png) {
+      r.set('Content-Type', 'image/png');
+      r.set('Cache-Control', 'public, max-age=3600');
+      return r.send(png);
+    }
+  }
   r.set('Content-Type', 'image/svg+xml');
   r.set('Cache-Control', 'public, max-age=3600');
   r.send(postSvg(post));

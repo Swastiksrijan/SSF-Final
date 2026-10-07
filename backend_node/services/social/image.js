@@ -2,7 +2,14 @@
 // Returns a branded 1080x1080 SVG that the browser renders to PNG-like visual.
 // House rule: awareness visuals are hand-coded art, never borrowed photos.
 
+const fs = require('fs');
+const path = require('path');
 const { ORG } = require('./content');
+
+const FONT_DIR = path.join(__dirname, '..', '..', 'assets', 'fonts');
+const FONT_FILES = ['NotoSans-Regular.ttf', 'NotoSans-Bold.ttf',
+  'NotoSansDevanagari-Regular.ttf', 'NotoSansDevanagari-Bold.ttf']
+  .map((f) => path.join(FONT_DIR, f)).filter((f) => fs.existsSync(f));
 
 const CAT = {
   education: ['#002344', '#0b3a63', '#FFD166'],
@@ -35,15 +42,23 @@ function tspans(lines, x, startY, lh) {
   return lines.map((l, i) => `<tspan x="${x}" y="${startY + i * lh}">${esc(l)}</tspan>`).join('');
 }
 
-// Build the SVG for one post.
+// Build the bilingual SVG for one post.
 function postSvg(post) {
   const [c1, c2, accent] = CAT[post.category] || CAT.community;
-  const titleEnLines = wrap(post.titleEn, 18).slice(0, 3);
-  const titleHiLines = wrap(post.titleHi, 20).slice(0, 3);
-  const bodyLines = wrap(post.bodyEn.split('\n')[0], 40).slice(0, 1);
+  const titleEnLines = wrap(post.titleEn, 20).slice(0, 2);
+  const titleHiLines = wrap(post.titleHi, 22).slice(0, 2);
+  const subEnLines = wrap(post.subtitleEn || '', 52).slice(0, 1);
+  const subHiLines = wrap(post.subtitleHi || '', 48).slice(0, 1);
+
+  let y = 400;
+  const titleEn = tspans(titleEnLines, 70, y, 84); y += titleEnLines.length * 84 + 30;
+  const titleHi = tspans(titleHiLines, 70, y, 72); y += titleHiLines.length * 72 + 34;
+  const subEn = tspans(subEnLines, 70, y, 42); y += subEnLines.length ? 50 : 0;
+  const subHi = tspans(subHiLines, 70, y, 40); y += subHiLines.length ? 48 : 0;
+  const barY = Math.min(Math.max(y + 14, 770), 850);
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" font-family="'Noto Sans Devanagari','Nirmala UI','Mangal','Segoe UI',Arial,sans-serif">
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080" font-family="'Noto Sans Devanagari','Noto Sans','Nirmala UI','Mangal','Segoe UI',Arial,sans-serif">
   <defs>
     <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
       <stop offset="0" stop-color="${c1}"/><stop offset="1" stop-color="${c2}"/>
@@ -61,18 +76,42 @@ function postSvg(post) {
     <text x="120" y="76" font-size="22" fill="${accent}">${esc(ORG.taglineEn)}</text>
   </g>
 
-  <!-- main title, bilingual -->
-  <text font-size="74" font-weight="800" fill="#ffffff">${tspans(titleEnLines, 70, 430, 88)}</text>
-  <text font-size="60" font-weight="700" fill="${accent}">${tspans(titleHiLines, 70, 430 + titleEnLines.length * 88 + 44, 76)}</text>
+  <!-- bilingual title + subtitle -->
+  <text font-size="72" font-weight="800" fill="#ffffff">${titleEn}</text>
+  <text font-size="58" font-weight="700" fill="${accent}">${titleHi}</text>
+  <text font-size="34" fill="#ffffff" opacity="0.92">${subEn}</text>
+  <text font-size="32" font-weight="600" fill="${accent}" opacity="0.95">${subHi}</text>
 
   <!-- accent bar -->
-  <rect x="70" y="760" width="150" height="10" rx="5" fill="${accent}"/>
+  <rect x="70" y="${barY}" width="150" height="10" rx="5" fill="${accent}"/>
 
   <!-- footer -->
-  <text x="70" y="900" font-size="30" fill="#ffffff" opacity="0.92">${esc(post.dateEn)} • ${esc(post.dateHi)}</text>
-  <text x="70" y="952" font-size="30" font-weight="700" fill="${accent}">🌐 ${esc(ORG.website)}   📞 ${esc(ORG.phone)}</text>
-  <text x="70" y="1012" font-size="24" fill="#ffffff" opacity="0.75">${esc(bodyLines[0] || '')}</text>
+  <text x="70" y="912" font-size="28" fill="#ffffff" opacity="0.85">${esc(post.dateEn)} • ${esc(post.dateHi)}</text>
+  <text x="70" y="962" font-size="28" font-weight="700" fill="${accent}">🌐 ${esc(ORG.website)}   📞 ${esc(ORG.phone)}</text>
+  <text x="70" y="1022" font-size="24" font-weight="700" fill="#ffffff" opacity="0.75">#SSF #SwastikSrijan #${esc(post.category || 'community')}</text>
 </svg>`;
 }
 
-module.exports = { postSvg, isSvgSafe: () => true };
+let ResvgCtor;
+function getResvg() {
+  if (ResvgCtor === undefined) {
+    try { ResvgCtor = require('@resvg/resvg-js').Resvg; } catch { ResvgCtor = null; }
+  }
+  return ResvgCtor;
+}
+
+// Rasterize a post to a PNG Buffer (Facebook / Instagram / Telegram need PNG).
+// Returns null when the rasterizer is unavailable so callers can fall back.
+function postPng(post) {
+  const R = getResvg();
+  if (!R) return null;
+  const opts = { fitTo: { mode: 'width', value: 1080 } };
+  if (FONT_FILES.length) {
+    opts.font = { fontFiles: FONT_FILES, loadSystemFonts: true, defaultFontFamily: 'Noto Sans Devanagari' };
+  } else {
+    opts.font = { loadSystemFonts: true };
+  }
+  return Buffer.from(new R(postSvg(post), opts).render().asPng());
+}
+
+module.exports = { postSvg, postPng, isSvgSafe: () => true };

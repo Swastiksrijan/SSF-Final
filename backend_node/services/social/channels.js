@@ -14,6 +14,33 @@
 //   x        : { accessToken }  (X API v2 + OAuth1) — auto publish when provided
 
 const GRAPH = 'https://graph.facebook.com/v21.0';
+const { postPng } = require('./image');
+
+// Rasterize a post to PNG; null when the rasterizer is unavailable.
+function safePng(post) {
+  try { return postPng(post); } catch { return null; }
+}
+
+// Bilingual caption used for image posts and plain-text fallbacks.
+function caption(post) {
+  return `${post.bodyEn}\n\n————\n${post.bodyHi}`;
+}
+
+async function multipartCall(url, fields) {
+  const form = new FormData();
+  for (const [k, v] of Object.entries(fields)) {
+    if (v && typeof v === 'object' && v.blob) form.append(k, v.blob, v.filename || 'file');
+    else if (v != null) form.append(k, String(v));
+  }
+  const res = await fetch(url, { method: 'POST', body: form });
+  let data = null;
+  try { data = await res.json(); } catch { /* non-JSON */ }
+  if (!res.ok) {
+    const msg = (data && (data.description || data.error?.message || data.message)) || `HTTP ${res.status}`;
+    const err = new Error(msg); err.status = res.status; throw err;
+  }
+  return data || {};
+}
 
 async function jsonCall(url, { method = 'POST', headers = {}, body } = {}) {
   const res = await fetch(url, {
@@ -59,10 +86,18 @@ async function publishTelegram(post, creds) {
   const token = pick(creds, 'botToken');
   const chatId = pick(creds, 'chatId');
   if (!token || !chatId) return missing('Telegram');
-  const text = `${post.bodyEn}\n\n————\n${post.bodyHi}`;
-  // Try a photo post when a public image URL exists, else plain text.
+  const text = caption(post);
   const publicBase = process.env.PUBLIC_BASE_URL || '';
   try {
+    // Prefer an uploaded PNG so the post always carries the branded visual.
+    const png = safePng(post);
+    if (png) {
+      const out = await multipartCall(`https://api.telegram.org/bot${token}/sendPhoto`, {
+        chat_id: chatId, caption: text.slice(0, 1024),
+        photo: { blob: new Blob([png], { type: 'image/png' }), filename: 'ssf-post.png' },
+      });
+      return { ok: true, url: out?.result?.message_id ? `https://t.me/c/${chatId}/${out.result.message_id}` : null };
+    }
     if (publicBase) {
       const photo = `${publicBase.replace(/\/$/, '')}${post.imageUrl}`;
       const out = await jsonCall(`https://api.telegram.org/bot${token}/sendPhoto`, {
@@ -84,17 +119,28 @@ async function publishFacebook(post, creds) {
   if (!pageId || !token) return missing('Facebook');
   const publicBase = process.env.PUBLIC_BASE_URL || '';
   try {
+    // Upload the PNG directly (no public URL needed).
+    const png = safePng(post);
+    if (png) {
+      const out = await multipartCall(`${GRAPH}/${pageId}/photos`, {
+        message: caption(post),
+        access_token: token,
+        source: { blob: new Blob([png], { type: 'image/png' }), filename: 'ssf-post.png' },
+      });
+      const id = out?.post_id || out?.id;
+      return { ok: true, url: id ? `https://facebook.com/${pageId}/posts/${String(id).split('_').pop()}` : null };
+    }
     if (publicBase) {
       const out = await formCall(`${GRAPH}/${pageId}/photos`, {
         url: `${publicBase.replace(/\/$/, '')}${post.imageUrl}`,
-        message: post.bodyEn,
-        caption: post.bodyEn,
+        message: caption(post),
+        caption: caption(post),
         access_token: token,
       });
       const id = out?.post_id || out?.id;
       return { ok: true, url: id ? `https://facebook.com/${pageId}/posts/${String(id).split('_').pop()}` : null };
     }
-    const out = await formCall(`${GRAPH}/${pageId}/feed`, { message: post.bodyEn, access_token: token });
+    const out = await formCall(`${GRAPH}/${pageId}/feed`, { message: caption(post), access_token: token });
     return { ok: true, url: out?.id ? `https://facebook.com/${out.id}` : null };
   } catch (e) { return { ok: false, error: e.message }; }
 }
