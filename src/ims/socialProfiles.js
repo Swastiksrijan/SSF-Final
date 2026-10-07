@@ -66,6 +66,7 @@ export const SOCIAL_PROFILES = {
   },
   whatsapp: {
     profileUrl: CONTACT_INFO.social.whatsapp,
+    channelUrl: CONTACT_INFO.social.whatsappChannel,
     idHint: {
       phoneNumberId: {
         en: 'Meta WhatsApp Cloud API → Phone number ID',
@@ -84,9 +85,21 @@ export const SOCIAL_PROFILES = {
   x: {
     profileUrl: CONTACT_INFO.social.twitter,
     idHint: {
+      consumerKey: {
+        en: 'developer.x.com → your App → Keys and tokens → API Key',
+        hi: 'developer.x.com → App → Keys and tokens → API Key',
+      },
+      consumerSecret: {
+        en: 'developer.x.com → API Key Secret',
+        hi: 'developer.x.com → API Key Secret',
+      },
       accessToken: {
-        en: 'developer.x.com → app keys (free tier has tight limits)',
-        hi: 'developer.x.com → app keys (free tier में सीमा कम है)',
+        en: 'developer.x.com → Access Token (user context, write)',
+        hi: 'developer.x.com → Access Token (user context, write)',
+      },
+      accessTokenSecret: {
+        en: 'developer.x.com → Access Token Secret',
+        hi: 'developer.x.com → Access Token Secret',
       },
     },
   },

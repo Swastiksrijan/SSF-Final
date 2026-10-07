@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaTelegramPlane, FaYoutube, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaShieldAlt } from "react-icons/fa";
+import { FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter, FaTelegramPlane, FaYoutube, FaWhatsapp, FaEnvelope, FaPhoneAlt, FaMapMarkerAlt, FaShieldAlt } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import logoImg from "../assets/footer-logo-circle-v3.png";
 import { useLanguage } from "../context/LanguageContext";
@@ -14,6 +14,7 @@ const socialItems = [
   { icon: FaLinkedinIn, href: CONTACT_INFO.social.linkedin, label: "LinkedIn" },
   { icon: FaTwitter, href: CONTACT_INFO.social.twitter, label: "X / Twitter" },
   { icon: FaTelegramPlane, href: CONTACT_INFO.social.telegram, label: "Telegram" },
+  { icon: FaWhatsapp, href: CONTACT_INFO.social.whatsappChannel, label: "WhatsApp Channel" },
   { icon: FaYoutube, href: CONTACT_INFO.social.youtube, label: "YouTube" }
 ];
 

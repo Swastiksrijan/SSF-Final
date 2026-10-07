@@ -25,7 +25,7 @@ const PLATFORM_META = [
   { platform: 'telegram', en: 'Telegram', hi: 'टेलीग्राम', fields: ['botToken', 'chatId'] },
   { platform: 'linkedin', en: 'LinkedIn', hi: 'लिंक्डइन', fields: ['authorUrn', 'accessToken'] },
   { platform: 'whatsapp', en: 'WhatsApp (Cloud API)', hi: 'व्हाट्सएप (क्लाउड API)', fields: ['phoneNumberId', 'accessToken', 'to'] },
-  { platform: 'x', en: 'X (Twitter)', hi: 'एक्स (ट्विटर)', fields: ['accessToken'] },
+  { platform: 'x', en: 'X (Twitter)', hi: 'एक्स (ट्विटर)', fields: ['consumerKey', 'consumerSecret', 'accessToken', 'accessTokenSecret'] },
   { platform: 'youtube', en: 'YouTube', hi: 'यूट्यूब', fields: ['accessToken'] },
 ];
 

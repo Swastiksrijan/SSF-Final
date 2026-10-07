@@ -14,7 +14,29 @@
 //   x        : { accessToken }  (X API v2 + OAuth1) — auto publish when provided
 
 const GRAPH = 'https://graph.facebook.com/v21.0';
+const crypto = require('crypto');
 const { postPng } = require('./image');
+
+// ---- OAuth 1.0a (X / Twitter) ---------------------------------------------
+// X requires user-context OAuth 1.0a for posting; OAuth2 app tokens are read-only.
+const pct = (s) => encodeURIComponent(String(s)).replace(/[!*'()]/g, (c) => '%' + c.charCodeAt(0).toString(16).toUpperCase());
+
+function oauth1Header({ method, url, params, consumerKey, consumerSecret, token, tokenSecret }) {
+  const oauth = {
+    oauth_consumer_key: consumerKey,
+    oauth_nonce: crypto.randomBytes(16).toString('hex'),
+    oauth_signature_method: 'HMAC-SHA1',
+    oauth_timestamp: String(Math.floor(Date.now() / 1000)),
+    oauth_token: token,
+    oauth_version: '1.0',
+  };
+  const all = { ...params, ...oauth };
+  const paramStr = Object.keys(all).sort().map((k) => `${pct(k)}=${pct(all[k])}`).join('&');
+  const base = `${method.toUpperCase()}&${pct(url)}&${pct(paramStr)}`;
+  const key = `${pct(consumerSecret)}&${pct(tokenSecret)}`;
+  oauth.oauth_signature = crypto.createHmac('sha1', key).update(base).digest('base64');
+  return 'OAuth ' + Object.keys(oauth).sort().map((k) => `${pct(k)}="${pct(oauth[k])}"`).join(', ');
+}
 
 // Rasterize a post to PNG; null when the rasterizer is unavailable.
 function safePng(post) {
@@ -230,13 +252,38 @@ async function publishYouTube(post, creds) {
 }
 
 // ---- X (Twitter) -----------------------------------------------------------
+// X posts need user-context OAuth 1.0a. Credentials (keys + user tokens) come
+// from the X developer portal; the OAuth2 bearer token alone cannot post.
 async function publishX(post, creds) {
+  const consumerKey = pick(creds, 'consumerKey');
+  const consumerSecret = pick(creds, 'consumerSecret');
   const token = pick(creds, 'accessToken');
-  if (!token) return missing('X');
+  const tokenSecret = pick(creds, 'accessTokenSecret');
+  // Backwards-compatible: an OAuth2 bearer token is accepted for read-only use,
+  // but posting requires the OAuth 1.0a quadruple.
+  if (!consumerKey || !consumerSecret || !token || !tokenSecret) return missing('X');
+  const auth = (method, url, params) => oauth1Header({ method, url, params, consumerKey, consumerSecret, token, tokenSecret });
+  const text = caption(post).slice(0, 280);
   try {
-    const out = await jsonCall('https://api.twitter.com/2/tweets', {
-      headers: { Authorization: `Bearer ${token}` },
-      body: { text: post.bodyEn.slice(0, 280) },
+    const mediaIds = [];
+    const png = safePng(post);
+    if (png) {
+      const form = new FormData();
+      form.append('media', new Blob([png], { type: 'image/png' }), 'ssf-post.png');
+      const up = await fetch('https://upload.twitter.com/1.1/media/upload.json', {
+        method: 'POST',
+        headers: { Authorization: auth('POST', 'https://upload.twitter.com/1.1/media/upload.json', {}) },
+        body: form,
+      });
+      const upData = await up.json().catch(() => null);
+      if (up.ok && upData?.media_id_string) mediaIds.push(upData.media_id_string);
+    }
+    const body = { text };
+    if (mediaIds.length) body.media = { media_ids: mediaIds };
+    const url = 'https://api.twitter.com/2/tweets';
+    const out = await jsonCall(url, {
+      headers: { Authorization: auth('POST', url, {}) },
+      body,
     });
     return { ok: true, url: out?.data?.id ? `https://x.com/i/web/status/${out.data.id}` : null };
   } catch (e) { return { ok: false, error: e.message }; }
@@ -280,6 +327,21 @@ async function testChannel(platform, creds) {
       // Reading the page with the saved token proves both values work.
       const out = await jsonCall(`${GRAPH}/${pageId}?fields=name,id&access_token=${encodeURIComponent(token)}`, { method: 'GET' });
       return { ok: true, platform, page: out?.name || null, url: `https://facebook.com/${pageId}` };
+    } catch (e) { return { ok: false, platform, error: e.message }; }
+  }
+  if (platform === 'x') {
+    const consumerKey = pick(creds, 'consumerKey');
+    const consumerSecret = pick(creds, 'consumerSecret');
+    const token = pick(creds, 'accessToken');
+    const tokenSecret = pick(creds, 'accessTokenSecret');
+    if (!consumerKey || !consumerSecret || !token || !tokenSecret) return missing('X');
+    try {
+      const url = 'https://api.twitter.com/2/users/me';
+      const auth = oauth1Header({ method: 'GET', url, params: {}, consumerKey, consumerSecret, token, tokenSecret });
+      const res = await fetch(url, { headers: { Authorization: auth } });
+      const out = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(out?.detail || out?.title || `HTTP ${res.status}`);
+      return { ok: true, platform, user: out?.data?.username || null, url: out?.data?.username ? `https://x.com/${out.data.username}` : null };
     } catch (e) { return { ok: false, platform, error: e.message }; }
   }
   return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };

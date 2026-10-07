@@ -30,6 +30,7 @@ export const CONTACT_INFO = {
     social: {
         whatsapp: "https://wa.me/919718346691",
         whatsappGroup: "https://wa.me/919718346691",
+        whatsappChannel: "https://whatsapp.com/channel/0029VbBahNeKwqSK1c8PuD0r",
         razorpay: "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view",
         upi: "swastikstijanfoundation@ptyes",
         instagram: "https://www.instagram.com/swastiksrijan/",
