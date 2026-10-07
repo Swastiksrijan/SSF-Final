@@ -9,6 +9,7 @@ import { Card, SectionHero, Button, Badge, Spinner, Toggle } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { makeReel, speakPost, downloadBlob } from '../reelMaker';
+import { profileUrlFor, idHintFor, captionFor } from '../socialProfiles';
 
 const FIELD_LABELS = {
   pageId: { en: 'Page ID', hi: 'पेज ID' },
@@ -55,7 +56,13 @@ function ChannelCard({ ch, onSave, onDisconnect, busy }) {
   const { lang } = useLang();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({});
+  const [copied, setCopied] = useState('');
   const required = ch.fields || [];
+  const profileUrl = profileUrlFor(ch.platform);
+
+  const copyProfile = async () => {
+    try { await navigator.clipboard.writeText(profileUrl); setCopied('url'); setTimeout(() => setCopied(''), 1500); } catch { /* clipboard blocked */ }
+  };
 
   return (
     <Card className="p-4">
@@ -69,6 +76,16 @@ function ChannelCard({ ch, onSave, onDisconnect, busy }) {
             {ch.lastPublishedAt ? `${lang === 'hi' ? 'अंतिम पोस्ट' : 'Last posted'}: ${new Date(ch.lastPublishedAt).toLocaleString('en-IN')}` : (lang === 'hi' ? 'अभी तक पोस्ट नहीं' : 'No posts yet')}
           </div>
           {ch.lastError && <div className="mt-1 truncate text-[11px] text-rose-500" title={ch.lastError}>{ch.lastError}</div>}
+          {profileUrl && (
+            <div className="mt-1.5 flex items-center gap-2 text-[11px]">
+              <a href={profileUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#002344] hover:text-[#FF6600]">
+                <Icons.ExternalLink size={12} /> {lang === 'hi' ? 'आपका पेज खोलें' : 'Open your page'}
+              </a>
+              <button type="button" onClick={copyProfile} className="inline-flex items-center gap-1 font-semibold text-slate-400 hover:text-[#FF6600]">
+                <Icons.Copy size={12} /> {copied === 'url' ? (lang === 'hi' ? 'कॉपी हुआ' : 'Copied') : (lang === 'hi' ? 'लिंक कॉपी' : 'Copy link')}
+              </button>
+            </div>
+          )}
         </div>
         {!ch.always && (
           <div className="flex shrink-0 items-center gap-2">
@@ -92,6 +109,9 @@ function ChannelCard({ ch, onSave, onDisconnect, busy }) {
                     className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-[#FF6600]"
                     placeholder={f}
                   />
+                  {idHintFor(ch.platform, f, lang) && (
+                    <span className="mt-1 block text-[10px] leading-snug text-slate-400">{idHintFor(ch.platform, f, lang)}</span>
+                  )}
                 </label>
               ))}
               <div className="flex items-center gap-2 pt-1">
@@ -118,6 +138,7 @@ function PostCard({ post, onPublish, onEdit, busy }) {
   const [body, setBody] = useState(lang === 'hi' ? post.bodyHi : post.bodyEn);
   const [reelBusy, setReelBusy] = useState(false);
   const [reelPct, setReelPct] = useState(0);
+  const [copied, setCopied] = useState('');
   const img = `${import.meta.env.VITE_BACKEND_URL || ''}/api/social/image/daily?postId=${post.id}`;
   const imgSrc = img.startsWith('/') ? `${(import.meta.env.VITE_BACKEND_URL || '').replace(/\/$/, '')}${img}` : img;
 
@@ -131,6 +152,19 @@ function PostCard({ post, onPublish, onEdit, busy }) {
     } finally {
       setReelBusy(false); setReelPct(0);
     }
+  };
+
+  // Token-free sharing: copy the caption, or open WhatsApp/Telegram prefilled.
+  // This is what makes the module useful on day one, before any API keys exist.
+  const copyCaption = async () => {
+    try { await navigator.clipboard.writeText(captionFor(post, lang)); setCopied('caption'); setTimeout(() => setCopied(''), 1500); } catch { /* clipboard blocked */ }
+  };
+  const shareTo = (kind) => {
+    const text = captionFor(post, lang);
+    const url = kind === 'telegram'
+      ? `https://t.me/share/url?url=${encodeURIComponent('https://swastiksrijan.in/Blog')}&text=${encodeURIComponent(text)}`
+      : `https://wa.me/?text=${encodeURIComponent(text)}`;
+    window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   return (
@@ -168,6 +202,15 @@ function PostCard({ post, onPublish, onEdit, busy }) {
             </Button>
             <Button variant="ghost" icon="Volume2" disabled={reelBusy} onClick={() => speakPost(post, lang)}>
               {lang === 'hi' ? 'सुनें (हिंदी)' : 'Listen'}
+            </Button>
+            <Button variant="ghost" icon="Copy" onClick={copyCaption}>
+              {copied === 'caption' ? (lang === 'hi' ? 'कॉपी हुआ' : 'Copied') : (lang === 'hi' ? 'कैप्शन कॉपी' : 'Copy caption')}
+            </Button>
+            <Button variant="ghost" icon="MessageCircle" onClick={() => shareTo('whatsapp')}>
+              {lang === 'hi' ? 'WhatsApp शेयर' : 'Share WhatsApp'}
+            </Button>
+            <Button variant="ghost" icon="Send" onClick={() => shareTo('telegram')}>
+              {lang === 'hi' ? 'Telegram शेयर' : 'Share Telegram'}
             </Button>
           </div>
           {post.results && post.results.length > 0 && (

@@ -33,7 +33,7 @@ export const CONTACT_INFO = {
         razorpay: "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view",
         upi: "swastikstijanfoundation@ptyes",
         instagram: "https://www.instagram.com/swastiksrijan/",
-        facebook: "https://www.facebook.com/share/1HQzoscW8o/",
+        facebook: "https://www.facebook.com/swastiksrijanfoundationofficial",
         linkedin: "https://www.linkedin.com/company/swastiksrijan/",
         twitter: "https://x.com/swastik_srijan",
         youtube: "https://www.youtube.com/@SwastikSrijanOfficial",
