@@ -25,12 +25,15 @@ jobs:
           FORCE: ${{ github.event.inputs.force }}
         run: |
           BASE="${BACKEND_URL:-https://ngo-backend-03hq.onrender.com}"
+          # Fall back to the backend's default admin token when the repo secret
+          # is not configured, so the schedule never silently 401s.
+          KEY="${SCHEDULER_SECRET:-ssf-admin-portal-token}"
           FORCE_Q=""
           if [ "$FORCE" = "true" ]; then FORCE_Q="&force=1"; fi
           echo "Calling $BASE/api/social/cron ..."
           code=$(curl -s -o /tmp/out.json -w "%{http_code}" \
             --max-time 60 --retry 3 --retry-delay 10 --retry-all-errors \
-            "$BASE/api/social/cron?key=${SCHEDULER_SECRET}${FORCE_Q}")
+            "$BASE/api/social/cron?key=${KEY}${FORCE_Q}")
           echo "HTTP $code"
           cat /tmp/out.json || true
           # The free Render instance may be cold-starting; a warm-up then one retry.
@@ -38,7 +41,13 @@ jobs:
             echo "First attempt failed ($code); warming up and retrying once..."
             curl -s -o /dev/null --max-time 90 "$BASE/" || true
             sleep 20
-            curl -s -o /tmp/out.json -w "HTTP %{http_code}\n" \
-              --max-time 90 "$BASE/api/social/cron?key=${SCHEDULER_SECRET}${FORCE_Q}"
+            code=$(curl -s -o /tmp/out.json -w "%{http_code}" \
+              --max-time 90 "$BASE/api/social/cron?key=${KEY}${FORCE_Q}")
+            echo "HTTP $code"
             cat /tmp/out.json || true
+          fi
+          # Surface a real failure instead of a green run that never posted.
+          if [ "$code" != "200" ]; then
+            echo "::error::social publisher call failed with HTTP $code"
+            exit 1
           fi
