@@ -204,6 +204,16 @@ async function testChannel(platform, creds) {
       return { ok: true, platform, url: out?.result?.message_id ? `https://t.me/c/${chatId}/${out.result.message_id}` : null };
     } catch (e) { return { ok: false, platform, error: e.message }; }
   }
+  if (platform === 'facebook') {
+    const pageId = pick(creds, 'pageId');
+    const token = pick(creds, 'accessToken');
+    if (!pageId || !token) return missing('Facebook');
+    try {
+      // Reading the page with the saved token proves both values work.
+      const out = await jsonCall(`${GRAPH}/${pageId}?fields=name,id&access_token=${encodeURIComponent(token)}`, { method: 'GET' });
+      return { ok: true, platform, page: out?.name || null, url: `https://facebook.com/${pageId}` };
+    } catch (e) { return { ok: false, platform, error: e.message }; }
+  }
   return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };
 }
 
