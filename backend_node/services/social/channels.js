@@ -16,6 +16,7 @@
 const GRAPH = 'https://graph.facebook.com/v21.0';
 const crypto = require('crypto');
 const { postPng, site: SITE } = require('./image');
+const { ORG } = require('./content');
 
 // ---- OAuth 1.0a (X / Twitter) ---------------------------------------------
 // X requires user-context OAuth 1.0a for posting; OAuth2 app tokens are read-only.
@@ -336,6 +337,21 @@ async function publishX(post, creds) {
   } catch (e) { return { ok: false, error: e.message }; }
 }
 
+// Instagram Business account ids are painful to find by hand. The id lives on
+// the linked Facebook Page, so with the Page token we already store we can read
+// it directly: GET /{pageId}?fields=instagram_business_account.
+async function resolveInstagramAccount({ pageId, accessToken }) {
+  if (!pageId || !accessToken) return { ok: false, error: 'missing_inputs', hint: 'Connect Facebook first (its token also works for Instagram).' };
+  try {
+    const out = await jsonCall(`${GRAPH}/${pageId}?fields=instagram_business_account{id,username}&access_token=${encodeURIComponent(accessToken)}`, { method: 'GET' });
+    const ig = out && out.instagram_business_account;
+    if (!ig || !ig.id) {
+      return { ok: false, error: 'no_linked_instagram', hint: 'Link an Instagram Business account to this Facebook Page, then retry.' };
+    }
+    return { ok: true, igUserId: ig.id, username: ig.username || null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
 const ADAPTERS = {
   website: publishWebsite,
   telegram: publishTelegram,
@@ -385,6 +401,29 @@ async function testChannel(platform, creds) {
       return { ok: true, platform, user: out?.username || out?.name || null, url: out?.username ? `https://instagram.com/${out.username}` : null };
     } catch (e) { return { ok: false, platform, error: e.message }; }
   }
+  if (platform === 'whatsapp') {
+    const phoneNumberId = pick(creds, 'phoneNumberId');
+    const token = pick(creds, 'accessToken');
+    if (!phoneNumberId || !token) return missing('WhatsApp');
+    try {
+      // Reading the phone number proves the id + token are valid.
+      const out = await jsonCall(`${GRAPH}/${phoneNumberId}?fields=display_phone_number,verified_name&access_token=${encodeURIComponent(token)}`, { method: 'GET' });
+      return { ok: true, platform, phone: out?.display_phone_number || null, name: out?.verified_name || null, url: `https://wa.me/${ORG.phone.replace(/\D/g, '')}` };
+    } catch (e) { return { ok: false, platform, error: e.message }; }
+  }
+  if (platform === 'linkedin') {
+    const authorUrn = pick(creds, 'authorUrn');
+    const token = pick(creds, 'accessToken');
+    if (!authorUrn || !token) return missing('LinkedIn');
+    try {
+      // Reading the organisation proves the URN + token are valid.
+      const out = await jsonCall(`https://api.linkedin.com/rest/organizations/${String(authorUrn).split(':').pop()}`, {
+        method: 'GET',
+        headers: { Authorization: `Bearer ${token}`, 'LinkedIn-Version': '202405', 'X-Restli-Protocol-Version': '2.0.0' },
+      });
+      return { ok: true, platform, name: out?.localizedName || null, url: `https://www.linkedin.com/company/${String(authorUrn).split(':').pop()}` };
+    } catch (e) { return { ok: false, platform, error: e.message }; }
+  }
   if (platform === 'x') {
     const consumerKey = pick(creds, 'consumerKey');
     const consumerSecret = pick(creds, 'consumerSecret');
@@ -403,4 +442,4 @@ async function testChannel(platform, creds) {
   return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };
 }
 
-module.exports = { ADAPTERS, testChannel, exchangeFacebookToken };
+module.exports = { ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount };

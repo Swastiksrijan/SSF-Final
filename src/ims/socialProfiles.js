@@ -29,12 +29,12 @@ export const SOCIAL_PROFILES = {
     profileUrl: CONTACT_INFO.social.instagram,
     idHint: {
       igUserId: {
-        en: 'Instagram Business account id (via the linked Facebook Page)',
-        hi: 'Instagram Business account की id (जुड़े Facebook Page से)',
+        en: 'Tap "Detect Instagram id" below — it reads the id from your linked Facebook Page, no typing needed.',
+        hi: 'नीचे "Instagram id अपने-आप लाएँ" दबाएँ — जुड़े Facebook Page से id खुद आ जाएगी, टाइप करने की ज़रूरत नहीं।',
       },
       accessToken: {
-        en: 'Same Facebook app token used for the Page',
-        hi: 'वही Facebook app token जो Page के लिए है',
+        en: 'Same Facebook Page token (Instagram Business uses the Page token).',
+        hi: 'वही Facebook Page token (Instagram Business, Page token ही इस्तेमाल करता है)।',
       },
     },
   },
@@ -55,12 +55,12 @@ export const SOCIAL_PROFILES = {
     profileUrl: CONTACT_INFO.social.linkedin,
     idHint: {
       authorUrn: {
-        en: 'Company page URN, e.g. urn:li:organization:12345678',
-        hi: 'Company page URN, जैसे urn:li:organization:12345678',
+        en: 'Company page URN, e.g. urn:li:organization:12345678 (the number is in your page admin URL).',
+        hi: 'Company page URN, जैसे urn:li:organization:12345678 (नंबर आपके page admin URL में मिलता है)।',
       },
       accessToken: {
-        en: 'LinkedIn Developer app → OAuth token with w_organization_social',
-        hi: 'LinkedIn Developer app → w_organization_social वाला token',
+        en: 'linkedin.com/developers → your app → Auth → OAuth 2.0 token with scope w_organization_social (valid 60 days).',
+        hi: 'linkedin.com/developers → app → Auth → OAuth 2.0 token, scope w_organization_social (60 दिन चलता है)।',
       },
     },
   },
@@ -69,16 +69,16 @@ export const SOCIAL_PROFILES = {
     channelUrl: CONTACT_INFO.social.whatsappChannel,
     idHint: {
       phoneNumberId: {
-        en: 'Meta WhatsApp Cloud API → Phone number ID',
-        hi: 'Meta WhatsApp Cloud API → Phone number ID',
+        en: 'developers.facebook.com app, WhatsApp, API Setup: the "Phone number ID" shown there.',
+        hi: 'developers.facebook.com app, WhatsApp, API Setup: वहाँ दिखा "Phone number ID"।',
       },
       accessToken: {
-        en: 'Meta WhatsApp Cloud API → permanent access token',
-        hi: 'Meta WhatsApp Cloud API → permanent access token',
+        en: 'Same screen: the temporary token works for a test; for daily posts create a System User permanent token (WhatsApp, Configuration).',
+        hi: 'उसी स्क्रीन पर: टेस्ट के लिए temporary token चलेगा; रोज़ के लिए System User permanent token बनाएँ (WhatsApp, Configuration)।',
       },
       to: {
-        en: 'Receiver number in full form, e.g. 919718346691',
-        hi: 'पाने वाले का नंबर, जैसे 919718346691',
+        en: 'Receiver number with country code, e.g. 919718346691 (must be an opted-in test number until verified).',
+        hi: 'पाने वाले का नंबर country code के साथ, जैसे 919718346691 (verify होने तक opted-in test number होना चाहिए)।',
       },
     },
   },
@@ -86,29 +86,35 @@ export const SOCIAL_PROFILES = {
     profileUrl: CONTACT_INFO.social.twitter,
     idHint: {
       consumerKey: {
-        en: 'developer.x.com → your App → Keys and tokens → API Key',
-        hi: 'developer.x.com → App → Keys and tokens → API Key',
+        en: 'developer.x.com → your app → Keys and tokens → API Key (Consumer Key).',
+        hi: 'developer.x.com → app → Keys and tokens → API Key (Consumer Key)।',
       },
       consumerSecret: {
-        en: 'developer.x.com → API Key Secret',
-        hi: 'developer.x.com → API Key Secret',
+        en: 'developer.x.com → same page → API Key Secret.',
+        hi: 'developer.x.com → उसी पेज पर → API Key Secret।',
       },
       accessToken: {
-        en: 'developer.x.com → Access Token (user context, write)',
-        hi: 'developer.x.com → Access Token (user context, write)',
+        en: 'developer.x.com → same page → Access Token (user context, write).',
+        hi: 'developer.x.com → उसी पेज पर → Access Token (user context, write)।',
       },
       accessTokenSecret: {
-        en: 'developer.x.com → Access Token Secret',
-        hi: 'developer.x.com → Access Token Secret',
+        en: 'developer.x.com → same page → Access Token Secret.',
+        hi: 'developer.x.com → उसी पेज पर → Access Token Secret।',
       },
     },
   },
   youtube: {
     profileUrl: CONTACT_INFO.social.youtube,
+    // Honest note: YouTube's public Data API cannot create community/feed posts,
+    // so this channel is stored but cannot auto-publish an image today.
+    note: {
+      en: 'Heads-up: YouTube Data API v3 cannot create community posts, so the publisher cannot auto-post an image here. The channel is saved for reference; use the Open your page link to post manually. An upload workflow (video/Shorts) can be added later.',
+      hi: 'ध्यान दें: YouTube Data API v3 से community post नहीं बनते, इसलिए publisher यहाँ image अपने-आप पोस्ट नहीं कर सकता। चैनल संदर्भ के लिए सेव रहेगा; मैन्युअल पोस्ट के लिए "आपका पेज खोलें" लिंक इस्तेमाल करें। आगे चाहें तो video/Shorts upload workflow जोड़ा जा सकता है।',
+    },
     idHint: {
       accessToken: {
-        en: 'Google Cloud → YouTube Data API v3 → OAuth token with upload scope',
-        hi: 'Google Cloud → YouTube Data API v3 → upload scope वाला OAuth token',
+        en: 'Google Cloud → enable YouTube Data API v3 → OAuth 2.0 token with scope youtube.upload (only needed for a future video workflow).',
+        hi: 'Google Cloud → YouTube Data API v3 enable करें → scope youtube.upload वाला OAuth 2.0 token (भविष्य के video workflow के लिए)।',
       },
     },
   },
@@ -117,6 +123,13 @@ export const SOCIAL_PROFILES = {
 // "Grab it from your website" shortcut: the public link to open for a platform.
 export function profileUrlFor(platform) {
   return (SOCIAL_PROFILES[platform] && SOCIAL_PROFILES[platform].profileUrl) || '';
+}
+
+// Platform-level note (e.g. "this API cannot auto-post"), in the chosen language.
+export function noteFor(platform, lang) {
+  const n = SOCIAL_PROFILES[platform] && SOCIAL_PROFILES[platform].note;
+  if (!n) return '';
+  return lang === 'hi' ? n.hi : n.en;
 }
 
 // Human hint for one credential field, in the chosen language.

@@ -178,6 +178,23 @@ router.post('/social/facebook/exchange', requireAuth, wrap(async (req, r) => {
   return r.json({ ok: true, pageId: chosen.id, pageName: chosen.name, expiresAt: out.expiresAt || 0, pages: out.pages.map((p) => ({ id: p.id, name: p.name })) });
 }));
 
+// Instagram: fill igUserId automatically from the linked Facebook Page, so the
+// admin never has to hunt for the numeric id. Reuses the saved Facebook token
+// (or one pasted in the form).
+router.post('/social/instagram/resolve', requireAuth, wrap(async (req, r) => {
+  const { resolveInstagramAccount } = require('../services/social/channels');
+  const fbRow = await SocialChannel.findOne({ where: { platform: 'facebook' } });
+  const fbCreds = (fbRow && fbRow.credentials) || {};
+  const pageId = (req.body && req.body.pageId) || fbCreds.pageId;
+  const accessToken = (req.body && req.body.accessToken) || fbCreds.accessToken;
+  const out = await resolveInstagramAccount({ pageId, accessToken });
+  if (!out.ok) return r.status(400).json(out);
+  const [row] = await SocialChannel.findOrCreate({ where: { platform: 'instagram' }, defaults: { platform: 'instagram' } });
+  const merged = { ...(row.credentials || {}), igUserId: out.igUserId, accessToken };
+  await row.update({ credentials: merged, enabled: true, status: 'connected', lastError: null });
+  return r.json({ ok: true, igUserId: out.igUserId, username: out.username, fields: Object.keys(merged) });
+}));
+
 // Send a live test message using the SAVED credentials (no publish needed).
 router.post('/social/channels/:platform/test', requireAuth, wrap(async (req, r) => {
   const row = await SocialChannel.findOne({ where: { platform: req.params.platform } });

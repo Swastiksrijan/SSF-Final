@@ -9,7 +9,7 @@ import { Card, SectionHero, Button, Badge, Spinner, Toggle } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { makeReel, speakPost, downloadBlob } from '../reelMaker';
-import { profileUrlFor, idHintFor, captionFor } from '../socialProfiles';
+import { profileUrlFor, idHintFor, captionFor, noteFor } from '../socialProfiles';
 
 const FIELD_LABELS = {
   pageId: { en: 'Page ID', hi: 'पेज ID' },
@@ -55,7 +55,7 @@ function KpiBox({ icon, en, hi, value, tone = 'text-[#002344]' }) {
   );
 }
 
-function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, busy }) {
+function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, onIgResolve, busy }) {
   const { lang } = useLang();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({});
@@ -65,6 +65,8 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, busy }) {
   const [fb, setFb] = useState({ appId: '', appSecret: '', shortToken: '' });
   const [fbBusy, setFbBusy] = useState(false);
   const [fbMsg, setFbMsg] = useState('');
+  const [igBusy, setIgBusy] = useState(false);
+  const [igMsg, setIgMsg] = useState('');
   const required = ch.fields || [];
   const profileUrl = profileUrlFor(ch.platform);
 
@@ -85,6 +87,17 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, busy }) {
         setFbMsg(`⚠️ ${(out && (out.error || out.hint)) || 'failed'}`);
       }
     } catch (e) { setFbMsg(`⚠️ ${e.message}`); } finally { setFbBusy(false); }
+  };
+
+  // Instagram: pull the numeric id straight from the linked Facebook Page.
+  const runIgResolve = async () => {
+    setIgBusy(true); setIgMsg('');
+    try {
+      const out = await onIgResolve();
+      setIgMsg(out && out.ok
+        ? (lang === 'hi' ? `✅ Instagram जुड़ गया${out.username ? ` — @${out.username}` : ''}` : `✅ Instagram connected${out.username ? ` — @${out.username}` : ''}`)
+        : `⚠️ ${(out && (out.hint || out.error)) || 'failed'}`);
+    } catch (e) { setIgMsg(`⚠️ ${e.message}`); } finally { setIgBusy(false); }
   };
 
   const copyProfile = async () => {
@@ -140,6 +153,11 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, busy }) {
           </button>
           {open && (
             <div className="mt-2 space-y-2 rounded-xl border border-slate-200 bg-slate-50/60 p-3">
+              {noteFor(ch.platform, lang) && (
+                <div className="rounded-lg border border-amber-300 bg-amber-50 p-2 text-[10px] leading-snug text-amber-800">
+                  {noteFor(ch.platform, lang)}
+                </div>
+              )}
               {required.map((f) => (
                 <label key={f} className="block">
                   <span className="mb-1 block text-[11px] font-semibold text-slate-500">{lang === 'hi' ? FIELD_LABELS[f]?.hi : FIELD_LABELS[f]?.en}{f === 'accessToken' || f === 'botToken' ? ' 🔒' : ''}</span>
@@ -176,6 +194,24 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, busy }) {
                     </Button>
                   </div>
                   {fbMsg && <div className="mt-1 text-[11px] font-semibold text-slate-600">{fbMsg}</div>}
+                </div>
+              )}
+              {ch.platform === 'instagram' && (
+                <div className="mt-1 rounded-xl border border-[#FF6600]/30 bg-[#FFF7F0] p-3">
+                  <div className="text-[11px] font-bold text-[#002344]">
+                    {lang === 'hi' ? '🔎 Instagram id अपने-आप भरें' : '🔎 Fill the Instagram id automatically'}
+                  </div>
+                  <p className="mt-1 text-[10px] leading-snug text-slate-500">
+                    {lang === 'hi'
+                      ? 'Facebook पेज जुड़ा हो तो यह बटन Instagram Business account की id खुद ले लेगा — मैन्युअल id की ज़रूरत नहीं।'
+                      : 'If your Facebook Page is connected, this pulls the Instagram Business account id for you — no manual id needed.'}
+                  </p>
+                  <div className="mt-2">
+                    <Button variant="ghost" icon="KeyRound" disabled={igBusy} onClick={runIgResolve}>
+                      {igBusy ? (lang === 'hi' ? 'ढूँढ रहे हैं…' : 'Detecting…') : (lang === 'hi' ? 'Instagram id अपने-आप लाएँ' : 'Detect Instagram id')}
+                    </Button>
+                  </div>
+                  {igMsg && <div className="mt-1 text-[11px] font-semibold text-slate-600">{igMsg}</div>}
                 </div>
               )}
               <div className="flex flex-wrap items-center gap-2 pt-1">
@@ -374,6 +410,7 @@ export default function ImsSocial() {
                   onSave={(p, payload) => run(() => ims.socialConnect(p, payload), lang === 'hi' ? 'चैनल अपडेट' : 'Channel updated')}
                   onTest={(p) => ims.socialTestChannel(p)}
                   onFbExchange={(payload) => ims.socialFbExchange(payload).then((out) => { if (out && out.ok) run(() => Promise.resolve(out), lang === 'hi' ? 'स्थायी token सेव' : 'Permanent token saved'); return out; })}
+                  onIgResolve={() => ims.socialIgResolve({}).then((out) => { if (out && out.ok) run(() => Promise.resolve(out), lang === 'hi' ? 'Instagram जुड़ा' : 'Instagram connected'); return out; })}
                   onDisconnect={(p) => run(() => ims.socialDisconnect(p), lang === 'hi' ? 'डिसकनेक्ट' : 'Disconnected')} />
               ))}
             </div>
