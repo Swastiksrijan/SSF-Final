@@ -113,6 +113,37 @@ function renderBlock(b, lang) {
           <span class="link-url">${esc(ln.url.replace(/^https?:\/\//, ''))}</span>
         </a>`).join('')}</div>
       </div>`;
+    case 'facts':
+      return `<div class="blk facts" data-safe>${b.items.map((f) => `<div class="fact" data-safe>
+        <div class="fact-value">${pick(esc(f.value.en), esc(f.value.hi), lang)}</div>
+        <div class="fact-label">${t(f.label, lang)}</div>
+      </div>`).join('')}</div>`;
+    case 'gallery':
+      return `<div class="blk gallery" data-safe>
+        ${b.label ? `<div class="block-label">${t(b.label, lang)}</div>` : ''}
+        <div class="gal-grid">${b.items.map((g) => `<figure class="gal-item" data-safe>
+          <div class="gal-img" style="background-image:url('${esc(g.src)}')"></div>
+          <figcaption>${t(g.caption, lang)}</figcaption>
+        </figure>`).join('')}</div>
+      </div>`;
+    case 'years':
+      return `<div class="blk years" data-safe>
+        ${b.label ? `<div class="block-label">${t(b.label, lang)}</div>` : ''}
+        <div class="yr-grid">${b.items.map((y) => `<a class="yr-chip" data-safe data-link="${esc(y.url)}">
+          <div class="yr-year">${esc(y.year)}</div>
+          <div class="yr-open">${pick('View', 'देखें', lang)} →</div>
+        </a>`).join('')}</div>
+      </div>`;
+    case 'docCards':
+      return `<div class="blk docs" data-safe>
+        ${b.label ? `<div class="block-label">${t(b.label, lang)}</div>` : ''}
+        <div class="doc-grid">${b.items.map((d) => `<a class="doc-card" data-safe data-link="${esc(d.url)}">
+          <div class="doc-card-top"><span class="doc-icon">▤</span><span class="doc-tag">${t(d.tag, lang)}</span></div>
+          <div class="doc-name">${t(d.name, lang)}</div>
+          ${lang === 'en' ? '' : `<div class="doc-hi">${esc(d.hi || '')}</div>`}
+          <div class="doc-open">${pick('View document', 'दस्तावेज़ देखें', lang)} →</div>
+        </a>`).join('')}</div>
+      </div>`;
     case 'signature':
       return `<div class="blk sign" data-safe>
         <div class="sign-issued">
@@ -149,16 +180,21 @@ function renderCover(lang) {
       <div class="cover-sub">${pick(esc(c.subtitle.en), esc(c.subtitle.hi), lang)}</div>
     </div>
     <div class="cover-foot">
+      <div class="cover-reg">Registered under the Madhya Pradesh Societies Registration Act, 1973 · Regn. No. 05/22/03/11448/13</div>
+      <div class="cover-reg-hi">मध्य प्रदेश सोसाइटी पंजीकरण अधिनियम, 1973 के अंतर्गत पंजीकृत · पंजीकरण सं. 05/22/03/11448/13</div>
       <div class="cover-ver"><span class="ver-lbl">${pick(esc(c.versionLabel.en), esc(c.versionLabel.hi), lang)}:</span> <span class="ver-code">${esc(c.code)}</span></div>
     </div>
   </div>`;
 }
 
 function renderSection(s, lang) {
+  const title = lang === 'hi'
+    ? `<h2 class="sec-title">${esc(s.hi)}</h2>`
+    : lang === 'both'
+      ? `<h2 class="sec-title">${esc(s.en)}</h2><div class="sec-title-hi">${esc(s.hi)}</div>`
+      : `<h2 class="sec-title">${esc(s.en)}</h2>`;
   return `<section class="sec" data-sec="${s.id}">
-    <div class="sec-head" data-safe>
-      <h2 class="sec-title">${pick(esc(s.en), esc(s.hi), lang)}</h2>
-    </div>
+    <div class="sec-head" data-safe>${title}</div>
     ${s.intro ? `<p class="sec-intro" data-safe>${t(s.intro, lang)}</p>` : ''}
     ${s.blocks.map((b) => renderBlock(b, lang)).join('')}
   </section>`;
@@ -241,7 +277,9 @@ const STYLE = `
   .cover-title { font-size: 44px; font-weight: 800; color: ${NAVY}; line-height: 1.1; }
   .cover-sub { margin-top: 18px; font-size: 14px; font-weight: 600; color: ${TEAL}; max-width: 560px; line-height: 1.6; }
   .cover-foot { margin-top: auto; padding-top: 20px; border-top: 2px solid ${NAVY}; }
-  .cover-ver { font-family: ui-monospace, monospace; font-size: 11px; color: #64748b; }
+  .cover-reg { font-size: 11.5px; font-weight: 700; color: ${NAVY}; }
+  .cover-reg-hi { font-size: 10.5px; color: #64748b; margin-top: 3px; font-family: 'SSFDevanagari','Mukta',sans-serif; }
+  .cover-ver { margin-top: 8px; font-family: ui-monospace, monospace; font-size: 11px; color: #64748b; }
   .ver-code { color: ${NAVY}; font-weight: 700; }
 
   /* ── Content ───────────────────────────────────────────── */
@@ -249,6 +287,7 @@ const STYLE = `
   .sec { margin-top: 22px; }
   .sec-head { border-bottom: 2.5px solid ${NAVY}; padding-bottom: 7px; margin-bottom: 12px; break-after: avoid; }
   .sec-title { font-size: 19px; font-weight: 800; color: ${NAVY}; letter-spacing: .005em; }
+  .sec-title-hi { font-size: 13px; font-weight: 700; color: ${BLUE}; margin-top: 2px; font-family: 'SSFDevanagari','Mukta',sans-serif; }
   .sec-intro { font-size: 11.5px; color: #64748b; margin-bottom: 12px; }
   .blk { margin-bottom: 14px; }
 
@@ -293,6 +332,38 @@ const STYLE = `
   .link-name { font-size: 11.5px; font-weight: 700; color: ${NAVY}; }
   .link-url { font-size: 10.5px; color: ${TEAL}; }
 
+  /* facts strip */
+  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .fact { border: 1px solid #e6edf5; border-top: 3px solid ${ORANGE}; border-radius: 10px;
+    padding: 12px 10px; text-align: center; background: #fbfdff; break-inside: avoid; }
+  .fact-value { font-size: 21px; font-weight: 800; color: ${NAVY}; line-height: 1; }
+  .fact-label { font-size: 10.5px; color: #64748b; margin-top: 6px; font-weight: 600; }
+
+  /* photo gallery */
+  .gal-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  .gal-item { border: 1px solid #e6edf5; border-radius: 10px; overflow: hidden; background: #fff; break-inside: avoid; }
+  .gal-img { width: 100%; height: 128px; background-size: cover; background-position: center; background-repeat: no-repeat; }
+  .gal-item figcaption { font-size: 10.5px; font-weight: 600; color: ${BLUE}; padding: 7px 9px; line-height: 1.35; }
+
+  /* public document cards */
+  .doc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .doc-card { display: block; text-decoration: none; border: 1px solid #e6edf5; border-left: 4px solid ${TEAL};
+    border-radius: 10px; padding: 10px 13px; background: #f8fafc; break-inside: avoid; }
+  .doc-card-top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .doc-icon { color: ${ORANGE}; font-weight: 800; font-size: 13px; }
+  .doc-tag { font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: .04em;
+    color: #c65f00; background: #fff3e6; border: 1px solid #ffe0c2; border-radius: 999px; padding: 2px 8px; }
+  .doc-name { font-size: 12px; font-weight: 800; color: ${NAVY}; margin-top: 5px; }
+  .doc-hi { font-size: 10.5px; color: #64748b; font-family: 'SSFDevanagari','Mukta',sans-serif; }
+  .doc-open { font-size: 10px; font-weight: 700; color: ${TEAL}; margin-top: 6px; }
+
+  /* year-wise annual reports */
+  .yr-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+  .yr-chip { display: block; text-decoration: none; text-align: center; border: 1px solid #e6edf5;
+    border-radius: 8px; padding: 9px 6px; background: #fbfdff; break-inside: avoid; }
+  .yr-year { font-size: 13px; font-weight: 800; color: ${NAVY}; }
+  .yr-open { font-size: 9px; font-weight: 700; color: ${TEAL}; margin-top: 3px; }
+
   .sign { border: 1px solid #e6edf5; border-radius: 10px; padding: 18px 18px 14px; }
   .sign-issued-lbl { font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
   .sign-issued-by { font-size: 15px; font-weight: 800; color: ${NAVY}; margin-top: 3px; }
@@ -329,9 +400,16 @@ async function ensureFonts() {
 
 function preloadImages(root) {
   const imgs = Array.from(root.querySelectorAll('img'));
-  return Promise.all(imgs.map((img) => (img.complete && img.naturalWidth
+  const bgEls = Array.from(root.querySelectorAll('[style*="background-image"]'));
+  const jobs = [];
+  imgs.forEach((img) => jobs.push(img.complete && img.naturalWidth
     ? Promise.resolve()
-    : new Promise((res) => { img.onload = img.onerror = () => res(); }))));
+    : new Promise((res) => { img.onload = img.onerror = () => res(); })));
+  bgEls.forEach((el) => {
+    const m = /url\(['"]?([^'")]+)['"]?\)/.exec(el.getAttribute('style') || '');
+    if (m) jobs.push(new Promise((res) => { const i = new Image(); i.onload = i.onerror = () => res(); i.src = m[1]; }));
+  });
+  return Promise.all(jobs);
 }
 
 // Collect safe pixel boundaries from the DOM: the top of each top-level safe
@@ -350,7 +428,7 @@ function safeBoundaries(host, scale) {
   content.querySelectorAll(':scope > section').forEach(add);
   content.querySelectorAll('[data-safe]').forEach(add);
   // line-level boundaries so an oversized block can still split cleanly
-  content.querySelectorAll('li, .kvrow, .card-line, .link-row, .callout p, .para-text, tbody tr').forEach(add);
+  content.querySelectorAll('li, .kvrow, .card-line, .link-row, .callout p, .para-text, tbody tr, .gal-item, .doc-card, .yr-chip, .fact').forEach(add);
   return [...pts].sort((a, b) => a - b);
 }
 

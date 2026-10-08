@@ -23,6 +23,51 @@ const UPD = (what_en, what_hi) => ({
   hi: `सत्यापित ${what_hi} से अद्यतन किया जाना है।`,
 });
 
+// Real SSF programme photographs (served from /public/images/real — the same
+// images the website shows). Captions stay factual: they name the activity,
+// not a beneficiary count or outcome.
+const PHOTO = (src, capEn, capHi) => ({ src, caption: T(capEn, capHi) });
+const GALLERY = [
+  PHOTO('/images/real/education_girls.jpg', 'Education & Learning Support', 'शिक्षा एवं अध्ययन सहयोग'),
+  PHOTO('/images/real/nutrition_program.jpg', 'Health & Nutrition Programme', 'स्वास्थ्य एवं पोषण कार्यक्रम'),
+  PHOTO('/images/real/computer-donation-final.png', 'Digital & Computer Education', 'डिजिटल एवं कंप्यूटर शिक्षा'),
+  PHOTO('/images/real/women_empowerment_tailoring.jpg', 'Women Empowerment & Skill Training', 'महिला सशक्तिकरण एवं कौशल प्रशिक्षण'),
+  PHOTO('/images/real/tree_plantation.jpg', 'Environment & Tree Plantation', 'पर्यावरण एवं वृक्षारोपण'),
+  PHOTO('/images/real/cow-rescue.jpg', 'Animal & Bird Welfare', 'पशु एवं पक्षी कल्याण'),
+  PHOTO('/images/real/scholarship_distribution.jpg', 'Scholarship Distribution', 'छात्रवृत्ति वितरण'),
+  PHOTO('/images/real/cricket-child.jpg', 'Sports & Youth Development', 'खेल एवं युवा विकास'),
+  PHOTO('/images/real/village-community-center.jpg', 'Village & Community Outreach', 'ग्रामीण एवं सामुदायिक पहुँच'),
+];
+
+// Public documents the Foundation already publishes on its Transparency page.
+// Reproducing them here means a reader can verify every claim from the profile
+// itself. URLs are the Foundation's own public Drive links.
+const PUB_DOCS = [
+  { name: T('Registration / Legal Identity', 'पंजीकरण एवं कानूनी पहचान'), hi: 'पंजीकरण एवं कानूनी पहचान', tag: T('Registered · 2013', 'पंजीकृत · 2013'), url: 'https://drive.google.com/file/d/1mvFn14TYtG-tiiE5_spHrUClTls1-Ii-/view?usp=sharing' },
+  { name: T('12AB Registration', '12AB पंजीकरण'), hi: '12AB पंजीकरण', tag: T('Registered', 'पंजीकृत'), url: 'https://drive.google.com/file/d/1MVtgKePT2WNTSrF1vrjrDIdrCZ6HaNrS/view?usp=drivesdk' },
+  { name: T('80G Status', '80G स्थिति'), hi: '80G स्थिति', tag: T('Applied / provisional', 'आवेदित / प्रावधिक'), url: 'https://drive.google.com/file/d/1uUAQuXCkz6H_sEJGgDvSx2Gj_PsIIVvB/view?usp=drivesdk' },
+  { name: T('CSR-1 Registration (MCA)', 'सीएसआर-1 पंजीकरण (एमसीए)'), hi: 'सीएसआर-1 पंजीकरण (एमसीए)', tag: T('Registered', 'पंजीकृत'), url: 'https://drive.google.com/file/d/1LdL8_IC3K6f4ZEddb68ki_393QkIBvcX/view?usp=drivesdk' },
+  { name: T('NGO Darpan', 'एनजीओ दर्पण'), hi: 'एनजीओ दर्पण', tag: T('Registered', 'पंजीकृत'), url: 'https://drive.google.com/file/d/15OX155DuYsymGQmEKCcoux1FGES_DSLH/view?usp=sharing' },
+  { name: T('Audited Accounts', 'लेखा-परीक्षित खाते'), hi: 'लेखा-परीक्षित खाते', tag: T('Audit records', 'लेखा परीक्षण अभिलेख'), url: 'https://drive.google.com/file/d/1ka7G73eU1SamorxUJivAJKldnOuNIdZU/view?usp=sharing' },
+  { name: T('PAN Verification', 'पैन सत्यापन'), hi: 'पैन सत्यापन', tag: T('Verified', 'सत्यापित'), url: 'https://drive.google.com/file/d/1RkC1uHQRBSBqTbUv_H20Ri0sgcQ2zlmT/view?usp=sharing' },
+];
+
+const ANNUAL_REPORTS = [
+  ['2013–14', 'https://drive.google.com/file/d/1dRT8fkKgxHhPdiiiHmz8DA0ZSUYWTDDi/view?usp=drivesdk'],
+  ['2014–15', 'https://drive.google.com/file/d/1D1Ak2S__z4yrZQ4ctR0qczBHdJtBcGkm/view?usp=drivesdk'],
+  ['2015–16', 'https://drive.google.com/file/d/1JxbRRc3v-LAy-iBeDVO11nPuYmedy_76/view?usp=drivesdk'],
+  ['2016–17', 'https://drive.google.com/file/d/1A75HkUwGyTAUzS2IrtJgv3zByw6OyrKK/view?usp=drivesdk'],
+  ['2017–18', 'https://drive.google.com/file/d/1JlFCdN7dGRLAK3NXZa1WlaRV6PBRjSaJ/view?usp=drivesdk'],
+  ['2018–19', 'https://drive.google.com/file/d/1u_ewjd6MUhARR_g35PRCQQX12TpmZd_F/view?usp=drivesdk'],
+  ['2019–20', 'https://drive.google.com/file/d/1ogaIch6vpZXL7SDGRYokdm0ARdzif5Od/view?usp=drivesdk'],
+  ['2020–21', 'https://drive.google.com/file/d/1osL_PaieAjLxLPK9lX52aNj4Gk51jgBg/view?usp=drivesdk'],
+  ['2021–22', 'https://drive.google.com/file/d/1FolHQb41PjtJDbbJxDK4tz8xgEgh2744/view?usp=drivesdk'],
+  ['2022–23', 'https://drive.google.com/file/d/19aC8NZ0q0-yjUxhOgJLzQFES7IIrh4tq/view?usp=drivesdk'],
+  ['2023–24', 'https://drive.google.com/file/d/18U4BtmY2N7nBC7mVUZ__UEzit1Lx2kUA/view?usp=drivesdk'],
+  ['2024–25', 'https://drive.google.com/file/d/1CymtYEy3BiUOpUn-enpIqyrsMbqunkRm/view?usp=drivesdk'],
+  ['2025–26', 'https://drive.google.com/file/d/1tftxk1SfpHwMSifNUhnxeenw7dfizjDW/view?usp=drivesdk'],
+].map(([year, url]) => ({ year, url }));
+
 export const PROFILE_DOC = {
   code: 'SSF/PROFILE/2026/V1',
   org: P,
@@ -43,6 +88,7 @@ export const PROFILE_DOC = {
     { id: 'partnership', en: 'CSR & Partnership', hi: 'सीएसआर एवं साझेदारी' },
     { id: 'impact', en: 'Our Reach & Impact', hi: 'हमारी पहुँच एवं प्रभाव' },
     { id: 'transparency', en: 'Transparency & Accountability', hi: 'पारदर्शिता एवं जवाबदेही' },
+    { id: 'documents', en: 'Public Documents & Annual Reports', hi: 'सार्वजनिक दस्तावेज़ एवं वार्षिक प्रतिवेदन' },
     { id: 'contact', en: 'Contact & Presence', hi: 'संपर्क एवं उपस्थिति' },
     { id: 'declaration', en: 'Declaration', hi: 'घोषणा' },
   ],
@@ -64,6 +110,12 @@ export const PROFILE_RENDER = {
       en: 'About the Organisation', hi: 'संस्था परिचय',
       intro: T('Registered identity and profile of the Foundation.', 'संस्था की पंजीकृत पहचान एवं परिचय।'),
       blocks: [
+        { type: 'facts', items: [
+          { value: T('2013', '2013'), label: T('Registered Since', 'स्थापना वर्ष') },
+          { value: T('Pan India', 'सम्पूर्ण भारत'), label: T('Operational Scope', 'कार्यक्षेत्र') },
+          { value: T('9+', '9+'), label: T('Focus Areas', 'कार्यक्षेत्र श्रेणियाँ') },
+          { value: T('100%', '100%'), label: T('Documented Records', 'प्रलेखित अभिलेख') },
+        ] },
         { type: 'kv', rows: [
           kv('Legal Name', 'कानूनी नाम', P.en, P.hi),
           kv('Short Name', 'संक्षिप्त नाम', 'SSF', 'एसएसएफ'),
@@ -190,6 +242,7 @@ export const PROFILE_RENDER = {
               { l: T('Status', 'स्थिति'), v: T('Ongoing', 'सतत') },
             ] },
         ] },
+        { type: 'gallery', label: T('Programme Activities', 'कार्यक्रम गतिविधियाँ'), items: GALLERY },
       ],
     },
 
@@ -312,12 +365,14 @@ export const PROFILE_RENDER = {
     {
       id: 'transparency',
       en: 'Transparency & Accountability', hi: 'पारदर्शिता एवं जवाबदेही',
-      intro: T('How the Foundation documents and reports its work.', 'संस्था अपने कार्य का अभिलेखन एवं रिपोर्टिंग कैसे करती है।'),
+      intro: T('How the Foundation documents and reports its work, and the public documents available for verification.', 'संस्था अपने कार्य का अभिलेखन एवं रिपोर्टिंग कैसे करती है, एवं सत्यापन हेतु उपलब्ध सार्वजनिक दस्तावेज़।'),
       blocks: [
         { type: 'para',
           text: T(
             'Swastik Srijan Foundation Samiti maintains documented records relating to governance, programmes, finances and statutory/compliance matters, subject to applicable requirements and periodic updating.',
             'स्वस्तिक सृजन फाउंडेशन समिति शासन, कार्यक्रम, वित्त एवं सांविधिक/अनुपालन संबंधी प्रलेखित अभिलेख संधारित करती है, जो प्रचलित अपेक्षाओं एवं आवधिक अद्यतन के अधीन हैं।') },
+        { type: 'docCards', label: T('Public Documents (Openly Available)', 'सार्वजनिक दस्तावेज़ (खुले रूप से उपलब्ध)'), items: PUB_DOCS },
+        { type: 'years', label: T('Annual Reports (Year-wise)', 'वार्षिक प्रतिवेदन (वर्षानुसार)'), items: ANNUAL_REPORTS },
       ],
     },
 
