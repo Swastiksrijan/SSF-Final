@@ -11,6 +11,12 @@ const FONT_FILES = ['NotoSans-Regular.ttf', 'NotoSans-Bold.ttf',
   'NotoSansDevanagari-Regular.ttf', 'NotoSansDevanagari-Bold.ttf']
   .map((f) => path.join(FONT_DIR, f)).filter((f) => fs.existsSync(f));
 
+// Organisation emblem, embedded as a data URI so the rasterizer needs no network.
+// Falls back to the letter "S" badge when the file is absent.
+const LOGO_FILE = path.join(__dirname, '..', '..', 'assets', 'social-logo.png');
+let LOGO_URI = '';
+try { if (fs.existsSync(LOGO_FILE)) LOGO_URI = 'data:image/png;base64,' + fs.readFileSync(LOGO_FILE).toString('base64'); } catch { /* badge fallback */ }
+
 const CAT = {
   education: ['#002344', '#0b3a63', '#FFD166'],
   health: ['#7f1d1d', '#b91c1c', '#FFD166'],
@@ -68,12 +74,14 @@ function postSvg(post) {
   <circle cx="960" cy="120" r="220" fill="${accent}" opacity="0.10"/>
   <circle cx="120" cy="980" r="260" fill="#ffffff" opacity="0.05"/>
 
-  <!-- brand row -->
+  <!-- brand row: organisation emblem + name + motto -->
   <g transform="translate(70,70)">
-    <rect x="0" y="0" width="96" height="96" rx="22" fill="#ffffff"/>
-    <text x="48" y="64" text-anchor="middle" font-size="52" font-weight="800" fill="${c1}">S</text>
-    <text x="120" y="38" font-size="34" font-weight="800" fill="#ffffff">${esc(ORG.name)}</text>
-    <text x="120" y="76" font-size="22" fill="${accent}">${esc(ORG.taglineEn)}</text>
+    ${LOGO_URI
+      ? `<image x="0" y="0" width="104" height="104" href="${LOGO_URI}"/>`
+      : `<rect x="0" y="0" width="104" height="104" rx="24" fill="#ffffff"/><text x="52" y="70" text-anchor="middle" font-size="56" font-weight="800" fill="${c1}">S</text>`}
+    <text x="130" y="40" font-size="36" font-weight="800" fill="#ffffff">${esc(ORG.name)}</text>
+    <text x="130" y="76" font-size="24" font-weight="700" fill="#ffffff">${esc(ORG.mottoEn)}</text>
+    <text x="130" y="106" font-size="22" font-weight="600" fill="${accent}">${esc(ORG.mottoHi)}</text>
   </g>
 
   <!-- bilingual title + subtitle -->

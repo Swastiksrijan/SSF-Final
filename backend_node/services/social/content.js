@@ -11,6 +11,8 @@ const ORG = {
   short: 'SSF',
   taglineEn: 'One Organisation • One Record • Complete Accountability',
   taglineHi: 'एक संस्था • एक रिकॉर्ड • पूर्ण जवाबदेही',
+  mottoEn: 'Creating Change. Inspiring Lives.',
+  mottoHi: 'सहयोग • कौशल • जागरूकता • सृजन',
   website: 'swastiksrijan.in',
   phone: '+91 97183 46691',
   email: 'info@swastiksrijan.in',
