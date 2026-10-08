@@ -209,7 +209,8 @@ function PostCard({ post, onPublish, onEdit, busy }) {
   const [reelBusy, setReelBusy] = useState(false);
   const [reelPct, setReelPct] = useState(0);
   const [copied, setCopied] = useState('');
-  const img = `${import.meta.env.VITE_BACKEND_URL || ''}/api/social/image/daily?postId=${post.id}`;
+  // format=png so the preview shows the exact rasterised image that gets published.
+  const img = `${import.meta.env.VITE_BACKEND_URL || ''}/api/social/image/daily?postId=${post.id}&format=png`;
   const imgSrc = img.startsWith('/') ? `${(import.meta.env.VITE_BACKEND_URL || '').replace(/\/$/, '')}${img}` : img;
 
   const genReel = async () => {

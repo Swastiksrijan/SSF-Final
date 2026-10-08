@@ -15,7 +15,7 @@
 
 const GRAPH = 'https://graph.facebook.com/v21.0';
 const crypto = require('crypto');
-const { postPng } = require('./image');
+const { postPng, site: SITE } = require('./image');
 
 // ---- OAuth 1.0a (X / Twitter) ---------------------------------------------
 // X requires user-context OAuth 1.0a for posting; OAuth2 app tokens are read-only.
@@ -39,8 +39,8 @@ function oauth1Header({ method, url, params, consumerKey, consumerSecret, token,
 }
 
 // Rasterize a post to PNG; null when the rasterizer is unavailable.
-function safePng(post) {
-  try { return postPng(post); } catch { return null; }
+async function safePng(post) {
+  try { return await postPng(post); } catch { return null; }
 }
 
 // Turn a short-lived Facebook user token into a NON-EXPIRING Page token.
@@ -88,9 +88,11 @@ async function exchangeFacebookToken({ appId, appSecret, shortToken }) {
   }
 }
 
-// Bilingual caption used for image posts and plain-text fallbacks.
+// Bilingual caption used for image posts and plain-text fallbacks. A bare URL
+// is appended so the post's "Join Us" button has somewhere to go on platforms
+// that only expose the caption (Facebook/Telegram linkify it automatically).
 function caption(post) {
-  return `${post.bodyEn}\n\n————\n${post.bodyHi}`;
+  return `${post.bodyEn}\n\n————\n${post.bodyHi}\n\n${SITE}`;
 }
 
 async function multipartCall(url, fields) {
@@ -157,7 +159,7 @@ async function publishTelegram(post, creds) {
   const publicBase = process.env.PUBLIC_BASE_URL || '';
   try {
     // Prefer an uploaded PNG so the post always carries the branded visual.
-    const png = safePng(post);
+    const png = await safePng(post);
     if (png) {
       const out = await multipartCall(`https://api.telegram.org/bot${token}/sendPhoto`, {
         chat_id: chatId, caption: text.slice(0, 1024),
@@ -187,7 +189,7 @@ async function publishFacebook(post, creds) {
   const publicBase = process.env.PUBLIC_BASE_URL || '';
   try {
     // Upload the PNG directly (no public URL needed).
-    const png = safePng(post);
+    const png = await safePng(post);
     if (png) {
       const out = await multipartCall(`${GRAPH}/${pageId}/photos`, {
         message: caption(post),
@@ -250,7 +252,7 @@ async function publishLinkedIn(post, creds) {
       isReshareDisabledByAuthor: false,
     };
 
-    const png = safePng(post);
+    const png = await safePng(post);
     if (png) {
       const init = await jsonCall('https://api.linkedin.com/rest/images?action=initializeUpload', {
         headers, body: { initializeUploadRequest: { owner: author } },
@@ -311,7 +313,7 @@ async function publishX(post, creds) {
   const text = caption(post).slice(0, 280);
   try {
     const mediaIds = [];
-    const png = safePng(post);
+    const png = await safePng(post);
     if (png) {
       const form = new FormData();
       form.append('media', new Blob([png], { type: 'image/png' }), 'ssf-post.png');

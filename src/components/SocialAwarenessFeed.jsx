@@ -3,8 +3,10 @@
 // so whatever is published to social handles also appears on the website.
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { Languages, Megaphone } from 'lucide-react';
+import { Languages, Megaphone, ExternalLink } from 'lucide-react';
 import { publicSocial } from '../ims/api';
+
+const SITE = 'https://swastiksrijan.in/';
 
 export default function SocialAwarenessFeed() {
   const [posts, setPosts] = useState([]);
@@ -45,7 +47,9 @@ export default function SocialAwarenessFeed() {
             initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
             transition={{ duration: 0.4, delay: (i % 3) * 0.06 }}
             className="overflow-hidden rounded-2xl border border-white/10 bg-white/5">
-            <img src={publicSocial.imageUrl(p)} alt="" className="aspect-square w-full object-cover" loading="lazy" />
+            <a href={SITE} target="_blank" rel="noopener noreferrer" aria-label="Join Us — swastiksrijan.in" className="block">
+              <img src={publicSocial.imageUrl(p)} alt="" className="aspect-square w-full object-cover" loading="lazy" />
+            </a>
             <div className="p-4">
               <div className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-[#FFD166]">
                 <span>{p.kind === 'awareness' ? (hi ? 'जागरूकता दिवस' : 'Awareness Day') : (hi ? 'दैनिक' : 'Daily')}</span>
@@ -57,6 +61,10 @@ export default function SocialAwarenessFeed() {
                 {(hi ? p.bodyHi : p.bodyEn).split('\n').slice(2, 5).join('\n').trim()}
               </p>
               <p className="mt-3 text-[10px] text-white/40">{p.hashtags}</p>
+              <a href={SITE} target="_blank" rel="noopener noreferrer"
+                className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-[#FF6600] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#e65c00]">
+                <ExternalLink size={13} /> {hi ? 'जुड़ें' : 'Join Us'}
+              </a>
             </div>
           </motion.article>
         ))}

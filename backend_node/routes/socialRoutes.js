@@ -216,7 +216,7 @@ router.get('/social/image/daily', wrap(async (req, r) => {
   }
   const { postPng } = require('../services/social/image');
   if (String(req.query.format).toLowerCase() === 'png') {
-    const png = postPng(post);
+    const png = await postPng(post);
     if (png) {
       r.set('Content-Type', 'image/png');
       r.set('Cache-Control', 'public, max-age=3600');

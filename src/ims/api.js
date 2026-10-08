@@ -116,5 +116,5 @@ export const ims = {
 // Public (no auth) social feed for the website News/Blog section.
 export const publicSocial = {
   posts: (limit = 20) => fetch(`${API_BASE_URL}/api/social/posts?limit=${limit}`).then(handle),
-  imageUrl: (post) => `${API_BASE_URL}/api/social/image/daily?postId=${post.id}`,
+  imageUrl: (post) => `${API_BASE_URL}/api/social/image/daily?postId=${post.id}&format=png`,
 };
