@@ -71,7 +71,18 @@ async function exchangeFacebookToken({ appId, appSecret, shortToken }) {
       return { ok: false, error: 'no_pages', hint: 'This token manages no Pages. Generate it while logged in as a Page admin.' };
     }
     // A Page token derived from a long-lived user token does not expire.
-    return { ok: true, pages, pageId: pages[0].id, accessToken: pages[0].accessToken };
+    // Prove it with debug_token so the admin can SEE "never expires" (0) rather
+    // than trusting the exchange. `data_access_expires_at` is the separate
+    // data-access window and is intentionally ignored here.
+    const first = pages[0];
+    let expiresAt = 0;
+    try {
+      const appToken = `${appId}|${appSecret}`;
+      const dbg = await fetch(`${GRAPH}/debug_token?input_token=${encodeURIComponent(first.accessToken)}&access_token=${encodeURIComponent(appToken)}`);
+      const djson = await dbg.json().catch(() => null);
+      if (djson && djson.data && typeof djson.data.expires_at === 'number') expiresAt = djson.data.expires_at;
+    } catch { /* expiry is best-effort; the token still works */ }
+    return { ok: true, pages, pageId: first.id, accessToken: first.accessToken, expiresAt };
   } catch (e) {
     return { ok: false, error: e.message };
   }

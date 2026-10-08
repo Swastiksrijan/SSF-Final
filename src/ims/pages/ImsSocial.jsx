@@ -73,9 +73,17 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, busy }) {
     setFbBusy(true); setFbMsg('');
     try {
       const out = await onFbExchange(fb);
-      setFbMsg(out && out.ok
-        ? (lang === 'hi' ? `✅ स्थायी token सेव हुआ — पेज: ${out.pageName || out.pageId}` : `✅ Permanent token saved — page: ${out.pageName || out.pageId}`)
-        : `⚠️ ${(out && (out.error || out.hint)) || 'failed'}`);
+      if (out && out.ok) {
+        const never = !out.expiresAt;
+        const tail = never
+          ? (lang === 'hi' ? 'कभी expire नहीं होगा ✅' : 'never expires ✅')
+          : (lang === 'hi' ? `expire: ${new Date(out.expiresAt * 1000).toLocaleString('en-IN')}` : `expires: ${new Date(out.expiresAt * 1000).toLocaleString('en-IN')}`);
+        setFbMsg(lang === 'hi'
+          ? `✅ स्थायी token सेव हुआ — पेज: ${out.pageName || out.pageId} · ${tail}`
+          : `✅ Permanent token saved — page: ${out.pageName || out.pageId} · ${tail}`);
+      } else {
+        setFbMsg(`⚠️ ${(out && (out.error || out.hint)) || 'failed'}`);
+      }
     } catch (e) { setFbMsg(`⚠️ ${e.message}`); } finally { setFbBusy(false); }
   };
 

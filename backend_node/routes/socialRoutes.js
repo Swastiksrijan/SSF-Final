@@ -175,7 +175,7 @@ router.post('/social/facebook/exchange', requireAuth, wrap(async (req, r) => {
     credentials: { pageId: chosen.id, accessToken: chosen.accessToken },
     lastError: null,
   });
-  return r.json({ ok: true, pageId: chosen.id, pageName: chosen.name, pages: out.pages.map((p) => ({ id: p.id, name: p.name })) });
+  return r.json({ ok: true, pageId: chosen.id, pageName: chosen.name, expiresAt: out.expiresAt || 0, pages: out.pages.map((p) => ({ id: p.id, name: p.name })) });
 }));
 
 // Send a live test message using the SAVED credentials (no publish needed).
