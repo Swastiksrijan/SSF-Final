@@ -176,6 +176,7 @@ export const DICT = {
   committees: { en: 'Committees', hi: 'समितियाँ' },
   organisations: { en: 'Organisation Master', hi: 'संस्था मास्टर' },
   org_profile: { en: 'Organisation Profile', hi: 'संस्था परिचय' },
+  org_profile_pdf: { en: 'Profile PDF (Shareable)', hi: 'परिचय PDF (साझा योग्य)' },
   managing_committee: { en: 'Managing Committee', hi: 'प्रबंधकारिणी समिति' },
   membership_contributions: { en: 'Membership & Contribution', hi: 'सदस्यता व योगदान' },
   appointment_letters: { en: 'Appointment Letters', hi: 'नियुक्ति पत्र' },

@@ -72,6 +72,7 @@ import { Route as ImsRegistersRouteImport } from './routes/ims/registers'
 import { Route as ImsProcurementRouteImport } from './routes/ims/procurement'
 import { Route as ImsPoliciesRouteImport } from './routes/ims/policies'
 import { Route as ImsPermissionsRouteImport } from './routes/ims/permissions'
+import { Route as ImsOrgProfilePdfRouteImport } from './routes/ims/org-profile-pdf'
 import { Route as ImsOrgProfileRouteImport } from './routes/ims/org-profile'
 import { Route as ImsOfficialDocumentsRouteImport } from './routes/ims/official-documents'
 import { Route as ImsOfficeRouteImport } from './routes/ims/office'
@@ -426,6 +427,11 @@ const ImsPermissionsRoute = ImsPermissionsRouteImport.update({
   path: '/ims/permissions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsOrgProfilePdfRoute = ImsOrgProfilePdfRouteImport.update({
+  id: '/ims/org-profile-pdf',
+  path: '/ims/org-profile-pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsOrgProfileRoute = ImsOrgProfileRouteImport.update({
   id: '/ims/org-profile',
   path: '/ims/org-profile',
@@ -693,6 +699,7 @@ export interface FileRoutesByFullPath {
   '/ims/office': typeof ImsOfficeRoute
   '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
+  '/ims/org-profile-pdf': typeof ImsOrgProfilePdfRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -794,6 +801,7 @@ export interface FileRoutesByTo {
   '/ims/office': typeof ImsOfficeRoute
   '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
+  '/ims/org-profile-pdf': typeof ImsOrgProfilePdfRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -897,6 +905,7 @@ export interface FileRoutesById {
   '/ims/office': typeof ImsOfficeRoute
   '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
+  '/ims/org-profile-pdf': typeof ImsOrgProfilePdfRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -1001,6 +1010,7 @@ export interface FileRouteTypes {
     | '/ims/office'
     | '/ims/official-documents'
     | '/ims/org-profile'
+    | '/ims/org-profile-pdf'
     | '/ims/permissions'
     | '/ims/policies'
     | '/ims/procurement'
@@ -1102,6 +1112,7 @@ export interface FileRouteTypes {
     | '/ims/office'
     | '/ims/official-documents'
     | '/ims/org-profile'
+    | '/ims/org-profile-pdf'
     | '/ims/permissions'
     | '/ims/policies'
     | '/ims/procurement'
@@ -1204,6 +1215,7 @@ export interface FileRouteTypes {
     | '/ims/office'
     | '/ims/official-documents'
     | '/ims/org-profile'
+    | '/ims/org-profile-pdf'
     | '/ims/permissions'
     | '/ims/policies'
     | '/ims/procurement'
@@ -1303,6 +1315,7 @@ export interface RootRouteChildren {
   ImsOfficeRoute: typeof ImsOfficeRoute
   ImsOfficialDocumentsRoute: typeof ImsOfficialDocumentsRoute
   ImsOrgProfileRoute: typeof ImsOrgProfileRoute
+  ImsOrgProfilePdfRoute: typeof ImsOrgProfilePdfRoute
   ImsPermissionsRoute: typeof ImsPermissionsRoute
   ImsPoliciesRoute: typeof ImsPoliciesRoute
   ImsProcurementRoute: typeof ImsProcurementRoute
@@ -1770,6 +1783,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsPermissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/org-profile-pdf': {
+      id: '/ims/org-profile-pdf'
+      path: '/ims/org-profile-pdf'
+      fullPath: '/ims/org-profile-pdf'
+      preLoaderRoute: typeof ImsOrgProfilePdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/org-profile': {
       id: '/ims/org-profile'
       path: '/ims/org-profile'
@@ -2135,6 +2155,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsOfficeRoute: ImsOfficeRoute,
   ImsOfficialDocumentsRoute: ImsOfficialDocumentsRoute,
   ImsOrgProfileRoute: ImsOrgProfileRoute,
+  ImsOrgProfilePdfRoute: ImsOrgProfilePdfRoute,
   ImsPermissionsRoute: ImsPermissionsRoute,
   ImsPoliciesRoute: ImsPoliciesRoute,
   ImsProcurementRoute: ImsProcurementRoute,

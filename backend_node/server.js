@@ -14,7 +14,10 @@ if (!emailConfigured()) {
 }
 
 app.use(cors());
-app.use(express.json());
+// Larger limit so generated documents (e.g. the Organisation Profile PDF saved as
+// a data URL) can be created through the IMS. The previous 100kb default rejected
+// them with a 413 before the request ever reached a route.
+app.use(express.json({ limit: '12mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 app.get('/', (_req, res) => res.send('SSF NGO Backend is Running with PostgreSQL!'));
