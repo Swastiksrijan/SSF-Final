@@ -145,21 +145,9 @@ function renderBlock(b, lang) {
         </a>`).join('')}</div>
       </div>`;
     case 'signature':
-      return `<div class="blk sign" data-safe>
-        <div class="sign-issued">
-          <div class="sign-issued-lbl">${t(b.issuedLabel, lang)}</div>
-          <div class="sign-issued-by">${pick(esc(b.issuedByEn), esc(b.issuedByHi), lang)}</div>
-          <div class="sign-issued-org">${pick(esc(b.orgEn), esc(b.orgHi), lang)}</div>
-        </div>
-        <div class="sign-meta">
-          <div><span class="sm-lbl">${t(b.dateLabel, lang)}:</span> <span class="sm-line">&nbsp;</span></div>
-          <div><span class="sm-lbl">${t(b.placeLabel, lang)}:</span> <span class="sm-line">&nbsp;</span></div>
-        </div>
-        <div class="sign-seal">
-          <div class="seal-box"></div>
-          <div class="seal-lbl">${t(b.sealLabel, lang)}</div>
-        </div>
-      </div>`;
+      // Intentionally not used: this is a professional institutional profile,
+      // not a signed certificate — no Authorised Signatory / seal block.
+      return '';
     default:
       return '';
   }
@@ -167,6 +155,29 @@ function renderBlock(b, lang) {
 
 function renderCover(lang) {
   const c = PROFILE_RENDER.cover;
+  // Cover art: an elegant hand-coded vector (no stock-photo collage), echoing
+  // SSF's focus areas — learning, community, growth, health, environment.
+  const art = `<svg class="cover-art" viewBox="0 0 620 220" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <defs>
+      <linearGradient id="cg" x1="0" y1="0" x2="1" y2="1">
+        <stop offset="0" stop-color="#0b3a63"/><stop offset="1" stop-color="#1F7A70"/>
+      </linearGradient>
+    </defs>
+    <!-- rising bars = growth -->
+    <rect x="40"  y="150" width="26" height="50"  rx="5" fill="#dbe7f2"/>
+    <rect x="78"  y="128" width="26" height="72"  rx="5" fill="#c3d6e8"/>
+    <rect x="116" y="104" width="26" height="96"  rx="5" fill="#a9c4dd"/>
+    <rect x="154" y="78"  width="26" height="122" rx="5" fill="#8fb1d1"/>
+    <!-- sun / health -->
+    <circle cx="300" cy="86" r="34" fill="none" stroke="#FF6600" stroke-width="6"/>
+    <circle cx="300" cy="86" r="14" fill="#FF6600" opacity="0.85"/>
+    <!-- open book / education -->
+    <path d="M400 96 q38 -20 76 0 v66 q-38 -20 -76 0 z" fill="url(#cg)"/>
+    <path d="M476 96 q38 -20 76 0 v66 q-38 -20 -76 0 z" fill="#0b3a63" opacity="0.85"/>
+    <line x1="476" y1="96" x2="476" y2="162" stroke="#ffffff" stroke-width="3"/>
+    <!-- ground line -->
+    <line x1="30" y1="200" x2="590" y2="200" stroke="#dbe7f2" stroke-width="4" stroke-linecap="round"/>
+  </svg>`;
   return `<div class="cover" data-safe>
     <div class="cover-top">
       <img class="cover-logo" src="${logoImg}" alt="SSF" />
@@ -178,11 +189,12 @@ function renderCover(lang) {
     <div class="cover-mid">
       <div class="cover-title">${pick(esc(c.title.en), esc(c.title.hi), lang)}</div>
       <div class="cover-sub">${pick(esc(c.subtitle.en), esc(c.subtitle.hi), lang)}</div>
+      ${art}
     </div>
     <div class="cover-foot">
       <div class="cover-reg">Registered under the Madhya Pradesh Societies Registration Act, 1973 · Regn. No. 05/22/03/11448/13</div>
       <div class="cover-reg-hi">मध्य प्रदेश सोसाइटी पंजीकरण अधिनियम, 1973 के अंतर्गत पंजीकृत · पंजीकरण सं. 05/22/03/11448/13</div>
-      <div class="cover-ver"><span class="ver-lbl">${pick(esc(c.versionLabel.en), esc(c.versionLabel.hi), lang)}:</span> <span class="ver-code">${esc(c.code)}</span></div>
+      <div class="cover-ver"><span class="ver-lbl">${pick(esc(c.docIdLabel.en), esc(c.docIdLabel.hi), lang)}:</span> <span class="ver-code">${esc(c.code)}</span> &nbsp;·&nbsp; <span class="ver-lbl">${pick(esc(c.issuedLabel.en), esc(c.issuedLabel.hi), lang)}:</span> <span class="ver-code">${esc(c.issued)}</span></div>
     </div>
   </div>`;
 }
@@ -208,23 +220,18 @@ function renderClosing(lang) {
     <div class="cl-statement">${t(c.statement, lang)}</div>
     <div class="cl-band">${t(c.audience, lang)}</div>
     <div class="cl-contact">
-      <div>${esc(CONTACT_BLOCK.email)}</div>
-      <div>${esc(CONTACT_BLOCK.phone)}</div>
-      <div>${esc(CONTACT_BLOCK.website)}</div>
+      <div class="cl-contact-lbl">${pick('Registered Office', 'पंजीकृत कार्यालय', lang)}</div>
       <div>${esc(CONTACT_BLOCK.address)}</div>
+      <div class="cl-contact-lbl">${pick('Operational Scope', 'कार्यक्षेत्र', lang)}</div>
+      <div>${pick('Pan India', 'सम्पूर्ण भारत', lang)}</div>
+      <div class="cl-contact-lbl">${pick('Contact', 'संपर्क', lang)}</div>
+      <div>${esc(CONTACT_BLOCK.email)} · ${esc(CONTACT_BLOCK.phone)}</div>
+      <div>${esc(CONTACT_BLOCK.website)}</div>
     </div>
-    <div class="cl-sign">
-      <div class="cl-sign-caption">${t(c.signatoryCaption, lang)}</div>
-      <div class="sign-grid">
-        <div><span class="sm-lbl">${t(c.nameLabel, lang)}:</span> <span class="sm-line">&nbsp;</span></div>
-        <div><span class="sm-lbl">${t(c.designationLabel, lang)}:</span> <span class="sm-line">&nbsp;</span></div>
-        <div><span class="sm-lbl">${t(c.dateLabel, lang)}:</span> <span class="sm-line">&nbsp;</span></div>
-        <div><span class="sm-lbl">${t(c.placeLabel, lang)}:</span> <span class="sm-line">&nbsp;</span></div>
-      </div>
-      <div class="sign-seal">
-        <div class="seal-box"></div>
-        <div class="seal-lbl">${t(c.sealLabel, lang)}</div>
-      </div>
+    <div class="cl-meta">
+      <span>${pick('Organisation Profile', 'संस्था परिचय', lang)}</span> ·
+      <span>${pick('Document ID', 'दस्तावेज़ आईडी', lang)}: ${esc(PROFILE_DOC.code)}</span> ·
+      <span>${pick('Issued / Updated', 'जारी / अद्यतन', lang)}: ${esc(c.issued)}</span>
     </div>
   </section>`;
 }
@@ -232,8 +239,8 @@ function renderClosing(lang) {
 // Contact block used only by the closing page.
 let CONTACT_BLOCK = { email: '', phone: '', website: '', address: '' };
 function setContactBlock() {
-  const about = PROFILE_RENDER.sections.find((s) => s.id === 'about');
-  const rows = about.blocks.find((b) => b.type === 'kv').rows;
+  const id = PROFILE_RENDER.sections.find((s) => s.id === 'identity');
+  const rows = id.blocks.find((b) => b.type === 'kv').rows;
   const get = (labelEn) => {
     const r = rows.find((x) => x.l.en === labelEn);
     return r ? r.v.en : '';
@@ -273,9 +280,10 @@ const STYLE = `
   .cover-logo { width: 84px; height: 84px; object-fit: contain; }
   .cover-org-en { font-size: 22px; font-weight: 800; color: ${NAVY}; letter-spacing: .01em; }
   .cover-org-hi { font-size: 17px; font-weight: 700; color: ${BLUE}; font-family: 'SSFDevanagari','Mukta',sans-serif; margin-top: 2px; }
-  .cover-mid { margin-top: 220px; border-left: 6px solid ${ORANGE}; padding-left: 26px; }
-  .cover-title { font-size: 44px; font-weight: 800; color: ${NAVY}; line-height: 1.1; }
+  .cover-mid { margin-top: 150px; border-left: 6px solid ${ORANGE}; padding-left: 26px; }
+  .cover-title { font-size: 42px; font-weight: 800; color: ${NAVY}; line-height: 1.1; }
   .cover-sub { margin-top: 18px; font-size: 14px; font-weight: 600; color: ${TEAL}; max-width: 560px; line-height: 1.6; }
+  .cover-art { display: block; width: 100%; max-width: 560px; margin-top: 44px; }
   .cover-foot { margin-top: auto; padding-top: 20px; border-top: 2px solid ${NAVY}; }
   .cover-reg { font-size: 11.5px; font-weight: 700; color: ${NAVY}; }
   .cover-reg-hi { font-size: 10.5px; color: #64748b; margin-top: 3px; font-family: 'SSFDevanagari','Mukta',sans-serif; }
@@ -333,7 +341,7 @@ const STYLE = `
   .link-url { font-size: 10.5px; color: ${TEAL}; }
 
   /* facts strip */
-  .facts { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; }
+  .facts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
   .fact { border: 1px solid #e6edf5; border-top: 3px solid ${ORANGE}; border-radius: 10px;
     padding: 12px 10px; text-align: center; background: #fbfdff; break-inside: avoid; }
   .fact-value { font-size: 21px; font-weight: 800; color: ${NAVY}; line-height: 1; }
@@ -364,27 +372,15 @@ const STYLE = `
   .yr-year { font-size: 13px; font-weight: 800; color: ${NAVY}; }
   .yr-open { font-size: 9px; font-weight: 700; color: ${TEAL}; margin-top: 3px; }
 
-  .sign { border: 1px solid #e6edf5; border-radius: 10px; padding: 18px 18px 14px; }
-  .sign-issued-lbl { font-size: 11px; color: #64748b; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; }
-  .sign-issued-by { font-size: 15px; font-weight: 800; color: ${NAVY}; margin-top: 3px; }
-  .sign-issued-org { font-size: 12px; color: #475569; }
-  .sign-meta { margin-top: 14px; display: flex; gap: 30px; font-size: 12px; color: #475569; }
-  .sm-lbl { font-weight: 700; color: ${BLUE}; }
-  .sm-line { display: inline-block; min-width: 110px; border-bottom: 1px solid #cbd5e1; }
-  .sign-seal { margin-top: 22px; }
-  .seal-box { width: 130px; height: 62px; border: 1.5px dashed #cbd5e1; border-radius: 8px; }
-  .seal-lbl { font-size: 10px; color: #94a3b8; margin-top: 5px; }
-
   /* ── Closing page ──────────────────────────────────────── */
-  .closing { text-align: center; padding-top: 40px; }
+  .closing { text-align: center; padding-top: 60px; }
   .cl-org-en { font-size: 26px; font-weight: 800; color: ${NAVY}; }
   .cl-org-hi { font-size: 19px; font-weight: 700; color: ${BLUE}; font-family: 'SSFDevanagari','Mukta',sans-serif; margin-top: 4px; }
   .cl-statement { margin: 24px auto 0; max-width: 560px; font-size: 14px; font-style: italic; color: #334155; }
   .cl-band { margin: 26px auto 0; display: inline-block; background: ${NAVY}; color: #fff; font-weight: 700; font-size: 12.5px; padding: 10px 22px; border-radius: 999px; }
-  .cl-contact { margin-top: 22px; font-size: 12.5px; color: #334155; line-height: 1.9; }
-  .cl-sign { margin-top: 46px; text-align: left; display: inline-block; min-width: 460px; }
-  .cl-sign-caption { font-size: 12px; font-weight: 800; color: ${BLUE}; margin-bottom: 12px; }
-  .sign-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 40px; font-size: 12px; color: #475569; }
+  .cl-contact { margin-top: 30px; font-size: 12.5px; color: #334155; line-height: 1.6; }
+  .cl-contact-lbl { font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .06em; color: ${TEAL}; margin-top: 12px; }
+  .cl-meta { margin-top: 34px; font-size: 11px; color: #94a3b8; font-family: ui-monospace, monospace; }
 `;
 
 async function ensureFonts() {
@@ -429,6 +425,16 @@ function safeBoundaries(host, scale) {
   content.querySelectorAll('[data-safe]').forEach(add);
   // line-level boundaries so an oversized block can still split cleanly
   content.querySelectorAll('li, .kvrow, .card-line, .link-row, .callout p, .para-text, tbody tr, .gal-item, .doc-card, .yr-chip, .fact').forEach(add);
+  // Keep-with-next: a section head must never be the last thing on a page, so
+  // the top of the element immediately following a head is not a valid break.
+  content.querySelectorAll('.sec-head').forEach((h) => {
+    let nxt = h.nextElementSibling;
+    while (nxt) {
+      const r = nxt.getBoundingClientRect();
+      if (r.height > 0) { pts.delete(Math.round((r.top - hostTop) * scale)); break; }
+      nxt = nxt.nextElementSibling;
+    }
+  });
   return [...pts].sort((a, b) => a - b);
 }
 
@@ -491,7 +497,9 @@ function drawFooters(pdf) {
 // Map each rendered link row to its PDF page + position and add jsPDF link
 // annotations, so social links are clickable in the exported PDF.
 function addLinkAnnotations(pdf, host, scale, pages, pageOffset) {
-  const hostTop = host.getBoundingClientRect().top;
+  const hostRect = host.getBoundingClientRect();
+  const hostTop = hostRect.top;
+  const hostLeft = hostRect.left;
   const links = host.querySelectorAll('a[data-link]');
   links.forEach((a) => {
     const r = a.getBoundingClientRect();
@@ -505,11 +513,16 @@ function addLinkAnnotations(pdf, host, scale, pages, pageOffset) {
       acc = e;
     }
     if (!page) return;
+    // Horizontal position must follow the element's column, not a fixed margin:
+    // multi-column link grids otherwise stack every annotation on the left edge,
+    // so clicking one card opens another card's document. r.left is CSS px, so
+    // it converts straight to mm (no /scale — scale is already in yPx below).
+    const localLeftMm = (r.left - hostLeft) * (PAGE_W_MM / PAGE_W_PX) + MARGIN_MM;
     const localTopMm = ((yPx - acc) / scale) * (PAGE_W_MM / PAGE_W_PX) + MARGIN_MM;
     const hMm = (hPx / scale) * (PAGE_W_MM / PAGE_W_PX);
     const wMm = (wPx / scale) * (PAGE_W_MM / PAGE_W_PX);
     pdf.setPage(page + pageOffset);
-    pdf.link(MARGIN_MM, localTopMm, wMm, hMm, { url: a.getAttribute('data-link') });
+    pdf.link(localLeftMm, localTopMm, wMm, hMm, { url: a.getAttribute('data-link') });
   });
 }
 
