@@ -183,10 +183,22 @@ async function publishTelegram(post, creds) {
 }
 
 // ---- Facebook Page ---------------------------------------------------------
+// The token admins save is usually a Business Manager System User token (never
+// expires), but the /photos and /feed endpoints need a Page token. Exchange it
+// when we can; a derived Page token does not expire either.
+async function resolvePageToken(pageId, token) {
+  try {
+    const out = await jsonCall(`${GRAPH}/${pageId}?fields=access_token&access_token=${encodeURIComponent(token)}`, { method: 'GET' });
+    if (out && out.access_token) return out.access_token;
+  } catch { /* the given token may already be a Page token */ }
+  return token;
+}
+
 async function publishFacebook(post, creds) {
   const pageId = pick(creds, 'pageId');
-  const token = pick(creds, 'accessToken');
-  if (!pageId || !token) return missing('Facebook');
+  const stored = pick(creds, 'accessToken');
+  if (!pageId || !stored) return missing('Facebook');
+  const token = await resolvePageToken(pageId, stored);
   const publicBase = process.env.PUBLIC_BASE_URL || '';
   try {
     // Upload the PNG directly (no public URL needed).
@@ -403,7 +415,7 @@ async function testChannel(platform, creds) {
     if (!pageId || !token) return missing('Facebook');
     try {
       // Reading the page with the saved token proves both values work.
-      const out = await jsonCall(`${GRAPH}/${pageId}?fields=name,id&access_token=${encodeURIComponent(token)}`, { method: 'GET' });
+      const out = await jsonCall(`${GRAPH}/${pageId}?fields=name,id&access_token=${encodeURIComponent(await resolvePageToken(pageId, token))}`, { method: 'GET' });
       return { ok: true, platform, page: out?.name || null, url: `https://facebook.com/${pageId}` };
     } catch (e) { return { ok: false, platform, error: e.message }; }
   }
