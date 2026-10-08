@@ -13,7 +13,6 @@ import devaBoldUrl from '../assets/fonts/NotoSansDevanagari-Bold.ttf?url';
 import { PROFILE_DOC } from './orgProfileData';
 
 const NAVY = '#002344';
-const NAVY_DEEP = '#001529';
 const ORANGE = '#FF6600';
 const PAGE_W_MM = 210;
 const PAGE_H_MM = 297;
@@ -128,6 +127,7 @@ async function ensureFonts() {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
     const faces = [
       "800 20px 'Plus Jakarta Sans'", "400 13px 'Plus Jakarta Sans'",
+      "400 13px 'SSFDevanagari'", "700 14px 'SSFDevanagari'",
       "700 14px 'Mukta'", "400 13px 'Mukta'",
       "400 13px 'Noto Serif Devanagari'", "700 14px 'Noto Serif Devanagari'",
     ];
