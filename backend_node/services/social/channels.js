@@ -342,14 +342,29 @@ async function publishX(post, creds) {
 // it directly: GET /{pageId}?fields=instagram_business_account.
 async function resolveInstagramAccount({ pageId, accessToken }) {
   if (!pageId || !accessToken) return { ok: false, error: 'missing_inputs', hint: 'Connect Facebook first (its token also works for Instagram).' };
+  // A Page token is needed for the page-backed fields; fall back to the user
+  // token when the Page token cannot be read.
+  let pageToken = accessToken;
   try {
-    const out = await jsonCall(`${GRAPH}/${pageId}?fields=instagram_business_account{id,username}&access_token=${encodeURIComponent(accessToken)}`, { method: 'GET' });
-    const ig = out && out.instagram_business_account;
-    if (!ig || !ig.id) {
-      return { ok: false, error: 'no_linked_instagram', hint: 'Link an Instagram Business account to this Facebook Page, then retry.' };
-    }
-    return { ok: true, igUserId: ig.id, username: ig.username || null };
-  } catch (e) { return { ok: false, error: e.message }; }
+    const pt = await jsonCall(`${GRAPH}/${pageId}?fields=access_token&access_token=${encodeURIComponent(accessToken)}`, { method: 'GET' });
+    if (pt && pt.access_token) pageToken = pt.access_token;
+  } catch { /* keep the given token */ }
+
+  const call = async (tok, fields) => jsonCall(`${GRAPH}/${pageId}?fields=${fields}&access_token=${encodeURIComponent(tok)}`, { method: 'GET' }).catch(() => null);
+
+  // 1) Preferred: the standard Instagram Business account link.
+  const std = await call(pageToken, 'instagram_business_account{id,username}');
+  if (std && std.instagram_business_account && std.instagram_business_account.id) {
+    return { ok: true, igUserId: std.instagram_business_account.id, username: std.instagram_business_account.username || null, link: 'business' };
+  }
+  // 2) Fallback: a page-backed Instagram account (works when the IG account is
+  //    managed by the Page even though the standard link is not set yet).
+  const backed = await call(pageToken, 'page_backed_instagram_accounts{id,username}');
+  const acct = backed && backed.page_backed_instagram_accounts && backed.page_backed_instagram_accounts.data && backed.page_backed_instagram_accounts.data[0];
+  if (acct && acct.id) {
+    return { ok: true, igUserId: acct.id, username: acct.username || null, link: 'page_backed' };
+  }
+  return { ok: false, error: 'no_linked_instagram', hint: 'Instagram is not linked to this Facebook Page. In the Page settings, connect the Instagram account (Professional/Business) to the Page, then retry.' };
 }
 
 const ADAPTERS = {
