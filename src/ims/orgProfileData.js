@@ -73,7 +73,6 @@ export const PROFILE_RENDER = {
           kv('Registration Act', 'पंजीकरण अधिनियम', 'Madhya Pradesh Societies Registration Act, 1973', 'मध्य प्रदेश सोसाइटी पंजीकरण अधिनियम, 1973'),
           kv('Operational Scope', 'कार्यक्षेत्र', 'Pan India', 'सम्पूर्ण भारत'),
           kv('Registered Office', 'पंजीकृत कार्यालय', 'Ward No. 1, Dadar, Post Rahat, District Rewa, MP 486446', 'वार्ड नं. 1, दादर, पोस्ट राहत, जिला रीवा, म.प्र. 486446'),
-          kv('Operational Office', 'प्रचालन कार्यालय', CONTACT_INFO.address.operational, 'पुणे, महाराष्ट्र, भारत'),
           kv('Website', 'वेबसाइट', 'www.swastiksrijan.in', 'www.swastiksrijan.in'),
           kv('Official Email', 'आधिकारिक ईमेल', CONTACT_INFO.primaryEmail, CONTACT_INFO.primaryEmail),
           kv('Official Contact', 'आधिकारिक संपर्क', CONTACT_INFO.phones.primaryFormatted, CONTACT_INFO.phones.primaryFormatted),
