@@ -160,6 +160,21 @@ export function FormDrawer({ open, title, schema, initial, onClose, onSubmit, sa
               return <RefField key={f.name} label={label} required={f.required} resource={r}
                 value={val} onChange={v => set(f.name, v)} />;
             }
+            // A stored file (uploaded data URL or a link) must not be dumped into
+            // a plain text input: multi-megabyte values freeze the drawer and are
+            // unreadable. Show a compact open/download link with a clear action.
+            if (typeof val === 'string' && val.length > 240 && (val.startsWith('data:') || /^https?:\/\//.test(val))) {
+              const kind = val.startsWith('data:image') ? 'Image' : val.startsWith('data:application/pdf') ? 'PDF' : 'File';
+              return <Field key={f.name} label={label}>
+                <div className="flex items-center gap-2">
+                  <a href={val} target="_blank" rel="noreferrer" download
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-[#002344] hover:border-[#FF6600] hover:text-[#FF6600]">
+                    <Icons.Download size={15} /> {kind}
+                  </a>
+                  <button type="button" onClick={() => set(f.name, '')} className="text-xs text-slate-400 hover:text-rose-500">{t('cancel')}</button>
+                </div>
+              </Field>;
+            }
             return <Field key={f.name} label={label} required={f.required}>
               <input type={f.type === 'number' ? 'number' : f.type === 'date' ? 'date' : 'text'}
                 className={inputCls} value={val} onChange={e => set(f.name, f.type === 'number' ? e.target.value : e.target.value)} /></Field>;
