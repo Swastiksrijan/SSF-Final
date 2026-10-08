@@ -18,6 +18,7 @@ export const SECTIONS = {
     subgroups: [
       { labelKey: 'grp_identity', items: [
         { key: 'org_profile', icon: 'Building2', path: '/ims/org-profile' },
+        { key: 'org_profile_pdf', icon: 'FileText', path: '/ims/org-profile-pdf' },
         { key: 'constitution', icon: 'ScrollText', path: '/ims/constitution' },
         { key: 'governanceRules', icon: 'Scale', resource: 'governanceRules' },
         { key: 'policies', icon: 'FileText', resource: 'policies' },
