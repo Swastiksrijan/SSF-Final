@@ -16,12 +16,12 @@ export const SOCIAL_PROFILES = {
     profileUrl: CONTACT_INFO.social.facebook,
     idHint: {
       pageId: {
-        en: 'Page → About → Page transparency shows the Page ID',
-        hi: 'Page → About → Page transparency में Page ID दिखता है',
+        en: 'Business Manager → System Users → assign the Page; the Page ID is under Page settings',
+        hi: 'Business Manager → System Users → Page असाइन करें; Page ID, Page settings में मिलता है',
       },
       accessToken: {
-        en: 'developers.facebook.com → Graph API Explorer → generate a Page token',
-        hi: 'developers.facebook.com → Graph API Explorer से Page token बनाएँ',
+        en: 'Use a Business Manager System User token with pages_manage_posts — it never expires (a plain Graph API Explorer token dies in ~1 hour).',
+        hi: 'Business Manager System User token (pages_manage_posts) इस्तेमाल करें — यह कभी expire नहीं होता (Graph API Explorer का token ~1 घंटे में ख़त्म)।',
       },
     },
   },

@@ -110,6 +110,7 @@ export const ims = {
   socialConnect: (platform, payload) => fetch(`${API_BASE_URL}/api/social/channels/${platform}`, { method: 'POST', headers: headers(), body: JSON.stringify(payload) }).then(handle),
   socialDisconnect: (platform) => fetch(`${API_BASE_URL}/api/social/channels/${platform}`, { method: 'DELETE', headers: headers() }).then(handle),
   socialTestChannel: (platform) => fetch(`${API_BASE_URL}/api/social/channels/${platform}/test`, { method: 'POST', headers: headers() }).then(handle),
+  socialFbExchange: (payload) => fetch(`${API_BASE_URL}/api/social/facebook/exchange`, { method: 'POST', headers: headers(), body: JSON.stringify(payload) }).then(handle),
 };
 
 // Public (no auth) social feed for the website News/Blog section.

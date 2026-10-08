@@ -159,6 +159,25 @@ router.delete('/social/channels/:platform', requireAuth, wrap(async (req, r) => 
   r.json({ ok: true });
 }));
 
+// Exchange a short-lived Facebook user token for a NON-EXPIRING Page token.
+// Admin pastes App ID + App Secret + a short-lived token once; we save the
+// resulting Page token so scheduled posts keep working instead of 401-ing later.
+router.post('/social/facebook/exchange', requireAuth, wrap(async (req, r) => {
+  const { appId, appSecret, shortToken, pageId } = req.body || {};
+  const { exchangeFacebookToken } = require('../services/social/channels');
+  const out = await exchangeFacebookToken({ appId, appSecret, shortToken });
+  if (!out.ok) return r.status(400).json(out);
+  // Prefer the page the admin named; otherwise the first Page the token manages.
+  const chosen = (pageId && out.pages.find((p) => String(p.id) === String(pageId))) || out.pages[0];
+  const [row] = await SocialChannel.findOrCreate({ where: { platform: 'facebook' }, defaults: { platform: 'facebook' } });
+  await row.update({
+    enabled: true, status: 'connected',
+    credentials: { pageId: chosen.id, accessToken: chosen.accessToken },
+    lastError: null,
+  });
+  return r.json({ ok: true, pageId: chosen.id, pageName: chosen.name, pages: out.pages.map((p) => ({ id: p.id, name: p.name })) });
+}));
+
 // Send a live test message using the SAVED credentials (no publish needed).
 router.post('/social/channels/:platform/test', requireAuth, wrap(async (req, r) => {
   const row = await SocialChannel.findOne({ where: { platform: req.params.platform } });

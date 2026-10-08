@@ -43,6 +43,40 @@ function safePng(post) {
   try { return postPng(post); } catch { return null; }
 }
 
+// Turn a short-lived Facebook user token into a NON-EXPIRING Page token.
+//
+// A token from Graph API Explorer (or a Login flow) dies within ~1-2 hours, so
+// scheduled posts silently 401 later. Exchanging it for a long-lived user token
+// and then reading the Page's own token yields a Page token with no expiry, which
+// is what the publisher must store. Requires the app's own App ID + App Secret.
+async function exchangeFacebookToken({ appId, appSecret, shortToken }) {
+  if (!appId || !appSecret || !shortToken) {
+    return { ok: false, error: 'missing_inputs', hint: 'App ID, App Secret and a short-lived user token are all required.' };
+  }
+  const qs = (o) => new URLSearchParams(o).toString();
+  try {
+    // 1) short-lived user token -> long-lived user token (~60 days)
+    let res = await fetch(`${GRAPH}/oauth/access_token?${qs({
+      grant_type: 'fb_exchange_token', client_id: appId, client_secret: appSecret, fb_exchange_token: shortToken,
+    })}`);
+    let data = await res.json().catch(() => null);
+    if (!res.ok || !data || !data.access_token) throw new Error((data && data.error && data.error.message) || `HTTP ${res.status}`);
+    const longUser = data.access_token;
+    // 2) the Pages this user administers, each with its own token
+    res = await fetch(`${GRAPH}/me/accounts?fields=id,name,access_token&access_token=${encodeURIComponent(longUser)}`);
+    data = await res.json().catch(() => null);
+    if (!res.ok) throw new Error((data && data.error && data.error.message) || `HTTP ${res.status}`);
+    const pages = (data && data.data ? data.data : []).map((p) => ({ id: p.id, name: p.name, accessToken: p.access_token }));
+    if (!pages.length) {
+      return { ok: false, error: 'no_pages', hint: 'This token manages no Pages. Generate it while logged in as a Page admin.' };
+    }
+    // A Page token derived from a long-lived user token does not expire.
+    return { ok: true, pages, pageId: pages[0].id, accessToken: pages[0].accessToken };
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+}
+
 // Bilingual caption used for image posts and plain-text fallbacks.
 function caption(post) {
   return `${post.bodyEn}\n\n————\n${post.bodyHi}`;
@@ -356,4 +390,4 @@ async function testChannel(platform, creds) {
   return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };
 }
 
-module.exports = { ADAPTERS, testChannel };
+module.exports = { ADAPTERS, testChannel, exchangeFacebookToken };

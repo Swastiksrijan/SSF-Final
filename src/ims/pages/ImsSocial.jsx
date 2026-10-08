@@ -55,15 +55,29 @@ function KpiBox({ icon, en, hi, value, tone = 'text-[#002344]' }) {
   );
 }
 
-function ChannelCard({ ch, onSave, onDisconnect, onTest, busy }) {
+function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, busy }) {
   const { lang } = useLang();
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({});
   const [copied, setCopied] = useState('');
   const [testing, setTesting] = useState(false);
   const [testMsg, setTestMsg] = useState('');
+  const [fb, setFb] = useState({ appId: '', appSecret: '', shortToken: '' });
+  const [fbBusy, setFbBusy] = useState(false);
+  const [fbMsg, setFbMsg] = useState('');
   const required = ch.fields || [];
   const profileUrl = profileUrlFor(ch.platform);
+
+  // One-time exchange: short-lived token -> permanent Page token.
+  const runFbExchange = async () => {
+    setFbBusy(true); setFbMsg('');
+    try {
+      const out = await onFbExchange(fb);
+      setFbMsg(out && out.ok
+        ? (lang === 'hi' ? `✅ स्थायी token सेव हुआ — पेज: ${out.pageName || out.pageId}` : `✅ Permanent token saved — page: ${out.pageName || out.pageId}`)
+        : `⚠️ ${(out && (out.error || out.hint)) || 'failed'}`);
+    } catch (e) { setFbMsg(`⚠️ ${e.message}`); } finally { setFbBusy(false); }
+  };
 
   const copyProfile = async () => {
     try { await navigator.clipboard.writeText(profileUrl); setCopied('url'); setTimeout(() => setCopied(''), 1500); } catch { /* clipboard blocked */ }
@@ -131,6 +145,31 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, busy }) {
                   )}
                 </label>
               ))}
+              {ch.platform === 'facebook' && (
+                <div className="mt-1 rounded-xl border border-[#FF6600]/30 bg-[#FFF7F0] p-3">
+                  <div className="text-[11px] font-bold text-[#002344]">
+                    {lang === 'hi' ? '🔁 स्थायी token बनाएँ (कभी expire न हो)' : '🔁 Get a permanent token (never expires)'}
+                  </div>
+                  <p className="mt-1 text-[10px] leading-snug text-slate-500">
+                    {lang === 'hi'
+                      ? 'Facebook App ID, App Secret और एक छोटा user token डालें — हम उसे स्थायी Page token में बदलकर सेव कर देंगे।'
+                      : 'Enter the Facebook App ID, App Secret and a short-lived user token — we exchange it for a permanent Page token and save it.'}
+                  </p>
+                  <div className="mt-2 space-y-2">
+                    {[['appId', 'App ID'], ['appSecret', 'App Secret'], ['shortToken', lang === 'hi' ? 'छोटा user token' : 'Short-lived user token']].map(([k, ph]) => (
+                      <input key={k} type={k === 'appSecret' || k === 'shortToken' ? 'password' : 'text'}
+                        value={fb[k]} onChange={(e) => setFb((s) => ({ ...s, [k]: e.target.value }))}
+                        placeholder={ph} className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-[#FF6600]" />
+                    ))}
+                  </div>
+                  <div className="mt-2">
+                    <Button variant="ghost" icon="KeyRound" disabled={fbBusy} onClick={runFbExchange}>
+                      {fbBusy ? (lang === 'hi' ? 'बदल रहे हैं…' : 'Exchanging…') : (lang === 'hi' ? 'स्थायी token बनाएँ' : 'Exchange for permanent token')}
+                    </Button>
+                  </div>
+                  {fbMsg && <div className="mt-1 text-[11px] font-semibold text-slate-600">{fbMsg}</div>}
+                </div>
+              )}
               <div className="flex flex-wrap items-center gap-2 pt-1">
                 <Button disabled={busy} icon="Check" onClick={() => { onSave(ch.platform, { ...form, enabled: true }); setForm({}); setOpen(false); }}>
                   {lang === 'hi' ? 'सहेजें' : 'Save & connect'}
@@ -325,6 +364,7 @@ export default function ImsSocial() {
                 <ChannelCard key={ch.platform} ch={ch} busy={busy}
                   onSave={(p, payload) => run(() => ims.socialConnect(p, payload), lang === 'hi' ? 'चैनल अपडेट' : 'Channel updated')}
                   onTest={(p) => ims.socialTestChannel(p)}
+                  onFbExchange={(payload) => ims.socialFbExchange(payload).then((out) => { if (out && out.ok) run(() => Promise.resolve(out), lang === 'hi' ? 'स्थायी token सेव' : 'Permanent token saved'); return out; })}
                   onDisconnect={(p) => run(() => ims.socialDisconnect(p), lang === 'hi' ? 'डिसकनेक्ट' : 'Disconnected')} />
               ))}
             </div>
