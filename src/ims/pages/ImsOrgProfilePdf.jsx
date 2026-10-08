@@ -24,6 +24,7 @@ export default function ImsOrgProfilePdf() {
   const [busy, setBusy] = useState('');
   const [notice, setNotice] = useState('');
   const [preview, setPreview] = useState(null); // { url }
+  const [generatedAt] = useState(() => new Date().toISOString().slice(0, 10));
 
   const docTitle = lang === 'hi' ? 'संस्था परिचय पत्र' : 'Organisation Profile';
 
@@ -94,10 +95,15 @@ export default function ImsOrgProfilePdf() {
               </h1>
               <p className="mt-1 max-w-3xl text-sm text-white/70">
                 {lang === 'hi'
-                  ? 'वेबसाइट एवं एसएसएफ-आईएमएस की सम्पूर्ण जानकारी से बनी एक पेशेवर, द्विभाषी संस्था परिचय — सीएसआर, कंपनी या शासकीय संस्थाओं को भेजने के लिए।'
-                  : 'A professional, bilingual organisation profile built from the website + SSF-IMS records — ready to send to a CSR partner, company or government body.'}
+                  ? 'संस्था के आधिकारिक अभिलेखों से बनी एक पेशेवर, द्विभाषी संस्था परिचय — सीएसआर, कंपनी या शासकीय संस्थाओं को भेजने के लिए।'
+                  : 'A professional, bilingual organisation profile built from the Foundation\u2019s official records — ready to send to a CSR partner, company or government body.'}
               </p>
               <span className="mt-3 inline-block rounded-lg bg-white/10 px-3 py-1 font-mono text-[11px] text-white/70">{PROFILE_DOC.code}</span>
+              <p className="mt-2 text-[11px] text-white/60">
+                {(lang === 'hi' ? 'संस्करण' : 'Version')}: <span className="font-mono">{PROFILE_DOC.code}</span>
+                {' · '}
+                {(lang === 'hi' ? 'निर्मित दिनांक' : 'Generated')}: <span className="font-mono">{generatedAt}</span>
+              </p>
             </div>
           </div>
         </div>
