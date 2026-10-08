@@ -293,10 +293,19 @@ async function publishWhatsApp(post, creds) {
   const token = pick(creds, 'accessToken');
   const to = pick(creds, 'to');
   if (!phoneNumberId || !token || !to) return missing('WhatsApp');
+  // WhatsApp fetches the image itself, so it must be a public URL.
+  let img = pick(post, 'imageUrl');
+  if (img && !/^https?:\/\//i.test(img)) {
+    img = `${(process.env.PUBLIC_BASE_URL || '').replace(/\/$/, '')}${img}`;
+  }
+  const text = caption(post);
   try {
+    const payload = img
+      ? { messaging_product: 'whatsapp', to, type: 'image', image: { link: img, caption: text.slice(0, 1024) } }
+      : { messaging_product: 'whatsapp', to, type: 'text', text: { preview_url: true, body: text.slice(0, 4096) } };
     const out = await jsonCall(`${GRAPH}/${phoneNumberId}/messages`, {
       headers: { Authorization: `Bearer ${token}` },
-      body: { messaging_product: 'whatsapp', to, type: 'text', text: { body: post.bodyEn } },
+      body: payload,
     });
     return { ok: true, url: out?.messages?.[0]?.id ? `wa://${to}` : null };
   } catch (e) { return { ok: false, error: e.message }; }
