@@ -28,6 +28,7 @@ const PAGE_H_MM = 297;
 const MARGIN_MM = 12;
 const FOOTER_MM = 12;
 const BODY_MM = PAGE_H_MM - MARGIN_MM - FOOTER_MM; // usable slice height
+const IMG_W_MM = PAGE_W_MM - 2 * MARGIN_MM; // rendered body image width (inset by margins)
 const PAGE_W_PX = 794;   // A4 @ 96dpi
 
 const esc = (s) => String(s == null ? '' : s)
@@ -515,12 +516,18 @@ function addLinkAnnotations(pdf, host, scale, pages, pageOffset) {
     if (!page) return;
     // Horizontal position must follow the element's column, not a fixed margin:
     // multi-column link grids otherwise stack every annotation on the left edge,
-    // so clicking one card opens another card's document. r.left is CSS px, so
-    // it converts straight to mm (no /scale — scale is already in yPx below).
-    const localLeftMm = (r.left - hostLeft) * (PAGE_W_MM / PAGE_W_PX) + MARGIN_MM;
+    // so clicking one card opens another card's document.
+    //
+    // The body image is placed inset by MARGIN_MM, so it is IMG_W_MM wide, not
+    // PAGE_W_MM. Using the full page width here overshoots every column by the
+    // margin ratio (~13%), shifting the right-hand column's box past its card so
+    // a click lands on the neighbouring (left) card's annotation. Height is
+    // placed with the PAGE_W_MM ratio, so the vertical factor stays as-is.
+    const mmX = IMG_W_MM / PAGE_W_PX;
+    const localLeftMm = (r.left - hostLeft) * mmX + MARGIN_MM;
     const localTopMm = ((yPx - acc) / scale) * (PAGE_W_MM / PAGE_W_PX) + MARGIN_MM;
     const hMm = (hPx / scale) * (PAGE_W_MM / PAGE_W_PX);
-    const wMm = (wPx / scale) * (PAGE_W_MM / PAGE_W_PX);
+    const wMm = (wPx / scale) * mmX;
     pdf.setPage(page + pageOffset);
     pdf.link(localLeftMm, localTopMm, wMm, hMm, { url: a.getAttribute('data-link') });
   });
