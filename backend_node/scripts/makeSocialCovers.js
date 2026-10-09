@@ -167,6 +167,38 @@ function accentBar(ctx, x, y, w) {
   roundRect(ctx, x, y, w, 8, 4); ctx.fill();
 }
 
+const save = (name, canvas) => fs.writeFileSync(path.join(OUT_DIR, name), canvas.toBuffer('image/png'));
+const newCanvas = (W, H) => {
+  const canvas = createCanvas(W, H);
+  const ctx = canvas.getContext('2d');
+  ctx.textBaseline = 'alphabetic';
+  return { canvas, ctx };
+};
+
+// Website/page header: wide hero band, decorative by default or carrying a
+// head/theme. `photo` (optional) drops a round photo frame at the right.
+function siteHeader({ name, W, H, titleEn, titleHi, tagline, photo, ring }) {
+  const { canvas, ctx } = newCanvas(W, H);
+  paintBackground(ctx, W, H);
+  const M = Math.round(H * 0.11);
+  accentBar(ctx, M, M - 6, Math.round(H * 0.28));
+  ctx.fillStyle = '#ffffff'; ctx.textAlign = 'left';
+  const s1 = fitFont(ctx, titleEn, 'NotoSansB', 800, W - M * 2 - (photo ? H * 0.62 : 0), Math.round(H * 0.42));
+  ctx.font = EN(s1);
+  ctx.fillText(titleEn, M, Math.round(H * 0.5));
+  if (titleHi) { ctx.fillStyle = YELLOW; ctx.font = HI(Math.round(H * 0.2)); ctx.fillText(titleHi, M, Math.round(H * 0.72)); }
+  if (tagline) {
+    ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.8;
+    ctx.font = ENr(Math.round(H * 0.11)); ctx.fillText(tagline, M, H - M);
+    ctx.globalAlpha = 1;
+  }
+  if (photo) {
+    const r = Math.round(H * 0.30);
+    drawCirclePhoto(ctx, photo, W - M - r, H / 2, r, ring || YELLOW, Math.max(3, Math.round(H * 0.018)));
+  }
+  save(name, canvas);
+}
+
 // ---- Facebook Page cover (1640 x 664) --------------------------------------
 async function facebookCover() {
   const W = 1640, H = 664, M = 78;
@@ -249,9 +281,102 @@ async function linkedinCover() {
   fs.writeFileSync(path.join(OUT_DIR, 'linkedin-cover-1128x191.png'), canvas.toBuffer('image/png'));
 }
 
+// ---- X (Twitter) header (1500 x 500) ---------------------------------------
+async function xHeader() {
+  const W = 1500, H = 500, M = 64;
+  const { canvas, ctx } = newCanvas(W, H);
+  paintBackground(ctx, W, H);
+  await drawLogo(ctx, M, 54, 96);
+  ctx.fillStyle = '#ffffff'; ctx.textAlign = 'left';
+  const s = fitFont(ctx, BRAND.name, 'NotoSansB', 800, 640, 46);
+  ctx.font = EN(s); ctx.fillText(BRAND.name, M + 116, 100);
+  ctx.fillStyle = YELLOW; ctx.font = HI(28); ctx.fillText(BRAND.mottoHi, M + 116, 138);
+  ctx.fillStyle = '#ffffff'; ctx.font = EN(56); ctx.fillText(BRAND.mottoEn, M, 280);
+  accentBar(ctx, M, 312, 190);
+  ctx.globalAlpha = 0.85; ctx.font = ENr(26);
+  ctx.fillText(BRAND.tagline, M, 372);
+  ctx.globalAlpha = 1;
+  // profile pic overlaps bottom-left on X -> keep contact on the right
+  await drawCirclePhoto(ctx, 'real/green-warriors-students.jpg', 1290, 250, 150, YELLOW, 7);
+  ctx.textAlign = 'right'; ctx.fillStyle = YELLOW; ctx.font = EN(30);
+  ctx.fillText(BRAND.website, W - M, 158);
+  ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.8; ctx.font = ENr(22);
+  ctx.fillText(BRAND.phone, W - M, 192); ctx.globalAlpha = 1;
+  ctx.textAlign = 'left';
+  save('x-header-1500x500.png', canvas);
+}
+
+// ---- YouTube channel art (2560 x 1440, safe zone 1546 x 423 centre) ---------
+async function youtubeBanner() {
+  const W = 2560, H = 1440;
+  const { canvas, ctx } = newCanvas(W, H);
+  paintBackground(ctx, W, H);
+  ctx.textAlign = 'center';
+  await drawLogo(ctx, W / 2 - 70, 470, 140);
+  ctx.fillStyle = '#ffffff'; ctx.font = EN(96);
+  ctx.fillText(BRAND.name, W / 2, 720);
+  ctx.fillStyle = YELLOW; ctx.font = HI(52); ctx.fillText(BRAND.mottoHi, W / 2, 786);
+  ctx.fillStyle = '#ffffff'; ctx.font = EN(88); ctx.fillText(BRAND.mottoEn, W / 2, 900);
+  accentBar(ctx, W / 2 - 150, 936, 300);
+  ctx.globalAlpha = 0.85; ctx.font = ENr(40);
+  ctx.fillText(BRAND.tagline, W / 2, 1010);
+  ctx.globalAlpha = 1;
+  ctx.fillStyle = YELLOW; ctx.font = EN(40);
+  ctx.fillText(`${BRAND.website}    ${BRAND.phone}`, W / 2, 1080);
+  ctx.textAlign = 'left';
+  save('youtube-channel-art-2560x1440.png', canvas);
+}
+
+// ---- Instagram profile logo (320 x 320) ------------------------------------
+async function instagramLogo() {
+  const S = 320;
+  const { canvas, ctx } = newCanvas(S, S);
+  const g = ctx.createLinearGradient(0, 0, S, S);
+  g.addColorStop(0, NAVY_DEEP); g.addColorStop(1, NAVY_MID);
+  ctx.fillStyle = g; ctx.fillRect(0, 0, S, S);
+  await drawLogo(ctx, S / 2 - 96, S / 2 - 96, 192);
+  save('instagram-logo-320x320.png', canvas);
+}
+
+// ---- Website / page headers (variety for the site hero) --------------------
+async function websiteHeaders() {
+  siteHeader({ name: 'header-education-1920x480.png', W: 1920, H: 480,
+    titleEn: 'Education for Every Child', titleHi: 'हर बच्चे के लिए शिक्षा',
+    tagline: BRAND.tagline, photo: 'real/girls-study-group-mat.jpg' });
+  siteHeader({ name: 'header-health-1920x480.png', W: 1920, H: 480,
+    titleEn: 'Health & Care Camps', titleHi: 'स्वास्थ्य और देखभाल',
+    tagline: 'Free check-ups • medicine support • awareness', photo: 'real/vision-health-camp.jpg', ring: ORANGE });
+  siteHeader({ name: 'header-environment-1920x480.png', W: 1920, H: 480,
+    titleEn: 'Green Warriors', titleHi: 'हरित योद्धा',
+    tagline: 'Plant • Protect • Preserve', photo: 'real/tree_plantation.jpg' });
+  siteHeader({ name: 'header-women-1920x480.png', W: 1920, H: 480,
+    titleEn: 'Women Empowerment', titleHi: 'महिला सशक्तिकरण',
+    tagline: 'Skill • Dignity • Independence', photo: 'real/women_empowerment_tailoring.jpg', ring: ORANGE });
+  siteHeader({ name: 'header-skills-1920x480.png', W: 1920, H: 480,
+    titleEn: 'Skills & Employment', titleHi: 'कौशल और रोज़गार',
+    tagline: 'Learn a skill • earn a living', photo: 'real/student-leadership-recitation.jpg' });
+  siteHeader({ name: 'header-community-1920x480.png', W: 1920, H: 480,
+    titleEn: 'Community First', titleHi: 'समुदाय सर्वोपरि',
+    tagline: 'Together we grow', photo: 'real/community-rally-children.jpg', ring: ORANGE });
+  siteHeader({ name: 'header-relief-1920x480.png', W: 1920, H: 480,
+    titleEn: 'Relief & Support', titleHi: 'राहत और सहयोग',
+    tagline: 'Food • Clothes • Emergency aid', photo: 'real/cloth-distribution.jpg' });
+  siteHeader({ name: 'header-youth-1920x480.png', W: 1920, H: 480,
+    titleEn: 'Youth Power', titleHi: 'युवा शक्ति',
+    tagline: 'Energy that builds the nation', photo: 'real/cricket-child.jpg', ring: ORANGE });
+  siteHeader({ name: 'header-cta-band-1920x520.png', W: 1920, H: 520,
+    titleEn: BRAND.mottoEn, titleHi: BRAND.mottoHi, tagline: `${BRAND.website}   |   ${BRAND.phone}` });
+  siteHeader({ name: 'header-office-1920x420.png', W: 1920, H: 420,
+    titleEn: BRAND.name, titleHi: BRAND.mottoHi, tagline: BRAND.tagline, photo: 'real/community-education-meeting.jpg' });
+}
+
 (async () => {
   fs.mkdirSync(OUT_DIR, { recursive: true });
   await facebookCover();
   await linkedinCover();
+  await xHeader();
+  await youtubeBanner();
+  await instagramLogo();
+  await websiteHeaders();
   console.log('Wrote covers to', OUT_DIR);
 })().catch((e) => { console.error(e); process.exit(1); });
