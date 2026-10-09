@@ -141,6 +141,16 @@ async function formCall(url, form) {
   return data || {};
 }
 
+async function graphGet(url) {
+  const res = await fetch(url);
+  const data = await res.json().catch(() => null);
+  if (!res.ok) {
+    const msg = (data && (data.error?.message || data.message)) || `HTTP ${res.status}`;
+    const err = new Error(msg); err.status = res.status; throw err;
+  }
+  return data || {};
+}
+
 const pick = (o, k) => (o && o[k]) || '';
 const missing = (name) => ({ ok: false, error: 'not_connected', hint: `${name} credentials missing` });
 
@@ -244,9 +254,24 @@ async function publishInstagram(post, creds) {
     const container = await formCall(`${GRAPH}/${igUserId}/media`, { image_url: img, caption: caption(post), access_token: token });
     const created = container?.id;
     if (!created) return { ok: false, error: 'container_failed' };
+    // Instagram processes the uploaded image asynchronously; publishing before
+    // status is FINISHED fails with "Media ID is not available". Poll briefly.
+    await waitForIgContainer(created, token);
     const out = await formCall(`${GRAPH}/${igUserId}/media_publish`, { creation_id: created, access_token: token });
     return { ok: true, url: out?.id ? `https://instagram.com/p/${out.id}` : null };
   } catch (e) { return { ok: false, error: e.message }; }
+}
+
+// Wait until an Instagram media container finishes processing (or gives up).
+async function waitForIgContainer(containerId, token, attempts = 12, delayMs = 2500) {
+  for (let i = 0; i < attempts; i += 1) {
+    const st = await graphGet(`${GRAPH}/${containerId}?fields=status_code,status&access_token=${encodeURIComponent(token)}`);
+    const code = st?.status_code;
+    if (code === 'FINISHED') return true;
+    if (code === 'ERROR' || code === 'EXPIRED') throw new Error(st?.status || 'instagram_container_failed');
+    await new Promise((res) => setTimeout(res, delayMs));
+  }
+  return false;
 }
 
 // ---- LinkedIn --------------------------------------------------------------
