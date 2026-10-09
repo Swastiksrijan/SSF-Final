@@ -231,13 +231,14 @@ router.get('/social/image/daily', wrap(async (req, r) => {
     const date = req.query.date ? new Date(req.query.date + 'T06:00:00') : new Date();
     post = content.planPost(date, req.query.slot || 'morning');
   }
-  const { postPng } = require('../services/social/image');
-  if (String(req.query.format).toLowerCase() === 'png') {
-    const png = await postPng(post);
-    if (png) {
-      r.set('Content-Type', 'image/png');
+  const { postPng, postJpeg } = require('../services/social/image');
+  const fmt = String(req.query.format).toLowerCase();
+  if (fmt === 'png' || fmt === 'jpeg' || fmt === 'jpg') {
+    const buf = fmt === 'png' ? await postPng(post) : await postJpeg(post);
+    if (buf) {
+      r.set('Content-Type', fmt === 'png' ? 'image/png' : 'image/jpeg');
       r.set('Cache-Control', 'public, max-age=3600');
-      return r.send(png);
+      return r.send(buf);
     }
   }
   r.set('Content-Type', 'image/svg+xml');

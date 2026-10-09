@@ -232,11 +232,13 @@ async function publishInstagram(post, creds) {
   const igUserId = pick(creds, 'igUserId');
   const token = pick(creds, 'accessToken');
   if (!igUserId || !token) return missing('Instagram');
-  // Instagram fetches the image itself, so it must be a public URL.
+  // Instagram fetches the image itself, so it must be a public URL, and it only
+  // accepts JPEG (a PNG fails with code 9004 "Only photo or video...").
   let img = pick(post, 'imageUrl');
   if (img && !/^https?:\/\//i.test(img)) {
     img = `${(process.env.PUBLIC_BASE_URL || '').replace(/\/$/, '')}${img}`;
   }
+  if (img) img = img.replace(/format=png/i, 'format=jpeg').replace(/\/([^/?]+\.png)(\?|$)/i, (m, f, q) => `/${f.replace(/\.png$/i, '.jpg')}${q || ''}`);
   if (!img) return { ok: false, error: 'public_image_url_unavailable' };
   try {
     const container = await formCall(`${GRAPH}/${igUserId}/media`, { image_url: img, caption: caption(post), access_token: token });

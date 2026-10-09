@@ -171,7 +171,7 @@ function drawLines(ctx, lines, x, y, lh) {
   return cy;
 }
 
-async function drawPost(post) {
+async function drawPost(post, format = 'png') {
   const { createCanvas } = getSkia();
   const [c1, c2, accent] = CAT[post.category] || CAT.community;
   const W = 1080, H = 1080, M = 70;
@@ -247,7 +247,7 @@ async function drawPost(post) {
   ctx.fillText('Join Us', 845, 957);
   ctx.textAlign = 'left';
 
-  return Buffer.from(canvas.toBuffer('image/png'));
+  return Buffer.from(canvas.toBuffer(format === 'jpeg' ? 'image/jpeg' : 'image/png'));
 }
 
 // ---- resvg (fallback only) -------------------------------------------------
@@ -264,7 +264,7 @@ function getResvg() {
 // so callers can fall back to plain text.
 async function postPng(post) {
   if (getSkia()) {
-    try { return await drawPost(post); } catch { /* fall through to resvg */ }
+    try { return await drawPost(post, 'png'); } catch { /* fall through to resvg */ }
   }
   const R = getResvg();
   if (R) {
@@ -277,4 +277,12 @@ async function postPng(post) {
   return null;
 }
 
-module.exports = { postSvg, postPng, site: SITE, isSvgSafe: () => true };
+// JPEG variant: Instagram only accepts JPEG (a PNG is rejected with code 9004).
+async function postJpeg(post) {
+  if (getSkia()) {
+    try { return await drawPost(post, 'jpeg'); } catch { /* fall back to PNG */ }
+  }
+  return postPng(post);
+}
+
+module.exports = { postSvg, postPng, postJpeg, site: SITE, isSvgSafe: () => true };
