@@ -123,6 +123,28 @@ async function drawLogo(ctx, x, y, size) {
   ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(255,209,102,0.85)'; ctx.stroke();
 }
 
+// Round photo frame: centre-crops a real SSF photo into a circle with a ring.
+async function drawCirclePhoto(ctx, file, cx, cy, r, ring = '#FFD166', ringW = 6) {
+  const img = await loadImage(path.join(ROOT, '..', 'public', 'images', file));
+  const d = r * 2;
+  const scale = Math.max(d / img.width, d / img.height);
+  const dw = img.width * scale, dh = img.height * scale;
+  ctx.save();
+  // soft shadow
+  ctx.shadowColor = 'rgba(0,0,0,0.45)';
+  ctx.shadowBlur = 28;
+  ctx.shadowOffsetY = 8;
+  ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+  ctx.fillStyle = '#0b3a63'; ctx.fill();
+  ctx.restore();
+  ctx.save();
+  ctx.beginPath(); ctx.arc(cx, cy, r - ringW / 2, 0, Math.PI * 2); ctx.clip();
+  ctx.drawImage(img, cx - dw / 2, cy - dh / 2, dw, dh);
+  ctx.restore();
+  ctx.beginPath(); ctx.arc(cx, cy, r - ringW / 2, 0, Math.PI * 2);
+  ctx.lineWidth = ringW; ctx.strokeStyle = ring; ctx.stroke();
+}
+
 function drawPill(ctx, x, y, w, h, label) {
   const g = ctx.createLinearGradient(x, y, x + w, y + h);
   g.addColorStop(0, ORANGE);
@@ -174,6 +196,10 @@ async function facebookCover() {
   ctx.font = ENr(30); ctx.fillText(BRAND.tagline, hx, hy + 158);
   ctx.globalAlpha = 1;
 
+  // two round SSF photo frames (centre-right), overlap-free
+  await drawCirclePhoto(ctx, 'real/girls-study-group-mat.jpg', 1085, 250, 145, YELLOW, 7);
+  await drawCirclePhoto(ctx, 'real/tree_plantation.jpg', 1395, 250, 145, ORANGE, 7);
+
   // contact + CTA bottom-right (bottom-left kept clear for the profile pic)
   ctx.textAlign = 'right';
   ctx.fillStyle = YELLOW; ctx.font = EN(34);
@@ -182,7 +208,7 @@ async function facebookCover() {
   ctx.fillText(BRAND.phone, W - M, 598);
   ctx.globalAlpha = 1;
   ctx.textAlign = 'left';
-  drawPill(ctx, W - M - 250, 470, 250, 74, 'Join Us');
+  drawPill(ctx, 1105, 445, 270, 74, 'Join Us');
 
   fs.writeFileSync(path.join(OUT_DIR, 'facebook-cover-1640x664.png'), canvas.toBuffer('image/png'));
 }
@@ -198,7 +224,7 @@ async function linkedinCover() {
   // brand block top-left; bottom-left stays clear (profile pic overlaps it)
   await drawLogo(ctx, M, 26, 84);
   ctx.fillStyle = '#ffffff'; ctx.textAlign = 'left';
-  const nameSize = fitFont(ctx, BRAND.name, 'NotoSansB', 800, 600, 40);
+  const nameSize = fitFont(ctx, BRAND.name, 'NotoSansB', 800, 500, 40);
   ctx.font = EN(nameSize); ctx.fillText(BRAND.name, M + 102, 58);
   ctx.fillStyle = YELLOW; ctx.font = EN(22);
   ctx.fillText(BRAND.mottoEn, M + 102, 90);
@@ -206,9 +232,12 @@ async function linkedinCover() {
   ctx.fillText(BRAND.mottoHi, M + 102, 118);
   ctx.globalAlpha = 1;
 
+  // one round SSF photo frame (centre-right)
+  await drawCirclePhoto(ctx, 'real/community-education-meeting.jpg', 970, 95, 66, YELLOW, 5);
+
   // contact top-right
   ctx.textAlign = 'right';
-  ctx.fillStyle = YELLOW; ctx.font = EN(26); ctx.fillText(BRAND.website, W - M, 70);
+  ctx.fillStyle = YELLOW; ctx.font = EN(26); ctx.fillText(BRAND.website, W - M, 60);
   ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.8; ctx.font = ENr(19);
   ctx.fillText(BRAND.phone, W - M, 100);
   ctx.globalAlpha = 1;
