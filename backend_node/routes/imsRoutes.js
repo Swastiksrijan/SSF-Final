@@ -326,7 +326,8 @@ router.get('/ims/notifications/unread-count', wrap(async (_req, r) => r.json({ u
 router.get('/ims/notifications/sources', wrap(async (_req, r) => r.json(await notif.sourceSummary())));
 
 // Derive any new alerts from the connected source registers (idempotent), then
-// email out anything not yet emailed (no-op unless an email provider is set).
+// send out anything not yet sent on email / WhatsApp / SMS (no-op unless a
+// provider for that channel is configured).
 router.post('/ims/notifications/sync', wrap(async (_req, r) => {
   const sync = await notif.syncNotifications();
   let delivery = { configured: false, sent: 0 };
@@ -334,8 +335,18 @@ router.post('/ims/notifications/sync', wrap(async (_req, r) => {
   r.json({ ...sync, delivery });
 }));
 
-// Email delivery log for an alert (evidence of what was actually sent).
+// Which delivery channels are usable right now (email / whatsapp / sms).
+router.get('/ims/notifications/channels', wrap(async (_req, r) => r.json(notif.channelsStatus())));
+
+// Delivery log for an alert (evidence of what was actually sent, per channel).
 router.get('/ims/notifications/:id/deliveries', wrap(async (req, r) => r.json(await notif.listDeliveries(req.params.id))));
+
+// Deliberate single-alert test send — bypasses the once-only gate so an admin
+// can verify a freshly configured channel. Body: { channels: ['whatsapp'] }.
+router.post('/ims/notifications/:id/test', wrap(async (req, r) => {
+  const channels = Array.isArray((req.body || {}).channels) ? req.body.channels : ['email'];
+  r.json(await notif.sendTest(req.params.id, channels));
+}));
 
 // Mark one alert read (per-user; never touches the source record).
 router.post('/ims/notifications/:id/read', wrap(async (req, r) => r.json(await notif.markRead(req.params.id, req))));

@@ -38,6 +38,7 @@ const DELIVERY_TONE = {
   delivered: 'bg-emerald-100 text-emerald-700',
   failed: 'bg-rose-100 text-rose-700',
   pending: 'bg-amber-100 text-amber-700',
+  skipped: 'bg-slate-100 text-slate-500',
   read: 'bg-emerald-100 text-emerald-700',
 };
 // Label + icon for each watched source register.
@@ -67,12 +68,29 @@ export default function ImsNotificationsCentre() {
   const [q, setQ] = useState('');
   const [detail, setDetail] = useState(null);
   const [deliveries, setDeliveries] = useState([]);
+  const [channels, setChannels] = useState(null);
+  const [testing, setTesting] = useState('');
+  const [testMsg, setTestMsg] = useState(null);
 
-  // Load the email delivery log when an alert is opened (evidence of what was sent).
+  useEffect(() => { ims.notificationChannels().then(setChannels).catch(() => setChannels(null)); }, []);
+
+  // Load the delivery log when an alert is opened (evidence of what was sent).
   useEffect(() => {
+    setTestMsg(null);
     if (!detail?.id) { setDeliveries([]); return; }
     ims.notificationDeliveries(detail.id).then((d) => setDeliveries(d.attempts || [])).catch(() => setDeliveries([]));
   }, [detail?.id]);
+
+  const runTest = async (channel) => {
+    setTesting(channel); setTestMsg(null);
+    try {
+      const out = await ims.notificationTest(detail.id, [channel]);
+      const r = (out.results || [])[0] || {};
+      setTestMsg(r.ok ? { ok: true, text: `${channel} → ${r.to || 'sent'}` } : { ok: false, text: `${channel}: ${r.error || 'failed'}` });
+      const d = await ims.notificationDeliveries(detail.id);
+      setDeliveries(d.attempts || []);
+    } catch (e) { setTestMsg({ ok: false, text: e.message }); } finally { setTesting(''); }
+  };
 
   const loadNotifs = useCallback(async () => {
     setLoading(true); setErr('');
@@ -397,15 +415,46 @@ export default function ImsNotificationsCentre() {
               <div><div className="text-[11px] font-bold uppercase text-slate-400">{t('source_record')}</div><div className="font-mono">{detail.sourceRecordId || '—'}</div></div>
             </div>
             <div>
-              <div className="mb-1 text-[11px] font-bold uppercase text-slate-400">{t('email_delivery')}</div>
+              <div className="mb-1 flex items-center justify-between">
+                <span className="text-[11px] font-bold uppercase text-slate-400">{t('delivery_channels')}</span>
+                <span className="text-[10px] text-slate-400">
+                  {detail.responsibleEmail || detail.responsibleMobile
+                    ? [detail.responsibleEmail, detail.responsibleMobile].filter(Boolean).join(' · ')
+                    : t('no_contact_details')}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-1.5">
+                {['email', 'whatsapp', 'sms'].map((ch) => {
+                  const on = channels && channels[ch];
+                  const I = Icons[ch === 'email' ? 'Mail' : ch === 'whatsapp' ? 'MessageCircle' : 'Smartphone'];
+                  return (
+                    <button
+                      key={ch} type="button" disabled={!on || testing === ch}
+                      onClick={() => runTest(ch)} title={on ? t('send_test') : t('not_configured')}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition ${on ? 'border-slate-200 text-slate-600 hover:border-[#002344] hover:text-[#002344]' : 'cursor-not-allowed border-dashed border-slate-200 text-slate-300'}`}
+                    >
+                      <I size={13} /> {ch === 'whatsapp' ? 'WhatsApp' : ch === 'sms' ? 'SMS' : 'Email'}
+                      {testing === ch ? <Icons.Loader2 size={12} className="animate-spin" /> : on ? <Icons.Send size={11} /> : <Icons.Minus size={11} />}
+                    </button>
+                  );
+                })}
+              </div>
+              {testMsg && (
+                <p className={`mt-1 text-xs ${testMsg.ok ? 'text-emerald-600' : 'text-rose-600'}`}>{testMsg.text}</p>
+              )}
+            </div>
+
+            <div>
+              <div className="mb-1 text-[11px] font-bold uppercase text-slate-400">{t('delivery_log')}</div>
               {deliveries.length === 0 ? (
                 <p className="text-xs text-slate-400">{t('no_delivery_yet')}</p>
               ) : (
                 <ul className="space-y-1">
                   {deliveries.map((a) => (
                     <li key={a.id} className="flex items-center gap-2 text-xs text-slate-600">
-                      <Pill tone={DELIVERY_TONE[a.status] || 'bg-slate-100 text-slate-500'}>{a.status}</Pill>
-                      <span className="truncate">{a.detail || a.channel}</span>
+                      <Pill tone={DELIVERY_TONE[a.status] || 'bg-slate-100 text-slate-500'}>{a.channel}</Pill>
+                      <span className="shrink-0 text-slate-400">{a.status}</span>
+                      <span className="truncate">{a.detail}</span>
                       <span className="ml-auto shrink-0 font-mono text-[10px] text-slate-400">{a.attemptedAt ? String(a.attemptedAt).slice(0, 16).replace('T', ' ') : ''}</span>
                     </li>
                   ))}

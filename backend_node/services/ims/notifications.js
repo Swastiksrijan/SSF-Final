@@ -282,7 +282,7 @@ async function enrich(rows) {
   if (personIds.size) {
     try {
       const found = await models.ImsPerson.findAll({ where: { id: [...personIds] } });
-      for (const p of found) people.set(p.id, { name: p.fullName || p.recordId, email: p.email || null });
+      for (const p of found) people.set(p.id, { name: p.fullName || p.recordId, email: p.email || null, mobile: p.mobile || p.altMobile || null });
     } catch { /* names are best-effort */ }
   }
   return rows.map((r) => {
@@ -297,6 +297,7 @@ async function enrich(rows) {
     const person = o.responsiblePersonId ? people.get(o.responsiblePersonId) : null;
     o.responsibleName = person ? person.name : null;
     o.responsibleEmail = person ? person.email : null;
+    o.responsibleMobile = person ? person.mobile : null;
     return o;
   });
 }
@@ -359,60 +360,172 @@ function emailHtml(alert) {
   </div>`;
 }
 
+// Short phone-friendly text for WhatsApp / SMS.
+function shortText(alert) {
+  return `[SSF] ${alert.title}: ${alert.message} Open: ${absoluteLink(alert.sourceLink)}`;
+}
+
 /**
- * Email out any alert that has not been emailed yet. Idempotent: an alert is
- * sent at most once (a successful 'email' delivery attempt is the gate), so
+ * Send every alert that has not yet gone out on each channel. Idempotent per
+ * channel: a successful delivery attempt for (alert, channel) is the gate, so
  * repeated boots/refreshes never spam. Never edits the source record.
+ *
+ *   email    — always attempted (provider-gated inside mailer.js)
+ *   whatsapp — the responsible person's mobile (Meta Cloud API), if configured
+ *   sms      — the responsible person's mobile (Twilio), if WHATSAPP_DISABLED
+ *              is not set and no WhatsApp is configured (opt-in, costs money)
+ *
+ * opts.channels narrows the channels (e.g. ['whatsapp'] for a test send).
  */
-async function deliverNotifications({ limit = 100 } = {}) {
+async function deliverNotifications({ limit = 100, channels = null } = {}) {
   const { sendMail, emailConfigured } = require('../mailer');
-  if (!emailConfigured()) return { configured: false, sent: 0, skipped: 0, failed: 0 };
+  const msg = require('../messaging');
+
+  const want = (c) => !channels || channels.includes(c);
+  const explicit = Array.isArray(channels);
+  const waConfigured = msg.whatsappConfigured();
+  const active = {
+    email: want('email') && emailConfigured(),
+    whatsapp: want('whatsapp') && waConfigured,
+    // Prefer WhatsApp (free); fall back to SMS only when it is off, or when a
+    // channel is explicitly requested. Avoids paying twice for the same alert.
+    sms: want('sms') && msg.smsConfigured() && (explicit || !waConfigured),
+  };
+  if (!active.email && !active.whatsapp && !active.sms) {
+    return { configured: false, sent: 0, skipped: 0, failed: 0, channels: active };
+  }
 
   const pending = await models.ImsNotification.findAll({ where: { dismissed: false }, order: [['dueDate', 'ASC']], limit });
   const enriched = await enrich(pending);
 
-  // Which alerts already have a successful email attempt?
-  const done = new Set();
+  // Alerts already delivered successfully on each channel.
+  const done = { email: new Set(), whatsapp: new Set(), sms: new Set() };
   try {
-    const attempts = await models.ImsDeliveryAttempt.findAll({ where: { channel: 'email', status: 'sent' } });
-    for (const a of attempts) done.add(String(a.notificationId));
-  } catch { /* if the table is not ready, treat as none done */ }
+    const attempts = await models.ImsDeliveryAttempt.findAll({ where: { status: 'sent' } });
+    for (const a of attempts) if (done[a.channel]) done[a.channel].add(String(a.notificationId));
+  } catch { /* table not ready — treat as nothing done */ }
+
+  const logAttempt = (alert, channel, status, detail, reference) =>
+    models.ImsDeliveryAttempt.create({
+      notificationId: alert.id, channel, status, attemptedAt: new Date(),
+      detail: String(detail).slice(0, 300), reference: reference ? String(reference) : null,
+    }).catch(() => {});
 
   let sent = 0, skipped = 0, failed = 0;
+  const byChannel = { email: 0, whatsapp: 0, sms: 0 };
+
   for (const alert of enriched) {
-    if (done.has(String(alert.id))) { skipped++; continue; }
-    const to = alert.responsibleEmail ? [alert.responsibleEmail] : adminRecipients();
-    if (!to.length) { skipped++; continue; }
-    try {
-      const out = await sendMail({
-        from: `"SSF Action Centre" <${process.env.EMAIL_FROM || process.env.EMAIL_USER || 'swastiksrijanfoundation@gmail.com'}>`,
-        to: to.join(','),
-        subject: `[SSF] ${alert.title} — ${alert.sourceRecordId || ''}`.trim(),
-        text: emailBody(alert),
-        html: emailHtml(alert),
-      });
-      await models.ImsDeliveryAttempt.create({
-        notificationId: alert.id, channel: 'email', status: 'sent', attemptedAt: new Date(),
-        detail: `to ${to.join(', ')}`, reference: out && out.id ? String(out.id) : null,
-      });
-      sent++;
-    } catch (e) {
-      failed++;
-      await models.ImsDeliveryAttempt.create({
-        notificationId: alert.id, channel: 'email', status: 'failed', attemptedAt: new Date(),
-        detail: `to ${to.join(', ')} — ${String(e.message || e).slice(0, 200)}`,
-      }).catch(() => {});
+    // --- email ---
+    if (active.email) {
+      if (done.email.has(String(alert.id))) skipped++;
+      else {
+        const to = alert.responsibleEmail ? [alert.responsibleEmail] : adminRecipients();
+        if (!to.length) skipped++;
+        else {
+          try {
+            const out = await sendMail({
+              from: `"SSF Action Centre" <${process.env.EMAIL_FROM || process.env.EMAIL_USER || 'swastiksrijanfoundation@gmail.com'}>`,
+              to: to.join(','),
+              subject: `[SSF] ${alert.title} — ${alert.sourceRecordId || ''}`.trim(),
+              text: emailBody(alert), html: emailHtml(alert),
+            });
+            await logAttempt(alert, 'email', 'sent', `to ${to.join(', ')}`, out && out.id);
+            sent++; byChannel.email++;
+          } catch (e) { failed++; await logAttempt(alert, 'email', 'failed', e.message); }
+        }
+      }
+    }
+
+    // --- whatsapp / sms: to the responsible person's own mobile only ---
+    const mobile = alert.responsibleMobile;
+    if (active.whatsapp) {
+      if (done.whatsapp.has(String(alert.id))) skipped++;
+      else if (!mobile) { skipped++; await logAttempt(alert, 'whatsapp', 'skipped', 'no mobile on responsible person'); }
+      else {
+        try {
+          const out = await msg.sendWhatsApp({
+            to: mobile,
+            text: shortText(alert),
+            params: [alert.title, alert.message, alert.dueDate || '—', absoluteLink(alert.sourceLink)],
+          });
+          await logAttempt(alert, 'whatsapp', 'sent', `to ${msg.normalizePhone(mobile)}`, out && out.id);
+          sent++; byChannel.whatsapp++;
+        } catch (e) { failed++; await logAttempt(alert, 'whatsapp', 'failed', `${mobile} — ${e.message}`); }
+      }
+    }
+    if (active.sms) {
+      if (done.sms.has(String(alert.id))) skipped++;
+      else if (!mobile) { skipped++; await logAttempt(alert, 'sms', 'skipped', 'no mobile on responsible person'); }
+      else {
+        try {
+          const out = await msg.sendSms({ to: mobile, text: shortText(alert) });
+          await logAttempt(alert, 'sms', 'sent', `to ${msg.normalizePhone(mobile)}`, out && out.id);
+          sent++; byChannel.sms++;
+        } catch (e) { failed++; await logAttempt(alert, 'sms', 'failed', `${mobile} — ${e.message}`); }
+      }
     }
   }
-  return { configured: true, sent, skipped, failed };
+  return { configured: true, sent, skipped, failed, channels: active, byChannel };
 }
 
-// Delivery evidence for one alert (what was actually emailed, when, and to whom).
+/**
+ * Send ONE alert by id on chosen channels, for an operational test. Unlike the
+ * batch path this overwrites the once-only gate, so an admin can deliberately
+ * re-send a single alert after configuring a new provider.
+ */
+async function sendTest(id, channelList = ['email']) {
+  const row = await models.ImsNotification.findByPk(id);
+  if (!row) throw new Error('Notification not found');
+  const [alert] = await enrich([row]);
+  const msg = require('../messaging');
+  const results = [];
+  for (const channel of channelList) {
+    if (channel === 'email') {
+      const to = alert.responsibleEmail ? [alert.responsibleEmail] : adminRecipients();
+      const { sendMail } = require('../mailer');
+      try {
+        const out = await sendMail({
+          from: `"SSF Action Centre" <${process.env.EMAIL_FROM || process.env.EMAIL_USER || 'swastiksrijanfoundation@gmail.com'}>`,
+          to: to.join(','), subject: `[SSF] ${alert.title} — ${alert.sourceRecordId || ''}`.trim(),
+          text: emailBody(alert), html: emailHtml(alert),
+        });
+        results.push({ channel, ok: true, to: to.join(', '), id: out && out.id });
+      } catch (e) { results.push({ channel, ok: false, error: e.message }); }
+    } else if (channel === 'whatsapp') {
+      if (!alert.responsibleMobile) { results.push({ channel, ok: false, error: 'no mobile on responsible person' }); continue; }
+      try {
+        const out = await msg.sendWhatsApp({ to: alert.responsibleMobile, text: shortText(alert), params: [alert.title, alert.message, alert.dueDate || '—', absoluteLink(alert.sourceLink)] });
+        results.push({ channel, ok: true, to: msg.normalizePhone(alert.responsibleMobile), id: out && out.id });
+      } catch (e) { results.push({ channel, ok: false, error: e.message }); }
+    } else if (channel === 'sms') {
+      if (!alert.responsibleMobile) { results.push({ channel, ok: false, error: 'no mobile on responsible person' }); continue; }
+      try {
+        const out = await msg.sendSms({ to: alert.responsibleMobile, text: shortText(alert) });
+        results.push({ channel, ok: true, to: msg.normalizePhone(alert.responsibleMobile), id: out && out.id });
+      } catch (e) { results.push({ channel, ok: false, error: e.message }); }
+    } else results.push({ channel, ok: false, error: 'unknown channel' });
+  }
+  return { results };
+}
+
+// Delivery evidence for one alert (which channel went out, when, and to whom).
 async function listDeliveries(id) {
   try {
     const rows = await models.ImsDeliveryAttempt.findAll({ where: { notificationId: id }, order: [['id', 'DESC']] });
     return { attempts: rows.map((r) => (typeof r.toJSON === 'function' ? r.toJSON() : r)) };
   } catch { return { attempts: [] }; }
+}
+
+// Which channels are actually usable right now — shown on the centre so an
+// admin knows whether alerts will reach phones, and what still needs setting up.
+function channelsStatus() {
+  const msg = require('../messaging');
+  const { emailConfigured } = require('../mailer');
+  return {
+    email: emailConfigured(),
+    whatsapp: msg.whatsappConfigured(),
+    sms: msg.smsConfigured(),
+  };
 }
 
 async function unreadCount() {
@@ -512,4 +625,4 @@ async function markAllRead(req) {
   return n;
 }
 
-module.exports = { syncNotifications, deliverNotifications, listDeliveries, istDate, daysUntil, SOURCES, listNotifications, markRead, markAllRead, unreadCount, enrich, statsSummary, sourceSummary };
+module.exports = { syncNotifications, deliverNotifications, sendTest, listDeliveries, channelsStatus, istDate, daysUntil, SOURCES, listNotifications, markRead, markAllRead, unreadCount, enrich, statsSummary, sourceSummary };

@@ -91,6 +91,11 @@ export const ims = {
   notificationRead: (id) => fetch(`${API_BASE_URL}/api/ims/notifications/${id}/read`, { method: 'POST', headers: headers() }).then(handle),
   notificationReadAll: () => fetch(`${API_BASE_URL}/api/ims/notifications/read-all`, { method: 'POST', headers: headers() }).then(handle),
   notificationDeliveries: (id) => fetch(`${API_BASE_URL}/api/ims/notifications/${id}/deliveries`, { headers: headers() }).then(handle),
+  notificationChannels: () => fetch(`${API_BASE_URL}/api/ims/notifications/channels`, { headers: headers() }).then(handle),
+  notificationTest: (id, channels = ['email']) =>
+    fetch(`${API_BASE_URL}/api/ims/notifications/${id}/test`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ channels }),
+    }).then(handle),
 
   list: (resource, params = {}) => {
     const qs = new URLSearchParams(params).toString();

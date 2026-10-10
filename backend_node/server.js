@@ -123,9 +123,10 @@ async function runSeeds() {
         const { syncNotifications, deliverNotifications } = require('./services/ims/notifications');
         const n = await syncNotifications();
         if (n.totalCreated) console.log(`✅ Notification sync created ${n.totalCreated} alert(s) (${JSON.stringify(n.created)})`);
-        // Email any alert not yet emailed (no-op unless an email provider is configured).
+        // Send any alert not yet sent (email / WhatsApp / SMS; no-op unless a
+        // provider for that channel is configured).
         const d = await deliverNotifications();
-        if (d.configured && (d.sent || d.failed)) console.log(`✉️ Action Centre emailed ${d.sent} alert(s), ${d.failed} failed`);
+        if (d.configured && (d.sent || d.failed)) console.log(`📣 Action Centre sent ${d.sent} alert(s) ${JSON.stringify(d.byChannel || {})}, ${d.failed} failed`);
     } catch (e) {
         console.error('⚠️ Notification sync skipped:', e.message);
     }
