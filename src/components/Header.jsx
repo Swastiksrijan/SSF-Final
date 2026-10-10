@@ -55,7 +55,7 @@ const Header = () => {
   const navItems = [
     { name: "Home", path: "/" },
     { name: "About Us", path: "/About", subItems: [{ name: "Mission & Vision", path: "/Mission" }, { name: "Our Objectives", path: "/Objectives" }, { name: "Meet Our Team", path: "/Team" }, { name: "Upcoming Projects", path: "/UpcomingProjects" }] },
-    { name: "Our Work", path: "/OurInitiatives", subItems: [{ name: "Our Initiatives & Impact", path: "/OurInitiatives" }, { name: "SSF Learning HUB", path: "/LearningHub" }, { name: "SSF Digital HelpCentre", path: "/HelpCentre" }, { name: "Education & Child Development", path: "/LearningHub" }, { name: "Health & Well-being", path: "/OurInitiatives#health" }, { name: "Women Empowerment & Livelihood", path: "/SkillPrograms" }, { name: "Social Awareness", path: "/OurInitiatives#awareness" }] },
+    { name: "Our Work", path: "/OurInitiatives", subItems: [{ name: "Our Initiatives & Impact", path: "/OurInitiatives" }, { name: "SSF Learning HUB", path: "/LearningHub" }, { name: "SSF Digital HelpCentre", path: "/HelpCentre" }, { name: "Education & Child Development", path: "/OurInitiatives#education" }, { name: "Health & Well-being", path: "/OurInitiatives#health" }, { name: "Women Empowerment & Livelihood", path: "/OurInitiatives#women" }, { name: "Social Awareness", path: "/OurInitiatives#awareness" }] },
     { name: "Impact", path: "/Impact" },
     { name: "Donate", path: "/Donate", isSpecial: true }
   ];
