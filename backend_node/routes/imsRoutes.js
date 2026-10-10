@@ -362,6 +362,9 @@ router.get('/ims/contacts/emails', wrap(async (req, r) => r.json(await contacts.
   onlyMissing: req.query.onlyMissing === 'true', search: req.query.search || '',
 }))));
 router.post('/ims/contacts/emails', wrap(async (req, r) => r.status(200).json(await contacts.importContactEmails((req.body || {}).rows))));
+// Pull people out of the members + managing-committee registers into the
+// directory (additive, idempotent). Safe to call repeatedly.
+router.post('/ims/contacts/sync-registers', wrap(async (_req, r) => r.status(200).json(await contacts.syncPeopleFromRegisters())));
 
 // ---- generic CRUD for every resource --------------------------------------
 router.get('/ims/:resource', wrap(async (req, r) => r.json(await res.list(req.params.resource, req.query))));

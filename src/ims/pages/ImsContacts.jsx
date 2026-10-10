@@ -24,6 +24,7 @@ export default function ImsContacts() {
   const [err, setErr] = useState('');
   const [edits, setEdits] = useState({});       // recordId -> drafted email
   const [saving, setSaving] = useState(false);
+  const [syncing, setSyncing] = useState(false);
   const [result, setResult] = useState(null);
   const [paste, setPaste] = useState('');
   const [showPaste, setShowPaste] = useState(false);
@@ -78,6 +79,17 @@ export default function ImsContacts() {
     setResult({ matched, unmatched, note: 'paste' });
   };
 
+  const syncRegisters = async () => {
+    setSyncing(true); setErr(''); setResult(null);
+    try {
+      const out = await ims.contactsSyncRegisters();
+      setResult({ note: 'sync', ...out });
+      setMissingOnly(false);
+      await load();
+    } catch (e) { setErr(e.message); }
+    finally { setSyncing(false); }
+  };
+
   const dirty = Object.keys(edits).length;
 
   return (
@@ -87,6 +99,9 @@ export default function ImsContacts() {
         subtitle={t('contacts_subtitle')}
         actions={(
           <>
+            <Button variant="ghost" icon="RefreshCw" disabled={syncing} onClick={syncRegisters}>
+              {syncing ? t('syncing') : t('sync_from_registers')}
+            </Button>
             <Button variant="ghost" icon="ClipboardPaste" onClick={() => setShowPaste((v) => !v)}>{t('paste_list')}</Button>
             <Button icon="Save" disabled={saving || dirty === 0} onClick={saveAll}>
               {dirty ? `${t('save')} (${dirty})` : t('save')}
@@ -140,7 +155,9 @@ export default function ImsContacts() {
         <Card className="mt-3 border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">
           {result.note === 'paste'
             ? `${t('paste_matched')}: ${result.matched} · ${t('paste_unmatched')}: ${result.unmatched}`
-            : `${t('saved_count')}: ${result.updated}${result.invalid?.length ? ` · ${t('invalid_count')}: ${result.invalid.length}` : ''}${result.notFound?.length ? ` · ${t('notfound_count')}: ${result.notFound.length}` : ''}`}
+            : result.note === 'sync'
+              ? `${t('sync_people_new')}: ${result.personsCreated} · ${t('sync_people_linked')}: ${result.personsLinked} · ${t('sync_people_filled')}: ${result.personsFilled} · ${t('sync_members')}: ${result.members} · ${t('sync_committee')}: ${result.committee}`
+              : `${t('saved_count')}: ${result.updated}${result.invalid?.length ? ` · ${t('invalid_count')}: ${result.invalid.length}` : ''}${result.notFound?.length ? ` · ${t('notfound_count')}: ${result.notFound.length}` : ''}`}
         </Card>
       )}
       {err && <Card className="mt-3 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</Card>}
