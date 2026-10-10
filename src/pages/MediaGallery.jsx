@@ -547,8 +547,22 @@ const DUPLICATE_SRCS = new Set([
   "/gallery/image23.jpg",                          // children-unity-park.jpg is larger
 ]);
 
+// Photos the team asked to remove from the gallery — they do not show SSF's
+// own work. Hidden from the grid only; some (ngo-darpan) are still used by
+// other pages, so the files themselves are kept.
+const EXCLUDED_SRCS = new Set([
+  "/gallery/image2.jpg",
+  "/gallery/image3.jpg",
+  "/gallery/image36.jpg",
+  "/gallery/image4.jpg",
+  "/images/village-outreach.png",
+  "/images/sthaniya-yojana-portal.png",
+  "/images/uploads/ngo-darpan.jpg",
+  "/images/real/leadership.jpg",
+]);
+
 const ALL_GALLERY = [...GALLERY_UPLOADS, ...ALL_IMAGES]
-  .filter((img) => !DUPLICATE_SRCS.has(img.src));
+  .filter((img) => !DUPLICATE_SRCS.has(img.src) && !EXCLUDED_SRCS.has(img.src));
 
 const YOUTUBE_VIDEOS = [
   {
