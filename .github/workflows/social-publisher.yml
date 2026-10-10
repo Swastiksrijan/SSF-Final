@@ -6,7 +6,8 @@ name: SSF Social Awareness Publisher
 # (a post flips from draft -> published once, then is skipped).
 on:
   schedule:
-    - cron: '30 * * * *'   # every hour at :30 UTC === on the hour IST
+    - cron: '30 * * * *'   # :30 UTC (=== on the hour IST)
+    - cron: '0 * * * *'    # :00 UTC — a second chance; GitHub cron is best-effort
   workflow_dispatch:
     inputs:
       force:

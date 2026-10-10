@@ -118,7 +118,7 @@ async function publishPost(post, platforms) {
 }
 
 // Publish drafts whose time has come. With `force`, publish today's drafts too.
-async function runPending({ force = false, date = new Date() } = {}) {
+async function runPendingInner({ force = false, date = new Date() } = {}) {
   await planDue({ date });
   const times = (await getConfig('times', { morning: '08:00', evening: '18:00' }));
   const autoApprove = await getConfig('auto_approve', POWER_AUTOMATE);
@@ -137,6 +137,15 @@ async function runPending({ force = false, date = new Date() } = {}) {
     published.push(await publishPost(p, platforms));
   }
   return { postDate, hhmm, platforms, published };
+}
+
+// Serialize runPending so the hourly GitHub cron, the in-process timer and a
+// manual "Run now" can never publish the same draft twice at the same instant.
+let runChain = Promise.resolve();
+function runPending(args) {
+  const next = runChain.then(() => runPendingInner(args), () => runPendingInner(args));
+  runChain = next.catch(() => {});
+  return next;
 }
 
 module.exports = { planDue, planExtra, runPending, publishPost, enabledPlatforms, getConfig, setConfig, DEFAULT_PLATFORMS, istParts };

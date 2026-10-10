@@ -183,19 +183,29 @@ async function syncWithRecovery() {
 app.listen(PORT, () => console.log(`🚀 Server running on http://localhost:${PORT}`));
 syncWithRecovery();
 
-// Make sure today's awareness drafts always exist. Publishing itself is driven
-// by the scheduler endpoint (GitHub Actions cron) so it works even while this
-// free instance is asleep between requests.
-setTimeout(async () => {
+// In-process safety net: while this instance is awake, publish any due post
+// within a few minutes. The free GitHub Actions cron is best-effort and can
+// skip hours, so this guarantees the morning/evening posts go out as soon as
+// the backend is serving. Idempotent (drafts flip to published once).
+let socialTickRunning = false;
+async function socialTick() {
+    if (socialTickRunning) return;
+    socialTickRunning = true;
     try {
         const { planDue, runPending } = require('./services/social/publisher');
         const created = await planDue({});
         if (created.length) console.log(`✅ Social publisher planned ${created.length} post(s) for today`);
-        // If the instance woke up after a slot time, publish what is due.
         const out = await runPending({});
         if (out.published.length) console.log(`✅ Social publisher published ${out.published.length} due post(s)`);
     } catch (e) {
-        console.error('⚠️ Social publisher startup skipped:', e.message);
+        console.error('⚠️ Social publisher tick skipped:', e.message);
+    } finally {
+        socialTickRunning = false;
     }
-}, 15000);
+}
+// One catch-up shortly after boot (in case we woke after a slot time)…
+setTimeout(socialTick, 15000);
+// …then keep checking every 5 minutes for as long as the instance is awake.
+const socialTimer = setInterval(socialTick, 5 * 60 * 1000);
+if (socialTimer.unref) socialTimer.unref();
 
