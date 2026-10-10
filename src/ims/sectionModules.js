@@ -330,6 +330,7 @@ export const SIDEBAR = [
   { key: 'main_dashboard', icon: 'LayoutDashboard', path: '/ims' },
   { key: 'global_search', icon: 'Search', path: '/ims/search' },
   { key: 'notifications', icon: 'Bell', path: '/ims/notifications' },
+  { key: 'contacts', icon: 'Contact', path: '/ims/contacts' },
   { key: 'social_publisher', icon: 'Megaphone', path: '/ims/social' },
   { key: 'volunteer_network', icon: 'Network', path: '/ims/volunteer-network' },
   { key: 'organisation', icon: 'Building2', path: '/ims/sections/organisation', activeKey: 'organisation_dashboard' },

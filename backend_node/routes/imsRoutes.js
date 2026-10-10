@@ -343,6 +343,15 @@ router.post('/ims/notifications/:id/read', wrap(async (req, r) => r.json(await n
 // Mark every eligible alert read (eligible = not dismissed; applies to this user).
 router.post('/ims/notifications/read-all', wrap(async (req, r) => r.json({ updated: await notif.markAllRead(req) })));
 
+// ---- contact & email directory ---------------------------------------------
+// Lists every person with their email status and bulk-fills emails, so the
+// Action Centre always knows who to notify.
+const contacts = require('../services/ims/contacts');
+router.get('/ims/contacts/emails', wrap(async (req, r) => r.json(await contacts.listContactEmails({
+  onlyMissing: req.query.onlyMissing === 'true', search: req.query.search || '',
+}))));
+router.post('/ims/contacts/emails', wrap(async (req, r) => r.status(200).json(await contacts.importContactEmails((req.body || {}).rows))));
+
 // ---- generic CRUD for every resource --------------------------------------
 router.get('/ims/:resource', wrap(async (req, r) => r.json(await res.list(req.params.resource, req.query))));
 

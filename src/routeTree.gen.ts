@@ -90,6 +90,7 @@ import { Route as ImsHistoryRouteImport } from './routes/ims/history'
 import { Route as ImsDownloadCenterRouteImport } from './routes/ims/download-center'
 import { Route as ImsDonorSlipsRouteImport } from './routes/ims/donor-slips'
 import { Route as ImsDataRouteImport } from './routes/ims/data'
+import { Route as ImsContactsRouteImport } from './routes/ims/contacts'
 import { Route as ImsConstitutionRouteImport } from './routes/ims/constitution'
 import { Route as ImsCashBookRouteImport } from './routes/ims/cash-book'
 import { Route as ImsCasesRouteImport } from './routes/ims/cases'
@@ -519,6 +520,11 @@ const ImsDataRoute = ImsDataRouteImport.update({
   path: '/ims/data',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsContactsRoute = ImsContactsRouteImport.update({
+  id: '/ims/contacts',
+  path: '/ims/contacts',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsConstitutionRoute = ImsConstitutionRouteImport.update({
   id: '/ims/constitution',
   path: '/ims/constitution',
@@ -690,6 +696,7 @@ export interface FileRoutesByFullPath {
   '/ims/cases': typeof ImsCasesRoute
   '/ims/cash-book': typeof ImsCashBookRoute
   '/ims/constitution': typeof ImsConstitutionRoute
+  '/ims/contacts': typeof ImsContactsRoute
   '/ims/data': typeof ImsDataRoute
   '/ims/donor-slips': typeof ImsDonorSlipsRoute
   '/ims/download-center': typeof ImsDownloadCenterRoute
@@ -793,6 +800,7 @@ export interface FileRoutesByTo {
   '/ims/cases': typeof ImsCasesRoute
   '/ims/cash-book': typeof ImsCashBookRoute
   '/ims/constitution': typeof ImsConstitutionRoute
+  '/ims/contacts': typeof ImsContactsRoute
   '/ims/data': typeof ImsDataRoute
   '/ims/donor-slips': typeof ImsDonorSlipsRoute
   '/ims/download-center': typeof ImsDownloadCenterRoute
@@ -898,6 +906,7 @@ export interface FileRoutesById {
   '/ims/cases': typeof ImsCasesRoute
   '/ims/cash-book': typeof ImsCashBookRoute
   '/ims/constitution': typeof ImsConstitutionRoute
+  '/ims/contacts': typeof ImsContactsRoute
   '/ims/data': typeof ImsDataRoute
   '/ims/donor-slips': typeof ImsDonorSlipsRoute
   '/ims/download-center': typeof ImsDownloadCenterRoute
@@ -1004,6 +1013,7 @@ export interface FileRouteTypes {
     | '/ims/cases'
     | '/ims/cash-book'
     | '/ims/constitution'
+    | '/ims/contacts'
     | '/ims/data'
     | '/ims/donor-slips'
     | '/ims/download-center'
@@ -1107,6 +1117,7 @@ export interface FileRouteTypes {
     | '/ims/cases'
     | '/ims/cash-book'
     | '/ims/constitution'
+    | '/ims/contacts'
     | '/ims/data'
     | '/ims/donor-slips'
     | '/ims/download-center'
@@ -1211,6 +1222,7 @@ export interface FileRouteTypes {
     | '/ims/cases'
     | '/ims/cash-book'
     | '/ims/constitution'
+    | '/ims/contacts'
     | '/ims/data'
     | '/ims/donor-slips'
     | '/ims/download-center'
@@ -1312,6 +1324,7 @@ export interface RootRouteChildren {
   ImsCasesRoute: typeof ImsCasesRoute
   ImsCashBookRoute: typeof ImsCashBookRoute
   ImsConstitutionRoute: typeof ImsConstitutionRoute
+  ImsContactsRoute: typeof ImsContactsRoute
   ImsDataRoute: typeof ImsDataRoute
   ImsDonorSlipsRoute: typeof ImsDonorSlipsRoute
   ImsDownloadCenterRoute: typeof ImsDownloadCenterRoute
@@ -1922,6 +1935,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsDataRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/contacts': {
+      id: '/ims/contacts'
+      path: '/ims/contacts'
+      fullPath: '/ims/contacts'
+      preLoaderRoute: typeof ImsContactsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/constitution': {
       id: '/ims/constitution'
       path: '/ims/constitution'
@@ -2160,6 +2180,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsCasesRoute: ImsCasesRoute,
   ImsCashBookRoute: ImsCashBookRoute,
   ImsConstitutionRoute: ImsConstitutionRoute,
+  ImsContactsRoute: ImsContactsRoute,
   ImsDataRoute: ImsDataRoute,
   ImsDonorSlipsRoute: ImsDonorSlipsRoute,
   ImsDownloadCenterRoute: ImsDownloadCenterRoute,

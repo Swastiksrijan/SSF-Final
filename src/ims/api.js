@@ -37,6 +37,11 @@ export const ims = {
   searchMeta: () => fetch(`${API_BASE_URL}/api/ims/search/meta`, { headers: headers() }).then(handle),
   volunteerNetwork: () => fetch(`${API_BASE_URL}/api/ims/volunteer-network`, { headers: headers() }).then(handle),
   person360: (id) => fetch(`${API_BASE_URL}/api/ims/person360/${id}`, { headers: headers() }).then(handle),
+  contacts: () => fetch(`${API_BASE_URL}/api/ims/contacts/emails`, { headers: headers() }).then(handle),
+  contactsImport: (rows = []) =>
+    fetch(`${API_BASE_URL}/api/ims/contacts/emails`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ rows }),
+    }).then(handle),
   meetingDossier: (id) => fetch(`${API_BASE_URL}/api/ims/meeting-dossier/${id}`, { headers: headers() }).then(handle),
   member360: (id) => fetch(`${API_BASE_URL}/api/ims/member360/${id}`, { headers: headers() }).then(handle),
 
