@@ -137,6 +137,22 @@ const SOURCES = [
     link: (r) => `/ims/r/audits?open=${r.id}`,
     message: (r) => `Audit ${r.recordId}${r.auditor ? ` (${r.auditor})` : ''} action due on ${toYmd(r.dueDate)}.`,
   },
+  {
+    key: 'yearClose',
+    resource: 'financialYears',
+    model: () => models.ImsFinancialYear,
+    dateField: 'endDate',
+    // A financial year that is not yet closed and is approaching its end date.
+    extraWhere: { isClosed: { [Op.ne]: true } },
+    title: 'Financial year closing',
+    hi: 'वित्तीय वर्ष समापन',
+    category: 'finance',
+    severity: 'warning',
+    window: 60,
+    recurring: false,
+    link: (r) => `/ims/r/financialYears?open=${r.id}`,
+    message: (r) => `Financial year ${r.label || r.recordId} closes on ${toYmd(r.endDate)} — finalise books and audit.`,
+  },
 ];
 
 function sourceWhere(src) {
@@ -147,6 +163,8 @@ function sourceWhere(src) {
       { [src.statusField]: { [Op.notIn]: src.doneValues } },
     ];
   }
+  // Source-specific guard (e.g. only years not yet closed).
+  if (src.extraWhere) Object.assign(where, src.extraWhere);
   return where;
 }
 

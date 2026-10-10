@@ -44,6 +44,7 @@ const SOURCE_META = {
   actions: { key: 'actions', icon: 'ListChecks' },
   compliance: { key: 'compliance', icon: 'ShieldCheck' },
   audits: { key: 'audit_risk', icon: 'SearchCheck' },
+  financialYears: { key: 'financialYears', icon: 'CalendarRange' },
 };
 
 function Pill({ children, tone = 'bg-slate-100 text-slate-600' }) {
