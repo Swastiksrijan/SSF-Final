@@ -82,22 +82,6 @@ export default function LearningHubHome({
   const completedCount = progressSummary?.completedCount || 0;
   const isReturning = Boolean(active || inProgress.length || completedCount || recentSubjects.length);
 
-  // Discovery: only real courses, badged by their genuine kind (never invented
-  // popularity or ratings). Pick a spread across the curriculum automatically.
-  const discovery = useMemo(() => {
-    const info = (s) => (cardInfo ? cardInfo(s) : {});
-    const featured = subjects.filter((s) => info(s).kind === "Full Course");
-    const fresh = subjects.filter((s) => info(s).kind === "Course Shell");
-    const kw = knowledgeWorldSubjects.slice(0, 2);
-    const out = [];
-    const push = (arr) => arr.forEach((s) => { if (out.length < 8 && !out.includes(s)) out.push(s); });
-    push(featured.slice(0, 4));
-    push(kw);
-    push(fresh.slice(0, 3));
-    push(featured.slice(4, 8));
-    return out;
-  }, [subjects, knowledgeWorldSubjects, cardInfo]);
-
   // Honest starter suggestions for a brand-new learner: real courses from the
   // beginning of the curriculum, preferring full structured courses.
   const starters = useMemo(() => {
@@ -106,8 +90,46 @@ export default function LearningHubHome({
     return (structured.length ? structured : subjects).slice(0, 4);
   }, [subjects, cardInfo]);
 
+  const starterIds = useMemo(() => new Set(starters.map((s) => s.id)), [starters]);
+
+  // Discovery: only real courses, badged by their genuine kind (never invented
+  // popularity or ratings). Spread with a real spread across the curriculum but
+  // never the starter cards, so the start + featured Home sections don't repeat.
+  const discovery = useMemo(() => {
+    const info = (s) => (cardInfo ? cardInfo(s) : {});
+    const isNew = (s) => !starterIds.has(s.id);
+    const featured = subjects.filter((s) => info(s).kind === "Full Course" && isNew(s));
+    const fresh = subjects.filter((s) => info(s).kind === "Course Shell" && isNew(s));
+    const kw = knowledgeWorldSubjects.filter(isNew).slice(0, 2);
+    const out = [];
+    const push = (arr) => arr.forEach((s) => { if (out.length < 8 && !out.includes(s)) out.push(s); });
+    push(featured.slice(0, 4));
+    push(kw);
+    push(fresh.slice(0, 3));
+    push(featured.slice(4, 8));
+    return out;
+  }, [subjects, knowledgeWorldSubjects, cardInfo, starterIds]);
+
   const nextStepItems = active ? [active] : recentSubjects.length ? recentSubjects.slice(0, 3).map((s) => ({ subject: s, percent: cardProgress ? cardProgress(s) : 0 })) : [];
-  const explorePreview = useMemo(() => subjects.slice(0, 8), [subjects]);
+
+  // Full-library preview: a category-spread sample that avoids every card
+  // already shown above, so it previews breadth instead of repeating them.
+  const explorePreview = useMemo(() => {
+    const shown = new Set([...starters, ...discovery].map((s) => s.id));
+    const pool = subjects.filter((s) => !shown.has(s.id));
+    const byCategory = new Map();
+    pool.forEach((s) => { const arr = byCategory.get(s.category) || []; arr.push(s); byCategory.set(s.category, arr); });
+    const out = [];
+    let progressed = true;
+    while (out.length < 8 && progressed) {
+      progressed = false;
+      for (const arr of byCategory.values()) {
+        if (arr.length) { out.push(arr.shift()); progressed = true; if (out.length >= 8) break; }
+      }
+    }
+    return out.length ? out : subjects.slice(0, 8);
+  }, [subjects, starters, discovery]);
+
   const practiceItems = inProgress.slice(0, 3);
 
   return <>
