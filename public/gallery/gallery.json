@@ -1,10 +1,10 @@
 {
-  "count": 46,
+  "count": 45,
   "items": [
     {
-      "id": "gallery_001",
-      "src": "/gallery/image1.jpg",
-      "original": "image1.jpg",
+      "id": "gallery_002",
+      "src": "/gallery/image10.jpg",
+      "original": "image10.jpg",
       "titleEn": "Programme Activity 1",
       "titleHi": "कार्यक्रम गतिविधि 1",
       "category": "Education",
@@ -14,9 +14,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_002",
-      "src": "/gallery/image10.jpg",
-      "original": "image10.jpg",
+      "id": "gallery_003",
+      "src": "/gallery/image11.jpg",
+      "original": "image11.jpg",
       "titleEn": "Programme Activity 2",
       "titleHi": "कार्यक्रम गतिविधि 2",
       "category": "Health",
@@ -26,9 +26,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_003",
-      "src": "/gallery/image11.jpg",
-      "original": "image11.jpg",
+      "id": "gallery_004",
+      "src": "/gallery/image12.jpg",
+      "original": "image12.jpg",
       "titleEn": "Programme Activity 3",
       "titleHi": "कार्यक्रम गतिविधि 3",
       "category": "Women Empowerment",
@@ -38,9 +38,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_004",
-      "src": "/gallery/image12.jpg",
-      "original": "image12.jpg",
+      "id": "gallery_005",
+      "src": "/gallery/image13.jpg",
+      "original": "image13.jpg",
       "titleEn": "Programme Activity 4",
       "titleHi": "कार्यक्रम गतिविधि 4",
       "category": "Events",
@@ -50,9 +50,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_005",
-      "src": "/gallery/image13.jpg",
-      "original": "image13.jpg",
+      "id": "gallery_006",
+      "src": "/gallery/image14.jpg",
+      "original": "image14.jpg",
       "titleEn": "Programme Activity 5",
       "titleHi": "कार्यक्रम गतिविधि 5",
       "category": "Community",
@@ -62,9 +62,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_006",
-      "src": "/gallery/image14.jpg",
-      "original": "image14.jpg",
+      "id": "gallery_007",
+      "src": "/gallery/image15.jpg",
+      "original": "image15.jpg",
       "titleEn": "Programme Activity 6",
       "titleHi": "कार्यक्रम गतिविधि 6",
       "category": "Education",
@@ -74,9 +74,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_007",
-      "src": "/gallery/image15.jpg",
-      "original": "image15.jpg",
+      "id": "gallery_008",
+      "src": "/gallery/image16.jpg",
+      "original": "image16.jpg",
       "titleEn": "Programme Activity 7",
       "titleHi": "कार्यक्रम गतिविधि 7",
       "category": "Health",
@@ -86,9 +86,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_008",
-      "src": "/gallery/image16.jpg",
-      "original": "image16.jpg",
+      "id": "gallery_009",
+      "src": "/gallery/image17.jpg",
+      "original": "image17.jpg",
       "titleEn": "Programme Activity 8",
       "titleHi": "कार्यक्रम गतिविधि 8",
       "category": "Women Empowerment",
@@ -98,9 +98,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_009",
-      "src": "/gallery/image17.jpg",
-      "original": "image17.jpg",
+      "id": "gallery_010",
+      "src": "/gallery/image18.jpg",
+      "original": "image18.jpg",
       "titleEn": "Programme Activity 9",
       "titleHi": "कार्यक्रम गतिविधि 9",
       "category": "Events",
@@ -110,9 +110,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_010",
-      "src": "/gallery/image18.jpg",
-      "original": "image18.jpg",
+      "id": "gallery_011",
+      "src": "/gallery/image19.jpg",
+      "original": "image19.jpg",
       "titleEn": "Programme Activity 10",
       "titleHi": "कार्यक्रम गतिविधि 10",
       "category": "Community",
@@ -122,9 +122,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_011",
-      "src": "/gallery/image19.jpg",
-      "original": "image19.jpg",
+      "id": "gallery_012",
+      "src": "/gallery/image2.jpg",
+      "original": "image2.jpg",
       "titleEn": "Programme Activity 11",
       "titleHi": "कार्यक्रम गतिविधि 11",
       "category": "Education",
@@ -134,9 +134,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_012",
-      "src": "/gallery/image2.jpg",
-      "original": "image2.jpg",
+      "id": "gallery_013",
+      "src": "/gallery/image20.jpg",
+      "original": "image20.jpg",
       "titleEn": "Programme Activity 12",
       "titleHi": "कार्यक्रम गतिविधि 12",
       "category": "Health",
@@ -146,9 +146,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_013",
-      "src": "/gallery/image20.jpg",
-      "original": "image20.jpg",
+      "id": "gallery_014",
+      "src": "/gallery/image21.jpg",
+      "original": "image21.jpg",
       "titleEn": "Programme Activity 13",
       "titleHi": "कार्यक्रम गतिविधि 13",
       "category": "Women Empowerment",
@@ -158,9 +158,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_014",
-      "src": "/gallery/image21.jpg",
-      "original": "image21.jpg",
+      "id": "gallery_015",
+      "src": "/gallery/image22.jpg",
+      "original": "image22.jpg",
       "titleEn": "Programme Activity 14",
       "titleHi": "कार्यक्रम गतिविधि 14",
       "category": "Events",
@@ -170,9 +170,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_015",
-      "src": "/gallery/image22.jpg",
-      "original": "image22.jpg",
+      "id": "gallery_016",
+      "src": "/gallery/image23.jpg",
+      "original": "image23.jpg",
       "titleEn": "Programme Activity 15",
       "titleHi": "कार्यक्रम गतिविधि 15",
       "category": "Community",
@@ -182,9 +182,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_016",
-      "src": "/gallery/image23.jpg",
-      "original": "image23.jpg",
+      "id": "gallery_017",
+      "src": "/gallery/image24.jpg",
+      "original": "image24.jpg",
       "titleEn": "Programme Activity 16",
       "titleHi": "कार्यक्रम गतिविधि 16",
       "category": "Education",
@@ -194,9 +194,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_017",
-      "src": "/gallery/image24.jpg",
-      "original": "image24.jpg",
+      "id": "gallery_018",
+      "src": "/gallery/image25.jpg",
+      "original": "image25.jpg",
       "titleEn": "Programme Activity 17",
       "titleHi": "कार्यक्रम गतिविधि 17",
       "category": "Health",
@@ -206,9 +206,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_018",
-      "src": "/gallery/image25.jpg",
-      "original": "image25.jpg",
+      "id": "gallery_019",
+      "src": "/gallery/image26.jpg",
+      "original": "image26.jpg",
       "titleEn": "Programme Activity 18",
       "titleHi": "कार्यक्रम गतिविधि 18",
       "category": "Women Empowerment",
@@ -218,9 +218,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_019",
-      "src": "/gallery/image26.jpg",
-      "original": "image26.jpg",
+      "id": "gallery_020",
+      "src": "/gallery/image27.jpg",
+      "original": "image27.jpg",
       "titleEn": "Programme Activity 19",
       "titleHi": "कार्यक्रम गतिविधि 19",
       "category": "Events",
@@ -230,9 +230,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_020",
-      "src": "/gallery/image27.jpg",
-      "original": "image27.jpg",
+      "id": "gallery_021",
+      "src": "/gallery/image28.jpg",
+      "original": "image28.jpg",
       "titleEn": "Programme Activity 20",
       "titleHi": "कार्यक्रम गतिविधि 20",
       "category": "Community",
@@ -242,9 +242,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_021",
-      "src": "/gallery/image28.jpg",
-      "original": "image28.jpg",
+      "id": "gallery_022",
+      "src": "/gallery/image29.jpg",
+      "original": "image29.jpg",
       "titleEn": "Programme Activity 21",
       "titleHi": "कार्यक्रम गतिविधि 21",
       "category": "Education",
@@ -254,9 +254,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_022",
-      "src": "/gallery/image29.jpg",
-      "original": "image29.jpg",
+      "id": "gallery_023",
+      "src": "/gallery/image3.jpg",
+      "original": "image3.jpg",
       "titleEn": "Programme Activity 22",
       "titleHi": "कार्यक्रम गतिविधि 22",
       "category": "Health",
@@ -266,9 +266,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_023",
-      "src": "/gallery/image3.jpg",
-      "original": "image3.jpg",
+      "id": "gallery_024",
+      "src": "/gallery/image30.jpg",
+      "original": "image30.jpg",
       "titleEn": "Programme Activity 23",
       "titleHi": "कार्यक्रम गतिविधि 23",
       "category": "Women Empowerment",
@@ -278,9 +278,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_024",
-      "src": "/gallery/image30.jpg",
-      "original": "image30.jpg",
+      "id": "gallery_025",
+      "src": "/gallery/image31.jpg",
+      "original": "image31.jpg",
       "titleEn": "Programme Activity 24",
       "titleHi": "कार्यक्रम गतिविधि 24",
       "category": "Events",
@@ -290,9 +290,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_025",
-      "src": "/gallery/image31.jpg",
-      "original": "image31.jpg",
+      "id": "gallery_026",
+      "src": "/gallery/image33.jpg",
+      "original": "image33.jpg",
       "titleEn": "Programme Activity 25",
       "titleHi": "कार्यक्रम गतिविधि 25",
       "category": "Community",
@@ -302,9 +302,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_026",
-      "src": "/gallery/image33.jpg",
-      "original": "image33.jpg",
+      "id": "gallery_027",
+      "src": "/gallery/image34.jpg",
+      "original": "image34.jpg",
       "titleEn": "Programme Activity 26",
       "titleHi": "कार्यक्रम गतिविधि 26",
       "category": "Education",
@@ -314,9 +314,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_027",
-      "src": "/gallery/image34.jpg",
-      "original": "image34.jpg",
+      "id": "gallery_028",
+      "src": "/gallery/image35.jpg",
+      "original": "image35.jpg",
       "titleEn": "Programme Activity 27",
       "titleHi": "कार्यक्रम गतिविधि 27",
       "category": "Health",
@@ -326,9 +326,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_028",
-      "src": "/gallery/image35.jpg",
-      "original": "image35.jpg",
+      "id": "gallery_029",
+      "src": "/gallery/image36.jpg",
+      "original": "image36.jpg",
       "titleEn": "Programme Activity 28",
       "titleHi": "कार्यक्रम गतिविधि 28",
       "category": "Women Empowerment",
@@ -338,9 +338,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_029",
-      "src": "/gallery/image36.jpg",
-      "original": "image36.jpg",
+      "id": "gallery_030",
+      "src": "/gallery/image37.jpg",
+      "original": "image37.jpg",
       "titleEn": "Programme Activity 29",
       "titleHi": "कार्यक्रम गतिविधि 29",
       "category": "Events",
@@ -350,9 +350,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_030",
-      "src": "/gallery/image37.jpg",
-      "original": "image37.jpg",
+      "id": "gallery_031",
+      "src": "/gallery/image38.jpg",
+      "original": "image38.jpg",
       "titleEn": "Programme Activity 30",
       "titleHi": "कार्यक्रम गतिविधि 30",
       "category": "Community",
@@ -362,9 +362,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_031",
-      "src": "/gallery/image38.jpg",
-      "original": "image38.jpg",
+      "id": "gallery_032",
+      "src": "/gallery/image39.jpg",
+      "original": "image39.jpg",
       "titleEn": "Programme Activity 31",
       "titleHi": "कार्यक्रम गतिविधि 31",
       "category": "Education",
@@ -374,9 +374,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_032",
-      "src": "/gallery/image39.jpg",
-      "original": "image39.jpg",
+      "id": "gallery_033",
+      "src": "/gallery/image4.jpg",
+      "original": "image4.jpg",
       "titleEn": "Programme Activity 32",
       "titleHi": "कार्यक्रम गतिविधि 32",
       "category": "Health",
@@ -386,9 +386,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_033",
-      "src": "/gallery/image4.jpg",
-      "original": "image4.jpg",
+      "id": "gallery_034",
+      "src": "/gallery/image40.jpg",
+      "original": "image40.jpg",
       "titleEn": "Programme Activity 33",
       "titleHi": "कार्यक्रम गतिविधि 33",
       "category": "Women Empowerment",
@@ -398,9 +398,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_034",
-      "src": "/gallery/image40.jpg",
-      "original": "image40.jpg",
+      "id": "gallery_035",
+      "src": "/gallery/image42.jpg",
+      "original": "image42.jpg",
       "titleEn": "Programme Activity 34",
       "titleHi": "कार्यक्रम गतिविधि 34",
       "category": "Events",
@@ -410,9 +410,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_035",
-      "src": "/gallery/image42.jpg",
-      "original": "image42.jpg",
+      "id": "gallery_036",
+      "src": "/gallery/image43.jpg",
+      "original": "image43.jpg",
       "titleEn": "Programme Activity 35",
       "titleHi": "कार्यक्रम गतिविधि 35",
       "category": "Community",
@@ -422,9 +422,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_036",
-      "src": "/gallery/image43.jpg",
-      "original": "image43.jpg",
+      "id": "gallery_037",
+      "src": "/gallery/image44.jpg",
+      "original": "image44.jpg",
       "titleEn": "Programme Activity 36",
       "titleHi": "कार्यक्रम गतिविधि 36",
       "category": "Education",
@@ -434,9 +434,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_037",
-      "src": "/gallery/image44.jpg",
-      "original": "image44.jpg",
+      "id": "gallery_038",
+      "src": "/gallery/image45.jpg",
+      "original": "image45.jpg",
       "titleEn": "Programme Activity 37",
       "titleHi": "कार्यक्रम गतिविधि 37",
       "category": "Health",
@@ -446,9 +446,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_038",
-      "src": "/gallery/image45.jpg",
-      "original": "image45.jpg",
+      "id": "gallery_039",
+      "src": "/gallery/image46.jpg",
+      "original": "image46.jpg",
       "titleEn": "Programme Activity 38",
       "titleHi": "कार्यक्रम गतिविधि 38",
       "category": "Women Empowerment",
@@ -458,9 +458,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_039",
-      "src": "/gallery/image46.jpg",
-      "original": "image46.jpg",
+      "id": "gallery_040",
+      "src": "/gallery/image47.jpg",
+      "original": "image47.jpg",
       "titleEn": "Programme Activity 39",
       "titleHi": "कार्यक्रम गतिविधि 39",
       "category": "Events",
@@ -470,9 +470,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_040",
-      "src": "/gallery/image47.jpg",
-      "original": "image47.jpg",
+      "id": "gallery_041",
+      "src": "/gallery/image5.jpg",
+      "original": "image5.jpg",
       "titleEn": "Programme Activity 40",
       "titleHi": "कार्यक्रम गतिविधि 40",
       "category": "Community",
@@ -482,9 +482,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_041",
-      "src": "/gallery/image5.jpg",
-      "original": "image5.jpg",
+      "id": "gallery_042",
+      "src": "/gallery/image6.jpg",
+      "original": "image6.jpg",
       "titleEn": "Programme Activity 41",
       "titleHi": "कार्यक्रम गतिविधि 41",
       "category": "Education",
@@ -494,9 +494,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_042",
-      "src": "/gallery/image6.jpg",
-      "original": "image6.jpg",
+      "id": "gallery_043",
+      "src": "/gallery/image7.jpg",
+      "original": "image7.jpg",
       "titleEn": "Programme Activity 42",
       "titleHi": "कार्यक्रम गतिविधि 42",
       "category": "Health",
@@ -506,9 +506,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_043",
-      "src": "/gallery/image7.jpg",
-      "original": "image7.jpg",
+      "id": "gallery_044",
+      "src": "/gallery/image8.jpg",
+      "original": "image8.jpg",
       "titleEn": "Programme Activity 43",
       "titleHi": "कार्यक्रम गतिविधि 43",
       "category": "Women Empowerment",
@@ -518,9 +518,9 @@
       "keywords": []
     },
     {
-      "id": "gallery_044",
-      "src": "/gallery/image8.jpg",
-      "original": "image8.jpg",
+      "id": "gallery_045",
+      "src": "/gallery/image9.jpg",
+      "original": "image9.jpg",
       "titleEn": "Programme Activity 44",
       "titleHi": "कार्यक्रम गतिविधि 44",
       "category": "Events",
@@ -530,26 +530,14 @@
       "keywords": []
     },
     {
-      "id": "gallery_045",
-      "src": "/gallery/image9.jpg",
-      "original": "image9.jpg",
+      "id": "gallery_046",
+      "src": "/gallery/ssf.jpg",
+      "original": "ssf.jpg",
       "titleEn": "Programme Activity 45",
       "titleHi": "कार्यक्रम गतिविधि 45",
       "category": "Community",
       "year": "2024",
       "alt": "SSF programme activity photo 45",
-      "aspect": "horizontal",
-      "keywords": []
-    },
-    {
-      "id": "gallery_046",
-      "src": "/gallery/ssf.jpg",
-      "original": "ssf.jpg",
-      "titleEn": "Programme Activity 46",
-      "titleHi": "कार्यक्रम गतिविधि 46",
-      "category": "Education",
-      "year": "2024",
-      "alt": "SSF programme activity photo 46",
       "aspect": "horizontal",
       "keywords": []
     }

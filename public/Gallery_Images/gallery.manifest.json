@@ -8,14 +8,5 @@
     "alt": "screen-reader description (use your best English description — helps search & SEO)",
     "keywords": ["free", "search", "terms"]
   },
-  "entries": {
-    "image1.jpg": {
-      "titleEn": "Programme Activity 1",
-      "titleHi": "कार्यक्रम गतिविधि 1",
-      "category": "Education",
-      "year": "2024",
-      "alt": "SSF programme activity photo 1",
-      "keywords": []
-    }
-  }
+  "entries": {}
 }
