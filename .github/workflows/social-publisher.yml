@@ -6,8 +6,12 @@ name: SSF Social Awareness Publisher
 # (a post flips from draft -> published once, then is skipped).
 on:
   schedule:
-    - cron: '30 * * * *'   # :30 UTC (=== on the hour IST)
-    - cron: '0 * * * *'    # :00 UTC — a second chance; GitHub cron is best-effort
+    # Every 5 minutes on a PUBLIC repo (Actions minutes are free/unlimited).
+    # This keeps the Render free instance awake 24x7 AND kicks the publisher.
+    # Once awake, the backend's own 5-minute timer publishes any due post, so
+    # morning/evening posts go out even if an individual cron is delayed or
+    # skipped. The backend is idempotent, so extra wakes are harmless.
+    - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
       force:
