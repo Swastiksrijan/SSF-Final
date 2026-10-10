@@ -8,11 +8,12 @@
   },
   "scripts": {
     "dev": "vite",
-    "build": "tsr generate && node scripts/build-gallery.mjs && vite build && node scripts/generate-share-pages.mjs",
+    "build": "tsr generate && node scripts/build-gallery.mjs && node scripts/build-members.mjs && vite build && node scripts/generate-share-pages.mjs",
     "lint": "eslint .",
     "preview": "vite preview",
     "tsr": "tsr",
-    "gallery": "node scripts/build-gallery.mjs"
+    "gallery": "node scripts/build-gallery.mjs",
+    "members": "node scripts/build-members.mjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

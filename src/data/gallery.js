@@ -42,3 +42,34 @@ export function pickPhoto({ category, query, index = 0 } = {}) {
   if (!pool.length) pool = galleryPhotos();
   return pool.length ? pool[index % pool.length] : null;
 }
+
+// ---------------------------------------------------------------------------
+// MEMBER / TEAM PHOTOS  (public/Gallery_Images/team/ -> scripts/build-members.mjs)
+// Distinct from the activity gallery. Each member has a portrait and a square
+// smart-crop (avatars). Use on any website page, e.g.
+//
+//   import { members, memberPhoto, memberSquare } from '../../data/gallery';
+//   const p = memberPhoto('Harish Kumar');
+//   <img src={memberSquare('Harish Kumar')} ... />
+// ---------------------------------------------------------------------------
+import memberData from './memberManifest.json';
+
+export const members = () => memberData.items || [];
+export const memberCount = () => memberData.count || 0;
+
+const memberKey = (s) => String(s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+
+// Find a member by name or slug (fuzzy: ignores spaces/case/punctuation).
+export function findMember(nameOrSlug) {
+  const k = memberKey(nameOrSlug);
+  if (!k) return null;
+  return members().find((m) => memberKey(m.name) === k || memberKey(m.id) === k) || null;
+}
+export function memberPhoto(nameOrSlug) {
+  const m = findMember(nameOrSlug);
+  return m ? m.photo : null;
+}
+export function memberSquare(nameOrSlug) {
+  const m = findMember(nameOrSlug);
+  return m ? m.square : null;
+}
