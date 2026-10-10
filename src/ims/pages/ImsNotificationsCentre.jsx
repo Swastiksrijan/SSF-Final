@@ -18,6 +18,7 @@ import { Card, SectionHero, StatStrip, Tabs, Empty, Spinner, Button, DetailModal
 import { useLang } from '../LangContext';
 import { tBoth } from '../i18n';
 import { ims } from '../api';
+import { REFRESH_EVENT, CHANGED_EVENT } from '../NotificationsHeader';
 
 const SEVERITY = {
   critical: 'border-l-[#DC2626] bg-rose-50/60',
@@ -65,7 +66,6 @@ export default function ImsNotificationsCentre() {
   const [filter, setFilter] = useState('unread');
   const [q, setQ] = useState('');
   const [detail, setDetail] = useState(null);
-  const [toast, setToast] = useState('');
 
   const loadNotifs = useCallback(async () => {
     setLoading(true); setErr('');
@@ -99,26 +99,22 @@ export default function ImsNotificationsCentre() {
   useEffect(() => { loadSources(); }, [loadSources]);
   useEffect(() => { loadHistory(); }, [loadHistory]);
 
-  const refresh = async () => {
-    setBusy(true); setToast('');
-    try {
-      await ims.notificationSync();
-      await Promise.all([loadNotifs(), loadSources()]);
-      setToast(t('notifications_refreshed'));
-    } catch (e) { setErr(e.message); } finally { setBusy(false); }
-  };
+  // The header's Refresh / Mark-all buttons live in ImsLayout; they signal this
+  // page through window events so the two stay in sync without prop drilling.
+  useEffect(() => {
+    const onRefresh = () => { loadNotifs(); loadSources(); };
+    window.addEventListener(REFRESH_EVENT, onRefresh);
+    return () => window.removeEventListener(REFRESH_EVENT, onRefresh);
+  }, [loadNotifs, loadSources]);
 
   const markRead = async (row) => {
     if (row.read) return;
     setBusy(true);
-    try { await ims.notificationRead(row.id); await loadNotifs(); }
-    catch (e) { setErr(e.message); } finally { setBusy(false); }
-  };
-
-  const markAll = async () => {
-    setBusy(true);
-    try { await ims.notificationReadAll(); await Promise.all([loadNotifs(), loadSources()]); }
-    catch (e) { setErr(e.message); } finally { setBusy(false); }
+    try {
+      await ims.notificationRead(row.id);
+      await loadNotifs();
+      window.dispatchEvent(new Event(CHANGED_EVENT));
+    } catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
 
   const openSource = (row) => {
@@ -179,12 +175,6 @@ export default function ImsNotificationsCentre() {
         eyebrow={`${t('app_name')} · ${t('centre_kicker')}`}
         icon="Bell"
         tone="navy"
-        actions={
-          <>
-            <Button variant="hero" icon="RefreshCw" onClick={refresh} disabled={busy}>{t('refresh')}</Button>
-            <Button variant="hero" icon="CheckCheck" onClick={markAll} disabled={busy || unread === 0}>{t('mark_all_read')}</Button>
-          </>
-        }
       >
         <StatStrip
           items={[
@@ -227,7 +217,6 @@ export default function ImsNotificationsCentre() {
         </div>
       </Card>
 
-      {toast && <Card className="mb-3 border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{toast}</Card>}
       {err && (
         <Card className="mb-3 flex items-center justify-between border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">
           <span>{t('load_error')}: {err}</span>
@@ -388,7 +377,7 @@ export default function ImsNotificationsCentre() {
         subtitle={detail?.sourceRecordId}
         badge={detail && <Pill tone={TASK_TONE[detail.taskStatus] || 'bg-slate-100 text-slate-500'}>{detail.taskStatus ? t('task_' + detail.taskStatus) : ''}</Pill>}
         actions={detail && !detail.read && (
-          <Button variant="ghost" icon="Check" onClick={() => { markRead(detail); setDetail(null); }}>{t('mark_read')}</Button>
+          <Button variant="ghost" icon="Check" disabled={busy} onClick={() => { markRead(detail); setDetail(null); }}>{t('mark_read')}</Button>
         )}
       >
         {detail && (
