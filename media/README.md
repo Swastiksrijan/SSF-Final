@@ -16,7 +16,32 @@ bhi nahi hota.
 | `04-graphics/` | logo, banner, design |
 | `05-videos/` | video / audio |
 | `06-other/` | baaki (identity docs etc.) |
+| `processed/` | **web-ready photos** (enhanced + poster) — neeche dekho |
 | `_duplicates/` | dedup se hatayi gayi copies (safe, recoverable) |
+
+## processed/ (web-ready photos)
+
+`scripts/media-process.py` chalane par banता hai. Isme har photo **enhance**
+(rotate, auto-contrast, colour, brightness, sharpness) hokar aati hai; jo photo
+chhoti/low-res ho usko **branded poster** (navy/orange frame + EN+HI caption) me
+wrap kar diya jaata hai taaki woh bhi saaf dekhe. Team photos square portrait
+ban jaate hain, logo/certificates sirf enhance (poster nahi) hote hain.
+
+| Folder | Kya |
+|---|---|
+| `processed/team/` | 900x900 square portraits |
+| `processed/activities/` | program photos (mostly posters) |
+| `processed/events/` | year-wise 2013-2026 photos |
+| `processed/graphics/` | logos (transparency bani rehti hai) |
+| `processed/certificates/` | certificates (app ki `public/certificates/` se alag) |
+| `processed/other/` | baaki |
+
+`processed/_contact-sheet.jpg` = saari photos ka ek preview.
+
+**Ahem:** poster ka caption photo ke filename se banta hai. Agar original file ka
+naam `12.jpg` jaisा khaali number ho to caption "SSF Programme" aata hai. Behtar
+caption ke liye original ko meaningful naam do (jaise `tree-plantation-2024.jpg`).
+
 
 ## Tools
 
