@@ -607,6 +607,7 @@ export default function MediaGallery() {
   const [activeCategory, setActiveCategory] = useState("All");
   const [activeYear, setActiveYear] = useState("All");
   const [selectedImg, setSelectedImg] = useState(null);
+  const [visibleCount, setVisibleCount] = useState(24);
 
   // Scroll to top on mount
   useEffect(() => {
@@ -621,6 +622,11 @@ export default function MediaGallery() {
   });
   // Filter chips = curated list + whatever categories the uploaded photos use.
   const categoryChips = ["All", ...new Set([...CATEGORIES.slice(1), ...ALL_GALLERY.map((i) => i.category).filter(Boolean)])];
+
+  // Progressive rendering: show a page at a time so a large gallery never
+  // loads hundreds of images at once (keeps the page fast).
+  const shownImages = filteredImages.slice(0, visibleCount);
+  useEffect(() => { setVisibleCount(24); }, [activeCategory, activeYear]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -721,7 +727,7 @@ export default function MediaGallery() {
         ) : (
           /* Masonry-like CSS Columns */
           <div className="columns-1 sm:columns-2 md:columns-3 xl:columns-4 gap-6 space-y-6">
-            {filteredImages.map((img) => (
+            {shownImages.map((img) => (
               <div
                 key={img.id}
                 className="break-inside-avoid relative group rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 bg-zinc-200 cursor-zoom-in"
@@ -750,6 +756,17 @@ export default function MediaGallery() {
                 </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {filteredImages.length > shownImages.length && (
+          <div className="text-center mt-10">
+            <button
+              onClick={() => setVisibleCount((n) => n + 24)}
+              className="px-8 py-3 rounded-full bg-[#002344] text-white font-bold hover:bg-[#fb8500] transition-colors"
+            >
+              Load more photos ({filteredImages.length - shownImages.length} left)
+            </button>
           </div>
         )}
 
