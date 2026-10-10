@@ -3,6 +3,7 @@ import { Link, useNavigate } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import { SIDEBAR } from '../ims/sectionModules';
 import SectionNav from './SectionNav';
+import NotificationsHeader from './NotificationsHeader';
 import { useLang } from '../ims/LangContext';
 import { ims } from '../ims/api';
 import { tBoth } from '../ims/i18n';
@@ -100,7 +101,9 @@ export default function ImsLayout({ children, active }) {
         </div>
       </header>
 
-      <SectionNav active={active} />
+      {/* The Notification Centre is global (watches every register), so it uses
+          its own identity bar instead of a single section's tab strip. */}
+      {active === 'notifications' ? <NotificationsHeader /> : <SectionNav active={active} />}
 
       <div className="mx-auto flex max-w-[1600px]">
         {/* sidebar */}

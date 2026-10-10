@@ -51,8 +51,11 @@ export const SECTIONS = {
         { key: 'meetings', shortKey: 'meetings_nav', icon: 'CalendarClock', path: '/ims/meetings', resource: 'meetings' },
         { key: 'online_meetings', icon: 'Video', path: '/ims/meetings', resource: 'meetings' },
         { key: 'agenda', shortKey: 'agenda', icon: 'ListOrdered', resource: 'meetings' },
-        { key: 'invitations', icon: 'Mail', path: '/ims/notifications' },
-        { key: 'reminders', icon: 'BellRing', path: '/ims/notifications' },
+        // Invitations/Reminders belong to the meeting itself; they are surfaced
+        // through the Notifications Centre rather than owning that global route
+        // (pointing here used to make the Governance strip appear on the centre).
+        { key: 'invitations', icon: 'Mail', planned: true },
+        { key: 'reminders', icon: 'BellRing', planned: true },
         { key: 'attendance', icon: 'CalendarCheck', resource: 'attendees' },
         { key: 'minutes', shortKey: 'minutes', icon: 'FileText', resource: 'meetings' },
         { key: 'resolutions', icon: 'Gavel', resource: 'resolutions' },

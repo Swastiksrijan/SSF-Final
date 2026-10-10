@@ -85,7 +85,10 @@ export default function ImsSectionDashboard({ section }) {
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {g.items.map((l) => {
                   const I = Icons[l.icon] || Icons.Folder;
-                  const [en, hi] = tBoth(l.key);
+                  // Cards use the short label when one exists, so a long name
+                  // such as "Meetings & Decisions" does not repeat the block
+                  // heading above it.
+                  const [en, hi] = tBoth(l.shortKey || l.key);
                   if (l.planned) {
                     return (
                       <div key={l.key} title={t('coming_soon')}
