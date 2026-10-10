@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
 import { FaEye, FaTimes, FaFilter, FaCamera } from "react-icons/fa";
+import galleryManifest from "../data/galleryManifest.json";
 
-// Image generation logic removed to prevent duplicates
+// Photos added by the team live in public/Gallery_Images/ and are compiled by
+// `node scripts/build-gallery.mjs` into this manifest. They are merged ahead of
+// the curated list so newly added real activity photos always appear.
+const GALLERY_UPLOADS = (galleryManifest.items || []).map((p) => ({
+  id: p.id,
+  src: p.src,
+  category: p.category,
+  year: p.year,
+  alt: p.alt,
+  aspect: p.aspect || "horizontal",
+}));
 
 
 const ALL_IMAGES = [
@@ -521,6 +532,7 @@ const ALL_IMAGES = [
 ];
 const CATEGORIES = ["All", "Education", "Health", "Women Empowerment", "Events", "Distribution"];
 const YEARS = ["All", "2014-2025"];
+const ALL_GALLERY = [...GALLERY_UPLOADS, ...ALL_IMAGES];
 
 const YOUTUBE_VIDEOS = [
   {
@@ -602,11 +614,13 @@ export default function MediaGallery() {
   }, []);
 
   // Derived filtered images (no extra state needed)
-  const filteredImages = ALL_IMAGES.filter((img) => {
+  const filteredImages = ALL_GALLERY.filter((img) => {
     const catMatch = activeCategory === "All" || img.category === activeCategory;
     const yearMatch = activeYear === "All" || img.year === activeYear;
     return catMatch && yearMatch;
   });
+  // Filter chips = curated list + whatever categories the uploaded photos use.
+  const categoryChips = ["All", ...new Set([...CATEGORIES.slice(1), ...ALL_GALLERY.map((i) => i.category).filter(Boolean)])];
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -658,7 +672,7 @@ export default function MediaGallery() {
               <span className="flex items-center gap-2 text-zinc-400 font-bold mr-2 text-sm uppercase tracking-wider">
                 <FaFilter /> Type:
               </span>
-              {CATEGORIES.map((cat) => (
+              {categoryChips.map((cat) => (
                 <button
                   key={cat}
                   onClick={() => setActiveCategory(cat)}

@@ -1,0 +1,21 @@
+{
+  "_help": "Optional captions for photos in public/Gallery_Images/. Key = exact file name. Any photo WITHOUT an entry still appears in the gallery (with a generic caption). Run `node scripts/build-gallery.mjs` after editing.",
+  "_fields": {
+    "titleEn": "English caption (shown in gallery)",
+    "titleHi": "Hindi caption",
+    "category": "Education | Health | Women Empowerment | Events | Community | Distribution",
+    "year": "e.g. 2024",
+    "alt": "screen-reader description (use your best English description — helps search & SEO)",
+    "keywords": ["free", "search", "terms"]
+  },
+  "entries": {
+    "image1.jpg": {
+      "titleEn": "Programme Activity 1",
+      "titleHi": "कार्यक्रम गतिविधि 1",
+      "category": "Education",
+      "year": "2024",
+      "alt": "SSF programme activity photo 1",
+      "keywords": []
+    }
+  }
+}

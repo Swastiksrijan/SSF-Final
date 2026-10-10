@@ -124,8 +124,10 @@ async function drawLogo(ctx, x, y, size) {
 }
 
 // Round photo frame: centre-crops a real SSF photo into a circle with a ring.
+// `file` is any path relative to public/ (e.g. 'images/real/tree.jpg' or
+// 'gallery/tree.jpg'), so both curated and team-uploaded photos work.
 async function drawCirclePhoto(ctx, file, cx, cy, r, ring = '#FFD166', ringW = 6) {
-  const img = await loadImage(path.join(ROOT, '..', 'public', 'images', file));
+  const img = await loadImage(path.join(ROOT, '..', 'public', file));
   const d = r * 2;
   const scale = Math.max(d / img.width, d / img.height);
   const dw = img.width * scale, dh = img.height * scale;
@@ -229,8 +231,8 @@ async function facebookCover() {
   ctx.globalAlpha = 1;
 
   // two round SSF photo frames (centre-right), overlap-free
-  await drawCirclePhoto(ctx, 'real/girls-study-group-mat.jpg', 1085, 250, 145, YELLOW, 7);
-  await drawCirclePhoto(ctx, 'real/tree_plantation.jpg', 1395, 250, 145, ORANGE, 7);
+  await drawCirclePhoto(ctx, 'images/real/girls-study-group-mat.jpg', 1085, 250, 145, YELLOW, 7);
+  await drawCirclePhoto(ctx, 'images/real/tree_plantation.jpg', 1395, 250, 145, ORANGE, 7);
 
   // contact + CTA bottom-right (bottom-left kept clear for the profile pic)
   ctx.textAlign = 'right';
@@ -265,7 +267,7 @@ async function linkedinCover() {
   ctx.globalAlpha = 1;
 
   // one round SSF photo frame (centre-right)
-  await drawCirclePhoto(ctx, 'real/community-education-meeting.jpg', 970, 95, 66, YELLOW, 5);
+  await drawCirclePhoto(ctx, 'images/real/community-education-meeting.jpg', 970, 95, 66, YELLOW, 5);
 
   // contact top-right
   ctx.textAlign = 'right';
@@ -297,7 +299,7 @@ async function xHeader() {
   ctx.fillText(BRAND.tagline, M, 372);
   ctx.globalAlpha = 1;
   // profile pic overlaps bottom-left on X -> keep contact on the right
-  await drawCirclePhoto(ctx, 'real/green-warriors-students.jpg', 1290, 250, 150, YELLOW, 7);
+  await drawCirclePhoto(ctx, 'images/real/green-warriors-students.jpg', 1290, 250, 150, YELLOW, 7);
   ctx.textAlign = 'right'; ctx.fillStyle = YELLOW; ctx.font = EN(30);
   ctx.fillText(BRAND.website, W - M, 158);
   ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.8; ctx.font = ENr(22);
@@ -342,32 +344,32 @@ async function instagramLogo() {
 async function websiteHeaders() {
   siteHeader({ name: 'header-education-1920x480.png', W: 1920, H: 480,
     titleEn: 'Education for Every Child', titleHi: 'हर बच्चे के लिए शिक्षा',
-    tagline: BRAND.tagline, photo: 'real/girls-study-group-mat.jpg' });
+    tagline: BRAND.tagline, photo: 'images/real/girls-study-group-mat.jpg' });
   siteHeader({ name: 'header-health-1920x480.png', W: 1920, H: 480,
     titleEn: 'Health & Care Camps', titleHi: 'स्वास्थ्य और देखभाल',
-    tagline: 'Free check-ups • medicine support • awareness', photo: 'real/vision-health-camp.jpg', ring: ORANGE });
+    tagline: 'Free check-ups • medicine support • awareness', photo: 'images/real/vision-health-camp.jpg', ring: ORANGE });
   siteHeader({ name: 'header-environment-1920x480.png', W: 1920, H: 480,
     titleEn: 'Green Warriors', titleHi: 'हरित योद्धा',
-    tagline: 'Plant • Protect • Preserve', photo: 'real/tree_plantation.jpg' });
+    tagline: 'Plant • Protect • Preserve', photo: 'images/real/tree_plantation.jpg' });
   siteHeader({ name: 'header-women-1920x480.png', W: 1920, H: 480,
     titleEn: 'Women Empowerment', titleHi: 'महिला सशक्तिकरण',
-    tagline: 'Skill • Dignity • Independence', photo: 'real/women_empowerment_tailoring.jpg', ring: ORANGE });
+    tagline: 'Skill • Dignity • Independence', photo: 'images/real/women_empowerment_tailoring.jpg', ring: ORANGE });
   siteHeader({ name: 'header-skills-1920x480.png', W: 1920, H: 480,
     titleEn: 'Skills & Employment', titleHi: 'कौशल और रोज़गार',
-    tagline: 'Learn a skill • earn a living', photo: 'real/student-leadership-recitation.jpg' });
+    tagline: 'Learn a skill • earn a living', photo: 'images/real/student-leadership-recitation.jpg' });
   siteHeader({ name: 'header-community-1920x480.png', W: 1920, H: 480,
     titleEn: 'Community First', titleHi: 'समुदाय सर्वोपरि',
-    tagline: 'Together we grow', photo: 'real/community-rally-children.jpg', ring: ORANGE });
+    tagline: 'Together we grow', photo: 'images/real/community-rally-children.jpg', ring: ORANGE });
   siteHeader({ name: 'header-relief-1920x480.png', W: 1920, H: 480,
     titleEn: 'Relief & Support', titleHi: 'राहत और सहयोग',
-    tagline: 'Food • Clothes • Emergency aid', photo: 'real/cloth-distribution.jpg' });
+    tagline: 'Food • Clothes • Emergency aid', photo: 'images/real/cloth-distribution.jpg' });
   siteHeader({ name: 'header-youth-1920x480.png', W: 1920, H: 480,
     titleEn: 'Youth Power', titleHi: 'युवा शक्ति',
-    tagline: 'Energy that builds the nation', photo: 'real/cricket-child.jpg', ring: ORANGE });
+    tagline: 'Energy that builds the nation', photo: 'images/real/cricket-child.jpg', ring: ORANGE });
   siteHeader({ name: 'header-cta-band-1920x520.png', W: 1920, H: 520,
     titleEn: BRAND.mottoEn, titleHi: BRAND.mottoHi, tagline: `${BRAND.website}   |   ${BRAND.phone}` });
   siteHeader({ name: 'header-office-1920x420.png', W: 1920, H: 420,
-    titleEn: BRAND.name, titleHi: BRAND.mottoHi, tagline: BRAND.tagline, photo: 'real/community-education-meeting.jpg' });
+    titleEn: BRAND.name, titleHi: BRAND.mottoHi, tagline: BRAND.tagline, photo: 'images/real/community-education-meeting.jpg' });
 }
 
 (async () => {
