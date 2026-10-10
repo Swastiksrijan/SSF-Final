@@ -3,7 +3,7 @@
 
 export const teamMembers = [
   // Governing Body
-  { id: 'g1', name: 'Mr. Ramesh Pandey', role: 'Founder & National President', location: 'Rewa, Madhya Pradesh', img: '/Teams_Images/ramesh_pandey.jpg', group: 'governing', visible: true },
+  { id: 'g1', name: 'Mr. Ramesh Pandey', role: 'Founder & National President', location: 'Rewa, Madhya Pradesh', img: '/Teams_Images/ramesh_pandey.jpg?v=2', group: 'governing', visible: true },
   { id: 'g2', name: 'Ms. Preeti Shukla', role: 'Vice President', location: 'Rewa, Madhya Pradesh', img: '/Teams_Images/image_19.jpg', group: 'governing', visible: true },
   { id: 'g3', name: 'Mr. Amit Pandey', role: 'General Secretary', location: 'Rewa, Madhya Pradesh', img: '/Teams_Images/image_15.jpg', group: 'governing', visible: true },
   { id: 'g4', name: 'Ms. Divya Sharma', role: 'Treasurer', location: 'Rewa, Madhya Pradesh', img: '/Teams_Images/divya_sharma.jpg', group: 'governing', visible: true },

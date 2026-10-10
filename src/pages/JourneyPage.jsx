@@ -101,7 +101,7 @@ export default function JourneyPage() {
                   {/* Coordinator Signature with SMALL Image */}
                   <div className="flex items-center gap-4 pt-4 border-t border-zinc-50">
                     <img
-                      src="/Teams_Images/ramesh_pandey.jpg"
+                      src="/Teams_Images/ramesh_pandey.jpg?v=2"
                       alt="Ramesh Pandey"
                       className="w-16 h-16 rounded-full border-2 border-[#fb8500]/20 object-cover shadow-sm"
                     />
