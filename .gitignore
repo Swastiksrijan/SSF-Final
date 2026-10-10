@@ -35,3 +35,7 @@ output.txt
 
 # agent scratch
 .agent_tmp/
+
+# media vault (raw master archive) - repo is PUBLIC, keep raw files out of git
+media/*
+!media/*.md
