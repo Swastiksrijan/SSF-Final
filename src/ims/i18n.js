@@ -601,6 +601,7 @@ export const DICT = {
   needs_attention: { en: 'Needs attention', hi: 'ध्यान देने योग्य' },
   monitored_sources: { en: 'Monitored sources', hi: 'निगरानी स्रोत' },
   source_monitored: { en: 'Monitored', hi: 'निगरानी' },
+  src_memberships: { en: 'Memberships', hi: 'सदस्यता' },
   source_due: { en: 'Due now', hi: 'अभी देय' },
   source_connected: { en: 'Connected', hi: 'जुड़ा हुआ' },
   source_disconnected: { en: 'Not connected', hi: 'जुड़ा नहीं' },

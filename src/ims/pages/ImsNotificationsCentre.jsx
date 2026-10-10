@@ -47,6 +47,13 @@ const SOURCE_META = {
   compliance: { key: 'compliance', icon: 'ShieldCheck' },
   audits: { key: 'audit_risk', icon: 'SearchCheck' },
   financialYears: { key: 'financialYears', icon: 'CalendarRange' },
+  agreements: { key: 'src_agreements', icon: 'FileSignature' },
+  grants: { key: 'src_grants', icon: 'HandCoins' },
+  documents: { key: 'src_documents', icon: 'FileText' },
+  risks: { key: 'audit_risk', icon: 'AlertTriangle' },
+  meetings: { key: 'src_meetings', icon: 'Users' },
+  notices: { key: 'src_notices', icon: 'Megaphone' },
+  memberships: { key: 'src_memberships', icon: 'IdCard' },
 };
 
 function Pill({ children, tone = 'bg-slate-100 text-slate-600' }) {

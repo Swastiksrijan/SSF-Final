@@ -85,7 +85,8 @@ const SOURCES = [
     category: 'action',
     severity: 'critical',
     overdue: true,
-    recurring: false,
+    // A still-overdue action re-raises weekly — steady pressure, not a storm.
+    recurring: true,
     link: (r) => `/ims/r/actions?open=${r.id}`,
     message: (r, n) => `“${r.title || r.recordId}” was due on ${toYmd(r.dueDate)}${n != null ? ` (${Math.abs(n)} day${Math.abs(n) === 1 ? '' : 's'} overdue)` : ''}.`,
   },
@@ -153,28 +154,266 @@ const SOURCES = [
     link: (r) => `/ims/r/financialYears?open=${r.id}`,
     message: (r) => `Financial year ${r.label || r.recordId} closes on ${toYmd(r.endDate)} — finalise books and audit.`,
   },
+
+  // ---- date-driven governance: agreements / grants / documents ------------
+  {
+    key: 'agreementExpiry',
+    resource: 'agreements',
+    model: () => models.ImsAgreement,
+    dateField: 'toDate',
+    title: 'Agreement expiring',
+    hi: 'अनुबंध समाप्त हो रहा',
+    category: 'governance',
+    severity: 'warning',
+    window: 30,
+    recurring: false,
+    link: (r) => `/ims/r/agreements?open=${r.id}`,
+    message: (r) => `${r.title || r.recordId}${r.agreementType ? ` (${r.agreementType})` : ''} expires on ${toYmd(r.toDate)} — review or renew.`,
+  },
+  {
+    key: 'agreementExpired',
+    resource: 'agreements',
+    model: () => models.ImsAgreement,
+    dateField: 'toDate',
+    title: 'Agreement expired',
+    hi: 'अनुबंध समाप्त',
+    category: 'governance',
+    severity: 'critical',
+    overdue: true,
+    recurring: false,
+    link: (r) => `/ims/r/agreements?open=${r.id}`,
+    message: (r) => `${r.title || r.recordId} expired on ${toYmd(r.toDate)} — renew or close it.`,
+  },
+  {
+    key: 'grantReportDue',
+    resource: 'grants',
+    model: () => models.ImsGrant,
+    dateField: 'reportDue',
+    statusField: 'grantStatus',
+    doneValues: ['closed', 'completed', 'cancelled', 'utilised'],
+    title: 'Grant report due',
+    hi: 'अनुदान रिपोर्ट देय',
+    category: 'finance',
+    severity: 'warning',
+    window: 30,
+    recurring: false,
+    link: (r) => `/ims/r/grants?open=${r.id}`,
+    message: (r) => `Utilisation report for grant ${r.recordId} is due on ${toYmd(r.reportDue)} — donors expect it on time.`,
+  },
+  {
+    key: 'documentExpiry',
+    resource: 'documents',
+    model: () => models.ImsDocument,
+    dateField: 'expiryDate',
+    title: 'Document expiring',
+    hi: 'दस्तावेज़ समाप्त हो रहा',
+    category: 'records',
+    severity: 'warning',
+    window: 30,
+    recurring: false,
+    link: (r) => `/ims/r/documents?open=${r.id}`,
+    message: (r) => `${r.title || r.recordId}${r.docType ? ` (${r.docType})` : ''} expires on ${toYmd(r.expiryDate)}.`,
+  },
+  {
+    key: 'documentExpired',
+    resource: 'documents',
+    model: () => models.ImsDocument,
+    dateField: 'expiryDate',
+    title: 'Document expired',
+    hi: 'दस्तावेज़ समाप्त',
+    category: 'records',
+    severity: 'critical',
+    overdue: true,
+    recurring: false,
+    link: (r) => `/ims/r/documents?open=${r.id}`,
+    message: (r) => `${r.title || r.recordId} expired on ${toYmd(r.expiryDate)} — replace or archive it.`,
+  },
+  {
+    key: 'riskReview',
+    resource: 'risks',
+    model: () => models.ImsRisk,
+    dateField: 'dueDate',
+    title: 'Risk review due',
+    hi: 'जोखिम समीक्षा देय',
+    category: 'compliance',
+    severity: 'warning',
+    window: 30,
+    recurring: false,
+    link: (r) => `/ims/r/risks?open=${r.id}`,
+    message: (r) => `Risk “${r.title || r.recordId}”${r.rating ? ` (${r.rating})` : ''} mitigation review is due on ${toYmd(r.dueDate)}.`,
+  },
+
+  // ---- behaviour-driven: patterns across the whole register ---------------
+  // These do not watch one date. They look at how people actually behave and
+  // raise an alert when a person's pattern crosses a threshold.
+  {
+    key: 'meetingAbsence',
+    resource: 'meetings',
+    model: () => models.ImsMeetingAttendee,
+    category: 'governance',
+    severity: 'warning',
+    recurring: true,
+    title: 'Repeated meeting absence',
+    hi: 'बार-बार बैठक अनुपस्थिति',
+    link: (r) => `/ims/r/meetings?open=${r.meta && r.meta.lastMeetingId ? r.meta.lastMeetingId : ''}`,
+    message: (r) => `${r.fullName} has been absent from ${r.meta.absent} meeting${r.meta.absent === 1 ? '' : 's'} in the last 120 days — discuss responsibility.`,
+    meta: (r) => ({ absent: r.meta.absent, lastMeetingId: r.meta.lastMeetingId }),
+    baseWhere: () => ({ attendance: { [Op.in]: ['absent', 'apology'] } }),
+    scan: ({ records, people, historical }) => {
+      const cutoff = istDate(new Date(Date.now() - 120 * 864e5));
+      const byPerson = new Map();
+      for (const a of records) {
+        if (!a.personId) continue;
+        const d = toYmd(a.attDate || a.createdAt);
+        if (!d || d < cutoff) continue;
+        if (!byPerson.has(a.personId)) byPerson.set(a.personId, []);
+        byPerson.get(a.personId).push(a);
+      }
+      const out = [];
+      for (const [personId, rows] of byPerson) {
+        if (rows.length < 3) continue;
+        rows.sort((x, y) => String(toYmd(y.attDate)).localeCompare(String(toYmd(x.attDate))));
+        const lastMeetingId = rows[0].meetingId;
+        const recId = `PERSON:${personId}`;
+        const prev = historical.get(recId);
+        out.push({
+          id: `person:${personId}`, recordId: recId, personId,
+          responsiblePersonId: personId, fullName: (people && people.get(personId)) || `Person #${personId}`,
+          absent: rows.length, lastMeetingId,
+          _days: 0, _dueDate: istDate(),
+          reminders: prev ? (prev.meta && prev.meta.reminders) || 1 : 0,
+          _lastEventAt: prev ? prev.at : 0,
+          meta: { absent: rows.length, total: rows.length, lastMeetingId },
+        });
+      }
+      return out;
+    },
+  },
+  {
+    key: 'noticeUnanswered',
+    resource: 'notices',
+    model: () => models.ImsNotice,
+    category: 'communication',
+    severity: 'warning',
+    recurring: true,
+    title: 'Notice still not acknowledged',
+    hi: 'सूचना की पुष्टि अभी नहीं',
+    link: (r) => `/ims/r/notices?open=${r.id}`,
+    message: (r) => `Notice “${r.subject || r.recordId}” has had no acknowledgement for ${r._days} days — follow up.`,
+    baseWhere: () => ({ [Op.or]: [{ acknowledgement: { [Op.is]: null } }, { acknowledgement: '' }] }),
+    scan: ({ records }) => {
+      const out = [];
+      for (const n of records) {
+        const issued = toYmd(n.createdAt) || toYmd(n.noticeDate);
+        if (!issued) continue;
+        const days = Math.abs(daysUntil(issued, istDate()));
+        if (days < 15) continue;
+        out.push({
+          id: n.id, recordId: n.recordId, subject: n.subject,
+          noticeType: n.noticeType, _days: days, _dueDate: issued,
+        });
+      }
+      return out;
+    },
+  },
+  {
+    key: 'membershipPending',
+    resource: 'memberships',
+    model: () => models.ImsMembership,
+    category: 'governance',
+    severity: 'info',
+    recurring: true,
+    title: 'Membership application awaiting decision',
+    hi: 'सदस्यता आवेदन निर्णय हेतु लंबित',
+    link: (r) => `/ims/r/memberships?open=${r.id}`,
+    message: (r) => `${r.fullName} applied on ${toYmd(r.admissionDate)} — ${r._days} days without a decision.`,
+    baseWhere: () => ({ applicationStatus: { [Op.in]: ['submitted', 'review'] } }),
+    scan: ({ records, people, historical }) => {
+      const out = [];
+      for (const m of records) {
+        const d = toYmd(m.admissionDate);
+        if (!d) continue;
+        const days = Math.abs(daysUntil(d, istDate()));
+        if (days < 30) continue;
+        const prev = historical.get(String(m.recordId));
+        out.push({
+          id: m.id, recordId: m.recordId, responsiblePersonId: m.personId,
+          fullName: (m.personId && people && people.get(m.personId)) || m.recordId,
+          admissionDate: d, _days: days, _dueDate: d,
+          reminders: prev ? (prev.meta && prev.meta.reminders) || 1 : 0,
+          _lastEventAt: prev ? prev.at : 0,
+        });
+      }
+      return out;
+    },
+  },
 ];
 
+// The date a source is keyed on. Most are a plain column; a few are derived
+// (e.g. a membership anniversary), so a source may supply `dateOf(record)`.
+function sourceDate(src, record) {
+  if (record && record._dueDate) return record._dueDate; // synthetic scan record
+  return src.dateOf ? src.dateOf(record) : record[src.dateField];
+}
+
+// A recurring source re-raises at most once every RECUR_MS while the condition
+// persists (a nag, not a storm). Non-recurring sources raise once per record.
+const RECUR_MS = 7 * 864e5;
+
+// Rows a source should look at. Scan-based sources read one register and
+// return synthetic records (e.g. a person who keeps missing meetings).
+async function gatherRecords(src, limit = 2000) {
+  if (src.scan) {
+    const base = await src.model().findAll({ where: src.baseWhere ? src.baseWhere() : {}, limit: 5000 });
+    const { Op } = require('sequelize');
+    const historical = await models.ImsNotification.findAll({
+      where: { eventType: src.key, dismissed: false, read: false },
+      attributes: ['sourceRecordId', 'eventAt', 'meta'],
+    }).catch(() => []);
+    const seen = new Map();
+    for (const n of historical) {
+      const key = String(n.sourceRecordId);
+      const at = n.eventAt ? new Date(n.eventAt).getTime() : 0;
+      if (!seen.has(key) || at > seen.get(key).at) seen.set(key, { at, meta: n.meta || {} });
+    }
+    // People, so a behavioural alert can name the person, not "Person #5".
+    const people = new Map();
+    try {
+      const rows = await models.ImsPerson.findAll({ attributes: ['id', 'fullName', 'recordId'] });
+      for (const p of rows) people.set(p.id, p.fullName || p.recordId);
+    } catch { /* names are best-effort */ }
+    return src.scan({ records: base, historical: seen, Op, people });
+  }
+  return src.model().findAll({ where: sourceWhere(src), limit });
+}
+
 function sourceWhere(src) {
-  const where = { [src.dateField]: { [Op.ne]: null }, status: { [Op.ne]: 'archived' } };
+  if (src.scan) return {}; // scan-based sources fetch their own rows
+  const and = [{ [src.dateField]: { [Op.ne]: null } }];
+  // NULL status is a live row, not an archived one — never drop it silently.
+  and.push({ [Op.or]: [{ status: { [Op.is]: null } }, { status: { [Op.ne]: 'archived' } }] });
   if (src.statusField) {
-    where[Op.or] = [
+    and.push({ [Op.or]: [
       { [src.statusField]: { [Op.is]: null } },
       { [src.statusField]: { [Op.notIn]: src.doneValues } },
-    ];
+    ] });
   }
   // Source-specific guard (e.g. only years not yet closed).
-  if (src.extraWhere) Object.assign(where, src.extraWhere);
-  return where;
+  if (src.extraWhere) and.push(src.extraWhere);
+  return { [Op.and]: and };
 }
 
 function alertRow(src, record, days, todayStr) {
-  const due = toYmd(record[src.dateField]);
+  const due = toYmd(sourceDate(src, record));
   // Stable identity: one alert per (source, record, kind) — plus the day for
   // recurring reminders so a still-overdue item raises one fresh alert a day.
   const eventKey = src.recurring
     ? `${src.key}:${record.recordId}:${todayStr}`
     : `${src.key}:${record.recordId}`;
+  const meta = { daysUntil: days, titleHi: src.hi };
+  const ownerId = record.responsiblePersonId || record.ownerPersonId || null;
+  if (ownerId) meta.personId = ownerId;
+  if (src.meta) Object.assign(meta, src.meta(record, days) || {});
   return {
     eventKey,
     eventType: src.key,
@@ -193,7 +432,7 @@ function alertRow(src, record, days, todayStr) {
     read: false,
     dismissed: false,
     dedupeDay: src.recurring ? todayStr : null,
-    meta: { daysUntil: days, titleHi: src.hi },
+    meta,
   };
 }
 
@@ -210,7 +449,7 @@ async function syncNotifications() {
   for (const src of SOURCES) {
     let records = [];
     try {
-      records = await src.model().findAll({ where: sourceWhere(src), limit: 1000 });
+      records = await gatherRecords(src, 2000);
     } catch (e) {
       // A missing table must never break the sync.
       console.error(`Notification source ${src.key} skipped:`, e.message);
@@ -218,10 +457,15 @@ async function syncNotifications() {
     }
     scanned += records.length;
     for (const r of records) {
-      const days = daysUntil(r[src.dateField], todayStr);
+      const days = daysUntil(sourceDate(src, r), todayStr);
       if (days == null) continue;
-      if (src.overdue ? days >= 0 : (days < 0 || days > (src.window || 0))) continue;
+      // Scan sources decide their own eligibility; date sources use the window.
+      if (!src.scan && (src.overdue ? days >= 0 : (days < 0 || days > (src.window || 0)))) continue;
+      // A recurring source re-raises only after RECUR_MS so a persisted
+      // condition is a steady nag, never a daily storm.
+      if (src.recurring && r._lastEventAt && (Date.now() - r._lastEventAt) < RECUR_MS) continue;
       const row = alertRow(src, r, days, todayStr);
+      if (src.recurring) row.meta.reminders = (r.reminders || 0) + 1;
       try {
         // The unique eventKey makes this the dedupe gate: a concurrent or
         // repeated sync simply hits the constraint and is skipped.
@@ -237,8 +481,12 @@ async function syncNotifications() {
   return { scanned, created, totalCreated: Object.values(created).reduce((a, b) => a + b, 0), today: todayStr };
 }
 
+// Sources are unique by event key; several may share one resource (e.g. three
+// action sources), so lookups by eventType must be exact.
 const SRC_BY_RESOURCE = {};
 for (const s of SOURCES) SRC_BY_RESOURCE[s.resource] = s;
+const SRC_BY_EVENT = {};
+for (const s of SOURCES) SRC_BY_EVENT[s.key] = s;
 
 // Live status of the underlying task, read from the authoritative source record
 // (never from the notification itself). This is what makes "reading ≠ done".
@@ -270,13 +518,19 @@ async function enrich(rows) {
       srcRecords[type] = new Map(found.map((x) => [String(x.id), x]));
     } catch { srcRecords[type] = new Map(); }
   }
-  // Resolve responsible person names in one pass.
+  // Resolve responsible person names in one pass. Behavioural alerts carry the
+  // person in their own meta (there is no single source record to read).
   const personIds = new Set();
   for (const map of Object.values(srcRecords)) {
     for (const rec of map.values()) {
       if (rec.responsiblePersonId) personIds.add(rec.responsiblePersonId);
       if (rec.ownerPersonId) personIds.add(rec.ownerPersonId);
     }
+  }
+  for (const r of rows) {
+    const meta = (typeof r.toJSON === 'function' ? r.toJSON() : r).meta || {};
+    if (meta.personId) personIds.add(meta.personId);
+    if (meta.ownerPersonId) personIds.add(meta.ownerPersonId);
   }
   const people = new Map();
   if (personIds.size) {
@@ -289,11 +543,15 @@ async function enrich(rows) {
     const o = typeof r.toJSON === 'function' ? r.toJSON() : { ...r };
     // Always hand the client a plain YYYY-MM-DD, whatever shape the driver used.
     o.dueDate = toYmd(o.dueDate);
-    const src = SRC_BY_RESOURCE[r.sourceType];
+    const meta = o.meta || {};
+    const src = SRC_BY_EVENT[r.eventType] || SRC_BY_RESOURCE[r.sourceType];
     const rec = srcRecords[r.sourceType] && srcRecords[r.sourceType].get(String(r.sourceId));
-    o.taskStatus = taskStatus(src, rec, todayStr);
-    o.daysUntil = rec && src ? daysUntil(rec[src.dateField], todayStr) : (o.dueDate ? daysUntil(o.dueDate, todayStr) : null);
-    o.responsiblePersonId = rec ? (rec.responsiblePersonId || rec.ownerPersonId || null) : null;
+    o.taskStatus = src && src.scan ? 'pending' : taskStatus(src, rec, todayStr);
+    // Scan-based alerts keep their own day count; date sources read the record.
+    o.daysUntil = meta.daysUntil != null ? meta.daysUntil
+      : (rec && src ? daysUntil(sourceDate(src, rec), todayStr) : (o.dueDate ? daysUntil(o.dueDate, todayStr) : null));
+    o.responsiblePersonId = rec ? (rec.responsiblePersonId || rec.ownerPersonId || null)
+      : (meta.personId || meta.ownerPersonId || null);
     const person = o.responsiblePersonId ? people.get(o.responsiblePersonId) : null;
     o.responsibleName = person ? person.name : null;
     o.responsibleEmail = person ? person.email : null;
@@ -590,12 +848,12 @@ async function sourceSummary() {
   for (const src of SOURCES) {
     let monitored = 0, due = 0, connected = true;
     try {
-      const records = await src.model().findAll({ where: sourceWhere(src), limit: 2000 });
+      const records = await gatherRecords(src, 2000);
       monitored = records.length;
       for (const r of records) {
-        const d = daysUntil(r[src.dateField], todayStr);
+        const d = daysUntil(sourceDate(src, r), todayStr);
         if (d == null) continue;
-        if (src.overdue ? d >= 0 : (d < 0 || d > (src.window || 0))) continue;
+        if (!src.scan && (src.overdue ? d >= 0 : (d < 0 || d > (src.window || 0)))) continue;
         due++;
       }
     } catch { connected = false; }
