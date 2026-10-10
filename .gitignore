@@ -39,3 +39,7 @@ output.txt
 # media vault (raw master archive) - repo is PUBLIC, keep raw files out of git
 media/*
 !media/*.md
+
+# temporary preview sheets (not for repo)
+public/tmp-preview/
+public/tmp-sheet.jpg

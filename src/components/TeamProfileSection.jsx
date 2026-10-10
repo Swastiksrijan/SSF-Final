@@ -1,7 +1,7 @@
 import React from "react";
 
 const teamMembers = [
-  { name: "Mr. Ramesh Pandey", position: "Founder & National President", img: "https://drive.google.com/uc?export=view&id=1GTYxGTc951L1LjBNhuQB443Wne5OnwSl" },
+  { name: "Mr. Ramesh Pandey", position: "Founder & National President", img: "/Teams_Images/ramesh_pandey.jpg" },
   { name: "Ms. Preeti Shukla", position: "Vice President & Program Head", img: "/Teams_Images/image_19.jpg" },
   { name: "Mr. Amit Pandey", position: "General Secretary & Operations", img: "/Teams_Images/image_15.jpg" },
   { name: "Ms. Divya Sharma", position: "Treasurer & CFO", img: "/Teams_Images/divya_sharma.jpg" },

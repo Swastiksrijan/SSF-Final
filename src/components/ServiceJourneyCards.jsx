@@ -1,5 +1,11 @@
 import { motion } from "framer-motion";
 import { FaSeedling, FaHandHoldingHeart, FaUsers, FaGraduationCap, FaBullhorn, FaBriefcase, FaFemale, FaHeartbeat, FaLeaf, FaLaptop, FaRocket, FaExternalLinkAlt } from "react-icons/fa";
+import { galleryPhotos } from "../data/gallery";
+
+// Local SSF activity photos (public/Gallery_Images -> /gallery/*.jpg), served
+// from our own site instead of Google Drive hotlinks, which are slow and
+// blocked in some browsers. Drive is kept only as an optional "original" link.
+const LOCAL_PHOTOS = galleryPhotos().filter((p) => p.src && p.src.startsWith("/gallery/"));
 
 const YEARS = [
   { year: "2013", title: "Foundation & Registration", hi: "स्थापना एवं पंजीयन", desc: "Registered beginning of the Swastik Srijan Foundation journey in Rewa, Madhya Pradesh.", icon: <FaSeedling />, tone: "orange" },
@@ -37,12 +43,15 @@ const PHOTO_HIGHLIGHTS = [
   "1yiWqV-QIvlNmTUryG6ejO6Zp7uSGgp7f",
   "16bfmSiH6gMoYgZbQGeOhSOzcuQA-oDTe",
   "17GxCIp7Xu7OTtEBR9xqMNIiVZCaH9QYg"
-].map((id, index) => ({
-  id,
-  label: `Activity Highlight ${String(index + 1).padStart(2, "0")}`,
-  image: `https://drive.google.com/uc?export=view&id=${id}`,
-  view: `https://drive.google.com/file/d/${id}/view?usp=drivesdk`
-}));
+].map((id, index) => {
+  const local = LOCAL_PHOTOS[index % (LOCAL_PHOTOS.length || 1)];
+  return {
+    id,
+    label: `Activity Highlight ${String(index + 1).padStart(2, "0")}`,
+    image: local ? local.src : `https://drive.google.com/thumbnail?id=${id}&sz=w1000`,
+    view: `https://drive.google.com/file/d/${id}/view?usp=drivesdk`
+  };
+});
 
 const TONES = {
   orange: "border-orange-200 bg-orange-50 text-orange-600",
