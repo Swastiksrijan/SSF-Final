@@ -15,6 +15,7 @@ export default function OptimizedImage({
     className = "",
     fallback = "/images/hero-fallback.svg",
     objectFit = "cover",
+    priority = false,
     ...props
 }) {
     const [isLoaded, setIsLoaded] = useState(false);
@@ -68,7 +69,9 @@ export default function OptimizedImage({
                 transition={{ duration: 0.6, ease: "easeOut" }}
                 onLoad={handleLoad}
                 onError={handleError}
-                loading="lazy"
+                loading={priority ? "eager" : "lazy"}
+                fetchPriority={priority ? "high" : undefined}
+                decoding={priority ? "sync" : "async"}
                 className={`w-full h-full object-${objectFit} transition-transform duration-700`}
                 {...props}
             />

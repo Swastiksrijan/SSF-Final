@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { FaEye, FaTimes, FaFilter, FaCamera } from "react-icons/fa";
 import galleryManifest from "../data/galleryManifest.json";
 
@@ -532,7 +532,23 @@ const ALL_IMAGES = [
 ];
 const CATEGORIES = ["All", "Education", "Health", "Women Empowerment", "Events", "Distribution"];
 const YEARS = ["All", "2014-2025"];
-const ALL_GALLERY = [...GALLERY_UPLOADS, ...ALL_IMAGES];
+
+// The same photograph was uploaded under several names over time (it was saved
+// by hand each time), so the grid showed the same scene more than once. For each
+// group below we keep the highest-quality copy and drop the rest. Nothing unique
+// is lost — every dropped file is a smaller/duplicate copy of the kept one.
+const DUPLICATE_SRCS = new Set([
+  "/images/uploads/community-banner.jpg",          // same file as disaster-relief.jpg
+  "/images/rural-children-raising-hands.jpg",      // 480x360, community-rally-children.jpg is 960x720
+  "/gallery/image10.jpg",                          // student-leadership-recitation.jpg is larger
+  "/images/women-learning-session.png",            // 259x194, gallery/image37.jpg is 804x497
+  "/images/uploads/footer-gallery-2.jpg",          // village-community-center.jpg is the same scene
+  "/images/slum-outreach-children.jpg",            // 180x240, footer-gallery-3.jpg is 1024x1024
+  "/gallery/image23.jpg",                          // children-unity-park.jpg is larger
+]);
+
+const ALL_GALLERY = [...GALLERY_UPLOADS, ...ALL_IMAGES]
+  .filter((img) => !DUPLICATE_SRCS.has(img.src));
 
 const YOUTUBE_VIDEOS = [
   {
@@ -624,9 +640,29 @@ export default function MediaGallery() {
   const categoryChips = ["All", ...new Set([...CATEGORIES.slice(1), ...ALL_GALLERY.map((i) => i.category).filter(Boolean)])];
 
   // Progressive rendering: show a page at a time so a large gallery never
-  // loads hundreds of images at once (keeps the page fast).
+  // loads hundreds of images at once (keeps the page fast). New pages load
+  // automatically as the visitor scrolls — no repeated clicking required.
   const shownImages = filteredImages.slice(0, visibleCount);
   useEffect(() => { setVisibleCount(24); }, [activeCategory, activeYear]);
+
+  const hasMore = filteredImages.length > shownImages.length;
+  const sentinelRef = useRef(null);
+
+  useEffect(() => {
+    if (!hasMore) return;
+    const node = sentinelRef.current;
+    if (!node || typeof IntersectionObserver === "undefined") return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          setVisibleCount((n) => n + 24);
+        }
+      },
+      { rootMargin: "600px 0px" }
+    );
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [hasMore, visibleCount, filteredImages.length]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -759,14 +795,15 @@ export default function MediaGallery() {
           </div>
         )}
 
-        {filteredImages.length > shownImages.length && (
-          <div className="text-center mt-10">
+        {hasMore && (
+          <div ref={sentinelRef} className="text-center mt-10">
             <button
               onClick={() => setVisibleCount((n) => n + 24)}
               className="px-8 py-3 rounded-full bg-[#002344] text-white font-bold hover:bg-[#fb8500] transition-colors"
             >
-              Load more photos ({filteredImages.length - shownImages.length} left)
+              Load more photos ({filteredImages.length - shownImages.length} remaining)
             </button>
+            <p className="text-zinc-400 text-sm mt-3">More photos load automatically as you scroll.</p>
           </div>
         )}
 
