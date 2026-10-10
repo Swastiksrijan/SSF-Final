@@ -308,7 +308,53 @@ async function listNotifications(query = {}) {
     limit,
   });
   const records = await enrich(rows);
-  return { records, total: count, unread: await unreadCount(), today: istDate() };
+  return {
+    records,
+    total: count,
+    unread: await unreadCount(),
+    stats: await statsSummary(),
+    today: istDate(),
+  };
+}
+
+// Aggregate picture for the dashboard header. Counts are taken from the whole
+// set (not just the current page) so KPIs stay correct under filters.
+async function statsSummary() {
+  const { Op } = require('sequelize');
+  const rows = await models.ImsNotification.findAll({ where: { dismissed: false } }).catch(() => []);
+  const enriched = await enrich(rows);
+  const s = { total: enriched.length, unread: 0, overdue: 0, dueSoon: 0, critical: 0, byCategory: {} };
+  for (const r of enriched) {
+    if (!r.read) s.unread++;
+    if (r.taskStatus === 'overdue') s.overdue++;
+    else if (r.taskStatus === 'dueSoon') s.dueSoon++;
+    if (r.severity === 'critical' && !r.read) s.critical++;
+    s.byCategory[r.category || 'other'] = (s.byCategory[r.category || 'other'] || 0) + 1;
+  }
+  return s;
+}
+
+// What this centre is watching: for each connected source, how many records are
+// eligible to raise an alert right now. Lets the UI show it is alive even when
+// no alert is currently due — and is honest when a source is not connected.
+async function sourceSummary() {
+  const todayStr = istDate();
+  const out = [];
+  for (const src of SOURCES) {
+    let monitored = 0, due = 0, connected = true;
+    try {
+      const records = await src.model().findAll({ where: sourceWhere(src), limit: 2000 });
+      monitored = records.length;
+      for (const r of records) {
+        const d = daysUntil(r[src.dateField], todayStr);
+        if (d == null) continue;
+        if (src.overdue ? d >= 0 : (d < 0 || d > (src.window || 0))) continue;
+        due++;
+      }
+    } catch { connected = false; }
+    out.push({ key: src.key, resource: src.resource, category: src.category, connected, monitored, due });
+  }
+  return { sources: out, today: todayStr };
 }
 
 async function markRead(idOrRecordId, req) {
@@ -332,4 +378,4 @@ async function markAllRead(req) {
   return n;
 }
 
-module.exports = { syncNotifications, istDate, daysUntil, SOURCES, listNotifications, markRead, markAllRead, unreadCount, enrich };
+module.exports = { syncNotifications, istDate, daysUntil, SOURCES, listNotifications, markRead, markAllRead, unreadCount, enrich, statsSummary, sourceSummary };

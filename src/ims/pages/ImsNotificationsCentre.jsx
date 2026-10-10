@@ -1,11 +1,12 @@
 // SSF-IMS Notification & Action Centre — /ims/notifications
 //
-// Three honest sections:
+// A live dashboard, not an empty page: a hero with real KPIs, a "monitored
+// sources" strip that proves the centre is connected and working even when no
+// alert is currently due, and three honest sections:
 //   A. Notifications       — genuine alerts derived from real source records
-//   B. Pending Actions     — actions that actually require attention (with owner,
-//                            real due date, live task status and a source link)
-//   C. Communications & Notices — the real communications + notices registers,
-//                            preserved as-is (delivery status shown only as recorded)
+//   B. Pending Actions     — actions that actually require attention (owner,
+//                            real due date, live task status, source link)
+//   C. Communications & Notices — the real communications + notices registers
 //
 // A notification is an ALERT, never proof of completion. Reading one clears the
 // alert only; the underlying task is completed in its own register.
@@ -13,8 +14,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, PageHeader, Button, Empty, Spinner, Tabs, Badge, DetailModal } from '../ui';
+import { Card, SectionHero, StatStrip, Tabs, Empty, Spinner, Button, DetailModal } from '../ui';
 import { useLang } from '../LangContext';
+import { tBoth } from '../i18n';
 import { ims } from '../api';
 
 const SEVERITY = {
@@ -37,22 +39,29 @@ const DELIVERY_TONE = {
   pending: 'bg-amber-100 text-amber-700',
   read: 'bg-emerald-100 text-emerald-700',
 };
+// Label + icon for each watched source register.
+const SOURCE_META = {
+  actions: { key: 'actions', icon: 'ListChecks' },
+  compliance: { key: 'compliance', icon: 'ShieldCheck' },
+  audits: { key: 'audit_risk', icon: 'SearchCheck' },
+};
 
 function Pill({ children, tone = 'bg-slate-100 text-slate-600' }) {
   return <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${tone}`}>{children}</span>;
 }
 
 export default function ImsNotificationsCentre() {
-  const { t, lang } = useLang();
+  const { t } = useLang();
   const navigate = useNavigate();
 
   const [tab, setTab] = useState('notifications');
-  const [data, setData] = useState(null);       // { records, total, unread, today }
+  const [data, setData] = useState(null);       // { records, total, unread, stats, today }
+  const [sources, setSources] = useState(null); // per-source connectivity summary
   const [comms, setComms] = useState(null);     // communications + notices
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState('');
   const [busy, setBusy] = useState(false);
-  const [filter, setFilter] = useState('unread'); // notifications sub-filter
+  const [filter, setFilter] = useState('unread');
   const [q, setQ] = useState('');
   const [detail, setDetail] = useState(null);
   const [toast, setToast] = useState('');
@@ -67,13 +76,16 @@ export default function ImsNotificationsCentre() {
     } finally { setLoading(false); }
   }, [q]);
 
+  const loadSources = useCallback(async () => {
+    try { setSources(await ims.notificationSources()); } catch { setSources({ sources: [] }); }
+  }, []);
+
   const loadHistory = useCallback(async () => {
     try {
       const [c, n] = await Promise.all([
         ims.list('communications', { limit: 120 }).catch(() => ({ records: [] })),
         ims.list('notices', { limit: 120 }).catch(() => ({ records: [] })),
       ]);
-      // Preserve both registers, distinguish the kind by the record's own fields.
       const merged = [
         ...(c.records || []).map((r) => ({ ...r, _kind: 'communication' })),
         ...(n.records || []).map((r) => ({ ...r, _kind: 'notice' })),
@@ -83,13 +95,14 @@ export default function ImsNotificationsCentre() {
   }, []);
 
   useEffect(() => { loadNotifs(); }, [loadNotifs]);
+  useEffect(() => { loadSources(); }, [loadSources]);
   useEffect(() => { loadHistory(); }, [loadHistory]);
 
   const refresh = async () => {
     setBusy(true); setToast('');
     try {
       await ims.notificationSync();
-      await loadNotifs();
+      await Promise.all([loadNotifs(), loadSources()]);
       setToast(t('notifications_refreshed'));
     } catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
@@ -97,15 +110,13 @@ export default function ImsNotificationsCentre() {
   const markRead = async (row) => {
     if (row.read) return;
     setBusy(true);
-    try {
-      await ims.notificationRead(row.id);
-      await loadNotifs();
-    } catch (e) { setErr(e.message); } finally { setBusy(false); }
+    try { await ims.notificationRead(row.id); await loadNotifs(); }
+    catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
 
   const markAll = async () => {
     setBusy(true);
-    try { await ims.notificationReadAll(); await loadNotifs(); }
+    try { await ims.notificationReadAll(); await Promise.all([loadNotifs(), loadSources()]); }
     catch (e) { setErr(e.message); } finally { setBusy(false); }
   };
 
@@ -119,8 +130,15 @@ export default function ImsNotificationsCentre() {
   };
 
   const records = useMemo(() => data?.records || [], [data]);
-  const unread = data?.unread || 0;
-  const overdueCount = records.filter((r) => r.taskStatus === 'overdue').length;
+  // Prefer server-side stats; fall back to computing from the page if the
+  // backend has not been redeployed yet.
+  const stats = data?.stats || {
+    total: records.length,
+    unread: records.filter((r) => !r.read).length,
+    overdue: records.filter((r) => r.taskStatus === 'overdue').length,
+    dueSoon: records.filter((r) => r.taskStatus === 'dueSoon').length,
+  };
+  const unread = stats.unread ?? data?.unread ?? 0;
 
   const shown = useMemo(() => records.filter((r) => {
     if (filter === 'unread') return !r.read;
@@ -130,30 +148,83 @@ export default function ImsNotificationsCentre() {
 
   const pending = useMemo(() => records.filter((r) => ['pending', 'dueSoon', 'overdue'].includes(r.taskStatus) || !r.read), [records]);
 
+  // Group the watched sources by register for the connectivity strip.
+  const sourceGroups = useMemo(() => {
+    const map = new Map();
+    for (const s of (sources?.sources || [])) {
+      const meta = SOURCE_META[s.resource] || { key: s.resource, icon: 'Activity' };
+      const g = map.get(s.resource) || { resource: s.resource, meta, connected: false, monitored: 0, due: 0 };
+      g.connected = g.connected || s.connected;
+      g.monitored = Math.max(g.monitored, s.monitored || 0);
+      g.due += s.due || 0;
+      map.set(s.resource, g);
+    }
+    return [...map.values()];
+  }, [sources]);
+
   const tabs = [
-    { id: 'notifications', en: t('notifications'), hi: lang === 'hi' ? '' : 'सूचनाएँ', count: unread },
-    { id: 'actions', en: t('pending_actions'), hi: lang === 'hi' ? '' : 'लंबित कार्य', count: pending.length },
-    { id: 'history', en: t('comm_notices'), hi: lang === 'hi' ? '' : 'संचार एवं नोटिस', count: comms ? comms.length : undefined },
+    { id: 'notifications', en: t('notifications'), hi: 'सूचनाएँ', count: unread },
+    { id: 'actions', en: t('pending_actions'), hi: 'लंबित कार्य', count: pending.length },
+    { id: 'history', en: t('comm_notices'), hi: 'संचार एवं नोटिस', count: comms ? comms.length : undefined },
   ];
 
-  const label = (p) => (Array.isArray(p) ? (lang === 'hi' ? p[1] : p[0]) : p);
+  const hiTitle = tBoth('notifications')[1];
 
   return (
     <ImsLayout active="notifications">
-      <PageHeader
-        title={t('notifications')}
-        subtitle={t('notif_subtitle')}
+      <SectionHero
+        title={t('action_centre')}
+        hi={hiTitle}
+        eyebrow={`${t('app_name')} · ${t('centre_kicker')}`}
+        icon="Bell"
+        tone="navy"
         actions={
           <>
-            <Pill tone={unread ? 'bg-[#002344] text-white' : 'bg-emerald-100 text-emerald-700'}>
-              <Icons.Bell size={12} /> {unread} {t('notif_unread')}
-            </Pill>
-            {overdueCount > 0 && <Pill tone="bg-rose-100 text-rose-700"><Icons.AlertTriangle size={12} /> {overdueCount} {t('task_overdue')}</Pill>}
-            <Button variant="ghost" icon="RefreshCw" onClick={refresh} disabled={busy}>{t('refresh')}</Button>
-            <Button variant="navy" icon="CheckCheck" onClick={markAll} disabled={busy || unread === 0}>{t('mark_all_read')}</Button>
+            <Button variant="hero" icon="RefreshCw" onClick={refresh} disabled={busy}>{t('refresh')}</Button>
+            <Button variant="hero" icon="CheckCheck" onClick={markAll} disabled={busy || unread === 0}>{t('mark_all_read')}</Button>
           </>
         }
-      />
+      >
+        <StatStrip
+          items={[
+            { labelKey: 'total_alerts', value: stats.total ?? 0, icon: 'Bell', tone: 'navy' },
+            { labelKey: 'needs_attention', value: unread, icon: 'AlertTriangle', tone: 'amber' },
+            { labelKey: 'task_overdue', value: stats.overdue ?? 0, icon: 'AlertOctagon', tone: 'red' },
+            { labelKey: 'task_dueSoon', value: stats.dueSoon ?? 0, icon: 'Clock', tone: 'blue' },
+          ]}
+        />
+      </SectionHero>
+
+      {/* Live connectivity: proves the centre is working even with 0 alerts. */}
+      <Card className="mb-5 p-4">
+        <div className="mb-3 flex items-center gap-2">
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600"><Icons.Radio size={15} /></span>
+          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-500">{t('monitored_sources')}</h2>
+          <Pill tone="bg-emerald-100 text-emerald-700"><span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" /> {t('live')}</Pill>
+          <span className="ml-auto hidden text-[11px] text-slate-400 sm:block">{t('auto_note')}</span>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {!sources && <div className="col-span-full"><Spinner /></div>}
+          {sourceGroups.map((g) => {
+            const I = Icons[g.meta.icon] || Icons.Activity;
+            return (
+              <div key={g.resource} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3">
+                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${g.connected ? 'bg-gradient-to-br from-[#1E3A8A] to-[#2563EB] text-white' : 'bg-slate-200 text-slate-400'}`}><I size={18} /></span>
+                <span className="min-w-0 flex-1">
+                  <span className="block truncate text-sm font-semibold text-slate-800">{t(g.meta.key)}</span>
+                  <span className="block truncate text-[11px] text-slate-400">
+                    {g.monitored} {t('source_monitored')} · {g.due} {t('source_due')}
+                  </span>
+                </span>
+                <Pill tone={g.connected ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'}>
+                  <span className={`h-1.5 w-1.5 rounded-full ${g.connected ? 'bg-emerald-500' : 'bg-slate-400'}`} />
+                  {g.connected ? t('source_connected') : t('source_disconnected')}
+                </Pill>
+              </div>
+            );
+          })}
+        </div>
+      </Card>
 
       {toast && <Card className="mb-3 border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{toast}</Card>}
       {err && (
@@ -183,9 +254,10 @@ export default function ImsNotificationsCentre() {
           </div>
 
           {loading && !data ? <Spinner /> : shown.length === 0 ? (
-            <Card className="p-6">
+            <Card className="p-8">
               <Empty label={filter === 'unread' ? t('all_caught_up') : t('no_notifications')} />
-              <p className="mt-2 text-center text-xs text-slate-400">{t('notif_empty_hint')}</p>
+              <p className="mt-2 text-center text-sm text-slate-400">{t('notif_empty_hint')}</p>
+              <p className="mx-auto mt-3 max-w-md text-center text-xs text-slate-400">{t('auto_note')}</p>
             </Card>
           ) : (
             <div className="space-y-2.5">
@@ -199,7 +271,7 @@ export default function ImsNotificationsCentre() {
                     <span className="flex flex-wrap items-center gap-2">
                       <span className="text-sm font-bold text-[#002344]">{r.title}</span>
                       {!r.read && <span className="h-2 w-2 rounded-full bg-[#FF6600]" />}
-                      {r.severity && r.severity !== 'info' && <Pill tone={r.severity === 'critical' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}>{label([r.severity, r.severity])}</Pill>}
+                      {r.severity && r.severity !== 'info' && <Pill tone={r.severity === 'critical' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}>{r.severity}</Pill>}
                     </span>
                     <span className="mt-0.5 block text-sm text-slate-600">{r.message}</span>
                     <span className="mt-1.5 flex flex-wrap items-center gap-2 text-[11px] text-slate-400">
@@ -223,7 +295,7 @@ export default function ImsNotificationsCentre() {
             <Icons.Info size={13} className="mr-1 inline" /> {t('reading_note')}
           </Card>
           {loading && !data ? <Spinner /> : pending.length === 0 ? (
-            <Card className="p-6"><Empty label={t('all_caught_up')} /></Card>
+            <Card className="p-8"><Empty label={t('all_caught_up')} /></Card>
           ) : (
             <Card className="overflow-hidden">
               <div className="overflow-x-auto">
@@ -271,7 +343,7 @@ export default function ImsNotificationsCentre() {
       {tab === 'history' && (
         <>
           {!comms ? <Spinner /> : comms.length === 0 ? (
-            <Card className="p-6"><Empty /></Card>
+            <Card className="p-8"><Empty /></Card>
           ) : (
             <Card className="overflow-hidden">
               <div className="overflow-x-auto">
@@ -294,7 +366,7 @@ export default function ImsNotificationsCentre() {
                         <td className="px-4 py-3">
                           {c.deliveryStatus
                             ? <Pill tone={DELIVERY_TONE[c.deliveryStatus] || 'bg-slate-100 text-slate-500'}>{c.deliveryStatus}</Pill>
-                            : <span className="text-xs text-slate-400">{t('no_records')}</span>}
+                            : <span className="text-xs text-slate-400">—</span>}
                         </td>
                         <td className="px-4 py-3 text-right font-mono text-xs text-slate-400">{c.recordId}</td>
                       </tr>

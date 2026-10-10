@@ -322,6 +322,9 @@ router.get('/ims/notifications', wrap(async (req, r) => r.json(await notif.listN
 // Unread count only (for the header badge).
 router.get('/ims/notifications/unread-count', wrap(async (_req, r) => r.json({ unread: await notif.unreadCount() })));
 
+// What the centre is watching: per-source monitored/due counts + connectivity.
+router.get('/ims/notifications/sources', wrap(async (_req, r) => r.json(await notif.sourceSummary())));
+
 // Derive any new alerts from the connected source registers (idempotent).
 router.post('/ims/notifications/sync', wrap(async (_req, r) => r.json(await notif.syncNotifications())));
 

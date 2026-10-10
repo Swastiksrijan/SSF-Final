@@ -124,7 +124,9 @@ export default function SectionNav({ active }) {
               </span>
               {g.items.map((item) => {
                 const on = item.key === activeKey;
-                const [en, hiLabel] = tBoth(item.key);
+                // Tabs use a short label when one exists, so a long name such as
+                // "Meetings & Decisions" does not crowd the strip.
+                const [en, hiLabel] = tBoth(item.shortKey || item.key);
                 return (
                   <button
                     type="button"
