@@ -15,7 +15,6 @@ import manifest from './galleryManifest.json';
 
 export const galleryPhotos = () => manifest.items || [];
 export const galleryCount = () => manifest.count || 0;
-export const galleryGeneratedAt = () => manifest.generatedAt || null;
 
 // Photos in a given category (case-insensitive), newest first by file order.
 export function photosByCategory(category) {

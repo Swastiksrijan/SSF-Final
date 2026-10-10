@@ -96,7 +96,7 @@ async function main() {
     });
   }
 
-  const manifestOut = { generatedAt: new Date().toISOString(), count: items.length, items };
+  const manifestOut = { count: items.length, items };
   await writeFile(path.join(OUT_DIR, 'gallery.json'), JSON.stringify(manifestOut, null, 2));
   await writeFile(path.join(ROOT, 'src', 'data', 'galleryManifest.json'), JSON.stringify(manifestOut, null, 2));
 
