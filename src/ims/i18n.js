@@ -565,6 +565,8 @@ export const DICT = {
   action_centre: { en: 'Action Centre', hi: 'कार्य केंद्र' },
   centre_kicker: { en: 'Notifications & Action Centre', hi: 'सूचना एवं कार्य केंद्र' },
   centre_purpose: { en: 'What needs your attention, across every register', hi: 'हर रजिस्टर से, आपके ध्यान देने योग्य कार्य' },
+  email_delivery: { en: 'Email delivery', hi: 'ईमेल प्रेषण' },
+  no_delivery_yet: { en: 'Not emailed yet (email delivery turns on once a mail provider is configured).', hi: 'अभी ईमेल नहीं भेजा गया (मेल प्रदाता सेट होने पर ईमेल चालू होगा)।' },
   total_alerts: { en: 'Total alerts', hi: 'कुल सूचनाएँ' },
   needs_attention: { en: 'Needs attention', hi: 'ध्यान देने योग्य' },
   monitored_sources: { en: 'Monitored sources', hi: 'निगरानी स्रोत' },

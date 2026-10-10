@@ -282,7 +282,7 @@ async function enrich(rows) {
   if (personIds.size) {
     try {
       const found = await models.ImsPerson.findAll({ where: { id: [...personIds] } });
-      for (const p of found) people.set(p.id, p.fullName || p.recordId);
+      for (const p of found) people.set(p.id, { name: p.fullName || p.recordId, email: p.email || null });
     } catch { /* names are best-effort */ }
   }
   return rows.map((r) => {
@@ -294,9 +294,125 @@ async function enrich(rows) {
     o.taskStatus = taskStatus(src, rec, todayStr);
     o.daysUntil = rec && src ? daysUntil(rec[src.dateField], todayStr) : (o.dueDate ? daysUntil(o.dueDate, todayStr) : null);
     o.responsiblePersonId = rec ? (rec.responsiblePersonId || rec.ownerPersonId || null) : null;
-    o.responsibleName = o.responsiblePersonId ? (people.get(o.responsiblePersonId) || null) : null;
+    const person = o.responsiblePersonId ? people.get(o.responsiblePersonId) : null;
+    o.responsibleName = person ? person.name : null;
+    o.responsibleEmail = person ? person.email : null;
     return o;
   });
+}
+
+// ---- delivery (email) ------------------------------------------------------
+// Who receives an alert: the responsible person's email when we have it, else
+// the configured admin mailbox(es). Nothing is invented — a missing email means
+// the alert simply stays in-app for admins to see.
+function adminRecipients() {
+  return String(process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || '')
+    .split(',').map((s) => s.trim()).filter(Boolean);
+}
+
+function appBaseUrl() {
+  return String(process.env.APP_BASE_URL || 'https://swastiksrijan.in').replace(/\/$/, '');
+}
+
+function absoluteLink(link) {
+  if (!link) return appBaseUrl();
+  return /^https?:/i.test(link) ? link : appBaseUrl() + link;
+}
+
+function emailBody(alert) {
+  const link = absoluteLink(alert.sourceLink);
+  const lines = [
+    alert.message,
+    '',
+    `Record: ${alert.sourceRecordId || '—'}`,
+    `Due date: ${alert.dueDate || '—'}`,
+    alert.responsibleName ? `Responsible: ${alert.responsibleName}` : null,
+    '',
+    `Open in SSF OneOffice: ${link}`,
+    '',
+    'SSF OneOffice · Notifications & Action Centre',
+    'This is an automatic reminder. Completing the task in its register clears it.',
+  ].filter((l) => l !== null);
+  return lines.join('\n');
+}
+
+function emailHtml(alert) {
+  const link = absoluteLink(alert.sourceLink);
+  const color = alert.severity === 'critical' ? '#DC2626' : alert.severity === 'warning' ? '#D97706' : '#2563EB';
+  return `<div style="font-family:system-ui,Segoe UI,Arial,sans-serif;max-width:560px;margin:auto;border:1px solid #e2e8f0;border-radius:14px;overflow:hidden">
+    <div style="background:#002344;color:#fff;padding:16px 20px">
+      <div style="font-size:12px;letter-spacing:.15em;color:#FFD166;font-weight:800">SSF ONEOFFICE</div>
+      <div style="font-size:18px;font-weight:800;margin-top:2px">Notifications &amp; Action Centre</div>
+    </div>
+    <div style="padding:20px">
+      <div style="display:inline-block;background:${color};color:#fff;border-radius:999px;padding:2px 10px;font-size:11px;font-weight:800;text-transform:uppercase">${alert.severity || 'info'}</div>
+      <h2 style="margin:10px 0 6px;color:#002344">${alert.title}</h2>
+      <p style="color:#334155;line-height:1.5">${alert.message}</p>
+      <table style="font-size:13px;color:#475569;margin-top:10px">
+        <tr><td style="padding:2px 10px 2px 0"><b>Record</b></td><td>${alert.sourceRecordId || '—'}</td></tr>
+        <tr><td style="padding:2px 10px 2px 0"><b>Due date</b></td><td>${alert.dueDate || '—'}</td></tr>
+        ${alert.responsibleName ? `<tr><td style="padding:2px 10px 2px 0"><b>Responsible</b></td><td>${alert.responsibleName}</td></tr>` : ''}
+      </table>
+      <p style="margin-top:18px"><a href="${link}" style="background:#FF6600;color:#fff;text-decoration:none;padding:10px 18px;border-radius:10px;font-weight:700">Open the record</a></p>
+      <p style="color:#94a3b8;font-size:12px;margin-top:16px">This is an automatic reminder. Completing the task in its register clears it.</p>
+    </div>
+  </div>`;
+}
+
+/**
+ * Email out any alert that has not been emailed yet. Idempotent: an alert is
+ * sent at most once (a successful 'email' delivery attempt is the gate), so
+ * repeated boots/refreshes never spam. Never edits the source record.
+ */
+async function deliverNotifications({ limit = 100 } = {}) {
+  const { sendMail, emailConfigured } = require('../mailer');
+  if (!emailConfigured()) return { configured: false, sent: 0, skipped: 0, failed: 0 };
+
+  const pending = await models.ImsNotification.findAll({ where: { dismissed: false }, order: [['dueDate', 'ASC']], limit });
+  const enriched = await enrich(pending);
+
+  // Which alerts already have a successful email attempt?
+  const done = new Set();
+  try {
+    const attempts = await models.ImsDeliveryAttempt.findAll({ where: { channel: 'email', status: 'sent' } });
+    for (const a of attempts) done.add(String(a.notificationId));
+  } catch { /* if the table is not ready, treat as none done */ }
+
+  let sent = 0, skipped = 0, failed = 0;
+  for (const alert of enriched) {
+    if (done.has(String(alert.id))) { skipped++; continue; }
+    const to = alert.responsibleEmail ? [alert.responsibleEmail] : adminRecipients();
+    if (!to.length) { skipped++; continue; }
+    try {
+      const out = await sendMail({
+        from: `"SSF Action Centre" <${process.env.EMAIL_FROM || process.env.EMAIL_USER || 'swastiksrijanfoundation@gmail.com'}>`,
+        to: to.join(','),
+        subject: `[SSF] ${alert.title} — ${alert.sourceRecordId || ''}`.trim(),
+        text: emailBody(alert),
+        html: emailHtml(alert),
+      });
+      await models.ImsDeliveryAttempt.create({
+        notificationId: alert.id, channel: 'email', status: 'sent', attemptedAt: new Date(),
+        detail: `to ${to.join(', ')}`, reference: out && out.id ? String(out.id) : null,
+      });
+      sent++;
+    } catch (e) {
+      failed++;
+      await models.ImsDeliveryAttempt.create({
+        notificationId: alert.id, channel: 'email', status: 'failed', attemptedAt: new Date(),
+        detail: `to ${to.join(', ')} — ${String(e.message || e).slice(0, 200)}`,
+      }).catch(() => {});
+    }
+  }
+  return { configured: true, sent, skipped, failed };
+}
+
+// Delivery evidence for one alert (what was actually emailed, when, and to whom).
+async function listDeliveries(id) {
+  try {
+    const rows = await models.ImsDeliveryAttempt.findAll({ where: { notificationId: id }, order: [['id', 'DESC']] });
+    return { attempts: rows.map((r) => (typeof r.toJSON === 'function' ? r.toJSON() : r)) };
+  } catch { return { attempts: [] }; }
 }
 
 async function unreadCount() {
@@ -396,4 +512,4 @@ async function markAllRead(req) {
   return n;
 }
 
-module.exports = { syncNotifications, istDate, daysUntil, SOURCES, listNotifications, markRead, markAllRead, unreadCount, enrich, statsSummary, sourceSummary };
+module.exports = { syncNotifications, deliverNotifications, listDeliveries, istDate, daysUntil, SOURCES, listNotifications, markRead, markAllRead, unreadCount, enrich, statsSummary, sourceSummary };

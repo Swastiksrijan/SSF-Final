@@ -66,6 +66,13 @@ export default function ImsNotificationsCentre() {
   const [filter, setFilter] = useState('unread');
   const [q, setQ] = useState('');
   const [detail, setDetail] = useState(null);
+  const [deliveries, setDeliveries] = useState([]);
+
+  // Load the email delivery log when an alert is opened (evidence of what was sent).
+  useEffect(() => {
+    if (!detail?.id) { setDeliveries([]); return; }
+    ims.notificationDeliveries(detail.id).then((d) => setDeliveries(d.attempts || [])).catch(() => setDeliveries([]));
+  }, [detail?.id]);
 
   const loadNotifs = useCallback(async () => {
     setLoading(true); setErr('');
@@ -388,6 +395,22 @@ export default function ImsNotificationsCentre() {
               <div><div className="text-[11px] font-bold uppercase text-slate-400">{t('responsible')}</div><div>{detail.responsibleName || '—'}</div></div>
               <div><div className="text-[11px] font-bold uppercase text-slate-400">{t('category')}</div><div>{detail.category || '—'}</div></div>
               <div><div className="text-[11px] font-bold uppercase text-slate-400">{t('source_record')}</div><div className="font-mono">{detail.sourceRecordId || '—'}</div></div>
+            </div>
+            <div>
+              <div className="mb-1 text-[11px] font-bold uppercase text-slate-400">{t('email_delivery')}</div>
+              {deliveries.length === 0 ? (
+                <p className="text-xs text-slate-400">{t('no_delivery_yet')}</p>
+              ) : (
+                <ul className="space-y-1">
+                  {deliveries.map((a) => (
+                    <li key={a.id} className="flex items-center gap-2 text-xs text-slate-600">
+                      <Pill tone={DELIVERY_TONE[a.status] || 'bg-slate-100 text-slate-500'}>{a.status}</Pill>
+                      <span className="truncate">{a.detail || a.channel}</span>
+                      <span className="ml-auto shrink-0 font-mono text-[10px] text-slate-400">{a.attemptedAt ? String(a.attemptedAt).slice(0, 16).replace('T', ' ') : ''}</span>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
             <p className="rounded-lg bg-slate-50 p-2 text-xs text-slate-500">{t('reading_note')}</p>
             {detail.sourceLink && (

@@ -85,6 +85,7 @@ export const ims = {
   notificationSync: () => fetch(`${API_BASE_URL}/api/ims/notifications/sync`, { method: 'POST', headers: headers() }).then(handle),
   notificationRead: (id) => fetch(`${API_BASE_URL}/api/ims/notifications/${id}/read`, { method: 'POST', headers: headers() }).then(handle),
   notificationReadAll: () => fetch(`${API_BASE_URL}/api/ims/notifications/read-all`, { method: 'POST', headers: headers() }).then(handle),
+  notificationDeliveries: (id) => fetch(`${API_BASE_URL}/api/ims/notifications/${id}/deliveries`, { headers: headers() }).then(handle),
 
   list: (resource, params = {}) => {
     const qs = new URLSearchParams(params).toString();

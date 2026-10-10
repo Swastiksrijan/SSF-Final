@@ -325,8 +325,17 @@ router.get('/ims/notifications/unread-count', wrap(async (_req, r) => r.json({ u
 // What the centre is watching: per-source monitored/due counts + connectivity.
 router.get('/ims/notifications/sources', wrap(async (_req, r) => r.json(await notif.sourceSummary())));
 
-// Derive any new alerts from the connected source registers (idempotent).
-router.post('/ims/notifications/sync', wrap(async (_req, r) => r.json(await notif.syncNotifications())));
+// Derive any new alerts from the connected source registers (idempotent), then
+// email out anything not yet emailed (no-op unless an email provider is set).
+router.post('/ims/notifications/sync', wrap(async (_req, r) => {
+  const sync = await notif.syncNotifications();
+  let delivery = { configured: false, sent: 0 };
+  try { delivery = await notif.deliverNotifications(); } catch (e) { delivery = { error: e.message }; }
+  r.json({ ...sync, delivery });
+}));
+
+// Email delivery log for an alert (evidence of what was actually sent).
+router.get('/ims/notifications/:id/deliveries', wrap(async (req, r) => r.json(await notif.listDeliveries(req.params.id))));
 
 // Mark one alert read (per-user; never touches the source record).
 router.post('/ims/notifications/:id/read', wrap(async (req, r) => r.json(await notif.markRead(req.params.id, req))));

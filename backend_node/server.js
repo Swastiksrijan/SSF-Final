@@ -120,9 +120,12 @@ async function runSeeds() {
     // Derive the Notification & Action Centre alerts from real source records.
     // Idempotent (stable eventKey) and additive: it never edits or clears tasks.
     try {
-        const { syncNotifications } = require('./services/ims/notifications');
+        const { syncNotifications, deliverNotifications } = require('./services/ims/notifications');
         const n = await syncNotifications();
         if (n.totalCreated) console.log(`✅ Notification sync created ${n.totalCreated} alert(s) (${JSON.stringify(n.created)})`);
+        // Email any alert not yet emailed (no-op unless an email provider is configured).
+        const d = await deliverNotifications();
+        if (d.configured && (d.sent || d.failed)) console.log(`✉️ Action Centre emailed ${d.sent} alert(s), ${d.failed} failed`);
     } catch (e) {
         console.error('⚠️ Notification sync skipped:', e.message);
     }
