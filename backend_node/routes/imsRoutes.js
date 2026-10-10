@@ -310,6 +310,27 @@ router.get('/ims/finance/cost-centres/:id/close-check', wrap(async (req, r) => r
 router.post('/ims/finance/cost-centres/:id/status', wrap(async (req, r) => r.json(await cc.setCostCentreStatus(req.params.id, (req.body || {}).status, req))));
 
 
+// ---- NOTIFICATION & ACTION CENTRE ------------------------------------------
+// A notification is an alert about a real event; reading it never completes the
+// underlying task. Alerts are derived (evidence-based, deduplicated) from the
+// source registers. See services/ims/notifications.js.
+const notif = require('../services/ims/notifications');
+
+// List alerts (filters: status=unread|read, category, search, limit).
+router.get('/ims/notifications', wrap(async (req, r) => r.json(await notif.listNotifications(req.query))));
+
+// Unread count only (for the header badge).
+router.get('/ims/notifications/unread-count', wrap(async (_req, r) => r.json({ unread: await notif.unreadCount() })));
+
+// Derive any new alerts from the connected source registers (idempotent).
+router.post('/ims/notifications/sync', wrap(async (_req, r) => r.json(await notif.syncNotifications())));
+
+// Mark one alert read (per-user; never touches the source record).
+router.post('/ims/notifications/:id/read', wrap(async (req, r) => r.json(await notif.markRead(req.params.id, req))));
+
+// Mark every eligible alert read (eligible = not dismissed; applies to this user).
+router.post('/ims/notifications/read-all', wrap(async (req, r) => r.json({ updated: await notif.markAllRead(req) })));
+
 // ---- generic CRUD for every resource --------------------------------------
 router.get('/ims/:resource', wrap(async (req, r) => r.json(await res.list(req.params.resource, req.query))));
 

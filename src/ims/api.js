@@ -75,6 +75,16 @@ export const ims = {
   orgProfileSeed: () => fetch(`${API_BASE_URL}/api/ims/org-profile/seed`, { method: 'POST', headers: headers() }).then(handle),
   officeHistorySeed: () => fetch(`${API_BASE_URL}/api/ims/office-history/seed`, { method: 'POST', headers: headers() }).then(handle),
 
+  // ---- NOTIFICATION & ACTION CENTRE ----
+  notifications: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return fetch(`${API_BASE_URL}/api/ims/notifications${qs ? '?' + qs : ''}`, { headers: headers() }).then(handle);
+  },
+  notificationUnread: () => fetch(`${API_BASE_URL}/api/ims/notifications/unread-count`, { headers: headers() }).then(handle),
+  notificationSync: () => fetch(`${API_BASE_URL}/api/ims/notifications/sync`, { method: 'POST', headers: headers() }).then(handle),
+  notificationRead: (id) => fetch(`${API_BASE_URL}/api/ims/notifications/${id}/read`, { method: 'POST', headers: headers() }).then(handle),
+  notificationReadAll: () => fetch(`${API_BASE_URL}/api/ims/notifications/read-all`, { method: 'POST', headers: headers() }).then(handle),
+
   list: (resource, params = {}) => {
     const qs = new URLSearchParams(params).toString();
     return fetch(`${API_BASE_URL}/api/ims/${resource}${qs ? '?' + qs : ''}`, { headers: headers() }).then(handle);

@@ -117,6 +117,15 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Organisation profile seed skipped:', e.message);
     }
+    // Derive the Notification & Action Centre alerts from real source records.
+    // Idempotent (stable eventKey) and additive: it never edits or clears tasks.
+    try {
+        const { syncNotifications } = require('./services/ims/notifications');
+        const n = await syncNotifications();
+        if (n.totalCreated) console.log(`✅ Notification sync created ${n.totalCreated} alert(s) (${JSON.stringify(n.created)})`);
+    } catch (e) {
+        console.error('⚠️ Notification sync skipped:', e.message);
+    }
 }
 
 // Copy the entire legacy SSF Digital Office dataset into the IMS masters.

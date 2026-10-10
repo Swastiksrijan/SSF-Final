@@ -818,6 +818,47 @@ const ImsRolePermission = sequelize.define('ImsRolePermission', {
   scope: DataTypes.STRING, // all/own/department/confidential
 }, S);
 
+// ---- 16. Notification & Action Centre --------------------------------------
+// A Notification is an ALERT about something that happened in a source record.
+// It is never proof that the underlying task was completed: reading it only
+// clears the alert, never the task. Every row carries a stable eventKey so the
+// same event can be processed repeatedly without creating duplicate alerts.
+const ImsNotification = sequelize.define('ImsNotification', {
+  ...idCols,
+  eventKey: { type: DataTypes.STRING, unique: true }, // stable dedupe identity
+  eventType: DataTypes.STRING,   // actionDue / actionOverdue / complianceDue / auditDue / noticeIssued / meetingScheduled / communicationFailed / caseDeadline / documentExpiry
+  category: DataTypes.STRING,    // action / governance / compliance / communication / records
+  severity: DataTypes.STRING,    // info / warning / critical
+  title: DataTypes.STRING,
+  message: DataTypes.TEXT,
+  sourceType: DataTypes.STRING,  // IMS resource key of the authoritative record
+  sourceId: DataTypes.STRING,
+  sourceRecordId: DataTypes.STRING, // human recordId of the source (e.g. ACTION-2027-0001)
+  sourceLink: DataTypes.STRING,  // in-app path to the source record
+  recipientType: DataTypes.STRING, // role | user | all
+  recipientId: DataTypes.STRING,   // roleCode or user id
+  dueDate: DataTypes.DATEONLY,     // the real due date from the source record
+  eventAt: DataTypes.DATE,         // when the underlying event actually happened
+  read: { type: DataTypes.BOOLEAN, defaultValue: false },
+  readAt: DataTypes.DATE,
+  readBy: DataTypes.STRING,
+  dismissed: { type: DataTypes.BOOLEAN, defaultValue: false },
+  dedupeDay: DataTypes.STRING,     // optional day bucket for repeating reminders
+  meta: JSONB,
+}, S);
+
+// Every attempted delivery (email / system / sms) is recorded so delivery
+// status shown in the UI is evidence-based, not assumed.
+const ImsDeliveryAttempt = sequelize.define('ImsDeliveryAttempt', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  notificationId: DataTypes.INTEGER,
+  channel: DataTypes.STRING,     // system / email / sms / whatsapp
+  status: DataTypes.STRING,      // pending / sent / delivered / failed
+  attemptedAt: DataTypes.DATE,
+  detail: DataTypes.TEXT,
+  reference: DataTypes.STRING,
+}, S);
+
 const models = {
   ImsIdSequence, ImsPerson, ImsRole, ImsPersonRole, ImsOrganisation, ImsGovernanceRule,
   ImsPolicy, ImsOrgProfile, ImsMembership, ImsCommittee, ImsCommitteeMember, ImsMeeting, ImsMeetingAttendee,
@@ -831,6 +872,7 @@ const models = {
   ImsOfficeHistory,
   ImsInstitutionHistory,
   ImsRelation, ImsAuditTrail, ImsUser, ImsRolePermission,
+  ImsNotification, ImsDeliveryAttempt,
 };
 
 module.exports = { sequelize, models };
