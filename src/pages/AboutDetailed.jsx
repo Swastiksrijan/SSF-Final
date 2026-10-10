@@ -281,11 +281,11 @@
 
 
 const ABFrame = "/images/real/academy_banner_wide.jpg";
-const ABFrame1 = "/images/real/health.png";
+const ABFrame1 = "/images/health.png";
 const ABFrame2 = "/images/real/women_community_meeting.jpg";
 const ABFrame3 = "/images/real/girls-study-group-mat.jpg";
 const ABFrame4 = "/images/real/awareness-poster-viewing.jpg";
-const ABFrame5 = "/images/real/people_help.png";
+const ABFrame5 = "/images/people_help.png";
 
 import { IoIosCheckmarkCircle } from "react-icons/io";
 

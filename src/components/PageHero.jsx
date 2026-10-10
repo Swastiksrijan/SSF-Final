@@ -39,11 +39,11 @@ export default function PageHero({
     const legacyHeroImages = {
         "Cookie Policy": "/images/real/awareness-poster-viewing.jpg",
         "Donation & Refund Policy": "/images/real/online-food-support-clipping.jpg",
-        "Privacy Policy": "/images/real/integrity-pledge.jpg",
+        "Privacy Policy": "/images/uploads/integrity-pledge.jpg",
         "Terms & Conditions": "/images/real/academy-board-compliance.jpg",
         "Transparency & Reports": "/images/real/ncw_pledge_certificate.jpg",
         "Registration Details": "/images/uploads/ngo-darpan.jpg",
-        "Our Campaigns": "https://drive.google.com/uc?export=view&id=17_wzFDJggJltxlaVY6rlB2_yGAzS52F8"
+        "Our Campaigns": "/images/real/community-rally-children.jpg"
     };
 
     const heroImage = legacyHeroImages[title] || image || pageHeader;

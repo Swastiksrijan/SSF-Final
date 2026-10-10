@@ -42,7 +42,7 @@ export const JOURNEY_POSTS = [
   },
   {
     id: 'j2014a', year: 2014, date: '2014', category: 'education',
-    image: '/images/real/classroom-session.png',
+    image: '/images/classroom-session.png',
     title: { en: 'Learning Begins in Earnest', hi: 'सीखने की सच्ची शुरुआत' },
     short: { en: 'Early years focused on education, community connections and groundwork for social awareness.', hi: 'शुरुआती वर्षों में शिक्षा, सामुदायिक जुड़ाव और सामाजिक जागरूकता की नींव पर काम हुआ।' },
     full: {
@@ -62,7 +62,7 @@ export const JOURNEY_POSTS = [
   },
   {
     id: 'j2015a', year: 2015, date: '2015', category: 'community',
-    image: '/images/real/community-meeting.jpg',
+    image: '/images/community-meeting.jpg',
     title: { en: 'The Community Becomes the Partner', hi: 'समुदाय बना साथी' },
     short: { en: 'Participation grew as local people joined planning and social initiatives themselves.', hi: 'स्थानीय लोगों के स्वयं जुड़ने से सहभागिता बढ़ी।' },
     full: {
@@ -292,7 +292,7 @@ export const JOURNEY_POSTS = [
   },
   {
     id: 'j2026b', year: 2026, date: '2026', category: 'community',
-    image: '/images/real/community-team-group.jpg',
+    image: '/images/community-team-group.jpg',
     title: { en: 'A Journey That Continues', hi: 'एक यात्रा जो जारी है' },
     short: { en: 'From a single registration to a Pan-India mission — with people always at the centre.', hi: 'एक पंजीयन से पूरे भारत के मिशन तक — हमेशा लोगों को केंद्र में रखते हुए।' },
     full: {

@@ -44,6 +44,7 @@ import { Route as JoinRouteImport } from './routes/Join'
 import { Route as InternshipRouteImport } from './routes/Internship'
 import { Route as ImpactRouteImport } from './routes/Impact'
 import { Route as HumanityChar38TruthRouteImport } from './routes/Humanity&Truth'
+import { Route as HelpCentreRouteImport } from './routes/HelpCentre'
 import { Route as GetInvolvedRouteImport } from './routes/GetInvolved'
 import { Route as DonorRouteImport } from './routes/Donor'
 import { Route as DonationRefundPolicyRouteImport } from './routes/DonationRefundPolicy'
@@ -285,6 +286,11 @@ const ImpactRoute = ImpactRouteImport.update({
 const HumanityChar38TruthRoute = HumanityChar38TruthRouteImport.update({
   id: '/Humanity&Truth',
   path: '/Humanity&Truth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HelpCentreRoute = HelpCentreRouteImport.update({
+  id: '/HelpCentre',
+  path: '/HelpCentre',
   getParentRoute: () => rootRouteImport,
 } as any)
 const GetInvolvedRoute = GetInvolvedRouteImport.update({
@@ -637,6 +643,7 @@ export interface FileRoutesByFullPath {
   '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
   '/Donor': typeof DonorRoute
   '/GetInvolved': typeof GetInvolvedRoute
+  '/HelpCentre': typeof HelpCentreRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
   '/Impact': typeof ImpactRoute
   '/Internship': typeof InternshipRoute
@@ -740,6 +747,7 @@ export interface FileRoutesByTo {
   '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
   '/Donor': typeof DonorRoute
   '/GetInvolved': typeof GetInvolvedRoute
+  '/HelpCentre': typeof HelpCentreRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
   '/Impact': typeof ImpactRoute
   '/Internship': typeof InternshipRoute
@@ -843,6 +851,7 @@ export interface FileRoutesById {
   '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
   '/Donor': typeof DonorRoute
   '/GetInvolved': typeof GetInvolvedRoute
+  '/HelpCentre': typeof HelpCentreRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
   '/Impact': typeof ImpactRoute
   '/Internship': typeof InternshipRoute
@@ -948,6 +957,7 @@ export interface FileRouteTypes {
     | '/DonationRefundPolicy'
     | '/Donor'
     | '/GetInvolved'
+    | '/HelpCentre'
     | '/Humanity&Truth'
     | '/Impact'
     | '/Internship'
@@ -1051,6 +1061,7 @@ export interface FileRouteTypes {
     | '/DonationRefundPolicy'
     | '/Donor'
     | '/GetInvolved'
+    | '/HelpCentre'
     | '/Humanity&Truth'
     | '/Impact'
     | '/Internship'
@@ -1153,6 +1164,7 @@ export interface FileRouteTypes {
     | '/DonationRefundPolicy'
     | '/Donor'
     | '/GetInvolved'
+    | '/HelpCentre'
     | '/Humanity&Truth'
     | '/Impact'
     | '/Internship'
@@ -1257,6 +1269,7 @@ export interface RootRouteChildren {
   DonationRefundPolicyRoute: typeof DonationRefundPolicyRoute
   DonorRoute: typeof DonorRoute
   GetInvolvedRoute: typeof GetInvolvedRoute
+  HelpCentreRoute: typeof HelpCentreRoute
   HumanityChar38TruthRoute: typeof HumanityChar38TruthRoute
   ImpactRoute: typeof ImpactRoute
   InternshipRoute: typeof InternshipRoute
@@ -1585,6 +1598,13 @@ declare module '@tanstack/react-router' {
       path: '/Humanity&Truth'
       fullPath: '/Humanity&Truth'
       preLoaderRoute: typeof HumanityChar38TruthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/HelpCentre': {
+      id: '/HelpCentre'
+      path: '/HelpCentre'
+      fullPath: '/HelpCentre'
+      preLoaderRoute: typeof HelpCentreRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/GetInvolved': {
@@ -2097,6 +2117,7 @@ const rootRouteChildren: RootRouteChildren = {
   DonationRefundPolicyRoute: DonationRefundPolicyRoute,
   DonorRoute: DonorRoute,
   GetInvolvedRoute: GetInvolvedRoute,
+  HelpCentreRoute: HelpCentreRoute,
   HumanityChar38TruthRoute: HumanityChar38TruthRoute,
   ImpactRoute: ImpactRoute,
   InternshipRoute: InternshipRoute,

@@ -13,7 +13,7 @@ export const teamMembers = [
   { id: 'm1', name: 'Ms. Priya Shukla', role: 'Admin Support & Core Volunteer', location: 'Madhya Pradesh', img: '/Teams_Images/priya_shukla.jpg', group: 'management', visible: true },
 
   // Regional Leadership (many removed — set visible: false for inactive/old)
-  { id: 'r1', name: 'Mr. Azad Singh Adhana', role: 'Regional Head & Operations', location: 'Greater Noida, Uttar Pradesh', img: '/Teams_Images/azad_singh.jpg', group: 'regional', visible: false },
+  { id: 'r1', name: 'Mr. Azad Singh Adhana', role: 'Regional Head & Operations', location: 'Greater Noida, Uttar Pradesh', img: '', group: 'regional', visible: false },
   { id: 'r2', name: 'Mr. Naresh Kumar', role: 'President, Faridabad Wing', location: 'Faridabad, Haryana', img: '/Teams_Images/naresh_kumar.jpg', group: 'regional', visible: false },
   { id: 'r3', name: 'Mr. Dhiraj Kumar', role: 'President, Pune Wing', location: 'Pune, Maharashtra', img: '/Teams_Images/image_4.png', group: 'regional', visible: false },
   { id: 'r4', name: 'Mr. Surender Mishra', role: 'President, Uttar Pradesh Wing', location: 'Greater Noida, Uttar Pradesh', img: '/Teams_Images/surender_mishra.jpg', group: 'regional', visible: false },
