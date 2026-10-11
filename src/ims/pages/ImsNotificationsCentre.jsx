@@ -200,7 +200,7 @@ export default function ImsNotificationsCentre() {
   const hiTitle = tBoth('notifications')[1];
 
   return (
-    <ImsLayout active="notifications">
+    <ImsLayout active="notification_centre">
       <SectionHero
         title={t('action_centre')}
         hi={hiTitle}

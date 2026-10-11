@@ -103,7 +103,7 @@ export default function ImsLayout({ children, active }) {
 
       {/* The Notification Centre is global (watches every register), so it uses
           its own identity bar instead of a single section's tab strip. */}
-      {active === 'notifications' ? <NotificationsHeader /> : <SectionNav active={active} />}
+      {active === 'notifications' || active === 'notification_centre' ? <NotificationsHeader /> : <SectionNav active={active} />}
 
       <div className="mx-auto flex max-w-[1600px]">
         {/* sidebar */}

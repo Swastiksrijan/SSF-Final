@@ -255,6 +255,16 @@ async function moduleDashboard(moduleKey) {
       ]);
       return { kpis: { pending, overdue, filed, auditsOpen, highRisks, agreements: await count(models.ImsAgreement) } };
     }
+    case 'notifications': {
+      const [unread, total, critical, warning, contacts] = await Promise.all([
+        count(models.ImsNotification, { read: false, dismissed: false }),
+        count(models.ImsNotification, { dismissed: false }),
+        count(models.ImsNotification, { severity: 'critical', dismissed: false }),
+        count(models.ImsNotification, { severity: 'warning', dismissed: false }),
+        count(models.ImsPerson, { status: { [Op.ne]: 'archived' } }),
+      ]);
+      return { kpis: { unread, total, critical, warning, contacts } };
+    }
     case 'records': {
       const [documents, communications, policies, governanceRules] = await Promise.all([
         count(models.ImsDocument), count(models.ImsCommunication),

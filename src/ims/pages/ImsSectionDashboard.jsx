@@ -18,6 +18,7 @@ const CHARTS = {
   resources: ['donors', 'grants', 'assets', 'employees', 'volunteers'],
   compliance: ['pending', 'overdue', 'filed', 'auditsOpen', 'highRisks'],
   records: ['documents', 'communications', 'policies', 'governanceRules'],
+  notifications: ['unread', 'total', 'critical', 'warning', 'contacts'],
   admin: ['users', 'documents', 'auditTrail'],
 };
 
@@ -133,5 +134,6 @@ const ICONS = {
   governanceRules: 'Scale', organisations: 'Building2', history: 'History',
   income: 'TrendingUp', expense: 'TrendingDown', net: 'Scale', vouchers: 'ReceiptText', accounts: 'BookOpen',
   users: 'UserCog', auditTrail: 'ClipboardList',
+  unread: 'Bell', total: 'Bell', critical: 'AlertOctagon', warning: 'TriangleAlert', contacts: 'Contact',
 };
 function iconFor(k) { return ICONS[k] || 'Activity'; }
