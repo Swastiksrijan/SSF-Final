@@ -101,7 +101,7 @@ async function dashboard() {
 
   // Today's slots, events and the next seven days of the calendar.
   const todaysPosts = all.filter((p) => p.postDate === today).map(postView);
-  const todayEvents = eventsForDate(today).map(dayView);
+  const todayEvents = (await eventsForDate(today)).map(dayView);
   const uncertainEvents = events.filter((e) => e.uncertain && e.status === 'active');
   const horizon = new Date(local.y, local.m - 1, local.d + 7);
   const upcoming = events.filter((e) => e.status === 'active' && e.date && e.date >= today && e.date <= `${horizon.getFullYear()}-${String(horizon.getMonth() + 1).padStart(2, '0')}-${String(horizon.getDate()).padStart(2, '0')}`).map(dayView);
@@ -236,7 +236,8 @@ router.post('/social/events', requireAuth, wrap(async (req, r) => {
   const b = req.body || {};
   if (!b.titleEn || !b.date) return r.status(400).json({ message: 'titleEn and date are required' });
   const key = b.key || `evt-${String(b.date).replace(/-/g, '')}-${String(b.titleEn).toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40)}`;
-  const [row] = await SocialEvent.findOrCreate({ where: { key }, defaults: { key } });
+  let row = await SocialEvent.findOne({ where: { key } });
+  if (!row) row = await SocialEvent.create({ key });
   await row.update({
     date: b.date, titleEn: b.titleEn, titleHi: b.titleHi || b.titleEn,
     altNames: b.altNames || null, tradition: b.tradition || 'other', region: b.region || 'India',
@@ -300,12 +301,16 @@ router.post('/social/channels/:platform', requireAuth, wrap(async (req, r) => {
   const creds = {};
   for (const f of meta.fields) if (req.body && req.body[f]) creds[f] = String(req.body[f]).trim();
   const enabled = req.body && req.body.enabled != null ? !!req.body.enabled : Object.keys(creds).length > 0;
-  const [row] = await SocialChannel.findOrCreate({ where: { platform: meta.platform }, defaults: { platform: meta.platform } });
+  let row = await SocialChannel.findOne({ where: { platform: meta.platform } });
+  if (!row) row = await SocialChannel.create({ platform: meta.platform });
   const merged = { ...(row.credentials || {}), ...creds };
+  // "Connected" must mean we actually hold credentials, not merely that the
+  // toggle was flipped — otherwise the dashboard lies about deliverability.
+  const connected = meta.always || Object.keys(merged).length > 0;
   await row.update({
     credentials: merged,
-    enabled: meta.always ? true : enabled,
-    status: meta.always ? 'connected' : (Object.keys(merged).length ? 'connected' : 'not_connected'),
+    enabled: meta.always ? true : (enabled && connected),
+    status: meta.always ? 'connected' : (connected ? 'connected' : 'not_connected'),
     lastError: null,
   });
   r.json({ ok: true, platform: meta.platform, status: row.status, enabled: row.enabled, fields: Object.keys(merged) });
@@ -327,7 +332,8 @@ router.post('/social/facebook/exchange', requireAuth, wrap(async (req, r) => {
   if (!out.ok) return r.status(400).json(out);
   // Prefer the page the admin named; otherwise the first Page the token manages.
   const chosen = (pageId && out.pages.find((p) => String(p.id) === String(pageId))) || out.pages[0];
-  const [row] = await SocialChannel.findOrCreate({ where: { platform: 'facebook' }, defaults: { platform: 'facebook' } });
+  let row = await SocialChannel.findOne({ where: { platform: 'facebook' } });
+  if (!row) row = await SocialChannel.create({ platform: 'facebook' });
   await row.update({
     enabled: true, status: 'connected',
     credentials: { pageId: chosen.id, accessToken: chosen.accessToken },
@@ -347,7 +353,8 @@ router.post('/social/instagram/resolve', requireAuth, wrap(async (req, r) => {
   const accessToken = (req.body && req.body.accessToken) || fbCreds.accessToken;
   const out = await resolveInstagramAccount({ pageId, accessToken });
   if (!out.ok) return r.status(400).json(out);
-  const [row] = await SocialChannel.findOrCreate({ where: { platform: 'instagram' }, defaults: { platform: 'instagram' } });
+  let row = await SocialChannel.findOne({ where: { platform: 'instagram' } });
+  if (!row) row = await SocialChannel.create({ platform: 'instagram' });
   const merged = { ...(row.credentials || {}), igUserId: out.igUserId, accessToken };
   await row.update({ credentials: merged, enabled: true, status: 'connected', lastError: null });
   return r.json({ ok: true, igUserId: out.igUserId, username: out.username, fields: Object.keys(merged) });

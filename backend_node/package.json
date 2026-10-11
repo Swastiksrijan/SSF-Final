@@ -6,7 +6,7 @@
     "start": "node server.js",
     "bootstrap-db": "node scripts/bootstrap-database.js",
     "restore-digital-office": "node scripts/restore-digital-office.js",
-    "test": "node tests/social.test.js"
+    "test": "node tests/social.test.js && node tests/social.http.test.js"
   },
   "keywords": [],
   "author": "",
