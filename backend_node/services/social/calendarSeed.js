@@ -228,6 +228,11 @@ const TRADITION_TO_PALETTE = {
   regional: 'community', other: 'community',
 };
 
+// On a day where a festival coincides with a generic awareness day, the festival
+// takes the primary morning/evening slots and the awareness day fills an extra
+// slot (nothing is dropped). Admins can override via the calendar API.
+const TYPE_PRIORITY = { religious: 10, cultural: 10, national: 8, remembrance: 6, awareness: 5 };
+
 function decorate(entry) {
   const g = GREETINGS[entry.key.replace(/-\d{4}$/, '')] || {};
   const palette = entry.palette || TRADITION_TO_PALETTE[entry.tradition] || 'community';
@@ -240,6 +245,7 @@ function decorate(entry) {
     significanceHi: entry.significanceHi || g.significanceHi || null,
     palette,
     solemn: entry.solemn || !!g.solemn,
+    priority: entry.priority || TYPE_PRIORITY[entry.eventType] || 0,
   };
 }
 
@@ -264,15 +270,22 @@ function buildEventSeed() {
 async function seedSocialEvents() {
   const { SocialEvent } = require('../../models/social');
   const seed = buildEventSeed();
-  const existing = await SocialEvent.findAll({ attributes: ['key'] });
-  const have = new Set(existing.map((r) => r.key));
+  const existing = await SocialEvent.findAll({ attributes: ['key', 'priority', 'palette', 'greetingEn'] });
+  const have = new Map(existing.map((r) => [r.key, r]));
   let created = 0;
+  let backfilled = 0;
   for (const e of seed) {
-    if (have.has(e.key)) continue;
-    await SocialEvent.create(e);
-    created += 1;
+    const row = have.get(e.key);
+    if (!row) { await SocialEvent.create(e); created += 1; continue; }
+    // Backfill a field ONLY when it is genuinely missing — an admin edit (a
+    // non-null priority/palette/greeting) is never overwritten.
+    const patch = {};
+    if ((row.priority == null || row.priority === 0) && e.priority) patch.priority = e.priority;
+    if (!row.palette && e.palette) patch.palette = e.palette;
+    if (!row.greetingEn && e.greetingEn) patch.greetingEn = e.greetingEn;
+    if (Object.keys(patch).length) { await SocialEvent.update(patch, { where: { key: e.key } }); backfilled += 1; }
   }
-  return { created, total: seed.length };
+  return { created, backfilled, total: seed.length };
 }
 
 module.exports = { buildEventSeed, seedSocialEvents, GREETINGS, TRADITION_TO_PALETTE };

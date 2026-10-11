@@ -78,7 +78,24 @@ async function main() {
   await SocialEvent.create({ key: 'test-verified', date: '2026-07-02', titleEn: 'Verified Test', titleHi: 'सत्यापित', tradition: 'other', region: 'India', calendarSystem: 'gregorian', eventType: 'observance', greetingEn: 'Happy Verified Test!', greetingHi: 'शुभ!', verified: true, uncertain: false, status: 'active' });
   ok('verified event included', (await publisher.eventsForDate('2026-07-02')).length === 1);
   await SocialEvent.create({ key: 'test-second', date: '2026-07-02', titleEn: 'Second Event', titleHi: 'दूसरा', tradition: 'other', region: 'India', calendarSystem: 'gregorian', eventType: 'awareness', greetingEn: 'Hi', greetingHi: 'नमस्ते', verified: true, uncertain: false, status: 'active' });
-  ok('both same-day events returned (no silent erase)', (await publisher.eventsForDate('2026-07-02')).length === 2);
+  const sameDay = await publisher.eventsForDate('2026-07-02');
+  ok('both same-day events returned (no silent erase)', sameDay.length === 2);
+
+  console.log('\nEvent prioritisation:')
+  await SocialEvent.create({ key: 'test-fest-big', date: '2026-08-01', titleEn: 'Big Festival', titleHi: 'बड़ा', tradition: 'hindu', region: 'India', calendarSystem: 'gregorian', eventType: 'religious', greetingEn: 'Shubh!', greetingHi: 'शुभ!', verified: true, uncertain: false, status: 'active', priority: 10 });
+  await SocialEvent.create({ key: 'test-awareness', date: '2026-08-01', titleEn: 'UN Awareness Day', titleHi: 'जागरूकता', tradition: 'un', region: 'Global', calendarSystem: 'gregorian', eventType: 'awareness', greetingEn: 'Hello', greetingHi: 'नमस्ते', verified: true, uncertain: false, status: 'active', priority: 5 });
+  const ordered = await publisher.eventsForDate('2026-08-01');
+  ok('higher-priority event listed first', ordered[0] && ordered[0].titleEn === 'Big Festival', ordered[0] && ordered[0].titleEn);
+
+  console.log('\nSeed backfill is non-destructive:')
+  // Simulate a legacy seeded row with a null greeting and an admin-set palette.
+  await SocialEvent.update({ greetingEn: null, priority: 0, palette: 'admin-custom' }, { where: { key: 'diwali-2026' } });
+  const seed2 = await seedSocialEvents();
+  ok('idempotent re-run creates nothing new', seed2.created === 0, `created=${seed2.created}`);
+  const legacy = await SocialEvent.findOne({ where: { key: 'diwali-2026' } });
+  ok('null greeting backfilled', !!legacy.greetingEn, String(legacy.greetingEn));
+  ok('null priority backfilled', legacy.priority > 0, String(legacy.priority));
+  ok('admin palette NOT overwritten', legacy.palette === 'admin-custom', legacy.palette);
 
   console.log('\nConfig / timezone (DST-safe):');
   await publisher.setConfig('times', { morning: '08:00', evening: '18:00' });
