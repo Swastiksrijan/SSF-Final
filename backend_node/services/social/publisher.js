@@ -115,7 +115,11 @@ async function dailyTime() {
 async function chooseDailyPlan(date, usedKeys) {
   const dateStr = ymd(date);
   const events = await eventsForDate(dateStr);
-  if (events.length) return { plan: planEventPost(events[0], 'daily', date), eventId: events[0].id };
+  // Prefer the highest-priority event whose greeting has not already been used
+  // recently (a multi-day festival seeded as one row is greeted once, not daily).
+  for (const ev of events) {
+    if (!usedKeys || !usedKeys.has(`evt-${ev.key}`)) return { plan: planEventPost(ev, 'daily', date), eventId: ev.id };
+  }
   return { plan: planLibraryPost(date, 'daily', usedKeys), eventId: null };
 }
 function ymd(d) { const pad = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
