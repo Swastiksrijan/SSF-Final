@@ -1,19 +1,19 @@
 name: SSF Social Awareness Publisher
 
-# Reliable daily scheduler for awareness posts (2 per day: morning + evening IST).
+# Reliable daily scheduler for awareness posts (ONE post per day, IST).
 #
 # Why this is a long-running loop instead of a plain "hit and exit":
 #   GitHub's scheduled cron is best-effort on free repos and often fires far
 #   less often than requested (this repo was seeing ~20 runs/24h instead of 288),
-#   so the Render free instance fell asleep between slots and the morning/
-#   evening posts went out hours late. Each run here therefore stays alive for
-#   ~5 hours, pinging the backend every 5 minutes, which keeps Render awake so
-#   the backend's own 5-minute timer publishes each slot on time (within a few
-#   minutes). `concurrency` cancels the previous long run when a new trigger
-#   arrives, so exactly one keep-alive loop is ever running.
+#   so the Render free instance fell asleep between runs and the daily post went
+#   out hours late. Each run here therefore stays alive for ~5 hours, pinging
+#   the backend every 5 minutes, which keeps Render awake so the backend's own
+#   5-minute timer publishes the day's post on time (within a few minutes).
+#   `concurrency` cancels the previous long run when a new trigger arrives, so
+#   exactly one keep-alive loop is ever running.
 #
-# The backend is idempotent (a draft flips to published once), so extra pings
-# are harmless.
+# The backend is idempotent (one post per day; a draft flips to published once),
+# so extra pings are harmless and can never duplicate a post.
 on:
   schedule:
     - cron: '*/5 * * * *'
