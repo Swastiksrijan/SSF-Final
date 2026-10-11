@@ -8,7 +8,7 @@ const { SocialChannel, SocialPost, SocialConfig, SocialEvent, SocialRunLog } = r
 const content = require('../services/social/content');
 const {
   planDue, planExtra, runPending, publishPost, enabledPlatforms, getConfig, setConfig,
-  allEvents, eventsForDate, timezone, localParts, istParts, DEFAULT_TZ,
+  allEvents, eventsForDate, timezone, localParts, DEFAULT_TZ,
 } = require('../services/social/publisher');
 const { postSvg } = require('../services/social/image');
 
