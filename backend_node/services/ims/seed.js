@@ -116,8 +116,11 @@ async function seedCommittee(out) {
 }
 
 // Create or update a Person from a member/committee row. Idempotent: an existing
-// person (matched by name) is refreshed, never duplicated.
+// person (matched by name) is refreshed, never duplicated. The person's role
+// (designation/position) is kept in `data.designation` so the Contacts directory
+// can show who to notify for what.
 async function ensurePerson(src) {
+  const designation = src.designation || src.position || undefined;
   const row = {
     fullName: src.name,
     gender: src.gender || undefined,
@@ -134,12 +137,16 @@ async function ensurePerson(src) {
     for (const [k, v] of Object.entries(row)) {
       if (v && existing[k] !== v) patch[k] = v;
     }
+    if (designation && (existing.data || {}).designation !== designation) {
+      patch.data = { ...(existing.data || {}), designation };
+    }
     if (Object.keys(patch).length) await existing.update(patch);
     return existing;
   }
   const recordId = await nextId('PERSON', null, models.ImsPerson);
   return models.ImsPerson.create({
     recordId, ...row,
+    data: designation ? { designation } : {},
     createdBy: 'register-seed', createdByName: 'Register Seed',
   });
 }

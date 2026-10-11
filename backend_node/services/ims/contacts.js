@@ -64,7 +64,8 @@ async function listContactEmails({ onlyMissing = false, search = '' } = {}) {
     const valid = looksLikeEmail(email);
     if (onlyMissing && valid) continue;
     const name = p.fullName || p.recordId;
-    if (q && !(`${name} ${p.recordId} ${email} ${p.mobile || ''}`.toLowerCase().includes(q))) continue;
+    const designation = (p.data && p.data.designation) || '';
+    if (q && !(`${name} ${p.recordId} ${email} ${p.mobile || ''} ${designation}`.toLowerCase().includes(q))) continue;
     records.push({
       id: p.id,
       recordId: p.recordId,
@@ -74,6 +75,7 @@ async function listContactEmails({ onlyMissing = false, search = '' } = {}) {
       email: email || '',
       emailValid: valid,
       placeholder: isPlaceholderName(name),
+      designation,
       engaged: [...(roles.get(p.id) || [])],
     });
   }
