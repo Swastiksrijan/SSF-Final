@@ -26,5 +26,8 @@
   },
   "engines": {
     "node": ">=18"
+  },
+  "devDependencies": {
+    "pg-mem": "^3.0.14"
   }
 }

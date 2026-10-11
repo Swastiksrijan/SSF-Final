@@ -37,6 +37,7 @@ export const DICT = {
   only_free: { en: 'Only ₹0 activities', hi: 'केवल ₹0 गतिविधियाँ' },
   global_search: { en: 'Global Search', hi: 'खोज' },
   notifications: { en: 'Notifications', hi: 'सूचनाएँ' },
+  contacts: { en: 'Contacts', hi: 'संपर्क' },
   organisation: { en: 'Organisation', hi: 'संस्था' },
   constitution: { en: 'Constitution & Bylaws', hi: 'संविधान एवं नियमावली' },
   history: { en: 'Institutional History', hi: 'संस्थागत इतिहास' },
