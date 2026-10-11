@@ -57,6 +57,23 @@ require('./models/ims');
 // Register Social Publisher models (separate file, same sync pass).
 require('./models/social');
 
+// Watchdog (registered BEFORE the routes so it runs on every request): any
+// request that reaches the app proves Render is awake, so kick the publisher
+// then too. This is what makes the GitHub keep-alive loop (or any visitor)
+// immediately publish a due post instead of waiting for the next 5-minute tick.
+// Throttled to at most once a minute; never fires for the publisher's own cron
+// call, so there is no feedback loop. socialTick is defined further down but
+// only ever runs after the event loop has moved on, by which time it exists.
+let lastSocialKick = 0;
+app.use((req, _res, next) => {
+    const now = Date.now();
+    if (now - lastSocialKick > 60000 && !/\/api\/social\//.test(req.path)) {
+        lastSocialKick = now;
+        socialTick();
+    }
+    next();
+});
+
 app.use('/api', memberCertificateRoutes);
 app.use('/api', learningCertificateRoutes);
 app.use('/api', volunteerAdminRoutes);
@@ -228,12 +245,53 @@ async function socialTick() {
         if (created.length) console.log(`✅ Social publisher planned ${created.length} post(s) for today`);
         const out = await runPending({ source: 'internal-timer' });
         if (out.published.length) console.log(`✅ Social publisher published ${out.published.length} due post(s)`);
+        await socialMissedAlert(out);
     } catch (e) {
         console.error('⚠️ Social publisher tick skipped:', e.message);
     } finally {
         socialTickRunning = false;
     }
 }
+
+// If a slot's time has long passed and its post is still an unpublished draft,
+// something is genuinely broken — tell the admins on Telegram so it never goes
+// unnoticed for days. At most one alert per (date, slot).
+async function socialMissedAlert(out) {
+    try {
+        const { getConfig } = require('./services/social/publisher');
+        const { SocialPost, SocialChannel } = require('./models/social');
+        const tz = (await getConfig('timezone', process.env.SOCIAL_TZ || 'Asia/Kolkata')) || 'Asia/Kolkata';
+        const times = await getConfig('times', { morning: '08:00', evening: '18:00' });
+        const parts = new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', year: 'numeric', month: '2-digit', day: '2-digit', hour12: false }).formatToParts(new Date());
+        const p = {}; for (const { type, value } of parts) p[type] = value;
+        const postDate = `${p.year}-${p.month}-${p.day}`;
+        const hhmm = `${p.hour}:${p.minute}`;
+        const lateBy = (slot) => {
+            const [sh, sm] = String(times[slot] || '00:00').split(':').map(Number);
+            return (Number(p.hour) * 60 + Number(p.minute)) - (sh * 60 + (sm || 0));
+        };
+        const rows = await SocialPost.findAll({ where: { postDate, status: 'draft' } });
+        const missed = rows.filter((r) => lateBy(r.slot) > 45);
+        if (!missed.length) return;
+        const ch = await SocialChannel.findOne({ where: { platform: 'telegram', enabled: true } });
+        const creds = (ch && ch.credentials) || {};
+        const token = creds.botToken || creds.token;
+        const chatId = creds.chatId;
+        if (!token || !chatId) return; // no alert channel configured — nothing to do
+        for (const m of missed) {
+            const key = `missed-${postDate}-${m.slot}`;
+            if (await getConfig(key, null)) continue; // already alerted
+            const msg = `⚠️ SSF Publisher: the ${m.slot} post for ${postDate} is still NOT published (scheduled ${times[m.slot] || '?'}, now ${hhmm} ${tz}). Please check the Social Publisher.`;
+            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                method: 'POST', headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ chat_id: chatId, text: msg }),
+            }).catch(() => {});
+            const { setConfig } = require('./services/social/publisher');
+            await setConfig(key, new Date().toISOString());
+        }
+    } catch (e) { /* alerting must never break publishing */ }
+}
+
 // One catch-up shortly after boot (in case we woke after a slot time)…
 setTimeout(socialTick, 15000);
 // …then keep checking every 5 minutes for as long as the instance is awake.
