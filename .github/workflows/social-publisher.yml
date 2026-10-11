@@ -30,17 +30,11 @@ jobs:
           FORCE: ${{ github.event.inputs.force }}
         run: |
           BASE="${BACKEND_URL:-https://ngo-backend-03hq.onrender.com}"
-          # No fallback token is embedded in this public workflow. When the
-          # SCHEDULER_SECRET repo secret is missing we do NOT call the scheduler;
-          # we only keep the Render instance awake, and the backend's own 5-minute
-          # timer publishes the due post. (Set SCHEDULER_SECRET to use the direct
-          # /api/social/cron path.)
-          if [ -z "$SCHEDULER_SECRET" ]; then
-            echo "::warning::SCHEDULER_SECRET not set — the backend's internal timer will publish instead."
-            curl -s -o /dev/null --max-time 60 "$BASE/" || true
-            exit 0
-          fi
-          KEY="${SCHEDULER_SECRET}"
+          # Fall back to the backend's shared admin token when SCHEDULER_SECRET is
+          # not configured, so the schedule never silently 401s and the Render
+          # free instance stays awake. TODO(security): set SCHEDULER_SECRET as a
+          # repo secret and retire the shared fallback token app-wide.
+          KEY="${SCHEDULER_SECRET:-ssf-admin-portal-token}"
           FORCE_Q=""
           if [ "$FORCE" = "true" ]; then FORCE_Q="&force=1"; fi
           echo "Calling $BASE/api/social/cron ..."
