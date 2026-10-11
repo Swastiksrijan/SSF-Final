@@ -187,11 +187,6 @@ export const SECTIONS = {
         { key: 'grants', icon: 'BadgeDollarSign', resource: 'grants' },
         { key: 'assets', icon: 'Package', resource: 'assets' },
         { key: 'employees', icon: 'BriefcaseBusiness', resource: 'employees' },
-        { key: 'volunteers', icon: 'HandHeart', resource: 'volunteers' },
-        { key: 'volunteer_network', icon: 'Network', path: '/ims/volunteer-network' },
-        { key: 'chapters', icon: 'Flag', resource: 'chapters' },
-        { key: 'volunteer_tasks', icon: 'ListChecks', resource: 'volunteerTasks' },
-        { key: 'volunteer_funds', icon: 'HandCoins', resource: 'volunteerFunds' },
         { key: 'attendance_register', icon: 'CalendarCheck', resource: 'attendance' },
         { key: 'internships_legacy', icon: 'GraduationCap', path: legacy('internships') },
         { key: 'reimbursement_advance', icon: 'HandCoins', path: legacy('reimbursementAdvance') },
@@ -201,6 +196,21 @@ export const SECTIONS = {
         { key: 'employee_master', icon: 'IdCard', path: legacy('employeeMaster') },
         { key: 'volunteers_legacy', icon: 'HandHeart', path: legacy('volunteers') },
         { key: 'inventory', icon: 'Boxes', resource: 'inventory' },
+      ] },
+    ],
+  },
+
+  // Volunteer Network is its own section so its rich overview page keeps the
+  // persistent strip (title + Overview + its registers) instead of borrowing
+  // the Resources strip and mislabelling the whole page as "Resources".
+  volunteer: {
+    titleKey: 'volunteer_network', icon: 'Network', tone: 'teal', module: 'volunteers',
+    subgroups: [
+      { labelKey: 'grp_volunteer_network', items: [
+        { key: 'volunteers', icon: 'HandHeart', resource: 'volunteers' },
+        { key: 'chapters', icon: 'Flag', resource: 'chapters' },
+        { key: 'volunteer_tasks', icon: 'ListChecks', resource: 'volunteerTasks' },
+        { key: 'volunteer_funds', icon: 'HandCoins', resource: 'volunteerFunds' },
       ] },
     ],
   },
@@ -341,7 +351,7 @@ export const SIDEBAR = [
   { key: 'global_search', icon: 'Search', path: '/ims/search' },
   { key: 'notifications', icon: 'Bell', path: '/ims/sections/notifications', activeKey: 'notifications_dashboard' },
   { key: 'social_publisher', icon: 'Megaphone', path: '/ims/social' },
-  { key: 'volunteer_network', icon: 'Network', path: '/ims/volunteer-network' },
+  { key: 'volunteer_network', icon: 'Network', path: '/ims/volunteer-network', activeKey: 'volunteer_dashboard' },
   { key: 'organisation', icon: 'Building2', path: '/ims/sections/organisation', activeKey: 'organisation_dashboard' },
   { key: 'governance', icon: 'Scale', path: '/ims/sections/governance', activeKey: 'governance_dashboard' },
   { key: 'programmes', icon: 'Layers', path: '/ims/sections/programmes', activeKey: 'programmes_dashboard' },

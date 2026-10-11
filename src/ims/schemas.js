@@ -425,6 +425,50 @@ export const SCHEMAS = {
       F('source', 'Source', 'स्रोत'),
     ],
   },
+  chapters: {
+    titleKey: 'chapters_title', icon: 'Flag', dup: ['name'],
+    fields: [
+      F('name', 'Chapter Name', 'अध्याय नाम', 'text', { required: true }),
+      F('nameHi', 'Name (Hindi)', 'नाम (हिंदी)'),
+      F('level', 'Level', 'स्तर', 'select', { options: ['state', 'district', 'block'] }),
+      F('state', 'State', 'राज्य'), F('district', 'District', 'जिला'), F('block', 'Block', 'ब्लॉक'),
+      F('coordinatorName', 'Coordinator', 'समन्वयक'),
+      F('memberCount', 'Members', 'सदस्य', 'number'),
+      F('target', 'Target', 'लक्ष्य'),
+      F('notes', 'Notes', 'टिप्पणी', 'textarea'),
+    ],
+  },
+  volunteerTasks: {
+    titleKey: 'volunteerTasks', icon: 'ListChecks',
+    fields: [
+      F('title', 'Task', 'कार्य', 'text', { required: true }),
+      F('titleHi', 'Task (Hindi)', 'कार्य (हिंदी)'),
+      F('chapterId', 'Chapter', 'अध्याय', 'ref:chapters'),
+      F('assigneeName', 'Assignee', 'नियुक्त व्यक्ति'),
+      F('assigneeRole', 'Assignee Role', 'भूमिका'),
+      F('dueDate', 'Due Date', 'नियत तिथि', 'date'),
+      F('priority', 'Priority', 'प्राथमिकता', 'select', { options: ['low', 'normal', 'high'] }),
+      F('taskStatus', 'Status', 'स्थिति', 'select', { options: ['pending', 'in_progress', 'done', 'dropped'] }),
+      F('fundRequired', 'Fund Required', 'आवश्यक निधि', 'number'),
+      F('fundRaised', 'Fund Raised', 'एकत्र निधि', 'number'),
+      F('description', 'Description', 'विवरण', 'textarea'),
+      F('notes', 'Notes', 'टिप्पणी', 'textarea'),
+    ],
+  },
+  volunteerFunds: {
+    titleKey: 'volunteerFunds', icon: 'HandCoins',
+    fields: [
+      F('donorName', 'Donor Name', 'दानदाता नाम', 'text', { required: true }),
+      F('donorMobile', 'Donor Mobile', 'दानदाता मोबाइल'),
+      F('amount', 'Amount', 'राशि', 'number'),
+      F('chapterId', 'Chapter', 'अध्याय', 'ref:chapters'),
+      F('purpose', 'Purpose', 'उद्देश्य', 'textarea'),
+      F('refNo', 'Reference No.', 'संदर्भ संख्या'),
+      F('fundDate', 'Date', 'दिनांक', 'date'),
+      F('channel', 'Channel', 'माध्यम', 'select', { options: ['cash', 'upi', 'bank', 'cheque'] }),
+      F('received', 'Received', 'प्राप्त', 'checkbox'),
+    ],
+  },
   attendance: {
     titleKey: 'attendance', icon: 'CalendarCheck',
     fields: [
@@ -622,5 +666,5 @@ export const PRIMARY_FIELD = {
   attendance: 'attStatus', parties: 'name', bankAccounts: 'accountNo', cashAccounts: 'name',
   costCentres: 'name', inventory: 'name', agreements: 'title', communications: 'subject',
   users: 'username', notices: 'subject', attendees: 'attendance', budgets: 'period', ledger: 'entryNo',
-  officeHistory: 'fullName',
+  officeHistory: 'fullName', chapters: 'name', volunteerTasks: 'title', volunteerFunds: 'donorName',
 };

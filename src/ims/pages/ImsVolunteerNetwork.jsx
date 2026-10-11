@@ -48,7 +48,7 @@ export default function ImsVolunteerNetwork() {
   const s = data && data.summary;
 
   return (
-    <ImsLayout active="volunteer_network">
+    <ImsLayout active="volunteer_dashboard">
       <SectionHero
         eyebrow={hi ? 'स्वयंसेवक' : 'Volunteers'}
         title={hi ? 'स्वयंसेवक एवं अध्याय' : 'Volunteer & Chapters'}

@@ -17,7 +17,8 @@ function Icon({ name, size = 14, className = '' }) {
   return <C size={size} className={className} />;
 }
 
-const dashboardPath = (id) => (id === 'finance' ? '/ims/finance' : `/ims/sections/${id}`);
+const dashboardPath = (id) =>
+  id === 'finance' ? '/ims/finance' : id === 'volunteer' ? '/ims/volunteer-network' : `/ims/sections/${id}`;
 
 // A catalogue item resolves to either its explicit path or its generic
 // resource route; `planned` items have no target yet.
@@ -85,7 +86,7 @@ export default function SectionNav({ active }) {
 
   return (
     <>
-    <div className="sticky top-16 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
+      <div className="sticky top-16 z-30 border-b border-slate-200 bg-white/95 shadow-[0_8px_18px_-14px_rgba(2,35,68,0.4)] backdrop-blur">
       <div className="mx-auto flex max-w-[1600px] items-center gap-3 px-4 lg:px-8">
         <button
           type="button"
