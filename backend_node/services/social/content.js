@@ -190,9 +190,11 @@ function planPost(date, slot = 'morning', extraSeed = 0) {
   const ctaEn = sec.ct.en, ctaHi = sec.ct.hi;
   const catLabelEn = sec.label.en, catLabelHi = sec.label.hi;
 
-  // Slot greeting keeps the two daily posts visibly different.
-  const greetEn = slot === 'morning' ? 'Good morning! ☀️' : slot === 'evening' ? 'Good evening! 🌙' : 'A quick reminder 💡';
-  const greetHi = slot === 'morning' ? 'सुप्रभात! ☀️' : slot === 'evening' ? 'शुभ संध्या! 🌙' : 'एक छोटी याद 💡';
+  // A neutral opener that reads correctly at ANY hour — the scheduler can run
+  // late (a slot may publish hours after its time), so "Good morning"/"Good
+  // evening" would be wrong. The opener instead describes the post itself.
+  const greetEn = '🌼 Thought for today';
+  const greetHi = '🌼 आज का विचार';
 
   // Social caption: greeting, heading, sub-title, idea, example, takeaway, CTA.
   const bodyEn = `${greetEn}\n\n${headingEn}\n${subtitleEn}\n\n${angleEn}\n\n${exampleEn}\n\n✅ ${takeawayEn}\n\n👉 ${ctaEn}\n\n🌐 ${ORG.website}  |  📞 ${ORG.phone}\n${tags}`;
@@ -275,23 +277,55 @@ function composeBody({ greetEn, greetHi, titleEn, titleHi, subtitleEn, subtitleH
   return { bodyEn: blocksEn.join('\n'), bodyHi: blocksHi.join('\n') };
 }
 
-const greetFor = (slot) => (slot === 'morning'
-  ? { greetEn: 'Good morning! ☀️', greetHi: 'सुप्रभात! ☀️' }
-  : slot === 'evening'
-    ? { greetEn: 'Good evening! 🌙', greetHi: 'शुभ संध्या! 🌙' }
-    : { greetEn: 'A quick reminder 💡', greetHi: 'एक छोटी याद 💡' });
+// A neutral opener for a festival / observance greeting. Never time-based: the
+// post may publish hours after its slot, so "Good morning" would be wrong.
+const greetFor = () => ({ greetEn: '🎉 Greetings from SSF', greetHi: '🎉 SSF की ओर से शुभकामनाएँ' });
 
 /**
- * Build one library post for a date + slot using the 20-topic registry. The
- * topic rotates by day-of-year and the entry rotates with the slot, so the
- * morning and evening posts always differ and adjacent days never repeat.
+ * Pick a library topic for a date that has NOT been used recently. Walks the
+ * flat (category, entry) list starting at the day-of-year index and returns the
+ * first topic whose key is not in `usedKeys`, so consecutive days — and any
+ * regeneration — never repeat a topic. Returns { cat, entry }.
  */
-function planLibraryPost(date, slot = 'morning') {
+function nextLibraryTopic(date, usedKeys) {
+  const used = usedKeys || new Set();
+  const doy = dayOfYear(date);
+  const total = TOPIC_ORDER.reduce((n, c) => n + (LIBRARY[c] || []).length, 0) || 1;
+  for (let i = 0; i < total; i += 1) {
+    const idx = (doy + i) % total;
+    let acc = 0, cat = TOPIC_ORDER[0], entry = null;
+    for (const c of TOPIC_ORDER) {
+      const list = LIBRARY[c] || [];
+      if (idx < acc + list.length) { cat = c; entry = list[idx - acc]; break; }
+      acc += list.length;
+    }
+    if (!entry) continue;
+    const key = `lib-${cat}-${(LIBRARY[cat] || []).indexOf(entry)}`;
+    if (!used.has(key)) return { cat, entry };
+  }
+  const cat = TOPIC_ORDER[doy % TOPIC_ORDER.length];
+  const list = LIBRARY[cat] || [];
+  return { cat, entry: list[doy % list.length] || list[0] };
+}
+
+/**
+ * Build one library post for a date + slot using the 20-topic registry. When
+ * `usedKeys` is given, a topic that has not been used recently is chosen (the
+ * single-daily-post flow); otherwise the topic rotates by day-of-year and the
+ * entry rotates with the slot.
+ */
+function planLibraryPost(date, slot = 'morning', usedKeys) {
   const doy = dayOfYear(date);
   const slotShift = slot === 'morning' ? 0 : slot === 'evening' ? 1 : 2;
-  const cat = TOPIC_ORDER[(doy + slotShift) % TOPIC_ORDER.length];
+  let cat, entry;
+  if (usedKeys) {
+    ({ cat, entry } = nextLibraryTopic(date, usedKeys));
+  } else {
+    cat = TOPIC_ORDER[(doy + slotShift) % TOPIC_ORDER.length];
+    const list0 = LIBRARY[cat] || [];
+    entry = list0[(doy + slotShift * 7) % list0.length] || list0[0];
+  }
   const list = LIBRARY[cat] || [];
-  const entry = list[(doy + slotShift * 7) % list.length] || list[0];
   const label = topicLabel(cat);
   const dateEn = `${date.getDate()} ${MONTHS_EN[date.getMonth()]} ${date.getFullYear()}`;
   const dateHi = `${date.getDate()} ${MONTHS_HI[date.getMonth()]} ${date.getFullYear()}`;
@@ -341,7 +375,10 @@ function planEventPost(event, slot = 'morning', date = new Date()) {
     tags,
   });
   return {
-    postDate: ymd(date), slot, topicKey: `evt-${event.key}`, category: 'festival', kind: 'festival',
+    // A festival/observance is greeted ONCE a day, never twice. The post is
+    // pinned to the morning slot so the evening slot stays free for a different
+    // awareness post — no duplicate festival greeting.
+    postDate: ymd(date), slot: 'morning', topicKey: `evt-${event.key}`, category: 'festival', kind: 'festival',
     titleEn: event.titleEn, titleHi: event.titleHi || event.titleEn, bodyEn, bodyHi, hashtags: tags,
     headingEn: event.titleEn, headingHi: event.titleHi || event.titleEn,
     subtitleEn: event.greetingEn || '', subtitleHi: event.greetingHi || '',
@@ -358,4 +395,4 @@ function planEventPost(event, slot = 'morning', date = new Date()) {
 
 module.exports = { ORG, AWARENESS_DAYS, THEMES, planPost, awarenessFor, dayOfYear, ymd, MONTHS_EN, MONTHS_HI,
   SUBTITLES, EXAMPLES, TAKEAWAYS, CTAS, buildSections, splitPlan, mergePost, EXTRA_FIELDS,
-  planLibraryPost, planEventPost, topicLabel, TOPIC_LABELS, TOPIC_ORDER, LIBRARY };
+  planLibraryPost, planEventPost, nextLibraryTopic, topicLabel, TOPIC_LABELS, TOPIC_ORDER, LIBRARY };

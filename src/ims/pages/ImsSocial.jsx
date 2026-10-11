@@ -490,7 +490,7 @@ export default function ImsSocial() {
     finally { setBusy(false); }
   };
 
-  const times = (data && data.times) || { morning: '08:00', evening: '18:00' };
+  const dailyTime = (data && data.dailyTime) || (data && data.times && data.times.morning) || '08:00';
   const todayPosts = (data && data.todayPosts) || [];
   const recentFiltered = (data && data.recent || []).filter((p) => !filterStatus || p.status === filterStatus);
 
@@ -503,7 +503,6 @@ export default function ImsSocial() {
   return (
     <ImsLayout active="social_publisher">
       <SectionHero
-        eyebrow={lang === 'hi' ? 'सोशल मीडिया' : 'Social Media'}
         title={lang === 'hi' ? 'जागरूकता प्रकाशक' : 'Awareness Publisher'}
         hi={lang === 'hi' ? undefined : 'जागरूकता प्रकाशक'}
         icon="Megaphone"
@@ -523,8 +522,7 @@ export default function ImsSocial() {
         }
       >
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm text-white/85">
-          <span>🌅 {lang === 'hi' ? 'सुबह' : 'Morning'} <b className="text-white">{times.morning}</b></span>
-          <span>🌙 {lang === 'hi' ? 'शाम' : 'Evening'} <b className="text-white">{times.evening}</b></span>
+          <span>🕗 {lang === 'hi' ? 'रोज़' : 'Daily'} <b className="text-white">{dailyTime}</b></span>
           <span className="inline-flex items-center gap-2">
             {lang === 'hi' ? 'ऑटो-प्रकाशन' : 'Auto-publish'}:{' '}
             <Toggle on={!!data?.autoApprove} onChange={(v) => run(() => (v ? ims.socialResume() : ims.socialPause()), v ? (lang === 'hi' ? 'चालू' : 'Resumed') : (lang === 'hi' ? 'रोका' : 'Paused'))} label={data?.autoApprove ? 'ON' : 'OFF'} />

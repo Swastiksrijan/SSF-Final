@@ -120,13 +120,15 @@ async function dashboard() {
     failing: lastRun ? !lastRun.ok : false,
   };
 
-  // Next scheduled slot time (local).
-  const slots = ['morning', 'evening'];
+  // Next scheduled post time (local). One post a day at the configured time.
+  const dailyTime = await getConfig('dailyTime', null) || (times && times.morning) || '08:00';
   let nextAt = null;
-  for (const s of slots) {
-    if (local.hhmm < times[s]) { nextAt = `${today}T${times[s]}`; break; }
+  if (local.hhmm < dailyTime) {
+    nextAt = `${today}T${dailyTime}`;
+  } else {
+    const nd = new Date(local.y, local.m - 1, local.d + 1);
+    nextAt = `${nd.getFullYear()}-${String(nd.getMonth() + 1).padStart(2, '0')}-${String(nd.getDate()).padStart(2, '0')}T${dailyTime}`;
   }
-  if (!nextAt) { const nd = new Date(local.y, local.m - 1, local.d + 1); nextAt = `${nd.getFullYear()}-${String(nd.getMonth() + 1).padStart(2, '0')}-${String(nd.getDate()).padStart(2, '0')}T${times.morning || '08:00'}`; }
 
   // Content freshness: a warning when recent posts reuse the same topic.
   const topicCounts = {};
@@ -140,9 +142,9 @@ async function dashboard() {
 
   return {
     times, autoApprove, postSeq: seq, timezone: tz,
-    today, todayLocalTime: local.hhmm, nextScheduledAt: nextAt,
+    today, todayLocalTime: local.hhmm, nextScheduledAt: nextAt, dailyTime,
     channels: startupChannels,
-    scheduledPerDay: 2,
+    scheduledPerDay: 1,
     stats: { total: all.length, published, partial, draft, failed },
     heartbeat,
     todayPosts: todaysPosts,
@@ -165,19 +167,20 @@ async function dashboard() {
 // ---- admin -----------------------------------------------------------------
 router.get('/social/dashboard', requireAuth, wrap(async (_req, r) => r.json(await dashboard())));
 router.get('/social/config', requireAuth, wrap(async (_req, r) => r.json({
-  times: await getConfig('times', { morning: '08:00', evening: '18:00' }),
+  dailyTime: (await getConfig('dailyTime', null)) || (await getConfig('times', { morning: '08:00' })).morning || '08:00',
   autoApprove: await getConfig('auto_approve', true),
 })));
 
 router.post('/social/config', requireAuth, wrap(async (req, r) => {
-  const { times, autoApprove, timezone: tz } = req.body || {};
+  const { dailyTime, times, autoApprove, timezone: tz } = req.body || {};
+  if (dailyTime) await setConfig('dailyTime', String(dailyTime));
   if (times) await setConfig('times', times);
   if (typeof autoApprove === 'boolean') await setConfig('auto_approve', autoApprove);
   if (tz) {
     try { new Intl.DateTimeFormat('en-GB', { timeZone: String(tz) }).format(new Date()); } catch { return r.status(400).json({ ok: false, message: 'Invalid IANA timezone.' }); }
     await setConfig('timezone', String(tz));
   }
-  r.json({ ok: true, times: await getConfig('times'), autoApprove: await getConfig('auto_approve'), timezone: await getConfig('timezone', DEFAULT_TZ) });
+  r.json({ ok: true, dailyTime: (await getConfig('dailyTime', null)) || '08:00', autoApprove: await getConfig('auto_approve'), timezone: await getConfig('timezone', DEFAULT_TZ) });
 }));
 
 // ---- automation controls (distinct verbs, never conflated) -----------------
@@ -220,9 +223,9 @@ router.post('/social/post-now', requireAuth, wrap(async (req, r) => {
 router.get('/social/preview', requireAuth, wrap(async (req, r) => {
   const [y, m, d] = String(req.query.date || new Date().toISOString().slice(0, 10)).split('-').map(Number);
   const date = new Date(y, m - 1, d);
-  const slot = String(req.query.slot || 'morning');
+  const slot = String(req.query.slot || 'daily');
   const events = await eventsForDate(String(req.query.date || ''));
-  const plan = events.length ? content.planEventPost(events[0], slot, date) : content.planLibraryPost(date, slot);
+  const plan = events.length ? content.planEventPost(events[0], 'daily', date) : content.planLibraryPost(date, 'daily');
   const view = postView({ ...plan, data: {} });
   view.preview = true;
   view.event = events.length ? dayView(events[0]) : null;

@@ -42,18 +42,18 @@ async function main() {
 
   console.log('\nContent engine (daily freshness):');
   const d1 = new Date(2026, 4, 20); // 20 May 2026 — no seeded event
-  const m = content.planLibraryPost(d1, 'morning');
-  const e = content.planLibraryPost(d1, 'evening');
-  ok('morning/evening differ in topic', m.topicKey !== e.topicKey, `${m.topicKey} vs ${e.topicKey}`);
-  ok('morning/evening differ in title', m.titleEn !== e.titleEn);
-  ok('bilingual body present', m.bodyEn.length > 100 && m.bodyHi.length > 100);
-  ok('morning body opens with morning greeting', /Good morning/.test(m.bodyEn), m.bodyEn.slice(0, 20));
-  ok('evening body opens with evening greeting', /Good evening/.test(e.bodyEn), e.bodyEn.slice(0, 20));
+  const m = content.planLibraryPost(d1, 'daily');
+  ok('daily post is bilingual', m.bodyEn.length > 100 && m.bodyHi.length > 100);
+  ok('opener is not time-based (no "Good morning/evening")', !/Good morning|Good evening/i.test(m.bodyEn), m.bodyEn.slice(0, 30));
   ok('library posts labelled library (not AI)', m.contentSource === 'library');
-  const next = content.planLibraryPost(new Date(2026, 4, 21), 'morning');
+  // Adjacent days must differ, and a recent-topic set must be respected.
+  const next = content.planLibraryPost(new Date(2026, 4, 21), 'daily');
   ok('adjacent days differ', next.topicKey !== m.topicKey || next.titleEn !== m.titleEn);
+  const used = new Set([m.topicKey]);
+  const avoided = content.planLibraryPost(d1, 'daily', used);
+  ok('used topic is not chosen again', avoided.topicKey !== m.topicKey, `${avoided.topicKey} vs ${m.topicKey}`);
   const topics = new Set();
-  for (let i = 0; i < 20; i += 1) topics.add(content.planLibraryPost(new Date(2026, 0, 1 + i), 'morning').category);
+  for (let i = 0; i < 20; i += 1) topics.add(content.planLibraryPost(new Date(2026, 0, 1 + i), 'daily').category);
   ok('covers many distinct topics over 20 days', topics.size >= 15, `topics=${topics.size}`);
 
   console.log('\nFestival posts (verified, per-tradition):');
@@ -110,15 +110,22 @@ async function main() {
   await publisher.setConfig('post_seq', 0);
   const made1 = await publisher.planDue({ date: new Date(2026, 6, 20), rebuild: false });
   const made2 = await publisher.planDue({ date: new Date(2026, 6, 20), rebuild: false });
-  ok('first planDue creates 2 posts', made1.length === 2, `got=${made1.length}`);
+  ok('first planDue creates 1 post (one per day)', made1.length === 1, `got=${made1.length}`);
   ok('second planDue creates 0 (idempotent)', made2.length === 0, `got=${made2.length}`);
-  const draftRow = await SocialPost.findOne({ where: { postDate: '2026-07-20', slot: 'morning' } });
-  ok('scheduledFor preserves slot time (08:00)', String(draftRow.scheduledFor).includes('08:00'), String(draftRow.scheduledFor));
+  const dayPosts = await SocialPost.findAll({ where: { postDate: '2026-07-20' } });
+  ok('exactly one post for the day', dayPosts.length === 1, `got=${dayPosts.length}`);
+  const draftRow = await SocialPost.findOne({ where: { postDate: '2026-07-20', slot: 'daily' } });
+  ok('post uses the single daily slot', !!draftRow);
+  ok('scheduledFor preserves the daily time (08:00)', String(draftRow.scheduledFor).includes('08:00'), String(draftRow.scheduledFor));
   await draftRow.update({ status: 'published', titleEn: 'ORIGINAL', publishedAt: new Date() });
   await publisher.planDue({ date: new Date(2026, 6, 20), rebuild: true });
   const afterRebuild = await SocialPost.findByPk(draftRow.id);
   ok('published post NOT reverted to draft', afterRebuild.status === 'published', afterRebuild.status);
   ok('published post content unchanged after rebuild', afterRebuild.titleEn === 'ORIGINAL', afterRebuild.titleEn);
+  // A second day must not reuse the first day's topic (no duplicate content).
+  const made3 = await publisher.planDue({ date: new Date(2026, 6, 21), rebuild: false });
+  ok('next day creates a fresh post', made3.length === 1, `got=${made3.length}`);
+  ok('next day topic differs from previous day', made3[0].topicKey !== draftRow.topicKey, `${made3[0].topicKey} vs ${draftRow.topicKey}`);
 
   console.log('\nScheduler heartbeat / logging:');
   await SocialRunLog.destroy({ where: {} });

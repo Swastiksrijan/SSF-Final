@@ -78,53 +78,86 @@ async function recentTitles(days = 30) {
   return set;
 }
 
+// Topic keys already used in the last N days. The single daily post must never
+// repeat one of these, so each day is genuinely new content.
+async function recentTopicKeys(days = 60) {
+  const since = new Date(Date.now() - days * 86400000);
+  const pad = (n) => String(n).padStart(2, '0');
+  const sinceStr = `${since.getFullYear()}-${pad(since.getMonth() + 1)}-${pad(since.getDate())}`;
+  const rows = await SocialPost.findAll({ where: { postDate: { [Op.gte]: sinceStr } }, attributes: ['topicKey'] });
+  const set = new Set();
+  for (const r of rows) if (r.topicKey) set.add(r.topicKey);
+  return set;
+}
+
+// How many recent days of topic keys are treated as "already used". With one
+// post a day this keeps roughly a two-month no-repeat window (the library is
+// finite, so eventually a topic is reused — that is intended).
+const RECENT_TOPIC_DAYS = 60;
+
+// The daily post time (local HH:MM). There is ONE post per day; it is created
+// and published at this time. Kept as a single value so there is no morning/
+// evening slot to get out of step.
+async function dailyTime() {
+  const cfg = await getConfig('dailyTime', null);
+  if (cfg) return String(cfg);
+  const t = await getConfig('times', { morning: '08:00', evening: '18:00' });
+  return (t && t.morning) || '08:00';
+}
+
 /**
- * Pick the plan for a slot on a date:
- *  - if verified events exist, the main post IS the top event (date-sensitive
+ * Pick the plan for the day:
+ *  - if verified events exist, the post IS the top event (a date-sensitive
  *    greeting published on the correct local day);
- *  - otherwise a rotating library awareness post.
- * A second verified event on the same day is kept as an `extra` post by the
- * caller rather than being silently erased.
+ *  - otherwise a rotating library awareness post, chosen so its topic has not
+ *    been used in the recent window (no repeats).
  */
-async function choosePlan(date, slot) {
+async function chooseDailyPlan(date, usedKeys) {
   const dateStr = ymd(date);
   const events = await eventsForDate(dateStr);
-  if (events.length) return { plan: planEventPost(events[0], slot, date), eventId: events[0].id, extraEvents: events.slice(1) };
-  return { plan: planLibraryPost(date, slot), eventId: null, extraEvents: [] };
+  if (events.length) return { plan: planEventPost(events[0], 'daily', date), eventId: events[0].id };
+  return { plan: planLibraryPost(date, 'daily', usedKeys), eventId: null };
 }
 function ymd(d) { const pad = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
 
-// Ensure today's two posts exist. Returns the list of created rows.
+// Ensure today's single post exists. Returns the list of created rows.
 async function planDue({ date = new Date(), rebuild = false } = {}) {
   const tz = await timezone();
   const { y, m, d } = localParts(date, tz);
   const day = new Date(y, m - 1, d); // local calendar day (date strings only)
-  const slots = ['morning', 'evening'];
+  const postDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
   const created = [];
   let seq = Number((await getConfig('post_seq', 0)) || 0);
 
-  for (const slot of slots) {
-    const postDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-    const existing = await SocialPost.findOne({ where: { postDate, slot } });
-    // Never overwrite a published post during regeneration — that would turn a
-    // live post back into a draft. Only drafts are rebuilt.
-    if (existing && (!rebuild || existing.status === 'published' || existing.status === 'partial')) continue;
-    const { plan, eventId } = await choosePlan(day, slot);
-    const enriched = { ...plan, ...(eventId ? { eventId } : {}), contentHash: contentHash(plan) };
-    const { row, extra } = splitPlan(enriched);
-    seq += 1;
-    if (existing && rebuild) {
-      await existing.update({ ...row, data: { ...(existing.data || {}), ...extra }, status: 'draft', platformResults: [] });
-      created.push(existing);
-    } else {
-      const row2 = await SocialPost.create({
-        ...row, data: extra, postRef: nextRef(seq), status: 'draft',
-        // Preserve the intended slot time, not the moment generation ran.
-        scheduledFor: slotDate(postDate, slot, await getConfig('times', { morning: '08:00', evening: '18:00' })),
-        createdBy: 'scheduler', createdByName: 'Social Scheduler',
-      });
-      created.push(row2);
-    }
+  // Any existing post for the date (whatever slot it was created under — e.g.
+  // the legacy morning/evening rows) is treated as "the day's post", so the
+  // switch to one-post-a-day never adds a duplicate on the transition day.
+  const existing = await SocialPost.findOne({ where: { postDate } });
+  // Never overwrite a published post during regeneration — that would turn a
+  // live post back into a draft. Only drafts are rebuilt.
+  if (existing && (!rebuild || existing.status === 'published' || existing.status === 'partial')) return created;
+
+  // Topic keys already used in the recent window, so the daily post never
+  // repeats a recent topic and regeneration cannot duplicate today's.
+  const used = new Set();
+  for (const r of await recentTopicKeys(RECENT_TOPIC_DAYS)) used.add(r);
+
+  const { plan, eventId } = await chooseDailyPlan(day, used);
+  const enriched = { ...plan, ...(eventId ? { eventId } : {}), contentHash: contentHash(plan) };
+  const { row, extra } = splitPlan(enriched);
+  seq += 1;
+  const times = { daily: await dailyTime() };
+  if (existing && rebuild) {
+    await existing.update({ ...row, data: { ...(existing.data || {}), ...extra }, status: 'draft', platformResults: [] });
+    created.push(existing);
+  } else {
+    const row2 = await SocialPost.create({
+      ...row, data: extra, postRef: nextRef(seq), status: 'draft',
+      // Preserve the intended post time, not the moment generation ran.
+      scheduledFor: slotDate(postDate, 'daily', times),
+      createdBy: 'scheduler', createdByName: 'Social Scheduler',
+    });
+    created.push(row2);
   }
   await setConfig('post_seq', seq);
   return created;
@@ -221,41 +254,24 @@ async function runPendingInner({ force = false, date = new Date(), source = 'int
   try {
     const tz = await timezone();
     await planDue({ date });
-    const times = (await getConfig('times', { morning: '08:00', evening: '18:00' }));
     const autoApprove = await getConfig('auto_approve', POWER_AUTOMATE);
     const { y, m, d } = localParts(date, tz);
     const postDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const hhmm = localParts(new Date(), tz).hhmm;
+    const time = await dailyTime();
 
-    // Also create extra posts for a SECOND verified event on the same day, so a
-    // coinciding festival is not silently erased.
-    const events = await eventsForDate(postDate);
-    if (events.length > 1) {
-      const seen = await SocialPost.findAll({ where: { postDate }, attributes: ['topicKey'] });
-      const have = new Set(seen.map((r) => r.topicKey));
-      for (const ev of events.slice(1)) {
-        const key = `evt-${ev.key}`;
-        if (have.has(key)) continue;
-        const plan = { ...planEventPost(ev, 'extra', new Date(y, m - 1, d)) };
-        const { row, extra } = splitPlan({ ...plan, contentHash: contentHash(plan) });
-        const seq = Number((await getConfig('post_seq', 0)) || 0) + 1;
-        await setConfig('post_seq', seq);
-        await SocialPost.create({ ...row, data: extra, postDate, status: 'draft', slot: 'extra', scheduledFor: slotDate(postDate, 'morning', times), createdBy: 'scheduler', createdByName: 'Social Scheduler' });
-      }
-    }
-
-    const drafts = await SocialPost.findAll({ where: { postDate, status: 'draft' }, order: [['slot', 'ASC']] });
+    // The single daily post, published as soon as it is created (real time).
+    // force = publish now regardless; autoApprove OFF = manual only.
+    const drafts = await SocialPost.findAll({ where: { postDate, status: 'draft' }, order: [['id', 'ASC']] });
     const platforms = await enabledPlatforms();
     const published = [];
     for (const p of drafts) {
-      // force = publish now; otherwise only auto-publish when the feature is ON
-      // and the slot's scheduled time has passed. autoApprove OFF = manual only.
-      const due = force || (autoApprove && hhmm >= (times[p.slot] || times.morning || '00:00'));
+      const due = force || (autoApprove && hhmm >= time);
       if (!due) continue;
       published.push(await publishPost(p, platforms));
     }
     const failed = published.filter((x) => x.status === 'failed').length;
-    await log.update({ finishedAt: new Date(), ok: failed === 0, published: published.length, detail: { postDate, hhmm, platforms, publishedCount: published.length, failed } });
+    await log.update({ finishedAt: new Date(), ok: failed === 0, published: published.length, detail: { postDate, hhmm, time, platforms, publishedCount: published.length, failed } });
     return { postDate, hhmm, tz, platforms, published };
   } catch (e) {
     await log.update({ finishedAt: new Date(), ok: false, error: e.message });
@@ -275,5 +291,5 @@ function runPending(args) {
 module.exports = {
   planDue, planExtra, runPending, publishPost, enabledPlatforms, getConfig, setConfig,
   DEFAULT_PLATFORMS, istParts, localParts, timezone, eventsForDate, allEvents, contentHash,
-  DEFAULT_TZ, SocialEvent, SocialRunLog,
+  DEFAULT_TZ, SocialEvent, SocialRunLog, dailyTime, recentTopicKeys, RECENT_TOPIC_DAYS,
 };

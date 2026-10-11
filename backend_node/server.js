@@ -245,7 +245,7 @@ async function socialTick() {
         if (created.length) console.log(`✅ Social publisher planned ${created.length} post(s) for today`);
         const out = await runPending({ source: 'internal-timer' });
         if (out.published.length) console.log(`✅ Social publisher published ${out.published.length} due post(s)`);
-        await socialMissedAlert(out);
+        await socialMissedAlert();
     } catch (e) {
         console.error('⚠️ Social publisher tick skipped:', e.message);
     } finally {
@@ -253,42 +253,38 @@ async function socialTick() {
     }
 }
 
-// If a slot's time has long passed and its post is still an unpublished draft,
-// something is genuinely broken — tell the admins on Telegram so it never goes
-// unnoticed for days. At most one alert per (date, slot).
-async function socialMissedAlert(out) {
+// If the day's post time has long passed and the post is still an unpublished
+// draft, something is genuinely broken — tell the admins on Telegram so it never
+// goes unnoticed for days. At most one alert per day.
+async function socialMissedAlert() {
     try {
-        const { getConfig } = require('./services/social/publisher');
+        const { getConfig, dailyTime } = require('./services/social/publisher');
         const { SocialPost, SocialChannel } = require('./models/social');
         const tz = (await getConfig('timezone', process.env.SOCIAL_TZ || 'Asia/Kolkata')) || 'Asia/Kolkata';
-        const times = await getConfig('times', { morning: '08:00', evening: '18:00' });
+        const time = await dailyTime();
         const parts = new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour: '2-digit', minute: '2-digit', year: 'numeric', month: '2-digit', day: '2-digit', hour12: false }).formatToParts(new Date());
         const p = {}; for (const { type, value } of parts) p[type] = value;
         const postDate = `${p.year}-${p.month}-${p.day}`;
         const hhmm = `${p.hour}:${p.minute}`;
-        const lateBy = (slot) => {
-            const [sh, sm] = String(times[slot] || '00:00').split(':').map(Number);
-            return (Number(p.hour) * 60 + Number(p.minute)) - (sh * 60 + (sm || 0));
-        };
-        const rows = await SocialPost.findAll({ where: { postDate, status: 'draft' } });
-        const missed = rows.filter((r) => lateBy(r.slot) > 45);
-        if (!missed.length) return;
+        const [sh, sm] = String(time).split(':').map(Number);
+        const lateBy = (Number(p.hour) * 60 + Number(p.minute)) - (sh * 60 + (sm || 0));
+        if (lateBy <= 45) return;
+        const row = await SocialPost.findOne({ where: { postDate, status: 'draft' } });
+        if (!row) return;
         const ch = await SocialChannel.findOne({ where: { platform: 'telegram', enabled: true } });
         const creds = (ch && ch.credentials) || {};
         const token = creds.botToken || creds.token;
         const chatId = creds.chatId;
         if (!token || !chatId) return; // no alert channel configured — nothing to do
-        for (const m of missed) {
-            const key = `missed-${postDate}-${m.slot}`;
-            if (await getConfig(key, null)) continue; // already alerted
-            const msg = `⚠️ SSF Publisher: the ${m.slot} post for ${postDate} is still NOT published (scheduled ${times[m.slot] || '?'}, now ${hhmm} ${tz}). Please check the Social Publisher.`;
-            await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ chat_id: chatId, text: msg }),
-            }).catch(() => {});
-            const { setConfig } = require('./services/social/publisher');
-            await setConfig(key, new Date().toISOString());
-        }
+        const key = `missed-${postDate}`;
+        if (await getConfig(key, null)) return; // already alerted
+        const msg = `⚠️ SSF Publisher: today's post for ${postDate} is still NOT published (scheduled ${time}, now ${hhmm} ${tz}). Please check the Social Publisher.`;
+        await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: msg }),
+        }).catch(() => {});
+        const { setConfig } = require('./services/social/publisher');
+        await setConfig(key, new Date().toISOString());
     } catch (e) { /* alerting must never break publishing */ }
 }
 
