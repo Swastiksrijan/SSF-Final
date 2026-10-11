@@ -16,6 +16,10 @@ const { nextId } = require('./ids');
 const { Op } = require('sequelize');
 
 const clean = (v) => String(v == null ? '' : v).trim();
+const low = (v) => clean(v).toLowerCase();
+// A name that is really a placeholder ("Member 1", "Unknown", "Test") — seeded
+// stand-ins, not a real person, so it is safe to fill in or safely remove.
+const isPlaceholderName = (v) => !clean(v) || /^(member|unknown|person|test)\b/i.test(clean(v)) || /^member\s*\d+$/i.test(clean(v));
 
 // A conservative email shape check — enough to catch "ramesh@" or a missing @.
 function looksLikeEmail(v) {
@@ -64,14 +68,62 @@ async function listContactEmails({ onlyMissing = false, search = '' } = {}) {
       recordId: p.recordId,
       fullName: name,
       mobile: p.mobile || '',
+      altMobile: p.altMobile || '',
       email: email || '',
       emailValid: valid,
+      placeholder: isPlaceholderName(name),
       engaged: [...(roles.get(p.id) || [])],
     });
   }
   const total = people.length;
   const withEmail = people.filter((p) => looksLikeEmail(p.email)).length;
-  return { records, total, withEmail, missing: total - withEmail, notifiable: withEmail };
+  const placeholders = people.filter((p) => isPlaceholderName(p.fullName)).length;
+  return {
+    records, total, withEmail, missing: total - withEmail, notifiable: withEmail,
+    placeholder: placeholders, real: total - placeholders,
+  };
+}
+
+/**
+ * Correct one person's contact so the Action Centre reaches the right address.
+ * Only name/mobile/email/altMobile are writable here — this is a directory, not
+ * the full Person Master. Returns the refreshed record.
+ */
+async function updateContact(id, body = {}) {
+  const person = await models.ImsPerson.findByPk(id);
+  if (!person) { const e = new Error('Person not found'); e.status = 404; throw e; }
+  const patch = {};
+  if ('fullName' in body) {
+    const name = clean(body.fullName);
+    if (!name) { const e = new Error('Name cannot be empty'); e.status = 400; throw e; }
+    patch.fullName = name;
+  }
+  if ('mobile' in body) patch.mobile = clean(body.mobile) || null;
+  if ('altMobile' in body) patch.altMobile = clean(body.altMobile) || null;
+  if ('email' in body) {
+    const email = clean(body.email);
+    if (email && !looksLikeEmail(email)) { const e = new Error('Invalid email address'); e.status = 400; throw e; }
+    patch.email = email || null;
+  }
+  if (Object.keys(patch).length) await person.update(patch);
+  return {
+    id: person.id, recordId: person.recordId, fullName: person.fullName,
+    mobile: person.mobile || '', email: person.email || '', emailValid: looksLikeEmail(person.email),
+  };
+}
+
+/**
+ * Remove a person from the directory. A placeholder stand-in ("Member 1") with
+ * no real contact carries no history, so it is deleted outright; a real person
+ * is only soft-archived, preserving every register and ledger reference.
+ */
+async function removeContact(id) {
+  const person = await models.ImsPerson.findByPk(id);
+  if (!person) { const e = new Error('Person not found'); e.status = 404; throw e; }
+  const stub = isPlaceholderName(person.fullName) && !looksLikeEmail(person.email) && !clean(person.mobile);
+  if (stub) { await person.destroy(); return { id: Number(id), removed: 'deleted', fullName: person.fullName }; }
+  await person.update({ status: 'archived' });
+  return { id: Number(id), removed: 'archived', fullName: person.fullName };
 }
 
 /**
@@ -101,10 +153,6 @@ async function importContactEmails(rows = []) {
 }
 
 // ---- register -> person sync ----------------------------------------------
-
-const low = (v) => clean(v).toLowerCase();
-// A name that is really a placeholder ("Member 1", "Unknown") — safe to replace.
-const isPlaceholderName = (v) => !clean(v) || /^(member|unknown|person|test)\b/i.test(clean(v)) || /^member\s*\d+$/i.test(clean(v));
 
 // Latest row wins: the current register is the highest id; earlier ids are the
 // preserved role history for the same person.
@@ -279,4 +327,7 @@ async function syncPeopleFromRegisters() {
   return out;
 }
 
-module.exports = { listContactEmails, importContactEmails, looksLikeEmail, syncPeopleFromRegisters };
+module.exports = {
+  listContactEmails, importContactEmails, looksLikeEmail, syncPeopleFromRegisters,
+  updateContact, removeContact,
+};

@@ -5,9 +5,17 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, PageHeader, StatStrip, Empty, Spinner, Button } from '../ui';
+import { Card, PageHeader, StatStrip, Empty, Spinner, Button, FormDrawer } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
+
+const CONTACT_FIELDS = [
+  { name: 'fullName', l: ['Name', 'नाम'], required: true },
+  { name: 'mobile', l: ['Mobile', 'मोबाइल'] },
+  { name: 'altMobile', l: ['Alternate mobile', 'वैकल्पिक मोबाइल'] },
+  { name: 'email', l: ['Email', 'ईमेल'] },
+];
+const CONTACT_SCHEMA = { fields: CONTACT_FIELDS };
 
 const ENGAGE = {
   member: { icon: 'IdCard', tone: 'bg-blue-50 text-blue-700' },
@@ -28,6 +36,8 @@ export default function ImsContacts() {
   const [result, setResult] = useState(null);
   const [paste, setPaste] = useState('');
   const [showPaste, setShowPaste] = useState(false);
+  const [editRow, setEditRow] = useState(null);
+  const [editSaving, setEditSaving] = useState(false);
 
   const load = useCallback(async () => {
     setErr('');
@@ -90,6 +100,47 @@ export default function ImsContacts() {
     finally { setSyncing(false); }
   };
 
+  const saveContact = async (form) => {
+    if (!editRow) return;
+    setEditSaving(true); setErr(''); setResult(null);
+    try {
+      const out = await ims.contactsUpdate(editRow.id, {
+        fullName: form.fullName, mobile: form.mobile, altMobile: form.altMobile, email: form.email,
+      });
+      setResult({ note: 'saved', updated: 1, who: out.fullName });
+      setEditRow(null);
+      setEdits((s) => {
+        const next = { ...s };
+        delete next[editRow.recordId];
+        return next;
+      });
+      await load();
+    } catch (e) { setErr(e.message); } finally { setEditSaving(false); }
+  };
+
+  const removeContact = async (r) => {
+    if (!confirm(`${t('remove_person')}: ${r.fullName} (${r.recordId})?`)) return;
+    setErr('');
+    try {
+      const out = await ims.contactsRemove(r.id);
+      setResult({ note: 'removed', who: out.fullName, how: out.removed });
+      await load();
+    } catch (e) { setErr(e.message); }
+  };
+
+  const shareWhatsapp = (r) => {
+    const digits = String(r.mobile || '').replace(/\D/g, '').slice(-10);
+    if (digits.length < 10) { setErr(t('no_mobile')); return; }
+    const text = encodeURIComponent(t('wa_greeting'));
+    window.open(`https://wa.me/91${digits}?text=${text}`, '_blank', 'noopener');
+  };
+
+  const notifySms = (r) => {
+    const digits = String(r.mobile || '').replace(/\D/g, '').slice(-10);
+    if (digits.length < 10) { setErr(t('no_mobile')); return; }
+    window.location.assign(`sms:${digits}`);
+  };
+
   const dirty = Object.keys(edits).length;
 
   return (
@@ -115,6 +166,7 @@ export default function ImsContacts() {
           { labelKey: 'contacts_total', value: data.total, icon: 'Users', tone: 'navy' },
           { labelKey: 'contacts_notifiable', value: data.withEmail, icon: 'MailCheck', tone: 'green' },
           { labelKey: 'contacts_missing', value: data.missing, icon: 'MailX', tone: 'amber' },
+          { labelKey: 'contacts_placeholder', value: data.placeholder || 0, icon: 'UserX', tone: 'slate' },
         ]} />
       )}
 
@@ -157,7 +209,11 @@ export default function ImsContacts() {
             ? `${t('paste_matched')}: ${result.matched} · ${t('paste_unmatched')}: ${result.unmatched}`
             : result.note === 'sync'
               ? `${t('sync_people_new')}: ${result.personsCreated} · ${t('sync_people_linked')}: ${result.personsLinked} · ${t('sync_people_filled')}: ${result.personsFilled} · ${t('sync_members')}: ${result.members} · ${t('sync_committee')}: ${result.committee}`
-              : `${t('saved_count')}: ${result.updated}${result.invalid?.length ? ` · ${t('invalid_count')}: ${result.invalid.length}` : ''}${result.notFound?.length ? ` · ${t('notfound_count')}: ${result.notFound.length}` : ''}`}
+              : result.note === 'saved'
+                ? `${t('saved_count')}: ${result.who}`
+                : result.note === 'removed'
+                  ? `${t('removed')}: ${result.who} (${result.how})`
+                  : `${t('saved_count')}: ${result.updated}${result.invalid?.length ? ` · ${t('invalid_count')}: ${result.invalid.length}` : ''}${result.notFound?.length ? ` · ${t('notfound_count')}: ${result.notFound.length}` : ''}`}
         </Card>
       )}
       {err && <Card className="mt-3 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</Card>}
@@ -185,7 +241,14 @@ export default function ImsContacts() {
                   return (
                     <tr key={r.recordId} className="border-t border-slate-100">
                       <td className="px-4 py-2">
-                        <div className="font-semibold text-slate-700">{r.fullName}</div>
+                        <div className="flex items-center gap-2">
+                          <span className={`font-semibold ${r.placeholder ? 'text-slate-400 line-through' : 'text-slate-700'}`}>{r.fullName}</span>
+                          {r.placeholder && (
+                            <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">
+                              <Icons.UserX size={11} /> {t('placeholder_badge')}
+                            </span>
+                          )}
+                        </div>
                         <div className="font-mono text-[10px] text-slate-400">{r.recordId}</div>
                       </td>
                       <td className="px-4 py-2">
@@ -213,15 +276,53 @@ export default function ImsContacts() {
                           {r.emailValid && !bad && <Icons.MailCheck size={15} className="shrink-0 text-emerald-500" />}
                         </div>
                       </td>
-                      <td className="px-4 py-2 text-right">
-                        <button
-                          type="button"
-                          title={t('open_person')}
-                          onClick={() => window.location.assign(`/ims/person/${r.id}`)}
-                          className="rounded-lg border border-slate-200 p-1.5 text-slate-400 hover:text-[#002344]"
-                        >
-                          <Icons.ExternalLink size={14} />
-                        </button>
+                      <td className="px-4 py-2">
+                        <div className="flex items-center justify-end gap-1">
+                          {r.mobile ? (
+                            <button
+                              type="button" title={t('share_whatsapp')} onClick={() => shareWhatsapp(r)}
+                              className="rounded-lg border border-slate-200 p-1.5 text-emerald-600 hover:border-emerald-300 hover:bg-emerald-50"
+                            >
+                              <Icons.MessageCircle size={14} />
+                            </button>
+                          ) : (
+                            <span className="rounded-lg border border-slate-100 p-1.5 text-slate-200" title={t('no_mobile')}><Icons.MessageCircle size={14} /></span>
+                          )}
+                          {r.emailValid ? (
+                            <a
+                              href={`mailto:${r.email}`} title={t('send_email')}
+                              className="rounded-lg border border-slate-200 p-1.5 text-blue-600 hover:border-blue-300 hover:bg-blue-50"
+                            >
+                              <Icons.Mail size={14} />
+                            </a>
+                          ) : (
+                            <span className="rounded-lg border border-slate-100 p-1.5 text-slate-200" title={t('contacts_missing')}><Icons.Mail size={14} /></span>
+                          )}
+                          <button
+                            type="button" title={t('notify_sms')} onClick={() => notifySms(r)}
+                            className="rounded-lg border border-slate-200 p-1.5 text-slate-500 hover:border-[#002344] hover:text-[#002344]"
+                          >
+                            <Icons.Smartphone size={14} />
+                          </button>
+                          <button
+                            type="button" title={t('edit_contact')} onClick={() => setEditRow(r)}
+                            className="rounded-lg border border-slate-200 p-1.5 text-slate-500 hover:border-[#FF6600] hover:text-[#FF6600]"
+                          >
+                            <Icons.Pencil size={14} />
+                          </button>
+                          <button
+                            type="button" title={t('open_person')} onClick={() => window.location.assign(`/ims/person/${r.id}`)}
+                            className="rounded-lg border border-slate-200 p-1.5 text-slate-400 hover:text-[#002344]"
+                          >
+                            <Icons.ExternalLink size={14} />
+                          </button>
+                          <button
+                            type="button" title={t('remove_person')} onClick={() => removeContact(r)}
+                            className="rounded-lg border border-slate-200 p-1.5 text-slate-400 hover:border-rose-300 hover:text-rose-600"
+                          >
+                            <Icons.Trash2 size={14} />
+                          </button>
+                        </div>
                       </td>
                     </tr>
                   );
@@ -231,6 +332,18 @@ export default function ImsContacts() {
           </div>
         )}
       </Card>
+
+      <FormDrawer
+        open={!!editRow}
+        title={editRow ? `${t('edit_contact')} — ${editRow.fullName}` : t('edit_contact')}
+        schema={CONTACT_SCHEMA}
+        initial={editRow ? {
+          fullName: editRow.fullName, mobile: editRow.mobile, altMobile: editRow.altMobile, email: editRow.email,
+        } : {}}
+        onClose={() => setEditRow(null)}
+        onSubmit={saveContact}
+        saving={editSaving}
+      />
     </ImsLayout>
   );
 }

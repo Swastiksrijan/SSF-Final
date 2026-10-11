@@ -40,6 +40,12 @@ export const ims = {
   contacts: () => fetch(`${API_BASE_URL}/api/ims/contacts/emails`, { headers: headers() }).then(handle),
   contactsSyncRegisters: () =>
     fetch(`${API_BASE_URL}/api/ims/contacts/sync-registers`, { method: 'POST', headers: headers() }).then(handle),
+  contactsUpdate: (id, body) =>
+    fetch(`${API_BASE_URL}/api/ims/contacts/person/${id}`, {
+      method: 'PUT', headers: headers(), body: JSON.stringify(body),
+    }).then(handle),
+  contactsRemove: (id) =>
+    fetch(`${API_BASE_URL}/api/ims/contacts/person/${id}`, { method: 'DELETE', headers: headers() }).then(handle),
   contactsImport: (rows = []) =>
     fetch(`${API_BASE_URL}/api/ims/contacts/emails`, {
       method: 'POST', headers: headers(), body: JSON.stringify({ rows }),

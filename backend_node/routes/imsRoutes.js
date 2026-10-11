@@ -365,6 +365,9 @@ router.post('/ims/contacts/emails', wrap(async (req, r) => r.status(200).json(aw
 // Pull people out of the members + managing-committee registers into the
 // directory (additive, idempotent). Safe to call repeatedly.
 router.post('/ims/contacts/sync-registers', wrap(async (_req, r) => r.status(200).json(await contacts.syncPeopleFromRegisters())));
+// Fix one person's contact, or drop a placeholder stand-in, from the directory.
+router.put('/ims/contacts/person/:id', wrap(async (req, r) => r.json(await contacts.updateContact(req.params.id, req.body || {}))));
+router.delete('/ims/contacts/person/:id', wrap(async (req, r) => r.json(await contacts.removeContact(req.params.id))));
 
 // ---- generic CRUD for every resource --------------------------------------
 router.get('/ims/:resource', wrap(async (req, r) => r.json(await res.list(req.params.resource, req.query))));
