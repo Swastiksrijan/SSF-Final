@@ -215,6 +215,9 @@ const EXTRA_FIELDS = [
   'headingEn', 'headingHi', 'subtitleEn', 'subtitleHi',
   'exampleEn', 'exampleHi', 'takeawayEn', 'takeawayHi',
   'ctaEn', 'ctaHi', 'catLabelEn', 'catLabelHi',
+  // provenance + festival metadata (so the UI can badge source and show a
+  // solemn tone rather than celebratory graphics on memorial days)
+  'contentSource', 'contentVerified', 'tradition', 'solemn', 'palette', 'altNames',
 ];
 
 // Split a planned post into the row columns and the JSONB `data` payload.
@@ -233,5 +236,126 @@ function mergePost(p) {
   return { ...base, ...(base.data || {}) };
 }
 
+// ---- daily topic library + multicultural events ----------------------------
+// These build on the pre-reviewed bilingual library (topicLibrary.js) and the
+// admin-editable festival calendar (SocialEvent), so every calendar day gets
+// fresh, non-repetitive content that is honestly labelled template/library
+// (never "AI-generated" unless an AI provider actually produced it).
+const { LIBRARY, TOPIC_ORDER, TOPIC_LABELS, VERIFIED } = require('./topicLibrary');
+
+// Twitter-style display name for a category from the library.
+function topicLabel(cat) {
+  const l = TOPIC_LABELS[cat];
+  return l || { en: cat, hi: cat };
+}
+
+// Standard awareness structure rendered into the caption body.
+function structureLines(entry) {
+  return {
+    issueEn: entry.issue.en, issueHi: entry.issue.hi,
+    whyEn: entry.why.en, whyHi: entry.why.hi,
+    doEn: entry.do.en, doHi: entry.do.hi,
+    stepEn: entry.step.en, stepHi: entry.step.hi,
+    avoidEn: entry.avoid.en, avoidHi: entry.avoid.hi,
+    helpEn: entry.help.en, helpHi: entry.help.hi,
+    actionEn: entry.action.en, actionHi: entry.action.hi,
+    communityEn: entry.community.en, communityHi: entry.community.hi,
+  };
+}
+
+function composeBody({ greetEn, greetHi, titleEn, titleHi, subtitleEn, subtitleHi, sections, ctaEn, ctaHi, tags }) {
+  const blocksEn = [greetEn, '', titleEn, subtitleEn];
+  const blocksHi = [greetHi, '', titleHi, subtitleHi];
+  if (sections) {
+    blocksEn.push('', sections.issueEn, sections.whyEn, `👉 ${sections.doEn}`, sections.stepEn, `⚠️ ${sections.avoidEn}`, `ℹ️ ${sections.helpEn}`);
+    blocksHi.push('', sections.issueHi, sections.whyHi, `👉 ${sections.doHi}`, sections.stepHi, `⚠️ ${sections.avoidHi}`, `ℹ️ ${sections.helpHi}`);
+  }
+  blocksEn.push('', `✅ ${ctaEn}`, '', `🌐 ${ORG.website}  |  📞 ${ORG.phone}`, tags);
+  blocksHi.push('', `✅ ${ctaHi}`, '', `🌐 ${ORG.website}  |  📞 ${ORG.phone}`, tags);
+  return { bodyEn: blocksEn.join('\n'), bodyHi: blocksHi.join('\n') };
+}
+
+const greetFor = (slot) => (slot === 'morning'
+  ? { greetEn: 'Good morning! ☀️', greetHi: 'सुप्रभात! ☀️' }
+  : slot === 'evening'
+    ? { greetEn: 'Good evening! 🌙', greetHi: 'शुभ संध्या! 🌙' }
+    : { greetEn: 'A quick reminder 💡', greetHi: 'एक छोटी याद 💡' });
+
+/**
+ * Build one library post for a date + slot using the 20-topic registry. The
+ * topic rotates by day-of-year and the entry rotates with the slot, so the
+ * morning and evening posts always differ and adjacent days never repeat.
+ */
+function planLibraryPost(date, slot = 'morning') {
+  const doy = dayOfYear(date);
+  const slotShift = slot === 'morning' ? 0 : slot === 'evening' ? 1 : 2;
+  const cat = TOPIC_ORDER[(doy + slotShift) % TOPIC_ORDER.length];
+  const list = LIBRARY[cat] || [];
+  const entry = list[(doy + slotShift * 7) % list.length] || list[0];
+  const label = topicLabel(cat);
+  const dateEn = `${date.getDate()} ${MONTHS_EN[date.getMonth()]} ${date.getFullYear()}`;
+  const dateHi = `${date.getDate()} ${MONTHS_HI[date.getMonth()]} ${date.getFullYear()}`;
+  const greet = greetFor(slot);
+  const tags = `${ORG.baseHashtags} #${cat} #Awareness`.replace(/\s+/g, ' ');
+  const sections = structureLines(entry);
+  const { bodyEn, bodyHi } = composeBody({
+    ...greet, titleEn: entry.title.en, titleHi: entry.title.hi,
+    subtitleEn: label.en, subtitleHi: label.hi,
+    sections, ctaEn: entry.action.en, ctaHi: entry.action.hi, tags,
+  });
+  return {
+    postDate: ymd(date), slot, topicKey: `lib-${cat}-${list.indexOf(entry)}`, category: cat, kind: 'awareness',
+    titleEn: entry.title.en, titleHi: entry.title.hi, bodyEn, bodyHi, hashtags: tags,
+    headingEn: entry.title.en, headingHi: entry.title.hi,
+    subtitleEn: label.en, subtitleHi: label.hi,
+    exampleEn: entry.do.en, exampleHi: entry.do.hi,
+    takeawayEn: entry.action.en, takeawayHi: entry.action.hi,
+    ctaEn: entry.community.en, ctaHi: entry.community.hi,
+    catLabelEn: label.en, catLabelHi: label.hi,
+    contentSource: 'library', contentVerified: VERIFIED,
+    dateEn, dateHi,
+    imageUrl: `${(process.env.PUBLIC_BASE_URL || 'https://ngo-backend-03hq.onrender.com').replace(/\/$/, '')}/api/social/image/daily?date=${ymd(date)}&slot=${slot}&format=png`,
+  };
+}
+
+/**
+ * Build a festival / observance greeting from a SocialEvent row. Each tradition
+ * gets its OWN greeting, and a solemn day (remembrance / tragedy) is rendered
+ * without celebratory wording. `kind` is 'festival' so the UI can badge it.
+ */
+function planEventPost(event, slot = 'morning', date = new Date()) {
+  const dateEn = `${date.getDate()} ${MONTHS_EN[date.getMonth()]} ${date.getFullYear()}`;
+  const dateHi = `${date.getDate()} ${MONTHS_HI[date.getMonth()]} ${date.getFullYear()}`;
+  const greet = greetFor(slot);
+  const tags = `${ORG.baseHashtags} ${event.titleEn ? '#' + String(event.titleEn).replace(/[^A-Za-z0-9]/g, '') : ''}`.trim();
+  const signif = event.significanceEn && !event.solemn
+    ? event.significanceEn : null;
+  const signifHi = event.significanceHi && !event.solemn ? event.significanceHi : null;
+  const subEn = signif ? signif : (event.significanceEn || '');
+  const subHi = signifHi ? signifHi : (event.significanceHi || '');
+  const { bodyEn, bodyHi } = composeBody({
+    ...greet, titleEn: event.greetingEn || event.titleEn, titleHi: event.greetingHi || event.titleHi,
+    subtitleEn: subEn, subtitleHi: subHi, sections: null,
+    ctaEn: event.solemn ? 'We remember and stand together.' : 'Warm wishes from the SSF family.',
+    ctaHi: event.solemn ? 'हम स्मरण करते हैं और साथ खड़े हैं।' : 'SSF परिवार की ओर से शुभकामनाएँ।',
+    tags,
+  });
+  return {
+    postDate: ymd(date), slot, topicKey: `evt-${event.key}`, category: 'festival', kind: 'festival',
+    titleEn: event.titleEn, titleHi: event.titleHi || event.titleEn, bodyEn, bodyHi, hashtags: tags,
+    headingEn: event.titleEn, headingHi: event.titleHi || event.titleEn,
+    subtitleEn: event.greetingEn || '', subtitleHi: event.greetingHi || '',
+    exampleEn: event.significanceEn || '', exampleHi: event.significanceHi || '',
+    takeawayEn: event.solemn ? 'A day of remembrance.' : 'Warm wishes.', takeawayHi: event.solemn ? 'स्मरण का दिन।' : 'शुभकामनाएँ।',
+    ctaEn: 'Warm wishes from the SSF family.', ctaHi: 'SSF परिवार की ओर से शुभकामनाएँ।',
+    catLabelEn: 'Festival & Observance', catLabelHi: 'पर्व एवं अवसर',
+    contentSource: 'calendar', contentVerified: event.verified ? VERIFIED : null,
+    tradition: event.tradition, solemn: !!event.solemn, palette: event.palette,
+    dateEn, dateHi,
+    imageUrl: `${(process.env.PUBLIC_BASE_URL || 'https://ngo-backend-03hq.onrender.com').replace(/\/$/, '')}/api/social/image/daily?date=${ymd(date)}&slot=${slot}&format=png`,
+  };
+}
+
 module.exports = { ORG, AWARENESS_DAYS, THEMES, planPost, awarenessFor, dayOfYear, ymd, MONTHS_EN, MONTHS_HI,
-  SUBTITLES, EXAMPLES, TAKEAWAYS, CTAS, buildSections, splitPlan, mergePost, EXTRA_FIELDS };
+  SUBTITLES, EXAMPLES, TAKEAWAYS, CTAS, buildSections, splitPlan, mergePost, EXTRA_FIELDS,
+  planLibraryPost, planEventPost, topicLabel, TOPIC_LABELS, TOPIC_ORDER, LIBRARY };

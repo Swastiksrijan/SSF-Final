@@ -130,6 +130,15 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Notification sync skipped:', e.message);
     }
+    // Multicultural festival & observance calendar. Seeds only MISSING keys, so
+    // an admin's edits, approvals or exclusions are never overwritten.
+    try {
+        const { seedSocialEvents } = require('./services/social/calendarSeed');
+        const seeded = await seedSocialEvents();
+        if (seeded.created) console.log(`✅ Seeded ${seeded.created} calendar entr(ies) for the social awareness calendar`);
+    } catch (e) {
+        console.error('⚠️ Social calendar seed skipped:', e.message);
+    }
 }
 
 // Copy the entire legacy SSF Digital Office dataset into the IMS masters.
@@ -208,7 +217,7 @@ async function socialTick() {
         const { planDue, runPending } = require('./services/social/publisher');
         const created = await planDue({});
         if (created.length) console.log(`✅ Social publisher planned ${created.length} post(s) for today`);
-        const out = await runPending({});
+        const out = await runPending({ source: 'internal-timer' });
         if (out.published.length) console.log(`✅ Social publisher published ${out.published.length} due post(s)`);
     } catch (e) {
         console.error('⚠️ Social publisher tick skipped:', e.message);

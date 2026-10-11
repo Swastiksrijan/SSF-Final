@@ -63,4 +63,48 @@ const SocialConfig = sequelize.define('SocialConfig', {
   value: { type: JSONB, defaultValue: {} },
 }, S);
 
-module.exports = { sequelize, SocialChannel, SocialPost, SocialAwarenessDay, SocialConfig };
+// Multicultural festival / observance calendar. Admin-editable without code
+// changes. `date` is the Gregorian date for a specific year; lunar festivals are
+// stored per-year and flagged `uncertain` until an admin verifies them, so a
+// possibly-wrong greeting is held for review instead of published blindly.
+const SocialEvent = sequelize.define('SocialEvent', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  key: { type: DataTypes.STRING, unique: true }, // stable id, e.g. ev-holi-2026
+  date: { type: DataTypes.DATEONLY },            // Gregorian date (YYYY-MM-DD)
+  month: DataTypes.INTEGER,                      // fallback for a recurring, fixed-date entry
+  day: DataTypes.INTEGER,
+  titleEn: DataTypes.TEXT,
+  titleHi: DataTypes.TEXT,
+  altNames: DataTypes.TEXT,                      // alternate / regional names
+  tradition: DataTypes.STRING,                   // hindu/muslim/sikh/christian/buddhist/jain/jewish/indigenous/national/un/regional/other
+  region: DataTypes.STRING,                      // India / World / state / community
+  calendarSystem: DataTypes.STRING,              // gregorian/lunar/lunisolar/hijri/hebrew
+  eventType: { type: DataTypes.STRING, defaultValue: 'observance' }, // public_holiday / religious_observance / cultural / awareness / national_day / remembrance
+  greetingEn: DataTypes.TEXT,
+  greetingHi: DataTypes.TEXT,
+  significanceEn: DataTypes.TEXT,
+  significanceHi: DataTypes.TEXT,
+  palette: DataTypes.STRING,                     // image category/tone for culturally appropriate colours
+  solemn: { type: DataTypes.BOOLEAN, defaultValue: false }, // remembrance/tragedy -> solemn tone
+  source: DataTypes.TEXT,
+  verified: { type: DataTypes.BOOLEAN, defaultValue: false },
+  uncertain: { type: DataTypes.BOOLEAN, defaultValue: false },
+  status: { type: DataTypes.STRING, defaultValue: 'active' }, // active/excluded
+  priority: { type: DataTypes.INTEGER, defaultValue: 0 },
+  notes: DataTypes.TEXT,
+}, S);
+
+// One scheduler/heartbeat run — powers the dashboard "last successful run" and
+// makes a failed scheduler run visible instead of silently green.
+const SocialRunLog = sequelize.define('SocialRunLog', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  startedAt: DataTypes.DATE,
+  finishedAt: DataTypes.DATE,
+  source: DataTypes.STRING, // github-cron / internal-timer / manual
+  ok: { type: DataTypes.BOOLEAN, defaultValue: true },
+  published: { type: DataTypes.INTEGER, defaultValue: 0 },
+  detail: { type: JSONB, defaultValue: {} },
+  error: DataTypes.TEXT,
+}, S);
+
+module.exports = { sequelize, SocialChannel, SocialPost, SocialAwarenessDay, SocialConfig, SocialEvent, SocialRunLog };

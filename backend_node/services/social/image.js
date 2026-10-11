@@ -35,6 +35,18 @@ const CAT = {
   women: ['#4c1d95', '#7c3aed', '#FFD166'],
   youth: ['#0c4a6e', '#0284c7', '#FFD166'],
   community: ['#002344', '#0b3a63', '#FF6600'],
+  // Festival palettes — one distinct, respectful colour family per tradition so
+  // a greeting does not reuse a single generic look for every religion.
+  festival: ['#002344', '#0b3a63', '#FFD166'],
+  'festival-hindu': ['#7c2d12', '#b45309', '#FFD166'],
+  'festival-muslim': ['#064e3b', '#047857', '#D4AF37'],
+  'festival-sikh': ['#1e3a8a', '#2563eb', '#F59E0B'],
+  'festival-christian': ['#7f1d1d', '#b91c1c', '#FCD34D'],
+  'festival-buddhist': ['#78350f', '#b45309', '#FDE68A'],
+  'festival-jain': ['#7f1d1d', '#dc2626', '#FCD34D'],
+  'festival-jewish': ['#1e3a8a', '#1d4ed8', '#D4AF37'],
+  // Solemn tone for remembrance / tragedy days — muted, no celebratory warmth.
+  solemn: ['#1f2937', '#374151', '#9CA3AF'],
 };
 
 const esc = (s) => String(s == null ? '' : s)
@@ -79,7 +91,7 @@ function layout(post) {
 
 // ---- SVG string (browser fallback when no rasterizer is available) ----------
 function postSvg(post) {
-  const [c1, c2, accent] = CAT[post.category] || CAT.community;
+  const [c1, c2, accent] = CAT[post.palette] || CAT[post.category] || CAT.community;
   const L = layout(post);
   const titleEn = tspans(L.titleEnLines, 70, L.titleEnY, 84);
   const titleHi = tspans(L.titleHiLines, 70, L.titleHiY, 72);
@@ -173,7 +185,7 @@ function drawLines(ctx, lines, x, y, lh) {
 
 async function drawPost(post, format = 'png') {
   const { createCanvas } = getSkia();
-  const [c1, c2, accent] = CAT[post.category] || CAT.community;
+  const [c1, c2, accent] = CAT[post.palette] || CAT[post.category] || CAT.community;
   const W = 1080, H = 1080, M = 70;
   const canvas = createCanvas(W, H);
   const ctx = canvas.getContext('2d');

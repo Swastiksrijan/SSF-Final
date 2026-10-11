@@ -142,6 +142,13 @@ export const ims = {
   socialTestChannel: (platform) => fetch(`${API_BASE_URL}/api/social/channels/${platform}/test`, { method: 'POST', headers: headers() }).then(handle),
   socialFbExchange: (payload) => fetch(`${API_BASE_URL}/api/social/facebook/exchange`, { method: 'POST', headers: headers(), body: JSON.stringify(payload) }).then(handle),
   socialIgResolve: (payload) => fetch(`${API_BASE_URL}/api/social/instagram/resolve`, { method: 'POST', headers: headers(), body: JSON.stringify(payload || {}) }).then(handle),
+  socialPause: () => fetch(`${API_BASE_URL}/api/social/pause`, { method: 'POST', headers: headers() }).then(handle),
+  socialResume: () => fetch(`${API_BASE_URL}/api/social/resume`, { method: 'POST', headers: headers() }).then(handle),
+  socialPreview: (date, slot = 'morning') => fetch(`${API_BASE_URL}/api/social/preview?date=${date}&slot=${slot}`, { headers: headers() }).then(handle),
+  socialEvents: () => fetch(`${API_BASE_URL}/api/social/events`, { headers: headers() }).then(handle),
+  socialSaveEvent: (payload) => fetch(`${API_BASE_URL}/api/social/events`, { method: 'POST', headers: headers(), body: JSON.stringify(payload) }).then(handle),
+  socialPatchEvent: (id, payload) => fetch(`${API_BASE_URL}/api/social/events/${id}`, { method: 'PATCH', headers: headers(), body: JSON.stringify(payload) }).then(handle),
+  socialRemoveEvent: (id) => fetch(`${API_BASE_URL}/api/social/events/${id}`, { method: 'DELETE', headers: headers() }).then(handle),
 };
 
 // Public (no auth) social feed for the website News/Blog section.

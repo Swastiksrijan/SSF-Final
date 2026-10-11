@@ -2,7 +2,7 @@
 // Connect every social account, watch today's bilingual posts, and let the
 // scheduler publish them automatically (twice a day). Nothing here removes any
 // existing feature; it is a new module on top of the IMS.
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
 import { Card, SectionHero, Button, Badge, Spinner, Toggle } from '../ui';
@@ -390,12 +390,148 @@ function PostCard({ post, onPublish, onEdit, busy }) {
   );
 }
 
+// Distinct connection states — the dashboard must not blur "connected",
+// "authenticated", "configured", "scheduled" and "published".
+function StatusStrip({ data, lang }) {
+  const hb = data.heartbeat || {};
+  const chips = [
+    { en: 'Scheduler', hi: 'शेड्यूलर', ok: !hb.failing, text: hb.lastRunAt ? new Date(hb.lastRunAt).toLocaleString(lang === 'hi' ? 'hi-IN' : 'en-IN') : (lang === 'hi' ? 'कभी नहीं चला' : 'never ran') },
+    { en: 'Last success', hi: 'अंतिम सफल', ok: !!hb.lastSuccessAt, text: hb.lastSuccessAt ? new Date(hb.lastSuccessAt).toLocaleString(lang === 'hi' ? 'hi-IN' : 'en-IN') : '—' },
+    { en: 'Runs / 24h', hi: '24घं में रन', ok: true, text: String(hb.runsLast24h ?? 0) },
+    { en: 'Next post', hi: 'अगली पोस्ट', ok: !!data.nextScheduledAt, text: data.nextScheduledAt ? data.nextScheduledAt.replace('T', ' ') : '—' },
+  ];
+  return (
+    <Card className="mb-6 p-4">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <h2 className="text-sm font-black uppercase tracking-wider text-slate-500">
+          {lang === 'hi' ? 'शेड्यूलर एवं स्थिति' : 'Scheduler & Status'}
+        </h2>
+        <span className="text-[11px] text-slate-400">{data.timezone} · {data.todayLocalTime}</span>
+      </div>
+      <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
+        {chips.map((c) => (
+          <div key={c.en} className="rounded-xl border border-slate-100 bg-slate-50 p-3">
+            <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-wide text-slate-400">
+              <span className={`inline-block h-2 w-2 rounded-full ${c.ok ? 'bg-emerald-500' : 'bg-rose-500'}`} />
+              {lang === 'hi' ? c.hi : c.en}
+            </div>
+            <div className="mt-1 truncate text-xs font-semibold text-[#002344]">{c.text}</div>
+          </div>
+        ))}
+      </div>
+      {hb.failing && (
+        <div className="mt-3 rounded-xl border border-rose-200 bg-rose-50 p-2 text-xs text-rose-700">
+          ⚠️ {lang === 'hi' ? 'पिछला शेड्यूलर रन विफल रहा' : 'The last scheduler run failed'}: {hb.lastRunError || '—'}
+        </div>
+      )}
+      {data.calendarWarnings?.uncertainCount > 0 && (
+        <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50 p-2 text-xs text-amber-700">
+          📅 {lang === 'hi' ? `${data.calendarWarnings.uncertainCount} तिथियाँ समीक्षा हेतु अनिश्चित हैं (चंद्र तिथियाँ)` : `${data.calendarWarnings.uncertainCount} dates are flagged uncertain for review (lunar/moon-sighting)`}
+        </div>
+      )}
+      {data.freshness?.warning && (
+        <div className="mt-2 rounded-xl border border-amber-200 bg-amber-50 p-2 text-xs text-amber-700">
+          🔁 {lang === 'hi' ? 'हाल के पोस्टों में विषय दोहराव मिला' : 'Recent posts repeat a topic'} ({data.freshness.repeats.map((r) => r.topicKey).join(', ')})
+        </div>
+      )}
+    </Card>
+  );
+}
+
+const TRADITIONS = ['hindu', 'muslim', 'sikh', 'christian', 'buddhist', 'jain', 'jewish', 'indigenous', 'national', 'regional', 'un', 'other'];
+
+// Admin-editable, searchable multicultural calendar. Add / approve / exclude
+// entries without any code change.
+function CalendarTab({ data, busy, run, lang }) {
+  const [q, setQ] = useState('');
+  const [tradition, setTradition] = useState('');
+  const [form, setForm] = useState(null);
+  const filtered = useMemo(() => (data.calendar || []).filter((e) => {
+    if (tradition && e.tradition !== tradition) return false;
+    if (!q) return true;
+    const s = `${e.titleEn} ${e.titleHi} ${e.altNames || ''} ${e.region} ${e.date}`.toLowerCase();
+    return s.includes(q.toLowerCase());
+  }), [data.calendar, q, tradition]);
+
+  const empty = { date: new Date().toISOString().slice(0, 10), titleEn: '', titleHi: '', tradition: 'other', region: 'India', calendarSystem: 'gregorian', eventType: 'observance', greetingEn: '', greetingHi: '', significanceEn: '', significanceHi: '', verified: true, uncertain: false };
+
+  return (
+    <div className="mb-8">
+      <div className="mb-3 flex flex-wrap items-center gap-2">
+        <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={lang === 'hi' ? 'खोजें…' : 'Search…'}
+          className="w-48 rounded-xl border border-slate-200 px-3 py-2 text-sm" />
+        <select value={tradition} onChange={(e) => setTradition(e.target.value)} className="rounded-xl border border-slate-200 px-3 py-2 text-sm">
+          <option value="">{lang === 'hi' ? 'सभी परंपराएँ' : 'All traditions'}</option>
+          {TRADITIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+        </select>
+        <Button variant="ghost" icon="Plus" disabled={busy} onClick={() => setForm(form ? null : empty)}>
+          {lang === 'hi' ? 'कार्यक्रम जोड़ें' : 'Add event'}
+        </Button>
+      </div>
+
+      {form && (
+        <Card className="mb-4 space-y-2 p-4">
+          <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+            <input type="date" value={form.date} onChange={(e) => setForm({ ...form, date: e.target.value })} className="rounded-xl border px-3 py-2 text-sm" />
+            <input placeholder="Title (EN)" value={form.titleEn} onChange={(e) => setForm({ ...form, titleEn: e.target.value })} className="rounded-xl border px-3 py-2 text-sm" />
+            <input placeholder="Title (HI)" value={form.titleHi} onChange={(e) => setForm({ ...form, titleHi: e.target.value })} className="rounded-xl border px-3 py-2 text-sm" />
+            <select value={form.tradition} onChange={(e) => setForm({ ...form, tradition: e.target.value })} className="rounded-xl border px-3 py-2 text-sm">
+              {TRADITIONS.map((t) => <option key={t} value={t}>{t}</option>)}
+            </select>
+            <input placeholder="Greeting (EN)" value={form.greetingEn} onChange={(e) => setForm({ ...form, greetingEn: e.target.value })} className="rounded-xl border px-3 py-2 text-sm sm:col-span-2" />
+            <input placeholder="Greeting (HI)" value={form.greetingHi} onChange={(e) => setForm({ ...form, greetingHi: e.target.value })} className="rounded-xl border px-3 py-2 text-sm sm:col-span-2" />
+            <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={form.verified} onChange={(e) => setForm({ ...form, verified: e.target.checked })} />{lang === 'hi' ? 'सत्यापित' : 'Verified'}</label>
+            <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={form.uncertain} onChange={(e) => setForm({ ...form, uncertain: e.target.checked })} />{lang === 'hi' ? 'अनिश्चित तिथि' : 'Uncertain date'}</label>
+            <label className="flex items-center gap-2 text-xs"><input type="checkbox" checked={form.solemn || false} onChange={(e) => setForm({ ...form, solemn: e.target.checked })} />{lang === 'hi' ? 'गंभीर (स्मरण)' : 'Solemn'}</label>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="hero" disabled={busy || !form.titleEn} onClick={() => run(() => ims.socialSaveEvent(form), lang === 'hi' ? 'सहेजा' : 'Saved').then(() => setForm(null))}>{lang === 'hi' ? 'सहेजें' : 'Save'}</Button>
+            <Button variant="ghost" onClick={() => setForm(null)}>{lang === 'hi' ? 'रद्द' : 'Cancel'}</Button>
+          </div>
+        </Card>
+      )}
+
+      <div className="mb-3 text-xs text-slate-500">
+        {lang === 'hi' ? 'स्रोत' : 'Sources'}: {data.calendarWarnings?.sources?.join(' · ')}
+      </div>
+
+      <Card className="divide-y divide-slate-100">
+        {filtered.length === 0 && <div className="p-6 text-center text-sm text-slate-400">—</div>}
+        {filtered.slice(0, 120).map((e) => (
+          <div key={e.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="text-xs font-bold text-[#002344]">{e.date}</span>
+                <span className="truncate text-xs text-slate-700">{lang === 'hi' ? (e.titleHi || e.titleEn) : e.titleEn}</span>
+                {e.solemn && <Chip label="solemn" tone="failed" />}
+                {e.uncertain && <Chip label="uncertain" tone="partial" />}
+                {!e.verified && <Chip label="unverified" tone="partial" />}
+                {e.status === 'excluded' && <Chip label="excluded" tone="failed" />}
+              </div>
+              <div className="text-[11px] text-slate-400">{e.tradition} · {e.region} · {e.calendarSystem}</div>
+            </div>
+            <div className="flex items-center gap-1">
+              {e.uncertain && <Button variant="ghost" disabled={busy} onClick={() => run(() => ims.socialPatchEvent(e.id, { uncertain: false, verified: true }), lang === 'hi' ? 'सत्यापित' : 'Confirmed')}>{lang === 'hi' ? 'पुष्टि' : 'Confirm'}</Button>}
+              <Button variant="ghost" disabled={busy} onClick={() => run(() => ims.socialPatchEvent(e.id, { status: e.status === 'excluded' ? 'active' : 'excluded' }), 'OK')}>
+                {e.status === 'excluded' ? (lang === 'hi' ? 'बहाल' : 'Restore') : (lang === 'hi' ? 'हटाएँ' : 'Exclude')}
+              </Button>
+            </div>
+          </div>
+        ))}
+      </Card>
+    </div>
+  );
+}
+
 export default function ImsSocial() {
   const { lang } = useLang();
   const [data, setData] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [note, setNote] = useState('');
+  const [tab, setTab] = useState('dashboard');
+  const [preview, setPreview] = useState(null);
+  const [filterStatus, setFilterStatus] = useState('');
 
   const load = async () => {
     try { setData(await ims.socialDashboard()); } catch (e) { setErr(e.message); }
@@ -409,9 +545,15 @@ export default function ImsSocial() {
     finally { setBusy(false); }
   };
 
-  const saveConfig = (patch) => run(() => ims.socialSaveConfig(patch), lang === 'hi' ? 'सहेजा गया' : 'Saved');
   const times = (data && data.times) || { morning: '08:00', evening: '18:00' };
-  const today = (data && data.recent || []).filter((p) => p.postDate === new Date().toISOString().slice(0, 10));
+  const todayPosts = (data && data.todayPosts) || [];
+  const recentFiltered = (data && data.recent || []).filter((p) => !filterStatus || p.status === filterStatus);
+
+  const openPreview = async (date, slot) => {
+    setErr('');
+    try { const out = await ims.socialPreview(date, slot); setPreview(out.post); }
+    catch (e) { setErr(e.message); }
+  };
 
   return (
     <ImsLayout active="social_publisher">
@@ -423,11 +565,14 @@ export default function ImsSocial() {
         tone="orange"
         actions={
           <>
-            <Button variant="hero" icon="Zap" disabled={busy} onClick={() => run(() => ims.socialRun(true), lang === 'hi' ? 'प्रकाशित' : 'Published')}>
-              {lang === 'hi' ? 'अभी चलाएँ' : 'Run now'}
+            <Button variant="hero" icon="PlayCircle" disabled={busy} onClick={() => run(() => ims.socialRun(false), lang === 'hi' ? 'शेड्यूलर चला' : 'Scheduler run')}>
+              {lang === 'hi' ? 'शेड्यूलर चलाएँ' : 'Run scheduler'}
             </Button>
-            <Button variant="hero" icon="PlusCircle" disabled={busy} onClick={() => run(() => ims.socialPostNow(), lang === 'hi' ? 'अतिरिक्त पोस्ट बनी' : 'Extra post created')}>
-              {lang === 'hi' ? 'तुरंत पोस्ट' : 'Post now'}
+            <Button variant="hero" icon="FileText" disabled={busy} onClick={() => run(() => ims.socialPlan(false), lang === 'hi' ? 'ड्राफ़्ट बने' : 'Drafts generated')}>
+              {lang === 'hi' ? 'सामग्री बनाएँ' : 'Generate content'}
+            </Button>
+            <Button variant="hero" icon="Send" disabled={busy} onClick={() => run(() => ims.socialRun(true), lang === 'hi' ? 'प्रकाशित' : 'Published')}>
+              {lang === 'hi' ? 'अभी प्रकाशित करें' : 'Publish now'}
             </Button>
           </>
         }
@@ -437,9 +582,9 @@ export default function ImsSocial() {
           <span>🌙 {lang === 'hi' ? 'शाम' : 'Evening'} <b className="text-white">{times.evening}</b></span>
           <span className="inline-flex items-center gap-2">
             {lang === 'hi' ? 'ऑटो-प्रकाशन' : 'Auto-publish'}:{' '}
-            <Toggle on={!!data?.autoApprove} onChange={(v) => saveConfig({ autoApprove: v })} label={data?.autoApprove ? 'ON' : 'OFF'} />
+            <Toggle on={!!data?.autoApprove} onChange={(v) => run(() => (v ? ims.socialResume() : ims.socialPause()), v ? (lang === 'hi' ? 'चालू' : 'Resumed') : (lang === 'hi' ? 'रोका' : 'Paused'))} label={data?.autoApprove ? 'ON' : 'OFF'} />
           </span>
-          <span className="text-white/70">🇮🇳 Asia/Kolkata (IST)</span>
+          <span className="text-white/70">🌐 {data?.timezone || 'Asia/Kolkata'}</span>
         </div>
       </SectionHero>
 
@@ -449,6 +594,13 @@ export default function ImsSocial() {
 
       {data && (
         <>
+          <div className="mb-4 flex gap-2">
+            {[['dashboard', lang === 'hi' ? 'डैशबोर्ड' : 'Dashboard'], ['calendar', lang === 'hi' ? 'कैलेंडर' : 'Calendar']].map(([k, label]) => (
+              <button key={k} onClick={() => setTab(k)}
+                className={`rounded-xl px-4 py-2 text-sm font-bold ${tab === k ? 'bg-[#002344] text-white' : 'bg-slate-100 text-slate-600'}`}>{label}</button>
+            ))}
+          </div>
+
           <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-5">
             <KpiBox icon="CalendarClock" en="Posts / day" hi="पोस्ट / दिन" value={data.scheduledPerDay} />
             <KpiBox icon="CheckCircle2" en="Published" hi="प्रकाशित" value={data.stats.published} tone="text-emerald-600" />
@@ -457,10 +609,87 @@ export default function ImsSocial() {
             <KpiBox icon="PlugZap" en="Channels on" hi="चैनल चालू" value={data.channels.filter((c) => c.enabled).length} tone="text-[#FF6600]" />
           </div>
 
+          <StatusStrip data={data} lang={lang} />
+
+          {tab === 'calendar' && <CalendarTab data={data} busy={busy} run={run} lang={lang} />}
+
+          {tab === 'dashboard' && (
+          <>
+          <div className="mb-8 grid gap-4 lg:grid-cols-2">
+            <Card className="p-4">
+              <h2 className="mb-2 text-sm font-black uppercase tracking-wider text-slate-500">
+                📅 {lang === 'hi' ? 'आज के पर्व एवं अवसर' : "Today's festivals & observances"}
+              </h2>
+              {(data.todayEvents || []).length === 0
+                ? <div className="text-xs text-slate-400">{lang === 'hi' ? 'आज कोई सत्यापित पर्व नहीं — सामान्य जागरूकता पोस्ट जाएगी।' : 'No verified festival today — a regular awareness post will go out.'}</div>
+                : (data.todayEvents || []).map((e) => (
+                  <div key={e.id} className="mb-2 rounded-xl border border-slate-100 bg-slate-50 p-3">
+                    <div className="text-xs font-bold text-[#002344]">{lang === 'hi' ? (e.titleHi || e.titleEn) : e.titleEn}</div>
+                    <div className="text-[11px] text-slate-500">{e.greetingEn} · {e.tradition} · {e.region}</div>
+                  </div>
+                ))}
+            </Card>
+            <Card className="p-4">
+              <h2 className="mb-2 text-sm font-black uppercase tracking-wider text-slate-500">
+                🗓️ {lang === 'hi' ? 'अगले 7 दिन' : 'Next 7 days'}
+              </h2>
+              {(data.upcomingSevenDays || []).length === 0
+                ? <div className="text-xs text-slate-400">—</div>
+                : (data.upcomingSevenDays || []).map((e) => (
+                  <div key={e.id} className="flex items-center justify-between border-b border-slate-100 py-1.5 text-xs last:border-0">
+                    <span className="font-bold text-[#002344]">{e.date}</span>
+                    <span className="truncate text-slate-600">{lang === 'hi' ? (e.titleHi || e.titleEn) : e.titleEn}</span>
+                    <span className="text-slate-400">{e.tradition}</span>
+                  </div>
+                ))}
+            </Card>
+          </div>
+
+          {(data.draftsAwaitingApproval || []).length > 0 && (
+            <Card className="mb-8 border-amber-200 bg-amber-50 p-4">
+              <h2 className="mb-2 text-sm font-black uppercase tracking-wider text-amber-700">
+                ✏️ {lang === 'hi' ? 'स्वीकृति हेतु ड्राफ़्ट' : 'Drafts awaiting approval'} ({data.draftsAwaitingApproval.length})
+              </h2>
+              <div className="grid gap-2">
+                {data.draftsAwaitingApproval.slice(0, 8).map((p) => (
+                  <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-white/70 px-3 py-2">
+                    <div className="min-w-0 text-xs">
+                      <span className="font-bold text-[#002344]">{p.postDate} {p.slot}</span>
+                      <span className="ml-2 text-slate-600">{p.titleEn}</span>
+                    </div>
+                    <Button variant="ghost" disabled={busy} onClick={() => run(() => ims.socialPublishPost(p.id), lang === 'hi' ? 'प्रकाशित' : 'Published')}>
+                      {lang === 'hi' ? 'अभी भेजें' : 'Publish'}
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
+          {(data.failedPosts || []).length > 0 && (
+            <Card className="mb-8 border-rose-200 bg-rose-50 p-4">
+              <h2 className="mb-2 text-sm font-black uppercase tracking-wider text-rose-700">
+                ⚠️ {lang === 'hi' ? 'विफल / आंशिक पोस्ट' : 'Failed / partial posts'}
+              </h2>
+              <div className="grid gap-2">
+                {data.failedPosts.slice(0, 6).map((p) => (
+                  <div key={p.id} className="rounded-xl bg-white/70 px-3 py-2 text-xs">
+                    <span className="font-bold text-[#002344]">{p.postDate} {p.slot}</span> — {p.titleEn}
+                    <div className="mt-1 flex flex-wrap gap-1">
+                      {(p.failures || []).map((f) => (
+                        <span key={f.platform} className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] text-rose-700">{f.platform}: {f.error || 'error'}</span>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+          )}
+
           <BrandKit />
 
           <div className="mb-8">
-            <h2 className="mb-3 text-sm font-black uppercase tracking-wider text-slate-500">{lang === 'hi' ? 'चैनल जोड़ें' : 'Channels'}</h2>
+            <h2 className="mb-3 text-sm font-black uppercase tracking-wider text-slate-500">{lang === 'hi' ? 'चैनल' : 'Channels'}</h2>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {data.channels.map((ch) => (
                 <ChannelCard key={ch.platform} ch={ch} busy={busy}
@@ -474,15 +703,18 @@ export default function ImsSocial() {
           </div>
 
           <div className="mb-8">
-            <div className="mb-3 flex items-center justify-between">
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
               <h2 className="text-sm font-black uppercase tracking-wider text-slate-500">{lang === 'hi' ? 'आज के पोस्ट' : "Today's posts"}</h2>
-              <Button variant="ghost" icon="RefreshCw" disabled={busy} onClick={() => run(() => ims.socialPlan(true), lang === 'hi' ? 'फिर बनाया' : 'Regenerated')}>
-                {lang === 'hi' ? 'फिर बनाएँ' : 'Regenerate'}
-              </Button>
+              <div className="flex gap-2">
+                <Button variant="ghost" icon="Eye" disabled={busy} onClick={() => openPreview(data.today, 'morning')}>{lang === 'hi' ? 'पूर्वावलोकन' : 'Preview'}</Button>
+                <Button variant="ghost" icon="RefreshCw" disabled={busy} onClick={() => run(() => ims.socialPlan(true), lang === 'hi' ? 'फिर बनाया' : 'Regenerated')}>
+                  {lang === 'hi' ? 'फिर बनाएँ' : 'Regenerate'}
+                </Button>
+              </div>
             </div>
             <div className="grid gap-3">
-              {today.length === 0 && <Card className="p-6 text-center text-sm text-slate-400">{lang === 'hi' ? 'आज के लिए अभी कोई पोस्ट नहीं — ऊपर “अभी चलाएँ” दबाएँ।' : 'No posts for today yet — press “Run now” above.'}</Card>}
-              {today.map((p) => (
+              {todayPosts.length === 0 && <Card className="p-6 text-center text-sm text-slate-400">{lang === 'hi' ? 'आज के लिए अभी कोई पोस्ट नहीं — “सामग्री बनाएँ” दबाएँ।' : 'No posts for today yet — press “Generate content”.'}</Card>}
+              {todayPosts.map((p) => (
                 <PostCard key={p.id} post={p} busy={busy}
                   onPublish={(id) => run(() => ims.socialPublishPost(id), lang === 'hi' ? 'प्रकाशित' : 'Published')}
                   onEdit={(id, payload) => run(() => ims.socialEditPost(id, payload), lang === 'hi' ? 'सहेजा' : 'Saved')} />
@@ -490,15 +722,34 @@ export default function ImsSocial() {
             </div>
           </div>
 
+          {preview && (
+            <Card className="mb-8 border-[#002344]/20 bg-slate-50 p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <h2 className="text-sm font-black uppercase tracking-wider text-slate-500">{lang === 'hi' ? 'पूर्वावलोकन' : 'Preview'} {preview.postDate} · {preview.slot}</h2>
+                <Button variant="ghost" onClick={() => setPreview(null)}>✕</Button>
+              </div>
+              <div className="text-sm font-bold text-[#002344]">{lang === 'hi' ? preview.titleHi : preview.titleEn}</div>
+              <pre className="mt-2 whitespace-pre-wrap text-xs text-slate-600">{lang === 'hi' ? preview.bodyHi : preview.bodyEn}</pre>
+            </Card>
+          )}
+
           <div>
-            <h2 className="mb-3 text-sm font-black uppercase tracking-wider text-slate-500">{lang === 'hi' ? 'हाल के पोस्ट' : 'Recent posts'}</h2>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+              <h2 className="text-sm font-black uppercase tracking-wider text-slate-500">{lang === 'hi' ? 'हाल के पोस्ट' : 'Recent posts'}</h2>
+              <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className="rounded-xl border border-slate-200 px-3 py-1.5 text-xs">
+                <option value="">{lang === 'hi' ? 'सभी स्थिति' : 'All statuses'}</option>
+                {['published', 'partial', 'draft', 'failed'].map((s) => <option key={s} value={s}>{s}</option>)}
+              </select>
+            </div>
             <Card className="divide-y divide-slate-100">
-              {data.recent.length === 0 && <div className="p-6 text-center text-sm text-slate-400">—</div>}
-              {data.recent.map((p) => (
+              {recentFiltered.length === 0 && <div className="p-6 text-center text-sm text-slate-400">—</div>}
+              {recentFiltered.map((p) => (
                 <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
                   <div className="min-w-0">
                     <span className="text-xs font-semibold text-[#002344]">{p.postRef}</span>
                     <span className="ml-2 text-xs text-slate-500">{p.titleEn}</span>
+                    {p.contentSource && <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500">{p.contentSource}</span>}
+                    {p.tradition && <span className="ml-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500">{p.tradition}</span>}
                   </div>
                   <div className="flex items-center gap-2">
                     <Chip label={p.slot} />
@@ -513,9 +764,11 @@ export default function ImsSocial() {
           <Card className="mt-6 p-4 text-xs text-slate-500">
             <b className="text-slate-700">{lang === 'hi' ? 'नोट' : 'Note'}:</b>{' '}
             {lang === 'hi'
-              ? 'पोस्ट पहले ड्राफ़्ट बनती है, फिर तय समय पर हर जुड़े चैनल पर अपने-आप प्रकाशित होती है। टोकन बदलने पर तुरंत प्रभावी होते हैं।'
-              : 'Posts are drafted first, then auto-published to every connected channel at the scheduled time. Updated tokens take effect immediately.'}
+              ? 'सामग्री स्रोत बैज में दिखता है — “library” = पूर्व-समीक्षित द्विभाषी पुस्तकालय, “calendar” = सत्यापित त्योहार। किसी साँचे को AI-निर्मित नहीं कहा जाता।'
+              : 'The content-source badge shows provenance — “library” = pre-reviewed bilingual library, “calendar” = verified festival. No template is ever labelled AI-generated.'}
           </Card>
+          </>
+          )}
         </>
       )}
     </ImsLayout>
