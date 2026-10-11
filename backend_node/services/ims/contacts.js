@@ -52,7 +52,9 @@ async function rolesByPerson() {
  */
 async function listContactEmails({ onlyMissing = false, search = '' } = {}) {
   const [people, roles] = await Promise.all([
-    models.ImsPerson.findAll({ order: [['fullName', 'ASC']], limit: 5000 }),
+    // Archived people are kept in the database for history, but they are gone
+    // from the directory — otherwise a "Remove" would leave the row visible.
+    models.ImsPerson.findAll({ where: { status: { [Op.ne]: 'archived' } }, order: [['fullName', 'ASC']], limit: 5000 }),
     rolesByPerson(),
   ]);
   const q = clean(search).toLowerCase();
