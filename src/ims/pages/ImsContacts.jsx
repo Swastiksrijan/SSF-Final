@@ -27,7 +27,9 @@ const ENGAGE = {
 export default function ImsContacts() {
   const { t } = useLang();
   const [data, setData] = useState(null);
-  const [missingOnly, setMissingOnly] = useState(true);
+  // Show everyone by default. Hiding the notifiable people made the loaded
+  // register data invisible, so the page looked empty until the filter was off.
+  const [missingOnly, setMissingOnly] = useState(false);
   const [q, setQ] = useState('');
   const [err, setErr] = useState('');
   const [edits, setEdits] = useState({});       // recordId -> drafted email
