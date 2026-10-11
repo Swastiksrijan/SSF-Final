@@ -117,6 +117,15 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Organisation profile seed skipped:', e.message);
     }
+    // Member Register — authoritative, from data/membersRegister.js. Keeps the
+    // People master and the Contacts directory in step on every boot.
+    try {
+        const { seedMembers } = require('./services/ims/seed');
+        const m = await seedMembers();
+        if (m.members) console.log(`✅ Seeded ${m.members} member(s) from the member register`);
+    } catch (e) {
+        console.error('⚠️ Member register seed skipped:', e.message);
+    }
     // Derive the Notification & Action Centre alerts from real source records.
     // Idempotent (stable eventKey) and additive: it never edits or clears tasks.
     try {

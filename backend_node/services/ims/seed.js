@@ -1,6 +1,15 @@
 // Seed SSF-IMS with organisation profile, governance rules (from SSF bylaws),
-// roles and the current Managing Committee. Idempotent: safe to run repeatedly.
+// roles, the member register and the current Managing Committee.
+//
+// Members and committee are seeded from two dedicated data files
+// (data/membersRegister.js and data/managingCommittee.js) — one source of truth
+// each — so the registers can never drift apart or be overwritten by a stale
+// seed. Add a person to the relevant file and it appears on the next boot.
+const { Op } = require('sequelize');
 const { models } = require('../../models/ims');
+const { nextId } = require('./ids');
+const { MEMBERS_REGISTER } = require('../../data/membersRegister');
+const { TERM, MANAGING_COMMITTEE } = require('../../data/managingCommittee');
 
 const GOVERNANCE_RULES = [
   { key: 'gb_frequency', value: 'Yearly', ruleText: 'General Body meets at least once every year.', ruleTextHi: 'आम सभा वर्ष में कम से कम एक बार।' },
@@ -39,20 +48,8 @@ const ORG = {
   contactEmail: 'swastiksrijanfoundation@gmail.com', contactPhone: '9718346691',
 };
 
-const CURRENT_COMMITTEE = [
-  { personName: 'Ramesh Pandey', position: 'President' },
-  { personName: 'Preeti Shukla', position: 'Vice President' },
-  { personName: 'Amit Kumar Pandey', position: 'Secretary' },
-  { personName: 'Sanjay Kumar', position: 'Treasurer' },
-  { personName: 'Anita Verma', position: 'Joint Secretary' },
-  { personName: 'Member 1', position: 'Member' },
-  { personName: 'Member 2', position: 'Member' },
-  { personName: 'Member 3', position: 'Member' },
-  { personName: 'Member 4', position: 'Member' },
-];
-
 async function seedGovernance() {
-  const out = { rules: 0, roles: 0, org: false, committee: false };
+  const out = { rules: 0, roles: 0, org: false, committee: false, committeeMembers: 0 };
   for (const r of GOVERNANCE_RULES) {
     const [, created] = await models.ImsGovernanceRule.findOrCreate({
       where: { key: r.key },
@@ -69,34 +66,124 @@ async function seedGovernance() {
   const orgCount = await models.ImsOrganisation.count();
   if (!orgCount) { await models.ImsOrganisation.create(ORG); out.org = true; }
 
-  const committeeCount = await models.ImsCommittee.count();
-  if (!committeeCount) {
-    const committee = await models.ImsCommittee.create({
+  await seedCommittee(out);
+  return out;
+}
+
+// Build (or repair) the current Managing Committee so it always matches
+// data/managingCommittee.js. Idempotent and self-healing: a person who left the
+// committee is marked 'former' (history kept), never deleted.
+async function seedCommittee(out) {
+  let committee = await models.ImsCommittee.findOne({ where: { isCurrent: true } });
+  if (!committee) {
+    committee = await models.ImsCommittee.create({
       recordId: 'CMT-' + new Date().getFullYear() + '-0001',
-      name: 'Current Managing Committee',
-      isCurrent: true, termStart: '2024-04-01', termEnd: '2027-03-31',
+      name: TERM.name, isCurrent: true, formedOn: TERM.formedOn,
+      termStart: TERM.termStart, termEnd: TERM.termEnd,
     });
     out.committee = true;
-    let seq = 0;
-    for (const m of CURRENT_COMMITTEE) {
-      let person = await models.ImsPerson.findOne({ where: { fullName: m.personName } });
-      if (!person) {
-        seq++;
-        person = await models.ImsPerson.create({
-          recordId: 'PERSON-' + String(seq).padStart(6, '0'),
-          fullName: m.personName, status: 'active',
-        });
-      }
-      await models.ImsCommitteeMember.create({
-        committeeId: committee.id, personId: person.id, position: m.position, status: 'active',
-      });
-      await models.ImsPersonRole.findOrCreate({
-        where: { personId: person.id, roleCode: 'committee' },
-        defaults: { personId: person.id, roleCode: 'committee', refType: 'committee', refId: committee.id, status: 'active' },
-      });
+  }
+  for (const m of MANAGING_COMMITTEE) {
+    const person = await ensurePerson(m);
+    const [member, created] = await models.ImsCommitteeMember.findOrCreate({
+      where: { committeeId: committee.id, personId: person.id },
+      defaults: { position: m.position, responsibility: m.responsibility || null, status: 'active', fromDate: TERM.termStart },
+    });
+    if (created) out.committeeMembers++;
+    else {
+      const patch = {};
+      if (member.position !== m.position) patch.position = m.position;
+      if ((member.responsibility || null) !== (m.responsibility || null)) patch.responsibility = m.responsibility || null;
+      if (member.status !== 'active') patch.status = 'active';
+      if (Object.keys(patch).length) await member.update(patch);
     }
+    await models.ImsPersonRole.findOrCreate({
+      where: { personId: person.id, roleCode: 'committee' },
+      defaults: { personId: person.id, roleCode: 'committee', refType: 'committee', refId: committee.id, status: 'active' },
+    });
+  }
+  // Anyone on the committee who is no longer listed becomes 'former'.
+  const currentIds = [];
+  for (const m of MANAGING_COMMITTEE) {
+    const p = await models.ImsPerson.findOne({ where: { fullName: m.name } });
+    if (p) currentIds.push(p.id);
+  }
+  await models.ImsCommitteeMember.update(
+    { status: 'former', toDate: TERM.termEnd },
+    { where: { committeeId: committee.id, personId: { [Op.notIn]: currentIds.length ? currentIds : [-1] } } },
+  );
+  out.committee = true;
+}
+
+// Create or update a Person from a member/committee row. Idempotent: an existing
+// person (matched by name) is refreshed, never duplicated.
+async function ensurePerson(src) {
+  const row = {
+    fullName: src.name,
+    gender: src.gender || undefined,
+    mobile: src.mobile || undefined,
+    email: src.email || undefined,
+    city: src.city || undefined,
+    state: src.state || undefined,
+    pinCode: src.pinCode || undefined,
+    status: 'active',
+  };
+  const existing = await models.ImsPerson.findOne({ where: { fullName: src.name } });
+  if (existing) {
+    const patch = {};
+    for (const [k, v] of Object.entries(row)) {
+      if (v && existing[k] !== v) patch[k] = v;
+    }
+    if (Object.keys(patch).length) await existing.update(patch);
+    return existing;
+  }
+  const recordId = await nextId('PERSON', null, models.ImsPerson);
+  return models.ImsPerson.create({
+    recordId, ...row,
+    createdBy: 'register-seed', createdByName: 'Register Seed',
+  });
+}
+
+// Seed the Member Register from data/membersRegister.js. Idempotent: the
+// membership is keyed by the person, so re-running never duplicates a member.
+async function seedMembers() {
+  const out = { members: 0 };
+  // Clean up placeholder people left behind by older seeds (e.g. "Member 1"),
+  // which are not real people and must never appear in Contacts.
+  try {
+    const archived = await models.ImsPerson.update(
+      { status: 'archived' },
+      { where: { fullName: { [Op.regexp]: '^Member [0-9]+$' } } },
+    );
+    out.placeholdersArchived = Array.isArray(archived) ? archived[0] : archived;
+  } catch { /* regexp unsupported: skip, nothing breaks */ }
+  for (const m of MEMBERS_REGISTER) {
+    const person = await ensurePerson(m);
+    const [member, created] = await models.ImsMembership.findOrCreate({
+      where: { personId: person.id },
+      defaults: {
+        recordId: await nextId('MEM', undefined, models.ImsMembership),
+        personId: person.id, memberNo: m.memberId,
+        category: m.memberType || 'Ordinary',
+        admissionDate: m.joiningDate || undefined,
+        applicationStatus: 'approved', approvedBy: 'Register Seed',
+        feeFrequency: 'annual',
+        createdBy: 'register-seed', createdByName: 'Register Seed',
+      },
+    });
+    if (created) out.members++;
+    else {
+      const patch = {};
+      if (member.memberNo !== m.memberId) patch.memberNo = m.memberId;
+      if ((member.category || null) !== (m.memberType || null)) patch.category = m.memberType;
+      if (Object.keys(patch).length) await member.update(patch);
+    }
+    await models.ImsPersonRole.findOrCreate({
+      where: { personId: person.id, roleCode: 'member' },
+      defaults: { personId: person.id, roleCode: 'member', refType: 'members', refId: member.id, status: 'active' },
+    });
   }
   return out;
 }
 
-module.exports = { seedGovernance, GOVERNANCE_RULES, ROLES };
+module.exports = { seedGovernance, seedMembers, GOVERNANCE_RULES, ROLES };
