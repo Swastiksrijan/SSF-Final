@@ -31,12 +31,12 @@ async function findPerson(v) {
   return null;
 }
 
-async function seedVolunteers(req) {
+async function importVolunteerRows(rows, req) {
   const created = [];
   const skipped = [];
   let personsCreated = 0;
 
-  for (const v of VOLUNTEER_IMPORT) {
+  for (const v of rows) {
     const fullName = clean(v.fullName) || clean(v.email) || 'Volunteer';
     let person = await findPerson(v);
     if (!person) {
@@ -88,7 +88,7 @@ async function seedVolunteers(req) {
   }
 
   return {
-    total: VOLUNTEER_IMPORT.length,
+    total: rows.length,
     personsCreated,
     volunteersCreated: created.length,
     skipped: skipped.length,
@@ -96,4 +96,9 @@ async function seedVolunteers(req) {
   };
 }
 
-module.exports = { seedVolunteers };
+// Import the built-in Google-Form responses (the original source list).
+async function seedVolunteers(req) {
+  return importVolunteerRows(VOLUNTEER_IMPORT, req);
+}
+
+module.exports = { seedVolunteers, importVolunteerRows };

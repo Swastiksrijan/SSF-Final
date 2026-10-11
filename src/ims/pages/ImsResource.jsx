@@ -6,6 +6,7 @@ import { Card, PageHeader, Badge, Empty, Spinner, Button, FormDrawer } from '../
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { schemaFor, PRIMARY_FIELD } from '../schemas';
+import { downloadVolunteerTemplate, parseVolunteerWorkbook } from '../excel';
 
 export default function ImsResource() {
   const { resource } = useParams({ from: '/ims/r/$resource' });
@@ -26,7 +27,9 @@ export default function ImsResource() {
   const [history, setHistory] = useState(null); // { recordId, history }
   const [err, setErr] = useState('');
   const [importing, setImporting] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [notice, setNotice] = useState('');
+  const fileRef = useRef(null);
 
   const load = useCallback(async () => {
     setRows(null);
@@ -127,6 +130,20 @@ export default function ImsResource() {
     } catch (e) { setErr(e.message); } finally { setImporting(false); }
   };
 
+  const onPickFile = async (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (fileRef.current) fileRef.current.value = '';
+    if (!file) return;
+    setUploading(true); setErr(''); setNotice('');
+    try {
+      const parsed = await parseVolunteerWorkbook(file);
+      if (!parsed.length) { setErr(t('volunteer_import_empty')); return; }
+      const r = await ims.volunteerBulkImport(parsed);
+      setNotice(`${t('volunteer_imported_ok')}: ${r.volunteersCreated} / ${r.total}${r.skipped ? ` • ${r.skipped} ${t('skipped')}` : ''}`);
+      await load();
+    } catch (err2) { setErr(err2.message); } finally { setUploading(false); }
+  };
+
   return (
     <ImsLayout active={resource}>
       <PageHeader
@@ -141,9 +158,18 @@ export default function ImsResource() {
           </div>
           <Button icon="Plus" onClick={openNew}>{t('new_record')}</Button>
           {resource === 'volunteers' && (
-            <Button icon="Upload" variant="ghost" onClick={importForm} disabled={importing}>
-              {importing ? '…' : t('import_form_responses')}
-            </Button>
+            <>
+              <input ref={fileRef} type="file" accept=".xlsx" className="hidden" onChange={onPickFile} />
+              <Button icon="FileDown" variant="ghost" onClick={() => downloadVolunteerTemplate()}>
+                {t('download_template')}
+              </Button>
+              <Button icon="Upload" variant="ghost" onClick={() => fileRef.current && fileRef.current.click()} disabled={uploading}>
+                {uploading ? '…' : t('import_from_excel')}
+              </Button>
+              <Button icon="FormInput" variant="ghost" onClick={importForm} disabled={importing}>
+                {importing ? '…' : t('import_form_responses')}
+              </Button>
+            </>
           )}
         </>}
       />

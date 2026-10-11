@@ -75,13 +75,15 @@ export default function ImsVolunteerNetwork() {
 
       {data && (
         <>
-          <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-6">
-            <Metric icon="MapPin" en="States" hi="राज्य" value={s.states} tone="text-purple-600" />
+          <div className="mb-6 grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-4">
+            <Metric icon="HandHeart" en="Volunteers" hi="स्वयंसेवक" value={s.volunteers} tone="text-[#FF6600]" />
+            <Metric icon="MapPin" en="States covered" hi="राज्य" value={s.states} tone="text-purple-600" />
             <Metric icon="Landmark" en="Districts" hi="जिले" value={s.districts} />
             <Metric icon="Flag" en="Chapters" hi="अध्याय" value={s.chapters} />
             <Metric icon="Users" en="Members" hi="सदस्य" value={s.members} />
-            <Metric icon="UserCog" en="Leaders" hi="नेतृत्व" value={s.leaders} tone="text-[#FF6600]" />
-            <Metric icon="CheckCircle2" en="Tasks done" hi="पूर्ण कार्य" value={s.tasksDone} tone="text-emerald-600" />
+            <Metric icon="UserCog" en="Leaders" hi="नेतृत्व" value={s.leaders} />
+            <Metric icon="Truck" en="Field volunteers" hi="क्षेत्रीय स्वयंसेवक" value={s.fieldVolunteers} />
+            <Metric icon="Crown" en="Leadership" hi="नेतृत्व" value={s.leadershipVolunteers} />
           </div>
 
           <div className="mb-6 grid gap-3 md:grid-cols-3">
@@ -99,10 +101,15 @@ export default function ImsVolunteerNetwork() {
             </Card>
           </div>
 
-          {/* Chapters */}
+          {/* Chapters — falls back to the real state-wise volunteer spread when
+              no formal chapter structure has been created yet. */}
           <h2 className="mb-3 text-sm font-black uppercase tracking-wider text-slate-500">{hi ? 'अध्याय (राज्य → जिला → ब्लॉक)' : 'Chapters (State → District → Block)'}</h2>
           <Card className="mb-6 overflow-hidden">
-            {data.perChapter.length === 0 && <div className="p-6 text-center text-sm text-slate-400">{hi ? 'अभी कोई अध्याय दर्ज नहीं — “अध्याय” खोलकर जोड़ें।' : 'No chapters yet — open “Chapters” to add one.'}</div>}
+            {data.perChapter.length === 0 && (
+              <div className="border-b border-slate-100 bg-amber-50/60 px-4 py-2 text-[11px] font-semibold text-amber-700">
+                {hi ? 'अध्याय अभी दर्ज नहीं — नीचे राज्य अनुसार स्वयंसेवक वितरण दिख रहा है।' : 'No chapters recorded yet — showing the state-wise volunteer spread instead.'}
+              </div>
+            )}
             {data.perChapter.map((c) => (
               <div key={c.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-4 py-3 last:border-0">
                 <div className="min-w-0">
@@ -122,6 +129,14 @@ export default function ImsVolunteerNetwork() {
                 </div>
               </div>
             ))}
+            {data.perChapter.length === 0 && (data.volunteersByState || []).map((v) => (
+              <div key={v.state} className="flex items-center justify-between gap-2 border-b border-slate-100 px-4 py-2.5 last:border-0">
+                <span className="flex items-center gap-2 text-sm font-semibold text-[#002344]">
+                  <Icons.MapPin size={14} className="text-slate-400" /> {v.state}
+                </span>
+                <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-600">{v.count} {hi ? 'स्वयंसेवक' : 'volunteers'}</span>
+              </div>
+            ))}
           </Card>
 
           <div className="grid gap-6 lg:grid-cols-2">
@@ -129,7 +144,7 @@ export default function ImsVolunteerNetwork() {
             <div>
               <h2 className="mb-3 text-sm font-black uppercase tracking-wider text-slate-500">{hi ? 'नेतृत्व' : 'Leadership ladder'}</h2>
               <Card className="divide-y divide-slate-100">
-                {data.leaders.length === 0 && <div className="p-6 text-center text-sm text-slate-400">—</div>}
+                {data.leaders.length === 0 && <div className="p-5 text-center text-sm text-slate-400">{hi ? 'अभी नेतृत्व दर्ज नहीं — बाद में भरा जाएगा (PENDING)।' : 'No leadership recorded yet — to be filled later (pending).'}</div>}
                 {data.leaders.map((l) => (
                   <div key={l.id} className="flex items-center justify-between gap-2 px-4 py-2.5">
                     <div className="min-w-0">
@@ -146,7 +161,7 @@ export default function ImsVolunteerNetwork() {
             <div>
               <h2 className="mb-3 text-sm font-black uppercase tracking-wider text-slate-500">{hi ? 'निधि — अध्याय अनुसार' : 'Funds by chapter'}</h2>
               <Card className="divide-y divide-slate-100">
-                {data.fundsByChapter.length === 0 && <div className="p-6 text-center text-sm text-slate-400">—</div>}
+                {data.fundsByChapter.length === 0 && <div className="p-5 text-center text-sm text-slate-400">{hi ? 'अभी निधि दर्ज नहीं — बाद में भरा जाएगा (PENDING)।' : 'No funds recorded yet — to be filled later (pending).'}</div>}
                 {data.fundsByChapter.map((f) => (
                   <div key={f.chapterId} className="flex items-center justify-between gap-2 px-4 py-2.5">
                     <span className="truncate text-sm text-slate-600">{f.chapter}</span>
@@ -160,7 +175,7 @@ export default function ImsVolunteerNetwork() {
           {/* Open tasks */}
           <h2 className="mb-3 mt-6 text-sm font-black uppercase tracking-wider text-slate-500">{hi ? 'खुले कार्य' : 'Open tasks'}</h2>
           <Card className="overflow-hidden">
-            {data.openTasks.length === 0 && <div className="p-6 text-center text-sm text-slate-400">{hi ? 'कोई खुला कार्य नहीं।' : 'No open tasks.'}</div>}
+            {data.openTasks.length === 0 && <div className="p-5 text-center text-sm text-slate-400">{hi ? 'कोई खुला कार्य नहीं — बाद में भरा जाएगा (PENDING)।' : 'No open tasks — to be filled later (pending).'}</div>}
             {data.openTasks.map((t) => (
               <div key={t.id} className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 px-4 py-2.5 last:border-0">
                 <div className="min-w-0">

@@ -143,6 +143,19 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Member register seed skipped:', e.message);
     }
+    // Volunteer & Leadership register — from the Google-Form responses.
+    // Guarded by an empty-register check so the import runs once, then stays
+    // idempotent (re-running never duplicates a person or a volunteer).
+    try {
+        const { models } = require('./models/ims');
+        if (await models.ImsVolunteer.count() === 0) {
+            const { seedVolunteers } = require('./services/ims/volunteerSeed');
+            const v = await seedVolunteers({ imsRole: 'system' });
+            console.log(`✅ Seeded ${v.volunteersCreated} volunteer(s) from the leadership form`);
+        }
+    } catch (e) {
+        console.error('⚠️ Volunteer seed skipped:', e.message);
+    }
     // Derive the Notification & Action Centre alerts from real source records.
     // Idempotent (stable eventKey) and additive: it never edits or clears tasks.
     try {

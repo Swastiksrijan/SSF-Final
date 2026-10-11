@@ -287,7 +287,15 @@ router.get('/ims/finance/ledger/:accountId', wrap(async (req, r) => r.json(await
 // ---- COST CENTRES (classification & reporting dimension) -------------------
 const cc = require('../services/ims/costCentre');
 const { seedCostCentres } = require('../services/ims/costCentreSeed');
-const { seedVolunteers } = require('../services/ims/volunteerSeed');
+const { seedVolunteers, importVolunteerRows } = require('../services/ims/volunteerSeed');
+
+// Bulk import of volunteer rows (already parsed from a filled .xlsx template).
+// Additive + idempotent, exactly like the seed: nothing is deleted or changed.
+router.post('/ims/volunteers/import', wrap(async (req, r) => {
+  const rows = Array.isArray(req.body && req.body.rows) ? req.body.rows : [];
+  if (!rows.length) return r.status(400).json({ message: 'No rows to import' });
+  r.json(await importVolunteerRows(rows, req));
+}));
 
 router.post('/ims/volunteers/seed', wrap(async (req, r) => r.json(await seedVolunteers(req))));
 router.post('/ims/finance/cost-centres/seed', wrap(async (_req, r) => r.json(await seedCostCentres())));

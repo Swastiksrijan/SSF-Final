@@ -83,6 +83,10 @@ export const ims = {
 
   // ---- VOLUNTEERS: import from the Leadership / Volunteer form ----
   volunteerSeed: () => fetch(`${API_BASE_URL}/api/ims/volunteers/seed`, { method: 'POST', headers: headers() }).then(handle),
+  volunteerBulkImport: (rows = []) =>
+    fetch(`${API_BASE_URL}/api/ims/volunteers/import`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ rows }),
+    }).then(handle),
 
   // ---- ORGANISATION PROFILE: master identity (seeded) ----
   orgProfileSeed: () => fetch(`${API_BASE_URL}/api/ims/org-profile/seed`, { method: 'POST', headers: headers() }).then(handle),

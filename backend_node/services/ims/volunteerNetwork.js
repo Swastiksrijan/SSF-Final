@@ -12,12 +12,28 @@ const { Op } = require('sequelize');
 const num = (v) => Number(v || 0);
 
 async function volunteerDashboard() {
-  const [chapters, members, tasks, funds] = await Promise.all([
+  const [chapters, members, tasks, funds, volunteers] = await Promise.all([
     models.ImsChapter.findAll({ where: { status: { [Op.ne]: 'archived' } } }).catch(() => []),
     models.ImsChapterMember.findAll({ where: { status: { [Op.ne]: 'archived' }, isActive: true } }).catch(() => []),
     models.ImsVolunteerTask.findAll({ where: { status: { [Op.ne]: 'archived' } } }).catch(() => []),
     models.ImsVolunteerFund.findAll({ where: { status: { [Op.ne]: 'archived' } } }).catch(() => []),
+    models.ImsVolunteer.findAll({ where: { status: { [Op.ne]: 'archived' } } }).catch(() => []),
   ]);
+
+  // The real register the network is actually built on (from the leadership
+  // form), independent of the optional chapter structure.
+  const volunteerStates = new Set(volunteers.filter((v) => v.state).map((v) => v.state));
+  const volunteerCities = new Set(volunteers.filter((v) => v.city).map((v) => v.city));
+  const fieldVolunteers = volunteers.filter((v) => (v.volunteerType || 'field') === 'field').length;
+  const leadershipVolunteers = volunteers.filter((v) => v.volunteerType === 'leadership').length;
+  const stateMap = {};
+  for (const v of volunteers) {
+    const k = String(v.state || '').trim() || '—';
+    stateMap[k] = (stateMap[k] || 0) + 1;
+  }
+  const volunteersByState = Object.entries(stateMap)
+    .map(([state, count]) => ({ state, count }))
+    .sort((a, b) => b.count - a.count);
 
   const byLevel = (lv) => chapters.filter((c) => c.level === lv);
   const states = new Set(chapters.filter((c) => c.state).map((c) => c.state));
@@ -84,10 +100,14 @@ async function volunteerDashboard() {
       stateChapters: byLevel('state').length,
       districtChapters: byLevel('district').length,
       blockChapters: byLevel('block').length,
-      states: states.size,
-      districts: districts.size,
+      states: Math.max(states.size, volunteerStates.size),
+      districts: Math.max(districts.size, volunteerCities.size),
       members: members.length,
       leaders: leaders.length,
+      volunteers: volunteers.length,
+      fieldVolunteers,
+      leadershipVolunteers,
+      volunteerStates: volunteerStates.size,
       tasks: tasks.length,
       tasksDone: done.length,
       tasksActive: active.length,
@@ -99,6 +119,7 @@ async function volunteerDashboard() {
     fundsByChapter,
     perChapter,
     leaders: leaders.slice(0, 60),
+    volunteersByState,
     openTasks,
   };
 }
