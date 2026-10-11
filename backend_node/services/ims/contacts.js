@@ -47,15 +47,32 @@ async function rolesByPerson() {
 }
 
 /**
+ * The public Member ID (e.g. SSF-MBR-00001) for each person, taken from the
+ * membership register. This is the identifier the Digital Office recognises,
+ * so the directory shows it instead of the internal PERSON-… record id.
+ */
+async function memberNoByPerson() {
+  const map = new Map();
+  try {
+    const rows = await models.ImsMembership.findAll({ attributes: ['personId', 'memberNo'] });
+    for (const r of rows) {
+      if (r.personId && r.memberNo && !map.has(r.personId)) map.set(r.personId, r.memberNo);
+    }
+  } catch { /* a missing table must never break the directory */ }
+  return map;
+}
+
+/**
  * Every person with email status. `onlyMissing` limits the list to people who
  * have no usable email — the working queue for filling addresses in.
  */
 async function listContactEmails({ onlyMissing = false, search = '' } = {}) {
-  const [people, roles] = await Promise.all([
+  const [people, roles, memberIds] = await Promise.all([
     // Archived people are kept in the database for history, but they are gone
     // from the directory — otherwise a "Remove" would leave the row visible.
     models.ImsPerson.findAll({ where: { status: { [Op.ne]: 'archived' } }, order: [['fullName', 'ASC']], limit: 5000 }),
     rolesByPerson(),
+    memberNoByPerson(),
   ]);
   const q = clean(search).toLowerCase();
   const records = [];
@@ -65,10 +82,12 @@ async function listContactEmails({ onlyMissing = false, search = '' } = {}) {
     if (onlyMissing && valid) continue;
     const name = p.fullName || p.recordId;
     const designation = (p.data && p.data.designation) || '';
-    if (q && !(`${name} ${p.recordId} ${email} ${p.mobile || ''} ${designation}`.toLowerCase().includes(q))) continue;
+    const memberId = memberIds.get(p.id) || '';
+    if (q && !(`${name} ${p.recordId} ${memberId} ${email} ${p.mobile || ''} ${designation}`.toLowerCase().includes(q))) continue;
     records.push({
       id: p.id,
       recordId: p.recordId,
+      memberId,
       fullName: name,
       mobile: p.mobile || '',
       altMobile: p.altMobile || '',

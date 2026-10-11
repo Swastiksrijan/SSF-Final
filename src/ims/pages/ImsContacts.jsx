@@ -251,7 +251,7 @@ export default function ImsContacts() {
                             </span>
                           )}
                         </div>
-                        <div className="font-mono text-[10px] text-slate-400">{r.recordId}</div>
+                        <div className="font-mono text-[10px] text-slate-400">{r.memberId || r.recordId}</div>
                       </td>
                       <td className="px-4 py-2">
                         <div className="flex flex-wrap gap-1">
