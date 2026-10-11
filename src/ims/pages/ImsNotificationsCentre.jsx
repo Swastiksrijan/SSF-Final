@@ -14,11 +14,11 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, SectionHero, StatStrip, Tabs, Empty, Spinner, Button, DetailModal } from '../ui';
+import { Card, StatStrip, Tabs, Empty, Spinner, Button, DetailModal } from '../ui';
 import { useLang } from '../LangContext';
-import { tBoth } from '../i18n';
 import { ims } from '../api';
 import { REFRESH_EVENT, CHANGED_EVENT } from '../NotificationsHeader';
+import { NotificationsModules } from '../SectionNav';
 
 const SEVERITY = {
   critical: 'border-l-[#DC2626] bg-rose-50/60',
@@ -197,28 +197,19 @@ export default function ImsNotificationsCentre() {
     { id: 'history', en: t('comm_notices'), hi: 'संचार एवं नोटिस', count: comms ? comms.length : undefined },
   ];
 
-  const hiTitle = tBoth('notifications')[1];
+  const kpis = [
+    { labelKey: 'total_alerts', value: stats.total ?? 0, icon: 'Bell', tone: 'navy' },
+    { labelKey: 'needs_attention', value: unread, icon: 'AlertTriangle', tone: 'amber' },
+    { labelKey: 'task_overdue', value: stats.overdue ?? 0, icon: 'AlertOctagon', tone: 'red' },
+    { labelKey: 'task_dueSoon', value: stats.dueSoon ?? 0, icon: 'Clock', tone: 'blue' },
+  ];
 
   return (
     <ImsLayout active="notification_centre">
-      <SectionHero
-        title={t('action_centre')}
-        hi={hiTitle}
-        eyebrow={`${t('app_name')} · ${t('centre_kicker')}`}
-        icon="Bell"
-        tone="navy"
-      >
-        <StatStrip
-          items={[
-            { labelKey: 'total_alerts', value: stats.total ?? 0, icon: 'Bell', tone: 'navy' },
-            { labelKey: 'needs_attention', value: unread, icon: 'AlertTriangle', tone: 'amber' },
-            { labelKey: 'task_overdue', value: stats.overdue ?? 0, icon: 'AlertOctagon', tone: 'red' },
-            { labelKey: 'task_dueSoon', value: stats.dueSoon ?? 0, icon: 'Clock', tone: 'blue' },
-          ]}
-        />
-      </SectionHero>
+      {/* Header (title + Refresh/Mark-all) is rendered by ImsLayout. */}
+      <NotificationsModules activeKey="notification_centre" />
+      <StatStrip items={kpis} />
 
-      {/* Live connectivity: proves the centre is working even with 0 alerts. */}
       <Card className="mb-5 p-4">
         <div className="mb-3 flex items-center gap-2">
           <span className="grid h-7 w-7 place-items-center rounded-lg bg-emerald-50 text-emerald-600"><Icons.Radio size={15} /></span>

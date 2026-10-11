@@ -258,7 +258,7 @@ export const SECTIONS = {
   },
 
   notifications: {
-    titleKey: 'notifications', icon: 'Bell', tone: 'amber', module: 'notifications',
+    titleKey: 'centre_kicker', icon: 'Bell', tone: 'navy', module: 'notifications',
     subgroups: [
       { labelKey: 'grp_notifications', items: [
         { key: 'notification_centre', icon: 'Bell', path: '/ims/notifications' },

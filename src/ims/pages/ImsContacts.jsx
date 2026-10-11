@@ -5,9 +5,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, PageHeader, StatStrip, Empty, Spinner, Button, FormDrawer } from '../ui';
+import { Card, StatStrip, Empty, Spinner, Button, FormDrawer } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
+import { NotificationsModules } from '../SectionNav';
 
 const CONTACT_FIELDS = [
   { name: 'fullName', l: ['Name', 'नाम'], required: true },
@@ -147,11 +148,17 @@ export default function ImsContacts() {
 
   return (
     <ImsLayout active="contacts">
-      <PageHeader
-        title={t('contacts_title')}
-        subtitle={t('contacts_subtitle')}
-        actions={(
-          <>
+      <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#002344] to-[#0b3a63] p-5 text-white shadow-[0_18px_40px_-22px_rgba(2,35,68,0.55)] sm:p-6">
+        <span className="pointer-events-none absolute -right-14 -top-16 h-48 w-48 rounded-full bg-white/10" />
+        <div className="relative flex flex-wrap items-center gap-4">
+          <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20">
+            <Icons.Contact size={24} />
+          </span>
+          <div className="min-w-0 flex-1">
+            <h1 className="text-xl font-black leading-tight tracking-tight sm:text-2xl">{t('contacts_title')}</h1>
+            <p className="mt-0.5 text-sm font-medium text-white/70">{t('contacts_subtitle')}</p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
             <Button variant="ghost" icon="RefreshCw" disabled={syncing} onClick={syncRegisters}>
               {syncing ? t('syncing') : t('sync_from_registers')}
             </Button>
@@ -159,9 +166,11 @@ export default function ImsContacts() {
             <Button icon="Save" disabled={saving || dirty === 0} onClick={saveAll}>
               {dirty ? `${t('save')} (${dirty})` : t('save')}
             </Button>
-          </>
-        )}
-      />
+          </div>
+        </div>
+      </div>
+
+      <NotificationsModules activeKey="contacts" />
 
       {data && (
         <StatStrip items={[

@@ -572,6 +572,7 @@ export const DICT = {
   action_centre: { en: 'Action Centre', hi: 'कार्य केंद्र' },
   centre_kicker: { en: 'Notifications & Action Centre', hi: 'सूचना एवं कार्य केंद्र' },
   centre_purpose: { en: 'What needs your attention, across every register', hi: 'हर रजिस्टर से, आपके ध्यान देने योग्य कार्य' },
+  open_module: { en: 'Open', hi: 'खोलें' },
   search: { en: 'Search', hi: 'खोजें' },
   email: { en: 'Email', hi: 'ईमेल' },
   mobile: { en: 'Mobile', hi: 'मोबाइल' },

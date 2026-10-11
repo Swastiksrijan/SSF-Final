@@ -10,7 +10,6 @@
 // the page through window events, so it stays correct no matter where the
 // layout renders it.
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import { useLang } from './LangContext';
 import { ims } from './api';
@@ -19,9 +18,7 @@ export const REFRESH_EVENT = 'ims-notifications-refresh';
 export const CHANGED_EVENT = 'ims-notifications-changed';
 
 export default function NotificationsHeader() {
-  const { t, lang } = useLang();
-  const navigate = useNavigate();
-  const hi = lang === 'hi';
+  const { t } = useLang();
   const [unread, setUnread] = useState(0);
   const [busy, setBusy] = useState(false);
 
@@ -54,40 +51,28 @@ export default function NotificationsHeader() {
     } catch { /* ignore */ } finally { setBusy(false); }
   };
 
-  const btn = 'inline-flex items-center gap-1.5 rounded-lg border border-slate-200 px-2.5 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-[#002344]/30 hover:text-[#002344] disabled:opacity-50';
-
   return (
-    <div className="sticky top-16 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
-      <div className="mx-auto flex max-w-[1600px] items-center gap-3 px-4 py-2 lg:px-8">
-        <button
-          type="button"
-          onClick={() => navigate({ to: '/ims' })}
-          title={hi ? 'डैशबोर्ड पर वापस' : 'Back to dashboard'}
-          className={btn + ' shrink-0'}
-        >
-          <Icons.ArrowLeft size={15} />
-          <span className="hidden sm:inline">{t('main_dashboard')}</span>
-        </button>
-
-        <span className="h-7 w-px shrink-0 bg-slate-200" />
-
-        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-[#002344] text-[#FFD166]">
-          <Icons.BellRing size={16} />
+    <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#002344] to-[#0b3a63] p-5 text-white shadow-[0_18px_40px_-22px_rgba(2,35,68,0.55)] sm:p-6">
+      <span className="pointer-events-none absolute -right-14 -top-16 h-48 w-48 rounded-full bg-white/10" />
+      <div className="relative flex flex-wrap items-center gap-4">
+        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20">
+          <Icons.BellRing size={24} />
         </span>
-        <span className="min-w-0 leading-tight">
-          <span className="block truncate text-sm font-bold text-[#002344]">{t('centre_kicker')}</span>
-          <span className="hidden truncate text-[11px] font-medium text-slate-400 sm:block">{t('centre_purpose')}</span>
-        </span>
-
-        <div className="ml-auto flex items-center gap-2">
-          <button type="button" onClick={refresh} disabled={busy} className={btn}>
-            <Icons.RefreshCw size={14} className={busy ? 'animate-spin' : ''} />
-            <span className="hidden sm:inline">{t('refresh')}</span>
+        <div className="min-w-0 flex-1">
+          <h1 className="text-xl font-black leading-tight tracking-tight sm:text-2xl">{t('centre_kicker')}</h1>
+          <p className="mt-0.5 text-sm font-medium text-white/70">{t('centre_purpose')}</p>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <button type="button" onClick={refresh} disabled={busy}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-3.5 py-2 text-sm font-semibold text-white ring-1 ring-white/20 transition hover:bg-white/20 disabled:opacity-50">
+            <Icons.RefreshCw size={15} className={busy ? 'animate-spin' : ''} />
+            {t('refresh')}
           </button>
-          <button type="button" onClick={markAll} disabled={busy || unread === 0} className={btn}>
-            <Icons.CheckCheck size={14} />
-            <span className="hidden sm:inline">{t('mark_all_read')}</span>
-            {unread > 0 && <span className="rounded-full bg-[#FF6600] px-1.5 text-[10px] font-black text-white">{unread}</span>}
+          <button type="button" onClick={markAll} disabled={busy || unread === 0}
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#FF6600] px-3.5 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-[#e65c00] disabled:opacity-50">
+            <Icons.CheckCheck size={15} />
+            {t('mark_all_read')}
+            {unread > 0 && <span className="rounded-full bg-white/25 px-1.5 text-[11px] font-black">{unread}</span>}
           </button>
         </div>
       </div>

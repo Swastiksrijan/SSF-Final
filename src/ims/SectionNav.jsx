@@ -84,6 +84,7 @@ export default function SectionNav({ active }) {
     ].join(' ');
 
   return (
+    <>
     <div className="sticky top-16 z-30 border-b border-slate-200 bg-white/95 backdrop-blur">
       <div className="mx-auto flex max-w-[1600px] items-center gap-3 px-4 lg:px-8">
         <button
@@ -146,6 +147,48 @@ export default function SectionNav({ active }) {
             </span>
           ))}
         </div>
+      </div>
+    </div>
+    {/* Notifications is a two-page section, so its modules get large dashboard
+        cards below the strip instead of cramped header tabs. */}
+    {sectionId === 'notifications' && <NotificationsModules activeKey={activeKey} />}
+    </>
+  );
+}
+
+// The two modules of the Notifications section shown as large two-column
+// dashboard cards. Shared so the same switcher appears on the centre page and
+// on the contacts page; the active module is highlighted and each card opens
+// only its own content.
+export function NotificationsModules({ activeKey }) {
+  const navigate = useNavigate();
+  const items = sectionGroups('notifications').flatMap((g) => g.items);
+  const go = (item) => {
+    if (item.planned) return;
+    if (item.path) navigate({ to: item.path });
+    else if (item.resource) navigate({ to: '/ims/r/$resource', params: { resource: item.resource } });
+  };
+  return (
+    <div className="border-b border-slate-200 bg-gradient-to-b from-slate-50 to-white">
+      <div className="mx-auto grid max-w-[1600px] gap-4 px-4 py-5 sm:grid-cols-2 lg:px-8">
+        {items.map((item) => {
+          const on = item.key === activeKey;
+          const I = Icons[item.icon] || Icons.Circle;
+          const [en, hiLabel] = tBoth(item.key);
+          return (
+            <button key={item.key} type="button" onClick={() => go(item)}
+              className={`group flex items-center gap-4 rounded-2xl border p-5 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-20px_rgba(2,35,68,0.5)] ${on ? 'border-[#002344]/30 bg-white shadow-[0_12px_30px_-18px_rgba(2,35,68,0.55)] ring-1 ring-[#002344]/10' : 'border-slate-200 bg-white hover:border-[#2563EB]/40'}`}>
+              <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl shadow-sm ring-1 ring-black/5 ${on ? 'bg-gradient-to-br from-[#002344] to-[#0b3a63] text-[#FFD166]' : 'bg-gradient-to-br from-[#1E3A8A] to-[#2563EB] text-white'}`}>
+                <I size={26} />
+              </span>
+              <span className="min-w-0 flex-1">
+                <span className="block truncate text-lg font-black text-[#002344]">{en}</span>
+                <span className="block truncate text-sm font-semibold text-slate-400">{hiLabel}</span>
+              </span>
+              <Icons.ArrowRight size={20} className={`shrink-0 transition-transform group-hover:translate-x-1 ${on ? 'text-[#FF6600]' : 'text-slate-300'}`} />
+            </button>
+          );
+        })}
       </div>
     </div>
   );
