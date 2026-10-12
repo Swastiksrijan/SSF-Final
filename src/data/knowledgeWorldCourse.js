@@ -137,8 +137,7 @@ export const knowledgeWorldToMasterCourse = (subject, course) => {
               { t: "p", x: tt.learn },
               { t: "ex", title: "Example / उदाहरण", x: tt.example },
               { t: "act", title: "Activity / गतिविधि", x: tt.activity },
-              { t: "note", k: "tip", title: "Quiz / अभ्यास", x: tt.quiz?.question, items: tt.quiz?.options },
-              { t: "note", k: "remember", title: "सही उत्तर", x: tt.quiz ? `${tt.quiz.options[tt.quiz.answer]} — ${tt.quiz.explain}` : "" },
+              { t: "quiz", title: "Quick Check / तुरंत जाँच", question: tt.quiz?.question, options: tt.quiz?.options || [], answer: tt.quiz?.answer, explain: tt.quiz?.explain || "" },
             ],
           };
         }),
