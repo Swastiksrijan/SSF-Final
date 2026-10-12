@@ -1,6 +1,23 @@
 import { SUBJECT_CONTENT } from "../src/data/learningHubSubjectContent.js";
 import { SUBJECT_CONTENT_EXTRA } from "../src/data/learningSubjectContentExtra.js";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA } from "../src/data/learningCurriculum.js";
+import { EDUCATION_COURSES } from "../src/data/educationCourse.js";
+import { KNOWLEDGE_WORLD_COURSES } from "../src/data/knowledgeWorldCourse.js";
+import { OFFICE_SKILLS_CONTENT } from "../src/data/officeSkillsCourse.js";
+import { ALL_STRUCTURED_COURSES } from "../src/data/coursesData.js";
+import { FLAGSHIP_COURSES } from "../src/data/learningHubCourseArchitecture.js";
+import { ENTREPRENEURSHIP_CONTENT } from "../src/data/entrepreneurshipContent.js";
+import { RESEARCH_CONTENT } from "../src/data/researchSkillsContent.js";
+import { MEDIA_CONTENT } from "../src/data/mediaLiteracyContent.js";
+import { ARTS_CONTENT } from "../src/data/artsCultureContent.js";
+import { PRACTICAL_CONTENT } from "../src/data/practicalLifeContent.js";
+import { AI_CONTENT } from "../src/data/aiTechContent.js";
+import { LIFESKILLS_CONTENT } from "../src/data/lifeSkillsContent.js";
+import { SPORTS_CONTENT } from "../src/data/sportsWellnessContent.js";
+import { MATH_CONTENT } from "../src/data/mathFinanceContent.js";
+import { LANGUAGES_CONTENT } from "../src/data/languagesContent.js";
+import { SCIENCE_CONTENT } from "../src/data/scienceContent.js";
+import { CORPORATE_CONTENT } from "../src/data/corporateMasteryContent.js";
 
 const registries = [
   ["SUBJECT_CONTENT", SUBJECT_CONTENT],
@@ -59,11 +76,46 @@ for (const category of categories) {
   }
 }
 const normalizeTitle = (title) => title.split(" / ")[0].trim().toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
-const normalizedKeys = new Set([...keysSeen.keys()].map(normalizeTitle));
-const missingExactRegistry = [...curriculumTitles].filter((title) => !normalizedKeys.has(normalizeTitle(title)));
+const providerMaps = [
+  ["SUBJECT_CONTENT", SUBJECT_CONTENT],
+  ["SUBJECT_CONTENT_EXTRA", SUBJECT_CONTENT_EXTRA],
+  ["EDUCATION_COURSES", EDUCATION_COURSES],
+  ["KNOWLEDGE_WORLD_COURSES", KNOWLEDGE_WORLD_COURSES],
+  ["OFFICE_SKILLS_CONTENT", OFFICE_SKILLS_CONTENT],
+  ["ENTREPRENEURSHIP_CONTENT", ENTREPRENEURSHIP_CONTENT],
+  ["RESEARCH_CONTENT", RESEARCH_CONTENT],
+  ["MEDIA_CONTENT", MEDIA_CONTENT],
+  ["ARTS_CONTENT", ARTS_CONTENT],
+  ["PRACTICAL_CONTENT", PRACTICAL_CONTENT],
+  ["AI_CONTENT", AI_CONTENT],
+  ["LIFESKILLS_CONTENT", LIFESKILLS_CONTENT],
+  ["SPORTS_CONTENT", SPORTS_CONTENT],
+  ["MATH_CONTENT", MATH_CONTENT],
+  ["LANGUAGES_CONTENT", LANGUAGES_CONTENT],
+  ["SCIENCE_CONTENT", SCIENCE_CONTENT],
+  ["CORPORATE_CONTENT", CORPORATE_CONTENT],
+];
+const providerByTitle = new Map();
+for (const [provider, map] of providerMaps) {
+  for (const title of Object.keys(map || {})) {
+    const key = normalizeTitle(title);
+    if (!providerByTitle.has(key)) providerByTitle.set(key, provider);
+  }
+}
+for (const course of [...(ALL_STRUCTURED_COURSES || []), ...(FLAGSHIP_COURSES || [])]) {
+  const title = course?.title?.en || course?.title || course?.id;
+  if (title) providerByTitle.set(normalizeTitle(String(title)), "STRUCTURED_COURSE");
+}
+for (const title of ["Primary Education", "Time & Calendar", "Fruits", "Vocabulary Building", "Trees & Forests"]) {
+  if (!providerByTitle.has(normalizeTitle(title))) providerByTitle.set(normalizeTitle(title), "DEDICATED_COURSE_RENDERER");
+}
+const missingExactRegistry = [...curriculumTitles].filter((title) => !keysSeen.has(title) && !keysSeen.has(title.split(" / ")[0]));
+const fallbackTitles = [...curriculumTitles].filter((title) => !providerByTitle.has(normalizeTitle(title)));
 
 console.log(`Learning Hub content audit: ${entryCount} registry entries, ${questionCount} quiz questions checked, ${curriculumTitles.size} curriculum titles detected.`);
-console.log(`Exact registry keys missing for ${missingExactRegistry.length} curriculum titles. These may be supplied by dedicated course providers; this is a coverage-review list, not an assertion that they are broken.`);
+console.log(`Titles without an exact SUBJECT_CONTENT registry entry: ${missingExactRegistry.length} (some are served by dedicated course providers).`);
+console.log(`Titles not matched to a dedicated content provider by this static audit: ${fallbackTitles.length}. Review these before claiming full subject-specific coverage.`);
+if (fallbackTitles.length) console.warn("Provider coverage review: " + fallbackTitles.join("; "));
 if (warnings.length) console.warn(warnings.join("\n"));
 if (errors.length) {
   console.error(`Content audit failed with ${errors.length} issue(s):\n` + errors.join("\n"));
