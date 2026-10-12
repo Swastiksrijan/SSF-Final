@@ -2968,9 +2968,12 @@ function LearningSubject({ subject, onBack }) {
                     {module.questions.map((q, qi) => <div key={q.q || q.question || qi} className="rounded-lg bg-zinc-50 p-3">
                       <div className="text-sm font-bold text-zinc-800">{qi + 1}. {q.q || q.question || q.prompt}</div>
                       <div className="mt-2 space-y-2">{q.options.map((option, oi) => <label key={oi} className="flex cursor-pointer items-start gap-2 text-sm leading-5 text-zinc-700">
-                        <input type="radio" name={"module-" + module.id + "-q-" + qi} checked={selectedAnswers[qi] === oi} onChange={() => setModuleAnswers(current => ({...current, [module.id]: {...(current[module.id] || {}), [qi]: oi}}))}/>
+                        <input type="radio" name={"module-" + module.id + "-q-" + qi} checked={selectedAnswers[qi] === oi} onChange={() => { setModuleAnswers(current => ({...current, [module.id]: {...(current[module.id] || {}), [qi]: oi}})); setModuleResults(current => { const updated = {...current}; delete updated[module.id]; try { localStorage.setItem(progressKey + "-assessments", JSON.stringify(updated)); } catch {} return updated; }); }}/>
                         <span>{option}</span>
                       </label>)}</div>
+                      {result && <div className={"mt-2 rounded-lg p-2 text-xs font-bold " + (selectedAnswers[qi] === q.answer ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800")}>
+                        {selectedAnswers[qi] === q.answer ? "✓ सही उत्तर / Correct" : "गलत उत्तर / Incorrect"} · सही उत्तर: {q.options[q.answer]}{q.explain || q.explanation ? " — " + (q.explain || q.explanation) : ""}
+                      </div>}
                     </div>)}
                   </div>
                   <button type="button" onClick={() => submitModuleAssessment(module.id, module.questions)} disabled={!module.questions.length || Object.keys(selectedAnswers).length < module.questions.length} className="mt-3 w-full rounded-xl bg-[#0f4c81] px-3 py-2.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Submit Module Assessment / जमा करें</button>
