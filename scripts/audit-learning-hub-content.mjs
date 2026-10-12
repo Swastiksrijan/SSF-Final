@@ -30,7 +30,7 @@ import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../src/data/learn
 import { ENGLISH_FROM_BASICS_ASSESSMENTS } from "../src/data/englishFromBasicsContent.js";
 import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../src/data/coursesData.js";
 import certificateValidation from "../backend_node/utils/learningCertificateValidation.js";
-import { buildAuthoredCourseProject } from "../src/data/authoredCourseProject.js";
+import { buildAuthoredCourseProject, ensureAuthoredCourseDepth } from "../src/data/authoredCourseProject.js";
 
 const registries = [
   ["SUBJECT_CONTENT", SUBJECT_CONTENT],
@@ -208,7 +208,8 @@ let authoredTopicCount = 0;
 for (const [mapName, map] of authoredMaps) {
   for (const [title, course] of Object.entries(map || {})) {
     authoredCourseCount += 1;
-    const modules = Array.isArray(course?.modules) ? course.modules : [];
+    const preparedCourse = ensureAuthoredCourseDepth({ en: title, hi: "" }, course);
+    const modules = Array.isArray(preparedCourse?.modules) ? preparedCourse.modules : [];
     if (!modules.length) errors.push(`${mapName}["${title}"]: no authored modules.`);
     for (const [mi, module] of modules.entries()) {
       const topics = Array.isArray(module?.topics) ? module.topics : [];
@@ -233,7 +234,7 @@ for (const [mapName, map] of authoredMaps) {
         }
       }
     }
-    for (const [qi, item] of (Array.isArray(course?.mastery) ? course.mastery : []).entries()) {
+    for (const [qi, item] of (Array.isArray(preparedCourse?.mastery) ? preparedCourse.mastery : []).entries()) {
       const tuple = Array.isArray(item);
       const prompt = tuple ? item[0] : (item?.question || item?.q || item?.prompt);
       const options = tuple ? item[1] : item?.options;
@@ -245,11 +246,11 @@ for (const [mapName, map] of authoredMaps) {
     }
     const authoredTopics = modules.reduce((n, module) => n + (module?.topics?.length || 0), 0);
     if (modules.length < 3 || authoredTopics < 5) warnings.push(`${mapName}["${title}"]: fewer than three modules or five topics.`);
-    const project = buildAuthoredCourseProject({ en: title, hi: "", intro: course?.tagline }, course);
+    const project = buildAuthoredCourseProject({ en: title, hi: "", intro: preparedCourse?.tagline }, preparedCourse);
     if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) {
       errors.push(`${mapName}["${title}"]: no usable subject-specific capstone project.`);
     }
-    const masteryQuestions = Array.isArray(course?.mastery) ? course.mastery.length : 0;
+    const masteryQuestions = Array.isArray(preparedCourse?.mastery) ? preparedCourse.mastery.length : 0;
     const topicQuestions = modules.reduce((n, module) => n + (module?.topics?.length || 0), 0);
     if (masteryQuestions + topicQuestions < 5) warnings.push(`${mapName}["${title}"]: fewer than five potential final assessment questions.`);
   }
