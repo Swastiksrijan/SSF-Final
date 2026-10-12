@@ -35,6 +35,7 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
   }, [subject.id]);
 
   const title = courseTitle || subject.title;
+  const certificateEligible = progress >= 100 && finalResult?.passed === true;
   const whatsappHref = useMemo(() => {
     const text = "Namaste SSF Learning Hub. Certificate request: " + subject.en + " (" + title + "). Learner: " + (user?.fullName || "") + ", email: " + (user?.email || "") + ", progress: " + progress + "%.";
     return "https://wa.me/919718346691?text=" + encodeURIComponent(text);
@@ -45,6 +46,11 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
   }, [subject, title, user, progress]);
 
   const submitRequest = async () => {
+    if (!certificateEligible) {
+      setStatus("error");
+      setMessage("पहले 100% पाठ पूरा करें और final assessment पास करें। / Complete 100% of the course and pass the final assessment first.");
+      return;
+    }
     if (!user) { setAuthOpen(true); return; }
     setStatus("submitting"); setMessage("");
     try {
@@ -87,8 +93,11 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
     </div>
 
     <p className="mt-4 text-sm leading-7 text-zinc-600 md:text-base">
-      Certificate पाने के लिए नीचे <strong>Join SSF</strong> / <strong>Login</strong> करें। आपकी details admin panel में जाएँगी, admin verify करके certificate जारी करेगा।
+      प्रमाणपत्र अनुरोध तभी खुलेगा जब पाठ्यक्रम का 100% पूरा हो और अंतिम आकलन पास हो। इसके बाद <strong>Join SSF</strong> / <strong>Login</strong> करें; SSF admin जाँच के बाद प्रमाणपत्र जारी करेगा।
     </p>
+    <div className={"mt-3 rounded-xl border p-3 text-sm font-bold " + (certificateEligible ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-800")}>
+      {certificateEligible ? "✓ पात्र / Eligible: course completion 100% और final assessment passed." : "अभी पात्र नहीं / Not yet eligible: " + progress + "% पूरा; final assessment " + (finalResult?.passed ? "पास" : "पास नहीं हुआ") + "।"}
+    </div>
 
     {user ? <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
       <FaUserCircle className="text-2xl text-[#177245]" />
@@ -98,7 +107,7 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
 
     <div className="mt-5 flex flex-col gap-3 sm:flex-row">
       {user
-        ? <button type="button" disabled={status === "submitting"} onClick={submitRequest} className="flex-1 rounded-xl bg-[#177245] px-5 py-3 text-sm font-black text-white disabled:opacity-50">{status === "submitting" ? "Submitting..." : requested ? "Request Again / दोबारा अनुरोध" : "Request Certificate / प्रमाणपत्र का अनुरोध करें"}</button>
+        ? <button type="button" disabled={!certificateEligible || status === "submitting"} onClick={submitRequest} className="flex-1 rounded-xl bg-[#177245] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">{status === "submitting" ? "Submitting..." : requested ? "Request Again / दोबारा अनुरोध" : "Request Certificate / प्रमाणपत्र का अनुरोध करें"}</button>
         : <button type="button" onClick={() => setAuthOpen(true)} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 text-sm font-black text-white">Join SSF / Login to get Certificate</button>}
     </div>
 
