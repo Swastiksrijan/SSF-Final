@@ -154,9 +154,9 @@ export function ensureStructuredCourseDepth(subject, course) {
   const lastExample = Array.isArray(last.content?.examples) ? last.content.examples[0] : (last.content?.example || "");
   const lastPractice = (Array.isArray(last.content?.practice) ? last.content.practice[0] : last.content?.practice) || last.content?.practicalApplication || "Apply the lesson to a real task and review the result.";
   const generatedLessons = [];
-
-  while (countLessons() + generatedLessons.length < 5 || modules.length + (generatedLessons.length ? 1 : 0) < 3) {
-    const index = generatedLessons.length + 1;
+  const newModuleCount = Math.max(0, 3 - modules.length);
+  const generatedCount = Math.max(0, 5 - countLessons(), newModuleCount);
+  for (let index = 1; index <= generatedCount; index += 1) {
     generatedLessons.push({
       id: courseId + "-applied-lesson-" + index,
       title: { en: "Applied Practice & Review", hi: "व्यावहारिक अभ्यास और पुनरावृत्ति" },
@@ -178,16 +178,16 @@ export function ensureStructuredCourseDepth(subject, course) {
   }
 
   const newModules = [];
-  let nextLesson = 0;
-  while (modules.length + newModules.length < 3 || nextLesson < generatedLessons.length) {
-    const moduleIndex = newModules.length + 1;
-    const lesson = generatedLessons[nextLesson++];
+  for (let moduleIndex = 1; moduleIndex <= newModuleCount; moduleIndex += 1) {
     const moduleId = courseId + "-applied-practice-" + moduleIndex;
+    const lessons = moduleIndex === newModuleCount && generatedCount > newModuleCount
+      ? generatedLessons.slice(moduleIndex - 1)
+      : generatedLessons.slice(moduleIndex - 1, moduleIndex);
     newModules.push({
       id: moduleId,
       title: { en: "Applied Practice", hi: "व्यावहारिक अभ्यास" },
       summary: "वास्तविक task, परिणाम जाँच और सुधार / Real task, review and improvement.",
-      lessons: lesson ? [lesson] : [],
+      lessons,
       assessment: {
         questions: [{
           q: "After applying “" + lastTitle + "”, what should you do next?",
