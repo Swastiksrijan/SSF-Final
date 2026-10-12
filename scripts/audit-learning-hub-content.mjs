@@ -29,6 +29,7 @@ import { KW_PART_F } from "../src/data/knowledgeWorldCoursesF.js";
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../src/data/learningHubCourseArchitecture.js";
 import { ENGLISH_FROM_BASICS_ASSESSMENTS } from "../src/data/englishFromBasicsContent.js";
 import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../src/data/coursesData.js";
+import certificateValidation from "../backend_node/utils/learningCertificateValidation.js";
 import { buildAuthoredCourseProject } from "../src/data/authoredCourseProject.js";
 
 const registries = [
@@ -149,6 +150,7 @@ for (const [mapName, map] of compactCourseMaps) {
   }
 }
 
+const REQUIRED_MODULE_ASSESSMENT_IDS_BY_COURSE = certificateValidation.REQUIRED_MODULE_ASSESSMENT_IDS_BY_COURSE;
 let structuredCourseCount = 0;
 let structuredLessonCount = 0;
 let structuredModuleAssessmentCount = 0;
@@ -278,6 +280,16 @@ for (const category of categories) {
     if (Array.isArray(item) && typeof item[0] === "string") curriculumTitles.add(item[0]);
   }
 }
+for (const [courseId, requiredIds] of Object.entries(REQUIRED_MODULE_ASSESSMENT_IDS_BY_COURSE || {})) {
+  if (!ALL_STRUCTURED_COURSES?.[courseId]) errors.push(`Server certificate assessment map references unknown course "${courseId}".`);
+  for (const moduleId of requiredIds) {
+    const questions = COURSE_ASSESSMENTS?.[moduleId] || COURSE_ASSESSMENTS?.[courseId]?.[moduleId];
+    if (!Array.isArray(questions) || !questions.length) {
+      errors.push(`Server certificate assessment map references missing question bank "${courseId}/${moduleId}".`);
+    }
+  }
+}
+
 const placeholderPattern = /\b(?:coming soon|placeholder|lorem ipsum|detailed lessons will be added|content will be added|under construction|coming shortly)\b/i;
 function scanForPlaceholder(value, location) {
   if (typeof value === "string") {
