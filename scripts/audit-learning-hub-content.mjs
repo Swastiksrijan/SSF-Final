@@ -30,7 +30,7 @@ import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../src/data/learn
 import { ENGLISH_FROM_BASICS_ASSESSMENTS } from "../src/data/englishFromBasicsContent.js";
 import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../src/data/coursesData.js";
 import certificateValidation from "../backend_node/utils/learningCertificateValidation.js";
-import { buildAuthoredCourseProject, ensureAuthoredCourseDepth } from "../src/data/authoredCourseProject.js";
+import { buildAuthoredCourseProject, ensureAuthoredCourseDepth, ensureStructuredCourseDepth } from "../src/data/authoredCourseProject.js";
 
 const registries = [
   ["SUBJECT_CONTENT", SUBJECT_CONTENT],
@@ -157,7 +157,8 @@ let structuredModuleAssessmentCount = 0;
 for (const [courseId, course] of Object.entries(ALL_STRUCTURED_COURSES || {})) {
   structuredCourseCount += 1;
   if (!course?.title?.en || !course?.title?.hi) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"]: missing bilingual course title.`);
-  const modules = Array.isArray(course?.modules) ? course.modules : [];
+  const preparedCourse = ensureStructuredCourseDepth({ id: courseId, en: course?.title?.en, hi: course?.title?.hi }, course);
+  const modules = Array.isArray(preparedCourse?.modules) ? preparedCourse.modules : [];
   if (!modules.length) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"]: no modules.`);
   const bank = COURSE_ASSESSMENTS?.[courseId] || {};
   for (const [mi, module] of modules.entries()) {
@@ -184,7 +185,7 @@ for (const [courseId, course] of Object.entries(ALL_STRUCTURED_COURSES || {})) {
   }
   const lessonCount = modules.reduce((n, module) => n + (module?.lessons?.length || 0), 0);
   if (modules.length < 3 || lessonCount < 5) warnings.push(`ALL_STRUCTURED_COURSES["${courseId}"]: fewer than three modules or five lessons.`);
-  const project = buildAuthoredCourseProject({ en: course?.title?.en || courseId, hi: course?.title?.hi || "" }, course);
+  const project = buildAuthoredCourseProject({ en: course?.title?.en || courseId, hi: course?.title?.hi || "" }, preparedCourse);
   if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"]: no usable practical capstone project.`);
 }
 
@@ -284,7 +285,9 @@ for (const category of categories) {
 for (const [courseId, requiredIds] of Object.entries(REQUIRED_MODULE_ASSESSMENT_IDS_BY_COURSE || {})) {
   if (!ALL_STRUCTURED_COURSES?.[courseId]) errors.push(`Server certificate assessment map references unknown course "${courseId}".`);
   for (const moduleId of requiredIds) {
-    const questions = COURSE_ASSESSMENTS?.[moduleId] || COURSE_ASSESSMENTS?.[courseId]?.[moduleId];
+    const preparedCourse = ensureStructuredCourseDepth({ id: courseId }, ALL_STRUCTURED_COURSES?.[courseId]);
+    const preparedModule = preparedCourse?.modules?.find((module) => module.id === moduleId);
+    const questions = COURSE_ASSESSMENTS?.[moduleId] || COURSE_ASSESSMENTS?.[courseId]?.[moduleId] || preparedModule?.assessment?.questions;
     if (!Array.isArray(questions) || !questions.length) {
       errors.push(`Server certificate assessment map references missing question bank "${courseId}/${moduleId}".`);
     }
