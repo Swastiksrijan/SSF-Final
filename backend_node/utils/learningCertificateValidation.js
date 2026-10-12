@@ -6,9 +6,9 @@ const PASS_THRESHOLD = 0.7;
 const REQUIRED_MODULE_ASSESSMENT_IDS_BY_COURSE = Object.freeze({
   "computer-education": ["computer-foundation", "files-documents", "internet-communication", "cyber-safety", "practical-digital-work"],
   "english-communication": ["english-foundation", "english-grammar", "english-practical"],
-  "health-wellness": ["health-hygiene", "health-disease"],
-  "environment-sustainability": ["env-basics", "env-conservation"],
-  "career-workplace": ["career-foundations", "workplace-skills"],
+  "health-wellness": ["health-hygiene", "health-disease", "health-wellness-applied-practice-1"],
+  "environment-sustainability": ["env-basics", "env-conservation", "environment-sustainability-applied-practice-1"],
+  "career-workplace": ["career-foundations", "workplace-skills", "career-workplace-applied-practice-1"],
 });
 
 /**
