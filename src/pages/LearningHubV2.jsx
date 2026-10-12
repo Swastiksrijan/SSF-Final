@@ -2662,12 +2662,12 @@ function LearningSubject({ subject, onBack }) {
   const moduleAssessments = structuredCourse
     ? structuredCourse.modules.map((m) => ({
         ...m,
-        questions: buildStructuredAssessmentQuestions(
-          m,
-          FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] ||
-            (isEnglishFromBasics(subject) ? ENGLISH_FROM_BASICS_ASSESSMENTS?.[m.id] : COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id]) ||
-            []
-        )
+        questions: buildStructuredAssessmentQuestions(m, [
+          ...(FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] || []),
+          ...(isEnglishFromBasics(subject) ? (ENGLISH_FROM_BASICS_ASSESSMENTS?.[m.id] || []) : []),
+          ...(COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id] || []),
+          ...(COURSE_ASSESSMENTS?.[m.id] || [])
+        ])
       })).filter(m => m.questions.length)
     : [];
   const courseMeta = structuredCourse || (eduCourse ? {
