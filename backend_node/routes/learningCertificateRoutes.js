@@ -18,7 +18,7 @@ router.post('/learning-certificates/request', async (req,res) => {
     const member = await Member.findByPk(accountId);
     if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(learner.email).toLowerCase()) return res.status(401).json({ message:'Learning account could not be verified.' });
     if (Number(completionPercent) !== 100) return res.status(400).json({ message:'Course completion must be 100%.' });
-    if (!validateCertificateAssessments({ moduleAssessments, requiredModuleAssessmentIds, finalAssessment })) {
+    if (!validateCertificateAssessments({ courseId, moduleAssessments, requiredModuleAssessmentIds, finalAssessment })) {
       return res.status(400).json({ message:'A valid passing score (at least 70%) is required for the final assessment and every required module assessment.' });
     }
     const existing = await LearningCertificate.findOne({ where:{ accountId, courseId, status:['requested','approved','issued'] } });
