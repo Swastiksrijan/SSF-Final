@@ -2807,7 +2807,7 @@ function LearningSubject({ subject, onBack }) {
   const submitModuleAssessment = (moduleId, questions) => {
     const result = questions.reduce((n,q,i)=>n+(moduleAnswers[moduleId]?.[i]===q.answer?1:0),0);
     setModuleResults(r => {
-      const next = { ...r, [moduleId]: { score: result, total: questions.length, passed: result / questions.length >= 0.7 } };
+      const next = { ...r, [moduleId]: { score: result, total: questions.length, passed: result / questions.length >= 0.7, assessmentVersion: "v2" } };
       try { localStorage.setItem(progressKey + "-assessments", JSON.stringify(next)); } catch {}
       return next;
     });
