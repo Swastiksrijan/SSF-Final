@@ -39,8 +39,14 @@ Not every subject should use identical question formats: practical skills need p
 
 ## Work performed on this branch
 
-- Changed generic lesson navigation so it no longer marks a lesson complete automatically.
-- Added an explicit “Mark lesson complete / पाठ पूरा चिह्नित करें” control in the generic course lesson panel.
+- Changed generic lesson navigation so it no longer marks a lesson complete automatically and added an explicit completion control.
+- Made lesson-level quick checks interactive in the primary lesson board and generic lesson detail panel; feedback reveals the correct option and any supplied explanation after a learner answers.
+- Corrected final-assessment pass scoring to use a 70% threshold rather than requiring four correct answers regardless of test length.
+- Excluded malformed assessment questions rather than silently assigning option zero as a guessed answer.
+- Connected Master Course mastery-test results to persisted final results and certificate eligibility.
+- Added front-end certificate-request gating for 100% completion plus a passed final assessment; the existing API independently validates these requirements.
+- Added `npm run audit:learning-hub` to validate explicit registry sections and answer-key indices, and wired it into PR CI before the production build.
+- Removed the duplicate push trigger from the PR-build workflow to reduce redundant CI runs.
 - No changes to `main`; no live deployment performed by this audit branch.
 
 ## Remaining work
