@@ -27,6 +27,7 @@ import { KW_PART_D } from "../src/data/knowledgeWorldCoursesD.js";
 import { KW_PART_E } from "../src/data/knowledgeWorldCoursesE.js";
 import { KW_PART_F } from "../src/data/knowledgeWorldCoursesF.js";
 import { FLAGSHIP_COURSES } from "../src/data/learningHubCourseArchitecture.js";
+import { buildAuthoredCourseProject } from "../src/data/authoredCourseProject.js";
 
 const registries = [
   ["SUBJECT_CONTENT", SUBJECT_CONTENT],
@@ -172,8 +173,13 @@ for (const [mapName, map] of authoredMaps) {
         }
       }
     }
-    if (!Array.isArray(course?.mastery) || !course.mastery.length) warnings.push(`${mapName}["${title}"]: no final mastery question bank found.`);
-    if (!course?.project) warnings.push(`${mapName}["${title}"]: no practical project authored.`);
+    const project = buildAuthoredCourseProject({ en: title, hi: "", intro: course?.tagline }, course);
+    if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) {
+      errors.push(`${mapName}["${title}"]: no usable subject-specific capstone project.`);
+    }
+    const masteryQuestions = Array.isArray(course?.mastery) ? course.mastery.length : 0;
+    const topicQuestions = modules.reduce((n, module) => n + (module?.topics?.length || 0), 0);
+    if (masteryQuestions + topicQuestions < 5) warnings.push(`${mapName}["${title}"]: fewer than five potential final assessment questions.`);
   }
 }
 
