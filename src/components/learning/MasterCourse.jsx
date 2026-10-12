@@ -304,7 +304,7 @@ function MasteryTest({ mastery, onResult }) {
             const correct = submitted && j === q.answer;
             const wrong = submitted && chosen && j !== q.answer;
             return <label key={j} className={"flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 text-base transition md:text-lg " + (correct ? "border-emerald-300 bg-emerald-50 font-bold text-emerald-800" : wrong ? "border-rose-300 bg-rose-50 font-bold text-rose-700" : chosen ? "border-[#0b3a63] bg-[#eef4f9]" : "border-zinc-200 hover:bg-zinc-50")}>
-              <input type="radio" name={"mc-q-" + i} checked={chosen} onChange={() => !submitted && setAnswers(a => ({ ...a, [i]: j }))} />
+              <input type="radio" name={"mc-q-" + i} checked={chosen} onChange={() => { if (submitted && pct >= 80) return; setAnswers(a => ({ ...a, [i]: j })); if (submitted) setSubmitted(false); }} />
               <span>{o}</span>
             </label>;
           })}
