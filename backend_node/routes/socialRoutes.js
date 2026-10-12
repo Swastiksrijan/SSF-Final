@@ -9,7 +9,7 @@ const content = require('../services/social/content');
 const {
   planDue, planExtra, runPending, publishPost, enabledPlatforms, getConfig, setConfig,
   allEvents, eventsForDate, timezone, localParts, DEFAULT_TZ,
-  planCourseSeries, COURSES, COURSE_TIMES,
+  planCourseSeries, COURSES, COURSE_TIMES, repairCourseSeries,
 } = require('../services/social/publisher');
 const { postSvg } = require('../services/social/image');
 
@@ -47,6 +47,7 @@ function postView(row) {
   return {
     id: p.id, postRef: p.postRef, postDate: p.postDate, slot: p.slot, status: p.status,
     titleEn: p.titleEn, titleHi: p.titleHi, kind: p.kind, category: p.category, imageUrl: p.imageUrl,
+    courseKey: p.courseKey, chapterNo: p.chapterNo, chapterTotal: p.chapterTotal,
     subtitleEn: p.subtitleEn, subtitleHi: p.subtitleHi,
     exampleEn: p.exampleEn, exampleHi: p.exampleHi,
     takeawayEn: p.takeawayEn, takeawayHi: p.takeawayHi,
@@ -205,6 +206,13 @@ router.post('/social/courses/plan', requireAuth, wrap(async (_req, r) => {
 // Force-publish every pending course draft now (catch up a missed day).
 router.post('/social/courses/run', requireAuth, wrap(async (_req, r) => {
   r.json({ ok: true, ...(await runPending({ force: true, source: 'manual-course-force' })) });
+}));
+
+// One-time repair: remove duplicate course posts (an earlier bug minted a fresh
+// chapter draft every 5-minute tick) and rebuild the per-course pointer to match
+// what was actually kept. Idempotent — safe to run again.
+router.post('/social/courses/repair', requireAuth, wrap(async (_req, r) => {
+  r.json({ ok: true, ...(await repairCourseSeries()) });
 }));
 
 router.get('/social/config', requireAuth, wrap(async (_req, r) => r.json({

@@ -147,6 +147,12 @@ async function planCourseSeries(date) {
     const course = COURSES[i];
     const slot = `course-${course.key}`;
     const total = course.chapters.length;
+    // Idempotent per (day, course): if today's post for this course already
+    // exists (draft OR published), never create a second one. Without this a
+    // 5-minute tick would mint a fresh chapter draft every time and publish it
+    // (the chapter pointer only advances on publish), flooding the channels.
+    const already = await SocialPost.findOne({ where: { postDate, slot } });
+    if (already) continue;
     const prog = await SocialCourseProgress.findOne({ where: { courseKey: course.key } });
     const lastChapter = prog ? Number(prog.lastChapter || 0) : 0;
     if (lastChapter >= total) continue; // course finished — nothing left to post
@@ -382,9 +388,39 @@ function runPending(args) {
   return next;
 }
 
+// One-time repair: drop duplicate course posts (an earlier bug minted a fresh
+// chapter draft every 5-minute tick) and rebuild each course pointer from the
+// surviving published chapters. Idempotent — safe to run again.
+async function repairCourseSeries() {
+  const rows = await SocialPost.findAll({ where: { kind: 'course' }, order: [['id', 'ASC']] });
+  const groups = new Map();
+  for (const p of rows) {
+    const k = `${p.postDate}|${p.slot}`;
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k).push(p);
+  }
+  const keep = new Set();
+  const removed = [];
+  for (const list of groups.values()) {
+    // Keep the earliest chapter for the day (restores the 1-chapter-a-day
+    // sequence); drop the flood duplicates.
+    const sorted = [...list].sort((a, b) => (Number(a.data?.chapterNo) || 0) - (Number(b.data?.chapterNo) || 0) || a.id - b.id);
+    keep.add(sorted[0].id);
+    for (const p of sorted.slice(1)) { removed.push(p.postRef || p.id); await p.destroy(); }
+  }
+  for (const c of COURSES) {
+    const mine = rows.filter((p) => keep.has(p.id) && p.data && p.data.courseKey === c.key && p.status === 'published');
+    const maxCh = mine.reduce((mx, p) => Math.max(mx, Number(p.data.chapterNo) || 0), 0);
+    let prog = await SocialCourseProgress.findOne({ where: { courseKey: c.key } });
+    if (!prog) prog = await SocialCourseProgress.create({ courseKey: c.key, lastChapter: 0 });
+    await prog.update({ lastChapter: maxCh });
+  }
+  return { removed: removed.length, removedRefs: removed };
+}
+
 module.exports = {
   planDue, planExtra, runPending, publishPost, enabledPlatforms, getConfig, setConfig,
   DEFAULT_PLATFORMS, istParts, localParts, timezone, eventsForDate, allEvents, contentHash,
   DEFAULT_TZ, SocialEvent, SocialRunLog, dailyTime, recentTopicKeys, RECENT_TOPIC_DAYS,
-  planCourseSeries, courseTimes, COURSES, COURSE_TIMES, SocialCourseProgress,
+  planCourseSeries, courseTimes, COURSES, COURSE_TIMES, SocialCourseProgress, repairCourseSeries,
 };

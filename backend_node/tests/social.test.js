@@ -134,6 +134,12 @@ async function main() {
   const cday1 = new Date(2026, 7, 1); // 1 Aug 2026
   const cs1 = await publisher.planCourseSeries(cday1);
   ok('five course posts created per day', cs1.length === 5, `got=${cs1.length}`);
+  // Regression: repeated ticks must NOT create duplicates.
+  const csAgain = await publisher.planCourseSeries(cday1);
+  const csAgain2 = await publisher.planCourseSeries(cday1);
+  ok('repeated ticks create no duplicates', csAgain.length === 0 && csAgain2.length === 0, `got=${csAgain.length},${csAgain2.length}`);
+  const totalCourseRows = await SocialPost.count({ where: { kind: 'course' } });
+  ok('still exactly 5 course rows after 3 ticks', totalCourseRows === 5, `rows=${totalCourseRows}`);
   ok('all are course kind', cs1.every((p) => p.kind === 'course'));
   ok('first chapters are 1..5', cs1.every((p) => p.data.chapterNo === 1));
   ok('every course gets its own slot', new Set(cs1.map((p) => p.slot)).size === 5);
@@ -158,6 +164,26 @@ async function main() {
   const cs3 = await publisher.planCourseSeries(new Date(2026, 7, 3));
   ok('finished course is not posted again', !cs3.some((p) => p.data.courseKey === 'cyber-safety'), `keys=${cs3.map((p) => p.data.courseKey)}`);
   ok('remaining courses still continue', cs3.length === 4 && cs3.every((p) => p.data.chapterNo === 3));
+
+  // Repair: simulate the old duplicate-flood bug, then heal it.
+  console.log('\nCourse series repair:');
+  const floodDay = '2026-08-01';
+  await SocialPost.destroy({ where: { postDate: floodDay, kind: 'course' } });
+  for (let extra = 1; extra <= 2; extra += 1) {
+    await SocialPost.create({
+      postDate: floodDay, slot: 'course-cyber-safety', postRef: `DUP-${extra}`,
+      kind: 'course', status: 'published', data: { courseKey: 'cyber-safety', chapterNo: 1 + extra, chapterTotal: 20 },
+      titleEn: 'x', titleHi: 'x',
+    });
+  }
+  const beforeRepair = await SocialPost.count({ where: { postDate: floodDay, slot: 'course-cyber-safety' } });
+  const rep = await publisher.repairCourseSeries();
+  const afterRepair = await SocialPost.count({ where: { postDate: floodDay, slot: 'course-cyber-safety' } });
+  const cprog = await SocialCourseProgress.findOne({ where: { courseKey: 'cyber-safety' } });
+  ok('repair removed the duplicates', beforeRepair === 2 && afterRepair === 1, `before=${beforeRepair} after=${afterRepair}`);
+  ok('repair rebuilt the pointer to the highest kept chapter', Number(cprog.lastChapter) === 2, `last=${cprog.lastChapter}`);
+  const rep2 = await publisher.repairCourseSeries();
+  ok('repair is idempotent', rep2.removed === 0, `second run removed=${rep2.removed}`);
 
   console.log('\nScheduler heartbeat / logging:');
   await SocialRunLog.destroy({ where: {} });

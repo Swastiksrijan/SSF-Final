@@ -407,8 +407,10 @@ for (const c of COURSES) courseByKey[c.key] = c;
 // One chapter rendered as a bilingual caption (EN + HI) with the next-chapter
 // footer. `next` is {title, no} of the following chapter, or null on the last.
 function planCoursePost(course, chapterNo, date, slot, next) {
-  const courseMeta = courseByKey[course] || COURSES[0];
+  const courseMeta = courseByKey[course];
+  if (!courseMeta) throw new Error(`planCoursePost: unknown course "${course}"`);
   const ch = courseMeta.chapters[chapterNo - 1];
+  if (!ch) throw new Error(`planCoursePost: ${course} has no chapter ${chapterNo} (of ${courseMeta.chapters.length})`);
   const total = courseMeta.chapters.length;
   const dateEn = `${date.getDate()} ${MONTHS_EN[date.getMonth()]} ${date.getFullYear()}`;
   const dateHi = `${date.getDate()} ${MONTHS_HI[date.getMonth()]} ${date.getFullYear()}`;
