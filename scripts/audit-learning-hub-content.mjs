@@ -269,7 +269,7 @@ for (const category of categories) {
     if (Array.isArray(item) && typeof item[0] === "string") curriculumTitles.add(item[0]);
   }
 }
-const placeholderPattern = /\\b(?:coming soon|placeholder|lorem ipsum|detailed lessons will be added|content will be added|under construction|coming shortly)\\b/i;
+const placeholderPattern = /\b(?:coming soon|placeholder|lorem ipsum|detailed lessons will be added|content will be added|under construction|coming shortly)\b/i;
 function scanForPlaceholder(value, location) {
   if (typeof value === "string") {
     if (placeholderPattern.test(value)) errors.push(`${location}: placeholder-like copy found: "${value.slice(0, 100)}".`);
