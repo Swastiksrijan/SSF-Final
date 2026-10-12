@@ -2689,7 +2689,7 @@ function LearningSubject({ subject, onBack }) {
     setAnswers({});
     setSubmitted(false);
     setLessonOpen(true);
-    markDone(safe);
+    // Opening or navigating to a lesson is not proof that the learner completed it.
     requestAnimationFrame(() => document.getElementById("current-lesson-content")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
 
@@ -2868,6 +2868,9 @@ function LearningSubject({ subject, onBack }) {
                   <button type="button" onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-3 text-xs font-black text-[#002344] disabled:cursor-not-allowed disabled:opacity-40">← Previous / पिछला</button>
                   <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-3 py-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Next Lesson / अगला पाठ →</button>
                 </div>
+                <button type="button" onClick={()=>markDone(activeLesson)} disabled={done.includes(activeLesson)} className="mt-3 w-full rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-800 disabled:cursor-default disabled:opacity-70">
+                  {done.includes(activeLesson) ? "✓ Lesson completed / पाठ पूरा हुआ" : "✓ Mark lesson complete / पाठ पूरा चिह्नित करें"}
+                </button>
               </div>
               {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
                 {[
