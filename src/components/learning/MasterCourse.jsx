@@ -305,7 +305,7 @@ function MasteryTest({ mastery, onResult }) {
   const pct = total ? Math.min(100, Math.round((score / total) * 100)) : 0;
   const submit = () => {
     if (!total || answered < total || submitted) return;
-    const result = { score, total, passed: pct >= 80, completedAt: new Date().toISOString() };
+    const result = { score, total, passed: pct >= 80, assessmentVersion: "v2", completedAt: new Date().toISOString() };
     setSubmitted(true);
     onResult?.(result);
   };
