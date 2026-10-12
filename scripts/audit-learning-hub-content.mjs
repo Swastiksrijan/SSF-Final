@@ -76,6 +76,56 @@ for (const [registryName, registry] of registries) {
   }
 }
 
+const compactCourseMaps = [
+  ["EDU_PART_A", EDU_PART_A],
+  ["EDU_PART_B", EDU_PART_B],
+  ["EDU_PART_C", EDU_PART_C],
+  ["EDU_PART_D", EDU_PART_D],
+  ["EDU_RICH_B1", EDU_RICH_B1],
+  ["EDU_RICH_B2", EDU_RICH_B2],
+  ["KW_PART_A", KW_PART_A],
+  ["KW_PART_B", KW_PART_B],
+  ["KW_PART_C", KW_PART_C],
+  ["KW_PART_D", KW_PART_D],
+  ["KW_PART_E", KW_PART_E],
+  ["KW_PART_F", KW_PART_F],
+];
+let compactCourseCount = 0;
+let compactTopicCount = 0;
+for (const [mapName, map] of compactCourseMaps) {
+  for (const [title, course] of Object.entries(map || {})) {
+    compactCourseCount += 1;
+    const modules = Array.isArray(course?.modules) ? course.modules : [];
+    if (!modules.length) errors.push(`${mapName}["${title}"]: no authored modules.`);
+    for (const [mi, module] of modules.entries()) {
+      const topics = Array.isArray(module) ? module[2] : module?.topics;
+      if (!Array.isArray(topics) || !topics.length) {
+        errors.push(`${mapName}["${title}"].modules[${mi}]: no authored topics.`);
+        continue;
+      }
+      for (const [ti, topic] of topics.entries()) {
+        compactTopicCount += 1;
+        const label = `${mapName}["${title}"].modules[${mi}].topics[${ti}]`;
+        const tuple = Array.isArray(topic);
+        const quiz = tuple ? (Array.isArray(topic[4]) ? { q: topic[4][0], options: topic[4][1], answer: topic[4][2] } : {}) : (topic?.quiz || {});
+        const prompt = quiz.q || quiz.question || quiz.prompt || topic?.question;
+        const options = quiz.options;
+        const answer = quiz.answer;
+        const learn = tuple ? topic[1] : (topic?.learn || topic?.body);
+        const example = tuple ? topic[2] : (topic?.example || topic?.examples);
+        const activity = tuple ? topic[3] : topic?.activity;
+        if (!(typeof (tuple ? topic[0] : topic?.title) === "string" && (tuple ? topic[0] : topic?.title).trim())) errors.push(`${label}: missing topic title.`);
+        if (!(typeof learn === "string" && learn.trim())) errors.push(`${label}: missing learning explanation.`);
+        if (!(typeof example === "string" && example.trim()) && !(Array.isArray(example) && example.length)) errors.push(`${label}: missing example.`);
+        if (!(typeof activity === "string" && activity.trim())) errors.push(`${label}: missing activity.`);
+        if (typeof prompt !== "string" || !prompt.trim()) errors.push(`${label}: missing quiz question.`);
+        if (!Array.isArray(options) || options.length < 2) errors.push(`${label}: quiz needs at least two options.`);
+        else if (!Number.isInteger(answer) || answer < 0 || answer >= options.length) errors.push(`${label}: answer key is missing or invalid; do not guess option zero.`);
+      }
+    }
+  }
+}
+
 const authoredMaps = [
   ["OFFICE_SKILLS_CONTENT", OFFICE_SKILLS_CONTENT],
   ["ENTREPRENEURSHIP_CONTENT", ENTREPRENEURSHIP_CONTENT],
@@ -178,6 +228,7 @@ const fallbackTitles = [...curriculumTitles].filter((title) => !providerByTitle.
 
 console.log(`Learning Hub content audit: ${entryCount} registry entries, ${questionCount} quiz questions checked, ${curriculumTitles.size} curriculum titles detected.`);
 console.log(`Authored category audit: ${authoredCourseCount} courses and ${authoredTopicCount} topic lessons checked.`);
+console.log(`Education/Knowledge World audit: ${compactCourseCount} courses and ${compactTopicCount} topic lessons checked.`);
 console.log(`Titles without an exact SUBJECT_CONTENT registry entry: ${missingExactRegistry.length} (some are served by dedicated course providers).`);
 console.log(`Titles not matched to an explicit subject registry or authored category map by this static audit: ${fallbackTitles.length}. Review these against dedicated course providers before claiming full subject-specific coverage.`);
 if (fallbackTitles.length) console.warn("Provider coverage review: " + fallbackTitles.join("; "));
