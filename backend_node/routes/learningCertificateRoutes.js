@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const LearningCertificate = require('../models/LearningCertificate');
 const Member = require('../models/Member');
+const { validateCertificateAssessments } = require('../utils/learningCertificateValidation');
 
 const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
 const requireAdminAuth = (req,res,next) => {
@@ -17,20 +18,7 @@ router.post('/learning-certificates/request', async (req,res) => {
     const member = await Member.findByPk(accountId);
     if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(learner.email).toLowerCase()) return res.status(401).json({ message:'Learning account could not be verified.' });
     if (Number(completionPercent) !== 100) return res.status(400).json({ message:'Course completion must be 100%.' });
-    const validPassedAssessment = (result) => {
-      if (!result || result.passed !== true) return false;
-      const score = Number(result.score);
-      const total = Number(result.total);
-      return Number.isInteger(score) && Number.isInteger(total) && total > 0 && score >= 0 && score <= total && score / total >= 0.7;
-    };
-    const requiredIds = Array.isArray(requiredModuleAssessmentIds)
-      ? [...new Set(requiredModuleAssessmentIds.filter(id => typeof id === 'string' && id.trim()))]
-      : [];
-    const results = moduleAssessments && typeof moduleAssessments === 'object' ? moduleAssessments : {};
-    const finalPassed = validPassedAssessment(finalAssessment);
-    const allRecordedModulesPassed = Object.values(results).every(validPassedAssessment);
-    const allRequiredModulesPassed = requiredIds.every(id => validPassedAssessment(results[id]));
-    if (!finalPassed || !allRecordedModulesPassed || !allRequiredModulesPassed) {
+    if (!validateCertificateAssessments({ moduleAssessments, requiredModuleAssessmentIds, finalAssessment })) {
       return res.status(400).json({ message:'A valid passing score (at least 70%) is required for the final assessment and every required module assessment.' });
     }
     const existing = await LearningCertificate.findOne({ where:{ accountId, courseId, status:['requested','approved','issued'] } });
