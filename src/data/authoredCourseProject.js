@@ -199,5 +199,6 @@ export function ensureStructuredCourseDepth(subject, course) {
     });
   }
 
+  if (!newModuleCount && generatedLessons.length) modules[modules.length - 1].lessons.push(...generatedLessons);
   return { ...course, modules: [...modules, ...newModules] };
 }
