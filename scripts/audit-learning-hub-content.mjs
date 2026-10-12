@@ -1,3 +1,4 @@
+import { readFile } from "node:fs/promises";
 import { SUBJECT_CONTENT } from "../src/data/learningHubSubjectContent.js";
 import { SUBJECT_CONTENT_EXTRA } from "../src/data/learningSubjectContentExtra.js";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA } from "../src/data/learningCurriculum.js";
@@ -415,6 +416,32 @@ for (const course of Object.values(FLAGSHIP_COURSES || {})) {
 }
 const missingExactRegistry = [...curriculumTitles].filter((title) => !keysSeen.has(title) && !keysSeen.has(title.split(" / ")[0]));
 const fallbackTitles = [...curriculumTitles].filter((title) => !providerByTitle.has(normalizeTitle(title)));
+
+const [learningHubSource, masterCourseSource, primaryLessonSource, certificateSource, certificateRouteSource] = await Promise.all([
+  readFile(new URL("../src/pages/LearningHubV2.jsx", import.meta.url), "utf8"),
+  readFile(new URL("../src/components/learning/MasterCourse.jsx", import.meta.url), "utf8"),
+  readFile(new URL("../src/components/learning/PrimaryLessonFresh.jsx", import.meta.url), "utf8"),
+  readFile(new URL("../src/components/learning/CourseCertificate.jsx", import.meta.url), "utf8"),
+  readFile(new URL("../backend_node/routes/learningCertificateRoutes.js", import.meta.url), "utf8"),
+]);
+const goLessonStart = learningHubSource.indexOf("const goLesson =");
+const goLessonEnd = learningHubSource.indexOf("\n  if (isPrimaryEducation)", goLessonStart);
+const goLessonSource = goLessonStart >= 0 && goLessonEnd > goLessonStart
+  ? learningHubSource.slice(goLessonStart, goLessonEnd)
+  : "";
+const sourceRegressionChecks = [
+  ["lesson navigation opens lesson content", Boolean(goLessonSource) && /setLessonOpen\\(true\\)/.test(goLessonSource)],
+  ["opening/navigating lessons does not auto-complete them", Boolean(goLessonSource) && !/markDone\\s*\\(/.test(goLessonSource)],
+  ["explicit lesson completion control exists", learningHubSource.includes("Mark lesson complete / पाठ पूरा चिह्नित करें")],
+  ["MasterCourse quick checks are interactive", masterCourseSource.includes("function QuickCheck") && masterCourseSource.includes('case "quiz"')],
+  ["Primary lesson quick checks validate answer keys", primaryLessonSource.includes("validKey") && primaryLessonSource.includes("q.options[q.answer]")],
+  ["certificate request checks current assessment eligibility", certificateSource.includes("assessmentCourseId") && certificateSource.includes("certificateEligible")],
+  ["certificate API uses server-side assessment validation", certificateRouteSource.includes("validateCertificateAssessments")],
+];
+for (const [label, passed] of sourceRegressionChecks) {
+  if (!passed) errors.push("Source regression check failed: " + label + ".");
+}
+console.log(`Interaction/certificate source regression checks: ${sourceRegressionChecks.length - sourceRegressionChecks.filter(([, passed]) => !passed).length}/${sourceRegressionChecks.length} passed.`);
 
 console.log(`Learning Hub content audit: ${entryCount} registry entries, ${questionCount} quiz questions checked, ${curriculumTitles.size} curriculum titles detected.`);
 console.log(`Authored category audit: ${authoredCourseCount} courses and ${authoredTopicCount} topic lessons checked.`);
