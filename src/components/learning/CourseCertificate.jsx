@@ -17,7 +17,7 @@ const readSession = () => {
  * gets the signup details), then submits a certificate request to the admin
  * panel. Certificate issuance itself stays a manual admin action.
  */
-export default function CourseCertificate({ subject, courseTitle, courseMeta, progress = 0, moduleResults = {}, requiredModuleAssessmentIds = [], finalResult = null }) {
+export default function CourseCertificate({ subject, courseTitle, courseMeta, progress = 0, moduleResults = {}, requiredModuleAssessmentIds = [], finalResult = null, assessmentCourseId = subject.id }) {
   const [user, setUser] = useState(readSession);
   const [authOpen, setAuthOpen] = useState(false);
   const [status, setStatus] = useState("idle");
@@ -65,7 +65,7 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
         body: JSON.stringify({
           accountId: user.id,
           learner: user,
-          courseId: subject.id,
+          courseId: assessmentCourseId,
           courseTitle: title,
           completionPercent: progress,
           moduleAssessments: moduleResults,
