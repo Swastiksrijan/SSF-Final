@@ -38,7 +38,7 @@ const buildTopic = (t, mi, ti) => {
       quiz: {
         question: quiz.question || quiz.q || t.question || "",
         options: quiz.options || [],
-        answer: typeof quiz.answer === "number" ? quiz.answer : 0,
+        answer: Number.isInteger(quiz.answer) ? quiz.answer : null,
         explain: quiz.explain || quiz.explanation || "",
       },
       // Rich authored fields (Primary-level depth). Present only for enriched
