@@ -35,7 +35,6 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
   }, [subject.id]);
 
   const title = courseTitle || subject.title;
-  const moduleAssessmentResults = Object.values(moduleResults || {});
   const requiredIds = Array.isArray(requiredModuleAssessmentIds) ? requiredModuleAssessmentIds : [];
   const moduleAssessmentsPassed = requiredIds.every((id) => {
     const result = moduleResults?.[id];
