@@ -84,7 +84,9 @@ export default function SocialAwarenessFeed() {
             </a>
             <div className="p-4">
               <div className="mb-2 flex items-center gap-2 text-[10px] font-semibold uppercase tracking-wide text-[#FFD166]">
-                <span>{p.kind === 'awareness' ? (hi ? 'जागरूकता दिवस' : 'Awareness Day') : (hi ? 'दैनिक' : 'Daily')}</span>
+                <span>{p.kind === 'course'
+                  ? (hi ? 'निःशुल्क कोर्स' : 'Free Course')
+                  : p.kind === 'awareness' ? (hi ? 'जागरूकता दिवस' : 'Awareness Day') : (hi ? 'दैनिक' : 'Daily')}</span>
                 <span className="text-white/30">•</span>
                 <span className="text-white/40">{p.date}</span>
               </div>

@@ -9,6 +9,7 @@ const content = require('../services/social/content');
 const {
   planDue, planExtra, runPending, publishPost, enabledPlatforms, getConfig, setConfig,
   allEvents, eventsForDate, timezone, localParts, DEFAULT_TZ,
+  planCourseSeries, COURSES, COURSE_TIMES,
 } = require('../services/social/publisher');
 const { postSvg } = require('../services/social/image');
 
@@ -73,7 +74,7 @@ async function dashboard() {
   const tz = await timezone();
   const local = localParts(new Date(), tz);
   const today = `${local.y}-${String(local.m).padStart(2, '0')}-${String(local.d).padStart(2, '0')}`;
-  const [channels, recent, times, autoApprove, seq, events, runs] = await Promise.all([
+  const [channels, recent, times, autoApprove, seq, events, runs, dailyAwareness] = await Promise.all([
     SocialChannel.findAll(),
     SocialPost.findAll({ order: [['postDate', 'DESC'], ['id', 'DESC']], limit: 120 }),
     getConfig('times', { morning: '08:00', evening: '18:00' }),
@@ -81,6 +82,7 @@ async function dashboard() {
     getConfig('post_seq', 0),
     allEvents(),
     SocialRunLog.findAll({ order: [['id', 'DESC']], limit: 20 }),
+    getConfig('daily_awareness', true),
   ]);
   const byPlatform = {};
   for (const c of channels) byPlatform[c.platform] = c;
@@ -144,7 +146,8 @@ async function dashboard() {
     times, autoApprove, postSeq: seq, timezone: tz,
     today, todayLocalTime: local.hhmm, nextScheduledAt: nextAt, dailyTime,
     channels: startupChannels,
-    scheduledPerDay: 1,
+    scheduledPerDay: (dailyAwareness === false ? 0 : 1) + (COURSE_TIMES || []).length,
+    dailyAwareness: dailyAwareness !== false,
     stats: { total: all.length, published, partial, draft, failed },
     heartbeat,
     todayPosts: todaysPosts,
@@ -166,21 +169,66 @@ async function dashboard() {
 
 // ---- admin -----------------------------------------------------------------
 router.get('/social/dashboard', requireAuth, wrap(async (_req, r) => r.json(await dashboard())));
+
+// ---- daily course series ---------------------------------------------------
+// The five courses and how far each has progressed, so the admin screen can
+// show "Cyber Safety — chapter 7 of 20" and the upcoming schedule.
+router.get('/social/courses', requireAuth, wrap(async (_req, r) => {
+  const { SocialCourseProgress } = require('../models/social');
+  const rows = await SocialCourseProgress.findAll();
+  const progBy = {};
+  for (const p of rows) progBy[p.courseKey] = p;
+  const courses = COURSES.map((c, i) => {
+    const p = progBy[c.key];
+    const last = p ? Number(p.lastChapter || 0) : 0;
+    const total = c.chapters.length;
+    return {
+      key: c.key, emoji: c.emoji, category: c.category,
+      titleEn: c.title.en, titleHi: c.title.hi,
+      subtitleEn: c.subtitle.en, subtitleHi: c.subtitle.hi,
+      total, published: last, completed: last >= total,
+      nextChapter: last < total ? last + 1 : null,
+      nextTitleEn: last < total ? c.chapters[last].title.en : null,
+      nextTitleHi: last < total ? c.chapters[last].title.hi : null,
+      time: (COURSE_TIMES[i] || null),
+    };
+  });
+  r.json({ courses, times: COURSE_TIMES });
+}));
+
+// Manually create today's course-series drafts (does not publish).
+router.post('/social/courses/plan', requireAuth, wrap(async (_req, r) => {
+  const created = await planCourseSeries(new Date());
+  r.json({ ok: true, created: created.length });
+}));
+
+// Force-publish every pending course draft now (catch up a missed day).
+router.post('/social/courses/run', requireAuth, wrap(async (_req, r) => {
+  r.json({ ok: true, ...(await runPending({ force: true, source: 'manual-course-force' })) });
+}));
+
 router.get('/social/config', requireAuth, wrap(async (_req, r) => r.json({
   dailyTime: (await getConfig('dailyTime', null)) || (await getConfig('times', { morning: '08:00' })).morning || '08:00',
   autoApprove: await getConfig('auto_approve', true),
+  dailyAwareness: (await getConfig('daily_awareness', true)) !== false,
+  courseTimes: await getConfig('courseTimes', COURSE_TIMES),
 })));
 
 router.post('/social/config', requireAuth, wrap(async (req, r) => {
-  const { dailyTime, times, autoApprove, timezone: tz } = req.body || {};
+  const { dailyTime, times, autoApprove, timezone: tz, dailyAwareness, courseTimes } = req.body || {};
   if (dailyTime) await setConfig('dailyTime', String(dailyTime));
   if (times) await setConfig('times', times);
   if (typeof autoApprove === 'boolean') await setConfig('auto_approve', autoApprove);
+  if (typeof dailyAwareness === 'boolean') await setConfig('daily_awareness', dailyAwareness);
+  if (Array.isArray(courseTimes)) {
+    const clean = courseTimes.map((t) => String(t)).filter((t) => /^\d{1,2}:\d{2}$/.test(t));
+    await setConfig('courseTimes', clean);
+  }
   if (tz) {
     try { new Intl.DateTimeFormat('en-GB', { timeZone: String(tz) }).format(new Date()); } catch { return r.status(400).json({ ok: false, message: 'Invalid IANA timezone.' }); }
     await setConfig('timezone', String(tz));
   }
-  r.json({ ok: true, dailyTime: (await getConfig('dailyTime', null)) || '08:00', autoApprove: await getConfig('auto_approve'), timezone: await getConfig('timezone', DEFAULT_TZ) });
+  r.json({ ok: true, dailyTime: (await getConfig('dailyTime', null)) || '08:00', autoApprove: await getConfig('auto_approve'), dailyAwareness: (await getConfig('daily_awareness', true)) !== false, timezone: await getConfig('timezone', DEFAULT_TZ) });
 }));
 
 // ---- automation controls (distinct verbs, never conflated) -----------------

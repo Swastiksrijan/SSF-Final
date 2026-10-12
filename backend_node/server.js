@@ -2,6 +2,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { Op } = require('sequelize');
 const sequelize = require('./config/database');
 
 const app = express();
@@ -282,7 +283,10 @@ async function socialMissedAlert() {
         const [sh, sm] = String(time).split(':').map(Number);
         const lateBy = (Number(p.hour) * 60 + Number(p.minute)) - (sh * 60 + (sm || 0));
         if (lateBy <= 45) return;
-        const row = await SocialPost.findOne({ where: { postDate, status: 'draft' } });
+        // Only the single daily awareness post is "missed" — course chapters
+        // are scheduled across the day and would otherwise alert before their
+        // own slot time.
+        const row = await SocialPost.findOne({ where: { postDate, status: 'draft', kind: { [Op.ne]: 'course' } } });
         if (!row) return;
         const ch = await SocialChannel.findOne({ where: { platform: 'telegram', enabled: true } });
         const creds = (ch && ch.credentials) || {};

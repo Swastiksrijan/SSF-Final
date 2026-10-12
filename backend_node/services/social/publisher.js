@@ -6,8 +6,8 @@
 
 const crypto = require('crypto');
 const { Op } = require('sequelize');
-const { SocialChannel, SocialPost, SocialConfig, SocialEvent, SocialRunLog } = require('../../models/social');
-const { planPost, planLibraryPost, planEventPost, splitPlan } = require('./content');
+const { SocialChannel, SocialPost, SocialConfig, SocialEvent, SocialRunLog, SocialCourseProgress } = require('../../models/social');
+const { planPost, planLibraryPost, planEventPost, planCoursePost, splitPlan, COURSES, COURSE_TIMES } = require('./content');
 const { ADAPTERS } = require('./channels');
 
 const DEFAULT_PLATFORMS = ['website', 'facebook', 'instagram', 'telegram', 'linkedin', 'whatsapp', 'x', 'youtube'];
@@ -124,8 +124,79 @@ async function chooseDailyPlan(date, usedKeys) {
 }
 function ymd(d) { const pad = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
 
+// ---- daily course series --------------------------------------------------
+// One chapter per course per day = five posts a day, each in its own slot. The
+// chapter released is always lastChapter + 1 (never skips, never repeats), and
+// `courseTimes` (config key `courseTimes`) sets the slot clock. Set the config
+// to [] to pause the series without touching the awareness/festival posts.
+async function courseTimes() {
+  const cfg = await getConfig('courseTimes', null);
+  if (Array.isArray(cfg)) return cfg;
+  return COURSE_TIMES;
+}
+
+async function planCourseSeries(date) {
+  const times = await courseTimes();
+  if (!times.length) return [];
+  const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const postDate = ymd(day);
+  const created = [];
+  let seq = Number((await getConfig('post_seq', 0)) || 0);
+
+  for (let i = 0; i < COURSES.length && i < times.length; i += 1) {
+    const course = COURSES[i];
+    const slot = `course-${course.key}`;
+    const total = course.chapters.length;
+    const prog = await SocialCourseProgress.findOne({ where: { courseKey: course.key } });
+    const lastChapter = prog ? Number(prog.lastChapter || 0) : 0;
+    if (lastChapter >= total) continue; // course finished — nothing left to post
+    const chapterNo = lastChapter + 1;
+    const next = chapterNo < total
+      ? { no: chapterNo + 1, title: course.chapters[chapterNo].title }
+      : null;
+    const plan = planCoursePost(course.key, chapterNo, day, slot, next);
+    const enriched = { ...plan, contentHash: contentHash(plan) };
+    const { row, extra } = splitPlan(enriched);
+    seq += 1;
+    const row2 = await SocialPost.create({
+      ...row, data: extra, postRef: nextRef(seq), status: 'draft',
+      scheduledFor: slotDate(postDate, i, times),
+      createdBy: 'scheduler', createdByName: 'Course Scheduler',
+    });
+    created.push(row2);
+  }
+  await setConfig('post_seq', seq);
+  return created;
+}
+
+// Advance a course's pointer once its chapter has actually been published.
+async function advanceCourseProgress(post) {
+  const data = post.data || {};
+  if (!data.courseKey || !data.chapterNo) return;
+  let prog = await SocialCourseProgress.findOne({ where: { courseKey: data.courseKey } });
+  if (!prog) {
+    try {
+      prog = await SocialCourseProgress.create({ courseKey: data.courseKey, lastChapter: 0 });
+    } catch {
+      prog = await SocialCourseProgress.findOne({ where: { courseKey: data.courseKey } });
+    }
+  }
+  if (prog && Number(data.chapterNo) > Number(prog.lastChapter || 0)) {
+    const total = Number(data.chapterTotal || 0);
+    await prog.update({
+      lastChapter: Number(data.chapterNo),
+      lastPostDate: post.postDate,
+      completedAt: total && Number(data.chapterNo) >= total ? new Date() : prog.completedAt,
+    });
+  }
+}
+
 // Ensure today's single post exists. Returns the list of created rows.
 async function planDue({ date = new Date(), rebuild = false } = {}) {
+  // The daily awareness/festival post is a separate stream from the course
+  // series. It can be switched off (config `daily_awareness` = false) so the
+  // day carries exactly the five course chapters, without touching any code.
+  if ((await getConfig('daily_awareness', true)) === false) return [];
   const tz = await timezone();
   const { y, m, d } = localParts(date, tz);
   const day = new Date(y, m - 1, d); // local calendar day (date strings only)
@@ -133,10 +204,12 @@ async function planDue({ date = new Date(), rebuild = false } = {}) {
   const created = [];
   let seq = Number((await getConfig('post_seq', 0)) || 0);
 
-  // Any existing post for the date (whatever slot it was created under — e.g.
-  // the legacy morning/evening rows) is treated as "the day's post", so the
-  // switch to one-post-a-day never adds a duplicate on the transition day.
-  const existing = await SocialPost.findOne({ where: { postDate } });
+  // Any existing NON-course post for the date (whatever slot it was created
+  // under — e.g. the legacy morning/evening rows) is treated as "the day's
+  // awareness post", so the switch to one-post-a-day never adds a duplicate on
+  // the transition day. Course-series posts are excluded — they are a separate,
+  // additive stream handled by planCourseSeries().
+  const existing = await SocialPost.findOne({ where: { postDate, kind: { [Op.ne]: 'course' } } });
   // Never overwrite a published post during regeneration — that would turn a
   // live post back into a draft. Only drafts are rebuilt.
   if (existing && (!rebuild || existing.status === 'published' || existing.status === 'partial')) return created;
@@ -168,8 +241,10 @@ async function planDue({ date = new Date(), rebuild = false } = {}) {
 }
 
 // Intended scheduled timestamp for a slot: the local date + configured HH:MM.
+// `slot` may be a key into an object of times, or an index into an array.
 function slotDate(postDate, slot, times) {
-  const [hh, mm] = String((times || {})[slot] || '00:00').split(':');
+  const t = Array.isArray(times) ? times[slot] : (times || {})[slot];
+  const [hh, mm] = String(t || '00:00').split(':');
   const dt = new Date(`${postDate}T${String(hh).padStart(2, '0')}:${String(mm || '00').padStart(2, '0')}:00`);
   return dt;
 }
@@ -240,6 +315,10 @@ async function publishPost(post, platforms) {
   const status = !anyOk ? 'failed' : real.every((r) => r.ok) ? 'published' : 'partial';
   await post.update({ platformResults: results, status, publishedAt: anyOk ? new Date() : post.publishedAt });
 
+  // A course chapter that actually went out advances the series pointer, so
+  // tomorrow's post is the next chapter (never a repeat, never a skip).
+  if (anyOk && post.kind === 'course') await advanceCourseProgress(post).catch(() => {});
+
   // Stamp channels for the admin "last published" indicator.
   for (const r of results) {
     const ch = rows.find((x) => x.platform === r.platform);
@@ -258,24 +337,35 @@ async function runPendingInner({ force = false, date = new Date(), source = 'int
   try {
     const tz = await timezone();
     await planDue({ date });
+    await planCourseSeries(date);
     const autoApprove = await getConfig('auto_approve', POWER_AUTOMATE);
     const { y, m, d } = localParts(date, tz);
     const postDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const hhmm = localParts(new Date(), tz).hhmm;
     const time = await dailyTime();
+    const cTimes = await courseTimes();
 
-    // The single daily post, published as soon as it is created (real time).
+    // The single daily awareness post publishes as soon as it is created.
     // force = publish now regardless; autoApprove OFF = manual only.
+    // Course posts are always scheduled (each at its own slot time), and force
+    // releases any that are still pending.
     const drafts = await SocialPost.findAll({ where: { postDate, status: 'draft' }, order: [['id', 'ASC']] });
     const platforms = await enabledPlatforms();
     const published = [];
     for (const p of drafts) {
-      const due = force || (autoApprove && hhmm >= time);
+      let due;
+      if (p.kind === 'course') {
+        const idx = Math.max(0, COURSES.findIndex((c) => c.key === p.data?.courseKey));
+        const at = String(cTimes[idx] || '23:59');
+        due = force || hhmm >= at;
+      } else {
+        due = force || (autoApprove && hhmm >= time);
+      }
       if (!due) continue;
       published.push(await publishPost(p, platforms));
     }
     const failed = published.filter((x) => x.status === 'failed').length;
-    await log.update({ finishedAt: new Date(), ok: failed === 0, published: published.length, detail: { postDate, hhmm, time, platforms, publishedCount: published.length, failed } });
+    await log.update({ finishedAt: new Date(), ok: failed === 0, published: published.length, detail: { postDate, hhmm, time, courseTimes: cTimes, platforms, publishedCount: published.length, failed } });
     return { postDate, hhmm, tz, platforms, published };
   } catch (e) {
     await log.update({ finishedAt: new Date(), ok: false, error: e.message });
@@ -296,4 +386,5 @@ module.exports = {
   planDue, planExtra, runPending, publishPost, enabledPlatforms, getConfig, setConfig,
   DEFAULT_PLATFORMS, istParts, localParts, timezone, eventsForDate, allEvents, contentHash,
   DEFAULT_TZ, SocialEvent, SocialRunLog, dailyTime, recentTopicKeys, RECENT_TOPIC_DAYS,
+  planCourseSeries, courseTimes, COURSES, COURSE_TIMES, SocialCourseProgress,
 };

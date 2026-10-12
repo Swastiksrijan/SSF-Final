@@ -127,6 +127,38 @@ async function main() {
   ok('next day creates a fresh post', made3.length === 1, `got=${made3.length}`);
   ok('next day topic differs from previous day', made3[0].topicKey !== draftRow.topicKey, `${made3[0].topicKey} vs ${draftRow.topicKey}`);
 
+  console.log('\nDaily course series (5 chapters/day, in order):');
+  const { SocialCourseProgress } = require('../models/social');
+  await SocialCourseProgress.destroy({ where: {} });
+  await SocialPost.destroy({ where: { kind: 'course' } });
+  const cday1 = new Date(2026, 7, 1); // 1 Aug 2026
+  const cs1 = await publisher.planCourseSeries(cday1);
+  ok('five course posts created per day', cs1.length === 5, `got=${cs1.length}`);
+  ok('all are course kind', cs1.every((p) => p.kind === 'course'));
+  ok('first chapters are 1..5', cs1.every((p) => p.data.chapterNo === 1));
+  ok('every course gets its own slot', new Set(cs1.map((p) => p.slot)).size === 5);
+  ok('each has a next-chapter pointer in its body', cs1.every((p) => /Next chapter: Chapter 2/.test(p.bodyEn)));
+  ok('bilingual bodies', cs1.every((p) => p.bodyEn.length > 100 && p.bodyHi.length > 100));
+
+  // Publishing advances each course pointer by exactly one — no skip, no repeat.
+  const platforms0 = await publisher.enabledPlatforms();
+  for (const p of cs1) await publisher.publishPost(p, platforms0);
+  const prog1 = await SocialCourseProgress.findAll();
+  ok('all five course pointers advanced to 1', prog1.length === 5 && prog1.every((r) => Number(r.lastChapter) === 1));
+
+  const cs2 = await publisher.planCourseSeries(new Date(2026, 7, 2));
+  ok('day 2 releases chapter 2 of each course', cs2.length === 5 && cs2.every((p) => p.data.chapterNo === 2));
+  ok('day 2 posts point to chapter 3', cs2.every((p) => /Next chapter: Chapter 3/.test(p.bodyEn)));
+  ok('no chapter number repeats across days', cs1[0].data.chapterNo !== cs2[0].data.chapterNo);
+  for (const p of cs2) await publisher.publishPost(p, platforms0);
+
+  // A finished course stops; the others keep going.
+  const cyber = publisher.COURSES.find((c) => c.key === 'cyber-safety');
+  await SocialCourseProgress.update({ lastChapter: cyber.chapters.length }, { where: { courseKey: 'cyber-safety' } });
+  const cs3 = await publisher.planCourseSeries(new Date(2026, 7, 3));
+  ok('finished course is not posted again', !cs3.some((p) => p.data.courseKey === 'cyber-safety'), `keys=${cs3.map((p) => p.data.courseKey)}`);
+  ok('remaining courses still continue', cs3.length === 4 && cs3.every((p) => p.data.chapterNo === 3));
+
   console.log('\nScheduler heartbeat / logging:');
   await SocialRunLog.destroy({ where: {} });
   const out = await publisher.runPending({ force: false, source: 'test-run' });

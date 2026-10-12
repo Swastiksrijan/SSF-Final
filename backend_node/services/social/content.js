@@ -217,6 +217,8 @@ const EXTRA_FIELDS = [
   'headingEn', 'headingHi', 'subtitleEn', 'subtitleHi',
   'exampleEn', 'exampleHi', 'takeawayEn', 'takeawayHi',
   'ctaEn', 'ctaHi', 'catLabelEn', 'catLabelHi',
+  // course-series metadata (course name, chapter number, series position)
+  'courseKey', 'chapterNo', 'chapterTotal',
   // provenance + festival metadata (so the UI can badge source and show a
   // solemn tone rather than celebratory graphics on memorial days)
   'contentSource', 'contentVerified', 'tradition', 'solemn', 'palette', 'altNames',
@@ -393,6 +395,90 @@ function planEventPost(event, slot = 'morning', date = new Date()) {
   };
 }
 
+// ---- daily course series ---------------------------------------------------
+// Five courses, one chapter each per day = five posts a day. Every post carries
+// its course name, "Chapter X of N", and the NEXT chapter teaser so the learner
+// can follow the series like a book, in order, day after day.
+const { COURSES, COURSE_TIMES } = require('./courses');
+
+const courseByKey = {};
+for (const c of COURSES) courseByKey[c.key] = c;
+
+// One chapter rendered as a bilingual caption (EN + HI) with the next-chapter
+// footer. `next` is {title, no} of the following chapter, or null on the last.
+function planCoursePost(course, chapterNo, date, slot, next) {
+  const courseMeta = courseByKey[course] || COURSES[0];
+  const ch = courseMeta.chapters[chapterNo - 1];
+  const total = courseMeta.chapters.length;
+  const dateEn = `${date.getDate()} ${MONTHS_EN[date.getMonth()]} ${date.getFullYear()}`;
+  const dateHi = `${date.getDate()} ${MONTHS_HI[date.getMonth()]} ${date.getFullYear()}`;
+  const tags = `${ORG.baseHashtags} #${courseMeta.category} #FreeCourse #SSFLearning`.replace(/\s+/g, ' ');
+
+  const headerEn = `${courseMeta.emoji} SSF FREE COURSE — ${courseMeta.title.en}`;
+  const headerHi = `${courseMeta.emoji} SSF निःशुल्क कोर्स — ${courseMeta.title.hi}`;
+  const posEn = `Chapter ${chapterNo} of ${total}`;
+  const posHi = `अध्याय ${chapterNo} / ${total}`;
+
+  const pointsEn = ch.keyPoints.map((p) => `• ${p.en}`).join('\n');
+  const pointsHi = ch.keyPoints.map((p) => `• ${p.hi}`).join('\n');
+
+  const lastEn = `🎓 Course complete! You finished all ${total} chapters of "${courseMeta.title.en}".`;
+  const lastHi = `🎓 कोर्स पूरा! आपने "${courseMeta.title.hi}" के सभी ${total} अध्याय पूरे कर लिए।`;
+
+  const nextEn = next
+    ? `➡️ Next chapter: Chapter ${next.no} — "${next.title.en}" (tomorrow)`
+    : `➡️ This series is complete. Watch for the next course from SSF.`;
+  const nextHi = next
+    ? `➡️ अगला अध्याय: अध्याय ${next.no} — "${next.title.hi}" (कल)`
+    : `➡️ यह शृंखला पूरी हुई। SSF का अगला कोर्स देखते रहें।`;
+
+  const blocksEn = [
+    headerEn, posEn, '',
+    `📖 ${ch.title.en}`, ch.hook.en, '',
+    '🔑 Key points:', pointsEn, '',
+    `🔎 Example: ${ch.example.en}`, '',
+    `✅ Today's task: ${ch.task.en}`,
+    `💡 Tip: ${ch.tip.en}`,
+    `⚠️ Caution: ${ch.avoid.en}`, '',
+    next ? '' : lastEn,
+    nextEn, '',
+    `🌐 ${ORG.website}  |  📞 ${ORG.phone}`, tags,
+  ];
+  const blocksHi = [
+    headerHi, posHi, '',
+    `📖 ${ch.title.hi}`, ch.hook.hi, '',
+    '🔑 मुख्य बातें:', pointsHi, '',
+    `🔎 उदाहरण: ${ch.example.hi}`, '',
+    `✅ आज का काम: ${ch.task.hi}`,
+    `💡 टिप: ${ch.tip.hi}`,
+    `⚠️ सावधानी: ${ch.avoid.hi}`, '',
+    next ? '' : lastHi,
+    nextHi, '',
+    `🌐 ${ORG.website}  |  📞 ${ORG.phone}`, tags,
+  ];
+
+  const bodyEn = blocksEn.filter((b) => b !== undefined).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  const bodyHi = blocksHi.filter((b) => b !== undefined).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+
+  return {
+    postDate: ymd(date), slot, category: courseMeta.category, kind: 'course',
+    courseKey: courseMeta.key, chapterNo, chapterTotal: total,
+    topicKey: `course-${courseMeta.key}-${chapterNo}`,
+    titleEn: ch.title.en, titleHi: ch.title.hi,
+    bodyEn, bodyHi, hashtags: tags,
+    headingEn: `${posEn} · ${ch.title.en}`, headingHi: `${posHi} · ${ch.title.hi}`,
+    subtitleEn: courseMeta.title.en, subtitleHi: courseMeta.title.hi,
+    exampleEn: ch.example.en, exampleHi: ch.example.hi,
+    takeawayEn: ch.task.en, takeawayHi: ch.task.hi,
+    ctaEn: next ? nextEn : lastEn, ctaHi: next ? nextHi : lastHi,
+    catLabelEn: courseMeta.title.en, catLabelHi: courseMeta.title.hi,
+    contentSource: 'course', contentVerified: null,
+    dateEn, dateHi,
+    imageUrl: `${(process.env.PUBLIC_BASE_URL || 'https://ngo-backend-03hq.onrender.com').replace(/\/$/, '')}/api/social/image/daily?date=${ymd(date)}&slot=${slot}&format=png`,
+  };
+}
+
 module.exports = { ORG, AWARENESS_DAYS, THEMES, planPost, awarenessFor, dayOfYear, ymd, MONTHS_EN, MONTHS_HI,
   SUBTITLES, EXAMPLES, TAKEAWAYS, CTAS, buildSections, splitPlan, mergePost, EXTRA_FIELDS,
-  planLibraryPost, planEventPost, nextLibraryTopic, topicLabel, TOPIC_LABELS, TOPIC_ORDER, LIBRARY };
+  planLibraryPost, planEventPost, nextLibraryTopic, topicLabel, TOPIC_LABELS, TOPIC_ORDER, LIBRARY,
+  planCoursePost, COURSES, COURSE_TIMES };

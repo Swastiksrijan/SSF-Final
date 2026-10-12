@@ -134,6 +134,9 @@ export const ims = {
 
   // ---- SOCIAL AWARENESS PUBLISHER ----
   socialDashboard: () => fetch(`${API_BASE_URL}/api/social/dashboard`, { headers: headers() }).then(handle),
+  socialCourses: () => fetch(`${API_BASE_URL}/api/social/courses`, { headers: headers() }).then(handle),
+  socialCoursesPlan: () => fetch(`${API_BASE_URL}/api/social/courses/plan`, { method: 'POST', headers: headers() }).then(handle),
+  socialCoursesRun: () => fetch(`${API_BASE_URL}/api/social/courses/run`, { method: 'POST', headers: headers() }).then(handle),
   socialConfig: () => fetch(`${API_BASE_URL}/api/social/config`, { headers: headers() }).then(handle),
   socialSaveConfig: (payload) => fetch(`${API_BASE_URL}/api/social/config`, { method: 'POST', headers: headers(), body: JSON.stringify(payload) }).then(handle),
   socialPlan: (rebuild = false) => fetch(`${API_BASE_URL}/api/social/plan`, { method: 'POST', headers: headers(), body: JSON.stringify({ rebuild }) }).then(handle),

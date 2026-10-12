@@ -107,4 +107,15 @@ const SocialRunLog = sequelize.define('SocialRunLog', {
   error: DataTypes.TEXT,
 }, S);
 
-module.exports = { sequelize, SocialChannel, SocialPost, SocialAwarenessDay, SocialConfig, SocialEvent, SocialRunLog };
+// How far each daily course series has progressed. One row per course; the
+// chapter published on a given day is derived from `lastChapter` (always +1),
+// so the sequence can never jump or repeat. Additive — safe with sequelize.sync.
+const SocialCourseProgress = sequelize.define('SocialCourseProgress', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  courseKey: { type: DataTypes.STRING, unique: true },
+  lastChapter: { type: DataTypes.INTEGER, defaultValue: 0 }, // 0 = none published yet
+  lastPostDate: DataTypes.DATEONLY,
+  completedAt: DataTypes.DATE,
+}, S);
+
+module.exports = { sequelize, SocialChannel, SocialPost, SocialAwarenessDay, SocialConfig, SocialEvent, SocialRunLog, SocialCourseProgress };

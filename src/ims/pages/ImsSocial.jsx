@@ -468,9 +468,74 @@ function CalendarTab({ data, busy, run, lang }) {
   );
 }
 
+// ---- daily course series tab -----------------------------------------------
+function CoursesTab({ courses, busy, run, lang }) {
+  const hi = lang === 'hi';
+  const list = (courses && courses.courses) || [];
+  return (
+    <div className="mb-6">
+      <Card className="mb-4 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-black uppercase tracking-wider text-slate-500">
+              📚 {hi ? 'रोज़ का कोर्स — एक अध्याय प्रतिदिन' : 'Daily course series — one chapter a day'}
+            </h2>
+            <p className="mt-1 max-w-2xl text-xs text-slate-500">
+              {hi
+                ? 'पाँच कोर्स, रोज़ एक-एक अध्याय = पाँच पोस्ट प्रतिदिन, क्रम से (कभी कहीं का कहीं नहीं)। हर पोस्ट में अगले अध्याय का संकेत होता है।'
+                : 'Five courses, one chapter each per day = five posts a day, always in order (never out of sequence). Every post points to the next chapter.'}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="ghost" icon="FileText" disabled={busy} onClick={() => run(() => ims.socialCoursesPlan(), hi ? 'आज के अध्याय तैयार' : "Today's chapters drafted")}>
+              {hi ? 'आज के ड्राफ़्ट बनाएँ' : 'Draft today'}
+            </Button>
+            <Button variant="hero" icon="Send" disabled={busy} onClick={() => run(() => ims.socialCoursesRun(), hi ? 'प्रकाशित' : 'Published')}>
+              {hi ? 'अभी प्रकाशित करें' : 'Publish now'}
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      {list.length === 0 && <Card className="p-6 text-center text-sm text-slate-400">{hi ? 'कोर्स लोड हो रहे हैं…' : 'Loading courses…'}</Card>}
+
+      <div className="grid gap-3 md:grid-cols-2">
+        {list.map((c) => {
+          const pct = c.total ? Math.round((c.published / c.total) * 100) : 0;
+          return (
+            <Card key={c.key} className="p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-sm font-black text-[#002344]">{c.emoji} {hi ? c.titleHi : c.titleEn}</div>
+                  <div className="mt-0.5 text-[11px] text-slate-500">{hi ? c.subtitleHi : c.subtitleEn}</div>
+                </div>
+                <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${c.completed ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+                  {c.completed ? (hi ? 'पूरा' : 'Done') : `${c.published}/${c.total}`}
+                </span>
+              </div>
+              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                <div className="h-full rounded-full bg-[#FF6600]" style={{ width: `${pct}%` }} />
+              </div>
+              <div className="mt-2 flex items-center justify-between text-[11px]">
+                <span className="text-slate-500">
+                  {c.completed
+                    ? (hi ? 'सभी अध्याय पूरे 🎓' : 'All chapters done 🎓')
+                    : (hi ? `अगला: अध्याय ${c.nextChapter} — ${c.nextTitleHi}` : `Next: Chapter ${c.nextChapter} — ${c.nextTitleEn}`)}
+                </span>
+                {c.time && <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-600">🕗 {c.time}</span>}
+              </div>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function ImsSocial() {
   const { lang } = useLang();
   const [data, setData] = useState(null);
+  const [courses, setCourses] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [note, setNote] = useState('');
@@ -479,7 +544,10 @@ export default function ImsSocial() {
   const [filterStatus, setFilterStatus] = useState('');
 
   const load = async () => {
-    try { setData(await ims.socialDashboard()); } catch (e) { setErr(e.message); }
+    try {
+      const [d, c] = await Promise.all([ims.socialDashboard(), ims.socialCourses().catch(() => null)]);
+      setData(d); setCourses(c);
+    } catch (e) { setErr(e.message); }
   };
   useEffect(() => { load(); }, []);
 
@@ -527,6 +595,10 @@ export default function ImsSocial() {
             {lang === 'hi' ? 'ऑटो-प्रकाशन' : 'Auto-publish'}:{' '}
             <Toggle on={!!data?.autoApprove} onChange={(v) => run(() => (v ? ims.socialResume() : ims.socialPause()), v ? (lang === 'hi' ? 'चालू' : 'Resumed') : (lang === 'hi' ? 'रोका' : 'Paused'))} label={data?.autoApprove ? 'ON' : 'OFF'} />
           </span>
+          <span className="inline-flex items-center gap-2">
+            {lang === 'hi' ? 'दैनिक जागरूकता पोस्ट' : 'Daily awareness post'}:{' '}
+            <Toggle on={!!data?.dailyAwareness} onChange={(v) => run(() => ims.socialSaveConfig({ dailyAwareness: v }), v ? (lang === 'hi' ? 'जोड़ा' : 'Added') : (lang === 'hi' ? 'हटाया' : 'Off'))} label={data?.dailyAwareness ? 'ON' : 'OFF'} />
+          </span>
           <span className="text-white/70">🌐 {data?.timezone || 'Asia/Kolkata'}</span>
         </div>
       </SectionHero>
@@ -538,7 +610,7 @@ export default function ImsSocial() {
       {data && (
         <>
           <div className="mb-4 flex gap-2">
-            {[['dashboard', lang === 'hi' ? 'डैशबोर्ड' : 'Dashboard'], ['calendar', lang === 'hi' ? 'कैलेंडर' : 'Calendar']].map(([k, label]) => (
+            {[['dashboard', lang === 'hi' ? 'डैशबोर्ड' : 'Dashboard'], ['courses', lang === 'hi' ? 'कोर्स शृंखला' : 'Course series'], ['calendar', lang === 'hi' ? 'कैलेंडर' : 'Calendar']].map(([k, label]) => (
               <button key={k} onClick={() => setTab(k)}
                 className={`rounded-xl px-4 py-2 text-sm font-bold ${tab === k ? 'bg-[#002344] text-white' : 'bg-slate-100 text-slate-600'}`}>{label}</button>
             ))}
@@ -555,6 +627,7 @@ export default function ImsSocial() {
           <StatusStrip data={data} lang={lang} />
 
           {tab === 'calendar' && <CalendarTab data={data} busy={busy} run={run} lang={lang} />}
+          {tab === 'courses' && <CoursesTab courses={courses} busy={busy} run={run} lang={lang} />}
 
           {tab === 'dashboard' && (
           <>
