@@ -10,6 +10,8 @@ function chapterNarration(chapter) {
   const parts = [chapter.title, chapter.titleHi];
   for (const b of chapter.blocks) {
     if (b.x) parts.push(b.x);
+    if (b.question) parts.push(b.question);
+    if (Array.isArray(b.options)) parts.push(b.options.join(", "));
     if (b.head) parts.push(b.head.join(", "));
     if (b.items) parts.push(b.items.map((it) => typeof it === "string" ? it : [it.w, it.c].filter(Boolean).join(". ")).join(". "));
     if (b.rows) parts.push(b.rows.map((r) => r.join(", ")).join(". "));
@@ -167,6 +169,31 @@ function DictionaryWidget({ b }) {
   </div>;
 }
 
+function QuickCheck({ b }) {
+  const [selected, setSelected] = useState(null);
+  const [checked, setChecked] = useState(false);
+  const options = Array.isArray(b.options) ? b.options : [];
+  const validAnswer = Number.isInteger(b.answer) && b.answer >= 0 && b.answer < options.length;
+  const correct = checked && validAnswer && selected === b.answer;
+
+  return <section className="rounded-2xl border border-[#cfe0ee] bg-gradient-to-br from-[#f4f9fd] to-white p-4 md:p-6">
+    <div className="text-xs font-black uppercase tracking-widest text-[#0b4a86] md:text-sm">🧠 Quick Check / तुरंत जाँच</div>
+    <h4 className="mt-2 text-base font-black leading-7 text-[#062a52] md:text-lg">{b.question || "प्रश्न / Question"}</h4>
+    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+      {options.map((option, i) => <button key={i} type="button" onClick={() => { setSelected(i); setChecked(false); }} className={"rounded-xl border px-3 py-3 text-left text-sm font-bold transition " + (selected === i ? "border-[#0b4a86] bg-[#eef7fb] text-[#062a52]" : "border-zinc-200 bg-white text-zinc-700 hover:border-[#9bbbd0]")}>
+        <span className="mr-2">{String.fromCharCode(65 + i)}.</span>{option}
+      </button>)}
+    </div>
+    {validAnswer
+      ? <button type="button" disabled={selected === null} onClick={() => setChecked(true)} className="mt-3 rounded-xl bg-[#0b3a63] px-4 py-2.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Check Answer / उत्तर जाँचें</button>
+      : <p className="mt-3 text-sm font-bold text-amber-800">इस प्रश्न की answer key सत्यापित नहीं है; इसे certificate assessment में नहीं गिना जाएगा।</p>}
+    {checked && <div className={"mt-3 rounded-xl p-3 text-sm font-bold " + (correct ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800")}>
+      {correct ? "✓ सही उत्तर / Correct!" : "अभी सही नहीं—फिर विकल्प चुनें। / Not quite—try another option."}
+      {correct && b.explain && <p className="mt-1 font-medium">व्याख्या / Explanation: {b.explain}</p>}
+    </div>}
+  </section>;
+}
+
 function Block({ b }) {
   if (!b) return null;
   switch (b.t) {
@@ -197,6 +224,8 @@ function Block({ b }) {
       </div>;
     case "note":
       return <Note b={b} />;
+    case "quiz":
+      return <QuickCheck b={b} />;
     case "dict":
       return <DictionaryWidget b={b} />;
     case "ex":
