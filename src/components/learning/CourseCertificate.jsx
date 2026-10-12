@@ -17,7 +17,7 @@ const readSession = () => {
  * gets the signup details), then submits a certificate request to the admin
  * panel. Certificate issuance itself stays a manual admin action.
  */
-export default function CourseCertificate({ subject, courseTitle, courseMeta, progress = 0, moduleResults = {}, finalResult = null }) {
+export default function CourseCertificate({ subject, courseTitle, courseMeta, progress = 0, moduleResults = {}, requiredModuleAssessmentIds = [], finalResult = null }) {
   const [user, setUser] = useState(readSession);
   const [authOpen, setAuthOpen] = useState(false);
   const [status, setStatus] = useState("idle");
@@ -36,7 +36,11 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
 
   const title = courseTitle || subject.title;
   const moduleAssessmentResults = Object.values(moduleResults || {});
-  const moduleAssessmentsPassed = moduleAssessmentResults.every((result) => result?.passed === true);
+  const requiredIds = Array.isArray(requiredModuleAssessmentIds) ? requiredModuleAssessmentIds : [];
+  const moduleAssessmentsPassed = requiredIds.every((id) => {
+    const result = moduleResults?.[id];
+    return result?.passed === true && Number.isInteger(result.score) && Number.isInteger(result.total) && result.total > 0 && result.score >= 0 && result.score <= result.total && result.score / result.total >= 0.7;
+  });
   const certificateEligible = progress >= 100 && finalResult?.passed === true && moduleAssessmentsPassed;
   const whatsappHref = useMemo(() => {
     const text = "Namaste SSF Learning Hub. Certificate request: " + subject.en + " (" + title + "). Learner: " + (user?.fullName || "") + ", email: " + (user?.email || "") + ", progress: " + progress + "%.";
@@ -66,6 +70,7 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
           courseTitle: title,
           completionPercent: progress,
           moduleAssessments: moduleResults,
+          requiredModuleAssessmentIds: requiredIds,
           finalAssessment: finalResult,
           learningHours: courseMeta?.learningHours,
         }),
@@ -98,7 +103,7 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
       प्रमाणपत्र अनुरोध तभी खुलेगा जब पाठ्यक्रम का 100% पूरा हो और अंतिम आकलन पास हो। इसके बाद <strong>Join SSF</strong> / <strong>Login</strong> करें; SSF admin जाँच के बाद प्रमाणपत्र जारी करेगा।
     </p>
     <div className={"mt-3 rounded-xl border p-3 text-sm font-bold " + (certificateEligible ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-800")}>
-      {certificateEligible ? "✓ पात्र / Eligible: 100% course completion और final assessment passed." : "अभी पात्र नहीं / Not yet eligible: " + progress + "% पूरा; final assessment " + (finalResult?.passed ? "पास" : "पास नहीं हुआ") + (moduleAssessmentResults.length && !moduleAssessmentsPassed ? "; कुछ module assessments पास नहीं हुए" : "") + "।"}
+      {certificateEligible ? "✓ पात्र / Eligible: 100% course completion और final assessment passed." : "अभी पात्र नहीं / Not yet eligible: " + progress + "% पूरा; final assessment " + (finalResult?.passed ? "पास" : "पास नहीं हुआ") + (requiredIds.length && !moduleAssessmentsPassed ? "; सभी required module assessments पास नहीं हुए" : "") + "।"}
     </div>
 
     {user ? <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
