@@ -1,11 +1,6 @@
 import { SUBJECT_CONTENT } from "../src/data/learningHubSubjectContent.js";
 import { SUBJECT_CONTENT_EXTRA } from "../src/data/learningSubjectContentExtra.js";
 import { LEARNING_CATEGORIES, LEARNING_CATEGORIES_EXTRA } from "../src/data/learningCurriculum.js";
-import { EDUCATION_COURSES } from "../src/data/educationCourse.js";
-import { KNOWLEDGE_WORLD_COURSES } from "../src/data/knowledgeWorldCourse.js";
-import { OFFICE_SKILLS_CONTENT } from "../src/data/officeSkillsCourse.js";
-import { ALL_STRUCTURED_COURSES } from "../src/data/coursesData.js";
-import { FLAGSHIP_COURSES } from "../src/data/learningHubCourseArchitecture.js";
 import { ENTREPRENEURSHIP_CONTENT } from "../src/data/entrepreneurshipContent.js";
 import { RESEARCH_CONTENT } from "../src/data/researchSkillsContent.js";
 import { MEDIA_CONTENT } from "../src/data/mediaLiteracyContent.js";
@@ -79,9 +74,6 @@ const normalizeTitle = (title) => title.split(" / ")[0].trim().toLowerCase().rep
 const providerMaps = [
   ["SUBJECT_CONTENT", SUBJECT_CONTENT],
   ["SUBJECT_CONTENT_EXTRA", SUBJECT_CONTENT_EXTRA],
-  ["EDUCATION_COURSES", EDUCATION_COURSES],
-  ["KNOWLEDGE_WORLD_COURSES", KNOWLEDGE_WORLD_COURSES],
-  ["OFFICE_SKILLS_CONTENT", OFFICE_SKILLS_CONTENT],
   ["ENTREPRENEURSHIP_CONTENT", ENTREPRENEURSHIP_CONTENT],
   ["RESEARCH_CONTENT", RESEARCH_CONTENT],
   ["MEDIA_CONTENT", MEDIA_CONTENT],
@@ -102,10 +94,6 @@ for (const [provider, map] of providerMaps) {
     if (!providerByTitle.has(key)) providerByTitle.set(key, provider);
   }
 }
-for (const course of [...(ALL_STRUCTURED_COURSES || []), ...(FLAGSHIP_COURSES || [])]) {
-  const title = course?.title?.en || course?.title || course?.id;
-  if (title) providerByTitle.set(normalizeTitle(String(title)), "STRUCTURED_COURSE");
-}
 for (const title of ["Primary Education", "Time & Calendar", "Fruits", "Vocabulary Building", "Trees & Forests"]) {
   if (!providerByTitle.has(normalizeTitle(title))) providerByTitle.set(normalizeTitle(title), "DEDICATED_COURSE_RENDERER");
 }
@@ -114,7 +102,7 @@ const fallbackTitles = [...curriculumTitles].filter((title) => !providerByTitle.
 
 console.log(`Learning Hub content audit: ${entryCount} registry entries, ${questionCount} quiz questions checked, ${curriculumTitles.size} curriculum titles detected.`);
 console.log(`Titles without an exact SUBJECT_CONTENT registry entry: ${missingExactRegistry.length} (some are served by dedicated course providers).`);
-console.log(`Titles not matched to a dedicated content provider by this static audit: ${fallbackTitles.length}. Review these before claiming full subject-specific coverage.`);
+console.log(`Titles not matched to an explicit subject registry or authored category map by this static audit: ${fallbackTitles.length}. Review these against dedicated course providers before claiming full subject-specific coverage.`);
 if (fallbackTitles.length) console.warn("Provider coverage review: " + fallbackTitles.join("; "));
 if (warnings.length) console.warn(warnings.join("\n"));
 if (errors.length) {
