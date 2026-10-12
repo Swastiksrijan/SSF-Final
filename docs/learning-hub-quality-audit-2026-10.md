@@ -51,6 +51,7 @@ The latest PR build, certificate-validation unit tests, static content audit and
 - Explicitly completing a lesson increments progress once only; reopening it must not double-count.
 - Previous/Next and Back navigation must keep the correct lesson and must not strand the learner on a module list.
 - Certificate requests require 100% lesson completion, a current-version passed final assessment and all configured module assessments. SSF admin review remains required for issuance.
+- Static source-regression checks confirm lesson navigation opens the lesson without marking it complete, an explicit completion control exists, quick checks are interactive, and certificate requests call server-side assessment validation.
 - Each visible subject maps to an explicit content provider in the static inventory; any remaining semantic fallback must be clearly labelled and reviewed.
 - Quick checks must allow an answer, feedback, explanation where supplied, and retry.
 - Verify bilingual rendering, keyboard/mobile usability, progress persistence, no React child/type errors, and production build.
