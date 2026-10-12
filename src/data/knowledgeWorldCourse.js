@@ -173,6 +173,6 @@ export const knowledgeWorldToMasterCourse = (subject, course) => {
     outcomeIntro: "इस course के बाद learner:",
     outcome: [course.overview?.outcome, course.overview?.why].filter(Boolean),
     outcomeClose: "समझ + अभ्यास + वास्तविक उदाहरण — यही असली learning है।",
-    project: course.project || buildAuthoredCourseProject(subject, course),
+    project: buildAuthoredCourseProject(subject, course),
   };
 };
