@@ -2107,9 +2107,9 @@ const authoredContentToMasterCourse = (subject, content, opts = {}) => {
   const focus = source.tagline || subject.intro || ("इस विषय को समझ, उदाहरण और अभ्यास के साथ सीखें।");
 
   return {
-    meta: { icon, title: [subject.en, subject.hi], level, tag, tagline: source.tagline, heroSubtitle: overview.what || subject.intro || content.tagline },
+    meta: { icon, title: [subject.en, subject.hi], level, tag, tagline: source.tagline, heroSubtitle: overview.what || subject.intro || source.tagline },
     overview: {
-      what: overview.what || subject.intro || content.tagline,
+      what: overview.what || subject.intro || source.tagline,
       why: overview.why || ("यह ज्ञान " + subject.en + " में रोज़मर्रा की समझ, सही निर्णय और practical capability के लिए जरूरी है।"),
       where: overview.where || "घर, काम और रोज़मर्रा की वास्तविक स्थितियों में।",
       outcome: overview.outcome || ("Learner " + subject.en + " के मुख्य concepts समझेगा, उदाहरण देखेगा, अभ्यास करेगा और नई स्थितियों में लागू कर सकेगा।"),
@@ -2125,13 +2125,14 @@ const authoredContentToMasterCourse = (subject, content, opts = {}) => {
     },
     modules,
     revision: { title: "पूरा course एक नज़र में", groups: [
-      ...(source.glossary ? [{ title: "📖 मुख्य शब्द / Key Words", items: content.glossary.map(([term, hi, meaning]) => term + (hi ? " (" + hi + ")" : "") + (meaning ? " — " + meaning : "")) }] : []),
-      ...(source.facts ? [{ title: "💡 Did You Know?", items: content.facts }] : []),
+      ...(source.glossary ? [{ title: "📖 मुख्य शब्द / Key Words", items: source.glossary.map(([term, hi, meaning]) => term + (hi ? " (" + hi + ")" : "") + (meaning ? " — " + meaning : "")) }] : []),
+      ...(source.facts ? [{ title: "💡 Did You Know?", items: source.facts }] : []),
+      { title: "Key Concepts / मुख्य बातें", items: source.modules.flatMap((m) => m.topics.map((t) => String(t.title) + " — " + String(t.learn || "").slice(0, 180))).slice(0, 8) },
     ].filter((g) => g.items.length) },
     mastery: { title: "Final Test / अंतिम परीक्षा", note: "इस course के modules से चुने गए प्रश्न।", tasks: modules.map((m) => ({ icon: m.icon, title: m.title, x: "" })), quiz: [...mastery, ...firstQuiz].slice(0, 10) },
     project: buildAuthoredCourseProject(subject, source),
     outcomeIntro: "इस course के बाद learner:",
-    outcome: (opts.outcomes && opts.outcomes.length) ? opts.outcomes : [content.tagline],
+    outcome: (opts.outcomes && opts.outcomes.length) ? opts.outcomes : [source.tagline],
     outcomeClose: opts.outcomeClose || "अभ्यास + वास्तविक उदाहरण + जाँच — यही असली skill है।",
   };
 };
