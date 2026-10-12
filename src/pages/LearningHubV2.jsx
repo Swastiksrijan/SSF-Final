@@ -2761,7 +2761,7 @@ function LearningSubject({ subject, onBack }) {
         activity: d.activity,
         summary: d.content?.summary
       }}
-      check={d.knowledgeCheck}
+      check={d.content?.knowledgeCheck || d.knowledgeCheck}
     />{finalAssessment}{cert}</>;
   }
   if (isTimeCalendarSubject(subject)) return <MasterCourse course={TIME_CALENDAR_COURSE} subject={subject} onBack={onBack} art={timeChapterArt} HeroArt={TimeHeroArt} />;
