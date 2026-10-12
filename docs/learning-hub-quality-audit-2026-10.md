@@ -21,7 +21,7 @@ The repeatable `npm run audit:learning-hub` check currently validates:
 - 108 authored-category courses and 651 topic lessons after subject-grounded applied-practice expansion.
 - 45 Education / Knowledge World courses and 587 topic lessons.
 - 41 flagship / English-from-basics assessment-bank questions.
-- 5 structured courses, 38 authored lessons and 17 module-assessment banks (including assessed practical modules added to short courses); every rendered structured module assessment must contain at least five validated questions.
+- 5 structured courses, 38 lessons after depth expansion and 17 module-assessment banks (including assessed practical modules added to short courses); every rendered structured module assessment must contain at least five validated questions.
 - 9 source-level regression guards for lesson navigation, interactive checks, certificate eligibility and server-side required-module validation.
 - Placeholder-copy scan across explicit subject registries, authored category maps, compact Education/Knowledge World maps and structured courses.
 
