@@ -2734,7 +2734,7 @@ function LearningSubject({ subject, onBack }) {
       onNextLesson: activeLesson < total - 1 ? () => goLesson(activeLesson + 1) : undefined,
       onMarkDone: () => markDone(activeLesson)
     };
-    const cert = <div className="mx-auto max-w-6xl px-4 pb-16"><CourseCertificate subject={subject} courseTitle={courseMeta.title.en} courseMeta={courseMeta} progress={progress} moduleResults={moduleResults} requiredModuleAssessmentIds={moduleAssessments.map((m) => m.id)} finalResult={finalResult} /></div>;
+    const cert = <div className="mx-auto max-w-6xl px-4 pb-16"><CourseCertificate subject={subject} courseTitle={courseMeta.title.en} courseMeta={courseMeta} progress={progress} moduleResults={moduleResults} requiredModuleAssessmentIds={moduleAssessments.map((m) => m.id)} finalResult={finalResult} assessmentCourseId={structuredCourseId} /></div>;
     const primaryProject = <section className="mx-auto mt-8 max-w-6xl px-4">
       <div className="rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-5 shadow-sm md:p-8">
         <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🎨</span><div><h2 className="text-xl font-black text-[#062a52] md:text-2xl">Primary Learning Project / प्राथमिक सीखने की परियोजना</h2><p className="mt-1 text-sm text-zinc-600">My Bilingual Picture Book / मेरी द्विभाषी चित्र-पुस्तिका</p></div></div>
@@ -3122,6 +3122,7 @@ function LearningSubject({ subject, onBack }) {
         moduleResults={moduleResults}
         requiredModuleAssessmentIds={moduleAssessments.map((m) => m.id)}
         finalResult={finalResult}
+        assessmentCourseId={structuredCourseId}
       />
 
     </main>
