@@ -66,8 +66,8 @@ Not every subject should use identical question formats: practical skills need p
 
 ## Remaining validation before release
 
-- Complete the latest CI run after the newest commits and inspect its final build status.
-- Perform actual browser/mobile smoke tests for course opening, Back/Next, completion persistence, final/module assessment retries and certificate eligibility. The Vercel connector currently denies access to the preview deployment, so that visual/runtime validation has not yet been completed.
+- Latest CI run passed at commit `82200ab581c55225307ed33719df142a0f5b2aaa`: locked dependency install, certificate validation unit tests, content audit, and production build all succeeded.
+- Actual browser/mobile smoke tests for course opening, Back/Next, completion persistence, final/module assessment retries and certificate eligibility are still blocked. Vercel reports the branch preview is READY, but the connected Vercel integration denies preview access with HTTP 403; authorize the SSF-Final project/team in the Vercel connection, then run these tests before release.
 - Review bilingual accuracy, subject-specific facts and answer explanations with a human educator; static checks cannot certify pedagogical quality.
 - Confirm the existing progress-storage limitation and certificate API trust model are acceptable before claiming a tamper-proof or cross-device learning record.
 - Merge/deploy only after these release gates pass. No live deployment has been performed by this audit branch.
