@@ -56,6 +56,9 @@ for (const [registryName, registry] of registries) {
     if (typeof content.practical !== "string" || !content.practical.trim()) {
       errors.push(`${registryName}["${subject}"]: missing practical application.`);
     }
+    if ((content.concepts?.length || 0) < 3 || (content.examples?.length || 0) < 2 || (content.practice?.length || 0) < 2 || (content.quiz?.length || 0) < 3) {
+      warnings.push(`${registryName}["${subject}"]: shallow registry section counts; confirm that the dedicated provider supplies the missing depth.`);
+    }
     for (const field of requiredArrays) {
       if (!Array.isArray(content[field]) || content[field].length === 0) {
         errors.push(`${registryName}["${subject}"]: ${field} must be a non-empty array.`);
@@ -137,6 +140,8 @@ for (const [mapName, map] of compactCourseMaps) {
       if (!Array.isArray(options) || options.length < 2) errors.push(`${label}: final assessment needs at least two options.`);
       else if (!Number.isInteger(answer) || answer < 0 || answer >= options.length) errors.push(`${label}: final assessment answer key is missing or invalid.`);
     }
+    const compactTopics = modules.reduce((n, module) => n + ((Array.isArray(module) ? module[2] : module?.topics)?.length || 0), 0);
+    if (modules.length < 3 || compactTopics < 5) warnings.push(`${mapName}["${title}"]: fewer than three modules or five topics.`);
     const project = buildAuthoredCourseProject({ en: title, hi: "" }, course);
     if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) {
       errors.push(`${mapName}["${title}"]: no usable subject-specific capstone project.`);
@@ -175,6 +180,8 @@ for (const [courseId, course] of Object.entries(ALL_STRUCTURED_COURSES || {})) {
       if (!(Array.isArray(lesson?.content?.examples) && lesson.content.examples.length) && !lesson?.content?.example) warnings.push(`${label}: no authored example field found.`);
     }
   }
+  const lessonCount = modules.reduce((n, module) => n + (module?.lessons?.length || 0), 0);
+  if (modules.length < 3 || lessonCount < 5) warnings.push(`ALL_STRUCTURED_COURSES["${courseId}"]: fewer than three modules or five lessons.`);
   const project = buildAuthoredCourseProject({ en: course?.title?.en || courseId, hi: course?.title?.hi || "" }, course);
   if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"]: no usable practical capstone project.`);
 }
@@ -234,6 +241,8 @@ for (const [mapName, map] of authoredMaps) {
       if (!Array.isArray(options) || options.length < 2) errors.push(`${label}: final assessment needs at least two options.`);
       else if (!Number.isInteger(answer) || answer < 0 || answer >= options.length) errors.push(`${label}: final assessment answer key is missing or invalid.`);
     }
+    const authoredTopics = modules.reduce((n, module) => n + (module?.topics?.length || 0), 0);
+    if (modules.length < 3 || authoredTopics < 5) warnings.push(`${mapName}["${title}"]: fewer than three modules or five topics.`);
     const project = buildAuthoredCourseProject({ en: title, hi: "", intro: course?.tagline }, course);
     if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) {
       errors.push(`${mapName}["${title}"]: no usable subject-specific capstone project.`);
