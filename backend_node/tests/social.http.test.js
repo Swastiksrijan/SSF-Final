@@ -61,7 +61,11 @@ async function main() {
     ok('six series returned', Array.isArray(series.body.series) && series.body.series.length === 6);
     ok('each series carries a time', series.body.series.every((s) => /^\d{1,2}:\d{2}$/.test(String(s.time || ''))));
     const sPlan = await send('/api/social/series/plan', 'POST', {});
-    ok('series/plan drafts chapters', sPlan.body.created >= 6, JSON.stringify(sPlan.body));
+    ok('series/plan drafts the safe 3-series default (not all 6)', sPlan.body.created === 3, JSON.stringify(sPlan.body));
+    // Explicitly enabling all six must be reflected by config (safe default is 3-on).
+    await send('/api/social/config', 'POST', { seriesEnabled: { samvidhan: true, yojana: true, swasthya: true, gk: true, 'english-word': true, prerna: true } });
+    const cfg = await get('/api/social/config', auth);
+    ok('config reports all six enabled after the toggle', cfg.body.seriesEnabled && Object.values(cfg.body.seriesEnabled).filter(Boolean).length === 6, JSON.stringify(cfg.body.seriesEnabled));
     const series2 = await get('/api/social/series', auth);
     ok('series endpoint reports progress after planning', true);
 

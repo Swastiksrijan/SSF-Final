@@ -228,6 +228,14 @@ async function main() {
   const { SocialSeriesProgress } = require('../models/social');
   await SocialSeriesProgress.destroy({ where: {} });
   await SocialPost.destroy({ where: { kind: 'series' } });
+  // Safe default: only 3 series ship enabled, so a fresh install does not flood.
+  await publisher.setConfig('seriesEnabled', null);
+  const dflt = await publisher.planAwarenessSeries(new Date(2026, 7, 1));
+  ok('fresh install plans only the safe 3-series default', dflt.length === 3, `got=${dflt.length}`);
+  await SocialSeriesProgress.destroy({ where: {} });
+  await SocialPost.destroy({ where: { kind: 'series' } });
+  // Enable all six for the ordering/idempotency flow below.
+  await publisher.setConfig('seriesEnabled', { samvidhan: true, yojana: true, swasthya: true, gk: true, 'english-word': true, prerna: true });
   const sday1 = new Date(2026, 8, 1);
   const sp1 = await publisher.planAwarenessSeries(sday1);
   ok('one awareness-series post per series per day', sp1.length === 6, `got=${sp1.length}`);

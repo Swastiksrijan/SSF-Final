@@ -20,9 +20,21 @@ const DEFAULT_SERIES_TIMES = {
   prerna: '20:00',
 };
 
+// Safe default: only THREE series are ON out of the box. Flooding 12 posts/day at
+// a small account suppresses reach, so the rest are shipped ready-but-OFF and can
+// be switched on any time from the IMS Series tab (config `seriesEnabled`).
+const DEFAULT_SERIES_ENABLED = {
+  samvidhan: true,
+  yojana: true,
+  swasthya: true,
+  gk: false,
+  'english-word': false,
+  prerna: false,
+};
+
 const SERIES = [samvidhan, swasthya, yojana, gk, englishWord, prerna];
 
 const seriesByKey = {};
 for (const s of SERIES) seriesByKey[s.key] = s;
 
-module.exports = { SERIES, seriesByKey, DEFAULT_SERIES_TIMES };
+module.exports = { SERIES, seriesByKey, DEFAULT_SERIES_TIMES, DEFAULT_SERIES_ENABLED };

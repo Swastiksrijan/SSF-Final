@@ -9,7 +9,7 @@ const { Op } = require('sequelize');
 const { SocialChannel, SocialPost, SocialConfig, SocialEvent, SocialRunLog, SocialCourseProgress, SocialSeriesProgress } = require('../../models/social');
 const { planPost, planLibraryPost, planEventPost, planCoursePost, splitPlan, COURSES, COURSE_TIMES } = require('./content');
 const { ADAPTERS } = require('./channels');
-const { SERIES, seriesByKey, DEFAULT_SERIES_TIMES } = require('./series');
+const { SERIES, seriesByKey, DEFAULT_SERIES_TIMES, DEFAULT_SERIES_ENABLED } = require('./series');
 const { buildSeriesPost, advanceSeriesProgress } = require('./seriesEngine');
 
 const DEFAULT_PLATFORMS = ['website', 'facebook', 'instagram', 'telegram', 'linkedin', 'whatsapp', 'x', 'youtube'];
@@ -136,7 +136,9 @@ async function seriesTimes() {
 }
 async function seriesEnabled() {
   const cfg = await getConfig('seriesEnabled', null);
-  return (cfg && typeof cfg === 'object') ? cfg : {};
+  // No explicit config -> the safe 3-on default (see series.js). An explicit
+  // object from config always wins, so the admin stays in full control.
+  return (cfg && typeof cfg === 'object') ? cfg : { ...DEFAULT_SERIES_ENABLED };
 }
 
 async function planAwarenessSeries(date) {
