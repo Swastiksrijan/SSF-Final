@@ -2727,7 +2727,7 @@ function LearningSubject({ subject, onBack }) {
       onNextLesson: activeLesson < total - 1 ? () => goLesson(activeLesson + 1) : undefined,
       onMarkDone: () => markDone(activeLesson)
     };
-    const cert = <div className="mx-auto max-w-6xl px-4 pb-16"><CourseCertificate subject={subject} courseTitle={courseMeta.title.en} courseMeta={courseMeta} progress={progress} moduleResults={moduleResults} finalResult={finalResult} /></div>;
+    const cert = <div className="mx-auto max-w-6xl px-4 pb-16"><CourseCertificate subject={subject} courseTitle={courseMeta.title.en} courseMeta={courseMeta} progress={progress} moduleResults={moduleResults} requiredModuleAssessmentIds={moduleAssessments.map((m) => m.id)} finalResult={finalResult} /></div>;
     const finalAssessment = <section className="mx-auto mt-8 max-w-6xl px-4">
       <div className="rounded-[2rem] border border-[#cfe0ee] bg-white p-5 shadow-sm md:p-8">
         <h2 className="text-xl font-black text-[#002344] md:text-2xl">Final Course Assessment / अंतिम पाठ्यक्रम आकलन</h2>
@@ -2954,6 +2954,31 @@ function LearningSubject({ subject, onBack }) {
               </div>}
             </div>
           </div>
+          {moduleAssessments.length > 0 && <section className="rounded-[2rem] border border-[#cfe0ee] bg-white p-5 shadow-sm">
+            <h3 className="font-black text-[#002344]">Module Assessments / मॉड्यूल आकलन</h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">हर required module assessment पास करें। कम-से-कम 70% सही उत्तर आवश्यक हैं।</p>
+            <div className="mt-4 space-y-4">
+              {moduleAssessments.map((module) => {
+                const selectedAnswers = moduleAnswers[module.id] || {};
+                const result = moduleResults[module.id];
+                return <div key={module.id} className="rounded-xl border border-zinc-200 p-4">
+                  <div className="font-black text-[#002344]">{module.title?.en || module.title?.hi || module.title || module.id}</div>
+                  {module.description && <p className="mt-1 text-xs leading-5 text-zinc-500">{module.description}</p>}
+                  <div className="mt-3 space-y-3">
+                    {module.questions.map((q, qi) => <div key={q.q || q.question || qi} className="rounded-lg bg-zinc-50 p-3">
+                      <div className="text-sm font-bold text-zinc-800">{qi + 1}. {q.q || q.question || q.prompt}</div>
+                      <div className="mt-2 space-y-2">{q.options.map((option, oi) => <label key={oi} className="flex cursor-pointer items-start gap-2 text-sm leading-5 text-zinc-700">
+                        <input type="radio" name={"module-" + module.id + "-q-" + qi} checked={selectedAnswers[qi] === oi} onChange={() => setModuleAnswers(current => ({...current, [module.id]: {...(current[module.id] || {}), [qi]: oi}}))}/>
+                        <span>{option}</span>
+                      </label>)}</div>
+                    </div>)}
+                  </div>
+                  <button type="button" onClick={() => submitModuleAssessment(module.id, module.questions)} disabled={!module.questions.length || Object.keys(selectedAnswers).length < module.questions.length} className="mt-3 w-full rounded-xl bg-[#0f4c81] px-3 py-2.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Submit Module Assessment / जमा करें</button>
+                  {result && <div className={"mt-3 rounded-lg p-3 text-sm font-bold " + (result.passed ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800")}>Score: {result.score}/{result.total} · {result.passed ? "पास / Passed" : "फिर प्रयास करें / Retry required"}</div>}
+                </div>;
+              })}
+            </div>
+          </section>}
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
             <h3 className="font-black text-[#002344]">Course Assessment / आकलन</h3>
             <p className="mt-2 text-sm leading-6 text-zinc-600">{quizQuestions.length ? "पाठ और अभ्यास के बाद विषय-आधारित प्रश्नों से अपना ज्ञान जाँचें। पास होने के लिए कम-से-कम 70% सही उत्तर जरूरी हैं।" : "इस विषय के लिए सत्यापित answer-key वाले प्रश्न उपलब्ध नहीं हैं। गलत या अनुमानित answer key दिखाने के बजाय final assessment फिलहाल उपलब्ध नहीं है।"}</p>
@@ -3056,6 +3081,7 @@ function LearningSubject({ subject, onBack }) {
         courseMeta={courseMeta}
         progress={progress}
         moduleResults={moduleResults}
+        requiredModuleAssessmentIds={moduleAssessments.map((m) => m.id)}
         finalResult={finalResult}
       />
 
