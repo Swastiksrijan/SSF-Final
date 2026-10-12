@@ -154,6 +154,7 @@ const REQUIRED_MODULE_ASSESSMENT_IDS_BY_COURSE = certificateValidation.REQUIRED_
 let structuredCourseCount = 0;
 let structuredLessonCount = 0;
 let structuredModuleAssessmentCount = 0;
+const structuredAssessmentIdsByCourse = {};
 for (const [courseId, course] of Object.entries(ALL_STRUCTURED_COURSES || {})) {
   structuredCourseCount += 1;
   if (!course?.title?.en || !course?.title?.hi) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"]: missing bilingual course title.`);
@@ -166,8 +167,10 @@ for (const [courseId, course] of Object.entries(ALL_STRUCTURED_COURSES || {})) {
     if (!lessons.length) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"].modules[${mi}]: no lessons.`);
     const questionSource = COURSE_ASSESSMENTS?.[module.id] || bank[module.id] || module.assessment?.questions;
     const questions = Array.isArray(questionSource) ? questionSource : [];
-    if (questions.length) structuredModuleAssessmentCount += 1;
-    else warnings.push(`ALL_STRUCTURED_COURSES["${courseId}"].modules["${module.id}"]: no module assessment bank.`);
+    if (questions.length) {
+      structuredModuleAssessmentCount += 1;
+      (structuredAssessmentIdsByCourse[courseId] ||= []).push(module.id);
+    } else warnings.push(`ALL_STRUCTURED_COURSES["${courseId}"].modules["${module.id}"]: no module assessment bank.`);
     for (const [qi, q] of questions.entries()) {
       const label = `ALL_STRUCTURED_COURSES["${courseId}"].modules["${module.id}"].assessment[${qi}]`;
       const prompt = q?.q || q?.question || q?.prompt;
@@ -280,6 +283,14 @@ const curriculumTitles = new Set();
 for (const category of categories) {
   for (const item of Array.isArray(category) ? category : []) {
     if (Array.isArray(item) && typeof item[0] === "string") curriculumTitles.add(item[0]);
+  }
+}
+const courseIdsWithAssessments = new Set([...Object.keys(structuredAssessmentIdsByCourse), ...Object.keys(REQUIRED_MODULE_ASSESSMENT_IDS_BY_COURSE || {})]);
+for (const courseId of courseIdsWithAssessments) {
+  const actualIds = [...(structuredAssessmentIdsByCourse[courseId] || [])].sort();
+  const requiredIds = [...(REQUIRED_MODULE_ASSESSMENT_IDS_BY_COURSE[courseId] || [])].sort();
+  if (actualIds.length !== requiredIds.length || actualIds.some((id, index) => id !== requiredIds[index])) {
+    errors.push(`Server-required module assessment IDs do not match the course assessment banks for "${courseId}". Expected [${actualIds.join(", ")}], configured [${requiredIds.join(", ")}].`);
   }
 }
 for (const [courseId, requiredIds] of Object.entries(REQUIRED_MODULE_ASSESSMENT_IDS_BY_COURSE || {})) {
