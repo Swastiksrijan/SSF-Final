@@ -2541,6 +2541,7 @@ function LearningSubject({ subject, onBack }) {
   const [quizOpen, setQuizOpen] = useState(false);
   const [lessonOpen, setLessonOpen] = useState(false);
   const [answers, setAnswers] = useState({});
+  const [lessonQuickAnswers, setLessonQuickAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [finalResult, setFinalResult] = useState(() => {
     try { return JSON.parse(localStorage.getItem(progressKey + "-final") || "null"); } catch { return null; }
@@ -2709,6 +2710,7 @@ function LearningSubject({ subject, onBack }) {
     setActiveLesson(safe);
     setQuizOpen(false);
     setAnswers({});
+    setLessonQuickAnswers({});
     setSubmitted(false);
     setLessonOpen(true);
     // Opening or navigating to a lesson is not proof that the learner completed it.
@@ -2908,7 +2910,33 @@ function LearningSubject({ subject, onBack }) {
                   ["Summary / सार", lessons[activeLesson].detail.content?.summary]
                 ].map(([label,value]) => value && <div key={label}>
                   <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">{label}</div>
-                  {Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{value.map((x,i)=><li key={i}>{x && typeof x === "object" ? [x.question || x.title || x.text || "", x.options ? x.options.join(" • ") : ""].filter(Boolean).join(" — ") : x}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-600">{value}</p>}
+                  {label === "Knowledge Check / ज्ञान जाँच" && Array.isArray(value) && value.some((q) => q && typeof q === "object" && Array.isArray(q.options)) ? (
+                    <div className="mt-3 space-y-3">
+                      {value.map((q, i) => {
+                        if (!q || typeof q !== "object" || !Array.isArray(q.options)) {
+                          return <div key={i} className="rounded-lg bg-zinc-50 p-3 text-sm text-zinc-700">{String(q ?? "")}</div>;
+                        }
+                        const answerKey = subject.id + "::" + activeLesson + "::" + i;
+                        const selected = lessonQuickAnswers[answerKey];
+                        const correct = Number.isInteger(q.answer) ? q.answer : (Number.isInteger(q.correctAnswer) ? q.correctAnswer : null);
+                        const hasAnswer = selected !== undefined;
+                        const isCorrect = hasAnswer && correct !== null && selected === correct;
+                        return <div key={answerKey} className="rounded-xl border border-zinc-200 bg-white p-4">
+                          <div className="text-sm font-black leading-6 text-zinc-800">{i + 1}. {q.question || q.prompt || "प्रश्न / Question"}</div>
+                          <div className="mt-3 grid gap-2">
+                            {q.options.map((option, oi) => <button key={oi} type="button" onClick={() => setLessonQuickAnswers((current) => ({ ...current, [answerKey]: oi }))} className={"rounded-lg border px-3 py-2 text-left text-sm font-semibold " + (selected === oi ? (correct === null ? "border-[#0f4c81] bg-[#eef7fb] text-[#002344]" : oi === correct ? "border-emerald-300 bg-emerald-50 text-emerald-800" : "border-rose-300 bg-rose-50 text-rose-800") : "border-zinc-200 hover:border-[#9bbbd0]")}>
+                              <span className="mr-2 font-black">{String.fromCharCode(65 + oi)}.</span>{String(option)}
+                            </button>)}
+                          </div>
+                          {hasAnswer && <div className={"mt-3 rounded-lg p-3 text-sm font-bold " + (correct === null ? "bg-[#eef7fb] text-[#002344]" : isCorrect ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800")}>
+                            {correct === null ? "उत्तर चुना गया। इस प्रश्न की answer key उपलब्ध नहीं है। / Answer selected; no answer key is available." : isCorrect ? "✓ सही उत्तर! / Correct answer!" : "अभी सही नहीं। फिर प्रयास करें। / Not quite—try again."}
+                            {correct !== null && <div className="mt-1">सही उत्तर / Correct answer: {q.options[correct] ?? "उत्तर उपलब्ध नहीं"}</div>}
+                            {q.explain && <div className="mt-1 font-medium">व्याख्या / Explanation: {q.explain}</div>}
+                          </div>}
+                        </div>;
+                      })}
+                    </div>
+                  ) : Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{value.map((x,i)=><li key={i}>{x && typeof x === "object" ? [x.question || x.title || x.text || "", x.options ? x.options.join(" • ") : ""].filter(Boolean).join(" — ") : x}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-600">{value}</p>}
                 </div>)}
               </div>}
             </div>
