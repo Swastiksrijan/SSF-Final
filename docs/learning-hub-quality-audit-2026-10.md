@@ -18,10 +18,10 @@ Scope: Learning Hub lesson rendering, content-provider registries, assessments, 
 
 The repeatable `npm run audit:learning-hub` check currently validates:
 - 154 explicit subject-registry entries and 483 quiz questions.
-- 108 authored-category courses and 574 topic lessons.
+- 108 authored-category courses and 651 topic lessons after subject-grounded applied-practice expansion.
 - 45 Education / Knowledge World courses and 587 topic lessons.
 - 41 flagship / English-from-basics assessment-bank questions.
-- 5 structured courses, 35 lessons and module-assessment banks.
+- 5 structured courses, 38 lessons and 17 module-assessment banks (including assessed practical modules added to short courses).
 
 The curriculum inventory detected 243 titles. The static provider map matched all 243 to an explicit registry or authored provider; 109 do not have an exact `SUBJECT_CONTENT` key because they are supplied through other dedicated course providers. These are registry/provider counts, not a claim that 243 unique courses have each passed human pedagogical or factual review.
 
@@ -57,7 +57,7 @@ Not every subject should use identical question formats: practical skills need p
 - Made quick checks interactive in primary, authored-category and Knowledge World/Master Course lesson renderers.
 - Corrected retry behavior for failed final/mastery assessments and versioned current assessment results.
 - Added module assessment UI for structured courses and tied recorded results to certificate eligibility.
-- Added subject-grounded practical projects for authored-category, Education, Knowledge World and structured courses; added a bilingual Primary Education capstone.
+- Added subject-grounded practical projects for authored-category, Education, Knowledge World and structured courses; short authored courses are extended to at least three modules/five lessons using real topic examples and activities; short structured courses receive an assessed practical module; added a bilingual Primary Education capstone.
 - Removed guessed answer-key defaults from the Education course builder.
 - Added server-side score/version consistency checks for certificate requests and five Node test cases.
 - Added `npm run audit:learning-hub` to validate content sections, lesson examples/activities, answer keys, provider coverage, projects and assessment banks.
