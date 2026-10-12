@@ -2614,35 +2614,27 @@ function LearningSubject({ subject, onBack }) {
       ).flat()
     : [];
   const subjectQuiz = (SUBJECT_CONTENT_ALL[subject.en] && SUBJECT_CONTENT_ALL[subject.en].quiz) || [];
-  const kwQuiz = kwCourse ? kwCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
-  const eduQuiz = eduCourse ? eduCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
-  const officeQuiz = officeCourse ? officeCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
-  // Education, Knowledge World and Office Skills share the same rich course UI
-  // (overview, modules, glossary, project, revision, mastery). `richCourse`
-  // selects whichever applies so the sections below stay single-sourced.
+  const kwQuiz = kwCourse ? kwCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer, explain: m.explain })) : [];
+  const eduQuiz = eduCourse ? eduCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer, explain: m.explain })) : [];
+  const officeQuiz = officeCourse ? officeCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer, explain: m.explain })) : [];
+  // Education, Knowledge World and Office Skills share the same rich course UI.
   const richCourse = eduCourse || kwCourse || officeCourse;
   const richTopicCount = eduCourse ? educationTopicCount(eduCourse) : kwCourse ? knowledgeWorldTopicCount(kwCourse) : officeCourse ? officeTopicCount(officeCourse) : 0;
-  const quizQuestions = structuredAssessmentPool.length
-    ? structuredAssessmentPool.slice(0, 5).map(q => ({
-        q: q.q || q.question,
-        options: q.options || [],
-        answer: typeof q.answer === "number" ? q.answer : 0
-      }))
-    : eduQuiz.length
-      ? eduQuiz.slice(0, 5)
-    : kwQuiz.length
-      ? kwQuiz.slice(0, 5)
-    : officeQuiz.length
-      ? officeQuiz.slice(0, 5)
-    : subjectQuiz.length
-      ? subjectQuiz.slice(0, 5).map(q => ({ q: q.question, options: q.options, answer: q.answer }))
-      : [
-        {q:"अच्छी learning का उद्देश्य क्या है?", options:["समझकर और अभ्यास करके capability विकसित करना","केवल title याद करना","केवल video देखना","केवल certificate लेना"], answer:0},
-        {q:"किसी concept को मजबूत करने का उपयोगी तरीका क्या है?", options:["Example + Practice + Review","बिना पढ़े अनुमान लगाना","बिना जाँचे जानकारी share करना","केवल एक definition याद करना"], answer:0},
-        {q:"Current rules या schemes को कहाँ verify करना चाहिए?", options:["संबंधित official source","random forwarded message","unverified social post","anonymous screenshot"], answer:0},
-        {q:"Practical learning में क्या महत्वपूर्ण है?", options:["सुरक्षित task, परिणाम और सुधार","केवल memorisation","बिना training high-risk action","दूसरे का work copy करना"], answer:0},
-        {q:"Course पूरा करने के बाद अगला कदम क्या हो सकता है?", options:["Assessment, reflection और next learning path","सीखना बंद करना","बिना समझे certificate claim करना","सभी sources ignore करना"], answer:0}
-      ];
+  const lessonQuizPool = lessons.flatMap((lesson) => {
+    const checks = lesson.detail?.content?.knowledgeCheck || lesson.detail?.knowledgeCheck || [];
+    return Array.isArray(checks) ? checks : [];
+  });
+  // Prefer real course/subject questions; never invent an answer key or silently use a generic quiz.
+  const rawQuizQuestions = [...structuredAssessmentPool, ...eduQuiz, ...kwQuiz, ...officeQuiz, ...subjectQuiz, ...lessonQuizPool];
+  const quizQuestions = rawQuizQuestions.map((q) => {
+    const question = q?.q || q?.question || q?.prompt;
+    const options = Array.isArray(q?.options) ? q.options : [];
+    const answer = q?.answer;
+    if (!question || options.length < 2 || !Number.isInteger(answer) || answer < 0 || answer >= options.length) return null;
+    return { q: String(question), options: options.map((option) => String(option)), answer, explain: q.explain || q.explanation || "" };
+  }).filter(Boolean)
+    .filter((q, index, all) => all.findIndex((item) => item.q.trim() === q.q.trim()) === index)
+    .slice(0, 5);
   const completed = done.length;
   const total = lessons.length;
   const isRichLesson = isPrimaryEducation && /letters\s*&\s*sounds|अक्षर एवं ध्वनि/i.test(lessons[activeLesson]?.title || "");
@@ -2765,7 +2757,8 @@ function LearningSubject({ subject, onBack }) {
     return <MasterCourse course={mc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />;
   }
   const submitQuiz = () => {
-    const passed = score >= 4;
+    if (!quizQuestions.length || Object.keys(answers).length < quizQuestions.length) return;
+    const passed = score / quizQuestions.length >= 0.7;
     const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
     setSubmitted(true);
     setFinalResult(result);
@@ -2943,11 +2936,11 @@ function LearningSubject({ subject, onBack }) {
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
             <h3 className="font-black text-[#002344]">Course Assessment / आकलन</h3>
-            <p className="mt-2 text-sm leading-6 text-zinc-600">पहले learning और practice पूरा करें, फिर self-check करें। Final certification अभी इस foundation stage में fake नहीं की जा रही है।</p>
-            <button onClick={()=>setQuizOpen(v=>!v)} className="mt-4 w-full rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-3 text-sm font-black text-white">{quizOpen?"Close Check / बंद करें":"Start Knowledge Check / शुरू करें"}</button>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">{quizQuestions.length ? "पाठ और अभ्यास के बाद विषय-आधारित प्रश्नों से अपना ज्ञान जाँचें। पास होने के लिए कम-से-कम 70% सही उत्तर जरूरी हैं।" : "इस विषय के लिए सत्यापित answer-key वाले प्रश्न उपलब्ध नहीं हैं। गलत या अनुमानित answer key दिखाने के बजाय final assessment फिलहाल उपलब्ध नहीं है।"}</p>
+            <button onClick={()=>setQuizOpen(v=>!v)} disabled={!quizQuestions.length} className="mt-4 w-full rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">{quizOpen?"Close Check / बंद करें":"Start Knowledge Check / शुरू करें"}</button>
             {quizOpen && <div className="mt-4 space-y-4">
               {quizQuestions.map((q,i)=><div key={i} className="rounded-xl bg-zinc-50 p-4"><div className="text-sm font-black">{i+1}. {q.q}</div><div className="mt-3 space-y-2">{q.options.map((o,j)=><label key={j} className="flex gap-2 text-xs leading-5"><input type="radio" name={"course-q-"+i} checked={answers[i]===j} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/><span>{o}</span></label>)}</div></div>)}
-              <button onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
+              <button onClick={submitQuiz} disabled={!quizQuestions.length || Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
               {(submitted || finalResult) && <div className={"rounded-xl border p-4 text-center "+(finalResult?.passed?"border-[#cfe5d8] bg-[#f3fbf6]":"border-[#f2dfbd] bg-[#fffaf0]")}><div className={"text-2xl font-black "+(finalResult?.passed?"text-[#177245]":"text-[#9a5b00]")}>{finalResult?.score ?? score}/{finalResult?.total ?? 5}</div><div className="mt-1 text-xs text-zinc-600">{finalResult?.passed?"Final assessment passed / अंतिम आकलन पास":"Review and retry / दोबारा पढ़ें और प्रयास करें"}</div></div>}
             </div>}
           </div>
