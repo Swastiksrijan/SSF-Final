@@ -137,6 +137,8 @@ export const ims = {
   socialCourses: () => fetch(`${API_BASE_URL}/api/social/courses`, { headers: headers() }).then(handle),
   socialCoursesPlan: () => fetch(`${API_BASE_URL}/api/social/courses/plan`, { method: 'POST', headers: headers() }).then(handle),
   socialCoursesRun: () => fetch(`${API_BASE_URL}/api/social/courses/run`, { method: 'POST', headers: headers() }).then(handle),
+  socialSeries: () => fetch(`${API_BASE_URL}/api/social/series`, { headers: headers() }).then(handle),
+  socialSeriesPlan: () => fetch(`${API_BASE_URL}/api/social/series/plan`, { method: 'POST', headers: headers() }).then(handle),
   socialConfig: () => fetch(`${API_BASE_URL}/api/social/config`, { headers: headers() }).then(handle),
   socialSaveConfig: (payload) => fetch(`${API_BASE_URL}/api/social/config`, { method: 'POST', headers: headers(), body: JSON.stringify(payload) }).then(handle),
   socialPlan: (rebuild = false) => fetch(`${API_BASE_URL}/api/social/plan`, { method: 'POST', headers: headers(), body: JSON.stringify({ rebuild }) }).then(handle),

@@ -53,6 +53,7 @@ const financeRoutes = require('./routes/financeRoutes');
 const auditRoutes = require('./routes/auditRoutes');
 const imsRoutes = require('./routes/imsRoutes');
 const socialRoutes = require('./routes/socialRoutes');
+const quizRoutes = require('./routes/quizRoutes');
 // Register SSF-IMS models so sequelize.sync creates their tables.
 require('./models/ims');
 // Register Social Publisher models (separate file, same sync pass).
@@ -100,6 +101,8 @@ app.use('/api', financeRoutes);
 app.use('/api', auditRoutes);
 app.use('/api', imsRoutes);
 app.use('/api', socialRoutes);
+// Awareness quiz + automatic certificate issuance.
+app.use('/api', quizRoutes);
 
 // `alter: true` re-introspects every foreign key on every boot. On a free-tier
 // Postgres that can exceed the provider's statement/connection timeout and get

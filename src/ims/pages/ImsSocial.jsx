@@ -532,10 +532,73 @@ function CoursesTab({ courses, busy, run, lang }) {
   );
 }
 
+// ---- daily awareness series tab (Samvidhan / Yojana / Charak / GK / English / Prerna) --
+function SeriesTab({ series, busy, run, lang }) {
+  const hi = lang === 'hi';
+  const list = (series && series.series) || [];
+  return (
+    <div className="mb-6">
+      <Card className="mb-4 p-4">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h2 className="text-sm font-black uppercase tracking-wider text-slate-500">
+              📖 {hi ? 'रोज़ की ज्ञान शृंखला — एक अध्याय प्रतिदिन' : 'Daily knowledge series — one chapter a day'}
+            </h2>
+            <p className="mt-1 max-w-2xl text-xs text-slate-500">
+              {hi
+                ? 'छह शृंखलाएँ: संविधान, स्वास्थ्य (चरक), सरकारी योजना, सामान्य ज्ञान, अंग्रेज़ी शब्द एवं प्रेरणा — प्रत्येक से रोज़ एक अध्याय, क्रम से (कभी कहीं का कहीं नहीं)।'
+                : 'Six series: Samvidhan, Health (Charak), Sarkari Yojana, General Knowledge, English word, and Motivation — one chapter each per day, always in order (never out of sequence).'}
+            </p>
+          </div>
+          <div className="flex gap-2">
+            <Button variant="ghost" icon="FileText" disabled={busy} onClick={() => run(() => ims.socialSeriesPlan(), hi ? 'आज के अध्याय तैयार' : "Today's chapters drafted")}>
+              {hi ? 'आज के ड्राफ़्ट बनाएँ' : 'Draft today'}
+            </Button>
+          </div>
+        </div>
+      </Card>
+
+      {list.length === 0 && <Card className="p-6 text-center text-sm text-slate-400">{hi ? 'शृंखलाएँ लोड हो रही हैं…' : 'Loading series…'}</Card>}
+
+      <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
+        {list.map((c) => {
+          const pct = c.total ? Math.round((c.published / c.total) * 100) : 0;
+          return (
+            <Card key={c.key} className="p-4">
+              <div className="flex items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <div className="text-sm font-black text-[#002344]">{c.emoji} {hi ? c.titleHi : c.titleEn}</div>
+                  <div className="mt-0.5 text-[11px] text-slate-500">{c.category}</div>
+                </div>
+                <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${c.completed ? 'bg-emerald-100 text-emerald-700' : (c.enabled === false ? 'bg-slate-100 text-slate-400' : 'bg-slate-100 text-slate-600')}`}>
+                  {c.completed ? (hi ? 'पूरा' : 'Done') : `${c.published}/${c.total}`}
+                </span>
+              </div>
+              <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+                <div className="h-full rounded-full bg-[#FF6600]" style={{ width: `${pct}%` }} />
+              </div>
+              <div className="mt-2 flex items-center justify-between text-[11px]">
+                <span className="text-slate-500">
+                  {c.completed
+                    ? (hi ? 'सभी अध्याय पूरे 🎓' : 'All chapters done 🎓')
+                    : (hi ? `अगला: ${c.nextChapter} — ${c.nextTitleHi}` : `Next: ${c.nextChapter} — ${c.nextTitleEn}`)}
+                </span>
+                {c.time && <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-600">🕗 {c.time}</span>}
+              </div>
+              {c.enabled === false && <div className="mt-1 text-[10px] font-semibold text-rose-500">{hi ? 'बंद है' : 'Paused'}</div>}
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 export default function ImsSocial() {
   const { lang } = useLang();
   const [data, setData] = useState(null);
   const [courses, setCourses] = useState(null);
+  const [series, setSeries] = useState(null);
   const [busy, setBusy] = useState(false);
   const [err, setErr] = useState('');
   const [note, setNote] = useState('');
@@ -545,8 +608,12 @@ export default function ImsSocial() {
 
   const load = async () => {
     try {
-      const [d, c] = await Promise.all([ims.socialDashboard(), ims.socialCourses().catch(() => null)]);
-      setData(d); setCourses(c);
+      const [d, c, s] = await Promise.all([
+        ims.socialDashboard(),
+        ims.socialCourses().catch(() => null),
+        ims.socialSeries().catch(() => null),
+      ]);
+      setData(d); setCourses(c); setSeries(s);
     } catch (e) { setErr(e.message); }
   };
   useEffect(() => { load(); }, []);
@@ -610,7 +677,7 @@ export default function ImsSocial() {
       {data && (
         <>
           <div className="mb-4 flex gap-2">
-            {[['dashboard', lang === 'hi' ? 'डैशबोर्ड' : 'Dashboard'], ['courses', lang === 'hi' ? 'कोर्स शृंखला' : 'Course series'], ['calendar', lang === 'hi' ? 'कैलेंडर' : 'Calendar']].map(([k, label]) => (
+            {[['dashboard', lang === 'hi' ? 'डैशबोर्ड' : 'Dashboard'], ['series', lang === 'hi' ? 'ज्ञान शृंखला' : 'Knowledge series'], ['courses', lang === 'hi' ? 'कोर्स शृंखला' : 'Course series'], ['calendar', lang === 'hi' ? 'कैलेंडर' : 'Calendar']].map(([k, label]) => (
               <button key={k} onClick={() => setTab(k)}
                 className={`rounded-xl px-4 py-2 text-sm font-bold ${tab === k ? 'bg-[#002344] text-white' : 'bg-slate-100 text-slate-600'}`}>{label}</button>
             ))}
@@ -627,6 +694,7 @@ export default function ImsSocial() {
           <StatusStrip data={data} lang={lang} />
 
           {tab === 'calendar' && <CalendarTab data={data} busy={busy} run={run} lang={lang} />}
+          {tab === 'series' && <SeriesTab series={series} busy={busy} run={run} lang={lang} />}
           {tab === 'courses' && <CoursesTab courses={courses} busy={busy} run={run} lang={lang} />}
 
           {tab === 'dashboard' && (

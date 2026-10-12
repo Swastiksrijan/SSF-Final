@@ -193,6 +193,62 @@ async function main() {
   ok('run is logged', logs.length >= 1);
   ok('run log records source', logs[0].source === 'test-run');
 
+  console.log('\nDaily awareness series (Samvidhan / Yojana / Charak / GK / English / Prerna):');
+  const { SERIES } = publisher;
+  const { buildSeriesPost } = require('../services/social/seriesEngine');
+  ok('six awareness series registered', SERIES.length === 6, `n=${SERIES.length}`);
+  for (const s of SERIES) {
+    const p = buildSeriesPost(s, 1, new Date(2026, 9, 12), `series-${s.key}`);
+    ok(`series ${s.key} builds a bilingual chapter`, p.bodyEn.length > 200 && p.bodyHi.length > 200 && p.kind === 'series' && p.seriesKey === s.key && p.chapterNo === 1);
+    ok(`series ${s.key} cites its next chapter`, /Next:/.test(p.bodyEn) || s.items.length === 1, s.items.length);
+  }
+  const samvidhan = SERIES.find((s) => s.key === 'samvidhan');
+  ok('Samvidhan covers Fundamental Duties (51A)', samvidhan.items.some((it) => /51A|Fundamental Duties/.test(it.title.en)));
+  ok('Samvidhan covers Fundamental Rights (Art 14/19/21)', samvidhan.items.some((it) => /Article 21/.test(it.title.en)) && samvidhan.items.some((it) => /Article 14/.test(it.title.en)));
+  const health = SERIES.find((s) => s.key === 'swasthya');
+  ok('health series carries a doctor disclaimer', /consult a qualified doctor/i.test(health.note.en));
+
+  // Labh (benefit) boxes: the "how to actually get the benefit" block that turns
+  // awareness into action. Optional, so must render only when present, and must
+  // carry the concrete who / documents / where details.
+  const schemeSeries = SERIES.find((s) => s.key === 'yojana');
+  const medScheme = schemeSeries.items.find((it) => /Ayushman/i.test(it.title.en));
+  const schemePost = buildSeriesPost(schemeSeries, schemeSeries.items.indexOf(medScheme) + 1, new Date(2026, 9, 12), 'series-yojana');
+  ok('labh box renders benefit/eligibility/documents/where', /लाभ/.test(schemePost.bodyHi) && /कौन पात्र/.test(schemePost.bodyHi) && /कागज़ात/.test(schemePost.bodyHi) && /कहाँ आवेदन/.test(schemePost.bodyHi));
+  ok('labh box carries a real official portal', /gov\.in/.test(schemePost.bodyHi + schemePost.bodyEn), schemePost.bodyEn.slice(0, 40));
+  const constSeries = SERIES.find((s) => s.key === 'samvidhan');
+  const art32 = constSeries.items.find((it) => /Article 32/.test(it.title.en));
+  const constPost = buildSeriesPost(constSeries, constSeries.items.indexOf(art32) + 1, new Date(2026, 9, 12), 'series-samvidhan');
+  ok('constitution labh box points to free legal aid (15100)', /15100/.test(constPost.bodyHi + constPost.bodyEn));
+  ok('health labh box carries a real helpline (14416/108/104)', /14416|108|104/.test(buildSeriesPost(health, health.items.findIndex((it) => /Manas|First aid|cleanliness/i.test(it.title.en)) + 1, new Date(2026, 9, 12), 'series-swasthya').bodyHi));
+  const gkSeries = SERIES.find((s) => s.key === 'gk');
+  ok('a chapter that omits the labh box renders exactly as before (no stray heading)', !/कौन पात्र/.test(buildSeriesPost(gkSeries, 1, new Date(2026, 9, 12), 'series-gk').bodyHi) || !!gkSeries.items[0].extra);
+
+  // Series planning is idempotent and advances one chapter per day on publish.
+  const { SocialSeriesProgress } = require('../models/social');
+  await SocialSeriesProgress.destroy({ where: {} });
+  await SocialPost.destroy({ where: { kind: 'series' } });
+  const sday1 = new Date(2026, 8, 1);
+  const sp1 = await publisher.planAwarenessSeries(sday1);
+  ok('one awareness-series post per series per day', sp1.length === 6, `got=${sp1.length}`);
+  const spAgain = await publisher.planAwarenessSeries(sday1);
+  ok('repeated series ticks create no duplicates', spAgain.length === 0, `got=${spAgain.length}`);
+  ok('every series gets its own slot', new Set(sp1.map((p) => p.slot)).size === 6);
+  ok('all are series kind with chapter 1', sp1.every((p) => p.kind === 'series' && p.data.chapterNo === 1));
+  const platforms1 = await publisher.enabledPlatforms();
+  for (const p of sp1) await publisher.publishPost(p, platforms1);
+  const sprog = await SocialSeriesProgress.findAll();
+  ok('all six series pointers advanced to 1', sprog.length === 6 && sprog.every((x) => Number(x.lastChapter) === 1));
+  const sp2 = await publisher.planAwarenessSeries(new Date(2026, 8, 2));
+  ok('day 2 releases chapter 2 of each series', sp2.length === 6 && sp2.every((p) => p.data.chapterNo === 2));
+  // A disabled series is skipped without touching the others.
+  await publisher.setConfig('seriesEnabled', { gk: false });
+  await SocialPost.destroy({ where: { postDate: '2026-09-03', kind: 'series' } });
+  const sp3 = await publisher.planAwarenessSeries(new Date(2026, 8, 3));
+  ok('disabled series is skipped', !sp3.some((p) => p.data.seriesKey === 'gk'), `keys=${sp3.map((p) => p.data.seriesKey)}`);
+  ok('other series still run', sp3.length === 5, `got=${sp3.length}`);
+  await publisher.setConfig('seriesEnabled', {});
+
   console.log(`\nRESULT: ${pass} passed, ${fail} failed`);
   await sequelize.close();
   if (fail) process.exit(1);

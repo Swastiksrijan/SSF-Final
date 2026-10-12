@@ -10,6 +10,7 @@ const {
   planDue, planExtra, runPending, publishPost, enabledPlatforms, getConfig, setConfig,
   allEvents, eventsForDate, timezone, localParts, DEFAULT_TZ,
   planCourseSeries, COURSES, COURSE_TIMES, repairCourseSeries,
+  planAwarenessSeries, seriesTimes, seriesEnabled, SERIES, DEFAULT_SERIES_TIMES,
 } = require('../services/social/publisher');
 const { postSvg } = require('../services/social/image');
 
@@ -75,7 +76,7 @@ async function dashboard() {
   const tz = await timezone();
   const local = localParts(new Date(), tz);
   const today = `${local.y}-${String(local.m).padStart(2, '0')}-${String(local.d).padStart(2, '0')}`;
-  const [channels, recent, times, autoApprove, seq, events, runs, dailyAwareness] = await Promise.all([
+  const [channels, recent, times, autoApprove, seq, events, runs, dailyAwareness, seriesOn] = await Promise.all([
     SocialChannel.findAll(),
     SocialPost.findAll({ order: [['postDate', 'DESC'], ['id', 'DESC']], limit: 120 }),
     getConfig('times', { morning: '08:00', evening: '18:00' }),
@@ -84,6 +85,7 @@ async function dashboard() {
     allEvents(),
     SocialRunLog.findAll({ order: [['id', 'DESC']], limit: 20 }),
     getConfig('daily_awareness', true),
+    seriesEnabled(),
   ]);
   const byPlatform = {};
   for (const c of channels) byPlatform[c.platform] = c;
@@ -147,7 +149,7 @@ async function dashboard() {
     times, autoApprove, postSeq: seq, timezone: tz,
     today, todayLocalTime: local.hhmm, nextScheduledAt: nextAt, dailyTime,
     channels: startupChannels,
-    scheduledPerDay: (dailyAwareness === false ? 0 : 1) + (COURSE_TIMES || []).length,
+    scheduledPerDay: (dailyAwareness === false ? 0 : 1) + (COURSE_TIMES || []).length + (SERIES || []).length,
     dailyAwareness: dailyAwareness !== false,
     stats: { total: all.length, published, partial, draft, failed },
     heartbeat,
@@ -165,6 +167,13 @@ async function dashboard() {
     recent: all.slice(0, 60).map(postView),
     calendar: events.map(dayView),
     topics: content.TOPIC_ORDER.map((k) => ({ key: k, label: content.TOPIC_LABELS[k] })),
+    series: SERIES.map((s) => ({
+      key: s.key, emoji: s.emoji, category: s.category,
+      titleEn: s.title.en, titleHi: s.title.hi,
+      total: (s.items || []).length,
+      time: (DEFAULT_SERIES_TIMES || {})[s.key] || null,
+      enabled: seriesOn[s.key] !== false,
+    })),
   };
 }
 
@@ -220,10 +229,12 @@ router.get('/social/config', requireAuth, wrap(async (_req, r) => r.json({
   autoApprove: await getConfig('auto_approve', true),
   dailyAwareness: (await getConfig('daily_awareness', true)) !== false,
   courseTimes: await getConfig('courseTimes', COURSE_TIMES),
+  seriesTimes: await seriesTimes(),
+  seriesEnabled: await seriesEnabled(),
 })));
 
 router.post('/social/config', requireAuth, wrap(async (req, r) => {
-  const { dailyTime, times, autoApprove, timezone: tz, dailyAwareness, courseTimes } = req.body || {};
+  const { dailyTime, times, autoApprove, timezone: tz, dailyAwareness, courseTimes, seriesTimes: stimes, seriesEnabled: senabled } = req.body || {};
   if (dailyTime) await setConfig('dailyTime', String(dailyTime));
   if (times) await setConfig('times', times);
   if (typeof autoApprove === 'boolean') await setConfig('auto_approve', autoApprove);
@@ -232,11 +243,54 @@ router.post('/social/config', requireAuth, wrap(async (req, r) => {
     const clean = courseTimes.map((t) => String(t)).filter((t) => /^\d{1,2}:\d{2}$/.test(t));
     await setConfig('courseTimes', clean);
   }
+  if (stimes && typeof stimes === 'object') {
+    const clean = {};
+    for (const [k, v] of Object.entries(stimes)) if (/^\d{1,2}:\d{2}$/.test(String(v))) clean[k] = String(v);
+    await setConfig('seriesTimes', clean);
+  }
+  if (senabled && typeof senabled === 'object') {
+    const clean = {};
+    for (const [k, v] of Object.entries(senabled)) clean[k] = v !== false && v !== 0;
+    await setConfig('seriesEnabled', clean);
+  }
   if (tz) {
     try { new Intl.DateTimeFormat('en-GB', { timeZone: String(tz) }).format(new Date()); } catch { return r.status(400).json({ ok: false, message: 'Invalid IANA timezone.' }); }
     await setConfig('timezone', String(tz));
   }
-  r.json({ ok: true, dailyTime: (await getConfig('dailyTime', null)) || '08:00', autoApprove: await getConfig('auto_approve'), dailyAwareness: (await getConfig('daily_awareness', true)) !== false, timezone: await getConfig('timezone', DEFAULT_TZ) });
+  r.json({ ok: true, dailyTime: (await getConfig('dailyTime', null)) || '08:00', autoApprove: await getConfig('auto_approve'), dailyAwareness: (await getConfig('daily_awareness', true)) !== false, timezone: await getConfig('timezone', DEFAULT_TZ), seriesTimes: await seriesTimes(), seriesEnabled: await seriesEnabled() });
+}));
+
+// Daily awareness series: what each stream is, how far it has run, and its time.
+router.get('/social/series', requireAuth, wrap(async (_req, r) => {
+  const { SocialSeriesProgress } = require('../models/social');
+  const rows = await SocialSeriesProgress.findAll();
+  const progBy = {};
+  for (const p of rows) progBy[p.seriesKey] = p;
+  const enabled = await seriesEnabled();
+  const times = await seriesTimes();
+  r.json({
+    series: SERIES.map((s) => {
+      const p = progBy[s.key];
+      const last = p ? Number(p.lastChapter || 0) : 0;
+      const total = (s.items || []).length;
+      return {
+        key: s.key, emoji: s.emoji, category: s.category,
+        titleEn: s.title.en, titleHi: s.title.hi,
+        total, published: last, completed: last >= total,
+        nextChapter: last < total ? last + 1 : null,
+        nextTitleEn: last < total ? s.items[last].title.en : null,
+        nextTitleHi: last < total ? s.items[last].title.hi : null,
+        time: times[s.key] || null, enabled: enabled[s.key] !== false,
+      };
+    }),
+    times, enabled,
+  });
+}));
+
+// Manually create today's awareness-series drafts (does not publish).
+router.post('/social/series/plan', requireAuth, wrap(async (_req, r) => {
+  const created = await planAwarenessSeries(new Date());
+  r.json({ ok: true, created: created.length });
 }));
 
 // ---- automation controls (distinct verbs, never conflated) -----------------

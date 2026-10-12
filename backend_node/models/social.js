@@ -118,4 +118,16 @@ const SocialCourseProgress = sequelize.define('SocialCourseProgress', {
   completedAt: DataTypes.DATE,
 }, S);
 
-module.exports = { sequelize, SocialChannel, SocialPost, SocialAwarenessDay, SocialConfig, SocialEvent, SocialRunLog, SocialCourseProgress };
+// How far each daily awareness series (Samvidhan / Yojana / Charak / GK /
+// English / Motivational …) has progressed. One row per series; the chapter
+// released on a given day is `lastChapter + 1`, so a series can never jump or
+// repeat. Additive — safe with sequelize.sync on an existing database.
+const SocialSeriesProgress = sequelize.define('SocialSeriesProgress', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  seriesKey: { type: DataTypes.STRING, unique: true },
+  lastChapter: { type: DataTypes.INTEGER, defaultValue: 0 }, // 0 = none published yet
+  lastPostDate: DataTypes.DATEONLY,
+  completedAt: DataTypes.DATE,
+}, S);
+
+module.exports = { sequelize, SocialChannel, SocialPost, SocialAwarenessDay, SocialConfig, SocialEvent, SocialRunLog, SocialCourseProgress, SocialSeriesProgress };

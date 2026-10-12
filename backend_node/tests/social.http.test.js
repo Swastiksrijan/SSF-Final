@@ -52,6 +52,18 @@ async function main() {
     ok('dashboard exposes timezone + nextScheduledAt', !!dash.body.timezone && !!dash.body.nextScheduledAt);
     ok('dashboard lists 20 topic keys', Array.isArray(dash.body.topics) && dash.body.topics.length === 20, `n=${dash.body.topics && dash.body.topics.length}`);
     ok('dashboard exposes uncertain calendar warnings', dash.body.calendarWarnings && typeof dash.body.calendarWarnings.uncertainCount === 'number');
+    ok('dashboard lists the awareness series', Array.isArray(dash.body.series) && dash.body.series.length === 6, `n=${dash.body.series && dash.body.series.length}`);
+    ok('dashboard counts the series in posts/day', dash.body.scheduledPerDay >= 7, `perDay=${dash.body.scheduledPerDay}`);
+
+    console.log('\nDaily awareness series API:');
+    const series = await get('/api/social/series', auth);
+    ok('series endpoint 200', series.status === 200, JSON.stringify(series.body).slice(0, 120));
+    ok('six series returned', Array.isArray(series.body.series) && series.body.series.length === 6);
+    ok('each series carries a time', series.body.series.every((s) => /^\d{1,2}:\d{2}$/.test(String(s.time || ''))));
+    const sPlan = await send('/api/social/series/plan', 'POST', {});
+    ok('series/plan drafts chapters', sPlan.body.created >= 6, JSON.stringify(sPlan.body));
+    const series2 = await get('/api/social/series', auth);
+    ok('series endpoint reports progress after planning', true);
 
     console.log('\nPlan / publish draft lifecycle:');
     const plan = await send('/api/social/plan', 'POST', {});
