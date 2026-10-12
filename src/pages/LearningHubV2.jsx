@@ -14,7 +14,7 @@ import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
 import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCount, knowledgeWorldToMasterCourse } from "../data/knowledgeWorldCourse";
 import { makeCourseArt } from "../components/learning/CourseArtKit";
-import { buildAuthoredCourseProject, ensureAuthoredCourseDepth } from "../data/authoredCourseProject";
+import { buildAuthoredCourseProject, ensureAuthoredCourseDepth, ensureStructuredCourseDepth } from "../data/authoredCourseProject";
 import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
 import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_SKILLS_CATEGORY, OFFICE_SKILLS_SECTION, OFFICE_SKILLS_CARDS, OFFICE_SKILLS_CONTENT } from "../data/officeSkillsCourse";
 import { ENTREPRENEURSHIP_CONTENT } from "../data/entrepreneurshipContent";
@@ -2356,7 +2356,7 @@ const getSubjectModules = (subject) => {
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
   }
-  const structuredCourse = hasStructuredCourse(subject) ? resolveStructuredCourse(subject).course : null;
+  const structuredCourse = hasStructuredCourse(subject) ? ensureStructuredCourseDepth(subject, resolveStructuredCourse(subject).course) : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const eduModules = isEducationSubject(subject) ? buildEducationModules(subject) : null;
   const secondaryModules = !eduModules && isSecondaryEducation
@@ -2557,7 +2557,7 @@ function LearningSubject({ subject, onBack }) {
 
   const structuredResolution = resolveStructuredCourse(subject);
   const structuredCourseId = structuredResolution.id;
-  const structuredCourse = hasStructuredCourse(subject) ? structuredResolution.course : null;
+  const structuredCourse = hasStructuredCourse(subject) ? ensureStructuredCourseDepth(subject, structuredResolution.course) : null;
   const kwCourse = isKnowledgeWorldSubject(subject) ? getKnowledgeWorldCourse(subject) : null;
   const eduCourse = isEducationSubject(subject) ? getEducationCourse(subject) : null;
   const officeCourse = isOfficeSkillsSubject(subject) ? getOfficeSkillsCourse(subject) : null;
