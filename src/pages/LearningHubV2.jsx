@@ -2702,6 +2702,7 @@ function LearningSubject({ subject, onBack }) {
       "Review learning through practice and assessment before claiming completion."
     ]
   });
+  const structuredProject = structuredCourse ? buildAuthoredCourseProject(subject, structuredCourse) : null;
   const markDone = (i) => setDone(current => {
     const next = current.includes(i) ? current : [...current, i];
     try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch {}
@@ -3077,6 +3078,18 @@ function LearningSubject({ subject, onBack }) {
             <div className="mt-3 flex flex-wrap gap-2">{richCourse.related.map((r,i)=><span key={i} className="rounded-full bg-white px-4 py-2 text-xs font-black text-[#002344] shadow-sm">🔗 {r}</span>)}</div>
           </div>}
         </div>
+      </section>}
+
+      {structuredProject && <section className="mt-8 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-6 shadow-sm md:p-8">
+        <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🧪</span><h2 className="text-2xl font-black text-[#062a52] md:text-3xl">Practical Project / व्यावहारिक परियोजना</h2></div>
+        <h3 className="mt-3 text-lg font-black text-[#0b3a63]">{structuredProject.objective}</h3>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="font-black text-[#0b3a63]">Materials / सामग्री</div><p className="mt-1 text-sm leading-7 text-zinc-600">{structuredProject.materials}</p></div>
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="font-black text-[#0b3a63]">Observe / निरीक्षण</div><p className="mt-1 text-sm leading-7 text-zinc-600">{structuredProject.observation}</p></div>
+        </div>
+        <ol className="mt-4 space-y-2">{structuredProject.steps.map((step,i)=><li key={i} className="flex gap-3 text-sm leading-7 text-zinc-700"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef4f9] text-xs font-black text-[#0b3a63]">{i+1}</span><span>{step}</span></li>)}</ol>
+        <p className="mt-4 rounded-2xl bg-[#eaf7f0] p-4 text-sm font-black text-[#177245]">Expected output / अपेक्षित परिणाम: {structuredProject.result}</p>
+        <p className="mt-2 text-sm italic leading-7 text-zinc-600">Reflection / विचार: {structuredProject.reflection}</p>
       </section>}
 
       <CourseCertificate
