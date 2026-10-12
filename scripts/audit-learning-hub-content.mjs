@@ -125,6 +125,10 @@ for (const [mapName, map] of compactCourseMaps) {
         else if (!Number.isInteger(answer) || answer < 0 || answer >= options.length) errors.push(`${label}: answer key is missing or invalid; do not guess option zero.`);
       }
     }
+    const project = buildAuthoredCourseProject({ en: title, hi: "" }, course);
+    if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) {
+      errors.push(`${mapName}["${title}"]: no usable subject-specific capstone project.`);
+    }
   }
 }
 
