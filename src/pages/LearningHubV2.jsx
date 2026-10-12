@@ -2635,6 +2635,15 @@ function LearningSubject({ subject, onBack }) {
   }).filter(Boolean)
     .filter((q, index, all) => all.findIndex((item) => item.q.trim() === q.q.trim()) === index)
     .slice(0, 5);
+  const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
+  const submitQuiz = () => {
+    if (!quizQuestions.length || Object.keys(answers).length < quizQuestions.length) return;
+    const passed = score / quizQuestions.length >= 0.7;
+    const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
+    setSubmitted(true);
+    setFinalResult(result);
+    try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
+  };
   const completed = done.length;
   const total = lessons.length;
   const isRichLesson = isPrimaryEducation && /letters\s*&\s*sounds|अक्षर एवं ध्वनि/i.test(lessons[activeLesson]?.title || "");
@@ -2719,7 +2728,27 @@ function LearningSubject({ subject, onBack }) {
       onMarkDone: () => markDone(activeLesson)
     };
     const cert = <div className="mx-auto max-w-6xl px-4 pb-16"><CourseCertificate subject={subject} courseTitle={courseMeta.title.en} courseMeta={courseMeta} progress={progress} moduleResults={moduleResults} finalResult={finalResult} /></div>;
-    if (isRichLesson) return <><PrimaryLettersCourse subject={subject} {...common} />{cert}</>;
+    const finalAssessment = <section className="mx-auto mt-8 max-w-6xl px-4">
+      <div className="rounded-[2rem] border border-[#cfe0ee] bg-white p-5 shadow-sm md:p-8">
+        <h2 className="text-xl font-black text-[#002344] md:text-2xl">Final Course Assessment / अंतिम पाठ्यक्रम आकलन</h2>
+        <p className="mt-2 text-sm leading-6 text-zinc-600">सभी पाठ पूरे करने के बाद प्रश्न हल करें। पास होने के लिए कम-से-कम 70% सही उत्तर आवश्यक हैं।</p>
+        <button type="button" onClick={()=>setQuizOpen(v=>!v)} disabled={!quizQuestions.length} className="mt-4 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">{quizOpen ? "Close Assessment / बंद करें" : "Start Final Assessment / अंतिम टेस्ट शुरू करें"}</button>
+        {!quizQuestions.length && <p className="mt-3 text-sm font-bold text-amber-800">इस पाठ्यक्रम के लिए सत्यापित प्रश्न उपलब्ध नहीं हैं; प्रमाणपत्र अनुरोध सक्षम नहीं होगा।</p>}
+        {quizOpen && quizQuestions.length > 0 && <div className="mt-5 space-y-4">
+          {quizQuestions.map((q,i)=><div key={q.q} className="rounded-xl border border-zinc-200 p-4">
+            <div className="font-black text-zinc-800">{i+1}. {q.q}</div>
+            <div className="mt-3 grid gap-2">{q.options.map((option,j)=><label key={j} className="flex cursor-pointer items-start gap-2 rounded-lg border border-zinc-200 p-3 text-sm leading-6">
+              <input type="radio" name={"primary-final-q-"+i} checked={answers[i]===j} onChange={()=>setAnswers(current=>({...current,[i]:j}))}/>
+              <span>{option}</span>
+            </label>)}</div>
+            {submitted && <div className={"mt-2 rounded-lg p-3 text-sm font-bold "+(answers[i]===q.answer?"bg-emerald-50 text-emerald-800":"bg-rose-50 text-rose-800")}>{answers[i]===q.answer?"✓ सही उत्तर":"गलत उत्तर"} · सही उत्तर: {q.options[q.answer]}{q.explain ? " — "+q.explain : ""}</div>}
+          </div>)}
+          <button type="button" onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#177245] px-4 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">Submit Final Assessment / अंतिम टेस्ट जमा करें</button>
+          {submitted && finalResult && <div className={"rounded-xl p-4 text-center font-black "+(finalResult.passed?"bg-emerald-50 text-emerald-800":"bg-amber-50 text-amber-800")}>Score: {finalResult.score}/{finalResult.total} · {finalResult.passed?"पास / Passed":"अभी पास नहीं / Not passed — answers review करके फिर प्रयास करें"}</div>}
+        </div>}
+      </div>
+    </section>;
+    if (isRichLesson) return <><PrimaryLettersCourse subject={subject} {...common} />{finalAssessment}{cert}</>;
     const d = cur.detail || {};
     return <><PrimaryLessonFresh {...common}
       content={{
@@ -2733,7 +2762,7 @@ function LearningSubject({ subject, onBack }) {
         summary: d.content?.summary
       }}
       check={d.knowledgeCheck}
-    />{cert}</>;
+    />{finalAssessment}{cert}</>;
   }
   if (isTimeCalendarSubject(subject)) return <MasterCourse course={TIME_CALENDAR_COURSE} subject={subject} onBack={onBack} art={timeChapterArt} HeroArt={TimeHeroArt} />;
   if (isFruitsSubject(subject)) return <MasterCourse course={FRUITS_COURSE} subject={subject} onBack={onBack} art={fruitChapterArt} HeroArt={FruitHeroArt} />;
@@ -2756,15 +2785,6 @@ function LearningSubject({ subject, onBack }) {
     const a = makeCourseArt(mc);
     return <MasterCourse course={mc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />;
   }
-  const submitQuiz = () => {
-    if (!quizQuestions.length || Object.keys(answers).length < quizQuestions.length) return;
-    const passed = score / quizQuestions.length >= 0.7;
-    const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
-    setSubmitted(true);
-    setFinalResult(result);
-    try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
-  };
-  const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
   const submitModuleAssessment = (moduleId, questions) => {
     const result = questions.reduce((n,q,i)=>n+(moduleAnswers[moduleId]?.[i]===q.answer?1:0),0);
     setModuleResults(r => {
