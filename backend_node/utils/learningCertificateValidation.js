@@ -38,6 +38,10 @@ function validateCertificateAssessments({ courseId, moduleAssessments, requiredM
   // For courses with server-defined module assessments, always enforce that
   // list even if the client omits it. Unknown courses may not invent required IDs.
   if (!serverRequiredIds && clientRequiredIds.length) return false;
+  if (serverRequiredIds && (
+    clientRequiredIds.length !== serverRequiredIds.length
+    || serverRequiredIds.some((id) => !clientRequiredIds.includes(id))
+  )) return false;
   const requiredIds = serverRequiredIds || clientRequiredIds;
 
   return isValidPassedAssessment(finalAssessment)
