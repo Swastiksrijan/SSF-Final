@@ -31,6 +31,7 @@ import { ENGLISH_FROM_BASICS_ASSESSMENTS } from "../src/data/englishFromBasicsCo
 import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../src/data/coursesData.js";
 import certificateValidation from "../backend_node/utils/learningCertificateValidation.js";
 import { buildAuthoredCourseProject, ensureAuthoredCourseDepth, ensureStructuredCourseDepth } from "../src/data/authoredCourseProject.js";
+import { readFileSync } from "node:fs";
 
 const registries = [
   ["SUBJECT_CONTENT", SUBJECT_CONTENT],
@@ -305,6 +306,34 @@ for (const [courseId, requiredIds] of Object.entries(REQUIRED_MODULE_ASSESSMENT_
   }
 }
 
+const sourceChecks = [
+  ["src/pages/LearningHubV2.jsx", [
+    ["lesson navigation does not auto-complete", /const goLesson = \(nextIndex\) => \{[\s\S]*?Opening or navigating to a lesson is not proof that the learner completed it\./],
+    ["final assessment is versioned", /assessmentVersion: "v2"/],
+    ["required structured module assessments are passed to certificate gate", /requiredModuleAssessmentIds=\{moduleAssessments\.map\(\(m\) => m\.id\)\}/],
+  ]],
+  ["src/components/learning/MasterCourse.jsx", [
+    ["lesson-level Quick Check is interactive", /function QuickCheck\(\{ b \}\)/],
+    ["Quick Check block is rendered", /case "quiz":[\s\S]*?return <QuickCheck b=\{b\} \/>/],
+    ["final assessment uses current result version", /assessmentVersion: "v2"/],
+  ]],
+  ["src/components/learning/CourseCertificate.jsx", [
+    ["certificate requires full progress and current passed final assessment", /progress >= 100 && finalResult\?\.passed === true && finalResult\?\.assessmentVersion === "v2"/],
+    ["certificate request sends required assessment IDs", /requiredModuleAssessmentIds: requiredIds/],
+  ]],
+  ["backend_node/routes/learningCertificateRoutes.js", [
+    ["certificate API uses server-side assessment validator", /validateCertificateAssessments\(\{ courseId, moduleAssessments, requiredModuleAssessmentIds, finalAssessment \}\)/],
+  ]],
+];
+for (const [file, checks] of sourceChecks) {
+  let source = "";
+  try { source = readFileSync(new URL("../" + file, import.meta.url), "utf8"); }
+  catch { errors.push(`Source regression check could not read ${file}.`); continue; }
+  for (const [label, pattern] of checks) {
+    if (!pattern.test(source)) errors.push(`${file}: regression guard failed — ${label}.`);
+  }
+}
+
 const placeholderPattern = /\b(?:coming soon|placeholder|lorem ipsum|detailed lessons will be added|content will be added|under construction|coming shortly)\b/i;
 function scanForPlaceholder(value, location) {
   if (typeof value === "string") {
@@ -378,6 +407,7 @@ console.log(`Authored category audit: ${authoredCourseCount} courses and ${autho
 console.log(`Education/Knowledge World audit: ${compactCourseCount} courses and ${compactTopicCount} topic lessons checked.`);
 console.log(`Explicit flagship/English assessment banks: ${explicitAssessmentCount} questions checked.`);
 console.log(`Structured courses: ${structuredCourseCount} courses, ${structuredLessonCount} lessons, and ${structuredModuleAssessmentCount} modules with assessment banks checked.`);
+console.log(`Source regression guards: ${sourceChecks.reduce((n, item) => n + item[1].length, 0)} navigation, quiz, certificate and API checks.`);
 console.log(`Titles without an exact SUBJECT_CONTENT registry entry: ${missingExactRegistry.length} (some are served by dedicated course providers).`);
 console.log(`Titles not matched to an explicit subject registry or authored category map by this static audit: ${fallbackTitles.length}. Review these against dedicated course providers before claiming full subject-specific coverage.`);
 if (fallbackTitles.length) console.warn("Provider coverage review: " + fallbackTitles.join("; "));
