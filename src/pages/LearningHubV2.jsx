@@ -2996,7 +2996,7 @@ function LearningSubject({ subject, onBack }) {
                     </div>)}
                   </div>
                   <button type="button" onClick={() => submitModuleAssessment(module.id, module.questions)} disabled={!module.questions.length || Object.keys(selectedAnswers).length < module.questions.length} className="mt-3 w-full rounded-xl bg-[#0f4c81] px-3 py-2.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Submit Module Assessment / जमा करें</button>
-                  {result && <div className={"mt-3 rounded-lg p-3 text-sm font-bold " + (result.passed ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800")}>Score: {result.score}/{result.total} · {result.passed ? "पास / Passed" : "फिर प्रयास करें / Retry required"}</div>}
+                  {result && <div className={"mt-3 rounded-lg p-3 text-sm font-bold " + (result.assessmentVersion !== "v2" ? "bg-amber-50 text-amber-800" : result.passed ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800")}>{result.assessmentVersion !== "v2" ? "पुराना परिणाम / Old result — फिर से उत्तर देकर जमा करें / Retake to verify" : "Score: " + result.score + "/" + result.total + " · " + (result.passed ? "पास / Passed" : "फिर प्रयास करें / Retry required")}</div>}
                 </div>;
               })}
             </div>
