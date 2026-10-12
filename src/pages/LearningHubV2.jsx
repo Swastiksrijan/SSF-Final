@@ -14,6 +14,7 @@ import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
 import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCount, knowledgeWorldToMasterCourse } from "../data/knowledgeWorldCourse";
 import { makeCourseArt } from "../components/learning/CourseArtKit";
+import { buildAuthoredCourseProject } from "../data/authoredCourseProject";
 import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
 import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_SKILLS_CATEGORY, OFFICE_SKILLS_SECTION, OFFICE_SKILLS_CARDS, OFFICE_SKILLS_CONTENT } from "../data/officeSkillsCourse";
 import { ENTREPRENEURSHIP_CONTENT } from "../data/entrepreneurshipContent";
@@ -2128,6 +2129,7 @@ const authoredContentToMasterCourse = (subject, content, opts = {}) => {
       ...(content.facts ? [{ title: "💡 Did You Know?", items: content.facts }] : []),
     ].filter((g) => g.items.length) },
     mastery: { title: "Final Test / अंतिम परीक्षा", note: "इस course के modules से चुने गए प्रश्न।", tasks: modules.map((m) => ({ icon: m.icon, title: m.title, x: "" })), quiz: [...mastery, ...firstQuiz].slice(0, 10) },
+    project: buildAuthoredCourseProject(subject, content),
     outcomeIntro: "इस course के बाद learner:",
     outcome: (opts.outcomes && opts.outcomes.length) ? opts.outcomes : [content.tagline],
     outcomeClose: opts.outcomeClose || "अभ्यास + वास्तविक उदाहरण + जाँच — यही असली skill है।",
