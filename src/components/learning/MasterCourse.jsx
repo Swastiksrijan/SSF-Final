@@ -172,9 +172,14 @@ function DictionaryWidget({ b }) {
 function QuickCheck({ b }) {
   const [selected, setSelected] = useState(null);
   const [checked, setChecked] = useState(false);
-  const options = Array.isArray(b.options) ? b.options : [];
-  const validAnswer = Number.isInteger(b.answer) && b.answer >= 0 && b.answer < options.length;
-  const correct = checked && validAnswer && selected === b.answer;
+  const originalOptions = Array.isArray(b.options) ? b.options : [];
+  const validAnswer = Number.isInteger(b.answer) && b.answer >= 0 && b.answer < originalOptions.length;
+  const shift = validAnswer
+    ? ([...String(b.question || "")].reduce((sum, character) => sum + character.charCodeAt(0), 1) % originalOptions.length)
+    : 0;
+  const options = originalOptions.map((_, index) => originalOptions[(index + shift) % originalOptions.length]);
+  const answer = validAnswer ? (b.answer - shift + originalOptions.length) % originalOptions.length : null;
+  const correct = checked && validAnswer && selected === answer;
 
   return <section className="rounded-2xl border border-[#cfe0ee] bg-gradient-to-br from-[#f4f9fd] to-white p-4 md:p-6">
     <div className="text-xs font-black uppercase tracking-widest text-[#0b4a86] md:text-sm">🧠 Quick Check / तुरंत जाँच</div>
@@ -299,8 +304,14 @@ function Chapter({ chapter, index, total, done, onToggleDone, speaking, onSpeak,
 function MasteryTest({ mastery, onResult }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const score = mastery.quiz.reduce((n, q, i) => n + (answers[i] === q.answer ? 1 : 0), 0);
-  const total = mastery.quiz.length;
+  const questions = useMemo(() => (mastery.quiz || []).map((q, index) => {
+    const options = Array.isArray(q.options) ? q.options : [];
+    if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer >= options.length || options.length < 2) return q;
+    const shift = ([...String(q.q || "")].reduce((sum, character) => sum + character.charCodeAt(0), index + 1)) % options.length;
+    return { ...q, options: options.map((_, i) => options[(i + shift) % options.length]), answer: (q.answer - shift + options.length) % options.length };
+  }), [mastery.quiz]);
+  const score = questions.reduce((n, q, i) => n + (answers[i] === q.answer ? 1 : 0), 0);
+  const total = questions.length;
   const answered = Object.keys(answers).length;
   const pct = total ? Math.min(100, Math.round((score / total) * 100)) : 0;
   const submit = () => {
@@ -325,7 +336,7 @@ function MasteryTest({ mastery, onResult }) {
     </div>
 
     <div className="mt-7 space-y-4">
-      {mastery.quiz.map((q, i) => <div key={i} className="rounded-2xl border border-zinc-200 bg-white p-4 md:p-5">
+      {questions.map((q, i) => <div key={i} className="rounded-2xl border border-zinc-200 bg-white p-4 md:p-5">
         <div className="text-base font-black text-zinc-800 md:text-lg">{i + 1}. {q.q}</div>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {q.options.map((o, j) => {
