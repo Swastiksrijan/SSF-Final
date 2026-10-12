@@ -6,6 +6,10 @@ test("accepts a passing score with a consistent total", () => {
   assert.equal(isValidPassedAssessment({ score: 7, total: 10, passed: true, assessmentVersion: "v2" }), true);
 });
 
+test("rejects a passing result saved by an older assessment version", () => {
+  assert.equal(isValidPassedAssessment({ score: 10, total: 10, passed: true }), false);
+});
+
 test("rejects a claimed pass below the 70 percent minimum", () => {
   assert.equal(isValidPassedAssessment({ score: 6, total: 10, passed: true, assessmentVersion: "v2" }), false);
 });
