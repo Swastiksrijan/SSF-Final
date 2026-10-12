@@ -42,7 +42,7 @@ export default function PrimaryLessonFresh({ lessonLabel, moduleTitle, content, 
   const examples = c.examples || [];
   const practice = c.practice || [];
   const mistakes = c.mistakes || [];
-  const knowledge = (check || []).slice(0, 3);
+  const knowledge = Array.isArray(check) ? check.slice(0, 3) : [];
   const [answers, setAnswers] = useState({});
 
   const isLettersy = /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(lessonLabel || "");
