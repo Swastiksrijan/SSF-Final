@@ -58,16 +58,15 @@ for (const category of categories) {
     if (Array.isArray(item) && typeof item[0] === "string") curriculumTitles.add(item[0]);
   }
 }
-const missingExactRegistry = [...curriculumTitles].filter((title) => {
-  const english = title.split(" / ")[0].trim().toLowerCase();
-  return !keysSeen.has(english) && !keysSeen.has(title);
-});
+const normalizeTitle = (title) => title.split(" / ")[0].trim().toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+const normalizedKeys = new Set([...keysSeen.keys()].map(normalizeTitle));
+const missingExactRegistry = [...curriculumTitles].filter((title) => !normalizedKeys.has(normalizeTitle(title)));
 
 console.log(`Learning Hub content audit: ${entryCount} registry entries, ${questionCount} quiz questions checked, ${curriculumTitles.size} curriculum titles detected.`);
 console.log(`Exact registry keys missing for ${missingExactRegistry.length} curriculum titles. These may be supplied by dedicated course providers; this is a coverage-review list, not an assertion that they are broken.`);
-if (warnings.length) console.warn(warnings.join("\\n"));
+if (warnings.length) console.warn(warnings.join("\n"));
 if (errors.length) {
-  console.error(`Content audit failed with ${errors.length} issue(s):\\n` + errors.join("\\n"));
+  console.error(`Content audit failed with ${errors.length} issue(s):\n` + errors.join("\n"));
   process.exitCode = 1;
 } else {
   console.log("All explicit subject-registry entries have required sections and valid quiz answer keys.");
