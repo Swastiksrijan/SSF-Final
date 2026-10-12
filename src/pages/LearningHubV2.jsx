@@ -2738,12 +2738,12 @@ function LearningSubject({ subject, onBack }) {
           {quizQuestions.map((q,i)=><div key={q.q} className="rounded-xl border border-zinc-200 p-4">
             <div className="font-black text-zinc-800">{i+1}. {q.q}</div>
             <div className="mt-3 grid gap-2">{q.options.map((option,j)=><label key={j} className="flex cursor-pointer items-start gap-2 rounded-lg border border-zinc-200 p-3 text-sm leading-6">
-              <input type="radio" name={"primary-final-q-"+i} checked={answers[i]===j} onChange={()=>setAnswers(current=>({...current,[i]:j}))}/>
+              <input type="radio" name={"primary-final-q-"+i} checked={answers[i]===j} onChange={()=>{if(submitted&&finalResult?.passed)return;setAnswers(current=>({...current,[i]:j}));if(submitted)setSubmitted(false);}}/>
               <span>{option}</span>
             </label>)}</div>
             {submitted && <div className={"mt-2 rounded-lg p-3 text-sm font-bold "+(answers[i]===q.answer?"bg-emerald-50 text-emerald-800":"bg-rose-50 text-rose-800")}>{answers[i]===q.answer?"✓ सही उत्तर":"गलत उत्तर"} · सही उत्तर: {q.options[q.answer]}{q.explain ? " — "+q.explain : ""}</div>}
           </div>)}
-          <button type="button" onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#177245] px-4 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">Submit Final Assessment / अंतिम टेस्ट जमा करें</button>
+          <button type="button" onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length||submitted} className="w-full rounded-xl bg-[#177245] px-4 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">Submit Final Assessment / अंतिम टेस्ट जमा करें</button>
           {submitted && finalResult && <div className={"rounded-xl p-4 text-center font-black "+(finalResult.passed?"bg-emerald-50 text-emerald-800":"bg-amber-50 text-amber-800")}>Score: {finalResult.score}/{finalResult.total} · {finalResult.passed?"पास / Passed":"अभी पास नहीं / Not passed — answers review करके फिर प्रयास करें"}</div>}
         </div>}
       </div>
