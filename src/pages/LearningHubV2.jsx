@@ -14,7 +14,7 @@ import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
 import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCount, knowledgeWorldToMasterCourse } from "../data/knowledgeWorldCourse";
 import { makeCourseArt } from "../components/learning/CourseArtKit";
-import { buildAuthoredCourseProject } from "../data/authoredCourseProject";
+import { buildAuthoredCourseProject, ensureAuthoredCourseDepth } from "../data/authoredCourseProject";
 import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
 import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_SKILLS_CATEGORY, OFFICE_SKILLS_SECTION, OFFICE_SKILLS_CARDS, OFFICE_SKILLS_CONTENT } from "../data/officeSkillsCourse";
 import { ENTREPRENEURSHIP_CONTENT } from "../data/entrepreneurshipContent";
@@ -2074,12 +2074,13 @@ const curriculumToMasterCourse = (subject) => {
 // single builder keeps the premium MasterCourse UI without duplicating code.
 const authoredContentToMasterCourse = (subject, content, opts = {}) => {
   if (!content) return null;
+  const source = ensureAuthoredCourseDepth(subject, content);
   const icon = opts.icon || "🏢";
   const level = opts.level || "Beginner → Advanced";
   const tag = opts.tag || subject.category;
   const overview = opts.overview || {};
   let gi = 0;
-  const modules = content.modules.map((m, mi) => ({
+  const modules = source.modules.map((m, mi) => ({
     id: subject.id + "-om-" + (mi + 1),
     title: String(m.title).split(" / ")[0],
     titleHi: String(m.title).split(" / ")[1] || "",
@@ -2101,12 +2102,12 @@ const authoredContentToMasterCourse = (subject, content, opts = {}) => {
   }));
   let n = 0; modules.forEach((m) => m.chapters.forEach((c) => { c.number = ++n; }));
 
-  const mastery = (content.mastery || []).map(([q, options, answer, explain]) => ({ q, options, answer, explain }));
-  const firstQuiz = content.modules.flatMap((m) => m.topics).slice(0, 10).map((t) => ({ q: t.quiz.q, options: t.quiz.options, answer: t.quiz.answer, explain: t.quiz.explain }));
-  const focus = content.tagline || subject.intro || ("इस विषय को समझ, उदाहरण और अभ्यास के साथ सीखें।");
+  const mastery = (source.mastery || []).map(([q, options, answer, explain]) => ({ q, options, answer, explain }));
+  const firstQuiz = source.modules.flatMap((m) => m.topics).slice(0, 10).map((t) => ({ q: t.quiz.q, options: t.quiz.options, answer: t.quiz.answer, explain: t.quiz.explain }));
+  const focus = source.tagline || subject.intro || ("इस विषय को समझ, उदाहरण और अभ्यास के साथ सीखें।");
 
   return {
-    meta: { icon, title: [subject.en, subject.hi], level, tag, tagline: content.tagline, heroSubtitle: overview.what || subject.intro || content.tagline },
+    meta: { icon, title: [subject.en, subject.hi], level, tag, tagline: source.tagline, heroSubtitle: overview.what || subject.intro || content.tagline },
     overview: {
       what: overview.what || subject.intro || content.tagline,
       why: overview.why || ("यह ज्ञान " + subject.en + " में रोज़मर्रा की समझ, सही निर्णय और practical capability के लिए जरूरी है।"),
@@ -2124,11 +2125,11 @@ const authoredContentToMasterCourse = (subject, content, opts = {}) => {
     },
     modules,
     revision: { title: "पूरा course एक नज़र में", groups: [
-      ...(content.glossary ? [{ title: "📖 मुख्य शब्द / Key Words", items: content.glossary.map(([term, hi, meaning]) => term + (hi ? " (" + hi + ")" : "") + (meaning ? " — " + meaning : "")) }] : []),
-      ...(content.facts ? [{ title: "💡 Did You Know?", items: content.facts }] : []),
+      ...(source.glossary ? [{ title: "📖 मुख्य शब्द / Key Words", items: content.glossary.map(([term, hi, meaning]) => term + (hi ? " (" + hi + ")" : "") + (meaning ? " — " + meaning : "")) }] : []),
+      ...(source.facts ? [{ title: "💡 Did You Know?", items: content.facts }] : []),
     ].filter((g) => g.items.length) },
     mastery: { title: "Final Test / अंतिम परीक्षा", note: "इस course के modules से चुने गए प्रश्न।", tasks: modules.map((m) => ({ icon: m.icon, title: m.title, x: "" })), quiz: [...mastery, ...firstQuiz].slice(0, 10) },
-    project: buildAuthoredCourseProject(subject, content),
+    project: buildAuthoredCourseProject(subject, source),
     outcomeIntro: "इस course के बाद learner:",
     outcome: (opts.outcomes && opts.outcomes.length) ? opts.outcomes : [content.tagline],
     outcomeClose: opts.outcomeClose || "अभ्यास + वास्तविक उदाहरण + जाँच — यही असली skill है।",
