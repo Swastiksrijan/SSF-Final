@@ -12,14 +12,27 @@ const requireAdminAuth = (req,res,next) => {
 
 router.post('/learning-certificates/request', async (req,res) => {
   try {
-    const { accountId, learner, courseId, courseTitle, completionPercent, moduleAssessments, finalAssessment, learningHours } = req.body || {};
+    const { accountId, learner, courseId, courseTitle, completionPercent, moduleAssessments, requiredModuleAssessmentIds, finalAssessment, learningHours } = req.body || {};
     if (!accountId || !learner?.email || !courseId || !courseTitle) return res.status(400).json({ message:'Account, learner and course details are required.' });
     const member = await Member.findByPk(accountId);
     if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(learner.email).toLowerCase()) return res.status(401).json({ message:'Learning account could not be verified.' });
     if (Number(completionPercent) !== 100) return res.status(400).json({ message:'Course completion must be 100%.' });
-    const finalPassed = Boolean(finalAssessment?.passed);
-    const modulePassed = Object.values(moduleAssessments || {}).every(v => v?.passed);
-    if (!finalPassed || !modulePassed) return res.status(400).json({ message:'All required assessments must be passed before requesting a certificate.' });
+    const validPassedAssessment = (result) => {
+      if (!result || result.passed !== true) return false;
+      const score = Number(result.score);
+      const total = Number(result.total);
+      return Number.isInteger(score) && Number.isInteger(total) && total > 0 && score >= 0 && score <= total && score / total >= 0.7;
+    };
+    const requiredIds = Array.isArray(requiredModuleAssessmentIds)
+      ? [...new Set(requiredModuleAssessmentIds.filter(id => typeof id === 'string' && id.trim()))]
+      : [];
+    const results = moduleAssessments && typeof moduleAssessments === 'object' ? moduleAssessments : {};
+    const finalPassed = validPassedAssessment(finalAssessment);
+    const allRecordedModulesPassed = Object.values(results).every(validPassedAssessment);
+    const allRequiredModulesPassed = requiredIds.every(id => validPassedAssessment(results[id]));
+    if (!finalPassed || !allRecordedModulesPassed || !allRequiredModulesPassed) {
+      return res.status(400).json({ message:'A valid passing score (at least 70%) is required for the final assessment and every required module assessment.' });
+    }
     const existing = await LearningCertificate.findOne({ where:{ accountId, courseId, status:['requested','approved','issued'] } });
     if (existing) return res.json({ status:'success', request:existing });
     const request = await LearningCertificate.create({
