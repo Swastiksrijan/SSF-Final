@@ -27,5 +27,7 @@ jobs:
           cache: npm
       - name: Install locked dependencies
         run: npm ci
+      - name: Validate Learning Hub content and quiz answer keys
+        run: npm run audit:learning-hub
       - name: Build production site
         run: npm run build
