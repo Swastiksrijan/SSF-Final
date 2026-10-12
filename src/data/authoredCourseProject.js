@@ -1,0 +1,37 @@
+/**
+ * Build a course-specific capstone project for authored subject courses that
+ * do not yet define one explicitly. The project is anchored to real lesson
+ * titles, examples and activities; it never substitutes a generic placeholder
+ * for subject content.
+ */
+export function buildAuthoredCourseProject(subject, content) {
+  if (content?.project?.objective && Array.isArray(content.project.steps) && content.project.steps.length) {
+    return content.project;
+  }
+
+  const topics = (content?.modules || []).flatMap((module) => module?.topics || []);
+  if (!topics.length) return null;
+
+  const first = topics[0];
+  const middle = topics[Math.floor((topics.length - 1) / 2)] || first;
+  const last = topics[topics.length - 1];
+  const en = subject?.en || "इस विषय";
+  const hi = subject?.hi || "";
+  const courseName = hi ? en + " / " + hi : en;
+
+  return {
+    objective: courseName + ": “" + last.title + "” को वास्तविक काम में लागू करें / Apply the final topic in a practical task",
+    materials: "Notebook or phone/computer as appropriate, the examples from “" + first.title + "”, and a simple record sheet / कॉपी या उपलब्ध device और अभ्यास के लिए एक record sheet।",
+    observation: "पहले और बाद के परिणाम लिखें; देखें कि “" + middle.title + "” और “" + last.title + "” से आपका काम कैसे बेहतर हुआ।",
+    steps: [
+      "एक वास्तविक समस्या या काम चुनें जो “" + first.title + "” से जुड़ा हो। / Choose a real task related to the first lesson.",
+      "इस उदाहरण को समझें और अपने शब्दों में मुख्य concept लिखें: " + String(first.example || first.learn || "").slice(0, 260),
+      "आखिरी topic का activity पूरा करें: “" + last.title + "” — " + String(last.activity || last.example || "").slice(0, 260),
+      "अपना output, steps और result लिखें या सुरक्षित करें; जरूरत हो तो screenshot/table/drawing जोड़ें।",
+      "Checklist से जाँचें: सही जानकारी, साफ़ प्रस्तुति, सुरक्षा/नैतिकता जहाँ लागू हो, और कोई सुधार।",
+      "एक छोटा सुधार करके final version बनाएँ और बताएं कि यह skill वास्तविक जीवन में कहाँ उपयोग होगी।"
+    ],
+    result: "एक छोटा, जाँचने योग्य subject-specific output: " + courseName + " में चुना गया काम, उसका record और सुधार का प्रमाण।",
+    reflection: "कौन-सा concept सबसे उपयोगी रहा? किस गलती को सुधारा? अगली बार क्या बेहतर करेंगे? / What did you learn and what would you improve next?"
+  };
+}
