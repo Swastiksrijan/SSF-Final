@@ -2640,7 +2640,7 @@ function LearningSubject({ subject, onBack }) {
   const submitQuiz = () => {
     if (!quizQuestions.length || Object.keys(answers).length < quizQuestions.length) return;
     const passed = score / quizQuestions.length >= 0.7;
-    const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
+    const result = { score, total: quizQuestions.length, passed, assessmentVersion: "v2", completedAt: new Date().toISOString() };
     setSubmitted(true);
     setFinalResult(result);
     try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
