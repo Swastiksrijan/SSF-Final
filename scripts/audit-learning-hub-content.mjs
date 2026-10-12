@@ -269,6 +269,27 @@ for (const category of categories) {
     if (Array.isArray(item) && typeof item[0] === "string") curriculumTitles.add(item[0]);
   }
 }
+const placeholderPattern = /\\b(?:coming soon|placeholder|lorem ipsum|detailed lessons will be added|content will be added|under construction|coming shortly)\\b/i;
+function scanForPlaceholder(value, location) {
+  if (typeof value === "string") {
+    if (placeholderPattern.test(value)) errors.push(`${location}: placeholder-like copy found: "${value.slice(0, 100)}".`);
+    return;
+  }
+  if (Array.isArray(value)) {
+    value.forEach((item, index) => scanForPlaceholder(item, `${location}[${index}]`));
+    return;
+  }
+  if (value && typeof value === "object") {
+    for (const [key, item] of Object.entries(value)) scanForPlaceholder(item, `${location}.${key}`);
+  }
+}
+for (const [registryName, registry] of registries) {
+  for (const [title, content] of Object.entries(registry || {})) scanForPlaceholder(content, `${registryName}["${title}"]`);
+}
+for (const [mapName, map] of authoredMaps) {
+  for (const [title, content] of Object.entries(map || {})) scanForPlaceholder(content, `${mapName}["${title}"]`);
+}
+
 const normalizeTitle = (title) => title.split(" / ")[0].trim().toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 const providerMaps = [
   ["SUBJECT_CONTENT", SUBJECT_CONTENT],
