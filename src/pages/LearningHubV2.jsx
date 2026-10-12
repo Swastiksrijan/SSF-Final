@@ -2094,8 +2094,7 @@ const authoredContentToMasterCourse = (subject, content, opts = {}) => {
           { t: "p", x: t.learn },
           { t: "ex", title: "Example / उदाहरण", x: t.example },
           { t: "act", title: "Activity / अभ्यास", x: t.activity },
-          { t: "note", k: "tip", title: "स्वयं जाँचें / Self-check", x: t.quiz.q, items: t.quiz.options },
-          { t: "note", k: "remember", title: "सही उत्तर", x: t.quiz.options[t.quiz.answer] + " — " + t.quiz.explain },
+          { t: "quiz", title: "Quick Check / तुरंत जाँच", question: t.quiz.q, options: t.quiz.options || [], answer: t.quiz.answer, explain: t.quiz.explain || "" },
         ],
       };
     }),
