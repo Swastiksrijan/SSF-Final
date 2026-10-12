@@ -5,7 +5,7 @@
  * for subject content.
  */
 export function buildAuthoredCourseProject(subject, content) {
-  if (content?.project?.objective && Array.isArray(content.project.steps) && content.project.steps.length) {
+  if (content?.project?.objective && Array.isArray(content.project.steps) && content.project.steps.length >= 3) {
     return content.project;
   }
 
