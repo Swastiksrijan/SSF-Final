@@ -430,8 +430,8 @@ const goLessonSource = goLessonStart >= 0 && goLessonEnd > goLessonStart
   ? learningHubSource.slice(goLessonStart, goLessonEnd)
   : "";
 const sourceRegressionChecks = [
-  ["lesson navigation opens lesson content", Boolean(goLessonSource) && /setLessonOpen\\(true\\)/.test(goLessonSource)],
-  ["opening/navigating lessons does not auto-complete them", Boolean(goLessonSource) && !/markDone\\s*\\(/.test(goLessonSource)],
+  ["lesson navigation opens lesson content", Boolean(goLessonSource) && /setLessonOpen\(true\)/.test(goLessonSource)],
+  ["opening/navigating lessons does not auto-complete them", Boolean(goLessonSource) && !/markDone\s*\(/.test(goLessonSource)],
   ["explicit lesson completion control exists", learningHubSource.includes("Mark lesson complete / पाठ पूरा चिह्नित करें")],
   ["MasterCourse quick checks are interactive", masterCourseSource.includes("function QuickCheck") && masterCourseSource.includes('case "quiz"')],
   ["Primary lesson quick checks validate answer keys", primaryLessonSource.includes("validKey") && primaryLessonSource.includes("q.options[q.answer]")],
