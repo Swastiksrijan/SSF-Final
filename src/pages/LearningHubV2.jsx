@@ -2400,6 +2400,7 @@ function PrimaryLessonVisual({ lesson }) {
   const practice = lesson.detail?.practice || [];
   const title = lesson.title || "";
   const cleanTitle = title.split(" / ")[0].trim();
+  const [quickAnswers, setQuickAnswers] = useState({});
   const isLetters = /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(title);
   const isNumbers = /numbers|counting|संख्या|गिनती|number sense|जोड़|घटाव|गुणा|भाग|fractions|भिन्न/i.test(title);
   const isLanguage = /hindi|english|शब्द|reading|writing|vocabulary|phonics|मात्रा|वाक्य|पठन|लेखन/i.test(title);
@@ -2495,10 +2496,31 @@ function PrimaryLessonVisual({ lesson }) {
         </div>
       </div>
 
-      {detail.knowledgeCheck && <div className="mt-6 rounded-[1.4rem] border-2 border-[#d9e7f0] bg-gradient-to-r from-[#f7fbff] to-[#fffdf5] p-5">
+      {Array.isArray(detail.knowledgeCheck) && detail.knowledgeCheck.length > 0 && <div className="mt-6 rounded-[1.4rem] border-2 border-[#d9e7f0] bg-gradient-to-r from-[#f7fbff] to-[#fffdf5] p-5">
         <div className="text-sm font-black uppercase tracking-widest text-[#0f4c81]">❓ Quick Check / तुरंत जाँच</div>
+        <p className="mt-2 text-xs font-semibold text-zinc-600">विकल्प चुनें। उत्तर के बाद सही/गलत प्रतिक्रिया और उपलब्ध व्याख्या दिखाई जाएगी। आप दोबारा प्रयास भी कर सकते हैं।</p>
         <div className="mt-4 space-y-3">
-          {detail.knowledgeCheck.map((q,i)=><div key={i} className="rounded-xl bg-white p-4"><div className="text-sm font-black text-zinc-800">{i+1}. {q.question}</div><div className="mt-2 text-xs font-bold text-zinc-500">सोचकर उत्तर दें: {q.options?.join(" • ")}</div></div>)}
+          {detail.knowledgeCheck.map((q,i)=>{
+            const options = Array.isArray(q.options) ? q.options : [];
+            const answerKey = title + "::" + i;
+            const selected = quickAnswers[answerKey];
+            const correct = Number.isInteger(q.answer) ? q.answer : (Number.isInteger(q.correctAnswer) ? q.correctAnswer : null);
+            const hasAnswer = selected !== undefined;
+            const isCorrect = hasAnswer && correct !== null && selected === correct;
+            return <div key={answerKey} className="rounded-xl bg-white p-4">
+              <div className="text-sm font-black text-zinc-800">{i+1}. {q.question || "प्रश्न"}</div>
+              <div className="mt-3 grid gap-2">
+                {options.map((option,oi)=><button key={oi} type="button" onClick={()=>setQuickAnswers(current=>({...current,[answerKey]:oi}))} className={"rounded-lg border px-3 py-2 text-left text-sm font-semibold transition "+(selected===oi?(correct===null?"border-[#0f4c81] bg-[#eef7fb] text-[#002344]":oi===correct?"border-emerald-300 bg-emerald-50 text-emerald-800":"border-rose-300 bg-rose-50 text-rose-800"):"border-zinc-200 hover:border-[#9bbbd0]")}>
+                    <span className="mr-2 font-black">{String.fromCharCode(65+oi)}.</span>{option}
+                  </button>)}
+              </div>
+              {hasAnswer && <div className={"mt-3 rounded-lg p-3 text-sm font-bold "+(correct===null?"bg-[#eef7fb] text-[#002344]":isCorrect?"bg-emerald-50 text-emerald-800":"bg-rose-50 text-rose-800")}>
+                {correct===null ? "आपका उत्तर चुना गया। इस प्रश्न के लिए answer key उपलब्ध नहीं है।" : isCorrect ? "✓ सही उत्तर! / Correct answer!" : "अभी सही नहीं। फिर प्रयास करें। / Not quite—try again."}
+                {correct!==null && <div className="mt-1">सही उत्तर: {options[correct] ?? "उत्तर उपलब्ध नहीं"}</div>}
+                {q.explain && <div className="mt-1 font-medium">व्याख्या / Explanation: {q.explain}</div>}
+              </div>}
+            </div>;
+          })}
         </div>
       </div>}
 
