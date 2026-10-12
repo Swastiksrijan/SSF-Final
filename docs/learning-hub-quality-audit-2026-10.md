@@ -8,7 +8,7 @@ Scope: Learning Hub lesson rendering, content-provider registries, assessments, 
 1. **Lesson visits no longer count as completion.** Opening or navigating between lessons does not mark them done. Learners must use the explicit completion control.
 2. **Quick checks are interactive.** Primary lesson renderers, authored category courses and Knowledge World/Master Courses now accept an answer before giving feedback. Correct answers are not shown before the learner checks; verified explanations appear after a correct response, and learners can retry.
 3. **Assessment answer keys are not guessed.** Invalid/missing answer keys are excluded from final quiz pools. The Education course builder no longer silently converts a missing answer key to option zero.
-4. **Module assessments are rendered for structured courses.** Results are persisted, invalidated when a learner changes answers, and required module IDs are passed into certificate eligibility checks.
+4. **Module assessments are rendered for structured courses.** Results are persisted, invalidated when a learner changes answers, and required module IDs are passed into certificate eligibility checks. Each structured module assessment combines its authored bank with validated questions derived from that module’s real lesson summaries and activities; the static audit requires at least five valid, keyed questions per module.
 5. **Final assessments can be retried after a fail.** A failed attempt can be changed and resubmitted. Assessment results are versioned so a pass saved by an older assessment implementation cannot automatically unlock a new certificate request.
 6. **Practical capstones are available across providers.** Courses without an authored project receive a subject-grounded capstone built from that course’s actual lesson titles, examples and activities. Primary Education includes a bilingual picture-book project.
 7. **Certificate request checks are stronger.** The front end requires 100% lesson progress, a current-version passed final assessment and every configured module assessment. The API checks score/total consistency, the minimum passing ratio, the assessment version, and required module results. Issuance remains an SSF admin-reviewed action; this prevents a learner from claiming an issued certificate directly.
@@ -21,7 +21,7 @@ The repeatable `npm run audit:learning-hub` check currently validates:
 - 108 authored-category courses and 651 topic lessons after subject-grounded applied-practice expansion.
 - 45 Education / Knowledge World courses and 587 topic lessons.
 - 41 flagship / English-from-basics assessment-bank questions.
-- 5 structured courses, 38 lessons and 17 module-assessment banks (including assessed practical modules added to short courses).
+- 5 structured courses, 38 authored lessons and 17 module-assessment banks (including assessed practical modules added to short courses); every rendered structured module assessment must contain at least five validated questions.
 - 9 source-level regression guards for lesson navigation, interactive checks, certificate eligibility and server-side required-module validation.
 - Placeholder-copy scan across explicit subject registries, authored category maps, compact Education/Knowledge World maps and structured courses.
 
