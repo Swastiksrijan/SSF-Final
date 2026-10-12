@@ -2636,15 +2636,18 @@ function LearningSubject({ subject, onBack }) {
   });
   // Prefer real course/subject questions; never invent an answer key or silently use a generic quiz.
   const rawQuizQuestions = [...structuredAssessmentPool, ...eduQuiz, ...kwQuiz, ...officeQuiz, ...subjectQuiz, ...lessonQuizPool];
-  const quizQuestions = rawQuizQuestions.map((q) => {
+  const quizQuestions = rawQuizQuestions.map((q, questionIndex) => {
     const question = q?.q || q?.question || q?.prompt;
-    const options = Array.isArray(q?.options) ? q.options : [];
+    const options = Array.isArray(q?.options) ? q.options.map((option) => String(option)) : [];
     const answer = q?.answer;
     if (!question || options.length < 2 || !Number.isInteger(answer) || answer < 0 || answer >= options.length) return null;
-    return { q: String(question), options: options.map((option) => String(option)), answer, explain: q.explain || q.explanation || "" };
+    const shift = ([...String(question)].reduce((sum, character) => sum + character.charCodeAt(0), questionIndex + 1)) % options.length;
+    const rotatedOptions = options.map((_, index) => options[(index + shift) % options.length]);
+    const rotatedAnswer = (answer - shift + options.length) % options.length;
+    return { q: String(question), options: rotatedOptions, answer: rotatedAnswer, explain: q.explain || q.explanation || "" };
   }).filter(Boolean)
     .filter((q, index, all) => all.findIndex((item) => item.q.trim() === q.q.trim()) === index)
-    .slice(0, 5);
+    .slice(0, 10);
   const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
   const submitQuiz = () => {
     if (!quizQuestions.length || Object.keys(answers).length < quizQuestions.length) return;
