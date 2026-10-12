@@ -7,7 +7,7 @@ import {
   FLAGSHIP_COMPUTER_COURSE,
   FLAGSHIP_COURSE_ID,
   FLAGSHIP_COURSE_ASSESSMENTS,
-} from "./learningHubCourseArchitecture";
+} from "./learningHubCourseArchitecture.js";
 
 // ============================================================================
 // ENGLISH & COMMUNICATION COURSE
