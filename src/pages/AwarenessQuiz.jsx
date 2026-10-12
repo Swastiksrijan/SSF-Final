@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { FaGraduationCap, FaCheckCircle, FaTimesCircle, FaWhatsapp, FaEnvelope, FaArrowRight } from "react-icons/fa";
-import { Link } from "react-router-dom";
+import { Link } from "@tanstack/react-router";
 import AuthModal from "../components/AuthModal";
 import { ENDPOINTS } from "../config/api";
 import { generateCertificate } from "../utils/generateCertificate";
