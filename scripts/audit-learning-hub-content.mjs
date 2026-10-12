@@ -156,7 +156,8 @@ for (const [courseId, course] of Object.entries(ALL_STRUCTURED_COURSES || {})) {
   for (const [mi, module] of modules.entries()) {
     const lessons = Array.isArray(module?.lessons) ? module.lessons : [];
     if (!lessons.length) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"].modules[${mi}]: no lessons.`);
-    const questions = bank[module.id] || module.assessment?.questions || [];
+    const questionSource = COURSE_ASSESSMENTS?.[module.id] || bank[module.id] || module.assessment?.questions;
+    const questions = Array.isArray(questionSource) ? questionSource : [];
     if (questions.length) structuredModuleAssessmentCount += 1;
     else warnings.push(`ALL_STRUCTURED_COURSES["${courseId}"].modules["${module.id}"]: no module assessment bank.`);
     for (const [qi, q] of questions.entries()) {
