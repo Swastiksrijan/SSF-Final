@@ -11,7 +11,8 @@ export function buildAuthoredCourseProject(subject, content) {
 
   const topics = (content?.modules || []).flatMap((module) => {
     if (Array.isArray(module)) return Array.isArray(module[2]) ? module[2] : [];
-    return Array.isArray(module?.topics) ? module.topics : [];
+    if (Array.isArray(module?.topics)) return module.topics;
+    return Array.isArray(module?.lessons) ? module.lessons : [];
   });
   if (!topics.length) return null;
 
@@ -19,7 +20,11 @@ export function buildAuthoredCourseProject(subject, content) {
     if (Array.isArray(topic)) {
       return ({ title: topic[0], learn: topic[1], example: topic[2], activity: topic[3] })[field];
     }
-    return topic?.[field] ?? (field === "learn" ? topic?.body : field === "example" ? topic?.examples?.[0] : undefined);
+    if (field === "title") return typeof topic?.title === "object" ? (topic.title.en || topic.title.hi) : topic?.title;
+    if (field === "learn") return topic?.learn || topic?.body || topic?.content?.easyExplanation || topic?.content?.deepUnderstanding || topic?.content?.summary;
+    if (field === "example") return topic?.example || topic?.examples?.[0] || topic?.content?.examples?.[0] || topic?.content?.example;
+    if (field === "activity") return topic?.activity || topic?.content?.activity || topic?.content?.practicalApplication || topic?.practice?.[0] || topic?.content?.practice?.[0];
+    return topic?.[field];
   };
   const first = topics[0];
   const middle = topics[Math.floor((topics.length - 1) / 2)] || first;
