@@ -22,6 +22,8 @@ The repeatable `npm run audit:learning-hub` check currently validates:
 - 45 Education / Knowledge World courses and 587 topic lessons.
 - 41 flagship / English-from-basics assessment-bank questions.
 - 5 structured courses, 38 lessons and 17 module-assessment banks (including assessed practical modules added to short courses).
+- 9 source-level regression guards for lesson navigation, interactive checks, certificate eligibility and server-side required-module validation.
+- Placeholder-copy scan across explicit subject registries, authored category maps, compact Education/Knowledge World maps and structured courses.
 
 The curriculum inventory detected 243 titles. The static provider map matched all 243 to an explicit registry or authored provider; 109 do not have an exact `SUBJECT_CONTENT` key because they are supplied through other dedicated course providers. These are registry/provider counts, not a claim that 243 unique courses have each passed human pedagogical or factual review.
 
@@ -38,6 +40,10 @@ Each subject should be reviewed through these stages, with English and Hindi sup
 8. Revision/mastery: concise recap, spaced review suggestions, next steps and transparent completion criteria.
 
 Not every subject should use identical question formats: practical skills need performance rubrics; languages need speaking/reading/writing; maths needs worked solutions; safety/health topics need careful, sourced and appropriately qualified guidance.
+
+## Release status
+
+The latest PR build, certificate-validation unit tests, static content audit and production bundle build pass on the audit branch. The Vercel preview deployment is protected and the connected Vercel tool currently returns 403 authorization errors, so a real browser/mobile smoke test could not be completed from this session. The changes remain isolated in draft PR #94; production/main has not been changed. Do not treat the Learning Hub as fully released until an authorized person verifies the preview on desktop/mobile and approves merging.
 
 ## Regression and quality gates
 
