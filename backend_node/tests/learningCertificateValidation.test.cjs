@@ -24,18 +24,37 @@ test("rejects missing, invalid, or impossible assessment totals", () => {
 test("requires the final assessment and every required module assessment to pass", () => {
   const finalAssessment = { score: 8, total: 10, passed: true, assessmentVersion: "v2" };
   const moduleAssessments = {
-    foundation: { score: 7, total: 10, passed: true, assessmentVersion: "v2" },
-    practical: { score: 9, total: 10, passed: true, assessmentVersion: "v2" },
+    "english-foundation": { score: 7, total: 10, passed: true, assessmentVersion: "v2" },
+    "english-grammar": { score: 8, total: 10, passed: true, assessmentVersion: "v2" },
+    "english-practical": { score: 9, total: 10, passed: true, assessmentVersion: "v2" },
   };
   assert.equal(validateCertificateAssessments({
-    finalAssessment, moduleAssessments, requiredModuleAssessmentIds: ["foundation", "practical"]
+    courseId: "english-communication", finalAssessment, moduleAssessments, requiredModuleAssessmentIds: ["english-foundation", "english-grammar", "english-practical"]
   }), true);
   assert.equal(validateCertificateAssessments({
-    finalAssessment, moduleAssessments: { foundation: moduleAssessments.foundation, practical: { score: 6, total: 10, passed: false } },
-    requiredModuleAssessmentIds: ["foundation", "practical"]
+    courseId: "english-communication", finalAssessment, moduleAssessments: { "english-foundation": moduleAssessments["english-foundation"], "english-grammar": moduleAssessments["english-grammar"], "english-practical": { score: 6, total: 10, passed: false, assessmentVersion: "v2" } },
+    requiredModuleAssessmentIds: ["english-foundation", "english-grammar", "english-practical"]
   }), false);
   assert.equal(validateCertificateAssessments({
-    finalAssessment, moduleAssessments, requiredModuleAssessmentIds: ["foundation", "missing"]
+    courseId: "english-communication", finalAssessment, moduleAssessments, requiredModuleAssessmentIds: ["english-foundation", "missing"]
+  }), false);
+});
+
+test("cannot omit server-defined required modules from a structured course request", () => {
+  assert.equal(validateCertificateAssessments({
+    courseId: "english-communication",
+    finalAssessment: { score: 8, total: 10, passed: true, assessmentVersion: "v2" },
+    moduleAssessments: {},
+    requiredModuleAssessmentIds: []
+  }), false);
+});
+
+test("does not accept client-invented required module IDs for an unknown course", () => {
+  assert.equal(validateCertificateAssessments({
+    courseId: "unregistered-course",
+    finalAssessment: { score: 8, total: 10, passed: true, assessmentVersion: "v2" },
+    moduleAssessments: { fake: { score: 10, total: 10, passed: true, assessmentVersion: "v2" } },
+    requiredModuleAssessmentIds: ["fake"]
   }), false);
 });
 
