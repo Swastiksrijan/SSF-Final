@@ -26,6 +26,7 @@ import { KW_PART_C } from "../src/data/knowledgeWorldCoursesC.js";
 import { KW_PART_D } from "../src/data/knowledgeWorldCoursesD.js";
 import { KW_PART_E } from "../src/data/knowledgeWorldCoursesE.js";
 import { KW_PART_F } from "../src/data/knowledgeWorldCoursesF.js";
+import { FLAGSHIP_COURSES } from "../src/data/learningHubCourseArchitecture.js";
 
 const registries = [
   ["SUBJECT_CONTENT", SUBJECT_CONTENT],
@@ -222,6 +223,10 @@ for (const [provider, map] of providerMaps) {
 }
 for (const title of ["Primary Education", "Time & Calendar", "Fruits", "Vocabulary Building", "Trees & Forests"]) {
   if (!providerByTitle.has(normalizeTitle(title))) providerByTitle.set(normalizeTitle(title), "DEDICATED_COURSE_RENDERER");
+}
+for (const course of Object.values(FLAGSHIP_COURSES || {})) {
+  const title = course?.title?.en || course?.title || course?.id;
+  if (title) providerByTitle.set(normalizeTitle(String(title)), "FLAGSHIP_COURSE");
 }
 const missingExactRegistry = [...curriculumTitles].filter((title) => !keysSeen.has(title) && !keysSeen.has(title.split(" / ")[0]));
 const fallbackTitles = [...curriculumTitles].filter((title) => !providerByTitle.has(normalizeTitle(title)));
