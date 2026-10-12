@@ -160,7 +160,15 @@ export const knowledgeWorldToMasterCourse = (subject, course) => {
       title: "Final Test / अंतिम परीक्षा",
       note: "इस course के सभी modules से चुने गए प्रश्न।",
       tasks: course.modules.map((m) => ({ icon: "📘", title: m.title.split(" / ")[0], x: m.summary })),
-      quiz: (course.mastery || []).map((q) => ({ q: q.question, options: q.options, answer: q.answer, explain: q.explain })),
+      quiz: ((course.mastery || []).length
+        ? course.mastery.map((q) => ({ q: q.question, options: q.options, answer: q.answer, explain: q.explain }))
+        : course.modules.flatMap((m) => m.topics).map((topic) => ({
+            q: topic.quiz?.question,
+            options: topic.quiz?.options || [],
+            answer: topic.quiz?.answer,
+            explain: topic.quiz?.explain || "",
+          })).filter((q) => q.q && Array.isArray(q.options) && q.options.length >= 2 && Number.isInteger(q.answer) && q.answer >= 0 && q.answer < q.options.length)
+      ).slice(0, 10),
     },
     outcomeIntro: "इस course के बाद learner:",
     outcome: [course.overview?.outcome, course.overview?.why].filter(Boolean),
