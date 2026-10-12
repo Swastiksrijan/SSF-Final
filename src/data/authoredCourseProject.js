@@ -128,3 +128,76 @@ export function ensureAuthoredCourseDepth(subject, content) {
   }
   return { ...content, modules };
 }
+
+/**
+ * Extend very short structured courses with a practical application module.
+ * The new module carries its own assessment so it participates in the same
+ * completion and certificate gates as the authored modules.
+ */
+export function ensureStructuredCourseDepth(subject, course) {
+  if (!course || !Array.isArray(course.modules)) return course;
+  const modules = course.modules.map((module) => ({
+    ...module,
+    lessons: Array.isArray(module?.lessons) ? [...module.lessons] : [],
+  }));
+  const countLessons = () => modules.reduce((n, module) => n + module.lessons.length, 0);
+  if (modules.length >= 3 && countLessons() >= 5) return course;
+
+  const allLessons = modules.flatMap((module) => module.lessons);
+  const first = allLessons[0];
+  const last = allLessons[allLessons.length - 1] || first;
+  if (!first || !last) return course;
+  const courseId = course.id || subject?.id || "structured-course";
+  const courseTitle = course.title?.en || subject?.en || "this subject";
+  const lastTitle = typeof last.title === "object" ? (last.title.en || last.title.hi) : (last.title || "the final lesson");
+  const lastExplanation = last.content?.easyExplanation || last.content?.deepUnderstanding || "";
+  const lastExample = Array.isArray(last.content?.examples) ? last.content.examples[0] : (last.content?.example || "");
+  const lastPractice = (Array.isArray(last.content?.practice) ? last.content.practice[0] : last.content?.practice) || last.content?.practicalApplication || "Apply the lesson to a real task and review the result.";
+  const generatedLessons = [];
+
+  while (countLessons() + generatedLessons.length < 5 || modules.length + (generatedLessons.length ? 1 : 0) < 3) {
+    const index = generatedLessons.length + 1;
+    generatedLessons.push({
+      id: courseId + "-applied-lesson-" + index,
+      title: { en: "Applied Practice & Review", hi: "व्यावहारिक अभ्यास और पुनरावृत्ति" },
+      content: {
+        easyExplanation: "इस course के concepts को जोड़कर वास्तविक काम में लागू करें। खास तौर पर “" + lastTitle + "” पर ध्यान दें।",
+        deepUnderstanding: "केवल प्रक्रिया दोहराना पर्याप्त नहीं है: परिणाम जाँचें, कारण समझें, और एक सुधार दर्ज करें। " + String(lastExplanation).slice(0, 320),
+        examples: [String(lastExample || lastPractice).slice(0, 280)],
+        practice: [String(lastPractice).slice(0, 280) + " फिर परिणाम जाँचें और एक सुधार लिखें।"],
+        practicalApplication: "एक वास्तविक " + courseTitle + " task पूरा करें, उसका परिणाम दर्ज करें और सुधार का प्रमाण रखें।",
+        reflection: "क्या काम किया, क्या बदलना पड़ा और अगली बार क्या बेहतर करेंगे?",
+        knowledgeCheck: {
+          question: "“" + lastTitle + "” को लागू करने के बाद सबसे अच्छा अगला कदम क्या है?",
+          options: ["परिणाम जाँचें और एक सुधार दर्ज करें", "बिना जाँचे काम जमा करें", "गलती को अनदेखा करें", "स्रोत/प्रक्रिया जाँचे बिना साझा करें"],
+          answer: 0,
+          explain: "परिणाम जाँचना और सुधार दर्ज करना सीखने को वास्तविक कौशल में बदलता है।",
+        },
+      },
+    });
+  }
+
+  const newModules = [];
+  let nextLesson = 0;
+  while (modules.length + newModules.length < 3 || nextLesson < generatedLessons.length) {
+    const moduleIndex = newModules.length + 1;
+    const lesson = generatedLessons[nextLesson++];
+    const moduleId = courseId + "-applied-practice-" + moduleIndex;
+    newModules.push({
+      id: moduleId,
+      title: { en: "Applied Practice", hi: "व्यावहारिक अभ्यास" },
+      summary: "वास्तविक task, परिणाम जाँच और सुधार / Real task, review and improvement.",
+      lessons: lesson ? [lesson] : [],
+      assessment: {
+        questions: [{
+          q: "After applying “" + lastTitle + "”, what should you do next?",
+          options: ["Review the result and record one improvement", "Skip checking the result", "Ignore any errors", "Share without verification"],
+          answer: 0,
+          explain: "Reviewing the result and recording an improvement is part of responsible practical work.",
+        }],
+      },
+    });
+  }
+
+  return { ...course, modules: [...modules, ...newModules] };
+}
