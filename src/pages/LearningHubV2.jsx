@@ -15,6 +15,7 @@ import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
 import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCount, knowledgeWorldToMasterCourse } from "../data/knowledgeWorldCourse";
 import { makeCourseArt } from "../components/learning/CourseArtKit";
 import { buildAuthoredCourseProject, ensureAuthoredCourseDepth, ensureStructuredCourseDepth } from "../data/authoredCourseProject";
+import { buildStructuredAssessmentQuestions } from "../data/structuredAssessmentBuilder";
 import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
 import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_SKILLS_CATEGORY, OFFICE_SKILLS_SECTION, OFFICE_SKILLS_CARDS, OFFICE_SKILLS_CONTENT } from "../data/officeSkillsCourse";
 import { ENTREPRENEURSHIP_CONTENT } from "../data/entrepreneurshipContent";
@@ -2661,11 +2662,12 @@ function LearningSubject({ subject, onBack }) {
   const moduleAssessments = structuredCourse
     ? structuredCourse.modules.map((m) => ({
         ...m,
-        questions:
-          (FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] ||
+        questions: buildStructuredAssessmentQuestions(
+          m,
+          FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] ||
             (isEnglishFromBasics(subject) ? ENGLISH_FROM_BASICS_ASSESSMENTS?.[m.id] : COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id]) ||
-            m.assessment?.questions ||
-            [])
+            []
+        )
       })).filter(m => m.questions.length)
     : [];
   const courseMeta = structuredCourse || (eduCourse ? {
