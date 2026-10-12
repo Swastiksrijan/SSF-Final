@@ -354,6 +354,12 @@ for (const [registryName, registry] of registries) {
 for (const [mapName, map] of authoredMaps) {
   for (const [title, content] of Object.entries(map || {})) scanForPlaceholder(content, `${mapName}["${title}"]`);
 }
+for (const [mapName, map] of compactCourseMaps) {
+  for (const [title, content] of Object.entries(map || {})) scanForPlaceholder(content, `${mapName}["${title}"]`);
+}
+for (const [courseId, course] of Object.entries(ALL_STRUCTURED_COURSES || {})) {
+  scanForPlaceholder(course, `ALL_STRUCTURED_COURSES["${courseId}"]`);
+}
 
 const normalizeTitle = (title) => title.split(" / ")[0].trim().toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
 const providerMaps = [
