@@ -6,7 +6,7 @@ const PASS_THRESHOLD = 0.7;
  * progress itself cannot be tampered with.
  */
 function isValidPassedAssessment(result, threshold = PASS_THRESHOLD) {
-  if (!result || result.passed !== true) return false;
+  if (!result || result.passed !== true || result.assessmentVersion !== "v2") return false;
   const score = Number(result.score);
   const total = Number(result.total);
   return Number.isInteger(score)
