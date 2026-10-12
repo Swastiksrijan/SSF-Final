@@ -20,6 +20,7 @@ import { KW_PART_C } from "./knowledgeWorldCoursesC.js";
 import { KW_PART_D } from "./knowledgeWorldCoursesD.js";
 import { KW_PART_E } from "./knowledgeWorldCoursesE.js";
 import { KW_PART_F } from "./knowledgeWorldCoursesF.js";
+import { buildAuthoredCourseProject } from "./authoredCourseProject.js";
 
 const buildTopic = (t, mi, ti) => ({
   id: `kw-m${mi + 1}-t${ti + 1}`,
@@ -165,6 +166,6 @@ export const knowledgeWorldToMasterCourse = (subject, course) => {
     outcomeIntro: "इस course के बाद learner:",
     outcome: [course.overview?.outcome, course.overview?.why].filter(Boolean),
     outcomeClose: "समझ + अभ्यास + वास्तविक उदाहरण — यही असली learning है।",
-    project: course.project,
+    project: course.project || buildAuthoredCourseProject(subject, course),
   };
 };
