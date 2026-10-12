@@ -114,15 +114,17 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
     <div className="mt-5 flex flex-col gap-3 sm:flex-row">
       {user
         ? <button type="button" disabled={!certificateEligible || status === "submitting"} onClick={submitRequest} className="flex-1 rounded-xl bg-[#177245] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">{status === "submitting" ? "Submitting..." : requested ? "Request Again / दोबारा अनुरोध" : "Request Certificate / प्रमाणपत्र का अनुरोध करें"}</button>
-        : <button type="button" onClick={() => setAuthOpen(true)} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 text-sm font-black text-white">Join SSF / Login to get Certificate</button>}
+        : <button type="button" onClick={() => setAuthOpen(true)} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 text-sm font-black text-white">Join SSF / Login</button>}
     </div>
 
     <div className="mt-4 border-t border-zinc-200 pt-4">
-      <div className="text-xs font-black uppercase tracking-widest text-zinc-400">Or reach SSF directly / सीधे संपर्क करें</div>
-      <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        <a href={whatsappHref} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-black text-white"><FaWhatsapp /> WhatsApp</a>
-        <a href={emailHref} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0f4c81]/25 bg-[#f1f7fa] px-4 py-3 text-sm font-black text-[#0f4c81]"><FaEnvelope /> Email</a>
-      </div>
+      {certificateEligible ? <>
+        <div className="text-xs font-black uppercase tracking-widest text-zinc-400">Or reach SSF directly / सीधे संपर्क करें</div>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <a href={whatsappHref} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-black text-white"><FaWhatsapp /> WhatsApp</a>
+          <a href={emailHref} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0f4c81]/25 bg-[#f1f7fa] px-4 py-3 text-sm font-black text-[#0f4c81]"><FaEnvelope /> Email</a>
+        </div>
+      </> : <p className="text-sm leading-6 text-zinc-500">Direct certificate request links खुलने के लिए पहले 100% course progress, current final assessment pass और सभी required module assessments पास करना आवश्यक है।</p>}
     </div>
 
     {message && <div className={"mt-4 rounded-xl p-4 text-sm font-bold " + (status === "error" ? "bg-red-50 text-red-700" : "bg-emerald-50 text-[#177245]")}>{message}</div>}
