@@ -3,8 +3,6 @@ name: Learning Hub PR Build
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [audit/learning-hub-quality-fixes]
   workflow_dispatch:
 
 permissions:
