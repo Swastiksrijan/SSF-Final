@@ -31,6 +31,7 @@ import { ENGLISH_FROM_BASICS_ASSESSMENTS } from "../src/data/englishFromBasicsCo
 import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../src/data/coursesData.js";
 import certificateValidation from "../backend_node/utils/learningCertificateValidation.js";
 import { buildAuthoredCourseProject, ensureAuthoredCourseDepth, ensureStructuredCourseDepth } from "../src/data/authoredCourseProject.js";
+import { buildStructuredAssessmentQuestions } from "../src/data/structuredAssessmentBuilder.js";
 import { readFileSync } from "node:fs";
 
 const registries = [
@@ -168,6 +169,13 @@ for (const [courseId, course] of Object.entries(ALL_STRUCTURED_COURSES || {})) {
     if (!lessons.length) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"].modules[${mi}]: no lessons.`);
     const questionSource = COURSE_ASSESSMENTS?.[module.id] || bank[module.id] || module.assessment?.questions;
     const questions = Array.isArray(questionSource) ? questionSource : [];
+    const expandedQuestions = buildStructuredAssessmentQuestions(module, [
+      ...(FLAGSHIP_COURSE_ASSESSMENTS?.[module.id] || []),
+      ...(ENGLISH_FROM_BASICS_ASSESSMENTS?.[module.id] || []),
+      ...(COURSE_ASSESSMENTS?.[courseId]?.[module.id] || []),
+      ...(COURSE_ASSESSMENTS?.[module.id] || [])
+    ]);
+    if (expandedQuestions.length < 5) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"].modules["${module.id}"]: assessment builder returned fewer than five valid questions.`);
     if (questions.length) {
       structuredModuleAssessmentCount += 1;
       (structuredAssessmentIdsByCourse[courseId] ||= []).push(module.id);
