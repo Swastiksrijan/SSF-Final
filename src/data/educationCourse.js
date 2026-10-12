@@ -115,7 +115,7 @@ const RAW = { ...EDU_PART_A, ...EDU_PART_B, ...EDU_PART_C, ...EDU_PART_D, ...EDU
 export const EDUCATION_COURSES = Object.fromEntries(
   Object.entries(RAW).map(([title, c]) => {
     const course = buildCourse(c);
-    if (!course.project) course.project = buildAuthoredCourseProject({ en: title, hi: "" }, course);
+    course.project = buildAuthoredCourseProject({ en: title, hi: "" }, course);
     return [title, course];
   })
 );
