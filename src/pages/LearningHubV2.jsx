@@ -2730,6 +2730,23 @@ function LearningSubject({ subject, onBack }) {
       onMarkDone: () => markDone(activeLesson)
     };
     const cert = <div className="mx-auto max-w-6xl px-4 pb-16"><CourseCertificate subject={subject} courseTitle={courseMeta.title.en} courseMeta={courseMeta} progress={progress} moduleResults={moduleResults} requiredModuleAssessmentIds={moduleAssessments.map((m) => m.id)} finalResult={finalResult} /></div>;
+    const primaryProject = <section className="mx-auto mt-8 max-w-6xl px-4">
+      <div className="rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-5 shadow-sm md:p-8">
+        <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🎨</span><div><h2 className="text-xl font-black text-[#062a52] md:text-2xl">Primary Learning Project / प्राथमिक सीखने की परियोजना</h2><p className="mt-1 text-sm text-zinc-600">My Bilingual Picture Book / मेरी द्विभाषी चित्र-पुस्तिका</p></div></div>
+        <p className="mt-4 text-sm leading-7 text-zinc-700">एक छोटी चित्र-पुस्तिका बनाएँ जिसमें English letters, हिंदी अक्षर, शब्द, चित्र और छोटे वाक्य हों। बच्चे को केवल रटवाने के बजाय सुनने, बोलने, पहचानने और खुद लिखने का मौका दें।</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="rounded-xl border border-zinc-200 bg-white p-4"><h3 className="font-black text-[#0b3a63]">Materials / सामग्री</h3><p className="mt-1 text-sm leading-6 text-zinc-600">कागज़ या notebook, pencil/crayons, घर में उपलब्ध चित्र या drawings.</p></div>
+          <div className="rounded-xl border border-zinc-200 bg-white p-4"><h3 className="font-black text-[#0b3a63]">Expected Output / परिणाम</h3><p className="mt-1 text-sm leading-6 text-zinc-600">कम-से-कम 5 English letters, 5 हिंदी अक्षर, हर अक्षर से एक शब्द और 3 छोटे वाक्य।</p></div>
+        </div>
+        <ol className="mt-4 space-y-2">{[
+          "A–E में से पाँच letters चुनें; हर letter के साथ picture और word लिखें (A—Apple, B—Ball)।",
+          "पाँच हिंदी स्वर या व्यंजन चुनें; उनसे शुरू होने वाले शब्द और छोटे चित्र बनाएँ।",
+          "तीन सरल वाक्य बनाएँ—जैसे “This is a ball.” / “यह लाल गेंद है।”",
+          "किसी अभिभावक या शिक्षक के सामने पढ़कर सुनाएँ; कठिन शब्दों पर निशान लगाकर फिर अभ्यास करें।",
+          "अंत में बच्चे से पूछें कि उसने क्या सीखा और कौन-सा अक्षर/शब्द दोहराना है।"
+        ].map((step,i)=><li key={i} className="flex gap-3 text-sm leading-7 text-zinc-700"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef4f9] text-xs font-black text-[#0b3a63]">{i+1}</span><span>{step}</span></li>)}</ol>
+      </div>
+    </section>;
     const finalAssessment = <section className="mx-auto mt-8 max-w-6xl px-4">
       <div className="rounded-[2rem] border border-[#cfe0ee] bg-white p-5 shadow-sm md:p-8">
         <h2 className="text-xl font-black text-[#002344] md:text-2xl">Final Course Assessment / अंतिम पाठ्यक्रम आकलन</h2>
@@ -2750,7 +2767,7 @@ function LearningSubject({ subject, onBack }) {
         </div>}
       </div>
     </section>;
-    if (isRichLesson) return <><PrimaryLettersCourse subject={subject} {...common} />{finalAssessment}{cert}</>;
+    if (isRichLesson) return <><PrimaryLettersCourse subject={subject} {...common} />{primaryProject}{finalAssessment}{cert}</>;
     const d = cur.detail || {};
     return <><PrimaryLessonFresh {...common}
       content={{
@@ -2764,7 +2781,7 @@ function LearningSubject({ subject, onBack }) {
         summary: d.content?.summary
       }}
       check={d.content?.knowledgeCheck || d.knowledgeCheck}
-    />{finalAssessment}{cert}</>;
+    />{primaryProject}{finalAssessment}{cert}</>;
   }
   if (isTimeCalendarSubject(subject)) return <MasterCourse course={TIME_CALENDAR_COURSE} subject={subject} onBack={onBack} art={timeChapterArt} HeroArt={TimeHeroArt} />;
   if (isFruitsSubject(subject)) return <MasterCourse course={FRUITS_COURSE} subject={subject} onBack={onBack} art={fruitChapterArt} HeroArt={FruitHeroArt} />;
