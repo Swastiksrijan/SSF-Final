@@ -6,9 +6,11 @@
 
 const crypto = require('crypto');
 const { Op } = require('sequelize');
-const { SocialChannel, SocialPost, SocialConfig, SocialEvent, SocialRunLog, SocialCourseProgress } = require('../../models/social');
+const { SocialChannel, SocialPost, SocialConfig, SocialEvent, SocialRunLog, SocialCourseProgress, SocialSeriesProgress } = require('../../models/social');
 const { planPost, planLibraryPost, planEventPost, planCoursePost, splitPlan, COURSES, COURSE_TIMES } = require('./content');
 const { ADAPTERS } = require('./channels');
+const { SERIES, seriesByKey, DEFAULT_SERIES_TIMES, DEFAULT_SERIES_ENABLED } = require('./series');
+const { buildSeriesPost, advanceSeriesProgress } = require('./seriesEngine');
 
 const DEFAULT_PLATFORMS = ['website', 'facebook', 'instagram', 'telegram', 'linkedin', 'whatsapp', 'x', 'youtube'];
 const POWER_AUTOMATE = Number(process.env.SOCIAL_AUTO == null ? 1 : process.env.SOCIAL_AUTO) !== 0;
@@ -123,6 +125,57 @@ async function chooseDailyPlan(date, usedKeys) {
   return { plan: planLibraryPost(date, 'daily', usedKeys), eventId: null };
 }
 function ymd(d) { const pad = (n) => String(n).padStart(2, '0'); return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`; }
+
+// ---- daily awareness series (Samvidhan / Yojana / Charak / GK / English …) --
+// One chapter per series per day, each in its own slot. Fully additive: a series
+// that is disabled in config (`seriesEnabled`) or has finished is simply skipped,
+// and nothing here changes the awareness/festival or course streams.
+async function seriesTimes() {
+  const cfg = await getConfig('seriesTimes', null);
+  return (cfg && typeof cfg === 'object') ? cfg : DEFAULT_SERIES_TIMES;
+}
+async function seriesEnabled() {
+  const cfg = await getConfig('seriesEnabled', null);
+  // No explicit config -> the safe 3-on default (see series.js). An explicit
+  // object from config always wins, so the admin stays in full control.
+  return (cfg && typeof cfg === 'object') ? cfg : { ...DEFAULT_SERIES_ENABLED };
+}
+
+async function planAwarenessSeries(date) {
+  const times = await seriesTimes();
+  const enabled = await seriesEnabled();
+  const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const postDate = ymd(day);
+  const created = [];
+  let seq = Number((await getConfig('post_seq', 0)) || 0);
+
+  for (const series of SERIES) {
+    const slot = `series-${series.key}`;
+    // Idempotent per (day, series): if today's chapter already exists (draft OR
+    // published), never create a second one — repeated ticks must not flood the
+    // channels. A disabled series (config `seriesEnabled[key] === false`) is skipped.
+    if (enabled[series.key] === false) continue;
+    const already = await SocialPost.findOne({ where: { postDate, slot } });
+    if (already) continue;
+    const total = (series.items || []).length;
+    const prog = await SocialSeriesProgress.findOne({ where: { seriesKey: series.key } });
+    const lastChapter = prog ? Number(prog.lastChapter || 0) : 0;
+    if (lastChapter >= total) continue; // series finished — nothing left
+    const chapterNo = lastChapter + 1;
+    const plan = buildSeriesPost(series, chapterNo, day, slot);
+    const enriched = { ...plan, contentHash: contentHash(plan) };
+    const { row, extra } = splitPlan(enriched);
+    seq += 1;
+    const row2 = await SocialPost.create({
+      ...row, data: extra, postRef: nextRef(seq), status: 'draft',
+      scheduledFor: slotDate(postDate, series.key, times),
+      createdBy: 'scheduler', createdByName: 'Series Scheduler',
+    });
+    created.push(row2);
+  }
+  await setConfig('post_seq', seq);
+  return created;
+}
 
 // ---- daily course series --------------------------------------------------
 // One chapter per course per day = five posts a day, each in its own slot. The
@@ -324,6 +377,8 @@ async function publishPost(post, platforms) {
   // A course chapter that actually went out advances the series pointer, so
   // tomorrow's post is the next chapter (never a repeat, never a skip).
   if (anyOk && post.kind === 'course') await advanceCourseProgress(post).catch(() => {});
+  // The same for an awareness series (Samvidhan / Yojana / …).
+  if (anyOk && post.kind === 'series') await advanceSeriesProgress({ SocialSeriesProgress }, post).catch(() => {});
 
   // Stamp channels for the admin "last published" indicator.
   for (const r of results) {
@@ -344,17 +399,19 @@ async function runPendingInner({ force = false, date = new Date(), source = 'int
     const tz = await timezone();
     await planDue({ date });
     await planCourseSeries(date);
+    await planAwarenessSeries(date);
     const autoApprove = await getConfig('auto_approve', POWER_AUTOMATE);
     const { y, m, d } = localParts(date, tz);
     const postDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
     const hhmm = localParts(new Date(), tz).hhmm;
     const time = await dailyTime();
     const cTimes = await courseTimes();
+    const sTimes = await seriesTimes();
 
     // The single daily awareness post publishes as soon as it is created.
     // force = publish now regardless; autoApprove OFF = manual only.
-    // Course posts are always scheduled (each at its own slot time), and force
-    // releases any that are still pending.
+    // Course posts and awareness-series posts are always scheduled (each at its
+    // own slot time); force releases any that are still pending.
     const drafts = await SocialPost.findAll({ where: { postDate, status: 'draft' }, order: [['id', 'ASC']] });
     const platforms = await enabledPlatforms();
     const published = [];
@@ -363,6 +420,10 @@ async function runPendingInner({ force = false, date = new Date(), source = 'int
       if (p.kind === 'course') {
         const idx = Math.max(0, COURSES.findIndex((c) => c.key === p.data?.courseKey));
         const at = String(cTimes[idx] || '23:59');
+        due = force || hhmm >= at;
+      } else if (p.kind === 'series') {
+        const key = p.data?.seriesKey;
+        const at = String((sTimes && sTimes[key]) || '23:59');
         due = force || hhmm >= at;
       } else {
         due = force || (autoApprove && hhmm >= time);
@@ -423,4 +484,5 @@ module.exports = {
   DEFAULT_PLATFORMS, istParts, localParts, timezone, eventsForDate, allEvents, contentHash,
   DEFAULT_TZ, SocialEvent, SocialRunLog, dailyTime, recentTopicKeys, RECENT_TOPIC_DAYS,
   planCourseSeries, courseTimes, COURSES, COURSE_TIMES, SocialCourseProgress, repairCourseSeries,
+  planAwarenessSeries, seriesTimes, seriesEnabled, SERIES, DEFAULT_SERIES_TIMES, SocialSeriesProgress,
 };

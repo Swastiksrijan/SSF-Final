@@ -35,8 +35,13 @@ const CAT = {
   women: ['#4c1d95', '#7c3aed', '#FFD166'],
   youth: ['#0c4a6e', '#0284c7', '#FFD166'],
   community: ['#002344', '#0b3a63', '#FF6600'],
-  // Festival palettes — one distinct, respectful colour family per tradition so
-  // a greeting does not reuse a single generic look for every religion.
+  // Awareness-series palettes — one distinct colour family per stream so a
+  // Samvidhan post never looks like a health or language post.
+  governance: ['#1e3a8a', '#1d4ed8', '#FCD34D'],
+  schemes: ['#134e4a', '#0f766e', '#FFD166'],
+  ayurveda: ['#064e3b', '#15803d', '#FDE68A'],
+  language: ['#4c1d95', '#6d28d9', '#FFD166'],
+  motivation: ['#7c2d12', '#c2410c', '#FDE68A'],
   festival: ['#002344', '#0b3a63', '#FFD166'],
   'festival-hindu': ['#7c2d12', '#b45309', '#FFD166'],
   'festival-muslim': ['#064e3b', '#047857', '#D4AF37'],

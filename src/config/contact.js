@@ -23,7 +23,7 @@ export const CONTACT_INFO = {
     address: {
         operational: "Pune, Maharashtra, India",
         registered: "Rewa, Madhya Pradesh, India",
-        fullRegistered: "Ward no. 1, Dadar, Post Rahat, District Rewa, Pin Code 48446, Madhya Pradesh - India",
+        fullRegistered: "Ward no. 1, Dadar, Post Rahat, District Rewa, Pin Code 486446, Madhya Pradesh - India",
     },
 
     // Socials & Direct Links

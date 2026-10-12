@@ -219,6 +219,8 @@ const EXTRA_FIELDS = [
   'ctaEn', 'ctaHi', 'catLabelEn', 'catLabelHi',
   // course-series metadata (course name, chapter number, series position)
   'courseKey', 'chapterNo', 'chapterTotal',
+  // awareness-series metadata (Samvidhan / Yojana / Charak / GK / English …)
+  'seriesKey',
   // provenance + festival metadata (so the UI can badge source and show a
   // solemn tone rather than celebratory graphics on memorial days)
   'contentSource', 'contentVerified', 'tradition', 'solemn', 'palette', 'altNames',

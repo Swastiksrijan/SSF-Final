@@ -56,6 +56,7 @@ import { Route as CampaignsRouteImport } from './routes/Campaigns'
 import { Route as CampaignRouteImport } from './routes/Campaign'
 import { Route as CSRPartnershipRouteImport } from './routes/CSRPartnership'
 import { Route as BlogRouteImport } from './routes/Blog'
+import { Route as AwarenessQuizRouteImport } from './routes/AwarenessQuiz'
 import { Route as AdminPortalRouteImport } from './routes/AdminPortal'
 import { Route as AboutRouteImport } from './routes/About'
 import { Route as IndexRouteImport } from './routes/index'
@@ -349,6 +350,11 @@ const BlogRoute = BlogRouteImport.update({
   path: '/Blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AwarenessQuizRoute = AwarenessQuizRouteImport.update({
+  id: '/AwarenessQuiz',
+  path: '/AwarenessQuiz',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminPortalRoute = AdminPortalRouteImport.update({
   id: '/AdminPortal',
   path: '/AdminPortal',
@@ -638,6 +644,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/About': typeof AboutRoute
   '/AdminPortal': typeof AdminPortalRoute
+  '/AwarenessQuiz': typeof AwarenessQuizRoute
   '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
@@ -743,6 +750,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/About': typeof AboutRoute
   '/AdminPortal': typeof AdminPortalRoute
+  '/AwarenessQuiz': typeof AwarenessQuizRoute
   '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
@@ -848,6 +856,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/About': typeof AboutRoute
   '/AdminPortal': typeof AdminPortalRoute
+  '/AwarenessQuiz': typeof AwarenessQuizRoute
   '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
@@ -955,6 +964,7 @@ export interface FileRouteTypes {
     | '/'
     | '/About'
     | '/AdminPortal'
+    | '/AwarenessQuiz'
     | '/Blog'
     | '/CSRPartnership'
     | '/Campaign'
@@ -1060,6 +1070,7 @@ export interface FileRouteTypes {
     | '/'
     | '/About'
     | '/AdminPortal'
+    | '/AwarenessQuiz'
     | '/Blog'
     | '/CSRPartnership'
     | '/Campaign'
@@ -1164,6 +1175,7 @@ export interface FileRouteTypes {
     | '/'
     | '/About'
     | '/AdminPortal'
+    | '/AwarenessQuiz'
     | '/Blog'
     | '/CSRPartnership'
     | '/Campaign'
@@ -1270,6 +1282,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
   AdminPortalRoute: typeof AdminPortalRoute
+  AwarenessQuizRoute: typeof AwarenessQuizRoute
   BlogRoute: typeof BlogRouteWithChildren
   CSRPartnershipRoute: typeof CSRPartnershipRoute
   CampaignRoute: typeof CampaignRoute
@@ -1695,6 +1708,13 @@ declare module '@tanstack/react-router' {
       path: '/Blog'
       fullPath: '/Blog'
       preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/AwarenessQuiz': {
+      id: '/AwarenessQuiz'
+      path: '/AwarenessQuiz'
+      fullPath: '/AwarenessQuiz'
+      preLoaderRoute: typeof AwarenessQuizRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/AdminPortal': {
@@ -2126,6 +2146,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
   AdminPortalRoute: AdminPortalRoute,
+  AwarenessQuizRoute: AwarenessQuizRoute,
   BlogRoute: BlogRouteWithChildren,
   CSRPartnershipRoute: CSRPartnershipRoute,
   CampaignRoute: CampaignRoute,
