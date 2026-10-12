@@ -28,6 +28,7 @@ import { KW_PART_E } from "../src/data/knowledgeWorldCoursesE.js";
 import { KW_PART_F } from "../src/data/knowledgeWorldCoursesF.js";
 import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../src/data/learningHubCourseArchitecture.js";
 import { ENGLISH_FROM_BASICS_ASSESSMENTS } from "../src/data/englishFromBasicsContent.js";
+import { ALL_STRUCTURED_COURSES, COURSE_ASSESSMENTS } from "../src/data/coursesData.js";
 import { buildAuthoredCourseProject } from "../src/data/authoredCourseProject.js";
 
 const registries = [
@@ -141,6 +142,40 @@ for (const [mapName, map] of compactCourseMaps) {
       errors.push(`${mapName}["${title}"]: no usable subject-specific capstone project.`);
     }
   }
+}
+
+let structuredCourseCount = 0;
+let structuredLessonCount = 0;
+let structuredModuleAssessmentCount = 0;
+for (const [courseId, course] of Object.entries(ALL_STRUCTURED_COURSES || {})) {
+  structuredCourseCount += 1;
+  if (!course?.title?.en || !course?.title?.hi) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"]: missing bilingual course title.`);
+  const modules = Array.isArray(course?.modules) ? course.modules : [];
+  if (!modules.length) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"]: no modules.`);
+  const bank = COURSE_ASSESSMENTS?.[courseId] || {};
+  for (const [mi, module] of modules.entries()) {
+    const lessons = Array.isArray(module?.lessons) ? module.lessons : [];
+    if (!lessons.length) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"].modules[${mi}]: no lessons.`);
+    const questions = bank[module.id] || module.assessment?.questions || [];
+    if (questions.length) structuredModuleAssessmentCount += 1;
+    else warnings.push(`ALL_STRUCTURED_COURSES["${courseId}"].modules["${module.id}"]: no module assessment bank.`);
+    for (const [qi, q] of questions.entries()) {
+      const label = `ALL_STRUCTURED_COURSES["${courseId}"].modules["${module.id}"].assessment[${qi}]`;
+      const prompt = q?.q || q?.question || q?.prompt;
+      if (typeof prompt !== "string" || !prompt.trim()) errors.push(`${label}: missing question text.`);
+      if (!Array.isArray(q?.options) || q.options.length < 2) errors.push(`${label}: at least two options are required.`);
+      else if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer >= q.options.length) errors.push(`${label}: answer key is missing or invalid.`);
+    }
+    for (const [li, lesson] of lessons.entries()) {
+      structuredLessonCount += 1;
+      const label = `ALL_STRUCTURED_COURSES["${courseId}"].modules["${module.id}"].lessons[${li}]`;
+      if (!lesson?.title?.en || !lesson?.title?.hi) errors.push(`${label}: missing bilingual lesson title.`);
+      if (!(lesson?.content?.easyExplanation || lesson?.content?.deepUnderstanding || lesson?.content?.body)) warnings.push(`${label}: no authored explanation field found.`);
+      if (!(Array.isArray(lesson?.content?.examples) && lesson.content.examples.length) && !lesson?.content?.example) warnings.push(`${label}: no authored example field found.`);
+    }
+  }
+  const project = buildAuthoredCourseProject({ en: course?.title?.en || courseId, hi: course?.title?.hi || "" }, course);
+  if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) errors.push(`ALL_STRUCTURED_COURSES["${courseId}"]: no usable practical capstone project.`);
 }
 
 const authoredMaps = [
@@ -284,6 +319,7 @@ console.log(`Learning Hub content audit: ${entryCount} registry entries, ${quest
 console.log(`Authored category audit: ${authoredCourseCount} courses and ${authoredTopicCount} topic lessons checked.`);
 console.log(`Education/Knowledge World audit: ${compactCourseCount} courses and ${compactTopicCount} topic lessons checked.`);
 console.log(`Explicit flagship/English assessment banks: ${explicitAssessmentCount} questions checked.`);
+console.log(`Structured courses: ${structuredCourseCount} courses, ${structuredLessonCount} lessons, and ${structuredModuleAssessmentCount} modules with assessment banks checked.`);
 console.log(`Titles without an exact SUBJECT_CONTENT registry entry: ${missingExactRegistry.length} (some are served by dedicated course providers).`);
 console.log(`Titles not matched to an explicit subject registry or authored category map by this static audit: ${fallbackTitles.length}. Review these against dedicated course providers before claiming full subject-specific coverage.`);
 if (fallbackTitles.length) console.warn("Provider coverage review: " + fallbackTitles.join("; "));
