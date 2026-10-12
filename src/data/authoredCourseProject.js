@@ -55,3 +55,76 @@ export function buildAuthoredCourseProject(subject, content) {
     reflection: "कौन-सा concept सबसे उपयोगी रहा? किस गलती को सुधारा? अगली बार क्या बेहतर करेंगे? / What did you learn and what would you improve next?"
   };
 }
+
+/**
+ * Ensure a short authored micro-course has at least three learning stages and
+ * five lessons. Added lessons are anchored to its actual first/last topics,
+ * activities and examples rather than a generic placeholder.
+ */
+export function ensureAuthoredCourseDepth(subject, content) {
+  if (!content || !Array.isArray(content.modules) || !content.modules.length) return content;
+  const modules = content.modules.map((module) => ({
+    ...module,
+    topics: Array.isArray(module?.topics) ? [...module.topics] : [],
+  }));
+  const topicCount = () => modules.reduce((n, module) => n + module.topics.length, 0);
+  const allTopics = () => modules.flatMap((module) => module.topics);
+  const first = allTopics()[0];
+  const last = allTopics()[allTopics().length - 1] || first;
+  if (!first || !last) return { ...content, modules };
+
+  const generatedTopics = [];
+  while (topicCount() + generatedTopics.length < 5) {
+    const n = generatedTopics.length;
+    const title = n === 0
+      ? "Applied Practice / व्यवहार में उपयोग"
+      : "Review & Teach Others / पुनरावृत्ति और सिखाएँ";
+    const lastTitle = String(last.title || "मुख्य विषय");
+    const firstTitle = String(first.title || "पहला पाठ");
+    const activity = String(last.activity || last.example || "विषय का अभ्यास करें।");
+    const example = String(first.example || first.learn || "");
+    const correctAction = "पूरा अभ्यास करें, परिणाम जाँचें और एक सुधार लिखें";
+    generatedTopics.push({
+      title,
+      learn: "अब “" + firstTitle + "” की मूल समझ को “" + lastTitle + "” के साथ जोड़कर वास्तविक परिस्थिति में लागू करें। केवल उत्तर याद न करें—अपना तरीका, परिणाम और सुधार भी दर्ज करें।",
+      example: "शुरुआत का उदाहरण: " + example.slice(0, 180) + " अंतिम अभ्यास: " + activity.slice(0, 180),
+      activity: activity + " इसके बाद अपना परिणाम जाँचें और एक सुधार लिखें।",
+      quiz: {
+        q: "“" + lastTitle + "” का अभ्यास पूरा करने के बाद सबसे अच्छा अगला कदम क्या है?",
+        options: [correctAction, "बिना जाँचे परिणाम साझा करना", "अभ्यास छोड़कर अनुमान लगाना", "गलती मिलने पर उसे अनदेखा करना"],
+        answer: 0,
+        explain: "विषय-विशिष्ट गतिविधि पूरी करके परिणाम जाँचना और सुधार लिखना वास्तविक कौशल को मजबूत करता है।",
+      },
+    });
+  }
+
+  while (modules.length < 3) {
+    if (generatedTopics.length) {
+      const topic = generatedTopics.shift();
+      modules.push({
+        title: "Applied Practice / व्यावहारिक अभ्यास",
+        summary: "सीखे गए concepts को वास्तविक task में लागू करें और परिणाम जाँचें।",
+        topics: [topic],
+      });
+      continue;
+    }
+    const donorIndex = modules.reduce((best, module, index, list) =>
+      module.topics.length > (list[best]?.topics.length || 0) ? index : best, 0);
+    if (modules[donorIndex]?.topics.length > 1) {
+      const topic = modules[donorIndex].topics.pop();
+      modules.push({
+        title: "Practice & Review / अभ्यास और पुनरावृत्ति",
+        summary: "मुख्य कौशल का अभ्यास, जाँच और सुधार।",
+        topics: [topic],
+      });
+    } else {
+      break;
+    }
+  }
+
+  if (generatedTopics.length) {
+    const practiceModule = modules.find((module) => /Applied Practice|Practice & Review/.test(module.title));
+    (practiceModule || modules[modules.length - 1]).topics.push(...generatedTopics);
+  }
+  return { ...content, modules };
+}
