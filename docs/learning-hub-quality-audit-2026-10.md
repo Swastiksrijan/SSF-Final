@@ -45,4 +45,4 @@ Not every subject should use identical question formats: practical skills need p
 
 ## Remaining work
 
-This branch is the safe starting point for the larger curriculum pass. Interactive question feedback, subject-by-subject coverage mapping, content fact-checking, certificate gating and automated/regression tests still need implementation and verification before this can be considered a complete global-standard learning system.
+This branch is the safe starting point for the larger curriculum pass. Subject-by-subject coverage mapping, content fact-checking, certificate gating, assessment consistency across all course types, and automated/regression tests still need implementation and verification before this can be considered a complete global-standard learning system.
