@@ -26,7 +26,8 @@ import { KW_PART_C } from "../src/data/knowledgeWorldCoursesC.js";
 import { KW_PART_D } from "../src/data/knowledgeWorldCoursesD.js";
 import { KW_PART_E } from "../src/data/knowledgeWorldCoursesE.js";
 import { KW_PART_F } from "../src/data/knowledgeWorldCoursesF.js";
-import { FLAGSHIP_COURSES } from "../src/data/learningHubCourseArchitecture.js";
+import { FLAGSHIP_COURSES, FLAGSHIP_COURSE_ASSESSMENTS } from "../src/data/learningHubCourseArchitecture.js";
+import { ENGLISH_FROM_BASICS_ASSESSMENTS } from "../src/data/englishFromBasicsContent.js";
 import { buildAuthoredCourseProject } from "../src/data/authoredCourseProject.js";
 
 const registries = [
@@ -125,6 +126,16 @@ for (const [mapName, map] of compactCourseMaps) {
         else if (!Number.isInteger(answer) || answer < 0 || answer >= options.length) errors.push(`${label}: answer key is missing or invalid; do not guess option zero.`);
       }
     }
+    for (const [qi, item] of (Array.isArray(course?.mastery) ? course.mastery : []).entries()) {
+      const tuple = Array.isArray(item);
+      const prompt = tuple ? item[0] : (item?.question || item?.q || item?.prompt);
+      const options = tuple ? item[1] : item?.options;
+      const answer = tuple ? item[2] : item?.answer;
+      const label = `${mapName}["${title}"].mastery[${qi}]`;
+      if (typeof prompt !== "string" || !prompt.trim()) errors.push(`${label}: missing final assessment question.`);
+      if (!Array.isArray(options) || options.length < 2) errors.push(`${label}: final assessment needs at least two options.`);
+      else if (!Number.isInteger(answer) || answer < 0 || answer >= options.length) errors.push(`${label}: final assessment answer key is missing or invalid.`);
+    }
     const project = buildAuthoredCourseProject({ en: title, hi: "" }, course);
     if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) {
       errors.push(`${mapName}["${title}"]: no usable subject-specific capstone project.`);
@@ -177,6 +188,16 @@ for (const [mapName, map] of authoredMaps) {
         }
       }
     }
+    for (const [qi, item] of (Array.isArray(course?.mastery) ? course.mastery : []).entries()) {
+      const tuple = Array.isArray(item);
+      const prompt = tuple ? item[0] : (item?.question || item?.q || item?.prompt);
+      const options = tuple ? item[1] : item?.options;
+      const answer = tuple ? item[2] : item?.answer;
+      const label = `${mapName}["${title}"].mastery[${qi}]`;
+      if (typeof prompt !== "string" || !prompt.trim()) errors.push(`${label}: missing final assessment question.`);
+      if (!Array.isArray(options) || options.length < 2) errors.push(`${label}: final assessment needs at least two options.`);
+      else if (!Number.isInteger(answer) || answer < 0 || answer >= options.length) errors.push(`${label}: final assessment answer key is missing or invalid.`);
+    }
     const project = buildAuthoredCourseProject({ en: title, hi: "", intro: course?.tagline }, course);
     if (!project || !project.objective || !Array.isArray(project.steps) || project.steps.length < 3) {
       errors.push(`${mapName}["${title}"]: no usable subject-specific capstone project.`);
@@ -184,6 +205,24 @@ for (const [mapName, map] of authoredMaps) {
     const masteryQuestions = Array.isArray(course?.mastery) ? course.mastery.length : 0;
     const topicQuestions = modules.reduce((n, module) => n + (module?.topics?.length || 0), 0);
     if (masteryQuestions + topicQuestions < 5) warnings.push(`${mapName}["${title}"]: fewer than five potential final assessment questions.`);
+  }
+}
+
+const explicitAssessmentMaps = [
+  ["FLAGSHIP_COURSE_ASSESSMENTS", FLAGSHIP_COURSE_ASSESSMENTS],
+  ["ENGLISH_FROM_BASICS_ASSESSMENTS", ENGLISH_FROM_BASICS_ASSESSMENTS],
+];
+let explicitAssessmentCount = 0;
+for (const [mapName, map] of explicitAssessmentMaps) {
+  for (const [moduleId, questions] of Object.entries(map || {})) {
+    for (const [qi, q] of (Array.isArray(questions) ? questions : []).entries()) {
+      explicitAssessmentCount += 1;
+      const label = `${mapName}["${moduleId}"][${qi}]`;
+      const prompt = q?.q || q?.question || q?.prompt;
+      if (typeof prompt !== "string" || !prompt.trim()) errors.push(`${label}: missing question text.`);
+      if (!Array.isArray(q?.options) || q.options.length < 2) errors.push(`${label}: at least two options are required.`);
+      else if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer >= q.options.length) errors.push(`${label}: answer key is missing or invalid.`);
+    }
   }
 }
 
@@ -244,6 +283,7 @@ const fallbackTitles = [...curriculumTitles].filter((title) => !providerByTitle.
 console.log(`Learning Hub content audit: ${entryCount} registry entries, ${questionCount} quiz questions checked, ${curriculumTitles.size} curriculum titles detected.`);
 console.log(`Authored category audit: ${authoredCourseCount} courses and ${authoredTopicCount} topic lessons checked.`);
 console.log(`Education/Knowledge World audit: ${compactCourseCount} courses and ${compactTopicCount} topic lessons checked.`);
+console.log(`Explicit flagship/English assessment banks: ${explicitAssessmentCount} questions checked.`);
 console.log(`Titles without an exact SUBJECT_CONTENT registry entry: ${missingExactRegistry.length} (some are served by dedicated course providers).`);
 console.log(`Titles not matched to an explicit subject registry or authored category map by this static audit: ${fallbackTitles.length}. Review these against dedicated course providers before claiming full subject-specific coverage.`);
 if (fallbackTitles.length) console.warn("Provider coverage review: " + fallbackTitles.join("; "));
