@@ -2552,7 +2552,10 @@ function LearningSubject({ subject, onBack }) {
   const [moduleAnswers, setModuleAnswers] = useState({});
   const isPrimaryEducation = /^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const [moduleResults, setModuleResults] = useState(() => {
-    try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
+    try {
+      const saved = JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}");
+      return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+    } catch { return {}; }
   });
 
   const structuredResolution = resolveStructuredCourse(subject);
