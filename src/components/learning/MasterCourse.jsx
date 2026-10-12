@@ -267,13 +267,19 @@ function Chapter({ chapter, index, total, done, onToggleDone, speaking, onSpeak,
   </section>;
 }
 
-function MasteryTest({ mastery }) {
+function MasteryTest({ mastery, onResult }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const score = mastery.quiz.reduce((n, q, i) => n + (answers[i] === q.answer ? 1 : 0), 0);
   const total = mastery.quiz.length;
   const answered = Object.keys(answers).length;
   const pct = total ? Math.min(100, Math.round((score / total) * 100)) : 0;
+  const submit = () => {
+    if (!total || answered < total || submitted) return;
+    const result = { score, total, passed: pct >= 80, completedAt: new Date().toISOString() };
+    setSubmitted(true);
+    onResult?.(result);
+  };
 
   return <section id="mc-mastery" className="scroll-mt-28 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-5 shadow-sm md:p-8">
     <div className="flex items-center gap-3">
@@ -308,7 +314,7 @@ function MasteryTest({ mastery }) {
     </div>
 
     <div className="mt-6 flex flex-wrap items-center gap-4">
-      <button type="button" disabled={answered < total || submitted} onClick={() => setSubmitted(true)}
+      <button type="button" disabled={answered < total || submitted} onClick={submit}
         className="rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-6 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
       {submitted && <div className={"rounded-2xl px-5 py-3 text-sm font-black md:text-base " + (pct >= 80 ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700")}>Score: {score}/{total} ({pct}%) {pct >= 80 ? "· Mastered 🏆" : "· दोबारा पढ़ें"}</div>}
     </div>
@@ -326,6 +332,13 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
   const chapterIds = useMemo(() => chapters.map((c) => c.id), [chapters]);
   const progressKey = "ssf-learning-course-progress-" + subject.id;
   const [done, setDone] = useState(() => readMigratedProgress(subject, chapterIds));
+  const [finalResult, setFinalResult] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(progressKey + "-final") || "null"); } catch { return null; }
+  });
+  const handleFinalResult = (result) => {
+    setFinalResult(result);
+    try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
+  };
   const topRef = useRef(null);
 
   useEffect(() => { try { localStorage.setItem(progressKey, JSON.stringify(done)); } catch {} }, [done, progressKey]);
@@ -440,7 +453,7 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
       </section>
 
       {/* Mastery */}
-      <div className="mt-8"><MasteryTest mastery={course.mastery} /></div>
+      <div className="mt-8"><MasteryTest mastery={course.mastery} onResult={handleFinalResult} /></div>
 
       {/* Project (optional — Knowledge World courses carry a field project) */}
       {course.project && <section className="mt-8 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-6 shadow-sm md:p-8">
@@ -467,6 +480,7 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
         courseTitle={(course.meta.title && course.meta.title[0]) || course.meta.tag || subject.en}
         courseMeta={course.meta}
         progress={pct}
+        finalResult={finalResult}
       />
 
       <div className="py-10 text-center">
