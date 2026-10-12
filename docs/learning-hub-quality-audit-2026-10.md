@@ -6,7 +6,7 @@ Scope: `src/pages/LearningHubV2.jsx` and the Learning Hub content/course registr
 ## Confirmed findings from source inspection
 
 1. **Lesson visits were counted as completion.** The generic lesson navigation handler called `markDone(safe)` whenever a learner opened or moved to a lesson. This inflated completion/progress and could misrepresent course completion. The handler has now been changed so navigation does not mark a lesson complete; a learner must use the explicit completion control. The primary-education course continues to receive its existing `onMarkDone` callback.
-2. **Quick checks needed interactivity.** In `PrimaryLessonVisual`, `knowledgeCheck` prompts/options were initially display-only. The audit branch now makes them selectable and provides correct/incorrect feedback, shows the correct option and any supplied explanation, and allows retry. Questions without a usable answer key are explicitly identified rather than assigning a guessed answer. This improvement is scoped to that lesson board; other course assessment flows still require separate review.
+2. **Quick checks needed interactivity.** In `PrimaryLessonVisual`, `knowledgeCheck` prompts/options were initially display-only. The audit branch now makes quick checks selectable in the primary lesson board and the generic lesson detail panel, provides correct/incorrect feedback, shows the correct option and any supplied explanation, and allows retry. The Primary Lesson Fresh renderer no longer reveals the answer before the learner responds. Questions without a usable answer key are explicitly identified rather than assigning a guessed answer.
 3. **Fallback content needs coverage review.** The subject registry explicitly says subjects without an exact entry use generated fallback content. Every published subject should be checked against its exact content key so generic fallback is never mistaken for fully subject-specific instruction.
 4. **Progress persistence is browser-local in this flow.** The inspected progress handler uses `localStorage`; this does not establish cross-device/server-synced progress.
 5. **Content completeness cannot be inferred from topic count.** Registries and module maps contain many subject/topic entries, but each subject still needs a coverage check for explanations, worked examples, guided practice, independent practice, feedback, real-world use, revision, and a meaningful assessment.
@@ -30,7 +30,7 @@ Not every subject should use identical question formats: practical skills need p
 - Opening, previewing, or navigating to a lesson must not increment completion.
 - Explicitly completing a lesson increments progress once only; reopening it must not double-count.
 - Previous/Next and Back navigation must keep the correct lesson and must not strand the learner on a module list.
-- A course certificate must depend on genuine course completion and assessment requirements, not merely visiting all lesson screens.
+- A course certificate request must depend on genuine 100% course completion and a passed final assessment; the client and existing API both enforce these checks. Module-assessment tracking remains course-dependent and needs full end-to-end verification.
 - Each visible subject is mapped to its exact content provider or is clearly labelled as a limited preview; no silent generic fallback for a course advertised as complete.
 - Quick checks must let learners answer, receive correct/incorrect feedback and an explanation, and retry where appropriate.
 - Verify bilingual rendering, keyboard/mobile usability, persistence, no React child/type errors, and production build.
@@ -45,4 +45,4 @@ Not every subject should use identical question formats: practical skills need p
 
 ## Remaining work
 
-This branch is the safe starting point for the larger curriculum pass. Subject-by-subject coverage mapping, content fact-checking, certificate gating, assessment consistency across all course types, browser/mobile regression tests and a successful production-build run still need verification before this can be considered a complete global-standard learning system.
+This is still not a claim that the entire curriculum is finished. Remaining work: run and fix the new registry audit; map every visible subject to its actual content provider; replace shallow generated lessons where they are presented as complete courses; review bilingual accuracy, examples and answer explanations; verify certificate requests for every course type; and perform browser/mobile regression tests for navigation, progress persistence, keyboard use, other website routes and production build. Do not merge to `main` or deploy live until the latest CI run passes and the course flows are tested.
