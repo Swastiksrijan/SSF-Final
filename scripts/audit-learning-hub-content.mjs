@@ -13,6 +13,19 @@ import { MATH_CONTENT } from "../src/data/mathFinanceContent.js";
 import { LANGUAGES_CONTENT } from "../src/data/languagesContent.js";
 import { SCIENCE_CONTENT } from "../src/data/scienceContent.js";
 import { CORPORATE_CONTENT } from "../src/data/corporateMasteryContent.js";
+import { OFFICE_SKILLS_CONTENT } from "../src/data/officeSkillsContent.js";
+import { EDU_PART_A } from "../src/data/educationCoursesA.js";
+import { EDU_PART_B } from "../src/data/educationCoursesB.js";
+import { EDU_PART_C } from "../src/data/educationCoursesC.js";
+import { EDU_PART_D } from "../src/data/educationCoursesD.js";
+import { EDU_RICH_B1 } from "../src/data/educationCoursesRich.js";
+import { EDU_RICH_B2 } from "../src/data/educationCoursesRichB.js";
+import { KW_PART_A } from "../src/data/knowledgeWorldCoursesA.js";
+import { KW_PART_B } from "../src/data/knowledgeWorldCoursesB.js";
+import { KW_PART_C } from "../src/data/knowledgeWorldCoursesC.js";
+import { KW_PART_D } from "../src/data/knowledgeWorldCoursesD.js";
+import { KW_PART_E } from "../src/data/knowledgeWorldCoursesE.js";
+import { KW_PART_F } from "../src/data/knowledgeWorldCoursesF.js";
 
 const registries = [
   ["SUBJECT_CONTENT", SUBJECT_CONTENT],
@@ -86,6 +99,19 @@ const providerMaps = [
   ["LANGUAGES_CONTENT", LANGUAGES_CONTENT],
   ["SCIENCE_CONTENT", SCIENCE_CONTENT],
   ["CORPORATE_CONTENT", CORPORATE_CONTENT],
+  ["OFFICE_SKILLS_CONTENT", OFFICE_SKILLS_CONTENT],
+  ["EDU_PART_A", EDU_PART_A],
+  ["EDU_PART_B", EDU_PART_B],
+  ["EDU_PART_C", EDU_PART_C],
+  ["EDU_PART_D", EDU_PART_D],
+  ["EDU_RICH_B1", EDU_RICH_B1],
+  ["EDU_RICH_B2", EDU_RICH_B2],
+  ["KW_PART_A", KW_PART_A],
+  ["KW_PART_B", KW_PART_B],
+  ["KW_PART_C", KW_PART_C],
+  ["KW_PART_D", KW_PART_D],
+  ["KW_PART_E", KW_PART_E],
+  ["KW_PART_F", KW_PART_F],
 ];
 const providerByTitle = new Map();
 for (const [provider, map] of providerMaps) {
