@@ -68,12 +68,17 @@ export function buildStructuredAssessmentQuestions(module, authoredQuestions = [
   const questions = [];
   const seen = new Set();
   const add = (candidate) => {
-    const q = normalizeQuestion(candidate);
-    if (!q) return;
-    const key = q.q.toLowerCase();
+    const parsed = normalizeQuestion(candidate);
+    if (!parsed) return;
+    const key = parsed.q.toLowerCase();
     if (seen.has(key)) return;
     seen.add(key);
-    questions.push(q);
+    const optionCount = parsed.options.length;
+    const textSeed = [...parsed.q].reduce((sum, character) => sum + character.charCodeAt(0), questions.length + 1);
+    const shift = textSeed % optionCount;
+    const options = parsed.options.map((_, index) => parsed.options[(index + shift) % optionCount]);
+    const answer = (parsed.answer - shift + optionCount) % optionCount;
+    questions.push({ ...parsed, options, answer });
   };
   raw.forEach(add);
 
