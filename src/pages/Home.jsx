@@ -93,16 +93,32 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="border-b border-[#e8e0ce] bg-[#f5f1e8] py-7 md:py-9">
-        <div className="container mx-auto grid max-w-7xl grid-cols-1 gap-5 px-5 sm:grid-cols-2 md:grid-cols-4 md:gap-0 md:px-8">
-          {facts.map((item, index) => (
-            <div key={item.label} className={"flex items-start gap-4 px-4 " + (index ? "md:border-l md:border-[#d9ceb7]" : "")}>
-              <span className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#d2bd83] bg-white text-lg text-[#9b7831]">{item.icon}</span>
-              <div className="min-w-0"><p className="break-words text-base font-bold leading-snug text-[#122b43] md:text-lg">{item.value}</p><p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-[#7a6b4e]">{item.label}</p><p className="mt-1 text-sm text-slate-600">{item.hi}</p></div>
-            </div>
-          ))}
+      <section className="relative isolate overflow-hidden border-y border-[#24435b] bg-[#0b2238] py-9 md:py-12">
+        <div aria-hidden="true" className="absolute -right-20 -top-28 -z-10 h-80 w-80 rounded-full border border-[#d8b96d]/15 md:h-[28rem] md:w-[28rem]" />
+        <div aria-hidden="true" className="absolute -right-8 -top-16 -z-10 h-64 w-64 rounded-full border border-[#d8b96d]/10 md:h-96 md:w-96" />
+        <div className="container mx-auto max-w-7xl px-5 md:px-8">
+          <div className="mb-7 flex items-center gap-3 md:mb-9">
+            <span className="h-px w-8 bg-[#d8b96d]" />
+            <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#e8c878] md:text-xs">Institutional Identity <span className="px-1.5 text-white/40">/</span> संस्थागत परिचय</p>
+            <span className="hidden h-px max-w-20 flex-1 bg-[#d8b96d]/35 sm:block" />
+          </div>
+          <div className="grid grid-cols-1 gap-y-6 sm:grid-cols-2 sm:gap-x-5 md:grid-cols-4 md:gap-x-0 md:gap-y-0">
+            {facts.map((item, index) => (
+              <div key={item.label} className={"group relative flex min-w-0 items-start gap-4 px-1 sm:px-3 md:px-5 " + (index % 2 === 1 ? "sm:border-l sm:border-white/10 md:border-l-0" : "") + (index ? " md:border-l md:border-white/15" : "")}>
+                <span className="mt-0.5 flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#d8b96d]/35 bg-white/[0.055] text-lg text-[#f0dba5] shadow-inner transition-colors group-hover:border-[#d8b96d]/70 group-hover:bg-[#d8b96d]/10">{item.icon}</span>
+                <div className="min-w-0 pt-0.5">
+                  <p className={"break-words font-semibold leading-snug text-white " + (item.label === "Registration Number" ? "text-sm md:text-base" : item.value === "Rewa, Madhya Pradesh" ? "text-base md:text-lg" : "text-xl md:text-2xl")}>{item.value}</p>
+                  <p className="mt-2 text-[10px] font-bold uppercase tracking-[0.13em] text-[#e8c878] md:text-[11px]">{item.label}</p>
+                  <p className="mt-1 text-sm text-slate-300">{item.hi}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-col gap-2 border-t border-white/10 pt-5 text-xs leading-relaxed text-slate-400 sm:flex-row sm:items-center sm:justify-between">
+            <p>Registered office: Rewa, Madhya Pradesh <span className="px-1.5 text-[#d8b96d]">•</span> Area of work: India-wide</p>
+            <p className="text-slate-500">Institutional details are subject to the relevant official records.</p>
+          </div>
         </div>
-        <p className="container mx-auto mt-6 max-w-7xl px-5 text-xs leading-relaxed text-slate-500 md:px-8">Registered NGO • Registered office: Rewa, Madhya Pradesh • Area of work: India-wide. Institutional details should be read with the relevant official records.</p>
       </section>
 
       <FloatingTicker />
