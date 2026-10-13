@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { FaUsers, FaHandsHelping, FaHeart, FaHandshake, FaClock, FaLightbulb, FaTools, FaShareAlt, FaBuilding, FaArrowRight, FaCheckCircle } from "react-icons/fa";
 import MemberForm from "../components/MemberForm";
 import VolunteerForm from "../components/VolunteerForm";
@@ -42,6 +42,17 @@ export default function JoinUsPage() {
     const requestedRole = new URLSearchParams(window.location.search).get("role");
     return ROLES.some((item) => item.id === requestedRole) ? requestedRole : "member";
   });
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const requestedRole = new URLSearchParams(window.location.search).get("role");
+    if (!["member", "volunteer"].includes(requestedRole)) return;
+    // Deep links from the homepage should reveal the matching form immediately.
+    const timer = window.setTimeout(() => {
+      document.getElementById("join-form")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }, 250);
+    return () => window.clearTimeout(timer);
+  }, []);
+
   const [gift, setGift] = useState(null);
   const selectedRole = useMemo(() => ROLES.find((item) => item.id === active), [active]);
   const chooseRole = (id) => { setActive(id); setGift(null); window.setTimeout(() => document.getElementById("join-form")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60); };
