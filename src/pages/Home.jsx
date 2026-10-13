@@ -107,6 +107,33 @@ export default function Home() {
 
       <FloatingTicker />
 
+      <section className="bg-[#fbfaf7] px-5 pb-16 pt-5 md:px-8 md:pb-20">
+        <div className="container mx-auto max-w-7xl">
+          <div className="mb-8 max-w-3xl">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7831] md:text-sm">People • Learning • Community</p>
+            <h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-4xl">Progress begins with people.</h2>
+            <p className="mt-3 max-w-2xl leading-relaxed text-slate-600">A visual introduction to the themes behind SSF’s work. These are illustrative stock photographs, not claims that the pictured activities were conducted by SSF.</p>
+          </div>
+          <div className="grid gap-4 md:grid-cols-3">
+            <article className="group relative min-h-[280px] overflow-hidden rounded-2xl bg-[#102b43] shadow-lg md:min-h-[340px]">
+              <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=85" alt="Illustrative photograph of students learning in a classroom" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07182b]/95 via-[#07182b]/25 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-7"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f0dba5]">Education & Learning</p><h3 className="mt-2 font-serif text-2xl md:text-3xl">A chance to learn. A future to shape.</h3></div>
+            </article>
+            <article className="group relative min-h-[280px] overflow-hidden rounded-2xl bg-[#102b43] shadow-lg md:min-h-[340px]">
+              <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1000&q=85" alt="Illustrative photograph of people collaborating around a table" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07182b]/95 via-[#07182b]/25 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-7"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f0dba5]">Partnership & Participation</p><h3 className="mt-2 font-serif text-2xl md:text-3xl">Shared purpose. Collective progress.</h3></div>
+            </article>
+            <article className="group relative min-h-[280px] overflow-hidden rounded-2xl bg-[#102b43] shadow-lg md:min-h-[340px]">
+              <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1000&q=85" alt="Illustrative photograph of community support for children" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07182b]/95 via-[#07182b]/25 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-7"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f0dba5]">Care & Inclusion</p><h3 className="mt-2 font-serif text-2xl md:text-3xl">Dignity and opportunity for all.</h3></div>
+            </article>
+          </div>
+        </div>
+      </section>
+
       <section className="px-5 py-16 md:px-8 md:py-24">
         <div className="container mx-auto max-w-7xl">
           <div className="mx-auto mb-12 max-w-3xl text-center">
