@@ -37,7 +37,11 @@ function RoleForm({ active }) {
 }
 
 export default function JoinUsPage() {
-  const [active, setActive] = useState("member");
+  const [active, setActive] = useState(() => {
+    if (typeof window === "undefined") return "member";
+    const requestedRole = new URLSearchParams(window.location.search).get("role");
+    return ROLES.some((item) => item.id === requestedRole) ? requestedRole : "member";
+  });
   const [gift, setGift] = useState(null);
   const selectedRole = useMemo(() => ROLES.find((item) => item.id === active), [active]);
   const chooseRole = (id) => { setActive(id); setGift(null); window.setTimeout(() => document.getElementById("join-form")?.scrollIntoView({ behavior: "smooth", block: "start" }), 60); };
