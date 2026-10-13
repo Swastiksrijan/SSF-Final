@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
@@ -36,7 +36,7 @@ const values = [
 ];
 
 export default function Home() {
-  const [authOpen, setAuthOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);\n  const [photoSlide, setPhotoSlide] = useState(0);\n  useEffect(() => {\n    const timer = window.setInterval(() => setPhotoSlide((current) => (current + 1) % 3), 5500);\n    return () => window.clearInterval(timer);\n  }, []);
   const [authMode, setAuthMode] = useState("signup");
   const openAuth = (mode = "signup") => { setAuthMode(mode); setAuthOpen(true); };
   const fadeInUp = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65 } } };
@@ -127,29 +127,32 @@ export default function Home() {
 
       <FloatingTicker />
 
-      <section className="bg-[#fbfaf7] px-5 pb-16 pt-5 md:px-8 md:pb-20">
+      <section className="bg-[#fbfaf7] px-5 py-10 md:px-8 md:py-14" aria-label="Community photographs">
         <div className="container mx-auto max-w-7xl">
-          <div className="mb-8 max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7831] md:text-sm">People • Learning • Community</p>
-            <h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-4xl">Progress begins with people.</h2>
-            <p className="mt-3 max-w-2xl leading-relaxed text-slate-600">A visual introduction to the themes behind SSF’s work. These are illustrative stock photographs, not claims that the pictured activities were conducted by SSF.</p>
-          </div>
-          <div className="grid gap-4 md:grid-cols-3">
-            <article className="group relative min-h-[280px] overflow-hidden rounded-2xl bg-[#102b43] shadow-lg md:min-h-[340px]">
-              <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=85" alt="Illustrative photograph of students learning in a classroom" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07182b]/95 via-[#07182b]/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-7"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f0dba5]">Education & Learning</p><h3 className="mt-2 font-serif text-2xl md:text-3xl">A chance to learn. A future to shape.</h3></div>
-            </article>
-            <article className="group relative min-h-[280px] overflow-hidden rounded-2xl bg-[#102b43] shadow-lg md:min-h-[340px]">
-              <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1000&q=85" alt="Illustrative photograph of people collaborating around a table" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07182b]/95 via-[#07182b]/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-7"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f0dba5]">Partnership & Participation</p><h3 className="mt-2 font-serif text-2xl md:text-3xl">Shared purpose. Collective progress.</h3></div>
-            </article>
-            <article className="group relative min-h-[280px] overflow-hidden rounded-2xl bg-[#102b43] shadow-lg md:min-h-[340px]">
-              <img src="https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1000&q=85" alt="Illustrative photograph of community support for children" loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#07182b]/95 via-[#07182b]/25 to-transparent" />
-              <div className="absolute inset-x-0 bottom-0 p-6 text-white md:p-7"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#f0dba5]">Care & Inclusion</p><h3 className="mt-2 font-serif text-2xl md:text-3xl">Dignity and opportunity for all.</h3></div>
-            </article>
+          <div className="relative mx-auto max-w-6xl overflow-hidden rounded-3xl bg-[#102b43] shadow-xl">
+            <div className="relative aspect-[16/9] max-h-[620px] w-full">
+              {[
+                { src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1800&q=85", alt: "Students learning in a classroom" },
+                { src: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=1800&q=85", alt: "People collaborating around a table" },
+                { src: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?auto=format&fit=crop&w=1800&q=85", alt: "Community support and children" },
+              ].map((slide, index) => (
+                <img
+                  key={slide.src}
+                  src={slide.src}
+                  alt={slide.alt}
+                  loading={index === 0 ? "eager" : "lazy"}
+                  className={"absolute inset-0 h-full w-full object-cover transition-opacity duration-1000 " + (photoSlide === index ? "opacity-100" : "pointer-events-none opacity-0")}
+                  aria-hidden={photoSlide !== index}
+                />
+              ))}
+              <button type="button" onClick={() => setPhotoSlide((photoSlide + 2) % 3)} aria-label="Previous photograph" className="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-2xl text-white backdrop-blur-sm transition hover:bg-black/70">‹</button>
+              <button type="button" onClick={() => setPhotoSlide((photoSlide + 1) % 3)} aria-label="Next photograph" className="absolute right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full bg-black/45 text-2xl text-white backdrop-blur-sm transition hover:bg-black/70">›</button>
+              <div className="absolute bottom-4 left-0 right-0 z-10 flex justify-center gap-2">
+                {[0, 1, 2].map((index) => (
+                  <button key={index} type="button" onClick={() => setPhotoSlide(index)} aria-label={"Show photograph " + (index + 1)} aria-current={photoSlide === index ? "true" : undefined} className={"h-2.5 rounded-full transition-all " + (photoSlide === index ? "w-7 bg-white" : "w-2.5 bg-white/60 hover:bg-white")} />
+                ))}
+              </div>
+            </div>
           </div>
         </div>
       </section>
