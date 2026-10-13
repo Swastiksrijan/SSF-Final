@@ -61,7 +61,11 @@ export default function Home() {
             <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#d7bd7c]/45 bg-white/[0.07] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#f0dba5] backdrop-blur-sm md:text-sm">
               <span className="h-2 w-2 rounded-full bg-[#e8c878]" /> Swastik Srijan Foundation Samiti
             </div>
-            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-[#e8c878] md:text-base">सहयोग • कौशल • जागरूकता • सृजन</p>
+            <div className="mb-6 inline-flex max-w-full items-center gap-3 rounded-2xl border border-[#f0dba5]/55 bg-gradient-to-r from-[#d8b96d]/20 via-white/[0.09] to-[#d8b96d]/15 px-4 py-3 shadow-[0_10px_35px_-15px_rgba(216,185,109,0.55)] backdrop-blur-sm sm:px-6 sm:py-4">
+              <span aria-hidden="true" className="hidden h-px w-5 shrink-0 bg-[#f0dba5] sm:block" />
+              <p className="text-center text-lg font-extrabold leading-relaxed tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#fff4cc] via-[#f0dba5] to-[#e8c878] sm:text-xl md:text-2xl lg:text-[1.7rem]">सहयोग <span className="px-1 text-white/70">•</span> कौशल <span className="px-1 text-white/70">•</span> जागरूकता <span className="px-1 text-white/70">•</span> सृजन</p>
+              <span aria-hidden="true" className="hidden h-px w-5 shrink-0 bg-[#f0dba5] sm:block" />
+            </div>
             <h1 className="max-w-3xl text-4xl font-semibold leading-[1.12] tracking-tight text-white md:text-6xl lg:text-7xl">
               Creating Change.<span className="block font-serif italic font-normal text-[#f0dba5]">Inspiring Lives.</span>
             </h1>
