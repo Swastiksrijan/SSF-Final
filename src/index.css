@@ -16,13 +16,6 @@ body { font-family:"Plus Jakarta Sans",sans-serif; color:var(--text-dark); backg
 .btn-secondary { @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 bg-white text-[#002344] border-2 border-[#002344] hover:bg-[#002344] hover:text-white hover:-translate-y-0.5; }
 .btn-cta { @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 bg-[#d90429] text-white hover:bg-[#b00422] hover:-translate-y-0.5 shadow-lg hover:shadow-red-500/20; }
 @keyframes float { 0%{transform:translateY(0)} 50%{transform:translateY(-8px)} 100%{transform:translateY(0)} } .animate-float{animation:float 3s ease-in-out infinite;}
-@keyframes lhRise { from{opacity:0;transform:translateY(16px)} to{opacity:1;transform:none} }
-.lh-rise{animation:lhRise .7s cubic-bezier(.2,.7,.2,1) both;}
-@keyframes lhFloatSlow { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-9px)} }
-.lh-float{animation:lhFloatSlow 7s ease-in-out infinite;}
-@keyframes lhGlow { 0%,100%{opacity:.4} 50%{opacity:.85} }
-.lh-glow{animation:lhGlow 6s ease-in-out infinite;}
-@media (prefers-reduced-motion: reduce){ .lh-rise,.lh-float,.lh-glow{animation:none !important} }
 @keyframes scrollX { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} } .animate-scrollX{animation:scrollX 20s linear infinite;}
 .premium-card { @apply bg-white p-8 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300; } .font-inria{font-family:"Plus Jakarta Sans",sans-serif;}
 

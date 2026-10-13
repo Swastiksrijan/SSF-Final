@@ -21,14 +21,6 @@ const SectionTitle = ({ icon, eyebrow, title, subtitle, action }) => (
   </div>
 );
 
-const QUICK_CHIPS = [
-  { label: "Computer", q: "computer" },
-  { label: "English", q: "english" },
-  { label: "Health", q: "health" },
-  { label: "Cyber Safety", q: "cyber" },
-  { label: "Career", q: "career" },
-];
-
 const MODES = [
   { icon: <FaBookOpen aria-hidden="true" />, title: "Courses", hi: "पाठ्यक्रम", text: "Structured learning, module by module.", cta: "Explore courses", route: "explore" },
   { icon: <FaGlobe aria-hidden="true" />, title: "Knowledge World", hi: "ज्ञान संसार", text: "Topic-wise knowledge and facts.", cta: "Enter Knowledge World", route: "knowledge" },
@@ -151,28 +143,20 @@ export default function LearningHubHome({
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <div className="max-w-3xl">
-          <div className="lh-rise inline-flex items-center gap-2.5 rounded-full border border-[#FFD166]/30 bg-white/[0.04] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[#FFD166] backdrop-blur" style={{ animationDelay: "0ms" }}>
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-[#FFD166]/30 bg-white/[0.04] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[#FFD166] backdrop-blur">
             <span aria-hidden="true">◆</span> SSF Learning Hub
           </div>
-          <h1 className="lh-rise mt-6 font-serif text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl" style={{ animationDelay: "90ms" }}>
-            ज्ञान से <span className="text-[#FFD166]">कौशल</span> तक,
-            <span className="block">हर कदम आपके साथ।</span>
+          <h1 className="mt-6 font-serif text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl">
+            Welcome to Your <span className="text-[#FFD166]">Learning Journey</span> 🚀
           </h1>
-          <div className="lh-rise mt-5 text-lg font-semibold tracking-wide text-[#FFD166] md:text-2xl" style={{ animationDelay: "180ms" }}>Discover • Learn • Practice • Grow</div>
-          <p className="lh-rise mt-5 max-w-xl text-sm leading-7 text-white/70 md:text-base" style={{ animationDelay: "260ms" }}>
-            279 subjects, 30 learning areas और 154 पूरे courses — हर course में modules, lessons, practice और quiz के साथ। अपनी गति से सीखें, अपनी भाषा में बढ़ें और पूरा करने पर certificate पाएँ।
+          <div className="mt-4 text-lg font-semibold tracking-wide text-[#FFD166] md:text-2xl">Discover • Learn • Practice • Grow</div>
+          <p className="mt-5 max-w-xl text-sm leading-7 text-white/70 md:text-base">
+            ज्ञान से कौशल तक — एक structured digital learning space। हर subject को Learning Area → Course → Modules → Lessons के स्पष्ट क्रम में सीखें, practice करें और अपनी गति से आगे बढ़ें।
           </p>
 
-          <div className="lh-rise" style={{ animationDelay: "340ms" }}>
-            <HeroSearch matchSubjects={matchSubjects} onOpenSubject={onOpenSubject} onSubmit={onSearch} />
-          </div>
+          <HeroSearch matchSubjects={matchSubjects} onOpenSubject={onOpenSubject} onSubmit={onSearch} />
 
-          <div className="lh-rise mt-4 flex flex-wrap items-center gap-2 text-xs text-white/50" style={{ animationDelay: "400ms" }}>
-            <span className="font-semibold uppercase tracking-[0.16em] text-white/40">Popular / लोकप्रिय:</span>
-            {QUICK_CHIPS.map((c) => <button key={c.label} type="button" onClick={() => onSearch(c.q)} className="rounded-full border border-white/15 bg-white/[0.05] px-3 py-1.5 font-semibold text-white/75 transition hover:border-[#FFD166]/50 hover:bg-white/[0.12] hover:text-white">{c.label}</button>)}
-          </div>
-
-          <div className="lh-rise mt-7 flex flex-wrap gap-3" style={{ animationDelay: "460ms" }}>
+          <div className="mt-7 flex flex-wrap gap-3">
             <button type="button" onClick={onExplore} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-6 py-3 text-sm font-bold text-[#142b45] shadow-[0_18px_40px_-20px_rgba(184,144,63,0.9)] transition hover:brightness-110">
               <FaCompass aria-hidden="true" /> Explore Learning
             </button>
@@ -181,7 +165,7 @@ export default function LearningHubHome({
             </button>
           </div>
 
-          {active && <button type="button" onClick={() => onOpenSubject(active.subject)} className="lh-rise mt-8 flex w-full max-w-2xl items-center justify-between gap-4 rounded-2xl border border-[#FFD166]/25 bg-white/[0.05] p-4 text-left backdrop-blur transition hover:bg-white/[0.1]" style={{ animationDelay: "540ms" }}>
+          {active && <button type="button" onClick={() => onOpenSubject(active.subject)} className="mt-8 flex w-full max-w-2xl items-center justify-between gap-4 rounded-2xl border border-[#FFD166]/25 bg-white/[0.05] p-4 text-left backdrop-blur transition hover:bg-white/[0.1]">
             <span className="min-w-0">
               <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#FFD166]">Continue where you left off</span>
               <span className="mt-1.5 block truncate text-base font-bold">{active.subject.en}</span>
@@ -195,7 +179,7 @@ export default function LearningHubHome({
               [subjects.length, "Subjects", "विषय"],
               [categoryCards.length, "Learning Areas", "क्षेत्र"],
               [knowledgeWorldSubjects.length, "Knowledge Topics", "ज्ञान विषय"],
-              [LEARNING_PATHS.length, "Learning Paths", "रास्ते"],
+              ["Structured", "Modules & Lessons", "मॉड्यूल"],
             ].map(([value, en, hi]) => <div key={en} className="bg-[#001529]/40 p-4 text-center backdrop-blur">
               <div className="font-serif text-2xl font-bold text-[#FFD166]">{value}</div>
               <div className="mt-1 text-[11px] font-semibold text-white/60">{en} / {hi}</div>
@@ -203,9 +187,9 @@ export default function LearningHubHome({
           </div>
         </div>
 
-        <div className="lh-rise relative mx-auto w-full max-w-xl lg:max-w-none" style={{ animationDelay: "220ms" }}>
-          <div className="lh-glow absolute -inset-5 rounded-[2.6rem] bg-[#FF6600]/10 blur-3xl" aria-hidden="true" />
-          <div className="lh-float relative rounded-[2rem] border border-[#FFD166]/25 p-2.5 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
+        <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
+          <div className="absolute -inset-5 rounded-[2.6rem] bg-[#FF6600]/10 blur-3xl" aria-hidden="true" />
+          <div className="relative rounded-[2rem] border border-[#FFD166]/25 p-2.5 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
             <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10">
               <HubHeroArt className="block h-auto w-full" />
               <div className="absolute inset-0 bg-gradient-to-t from-[#001529]/70 via-transparent to-transparent" />
