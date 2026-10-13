@@ -68,7 +68,7 @@ export default function Home() {
             </div>
             <div className="mb-6 inline-flex max-w-full items-center gap-3 rounded-2xl border border-[#f0dba5]/55 bg-gradient-to-r from-[#d8b96d]/20 via-white/[0.09] to-[#d8b96d]/15 px-4 py-3 shadow-[0_10px_35px_-15px_rgba(216,185,109,0.55)] backdrop-blur-sm sm:px-6 sm:py-4">
               <span aria-hidden="true" className="hidden h-px w-5 shrink-0 bg-[#f0dba5] sm:block" />
-              <p className="text-center text-lg font-extrabold leading-relaxed tracking-wide text-[#F97316] sm:text-xl md:text-2xl lg:text-[1.7rem]">सहयोग <span className="px-1 text-white/70">•</span> कौशल <span className="px-1 text-white/70">•</span> जागरूकता <span className="px-1 text-white/70">•</span> सृजन</p>
+              <p className="text-center text-lg font-extrabold leading-relaxed tracking-wide text-[#f0dba5] sm:text-xl md:text-2xl lg:text-[1.7rem]">सहयोग <span className="px-1 text-white/70">•</span> कौशल <span className="px-1 text-white/70">•</span> जागरूकता <span className="px-1 text-white/70">•</span> सृजन</p>
               <span aria-hidden="true" className="hidden h-px w-5 shrink-0 bg-[#f0dba5] sm:block" />
             </div>
             <h1 className="max-w-3xl text-4xl font-semibold leading-[1.12] tracking-tight text-white md:text-6xl lg:text-7xl">
@@ -78,7 +78,7 @@ export default function Home() {
             <p className="mt-2 max-w-2xl text-base leading-relaxed text-slate-200 md:text-lg">शिक्षा, कौशल, स्वास्थ्य, जागरूकता और सार्थक साझेदारी के माध्यम से समावेशी सामुदायिक विकास की दिशा में प्रयास।</p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link to="/PartnerWithUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#d8b96d] px-7 py-3.5 font-bold text-[#10263b] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#f0dba5]">Partner with SSF <FaArrowRight /></Link>
-              <Link to="/Donate" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F97316] px-7 py-3.5 font-extrabold text-white shadow-lg shadow-orange-950/25 transition hover:-translate-y-0.5 hover:bg-[#EA580C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"><FaHeart /> Donate Now <FaArrowRight /></Link>
+              <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F97316] px-7 py-3.5 font-extrabold text-white shadow-lg shadow-orange-950/25 transition hover:-translate-y-0.5 hover:bg-[#EA580C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"><FaHeart /> Donate Now <FaArrowRight /></a>
               <Link to="/JoinUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/70 bg-white/5 px-7 py-3.5 font-semibold text-white transition hover:bg-white hover:text-[#10263b]">Join the Mission <FaUsers /></Link>
               <Link to="/LearningHub" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/25 px-6 py-3.5 font-semibold text-white transition hover:border-[#d8b96d] hover:text-[#f0dba5]"><FaGraduationCap /> SSF Learning Hub</Link>
             </div>
