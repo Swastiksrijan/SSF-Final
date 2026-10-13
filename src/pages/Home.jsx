@@ -36,7 +36,12 @@ const values = [
 ];
 
 export default function Home() {
-  const [authOpen, setAuthOpen] = useState(false);\n  const [photoSlide, setPhotoSlide] = useState(0);\n  useEffect(() => {\n    const timer = window.setInterval(() => setPhotoSlide((current) => (current + 1) % 3), 5500);\n    return () => window.clearInterval(timer);\n  }, []);
+  const [authOpen, setAuthOpen] = useState(false);
+  const [photoSlide, setPhotoSlide] = useState(0);
+  useEffect(() => {
+    const timer = window.setInterval(() => setPhotoSlide((current) => (current + 1) % 3), 5500);
+    return () => window.clearInterval(timer);
+  }, []);
   const [authMode, setAuthMode] = useState("signup");
   const openAuth = (mode = "signup") => { setAuthMode(mode); setAuthOpen(true); };
   const fadeInUp = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65 } } };
@@ -73,6 +78,7 @@ export default function Home() {
             <p className="mt-2 max-w-2xl text-base leading-relaxed text-slate-200 md:text-lg">शिक्षा, कौशल, स्वास्थ्य, जागरूकता और सार्थक साझेदारी के माध्यम से समावेशी सामुदायिक विकास की दिशा में प्रयास।</p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
               <Link to="/PartnerWithUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#d8b96d] px-7 py-3.5 font-bold text-[#10263b] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#f0dba5]">Partner with SSF <FaArrowRight /></Link>
+              <Link to="/Donate" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F97316] px-7 py-3.5 font-extrabold text-white shadow-lg shadow-orange-950/25 transition hover:-translate-y-0.5 hover:bg-[#EA580C] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"><FaHeart /> Donate Now <FaArrowRight /></Link>
               <Link to="/JoinUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/70 bg-white/5 px-7 py-3.5 font-semibold text-white transition hover:bg-white hover:text-[#10263b]">Join the Mission <FaUsers /></Link>
               <Link to="/LearningHub" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/25 px-6 py-3.5 font-semibold text-white transition hover:border-[#d8b96d] hover:text-[#f0dba5]"><FaGraduationCap /> SSF Learning Hub</Link>
             </div>
