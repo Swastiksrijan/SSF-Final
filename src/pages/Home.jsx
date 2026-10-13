@@ -61,8 +61,8 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 px-4 md:px-6 pb-7">
               {[
-                {title:"MEMBER", text:"मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", path:"/Join", icon:<FaUsers />, tone:"text-[#0b4f86] bg-blue-50 border-blue-100", titleTone:"text-[#0b4f86] group-hover:text-[#2563eb]", accent:"bg-[#0b4f86]", glow:"group-hover:shadow-blue-100/80"},
-                {title:"VOLUNTEER", text:"मेरे पास समय / skill है, मैं काम करना चाहता हूँ।", path:"/Join", icon:<FaHandsHelping />, tone:"text-[#168a5a] bg-emerald-50 border-emerald-100", titleTone:"text-[#168a5a] group-hover:text-[#16a34a]", accent:"bg-[#168a5a]", glow:"group-hover:shadow-emerald-100/80"},
+                {title:"MEMBER", text:"मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", path:"/JoinUs?role=member", icon:<FaUsers />, tone:"text-[#0b4f86] bg-blue-50 border-blue-100", titleTone:"text-[#0b4f86] group-hover:text-[#2563eb]", accent:"bg-[#0b4f86]", glow:"group-hover:shadow-blue-100/80"},
+                {title:"VOLUNTEER", text:"मेरे पास समय / skill है, मैं काम करना चाहता हूँ।", path:"/JoinUs?role=volunteer", icon:<FaHandsHelping />, tone:"text-[#168a5a] bg-emerald-50 border-emerald-100", titleTone:"text-[#168a5a] group-hover:text-[#16a34a]", accent:"bg-[#168a5a]", glow:"group-hover:shadow-emerald-100/80"},
                 {title:"SUPPORTER / DONOR", text:"मैं किसी अच्छे काम को support करना चाहता हूँ।", path:"/Donate", icon:<FaHeart />, tone:"text-[#c2410c] bg-orange-50 border-orange-100", titleTone:"text-[#c2410c] group-hover:text-[#ea580c]", accent:"bg-[#c2410c]", glow:"group-hover:shadow-orange-100/80"},
                 {title:"PARTNER", text:"मेरी संस्था / company / institution Swastik Srijan Foundation के साथ काम कर सकती है।", path:"/PartnerWithUs", icon:<FaHandshake />, tone:"text-[#7c3aed] bg-violet-50 border-violet-100", titleTone:"text-[#7c3aed] group-hover:text-[#9333ea]", accent:"bg-[#7c3aed]", glow:"group-hover:shadow-violet-100/80"}
               ].map((item,index) => (
