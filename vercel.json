@@ -4,6 +4,10 @@
     {
       "source": "/api/digital-office/google/callback",
       "destination": "https://ngo-backend-03hq.onrender.com/api/digital-office/google/callback"
+    },
+    {
+      "source": "/((?!api/).*)",
+      "destination": "/index.html"
     }
   ]
 }
