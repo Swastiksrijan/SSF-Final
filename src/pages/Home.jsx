@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
-import { FaHeart, FaArrowRight, FaCheckCircle, FaUsers, FaGlobeAsia, FaHandshake, FaBullseye, FaHandsHelping, FaBookOpen, FaLaptop, FaHeartbeat, FaLeaf, FaLightbulb, FaGraduationCap } from "react-icons/fa";
+import {
+  FaHeart, FaArrowRight, FaCheckCircle, FaUsers, FaGlobeAsia, FaHandshake,
+  FaBullseye, FaHandsHelping, FaBookOpen, FaLaptop, FaHeartbeat, FaLeaf,
+  FaLightbulb, FaGraduationCap, FaShieldAlt, FaFileAlt, FaBuilding, FaCompass
+} from "react-icons/fa";
 import OptimizedImage from "../components/OptimizedImage";
 import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
@@ -9,93 +13,179 @@ import EliteDonationCard from "../components/EliteDonationCard";
 import AuthModal from "../components/AuthModal";
 import pageHeader from "../assets/page-header.jpg";
 
+const focusAreas = [
+  { title: "Education & Learning", hi: "शिक्षा एवं सीखना", icon: <FaBookOpen />, path: "/OurInitiatives" },
+  { title: "Skills & Livelihoods", hi: "कौशल एवं आजीविका", icon: <FaLightbulb />, path: "/SkillPrograms" },
+  { title: "Health & Well-being", hi: "स्वास्थ्य एवं कल्याण", icon: <FaHeartbeat />, path: "/OurInitiatives#health" },
+  { title: "Women & Child Welfare", hi: "महिला एवं बाल कल्याण", icon: <FaHandsHelping />, path: "/OurInitiatives" },
+  { title: "Digital Learning", hi: "डिजिटल शिक्षा", icon: <FaLaptop />, path: "/LearningHub" },
+  { title: "Environment & Awareness", hi: "पर्यावरण एवं जागरूकता", icon: <FaLeaf />, path: "/OurInitiatives#awareness" },
+];
+
+const partnershipCards = [
+  { eyebrow: "FOR CORPORATES & INSTITUTIONS", title: "CSR & Institutional Partnerships", hi: "सीएसआर एवं संस्थागत साझेदारी", text: "Explore collaboration opportunities, project proposals and ways to work together for inclusive community development.", icon: <FaHandshake />, path: "/CSRPartnership", action: "Explore partnerships" },
+  { eyebrow: "PROGRAMMES & PROPOSALS", title: "Projects & Initiatives", hi: "परियोजनाएँ एवं पहल", text: "Learn about SSF’s focus areas and proposed initiatives. Future plans are distinguished from programmes currently in operation.", icon: <FaBuilding />, path: "/UpcomingProjects", action: "Explore initiatives" },
+  { eyebrow: "OPEN INSTITUTIONAL INFORMATION", title: "Transparency & Documents", hi: "पारदर्शिता एवं दस्तावेज़", text: "Find available institutional information, policies and reports. Each document should link to its own verified record.", icon: <FaShieldAlt />, path: "/Transparency", action: "View transparency" },
+];
+
+const values = [
+  { title: "Integrity", hi: "ईमानदारी", text: "Act responsibly and communicate truthfully." },
+  { title: "Dignity", hi: "गरिमा", text: "Respect every person without discrimination." },
+  { title: "Inclusion", hi: "समावेशिता", text: "Encourage participation and equal opportunity." },
+  { title: "Accountability", hi: "जवाबदेही", text: "Value transparency and responsible use of resources." },
+];
+
 export default function Home() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("signup");
-  const fadeInUp = { hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { duration: 0.6 } } };
-  const openAuth = (mode) => { setAuthMode(mode); setAuthOpen(true); };
-  const focusAreas = [
-    { title: "Education & Learning", hi: "शिक्षा एवं सीखना", icon: <FaBookOpen />, path: "/OurInitiatives" },
-    { title: "Skill & Livelihood", hi: "कौशल एवं आजीविका", icon: <FaLightbulb />, path: "/SkillPrograms" },
-    { title: "Health & Well-being", hi: "स्वास्थ्य एवं कल्याण", icon: <FaHeartbeat />, path: "/OurInitiatives#health" },
-    { title: "Women & Child Welfare", hi: "महिला एवं बाल कल्याण", icon: <FaHandsHelping />, path: "/OurInitiatives" },
-    { title: "Digital Learning", hi: "डिजिटल शिक्षा", icon: <FaLaptop />, path: "/LearningHub" },
-    { title: "Environment & Awareness", hi: "पर्यावरण एवं जागरूकता", icon: <FaLeaf />, path: "/OurInitiatives#awareness" }
+  const openAuth = (mode = "signup") => { setAuthMode(mode); setAuthOpen(true); };
+  const fadeInUp = { hidden: { opacity: 0, y: 22 }, visible: { opacity: 1, y: 0, transition: { duration: 0.65 } } };
+  const facts = [
+    { value: "2013", label: "Established", hi: "स्थापना वर्ष", icon: <FaHeart /> },
+    { value: "December 2013", label: "Registered Society", hi: "पंजीकृत संस्था", icon: <FaCheckCircle /> },
+    { value: "05/22/03/11448/13", label: "Registration Number", hi: "पंजीयन क्रमांक", icon: <FaFileAlt /> },
+    { value: "Rewa, Madhya Pradesh", label: "Registered Office", hi: "पंजीकृत कार्यालय", icon: <FaGlobeAsia /> },
   ];
-  const objectives = [
-    { title: "Education & Knowledge", hi: "शिक्षा एवं ज्ञान", icon: <FaBookOpen /> },
-    { title: "Skill Development & Livelihood", hi: "कौशल विकास एवं आजीविका", icon: <FaLightbulb /> },
-    { title: "Women & Child Development", hi: "महिला एवं बाल विकास", icon: <FaHandsHelping /> },
-    { title: "Health & Well-being", hi: "स्वास्थ्य एवं कल्याण", icon: <FaHeartbeat /> },
-    { title: "Environment & Natural Resources", hi: "पर्यावरण एवं प्राकृतिक संसाधन", icon: <FaLeaf /> },
-    { title: "Agriculture & Rural Development", hi: "कृषि एवं ग्रामीण विकास", icon: <FaGlobeAsia /> },
-    { title: "Social Justice & Awareness", hi: "सामाजिक न्याय एवं जागरूकता", icon: <FaBullseye /> },
-    { title: "Disability, Elderly & Rehabilitation", hi: "दिव्यांग, वृद्धजन एवं पुनर्वास", icon: <FaUsers /> },
-    { title: "Animal & Wildlife Protection", hi: "पशु एवं वन्यजीव संरक्षण", icon: <FaLeaf /> },
-    { title: "Religious, Cultural & Creative", hi: "धार्मिक, सांस्कृतिक एवं रचनात्मक", icon: <FaHandshake /> }
-  ];
-  const glanceCards = [
-    { text: "2013–2026", sub: "Service Journey", hi: "सेवा यात्रा", icon: <FaHeart className="text-[#FF6600] text-3xl" /> },
-    { text: "December 2013", sub: "Registered Foundation", hi: "पंजीकृत संस्था", icon: <FaBullseye className="text-[#002344] text-3xl" /> },
-    { text: "Reg. No. 05/22/03/11448/13", sub: "Registration Number", hi: "पंजीयन क्रमांक", icon: <FaCheckCircle className="text-[#002344] text-3xl" /> },
-    { text: "Pan India", sub: "Area of Work", hi: "कार्य क्षेत्र", icon: <FaGlobeAsia className="text-[#002344] text-3xl" /> }
-  ];
-  const quickActions = [
-    { title: "Join SSF", text: "Become part of the journey", path: "/Join", icon: <FaUsers /> },
-    { title: "Volunteer", text: "Give your time and skills", path: "/Volunteer", icon: <FaHandsHelping /> },
-    { title: "Support Our Work", text: "Help create meaningful change", path: "/Donate", icon: <FaHeart /> }
-  ];
+
   return (
-    <div className="w-full bg-white font-sans text-zinc-800">
-      <section className="relative min-h-[85vh] flex items-center pt-20 pb-20 overflow-hidden bg-[#001529]"><div className="absolute inset-0 z-0"><OptimizedImage priority src={pageHeader} alt="Swastik Srijan Foundation community activity" className="w-full h-full object-cover brightness-[0.8] contrast-[1.08]" /><div className="absolute inset-0 bg-gradient-to-r from-[#001529] via-[#001529]/70 to-[#001529]/15" /></div><div className="container mx-auto px-6 relative z-10 flex items-center h-full"><motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-4xl space-y-7"><div className="flex items-center gap-3 mt-4 md:mt-0"><div className="h-[2px] w-12 bg-[#FF6600]" /><span className="text-white font-bold tracking-widest uppercase text-sm">Swastik Srijan Foundation Samiti</span></div><h1 className="text-4xl md:text-6xl lg:text-7xl font-bold text-white leading-tight drop-shadow-2xl">Creating Change.<br />Inspiring Lives.<span className="block text-2xl md:text-4xl mt-4 font-normal text-zinc-100">सहयोग • कौशल • जागरूकता • सृजन</span></h1><p className="max-w-2xl text-lg md:text-xl text-zinc-100 leading-relaxed">Working for inclusive community development across India through education, skills, health, awareness and meaningful partnerships.</p><div className="flex flex-col sm:flex-row flex-wrap gap-4 pt-2"><Link to="/JoinUs" className="px-8 py-4 bg-[#FF6600] text-white font-bold rounded-full hover:bg-[#e65c00] transition-all shadow-xl text-lg text-center">Join the Movement</Link><Link to="/Join" className="px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all text-lg text-center">Member</Link><Link to="/Join?tab=volunteer" className="px-8 py-4 bg-white/10 backdrop-blur-md border-2 border-white/70 text-white font-bold rounded-full hover:bg-white hover:text-[#002344] transition-all text-lg text-center">Volunteer</Link><a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noreferrer noopener" className="px-8 py-4 bg-white text-[#002344] font-bold rounded-full hover:bg-zinc-100 transition-all text-lg text-center">Donate <FaHeart className="inline ml-2 text-[#FF6600]" /></a><Link to="/LearningHub" className="px-8 py-4 bg-gradient-to-r from-[#E85D04] via-[#FF8C00] to-[#F4B400] text-white font-black rounded-full border-2 border-[#FFD166]/90 hover:-translate-y-0.5 hover:brightness-105 transition-all shadow-xl text-lg text-center inline-flex items-center justify-center gap-2 whitespace-nowrap"><FaGraduationCap /> SSF Learning Hub</Link></div></motion.div></div></section>
-      <section className="py-14 bg-zinc-50 border-y border-zinc-200"><div className="container mx-auto px-4 max-w-6xl"><div className="text-center mb-9"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">SSF at a glance</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">A Journey of Service Since 2013</h2></div><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">{glanceCards.map((item,index)=><motion.div key={index} initial={{opacity:0,y:20}} whileInView={{opacity:1,y:0}} viewport={{once:true}} transition={{delay:index*0.08}} className="bg-white p-7 rounded-2xl shadow-sm hover:shadow-lg transition-shadow text-center border border-zinc-100 flex flex-col items-center"><div className="mb-4">{item.icon}</div><h3 className="text-2xl md:text-3xl font-extrabold text-zinc-800 mb-1">{item.text}</h3><p className="text-zinc-600 font-bold uppercase text-xs md:text-sm tracking-wider">{item.sub}</p><p className="text-zinc-400 text-xs mt-1">{item.hi}</p></motion.div>)}</div></div></section>
-      <div className="bg-[#002344] text-zinc-300 py-3 text-center text-xs md:text-sm font-medium border-t border-white/10"><div className="container mx-auto px-4">Registered NGO | Registered December 2013 | Reg. No. 05/22/03/11448/13 | Rewa, Madhya Pradesh | Working Across India</div></div>
+    <main className="w-full overflow-hidden bg-[#fbfaf7] font-sans text-[#17283a]">
+      <section className="relative isolate flex min-h-[660px] items-center overflow-hidden bg-[#081e33] pb-20 pt-28 md:min-h-[730px] md:pb-28 md:pt-32">
+        <div className="absolute inset-0 -z-20">
+          <OptimizedImage priority src={pageHeader} alt="Community activity associated with Swastik Srijan Foundation" className="h-full w-full" />
+        </div>
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(5,23,40,0.97)_0%,rgba(8,30,51,0.88)_43%,rgba(8,30,51,0.48)_78%,rgba(8,30,51,0.36)_100%)]" />
+        <div className="absolute -right-20 -top-24 -z-10 h-[460px] w-[460px] rounded-full border border-[#d7bd7c]/35 md:h-[640px] md:w-[640px]" aria-hidden="true" />
+        <div className="absolute -right-8 -top-12 -z-10 h-[360px] w-[360px] rounded-full border border-[#d7bd7c]/25 md:h-[520px] md:w-[520px]" aria-hidden="true" />
+        <div className="container relative mx-auto grid max-w-7xl items-center gap-12 px-5 md:px-8 lg:grid-cols-[1.25fr_0.75fr]">
+          <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-3xl">
+            <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#d7bd7c]/45 bg-white/[0.07] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#f0dba5] backdrop-blur-sm md:text-sm">
+              <span className="h-2 w-2 rounded-full bg-[#e8c878]" /> Swastik Srijan Foundation Samiti
+            </div>
+            <p className="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-[#e8c878] md:text-base">सहयोग • कौशल • जागरूकता • सृजन</p>
+            <h1 className="max-w-3xl text-4xl font-semibold leading-[1.12] tracking-tight text-white md:text-6xl lg:text-7xl">
+              Creating Change.<span className="block font-serif italic font-normal text-[#f0dba5]">Inspiring Lives.</span>
+            </h1>
+            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-100 md:text-xl">Working towards inclusive community development through education, skills, health, awareness and meaningful partnerships.</p>
+            <p className="mt-2 max-w-2xl text-base leading-relaxed text-slate-200 md:text-lg">शिक्षा, कौशल, स्वास्थ्य, जागरूकता और सार्थक साझेदारी के माध्यम से समावेशी सामुदायिक विकास की दिशा में प्रयास।</p>
+            <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <Link to="/PartnerWithUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#d8b96d] px-7 py-3.5 font-bold text-[#10263b] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#f0dba5]">Partner with SSF <FaArrowRight /></Link>
+              <Link to="/JoinUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/70 bg-white/5 px-7 py-3.5 font-semibold text-white transition hover:bg-white hover:text-[#10263b]">Join the Mission <FaUsers /></Link>
+              <Link to="/LearningHub" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/25 px-6 py-3.5 font-semibold text-white transition hover:border-[#d8b96d] hover:text-[#f0dba5]"><FaGraduationCap /> SSF Learning Hub</Link>
+            </div>
+            <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-200">
+              <span className="inline-flex items-center gap-2"><FaCheckCircle className="text-[#d8b96d]" /> Registered society</span>
+              <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#d8b96d]" /> Working across India</span>
+            </div>
+          </motion.div>
+          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden lg:block">
+            <div className="relative rounded-[2rem] border border-[#d8b96d]/45 bg-[#0b2740]/75 p-8 shadow-2xl shadow-black/30 backdrop-blur-md">
+              <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878]">Our guiding promise</p>
+              <h2 className="mt-5 font-serif text-3xl leading-snug text-white">Serve with integrity. Act with compassion.</h2>
+              <p className="mt-4 leading-relaxed text-slate-200">We strive to create lasting, meaningful social value through responsible action, community participation and cooperation.</p>
+              <div className="mt-7 border-t border-white/15 pt-6">
+                <p className="text-sm font-semibold text-[#f0dba5]">हमारा संकल्प</p>
+                <p className="mt-2 leading-relaxed text-slate-200">ईमानदारी से सेवा, संवेदनशीलता के साथ कार्य और समाज के लिए स्थायी सकारात्मक परिवर्तन।</p>
+              </div>
+              <div className="mt-7 flex items-center gap-3 text-sm text-slate-300"><span className="h-px flex-1 bg-[#d8b96d]/50" /><span>Since December 2013</span><span className="h-px flex-1 bg-[#d8b96d]/50" /></div>
+            </div>
+          </motion.aside>
+        </div>
+      </section>
+
+      <section className="border-b border-[#e8e0ce] bg-[#f5f1e8] py-7 md:py-9">
+        <div className="container mx-auto grid max-w-7xl grid-cols-1 gap-5 px-5 sm:grid-cols-2 md:grid-cols-4 md:gap-0 md:px-8">
+          {facts.map((item, index) => (
+            <div key={item.label} className={"flex items-start gap-4 px-4 " + (index ? "md:border-l md:border-[#d9ceb7]" : "")}>
+              <span className="mt-1 flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-[#d2bd83] bg-white text-lg text-[#9b7831]">{item.icon}</span>
+              <div className="min-w-0"><p className="break-words text-base font-bold leading-snug text-[#122b43] md:text-lg">{item.value}</p><p className="mt-1 text-xs font-bold uppercase tracking-[0.12em] text-[#7a6b4e]">{item.label}</p><p className="mt-1 text-sm text-slate-600">{item.hi}</p></div>
+            </div>
+          ))}
+        </div>
+        <p className="container mx-auto mt-6 max-w-7xl px-5 text-xs leading-relaxed text-slate-500 md:px-8">Registered NGO • Registered office: Rewa, Madhya Pradesh • Area of work: India-wide. Institutional details should be read with the relevant official records.</p>
+      </section>
+
       <FloatingTicker />
-      <section className="relative z-20 -mt-2 px-4 pb-10">
+
+      <section className="px-5 py-16 md:px-8 md:py-24">
         <div className="container mx-auto max-w-7xl">
-          <div className="rounded-[2.25rem] bg-white shadow-[0_24px_70px_rgba(6,40,74,0.12)] border border-slate-200 overflow-hidden">
-            <div className="px-6 md:px-10 pt-9 md:pt-12 pb-8 text-center">
-              <p className="text-[#168a5a] font-extrabold text-sm md:text-base tracking-[0.18em] uppercase">Be Part of the Journey</p>
-              <h2 className="text-3xl md:text-5xl lg:text-6xl font-black text-[#06284a] mt-3 leading-tight">आज Swastik Srijan Foundation से जुड़िए।</h2>
-              <p className="text-slate-500 mt-4 text-base md:text-xl leading-relaxed">आपके लिए जुड़ने का एक रास्ता है — अपनी भूमिका चुनिए।</p>
-            </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-5 px-4 md:px-6 pb-7">
-              {[
-                {title:"MEMBER", text:"मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", path:"/Join", icon:<FaUsers />, tone:"text-[#0b4f86] bg-blue-50 border-blue-100", titleTone:"text-[#0b4f86] group-hover:text-[#2563eb]", accent:"bg-[#0b4f86]", glow:"group-hover:shadow-blue-100/80"},
-                {title:"VOLUNTEER", text:"मेरे पास समय / skill है, मैं काम करना चाहता हूँ।", path:"/Join", icon:<FaHandsHelping />, tone:"text-[#168a5a] bg-emerald-50 border-emerald-100", titleTone:"text-[#168a5a] group-hover:text-[#16a34a]", accent:"bg-[#168a5a]", glow:"group-hover:shadow-emerald-100/80"},
-                {title:"SUPPORTER / DONOR", text:"मैं किसी अच्छे काम को support करना चाहता हूँ।", path:"/Donate", icon:<FaHeart />, tone:"text-[#c2410c] bg-orange-50 border-orange-100", titleTone:"text-[#c2410c] group-hover:text-[#ea580c]", accent:"bg-[#c2410c]", glow:"group-hover:shadow-orange-100/80"},
-                {title:"PARTNER", text:"मेरी संस्था / company / institution Swastik Srijan Foundation के साथ काम कर सकती है।", path:"/PartnerWithUs", icon:<FaHandshake />, tone:"text-[#7c3aed] bg-violet-50 border-violet-100", titleTone:"text-[#7c3aed] group-hover:text-[#9333ea]", accent:"bg-[#7c3aed]", glow:"group-hover:shadow-violet-100/80"}
-              ].map((item,index) => (
-                <Link key={item.title} to={item.path} className={`group relative overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white p-6 md:p-7 shadow-[0_10px_30px_rgba(6,40,74,0.06)] hover:-translate-y-2 hover:border-slate-300 hover:shadow-[0_26px_60px_rgba(6,40,74,0.14)] ${item.glow} transition-all duration-300`}>
-                  <div className={`absolute inset-x-0 top-0 h-1.5 ${item.accent} opacity-80 group-hover:h-2 group-hover:opacity-100 transition-all duration-300`} />
-                  <div className={`absolute -right-16 -top-16 h-36 w-36 rounded-full ${item.accent} opacity-[0.035] group-hover:scale-150 group-hover:opacity-[0.07] transition-all duration-500`} />
-                  <div className={`relative z-10 w-16 h-16 rounded-2xl ${item.tone} border flex items-center justify-center text-2xl shadow-sm group-hover:scale-110 group-hover:-rotate-2 transition-all duration-300`}>{item.icon}</div>
-                  <div className="relative z-10 mt-6 flex items-center gap-3">
-                    <span className={`h-1 w-8 rounded-full ${item.accent} opacity-70 group-hover:w-12 transition-all duration-300`} />
-                    <span className="text-[11px] font-extrabold tracking-[0.16em] text-slate-400 uppercase">Join the Journey</span>
-                  </div>
-                  <h3 className={`relative z-10 mt-3 text-2xl md:text-3xl font-black tracking-tight transition-all duration-300 ${item.titleTone} group-hover:translate-x-1`}>{item.title}</h3>
-                  <p className="relative z-10 mt-4 text-lg md:text-xl font-bold leading-relaxed text-[#0b4f86] min-h-[96px]">{item.text}</p>
-                  <span className="group/cta relative z-10 mt-5 inline-flex items-center gap-2 overflow-hidden px-6 py-3 rounded-full bg-gradient-to-r from-[#002344] to-[#064b78] text-white text-sm md:text-base font-extrabold tracking-[0.02em] shadow-lg shadow-[#002344]/20 border border-white/10 group-hover:-translate-y-0.5 group-hover:shadow-xl transition-all duration-200">
-                    <span className="relative z-10">JOIN / EXPLORE</span>
-                    <FaArrowRight className="relative z-10 group-hover:translate-x-1 transition-transform" />
-                    <span className="absolute inset-0 opacity-0 group-hover/cta:opacity-100 bg-gradient-to-r from-[#064b78] to-[#0a668f] transition-opacity duration-200" />
-                  </span>
-                </Link>
-              ))}
-            </div>
+          <div className="mx-auto mb-12 max-w-3xl text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7831] md:text-sm">Purpose & Direction • उद्देश्य एवं दिशा</p>
+            <h2 className="mt-4 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">A clear purpose. A shared future.</h2>
+            <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">SSF’s mission and vision guide the work, partnerships and choices we make.</p>
+          </div>
+          <div className="grid gap-5 lg:grid-cols-2">
+            <motion.article whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 18 }} viewport={{ once: true }} className="relative overflow-hidden rounded-[1.75rem] border border-[#e1d5b9] bg-white p-7 shadow-[0_20px_60px_-45px_rgba(16,38,59,0.45)] md:p-10">
+              <span className="absolute right-6 top-2 font-serif text-8xl text-[#e8dfcb]">“</span>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#9b7831]">Our Mission • हमारा मिशन</p>
+              <h3 className="relative mt-5 max-w-xl font-serif text-2xl leading-snug text-[#10263b] md:text-3xl">To contribute to inclusive development through education, skills, health, awareness and community participation.</h3>
+              <p className="mt-5 max-w-xl leading-relaxed text-slate-600">शिक्षा, कौशल, स्वास्थ्य, जागरूकता और सामुदायिक सहभागिता के माध्यम से समावेशी विकास में योगदान देना।</p>
+              <Link to="/Mission" className="mt-7 inline-flex items-center gap-2 font-bold text-[#8c6c2d] hover:text-[#10263b]">Explore our mission <FaArrowRight /></Link>
+            </motion.article>
+            <motion.article whileInView={{ opacity: 1, y: 0 }} initial={{ opacity: 0, y: 18 }} viewport={{ once: true }} transition={{ delay: 0.08 }} className="relative overflow-hidden rounded-[1.75rem] border border-[#183a57] bg-[#102b43] p-7 text-white shadow-[0_20px_60px_-35px_rgba(16,38,59,0.6)] md:p-10">
+              <div className="absolute -right-12 -top-12 h-52 w-52 rounded-full border border-[#d8b96d]/25" /><div className="absolute -right-4 -top-4 h-36 w-36 rounded-full border border-[#d8b96d]/20" />
+              <p className="relative text-xs font-bold uppercase tracking-[0.2em] text-[#e8c878]">Our Vision • हमारा विज़न</p>
+              <h3 className="relative mt-5 max-w-xl font-serif text-2xl leading-snug md:text-3xl">A just, educated, inclusive and sustainable India where every individual has the opportunity to thrive with dignity.</h3>
+              <p className="relative mt-5 max-w-xl leading-relaxed text-slate-200">एक न्यायपूर्ण, शिक्षित, समावेशी और सतत भारत, जहाँ प्रत्येक व्यक्ति को गरिमा के साथ आगे बढ़ने का अवसर मिले।</p>
+              <Link to="/Vision" className="relative mt-7 inline-flex items-center gap-2 font-bold text-[#f0dba5] hover:text-white">Explore our vision <FaArrowRight /></Link>
+            </motion.article>
+          </div>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {values.map((value) => <div key={value.title} className="rounded-2xl border border-[#e8e0ce] bg-[#f8f5ed] p-5"><p className="font-bold text-[#10263b]">{value.title}</p><p className="mt-1 text-sm font-semibold text-[#9b7831]">{value.hi}</p><p className="mt-3 text-sm leading-relaxed text-slate-600">{value.text}</p></div>)}
           </div>
         </div>
       </section>
-      <section className="py-16 bg-white"><div className="container mx-auto px-4 max-w-6xl"><div className="text-center mb-10"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">What we do</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">Our Focus Areas</h2><p className="text-zinc-500 mt-3 max-w-2xl mx-auto">Our work brings together education, skills, health, awareness and community participation to support inclusive development.</p></div><div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">{focusAreas.map((item,index)=><Link key={index} to={item.path} className="group p-6 rounded-2xl border border-zinc-200 bg-white hover:border-[#FF6600]/40 hover:shadow-xl transition-all"><div className="w-12 h-12 rounded-xl bg-[#002344]/5 text-[#FF6600] flex items-center justify-center text-xl mb-5 group-hover:bg-[#FF6600] group-hover:text-white transition-colors">{item.icon}</div><h3 className="font-bold text-lg text-[#002344]">{item.title}</h3><p className="text-sm text-zinc-500 mt-1">{item.hi}</p><span className="inline-flex items-center gap-2 mt-5 text-sm font-bold text-[#FF6600]">Explore <FaArrowRight className="group-hover:translate-x-1 transition-transform" /></span></Link>)}</div></div></section>
-      <section className="py-12 bg-[#002344] overflow-hidden"><div className="container mx-auto px-4 max-w-6xl"><div className="text-center mb-7"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">OUR OBJECTIVES</p><h2 className="text-2xl md:text-3xl font-bold text-white mt-2">Our Registered Objectives • संस्था के उद्देश्य</h2><p className="text-zinc-300 text-sm mt-2">संस्था की नियमावली में निर्धारित व्यापक कार्य क्षेत्र</p></div><div className="relative overflow-hidden rounded-3xl border border-white/10 bg-white/[0.04] py-5"><div className="flex w-max animate-[scroll_28s_linear_infinite] hover:[animation-play-state:paused]">{[...objectives, ...objectives].map((item,index)=><div key={`${item.title}-${index}`} className="w-[260px] sm:w-[300px] mx-2 shrink-0 rounded-2xl bg-white p-5 shadow-lg"><div className="flex items-center gap-3"><div className="w-11 h-11 shrink-0 rounded-xl bg-[#002344]/5 text-[#FF6600] flex items-center justify-center text-xl">{item.icon}</div><div><h3 className="font-bold text-[#002344] text-sm leading-snug">{item.title}</h3><p className="text-xs text-zinc-500 mt-1">{item.hi}</p></div></div></div>)}</div></div><p className="text-center text-zinc-400 text-xs mt-4">Auto slider • Hover करने पर रुकेगा</p></div><style>{`@keyframes scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }`}</style></section>
-      <section className="py-12 bg-transparent"><div className="container mx-auto px-4"><EliteDonationCard /></div></section>
-      <section className="py-16 bg-[#f8fafc]"><div className="container mx-auto px-4 max-w-6xl"><div className="text-center mb-9"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">Get involved</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">You Can Be Part of the Change</h2></div><div className="grid md:grid-cols-3 gap-5">{quickActions.map((item,i)=>item.action ? <button key={i} type="button" onClick={item.action} className="text-left bg-white rounded-2xl p-7 border border-zinc-200 hover:shadow-xl hover:-translate-y-1 transition-all"><div className="text-[#FF6600] text-3xl mb-4">{item.icon}</div><h3 className="text-xl font-bold text-[#002344]">{item.title}</h3><p className="text-zinc-500 mt-2">{item.text}</p><span className="inline-flex items-center gap-2 mt-5 text-sm font-bold text-[#FF6600]">Get started <FaArrowRight /></span></button> : <Link key={i} to={item.path} className="bg-white rounded-2xl p-7 border border-zinc-200 hover:shadow-xl hover:-translate-y-1 transition-all"><div className="text-[#FF6600] text-3xl mb-4">{item.icon}</div><h3 className="text-xl font-bold text-[#002344]">{item.title}</h3><p className="text-zinc-500 mt-2">{item.text}</p><span className="inline-flex items-center gap-2 mt-5 text-sm font-bold text-[#FF6600]">Get started <FaArrowRight /></span></Link>)}</div></div></section>
-      <section className="py-16 bg-[#001529] text-white"><div className="container mx-auto px-4 max-w-6xl"><div className="grid md:grid-cols-[0.9fr_1.5fr] gap-10 items-center"><motion.div initial={{opacity:0,x:-20}} whileInView={{opacity:1,x:0}} viewport={{once:true}} className="text-center md:text-left"><div className="relative inline-block"><OptimizedImage src="/Teams_Images/ramesh_pandey.jpg?v=2" alt="Mr. Ramesh Pandey, Founder & President" className="w-44 h-44 md:w-52 md:h-52 rounded-full object-cover border-4 border-white/20 shadow-2xl" /></div><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase mt-6">Founder’s Message</p><h2 className="text-3xl md:text-4xl font-bold mt-2">Mr. Ramesh Pandey</h2><p className="text-zinc-300 mt-2 font-medium">Founder & President</p></motion.div><motion.div initial={{opacity:0,x:20}} whileInView={{opacity:1,x:0}} viewport={{once:true}} className="relative"><div className="text-[#FF6600] text-5xl leading-none font-serif mb-2">“</div><h3 className="text-2xl md:text-3xl font-bold leading-snug">Service becomes meaningful when it reaches people with dignity, cooperation and hope.</h3><p className="text-zinc-300 text-lg leading-relaxed mt-6">Swastik Srijan Foundation was founded with the belief that positive change grows when people come together, learn together and take responsible action. Our journey is rooted in education, skills, awareness, health, cooperation and community participation.</p><p className="text-zinc-300 text-lg leading-relaxed mt-4">We may begin with limited resources, but sincere effort, transparency and the willingness to serve can create lasting possibilities. We invite citizens, volunteers, institutions and partners to join this journey and contribute to a stronger, more aware and inclusive society.</p><div className="mt-7"><Link to="/About" className="inline-flex items-center gap-2 px-7 py-3 rounded-full border-2 border-white/70 text-white font-bold hover:bg-white hover:text-[#002344] transition-all">Read More About SSF <FaArrowRight /></Link></div></motion.div></div></div></section>
-      <section className="py-20 bg-white"><div className="container mx-auto px-4 max-w-5xl"><div className="text-center mb-10"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">About SSF</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">Serving Communities, Creating Possibilities</h2><div className="w-20 h-1 bg-[#FF6600] mx-auto rounded-full mt-5" /></div><div className="text-lg text-zinc-600 leading-relaxed text-center"><p>Swastik Srijan Foundation is a registered non-government organization established in December 2013, working with communities across India. We believe meaningful social change grows through participation, learning, skills, awareness and cooperation.</p><div className="grid md:grid-cols-3 gap-5 text-left mt-10">{[["Our Mission","To contribute to inclusive development through education, skills, health, awareness and community participation."],["Our Approach","We value practical action, awareness, learning and cooperation with communities and partners."],["Our Values","Transparency, dignity, inclusion and service without discrimination guide our work."]].map(([title,text])=><div key={title} className="p-6 rounded-2xl bg-zinc-50 border border-zinc-100"><h3 className="font-bold text-[#002344] text-lg">{title}</h3><p className="text-sm text-zinc-500 mt-2 leading-relaxed">{text}</p></div>)}</div></div></div></section>
-      <section className="py-16 bg-zinc-50"><div className="container mx-auto px-4 max-w-5xl"><div className="text-center mb-10"><p className="text-[#FF6600] font-bold text-sm tracking-[0.2em] uppercase">Transparency & Partnership</p><h2 className="text-3xl md:text-4xl font-bold text-[#002344] mt-2">Work With Us for Meaningful Impact</h2><p className="text-zinc-500 mt-3 max-w-2xl mx-auto">We welcome volunteers, institutions, companies, trainers and community partners who want to contribute responsibly.</p></div><div className="grid md:grid-cols-3 gap-5">{[["Individuals","Volunteer, learn, support or share skills.","/Join"],["Institutions","Explore partnerships, internships and learning initiatives.","/Join"],["Supporters","Contribute through transparent giving and collaboration.","/Donate"]].map(([title,text,path])=><Link key={title} to={path} className="p-7 rounded-2xl bg-white border border-zinc-200 hover:shadow-xl transition-all"><h3 className="font-bold text-[#002344] text-xl">{title}</h3><p className="text-zinc-500 mt-2 text-sm leading-relaxed">{text}</p><span className="inline-flex items-center gap-2 mt-5 text-sm font-bold text-[#FF6600]">Explore <FaArrowRight /></span></Link>)}</div></div></section>
-      <ImpactTimeline />
+
+      <section className="bg-white px-5 py-16 md:px-8 md:py-20">
+        <div className="container mx-auto max-w-7xl">
+          <div className="mb-10 flex flex-col gap-5 md:flex-row md:items-end md:justify-between"><div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7831] md:text-sm">Our Focus Areas • हमारे कार्यक्षेत्र</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">Where we focus our efforts</h2><p className="mt-4 leading-relaxed text-slate-600">Explore the areas connected to SSF’s registered objectives and community-development approach.</p></div><Link to="/Objectives" className="inline-flex items-center gap-2 self-start rounded-full border border-[#d7c69e] px-5 py-3 font-bold text-[#6f5625] transition hover:bg-[#f5f1e8] md:self-auto">All registered objectives <FaArrowRight /></Link></div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {focusAreas.map((item, index) => <motion.div key={item.title} initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: index * 0.04 }}><Link to={item.path} className="group flex h-full gap-5 rounded-2xl border border-slate-200 bg-white p-6 transition duration-300 hover:-translate-y-1 hover:border-[#d1b56b] hover:shadow-[0_20px_45px_-35px_rgba(16,38,59,0.55)]"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#f5f1e8] text-xl text-[#9b7831] transition group-hover:bg-[#102b43] group-hover:text-[#f0dba5]">{item.icon}</span><span><span className="block font-bold text-[#10263b]">{item.title}</span><span className="mt-1 block text-sm text-slate-500">{item.hi}</span><span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8c6c2d]">Explore <FaArrowRight className="transition group-hover:translate-x-1" /></span></span></Link></motion.div>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#102b43] px-5 py-16 text-white md:px-8 md:py-20">
+        <div className="container mx-auto max-w-7xl"><div className="mb-10 max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878] md:text-sm">Work together • साथ मिलकर काम करें</p><h2 className="mt-3 font-serif text-3xl leading-tight md:text-5xl">Partnership built on purpose and responsibility.</h2><p className="mt-4 leading-relaxed text-slate-200">For CSR teams, government departments, grantmakers and institutions, a clear starting point matters. Explore SSF’s information and connect to discuss a potential collaboration.</p></div>
+          <div className="grid gap-5 lg:grid-cols-3">{partnershipCards.map((item) => <Link key={item.title} to={item.path} className="group flex h-full flex-col rounded-[1.5rem] border border-white/15 bg-white/[0.055] p-6 transition hover:-translate-y-1 hover:border-[#d8b96d]/65 hover:bg-white/[0.09] md:p-7"><span className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#d8b96d]/40 bg-[#d8b96d]/10 text-xl text-[#f0dba5]">{item.icon}</span><p className="mt-6 text-[10px] font-bold uppercase tracking-[0.16em] text-[#e8c878]">{item.eyebrow}</p><h3 className="mt-2 text-xl font-bold text-white">{item.title}</h3><p className="mt-1 text-sm text-slate-300">{item.hi}</p><p className="mt-4 flex-1 leading-relaxed text-slate-200">{item.text}</p><span className="mt-6 inline-flex items-center gap-2 font-bold text-[#f0dba5]">{item.action}<FaArrowRight /></span></Link>)}</div>
+          <p className="mt-6 max-w-4xl text-xs leading-relaxed text-slate-400">Programme descriptions and documents should be verified before publication. A listed opportunity is not a claim of grant approval, CSR eligibility or funding guarantee.</p>
+        </div>
+      </section>
+
+      <section className="bg-[#f5f1e8] px-5 py-16 md:px-8 md:py-20">
+        <div className="container mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]"><div><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7831] md:text-sm">Impact & Accountability • प्रभाव एवं जवाबदेही</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">Show the work. Share the learning.</h2><p className="mt-5 leading-relaxed text-slate-600">Institutional trust grows when activities, stories, reports and progress are shared responsibly. Explore SSF’s available updates and documented journey.</p><p className="mt-4 text-sm leading-relaxed text-slate-500">Only verified project results and supported figures should be presented as impact metrics.</p></div>
+          <div className="grid gap-4 sm:grid-cols-2">{[
+            { title: "Impact & Outcomes", hi: "प्रभाव एवं परिणाम", text: "Explore available impact information and project outcomes.", path: "/Impact", icon: <FaBullseye /> },
+            { title: "Stories & Activities", hi: "कहानियाँ एवं गतिविधियाँ", text: "Discover community stories, activities and updates.", path: "/Stories", icon: <FaHeart /> },
+            { title: "Service Journey", hi: "सेवा यात्रा", text: "Learn about SSF’s institutional journey since 2013.", path: "/Journey", icon: <FaCompass /> },
+            { title: "Media & Updates", hi: "मीडिया एवं अपडेट", text: "Find available media, announcements and information.", path: "/Media", icon: <FaLaptop /> },
+          ].map((item) => <Link key={item.title} to={item.path} className="group rounded-2xl border border-[#e1d5b9] bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-lg md:p-6"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f5f1e8] text-lg text-[#9b7831]">{item.icon}</span><h3 className="mt-4 font-bold text-[#10263b]">{item.title}</h3><p className="mt-1 text-sm text-[#9b7831]">{item.hi}</p><p className="mt-3 text-sm leading-relaxed text-slate-600">{item.text}</p><span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8c6c2d]">Explore <FaArrowRight className="transition group-hover:translate-x-1" /></span></Link>)}</div>
+        </div>
+      </section>
+
+      <section className="bg-white px-5 py-16 md:px-8 md:py-20">
+        <div className="container mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.75fr_1.25fr]">
+          <div className="text-center lg:text-left"><div className="mx-auto h-48 w-48 overflow-hidden rounded-full border-4 border-[#d8b96d] bg-[#f5f1e8] p-1 shadow-xl lg:mx-0"><OptimizedImage src="/Teams_Images/ramesh_pandey.jpg?v=2" alt="Mr. Ramesh Pandey, Founder and President of Swastik Srijan Foundation" className="h-full w-full rounded-full" /></div><p className="mt-6 text-xs font-bold uppercase tracking-[0.2em] text-[#9b7831]">Founder’s Message</p><h2 className="mt-2 font-serif text-3xl text-[#10263b] md:text-4xl">Mr. Ramesh Pandey</h2><p className="mt-2 font-medium text-slate-500">Founder & President</p></div>
+          <div className="rounded-[1.75rem] border border-[#e1d5b9] bg-[#fbfaf7] p-7 md:p-10"><span className="font-serif text-5xl leading-none text-[#c5a45a]">“</span><h3 className="mt-2 font-serif text-2xl leading-snug text-[#10263b] md:text-3xl">Service becomes meaningful when it reaches people with dignity, cooperation and hope.</h3><p className="mt-5 leading-relaxed text-slate-600">Swastik Srijan Foundation was founded with the belief that positive change grows when people come together, learn together and take responsible action. Our journey is rooted in education, skills, awareness, health, cooperation and community participation.</p><p className="mt-4 leading-relaxed text-slate-600">We invite citizens, volunteers, institutions and partners to join this journey and contribute to a stronger, more aware and inclusive society.</p><Link to="/About" className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#102b43] px-6 py-3 font-bold text-white transition hover:bg-[#1b405f]">Read about SSF <FaArrowRight /></Link></div>
+        </div>
+      </section>
+
+      <section className="bg-[#102b43] px-5 py-16 md:px-8 md:py-20"><div className="container mx-auto max-w-7xl"><div className="mx-auto mb-10 max-w-3xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878] md:text-sm">Be part of the journey • जुड़िए</p><h2 className="mt-3 font-serif text-3xl text-white md:text-5xl">Every contribution starts with a conversation.</h2><p className="mt-4 leading-relaxed text-slate-200">Share your time, skills, resources or ideas. Choose the way that works for you.</p></div>
+        <div className="grid gap-4 md:grid-cols-3">{[
+          { title: "Become a Member", hi: "सदस्य बनें", text: "Be part of SSF’s continuing institutional journey.", path: "/Join", icon: <FaUsers /> },
+          { title: "Volunteer", hi: "स्वयंसेवक बनें", text: "Contribute your time, experience or skills.", path: "/Volunteer", icon: <FaHandsHelping /> },
+          { title: "Support Our Work", hi: "सहयोग करें", text: "Explore ways to support responsible community initiatives.", path: "/Donate", icon: <FaHeart /> },
+        ].map((item) => <Link key={item.title} to={item.path} className="group rounded-2xl border border-white/15 bg-white/[0.06] p-6 transition hover:-translate-y-1 hover:border-[#d8b96d]/65 hover:bg-white/[0.1] md:p-7"><span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#d8b96d]/10 text-xl text-[#f0dba5]">{item.icon}</span><h3 className="mt-5 text-xl font-bold text-white">{item.title}</h3><p className="mt-1 text-sm text-[#f0dba5]">{item.hi}</p><p className="mt-3 leading-relaxed text-slate-200">{item.text}</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-[#f0dba5]">Get started <FaArrowRight /></span></Link>)}</div>
+      </div></section>
+
+      <section className="bg-white px-5 py-12 md:px-8"><div className="container mx-auto max-w-7xl"><div className="mb-8 text-center"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#9b7831]">Support SSF • सहयोग करें</p><h2 className="mt-2 font-serif text-3xl text-[#10263b] md:text-4xl">Help meaningful work move forward.</h2></div><EliteDonationCard /></div></section>
+
+      <section className="bg-[#fbfaf7] px-5 py-16 md:px-8 md:py-20"><div className="container mx-auto max-w-7xl"><div className="mb-10 text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7831] md:text-sm">Institutional Journey • संस्थागत यात्रा</p><h2 className="mt-3 font-serif text-3xl text-[#10263b] md:text-5xl">A continuing journey of service.</h2><p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">Explore the history and milestones documented by SSF.</p></div><ImpactTimeline /><div className="mt-8 text-center"><Link to="/Journey" className="inline-flex items-center gap-2 rounded-full border border-[#d7c69e] px-6 py-3 font-bold text-[#6f5625] transition hover:bg-[#f5f1e8]">View service journey <FaArrowRight /></Link></div></div></section>
+
+      <section className="border-t border-[#e1d5b9] bg-white px-5 py-10 md:px-8"><div className="container mx-auto flex max-w-7xl flex-col items-center justify-between gap-5 text-center md:flex-row md:text-left"><div><p className="font-serif text-xl font-bold text-[#10263b]">Swastik Srijan Foundation Samiti</p><p className="mt-1 text-sm text-slate-500">Registered Society • Rewa, Madhya Pradesh • Working across India</p></div><div className="flex flex-wrap justify-center gap-x-5 gap-y-3 text-sm font-semibold text-[#6f5625]"><Link to="/About" className="hover:text-[#10263b]">About</Link><Link to="/Transparency" className="hover:text-[#10263b]">Transparency</Link><Link to="/CSRPartnership" className="hover:text-[#10263b]">CSR Partnerships</Link><Link to="/Contact" className="hover:text-[#10263b]">Contact</Link></div></div></section>
+
       <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} initialMode={authMode} />
-    </div>
+      <button type="button" onClick={() => openAuth("signup")} className="fixed bottom-5 right-5 z-40 inline-flex items-center gap-2 rounded-full border border-[#d8b96d] bg-[#102b43] px-4 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5 hover:bg-[#183b58]" aria-label="Open SSF account registration"><FaUsers /> Join SSF</button>
+    </main>
   );
 }
