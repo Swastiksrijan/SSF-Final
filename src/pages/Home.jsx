@@ -58,7 +58,7 @@ export default function Home() {
         <div className="absolute -right-8 -top-12 -z-10 h-[360px] w-[360px] rounded-full border border-[#d7bd7c]/25 md:h-[520px] md:w-[520px]" aria-hidden="true" />
         <div className="container relative mx-auto grid max-w-7xl items-center gap-12 px-5 md:px-8 lg:grid-cols-[1.25fr_0.75fr]">
           <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-3xl">
-            <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#d7bd7c]/45 bg-white/[0.07] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#f0dba5] backdrop-blur-sm md:text-sm">
+            <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#d7bd7c]/45 bg-white/[0.07] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-white backdrop-blur-sm md:text-sm">
               <span className="h-2 w-2 rounded-full bg-[#e8c878]" /> Swastik Srijan Foundation Samiti
             </div>
             <p className="mb-4 text-sm font-semibold uppercase tracking-[0.22em] text-[#e8c878] md:text-base">सहयोग • कौशल • जागरूकता • सृजन</p>
