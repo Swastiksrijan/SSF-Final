@@ -87,8 +87,8 @@ export default function Home() {
               <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#d8b96d]" /> Working across India</span>
             </div>
           </motion.div>
-          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden lg:block">
-            <div className="relative rounded-[2rem] border border-[#d8b96d]/45 bg-[#0b2740]/75 p-8 shadow-2xl shadow-black/30 backdrop-blur-md">
+          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden lg:mt-16 lg:block xl:mt-20">
+            <div className="relative rounded-[2rem] border border-[#d8b96d]/45 bg-[#0b2740]/70 p-8 shadow-2xl shadow-black/30 backdrop-blur-md">
               <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878]">Our guiding promise</p>
               <h2 className="mt-5 font-serif text-3xl leading-snug text-white">Serve with integrity. Act with compassion.</h2>
