@@ -110,7 +110,8 @@ export default function Home() {
                   </div>
                 </div>
                 <div className="mt-4 flex items-center gap-3 border-t border-white/10 pt-3 text-xs text-slate-300 md:text-sm"><span className="h-px flex-1 bg-[#d8b96d]/50" /><span className="whitespace-nowrap text-center">Since December 2013 — दिसंबर 2013 से।</span><span className="h-px flex-1 bg-[#d8b96d]/50" /></div>
-              </div>            </div>
+              </div>
+          </div>
           </motion.aside>
         </div>
       </section>
