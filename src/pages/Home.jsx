@@ -93,7 +93,7 @@ export default function Home() {
               <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-white">Registered Office</p>
               <p className="mt-1 text-sm text-slate-200">पंजीकृत कार्यालय</p>
             </div>
-  <div className="relative w-full rounded-[1.75rem] border border-[#d8b96d]/45 bg-[#0b2740]/70 p-4 shadow-2xl shadow-black/30 backdrop-blur-md sm:p-5 lg:col-span-2 lg:p-6">
+  <div className="relative w-full max-w-5xl justify-self-center rounded-[1.75rem] border border-[#d8b96d]/45 bg-[#0b2740]/70 p-4 shadow-2xl shadow-black/30 backdrop-blur-md sm:p-5 lg:col-span-2 lg:p-6">
                 <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
                 <div className="grid gap-4 sm:grid-cols-[0.72fr_1.15fr_1.13fr] sm:items-stretch sm:gap-5 lg:gap-6">
                   <div className="flex flex-col justify-center sm:border-r sm:border-white/15 sm:pr-4">
