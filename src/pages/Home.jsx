@@ -93,7 +93,7 @@ export default function Home() {
               <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#34d399]" /> Working across India</span>
             </div>
           </motion.div>
-          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden lg:block">
+          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden lg:block lg:relative lg:left-8 lg:top-14">
             <div className="relative rounded-[2rem] border border-[#FFD166]/40 bg-[#002344]/80 p-8 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.9)] backdrop-blur-md">
               <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#FFD166]" />
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#FFD166]">Our guiding promise</p>
