@@ -87,13 +87,13 @@ export default function Home() {
               <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#d8b96d]" /> Working across India</span>
             </div>
           </motion.div>
-          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="relative mt-0 w-full self-start lg:translate-x-6 lg:translate-y-8 xl:translate-x-8 xl:translate-y-10">
+          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="relative mt-0 w-full self-start">
             <div className="mb-4 text-right">
               <p className="text-sm font-semibold tracking-wide text-[#f0dba5]">Rewa, Madhya Pradesh</p>
               <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-white">Registered Office</p>
               <p className="mt-1 text-sm text-slate-200">पंजीकृत कार्यालय</p>
             </div>
-  <div className="relative rounded-[1.75rem] border border-[#d8b96d]/45 bg-[#0b2740]/70 p-4 shadow-2xl shadow-black/30 backdrop-blur-md sm:p-5 lg:p-6">
+  <div className="relative rounded-[1.75rem] border border-[#d8b96d]/45 bg-[#0b2740]/70 p-4 shadow-2xl shadow-black/30 backdrop-blur-md sm:p-5 lg:p-6 lg:translate-x-8 lg:translate-y-12 xl:translate-x-10 xl:translate-y-16">
                 <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
                 <div className="grid gap-4 sm:grid-cols-[0.72fr_1.15fr_1.13fr] sm:items-stretch sm:gap-5 lg:gap-6">
                   <div className="flex flex-col justify-center sm:border-r sm:border-white/15 sm:pr-4">
