@@ -13,6 +13,8 @@ import EliteDonationCard from "../components/EliteDonationCard";
 import AuthModal from "../components/AuthModal";
 import pageHeader from "../assets/page-header.jpg";
 
+const RAZORPAY_URL = "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view";
+
 const focusAreas = [
   { title: "Education & Learning", hi: "शिक्षा एवं सीखना", icon: <FaBookOpen />, path: "/OurInitiatives" },
   { title: "Skills & Livelihoods", hi: "कौशल एवं आजीविका", icon: <FaLightbulb />, path: "/SkillPrograms" },
@@ -35,6 +37,14 @@ const values = [
   { title: "Accountability", hi: "जवाबदेही", text: "Value transparency and responsible use of resources." },
 ];
 
+// SSF photographs used in the auto-scrolling "glimpses" strip.
+const photoStrip = [
+  { src: "/images/rural-children-raising-hands.jpg", alt: "Children learning together", label: "Education", caption: "Learning together" },
+  { src: "/images/women-learning-session.png", alt: "Women in a learning session", label: "Skills", caption: "Skills that empower" },
+  { src: "/images/community-meeting.jpg", alt: "Community meeting", label: "Participation", caption: "Community in action" },
+  { src: "/images/tree-planting-2.jpg", alt: "Tree planting drive", label: "Environment", caption: "Greener tomorrow" },
+];
+
 export default function Home() {
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("signup");
@@ -49,49 +59,51 @@ export default function Home() {
 
   return (
     <main className="w-full overflow-hidden bg-[#fbfaf7] font-sans text-[#17283a]">
-      <section className="relative isolate flex min-h-[660px] items-center overflow-hidden bg-[#081e33] pb-20 pt-28 md:min-h-[730px] md:pb-28 md:pt-32">
+      <section className="relative isolate flex min-h-[680px] items-center overflow-hidden bg-[#001b33] pb-20 pt-28 md:min-h-[760px] md:pb-28 md:pt-32">
         <div className="absolute inset-0 -z-20">
           <OptimizedImage priority src={pageHeader} alt="Community activity associated with Swastik Srijan Foundation" className="h-full w-full" />
         </div>
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(5,23,40,0.97)_0%,rgba(8,30,51,0.88)_43%,rgba(8,30,51,0.48)_78%,rgba(8,30,51,0.36)_100%)]" />
-        <div className="absolute -right-20 -top-24 -z-10 h-[460px] w-[460px] rounded-full border border-[#d7bd7c]/35 md:h-[640px] md:w-[640px]" aria-hidden="true" />
-        <div className="absolute -right-8 -top-12 -z-10 h-[360px] w-[360px] rounded-full border border-[#d7bd7c]/25 md:h-[520px] md:w-[520px]" aria-hidden="true" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,#001b33_0%,rgba(0,27,51,0.95)_38%,rgba(0,35,68,0.62)_72%,rgba(0,35,68,0.42)_100%)]" />
+        <div className="absolute -right-20 -top-24 -z-10 h-[460px] w-[460px] rounded-full border border-[#FFD166]/30 md:h-[640px] md:w-[640px]" aria-hidden="true" />
+        <div className="absolute -right-8 -top-12 -z-10 h-[360px] w-[360px] rounded-full border border-[#FFD166]/20 md:h-[520px] md:w-[520px]" aria-hidden="true" />
         <div className="container relative mx-auto grid max-w-7xl items-center gap-12 px-5 md:px-8 lg:grid-cols-[1.25fr_0.75fr]">
           <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-3xl">
-            <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#d7bd7c]/45 bg-white/[0.07] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#f0dba5] backdrop-blur-sm md:text-sm">
-              <span className="h-2 w-2 rounded-full bg-[#e8c878]" /> Swastik Srijan Foundation Samiti
+            <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#FFD166]/45 bg-white/[0.08] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#FFD166] backdrop-blur-sm md:text-sm">
+              <span className="h-2 w-2 rounded-full bg-[#FFD166]" /> Swastik Srijan Foundation Samiti
             </div>
-            <div className="mb-6 inline-flex max-w-full items-center gap-3 rounded-2xl border border-[#f0dba5]/55 bg-gradient-to-r from-[#d8b96d]/20 via-white/[0.09] to-[#d8b96d]/15 px-4 py-3 shadow-[0_10px_35px_-15px_rgba(216,185,109,0.55)] backdrop-blur-sm sm:px-6 sm:py-4">
-              <span aria-hidden="true" className="hidden h-px w-5 shrink-0 bg-[#f0dba5] sm:block" />
-              <p className="text-center text-lg font-extrabold leading-relaxed tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#fff4cc] via-[#f0dba5] to-[#e8c878] sm:text-xl md:text-2xl lg:text-[1.7rem]">सहयोग <span className="px-1 text-white/70">•</span> कौशल <span className="px-1 text-white/70">•</span> जागरूकता <span className="px-1 text-white/70">•</span> सृजन</p>
-              <span aria-hidden="true" className="hidden h-px w-5 shrink-0 bg-[#f0dba5] sm:block" />
+            <div className="mb-6 inline-flex max-w-full items-center gap-3 rounded-2xl border border-[#FFD166]/50 bg-gradient-to-r from-[#FFD166]/20 via-white/[0.08] to-[#FFD166]/15 px-4 py-3 shadow-[0_10px_35px_-15px_rgba(255,209,102,0.55)] backdrop-blur-sm sm:px-6 sm:py-4">
+              <span aria-hidden="true" className="hidden h-px w-5 shrink-0 bg-[#FFD166] sm:block" />
+              <p className="text-center text-lg font-extrabold leading-relaxed tracking-wide text-transparent bg-clip-text bg-gradient-to-r from-[#fff4cc] via-[#FFD166] to-[#ffb703] sm:text-xl md:text-2xl lg:text-[1.7rem]">सहयोग <span className="px-1 text-white/70">•</span> कौशल <span className="px-1 text-white/70">•</span> जागरूकता <span className="px-1 text-white/70">•</span> सृजन</p>
+              <span aria-hidden="true" className="hidden h-px w-5 shrink-0 bg-[#FFD166] sm:block" />
             </div>
             <h1 className="max-w-3xl text-4xl font-semibold leading-[1.12] tracking-tight text-white md:text-6xl lg:text-7xl">
-              Creating Change.<span className="block font-serif italic font-normal text-[#f0dba5]">Inspiring Lives.</span>
+              Creating Change.<span className="block font-serif italic font-normal text-[#FFD166]">Inspiring Lives.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-100 md:text-xl">Working towards inclusive community development through education, skills, health, awareness and meaningful partnerships.</p>
             <p className="mt-2 max-w-2xl text-base leading-relaxed text-slate-200 md:text-lg">शिक्षा, कौशल, स्वास्थ्य, जागरूकता और सार्थक साझेदारी के माध्यम से समावेशी सामुदायिक विकास की दिशा में प्रयास।</p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link to="/PartnerWithUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#d8b96d] px-7 py-3.5 font-bold text-[#10263b] shadow-lg transition hover:-translate-y-0.5 hover:bg-[#f0dba5]">Partner with SSF <FaArrowRight /></Link>
-              <Link to="/JoinUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/70 bg-white/5 px-7 py-3.5 font-semibold text-white transition hover:bg-white hover:text-[#10263b]">Join the Mission <FaUsers /></Link>
-              <Link to="/LearningHub" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/25 px-6 py-3.5 font-semibold text-white transition hover:border-[#d8b96d] hover:text-[#f0dba5]"><FaGraduationCap /> SSF Learning Hub</Link>
+              <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#FF6600] to-[#fb8500] px-7 py-3.5 font-bold text-white shadow-[0_12px_30px_-12px_rgba(255,102,0,0.75)] transition hover:-translate-y-0.5 hover:brightness-110"><FaHeart /> Donate Now</a>
+              <Link to="/PartnerWithUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-[#FFD166]/70 bg-[#FFD166]/10 px-7 py-3.5 font-bold text-[#FFD166] transition hover:-translate-y-0.5 hover:bg-[#FFD166] hover:text-[#10263b]"><FaHandshake /> Partner with SSF</Link>
+              <Link to="/JoinUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/70 bg-white/5 px-7 py-3.5 font-semibold text-white transition hover:bg-white hover:text-[#10263b]"><FaUsers /> Join the Mission</Link>
+              <Link to="/LearningHub" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/25 px-6 py-3.5 font-semibold text-white transition hover:border-[#FFD166] hover:text-[#FFD166]"><FaGraduationCap /> SSF Learning Hub</Link>
             </div>
             <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-slate-200">
-              <span className="inline-flex items-center gap-2"><FaCheckCircle className="text-[#d8b96d]" /> Registered society</span>
-              <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#d8b96d]" /> Working across India</span>
+              <span className="inline-flex items-center gap-2"><FaCheckCircle className="text-[#34d399]" /> Registered society</span>
+              <span className="inline-flex items-center gap-2"><FaCheckCircle className="text-[#34d399]" /> Reg. No. 05/22/03/11448/13</span>
+              <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#34d399]" /> Working across India</span>
             </div>
           </motion.div>
           <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden lg:block">
-            <div className="relative rounded-[2rem] border border-[#d8b96d]/45 bg-[#0b2740]/75 p-8 shadow-2xl shadow-black/30 backdrop-blur-md">
-              <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878]">Our guiding promise</p>
+            <div className="relative rounded-[2rem] border border-[#FFD166]/40 bg-[#002344]/80 p-8 shadow-[0_30px_70px_-40px_rgba(0,0,0,0.9)] backdrop-blur-md">
+              <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#FFD166]" />
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#FFD166]">Our guiding promise</p>
               <h2 className="mt-5 font-serif text-3xl leading-snug text-white">Serve with integrity. Act with compassion.</h2>
               <p className="mt-4 leading-relaxed text-slate-200">We strive to create lasting, meaningful social value through responsible action, community participation and cooperation.</p>
               <div className="mt-7 border-t border-white/15 pt-6">
-                <p className="text-sm font-semibold text-[#f0dba5]">हमारा संकल्प</p>
+                <p className="text-sm font-semibold text-[#FFD166]">हमारा संकल्प</p>
                 <p className="mt-2 leading-relaxed text-slate-200">ईमानदारी से सेवा, संवेदनशीलता के साथ कार्य और समाज के लिए स्थायी सकारात्मक परिवर्तन।</p>
               </div>
-              <div className="mt-7 flex items-center gap-3 text-sm text-slate-300"><span className="h-px flex-1 bg-[#d8b96d]/50" /><span>Since December 2013</span><span className="h-px flex-1 bg-[#d8b96d]/50" /></div>
+              <div className="mt-7 flex items-center gap-3 text-sm text-slate-300"><span className="h-px flex-1 bg-[#FFD166]/45" /><span>Since December 2013</span><span className="h-px flex-1 bg-[#FFD166]/45" /></div>
             </div>
           </motion.aside>
         </div>
@@ -127,12 +139,32 @@ export default function Home() {
 
       <FloatingTicker />
 
+      <section className="bg-[#fbfaf7] py-12 md:py-16">
+        <div className="container mx-auto mb-8 max-w-7xl px-5 md:px-8">
+          <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7831] md:text-sm">Glimpses • झलकियाँ</p>
+          <h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-4xl">Moments from the field.</h2>
+          <p className="mt-3 max-w-2xl leading-relaxed text-slate-600">Snapshots of learning, participation and community work.</p>
+        </div>
+        <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_6%,black_94%,transparent)]">
+          <div className="flex w-max animate-[ssf-marquee_38s_linear_infinite] gap-4 px-4 hover:[animation-play-state:paused]">
+            {[...photoStrip, ...photoStrip].map((photo, index) => (
+              <figure key={`${photo.src}-${index}`} className="group relative h-56 w-[300px] shrink-0 overflow-hidden rounded-2xl bg-[#102b43] shadow-lg md:h-64 md:w-[360px]">
+                <img src={photo.src} alt={photo.alt} loading="lazy" className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-105" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#07182b]/90 via-[#07182b]/20 to-transparent" />
+                <figcaption className="absolute inset-x-0 bottom-0 p-5 text-white"><p className="text-xs font-bold uppercase tracking-[0.18em] text-[#FFD166]">{photo.label}</p><h3 className="mt-1.5 font-serif text-xl">{photo.caption}</h3></figcaption>
+              </figure>
+            ))}
+          </div>
+        </div>
+        <style>{`@keyframes ssf-marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }`}</style>
+      </section>
+
       <section className="bg-[#fbfaf7] px-5 pb-16 pt-5 md:px-8 md:pb-20">
         <div className="container mx-auto max-w-7xl">
           <div className="mb-8 max-w-3xl">
             <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#9b7831] md:text-sm">People • Learning • Community</p>
             <h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-4xl">Progress begins with people.</h2>
-            <p className="mt-3 max-w-2xl leading-relaxed text-slate-600">A visual introduction to the themes behind SSF’s work. These are illustrative stock photographs, not claims that the pictured activities were conducted by SSF.</p>
+            <p className="mt-3 max-w-2xl leading-relaxed text-slate-600">A visual introduction to the themes behind SSF’s work.</p>
           </div>
           <div className="grid gap-4 md:grid-cols-3">
             <article className="group relative min-h-[280px] overflow-hidden rounded-2xl bg-[#102b43] shadow-lg md:min-h-[340px]">
