@@ -20,6 +20,7 @@ import { KW_PART_C } from "./knowledgeWorldCoursesC.js";
 import { KW_PART_D } from "./knowledgeWorldCoursesD.js";
 import { KW_PART_E } from "./knowledgeWorldCoursesE.js";
 import { KW_PART_F } from "./knowledgeWorldCoursesF.js";
+import { buildAuthoredCourseProject } from "./authoredCourseProject.js";
 
 const buildTopic = (t, mi, ti) => ({
   id: `kw-m${mi + 1}-t${ti + 1}`,
@@ -136,8 +137,7 @@ export const knowledgeWorldToMasterCourse = (subject, course) => {
               { t: "p", x: tt.learn },
               { t: "ex", title: "Example / उदाहरण", x: tt.example },
               { t: "act", title: "Activity / गतिविधि", x: tt.activity },
-              { t: "note", k: "tip", title: "Quiz / अभ्यास", x: tt.quiz?.question, items: tt.quiz?.options },
-              { t: "note", k: "remember", title: "सही उत्तर", x: tt.quiz ? `${tt.quiz.options[tt.quiz.answer]} — ${tt.quiz.explain}` : "" },
+              { t: "quiz", title: "Quick Check / तुरंत जाँच", question: tt.quiz?.question, options: tt.quiz?.options || [], answer: tt.quiz?.answer, explain: tt.quiz?.explain || "" },
             ],
           };
         }),
@@ -160,11 +160,19 @@ export const knowledgeWorldToMasterCourse = (subject, course) => {
       title: "Final Test / अंतिम परीक्षा",
       note: "इस course के सभी modules से चुने गए प्रश्न।",
       tasks: course.modules.map((m) => ({ icon: "📘", title: m.title.split(" / ")[0], x: m.summary })),
-      quiz: (course.mastery || []).map((q) => ({ q: q.question, options: q.options, answer: q.answer, explain: q.explain })),
+      quiz: ((course.mastery || []).length
+        ? course.mastery.map((q) => ({ q: q.question, options: q.options, answer: q.answer, explain: q.explain }))
+        : course.modules.flatMap((m) => m.topics).map((topic) => ({
+            q: topic.quiz?.question,
+            options: topic.quiz?.options || [],
+            answer: topic.quiz?.answer,
+            explain: topic.quiz?.explain || "",
+          })).filter((q) => q.q && Array.isArray(q.options) && q.options.length >= 2 && Number.isInteger(q.answer) && q.answer >= 0 && q.answer < q.options.length)
+      ).slice(0, 10),
     },
     outcomeIntro: "इस course के बाद learner:",
     outcome: [course.overview?.outcome, course.overview?.why].filter(Boolean),
     outcomeClose: "समझ + अभ्यास + वास्तविक उदाहरण — यही असली learning है।",
-    project: course.project,
+    project: buildAuthoredCourseProject(subject, course),
   };
 };

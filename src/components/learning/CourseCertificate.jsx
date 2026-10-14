@@ -17,7 +17,7 @@ const readSession = () => {
  * gets the signup details), then submits a certificate request to the admin
  * panel. Certificate issuance itself stays a manual admin action.
  */
-export default function CourseCertificate({ subject, courseTitle, courseMeta, progress = 0, moduleResults = {}, finalResult = null }) {
+export default function CourseCertificate({ subject, courseTitle, courseMeta, progress = 0, moduleResults = {}, requiredModuleAssessmentIds = [], finalResult = null, assessmentCourseId = subject.id }) {
   const [user, setUser] = useState(readSession);
   const [authOpen, setAuthOpen] = useState(false);
   const [status, setStatus] = useState("idle");
@@ -35,6 +35,12 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
   }, [subject.id]);
 
   const title = courseTitle || subject.title;
+  const requiredIds = Array.isArray(requiredModuleAssessmentIds) ? requiredModuleAssessmentIds : [];
+  const moduleAssessmentsPassed = requiredIds.every((id) => {
+    const result = moduleResults?.[id];
+    return result?.passed === true && result?.assessmentVersion === "v2" && Number.isInteger(result.score) && Number.isInteger(result.total) && result.total > 0 && result.score >= 0 && result.score <= result.total && result.score / result.total >= 0.7;
+  });
+  const certificateEligible = progress >= 100 && finalResult?.passed === true && finalResult?.assessmentVersion === "v2" && moduleAssessmentsPassed;
   const whatsappHref = useMemo(() => {
     const text = "Namaste SSF Learning Hub. Certificate request: " + subject.en + " (" + title + "). Learner: " + (user?.fullName || "") + ", email: " + (user?.email || "") + ", progress: " + progress + "%.";
     return "https://wa.me/919718346691?text=" + encodeURIComponent(text);
@@ -45,6 +51,11 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
   }, [subject, title, user, progress]);
 
   const submitRequest = async () => {
+    if (!certificateEligible) {
+      setStatus("error");
+      setMessage("पहले 100% पाठ पूरा करें और final assessment पास करें। / Complete 100% of the course and pass the final assessment first.");
+      return;
+    }
     if (!user) { setAuthOpen(true); return; }
     setStatus("submitting"); setMessage("");
     try {
@@ -54,10 +65,11 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
         body: JSON.stringify({
           accountId: user.id,
           learner: user,
-          courseId: subject.id,
+          courseId: assessmentCourseId,
           courseTitle: title,
           completionPercent: progress,
           moduleAssessments: moduleResults,
+          requiredModuleAssessmentIds: requiredIds,
           finalAssessment: finalResult,
           learningHours: courseMeta?.learningHours,
         }),
@@ -87,8 +99,11 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
     </div>
 
     <p className="mt-4 text-sm leading-7 text-zinc-600 md:text-base">
-      Certificate पाने के लिए नीचे <strong>Join SSF</strong> / <strong>Login</strong> करें। आपकी details admin panel में जाएँगी, admin verify करके certificate जारी करेगा।
+      प्रमाणपत्र अनुरोध तभी खुलेगा जब पाठ्यक्रम का 100% पूरा हो और अंतिम आकलन पास हो। इसके बाद <strong>Join SSF</strong> / <strong>Login</strong> करें; SSF admin जाँच के बाद प्रमाणपत्र जारी करेगा।
     </p>
+    <div className={"mt-3 rounded-xl border p-3 text-sm font-bold " + (certificateEligible ? "border-emerald-200 bg-emerald-50 text-emerald-800" : "border-amber-200 bg-amber-50 text-amber-800")}>
+      {certificateEligible ? "✓ पात्र / Eligible: 100% course completion और final assessment passed." : "अभी पात्र नहीं / Not yet eligible: " + progress + "% पूरा; final assessment " + (finalResult?.passed && finalResult?.assessmentVersion === "v2" ? "पास" : "पास नहीं हुआ") + (requiredIds.length && !moduleAssessmentsPassed ? "; सभी required module assessments पास नहीं हुए" : "") + "।"}
+    </div>
 
     {user ? <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
       <FaUserCircle className="text-2xl text-[#177245]" />
@@ -98,16 +113,18 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
 
     <div className="mt-5 flex flex-col gap-3 sm:flex-row">
       {user
-        ? <button type="button" disabled={status === "submitting"} onClick={submitRequest} className="flex-1 rounded-xl bg-[#177245] px-5 py-3 text-sm font-black text-white disabled:opacity-50">{status === "submitting" ? "Submitting..." : requested ? "Request Again / दोबारा अनुरोध" : "Request Certificate / प्रमाणपत्र का अनुरोध करें"}</button>
-        : <button type="button" onClick={() => setAuthOpen(true)} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 text-sm font-black text-white">Join SSF / Login to get Certificate</button>}
+        ? <button type="button" disabled={!certificateEligible || status === "submitting"} onClick={submitRequest} className="flex-1 rounded-xl bg-[#177245] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">{status === "submitting" ? "Submitting..." : requested ? "Request Again / दोबारा अनुरोध" : "Request Certificate / प्रमाणपत्र का अनुरोध करें"}</button>
+        : <button type="button" onClick={() => setAuthOpen(true)} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 text-sm font-black text-white">Join SSF / Login</button>}
     </div>
 
     <div className="mt-4 border-t border-zinc-200 pt-4">
-      <div className="text-xs font-black uppercase tracking-widest text-zinc-400">Or reach SSF directly / सीधे संपर्क करें</div>
-      <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        <a href={whatsappHref} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-black text-white"><FaWhatsapp /> WhatsApp</a>
-        <a href={emailHref} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0f4c81]/25 bg-[#f1f7fa] px-4 py-3 text-sm font-black text-[#0f4c81]"><FaEnvelope /> Email</a>
-      </div>
+      {certificateEligible ? <>
+        <div className="text-xs font-black uppercase tracking-widest text-zinc-400">Or reach SSF directly / सीधे संपर्क करें</div>
+        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+          <a href={whatsappHref} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-black text-white"><FaWhatsapp /> WhatsApp</a>
+          <a href={emailHref} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0f4c81]/25 bg-[#f1f7fa] px-4 py-3 text-sm font-black text-[#0f4c81]"><FaEnvelope /> Email</a>
+        </div>
+      </> : <p className="text-sm leading-6 text-zinc-500">Direct certificate request links खुलने के लिए पहले 100% course progress, current final assessment pass और सभी required module assessments पास करना आवश्यक है।</p>}
     </div>
 
     {message && <div className={"mt-4 rounded-xl p-4 text-sm font-bold " + (status === "error" ? "bg-red-50 text-red-700" : "bg-emerald-50 text-[#177245]")}>{message}</div>}

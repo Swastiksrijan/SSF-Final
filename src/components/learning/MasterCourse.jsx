@@ -10,6 +10,8 @@ function chapterNarration(chapter) {
   const parts = [chapter.title, chapter.titleHi];
   for (const b of chapter.blocks) {
     if (b.x) parts.push(b.x);
+    if (b.question) parts.push(b.question);
+    if (Array.isArray(b.options)) parts.push(b.options.join(", "));
     if (b.head) parts.push(b.head.join(", "));
     if (b.items) parts.push(b.items.map((it) => typeof it === "string" ? it : [it.w, it.c].filter(Boolean).join(". ")).join(". "));
     if (b.rows) parts.push(b.rows.map((r) => r.join(", ")).join(". "));
@@ -167,6 +169,36 @@ function DictionaryWidget({ b }) {
   </div>;
 }
 
+function QuickCheck({ b }) {
+  const [selected, setSelected] = useState(null);
+  const [checked, setChecked] = useState(false);
+  const originalOptions = Array.isArray(b.options) ? b.options : [];
+  const validAnswer = Number.isInteger(b.answer) && b.answer >= 0 && b.answer < originalOptions.length;
+  const shift = validAnswer
+    ? ([...String(b.question || "")].reduce((sum, character) => sum + character.charCodeAt(0), 1) % originalOptions.length)
+    : 0;
+  const options = originalOptions.map((_, index) => originalOptions[(index + shift) % originalOptions.length]);
+  const answer = validAnswer ? (b.answer - shift + originalOptions.length) % originalOptions.length : null;
+  const correct = checked && validAnswer && selected === answer;
+
+  return <section className="rounded-2xl border border-[#cfe0ee] bg-gradient-to-br from-[#f4f9fd] to-white p-4 md:p-6">
+    <div className="text-xs font-black uppercase tracking-widest text-[#0b4a86] md:text-sm">🧠 Quick Check / तुरंत जाँच</div>
+    <h4 className="mt-2 text-base font-black leading-7 text-[#062a52] md:text-lg">{b.question || "प्रश्न / Question"}</h4>
+    <div className="mt-3 grid gap-2 sm:grid-cols-2">
+      {options.map((option, i) => <button key={i} type="button" onClick={() => { setSelected(i); setChecked(false); }} className={"rounded-xl border px-3 py-3 text-left text-sm font-bold transition " + (selected === i ? "border-[#0b4a86] bg-[#eef7fb] text-[#062a52]" : "border-zinc-200 bg-white text-zinc-700 hover:border-[#9bbbd0]")}>
+        <span className="mr-2">{String.fromCharCode(65 + i)}.</span>{option}
+      </button>)}
+    </div>
+    {validAnswer
+      ? <button type="button" disabled={selected === null} onClick={() => setChecked(true)} className="mt-3 rounded-xl bg-[#0b3a63] px-4 py-2.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Check Answer / उत्तर जाँचें</button>
+      : <p className="mt-3 text-sm font-bold text-amber-800">इस प्रश्न की answer key सत्यापित नहीं है; इसे certificate assessment में नहीं गिना जाएगा।</p>}
+    {checked && <div className={"mt-3 rounded-xl p-3 text-sm font-bold " + (correct ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800")}>
+      {correct ? "✓ सही उत्तर / Correct!" : "अभी सही नहीं—फिर विकल्प चुनें। / Not quite—try another option."}
+      {correct && b.explain && <p className="mt-1 font-medium">व्याख्या / Explanation: {b.explain}</p>}
+    </div>}
+  </section>;
+}
+
 function Block({ b }) {
   if (!b) return null;
   switch (b.t) {
@@ -197,6 +229,8 @@ function Block({ b }) {
       </div>;
     case "note":
       return <Note b={b} />;
+    case "quiz":
+      return <QuickCheck b={b} />;
     case "dict":
       return <DictionaryWidget b={b} />;
     case "ex":
@@ -267,13 +301,25 @@ function Chapter({ chapter, index, total, done, onToggleDone, speaking, onSpeak,
   </section>;
 }
 
-function MasteryTest({ mastery }) {
+function MasteryTest({ mastery, onResult }) {
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-  const score = mastery.quiz.reduce((n, q, i) => n + (answers[i] === q.answer ? 1 : 0), 0);
-  const total = mastery.quiz.length;
+  const questions = useMemo(() => (mastery.quiz || []).map((q, index) => {
+    const options = Array.isArray(q.options) ? q.options : [];
+    if (!Number.isInteger(q.answer) || q.answer < 0 || q.answer >= options.length || options.length < 2) return q;
+    const shift = ([...String(q.q || "")].reduce((sum, character) => sum + character.charCodeAt(0), index + 1)) % options.length;
+    return { ...q, options: options.map((_, i) => options[(i + shift) % options.length]), answer: (q.answer - shift + options.length) % options.length };
+  }), [mastery.quiz]);
+  const score = questions.reduce((n, q, i) => n + (answers[i] === q.answer ? 1 : 0), 0);
+  const total = questions.length;
   const answered = Object.keys(answers).length;
   const pct = total ? Math.min(100, Math.round((score / total) * 100)) : 0;
+  const submit = () => {
+    if (!total || answered < total || submitted) return;
+    const result = { score, total, passed: pct >= 80, assessmentVersion: "v2", completedAt: new Date().toISOString() };
+    setSubmitted(true);
+    onResult?.(result);
+  };
 
   return <section id="mc-mastery" className="scroll-mt-28 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-5 shadow-sm md:p-8">
     <div className="flex items-center gap-3">
@@ -290,7 +336,7 @@ function MasteryTest({ mastery }) {
     </div>
 
     <div className="mt-7 space-y-4">
-      {mastery.quiz.map((q, i) => <div key={i} className="rounded-2xl border border-zinc-200 bg-white p-4 md:p-5">
+      {questions.map((q, i) => <div key={i} className="rounded-2xl border border-zinc-200 bg-white p-4 md:p-5">
         <div className="text-base font-black text-zinc-800 md:text-lg">{i + 1}. {q.q}</div>
         <div className="mt-3 grid gap-2 sm:grid-cols-2">
           {q.options.map((o, j) => {
@@ -298,7 +344,7 @@ function MasteryTest({ mastery }) {
             const correct = submitted && j === q.answer;
             const wrong = submitted && chosen && j !== q.answer;
             return <label key={j} className={"flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 text-base transition md:text-lg " + (correct ? "border-emerald-300 bg-emerald-50 font-bold text-emerald-800" : wrong ? "border-rose-300 bg-rose-50 font-bold text-rose-700" : chosen ? "border-[#0b3a63] bg-[#eef4f9]" : "border-zinc-200 hover:bg-zinc-50")}>
-              <input type="radio" name={"mc-q-" + i} checked={chosen} onChange={() => !submitted && setAnswers(a => ({ ...a, [i]: j }))} />
+              <input type="radio" name={"mc-q-" + i} checked={chosen} onChange={() => { if (submitted && pct >= 80) return; setAnswers(a => ({ ...a, [i]: j })); if (submitted) setSubmitted(false); }} />
               <span>{o}</span>
             </label>;
           })}
@@ -308,7 +354,7 @@ function MasteryTest({ mastery }) {
     </div>
 
     <div className="mt-6 flex flex-wrap items-center gap-4">
-      <button type="button" disabled={answered < total || submitted} onClick={() => setSubmitted(true)}
+      <button type="button" disabled={answered < total || submitted} onClick={submit}
         className="rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-6 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
       {submitted && <div className={"rounded-2xl px-5 py-3 text-sm font-black md:text-base " + (pct >= 80 ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700")}>Score: {score}/{total} ({pct}%) {pct >= 80 ? "· Mastered 🏆" : "· दोबारा पढ़ें"}</div>}
     </div>
@@ -326,6 +372,13 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
   const chapterIds = useMemo(() => chapters.map((c) => c.id), [chapters]);
   const progressKey = "ssf-learning-course-progress-" + subject.id;
   const [done, setDone] = useState(() => readMigratedProgress(subject, chapterIds));
+  const [finalResult, setFinalResult] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(progressKey + "-final") || "null"); } catch { return null; }
+  });
+  const handleFinalResult = (result) => {
+    setFinalResult(result);
+    try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
+  };
   const topRef = useRef(null);
 
   useEffect(() => { try { localStorage.setItem(progressKey, JSON.stringify(done)); } catch {} }, [done, progressKey]);
@@ -440,7 +493,7 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
       </section>
 
       {/* Mastery */}
-      <div className="mt-8"><MasteryTest mastery={course.mastery} /></div>
+      <div className="mt-8"><MasteryTest mastery={course.mastery} onResult={handleFinalResult} /></div>
 
       {/* Project (optional — Knowledge World courses carry a field project) */}
       {course.project && <section className="mt-8 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-6 shadow-sm md:p-8">
@@ -467,6 +520,7 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
         courseTitle={(course.meta.title && course.meta.title[0]) || course.meta.tag || subject.en}
         courseMeta={course.meta}
         progress={pct}
+        finalResult={finalResult}
       />
 
       <div className="py-10 text-center">

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const LearningCertificate = require('../models/LearningCertificate');
 const Member = require('../models/Member');
+const { validateCertificateAssessments } = require('../utils/learningCertificateValidation');
 
 const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
 const requireAdminAuth = (req,res,next) => {
@@ -12,14 +13,14 @@ const requireAdminAuth = (req,res,next) => {
 
 router.post('/learning-certificates/request', async (req,res) => {
   try {
-    const { accountId, learner, courseId, courseTitle, completionPercent, moduleAssessments, finalAssessment, learningHours } = req.body || {};
+    const { accountId, learner, courseId, courseTitle, completionPercent, moduleAssessments, requiredModuleAssessmentIds, finalAssessment, learningHours } = req.body || {};
     if (!accountId || !learner?.email || !courseId || !courseTitle) return res.status(400).json({ message:'Account, learner and course details are required.' });
     const member = await Member.findByPk(accountId);
     if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(learner.email).toLowerCase()) return res.status(401).json({ message:'Learning account could not be verified.' });
     if (Number(completionPercent) !== 100) return res.status(400).json({ message:'Course completion must be 100%.' });
-    const finalPassed = Boolean(finalAssessment?.passed);
-    const modulePassed = Object.values(moduleAssessments || {}).every(v => v?.passed);
-    if (!finalPassed || !modulePassed) return res.status(400).json({ message:'All required assessments must be passed before requesting a certificate.' });
+    if (!validateCertificateAssessments({ courseId, moduleAssessments, requiredModuleAssessmentIds, finalAssessment })) {
+      return res.status(400).json({ message:'A valid passing score (at least 70%) is required for the final assessment and every required module assessment.' });
+    }
     const existing = await LearningCertificate.findOne({ where:{ accountId, courseId, status:['requested','approved','issued'] } });
     if (existing) return res.json({ status:'success', request:existing });
     const request = await LearningCertificate.create({

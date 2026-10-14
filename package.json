@@ -13,7 +13,9 @@
     "preview": "vite preview",
     "tsr": "tsr",
     "gallery": "node scripts/build-gallery.mjs",
-    "members": "node scripts/build-members.mjs"
+    "members": "node scripts/build-members.mjs",
+    "audit:learning-hub": "node scripts/audit-learning-hub-content.mjs",
+    "test:learning-certificates": "node --test backend_node/tests/learningCertificateValidation.test.cjs"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",

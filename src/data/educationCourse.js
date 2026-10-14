@@ -17,6 +17,7 @@ import { EDU_PART_C } from "./educationCoursesC.js";
 import { EDU_PART_D } from "./educationCoursesD.js";
 import { EDU_RICH_B1 } from "./educationCoursesRich.js";
 import { EDU_RICH_B2 } from "./educationCoursesRichB.js";
+import { buildAuthoredCourseProject } from "./authoredCourseProject.js";
 
 // Rich (Primary-level depth) overrides, merged last so they win over the
 // compact part-file versions.
@@ -38,7 +39,7 @@ const buildTopic = (t, mi, ti) => {
       quiz: {
         question: quiz.question || quiz.q || t.question || "",
         options: quiz.options || [],
-        answer: typeof quiz.answer === "number" ? quiz.answer : 0,
+        answer: Number.isInteger(quiz.answer) ? quiz.answer : null,
         explain: quiz.explain || quiz.explanation || "",
       },
       // Rich authored fields (Primary-level depth). Present only for enriched
@@ -112,7 +113,11 @@ const buildCourse = (c) => ({
 const RAW = { ...EDU_PART_A, ...EDU_PART_B, ...EDU_PART_C, ...EDU_PART_D, ...EDU_RICH };
 
 export const EDUCATION_COURSES = Object.fromEntries(
-  Object.entries(RAW).map(([title, c]) => [title, buildCourse(c)])
+  Object.entries(RAW).map(([title, c]) => {
+    const course = buildCourse(c);
+    course.project = buildAuthoredCourseProject({ en: title, hi: "" }, course);
+    return [title, course];
+  })
 );
 
 export const getEducationCourse = (subject) => {

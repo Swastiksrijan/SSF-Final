@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { IllustrationAlphabet, IllustrationStory, IllustrationSounds } from "./LearningIllustrations";
 
 const speak = (text) => {
@@ -41,7 +42,8 @@ export default function PrimaryLessonFresh({ lessonLabel, moduleTitle, content, 
   const examples = c.examples || [];
   const practice = c.practice || [];
   const mistakes = c.mistakes || [];
-  const knowledge = (check || []).slice(0, 3);
+  const knowledge = Array.isArray(check) ? check.slice(0, 3) : [];
+  const [answers, setAnswers] = useState({});
 
   const isLettersy = /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(lessonLabel || "");
   const isNumbery = /number|counting|संख्या|गिनती|जोड़|घटाव|गुणा|भाग|भिन्न|मापन|मुद्रा|समय/i.test(lessonLabel || "");
@@ -85,8 +87,23 @@ export default function PrimaryLessonFresh({ lessonLabel, moduleTitle, content, 
 
       {c.summary && <div className="rounded-2xl border border-[#d3e8db] bg-gradient-to-r from-[#f2fdf6] to-white p-5 shadow-sm"><div className="text-xs font-black uppercase tracking-widest text-[#14663b]">सार / Summary</div><p className="mt-1 text-sm font-bold text-zinc-700">📌 {c.summary}</p></div>}
 
-      {knowledge.length > 0 && <Card icon="🧠" title="Knowledge Check" subtitle="छोटा स्व-मूल्यांकन" tone="sky">
-        <div className="space-y-3">{knowledge.map((q, i) => <div key={i} className="rounded-2xl bg-white p-4 shadow-sm"><div className="text-sm font-black text-zinc-800">{i + 1}. {q.question}</div><div className="mt-2 flex flex-wrap gap-2">{(q.options || []).map((o, oi) => <span key={oi} className={"rounded-xl px-3 py-2 text-xs font-black " + (oi === q.answer ? "bg-[#e4f7ec] text-[#14663b]" : "bg-zinc-50 text-zinc-600")}>{oi === q.answer ? "✅ " : ""}{o}</span>)}</div></div>)}</div>
+      {knowledge.length > 0 && <Card icon="🧠" title="Knowledge Check / ज्ञान जाँच" subtitle="पहले उत्तर चुनें, फिर feedback देखें" tone="sky">
+        <div className="space-y-3">{knowledge.map((q, i) => {
+          const selected = answers[i];
+          const validKey = Number.isInteger(q.answer) && q.answer >= 0 && q.answer < (q.options || []).length;
+          const isCorrect = selected !== undefined && validKey && selected === q.answer;
+          return <div key={i} className="rounded-2xl bg-white p-4 shadow-sm">
+            <div className="text-sm font-black text-zinc-800">{i + 1}. {q.question}</div>
+            <div className="mt-3 grid gap-2">{(q.options || []).map((option, oi) => <button key={oi} type="button" onClick={() => setAnswers((current) => ({ ...current, [i]: oi }))} className={"rounded-xl border px-3 py-2 text-left text-sm font-bold transition " + (selected === oi ? (!validKey ? "border-[#0b4a86] bg-[#eef7ff] text-[#083a68]" : oi === q.answer ? "border-emerald-300 bg-emerald-50 text-emerald-800" : "border-rose-300 bg-rose-50 text-rose-800") : "border-zinc-200 bg-zinc-50 text-zinc-700 hover:bg-white")}>
+              <span className="mr-2">{String.fromCharCode(65 + oi)}.</span>{option}
+            </button>)}</div>
+            {selected !== undefined && <div className={"mt-3 rounded-xl p-3 text-sm font-bold " + (!validKey ? "bg-amber-50 text-amber-800" : isCorrect ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800")}>
+              {!validKey ? "उत्तर चुना गया, लेकिन इस प्रश्न की answer key सत्यापित नहीं है।" : isCorrect ? "✓ सही उत्तर! / Correct answer!" : "फिर प्रयास करें। / Try again."}
+              {validKey && <div className="mt-1">सही उत्तर: {q.options[q.answer]}</div>}
+              {q.explain && <div className="mt-1 font-medium">व्याख्या / Explanation: {q.explain}</div>}
+            </div>}
+          </div>;
+        })}</div>
       </Card>}
 
       <div className="flex flex-wrap justify-center gap-3 pt-2">

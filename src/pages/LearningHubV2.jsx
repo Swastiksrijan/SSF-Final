@@ -14,6 +14,8 @@ import { ENGLISH_FROM_BASICS_COURSE, ENGLISH_FROM_BASICS_ASSESSMENTS } from "../
 import { KNOWLEDGE_WORLD_TOPICS } from "../data/knowledgeWorldContent";
 import { getKnowledgeWorldCourse, isKnowledgeWorldSubject, knowledgeWorldTopicCount, knowledgeWorldToMasterCourse } from "../data/knowledgeWorldCourse";
 import { makeCourseArt } from "../components/learning/CourseArtKit";
+import { buildAuthoredCourseProject, ensureAuthoredCourseDepth, ensureStructuredCourseDepth } from "../data/authoredCourseProject";
+import { buildStructuredAssessmentQuestions } from "../data/structuredAssessmentBuilder";
 import { getEducationCourse, isEducationSubject, educationTopicCount, EDUCATION_CATEGORY } from "../data/educationCourse";
 import { getOfficeSkillsCourse, isOfficeSkillsSubject, officeTopicCount, OFFICE_SKILLS_CATEGORY, OFFICE_SKILLS_SECTION, OFFICE_SKILLS_CARDS, OFFICE_SKILLS_CONTENT } from "../data/officeSkillsCourse";
 import { ENTREPRENEURSHIP_CONTENT } from "../data/entrepreneurshipContent";
@@ -2073,12 +2075,13 @@ const curriculumToMasterCourse = (subject) => {
 // single builder keeps the premium MasterCourse UI without duplicating code.
 const authoredContentToMasterCourse = (subject, content, opts = {}) => {
   if (!content) return null;
+  const source = ensureAuthoredCourseDepth(subject, content);
   const icon = opts.icon || "🏢";
   const level = opts.level || "Beginner → Advanced";
   const tag = opts.tag || subject.category;
   const overview = opts.overview || {};
   let gi = 0;
-  const modules = content.modules.map((m, mi) => ({
+  const modules = source.modules.map((m, mi) => ({
     id: subject.id + "-om-" + (mi + 1),
     title: String(m.title).split(" / ")[0],
     titleHi: String(m.title).split(" / ")[1] || "",
@@ -2093,22 +2096,21 @@ const authoredContentToMasterCourse = (subject, content, opts = {}) => {
           { t: "p", x: t.learn },
           { t: "ex", title: "Example / उदाहरण", x: t.example },
           { t: "act", title: "Activity / अभ्यास", x: t.activity },
-          { t: "note", k: "tip", title: "स्वयं जाँचें / Self-check", x: t.quiz.q, items: t.quiz.options },
-          { t: "note", k: "remember", title: "सही उत्तर", x: t.quiz.options[t.quiz.answer] + " — " + t.quiz.explain },
+          { t: "quiz", title: "Quick Check / तुरंत जाँच", question: t.quiz.q, options: t.quiz.options || [], answer: t.quiz.answer, explain: t.quiz.explain || "" },
         ],
       };
     }),
   }));
   let n = 0; modules.forEach((m) => m.chapters.forEach((c) => { c.number = ++n; }));
 
-  const mastery = (content.mastery || []).map(([q, options, answer, explain]) => ({ q, options, answer, explain }));
-  const firstQuiz = content.modules.flatMap((m) => m.topics).slice(0, 10).map((t) => ({ q: t.quiz.q, options: t.quiz.options, answer: t.quiz.answer, explain: t.quiz.explain }));
-  const focus = content.tagline || subject.intro || ("इस विषय को समझ, उदाहरण और अभ्यास के साथ सीखें।");
+  const mastery = (source.mastery || []).map(([q, options, answer, explain]) => ({ q, options, answer, explain }));
+  const firstQuiz = source.modules.flatMap((m) => m.topics).slice(0, 10).map((t) => ({ q: t.quiz.q, options: t.quiz.options, answer: t.quiz.answer, explain: t.quiz.explain }));
+  const focus = source.tagline || subject.intro || ("इस विषय को समझ, उदाहरण और अभ्यास के साथ सीखें।");
 
   return {
-    meta: { icon, title: [subject.en, subject.hi], level, tag, tagline: content.tagline, heroSubtitle: overview.what || subject.intro || content.tagline },
+    meta: { icon, title: [subject.en, subject.hi], level, tag, tagline: source.tagline, heroSubtitle: overview.what || subject.intro || source.tagline },
     overview: {
-      what: overview.what || subject.intro || content.tagline,
+      what: overview.what || subject.intro || source.tagline,
       why: overview.why || ("यह ज्ञान " + subject.en + " में रोज़मर्रा की समझ, सही निर्णय और practical capability के लिए जरूरी है।"),
       where: overview.where || "घर, काम और रोज़मर्रा की वास्तविक स्थितियों में।",
       outcome: overview.outcome || ("Learner " + subject.en + " के मुख्य concepts समझेगा, उदाहरण देखेगा, अभ्यास करेगा और नई स्थितियों में लागू कर सकेगा।"),
@@ -2124,12 +2126,14 @@ const authoredContentToMasterCourse = (subject, content, opts = {}) => {
     },
     modules,
     revision: { title: "पूरा course एक नज़र में", groups: [
-      ...(content.glossary ? [{ title: "📖 मुख्य शब्द / Key Words", items: content.glossary.map(([term, hi, meaning]) => term + (hi ? " (" + hi + ")" : "") + (meaning ? " — " + meaning : "")) }] : []),
-      ...(content.facts ? [{ title: "💡 Did You Know?", items: content.facts }] : []),
+      ...(source.glossary ? [{ title: "📖 मुख्य शब्द / Key Words", items: source.glossary.map(([term, hi, meaning]) => term + (hi ? " (" + hi + ")" : "") + (meaning ? " — " + meaning : "")) }] : []),
+      ...(source.facts ? [{ title: "💡 Did You Know?", items: source.facts }] : []),
+      { title: "Key Concepts / मुख्य बातें", items: source.modules.flatMap((m) => m.topics.map((t) => String(t.title) + " — " + String(t.learn || "").slice(0, 180))).slice(0, 8) },
     ].filter((g) => g.items.length) },
     mastery: { title: "Final Test / अंतिम परीक्षा", note: "इस course के modules से चुने गए प्रश्न।", tasks: modules.map((m) => ({ icon: m.icon, title: m.title, x: "" })), quiz: [...mastery, ...firstQuiz].slice(0, 10) },
+    project: buildAuthoredCourseProject(subject, source),
     outcomeIntro: "इस course के बाद learner:",
-    outcome: (opts.outcomes && opts.outcomes.length) ? opts.outcomes : [content.tagline],
+    outcome: (opts.outcomes && opts.outcomes.length) ? opts.outcomes : [source.tagline],
     outcomeClose: opts.outcomeClose || "अभ्यास + वास्तविक उदाहरण + जाँच — यही असली skill है।",
   };
 };
@@ -2353,7 +2357,7 @@ const getSubjectModules = (subject) => {
     SUBJECT_MODULES_CACHE.set(subject.id, result);
     return result;
   }
-  const structuredCourse = hasStructuredCourse(subject) ? resolveStructuredCourse(subject).course : null;
+  const structuredCourse = hasStructuredCourse(subject) ? ensureStructuredCourseDepth(subject, resolveStructuredCourse(subject).course) : null;
   const isSecondaryEducation = /secondary education|माध्यमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const eduModules = isEducationSubject(subject) ? buildEducationModules(subject) : null;
   const secondaryModules = !eduModules && isSecondaryEducation
@@ -2400,6 +2404,8 @@ function PrimaryLessonVisual({ lesson }) {
   const practice = lesson.detail?.practice || [];
   const title = lesson.title || "";
   const cleanTitle = title.split(" / ")[0].trim();
+  const [quickAnswers, setQuickAnswers] = useState({});
+  const [quickChecked, setQuickChecked] = useState({});
   const isLetters = /letters|sounds|अक्षर|ध्वनि|alphabet|वर्णमाला/i.test(title);
   const isNumbers = /numbers|counting|संख्या|गिनती|number sense|जोड़|घटाव|गुणा|भाग|fractions|भिन्न/i.test(title);
   const isLanguage = /hindi|english|शब्द|reading|writing|vocabulary|phonics|मात्रा|वाक्य|पठन|लेखन/i.test(title);
@@ -2495,10 +2501,33 @@ function PrimaryLessonVisual({ lesson }) {
         </div>
       </div>
 
-      {detail.knowledgeCheck && <div className="mt-6 rounded-[1.4rem] border-2 border-[#d9e7f0] bg-gradient-to-r from-[#f7fbff] to-[#fffdf5] p-5">
+      {Array.isArray(detail.knowledgeCheck) && detail.knowledgeCheck.length > 0 && <div className="mt-6 rounded-[1.4rem] border-2 border-[#d9e7f0] bg-gradient-to-r from-[#f7fbff] to-[#fffdf5] p-5">
         <div className="text-sm font-black uppercase tracking-widest text-[#0f4c81]">❓ Quick Check / तुरंत जाँच</div>
+        <p className="mt-2 text-xs font-semibold text-zinc-600">विकल्प चुनें। उत्तर के बाद सही/गलत प्रतिक्रिया और उपलब्ध व्याख्या दिखाई जाएगी। आप दोबारा प्रयास भी कर सकते हैं।</p>
         <div className="mt-4 space-y-3">
-          {detail.knowledgeCheck.map((q,i)=><div key={i} className="rounded-xl bg-white p-4"><div className="text-sm font-black text-zinc-800">{i+1}. {q.question}</div><div className="mt-2 text-xs font-bold text-zinc-500">सोचकर उत्तर दें: {q.options?.join(" • ")}</div></div>)}
+          {detail.knowledgeCheck.map((q,i)=>{
+            const options = Array.isArray(q.options) ? q.options : [];
+            const answerKey = title + "::" + i;
+            const selected = quickAnswers[answerKey];
+            const checked = quickChecked[answerKey] === true;
+            const correct = Number.isInteger(q.answer) ? q.answer : (Number.isInteger(q.correctAnswer) ? q.correctAnswer : null);
+            const hasAnswer = selected !== undefined;
+            const isCorrect = checked && hasAnswer && correct !== null && selected === correct;
+            return <div key={answerKey} className="rounded-xl bg-white p-4">
+              <div className="text-sm font-black text-zinc-800">{i+1}. {q.question || "प्रश्न"}</div>
+              <div className="mt-3 grid gap-2">
+                {options.map((option,oi)=><button key={oi} type="button" onClick={()=>{setQuickAnswers(current=>({...current,[answerKey]:oi}));setQuickChecked(current=>({...current,[answerKey]:false}));}} className={"rounded-lg border px-3 py-2 text-left text-sm font-semibold transition "+(selected===oi?(checked && correct!==null?(oi===correct?"border-emerald-300 bg-emerald-50 text-emerald-800":"border-rose-300 bg-rose-50 text-rose-800"):"border-[#0f4c81] bg-[#eef7fb] text-[#002344]"):"border-zinc-200 hover:border-[#9bbbd0]")}>
+                    <span className="mr-2 font-black">{String.fromCharCode(65+oi)}.</span>{option}
+                  </button>)}
+              </div>
+              {hasAnswer && <button type="button" onClick={()=>setQuickChecked(current=>({...current,[answerKey]:true}))} className="mt-3 rounded-lg bg-[#0b3a63] px-4 py-2 text-sm font-black text-white">Check Answer / उत्तर जाँचें</button>}
+              {hasAnswer && checked && <div className={"mt-3 rounded-lg p-3 text-sm font-bold "+(correct===null?"bg-[#eef7fb] text-[#002344]":isCorrect?"bg-emerald-50 text-emerald-800":"bg-rose-50 text-rose-800")}>
+                {correct===null ? "आपका उत्तर चुना गया। इस प्रश्न के लिए answer key उपलब्ध नहीं है।" : isCorrect ? "✓ सही उत्तर! / Correct answer!" : "अभी सही नहीं। फिर प्रयास करें। / Not quite—try again."}
+                {correct!==null && <div className="mt-1">सही उत्तर: {options[correct] ?? "उत्तर उपलब्ध नहीं"}</div>}
+                {q.explain && <div className="mt-1 font-medium">व्याख्या / Explanation: {q.explain}</div>}
+              </div>}
+            </div>;
+          })}
         </div>
       </div>}
 
@@ -2519,6 +2548,7 @@ function LearningSubject({ subject, onBack }) {
   const [quizOpen, setQuizOpen] = useState(false);
   const [lessonOpen, setLessonOpen] = useState(false);
   const [answers, setAnswers] = useState({});
+  const [lessonQuickAnswers, setLessonQuickAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
   const [finalResult, setFinalResult] = useState(() => {
     try { return JSON.parse(localStorage.getItem(progressKey + "-final") || "null"); } catch { return null; }
@@ -2526,12 +2556,15 @@ function LearningSubject({ subject, onBack }) {
   const [moduleAnswers, setModuleAnswers] = useState({});
   const isPrimaryEducation = /^primary-education$/.test(subject.id) || /primary education|प्राथमिक शिक्षा/i.test(subject.en + " " + subject.hi);
   const [moduleResults, setModuleResults] = useState(() => {
-    try { return JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}"); } catch { return {}; }
+    try {
+      const saved = JSON.parse(localStorage.getItem(progressKey + "-assessments") || "{}");
+      return saved && typeof saved === "object" && !Array.isArray(saved) ? saved : {};
+    } catch { return {}; }
   });
 
   const structuredResolution = resolveStructuredCourse(subject);
   const structuredCourseId = structuredResolution.id;
-  const structuredCourse = hasStructuredCourse(subject) ? structuredResolution.course : null;
+  const structuredCourse = hasStructuredCourse(subject) ? ensureStructuredCourseDepth(subject, structuredResolution.course) : null;
   const kwCourse = isKnowledgeWorldSubject(subject) ? getKnowledgeWorldCourse(subject) : null;
   const eduCourse = isEducationSubject(subject) ? getEducationCourse(subject) : null;
   const officeCourse = isOfficeSkillsSubject(subject) ? getOfficeSkillsCourse(subject) : null;
@@ -2591,35 +2624,39 @@ function LearningSubject({ subject, onBack }) {
       ).flat()
     : [];
   const subjectQuiz = (SUBJECT_CONTENT_ALL[subject.en] && SUBJECT_CONTENT_ALL[subject.en].quiz) || [];
-  const kwQuiz = kwCourse ? kwCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
-  const eduQuiz = eduCourse ? eduCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
-  const officeQuiz = officeCourse ? officeCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer })) : [];
-  // Education, Knowledge World and Office Skills share the same rich course UI
-  // (overview, modules, glossary, project, revision, mastery). `richCourse`
-  // selects whichever applies so the sections below stay single-sourced.
+  const kwQuiz = kwCourse ? kwCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer, explain: m.explain })) : [];
+  const eduQuiz = eduCourse ? eduCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer, explain: m.explain })) : [];
+  const officeQuiz = officeCourse ? officeCourse.mastery.map((m) => ({ q: m.question, options: m.options, answer: m.answer, explain: m.explain })) : [];
+  // Education, Knowledge World and Office Skills share the same rich course UI.
   const richCourse = eduCourse || kwCourse || officeCourse;
   const richTopicCount = eduCourse ? educationTopicCount(eduCourse) : kwCourse ? knowledgeWorldTopicCount(kwCourse) : officeCourse ? officeTopicCount(officeCourse) : 0;
-  const quizQuestions = structuredAssessmentPool.length
-    ? structuredAssessmentPool.slice(0, 5).map(q => ({
-        q: q.q || q.question,
-        options: q.options || [],
-        answer: typeof q.answer === "number" ? q.answer : 0
-      }))
-    : eduQuiz.length
-      ? eduQuiz.slice(0, 5)
-    : kwQuiz.length
-      ? kwQuiz.slice(0, 5)
-    : officeQuiz.length
-      ? officeQuiz.slice(0, 5)
-    : subjectQuiz.length
-      ? subjectQuiz.slice(0, 5).map(q => ({ q: q.question, options: q.options, answer: q.answer }))
-      : [
-        {q:"अच्छी learning का उद्देश्य क्या है?", options:["समझकर और अभ्यास करके capability विकसित करना","केवल title याद करना","केवल video देखना","केवल certificate लेना"], answer:0},
-        {q:"किसी concept को मजबूत करने का उपयोगी तरीका क्या है?", options:["Example + Practice + Review","बिना पढ़े अनुमान लगाना","बिना जाँचे जानकारी share करना","केवल एक definition याद करना"], answer:0},
-        {q:"Current rules या schemes को कहाँ verify करना चाहिए?", options:["संबंधित official source","random forwarded message","unverified social post","anonymous screenshot"], answer:0},
-        {q:"Practical learning में क्या महत्वपूर्ण है?", options:["सुरक्षित task, परिणाम और सुधार","केवल memorisation","बिना training high-risk action","दूसरे का work copy करना"], answer:0},
-        {q:"Course पूरा करने के बाद अगला कदम क्या हो सकता है?", options:["Assessment, reflection और next learning path","सीखना बंद करना","बिना समझे certificate claim करना","सभी sources ignore करना"], answer:0}
-      ];
+  const lessonQuizPool = lessons.flatMap((lesson) => {
+    const checks = lesson.detail?.content?.knowledgeCheck || lesson.detail?.knowledgeCheck || [];
+    return Array.isArray(checks) ? checks : [];
+  });
+  // Prefer real course/subject questions; never invent an answer key or silently use a generic quiz.
+  const rawQuizQuestions = [...structuredAssessmentPool, ...eduQuiz, ...kwQuiz, ...officeQuiz, ...subjectQuiz, ...lessonQuizPool];
+  const quizQuestions = rawQuizQuestions.map((q, questionIndex) => {
+    const question = q?.q || q?.question || q?.prompt;
+    const options = Array.isArray(q?.options) ? q.options.map((option) => String(option)) : [];
+    const answer = q?.answer;
+    if (!question || options.length < 2 || !Number.isInteger(answer) || answer < 0 || answer >= options.length) return null;
+    const shift = ([...String(question)].reduce((sum, character) => sum + character.charCodeAt(0), questionIndex + 1)) % options.length;
+    const rotatedOptions = options.map((_, index) => options[(index + shift) % options.length]);
+    const rotatedAnswer = (answer - shift + options.length) % options.length;
+    return { q: String(question), options: rotatedOptions, answer: rotatedAnswer, explain: q.explain || q.explanation || "" };
+  }).filter(Boolean)
+    .filter((q, index, all) => all.findIndex((item) => item.q.trim() === q.q.trim()) === index)
+    .slice(0, 10);
+  const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
+  const submitQuiz = () => {
+    if (!quizQuestions.length || Object.keys(answers).length < quizQuestions.length) return;
+    const passed = score / quizQuestions.length >= 0.7;
+    const result = { score, total: quizQuestions.length, passed, assessmentVersion: "v2", completedAt: new Date().toISOString() };
+    setSubmitted(true);
+    setFinalResult(result);
+    try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
+  };
   const completed = done.length;
   const total = lessons.length;
   const isRichLesson = isPrimaryEducation && /letters\s*&\s*sounds|अक्षर एवं ध्वनि/i.test(lessons[activeLesson]?.title || "");
@@ -2628,11 +2665,12 @@ function LearningSubject({ subject, onBack }) {
   const moduleAssessments = structuredCourse
     ? structuredCourse.modules.map((m) => ({
         ...m,
-        questions:
-          (FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] ||
-            (isEnglishFromBasics(subject) ? ENGLISH_FROM_BASICS_ASSESSMENTS?.[m.id] : COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id]) ||
-            m.assessment?.questions ||
-            [])
+        questions: buildStructuredAssessmentQuestions(m, [
+          ...(FLAGSHIP_COURSE_ASSESSMENTS?.[m.id] || []),
+          ...(isEnglishFromBasics(subject) ? (ENGLISH_FROM_BASICS_ASSESSMENTS?.[m.id] || []) : []),
+          ...(COURSE_ASSESSMENTS?.[structuredCourseId]?.[m.id] || []),
+          ...(COURSE_ASSESSMENTS?.[m.id] || [])
+        ])
       })).filter(m => m.questions.length)
     : [];
   const courseMeta = structuredCourse || (eduCourse ? {
@@ -2677,6 +2715,7 @@ function LearningSubject({ subject, onBack }) {
       "Review learning through practice and assessment before claiming completion."
     ]
   });
+  const structuredProject = structuredCourse ? buildAuthoredCourseProject(subject, structuredCourse) : null;
   const markDone = (i) => setDone(current => {
     const next = current.includes(i) ? current : [...current, i];
     try { localStorage.setItem(progressKey, JSON.stringify(next)); } catch {}
@@ -2687,9 +2726,10 @@ function LearningSubject({ subject, onBack }) {
     setActiveLesson(safe);
     setQuizOpen(false);
     setAnswers({});
+    setLessonQuickAnswers({});
     setSubmitted(false);
     setLessonOpen(true);
-    markDone(safe);
+    // Opening or navigating to a lesson is not proof that the learner completed it.
     requestAnimationFrame(() => document.getElementById("current-lesson-content")?.scrollIntoView({ behavior: "smooth", block: "start" }));
   };
 
@@ -2702,8 +2742,45 @@ function LearningSubject({ subject, onBack }) {
       onNextLesson: activeLesson < total - 1 ? () => goLesson(activeLesson + 1) : undefined,
       onMarkDone: () => markDone(activeLesson)
     };
-    const cert = <div className="mx-auto max-w-6xl px-4 pb-16"><CourseCertificate subject={subject} courseTitle={courseMeta.title.en} courseMeta={courseMeta} progress={progress} moduleResults={moduleResults} finalResult={finalResult} /></div>;
-    if (isRichLesson) return <><PrimaryLettersCourse subject={subject} {...common} />{cert}</>;
+    const cert = <div className="mx-auto max-w-6xl px-4 pb-16"><CourseCertificate subject={subject} courseTitle={courseMeta.title.en} courseMeta={courseMeta} progress={progress} moduleResults={moduleResults} requiredModuleAssessmentIds={moduleAssessments.map((m) => m.id)} finalResult={finalResult} assessmentCourseId={structuredCourseId} /></div>;
+    const primaryProject = <section className="mx-auto mt-8 max-w-6xl px-4">
+      <div className="rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-5 shadow-sm md:p-8">
+        <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🎨</span><div><h2 className="text-xl font-black text-[#062a52] md:text-2xl">Primary Learning Project / प्राथमिक सीखने की परियोजना</h2><p className="mt-1 text-sm text-zinc-600">My Bilingual Picture Book / मेरी द्विभाषी चित्र-पुस्तिका</p></div></div>
+        <p className="mt-4 text-sm leading-7 text-zinc-700">एक छोटी चित्र-पुस्तिका बनाएँ जिसमें English letters, हिंदी अक्षर, शब्द, चित्र और छोटे वाक्य हों। बच्चे को केवल रटवाने के बजाय सुनने, बोलने, पहचानने और खुद लिखने का मौका दें।</p>
+        <div className="mt-4 grid gap-3 md:grid-cols-2">
+          <div className="rounded-xl border border-zinc-200 bg-white p-4"><h3 className="font-black text-[#0b3a63]">Materials / सामग्री</h3><p className="mt-1 text-sm leading-6 text-zinc-600">कागज़ या notebook, pencil/crayons, घर में उपलब्ध चित्र या drawings.</p></div>
+          <div className="rounded-xl border border-zinc-200 bg-white p-4"><h3 className="font-black text-[#0b3a63]">Expected Output / परिणाम</h3><p className="mt-1 text-sm leading-6 text-zinc-600">कम-से-कम 5 English letters, 5 हिंदी अक्षर, हर अक्षर से एक शब्द और 3 छोटे वाक्य।</p></div>
+        </div>
+        <ol className="mt-4 space-y-2">{[
+          "A–E में से पाँच letters चुनें; हर letter के साथ picture और word लिखें (A—Apple, B—Ball)।",
+          "पाँच हिंदी स्वर या व्यंजन चुनें; उनसे शुरू होने वाले शब्द और छोटे चित्र बनाएँ।",
+          "तीन सरल वाक्य बनाएँ—जैसे “This is a ball.” / “यह लाल गेंद है।”",
+          "किसी अभिभावक या शिक्षक के सामने पढ़कर सुनाएँ; कठिन शब्दों पर निशान लगाकर फिर अभ्यास करें।",
+          "अंत में बच्चे से पूछें कि उसने क्या सीखा और कौन-सा अक्षर/शब्द दोहराना है।"
+        ].map((step,i)=><li key={i} className="flex gap-3 text-sm leading-7 text-zinc-700"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef4f9] text-xs font-black text-[#0b3a63]">{i+1}</span><span>{step}</span></li>)}</ol>
+      </div>
+    </section>;
+    const finalAssessment = <section className="mx-auto mt-8 max-w-6xl px-4">
+      <div className="rounded-[2rem] border border-[#cfe0ee] bg-white p-5 shadow-sm md:p-8">
+        <h2 className="text-xl font-black text-[#002344] md:text-2xl">Final Course Assessment / अंतिम पाठ्यक्रम आकलन</h2>
+        <p className="mt-2 text-sm leading-6 text-zinc-600">सभी पाठ पूरे करने के बाद प्रश्न हल करें। पास होने के लिए कम-से-कम 70% सही उत्तर आवश्यक हैं।</p>
+        <button type="button" onClick={()=>setQuizOpen(v=>!v)} disabled={!quizQuestions.length} className="mt-4 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">{quizOpen ? "Close Assessment / बंद करें" : "Start Final Assessment / अंतिम टेस्ट शुरू करें"}</button>
+        {!quizQuestions.length && <p className="mt-3 text-sm font-bold text-amber-800">इस पाठ्यक्रम के लिए सत्यापित प्रश्न उपलब्ध नहीं हैं; प्रमाणपत्र अनुरोध सक्षम नहीं होगा।</p>}
+        {quizOpen && quizQuestions.length > 0 && <div className="mt-5 space-y-4">
+          {quizQuestions.map((q,i)=><div key={q.q} className="rounded-xl border border-zinc-200 p-4">
+            <div className="font-black text-zinc-800">{i+1}. {q.q}</div>
+            <div className="mt-3 grid gap-2">{q.options.map((option,j)=><label key={j} className="flex cursor-pointer items-start gap-2 rounded-lg border border-zinc-200 p-3 text-sm leading-6">
+              <input type="radio" name={"primary-final-q-"+i} checked={answers[i]===j} onChange={()=>{if(submitted&&finalResult?.passed)return;setAnswers(current=>({...current,[i]:j}));if(submitted)setSubmitted(false);}}/>
+              <span>{option}</span>
+            </label>)}</div>
+            {submitted && <div className={"mt-2 rounded-lg p-3 text-sm font-bold "+(answers[i]===q.answer?"bg-emerald-50 text-emerald-800":"bg-rose-50 text-rose-800")}>{answers[i]===q.answer?"✓ सही उत्तर":"गलत उत्तर"} · सही उत्तर: {q.options[q.answer]}{q.explain ? " — "+q.explain : ""}</div>}
+          </div>)}
+          <button type="button" onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length||submitted} className="w-full rounded-xl bg-[#177245] px-4 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">Submit Final Assessment / अंतिम टेस्ट जमा करें</button>
+          {submitted && finalResult && <div className={"rounded-xl p-4 text-center font-black "+(finalResult.passed?"bg-emerald-50 text-emerald-800":"bg-amber-50 text-amber-800")}>Score: {finalResult.score}/{finalResult.total} · {finalResult.passed?"पास / Passed":"अभी पास नहीं / Not passed — answers review करके फिर प्रयास करें"}</div>}
+        </div>}
+      </div>
+    </section>;
+    if (isRichLesson) return <><PrimaryLettersCourse subject={subject} {...common} />{primaryProject}{finalAssessment}{cert}</>;
     const d = cur.detail || {};
     return <><PrimaryLessonFresh {...common}
       content={{
@@ -2716,8 +2793,8 @@ function LearningSubject({ subject, onBack }) {
         activity: d.activity,
         summary: d.content?.summary
       }}
-      check={d.knowledgeCheck}
-    />{cert}</>;
+      check={d.content?.knowledgeCheck || d.knowledgeCheck}
+    />{primaryProject}{finalAssessment}{cert}</>;
   }
   if (isTimeCalendarSubject(subject)) return <MasterCourse course={TIME_CALENDAR_COURSE} subject={subject} onBack={onBack} art={timeChapterArt} HeroArt={TimeHeroArt} />;
   if (isFruitsSubject(subject)) return <MasterCourse course={FRUITS_COURSE} subject={subject} onBack={onBack} art={fruitChapterArt} HeroArt={FruitHeroArt} />;
@@ -2740,18 +2817,10 @@ function LearningSubject({ subject, onBack }) {
     const a = makeCourseArt(mc);
     return <MasterCourse course={mc} subject={subject} onBack={onBack} art={a.chapterArt} HeroArt={a.HeroArt} />;
   }
-  const submitQuiz = () => {
-    const passed = score >= 4;
-    const result = { score, total: quizQuestions.length, passed, completedAt: new Date().toISOString() };
-    setSubmitted(true);
-    setFinalResult(result);
-    try { localStorage.setItem(progressKey + "-final", JSON.stringify(result)); } catch {}
-  };
-  const score = quizQuestions.reduce((n,q,i)=>n+(answers[i]===q.answer?1:0),0);
   const submitModuleAssessment = (moduleId, questions) => {
     const result = questions.reduce((n,q,i)=>n+(moduleAnswers[moduleId]?.[i]===q.answer?1:0),0);
     setModuleResults(r => {
-      const next = { ...r, [moduleId]: { score: result, total: questions.length, passed: result / questions.length >= 0.7 } };
+      const next = { ...r, [moduleId]: { score: result, total: questions.length, passed: result / questions.length >= 0.7, assessmentVersion: "v2" } };
       try { localStorage.setItem(progressKey + "-assessments", JSON.stringify(next)); } catch {}
       return next;
     });
@@ -2868,6 +2937,9 @@ function LearningSubject({ subject, onBack }) {
                   <button type="button" onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-3 text-xs font-black text-[#002344] disabled:cursor-not-allowed disabled:opacity-40">← Previous / पिछला</button>
                   <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-3 py-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Next Lesson / अगला पाठ →</button>
                 </div>
+                <button type="button" onClick={()=>markDone(activeLesson)} disabled={done.includes(activeLesson)} className="mt-3 w-full rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm font-black text-emerald-800 disabled:cursor-default disabled:opacity-70">
+                  {done.includes(activeLesson) ? "✓ Lesson completed / पाठ पूरा हुआ" : "✓ Mark lesson complete / पाठ पूरा चिह्नित करें"}
+                </button>
               </div>
               {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
                 {[
@@ -2883,18 +2955,72 @@ function LearningSubject({ subject, onBack }) {
                   ["Summary / सार", lessons[activeLesson].detail.content?.summary]
                 ].map(([label,value]) => value && <div key={label}>
                   <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">{label}</div>
-                  {Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{value.map((x,i)=><li key={i}>{x && typeof x === "object" ? [x.question || x.title || x.text || "", x.options ? x.options.join(" • ") : ""].filter(Boolean).join(" — ") : x}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-600">{value}</p>}
+                  {label === "Knowledge Check / ज्ञान जाँच" && Array.isArray(value) && value.some((q) => q && typeof q === "object" && Array.isArray(q.options)) ? (
+                    <div className="mt-3 space-y-3">
+                      {value.map((q, i) => {
+                        if (!q || typeof q !== "object" || !Array.isArray(q.options)) {
+                          return <div key={i} className="rounded-lg bg-zinc-50 p-3 text-sm text-zinc-700">{String(q ?? "")}</div>;
+                        }
+                        const answerKey = subject.id + "::" + activeLesson + "::" + i;
+                        const selected = lessonQuickAnswers[answerKey];
+                        const correct = Number.isInteger(q.answer) ? q.answer : (Number.isInteger(q.correctAnswer) ? q.correctAnswer : null);
+                        const hasAnswer = selected !== undefined;
+                        const isCorrect = hasAnswer && correct !== null && selected === correct;
+                        return <div key={answerKey} className="rounded-xl border border-zinc-200 bg-white p-4">
+                          <div className="text-sm font-black leading-6 text-zinc-800">{i + 1}. {q.question || q.prompt || "प्रश्न / Question"}</div>
+                          <div className="mt-3 grid gap-2">
+                            {q.options.map((option, oi) => <button key={oi} type="button" onClick={() => setLessonQuickAnswers((current) => ({ ...current, [answerKey]: oi }))} className={"rounded-lg border px-3 py-2 text-left text-sm font-semibold " + (selected === oi ? (correct === null ? "border-[#0f4c81] bg-[#eef7fb] text-[#002344]" : oi === correct ? "border-emerald-300 bg-emerald-50 text-emerald-800" : "border-rose-300 bg-rose-50 text-rose-800") : "border-zinc-200 hover:border-[#9bbbd0]")}>
+                              <span className="mr-2 font-black">{String.fromCharCode(65 + oi)}.</span>{String(option)}
+                            </button>)}
+                          </div>
+                          {hasAnswer && <div className={"mt-3 rounded-lg p-3 text-sm font-bold " + (correct === null ? "bg-[#eef7fb] text-[#002344]" : isCorrect ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800")}>
+                            {correct === null ? "उत्तर चुना गया। इस प्रश्न की answer key उपलब्ध नहीं है। / Answer selected; no answer key is available." : isCorrect ? "✓ सही उत्तर! / Correct answer!" : "अभी सही नहीं। फिर प्रयास करें। / Not quite—try again."}
+                            {correct !== null && <div className="mt-1">सही उत्तर / Correct answer: {q.options[correct] ?? "उत्तर उपलब्ध नहीं"}</div>}
+                            {q.explain && <div className="mt-1 font-medium">व्याख्या / Explanation: {q.explain}</div>}
+                          </div>}
+                        </div>;
+                      })}
+                    </div>
+                  ) : Array.isArray(value) ? <ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{value.map((x,i)=><li key={i}>{x && typeof x === "object" ? [x.question || x.title || x.text || "", x.options ? x.options.join(" • ") : ""].filter(Boolean).join(" — ") : x}</li>)}</ul> : <p className="mt-2 text-sm leading-6 text-zinc-600">{value}</p>}
                 </div>)}
               </div>}
             </div>
           </div>
+          {moduleAssessments.length > 0 && <section className="rounded-[2rem] border border-[#cfe0ee] bg-white p-5 shadow-sm">
+            <h3 className="font-black text-[#002344]">Module Assessments / मॉड्यूल आकलन</h3>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">हर required module assessment पास करें। कम-से-कम 70% सही उत्तर आवश्यक हैं।</p>
+            <div className="mt-4 space-y-4">
+              {moduleAssessments.map((module) => {
+                const selectedAnswers = moduleAnswers[module.id] || {};
+                const result = moduleResults[module.id];
+                return <div key={module.id} className="rounded-xl border border-zinc-200 p-4">
+                  <div className="font-black text-[#002344]">{module.title?.en || module.title?.hi || module.title || module.id}</div>
+                  {module.description && <p className="mt-1 text-xs leading-5 text-zinc-500">{module.description}</p>}
+                  <div className="mt-3 space-y-3">
+                    {module.questions.map((q, qi) => <div key={q.q || q.question || qi} className="rounded-lg bg-zinc-50 p-3">
+                      <div className="text-sm font-bold text-zinc-800">{qi + 1}. {q.q || q.question || q.prompt}</div>
+                      <div className="mt-2 space-y-2">{q.options.map((option, oi) => <label key={oi} className="flex cursor-pointer items-start gap-2 text-sm leading-5 text-zinc-700">
+                        <input type="radio" name={"module-" + module.id + "-q-" + qi} checked={selectedAnswers[qi] === oi} onChange={() => { setModuleAnswers(current => ({...current, [module.id]: {...(current[module.id] || {}), [qi]: oi}})); setModuleResults(current => { const updated = {...current}; delete updated[module.id]; try { localStorage.setItem(progressKey + "-assessments", JSON.stringify(updated)); } catch {} return updated; }); }}/>
+                        <span>{option}</span>
+                      </label>)}</div>
+                      {result && <div className={"mt-2 rounded-lg p-2 text-xs font-bold " + (selectedAnswers[qi] === q.answer ? "bg-emerald-50 text-emerald-800" : "bg-rose-50 text-rose-800")}>
+                        {selectedAnswers[qi] === q.answer ? "✓ सही उत्तर / Correct" : "गलत उत्तर / Incorrect"} · सही उत्तर: {q.options[q.answer]}{q.explain || q.explanation ? " — " + (q.explain || q.explanation) : ""}
+                      </div>}
+                    </div>)}
+                  </div>
+                  <button type="button" onClick={() => submitModuleAssessment(module.id, module.questions)} disabled={!module.questions.length || Object.keys(selectedAnswers).length < module.questions.length} className="mt-3 w-full rounded-xl bg-[#0f4c81] px-3 py-2.5 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Submit Module Assessment / जमा करें</button>
+                  {result && <div className={"mt-3 rounded-lg p-3 text-sm font-bold " + (result.assessmentVersion !== "v2" ? "bg-amber-50 text-amber-800" : result.passed ? "bg-emerald-50 text-emerald-800" : "bg-amber-50 text-amber-800")}>{result.assessmentVersion !== "v2" ? "पुराना परिणाम / Old result — फिर से उत्तर देकर जमा करें / Retake to verify" : "Score: " + result.score + "/" + result.total + " · " + (result.passed ? "पास / Passed" : "फिर प्रयास करें / Retry required")}</div>}
+                </div>;
+              })}
+            </div>
+          </section>}
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
             <h3 className="font-black text-[#002344]">Course Assessment / आकलन</h3>
-            <p className="mt-2 text-sm leading-6 text-zinc-600">पहले learning और practice पूरा करें, फिर self-check करें। Final certification अभी इस foundation stage में fake नहीं की जा रही है।</p>
-            <button onClick={()=>setQuizOpen(v=>!v)} className="mt-4 w-full rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-3 text-sm font-black text-white">{quizOpen?"Close Check / बंद करें":"Start Knowledge Check / शुरू करें"}</button>
+            <p className="mt-2 text-sm leading-6 text-zinc-600">{quizQuestions.length ? "पाठ और अभ्यास के बाद विषय-आधारित प्रश्नों से अपना ज्ञान जाँचें। पास होने के लिए कम-से-कम 70% सही उत्तर जरूरी हैं।" : "इस विषय के लिए सत्यापित answer-key वाले प्रश्न उपलब्ध नहीं हैं। गलत या अनुमानित answer key दिखाने के बजाय final assessment फिलहाल उपलब्ध नहीं है।"}</p>
+            <button onClick={()=>setQuizOpen(v=>!v)} disabled={!quizQuestions.length} className="mt-4 w-full rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-3 text-sm font-black text-white disabled:cursor-not-allowed disabled:opacity-50">{quizOpen?"Close Check / बंद करें":"Start Knowledge Check / शुरू करें"}</button>
             {quizOpen && <div className="mt-4 space-y-4">
               {quizQuestions.map((q,i)=><div key={i} className="rounded-xl bg-zinc-50 p-4"><div className="text-sm font-black">{i+1}. {q.q}</div><div className="mt-3 space-y-2">{q.options.map((o,j)=><label key={j} className="flex gap-2 text-xs leading-5"><input type="radio" name={"course-q-"+i} checked={answers[i]===j} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/><span>{o}</span></label>)}</div></div>)}
-              <button onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
+              <button onClick={submitQuiz} disabled={!quizQuestions.length || Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
               {(submitted || finalResult) && <div className={"rounded-xl border p-4 text-center "+(finalResult?.passed?"border-[#cfe5d8] bg-[#f3fbf6]":"border-[#f2dfbd] bg-[#fffaf0]")}><div className={"text-2xl font-black "+(finalResult?.passed?"text-[#177245]":"text-[#9a5b00]")}>{finalResult?.score ?? score}/{finalResult?.total ?? 5}</div><div className="mt-1 text-xs text-zinc-600">{finalResult?.passed?"Final assessment passed / अंतिम आकलन पास":"Review and retry / दोबारा पढ़ें और प्रयास करें"}</div></div>}
             </div>}
           </div>
@@ -2984,13 +3110,27 @@ function LearningSubject({ subject, onBack }) {
         </div>
       </section>}
 
+      {structuredProject && <section className="mt-8 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-6 shadow-sm md:p-8">
+        <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🧪</span><h2 className="text-2xl font-black text-[#062a52] md:text-3xl">Practical Project / व्यावहारिक परियोजना</h2></div>
+        <h3 className="mt-3 text-lg font-black text-[#0b3a63]">{structuredProject.objective}</h3>
+        <div className="mt-4 grid gap-4 md:grid-cols-2">
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="font-black text-[#0b3a63]">Materials / सामग्री</div><p className="mt-1 text-sm leading-7 text-zinc-600">{structuredProject.materials}</p></div>
+          <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="font-black text-[#0b3a63]">Observe / निरीक्षण</div><p className="mt-1 text-sm leading-7 text-zinc-600">{structuredProject.observation}</p></div>
+        </div>
+        <ol className="mt-4 space-y-2">{structuredProject.steps.map((step,i)=><li key={i} className="flex gap-3 text-sm leading-7 text-zinc-700"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef4f9] text-xs font-black text-[#0b3a63]">{i+1}</span><span>{step}</span></li>)}</ol>
+        <p className="mt-4 rounded-2xl bg-[#eaf7f0] p-4 text-sm font-black text-[#177245]">Expected output / अपेक्षित परिणाम: {structuredProject.result}</p>
+        <p className="mt-2 text-sm italic leading-7 text-zinc-600">Reflection / विचार: {structuredProject.reflection}</p>
+      </section>}
+
       <CourseCertificate
         subject={subject}
         courseTitle={courseMeta.title.en}
         courseMeta={courseMeta}
         progress={progress}
         moduleResults={moduleResults}
+        requiredModuleAssessmentIds={moduleAssessments.map((m) => m.id)}
         finalResult={finalResult}
+        assessmentCourseId={structuredCourseId}
       />
 
     </main>
