@@ -87,7 +87,7 @@ export default function Home() {
               <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#d8b96d]" /> Working across India</span>
             </div>
           </motion.div>
-          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="relative mt-0 w-full self-start">
+          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="relative mt-0 w-full self-start lg:translate-x-6 lg:translate-y-8 xl:translate-x-8 xl:translate-y-10">
             <div className="mb-4 text-right">
               <p className="text-sm font-semibold tracking-wide text-[#f0dba5]">Rewa, Madhya Pradesh</p>
               <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-white">Registered Office</p>
