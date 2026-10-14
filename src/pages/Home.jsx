@@ -93,25 +93,24 @@ export default function Home() {
               <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-white">Registered Office</p>
               <p className="mt-1 text-sm text-slate-200">पंजीकृत कार्यालय</p>
             </div>
-  <div className="relative rounded-[1.75rem] border border-[#d8b96d]/45 bg-[#0b2740]/70 p-5 shadow-2xl shadow-black/30 backdrop-blur-md sm:p-6 lg:p-7">
+  <div className="relative rounded-[1.75rem] border border-[#d8b96d]/45 bg-[#0b2740]/70 p-4 shadow-2xl shadow-black/30 backdrop-blur-md sm:p-5 lg:p-6">
                 <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
-                <div className="grid gap-5 sm:grid-cols-[0.78fr_1.22fr] sm:gap-7">
-                  <div className="sm:border-r sm:border-white/15 sm:pr-5">
-                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#e8c878]">Our guiding promise</p>
-                    <p className="mt-2 text-sm font-semibold text-[#f0dba5]">हमारा मार्गदर्शक संकल्प</p>
+                <div className="grid gap-4 sm:grid-cols-[0.72fr_1.15fr_1.13fr] sm:items-stretch sm:gap-5 lg:gap-6">
+                  <div className="flex flex-col justify-center sm:border-r sm:border-white/15 sm:pr-4">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#e8c878]">Our guiding promise</p>
+                    <p className="mt-2 text-sm font-semibold leading-snug text-[#f0dba5]">हमारा मार्गदर्शक संकल्प</p>
                   </div>
-                  <div>
-                    <h2 className="font-serif text-2xl leading-snug text-white md:text-[1.7rem]">Serve with integrity. Act with compassion.</h2>
-                    <p className="mt-3 text-sm leading-relaxed text-slate-200 md:text-base">We strive to create lasting, meaningful social value through responsible action, community participation and cooperation.</p>
+                  <div className="flex flex-col justify-center sm:py-1">
+                    <h2 className="font-serif text-xl leading-snug text-white lg:text-2xl">Serve with integrity. Act with compassion.</h2>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-200">We strive to create lasting, meaningful social value through responsible action, community participation and cooperation.</p>
+                  </div>
+                  <div className="flex flex-col justify-center border-t border-white/15 pt-4 sm:border-l sm:border-t-0 sm:py-1 sm:pl-5">
+                    <p className="text-sm font-semibold text-[#f0dba5]">हमारा संकल्प</p>
+                    <p className="mt-2 text-sm leading-relaxed text-slate-200">ईमानदारी से सेवा, संवेदनशीलता के साथ कार्य और समाज के लिए स्थायी सकारात्मक परिवर्तन।</p>
                   </div>
                 </div>
-                <div className="mt-5 grid gap-2 border-t border-white/15 pt-5 sm:grid-cols-[0.78fr_1.22fr] sm:gap-7">
-                  <p className="text-sm font-semibold text-[#f0dba5] sm:pr-5">हमारा संकल्प</p>
-                  <p className="leading-relaxed text-slate-200">ईमानदारी से सेवा, संवेदनशीलता के साथ कार्य और समाज के लिए स्थायी सकारात्मक परिवर्तन।</p>
-                </div>
-                <div className="mt-5 flex items-center gap-3 text-xs text-slate-300 md:text-sm"><span className="h-px flex-1 bg-[#d8b96d]/50" /><span className="text-center">Since December 2013 — दिसंबर 2013 से।</span><span className="h-px flex-1 bg-[#d8b96d]/50" /></div>
-              </div>
-            </div>
+                <div className="mt-4 flex items-center gap-3 border-t border-white/10 pt-3 text-xs text-slate-300 md:text-sm"><span className="h-px flex-1 bg-[#d8b96d]/50" /><span className="whitespace-nowrap text-center">Since December 2013 — दिसंबर 2013 से।</span><span className="h-px flex-1 bg-[#d8b96d]/50" /></div>
+              </div>            </div>
           </motion.aside>
         </div>
       </section>
