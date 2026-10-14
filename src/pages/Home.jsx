@@ -13,6 +13,8 @@ import EliteDonationCard from "../components/EliteDonationCard";
 import AuthModal from "../components/AuthModal";
 import pageHeader from "../assets/page-header.jpg";
 
+const RAZORPAY_URL = "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view";
+
 const focusAreas = [
   { title: "Education & Learning", hi: "शिक्षा एवं सीखना", icon: <FaBookOpen />, path: "/OurInitiatives" },
   { title: "Skills & Livelihoods", hi: "कौशल एवं आजीविका", icon: <FaLightbulb />, path: "/SkillPrograms" },
@@ -52,7 +54,7 @@ export default function Home() {
       <section className="relative isolate flex min-h-[660px] items-center overflow-hidden bg-[#FAF8F2] pb-20 pt-28 md:min-h-[730px] md:pb-28 md:pt-32">
         <div className="absolute -right-20 -top-24 -z-10 h-[460px] w-[460px] rounded-full border border-[#C6A04A]/25 md:h-[640px] md:w-[640px]" aria-hidden="true" />
         <div className="absolute -right-8 -top-12 -z-10 h-[360px] w-[360px] rounded-full border border-[#C6A04A]/20 md:h-[520px] md:w-[520px]" aria-hidden="true" />
-        <div className="container relative mx-auto grid max-w-7xl items-center gap-12 px-5 md:px-8 lg:grid-cols-[1.25fr_0.75fr]">
+        <div className="container relative mx-auto flex w-full max-w-7xl flex-col gap-10 px-5 md:px-8">
           <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-3xl">
             <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#C6A04A]/45 bg-white/70 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#102A43] md:text-sm">
               <span className="h-2 w-2 rounded-full bg-[#C6A04A]" /> Swastik Srijan Foundation Samiti
@@ -64,17 +66,19 @@ export default function Home() {
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-[#293746] md:text-xl">Working towards inclusive community development through education, skills, health, awareness and meaningful partnerships.</p>
             <p className="mt-2 max-w-2xl text-base leading-relaxed text-[#293746] md:text-lg">शिक्षा, कौशल, स्वास्थ्य, जागरूकता और सार्थक साझेदारी के माध्यम से समावेशी सामुदायिक विकास की दिशा में प्रयास।</p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#146B50] px-7 py-3.5 font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#105840]"><FaHeart /> Donate Now</a>
               <Link to="/PartnerWithUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#146B50] px-7 py-3.5 font-bold text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-[#105840]">Partner with SSF <FaArrowRight /></Link>
               <Link to="/JoinUs" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-[#102A43]/35 bg-white/70 px-7 py-3.5 font-semibold text-[#102A43] transition hover:bg-white">Join the Mission <FaUsers /></Link>
               <Link to="/LearningHub" className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-[#102A43]/25 px-6 py-3.5 font-semibold text-[#102A43] transition hover:border-[#C6A04A] hover:text-[#146B50]"><FaGraduationCap /> SSF Learning Hub</Link>
             </div>
             <div className="mt-7 flex flex-wrap gap-x-6 gap-y-2 text-sm text-[#293746]">
               <span className="inline-flex items-center gap-2"><FaCheckCircle className="text-[#146B50]" /> Registered society</span>
+              <span className="inline-flex items-center gap-2"><FaFileAlt className="text-[#146B50]" /> Reg. No. 05/22/03/11448/13</span>
               <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#146B50]" /> Working across India</span>
             </div>
           </motion.div>
-          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="hidden lg:block">
-            <div className="relative rounded-[2rem] border border-[#d8b96d]/45 bg-[#0b2740]/75 p-8 shadow-2xl shadow-black/30 backdrop-blur-md">
+          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="w-full">
+            <div className="relative rounded-[2rem] border border-[#d8b96d]/45 bg-[#0b2740]/90 p-7 shadow-2xl shadow-black/20 backdrop-blur-md md:p-9">
               <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
               <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878]">Our guiding promise</p>
               <h2 className="mt-5 font-serif text-3xl leading-snug text-white">Serve with integrity. Act with compassion.</h2>
