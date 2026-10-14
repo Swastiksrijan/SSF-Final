@@ -61,7 +61,7 @@ export default function Home() {
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(5,23,40,0.97)_0%,rgba(8,30,51,0.88)_43%,rgba(8,30,51,0.48)_78%,rgba(8,30,51,0.36)_100%)]" />
         <div className="absolute -right-20 -top-24 -z-10 h-[460px] w-[460px] rounded-full border border-[#d7bd7c]/35 md:h-[640px] md:w-[640px]" aria-hidden="true" />
         <div className="absolute -right-8 -top-12 -z-10 h-[360px] w-[360px] rounded-full border border-[#d7bd7c]/25 md:h-[520px] md:w-[520px]" aria-hidden="true" />
-        <div className="container relative mx-auto grid max-w-7xl items-center gap-12 px-5 md:px-8 lg:grid-cols-[1.25fr_0.75fr]">
+        <div className="container relative mx-auto grid max-w-7xl items-center gap-10 px-5 md:px-8 lg:grid-cols-[1.05fr_0.95fr] xl:gap-12">
           <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="max-w-3xl">
             <div className="mb-7 inline-flex items-center gap-3 rounded-full border border-[#d7bd7c]/45 bg-white/[0.07] px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#f0dba5] backdrop-blur-sm md:text-sm">
               <span className="h-2 w-2 rounded-full bg-[#e8c878]" /> Swastik Srijan Foundation Samiti
@@ -93,17 +93,24 @@ export default function Home() {
               <p className="mt-1 text-xs font-bold uppercase tracking-[0.18em] text-white">Registered Office</p>
               <p className="mt-1 text-sm text-slate-200">पंजीकृत कार्यालय</p>
             </div>
-            <div className="relative rounded-[1.75rem] border border-[#d8b96d]/45 bg-[#0b2740]/70 p-6 shadow-2xl shadow-black/30 backdrop-blur-md md:p-7">
-              <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
-              <p className="text-[11px] font-bold uppercase tracking-[0.2em] text-[#e8c878]">Our guiding promise</p>
-              <p className="mt-2 text-sm font-semibold text-[#f0dba5]">हमारा मार्गदर्शक संकल्प</p>
-              <h2 className="mt-4 font-serif text-2xl leading-snug text-white md:text-[1.7rem]">Serve with integrity. Act with compassion.</h2>
-              <p className="mt-3 text-sm leading-relaxed text-slate-200 md:text-base">We strive to create lasting, meaningful social value through responsible action, community participation and cooperation.</p>
-              <div className="mt-5 border-t border-white/15 pt-5">
-                <p className="text-sm font-semibold text-[#f0dba5]">हमारा संकल्प</p>
-                <p className="mt-2 leading-relaxed text-slate-200">ईमानदारी से सेवा, संवेदनशीलता के साथ कार्य और समाज के लिए स्थायी सकारात्मक परिवर्तन।</p>
+  <div className="relative rounded-[1.75rem] border border-[#d8b96d]/45 bg-[#0b2740]/70 p-5 shadow-2xl shadow-black/30 backdrop-blur-md sm:p-6 lg:p-7">
+                <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
+                <div className="grid gap-5 sm:grid-cols-[0.78fr_1.22fr] sm:gap-7">
+                  <div className="sm:border-r sm:border-white/15 sm:pr-5">
+                    <p className="text-[11px] font-bold uppercase tracking-[0.18em] text-[#e8c878]">Our guiding promise</p>
+                    <p className="mt-2 text-sm font-semibold text-[#f0dba5]">हमारा मार्गदर्शक संकल्प</p>
+                  </div>
+                  <div>
+                    <h2 className="font-serif text-2xl leading-snug text-white md:text-[1.7rem]">Serve with integrity. Act with compassion.</h2>
+                    <p className="mt-3 text-sm leading-relaxed text-slate-200 md:text-base">We strive to create lasting, meaningful social value through responsible action, community participation and cooperation.</p>
+                  </div>
+                </div>
+                <div className="mt-5 grid gap-2 border-t border-white/15 pt-5 sm:grid-cols-[0.78fr_1.22fr] sm:gap-7">
+                  <p className="text-sm font-semibold text-[#f0dba5] sm:pr-5">हमारा संकल्प</p>
+                  <p className="leading-relaxed text-slate-200">ईमानदारी से सेवा, संवेदनशीलता के साथ कार्य और समाज के लिए स्थायी सकारात्मक परिवर्तन।</p>
+                </div>
+                <div className="mt-5 flex items-center gap-3 text-xs text-slate-300 md:text-sm"><span className="h-px flex-1 bg-[#d8b96d]/50" /><span className="text-center">Since December 2013 — दिसंबर 2013 से।</span><span className="h-px flex-1 bg-[#d8b96d]/50" /></div>
               </div>
-              <div className="mt-5 flex items-center gap-3 text-xs text-slate-300 md:text-sm"><span className="h-px flex-1 bg-[#d8b96d]/50" /><span>Since December 2013 — दिसंबर 2013 से।</span><span className="h-px flex-1 bg-[#d8b96d]/50" /></div>
             </div>
           </motion.aside>
         </div>
