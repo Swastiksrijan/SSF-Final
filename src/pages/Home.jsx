@@ -98,7 +98,7 @@ export default function Home() {
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaFileAlt className="text-[#e8c878]" /> 80G final approval pending</span>
             </div>
           </motion.div>
-          <motion.aside initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.1 }} className="w-full max-w-xl justify-self-center lg:justify-self-end">
+          <motion.aside initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.1 }} className="w-full max-w-sm justify-self-center lg:justify-self-end">
             <div className="rounded-[2rem] border border-[#d7b45a]/35 bg-[#071b30]/75 p-7 shadow-2xl backdrop-blur-md">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#e8c878]">Who We Are · हमारा परिचय</p>
               <h2 className="mt-4 font-serif text-3xl leading-snug">Service • Creation • Harmony</h2>
