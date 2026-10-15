@@ -66,13 +66,13 @@ const communityPhotoStrip = [
 export default function Home() {
   return (
     <main className="w-full overflow-hidden bg-[#fbfaf7] font-sans text-[#17283a]">
-      <section className="relative isolate flex min-h-[640px] items-center overflow-hidden bg-[#09233c] py-20 text-white md:min-h-[680px] md:py-24">
+      <section className="relative isolate flex min-h-[580px] items-center overflow-hidden bg-[#09233c] py-14 text-white md:min-h-[620px] md:py-16">
         <div className="absolute inset-0 -z-20">
           <OptimizedImage priority src="/images/real/foundation_banner.jpg" alt="Swastik Srijan Foundation community work" className="h-full w-full" />
         </div>
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(5,25,44,0.98)_0%,rgba(5,25,44,0.9)_50%,rgba(5,25,44,0.48)_100%)]" />
         <div className="absolute -right-24 -top-28 -z-10 h-96 w-96 rounded-full border border-[#d7b45a]/30 md:h-[560px] md:w-[560px]" />
-        <div className="container mx-auto grid max-w-7xl items-center gap-10 px-5 md:px-10 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="container mx-auto grid max-w-7xl items-center gap-7 px-5 md:px-10 lg:grid-cols-[1.3fr_0.7fr]">
           <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-[#d7b45a]/40 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#f0dba5]">
               <FaSeedling /> Registered Society · Since 2013
@@ -99,17 +99,17 @@ export default function Home() {
             </div>
           </motion.div>
           <motion.aside initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.1 }} className="w-full max-w-sm justify-self-center lg:justify-self-end">
-            <div className="rounded-[2rem] border border-[#d7b45a]/35 bg-[#071b30]/75 p-7 shadow-2xl backdrop-blur-md">
+            <div className="rounded-[1.5rem] border border-[#d7b45a]/35 bg-[#071b30]/75 p-5 shadow-xl backdrop-blur-md md:p-5">
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#e8c878]">Who We Are · हमारा परिचय</p>
-              <h2 className="mt-4 font-serif text-3xl leading-snug">Service • Creation • Harmony</h2>
-              <p className="mt-2 text-lg font-semibold text-[#f0dba5]">सेवा • सृजन • समरसता</p>
-              <p className="mt-4 leading-relaxed text-slate-200">A community-focused registered society working towards inclusive development. हम शिक्षा, जागरूकता और सामुदायिक सहभागिता के माध्यम से सकारात्मक बदलाव के लिए प्रयासरत हैं।</p>
-              <div className="mt-7 space-y-4 border-t border-white/15 pt-6">
+              <h2 className="mt-3 font-serif text-2xl leading-snug">Service • Creation • Harmony</h2>
+              <p className="mt-1 text-base font-semibold text-[#f0dba5]">सेवा • सृजन • समरसता</p>
+              <p className="mt-3 text-sm leading-relaxed text-slate-200">A community-focused registered society working towards inclusive development. हम शिक्षा, जागरूकता और सामुदायिक सहभागिता के माध्यम से सकारात्मक बदलाव के लिए प्रयासरत हैं।</p>
+              <div className="mt-4 space-y-3 border-t border-white/15 pt-4">
                 <div className="flex gap-3"><FaBuilding className="mt-1 shrink-0 text-[#e8c878]" /><div><p className="font-semibold">Registered office · पंजीकृत कार्यालय</p><p className="text-sm text-slate-300">Rewa, Madhya Pradesh, India · रीवा, मध्य प्रदेश</p></div></div>
                 <div className="flex gap-3"><FaGlobeAsia className="mt-1 shrink-0 text-[#e8c878]" /><div><p className="font-semibold">Area of work · कार्यक्षेत्र</p><p className="text-sm text-slate-300">Community development across India · भारतभर</p></div></div>
                 <div className="flex gap-3"><FaShieldAlt className="mt-1 shrink-0 text-[#e8c878]" /><div><p className="font-semibold">Open documentation · उपलब्ध अभिलेख</p><p className="text-sm text-slate-300">Registration, statutory records and annual reports · पंजीयन, वैधानिक दस्तावेज़ एवं वार्षिक रिपोर्ट</p></div></div>
               </div>
-              <Link to="/Transparency" className="mt-7 inline-flex items-center gap-2 font-bold text-[#f0dba5] hover:text-white">Review transparency documents <FaArrowRight /></Link>
+              <Link to="/Transparency" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#f0dba5] hover:text-white">Review transparency documents <FaArrowRight /></Link>
             </div>
           </motion.aside>
         </div>
