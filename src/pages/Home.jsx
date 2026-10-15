@@ -12,12 +12,12 @@ import pageHeader from "../assets/page-header.jpg";
 const gold = "#D7B45A";
 
 const focusAreas = [
-  { title: "Education & Learning", hi: "शिक्षा एवं सीखना", icon: <FaBookOpen />, path: "/OurInitiatives", text: "Learning opportunities, guidance and educational awareness." },
-  { title: "Skills & Livelihoods", hi: "कौशल एवं आजीविका", icon: <FaGraduationCap />, path: "/SkillPrograms", text: "Practical skills, confidence and pathways to self-reliance." },
-  { title: "Health & Well-being", hi: "स्वास्थ्य एवं कल्याण", icon: <FaHeart />, path: "/OurInitiatives#health", text: "Health awareness and community-oriented support." },
-  { title: "Women & Child Welfare", hi: "महिला एवं बाल कल्याण", icon: <FaUsers />, path: "/OurInitiatives", text: "Dignity, safety, participation and equal opportunity." },
-  { title: "Digital Learning", hi: "डिजिटल शिक्षा", icon: <FaLaptop />, path: "/LearningHub", text: "Learning resources and responsible digital awareness." },
-  { title: "Environment & Awareness", hi: "पर्यावरण एवं जागरूकता", icon: <FaLeaf />, path: "/OurInitiatives#awareness", text: "Environmental responsibility and public awareness." },
+  { title: "Education & Learning", hi: "शिक्षा एवं सीखना", image: "/images/real/children-mat-session.jpg", icon: <FaBookOpen />, path: "/OurInitiatives", text: "Learning opportunities, guidance and educational awareness." },
+  { title: "Skills & Livelihoods", hi: "कौशल एवं आजीविका", image: "/images/real/women_empowerment_tailoring.jpg", icon: <FaGraduationCap />, path: "/SkillPrograms", text: "Practical skills, confidence and pathways to self-reliance." },
+  { title: "Health & Well-being", hi: "स्वास्थ्य एवं कल्याण", image: "/images/real/vision-health-camp.jpg", icon: <FaHeart />, path: "/OurInitiatives#health", text: "Health awareness and community-oriented support." },
+  { title: "Women & Child Welfare", hi: "महिला एवं बाल कल्याण", image: "/images/real/women_community_meeting.jpg", icon: <FaUsers />, path: "/OurInitiatives", text: "Dignity, safety, participation and equal opportunity." },
+  { title: "Digital Learning", hi: "डिजिटल शिक्षा", image: "/images/real/computer-donation-clean-v2.png", icon: <FaLaptop />, path: "/LearningHub", text: "Learning resources and responsible digital awareness." },
+  { title: "Environment & Awareness", hi: "पर्यावरण एवं जागरूकता", image: "/images/real/tree_plantation.jpg", icon: <FaLeaf />, path: "/OurInitiatives#awareness", text: "Environmental responsibility and public awareness." },
 ];
 
 const proofItems = [
@@ -28,7 +28,7 @@ const proofItems = [
 
 const activityCards = [
   { image: "/images/real/children-mat-session.jpg", alt: "Children taking part in a learning session", label: "Education", title: "Learning with the community", text: "Explore documented learning activities and education-related initiatives." },
-  { image: "/images/women-learning-session.png", alt: "Women participating in a learning and discussion session", label: "Participation", title: "Creating space for participation", text: "See community-focused activities and awareness efforts." },
+  { image: "/images/real/women_empowerment_tailoring.jpg", alt: "Women taking part in a skills and livelihood activity", label: "Women & Skills", title: "Skills, confidence and participation", text: "Explore community-focused activities and awareness efforts." },
   { image: "/images/real/tree_plantation.jpg", alt: "Tree plantation activity", label: "Environment", title: "Awareness through action", text: "Explore environmental awareness and related community initiatives." },
 ];
 
@@ -36,6 +36,18 @@ const pressItems = [
   { image: "/images/real/newspaper-clipping.jpg", alt: "Newspaper clipping documenting an SSF-related activity", label: "Press coverage" },
   { image: "/images/real/news_media_1.jpg", alt: "News coverage of a digital initiative in Rewa", label: "News & media" },
   { image: "/images/real/computer-donation-clipping.jpg", alt: "Newspaper clipping about a computer donation initiative", label: "Documented initiative" },
+];
+
+
+const communityPhotoStrip = [
+  { src: "/images/real/children-playing-circle.jpg", alt: "Children learning and playing together", label: "Learning" },
+  { src: "/images/real/women_community_meeting.jpg", alt: "Women at a community meeting", label: "Participation" },
+  { src: "/images/real/health-center-visit.jpg", alt: "Community health visit", label: "Health awareness" },
+  { src: "/images/real/tree_planting_2.jpg", alt: "Tree planting activity", label: "Environment" },
+  { src: "/images/real/stationery-distribution.jpg", alt: "Educational stationery distribution", label: "Education support" },
+  { src: "/images/real/ssf_event_members.jpg", alt: "Swastik Srijan Foundation members at an event", label: "Our community" },
+  { src: "/images/real/computer-donation-clean-v2.png", alt: "Documented computer donation initiative", label: "Digital access" },
+  { src: "/images/real/community-education-meeting.jpg", alt: "Community education meeting", label: "Community work" },
 ];
 
 export default function Home() {
@@ -73,15 +85,16 @@ export default function Home() {
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaFileAlt className="text-[#e8c878]" /> 80G final approval pending</span>
             </div>
           </motion.div>
-          <motion.aside initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.1 }} className="hidden lg:block">
+          <motion.aside initial={{ opacity: 0, x: 14 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.65, delay: 0.1 }} className="w-full max-w-xl justify-self-center lg:justify-self-end">
             <div className="rounded-[2rem] border border-[#d7b45a]/35 bg-[#071b30]/75 p-7 shadow-2xl backdrop-blur-md">
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#e8c878]">Institutional Profile</p>
-              <h2 className="mt-4 font-serif text-3xl leading-snug">A clear record. An open invitation.</h2>
-              <p className="mt-4 leading-relaxed text-slate-200">We invite citizens, volunteers, institutions, CSR teams and public agencies to review our work, explore our priorities and discuss practical collaboration.</p>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#e8c878]">Who We Are · हमारा परिचय</p>
+              <h2 className="mt-4 font-serif text-3xl leading-snug">Service • Creation • Harmony</h2>
+              <p className="mt-2 text-lg font-semibold text-[#f0dba5]">सेवा • सृजन • समरसता</p>
+              <p className="mt-4 leading-relaxed text-slate-200">A community-focused registered society working towards inclusive development. हम शिक्षा, जागरूकता और सामुदायिक सहभागिता के माध्यम से सकारात्मक बदलाव के लिए प्रयासरत हैं।</p>
               <div className="mt-7 space-y-4 border-t border-white/15 pt-6">
-                <div className="flex gap-3"><FaBuilding className="mt-1 shrink-0 text-[#e8c878]" /><div><p className="font-semibold">Registered office</p><p className="text-sm text-slate-300">Rewa, Madhya Pradesh, India</p></div></div>
-                <div className="flex gap-3"><FaGlobeAsia className="mt-1 shrink-0 text-[#e8c878]" /><div><p className="font-semibold">Area of work</p><p className="text-sm text-slate-300">Community development across India</p></div></div>
-                <div className="flex gap-3"><FaShieldAlt className="mt-1 shrink-0 text-[#e8c878]" /><div><p className="font-semibold">Open documentation</p><p className="text-sm text-slate-300">Registration, statutory records and available reports</p></div></div>
+                <div className="flex gap-3"><FaBuilding className="mt-1 shrink-0 text-[#e8c878]" /><div><p className="font-semibold">Registered office · पंजीकृत कार्यालय</p><p className="text-sm text-slate-300">Rewa, Madhya Pradesh, India · रीवा, मध्य प्रदेश</p></div></div>
+                <div className="flex gap-3"><FaGlobeAsia className="mt-1 shrink-0 text-[#e8c878]" /><div><p className="font-semibold">Area of work · कार्यक्षेत्र</p><p className="text-sm text-slate-300">Community development across India · भारतभर</p></div></div>
+                <div className="flex gap-3"><FaShieldAlt className="mt-1 shrink-0 text-[#e8c878]" /><div><p className="font-semibold">Open documentation · उपलब्ध अभिलेख</p><p className="text-sm text-slate-300">Registration, statutory records and annual reports · पंजीयन, वैधानिक दस्तावेज़ एवं वार्षिक रिपोर्ट</p></div></div>
               </div>
               <Link to="/Transparency" className="mt-7 inline-flex items-center gap-2 font-bold text-[#f0dba5] hover:text-white">Review transparency documents <FaArrowRight /></Link>
             </div>
@@ -121,6 +134,26 @@ export default function Home() {
         </div>
       </section>
 
+
+      <section className="border-y border-[#e4dccb] bg-white px-5 py-12 md:px-8 md:py-16">
+        <div className="container mx-auto max-w-7xl">
+          <div className="mb-8 text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Glimpses of SSF · संस्था की झलकियाँ</p>
+            <h2 className="mt-3 font-serif text-3xl text-[#10263b] md:text-4xl">Real moments. Shared purpose.</h2>
+            <p className="mt-3 text-slate-600">शिक्षा, सहभागिता, जागरूकता और सेवा से जुड़ी संस्था की तस्वीरें।</p>
+          </div>
+          <div className="grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-4 lg:grid-cols-8">
+            {communityPhotoStrip.map((item) => <Link to="/Media" key={item.src} className="group flex flex-col items-center text-center">
+              <span className="relative block h-24 w-24 overflow-hidden rounded-full border-[3px] border-[#d7b45a] bg-[#f5f1e8] p-1 shadow-md transition duration-300 group-hover:-translate-y-1 group-hover:shadow-xl sm:h-28 sm:w-28">
+                <img src={item.src} alt={item.alt} loading="lazy" className="h-full w-full rounded-full object-cover" />
+              </span>
+              <span className="mt-3 text-sm font-semibold text-[#10263b]">{item.label}</span>
+            </Link>)}
+          </div>
+          <div className="mt-8 text-center"><Link to="/Media" className="inline-flex items-center gap-2 rounded-full border border-[#d7c69e] px-5 py-3 font-bold text-[#775b24] hover:bg-[#f5f1e8]">सभी तस्वीरें और समाचार देखें <FaArrowRight /></Link></div>
+        </div>
+      </section>
+
       <section className="bg-[#f2eee5] px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
           <div className="mb-9 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"><div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">In the News · समाचारों में</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">A documented journey, not just a promise.</h2><p className="mt-4 leading-relaxed text-slate-600">Newspaper coverage and media records can help visitors understand the Foundation’s past initiatives. Open the gallery to explore available records and context.</p></div><Link to="/Media" className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#10263b] px-5 py-3 font-bold text-white hover:bg-[#1c405f] md:self-auto">Explore media archive <FaArrowRight /></Link></div>
@@ -134,7 +167,7 @@ export default function Home() {
         <div className="container mx-auto max-w-7xl">
           <div className="mb-9 max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Our Focus Areas · हमारे कार्यक्षेत्र</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">Where we focus our efforts</h2><p className="mt-4 leading-relaxed text-slate-600">These areas reflect the Foundation’s broad objectives. Individual activities and programmes are developed according to community needs, resources and partnerships.</p></div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {focusAreas.map((item) => <Link to={item.path} key={item.title} className="group flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#c6a24e] hover:shadow-lg"><span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-[#f5f1e8] text-xl text-[#8f6d2a] group-hover:bg-[#102b43] group-hover:text-[#f0dba5]">{item.icon}</span><span className="min-w-0"><span className="block font-bold text-[#10263b]">{item.title}</span><span className="mt-1 block text-sm font-medium text-[#8f6d2a]">{item.hi}</span><span className="mt-3 block text-sm leading-relaxed text-slate-600">{item.text}</span><span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8f6d2a]">Explore <FaArrowRight className="transition group-hover:translate-x-1" /></span></span></Link>)}
+            {focusAreas.map((item) => <Link to={item.path} key={item.title} className="group flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#c6a24e] hover:shadow-lg"><span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[#d7b45a] bg-white shadow-sm"><img src={item.image} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-110" /></span><span className="min-w-0"><span className="block font-bold text-[#10263b]">{item.title}</span><span className="mt-1 block text-sm font-medium text-[#8f6d2a]">{item.hi}</span><span className="mt-3 block text-sm leading-relaxed text-slate-600">{item.text}</span><span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8f6d2a]">Explore <FaArrowRight className="transition group-hover:translate-x-1" /></span></span></Link>)}
           </div>
           <div className="mt-6"><Link to="/Objectives" className="inline-flex items-center gap-2 font-bold text-[#8f6d2a] hover:text-[#10263b]">View all registered objectives <FaArrowRight /></Link></div>
         </div>
