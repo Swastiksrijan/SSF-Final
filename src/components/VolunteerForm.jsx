@@ -3,7 +3,7 @@ import { FaArrowRight, FaCheckCircle, FaExclamationCircle, FaSpinner, FaUpload }
 import { ENDPOINTS } from "../config/api";
 
 const initialForm = { name: "", email: "", phone: "", volunteerType: "field", message: "", idDocument: null };
-const inputClass = "w-full px-4 py-3 rounded-xl border border-zinc-200 bg-white focus:outline-none focus:ring-2 focus:ring-orange-200 focus:border-orange-400";
+const inputClass = "w-full px-4 py-3 rounded-xl border border-[#e9e3d6] bg-white focus:outline-none focus:ring-2 focus:ring-[#c9a227]/40 focus:border-[#c9a227]";
 
 export default function VolunteerForm() {
     const [form, setForm] = useState(initialForm);
@@ -49,19 +49,19 @@ export default function VolunteerForm() {
     };
 
     if (status === "success") return (
-        <div className="bg-white p-8 rounded-3xl shadow-xl border border-emerald-100 text-center space-y-4">
-            <FaCheckCircle className="mx-auto text-5xl text-emerald-500" />
-            <h3 className="text-2xl font-black text-[#002344]">Volunteer Application Submitted</h3>
-            <p className="text-zinc-600">Thank you. Your application has been received and will be reviewed by our team.</p>
-            <p className="text-sm text-zinc-500">Reference: <strong>{reference}</strong></p>
-            <button type="button" onClick={() => { setForm(initialForm); setReference(""); setError(""); setStatus("idle"); }} className="text-sm font-bold text-[#002344] hover:text-orange-600">Submit another application</button>
+        <div className="bg-white p-8 rounded-3xl shadow-xl border border-[#e9e3d6] text-center space-y-4">
+            <FaCheckCircle className="mx-auto text-5xl text-[#177245]" />
+            <h3 className="text-2xl font-black text-[#0f2740]">Volunteer Application Submitted</h3>
+            <p className="text-[#41506b]">Thank you. Your application has been received and will be reviewed by our team.</p>
+            <p className="text-sm text-[#5c6b80]">Reference: <strong>{reference}</strong></p>
+            <button type="button" onClick={() => { setForm(initialForm); setReference(""); setError(""); setStatus("idle"); }} className="text-sm font-bold text-[#0a2540] hover:text-[#7e5f22]">Submit another application</button>
         </div>
     );
 
     return (
-        <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-zinc-100">
-            <h3 className="text-2xl font-black text-[#002344]">Volunteer Application</h3>
-            <p className="mt-2 mb-6 text-sm text-zinc-500">A simple application for people who want to support Swastik Srijan Foundation.</p>
+        <div className="bg-white p-6 md:p-8 rounded-3xl shadow-xl border border-[#e9e3d6]">
+            <h3 className="text-2xl font-black text-[#0f2740]">Volunteer Application</h3>
+            <p className="mt-2 mb-6 text-sm text-[#5c6b80]">A simple application for people who want to support Swastik Srijan Foundation.</p>
             <form onSubmit={submit} className="space-y-5" noValidate>
                 <div className="grid md:grid-cols-2 gap-4">
                     <div><label className="field-label">Full Name *</label><input className={inputClass} value={form.name} onChange={e => set("name", e.target.value)} placeholder="Your full name" required /></div>
@@ -72,11 +72,11 @@ export default function VolunteerForm() {
                     <div><label className="field-label">Volunteer Type *</label><select className={inputClass} value={form.volunteerType} onChange={e => set("volunteerType", e.target.value)}><option value="field">Field Volunteer</option><option value="program">Program Volunteer</option><option value="professional">Professional Volunteer</option><option value="digital">Digital / Online Volunteer</option></select></div>
                 </div>
                 <div><label className="field-label">Why do you want to volunteer? *</label><textarea className={`${inputClass} resize-none`} rows={4} value={form.message} onChange={e => set("message", e.target.value)} placeholder="Tell us briefly how you would like to contribute." required /></div>
-                <div><label className="field-label flex items-center gap-2"><FaUpload /> Identity Document *</label><input type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,application/pdf" onChange={e => set("idDocument", e.target.files?.[0] || null)} className={inputClass} required /><p className="mt-1 text-xs text-zinc-400">JPG, PNG, WebP or PDF · max 5MB</p></div>
-                {status === "error" && <div className="p-4 rounded-xl bg-red-50 text-red-700 text-sm font-semibold flex gap-2"><FaExclamationCircle className="mt-0.5 shrink-0" />{error}</div>}
-                <button type="submit" disabled={status === "submitting"} className="w-full bg-[#002344] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#FF6600] transition flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting...</> : <>Submit Volunteer Application <FaArrowRight /></>}</button>
+                <div><label className="field-label flex items-center gap-2"><FaUpload /> Identity Document *</label><input type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,application/pdf" onChange={e => set("idDocument", e.target.files?.[0] || null)} className={inputClass} required /><p className="mt-1 text-xs text-[#5c6b80]">JPG, PNG, WebP or PDF · max 5MB</p></div>
+                {status === "error" && <div className="p-4 rounded-xl bg-[#fef2f2] text-[#b91c1c] text-sm font-semibold flex gap-2"><FaExclamationCircle className="mt-0.5 shrink-0" />{error}</div>}
+                <button type="submit" disabled={status === "submitting"} className="w-full bg-[#0a2540] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#c9a227] hover:text-[#0f2740] transition flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting...</> : <>Submit Volunteer Application <FaArrowRight /></>}</button>
             </form>
-            <style>{`.field-label{display:block;font-size:.72rem;font-weight:800;color:#52525b;text-transform:uppercase;letter-spacing:.07em;margin:0 0 .4rem .15rem}`}</style>
+            <style>{`.field-label{display:block;font-size:.72rem;font-weight:800;color:#5c6b80;text-transform:uppercase;letter-spacing:.07em;margin:0 0 .4rem .15rem}`}</style>
         </div>
     );
 }
