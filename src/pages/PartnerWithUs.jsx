@@ -8,7 +8,7 @@ export default function PartnerWithUs() {
         <main className="w-full bg-white min-h-screen font-inria">
 
             {/* ================= HERO SECTION (Premium Heritage Blue) ================= */}
-            <section className="bg-[#002344] text-white pt-48 pb-32 relative overflow-hidden px-6">
+            <section className="bg-[#12345A] text-white pt-48 pb-32 relative overflow-hidden px-6">
                 <div className="absolute inset-0 opacity-[0.03] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px]"></div>
                 <div className="absolute -top-24 -right-24 w-96 h-96 bg-[#fb8500] opacity-[0.05] rounded-full blur-[100px]"></div>
 
@@ -51,7 +51,7 @@ export default function PartnerWithUs() {
                             <span className="font-bold uppercase tracking-widest text-sm">Corporate Social Responsibility</span>
                         </div>
 
-                        <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#002344] leading-tight">
+                        <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#12345A] leading-tight">
                             Transforming Corporate <br /> Vision into Social Reality.
                         </h2>
                         <p className="text-lg text-zinc-500 italic">
@@ -70,7 +70,7 @@ export default function PartnerWithUs() {
                                 { title: "Volunteer Drifts", desc: "Involve your employees in direct fieldwork." }
                             ].map((item, i) => (
                                 <div key={i} className="bg-[#f8f9fa] p-6 rounded-3xl border border-zinc-100 hover:border-[#fb8500]/20 transition-all">
-                                    <h4 className="font-bold text-[#002344] mb-2">{item.title}</h4>
+                                    <h4 className="font-bold text-[#12345A] mb-2">{item.title}</h4>
                                     <p className="text-zinc-500 text-sm font-medium">{item.desc}</p>
                                 </div>
                             ))}
@@ -85,8 +85,8 @@ export default function PartnerWithUs() {
                     >
                         <div className="rounded-[3rem] overflow-hidden shadow-2xl border-8 border-white bg-zinc-100 aspect-square flex items-center justify-center">
                             <div className="text-center space-y-4 opacity-30">
-                                <FaHandshake className="text-9xl mx-auto text-[#002344]" />
-                                <p className="font-black tracking-[0.3em] text-[#002344]">PARTNERSHIP HUB</p>
+                                <FaHandshake className="text-9xl mx-auto text-[#12345A]" />
+                                <p className="font-black tracking-[0.3em] text-[#12345A]">PARTNERSHIP HUB</p>
                             </div>
                         </div>
                         <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#fb8500] opacity-5 rounded-full blur-3xl"></div>
@@ -95,7 +95,7 @@ export default function PartnerWithUs() {
             </section>
 
             {/* ================= ECOSYSTEM MODELS ================= */}
-            <section className="py-32 bg-[#002344] text-white px-6">
+            <section className="py-32 bg-[#12345A] text-white px-6">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-24 space-y-6">
                         <h2 className="text-[#fb8500] font-bold tracking-[0.3em] uppercase text-xs">The SSF Ecosystem</h2>
@@ -175,7 +175,7 @@ export default function PartnerWithUs() {
                             initial={{ opacity: 0 }}
                             whileInView={{ opacity: 1 }}
                             viewport={{ once: true }}
-                            className="text-4xl md:text-7xl font-serif font-bold text-[#002344]"
+                            className="text-4xl md:text-7xl font-serif font-bold text-[#12345A]"
                         >
                             Become a <span className="text-[#fb8500]">Partner.</span>
                         </motion.h2>
@@ -187,7 +187,7 @@ export default function PartnerWithUs() {
 
                         <div className="pt-8 flex flex-wrap justify-center gap-6">
                             <Link to="/Contact">
-                                <button className="btn-primary px-16 py-6 text-xl bg-[#003366] text-white rounded-full font-bold hover:bg-[#002244] transition-colors shadow-lg shadow-blue-900/20">
+                                <button className="btn-primary px-16 py-6 text-xl bg-[#12345A] text-white rounded-full font-bold hover:bg-[#002244] transition-colors shadow-lg shadow-blue-900/20">
                                     Contact Partnership Team
                                 </button>
                             </Link>
@@ -197,7 +197,7 @@ export default function PartnerWithUs() {
                                 rel="noreferrer"
                                 className="inline-block"
                             >
-                                <button className="btn-primary px-16 py-6 text-xl bg-white border-2 border-[#003366] text-[#003366] rounded-full font-bold hover:bg-zinc-50 transition-colors shadow-lg cursor-pointer">
+                                <button className="btn-primary px-16 py-6 text-xl bg-white border-2 border-[#12345A] text-[#12345A] rounded-full font-bold hover:bg-zinc-50 transition-colors shadow-lg cursor-pointer">
                                     Apply via Google Form
                                 </button>
                             </a>
