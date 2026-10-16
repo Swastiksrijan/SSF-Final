@@ -60,21 +60,21 @@ export default function JoinUsPage() {
 
   return (
     <main className="min-h-screen bg-[#f7fafc] text-[#17202a]">
-      <section className="relative min-h-[68vh] lg:min-h-[72vh] w-full overflow-hidden bg-[#001529] text-white">
+      <section className="relative min-h-[68vh] lg:min-h-[72vh] w-full overflow-hidden bg-[#12345A] text-white">
         <div className="absolute inset-0 p-2 sm:p-3 lg:p-4">
           <div className="grid h-full grid-cols-2 md:grid-cols-4 gap-1.5 sm:gap-2 lg:gap-3">
             {[footerImg1, footerImg2, footerImg3, footerImg4].map((img, index) => (
-              <div key={index} className="relative overflow-hidden rounded-lg lg:rounded-xl bg-[#002344]">
+              <div key={index} className="relative overflow-hidden rounded-lg lg:rounded-xl bg-[#12345A]">
                 <img src={img} alt="" className="h-full w-full object-cover object-center opacity-75 scale-105" loading={index === 0 ? "eager" : "lazy"} />
               </div>
             ))}
           </div>
         </div>
-        <div className="absolute inset-0 bg-[#001529]/62"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#001529]/35 via-[#001529]/55 to-[#001529]/90"></div>
+        <div className="absolute inset-0 bg-[#12345A]/62"></div>
+        <div className="absolute inset-0 bg-gradient-to-b from-[#12345A]/35 via-[#12345A]/55 to-[#12345A]/90"></div>
         <div className="relative z-10 flex min-h-[68vh] lg:min-h-[72vh] items-center justify-center px-5 py-24 lg:px-8">
           <div className="max-w-6xl w-full text-center">
-            <div className="mx-auto inline-block rounded-2xl border border-white/15 bg-[#001529]/55 px-6 py-5 sm:px-12 sm:py-6 backdrop-blur-sm shadow-2xl">
+            <div className="mx-auto inline-block rounded-2xl border border-white/15 bg-[#12345A]/55 px-6 py-5 sm:px-12 sm:py-6 backdrop-blur-sm shadow-2xl">
               <p className="mt-4 md:mt-6 text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.22em] text-[#7dd3a8]">Swastik Srijan Foundation / स्थापना • Join the Movement / जुड़िए</p>
               <h1 className="mt-8 md:mt-10 text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black leading-tight tracking-tight text-white">कुछ लोग बदलाव की प्रतीक्षा करते हैं।<span className="block mt-2 text-[#7dd3a8]">Some wait for change. कुछ बदलाव का हिस्सा बनते हैं।</span></h1>
               <p className="mx-auto mt-4 max-w-5xl text-base md:text-lg text-[#e5edf4] leading-relaxed">Find your place in Swastik Srijan Foundation / स्थापना. / Swastik Srijan Foundation / स्थापना में आपके लिए कौन-सी भूमिका है?</p>

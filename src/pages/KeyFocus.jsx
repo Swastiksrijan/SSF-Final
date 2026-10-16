@@ -14,7 +14,7 @@ export default function KeyFocus() {
           className="text-center space-y-4"
         >
           <span className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs">Sustainability Model</span>
-          <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#002344]">
+          <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#12345A]">
             The SSF <span className="text-[#fb8500]">Ecosystem</span>
           </h2>
           <p className="max-w-2xl mx-auto text-zinc-500 text-lg font-medium leading-relaxed">

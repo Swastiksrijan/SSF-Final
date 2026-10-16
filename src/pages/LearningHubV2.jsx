@@ -67,7 +67,7 @@ const CORPORATE_CATEGORY = "Corporate Mastery / कॉर्पोरेट द�
 const SUBJECT_CONTENT_ALL = { ...SUBJECT_CONTENT, ...SUBJECT_CONTENT_EXTRA };
 
 const CATEGORY_META = {
-  "Education / शिक्षा": { key:"education", icon:FaGraduationCap, color:"from-[#003366] to-[#1d4f7a]" },
+  "Education / शिक्षा": { key:"education", icon:FaGraduationCap, color:"from-[#12345A] to-[#1d4f7a]" },
   "English & Communication / अंग्रेज़ी एवं संचार": { key:"career", icon:FaComments, color:"from-[#0f4c81] to-[#2c7da0]" },
   "Digital Skills / डिजिटल कौशल": { key:"digital", icon:FaLaptop, color:"from-[#17324d] to-[#2563eb]" },
   "Career & Workplace / करियर एवं कार्यस्थल": { key:"career", icon:FaBriefcase, color:"from-[#374151] to-[#111827]" },
@@ -83,8 +83,8 @@ const CATEGORY_META = {
   "Youth & Disaster Preparedness / युवा एवं आपदा तैयारी": { key:"disaster", icon:FaShieldAlt, color:"from-[#33415c] to-[#5c677d]" },
   "Personal Development / व्यक्तिगत विकास": { key:"community", icon:FaUsers, color:"from-[#005f73] to-[#0a9396]" },
   "NGO, Project & Grant Learning / NGO, परियोजना एवं अनुदान": { key:"community", icon:FaBookOpen, color:"from-[#003049] to-[#669bbc]" },
-  "Knowledge World / ज्ञान संसार": { key:"community", icon:FaBookOpen, color:"from-[#0b3a63] to-[#001529]" },
-  "Mathematics & Financial Literacy / गणित एवं वित्तीय साक्षरता": { key:"education", icon:FaBalanceScale, color:"from-[#0b3a63] to-[#002344]" },
+  "Knowledge World / ज्ञान संसार": { key:"community", icon:FaBookOpen, color:"from-[#0b3a63] to-[#12345A]" },
+  "Mathematics & Financial Literacy / गणित एवं वित्तीय साक्षरता": { key:"education", icon:FaBalanceScale, color:"from-[#0b3a63] to-[#12345A]" },
   "Science / विज्ञान": { key:"education", icon:FaLeaf, color:"from-[#0b3a63] to-[#1b4332]" },
   "Languages / भाषाएँ": { key:"career", icon:FaComments, color:"from-[#0f4c81] to-[#2c7da0]" },
   "AI & Future Technology / AI एवं भविष्य की तकनीक": { key:"digital", icon:FaLaptop, color:"from-[#17324d] to-[#2563eb]" },
@@ -96,7 +96,7 @@ const CATEGORY_META = {
   "Arts, Creativity & Culture / कला, रचनात्मकता एवं संस्कृति": { key:"culture", icon:FaBookOpen, color:"from-[#6d597a] to-[#b56576]" },
   "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": { key:"health", icon:FaHeartbeat, color:"from-[#1b4332] to-[#40916c]" },
   "Office Skills / ऑफिस कौशल": { key:"digital", icon:FaBriefcase, color:"from-[#0b3a63] to-[#1f6f8b]" },
-  "Corporate Mastery / कॉर्पोरेट दक्षता": { key:"career", icon:FaBriefcase, color:"from-[#001529] to-[#0b3a63]" }
+  "Corporate Mastery / कॉर्पोरेट दक्षता": { key:"career", icon:FaBriefcase, color:"from-[#12345A] to-[#0b3a63]" }
 };
 
 const TOPICS = [
@@ -186,11 +186,11 @@ const SUBJECT_VISUAL_GLYPH = {
   "Sports, Fitness & Wellness / खेल, फिटनेस एवं कल्याण": "🏅",
   "Office Skills / ऑफिस कौशल": "🏢"
 };
-const HUB_ACCENTS = ["#FF6600","#FFD166","#8ecae6","#95d5b2","#f4a261","#e9c46a","#48cae4","#a7c957"];
+const HUB_ACCENTS = ["#E6530E","#FFD166","#8ecae6","#95d5b2","#f4a261","#e9c46a","#48cae4","#a7c957"];
 const HUB_PALETTES = [
-  ["#003366","#0b2e59"],["#0f4c81","#052a4a"],["#2d6a4f","#0b2e59"],["#8b1e3f","#2a0a18"],
+  ["#12345A","#0b2e59"],["#0f4c81","#052a4a"],["#2d6a4f","#0b2e59"],["#8b1e3f","#2a0a18"],
   ["#9d0208","#2b0504"],["#386641","#132a13"],["#6d597a","#2b1f33"],["#264653","#0b2e59"],
-  ["#6b4f3a","#241a12"],["#33415c","#111a29"],["#005f73","#002733"],["#003049","#001529"],["#7a4b1e","#2b1a08"]
+  ["#6b4f3a","#241a12"],["#33415c","#111a29"],["#005f73","#002733"],["#003049","#12345A"],["#7a4b1e","#2b1a08"]
 ];
 // Hand-coded SVG cover art (no stock photos). Kept inline so every subject and
 // learning area gets a unique, on-brand visual that animates even inside <img>.
@@ -1890,7 +1890,7 @@ const LessonNotes = ({ text, className }) => {
   let list = null;
   const inline = (s) => s.split(/(\*\*[^*]+\*\*)/g).filter(Boolean).map((part, i) =>
     part.startsWith("**") && part.endsWith("**")
-      ? <strong key={i} className="font-black text-[#002344]">{part.slice(2, -2)}</strong>
+      ? <strong key={i} className="font-black text-[#12345A]">{part.slice(2, -2)}</strong>
       : <span key={i}>{part}</span>
   );
   lines.forEach((raw, i) => {
@@ -2425,16 +2425,16 @@ function PrimaryLessonVisual({ lesson }) {
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div>
           <div className="text-xs font-black uppercase tracking-[0.2em] text-[#0f4c81]">Interactive Teaching Board / इंटरैक्टिव शिक्षण बोर्ड</div>
-          <div className="mt-1 text-xl font-black text-[#002344]">👀 देखो → 🔊 सुनो → 👄 बोलो → 👉 पहचानो → ✍️ करो</div>
+          <div className="mt-1 text-xl font-black text-[#12345A]">👀 देखो → 🔊 सुनो → 👄 बोलो → 👉 पहचानो → ✍️ करो</div>
         </div>
-        <button type="button" onClick={()=>speakLessonText([lesson.title,lesson.body,...examples,...practice].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#001529] px-5 py-3 text-sm font-black text-white shadow-md">
+        <button type="button" onClick={()=>speakLessonText([lesson.title,lesson.body,...examples,...practice].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#12345A] px-5 py-3 text-sm font-black text-white shadow-md">
           🔊 Listen All / सब सुनें
         </button>
       </div>
     </div>
 
     <div className="p-4 md:p-7">
-      <div className="rounded-[1.5rem] border-2 border-white bg-gradient-to-br from-[#003366] via-[#0f4c81] to-[#007c91] p-5 text-center text-white shadow-inner md:p-8">
+      <div className="rounded-[1.5rem] border-2 border-white bg-gradient-to-br from-[#12345A] via-[#0f4c81] to-[#007c91] p-5 text-center text-white shadow-inner md:p-8">
         <div className="text-sm font-bold text-white/80">Today we learn / आज हम सीखेंगे</div>
         <div className={(isLetters ? "text-6xl md:text-9xl " : isLanguage ? "text-4xl md:text-6xl " : "text-3xl md:text-5xl ")+"mt-2 font-black leading-tight tracking-tight"}>{cleanTitle}</div>
         <div className="mt-4 text-base font-black">🔊 सुनें • 👄 दोहराएँ • 👉 पहचानें • ✍️ करके सीखें</div>
@@ -2444,14 +2444,14 @@ function PrimaryLessonVisual({ lesson }) {
         {cards.map(([big,visual,meaning],i)=><div key={i} className="rounded-[1.4rem] border-2 border-[#e4d9ff] bg-gradient-to-b from-white to-[#faf7ff] p-4 text-center shadow-sm">
           <div className="text-4xl font-black text-[#7b2cbf] md:text-5xl">{big}</div>
           <div className="my-3 text-3xl md:text-4xl">{visual}</div>
-          <div className="text-base font-black text-[#002344]">{meaning}</div>
-          <button type="button" onClick={()=>speakLessonText(big+" "+meaning)} className="mt-3 rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#002344]">🔊 बोलें</button>
+          <div className="text-base font-black text-[#12345A]">{meaning}</div>
+          <button type="button" onClick={()=>speakLessonText(big+" "+meaning)} className="mt-3 rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#12345A]">🔊 बोलें</button>
         </div>)}
       </div>}
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="rounded-[1.4rem] border-2 border-[#d8eadf] bg-[#f4fff7] p-5">
-          <div className="text-sm font-black uppercase tracking-widest text-[#177245]">📖 Concept / अवधारणा</div>
+          <div className="text-sm font-black uppercase tracking-widest text-[#176447]">📖 Concept / अवधारणा</div>
           <p className="mt-3 text-base font-semibold leading-7 text-zinc-700">{detail.easyExplanation || lesson.body}</p>
           {detail.deepUnderstanding && <p className="mt-3 rounded-xl bg-white p-3 text-sm leading-6 text-zinc-600">{detail.deepUnderstanding}</p>}
         </div>
@@ -2468,9 +2468,9 @@ function PrimaryLessonVisual({ lesson }) {
         <div className="text-sm font-black uppercase tracking-widest text-[#0f4c81]">🧩 Many Examples / कई उदाहरण</div>
         <div className="mt-4 grid gap-3 md:grid-cols-2">
           {examples.map((x,i)=><div key={i} className="flex items-start gap-3 rounded-xl bg-white p-4 shadow-sm">
-            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#e8f4fa] font-black text-[#002344]">{i+1}</div>
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#e8f4fa] font-black text-[#12345A]">{i+1}</div>
             <div className="flex-1 text-sm font-bold leading-6 text-zinc-700">{x}</div>
-            <button type="button" onClick={()=>speakLessonText(x)} className="shrink-0 rounded-full bg-gradient-to-br from-[#0b3a63] to-[#001529] px-3 py-2 text-xs font-black text-white">🔊</button>
+            <button type="button" onClick={()=>speakLessonText(x)} className="shrink-0 rounded-full bg-gradient-to-br from-[#0b3a63] to-[#12345A] px-3 py-2 text-xs font-black text-white">🔊</button>
           </div>)}
         </div>
       </div>}
@@ -2484,9 +2484,9 @@ function PrimaryLessonVisual({ lesson }) {
 
       <div className="mt-6 grid gap-4 md:grid-cols-2">
         <div className="rounded-[1.4rem] border-2 border-[#dce8f5] bg-white p-5">
-          <div className="text-sm font-black uppercase tracking-widest text-[#002344]">🎮 Do It / करके देखें</div>
+          <div className="text-sm font-black uppercase tracking-widest text-[#12345A]">🎮 Do It / करके देखें</div>
           <ul className="mt-3 space-y-2 text-sm font-bold leading-6 text-zinc-700">{practice.slice(0,6).map((x,i)=><li key={i}>👉 {x}</li>)}</ul>
-          {lesson.detail?.activity && <div className="mt-4 rounded-xl bg-[#eef7fb] p-4 text-sm font-bold leading-6 text-[#002344]">🎯 {lesson.detail.activity}</div>}
+          {lesson.detail?.activity && <div className="mt-4 rounded-xl bg-[#eef7fb] p-4 text-sm font-bold leading-6 text-[#12345A]">🎯 {lesson.detail.activity}</div>}
         </div>
         <div className="rounded-[1.4rem] border-2 border-[#e4e4e4] bg-[#fafafa] p-5">
           <div className="text-sm font-black uppercase tracking-widest text-[#463f3a]">🧠 Remember & Correct / याद रखें और सुधारें</div>
@@ -2502,9 +2502,9 @@ function PrimaryLessonVisual({ lesson }) {
         </div>
       </div>}
 
-      <div className="mt-6 rounded-[1.4rem] bg-gradient-to-br from-[#0b3a63] to-[#001529] p-5 text-center text-white">
+      <div className="mt-6 rounded-[1.4rem] bg-gradient-to-br from-[#0b3a63] to-[#12345A] p-5 text-center text-white">
         <div className="text-xs font-black uppercase tracking-widest text-white/70">🔁 Speak & Repeat / सुनें और दोहराएँ</div>
-        <button type="button" onClick={()=>speakLessonText([cleanTitle,...examples].join(". "))} className="mt-3 rounded-full bg-white px-5 py-3 text-sm font-black text-[#002344]">🔊 फिर से सुनें और बोलें</button>
+        <button type="button" onClick={()=>speakLessonText([cleanTitle,...examples].join(". "))} className="mt-3 rounded-full bg-white px-5 py-3 text-sm font-black text-[#12345A]">🔊 फिर से सुनें और बोलें</button>
       </div>
     </div>
   </div>;
@@ -2760,7 +2760,7 @@ function LearningSubject({ subject, onBack }) {
   return <div className="min-h-screen bg-[#f6f8fb] pt-4 text-zinc-900 font-inria md:pt-6">
     <section className={"relative overflow-hidden bg-gradient-to-r "+subject.color+" text-white"}>
       <img src={subject.photo || subject.image} alt={subject.title} className="absolute inset-0 h-full w-full object-cover opacity-30"/>
-      <div className="absolute inset-0 bg-[#001529]/75"/>
+      <div className="absolute inset-0 bg-[#12345A]/75"/>
       <div className="relative mx-auto max-w-7xl px-4 py-10 md:py-16">
         <button onClick={onBack} className="mb-7 inline-flex items-center gap-2 rounded-xl bg-white/10 px-4 py-2 text-sm font-bold hover:bg-white/20"><FaArrowLeft/> Back / वापस</button>
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
@@ -2788,7 +2788,7 @@ function LearningSubject({ subject, onBack }) {
             <div className="text-base font-bold text-zinc-500">{courseMeta.title.hi}</div>
             <p className="mt-3 max-w-3xl text-sm leading-7 text-zinc-600">{courseMeta.description || subject.intro}</p>
           </div>
-          <div className="rounded-2xl bg-[#eef7fb] px-5 py-4 text-sm font-black text-[#002344]">Version {courseMeta.version}<br/>Reviewed {courseMeta.lastReviewed || "—"}</div>
+          <div className="rounded-2xl bg-[#eef7fb] px-5 py-4 text-sm font-black text-[#12345A]">Version {courseMeta.version}<br/>Reviewed {courseMeta.lastReviewed || "—"}</div>
         </div>
         <div className="mt-7 grid gap-5 md:grid-cols-4">
           <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Level</div><div className="mt-1 font-black">{structuredCourse ? "Foundation" : "Foundation → Practical"}</div></div>
@@ -2797,29 +2797,29 @@ function LearningSubject({ subject, onBack }) {
           <div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Learning Time</div><div className="mt-1 font-black">{courseMeta.learningHours ? courseMeta.learningHours + " hours" : "Self-paced"}</div></div>
         </div>
         <div className="mt-7 grid gap-6 lg:grid-cols-2">
-          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#002344]">Who is this for? / किसके लिए?</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{courseMeta.audience}</p><h3 className="mt-5 font-black text-[#002344]">Prerequisites / पूर्व-आवश्यकताएँ</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.prerequisites.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
-          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#002344]">What you will learn / आप क्या सीखेंगे</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.outcomes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
+          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#12345A]">Who is this for? / किसके लिए?</h3><p className="mt-2 text-sm leading-6 text-zinc-600">{courseMeta.audience}</p><h3 className="mt-5 font-black text-[#12345A]">Prerequisites / पूर्व-आवश्यकताएँ</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.prerequisites.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
+          <div className="rounded-2xl border border-zinc-200 p-5"><h3 className="font-black text-[#12345A]">What you will learn / आप क्या सीखेंगे</h3><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600">{courseMeta.outcomes.map((x,i)=><li key={i}>{x}</li>)}</ul></div>
         </div>
         <div className="mt-7 rounded-2xl bg-[#f1f7fa] p-5">
-          <div className="flex items-center justify-between"><div><div className="text-sm font-black text-[#002344]">Course Progress / प्रगति</div><div className="text-xs text-zinc-500">{completed} / {total} lessons completed</div></div><div className="text-2xl font-black text-[#002344]">{progress}%</div></div>
-          <div className="mt-3 h-3 overflow-hidden rounded-full bg-white"><div className="h-full bg-gradient-to-r from-[#003366] to-[#0a9396]" style={{width:progress+"%"}}/></div>
+          <div className="flex items-center justify-between"><div><div className="text-sm font-black text-[#12345A]">Course Progress / प्रगति</div><div className="text-xs text-zinc-500">{completed} / {total} lessons completed</div></div><div className="text-2xl font-black text-[#12345A]">{progress}%</div></div>
+          <div className="mt-3 h-3 overflow-hidden rounded-full bg-white"><div className="h-full bg-gradient-to-r from-[#12345A] to-[#0a9396]" style={{width:progress+"%"}}/></div>
         </div>
       </section>
 
       {richCourse && <section className="mt-8 grid gap-6 md:grid-cols-2">
         <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
           <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">About this subject / इस विषय के बारे में</div>
-          <h3 className="mt-2 text-xl font-black text-[#002344]">यह विषय क्या है? / What is it?</h3>
+          <h3 className="mt-2 text-xl font-black text-[#12345A]">यह विषय क्या है? / What is it?</h3>
           <p className="mt-2 text-sm leading-7 text-zinc-600">{richCourse.overview.what}</p>
-          <h3 className="mt-5 text-xl font-black text-[#002344]">क्यों महत्वपूर्ण है? / Why it matters</h3>
+          <h3 className="mt-5 text-xl font-black text-[#12345A]">क्यों महत्वपूर्ण है? / Why it matters</h3>
           <p className="mt-2 text-sm leading-7 text-zinc-600">{richCourse.overview.why}</p>
         </div>
         <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
           <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Where we see it / कहाँ दिखता है</div>
           <p className="mt-2 text-sm leading-7 text-zinc-600">{richCourse.overview.where}</p>
-          <h3 className="mt-5 text-xl font-black text-[#002344]">सीखने के बाद आप समझ पाएँगे / What you will understand</h3>
+          <h3 className="mt-5 text-xl font-black text-[#12345A]">सीखने के बाद आप समझ पाएँगे / What you will understand</h3>
           <p className="mt-2 text-sm leading-7 text-zinc-600">{richCourse.overview.outcome}</p>
-          <div className="mt-5 rounded-2xl bg-[#f1f7fa] p-4 text-sm font-bold text-[#002344]">
+          <div className="mt-5 rounded-2xl bg-[#f1f7fa] p-4 text-sm font-bold text-[#12345A]">
             🧭 Learning Map: {richCourse.modules.length} modules • {richTopicCount} topics • {richCourse.glossary.length} key words • quiz + activity + project
           </div>
         </div>
@@ -2833,9 +2833,9 @@ function LearningSubject({ subject, onBack }) {
       <div className="mt-8 grid gap-8 lg:grid-cols-[1fr_330px]">
         <div className="space-y-7">
           {modules.map((m,mi)=><section key={m.title} className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
-            <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#001529] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
+            <div className="flex gap-4"><div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#12345A] text-white font-black">{mi+1}</div><div><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Module {mi+1}</div><h2 className="mt-1 text-2xl font-black">{m.title}</h2><p className="mt-1 text-sm text-zinc-500">{m.subtitle}</p></div></div>
             <div className="mt-6 space-y-3">{m.lessons.map((l,li)=>{const global=modules.slice(0,mi).reduce((n,x)=>n+x.lessons.length,0)+li;const isDone=done.includes(global);return <button key={l[0]} onClick={()=>goLesson(global)} className={"flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition "+(activeLesson===global?"border-[#0f4c81] bg-[#eef7fb]":"border-zinc-200 hover:border-[#b9cfdd] hover:bg-zinc-50")}>
-              <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#177245]":"bg-zinc-100 text-[#002344]")}>{isDone?<FaCheckCircle/>:li+1}</div>
+              <div className={"flex h-10 w-10 shrink-0 items-center justify-center rounded-xl font-black "+(isDone?"bg-[#e7f7ef] text-[#176447]":"bg-zinc-100 text-[#12345A]")}>{isDone?<FaCheckCircle/>:li+1}</div>
               <div className="min-w-0 flex-1"><div className="font-black">{l[0]}</div><div className="mt-1 text-xs leading-5 text-zinc-500">{l[1]}</div></div><FaArrowRight className="shrink-0 text-zinc-400"/>
             </button>})}</div>
           </section>)}
@@ -2847,13 +2847,13 @@ function LearningSubject({ subject, onBack }) {
             <div className="p-5"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Visual Learning / दृश्य सीख</div><p className="mt-2 text-sm leading-6 text-zinc-600">इस course का visual उसी विषय से जुड़ा है।</p></div>
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
-            <h3 className="font-black text-[#002344]">Current Lesson / वर्तमान पाठ</h3>
+            <h3 className="font-black text-[#12345A]">Current Lesson / वर्तमान पाठ</h3>
             <div id="current-lesson-content" className="mt-3 rounded-xl bg-zinc-50 p-4 scroll-mt-6">
               <div className="text-xs text-zinc-500">{lessons[activeLesson].module}</div>
               <div className="mt-1 font-black">{lessons[activeLesson].title}</div>
               <p className="mt-2 text-sm leading-6 text-zinc-600">{lessons[activeLesson].body}</p>
               <div className="mt-3 flex flex-wrap gap-2">
-                <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
+                <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#12345A] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
                 <span className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#0f4c81]">👄 Repeat / बोलें</span>
               </div>
               {isPrimaryEducation && <PrimaryLessonVisual lesson={lessons[activeLesson]} />}
@@ -2863,10 +2863,10 @@ function LearningSubject({ subject, onBack }) {
                   <span>Lesson {activeLesson + 1} of {total} / पाठ {activeLesson + 1} / {total}</span>
                   <span>{Math.round(((activeLesson + 1) / total) * 100)}% path</span>
                 </div>
-                <div className="mb-3 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#003366] to-[#0a9396]" style={{width:(((activeLesson + 1) / total) * 100)+"%"}}/></div>
+                <div className="mb-3 h-2 overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#12345A] to-[#0a9396]" style={{width:(((activeLesson + 1) / total) * 100)+"%"}}/></div>
                 <div className="flex gap-2">
-                  <button type="button" onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-3 text-xs font-black text-[#002344] disabled:cursor-not-allowed disabled:opacity-40">← Previous / पिछला</button>
-                  <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-3 py-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Next Lesson / अगला पाठ →</button>
+                  <button type="button" onClick={()=>goLesson(activeLesson-1)} disabled={activeLesson===0} className="flex-1 rounded-xl border border-zinc-200 px-3 py-3 text-xs font-black text-[#12345A] disabled:cursor-not-allowed disabled:opacity-40">← Previous / पिछला</button>
+                  <button type="button" onClick={()=>goLesson(activeLesson+1)} disabled={activeLesson===total-1} className="flex-1 rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#12345A] px-3 py-3 text-xs font-black text-white disabled:cursor-not-allowed disabled:opacity-40">Next Lesson / अगला पाठ →</button>
                 </div>
               </div>
               {lessons[activeLesson].detail && <div className="mt-5 space-y-4 border-t border-zinc-200 pt-4">
@@ -2889,19 +2889,19 @@ function LearningSubject({ subject, onBack }) {
             </div>
           </div>
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-sm">
-            <h3 className="font-black text-[#002344]">Course Assessment / आकलन</h3>
+            <h3 className="font-black text-[#12345A]">Course Assessment / आकलन</h3>
             <p className="mt-2 text-sm leading-6 text-zinc-600">पहले learning और practice पूरा करें, फिर self-check करें। Final certification अभी इस foundation stage में fake नहीं की जा रही है।</p>
-            <button onClick={()=>setQuizOpen(v=>!v)} className="mt-4 w-full rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-3 text-sm font-black text-white">{quizOpen?"Close Check / बंद करें":"Start Knowledge Check / शुरू करें"}</button>
+            <button onClick={()=>setQuizOpen(v=>!v)} className="mt-4 w-full rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#12345A] px-4 py-3 text-sm font-black text-white">{quizOpen?"Close Check / बंद करें":"Start Knowledge Check / शुरू करें"}</button>
             {quizOpen && <div className="mt-4 space-y-4">
               {quizQuestions.map((q,i)=><div key={i} className="rounded-xl bg-zinc-50 p-4"><div className="text-sm font-black">{i+1}. {q.q}</div><div className="mt-3 space-y-2">{q.options.map((o,j)=><label key={j} className="flex gap-2 text-xs leading-5"><input type="radio" name={"course-q-"+i} checked={answers[i]===j} onChange={()=>setAnswers(a=>({...a,[i]:j}))}/><span>{o}</span></label>)}</div></div>)}
               <button onClick={submitQuiz} disabled={Object.keys(answers).length<quizQuestions.length} className="w-full rounded-xl bg-[#0f4c81] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
-              {(submitted || finalResult) && <div className={"rounded-xl border p-4 text-center "+(finalResult?.passed?"border-[#cfe5d8] bg-[#f3fbf6]":"border-[#f2dfbd] bg-[#fffaf0]")}><div className={"text-2xl font-black "+(finalResult?.passed?"text-[#177245]":"text-[#9a5b00]")}>{finalResult?.score ?? score}/{finalResult?.total ?? 5}</div><div className="mt-1 text-xs text-zinc-600">{finalResult?.passed?"Final assessment passed / अंतिम आकलन पास":"Review and retry / दोबारा पढ़ें और प्रयास करें"}</div></div>}
+              {(submitted || finalResult) && <div className={"rounded-xl border p-4 text-center "+(finalResult?.passed?"border-[#cfe5d8] bg-[#f3fbf6]":"border-[#f2dfbd] bg-[#fffaf0]")}><div className={"text-2xl font-black "+(finalResult?.passed?"text-[#176447]":"text-[#9a5b00]")}>{finalResult?.score ?? score}/{finalResult?.total ?? 5}</div><div className="mt-1 text-xs text-zinc-600">{finalResult?.passed?"Final assessment passed / अंतिम आकलन पास":"Review and retry / दोबारा पढ़ें और प्रयास करें"}</div></div>}
             </div>}
           </div>
         </aside>
       </div>
 
-      {lessonOpen && lessons[activeLesson] && <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[#001529]/75 p-3 backdrop-blur-sm md:p-6" role="dialog" aria-modal="true" aria-label="Current lesson">
+      {lessonOpen && lessons[activeLesson] && <div className="fixed inset-0 z-[90] flex items-center justify-center bg-[#12345A]/75 p-3 backdrop-blur-sm md:p-6" role="dialog" aria-modal="true" aria-label="Current lesson">
         <div className="flex max-h-[92vh] w-full max-w-3xl flex-col overflow-hidden rounded-[2rem] bg-white shadow-2xl">
           <div className={"shrink-0 bg-gradient-to-r "+subject.color+" p-5 text-white md:p-7"}>
             <div className="flex items-start justify-between gap-4">
@@ -2924,7 +2924,7 @@ function LearningSubject({ subject, onBack }) {
               ? <LessonNotes text={lessons[activeLesson].body} className="space-y-3 text-base text-zinc-700" />
               : <p className="text-base leading-8 text-zinc-700">{lessons[activeLesson].body}</p>}
             <div className="mt-4 flex flex-wrap gap-2">
-              <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
+              <button type="button" onClick={()=>speakLessonText([lessons[activeLesson].title,lessons[activeLesson].body,...(lessons[activeLesson].detail?.content?.examples||[])].join(". "))} className="rounded-full bg-gradient-to-br from-[#0b3a63] to-[#12345A] px-4 py-2 text-xs font-black text-white">🔊 Listen / सुनें</button>
               <span className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#0f4c81]">👄 Repeat / बोलें</span>
             </div>
             {isPrimaryEducation && <PrimaryLessonVisual lesson={lessons[activeLesson]} />}
@@ -2948,8 +2948,8 @@ function LearningSubject({ subject, onBack }) {
           <div className="shrink-0 border-t border-zinc-200 bg-white p-4 md:p-5">
             <div className="mb-3 text-center text-xs font-bold text-zinc-500">Lesson {activeLesson + 1} of {total} • पूरा पढ़ें, फिर आगे बढ़ें</div>
             <div className="grid grid-cols-2 gap-3">
-              <button type="button" onClick={()=>setLessonOpen(false)} className="rounded-xl border border-zinc-200 px-4 py-3 text-sm font-black text-[#002344]">Close / बंद करें</button>
-              <button type="button" disabled={activeLesson===total-1} onClick={()=>goLesson(activeLesson+1)} className="rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Next Lesson / अगला पाठ →</button>
+              <button type="button" onClick={()=>setLessonOpen(false)} className="rounded-xl border border-zinc-200 px-4 py-3 text-sm font-black text-[#12345A]">Close / बंद करें</button>
+              <button type="button" disabled={activeLesson===total-1} onClick={()=>goLesson(activeLesson+1)} className="rounded-xl bg-gradient-to-br from-[#0b3a63] to-[#12345A] px-4 py-3 text-sm font-black text-white disabled:opacity-40">Next Lesson / अगला पाठ →</button>
             </div>
           </div>
         </div>
@@ -2958,19 +2958,19 @@ function LearningSubject({ subject, onBack }) {
       {richCourse && <section className="mt-8 grid gap-6 lg:grid-cols-2">
         <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
           <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Key Words / मुख्य शब्द</div>
-          <h3 className="mt-2 text-xl font-black text-[#002344]">Glossary</h3>
-          <div className="mt-4 grid gap-3 sm:grid-cols-2">{richCourse.glossary.map((g,i)=><div key={i} className="rounded-xl bg-[#f7fafc] p-3"><div className="text-sm font-black text-[#002344]">{g.term} <span className="text-[#0f4c81]">/ {g.hi}</span></div><div className="mt-1 text-xs leading-5 text-zinc-600">{g.meaning}</div></div>)}</div>
+          <h3 className="mt-2 text-xl font-black text-[#12345A]">Glossary</h3>
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">{richCourse.glossary.map((g,i)=><div key={i} className="rounded-xl bg-[#f7fafc] p-3"><div className="text-sm font-black text-[#12345A]">{g.term} <span className="text-[#0f4c81]">/ {g.hi}</span></div><div className="mt-1 text-xs leading-5 text-zinc-600">{g.meaning}</div></div>)}</div>
         </div>
         <div className="space-y-6">
           {richCourse.project && <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
             <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Project / परियोजना</div>
-            <h3 className="mt-2 text-xl font-black text-[#002344]">{richCourse.project.objective}</h3>
+            <h3 className="mt-2 text-xl font-black text-[#12345A]">{richCourse.project.objective}</h3>
             <div className="mt-3 grid gap-3 text-sm leading-6 text-zinc-600 md:grid-cols-2">
-              <div><span className="font-black text-[#002344]">Materials:</span> {richCourse.project.materials}</div>
-              <div><span className="font-black text-[#002344]">Observation:</span> {richCourse.project.observation}</div>
+              <div><span className="font-black text-[#12345A]">Materials:</span> {richCourse.project.materials}</div>
+              <div><span className="font-black text-[#12345A]">Observation:</span> {richCourse.project.observation}</div>
             </div>
             <div className="mt-3"><div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Steps</div><ol className="mt-2 list-decimal space-y-1 pl-5 text-sm leading-6 text-zinc-600">{richCourse.project.steps.map((s,i)=><li key={i}>{s}</li>)}</ol></div>
-            <div className="mt-3 grid gap-2 text-sm leading-6 text-zinc-600 md:grid-cols-2"><div><span className="font-black text-[#002344]">Result:</span> {richCourse.project.result}</div><div><span className="font-black text-[#002344]">Reflection:</span> {richCourse.project.reflection}</div></div>
+            <div className="mt-3 grid gap-2 text-sm leading-6 text-zinc-600 md:grid-cols-2"><div><span className="font-black text-[#12345A]">Result:</span> {richCourse.project.result}</div><div><span className="font-black text-[#12345A]">Reflection:</span> {richCourse.project.reflection}</div></div>
           </div>}
           {richCourse.revision?.length > 0 && <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-7">
             <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Quick Revision / द्रुत पुनरावृत्ति</div>
@@ -2979,7 +2979,7 @@ function LearningSubject({ subject, onBack }) {
           {richCourse.related?.length > 0 && <div className="rounded-[2rem] border border-[#d9e7f0] bg-[#f7fafc] p-6 shadow-sm md:p-7">
             <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Related Knowledge / संबंधित ज्ञान</div>
             <p className="mt-1 text-xs text-zinc-500">Knowledge World आपस में जुड़ा है — इन विषयों से यह topic गहरा होता है।</p>
-            <div className="mt-3 flex flex-wrap gap-2">{richCourse.related.map((r,i)=><span key={i} className="rounded-full bg-white px-4 py-2 text-xs font-black text-[#002344] shadow-sm">🔗 {r}</span>)}</div>
+            <div className="mt-3 flex flex-wrap gap-2">{richCourse.related.map((r,i)=><span key={i} className="rounded-full bg-white px-4 py-2 text-xs font-black text-[#12345A] shadow-sm">🔗 {r}</span>)}</div>
           </div>}
         </div>
       </section>}
@@ -3177,7 +3177,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
   if (view === "course" && !selected) return <div className="mx-auto max-w-3xl px-4 py-16 text-center">
     <h1 className="text-2xl font-black text-[#062a52]">Subject not found / विषय नहीं मिला</h1>
     <p className="mt-2 text-sm text-zinc-600">यह course उपलब्ध नहीं है। कृपया Subjects list से चुनें।</p>
-    <button type="button" onClick={() => navigate({ to: "/LearningHub/explore" })} className="mt-6 rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-6 py-3 text-sm font-black text-white">Explore Subjects →</button>
+    <button type="button" onClick={() => navigate({ to: "/LearningHub/explore" })} className="mt-6 rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#12345A] px-6 py-3 text-sm font-black text-white">Explore Subjects →</button>
   </div>;
   if (view === "home" && getSubjectFromUrl()) return <LegacySubjectRedirect />;
 
@@ -3188,7 +3188,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
   const categoryCards = CATEGORY_ORDER.map((name, ci) => {
     const meta = CATEGORY_META[name] || {};
     const subjects = SUBJECTS.filter((s) => s.category === name);
-    return { name, icon: meta.icon || FaBookOpen, color: meta.color || "from-[#003366] to-[#0f4c81]", image: makeCategoryVisual(name, subjects.length, SUBJECT_VISUAL_GLYPH[name] || "🎓", ci + 40), count: subjects.length, subjects };
+    return { name, icon: meta.icon || FaBookOpen, color: meta.color || "from-[#12345A] to-[#0f4c81]", image: makeCategoryVisual(name, subjects.length, SUBJECT_VISUAL_GLYPH[name] || "🎓", ci + 40), count: subjects.length, subjects };
   });
   const openCategory = (name) => { PENDING_FILTERS.category = name; PENDING_FILTERS.query = ""; setCategory(name); setQuery(""); navigate({ to: "/LearningHub/explore" }); try { window.scrollTo({ top: 0, behavior: "smooth" }); } catch {} };
   const myLearningSubjects = filtered.filter((s) => cardProgress(s) > 0);
@@ -3225,13 +3225,13 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
             <h1 className="font-serif text-3xl font-bold text-[#142b45] md:text-4xl">{view === "my-learning" ? "My Learning / मेरी सीख" : view === "knowledge-world" ? "Knowledge World / ज्ञान संसार" : "Explore All Learning / सारी सीख"}</h1>
             <p className="mt-1 text-sm text-[#5b6b7c]">{view === "my-learning" ? "आपके शुरू किए courses — यहीं से जारी रखें।" : `${gridSubjects.length} learning options — search, category, level, type और sort से filter करें।`}</p>
           </div>
-          <button type="button" onClick={() => navigate({ to: "/LearningHub" })} className="self-start rounded-full border border-[#FF6600]/30 px-4 py-2 text-xs font-bold text-[#c2410c] transition hover:bg-[#FFF3D6]">← Learning Hub home</button>
+          <button type="button" onClick={() => navigate({ to: "/LearningHub" })} className="self-start rounded-full border border-[#E6530E]/30 px-4 py-2 text-xs font-bold text-[#c2410c] transition hover:bg-[#FFF3D6]">← Learning Hub home</button>
         </div>
         <div className="mt-5 grid gap-3 md:grid-cols-2 lg:grid-cols-4">
           <label className="lg:col-span-2">
             <span className="sr-only">Search learning</span>
             <div className="flex items-center gap-2 rounded-xl border border-[#EADFCC] bg-[#fbfaf7] px-3">
-              <FaSearch className="text-[#FF6600]" aria-hidden="true" />
+              <FaSearch className="text-[#E6530E]" aria-hidden="true" />
               <input value={query} onChange={(e) => setQuery(e.target.value)} type="search" placeholder="Search subject, skill or topic..." className="min-w-0 flex-1 bg-transparent py-2.5 text-sm focus:outline-none" />
             </div>
           </label>
@@ -3270,7 +3270,7 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
             </select>
           </label>
           <div className="flex items-end">
-            <button type="button" onClick={clearFilters} disabled={!hasActiveFilters} className={"w-full rounded-xl px-4 py-2.5 text-sm font-bold transition " + (hasActiveFilters ? "border border-[#FF6600]/40 bg-[#FFF7EA] text-[#B34A00] hover:bg-[#FFEFD6]" : "border border-zinc-200 bg-zinc-50 text-zinc-400")}>Clear filters</button>
+            <button type="button" onClick={clearFilters} disabled={!hasActiveFilters} className={"w-full rounded-xl px-4 py-2.5 text-sm font-bold transition " + (hasActiveFilters ? "border border-[#E6530E]/40 bg-[#FFF7EA] text-[#B34A00] hover:bg-[#FFEFD6]" : "border border-zinc-200 bg-zinc-50 text-zinc-400")}>Clear filters</button>
           </div>
         </div>
       </div>}
@@ -3285,13 +3285,13 @@ export default function LearningHubV2({ view = "home", subjectIdParam = "" }) {
           return <section key={cat} className="mt-14">
             <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
               <div>
-                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#FF6600]"><Icon aria-hidden="true" /> {cat}</div>
+                <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#E6530E]"><Icon aria-hidden="true" /> {cat}</div>
                 <h2 className="mt-3 font-serif text-3xl font-bold text-[#142b45] md:text-4xl">{isOfficeCat ? "Learning Cards / लर्निंग कार्ड" : "Courses / पाठ्यक्रम"}</h2>
                 {isOfficeCat && <p className="mt-2 text-sm font-semibold text-[#5b6b7c]">{OFFICE_SKILLS_SECTION.taglineEn} • {OFFICE_SKILLS_SECTION.taglineHi}</p>}
                 {isOfficeCat && <p className="mt-1 text-sm leading-7 text-[#5b6b7c]">{OFFICE_SKILLS_SECTION.description}</p>}
                 <p className="mt-2 text-sm text-[#9aa7b4]">{courses.length} learning options available in this area / इस क्षेत्र में उपलब्ध learning options</p>
               </div>
-              <span className="block h-px flex-1 bg-gradient-to-r from-[#FF6600]/50 to-transparent md:mb-3" aria-hidden="true" />
+              <span className="block h-px flex-1 bg-gradient-to-r from-[#E6530E]/50 to-transparent md:mb-3" aria-hidden="true" />
             </div>
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {courses.map(s => { const info = cardInfo(s); return (
