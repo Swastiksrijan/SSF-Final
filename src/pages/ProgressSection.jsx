@@ -87,7 +87,7 @@ const ProgressTimeline = () => {
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-serif font-bold text-[#002344]"
+            className="text-4xl md:text-6xl font-serif font-bold text-[#12345A]"
           >
             Milestones of Our <span className="text-[#fb8500]">Journey</span>
           </motion.h2>
@@ -122,7 +122,7 @@ const ProgressTimeline = () => {
                     <span className="text-4xl font-black text-[#fb8500]/10 block mb-2">{item.year}</span>
                     <div className="flex flex-col gap-1">
                       <span className="text-[#fb8500] font-bold text-xs uppercase tracking-widest">{item.year}</span>
-                      <h3 className="text-xl md:text-2xl font-serif font-bold text-[#002344] mb-3 leading-tight">{item.title}</h3>
+                      <h3 className="text-xl md:text-2xl font-serif font-bold text-[#12345A] mb-3 leading-tight">{item.title}</h3>
                     </div>
                     <p className="text-zinc-600 leading-relaxed font-medium">{item.desc}</p>
                   </motion.div>

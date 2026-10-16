@@ -171,7 +171,7 @@ export default function PrivacyPolicy() {
   ];
 
   return (
-    <div className="w-full bg-zinc-50 font-inria text-[#002344]">
+    <div className="w-full bg-zinc-50 font-inria text-[#12345A]">
       {/* ================= CODED HERO ================= */}
       <section className="relative overflow-hidden bg-[#001a33] text-white py-16 sm:py-20 lg:py-24 border-b-4 border-[#fb8500]">
         <div className="absolute inset-0 opacity-25" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.07) 1px, transparent 1px)", backgroundSize: "44px 44px" }} />
@@ -222,7 +222,7 @@ export default function PrivacyPolicy() {
         <motion.div initial={{ opacity: 0, y: 18 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="bg-white rounded-3xl shadow-lg p-7 sm:p-9 lg:p-11 mb-10 border border-zinc-200 relative overflow-hidden">
           <div className="absolute left-0 top-0 bottom-0 w-2 bg-[#fb8500]" />
           <div className="flex flex-col sm:flex-row gap-5 sm:items-start">
-            <div className="shrink-0 w-14 h-14 rounded-2xl bg-[#002344]/5 border border-[#002344]/10 flex items-center justify-center text-2xl text-[#fb8500]"><FaCheckCircle /></div>
+            <div className="shrink-0 w-14 h-14 rounded-2xl bg-[#12345A]/5 border border-[#12345A]/10 flex items-center justify-center text-2xl text-[#fb8500]"><FaCheckCircle /></div>
             <div>
               <h2 className="text-2xl sm:text-3xl font-bold text-zinc-900 mb-3">Your Privacy Matters to Us</h2>
               <p className="text-base sm:text-lg text-zinc-600 leading-relaxed">Swastik Srijan Foundation is committed to transparency, accountability and responsible handling of personal information entrusted to us. This page is designed to explain our approach in clear, accessible language.</p>
@@ -249,11 +249,11 @@ export default function PrivacyPolicy() {
               onMouseLeave={() => setActiveSection(null)}
             >
               <div className="flex items-start gap-4">
-                <div className={`shrink-0 mt-1 w-12 h-12 rounded-2xl flex items-center justify-center text-xl transition-all duration-300 ${activeSection === section.id ? "bg-[#002344] text-white scale-105" : "bg-[#002344]/5 text-[#fb8500]"}`}>
+                <div className={`shrink-0 mt-1 w-12 h-12 rounded-2xl flex items-center justify-center text-xl transition-all duration-300 ${activeSection === section.id ? "bg-[#12345A] text-white scale-105" : "bg-[#12345A]/5 text-[#fb8500]"}`}>
                   {section.icon}
                 </div>
                 <div className="min-w-0">
-                  <h3 className="text-xl font-bold text-zinc-900 group-hover:text-[#002344] transition-colors">{section.title}</h3>
+                  <h3 className="text-xl font-bold text-zinc-900 group-hover:text-[#12345A] transition-colors">{section.title}</h3>
                   <p className="text-[#fb8500] font-serif font-bold italic mt-1 mb-3">{section.hindi}</p>
                   <div className="text-zinc-600 leading-relaxed text-[15px]">{section.content}</div>
                 </div>
