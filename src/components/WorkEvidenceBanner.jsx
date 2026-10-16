@@ -90,30 +90,30 @@ const DATA = {
 export default function WorkEvidenceBanner({ page }) {
   const item = DATA[page] || DATA.initiatives
   return (
-    <section className="relative overflow-hidden border-b border-zinc-200 bg-[#001b32] text-white">
-      <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[#FF6600]/15 blur-3xl" />
+    <section className="relative overflow-hidden border-b border-[#e9e3d6] bg-[#08192b] text-white">
+      <div className="absolute -right-24 -top-24 h-64 w-64 rounded-full bg-[#c9a227]/15 blur-3xl" />
       <div className="mx-auto max-w-7xl px-4 pb-8 pt-24 sm:px-6 md:pb-10 md:pt-28">
         <div className="rounded-[2rem] border border-white/10 bg-white/[0.045] p-6 shadow-2xl backdrop-blur md:p-9">
           <div className="grid gap-8 lg:grid-cols-[1.15fr_.85fr] lg:items-center">
             <div>
-              <div className="flex items-center gap-3 text-[#FFB066]">
-                <span className="h-px w-8 bg-[#FF6600]" /><span className="text-xs font-black uppercase tracking-[0.22em]">{item.eyebrow}</span>
+              <div className="flex items-center gap-3 text-[#e4c86a]">
+                <span className="h-px w-8 bg-[#c9a227]" /><span className="text-xs font-black uppercase tracking-[0.22em]">{item.eyebrow}</span>
               </div>
               <h2 className="mt-4 max-w-3xl text-3xl font-black leading-tight md:text-4xl">{item.title}</h2>
-              <p className="mt-4 max-w-3xl text-base leading-7 text-white/72 md:text-lg">{item.intro}</p>
+              <p className="mt-4 max-w-3xl text-base leading-7 text-[#cbd5e1] md:text-lg">{item.intro}</p>
             </div>
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               {item.cards.map(([title, text, Icon]) => (
                 <div key={title} className="rounded-2xl border border-white/10 bg-white/[0.06] p-4">
-                  <div className="flex items-center gap-3"><Icon className="text-[#FF8A3D]" /><h3 className="font-extrabold">{title}</h3></div>
-                  <p className="mt-2 text-sm leading-6 text-white/65">{text}</p>
+                  <div className="flex items-center gap-3"><Icon className="text-[#c9a227]" /><h3 className="font-extrabold">{title}</h3></div>
+                  <p className="mt-2 text-sm leading-6 text-[#cbd5e1]">{text}</p>
                 </div>
               ))}
             </div>
           </div>
-          <div className="mt-7 rounded-2xl border border-[#FF6600]/20 bg-[#FF6600]/[0.08] px-5 py-4">
-            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#FFB066]">Record & evidence note</p>
-            <p className="mt-2 text-sm leading-6 text-white/75">{item.evidence}</p>
+          <div className="mt-7 rounded-2xl border border-[#c9a227]/25 bg-[#c9a227]/[0.10] px-5 py-4">
+            <p className="text-xs font-black uppercase tracking-[0.18em] text-[#e4c86a]">Record & evidence note</p>
+            <p className="mt-2 text-sm leading-6 text-[#cbd5e1]">{item.evidence}</p>
           </div>
         </div>
       </div>
