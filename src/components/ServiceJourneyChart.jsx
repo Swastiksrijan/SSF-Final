@@ -27,11 +27,11 @@ export default function ServiceJourneyChart({ compact = false }) {
     <section className={compact ? "py-16 px-6 bg-white" : "py-24 px-6 bg-zinc-50 border-y border-zinc-100"}>
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 text-[#FF6600] text-[10px] font-bold uppercase tracking-[0.2em]">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-orange-50 text-[#E6530E] text-[10px] font-bold uppercase tracking-[0.2em]">
             <FaCalendarAlt /> 2013 — 2026
           </div>
-          <h2 className="mt-4 text-3xl md:text-5xl font-serif font-bold text-[#002344]">
-            SSF <span className="text-[#FF6600]">Service Journey</span>
+          <h2 className="mt-4 text-3xl md:text-5xl font-serif font-bold text-[#12345A]">
+            SSF <span className="text-[#E6530E]">Service Journey</span>
           </h2>
           <p className="mt-3 text-zinc-500 max-w-2xl mx-auto">
             A year-by-year view of our continuing journey of service, learning, awareness and community development.
@@ -58,9 +58,9 @@ export default function ServiceJourneyChart({ compact = false }) {
                         whileInView={{ opacity: 1, scaleY: 1 }}
                         viewport={{ once: true }}
                         transition={{ delay: index * 0.03, duration: 0.35 }}
-                        className={`w-full max-w-12 rounded-t-xl transition-all duration-300 origin-bottom ${active ? "h-44 bg-[#FF6600] shadow-lg" : "h-28 bg-[#002344]/15 group-hover:h-36 group-hover:bg-[#002344]/30"}`}
+                        className={`w-full max-w-12 rounded-t-xl transition-all duration-300 origin-bottom ${active ? "h-44 bg-[#E6530E] shadow-lg" : "h-28 bg-[#12345A]/15 group-hover:h-36 group-hover:bg-[#12345A]/30"}`}
                       />
-                      <span className={`text-xs md:text-sm font-black ${active ? "text-[#FF6600]" : "text-[#002344]"}`}>{item.year}</span>
+                      <span className={`text-xs md:text-sm font-black ${active ? "text-[#E6530E]" : "text-[#12345A]"}`}>{item.year}</span>
                     </button>
                   );
                 })}
@@ -70,12 +70,12 @@ export default function ServiceJourneyChart({ compact = false }) {
 
           <div className="mt-7 grid md:grid-cols-[1fr_auto] gap-6 items-center rounded-3xl bg-zinc-50 border border-zinc-100 p-6 md:p-8">
             <div>
-              <div className="text-xs font-bold uppercase tracking-[0.2em] text-[#FF6600]">Selected year • {selected.year}</div>
-              <h3 className="mt-2 text-2xl md:text-3xl font-serif font-bold text-[#002344]">{selected.label}</h3>
+              <div className="text-xs font-bold uppercase tracking-[0.2em] text-[#E6530E]">Selected year • {selected.year}</div>
+              <h3 className="mt-2 text-2xl md:text-3xl font-serif font-bold text-[#12345A]">{selected.label}</h3>
               <p className="mt-1 text-lg font-hindi text-zinc-500">{selected.hi}</p>
               <p className="mt-3 text-sm text-zinc-500">The visual shows the continuity of SSF's journey; it is not a beneficiary or financial-performance chart.</p>
             </div>
-            <div className="w-16 h-16 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center text-[#FF6600] shadow-sm text-xl font-black">
+            <div className="w-16 h-16 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center text-[#E6530E] shadow-sm text-xl font-black">
               {String(selected.year).slice(2)}
             </div>
           </div>
@@ -84,7 +84,7 @@ export default function ServiceJourneyChart({ compact = false }) {
             <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-xs text-zinc-400">
               <span>2013: Registered foundation • Rewa, Madhya Pradesh</span>
               <span>2026: Continuing the mission across India</span>
-              <a href="/Impact" className="inline-flex items-center gap-2 font-bold text-[#002344] hover:text-[#FF6600] transition-colors">
+              <a href="/Impact" className="inline-flex items-center gap-2 font-bold text-[#12345A] hover:text-[#E6530E] transition-colors">
                 Explore Impact <FaArrowRight />
               </a>
             </div>

@@ -123,7 +123,7 @@ function statementPdf(title, fy, tables) {
 }
 
 function StatCard({ label, value, sub, tone }) {
-  const tones = { navy: "bg-[#002344] text-white", green: "bg-emerald-50 text-emerald-800 border-emerald-200", red: "bg-red-50 text-red-800 border-red-200", blue: "bg-[#123B5D] text-white", white: "bg-white border-zinc-200 text-[#002344]" };
+  const tones = { navy: "bg-[#12345A] text-white", green: "bg-emerald-50 text-emerald-800 border-emerald-200", red: "bg-red-50 text-red-800 border-red-200", blue: "bg-[#123B5D] text-white", white: "bg-white border-zinc-200 text-[#12345A]" };
   return (
     <div className={"rounded-2xl p-5 border " + (tones[tone] || tones.white)}>
       <div className="text-xs font-bold uppercase opacity-70">{label}</div>
@@ -144,7 +144,7 @@ export function FinanceDashboard({ fy }) {
   const maxPay = Math.max(1, ...f.paymentsByHead.map((x) => x[1]));
   return (
     <div className="space-y-5">
-      <div className="bg-[#002344] text-white rounded-2xl p-6">
+      <div className="bg-[#12345A] text-white rounded-2xl p-6">
         <div className="flex items-center gap-3"><FaChartLine className="text-2xl" /><div>
           <h2 className="text-2xl font-black">Finance Dashboard / वित्तीय डैशबोर्ड</h2>
           <p className="text-white/70 mt-1">FY {fy} · Master Voucher Register se auto-generated · {f.voucherCount} vouchers</p>
@@ -160,19 +160,19 @@ export function FinanceDashboard({ fy }) {
 
       <div className="grid lg:grid-cols-2 gap-5">
         <div className="bg-white rounded-2xl border p-5">
-          <h3 className="text-lg font-black text-[#002344] mb-4">Receipts by Mode / प्राप्ति (साधन अनुसार)</h3>
+          <h3 className="text-lg font-black text-[#12345A] mb-4">Receipts by Mode / प्राप्ति (साधन अनुसार)</h3>
           <div className="space-y-3">{f.receiptsByMode.map(([m, v]) => (
             <div key={m}><div className="flex justify-between text-sm font-semibold"><span>{m}</span><span>{money(v)}</span></div><Bar value={v} max={maxRec} color="bg-emerald-500" /></div>
           ))}</div>
-          <div className="mt-4 pt-3 border-t flex justify-between font-black text-[#002344]"><span>Total Receipts</span><span>{money(f.receiptsYear)}</span></div>
+          <div className="mt-4 pt-3 border-t flex justify-between font-black text-[#12345A]"><span>Total Receipts</span><span>{money(f.receiptsYear)}</span></div>
         </div>
 
         <div className="bg-white rounded-2xl border p-5">
-          <h3 className="text-lg font-black text-[#002344] mb-4">Expenditure by Head / व्यय (शीर्ष अनुसार)</h3>
+          <h3 className="text-lg font-black text-[#12345A] mb-4">Expenditure by Head / व्यय (शीर्ष अनुसार)</h3>
           <div className="space-y-3">{f.paymentsByHead.slice(0, 10).map(([h, v]) => (
             <div key={h}><div className="flex justify-between text-sm font-semibold"><span>{h}</span><span>{money(v)}</span></div><Bar value={v} max={maxPay} color="bg-red-500" /></div>
           ))}</div>
-          <div className="mt-4 pt-3 border-t flex justify-between font-black text-[#002344]"><span>Total Expenditure</span><span>{money(f.paymentsYear)}</span></div>
+          <div className="mt-4 pt-3 border-t flex justify-between font-black text-[#12345A]"><span>Total Expenditure</span><span>{money(f.paymentsYear)}</span></div>
         </div>
       </div>
 
@@ -183,7 +183,7 @@ export function FinanceDashboard({ fy }) {
       </div>
 
       <div className="bg-white rounded-2xl border overflow-hidden">
-        <div className="p-5 border-b"><h3 className="text-lg font-black text-[#002344]">Audit Summary / लेखा परीक्षा सारांश</h3><p className="text-sm text-zinc-500 mt-1">As per the audited financial statements for FY {fy}.</p></div>
+        <div className="p-5 border-b"><h3 className="text-lg font-black text-[#12345A]">Audit Summary / लेखा परीक्षा सारांश</h3><p className="text-sm text-zinc-500 mt-1">As per the audited financial statements for FY {fy}.</p></div>
         <div className="overflow-x-auto"><table className="w-full text-sm">
           <tbody className="divide-y">
             {f.audit.map((a) => (
@@ -264,7 +264,7 @@ export function FinanceStatements({ fy }) {
 
   return (
     <div className="space-y-5">
-      <div className="bg-[#002344] text-white rounded-2xl p-6">
+      <div className="bg-[#12345A] text-white rounded-2xl p-6">
         <div className="flex items-center gap-3"><FaBalanceScale className="text-2xl" /><div>
           <h2 className="text-2xl font-black">Financial Statements / वित्तीय विवरण</h2>
           <p className="text-white/70 mt-1">Auto-generated from the Master Voucher Register · FY {fy}</p>
@@ -273,17 +273,17 @@ export function FinanceStatements({ fy }) {
 
       <div className="flex flex-wrap gap-2">
         {TABS.map((t) => (
-          <button key={t} onClick={() => setTab(t)} className={"px-4 py-2.5 rounded-xl font-bold border " + (tab === t ? "bg-[#002344] text-white border-[#002344]" : "bg-white text-[#002344] border-zinc-200")}>{t}</button>
+          <button key={t} onClick={() => setTab(t)} className={"px-4 py-2.5 rounded-xl font-bold border " + (tab === t ? "bg-[#12345A] text-white border-[#12345A]" : "bg-white text-[#12345A] border-zinc-200")}>{t}</button>
         ))}
       </div>
 
       {current.map((t) => (
         <div key={t.name} className="bg-white rounded-2xl border overflow-hidden">
           <div className="p-5 border-b flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-            <div><h3 className="text-lg font-black text-[#002344]">{t.name}</h3><p className="text-sm text-zinc-500 mt-1">Read-only · derived from vouchers</p></div>
+            <div><h3 className="text-lg font-black text-[#12345A]">{t.name}</h3><p className="text-sm text-zinc-500 mt-1">Read-only · derived from vouchers</p></div>
             <div className="flex gap-2">
-              <button onClick={() => exportCsv(t.head, t.rows, "ssf-" + t.name.replace(/[^a-z]+/gi, "-").toLowerCase() + ".csv")} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2 rounded-xl font-bold">CSV</button>
-              <button onClick={() => statementPdf(t.name, fy, current)} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2 rounded-xl font-bold">PDF</button>
+              <button onClick={() => exportCsv(t.head, t.rows, "ssf-" + t.name.replace(/[^a-z]+/gi, "-").toLowerCase() + ".csv")} className="bg-white border border-zinc-200 text-[#12345A] px-4 py-2 rounded-xl font-bold">CSV</button>
+              <button onClick={() => statementPdf(t.name, fy, current)} className="bg-white border border-zinc-200 text-[#12345A] px-4 py-2 rounded-xl font-bold">PDF</button>
             </div>
           </div>
           <div className="overflow-x-auto"><table className="w-full text-sm">
@@ -330,7 +330,7 @@ export function IntegrityCheck() {
   const totalDup = reports.reduce((a, x) => a + x.dups.reduce((b, d) => b + (d.count - 1), 0), 0);
   return (
     <div className="space-y-5">
-      <div className="bg-[#002344] text-white rounded-2xl p-6">
+      <div className="bg-[#12345A] text-white rounded-2xl p-6">
         <div className="flex items-center gap-3"><FaCheckCircle className="text-2xl" /><div>
           <h2 className="text-2xl font-black">Data Integrity Check / डेटा जाँच</h2>
           <p className="text-white/70 mt-1">Duplicate entries dhoondhta hai — kuch bhi apne aap delete nahi hota.</p>
@@ -343,7 +343,7 @@ export function IntegrityCheck() {
       </div>
       {reports.map(({ reg, dups }) => (
         <div key={reg.id} className="bg-white rounded-2xl border overflow-hidden">
-          <div className="p-5 border-b flex items-center justify-between"><h3 className="text-lg font-black text-[#002344]">{reg.title}</h3><span className="text-xs font-bold bg-amber-100 text-amber-800 px-3 py-1 rounded-full">{dups.length} group(s)</span></div>
+          <div className="p-5 border-b flex items-center justify-between"><h3 className="text-lg font-black text-[#12345A]">{reg.title}</h3><span className="text-xs font-bold bg-amber-100 text-amber-800 px-3 py-1 rounded-full">{dups.length} group(s)</span></div>
           <div className="overflow-x-auto"><table className="w-full text-sm">
             <thead className="bg-zinc-50 text-zinc-500 text-xs uppercase"><tr><th className="p-3 text-left">Date</th><th className="p-3 text-left">Particulars</th><th className="p-3 text-right">Amount</th><th className="p-3 text-right">Copies</th></tr></thead>
             <tbody className="divide-y">{dups.map((d, i) => {
