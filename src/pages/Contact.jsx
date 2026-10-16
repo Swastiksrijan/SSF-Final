@@ -80,7 +80,7 @@ export default function Contact() {
                 <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#12345A] shrink-0"><Mail className="w-5 h-5" /></div>
                 <div>
                   <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-2">Email Support</p>
-                  <button onClick={() => copyToClipboard(CONTACT_INFO.primaryEmail, "Email")} className="text-[#12345A] text-lg font-semibold hover:text-[#fb8500] break-all text-left">{CONTACT_INFO.primaryEmail}</button>
+                  <button onClick={() => copyToClipboard(CONTACT_INFO.primaryEmail, "Email")} className="text-[#12345A] text-lg font-semibold hover:text-[#E6530E] break-all text-left">{CONTACT_INFO.primaryEmail}</button>
                   <p className="text-xs text-zinc-400 mt-1">Click to copy</p>
                 </div>
               </div>
@@ -88,7 +88,7 @@ export default function Contact() {
                 <div className="w-12 h-12 bg-green-50 rounded-2xl flex items-center justify-center text-green-600 shrink-0"><Phone className="w-5 h-5" /></div>
                 <div>
                   <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-2">Call Us</p>
-                  <a href={`tel:${CONTACT_INFO.phones.primary.replace(/\s+/g, "")}`} className="text-[#12345A] text-xl font-semibold hover:text-[#fb8500]">{CONTACT_INFO.phones.primaryFormatted}</a>
+                  <a href={`tel:${CONTACT_INFO.phones.primary.replace(/\s+/g, "")}`} className="text-[#12345A] text-xl font-semibold hover:text-[#E6530E]">{CONTACT_INFO.phones.primaryFormatted}</a>
                   <p className="text-xs text-zinc-400 mt-1">Mon - Sat, 9:00 AM - 6:00 PM (IST)</p>
                 </div>
               </div>
@@ -108,7 +108,7 @@ export default function Contact() {
 
             <div className="flex flex-col sm:flex-row gap-4">
               <Link to="/Volunteer" className="flex-1 py-4 px-6 bg-[#12345A] text-white font-bold rounded-xl text-center hover:bg-[#12345A] transition-colors">Join as Volunteer</Link>
-              <Link to="/Members" className="flex-1 py-4 px-6 bg-[#fb8500] text-white font-bold rounded-xl text-center hover:bg-[#e07600] transition-colors">Membership <FaArrowRight className="inline ml-2" /></Link>
+              <Link to="/Members" className="flex-1 py-4 px-6 bg-[#E6530E] text-white font-bold rounded-xl text-center hover:bg-[#e07600] transition-colors">Membership <FaArrowRight className="inline ml-2" /></Link>
             </div>
           </motion.div>
 
@@ -119,12 +119,12 @@ export default function Contact() {
             </div>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">First Name *</label><input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Jane" required className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#fb8500]/10 font-medium" /></div>
-                <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Last Name</label><input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Doe" className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#fb8500]/10 font-medium" /></div>
+                <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">First Name *</label><input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Jane" required className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#E6530E]/10 font-medium" /></div>
+                <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Last Name</label><input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Doe" className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#E6530E]/10 font-medium" /></div>
               </div>
-              <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Email Address *</label><input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="jane@example.com" required className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#fb8500]/10 font-medium" /></div>
-              <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Mobile Number</label><input name="phone" type="tel" inputMode="numeric" value={formData.phone} onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value.replace(/\D/g, "") }))} placeholder="Enter mobile number" className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#fb8500]/10 font-medium" /></div>
-              <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Message *</label><textarea name="message" value={formData.message} onChange={handleChange} rows={5} placeholder="How can we help you today?" required minLength={10} className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#fb8500]/10 font-medium resize-none" /></div>
+              <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Email Address *</label><input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="jane@example.com" required className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#E6530E]/10 font-medium" /></div>
+              <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Mobile Number</label><input name="phone" type="tel" inputMode="numeric" value={formData.phone} onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value.replace(/\D/g, "") }))} placeholder="Enter mobile number" className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#E6530E]/10 font-medium" /></div>
+              <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Message *</label><textarea name="message" value={formData.message} onChange={handleChange} rows={5} placeholder="How can we help you today?" required minLength={10} className="w-full px-6 py-4 bg-[#f8f9fa] border-none rounded-2xl focus:ring-4 focus:ring-[#E6530E]/10 font-medium resize-none" /></div>
               <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-5 text-lg group disabled:opacity-60 disabled:cursor-not-allowed"><span>{isSubmitting ? "Submitting..." : "Send Message"}</span><Send className={`w-5 h-5 inline ml-3 ${isSubmitting ? "animate-pulse" : "group-hover:translate-x-2"}`} /></button>
             </form>
           </motion.div>

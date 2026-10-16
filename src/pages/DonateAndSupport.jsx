@@ -56,7 +56,7 @@ export default function DonateAndSupport() {
             <h1 className="text-5xl md:text-7xl font-black leading-tight mb-6">
               Invest in <br /><span className="text-white">Hope & Dignity</span>
             </h1>
-            <h2 className="text-3xl font-hindi text-[#fb8500] mb-6">आशा और गरिमा में निवेश करें</h2>
+            <h2 className="text-3xl font-hindi text-[#E6530E] mb-6">आशा और गरिमा में निवेश करें</h2>
             <p className="text-zinc-300 text-xl md:text-2xl leading-relaxed max-w-2xl mx-auto">
               Your contribution isn't just charity. It's an investment in a child's education, a woman's independence, and a village's future.
             </p>
