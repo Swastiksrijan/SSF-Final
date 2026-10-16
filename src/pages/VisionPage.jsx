@@ -25,7 +25,7 @@ export default function VisionPage() {
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            className="bg-gradient-to-br from-[#002344] to-[#003366] rounded-[3rem] p-12 lg:p-16 text-white shadow-2xl mb-16"
+                            className="bg-gradient-to-br from-[#12345A] to-[#12345A] rounded-[3rem] p-12 lg:p-16 text-white shadow-2xl mb-16"
                         >
                             <h2 className="text-3xl lg:text-4xl font-serif font-bold mb-8 text-center text-[#fb8500]">
                                 A Commitment to Inclusive Growth
@@ -48,11 +48,11 @@ export default function VisionPage() {
                                 viewport={{ once: true }}
                                 className="space-y-8"
                             >
-                                <h3 className="text-2xl font-serif font-bold text-[#002344] border-l-4 border-[#fb8500] pl-4">
+                                <h3 className="text-2xl font-serif font-bold text-[#12345A] border-l-4 border-[#fb8500] pl-4">
                                     लक्ष्य और दृष्टि
                                 </h3>
                                 <div className="bg-blue-50/50 p-8 rounded-3xl border border-blue-100">
-                                    <p className="text-xl text-[#002344] font-medium leading-relaxed">
+                                    <p className="text-xl text-[#12345A] font-medium leading-relaxed">
                                         एक ऐसा समावेशी, नैतिक और सशक्त समाज बनाना जहाँ प्रत्येक व्यक्ति को शिक्षा, स्वास्थ्य, सम्मान, अवसर और सुरक्षित भविष्य प्राप्त हो — राष्ट्र निर्माण के माध्यम से वैश्विक कल्याण की दिशा में।
                                     </p>
                                 </div>
@@ -65,11 +65,11 @@ export default function VisionPage() {
                                 viewport={{ once: true }}
                                 className="space-y-8"
                             >
-                                <h3 className="text-2xl font-serif font-bold text-[#002344] border-l-4 border-[#fb8500] pl-4">
+                                <h3 className="text-2xl font-serif font-bold text-[#12345A] border-l-4 border-[#fb8500] pl-4">
                                     Vision Goals
                                 </h3>
                                 <div className="bg-amber-50/50 p-8 rounded-3xl border border-amber-100">
-                                    <p className="text-xl text-[#002344] font-medium leading-relaxed">
+                                    <p className="text-xl text-[#12345A] font-medium leading-relaxed">
                                         To build an inclusive, ethical, and empowered society where every individual has access to education, health, dignity, opportunities, and a secure future—contributing to nation-building and global well-being.
                                     </p>
                                 </div>
@@ -83,14 +83,14 @@ export default function VisionPage() {
                             viewport={{ once: true }}
                             className="bg-zinc-50 rounded-[2.5rem] p-12 border border-zinc-200"
                         >
-                            <h3 className="text-3xl font-serif font-bold text-[#002344] mb-6 text-center">
+                            <h3 className="text-3xl font-serif font-bold text-[#12345A] mb-6 text-center">
                                 Our Path Forward
                             </h3>
                             <p className="text-xl text-zinc-600 leading-relaxed text-center font-medium mb-8">
                                 Our Vision is realized through our Mission and guided by our Core Values.
                             </p>
                             <div className="flex flex-col sm:flex-row justify-center gap-6">
-                                <Link to="/Mission" className="btn-secondary border-[#002344] text-[#002344] hover:bg-[#002344] hover:text-white">
+                                <Link to="/Mission" className="btn-secondary border-[#12345A] text-[#12345A] hover:bg-[#12345A] hover:text-white">
                                     Explore Our Mission <FaHandHoldingHeart />
                                 </Link>
                                 <Link to="/institutional-dna" className="btn-secondary border-[#d90429] text-[#d90429] hover:bg-[#d90429] hover:text-white">
@@ -103,7 +103,7 @@ export default function VisionPage() {
             </section>
 
             {/* ================= CALL TO ACTION ================= */}
-            <section className="py-24 bg-[#001529] relative overflow-hidden">
+            <section className="py-24 bg-[#12345A] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.03]"></div>
 
                 <div className="container mx-auto px-6 relative z-10">
@@ -123,7 +123,7 @@ export default function VisionPage() {
                             <Link to="/Volunteer" className="btn-cta px-12 py-5 text-lg">
                                 Become a Volunteer
                             </Link>
-                            <Link to="/DonateAndSupport" className="btn-secondary border-white text-white hover:bg-white hover:text-[#001529] px-12 py-5 text-lg">
+                            <Link to="/DonateAndSupport" className="btn-secondary border-white text-white hover:bg-white hover:text-[#12345A] px-12 py-5 text-lg">
                                 Support Our Vision
                             </Link>
                         </div>

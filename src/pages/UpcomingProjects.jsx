@@ -40,7 +40,7 @@ export default function UpcomingProjects() {
 
             <div className="space-y-8 pt-4">
               <div className="flex gap-6 group">
-                <div className="p-4 bg-[#eef7f1] text-[#177245] rounded-2xl h-fit transition-transform group-hover:scale-110">
+                <div className="p-4 bg-[#eef7f1] text-[#176447] rounded-2xl h-fit transition-transform group-hover:scale-110">
                   <FaCheckCircle className="text-2xl" />
                 </div>
                 <div>
@@ -104,7 +104,7 @@ export default function UpcomingProjects() {
                             Free Registration
                         </span>
 
-                        <h2 className="text-4xl lg:text-6xl font-serif font-bold text-[#002344] leading-tight">
+                        <h2 className="text-4xl lg:text-6xl font-serif font-bold text-[#12345A] leading-tight">
                             SSF Youth <br />
                             <span className="text-[#fb8500]">Career Network</span>
                         </h2>
@@ -144,7 +144,7 @@ export default function UpcomingProjects() {
                             </a>
                             <div className="flex items-center gap-3">
                                 <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></div>
-                                <span className="text-[#002344] font-bold text-lg">
+                                <span className="text-[#12345A] font-bold text-lg">
                                     {CONTACT_INFO.phones.primaryFormatted}
                                 </span>
                             </div>
@@ -297,7 +297,7 @@ export default function UpcomingProjects() {
                     "Financial Allocation"
                   ].map((trait, i) => (
                     <div key={i} className="flex items-center gap-2 px-4 py-2 bg-[#f8f5ed] rounded-lg border border-[#e9e3d6]">
-                      <FaCheckCircle className="text-[#177245] text-sm" />
+                      <FaCheckCircle className="text-[#176447] text-sm" />
                       <span className="text-sm font-bold text-[#41506b]">{trait}</span>
                     </div>
                   ))}
