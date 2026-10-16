@@ -60,7 +60,7 @@ export default function JourneyPage() {
                 />
               </div>
               {/* Decorative elements */}
-              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#fb8500] rounded-3xl -z-10 opacity-20"></div>
+              <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-[#E6530E] rounded-3xl -z-10 opacity-20"></div>
               <div className="absolute -top-6 -left-6 w-32 h-32 bg-[#12345A] rounded-3xl -z-10 opacity-20"></div>
             </motion.div>
 
@@ -71,9 +71,9 @@ export default function JourneyPage() {
               className="space-y-8"
             >
               <div className="space-y-2">
-                <span className="text-[#fb8500] font-bold uppercase tracking-widest text-sm">Message from NGO Coordinator</span>
+                <span className="text-[#E6530E] font-bold uppercase tracking-widest text-sm">Message from NGO Coordinator</span>
                 <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#12345A]">
-                  Our Journey | <span className="text-[#fb8500]">हमारी यात्रा</span>
+                  Our Journey | <span className="text-[#E6530E]">हमारी यात्रा</span>
                 </h2>
               </div>
 
@@ -81,13 +81,13 @@ export default function JourneyPage() {
                 <p>
                   “Since its inception in 2013, Swastik Srijan Foundation has been nurturing young lives from the grassroots. Children who joined our programs at a very young age have grown alongside our initiatives — participating, learning, and contributing to community development. Every step of this journey reflects our commitment to empowering underprivileged communities across India.”
                 </p>
-                <p className="font-hindi text-zinc-500 text-base border-l-4 border-[#fb8500]/30 pl-6 italic">
+                <p className="font-hindi text-zinc-500 text-base border-l-4 border-[#E6530E]/30 pl-6 italic">
                   “2013 में अपनी शुरुआत से, स्वास्तिक सृजन फाउंडेशन ने जमीनी स्तर से बच्चों और समुदायों का सशक्तिकरण किया है। जो बच्चे हमारे कार्यक्रमों में बहुत छोटे उम्र में जुड़े थे, वे अब हमारी पहल के साथ बढ़े हैं — भाग ले रहे हैं, सीख रहे हैं और समाज के विकास में योगदान दे रहे हैं। इस यात्रा का हर कदम वंचित समुदायों को सशक्त बनाने के हमारे संकल्प को दर्शाता है।”
                 </p>
               </div>
 
               <div className="bg-white p-8 rounded-2xl shadow-sm border border-zinc-100 relative">
-                <div className="absolute -top-4 -left-4 text-6xl text-[#fb8500] opacity-20 font-serif">“</div>
+                <div className="absolute -top-4 -left-4 text-6xl text-[#E6530E] opacity-20 font-serif">“</div>
                 <div className="space-y-6">
                   <div className="space-y-2">
                     <p className="text-xl font-medium text-[#12345A] italic">
@@ -103,11 +103,11 @@ export default function JourneyPage() {
                     <img
                       src="/Teams_Images/ramesh_pandey.jpg?v=2"
                       alt="Ramesh Pandey"
-                      className="w-16 h-16 rounded-full border-2 border-[#fb8500]/20 object-cover shadow-sm"
+                      className="w-16 h-16 rounded-full border-2 border-[#E6530E]/20 object-cover shadow-sm"
                     />
                     <div>
                       <p className="font-bold text-[#12345A]">Ramesh Pandey</p>
-                      <p className="text-xs text-[#fb8500] font-bold uppercase tracking-wider">Foundation Coordinator</p>
+                      <p className="text-xs text-[#E6530E] font-bold uppercase tracking-wider">Foundation Coordinator</p>
                     </div>
                   </div>
                 </div>
@@ -121,10 +121,10 @@ export default function JourneyPage() {
       <section className="py-32 bg-white px-6 relative overflow-hidden">
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="text-center mb-24 space-y-4">
-            <span className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs">Our Roadmap | हमारा रोडमैप</span>
+            <span className="text-[#E6530E] font-bold uppercase tracking-[0.2em] text-xs">Our Roadmap | हमारा रोडमैप</span>
             <h2 className="text-4xl md:text-6xl font-serif font-bold text-[#12345A]">
-              Our Growth Over <br /> <span className="text-[#fb8500]">the Years</span>
-              <div className="text-2xl md:text-3xl font-sans font-normal text-[#12345A]/60 mt-4">वर्षों की हमारी <span className="text-[#fb8500]">प्रगति</span></div>
+              Our Growth Over <br /> <span className="text-[#E6530E]">the Years</span>
+              <div className="text-2xl md:text-3xl font-sans font-normal text-[#12345A]/60 mt-4">वर्षों की हमारी <span className="text-[#E6530E]">प्रगति</span></div>
             </h2>
           </div>
 
@@ -150,7 +150,7 @@ export default function JourneyPage() {
                   year: "2015",
                   title: "Expanding Early Initiatives",
                   desc: "Strengthened nutrition and preventive support services for vulnerable populations.",
-                  color: "#fb8500"
+                  color: "#E6530E"
                 },
                 {
                   year: "2016",
@@ -168,7 +168,7 @@ export default function JourneyPage() {
                   year: "2018",
                   title: "Promoting Health and Hygiene",
                   desc: "Conducted large-scale health camps, hygiene awareness drives, and sanitation programs.",
-                  color: "#fb8500"
+                  color: "#E6530E"
                 },
                 {
                   year: "2019",
@@ -180,7 +180,7 @@ export default function JourneyPage() {
                   year: "2020",
                   title: "Resilience in Crisis",
                   desc: "Emergency relief and community support provided during the COVID-19 crisis.",
-                  color: "#fb8500"
+                  color: "#E6530E"
                 },
                 {
                   year: "2021",
@@ -210,7 +210,7 @@ export default function JourneyPage() {
                   year: "2025",
                   title: "Technology Integration",
                   desc: "Programs scaled through digital tools, data-driven planning, and local leadership.",
-                  color: "#fb8500"
+                  color: "#E6530E"
                 },
                 {
                   year: "2026+",

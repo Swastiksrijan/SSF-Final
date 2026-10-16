@@ -49,7 +49,7 @@ export default function SubjectCard({ subject, onOpen, onShare, progress = 0, ba
     </div>
 
     <div className="flex flex-1 flex-col p-5">
-      {level && <div className="mb-3"><span className="inline-flex rounded-full bg-[#f1efe8] px-2.5 py-1 text-[10px] font-bold text-[#26343D]">{level}</span></div>}
+      {level && <div className="mb-3"><span className="inline-flex rounded-full bg-[#FAF9F5] px-2.5 py-1 text-[10px] font-bold text-[#26343D]">{level}</span></div>}
       <p className="flex-1 text-sm leading-6 text-[#26343D]">{subject.intro}</p>
 
       {pct > 0 && <div className="mt-4">

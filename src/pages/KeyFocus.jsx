@@ -13,9 +13,9 @@ export default function KeyFocus() {
           viewport={{ once: true }}
           className="text-center space-y-4"
         >
-          <span className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs">Sustainability Model</span>
+          <span className="text-[#E6530E] font-bold uppercase tracking-[0.2em] text-xs">Sustainability Model</span>
           <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#12345A]">
-            The SSF <span className="text-[#fb8500]">Ecosystem</span>
+            The SSF <span className="text-[#E6530E]">Ecosystem</span>
           </h2>
           <p className="max-w-2xl mx-auto text-zinc-500 text-lg font-medium leading-relaxed">
             An interconnected network of initiatives designed for sustainable, long-term impact.

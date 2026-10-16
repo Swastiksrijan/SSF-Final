@@ -259,7 +259,7 @@ export default function LearningHubHome({
               className="group inline-flex items-center gap-2 rounded-full border border-[#FAF9F5] bg-white px-3.5 py-2 text-xs font-bold text-[#12345A] shadow-sm transition hover:-translate-y-0.5 hover:border-[#E6530E]/50 hover:bg-[#FAF9F5]">
               <c.icon aria-hidden="true" />
               <span>{c.name.split(" / ")[0]}</span>
-              <span className="rounded-full bg-[#f1efe8] px-2 py-0.5 text-[10px] font-bold text-[#26343D]">{c.count}</span>
+              <span className="rounded-full bg-[#FAF9F5] px-2 py-0.5 text-[10px] font-bold text-[#26343D]">{c.count}</span>
               <FaArrowRight className="text-[#E6530E] opacity-0 transition group-hover:opacity-100" aria-hidden="true" />
             </button>)}
           </div>
