@@ -10,7 +10,6 @@ import {
 import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
-import AuthModal from "../components/AuthModal";
 import OptimizedImage from "../components/OptimizedImage";
 import pageHeader from "../assets/page-header.jpg";
 
