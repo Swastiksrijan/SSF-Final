@@ -61,7 +61,7 @@ export default function SocialAwarenessFeed() {
     <section id="awareness" className="mx-auto max-w-5xl px-4 py-10">
       <div className="mb-6 flex items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#FF6600] text-white"><Megaphone size={20} /></span>
+          <span className="grid h-10 w-10 place-items-center rounded-xl bg-[#E6530E] text-white"><Megaphone size={20} /></span>
           <div>
             <h2 className="text-xl font-black text-white">{hi ? 'जागरूकता और अपडेट' : 'Awareness & Updates'}</h2>
             <p className="text-xs text-white/60">{hi ? 'हमारे सोशल चैनलों से सीधे' : 'Straight from our social channels'}</p>
@@ -97,7 +97,7 @@ export default function SocialAwarenessFeed() {
               <p className="mt-3 text-[10px] text-white/40">{p.hashtags}</p>
               <div className="mt-3 flex items-center gap-2">
                 <a href={SITE} target="_blank" rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full bg-[#FF6600] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#e65c00]">
+                  className="inline-flex items-center gap-1.5 rounded-full bg-[#E6530E] px-3.5 py-1.5 text-xs font-bold text-white hover:bg-[#e65c00]">
                   <ExternalLink size={13} /> {hi ? 'जुड़ें' : 'Join Us'}
                 </a>
                 <button type="button" onClick={() => setOpenId(p.id)}
@@ -157,7 +157,7 @@ function ShareSheet({ post, hi, copied, onCopied, onClose }) {
 
   return (
     <div className="fixed inset-0 z-[100] flex items-end justify-center bg-black/70 p-0 sm:items-center sm:p-4" onClick={onClose}>
-      <div className="w-full max-w-md overflow-hidden rounded-t-3xl border border-white/15 bg-[#001529] sm:rounded-3xl"
+      <div className="w-full max-w-md overflow-hidden rounded-t-3xl border border-white/15 bg-[#12345A] sm:rounded-3xl"
         onClick={(e) => e.stopPropagation()}>
         <div className="flex items-start gap-3 border-b border-white/10 p-4">
           <img src={img} alt="" className="h-14 w-14 rounded-xl object-cover" />
@@ -188,7 +188,7 @@ function ShareSheet({ post, hi, copied, onCopied, onClose }) {
           </button>
           <button type="button" onClick={moreShare}
             className="flex flex-col items-center gap-1.5 rounded-xl p-2 text-center hover:bg-white/5">
-            <span className="grid h-11 w-11 place-items-center rounded-full bg-[#FF6600] text-white"><Share2 size={20} /></span>
+            <span className="grid h-11 w-11 place-items-center rounded-full bg-[#E6530E] text-white"><Share2 size={20} /></span>
             <span className="text-[11px] font-semibold text-white/80">{label('More', 'और')}</span>
           </button>
         </div>

@@ -135,12 +135,12 @@ function DictionaryWidget({ b }) {
     {b.x && <p className="mt-2 text-base leading-8 text-zinc-700 md:text-lg">{b.x}</p>}
     <form className="mt-3 flex flex-col gap-2 sm:flex-row" onSubmit={(e) => { e.preventDefault(); search(); }}>
       <input value={word} onChange={(e) => setWord(e.target.value)} placeholder="English word टाइप करें…" aria-label="Look up an English word"
-        className="min-w-0 flex-1 rounded-xl border border-[#cfe0ee] bg-white px-4 py-3 text-base font-bold text-[#0b3a63] outline-none focus:border-[#FF6600] md:text-lg" />
-      <button type="submit" className="rounded-xl bg-[#0b3a63] px-5 py-3 text-base font-black text-white transition hover:bg-[#0b4a86] md:text-lg">Search</button>
+        className="min-w-0 flex-1 rounded-xl border border-[#cfe0ee] bg-white px-4 py-3 text-base font-bold text-[#12345A] outline-none focus:border-[#E6530E] md:text-lg" />
+      <button type="submit" className="rounded-xl bg-[#12345A] px-5 py-3 text-base font-black text-white transition hover:bg-[#0b4a86] md:text-lg">Search</button>
     </form>
     <div className="mt-2 flex flex-wrap gap-2">
       {suggest.map((w) => <button key={w} type="button" onClick={() => { setWord(w); search(w); }}
-        className="rounded-full border border-[#cfe0ee] bg-white px-3 py-1 text-sm font-bold text-[#0b4a86] transition hover:border-[#FF6600] hover:text-[#FF6600]">{w}</button>)}
+        className="rounded-full border border-[#cfe0ee] bg-white px-3 py-1 text-sm font-bold text-[#0b4a86] transition hover:border-[#E6530E] hover:text-[#E6530E]">{w}</button>)}
     </div>
     {status === "loading" && <p className="mt-3 text-base font-bold text-zinc-500 md:text-lg">खोज रहे हैं… / Looking up…</p>}
     {status === "notfound" && <p className="mt-3 rounded-xl bg-amber-50 p-3 text-base font-bold text-amber-700 md:text-lg">यह शब्द नहीं मिला। Spelling जाँचें और दोबारा कोशिश करें।</p>}
@@ -149,14 +149,14 @@ function DictionaryWidget({ b }) {
       <div className="flex flex-wrap items-center gap-3">
         <span className="text-2xl font-black text-[#062a52] md:text-3xl">{data.word}</span>
         {data.phonetic && <span className="text-base font-bold text-zinc-500 md:text-lg">{data.phonetic}</span>}
-        <button type="button" onClick={() => speak.toggle(data.word)} className="rounded-full border border-[#cfe0ee] px-3 py-1 text-sm font-bold text-[#0b4a86] transition hover:border-[#FF6600]">{speak.speaking ? "⏹ Stop" : "🔊 सुनें"}</button>
+        <button type="button" onClick={() => speak.toggle(data.word)} className="rounded-full border border-[#cfe0ee] px-3 py-1 text-sm font-bold text-[#0b4a86] transition hover:border-[#E6530E]">{speak.speaking ? "⏹ Stop" : "🔊 सुनें"}</button>
       </div>
       <ul className="mt-3 space-y-3">
         {data.meanings.map((m, i) => <li key={i}>
-          <div className="text-sm font-black uppercase tracking-wide text-[#FF6600] md:text-base">{m.partOfSpeech}</div>
+          <div className="text-sm font-black uppercase tracking-wide text-[#E6530E] md:text-base">{m.partOfSpeech}</div>
           <ol className="mt-1 space-y-1.5 pl-1">
             {m.definitions.map((d, j) => <li key={j} className="flex gap-2 text-base leading-8 text-zinc-700 md:text-lg">
-              <span className="font-black text-[#0b3a63]">{j + 1}.</span>
+              <span className="font-black text-[#12345A]">{j + 1}.</span>
               <span>{d.definition}{d.example ? <em className="block text-zinc-500">e.g. {d.example}</em> : null}</span>
             </li>)}
           </ol>
@@ -172,24 +172,24 @@ function Block({ b }) {
   switch (b.t) {
     case "h":
       return <h4 className="mt-3 flex items-center gap-3 text-xl font-black leading-snug text-[#062a52] md:text-2xl">
-        <span className="h-6 w-1.5 shrink-0 rounded-full bg-gradient-to-b from-[#FF6600] to-[#FFD166]" aria-hidden="true" />
+        <span className="h-6 w-1.5 shrink-0 rounded-full bg-gradient-to-b from-[#E6530E] to-[#FFD166]" aria-hidden="true" />
         {b.x}
       </h4>;
     case "p":
       return <p className="text-base leading-8 text-zinc-700 md:text-lg md:leading-9">{b.x}</p>;
     case "ul":
-      return <ul className="space-y-2 pl-1 text-base leading-8 text-zinc-700 md:text-lg md:leading-9">{b.items.map((it, i) => <li key={i} className="flex gap-3"><span className="mt-3 h-2 w-2 shrink-0 rounded-full bg-[#FF6600]" aria-hidden="true" /><span>{it}</span></li>)}</ul>;
+      return <ul className="space-y-2 pl-1 text-base leading-8 text-zinc-700 md:text-lg md:leading-9">{b.items.map((it, i) => <li key={i} className="flex gap-3"><span className="mt-3 h-2 w-2 shrink-0 rounded-full bg-[#E6530E]" aria-hidden="true" /><span>{it}</span></li>)}</ul>;
     case "ol":
-      return <ol className="space-y-2 pl-1 text-base leading-8 text-zinc-700 md:text-lg md:leading-9">{b.items.map((it, i) => <li key={i} className="flex gap-3"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef4f9] text-sm font-black text-[#0b3a63]">{i + 1}</span><span className="pt-0.5">{it}</span></li>)}</ol>;
+      return <ol className="space-y-2 pl-1 text-base leading-8 text-zinc-700 md:text-lg md:leading-9">{b.items.map((it, i) => <li key={i} className="flex gap-3"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef4f9] text-sm font-black text-[#12345A]">{i + 1}</span><span className="pt-0.5">{it}</span></li>)}</ol>;
     case "flow":
       return <div className="space-y-2">{b.items.map((it, i) => <div key={i}>
-        <div className="rounded-2xl border border-[#d9e4ee] bg-gradient-to-r from-[#f7fafd] to-white px-4 py-3 text-base font-bold text-[#0b3a63] md:text-lg">{it}</div>
-        {i < b.items.length - 1 && <div className="py-0.5 text-center text-2xl font-black text-[#FF6600]" aria-hidden="true">↓</div>}
+        <div className="rounded-2xl border border-[#d9e4ee] bg-gradient-to-r from-[#f7fafd] to-white px-4 py-3 text-base font-bold text-[#12345A] md:text-lg">{it}</div>
+        {i < b.items.length - 1 && <div className="py-0.5 text-center text-2xl font-black text-[#E6530E]" aria-hidden="true">↓</div>}
       </div>)}</div>;
     case "table":
       return <div className="overflow-x-auto rounded-2xl border border-zinc-200">
         <table className="w-full min-w-[22rem] border-collapse text-left text-[15px] md:text-base">
-          {b.head && <thead className="bg-[#0b3a63] text-white"><tr>{b.head.map((h, i) => <th key={i} className="px-4 py-3 text-xs font-black uppercase tracking-wide md:text-sm">{h}</th>)}</tr></thead>}
+          {b.head && <thead className="bg-[#12345A] text-white"><tr>{b.head.map((h, i) => <th key={i} className="px-4 py-3 text-xs font-black uppercase tracking-wide md:text-sm">{h}</th>)}</tr></thead>}
           <tbody>{b.rows.map((row, r) => <tr key={r} className={r % 2 ? "bg-[#fbfdff]" : "bg-white"}>
             {row.map((cell, c) => <td key={c} className="border-t border-zinc-100 px-4 py-3 leading-7 text-zinc-700">{cell}</td>)}
           </tr>)}</tbody>
@@ -202,8 +202,8 @@ function Block({ b }) {
     case "ex":
       return <div className="rounded-2xl border border-[#cfe0ee] bg-gradient-to-br from-[#f4f9fd] to-white p-4 md:p-6">
         <div className="flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#0b4a86] md:text-sm"><span aria-hidden="true">📖</span>{b.title || "Example"}</div>
-        {b.x && <p className="mt-2 text-base font-bold leading-8 text-[#0b3a63] md:text-lg">{b.x}</p>}
-        {b.steps && <ol className="mt-4 space-y-3">{b.steps.map((s, i) => <li key={i} className="flex gap-3 text-base leading-8 text-zinc-700 md:text-lg"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#0b3a63] text-sm font-black text-white">{i + 1}</span><span>{s}</span></li>)}</ol>}
+        {b.x && <p className="mt-2 text-base font-bold leading-8 text-[#12345A] md:text-lg">{b.x}</p>}
+        {b.steps && <ol className="mt-4 space-y-3">{b.steps.map((s, i) => <li key={i} className="flex gap-3 text-base leading-8 text-zinc-700 md:text-lg"><span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#12345A] text-sm font-black text-white">{i + 1}</span><span>{s}</span></li>)}</ol>}
       </div>;
     case "act":
       return <div className="rounded-2xl border border-[#d7ecdd] bg-gradient-to-br from-[#f4fdf7] to-white p-4 md:p-6">
@@ -236,7 +236,7 @@ function Block({ b }) {
 function Chapter({ chapter, index, total, done, onToggleDone, speaking, onSpeak, art }) {
   return <section id={"mc-" + chapter.id} className="scroll-mt-28 overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-sm">
     {/* colourful chapter banner */}
-    <div className="flex items-center gap-4 bg-gradient-to-r from-[#001529] via-[#0b3a63] to-[#0b3a63] p-5 md:p-6">
+    <div className="flex items-center gap-4 bg-gradient-to-r from-[#12345A] via-[#12345A] to-[#12345A] p-5 md:p-6">
       <div className="h-20 w-20 shrink-0 overflow-hidden rounded-2xl ring-2 ring-white/15 md:h-24 md:w-24" aria-hidden="true">{art(chapter.id)}</div>
       <div className="min-w-0 flex-1">
         <div className="text-[11px] font-black uppercase tracking-[0.2em] text-[#FFD166] md:text-xs">{chapter.moduleIcon} {chapter.moduleTitle} · Chapter {chapter.number}</div>
@@ -246,7 +246,7 @@ function Chapter({ chapter, index, total, done, onToggleDone, speaking, onSpeak,
       <div className="hidden shrink-0 flex-col items-end gap-2 sm:flex">
         <span className="rounded-full bg-white/10 px-3 py-1 text-[11px] font-black text-white/80">{index + 1}/{total}</span>
         <button type="button" onClick={() => onSpeak(chapterNarration(chapter))}
-          className={"inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-black transition " + (speaking ? "bg-[#FF6600] text-white" : "bg-[#FFD166] text-[#062a52] hover:bg-[#ffdf8c]")}
+          className={"inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs font-black transition " + (speaking ? "bg-[#E6530E] text-white" : "bg-[#FFD166] text-[#062a52] hover:bg-[#ffdf8c]")}
           aria-label={speaking ? "Stop audio" : "Listen to this chapter"}>
           {speaking ? "⏸ रोकें" : "🔊 सुनें"}
         </button>
@@ -256,11 +256,11 @@ function Chapter({ chapter, index, total, done, onToggleDone, speaking, onSpeak,
     <div className="p-5 md:p-7">
       <div className="space-y-4">{chapter.blocks.map((b, i) => <Block key={i} b={b} />)}</div>
       <button type="button" onClick={() => onSpeak(chapterNarration(chapter))}
-        className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#eef4f9] px-4 py-2 text-xs font-black text-[#0b3a63] sm:hidden">
+        className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#eef4f9] px-4 py-2 text-xs font-black text-[#12345A] sm:hidden">
         {speaking ? "⏸ रोकें / Stop" : "🔊 पूरा पाठ सुनें / Listen"}
       </button>
       <button type="button" onClick={() => onToggleDone(chapter.id)}
-        className={"mt-5 inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-black transition " + (done ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200" : "bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] text-[#142b45] hover:brightness-110")}>
+        className={"mt-5 inline-flex items-center gap-2 rounded-xl px-5 py-3 text-sm font-black transition " + (done ? "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200" : "bg-gradient-to-r from-[#FF8C1A] to-[#E6530E] text-[#142b45] hover:brightness-110")}>
         {done ? "✅ Completed / पूरा हुआ" : "Mark as done / पूरा करें"}
       </button>
     </div>
@@ -284,7 +284,7 @@ function MasteryTest({ mastery }) {
 
     <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
       {mastery.tasks.map((t) => <div key={t.title} className="rounded-2xl border border-zinc-200 bg-white p-4">
-        <div className="text-base font-black text-[#0b3a63] md:text-lg"><span aria-hidden="true">{t.icon}</span> {t.title}</div>
+        <div className="text-base font-black text-[#12345A] md:text-lg"><span aria-hidden="true">{t.icon}</span> {t.title}</div>
         <p className="mt-1 text-sm leading-7 text-zinc-600 md:text-base">{t.x}</p>
       </div>)}
     </div>
@@ -297,19 +297,19 @@ function MasteryTest({ mastery }) {
             const chosen = answers[i] === j;
             const correct = submitted && j === q.answer;
             const wrong = submitted && chosen && j !== q.answer;
-            return <label key={j} className={"flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 text-base transition md:text-lg " + (correct ? "border-emerald-300 bg-emerald-50 font-bold text-emerald-800" : wrong ? "border-rose-300 bg-rose-50 font-bold text-rose-700" : chosen ? "border-[#0b3a63] bg-[#eef4f9]" : "border-zinc-200 hover:bg-zinc-50")}>
+            return <label key={j} className={"flex cursor-pointer items-center gap-2 rounded-xl border px-3 py-2.5 text-base transition md:text-lg " + (correct ? "border-emerald-300 bg-emerald-50 font-bold text-emerald-800" : wrong ? "border-rose-300 bg-rose-50 font-bold text-rose-700" : chosen ? "border-[#12345A] bg-[#eef4f9]" : "border-zinc-200 hover:bg-zinc-50")}>
               <input type="radio" name={"mc-q-" + i} checked={chosen} onChange={() => !submitted && setAnswers(a => ({ ...a, [i]: j }))} />
               <span>{o}</span>
             </label>;
           })}
         </div>
-        {submitted && <div className="mt-2 text-sm leading-7 text-zinc-600 md:text-base"><strong className="text-[#0b3a63]">Explanation:</strong> {q.explain}</div>}
+        {submitted && <div className="mt-2 text-sm leading-7 text-zinc-600 md:text-base"><strong className="text-[#12345A]">Explanation:</strong> {q.explain}</div>}
       </div>)}
     </div>
 
     <div className="mt-6 flex flex-wrap items-center gap-4">
       <button type="button" disabled={answered < total || submitted} onClick={() => setSubmitted(true)}
-        className="rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#001529] px-6 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
+        className="rounded-2xl bg-gradient-to-br from-[#12345A] to-[#12345A] px-6 py-3 text-sm font-black text-white disabled:opacity-40">Check Answers / उत्तर जाँचें</button>
       {submitted && <div className={"rounded-2xl px-5 py-3 text-sm font-black md:text-base " + (pct >= 80 ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700")}>Score: {score}/{total} ({pct}%) {pct >= 80 ? "· Mastered 🏆" : "· दोबारा पढ़ें"}</div>}
     </div>
   </section>;
@@ -340,13 +340,13 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
 
   return <div className="min-h-screen bg-[#f4f7fb] font-inria text-zinc-900">
     {/* Brand strip — SSF logo + official line, kept on every Master Course */}
-    <div className="bg-[#001529]">
+    <div className="bg-[#12345A]">
       <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 pt-28 pb-3 md:pt-32">
         <a href="/LearningHub" className="flex items-center gap-2.5">
           <img src={ssfLogo} alt="Swastik Srijan Foundation" className="h-11 w-11 object-contain drop-shadow md:h-12 md:w-12" />
           <span className="leading-none">
             <span className="block text-sm font-black text-white md:text-base">Swastik Srijan</span>
-            <span className="text-[9px] font-bold uppercase tracking-[0.28em] text-[#FF6600] md:text-[10px]">Foundation</span>
+            <span className="text-[9px] font-bold uppercase tracking-[0.28em] text-[#E6530E] md:text-[10px]">Foundation</span>
           </span>
         </a>
         <span className="hidden text-right text-[11px] font-bold text-white/70 sm:block md:text-sm">
@@ -354,8 +354,8 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
         </span>
       </div>
     </div>
-    <section className="relative overflow-hidden bg-[#001529] text-white">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#001529] via-[#0b3a63] to-[#001529]" />
+    <section className="relative overflow-hidden bg-[#12345A] text-white">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#12345A] via-[#12345A] to-[#12345A]" />
       <div className="relative mx-auto max-w-6xl px-4 pb-14 pt-8 md:pb-16 md:pt-10">
         <button type="button" onClick={onBack} className="mb-6 inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2 text-sm font-bold backdrop-blur transition hover:bg-white/20">← Back to Learning Hub / वापस</button>
         <div className="grid items-center gap-8 lg:grid-cols-[1.15fr_0.85fr]">
@@ -367,7 +367,7 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
             <div className="mt-7 flex flex-wrap gap-3">
               <button type="button" onClick={() => topRef.current?.scrollIntoView({ behavior: "smooth", block: "start" })} className="rounded-2xl bg-[#FFD166] px-6 py-3 text-sm font-black text-[#062a52] shadow-lg transition hover:bg-[#ffdf8c]">▶ Start Learning / सीखना शुरू करें</button>
               <button type="button" onClick={() => onSpeak([course.meta.tagline, course.overview.what, course.overview.why, course.overview.outcome].join(". "))}
-                className={"rounded-2xl border px-6 py-3 text-sm font-bold backdrop-blur transition " + (speaking ? "border-[#FF6600] bg-[#FF6600] text-white" : "border-white/20 bg-white/10 hover:bg-white/20")}>
+                className={"rounded-2xl border px-6 py-3 text-sm font-bold backdrop-blur transition " + (speaking ? "border-[#E6530E] bg-[#E6530E] text-white" : "border-white/20 bg-white/10 hover:bg-white/20")}>
                 {speaking ? "⏸ रोकें / Stop" : "🔊 सुनें / Listen"}
               </button>
             </div>
@@ -386,22 +386,22 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
     <div className="sticky top-20 z-30 border-b border-zinc-200 bg-white/95 backdrop-blur md:top-[116px]">
       <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3">
         <div className="min-w-0 flex-1">
-          <div className="flex items-center justify-between text-[11px] font-black text-zinc-500"><span>{completed} / {total} chapters</span><span className="text-[#FF6600]">{pct}%</span></div>
-          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#eef1f4]"><div className="h-full rounded-full bg-gradient-to-r from-[#FF6600] to-[#FFD166]" style={{ width: pct + "%" }} /></div>
+          <div className="flex items-center justify-between text-[11px] font-black text-zinc-500"><span>{completed} / {total} chapters</span><span className="text-[#E6530E]">{pct}%</span></div>
+          <div className="mt-1.5 h-2 overflow-hidden rounded-full bg-[#eef1f4]"><div className="h-full rounded-full bg-gradient-to-r from-[#E6530E] to-[#FFD166]" style={{ width: pct + "%" }} /></div>
         </div>
         <div className="hidden shrink-0 gap-2 lg:flex">
-          <button type="button" onClick={() => goTo("mastery")} className="rounded-xl border border-zinc-200 px-4 py-2 text-xs font-black text-[#0b3a63] hover:bg-zinc-50">Final Test</button>
-          <button type="button" onClick={() => goTo(chapters[0].id)} className="rounded-xl bg-[#0b3a63] px-4 py-2 text-xs font-black text-white">Start</button>
+          <button type="button" onClick={() => goTo("mastery")} className="rounded-xl border border-zinc-200 px-4 py-2 text-xs font-black text-[#12345A] hover:bg-zinc-50">Final Test</button>
+          <button type="button" onClick={() => goTo(chapters[0].id)} className="rounded-xl bg-[#12345A] px-4 py-2 text-xs font-black text-white">Start</button>
         </div>
       </div>
     </div>
 
     <main ref={topRef} className="mx-auto max-w-6xl px-4 py-8 md:py-12">
       <section className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-sm md:p-8">
-        <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">About this course / इस course के बारे में</div>
+        <div className="text-xs font-black uppercase tracking-widest text-[#12345A]">About this course / इस course के बारे में</div>
         <div className="mt-4 grid gap-5 md:grid-cols-2">
           {[["यह विषय क्या है? / What is it?", course.overview.what], ["क्यों महत्वपूर्ण है? / Why it matters", course.overview.why], ["कहाँ दिखता है? / Where we see it", course.overview.where], ["सीखने के बाद / Outcome", course.overview.outcome]].map(([h, x]) => <div key={h} className="rounded-2xl border border-zinc-100 bg-gradient-to-br from-[#fbfdff] to-white p-5">
-            <div className="text-base font-black text-[#0b3a63] md:text-lg">{h}</div><p className="mt-2 text-base leading-8 text-zinc-600 md:text-lg">{x}</p>
+            <div className="text-base font-black text-[#12345A] md:text-lg">{h}</div><p className="mt-2 text-base leading-8 text-zinc-600 md:text-lg">{x}</p>
           </div>)}
         </div>
       </section>
@@ -417,7 +417,7 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
         <h2 className="text-2xl font-black text-[#062a52] md:text-3xl">📚 Course Path / पाठ्यक्रम</h2>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           {course.modules.map((m) => <div key={m.id} className="rounded-2xl border border-zinc-100 bg-gradient-to-br from-[#fbfdff] to-white p-4">
-            <div className="text-base font-black text-[#0b3a63] md:text-lg"><span aria-hidden="true">{m.icon}</span> {m.title} <span className="font-bold text-zinc-400">/ {m.titleHi}</span></div>
+            <div className="text-base font-black text-[#12345A] md:text-lg"><span aria-hidden="true">{m.icon}</span> {m.title} <span className="font-bold text-zinc-400">/ {m.titleHi}</span></div>
             <div className="mt-2 flex flex-wrap gap-1.5">{m.chapters.map((c) => <button key={c.id} type="button" onClick={() => goTo(c.id)} className={"rounded-full border px-3 py-1.5 text-sm font-bold transition " + (done.includes(c.id) ? "border-emerald-200 bg-emerald-50 text-emerald-700" : "border-zinc-200 text-zinc-600 hover:bg-white")}>{c.number}. {c.title}</button>)}</div>
           </div>)}
         </div>
@@ -433,8 +433,8 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
         <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🔄</span><h2 className="text-2xl font-black text-[#062a52] md:text-3xl">Final Revision — {course.revision.title}</h2></div>
         <div className="mt-5 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
           {course.revision.groups.map((g) => <div key={g.title} className="rounded-2xl border border-zinc-200 bg-white p-4">
-            <div className="text-base font-black text-[#0b3a63] md:text-lg">{g.title}</div>
-            <ul className="mt-2 space-y-1.5 pl-1 text-base leading-8 text-zinc-700">{g.items.map((x, i) => <li key={i} className="flex gap-3"><span className="mt-3 h-2 w-2 shrink-0 rounded-full bg-[#FF6600]" aria-hidden="true" /><span>{x}</span></li>)}</ul>
+            <div className="text-base font-black text-[#12345A] md:text-lg">{g.title}</div>
+            <ul className="mt-2 space-y-1.5 pl-1 text-base leading-8 text-zinc-700">{g.items.map((x, i) => <li key={i} className="flex gap-3"><span className="mt-3 h-2 w-2 shrink-0 rounded-full bg-[#E6530E]" aria-hidden="true" /><span>{x}</span></li>)}</ul>
           </div>)}
         </div>
       </section>
@@ -446,10 +446,10 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
       {course.project && <section className="mt-8 rounded-[2rem] border border-[#e6d3a8] bg-gradient-to-br from-[#fffaf0] to-white p-6 shadow-sm md:p-8">
         <div className="flex items-center gap-3"><span className="text-3xl" aria-hidden="true">🧪</span><h2 className="text-2xl font-black text-[#062a52] md:text-3xl">Project — {course.project.objective}</h2></div>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
-          {course.project.materials && <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-base font-black text-[#0b3a63] md:text-lg">Materials / सामग्री</div><p className="mt-1 text-base leading-8 text-zinc-600 md:text-lg">{course.project.materials}</p></div>}
-          {course.project.observation && <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-base font-black text-[#0b3a63] md:text-lg">Observe / निरीक्षण</div><p className="mt-1 text-base leading-8 text-zinc-600 md:text-lg">{course.project.observation}</p></div>}
+          {course.project.materials && <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-base font-black text-[#12345A] md:text-lg">Materials / सामग्री</div><p className="mt-1 text-base leading-8 text-zinc-600 md:text-lg">{course.project.materials}</p></div>}
+          {course.project.observation && <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-base font-black text-[#12345A] md:text-lg">Observe / निरीक्षण</div><p className="mt-1 text-base leading-8 text-zinc-600 md:text-lg">{course.project.observation}</p></div>}
         </div>
-        {course.project.steps && <ol className="mt-4 space-y-2 pl-1 text-base leading-8 text-zinc-700 md:text-lg">{course.project.steps.map((s, i) => <li key={i} className="flex gap-3"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef4f9] text-sm font-black text-[#0b3a63]">{i + 1}</span><span>{s}</span></li>)}</ol>}
+        {course.project.steps && <ol className="mt-4 space-y-2 pl-1 text-base leading-8 text-zinc-700 md:text-lg">{course.project.steps.map((s, i) => <li key={i} className="flex gap-3"><span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#eef4f9] text-sm font-black text-[#12345A]">{i + 1}</span><span>{s}</span></li>)}</ol>}
         {course.project.result && <p className="mt-4 rounded-2xl bg-[#eaf7f0] p-4 text-base font-black text-[#177245] md:text-lg">Result: {course.project.result}</p>}
         {course.project.reflection && <p className="mt-2 text-base italic leading-8 text-zinc-600 md:text-lg">Reflection: {course.project.reflection}</p>}
       </section>}
@@ -470,7 +470,7 @@ export default function MasterCourse({ course, subject, onBack, art, HeroArt }) 
       />
 
       <div className="py-10 text-center">
-        <button type="button" onClick={onBack} className="rounded-2xl border border-zinc-300 bg-white px-6 py-3 text-sm font-black text-[#0b3a63] hover:bg-zinc-50">← Back to Learning Hub / वापस</button>
+        <button type="button" onClick={onBack} className="rounded-2xl border border-zinc-300 bg-white px-6 py-3 text-sm font-black text-[#12345A] hover:bg-zinc-50">← Back to Learning Hub / वापस</button>
       </div>
     </main>
   </div>;
