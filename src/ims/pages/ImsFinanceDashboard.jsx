@@ -55,9 +55,9 @@ export default function ImsFinanceDashboard() {
       </div>
 
       {/* Single entry point call-out */}
-      <Card className="mb-5 flex flex-wrap items-center justify-between gap-4 border-l-4 border-[#FF6600] p-4">
+      <Card className="mb-5 flex flex-wrap items-center justify-between gap-4 border-l-4 border-[#E6530E] p-4">
         <div>
-          <p className="text-base font-black text-[#002344]">{t('receipts_payments')} — {t('receipts_payments_hint')}</p>
+          <p className="text-base font-black text-[#12345A]">{t('receipts_payments')} — {t('receipts_payments_hint')}</p>
           <p className="mt-0.5 text-sm text-slate-500">{t('double_entry_note')}</p>
         </div>
         <div className="flex gap-2">
@@ -76,7 +76,7 @@ export default function ImsFinanceDashboard() {
               return (
                 <button key={m.key} onClick={() => navigate({ to: '/ims/r/$resource', params: { resource: m.resource } })}
                   className="flex w-full items-center gap-2.5 rounded-lg px-3 py-2 text-left text-sm font-semibold text-slate-600 hover:bg-slate-100">
-                  <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#002344]/5 text-[#002344]"><I size={16} /></span>
+                  <span className="grid h-8 w-8 place-items-center rounded-lg bg-[#12345A]/5 text-[#12345A]"><I size={16} /></span>
                   {t(m.key)}
                 </button>
               );
@@ -94,8 +94,8 @@ export default function ImsFinanceDashboard() {
               </span>
             </div>
             <div className="mt-3 grid grid-cols-2 gap-3 text-sm">
-              <div className="rounded-xl bg-slate-50 p-3"><span className="block text-[11px] font-semibold uppercase text-slate-400">{t('debit')}</span><span className="text-lg font-black text-[#002344]">{inr(d && d.trialBalance && d.trialBalance.totalDebit)}</span></div>
-              <div className="rounded-xl bg-slate-50 p-3"><span className="block text-[11px] font-semibold uppercase text-slate-400">{t('credit')}</span><span className="text-lg font-black text-[#002344]">{inr(d && d.trialBalance && d.trialBalance.totalCredit)}</span></div>
+              <div className="rounded-xl bg-slate-50 p-3"><span className="block text-[11px] font-semibold uppercase text-slate-400">{t('debit')}</span><span className="text-lg font-black text-[#12345A]">{inr(d && d.trialBalance && d.trialBalance.totalDebit)}</span></div>
+              <div className="rounded-xl bg-slate-50 p-3"><span className="block text-[11px] font-semibold uppercase text-slate-400">{t('credit')}</span><span className="text-lg font-black text-[#12345A]">{inr(d && d.trialBalance && d.trialBalance.totalCredit)}</span></div>
             </div>
             <div className="mt-3 flex gap-2">
               <Button variant="ghost" icon="BookOpen" onClick={() => navigate({ to: '/ims/finance/ledger' })}>{t('ledger_journal')}</Button>
