@@ -10,7 +10,6 @@ import {
 import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
-import AuthModal from "../components/AuthModal";
 import OptimizedImage from "../components/OptimizedImage";
 import pageHeader from "../assets/page-header.jpg";
 
@@ -263,7 +262,6 @@ export default function Home() {
           <div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Take the next step</p><h2 className="mt-3 font-serif text-3xl text-[#10263b] md:text-4xl">Every meaningful partnership starts somewhere.</h2><p className="mt-3 leading-relaxed text-slate-600">Explore the work, ask a question, volunteer a skill or start a conversation about collaboration.</p></div>
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap"><Link to="/JoinUs" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#10263b] px-6 py-3 font-bold text-white hover:bg-[#1c405f]"><FaUsers /> Join SSF</Link><Link to="/PartnerWithUs" className="inline-flex items-center justify-center gap-2 rounded-full border border-[#c6a24e] px-6 py-3 font-bold text-[#775b24] hover:bg-[#f5f1e8]"><FaHandshake /> Partner with us</Link><Link to="/Donate" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 px-6 py-3 font-bold text-[#10263b] hover:bg-white"><FaHeart /> Support SSF</Link></div>
         </div>
-      </section>
-      <AuthModal open={authOpen} onClose={() => setAuthOpen(false)} initialMode={authMode} />\n      <button type="button" onClick={() => openAuth("signup")} className="fixed bottom-20 right-5 z-40 inline-flex items-center gap-2 rounded-full border border-[#d8b96d] bg-[#102b43] px-4 py-3 text-sm font-bold text-white shadow-xl transition hover:-translate-y-0.5 hover:bg-[#183b58]" aria-label="Open SSF account registration"><FaUsers /> Join SSF</button>\n    </main>
+      </section>\n\n    </main>
   );
 }
