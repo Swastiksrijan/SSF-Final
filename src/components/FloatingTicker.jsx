@@ -9,13 +9,13 @@ const FloatingTicker = () => {
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="bg-[#002344] rounded-2xl shadow-xl border border-zinc-700/30 px-6 py-7 md:px-9 md:py-9 text-center text-white overflow-hidden relative"
+                className="bg-[#12345A] rounded-2xl shadow-xl border border-zinc-700/30 px-6 py-7 md:px-9 md:py-9 text-center text-white overflow-hidden relative"
             >
                 <div className="relative z-10 space-y-3">
                     <h2 className="text-3xl md:text-4xl font-serif font-bold tracking-wide drop-shadow-md">
                         Swastik Srijan Foundation
                     </h2>
-                    <p className="text-[#fb8500] font-medium text-lg md:text-xl tracking-wider uppercase font-sans">
+                    <p className="text-[#E6530E] font-medium text-lg md:text-xl tracking-wider uppercase font-sans">
                         Empowering Lives. Building a Better Bharat.
                     </p>
                 </div>

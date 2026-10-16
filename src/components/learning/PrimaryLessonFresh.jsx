@@ -74,7 +74,7 @@ export default function PrimaryLessonFresh({ lessonLabel, moduleTitle, content, 
         </div>
       </div>
 
-      {examples.length > 0 && <Card icon="👀" title="उदाहरण / Examples" subtitle="देखो और समझो" tone="amber"><div className="grid gap-3 sm:grid-cols-2">{examples.map((e, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-2xl bg-white p-4 shadow-sm"><span className="flex-1 text-sm font-bold text-zinc-700">{e}</span><button type="button" onClick={() => speak(e)} className="rounded-full bg-[#003366] px-3 py-1.5 text-xs font-black text-white">🔊</button></div>)}</div></Card>}
+      {examples.length > 0 && <Card icon="👀" title="उदाहरण / Examples" subtitle="देखो और समझो" tone="amber"><div className="grid gap-3 sm:grid-cols-2">{examples.map((e, i) => <div key={i} className="flex items-center justify-between gap-3 rounded-2xl bg-white p-4 shadow-sm"><span className="flex-1 text-sm font-bold text-zinc-700">{e}</span><button type="button" onClick={() => speak(e)} className="rounded-full bg-[#12345A] px-3 py-1.5 text-xs font-black text-white">🔊</button></div>)}</div></Card>}
 
       <div className="grid gap-6 lg:grid-cols-2">
         {practice.length > 0 && <Card icon="✍️" title="अभ्यास / Practice" subtitle="खुद करके सीखो" tone="green"><Bullets items={practice} mark="👉" /></Card>}
@@ -92,7 +92,7 @@ export default function PrimaryLessonFresh({ lessonLabel, moduleTitle, content, 
       <div className="flex flex-wrap justify-center gap-3 pt-2">
         <button type="button" onClick={() => speak([lessonLabel, c.summary].join(". "))} className="rounded-2xl border-2 border-[#0b4a86] px-5 py-3 text-sm font-black text-[#0b4a86] transition hover:bg-[#eef7ff]">🔊 दोहराएँ</button>
         {onMarkDone && <button type="button" onClick={onMarkDone} className="rounded-2xl bg-[#177245] px-5 py-3 text-sm font-black text-white transition hover:bg-[#14663b]">✅ Mark Complete</button>}
-        {onNextLesson && <button type="button" onClick={onNextLesson} className="rounded-2xl bg-[#0b4a86] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0f4c81]">Next: {nextLessonTitle} →</button>}
+        {onNextLesson && <button type="button" onClick={onNextLesson} className="rounded-2xl bg-[#0b4a86] px-5 py-3 text-sm font-black text-white transition hover:bg-[#12345A]">Next: {nextLessonTitle} →</button>}
       </div>
     </main>
   </div>;
