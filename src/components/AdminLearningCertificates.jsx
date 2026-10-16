@@ -96,14 +96,14 @@ export default function AdminLearningCertificates() {
   };
 
   return <section className="rounded-[2rem] bg-white border border-zinc-100 shadow-sm overflow-hidden">
-    <div className="p-6 bg-[#002344] text-white">
+    <div className="p-6 bg-[#12345A] text-white">
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div>
-          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#ffb067]">SSF Learning Hub</p>
+          <p className="text-xs font-black uppercase tracking-[0.2em] text-[#F7A814]">SSF Learning Hub</p>
           <h2 className="text-2xl sm:text-3xl font-black mt-1">Learning Certificates / शिक्षण प्रमाणपत्र</h2>
           <p className="text-sm text-white/70 mt-2 max-w-3xl">Review completed learning records, issue official certificate IDs, and open the verification record. Account creation alone never issues a certificate.</p>
         </div>
-        <button onClick={load} disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-xl bg-white text-[#002344] px-4 py-2.5 text-sm font-black">
+        <button onClick={load} disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-xl bg-white text-[#12345A] px-4 py-2.5 text-sm font-black">
           <FaSyncAlt className={loading ? "animate-spin" : ""} /> Refresh
         </button>
       </div>
@@ -111,7 +111,7 @@ export default function AdminLearningCertificates() {
 
     <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 p-5 border-b border-zinc-100">
       {[["Total Requests", counts.total, FaCertificate], ["Requested", counts.requested, FaClock], ["Issued", counts.issued, FaCheckCircle], ["Other Status", counts.other, FaEye]].map(([label, value, Icon]) =>
-        <div key={label} className="rounded-2xl bg-zinc-50 border border-zinc-100 p-4"><Icon className="text-[#ff6600]" /><p className="text-xs uppercase tracking-widest text-zinc-400 font-black mt-2">{label}</p><p className="text-2xl font-black text-[#002344] mt-1">{value}</p></div>
+        <div key={label} className="rounded-2xl bg-zinc-50 border border-zinc-100 p-4"><Icon className="text-[#E6530E]" /><p className="text-xs uppercase tracking-widest text-zinc-400 font-black mt-2">{label}</p><p className="text-2xl font-black text-[#12345A] mt-1">{value}</p></div>
       )}
     </div>
 
@@ -127,7 +127,7 @@ export default function AdminLearningCertificates() {
           const modules = Array.isArray(item.moduleAssessments) ? item.moduleAssessments : [];
           const passed = modules.filter(x => x?.passed).length;
           return <tr key={item.id} className="border-b border-zinc-100 align-top">
-            <td className="p-3"><div className="font-black text-[#002344]">{item.learnerName || "—"}</div><div className="text-xs text-zinc-500 mt-1">{item.learnerEmail || item.email || "—"}</div></td>
+            <td className="p-3"><div className="font-black text-[#12345A]">{item.learnerName || "—"}</div><div className="text-xs text-zinc-500 mt-1">{item.learnerEmail || item.email || "—"}</div></td>
             <td className="p-3"><div className="font-bold max-w-[250px]">{item.courseTitle || item.courseId || "—"}</div><div className="text-xs text-zinc-500 mt-1">{item.learningHours || 0} learning hours</div></td>
             <td className="p-3 font-black">{item.completionPercent ?? 0}%</td>
             <td className="p-3"><div>{passed}/{modules.length || 0} modules passed</div><div className="text-xs mt-1">{item.finalAssessment?.passed ? "Final: Passed" : "Final: Not passed"}</div></td>
@@ -135,8 +135,8 @@ export default function AdminLearningCertificates() {
             <td className="p-3"><span className={`inline-flex rounded-full px-3 py-1 text-xs font-black ${item.status === "issued" ? "bg-green-100 text-green-700" : item.status === "requested" ? "bg-amber-100 text-amber-700" : "bg-zinc-100 text-zinc-700"}`}>{item.status || "—"}</span></td>
             <td className="p-3"><div className="flex justify-end gap-2">
               <button onClick={() => setSelected(item)} className="inline-flex items-center gap-2 rounded-xl bg-zinc-100 px-3 py-2 font-bold text-xs"><FaEye /> Review</button>
-              {item.status === "requested" && <button disabled={!!busy} onClick={() => issue(item)} className="inline-flex items-center gap-2 rounded-xl bg-[#002344] text-white px-3 py-2 font-bold text-xs">{busy === item.id ? "Issuing..." : "Issue Certificate"}</button>}
-              {item.status === "issued" && <button disabled={!!busy} onClick={() => download(item)} className="inline-flex items-center gap-2 rounded-xl bg-[#ff6600] text-white px-3 py-2 font-bold text-xs">{busy === `pdf-${item.id}` ? "Creating..." : "PDF"}</button>}
+              {item.status === "requested" && <button disabled={!!busy} onClick={() => issue(item)} className="inline-flex items-center gap-2 rounded-xl bg-[#12345A] text-white px-3 py-2 font-bold text-xs">{busy === item.id ? "Issuing..." : "Issue Certificate"}</button>}
+              {item.status === "issued" && <button disabled={!!busy} onClick={() => download(item)} className="inline-flex items-center gap-2 rounded-xl bg-[#E6530E] text-white px-3 py-2 font-bold text-xs">{busy === `pdf-${item.id}` ? "Creating..." : "PDF"}</button>}
             </div></td>
           </tr>;
         })}</tbody>
@@ -145,17 +145,17 @@ export default function AdminLearningCertificates() {
 
     {selected && <div className="fixed inset-0 z-50 bg-black/50 p-4 flex items-center justify-center" onMouseDown={e => { if (e.target === e.currentTarget) setSelected(null); }}>
       <div className="w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-3xl bg-white shadow-2xl">
-        <div className="p-6 border-b border-zinc-100 flex items-start justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-widest text-[#ff6600]">Certificate Review / प्रमाणपत्र समीक्षा</p><h3 className="text-2xl font-black text-[#002344] mt-1">{selected.learnerName || "Learner"}</h3></div><button onClick={() => setSelected(null)} className="text-zinc-500 text-2xl">×</button></div>
+        <div className="p-6 border-b border-zinc-100 flex items-start justify-between gap-4"><div><p className="text-xs font-black uppercase tracking-widest text-[#E6530E]">Certificate Review / प्रमाणपत्र समीक्षा</p><h3 className="text-2xl font-black text-[#12345A] mt-1">{selected.learnerName || "Learner"}</h3></div><button onClick={() => setSelected(null)} className="text-zinc-500 text-2xl">×</button></div>
         <div className="p-6 grid sm:grid-cols-2 gap-4">
-          {[["Course", selected.courseTitle], ["Email", selected.email], ["Completion", `${selected.completionPercent ?? 0}%`], ["Learning Hours", selected.learningHours || 0], ["Status", selected.status], ["Request Date", dateLabel(selected.createdAt)]].map(([k,v]) => <div key={k} className="rounded-2xl bg-zinc-50 p-4"><p className="text-xs font-black uppercase tracking-wider text-zinc-400">{k}</p><p className="font-bold text-[#002344] mt-1 break-words">{v || "—"}</p></div>)}
+          {[["Course", selected.courseTitle], ["Email", selected.email], ["Completion", `${selected.completionPercent ?? 0}%`], ["Learning Hours", selected.learningHours || 0], ["Status", selected.status], ["Request Date", dateLabel(selected.createdAt)]].map(([k,v]) => <div key={k} className="rounded-2xl bg-zinc-50 p-4"><p className="text-xs font-black uppercase tracking-wider text-zinc-400">{k}</p><p className="font-bold text-[#12345A] mt-1 break-words">{v || "—"}</p></div>)}
           <div className="sm:col-span-2 rounded-2xl border border-zinc-200 p-4"><p className="text-xs font-black uppercase tracking-wider text-zinc-400">Module Assessments</p>{(selected.moduleAssessments || []).map((a,i) => <div key={i} className="flex justify-between gap-4 py-2 border-b last:border-0"><span>{a.moduleId || `Module ${i+1}`}</span><span className={a.passed ? "text-green-700 font-black" : "text-red-700 font-black"}>{a.passed ? "Passed" : "Not passed"}{a.score != null ? ` • ${a.score}%` : ""}</span></div>)}</div>
           <div className="sm:col-span-2 rounded-2xl border border-zinc-200 p-4"><p className="text-xs font-black uppercase tracking-wider text-zinc-400">Final Assessment</p><p className={selected.finalAssessment?.passed ? "text-green-700 font-black mt-1" : "text-red-700 font-black mt-1"}>{selected.finalAssessment?.passed ? "Passed" : "Not passed"}{selected.finalAssessment?.score != null ? ` • ${selected.finalAssessment.score}%` : ""}</p></div>
         </div>
-        {selected.certificateId && <div className="mx-6 mb-6 rounded-2xl bg-green-50 border border-green-200 p-4"><p className="text-xs uppercase tracking-widest text-green-700 font-black">Issued Certificate ID</p><p className="text-xl font-black text-[#002344] mt-1">{selected.certificateId}</p><a className="inline-flex items-center gap-2 mt-3 text-sm font-bold text-[#0B3A63]" href={`/LearningCertificateVerify?code=${encodeURIComponent(selected.certificateId)}`} target="_blank" rel="noreferrer"><FaExternalLinkAlt /> Open Verification</a></div>}
+        {selected.certificateId && <div className="mx-6 mb-6 rounded-2xl bg-green-50 border border-green-200 p-4"><p className="text-xs uppercase tracking-widest text-green-700 font-black">Issued Certificate ID</p><p className="text-xl font-black text-[#12345A] mt-1">{selected.certificateId}</p><a className="inline-flex items-center gap-2 mt-3 text-sm font-bold text-[#12345A]" href={`/LearningCertificateVerify?code=${encodeURIComponent(selected.certificateId)}`} target="_blank" rel="noreferrer"><FaExternalLinkAlt /> Open Verification</a></div>}
         <div className="p-6 border-t border-zinc-100 flex flex-wrap justify-end gap-2">
           <button onClick={() => setSelected(null)} className="rounded-xl bg-zinc-100 px-4 py-2.5 font-bold">Close</button>
-          {selected.status === "requested" && <button disabled={!!busy} onClick={() => issue(selected)} className="rounded-xl bg-[#002344] text-white px-5 py-2.5 font-black">{busy === selected.id ? "Issuing..." : "Issue Certificate / जारी करें"}</button>}
-          {selected.status === "issued" && <button disabled={!!busy} onClick={() => download(selected)} className="rounded-xl bg-[#ff6600] text-white px-5 py-2.5 font-black">{busy === `pdf-${selected.id}` ? "Creating..." : "Generate PDF / PDF बनाएं"}</button>}
+          {selected.status === "requested" && <button disabled={!!busy} onClick={() => issue(selected)} className="rounded-xl bg-[#12345A] text-white px-5 py-2.5 font-black">{busy === selected.id ? "Issuing..." : "Issue Certificate / जारी करें"}</button>}
+          {selected.status === "issued" && <button disabled={!!busy} onClick={() => download(selected)} className="rounded-xl bg-[#E6530E] text-white px-5 py-2.5 font-black">{busy === `pdf-${selected.id}` ? "Creating..." : "Generate PDF / PDF बनाएं"}</button>}
         </div>
       </div>
     </div>}
