@@ -155,12 +155,12 @@ export default function ImsFinanceEntry() {
     { key: 'transactionNo', en: 'Txn No.', render: (r) => <span className="font-mono text-xs text-slate-500">{r.transactionNo}</span> },
     { key: 'txnDate', en: 'Date', hi: 'दिनांक' },
     { key: 'transactionType', en: 'Type', hi: 'प्रकार', render: (r) => <Badge status={r.transactionType} /> },
-    { key: 'amount', en: 'Amount', hi: 'राशि', align: 'right', render: (r) => <span className="font-semibold tabular-nums text-[#002344]">₹{Number(r.amount).toLocaleString('en-IN')}</span> },
+    { key: 'amount', en: 'Amount', hi: 'राशि', align: 'right', render: (r) => <span className="font-semibold tabular-nums text-[#12345A]">₹{Number(r.amount).toLocaleString('en-IN')}</span> },
     { key: 'direction', en: 'Dr/Cr', render: (r) => r.direction === 'in'
       ? <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700">↓ {t('in_dr')}</span>
       : <span className="inline-flex items-center gap-1 rounded-full bg-rose-100 px-2.5 py-0.5 text-[11px] font-bold text-rose-700">↑ {t('out_cr')}</span> },
     { key: 'paymentMode', en: 'Mode', hi: 'माध्यम', render: (r) => <span className="capitalize">{r.paymentMode || '—'}</span> },
-    { key: 'costCentreId', en: 'Cost Centre', hi: 'लागत केंद्र', render: (r) => (r.costCentreId && ccMap[r.costCentreId]) ? <span className="text-xs font-semibold text-[#002344]">{ccMap[r.costCentreId]}</span> : '—' },
+    { key: 'costCentreId', en: 'Cost Centre', hi: 'लागत केंद्र', render: (r) => (r.costCentreId && ccMap[r.costCentreId]) ? <span className="text-xs font-semibold text-[#12345A]">{ccMap[r.costCentreId]}</span> : '—' },
     { key: 'narration', en: 'Particulars', hi: 'विवरण', render: (r) => (r.narration ? String(r.narration).slice(0, 40) : '—') },
   ];
 
@@ -190,7 +190,7 @@ export default function ImsFinanceEntry() {
               {kind === 'receipt' ? '↓' : '↑'}
             </span>
             <div>
-              <p className="text-sm font-black text-[#002344]">{t('new_entry')}</p>
+              <p className="text-sm font-black text-[#12345A]">{t('new_entry')}</p>
               <p className="text-[11px] font-semibold uppercase tracking-wider text-slate-400">{t('money_transaction')}</p>
             </div>
           </div>
@@ -263,7 +263,7 @@ export default function ImsFinanceEntry() {
               <textarea rows={2} className={inp} value={form.remarks} onChange={(e) => set('remarks', e.target.value)} />
             </L>
 
-            <p className="flex items-start gap-1.5 rounded-xl bg-[#F5F8FC] px-3 py-2 text-[11px] font-semibold text-[#0F766E]">
+            <p className="flex items-start gap-1.5 rounded-xl bg-[#EAF0F6] px-3 py-2 text-[11px] font-semibold text-[#176447]">
               <Icons.RefreshCw size={13} className="mt-0.5 shrink-0" /> {t('auto_updated')}
             </p>
 
@@ -334,7 +334,7 @@ function VoucherDetail({ item, onClose, t }) {
   );
 }
 
-const inp = 'w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-[#2563EB] focus:ring-2 focus:ring-[#2563EB]/15';
+const inp = 'w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-[#12345A] focus:ring-2 focus:ring-[#12345A]/15';
 
 function L({ label, req, children }) {
   return (
