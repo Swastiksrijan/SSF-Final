@@ -38,7 +38,7 @@ export default function EliteDonationCard() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-2.5">
-            <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">80G Eligible*</span>
+            <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">80G Provisional*</span>
             <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">12AB Registered</span>
             <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">CSR-1</span>
             <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">Serving Since 2013</span>

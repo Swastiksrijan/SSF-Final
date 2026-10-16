@@ -1,20 +1,16 @@
 import { Link } from "@tanstack/react-router";
-import { motion } from "framer-motion";
-import { useState } from "react";
+import { motion as Motion } from "framer-motion";
 import {
   FaArrowRight, FaBookOpen, FaBuilding, FaCheckCircle, FaFileAlt,
-  FaGlobeAsia, FaHandshake, FaHeart, FaLeaf, FaUsers, FaLaptop,
+  FaHandshake, FaHeart, FaLeaf, FaUsers, FaLaptop,
   FaGraduationCap, FaShieldAlt, FaNewspaper, FaChartLine, FaSeedling,
-  FaBullseye, FaHandsHelping, FaCompass, FaLightbulb
+  FaBullseye, FaHandsHelping, FaCompass
 } from "react-icons/fa";
 import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
 import OptimizedImage from "../components/OptimizedImage";
 import pageHeader from "../assets/page-header.jpg";
-
-const gold = "#D7B45A";
-const RAZORPAY_URL = "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view";
 
 const values = [
   { title: "Integrity", hi: "ईमानदारी", text: "Act responsibly and communicate truthfully." },
@@ -72,7 +68,7 @@ export default function Home() {
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(5,25,44,0.98)_0%,rgba(5,25,44,0.9)_50%,rgba(5,25,44,0.48)_100%)]" />
         <div className="absolute -right-24 -top-28 -z-10 h-96 w-96 rounded-full border border-[#d7b45a]/30 md:h-[560px] md:w-[560px]" />
         <div className="container mx-auto grid max-w-7xl items-center gap-7 px-5 md:px-10 lg:grid-cols-1">
-          <motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl">
+          <Motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-[#d7b45a]/40 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#f0dba5]">
               <FaSeedling /> Registered Society · Since 2013
             </p>
@@ -94,14 +90,16 @@ export default function Home() {
             <div className="mt-8 flex flex-wrap gap-2 text-sm">
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaCheckCircle className="text-emerald-300" /> 12AB Registered</span>
               <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaCheckCircle className="text-emerald-300" /> CSR-1 Registered</span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaFileAlt className="text-[#e8c878]" /> 80G final approval pending</span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaFileAlt className="text-[#e8c878]" /> 80G provisional · final approval applied</span>
             </div>
-          </motion.div>
+          </Motion.div>
 
         </div>
       </section>
 
-      <FloatingTicker />\n\n      <section className="border-b border-slate-200 bg-white py-7">
+      <FloatingTicker />
+
+      <section className="border-b border-slate-200 bg-white py-7">
         <div className="container mx-auto grid max-w-7xl gap-5 px-5 sm:grid-cols-2 md:grid-cols-4 md:px-8">
           {[
             ["Since 2013", "Registered society"],
@@ -167,7 +165,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-\n      <section className="bg-[#f2eee5] px-5 py-16 md:px-8 md:py-20">
+
+      <section className="bg-[#f2eee5] px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
           <div className="mb-9 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"><div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">In the News · समाचारों में</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">A documented journey, not just a promise.</h2><p className="mt-4 leading-relaxed text-slate-600">Newspaper coverage and media records can help visitors understand the Foundation’s past initiatives. Open the gallery to explore available records and context.</p></div><Link to="/Media" className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#10263b] px-5 py-3 font-bold text-white hover:bg-[#1c405f] md:self-auto">Explore media archive <FaArrowRight /></Link></div>
           <div className="grid gap-5 sm:grid-cols-3">
@@ -215,7 +214,8 @@ export default function Home() {
           </div>
         </div>
       </section>
-\n      <section className="bg-[#09233c] px-5 py-16 text-white md:px-8 md:py-20">
+
+      <section className="bg-[#09233c] px-5 py-16 text-white md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
           <div className="mb-9 max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#e8c878]">Work Together · साथ मिलकर</p><h2 className="mt-3 font-serif text-3xl leading-tight md:text-5xl">Partnership starts with a conversation.</h2><p className="mt-4 leading-relaxed text-slate-200">For CSR teams, government departments, institutions and community partners, we welcome an initial discussion to explore needs, project scope, compliance requirements and practical ways to work together.</p></div>
           <div className="grid gap-4 md:grid-cols-3">
@@ -244,7 +244,7 @@ export default function Home() {
 
       <section className="bg-[#102b43] px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="mx-auto mb-10 max-w-3xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878] md:text-sm">Be Part of the Journey</p><h2 className="mt-3 font-serif text-3xl text-white md:text-5xl">Be Part of the Journey</h2><p className="mt-4 leading-relaxed text-slate-100">आज Swastik Srijan Foundation से जुड़िए। आपके लिए जुड़ने का एक रास्ता है — अपनी भूमिका चुनिए।</p></div>
+          <div className="mx-auto mb-10 max-w-3xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878] md:text-sm">Get Involved · जुड़िए</p><h2 className="mt-3 font-serif text-3xl text-white md:text-5xl">Be Part of the Journey</h2><p className="mt-4 leading-relaxed text-slate-100">आज Swastik Srijan Foundation से जुड़िए। आपके लिए जुड़ने का एक रास्ता है — अपनी भूमिका चुनिए।</p></div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { title: "MEMBER", hi: "सदस्य बनें", text: "मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", path: "/JoinUs?role=member", icon: <FaUsers /> },
@@ -257,11 +257,14 @@ export default function Home() {
       </section>
       <section className="bg-white px-5 py-12 md:px-8"><div className="container mx-auto max-w-7xl"><div className="mb-8 text-center"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Support SSF • सहयोग करें</p><h2 className="mt-2 font-serif text-3xl text-[#10263b] md:text-4xl">Help meaningful work move forward.</h2></div><EliteDonationCard /></div></section>
       <section className="bg-[#fbfaf7] px-5 py-16 md:px-8 md:py-20"><div className="container mx-auto max-w-7xl"><div className="mb-10 text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#8f6d2a] md:text-sm">Institutional Journey • संस्थागत यात्रा</p><h2 className="mt-3 font-serif text-3xl text-[#10263b] md:text-5xl">A continuing journey of service.</h2><p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">Explore the history and milestones documented by SSF.</p></div><ImpactTimeline /><div className="mt-8 text-center"><Link to="/Journey" className="inline-flex items-center gap-2 rounded-full border border-[#d7c69e] px-6 py-3 font-bold text-[#8f6d2a] transition hover:bg-[#f5f1e8]">View service journey <FaArrowRight /></Link></div></div></section>
-\n      <section className="bg-white px-5 py-14 md:px-8">
+
+      <section className="bg-white px-5 py-14 md:px-8">
         <div className="container mx-auto flex max-w-7xl flex-col gap-6 rounded-[1.75rem] border border-[#e1d5b9] bg-[#fbfaf7] p-7 md:flex-row md:items-center md:justify-between md:p-10">
           <div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Take the next step</p><h2 className="mt-3 font-serif text-3xl text-[#10263b] md:text-4xl">Every meaningful partnership starts somewhere.</h2><p className="mt-3 leading-relaxed text-slate-600">Explore the work, ask a question, volunteer a skill or start a conversation about collaboration.</p></div>
           <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap"><Link to="/JoinUs" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#10263b] px-6 py-3 font-bold text-white hover:bg-[#1c405f]"><FaUsers /> Join SSF</Link><Link to="/PartnerWithUs" className="inline-flex items-center justify-center gap-2 rounded-full border border-[#c6a24e] px-6 py-3 font-bold text-[#775b24] hover:bg-[#f5f1e8]"><FaHandshake /> Partner with us</Link><Link to="/Donate" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 px-6 py-3 font-bold text-[#10263b] hover:bg-white"><FaHeart /> Support SSF</Link></div>
         </div>
-      </section>\n\n    </main>
+      </section>
+
+    </main>
   );
 }
