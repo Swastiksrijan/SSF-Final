@@ -43,7 +43,7 @@ const activityCards = [
 const pressItems = [
   { image: "/images/real/newspaper-clipping.jpg", alt: "Newspaper clipping documenting an SSF-related activity", label: "Press coverage" },
   { image: "/images/real/news_media_1.jpg", alt: "News coverage of a digital initiative in Rewa", label: "News & media" },
-  { image: "/images/real/computer-donation-clipping.jpg", alt: "Newspaper clipping about a computer donation initiative", label: "Documented initiative" },
+  { image: "/images/real/online-food-support-clipping.jpg", alt: "Newspaper clipping about an online food support initiative", label: "Community relief" },
 ];
 
 
