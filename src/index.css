@@ -265,3 +265,10 @@ a { text-underline-offset: .18em; }
 [class*="to-[#002344]"], [class*="to-[#001529]"], [class*="to-[#0b3a63]"] { --tw-gradient-to: var(--ssf-navy) var(--tw-gradient-to-position) !important; }
 [class*="from-[#FF6600]"], [class*="from-[#ff6600]"], [class*="from-[#e65c00]"] { --tw-gradient-from: var(--ssf-saffron) var(--tw-gradient-from-position) !important; }
 [class*="to-[#FFD166]"], [class*="to-[#ffd166]"], [class*="to-[#e4c86a]"] { --tw-gradient-to: var(--ssf-gold) var(--tw-gradient-to-position) !important; }
+
+
+/* Final catch-all for legacy arbitrary text/border colors: palette tokens win. */
+:where([class*="text-[#"]) { color: var(--ssf-navy) !important; }
+:where([class*="border-[#"]) { border-color: color-mix(in srgb, var(--ssf-navy) 18%, white) !important; }
+[class*="text-[#FFFFFF]"], [class*="text-[#ffffff]"], [class*="text-[#fff]"] { color: var(--ssf-white) !important; }
+[class*="text-[#EAF0F6]"], [class*="text-[#eaf0f6]"], [class*="text-[#D8EDE9]"] { color: var(--ssf-soft-blue) !important; }
