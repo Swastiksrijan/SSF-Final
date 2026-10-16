@@ -127,31 +127,31 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
         <div className="fixed inset-0 z-[120] bg-black/45 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="auth-title">
             <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-zinc-100 p-6 relative">
                 <button onClick={onClose} className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-900" aria-label="Close auth modal"><FaTimes /></button>
-                <h3 id="auth-title" className="text-2xl font-bold text-[#002344] mb-5">{mode === "signup" ? "Join SSF" : mode === "login" ? "Welcome Back" : "Reset Password"}</h3>
+                <h3 id="auth-title" className="text-2xl font-bold text-[#12345A] mb-5">{mode === "signup" ? "Join SSF" : mode === "login" ? "Welcome Back" : "Reset Password"}</h3>
 
                 {mode !== "forgot" && <div className="flex gap-2 bg-zinc-100 rounded-xl p-1 mb-5">
-                    <button type="button" className={`flex-1 py-2 rounded-lg font-semibold text-sm ${mode === "signup" ? "bg-white text-[#002344] shadow" : "text-zinc-500"}`} onClick={() => { setMode("signup"); setStatus("idle"); setMessage(""); }}>Join SSF</button>
-                    <button type="button" className={`flex-1 py-2 rounded-lg font-semibold text-sm ${mode === "login" ? "bg-white text-[#002344] shadow" : "text-zinc-500"}`} onClick={showLogin}>Login</button>
+                    <button type="button" className={`flex-1 py-2 rounded-lg font-semibold text-sm ${mode === "signup" ? "bg-white text-[#12345A] shadow" : "text-zinc-500"}`} onClick={() => { setMode("signup"); setStatus("idle"); setMessage(""); }}>Join SSF</button>
+                    <button type="button" className={`flex-1 py-2 rounded-lg font-semibold text-sm ${mode === "login" ? "bg-white text-[#12345A] shadow" : "text-zinc-500"}`} onClick={showLogin}>Login</button>
                 </div>}
 
                 {mode === "forgot" ? <form onSubmit={handleForgot} className="space-y-3">
                     <p className="text-sm text-zinc-500 leading-relaxed">Enter the email address registered with your SSF account. We will send a secure password reset link.</p>
                     <input required type="email" autoComplete="email" placeholder="Registered Email" value={forgotData.email} onChange={(e) => setForgotData({ email: e.target.value })} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />
-                    <button type="submit" disabled={status === "submitting"} className="w-full bg-[#FF6600] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-60"><FaKey />{status === "submitting" ? "Sending..." : "Send Reset Link"}</button>
-                    <button type="button" onClick={showLogin} className="w-full py-2 text-sm font-bold text-[#002344] inline-flex items-center justify-center gap-2"><FaArrowLeft /> Back to Login</button>
+                    <button type="submit" disabled={status === "submitting"} className="w-full bg-[#E6530E] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-60"><FaKey />{status === "submitting" ? "Sending..." : "Send Reset Link"}</button>
+                    <button type="button" onClick={showLogin} className="w-full py-2 text-sm font-bold text-[#12345A] inline-flex items-center justify-center gap-2"><FaArrowLeft /> Back to Login</button>
                 </form> : <form onSubmit={handleSubmit} className="space-y-3">
                     {mode === "signup" && <input required autoComplete="name" placeholder="Full Name" value={signupData.fullName} onChange={(e) => setSignupData(prev => ({ ...prev, fullName: e.target.value }))} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />}
                     <input required type="email" autoComplete="email" placeholder="Email" value={mode === "signup" ? signupData.email : loginData.email} onChange={(e) => mode === "signup" ? setSignupData(prev => ({ ...prev, email: e.target.value })) : setLoginData(prev => ({ ...prev, email: e.target.value }))} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />
                     {mode === "signup" && <input required autoComplete="tel" placeholder="Phone" value={signupData.phone} onChange={(e) => setSignupData(prev => ({ ...prev, phone: e.target.value }))} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />}
                     <input required minLength={8} type="password" autoComplete={mode === "signup" ? "new-password" : "current-password"} placeholder={mode === "signup" ? "Password (minimum 8 characters)" : "Password"} value={mode === "signup" ? signupData.password : loginData.password} onChange={(e) => mode === "signup" ? setSignupData(prev => ({ ...prev, password: e.target.value })) : setLoginData(prev => ({ ...prev, password: e.target.value }))} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />
-                    {mode === "login" && <button type="button" onClick={() => { setMode("forgot"); setStatus("idle"); setMessage(""); }} className="text-sm font-bold text-[#FF6600] hover:underline">Forgot Password?</button>}
-                    <button type="submit" disabled={status === "submitting"} className="w-full bg-[#FF6600] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-60">{mode === "signup" ? <FaUserPlus /> : <FaSignInAlt />}{status === "submitting" ? "Please wait..." : mode === "signup" ? "Create Account" : "Login"}</button>
+                    {mode === "login" && <button type="button" onClick={() => { setMode("forgot"); setStatus("idle"); setMessage(""); }} className="text-sm font-bold text-[#E6530E] hover:underline">Forgot Password?</button>}
+                    <button type="submit" disabled={status === "submitting"} className="w-full bg-[#E6530E] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-60">{mode === "signup" ? <FaUserPlus /> : <FaSignInAlt />}{status === "submitting" ? "Please wait..." : mode === "signup" ? "Create Account" : "Login"}</button>
                 </form>}
 
                 {message && <p className={`mt-3 text-sm ${status === "error" ? "text-red-600" : "text-green-700"}`} role="status" aria-live="polite">{message}</p>}
                 {mode !== "forgot" && <div className="grid grid-cols-2 gap-3 mt-4">
                     <a href={adminWhatsAppLink} target="_blank" rel="noreferrer" className="text-center py-2 rounded-xl bg-[#25D366] text-white font-semibold text-sm flex items-center justify-center gap-2"><FaWhatsapp /> WhatsApp</a>
-                    <a href={`mailto:${CONTACT_INFO.primaryEmail}?subject=${encodeURIComponent(`New ${mode} alert`)}&body=${encodeURIComponent(message || "New login/signup activity on website.")}`} className="text-center py-2 rounded-xl bg-[#002344] text-white font-semibold text-sm flex items-center justify-center gap-2"><FaEnvelope /> Email</a>
+                    <a href={`mailto:${CONTACT_INFO.primaryEmail}?subject=${encodeURIComponent(`New ${mode} alert`)}&body=${encodeURIComponent(message || "New login/signup activity on website.")}`} className="text-center py-2 rounded-xl bg-[#12345A] text-white font-semibold text-sm flex items-center justify-center gap-2"><FaEnvelope /> Email</a>
                 </div>}
             </div>
         </div>

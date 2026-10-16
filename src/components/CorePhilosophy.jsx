@@ -47,8 +47,8 @@ export default function CorePhilosophy() {
             <div className="container mx-auto px-6 relative z-10">
                 {/* Header Section Restored */}
                 <div className="text-center max-w-4xl mx-auto space-y-4 mb-16">
-                    <h2 className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em]">Purpose & Direction</h2>
-                    <h3 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344]">Our Campaign</h3>
+                    <h2 className="text-[#E6530E] font-bold text-xs uppercase tracking-[0.2em]">Purpose & Direction</h2>
+                    <h3 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A]">Our Campaign</h3>
                     <p className="text-xl text-zinc-500 max-w-2xl mx-auto">Foundational pillars of our movement for social change.</p>
                 </div>
 
