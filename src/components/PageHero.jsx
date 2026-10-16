@@ -50,16 +50,16 @@ export default function PageHero({
 
     const brand = (
         <div className="flex items-center justify-center gap-3 mb-2">
-            <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
-            <h2 className="text-[#FF6600] font-bold tracking-[0.3em] uppercase text-[10px] md:text-xs">
+            <div className="h-[1px] w-8 bg-[#e4c86a]/60"></div>
+            <h2 className="text-[#e4c86a] font-bold tracking-[0.3em] uppercase text-[10px] md:text-xs">
                 Swastik Srijan Foundation
             </h2>
-            <div className="h-[1px] w-8 bg-[#FF6600]/60"></div>
+            <div className="h-[1px] w-8 bg-[#e4c86a]/60"></div>
         </div>
     );
 
     return (
-        <section className={`relative ${height} flex items-center justify-center bg-[#001529] text-white overflow-hidden pt-20`}>
+        <section className={`relative ${height} flex items-center justify-center bg-[#08192b] text-white overflow-hidden pt-20`}>
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <OptimizedImage
@@ -70,7 +70,7 @@ export default function PageHero({
                     style={{ objectPosition }}
                 />
                 {/* Gradient Overlay for better text readability */}
-                <div className={`absolute inset-0 ${overlayOpacity} bg-gradient-to-b from-[#001529]/60 via-transparent to-[#001529]/80`}></div>
+                <div className={`absolute inset-0 ${overlayOpacity} bg-gradient-to-b from-[#08192b]/60 via-transparent to-[#08192b]/80`}></div>
             </div>
 
             {/* Content Container */}
@@ -105,12 +105,12 @@ export default function PageHero({
                     {(subtitle || hindiSubtitle) && (
                         <div className="hidden md:block space-y-3 pt-2">
                             {subtitle && (
-                                <p className="text-lg md:text-2xl font-light text-blue-50/90 tracking-wide max-w-3xl mx-auto">
+                                <p className="text-lg md:text-2xl font-light text-[#e2e8f0] tracking-wide max-w-3xl mx-auto">
                                     {subtitle}
                                 </p>
                             )}
                             {hindiSubtitle && (
-                                <p className="text-xl md:text-3xl font-hindi text-zinc-200/90 leading-relaxed font-light">
+                                <p className="text-xl md:text-3xl font-hindi text-[#cbd5e1] leading-relaxed font-light">
                                     {hindiSubtitle}
                                 </p>
                             )}
