@@ -272,3 +272,21 @@ a { text-underline-offset: .18em; }
 :where([class*="border-[#"]) { border-color: color-mix(in srgb, var(--ssf-navy) 18%, white) !important; }
 [class*="text-[#FFFFFF]"], [class*="text-[#ffffff]"], [class*="text-[#fff]"] { color: var(--ssf-white) !important; }
 [class*="text-[#EAF0F6]"], [class*="text-[#eaf0f6]"], [class*="text-[#D8EDE9]"] { color: var(--ssf-soft-blue) !important; }
+
+
+/* Remaining utility shade families found in forms, cards and dashboards */
+[class*="bg-orange-50"], [class*="bg-orange-100"], [class*="bg-amber-50"],
+[class*="bg-amber-100"], [class*="bg-yellow-50"], [class*="bg-yellow-100"] {
+  background-color: var(--ssf-ivory) !important;
+}
+[class*="bg-orange-400"], [class*="bg-orange-500"] { background-color: var(--ssf-saffron) !important; }
+[class*="bg-amber-400"], [class*="bg-amber-500"], [class*="bg-yellow-400"], [class*="bg-yellow-500"] {
+  background-color: var(--ssf-gold) !important;
+}
+[class*="bg-green-500"], [class*="bg-emerald-500"], [class*="bg-teal-600"] {
+  background-color: var(--ssf-green) !important;
+}
+[class*="bg-blue-500"], [class*="bg-indigo-500"], [class*="bg-violet-500"],
+[class*="bg-purple-500"], [class*="bg-cyan-500"] { background-color: var(--ssf-navy) !important; }
+[class*="bg-gray-200"], [class*="bg-zinc-200"], [class*="bg-slate-200"],
+[class*="bg-neutral-200"] { background-color: var(--ssf-soft-blue) !important; }
