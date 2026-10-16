@@ -18,10 +18,10 @@ export default function DonatePage() {
 
   const causes = [
     { id: 1, title: "Education for Every Child", titleHi: "हर बच्चे के लिए शिक्षा", icon: <FaGraduationCap />, points: ["School education", "Learning material", "Digital & creative education"], btnText: "Donate for Education", iconBox: "bg-[#eef2f7] text-[#0a2540]", border: "border-[#e9e3d6]", bg: "bg-[#eef2f7]" },
-    { id: 2, title: "Health & Nutrition", titleHi: "स्वास्थ्य और पोषण", icon: <FaHeartbeat />, points: ["Health camps", "Nutrition for children & women", "Medical assistance"], btnText: "Donate for Health", iconBox: "bg-[#eef7f1] text-[#177245]", border: "border-[#e9e3d6]", bg: "bg-[#eef7f1]" },
-    { id: 3, title: "Livelihood & Skill Development", titleHi: "आजीविका और कौशल विकास", icon: <FaBriefcase />, points: ["Vocational training", "Women empowerment", "Self-employment support"], btnText: "Donate for Livelihood", iconBox: "bg-[#eef7f1] text-[#177245]", border: "border-[#e9e3d6]", bg: "bg-[#eef7f1]" },
+    { id: 2, title: "Health & Nutrition", titleHi: "स्वास्थ्य और पोषण", icon: <FaHeartbeat />, points: ["Health camps", "Nutrition for children & women", "Medical assistance"], btnText: "Donate for Health", iconBox: "bg-[#eef7f1] text-[#176447]", border: "border-[#e9e3d6]", bg: "bg-[#eef7f1]" },
+    { id: 3, title: "Livelihood & Skill Development", titleHi: "आजीविका और कौशल विकास", icon: <FaBriefcase />, points: ["Vocational training", "Women empowerment", "Self-employment support"], btnText: "Donate for Livelihood", iconBox: "bg-[#eef7f1] text-[#176447]", border: "border-[#e9e3d6]", bg: "bg-[#eef7f1]" },
     { id: 4, title: "Sports, Culture & Youth Development", titleHi: "खेल, संस्कृति और युवा विकास", icon: <FaRunning />, points: ["Sports activities", "Cultural programs", "Youth leadership"], btnText: "Support Youth & Sports", iconBox: "bg-[#faf4e2] text-[#7e5f22]", border: "border-[#e9e3d6]", bg: "bg-[#faf4e2]" },
-    { id: 5, title: "Environment & Community Welfare", titleHi: "पर्यावरण और सामुदायिक कल्याण", icon: <FaTree />, points: ["Tree plantation", "Cleanliness & awareness", "Animal & bird welfare"], btnText: "Support Environment", iconBox: "bg-[#eef7f1] text-[#177245]", border: "border-[#e9e3d6]", bg: "bg-[#eef7f1]" }
+    { id: 5, title: "Environment & Community Welfare", titleHi: "पर्यावरण और सामुदायिक कल्याण", icon: <FaTree />, points: ["Tree plantation", "Cleanliness & awareness", "Animal & bird welfare"], btnText: "Support Environment", iconBox: "bg-[#eef7f1] text-[#176447]", border: "border-[#e9e3d6]", bg: "bg-[#eef7f1]" }
   ];
 
   const whyDonate = [

@@ -37,20 +37,20 @@ const items = [
 
 export default function CookiePolicy() {
     return (
-        <div className="min-h-screen bg-[#f7f9fc] text-[#002344] font-sans">
-            <section className="relative overflow-hidden bg-[#002344] pt-36 pb-20 px-5 sm:px-8">
+        <div className="min-h-screen bg-[#f7f9fc] text-[#12345A] font-sans">
+            <section className="relative overflow-hidden bg-[#12345A] pt-36 pb-20 px-5 sm:px-8">
                 <div className="absolute inset-0 opacity-[0.08] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:28px_28px]" />
-                <div className="absolute -top-24 -right-20 w-72 h-72 rounded-full border border-[#FF6600]/30" />
+                <div className="absolute -top-24 -right-20 w-72 h-72 rounded-full border border-[#E6530E]/30" />
                 <div className="absolute -bottom-36 -left-20 w-80 h-80 rounded-full border border-white/10" />
                 <div className="relative max-w-6xl mx-auto rounded-[28px] border border-white/20 p-2 shadow-2xl">
                     <div className="rounded-[22px] border border-white/10 bg-white/[0.04] px-6 sm:px-10 lg:px-14 py-10 sm:py-12">
                         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-10">
                             <div className="max-w-3xl">
-                                <div className="inline-flex items-center gap-2 rounded-full border border-[#FF6600]/40 bg-[#FF6600]/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-[#ff9a45]">
+                                <div className="inline-flex items-center gap-2 rounded-full border border-[#E6530E]/40 bg-[#E6530E]/10 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-[#ff9a45]">
                                     <FaCookieBite /> Website Policy
                                 </div>
                                 <h1 className="mt-5 text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight text-white leading-tight">
-                                    Cookie <span className="text-[#FF6600]">Policy</span>
+                                    Cookie <span className="text-[#E6530E]">Policy</span>
                                 </h1>
                                 <p className="mt-4 text-lg sm:text-xl text-zinc-200 leading-relaxed">
                                     A clear explanation of cookies and similar technologies used to support a reliable and transparent website experience.
@@ -61,9 +61,9 @@ export default function CookiePolicy() {
                                 </div>
                             </div>
                             <div className="shrink-0 flex justify-center">
-                                <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full border border-[#FF6600]/40 bg-white/[0.06] flex items-center justify-center shadow-2xl">
+                                <div className="relative w-36 h-36 sm:w-44 sm:h-44 rounded-full border border-[#E6530E]/40 bg-white/[0.06] flex items-center justify-center shadow-2xl">
                                     <div className="absolute inset-3 rounded-full border border-white/10" />
-                                    <FaCookieBite className="text-5xl sm:text-6xl text-[#FF6600]" />
+                                    <FaCookieBite className="text-5xl sm:text-6xl text-[#E6530E]" />
                                 </div>
                             </div>
                         </div>
@@ -74,14 +74,14 @@ export default function CookiePolicy() {
             <main className="max-w-6xl mx-auto px-5 sm:px-8 py-14 sm:py-20">
                 <div className="grid lg:grid-cols-[1.5fr_.8fr] gap-8 mb-10">
                     <div className="bg-white rounded-3xl border border-zinc-200 shadow-sm p-7 sm:p-9">
-                        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#FF6600] mb-3">Our approach</p>
+                        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#E6530E] mb-3">Our approach</p>
                         <h2 className="text-2xl sm:text-3xl font-black mb-4">Simple, useful and transparent</h2>
                         <p className="text-zinc-600 leading-8">
                             We aim to use only the technologies reasonably required for the website experience and to explain their purpose in clear language. This policy should be read together with our Privacy Policy and Terms of Use.
                         </p>
                     </div>
-                    <div className="rounded-3xl bg-[#002344] text-white p-7 sm:p-9 shadow-xl">
-                        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#FF6600] mb-3">Related policies</p>
+                    <div className="rounded-3xl bg-[#12345A] text-white p-7 sm:p-9 shadow-xl">
+                        <p className="text-xs font-black uppercase tracking-[0.18em] text-[#E6530E] mb-3">Related policies</p>
                         <div className="space-y-3">
                             <Link to="/PrivacyPolicy" className="block rounded-xl border border-white/10 px-4 py-3 hover:bg-white/10 transition">Privacy Policy →</Link>
                             <Link to="/TermsAndConditions" className="block rounded-xl border border-white/10 px-4 py-3 hover:bg-white/10 transition">Terms of Use →</Link>
@@ -94,7 +94,7 @@ export default function CookiePolicy() {
                     {items.map(({ title, icon: Icon, text }, index) => (
                         <section key={title} className="bg-white rounded-3xl border border-zinc-200 shadow-sm p-7 sm:p-8 hover:shadow-md transition-shadow">
                             <div className="flex items-start gap-4">
-                                <div className="w-12 h-12 rounded-2xl bg-[#002344] text-[#FF6600] flex items-center justify-center shrink-0"><Icon /></div>
+                                <div className="w-12 h-12 rounded-2xl bg-[#12345A] text-[#E6530E] flex items-center justify-center shrink-0"><Icon /></div>
                                 <div>
                                     <p className="text-xs font-black text-zinc-400 mb-1">0{index + 1}</p>
                                     <h2 className="text-xl font-black mb-3">{title}</h2>
@@ -105,12 +105,12 @@ export default function CookiePolicy() {
                     ))}
                 </div>
 
-                <section className="mt-8 rounded-3xl border border-[#FF6600]/20 bg-[#fff8f0] p-7 sm:p-9">
+                <section className="mt-8 rounded-3xl border border-[#E6530E]/20 bg-[#fff8f0] p-7 sm:p-9">
                     <div className="flex items-start gap-4">
-                        <div className="w-11 h-11 rounded-xl bg-[#FF6600] text-white flex items-center justify-center shrink-0"><FaEnvelope /></div>
+                        <div className="w-11 h-11 rounded-xl bg-[#E6530E] text-white flex items-center justify-center shrink-0"><FaEnvelope /></div>
                         <div>
                             <h2 className="text-xl font-black mb-2">Questions or privacy requests?</h2>
-                            <p className="text-zinc-600 leading-7">For questions about cookies, privacy or website data practices, contact us at <a className="font-bold text-[#002344] hover:text-[#FF6600]" href={`mailto:${CONTACT_INFO.primaryEmail}`}>{CONTACT_INFO.primaryEmail}</a>.</p>
+                            <p className="text-zinc-600 leading-7">For questions about cookies, privacy or website data practices, contact us at <a className="font-bold text-[#12345A] hover:text-[#E6530E]" href={`mailto:${CONTACT_INFO.primaryEmail}`}>{CONTACT_INFO.primaryEmail}</a>.</p>
                         </div>
                     </div>
                 </section>
