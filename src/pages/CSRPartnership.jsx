@@ -84,7 +84,7 @@ export default function CSRPartnership() {
                                 transition={{ delay: idx * 0.1 }}
                                 className="group p-8 rounded-[2rem] bg-zinc-50 border border-zinc-100 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
                             >
-                                <div className="w-16 h-16 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center text-3xl text-[#12345A] mb-6 group-hover:bg-[#fb8500] group-hover:text-white transition-colors duration-300">
+                                <div className="w-16 h-16 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center text-3xl text-[#12345A] mb-6 group-hover:bg-[#E6530E] group-hover:text-white transition-colors duration-300">
                                     {benefit.icon}
                                 </div>
                                 <h3 className="text-xl font-bold text-[#12345A] mb-3">{benefit.title}</h3>
@@ -100,13 +100,13 @@ export default function CSRPartnership() {
             {/* ================= TAX & COMPLIANCE SECTION ================= */}
             <section className="py-24 px-6 bg-[#12345A] text-white relative overflow-hidden">
                 {/* Background Patterns */}
-                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#fb8500]/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#004d99]/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
+                <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#E6530E]/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
+                <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#12345A]/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
 
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
                     <div>
                         <h2 className="text-4xl font-serif font-bold mb-6">
-                            Maximize Impact,<br /> <span className="text-[#fb8500]">Optimize Taxes.</span>
+                            Maximize Impact,<br /> <span className="text-[#E6530E]">Optimize Taxes.</span>
                         </h2>
                         <p className="text-lg text-zinc-300 leading-relaxed mb-8">
                             Partnering with Swastik Srijan Foundation not only helps you fulfill your corporate social responsibility but also provides tangible financial benefits through tax exemptions.
@@ -114,7 +114,7 @@ export default function CSRPartnership() {
 
                         <div className="space-y-6">
                             <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                                <div className="shrink-0 w-12 h-12 rounded-full bg-[#fb8500] flex items-center justify-center text-xl font-bold">
+                                <div className="shrink-0 w-12 h-12 rounded-full bg-[#E6530E] flex items-center justify-center text-xl font-bold">
                                     %
                                 </div>
                                 <div>
@@ -123,7 +123,7 @@ export default function CSRPartnership() {
                                 </div>
                             </div>
                             <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
-                                <div className="shrink-0 w-12 h-12 rounded-full bg-[#2d6a4f] flex items-center justify-center text-xl font-bold">
+                                <div className="shrink-0 w-12 h-12 rounded-full bg-[#176447] flex items-center justify-center text-xl font-bold">
                                     <FaCheckCircle />
                                 </div>
                                 <div>
@@ -137,7 +137,7 @@ export default function CSRPartnership() {
                     {/* Registration Details Card */}
                     <div className="bg-white text-[#12345A] p-8 md:p-10 rounded-[2.5rem] shadow-2xl relative">
                         <h3 className="text-2xl font-bold mb-6 flex items-center gap-3 border-b border-zinc-100 pb-4">
-                            <FaBuilding className="text-[#fb8500]" /> Registration Details
+                            <FaBuilding className="text-[#E6530E]" /> Registration Details
                         </h3>
                         <div className="space-y-4">
                             {registrationDetails.map((item, i) => (
@@ -281,7 +281,7 @@ export default function CSRPartnership() {
                         </p>
                         <div className="space-y-4 relative z-10">
                             <div className="flex items-center gap-4 text-white">
-                                <div className="w-10 h-10 rounded-full bg-[#fb8500] flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-full bg-[#E6530E] flex items-center justify-center">
                                     <FaEnvelope />
                                 </div>
                                 <div>
@@ -291,7 +291,7 @@ export default function CSRPartnership() {
                                             navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
                                             alert("Email copied to clipboard!");
                                         }}
-                                        className="text-lg font-semibold text-white hover:text-[#fb8500] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#fb8500] pb-1"
+                                        className="text-lg font-semibold text-white hover:text-[#E6530E] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#E6530E] pb-1"
                                         title="Click to copy"
                                     >
                                         {CONTACT_INFO.primaryEmail}
@@ -305,7 +305,7 @@ export default function CSRPartnership() {
                                                         navigator.clipboard.writeText(CONTACT_INFO.secondaryEmail);
                                                         alert("Email copied!");
                                                     }}
-                                                    className="text-xs text-zinc-400 font-medium hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                                                    className="text-xs text-zinc-400 font-medium hover:text-[#E6530E] transition-colors cursor-pointer outline-none"
                                                     title="Click to copy"
                                                 >
                                                     {CONTACT_INFO.secondaryEmail}
@@ -320,7 +320,7 @@ export default function CSRPartnership() {
                                                         navigator.clipboard.writeText(CONTACT_INFO.thirdEmail);
                                                         alert("Email copied!");
                                                     }}
-                                                    className="text-xs text-zinc-400 font-medium hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                                                    className="text-xs text-zinc-400 font-medium hover:text-[#E6530E] transition-colors cursor-pointer outline-none"
                                                     title="Click to copy"
                                                 >
                                                     {CONTACT_INFO.thirdEmail}
@@ -334,7 +334,7 @@ export default function CSRPartnership() {
                                 </div>
                             </div>
                             <div className="flex items-center gap-4 text-white">
-                                <div className="w-10 h-10 rounded-full bg-[#fb8500] flex items-center justify-center">
+                                <div className="w-10 h-10 rounded-full bg-[#E6530E] flex items-center justify-center">
                                     <FaPhoneAlt />
                                 </div>
                                 <div>
@@ -350,15 +350,15 @@ export default function CSRPartnership() {
                             <h3 className="text-2xl font-bold text-[#12345A] mb-4">Request a Proposal</h3>
                             <div>
                                 <label className="block text-sm font-bold text-zinc-500 mb-2">Company Name</label>
-                                <input type="text" className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#fb8500] focus:ring-2 focus:ring-[#fb8500]/20 outline-none transition-all" placeholder="Enter company name" />
+                                <input type="text" className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#E6530E] focus:ring-2 focus:ring-[#E6530E]/20 outline-none transition-all" placeholder="Enter company name" />
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-zinc-500 mb-2">Phone / Email</label>
-                                <input type="text" className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#fb8500] focus:ring-2 focus:ring-[#fb8500]/20 outline-none transition-all" placeholder="How can we reach you?" />
+                                <input type="text" className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#E6530E] focus:ring-2 focus:ring-[#E6530E]/20 outline-none transition-all" placeholder="How can we reach you?" />
                             </div>
                             <div>
                                 <label className="block text-sm font-bold text-zinc-500 mb-2">Interest Area</label>
-                                <select className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#fb8500] focus:ring-2 focus:ring-[#fb8500]/20 outline-none transition-all">
+                                <select className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#E6530E] focus:ring-2 focus:ring-[#E6530E]/20 outline-none transition-all">
                                     <option>General CSR</option>
                                     <option>Education</option>
                                     <option>Healthcare</option>
