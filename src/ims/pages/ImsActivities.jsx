@@ -35,7 +35,7 @@ export default function ImsActivities() {
 
   const cols = [
     { key: 'recordId', en: 'ID', render: (r) => <span className="font-mono text-xs text-slate-500">{r.recordId}</span> },
-    { key: 'title', en: 'Activity', render: (r) => <span className="font-semibold text-[#002344]">{r.title || '—'}</span> },
+    { key: 'title', en: 'Activity', render: (r) => <span className="font-semibold text-[#12345A]">{r.title || '—'}</span> },
     { key: 'activityType', en: 'Type', render: (r) => r.activityType || '—' },
     { key: 'activityDate', en: 'Date', render: (r) => r.activityDate || '—' },
     { key: 'participants', en: 'Participants', render: (r) => r.participants ?? 0 },
@@ -73,7 +73,7 @@ export default function ImsActivities() {
           {Object.entries(groupBy(rows, (a) => a.activityType || 'other')).map(([type, list]) => (
             <Card key={type} className="p-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-bold text-[#002344]">{type}</span>
+                <span className="text-sm font-bold text-[#12345A]">{type}</span>
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs font-bold text-slate-500">{list.length}</span>
               </div>
               <p className="mt-2 text-xs text-slate-400">{list.reduce((s, a) => s + (Number(a.participants) || 0), 0)} participants · {list.filter((a) => a.isFree).length} free</p>
@@ -86,7 +86,7 @@ export default function ImsActivities() {
       {tab === 'beneficiaries' && (
         <DataTable rows={beneficiaries} empty={t('no_records')} columns={[
           { key: 'recordId', en: 'ID', render: (r) => <span className="font-mono text-xs text-slate-500">{r.recordId}</span> },
-          { key: 'household', en: 'Household', render: (r) => <span className="font-semibold text-[#002344]">{r.household || '—'}</span> },
+          { key: 'household', en: 'Household', render: (r) => <span className="font-semibold text-[#12345A]">{r.household || '—'}</span> },
           { key: 'personId', en: 'Person', render: (r) => (r.personId ? `#${r.personId}` : '—') },
           { key: 'services', en: 'Services', render: (r) => (r.services ? String(r.services).slice(0, 40) : '—') },
           { key: 'consent', en: 'Consent', render: (r) => (r.consent ? '✓' : '—') },

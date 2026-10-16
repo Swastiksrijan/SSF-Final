@@ -103,7 +103,7 @@ export default function ImsPolicies() {
       >
         <div className="flex flex-wrap items-center gap-x-5 gap-y-1 text-xs font-semibold text-white/80">
           <span>{meta.organisation}</span>
-          <span>{t('policy_status')}: <span className="text-[#FFD166]">{meta.status}</span></span>
+          <span>{t('policy_status')}: <span className="text-[#F7A814]">{meta.status}</span></span>
           <span>{t('parts')}: {parts}</span>
           <span>{t('sections')}: {sections}</span>
           <span>{t('policy_areas')}: {POLICY_AREAS.length}</span>
@@ -129,7 +129,7 @@ export default function ImsPolicies() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder={t('search_policy')}
-                className="w-full rounded-lg border border-slate-300 py-2 pl-8 pr-2 text-sm outline-none focus:border-[#FF6600]"
+                className="w-full rounded-lg border border-slate-300 py-2 pl-8 pr-2 text-sm outline-none focus:border-[#E6530E]"
               />
             </div>
             <p className="mb-1.5 px-1 text-[11px] font-bold uppercase tracking-wide text-slate-400">{t('contents')}</p>
@@ -138,7 +138,7 @@ export default function ImsPolicies() {
                 <div key={c.id} className="group flex items-center gap-1">
                   <button
                     onClick={() => document.getElementById(c.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })}
-                    className={`flex-1 rounded-md px-2 py-1.5 text-left text-[13px] leading-snug transition hover:bg-slate-100 ${c.level === 1 ? 'font-bold text-[#002344]' : 'pl-4 text-slate-500'}`}
+                    className={`flex-1 rounded-md px-2 py-1.5 text-left text-[13px] leading-snug transition hover:bg-slate-100 ${c.level === 1 ? 'font-bold text-[#12345A]' : 'pl-4 text-slate-500'}`}
                   >
                     {c.text}
                   </button>
@@ -146,7 +146,7 @@ export default function ImsPolicies() {
                     <button
                       title={t('export_chapter')}
                       onClick={() => downloadChapter(c.id)}
-                      className="rounded p-1 text-slate-300 opacity-0 transition hover:bg-slate-100 hover:text-[#FF6600] group-hover:opacity-100"
+                      className="rounded p-1 text-slate-300 opacity-0 transition hover:bg-slate-100 hover:text-[#E6530E] group-hover:opacity-100"
                     >
                       <Icons.FileDown size={14} />
                     </button>
@@ -194,7 +194,7 @@ export default function ImsPolicies() {
             </dl>
             {master && (
               <p className="mt-4 text-xs text-slate-500">
-                {t('linked_record')}: <span className="font-mono font-semibold text-[#002344]">{master.recordId}</span> · <Badge status={master.status} />
+                {t('linked_record')}: <span className="font-mono font-semibold text-[#12345A]">{master.recordId}</span> · <Badge status={master.status} />
               </p>
             )}
           </Card>
