@@ -60,22 +60,22 @@ const communityPhotoStrip = [
 
 export default function Home() {
   return (
-    <main className="w-full overflow-hidden bg-[#fbfaf7] font-sans text-[#17283a]">
-      <section className="relative isolate flex min-h-[580px] items-center overflow-hidden bg-[#09233c] py-14 text-white md:min-h-[620px] md:py-16">
+    <main className="w-full overflow-hidden bg-[#FAF9F5] font-sans text-[#26343D]">
+      <section className="relative isolate flex min-h-[580px] items-center overflow-hidden bg-[#12345A] py-14 text-white md:min-h-[620px] md:py-16">
         <div className="absolute inset-0 -z-20">
           <OptimizedImage priority src={pageHeader} alt="Swastik Srijan Foundation community work" className="h-full w-full" />
         </div>
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(5,25,44,0.98)_0%,rgba(5,25,44,0.9)_50%,rgba(5,25,44,0.48)_100%)]" />
-        <div className="absolute -right-24 -top-28 -z-10 h-96 w-96 rounded-full border border-[#d7b45a]/30 md:h-[560px] md:w-[560px]" />
+        <div className="absolute -right-24 -top-28 -z-10 h-96 w-96 rounded-full border border-[#F7A814]/30 md:h-[560px] md:w-[560px]" />
         <div className="container mx-auto grid max-w-7xl items-center gap-7 px-5 md:px-10 lg:grid-cols-1">
           <Motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl">
-            <p className="inline-flex items-center gap-2 rounded-full border border-[#d7b45a]/40 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#f0dba5]">
+            <p className="inline-flex items-center gap-2 rounded-full border border-[#F7A814]/40 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#F7A814]">
               <FaSeedling /> Registered Society · Since 2013
             </p>
             <p className="mt-6 text-xl font-semibold tracking-wide text-white md:text-2xl">Swastik Srijan Foundation Samiti</p>
-            <p className="mt-4 font-hindi text-lg leading-relaxed text-[#f0dba5] sm:text-xl">सहयोग <span className="px-1 text-white/40">•</span> कौशल <span className="px-1 text-white/40">•</span> जागरूकता <span className="px-1 text-white/40">•</span> सृजन</p>
+            <p className="mt-4 font-hindi text-lg leading-relaxed text-[#F7A814] sm:text-xl">सहयोग <span className="px-1 text-white/40">•</span> कौशल <span className="px-1 text-white/40">•</span> जागरूकता <span className="px-1 text-white/40">•</span> सृजन</p>
             <h1 className="mt-5 font-serif text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl lg:text-7xl">
-              Creating Change.<span className="mt-2 block italic text-[#e8c878]">Inspiring Lives.</span>
+              Creating Change.<span className="mt-2 block italic text-[#F7A814]">Inspiring Lives.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-100 md:text-xl">
               Working towards inclusive community development through education, skills, health awareness, environmental responsibility and meaningful partnerships.
@@ -84,14 +84,14 @@ export default function Home() {
               शिक्षा, कौशल, स्वास्थ्य-जागरूकता, पर्यावरण संरक्षण और सार्थक साझेदारी के माध्यम से समावेशी सामुदायिक विकास की दिशा में प्रयास।
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-              <Link to="/About" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#d7b45a] px-6 py-3 font-bold text-[#09233c] transition hover:-translate-y-0.5 hover:bg-[#f0dba5]">Discover SSF <FaArrowRight /></Link>
-              <Link to="/CSRPartnership" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#e8c878]/70 px-6 py-3 font-bold text-[#f0dba5] transition hover:bg-white/10">CSR & Institutional Partnerships <FaHandshake /></Link>
+              <Link to="/About" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#176447] px-6 py-3 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#176447]">Discover SSF <FaArrowRight /></Link>
+              <Link to="/CSRPartnership" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#F7A814]/70 px-6 py-3 font-bold text-[#F7A814] transition hover:bg-white/10">CSR & Institutional Partnerships <FaHandshake /></Link>
               <Link to="/JoinUs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/40 px-6 py-3 font-semibold text-white transition hover:bg-white/10"><FaUsers /> Join the Mission</Link>
             </div>
             <div className="mt-8 flex flex-wrap gap-2 text-sm">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaCheckCircle className="text-emerald-300" /> 12AB Registered</span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaCheckCircle className="text-emerald-300" /> CSR-1 Registered</span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaFileAlt className="text-[#e8c878]" /> 80G provisional · final approval applied</span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaCheckCircle className="text-[#176447]" /> 12AB Registered</span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaCheckCircle className="text-[#176447]" /> CSR-1 Registered</span>
+              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaFileAlt className="text-[#F7A814]" /> 80G provisional · final approval applied</span>
             </div>
           </Motion.div>
 
@@ -107,82 +107,82 @@ export default function Home() {
             ["Rewa, MP", "Registered office"],
             ["Across India", "Area of work"],
             ["Open records", "Transparency & reports"],
-          ].map(([value, label]) => <div key={label} className="flex items-center gap-3 border-slate-200 sm:px-3 md:border-r last:md:border-r-0"><span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#c6a24e]" /><div><p className="font-serif text-xl font-semibold text-[#10263b]">{value}</p><p className="mt-1 text-sm text-slate-600">{label}</p></div></div>)}
+          ].map(([value, label]) => <div key={label} className="flex items-center gap-3 border-slate-200 sm:px-3 md:border-r last:md:border-r-0"><span className="h-2.5 w-2.5 shrink-0 rounded-full bg-[#F7A814]" /><div><p className="font-serif text-xl font-semibold text-[#12345A]">{value}</p><p className="mt-1 text-sm text-slate-600">{label}</p></div></div>)}
         </div>
       </section>
 
       <section className="px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
           <div className="mb-9 max-w-3xl">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Work & Community · कार्य और समुदाय</p>
-            <h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">The work matters. So does the evidence.</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Work & Community · कार्य और समुदाय</p>
+            <h2 className="mt-3 font-serif text-3xl leading-tight text-[#12345A] md:text-5xl">The work matters. So does the evidence.</h2>
             <p className="mt-4 leading-relaxed text-slate-600">Explore documented activities and initiatives. We aim to present our work responsibly, without unsupported impact numbers or promises.</p>
           </div>
           <div className="grid gap-5 md:grid-cols-3">
             {activityCards.map((item) => <article key={item.title} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white transition hover:-translate-y-1 hover:shadow-xl">
-              <div className="relative h-56 overflow-hidden bg-slate-100"><img src={item.image} alt={item.alt} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className="absolute left-4 top-4 rounded-full bg-[#09233c]/90 px-3 py-1.5 text-xs font-bold text-white">{item.label}</span></div>
-              <div className="p-6"><h3 className="font-serif text-xl font-semibold text-[#10263b]">{item.title}</h3><p className="mt-3 text-sm leading-relaxed text-slate-600">{item.text}</p><Link to="/Media" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#8f6d2a]">View documented activities <FaArrowRight /></Link></div>
+              <div className="relative h-56 overflow-hidden bg-slate-100"><img src={item.image} alt={item.alt} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" /><span className="absolute left-4 top-4 rounded-full bg-[#12345A]/90 px-3 py-1.5 text-xs font-bold text-white">{item.label}</span></div>
+              <div className="p-6"><h3 className="font-serif text-xl font-semibold text-[#12345A]">{item.title}</h3><p className="mt-3 text-sm leading-relaxed text-slate-600">{item.text}</p><Link to="/Media" className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-[#12345A]">View documented activities <FaArrowRight /></Link></div>
             </article>)}
           </div>
           <div className="mt-6 flex flex-wrap gap-3">
-            <Link to="/Media" className="inline-flex items-center gap-2 rounded-full border border-[#d7c69e] px-5 py-3 font-bold text-[#775b24] hover:bg-[#f5f1e8]"><FaNewspaper /> Media & Gallery</Link>
-            <Link to="/Impact" className="inline-flex items-center gap-2 rounded-full border border-[#d7c69e] px-5 py-3 font-bold text-[#775b24] hover:bg-[#f5f1e8]"><FaChartLine /> Work & Impact</Link>
-            <Link to="/Blog" className="inline-flex items-center gap-2 rounded-full border border-[#d7c69e] px-5 py-3 font-bold text-[#775b24] hover:bg-[#f5f1e8]">Stories & Updates <FaArrowRight /></Link>
+            <Link to="/Media" className="inline-flex items-center gap-2 rounded-full border border-[#12345A] px-5 py-3 font-bold text-[#12345A] hover:bg-[#EAF0F6]"><FaNewspaper /> Media & Gallery</Link>
+            <Link to="/Impact" className="inline-flex items-center gap-2 rounded-full border border-[#12345A] px-5 py-3 font-bold text-[#12345A] hover:bg-[#EAF0F6]"><FaChartLine /> Work & Impact</Link>
+            <Link to="/Blog" className="inline-flex items-center gap-2 rounded-full border border-[#12345A] px-5 py-3 font-bold text-[#12345A] hover:bg-[#EAF0F6]">Stories & Updates <FaArrowRight /></Link>
           </div>
         </div>
       </section>
 
 
-      <section className="border-y border-[#e4dccb] bg-white px-5 py-12 md:px-8 md:py-16">
+      <section className="border-y border-[#EAF0F6] bg-white px-5 py-12 md:px-8 md:py-16">
         <div className="container mx-auto max-w-7xl">
           <div className="mb-8 text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Glimpses of SSF · संस्था की झलकियाँ</p>
-            <h2 className="mt-3 font-serif text-3xl text-[#10263b] md:text-4xl">Real moments. Shared purpose.</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Glimpses of SSF · संस्था की झलकियाँ</p>
+            <h2 className="mt-3 font-serif text-3xl text-[#12345A] md:text-4xl">Real moments. Shared purpose.</h2>
             <p className="mt-3 text-slate-600">शिक्षा, सहभागिता, जागरूकता और सेवा से जुड़ी संस्था की तस्वीरें।</p>
           </div>
           <div className="grid grid-cols-2 gap-x-4 gap-y-7 sm:grid-cols-4 lg:grid-cols-8">
             {communityPhotoStrip.map((item) => <Link to="/Media" key={item.src} className="group flex flex-col items-center text-center">
-              <span className="relative block h-24 w-24 overflow-hidden rounded-full border-[3px] border-[#d7b45a] bg-[#f5f1e8] p-1 shadow-md transition duration-300 group-hover:-translate-y-1 group-hover:shadow-xl sm:h-28 sm:w-28">
+              <span className="relative block h-24 w-24 overflow-hidden rounded-full border-[3px] border-[#F7A814] bg-[#EAF0F6] p-1 shadow-md transition duration-300 group-hover:-translate-y-1 group-hover:shadow-xl sm:h-28 sm:w-28">
                 <img src={item.src} alt={item.alt} loading="lazy" className="h-full w-full rounded-full object-cover" />
               </span>
-              <span className="mt-3 text-sm font-semibold text-[#10263b]">{item.label}</span>
+              <span className="mt-3 text-sm font-semibold text-[#12345A]">{item.label}</span>
             </Link>)}
           </div>
-          <div className="mt-8 text-center"><Link to="/Media" className="inline-flex items-center gap-2 rounded-full border border-[#d7c69e] px-5 py-3 font-bold text-[#775b24] hover:bg-[#f5f1e8]">सभी तस्वीरें और समाचार देखें <FaArrowRight /></Link></div>
+          <div className="mt-8 text-center"><Link to="/Media" className="inline-flex items-center gap-2 rounded-full border border-[#12345A] px-5 py-3 font-bold text-[#12345A] hover:bg-[#EAF0F6]">सभी तस्वीरें और समाचार देखें <FaArrowRight /></Link></div>
         </div>
       </section>
 
 
-      <section className="bg-[#f5f1e8] px-5 py-16 md:px-8 md:py-20">
+      <section className="bg-[#EAF0F6] px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-          <div><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#8f6d2a]">Impact & Accountability • प्रभाव एवं जवाबदेही</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">Show the work. Share the learning.</h2><p className="mt-5 leading-relaxed text-slate-600">Institutional trust grows when activities, stories, reports and progress are shared responsibly. Explore SSF’s available updates and documented journey.</p><p className="mt-4 text-sm leading-relaxed text-slate-600">Only verified project results and supported figures should be presented as impact metrics.</p></div>
+          <div><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#12345A]">Impact & Accountability • प्रभाव एवं जवाबदेही</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#12345A] md:text-5xl">Show the work. Share the learning.</h2><p className="mt-5 leading-relaxed text-slate-600">Institutional trust grows when activities, stories, reports and progress are shared responsibly. Explore SSF’s available updates and documented journey.</p><p className="mt-4 text-sm leading-relaxed text-slate-600">Only verified project results and supported figures should be presented as impact metrics.</p></div>
           <div className="grid gap-4 sm:grid-cols-2">
             {[
               { title: "Impact & Outcomes", hi: "प्रभाव एवं परिणाम", text: "Explore available impact information and project outcomes.", path: "/Impact", icon: <FaBullseye /> },
               { title: "Stories & Activities", hi: "कहानियाँ एवं गतिविधियाँ", text: "Discover community stories, activities and updates.", path: "/Stories", icon: <FaHeart /> },
               { title: "Service Journey", hi: "सेवा यात्रा", text: "Learn about SSF’s institutional journey since 2013.", path: "/Journey", icon: <FaCompass /> },
               { title: "Media & Updates", hi: "मीडिया एवं अपडेट", text: "Find available media, announcements and information.", path: "/Media", icon: <FaLaptop /> },
-            ].map((item) => <Link key={item.title} to={item.path} className="group rounded-2xl border border-[#e1d5b9] bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-lg md:p-6"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#f5f1e8] text-lg text-[#8f6d2a]">{item.icon}</span><h3 className="mt-4 font-bold text-[#10263b]">{item.title}</h3><p className="mt-1 text-sm text-[#8f6d2a]">{item.hi}</p><p className="mt-3 text-sm leading-relaxed text-slate-600">{item.text}</p><span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8f6d2a]">Explore <FaArrowRight /></span></Link>)}
+            ].map((item) => <Link key={item.title} to={item.path} className="group rounded-2xl border border-[#EAF0F6] bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-lg md:p-6"><span className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#EAF0F6] text-lg text-[#12345A]">{item.icon}</span><h3 className="mt-4 font-bold text-[#12345A]">{item.title}</h3><p className="mt-1 text-sm text-[#12345A]">{item.hi}</p><p className="mt-3 text-sm leading-relaxed text-slate-600">{item.text}</p><span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#12345A]">Explore <FaArrowRight /></span></Link>)}
           </div>
         </div>
       </section>
 
-      <section className="bg-[#f2eee5] px-5 py-16 md:px-8 md:py-20">
+      <section className="bg-[#EAF0F6] px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="mb-9 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"><div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">In the News · समाचारों में</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">A documented journey, not just a promise.</h2><p className="mt-4 leading-relaxed text-slate-600">Newspaper coverage and media records can help visitors understand the Foundation’s past initiatives. Open the gallery to explore available records and context.</p></div><Link to="/Media" className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#10263b] px-5 py-3 font-bold text-white hover:bg-[#1c405f] md:self-auto">Explore media archive <FaArrowRight /></Link></div>
+          <div className="mb-9 flex flex-col gap-4 md:flex-row md:items-end md:justify-between"><div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">In the News · समाचारों में</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#12345A] md:text-5xl">A documented journey, not just a promise.</h2><p className="mt-4 leading-relaxed text-slate-600">Newspaper coverage and media records can help visitors understand the Foundation’s past initiatives. Open the gallery to explore available records and context.</p></div><Link to="/Media" className="inline-flex shrink-0 items-center gap-2 self-start rounded-full bg-[#12345A] px-5 py-3 font-bold text-white hover:bg-[#12345A] md:self-auto">Explore media archive <FaArrowRight /></Link></div>
           <div className="grid gap-5 sm:grid-cols-3">
-            {pressItems.map((item) => <Link to="/Media" key={item.image} className="group overflow-hidden rounded-2xl border border-[#dfd5c1] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><div className="flex h-56 items-center justify-center overflow-hidden bg-white p-3"><img src={item.image} alt={item.alt} loading="lazy" className="h-full w-full object-contain transition duration-500 group-hover:scale-[1.02]" /></div><div className="flex items-center justify-between gap-3 border-t border-slate-100 px-4 py-4"><span className="font-semibold text-[#10263b]">{item.label}</span><FaArrowRight className="shrink-0 text-[#8f6d2a]" /></div></Link>)}
+            {pressItems.map((item) => <Link to="/Media" key={item.image} className="group overflow-hidden rounded-2xl border border-[#EAF0F6] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><div className="flex h-56 items-center justify-center overflow-hidden bg-white p-3"><img src={item.image} alt={item.alt} loading="lazy" className="h-full w-full object-contain transition duration-500 group-hover:scale-[1.02]" /></div><div className="flex items-center justify-between gap-3 border-t border-slate-100 px-4 py-4"><span className="font-semibold text-[#12345A]">{item.label}</span><FaArrowRight className="shrink-0 text-[#12345A]" /></div></Link>)}
           </div>
         </div>
       </section>
 
       <section className="bg-white px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="mb-9 max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Our Focus Areas · हमारे कार्यक्षेत्र</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">Where we focus our efforts</h2><p className="mt-4 leading-relaxed text-slate-600">These areas reflect the Foundation’s broad objectives. Individual activities and programmes are developed according to community needs, resources and partnerships.</p></div>
+          <div className="mb-9 max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Our Focus Areas · हमारे कार्यक्षेत्र</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#12345A] md:text-5xl">Where we focus our efforts</h2><p className="mt-4 leading-relaxed text-slate-600">These areas reflect the Foundation’s broad objectives. Individual activities and programmes are developed according to community needs, resources and partnerships.</p></div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {focusAreas.map((item) => <Link to={item.path} key={item.title} className="group flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#c6a24e] hover:shadow-lg"><span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[#d7b45a] bg-white shadow-sm"><img src={item.image} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-110" /></span><span className="min-w-0"><span className="block font-bold text-[#10263b]">{item.title}</span><span className="mt-1 block text-sm font-medium text-[#8f6d2a]">{item.hi}</span><span className="mt-3 block text-sm leading-relaxed text-slate-600">{item.text}</span><span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8f6d2a]">Explore <FaArrowRight className="transition group-hover:translate-x-1" /></span></span></Link>)}
+            {focusAreas.map((item) => <Link to={item.path} key={item.title} className="group flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#F7A814] hover:shadow-lg"><span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[#F7A814] bg-white shadow-sm"><img src={item.image} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-110" /></span><span className="min-w-0"><span className="block font-bold text-[#12345A]">{item.title}</span><span className="mt-1 block text-sm font-medium text-[#12345A]">{item.hi}</span><span className="mt-3 block text-sm leading-relaxed text-slate-600">{item.text}</span><span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#12345A]">Explore <FaArrowRight className="transition group-hover:translate-x-1" /></span></span></Link>)}
           </div>
-          <div className="mt-6"><Link to="/Objectives" className="inline-flex items-center gap-2 font-bold text-[#8f6d2a] hover:text-[#10263b]">View all registered objectives <FaArrowRight /></Link></div>
+          <div className="mt-6"><Link to="/Objectives" className="inline-flex items-center gap-2 font-bold text-[#12345A] hover:text-[#12345A]">View all registered objectives <FaArrowRight /></Link></div>
         </div>
       </section>
 
@@ -190,39 +190,39 @@ export default function Home() {
       <section className="px-5 py-16 md:px-8 md:py-24">
         <div className="container mx-auto max-w-7xl">
           <div className="mx-auto mb-12 max-w-3xl text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#8f6d2a] md:text-sm">Purpose & Direction • उद्देश्य एवं दिशा</p>
-            <h2 className="mt-4 font-serif text-3xl leading-tight text-[#10263b] md:text-5xl">A clear purpose. A shared future.</h2>
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#12345A] md:text-sm">Purpose & Direction • उद्देश्य एवं दिशा</p>
+            <h2 className="mt-4 font-serif text-3xl leading-tight text-[#12345A] md:text-5xl">A clear purpose. A shared future.</h2>
             <p className="mt-4 text-base leading-relaxed text-slate-600 md:text-lg">SSF’s mission and vision guide the work, partnerships and choices we make.</p>
           </div>
           <div className="grid gap-5 lg:grid-cols-2">
-            <article className="relative overflow-hidden rounded-[1.75rem] border border-[#e1d5b9] bg-white p-7 shadow-md md:p-10">
-              <span className="absolute right-6 top-2 font-serif text-8xl text-[#e8dfcb]">“</span>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Our Mission • हमारा मिशन</p>
-              <h3 className="relative mt-5 max-w-xl font-serif text-2xl leading-snug text-[#10263b] md:text-3xl">To contribute to inclusive development through education, skills, health, awareness and community participation.</h3>
+            <article className="relative overflow-hidden rounded-[1.75rem] border border-[#EAF0F6] bg-white p-7 shadow-md md:p-10">
+              <span className="absolute right-6 top-2 font-serif text-8xl text-[#EAF0F6]">“</span>
+              <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Our Mission • हमारा मिशन</p>
+              <h3 className="relative mt-5 max-w-xl font-serif text-2xl leading-snug text-[#12345A] md:text-3xl">To contribute to inclusive development through education, skills, health, awareness and community participation.</h3>
               <p className="mt-5 max-w-xl leading-relaxed text-slate-600">शिक्षा, कौशल, स्वास्थ्य, जागरूकता और सामुदायिक सहभागिता के माध्यम से समावेशी विकास में योगदान देना।</p>
-              <Link to="/Mission" className="mt-7 inline-flex items-center gap-2 font-bold text-[#8f6d2a] hover:text-[#10263b]">Explore our mission <FaArrowRight /></Link>
+              <Link to="/Mission" className="mt-7 inline-flex items-center gap-2 font-bold text-[#12345A] hover:text-[#12345A]">Explore our mission <FaArrowRight /></Link>
             </article>
-            <article className="relative overflow-hidden rounded-[1.75rem] border border-[#183a57] bg-[#102b43] p-7 text-white shadow-md md:p-10">
-              <div className="absolute -right-12 -top-12 h-52 w-52 rounded-full border border-[#d8b96d]/25" />
-              <p className="relative text-xs font-bold uppercase tracking-[0.2em] text-[#e8c878]">Our Vision • हमारा विज़न</p>
+            <article className="relative overflow-hidden rounded-[1.75rem] border border-[#12345A] bg-[#12345A] p-7 text-white shadow-md md:p-10">
+              <div className="absolute -right-12 -top-12 h-52 w-52 rounded-full border border-[#F7A814]/25" />
+              <p className="relative text-xs font-bold uppercase tracking-[0.2em] text-[#F7A814]">Our Vision • हमारा विज़न</p>
               <h3 className="relative mt-5 max-w-xl font-serif text-2xl leading-snug md:text-3xl">A just, educated, inclusive and sustainable India where every individual has the opportunity to thrive with dignity.</h3>
               <p className="relative mt-5 max-w-xl leading-relaxed text-slate-200">एक न्यायपूर्ण, शिक्षित, समावेशी और सतत भारत, जहाँ प्रत्येक व्यक्ति को गरिमा के साथ आगे बढ़ने का अवसर मिले।</p>
-              <Link to="/Vision" className="relative mt-7 inline-flex items-center gap-2 font-bold text-[#f0dba5] hover:text-white">Explore our vision <FaArrowRight /></Link>
+              <Link to="/Vision" className="relative mt-7 inline-flex items-center gap-2 font-bold text-[#F7A814] hover:text-white">Explore our vision <FaArrowRight /></Link>
             </article>
           </div>
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map((value) => <div key={value.title} className="rounded-2xl border border-[#e8e0ce] bg-[#f8f5ed] p-5"><p className="font-bold text-[#10263b]">{value.title}</p><p className="mt-1 text-sm font-semibold text-[#8f6d2a]">{value.hi}</p><p className="mt-3 text-sm leading-relaxed text-slate-600">{value.text}</p></div>)}
+            {values.map((value) => <div key={value.title} className="rounded-2xl border border-[#EAF0F6] bg-[#FAF9F5] p-5"><p className="font-bold text-[#12345A]">{value.title}</p><p className="mt-1 text-sm font-semibold text-[#12345A]">{value.hi}</p><p className="mt-3 text-sm leading-relaxed text-slate-600">{value.text}</p></div>)}
           </div>
         </div>
       </section>
 
-      <section className="bg-[#09233c] px-5 py-16 text-white md:px-8 md:py-20">
+      <section className="bg-[#12345A] px-5 py-16 text-white md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="mb-9 max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#e8c878]">Work Together · साथ मिलकर</p><h2 className="mt-3 font-serif text-3xl leading-tight md:text-5xl">Partnership starts with a conversation.</h2><p className="mt-4 leading-relaxed text-slate-200">For CSR teams, government departments, institutions and community partners, we welcome an initial discussion to explore needs, project scope, compliance requirements and practical ways to work together.</p></div>
+          <div className="mb-9 max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#F7A814]">Work Together · साथ मिलकर</p><h2 className="mt-3 font-serif text-3xl leading-tight md:text-5xl">Partnership starts with a conversation.</h2><p className="mt-4 leading-relaxed text-slate-200">For CSR teams, government departments, institutions and community partners, we welcome an initial discussion to explore needs, project scope, compliance requirements and practical ways to work together.</p></div>
           <div className="grid gap-4 md:grid-cols-3">
-            <Link to="/CSRPartnership" className="group rounded-2xl border border-white/15 bg-white/[0.06] p-6 transition hover:border-[#d7b45a]/60 hover:bg-white/[0.1]"><FaHandshake className="text-2xl text-[#e8c878]" /><h3 className="mt-4 text-xl font-bold">CSR & Corporate Partners</h3><p className="mt-3 text-sm leading-relaxed text-slate-200">Explore institutional collaboration, proposal discussions and relevant documents.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-[#f0dba5]">Explore partnerships <FaArrowRight /></span></Link>
-            <Link to="/UpcomingProjects" className="group rounded-2xl border border-white/15 bg-white/[0.06] p-6 transition hover:border-[#d7b45a]/60 hover:bg-white/[0.1]"><FaBuilding className="text-2xl text-[#e8c878]" /><h3 className="mt-4 text-xl font-bold">Projects & Proposals</h3><p className="mt-3 text-sm leading-relaxed text-slate-200">Review planned initiatives and discuss a project with a clear scope and implementation plan.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-[#f0dba5]">Explore initiatives <FaArrowRight /></span></Link>
-            <Link to="/JoinUs" className="group rounded-2xl border border-white/15 bg-white/[0.06] p-6 transition hover:border-[#d7b45a]/60 hover:bg-white/[0.1]"><FaUsers className="text-2xl text-[#e8c878]" /><h3 className="mt-4 text-xl font-bold">Volunteers & Community</h3><p className="mt-3 text-sm leading-relaxed text-slate-200">Contribute time, professional skills, local knowledge or responsible support.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-[#f0dba5]">Find your role <FaArrowRight /></span></Link>
+            <Link to="/CSRPartnership" className="group rounded-2xl border border-white/15 bg-white/[0.06] p-6 transition hover:border-[#F7A814]/60 hover:bg-white/[0.1]"><FaHandshake className="text-2xl text-[#F7A814]" /><h3 className="mt-4 text-xl font-bold">CSR & Corporate Partners</h3><p className="mt-3 text-sm leading-relaxed text-slate-200">Explore institutional collaboration, proposal discussions and relevant documents.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-[#F7A814]">Explore partnerships <FaArrowRight /></span></Link>
+            <Link to="/UpcomingProjects" className="group rounded-2xl border border-white/15 bg-white/[0.06] p-6 transition hover:border-[#F7A814]/60 hover:bg-white/[0.1]"><FaBuilding className="text-2xl text-[#F7A814]" /><h3 className="mt-4 text-xl font-bold">Projects & Proposals</h3><p className="mt-3 text-sm leading-relaxed text-slate-200">Review planned initiatives and discuss a project with a clear scope and implementation plan.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-[#F7A814]">Explore initiatives <FaArrowRight /></span></Link>
+            <Link to="/JoinUs" className="group rounded-2xl border border-white/15 bg-white/[0.06] p-6 transition hover:border-[#F7A814]/60 hover:bg-white/[0.1]"><FaUsers className="text-2xl text-[#F7A814]" /><h3 className="mt-4 text-xl font-bold">Volunteers & Community</h3><p className="mt-3 text-sm leading-relaxed text-slate-200">Contribute time, professional skills, local knowledge or responsible support.</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-[#F7A814]">Find your role <FaArrowRight /></span></Link>
           </div>
           <p className="mt-6 text-xs leading-relaxed text-slate-300">Listing a proposed initiative does not mean it is funded, approved or currently operational. Project commitments are made only after scope, resources and responsibilities are agreed.</p>
         </div>
@@ -230,39 +230,39 @@ export default function Home() {
 
       <section className="px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-          <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Trust & Transparency · पारदर्शिता</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#10263b] md:text-4xl">Trust should be supported by records.</h2><p className="mt-4 leading-relaxed text-slate-600">Review available documents and institutional information before deciding to donate, partner or participate.</p><Link to="/Transparency" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#10263b] px-6 py-3 font-bold text-white hover:bg-[#1c405f]">Open Transparency Centre <FaArrowRight /></Link></div>
-          <div className="grid gap-4 sm:grid-cols-3">{proofItems.map((item) => <div key={item.title} className="rounded-2xl border border-[#e1d5b9] bg-white p-5"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#f5f1e8] text-lg text-[#8f6d2a]">{item.icon}</span><h3 className="mt-4 font-bold text-[#10263b]">{item.title}</h3><p className="mt-3 text-sm leading-relaxed text-slate-600">{item.text}</p><Link to="/Transparency" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#8f6d2a]">View records <FaArrowRight /></Link></div>)}</div>
+          <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Trust & Transparency · पारदर्शिता</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#12345A] md:text-4xl">Trust should be supported by records.</h2><p className="mt-4 leading-relaxed text-slate-600">Review available documents and institutional information before deciding to donate, partner or participate.</p><Link to="/Transparency" className="mt-6 inline-flex items-center gap-2 rounded-full bg-[#12345A] px-6 py-3 font-bold text-white hover:bg-[#12345A]">Open Transparency Centre <FaArrowRight /></Link></div>
+          <div className="grid gap-4 sm:grid-cols-3">{proofItems.map((item) => <div key={item.title} className="rounded-2xl border border-[#EAF0F6] bg-white p-5"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#EAF0F6] text-lg text-[#12345A]">{item.icon}</span><h3 className="mt-4 font-bold text-[#12345A]">{item.title}</h3><p className="mt-3 text-sm leading-relaxed text-slate-600">{item.text}</p><Link to="/Transparency" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#12345A]">View records <FaArrowRight /></Link></div>)}</div>
         </div>
       </section>
 
-      <section className="bg-[#f2eee5] px-5 py-16 md:px-8 md:py-20">
+      <section className="bg-[#EAF0F6] px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto grid max-w-7xl items-center gap-8 lg:grid-cols-[0.65fr_1.35fr]">
-          <div className="mx-auto h-44 w-44 overflow-hidden rounded-full border-4 border-[#d7b45a] bg-white p-1 shadow-lg lg:mx-0"><OptimizedImage src="/Teams_Images/ramesh_pandey.jpg?v=2" alt="Ramesh Pandey, Founder and President of Swastik Srijan Foundation" className="h-full w-full rounded-full" /></div>
-          <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">A message from the Founder</p><h2 className="mt-3 font-serif text-3xl text-[#10263b] md:text-4xl">Ramesh Pandey <span className="block mt-1 text-lg font-sans font-semibold text-slate-600">Founder & President</span></h2><blockquote className="mt-5 border-l-2 border-[#c6a24e] pl-5 font-serif text-xl leading-relaxed text-[#10263b] md:text-2xl">“Service becomes meaningful when it reaches people with dignity, cooperation and hope.”</blockquote><p className="mt-5 max-w-3xl leading-relaxed text-slate-600">Our journey began with a belief that positive change grows when people come together, learn together and take responsible action. We invite citizens, volunteers, institutions and partners to review our work and help shape practical, accountable community initiatives.</p><Link to="/About" className="mt-5 inline-flex items-center gap-2 font-bold text-[#8f6d2a]">Read about SSF <FaArrowRight /></Link></div>
+          <div className="mx-auto h-44 w-44 overflow-hidden rounded-full border-4 border-[#F7A814] bg-white p-1 shadow-lg lg:mx-0"><OptimizedImage src="/Teams_Images/ramesh_pandey.jpg?v=2" alt="Ramesh Pandey, Founder and President of Swastik Srijan Foundation" className="h-full w-full rounded-full" /></div>
+          <div><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">A message from the Founder</p><h2 className="mt-3 font-serif text-3xl text-[#12345A] md:text-4xl">Ramesh Pandey <span className="block mt-1 text-lg font-sans font-semibold text-slate-600">Founder & President</span></h2><blockquote className="mt-5 border-l-2 border-[#F7A814] pl-5 font-serif text-xl leading-relaxed text-[#12345A] md:text-2xl">“Service becomes meaningful when it reaches people with dignity, cooperation and hope.”</blockquote><p className="mt-5 max-w-3xl leading-relaxed text-slate-600">Our journey began with a belief that positive change grows when people come together, learn together and take responsible action. We invite citizens, volunteers, institutions and partners to review our work and help shape practical, accountable community initiatives.</p><Link to="/About" className="mt-5 inline-flex items-center gap-2 font-bold text-[#12345A]">Read about SSF <FaArrowRight /></Link></div>
         </div>
       </section>
 
 
-      <section className="bg-[#102b43] px-5 py-16 md:px-8 md:py-20">
+      <section className="bg-[#12345A] px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="mx-auto mb-10 max-w-3xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878] md:text-sm">Get Involved · जुड़िए</p><h2 className="mt-3 font-serif text-3xl text-white md:text-5xl">Be Part of the Journey</h2><p className="mt-4 leading-relaxed text-slate-100">आज Swastik Srijan Foundation से जुड़िए। आपके लिए जुड़ने का एक रास्ता है — अपनी भूमिका चुनिए।</p></div>
+          <div className="mx-auto mb-10 max-w-3xl text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#F7A814] md:text-sm">Get Involved · जुड़िए</p><h2 className="mt-3 font-serif text-3xl text-white md:text-5xl">Be Part of the Journey</h2><p className="mt-4 leading-relaxed text-slate-100">आज Swastik Srijan Foundation से जुड़िए। आपके लिए जुड़ने का एक रास्ता है — अपनी भूमिका चुनिए।</p></div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               { title: "MEMBER", hi: "सदस्य बनें", text: "मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", path: "/JoinUs?role=member", icon: <FaUsers /> },
               { title: "VOLUNTEER", hi: "स्वयंसेवक बनें", text: "मेरे पास समय / skill है, मैं काम करना चाहता हूँ।", path: "/JoinUs?role=volunteer", icon: <FaHandsHelping /> },
               { title: "SUPPORTER / DONOR", hi: "सहयोगकर्ता / दानदाता", text: "मैं किसी अच्छे काम को support करना चाहता हूँ।", path: "/Donate", icon: <FaHeart /> },
               { title: "PARTNER", hi: "साझेदार बनें", text: "मेरी संस्था / company / institution Swastik Srijan Foundation के साथ काम कर सकती है।", path: "/PartnerWithUs", icon: <FaHandshake /> },
-            ].map((item) => <Link key={item.title} to={item.path} className="group flex h-full flex-col rounded-2xl border border-white/15 bg-white/[0.06] p-6 transition hover:-translate-y-1 hover:border-[#d8b96d]/65 hover:bg-white/[0.1] md:p-7"><span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#d8b96d]/10 text-xl text-[#f0dba5]">{item.icon}</span><h3 className="mt-5 text-lg font-bold text-white">{item.title}</h3><p className="mt-1 text-sm text-[#f0dba5]">{item.hi}</p><p className="mt-3 flex-1 leading-relaxed text-slate-200">{item.text}</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-[#f0dba5]">JOIN / EXPLORE <FaArrowRight /></span></Link>)}
+            ].map((item) => <Link key={item.title} to={item.path} className="group flex h-full flex-col rounded-2xl border border-white/15 bg-white/[0.06] p-6 transition hover:-translate-y-1 hover:border-[#F7A814]/65 hover:bg-white/[0.1] md:p-7"><span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#F7A814]/10 text-xl text-[#F7A814]">{item.icon}</span><h3 className="mt-5 text-lg font-bold text-white">{item.title}</h3><p className="mt-1 text-sm text-[#F7A814]">{item.hi}</p><p className="mt-3 flex-1 leading-relaxed text-slate-200">{item.text}</p><span className="mt-5 inline-flex items-center gap-2 font-bold text-[#F7A814]">JOIN / EXPLORE <FaArrowRight /></span></Link>)}
           </div>
         </div>
       </section>
-      <section className="bg-white px-5 py-12 md:px-8"><div className="container mx-auto max-w-7xl"><div className="mb-8 text-center"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Support SSF • सहयोग करें</p><h2 className="mt-2 font-serif text-3xl text-[#10263b] md:text-4xl">Help meaningful work move forward.</h2></div><EliteDonationCard /></div></section>
-      <section className="bg-[#fbfaf7] px-5 py-16 md:px-8 md:py-20"><div className="container mx-auto max-w-7xl"><div className="mb-10 text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#8f6d2a] md:text-sm">Institutional Journey • संस्थागत यात्रा</p><h2 className="mt-3 font-serif text-3xl text-[#10263b] md:text-5xl">A continuing journey of service.</h2><p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">Explore the history and milestones documented by SSF.</p></div><ImpactTimeline /><div className="mt-8 text-center"><Link to="/Journey" className="inline-flex items-center gap-2 rounded-full border border-[#d7c69e] px-6 py-3 font-bold text-[#8f6d2a] transition hover:bg-[#f5f1e8]">View service journey <FaArrowRight /></Link></div></div></section>
+      <section className="bg-white px-5 py-12 md:px-8"><div className="container mx-auto max-w-7xl"><div className="mb-8 text-center"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Support SSF • सहयोग करें</p><h2 className="mt-2 font-serif text-3xl text-[#12345A] md:text-4xl">Help meaningful work move forward.</h2></div><EliteDonationCard /></div></section>
+      <section className="bg-[#FAF9F5] px-5 py-16 md:px-8 md:py-20"><div className="container mx-auto max-w-7xl"><div className="mb-10 text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#12345A] md:text-sm">Institutional Journey • संस्थागत यात्रा</p><h2 className="mt-3 font-serif text-3xl text-[#12345A] md:text-5xl">A continuing journey of service.</h2><p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">Explore the history and milestones documented by SSF.</p></div><ImpactTimeline /><div className="mt-8 text-center"><Link to="/Journey" className="inline-flex items-center gap-2 rounded-full border border-[#12345A] px-6 py-3 font-bold text-[#12345A] transition hover:bg-[#EAF0F6]">View service journey <FaArrowRight /></Link></div></div></section>
 
       <section className="bg-white px-5 py-14 md:px-8">
-        <div className="container mx-auto flex max-w-7xl flex-col gap-6 rounded-[1.75rem] border border-[#e1d5b9] bg-[#fbfaf7] p-7 md:flex-row md:items-center md:justify-between md:p-10">
-          <div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#8f6d2a]">Take the next step</p><h2 className="mt-3 font-serif text-3xl text-[#10263b] md:text-4xl">Every meaningful partnership starts somewhere.</h2><p className="mt-3 leading-relaxed text-slate-600">Explore the work, ask a question, volunteer a skill or start a conversation about collaboration.</p></div>
-          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap"><Link to="/JoinUs" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#10263b] px-6 py-3 font-bold text-white hover:bg-[#1c405f]"><FaUsers /> Join SSF</Link><Link to="/PartnerWithUs" className="inline-flex items-center justify-center gap-2 rounded-full border border-[#c6a24e] px-6 py-3 font-bold text-[#775b24] hover:bg-[#f5f1e8]"><FaHandshake /> Partner with us</Link><Link to="/Donate" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 px-6 py-3 font-bold text-[#10263b] hover:bg-white"><FaHeart /> Support SSF</Link></div>
+        <div className="container mx-auto flex max-w-7xl flex-col gap-6 rounded-[1.75rem] border border-[#EAF0F6] bg-[#FAF9F5] p-7 md:flex-row md:items-center md:justify-between md:p-10">
+          <div className="max-w-2xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Take the next step</p><h2 className="mt-3 font-serif text-3xl text-[#12345A] md:text-4xl">Every meaningful partnership starts somewhere.</h2><p className="mt-3 leading-relaxed text-slate-600">Explore the work, ask a question, volunteer a skill or start a conversation about collaboration.</p></div>
+          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap"><Link to="/JoinUs" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#12345A] px-6 py-3 font-bold text-white hover:bg-[#12345A]"><FaUsers /> Join SSF</Link><Link to="/PartnerWithUs" className="inline-flex items-center justify-center gap-2 rounded-full border border-[#F7A814] px-6 py-3 font-bold text-[#12345A] hover:bg-[#EAF0F6]"><FaHandshake /> Partner with us</Link><Link to="/Donate" className="inline-flex items-center justify-center gap-2 rounded-full border border-slate-300 px-6 py-3 font-bold text-[#12345A] hover:bg-white"><FaHeart /> Support SSF</Link></div>
         </div>
       </section>
 
