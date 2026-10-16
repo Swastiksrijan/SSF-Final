@@ -60,18 +60,18 @@ export default function BlogJourney() {
           <Search size={16} className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-white/40" />
           <input value={query} onChange={(e) => setQuery(e.target.value)}
             placeholder={hi ? 'खोजें — शिक्षा, स्वास्थ्य, 2013 …' : 'Search — education, health, 2013 …'}
-            className="w-full rounded-xl border border-white/15 bg-white/5 py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/40 outline-none focus:border-[#FF6600]" />
+            className="w-full rounded-xl border border-white/15 bg-white/5 py-2.5 pl-9 pr-3 text-sm text-white placeholder-white/40 outline-none focus:border-[#E6530E]" />
         </div>
         <div className="flex flex-wrap gap-1.5">
-          <button onClick={() => setYear('all')} className={`rounded-full px-3 py-1 text-xs font-semibold ${year === 'all' ? 'bg-[#FF6600] text-white' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>{hi ? 'सभी वर्ष' : 'All years'}</button>
+          <button onClick={() => setYear('all')} className={`rounded-full px-3 py-1 text-xs font-semibold ${year === 'all' ? 'bg-[#E6530E] text-white' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>{hi ? 'सभी वर्ष' : 'All years'}</button>
           {years.map((y) => (
-            <button key={y} onClick={() => setYear(y)} className={`rounded-full px-3 py-1 text-xs font-semibold ${Number(year) === y ? 'bg-[#FF6600] text-white' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>{y}</button>
+            <button key={y} onClick={() => setYear(y)} className={`rounded-full px-3 py-1 text-xs font-semibold ${Number(year) === y ? 'bg-[#E6530E] text-white' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>{y}</button>
           ))}
         </div>
         <div className="flex flex-wrap gap-1.5">
-          <button onClick={() => setCat('all')} className={`rounded-full px-3 py-1 text-xs font-semibold ${cat === 'all' ? 'bg-[#002344] text-white ring-1 ring-white/30' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>{hi ? 'सभी श्रेणियाँ' : 'All categories'}</button>
+          <button onClick={() => setCat('all')} className={`rounded-full px-3 py-1 text-xs font-semibold ${cat === 'all' ? 'bg-[#12345A] text-white ring-1 ring-white/30' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>{hi ? 'सभी श्रेणियाँ' : 'All categories'}</button>
           {BLOG_CATEGORIES.map((c) => (
-            <button key={c.key} onClick={() => setCat(c.key)} className={`rounded-full px-3 py-1 text-xs font-semibold ${cat === c.key ? 'bg-[#002344] text-white ring-1 ring-white/30' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>
+            <button key={c.key} onClick={() => setCat(c.key)} className={`rounded-full px-3 py-1 text-xs font-semibold ${cat === c.key ? 'bg-[#12345A] text-white ring-1 ring-white/30' : 'bg-white/10 text-white/70 hover:bg-white/20'}`}>
               {c.icon} {categoryLabel(c.key, lang)}
             </button>
           ))}
@@ -89,13 +89,13 @@ export default function BlogJourney() {
             </div>
             <div className="p-5">
               <div className="mb-1 flex flex-wrap items-center gap-2 text-xs">
-                <span className="inline-flex items-center gap-1 rounded-full bg-[#002344]/10 px-2 py-0.5 font-bold text-[#002344]"><Calendar size={12} />{post.year}</span>
-                <span className="rounded-full bg-[#FF6600]/10 px-2 py-0.5 font-semibold text-[#c2410c]">{categoryLabel(post.category, lang)}</span>
+                <span className="inline-flex items-center gap-1 rounded-full bg-[#12345A]/10 px-2 py-0.5 font-bold text-[#12345A]"><Calendar size={12} />{post.year}</span>
+                <span className="rounded-full bg-[#E6530E]/10 px-2 py-0.5 font-semibold text-[#E6530E]">{categoryLabel(post.category, lang)}</span>
               </div>
               <h3 className="text-lg font-bold leading-snug">{post.title[lang]}</h3>
               <p className="mt-2 line-clamp-3 text-sm text-zinc-600">{post.short[lang]}</p>
               <div className="mt-4 flex items-center justify-between">
-                <button onClick={() => setActive(post)} className="text-sm font-semibold text-[#003366] hover:underline">
+                <button onClick={() => setActive(post)} className="text-sm font-semibold text-[#12345A] hover:underline">
                   {hi ? 'और पढ़ें →' : 'Read more →'}
                 </button>
                 <button onClick={() => sharePost(post, lang)} title={hi ? 'साझा करें' : 'Share'}
@@ -123,14 +123,14 @@ export default function BlogJourney() {
               </div>
               <div className="p-8">
                 <div className="mb-2 flex flex-wrap items-center gap-2 text-xs">
-                  <span className="rounded-full bg-[#002344]/10 px-2 py-0.5 font-bold text-[#002344]">{active.year}</span>
-                  <span className="rounded-full bg-[#FF6600]/10 px-2 py-0.5 font-semibold text-[#c2410c]">{categoryLabel(active.category, lang)}</span>
+                  <span className="rounded-full bg-[#12345A]/10 px-2 py-0.5 font-bold text-[#12345A]">{active.year}</span>
+                  <span className="rounded-full bg-[#E6530E]/10 px-2 py-0.5 font-semibold text-[#E6530E]">{categoryLabel(active.category, lang)}</span>
                   <span className="text-zinc-400">{active.date}</span>
                 </div>
                 <h2 className="text-3xl font-bold">{active.title[lang]}</h2>
                 <p className="mt-4 whitespace-pre-line leading-relaxed text-zinc-700">{active.full[lang]}</p>
                 <button onClick={() => sharePost(active, lang)}
-                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#002344] px-4 py-2 text-sm font-semibold text-white hover:bg-[#001529]">
+                  className="mt-6 inline-flex items-center gap-2 rounded-xl bg-[#12345A] px-4 py-2 text-sm font-semibold text-white hover:bg-[#12345A]">
                   <Share2 size={15} /> {hi ? 'साझा करें' : 'Share this story'}
                 </button>
               </div>
