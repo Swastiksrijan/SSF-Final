@@ -15,7 +15,7 @@ function BlogHero() {
   if (pathname !== "/Blog") return null;
 
   return (
-    <section className="relative min-h-[48vh] md:min-h-[56vh] flex items-center justify-center overflow-hidden bg-[#001529] text-white">
+    <section className="relative min-h-[48vh] md:min-h-[56vh] flex items-center justify-center overflow-hidden bg-[#12345A] text-white">
       <div className="absolute inset-0">
         <OptimizedImage
           src="/images/real/education_girls.jpg"
@@ -24,14 +24,14 @@ function BlogHero() {
           objectFit="cover"
           style={{ objectPosition: "center" }}
         />
-        <div className="absolute inset-0 bg-[#001529]/55 bg-gradient-to-b from-[#001529]/65 via-black/20 to-[#001529]/90" />
+        <div className="absolute inset-0 bg-[#12345A]/55 bg-gradient-to-b from-[#12345A]/65 via-black/20 to-[#12345A]/90" />
       </div>
 
       <div className="relative z-10 max-w-5xl px-6 pt-16 text-center">
         <div className="mx-auto mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-white/95 p-2 shadow-2xl ring-1 ring-white/40">
           <img src={logoImg} alt="Swastik Srijan Foundation" className="h-full w-full object-contain" />
         </div>
-        <p className="mb-3 text-[10px] md:text-xs font-bold uppercase tracking-[0.35em] text-[#FFB347]">
+        <p className="mb-3 text-[10px] md:text-xs font-bold uppercase tracking-[0.35em] text-[#F7A814]">
           Swastik Srijan Foundation
         </p>
         <h1 className="font-serif text-4xl md:text-6xl lg:text-7xl font-bold leading-tight drop-shadow-2xl">

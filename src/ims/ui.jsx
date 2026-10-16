@@ -11,7 +11,7 @@ export function PageHeader({ title, subtitle, actions }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
-        <h1 className="text-2xl font-black tracking-tight text-[#002344]">{title}</h1>
+        <h1 className="text-2xl font-black tracking-tight text-[#12345A]">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -21,15 +21,15 @@ export function PageHeader({ title, subtitle, actions }) {
 
 export function Kpi({ icon, label, value, tone = 'navy' }) {
   const tones = {
-    navy: 'from-[#002344] to-[#0b3a63] text-white',
-    blue: 'from-[#2563EB] to-[#3b82f6] text-white',
-    deepblue: 'from-[#1E3A8A] to-[#2563EB] text-white',
-    purple: 'from-[#7C3AED] to-[#9333ea] text-white',
-    orange: 'from-[#FF6600] to-[#ff8a3d] text-white',
-    green: 'from-[#16A34A] to-emerald-500 text-white',
-    teal: 'from-[#0F766E] to-[#0e7490] text-white',
+    navy: 'from-[#12345A] to-[#12345A] text-white',
+    blue: 'from-[#12345A] to-[#12345A] text-white',
+    deepblue: 'from-[#12345A] to-[#12345A] text-white',
+    purple: 'from-[#12345A] to-[#12345A] text-white',
+    orange: 'from-[#E6530E] to-[#E6530E] text-white',
+    green: 'from-[#176447] to-emerald-500 text-white',
+    teal: 'from-[#176447] to-[#176447] text-white',
     red: 'from-[#DC2626] to-rose-500 text-white',
-    amber: 'from-[#D97706] to-amber-400 text-white',
+    amber: 'from-[#F7A814] to-amber-400 text-white',
     slate: 'from-slate-700 to-slate-600 text-white',
   };
   const I = Icons[icon] || Icons.Activity;
@@ -40,7 +40,7 @@ export function Kpi({ icon, label, value, tone = 'navy' }) {
         <span className={`grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-gradient-to-br shadow-sm ring-1 ring-black/5 ${tones[tone]}`}><I size={21} /></span>
         <span className="min-w-0">
           <span className="block truncate text-[11px] font-semibold uppercase tracking-wider text-slate-400">{label}</span>
-          <span className="block truncate text-[22px] font-black leading-tight tracking-tight text-[#002344]">{value}</span>
+          <span className="block truncate text-[22px] font-black leading-tight tracking-tight text-[#12345A]">{value}</span>
         </span>
       </div>
     </Card>
@@ -66,15 +66,15 @@ export function Badge({ status }) {
 
 export function Button({ children, icon, variant = 'primary', ...rest }) {
   const variants = {
-    primary: 'bg-[#FF6600] text-white hover:bg-[#e65c00] shadow-sm shadow-orange-500/20',
-    navy: 'bg-[#002344] text-white hover:bg-[#001529] shadow-sm shadow-[#002344]/20',
+    primary: 'bg-[#E6530E] text-white hover:bg-[#E6530E] shadow-sm shadow-orange-500/20',
+    navy: 'bg-[#12345A] text-white hover:bg-[#12345A] shadow-sm shadow-[#12345A]/20',
     ghost: 'border border-slate-300 bg-white text-slate-700 hover:bg-slate-50 hover:border-slate-400',
-    hero: 'bg-white text-[#002344] hover:bg-zinc-100 shadow-sm',
+    hero: 'bg-white text-[#12345A] hover:bg-zinc-100 shadow-sm',
     danger: 'border border-rose-300 bg-white text-rose-600 hover:bg-rose-50',
   };
   const I = icon ? Icons[icon] : null;
   return (
-    <button {...rest} className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#FF6600]/40 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${rest.className || ''}`}>
+    <button {...rest} className={`inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#E6530E]/40 focus-visible:ring-offset-1 disabled:cursor-not-allowed disabled:opacity-50 ${variants[variant]} ${rest.className || ''}`}>
       {I && <I size={16} />}{children}
     </button>
   );
@@ -168,7 +168,7 @@ export function FormDrawer({ open, title, schema, initial, onClose, onSubmit, sa
               return <Field key={f.name} label={label}>
                 <div className="flex items-center gap-2">
                   <a href={val} target="_blank" rel="noreferrer" download
-                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-[#002344] hover:border-[#FF6600] hover:text-[#FF6600]">
+                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 px-3 py-2 text-sm font-semibold text-[#12345A] hover:border-[#E6530E] hover:text-[#E6530E]">
                     <Icons.Download size={15} /> {kind}
                   </a>
                   <button type="button" onClick={() => set(f.name, '')} className="text-xs text-slate-400 hover:text-rose-500">{t('cancel')}</button>
@@ -190,7 +190,7 @@ export function FormDrawer({ open, title, schema, initial, onClose, onSubmit, sa
   );
 }
 
-const inputCls = 'w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#FF6600]';
+const inputCls = 'w-full rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#E6530E]';
 
 function Field({ label, required, children }) {
   return (
@@ -247,7 +247,7 @@ export function Tabs({ tabs = [], value, onChange }) {
         const label = lang === 'hi' && tb.hi ? `${tb.hi} (${tb.en})` : tb.en;
         return (
           <button key={tb.id} type="button" onClick={() => onChange(tb.id)}
-            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-all duration-150 ${on ? 'bg-[#002344] text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+            className={`whitespace-nowrap rounded-full px-4 py-2 text-sm font-bold transition-all duration-150 ${on ? 'bg-[#12345A] text-white shadow-sm' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
             {label}
             {tb.count != null && (
               <span className={`ml-1.5 rounded-full px-1.5 py-0.5 text-[11px] font-black ${on ? 'bg-white/20 text-white' : 'bg-white text-slate-500'}`}>{tb.count}</span>
@@ -276,14 +276,14 @@ export function SectionHero({ title, hi, eyebrow, icon = 'LayoutDashboard', tone
   const { lang } = useLang();
   const I = Icons[icon] || Icons.LayoutDashboard;
   const tones = {
-    navy: 'from-[#002344] to-[#0b3a63]',
-    blue: 'from-[#1E3A8A] to-[#2563EB]',
-    deepblue: 'from-[#1E3A8A] to-[#1d4ed8]',
-    purple: 'from-[#6d28d9] to-[#7C3AED]',
-    orange: 'from-[#c2410c] to-[#FF6600]',
-    teal: 'from-[#134e4a] to-[#0e7490]',
-    green: 'from-[#065f46] to-emerald-600',
-    amber: 'from-[#b45309] to-[#D97706]',
+    navy: 'from-[#12345A] to-[#12345A]',
+    blue: 'from-[#12345A] to-[#12345A]',
+    deepblue: 'from-[#12345A] to-[#12345A]',
+    purple: 'from-[#12345A] to-[#12345A]',
+    orange: 'from-[#E6530E] to-[#E6530E]',
+    teal: 'from-[#176447] to-[#176447]',
+    green: 'from-[#176447] to-emerald-600',
+    amber: 'from-[#F7A814] to-[#F7A814]',
     slate: 'from-slate-700 to-slate-600',
   };
   return (
@@ -294,7 +294,7 @@ export function SectionHero({ title, hi, eyebrow, icon = 'LayoutDashboard', tone
         <div className="flex items-start gap-4">
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20"><I size={24} /></span>
           <div>
-            {eyebrow && <p className="text-[11px] font-black uppercase tracking-[.22em] text-[#FFD166]">{eyebrow}</p>}
+            {eyebrow && <p className="text-[11px] font-black uppercase tracking-[.22em] text-[#F7A814]">{eyebrow}</p>}
             <h1 className="mt-1.5 text-2xl font-black leading-tight tracking-tight sm:text-[32px]">{title}</h1>
             {hi && lang !== 'hi' && <p className="mt-1 text-sm font-semibold text-white/70">{hi}</p>}
           </div>
@@ -326,7 +326,7 @@ export function DataTable({ columns = [], rows = [], loading, empty, onRowClick 
           </thead>
           <tbody className="divide-y divide-slate-100">
             {rows.map((r, ri) => (
-              <tr key={r.id || ri} className={`transition-colors hover:bg-[#F5F8FC] ${onRowClick ? 'cursor-pointer' : ''}`}
+              <tr key={r.id || ri} className={`transition-colors hover:bg-[#EAF0F6] ${onRowClick ? 'cursor-pointer' : ''}`}
                 onClick={onRowClick ? () => onRowClick(r) : undefined}>
                 {columns.map((c, ci) => (
                   <td key={ci} className={`px-4 py-3 text-slate-700 ${c.className || ''} ${c.align === 'right' ? 'text-right' : ''}`}>
@@ -354,7 +354,7 @@ export function Lifecycle({ steps = [], value }) {
         const label = lang === 'hi' && s.hi ? s.hi : s.en;
         return (
           <span key={s.id} className="flex items-center gap-1.5">
-            <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${on ? 'bg-[#FF6600] text-white' : done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'}`}>
+            <span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${on ? 'bg-[#E6530E] text-white' : done ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-400'}`}>
               {label}
             </span>
             {i < steps.length - 1 && <Icons.ChevronRight size={13} className="text-slate-300" />}
@@ -374,7 +374,7 @@ export function DetailModal({ open, onClose, title, subtitle, badge, actions, ch
         <div className="flex items-start justify-between gap-3 border-b border-slate-200 px-5 py-4">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <h2 className="truncate text-lg font-black text-[#002344]">{title}</h2>
+              <h2 className="truncate text-lg font-black text-[#12345A]">{title}</h2>
               {badge}
             </div>
             {subtitle && <p className="mt-0.5 truncate text-xs font-semibold text-slate-400">{subtitle}</p>}
@@ -407,8 +407,8 @@ export function RecordCard({ title, subtitle, right, onClick, icon = 'FileText' 
   const I = Icons[icon] || Icons.FileText;
   return (
     <button type="button" onClick={onClick}
-      className="flex w-full items-center gap-3.5 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-left transition-all duration-150 hover:border-[#002344]/25 hover:shadow-[0_10px_26px_-14px_rgba(2,35,68,0.3)]">
-      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-100 text-[#002344]"><I size={18} /></span>
+      className="flex w-full items-center gap-3.5 rounded-2xl border border-slate-200 bg-white px-4 py-3.5 text-left transition-all duration-150 hover:border-[#12345A]/25 hover:shadow-[0_10px_26px_-14px_rgba(2,35,68,0.3)]">
+      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-100 text-[#12345A]"><I size={18} /></span>
       <span className="min-w-0 flex-1">
         <span className="block truncate text-sm font-semibold text-slate-800">{title}</span>
         {subtitle && <span className="block truncate text-xs text-slate-400">{subtitle}</span>}
@@ -423,8 +423,8 @@ export function RecordCard({ title, subtitle, right, onClick, icon = 'FileText' 
 export function Toggle({ on, onChange, label }) {
   return (
     <button type="button" onClick={() => onChange(!on)}
-      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold transition ${on ? 'border-[#002344] bg-[#002344] text-white' : 'border-slate-300 bg-white text-slate-600'}`}>
-      <span className={`h-2 w-2 rounded-full ${on ? 'bg-[#FFD166]' : 'bg-slate-300'}`} />
+      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold transition ${on ? 'border-[#12345A] bg-[#12345A] text-white' : 'border-slate-300 bg-white text-slate-600'}`}>
+      <span className={`h-2 w-2 rounded-full ${on ? 'bg-[#F7A814]' : 'bg-slate-300'}`} />
       {label}
     </button>
   );
