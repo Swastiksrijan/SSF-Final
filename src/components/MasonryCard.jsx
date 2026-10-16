@@ -8,7 +8,7 @@ export default function MasonryCards() {
       title: "Education",
       desc: "Empowering children with quality learning for a brighter future.",
       img: "/images/real/scholarship_distribution.jpg",
-      color: "border-l-4 border-[#003366]",
+      color: "border-l-4 border-[#12345A]",
       link: "/LearningHub"
     },
     {
@@ -22,7 +22,7 @@ export default function MasonryCards() {
       title: "Health",
       desc: "Providing essential healthcare and nutrition to combat disease.",
       img: "/images/real/nutrition_program.jpg",
-      color: "border-l-4 border-[#003366]",
+      color: "border-l-4 border-[#12345A]",
       link: "/Campaign#health"
     },
     {
@@ -54,7 +54,7 @@ export default function MasonryCards() {
         >
           <Link to={card.link} className="flex flex-col h-full p-6 relative z-10">
             <div className="mb-4">
-              <h3 className="text-xl font-bold text-zinc-900 mb-2 group-hover:text-[#003366] transition-colors">{card.title}</h3>
+              <h3 className="text-xl font-bold text-zinc-900 mb-2 group-hover:text-[#12345A] transition-colors">{card.title}</h3>
               <p className="text-sm text-zinc-600 leading-relaxed font-medium">
                 {card.desc}
               </p>
@@ -67,7 +67,7 @@ export default function MasonryCards() {
                   <img src={card.img} alt={card.title} className="w-full h-full object-cover transform group-hover:scale-110 transition-transform duration-700" />
                 </div>
               )}
-              <div className="inline-flex items-center gap-2 font-bold text-[10px] uppercase tracking-wider text-[#003366]">
+              <div className="inline-flex items-center gap-2 font-bold text-[10px] uppercase tracking-wider text-[#12345A]">
                 Explore Impact <FaArrowRight size={10} className="group-hover:translate-x-1 transition-transform" />
               </div>
             </div>

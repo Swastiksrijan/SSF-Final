@@ -15,10 +15,10 @@ function Supportour() {
         <Toaster
           toastOptions={{
             className:
-              " font-semibold text-lg px-4 py-2 text-white bg-[#003366] cursor-pointer transition-all duration-200 ease-in z-2 mt-20",
+              " font-semibold text-lg px-4 py-2 text-white bg-[#12345A] cursor-pointer transition-all duration-200 ease-in z-2 mt-20",
             style: {
               padding: "12px 20px",
-              background: "#003366",
+              background: "#12345A",
               color: "white",
               borderRadius: "0",
             },
@@ -50,15 +50,15 @@ function Supportour() {
           </span>
 
           {/* QR Box */}
-          <div className="flex flex-col items-center justify-center bg-[#003366]/10 p-6 rounded border border-dashed w-full max-w-[420px]">
+          <div className="flex flex-col items-center justify-center bg-[#12345A]/10 p-6 rounded border border-dashed w-full max-w-[420px]">
             <img src={Barcode} className="w-40 h-40" />
 
             {/* UPI ID */}
-            <div className="flex items-center gap-2 bg-white px-4 py-2 mt-4  shadow-[4px_4px_0px_#003366] w-fit">
+            <div className="flex items-center gap-2 bg-white px-4 py-2 mt-4  shadow-[4px_4px_0px_#12345A] w-fit">
               <span>swastikstijanfoundation@ptyes</span>
 
               <span
-                className="text-[#003366] cursor-pointer ml-6 flex items-center gap-1"
+                className="text-[#12345A] cursor-pointer ml-6 flex items-center gap-1"
                 onClick={() => handleCopy("swastiksrijanfoundation@ptyes")}
               >
                 Copy <IoCopyOutline />
@@ -80,7 +80,7 @@ function Supportour() {
                   Union Bank Of India
                 </span>
                 <span
-                  className="text-[#003366] cursor-pointer"
+                  className="text-[#12345A] cursor-pointer"
                   onClick={() => handleCopy("Union Bank Of India")}
                 >
                   <IoCopyOutline />
@@ -95,7 +95,7 @@ function Supportour() {
                   481401010036579
                 </span>
                 <span
-                  className="text-[#003366] cursor-pointer"
+                  className="text-[#12345A] cursor-pointer"
                   onClick={() => handleCopy("481401010036579")}
                 >
                   <IoCopyOutline />
@@ -108,7 +108,7 @@ function Supportour() {
               <div className="flex items-center gap-2">
                 <span className="text-zinc-600 font-medium">UBIN0548146</span>
                 <span
-                  className="text-[#003366] cursor-pointer"
+                  className="text-[#12345A] cursor-pointer"
                   onClick={() => handleCopy("UBIN0548146")}
                 >
                   <IoCopyOutline />
@@ -123,7 +123,7 @@ function Supportour() {
                   Transport Nagar, Rewa
                 </span>
                 <span
-                  className="text-[#003366] cursor-pointer"
+                  className="text-[#12345A] cursor-pointer"
                   onClick={() => handleCopy("Transport Nagar, Rewa")}
                 >
                   <IoCopyOutline />
