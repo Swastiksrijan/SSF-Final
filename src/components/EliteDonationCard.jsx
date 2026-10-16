@@ -19,15 +19,15 @@ export default function EliteDonationCard() {
 
   return (
     <div className="w-full px-4 py-10">
-      <div className="mx-auto max-w-5xl rounded-[2rem] bg-gradient-to-br from-[#001529] via-[#002344] to-[#001529] border border-white/10 p-7 md:p-10 shadow-2xl">
+      <div className="mx-auto max-w-5xl rounded-[2rem] bg-gradient-to-br from-[#12345A] via-[#12345A] to-[#12345A] border border-white/10 p-7 md:p-10 shadow-2xl">
         <div className="text-center space-y-6">
           <div>
-            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#FF6600]/15 text-[#ff914d] text-[10px] font-black uppercase tracking-[0.2em]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#FF6600] animate-pulse"></span>
+            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#176447]/15 text-[#176447] text-[10px] font-black uppercase tracking-[0.2em]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#176447] animate-pulse"></span>
               Make a Difference
             </span>
             <h2 className="mt-4 text-3xl md:text-4xl font-serif font-bold text-white">
-              Support Our <span className="text-[#FF6600]">Mission</span>
+              Support Our <span className="text-[#176447]">Mission</span>
             </h2>
             <p className="mt-3 text-zinc-300 max-w-3xl mx-auto text-sm md:text-base leading-relaxed">
               Your contribution can help create lasting change in education, health, women empowerment and community development.
@@ -53,7 +53,7 @@ export default function EliteDonationCard() {
               aria-label="Donate via Zoho Payments"
               className="group w-full"
             >
-              <div className="h-full flex items-center gap-4 justify-center px-6 py-4 rounded-2xl bg-[#FF6600] hover:bg-[#ff7a1a] text-white font-bold shadow-lg transition-all group-hover:-translate-y-0.5">
+              <div className="h-full flex items-center gap-4 justify-center px-6 py-4 rounded-2xl bg-[#176447] hover:bg-[#176447] text-white font-bold shadow-lg transition-all group-hover:-translate-y-0.5">
                 <span className="text-2xl">❤️</span>
                 <div className="text-left">
                   <div className="text-sm font-black uppercase tracking-wide">Donate via Zoho Payments</div>
@@ -70,7 +70,7 @@ export default function EliteDonationCard() {
               aria-label="Donate via Razorpay"
               className="group w-full"
             >
-              <div className="h-full flex items-center gap-4 justify-center px-6 py-4 rounded-2xl bg-white text-[#002344] border border-white hover:bg-zinc-100 font-bold shadow-lg transition-all group-hover:-translate-y-0.5">
+              <div className="h-full flex items-center gap-4 justify-center px-6 py-4 rounded-2xl bg-white text-[#12345A] border border-white hover:bg-zinc-100 font-bold shadow-lg transition-all group-hover:-translate-y-0.5">
                 <span className="text-2xl">⚡</span>
                 <div className="text-left">
                   <div className="text-sm font-black uppercase tracking-wide">Donate via Razorpay</div>

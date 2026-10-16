@@ -16,7 +16,7 @@ function Aboutus() {
           className="w-full md:w-1/2"
         >
           <div className="relative">
-            <div className="absolute -inset-4 bg-[#003366] rounded-2xl transform rotate-3 opacity-20"></div>
+            <div className="absolute -inset-4 bg-[#12345A] rounded-2xl transform rotate-3 opacity-20"></div>
             <img
               src={image1}
               className="relative rounded-lg shadow-xl w-full object-cover transform transition hover:scale-[1.02] duration-500"
@@ -33,7 +33,7 @@ function Aboutus() {
           transition={{ duration: 0.8 }}
           className="w-full md:w-1/2 space-y-6"
         >
-          <h2 className="text-[#003366] font-bold tracking-widest uppercase text-sm">Who We Are</h2>
+          <h2 className="text-[#12345A] font-bold tracking-widest uppercase text-sm">Who We Are</h2>
           <h1 className="cry-title text-black">
             A catalyst for <span className="italic">change</span> since 2013.
           </h1>

@@ -29,7 +29,7 @@ const Chip = ({ children, tone = "zinc" }) => {
     amber: "bg-amber-50 text-amber-700 border-amber-200",
     blue: "bg-sky-50 text-sky-700 border-sky-200",
     zinc: "bg-zinc-100 text-zinc-600 border-zinc-200",
-    navy: "bg-[#002344] text-white border-[#002344]"
+    navy: "bg-[#12345A] text-white border-[#12345A]"
   };
   return <span className={"inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full border " + (tones[tone] || tones.zinc)}>{children}</span>;
 };
@@ -38,7 +38,7 @@ const Panel = ({ title, subtitle, right, children }) => (
   <div className="bg-white rounded-2xl border border-zinc-200 overflow-hidden">
     <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-zinc-100">
       <div>
-        <h3 className="text-lg font-black text-[#002344]">{title}</h3>
+        <h3 className="text-lg font-black text-[#12345A]">{title}</h3>
         {subtitle && <p className="text-xs text-zinc-500 mt-0.5">{subtitle}</p>}
       </div>
       {right}
@@ -50,14 +50,14 @@ const Panel = ({ title, subtitle, right, children }) => (
 const Stat = ({ label, value, tone = "navy" }) => (
   <div className="rounded-2xl border border-zinc-200 p-4 bg-gradient-to-br from-white to-zinc-50">
     <div className="text-[11px] font-black uppercase tracking-wide text-zinc-400">{label}</div>
-    <div className={"text-xl font-black mt-1 " + (tone === "red" ? "text-rose-600" : tone === "green" ? "text-emerald-600" : "text-[#002344]")}>{value}</div>
+    <div className={"text-xl font-black mt-1 " + (tone === "red" ? "text-rose-600" : tone === "green" ? "text-emerald-600" : "text-[#12345A]")}>{value}</div>
   </div>
 );
 
 const useFy = () => {
   const [fy, setFy] = useState("2025-26");
   const picker = (
-    <select value={fy} onChange={(e) => setFy(e.target.value)} className="border border-zinc-300 rounded-xl px-3 py-2 text-sm font-bold text-[#002344]">
+    <select value={fy} onChange={(e) => setFy(e.target.value)} className="border border-zinc-300 rounded-xl px-3 py-2 text-sm font-bold text-[#12345A]">
       {FY_OPTIONS.map((y) => <option key={y} value={y}>FY {y}</option>)}
     </select>
   );
@@ -129,15 +129,15 @@ export function FinanceTransactions({ token }) {
           {picker}
           <div className="relative"><FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-xs" />
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search id / party / ref" className="pl-8 pr-3 py-2 border border-zinc-300 rounded-xl text-sm" /></div>
-          <select value={type} onChange={(e) => setType(e.target.value)} className="border border-zinc-300 rounded-xl px-3 py-2 text-sm font-bold text-[#002344]">
+          <select value={type} onChange={(e) => setType(e.target.value)} className="border border-zinc-300 rounded-xl px-3 py-2 text-sm font-bold text-[#12345A]">
             <option value="">All types</option>
             {["donation", "membership", "expense", "receipt", "payment", "opening"].map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
-          <button onClick={reload} className="bg-zinc-100 text-[#002344] px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaSync /> Refresh</button>
-          <button onClick={() => setShowForm((s) => !s)} className="bg-[#FF6600] text-white px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaPlus /> New</button>
+          <button onClick={reload} className="bg-zinc-100 text-[#12345A] px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaSync /> Refresh</button>
+          <button onClick={() => setShowForm((s) => !s)} className="bg-[#176447] text-white px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaPlus /> New</button>
         </div>}
       >
-        {msg && <div className="mb-3 text-sm font-semibold text-[#002344] bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">{msg}</div>}
+        {msg && <div className="mb-3 text-sm font-semibold text-[#12345A] bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">{msg}</div>}
         {showForm && (
           <form onSubmit={submit} className="grid sm:grid-cols-3 gap-3 mb-4 bg-zinc-50 border border-zinc-200 rounded-xl p-3">
             <select value={form.transactionType} onChange={(e) => setForm({ ...form, transactionType: e.target.value })} className="border rounded-lg px-3 py-2">
@@ -150,7 +150,7 @@ export function FinanceTransactions({ token }) {
             </select>
             <input placeholder="Reference / UTR" value={form.referenceNumber} onChange={(e) => setForm({ ...form, referenceNumber: e.target.value })} className="border rounded-lg px-3 py-2" />
             <input placeholder="Party / Payee" value={form.partyId} onChange={(e) => setForm({ ...form, partyId: e.target.value })} className="border rounded-lg px-3 py-2" />
-            <button type="submit" className="bg-[#002344] text-white rounded-lg px-4 py-2 font-bold">Save transaction</button>
+            <button type="submit" className="bg-[#12345A] text-white rounded-lg px-4 py-2 font-bold">Save transaction</button>
           </form>
         )}
         <div className="overflow-auto">
@@ -164,7 +164,7 @@ export function FinanceTransactions({ token }) {
               {loading && <tr><td colSpan="9" className="p-4 text-center text-zinc-400">Loading…</td></tr>}
               {!loading && filtered.map((r) => (
                 <tr key={r.id} className="hover:bg-zinc-50">
-                  <td className="p-2 font-mono text-xs font-bold text-[#002344]">{r.transactionId}</td>
+                  <td className="p-2 font-mono text-xs font-bold text-[#12345A]">{r.transactionId}</td>
                   <td className="p-2 whitespace-nowrap">{day(r.transactionDate)}</td>
                   <td className="p-2"><Chip tone={r.direction === "in" ? "green" : r.direction === "out" ? "red" : "zinc"}>{r.transactionType}</Chip></td>
                   <td className="p-2 max-w-[180px] truncate">{r.partyId || "—"}</td>
@@ -205,7 +205,7 @@ export function FinanceLedger({ token }) {
               <tbody className="divide-y">
                 {heads.map((h) => (
                   <tr key={h.head}>
-                    <td className="p-2 font-bold text-[#002344] capitalize">{h.head}</td>
+                    <td className="p-2 font-bold text-[#12345A] capitalize">{h.head}</td>
                     <td className="p-2 text-right">{money(h.debit)}</td>
                     <td className="p-2 text-right">{money(h.credit)}</td>
                     <td className="p-2 text-right font-bold">{money((h.credit || 0) - (h.debit || 0))}</td>
@@ -382,13 +382,13 @@ export function FinanceAudit() {
           </select>
           <input className="border rounded-lg px-3 py-2 sm:col-span-2" placeholder="Description / title / form" value={text} onChange={(e) => setText(e.target.value)} />
           <input type="number" step="0.01" className="border rounded-lg px-3 py-2" placeholder="Amount (optional)" value={amount} onChange={(e) => setAmount(e.target.value)} />
-          <button className="bg-[#002344] text-white rounded-lg px-4 py-2 font-bold">Add record</button>
+          <button className="bg-[#12345A] text-white rounded-lg px-4 py-2 font-bold">Add record</button>
         </form>
-        {msg && <div className="mb-3 text-sm font-semibold text-[#002344]">{msg}</div>}
+        {msg && <div className="mb-3 text-sm font-semibold text-[#12345A]">{msg}</div>}
         <div className="grid sm:grid-cols-3 gap-3">
-          <div className="border rounded-xl p-3"><div className="text-xs font-black text-zinc-400 uppercase">Findings</div><div className="text-2xl font-black text-[#002344]">{summary?.findings?.total ?? 0}</div><div className="text-xs text-zinc-500">{summary?.findings?.open ?? 0} open</div></div>
-          <div className="border rounded-xl p-3"><div className="text-xs font-black text-zinc-400 uppercase">Documents</div><div className="text-2xl font-black text-[#002344]">{(summary?.documents?.uploaded ?? 0)}</div><div className="text-xs text-zinc-500">{summary?.documents?.versions ?? 0} versions</div></div>
-          <div className="border rounded-xl p-3"><div className="text-xs font-black text-zinc-400 uppercase">Filings</div><div className="text-2xl font-black text-[#002344]">{(summary?.filings || []).length}</div><div className="text-xs text-zinc-500">{(summary?.filings || [])[0]?.status || "—"}</div></div>
+          <div className="border rounded-xl p-3"><div className="text-xs font-black text-zinc-400 uppercase">Findings</div><div className="text-2xl font-black text-[#12345A]">{summary?.findings?.total ?? 0}</div><div className="text-xs text-zinc-500">{summary?.findings?.open ?? 0} open</div></div>
+          <div className="border rounded-xl p-3"><div className="text-xs font-black text-zinc-400 uppercase">Documents</div><div className="text-2xl font-black text-[#12345A]">{(summary?.documents?.uploaded ?? 0)}</div><div className="text-xs text-zinc-500">{summary?.documents?.versions ?? 0} versions</div></div>
+          <div className="border rounded-xl p-3"><div className="text-xs font-black text-zinc-400 uppercase">Filings</div><div className="text-2xl font-black text-[#12345A]">{(summary?.filings || []).length}</div><div className="text-xs text-zinc-500">{(summary?.filings || [])[0]?.status || "—"}</div></div>
         </div>
       </Panel>
 
@@ -416,7 +416,7 @@ export function FinanceAudit() {
             <tbody className="divide-y">
               {auditedYears.map((y) => (
                 <tr key={y.financialYear} className={"hover:bg-zinc-50 cursor-pointer " + (openFy === y.financialYear ? "bg-amber-50/60" : "")} onClick={() => setOpenFy(y.financialYear)}>
-                  <td className="p-2 font-bold text-[#002344]">{y.financialYear}</td>
+                  <td className="p-2 font-bold text-[#12345A]">{y.financialYear}</td>
                   <td className="p-2 text-right">{money(y.receiptsTotal)}</td>
                   <td className="p-2 text-right text-emerald-700">{money(y.income)}</td>
                   <td className="p-2 text-right text-rose-600">{money(y.expenditure)}</td>
@@ -439,7 +439,7 @@ export function FinanceAudit() {
         <Panel title={"FY " + selectedReport.financialYear + " — Audited statements"} subtitle={selectedReport.opinion} right={<Chip tone={selectedReport.result.type === "surplus" ? "green" : "red"}>{selectedReport.result.type}</Chip>}>
           <div className="grid lg:grid-cols-2 gap-4">
             <div className="border border-zinc-200 rounded-xl overflow-hidden">
-              <div className="bg-zinc-50 px-3 py-2 font-black text-[#002344] text-sm">Income &amp; Expenditure Account</div>
+              <div className="bg-zinc-50 px-3 py-2 font-black text-[#12345A] text-sm">Income &amp; Expenditure Account</div>
               <table className="w-full text-sm">
                 <tbody className="divide-y">
                   {selectedReport.income.map((i) => (
@@ -449,12 +449,12 @@ export function FinanceAudit() {
                     <tr key={"e" + e.head}><td className="p-1.5">{e.head}</td><td className="p-1.5 text-right text-rose-600">{money(e.amount)}</td></tr>
                   ))}
                   <tr className="bg-zinc-50 font-bold"><td className="p-1.5">Total income / expenditure</td><td className="p-1.5 text-right">{money(selectedReport.incomeTotal)} / {money(selectedReport.expenditureTotal)}</td></tr>
-                  <tr className="font-black text-[#002344]"><td className="p-1.5 capitalize">{selectedReport.result.type} to Balance Sheet</td><td className="p-1.5 text-right">{money(selectedReport.result.amount)}</td></tr>
+                  <tr className="font-black text-[#12345A]"><td className="p-1.5 capitalize">{selectedReport.result.type} to Balance Sheet</td><td className="p-1.5 text-right">{money(selectedReport.result.amount)}</td></tr>
                 </tbody>
               </table>
             </div>
             <div className="border border-zinc-200 rounded-xl overflow-hidden">
-              <div className="bg-zinc-50 px-3 py-2 font-black text-[#002344] text-sm">Balance Sheet (as at 31 March)</div>
+              <div className="bg-zinc-50 px-3 py-2 font-black text-[#12345A] text-sm">Balance Sheet (as at 31 March)</div>
               <table className="w-full text-sm">
                 <tbody className="divide-y">
                   <tr><td className="p-1.5">General Fund — opening</td><td className="p-1.5 text-right">{money(selectedReport.generalFund.opening)}</td></tr>
@@ -474,11 +474,11 @@ export function FinanceAudit() {
         </Panel>
       )}
 
-      <Panel title="Audit Pack" subtitle={"Organized index of everything for FY " + fy} right={<button onClick={downloadPack} className="bg-[#FF6600] text-white px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaDownload /> Download pack</button>}>
+      <Panel title="Audit Pack" subtitle={"Organized index of everything for FY " + fy} right={<button onClick={downloadPack} className="bg-[#176447] text-white px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaDownload /> Download pack</button>}>
         <div className="grid sm:grid-cols-2 gap-3">
           {(pack?.index || []).map((s) => (
             <div key={s.section} className="border rounded-xl p-3 flex items-center justify-between">
-              <span className="font-bold text-[#002344] inline-flex items-center gap-2"><FaLayerGroup className="text-[#FF6600]" /> {s.section}</span>
+              <span className="font-bold text-[#12345A] inline-flex items-center gap-2"><FaLayerGroup className="text-[#176447]" /> {s.section}</span>
               <Chip tone="zinc">{s.items.length} items</Chip>
             </div>
           ))}
@@ -503,10 +503,10 @@ export function SeedBar({ reload, count }) {
   };
   return (
     <div className="mt-4 flex flex-wrap items-center gap-3 border-t border-zinc-100 pt-3">
-      <button disabled={busy} onClick={() => seed(false)} className="bg-[#002344] text-white px-4 py-2 rounded-xl font-bold inline-flex items-center gap-2 disabled:opacity-50"><FaClipboardCheck /> {busy ? "Working…" : "Seed official registers"}</button>
-      <button disabled={busy} onClick={() => seed(true)} className="bg-white border border-zinc-300 text-[#002344] px-4 py-2 rounded-xl font-bold inline-flex items-center gap-2 disabled:opacity-50"><FaSync /> Re-import (rebuild)</button>
+      <button disabled={busy} onClick={() => seed(false)} className="bg-[#12345A] text-white px-4 py-2 rounded-xl font-bold inline-flex items-center gap-2 disabled:opacity-50"><FaClipboardCheck /> {busy ? "Working…" : "Seed official registers"}</button>
+      <button disabled={busy} onClick={() => seed(true)} className="bg-white border border-zinc-300 text-[#12345A] px-4 py-2 rounded-xl font-bold inline-flex items-center gap-2 disabled:opacity-50"><FaSync /> Re-import (rebuild)</button>
       <span className="text-xs text-zinc-500">Import is duplicate-safe: re-running never creates duplicate transactions.</span>
-      {msg && <span className="text-xs font-bold text-[#002344]">{msg}</span>}
+      {msg && <span className="text-xs font-bold text-[#12345A]">{msg}</span>}
     </div>
   );
 }

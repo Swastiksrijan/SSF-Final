@@ -54,7 +54,7 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   const verificationUrl = certId ? `https://swastiksrijan.in/verify/${encodeURIComponent(certId)}` : null;
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [86, 54] });
   const W = 86; const H = 54;
-  const navy = "#002344"; const blue = "#0B3A63"; const gold = "#C5A059"; const cream = "#FBFAF6"; const ink = "#26323D"; const muted = "#697582";
+  const navy = "#12345A"; const blue = "#12345A"; const gold = "#F7A814"; const cream = "#FAF9F5"; const ink = "#26343D"; const muted = "#26343D";
 
   // FRONT — premium photo-ID design
   doc.setFillColor(cream); doc.rect(0, 0, W, H, "F");
@@ -68,12 +68,12 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   } catch { /* branding text remains */ }
   doc.setFont("helvetica", "bold"); doc.setTextColor("#FFFFFF"); doc.setFontSize(6.2);
   doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", 16, 6.6);
-  doc.setFontSize(3.8); doc.setTextColor("#DDE7F0");
+  doc.setFontSize(3.8); doc.setTextColor("#EAF0F6");
   doc.text(isMember ? "OFFICIAL MEMBERSHIP IDENTITY CARD" : "OFFICIAL VOLUNTEER IDENTITY CARD", 16, 10.7);
   doc.setFontSize(3.1); doc.setTextColor("#FFFFFF"); doc.text(typeLabel, W - 5, 6.6, { align: "right" });
 
   const photoX = 5; const photoY = 18; const photoW = 22; const photoH = 27;
-  doc.setFillColor("#E8EDF2"); doc.roundedRect(photoX, photoY, photoW, photoH, 1.8, 1.8, "F");
+  doc.setFillColor("#EAF0F6"); doc.roundedRect(photoX, photoY, photoW, photoH, 1.8, 1.8, "F");
   if (photoUrl) {
     try {
       const photo = await loadImage(photoUrl);
@@ -83,10 +83,10 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
       else { drawH = photoW / sourceRatio; drawY = photoY - (drawH - photoH) / 2; }
       doc.addImage(photo, getImageFormat(photoUrl), drawX, drawY, drawW, drawH);
     } catch {
-      doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#7B8490"); doc.text("PHOTO", photoX + photoW / 2, photoY + photoH / 2, { align: "center" });
+      doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#26343D"); doc.text("PHOTO", photoX + photoW / 2, photoY + photoH / 2, { align: "center" });
     }
   } else {
-    doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#7B8490"); doc.text("PHOTO", photoX + photoW / 2, photoY + photoH / 2, { align: "center" });
+    doc.setFont("helvetica", "bold"); doc.setFontSize(5); doc.setTextColor("#26343D"); doc.text("PHOTO", photoX + photoW / 2, photoY + photoH / 2, { align: "center" });
   }
   doc.setDrawColor(gold); doc.setLineWidth(0.7); doc.roundedRect(photoX, photoY, photoW, photoH, 1.8, 1.8);
   doc.setFillColor(navy); doc.roundedRect(photoX, 42.5, photoW, 2.5, 0.8, 0.8, "F");
@@ -96,7 +96,7 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   const detailsX = 30;
   doc.setFont("helvetica", "bold"); doc.setTextColor(navy); fitText(doc, String(name || "Member"), 31, 9, 6); doc.text(String(name || "Member"), detailsX, 21.8);
   doc.setFontSize(3.4); doc.setTextColor(muted); doc.text("OFFICIAL IDENTITY", detailsX, 25.2);
-  doc.setFillColor("#EEF3F7"); doc.roundedRect(detailsX, 27, 31, 8.2, 1.4, 1.4, "F");
+  doc.setFillColor("#EAF0F6"); doc.roundedRect(detailsX, 27, 31, 8.2, 1.4, 1.4, "F");
   doc.setFont("helvetica", "bold"); doc.setFontSize(3.4); doc.setTextColor(muted); doc.text(idLabel, detailsX + 2.2, 30);
   doc.setFontSize(6.1); doc.setTextColor(navy); doc.text(String(officialId || "PENDING"), detailsX + 2.2, 33.3);
   doc.setFontSize(3.6); doc.setTextColor(muted); doc.text("ROLE", detailsX, 39.2);
@@ -105,7 +105,7 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   doc.setFont("helvetica", "normal"); doc.setFontSize(4.1); doc.setTextColor(ink); doc.text(String(date || "—"), detailsX, 48.7);
 
   const qrBoxX = 64; const qrBoxY = 17.2;
-  doc.setFillColor("#FFFFFF"); doc.setDrawColor("#D8DEE5"); doc.setLineWidth(0.35); doc.roundedRect(qrBoxX, qrBoxY, 17, 23.2, 1.5, 1.5, "FD");
+  doc.setFillColor("#FFFFFF"); doc.setDrawColor("#EAF0F6"); doc.setLineWidth(0.35); doc.roundedRect(qrBoxX, qrBoxY, 17, 23.2, 1.5, 1.5, "FD");
   if (verificationUrl) {
     try { const qr = await loadImage(`${QR_CODE_API}${encodeURIComponent(verificationUrl)}`); doc.addImage(qr, "PNG", qrBoxX + 1.3, qrBoxY + 1.2, 14.4, 14.4); }
     catch { doc.setFont("helvetica", "bold"); doc.setFontSize(3.6); doc.setTextColor(muted); doc.text("VERIFY ONLINE", qrBoxX + 8.5, qrBoxY + 9, { align: "center" }); }
@@ -120,8 +120,8 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   doc.setFillColor(cream); doc.rect(0, 0, W, H, "F"); doc.setFillColor(navy); doc.rect(0, 0, W, 12.5, "F"); doc.setFillColor(gold); doc.rect(0, 12.5, W, 1.2, "F");
   doc.setDrawColor(gold); doc.setLineWidth(0.55); doc.roundedRect(2, 2, W - 4, H - 4, 2, 2);
   doc.setFont("helvetica", "bold"); doc.setTextColor("#FFFFFF"); doc.setFontSize(6.1); doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", W / 2, 6.5, { align: "center" });
-  doc.setFontSize(3.6); doc.setTextColor("#DDE7F0"); doc.text("OFFICIAL ID CARD • REVERSE", W / 2, 10, { align: "center" });
-  doc.setFillColor("#EEF3F7"); doc.roundedRect(6, 17, 74, 8.8, 1.8, 1.8, "F");
+  doc.setFontSize(3.6); doc.setTextColor("#EAF0F6"); doc.text("OFFICIAL ID CARD • REVERSE", W / 2, 10, { align: "center" });
+  doc.setFillColor("#EAF0F6"); doc.roundedRect(6, 17, 74, 8.8, 1.8, 1.8, "F");
   doc.setFont("helvetica", "bold"); doc.setFontSize(4.2); doc.setTextColor(navy); doc.text("CARD STATUS", 9, 20.7);
   doc.setFont("helvetica", "normal"); doc.setFontSize(3.8); doc.setTextColor(ink); doc.text("Issued only after official approval by Swastik Srijan Foundation Samiti.", 9, 23.2);
   const notes = ["This card is the property of Swastik Srijan Foundation Samiti.", "It may be withdrawn when the volunteer or membership authorization ends.", "If found, please return this card to the Foundation. Do not alter or misuse it."];
@@ -149,12 +149,12 @@ export const generateCertificate = async (name, role, date, certId = null, membe
   const W = doc.internal.pageSize.getWidth();
   const H = doc.internal.pageSize.getHeight();
   const cx = W / 2;
-  const navy = "#002344";
-  const blue = "#0B3A63";
-  const gold = "#C5A059";
-  const cream = "#FFFDF8";
-  const ink = "#30343B";
-  const muted = "#66727E";
+  const navy = "#12345A";
+  const blue = "#12345A";
+  const gold = "#F7A814";
+  const cream = "#FAF9F5";
+  const ink = "#26343D";
+  const muted = "#26343D";
 
   const type = String(certificateType || "Participation").trim();
   const normalizedType = type.toLowerCase();
@@ -214,7 +214,7 @@ export const generateCertificate = async (name, role, date, certId = null, membe
   doc.line(cx - 48, 66, cx + 48, 66);
 
   doc.setFont("helvetica", "normal");
-  doc.setTextColor("#555555");
+  doc.setTextColor("#26343D");
   doc.setFontSize(10.5);
   doc.text("This certificate is proudly presented to", cx, 78, { align: "center" });
 
@@ -243,7 +243,7 @@ export const generateCertificate = async (name, role, date, certId = null, membe
   doc.text(bodyLines, cx, 112, { align: "center", lineHeightFactor: 1.35 });
 
   // Footer information is kept inside the A4 printable area.
-  doc.setDrawColor("#D8D2C5");
+  doc.setDrawColor("#EAF0F6");
   doc.setLineWidth(0.35);
   doc.line(25, 137, W - 25, 137);
 
@@ -269,7 +269,7 @@ export const generateCertificate = async (name, role, date, certId = null, membe
     const sigH = Math.min((signature.height / signature.width) * sigW, 15);
     doc.addImage(signature, "PNG", sigX - sigW / 2, 149, sigW, sigH);
   } catch {}
-  doc.setDrawColor("#333333");
+  doc.setDrawColor("#26343D");
   doc.setLineWidth(0.45);
   doc.line(sigX - 28, 168, sigX + 28, 168);
   doc.setFont("helvetica", "bold");

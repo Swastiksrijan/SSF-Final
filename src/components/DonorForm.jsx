@@ -39,15 +39,15 @@ export default function DonorForm() {
         } finally { setBusy(false); }
     };
 
-    const inputClass = 'w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none focus:border-[#002344] focus:ring-2 focus:ring-[#002344]/10';
+    const inputClass = 'w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-zinc-900 outline-none focus:border-[#12345A] focus:ring-2 focus:ring-[#12345A]/10';
     const labelClass = 'block text-sm font-semibold text-zinc-700 mb-2';
 
     return (
         <section id="donor-form" className="py-20 px-4 bg-zinc-50 border-t border-zinc-100">
             <div className="max-w-5xl mx-auto">
                 <div className="text-center mb-10">
-                    <div className="inline-flex items-center gap-2 rounded-full bg-[#002344] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white mb-4"><FaHeart /> Donor Registration</div>
-                    <h2 className="text-3xl md:text-4xl font-bold text-[#002344]">Register as a Donor</h2>
+                    <div className="inline-flex items-center gap-2 rounded-full bg-[#12345A] px-4 py-2 text-xs font-bold uppercase tracking-wider text-white mb-4"><FaHeart /> Donor Registration</div>
+                    <h2 className="text-3xl md:text-4xl font-bold text-[#12345A]">Register as a Donor</h2>
                     <p className="mt-3 text-zinc-600">दान करने के बाद अपनी donor details यहाँ दर्ज करें, ताकि आपका record और future receipt support सुरक्षित रहे।</p>
                 </div>
                 <form onSubmit={submit} className="bg-white rounded-3xl border border-zinc-200 shadow-xl p-6 md:p-10">
@@ -62,10 +62,10 @@ export default function DonorForm() {
                         {form.paymentMode === 'online' && (
                             <div className="md:col-span-2 rounded-2xl border border-orange-200 bg-orange-50 p-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                                 <div>
-                                    <p className="font-black text-[#002344]">Online Donation</p>
+                                    <p className="font-black text-[#12345A]">Online Donation</p>
                                     <p className="text-sm text-zinc-600 mt-1">Pay securely through Razorpay. You can select the donation amount on the payment page.</p>
                                 </div>
-                                <a href={DONATION_PAYMENT_LINK} target="_blank" rel="noreferrer noopener" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-[#ff6600] px-5 py-3 font-black text-white hover:bg-[#e85b00] transition">
+                                <a href={DONATION_PAYMENT_LINK} target="_blank" rel="noreferrer noopener" className="shrink-0 inline-flex items-center justify-center gap-2 rounded-xl bg-[#176447] px-5 py-3 font-black text-white hover:bg-[#176447] transition">
                                     Donate Now <FaExternalLinkAlt className="text-xs" />
                                 </a>
                             </div>
@@ -78,9 +78,9 @@ export default function DonorForm() {
                         <div className="md:col-span-2"><label className={labelClass}>Address (Optional)</label><textarea className={`${inputClass} min-h-[90px]`} value={form.address} onChange={e => update('address', e.target.value)} placeholder="Address for records/receipt" /></div>
                         <div className="md:col-span-2"><label className={labelClass}>Note (Optional)</label><textarea className={`${inputClass} min-h-[90px]`} value={form.notes} onChange={e => update('notes', e.target.value)} placeholder="Any message for the Foundation" /></div>
                     </div>
-                    <div className="mt-6 flex items-start gap-3 rounded-2xl bg-zinc-50 border border-zinc-100 p-4 text-sm text-zinc-600"><FaShieldAlt className="mt-0.5 text-[#002344] shrink-0" /><p>Your donor details are submitted securely to the Foundation for donation records and receipt support. Payment itself continues through the selected payment method.</p></div>
+                    <div className="mt-6 flex items-start gap-3 rounded-2xl bg-zinc-50 border border-zinc-100 p-4 text-sm text-zinc-600"><FaShieldAlt className="mt-0.5 text-[#12345A] shrink-0" /><p>Your donor details are submitted securely to the Foundation for donation records and receipt support. Payment itself continues through the selected payment method.</p></div>
                     {result && <div className={`mt-5 rounded-2xl p-4 font-semibold ${result.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>{result.type === 'success' ? <FaCheckCircle className="inline mr-2" /> : null}{result.message}</div>}
-                    <button disabled={busy} className="mt-6 w-full rounded-2xl bg-[#002344] py-4 text-lg font-bold text-white hover:bg-[#003b70] disabled:opacity-60 transition-colors">{busy ? 'Submitting...' : 'Register as Donor'}</button>
+                    <button disabled={busy} className="mt-6 w-full rounded-2xl bg-[#12345A] py-4 text-lg font-bold text-white hover:bg-[#12345A] disabled:opacity-60 transition-colors">{busy ? 'Submitting...' : 'Register as Donor'}</button>
                 </form>
             </div>
         </section>

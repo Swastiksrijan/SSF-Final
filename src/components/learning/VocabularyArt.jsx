@@ -8,13 +8,13 @@
 
 import { useId } from "react";
 
-const NAVY = "#0b3a63";
-const ORANGE = "#FF6600";
-const YELLOW = "#FFD166";
-const SKY = "#8ecae6";
-const GREEN = "#2f9e44";
-const PURPLE = "#7048e8";
-const ROSE = "#e64980";
+const NAVY = "#12345A";
+const ORANGE = "#176447";
+const YELLOW = "#F7A814";
+const SKY = "#EAF0F6";
+const GREEN = "#176447";
+const PURPLE = "#12345A";
+const ROSE = "#12345A";
 
 function Tile({ children, bg = NAVY, label = "Vocabulary illustration" }) {
   const uid = useId().replace(/[:]/g, "");
@@ -70,7 +70,7 @@ export function WordCardArt() {
 
 export function ContextArt() {
   return <Tile label="Context clues">
-    <Card x={-2} y={-18} w={150} h={58} fill="#f8fafc">
+    <Card x={-2} y={-18} w={150} h={58} fill="#EAF0F6">
       <text x={-6} y={-2} textAnchor="middle" fontSize="12" fontWeight="800" fill={NAVY}>“walking all day</text>
       <text x={-6} y={16} textAnchor="middle" fontSize="12" fontWeight="800" fill={NAVY}>under the sun”</text>
     </Card>
@@ -145,8 +145,8 @@ export function ActivePassiveArt() {
 
 export function WordFamilyArt() {
   const leaves = ["creation", "creative", "creatively", "creator"];
-  return <Tile label="Word family tree" bg="#0f3d2e">
-    <rect x="-6" y="-2" width="12" height="40" rx="5" fill="#7a4a1e" />
+  return <Tile label="Word family tree" bg="#12345A">
+    <rect x="-6" y="-2" width="12" height="40" rx="5" fill="#F7A814" />
     <circle cx="0" cy="-20" r="30" fill={GREEN} />
     <text x="0" y="-14" textAnchor="middle" fontSize="14" fontWeight="900" fill="#fff">create</text>
     {leaves.map((w, i) => <g key={i} transform={`translate(${-58 + i * 38},44)`}>
@@ -173,12 +173,12 @@ export function WordPartsArt() {
 export function DictionaryArt() {
   return <Tile label="Dictionary entry">
     <Card x={0} y={-10} w={140} h={120} fill="#fff">
-      <text x={0} y={-60} textAnchor="middle" fontSize="11" fontWeight="900" fill="#94a3b8">DICTIONARY</text>
+      <text x={0} y={-60} textAnchor="middle" fontSize="11" fontWeight="900" fill="#26343D">DICTIONARY</text>
       <text x={0} y={-30} textAnchor="middle" fontSize="22" fontWeight="900" fill={NAVY}>branch</text>
       <text x={0} y={-10} textAnchor="middle" fontSize="11" fontWeight="700" fill={GREEN}>/brɑːntʃ/ · noun</text>
-      <text x={-60} y={14} fontSize="9" fontWeight="700" fill="#475569">1. tree part</text>
-      <text x={-60} y={30} fontSize="9" fontWeight="700" fill="#475569">2. office division</text>
-      <text x={-60} y={46} fontSize="9" fontWeight="700" fill="#475569">3. subject division</text>
+      <text x={-60} y={14} fontSize="9" fontWeight="700" fill="#26343D">1. tree part</text>
+      <text x={-60} y={30} fontSize="9" fontWeight="700" fill="#26343D">2. office division</text>
+      <text x={-60} y={46} fontSize="9" fontWeight="700" fill="#26343D">3. subject division</text>
     </Card>
     {cap("Dictionary", "#fff", 92)}
   </Tile>;
@@ -187,7 +187,7 @@ export function DictionaryArt() {
 export function ReadingArt() {
   return <Tile label="Vocabulary from reading">
     <Card x={-14} y={-16} w={120} h={96} fill="#fff">
-      {[0, 1, 2, 3, 4].map((i) => <line key={i} x1={-62} y1={-44 + i * 20} x2={i === 4 ? -6 : 40} y2={-44 + i * 20} stroke="#cbd5e1" strokeWidth="5" strokeLinecap="round" />)}
+      {[0, 1, 2, 3, 4].map((i) => <line key={i} x1={-62} y1={-44 + i * 20} x2={i === 4 ? -6 : 40} y2={-44 + i * 20} stroke="#EAF0F6" strokeWidth="5" strokeLinecap="round" />)}
       <rect x={-30} y={-6} width="26" height="10" rx="4" fill={YELLOW} />
     </Card>
     <text x={56} y={-20} textAnchor="middle" fontSize="34">💡</text>
@@ -212,9 +212,9 @@ export function RegisterArt() {
 export function AcademicArt() {
   return <Tile label="Academic vocabulary">
     <Card x={0} y={-6} w={150} h={104} fill="#fff">
-      <text x={0} y={-40} textAnchor="middle" fontSize="11" fontWeight="900" fill="#94a3b8">ACADEMIC WORDS</text>
+      <text x={0} y={-40} textAnchor="middle" fontSize="11" fontWeight="900" fill="#26343D">ACADEMIC WORDS</text>
       {["explain", "describe", "compare", "analyze"].map((w, i) => <g key={i} transform={`translate(${i % 2 ? 36 : -36},${-18 + Math.floor(i / 2) * 30})`}>
-        <rect x="-32" y="-11" width="64" height="22" rx="8" fill={i === 3 ? ORANGE : "#eef4f9"} />
+        <rect x="-32" y="-11" width="64" height="22" rx="8" fill={i === 3 ? ORANGE : "#EAF0F6"} />
         <text x="0" y="4" textAnchor="middle" fontSize="10" fontWeight="800" fill={i === 3 ? "#fff" : NAVY}>{w}</text>
       </g>)}
     </Card>
@@ -269,8 +269,8 @@ export function GamesArt() {
 
 export function DetectiveArt() {
   return <Tile label="Word detective">
-    <Card x={-6} y={-14} w={132} h={86} fill="#f8fafc">
-      {[0, 1, 2, 3].map((i) => <line key={i} x1={-56} y1={-36 + i * 20} x2={i === 2 ? 4 : 44} y2={-36 + i * 20} stroke="#cbd5e1" strokeWidth="5" strokeLinecap="round" />)}
+    <Card x={-6} y={-14} w={132} h={86} fill="#EAF0F6">
+      {[0, 1, 2, 3].map((i) => <line key={i} x1={-56} y1={-36 + i * 20} x2={i === 2 ? 4 : 44} y2={-36 + i * 20} stroke="#EAF0F6" strokeWidth="5" strokeLinecap="round" />)}
     </Card>
     <Magnifier cx={30} cy={18} r={24} handle={20} />
     {cap("🕵️ Word Detective", "#fff", 84)}
@@ -282,7 +282,7 @@ export function WordBankArt() {
     <Card x={0} y={-6} w={126} h={116} fill="#fff">
       <rect x="-52" y="-48" width="104" height="14" rx="7" fill={ORANGE} />
       {[0, 1, 2, 3, 4].map((i) => <g key={i}>
-        <line x1={-46} y1={-22 + i * 20} x2={i % 2 ? 30 : 44} y2={-22 + i * 20} stroke="#cbd5e1" strokeWidth="4" strokeLinecap="round" />
+        <line x1={-46} y1={-22 + i * 20} x2={i % 2 ? 30 : 44} y2={-22 + i * 20} stroke="#EAF0F6" strokeWidth="4" strokeLinecap="round" />
         <circle cx={-54} cy={-22 + i * 20} r="3.5" fill={GREEN} />
       </g>)}
     </Card>
@@ -291,7 +291,7 @@ export function WordBankArt() {
 }
 
 export function TrophyArt() {
-  return <Tile label="Mastery" bg="#5a3b00">
+  return <Tile label="Mastery" bg="#F7A814">
     <text x="0" y="18" textAnchor="middle" fontSize="72">🏆</text>
     {cap("Vocabulary Mastery", YELLOW, 86)}
   </Tile>;
@@ -347,22 +347,22 @@ export function HeroArt({ className = "" }) {
     <svg viewBox="0 0 400 300" className={className} role="img" aria-label="Vocabulary words illustration" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id={bgId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#123a5f" /><stop offset="1" stopColor="#001529" />
+          <stop offset="0" stopColor="#12345A" /><stop offset="1" stopColor="#12345A" />
         </linearGradient>
       </defs>
       <rect x="0" y="0" width="400" height="300" rx="26" fill={`url(#${bgId})`} />
       {[[40, 44], [96, 78], [304, 40], [352, 96], [214, 28], [150, 268], [290, 262]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2.2" fill="#fff" opacity="0.7" />)}
       {/* floating word cards */}
-      <g transform="translate(96,70) rotate(-8)"><rect x="-46" y="-24" width="92" height="48" rx="12" fill={YELLOW} /><text x="0" y="7" textAnchor="middle" fontSize="18" fontWeight="900" fill="#0b3a63">साहस</text></g>
-      <g transform="translate(300,84) rotate(7)"><rect x="-50" y="-22" width="100" height="44" rx="12" fill={SKY} /><text x="0" y="6" textAnchor="middle" fontSize="15" fontWeight="900" fill="#0b3a63">courage</text></g>
+      <g transform="translate(96,70) rotate(-8)"><rect x="-46" y="-24" width="92" height="48" rx="12" fill={YELLOW} /><text x="0" y="7" textAnchor="middle" fontSize="18" fontWeight="900" fill="#12345A">साहस</text></g>
+      <g transform="translate(300,84) rotate(7)"><rect x="-50" y="-22" width="100" height="44" rx="12" fill={SKY} /><text x="0" y="6" textAnchor="middle" fontSize="15" fontWeight="900" fill="#12345A">courage</text></g>
       <g transform="translate(320,168) rotate(-6)"><rect x="-48" y="-20" width="96" height="40" rx="12" fill={ROSE} /><text x="0" y="6" textAnchor="middle" fontSize="15" fontWeight="900" fill="#fff">reliable</text></g>
       {/* open book */}
       <g transform="translate(200,214)">
-        <path d="M-120 20 C -70 -4 -20 -4 0 12 C 20 -4 70 -4 120 20 L 120 54 C 70 30 20 30 0 46 C -20 30 -70 30 -120 54 Z" fill="#f8fafc" />
-        <path d="M0 12 V46" stroke="#cbd5e1" strokeWidth="4" />
+        <path d="M-120 20 C -70 -4 -20 -4 0 12 C 20 -4 70 -4 120 20 L 120 54 C 70 30 20 30 0 46 C -20 30 -70 30 -120 54 Z" fill="#EAF0F6" />
+        <path d="M0 12 V46" stroke="#EAF0F6" strokeWidth="4" />
         <path d="M-120 20 C -70 -4 -20 -4 0 12 C 20 -4 70 -4 120 20" fill="none" stroke={ORANGE} strokeWidth="4" />
-        {[-88, -60, -32].map((x, i) => <line key={i} x1={x} y1={26} x2={x + 34} y2={22} stroke="#94a3b8" strokeWidth="4" strokeLinecap="round" />)}
-        {[32, 60, 88].map((x, i) => <line key={i} x1={x} y1={22} x2={x + 26} y2={26} stroke="#94a3b8" strokeWidth="4" strokeLinecap="round" />)}
+        {[-88, -60, -32].map((x, i) => <line key={i} x1={x} y1={26} x2={x + 34} y2={22} stroke="#26343D" strokeWidth="4" strokeLinecap="round" />)}
+        {[32, 60, 88].map((x, i) => <line key={i} x1={x} y1={22} x2={x + 26} y2={26} stroke="#26343D" strokeWidth="4" strokeLinecap="round" />)}
       </g>
       <text x="200" y="292" textAnchor="middle" fontSize="16" fontWeight="900" fill={YELLOW} letterSpacing="0.5">शब्द भंडार</text>
     </svg>

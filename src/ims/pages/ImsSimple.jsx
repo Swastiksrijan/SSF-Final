@@ -87,7 +87,7 @@ export function ImsModuleDashboard({ module, titleKey, icon = 'BarChart3', activ
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
           {Object.entries(data.kpis).map(([k, v]) => (
             <Card key={k} className="flex items-center gap-3 p-4">
-              <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#002344] text-white"><I size={20} /></span>
+              <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#12345A] text-white"><I size={20} /></span>
               <span>
                 <span className="block text-xs font-medium uppercase tracking-wide text-slate-400">{k}</span>
                 <span className="block text-xl font-bold text-slate-900">{typeof v === 'number' && k.match(/income|expense|net|amount/i) ? '₹' + v.toLocaleString('en-IN') : v}</span>
@@ -122,7 +122,7 @@ export function ImsRegisters() {
       {data && (
         <>
           <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
-            <Card className="p-4"><span className="block text-xs uppercase tracking-wide text-slate-400">Total</span><span className="text-2xl font-bold text-[#002344]">{data.total}</span></Card>
+            <Card className="p-4"><span className="block text-xs uppercase tracking-wide text-slate-400">Total</span><span className="text-2xl font-bold text-[#12345A]">{data.total}</span></Card>
             {data.byGroup.map(g => (
               <Card key={g.group} className="p-4">
                 <span className="block text-xs uppercase tracking-wide text-slate-400">{GROUP_LABEL[g.group] ? (lang === 'hi' ? GROUP_LABEL[g.group][1] : GROUP_LABEL[g.group][0]) : g.group}</span>

@@ -90,10 +90,10 @@ export default function ImsDashboard() {
                 <h3 className="mb-3 text-xs font-bold uppercase tracking-wider text-slate-500">{t('overview')}</h3>
                 <BarChart
                   data={[
-                    { label: t('total_income'), value: data.finance.income, color: '#15803d' },
+                    { label: t('total_income'), value: data.finance.income, color: '#176447' },
                     { label: t('total_expenses'), value: data.finance.expense, color: '#be123c' },
-                    { label: t('net_balance'), value: data.finance.net, color: '#002344' },
-                    { label: t('donations'), value: data.finance.donationsTotal, color: '#FF6600' },
+                    { label: t('net_balance'), value: data.finance.net, color: '#12345A' },
+                    { label: t('donations'), value: data.finance.donationsTotal, color: '#176447' },
                   ]}
                   valueFmt={money}
                 />
@@ -138,31 +138,31 @@ export default function ImsDashboard() {
             <Section title={t('organisation_overview')} icon="Users">
               <Card className="p-4">
                 <DonutChart data={[
-                  { label: t('persons'), value: data.organisation.persons, color: '#002344' },
-                  { label: t('members'), value: data.organisation.members, color: '#FF6600' },
-                  { label: t('donors'), value: data.organisation.donors, color: '#FFD166' },
-                  { label: t('volunteers'), value: data.organisation.volunteers, color: '#15803d' },
-                  { label: t('employees'), value: data.organisation.employees, color: '#0e7490' },
+                  { label: t('persons'), value: data.organisation.persons, color: '#12345A' },
+                  { label: t('members'), value: data.organisation.members, color: '#176447' },
+                  { label: t('donors'), value: data.organisation.donors, color: '#F7A814' },
+                  { label: t('volunteers'), value: data.organisation.volunteers, color: '#176447' },
+                  { label: t('employees'), value: data.organisation.employees, color: '#176447' },
                 ]} />
               </Card>
             </Section>
             <Section title={t('finance_overview')} icon="BarChart3">
               <Card className="p-4">
                 <ColumnChart data={[
-                  { label: t('total_income'), value: data.finance.income, color: '#15803d' },
+                  { label: t('total_income'), value: data.finance.income, color: '#176447' },
                   { label: t('total_expenses'), value: data.finance.expense, color: '#be123c' },
-                  { label: t('donations'), value: data.finance.donationsTotal, color: '#FF6600' },
-                  { label: t('bank_balance'), value: data.finance.bankBalance, color: '#002344' },
-                  { label: t('cash_balance'), value: data.finance.cashBalance, color: '#0e7490' },
+                  { label: t('donations'), value: data.finance.donationsTotal, color: '#176447' },
+                  { label: t('bank_balance'), value: data.finance.bankBalance, color: '#12345A' },
+                  { label: t('cash_balance'), value: data.finance.cashBalance, color: '#176447' },
                 ]} />
               </Card>
             </Section>
             <Section title={t('governance_overview')} icon="Activity">
               <Card className="p-4">
                 <ColumnChart data={[
-                  { label: t('upcoming_meetings'), value: data.governance.upcomingMeetings, color: '#002344' },
-                  { label: t('pending_resolutions'), value: data.governance.pendingResolutions, color: '#FF6600' },
-                  { label: t('pending_actions'), value: data.governance.pendingActions, color: '#FFD166' },
+                  { label: t('upcoming_meetings'), value: data.governance.upcomingMeetings, color: '#12345A' },
+                  { label: t('pending_resolutions'), value: data.governance.pendingResolutions, color: '#176447' },
+                  { label: t('pending_actions'), value: data.governance.pendingActions, color: '#F7A814' },
                   { label: t('pending_cases'), value: data.governance.openCases, color: '#be123c' },
                 ]} />
               </Card>
@@ -191,8 +191,8 @@ export default function ImsDashboard() {
                         <td className="whitespace-nowrap px-4 py-2.5 text-slate-500">{fmtTime(r.createdAt)}</td>
                         <td className="whitespace-nowrap px-4 py-2.5 font-medium text-slate-700">{pretty(r.actor || 'system')}</td>
                         <td className="whitespace-nowrap px-4 py-2.5">
-                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#002344]/5 px-2.5 py-0.5 text-[11px] font-semibold text-[#002344]">
-                            <span className="h-1.5 w-1.5 rounded-full bg-[#FF6600]" />{pretty(r.action)}
+                          <span className="inline-flex items-center gap-1.5 rounded-full bg-[#12345A]/5 px-2.5 py-0.5 text-[11px] font-semibold text-[#12345A]">
+                            <span className="h-1.5 w-1.5 rounded-full bg-[#176447]" />{pretty(r.action)}
                           </span>
                         </td>
                         <td className="whitespace-nowrap px-4 py-2.5 text-slate-600">{pretty(r.entityType)}</td>
@@ -212,14 +212,14 @@ export default function ImsDashboard() {
 
 function Hero({ title, eyebrow, tagline, updated, actions }) {
   return (
-    <section className="relative mb-7 overflow-hidden rounded-3xl bg-[#002344] p-6 text-white shadow-[0_18px_40px_-20px_rgba(2,35,68,0.55)] sm:p-8">
-      <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[#FF6600]/20 blur-2xl" />
-      <div aria-hidden className="pointer-events-none absolute -bottom-20 right-24 h-48 w-48 rounded-full bg-[#FFD166]/10 blur-2xl" />
+    <section className="relative mb-7 overflow-hidden rounded-3xl bg-[#12345A] p-6 text-white shadow-[0_18px_40px_-20px_rgba(18,52,90,0.55)] sm:p-8">
+      <div aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-56 w-56 rounded-full bg-[#176447]/20 blur-2xl" />
+      <div aria-hidden className="pointer-events-none absolute -bottom-20 right-24 h-48 w-48 rounded-full bg-[#176447]/10 blur-2xl" />
       <div className="relative flex flex-col gap-5 xl:flex-row xl:items-center xl:justify-between">
         <div className="flex items-start gap-4">
           <img src={logoImg} alt="SSF logo" className="h-16 w-16 shrink-0 rounded-2xl bg-white p-2 object-contain sm:h-20 sm:w-20" />
           <div>
-            <p className="text-[11px] font-black uppercase tracking-[.2em] text-[#FFD166]">{eyebrow}</p>
+            <p className="text-[11px] font-black uppercase tracking-[.2em] text-[#F7A814]">{eyebrow}</p>
             <h1 className="mt-2 text-2xl font-black leading-tight tracking-tight sm:text-3xl">{title}</h1>
             <p className="mt-2 max-w-3xl text-sm text-white/75">{tagline}</p>
             {updated && <p className="mt-2 text-[11px] font-semibold text-white/50">{updated}</p>}
@@ -237,7 +237,7 @@ function Section({ title, icon, count, badge, children }) {
     <section>
       <div className="mb-3 flex flex-wrap items-center gap-3">
         <h2 className="flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-600">
-          <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#002344]/5 text-[#FF6600]"><I size={15} /></span>
+          <span className="grid h-7 w-7 place-items-center rounded-lg bg-[#12345A]/5 text-[#176447]"><I size={15} /></span>
           {title}
           {count != null && <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-500">{count}</span>}
         </h2>
@@ -251,15 +251,15 @@ function Section({ title, icon, count, badge, children }) {
 function NetBalanceCard({ net, income, expense, t }) {
   const positive = net >= 0;
   return (
-    <Card className={`relative overflow-hidden p-5 ${positive ? 'bg-gradient-to-br from-[#002344] to-[#0b3a63]' : 'bg-gradient-to-br from-[#7f1d1d] to-[#b91c1c]'} text-white`}>
+    <Card className={`relative overflow-hidden p-5 ${positive ? 'bg-gradient-to-br from-[#12345A] to-[#12345A]' : 'bg-gradient-to-br from-[#7f1d1d] to-[#b91c1c]'} text-white`}>
       <span aria-hidden className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10" />
       <div className="relative">
         <p className="text-[11px] font-bold uppercase tracking-[.18em] text-white/60">{t('net_balance')}</p>
         <p className="mt-1 text-3xl font-black tracking-tight">{money(net)}</p>
         <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-white/80">
-          <span>{t('total_income')} <span className="text-[#8fe3a8]">{money(income)}</span></span>
+          <span>{t('total_income')} <span className="text-[#176447]">{money(income)}</span></span>
           <span className="text-white/50">−</span>
-          <span>{t('total_expenses')} <span className="text-[#ffb3b3]">{money(expense)}</span></span>
+          <span>{t('total_expenses')} <span className="text-[#FEF2F2]">{money(expense)}</span></span>
         </p>
       </div>
     </Card>

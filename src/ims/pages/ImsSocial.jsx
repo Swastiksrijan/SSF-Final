@@ -39,13 +39,13 @@ function Chip({ label, tone = 'draft' }) {
   return <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ring-1 ${STATUS_STYLE[tone] || STATUS_STYLE.draft}`}>{label}</span>;
 }
 
-function KpiBox({ icon, en, hi, value, tone = 'text-[#002344]' }) {
+function KpiBox({ icon, en, hi, value, tone = 'text-[#12345A]' }) {
   const { lang } = useLang();
   const I = Icons[icon] || Icons.Activity;
   return (
     <Card className="p-4">
       <div className="flex items-center gap-3">
-        <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-100 text-[#002344]"><I size={18} /></span>
+        <span className="grid h-10 w-10 place-items-center rounded-xl bg-slate-100 text-[#12345A]"><I size={18} /></span>
         <div className="min-w-0">
           <div className={`text-2xl font-black leading-none ${tone}`}>{value}</div>
           <div className="mt-1 truncate text-[11px] font-semibold text-slate-500">{lang === 'hi' ? hi : en}</div>
@@ -121,7 +121,7 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, onIgResol
       <div className="flex items-start justify-between gap-3">
         <div className="min-w-0">
           <div className="flex items-center gap-2">
-            <span className="truncate text-sm font-bold text-[#002344]">{lang === 'hi' ? ch.hi : ch.en}</span>
+            <span className="truncate text-sm font-bold text-[#12345A]">{lang === 'hi' ? ch.hi : ch.en}</span>
             <Chip label={ch.always ? (lang === 'hi' ? 'हमेशा चालू' : 'Always on') : ch.status} tone={ch.always ? 'connected' : ch.status} />
           </div>
           <div className="mt-1 text-[11px] text-slate-400">
@@ -130,10 +130,10 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, onIgResol
           {ch.lastError && <div className="mt-1 truncate text-[11px] text-rose-500" title={ch.lastError}>{ch.lastError}</div>}
           {profileUrl && (
             <div className="mt-1.5 flex items-center gap-2 text-[11px]">
-              <a href={profileUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#002344] hover:text-[#FF6600]">
+              <a href={profileUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-1 font-semibold text-[#12345A] hover:text-[#176447]">
                 <Icons.ExternalLink size={12} /> {lang === 'hi' ? 'आपका पेज खोलें' : 'Open your page'}
               </a>
-              <button type="button" onClick={copyProfile} className="inline-flex items-center gap-1 font-semibold text-slate-400 hover:text-[#FF6600]">
+              <button type="button" onClick={copyProfile} className="inline-flex items-center gap-1 font-semibold text-slate-400 hover:text-[#176447]">
                 <Icons.Copy size={12} /> {copied === 'url' ? (lang === 'hi' ? 'कॉपी हुआ' : 'Copied') : (lang === 'hi' ? 'लिंक कॉपी' : 'Copy link')}
               </button>
             </div>
@@ -148,7 +148,7 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, onIgResol
 
       {!ch.always && (
         <div className="mt-3">
-          <button onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1 text-xs font-semibold text-[#FF6600]">
+          <button onClick={() => setOpen((o) => !o)} className="inline-flex items-center gap-1 text-xs font-semibold text-[#176447]">
             <Icons.KeyRound size={13} /> {lang === 'hi' ? 'क्रेडेंशियल जोड़ें' : 'Add credentials'} <Icons.ChevronDown size={13} />
           </button>
           {open && (
@@ -163,7 +163,7 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, onIgResol
                   <span className="mb-1 block text-[11px] font-semibold text-slate-500">{lang === 'hi' ? FIELD_LABELS[f]?.hi : FIELD_LABELS[f]?.en}{f === 'accessToken' || f === 'botToken' ? ' 🔒' : ''}</span>
                   <input
                     value={form[f] || ''} onChange={(e) => setForm((s) => ({ ...s, [f]: e.target.value }))}
-                    className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-[#FF6600]"
+                    className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-[#176447]"
                     placeholder={f}
                   />
                   {idHintFor(ch.platform, f, lang) && (
@@ -172,8 +172,8 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, onIgResol
                 </label>
               ))}
               {ch.platform === 'facebook' && (
-                <div className="mt-1 rounded-xl border border-[#FF6600]/30 bg-[#FFF7F0] p-3">
-                  <div className="text-[11px] font-bold text-[#002344]">
+                <div className="mt-1 rounded-xl border border-[#176447]/30 bg-[#FAF9F5] p-3">
+                  <div className="text-[11px] font-bold text-[#12345A]">
                     {lang === 'hi' ? '🔁 स्थायी token बनाएँ (कभी expire न हो)' : '🔁 Get a permanent token (never expires)'}
                   </div>
                   <p className="mt-1 text-[10px] leading-snug text-slate-500">
@@ -185,7 +185,7 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, onIgResol
                     {[['appId', 'App ID'], ['appSecret', 'App Secret'], ['shortToken', lang === 'hi' ? 'छोटा user token' : 'Short-lived user token']].map(([k, ph]) => (
                       <input key={k} type={k === 'appSecret' || k === 'shortToken' ? 'password' : 'text'}
                         value={fb[k]} onChange={(e) => setFb((s) => ({ ...s, [k]: e.target.value }))}
-                        placeholder={ph} className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-[#FF6600]" />
+                        placeholder={ph} className="w-full rounded-lg border border-slate-300 px-3 py-1.5 text-sm outline-none focus:border-[#176447]" />
                     ))}
                   </div>
                   <div className="mt-2">
@@ -197,8 +197,8 @@ function ChannelCard({ ch, onSave, onDisconnect, onTest, onFbExchange, onIgResol
                 </div>
               )}
               {ch.platform === 'instagram' && (
-                <div className="mt-1 rounded-xl border border-[#FF6600]/30 bg-[#FFF7F0] p-3">
-                  <div className="text-[11px] font-bold text-[#002344]">
+                <div className="mt-1 rounded-xl border border-[#176447]/30 bg-[#FAF9F5] p-3">
+                  <div className="text-[11px] font-bold text-[#12345A]">
                     {lang === 'hi' ? '🔎 Instagram id अपने-आप भरें' : '🔎 Fill the Instagram id automatically'}
                   </div>
                   <p className="mt-1 text-[10px] leading-snug text-slate-500">
@@ -287,11 +287,11 @@ function PostCard({ post, onPublish, onEdit, busy }) {
             {post.category && <Chip label={post.category} />}
             <span className="text-[11px] font-semibold text-slate-400">{post.postRef}</span>
           </div>
-          <h3 className="mt-2 text-sm font-bold text-[#002344]">{lang === 'hi' ? post.titleHi : post.titleEn}</h3>
+          <h3 className="mt-2 text-sm font-bold text-[#12345A]">{lang === 'hi' ? post.titleHi : post.titleEn}</h3>
           {lang !== 'hi' && <p className="text-xs font-semibold text-slate-500">{post.titleHi}</p>}
           {editing ? (
             <textarea value={body} onChange={(e) => setBody(e.target.value)} rows={6}
-              className="mt-2 w-full rounded-lg border border-slate-300 p-2 text-xs outline-none focus:border-[#FF6600]" />
+              className="mt-2 w-full rounded-lg border border-slate-300 p-2 text-xs outline-none focus:border-[#176447]" />
           ) : (
             <pre className="mt-2 max-h-28 overflow-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-2 text-[11px] leading-relaxed text-slate-600">{body}</pre>
           )}
@@ -360,7 +360,7 @@ function StatusStrip({ data, lang }) {
               <span className={`inline-block h-2 w-2 rounded-full ${c.ok ? 'bg-emerald-500' : 'bg-rose-500'}`} />
               {lang === 'hi' ? c.hi : c.en}
             </div>
-            <div className="mt-1 truncate text-xs font-semibold text-[#002344]">{c.text}</div>
+            <div className="mt-1 truncate text-xs font-semibold text-[#12345A]">{c.text}</div>
           </div>
         ))}
       </div>
@@ -446,7 +446,7 @@ function CalendarTab({ data, busy, run, lang }) {
           <div key={e.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
             <div className="min-w-0">
               <div className="flex items-center gap-2">
-                <span className="text-xs font-bold text-[#002344]">{e.date}</span>
+                <span className="text-xs font-bold text-[#12345A]">{e.date}</span>
                 <span className="truncate text-xs text-slate-700">{lang === 'hi' ? (e.titleHi || e.titleEn) : e.titleEn}</span>
                 {e.solemn && <Chip label="solemn" tone="failed" />}
                 {e.uncertain && <Chip label="uncertain" tone="partial" />}
@@ -506,7 +506,7 @@ function CoursesTab({ courses, busy, run, lang }) {
             <Card key={c.key} className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="text-sm font-black text-[#002344]">{c.emoji} {hi ? c.titleHi : c.titleEn}</div>
+                  <div className="text-sm font-black text-[#12345A]">{c.emoji} {hi ? c.titleHi : c.titleEn}</div>
                   <div className="mt-0.5 text-[11px] text-slate-500">{hi ? c.subtitleHi : c.subtitleEn}</div>
                 </div>
                 <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${c.completed ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
@@ -514,7 +514,7 @@ function CoursesTab({ courses, busy, run, lang }) {
                 </span>
               </div>
               <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                <div className="h-full rounded-full bg-[#FF6600]" style={{ width: `${pct}%` }} />
+                <div className="h-full rounded-full bg-[#176447]" style={{ width: `${pct}%` }} />
               </div>
               <div className="mt-2 flex items-center justify-between text-[11px]">
                 <span className="text-slate-500">
@@ -567,7 +567,7 @@ function SeriesTab({ series, busy, run, lang }) {
             <Card key={c.key} className="p-4">
               <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
-                  <div className="text-sm font-black text-[#002344]">{c.emoji} {hi ? c.titleHi : c.titleEn}</div>
+                  <div className="text-sm font-black text-[#12345A]">{c.emoji} {hi ? c.titleHi : c.titleEn}</div>
                   <div className="mt-0.5 text-[11px] text-slate-500">{c.category}</div>
                 </div>
                 <span className={`shrink-0 rounded-full px-2.5 py-0.5 text-[11px] font-bold ${c.completed ? 'bg-emerald-100 text-emerald-700' : (c.enabled === false ? 'bg-slate-100 text-slate-400' : 'bg-slate-100 text-slate-600')}`}>
@@ -575,7 +575,7 @@ function SeriesTab({ series, busy, run, lang }) {
                 </span>
               </div>
               <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
-                <div className="h-full rounded-full bg-[#FF6600]" style={{ width: `${pct}%` }} />
+                <div className="h-full rounded-full bg-[#176447]" style={{ width: `${pct}%` }} />
               </div>
               <div className="mt-2 flex items-center justify-between text-[11px]">
                 <span className="text-slate-500">
@@ -679,7 +679,7 @@ export default function ImsSocial() {
           <div className="mb-4 flex gap-2">
             {[['dashboard', lang === 'hi' ? 'डैशबोर्ड' : 'Dashboard'], ['series', lang === 'hi' ? 'ज्ञान शृंखला' : 'Knowledge series'], ['courses', lang === 'hi' ? 'कोर्स शृंखला' : 'Course series'], ['calendar', lang === 'hi' ? 'कैलेंडर' : 'Calendar']].map(([k, label]) => (
               <button key={k} onClick={() => setTab(k)}
-                className={`rounded-xl px-4 py-2 text-sm font-bold ${tab === k ? 'bg-[#002344] text-white' : 'bg-slate-100 text-slate-600'}`}>{label}</button>
+                className={`rounded-xl px-4 py-2 text-sm font-bold ${tab === k ? 'bg-[#12345A] text-white' : 'bg-slate-100 text-slate-600'}`}>{label}</button>
             ))}
           </div>
 
@@ -688,7 +688,7 @@ export default function ImsSocial() {
             <KpiBox icon="CheckCircle2" en="Published" hi="प्रकाशित" value={data.stats.published} tone="text-emerald-600" />
             <KpiBox icon="CircleDot" en="Draft" hi="ड्राफ़्ट" value={data.stats.draft} />
             <KpiBox icon="AlertTriangle" en="Partial" hi="आंशिक" value={data.stats.partial} tone="text-amber-600" />
-            <KpiBox icon="PlugZap" en="Channels on" hi="चैनल चालू" value={data.channels.filter((c) => c.enabled).length} tone="text-[#FF6600]" />
+            <KpiBox icon="PlugZap" en="Channels on" hi="चैनल चालू" value={data.channels.filter((c) => c.enabled).length} tone="text-[#176447]" />
           </div>
 
           <StatusStrip data={data} lang={lang} />
@@ -708,7 +708,7 @@ export default function ImsSocial() {
                 ? <div className="text-xs text-slate-400">{lang === 'hi' ? 'आज कोई सत्यापित पर्व नहीं — सामान्य जागरूकता पोस्ट जाएगी।' : 'No verified festival today — a regular awareness post will go out.'}</div>
                 : (data.todayEvents || []).map((e) => (
                   <div key={e.id} className="mb-2 rounded-xl border border-slate-100 bg-slate-50 p-3">
-                    <div className="text-xs font-bold text-[#002344]">{lang === 'hi' ? (e.titleHi || e.titleEn) : e.titleEn}</div>
+                    <div className="text-xs font-bold text-[#12345A]">{lang === 'hi' ? (e.titleHi || e.titleEn) : e.titleEn}</div>
                     <div className="text-[11px] text-slate-500">{e.greetingEn} · {e.tradition} · {e.region}</div>
                   </div>
                 ))}
@@ -721,7 +721,7 @@ export default function ImsSocial() {
                 ? <div className="text-xs text-slate-400">—</div>
                 : (data.upcomingSevenDays || []).map((e) => (
                   <div key={e.id} className="flex items-center justify-between border-b border-slate-100 py-1.5 text-xs last:border-0">
-                    <span className="font-bold text-[#002344]">{e.date}</span>
+                    <span className="font-bold text-[#12345A]">{e.date}</span>
                     <span className="truncate text-slate-600">{lang === 'hi' ? (e.titleHi || e.titleEn) : e.titleEn}</span>
                     <span className="text-slate-400">{e.tradition}</span>
                   </div>
@@ -738,7 +738,7 @@ export default function ImsSocial() {
                 {data.draftsAwaitingApproval.slice(0, 8).map((p) => (
                   <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-white/70 px-3 py-2">
                     <div className="min-w-0 text-xs">
-                      <span className="font-bold text-[#002344]">{p.postDate} {p.slot}</span>
+                      <span className="font-bold text-[#12345A]">{p.postDate} {p.slot}</span>
                       <span className="ml-2 text-slate-600">{p.titleEn}</span>
                     </div>
                     <Button variant="ghost" disabled={busy} onClick={() => run(() => ims.socialPublishPost(p.id), lang === 'hi' ? 'प्रकाशित' : 'Published')}>
@@ -758,7 +758,7 @@ export default function ImsSocial() {
               <div className="grid gap-2">
                 {data.failedPosts.slice(0, 6).map((p) => (
                   <div key={p.id} className="rounded-xl bg-white/70 px-3 py-2 text-xs">
-                    <span className="font-bold text-[#002344]">{p.postDate} {p.slot}</span> — {p.titleEn}
+                    <span className="font-bold text-[#12345A]">{p.postDate} {p.slot}</span> — {p.titleEn}
                     <div className="mt-1 flex flex-wrap gap-1">
                       {(p.failures || []).map((f) => (
                         <span key={f.platform} className="rounded-full bg-rose-100 px-2 py-0.5 text-[10px] text-rose-700">{f.platform}: {f.error || 'error'}</span>
@@ -805,12 +805,12 @@ export default function ImsSocial() {
           </div>
 
           {preview && (
-            <Card className="mb-8 border-[#002344]/20 bg-slate-50 p-4">
+            <Card className="mb-8 border-[#12345A]/20 bg-slate-50 p-4">
               <div className="mb-2 flex items-center justify-between">
                 <h2 className="text-sm font-black uppercase tracking-wider text-slate-500">{lang === 'hi' ? 'पूर्वावलोकन' : 'Preview'} {preview.postDate} · {preview.slot}</h2>
                 <Button variant="ghost" onClick={() => setPreview(null)}>✕</Button>
               </div>
-              <div className="text-sm font-bold text-[#002344]">{lang === 'hi' ? preview.titleHi : preview.titleEn}</div>
+              <div className="text-sm font-bold text-[#12345A]">{lang === 'hi' ? preview.titleHi : preview.titleEn}</div>
               <pre className="mt-2 whitespace-pre-wrap text-xs text-slate-600">{lang === 'hi' ? preview.bodyHi : preview.bodyEn}</pre>
             </Card>
           )}
@@ -828,7 +828,7 @@ export default function ImsSocial() {
               {recentFiltered.map((p) => (
                 <div key={p.id} className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5">
                   <div className="min-w-0">
-                    <span className="text-xs font-semibold text-[#002344]">{p.postRef}</span>
+                    <span className="text-xs font-semibold text-[#12345A]">{p.postRef}</span>
                     <span className="ml-2 text-xs text-slate-500">{p.titleEn}</span>
                     {p.contentSource && <span className="ml-2 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500">{p.contentSource}</span>}
                     {p.tradition && <span className="ml-1 rounded-full bg-slate-100 px-2 py-0.5 text-[10px] text-slate-500">{p.tradition}</span>}

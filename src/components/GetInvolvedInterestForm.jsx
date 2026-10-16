@@ -47,16 +47,16 @@ export default function GetInvolvedInterestForm({ type = "movement", onClose }) 
 
   if (status === "success") return (
     <div className="p-8 md:p-10 text-center space-y-5">
-      <div className="w-16 h-16 mx-auto rounded-full bg-[#eef7f1] text-[#177245] flex items-center justify-center text-3xl"><FaCheckCircle /></div>
-      <h3 className="text-2xl font-black text-[#0f2740]">Request Submitted</h3>
-      <p className="text-[#41506b]">Thank you. Swastik Srijan Foundation has received your request and our team will contact you.</p>
-      <button onClick={onClose} className="px-6 py-3 rounded-xl bg-[#0a2540] text-white font-bold hover:bg-[#c9a227] hover:text-[#0f2740] transition-colors">Close</button>
+      <div className="w-16 h-16 mx-auto rounded-full bg-[#EAF0F6] text-[#176447] flex items-center justify-center text-3xl"><FaCheckCircle /></div>
+      <h3 className="text-2xl font-black text-[#12345A]">Request Submitted</h3>
+      <p className="text-[#26343D]">Thank you. Swastik Srijan Foundation has received your request and our team will contact you.</p>
+      <button onClick={onClose} className="px-6 py-3 rounded-xl bg-[#12345A] text-white font-bold hover:bg-[#176447] hover:text-[#12345A] transition-colors">Close</button>
     </div>
   );
 
   return (
     <div className="p-6 md:p-10">
-      <div className="mb-7"><p className="text-xs uppercase tracking-widest font-bold text-[#7e5f22]">Get Involved</p><h3 className="text-2xl md:text-3xl font-black text-[#0a2540] mt-1">{meta.title}</h3><p className="text-sm text-[#5c6b80] mt-2">{meta.hi}</p></div>
+      <div className="mb-7"><p className="text-xs uppercase tracking-widest font-bold text-[#12345A]">Get Involved</p><h3 className="text-2xl md:text-3xl font-black text-[#12345A] mt-1">{meta.title}</h3><p className="text-sm text-[#26343D] mt-2">{meta.hi}</p></div>
       <form onSubmit={submit} className="space-y-5" noValidate>
         <div className="grid md:grid-cols-2 gap-5">
           <div><label className="gil-label">Full Name *</label><input className="gil-input" value={form.name} onChange={e => update("name", e.target.value)} placeholder="Your full name" required /></div>
@@ -76,10 +76,10 @@ export default function GetInvolvedInterestForm({ type = "movement", onClose }) 
           </div>
         </div>
         <div><label className="gil-label">How would you like to contribute? *</label><textarea className="gil-input resize-none" rows={5} value={form.message} onChange={e => update("message", e.target.value)} placeholder={type === "partner" ? "Tell us about your company, CSR interest, collaboration or partnership idea." : "Tell us how you would like to participate, support or stay connected."} required /></div>
-        {status === "error" && <div className="p-4 rounded-xl bg-[#fef2f2] border border-[#e9e3d6] text-[#b91c1c] text-sm font-semibold flex gap-2"><FaExclamationCircle />{error}</div>}
-        <button type="submit" disabled={status === "submitting"} className="w-full bg-[#0a2540] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#c9a227] hover:text-[#0f2740] transition-all flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting securely...</> : <>Submit Request <FaArrowRight /></>}</button>
+        {status === "error" && <div className="p-4 rounded-xl bg-[#fef2f2] border border-[#EAF0F6] text-[#b91c1c] text-sm font-semibold flex gap-2"><FaExclamationCircle />{error}</div>}
+        <button type="submit" disabled={status === "submitting"} className="w-full bg-[#12345A] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#176447] hover:text-[#12345A] transition-all flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting securely...</> : <>Submit Request <FaArrowRight /></>}</button>
       </form>
-      <style>{`.gil-label{display:block;font-size:.72rem;font-weight:800;color:#5c6b80;text-transform:uppercase;letter-spacing:.08em;margin:0 0 .45rem .25rem}.gil-input{width:100%;padding:.9rem 1rem;background:#fafafa;border:1px solid #e4e4e7;border-radius:.8rem;outline:none;font-weight:500}.gil-input:focus{border-color:#fdba74;box-shadow:0 0 0 4px rgba(251,146,60,.1)}`}</style>
+      <style>{`.gil-label{display:block;font-size:.72rem;font-weight:800;color:#26343D;text-transform:uppercase;letter-spacing:.08em;margin:0 0 .45rem .25rem}.gil-input{width:100%;padding:.9rem 1rem;background:#FAF9F5;border:1px solid #EAF0F6;border-radius:.8rem;outline:none;font-weight:500}.gil-input:focus{border-color:#F7A814;box-shadow:0 0 0 4px rgba(23,100,71,.1)}`}</style>
     </div>
   );
 }

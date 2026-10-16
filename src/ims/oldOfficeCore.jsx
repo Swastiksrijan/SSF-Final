@@ -12,7 +12,7 @@ import { LABELS } from './oldOfficeModules';
 
 export const TOKEN_KEY = 'ssf_admin_token';
 
-export const cls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#002344]/20";
+export const cls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#12345A]/20";
 
 export function formatOfficeDate(value){ if(!value)return "—";
  const s=String(value);
@@ -22,7 +22,7 @@ export function formatOfficeDate(value){ if(!value)return "—";
  return Number.isNaN(d.getTime())?s:d.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
 }
 
-export function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#002344] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
+export function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#12345A] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 
 export const downloadPdf=function(doc,filename){
  try{ doc.save(filename||"ssf-document.pdf"); }

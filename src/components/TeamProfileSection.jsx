@@ -33,10 +33,10 @@ export default function TeamProfileSection() {
     <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8 mt-10">
       {teamMembers.map((member, idx) => (
         <div key={idx} className="text-center group">
-          <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto overflow-hidden rounded-full border-2 border-[#fb8500]/20 group-hover:border-[#fb8500] transition-colors duration-300 shadow-sm group-hover:shadow-md">
+          <div className="relative w-24 h-24 md:w-32 md:h-32 mx-auto overflow-hidden rounded-full border-2 border-[#176447]/20 group-hover:border-[#176447] transition-colors duration-300 shadow-sm group-hover:shadow-md">
             <img src={member.img || "/images/team/placeholder.jpg"} alt={member.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" />
           </div>
-          <h3 className="mt-4 font-serif font-bold text-zinc-900 text-sm group-hover:text-[#fb8500] transition-colors">{member.name}</h3>
+          <h3 className="mt-4 font-serif font-bold text-zinc-900 text-sm group-hover:text-[#176447] transition-colors">{member.name}</h3>
           <p className="text-[10px] font-bold text-zinc-500 uppercase tracking-wider mt-1">{member.position}</p>
         </div>
       ))}

@@ -702,11 +702,11 @@ export default function MediaGallery() {
       {/* ================= HERO SECTION ================= */}
       <section className="bg-zinc-900 text-white pt-40 pb-24 px-4 relative overflow-hidden">
         {/* Background Decorative Elements */}
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#003366] opacity-5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#12345A] opacity-5 rounded-full blur-3xl translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-600 opacity-5 rounded-full blur-3xl -translate-x-1/2 translate-y-1/2"></div>
 
         <div className="max-w-6xl mx-auto text-center relative z-10">
-          <div className="inline-block bg-[#003366]/20 text-[#003366] px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider mb-6">
+          <div className="inline-block bg-[#12345A]/20 text-[#12345A] px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider mb-6">
             <FaCamera className="inline-block mr-2" /> Our Visual Journey
           </div>
           <h1 className="text-5xl md:text-7xl font-black mb-8 leading-tight">
@@ -734,8 +734,8 @@ export default function MediaGallery() {
                   onClick={() => setActiveCategory(cat)}
                   className={`px-5 py-2 rounded-full text-sm font-bold whitespace-nowrap transition-all duration-300 border
                     ${activeCategory === cat
-                      ? "bg-[#003366] text-white border-[#003366] shadow-md transform scale-105"
-                      : "bg-white text-zinc-600 border-zinc-200 hover:border-[#003366] hover:text-black"}`}
+                      ? "bg-[#12345A] text-white border-[#12345A] shadow-md transform scale-105"
+                      : "bg-white text-zinc-600 border-zinc-200 hover:border-[#12345A] hover:text-black"}`}
                 >
                   {cat}
                 </button>
@@ -793,7 +793,7 @@ export default function MediaGallery() {
                 {/* Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-6">
                   <div className="transform translate-y-4 group-hover:translate-y-0 transition-transform duration-300">
-                    <span className="bg-[#003366] text-white text-xs font-bold px-2 py-1 rounded mb-2 inline-block">
+                    <span className="bg-[#12345A] text-white text-xs font-bold px-2 py-1 rounded mb-2 inline-block">
                       {img.category}
                     </span>
                     <h3 className="text-white font-bold text-lg">{img.category} Drive</h3>
@@ -813,7 +813,7 @@ export default function MediaGallery() {
           <div ref={sentinelRef} className="text-center mt-10">
             <button
               onClick={() => setVisibleCount((n) => n + 24)}
-              className="px-8 py-3 rounded-full bg-[#002344] text-white font-bold hover:bg-[#fb8500] transition-colors"
+              className="px-8 py-3 rounded-full bg-[#12345A] text-white font-bold hover:bg-[#176447] transition-colors"
             >
               Load more photos ({filteredImages.length - shownImages.length} remaining)
             </button>
@@ -826,10 +826,10 @@ export default function MediaGallery() {
       {/* ================= VIDEO GALLERY ================= */}
       <section className="max-w-[1600px] mx-auto py-12 px-4 border-t border-zinc-200">
         <div className="text-center mb-12">
-          <div className="inline-block bg-[#fb8500]/20 text-[#fb8500] px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider mb-4">
+          <div className="inline-block bg-[#176447]/20 text-[#176447] px-4 py-1.5 rounded-full text-sm font-bold uppercase tracking-wider mb-4">
             <FaEye className="inline-block mr-2" /> Watch Our Impact
           </div>
-          <h2 className="text-4xl md:text-5xl font-black text-[#002344]">Video <span className="text-[#fb8500]">Highlights</span></h2>
+          <h2 className="text-4xl md:text-5xl font-black text-[#12345A]">Video <span className="text-[#176447]">Highlights</span></h2>
           <p className="text-zinc-500 max-w-2xl mx-auto mt-4 text-lg">A collection of stories, events, and initiatives captured in motion.</p>
         </div>
 
@@ -847,8 +847,8 @@ export default function MediaGallery() {
               ></iframe>
             </div>
             <div className="p-6">
-              <span className="text-xs font-bold text-[#fb8500] uppercase tracking-wider mb-2 block">Featured Facebook</span>
-              <h3 className="text-xl font-bold text-[#002344] mb-3 group-hover:text-[#fb8500] transition-colors font-serif">
+              <span className="text-xs font-bold text-[#176447] uppercase tracking-wider mb-2 block">Featured Facebook</span>
+              <h3 className="text-xl font-bold text-[#12345A] mb-3 group-hover:text-[#176447] transition-colors font-serif">
                 Transformation Stories
               </h3>
               <p className="text-zinc-500 text-sm leading-relaxed">
@@ -870,8 +870,8 @@ export default function MediaGallery() {
                 ></iframe>
               </div>
               <div className="p-6">
-                <span className="text-xs font-bold text-[#fb8500] uppercase tracking-wider mb-2 block">{video.category}</span>
-                <h3 className="text-xl font-bold text-[#002344] mb-3 group-hover:text-[#fb8500] transition-colors font-serif">
+                <span className="text-xs font-bold text-[#176447] uppercase tracking-wider mb-2 block">{video.category}</span>
+                <h3 className="text-xl font-bold text-[#12345A] mb-3 group-hover:text-[#176447] transition-colors font-serif">
                   {video.title}
                 </h3>
                 <p className="text-zinc-500 text-sm leading-relaxed">
@@ -913,7 +913,7 @@ export default function MediaGallery() {
             {/* Sidebar Details (Visible on Desktop, stacked on Mobile) */}
             <div className="w-full md:w-80 bg-zinc-900 p-8 border-l border-zinc-800 flex flex-col justify-between">
               <div>
-                <span className="text-[#003366] font-bold tracking-wider text-sm uppercase mb-2 block">
+                <span className="text-[#12345A] font-bold tracking-wider text-sm uppercase mb-2 block">
                   {selectedImg.year}
                 </span>
                 <h3 className="text-2xl font-white font-bold text-white mb-4">
@@ -937,7 +937,7 @@ export default function MediaGallery() {
 
               <div className="pt-8">
                 <button
-                  className="w-full bg-white text-black font-bold py-3 rounded hover:bg-[#003366] hover:text-white transition-colors"
+                  className="w-full bg-white text-black font-bold py-3 rounded hover:bg-[#12345A] hover:text-white transition-colors"
                   onClick={() => setSelectedImg(null)}
                 >
                   Close Gallery

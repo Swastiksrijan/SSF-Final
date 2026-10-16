@@ -148,7 +148,7 @@ export default function ImsContacts() {
 
   return (
     <ImsLayout active="contacts">
-      <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#002344] to-[#0b3a63] p-5 text-white shadow-[0_18px_40px_-22px_rgba(2,35,68,0.55)] sm:p-6">
+      <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#12345A] to-[#12345A] p-5 text-white shadow-[0_18px_40px_-22px_rgba(18,52,90,0.55)] sm:p-6">
         <span className="pointer-events-none absolute -right-14 -top-16 h-48 w-48 rounded-full bg-white/10" />
         <div className="relative flex flex-wrap items-center gap-4">
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20">
@@ -274,7 +274,7 @@ export default function ImsContacts() {
                             );
                           })}
                         </div>
-                        {r.designation && <div className="mt-0.5 text-[11px] font-semibold text-[#002344]">{r.designation}</div>}
+                        {r.designation && <div className="mt-0.5 text-[11px] font-semibold text-[#12345A]">{r.designation}</div>}
                       </td>
                       <td className="px-4 py-2 text-slate-600">{r.mobile || '—'}</td>
                       <td className="px-4 py-2">
@@ -312,19 +312,19 @@ export default function ImsContacts() {
                           )}
                           <button
                             type="button" title={t('notify_sms')} onClick={() => notifySms(r)}
-                            className="rounded-lg border border-slate-200 p-1.5 text-slate-500 hover:border-[#002344] hover:text-[#002344]"
+                            className="rounded-lg border border-slate-200 p-1.5 text-slate-500 hover:border-[#12345A] hover:text-[#12345A]"
                           >
                             <Icons.Smartphone size={14} />
                           </button>
                           <button
                             type="button" title={t('edit_contact')} onClick={() => setEditRow(r)}
-                            className="rounded-lg border border-slate-200 p-1.5 text-slate-500 hover:border-[#FF6600] hover:text-[#FF6600]"
+                            className="rounded-lg border border-slate-200 p-1.5 text-slate-500 hover:border-[#176447] hover:text-[#176447]"
                           >
                             <Icons.Pencil size={14} />
                           </button>
                           <button
                             type="button" title={t('open_person')} onClick={() => window.location.assign(`/ims/person/${r.id}`)}
-                            className="rounded-lg border border-slate-200 p-1.5 text-slate-400 hover:text-[#002344]"
+                            className="rounded-lg border border-slate-200 p-1.5 text-slate-400 hover:text-[#12345A]"
                           >
                             <Icons.ExternalLink size={14} />
                           </button>

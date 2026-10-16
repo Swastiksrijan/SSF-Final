@@ -78,7 +78,7 @@ export default function ImsFinanceLedger() {
           )}
           <DataTable rows={tb ? tb.accounts : null} empty={t('no_records')} columns={[
             { key: 'accountCode', en: 'Code', hi: 'कोड', render: (r) => <span className="font-mono text-xs text-slate-500">{r.accountCode}</span> },
-            { key: 'accountName', en: 'Account', hi: 'खाता', render: (r) => <span className="font-semibold text-[#002344]">{r.accountName}</span> },
+            { key: 'accountName', en: 'Account', hi: 'खाता', render: (r) => <span className="font-semibold text-[#12345A]">{r.accountName}</span> },
             { key: 'debit', en: 'Debit', hi: 'नामे', align: 'right', render: (r) => inr(r.debit) },
             { key: 'credit', en: 'Credit', hi: 'जमा', align: 'right', render: (r) => inr(r.credit) },
             { key: 'side', en: 'Balance', hi: 'शेष', align: 'right', render: (r) => `${inr(r.balance)} ${r.side}` },
@@ -109,7 +109,7 @@ export default function ImsFinanceLedger() {
               <option value="">— {t('chart_of_accounts')} —</option>
               {accounts.map((a) => <option key={a.id} value={a.id}>{a.code} · {a.name}</option>)}
             </select>
-            {ledger && <span className="text-sm font-bold text-[#002344]">{t('balance')}: {inr(ledger.closingBalance)}</span>}
+            {ledger && <span className="text-sm font-bold text-[#12345A]">{t('balance')}: {inr(ledger.closingBalance)}</span>}
           </Card>
           <DataTable rows={ledger ? ledger.entries : []} empty={t('no_records')} columns={[
             { key: 'entryDate', en: 'Date', hi: 'दिनांक' },
@@ -124,7 +124,7 @@ export default function ImsFinanceLedger() {
 
       {tab === 'budget' && (
         <DataTable rows={budget ? budget.rows : null} empty={t('no_records')} columns={[
-          { key: 'accountName', en: 'Account', hi: 'खाता', render: (r) => <span className="font-semibold text-[#002344]">{r.accountName}</span> },
+          { key: 'accountName', en: 'Account', hi: 'खाता', render: (r) => <span className="font-semibold text-[#12345A]">{r.accountName}</span> },
           { key: 'amount', en: 'Budget', hi: 'बजट', align: 'right', render: (r) => inr(r.amount) },
           { key: 'actual', en: 'Actual', hi: 'वास्तविक', align: 'right', render: (r) => inr(r.actual) },
           { key: 'variance', en: 'Variance', hi: 'अंतर', align: 'right', render: (r) => <span className={r.variance < 0 ? 'font-semibold text-rose-600' : 'font-semibold text-emerald-600'}>{inr(r.variance)}</span> },
@@ -140,7 +140,7 @@ function BookView({ book, t }) {
   return (
     <div className="space-y-3">
       {book && book.account && (
-        <p className="text-sm font-semibold text-slate-600">{book.account.code} · {book.account.name} — <span className="font-bold text-[#002344]">{t('balance')}: {inr(book.closingBalance)}</span></p>
+        <p className="text-sm font-semibold text-slate-600">{book.account.code} · {book.account.name} — <span className="font-bold text-[#12345A]">{t('balance')}: {inr(book.closingBalance)}</span></p>
       )}
       <DataTable rows={book ? book.entries : null} empty={t('no_records')} columns={[
         { key: 'entryDate', en: 'Date', hi: 'दिनांक' },

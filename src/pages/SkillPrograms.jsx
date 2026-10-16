@@ -30,7 +30,7 @@ export default function SkillPrograms() {
                         </div>
                     </div>
                     <div className="order-1 md:order-2">
-                        <div className="w-16 h-16 bg-[#003366]/10 text-[#003366] rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        <div className="w-16 h-16 bg-[#12345A]/10 text-[#12345A] rounded-2xl flex items-center justify-center text-3xl mb-6">
                             <FaLaptopCode />
                         </div>
                         <h2 className="text-4xl font-black text-black mb-6">Youth Skill Development</h2>
@@ -45,7 +45,7 @@ export default function SkillPrograms() {
                                 "Financial Literacy"
                             ].map((item, i) => (
                                 <li key={i} className="flex items-center gap-3 font-bold text-zinc-800">
-                                    <IoCheckmarkCircleSharp className="text-[#003366] text-xl" /> {item}
+                                    <IoCheckmarkCircleSharp className="text-[#12345A] text-xl" /> {item}
                                 </li>
                             ))}
                         </ul>
@@ -68,7 +68,7 @@ export default function SkillPrograms() {
                             <p className="text-zinc-400">Helping students identify their strengths and map out a 5-year career plan aligned with their goals.</p>
                         </div>
                         <div className="bg-zinc-800 p-8 rounded-xl border border-zinc-700">
-                            <div className="text-[#003366] text-4xl mb-6"><FaUserTie /></div>
+                            <div className="text-[#12345A] text-4xl mb-6"><FaUserTie /></div>
                             <h4 className="text-xl font-bold mb-3">Mentorship</h4>
                             <p className="text-zinc-400">Connecting youth with industry professionals for 1-on-1 guidance and real-world insights.</p>
                         </div>
@@ -85,7 +85,7 @@ export default function SkillPrograms() {
             <section className="py-24 px-4 bg-zinc-50">
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-12 items-center">
                     <div>
-                        <div className="w-16 h-16 bg-[#003366]/10 text-[#003366] rounded-2xl flex items-center justify-center text-3xl mb-6">
+                        <div className="w-16 h-16 bg-[#12345A]/10 text-[#12345A] rounded-2xl flex items-center justify-center text-3xl mb-6">
                             <FaHandshake />
                         </div>
                         <h2 className="text-4xl font-black text-black mb-6">Employability Focus</h2>
@@ -93,7 +93,7 @@ export default function SkillPrograms() {
                             It's not just about learning; it's about earning. We bridge the "last mile" gap to help our students secure dignity and financial independence.
                         </p>
                         <div className="space-y-6">
-                            <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[#003366]">
+                            <div className="bg-white p-6 rounded-xl shadow-sm border-l-4 border-[#12345A]">
                                 <h4 className="text-xl font-bold mb-2">Job Readiness</h4>
                                 <p className="text-zinc-600 text-sm">Resume building, mock interviews, and corporate etiquette training.</p>
                             </div>
@@ -114,7 +114,7 @@ export default function SkillPrograms() {
             </section>
 
             {/* ================= CTA ================= */}
-            <section className="py-20 bg-[#003366] text-white text-center px-4">
+            <section className="py-20 bg-[#12345A] text-white text-center px-4">
                 <h2 className="text-3xl font-black mb-4">
                     Ready to Upskill?
                 </h2>
@@ -122,7 +122,7 @@ export default function SkillPrograms() {
                     Join our next batch of skill development programs.
                 </p>
                 <Link to="/Contact">
-                    <button className="bg-white text-[#003366] px-8 py-3 font-bold hover:bg-zinc-200 transition">
+                    <button className="bg-white text-[#12345A] px-8 py-3 font-bold hover:bg-zinc-200 transition">
                         Apply for Training
                     </button>
                 </Link>

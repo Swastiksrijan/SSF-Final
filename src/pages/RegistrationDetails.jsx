@@ -77,7 +77,7 @@ export default function RegistrationDetails() {
   ];
 
   return (
-    <div className="w-full bg-[#f8f9fa] font-inria min-h-screen">
+    <div className="w-full bg-[#EAF0F6] font-inria min-h-screen">
 
       {/* ================= HERO ================= */}
       <PageHero
@@ -94,10 +94,10 @@ export default function RegistrationDetails() {
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="bg-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] p-10 md:p-16 mb-20 border-l-8 border-[#002344] relative overflow-hidden group"
+          className="bg-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] p-10 md:p-16 mb-20 border-l-8 border-[#12345A] relative overflow-hidden group"
         >
-          <div className="absolute top-0 right-0 w-40 h-40 bg-[#002344]/5 rounded-full translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-transform duration-700"></div>
-          <h2 className="text-4xl font-serif font-bold mb-8 text-[#002344]">
+          <div className="absolute top-0 right-0 w-40 h-40 bg-[#12345A]/5 rounded-full translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-transform duration-700"></div>
+          <h2 className="text-4xl font-serif font-bold mb-8 text-[#12345A]">
             Legal Identity & Compliance
           </h2>
           <p className="text-xl text-zinc-500 leading-relaxed font-medium">
@@ -116,22 +116,22 @@ export default function RegistrationDetails() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className="bg-white rounded-[2rem] shadow-sm p-10 hover:shadow-xl hover:bg-[#002344] transition-all duration-500 border border-zinc-100 group"
+              className="bg-white rounded-[2rem] shadow-sm p-10 hover:shadow-xl hover:bg-[#12345A] transition-all duration-500 border border-zinc-100 group"
               onMouseEnter={() => setActiveSection(section.id)}
               onMouseLeave={() => setActiveSection(null)}
             >
               <div className="flex flex-col gap-6">
                 <div
                   className={`w-16 h-16 rounded-2xl text-2xl flex items-center justify-center transition-all duration-500 ${activeSection === section.id
-                    ? "bg-[#fb8500] text-white"
-                    : "bg-blue-50 text-[#002344]"
+                    ? "bg-[#176447] text-white"
+                    : "bg-blue-50 text-[#12345A]"
                     }`}
                 >
                   {section.icon}
                 </div>
 
                 <div className="space-y-4">
-                  <h3 className={`text-2xl font-serif font-bold transition-colors duration-500 ${activeSection === section.id ? 'text-white' : 'text-[#002344]'}`}>
+                  <h3 className={`text-2xl font-serif font-bold transition-colors duration-500 ${activeSection === section.id ? 'text-white' : 'text-[#12345A]'}`}>
                     {section.title}
                   </h3>
 
@@ -155,7 +155,7 @@ export default function RegistrationDetails() {
         {/* ================= OFFICIAL DOCUMENTS ================= */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-serif font-bold text-[#002344] mb-4">Official Recognize & Certificates</h2>
+            <h2 className="text-3xl font-serif font-bold text-[#12345A] mb-4">Official Recognize & Certificates</h2>
             <p className="text-lg text-zinc-500 max-w-2xl mx-auto mb-10">
               We are committed to maintaining the highest standards of transparency and integrity.
             </p>
@@ -170,15 +170,15 @@ export default function RegistrationDetails() {
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="bg-white p-4 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-xl transition-all">
               <img src="/images/uploads/pm-cares-cert.jpg" alt="PM CARES Certificate" className="w-full h-auto rounded-2xl" />
-              <p className="text-center font-bold text-[#002344] mt-4">PM CARES Fund Contribution</p>
+              <p className="text-center font-bold text-[#12345A] mt-4">PM CARES Fund Contribution</p>
             </div>
             <div className="bg-white p-4 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-xl transition-all">
               <img src="/images/uploads/integrity-pledge.jpg" alt="Integrity Pledge" className="w-full h-auto rounded-2xl" />
-              <p className="text-center font-bold text-[#002344] mt-4">Integrity Pledge Certificate</p>
+              <p className="text-center font-bold text-[#12345A] mt-4">Integrity Pledge Certificate</p>
             </div>
             <div className="bg-white p-4 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-xl transition-all">
               <img src="/images/uploads/ngo-darpan.jpg" alt="NITI Aayog DARPAN" className="w-full h-auto rounded-2xl" />
-              <p className="text-center font-bold text-[#002344] mt-4">NITI Aayog DARPAN Registration</p>
+              <p className="text-center font-bold text-[#12345A] mt-4">NITI Aayog DARPAN Registration</p>
             </div>
           </div>
         </section>
@@ -188,12 +188,12 @@ export default function RegistrationDetails() {
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-[#001529] rounded-[3rem] shadow-2xl overflow-hidden relative"
+          className="bg-[#12345A] rounded-[3rem] shadow-2xl overflow-hidden relative"
         >
-          <div className="absolute top-0 right-0 w-96 h-96 bg-[#fb8500] opacity-[0.05] rounded-full translate-x-1/3 -translate-y-1/3 blur-[120px]"></div>
+          <div className="absolute top-0 right-0 w-96 h-96 bg-[#176447] opacity-[0.05] rounded-full translate-x-1/3 -translate-y-1/3 blur-[120px]"></div>
 
           <div className="p-12 md:p-20 text-center relative z-10 space-y-8">
-            <div className="w-20 h-20 bg-[#fb8500] text-white rounded-[1.5rem] mx-auto flex items-center justify-center text-3xl shadow-lg shadow-[#fb8500]/20">
+            <div className="w-20 h-20 bg-[#176447] text-white rounded-[1.5rem] mx-auto flex items-center justify-center text-3xl shadow-lg shadow-[#176447]/20">
               <FaEnvelope />
             </div>
             <h2 className="text-4xl font-serif font-bold text-white">
@@ -206,7 +206,7 @@ export default function RegistrationDetails() {
 
             <div className="bg-white/5 backdrop-blur-md px-10 py-8 rounded-[2rem] border border-white/10 inline-block group hover:bg-white/10 transition-all text-white space-y-6">
               <div className="text-center">
-                <p className="text-[10px] text-[#fb8500] uppercase tracking-[0.3em] font-bold mb-3 opacity-80">
+                <p className="text-[10px] text-[#176447] uppercase tracking-[0.3em] font-bold mb-3 opacity-80">
                   Official Email Inbox
                 </p>
                 <button
@@ -214,7 +214,7 @@ export default function RegistrationDetails() {
                     navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
                     alert("Email copied to clipboard!");
                   }}
-                  className="font-serif font-bold text-2xl md:text-3xl hover:text-[#fb8500] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#fb8500] pb-1"
+                  className="font-serif font-bold text-2xl md:text-3xl hover:text-[#176447] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#176447] pb-1"
                   title="Click to copy"
                 >
                   {CONTACT_INFO.primaryEmail}
@@ -229,7 +229,7 @@ export default function RegistrationDetails() {
                         navigator.clipboard.writeText(CONTACT_INFO.secondaryEmail);
                         alert("Email copied!");
                       }}
-                      className="text-sm text-zinc-300 font-semibold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                      className="text-sm text-zinc-300 font-semibold hover:text-[#176447] transition-colors cursor-pointer outline-none"
                       title="Click to copy"
                     >
                       {CONTACT_INFO.secondaryEmail}
@@ -244,7 +244,7 @@ export default function RegistrationDetails() {
                         navigator.clipboard.writeText(CONTACT_INFO.thirdEmail);
                         alert("Email copied!");
                       }}
-                      className="text-sm text-zinc-300 font-semibold hover:text-[#fb8500] transition-colors cursor-pointer outline-none"
+                      className="text-sm text-zinc-300 font-semibold hover:text-[#176447] transition-colors cursor-pointer outline-none"
                       title="Click to copy"
                     >
                       {CONTACT_INFO.thirdEmail}

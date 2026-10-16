@@ -75,15 +75,15 @@ export default function ServiceJourneyCards() {
     <section className="py-20 bg-white overflow-hidden border-y border-zinc-100">
       <div className="container mx-auto px-4">
         <div className="text-center max-w-4xl mx-auto mb-10">
-          <span className="inline-flex px-5 py-2 rounded-full bg-[#002344] text-white text-[10px] font-black uppercase tracking-[0.25em]">2013 — 2026 • Detailed Journey</span>
-          <h2 className="mt-5 text-3xl md:text-5xl font-serif font-bold text-[#002344]">SSF SERVICE JOURNEY <span className="text-[#FF6600]">| सेवा यात्रा</span></h2>
+          <span className="inline-flex px-5 py-2 rounded-full bg-[#12345A] text-white text-[10px] font-black uppercase tracking-[0.25em]">2013 — 2026 • Detailed Journey</span>
+          <h2 className="mt-5 text-3xl md:text-5xl font-serif font-bold text-[#12345A]">SSF SERVICE JOURNEY <span className="text-[#176447]">| सेवा यात्रा</span></h2>
           <p className="mt-4 text-zinc-500 max-w-2xl mx-auto">Year-by-year milestones, learning and community-oriented work across the continuing journey of SSF.</p>
         </div>
 
         <div className="mb-14">
           <div className="text-center max-w-3xl mx-auto mb-8">
-            <span className="text-[#FF6600] font-black text-xs uppercase tracking-[0.2em]">SSF IN ACTION</span>
-            <h3 className="mt-2 text-2xl md:text-4xl font-bold text-[#002344]">Our Work & Service Highlights</h3>
+            <span className="text-[#176447] font-black text-xs uppercase tracking-[0.2em]">SSF IN ACTION</span>
+            <h3 className="mt-2 text-2xl md:text-4xl font-bold text-[#12345A]">Our Work & Service Highlights</h3>
             <p className="mt-3 text-sm md:text-base text-zinc-500">संस्था की गतिविधियों और सेवा कार्यों की झलक</p>
           </div>
 
@@ -107,10 +107,10 @@ export default function ServiceJourneyCards() {
                 </div>
                 <div className="p-5 flex items-center justify-between gap-3">
                   <div>
-                    <p className="text-xs font-black uppercase tracking-[0.16em] text-[#FF6600]">SSF • Activity</p>
-                    <h4 className="mt-1 font-bold text-[#002344]">{item.label}</h4>
+                    <p className="text-xs font-black uppercase tracking-[0.16em] text-[#176447]">SSF • Activity</p>
+                    <h4 className="mt-1 font-bold text-[#12345A]">{item.label}</h4>
                   </div>
-                  <a href={item.view} target="_blank" rel="noreferrer noopener" className="shrink-0 inline-flex items-center gap-2 rounded-full bg-[#002344] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#FF6600] transition-colors">
+                  <a href={item.view} target="_blank" rel="noreferrer noopener" className="shrink-0 inline-flex items-center gap-2 rounded-full bg-[#12345A] text-white px-4 py-2.5 text-xs font-bold hover:bg-[#176447] transition-colors">
                     View Full <FaExternalLinkAlt />
                   </a>
                 </div>
@@ -139,10 +139,10 @@ export default function ServiceJourneyCards() {
                   <div className="w-12 h-12 rounded-2xl bg-white/90 flex items-center justify-center text-xl shadow-sm">{item.icon}</div>
                 </div>
                 <div className="mt-5 h-1.5 w-14 rounded-full bg-current opacity-70" />
-                <h3 className="mt-5 text-xl font-black text-[#002344] leading-tight">{item.title}</h3>
+                <h3 className="mt-5 text-xl font-black text-[#12345A] leading-tight">{item.title}</h3>
                 <p className="mt-2 text-sm font-bold opacity-80">{item.hi}</p>
                 <p className="mt-4 text-sm leading-6 text-zinc-600 bg-white/65 rounded-2xl p-4">{item.desc}</p>
-                <div className="mt-5 text-[10px] font-black uppercase tracking-[0.18em] text-[#002344]/55">SSF • Service • Learning • Awareness</div>
+                <div className="mt-5 text-[10px] font-black uppercase tracking-[0.18em] text-[#12345A]/55">SSF • Service • Learning • Awareness</div>
               </motion.article>
             ))}
           </motion.div>

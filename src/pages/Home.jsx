@@ -65,7 +65,7 @@ export default function Home() {
         <div className="absolute inset-0 -z-20">
           <OptimizedImage priority src={pageHeader} alt="Swastik Srijan Foundation community work" className="h-full w-full" />
         </div>
-        <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(5,25,44,0.98)_0%,rgba(5,25,44,0.9)_50%,rgba(5,25,44,0.48)_100%)]" />
+        <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(18,52,90,0.98)_0%,rgba(18,52,90,0.9)_50%,rgba(18,52,90,0.48)_100%)]" />
         <div className="absolute -right-24 -top-28 -z-10 h-96 w-96 rounded-full border border-[#F7A814]/30 md:h-[560px] md:w-[560px]" />
         <div className="container mx-auto grid max-w-7xl items-center gap-7 px-5 md:px-10 lg:grid-cols-1">
           <Motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl">

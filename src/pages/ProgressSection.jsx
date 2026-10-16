@@ -80,16 +80,16 @@ const ProgressTimeline = () => {
           <motion.span
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
-            className="text-[#fb8500] font-bold uppercase tracking-[0.2em] text-xs"
+            className="text-[#176447] font-bold uppercase tracking-[0.2em] text-xs"
           >
             Our Roadmap
           </motion.span>
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            className="text-4xl md:text-6xl font-serif font-bold text-[#002344]"
+            className="text-4xl md:text-6xl font-serif font-bold text-[#12345A]"
           >
-            Milestones of Our <span className="text-[#fb8500]">Journey</span>
+            Milestones of Our <span className="text-[#176447]">Journey</span>
           </motion.h2>
           <motion.p
             initial={{ opacity: 0 }}
@@ -109,7 +109,7 @@ const ProgressTimeline = () => {
             {timelineData.map((item, i) => (
               <div key={i} className={`relative flex items-center justify-between md:justify-normal even:md:flex-row-reverse group`}>
                 {/* Dot */}
-                <div className="absolute left-4 md:left-1/2 w-3 h-3 bg-white border-2 border-[#fb8500] rounded-full md:-translate-x-1/2 z-20 group-hover:scale-150 transition-transform"></div>
+                <div className="absolute left-4 md:left-1/2 w-3 h-3 bg-white border-2 border-[#176447] rounded-full md:-translate-x-1/2 z-20 group-hover:scale-150 transition-transform"></div>
 
                 {/* Content */}
                 <div className={`w-full md:w-[45%] pl-12 md:pl-0 ${i % 2 === 0 ? "md:pr-12 text-left md:text-right" : "md:pl-12 text-left"}`}>
@@ -119,10 +119,10 @@ const ProgressTimeline = () => {
                     viewport={{ once: true }}
                     className="bg-white rounded-3xl p-8 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.08)] border border-zinc-50 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300"
                   >
-                    <span className="text-4xl font-black text-[#fb8500]/10 block mb-2">{item.year}</span>
+                    <span className="text-4xl font-black text-[#176447]/10 block mb-2">{item.year}</span>
                     <div className="flex flex-col gap-1">
-                      <span className="text-[#fb8500] font-bold text-xs uppercase tracking-widest">{item.year}</span>
-                      <h3 className="text-xl md:text-2xl font-serif font-bold text-[#002344] mb-3 leading-tight">{item.title}</h3>
+                      <span className="text-[#176447] font-bold text-xs uppercase tracking-widest">{item.year}</span>
+                      <h3 className="text-xl md:text-2xl font-serif font-bold text-[#12345A] mb-3 leading-tight">{item.title}</h3>
                     </div>
                     <p className="text-zinc-600 leading-relaxed font-medium">{item.desc}</p>
                   </motion.div>

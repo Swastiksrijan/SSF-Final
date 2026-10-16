@@ -2,7 +2,7 @@ import { VOLUNTEER_TEMPLATE_COLUMNS, VOLUNTEER_TEMPLATE_SAMPLE } from './volunte
 
 // SSF-IMS Excel (.xlsx) export — brand-styled, lazily loads exceljs so the
 // ~1MB library is only fetched when the user actually clicks "Excel".
-const NAVY = 'FF002344';
+const NAVY = 'FF12345A';
 
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
 

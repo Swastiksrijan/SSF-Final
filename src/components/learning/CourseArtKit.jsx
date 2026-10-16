@@ -14,8 +14,8 @@
 
 import { useId } from "react";
 
-const NAVY = "#0b3a63";
-const YELLOW = "#FFD166";
+const NAVY = "#12345A";
+const YELLOW = "#F7A814";
 
 function Frame({ children, bg, label }) {
   const uid = useId().replace(/[:]/g, "");
@@ -37,12 +37,12 @@ function Frame({ children, bg, label }) {
 
 /** Palette per category, so tiles feel subject-appropriate but consistent. */
 const PALETTE = {
-  green: "#0f3d2e",
-  blue: "#123a5f",
+  green: "#12345A",
+  blue: "#12345A",
   navy: NAVY,
-  earth: "#5a3b1e",
-  sky: "#0b3a63",
-  violet: "#3b2a63",
+  earth: "#F7A814",
+  sky: "#12345A",
+  violet: "#12345A",
 };
 
 function pickBg(seed = "") {
@@ -87,7 +87,7 @@ export function GlyphHero({ icon = "📘", glyphs = [], title = "", className = 
     <svg viewBox="0 0 400 300" className={className} role="img" aria-label={title || "course illustration"} preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id={gid} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#123a5f" /><stop offset="1" stopColor="#001529" />
+          <stop offset="0" stopColor="#12345A" /><stop offset="1" stopColor="#12345A" />
         </linearGradient>
       </defs>
       <rect x="0" y="0" width="400" height="300" rx="26" fill={`url(#${gid})`} />

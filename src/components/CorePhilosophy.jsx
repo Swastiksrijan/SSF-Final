@@ -20,8 +20,8 @@ export default function CorePhilosophy() {
             desc: "Focusing on holistic development through education, health, and sustainable livelihood to uplift the marginalized.",
             link: "/Mission",
             // Vibrant Growth Green
-            bg: "bg-[#00a651]",
-            text: "text-[#00a651]",
+            bg: "bg-[#176447]",
+            text: "text-[#176447]",
             delay: 0.2
         },
         {
@@ -30,8 +30,8 @@ export default function CorePhilosophy() {
             desc: "Integrity, Inclusivity, and Compassion are the pillars guiding our every action and decision.",
             link: "/institutional-dna",
             // Warm Terra Cotta / Bronze
-            bg: "bg-[#c05e2b]",
-            text: "text-[#c05e2b]",
+            bg: "bg-[#F7A814]",
+            text: "text-[#F7A814]",
             delay: 0.4
         }
     ];
@@ -41,14 +41,14 @@ export default function CorePhilosophy() {
             {/* Background Elements matching new vibrant colors */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
                 <div className="absolute top-20 left-10 w-80 h-80 bg-[#0081d1] rounded-full blur-[100px] opacity-10"></div>
-                <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#00a651] rounded-full blur-[100px] opacity-10"></div>
+                <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#176447] rounded-full blur-[100px] opacity-10"></div>
             </div>
 
             <div className="container mx-auto px-6 relative z-10">
                 {/* Header Section Restored */}
                 <div className="text-center max-w-4xl mx-auto space-y-4 mb-16">
-                    <h2 className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em]">Purpose & Direction</h2>
-                    <h3 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344]">Our Campaign</h3>
+                    <h2 className="text-[#176447] font-bold text-xs uppercase tracking-[0.2em]">Purpose & Direction</h2>
+                    <h3 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A]">Our Campaign</h3>
                     <p className="text-xl text-zinc-500 max-w-2xl mx-auto">Foundational pillars of our movement for social change.</p>
                 </div>
 

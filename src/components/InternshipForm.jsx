@@ -52,10 +52,10 @@ export default function InternshipForm({ onClose }) {
   if (status === "success") return (
     <div className="p-8 md:p-12 text-center space-y-5">
       <div className="w-16 h-16 mx-auto rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-3xl"><FaCheckCircle /></div>
-      <p className="text-xs uppercase tracking-widest font-black text-[#FF6600]">Internship Application</p>
-      <h3 className="text-2xl md:text-3xl font-black text-[#002344]">Application Submitted</h3>
+      <p className="text-xs uppercase tracking-widest font-black text-[#176447]">Internship Application</p>
+      <h3 className="text-2xl md:text-3xl font-black text-[#12345A]">Application Submitted</h3>
       <p className="text-zinc-600">Thank you. Your internship application has been received. Our team will review it and contact you by email or phone.</p>
-      <button onClick={onClose} className="px-7 py-3 rounded-xl bg-[#002344] text-white font-bold hover:bg-[#FF6600] transition-colors">Close</button>
+      <button onClick={onClose} className="px-7 py-3 rounded-xl bg-[#12345A] text-white font-bold hover:bg-[#176447] transition-colors">Close</button>
     </div>
   );
 
@@ -63,7 +63,7 @@ export default function InternshipForm({ onClose }) {
   const label = "block text-xs font-black uppercase tracking-wider text-zinc-500 mb-2";
 
   return <div className="p-6 md:p-10">
-    <div className="mb-7"><p className="text-xs uppercase tracking-widest font-black text-[#FF6600]">Internship Application</p><h3 className="text-2xl md:text-3xl font-black text-[#002344] mt-1">Apply for an Internship</h3><p className="text-sm text-zinc-500 mt-2">इंटर्नशिप के लिए आवेदन करें</p></div>
+    <div className="mb-7"><p className="text-xs uppercase tracking-widest font-black text-[#176447]">Internship Application</p><h3 className="text-2xl md:text-3xl font-black text-[#12345A] mt-1">Apply for an Internship</h3><p className="text-sm text-zinc-500 mt-2">इंटर्नशिप के लिए आवेदन करें</p></div>
     <form onSubmit={submit} className="space-y-5" noValidate>
       <div className="grid md:grid-cols-2 gap-5">
         <div><label className={label}>Full Name *</label><input className={input} value={form.fullName} onChange={e => update("fullName", e.target.value)} placeholder="Your full name" /></div>
@@ -82,7 +82,7 @@ export default function InternshipForm({ onClose }) {
       <div><label className={label}>Resume / CV *</label><input type="file" accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" className={input} onChange={e => setResume(e.target.files?.[0] || null)} /><p className="text-xs text-zinc-400 mt-1">PDF, DOC or DOCX · maximum 5 MB</p></div>
       <div><label className={label}>Why do you want to intern with SSF?</label><textarea className={`${input} resize-none`} rows={4} value={form.message} onChange={e => update("message", e.target.value)} placeholder="Tell us about your interests, skills and what you hope to learn." /></div>
       {status === "error" && <div className="p-4 rounded-xl bg-red-50 border border-red-100 text-red-700 text-sm font-semibold flex gap-2"><FaExclamationCircle />{error}</div>}
-      <button type="submit" disabled={status === "submitting"} className="w-full bg-[#002344] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#FF6600] transition-all flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting securely...</> : <>Submit Internship Application <FaArrowRight /></>}</button>
+      <button type="submit" disabled={status === "submitting"} className="w-full bg-[#12345A] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#176447] transition-all flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting securely...</> : <>Submit Internship Application <FaArrowRight /></>}</button>
     </form>
   </div>;
 }

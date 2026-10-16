@@ -36,12 +36,12 @@ export default function SSFNationalAcademy() {
     return (
         <section className="bg-white font-inria min-h-screen">
             {/* ================= HERO WITH PROGRESS BADGE ================= */}
-            <div className="bg-gradient-to-br from-[#001529] via-[#002344] to-[#003366] text-white pt-48 pb-24 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-[#12345A] via-[#12345A] to-[#12345A] text-white pt-48 pb-24 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.03]"></div>
 
                 {/* Animated floating elements */}
                 <motion.div
-                    className="absolute top-32 right-20 w-72 h-72 bg-[#fb8500]/10 rounded-full blur-3xl"
+                    className="absolute top-32 right-20 w-72 h-72 bg-[#176447]/10 rounded-full blur-3xl"
                     animate={{ scale: [1, 1.2, 1], opacity: [0.3, 0.5, 0.3] }}
                     transition={{ duration: 5, repeat: Infinity }}
                 />
@@ -56,23 +56,23 @@ export default function SSFNationalAcademy() {
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-3 bg-gradient-to-r from-[#fb8500]/20 to-[#d90429]/20 backdrop-blur-md border border-[#fb8500]/30 px-6 py-3 rounded-full"
+                        className="inline-flex items-center gap-3 bg-gradient-to-r from-[#176447]/20 to-[#d90429]/20 backdrop-blur-md border border-[#176447]/30 px-6 py-3 rounded-full"
                     >
                         <span className="relative flex h-3 w-3">
-                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#fb8500] opacity-75"></span>
-                            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#fb8500]"></span>
+                            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#176447] opacity-75"></span>
+                            <span className="relative inline-flex rounded-full h-3 w-3 bg-[#176447]"></span>
                         </span>
-                        <span className="text-[#fb8500] font-bold text-sm uppercase tracking-wider">Currently Under Development</span>
+                        <span className="text-[#176447] font-bold text-sm uppercase tracking-wider">Currently Under Development</span>
                     </motion.div>
 
                     <motion.div
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                     >
-                        <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em] mb-4">Education & Values | शिक्षा और संस्कार</p>
+                        <p className="text-[#176447] font-bold text-xs uppercase tracking-[0.2em] mb-4">Education & Values | शिक्षा और संस्कार</p>
                         <h1 className="text-5xl md:text-7xl font-serif font-bold mb-4">
-                            The SSF <span className="text-[#fb8500]">National Academy</span> <br />
-                            <span className="text-3xl md:text-5xl font-sans font-normal opacity-80 decoration-[#fb8500]/30">एसएसएफ नेशनल एकेडमी</span>
+                            The SSF <span className="text-[#176447]">National Academy</span> <br />
+                            <span className="text-3xl md:text-5xl font-sans font-normal opacity-80 decoration-[#176447]/30">एसएसएफ नेशनल एकेडमी</span>
                         </h1>
                         <h2 className="text-xl md:text-2xl font-serif text-zinc-300 mb-8 italic">
                             "Creating Leaders of Tomorrow" | "कल के लीडर्स बनाना"
@@ -95,11 +95,11 @@ export default function SSFNationalAcademy() {
                         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20">
                             <div className="flex justify-between text-sm mb-3">
                                 <span className="text-white/80">Project Progress</span>
-                                <span className="text-[#fb8500] font-bold">35%</span>
+                                <span className="text-[#176447] font-bold">35%</span>
                             </div>
                             <div className="h-3 bg-white/20 rounded-full overflow-hidden">
                                 <motion.div
-                                    className="h-full bg-gradient-to-r from-[#fb8500] to-[#d90429] rounded-full"
+                                    className="h-full bg-gradient-to-r from-[#176447] to-[#d90429] rounded-full"
                                     initial={{ width: 0 }}
                                     animate={{ width: "35%" }}
                                     transition={{ duration: 1.5, ease: "easeOut" }}
@@ -120,10 +120,10 @@ export default function SSFNationalAcademy() {
                         viewport={{ once: true }}
                         className="text-center mb-16"
                     >
-                        <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em] mb-4">Our Purpose | हमारा उद्देश्य</p>
-                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344]">
+                        <p className="text-[#176447] font-bold text-xs uppercase tracking-[0.2em] mb-4">Our Purpose | हमारा उद्देश्य</p>
+                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A]">
                             Objectives of The Academy <br />
-                            <span className="text-2xl lg:text-3xl font-sans font-normal text-[#002344]/60">एकेडमी के उद्देश्य</span>
+                            <span className="text-2xl lg:text-3xl font-sans font-normal text-[#12345A]/60">एकेडमी के उद्देश्य</span>
                         </h2>
                     </motion.div>
 
@@ -135,9 +135,9 @@ export default function SSFNationalAcademy() {
                                 whileInView={{ opacity: 1, x: 0 }}
                                 transition={{ delay: idx * 0.1 }}
                                 viewport={{ once: true }}
-                                className="flex items-start gap-4 p-6 bg-white rounded-2xl shadow-lg border border-zinc-100 hover:shadow-xl hover:border-[#fb8500]/30 transition-all"
+                                className="flex items-start gap-4 p-6 bg-white rounded-2xl shadow-lg border border-zinc-100 hover:shadow-xl hover:border-[#176447]/30 transition-all"
                             >
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#fb8500] to-[#d90429] flex items-center justify-center text-white font-bold shrink-0">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#176447] to-[#d90429] flex items-center justify-center text-white font-bold shrink-0">
                                     {idx + 1}
                                 </div>
                                 <p className="text-zinc-700 font-medium leading-relaxed">{obj}</p>
@@ -148,7 +148,7 @@ export default function SSFNationalAcademy() {
             </div>
 
             {/* ================= KEY FOCUS AREAS ================= */}
-            <div className="py-24 bg-[#001529]">
+            <div className="py-24 bg-[#12345A]">
                 <div className="max-w-6xl mx-auto px-6">
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -156,7 +156,7 @@ export default function SSFNationalAcademy() {
                         viewport={{ once: true }}
                         className="text-center mb-16"
                     >
-                        <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em] mb-4">What We Focus On | हमारा विशेष ध्यान</p>
+                        <p className="text-[#176447] font-bold text-xs uppercase tracking-[0.2em] mb-4">What We Focus On | हमारा विशेष ध्यान</p>
                         <h2 className="text-4xl lg:text-5xl font-serif font-bold text-white mb-2">
                             Key Focus Areas | प्रमुख कार्य क्षेत्र
                         </h2>
@@ -173,9 +173,9 @@ export default function SSFNationalAcademy() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.1 }}
                                 viewport={{ once: true }}
-                                className="bg-white/5 backdrop-blur-md rounded-2xl p-6 text-center border border-white/10 hover:border-[#fb8500]/50 hover:bg-white/10 transition-all group"
+                                className="bg-white/5 backdrop-blur-md rounded-2xl p-6 text-center border border-white/10 hover:border-[#176447]/50 hover:bg-white/10 transition-all group"
                             >
-                                <div className="text-4xl text-[#fb8500] mb-4 group-hover:scale-110 transition-transform">
+                                <div className="text-4xl text-[#176447] mb-4 group-hover:scale-110 transition-transform">
                                     {area.icon}
                                 </div>
                                 <h3 className="text-white font-bold mb-2">{area.title}</h3>
@@ -195,8 +195,8 @@ export default function SSFNationalAcademy() {
                             whileInView={{ opacity: 1, x: 0 }}
                             viewport={{ once: true }}
                         >
-                            <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em] mb-4">Target Audience</p>
-                            <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344] mb-2">
+                            <p className="text-[#176447] font-bold text-xs uppercase tracking-[0.2em] mb-4">Target Audience</p>
+                            <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A] mb-2">
                                 Who Can Benefit?
                             </h2>
                             <h3 className="text-lg text-zinc-500 mb-8 italic">
@@ -204,8 +204,8 @@ export default function SSFNationalAcademy() {
                             </h3>
                             <div className="space-y-4">
                                 {beneficiaries.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-zinc-100 hover:border-[#002344]/30 transition-all">
-                                        <div className="w-8 h-8 rounded-lg bg-[#002344] flex items-center justify-center">
+                                    <div key={idx} className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-zinc-100 hover:border-[#12345A]/30 transition-all">
+                                        <div className="w-8 h-8 rounded-lg bg-[#12345A] flex items-center justify-center">
                                             <HiUserGroup className="text-white text-lg" />
                                         </div>
                                         <span className="text-zinc-700 font-medium">{item}</span>
@@ -220,8 +220,8 @@ export default function SSFNationalAcademy() {
                             viewport={{ once: true }}
                             className="relative"
                         >
-                            <div className="bg-gradient-to-br from-[#002344] to-[#001529] rounded-3xl p-8 text-white">
-                                <HiSparkles className="text-[#fb8500] text-4xl mb-6" />
+                            <div className="bg-gradient-to-br from-[#12345A] to-[#12345A] rounded-3xl p-8 text-white">
+                                <HiSparkles className="text-[#176447] text-4xl mb-6" />
                                 <h3 className="text-2xl font-bold mb-4">Our Approach</h3>
                                 <p className="text-zinc-300 leading-relaxed mb-6">
                                     We follow a learner-centric and inclusive approach, combining knowledge sharing, mentorship, and practical exposure.
@@ -236,7 +236,7 @@ export default function SSFNationalAcademy() {
             </div>
 
             {/* ================= FUNDING REQUIREMENTS ================= */}
-            <div className="py-24 bg-gradient-to-br from-[#d90429]/5 via-white to-[#fb8500]/5">
+            <div className="py-24 bg-gradient-to-br from-[#d90429]/5 via-white to-[#176447]/5">
                 <div className="max-w-6xl mx-auto px-6">
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -245,7 +245,7 @@ export default function SSFNationalAcademy() {
                         className="text-center mb-16"
                     >
                         <p className="text-[#d90429] font-bold text-xs uppercase tracking-[0.2em] mb-4">Support Our Vision | हमारे विजन का समर्थन करें</p>
-                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344] mb-6">
+                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A] mb-6">
                             Funding Requirements | फंड की जरूरतें
                         </h2>
                         <p className="text-zinc-600 max-w-2xl mx-auto text-lg leading-relaxed">
@@ -264,13 +264,13 @@ export default function SSFNationalAcademy() {
                                 whileInView={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.1 }}
                                 viewport={{ once: true }}
-                                className="bg-white rounded-2xl p-8 shadow-xl border border-zinc-100 hover:border-[#fb8500]/30 hover:shadow-2xl transition-all group"
+                                className="bg-white rounded-2xl p-8 shadow-xl border border-zinc-100 hover:border-[#176447]/30 hover:shadow-2xl transition-all group"
                             >
                                 <div className="flex items-start justify-between mb-4">
-                                    <h3 className="text-xl font-bold text-[#002344] group-hover:text-[#fb8500] transition-colors">
+                                    <h3 className="text-xl font-bold text-[#12345A] group-hover:text-[#176447] transition-colors">
                                         {need.title}
                                     </h3>
-                                    <span className="bg-[#fb8500]/10 text-[#fb8500] font-bold px-4 py-2 rounded-full text-sm">
+                                    <span className="bg-[#176447]/10 text-[#176447] font-bold px-4 py-2 rounded-full text-sm">
                                         {need.amount}
                                     </span>
                                 </div>
@@ -284,9 +284,9 @@ export default function SSFNationalAcademy() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="bg-gradient-to-r from-[#002344] to-[#001529] rounded-3xl p-10 text-center text-white"
+                        className="bg-gradient-to-r from-[#12345A] to-[#12345A] rounded-3xl p-10 text-center text-white"
                     >
-                        <p className="text-[#fb8500] font-bold text-sm uppercase tracking-wider mb-4">Total Project Budget</p>
+                        <p className="text-[#176447] font-bold text-sm uppercase tracking-wider mb-4">Total Project Budget</p>
                         <h3 className="text-5xl lg:text-6xl font-serif font-bold mb-4">₹1,25,00,000</h3>
                         <p className="text-zinc-400 max-w-xl mx-auto mb-8">
                             Every contribution brings us closer to establishing a world-class educational facility that will transform thousands of lives.
@@ -321,8 +321,8 @@ export default function SSFNationalAcademy() {
                         whileInView={{ opacity: 1 }}
                         viewport={{ once: true }}
                     >
-                        <FaHandsHelping className="text-6xl text-[#fb8500] mx-auto mb-8" />
-                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344] mb-6">
+                        <FaHandsHelping className="text-6xl text-[#176447] mx-auto mb-8" />
+                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A] mb-6">
                             Collaboration & Support
                         </h2>
                         <p className="text-zinc-600 max-w-3xl mx-auto text-lg leading-relaxed mb-8">
@@ -331,13 +331,13 @@ export default function SSFNationalAcademy() {
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link
                                 to="/Volunteer"
-                                className="inline-flex items-center gap-2 bg-[#002344] text-white font-bold px-8 py-4 rounded-full hover:bg-[#001529] transition-all"
+                                className="inline-flex items-center gap-2 bg-[#12345A] text-white font-bold px-8 py-4 rounded-full hover:bg-[#12345A] transition-all"
                             >
                                 Volunteer as Mentor <FaArrowRight />
                             </Link>
                             <Link
                                 to="/PartnerWithUs"
-                                className="inline-flex items-center gap-2 border-2 border-[#002344] text-[#002344] font-bold px-8 py-4 rounded-full hover:bg-[#002344] hover:text-white transition-all"
+                                className="inline-flex items-center gap-2 border-2 border-[#12345A] text-[#12345A] font-bold px-8 py-4 rounded-full hover:bg-[#12345A] hover:text-white transition-all"
                             >
                                 Partner With Us <FaArrowRight />
                             </Link>
@@ -347,7 +347,7 @@ export default function SSFNationalAcademy() {
             </div>
 
             {/* ================= CTA ================= */}
-            <div className="py-24 bg-gradient-to-br from-[#fb8500] to-[#d90429] relative overflow-hidden">
+            <div className="py-24 bg-gradient-to-br from-[#176447] to-[#d90429] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.1]"></div>
                 <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
                     <motion.div

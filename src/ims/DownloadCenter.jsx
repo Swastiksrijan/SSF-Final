@@ -114,7 +114,7 @@ export default function DownloadCenter({ defaultResource, variant = 'bar' }) {
   };
 
   const triggerClass = variant === 'hero'
-    ? 'inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-[#002344] hover:bg-zinc-100'
+    ? 'inline-flex items-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-[#12345A] hover:bg-zinc-100'
     : 'inline-flex items-center gap-2 rounded-xl bg-white/10 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/15';
 
   const panelStyle = rect ? {
@@ -132,12 +132,12 @@ export default function DownloadCenter({ defaultResource, variant = 'bar' }) {
 
       {open && panelStyle && createPortal(
         <div ref={panelRef} style={panelStyle} className="w-[min(92vw,390px)] rounded-2xl border border-slate-200 bg-white p-5 text-slate-800 shadow-2xl">
-          <div className="text-lg font-black text-[#002344]">{t('what_download')}</div>
+          <div className="text-lg font-black text-[#12345A]">{t('what_download')}</div>
           <p className="mt-1 text-xs text-slate-500">{t('select_register_hint')}</p>
 
           <label className="mt-4 mb-1 block text-xs font-bold text-slate-500">{t('select_register')}</label>
           <select value={target} onChange={(e) => setTarget(e.target.value)}
-            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#002344]/20">
+            className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-[#12345A]/20">
             {NAV.map((g) => {
               const opts = g.items.filter((it) => it.resource);
               if (!opts.length) return null;
@@ -156,7 +156,7 @@ export default function DownloadCenter({ defaultResource, variant = 'bar' }) {
           <div className="grid grid-cols-3 gap-2">
             {FORMATS.map((f) => (
               <button key={f.id} type="button" onClick={() => setFormat(f.id)}
-                className={`rounded-xl border px-3 py-3 text-sm font-bold ${format === f.id ? 'border-[#002344] bg-[#002344] text-white' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}>
+                className={`rounded-xl border px-3 py-3 text-sm font-bold ${format === f.id ? 'border-[#12345A] bg-[#12345A] text-white' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}>
                 {f.label}
               </button>
             ))}
@@ -166,7 +166,7 @@ export default function DownloadCenter({ defaultResource, variant = 'bar' }) {
 
           <div className="mt-4 flex gap-2">
             <button type="button" onClick={() => setOpen(false)} className="flex-1 rounded-xl border border-slate-200 px-3 py-2.5 text-sm font-bold text-slate-600 hover:bg-slate-50">{t('cancel')}</button>
-            <button type="button" disabled={busy} onClick={download} className="flex-1 rounded-xl bg-[#002344] px-3 py-2.5 text-sm font-bold text-white disabled:opacity-40">{busy ? t('preparing') : t('download')}</button>
+            <button type="button" disabled={busy} onClick={download} className="flex-1 rounded-xl bg-[#12345A] px-3 py-2.5 text-sm font-bold text-white disabled:opacity-40">{busy ? t('preparing') : t('download')}</button>
           </div>
         </div>,
         document.body,

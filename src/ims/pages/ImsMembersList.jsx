@@ -29,7 +29,7 @@ export default function ImsMembersList() {
 
   const cols = [
     { key: 'recordId', en: 'Member No', hi: 'सदस्य संख्या', render: (r) => <span className="font-mono text-xs text-slate-500">{r.memberNo || r.recordId}</span> },
-    { key: 'personId', en: 'Member', hi: 'सदस्य', render: (r) => <span className="font-semibold text-[#002344]">{nameOf(r.personId)}</span> },
+    { key: 'personId', en: 'Member', hi: 'सदस्य', render: (r) => <span className="font-semibold text-[#12345A]">{nameOf(r.personId)}</span> },
     { key: 'category', en: 'Category', hi: 'श्रेणी', render: (r) => r.category || '—' },
     { key: 'admissionDate', en: 'Admission', hi: 'प्रवेश', render: (r) => r.admissionDate || '—' },
     { key: 'feeAmount', en: 'Fee', hi: 'शुल्क', render: (r) => (r.feeAmount ? `₹${r.feeAmount} / ${r.feeFrequency || ''}` : '—') },

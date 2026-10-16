@@ -46,22 +46,22 @@ function drawFrame(ctx, post, lang, progress) {
 
   // background
   const g = ctx.createLinearGradient(0, 0, W, H);
-  g.addColorStop(0, '#001529');
-  g.addColorStop(0.55, '#002344');
-  g.addColorStop(1, '#0b3a63');
+  g.addColorStop(0, '#12345A');
+  g.addColorStop(0.55, '#12345A');
+  g.addColorStop(1, '#12345A');
   ctx.fillStyle = g;
   ctx.fillRect(0, 0, W, H);
 
   // soft accent glow that gently moves over time
   const cx = W * 0.8 + Math.sin(progress * Math.PI * 2) * 60;
   const rg = ctx.createRadialGradient(cx, H * 0.18, 40, cx, H * 0.18, 420);
-  rg.addColorStop(0, 'rgba(255,102,0,0.35)');
-  rg.addColorStop(1, 'rgba(255,102,0,0)');
+  rg.addColorStop(0, 'rgba(23,100,71,0.35)');
+  rg.addColorStop(1, 'rgba(23,100,71,0)');
   ctx.fillStyle = rg;
   ctx.fillRect(0, 0, W, H);
 
   // brand bar
-  ctx.fillStyle = '#FF6600';
+  ctx.fillStyle = '#176447';
   roundRect(ctx, 70, 70, 240, 60, 30);
   ctx.fill();
   ctx.fillStyle = '#fff';
@@ -87,7 +87,7 @@ function drawFrame(ctx, post, lang, progress) {
   // sub-title
   if (sub) {
     ctx.globalAlpha = 0.9;
-    ctx.fillStyle = '#FFD166';
+    ctx.fillStyle = '#F7A814';
     ctx.font = '600 34px "Segoe UI", system-ui, "Noto Sans Devanagari", sans-serif';
     for (const ln of wrapText(ctx, sub, W - 160).slice(0, 2)) {
       ctx.fillText(ln, 80, y + 6);
@@ -113,7 +113,7 @@ function drawFrame(ctx, post, lang, progress) {
     ctx.fillStyle = 'rgba(255,255,255,0.10)';
     roundRect(ctx, 70, H - 360, W - 140, 150, 24);
     ctx.fill();
-    ctx.fillStyle = '#FFD166';
+    ctx.fillStyle = '#F7A814';
     ctx.font = '700 30px "Segoe UI", system-ui, "Noto Sans Devanagari", sans-serif';
     ctx.fillText(hi ? 'आज की बात' : 'Takeaway', 100, H - 315);
     ctx.fillStyle = '#fff';
@@ -127,7 +127,7 @@ function drawFrame(ctx, post, lang, progress) {
 
   // CTA + footer
   ctx.globalAlpha = 1;
-  ctx.fillStyle = '#FF6600';
+  ctx.fillStyle = '#176447';
   ctx.font = '700 32px "Segoe UI", system-ui, "Noto Sans Devanagari", sans-serif';
   ctx.fillText(cta || (hi ? 'सकारात्मक बदलाव में साथ दें' : 'Join the positive change'), 80, H - 150);
   ctx.fillStyle = 'rgba(255,255,255,0.7)';

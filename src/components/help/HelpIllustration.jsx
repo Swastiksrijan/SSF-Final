@@ -1,11 +1,11 @@
 // Hand-built flat SVG scenes for the Help Centre category cards.
 // No stock photos and no external assets — every scene is drawn here with the
 // brand palette so cards stay crisp, light and consistent in both languages.
-const NAVY = "#002344";
-const NAVY_2 = "#0e4a70";
-const TEAL = "#0e7490";
-const ORANGE = "#FF6600";
-const AMBER = "#FFD166";
+const NAVY = "#12345A";
+const NAVY_2 = "#12345A";
+const TEAL = "#176447";
+const ORANGE = "#176447";
+const AMBER = "#F7A814";
 
 function Frame({ id, children }) {
   return (

@@ -16,7 +16,7 @@ export default function SquigglyLine() {
 
       <path
         d="M1.4,6c0,0,9-9,18,0s18,0,18,0s9-9,18,0s18,0,18,0s9-9,18,0"
-        className="fill-none stroke-[#FFF41D]"
+        className="fill-none stroke-[#F7A814]"
         style={{
           strokeWidth: 4,
           strokeMiterlimit: 10,

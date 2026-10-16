@@ -175,5 +175,5 @@ export function ImsLegacyRegister(){
   if(REGISTERS[module]) return <LegacyRegister module={module}/>;
   if(GENERIC_REGISTERS.has(module)) return <LegacyGenericRegister module={module}/>;
   if(FINANCE_SCREENS[module]) return <LegacyFinance module={module}/>;
-  return <Shell active="main_dashboard"><div className="bg-white border rounded-2xl p-8"><h2 className="text-2xl font-black text-[#002344]">Section not found</h2><p className="text-zinc-500 mt-2">Unknown legacy module: {module}</p></div></Shell>;
+  return <Shell active="main_dashboard"><div className="bg-white border rounded-2xl p-8"><h2 className="text-2xl font-black text-[#12345A]">Section not found</h2><p className="text-zinc-500 mt-2">Unknown legacy module: {module}</p></div></Shell>;
 }

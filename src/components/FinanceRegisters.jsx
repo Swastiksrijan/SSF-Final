@@ -21,7 +21,7 @@ import { FaPlus, FaSearch, FaPrint, FaBoxes, FaFileAlt, FaRupeeSign, FaBalanceSc
 const num = (v) => { const n = parseFloat(String(v == null ? "" : v).replace(/[^0-9.\-]/g, "")); return isFinite(n) ? n : 0; };
 const money = (v) => "₹" + Number(v || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 const officeDate = (v) => { const s = String(v || ""); const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? m[3] + "-" + m[2] + "-" + m[1] : (s || "—"); };
-const inputCls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#002344]/20";
+const inputCls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#12345A]/20";
 
 const csvExport = (head, rows, filename) => {
   const esc = (x) => '"' + String(x == null ? "" : x).replace(/"/g, '""') + '"';
@@ -208,7 +208,7 @@ function FinForm({ regId, onSave }) {
           )}
         </div>
       ))}
-      <button className="sm:col-span-2 lg:col-span-4 bg-[#002344] text-white py-3 rounded-xl font-bold">Save {def.title.split(" / ")[0]}</button>
+      <button className="sm:col-span-2 lg:col-span-4 bg-[#12345A] text-white py-3 rounded-xl font-bold">Save {def.title.split(" / ")[0]}</button>
     </form>
   );
 }
@@ -230,7 +230,7 @@ export function FinanceRegister({ regId, rows, add, archive }) {
   const exportRows = records.map((r) => cols.map((c) => (r.data || {})[c.k] ?? ""));
   return (
     <div className="space-y-5">
-      <div className="bg-[#002344] text-white rounded-2xl p-6">
+      <div className="bg-[#12345A] text-white rounded-2xl p-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-3"><Icon className="text-2xl" /><div>
             <h2 className="text-2xl font-black">{def.title}</h2>
@@ -244,12 +244,12 @@ export function FinanceRegister({ regId, rows, add, archive }) {
       </div>
       <div className="bg-white rounded-2xl border overflow-hidden">
         <div className="p-5 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-          <div><h3 className="text-xl font-black text-[#002344]">{records.length} of {(rows || []).length} record(s)</h3><p className="text-sm text-zinc-500 mt-1">Audit-ready register · apne aap add karein, edit ya delete kabhi nahi.</p></div>
+          <div><h3 className="text-xl font-black text-[#12345A]">{records.length} of {(rows || []).length} record(s)</h3><p className="text-sm text-zinc-500 mt-1">Audit-ready register · apne aap add karein, edit ya delete kabhi nahi.</p></div>
           <div className="flex flex-wrap gap-2 items-center">
             <div className="relative"><FaSearch className="absolute left-3 top-3.5 text-zinc-400" /><input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search" className="pl-9 pr-3 py-2.5 border rounded-xl w-48" /></div>
-            <button onClick={() => csvExport(cols.map((c) => c.l), exportRows, "ssf-" + regId + ".csv")} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">CSV</button>
-            <button onClick={() => tablePdf(def.title, cols.map((c) => c.l), exportRows, "ssf-" + regId + ".pdf")} className="bg-white border border-zinc-200 text-[#002344] px-4 py-2.5 rounded-xl font-bold">PDF</button>
-            <button onClick={() => setOpen(!open)} className="bg-[#002344] text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2"><FaPlus /> Add Entry</button>
+            <button onClick={() => csvExport(cols.map((c) => c.l), exportRows, "ssf-" + regId + ".csv")} className="bg-white border border-zinc-200 text-[#12345A] px-4 py-2.5 rounded-xl font-bold">CSV</button>
+            <button onClick={() => tablePdf(def.title, cols.map((c) => c.l), exportRows, "ssf-" + regId + ".pdf")} className="bg-white border border-zinc-200 text-[#12345A] px-4 py-2.5 rounded-xl font-bold">PDF</button>
+            <button onClick={() => setOpen(!open)} className="bg-[#12345A] text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2"><FaPlus /> Add Entry</button>
           </div>
         </div>
         {open && <FinForm regId={regId} onSave={(d) => { add(regId, d); setOpen(false); }} />}

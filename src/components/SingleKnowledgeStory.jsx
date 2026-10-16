@@ -107,7 +107,7 @@ export default function SingleKnowledgeStory() {
   return (
     <section className="max-w-6xl mx-auto pb-16">
       <div className="text-center mb-8">
-        <p className="text-[#fb8500] font-semibold tracking-wide">SSF • KNOWLEDGE & AWARENESS</p>
+        <p className="text-[#176447] font-semibold tracking-wide">SSF • KNOWLEDGE & AWARENESS</p>
         <h2 className="text-3xl md:text-4xl font-bold mt-2">आज की उपयोगी जानकारी</h2>
         <p className="text-zinc-300 mt-3 max-w-2xl mx-auto">हर दिन कुछ नया सीखें — छोटी लेकिन उपयोगी जानकारी, जो रोजमर्रा की जिंदगी में काम आ सके।</p>
       </div>
@@ -120,7 +120,7 @@ export default function SingleKnowledgeStory() {
             whileHover={{ y: -5 }}
             className="bg-white text-black rounded-2xl overflow-hidden shadow-xl"
           >
-            <div className="w-full aspect-[4/3] bg-gradient-to-br from-[#002344] to-[#fb8500] flex items-center justify-center text-white text-7xl">
+            <div className="w-full aspect-[4/3] bg-gradient-to-br from-[#12345A] to-[#176447] flex items-center justify-center text-white text-7xl">
               {story.icon}
             </div>
             <div className="p-6">
@@ -128,8 +128,8 @@ export default function SingleKnowledgeStory() {
               <h3 className="text-xl font-bold mb-2">{story.title}</h3>
               <p className="text-zinc-700 text-sm mb-5">{story.summary}</p>
               <div className="flex flex-wrap gap-3">
-                <button type="button" onClick={() => setOpenId(story.id)} className="rounded-full bg-[#002344] text-white px-5 py-2.5 font-semibold hover:bg-[#003b70] transition">Story पढ़ें →</button>
-                <button type="button" onClick={() => share(story)} className="rounded-full border-2 border-[#fb8500] text-[#002344] px-5 py-2.5 font-semibold hover:bg-[#fb8500] hover:text-white transition">↗ Share Story</button>
+                <button type="button" onClick={() => setOpenId(story.id)} className="rounded-full bg-[#12345A] text-white px-5 py-2.5 font-semibold hover:bg-[#12345A] transition">Story पढ़ें →</button>
+                <button type="button" onClick={() => share(story)} className="rounded-full border-2 border-[#176447] text-[#12345A] px-5 py-2.5 font-semibold hover:bg-[#176447] hover:text-white transition">↗ Share Story</button>
               </div>
             </div>
           </motion.article>
@@ -140,12 +140,12 @@ export default function SingleKnowledgeStory() {
         <div className="fixed inset-0 bg-black/80 z-50 flex items-center justify-center px-4" role="dialog" aria-modal="true">
           <motion.div initial={{ scale: 0.95, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} className="bg-white text-black max-w-2xl w-full rounded-2xl p-7 relative max-h-[90vh] overflow-y-auto">
             <button type="button" onClick={() => setOpenId(null)} aria-label="Close story" className="absolute top-4 right-4 bg-zinc-100 rounded-full p-2 hover:bg-zinc-200"><X /></button>
-            <p className="text-[#fb8500] font-semibold">SSF • {activeStory.category}</p>
+            <p className="text-[#176447] font-semibold">SSF • {activeStory.category}</p>
             <h2 className="text-3xl font-bold mt-2 mb-5">{activeStory.title}</h2>
             {activeStory.text.map((paragraph) => (
               <p key={paragraph} className="text-zinc-700 leading-7 mt-4 first:mt-0">{paragraph}</p>
             ))}
-            <button type="button" onClick={() => share(activeStory)} className="mt-6 rounded-full bg-[#fb8500] text-white px-6 py-3 font-semibold hover:opacity-90 transition">↗ Share This Story</button>
+            <button type="button" onClick={() => share(activeStory)} className="mt-6 rounded-full bg-[#176447] text-white px-6 py-3 font-semibold hover:opacity-90 transition">↗ Share This Story</button>
           </motion.div>
         </div>
       )}

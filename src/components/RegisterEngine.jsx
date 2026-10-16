@@ -12,7 +12,7 @@ export const num = (v) => { const n = parseFloat(String(v == null ? "" : v).repl
 export const money = (v) => "₹" + Number(v || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 export const officeDate = (v) => { const s = String(v || ""); const m = s.match(/^(\d{4})-(\d{2})-(\d{2})/); return m ? m[3] + "-" + m[2] + "-" + m[1] : (s || "—"); };
 export const fyOf = (value) => { const s = String(value || "").slice(0, 10); const y = Number(s.slice(0, 4)), m = Number(s.slice(5, 7)); if (!y || !m) return ""; const start = m >= 4 ? y : y - 1; return start + "-" + String((start + 1) % 100).padStart(2, "0"); };
-export const inputCls = "w-full px-3 py-2.5 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#002344]/20 text-sm";
+export const inputCls = "w-full px-3 py-2.5 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#12345A]/20 text-sm";
 
 export const toCsv = (head, rows, filename) => {
   const esc = (x) => '"' + String(x == null ? "" : x).replace(/"/g, '""') + '"';
@@ -43,7 +43,7 @@ const Chip = ({ children, tone = "zinc" }) => {
     amber: "bg-amber-50 text-amber-700 border-amber-200",
     blue: "bg-sky-50 text-sky-700 border-sky-200",
     zinc: "bg-zinc-100 text-zinc-600 border-zinc-200",
-    navy: "bg-[#002344] text-white border-[#002344]"
+    navy: "bg-[#12345A] text-white border-[#12345A]"
   };
   return <span className={"inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full border " + (tones[tone] || tones.zinc)}>{children}</span>;
 };
@@ -81,8 +81,8 @@ function RecordForm({ def, initial, onSubmit, onCancel, busy }) {
         </div>
       ))}
       <div className="sm:col-span-2 lg:col-span-3 flex items-center gap-3">
-        <button type="submit" disabled={busy} className="bg-[#002344] text-white rounded-xl px-5 py-2.5 font-bold text-sm disabled:opacity-50">{busy ? "Saving… / सहेजा जा रहा…" : (initial ? "Update / अद्यतन करें" : "Save / सहेजें")}</button>
-        <button type="button" onClick={onCancel} className="bg-white border border-zinc-300 text-[#002344] rounded-xl px-5 py-2.5 font-bold text-sm">Cancel / रद्द करें</button>
+        <button type="submit" disabled={busy} className="bg-[#12345A] text-white rounded-xl px-5 py-2.5 font-bold text-sm disabled:opacity-50">{busy ? "Saving… / सहेजा जा रहा…" : (initial ? "Update / अद्यतन करें" : "Save / सहेजें")}</button>
+        <button type="button" onClick={onCancel} className="bg-white border border-zinc-300 text-[#12345A] rounded-xl px-5 py-2.5 font-bold text-sm">Cancel / रद्द करें</button>
       </div>
     </form>
   );
@@ -145,30 +145,30 @@ export default function RegisterEngine({ def, rows, onAdd, onUpdate, onArchive, 
       <div className="bg-white rounded-2xl border border-zinc-200 overflow-hidden">
         <div className="flex flex-wrap items-center justify-between gap-3 px-5 py-4 border-b border-zinc-100">
           <div>
-            <h3 className="text-lg font-black text-[#002344]">{def.title} <span className="text-zinc-400 font-bold">/ {def.titleHi}</span></h3>
+            <h3 className="text-lg font-black text-[#12345A]">{def.title} <span className="text-zinc-400 font-bold">/ {def.titleHi}</span></h3>
             {def.intro && <p className="text-xs text-zinc-500 mt-0.5">{def.intro}</p>}
           </div>
           <div className="flex flex-wrap items-center gap-2">
-            <select value={fy} onChange={(e) => setFy(e.target.value)} className="border border-zinc-300 rounded-xl px-3 py-2 text-sm font-bold text-[#002344]">
+            <select value={fy} onChange={(e) => setFy(e.target.value)} className="border border-zinc-300 rounded-xl px-3 py-2 text-sm font-bold text-[#12345A]">
               <option value="">All FY / सभी वर्ष</option>
               {fyList.map((y) => <option key={y} value={y}>FY {y}</option>)}
             </select>
             {typeList.length > 0 && (
-              <select value={typeF} onChange={(e) => setTypeF(e.target.value)} className="border border-zinc-300 rounded-xl px-3 py-2 text-sm font-bold text-[#002344]">
+              <select value={typeF} onChange={(e) => setTypeF(e.target.value)} className="border border-zinc-300 rounded-xl px-3 py-2 text-sm font-bold text-[#12345A]">
                 <option value="">All types / सभी प्रकार</option>
                 {typeList.map((t) => <option key={t} value={t}>{t}</option>)}
               </select>
             )}
             <div className="relative"><FaSearch className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 text-xs" />
               <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Search / खोजें" className="pl-8 pr-3 py-2 border border-zinc-300 rounded-xl text-sm" /></div>
-            <button onClick={reload} className="bg-zinc-100 text-[#002344] px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaSync /></button>
-            <button onClick={exportCsv} className="bg-zinc-100 text-[#002344] px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaFileCsv /></button>
-            <button onClick={printPdf} className="bg-zinc-100 text-[#002344] px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaPrint /></button>
-            <button onClick={() => { setEditing(null); setShowForm((s) => !s); }} className="bg-[#FF6600] text-white px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaPlus /> New / नया</button>
+            <button onClick={reload} className="bg-zinc-100 text-[#12345A] px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaSync /></button>
+            <button onClick={exportCsv} className="bg-zinc-100 text-[#12345A] px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaFileCsv /></button>
+            <button onClick={printPdf} className="bg-zinc-100 text-[#12345A] px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaPrint /></button>
+            <button onClick={() => { setEditing(null); setShowForm((s) => !s); }} className="bg-[#176447] text-white px-3 py-2 rounded-xl font-bold inline-flex items-center gap-2"><FaPlus /> New / नया</button>
           </div>
         </div>
 
-        {msg && <div className="mx-5 mt-3 text-sm font-semibold text-[#002344] bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">{msg}</div>}
+        {msg && <div className="mx-5 mt-3 text-sm font-semibold text-[#12345A] bg-amber-50 border border-amber-200 rounded-xl px-3 py-2">{msg}</div>}
         {showForm && <RecordForm def={def} initial={editing ? editing.data : null} onSubmit={save} onCancel={() => { setShowForm(false); setEditing(null); }} busy={busy} />}
 
         <div className="overflow-auto">
@@ -186,7 +186,7 @@ export default function RegisterEngine({ def, rows, onAdd, onUpdate, onArchive, 
               {loading && <tr><td colSpan={def.fields.length + 4} className="p-6 text-center text-zinc-400">Loading… / लोड हो रहा है…</td></tr>}
               {!loading && filtered.map((r) => (
                 <tr key={r.id} className="hover:bg-zinc-50">
-                  <td className="p-3 font-mono text-xs font-bold text-[#002344] whitespace-nowrap">{r.recordId}</td>
+                  <td className="p-3 font-mono text-xs font-bold text-[#12345A] whitespace-nowrap">{r.recordId}</td>
                   <td className="p-3 whitespace-nowrap">{officeDate(r.recordDate)}</td>
                   {def.fields.map((f) => (
                     <td key={f.k} className="p-3 whitespace-nowrap max-w-[220px] truncate">
@@ -195,9 +195,9 @@ export default function RegisterEngine({ def, rows, onAdd, onUpdate, onArchive, 
                   ))}
                   <td className="p-3">{r.status === "deleted" ? <Chip tone="amber">archived</Chip> : <Chip tone="green">active</Chip>}</td>
                   <td className="p-3 text-right whitespace-nowrap">
-                    <button onClick={() => setViewing(r)} title="View" className="text-[#002344] mr-2"><FaEye /></button>
+                    <button onClick={() => setViewing(r)} title="View" className="text-[#12345A] mr-2"><FaEye /></button>
                     {r.status !== "deleted" && <>
-                      <button onClick={() => { setEditing(r); setShowForm(true); }} title="Edit" className="text-[#FF6600] mr-2"><FaEdit /></button>
+                      <button onClick={() => { setEditing(r); setShowForm(true); }} title="Edit" className="text-[#176447] mr-2"><FaEdit /></button>
                       <button onClick={() => { if (confirm("Archive this record? It stays in history. / यह प्रविष्टि संग्रहित होगी, मिटेगी नहीं।")) onArchive(r.id); }} title="Archive" className="text-rose-600 mr-2"><FaArchive /></button>
                     </>}
                     {r.status === "deleted" && <button onClick={() => onRestore(r.id)} title="Restore" className="text-emerald-600 mr-2"><FaUndo /></button>}
@@ -214,7 +214,7 @@ export default function RegisterEngine({ def, rows, onAdd, onUpdate, onArchive, 
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center p-4" onClick={() => setViewing(null)}>
           <div className="bg-white rounded-2xl max-w-lg w-full max-h-[85vh] overflow-auto" onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-100">
-              <div><div className="font-black text-[#002344]">{viewing.recordId}</div><div className="text-xs text-zinc-500">{def.title} / {def.titleHi}</div></div>
+              <div><div className="font-black text-[#12345A]">{viewing.recordId}</div><div className="text-xs text-zinc-500">{def.title} / {def.titleHi}</div></div>
               <button onClick={() => setViewing(null)} className="text-zinc-400 font-bold">✕</button>
             </div>
             <div className="p-5 space-y-2 text-sm">

@@ -10,11 +10,11 @@
 
 import { useId } from "react";
 
-const NAVY = "#0b3a63";
-const ORANGE = "#FF6600";
-const YELLOW = "#FFD166";
-const SKY = "#8ecae6";
-const GREEN = "#177245";
+const NAVY = "#12345A";
+const ORANGE = "#176447";
+const YELLOW = "#F7A814";
+const SKY = "#EAF0F6";
+const GREEN = "#176447";
 const ROSE = "#e5484d";
 
 function Tile({ children, bg = NAVY, label = "Illustration" }) {
@@ -36,7 +36,7 @@ function Tile({ children, bg = NAVY, label = "Illustration" }) {
 }
 
 /** Analog clock face centered on (0,0). Reused by many scenes. */
-function ClockGroup({ hour = 10, minute = 10, r = 70, showNumbers = true, face = "#eef4f9", ring = YELLOW }) {
+function ClockGroup({ hour = 10, minute = 10, r = 70, showNumbers = true, face = "#EAF0F6", ring = YELLOW }) {
   const h = ((hour % 12) + 12) % 12;
   const hAng = h * 30 + minute * 0.5;
   const mAng = minute * 6;
@@ -51,7 +51,7 @@ function ClockGroup({ hour = 10, minute = 10, r = 70, showNumbers = true, face =
       const a = (i * 6 - 90) * Math.PI / 180;
       const big = i % 5 === 0;
       const r1 = r - (big ? 10 : 5);
-      return <line key={i} x1={Math.cos(a) * r1} y1={Math.sin(a) * r1} x2={Math.cos(a) * (r - 1)} y2={Math.sin(a) * (r - 1)} stroke={big ? NAVY : "#9fb2c4"} strokeWidth={big ? 3 : 1.4} />;
+      return <line key={i} x1={Math.cos(a) * r1} y1={Math.sin(a) * r1} x2={Math.cos(a) * (r - 1)} y2={Math.sin(a) * (r - 1)} stroke={big ? NAVY : "#26343D"} strokeWidth={big ? 3 : 1.4} />;
     })}
     {showNumbers && Array.from({ length: 12 }, (_, i) => {
       const n = i + 1;
@@ -82,7 +82,7 @@ function CalendarGroup({ month = "JUNE", highlight = [15], startCol = 6, days = 
     const on = highlight.includes(i + 1);
     cells.push(<g key={i}>
       {on && <circle cx={cx} cy={cy} r="8.5" fill={ORANGE} />}
-      <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central" fontSize="10.5" fontWeight={on ? 800 : 600} fill={on ? "#fff" : "#33475b"}>{i + 1}</text>
+      <text x={cx} y={cy} textAnchor="middle" dominantBaseline="central" fontSize="10.5" fontWeight={on ? 800 : 600} fill={on ? "#fff" : "#26343D"}>{i + 1}</text>
     </g>);
   }
   return <g>
@@ -117,18 +117,18 @@ export function IdeaArt() {
 }
 
 export function UnitsArt() {
-  const bars = [["sec", 26, SKY], ["min", 44, GREEN], ["hr", 62, YELLOW], ["day", 80, ORANGE], ["wk", 96, "#ff8c1a"], ["mo", 112, "#f4a261"], ["yr", 128, ROSE]];
+  const bars = [["sec", 26, SKY], ["min", 44, GREEN], ["hr", 62, YELLOW], ["day", 80, ORANGE], ["wk", 96, "#176447"], ["mo", 112, "#176447"], ["yr", 128, ROSE]];
   return <Tile label="Units of time">
     {bars.map(([l, w, c], i) => <g key={l} transform={`translate(-96,${-70 + i * 21})`}>
       <rect x="0" y="0" width={w} height="15" rx="7.5" fill={c} />
-      <text x="6" y="11" fontSize="10" fontWeight="800" fill="#12233a">{l}</text>
+      <text x="6" y="11" fontSize="10" fontWeight="800" fill="#12345A">{l}</text>
     </g>)}
     <text x="0" y="90" textAnchor="middle" fontSize="12" fontWeight="900" fill="#fff">Second → Year</text>
   </Tile>;
 }
 
 export function LeapArt() {
-  return <Tile label="Leap year rule" bg="#123a5f">
+  return <Tile label="Leap year rule" bg="#12345A">
     <g transform="translate(0,-14)"><CalendarGroup month="FEB" highlight={[29]} days={29} startCol={4} /></g>
     <text x="0" y="66" textAnchor="middle" fontSize="12" fontWeight="900" fill={YELLOW}>÷4 · ÷100 · ÷400</text>
     <text x="0" y="86" textAnchor="middle" fontSize="11" fontWeight="700" fill="#fff">29 February</text>
@@ -143,8 +143,8 @@ export function ClockArt({ hour = 4, minute = 0 } = {}) {
 }
 
 export function DigitalArt() {
-  return <Tile label="Digital clock" bg="#0d2a45">
-    <rect x="-78" y="-46" width="156" height="66" rx="12" fill="#04101c" stroke={SKY} strokeWidth="2" />
+  return <Tile label="Digital clock" bg="#12345A">
+    <rect x="-78" y="-46" width="156" height="66" rx="12" fill="#12345A" stroke={SKY} strokeWidth="2" />
     <text x="0" y="-12" textAnchor="middle" fontSize="34" fontWeight="900" fill={SKY} fontFamily="monospace">07:30</text>
     <text x="0" y="10" textAnchor="middle" fontSize="12" fontWeight="800" fill={YELLOW}>AM</text>
     <text x="0" y="58" textAnchor="middle" fontSize="13" fontWeight="900" fill="#fff">7 घंटे 30 मिनट</text>
@@ -155,7 +155,7 @@ export function DigitalArt() {
 export function ConvertArt() {
   return <Tile label="12-hour to 24-hour">
     <g transform="translate(-38,-8)"><ClockGroup hour={7} minute={0} r={40} showNumbers={false} /></g>
-    <g transform="translate(38,-8)"><ClockGroup hour={7} minute={0} r={40} showNumbers={false} face="#dff0fb" ring={SKY} /></g>
+    <g transform="translate(38,-8)"><ClockGroup hour={7} minute={0} r={40} showNumbers={false} face="#EAF0F6" ring={SKY} /></g>
     <path d="M-8 -8 h16" stroke={YELLOW} strokeWidth="4" strokeLinecap="round" />
     <path d="M6 -13 l6 5 l-6 5" fill="none" stroke={YELLOW} strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" />
     <text x="-38" y="48" textAnchor="middle" fontSize="12" fontWeight="800" fill="#fff">7 PM</text>
@@ -178,7 +178,7 @@ export function DurationArt() {
 }
 
 export function AddArt() {
-  return <Tile label="Time addition" bg="#0f3d2e">
+  return <Tile label="Time addition" bg="#12345A">
     <text x="-34" y="4" textAnchor="middle" fontSize="20" fontWeight="900" fill="#fff">1:25</text>
     <text x="0" y="6" textAnchor="middle" fontSize="26" fontWeight="900" fill={YELLOW}>+</text>
     <text x="36" y="4" textAnchor="middle" fontSize="20" fontWeight="900" fill="#fff">2:40</text>
@@ -189,7 +189,7 @@ export function AddArt() {
 }
 
 export function SubArt() {
-  return <Tile label="Time subtraction" bg="#5a1f22">
+  return <Tile label="Time subtraction" bg="#12345A">
     <text x="-34" y="4" textAnchor="middle" fontSize="20" fontWeight="900" fill="#fff">5:20</text>
     <text x="0" y="6" textAnchor="middle" fontSize="26" fontWeight="900" fill={YELLOW}>−</text>
     <text x="36" y="4" textAnchor="middle" fontSize="20" fontWeight="900" fill="#fff">2:45</text>
@@ -200,11 +200,11 @@ export function SubArt() {
 }
 
 export function MidnightArt() {
-  return <Tile label="Crossing midnight" bg="#0a1b3a">
+  return <Tile label="Crossing midnight" bg="#12345A">
     {Array.from({ length: 14 }, (_, i) => <circle key={i} cx={-80 + i * 12} cy={-70 + (i % 3) * 8} r="1.6" fill="#fff" opacity="0.8" />)}
     <path d="M-70 30 a70 70 0 0 1 140 0" fill="none" stroke="#ffffff" strokeOpacity="0.25" strokeWidth="4" strokeDasharray="6 6" />
     <g transform="translate(-40,-6)"><ClockGroup hour={10} minute={30} r={34} showNumbers={false} /></g>
-    <g transform="translate(40,-6)"><ClockGroup hour={1} minute={15} r={34} showNumbers={false} face="#1b2f4d" ring={YELLOW} /></g>
+    <g transform="translate(40,-6)"><ClockGroup hour={1} minute={15} r={34} showNumbers={false} face="#12345A" ring={YELLOW} /></g>
     <text x="0" y="52" textAnchor="middle" fontSize="12" fontWeight="900" fill={YELLOW}>10:30 PM → 1:15 AM</text>
     {caption("नया दिन शुरू", "#fff", 80)}
   </Tile>;
@@ -218,7 +218,7 @@ export function CalendarArt() {
 }
 
 export function DateDiffArt() {
-  return <Tile label="Difference between dates" bg="#123a5f">
+  return <Tile label="Difference between dates" bg="#12345A">
     <g transform="translate(0,-10)"><CalendarGroup month="MARCH" highlight={[3, 10]} days={31} startCol={0} /></g>
     <text x="0" y="72" textAnchor="middle" fontSize="12" fontWeight="900" fill={YELLOW}>10 − 3 = 7 days</text>
   </Tile>;
@@ -231,7 +231,7 @@ export function AgeArt() {
       <rect x="-46" y="-16" width="92" height="16" rx="8" fill={YELLOW} />
       <path d="M-30 26 h60 v10 a6 6 0 0 1 -6 6 h-48 a6 6 0 0 1 -6 -6 z" fill={ORANGE} />
       {[-24, 0, 24].map((x, i) => <g key={i}>
-        <rect x={x - 3} y="-34" width="6" height="18" rx="3" fill={i === 1 ? ORANGE : "#ff8c1a"} />
+        <rect x={x - 3} y="-34" width="6" height="18" rx="3" fill={i === 1 ? ORANGE : "#176447"} />
         <ellipse cx={x} cy="-38" rx="3.5" ry="5" fill={YELLOW} />
       </g>)}
     </g>
@@ -240,11 +240,11 @@ export function AgeArt() {
 }
 
 export function TimetableArt() {
-  const rows = [["6:30", "#8ecae6"], ["7:00", "#95d5b2"], ["8:00", ORANGE], ["16:00", YELLOW], ["19:00", "#c9a7f0"]];
+  const rows = [["6:30", "#EAF0F6"], ["7:00", "#176447"], ["8:00", ORANGE], ["16:00", YELLOW], ["19:00", "#12345A"]];
   return <Tile label="Timetable">
     {rows.map(([t, c], i) => <g key={t} transform={`translate(-78,${-60 + i * 26})`}>
       <rect x="0" y="0" width="46" height="20" rx="6" fill={c} />
-      <text x="23" y="14" textAnchor="middle" fontSize="11" fontWeight="800" fill="#12233a">{t}</text>
+      <text x="23" y="14" textAnchor="middle" fontSize="11" fontWeight="800" fill="#12345A">{t}</text>
       <rect x="52" y="0" width={40 + (i % 3) * 26} height="20" rx="6" fill="#ffffff" opacity="0.9" />
     </g>)}
     {caption("Start · End · Duration", "#fff", 92)}
@@ -252,7 +252,7 @@ export function TimetableArt() {
 }
 
 export function TravelArt() {
-  return <Tile label="Travel time" bg="#123a5f">
+  return <Tile label="Travel time" bg="#12345A">
     <line x1="-80" y1="10" x2="80" y2="10" stroke="#fff" strokeOpacity="0.4" strokeWidth="5" strokeLinecap="round" />
     <g transform="translate(-52,10)">
       <rect x="-16" y="-14" width="34" height="22" rx="5" fill={ORANGE} />
@@ -269,7 +269,7 @@ export function TravelArt() {
 }
 
 export function CookingArt() {
-  return <Tile label="Cooking and daily life" bg="#0f3d2e">
+  return <Tile label="Cooking and daily life" bg="#12345A">
     <g transform="translate(0,-4)">
       <rect x="-46" y="-6" width="92" height="46" rx="12" fill="#ffffff" />
       <rect x="-52" y="-14" width="104" height="14" rx="7" fill={YELLOW} />
@@ -296,7 +296,7 @@ export function WorkArt() {
 
 export function ZonesArt() {
   return <Tile label="Time zones">
-    <circle cx="0" cy="-4" r="52" fill="#1b4a72" stroke={SKY} strokeWidth="3" />
+    <circle cx="0" cy="-4" r="52" fill="#12345A" stroke={SKY} strokeWidth="3" />
     <ellipse cx="0" cy="-4" rx="52" ry="20" fill="none" stroke={SKY} strokeWidth="2" opacity="0.8" />
     <ellipse cx="0" cy="-4" rx="20" ry="52" fill="none" stroke={SKY} strokeWidth="2" opacity="0.8" />
     <path d="M-52 -4 h104" stroke={SKY} strokeWidth="2" opacity="0.8" />
@@ -307,19 +307,19 @@ export function ZonesArt() {
 }
 
 export function EvolutionArt() {
-  const items = [["☀", YELLOW], ["⧗", SKY], ["⚙", "#c9a7f0"], ["⌚", GREEN], ["📱", ORANGE]];
-  return <Tile label="Evolution of timekeeping" bg="#3a2a12">
+  const items = [["☀", YELLOW], ["⧗", SKY], ["⚙", "#12345A"], ["⌚", GREEN], ["📱", ORANGE]];
+  return <Tile label="Evolution of timekeeping" bg="#F7A814">
     <path d="M-80 34 h160" stroke="#fff" strokeOpacity="0.35" strokeWidth="4" strokeLinecap="round" />
     {items.map(([g, c], i) => <g key={i} transform={`translate(${-64 + i * 32},4)`}>
       <circle r="14" fill={c} />
-      <text x="0" y="5" textAnchor="middle" fontSize="15" fill="#12233a">{g}</text>
+      <text x="0" y="5" textAnchor="middle" fontSize="15" fill="#12345A">{g}</text>
     </g>)}
     {caption("Sundial → Digital", "#fff", 72)}
   </Tile>;
 }
 
 export function EstimateArt() {
-  return <Tile label="Time estimation" bg="#2a1b45">
+  return <Tile label="Time estimation" bg="#12345A">
     <text x="-40" y="8" textAnchor="middle" fontSize="30">🧠</text>
     <text x="40" y="8" textAnchor="middle" fontSize="30">⏱️</text>
     <text x="0" y="12" textAnchor="middle" fontSize="22" fontWeight="900" fill={YELLOW}>≈</text>
@@ -329,13 +329,13 @@ export function EstimateArt() {
 }
 
 export function MistakesArt() {
-  return <Tile label="Common mistakes" bg="#5a1f22">
+  return <Tile label="Common mistakes" bg="#12345A">
     <g transform="translate(0,-16)">
       <text x="-44" y="4" textAnchor="middle" fontSize="34" fill={ROSE}>✗</text>
       <text x="0" y="6" textAnchor="middle" fontSize="16" fontWeight="800" fill="#fff">1 hr = 100</text>
     </g>
     <g transform="translate(0,34)">
-      <text x="-44" y="4" textAnchor="middle" fontSize="34" fill="#7ee0a8">✓</text>
+      <text x="-44" y="4" textAnchor="middle" fontSize="34" fill="#176447">✓</text>
       <text x="0" y="6" textAnchor="middle" fontSize="16" fontWeight="800" fill={YELLOW}>1 hr = 60</text>
     </g>
   </Tile>;
@@ -347,7 +347,7 @@ export function TrophyArt() {
       <path d="M-30 -34 h60 v22 a30 30 0 0 1 -60 0 z" fill={YELLOW} />
       <path d="M-30 -30 q-16 0 -16 12 q0 12 16 12" fill="none" stroke={YELLOW} strokeWidth="5" />
       <path d="M30 -30 q16 0 16 12 q0 12 -16 12" fill="none" stroke={YELLOW} strokeWidth="5" />
-      <rect x="-6" y="12" width="12" height="16" fill="#f4a261" />
+      <rect x="-6" y="12" width="12" height="16" fill="#176447" />
       <rect x="-22" y="28" width="44" height="10" rx="4" fill={ORANGE} />
     </g>
     {caption("Mastery 🏆", "#fff", 78)}
@@ -360,9 +360,9 @@ export function ProjectArt() {
     <rect x="-70" y="-56" width="140" height="22" rx="12" fill={ORANGE} />
     <rect x="-70" y="-42" width="140" height="8" fill={ORANGE} />
     {[-28, -6, 16, 38].map((y, i) => <g key={i} transform={`translate(-58,${y})`}>
-      <rect x="0" y="-6" width="14" height="14" rx="4" fill={i < 3 ? GREEN : "#dbe4ec"} />
+      <rect x="0" y="-6" width="14" height="14" rx="4" fill={i < 3 ? GREEN : "#EAF0F6"} />
       {i < 3 && <path d="M3 -1 l3 4 l6 -8" fill="none" stroke="#fff" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />}
-      <rect x="22" y="-4" width={60 + (i % 2) * 20} height="8" rx="4" fill="#dbe4ec" />
+      <rect x="22" y="-4" width={60 + (i % 2) * 20} height="8" rx="4" fill="#EAF0F6" />
     </g>)}
     {caption("Weekly time plan", NAVY, 74)}
   </Tile>;
@@ -415,7 +415,7 @@ export function HeroArt({ className = "" }) {
     <svg viewBox="0 0 400 300" className={className} role="img" aria-label="घड़ी और कैलेंडर illustration" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id={bgId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#0b3a63" /><stop offset="1" stopColor="#001529" />
+          <stop offset="0" stopColor="#12345A" /><stop offset="1" stopColor="#12345A" />
         </linearGradient>
         <radialGradient id={glowId} cx="50%" cy="45%" r="62%">
           <stop offset="0" stopColor={YELLOW} stopOpacity="0.3" /><stop offset="1" stopColor={YELLOW} stopOpacity="0" />
@@ -428,7 +428,7 @@ export function HeroArt({ className = "" }) {
         <circle r="17" fill={YELLOW} />
         {Array.from({ length: 8 }, (_, i) => { const a = i * Math.PI / 4; return <line key={i} x1={Math.cos(a) * 22} y1={Math.sin(a) * 22} x2={Math.cos(a) * 28} y2={Math.sin(a) * 28} stroke={YELLOW} strokeWidth="3.5" strokeLinecap="round" />; })}
       </g>
-      <path d="M332 48 a20 20 0 1 0 12 36 a16 16 0 1 1 -12 -36 z" fill="#cfe0ee" />
+      <path d="M332 48 a20 20 0 1 0 12 36 a16 16 0 1 1 -12 -36 z" fill="#EAF0F6" />
       <g transform="translate(120,168)"><ClockGroup hour={10} minute={10} r={78} /></g>
       <g transform="translate(292,168) scale(0.62)"><CalendarGroup month="JUNE" highlight={[15]} days={30} startCol={6} /></g>
       <text x="120" y="272" textAnchor="middle" fontSize="15" fontWeight="900" fill={YELLOW} letterSpacing="0.5">समय एवं कैलेंडर</text>

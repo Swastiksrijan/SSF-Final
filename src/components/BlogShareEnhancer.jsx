@@ -61,7 +61,7 @@ export default function BlogShareEnhancer({ children }) {
         shareButton.type = "button";
         shareButton.setAttribute("data-blog-share", "true");
         shareButton.setAttribute("aria-label", `Share story ${index + 1}`);
-        shareButton.className = "ml-4 inline-flex items-center gap-2 rounded-full border-2 border-[#fb8500] px-4 py-2 text-sm font-semibold text-[#002344] transition hover:bg-[#fb8500] hover:text-white";
+        shareButton.className = "ml-4 inline-flex items-center gap-2 rounded-full border-2 border-[#176447] px-4 py-2 text-sm font-semibold text-[#12345A] transition hover:bg-[#176447] hover:text-white";
         shareButton.innerHTML = '<span aria-hidden="true">↗</span><span>Share Story</span>';
         shareButton.addEventListener("click", () => shareStory(card, index + 1));
 

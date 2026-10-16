@@ -118,14 +118,14 @@ const FINAL_QUIZ = [
 
 function Section({ icon, title, subtitle, children, tone = "sky" }) {
   const tones = {
-    sky: { wrap: "border-[#cfe3ef] bg-gradient-to-br from-[#f2f9ff] to-white", bar: "from-[#0b4a86] to-[#0c7a86]", chip: "bg-[#e8f4fa] text-[#0b4a86]", title: "text-[#083a68]" },
-    purple: { wrap: "border-[#e0d5ff] bg-gradient-to-br from-[#f8f5ff] to-white", bar: "from-[#5b21b6] to-[#7c3aed]", chip: "bg-[#efe8ff] text-[#5b21b6]", title: "text-[#4a1d96]" },
-    green: { wrap: "border-[#d3e8db] bg-gradient-to-br from-[#f2fdf6] to-white", bar: "from-[#14663b] to-[#2f9e63]", chip: "bg-[#e4f7ec] text-[#14663b]", title: "text-[#0f5130]" },
-    amber: { wrap: "border-[#efdcc0] bg-gradient-to-br from-[#fffaf0] to-white", bar: "from-[#b45309] to-[#f59e0b]", chip: "bg-[#fdf0dc] text-[#92400e]", title: "text-[#7a3a06]" },
-    rose: { wrap: "border-[#f2d6dd] bg-gradient-to-br from-[#fff5f7] to-white", bar: "from-[#9d174d] to-[#db2777]", chip: "bg-[#fce8ee] text-[#9d174d]", title: "text-[#831843]" }
+    sky: { wrap: "border-[#EAF0F6] bg-gradient-to-br from-[#EAF0F6] to-white", bar: "from-[#12345A] to-[#176447]", chip: "bg-[#EAF0F6] text-[#12345A]", title: "text-[#12345A]" },
+    purple: { wrap: "border-[#12345A] bg-gradient-to-br from-[#EAF0F6] to-white", bar: "from-[#12345A] to-[#12345A]", chip: "bg-[#12345A] text-[#12345A]", title: "text-[#12345A]" },
+    green: { wrap: "border-[#EAF0F6] bg-gradient-to-br from-[#EAF0F6] to-white", bar: "from-[#176447] to-[#176447]", chip: "bg-[#EAF0F6] text-[#176447]", title: "text-[#176447]" },
+    amber: { wrap: "border-[#F7A814] bg-gradient-to-br from-[#FAF9F5] to-white", bar: "from-[#b45309] to-[#f59e0b]", chip: "bg-[#FAF9F5] text-[#92400e]", title: "text-[#F7A814]" },
+    rose: { wrap: "border-[#EAF0F6] bg-gradient-to-br from-[#EAF0F6] to-white", bar: "from-[#12345A] to-[#12345A]", chip: "bg-[#EAF0F6] text-[#12345A]", title: "text-[#12345A]" }
   };
   const t = tones[tone] || tones.sky;
-  return <section className={`relative overflow-hidden rounded-[1.8rem] border-2 p-5 shadow-[0_10px_30px_-18px_rgba(11,46,89,0.45)] md:p-7 ${t.wrap}`}>
+  return <section className={`relative overflow-hidden rounded-[1.8rem] border-2 p-5 shadow-[0_10px_30px_-18px_rgba(18,52,90,0.45)] md:p-7 ${t.wrap}`}>
     <span className={`absolute inset-x-0 top-0 h-1.5 bg-gradient-to-r ${t.bar}`} />
     <div className="flex items-center gap-3">
       <span className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl text-xl shadow-sm ${t.chip}`}>{icon}</span>
@@ -139,7 +139,7 @@ function Section({ icon, title, subtitle, children, tone = "sky" }) {
 }
 
 function SoundButton({ text, label = "🔊 सुनें" }) {
-  return <button type="button" onClick={() => speak(text)} className="rounded-full bg-[#003366] px-4 py-2 text-xs font-black text-white shadow-sm transition hover:bg-[#0f4c81]">{label}</button>;
+  return <button type="button" onClick={() => speak(text)} className="rounded-full bg-[#12345A] px-4 py-2 text-xs font-black text-white shadow-sm transition hover:bg-[#12345A]">{label}</button>;
 }
 
 export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, onMarkDone }) {
@@ -161,28 +161,28 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
   };
 
   return <div className="mt-6 space-y-6">
-    <div className="overflow-hidden rounded-[1.8rem] border-2 border-[#cfe3ef] bg-white shadow-lg">
-      <div className="border-b-2 border-[#dbeaf2] bg-gradient-to-r from-[#fff7d6] via-[#eefaff] to-[#f5efff] p-4 md:p-6">
-        <div className="text-xs font-black uppercase tracking-[0.2em] text-[#0f4c81]">Interactive Teaching Board / इंटरैक्टिव शिक्षण बोर्ड</div>
-        <div className="mt-1 text-xl font-black text-[#003366]">👀 देखो → 🔊 सुनो → 👄 बोलो → 👉 पहचानो → ✍️ करो</div>
+    <div className="overflow-hidden rounded-[1.8rem] border-2 border-[#EAF0F6] bg-white shadow-lg">
+      <div className="border-b-2 border-[#EAF0F6] bg-gradient-to-r from-[#FAF9F5] via-[#EAF0F6] to-[#12345A] p-4 md:p-6">
+        <div className="text-xs font-black uppercase tracking-[0.2em] text-[#12345A]">Interactive Teaching Board / इंटरैक्टिव शिक्षण बोर्ड</div>
+        <div className="mt-1 text-xl font-black text-[#12345A]">👀 देखो → 🔊 सुनो → 👄 बोलो → 👉 पहचानो → ✍️ करो</div>
       </div>
     </div>
 
     <Section icon="📚" title="पूरा Course Path / Course Path" subtitle="15 modules — एक teacher की तरह step-by-step">
       <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-        {["Meet the Letters","English Alphabet","Phonics","Picture Learning","Rhymes","Hindi स्वर","Hindi व्यंजन","मात्राएँ","बारहखड़ी","Word Building","Sentence Reading","Learning Games","Practice Worksheet","Knowledge Check","Revision & Achievement"].map((m, i) => <div key={m} className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-sm font-black text-[#003366] shadow-sm"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#e8f4fa] text-xs">{i + 1}</span>{m}</div>)}
+        {["Meet the Letters","English Alphabet","Phonics","Picture Learning","Rhymes","Hindi स्वर","Hindi व्यंजन","मात्राएँ","बारहखड़ी","Word Building","Sentence Reading","Learning Games","Practice Worksheet","Knowledge Check","Revision & Achievement"].map((m, i) => <div key={m} className="flex items-center gap-3 rounded-xl bg-white px-4 py-3 text-sm font-black text-[#12345A] shadow-sm"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#EAF0F6] text-xs">{i + 1}</span>{m}</div>)}
       </div>
     </Section>
 
     <Section icon="👋" title="Module 1 — Meet the Letters" subtitle="अक्षर क्या हैं? कैसे काम करते हैं?" tone="green">
       <p className="text-sm leading-7 text-zinc-700">अक्षर भाषा की सबसे छोटी इकाई हैं। हर अक्षर की एक <b>आवाज़ (sound)</b> होती है, और इन आवाज़ों को जोड़कर हम <b>शब्द</b> बनाते हैं। English में 26 letters और Hindi में 13 स्वर + 33 व्यंजन होते हैं। एक-एक करके इन्हें पहचानें, सुनें और बोलें — यही सीखने की नींव है।</p>
       <div className="mt-4 grid gap-3 sm:grid-cols-3">
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm"><div className="text-3xl">🔤</div><div className="mt-1 text-sm font-black text-[#0f5130]">Letter / अक्षर</div><div className="text-xs text-zinc-500">A, B, C … क, ख, ग …</div></div>
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm"><div className="text-3xl">🔊</div><div className="mt-1 text-sm font-black text-[#0f5130]">Sound / ध्वनि</div><div className="text-xs text-zinc-500">हर अक्षर आवाज़ देता है</div></div>
-        <div className="rounded-2xl bg-white p-4 text-center shadow-sm"><div className="text-3xl">🧱</div><div className="mt-1 text-sm font-black text-[#0f5130]">Word / शब्द</div><div className="text-xs text-zinc-500">A + P + P + L + E</div></div>
+        <div className="rounded-2xl bg-white p-4 text-center shadow-sm"><div className="text-3xl">🔤</div><div className="mt-1 text-sm font-black text-[#176447]">Letter / अक्षर</div><div className="text-xs text-zinc-500">A, B, C … क, ख, ग …</div></div>
+        <div className="rounded-2xl bg-white p-4 text-center shadow-sm"><div className="text-3xl">🔊</div><div className="mt-1 text-sm font-black text-[#176447]">Sound / ध्वनि</div><div className="text-xs text-zinc-500">हर अक्षर आवाज़ देता है</div></div>
+        <div className="rounded-2xl bg-white p-4 text-center shadow-sm"><div className="text-3xl">🧱</div><div className="mt-1 text-sm font-black text-[#176447]">Word / शब्द</div><div className="text-xs text-zinc-500">A + P + P + L + E</div></div>
       </div>
       <div className="mt-4 rounded-2xl bg-white p-4 shadow-sm">
-        <div className="text-sm font-black text-[#0f5130]">👀 देखो → 🔊 सुनो → 👄 बोलो</div>
+        <div className="text-sm font-black text-[#176447]">👀 देखो → 🔊 सुनो → 👄 बोलो</div>
         <p className="mt-1 text-xs leading-6 text-zinc-600">नीचे हर card में 🔊 सुनें button है — दबाकर आवाज़ सुनें और साथ में दोहराएँ।</p>
         <div className="mt-2 flex flex-wrap gap-2">
           <SoundButton text="This is the letter A. A says aah. Apple." label="🔊 Example सुनें" />
@@ -192,12 +192,12 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
 
     <Section icon="🔤" title="Module 2 — English Alphabet" subtitle="हर अक्षर का card: चित्र, शब्द, आवाज़" tone="purple">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {ENGLISH.map(([l, emoji, w1, w2, w3, sound]) => <div key={l} className="rounded-[1.3rem] border-2 border-[#e4d9ff] bg-white p-4 text-center shadow-sm">
-          <div className="text-4xl font-black text-[#7b2cbf] md:text-5xl">{l}<span className="text-2xl text-zinc-400"> {l.toLowerCase()}</span></div>
+        {ENGLISH.map(([l, emoji, w1, w2, w3, sound]) => <div key={l} className="rounded-[1.3rem] border-2 border-[#12345A] bg-white p-4 text-center shadow-sm">
+          <div className="text-4xl font-black text-[#12345A] md:text-5xl">{l}<span className="text-2xl text-zinc-400"> {l.toLowerCase()}</span></div>
           <div className="my-2 text-4xl">{emoji}</div>
-          <div className="text-sm font-black text-[#003366]">{w1}</div>
+          <div className="text-sm font-black text-[#12345A]">{w1}</div>
           <div className="text-[11px] font-bold text-zinc-500">{w2} • {w3}</div>
-          <div className="mt-2 rounded-full bg-[#f3efff] px-3 py-1 text-xs font-black text-[#7b2cbf]">Sound {sound}</div>
+          <div className="mt-2 rounded-full bg-[#EAF0F6] px-3 py-1 text-xs font-black text-[#12345A]">Sound {sound}</div>
           <div className="mt-3"><SoundButton text={`${l} ${l.toLowerCase()}, ${w1}`} /></div>
         </div>)}
       </div>
@@ -205,12 +205,12 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
 
     <Section icon="🧩" title="Module 3 — Phonics (Sounds जोड़ो)" subtitle="C + A + T = CAT" tone="amber">
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        {BLENDS.map((letters) => <div key={letters[4]} className="rounded-[1.3rem] border-2 border-[#f0dfc2] bg-white p-4 text-center shadow-sm">
+        {BLENDS.map((letters) => <div key={letters[4]} className="rounded-[1.3rem] border-2 border-[#F7A814] bg-white p-4 text-center shadow-sm">
           <div className="flex items-center justify-center gap-2">
-            {letters.slice(0, 3).map((c, i) => <span key={i} className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#003366] text-2xl font-black text-white">{c}</span>)}
+            {letters.slice(0, 3).map((c, i) => <span key={i} className="flex h-12 w-12 items-center justify-center rounded-xl bg-[#12345A] text-2xl font-black text-white">{c}</span>)}
           </div>
           <div className="mt-2 text-sm font-black text-zinc-500">➡️</div>
-          <div className="text-3xl font-black text-[#9a5b00]">{letters[4]}</div>
+          <div className="text-3xl font-black text-[#12345A]">{letters[4]}</div>
           <div className="text-3xl">{letters[3]}</div>
           <div className="mt-2"><SoundButton text={letters.slice(0, 3).join(", ") + ", " + letters[4]} label="🔊 Sounds जोड़ें" /></div>
         </div>)}
@@ -220,7 +220,7 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
 
     <Section icon="🖼️" title="Module 4 — Picture Learning" subtitle="चित्र देखकर शब्द पहचानो" tone="green">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-5">
-        {[["🍎","Apple"],["🐱","Cat"],["🐶","Dog"],["☀️","Sun"],["🏠","House"]].map(([e, w]) => <div key={w} className="rounded-xl bg-white p-4 text-center shadow-sm"><div className="text-4xl">{e}</div><div className="mt-1 text-sm font-black text-[#177245]">{w}</div><button type="button" onClick={() => speak(w)} className="mt-2 text-xs font-black text-[#003366]">🔊</button></div>)}
+        {[["🍎","Apple"],["🐱","Cat"],["🐶","Dog"],["☀️","Sun"],["🏠","House"]].map(([e, w]) => <div key={w} className="rounded-xl bg-white p-4 text-center shadow-sm"><div className="text-4xl">{e}</div><div className="mt-1 text-sm font-black text-[#176447]">{w}</div><button type="button" onClick={() => speak(w)} className="mt-2 text-xs font-black text-[#12345A]">🔊</button></div>)}
       </div>
     </Section>
 
@@ -232,15 +232,15 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
 
     <Section icon="🇮🇳" title="Module 6 — Hindi स्वर / Vowels" subtitle="अ आ इ ई उ ऊ ए ऐ ओ औ अं" tone="purple">
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
-        {SWAR.map(([l, e, w]) => <div key={l} className="rounded-xl border-2 border-[#e4d9ff] bg-white p-3 text-center shadow-sm"><div className="text-3xl font-black text-[#7b2cbf]">{l}</div><div className="my-1 text-3xl">{e}</div><div className="text-sm font-black text-[#003366]">{w}</div><button type="button" onClick={() => speak(`${l}, ${w}`)} className="mt-2 text-xs font-black text-[#7b2cbf]">🔊</button></div>)}
+        {SWAR.map(([l, e, w]) => <div key={l} className="rounded-xl border-2 border-[#12345A] bg-white p-3 text-center shadow-sm"><div className="text-3xl font-black text-[#12345A]">{l}</div><div className="my-1 text-3xl">{e}</div><div className="text-sm font-black text-[#12345A]">{w}</div><button type="button" onClick={() => speak(`${l}, ${w}`)} className="mt-2 text-xs font-black text-[#12345A]">🔊</button></div>)}
       </div>
     </Section>
 
     <Section icon="🅰️" title="Module 7 — Hindi व्यंजन / Consonants" subtitle="समूह में सीखो: क ख ग घ ङ" tone="amber">
       <div className="space-y-3">
         {VYANJAN_SETS.map((set, i) => <div key={i} className="flex flex-wrap gap-2">
-          {set.map(v => <button key={v} type="button" onClick={() => speak(`${v}, ${VYANJAN_WORDS[v] || ""}`)} title={VYANJAN_WORDS[v]} className="flex min-w-[74px] flex-col items-center rounded-xl border-2 border-[#f0dfc2] bg-white px-3 py-2 shadow-sm transition hover:border-[#d90429]">
-            <span className="text-2xl font-black text-[#9a5b00]">{v}</span>
+          {set.map(v => <button key={v} type="button" onClick={() => speak(`${v}, ${VYANJAN_WORDS[v] || ""}`)} title={VYANJAN_WORDS[v]} className="flex min-w-[74px] flex-col items-center rounded-xl border-2 border-[#F7A814] bg-white px-3 py-2 shadow-sm transition hover:border-[#d90429]">
+            <span className="text-2xl font-black text-[#12345A]">{v}</span>
             <span className="text-[10px] font-bold text-zinc-500">{VYANJAN_WORDS[v]}</span>
           </button>)}
         </div>)}
@@ -249,17 +249,17 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
 
     <Section icon="✍️" title="Module 8 — मात्राएँ / Matras" subtitle="व्यंजन चुनो और मात्रा जोड़कर देखो" tone="green">
       <div className="flex flex-wrap gap-2">
-        {["क","ख","ग","म","र","स","न"].map(c => <button key={c} type="button" onClick={() => setActiveConsonant(c)} className={"rounded-xl px-4 py-2 text-lg font-black shadow-sm transition " + (activeConsonant === c ? "bg-[#177245] text-white" : "bg-white text-[#177245] border-2 border-[#d8eadf]")}>{c}</button>)}
+        {["क","ख","ग","म","र","स","न"].map(c => <button key={c} type="button" onClick={() => setActiveConsonant(c)} className={"rounded-xl px-4 py-2 text-lg font-black shadow-sm transition " + (activeConsonant === c ? "bg-[#176447] text-white" : "bg-white text-[#176447] border-2 border-[#EAF0F6]")}>{c}</button>)}
       </div>
       <div className="mt-4 flex flex-wrap gap-2">
-        {barakhadi.map((form) => <button key={form} type="button" onClick={() => speak(form)} className="rounded-xl border-2 border-[#d8eadf] bg-white px-4 py-3 text-xl font-black text-[#177245] shadow-sm transition hover:bg-[#f4fff7]">{form}</button>)}
+        {barakhadi.map((form) => <button key={form} type="button" onClick={() => speak(form)} className="rounded-xl border-2 border-[#EAF0F6] bg-white px-4 py-3 text-xl font-black text-[#176447] shadow-sm transition hover:bg-[#EAF0F6]">{form}</button>)}
       </div>
       <p className="mt-3 text-sm font-bold text-zinc-600">👉 {activeConsonant} + ा = {activeConsonant}ा • {activeConsonant} + ि = {activeConsonant}ि • {activeConsonant} + ी = {activeConsonant}ी</p>
     </Section>
 
     <Section icon="📖" title="Module 9 — बारहखड़ी" subtitle="क की बारहखड़ी — एक-एक करके सुनो" tone="sky">
       <div className="grid grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-6">
-        {BARAKHADI.map(f => <button key={f} type="button" onClick={() => speak(f)} className="rounded-xl bg-white p-3 text-center shadow-sm transition hover:bg-[#f3faff]"><div className="text-2xl font-black text-[#0f4c81]">{f}</div><div className="text-[10px] font-bold text-zinc-500">🔊 सुनें</div></button>)}
+        {BARAKHADI.map(f => <button key={f} type="button" onClick={() => speak(f)} className="rounded-xl bg-white p-3 text-center shadow-sm transition hover:bg-[#EAF0F6]"><div className="text-2xl font-black text-[#12345A]">{f}</div><div className="text-[10px] font-bold text-zinc-500">🔊 सुनें</div></button>)}
       </div>
     </Section>
 
@@ -271,7 +271,7 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
           राम हँसा और बोला — “बंदर, तुम <b>अच्छे</b> हो!”
         </p>
         <div className="mt-3 flex flex-wrap gap-2">
-          {["राम","बंदर","आम","नाच","अच्छे"].map(w => <button key={w} type="button" onClick={() => speak(w)} className="rounded-full bg-[#eef7fb] px-4 py-2 text-xs font-black text-[#003366]">🔊 {w}</button>)}
+          {["राम","बंदर","आम","नाच","अच्छे"].map(w => <button key={w} type="button" onClick={() => speak(w)} className="rounded-full bg-[#EAF0F6] px-4 py-2 text-xs font-black text-[#12345A]">🔊 {w}</button>)}
         </div>
         <div className="mt-3"><SoundButton text="एक था राम। राम के पास एक बंदर था। बंदर को आम बहुत पसंद था।" label="🔊 पूरी कहानी सुनें" /></div>
       </div>
@@ -282,9 +282,9 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
         {[...BLENDS, ["क","म","ल","🌸","कमल"], ["घ","र","","🏠","घर"]].map((x) => {
           const letters = x.slice(0, 3).filter(Boolean);
           const word = x[4];
-          return <div key={word} className="rounded-xl border-2 border-[#f0dfc2] bg-white p-4 text-center shadow-sm">
-            <div className="flex items-center justify-center gap-1">{letters.map((c, i) => <span key={i} className="rounded-lg bg-[#9a5b00] px-3 py-2 text-xl font-black text-white">{c}</span>)}</div>
-            <div className="mt-2 text-2xl font-black text-[#9a5b00]">➡️ {word}</div>
+          return <div key={word} className="rounded-xl border-2 border-[#F7A814] bg-white p-4 text-center shadow-sm">
+            <div className="flex items-center justify-center gap-1">{letters.map((c, i) => <span key={i} className="rounded-lg bg-[#176447] px-3 py-2 text-xl font-black text-white">{c}</span>)}</div>
+            <div className="mt-2 text-2xl font-black text-[#12345A]">➡️ {word}</div>
             <div className="text-3xl">{x[3]}</div>
             <div className="mt-2"><SoundButton text={word} label="🔊 शब्द सुनें" /></div>
           </div>;
@@ -300,13 +300,13 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
 
     <Section icon="🎮" title="Module 12 — Learning Games" subtitle="खेल-खेल में जाँचो" tone="rose">
       <div className="grid gap-3 md:grid-cols-3">
-        {Object.entries(GAMES).map(([key, g]) => <div key={key} className="rounded-xl border-2 border-[#f3d9df] bg-white p-4 shadow-sm">
+        {Object.entries(GAMES).map(([key, g]) => <div key={key} className="rounded-xl border-2 border-[#EAF0F6] bg-white p-4 shadow-sm">
           <div className="text-sm font-black text-zinc-700">{g.prompt}</div>
           <div className="mt-3 flex flex-wrap gap-2">{g.options.map(o => {
             const chosen = gameAnswers[key];
             const correct = chosen === o && o === g.answer;
             const wrong = chosen === o && o !== g.answer;
-            return <button key={o} type="button" onClick={() => { setGameAnswers(a => ({ ...a, [key]: o })); if (o === g.answer) speak("Correct! " + o); }} className={"rounded-xl px-4 py-2 text-lg font-black shadow-sm transition " + (correct ? "bg-[#177245] text-white" : wrong ? "bg-[#d90429] text-white" : "bg-[#fafafa] text-[#003366] border-2 border-zinc-200")}>{o}</button>;
+            return <button key={o} type="button" onClick={() => { setGameAnswers(a => ({ ...a, [key]: o })); if (o === g.answer) speak("Correct! " + o); }} className={"rounded-xl px-4 py-2 text-lg font-black shadow-sm transition " + (correct ? "bg-[#176447] text-white" : wrong ? "bg-[#d90429] text-white" : "bg-[#FAF9F5] text-[#12345A] border-2 border-zinc-200")}>{o}</button>;
           })}</div>
           {gameAnswers[key] && <div className="mt-2 text-xs font-black">{gameAnswers[key] === g.answer ? "✅ सही!" : "❌ फिर कोशिश करें — सही उत्तर: " + g.answer}</div>}
         </div>)}
@@ -316,8 +316,8 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
     <Section icon="📝" title="Module 13 — Practice Worksheet" subtitle="हर module के बाद अभ्यास (printable)" tone="sky">
       <ol className="space-y-2">
         {WORKSHEET.map(([q, opts], i) => <li key={q} className="rounded-xl bg-white p-4 text-sm font-bold text-zinc-700 shadow-sm">
-          <span className="font-black text-[#003366]">Q{i + 1}. </span>{q}
-          <div className="mt-2 flex flex-wrap gap-2">{opts.map(o => <button key={o} type="button" onClick={() => speak(o)} className="rounded-lg border-2 border-zinc-200 px-3 py-1 text-xs font-black text-[#003366]">{o}</button>)}</div>
+          <span className="font-black text-[#12345A]">Q{i + 1}. </span>{q}
+          <div className="mt-2 flex flex-wrap gap-2">{opts.map(o => <button key={o} type="button" onClick={() => speak(o)} className="rounded-lg border-2 border-zinc-200 px-3 py-1 text-xs font-black text-[#12345A]">{o}</button>)}</div>
         </li>)}
       </ol>
     </Section>
@@ -330,26 +330,26 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
             const chosen = quizAnswers[i];
             const correct = chosen === oi && oi === ans;
             const wrong = chosen === oi && oi !== ans;
-            return <button key={o} type="button" onClick={() => { setQuizAnswers(a => ({ ...a, [i]: oi })); speak(o); }} className={"rounded-xl px-4 py-2 text-sm font-black shadow-sm transition " + (correct ? "bg-[#177245] text-white" : wrong ? "bg-[#d90429] text-white" : "bg-[#fafafa] text-[#003366] border-2 border-zinc-200")}>{o}</button>;
+            return <button key={o} type="button" onClick={() => { setQuizAnswers(a => ({ ...a, [i]: oi })); speak(o); }} className={"rounded-xl px-4 py-2 text-sm font-black shadow-sm transition " + (correct ? "bg-[#176447] text-white" : wrong ? "bg-[#d90429] text-white" : "bg-[#FAF9F5] text-[#12345A] border-2 border-zinc-200")}>{o}</button>;
           })}</div>
         </div>)}
       </div>
-      {quizDone && <div className={"mt-4 rounded-2xl p-5 text-center " + (quizScore >= 8 ? "bg-[#e7f7ef]" : "bg-[#fff5e6]")}>
-        <div className="text-2xl font-black text-[#003366]">{quizScore >= 8 ? "🎉 Excellent!" : "👏 अच्छा प्रयास!"} {quizScore}/10</div>
+      {quizDone && <div className={"mt-4 rounded-2xl p-5 text-center " + (quizScore >= 8 ? "bg-[#EAF0F6]" : "bg-[#FAF9F5]")}>
+        <div className="text-2xl font-black text-[#12345A]">{quizScore >= 8 ? "🎉 Excellent!" : "👏 अच्छा प्रयास!"} {quizScore}/10</div>
         <div className="mt-2 text-sm font-bold text-zinc-600">{quizScore >= 8 ? "You completed: ✅ Alphabet ✅ Phonics ✅ Swar ✅ Vyanjan ✅ Matra ✅ Word Building" : "गलत उत्तर दोबारा करें और 8/10 लाएँ।"}</div>
       </div>}
     </Section>
 
     <Section icon="🏆" title="Module 15 — Revision + Achievement" subtitle="Course पूरा — अभ्यास जारी रखें" tone="green">
       <div className="text-center">
-        <div className="text-4xl font-black text-[#177245]">🎓 Letters & Sounds Completed</div>
-        <div className="mt-4 h-4 w-full overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#177245] to-[#0a9396]" style={{ width: units + "%" }} /></div>
+        <div className="text-4xl font-black text-[#176447]">🎓 Letters & Sounds Completed</div>
+        <div className="mt-4 h-4 w-full overflow-hidden rounded-full bg-zinc-100"><div className="h-full rounded-full bg-gradient-to-r from-[#176447] to-[#176447]" style={{ width: units + "%" }} /></div>
         <div className="mt-2 text-sm font-black text-zinc-600">{units}%</div>
         <div className="mt-4 flex flex-wrap justify-center gap-2">
-          <button type="button" onClick={resetPractice} className="rounded-2xl border-2 border-[#177245] px-5 py-3 text-sm font-black text-[#177245] transition hover:bg-[#eafaf1]">Practice Again 🔄</button>
-          <button type="button" onClick={goFinalTest} className="rounded-2xl bg-[#0b4a86] px-5 py-3 text-sm font-black text-white transition hover:bg-[#0f4c81]">Take Final Test 📝</button>
-          <button type="button" onClick={markDone} className="rounded-2xl bg-[#177245] px-5 py-3 text-sm font-black text-white transition hover:bg-[#14663b]">✅ Mark Complete</button>
-          {onNextLesson && <button type="button" onClick={onNextLesson} className="rounded-2xl border-2 border-[#0b4a86] px-5 py-3 text-sm font-black text-[#0b4a86] transition hover:bg-[#eef7ff]">Next: {nextLessonTitle || "अगला पाठ"} →</button>}
+          <button type="button" onClick={resetPractice} className="rounded-2xl border-2 border-[#176447] px-5 py-3 text-sm font-black text-[#176447] transition hover:bg-[#EAF0F6]">Practice Again 🔄</button>
+          <button type="button" onClick={goFinalTest} className="rounded-2xl bg-[#12345A] px-5 py-3 text-sm font-black text-white transition hover:bg-[#12345A]">Take Final Test 📝</button>
+          <button type="button" onClick={markDone} className="rounded-2xl bg-[#176447] px-5 py-3 text-sm font-black text-white transition hover:bg-[#176447]">✅ Mark Complete</button>
+          {onNextLesson && <button type="button" onClick={onNextLesson} className="rounded-2xl border-2 border-[#12345A] px-5 py-3 text-sm font-black text-[#12345A] transition hover:bg-[#EAF0F6]">Next: {nextLessonTitle || "अगला पाठ"} →</button>}
         </div>
         <div className="mt-3 text-xs font-bold text-zinc-500">{completed ? "🎉 Shabash! यह lesson पूरा हुआ।" : "Practice और Final Test पूरा करके lesson complete करें।"}</div>
       </div>
@@ -357,9 +357,9 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
 
     <Section icon="🧑‍🏫" title="Parents & Teachers Guide / मार्गदर्शिका" subtitle="घर और कक्षा में कैसे सिखाएँ" tone="sky">
       <div className="grid gap-3 md:grid-cols-3">
-        <div className="rounded-2xl bg-white p-5 shadow-sm"><div className="text-sm font-black text-[#003366]">रोज़ 15 मिनट</div><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600"><li>5 मिनट अक्षर दोहराएँ</li><li>5 मिनट 🔇 बोलकर ध्वनि</li><li>5 मिनट लिखने का अभ्यास</li></ul></div>
-        <div className="rounded-2xl bg-white p-5 shadow-sm"><div className="text-sm font-black text-[#003366]">घर पर अभ्यास</div><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600"><li>आसपास की चीज़ों के नाम बोलो</li><li>अनाज/ढक्कन गिनकर गिनती</li><li>बच्चे को 🔊 सुनें button दबाने दो</li></ul></div>
-        <div className="rounded-2xl bg-white p-5 shadow-sm"><div className="text-sm font-black text-[#003366]">प्रगति जाँच</div><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600"><li>हर module बाद worksheet</li><li>10 में से 8 सही = आगे बढ़ें</li><li>गलती पर हँसें नहीं, दोबारा कराएँ</li></ul></div>
+        <div className="rounded-2xl bg-white p-5 shadow-sm"><div className="text-sm font-black text-[#12345A]">रोज़ 15 मिनट</div><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600"><li>5 मिनट अक्षर दोहराएँ</li><li>5 मिनट 🔇 बोलकर ध्वनि</li><li>5 मिनट लिखने का अभ्यास</li></ul></div>
+        <div className="rounded-2xl bg-white p-5 shadow-sm"><div className="text-sm font-black text-[#12345A]">घर पर अभ्यास</div><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600"><li>आसपास की चीज़ों के नाम बोलो</li><li>अनाज/ढक्कन गिनकर गिनती</li><li>बच्चे को 🔊 सुनें button दबाने दो</li></ul></div>
+        <div className="rounded-2xl bg-white p-5 shadow-sm"><div className="text-sm font-black text-[#12345A]">प्रगति जाँच</div><ul className="mt-2 list-disc space-y-1 pl-5 text-sm leading-6 text-zinc-600"><li>हर module बाद worksheet</li><li>10 में से 8 सही = आगे बढ़ें</li><li>गलती पर हँसें नहीं, दोबारा कराएँ</li></ul></div>
       </div>
       <p className="mt-4 rounded-xl bg-white p-4 text-sm font-bold text-zinc-700 shadow-sm">🎯 सिद्धांत: <b>Learn → See → Listen → Example → Practice → Activity → Quiz → Revision → Assessment → Completion</b>. बच्चे को लगे कि teacher step-by-step पढ़ा रहा है।</p>
     </Section>

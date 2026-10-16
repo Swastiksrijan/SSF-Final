@@ -63,7 +63,7 @@ export default function ImsMeetings() {
 
   const meetingCols = [
     { key: 'recordId', en: 'ID', hi: 'आईडी', render: (r) => <span className="font-mono text-xs text-slate-500">{r.recordId}</span> },
-    { key: 'title', en: 'Meeting', hi: 'बैठक', render: (r) => <span className="font-semibold text-[#002344]">{r.title || '—'}</span> },
+    { key: 'title', en: 'Meeting', hi: 'बैठक', render: (r) => <span className="font-semibold text-[#12345A]">{r.title || '—'}</span> },
     { key: 'meetingType', en: 'Type', hi: 'प्रकार', render: (r) => r.meetingType || '—' },
     { key: 'meetingDate', en: 'Date', hi: 'दिनांक', render: (r) => r.meetingDate || '—' },
     { key: 'mode', en: 'Mode', hi: 'माध्यम', render: (r) => <Badge status={r.mode} /> },
@@ -120,7 +120,7 @@ export default function ImsMeetings() {
       {tab === 'decisions' && (
         <DataTable rows={resolutions} empty={t('no_records')} columns={[
           { key: 'recordId', en: 'ID', render: (r) => <span className="font-mono text-xs text-slate-500">{r.recordId}</span> },
-          { key: 'title', en: 'Decision', render: (r) => <span className="font-semibold text-[#002344]">{r.title || '—'}</span> },
+          { key: 'title', en: 'Decision', render: (r) => <span className="font-semibold text-[#12345A]">{r.title || '—'}</span> },
           { key: 'votingResult', en: 'Voting', render: (r) => r.votingResult || '—' },
           { key: 'isSpecial', en: 'Special', render: (r) => (r.isSpecial ? '✓' : '—') },
           { key: 'status', en: 'Status', render: (r) => <Badge status={r.status} /> },
@@ -130,7 +130,7 @@ export default function ImsMeetings() {
       {tab === 'resolutions' && (
         <DataTable rows={resolutions} empty={t('no_records')} columns={[
           { key: 'resolutionNo', en: 'Resolution No', render: (r) => r.resolutionNo || r.recordId },
-          { key: 'title', en: 'Title', render: (r) => <span className="font-semibold text-[#002344]">{r.title || '—'}</span> },
+          { key: 'title', en: 'Title', render: (r) => <span className="font-semibold text-[#12345A]">{r.title || '—'}</span> },
           { key: 'votingResult', en: 'Voting Result', render: (r) => r.votingResult || '—' },
           { key: 'dissent', en: 'Dissent', render: (r) => (r.dissent ? String(r.dissent).slice(0, 40) : '—') },
           { key: 'isSpecial', en: 'Special', render: (r) => (r.isSpecial ? '✓' : '—') },
@@ -140,7 +140,7 @@ export default function ImsMeetings() {
       {tab === 'actions' && (
         <DataTable rows={actions} empty={t('no_records')} columns={[
           { key: 'recordId', en: 'ID', render: (r) => <span className="font-mono text-xs text-slate-500">{r.recordId}</span> },
-          { key: 'title', en: 'Action', render: (r) => <span className="font-semibold text-[#002344]">{r.title || '—'}</span> },
+          { key: 'title', en: 'Action', render: (r) => <span className="font-semibold text-[#12345A]">{r.title || '—'}</span> },
           { key: 'dueDate', en: 'Due', render: (r) => r.dueDate || '—' },
           { key: 'priority', en: 'Priority', render: (r) => <Badge status={r.priority} /> },
           { key: 'actionStatus', en: 'Status', render: (r) => <Badge status={r.actionStatus} /> },
@@ -150,7 +150,7 @@ export default function ImsMeetings() {
       {tab === 'notices' && (
         <DataTable rows={notices} empty={t('no_records')} columns={[
           { key: 'recordId', en: 'ID', render: (r) => <span className="font-mono text-xs text-slate-500">{r.recordId}</span> },
-          { key: 'subject', en: 'Notice', render: (r) => <span className="font-semibold text-[#002344]">{r.subject || '—'}</span> },
+          { key: 'subject', en: 'Notice', render: (r) => <span className="font-semibold text-[#12345A]">{r.subject || '—'}</span> },
           { key: 'noticeType', en: 'Type', render: (r) => r.noticeType || '—' },
           { key: 'deliveryStatus', en: 'Delivery', render: (r) => <Badge status={r.deliveryStatus} /> },
           { key: 'reminderCount', en: 'Reminders', render: (r) => r.reminderCount ?? 0 },

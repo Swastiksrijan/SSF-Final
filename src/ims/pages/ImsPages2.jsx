@@ -39,7 +39,7 @@ export function ImsReports() {
               <button title="CSV" className="rounded p-1.5 text-slate-500 hover:bg-slate-100" onClick={() => exportCsv(res)}><Icons.Download size={16} /></button>
               <button title="Excel" className="rounded p-1.5 text-emerald-600 hover:bg-emerald-50" onClick={() => exportExcel(res, label)}><Icons.Table2 size={16} /></button>
               <button title="PDF" className="rounded p-1.5 text-rose-600 hover:bg-rose-50" onClick={() => exportPdf(res, label, lang)}><Icons.FileText size={16} /></button>
-              <button title="Open" className="rounded p-1.5 text-[#FF6600] hover:bg-orange-50" onClick={() => navigate({ to: '/ims/r/$resource', params: { resource: res } })}><Icons.ExternalLink size={16} /></button>
+              <button title="Open" className="rounded p-1.5 text-[#176447] hover:bg-orange-50" onClick={() => navigate({ to: '/ims/r/$resource', params: { resource: res } })}><Icons.ExternalLink size={16} /></button>
             </div>
           </Card>
         ))}

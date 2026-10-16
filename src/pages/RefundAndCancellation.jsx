@@ -66,7 +66,7 @@ export default function RefundAndCancellation() {
               </div>
 
               <div className="mx-auto flex w-full max-w-sm items-center justify-center">
-                <div className="relative flex aspect-square w-64 items-center justify-center rounded-full border border-orange-300/30 bg-white/[0.06] shadow-[0_0_80px_rgba(249,115,22,0.12)] backdrop-blur-md sm:w-72">
+                <div className="relative flex aspect-square w-64 items-center justify-center rounded-full border border-orange-300/30 bg-white/[0.06] shadow-[0_0_80px_rgba(23,100,71,0.12)] backdrop-blur-md sm:w-72">
                   <div className="absolute inset-5 rounded-full border border-dashed border-orange-300/25" />
                   <div className="relative flex h-32 w-32 items-center justify-center rounded-3xl border border-orange-300/30 bg-orange-400/10 text-orange-300 shadow-2xl sm:h-36 sm:w-36">
                     <FaHandHoldingHeart className="text-6xl sm:text-7xl" />

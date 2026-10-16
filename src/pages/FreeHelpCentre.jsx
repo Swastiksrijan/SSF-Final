@@ -15,8 +15,8 @@ import {
 import { ENDPOINTS } from "../config/api";
 import { CONTACT_INFO } from "../config/contact";
 
-const NAVY = "#002344";
-const ACCENT = "#FF6600";
+const NAVY = "#12345A";
+const ACCENT = "#176447";
 
 const CATEGORIES_WITH_COUNTS = helpCategoriesWithCounts();
 
@@ -35,20 +35,20 @@ function makeReference() {
 /* ------------------------------------------------------------------ hero */
 function Hero({ onExplore, onRequest }) {
   return (
-    <section className="relative overflow-hidden bg-[#001529] text-white">
+    <section className="relative overflow-hidden bg-[#12345A] text-white">
       <div className="pointer-events-none absolute inset-0 opacity-[0.06] bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:34px_34px]" aria-hidden="true" />
-      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#0e7490]/20 blur-3xl" aria-hidden="true" />
-      <div className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#FF6600]/10 blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-[#176447]/20 blur-3xl" aria-hidden="true" />
+      <div className="pointer-events-none absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-[#176447]/10 blur-3xl" aria-hidden="true" />
 
       <div className="relative mx-auto grid max-w-7xl gap-12 px-5 pb-14 pt-28 sm:px-6 md:pb-20 md:pt-40 lg:grid-cols-[1.05fr_0.95fr] lg:items-center">
         <div>
-          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-[#FFB347]">
+          <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/[0.06] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.22em] text-[#176447]">
             <Sparkles className="h-3.5 w-3.5" aria-hidden="true" /> SSF Digital Assistance
           </p>
           <h1 className="font-serif text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl lg:text-6xl">
             Free Digital Help Centre
           </h1>
-          <p className="mt-3 font-hindi text-2xl font-bold text-[#FFD166] sm:text-3xl" lang="hi">
+          <p className="mt-3 font-hindi text-2xl font-bold text-[#F7A814] sm:text-3xl" lang="hi">
             निःशुल्क डिजिटल सहायता केंद्र
           </p>
           <p className="mt-5 max-w-xl text-base leading-relaxed text-blue-50/90 sm:text-lg">
@@ -62,13 +62,13 @@ function Hero({ onExplore, onRequest }) {
             {["Information", "Understanding", "Assistance", "Self-Reliance"].map((step, i, arr) => (
               <span key={step} className="inline-flex items-center gap-2">
                 <span className="rounded-lg bg-white/[0.07] px-2.5 py-1 ring-1 ring-white/10">{step}</span>
-                {i < arr.length - 1 && <ArrowRight className="h-3.5 w-3.5 text-[#FFB347]" aria-hidden="true" />}
+                {i < arr.length - 1 && <ArrowRight className="h-3.5 w-3.5 text-[#176447]" aria-hidden="true" />}
               </span>
             ))}
           </div>
 
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <button onClick={onExplore} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#FF6600] px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-[#FF6600]/25 transition hover:bg-[#ff7b26] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+            <button onClick={onExplore} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#176447] px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-[#176447]/25 transition hover:bg-[#176447] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
               Explore Services <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </button>
             <button onClick={onRequest} className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/20 bg-white/[0.04] px-6 py-3.5 text-sm font-black text-white transition hover:bg-white/10 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
@@ -100,7 +100,7 @@ function Hero({ onExplore, onRequest }) {
                 { icon: "cyber", en: "Cyber Safety", hi: "साइबर सुरक्षा" }
               ].map((c) => (
                 <div key={c.en} className="rounded-2xl border border-white/10 bg-white/[0.06] p-3.5 transition hover:bg-white/10">
-                  <span className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#0e7490]/25 text-[#7fd8e8] ring-1 ring-white/10">
+                  <span className="mb-2.5 flex h-9 w-9 items-center justify-center rounded-xl bg-[#176447]/25 text-[#EAF0F6] ring-1 ring-white/10">
                     <HelpIcon name={c.icon} className="h-4.5 w-4.5" />
                   </span>
                   <p className="text-sm font-black text-white">{c.en}</p>
@@ -124,7 +124,7 @@ function TrustStrip() {
   return (
     <section className="border-b border-zinc-200 bg-white">
       <div className="mx-auto max-w-7xl px-5 py-8 sm:px-6">
-        <p className="text-center text-sm font-black text-[#002344] sm:text-base">
+        <p className="text-center text-sm font-black text-[#12345A] sm:text-base">
           Human guidance. Clear information. Responsible digital assistance.
         </p>
         <p className="mt-1 text-center font-hindi text-sm text-zinc-500" lang="hi">
@@ -137,11 +137,11 @@ function TrustStrip() {
             { icon: "people", t: "For everyone", d: "Students, families, farmers, seniors, NGOs and communities." }
           ].map((x) => (
             <div key={x.t} className="flex items-start gap-3 rounded-2xl border border-zinc-100 bg-zinc-50/60 p-4">
-              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#002344]/5 text-[#002344]">
+              <span className="mt-0.5 flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#12345A]/5 text-[#12345A]">
                 <HelpIcon name={x.icon} className="h-4.5 w-4.5" />
               </span>
               <div>
-                <p className="text-sm font-black text-[#002344]">{x.t}</p>
+                <p className="text-sm font-black text-[#12345A]">{x.t}</p>
                 <p className="mt-0.5 text-xs leading-relaxed text-zinc-500">{x.d}</p>
               </div>
             </div>
@@ -159,10 +159,10 @@ function Finder({ query, setQuery, filter, setFilter, onOpen }) {
   const listId = "help-finder-results";
 
   return (
-    <section id="help-finder" className="bg-[#f6f8fb] py-14 sm:py-16 scroll-mt-24">
+    <section id="help-finder" className="bg-[#EAF0F6] py-14 sm:py-16 scroll-mt-24">
       <div className="mx-auto max-w-5xl px-5 sm:px-6">
         <div className="text-center">
-          <h2 className="font-serif text-3xl font-bold text-[#002344] sm:text-4xl">How can we help you?</h2>
+          <h2 className="font-serif text-3xl font-bold text-[#12345A] sm:text-4xl">How can we help you?</h2>
           <p className="mt-2 font-hindi text-lg text-zinc-500" lang="hi">हम आपकी किस प्रकार सहायता कर सकते हैं?</p>
         </div>
 
@@ -178,11 +178,11 @@ function Finder({ query, setQuery, filter, setFilter, onOpen }) {
               placeholder="Search for a service / सेवा खोजें"
               aria-controls={listId}
               autoComplete="off"
-              className="w-full rounded-2xl border border-zinc-200 bg-white py-4 pl-12 pr-11 text-base text-zinc-800 shadow-sm outline-none transition placeholder:text-zinc-400 focus:border-[#0e7490] focus:ring-4 focus:ring-[#0e7490]/10"
+              className="w-full rounded-2xl border border-zinc-200 bg-white py-4 pl-12 pr-11 text-base text-zinc-800 shadow-sm outline-none transition placeholder:text-zinc-400 focus:border-[#176447] focus:ring-4 focus:ring-[#176447]/10"
             />
             {query && (
               <button type="button" onClick={() => setQuery("")} aria-label="Clear search"
-                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0e7490]">
+                className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#176447]">
                 <X className="h-4 w-4" aria-hidden="true" />
               </button>
             )}
@@ -192,8 +192,8 @@ function Finder({ query, setQuery, filter, setFilter, onOpen }) {
             {HELP_FILTERS.map((f) => (
               <button key={f.id} type="button" onClick={() => setFilter(f.id)}
                 aria-pressed={filter === f.id}
-                className={"shrink-0 rounded-full px-3.5 py-2 text-xs font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0e7490] " +
-                  (filter === f.id ? "bg-[#002344] text-white shadow-sm" : "border border-zinc-200 bg-white text-zinc-600 hover:border-[#002344]/30 hover:text-[#002344]")}>
+                className={"shrink-0 rounded-full px-3.5 py-2 text-xs font-bold transition focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#176447] " +
+                  (filter === f.id ? "bg-[#12345A] text-white shadow-sm" : "border border-zinc-200 bg-white text-zinc-600 hover:border-[#12345A]/30 hover:text-[#12345A]")}>
                 {f.en}
               </button>
             ))}
@@ -204,20 +204,20 @@ function Finder({ query, setQuery, filter, setFilter, onOpen }) {
               <div className="overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm">
                 {results.length === 0 ? (
                   <div className="p-6 text-center">
-                    <p className="text-sm font-bold text-[#002344]">No matching services found.</p>
-                    <p className="mt-1 text-xs text-zinc-500">Try a different word, or <button type="button" className="font-bold text-[#0e7490] underline" onClick={() => { setQuery(""); setFilter("all"); }}>browse all services</button>.</p>
+                    <p className="text-sm font-bold text-[#12345A]">No matching services found.</p>
+                    <p className="mt-1 text-xs text-zinc-500">Try a different word, or <button type="button" className="font-bold text-[#176447] underline" onClick={() => { setQuery(""); setFilter("all"); }}>browse all services</button>.</p>
                   </div>
                 ) : (
                   <ul className="divide-y divide-zinc-100">
                     {results.map((s) => (
                       <li key={s.id}>
                         <button type="button" onClick={() => onOpen(s)}
-                          className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#0e7490]">
-                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#002344]/5 text-[#002344]">
+                          className="flex w-full items-center gap-3 px-4 py-3.5 text-left transition hover:bg-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#176447]">
+                          <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-[#12345A]/5 text-[#12345A]">
                             <HelpIcon name={s.icon} className="h-4.5 w-4.5" />
                           </span>
                           <span className="min-w-0 flex-1">
-                            <span className="block truncate text-sm font-bold text-[#002344]">{s.en}</span>
+                            <span className="block truncate text-sm font-bold text-[#12345A]">{s.en}</span>
                             <span className="block truncate font-hindi text-xs text-zinc-500" lang="hi">{s.hi} · {s.categoryEn}</span>
                           </span>
                           <ArrowRight className="h-4 w-4 shrink-0 text-zinc-300" aria-hidden="true" />
@@ -243,15 +243,15 @@ function Finder({ query, setQuery, filter, setFilter, onOpen }) {
 /* ----------------------------------------------------------- categories */
 function CategoryCard({ cat, onOpen }) {
   return (
-    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-[#0e7490]/30 hover:shadow-lg">
-      <div className="relative h-28 w-full overflow-hidden bg-[#002344]">
+    <article className="group flex h-full flex-col overflow-hidden rounded-2xl border border-zinc-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:border-[#176447]/30 hover:shadow-lg">
+      <div className="relative h-28 w-full overflow-hidden bg-[#12345A]">
         <HelpIllustration name={cat.icon} />
         <span className="absolute bottom-3 left-4 flex h-11 w-11 items-center justify-center rounded-xl bg-white/15 text-white shadow-sm ring-1 ring-white/30 backdrop-blur-sm">
           <HelpIcon name={cat.icon} className="h-5.5 w-5.5" />
         </span>
       </div>
       <div className="flex flex-1 flex-col p-5 pt-4">
-        <h3 className="text-base font-black leading-snug text-[#002344]">{cat.en}</h3>
+        <h3 className="text-base font-black leading-snug text-[#12345A]">{cat.en}</h3>
         <p className="mt-0.5 font-hindi text-sm font-semibold text-zinc-500" lang="hi">{cat.hi}</p>
         <p className="mt-2.5 flex-1 text-sm leading-relaxed text-zinc-600">{cat.blurbEn}</p>
         <div className="mt-4 flex items-center justify-between border-t border-zinc-100 pt-3.5">
@@ -259,7 +259,7 @@ function CategoryCard({ cat, onOpen }) {
             <FileText className="h-3.5 w-3.5" aria-hidden="true" /> {cat.count} services
           </span>
           <button type="button" onClick={() => onOpen(cat)}
-            className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-black text-[#0e7490] transition hover:bg-[#0e7490]/8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#0e7490]">
+            className="inline-flex items-center gap-1.5 rounded-xl px-3 py-2 text-xs font-black text-[#176447] transition hover:bg-[#176447]/8 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#176447]">
             Explore Services <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" aria-hidden="true" />
           </button>
         </div>
@@ -273,7 +273,7 @@ function CategoryGrid({ onOpenCategory }) {
     <section id="help-categories" className="bg-white py-14 sm:py-16 scroll-mt-24">
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-serif text-3xl font-bold text-[#002344] sm:text-4xl">Service Categories</h2>
+          <h2 className="font-serif text-3xl font-bold text-[#12345A] sm:text-4xl">Service Categories</h2>
           <p className="mt-2 font-hindi text-lg text-zinc-500" lang="hi">सेवा श्रेणियाँ</p>
           <p className="mt-3 text-sm text-zinc-500 sm:text-base">Organised help across education, career, government, documents, digital skills and more.</p>
         </div>
@@ -288,7 +288,7 @@ function CategoryGrid({ onOpenCategory }) {
 /* -------------------------------------------------------------- popular */
 function Popular({ onOpen }) {
   return (
-    <section className="bg-[#062a52] py-14 text-white sm:py-16">
+    <section className="bg-[#12345A] py-14 text-white sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
@@ -301,7 +301,7 @@ function Popular({ onOpen }) {
           {HELP_POPULAR.map((s) => (
             <button key={s.id} type="button" onClick={() => onOpen(s)}
               className="group flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-4 text-left transition hover:bg-white/12 hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-[#7fd8e8] ring-1 ring-white/10">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/10 text-[#EAF0F6] ring-1 ring-white/10">
                 <HelpIcon name={s.icon} className="h-5 w-5" />
               </span>
               <span className="min-w-0">
@@ -319,20 +319,20 @@ function Popular({ onOpen }) {
 /* ------------------------------------------------------------- audience */
 function Audience() {
   return (
-    <section className="bg-[#f6f8fb] py-14 sm:py-16">
+    <section className="bg-[#EAF0F6] py-14 sm:py-16">
       <div className="mx-auto max-w-7xl px-5 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-serif text-3xl font-bold text-[#002344] sm:text-4xl">Who can use it?</h2>
+          <h2 className="font-serif text-3xl font-bold text-[#12345A] sm:text-4xl">Who can use it?</h2>
           <p className="mt-2 font-hindi text-lg text-zinc-500" lang="hi">यह किसके लिए है?</p>
         </div>
         <div className="mt-9 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
           {HELP_AUDIENCE.map((a) => (
             <div key={a.en} className="flex items-center gap-3 rounded-2xl border border-zinc-200 bg-white p-4 transition hover:shadow-md">
-              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#0e7490]/10 text-[#0e7490]">
+              <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[#176447]/10 text-[#176447]">
                 <HelpIcon name={a.icon} className="h-5 w-5" />
               </span>
               <span className="min-w-0">
-                <span className="block text-sm font-black leading-snug text-[#002344]">{a.en}</span>
+                <span className="block text-sm font-black leading-snug text-[#12345A]">{a.en}</span>
                 <span className="block font-hindi text-xs text-zinc-500" lang="hi">{a.hi}</span>
               </span>
             </div>
@@ -349,17 +349,17 @@ function HowItWorks() {
     <section className="bg-white py-14 sm:py-16">
       <div className="mx-auto max-w-6xl px-5 sm:px-6">
         <div className="mx-auto max-w-2xl text-center">
-          <h2 className="font-serif text-3xl font-bold text-[#002344] sm:text-4xl">How it works</h2>
+          <h2 className="font-serif text-3xl font-bold text-[#12345A] sm:text-4xl">How it works</h2>
           <p className="mt-2 font-hindi text-lg text-zinc-500" lang="hi">यह कैसे काम करता है</p>
         </div>
         <ol className="mt-10 grid gap-6 md:grid-cols-4">
           {HELP_PROCESS.map((step, i) => (
             <li key={step.n} className="relative">
               {i < HELP_PROCESS.length - 1 && (
-                <span className="absolute left-[22px] top-12 hidden h-[2px] w-[calc(100%-1rem)] bg-gradient-to-r from-[#0e7490]/30 to-transparent md:block" aria-hidden="true" />
+                <span className="absolute left-[22px] top-12 hidden h-[2px] w-[calc(100%-1rem)] bg-gradient-to-r from-[#176447]/30 to-transparent md:block" aria-hidden="true" />
               )}
-              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#002344] text-sm font-black text-white shadow-sm">{step.n}</span>
-              <h3 className="mt-4 text-base font-black text-[#002344]">{step.en}</h3>
+              <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#12345A] text-sm font-black text-white shadow-sm">{step.n}</span>
+              <h3 className="mt-4 text-base font-black text-[#12345A]">{step.en}</h3>
               <p className="mt-0.5 font-hindi text-sm text-zinc-500" lang="hi">{step.hi}</p>
             </li>
           ))}
@@ -372,17 +372,17 @@ function HowItWorks() {
 /* --------------------------------------------------------------- policy */
 function Policy() {
   return (
-    <section className="bg-[#f6f8fb] py-14 sm:py-16">
+    <section className="bg-[#EAF0F6] py-14 sm:py-16">
       <div className="mx-auto grid max-w-6xl gap-6 px-5 sm:px-6 md:grid-cols-2">
         <div className="rounded-3xl border border-zinc-200 bg-white p-6 sm:p-8">
           <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-emerald-50 text-emerald-600">
             <BadgeCheck className="h-5.5 w-5.5" aria-hidden="true" />
           </span>
-          <h2 className="text-xl font-black text-[#002344]">Free Assistance Policy</h2>
+          <h2 className="text-xl font-black text-[#12345A]">Free Assistance Policy</h2>
           <p className="mt-1 font-hindi text-sm text-zinc-500" lang="hi">निःशुल्क सहायता नीति</p>
           <p className="mt-4 text-sm leading-relaxed text-zinc-600">
             Where specifically offered, SSF provides digital assistance and guidance
-            <strong className="text-[#002344]"> without an assistance charge</strong>.
+            <strong className="text-[#12345A]"> without an assistance charge</strong>.
           </p>
           <p className="mt-3 text-sm leading-relaxed text-zinc-600">However, official third-party costs may still apply:</p>
           <ul className="mt-3 grid gap-2 text-sm text-zinc-600 sm:grid-cols-2">
@@ -396,7 +396,7 @@ function Policy() {
           <span className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl bg-amber-100 text-amber-700">
             <ShieldAlert className="h-5.5 w-5.5" aria-hidden="true" />
           </span>
-          <h2 className="text-xl font-black text-[#002344]">Service is not a guarantee</h2>
+          <h2 className="text-xl font-black text-[#12345A]">Service is not a guarantee</h2>
           <p className="mt-1 font-hindi text-sm text-zinc-500" lang="hi">सेवा गारंटी नहीं है</p>
           <p className="mt-4 rounded-2xl border border-amber-200 bg-white/70 p-4 text-sm font-semibold leading-relaxed text-amber-900">
             SSF provides digital assistance and guidance. Final approval, eligibility and
@@ -424,7 +424,7 @@ function Safety() {
               <span className="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-red-100 text-red-600">
                 <ShieldAlert className="h-6 w-6" aria-hidden="true" />
               </span>
-              <h2 className="font-serif text-2xl font-bold text-[#002344] sm:text-3xl">Safety &amp; Privacy</h2>
+              <h2 className="font-serif text-2xl font-bold text-[#12345A] sm:text-3xl">Safety &amp; Privacy</h2>
               <p className="mt-1 font-hindi text-base text-zinc-500" lang="hi">सुरक्षा एवं गोपनीयता</p>
               <p className="mt-4 max-w-xl text-sm leading-relaxed text-zinc-600">
                 SSF will <strong className="text-red-700">never</strong> ask for any of the following.
@@ -454,10 +454,10 @@ function Safety() {
 function Faq() {
   const [open, setOpen] = useState(0);
   return (
-    <section className="bg-[#f6f8fb] py-14 sm:py-16">
+    <section className="bg-[#EAF0F6] py-14 sm:py-16">
       <div className="mx-auto max-w-3xl px-5 sm:px-6">
         <div className="text-center">
-          <h2 className="font-serif text-3xl font-bold text-[#002344] sm:text-4xl">Frequently Asked Questions</h2>
+          <h2 className="font-serif text-3xl font-bold text-[#12345A] sm:text-4xl">Frequently Asked Questions</h2>
           <p className="mt-2 font-hindi text-lg text-zinc-500" lang="hi">अक्सर पूछे जाने वाले प्रश्न</p>
         </div>
         <div className="mt-8 divide-y divide-zinc-200 overflow-hidden rounded-2xl border border-zinc-200 bg-white">
@@ -468,9 +468,9 @@ function Faq() {
                 <h3>
                   <button type="button" onClick={() => setOpen(isOpen ? -1 : i)}
                     aria-expanded={isOpen}
-                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#0e7490]">
+                    className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left transition hover:bg-zinc-50 focus-visible:outline focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:outline-[#176447]">
                     <span>
-                      <span className="block text-sm font-black text-[#002344] sm:text-base">{item.q}</span>
+                      <span className="block text-sm font-black text-[#12345A] sm:text-base">{item.q}</span>
                       <span className="mt-0.5 block font-hindi text-xs text-zinc-500" lang="hi">{item.qHi}</span>
                     </span>
                     <ChevronDown className={"h-5 w-5 shrink-0 text-zinc-400 transition-transform " + (isOpen ? "rotate-180" : "")} aria-hidden="true" />
@@ -494,7 +494,7 @@ function Faq() {
 /* -------------------------------------------------------------- cta/foot */
 function RequestCta({ onRequest }) {
   return (
-    <section className="bg-[#002344] py-14 text-white sm:py-16">
+    <section className="bg-[#12345A] py-14 text-white sm:py-16">
       <div className="mx-auto max-w-4xl px-5 text-center sm:px-6">
         <h2 className="font-serif text-3xl font-bold sm:text-4xl">Ready to get help?</h2>
         <p className="mt-2 font-hindi text-lg text-blue-100/80" lang="hi">सहायता के लिए तैयार हैं?</p>
@@ -502,7 +502,7 @@ function RequestCta({ onRequest }) {
           Tell us what you need. SSF reviews your request and guides you on the next step.
         </p>
         <div className="mt-7 flex flex-col justify-center gap-3 sm:flex-row">
-          <button onClick={onRequest} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#FF6600] px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-[#FF6600]/25 transition hover:bg-[#ff7b26] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
+          <button onClick={onRequest} className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#176447] px-6 py-3.5 text-sm font-black text-white shadow-lg shadow-[#176447]/25 transition hover:bg-[#176447] hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">
             Request Assistance <Send className="h-4 w-4" aria-hidden="true" />
           </button>
           <a href={`https://wa.me/${CONTACT_INFO.phones.primary.replace(/\D/g, "")}`} target="_blank" rel="noopener noreferrer"
@@ -532,7 +532,7 @@ function ModalShell({ titleId, onClose, children, size = "max-w-2xl" }) {
     return () => { document.removeEventListener("keydown", onKey); document.body.style.overflow = prev; };
   }, [onClose]);
   return (
-    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-[#001529]/60 p-0 backdrop-blur-sm sm:items-center sm:p-4" role="presentation"
+    <div className="fixed inset-0 z-[70] flex items-end justify-center bg-[#12345A]/60 p-0 backdrop-blur-sm sm:items-center sm:p-4" role="presentation"
       onMouseDown={(e) => { if (e.target === e.currentTarget) onClose(); }}>
       <div ref={ref} tabIndex={-1} role="dialog" aria-modal="true" aria-labelledby={titleId}
         className={`max-h-[92vh] w-full ${size} overflow-y-auto rounded-t-3xl bg-white shadow-2xl outline-none sm:rounded-3xl`}>
@@ -550,17 +550,17 @@ function ServiceModal({ service, onClose, onRequest }) {
     <ModalShell titleId="help-service-title" onClose={onClose} size="max-w-3xl">
       <div className="sticky top-0 z-10 flex items-start justify-between gap-4 border-b border-zinc-100 bg-white/95 px-5 py-4 backdrop-blur sm:px-7">
         <div className="flex items-start gap-3">
-          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#002344] to-[#0e4a70] text-white">
+          <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-[#12345A] to-[#12345A] text-white">
             <HelpIcon name={service.icon} className="h-5.5 w-5.5" />
           </span>
           <div>
-            <h2 id="help-service-title" className="text-lg font-black leading-snug text-[#002344]">{service.en}</h2>
+            <h2 id="help-service-title" className="text-lg font-black leading-snug text-[#12345A]">{service.en}</h2>
             <p className="font-hindi text-sm font-semibold text-zinc-500" lang="hi">{service.hi}</p>
-            <p className="mt-1 text-[11px] font-black uppercase tracking-wide text-[#0e7490]">{service.categoryEn}</p>
+            <p className="mt-1 text-[11px] font-black uppercase tracking-wide text-[#176447]">{service.categoryEn}</p>
           </div>
         </div>
         <button type="button" onClick={onClose} aria-label="Close"
-          className="rounded-full p-2 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#0e7490]">
+          className="rounded-full p-2 text-zinc-400 transition hover:bg-zinc-100 hover:text-zinc-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#176447]">
           <X className="h-5 w-5" aria-hidden="true" />
         </button>
       </div>
@@ -569,19 +569,19 @@ function ServiceModal({ service, onClose, onRequest }) {
         <div>
           <h3 className="text-sm font-black uppercase tracking-wide text-zinc-400">What is this?</h3>
           <p className="mt-2 text-sm leading-relaxed text-zinc-600">
-            <strong className="text-[#002344]">{service.en}</strong> is offered under
-            <strong className="text-[#002344]"> {service.categoryEn}</strong>. SSF provides digital assistance and guidance to help you complete the correct process using the right official channel.
+            <strong className="text-[#12345A]">{service.en}</strong> is offered under
+            <strong className="text-[#12345A]"> {service.categoryEn}</strong>. SSF provides digital assistance and guidance to help you complete the correct process using the right official channel.
           </p>
         </div>
 
         <div className="grid gap-5 sm:grid-cols-2">
           <div className="rounded-2xl border border-zinc-100 bg-zinc-50/60 p-4">
-            <h3 className="text-sm font-black text-[#002344]">Who can use this help?</h3>
+            <h3 className="text-sm font-black text-[#12345A]">Who can use this help?</h3>
             <p className="mt-2 text-sm leading-relaxed text-zinc-600">{service.whoEn}</p>
             <p className="mt-1.5 font-hindi text-xs leading-relaxed text-zinc-500" lang="hi">{service.whoHi}</p>
           </div>
           <div className="rounded-2xl border border-zinc-100 bg-zinc-50/60 p-4">
-            <h3 className="text-sm font-black text-[#002344]">What may be required?</h3>
+            <h3 className="text-sm font-black text-[#12345A]">What may be required?</h3>
             <ul className="mt-2 space-y-1.5">
               {service.docsEn.map((d) => (
                 <li key={d} className="flex items-start gap-2 text-sm text-zinc-600">
@@ -593,13 +593,13 @@ function ServiceModal({ service, onClose, onRequest }) {
         </div>
 
         <div>
-          <h3 className="text-sm font-black text-[#002344]">What can SSF help with?</h3>
+          <h3 className="text-sm font-black text-[#12345A]">What can SSF help with?</h3>
           <p className="mt-2 text-sm leading-relaxed text-zinc-600">{service.helpEn}</p>
           <p className="mt-1.5 font-hindi text-xs leading-relaxed text-zinc-500" lang="hi">{service.helpHi}</p>
         </div>
 
         <div>
-          <h3 className="text-sm font-black text-[#002344]">How does it work?</h3>
+          <h3 className="text-sm font-black text-[#12345A]">How does it work?</h3>
           <ol className="mt-3 space-y-3">
             {[
               "Submit an assistance request.",
@@ -609,7 +609,7 @@ function ServiceModal({ service, onClose, onRequest }) {
               "You receive the final result from the concerned authority, where applicable."
             ].map((t, i) => (
               <li key={t} className="flex items-start gap-3 text-sm text-zinc-600">
-                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#002344] text-[11px] font-black text-white">{i + 1}</span>
+                <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#12345A] text-[11px] font-black text-white">{i + 1}</span>
                 {t}
               </li>
             ))}
@@ -623,13 +623,13 @@ function ServiceModal({ service, onClose, onRequest }) {
 
         {siblings.length > 1 && (
           <div>
-            <h3 className="text-sm font-black text-[#002344]">More in {service.categoryEn}</h3>
+            <h3 className="text-sm font-black text-[#12345A]">More in {service.categoryEn}</h3>
             <div className="mt-3 flex flex-wrap gap-2">
               {visible.map((s) => (
                 <span key={s.id} className="rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-600">{s.en}</span>
               ))}
               {siblings.length > 6 && !showAll && (
-                <button type="button" onClick={() => setShowAll(true)} className="rounded-xl border border-[#0e7490]/30 px-3 py-1.5 text-xs font-black text-[#0e7490] hover:bg-[#0e7490]/8">
+                <button type="button" onClick={() => setShowAll(true)} className="rounded-xl border border-[#176447]/30 px-3 py-1.5 text-xs font-black text-[#176447] hover:bg-[#176447]/8">
                   +{siblings.length - 6} more
                 </button>
               )}
@@ -640,7 +640,7 @@ function ServiceModal({ service, onClose, onRequest }) {
 
       <div className="sticky bottom-0 flex flex-col gap-2 border-t border-zinc-100 bg-white/95 px-5 py-4 backdrop-blur sm:flex-row sm:px-7">
         <button type="button" onClick={() => onRequest(service)}
-          className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#FF6600] px-6 py-3.5 text-sm font-black text-white shadow-md transition hover:bg-[#ff7b26] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#FF6600]">
+          className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#176447] px-6 py-3.5 text-sm font-black text-white shadow-md transition hover:bg-[#176447] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#176447]">
           Request Assistance <ArrowRight className="h-4 w-4" aria-hidden="true" />
         </button>
         <button type="button" onClick={onClose}
@@ -729,7 +729,7 @@ function RequestModal({ service, categories, onClose }) {
     <ModalShell titleId="help-request-title" onClose={onClose} size="max-w-2xl">
       <div className="sticky top-0 z-10 flex items-center justify-between gap-4 border-b border-zinc-100 bg-white/95 px-5 py-4 backdrop-blur sm:px-7">
         <div>
-          <h2 id="help-request-title" className="text-lg font-black text-[#002344]">Request Assistance</h2>
+          <h2 id="help-request-title" className="text-lg font-black text-[#12345A]">Request Assistance</h2>
           <p className="font-hindi text-sm text-zinc-500" lang="hi">सहायता अनुरोध करें</p>
         </div>
         <button type="button" onClick={onClose} aria-label="Close"
@@ -743,17 +743,17 @@ function RequestModal({ service, categories, onClose }) {
           <span className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
             <Check className="h-8 w-8" aria-hidden="true" />
           </span>
-          <h3 className="text-2xl font-black text-[#002344]">Request Received</h3>
+          <h3 className="text-2xl font-black text-[#12345A]">Request Received</h3>
           <p className="mt-1 font-hindi text-base text-zinc-500" lang="hi">आपका सहायता अनुरोध प्राप्त हो गया है।</p>
           <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-zinc-600">
             Thank you. The SSF team will review your request and reach out using the contact details you provided.
           </p>
           <div className="mx-auto mt-5 inline-flex flex-col items-center rounded-2xl border border-zinc-200 bg-zinc-50 px-6 py-4">
             <span className="text-[11px] font-black uppercase tracking-widest text-zinc-400">Reference number</span>
-            <span className="mt-1 font-mono text-lg font-black text-[#002344]">{reference}</span>
+            <span className="mt-1 font-mono text-lg font-black text-[#12345A]">{reference}</span>
           </div>
           <button type="button" onClick={onClose}
-            className="mt-7 inline-flex items-center justify-center rounded-2xl bg-[#002344] px-6 py-3.5 text-sm font-black text-white transition hover:bg-[#0e4a70]">
+            className="mt-7 inline-flex items-center justify-center rounded-2xl bg-[#12345A] px-6 py-3.5 text-sm font-black text-white transition hover:bg-[#12345A]">
             Close
           </button>
         </div>
@@ -809,7 +809,7 @@ function RequestModal({ service, categories, onClose }) {
 
           <div className="flex flex-col gap-2 sm:flex-row">
             <button type="submit" disabled={state === "sending"}
-              className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#FF6600] px-6 py-3.5 text-sm font-black text-white shadow-md transition hover:bg-[#ff7b26] disabled:cursor-not-allowed disabled:opacity-70">
+              className="inline-flex flex-1 items-center justify-center gap-2 rounded-2xl bg-[#176447] px-6 py-3.5 text-sm font-black text-white shadow-md transition hover:bg-[#176447] disabled:cursor-not-allowed disabled:opacity-70">
               {state === "sending" ? <><Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> Sending…</> : <>Submit Request <Send className="h-4 w-4" aria-hidden="true" /></>}
             </button>
             <button type="button" onClick={onClose}
@@ -828,14 +828,14 @@ function RequestModal({ service, categories, onClose }) {
 
 function inputCls(error) {
   return "w-full rounded-xl border bg-white px-3.5 py-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:ring-4 " +
-    (error ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-zinc-200 focus:border-[#0e7490] focus:ring-[#0e7490]/10");
+    (error ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-zinc-200 focus:border-[#176447] focus:ring-[#176447]/10");
 }
 
 function Field({ label, required, error, children }) {
   return (
     <label className="block">
       <span className="mb-1.5 block text-xs font-black uppercase tracking-wide text-zinc-500">
-        {label}{required && <span className="text-[#FF6600]"> *</span>}
+        {label}{required && <span className="text-[#176447]"> *</span>}
       </span>
       {children}
       {error && <span className="mt-1 block text-xs font-semibold text-red-600">{error}</span>}

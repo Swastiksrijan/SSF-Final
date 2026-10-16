@@ -72,7 +72,7 @@ export default function ImsCostCentres() {
     { key: 'recordId', en: 'ID', render: (r) => <span className="font-mono text-xs text-slate-500">{r.recordId}</span> },
     { key: 'name', en: 'Cost Centre', hi: 'लागत केंद्र', render: (r) => (
       <div>
-        <p className="font-semibold text-[#002344]">{r.name}</p>
+        <p className="font-semibold text-[#12345A]">{r.name}</p>
         <p className="text-[11px] text-slate-400">{TYPE_KEYS[r.centreType] || r.centreType || '—'}{r.category ? ` · ${r.category}` : ''}{r.programmeName ? ` · ${r.programmeName}` : ''}</p>
       </div>
     ) },
@@ -135,7 +135,7 @@ export default function ImsCostCentres() {
         <div className="relative">
           <Icons.Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('search_placeholder')}
-            className="rounded-lg border border-slate-300 py-2 pl-8 pr-3 text-sm outline-none focus:border-[#FF6600]" />
+            className="rounded-lg border border-slate-300 py-2 pl-8 pr-3 text-sm outline-none focus:border-[#176447]" />
         </div>
         <Select value={filters.centreType} onChange={(v) => setFilters((f) => ({ ...f, centreType: v }))}
           options={Object.entries(TYPE_KEYS).map(([v, l]) => [v, l])} placeholder={t('type')} />
@@ -173,7 +173,7 @@ function UtilBar({ pct, over }) {
 function Select({ value, onChange, options, placeholder }) {
   return (
     <select value={value} onChange={(e) => onChange(e.target.value)}
-      className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#FF6600]">
+      className="rounded-lg border border-slate-300 px-3 py-2 text-sm outline-none focus:border-[#176447]">
       <option value="">{placeholder} · —</option>
       {options.map(([v, l]) => <option key={v} value={v}>{l}</option>)}
     </select>
@@ -438,7 +438,7 @@ function AuditHistory({ id }) {
       <ol className="relative space-y-4 border-l border-slate-200 pl-4">
         {rows.map((h) => (
           <li key={h.id} className="relative">
-            <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-[#FF6600]" />
+            <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-[#176447]" />
             <div className="flex items-center gap-2">
               <Badge status={h.action} />
               <span className="text-xs text-slate-400">{new Date(h.createdAt).toLocaleString('en-IN')}</span>
@@ -461,7 +461,7 @@ function Row({ k, v }) {
 }
 
 function BudgetLine({ label, value, tone = 'navy' }) {
-  const colors = { navy: 'text-[#002344]', green: 'text-emerald-600', red: 'text-rose-600', amber: 'text-amber-600' };
+  const colors = { navy: 'text-[#12345A]', green: 'text-emerald-600', red: 'text-rose-600', amber: 'text-amber-600' };
   return (
     <div className="flex items-center justify-between border-b border-dashed border-slate-200 pb-1.5">
       <span className="text-sm text-slate-500">{label}</span>

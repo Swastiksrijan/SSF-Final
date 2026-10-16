@@ -31,7 +31,7 @@ const HygieneModule = () => {
     ];
 
     return (
-        <section className="py-20 bg-[#fdfcf0] relative overflow-hidden">
+        <section className="py-20 bg-[#FAF9F5] relative overflow-hidden">
             {/* Decorative background elements */}
             <div className="absolute top-0 right-0 w-64 h-64 bg-blue-100 rounded-full blur-3xl opacity-50 -mr-32 -mt-32"></div>
             <div className="absolute bottom-0 left-0 w-64 h-64 bg-green-100 rounded-full blur-3xl opacity-50 -ml-32 -mb-32"></div>
@@ -41,7 +41,7 @@ const HygieneModule = () => {
                     <motion.span
                         initial={{ opacity: 0, y: 10 }}
                         whileInView={{ opacity: 1, y: 0 }}
-                        className="inline-block px-4 py-1.5 bg-[#004d99] text-white text-xs font-bold rounded-full mb-4 tracking-widest uppercase"
+                        className="inline-block px-4 py-1.5 bg-[#12345A] text-white text-xs font-bold rounded-full mb-4 tracking-widest uppercase"
                     >
                         SSF Learning Hub Special
                     </motion.span>
@@ -56,7 +56,7 @@ const HygieneModule = () => {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         transition={{ delay: 0.1 }}
-                        className="text-2xl text-[#004d99] font-bold italic"
+                        className="text-2xl text-[#12345A] font-bold italic"
                     >
                         "स्वच्छ रहो, चमकदार रहो!"
                     </motion.p>

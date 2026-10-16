@@ -154,7 +154,7 @@ export default function ImsResource() {
             <Icons.Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
             <input value={search} onChange={e => setSearch(e.target.value)}
               placeholder={t('search_placeholder')}
-              className="rounded-lg border border-slate-300 py-2 pl-8 pr-3 text-sm outline-none focus:border-[#FF6600]" />
+              className="rounded-lg border border-slate-300 py-2 pl-8 pr-3 text-sm outline-none focus:border-[#176447]" />
           </div>
           <Button icon="Plus" onClick={openNew}>{t('new_record')}</Button>
           {resource === 'volunteers' && (
@@ -202,7 +202,7 @@ export default function ImsResource() {
                   <tr key={row.id} className="hover:bg-slate-50">
                     <td className="whitespace-nowrap px-4 py-2.5 font-mono text-xs text-slate-500">{row.recordId}</td>
                     <td className="px-4 py-2.5">
-                      <button className="font-medium text-[#002344] hover:underline"
+                      <button className="font-medium text-[#12345A] hover:underline"
                         onClick={() => {
                           if (resource === 'persons') navigate({ to: '/ims/person/$id', params: { id: String(row.id) } });
                           else if (resource === 'members') navigate({ to: '/ims/member/$id', params: { id: String(row.id) } });
@@ -212,8 +212,8 @@ export default function ImsResource() {
                     </td>
                     <td className="px-4 py-2.5"><Badge status={row.status} /></td>
                     <td className="whitespace-nowrap px-4 py-2.5 text-right">
-                      <button onClick={() => openEdit(row)} className="mr-3 text-slate-500 hover:text-[#FF6600]" title={t('edit')}><Icons.Pencil size={16} /></button>
-                      <button onClick={() => ims.history(resource, row.id).then(setHistory)} className="mr-3 text-slate-500 hover:text-[#002344]" title={t('history')}><Icons.History size={16} /></button>
+                      <button onClick={() => openEdit(row)} className="mr-3 text-slate-500 hover:text-[#176447]" title={t('edit')}><Icons.Pencil size={16} /></button>
+                      <button onClick={() => ims.history(resource, row.id).then(setHistory)} className="mr-3 text-slate-500 hover:text-[#12345A]" title={t('history')}><Icons.History size={16} /></button>
                       <button onClick={() => archive(row)} className="text-slate-400 hover:text-rose-600" title={t('archive')}><Icons.Archive size={16} /></button>
                     </td>
                   </tr>
@@ -252,7 +252,7 @@ export default function ImsResource() {
               <ol className="relative space-y-4 border-l border-slate-200 pl-4">
                 {history.history.map((h, i) => (
                   <li key={h.id} className="relative">
-                    <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-[#FF6600]" />
+                    <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-[#176447]" />
                     <div className="flex items-center gap-2">
                       <Badge status={h.action} />
                       <span className="text-xs text-slate-400">{new Date(h.createdAt).toLocaleString('en-IN')}</span>

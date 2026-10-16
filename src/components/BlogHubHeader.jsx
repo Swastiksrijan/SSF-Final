@@ -117,14 +117,14 @@ export default function BlogHubHeader({ initialTopic = "" }) {
 
       {activeCategory && (
         <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/80 px-4 py-6" onClick={() => setActiveCategory(null)}>
-          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-white/10 bg-white text-[#002344] shadow-2xl" onClick={(e) => e.stopPropagation()}>
+          <div className="max-h-[90vh] w-full max-w-3xl overflow-y-auto rounded-3xl border border-white/10 bg-white text-[#12345A] shadow-2xl" onClick={(e) => e.stopPropagation()}>
             <div className="sticky top-0 z-10 flex items-center justify-between border-b border-zinc-200 bg-white/95 px-5 py-4 backdrop-blur sm:px-7">
-              <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#002344]/[0.06] text-2xl">{activeCategory.icon}</span><div><p className="text-xs font-bold uppercase tracking-wider text-[#fb8500]">SSF Knowledge & Awareness / ज्ञान एवं जागरूकता</p><h2 className="text-xl font-black sm:text-2xl">{activeCategory.label} / {activeCategory.hi}</h2></div></div>
+              <div className="flex items-center gap-3"><span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#12345A]/[0.06] text-2xl">{activeCategory.icon}</span><div><p className="text-xs font-bold uppercase tracking-wider text-[#176447]">SSF Knowledge & Awareness / ज्ञान एवं जागरूकता</p><h2 className="text-xl font-black sm:text-2xl">{activeCategory.label} / {activeCategory.hi}</h2></div></div>
               <button type="button" onClick={() => setActiveCategory(null)} aria-label="Close / बंद करें" className="rounded-full border border-zinc-200 px-3 py-2 text-xl leading-none text-zinc-600 hover:bg-zinc-100">×</button>
             </div>
             <div className="p-6 sm:p-8"><p className="text-base leading-8 text-zinc-700 sm:text-lg">{activeCategory.intro}</p>
-              <div className="mt-7 rounded-2xl bg-[#F4F8FB] p-5 sm:p-6"><h3 className="text-lg font-extrabold">क्या जानें / What you will learn</h3><ul className="mt-4 space-y-3 text-sm leading-6 text-zinc-700 sm:text-base">{activeCategory.points.map((point) => <li key={point} className="flex gap-3"><span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#fb8500]" />{point}</li>)}</ul></div>
-              <div className="mt-6 rounded-2xl border border-[#fb8500]/25 bg-[#fff8f1] p-5 sm:p-6"><h3 className="text-lg font-extrabold">मुख्य सीख / Practical Learning</h3><p className="mt-3 leading-7 text-zinc-700">{activeCategory.action}</p></div>
+              <div className="mt-7 rounded-2xl bg-[#EAF0F6] p-5 sm:p-6"><h3 className="text-lg font-extrabold">क्या जानें / What you will learn</h3><ul className="mt-4 space-y-3 text-sm leading-6 text-zinc-700 sm:text-base">{activeCategory.points.map((point) => <li key={point} className="flex gap-3"><span className="mt-2 h-2 w-2 shrink-0 rounded-full bg-[#176447]" />{point}</li>)}</ul></div>
+              <div className="mt-6 rounded-2xl border border-[#176447]/25 bg-[#FAF9F5] p-5 sm:p-6"><h3 className="text-lg font-extrabold">मुख्य सीख / Practical Learning</h3><p className="mt-3 leading-7 text-zinc-700">{activeCategory.action}</p></div>
               <div className="mt-7 border-t border-zinc-200 pt-6">
                 <h3 className="text-lg font-extrabold">शेयर करें / Share this Topic</h3>
                 <p className="mt-2 text-sm text-zinc-500">इस विषय की जानकारी दूसरों तक पहुँचाएँ / Share this learning with others.</p>
@@ -138,7 +138,7 @@ export default function BlogHubHeader({ initialTopic = "" }) {
                       await navigator.clipboard.writeText(url);
                       alert("Link copied / लिंक कॉपी हो गया");
                     }
-                  }} className="rounded-xl bg-[#002344] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#00365f]">↗ Share / शेयर</button>
+                  }} className="rounded-xl bg-[#12345A] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#12345A]">↗ Share / शेयर</button>
                   <button type="button" onClick={async () => {
                     await navigator.clipboard?.writeText(`${window.location.origin}/Blog/${getCategorySlug(activeCategory.label)}`);
                     alert("Link copied / लिंक कॉपी हो गया");

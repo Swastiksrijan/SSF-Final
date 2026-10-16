@@ -31,7 +31,7 @@ const getRoleLabel = (role, isMember) => {
 };
 
 const getImageFormat = (url) => {\n    const match = String(url || "").match(/^data:image\\/([a-z0-9.+-]+);/i);\n    if (match) {\n        const type = match[1].toLowerCase();\n        return type === "jpg" || type === "jpeg" ? "JPEG" : type === "webp" ? "WEBP" : "PNG";\n    }\n    return "JPEG";\n};\n\nconst addPhoto = async (doc, photoUrl, x, y, w, h, gold) => {
-    doc.setFillColor("#E8EDF2");
+    doc.setFillColor("#EAF0F6");
     doc.roundedRect(x, y, w, h, 1.8, 1.8, "F");
     if (!photoUrl) return false;
     try {
@@ -57,7 +57,7 @@ const getImageFormat = (url) => {\n    const match = String(url || "").match(/^d
     } catch {
         doc.setFont("helvetica", "bold");
         doc.setFontSize(5);
-        doc.setTextColor("#7B8490");
+        doc.setTextColor("#26343D");
         doc.text("PHOTO", x + w / 2, y + h / 2, { align: "center" });
         return false;
     }
@@ -74,12 +74,12 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
     const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [86, 54] });
     const W = 86;
     const H = 54;
-    const navy = "#002344";
-    const blue = "#0B3A63";
-    const gold = "#C5A059";
-    const cream = "#FBFAF6";
-    const ink = "#26323D";
-    const muted = "#697582";
+    const navy = "#12345A";
+    const blue = "#12345A";
+    const gold = "#F7A814";
+    const cream = "#FAF9F5";
+    const ink = "#26343D";
+    const muted = "#26343D";
 
     // FRONT — premium photo-ID layout
     doc.setFillColor(cream);
@@ -104,7 +104,7 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
     doc.setFontSize(6.2);
     doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", 16, 6.6);
     doc.setFontSize(3.8);
-    doc.setTextColor("#DDE7F0");
+    doc.setTextColor("#EAF0F6");
     doc.text(isMember ? "OFFICIAL MEMBERSHIP IDENTITY CARD" : "OFFICIAL VOLUNTEER IDENTITY CARD", 16, 10.7);
     doc.setFontSize(3.1);
     doc.setTextColor("#FFFFFF");
@@ -136,7 +136,7 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
     doc.setTextColor(muted);
     doc.text("OFFICIAL IDENTITY", dx, 25.2);
 
-    doc.setFillColor("#EEF3F7");
+    doc.setFillColor("#EAF0F6");
     doc.roundedRect(dx, 27, 31, 8.2, 1.4, 1.4, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(3.4);
@@ -169,7 +169,7 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
     const qrBoxY = 17.2;
     const qrBox = 17;
     doc.setFillColor("#FFFFFF");
-    doc.setDrawColor("#D8DEE5");
+    doc.setDrawColor("#EAF0F6");
     doc.setLineWidth(0.35);
     doc.roundedRect(qrBoxX, qrBoxY, qrBox, 23.2, 1.5, 1.5, "FD");
     if (verificationUrl) {
@@ -216,10 +216,10 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
     doc.setFontSize(6.1);
     doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", W / 2, 6.5, { align: "center" });
     doc.setFontSize(3.6);
-    doc.setTextColor("#DDE7F0");
+    doc.setTextColor("#EAF0F6");
     doc.text("OFFICIAL ID CARD • REVERSE", W / 2, 10, { align: "center" });
 
-    doc.setFillColor("#EEF3F7");
+    doc.setFillColor("#EAF0F6");
     doc.roundedRect(6, 17, 74, 8.8, 1.8, 1.8, "F");
     doc.setFont("helvetica", "bold");
     doc.setFontSize(4.2);

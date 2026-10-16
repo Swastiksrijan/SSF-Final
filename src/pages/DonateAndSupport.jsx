@@ -31,7 +31,7 @@ export default function DonateAndSupport() {
   ];
 
   const impactTiers = [
-    { amount: 1000, desc: "Educational supplies for 2 children", descHi: "2 बच्चों के लिए शैक्षिक सामग्री", color: "bg-[#003366]/5 border-[#003366]/20 text-[#003366]" },
+    { amount: 1000, desc: "Educational supplies for 2 children", descHi: "2 बच्चों के लिए शैक्षिक सामग्री", color: "bg-[#12345A]/5 border-[#12345A]/20 text-[#12345A]" },
     { amount: 2500, desc: "Health checkup camp for 20 villagers", descHi: "20 ग्रामीणों के लिए स्वास्थ्य जांच शिविर", color: "bg-green-50 border-green-200 text-green-800" },
     { amount: 5000, desc: "Vocational training for 1 woman", descHi: "1 महिला के लिए व्यावसायिक प्रशिक्षण", color: "bg-purple-50 border-purple-200 text-purple-800" },
     { amount: 10000, desc: "Digital classroom setup support", descHi: "डिजिटल क्लासरूम सेटअप सहायता", color: "bg-orange-50 border-orange-200 text-orange-800" },
@@ -56,7 +56,7 @@ export default function DonateAndSupport() {
             <h1 className="text-5xl md:text-7xl font-black leading-tight mb-6">
               Invest in <br /><span className="text-white">Hope & Dignity</span>
             </h1>
-            <h2 className="text-3xl font-hindi text-[#fb8500] mb-6">आशा और गरिमा में निवेश करें</h2>
+            <h2 className="text-3xl font-hindi text-[#176447] mb-6">आशा और गरिमा में निवेश करें</h2>
             <p className="text-zinc-300 text-xl md:text-2xl leading-relaxed max-w-2xl mx-auto">
               Your contribution isn't just charity. It's an investment in a child's education, a woman's independence, and a village's future.
             </p>
@@ -98,14 +98,14 @@ export default function DonateAndSupport() {
         <div className="max-w-6xl mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-black text-zinc-900 mb-4">Ways to Contribute</h2>
-            <h3 className="text-2xl font-hindi text-[#003366]">योगदान के तरीके</h3>
+            <h3 className="text-2xl font-hindi text-[#12345A]">योगदान के तरीके</h3>
             <p className="text-xl text-zinc-500 mt-4">Choose the method that suits you best.</p>
           </div>
           <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* LEFT COLUMN: ONLINE & QR */}
             <div className="space-y-8">
               {/* Online Donation Card */}
-              <div className="bg-gradient-to-br from-[#003366] to-black text-white p-8 md:p-10 rounded-3xl shadow-2xl relative overflow-hidden group">
+              <div className="bg-gradient-to-br from-[#12345A] to-black text-white p-8 md:p-10 rounded-3xl shadow-2xl relative overflow-hidden group">
                 <div className="absolute top-0 right-0 p-4 opacity-10 transform translate-x-1/4 -translate-y-1/4">
                   <FaHandHoldingHeart size={200} />
                 </div>
@@ -118,7 +118,7 @@ export default function DonateAndSupport() {
                 <a
                   href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
                   target="_blank"
-                  className="inline-block w-full bg-white text-[#003366] font-black text-xl py-4 rounded-xl text-center hover:bg-zinc-200 transition-colors shadow-lg"
+                  className="inline-block w-full bg-white text-[#12345A] font-black text-xl py-4 rounded-xl text-center hover:bg-zinc-200 transition-colors shadow-lg"
                 >
                   DONATE NOW
                 </a>
@@ -141,7 +141,7 @@ export default function DonateAndSupport() {
                 </div>
                 <div className="text-center md:text-left">
                   <h4 className="text-2xl font-bold text-zinc-900 mb-2 flex items-center justify-center md:justify-start gap-2">
-                    <FaQrcode className="text-[#003366]" /> Scan to Donate | स्कैन करें
+                    <FaQrcode className="text-[#12345A]" /> Scan to Donate | स्कैन करें
                   </h4>
                   <p className="text-zinc-600 mb-4">
                     Use any UPI app (Google Pay, PhonePe, Paytm, BHIM) to scan and donate instantly.
@@ -159,7 +159,7 @@ export default function DonateAndSupport() {
               <div className="bg-zinc-900 text-white p-8 md:p-10 rounded-3xl shadow-2xl relative overflow-hidden h-full">
                 {/* Decorative Elements for "Premium Card" look */}
                 <div className="absolute top-0 right-0 w-64 h-64 bg-white opacity-5 rounded-full blur-3xl -mr-16 -mt-16"></div>
-                <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#003366] opacity-10 rounded-full blur-3xl -ml-10 -mb-10"></div>
+                <div className="absolute bottom-0 left-0 w-48 h-48 bg-[#12345A] opacity-10 rounded-full blur-3xl -ml-10 -mb-10"></div>
 
                 <h3 className="text-3xl font-bold mb-8 flex items-center gap-3">
                   <FaUniversity /> Bank Transfer • बैंक ट्रांसफर
@@ -210,7 +210,7 @@ export default function DonateAndSupport() {
         <div className="max-w-6xl mx-auto">
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              <h2 className="text-3xl md:text-4xl font-black text-black">Complete Financial <br /><span className="text-[#003366]">Transparency</span></h2>
+              <h2 className="text-3xl md:text-4xl font-black text-black">Complete Financial <br /><span className="text-[#12345A]">Transparency</span></h2>
               <h3 className="text-2xl font-hindi text-zinc-500">पूर्ण वित्तीय पारदर्शिता</h3>
               <p className="text-lg text-zinc-600 leading-relaxed">
                 We believe you deserve to know exactly where your money goes. For every ₹100 you donate, ₹85 goes directly to the field.
@@ -221,7 +221,7 @@ export default function DonateAndSupport() {
 
               <div className="space-y-4 pt-4">
                 <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm">
-                  <div className="w-3 h-3 rounded-full bg-[#003366]"></div>
+                  <div className="w-3 h-3 rounded-full bg-[#12345A]"></div>
                   <div className="flex-1 font-bold">Program Implementation</div>
                   <div className="font-mono font-bold text-xl">85%</div>
                 </div>
@@ -242,7 +242,7 @@ export default function DonateAndSupport() {
               <div className="relative w-80 h-80">
                 <FaChartPie className="w-full h-full text-zinc-200 drop-shadow-xl" />
                 <div className="absolute inset-0 flex items-center justify-center flex-col">
-                  <span className="text-6xl font-black text-[#003366] drop-shadow-sm">85%</span>
+                  <span className="text-6xl font-black text-[#12345A] drop-shadow-sm">85%</span>
                   <span className="text-sm font-bold tracking-widest text-zinc-400 uppercase mt-2">To Programs</span>
                 </div>
               </div>
@@ -256,19 +256,19 @@ export default function DonateAndSupport() {
         <div className="max-w-3xl mx-auto">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-black text-zinc-900 flex items-center justify-center gap-3">
-              <FaQuestionCircle className="text-[#003366]" /> Frequently Asked Questions
+              <FaQuestionCircle className="text-[#12345A]" /> Frequently Asked Questions
             </h2>
           </div>
 
           <div className="space-y-4">
             {faqs.map((faq, i) => (
-              <div key={i} className="border border-zinc-200 rounded-xl overflow-hidden transition-all duration-300 hover:border-[#003366]">
+              <div key={i} className="border border-zinc-200 rounded-xl overflow-hidden transition-all duration-300 hover:border-[#12345A]">
                 <button
                   onClick={() => toggleFaq(i)}
                   className="w-full flex items-center justify-between p-6 bg-zinc-50 hover:bg-white transition-colors text-left"
                 >
                   <span className="font-bold text-lg text-zinc-800">{faq.question}</span>
-                  {openFaq === i ? <FaChevronUp className="text-[#003366]" /> : <FaChevronDown className="text-zinc-400" />}
+                  {openFaq === i ? <FaChevronUp className="text-[#12345A]" /> : <FaChevronDown className="text-zinc-400" />}
                 </button>
                 <AnimatePresence>
                   {openFaq === i && (

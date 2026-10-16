@@ -41,7 +41,7 @@
 //           {faqs.map((faq, index) => (
 //             <div
 //               key={index}
-//               className="bg-[#EDEDED] shadow-[6px_6px_0px_#333] overflow-hidden"
+//               className="bg-[#EAF0F6] shadow-[6px_6px_0px_#333] overflow-hidden"
 //             >
 //               <button
 //                 onClick={() => toggleFAQ(index)}

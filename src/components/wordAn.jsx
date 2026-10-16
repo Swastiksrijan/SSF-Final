@@ -30,21 +30,21 @@ export default function WordAni() {
     return (
         <div className="p-2">
             <div className="flex">
-                <div className="border border-[#003366] md:h-[50px] h-11 overflow-hidden text-center bg-[#003366] inline-block px-2 md:py-0">
+                <div className="border border-[#12345A] md:h-[50px] h-11 overflow-hidden text-center bg-[#12345A] inline-block px-2 md:py-0">
                     <ul ref={listRef} className="list-none p-0">
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Change</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Hope</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Lives</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Futures</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Communities</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Dreams</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Voices</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Growth</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Impact</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Smiles</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Possibilities</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Tomorrow</li>
-                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#edf0f3]">Progress</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Change</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Hope</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Lives</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Futures</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Communities</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Dreams</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Voices</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Growth</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Impact</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Smiles</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Possibilities</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Tomorrow</li>
+                        <li className="md:text-[38px] text-[27px] leading-[50px] text-[#EAF0F6]">Progress</li>
                     </ul>
                 </div>
             </div>

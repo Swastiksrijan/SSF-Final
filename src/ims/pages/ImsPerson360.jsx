@@ -51,7 +51,7 @@ export default function ImsPerson360() {
               <div className="flex flex-wrap gap-2">
                 {data.roles.length === 0 && <span className="text-sm text-slate-400">—</span>}
                 {data.roles.map((r, i) => (
-                  <span key={i} className="rounded-full bg-[#002344] px-3 py-1 text-xs font-semibold text-white">{r}</span>
+                  <span key={i} className="rounded-full bg-[#12345A] px-3 py-1 text-xs font-semibold text-white">{r}</span>
                 ))}
               </div>
             </Card>
@@ -125,7 +125,7 @@ function Section({ title, icon, empty, children }) {
   return (
     <Card className="p-4">
       <h2 className="mb-3 flex items-center gap-2 text-sm font-bold uppercase tracking-wide text-slate-500">
-        <I size={15} className="text-[#FF6600]" />{title}
+        <I size={15} className="text-[#176447]" />{title}
       </h2>
       {empty ? <span className="text-sm text-slate-400">—</span> : <div className="space-y-1.5">{children}</div>}
     </Card>

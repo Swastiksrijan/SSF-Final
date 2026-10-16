@@ -66,12 +66,12 @@ export default function AwarenessQuiz() {
   }, [result, user]);
 
   return (
-    <div className="min-h-screen bg-[#f6f8fb] px-4 py-10">
+    <div className="min-h-screen bg-[#EAF0F6] px-4 py-10">
       <div className="mx-auto max-w-3xl">
         <div className="mb-6 flex items-center gap-3">
-          <FaGraduationCap className="text-4xl text-[#002344]" />
+          <FaGraduationCap className="text-4xl text-[#12345A]" />
           <div>
-            <h1 className="text-2xl font-black text-[#062a52] md:text-3xl">SSF Awareness Quiz / जागरूकता प्रश्नोत्तरी</h1>
+            <h1 className="text-2xl font-black text-[#12345A] md:text-3xl">SSF Awareness Quiz / जागरूकता प्रश्नोत्तरी</h1>
             <p className="text-sm text-zinc-500">10 प्रश्न · Pass 80% · Pass होते ही certificate तुरंत मिलेगा।</p>
           </div>
         </div>
@@ -88,15 +88,15 @@ export default function AwarenessQuiz() {
             </div>
             {quiz.questions.map((q, i) => (
               <div key={q.id} className="rounded-2xl border border-zinc-200 bg-white p-4 shadow-sm md:p-5">
-                <div className="text-[11px] font-black uppercase tracking-widest text-[#0f4c81]">{q.subject} · Q{i + 1}</div>
-                <div className="mt-1 text-base font-bold text-[#062a52]">{q.q.en}</div>
+                <div className="text-[11px] font-black uppercase tracking-widest text-[#12345A]">{q.subject} · Q{i + 1}</div>
+                <div className="mt-1 text-base font-bold text-[#12345A]">{q.q.en}</div>
                 <div className="text-sm text-zinc-500">{q.q.hi}</div>
                 <div className="mt-3 grid gap-2 sm:grid-cols-2">
                   {q.options.map((o, idx) => {
                     const chosen = Number(answers[q.id]) === idx;
                     return (
                       <button key={idx} type="button" onClick={() => setAnswers((a) => ({ ...a, [q.id]: idx }))}
-                        className={"rounded-xl border px-4 py-2 text-left text-sm font-semibold transition " + (chosen ? "border-[#FF6600] bg-[#fff4ec] text-[#8a3b00]" : "border-zinc-200 bg-white text-zinc-700 hover:border-[#0f4c81]/40")}>
+                        className={"rounded-xl border px-4 py-2 text-left text-sm font-semibold transition " + (chosen ? "border-[#176447] bg-[#FAF9F5] text-[#12345A]" : "border-zinc-200 bg-white text-zinc-700 hover:border-[#12345A]/40")}>
                         <span className="font-black">{String.fromCharCode(65 + idx)}.</span> {o.en} <span className="text-zinc-400">/ {o.hi}</span>
                       </button>
                     );
@@ -105,7 +105,7 @@ export default function AwarenessQuiz() {
               </div>
             ))}
             <button type="button" disabled={submitting} onClick={submit}
-              className="w-full rounded-xl bg-[#177245] px-5 py-4 text-base font-black text-white disabled:opacity-50">
+              className="w-full rounded-xl bg-[#176447] px-5 py-4 text-base font-black text-white disabled:opacity-50">
               {submitting ? "Submitting…" : user ? "Submit & get certificate" : "Login to submit & get certificate"}
             </button>
           </div>
@@ -114,22 +114,22 @@ export default function AwarenessQuiz() {
         {result && (
           <div className={"rounded-2xl border p-6 shadow-sm md:p-8 " + (result.passed ? "border-emerald-200 bg-white" : "border-red-200 bg-white")}>
             <div className="flex items-center gap-3">
-              {result.passed ? <FaCheckCircle className="text-3xl text-[#177245]" /> : <FaTimesCircle className="text-3xl text-red-500" />}
+              {result.passed ? <FaCheckCircle className="text-3xl text-[#176447]" /> : <FaTimesCircle className="text-3xl text-red-500" />}
               <div>
-                <div className="text-xl font-black text-[#062a52]">{result.passed ? "Congratulations! आप पास हो गए 🎉" : "Not passed yet / अभी पास नहीं"}</div>
+                <div className="text-xl font-black text-[#12345A]">{result.passed ? "Congratulations! आप पास हो गए 🎉" : "Not passed yet / अभी पास नहीं"}</div>
                 <div className="text-sm text-zinc-500">Score: {result.correct}/{result.total} · {result.percent}% (pass {result.passPercent}%)</div>
               </div>
             </div>
 
             {result.passed && result.certificate && (
-              <div className="mt-5 rounded-2xl border border-[#e6d3a8] bg-gradient-to-br from-[#fff8e8] to-white p-5">
-                <div className="text-xs font-black uppercase tracking-widest text-[#0f4c81]">Certificate issued / प्रमाणपत्र जारी</div>
-                <div className="mt-1 text-lg font-black text-[#062a52]">{result.certificate.certificateId}</div>
+              <div className="mt-5 rounded-2xl border border-[#F7A814] bg-gradient-to-br from-[#FAF9F5] to-white p-5">
+                <div className="text-xs font-black uppercase tracking-widest text-[#12345A]">Certificate issued / प्रमाणपत्र जारी</div>
+                <div className="mt-1 text-lg font-black text-[#12345A]">{result.certificate.certificateId}</div>
                 <div className="text-sm text-zinc-500">Issued to {result.certificate.learnerName} · {result.certificate.courseTitle}</div>
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row">
-                  <button type="button" onClick={download} className="flex-1 rounded-xl bg-[#0b3a63] px-4 py-3 text-sm font-black text-white">Download certificate (PDF)</button>
+                  <button type="button" onClick={download} className="flex-1 rounded-xl bg-[#12345A] px-4 py-3 text-sm font-black text-white">Download certificate (PDF)</button>
                   <a href={waHref} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 text-sm font-black text-white"><FaWhatsapp /> Share</a>
-                  <a href={ENDPOINTS.AWARENESS_QUIZ_CERTIFICATE(result.certificate.certificateId)} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#0f4c81]/25 bg-[#f1f7fa] px-4 py-3 text-sm font-black text-[#0f4c81]"><FaEnvelope /> Verify</a>
+                  <a href={ENDPOINTS.AWARENESS_QUIZ_CERTIFICATE(result.certificate.certificateId)} target="_blank" rel="noreferrer" className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#12345A]/25 bg-[#EAF0F6] px-4 py-3 text-sm font-black text-[#12345A]"><FaEnvelope /> Verify</a>
                 </div>
               </div>
             )}
@@ -154,12 +154,12 @@ export default function AwarenessQuiz() {
             )}
 
             <button type="button" onClick={() => { setResult(null); setAnswers({}); }}
-              className="mt-5 inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-black text-[#0f4c81]">Retry <FaArrowRight /></button>
+              className="mt-5 inline-flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm font-black text-[#12345A]">Retry <FaArrowRight /></button>
           </div>
         )}
 
         <div className="mt-6 text-center text-sm">
-          <Link to="/" className="font-bold text-[#0f4c81]">← Back to home</Link>
+          <Link to="/" className="font-bold text-[#12345A]">← Back to home</Link>
         </div>
       </div>
 

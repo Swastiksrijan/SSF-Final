@@ -21,13 +21,13 @@ export default function JoinFormPage() {
   }, []);
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-[#f6fbff] via-white to-[#f5faf7] text-[#17202a] px-4 py-8 md:py-14">
+    <main className="min-h-screen bg-gradient-to-b from-[#EAF0F6] via-white to-[#EAF0F6] text-[#26343D] px-4 py-8 md:py-14">
       <div className="max-w-6xl mx-auto">
         <header className="text-center max-w-3xl mx-auto mb-8 md:mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-emerald-100 shadow-sm text-[#168a5a] text-xs md:text-sm font-black tracking-[.14em] uppercase">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-emerald-100 shadow-sm text-[#176447] text-xs md:text-sm font-black tracking-[.14em] uppercase">
             <FaCheckCircle /> Swastik Srijan Foundation
           </div>
-          <h1 className="mt-5 text-4xl md:text-6xl font-black tracking-tight text-[#06284a]">
+          <h1 className="mt-5 text-4xl md:text-6xl font-black tracking-tight text-[#12345A]">
             Swastik Srijan Foundation से जुड़िए
           </h1>
           <p className="mt-4 text-base md:text-xl leading-relaxed text-slate-600">
@@ -41,22 +41,22 @@ export default function JoinFormPage() {
               const selected = active === id;
               const iconClass =
                 tone === "green" || tone === "emerald"
-                  ? "text-[#168a5a] bg-emerald-50"
+                  ? "text-[#176447] bg-emerald-50"
                   : tone === "navy"
-                    ? "text-[#06284a] bg-blue-50"
-                    : "text-[#0b4f86] bg-blue-50";
+                    ? "text-[#12345A] bg-blue-50"
+                    : "text-[#12345A] bg-blue-50";
               return (
                 <button
                   key={id}
                   type="button"
                   onClick={() => setActive(id)}
                   aria-pressed={selected}
-                  className={"text-left rounded-2xl border-2 p-4 md:p-5 transition-all " + (selected ? "border-[#168a5a] bg-[#f2fbf6] shadow-md" : "border-slate-100 bg-slate-50 hover:border-slate-200 hover:bg-white")}
+                  className={"text-left rounded-2xl border-2 p-4 md:p-5 transition-all " + (selected ? "border-[#176447] bg-[#EAF0F6] shadow-md" : "border-slate-100 bg-slate-50 hover:border-slate-200 hover:bg-white")}
                 >
                   <span className={"w-11 h-11 rounded-xl flex items-center justify-center text-lg " + iconClass}>
                     <Icon />
                   </span>
-                  <span className="block mt-3 font-black text-[#06284a]">{label}</span>
+                  <span className="block mt-3 font-black text-[#12345A]">{label}</span>
                   <span className="block mt-1 text-xs md:text-sm text-slate-500">{hindi}</span>
                 </button>
               );

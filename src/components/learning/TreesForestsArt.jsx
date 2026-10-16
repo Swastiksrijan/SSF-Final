@@ -8,14 +8,14 @@
 
 import { useId } from "react";
 
-const NAVY = "#0b3a63";
-const ORANGE = "#FF6600";
-const YELLOW = "#FFD166";
-const SKY = "#8ecae6";
-const GREEN = "#2f9e44";
-const DARKGREEN = "#166534";
-const BROWN = "#7a4a1e";
-const PURPLE = "#7048e8";
+const NAVY = "#12345A";
+const ORANGE = "#176447";
+const YELLOW = "#F7A814";
+const SKY = "#EAF0F6";
+const GREEN = "#176447";
+const DARKGREEN = "#176447";
+const BROWN = "#F7A814";
+const PURPLE = "#12345A";
 
 function Tile({ children, bg = NAVY, label = "Trees and forests illustration" }) {
   const uid = useId().replace(/[:]/g, "");
@@ -100,8 +100,8 @@ export function GrowthArt() {
 
 export function ForestEcosystemArt() {
   return <Tile label="Forest ecosystem" bg={DARKGREEN}>
-    <Tree x={-46} y={-6} s={0.85} leaf="#2b8a3e" />
-    <Tree x={46} y={-6} s={0.85} leaf="#2b8a3e" />
+    <Tree x={-46} y={-6} s={0.85} leaf="#176447" />
+    <Tree x={46} y={-6} s={0.85} leaf="#176447" />
     <text x="0" y="-52" textAnchor="middle" fontSize="20">🐦</text>
     <text x="0" y="30" textAnchor="middle" fontSize="16">🦌</text>
     <text x="-70" y="40" textAnchor="middle" fontSize="14">🍄</text>
@@ -113,7 +113,7 @@ export function ForestEcosystemArt() {
 
 export function ForestLayersArt() {
   return <Tile label="Forest layers">
-    {[["Emergent", -70, "#2b8a3e"], ["Canopy", -30, "#2f9e44"], ["Understory", 10, "#40c057"], ["Floor", 44, "#5c940d"]].map(([t, y, c], i) => <g key={i}>
+    {[["Emergent", -70, "#176447"], ["Canopy", -30, "#176447"], ["Understory", 10, "#176447"], ["Floor", 44, "#176447"]].map(([t, y, c], i) => <g key={i}>
       <rect x="-78" y={y} width="156" height="30" rx="8" fill={c} opacity={0.9} />
       <text x="-70" y={y + 20} fontSize="10" fontWeight="900" fill="#fff">{t}</text>
     </g>)}
@@ -158,7 +158,7 @@ export function FoodWebArt() {
 }
 
 export function BiodiversityArt() {
-  return <Tile label="Biodiversity" bg="#0f3d2e">
+  return <Tile label="Biodiversity" bg="#12345A">
     <text x="-52" y="-34" textAnchor="middle" fontSize="20">🐦</text>
     <text x="0" y="-46" textAnchor="middle" fontSize="20">🦋</text>
     <text x="52" y="-34" textAnchor="middle" fontSize="20">🐝</text>
@@ -205,7 +205,7 @@ export function DecompositionArt() {
 }
 
 export function BiodiversityMattersArt() {
-  return <Tile label="Why biodiversity matters" bg="#123a5f">
+  return <Tile label="Why biodiversity matters" bg="#12345A">
     <text x="-46" y="0" textAnchor="middle" fontSize="34">🌳</text>
     <text x="46" y="0" textAnchor="middle" fontSize="34">🌳🌳</text>
     <text x="0" y="48" textAnchor="middle" fontSize="10" fontWeight="900" fill={YELLOW}>3 species vs 300 species</text>
@@ -251,7 +251,7 @@ export function ForestProductsArt() {
 }
 
 export function DeforestationArt() {
-  return <Tile label="Deforestation and degradation" bg="#5a2a00">
+  return <Tile label="Deforestation and degradation" bg="#F7A814">
     <text x="-46" y="-4" textAnchor="middle" fontSize="30">🪓</text>
     <text x="34" y="-16" textAnchor="middle" fontSize="24">🌳</text>
     <text x="46" y="34" textAnchor="middle" fontSize="20">🪵</text>
@@ -264,7 +264,7 @@ export function FragmentationArt() {
   return <Tile label="Habitat fragmentation">
     <g>
       <Tree x={-66} y={-6} s={0.5} /><Tree x={-30} y={-6} s={0.5} />
-      <rect x="-8" y="-64" width="16" height="128" fill="#3a3a3a" />
+      <rect x="-8" y="-64" width="16" height="128" fill="#26343D" />
       <path d="M-2 -60 h4 M-2 -40 h4 M-2 -20 h4 M-2 0 h4 M-2 20 h4 M-2 40 h4" stroke={YELLOW} strokeWidth="2" />
       <Tree x={34} y={-6} s={0.5} /><Tree x={66} y={-6} s={0.5} />
     </g>
@@ -307,7 +307,7 @@ export function ProtectedArt() {
 export function CaseStudyArt() {
   return <Tile label="Conservation case study">
     <Tree x={-52} y={-6} s={0.55} /><Tree x={52} y={-6} s={0.55} />
-    <rect x="-10" y="-56" width="20" height="112" fill="#3a3a3a" />
+    <rect x="-10" y="-56" width="20" height="112" fill="#26343D" />
     <path d="M-4 -52 h8 M-4 -28 h8 M-4 -4 h8 M-4 20 h8 M-4 44 h8" stroke={YELLOW} strokeWidth="2" />
     <text x="0" y="-62" textAnchor="middle" fontSize="18">🛣️</text>
     <text x="0" y="72" textAnchor="middle" fontSize="9" fontWeight="900" fill="#fff">evidence-based decision</text>
@@ -344,8 +344,8 @@ export function chapterArt(id) {
 /** Compact art for the hub course card. */
 export function CardArt() {
   return <Tile label="Trees & Forests" bg={DARKGREEN}>
-    <Tree x={-24} y={2} s={0.8} leaf="#2b8a3e" />
-    <Tree x={26} y={2} s={0.65} leaf="#40c057" />
+    <Tree x={-24} y={2} s={0.8} leaf="#176447" />
+    <Tree x={26} y={2} s={0.65} leaf="#176447" />
     <text x="0" y="56" textAnchor="middle" fontSize="10" fontWeight="900" fill={YELLOW}>वृक्ष एवं जंगल</text>
   </Tile>;
 }
@@ -358,7 +358,7 @@ export function HeroArt({ className = "" }) {
     <svg viewBox="0 0 400 300" className={className} role="img" aria-label="Forest illustration" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id={bgId} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stopColor="#0b3a63" /><stop offset="1" stopColor="#04121f" />
+          <stop offset="0" stopColor="#12345A" /><stop offset="1" stopColor="#12345A" />
         </linearGradient>
       </defs>
       <rect x="0" y="0" width="400" height="300" rx="26" fill={`url(#${bgId})`} />
@@ -366,21 +366,21 @@ export function HeroArt({ className = "" }) {
       {[[70, 40], [150, 28], [240, 44], [360, 120], [40, 150]].map(([x, y], i) => <circle key={i} cx={x} cy={y} r="2" fill="#fff" opacity="0.6" />)}
       {/* far canopy */}
       <g opacity="0.55">
-        <circle cx="60" cy="210" r="70" fill="#2b8a3e" />
-        <circle cx="150" cy="200" r="80" fill="#2b8a3e" />
-        <circle cx="250" cy="205" r="85" fill="#2b8a3e" />
-        <circle cx="345" cy="212" r="70" fill="#2b8a3e" />
+        <circle cx="60" cy="210" r="70" fill="#176447" />
+        <circle cx="150" cy="200" r="80" fill="#176447" />
+        <circle cx="250" cy="205" r="85" fill="#176447" />
+        <circle cx="345" cy="212" r="70" fill="#176447" />
       </g>
       {/* trunks */}
       {[70, 160, 250, 340].map((x, i) => <rect key={i} x={x - 7} y="205" width="14" height="70" rx="5" fill={BROWN} />)}
       {/* mid trees */}
       <g>
-        <circle cx="90" cy="180" r="52" fill="#40c057" />
-        <circle cx="200" cy="172" r="58" fill="#37b24d" />
-        <circle cx="310" cy="182" r="50" fill="#40c057" />
+        <circle cx="90" cy="180" r="52" fill="#176447" />
+        <circle cx="200" cy="172" r="58" fill="#176447" />
+        <circle cx="310" cy="182" r="50" fill="#176447" />
       </g>
       {/* foreground */}
-      <rect x="0" y="262" width="400" height="38" fill="#1d5c2b" />
+      <rect x="0" y="262" width="400" height="38" fill="#176447" />
       <text x="96" y="150" fontSize="26" textAnchor="middle">🐦</text>
       <text x="250" y="120" fontSize="22" textAnchor="middle">🦋</text>
       <text x="330" y="240" fontSize="24" textAnchor="middle">🦌</text>

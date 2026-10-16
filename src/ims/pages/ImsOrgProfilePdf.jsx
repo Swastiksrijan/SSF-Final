@@ -86,9 +86,9 @@ export default function ImsOrgProfilePdf() {
   return (
     <ImsLayout active="org_profile_pdf">
       <div className="mx-auto max-w-5xl space-y-5">
-        <div className="rounded-2xl bg-[#002344] p-6 text-white sm:p-8">
+        <div className="rounded-2xl bg-[#12345A] p-6 text-white sm:p-8">
           <div className="flex items-start gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white/10 text-[#FF9A45]"><FileText size={22} /></span>
+            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white/10 text-[#176447]"><FileText size={22} /></span>
             <div className="min-w-0">
               <h1 className="text-2xl font-black leading-tight sm:text-3xl">
                 {lang === 'hi' ? 'संस्था परिचय पत्र — साझा करने योग्य PDF' : 'Organisation Profile PDF — ready to share'}
@@ -111,13 +111,13 @@ export default function ImsOrgProfilePdf() {
         {/* language + actions */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <div className="flex flex-wrap items-center gap-2">
-            <Languages size={16} className="text-[#FF6600]" />
-            <span className="text-sm font-bold text-[#002344]">{lang === 'hi' ? 'भाषा चुनें' : 'Document language'}</span>
+            <Languages size={16} className="text-[#176447]" />
+            <span className="text-sm font-bold text-[#12345A]">{lang === 'hi' ? 'भाषा चुनें' : 'Document language'}</span>
           </div>
           <div className="mt-3 grid gap-2 sm:grid-cols-3">
             {LANGS.map((l) => (
               <button key={l.id} type="button" onClick={() => setPdfLang(l.id)}
-                className={`rounded-xl border px-4 py-3 text-left transition ${pdfLang === l.id ? 'border-[#002344] bg-[#002344] text-white' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}>
+                className={`rounded-xl border px-4 py-3 text-left transition ${pdfLang === l.id ? 'border-[#12345A] bg-[#12345A] text-white' : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'}`}>
                 <div className="text-sm font-bold">{lang === 'hi' ? l.hi : l.en}</div>
                 <div className={`mt-0.5 text-[11px] ${pdfLang === l.id ? 'text-white/70' : 'text-slate-400'}`}>{lang === 'hi' ? l.note.hi : l.note.en}</div>
               </button>
@@ -126,17 +126,17 @@ export default function ImsOrgProfilePdf() {
 
           <div className="mt-5 flex flex-wrap gap-2">
             <button type="button" disabled={!!busy} onClick={doPreview}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#002344] px-5 py-3 text-sm font-bold text-white disabled:opacity-40">
+              className="inline-flex items-center gap-2 rounded-xl bg-[#12345A] px-5 py-3 text-sm font-bold text-white disabled:opacity-40">
               {busy === 'preview' ? <Loader2 size={16} className="animate-spin" /> : <Eye size={16} />}
               {lang === 'hi' ? 'पूर्वावलोकन' : 'Preview'}
             </button>
             <button type="button" disabled={!!busy} onClick={doDownload}
-              className="inline-flex items-center gap-2 rounded-xl bg-[#FF6600] px-5 py-3 text-sm font-bold text-white disabled:opacity-40">
+              className="inline-flex items-center gap-2 rounded-xl bg-[#176447] px-5 py-3 text-sm font-bold text-white disabled:opacity-40">
               {busy === 'download' ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}
               {lang === 'hi' ? 'PDF डाउनलोड' : 'Download PDF'}
             </button>
             <button type="button" disabled={!!busy} onClick={doSave}
-              className="inline-flex items-center gap-2 rounded-xl border border-[#002344] px-5 py-3 text-sm font-bold text-[#002344] disabled:opacity-40 hover:bg-slate-50">
+              className="inline-flex items-center gap-2 rounded-xl border border-[#12345A] px-5 py-3 text-sm font-bold text-[#12345A] disabled:opacity-40 hover:bg-slate-50">
               {busy === 'save' ? <Loader2 size={16} className="animate-spin" /> : <FilePlus2 size={16} />}
               {lang === 'hi' ? 'दस्तावेज़ पंजिका में सहेजें' : 'File in Document Register'}
             </button>
@@ -151,14 +151,14 @@ export default function ImsOrgProfilePdf() {
 
         {/* contents listing */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5">
-          <h2 className="flex items-center gap-2 text-lg font-black text-[#002344]">
-            <ShieldCheck size={18} className="text-[#FF6600]" />
+          <h2 className="flex items-center gap-2 text-lg font-black text-[#12345A]">
+            <ShieldCheck size={18} className="text-[#176447]" />
             {lang === 'hi' ? 'PDF में क्या-क्या शामिल है' : 'What the PDF includes'}
           </h2>
           <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
             {PROFILE_DOC.sections.map((s) => (
               <div key={s.id} className="flex items-center gap-2 rounded-xl border border-slate-100 bg-slate-50 px-3 py-2.5">
-                <span className="h-2 w-2 shrink-0 rounded-full bg-[#FF6600]" />
+                <span className="h-2 w-2 shrink-0 rounded-full bg-[#176447]" />
                 <span className="text-[13px] font-semibold text-slate-700">{lang === 'hi' ? s.hi : s.en}</span>
               </div>
             ))}

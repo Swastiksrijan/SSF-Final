@@ -71,8 +71,8 @@ export function renderBlocks(blocks) {
         return <hr key={key} className="my-6 border-slate-200" />;
       case 'heading': {
         const id = slugifyHeading(b.text);
-        if (b.level === 1) return <h2 key={key} id={id} className="mt-8 mb-3 scroll-mt-24 border-l-4 border-[#FF6600] pl-3 text-lg font-bold text-[#002344]">{inline(b.text, key)}</h2>;
-        if (b.level === 2) return <h3 key={key} id={id} className="mt-6 mb-2 scroll-mt-24 text-base font-bold text-[#002344]">{inline(b.text, key)}</h3>;
+        if (b.level === 1) return <h2 key={key} id={id} className="mt-8 mb-3 scroll-mt-24 border-l-4 border-[#176447] pl-3 text-lg font-bold text-[#12345A]">{inline(b.text, key)}</h2>;
+        if (b.level === 2) return <h3 key={key} id={id} className="mt-6 mb-2 scroll-mt-24 text-base font-bold text-[#12345A]">{inline(b.text, key)}</h3>;
         return <h4 key={key} id={id} className="mt-4 mb-1.5 scroll-mt-24 text-sm font-bold text-slate-700">{inline(b.text, key)}</h4>;
       }
       case 'ul':
@@ -85,7 +85,7 @@ export function renderBlocks(blocks) {
             <table className="w-full border-collapse text-sm">
               <tbody>
                 {b.rows.map((row, r) => (
-                  <tr key={r} className={r === 0 ? 'bg-[#002344] text-white' : (r % 2 ? 'bg-slate-50' : '')}>
+                  <tr key={r} className={r === 0 ? 'bg-[#12345A] text-white' : (r % 2 ? 'bg-slate-50' : '')}>
                     {row.map((c, ci) => (
                       <td key={ci} className="border border-slate-200 px-3 py-1.5 align-top">{inline(c, `${key}-${r}-${ci}`)}</td>
                     ))}

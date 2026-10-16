@@ -52,7 +52,7 @@ export default function OptimizedImage({
                         exit={{ opacity: 0 }}
                         className="absolute inset-0 bg-zinc-100 animate-pulse z-10 flex items-center justify-center"
                     >
-                        <div className="w-12 h-12 border-4 border-[#002344]/10 border-t-[#002344] rounded-full animate-spin" />
+                        <div className="w-12 h-12 border-4 border-[#12345A]/10 border-t-[#12345A] rounded-full animate-spin" />
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -78,7 +78,7 @@ export default function OptimizedImage({
 
             {/* Error State Overlay (Optional simple indicator) */}
             {hasError && currentSrc === fallback && (
-                <div className="absolute inset-0 bg-[#001529]" aria-hidden="true" />
+                <div className="absolute inset-0 bg-[#12345A]" aria-hidden="true" />
             )}
         </div>
     );

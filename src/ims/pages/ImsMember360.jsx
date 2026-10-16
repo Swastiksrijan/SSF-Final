@@ -66,7 +66,7 @@ export default function ImsMember360() {
               <div className="flex flex-wrap gap-2">
                 {data.committeeRoles.length === 0 && <span className="text-sm text-slate-400">—</span>}
                 {data.committeeRoles.map((r) => (
-                  <span key={r.id} className="rounded-full bg-[#002344] px-3 py-1 text-xs font-semibold text-white">{r.position || r.recordId}</span>
+                  <span key={r.id} className="rounded-full bg-[#12345A] px-3 py-1 text-xs font-semibold text-white">{r.position || r.recordId}</span>
                 ))}
               </div>
             </Card>
@@ -116,7 +116,7 @@ export default function ImsMember360() {
               <ol className="relative space-y-3 border-l border-slate-200 pl-4">
                 {data.history.map((h) => (
                   <li key={h.id} className="relative">
-                    <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-[#FF6600]" />
+                    <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-[#176447]" />
                     <div className="flex items-center gap-2">
                       <Badge status={h.action} />
                       <span className="text-xs text-slate-400">{new Date(h.createdAt).toLocaleString('en-IN')}</span>

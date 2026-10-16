@@ -8,14 +8,14 @@
 
 import { useId } from "react";
 
-const NAVY = "#0b3a63";
-const ORANGE = "#FF6600";
-const YELLOW = "#FFD166";
-const SKY = "#8ecae6";
-const GREEN = "#2f9e44";
-const LEAF = "#40c057";
+const NAVY = "#12345A";
+const ORANGE = "#176447";
+const YELLOW = "#F7A814";
+const SKY = "#EAF0F6";
+const GREEN = "#176447";
+const LEAF = "#176447";
 const RED = "#e03131";
-const PURPLE = "#7048e8";
+const PURPLE = "#12345A";
 
 function Tile({ children, bg = NAVY, label = "Illustration" }) {
   const uid = useId().replace(/[:]/g, "");
@@ -43,7 +43,7 @@ function Apple({ s = 1, color = RED }) {
   return <g transform={`scale(${s})`}>
     <path d="M0 -30 C -22 -46 -46 -28 -42 -2 C -39 20 -22 38 0 38 C 22 38 39 20 42 -2 C 46 -28 22 -46 0 -30 Z" fill={color} />
     <path d="M0 -30 C -10 -40 -24 -40 -32 -30" fill="none" stroke="#ffffff" strokeOpacity="0.35" strokeWidth="3" />
-    <rect x="-2.5" y="-46" width="5" height="16" rx="2.5" fill="#7a4a1e" />
+    <rect x="-2.5" y="-46" width="5" height="16" rx="2.5" fill="#F7A814" />
     <path d="M2 -40 q14 -6 18 4 q-12 6 -18 -4 z" fill={LEAF} />
   </g>;
 }
@@ -51,16 +51,16 @@ function Apple({ s = 1, color = RED }) {
 function Banana({ s = 1 }) {
   return <g transform={`scale(${s})`}>
     <path d="M-40 -18 C -34 24 34 30 42 6 C 30 24 -24 20 -40 -18 Z" fill={YELLOW} />
-    <path d="M-40 -18 C -34 24 34 30 42 6" fill="none" stroke="#d9a400" strokeWidth="3" strokeLinecap="round" />
-    <path d="M-40 -18 q-6 -6 -2 -12" fill="none" stroke="#7a4a1e" strokeWidth="4" strokeLinecap="round" />
-    <path d="M42 6 q8 -2 8 -10" fill="none" stroke="#7a4a1e" strokeWidth="4" strokeLinecap="round" />
+    <path d="M-40 -18 C -34 24 34 30 42 6" fill="none" stroke="#F7A814" strokeWidth="3" strokeLinecap="round" />
+    <path d="M-40 -18 q-6 -6 -2 -12" fill="none" stroke="#F7A814" strokeWidth="4" strokeLinecap="round" />
+    <path d="M42 6 q8 -2 8 -10" fill="none" stroke="#F7A814" strokeWidth="4" strokeLinecap="round" />
   </g>;
 }
 
 function Orange({ s = 1 }) {
   return <g transform={`scale(${s})`}>
-    <circle r="36" fill="#f76707" />
-    <circle r="36" fill="none" stroke="#d9480f" strokeWidth="3" />
+    <circle r="36" fill="#176447" />
+    <circle r="36" fill="none" stroke="#176447" strokeWidth="3" />
     {Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6; return <circle key={i} cx={Math.cos(a) * 20} cy={Math.sin(a) * 20} r="1.6" fill="#ffd8a8" />; })}
     <circle cx="-10" cy="-12" r="12" fill="#ffffff" opacity="0.25" />
     <path d="M0 -36 q10 -10 18 -4 q-8 10 -18 4 z" fill={LEAF} />
@@ -80,7 +80,7 @@ function Grapes({ s = 1 }) {
   return <g transform={`scale(${s})`}>
     {pts.map(([x, y], i) => <circle key={i} cx={x} cy={y} r="11" fill={PURPLE} />)}
     {pts.map(([x, y], i) => <circle key={"h" + i} cx={x - 3} cy={y - 3} r="3" fill="#ffffff" opacity="0.28" />)}
-    <path d="M0 -30 q6 -12 16 -14" fill="none" stroke="#7a4a1e" strokeWidth="4" strokeLinecap="round" />
+    <path d="M0 -30 q6 -12 16 -14" fill="none" stroke="#F7A814" strokeWidth="4" strokeLinecap="round" />
     <path d="M8 -40 q16 -8 22 2 q-14 8 -22 -2 z" fill={LEAF} />
   </g>;
 }
@@ -90,38 +90,38 @@ function Watermelon({ s = 1 }) {
     <path d="M-44 8 A 44 44 0 0 1 44 8 Z" fill={GREEN} />
     <path d="M-40 8 A 40 40 0 0 1 40 8 Z" fill="#e03131" />
     <path d="M-40 8 A 40 40 0 0 1 40 8 Z" fill="none" stroke="#ffffff" strokeOpacity="0.5" strokeWidth="5" />
-    {[[-20, -2], [0, -14], [20, -2], [-10, 0], [10, 0]].map(([x, y], i) => <ellipse key={i} cx={x} cy={y} rx="2.6" ry="4" fill="#2b2b2b" transform={`rotate(${x * 0.6} ${x} ${y})`} />)}
+    {[[-20, -2], [0, -14], [20, -2], [-10, 0], [10, 0]].map(([x, y], i) => <ellipse key={i} cx={x} cy={y} rx="2.6" ry="4" fill="#26343D" transform={`rotate(${x * 0.6} ${x} ${y})`} />)}
   </g>;
 }
 
 function Guava({ s = 1 }) {
   return <g transform={`scale(${s})`}>
-    <ellipse rx="34" ry="38" fill="#94d82d" />
-    <ellipse rx="34" ry="38" fill="none" stroke="#66a80f" strokeWidth="3" />
+    <ellipse rx="34" ry="38" fill="#176447" />
+    <ellipse rx="34" ry="38" fill="none" stroke="#176447" strokeWidth="3" />
     <circle cx="-10" cy="-12" r="11" fill="#ffffff" opacity="0.25" />
-    <rect x="-3" y="-44" width="6" height="12" rx="3" fill="#7a4a1e" />
+    <rect x="-3" y="-44" width="6" height="12" rx="3" fill="#F7A814" />
   </g>;
 }
 
 function Flower({ s = 1 }) {
   return <g transform={`scale(${s})`}>
-    {Array.from({ length: 6 }, (_, i) => { const a = i * Math.PI / 3; return <ellipse key={i} cx={Math.cos(a) * 24} cy={Math.sin(a) * 24} rx="15" ry="11" fill="#f783ac" transform={`rotate(${i * 60} ${Math.cos(a) * 24} ${Math.sin(a) * 24})`} />; })}
+    {Array.from({ length: 6 }, (_, i) => { const a = i * Math.PI / 3; return <ellipse key={i} cx={Math.cos(a) * 24} cy={Math.sin(a) * 24} rx="15" ry="11" fill="#EAF0F6" transform={`rotate(${i * 60} ${Math.cos(a) * 24} ${Math.sin(a) * 24})`} />; })}
     <circle r="15" fill={YELLOW} />
-    <circle r="15" fill="none" stroke="#e8590c" strokeWidth="2" />
+    <circle r="15" fill="none" stroke="#176447" strokeWidth="2" />
   </g>;
 }
 
 function Seed({ s = 1 }) {
   return <g transform={`scale(${s})`}>
-    <ellipse rx="12" ry="18" fill="#7a4a1e" />
-    <path d="M0 -16 q6 16 0 32" fill="none" stroke="#c99a6a" strokeWidth="2.5" />
+    <ellipse rx="12" ry="18" fill="#F7A814" />
+    <path d="M0 -16 q6 16 0 32" fill="none" stroke="#F7A814" strokeWidth="2.5" />
   </g>;
 }
 
 function Leaf() {
   return <g>
     <path d="M-30 20 C -30 -20 20 -34 34 -30 C 30 6 -6 28 -30 20 Z" fill={GREEN} />
-    <path d="M-24 16 C -6 0 12 -14 30 -26" fill="none" stroke="#d3f9d8" strokeWidth="2.5" />
+    <path d="M-24 16 C -6 0 12 -14 30 -26" fill="none" stroke="#EAF0F6" strokeWidth="2.5" />
   </g>;
 }
 
@@ -136,7 +136,7 @@ export function IdentifyArt() {
 }
 
 export function ColoursArt() {
-  const fruits = [[RED, -52], ["#f76707", -18], [YELLOW, 16], [GREEN, 50]];
+  const fruits = [[RED, -52], ["#176447", -18], [YELLOW, 16], [GREEN, 50]];
   return <Tile label="Fruits in many colours">
     {fruits.map(([c, x], i) => <g key={i} transform={`translate(${x},-16)`}>
       <circle r="20" fill={c} />
@@ -148,8 +148,8 @@ export function ColoursArt() {
 }
 
 export function PlantSourceArt() {
-  return <Tile label="Tree with fruits" bg="#0f3d2e">
-    <rect x="-8" y="4" width="16" height="46" rx="5" fill="#7a4a1e" />
+  return <Tile label="Tree with fruits" bg="#12345A">
+    <rect x="-8" y="4" width="16" height="46" rx="5" fill="#F7A814" />
     <circle cx="0" cy="-18" r="42" fill={GREEN} />
     <circle cx="-30" cy="-4" r="24" fill={LEAF} />
     <circle cx="30" cy="-6" r="24" fill={LEAF} />
@@ -161,7 +161,7 @@ export function PlantSourceArt() {
 }
 
 export function SeedsArt() {
-  return <Tile label="Fruit and seeds" bg="#4a2c12">
+  return <Tile label="Fruit and seeds" bg="#F7A814">
     <g transform="translate(0,-18)"><Apple s={1} /></g>
     <g transform="translate(-26,40)"><Seed s={1} /></g>
     <g transform="translate(0,42)"><Seed s={1.15} /></g>
@@ -192,7 +192,7 @@ export function FormsArt() {
 export function TasteArt() {
   return <Tile label="Taste">
     <g transform="translate(0,-14)">
-      <circle r="42" fill="#e8590c" opacity="0.9" />
+      <circle r="42" fill="#176447" opacity="0.9" />
       <circle r="42" fill="none" stroke="#fff" strokeOpacity="0.4" strokeWidth="4" />
       <text x="0" y="6" textAnchor="middle" fontSize="34">👅</text>
     </g>
@@ -201,15 +201,15 @@ export function TasteArt() {
 }
 
 export function SeasonArt() {
-  return <Tile label="Seasons" bg="#123a5f">
+  return <Tile label="Seasons" bg="#12345A">
     <g transform="translate(-44,-18)">
       <circle r="20" fill={YELLOW} />
       {Array.from({ length: 8 }, (_, i) => { const a = i * Math.PI / 4; return <line key={i} x1={Math.cos(a) * 25} y1={Math.sin(a) * 25} x2={Math.cos(a) * 31} y2={Math.sin(a) * 31} stroke={YELLOW} strokeWidth="3.5" strokeLinecap="round" />; })}
       <text x="0" y="46" textAnchor="middle" fontSize="12" fontWeight="800" fill="#fff">गर्मी</text>
     </g>
     <g transform="translate(46,-18)">
-      <ellipse cx="0" cy="6" rx="26" ry="18" fill="#ced4da" />
-      <path d="M-24 6 a24 24 0 0 1 48 0 z" fill="#adb5bd" />
+      <ellipse cx="0" cy="6" rx="26" ry="18" fill="#EAF0F6" />
+      <path d="M-24 6 a24 24 0 0 1 48 0 z" fill="#26343D" />
       {[[-8, 24], [4, 30], [14, 22]].map(([x, y], i) => <path key={i} d={`M${x} ${y} l-4 12`} stroke={SKY} strokeWidth="3.5" strokeLinecap="round" />)}
       <text x="0" y="52" textAnchor="middle" fontSize="12" fontWeight="800" fill="#fff">बारिश</text>
     </g>
@@ -218,8 +218,8 @@ export function SeasonArt() {
 }
 
 export function FarmingArt() {
-  return <Tile label="Farming" bg="#0f3d2e">
-    <rect x="-80" y="26" width="160" height="30" rx="8" fill="#5c3d1e" />
+  return <Tile label="Farming" bg="#12345A">
+    <rect x="-80" y="26" width="160" height="30" rx="8" fill="#F7A814" />
     <g transform="translate(0,-6)">
       <circle cy="-30" r="14" fill="#ffd8a8" />
       <path d="M-20 -8 a20 22 0 0 1 40 0 z" fill={ORANGE} />
@@ -230,7 +230,7 @@ export function FarmingArt() {
 }
 
 export function NutritionArt() {
-  return <Tile label="Nutrition" bg="#0f3d2e">
+  return <Tile label="Nutrition" bg="#12345A">
     <ellipse cx="0" cy="14" rx="56" ry="20" fill="#ffffff" />
     <g transform="translate(-24,-6)"><Apple s={0.62} /></g>
     <g transform="translate(16,-4)"><Orange s={0.5} /></g>
@@ -247,7 +247,7 @@ export function JuiceArt() {
     <g transform="translate(42,-4)">
       <path d="M-18 -24 h36 l-6 44 h-24 z" fill={SKY} opacity="0.85" />
       <rect x="-20" y="-30" width="40" height="8" rx="4" fill="#fff" />
-      <path d="M-16 -14 h32 l-4 30 h-24 z" fill="#f76707" opacity="0.85" />
+      <path d="M-16 -14 h32 l-4 30 h-24 z" fill="#176447" opacity="0.85" />
     </g>
     {cap("whole ≠ juice", "#fff", 86)}
   </Tile>;
@@ -276,7 +276,7 @@ export function ChoosingArt() {
 }
 
 export function SafetyArt() {
-  return <Tile label="Wash fruit safely" bg="#0b3a63">
+  return <Tile label="Wash fruit safely" bg="#12345A">
     <text x="-30" y="2" textAnchor="middle" fontSize="40">🧼</text>
     <text x="26" y="2" textAnchor="middle" fontSize="40">🚿</text>
     <g transform="translate(0,42)"><Apple s={0.55} /></g>
@@ -285,13 +285,13 @@ export function SafetyArt() {
 }
 
 export function MythArt() {
-  return <Tile label="Myth vs reality" bg="#5a1f22">
+  return <Tile label="Myth vs reality" bg="#12345A">
     <g transform="translate(0,-24)">
       <text x="-34" y="6" textAnchor="middle" fontSize="30" fill="#ff8787">✗</text>
       <text x="30" y="6" textAnchor="middle" fontSize="22" fontWeight="800" fill="#fff">Myth</text>
     </g>
     <g transform="translate(0,34)">
-      <text x="-34" y="6" textAnchor="middle" fontSize="30" fill="#69db7c">✓</text>
+      <text x="-34" y="6" textAnchor="middle" fontSize="30" fill="#176447">✓</text>
       <text x="30" y="6" textAnchor="middle" fontSize="22" fontWeight="800" fill={YELLOW}>Reality</text>
     </g>
   </Tile>;
@@ -299,7 +299,7 @@ export function MythArt() {
 
 export function GlobeArt() {
   return <Tile label="Local and global fruits">
-    <circle r="52" fill="#1b4a72" stroke={SKY} strokeWidth="3" />
+    <circle r="52" fill="#12345A" stroke={SKY} strokeWidth="3" />
     <ellipse rx="52" ry="20" fill="none" stroke={SKY} strokeWidth="2" opacity="0.8" />
     <ellipse rx="20" ry="52" fill="none" stroke={SKY} strokeWidth="2" opacity="0.8" />
     <path d="M-52 0 h104" stroke={SKY} strokeWidth="2" opacity="0.8" />
@@ -310,7 +310,7 @@ export function GlobeArt() {
 }
 
 export function FarmToPlateArt() {
-  return <Tile label="Farm to plate" bg="#123a5f">
+  return <Tile label="Farm to plate" bg="#12345A">
     <line x1="-76" y1="16" x2="76" y2="16" stroke="#fff" strokeOpacity="0.4" strokeWidth="5" strokeLinecap="round" />
     <g transform="translate(-40,16)">
       <rect x="-18" y="-16" width="40" height="26" rx="5" fill={ORANGE} />
@@ -324,7 +324,7 @@ export function FarmToPlateArt() {
 }
 
 export function EnvironmentArt() {
-  return <Tile label="Reduce food waste" bg="#0f3d2e">
+  return <Tile label="Reduce food waste" bg="#12345A">
     <g transform="translate(0,-10)"><Leaf /></g>
     <path d="M-30 40 q30 -14 60 0" fill="none" stroke={YELLOW} strokeWidth="5" strokeLinecap="round" />
     <path d="M18 34 l10 6 l-10 6" fill="none" stroke={YELLOW} strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
@@ -377,7 +377,7 @@ export function HeroArt({ className = "" }) {
     <svg viewBox="0 0 400 300" className={className} role="img" aria-label="फलों की टोकरी illustration" preserveAspectRatio="xMidYMid meet">
       <defs>
         <linearGradient id={bgId} x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stopColor="#0f3d2e" /><stop offset="1" stopColor="#001529" />
+          <stop offset="0" stopColor="#12345A" /><stop offset="1" stopColor="#12345A" />
         </linearGradient>
       </defs>
       <rect x="0" y="0" width="400" height="300" rx="26" fill={`url(#${bgId})`} />
@@ -388,10 +388,10 @@ export function HeroArt({ className = "" }) {
       <g transform="translate(160,196)"><Banana s={0.8} /></g>
       <g transform="translate(258,206)"><Mango s={0.7} /></g>
       {/* basket */}
-      <path d="M92 168 h216 l-20 92 a20 20 0 0 1 -20 16 h-136 a20 20 0 0 1 -20 -16 z" fill="#a9651f" />
-      <path d="M92 168 h216 l-20 92 a20 20 0 0 1 -20 16 h-136 a20 20 0 0 1 -20 -16 z" fill="none" stroke="#7a4a1e" strokeWidth="4" />
-      {[130, 168, 206, 244, 282].map((x, i) => <line key={i} x1={x} y1="172" x2={x - 4} y2="268" stroke="#7a4a1e" strokeWidth="3" opacity="0.6" />)}
-      <rect x="84" y="158" width="232" height="18" rx="9" fill="#c47b2b" />
+      <path d="M92 168 h216 l-20 92 a20 20 0 0 1 -20 16 h-136 a20 20 0 0 1 -20 -16 z" fill="#F7A814" />
+      <path d="M92 168 h216 l-20 92 a20 20 0 0 1 -20 16 h-136 a20 20 0 0 1 -20 -16 z" fill="none" stroke="#F7A814" strokeWidth="4" />
+      {[130, 168, 206, 244, 282].map((x, i) => <line key={i} x1={x} y1="172" x2={x - 4} y2="268" stroke="#F7A814" strokeWidth="3" opacity="0.6" />)}
+      <rect x="84" y="158" width="232" height="18" rx="9" fill="#F7A814" />
       <text x="200" y="292" textAnchor="middle" fontSize="16" fontWeight="900" fill={YELLOW} letterSpacing="0.5">फल</text>
     </svg>
   );

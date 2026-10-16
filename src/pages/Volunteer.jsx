@@ -15,7 +15,7 @@ export default function Volunteer() {
       icon: <FaMapMarkerAlt />,
       title: "Field Volunteer",
       titleHi: "सेवा देने वाले - फील्ड",
-      color: "bg-orange-50 text-[#FF6600]",
+      color: "bg-orange-50 text-[#176447]",
       border: "border-orange-100",
       work: ["Education programs (शिक्षा कार्यक्रम)", "Health camps (स्वास्थ्य शिविर)", "Rural/Urban outreach", "Activities with children", "Sports, Environment, Awareness"],
       forWhom: "Students, Youth, Social workers"
@@ -25,7 +25,7 @@ export default function Volunteer() {
       icon: <FaProjectDiagram />,
       title: "Program Volunteer",
       titleHi: "प्रोजेक्ट वालंटियर",
-      color: "bg-blue-50 text-[#002344]",
+      color: "bg-blue-50 text-[#12345A]",
       border: "border-blue-100",
       work: ["Regular support in a project", "Women empowerment initiatives", "Livelihood / Skill training", "Sports & cultural activities"],
       forWhom: "Individuals wanting to work deeply on one subject"
@@ -71,7 +71,7 @@ export default function Volunteer() {
       <section className="py-24 px-6 bg-zinc-50 border-y border-zinc-100">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 space-y-4">
-            <h2 className="text-3xl md:text-5xl font-bold text-[#002344]">Volunteer के प्रकार</h2>
+            <h2 className="text-3xl md:text-5xl font-bold text-[#12345A]">Volunteer के प्रकार</h2>
             <p className="text-zinc-500 text-lg font-medium">Empower communities through your unique contribution.</p>
           </div>
 
@@ -91,7 +91,7 @@ export default function Volunteer() {
                 <div className={`w-16 h-16 ${type.color} rounded-2xl flex items-center justify-center text-3xl mb-8`}>
                   {type.icon}
                 </div>
-                <h3 className="text-xl font-bold text-[#002344] mb-1">{type.title}</h3>
+                <h3 className="text-xl font-bold text-[#12345A] mb-1">{type.title}</h3>
                 <h4 className="text-sm font-hindi text-zinc-400 font-bold mb-6">{type.titleHi}</h4>
 
                 <div className="space-y-4 flex-grow">
@@ -108,7 +108,7 @@ export default function Volunteer() {
                   </div>
                   <div className="pt-6 border-t border-zinc-100">
                     <p className="text-xs font-bold text-zinc-400 uppercase tracking-widest mb-1">For Whom: किसके लिए</p>
-                    <p className="text-sm font-bold text-[#002344]">{type.forWhom}</p>
+                    <p className="text-sm font-bold text-[#12345A]">{type.forWhom}</p>
                   </div>
                 </div>
               </motion.div>
@@ -121,8 +121,8 @@ export default function Volunteer() {
       <section className="py-24 px-6 bg-white overflow-hidden relative">
         <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-20">
           <div className="lg:w-1/2 space-y-8 relative z-10">
-            <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#002344] leading-tight">
-              Start Your <br /><span className="text-[#FF6600]">Service Journey</span> Today.
+            <h2 className="text-3xl sm:text-5xl md:text-6xl font-black text-[#12345A] leading-tight">
+              Start Your <br /><span className="text-[#176447]">Service Journey</span> Today.
             </h2>
             <p className="text-xl text-zinc-600 leading-relaxed">
               Join a community of over 500+ volunteers across Bharat who are dedicated to the wellness of every human being.
@@ -131,7 +131,7 @@ export default function Volunteer() {
             <div className="flex flex-wrap gap-4">
               <button
                 onClick={() => setIsFormOpen(true)}
-                className="bg-[#FF6600] text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-[#002344] transition-all flex items-center gap-3 cursor-pointer shadow-xl hover:shadow-orange-200"
+                className="bg-[#176447] text-white px-10 py-5 rounded-2xl font-bold text-xl hover:bg-[#12345A] transition-all flex items-center gap-3 cursor-pointer shadow-xl hover:shadow-orange-200"
               >
                 👉 Apply as a Volunteer
                 <FaArrowRight />
@@ -140,7 +140,7 @@ export default function Volunteer() {
                 href="https://forms.gle/S6Qc56QE8nLYdDTL9"
                 target="_blank"
                 rel="noreferrer"
-                className="bg-white border-2 border-[#FF6600] text-[#FF6600] px-10 py-5 rounded-2xl font-bold text-xl hover:bg-[#FF6600] hover:text-white transition-all flex items-center gap-3 cursor-pointer shadow-xl"
+                className="bg-white border-2 border-[#176447] text-[#176447] px-10 py-5 rounded-2xl font-bold text-xl hover:bg-[#176447] hover:text-white transition-all flex items-center gap-3 cursor-pointer shadow-xl"
               >
                 Apply via Google Form
                 <FaArrowRight />
@@ -160,7 +160,7 @@ export default function Volunteer() {
             <div className="absolute -top-10 -left-10 w-40 h-40 bg-orange-100 rounded-full blur-3xl opacity-50"></div>
             <div className="relative rounded-[3rem] overflow-hidden shadow-2xl skew-y-1">
               <img src="/images/real/ngo_event_1.jpg" alt="Volunteer Impact" className="w-full h-auto" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#001529] via-transparent to-transparent opacity-60"></div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#12345A] via-transparent to-transparent opacity-60"></div>
               <div className="absolute bottom-10 left-10 text-white">
                 <p className="text-2xl font-bold">"सेवा ही परमो धर्म:"</p>
                 <p className="text-zinc-300 opacity-80 italic">Service is the highest duty.</p>
@@ -179,7 +179,7 @@ export default function Volunteer() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFormOpen(false)}
-              className="absolute inset-0 bg-[#001529]/80 backdrop-blur-md transition-all"
+              className="absolute inset-0 bg-[#12345A]/80 backdrop-blur-md transition-all"
             ></motion.div>
 
             <motion.div

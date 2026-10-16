@@ -55,7 +55,7 @@ export default function ImsCases() {
 
   const caseCols = [
     { key: 'recordId', en: 'ID', render: (r) => <span className="font-mono text-xs text-slate-500">{r.recordId}</span> },
-    { key: 'title', en: 'Case', render: (r) => <span className="font-semibold text-[#002344]">{r.title || '—'}</span> },
+    { key: 'title', en: 'Case', render: (r) => <span className="font-semibold text-[#12345A]">{r.title || '—'}</span> },
     { key: 'caseType', en: 'Type', render: (r) => r.caseType || '—' },
     { key: 'deadline', en: 'Deadline', render: (r) => r.deadline || '—' },
     { key: 'stage', en: 'Stage', render: (r) => <Badge status={r.stage} /> },
@@ -90,7 +90,7 @@ export default function ImsCases() {
               <div className="space-y-2">
                 {board[s.id].filter((c) => showSensitive || !c.confidential).map((c) => (
                   <button key={c.id} type="button" onClick={() => setDetail(c)}
-                    className="w-full rounded-xl border border-slate-200 bg-white p-3 text-left transition hover:border-[#002344]/30 hover:shadow-sm">
+                    className="w-full rounded-xl border border-slate-200 bg-white p-3 text-left transition hover:border-[#12345A]/30 hover:shadow-sm">
                     <span className="block text-sm font-semibold text-slate-800">{c.title || c.recordId}</span>
                     <span className="mt-1 block text-[11px] text-slate-400">{c.caseType || ''}</span>
                     {c.confidential && <span className="mt-1 inline-block rounded bg-rose-100 px-1.5 py-0.5 text-[10px] font-bold text-rose-700">Sensitive</span>}
@@ -108,7 +108,7 @@ export default function ImsCases() {
       {tab === 'notices' && (
         <DataTable rows={notices} empty={t('no_records')} columns={[
           { key: 'recordId', en: 'ID', render: (r) => <span className="font-mono text-xs text-slate-500">{r.recordId}</span> },
-          { key: 'subject', en: 'Notice', render: (r) => <span className="font-semibold text-[#002344]">{r.subject || '—'}</span> },
+          { key: 'subject', en: 'Notice', render: (r) => <span className="font-semibold text-[#12345A]">{r.subject || '—'}</span> },
           { key: 'noticeType', en: 'Type', render: (r) => r.noticeType || '—' },
           { key: 'deliveryStatus', en: 'Delivery', render: (r) => <Badge status={r.deliveryStatus} /> },
           { key: 'reminderCount', en: 'Reminders', render: (r) => r.reminderCount ?? 0 },

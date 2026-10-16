@@ -15,15 +15,15 @@ const fmtDate = (d) => {
 };
 // Badge tone by module — gives each result a clear colour cue.
 const MODULE_TONE = {
-  organisation: 'text-[#0e7490] bg-cyan-50 ring-cyan-100',
-  governance: 'text-[#7c3aed] bg-violet-50 ring-violet-100',
-  finance: 'text-[#15803d] bg-emerald-50 ring-emerald-100',
+  organisation: 'text-[#176447] bg-cyan-50 ring-cyan-100',
+  governance: 'text-[#12345A] bg-violet-50 ring-violet-100',
+  finance: 'text-[#176447] bg-emerald-50 ring-emerald-100',
   programmes: 'text-[#b45309] bg-amber-50 ring-amber-100',
   hr: 'text-[#be123c] bg-rose-50 ring-rose-100',
-  compliance: 'text-[#1d4ed8] bg-blue-50 ring-blue-100',
-  documents: 'text-[#0f766e] bg-teal-50 ring-teal-100',
-  assets: 'text-[#475569] bg-slate-100 ring-slate-200',
-  masters: 'text-[#002344] bg-[#002344]/5 ring-[#002344]/10',
+  compliance: 'text-[#12345A] bg-blue-50 ring-blue-100',
+  documents: 'text-[#176447] bg-teal-50 ring-teal-100',
+  assets: 'text-[#26343D] bg-slate-100 ring-slate-200',
+  masters: 'text-[#12345A] bg-[#12345A]/5 ring-[#12345A]/10',
 };
 
 export default function ImsSearch() {
@@ -104,11 +104,11 @@ export default function ImsSearch() {
 
       {/* Prominent universal search box */}
       <div className="relative mb-4 max-w-3xl">
-        <Icons.Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#FF6600]" />
+        <Icons.Search size={20} className="absolute left-4 top-1/2 -translate-y-1/2 text-[#176447]" />
         <input
           autoFocus value={q} onChange={(e) => setQ(e.target.value)}
           placeholder={t('search_placeholder')}
-          className="w-full rounded-2xl border border-slate-300 bg-white py-4 pl-12 pr-4 text-base shadow-sm outline-none transition focus:border-[#FF6600] focus:ring-4 focus:ring-[#FF6600]/10"
+          className="w-full rounded-2xl border border-slate-300 bg-white py-4 pl-12 pr-4 text-base shadow-sm outline-none transition focus:border-[#176447] focus:ring-4 focus:ring-[#176447]/10"
         />
         {q && (
           <button onClick={() => setQ('')} className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-100">
@@ -147,7 +147,7 @@ export default function ImsSearch() {
       {/* Initial state — never a premature "No records yet" */}
       {!active && (
         <Card className="flex flex-col items-center gap-2 p-10 text-center">
-          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[#002344]/5 text-[#FF6600]"><Icons.Search size={26} /></span>
+          <span className="grid h-14 w-14 place-items-center rounded-2xl bg-[#12345A]/5 text-[#176447]"><Icons.Search size={26} /></span>
           <p className="text-sm font-semibold text-slate-700">{t('search_hint')}</p>
           <p className="text-xs text-slate-400">{t('search_everything_hint')}</p>
         </Card>
@@ -167,7 +167,7 @@ export default function ImsSearch() {
       {active && results && results.length > 0 && (
         <>
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <p className="text-sm text-slate-500"><b className="text-[#002344]">{results.length}</b> {t('results_found')}</p>
+            <p className="text-sm text-slate-500"><b className="text-[#12345A]">{results.length}</b> {t('results_found')}</p>
             <div className="flex flex-wrap gap-1.5">
               {Object.entries(counts).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, n]) => (
                 <span key={k} className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-semibold text-slate-500">{typeLabel(k)} · {n}</span>
@@ -183,7 +183,7 @@ export default function ImsSearch() {
                     <span className={`rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-wide ring-1 ${MODULE_TONE[r.module] || 'text-slate-600 bg-slate-100 ring-slate-200'}`}>{r.type}</span>
                     <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400">{moduleLabel(r.module)}</span>
                   </span>
-                  <span className="mt-1 block truncate font-semibold text-[#002344]">{r.title}</span>
+                  <span className="mt-1 block truncate font-semibold text-[#12345A]">{r.title}</span>
                   <span className="mt-0.5 flex flex-wrap items-center gap-x-3 gap-y-0.5 text-xs text-slate-500">
                     {r.recordId && <span className="font-mono">{r.recordId}</span>}
                     {r.personName && <span className="inline-flex items-center gap-1"><Icons.UserRound size={12} />{r.personName}</span>}
@@ -219,7 +219,7 @@ function FilterSelect({ label, value, onChange, children }) {
       <span className="mb-1 block text-[11px] font-bold uppercase tracking-wide text-slate-500">{label}</span>
       <select
         value={value} onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#FF6600]"
+        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm outline-none focus:border-[#176447]"
       >
         {children}
       </select>
@@ -233,7 +233,7 @@ function DateFilter({ label, value, onChange }) {
       <span className="mb-1 block text-[11px] font-bold uppercase tracking-wide text-slate-500">{label}</span>
       <input
         type="date" value={value} onChange={(e) => onChange(e.target.value)}
-        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-[#FF6600]"
+        className="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-700 outline-none focus:border-[#176447]"
       />
     </label>
   );
