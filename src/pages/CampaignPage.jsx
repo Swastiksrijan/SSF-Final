@@ -12,9 +12,9 @@ export default function Campaign() {
       image: "/images/rural-education.jpg",
       description: "Bringing quality education to the doorsteps of rural communities. Our focus is on holistic development through interactive learning and literacy drives.",
       stats: "20,000+ Students Impacted",
-      borderColor: "border-[#fb8500]",
-      accent: "text-[#fb8500]",
-      bg: "bg-orange-50/50"
+      borderColor: "border-[#c9a227]",
+      accent: "text-[#7e5f22]",
+      bg: "bg-[#faf4e2]"
     },
     {
       id: "health",
@@ -23,9 +23,9 @@ export default function Campaign() {
       image: "/images/health-program-masks.jpg",
       description: "From COVID-19 awareness to regular health camps, we ensure that rural families have the knowledge and support to live healthy lives.",
       stats: "10,000+ Awareness Drives",
-      borderColor: "border-[#d90429]",
-      accent: "text-[#d90429]",
-      bg: "bg-red-50/50"
+      borderColor: "border-[#177245]",
+      accent: "text-[#177245]",
+      bg: "bg-[#eef7f1]"
     },
     {
       id: "community",
@@ -34,9 +34,9 @@ export default function Campaign() {
       image: "/images/real/cloth-distribution.jpg",
       description: "Serving the underprivileged through direct relief programs, including cloth distribution, food security, and community support initiatives.",
       stats: "150+ Distribution Drives",
-      borderColor: "border-[#2d6a4f]",
-      accent: "text-[#2d6a4f]",
-      bg: "bg-emerald-50/50"
+      borderColor: "border-[#177245]",
+      accent: "text-[#177245]",
+      bg: "bg-[#eef7f1]"
     },
     {
       id: "environment",
@@ -45,9 +45,9 @@ export default function Campaign() {
       image: "/images/tree-planting-1.jpg",
       description: "Our plantation drives and environmental awareness programs aim to build a sustainable and greener future for coming generations.",
       stats: "5,000+ Trees Planted",
-      borderColor: "border-[#2d6a4f]",
-      accent: "text-[#2d6a4f]",
-      bg: "bg-emerald-50/50"
+      borderColor: "border-[#177245]",
+      accent: "text-[#177245]",
+      bg: "bg-[#eef7f1]"
     },
     {
       id: "skills",
@@ -56,9 +56,9 @@ export default function Campaign() {
       image: "/images/real/children-gathering.jpg",
       description: "Investing in the future of the nation by empowering youth and children with the tools they need for a dignified life.",
       stats: "5,000+ Youth Empowered",
-      borderColor: "border-[#002344]",
-      accent: "text-[#002344]",
-      bg: "bg-blue-50/50"
+      borderColor: "border-[#0a2540]",
+      accent: "text-[#0a2540]",
+      bg: "bg-[#eef2f7]"
     },
     {
       id: "direct-aid",
@@ -67,9 +67,9 @@ export default function Campaign() {
       image: "/images/real/direct-aid-mask.jpg",
       description: "Providing immediate support to those in need. Our volunteers work around the clock to ensure help reaches the last mile.",
       stats: "Every Individual Matters",
-      borderColor: "border-purple-500",
-      accent: "text-purple-600",
-      bg: "bg-purple-50/50"
+      borderColor: "border-[#7e5f22]",
+      accent: "text-[#7e5f22]",
+      bg: "bg-[#faf4e2]"
     },
   ];
 
@@ -94,7 +94,7 @@ export default function Campaign() {
               transition={{ delay: idx * 0.1 }}
               viewport={{ once: true }}
               id={program.id}
-              className={`bg-white rounded-[2.5rem] overflow-hidden shadow-[0_15px_50px_-15px_rgba(0,0,0,0.08)] border border-zinc-50 flex flex-col group hover:-translate-y-2 transition-all duration-500`}
+              className={`bg-white rounded-[2.5rem] overflow-hidden shadow-[0_15px_50px_-15px_rgba(0,0,0,0.08)] border border-[#e9e3d6] flex flex-col group hover:-translate-y-2 transition-all duration-500`}
             >
               <div className="w-full h-64 overflow-hidden relative">
                 <img
@@ -102,7 +102,7 @@ export default function Campaign() {
                   alt={program.title}
                   className="w-full h-full object-cover transition-transform duration-1000 group-hover:scale-110"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#002344]/60 to-transparent"></div>
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0a2540]/60 to-transparent"></div>
                 <div className={`absolute bottom-6 left-6 p-4 ${program.bg} backdrop-blur-md rounded-2xl shadow-xl border border-white/20`}>
                   <div className={`text-2xl ${program.accent}`}>{program.icon}</div>
                 </div>
@@ -110,18 +110,18 @@ export default function Campaign() {
 
               <div className="p-10 flex flex-col flex-grow space-y-6">
                 <div className="space-y-4">
-                  <h3 className="text-2xl font-serif font-bold text-[#002344] group-hover:text-[#fb8500] transition-colors leading-tight">
+                  <h3 className="text-2xl font-serif font-bold text-[#0f2740] group-hover:text-[#7e5f22] transition-colors leading-tight">
                     {program.title}
                   </h3>
-                  <p className="text-zinc-500 leading-relaxed font-medium text-sm">
+                  <p className="text-[#41506b] leading-relaxed font-medium text-sm">
                     {program.description}
                   </p>
                 </div>
 
-                <div className="pt-8 mt-auto border-t border-zinc-50 flex items-center justify-between">
+                <div className="pt-8 mt-auto border-t border-[#e9e3d6] flex items-center justify-between">
                   <div className="flex items-center gap-3">
                     <div className={`w-2 h-2 rounded-full ${program.accent.replace('text-', 'bg-')}`}></div>
-                    <span className="font-bold text-[#002344] text-xs uppercase tracking-wider">{program.stats}</span>
+                    <span className="font-bold text-[#0f2740] text-xs uppercase tracking-wider">{program.stats}</span>
                   </div>
                   <Link
                     to="/Contact"
@@ -137,13 +137,13 @@ export default function Campaign() {
       </div>
 
       {/* ================= CTA ================= */}
-      <div className="py-32 bg-[#001529] relative overflow-hidden text-center px-6">
-        <div className="absolute inset-0 bg-[radial-gradient(#fb8500_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.03]"></div>
+      <div className="py-32 bg-[#08192b] relative overflow-hidden text-center px-6">
+        <div className="absolute inset-0 opacity-[0.05]" style={{ backgroundImage: "radial-gradient(#c9a227 1px, transparent 1px)", backgroundSize: "40px 40px" }}></div>
         <div className="max-w-4xl mx-auto relative z-10 space-y-12">
           <h2 className="text-4xl lg:text-6xl font-serif font-bold text-white leading-tight">
-            Want to <span className="text-[#fb8500]">support</span> these programs?
+            Want to <span className="text-[#e4c86a]">support</span> these programs?
           </h2>
-          <p className="text-zinc-400 text-xl font-medium max-w-2xl mx-auto leading-relaxed">
+          <p className="text-[#cbd5e1] text-xl font-medium max-w-2xl mx-auto leading-relaxed">
             Your contribution provides the fuel for these initiatives to reach more villages and change more destinies. Join our mission today.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
@@ -153,7 +153,7 @@ export default function Campaign() {
               </button>
             </Link>
             <Link to="/Volunteer" className="sm:w-auto">
-              <button className="btn-secondary w-full px-14 py-6 text-xl border-white text-white hover:bg-white hover:text-[#001529]">
+              <button className="btn-secondary w-full px-14 py-6 text-xl border-white text-white hover:bg-white hover:text-[#0f2740]">
                 Volunteer with Us
               </button>
             </Link>
