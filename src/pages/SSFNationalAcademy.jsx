@@ -36,7 +36,7 @@ export default function SSFNationalAcademy() {
     return (
         <section className="bg-white font-inria min-h-screen">
             {/* ================= HERO WITH PROGRESS BADGE ================= */}
-            <div className="bg-gradient-to-br from-[#001529] via-[#002344] to-[#003366] text-white pt-48 pb-24 relative overflow-hidden">
+            <div className="bg-gradient-to-br from-[#12345A] via-[#12345A] to-[#12345A] text-white pt-48 pb-24 relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.03]"></div>
 
                 {/* Animated floating elements */}
@@ -121,9 +121,9 @@ export default function SSFNationalAcademy() {
                         className="text-center mb-16"
                     >
                         <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em] mb-4">Our Purpose | हमारा उद्देश्य</p>
-                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344]">
+                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A]">
                             Objectives of The Academy <br />
-                            <span className="text-2xl lg:text-3xl font-sans font-normal text-[#002344]/60">एकेडमी के उद्देश्य</span>
+                            <span className="text-2xl lg:text-3xl font-sans font-normal text-[#12345A]/60">एकेडमी के उद्देश्य</span>
                         </h2>
                     </motion.div>
 
@@ -148,7 +148,7 @@ export default function SSFNationalAcademy() {
             </div>
 
             {/* ================= KEY FOCUS AREAS ================= */}
-            <div className="py-24 bg-[#001529]">
+            <div className="py-24 bg-[#12345A]">
                 <div className="max-w-6xl mx-auto px-6">
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -196,7 +196,7 @@ export default function SSFNationalAcademy() {
                             viewport={{ once: true }}
                         >
                             <p className="text-[#fb8500] font-bold text-xs uppercase tracking-[0.2em] mb-4">Target Audience</p>
-                            <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344] mb-2">
+                            <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A] mb-2">
                                 Who Can Benefit?
                             </h2>
                             <h3 className="text-lg text-zinc-500 mb-8 italic">
@@ -204,8 +204,8 @@ export default function SSFNationalAcademy() {
                             </h3>
                             <div className="space-y-4">
                                 {beneficiaries.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-zinc-100 hover:border-[#002344]/30 transition-all">
-                                        <div className="w-8 h-8 rounded-lg bg-[#002344] flex items-center justify-center">
+                                    <div key={idx} className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm border border-zinc-100 hover:border-[#12345A]/30 transition-all">
+                                        <div className="w-8 h-8 rounded-lg bg-[#12345A] flex items-center justify-center">
                                             <HiUserGroup className="text-white text-lg" />
                                         </div>
                                         <span className="text-zinc-700 font-medium">{item}</span>
@@ -220,7 +220,7 @@ export default function SSFNationalAcademy() {
                             viewport={{ once: true }}
                             className="relative"
                         >
-                            <div className="bg-gradient-to-br from-[#002344] to-[#001529] rounded-3xl p-8 text-white">
+                            <div className="bg-gradient-to-br from-[#12345A] to-[#12345A] rounded-3xl p-8 text-white">
                                 <HiSparkles className="text-[#fb8500] text-4xl mb-6" />
                                 <h3 className="text-2xl font-bold mb-4">Our Approach</h3>
                                 <p className="text-zinc-300 leading-relaxed mb-6">
@@ -245,7 +245,7 @@ export default function SSFNationalAcademy() {
                         className="text-center mb-16"
                     >
                         <p className="text-[#d90429] font-bold text-xs uppercase tracking-[0.2em] mb-4">Support Our Vision | हमारे विजन का समर्थन करें</p>
-                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344] mb-6">
+                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A] mb-6">
                             Funding Requirements | फंड की जरूरतें
                         </h2>
                         <p className="text-zinc-600 max-w-2xl mx-auto text-lg leading-relaxed">
@@ -267,7 +267,7 @@ export default function SSFNationalAcademy() {
                                 className="bg-white rounded-2xl p-8 shadow-xl border border-zinc-100 hover:border-[#fb8500]/30 hover:shadow-2xl transition-all group"
                             >
                                 <div className="flex items-start justify-between mb-4">
-                                    <h3 className="text-xl font-bold text-[#002344] group-hover:text-[#fb8500] transition-colors">
+                                    <h3 className="text-xl font-bold text-[#12345A] group-hover:text-[#fb8500] transition-colors">
                                         {need.title}
                                     </h3>
                                     <span className="bg-[#fb8500]/10 text-[#fb8500] font-bold px-4 py-2 rounded-full text-sm">
@@ -284,7 +284,7 @@ export default function SSFNationalAcademy() {
                         initial={{ opacity: 0, scale: 0.95 }}
                         whileInView={{ opacity: 1, scale: 1 }}
                         viewport={{ once: true }}
-                        className="bg-gradient-to-r from-[#002344] to-[#001529] rounded-3xl p-10 text-center text-white"
+                        className="bg-gradient-to-r from-[#12345A] to-[#12345A] rounded-3xl p-10 text-center text-white"
                     >
                         <p className="text-[#fb8500] font-bold text-sm uppercase tracking-wider mb-4">Total Project Budget</p>
                         <h3 className="text-5xl lg:text-6xl font-serif font-bold mb-4">₹1,25,00,000</h3>
@@ -322,7 +322,7 @@ export default function SSFNationalAcademy() {
                         viewport={{ once: true }}
                     >
                         <FaHandsHelping className="text-6xl text-[#fb8500] mx-auto mb-8" />
-                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#002344] mb-6">
+                        <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A] mb-6">
                             Collaboration & Support
                         </h2>
                         <p className="text-zinc-600 max-w-3xl mx-auto text-lg leading-relaxed mb-8">
@@ -331,13 +331,13 @@ export default function SSFNationalAcademy() {
                         <div className="flex flex-wrap justify-center gap-4">
                             <Link
                                 to="/Volunteer"
-                                className="inline-flex items-center gap-2 bg-[#002344] text-white font-bold px-8 py-4 rounded-full hover:bg-[#001529] transition-all"
+                                className="inline-flex items-center gap-2 bg-[#12345A] text-white font-bold px-8 py-4 rounded-full hover:bg-[#12345A] transition-all"
                             >
                                 Volunteer as Mentor <FaArrowRight />
                             </Link>
                             <Link
                                 to="/PartnerWithUs"
-                                className="inline-flex items-center gap-2 border-2 border-[#002344] text-[#002344] font-bold px-8 py-4 rounded-full hover:bg-[#002344] hover:text-white transition-all"
+                                className="inline-flex items-center gap-2 border-2 border-[#12345A] text-[#12345A] font-bold px-8 py-4 rounded-full hover:bg-[#12345A] hover:text-white transition-all"
                             >
                                 Partner With Us <FaArrowRight />
                             </Link>
