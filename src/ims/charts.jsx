@@ -20,7 +20,7 @@ export function BarChart({ data = [], height = 180, color = ORANGE, valueFmt = (
         return (
           <g key={i}>
             <text x={0} y={y + 17} fontSize="12" fill="#26343D">{String(d.label).slice(0, 24)}</text>
-            <rect x={labelW} y={y + 4} width={640 - labelW - 90} height={18} rx="4" fill="#eef2f7" />
+            <rect x={labelW} y={y + 4} width={640 - labelW - 90} height={18} rx="4" fill="#EAF0F6" />
             <rect x={labelW} y={y + 4} width={w} height={18} rx="4" fill={d.color || color} />
             <text x={640} y={y + 17} fontSize="12" fontWeight="700" textAnchor="end" fill={NAVY}>{valueFmt(d.value)}</text>
           </g>
@@ -39,7 +39,7 @@ export function ColumnChart({ data = [], height = 200, color = NAVY }) {
   const colW = (w - pad * 2) / rows.length;
   return (
     <svg viewBox={`0 0 ${w} ${h}`} width="100%" height={h} role="img">
-      <line x1={pad} y1={h - bottom} x2={w - pad} y2={h - bottom} stroke="#cbd5e1" />
+      <line x1={pad} y1={h - bottom} x2={w - pad} y2={h - bottom} stroke="#EAF0F6" />
       {rows.map((d, i) => {
         const bh = ((Number(d.value) || 0) / max) * (h - pad - bottom);
         const x = pad + i * colW + colW * 0.18;
@@ -47,7 +47,7 @@ export function ColumnChart({ data = [], height = 200, color = NAVY }) {
         return (
           <g key={i}>
             <rect x={x} y={h - bottom - bh} width={bw} height={bh} rx="4" fill={d.color || color} />
-            <text x={x + bw / 2} y={h - bottom - bh - 4} fontSize="10" textAnchor="middle" fill="#64748b">{d.value}</text>
+            <text x={x + bw / 2} y={h - bottom - bh - 4} fontSize="10" textAnchor="middle" fill="#26343D">{d.value}</text>
             <text x={x + bw / 2} y={h - bottom + 15} fontSize="10" textAnchor="middle" fill="#26343D">{String(d.label).slice(0, 8)}</text>
           </g>
         );
@@ -68,7 +68,7 @@ export function DonutChart({ data = [], size = 190, thickness = 34 }) {
   return (
     <div className="flex flex-wrap items-center gap-5">
       <svg viewBox={`0 0 ${size} ${size}`} width={size} height={size} role="img">
-        <circle cx={c} cy={c} r={r} fill="none" stroke="#eef2f7" strokeWidth={thickness} />
+        <circle cx={c} cy={c} r={r} fill="none" stroke="#EAF0F6" strokeWidth={thickness} />
         {rows.map((d, i) => {
           const frac = Number(d.value) / total;
           const dash = frac * circ;
@@ -86,7 +86,7 @@ export function DonutChart({ data = [], size = 190, thickness = 34 }) {
           return el;
         })}
         <text x={c} y={c - 2} textAnchor="middle" fontSize="22" fontWeight="800" fill={NAVY}>{total}</text>
-        <text x={c} y={c + 16} textAnchor="middle" fontSize="11" fill="#64748b">total</text>
+        <text x={c} y={c + 16} textAnchor="middle" fontSize="11" fill="#26343D">total</text>
       </svg>
       <ul className="space-y-1 text-sm">
         {rows.map((d, i) => (
