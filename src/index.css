@@ -7,7 +7,7 @@
 }
 body { font-family:"Plus Jakarta Sans",sans-serif; color:var(--text-dark); background-color:var(--white); overflow-x:hidden; line-height:1.6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 * { overflow-wrap:break-word; word-wrap:break-word; }
-.break-all { word-break:break-all !important; } .break-words { overflow-wrap:break-word !important; word-wrap:break-word !important; } img { max-width:100%; height:auto; }
+.break-all { word-break:break-all !important; } .break-words { overflow-wrap:break-word !important; word-wrap:break-word !important; } @layer base { img { max-width:100%; height:auto; } }
 .font-serif { font-family:"Playfair Display",serif; } .font-display { font-family:"Lora",serif; } .font-hindi { font-family:"Noto Serif Devanagari",serif; } .font-merriweather { font-family:"Merriweather",serif; } .font-mukta { font-family:"Mukta",sans-serif; }
 .glass-effect { background:var(--glass); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.3); }
 .text-gradient { background:linear-gradient(135deg,var(--primary) 0%,#001a33 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }

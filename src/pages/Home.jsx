@@ -73,8 +73,9 @@ export default function Home() {
               <FaSeedling /> Registered Society · Since 2013
             </p>
             <p className="mt-6 text-xl font-semibold tracking-wide text-white md:text-2xl">Swastik Srijan Foundation Samiti</p>
+            <p className="mt-4 font-hindi text-lg leading-relaxed text-[#f0dba5] sm:text-xl">सहयोग <span className="px-1 text-white/40">•</span> कौशल <span className="px-1 text-white/40">•</span> जागरूकता <span className="px-1 text-white/40">•</span> सृजन</p>
             <h1 className="mt-5 font-serif text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl lg:text-7xl">
-              Service with purpose.<span className="mt-2 block italic text-[#e8c878]">Progress through people.</span>
+              Creating Change.<span className="mt-2 block italic text-[#e8c878]">Inspiring Lives.</span>
             </h1>
             <p className="mt-6 max-w-2xl text-lg leading-relaxed text-slate-100 md:text-xl">
               Working towards inclusive community development through education, skills, health awareness, environmental responsibility and meaningful partnerships.
