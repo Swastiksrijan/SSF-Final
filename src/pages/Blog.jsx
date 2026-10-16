@@ -340,7 +340,7 @@ export default function Blogs() {
           </h1>
           <button
             onClick={toggleLanguage}
-            className="bg-[#003366] hover:bg-[#004488] text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+            className="bg-[#12345A] hover:bg-[#12345A] text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
             title={language === "en" ? "Switch to Hindi" : "Switch to English"}
           >
             <Languages size={20} />
@@ -379,7 +379,7 @@ export default function Blogs() {
 
               <button
                 onClick={() => setActivePost(post)}
-                className="text-[#003366] font-semibold hover:underline"
+                className="text-[#12345A] font-semibold hover:underline"
               >
                 {language === "en" ? "Read More →" : "और पढ़ें →"}
               </button>

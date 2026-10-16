@@ -297,7 +297,7 @@ function AbtDetailed() {
         {/* ========== EDUCATION ========== */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <div className="space-y-4">
-            <span className="inline-block text-sm text-[#003366] bg-[#003366]/5 px-3 py-1 rounded">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
               Education
             </span>
             <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
@@ -327,7 +327,7 @@ function AbtDetailed() {
           <img src={ABFrame1} alt="Health programs" className="w-full hidden md:block" />
 
           <div className="space-y-4">
-            <span className="inline-block text-sm text-[#003366] bg-[#003366]/5 px-3 py-1 rounded">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
               Nutrition & Health
             </span>
             <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
@@ -355,7 +355,7 @@ function AbtDetailed() {
         {/* ========== DEVELOPMENT ========== */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <div className="space-y-4">
-            <span className="inline-block text-sm text-[#003366] bg-[#003366]/5 px-3 py-1 rounded">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
               Development
             </span>
             <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
@@ -391,7 +391,7 @@ function AbtDetailed() {
           </div>
 
           <div className="space-y-4">
-            <span className="inline-block text-sm text-[#003366] bg-[#003366]/5 px-3 py-1 rounded">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
               Youth Empowerment
             </span>
             <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
@@ -422,7 +422,7 @@ function AbtDetailed() {
         {/* ========== HEALTH AWARENESS ========== */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
           <div className="space-y-4">
-            <span className="inline-block text-sm text-[#003366] bg-[#003366]/5 px-3 py-1 rounded">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
               Health Awareness
             </span>
             <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
@@ -455,7 +455,7 @@ function AbtDetailed() {
           <img src={ABFrame5} alt="Homeless support" className="w-full hidden md:block" />
 
           <div className="space-y-4">
-            <span className="inline-block text-sm text-[#003366] bg-[#003366]/5 px-3 py-1 rounded">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
               Homeless Support
             </span>
             <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">

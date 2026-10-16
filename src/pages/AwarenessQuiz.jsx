@@ -69,7 +69,7 @@ export default function AwarenessQuiz() {
     <div className="min-h-screen bg-[#f6f8fb] px-4 py-10">
       <div className="mx-auto max-w-3xl">
         <div className="mb-6 flex items-center gap-3">
-          <FaGraduationCap className="text-4xl text-[#002344]" />
+          <FaGraduationCap className="text-4xl text-[#12345A]" />
           <div>
             <h1 className="text-2xl font-black text-[#062a52] md:text-3xl">SSF Awareness Quiz / जागरूकता प्रश्नोत्तरी</h1>
             <p className="text-sm text-zinc-500">10 प्रश्न · Pass 80% · Pass होते ही certificate तुरंत मिलेगा।</p>
@@ -96,7 +96,7 @@ export default function AwarenessQuiz() {
                     const chosen = Number(answers[q.id]) === idx;
                     return (
                       <button key={idx} type="button" onClick={() => setAnswers((a) => ({ ...a, [q.id]: idx }))}
-                        className={"rounded-xl border px-4 py-2 text-left text-sm font-semibold transition " + (chosen ? "border-[#FF6600] bg-[#fff4ec] text-[#8a3b00]" : "border-zinc-200 bg-white text-zinc-700 hover:border-[#0f4c81]/40")}>
+                        className={"rounded-xl border px-4 py-2 text-left text-sm font-semibold transition " + (chosen ? "border-[#E6530E] bg-[#fff4ec] text-[#8a3b00]" : "border-zinc-200 bg-white text-zinc-700 hover:border-[#0f4c81]/40")}>
                         <span className="font-black">{String.fromCharCode(65 + idx)}.</span> {o.en} <span className="text-zinc-400">/ {o.hi}</span>
                       </button>
                     );
@@ -105,7 +105,7 @@ export default function AwarenessQuiz() {
               </div>
             ))}
             <button type="button" disabled={submitting} onClick={submit}
-              className="w-full rounded-xl bg-[#177245] px-5 py-4 text-base font-black text-white disabled:opacity-50">
+              className="w-full rounded-xl bg-[#176447] px-5 py-4 text-base font-black text-white disabled:opacity-50">
               {submitting ? "Submitting…" : user ? "Submit & get certificate" : "Login to submit & get certificate"}
             </button>
           </div>
@@ -114,7 +114,7 @@ export default function AwarenessQuiz() {
         {result && (
           <div className={"rounded-2xl border p-6 shadow-sm md:p-8 " + (result.passed ? "border-emerald-200 bg-white" : "border-red-200 bg-white")}>
             <div className="flex items-center gap-3">
-              {result.passed ? <FaCheckCircle className="text-3xl text-[#177245]" /> : <FaTimesCircle className="text-3xl text-red-500" />}
+              {result.passed ? <FaCheckCircle className="text-3xl text-[#176447]" /> : <FaTimesCircle className="text-3xl text-red-500" />}
               <div>
                 <div className="text-xl font-black text-[#062a52]">{result.passed ? "Congratulations! आप पास हो गए 🎉" : "Not passed yet / अभी पास नहीं"}</div>
                 <div className="text-sm text-zinc-500">Score: {result.correct}/{result.total} · {result.percent}% (pass {result.passPercent}%)</div>

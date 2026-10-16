@@ -68,7 +68,7 @@ export default function CSRPartnership() {
             <section id="benefits" className="py-24 px-6 bg-white relative">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-20">
-                        <h2 className="text-4xl font-serif font-bold text-[#002344] mb-4">Why Partner with SSF?</h2>
+                        <h2 className="text-4xl font-serif font-bold text-[#12345A] mb-4">Why Partner with SSF?</h2>
                         <p className="text-xl text-zinc-600 max-w-2xl mx-auto">
                             We offer a transparent, compliant, and impactful pathway for your CSR initiatives, ensuring maximum value for society and your brand.
                         </p>
@@ -84,10 +84,10 @@ export default function CSRPartnership() {
                                 transition={{ delay: idx * 0.1 }}
                                 className="group p-8 rounded-[2rem] bg-zinc-50 border border-zinc-100 hover:bg-white hover:shadow-2xl hover:-translate-y-2 transition-all duration-300"
                             >
-                                <div className="w-16 h-16 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center text-3xl text-[#003366] mb-6 group-hover:bg-[#fb8500] group-hover:text-white transition-colors duration-300">
+                                <div className="w-16 h-16 rounded-2xl bg-white border border-zinc-100 shadow-sm flex items-center justify-center text-3xl text-[#12345A] mb-6 group-hover:bg-[#fb8500] group-hover:text-white transition-colors duration-300">
                                     {benefit.icon}
                                 </div>
-                                <h3 className="text-xl font-bold text-[#002344] mb-3">{benefit.title}</h3>
+                                <h3 className="text-xl font-bold text-[#12345A] mb-3">{benefit.title}</h3>
                                 <p className="text-zinc-500 leading-relaxed font-medium">
                                     {benefit.description}
                                 </p>
@@ -98,7 +98,7 @@ export default function CSRPartnership() {
             </section>
 
             {/* ================= TAX & COMPLIANCE SECTION ================= */}
-            <section className="py-24 px-6 bg-[#001529] text-white relative overflow-hidden">
+            <section className="py-24 px-6 bg-[#12345A] text-white relative overflow-hidden">
                 {/* Background Patterns */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#fb8500]/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#004d99]/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
@@ -135,7 +135,7 @@ export default function CSRPartnership() {
                     </div>
 
                     {/* Registration Details Card */}
-                    <div className="bg-white text-[#002344] p-8 md:p-10 rounded-[2.5rem] shadow-2xl relative">
+                    <div className="bg-white text-[#12345A] p-8 md:p-10 rounded-[2.5rem] shadow-2xl relative">
                         <h3 className="text-2xl font-bold mb-6 flex items-center gap-3 border-b border-zinc-100 pb-4">
                             <FaBuilding className="text-[#fb8500]" /> Registration Details
                         </h3>
@@ -143,13 +143,13 @@ export default function CSRPartnership() {
                             {registrationDetails.map((item, i) => (
                                 <div key={i} className="flex flex-col sm:flex-row sm:justify-between text-sm sm:items-center py-2 border-b border-zinc-50 last:border-0 hover:bg-zinc-50 px-2 rounded-lg transition-colors">
                                     <span className="font-bold text-zinc-500 w-1/3">{item.label}</span>
-                                    <span className="font-semibold text-[#002344] sm:text-right flex-1">{item.value}</span>
+                                    <span className="font-semibold text-[#12345A] sm:text-right flex-1">{item.value}</span>
                                 </div>
                             ))}
                         </div>
                         <div className="mt-8 pt-6 border-t border-zinc-100 text-center">
                             <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider mb-2">Verified & Trusted</p>
-                            <div className="flex justify-center gap-4 text-2xl text-[#003366]">
+                            <div className="flex justify-center gap-4 text-2xl text-[#12345A]">
                                 <FaFileContract title="12A Registered" />
                                 <FaHandshake title="CSR-1 Compliant" />
                                 <FaCheckCircle title="NGO Darpan" />
@@ -162,7 +162,7 @@ export default function CSRPartnership() {
             {/* ================= CERTIFICATIONS ================= */}
             <section className="py-24 px-6 bg-white">
                 <div className="max-w-7xl mx-auto text-center mb-16">
-                    <h2 className="text-4xl font-serif font-bold text-[#002344] mb-4">Recognitions & Certifications</h2>
+                    <h2 className="text-4xl font-serif font-bold text-[#12345A] mb-4">Recognitions & Certifications</h2>
                     <p className="text-xl text-zinc-500">Endorsed by national bodies for transparency and integrity.</p>
                 </div>
 
@@ -181,7 +181,7 @@ export default function CSRPartnership() {
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
                         </div>
                         <div className="mt-6 text-center">
-                            <h3 className="text-xl font-bold text-[#002344]">PM CARES Contribution</h3>
+                            <h3 className="text-xl font-bold text-[#12345A]">PM CARES Contribution</h3>
                             <p className="text-zinc-500 mt-2 text-sm">Acknowledged for valuable contribution to the Prime Minister's Citizen Assistance Fund.</p>
                         </div>
                     </motion.div>
@@ -200,7 +200,7 @@ export default function CSRPartnership() {
                             <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors"></div>
                         </div>
                         <div className="mt-6 text-center">
-                            <h3 className="text-xl font-bold text-[#002344]">Integrity Pledge</h3>
+                            <h3 className="text-xl font-bold text-[#12345A]">Integrity Pledge</h3>
                             <p className="text-zinc-500 mt-2 text-sm">Committed to upholding the highest standards of integrity and transparency.</p>
                         </div>
                     </motion.div>
@@ -218,7 +218,7 @@ export default function CSRPartnership() {
                             />
                         </div>
                         <div className="mt-6 text-center">
-                            <h3 className="text-xl font-bold text-[#002344]">All India Registered</h3>
+                            <h3 className="text-xl font-bold text-[#12345A]">All India Registered</h3>
                             <p className="text-zinc-500 mt-2 text-sm">Operational scope covering all of India, registered under MP Society Act.</p>
                         </div>
                     </motion.div>
@@ -228,7 +228,7 @@ export default function CSRPartnership() {
             {/* ================= SOCIAL IMPACT ================= */}
             <section className="py-24 px-6 bg-zinc-50">
                 <div className="max-w-7xl mx-auto text-center mb-16">
-                    <h2 className="text-4xl font-serif font-bold text-[#002344] mb-4">Focus Areas for CSR</h2>
+                    <h2 className="text-4xl font-serif font-bold text-[#12345A] mb-4">Focus Areas for CSR</h2>
                     <p className="text-xl text-zinc-500">Align your CSR goals with our key initiatives.</p>
                 </div>
 
@@ -270,7 +270,7 @@ export default function CSRPartnership() {
 
             {/* ================= CONTACT / CTA ================= */}
             <section id="partner-form" className="pt-24 pb-24 px-6 bg-white">
-                <div className="max-w-5xl mx-auto bg-[#001529] rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row">
+                <div className="max-w-5xl mx-auto bg-[#12345A] rounded-[3rem] overflow-hidden shadow-2xl flex flex-col md:flex-row">
                     <div className="p-12 md:p-16 md:w-1/2 flex flex-col justify-center relative">
                         <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
                         <h2 className="text-4xl font-serif font-bold text-white mb-6 relative z-10">
@@ -347,7 +347,7 @@ export default function CSRPartnership() {
 
                     <div className="p-12 md:p-16 md:w-1/2 bg-white">
                         <form className="space-y-6">
-                            <h3 className="text-2xl font-bold text-[#002344] mb-4">Request a Proposal</h3>
+                            <h3 className="text-2xl font-bold text-[#12345A] mb-4">Request a Proposal</h3>
                             <div>
                                 <label className="block text-sm font-bold text-zinc-500 mb-2">Company Name</label>
                                 <input type="text" className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#fb8500] focus:ring-2 focus:ring-[#fb8500]/20 outline-none transition-all" placeholder="Enter company name" />
@@ -365,7 +365,7 @@ export default function CSRPartnership() {
                                     <option>Skill Development</option>
                                 </select>
                             </div>
-                            <button className="w-full py-4 bg-[#002344] text-white font-bold rounded-xl hover:bg-[#003366] transition-colors shadow-lg">
+                            <button className="w-full py-4 bg-[#12345A] text-white font-bold rounded-xl hover:bg-[#12345A] transition-colors shadow-lg">
                                 Submit Request
                             </button>
                         </form>
