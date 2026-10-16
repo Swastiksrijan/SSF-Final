@@ -246,3 +246,22 @@ a { text-underline-offset: .18em; }
 [class*="border-[#168a5a]"], [class*="border-[#087f73]"], [class*="border-[#177245]"] { border-color: var(--ssf-green) !important; }
 [class*="border-[#fb8500]"], [class*="border-[#FF6600]"], [class*="border-[#c9a227]"],
 [class*="border-[#C8A24D]"] { border-color: var(--ssf-saffron) !important; }
+
+
+/* Legacy custom-color utilities on public pages and SSF-IMS */
+[class*="text-[#123B5D]"], [class*="text-[#123b5d]"] { color: var(--ssf-navy) !important; }
+[class*="text-[#1F7A70]"], [class*="text-[#1f7a70]"] { color: var(--ssf-green) !important; }
+[class*="text-[#D8EDE9]"], [class*="text-[#D8E3EA]"], [class*="text-[#E3EBF0]"] { color: var(--ssf-soft-blue) !important; }
+[class*="bg-[#123B5D]"], [class*="bg-[#123b5d]"] { background-color: var(--ssf-navy) !important; }
+[class*="bg-[#1F7A70]"], [class*="bg-[#1f7a70]"] { background-color: var(--ssf-green) !important; }
+[class*="bg-[#D8E3EA]"], [class*="bg-[#E3EBF0]"], [class*="bg-[#F5F8FA]"],
+[class*="bg-[#F5F8FC]"], [class*="bg-[#D8EDE9]"] { background-color: var(--ssf-soft-blue) !important; }
+[class*="bg-[#FFF8E7]"], [class*="bg-[#f6f8fa]"], [class*="bg-[#f7f9fc]"] { background-color: var(--ssf-ivory) !important; }
+[class*="border-[#D8E3EA]"], [class*="border-[#E3EBF0]"] { border-color: var(--ssf-soft-blue) !important; }
+[class*="border-[#1F7A70]"], [class*="border-[#1f7a70]"] { border-color: var(--ssf-green) !important; }
+[class*="from-[#002344]"], [class*="from-[#001529]"], [class*="from-[#0b3a63]"],
+[class*="from-[#123B5D]"] { --tw-gradient-from: var(--ssf-navy) var(--tw-gradient-from-position) !important; }
+[class*="via-[#0b3a63]"], [class*="via-[#123a5e]"] { --tw-gradient-via: var(--ssf-green) var(--tw-gradient-via-position) !important; }
+[class*="to-[#002344]"], [class*="to-[#001529]"], [class*="to-[#0b3a63]"] { --tw-gradient-to: var(--ssf-navy) var(--tw-gradient-to-position) !important; }
+[class*="from-[#FF6600]"], [class*="from-[#ff6600]"], [class*="from-[#e65c00]"] { --tw-gradient-from: var(--ssf-saffron) var(--tw-gradient-from-position) !important; }
+[class*="to-[#FFD166]"], [class*="to-[#ffd166]"], [class*="to-[#e4c86a]"] { --tw-gradient-to: var(--ssf-gold) var(--tw-gradient-to-position) !important; }

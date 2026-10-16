@@ -42,8 +42,8 @@ function HeroSearch({ matchSubjects, onOpenSubject, onSubmit }) {
   };
 
   return <form onSubmit={submit} className="relative mt-8 w-full max-w-2xl" role="search">
-    <div className="flex items-center gap-2 rounded-2xl border border-white/20 bg-white/[0.07] p-2 pl-4 backdrop-blur transition focus-within:border-[#FFD166]/60 focus-within:bg-white/[0.12]">
-      <FaSearch className="shrink-0 text-[#FFD166]" aria-hidden="true" />
+    <div className="flex items-center gap-2 rounded-2xl border border-white/20 bg-white/[0.07] p-2 pl-4 backdrop-blur transition focus-within:border-[#F7A814]/60 focus-within:bg-white/[0.12]">
+      <FaSearch className="shrink-0 text-[#F7A814]" aria-hidden="true" />
       <input
         value={q}
         onChange={(e) => setQ(e.target.value)}
@@ -134,22 +134,22 @@ export default function LearningHubHome({
 
   return <>
     {/* ── HERO ─────────────────────────────────────────────── */}
-    <section className="relative overflow-hidden bg-[#001529] text-white">
-      <div className="absolute inset-0 bg-gradient-to-br from-[#001529] via-[#0b3a63] to-[#001529]" />
-      <div className="absolute inset-0 opacity-50" style={{ backgroundImage: "radial-gradient(circle at 78% 22%, rgba(184,144,63,0.22), transparent 45%)" }} />
-      <div className="absolute -right-40 -top-40 h-[30rem] w-[30rem] rounded-full border border-[#FFD166]/15" />
+    <section className="relative overflow-hidden bg-[#12345A] text-white">
+      <div className="absolute inset-0 bg-gradient-to-br from-[#12345A] via-[#12345A] to-[#12345A]" />
+      <div className="absolute inset-0 opacity-50" style={{ backgroundImage: "radial-gradient(circle at 78% 22%, rgba(247,168,20,0.22), transparent 45%)" }} />
+      <div className="absolute -right-40 -top-40 h-[30rem] w-[30rem] rounded-full border border-[#F7A814]/15" />
       <div className="absolute -bottom-48 -left-24 h-[34rem] w-[34rem] rounded-full border border-white/[0.06]" />
       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FF6600]/60 to-transparent" />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2.5 rounded-full border border-[#FFD166]/30 bg-white/[0.04] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[#FFD166] backdrop-blur">
+          <div className="inline-flex items-center gap-2.5 rounded-full border border-[#F7A814]/30 bg-white/[0.04] px-4 py-2 text-[10px] font-bold uppercase tracking-[0.24em] text-[#F7A814] backdrop-blur">
             <span aria-hidden="true">◆</span> SSF Learning Hub
           </div>
           <h1 className="mt-6 font-serif text-4xl font-bold leading-[1.05] tracking-tight text-white md:text-6xl">
-            Welcome to Your <span className="text-[#FFD166]">Learning Journey</span> 🚀
+            Welcome to Your <span className="text-[#F7A814]">Learning Journey</span> 🚀
           </h1>
-          <div className="mt-4 text-lg font-semibold tracking-wide text-[#FFD166] md:text-2xl">Discover • Learn • Practice • Grow</div>
+          <div className="mt-4 text-lg font-semibold tracking-wide text-[#F7A814] md:text-2xl">Discover • Learn • Practice • Grow</div>
           <p className="mt-5 max-w-xl text-sm leading-7 text-white/70 md:text-base">
             ज्ञान से कौशल तक — एक structured digital learning space। हर subject को Learning Area → Course → Modules → Lessons के स्पष्ट क्रम में सीखें, practice करें और अपनी गति से आगे बढ़ें।
           </p>
@@ -157,7 +157,7 @@ export default function LearningHubHome({
           <HeroSearch matchSubjects={matchSubjects} onOpenSubject={onOpenSubject} onSubmit={onSearch} />
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <button type="button" onClick={onExplore} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-6 py-3 text-sm font-bold text-[#142b45] shadow-[0_18px_40px_-20px_rgba(184,144,63,0.9)] transition hover:brightness-110">
+            <button type="button" onClick={onExplore} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-6 py-3 text-sm font-bold text-[#142b45] shadow-[0_18px_40px_-20px_rgba(247,168,20,0.9)] transition hover:brightness-110">
               <FaCompass aria-hidden="true" /> Explore Learning
             </button>
             <button type="button" onClick={onMyLearning} className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-6 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/[0.12]">
@@ -165,13 +165,13 @@ export default function LearningHubHome({
             </button>
           </div>
 
-          {active && <button type="button" onClick={() => onOpenSubject(active.subject)} className="mt-8 flex w-full max-w-2xl items-center justify-between gap-4 rounded-2xl border border-[#FFD166]/25 bg-white/[0.05] p-4 text-left backdrop-blur transition hover:bg-white/[0.1]">
+          {active && <button type="button" onClick={() => onOpenSubject(active.subject)} className="mt-8 flex w-full max-w-2xl items-center justify-between gap-4 rounded-2xl border border-[#F7A814]/25 bg-white/[0.05] p-4 text-left backdrop-blur transition hover:bg-white/[0.1]">
             <span className="min-w-0">
-              <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#FFD166]">Continue where you left off</span>
+              <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#F7A814]">Continue where you left off</span>
               <span className="mt-1.5 block truncate text-base font-bold">{active.subject.en}</span>
-              <span className="mt-2 block h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-white/15"><span className="block h-full rounded-full bg-gradient-to-r from-[#FFD166] to-[#FF6600]" style={{ width: active.percent + "%" }} /></span>
+              <span className="mt-2 block h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-white/15"><span className="block h-full rounded-full bg-gradient-to-r from-[#F7A814] to-[#FF6600]" style={{ width: active.percent + "%" }} /></span>
             </span>
-            <span className="shrink-0 text-sm font-bold text-[#FFD166]">{active.percent}% <FaArrowRight className="ml-1 inline" aria-hidden="true" /></span>
+            <span className="shrink-0 text-sm font-bold text-[#F7A814]">{active.percent}% <FaArrowRight className="ml-1 inline" aria-hidden="true" /></span>
           </button>}
 
           <div className="mt-10 grid grid-cols-2 gap-px overflow-hidden rounded-2xl border border-white/10 bg-white/[0.04] sm:grid-cols-4">
@@ -180,8 +180,8 @@ export default function LearningHubHome({
               [categoryCards.length, "Learning Areas", "क्षेत्र"],
               [knowledgeWorldSubjects.length, "Knowledge Topics", "ज्ञान विषय"],
               ["Structured", "Modules & Lessons", "मॉड्यूल"],
-            ].map(([value, en, hi]) => <div key={en} className="bg-[#001529]/40 p-4 text-center backdrop-blur">
-              <div className="font-serif text-2xl font-bold text-[#FFD166]">{value}</div>
+            ].map(([value, en, hi]) => <div key={en} className="bg-[#12345A]/40 p-4 text-center backdrop-blur">
+              <div className="font-serif text-2xl font-bold text-[#F7A814]">{value}</div>
               <div className="mt-1 text-[11px] font-semibold text-white/60">{en} / {hi}</div>
             </div>)}
           </div>
@@ -189,13 +189,13 @@ export default function LearningHubHome({
 
         <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
           <div className="absolute -inset-5 rounded-[2.6rem] bg-[#FF6600]/10 blur-3xl" aria-hidden="true" />
-          <div className="relative rounded-[2rem] border border-[#FFD166]/25 p-2.5 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
+          <div className="relative rounded-[2rem] border border-[#F7A814]/25 p-2.5 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
             <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10">
               <HubHeroArt className="block h-auto w-full" />
-              <div className="absolute inset-0 bg-gradient-to-t from-[#001529]/70 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-[#12345A]/70 via-transparent to-transparent" />
               <div className="absolute left-5 top-5 inline-flex items-center gap-2 rounded-full border border-white/20 bg-black/30 px-3 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] backdrop-blur">◆ हर बच्चा सीख सकता है</div>
               <div className="absolute bottom-5 left-5 right-5 rounded-2xl border border-white/15 bg-white/[0.08] p-4 backdrop-blur">
-                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#FFD166]">Swastik Srijan Foundation</div>
+                <div className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#F7A814]">Swastik Srijan Foundation</div>
                 <div className="mt-1 text-sm font-bold text-white">शिक्षा • कौशल • स्वावलंबन</div>
               </div>
             </div>
@@ -274,7 +274,7 @@ export default function LearningHubHome({
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {LEARNING_PATHS.map((p) => <button key={p.id} type="button" onClick={() => onPath(p)}
           className="group flex h-full items-start gap-4 rounded-[1.6rem] border border-[#EADFCC] bg-white p-5 text-left shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1 hover:border-[#FF6600]/45 hover:shadow-[0_30px_60px_-40px_rgba(20,43,69,0.7)]">
-          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#0b3a63] to-[#001529] text-xl text-[#FFD166]" aria-hidden="true">{p.icon}</span>
+          <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#12345A] to-[#12345A] text-xl text-[#F7A814]" aria-hidden="true">{p.icon}</span>
           <span className="min-w-0 flex-1">
             <span className="block font-serif text-base font-bold text-[#142b45]">{p.title}</span>
             <span className="block text-[11px] font-bold text-[#B34A00]">{p.hi}</span>
@@ -363,7 +363,7 @@ export default function LearningHubHome({
         <span className="min-w-0">
           <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#B34A00]">Continue Learning</span>
           <span className="mt-1 block truncate font-serif text-lg font-bold text-[#142b45]">{active.subject.en}</span>
-          <span className="mt-2 block h-1.5 w-full max-w-md overflow-hidden rounded-full bg-white"><span className="block h-full rounded-full bg-gradient-to-r from-[#FF6600] to-[#FFD166]" style={{ width: active.percent + "%" }} /></span>
+          <span className="mt-2 block h-1.5 w-full max-w-md overflow-hidden rounded-full bg-white"><span className="block h-full rounded-full bg-gradient-to-r from-[#FF6600] to-[#F7A814]" style={{ width: active.percent + "%" }} /></span>
         </span>
         <span className="shrink-0 rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-5 py-3 text-sm font-bold text-[#142b45] shadow-md">Continue →</span>
       </button>}
