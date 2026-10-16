@@ -53,7 +53,7 @@ export default function CertificateGenerator({ role }) {
     return (
         <div className="w-full max-w-lg mx-auto bg-white rounded-2xl shadow-xl border border-zinc-100 overflow-hidden my-12 relative">
             {/* Header */}
-            <div className={`p-8 text-center transition-colors duration-500 ${generated ? 'bg-green-600' : 'bg-[#003366]'}`}>
+            <div className={`p-8 text-center transition-colors duration-500 ${generated ? 'bg-green-600' : 'bg-[#12345A]'}`}>
                 <FaShieldAlt className="text-5xl text-yellow-400 mx-auto mb-4 drop-shadow-md" />
                 <h3 className="text-2xl font-bold text-white tracking-wide">
                     {generated ? 'Verified & Issued' : 'Secure Certificate Retrieval'}
@@ -79,7 +79,7 @@ export default function CertificateGenerator({ role }) {
                                 setError('');
                             }}
                             placeholder="e.g. SSF-VOL-2026-0001"
-                            className="w-full px-5 py-4 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-4 focus:ring-[#003366]/10 focus:border-[#003366] text-lg font-mono text-zinc-800 outline-none transition-all tracking-wider"
+                            className="w-full px-5 py-4 bg-zinc-50 border border-zinc-200 rounded-xl focus:ring-4 focus:ring-[#12345A]/10 focus:border-[#12345A] text-lg font-mono text-zinc-800 outline-none transition-all tracking-wider"
                             required
                         />
                         <p className="text-[10px] text-zinc-400 mt-1 ml-1">
@@ -103,7 +103,7 @@ export default function CertificateGenerator({ role }) {
                         disabled={loading || !accessCode.trim()}
                         className={`w-full py-4 rounded-xl font-bold text-lg shadow-lg flex items-center justify-center gap-3 transition-all transform active:scale-[0.98] ${generated
                             ? 'bg-green-50 text-green-700 border-2 border-green-200 cursor-default'
-                            : 'bg-gradient-to-r from-[#003366] to-[#004080] text-white hover:shadow-xl'
+                            : 'bg-gradient-to-r from-[#12345A] to-[#004080] text-white hover:shadow-xl'
                             } disabled:opacity-50 disabled:grayscale disabled:cursor-not-allowed`}
                     >
                         {loading ? (
@@ -129,11 +129,11 @@ export default function CertificateGenerator({ role }) {
                         </p>
                         <ul className="text-xs text-zinc-500 space-y-2 text-left bg-zinc-50 p-4 rounded-lg">
                             <li className="flex gap-2">
-                                <span className="font-bold text-[#003366]">1. Check your Email:</span>
+                                <span className="font-bold text-[#12345A]">1. Check your Email:</span>
                                 <span>The code is sent automatically after you complete your donation or volunteer registration form.</span>
                             </li>
                             <li className="flex gap-2">
-                                <span className="font-bold text-[#003366]">2. Late Arrival:</span>
+                                <span className="font-bold text-[#12345A]">2. Late Arrival:</span>
                                 <span>Sometimes it takes up to 24 hours for the system to verify and send the code.</span>
                             </li>
                         </ul>
@@ -141,7 +141,7 @@ export default function CertificateGenerator({ role }) {
                             href={`${CONTACT_INFO.social.whatsapp}?text=${encodeURIComponent("Hi, I have registered as a Volunteer/Donor but haven't received my Certificate Access Code yet.")}`}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-block text-xs text-[#003366] font-bold underline hover:text-blue-700"
+                            className="inline-block text-xs text-[#12345A] font-bold underline hover:text-blue-700"
                         >
                             Contact Support on WhatsApp
                         </a>

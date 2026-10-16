@@ -22,7 +22,7 @@ export default function OfficialOverview() {
     return (
         <section className="py-12 container mx-auto px-6 relative">
             {/* Floating Top Statement - Scrolling Ticker */}
-            <div className="absolute top-4 left-4 right-4 md:left-12 md:right-12 mx-auto bg-[#003366] text-white py-2 rounded-t-2xl z-0 shadow-lg border-t border-x border-white/20 overflow-hidden">
+            <div className="absolute top-4 left-4 right-4 md:left-12 md:right-12 mx-auto bg-[#12345A] text-white py-2 rounded-t-2xl z-0 shadow-lg border-t border-x border-white/20 overflow-hidden">
                 <div className="flex animate-scrollX whitespace-nowrap w-fit">
                     {/* Repeated content for seamless scrolling loop */}
                     {[1, 2, 3, 4, 5, 6].map((i) => (
@@ -30,13 +30,13 @@ export default function OfficialOverview() {
                             <span className="font-semibold tracking-wide text-sm">
                                 Together, we empower communities & transform lives.
                             </span>
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#fb8500]"></span>
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#E6530E]"></span>
                         </div>
                     ))}
                 </div>
             </div>
 
-            <div className="bg-gradient-to-br from-[#004d99] to-[#002344] rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden z-10 mt-6">
+            <div className="bg-gradient-to-br from-[#004d99] to-[#12345A] rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden z-10 mt-6">
                 {/* Background decoration */}
                 <div className="absolute top-0 right-0 w-80 h-80 bg-[#3b82f6] opacity-20 rounded-full blur-[80px] translate-x-1/2 -translate-y-1/2"></div>
                 <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#d90429] opacity-10 rounded-full blur-[80px] -translate-x-1/2 translate-y-1/2"></div>
@@ -55,7 +55,7 @@ export default function OfficialOverview() {
 
                     <div className="grid md:grid-cols-3 gap-6">
                         {cards.map((card, i) => (
-                            <div key={i} className="bg-[#001529]/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 flex flex-col items-center justify-center text-center h-full hover:bg-[#001529]/80 transition-all duration-300 hover:-translate-y-1 shadow-lg">
+                            <div key={i} className="bg-[#12345A]/60 backdrop-blur-md border border-white/10 rounded-2xl p-5 flex flex-col items-center justify-center text-center h-full hover:bg-[#12345A]/80 transition-all duration-300 hover:-translate-y-1 shadow-lg">
                                 <h3 className="text-[#60a5fa] text-lg font-bold mb-3 uppercase tracking-widest">{card.title}</h3>
                                 <div className="space-y-1 text-white/90 text-sm font-medium">
                                     {card.content.map((line, idx) => (
@@ -78,7 +78,7 @@ export default function OfficialOverview() {
 
                         <Link
                             to="/Volunteer"
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-200 transform bg-[#002344] text-white hover:bg-[#003366] hover:-translate-y-0.5 shadow-lg shadow-blue-900/20 text-sm min-w-[180px] justify-center"
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-200 transform bg-[#12345A] text-white hover:bg-[#12345A] hover:-translate-y-0.5 shadow-lg shadow-blue-900/20 text-sm min-w-[180px] justify-center"
                         >
                             <FaUserPlus className="text-xl" /> Volunteer with Us
                         </Link>
@@ -87,7 +87,7 @@ export default function OfficialOverview() {
                             href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
                             target="_blank"
                             rel="noreferrer"
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-200 transform bg-[#fb8500] text-white hover:bg-[#e07600] hover:-translate-y-0.5 shadow-lg shadow-orange-900/20 text-sm min-w-[180px] justify-center"
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-200 transform bg-[#E6530E] text-white hover:bg-[#e07600] hover:-translate-y-0.5 shadow-lg shadow-orange-900/20 text-sm min-w-[180px] justify-center"
                         >
                             <FaDonate className="text-xl" /> Support Us
                         </a>
