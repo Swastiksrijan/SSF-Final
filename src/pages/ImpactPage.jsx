@@ -32,7 +32,7 @@ export default function ImpactPage() {
             titleHi: "एसएसएफ लर्निंग हब",
             desc: "An active community-driven education initiative offering both online and offline classes for holistic learning.",
             descHi: "एक सक्रिय समुदाय-संचालित शिक्षा पहल जो समग्र सीखने के लिए ऑनलाइन और ऑफलाइन दोनों कक्षाएं प्रदान करती है।",
-            color: "bg-blue-50 text-blue-600 border-blue-100",
+            color: "bg-[#eef2f7] text-[#0a2540] border-[#e9e3d6]",
             impact: "Currently Active",
             customButtons: [
                 { label: "🔘 Donate for Learning Hub", link: "/Donate" },
@@ -46,7 +46,7 @@ export default function ImpactPage() {
             titleHi: "एसएसएफ नेशनल अकादमी",
             desc: "Our flagship knowledge hub for future leaders, focusing on academic excellence and professional growth.",
             descHi: "भावी नेताओं के लिए हमारा प्रमुख ज्ञान केंद्र, जो शैक्षणिक उत्कृष्टता और व्यावसायिक विकास पर केंद्रित है।",
-            color: "bg-indigo-50 text-indigo-600 border-indigo-100",
+            color: "bg-[#eef2f7] text-[#0a2540] border-[#e9e3d6]",
             impact: "Upcoming Project",
             customButtons: [
                 { label: "🔘 Support Education", link: "/Donate" },
@@ -59,7 +59,7 @@ export default function ImpactPage() {
             title: "Education for Underprivileged Children",
             titleHi: "वंचित बच्चों के लिए शिक्षा",
             desc: "Direct support for school fees, materials, and digital learning for children in need.",
-            color: "bg-orange-50 text-orange-600 border-orange-100",
+            color: "bg-[#faf4e2] text-[#7e5f22] border-[#e9e3d6]",
             impact: "Education Access"
         },
         {
@@ -68,7 +68,7 @@ export default function ImpactPage() {
             title: "Health & Nutrition Initiative",
             titleHi: "स्वास्थ्य और पोषण पहल",
             desc: "Free health camps, medicine distribution, and nutrition kits for women and children.",
-            color: "bg-red-50 text-red-600 border-red-100",
+            color: "bg-[#eef7f1] text-[#177245] border-[#e9e3d6]",
             impact: "Preventive Healthcare"
         },
         {
@@ -77,7 +77,7 @@ export default function ImpactPage() {
             title: "Sports & Youth Development",
             titleHi: "खेल और युवा विकास",
             desc: "Promoting physical fitness, leadership, and professional coaching for rural youth.",
-            color: "bg-indigo-50 text-indigo-600 border-indigo-100",
+            color: "bg-[#eef2f7] text-[#0a2540] border-[#e9e3d6]",
             impact: "Youth Leadership"
         },
         {
@@ -86,7 +86,7 @@ export default function ImpactPage() {
             title: "Women & Child Empowerment",
             titleHi: "महिला एवं बाल सशक्तिकरण",
             desc: "Vocational training and protection programs for social and economic independence.",
-            color: "bg-pink-50 text-pink-600 border-pink-100",
+            color: "bg-[#faf4e2] text-[#7e5f22] border-[#e9e3d6]",
             impact: "Social Equality"
         },
         {
@@ -95,7 +95,7 @@ export default function ImpactPage() {
             title: "Environment & Sustainability",
             titleHi: "पर्यावरण और स्थिरता",
             desc: "Tree plantation drives, waste management awareness, and clean energy advocacy.",
-            color: "bg-green-50 text-green-600 border-green-100",
+            color: "bg-[#eef7f1] text-[#177245] border-[#e9e3d6]",
             impact: "Climate Action"
         },
         {
@@ -104,7 +104,7 @@ export default function ImpactPage() {
             title: "Animal & Bird Welfare",
             titleHi: "पशु और पक्षी कल्याण",
             desc: "Rescuing injured strays and creating awareness for wildlife protection.",
-            color: "bg-amber-50 text-amber-600 border-amber-100",
+            color: "bg-[#faf4e2] text-[#7e5f22] border-[#e9e3d6]",
             impact: "Ecological Care"
         },
         {
@@ -113,13 +113,13 @@ export default function ImpactPage() {
             title: "Community Development",
             titleHi: "सामुदायिक विकास",
             desc: "Infrastructure support and awareness campaigns for clean and self-reliant villages.",
-            color: "bg-zinc-50 text-zinc-600 border-zinc-100",
+            color: "bg-[#f8f5ed] text-[#41506b] border-[#e9e3d6]",
             impact: "Holistic Growth"
         }
     ];
 
     return (
-        <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
+        <div className="w-full bg-white font-sans text-[#0f2740] overflow-hidden">
             {/* ================= HERO ================= */}
             <PageHero
                 image={pageHeader}
@@ -141,19 +141,19 @@ export default function ImpactPage() {
                         whileInView="visible"
                         viewport={{ once: true }}
                         variants={fadeInUp}
-                        className="bg-gradient-to-br from-zinc-50 to-white p-8 md:p-14 rounded-[4rem] shadow-2xl border border-zinc-200"
+                        className="bg-gradient-to-br from-[#f8f5ed] to-white p-8 md:p-14 rounded-[4rem] shadow-2xl border border-[#e9e3d6]"
                     >
                         <div className="max-w-3xl mx-auto text-center mb-12 space-y-4">
-                            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-[#002344] text-[10px] font-bold uppercase tracking-[0.2em]">
+                            <span className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#eef2f7] text-[#0a2540] text-[10px] font-bold uppercase tracking-[0.2em]">
                                 Our Approach to Impact
                             </span>
-                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#002344]">
-                                Impact is built through <span className="text-[#FF6600]">consistent action</span>
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#0a2540]">
+                                Impact is built through <span className="text-#7e5f22">consistent action</span>
                             </h2>
-                            <p className="text-lg text-zinc-500 font-medium leading-relaxed">
+                            <p className="text-lg text-[#5c6b80] font-medium leading-relaxed">
                                 We focus on practical community work rather than presenting unsupported headline numbers. Our impact is reflected through programmes, participation, learning opportunities, awareness activities and documented field work.
                             </p>
-                            <p className="text-sm font-hindi text-zinc-400 font-medium">
+                            <p className="text-sm font-hindi text-[#5c6b80] font-medium">
                                 हमारा प्रभाव केवल आंकड़ों से नहीं, बल्कि निरंतर सेवा, सहभागिता और वास्तविक गतिविधियों से बनता है।
                             </p>
                         </div>
@@ -166,14 +166,14 @@ export default function ImpactPage() {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                     transition={{ delay: i * 0.06 }}
-                                    className="rounded-3xl border border-zinc-200 bg-white p-7 hover:shadow-lg transition-all"
+                                    className="rounded-3xl border border-[#e9e3d6] bg-white p-7 hover:shadow-lg transition-all"
                                 >
-                                    <div className="w-12 h-12 rounded-2xl bg-blue-50 text-[#002344] flex items-center justify-center text-xl mb-5">
+                                    <div className="w-12 h-12 rounded-2xl bg-[#eef2f7] text-[#0a2540] flex items-center justify-center text-xl mb-5">
                                         {item.icon}
                                     </div>
-                                    <h3 className="text-lg font-bold text-[#002344]">{item.title}</h3>
-                                    <p className="text-xs font-hindi text-zinc-400 font-bold mt-1">{item.titleHi}</p>
-                                    <p className="text-sm text-zinc-600 leading-relaxed mt-4">{item.desc}</p>
+                                    <h3 className="text-lg font-bold text-[#0a2540]">{item.title}</h3>
+                                    <p className="text-xs font-hindi text-[#5c6b80] font-bold mt-1">{item.titleHi}</p>
+                                    <p className="text-sm text-[#41506b] leading-relaxed mt-4">{item.desc}</p>
                                 </motion.div>
                             ))}
                         </div>
@@ -182,24 +182,24 @@ export default function ImpactPage() {
             </section>
 
             {/* ================= PROGRAMS & INITIATIVES FEATURED ================= */}
-            <section className="py-24 px-6 bg-zinc-50 border-y border-zinc-100">
+            <section className="py-24 px-6 bg-[#f8f5ed] border-y border-[#e9e3d6]">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-16 space-y-4">
-                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-blue-50 text-[#002344] text-[10px] font-bold uppercase tracking-[0.2em]">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#002344] animate-pulse"></span>
+                        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#eef2f7] text-[#0a2540] text-[10px] font-bold uppercase tracking-[0.2em]">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#0a2540] animate-pulse"></span>
                             Ecosystem of Empowerment
                         </div>
-                        <h2 className="text-4xl lg:text-7xl font-serif font-bold text-[#002344]">
-                            Programs & <span className="text-[#FF6600]">Initiatives</span>
+                        <h2 className="text-4xl lg:text-7xl font-serif font-bold text-[#0a2540]">
+                            Programs & <span className="text-#7e5f22">Initiatives</span>
                         </h2>
-                        <p className="max-w-2xl mx-auto text-zinc-500 text-lg font-medium leading-relaxed">
+                        <p className="max-w-2xl mx-auto text-[#5c6b80] text-lg font-medium leading-relaxed">
                             Every program we run has a purpose that deserves support. Explore the diverse channels of transformation created by our collective effort.
                         </p>
-                        <p className="text-sm font-hindi text-zinc-400 font-bold uppercase tracking-widest mb-6">सामुदायिक विकास के लिए हमारा व्यापक दृष्टिकोण</p>
+                        <p className="text-sm font-hindi text-[#5c6b80] font-bold uppercase tracking-widest mb-6">सामुदायिक विकास के लिए हमारा व्यापक दृष्टिकोण</p>
 
                         <div className="flex justify-center pt-2">
                             <Link to="/Campaigns">
-                                <button className="px-8 py-3 bg-white border-2 border-[#002344] text-[#002344] rounded-2xl font-bold hover:bg-[#002344] hover:text-white transition-all shadow-lg flex items-center gap-2 text-xs uppercase tracking-widest">
+                                <button className="px-8 py-3 bg-white border-2 border-[#0a2540] text-[#0a2540] rounded-2xl font-bold hover:bg-[#0a2540] hover:text-white transition-all shadow-lg flex items-center gap-2 text-xs uppercase tracking-widest">
                                     View Detailed Campaigns <FaArrowRight className="text-[10px]" />
                                 </button>
                             </Link>
@@ -207,7 +207,7 @@ export default function ImpactPage() {
                     </div>
 
                     {/* Featured Program - Flagship Layout */}
-                    <div className="bg-white rounded-[3.5rem] p-4 md:p-8 border border-zinc-200 shadow-xl overflow-hidden mb-16 group">
+                    <div className="bg-white rounded-[3.5rem] p-4 md:p-8 border border-[#e9e3d6] shadow-xl overflow-hidden mb-16 group">
                         <div className="flex flex-col lg:flex-row items-center gap-12">
                             <div className="lg:w-1/2 w-full h-[400px] md:h-[600px] rounded-[2.5rem] overflow-hidden relative shadow-2xl">
                                 <img
@@ -216,34 +216,34 @@ export default function ImpactPage() {
                                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-1000"
                                 />
                                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                                <span className="absolute bottom-8 left-8 bg-[#002344] text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg border border-white/20">
+                                <span className="absolute bottom-8 left-8 bg-[#0a2540] text-white px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-lg border border-white/20">
                                     Flagship Initiative
                                 </span>
                             </div>
 
                             <div className="lg:w-1/2 w-full p-4 md:p-12 space-y-10 text-left">
-                                <FaQuoteLeft className="text-[#FF6600] opacity-20 text-7xl" />
+                                <FaQuoteLeft className="text-[#c9a227] opacity-20 text-7xl" />
                                 <div className="space-y-6">
                                     <div className="space-y-2">
-                                        <h3 className="text-4xl md:text-6xl font-serif font-bold text-[#002344] leading-tight group-hover:text-[#FF6600] transition-colors">
+                                        <h3 className="text-4xl md:text-6xl font-serif font-bold text-[#0a2540] leading-tight group-hover:text-[#7e5f22] transition-colors">
                                             {programs[0].title}
                                         </h3>
-                                        <h4 className="text-2xl font-hindi text-zinc-400 font-medium">{programs[0].titleHi}</h4>
+                                        <h4 className="text-2xl font-hindi text-[#5c6b80] font-medium">{programs[0].titleHi}</h4>
                                     </div>
-                                    <p className="text-xl text-zinc-600 leading-relaxed font-medium">
+                                    <p className="text-xl text-[#41506b] leading-relaxed font-medium">
                                         "{programs[0].desc}"
                                     </p>
-                                    <p className="text-lg font-hindi text-zinc-400 italic">
+                                    <p className="text-lg font-hindi text-[#5c6b80] italic">
                                         {programs[0].descHi}
                                     </p>
                                 </div>
 
-                                <div className="pt-10 border-t border-zinc-100 flex flex-wrap gap-6 items-center">
+                                <div className="pt-10 border-t border-[#e9e3d6] flex flex-wrap gap-6 items-center">
                                     {programs[0].customButtons.map((btn, idx) => (
                                         <Link
                                             key={idx}
                                             to={btn.link}
-                                            className={`px-8 py-4 rounded-2xl font-bold transition-all shadow-xl flex items-center gap-3 uppercase tracking-wider text-[10px] ${idx === 0 ? 'bg-[#002344] text-white hover:bg-[#FF6600]' : 'bg-white border-2 border-zinc-100 text-zinc-600 hover:border-[#002344] hover:text-[#002344]'}`}
+                                            className={`px-8 py-4 rounded-2xl font-bold transition-all shadow-xl flex items-center gap-3 uppercase tracking-wider text-[10px] ${idx === 0 ? 'bg-[#0a2540] text-white hover:bg-[#c9a227] hover:text-[#0f2740]' : 'bg-white border-2 border-[#e9e3d6] text-[#41506b] hover:border-[#0a2540] hover:text-[#0a2540]'}`}
                                         >
                                             {btn.label.replace('🔘 ', '')} <FaArrowRight />
                                         </Link>
@@ -257,10 +257,10 @@ export default function ImpactPage() {
                         <div className="flex justify-center">
                             <button
                                 onClick={() => setShowAllPrograms(true)}
-                                className="group px-16 py-7 bg-zinc-900 text-white rounded-[2rem] font-bold hover:bg-[#FF6600] transition-all shadow-2xl flex items-center gap-4 text-xl"
+                                className="group px-16 py-7 bg-[#08192b] text-white rounded-[2rem] font-bold hover:bg-[#c9a227] hover:text-[#0f2740] transition-all shadow-2xl flex items-center gap-4 text-xl"
                             >
                                 Explore All Initiatives
-                                <FaArrowRight className="text-orange-400 group-hover:translate-x-2 transition-transform" />
+                                <FaArrowRight className="text-[#7e5f22] group-hover:translate-x-2 transition-transform" />
                             </button>
                         </div>
                     ) : (
@@ -269,14 +269,14 @@ export default function ImpactPage() {
                             animate={{ opacity: 1, y: 0 }}
                             className="space-y-12"
                         >
-                            <div className="flex items-center justify-between border-b border-zinc-200 pb-8 mb-12">
+                            <div className="flex items-center justify-between border-b border-[#e9e3d6] pb-8 mb-12">
                                 <div className="space-y-1">
-                                    <h4 className="text-3xl font-bold text-[#002344]">Full Spectrum of Impact</h4>
-                                    <p className="text-zinc-400 text-sm font-medium uppercase tracking-widest">Bridging the gap across all developmental sectors</p>
+                                    <h4 className="text-3xl font-bold text-[#0a2540]">Full Spectrum of Impact</h4>
+                                    <p className="text-[#5c6b80] text-sm font-medium uppercase tracking-widest">Bridging the gap across all developmental sectors</p>
                                 </div>
                                 <button
                                     onClick={() => setShowAllPrograms(false)}
-                                    className="text-[#FF6600] font-bold flex items-center gap-2 hover:gap-3 transition-all text-lg"
+                                    className="text-[#7e5f22] font-bold flex items-center gap-2 hover:gap-3 transition-all text-lg"
                                 >
                                     Show Less <FaArrowRight className="-rotate-90 transition-transform" />
                                 </button>
@@ -311,14 +311,14 @@ export default function ImpactPage() {
                                                 {program.icon}
                                             </div>
                                             <div className="space-y-1 mb-4">
-                                                <h3 className="text-xl font-bold text-[#002344] leading-tight group-hover:text-[#FF6600] transition-colors">{program.title}</h3>
-                                                <h4 className="text-xs font-hindi text-zinc-400 font-bold tracking-wide">{program.titleHi}</h4>
+                                                <h3 className="text-xl font-bold text-[#0a2540] leading-tight group-hover:text-[#7e5f22] transition-colors">{program.title}</h3>
+                                                <h4 className="text-xs font-hindi text-[#5c6b80] font-bold tracking-wide">{program.titleHi}</h4>
                                             </div>
 
                                             <div className="space-y-3 mb-6 flex-1">
-                                                <p className="text-sm text-zinc-600 leading-relaxed font-medium">{program.desc}</p>
+                                                <p className="text-sm text-[#41506b] leading-relaxed font-medium">{program.desc}</p>
                                                 {program.descHi && (
-                                                    <p className="text-[11px] font-hindi text-zinc-400/80 leading-relaxed italic">{program.descHi}</p>
+                                                    <p className="text-[11px] font-hindi text-[#5c6b80]/80 leading-relaxed italic">{program.descHi}</p>
                                                 )}
                                             </div>
 
@@ -328,7 +328,7 @@ export default function ImpactPage() {
                                                         <Link
                                                             key={idx}
                                                             to={btn.link}
-                                                            className="w-full py-3 px-4 bg-white/80 backdrop-blur-sm border border-zinc-200 rounded-xl text-[10px] font-black text-center text-[#002344] hover:bg-[#002344] hover:text-white transition-all flex items-center justify-center gap-2 group/btn uppercase tracking-widest shadow-sm"
+                                                            className="w-full py-3 px-4 bg-white/80 backdrop-blur-sm border border-[#e9e3d6] rounded-xl text-[10px] font-black text-center text-[#0a2540] hover:bg-[#0a2540] hover:text-white transition-all flex items-center justify-center gap-2 group/btn uppercase tracking-widest shadow-sm"
                                                         >
                                                             {btn.label.replace('🔘 ', '')}
                                                             <FaArrowRight className="text-[8px] group-hover/btn:translate-x-1 transition-transform" />
@@ -338,16 +338,16 @@ export default function ImpactPage() {
                                             ) : (
                                                 <Link
                                                     to="/Donate"
-                                                    className="w-fit mb-6 text-[10px] font-black flex items-center gap-2 hover:gap-3 transition-all text-[#002344] uppercase tracking-widest border-b-2 border-transparent hover:border-[#FF6600]"
+                                                    className="w-fit mb-6 text-[10px] font-black flex items-center gap-2 hover:gap-3 transition-all text-[#0a2540] uppercase tracking-widest border-b-2 border-transparent hover:border-[#c9a227]"
                                                 >
-                                                    Help Now <FaArrowRight className="text-[8px] text-[#FF6600]" />
+                                                    Help Now <FaArrowRight className="text-[8px] text-[#7e5f22]" />
                                                 </Link>
                                             )}
 
-                                            <div className="pt-4 border-t border-zinc-200 mt-auto">
+                                            <div className="pt-4 border-t border-[#e9e3d6] mt-auto">
                                                 <div className="flex items-center gap-2">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-[#FF6600]"></span>
-                                                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-zinc-400">{program.impact}</p>
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-[#c9a227]"></span>
+                                                    <p className="text-[9px] font-black uppercase tracking-[0.2em] text-[#5c6b80]">{program.impact}</p>
                                                 </div>
                                             </div>
                                         </div>
@@ -358,7 +358,7 @@ export default function ImpactPage() {
                             <div className="flex justify-center pt-8">
                                 <button
                                     onClick={() => setShowAllPrograms(false)}
-                                    className="px-12 py-5 border-2 border-[#002344]/10 rounded-2xl font-bold text-zinc-400 hover:border-[#002344] hover:text-[#002344] transition-all flex items-center gap-3"
+                                    className="px-12 py-5 border-2 border-[#0a2540]/10 rounded-2xl font-bold text-[#5c6b80] hover:border-[#0a2540] hover:text-[#0a2540] transition-all flex items-center gap-3"
                                 >
                                     Hide Grid
                                     <FaArrowRight className="-rotate-90 transition-transform" />
@@ -371,7 +371,7 @@ export default function ImpactPage() {
 
             {/* ================= DIRECT IMPACT SPOTLIGHT ================= */}
             <section className="py-24 px-6 bg-white overflow-hidden relative">
-                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-blue-50/50 rounded-full blur-[100px] -mr-[300px] -mt-[300px]"></div>
+                <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-[#eef2f7]/50 rounded-full blur-[100px] -mr-[300px] -mt-[300px]"></div>
                 <div className="max-w-7xl mx-auto relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-16">
                         <motion.div
@@ -388,11 +388,11 @@ export default function ImpactPage() {
                                 />
                                 <div className="absolute inset-x-0 bottom-0 p-8 bg-gradient-to-t from-black/80 via-black/20 to-transparent">
                                     <div className="flex items-center gap-4">
-                                        <div className="w-16 h-16 bg-[#FF6600] rounded-2xl flex items-center justify-center text-white text-2xl shadow-lg">
+                                        <div className="w-16 h-16 bg-[#c9a227] rounded-2xl flex items-center justify-center text-[#0f2740] text-2xl shadow-lg">
                                             <FaHeartbeat />
                                         </div>
                                         <div className="text-white">
-                                            <p className="text-xs font-bold uppercase tracking-widest opacity-70">Focus Area</p>
+                                            <p className="text-xs font-bold uppercase tracking-widest text-[#cbd5e1]">Focus Area</p>
                                             <p className="text-xl font-bold">Preventive Healthcare</p>
                                         </div>
                                     </div>
@@ -402,14 +402,14 @@ export default function ImpactPage() {
                             <motion.div
                                 animate={{ y: [0, -15, 0] }}
                                 transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-                                className="absolute -top-10 -right-10 bg-white p-6 rounded-3xl shadow-xl border border-blue-50 hidden md:block"
+                                className="absolute -top-10 -right-10 bg-white p-6 rounded-3xl shadow-xl border border-[#e9e3d6] hidden md:block"
                             >
                                 <div className="text-center">
-                                    <div className="w-12 h-12 mx-auto rounded-2xl bg-blue-50 text-[#002344] flex items-center justify-center text-xl mb-2">
+                                    <div className="w-12 h-12 mx-auto rounded-2xl bg-[#eef2f7] text-[#0a2540] flex items-center justify-center text-xl mb-2">
                                         <FaHeartbeat />
                                     </div>
-                                    <p className="text-[10px] font-bold text-zinc-400 uppercase tracking-widest">Community Health</p>
-                                    <p className="text-sm font-black text-[#002344] mt-1">Awareness & Support</p>
+                                    <p className="text-[10px] font-bold text-[#5c6b80] uppercase tracking-widest">Community Health</p>
+                                    <p className="text-sm font-black text-[#0a2540] mt-1">Awareness & Support</p>
                                 </div>
                             </motion.div>
                         </motion.div>
@@ -421,29 +421,29 @@ export default function ImpactPage() {
                             className="lg:w-1/2 space-y-8"
                         >
                             <div className="space-y-4">
-                                <span className="inline-block px-4 py-1.5 bg-blue-50 text-blue-600 text-[10px] font-bold rounded-full uppercase tracking-[0.2em]">
+                                <span className="inline-block px-4 py-1.5 bg-[#eef2f7] text-[#0a2540] text-[10px] font-bold rounded-full uppercase tracking-[0.2em]">
                                     Direct Impact Spotlight
                                 </span>
-                                <h2 className="text-4xl md:text-6xl font-serif font-bold text-[#002344] leading-tight">
-                                    Health is the first step to <span className="text-[#FF6600]">Dignity</span>
+                                <h2 className="text-4xl md:text-6xl font-serif font-bold text-[#0a2540] leading-tight">
+                                    Health is the first step to <span className="text-#7e5f22">Dignity</span>
                                 </h2>
-                                <p className="text-xl text-zinc-500 leading-relaxed font-medium">
+                                <p className="text-xl text-[#5c6b80] leading-relaxed font-medium">
                                     Our health awareness camps don't just provide medicines; they provide hope and education for a healthier generation.
                                 </p>
                             </div>
 
                             <div className="space-y-6">
                                 <div className="flex items-start gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex-shrink-0 flex items-center justify-center mt-1">
+                                    <div className="w-8 h-8 rounded-full bg-[#eef2f7] text-[#0a2540] flex-shrink-0 flex items-center justify-center mt-1">
                                         <FaArrowRight className="text-xs" />
                                     </div>
-                                    <p className="text-zinc-600 font-medium italic select-none">"I never knew my vision could be restored with a simple procedure. SSF changed how I see my future." — Health Camp Beneficiary</p>
+                                    <p className="text-[#41506b] font-medium italic select-none">"I never knew my vision could be restored with a simple procedure. SSF changed how I see my future." — Health Camp Beneficiary</p>
                                 </div>
                                 <div className="flex items-start gap-4">
-                                    <div className="w-8 h-8 rounded-full bg-orange-50 text-[#FF6600] flex-shrink-0 flex items-center justify-center mt-1">
+                                    <div className="w-8 h-8 rounded-full bg-[#faf4e2] text-[#7e5f22] flex-shrink-0 flex items-center justify-center mt-1">
                                         <FaArrowRight className="text-xs" />
                                     </div>
-                                    <p className="text-zinc-600 font-hindi border-l-4 border-orange-100 pl-4 py-1 leading-loose">
+                                    <p className="text-[#41506b] font-hindi border-l-4 border-[#e9e3d6] pl-4 py-1 leading-loose">
                                         "मुझे कभी नहीं पता था कि एक साधारण प्रक्रिया से मेरी दृष्टि बहाल हो सकती है। एसएसएफ ने मेरे भविष्य को देखने के तरीके को बदल दिया है।" — स्वास्थ्य शिविर लाभार्थी
                                     </p>
                                 </div>
@@ -451,7 +451,7 @@ export default function ImpactPage() {
 
                             <div className="pt-6">
                                 <Link to="/Donate">
-                                    <button className="px-10 py-5 bg-[#002344] text-white rounded-2xl font-bold hover:bg-[#FF6600] transition-all shadow-xl flex items-center gap-3">
+                                    <button className="px-10 py-5 bg-[#0a2540] text-white rounded-2xl font-bold hover:bg-[#c9a227] hover:text-[#0f2740] transition-all shadow-xl flex items-center gap-3">
                                         Support Our Health Camps <FaArrowRight />
                                     </button>
                                 </Link>
@@ -465,20 +465,20 @@ export default function ImpactPage() {
             <ImpactStories />
 
             {/* ================= YOUTH EMPOWERMENT SPOTLIGHT ================= */}
-            <section className="py-24 px-6 bg-zinc-50 overflow-hidden">
+            <section className="py-24 px-6 bg-[#f8f5ed] overflow-hidden">
                 <div className="max-w-7xl mx-auto">
-                    <div className="bg-[#002344] rounded-[4rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row items-center border border-white/10">
+                    <div className="bg-[#0a2540] rounded-[4rem] shadow-2xl overflow-hidden flex flex-col lg:flex-row items-center border border-white/10">
                         <div className="lg:w-1/2 p-12 md:p-20 space-y-8">
-                            <div className="inline-block px-4 py-1.5 bg-[#FF6600] text-white text-[10px] font-bold rounded-full uppercase tracking-widest">
+                            <div className="inline-block px-4 py-1.5 bg-[#c9a227] text-[#0f2740] text-[10px] font-bold rounded-full uppercase tracking-widest">
                                 Holistic Development | समग्र विकास
                             </div>
                             <h2 className="text-4xl md:text-5xl font-bold text-white leading-tight">
-                                More Than Just <br /> <span className="text-[#FF6600]">Academics</span>
+                                More Than Just <br /> <span className="text-#e4c86a">Academics</span>
                             </h2>
-                            <p className="text-zinc-300 text-xl leading-relaxed font-serif italic">
+                            <p className="text-[#cbd5e1] text-xl leading-relaxed font-serif italic">
                                 "We believe sports play a vital role in building character, leadership, and confidence in children. It's about nurturing the spirit of resilience."
                             </p>
-                            <p className="text-zinc-400 font-hindi border-l-2 border-[#FF6600] pl-6">
+                            <p className="text-[#cbd5e1] font-hindi border-l-2 border-[#c9a227] pl-6">
                                 हमारा मानना है कि खेल बच्चों में चरित्र, नेतृत्व और आत्मविश्वास के निर्माण में महत्वपूर्ण भूमिका निभाते हैं। यह लचीलेपन की भावना को पोषित करने के बारे में है।
                             </p>
                         </div>
@@ -492,7 +492,7 @@ export default function ImpactPage() {
                                     alt="Child playing cricket"
                                     className="w-full h-full object-cover"
                                 />
-                                <div className="absolute inset-0 bg-gradient-to-r from-[#002344] via-transparent to-transparent"></div>
+                                <div className="absolute inset-0 bg-gradient-to-r from-[#0a2540] via-transparent to-transparent"></div>
 
                                 <div className="absolute top-10 right-10 flex flex-col gap-4">
                                     <div className="p-4 bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 text-white text-center">
@@ -515,12 +515,12 @@ export default function ImpactPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
                         <div className="space-y-4">
-                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-600 text-xs font-bold uppercase tracking-widest">
-                                <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse"></span>
+                            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#eef2f7] text-[#0a2540] text-xs font-bold uppercase tracking-widest">
+                                <span className="w-2 h-2 rounded-full bg-[#c9a227] animate-pulse"></span>
                                 Ground Reality
                             </div>
-                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#002344]">Visualising the <span className="text-[#FF6600]">Transformation</span></h2>
-                            <p className="text-xl text-zinc-500 font-medium">Real moments of change captured during our field operations.</p>
+                            <h2 className="text-4xl md:text-5xl font-serif font-bold text-[#0a2540]">Visualising the <span className="text-#7e5f22">Transformation</span></h2>
+                            <p className="text-xl text-[#5c6b80] font-medium">Real moments of change captured during our field operations.</p>
                         </div>
                     </div>
 
@@ -551,21 +551,21 @@ export default function ImpactPage() {
             </section>
 
             {/* ================= FINAL CTA ================= */}
-            <section className="py-24 px-6 bg-[#002344] relative overflow-hidden">
+            <section className="py-24 px-6 bg-[#0a2540] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[url('/images/pattern-bg.png')] opacity-10"></div>
                 <div className="max-w-4xl mx-auto text-center relative z-10 space-y-10">
                     <h2 className="text-4xl md:text-6xl font-bold text-white leading-tight">
-                        Be the reason a <br /> <span className="text-[#FF6600]">child smiles today.</span>
+                        Be the reason a <br /> <span className="text-#e4c86a">child smiles today.</span>
                     </h2>
-                    <p className="text-xl text-zinc-300 font-medium">Your contribution, no matter the size, fuels these programs and keeps our mission alive.</p>
+                    <p className="text-xl text-[#cbd5e1] font-medium">Your contribution, no matter the size, fuels these programs and keeps our mission alive.</p>
                     <div className="flex flex-wrap justify-center gap-6">
                         <Link to="/Donate">
-                            <button className="px-12 py-5 bg-[#FF6600] text-white rounded-2xl font-black text-lg hover:bg-white hover:text-[#002344] transition-all shadow-2xl flex items-center gap-3">
+                            <button className="px-12 py-5 bg-[#c9a227] text-[#0f2740] rounded-2xl font-black text-lg hover:bg-white hover:text-[#0f2740] transition-all shadow-2xl flex items-center gap-3">
                                 Become a Donor <FaArrowRight />
                             </button>
                         </Link>
                         <Link to="/Volunteer">
-                            <button className="px-12 py-5 bg-white/10 text-white border border-white/20 rounded-2xl font-black text-lg hover:bg-white hover:text-[#002344] transition-all flex items-center gap-3">
+                            <button className="px-12 py-5 bg-white/10 text-white border border-white/20 rounded-2xl font-black text-lg hover:bg-white hover:text-[#0a2540] transition-all flex items-center gap-3">
                                 Join as Volunteer <FaArrowRight />
                             </button>
                         </Link>
