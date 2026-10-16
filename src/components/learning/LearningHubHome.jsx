@@ -11,11 +11,11 @@ import { buildLearningWorld, LEARNING_INTENTS, LEARNING_PATHS } from "../../data
 const SectionTitle = ({ icon, eyebrow, title, subtitle, action }) => (
   <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
     <div>
-      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#FF6600]">
+      <div className="flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[#E6530E]">
         <span aria-hidden="true">{icon}</span> {eyebrow}
       </div>
-      <h2 className="mt-3 font-serif text-3xl font-bold leading-tight text-[#142b45] md:text-4xl">{title}</h2>
-      {subtitle && <p className="mt-2 max-w-2xl text-sm leading-7 text-[#5b6b7c]">{subtitle}</p>}
+      <h2 className="mt-3 font-serif text-3xl font-bold leading-tight text-[#12345A] md:text-4xl">{title}</h2>
+      {subtitle && <p className="mt-2 max-w-2xl text-sm leading-7 text-[#26343D]">{subtitle}</p>}
     </div>
     {action}
   </div>
@@ -54,18 +54,18 @@ function HeroSearch({ matchSubjects, onOpenSubject, onSubmit }) {
         placeholder="Search a subject, skill, topic or anything you want to learn..."
         className="min-w-0 flex-1 bg-transparent py-2.5 text-sm text-white placeholder:text-white/45 focus:outline-none"
       />
-      <button type="submit" className="shrink-0 rounded-xl bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-4 py-2.5 text-sm font-bold text-[#142b45] transition hover:brightness-110">Search</button>
+      <button type="submit" className="shrink-0 rounded-xl bg-gradient-to-r from-[#E6530E] to-[#E6530E] px-4 py-2.5 text-sm font-bold text-[#12345A] transition hover:brightness-110">Search</button>
     </div>
-    {showResults && <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-[#EADFCC] bg-white text-left shadow-2xl">
+    {showResults && <div className="absolute left-0 right-0 top-full z-30 mt-2 overflow-hidden rounded-2xl border border-[#FAF9F5] bg-white text-left shadow-2xl">
       {results.length ? results.map((s) => (
-        <button key={s.id} type="button" onMouseDown={(e) => { e.preventDefault(); onOpenSubject(s); }} className="flex w-full items-center gap-3 border-b border-[#f1ece1] px-4 py-3 text-left transition last:border-0 hover:bg-[#FFF7EA]">
+        <button key={s.id} type="button" onMouseDown={(e) => { e.preventDefault(); onOpenSubject(s); }} className="flex w-full items-center gap-3 border-b border-[#FAF9F5] px-4 py-3 text-left transition last:border-0 hover:bg-[#FAF9F5]">
           <span className="min-w-0 flex-1">
-            <span className="block truncate font-serif text-sm font-bold text-[#142b45]">{s.en}</span>
-            <span className="block truncate text-[11px] font-semibold text-[#8a97a5]">{s.hi} • {s.category.split(" / ")[0]}</span>
+            <span className="block truncate font-serif text-sm font-bold text-[#12345A]">{s.en}</span>
+            <span className="block truncate text-[11px] font-semibold text-[#26343D]">{s.hi} • {s.category.split(" / ")[0]}</span>
           </span>
-          <FaArrowRight className="shrink-0 text-[#FF6600]" aria-hidden="true" />
+          <FaArrowRight className="shrink-0 text-[#E6530E]" aria-hidden="true" />
         </button>
-      )) : <div className="px-4 py-4 text-sm text-[#8a97a5]">कोई परिणाम नहीं मिला। Explore में पूरी लाइब्रेरी देखें।</div>}
+      )) : <div className="px-4 py-4 text-sm text-[#26343D]">कोई परिणाम नहीं मिला। Explore में पूरी लाइब्रेरी देखें।</div>}
     </div>}
   </form>;
 }
@@ -139,7 +139,7 @@ export default function LearningHubHome({
       <div className="absolute inset-0 opacity-50" style={{ backgroundImage: "radial-gradient(circle at 78% 22%, rgba(247,168,20,0.22), transparent 45%)" }} />
       <div className="absolute -right-40 -top-40 h-[30rem] w-[30rem] rounded-full border border-[#F7A814]/15" />
       <div className="absolute -bottom-48 -left-24 h-[34rem] w-[34rem] rounded-full border border-white/[0.06]" />
-      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#FF6600]/60 to-transparent" />
+      <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#E6530E]/60 to-transparent" />
 
       <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 py-14 md:py-20 lg:grid-cols-[1.05fr_0.95fr] lg:gap-16">
         <div className="max-w-3xl">
@@ -157,7 +157,7 @@ export default function LearningHubHome({
           <HeroSearch matchSubjects={matchSubjects} onOpenSubject={onOpenSubject} onSubmit={onSearch} />
 
           <div className="mt-7 flex flex-wrap gap-3">
-            <button type="button" onClick={onExplore} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-6 py-3 text-sm font-bold text-[#142b45] shadow-[0_18px_40px_-20px_rgba(247,168,20,0.9)] transition hover:brightness-110">
+            <button type="button" onClick={onExplore} className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-[#E6530E] to-[#E6530E] px-6 py-3 text-sm font-bold text-[#12345A] shadow-[0_18px_40px_-20px_rgba(247,168,20,0.9)] transition hover:brightness-110">
               <FaCompass aria-hidden="true" /> Explore Learning
             </button>
             <button type="button" onClick={onMyLearning} className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/[0.06] px-6 py-3 text-sm font-bold text-white backdrop-blur transition hover:bg-white/[0.12]">
@@ -169,7 +169,7 @@ export default function LearningHubHome({
             <span className="min-w-0">
               <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#F7A814]">Continue where you left off</span>
               <span className="mt-1.5 block truncate text-base font-bold">{active.subject.en}</span>
-              <span className="mt-2 block h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-white/15"><span className="block h-full rounded-full bg-gradient-to-r from-[#F7A814] to-[#FF6600]" style={{ width: active.percent + "%" }} /></span>
+              <span className="mt-2 block h-1.5 w-full max-w-xs overflow-hidden rounded-full bg-white/15"><span className="block h-full rounded-full bg-gradient-to-r from-[#F7A814] to-[#E6530E]" style={{ width: active.percent + "%" }} /></span>
             </span>
             <span className="shrink-0 text-sm font-bold text-[#F7A814]">{active.percent}% <FaArrowRight className="ml-1 inline" aria-hidden="true" /></span>
           </button>}
@@ -188,7 +188,7 @@ export default function LearningHubHome({
         </div>
 
         <div className="relative mx-auto w-full max-w-xl lg:max-w-none">
-          <div className="absolute -inset-5 rounded-[2.6rem] bg-[#FF6600]/10 blur-3xl" aria-hidden="true" />
+          <div className="absolute -inset-5 rounded-[2.6rem] bg-[#E6530E]/10 blur-3xl" aria-hidden="true" />
           <div className="relative rounded-[2rem] border border-[#F7A814]/25 p-2.5 shadow-[0_40px_90px_-40px_rgba(0,0,0,0.8)] backdrop-blur">
             <div className="relative overflow-hidden rounded-[1.6rem] border border-white/10">
               <HubHeroArt className="block h-auto w-full" />
@@ -213,12 +213,12 @@ export default function LearningHubHome({
         title="अपना रास्ता चुनें" subtitle="चार स्पष्ट रास्ते — अपने उद्देश्य के अनुसार learning चुनें।" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {LEARNING_INTENTS.map((it) => <button key={it.id} type="button" onClick={() => onIntent(it)}
-          className="group flex h-full flex-col rounded-[1.6rem] border border-[#EADFCC] bg-white p-6 text-left shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1.5 hover:border-[#FF6600]/45 hover:shadow-[0_32px_65px_-40px_rgba(20,43,69,0.7)]">
-          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFF3D6] to-[#FFE3B0] text-2xl shadow-inner" aria-hidden="true">{it.icon}</span>
-          <span className="mt-5 font-serif text-lg font-bold text-[#142b45]">{it.title}</span>
-          <span className="mt-0.5 text-xs font-bold text-[#B34A00]">{it.hi}</span>
-          <span className="mt-3 flex-1 text-sm leading-6 text-[#5b6b7c]">{it.text}</span>
-          <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#FF6600]">Start <FaArrowRight className="transition group-hover:translate-x-1" aria-hidden="true" /></span>
+          className="group flex h-full flex-col rounded-[1.6rem] border border-[#FAF9F5] bg-white p-6 text-left shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1.5 hover:border-[#E6530E]/45 hover:shadow-[0_32px_65px_-40px_rgba(20,43,69,0.7)]">
+          <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FAF9F5] to-[#F7A814] text-2xl shadow-inner" aria-hidden="true">{it.icon}</span>
+          <span className="mt-5 font-serif text-lg font-bold text-[#12345A]">{it.title}</span>
+          <span className="mt-0.5 text-xs font-bold text-[#E6530E]">{it.hi}</span>
+          <span className="mt-3 flex-1 text-sm leading-6 text-[#26343D]">{it.text}</span>
+          <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#E6530E]">Start <FaArrowRight className="transition group-hover:translate-x-1" aria-hidden="true" /></span>
         </button>)}
       </div>
     </section>
@@ -243,24 +243,24 @@ export default function LearningHubHome({
       <SectionTitle icon={<FaLayerGroup aria-hidden="true" />} eyebrow="Explore Your Learning World / सीखने की दुनिया"
         title="पूरा Learning Hub एक नज़र में"
         subtitle="हर समूह से जुड़े learning areas — area चुनें और उसके subjects देखें।"
-        action={<button type="button" onClick={onExplore} className="self-start rounded-full border border-[#FF6600]/30 px-4 py-2 text-xs font-bold text-[#c2410c] transition hover:bg-[#FFF3D6]">View all learning →</button>} />
+        action={<button type="button" onClick={onExplore} className="self-start rounded-full border border-[#E6530E]/30 px-4 py-2 text-xs font-bold text-[#E6530E] transition hover:bg-[#FAF9F5]">View all learning →</button>} />
       <div className="grid gap-6 lg:grid-cols-2">
         {groups.map((g) => <div key={g.id} className="ssf-panel">
           <div className="flex items-start gap-4">
-            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFF3D6] to-[#FFE3B0] text-2xl shadow-inner" aria-hidden="true">{g.icon}</span>
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FAF9F5] to-[#F7A814] text-2xl shadow-inner" aria-hidden="true">{g.icon}</span>
             <div className="min-w-0">
-              <h3 className="font-serif text-lg font-bold text-[#142b45]">{g.title}</h3>
-              <div className="text-xs font-bold text-[#B34A00]">{g.hi}</div>
-              <p className="mt-1 text-sm text-[#5b6b7c]">{g.blurb}</p>
+              <h3 className="font-serif text-lg font-bold text-[#12345A]">{g.title}</h3>
+              <div className="text-xs font-bold text-[#E6530E]">{g.hi}</div>
+              <p className="mt-1 text-sm text-[#26343D]">{g.blurb}</p>
             </div>
           </div>
           <div className="mt-5 flex flex-wrap gap-2">
             {g.items.map((c) => <button key={c.name} type="button" onClick={() => onCategory(c.name)}
-              className="group inline-flex items-center gap-2 rounded-full border border-[#EADFCC] bg-white px-3.5 py-2 text-xs font-bold text-[#142b45] shadow-sm transition hover:-translate-y-0.5 hover:border-[#FF6600]/50 hover:bg-[#FFF7EA]">
+              className="group inline-flex items-center gap-2 rounded-full border border-[#FAF9F5] bg-white px-3.5 py-2 text-xs font-bold text-[#12345A] shadow-sm transition hover:-translate-y-0.5 hover:border-[#E6530E]/50 hover:bg-[#FAF9F5]">
               <c.icon aria-hidden="true" />
               <span>{c.name.split(" / ")[0]}</span>
-              <span className="rounded-full bg-[#f1efe8] px-2 py-0.5 text-[10px] font-bold text-[#5b6b7c]">{c.count}</span>
-              <FaArrowRight className="text-[#FF6600] opacity-0 transition group-hover:opacity-100" aria-hidden="true" />
+              <span className="rounded-full bg-[#f1efe8] px-2 py-0.5 text-[10px] font-bold text-[#26343D]">{c.count}</span>
+              <FaArrowRight className="text-[#E6530E] opacity-0 transition group-hover:opacity-100" aria-hidden="true" />
             </button>)}
           </div>
         </div>)}
@@ -273,13 +273,13 @@ export default function LearningHubHome({
         title="लक्ष्य के अनुसार journeys" subtitle="हर path असली categories से जुड़ा है — कोई नकली course नहीं।" />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {LEARNING_PATHS.map((p) => <button key={p.id} type="button" onClick={() => onPath(p)}
-          className="group flex h-full items-start gap-4 rounded-[1.6rem] border border-[#EADFCC] bg-white p-5 text-left shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1 hover:border-[#FF6600]/45 hover:shadow-[0_30px_60px_-40px_rgba(20,43,69,0.7)]">
+          className="group flex h-full items-start gap-4 rounded-[1.6rem] border border-[#FAF9F5] bg-white p-5 text-left shadow-[0_18px_45px_-38px_rgba(20,43,69,0.6)] transition duration-300 hover:-translate-y-1 hover:border-[#E6530E]/45 hover:shadow-[0_30px_60px_-40px_rgba(20,43,69,0.7)]">
           <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#12345A] to-[#12345A] text-xl text-[#F7A814]" aria-hidden="true">{p.icon}</span>
           <span className="min-w-0 flex-1">
-            <span className="block font-serif text-base font-bold text-[#142b45]">{p.title}</span>
-            <span className="block text-[11px] font-bold text-[#B34A00]">{p.hi}</span>
-            <span className="mt-1 block text-sm leading-6 text-[#5b6b7c]">{p.text}</span>
-            <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-[#FF6600]">Begin path <FaArrowRight className="transition group-hover:translate-x-1" aria-hidden="true" /></span>
+            <span className="block font-serif text-base font-bold text-[#12345A]">{p.title}</span>
+            <span className="block text-[11px] font-bold text-[#E6530E]">{p.hi}</span>
+            <span className="mt-1 block text-sm leading-6 text-[#26343D]">{p.text}</span>
+            <span className="mt-3 inline-flex items-center gap-1.5 text-xs font-bold text-[#E6530E]">Begin path <FaArrowRight className="transition group-hover:translate-x-1" aria-hidden="true" /></span>
           </span>
         </button>)}
       </div>
@@ -292,12 +292,12 @@ export default function LearningHubHome({
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
         {MODES.map((m) => <button key={m.title} type="button"
           onClick={() => m.route === "knowledge" ? onKnowledge() : m.route === "myLearning" ? onMyLearning() : m.route === "verify" ? onVerify() : onExplore()}
-          className="group flex h-full flex-col rounded-2xl border border-[#EADFCC] bg-white p-5 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#FF6600]/45 hover:shadow-lg">
-          <span className="text-2xl text-[#FF6600]" aria-hidden="true">{m.icon}</span>
-          <span className="mt-3 font-serif text-base font-bold text-[#142b45]">{m.title}</span>
-          <span className="text-[11px] font-bold text-[#B34A00]">{m.hi}</span>
-          <span className="mt-2 flex-1 text-xs leading-6 text-[#5b6b7c]">{m.text}</span>
-          <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-[#FF6600]">{m.cta} <FaArrowRight className="transition group-hover:translate-x-1" aria-hidden="true" /></span>
+          className="group flex h-full flex-col rounded-2xl border border-[#FAF9F5] bg-white p-5 text-left shadow-sm transition duration-300 hover:-translate-y-1 hover:border-[#E6530E]/45 hover:shadow-lg">
+          <span className="text-2xl text-[#E6530E]" aria-hidden="true">{m.icon}</span>
+          <span className="mt-3 font-serif text-base font-bold text-[#12345A]">{m.title}</span>
+          <span className="text-[11px] font-bold text-[#E6530E]">{m.hi}</span>
+          <span className="mt-2 flex-1 text-xs leading-6 text-[#26343D]">{m.text}</span>
+          <span className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-bold text-[#E6530E]">{m.cta} <FaArrowRight className="transition group-hover:translate-x-1" aria-hidden="true" /></span>
         </button>)}
       </div>
     </section>
@@ -307,7 +307,7 @@ export default function LearningHubHome({
       <SectionTitle icon={<FaStar aria-hidden="true" />} eyebrow="Featured & Discovery / चुनिंदा"
         title="आपके लिए चुनिंदा learning"
         subtitle="Badges असली course metadata से — कोई नकली rating या popularity नहीं।"
-        action={<button type="button" onClick={onExplore} className="self-start rounded-full border border-[#FF6600]/30 px-4 py-2 text-xs font-bold text-[#c2410c] transition hover:bg-[#FFF3D6]">Explore all →</button>} />
+        action={<button type="button" onClick={onExplore} className="self-start rounded-full border border-[#E6530E]/30 px-4 py-2 text-xs font-bold text-[#E6530E] transition hover:bg-[#FAF9F5]">Explore all →</button>} />
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {discovery.map((s) => { const info = cardInfo ? cardInfo(s) : {}; return (
           <SubjectCard key={s.id} subject={s} onOpen={onOpenSubject} onShare={onShareSubject}
@@ -331,11 +331,11 @@ export default function LearningHubHome({
           { icon: "🧪", title: "Quick Practice", hi: "त्वरित अभ्यास", text: "हर module में छोटे practice steps।" },
           { icon: "🎯", title: "Knowledge Check", hi: "ज्ञान जाँच", text: "Module assessment से समझ परखें।" },
           { icon: "🏆", title: "Assessment", hi: "आकलन", text: "अंत में final quiz और certificate pathway।" },
-        ].map((c) => <div key={c.title} className="rounded-2xl border border-[#EADFCC] bg-white p-5 shadow-sm">
+        ].map((c) => <div key={c.title} className="rounded-2xl border border-[#FAF9F5] bg-white p-5 shadow-sm">
           <span className="text-2xl" aria-hidden="true">{c.icon}</span>
-          <div className="mt-3 font-serif text-base font-bold text-[#142b45]">{c.title}</div>
-          <div className="text-[11px] font-bold text-[#B34A00]">{c.hi}</div>
-          <p className="mt-2 text-sm leading-6 text-[#5b6b7c]">{c.text}</p>
+          <div className="mt-3 font-serif text-base font-bold text-[#12345A]">{c.title}</div>
+          <div className="text-[11px] font-bold text-[#E6530E]">{c.hi}</div>
+          <p className="mt-2 text-sm leading-6 text-[#26343D]">{c.text}</p>
         </div>)}
       </div>}
     </section>
@@ -345,27 +345,27 @@ export default function LearningHubHome({
       <SectionTitle icon={<FaHistory aria-hidden="true" />} eyebrow="My Learning / मेरी सीख"
         title="आपकी व्यक्तिगत learning"
         subtitle="Continue Learning, Recently Viewed, Progress और Certificates — सब एक जगह।"
-        action={<button type="button" onClick={onMyLearning} className="self-start rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-4 py-2.5 text-xs font-bold text-[#142b45] shadow-md transition hover:brightness-110">Open My Learning →</button>} />
+        action={<button type="button" onClick={onMyLearning} className="self-start rounded-full bg-gradient-to-r from-[#E6530E] to-[#E6530E] px-4 py-2.5 text-xs font-bold text-[#12345A] shadow-md transition hover:brightness-110">Open My Learning →</button>} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {[
           { icon: <FaPlayCircle aria-hidden="true" />, label: "Continue Learning", hi: "सीखना जारी रखें", value: inProgress.length, note: inProgress.length ? "in progress" : "अभी शुरू करें" },
           { icon: <FaHistory aria-hidden="true" />, label: "Recently Viewed", hi: "हाल में देखा", value: recentSubjects.length, note: recentSubjects.length ? "recent courses" : "कुछ नहीं" },
           { icon: <FaCheckCircle aria-hidden="true" />, label: "Completed", hi: "पूर्ण", value: completedCount, note: "courses" },
           { icon: <FaCertificate aria-hidden="true" />, label: "Certificates", hi: "प्रमाणपत्र", value: "—", note: "verify anytime" },
-        ].map((c) => <div key={c.label} className="rounded-2xl border border-[#EADFCC] bg-white p-5 shadow-sm">
-          <span className="text-xl text-[#FF6600]" aria-hidden="true">{c.icon}</span>
-          <div className="mt-3 font-serif text-2xl font-bold text-[#142b45]">{c.value}</div>
-          <div className="text-xs font-bold text-[#142b45]">{c.label}</div>
-          <div className="text-[11px] font-semibold text-[#8a97a5]">{c.hi} • {c.note}</div>
+        ].map((c) => <div key={c.label} className="rounded-2xl border border-[#FAF9F5] bg-white p-5 shadow-sm">
+          <span className="text-xl text-[#E6530E]" aria-hidden="true">{c.icon}</span>
+          <div className="mt-3 font-serif text-2xl font-bold text-[#12345A]">{c.value}</div>
+          <div className="text-xs font-bold text-[#12345A]">{c.label}</div>
+          <div className="text-[11px] font-semibold text-[#26343D]">{c.hi} • {c.note}</div>
         </div>)}
       </div>
-      {active && <button type="button" onClick={() => onOpenSubject(active.subject)} className="group mt-6 flex w-full items-center justify-between gap-4 rounded-2xl border border-[#FF6600]/25 bg-[#FFF7EA] p-5 text-left transition hover:bg-[#FFEFD6]">
+      {active && <button type="button" onClick={() => onOpenSubject(active.subject)} className="group mt-6 flex w-full items-center justify-between gap-4 rounded-2xl border border-[#E6530E]/25 bg-[#FAF9F5] p-5 text-left transition hover:bg-[#FAF9F5]">
         <span className="min-w-0">
-          <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#B34A00]">Continue Learning</span>
-          <span className="mt-1 block truncate font-serif text-lg font-bold text-[#142b45]">{active.subject.en}</span>
-          <span className="mt-2 block h-1.5 w-full max-w-md overflow-hidden rounded-full bg-white"><span className="block h-full rounded-full bg-gradient-to-r from-[#FF6600] to-[#F7A814]" style={{ width: active.percent + "%" }} /></span>
+          <span className="block text-[10px] font-bold uppercase tracking-[0.2em] text-[#E6530E]">Continue Learning</span>
+          <span className="mt-1 block truncate font-serif text-lg font-bold text-[#12345A]">{active.subject.en}</span>
+          <span className="mt-2 block h-1.5 w-full max-w-md overflow-hidden rounded-full bg-white"><span className="block h-full rounded-full bg-gradient-to-r from-[#E6530E] to-[#F7A814]" style={{ width: active.percent + "%" }} /></span>
         </span>
-        <span className="shrink-0 rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-5 py-3 text-sm font-bold text-[#142b45] shadow-md">Continue →</span>
+        <span className="shrink-0 rounded-full bg-gradient-to-r from-[#E6530E] to-[#E6530E] px-5 py-3 text-sm font-bold text-[#12345A] shadow-md">Continue →</span>
       </button>}
     </section>
 
@@ -374,7 +374,7 @@ export default function LearningHubHome({
       <SectionTitle icon={<FaBookOpen aria-hidden="true" />} eyebrow="Explore All Learning / सारी सीख"
         title="पूरी learning library"
         subtitle={`Explore में सभी ${subjects.length} subjects search, category, level, type और sort से filter करें।`}
-        action={<button type="button" onClick={onExplore} className="self-start rounded-full bg-gradient-to-r from-[#FF8C1A] to-[#FF6600] px-4 py-2.5 text-xs font-bold text-[#142b45] shadow-md transition hover:brightness-110">Open full Explore →</button>} />
+        action={<button type="button" onClick={onExplore} className="self-start rounded-full bg-gradient-to-r from-[#E6530E] to-[#E6530E] px-4 py-2.5 text-xs font-bold text-[#12345A] shadow-md transition hover:brightness-110">Open full Explore →</button>} />
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {explorePreview.map((s) => { const info = cardInfo ? cardInfo(s) : {}; return (
           <SubjectCard key={s.id} subject={s} onOpen={onOpenSubject} onShare={onShareSubject}
