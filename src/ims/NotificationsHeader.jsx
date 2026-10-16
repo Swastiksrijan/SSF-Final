@@ -52,7 +52,7 @@ export default function NotificationsHeader() {
   };
 
   return (
-    <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#002344] to-[#0b3a63] p-5 text-white shadow-[0_18px_40px_-22px_rgba(2,35,68,0.55)] sm:p-6">
+    <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#12345A] to-[#12345A] p-5 text-white shadow-[0_18px_40px_-22px_rgba(2,35,68,0.55)] sm:p-6">
       <span className="pointer-events-none absolute -right-14 -top-16 h-48 w-48 rounded-full bg-white/10" />
       <div className="relative flex flex-wrap items-center gap-4">
         <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20">
@@ -69,7 +69,7 @@ export default function NotificationsHeader() {
             {t('refresh')}
           </button>
           <button type="button" onClick={markAll} disabled={busy || unread === 0}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#FF6600] px-3.5 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-[#e65c00] disabled:opacity-50">
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#E6530E] px-3.5 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-[#E6530E] disabled:opacity-50">
             <Icons.CheckCheck size={15} />
             {t('mark_all_read')}
             {unread > 0 && <span className="rounded-full bg-white/25 px-1.5 text-[11px] font-black">{unread}</span>}

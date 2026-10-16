@@ -78,10 +78,10 @@ export default function SectionNav({ active }) {
     [
       'flex shrink-0 items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-xs font-semibold transition-all duration-150',
       on
-        ? 'bg-[#002344] text-white shadow-[0_4px_12px_-4px_rgba(2,35,68,0.6)]'
+        ? 'bg-[#12345A] text-white shadow-[0_4px_12px_-4px_rgba(2,35,68,0.6)]'
         : planned
           ? 'cursor-not-allowed text-slate-300'
-          : 'text-slate-600 hover:bg-slate-100 hover:text-[#002344]',
+          : 'text-slate-600 hover:bg-slate-100 hover:text-[#12345A]',
     ].join(' ');
 
   return (
@@ -94,12 +94,12 @@ export default function SectionNav({ active }) {
           className="flex shrink-0 items-center gap-2 py-2 pr-1 text-left"
           title={hi ? 'अनुभाग डैशबोर्ड' : 'Section dashboard'}
         >
-          <span className="grid h-7 w-7 place-items-center rounded-md bg-[#002344] text-[#FFD166]">
+          <span className="grid h-7 w-7 place-items-center rounded-md bg-[#12345A] text-[#F7A814]">
             <Icon name={cfg.icon} size={15} />
           </span>
           <span className="leading-tight">
-            <span className="block text-xs font-bold text-[#002344]">{secEn}</span>
-            <span className="block text-[10px] font-medium text-[#1F7A70]">{secHi}</span>
+            <span className="block text-xs font-bold text-[#12345A]">{secEn}</span>
+            <span className="block text-[10px] font-medium text-[#176447]">{secHi}</span>
           </span>
         </button>
 
@@ -178,15 +178,15 @@ export function NotificationsModules({ activeKey }) {
           const [en, hiLabel] = tBoth(item.key);
           return (
             <button key={item.key} type="button" onClick={() => go(item)}
-              className={`group flex items-center gap-4 rounded-2xl border p-5 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-20px_rgba(2,35,68,0.5)] ${on ? 'border-[#002344]/30 bg-white shadow-[0_12px_30px_-18px_rgba(2,35,68,0.55)] ring-1 ring-[#002344]/10' : 'border-slate-200 bg-white hover:border-[#2563EB]/40'}`}>
-              <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl shadow-sm ring-1 ring-black/5 ${on ? 'bg-gradient-to-br from-[#002344] to-[#0b3a63] text-[#FFD166]' : 'bg-gradient-to-br from-[#1E3A8A] to-[#2563EB] text-white'}`}>
+              className={`group flex items-center gap-4 rounded-2xl border p-5 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_16px_36px_-20px_rgba(2,35,68,0.5)] ${on ? 'border-[#12345A]/30 bg-white shadow-[0_12px_30px_-18px_rgba(2,35,68,0.55)] ring-1 ring-[#12345A]/10' : 'border-slate-200 bg-white hover:border-[#12345A]/40'}`}>
+              <span className={`grid h-14 w-14 shrink-0 place-items-center rounded-2xl shadow-sm ring-1 ring-black/5 ${on ? 'bg-gradient-to-br from-[#12345A] to-[#12345A] text-[#F7A814]' : 'bg-gradient-to-br from-[#12345A] to-[#12345A] text-white'}`}>
                 <I size={26} />
               </span>
               <span className="min-w-0 flex-1">
-                <span className="block truncate text-lg font-black text-[#002344]">{en}</span>
+                <span className="block truncate text-lg font-black text-[#12345A]">{en}</span>
                 <span className="block truncate text-sm font-semibold text-slate-400">{hiLabel}</span>
               </span>
-              <Icons.ArrowRight size={20} className={`shrink-0 transition-transform group-hover:translate-x-1 ${on ? 'text-[#FF6600]' : 'text-slate-300'}`} />
+              <Icons.ArrowRight size={20} className={`shrink-0 transition-transform group-hover:translate-x-1 ${on ? 'text-[#E6530E]' : 'text-slate-300'}`} />
             </button>
           );
         })}

@@ -43,7 +43,7 @@ export default function ImsLayout({ children, active }) {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800" style={{ fontFamily: 'inherit' }}>
       {/* top bar */}
-      <header className="sticky top-0 z-40 bg-[#002344] text-white shadow-md">
+      <header className="sticky top-0 z-40 bg-[#12345A] text-white shadow-md">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center gap-3 px-4">
           <button className="lg:hidden rounded p-2 hover:bg-white/10" onClick={() => setOpen(o => !o)} aria-label="Menu">
             <Icons.Menu size={22} />
@@ -73,12 +73,12 @@ export default function ImsLayout({ children, active }) {
                       <span className="block truncate font-medium">{r.title}</span>
                       <span className="block text-[11px] text-slate-400">{r.type} • {r.recordId}</span>
                     </span>
-                    <span className="shrink-0 text-xs font-semibold text-[#FF6600]">{t('open_record')}</span>
+                    <span className="shrink-0 text-xs font-semibold text-[#E6530E]">{t('open_record')}</span>
                   </button>
                 ))}
                 {results.length > 0 && (
                   <button type="button" onClick={goToSearch}
-                    className="mt-0.5 block w-full rounded px-3 py-2 text-left text-xs font-semibold text-[#002344] hover:bg-slate-100">
+                    className="mt-0.5 block w-full rounded px-3 py-2 text-left text-xs font-semibold text-[#12345A] hover:bg-slate-100">
                     {t('results_found')}: {results.length} — {t('global_search')} →
                   </button>
                 )}
@@ -116,13 +116,13 @@ export default function ImsLayout({ children, active }) {
                 <button key={item.key}
                   onClick={() => (setOpen(false), navigate({ to: item.path }))}
                   className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-150
-                    ${isActive ? 'bg-gradient-to-r from-[#002344] to-[#0b3a63] text-white shadow-[0_8px_20px_-10px_rgba(2,35,68,0.7)]' : 'text-slate-600 hover:bg-slate-100'}`}>
+                    ${isActive ? 'bg-gradient-to-r from-[#12345A] to-[#12345A] text-white shadow-[0_8px_20px_-10px_rgba(2,35,68,0.7)]' : 'text-slate-600 hover:bg-slate-100'}`}>
                   <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg transition-colors ${isActive ? 'bg-white/15' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
-                    <Icon name={item.icon} size={16} className={isActive ? 'text-[#FFD166]' : 'text-slate-500'} />
+                    <Icon name={item.icon} size={16} className={isActive ? 'text-[#F7A814]' : 'text-slate-500'} />
                   </span>
                   <span className="min-w-0 flex-1 leading-tight">
-                    <span className={`block truncate text-sm font-semibold ${isActive ? 'text-white' : 'text-[#002344]'}`}>{both[0]}</span>
-                    <span className={`block truncate text-[11px] font-medium ${isActive ? 'text-[#FFF8E7]/90' : 'text-[#1F7A70]'}`}>{both[1]}</span>
+                    <span className={`block truncate text-sm font-semibold ${isActive ? 'text-white' : 'text-[#12345A]'}`}>{both[0]}</span>
+                    <span className={`block truncate text-[11px] font-medium ${isActive ? 'text-[#FAF9F5]/90' : 'text-[#176447]'}`}>{both[1]}</span>
                   </span>
                   {isActive && <Icons.ChevronRight size={15} className="shrink-0 text-white/60" />}
                 </button>
