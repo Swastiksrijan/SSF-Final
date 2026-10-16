@@ -79,7 +79,7 @@ export default function ImsSectionDashboard({ section }) {
           {groups.map((g) => (
             <Card key={g.labelKey} className="p-5">
               <h2 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-500">
-                <span className="grid h-6 w-6 place-items-center rounded-lg bg-[#002344]/5 text-[#FF6600]"><Icons.Layers size={14} /></span>
+                <span className="grid h-6 w-6 place-items-center rounded-lg bg-[#12345A]/5 text-[#E6530E]"><Icons.Layers size={14} /></span>
                 {t(g.labelKey)}
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-500">{g.items.length}</span>
               </h2>
@@ -104,10 +104,10 @@ export default function ImsSectionDashboard({ section }) {
                   }
                   return (
                     <button key={l.key} type="button" onClick={() => go(l)}
-                      className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-left transition-all duration-150 hover:-translate-y-0.5 hover:border-[#2563EB]/40 hover:shadow-[0_10px_26px_-14px_rgba(2,35,68,0.35)]">
-                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#1E3A8A] to-[#2563EB] text-white shadow-sm ring-1 ring-black/5"><I size={18} /></span>
+                      className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-left transition-all duration-150 hover:-translate-y-0.5 hover:border-[#12345A]/40 hover:shadow-[0_10px_26px_-14px_rgba(2,35,68,0.35)]">
+                      <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#12345A] to-[#12345A] text-white shadow-sm ring-1 ring-black/5"><I size={18} /></span>
                       <span className="min-w-0">
-                        <span className="block truncate text-sm font-semibold text-slate-800 group-hover:text-[#002344]">{en}</span>
+                        <span className="block truncate text-sm font-semibold text-slate-800 group-hover:text-[#12345A]">{en}</span>
                         <span className="block truncate text-[11px] text-slate-400">{hi}</span>
                       </span>
                     </button>
