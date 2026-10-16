@@ -67,7 +67,7 @@ export default function Home() {
     <main className="w-full overflow-hidden bg-[#fbfaf7] font-sans text-[#17283a]">
       <section className="relative isolate flex min-h-[580px] items-center overflow-hidden bg-[#09233c] py-14 text-white md:min-h-[620px] md:py-16">
         <div className="absolute inset-0 -z-20">
-          <OptimizedImage priority src="/images/real/foundation_banner.jpg" alt="Swastik Srijan Foundation community work" className="h-full w-full" />
+          <OptimizedImage priority src={pageHeader} alt="Swastik Srijan Foundation community work" className="h-full w-full" />
         </div>
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(5,25,44,0.98)_0%,rgba(5,25,44,0.9)_50%,rgba(5,25,44,0.48)_100%)]" />
         <div className="absolute -right-24 -top-28 -z-10 h-96 w-96 rounded-full border border-[#d7b45a]/30 md:h-[560px] md:w-[560px]" />
