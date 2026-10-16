@@ -22,8 +22,8 @@ import { NotificationsModules } from '../SectionNav';
 
 const SEVERITY = {
   critical: 'border-l-[#DC2626] bg-rose-50/60',
-  warning: 'border-l-[#D97706] bg-amber-50/50',
-  info: 'border-l-[#2563EB] bg-sky-50/40',
+  warning: 'border-l-[#F7A814] bg-amber-50/50',
+  info: 'border-l-[#12345A] bg-sky-50/40',
 };
 const TASK_TONE = {
   overdue: 'bg-rose-100 text-rose-700',
@@ -223,7 +223,7 @@ export default function ImsNotificationsCentre() {
             const I = Icons[g.meta.icon] || Icons.Activity;
             return (
               <div key={g.resource} className="flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3">
-                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${g.connected ? 'bg-gradient-to-br from-[#1E3A8A] to-[#2563EB] text-white' : 'bg-slate-200 text-slate-400'}`}><I size={18} /></span>
+                <span className={`grid h-10 w-10 shrink-0 place-items-center rounded-xl ${g.connected ? 'bg-gradient-to-br from-[#12345A] to-[#12345A] text-white' : 'bg-slate-200 text-slate-400'}`}><I size={18} /></span>
                 <span className="min-w-0 flex-1">
                   <span className="block truncate text-sm font-semibold text-slate-800">{t(g.meta.key)}</span>
                   <span className="block truncate text-[11px] text-slate-400">
@@ -255,14 +255,14 @@ export default function ImsNotificationsCentre() {
           <div className="mb-3 flex flex-wrap items-center gap-2">
             {['unread', 'read', 'all'].map((f) => (
               <button key={f} onClick={() => setFilter(f)}
-                className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${filter === f ? 'bg-[#002344] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
+                className={`rounded-full px-3 py-1.5 text-xs font-bold transition ${filter === f ? 'bg-[#12345A] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}>
                 {t(f === 'unread' ? 'notif_unread' : f === 'read' ? 'notif_read' : 'notif_all')}
               </button>
             ))}
             <div className="relative ml-auto">
               <Icons.Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
               <input value={q} onChange={(e) => setQ(e.target.value)} placeholder={t('search_placeholder')}
-                className="rounded-lg border border-slate-300 py-2 pl-8 pr-3 text-sm outline-none focus:border-[#FF6600]" />
+                className="rounded-lg border border-slate-300 py-2 pl-8 pr-3 text-sm outline-none focus:border-[#E6530E]" />
             </div>
           </div>
 
@@ -277,13 +277,13 @@ export default function ImsNotificationsCentre() {
               {shown.map((r) => (
                 <button key={r.id} type="button" onClick={() => setDetail(r)}
                   className={`flex w-full items-start gap-3 rounded-2xl border border-l-4 border-slate-200 bg-white p-4 text-left transition hover:shadow-[0_10px_26px_-14px_rgba(2,35,68,0.3)] ${r.read ? 'opacity-70' : ''} ${SEVERITY[r.severity] || ''}`}>
-                  <span className={`mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl ${r.read ? 'bg-slate-100 text-slate-400' : 'bg-[#002344] text-[#FFD166]'}`}>
+                  <span className={`mt-0.5 grid h-9 w-9 shrink-0 place-items-center rounded-xl ${r.read ? 'bg-slate-100 text-slate-400' : 'bg-[#12345A] text-[#F7A814]'}`}>
                     <Icons.Bell size={16} />
                   </span>
                   <span className="min-w-0 flex-1">
                     <span className="flex flex-wrap items-center gap-2">
-                      <span className="text-sm font-bold text-[#002344]">{r.title}</span>
-                      {!r.read && <span className="h-2 w-2 rounded-full bg-[#FF6600]" />}
+                      <span className="text-sm font-bold text-[#12345A]">{r.title}</span>
+                      {!r.read && <span className="h-2 w-2 rounded-full bg-[#E6530E]" />}
                       {r.severity && r.severity !== 'info' && <Pill tone={r.severity === 'critical' ? 'bg-rose-100 text-rose-700' : 'bg-amber-100 text-amber-700'}>{r.severity}</Pill>}
                     </span>
                     <span className="mt-0.5 block text-sm text-slate-600">{r.message}</span>
@@ -324,7 +324,7 @@ export default function ImsNotificationsCentre() {
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {pending.map((r) => (
-                      <tr key={r.id} className="hover:bg-[#F5F8FC]">
+                      <tr key={r.id} className="hover:bg-[#EAF0F6]">
                         <td className="px-4 py-3">
                           <span className="block font-semibold text-slate-800">{r.title}</span>
                           <span className="block text-xs text-slate-400">{r.message}</span>
@@ -339,7 +339,7 @@ export default function ImsNotificationsCentre() {
                         <td className="px-4 py-3"><Pill tone={TASK_TONE[r.taskStatus]}>{t('task_' + r.taskStatus)}</Pill></td>
                         <td className="whitespace-nowrap px-4 py-3 text-right">
                           {r.sourceLink
-                            ? <button className="text-xs font-semibold text-[#FF6600] hover:underline" onClick={() => openSource(r)}>{t('open_source')} →</button>
+                            ? <button className="text-xs font-semibold text-[#E6530E] hover:underline" onClick={() => openSource(r)}>{t('open_source')} →</button>
                             : <span className="text-xs text-slate-300">—</span>}
                         </td>
                       </tr>
@@ -372,7 +372,7 @@ export default function ImsNotificationsCentre() {
                   </thead>
                   <tbody className="divide-y divide-slate-100">
                     {comms.map((c) => (
-                      <tr key={c._kind + c.id} className="hover:bg-[#F5F8FC]">
+                      <tr key={c._kind + c.id} className="hover:bg-[#EAF0F6]">
                         <td className="px-4 py-3 font-medium text-slate-800">{c.subject || '—'}</td>
                         <td className="px-4 py-3"><Pill>{c._kind === 'notice' ? t('notices') : t('communications')}</Pill></td>
                         <td className="px-4 py-3 text-slate-600">{c.channel || c.noticeType || c.relatedType || '—'}</td>
@@ -429,7 +429,7 @@ export default function ImsNotificationsCentre() {
                     <button
                       key={ch} type="button" disabled={!on || testing === ch}
                       onClick={() => runTest(ch)} title={on ? t('send_test') : t('not_configured')}
-                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition ${on ? 'border-slate-200 text-slate-600 hover:border-[#002344] hover:text-[#002344]' : 'cursor-not-allowed border-dashed border-slate-200 text-slate-300'}`}
+                      className={`inline-flex items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-[11px] font-semibold transition ${on ? 'border-slate-200 text-slate-600 hover:border-[#12345A] hover:text-[#12345A]' : 'cursor-not-allowed border-dashed border-slate-200 text-slate-300'}`}
                     >
                       <I size={13} /> {ch === 'whatsapp' ? 'WhatsApp' : ch === 'sms' ? 'SMS' : 'Email'}
                       {testing === ch ? <Icons.Loader2 size={12} className="animate-spin" /> : on ? <Icons.Send size={11} /> : <Icons.Minus size={11} />}
