@@ -5,7 +5,7 @@ export default function Collaborations() {
   return (
     <section className="w-full bg-[#12345A] py-32 relative overflow-hidden">
       {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#fb8500] opacity-[0.03] rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2"></div>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#E6530E] opacity-[0.03] rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2"></div>
       <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#12345A] opacity-[0.05] rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
@@ -18,17 +18,17 @@ export default function Collaborations() {
             viewport={{ once: true }}
             className="space-y-4"
           >
-            <span className="text-[#fb8500] font-bold uppercase tracking-[0.3em] text-xs">
+            <span className="text-[#E6530E] font-bold uppercase tracking-[0.3em] text-xs">
               Synergy for Social Impact
             </span>
             <h2 className="text-4xl md:text-6xl font-serif font-bold text-white">
-              Our <span className="text-[#fb8500]">Collaborations</span>
+              Our <span className="text-[#E6530E]">Collaborations</span>
             </h2>
             <div className="flex flex-col gap-2">
               <p className="text-xl text-zinc-400 font-medium max-w-2xl mx-auto">
                 We partner with trusted organizations to amplify our collective impact and reach the last mile.
               </p>
-              <p className="text-lg font-hindi text-[#fb8500]/60 italic font-medium">
+              <p className="text-lg font-hindi text-[#E6530E]/60 italic font-medium">
                 "हम सामूहिक प्रभाव को बढ़ाने और अंतिम मील तक पहुँचने के लिए विश्वसनीय संगठनों के साथ साझेदारी करते हैं।"
               </p>
             </div>
