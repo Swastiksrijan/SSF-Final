@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 
 export default function Collaborations() {
   return (
-    <section className="w-full bg-[#001529] py-32 relative overflow-hidden">
+    <section className="w-full bg-[#12345A] py-32 relative overflow-hidden">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#fb8500] opacity-[0.03] rounded-full blur-[100px] translate-x-1/2 -translate-y-1/2"></div>
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#003366] opacity-[0.05] rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2"></div>
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#12345A] opacity-[0.05] rounded-full blur-[100px] -translate-x-1/2 translate-y-1/2"></div>
 
       <div className="max-w-7xl mx-auto px-6 relative z-10">
 
@@ -38,8 +38,8 @@ export default function Collaborations() {
         {/* LOGO SCROLL CONTAINER WITH FADE EDGES */}
         <div className="relative">
           {/* Fading Gradient Overlays */}
-          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#001529] to-transparent z-10"></div>
-          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#001529] to-transparent z-10"></div>
+          <div className="absolute inset-y-0 left-0 w-32 bg-gradient-to-r from-[#12345A] to-transparent z-10"></div>
+          <div className="absolute inset-y-0 right-0 w-32 bg-gradient-to-l from-[#12345A] to-transparent z-10"></div>
 
           <div className="bg-white/5 backdrop-blur-sm rounded-[3rem] border border-white/5 py-10 px-4">
             <InfiniteLogoScroll />

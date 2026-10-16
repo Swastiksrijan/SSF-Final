@@ -23,8 +23,8 @@ export default function Campaign() {
       image: "/images/health-program-masks.jpg",
       description: "From COVID-19 awareness to regular health camps, we ensure that rural families have the knowledge and support to live healthy lives.",
       stats: "10,000+ Awareness Drives",
-      borderColor: "border-[#177245]",
-      accent: "text-[#177245]",
+      borderColor: "border-[#176447]",
+      accent: "text-[#176447]",
       bg: "bg-[#eef7f1]"
     },
     {
@@ -34,8 +34,8 @@ export default function Campaign() {
       image: "/images/real/cloth-distribution.jpg",
       description: "Serving the underprivileged through direct relief programs, including cloth distribution, food security, and community support initiatives.",
       stats: "150+ Distribution Drives",
-      borderColor: "border-[#177245]",
-      accent: "text-[#177245]",
+      borderColor: "border-[#176447]",
+      accent: "text-[#176447]",
       bg: "bg-[#eef7f1]"
     },
     {
@@ -45,8 +45,8 @@ export default function Campaign() {
       image: "/images/tree-planting-1.jpg",
       description: "Our plantation drives and environmental awareness programs aim to build a sustainable and greener future for coming generations.",
       stats: "5,000+ Trees Planted",
-      borderColor: "border-[#177245]",
-      accent: "text-[#177245]",
+      borderColor: "border-[#176447]",
+      accent: "text-[#176447]",
       bg: "bg-[#eef7f1]"
     },
     {
