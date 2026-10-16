@@ -24,7 +24,7 @@ export default function InstitutionalDNA() {
               y: [0, 60, 0]
             }}
             transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-            className="absolute top-1/2 -right-48 w-[600px] h-[600px] bg-[#002344]/5 rounded-full blur-[150px]"
+            className="absolute top-1/2 -right-48 w-[600px] h-[600px] bg-[#12345A]/5 rounded-full blur-[150px]"
           />
         </div>
 
@@ -38,7 +38,7 @@ export default function InstitutionalDNA() {
             <span className="text-[#fb8500] font-bold uppercase tracking-[0.3em] text-xs px-4 py-2 bg-[#fb8500]/10 rounded-full inline-block">
               Foundational Identity
             </span>
-            <h1 className="text-5xl md:text-8xl font-serif font-bold text-[#002344] leading-[1.1]">
+            <h1 className="text-5xl md:text-8xl font-serif font-bold text-[#12345A] leading-[1.1]">
               Institutional <br /> <span className="text-[#fb8500]">DNA</span>
             </h1>
             <p className="text-zinc-500 mt-12 text-2xl md:text-3xl font-medium leading-relaxed max-w-3xl mx-auto font-serif italic">
@@ -68,7 +68,7 @@ export default function InstitutionalDNA() {
                 subtitle: "मार्गदर्शन",
                 desc: "Every step is driven by a clear vision and ethical purpose.",
                 pillar: "02",
-                color: "from-[#002344] to-[#004d99]"
+                color: "from-[#12345A] to-[#004d99]"
               },
               {
                 title: "Ethics",
@@ -96,7 +96,7 @@ export default function InstitutionalDNA() {
                 subtitle: "लक्षित समाज",
                 desc: "Deprived and underserved communities are at our core.",
                 pillar: "06",
-                color: "from-[#002344] to-[#004d99]"
+                color: "from-[#12345A] to-[#004d99]"
               },
               {
                 title: "Nature",
@@ -132,7 +132,7 @@ export default function InstitutionalDNA() {
                   <div className="space-y-4">
                     <div className="space-y-1">
                       <p className="text-[#fb8500] text-[10px] font-bold uppercase tracking-widest">{item.subtitle}</p>
-                      <h3 className="text-2xl font-serif font-bold text-[#002344]">
+                      <h3 className="text-2xl font-serif font-bold text-[#12345A]">
                         {item.title}
                       </h3>
                     </div>
@@ -156,7 +156,7 @@ export default function InstitutionalDNA() {
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-[#002344] p-16 md:p-24 text-white relative flex flex-col justify-center"
+              className="bg-[#12345A] p-16 md:p-24 text-white relative flex flex-col justify-center"
             >
               <div className="absolute top-0 left-0 w-full h-full opacity-10 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:20px_20px]"></div>
               <p className="text-[#fb8500] font-bold uppercase tracking-[0.3em] text-xs mb-10">The Vision</p>
@@ -173,7 +173,7 @@ export default function InstitutionalDNA() {
               initial={{ opacity: 0, x: 50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="bg-white p-16 md:p-24 text-[#002344] flex flex-col justify-center"
+              className="bg-white p-16 md:p-24 text-[#12345A] flex flex-col justify-center"
             >
               <p className="text-[#d90429] font-bold uppercase tracking-[0.3em] text-xs mb-10">Our Mission</p>
               <ul className="space-y-8">
@@ -214,7 +214,7 @@ export default function InstitutionalDNA() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="text-5xl md:text-8xl font-serif font-bold text-[#002344]"
+            className="text-5xl md:text-8xl font-serif font-bold text-[#12345A]"
           >
             Sowing Seeds <br /> of <span className="text-[#fb8500]">Change.</span>
           </motion.h2>

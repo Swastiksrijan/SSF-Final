@@ -15,7 +15,7 @@ export default function Internship() {
   ];
 
   return <div className="w-full bg-white text-zinc-900 font-sans overflow-hidden">
-    <section className="relative min-h-[68vh] flex items-center overflow-hidden bg-[#001529] text-white pt-36 pb-20 px-6">
+    <section className="relative min-h-[68vh] flex items-center overflow-hidden bg-[#12345A] text-white pt-36 pb-20 px-6">
       <div className="absolute inset-0">
         <OptimizedImage
           src="/images/real/education_girls.jpg"
@@ -23,9 +23,9 @@ export default function Internship() {
           className="w-full h-full"
           objectFit="cover"
         />
-        <div className="absolute inset-0 bg-[#001529]/65" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#001529]/95 via-[#001529]/75 to-[#001529]/35" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#001529] via-transparent to-[#001529]/30" />
+        <div className="absolute inset-0 bg-[#12345A]/65" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#12345A]/95 via-[#12345A]/75 to-[#12345A]/35" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#12345A] via-transparent to-[#12345A]/30" />
       </div>
       <div className="max-w-7xl mx-auto w-full relative z-10">
         <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} className="max-w-4xl space-y-6">
@@ -39,13 +39,13 @@ export default function Internship() {
 
     <section className="py-20 px-6 bg-zinc-50 border-y border-zinc-100">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12"><h2 className="text-3xl md:text-5xl font-black text-[#002344]">Internship के अवसर</h2><p className="text-zinc-500 mt-3">Choose the area where your skills can create the most impact.</p></div>
+        <div className="text-center mb-12"><h2 className="text-3xl md:text-5xl font-black text-[#12345A]">Internship के अवसर</h2><p className="text-zinc-500 mt-3">Choose the area where your skills can create the most impact.</p></div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
           {roles.map((role, i) => <motion.article key={role.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .08 }} className="bg-white p-7 rounded-3xl border border-zinc-200 shadow-sm hover:shadow-xl transition-shadow">
             <div className="w-14 h-14 rounded-2xl bg-orange-50 text-[#fb8500] flex items-center justify-center text-2xl mb-6">{role.icon}</div>
-            <h3 className="text-xl font-black text-[#002344]">{role.title}</h3><p className="text-sm font-bold text-zinc-400 mt-1 mb-5">{role.hi}</p>
+            <h3 className="text-xl font-black text-[#12345A]">{role.title}</h3><p className="text-sm font-bold text-zinc-400 mt-1 mb-5">{role.hi}</p>
             <p className="text-sm text-zinc-600 leading-relaxed mb-5">{role.desc}</p>
-            <div className="pt-4 border-t border-zinc-100"><p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Expectation / पात्रता</p><p className="text-sm font-bold text-[#002344]">{role.req}</p></div>
+            <div className="pt-4 border-t border-zinc-100"><p className="text-[10px] font-black uppercase tracking-widest text-zinc-400 mb-1">Expectation / पात्रता</p><p className="text-sm font-bold text-[#12345A]">{role.req}</p></div>
           </motion.article>)}
         </div>
       </div>
@@ -58,10 +58,10 @@ export default function Internship() {
       </div>
     </section>
 
-    <section className="py-20 px-6 bg-white"><div className="max-w-6xl mx-auto bg-[#001529] rounded-[2.5rem] p-8 md:p-14 text-white flex flex-col lg:flex-row items-center gap-10 shadow-2xl"><div className="flex-1"><p className="text-[#fb8500] text-xs font-black uppercase tracking-widest mb-3"><FaCertificate className="inline mr-2" /> Verified NGO Internship</p><h2 className="text-3xl md:text-5xl font-black">Start Your <span className="text-[#fb8500]">Social Career</span></h2><p className="text-zinc-400 mt-4 max-w-2xl">Students and professionals can apply for available internship opportunities with SSF.</p></div><button onClick={() => setIsFormOpen(true)} className="shrink-0 bg-[#fb8500] px-9 py-4 rounded-2xl font-black text-lg hover:bg-white hover:text-[#001529] transition-all flex items-center gap-3">Apply for Internship <FaArrowRight /></button></div></section>
+    <section className="py-20 px-6 bg-white"><div className="max-w-6xl mx-auto bg-[#12345A] rounded-[2.5rem] p-8 md:p-14 text-white flex flex-col lg:flex-row items-center gap-10 shadow-2xl"><div className="flex-1"><p className="text-[#fb8500] text-xs font-black uppercase tracking-widest mb-3"><FaCertificate className="inline mr-2" /> Verified NGO Internship</p><h2 className="text-3xl md:text-5xl font-black">Start Your <span className="text-[#fb8500]">Social Career</span></h2><p className="text-zinc-400 mt-4 max-w-2xl">Students and professionals can apply for available internship opportunities with SSF.</p></div><button onClick={() => setIsFormOpen(true)} className="shrink-0 bg-[#fb8500] px-9 py-4 rounded-2xl font-black text-lg hover:bg-white hover:text-[#12345A] transition-all flex items-center gap-3">Apply for Internship <FaArrowRight /></button></div></section>
 
-    <section className="py-20 px-6 bg-[#001529] text-white"><div className="max-w-6xl mx-auto text-center"><h2 className="text-3xl md:text-5xl font-black mb-12">Internship Benefits | लाभ</h2><div className="grid sm:grid-cols-3 gap-8"><div><FaHandsHelping className="mx-auto text-4xl text-[#fb8500] mb-4" /><h3 className="font-bold text-xl">Real Impact</h3><p className="text-zinc-400 mt-2">Contribute to real grassroots initiatives.</p></div><div><FaGraduationCap className="mx-auto text-4xl text-[#fb8500] mb-4" /><h3 className="font-bold text-xl">Mentorship</h3><p className="text-zinc-400 mt-2">Learn from social-sector professionals.</p></div><div><FaCertificate className="mx-auto text-4xl text-[#fb8500] mb-4" /><h3 className="font-bold text-xl">Certification</h3><p className="text-zinc-400 mt-2">Receive an internship completion certificate as applicable.</p></div></div></div></section>
+    <section className="py-20 px-6 bg-[#12345A] text-white"><div className="max-w-6xl mx-auto text-center"><h2 className="text-3xl md:text-5xl font-black mb-12">Internship Benefits | लाभ</h2><div className="grid sm:grid-cols-3 gap-8"><div><FaHandsHelping className="mx-auto text-4xl text-[#fb8500] mb-4" /><h3 className="font-bold text-xl">Real Impact</h3><p className="text-zinc-400 mt-2">Contribute to real grassroots initiatives.</p></div><div><FaGraduationCap className="mx-auto text-4xl text-[#fb8500] mb-4" /><h3 className="font-bold text-xl">Mentorship</h3><p className="text-zinc-400 mt-2">Learn from social-sector professionals.</p></div><div><FaCertificate className="mx-auto text-4xl text-[#fb8500] mb-4" /><h3 className="font-bold text-xl">Certification</h3><p className="text-zinc-400 mt-2">Receive an internship completion certificate as applicable.</p></div></div></div></section>
 
-    <AnimatePresence>{isFormOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"><motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsFormOpen(false)} className="absolute inset-0 bg-[#001529]/80 backdrop-blur-md" /><motion.div initial={{ opacity: 0, scale: .95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: .95, y: 20 }} className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-white rounded-3xl shadow-2xl"><button onClick={() => setIsFormOpen(false)} aria-label="Close" className="sticky top-4 float-right mr-4 z-20 w-11 h-11 rounded-full bg-white border border-zinc-200 text-zinc-600 flex items-center justify-center shadow-lg hover:text-red-600"><FaTimes /></button><div className="clear-both"><InternshipForm onClose={() => setIsFormOpen(false)} /></div></motion.div></div>}</AnimatePresence>
+    <AnimatePresence>{isFormOpen && <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"><motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsFormOpen(false)} className="absolute inset-0 bg-[#12345A]/80 backdrop-blur-md" /><motion.div initial={{ opacity: 0, scale: .95, y: 20 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: .95, y: 20 }} className="relative w-full max-w-4xl max-h-[92vh] overflow-y-auto bg-white rounded-3xl shadow-2xl"><button onClick={() => setIsFormOpen(false)} aria-label="Close" className="sticky top-4 float-right mr-4 z-20 w-11 h-11 rounded-full bg-white border border-zinc-200 text-zinc-600 flex items-center justify-center shadow-lg hover:text-red-600"><FaTimes /></button><div className="clear-both"><InternshipForm onClose={() => setIsFormOpen(false)} /></div></motion.div></div>}</AnimatePresence>
   </div>;
 }

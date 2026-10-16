@@ -68,7 +68,7 @@ export default function ImpactPage() {
             title: "Health & Nutrition Initiative",
             titleHi: "स्वास्थ्य और पोषण पहल",
             desc: "Free health camps, medicine distribution, and nutrition kits for women and children.",
-            color: "bg-[#eef7f1] text-[#177245] border-[#e9e3d6]",
+            color: "bg-[#eef7f1] text-[#176447] border-[#e9e3d6]",
             impact: "Preventive Healthcare"
         },
         {
@@ -95,7 +95,7 @@ export default function ImpactPage() {
             title: "Environment & Sustainability",
             titleHi: "पर्यावरण और स्थिरता",
             desc: "Tree plantation drives, waste management awareness, and clean energy advocacy.",
-            color: "bg-[#eef7f1] text-[#177245] border-[#e9e3d6]",
+            color: "bg-[#eef7f1] text-[#176447] border-[#e9e3d6]",
             impact: "Climate Action"
         },
         {
