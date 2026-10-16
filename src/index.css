@@ -2,19 +2,38 @@
 @import "tailwindcss";
 
 :root {
-  --primary: #002344; --primary-light: #004d99; --secondary: #d90429; --accent-gold: #fb8500; --accent-green: #2d6a4f;
-  --bg-soft: #f8f9fa; --text-dark: #1a1c1e; --text-muted: #64748b; --white: #ffffff; --glass: rgba(255,255,255,.7);
+  /* SSF FINAL BRAND PALETTE — approved 17 Oct 2026; keep these values stable */
+  --ssf-navy: #12345A;
+  --ssf-ivory: #FAF9F5;
+  --ssf-green: #176447;
+  --ssf-soft-blue: #EAF0F6;
+  --ssf-saffron: #E6530E;
+  --ssf-gold: #F7A814;
+  --ssf-charcoal: #26343D;
+  --ssf-white: #FFFFFF;
+
+  /* Shared theme tokens mapped to the approved SSF palette */
+  --primary: var(--ssf-navy);
+  --primary-light: #244F7A;
+  --secondary: var(--ssf-saffron);
+  --accent-gold: var(--ssf-gold);
+  --accent-green: var(--ssf-green);
+  --bg-soft: var(--ssf-soft-blue);
+  --text-dark: var(--ssf-charcoal);
+  --text-muted: #536471;
+  --white: var(--ssf-white);
+  --glass: rgba(255,255,255,.78);
 }
-body { font-family:"Plus Jakarta Sans",sans-serif; color:var(--text-dark); background-color:var(--white); overflow-x:hidden; line-height:1.6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
+body { font-family:"Plus Jakarta Sans",sans-serif; color:var(--ssf-charcoal); background-color:var(--ssf-ivory); overflow-x:hidden; line-height:1.6; -webkit-font-smoothing:antialiased; -moz-osx-font-smoothing:grayscale; }
 * { overflow-wrap:break-word; word-wrap:break-word; }
 .break-all { word-break:break-all !important; } .break-words { overflow-wrap:break-word !important; word-wrap:break-word !important; } @layer base { img { max-width:100%; height:auto; } }
 .font-serif { font-family:"Playfair Display",serif; } .font-display { font-family:"Lora",serif; } .font-hindi { font-family:"Noto Serif Devanagari",serif; } .font-merriweather { font-family:"Merriweather",serif; } .font-mukta { font-family:"Mukta",sans-serif; }
 .glass-effect { background:var(--glass); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); border:1px solid rgba(255,255,255,.3); }
-.text-gradient { background:linear-gradient(135deg,var(--primary) 0%,#001a33 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
-.bg-gradient-premium { background:linear-gradient(135deg,#001a33 0%,var(--primary) 100%); }
-.btn-primary { @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 bg-[#002344] text-white hover:bg-[#003366] hover:-translate-y-0.5 shadow-lg hover:shadow-[#002344]/20; }
-.btn-secondary { @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 bg-white text-[#002344] border-2 border-[#002344] hover:bg-[#002344] hover:text-white hover:-translate-y-0.5; }
-.btn-cta { @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 bg-[#d90429] text-white hover:bg-[#b00422] hover:-translate-y-0.5 shadow-lg hover:shadow-red-500/20; }
+.text-gradient { background:linear-gradient(135deg,var(--ssf-navy) 0%,#244F7A 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; }
+.bg-gradient-premium { background:linear-gradient(135deg,var(--ssf-navy) 0%,#244F7A 100%); }
+.btn-primary { @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 text-white hover:-translate-y-0.5 shadow-lg; background-color:var(--ssf-green); } .btn-primary:hover { background-color:#10533B; box-shadow:0 12px 24px -12px rgba(23,100,71,.35); }
+.btn-secondary { @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 bg-white hover:-translate-y-0.5; color:var(--ssf-navy); border:2px solid var(--ssf-navy); } .btn-secondary:hover { background-color:var(--ssf-navy); color:var(--ssf-white); }
+.btn-cta { @apply px-8 py-4 rounded-full font-bold transition-all duration-200 transform flex items-center justify-center gap-2 text-white hover:-translate-y-0.5 shadow-lg; background-color:var(--ssf-green); } .btn-cta:hover { background-color:#10533B; box-shadow:0 12px 24px -12px rgba(23,100,71,.35); }
 @keyframes float { 0%{transform:translateY(0)} 50%{transform:translateY(-8px)} 100%{transform:translateY(0)} } .animate-float{animation:float 3s ease-in-out infinite;}
 @keyframes scrollX { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} } .animate-scrollX{animation:scrollX 20s linear infinite;}
 .premium-card { @apply bg-white p-8 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-xl hover:-translate-y-1 transition-all duration-300; } .font-inria{font-family:"Plus Jakarta Sans",sans-serif;}
@@ -139,3 +158,10 @@ div[class*="bg-[radial-gradient"] > footer { padding-top:clamp(4rem,8vw,7rem) !i
   .ssf-hub .ssf-anim-rise, .ssf-hub article, .ssf-hub .ssf-float,
   .ssf-hub .ssf-shine::after, .ssf-hub .ssf-ring, .ssf-hub .ssf-underline { animation:none !important; }
 }
+
+
+/* SSF FINAL BRAND APPLICATION — shared, low-risk semantic defaults */
+a { text-underline-offset: .18em; }
+::selection { color: var(--ssf-white); background: var(--ssf-navy); }
+:focus-visible { outline: 3px solid var(--ssf-gold); outline-offset: 3px; }
+.premium-card { background: var(--ssf-white); border-color: rgba(18,52,90,.10); }
