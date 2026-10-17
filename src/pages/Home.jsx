@@ -1,7 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { motion as Motion } from "framer-motion";
 import {
-  FaArrowRight, FaBookOpen, FaBuilding, FaCheckCircle, FaFileAlt,
+  FaArrowRight, FaBookOpen, FaBuilding, FaFileAlt,
   FaHandshake, FaHeart, FaLeaf, FaUsers, FaLaptop,
   FaGraduationCap, FaShieldAlt, FaNewspaper, FaChartLine, FaSeedling,
   FaBullseye, FaHandsHelping, FaCompass
@@ -88,11 +88,15 @@ export default function Home() {
               <Link to="/CSRPartnership" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#F7A814]/70 px-6 py-3 font-bold text-[#F7A814] transition hover:bg-white/10">CSR & Institutional Partnerships <FaHandshake /></Link>
               <Link to="/JoinUs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/40 px-6 py-3 font-semibold text-white transition hover:bg-white/10"><FaUsers /> Join the Mission</Link>
             </div>
-            <div className="mt-8 flex flex-wrap gap-2 text-sm">
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaCheckCircle className="text-[#176447]" /> 12AB Registered</span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaCheckCircle className="text-[#176447]" /> CSR-1 Registered</span>
-              <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-2"><FaFileAlt className="text-[#F7A814]" /> 80G provisional · final approval applied</span>
-            </div>
+            <p className="mt-8 flex flex-wrap items-center gap-x-3 gap-y-2 text-sm font-semibold text-white/90">
+              <span>12AB Registered</span>
+              <span className="text-[#F7A814]" aria-hidden="true">|</span>
+              <span>80G Provisional Approval - Final Approval Applied</span>
+              <span className="text-[#F7A814]" aria-hidden="true">|</span>
+              <span>CSR-1 Registered</span>
+              <span className="text-[#F7A814]" aria-hidden="true">|</span>
+              <span>NGO Darpan • NITI Aayog</span>
+            </p>
           </Motion.div>
 
           <Motion.div initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="hidden xl:block xl:self-end xl:pb-4">
