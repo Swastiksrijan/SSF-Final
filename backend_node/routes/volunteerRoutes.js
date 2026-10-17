@@ -7,6 +7,12 @@ const { sendMail, emailConfigured } = require('../services/mailer');
 const crypto = require('crypto');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
+const identity = require('../services/identityService');
+// Report a member's true category. A row whose number came from the offline
+// register must not keep showing the leftover 'website_signup' marker.
+const memberTypeFor = (member) => (identity.holdsOfficialMemberId(member)
+    ? (identity.registerEntryFor(member.memberId)?.memberType || member.memberType)
+    : member.memberType);
 const { issueToken } = require('../services/userAuth');
 
 // --- 1. File Upload Configuration ---
@@ -244,7 +250,7 @@ router.post('/member-login', async (req, res) => {
             status: 'success',
             message: 'Login successful',
             token: issueToken(member),
-            user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status }
+            user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: memberTypeFor(member), status: member.status }
         });
     } catch (error) {
         console.error('❌ Member login error:', error);

@@ -7,9 +7,10 @@ const InternshipApplication = require('../models/InternshipApplication');
 const Interest = require('../models/Interest');
 const { requireAccountAuth } = require('../services/userAuth');
 
-const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory'];
-const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
-const isRealMembership = (member) => !isAccountOnly(member) && REAL_MEMBERSHIP_TYPES.includes(String(member?.memberType || '').trim().toLowerCase());
+const identity = require('../services/identityService');
+const REAL_MEMBERSHIP_TYPES = identity.REAL_MEMBERSHIP_TYPES;
+const isAccountOnly = (member) => identity.isAccountOnly(member);
+const isRealMembership = (member) => identity.isRealMembership(member);
 const backendUrl = (process.env.BACKEND_PUBLIC_URL || 'https://ngo-backend-03hq.onrender.com').replace(/\/$/, '');
 // The document route now proves ownership with a signed token, so the links the
 // portal hands back must carry the caller's own token with them.
@@ -22,12 +23,17 @@ router.get('/user-portal/:id', requireAccountAuth((req) => req.params.id), async
 
         const email = String(member.email || '').trim().toLowerCase();
         const membershipAccount = isRealMembership(member);
+        // Show the register's own category and post when the number comes from
+        // the offline register, so a Founder Member is not labelled "website
+        // signup" just because that was the column left behind.
+        const registerEntry = membershipAccount ? identity.registerEntryFor(member.memberId) : null;
         const account = {
             id: member.id,
             fullName: member.fullName,
             email: member.email,
             phone: member.phone,
-            memberType: membershipAccount ? member.memberType : 'general',
+            memberType: membershipAccount ? (registerEntry?.memberType || member.memberType) : 'general',
+            designation: registerEntry?.designation || member.designation || null,
             status: member.status,
             memberId: membershipAccount ? member.memberId : null,
             certId: membershipAccount ? member.certId : null,

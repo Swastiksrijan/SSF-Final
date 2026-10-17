@@ -150,8 +150,10 @@ const editKind = (kind) => (['volunteer-interest', 'member-interest'].includes(k
 
 // A website account that has not submitted a membership application yet. It is
 // stored as memberType 'website_signup', so it must be told apart from a real
-// membership everywhere the admin acts on it.
-const isAccountOnlyMember = (record) => String(record?.memberType || '').toLowerCase() === 'website_signup' || String(record?.message || '').toLowerCase() === 'signup from website';
+// membership everywhere the admin acts on it. Holding an official member
+// number outranks the marker: a registered member keeps their card even if the
+// old column was never updated.
+const isAccountOnlyMember = (record) => !String(record?.memberId || '').trim() && (String(record?.memberType || '').toLowerCase() === 'website_signup' || String(record?.message || '').toLowerCase() === 'signup from website');
 
 // A short human label for the state of an issued card: on, off, or expired.
 const idStateBadge = (record) => {

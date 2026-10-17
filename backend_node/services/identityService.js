@@ -153,6 +153,54 @@ const isTaken = async (model, field, value, exceptId = null) => {
 
 const digits = (value) => String(value || '').replace(/\D/g, '');
 
+// --- Membership classification (one definition, used by every route) --------
+//
+// `memberType` only records the role a person picked in an online application.
+// It is NOT proof of membership. A person who holds an official SSF member
+// number has been admitted by the register, whatever the column still says.
+// Keying membership on `memberType` alone is what made 7 registered members
+// (Divya Sharma SSF-MBR-00003 and the rest) look like empty website accounts:
+// their number was issued but the marker was never updated, so the portal
+// withheld their ID card and the admin list labelled them "Account only".
+const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory'];
+const holdsOfficialMemberId = (member) => Boolean(String(member?.memberId || '').trim());
+const hasAccountMarker = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup'
+  || String(member?.message || '').trim().toLowerCase() === 'signup from website';
+const isAccountOnly = (member) => !holdsOfficialMemberId(member) && hasAccountMarker(member);
+const isRealMembership = (member) => holdsOfficialMemberId(member)
+  || (!isAccountOnly(member) && REAL_MEMBERSHIP_TYPES.includes(String(member?.memberType || '').trim().toLowerCase()));
+
+// The offline register row behind an official number, so the true category and
+// post ("Founder Member", "Treasurer") can be shown instead of the raw column.
+const registerEntryFor = (memberId) => {
+  const wanted = String(memberId || '').trim();
+  if (!wanted) return null;
+  return registerEntries().find((entry) => entry.memberId === wanted) || null;
+};
+
+// Repair rows left contradictory by an older approval: an account-only signup
+// that was later given a register number. Idempotent — a repaired row no longer
+// matches, so re-running on every boot is safe.
+const reconcileRegisterMembers = async (Member) => {
+  const rows = await Member.findAll({ where: { memberId: { [Op.ne]: null } } });
+  let promoted = 0;
+  for (const row of rows) {
+    if (!hasAccountMarker(row)) continue;
+    const entry = registerEntryFor(row.memberId);
+    const patch = {};
+    if (String(row.message || '').trim().toLowerCase() === 'signup from website') patch.message = null;
+    if (entry?.memberType) patch.memberType = entry.memberType;
+    if (entry?.designation && !row.designation) patch.designation = entry.designation;
+    if (!row.certId) patch.certId = memberCertIdFor(row.memberId);
+    if (!row.certificateType) patch.certificateType = 'Membership Certificate';
+    if (!row.certificateIssuedAt) patch.certificateIssuedAt = row.createdAt || new Date();
+    if (!Object.keys(patch).length) continue;
+    await row.update(patch);
+    promoted += 1;
+  }
+  return { promoted };
+};
+
 // Find the register row that belongs to a person, matched on email or mobile.
 // Used to adopt an existing member's original number on approval instead of
 // minting a second one.
@@ -202,4 +250,6 @@ module.exports = {
   memberCertIdFor, volunteerCertIdFor, donorCertIdFor,
   isMemberId, isVolunteerId, isDonorId, isTaken, matchRegisterEntry, registerOverview,
   registerEntries, reserve, revokeFor, listIssuances,
+  REAL_MEMBERSHIP_TYPES, holdsOfficialMemberId, hasAccountMarker, isAccountOnly, isRealMembership,
+  registerEntryFor, reconcileRegisterMembers,
 };

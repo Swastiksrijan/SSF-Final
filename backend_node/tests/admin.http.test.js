@@ -219,6 +219,17 @@ async function main() {
     const keepMarker = await send(`/api/admin/members/${acct.id}`, 'PATCH', { memberType: 'general', designation: 'Programme Lead' }, auth);
     ok('re-saving an unchanged role is a no-op, not an error', keepMarker.status === 200 && keepMarker.body.member?.designation === 'Programme Lead', JSON.stringify(keepMarker.body).slice(0, 160));
 
+    // The exact production shape that hid 7 registered members from the admin
+    // list: an approval issued the register number but left memberType as
+    // 'website_signup'. Holding a number outranks the stale marker, so the row
+    // must never be filtered out as an "account only" signup.
+    const legacy = await Member.create({ fullName: 'Divya Sharma', email: 'legacy.member@example.com', phone: '9827263231', passwordHash: 'x', memberType: 'website_signup', message: 'Signup from website', status: 'approved', paymentStatus: 'not_required' });
+    await legacy.update({ memberId: 'SSF-MBR-00003', certId: 'SSF-MCERT-00003' });
+    const defaultList = await json('/api/admin/members', auth);
+    const legacyRow = (Array.isArray(defaultList.body) ? defaultList.body : []).find((m) => m.id === legacy.id);
+    ok('a registered member is never hidden from the default admin list', !!legacyRow, `n=${defaultList.body.length}`);
+    ok('their official number is preserved, not re-minted', legacyRow?.memberId === 'SSF-MBR-00003', String(legacyRow?.memberId));
+
     console.log('\nIssued ID re-issue and revoke');
     const reissue = await send(`/api/admin/volunteers/${vol.id}/reissue`, 'POST', {}, auth);
     ok('volunteer IDs can be re-issued', reissue.status === 400 || reissue.status === 200, String(reissue.status));

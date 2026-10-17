@@ -163,6 +163,17 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Member register seed skipped:', e.message);
     }
+    // An earlier approval issued a register number but left the row still
+    // carrying the website-account marker, which hid that member's ID card in
+    // the portal. Repair those rows once per boot; idempotent.
+    try {
+        const Member = require('./models/Member');
+        const identity = require('./services/identityService');
+        const fixed = await identity.reconcileRegisterMembers(Member);
+        if (fixed.promoted) console.log(`✅ Repaired ${fixed.promoted} member record(s) that held an ID but no role`);
+    } catch (e) {
+        console.error('⚠️ Member record repair skipped:', e.message);
+    }
     // Volunteer & Leadership register — from the Google-Form responses.
     // Guarded by an empty-register check so the import runs once, then stays
     // idempotent (re-running never duplicates a person or a volunteer).

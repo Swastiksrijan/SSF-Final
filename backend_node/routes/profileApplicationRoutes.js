@@ -7,6 +7,7 @@ const crypto = require('crypto');
 const { sendMail, emailConfigured } = require('../services/mailer');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
+const identity = require('../services/identityService');
 
 const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
@@ -29,7 +30,7 @@ const sendAdminNotification = async (subject, text) => {
 };
 const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
 const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.authorization || ''; const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : ''; if (!token || token !== getAdminToken()) return res.status(401).json({ message: 'Unauthorized admin access' }); next(); };
-const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
+const isAccountOnly = (member) => identity.isAccountOnly(member);
 const removeStoredFile = (storedPath) => { if (!storedPath) return; const relative = String(storedPath).replace(/^\/+/, ''); const filePath = path.join(__dirname, '..', relative); try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Upload cleanup failed:', error.message); } };
 
 router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', maxCount: 1 }, { name: 'profile_photo', maxCount: 1 }]), async (req, res) => {

@@ -7,6 +7,7 @@ const { sendMail, emailConfigured } = require('../services/mailer');
 const { Op } = require('sequelize');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
+const identity = require('../services/identityService');
 const { requireAccountAuth, issueToken } = require('../services/userAuth');
 
 const router = express.Router();
@@ -56,7 +57,7 @@ const notifyAdmin = async (subject, text) => {
 };
 const cleanEmail = (value) => String(value || '').trim().toLowerCase();
 const cleanPhone = (value) => String(value || '').replace(/\s+/g, ' ').trim();
-const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
+const isAccountOnly = (member) => identity.isAccountOnly(member);
 
 const hashPassword = (password) => {
   const salt = crypto.randomBytes(16).toString('hex');

@@ -8,9 +8,11 @@ const Member = require('../models/Member');
 const { requireAccountAuth, issueToken } = require('../services/userAuth');
 const identity = require('../services/identityService');
 
-const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory'];
-const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
-const isRealMembership = (member) => !isAccountOnly(member) && REAL_MEMBERSHIP_TYPES.includes(String(member?.memberType || '').trim().toLowerCase());
+const REAL_MEMBERSHIP_TYPES = identity.REAL_MEMBERSHIP_TYPES;
+// A person holding an official member number is a member even if the old
+// account marker is still on the row. See identityService for the reasoning.
+const isAccountOnly = (member) => identity.isAccountOnly(member);
+const isRealMembership = (member) => identity.isRealMembership(member);
 const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
 const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.authorization || ''; const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : ''; if (!token || token !== getAdminToken()) return res.status(401).json({ message: 'Unauthorized admin access' }); next(); };
 const sendEmail = async (to, subject, text, html) => { if (!emailConfigured()) throw new Error('Email credentials missing in .env file'); await sendMail({ from: '"Swastik Srijan Admin"', to, subject, text, html }); };
@@ -144,6 +146,12 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
                 updates.certId = member.certId || issued.certId;
                 updates.certificateType = member.certificateType || 'Membership Certificate';
                 updates.certificateIssuedAt = now;
+                // When the number is adopted from the offline register, the
+                // register's own category and post are the truth. Adopt them
+                // unless the admin set those fields in this same request.
+                const entry = identity.registerEntryFor(issued.memberId);
+                if (entry?.memberType && updates.memberType === undefined) updates.memberType = entry.memberType;
+                if (entry?.designation && updates.designation === undefined && !member.designation) updates.designation = entry.designation;
             }
         }
         if (updates.status === 'rejected') {

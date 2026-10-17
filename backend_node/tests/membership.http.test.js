@@ -371,6 +371,44 @@ async function main() {
     const portalVol = await send('/api/portal-volunteer', 'POST', { accountId, name: 'Asha Verma', email, phone: '9876543210', volunteer_type: 'field', message: 'I can help with drives.' });
     ok('portal volunteer application accepted', [200, 201].includes(portalVol.status), JSON.stringify(portalVol.body).slice(0, 200));
 
+    console.log('\nA registered member whose role marker was never updated still gets their ID card:');
+    // This is the exact production shape that hid Divya Sharma's card: an
+    // approval issued the register number but left memberType as
+    // 'website_signup' with the 'Signup from website' marker. Membership must
+    // follow the issued number, not the stale column.
+    const identity = require('../services/identityService');
+    // Create first, then issue the number — the beforeCreate hook deliberately
+    // strips IDs from a website signup, and in production the number arrives
+    // later on approval, exactly like this.
+    const stuck = await Member.create({ fullName: 'Divya Sharma', email: 'divya.stuck@example.com', phone: '9827263231', passwordHash: 'x', memberType: 'website_signup', message: 'Signup from website', status: 'approved', paymentStatus: 'not_required' });
+    await stuck.update({ memberId: 'SSF-MBR-00003', certId: 'SSF-MCERT-00003', certificateType: 'Membership Certificate', certificateIssuedAt: new Date() });
+    const stuckToken = (await require('../services/userAuth').issueToken(stuck));
+    const stuckHeaders = { Authorization: `Bearer ${stuckToken}` };
+    ok('a row with an issued number is treated as a real membership', identity.isRealMembership(stuck));
+    ok('it is no longer classed as account-only', !identity.isAccountOnly(stuck));
+
+    const stuckPortal = await fetch(`${base}/api/user-portal/${stuck.id}`, { headers: stuckHeaders }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
+    ok('portal returns the member ID', stuckPortal.body.account?.memberId === 'SSF-MBR-00003', String(stuckPortal.body.account?.memberId));
+    ok('portal exposes the ID card URL', String(stuckPortal.body.account?.idCardUrl || '').includes('/api/user-document/membership-id/SSF-MBR-00003'), String(stuckPortal.body.account?.idCardUrl).slice(0, 80));
+    ok('portal shows the register category, not the stale marker', stuckPortal.body.account?.memberType === 'Founder Member', String(stuckPortal.body.account?.memberType));
+
+    const cardRes = await fetch(`${base}/api/user-document/membership-id/SSF-MBR-00003?account=${stuck.id}&token=${encodeURIComponent(stuckToken)}`);
+    ok('the ID card document itself renders (200)', cardRes.status === 200, String(cardRes.status));
+    const cardHtml = await cardRes.text();
+    ok('the card names the holder', cardHtml.includes('Divya Sharma'));
+    ok('the card shows the register category', cardHtml.includes('Founder Member'));
+    const verifyRes = await fetch(`${base}/api/verify/SSF-MBR-00003`).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
+    ok('the public verify page validates the card', verifyRes.status === 200 && verifyRes.body.valid === true, JSON.stringify(verifyRes.body).slice(0, 150));
+
+    console.log('\nThe one-time repair fixes rows left contradictory by the old approval:');
+    const repaired = await identity.reconcileRegisterMembers(Member);
+    const fixed = await Member.findByPk(stuck.id);
+    ok('the repair reports the row it changed', repaired.promoted >= 1, JSON.stringify(repaired));
+    ok('the stale marker is cleared', !fixed.message, String(fixed.message));
+    ok('the register category replaces website_signup', fixed.memberType === 'Founder Member', String(fixed.memberType));
+    ok('the post from the register is filled in', fixed.designation === 'Treasurer', String(fixed.designation));
+    ok('running the repair again changes nothing', (await identity.reconcileRegisterMembers(Member)).promoted === 0);
+
     console.log('\nProfile photo management:');
     const photoForm = new FormData();
     photoForm.append('profilePhoto', new Blob([PNG.data], { type: PNG.type }), PNG.name);
