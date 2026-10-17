@@ -67,7 +67,7 @@ export default function Home() {
         </div>
         <div className="absolute inset-0 -z-10 bg-[linear-gradient(100deg,rgba(18,52,90,0.98)_0%,rgba(18,52,90,0.9)_50%,rgba(18,52,90,0.48)_100%)]" />
         <div className="absolute -right-24 -top-28 -z-10 h-96 w-96 rounded-full border border-[#F7A814]/30 md:h-[560px] md:w-[560px]" />
-        <div className="container mx-auto grid max-w-7xl items-center gap-7 px-5 md:px-10 lg:grid-cols-1">
+        <div className="container mx-auto grid max-w-7xl items-center gap-7 px-5 md:px-10 lg:grid-cols-1 xl:grid-cols-[minmax(0,1fr)_22rem]">
           <Motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-3xl">
             <p className="inline-flex items-center gap-2 rounded-full border border-[#F7A814]/40 bg-white/5 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#F7A814]">
               <FaSeedling /> Registered Society · Since 2013
@@ -95,6 +95,11 @@ export default function Home() {
             </div>
           </Motion.div>
 
+          <Motion.div initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="hidden xl:block xl:self-end xl:pb-4">
+            <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#F7A814]">Our Purpose</p>
+            <p className="mt-5 font-serif text-3xl leading-snug text-white">Service with purpose.</p>
+            <p className="mt-2 font-serif text-3xl italic leading-snug text-[#F7A814]">Progress through people.</p>
+          </Motion.div>
         </div>
       </section>
 

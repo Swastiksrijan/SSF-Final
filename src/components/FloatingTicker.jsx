@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 
 const FloatingTicker = () => {
-    const hindiText = "सेवा • समर्पण • समग्र विकास • सेवा • समर्पण • समग्र विकास • सेवा • समर्पण • समग्र विकास • ";
+    const valuesText = "सेवा • समर्पण • समग्र विकास";
 
     return (
         <div className="relative z-30 mt-3 px-4 md:px-10">
@@ -22,27 +22,11 @@ const FloatingTicker = () => {
                         </p>
                     </div>
 
-                    {/* Scrolling Ticker */}
-                    <div className="mt-7 border-t border-white/10 pt-5 overflow-hidden relative">
-                        <div className="flex whitespace-nowrap overflow-hidden py-2">
-                            {[...Array(4)].map((_, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ x: 0 }}
-                                    animate={{ x: "-100%" }}
-                                    transition={{
-                                        repeat: Infinity,
-                                        ease: "linear",
-                                        duration: 25, // Slightly slower for better readability
-                                    }}
-                                    className="flex items-center"
-                                >
-                                    <span className="text-xl md:text-2xl font-bold leading-normal text-white/90 px-4">
-                                        {hindiText}
-                                    </span>
-                                </motion.div>
-                            ))}
-                        </div>
+                    {/* Values line — static, no auto-scroll */}
+                    <div className="mt-7 border-t border-white/10 pt-5">
+                        <p className="text-xl md:text-2xl font-bold leading-normal text-white/90">
+                            {valuesText}
+                        </p>
                     </div>
                 </motion.div>
 
