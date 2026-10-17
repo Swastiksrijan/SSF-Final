@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { FaBell, FaCheckCircle, FaFileInvoiceDollar, FaIdCard } from 'react-icons/fa';
 import { ENDPOINTS } from '../config/api';
-
-const SESSION_KEY = 'ssf_user_session';
+import { authHeaders, readSession } from '../utils/userSession';
 
 // Admin workflow states such as "contacted" and "reviewed" should not be
 // exposed as the final user-facing application state. Keep those details in
@@ -55,9 +54,9 @@ export default function UserApplicationStatus() {
     let alive = true;
     (async () => {
       try {
-        const saved = JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+        const saved = readSession();
         if (!saved?.id) return;
-        const response = await fetch(ENDPOINTS.USER_PORTAL(saved.id));
+        const response = await fetch(ENDPOINTS.USER_PORTAL(saved.id), { headers: authHeaders() });
         if (!response.ok) return;
         const data = await response.json();
         const volunteers = data.activities?.volunteers || [];

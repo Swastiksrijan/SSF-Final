@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { FaArrowRight, FaCalendarAlt, FaExternalLinkAlt, FaGraduationCap, FaHandshake, FaHeart, FaTimes, FaTools, FaUserFriends, FaUsers } from "react-icons/fa";
 import { API_BASE_URL, ENDPOINTS } from "../config/api";
+import { authHeaders } from "../utils/userSession";
 import { Alert, Field, FileField, FormHead, FormNote, Input, Select, SubmitButton, SuccessPanel, Textarea } from "./forms/FormUI";
 import InternshipForm from "./InternshipForm";
 import DonorForm from "./DonorForm";
@@ -57,7 +58,7 @@ function VolunteerPortalForm({ user }) {
     try {
       const response = await fetch(ENDPOINTS.PORTAL_VOLUNTEER, {
         method: "POST",
-        headers: { "Content-Type": "application/json", Accept: "application/json" },
+        headers: authHeaders({ "Content-Type": "application/json", Accept: "application/json" }),
         body: JSON.stringify({
           accountId: user.id,
           name: user.fullName,
@@ -147,7 +148,7 @@ function MembershipPortalForm({ user }) {
       data.append("message", form.message.trim());
       data.append("profile_photo", form.profilePhoto);
       if (form.idDocument) data.append("id_document", form.idDocument);
-      const response = await fetch(`${API_BASE_URL}/api/member-application`, { method: "POST", body: data });
+      const response = await fetch(`${API_BASE_URL}/api/member-application`, { method: "POST", headers: authHeaders(), body: data });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || `Membership application failed (HTTP ${response.status}).`);
       setMemberId(result?.user?.id || user.id);

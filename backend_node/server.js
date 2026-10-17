@@ -55,10 +55,15 @@ const auditRoutes = require('./routes/auditRoutes');
 const imsRoutes = require('./routes/imsRoutes');
 const socialRoutes = require('./routes/socialRoutes');
 const quizRoutes = require('./routes/quizRoutes');
+const adminDashboardRoutes = require('./routes/adminDashboardRoutes');
+const accountRoutes = require('./routes/accountRoutes');
+const { adminAuditTrail } = require('./middleware/adminAuditTrail');
 // Register SSF-IMS models so sequelize.sync creates their tables.
 require('./models/ims');
 // Register Social Publisher models (separate file, same sync pass).
 require('./models/social');
+// Register the audit trail model so sequelize.sync creates its table.
+require('./models/AuditLog');
 
 // Watchdog (registered BEFORE the routes so it runs on every request): any
 // request that reaches the app proves Render is awake, so kick the publisher
@@ -77,6 +82,10 @@ app.use((req, _res, next) => {
     next();
 });
 
+// Every state-changing /api/admin request is recorded in the audit trail.
+// Mounted first so it wraps ALL admin routes, including the ones registered by
+// memberCertificateRoutes below.
+app.use('/api', adminAuditTrail());
 app.use('/api', memberCertificateRoutes);
 app.use('/api', learningCertificateRoutes);
 app.use('/api', volunteerAdminRoutes);
@@ -104,6 +113,10 @@ app.use('/api', imsRoutes);
 app.use('/api', socialRoutes);
 // Awareness quiz + automatic certificate issuance.
 app.use('/api', quizRoutes);
+// Admin command-centre: KPIs, audit trail, exports.
+app.use('/api', adminDashboardRoutes);
+// Logged-in user self-service: own profile + password.
+app.use('/api', accountRoutes);
 
 // `alter: true` re-introspects every foreign key on every boot. On a free-tier
 // Postgres that can exceed the provider's statement/connection timeout and get

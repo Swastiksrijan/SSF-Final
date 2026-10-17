@@ -114,13 +114,17 @@ async function main() {
   const base = `http://127.0.0.1:${server.address().port}`;
   const auth = { Authorization: 'Bearer test-token' };
 
-  const json = (p, h = {}) => fetch(base + p, { headers: h }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
-  const send = (p, method, body, h = {}) => fetch(base + p, { method, headers: { 'Content-Type': 'application/json', ...h }, body: body ? JSON.stringify(body) : undefined }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
+  // The account UUID alone is no longer enough: user endpoints now require the
+  // signed session token that login/signup returns, exactly like the browser.
+  let userToken = '';
+  const withToken = (h = {}) => (userToken ? { Authorization: `Bearer ${userToken}`, ...h } : h);
+  const json = (p, h = {}) => fetch(base + p, { headers: withToken(h) }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
+  const send = (p, method, body, h = {}) => fetch(base + p, { method, headers: { 'Content-Type': 'application/json', ...withToken(h) }, body: body ? JSON.stringify(body) : undefined }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
   const upload = (p, fields, files) => {
     const form = new FormData();
     for (const [k, v] of Object.entries(fields || {})) form.append(k, v);
     for (const [k, f] of Object.entries(files || {})) form.append(k, new Blob([f.data], { type: f.type }), f.name);
-    return fetch(base + p, { method: 'POST', body: form }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
+    return fetch(base + p, { method: 'POST', headers: withToken(), body: form }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
   };
 
   const PNG = { name: 'photo.png', type: 'image/png', data: Buffer.from('89504e470d0a1a0a0000000d49484452', 'hex') };
@@ -133,7 +137,9 @@ async function main() {
     const signup = await upload('/api/member-signup', { fullName: 'Asha Verma', email, confirmEmail: email, phone: '9876543210', password: 'secret1234', memberType: 'website_signup' });
     ok('signup 201', signup.status === 201 || signup.status === 200, JSON.stringify(signup.body).slice(0, 200));
     ok('signup returns a session user', !!signup.body.user?.id);
+    ok('signup returns a signed session token', typeof signup.body.token === 'string' && signup.body.token.includes('.'), String(signup.body.token).slice(0, 24));
     const accountId = signup.body.user?.id;
+    userToken = signup.body.token;
     ok('account is active immediately', signup.body.user?.status === 'approved', signup.body.user?.status);
     ok('account has no member id yet', !signup.body.user?.memberId);
 
@@ -194,6 +200,8 @@ async function main() {
 
     const portal = await json(`/api/user-portal/${accountId}`);
     ok('user portal shows the correction note', portal.body.account?.reviewNote === 'Please upload a clearer Aadhaar copy.', JSON.stringify(portal.body.account?.reviewNote));
+    ok('user portal rejects an anonymous request', (await fetch(`${base}/api/user-portal/${accountId}`).then((r) => r.status)) === 401);
+    ok('user portal rejects another account\'s token', (await fetch(`${base}/api/user-portal/${accountId}`, { headers: { Authorization: 'Bearer deadbeef.cafe' } }).then((r) => r.status)) === 401);
     ok('user portal keeps profile photo', !!portal.body.account?.profilePhotoPath);
 
     console.log('\nResubmission after correction:');
@@ -247,12 +255,12 @@ async function main() {
     ok('unknown certificate id = 404', (await json('/api/verify/SSF-MCERT-0000-9999')).status === 404);
 
     // The admin "fallback" download path: /user-document/<type>/<officialId>?account=<id>
-    const idDoc = await fetch(`${base}/api/user-document/membership-id/${encodeURIComponent(approve.body.memberId)}?account=${accountId}`).then(async (r) => ({ status: r.status, text: await r.text() }));
+    const idDoc = await fetch(`${base}/api/user-document/membership-id/${encodeURIComponent(approve.body.memberId)}?account=${accountId}`, { headers: withToken() }).then(async (r) => ({ status: r.status, text: await r.text() }));
     ok('membership ID card document renders', idDoc.status === 200 && /Membership Identity Card/.test(idDoc.text), String(idDoc.status));
     ok('ID card shows the member name', /Asha Verma/.test(idDoc.text));
-    const certDoc = await fetch(`${base}/api/user-document/membership-certificate/${encodeURIComponent(approve.body.certId)}?account=${accountId}`).then(async (r) => ({ status: r.status, text: await r.text() }));
+    const certDoc = await fetch(`${base}/api/user-document/membership-certificate/${encodeURIComponent(approve.body.certId)}?account=${accountId}`, { headers: withToken() }).then(async (r) => ({ status: r.status, text: await r.text() }));
     ok('membership certificate document renders', certDoc.status === 200 && /Certificate of Membership/.test(certDoc.text), String(certDoc.status));
-    const foreign = await fetch(`${base}/api/user-document/membership-id/SSF-MEM-0000-0001?account=${accountId}`).then((r) => r.status);
+    const foreign = await fetch(`${base}/api/user-document/membership-id/SSF-MEM-0000-0001?account=${accountId}`, { headers: withToken() }).then((r) => r.status);
     ok('document for another member is refused', foreign === 403, String(foreign));
     const noAccount = await fetch(`${base}/api/user-document/membership-id/${encodeURIComponent(approve.body.memberId)}`).then((r) => r.status);
     ok('document without account reference is refused', noAccount === 400, String(noAccount));
@@ -261,6 +269,8 @@ async function main() {
     const advEmail = 'advisor@example.com';
     const advSignup = await send('/api/member-account-signup', 'POST', { fullName: 'Meera Nair', email: advEmail, confirmEmail: advEmail, phone: '9811111111', password: 'StrongPass1', memberType: 'advisory' });
     const advId = advSignup.body.user?.id;
+    const ashaToken = userToken;
+    userToken = advSignup.body.token;
     ok('advisory signup accepted', advSignup.status === 201, JSON.stringify(advSignup.body).slice(0, 150));
     ok('advisory payment marked not required', advSignup.body.user?.paymentStatus === 'not_required', advSignup.body.user?.paymentStatus);
     const advApply = await upload('/api/member-application', { accountId: advId, fullName: 'Meera Nair', email: advEmail, phone: '9811111111', memberType: 'advisory', message: 'Legal advisory support.' }, { profile_photo: PNG });
@@ -270,6 +280,7 @@ async function main() {
     ok('advisory member id issued', /^SSF-MEM-\d{4}-\d{4}$/.test(String(advApprove.body.memberId)), advApprove.body.memberId);
     const advPay = await send('/api/member-payment-submit', 'POST', { memberId: advId, paymentMode: 'UPI', paymentReference: '999999999999' });
     ok('advisory payment submit refused', advPay.status === 400, JSON.stringify(advPay.body).slice(0, 150));
+    userToken = ashaToken;
 
     console.log('\nVolunteer application (public route, with identity proof):');
     const vol = await upload('/api/register', { name: 'Ravi Kumar', email: 'ravi.kumar@example.com', phone: '9812345678', volunteer_type: 'field', position: 'Field Volunteer', id_type: 'Aadhaar Card', identity_number: '9999 8888 7777', message: 'Weekend drives.' }, { profile_photo: PNG, id_document: PDF });
@@ -363,10 +374,10 @@ async function main() {
     console.log('\nProfile photo management:');
     const photoForm = new FormData();
     photoForm.append('profilePhoto', new Blob([PNG.data], { type: PNG.type }), PNG.name);
-    const photoRes = await fetch(`${base}/api/member-profile/${accountId}/photo`, { method: 'PATCH', body: photoForm }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
+    const photoRes = await fetch(`${base}/api/member-profile/${accountId}/photo`, { method: 'PATCH', headers: withToken(), body: photoForm }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
     ok('photo upload 200', photoRes.status === 200, JSON.stringify(photoRes.body).slice(0, 150));
     ok('photo returned as data url', String(photoRes.body.profilePhotoPath || '').startsWith('data:image/'), String(photoRes.body.profilePhotoPath).slice(0, 40));
-    const removed = await fetch(`${base}/api/member-profile/${accountId}/photo`, { method: 'DELETE' }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
+    const removed = await fetch(`${base}/api/member-profile/${accountId}/photo`, { method: 'DELETE', headers: withToken() }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
     ok('photo removal 200', removed.status === 200 && removed.body.profilePhotoPath === null, JSON.stringify(removed.body).slice(0, 120));
   } catch (error) {
     fail += 1;

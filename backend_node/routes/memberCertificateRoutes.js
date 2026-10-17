@@ -5,6 +5,7 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 const Member = require('../models/Member');
+const { requireAccountAuth, issueToken } = require('../services/userAuth');
 
 const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory'];
 const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
@@ -22,7 +23,7 @@ const requiresPayment = (member) => PAID_MEMBERSHIP_TYPES.includes(String(member
 const paymentGateMessage = 'Membership fee is not confirmed yet. The applicant must complete the payment, or the admin must record it as received, before approval.';
 
 router.post('/member-account-signup', async (req, res) => {
-    try { const { fullName, email, confirmEmail, phone, password, memberType, message } = req.body || {}; const primaryEmail = String(email || '').trim().toLowerCase(); if (!fullName || !primaryEmail || primaryEmail !== String(confirmEmail || '').trim().toLowerCase() || !phone || !password || password.length < 8 || !memberType) return res.status(400).json({ message: 'Please complete all required fields. Password must be at least 8 characters.' }); const existing = await Member.findOne({ where: { email: primaryEmail } }); if (existing?.passwordHash) return res.status(409).json({ message: 'An account with this email already exists. Please log in.' }); const member = existing || await Member.create({ fullName, email: primaryEmail, phone, passwordHash: hashPassword(password), memberType, message, status: 'pending', paymentStatus: memberType === 'advisory' ? 'not_required' : 'pending' }); if (existing) await member.update({ fullName, phone, passwordHash: hashPassword(password), memberType, message, status: existing.status, paymentStatus: memberType === 'advisory' ? 'not_required' : (existing.paymentStatus || 'pending') }); return res.status(existing ? 200 : 201).json({ status: 'success', message: 'Account created successfully.', user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status, paymentStatus: member.paymentStatus } }); }
+    try { const { fullName, email, confirmEmail, phone, password, memberType, message } = req.body || {}; const primaryEmail = String(email || '').trim().toLowerCase(); if (!fullName || !primaryEmail || primaryEmail !== String(confirmEmail || '').trim().toLowerCase() || !phone || !password || password.length < 8 || !memberType) return res.status(400).json({ message: 'Please complete all required fields. Password must be at least 8 characters.' }); const existing = await Member.findOne({ where: { email: primaryEmail } }); if (existing?.passwordHash) return res.status(409).json({ message: 'An account with this email already exists. Please log in.' }); const member = existing || await Member.create({ fullName, email: primaryEmail, phone, passwordHash: hashPassword(password), memberType, message, status: 'pending', paymentStatus: memberType === 'advisory' ? 'not_required' : 'pending' }); if (existing) await member.update({ fullName, phone, passwordHash: hashPassword(password), memberType, message, status: existing.status, paymentStatus: memberType === 'advisory' ? 'not_required' : (existing.paymentStatus || 'pending') }); return res.status(existing ? 200 : 201).json({ status: 'success', message: 'Account created successfully.', token: issueToken(member), user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status, paymentStatus: member.paymentStatus } }); }
     catch (error) { console.error('❌ Member account signup error:', error); return res.status(500).json({ message: 'Server Error' }); }
 });
 
@@ -34,7 +35,7 @@ router.post('/member-payment-link', async (req, res) => {
 // The applicant pays through the shared Razorpay page and then records the
 // mode + UTR/receipt reference here. This does NOT mark the fee as paid — an
 // admin verifies the reference and confirms it, which is what unlocks approval.
-router.post('/member-payment-submit', async (req, res) => {
+router.post('/member-payment-submit', requireAccountAuth((req) => (req.body || {}).memberId), async (req, res) => {
     try {
         const { memberId, paymentMode, paymentReference } = req.body || {};
         const member = await Member.findByPk(memberId);
@@ -65,7 +66,7 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
     try {
         const member = await Member.findByPk(req.params.id);
         if (!member) return res.status(404).json({ message: 'Member not found' });
-        const allowed = ['fullName', 'email', 'phone', 'memberType', 'message', 'status', 'paymentStatus', 'paymentMode', 'paymentReference', 'reviewNote'];
+        const allowed = ['fullName', 'email', 'phone', 'memberType', 'message', 'status', 'paymentStatus', 'paymentMode', 'paymentReference', 'paymentId', 'paymentAmount', 'paymentLinkId', 'reviewNote'];
         const updates = {};
         for (const field of allowed) if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) updates[field] = req.body[field];
         if (updates.email) updates.email = String(updates.email).trim().toLowerCase();
@@ -125,7 +126,7 @@ router.delete('/admin/members/:id', requireAdminAuth, async (req, res) => {
     catch (error) { console.error('❌ Member delete error:', error); return res.status(500).json({ message: 'Unable to delete member application.' }); }
 });
 
-router.get('/member-status/:id', async (req, res) => {
+router.get('/member-status/:id', requireAccountAuth((req) => req.params.id), async (req, res) => {
     try { const member = await Member.findByPk(req.params.id, { attributes: ['id','fullName','email','phone','memberType','status','paymentStatus','paymentId','paymentLinkId','paymentAmount','paymentMode','paymentReference','paymentPaidAt','memberId','certId','certificateType','certificateIssuedAt','reviewNote','idProofType','identityNumber','profilePhotoPath','profilePhotoData','createdAt'] }); if (!member) return res.status(404).json({ message: 'Member not found' }); const data = member.toJSON(); data.profilePhotoPath = member.profilePhotoData || member.profilePhotoPath; return res.json(data); }
     catch (error) { console.error('❌ Member status error:', error); return res.status(500).json({ message: 'Server Error' }); }
 });

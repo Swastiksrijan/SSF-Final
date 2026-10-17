@@ -7,6 +7,7 @@ const { sendMail, emailConfigured } = require('../services/mailer');
 const crypto = require('crypto');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
+const { issueToken } = require('../services/userAuth');
 
 // --- 1. File Upload Configuration ---
 const storage = multer.diskStorage({
@@ -242,6 +243,7 @@ router.post('/member-login', async (req, res) => {
         return res.json({
             status: 'success',
             message: 'Login successful',
+            token: issueToken(member),
             user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status }
         });
     } catch (error) {

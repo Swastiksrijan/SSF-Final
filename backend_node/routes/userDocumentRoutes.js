@@ -4,13 +4,22 @@ const Volunteer = require('../models/Volunteer');
 const Donor = require('../models/Donor');
 const InternshipApplication = require('../models/InternshipApplication');
 const router = express.Router();
+const { verifyToken, getAdminToken } = require('../services/userAuth');
 const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory'];
 const isRealMembership = (memberType) => REAL_MEMBERSHIP_TYPES.includes(String(memberType || '').trim().toLowerCase());
 const FRONTEND_URL=(process.env.FRONTEND_URL||'https://swastiksrijan.in').replace(/\/$/,'');
 const escapeHtml=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const absolute=v=>v?(/^https?:\/\//i.test(v)?v:`${(process.env.BACKEND_PUBLIC_URL||'https://ngo-backend-03hq.onrender.com').replace(/\/$/,'')}${v.startsWith('/')?'':'/'}${v}`):'';
 const verifyUrl=id=>`${FRONTEND_URL}/verify/${encodeURIComponent(id)}`;
-const requireAccount=async(req,res)=>{const id=String(req.query.account||'').trim();if(!id){res.status(400).json({message:'Account reference is required.'});return null}const m=await Member.findByPk(id,{attributes:['id','fullName','email','phone','memberType','status','memberId','certId','certificateType','certificateIssuedAt','profilePhotoPath','createdAt']});if(!m){res.status(404).json({message:'Account not found.'});return null}return m};
+const requireAccount=async(req,res)=>{const id=String(req.query.account||'').trim();if(!id){res.status(400).json({message:'Account reference is required.'});return null}
+ // The account UUID alone is not proof of ownership, so a signed token must
+ // accompany it — either the caller's own user token or the admin token.
+ const header=(req.headers.authorization||'');const headerToken=header.startsWith('Bearer ')?header.slice(7).trim():'';
+ const queryToken=String(req.query.token||'').trim();
+ const supplied=headerToken||queryToken;
+ if(!supplied)return (res.status(401).send('Please log in to open this document.'),null);
+ if(supplied!==getAdminToken()){const payload=verifyToken(supplied);if(!payload)return (res.status(401).send('Your session has expired. Please log in again.'),null);if(String(payload.sub)!==id)return (res.status(403).send('You can only open your own documents.'),null)}
+ const m=await Member.findByPk(id,{attributes:['id','fullName','email','phone','memberType','status','memberId','certId','certificateType','certificateIssuedAt','profilePhotoPath','createdAt']});if(!m){res.status(404).json({message:'Account not found.'});return null}return m};
 const css=`body{font-family:Arial,Helvetica,sans-serif;background:#eef3f6;margin:0;color:#17324d}.sheet{width:900px;max-width:calc(100vw - 32px);margin:32px auto;background:#fff;border:1px solid #d9e2e8;border-radius:20px;overflow:hidden;box-shadow:0 12px 40px rgba(0,35,68,.12)}.head{background:#002344;color:#fff;padding:28px 34px}.brand{font-size:13px;letter-spacing:2px;font-weight:800}.title{font-size:28px;font-weight:900;margin:8px 0}.body{padding:36px}.muted{color:#667788}.row{display:flex;justify-content:space-between;gap:20px;border-bottom:1px solid #e7edf1;padding:13px 0}.value{font-weight:800;color:#002344}.footer{padding:20px 34px;background:#f7fafb;font-size:12px;color:#667788}.print{position:fixed;right:20px;top:20px;background:#ff6600;color:#fff;border:0;border-radius:10px;padding:12px 16px;font-weight:800;cursor:pointer}@media print{body{background:#fff}.sheet{width:100%;max-width:none;margin:0;border:0;box-shadow:none}.print{display:none}}`;
 const row=(a,b)=>`<div class="row"><span class="muted">${escapeHtml(a)}</span><span class="value">${escapeHtml(b||'—')}</span></div>`;
 const docHtml=(title,body,id)=>`<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>${css}</style></head><body><button class="print" onclick="window.print()">Print / Save as PDF</button><main class="sheet"><header class="head"><div class="brand">SWASTIK SRIJAN FOUNDATION SAMITI</div><div class="title">${escapeHtml(title)}</div><div>Official document • Rewa, Madhya Pradesh, India</div></header><section class="body">${body}</section><footer class="footer">Document ID: <strong>${escapeHtml(id)}</strong><br>Verify authenticity: ${escapeHtml(verifyUrl(id))}</footer></main></body></html>`;

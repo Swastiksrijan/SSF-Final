@@ -6,27 +6,20 @@ import { FaUserCircle, FaTachometerAlt, FaUserEdit, FaClipboardList, FaDonate, F
 import AuthModal from "./AuthModal";
 import { useLanguage } from "../context/LanguageContext";
 import { API_BASE_URL } from "../config/api";
+import { clearSession, readSession } from "../utils/userSession";
 import logoImg from "../assets/new-logo.png";
 
-const SESSION_KEY = "ssf_user_session";
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [mobileSubMenu, setMobileSubMenu] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("signup");
   const [accountOpen, setAccountOpen] = useState(false);
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => readSession());
   const location = useLocation();
   const { lang, toggleLang } = useLanguage();
 
   useEffect(() => {
-    try {
-      localStorage.removeItem(SESSION_KEY);
-      const saved = sessionStorage.getItem(SESSION_KEY);
-      if (saved) setUser(JSON.parse(saved));
-    } catch {
-      sessionStorage.removeItem(SESSION_KEY);
-    }
     const fn = e => setUser(e.detail || null);
     window.addEventListener("ssf-auth-changed", fn);
     return () => window.removeEventListener("ssf-auth-changed", fn);
@@ -40,11 +33,9 @@ const Header = () => {
     window.dispatchEvent(new CustomEvent("ssf-getinvolved-form", { detail: form }));
   };
   const logout = () => {
-    sessionStorage.removeItem(SESSION_KEY);
-    localStorage.removeItem(SESSION_KEY);
+    clearSession();
     setUser(null);
     setAccountOpen(false);
-    window.dispatchEvent(new CustomEvent("ssf-auth-changed", { detail: null }));
   };
   if (location.pathname === "/SSFDigitalOffice" || location.pathname === "/admin") return null;
 

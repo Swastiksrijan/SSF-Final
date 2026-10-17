@@ -20,6 +20,7 @@ const uploadProfilePhoto = multer({ storage, fileFilter: profilePhotoOnly, limit
 // public URL, which leaked deploy internals to the admin UI. Normalise both.
 const publicUploadUrl = (stored) => (stored ? `/uploads/${path.basename(String(stored))}` : null);
 const hashPassword = (password) => { const salt = crypto.randomBytes(16).toString('hex'); const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex'); return `${salt}:${hash}`; };
+const { requireAccountAuth, issueToken } = require('../services/userAuth');
 const sendAdminNotification = async (subject, text) => {
     if (!emailConfigured()) return;
     const recipients = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'swastiksrijanfoundation@gmail.com').split(',').map((email) => email.trim()).filter(Boolean).join(',');
@@ -61,15 +62,15 @@ router.post('/member-signup', uploadMemberFiles.fields([{ name: 'profile_photo',
         if (existing) {
             if (existing.passwordHash) return res.status(409).json({ status: 'error', message: 'An account with this email already exists. Please log in.' });
             await existing.update({ passwordHash: hashPassword(password), phone: phone.trim(), memberType: isWebsiteAccount ? 'website_signup' : memberType, idProofType: idProofType || existing.idProofType, identityNumber: String(identityNumber || '').trim() || existing.identityNumber || null, idDocumentPath: idDocumentPath || existing.idDocumentPath, profilePhotoPath: photoPath || existing.profilePhotoPath, message: isWebsiteAccount ? 'Signup from website' : (message || existing.message) });
-            return res.status(200).json({ status: 'success', message: 'Your existing record now has a website account. You are signed in.', data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
+            return res.status(200).json({ status: 'success', message: 'Your existing record now has a website account. You are signed in.', data: existing, token: issueToken(existing), user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
         }
         const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: phone.trim(), passwordHash: hashPassword(password), memberType: isWebsiteAccount ? 'website_signup' : memberType, message: isWebsiteAccount ? 'Signup from website' : (message || null), profilePhotoPath: photoPath, idProofType: idProofType || null, identityNumber: String(identityNumber || '').trim() || null, idDocumentPath, status: isWebsiteAccount ? 'approved' : 'pending', paymentStatus: isWebsiteAccount ? 'not_required' : (memberType === 'advisory' ? 'not_required' : 'pending') });
         await sendAdminNotification(`New ${isWebsiteAccount ? 'Website Account' : 'Member'} Signup: ${fullName}`, `New ${isWebsiteAccount ? 'website account' : 'member application'} received. Name: ${fullName}, Type: ${isWebsiteAccount ? 'website account' : memberType}, Email: ${primaryEmail}, Phone: ${phone}`);
-        return res.status(201).json({ status: 'success', message: isWebsiteAccount ? 'Account created successfully. You are now signed in.' : 'Membership application submitted successfully', data: newMember, user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
+        return res.status(201).json({ status: 'success', message: isWebsiteAccount ? 'Account created successfully. You are now signed in.' : 'Membership application submitted successfully', data: newMember, token: issueToken(newMember), user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
     } catch (error) { console.error('❌ Member registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
 });
 
-router.patch('/member-profile/:id/photo', uploadProfilePhoto.single('profilePhoto'), async (req, res) => {
+router.patch('/member-profile/:id/photo', requireAccountAuth((req) => req.params.id), uploadProfilePhoto.single('profilePhoto'), async (req, res) => {
     try {
         const member = await Member.findByPk(req.params.id);
         if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' });
@@ -85,7 +86,7 @@ router.patch('/member-profile/:id/photo', uploadProfilePhoto.single('profilePhot
     } catch (error) { if (req.file?.path && fs.existsSync(req.file.path)) { try { fs.unlinkSync(req.file.path); } catch (_) {} } console.error('❌ Profile photo update error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Unable to update profile photo.' }); }
 });
 
-router.delete('/member-profile/:id/photo', async (req, res) => {
+router.delete('/member-profile/:id/photo', requireAccountAuth((req) => req.params.id), async (req, res) => {
     try { const member = await Member.findByPk(req.params.id); if (!member) return res.status(404).json({ status: 'error', message: 'Profile not found.' }); const oldPath = member.profilePhotoPath; await member.update({ profilePhotoPath: null, profilePhotoData: null }); if (oldPath && oldPath.startsWith('/uploads/')) { const oldFile = path.join(__dirname, '..', oldPath.replace(/^\//, '')); if (fs.existsSync(oldFile)) { try { fs.unlinkSync(oldFile); } catch (_) {} } } return res.json({ status: 'success', message: 'Profile photo removed.', profilePhotoPath: null }); }
     catch (error) { console.error('❌ Profile photo delete error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Unable to remove photo.' }); }
 });

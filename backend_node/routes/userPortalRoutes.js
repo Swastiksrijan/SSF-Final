@@ -5,14 +5,17 @@ const Volunteer = require('../models/Volunteer');
 const Donor = require('../models/Donor');
 const InternshipApplication = require('../models/InternshipApplication');
 const Interest = require('../models/Interest');
+const { requireAccountAuth } = require('../services/userAuth');
 
 const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory'];
 const isAccountOnly = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup' || String(member?.message || '').trim().toLowerCase() === 'signup from website';
 const isRealMembership = (member) => !isAccountOnly(member) && REAL_MEMBERSHIP_TYPES.includes(String(member?.memberType || '').trim().toLowerCase());
 const backendUrl = (process.env.BACKEND_PUBLIC_URL || 'https://ngo-backend-03hq.onrender.com').replace(/\/$/, '');
-const documentUrl = (type, id, accountId) => `${backendUrl}/api/user-document/${type}/${encodeURIComponent(id)}?account=${encodeURIComponent(accountId)}`;
+// The document route now proves ownership with a signed token, so the links the
+// portal hands back must carry the caller's own token with them.
+const documentUrl = (type, id, accountId, token) => `${backendUrl}/api/user-document/${type}/${encodeURIComponent(id)}?account=${encodeURIComponent(accountId)}&token=${encodeURIComponent(token || '')}`;
 
-router.get('/user-portal/:id', async (req, res) => {
+router.get('/user-portal/:id', requireAccountAuth((req) => req.params.id), async (req, res) => {
     try {
         const member = await Member.findByPk(req.params.id, { attributes: { exclude: ['passwordHash'] } });
         if (!member) return res.status(404).json({ message: 'Account not found' });
@@ -34,12 +37,17 @@ router.get('/user-portal/:id', async (req, res) => {
             idProofType: member.idProofType || null,
             identityNumber: member.identityNumber || null,
             profilePhotoPath: member.profilePhotoData || member.profilePhotoPath,
+            paymentStatus: membershipAccount ? (member.paymentStatus || 'pending') : 'not_required',
+            paymentMode: membershipAccount ? member.paymentMode : null,
+            paymentReference: membershipAccount ? member.paymentReference : null,
+            paymentAmount: membershipAccount ? member.paymentAmount : null,
+            paymentPaidAt: membershipAccount ? member.paymentPaidAt : null,
             createdAt: member.createdAt
         };
 
         if (membershipAccount && member.status === 'approved' && member.memberId) {
-            account.idCardUrl = documentUrl('membership-id', member.memberId, member.id);
-            if (member.certId) account.certificateUrl = documentUrl('membership-certificate', member.certId, member.id);
+            account.idCardUrl = documentUrl('membership-id', member.memberId, member.id, req.account.token);
+            if (member.certId) account.certificateUrl = documentUrl('membership-certificate', member.certId, member.id, req.account.token);
         }
 
         // Account/profile data must never disappear just because an optional
@@ -61,9 +69,9 @@ router.get('/user-portal/:id', async (req, res) => {
         if (internshipsResult.status === 'rejected') console.error('User portal internship query failed:', internshipsResult.reason);
         if (interestsResult.status === 'rejected') console.error('User portal interest query failed:', interestsResult.reason);
 
-        const safeVolunteers = volunteers.map(v => ({ ...v.toJSON(), idCardUrl: v.status === 'approved' && v.volunteerId ? documentUrl('volunteer-id', v.volunteerId, member.id) : null, certificateUrl: v.status === 'approved' && v.certId ? documentUrl('volunteer-certificate', v.certId, member.id) : null }));
-        const safeDonors = donors.map(d => ({ ...d.toJSON(), receiptUrl: ['paid','offline'].includes(String(d.paymentStatus).toLowerCase()) && d.donorId ? documentUrl('donation-receipt', d.donorId, member.id) : null }));
-        const safeInternships = internships.map(i => ({ ...i.toJSON(), idCardUrl: ['selected','completed'].includes(String(i.status).toLowerCase()) && i.internId ? documentUrl('intern-id', i.internId, member.id) : null, joiningLetterUrl: ['selected','completed'].includes(String(i.status).toLowerCase()) && i.joiningLetterId ? documentUrl('intern-letter', i.id, member.id) : null, completionCertificateUrl: String(i.status).toLowerCase() === 'completed' && i.completionCertId ? documentUrl('intern-certificate', i.id, member.id) : null }));
+        const safeVolunteers = volunteers.map(v => ({ ...v.toJSON(), idCardUrl: v.status === 'approved' && v.volunteerId ? documentUrl('volunteer-id', v.volunteerId, member.id, req.account.token) : null, certificateUrl: v.status === 'approved' && v.certId ? documentUrl('volunteer-certificate', v.certId, member.id, req.account.token) : null }));
+        const safeDonors = donors.map(d => ({ ...d.toJSON(), receiptUrl: ['paid','offline'].includes(String(d.paymentStatus).toLowerCase()) && d.donorId ? documentUrl('donation-receipt', d.donorId, member.id, req.account.token) : null }));
+        const safeInternships = internships.map(i => ({ ...i.toJSON(), idCardUrl: ['selected','completed'].includes(String(i.status).toLowerCase()) && i.internId ? documentUrl('intern-id', i.internId, member.id, req.account.token) : null, joiningLetterUrl: ['selected','completed'].includes(String(i.status).toLowerCase()) && i.joiningLetterId ? documentUrl('intern-letter', i.id, member.id, req.account.token) : null, completionCertificateUrl: String(i.status).toLowerCase() === 'completed' && i.completionCertId ? documentUrl('intern-certificate', i.id, member.id, req.account.token) : null }));
 
         return res.json({ account, activities: { volunteers: safeVolunteers, donors: safeDonors, internships: safeInternships, interests } });
     } catch (error) {

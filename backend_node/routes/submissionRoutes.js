@@ -7,6 +7,7 @@ const { sendMail, emailConfigured } = require('../services/mailer');
 const { Op } = require('sequelize');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
+const { requireAccountAuth, issueToken } = require('../services/userAuth');
 
 const router = express.Router();
 const uploadDir = path.join(__dirname, '../uploads');
@@ -114,25 +115,25 @@ router.post('/member-signup', multipart([
       if (isWebsiteAccount) {
         if (existing.passwordHash) { removeFile(profilePhoto); removeFile(idDocument); return res.status(409).json({ status: 'error', message: 'An account with this email already exists. Please log in.' }); }
         await existing.update({ passwordHash: hashPassword(password), phone: normalizedPhone, memberType: 'website_signup', message: 'Signup from website', status: 'approved', paymentStatus: 'not_required' });
-        return res.status(200).json({ status: 'success', message: 'Account created successfully. You are now signed in.', user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
+        return res.status(200).json({ status: 'success', message: 'Account created successfully. You are now signed in.', token: issueToken(existing), user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
       }
       if (isAccountOnly(existing)) {
         const updates = { fullName: fullName.trim(), phone: normalizedPhone, memberType, idProofType, identityNumber: String(identityNumber || '').trim() || null, message: message?.trim() || null, profilePhotoPath: profilePhoto ? `/uploads/${profilePhoto.filename}` : existing.profilePhotoPath, idDocumentPath: idDocument ? `/uploads/${idDocument.filename}` : existing.idDocumentPath, status: 'pending', paymentStatus: memberType === 'advisory' ? 'not_required' : 'pending', reviewNote: null };
         await existing.update(updates);
         const emailSent = await notifyAdmin(`New Membership Application: ${fullName.trim()}`, `An existing SSF account has submitted a membership application.\nName: ${fullName.trim()}\nType: ${memberType}\nEmail: ${primaryEmail}\nPhone: ${normalizedPhone}`);
-        return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully', emailSent, data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
+        return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully', emailSent, data: existing, token: issueToken(existing), user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
       }
       if (existing.status === 'changes_requested') {
         await existing.update({ fullName: fullName.trim(), phone: normalizedPhone, memberType, idProofType, identityNumber: String(identityNumber || '').trim() || null, message: message?.trim() || null, profilePhotoPath: profilePhoto ? `/uploads/${profilePhoto.filename}` : existing.profilePhotoPath, idDocumentPath: idDocument ? `/uploads/${idDocument.filename}` : existing.idDocumentPath, status: 'pending', reviewNote: null });
         const emailSent = await notifyAdmin(`Membership Application Resubmitted: ${fullName.trim()}`, `A membership application has been updated and resubmitted.\nName: ${fullName.trim()}\nType: ${memberType}\nEmail: ${primaryEmail}\nPhone: ${normalizedPhone}`);
-        return res.status(200).json({ status: 'success', message: 'Membership application updated and resubmitted successfully.', emailSent, data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
+        return res.status(200).json({ status: 'success', message: 'Membership application updated and resubmitted successfully.', emailSent, data: existing, token: issueToken(existing), user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
       }
       removeFile(profilePhoto); removeFile(idDocument);
       return res.status(409).json({ status: 'error', message: 'A membership application with this email already exists.' });
     }
     const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: normalizedPhone, passwordHash: hashPassword(password), memberType, message: message?.trim() || null, profilePhotoPath: profilePhoto ? `/uploads/${profilePhoto.filename}` : null, idProofType: idProofType || null, identityNumber: String(identityNumber || '').trim() || null, idDocumentPath: idDocument ? `/uploads/${idDocument.filename}` : null, status: 'pending', paymentStatus: memberType === 'advisory' ? 'not_required' : 'pending' });
     const emailSent = await notifyAdmin(`New Membership Application: ${fullName.trim()}`, `New membership application received.\nName: ${fullName.trim()}\nType: ${memberType}\nEmail: ${primaryEmail}\nPhone: ${normalizedPhone}`);
-    return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully', emailSent, data: newMember, user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
+    return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully', emailSent, data: newMember, token: issueToken(newMember), user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
   } catch (error) {
     removeFile(profilePhoto); removeFile(idDocument);
     console.error('❌ Membership submission error:', error);
@@ -144,11 +145,12 @@ router.post('/member-signup', multipart([
 router.post('/member-application', multipart([
   { name: 'profile_photo', maxCount: 1 },
   { name: 'id_document', maxCount: 1 }
-]), async (req, res) => {
+]), requireAccountAuth((req) => (req.body || {}).accountId), async (req, res) => {
   const profilePhoto = req.files?.profile_photo?.[0];
   const idDocument = req.files?.id_document?.[0];
   try {
-    const { accountId, fullName, email, phone, memberType, idProofType, identityNumber, message } = req.body || {};
+    const { fullName, email, phone, memberType, idProofType, identityNumber, message } = req.body || {};
+    const accountId = req.account.accountId;
     const normalizedEmail = cleanEmail(email);
     const normalizedPhone = cleanPhone(phone);
     const allowedTypes = new Set(['general', 'active', 'life', 'advisory']);
@@ -171,7 +173,7 @@ router.post('/member-application', multipart([
     if (!isAccountOnly(member) && !['changes_requested', 'rejected', 'pending'].includes(String(member.status || '').toLowerCase())) { removeFile(profilePhoto); removeFile(idDocument); return res.status(409).json({ status: 'error', message: 'This membership account cannot be submitted right now.' }); }
     await member.update({ fullName: String(fullName).trim(), phone: normalizedPhone, memberType: String(memberType).toLowerCase(), idProofType: String(idProofType || '').trim() || null, identityNumber: String(identityNumber || '').trim() || null, message: String(message || '').trim() || null, profilePhotoPath: `/uploads/${profilePhoto.filename}`, idDocumentPath: idDocument ? `/uploads/${idDocument.filename}` : member.idDocumentPath, status: 'pending', paymentStatus: String(memberType).toLowerCase() === 'advisory' ? 'not_required' : 'pending', reviewNote: null, memberId: null, certId: null, certificateType: null, certificateIssuedAt: null });
     const emailSent = await notifyAdmin(`Membership Application: ${member.fullName}`, `Membership application submitted from logged-in portal.\nName: ${member.fullName}\nType: ${member.memberType}\nEmail: ${member.email}\nPhone: ${member.phone}`);
-    return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully. It is now under review.', emailSent, user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status } });
+    return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully. It is now under review.', emailSent, token: issueToken(member), user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status } });
   } catch (error) {
     removeFile(profilePhoto); removeFile(idDocument);
     console.error('❌ Portal membership submission error:', error);

@@ -3,6 +3,7 @@ const { Op } = require('sequelize');
 const { sendMail, emailConfigured } = require('../services/mailer');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
+const { requireAccountAuth } = require('../services/userAuth');
 
 const router = express.Router();
 const cleanEmail = (value) => String(value || '').trim().toLowerCase();
@@ -18,9 +19,10 @@ const notifyAdmin = async (subject, text) => {
   }
 };
 
-router.post('/portal-volunteer', async (req, res) => {
+router.post('/portal-volunteer', requireAccountAuth((req) => (req.body || {}).accountId), async (req, res) => {
   try {
-    const { accountId, name, email, phone, volunteer_type, message } = req.body || {};
+    const { name, email, phone, volunteer_type, message } = req.body || {};
+    const accountId = req.account.accountId;
     const normalizedEmail = cleanEmail(email);
     const normalizedPhone = cleanPhone(phone);
     if (!accountId || !name || !normalizedEmail || !normalizedPhone) {
@@ -46,9 +48,10 @@ router.post('/portal-volunteer', async (req, res) => {
   }
 });
 
-router.post('/portal-member-application', async (req, res) => {
+router.post('/portal-member-application', requireAccountAuth((req) => (req.body || {}).accountId), async (req, res) => {
   try {
-    const { accountId, fullName, email, phone, memberType, message } = req.body || {};
+    const { fullName, email, phone, memberType, message } = req.body || {};
+    const accountId = req.account.accountId;
     const normalizedEmail = cleanEmail(email);
     const normalizedPhone = cleanPhone(phone);
     const allowedTypes = new Set(['general', 'active', 'life', 'advisory']);

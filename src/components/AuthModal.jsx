@@ -5,8 +5,7 @@ import { FaTimes, FaUserPlus, FaSignInAlt, FaWhatsapp, FaEnvelope, FaArrowLeft, 
 import { CONTACT_INFO } from "../config/contact";
 import { ENDPOINTS } from "../config/api";
 import { Alert, Field, Input, SubmitButton } from "./forms/FormUI";
-
-const SESSION_KEY = "ssf_user_session";
+import { writeSession } from "../utils/userSession";
 const initialSignup = { fullName: "", email: "", phone: "", password: "" };
 const initialLogin = { email: "", password: "" };
 const initialForgot = { email: "" };
@@ -57,17 +56,12 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
         });
     };
 
-    const persistSession = (user) => {
-        const session = {
-            ...user,
-            memberType: user.memberType === "website_signup" ? "general" : user.memberType,
-            loggedInAt: new Date().toISOString()
-        };
-        sessionStorage.setItem(SESSION_KEY, JSON.stringify(session));
-        localStorage.removeItem(SESSION_KEY);
-        window.dispatchEvent(new CustomEvent("ssf-auth-changed", { detail: session }));
-        return session;
-    };
+    const persistSession = (user, token) => writeSession({
+        ...user,
+        token: token || user.token || "",
+        memberType: user.memberType === "website_signup" ? "general" : user.memberType,
+        loggedInAt: new Date().toISOString()
+    });
 
     const handleForgot = async (e) => {
         e.preventDefault();
@@ -108,7 +102,7 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
             const result = await response.json().catch(() => ({}));
             if (!response.ok) throw new Error(result.message || "Unable to complete the request. Please try again.");
             if (!result.user) throw new Error("The server did not return a valid account session.");
-            const session = persistSession(result.user);
+            const session = persistSession(result.user, result.token);
             await sendEmailNotification().catch((err) => console.warn("Email notify failed:", err));
             setStatus("success");
             setMessage(mode === "signup" ? "Account created successfully. You are now signed in." : "Login successful. Welcome back.");

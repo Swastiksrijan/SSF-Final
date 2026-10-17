@@ -263,12 +263,13 @@ async function planDue({ date = new Date(), rebuild = false } = {}) {
   const created = [];
   let seq = Number((await getConfig('post_seq', 0)) || 0);
 
-  // Any existing NON-course post for the date (whatever slot it was created
+  // Any existing NON-additive post for the date (whatever slot it was created
   // under — e.g. the legacy morning/evening rows) is treated as "the day's
   // awareness post", so the switch to one-post-a-day never adds a duplicate on
-  // the transition day. Course-series posts are excluded — they are a separate,
-  // additive stream handled by planCourseSeries().
-  const existing = await SocialPost.findOne({ where: { postDate, kind: { [Op.ne]: 'course' } } });
+  // the transition day. The course and awareness series are separate, additive
+  // streams (their own plan functions), so they must not be mistaken for the
+  // day's daily post — otherwise their presence suppresses it entirely.
+  const existing = await SocialPost.findOne({ where: { postDate, kind: { [Op.notIn]: ['course', 'series'] } } });
   // Never overwrite a published post during regeneration — that would turn a
   // live post back into a draft. Only drafts are rebuilt.
   if (existing && (!rebuild || existing.status === 'published' || existing.status === 'partial')) return created;

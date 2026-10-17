@@ -1,79 +1,177 @@
-import { useEffect, useState } from 'react';
-import { FaChartLine, FaClipboardList, FaUsers, FaHeart, FaHandsHelping, FaIdCard, FaFileAlt, FaShieldAlt, FaSignOutAlt, FaCertificate } from 'react-icons/fa';
-import AdminPortalV2 from './AdminPortalV2';
-import AdminApplicationDashboard from '../components/AdminApplicationDashboard';
-import AdminUserManagement from '../components/AdminUserManagement';
-import AdminLearningCertificates from '../components/AdminLearningCertificates';
+// The admin command centre.
+//
+// A sidebar dashboard rather than one long scroll: each module is a real,
+// working area (live KPIs, the applications workflow, people and roles, account
+// administration, learning certificates, the audit log and settings). The three
+// placeholder sections that only held a paragraph and a jump button have been
+// removed — their data is reachable where it actually lives.
+import { useState } from "react";
+import {
+  FaBars, FaCertificate, FaChartLine, FaClipboardList, FaCog, FaExternalLinkAlt,
+  FaHistory, FaSignOutAlt, FaUserShield, FaUsers, FaTimes,
+} from "react-icons/fa";
+import AdminPortalV2 from "./AdminPortalV2";
+import AdminApplicationDashboard from "../components/AdminApplicationDashboard";
+import AdminUserManagement from "../components/AdminUserManagement";
+import AdminLearningCertificates from "../components/AdminLearningCertificates";
+import { AdminAuditLog, AdminOverview } from "../components/dashboard/AdminOverview";
+import { SectionCard } from "../components/dashboard/DashboardUI";
+import { ENDPOINTS } from "../config/api";
 
-const TOKEN_KEY = 'ssf_admin_token';
+const TOKEN_KEY = "ssf_admin_token";
 
-const modules = [
-  { id: 'admin-overview', label: 'Dashboard', icon: FaChartLine },
-  { id: 'admin-applications', label: 'Applications', icon: FaClipboardList },
-  { id: 'admin-people', label: 'People & Roles', icon: FaUsers },
-  { id: 'admin-user-management', label: 'User Management', icon: FaUsers },
-  { id: 'admin-donors', label: 'Donors & Donations', icon: FaHeart },
-  { id: 'admin-volunteers', label: 'Volunteers', icon: FaHandsHelping },
-  { id: 'admin-members', label: 'Members', icon: FaIdCard },
-  { id: 'admin-reports', label: 'Reports & Records', icon: FaFileAlt },
-  { id: 'admin-learning-certificates', label: 'Learning Certificates / प्रमाणपत्र', icon: FaCertificate },
-  { id: 'admin-compliance', label: 'Compliance', icon: FaShieldAlt }
+const MODULES = [
+  { id: "overview", label: "Dashboard", hint: "Live KPIs & work queue", icon: FaChartLine },
+  { id: "applications", label: "Applications", hint: "Intake, status & records", icon: FaClipboardList },
+  { id: "people", label: "People & Roles", hint: "Members, volunteers, approvals", icon: FaUsers },
+  { id: "users", label: "User Management", hint: "Accounts & access", icon: FaUserShield },
+  { id: "learning", label: "Learning Certificates", hint: "Course completions", icon: FaCertificate },
+  { id: "audit", label: "Audit Log", hint: "Every admin change", icon: FaHistory },
+  { id: "settings", label: "Settings", hint: "Session, exports & links", icon: FaCog },
 ];
 
-function jumpTo(id) { document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-
 export default function AdminDashboard() {
-  const [loggedIn, setLoggedIn] = useState(Boolean(localStorage.getItem(TOKEN_KEY)));
+  const [active, setActive] = useState(() => {
+    const stored = sessionStorage.getItem("ssf_admin_module");
+    return MODULES.some((m) => m.id === stored) ? stored : "overview";
+  });
+  const [navOpen, setNavOpen] = useState(false);
 
-  const handleLogout = () => {
+  const logout = () => {
     localStorage.removeItem(TOKEN_KEY);
-    setLoggedIn(false);
     window.location.assign("/Admin");
   };
 
-  useEffect(() => {
-    const sync = () => setLoggedIn(Boolean(localStorage.getItem(TOKEN_KEY)));
-    window.addEventListener('storage', sync);
-    const timer = window.setInterval(sync, 1000);
-    return () => { window.removeEventListener('storage', sync); window.clearInterval(timer); };
-  }, []);
+  const open = (id) => {
+    setActive(id);
+    sessionStorage.setItem("ssf_admin_module", id);
+    setNavOpen(false);
+  };
 
-  return <main className="min-h-screen bg-[#EAF0F6] pt-20 md:pt-[116px]">
-    <section id="admin-overview" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24">
-      <div className="rounded-[2rem] bg-[#12345A] text-white p-6 sm:p-8 shadow-sm overflow-hidden relative">
-        <div className="absolute -right-20 -top-24 w-72 h-72 rounded-full bg-white/5" />
-        <div className="relative flex flex-col xl:flex-row xl:items-end xl:justify-between gap-6">
-          <div><p className="text-xs font-black uppercase tracking-[0.22em] text-[#176447]">Swastik Srijan Foundation</p><h1 className="text-3xl sm:text-4xl font-black mt-2">Admin Command Center</h1><p className="text-white/70 mt-2 max-w-3xl">One place to review applications, manage people, approve roles, issue official records and keep SSF operational data organized.</p></div><div className="flex flex-wrap items-center gap-2"><a href="/SSFDigitalOffice" className="inline-flex items-center justify-center rounded-xl bg-white text-[#12345A] px-4 py-2.5 text-sm font-black hover:bg-zinc-100">SSF Digital Office</a><a href="/ims" className="inline-flex items-center justify-center rounded-xl bg-[#176447] text-white px-4 py-2.5 text-sm font-black hover:bg-[#176447]">SSF OneOffice (IMS)</a><button type="button" onClick={handleLogout} className="inline-flex items-center gap-2 rounded-xl border border-white/15 bg-white/10 px-4 py-2.5 text-sm font-black text-white hover:bg-white/15"><FaSignOutAlt /> Logout</button></div>
-          {loggedIn && <div className="rounded-2xl bg-white/10 border border-white/10 px-5 py-4 min-w-[220px]"><p className="text-xs uppercase tracking-widest text-white/60 font-bold">System status</p><p className="font-black mt-1">Admin session active</p><p className="text-xs text-white/60 mt-1">Protected records are available below.</p></div>}
+  const current = MODULES.find((m) => m.id === active) || MODULES[0];
+
+  return (
+    <main className="min-h-screen bg-[#EAF0F6] pt-20 md:pt-[116px] pb-12">
+      <div className="max-w-[1600px] mx-auto px-3 sm:px-6 lg:px-8 pt-6">
+        <div className="flex flex-col lg:flex-row gap-5">
+          {/* Sidebar */}
+          <aside className={`lg:w-72 shrink-0 ${navOpen ? "" : "hidden lg:block"}`}>
+            <div className="lg:sticky lg:top-32 space-y-4">
+              <div className="rounded-3xl bg-[#12345A] text-white p-5 shadow-sm relative overflow-hidden">
+                <div className="absolute -right-14 -top-16 h-52 w-52 rounded-full bg-white/5" />
+                <div className="relative">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F7A814]">Swastik Srijan Foundation</p>
+                  <h1 className="text-xl font-black mt-1">Admin Command Center</h1>
+                  <p className="text-xs text-white/60 mt-1.5">Full control over applications, people, records and the audit trail.</p>
+                  <div className="mt-4 rounded-2xl bg-white/10 border border-white/10 px-3.5 py-3">
+                    <p className="text-[10px] uppercase tracking-widest text-white/60 font-bold">System status</p>
+                    <p className="font-black text-sm mt-0.5">Admin session active</p>
+                  </div>
+                </div>
+              </div>
+
+              <nav className="rounded-3xl bg-white border border-[#EAF0F6] shadow-sm p-2.5">
+                {MODULES.map(({ id, label, hint, icon: Icon }) => (
+                  <button
+                    key={id}
+                    type="button"
+                    onClick={() => open(id)}
+                    className={`w-full text-left rounded-2xl px-3.5 py-3 flex items-start gap-3 transition ${active === id ? "bg-[#12345A] text-white" : "text-zinc-700 hover:bg-[#EAF0F6]"}`}
+                  >
+                    <Icon className={`mt-0.5 ${active === id ? "text-[#F7A814]" : "text-[#176447]"}`} />
+                    <span className="min-w-0">
+                      <span className="block text-sm font-black leading-tight">{label}</span>
+                      <span className={`block text-[11px] mt-0.5 ${active === id ? "text-white/60" : "text-zinc-400"}`}>{hint}</span>
+                    </span>
+                  </button>
+                ))}
+              </nav>
+
+              <div className="rounded-3xl bg-white border border-[#EAF0F6] shadow-sm p-4 space-y-2">
+                <a href="/SSFDigitalOffice" className="flex items-center justify-between gap-2 rounded-2xl bg-[#EAF0F6] text-[#12345A] px-4 py-3 text-sm font-black">SSF Digital Office <FaExternalLinkAlt className="text-xs" /></a>
+                <a href="/ims" className="flex items-center justify-between gap-2 rounded-2xl bg-[#176447] text-white px-4 py-3 text-sm font-black">SSF OneOffice (IMS) <FaExternalLinkAlt className="text-xs" /></a>
+                <button type="button" onClick={logout} className="w-full flex items-center justify-center gap-2 rounded-2xl border border-red-200 text-red-600 px-4 py-3 text-sm font-black"><FaSignOutAlt /> Logout</button>
+              </div>
+            </div>
+          </aside>
+
+          {/* Content */}
+          <div className="flex-1 min-w-0">
+            <div className="lg:hidden mb-4">
+              <button type="button" onClick={() => setNavOpen((v) => !v)} className="inline-flex items-center gap-2 rounded-2xl bg-[#12345A] text-white px-4 py-3 text-sm font-black">
+                {navOpen ? <FaTimes /> : <FaBars />} {navOpen ? "Close menu" : `Menu · ${current.label}`}
+              </button>
+            </div>
+
+            <header className="mb-5 hidden lg:block">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#176447]">{current.hint}</p>
+              <h2 className="text-3xl font-black text-[#12345A] mt-1">{current.label}</h2>
+            </header>
+
+            {active === "overview" && <AdminOverview onOpenModule={open} />}
+
+            {active === "applications" && <AdminApplicationDashboard />}
+
+            {active === "people" && (
+              <div className="space-y-5">
+                <SectionCard eyebrow="People & roles" title="Members, volunteers & approvals" subtitle="Approve applications and issue official ID cards and certificates. Membership approval requires a confirmed fee.">
+                  <AdminPortalV2 />
+                </SectionCard>
+              </div>
+            )}
+
+            {active === "users" && (
+              <SectionCard eyebrow="Accounts & access" title="User management" subtitle="Website accounts, roles and account-level administration.">
+                <AdminUserManagement />
+              </SectionCard>
+            )}
+
+            {active === "learning" && <AdminLearningCertificates />}
+
+            {active === "audit" && <AdminAuditLog />}
+
+            {active === "settings" && <AdminSettings onLogout={logout} />}
+          </div>
         </div>
       </div>
-      <div className="sticky top-20 z-20 mt-4 rounded-2xl border border-zinc-200 bg-white/95 backdrop-blur shadow-sm p-2 overflow-x-auto md:top-[116px]"><div className="flex gap-2 min-w-max">{modules.map(({ id, label, icon: Icon }) => <button key={id} onClick={() => jumpTo(id)} className="inline-flex items-center gap-2 rounded-xl px-3.5 py-2.5 text-sm font-bold text-zinc-700 hover:bg-zinc-100 transition whitespace-nowrap"><Icon className="text-[#176447]" />{label}</button>)}</div></div>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
-        <button onClick={() => jumpTo('admin-applications')} className="text-left rounded-2xl bg-white border border-zinc-100 p-5 shadow-sm hover:shadow-md transition"><p className="text-xs uppercase tracking-widest text-zinc-400 font-black">Workflow</p><p className="text-lg font-black text-[#12345A] mt-1">Applications</p><p className="text-xs text-zinc-500 mt-1">Review every portal/public submission</p></button>
-        <button onClick={() => jumpTo('admin-people')} className="text-left rounded-2xl bg-white border border-zinc-100 p-5 shadow-sm hover:shadow-md transition"><p className="text-xs uppercase tracking-widest text-zinc-400 font-black">CRM</p><p className="text-lg font-black text-[#12345A] mt-1">People & Roles</p><p className="text-xs text-zinc-500 mt-1">Members, volunteers and applicants</p></button>
-        <button onClick={() => jumpTo('admin-donors')} className="text-left rounded-2xl bg-white border border-zinc-100 p-5 shadow-sm hover:shadow-md transition"><p className="text-xs uppercase tracking-widest text-zinc-400 font-black">Fundraising</p><p className="text-lg font-black text-[#12345A] mt-1">Donors & Donations</p><p className="text-xs text-zinc-500 mt-1">Track requests without overstating receipts</p></button>
-        <button onClick={() => jumpTo('admin-reports')} className="text-left rounded-2xl bg-white border border-zinc-100 p-5 shadow-sm hover:shadow-md transition"><p className="text-xs uppercase tracking-widest text-zinc-400 font-black">Records</p><p className="text-lg font-black text-[#12345A] mt-1">Reports & Records</p><p className="text-xs text-zinc-500 mt-1">Keep approvals and official records traceable</p></button>
-      </div>
-    </section>
+    </main>
+  );
+}
 
-    <section id="admin-applications" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><AdminApplicationDashboard /></section>
+function AdminSettings({ onLogout }) {
+  const exportCsv = async (type) => {
+    const response = await fetch(ENDPOINTS.ADMIN_EXPORT_CSV(type), {
+      headers: { Authorization: `Bearer ${localStorage.getItem(TOKEN_KEY) || ""}` },
+    });
+    if (!response.ok) return;
+    const blob = await response.blob();
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `ssf-${type}.csv`;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    URL.revokeObjectURL(url);
+  };
 
-    <section id="admin-people" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24">
-      <div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm">
-        <p className="text-xs font-black uppercase tracking-widest text-[#176447]">People & Roles</p>
-        <h2 className="text-2xl font-black text-[#12345A] mt-1">Members, Volunteers & Accounts</h2>
-        <p className="text-sm text-zinc-500 mt-1 mb-5">Approval and official ID/certificate issuance remain in the existing secure management area. Account administration is available below.</p>
-        <AdminPortalV2 />
-      </div>
-      <div className="mt-6">
-        <AdminUserManagement />
-      </div>
-    </section>
-
-    <section id="admin-donors" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#176447]">Fundraising</p><h2 className="text-2xl font-black text-[#12345A] mt-1">Donors & Donations</h2><p className="text-sm text-zinc-500 mt-1">Donor submissions are available in Applications. Donation status must reflect the actual transaction state; a request or pending record is not treated as money received.</p><button onClick={() => jumpTo('admin-applications')} className="mt-4 px-4 py-2.5 rounded-xl bg-[#12345A] text-white text-sm font-bold">Open donor records</button></div></section>
-    <section id="admin-volunteers" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#176447]">Volunteer Management</p><h2 className="text-2xl font-black text-[#12345A] mt-1">Volunteer workflow</h2><p className="text-sm text-zinc-500 mt-1">Use Applications for intake/status and the secure management area for approval and official volunteer ID/certificate actions.</p><button onClick={() => jumpTo('admin-applications')} className="mt-4 px-4 py-2.5 rounded-xl bg-[#12345A] text-white text-sm font-bold">Open volunteer applications</button></div></section>
-    <section id="admin-members" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#176447]">Membership</p><h2 className="text-2xl font-black text-[#12345A] mt-1">Member management</h2><p className="text-sm text-zinc-500 mt-1">Review membership submissions and use the secure management area to approve members and issue official records.</p><button onClick={() => jumpTo('admin-applications')} className="mt-4 px-4 py-2.5 rounded-xl bg-[#12345A] text-white text-sm font-bold">Open member applications</button></div></section>
-    <section id="admin-learning-certificates" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><AdminLearningCertificates /></section>\n    <section id="admin-reports" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 pt-6 scroll-mt-24"><div className="rounded-[2rem] bg-white border border-zinc-100 p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#176447]">Records</p><h2 className="text-2xl font-black text-[#12345A] mt-1">Reports & official records</h2><p className="text-sm text-zinc-500 mt-1">This section is intentionally factual: no funding, donation or impact figure is treated as confirmed until the underlying record supports it.</p></div></section>
-    <section id="admin-compliance" className="max-w-[1600px] mx-auto px-4 sm:px-6 lg:px-8 py-6 scroll-mt-24"><div className="rounded-[2rem] bg-[#12345A] text-white p-6 shadow-sm"><p className="text-xs font-black uppercase tracking-widest text-[#176447]">Governance</p><h2 className="text-2xl font-black mt-1">Compliance & audit readiness</h2><p className="text-sm text-white/70 mt-2 max-w-4xl">The admin architecture is prepared for future modules such as audit logs, document records, programme reporting, CSR/partnership pipeline and grant tracking. These should be added only when the corresponding backend records and permissions exist.</p></div></section>
-  </main>;
+  return (
+    <div className="space-y-5">
+      <SectionCard eyebrow="Data" title="Export records" subtitle="Download a CSV of any record set for offline reporting and record-keeping.">
+        <div className="flex flex-wrap gap-2">
+          {["members", "volunteers", "donors", "internships"].map((type) => (
+            <button key={type} type="button" onClick={() => exportCsv(type)} className="rounded-xl bg-[#12345A] text-white px-4 py-2.5 text-sm font-black capitalize">Export {type}</button>
+          ))}
+        </div>
+      </SectionCard>
+      <SectionCard eyebrow="Session" title="Admin session">
+        <p className="text-sm text-zinc-600">Your admin session is stored on this device only. Logging out removes it immediately — always log out on a shared computer.</p>
+        <div className="flex flex-wrap gap-2 mt-4">
+          <a href="/SSFDigitalOffice" className="inline-flex items-center gap-2 rounded-xl bg-[#EAF0F6] text-[#12345A] px-4 py-2.5 text-sm font-black">SSF Digital Office <FaExternalLinkAlt className="text-xs" /></a>
+          <a href="/ims" className="inline-flex items-center gap-2 rounded-xl bg-[#176447] text-white px-4 py-2.5 text-sm font-black">SSF OneOffice (IMS) <FaExternalLinkAlt className="text-xs" /></a>
+          <button type="button" onClick={onLogout} className="inline-flex items-center gap-2 rounded-xl border border-red-200 text-red-600 px-4 py-2.5 text-sm font-black"><FaSignOutAlt /> Logout</button>
+        </div>
+      </SectionCard>
+    </div>
+  );
 }
