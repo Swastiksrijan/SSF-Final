@@ -5,6 +5,7 @@ const fs = require('fs');
 const { sendMail, emailConfigured } = require('../services/mailer');
 const router = express.Router();
 const Donor = require('../models/Donor');
+const identity = require('../services/identityService');
 
 // Donor uploads are optional: a PAN / identity document and a profile photo.
 // JSON bodies (the Join SSF hub and the User Portal) still work unchanged —
@@ -25,7 +26,9 @@ const upload = multer({
 const removeFile = (file) => { if (file?.path) fs.unlink(file.path, () => {}); };
 const donorFileUrl = (file) => (file ? `/uploads/donors/${file.filename}` : null);
 
-const getDonorNumber = async () => (await Donor.count()) + 1;
+// Never reuse a donor number: the next one is the highest already issued plus
+// one, so a deleted record cannot cause a duplicate ID.
+const getDonorNumber = async (date = new Date()) => identity.nextDonorId(Donor, date);
 
 const sendAdminEmail = async (donor) => {
     if (!emailConfigured()) return;
@@ -58,11 +61,10 @@ router.post('/donor', upload.fields([{ name: 'profile_photo', maxCount: 1 }, { n
         if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) { cleanup(); return res.status(400).json({ message: 'Please enter a valid email address.' }); }
         if (cleanPhone.length < 7 || cleanPhone.length > 15) { cleanup(); return res.status(400).json({ message: 'Please enter a valid mobile number.' }); }
         if (pan && !/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(String(pan).trim().toUpperCase())) { cleanup(); return res.status(400).json({ message: 'Please enter a valid PAN (e.g. AAKAS7123H) or leave it blank.' }); }
-        const number = await getDonorNumber();
         const now = new Date();
-        const monthYear = `${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getFullYear()).slice(-2)}`;
-        const donorId = `SSF-DON-${monthYear}-${String(number).padStart(4, '0')}`;
+        const donorId = await getDonorNumber(now);
         const donor = await Donor.create({ donorId, fullName: cleanName, email: cleanEmail, phone: cleanPhone, city: String(city || '').trim() || null, state: String(state || '').trim() || null, country: String(country || 'India').trim() || 'India', donationPurpose: String(donationPurpose || '').trim() || null, amount: amount ? Number(amount) : null, pan: String(pan || '').trim().toUpperCase() || null, address: String(address || '').trim() || null, paymentMode: String(paymentMode || '').trim() || null, receiptPreference: String(receiptPreference || 'email').trim(), paymentStatus: paymentMode === 'bank_transfer' || paymentMode === 'upi' ? 'offline' : 'pending', notes: String(notes || '').trim() || null, profilePhotoPath: donorFileUrl(profilePhoto), idDocumentPath: donorFileUrl(idDocument) });
+        await identity.reserve({ kind: 'donor', value: donorId, recordId: donor.id, holderName: donor.fullName, holderEmail: donor.email });
         try { await sendAdminEmail(donor); } catch (emailError) { console.error('⚠️ Donor notification email failed:', emailError.message); }
         return res.status(201).json({ status: 'success', message: 'Donor details submitted successfully.', donorId: donor.donorId });
     } catch (error) {
@@ -94,7 +96,7 @@ router.patch('/admin/donors/:id', requireAdminAuth, async (req, res) => {
     try {
         const donor = await Donor.findByPk(req.params.id);
         if (!donor) return res.status(404).json({ message: 'Donor record not found.' });
-        const allowed = ['fullName', 'email', 'phone', 'city', 'state', 'country', 'donationPurpose', 'amount', 'pan', 'address', 'paymentMode', 'receiptPreference', 'paymentStatus', 'status', 'notes'];
+        const allowed = ['fullName', 'email', 'phone', 'city', 'state', 'country', 'donationPurpose', 'amount', 'pan', 'address', 'paymentMode', 'receiptPreference', 'paymentStatus', 'status', 'notes', 'donorId', 'idValidFrom', 'idValidTill', 'idActive'];
         const updates = {};
         for (const field of allowed) if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) updates[field] = req.body[field];
         if (updates.email !== undefined) {
@@ -106,15 +108,30 @@ router.patch('/admin/donors/:id', requireAdminAuth, async (req, res) => {
         if (updates.pan !== undefined) { updates.pan = String(updates.pan || '').trim().toUpperCase() || null; if (updates.pan && !/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(updates.pan)) return res.status(400).json({ message: 'Please enter a valid PAN (e.g. AAKAS7123H) or leave it blank.' }); }
         if (updates.amount !== undefined) updates.amount = updates.amount === null || updates.amount === '' ? null : Number(updates.amount);
         if (updates.status !== undefined && !['new', 'contacted', 'completed'].includes(String(updates.status))) return res.status(400).json({ message: 'Invalid donor status.' });
+        for (const field of ['idValidFrom', 'idValidTill']) {
+            if (updates[field] !== undefined) updates[field] = String(updates[field] || '').trim() || null;
+        }
+        if (updates.idActive !== undefined) updates.idActive = updates.idActive === true || updates.idActive === 'true';
+        // Hand-entered donor ID, validated and checked for collisions.
+        if (updates.donorId !== undefined) {
+            const wanted = String(updates.donorId || '').trim();
+            if (!wanted) updates.donorId = null;
+            else {
+                if (!identity.isDonorId(wanted)) return res.status(400).json({ message: 'Donor ID must look like SSF-DON-2510-0001.' });
+                if (await identity.isTaken(Donor, 'donorId', wanted, donor.id)) return res.status(400).json({ message: `Donor ID ${wanted} is already assigned to another donor.` });
+                updates.donorId = wanted;
+                updates.certId = identity.donorCertIdFor(wanted);
+                await identity.reserve({ kind: 'donor', value: wanted, certValue: updates.certId, recordId: donor.id, holderName: donor.fullName, holderEmail: donor.email, note: 'Assigned by admin' });
+            }
+        }
         if (updates.paymentStatus !== undefined && !['pending', 'paid', 'failed', 'offline'].includes(String(updates.paymentStatus))) return res.status(400).json({ message: 'Invalid payment status.' });
         // Confirming the payment issues the donation certificate ID exactly once.
         // A legacy row may predate donorId, so mint one from the same scheme the
         // public form uses rather than leaving the certificate unidentifiable.
         if (['paid', 'offline'].includes(String(updates.paymentStatus || donor.paymentStatus)) && !donor.certId) {
             if (!donor.donorId) {
-                const now = new Date();
-                const monthYear = `${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getFullYear()).slice(-2)}`;
-                updates.donorId = `SSF-DON-${monthYear}-${String((await Donor.count()) + 1).padStart(4, '0')}`;
+                updates.donorId = await getDonorNumber();
+                await identity.reserve({ kind: 'donor', value: updates.donorId, recordId: donor.id, holderName: donor.fullName, holderEmail: donor.email });
             }
             updates.certId = donorCertificateId({ donorId: updates.donorId || donor.donorId });
         }
@@ -137,6 +154,34 @@ router.patch('/admin/donors/:id/status', requireAdminAuth, async (req, res) => {
     } catch (error) {
         console.error('❌ Admin donor status error:', error);
         return res.status(500).json({ message: 'Unable to change donor status.' });
+    }
+});
+
+// Switch a donor ID card on or off. A deactivated card stops verifying.
+router.post('/admin/donors/:id/id-status', requireAdminAuth, async (req, res) => {
+    try {
+        const donor = await Donor.findByPk(req.params.id);
+        if (!donor) return res.status(404).json({ message: 'Donor record not found.' });
+        const active = req.body?.idActive === undefined ? !donor.idActive : Boolean(req.body.idActive);
+        await donor.update({ idActive: active });
+        return res.json({ status: 'success', message: active ? 'Donor ID card activated.' : 'Donor ID card deactivated. It no longer verifies.', idActive: active });
+    } catch (error) {
+        console.error('❌ Donor ID status error:', error);
+        return res.status(500).json({ message: 'Unable to change the donor ID card status.' });
+    }
+});
+
+// Every official number the Foundation has issued, newest first. This is the
+// admin's ID operations register: it still lists numbers whose record was since
+// revoked, which is exactly the point of an append-only ledger.
+router.get('/admin/id-issuances', requireAdminAuth, async (req, res) => {
+    try {
+        const kind = String(req.query.kind || '').trim().toLowerCase() || null;
+        if (kind && !['member', 'volunteer', 'donor'].includes(kind)) return res.status(400).json({ message: 'Unknown ID kind.' });
+        return res.json(await identity.listIssuances(kind));
+    } catch (error) {
+        console.error('❌ ID issuance list error:', error);
+        return res.status(500).json({ message: 'Unable to load issued IDs.' });
     }
 });
 

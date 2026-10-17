@@ -34,6 +34,24 @@ const COLUMNS = [
   { table: 'Members', column: 'identityNumber', type: 'VARCHAR(255)' },
   { table: 'Members', column: 'idDocumentPath', type: 'VARCHAR(255)' },
   { table: 'Members', column: 'reviewNote', type: 'TEXT' },
+  // The admin command centre edits the full member profile, and an issued ID
+  // card carries a validity window plus an active switch.
+  { table: 'Members', column: 'designation', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'guardianName', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'address', type: 'TEXT' },
+  { table: 'Members', column: 'city', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'state', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'pinCode', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'joiningDate', type: 'DATE' },
+  { table: 'Members', column: 'idValidFrom', type: 'DATE' },
+  { table: 'Members', column: 'idValidTill', type: 'DATE' },
+  { table: 'Members', column: 'idActive', type: 'BOOLEAN DEFAULT true' },
+  { table: 'Volunteers', column: 'idValidFrom', type: 'DATE' },
+  { table: 'Volunteers', column: 'idValidTill', type: 'DATE' },
+  { table: 'Volunteers', column: 'idActive', type: 'BOOLEAN DEFAULT true' },
+  { table: 'Donors', column: 'idValidFrom', type: 'DATE' },
+  { table: 'Donors', column: 'idValidTill', type: 'DATE' },
+  { table: 'Donors', column: 'idActive', type: 'BOOLEAN DEFAULT true' },
 ];
 
 async function ensureColumns() {

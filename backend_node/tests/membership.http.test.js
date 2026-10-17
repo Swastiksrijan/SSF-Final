@@ -237,8 +237,8 @@ async function main() {
     console.log('\nApproval:');
     const approve = await send(`/api/admin/member-approve/${accountId}`, 'POST', {}, auth);
     ok('approval 200', approve.status === 200, JSON.stringify(approve.body).slice(0, 200));
-    ok('member id issued', /^SSF-MEM-\d{4}-\d{4}$/.test(String(approve.body.memberId)), approve.body.memberId);
-    ok('certificate id issued', /^SSF-MCERT-\d{4}-\d{4}$/.test(String(approve.body.certId)), approve.body.certId);
+    ok('member id issued', /^SSF-MBR-\d{5}$/.test(String(approve.body.memberId)), approve.body.memberId);
+    ok('certificate id issued', /^SSF-MCERT-\d{5}$/.test(String(approve.body.certId)), approve.body.certId);
     ok('approval returns a verification url', /\/verify\//.test(String(approve.body.verificationUrl)), approve.body.verificationUrl);
     ok('double approval rejected', (await send(`/api/admin/member-approve/${accountId}`, 'POST', {}, auth)).status === 400);
 
@@ -277,7 +277,7 @@ async function main() {
     ok('advisory application accepted', advApply.status === 201, JSON.stringify(advApply.body).slice(0, 150));
     const advApprove = await send(`/api/admin/member-approve/${advId}`, 'POST', {}, auth);
     ok('advisory approves without any payment', advApprove.status === 200, JSON.stringify(advApprove.body).slice(0, 200));
-    ok('advisory member id issued', /^SSF-MEM-\d{4}-\d{4}$/.test(String(advApprove.body.memberId)), advApprove.body.memberId);
+    ok('advisory member id issued', /^SSF-MBR-\d{5}$/.test(String(advApprove.body.memberId)), advApprove.body.memberId);
     const advPay = await send('/api/member-payment-submit', 'POST', { memberId: advId, paymentMode: 'UPI', paymentReference: '999999999999' });
     ok('advisory payment submit refused', advPay.status === 400, JSON.stringify(advPay.body).slice(0, 150));
     userToken = ashaToken;

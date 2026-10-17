@@ -79,6 +79,7 @@ async function main() {
   const ContactMessage = require('../models/ContactMessage');
   const RoleDocument = require('../models/RoleDocument');
   const AuditLog = require('../models/AuditLog');
+  require('../models/IdIssuance');
   await sequelize.sync({ force: true });
 
   const app = express();
@@ -207,6 +208,82 @@ async function main() {
     ok('a revoked volunteer ID no longer verifies', (await json(`/api/verify/${reissue2.body.volunteerId}`)).status === 404);
     ok('member re-issue requires an approved member', (await send(`/api/admin/members/${member.id}/reissue`, 'POST', {}, auth)).status === 400, '');
     ok('member revoke reports nothing to revoke', (await send(`/api/admin/members/${member.id}/revoke`, 'POST', {}, auth)).status === 400, '');
+
+    console.log('\nIdentity numbers: no reuse, register series, manual correction');
+    const { nextMemberId, nextVolunteerId, nextDonorId, isMemberId } = require('../services/identityService');
+    // The offline register holds SSF-MBR-00018, so the next website member must
+    // continue that series rather than start a parallel one.
+    ok('next member id continues the register series', (await nextMemberId(Member)) === 'SSF-MBR-00019', await nextMemberId(Member));
+    ok('register member id is accepted', isMemberId('SSF-MBR-00001'));
+    ok('website member id is still accepted', isMemberId('SSF-MEM-2510-0001'));
+    ok('a random string is not a member id', !isMemberId('MEM-1'));
+
+    // A rejected member must not free their number for reuse.
+    const reuse = await Member.create({ fullName: 'Reuse Person', email: 'reuse@example.com', phone: '9876500099', passwordHash: 'x', memberType: 'general', status: 'pending', paymentStatus: 'paid' });
+    await send(`/api/admin/members/${reuse.id}/status`, 'PATCH', { status: 'approved' }, auth);
+    const reuseId = (await Member.findByPk(reuse.id)).memberId;
+    await send(`/api/admin/members/${reuse.id}/status`, 'PATCH', { status: 'rejected' }, auth);
+    const later = await Member.create({ fullName: 'Later Person', email: 'later@example.com', phone: '9876500098', passwordHash: 'x', memberType: 'general', status: 'pending', paymentStatus: 'paid' });
+    await send(`/api/admin/members/${later.id}/status`, 'PATCH', { status: 'approved' }, auth);
+    ok('a revoked number is never handed out again', (await Member.findByPk(later.id)).memberId !== reuseId, `${reuseId} -> ${(await Member.findByPk(later.id)).memberId}`);
+
+    console.log('\nRegister: an existing member keeps their original number');
+    const adopted = await Member.create({ fullName: 'Ramesh Pandey', email: 'rameshpandey335@gmail.com', phone: '9718346691', passwordHash: 'x', memberType: 'general', status: 'pending', paymentStatus: 'paid' });
+    await send(`/api/admin/members/${adopted.id}/status`, 'PATCH', { status: 'approved' }, auth);
+    const adoptedRow = await Member.findByPk(adopted.id);
+    ok('a register member adopts their offline number', adoptedRow.memberId === 'SSF-MBR-00001', String(adoptedRow.memberId));
+    ok('the adopted certificate id follows the member id', adoptedRow.certId === 'SSF-MCERT-00001', String(adoptedRow.certId));
+
+    const register = await json('/api/admin/member-register', auth);
+    ok('member register requires admin auth', (await json('/api/admin/member-register')).status === 401);
+    ok('member register lists every offline row', Array.isArray(register.body) && register.body.length >= 9, String(register.body?.length));
+    ok('member register marks claimed numbers', register.body.find((r) => r.memberId === 'SSF-MBR-00001')?.claimed === true);
+    ok('member register marks an unclaimed number', register.body.find((r) => r.memberId === 'SSF-MBR-00002')?.claimed === false);
+
+    console.log('\nManual ID correction (the admin can set or fix a number)');
+    await Member.update({ status: 'approved', paymentStatus: 'paid' }, { where: { id: member.id } });
+    const manual = await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'SSF-MBR-00002', designation: 'Volunteer Coordinator', city: 'Rewa', idValidTill: '2030-12-31' }, auth);
+    ok('admin can assign a register number by hand', manual.status === 200 && manual.body.member?.memberId === 'SSF-MBR-00002', JSON.stringify(manual.body).slice(0, 200));
+    ok('the hand-assigned number carries its certificate id', manual.body.member?.certId === 'SSF-MCERT-00002', String(manual.body.member?.certId));
+    ok('the corrected designation is stored', manual.body.member?.designation === 'Volunteer Coordinator');
+    ok('a malformed manual id is refused', (await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'MBR-2' }, auth)).status === 400);
+    ok('a duplicate manual id is refused', (await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'SSF-MBR-00001' }, auth)).status === 400);
+    const clearId = await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: '' }, auth);
+    ok('an id can be cleared', clearId.status === 200 && clearId.body.member?.memberId === null, String(clearId.body.member?.memberId));
+    await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'SSF-MBR-00002' }, auth);
+
+    console.log('\nDeactivate an ID card (stops verifying without deleting the record)');
+    const off = await send(`/api/admin/members/${member.id}/id-status`, 'POST', { idActive: false }, auth);
+    ok('member ID card can be switched off', off.status === 200 && off.body.idActive === false, JSON.stringify(off.body));
+    ok('a switched-off member ID no longer verifies', (await json('/api/verify/SSF-MBR-00002')).status === 404);
+    ok('the deactivated card explains why', (await json('/api/verify/SSF-MBR-00002')).body.message?.includes('deactivated'), JSON.stringify((await json('/api/verify/SSF-MBR-00002')).body));
+    await send(`/api/admin/members/${member.id}/id-status`, 'POST', { idActive: true }, auth);
+    ok('a reactivated member ID verifies again', (await json('/api/verify/SSF-MBR-00002')).status === 200);
+    const volOff = await send(`/api/admin/volunteers/${vol.id}/id-status`, 'POST', { idActive: false }, auth);
+    ok('volunteer ID card can be switched off', volOff.status === 200 && volOff.body.idActive === false, JSON.stringify(volOff.body));
+    const donorOff = await send(`/api/admin/donors/${donor.id}/id-status`, 'POST', { idActive: false }, auth);
+    ok('donor ID card can be switched off', donorOff.status === 200 && donorOff.body.idActive === false, JSON.stringify(donorOff.body));
+    ok('a switched-off donor ID no longer verifies', (await json(`/api/verify/${donor.donorId}`)).status === 404);
+    await send(`/api/admin/donors/${donor.id}/id-status`, 'POST', { idActive: true }, auth);
+
+    console.log('\nDonor and volunteer numbers are unique and never reused');
+    const donorNext = await nextDonorId(Donor);
+    ok('next donor id is unique against the existing row', donorNext !== donor.donorId, donorNext);
+    const donorManual = await send(`/api/admin/donors/${donor.id}`, 'PATCH', { donorId: 'SSF-DON-2601-0001' }, auth);
+    ok('admin can correct a donor id by hand', donorManual.status === 200 && donorManual.body.donor?.donorId === 'SSF-DON-2601-0001', JSON.stringify(donorManual.body).slice(0, 200));
+    ok('a malformed donor id is refused', (await send(`/api/admin/donors/${donor.id}`, 'PATCH', { donorId: 'DON-1' }, auth)).status === 400);
+    const volManual = await send(`/api/admin/volunteers/${vol.id}`, 'PATCH', { volunteerId: 'SSF-VOL-2601-0007' }, auth);
+    ok('admin can correct a volunteer id by hand', volManual.status === 200 && volManual.body.volunteer?.volunteerId === 'SSF-VOL-2601-0007', JSON.stringify(volManual.body).slice(0, 200));
+    ok('a malformed volunteer id is refused', (await send(`/api/admin/volunteers/${vol.id}`, 'PATCH', { volunteerId: 'VOL-7' }, auth)).status === 400);
+    ok('the volunteer id sequence skips the manual number', (await nextVolunteerId(Volunteer, new Date('2026-01-15'))) !== 'SSF-VOL-2601-0007', await nextVolunteerId(Volunteer, new Date('2026-01-15')));
+
+    console.log('\nIssuance ledger: the admin can see every ID ever handed out');
+    const issuances = await json('/api/admin/id-issuances', auth);
+    ok('issuance ledger requires admin auth', (await json('/api/admin/id-issuances')).status === 401);
+    ok('issuance ledger lists the member number', Array.isArray(issuances.body) && issuances.body.some((r) => r.kind === 'member' && r.value === 'SSF-MBR-00002'), JSON.stringify(issuances.body).slice(0, 160));
+    ok('issuance ledger keeps the revoked volunteer number', issuances.body.some((r) => r.kind === 'volunteer' && r.status === 'revoked'), JSON.stringify(issuances.body.filter((r) => r.kind === 'volunteer')).slice(0, 200));
+    ok('issuance ledger can be filtered by kind', (await json('/api/admin/id-issuances?kind=donor', auth)).body.every((r) => r.kind === 'donor'));
+    ok('issuance ledger rejects an unknown kind', (await json('/api/admin/id-issuances?kind=ghost', auth)).status === 400);
   } catch (error) {
     fail += 1;
     console.error('\n  \u2717 unexpected failure:', error);

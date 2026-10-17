@@ -344,6 +344,9 @@ router.get('/verify/:certId', async (req, res) => {
         });
 
         if (!volunteer) return res.status(404).json({ valid: false });
+        if (volunteer.idActive === false) return res.status(404).json({ valid: false, message: 'This ID card has been deactivated by the Foundation.' });
+        const today = new Date().toISOString().slice(0, 10);
+        if (volunteer.idValidTill && String(volunteer.idValidTill) < today) return res.status(404).json({ valid: false, message: 'This ID card has expired.' });
 
         res.json({
             valid: true,
@@ -351,7 +354,9 @@ router.get('/verify/:certId', async (req, res) => {
             volunteerType: volunteer.volunteerType,
             position: volunteer.position,
             approvedAt: volunteer.approvedAt,
-            certId: volunteer.certId
+            certId: volunteer.certId,
+            idValidFrom: volunteer.idValidFrom,
+            idValidTill: volunteer.idValidTill
         });
     } catch (error) {
         console.error(error);

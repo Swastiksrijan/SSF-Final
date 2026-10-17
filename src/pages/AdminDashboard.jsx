@@ -8,10 +8,11 @@
 import { useState } from "react";
 import {
   FaBars, FaCertificate, FaChartLine, FaClipboardList, FaCog, FaExternalLinkAlt,
-  FaHistory, FaSignOutAlt, FaUserShield, FaUsers, FaTimes,
+  FaHistory, FaIdCard, FaSignOutAlt, FaUserShield, FaUsers, FaTimes,
 } from "react-icons/fa";
 import AdminPortalV2 from "./AdminPortalV2";
 import AdminApplicationDashboard from "../components/AdminApplicationDashboard";
+import AdminIdRegister from "../components/dashboard/AdminIdRegister";
 import AdminUserManagement from "../components/AdminUserManagement";
 import AdminLearningCertificates from "../components/AdminLearningCertificates";
 import { AdminAuditLog, AdminOverview } from "../components/dashboard/AdminOverview";
@@ -23,6 +24,7 @@ const TOKEN_KEY = "ssf_admin_token";
 const MODULES = [
   { id: "overview", label: "Dashboard", hint: "Live KPIs & work queue", icon: FaChartLine },
   { id: "applications", label: "Applications", hint: "Intake, status & records", icon: FaClipboardList },
+  { id: "ids", label: "ID Register", hint: "Issued IDs & member register", icon: FaIdCard },
   { id: "people", label: "People & Roles", hint: "Members, volunteers, approvals", icon: FaUsers },
   { id: "users", label: "User Management", hint: "Accounts & access", icon: FaUserShield },
   { id: "learning", label: "Learning Certificates", hint: "Course completions", icon: FaCertificate },
@@ -111,6 +113,8 @@ export default function AdminDashboard() {
             {active === "overview" && <AdminOverview onOpenModule={open} />}
 
             {active === "applications" && <AdminApplicationDashboard />}
+
+            {active === "ids" && <AdminIdRegister />}
 
             {active === "people" && (
               <div className="space-y-5">

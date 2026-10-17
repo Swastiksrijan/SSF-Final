@@ -64,6 +64,8 @@ require('./models/ims');
 require('./models/social');
 // Register the audit trail model so sequelize.sync creates its table.
 require('./models/AuditLog');
+// Register the ID issuance ledger so sequelize.sync creates its table.
+require('./models/IdIssuance');
 
 // Watchdog (registered BEFORE the routes so it runs on every request): any
 // request that reaches the app proves Render is awake, so kick the publisher

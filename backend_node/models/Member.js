@@ -10,6 +10,13 @@ const Member = sequelize.define('Member', {
     resetTokenHash: { type: DataTypes.STRING, allowNull: true },
     resetTokenExpiresAt: { type: DataTypes.DATE, allowNull: true },
     memberType: { type: DataTypes.STRING, defaultValue: 'general' },
+    designation: { type: DataTypes.STRING, allowNull: true },
+    guardianName: { type: DataTypes.STRING, allowNull: true },
+    address: { type: DataTypes.TEXT, allowNull: true },
+    city: { type: DataTypes.STRING, allowNull: true },
+    state: { type: DataTypes.STRING, allowNull: true },
+    pinCode: { type: DataTypes.STRING, allowNull: true },
+    joiningDate: { type: DataTypes.DATEONLY, allowNull: true },
     message: { type: DataTypes.TEXT, allowNull: true },
     profilePhotoPath: { type: DataTypes.STRING, allowNull: true },
     profilePhotoData: { type: DataTypes.TEXT, allowNull: true },
@@ -28,7 +35,12 @@ const Member = sequelize.define('Member', {
     memberId: { type: DataTypes.STRING, allowNull: true, unique: true },
     certId: { type: DataTypes.STRING, allowNull: true, unique: true },
     certificateType: { type: DataTypes.STRING, allowNull: true },
-    certificateIssuedAt: { type: DataTypes.DATE, allowNull: true }
+    certificateIssuedAt: { type: DataTypes.DATE, allowNull: true },
+    // An issued ID card carries a validity window, and an admin can switch it
+    // off without deleting the person's record.
+    idValidFrom: { type: DataTypes.DATEONLY, allowNull: true },
+    idValidTill: { type: DataTypes.DATEONLY, allowNull: true },
+    idActive: { type: DataTypes.BOOLEAN, defaultValue: true }
 }, { timestamps: true });
 
 // A website signup creates only an SSF account. It is not a membership application.

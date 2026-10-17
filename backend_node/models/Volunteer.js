@@ -18,7 +18,11 @@ const Volunteer = sequelize.define('Volunteer', {
     isVerified: { type: DataTypes.BOOLEAN, defaultValue: false },
     volunteerId: { type: DataTypes.STRING, unique: true, allowNull: true },
     certId: { type: DataTypes.STRING, unique: true, allowNull: true },
-    approvedAt: { type: DataTypes.DATE, allowNull: true }
+    approvedAt: { type: DataTypes.DATE, allowNull: true },
+    // Validity window printed on the card, plus a switch to deactivate it.
+    idValidFrom: { type: DataTypes.DATEONLY, allowNull: true },
+    idValidTill: { type: DataTypes.DATEONLY, allowNull: true },
+    idActive: { type: DataTypes.BOOLEAN, defaultValue: true }
 }, { timestamps: true });
 
 module.exports = Volunteer;

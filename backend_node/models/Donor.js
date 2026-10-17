@@ -21,7 +21,11 @@ const Donor = sequelize.define('Donor', {
     paymentStatus: { type: DataTypes.ENUM('pending', 'paid', 'failed', 'offline'), defaultValue: 'pending' },
     certId: { type: DataTypes.STRING, allowNull: true, unique: true },
     notes: { type: DataTypes.TEXT, allowNull: true },
-    status: { type: DataTypes.ENUM('new', 'contacted', 'completed'), defaultValue: 'new' }
+    status: { type: DataTypes.ENUM('new', 'contacted', 'completed'), defaultValue: 'new' },
+    // Donor ID cards carry the same validity window / active switch.
+    idValidFrom: { type: DataTypes.DATEONLY, allowNull: true },
+    idValidTill: { type: DataTypes.DATEONLY, allowNull: true },
+    idActive: { type: DataTypes.BOOLEAN, defaultValue: true }
 }, { timestamps: true });
 
 module.exports = Donor;

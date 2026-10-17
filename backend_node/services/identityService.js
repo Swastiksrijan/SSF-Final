@@ -1,0 +1,205 @@
+// Official identity numbers (member / volunteer / donor IDs and their
+// certificates).
+//
+// Two rules drive everything here:
+//   1. A number is never reused. The next number is the highest already issued
+//      plus one, never "how many rows exist plus one" — that count-based scheme
+//      mints a duplicate as soon as a record is rejected or deleted.
+//   2. The member series continues the offline register (`data/membersRegister.js`),
+//      so a person who was already a member keeps one continuous number instead
+//      of getting a second, parallel website ID.
+const { Op } = require('sequelize');
+
+const MEMBER_REGISTER_PREFIX = 'SSF-MBR-';
+const MEMBER_SITE_PREFIX = 'SSF-MEM-';
+const VOLUNTEER_PREFIX = 'SSF-VOL-';
+const VOLUNTEER_CERT_PREFIX = 'SSF-VCERT-';
+const DONOR_PREFIX = 'SSF-DON-';
+const DONOR_CERT_PREFIX = 'SSF-DONCERT-';
+
+const MEMBER_REGISTER_PATTERN = /^SSF-MBR-\d{5}$/;
+const MEMBER_SITE_PATTERN = /^SSF-MEM-\d{4}-\d{4}$/;
+const VOLUNTEER_PATTERN = /^SSF-VOL-\d{4}-\d{4}$/;
+const DONOR_PATTERN = /^SSF-DON-\d{4}-\d{4}$/;
+
+const registerEntries = () => {
+  try {
+    const { MEMBERS_REGISTER } = require('../data/membersRegister');
+    return Array.isArray(MEMBERS_REGISTER) ? MEMBERS_REGISTER : [];
+  } catch {
+    return [];
+  }
+};
+
+const monthYearCode = (date = new Date()) =>
+  `${String(date.getMonth() + 1).padStart(2, '0')}${String(date.getFullYear()).slice(-2)}`;
+
+// Highest numeric suffix seen for a prefix. When `period` is given the ID must
+// carry that MMYY block (`SSF-VOL-2510-0007`); otherwise the suffix is read
+// straight after the prefix (`SSF-MBR-00019`).
+const highestSuffix = (values, prefix, period = null) => {
+  const pattern = period
+    ? new RegExp(`^${prefix}${period}-(\\d+)$`)
+    : new RegExp(`^${prefix}(\\d+)$`);
+  let highest = 0;
+  for (const value of values) {
+    const match = String(value || '').match(pattern);
+    if (match) highest = Math.max(highest, Number(match[1]));
+  }
+  return highest;
+};
+
+const issuedValues = async (model, field) => {
+  const rows = await model.findAll({ attributes: [field], where: { [field]: { [Op.ne]: null } }, raw: true });
+  return rows.map((row) => row[field]);
+};
+
+// Numbers already handed out, including ones whose record has since been
+// deleted or revoked. Reading the ledger as well as the live rows is what stops
+// a freed number from being issued a second time.
+const ledgerValues = async (kind) => {
+  try {
+    const IdIssuance = require('../models/IdIssuance');
+    const rows = await IdIssuance.findAll({ attributes: ['value'], where: { kind }, raw: true });
+    return rows.map((row) => row.value);
+  } catch {
+    return [];
+  }
+};
+
+const reserve = async ({ kind, value, certValue = null, recordId = null, holderName = null, holderEmail = null }) => {
+  try {
+    const IdIssuance = require('../models/IdIssuance');
+    const existing = await IdIssuance.findOne({ where: { kind, value } });
+    if (existing) return existing;
+    return await IdIssuance.create({ kind, value, certValue, recordId, holderName, holderEmail, status: 'issued', issuedAt: new Date() });
+  } catch (error) {
+    console.warn('ID ledger write failed:', error.message);
+    return null;
+  }
+};
+
+// Mark every number a record holds as revoked. The ledger rows stay behind so
+// the numbers can never be reused.
+const revokeFor = async (kind, recordId, note = null) => {
+  try {
+    const IdIssuance = require('../models/IdIssuance');
+    await IdIssuance.update({ status: 'revoked', revokedAt: new Date(), note }, { where: { kind, recordId, status: 'issued' } });
+  } catch (error) {
+    console.warn('ID ledger revoke failed:', error.message);
+  }
+};
+
+const listIssuances = async (kind = null) => {
+  try {
+    const IdIssuance = require('../models/IdIssuance');
+    const where = kind ? { kind } : {};
+    return await IdIssuance.findAll({ where, order: [['issuedAt', 'DESC']], raw: true });
+  } catch {
+    return [];
+  }
+};
+
+const pad = (value, size) => String(value).padStart(size, '0');
+
+// Member numbers continue the register series: SSF-MBR-00019, SSF-MBR-00020…
+// The register file, the live rows and the issuance ledger are all counted, so
+// a hand-entered or revoked number can never be handed out twice.
+const nextMemberId = async (Member) => {
+  const fromDb = await issuedValues(Member, 'memberId');
+  const fromRegister = registerEntries().map((entry) => entry.memberId);
+  const highest = Math.max(
+    highestSuffix(fromDb, MEMBER_REGISTER_PREFIX),
+    highestSuffix(fromRegister, MEMBER_REGISTER_PREFIX),
+    highestSuffix(await ledgerValues('member'), MEMBER_REGISTER_PREFIX),
+  );
+  return `${MEMBER_REGISTER_PREFIX}${pad(highest + 1, 5)}`;
+};
+
+const nextVolunteerId = async (Volunteer, date = new Date()) => {
+  const period = monthYearCode(date);
+  const highest = Math.max(
+    highestSuffix(await issuedValues(Volunteer, 'volunteerId'), VOLUNTEER_PREFIX, period),
+    highestSuffix(await ledgerValues('volunteer'), VOLUNTEER_PREFIX, period),
+  );
+  return `${VOLUNTEER_PREFIX}${period}-${pad(highest + 1, 4)}`;
+};
+
+const nextDonorId = async (Donor, date = new Date()) => {
+  const period = monthYearCode(date);
+  const highest = Math.max(
+    highestSuffix(await issuedValues(Donor, 'donorId'), DONOR_PREFIX, period),
+    highestSuffix(await ledgerValues('donor'), DONOR_PREFIX, period),
+  );
+  return `${DONOR_PREFIX}${period}-${pad(highest + 1, 4)}`;
+};
+
+// Certificate IDs mirror their identity number so the pair is always in step.
+const memberCertIdFor = (memberId) => String(memberId || '').replace(MEMBER_REGISTER_PREFIX, 'SSF-MCERT-');
+const volunteerCertIdFor = (volunteerId) => String(volunteerId || '').replace(VOLUNTEER_PREFIX, VOLUNTEER_CERT_PREFIX);
+const donorCertIdFor = (donorId) => String(donorId || '').replace(DONOR_PREFIX, DONOR_CERT_PREFIX);
+
+const isMemberId = (value) => MEMBER_REGISTER_PATTERN.test(String(value || '').trim()) || MEMBER_SITE_PATTERN.test(String(value || '').trim());
+const isVolunteerId = (value) => VOLUNTEER_PATTERN.test(String(value || '').trim());
+const isDonorId = (value) => DONOR_PATTERN.test(String(value || '').trim());
+
+// True when another record already owns this number. `exceptId` lets a record
+// keep the number it already has while its other fields are edited.
+const isTaken = async (model, field, value, exceptId = null) => {
+  const where = { [field]: String(value || '').trim() };
+  if (exceptId) where.id = { [Op.ne]: exceptId };
+  return Boolean(await model.count({ where }));
+};
+
+const digits = (value) => String(value || '').replace(/\D/g, '');
+
+// Find the register row that belongs to a person, matched on email or mobile.
+// Used to adopt an existing member's original number on approval instead of
+// minting a second one.
+const matchRegisterEntry = ({ email, phone } = {}) => {
+  const wantedEmail = String(email || '').trim().toLowerCase();
+  const wantedPhone = digits(phone).slice(-10);
+  if (!wantedEmail && !wantedPhone) return null;
+  return registerEntries().find((entry) => {
+    const entryEmail = String(entry.email || '').trim().toLowerCase();
+    const entryPhone = digits(entry.mobile).slice(-10);
+    if (wantedEmail && entryEmail && wantedEmail === entryEmail) return true;
+    if (wantedPhone && entryPhone && wantedPhone === entryPhone) return true;
+    return false;
+  }) || null;
+};
+
+// The register as an admin sees it: every row with whether its number is
+// already used, and which account (if any) it looks like it belongs to.
+const registerOverview = async (Member) => {
+  const members = await Member.findAll({ attributes: ['id', 'memberId', 'fullName', 'email', 'phone'], raw: true });
+  const byNumber = new Map(members.filter((m) => m.memberId).map((m) => [m.memberId, m]));
+  return registerEntries().map((entry) => {
+    const owner = byNumber.get(entry.memberId) || null;
+    const account = owner || members.find((m) =>
+      String(m.email || '').trim().toLowerCase() === String(entry.email || '').trim().toLowerCase()
+      || (digits(m.phone).slice(-10) && digits(m.phone).slice(-10) === digits(entry.mobile).slice(-10))) || null;
+    return {
+      memberId: entry.memberId,
+      name: entry.name,
+      memberType: entry.memberType,
+      designation: entry.designation || null,
+      email: entry.email || null,
+      mobile: entry.mobile || null,
+      joiningDate: entry.joiningDate || null,
+      status: entry.status || 'active',
+      claimed: Boolean(owner),
+      accountId: account ? account.id : null,
+    };
+  });
+};
+
+module.exports = {
+  MEMBER_REGISTER_PREFIX, MEMBER_SITE_PREFIX, VOLUNTEER_PREFIX, VOLUNTEER_CERT_PREFIX,
+  DONOR_PREFIX, DONOR_CERT_PREFIX,
+  MEMBER_REGISTER_PATTERN, MEMBER_SITE_PATTERN, VOLUNTEER_PATTERN, DONOR_PATTERN,
+  monthYearCode, highestSuffix, nextMemberId, nextVolunteerId, nextDonorId,
+  memberCertIdFor, volunteerCertIdFor, donorCertIdFor,
+  isMemberId, isVolunteerId, isDonorId, isTaken, matchRegisterEntry, registerOverview,
+  registerEntries, reserve, revokeFor, listIssuances,
+};

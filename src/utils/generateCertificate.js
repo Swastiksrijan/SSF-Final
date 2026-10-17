@@ -49,7 +49,7 @@ const getRoleLabel = (role, isMember) => {
 // generators need to recognise the role instead of defaulting to "Volunteer".
 const isDonorRole = (role) => String(role || "").trim().toLowerCase().includes("donor");
 
-export const generateIdentityCard = async ({ name, role, date, officialId, certId, photoUrl }) => {
+export const generateIdentityCard = async ({ name, role, date, officialId, certId, photoUrl, validFrom = null, validTill = null, active = true }) => {
   const normalizedRole = String(role || "volunteer").toLowerCase();
   const isMember = normalizedRole === "member" || normalizedRole.includes("membership");
   const isDonor = !isMember && normalizedRole.includes("donor");
@@ -119,7 +119,17 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   } else {
     doc.setFont("helvetica", "bold"); doc.setFontSize(3.5); doc.setTextColor(muted); doc.text("VERIFICATION", qrBoxX + 8.5, qrBoxY + 10, { align: "center" }); doc.text("AVAILABLE AFTER ISSUE", qrBoxX + 8.5, qrBoxY + 14, { align: "center" });
   }
-  doc.setFont("helvetica", "normal"); doc.setFontSize(3.1); doc.setTextColor(muted); doc.text("Valid after official approval", W / 2, 51.4, { align: "center" });
+  // The validity line replaces the old "valid after official approval" note:
+  // an issued card now carries the real window an admin set, or states that the
+  // card has been switched off.
+  const validFromText = validFrom ? new Date(validFrom).toLocaleDateString("en-IN") : null;
+  const validTillText = validTill ? new Date(validTill).toLocaleDateString("en-IN") : null;
+  const validityText = !active
+    ? "ID card deactivated — not valid"
+    : validTillText
+      ? `Valid ${validFromText ? `from ${validFromText} ` : ""}till ${validTillText}`
+      : validFromText ? `Valid from ${validFromText}` : "Valid after official approval";
+  doc.setFont("helvetica", "normal"); doc.setFontSize(3.1); doc.setTextColor(active ? muted : "#B45309"); doc.text(validityText, W / 2, 51.4, { align: "center" });
 
   // BACK — official instructions and signature
   doc.addPage([86, 54], "landscape");
