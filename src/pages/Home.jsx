@@ -109,14 +109,14 @@ export default function Home() {
 
       <FloatingTicker />
 
-      <section className="border-y border-[#12345A]/10 bg-[#EAF0F6] py-8">
+      <section className="relative border-y border-[#12345A]/10 bg-[#EAF0F6] py-8 shadow-[0_22px_46px_-36px_rgba(18,52,90,0.45)]">
         <div className="container mx-auto grid max-w-7xl gap-4 px-5 sm:grid-cols-2 lg:grid-cols-4 md:px-8">
           {[
-            ["Since 2013", "Registered society"],
-            ["Rewa, MP", "Registered office"],
-            ["Across India", "Area of work"],
-            ["Open records", "Transparency & reports"],
-          ].map(([value, label]) => <div key={label} className="group relative overflow-hidden rounded-2xl border border-[#12345A]/10 bg-white px-5 py-4 shadow-[0_14px_34px_-28px_rgba(18,52,90,0.6)] transition duration-200 hover:-translate-y-0.5 hover:border-[#F7A814]/45 hover:shadow-[0_18px_38px_-26px_rgba(18,52,90,0.5)]"><span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 bg-[#F7A814]" /><p className="font-serif text-xl font-semibold text-[#12345A]">{value}</p><p className="mt-1 text-sm text-[#26343D]/75">{label}</p></div>)}
+            [FaShieldAlt, "Since 2013", "Registered society"],
+            [FaBuilding, "Rewa, MP", "Registered office"],
+            [FaCompass, "Across India", "Area of work"],
+            [FaFileAlt, "Open records", "Transparency & reports"],
+          ].map(([Icon, value, label]) => <div key={label} className="group relative overflow-hidden rounded-2xl border border-[#12345A]/10 bg-white py-4 pl-5 pr-14 shadow-[0_14px_34px_-28px_rgba(18,52,90,0.6)] transition duration-200 hover:-translate-y-0.5 hover:border-[#F7A814]/45 hover:shadow-[0_18px_38px_-26px_rgba(18,52,90,0.5)]"><span aria-hidden="true" className="absolute inset-y-0 left-0 w-1 bg-[#F7A814]" /><span aria-hidden="true" className="absolute right-4 top-1/2 flex h-8 w-8 -translate-y-1/2 items-center justify-center rounded-lg bg-[#EAF0F6] text-[#12345A]"><Icon className="text-sm" /></span><p className="font-serif text-xl font-semibold text-[#12345A]">{value}</p><p className="mt-1 text-sm text-[#26343D]/75">{label}</p></div>)}
         </div>
       </section>
 
