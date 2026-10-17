@@ -107,7 +107,7 @@ export default function ImsLayout({ children, active }) {
 
       <div className="mx-auto flex max-w-[1600px]">
         {/* sidebar */}
-        <aside className={`${open ? 'block' : 'hidden'} fixed top-[7rem] bottom-0 left-0 z-20 w-72 overflow-y-auto border-r border-slate-200 bg-white pb-24 lg:sticky lg:top-[7rem] lg:block lg:h-[calc(100vh-7rem)]`}>
+        <aside className={`${open ? 'block' : 'hidden'} fixed top-[7.5rem] bottom-0 left-0 z-20 w-72 overflow-y-auto border-r border-slate-200 bg-white pb-24 lg:sticky lg:top-[7.5rem] lg:block lg:h-[calc(100vh-7.5rem)]`}>
           <nav className="space-y-1 p-3">
             {SIDEBAR.map((item) => {
               const isActive = active === (item.activeKey || item.key);

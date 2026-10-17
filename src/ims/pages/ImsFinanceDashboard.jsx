@@ -5,6 +5,7 @@ import ImsLayout from '../ImsLayout';
 import { Card, Badge, Button, SectionHero, Kpi, DataTable } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
+import { SectionModuleDirectory } from '../SectionNav';
 
 const inr = (n) => `₹${Number(n || 0).toLocaleString('en-IN')}`;
 
@@ -39,6 +40,13 @@ export default function ImsFinanceDashboard() {
       </SectionHero>
 
       {err && <p className="mb-4 rounded-lg bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700">{err}</p>}
+
+      {/* Every finance module in one place, so a treasurer can see the whole
+          tree and click straight into it instead of hunting through the strip. */}
+      <Card className="mb-5 p-5">
+        <h2 className="mb-3 text-sm font-black uppercase tracking-wide text-slate-500">{t('all_modules')}</h2>
+        <SectionModuleDirectory sectionId="finance" />
+      </Card>
 
       <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi icon="TrendingUp" label={t('income')} value={inr(k.income)} tone="green" />
