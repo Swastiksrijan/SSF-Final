@@ -67,6 +67,7 @@ export const NAV = [
       { key: 'bank_accounts', icon: 'Landmark', resource: 'bankAccounts' },
       { key: 'cash_accounts', icon: 'Banknote', resource: 'cashAccounts' },
       { key: 'bank_book', icon: 'BookText', path: '/ims/bank-book', resource: 'bank' },
+      { key: 'statement_import', icon: 'Upload', path: '/ims/finance/statement-import' },
       { key: 'cash_book', icon: 'BookText', path: '/ims/cash-book', resource: 'cash' },
       { key: 'parties', icon: 'Handshake', resource: 'parties' },
       { key: 'vouchers', icon: 'ReceiptText', resource: 'vouchers' },

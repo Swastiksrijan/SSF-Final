@@ -284,6 +284,32 @@ router.get('/ims/finance/ledger/:accountId', wrap(async (req, r) => r.json(await
   req.params.accountId, { from: req.query.from, to: req.query.to, limit: req.query.limit },
 ))));
 
+// ---- Bank / Cash statement import -----------------------------------------
+// Paste a statement -> preview (nothing written) -> commit (idempotent).
+// Every imported row is posted to the SAME double-entry ledger the registers
+// read, so the Bank Book, Day Book and Trial Balance agree by construction.
+const statementImport = require('../services/ims/bankStatementImport');
+
+router.post('/ims/finance/statement/preview', wrap(async (req, r) => {
+  const b = req.body || {};
+  r.json(await statementImport.preview(b.text || '', {
+    accountKey: b.accountKey,
+    openingBalance: b.openingBalance,
+  }));
+}));
+
+router.post('/ims/finance/statement/import', wrap(async (req, r) => {
+  const b = req.body || {};
+  if (!String(b.text || '').trim()) return r.status(400).json({ message: 'Paste the statement text first.' });
+  r.json(await statementImport.commit(b.text, {
+    kind: b.kind,
+    accountKey: b.accountKey,
+    accountId: b.accountId,
+    openingBalance: b.openingBalance,
+    openingFy: b.openingFy,
+  }, req));
+}));
+
 // ---- COST CENTRES (classification & reporting dimension) -------------------
 const cc = require('../services/ims/costCentre');
 const { seedCostCentres } = require('../services/ims/costCentreSeed');

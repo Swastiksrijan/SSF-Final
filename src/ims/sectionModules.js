@@ -102,6 +102,7 @@ export const SECTIONS = {
       { labelKey: 'grp_cash_bank', items: [
         { key: 'cash_book', icon: 'BookText', path: '/ims/cash-book' },
         { key: 'bank_book', icon: 'BookText', path: '/ims/bank-book' },
+        { key: 'statement_import', icon: 'Upload', path: '/ims/finance/statement-import' },
         { key: 'brs_legacy', icon: 'Scale', path: legacy('brs') },
         { key: 'bank_accounts', icon: 'Landmark', resource: 'bankAccounts' },
         { key: 'cash_accounts', icon: 'Banknote', resource: 'cashAccounts' },

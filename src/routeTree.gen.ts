@@ -109,6 +109,7 @@ import { Route as ImsRResourceRouteImport } from './routes/ims/r/$resource'
 import { Route as ImsPersonIdRouteImport } from './routes/ims/person/$id'
 import { Route as ImsMemberIdRouteImport } from './routes/ims/member/$id'
 import { Route as ImsLegacyModuleRouteImport } from './routes/ims/legacy/$module'
+import { Route as ImsFinanceStatementImportRouteImport } from './routes/ims/finance/statement-import'
 import { Route as ImsFinanceReceiptsPaymentsRouteImport } from './routes/ims/finance/receipts-payments'
 import { Route as ImsFinanceLedgerRouteImport } from './routes/ims/finance/ledger'
 import { Route as ImsFinanceCostCentresRouteImport } from './routes/ims/finance/cost-centres'
@@ -617,6 +618,12 @@ const ImsLegacyModuleRoute = ImsLegacyModuleRouteImport.update({
   path: '/ims/legacy/$module',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsFinanceStatementImportRoute =
+  ImsFinanceStatementImportRouteImport.update({
+    id: '/ims/finance/statement-import',
+    path: '/ims/finance/statement-import',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ImsFinanceReceiptsPaymentsRoute =
   ImsFinanceReceiptsPaymentsRouteImport.update({
     id: '/ims/finance/receipts-payments',
@@ -739,6 +746,7 @@ export interface FileRoutesByFullPath {
   '/ims/finance/cost-centres': typeof ImsFinanceCostCentresRoute
   '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
   '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
+  '/ims/finance/statement-import': typeof ImsFinanceStatementImportRoute
   '/ims/legacy/$module': typeof ImsLegacyModuleRoute
   '/ims/member/$id': typeof ImsMemberIdRoute
   '/ims/person/$id': typeof ImsPersonIdRoute
@@ -844,6 +852,7 @@ export interface FileRoutesByTo {
   '/ims/finance/cost-centres': typeof ImsFinanceCostCentresRoute
   '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
   '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
+  '/ims/finance/statement-import': typeof ImsFinanceStatementImportRoute
   '/ims/legacy/$module': typeof ImsLegacyModuleRoute
   '/ims/member/$id': typeof ImsMemberIdRoute
   '/ims/person/$id': typeof ImsPersonIdRoute
@@ -951,6 +960,7 @@ export interface FileRoutesById {
   '/ims/finance/cost-centres': typeof ImsFinanceCostCentresRoute
   '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
   '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
+  '/ims/finance/statement-import': typeof ImsFinanceStatementImportRoute
   '/ims/legacy/$module': typeof ImsLegacyModuleRoute
   '/ims/member/$id': typeof ImsMemberIdRoute
   '/ims/person/$id': typeof ImsPersonIdRoute
@@ -1059,6 +1069,7 @@ export interface FileRouteTypes {
     | '/ims/finance/cost-centres'
     | '/ims/finance/ledger'
     | '/ims/finance/receipts-payments'
+    | '/ims/finance/statement-import'
     | '/ims/legacy/$module'
     | '/ims/member/$id'
     | '/ims/person/$id'
@@ -1164,6 +1175,7 @@ export interface FileRouteTypes {
     | '/ims/finance/cost-centres'
     | '/ims/finance/ledger'
     | '/ims/finance/receipts-payments'
+    | '/ims/finance/statement-import'
     | '/ims/legacy/$module'
     | '/ims/member/$id'
     | '/ims/person/$id'
@@ -1270,6 +1282,7 @@ export interface FileRouteTypes {
     | '/ims/finance/cost-centres'
     | '/ims/finance/ledger'
     | '/ims/finance/receipts-payments'
+    | '/ims/finance/statement-import'
     | '/ims/legacy/$module'
     | '/ims/member/$id'
     | '/ims/person/$id'
@@ -1371,6 +1384,7 @@ export interface RootRouteChildren {
   ImsFinanceCostCentresRoute: typeof ImsFinanceCostCentresRoute
   ImsFinanceLedgerRoute: typeof ImsFinanceLedgerRoute
   ImsFinanceReceiptsPaymentsRoute: typeof ImsFinanceReceiptsPaymentsRoute
+  ImsFinanceStatementImportRoute: typeof ImsFinanceStatementImportRoute
   ImsLegacyModuleRoute: typeof ImsLegacyModuleRoute
   ImsMemberIdRoute: typeof ImsMemberIdRoute
   ImsPersonIdRoute: typeof ImsPersonIdRoute
@@ -2081,6 +2095,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsLegacyModuleRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/finance/statement-import': {
+      id: '/ims/finance/statement-import'
+      path: '/ims/finance/statement-import'
+      fullPath: '/ims/finance/statement-import'
+      preLoaderRoute: typeof ImsFinanceStatementImportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/finance/receipts-payments': {
       id: '/ims/finance/receipts-payments'
       path: '/ims/finance/receipts-payments'
@@ -2235,6 +2256,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsFinanceCostCentresRoute: ImsFinanceCostCentresRoute,
   ImsFinanceLedgerRoute: ImsFinanceLedgerRoute,
   ImsFinanceReceiptsPaymentsRoute: ImsFinanceReceiptsPaymentsRoute,
+  ImsFinanceStatementImportRoute: ImsFinanceStatementImportRoute,
   ImsLegacyModuleRoute: ImsLegacyModuleRoute,
   ImsMemberIdRoute: ImsMemberIdRoute,
   ImsPersonIdRoute: ImsPersonIdRoute,

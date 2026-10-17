@@ -67,6 +67,14 @@ export const ims = {
   budgetVariance: (params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/budget-variance?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
   accountLedger: (accountId, params = {}) => fetch(`${API_BASE_URL}/api/ims/finance/ledger/${accountId}?${new URLSearchParams(params)}`, { headers: headers() }).then(handle),
 
+  // ---- Bank / cash statement import (paste -> preview -> commit) ----
+  statementPreview: (payload) => fetch(`${API_BASE_URL}/api/ims/finance/statement/preview`, {
+    method: 'POST', headers: headers(), body: JSON.stringify(payload),
+  }).then(handle),
+  statementImport: (payload) => fetch(`${API_BASE_URL}/api/ims/finance/statement/import`, {
+    method: 'POST', headers: headers(), body: JSON.stringify(payload),
+  }).then(handle),
+
   // ---- COST CENTRES (classification & reporting dimension) ----
   costCentreMeta: () => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/meta`, { headers: headers() }).then(handle),
   costCentreSeed: () => fetch(`${API_BASE_URL}/api/ims/finance/cost-centres/seed`, { method: 'POST', headers: headers() }).then(handle),

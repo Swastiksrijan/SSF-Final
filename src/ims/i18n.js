@@ -68,6 +68,8 @@ export const DICT = {
   bank_cash: { en: 'Bank / Cash', hi: 'बैंक / रोकड़' },
   statements: { en: 'Financial Statements', hi: 'वित्तीय विवरण' },
   receipts_payments: { en: 'Receipts & Payments', hi: 'प्राप्तियाँ एवं भुगतान' },
+  statement_import: { en: 'Bank Statement Import', hi: 'बैंक विवरण आयात' },
+  statement_import_note: { en: 'Paste a year’s bank statement. Check it first — nothing is saved until you import. Every row posts to the same ledger the registers read, so the books always tally.', hi: 'वर्ष का बैंक विवरण चिपकाएँ। पहले जाँचें — आयात करने तक कुछ सुरक्षित नहीं होता। हर पंक्ति उसी बही में दर्ज होती है जिसे पंजिकाएँ पढ़ती हैं, इसलिए हिसाब हमेशा मिलता है।' },
   receipts_payments_hint: { en: 'One entry point — record every financial transaction once', hi: 'एक प्रवेश बिंदु — प्रत्येक वित्तीय लेन-देन एक बार दर्ज करें' },
   ledger_journal: { en: 'Ledger & Journal', hi: 'बही एवं रोजनामा' },
   financial_years: { en: 'Financial Years', hi: 'वित्तीय वर्ष' },
