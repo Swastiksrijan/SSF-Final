@@ -73,7 +73,7 @@ export default function Home() {
               <FaSeedling /> Registered Society · Since 2013
             </p>
             <p className="mt-6 text-xl font-semibold tracking-wide text-white md:text-2xl">Swastik Srijan Foundation Samiti</p>
-            <p className="mt-4 font-hindi text-lg leading-relaxed text-[#F7A814] sm:text-xl">सहयोग <span className="px-1 text-white/40">•</span> कौशल <span className="px-1 text-white/40">•</span> जागरूकता <span className="px-1 text-white/40">•</span> सृजन</p>
+            <p className="mt-3 pl-8 font-hindi text-lg leading-relaxed text-[#FAF9F5] sm:pl-24 sm:text-xl">सहयोग <span className="px-1 text-[#F7A814]">•</span> कौशल <span className="px-1 text-[#F7A814]">•</span> जागरूकता <span className="px-1 text-[#F7A814]">•</span> सृजन</p>
             <h1 className="mt-5 font-serif text-4xl font-semibold leading-[1.08] tracking-tight md:text-6xl lg:text-7xl">
               Creating Change.<span className="mt-2 block italic text-[#F7A814]">Inspiring Lives.</span>
             </h1>
