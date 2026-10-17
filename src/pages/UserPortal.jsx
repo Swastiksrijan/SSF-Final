@@ -19,6 +19,18 @@ import { EmptyState, InlineAlert, ProgressRing, SectionCard, StatCard, StatusChi
 const MEMBERSHIP_FEE_TYPES = ["general", "active", "life"];
 const MEMBERSHIP_FEES = { general: 1200, active: 2500, life: 8000 };
 const needsFee = (memberType) => MEMBERSHIP_FEE_TYPES.includes(String(memberType || "").trim().toLowerCase());
+// `memberType` cannot be trusted as the single key for "is this a member?".
+// A website applicant carries the plan (general/active/life/advisory), a person
+// adopted from the offline register carries the register's wording ("Founder
+// Member"), and a bare account carries 'website_signup'. Membership is really
+// proven by the issued number or an approval, so the fee UI follows either and
+// a register member never loses their payment options to a display label.
+const hasMembership = (user) => needsFee(user?.memberType)
+  || !!user?.memberId
+  || (String(user?.status || "").toLowerCase() === "approved" && String(user?.memberType || "").trim().toLowerCase() !== "website_signup");
+// The plan drives the fee amount, so only a priced plan yields one. A register
+// member has no online plan and is shown "as per the register" instead.
+const planKey = (user) => (needsFee(user?.memberType) ? String(user.memberType).trim().toLowerCase() : null);
 
 const fileUrl = (path) => {
   if (!path) return null;
@@ -180,7 +192,7 @@ export default function UserPortal() {
   const timeline = useMemo(() => {
     if (!user) return [];
     const items = [{ key: "created", title: "Account created", detail: user.email, at: dateTimeText(user.createdAt), done: true }];
-    if (needsFee(user.memberType)) {
+    if (hasMembership(user)) {
       const paid = String(user.paymentStatus || "").toLowerCase() === "paid";
       const approved = user.status === "approved";
       // An approved member must never be told to "pay to unlock approval".
@@ -202,7 +214,7 @@ export default function UserPortal() {
     if (!user) return [];
     const list = [];
     if (needsCorrection) list.push({ id: "correction", tone: "warning", title: "Action required: correction requested", body: user.reviewNote, action: "Fix & resubmit" });
-    if (needsFee(user.memberType) && String(user.paymentStatus || "").toLowerCase() !== "paid" && user.status !== "approved") {
+    if (hasMembership(user) && String(user.paymentStatus || "").toLowerCase() !== "paid" && user.status !== "approved") {
       list.push({ id: "fee", tone: "warning", title: "Membership fee pending", body: `Your ${statusLabel(user.memberType)} membership needs a confirmed fee payment of ${formatINR(MEMBERSHIP_FEES[user.memberType])} before approval.`, action: "Pay membership fee" });
     }
     if (memberApproved) list.push({ id: "issued", tone: "success", title: "Membership ID and certificate issued", body: `Your official Member ID ${user.memberId} is ready to download from Documents.` });
@@ -339,7 +351,7 @@ export default function UserPortal() {
               <div className="grid lg:grid-cols-3 gap-5">
                 <SectionCard eyebrow="Progress" title="Membership journey" className="lg:col-span-2">
                   <Timeline items={timeline} />
-                  {needsFee(user.memberType) && String(user.paymentStatus || "").toLowerCase() !== "paid" && user.status !== "approved" && (
+                  {hasMembership(user) && String(user.paymentStatus || "").toLowerCase() !== "paid" && user.status !== "approved" && (
                     <button type="button" onClick={() => goTab("payments")} className="mt-5 inline-flex items-center gap-2 rounded-xl bg-[#12345A] text-white px-5 py-3 font-bold">Pay membership fee <FaArrowRight /></button>
                   )}
                 </SectionCard>
@@ -391,9 +403,9 @@ export default function UserPortal() {
 
               <SectionCard eyebrow="Track" title="My applications">
                 <div className="space-y-3">
-                  {(needsFee(user.memberType) || !!user.memberId) && (
+                  {hasMembership(user) && (
                     <div className="rounded-2xl border border-[#D8E1EA] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div><p className="font-black text-[#12345A]">Membership — {user.memberCategory || statusLabel(user.memberType)}</p><p className="text-sm text-zinc-500 mt-0.5">{statusLabel(user.status)}{MEMBERSHIP_FEES[user.memberType] ? ` · ${formatINR(MEMBERSHIP_FEES[user.memberType])}/year` : user.memberId ? ` · ${user.memberId}` : ""}</p></div>
+                      <div><p className="font-black text-[#12345A]">Membership — {user.memberCategory || statusLabel(user.memberType)}</p><p className="text-sm text-zinc-500 mt-0.5">{statusLabel(user.status)}{planKey(user) ? ` · ${formatINR(MEMBERSHIP_FEES[planKey(user)])}/year` : user.memberId ? ` · ${user.memberId}` : ""}</p></div>
                       <div className="flex items-center gap-2"><StatusChip status={user.status} /><StatusChip status={user.paymentStatus} /></div>
                     </div>
                   )}
@@ -415,7 +427,7 @@ export default function UserPortal() {
                       <StatusChip status={i.status} />
                     </div>
                   ))}
-                  {!needsFee(user.memberType) && !user.memberId && volunteers.length === 0 && internships.length === 0 && interests.length === 0 && (
+                  {!hasMembership(user) && volunteers.length === 0 && internships.length === 0 && interests.length === 0 && (
                     <EmptyState title="No applications yet">Use the cards above to start your first application with SSF.</EmptyState>
                   )}
                 </div>
@@ -519,14 +531,14 @@ function ProfileTab({ user, onRefresh }) {
 }
 
 function PaymentsTab({ user, donors }) {
-  const planKey = String(user.memberType || "").trim().toLowerCase();
-  const fee = MEMBERSHIP_FEES[planKey];
+  const key = planKey(user);
+  const fee = key ? MEMBERSHIP_FEES[key] : null;
   const paid = String(user.paymentStatus || "").toLowerCase() === "paid";
   // A member whose plan is not one of the priced tiers (a registered Founder /
   // Executive / General Member) still has a membership record, so the fee
   // section must stay visible instead of vanishing with the plan.
-  const showMembershipFee = needsFee(user.memberType) || !!user.memberId;
-  const planLabel = user.memberCategory || (needsFee(user.memberType) ? statusLabel(user.memberType) : "Member");
+  const showMembershipFee = hasMembership(user);
+  const planLabel = user.memberCategory || (key ? statusLabel(key) : "Member");
   return (
     <>
       {showMembershipFee && (
