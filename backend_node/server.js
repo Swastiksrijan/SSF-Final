@@ -4,6 +4,7 @@ const cors = require('cors');
 const path = require('path');
 const { Op } = require('sequelize');
 const sequelize = require('./config/database');
+const { ensureColumns } = require('./services/ensureColumns');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -207,6 +208,7 @@ async function syncDatabase(attempts = 3) {
         try {
             await sequelize.sync();
             console.log('✅ PostgreSQL Database Synced');
+            await ensureColumns();
             await runSeeds();
             await runLegacyMigration();
             if (SYNC_ALTER) {

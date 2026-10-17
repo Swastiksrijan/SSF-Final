@@ -6,6 +6,7 @@ import { FaArrowRight } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import { ENDPOINTS } from "../config/api";
 import PageHero from "../components/PageHero";
+import { Field, Input, Textarea, SubmitButton } from "../components/forms/FormUI";
 
 export default function Contact() {
   const [formData, setFormData] = useState({ firstName: "", lastName: "", email: "", phone: "", message: "" });
@@ -117,15 +118,15 @@ export default function Contact() {
               <h3 className="text-2xl md:text-3xl font-black text-[#12345A]">Send us a Message</h3>
               <p className="text-sm text-zinc-400 mt-2">Your message will be securely recorded and sent to our team.</p>
             </div>
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">First Name *</label><input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Jane" required className="w-full px-6 py-4 bg-[#EAF0F6] border-none rounded-2xl focus:ring-4 focus:ring-[#176447]/10 font-medium" /></div>
-                <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Last Name</label><input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Doe" className="w-full px-6 py-4 bg-[#EAF0F6] border-none rounded-2xl focus:ring-4 focus:ring-[#176447]/10 font-medium" /></div>
+            <form onSubmit={handleSubmit} className="ssf-form">
+              <div className="ssf-form-grid ssf-form-grid-2">
+                <Field label="First Name" required><Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Jane" /></Field>
+                <Field label="Last Name"><Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Doe" /></Field>
               </div>
-              <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Email Address *</label><input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="jane@example.com" required className="w-full px-6 py-4 bg-[#EAF0F6] border-none rounded-2xl focus:ring-4 focus:ring-[#176447]/10 font-medium" /></div>
-              <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Mobile Number</label><input name="phone" type="tel" inputMode="numeric" value={formData.phone} onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value.replace(/\D/g, "") }))} placeholder="Enter mobile number" className="w-full px-6 py-4 bg-[#EAF0F6] border-none rounded-2xl focus:ring-4 focus:ring-[#176447]/10 font-medium" /></div>
-              <div className="space-y-2"><label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-2">Message *</label><textarea name="message" value={formData.message} onChange={handleChange} rows={5} placeholder="How can we help you today?" required minLength={10} className="w-full px-6 py-4 bg-[#EAF0F6] border-none rounded-2xl focus:ring-4 focus:ring-[#176447]/10 font-medium resize-none" /></div>
-              <button type="submit" disabled={isSubmitting} className="w-full btn-primary py-5 text-lg group disabled:opacity-60 disabled:cursor-not-allowed"><span>{isSubmitting ? "Submitting..." : "Send Message"}</span><Send className={`w-5 h-5 inline ml-3 ${isSubmitting ? "animate-pulse" : "group-hover:translate-x-2"}`} /></button>
+              <Field label="Email Address" required><Input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="jane@example.com" /></Field>
+              <Field label="Mobile Number"><Input name="phone" type="tel" inputMode="numeric" value={formData.phone} onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value.replace(/\D/g, "") }))} placeholder="Enter mobile number" /></Field>
+              <Field label="Message" required><Textarea name="message" value={formData.message} onChange={handleChange} rows={5} minLength={10} placeholder="How can we help you today?" /></Field>
+              <SubmitButton busy={isSubmitting} busyLabel="Submitting…"><span>Send Message</span><Send className="w-5 h-5" /></SubmitButton>
             </form>
           </motion.div>
         </div>

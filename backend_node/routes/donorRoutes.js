@@ -1,7 +1,29 @@
 const express = require('express');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 const { sendMail, emailConfigured } = require('../services/mailer');
 const router = express.Router();
 const Donor = require('../models/Donor');
+
+// Donor uploads are optional: a PAN / identity document and a profile photo.
+// JSON bodies (the Join SSF hub and the User Portal) still work unchanged —
+// multer simply passes a non-multipart request straight through.
+const uploadDir = path.join(__dirname, '..', 'uploads', 'donors');
+fs.mkdirSync(uploadDir, { recursive: true });
+const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
+const storage = multer.diskStorage({ destination: (_req, _file, cb) => cb(null, uploadDir), filename: (_req, file, cb) => cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${path.extname(file.originalname).toLowerCase()}`) });
+const upload = multer({
+    storage,
+    limits: { fileSize: 5 * 1024 * 1024 },
+    fileFilter: (_req, file, cb) => {
+        if (file.fieldname === 'profile_photo') return IMAGE_TYPES.includes(file.mimetype) ? cb(null, true) : cb(new Error('Profile photo must be JPG, PNG or WebP.'));
+        if (file.fieldname === 'id_document') return (IMAGE_TYPES.includes(file.mimetype) || file.mimetype === 'application/pdf') ? cb(null, true) : cb(new Error('Document must be JPG, PNG, WebP or PDF.'));
+        return cb(new Error('Unexpected upload field.'));
+    }
+});
+const removeFile = (file) => { if (file?.path) fs.unlink(file.path, () => {}); };
+const donorFileUrl = (file) => (file ? `/uploads/donors/${file.filename}` : null);
 
 const getDonorNumber = async () => (await Donor.count()) + 1;
 
@@ -23,23 +45,28 @@ const requireAdminAuth = (req, res, next) => {
     next();
 };
 
-router.post('/donor', async (req, res) => {
+router.post('/donor', upload.fields([{ name: 'profile_photo', maxCount: 1 }, { name: 'id_document', maxCount: 1 }]), async (req, res) => {
+    const profilePhoto = req.files?.profile_photo?.[0];
+    const idDocument = req.files?.id_document?.[0];
+    const cleanup = () => { removeFile(profilePhoto); removeFile(idDocument); };
     try {
         const { fullName, email, phone, city, state, country, donationPurpose, amount, pan, address, paymentMode, receiptPreference, notes } = req.body || {};
         const cleanName = String(fullName || '').trim();
         const cleanEmail = String(email || '').trim().toLowerCase();
         const cleanPhone = String(phone || '').replace(/\D/g, '');
-        if (!cleanName || !cleanEmail || !cleanPhone) return res.status(400).json({ message: 'Name, email and mobile number are required.' });
-        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) return res.status(400).json({ message: 'Please enter a valid email address.' });
-        if (cleanPhone.length < 7 || cleanPhone.length > 15) return res.status(400).json({ message: 'Please enter a valid mobile number.' });
+        if (!cleanName || !cleanEmail || !cleanPhone) { cleanup(); return res.status(400).json({ message: 'Name, email and mobile number are required.' }); }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(cleanEmail)) { cleanup(); return res.status(400).json({ message: 'Please enter a valid email address.' }); }
+        if (cleanPhone.length < 7 || cleanPhone.length > 15) { cleanup(); return res.status(400).json({ message: 'Please enter a valid mobile number.' }); }
+        if (pan && !/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(String(pan).trim().toUpperCase())) { cleanup(); return res.status(400).json({ message: 'Please enter a valid PAN (e.g. AAKAS7123H) or leave it blank.' }); }
         const number = await getDonorNumber();
         const now = new Date();
         const monthYear = `${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getFullYear()).slice(-2)}`;
         const donorId = `SSF-DON-${monthYear}-${String(number).padStart(4, '0')}`;
-        const donor = await Donor.create({ donorId, fullName: cleanName, email: cleanEmail, phone: cleanPhone, city: String(city || '').trim() || null, state: String(state || '').trim() || null, country: String(country || 'India').trim() || 'India', donationPurpose: String(donationPurpose || '').trim() || null, amount: amount ? Number(amount) : null, pan: String(pan || '').trim().toUpperCase() || null, address: String(address || '').trim() || null, paymentMode: String(paymentMode || '').trim() || null, receiptPreference: String(receiptPreference || 'email').trim(), paymentStatus: paymentMode === 'bank_transfer' || paymentMode === 'upi' ? 'offline' : 'pending', notes: String(notes || '').trim() || null });
+        const donor = await Donor.create({ donorId, fullName: cleanName, email: cleanEmail, phone: cleanPhone, city: String(city || '').trim() || null, state: String(state || '').trim() || null, country: String(country || 'India').trim() || 'India', donationPurpose: String(donationPurpose || '').trim() || null, amount: amount ? Number(amount) : null, pan: String(pan || '').trim().toUpperCase() || null, address: String(address || '').trim() || null, paymentMode: String(paymentMode || '').trim() || null, receiptPreference: String(receiptPreference || 'email').trim(), paymentStatus: paymentMode === 'bank_transfer' || paymentMode === 'upi' ? 'offline' : 'pending', notes: String(notes || '').trim() || null, profilePhotoPath: donorFileUrl(profilePhoto), idDocumentPath: donorFileUrl(idDocument) });
         try { await sendAdminEmail(donor); } catch (emailError) { console.error('⚠️ Donor notification email failed:', emailError.message); }
         return res.status(201).json({ status: 'success', message: 'Donor details submitted successfully.', donorId: donor.donorId });
     } catch (error) {
+        cleanup();
         console.error('❌ Donor registration error:', error);
         return res.status(500).json({ message: 'Unable to save donor details right now.' });
     }
@@ -48,17 +75,21 @@ router.post('/donor', async (req, res) => {
 router.get('/admin/donors', requireAdminAuth, async (_req, res) => {
     try {
         const donors = await Donor.findAll({ order: [['createdAt', 'DESC']] });
-        return res.json(donors);
+        return res.json(donors.map((d) => ({ ...d.toJSON(), profilePhotoUrl: d.profilePhotoPath, idDocumentUrl: d.idDocumentPath })));
     } catch (error) {
         console.error('❌ Admin donor list error:', error);
         return res.status(500).json({ message: 'Unable to load donor records.' });
     }
 });
 
+const removeStoredFile = (storedPath) => { if (!storedPath) return; const filePath = path.join(__dirname, '..', String(storedPath).replace(/^\/+/, '')); try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Donor upload cleanup failed:', error.message); } };
+
 router.delete('/admin/donors/:id', requireAdminAuth, async (req, res) => {
     try {
         const donor = await Donor.findOne({ where: { id: req.params.id } });
         if (!donor) return res.status(404).json({ message: 'Donor record not found.' });
+        removeStoredFile(donor.profilePhotoPath);
+        removeStoredFile(donor.idDocumentPath);
         await donor.destroy();
         return res.json({ status: 'success', message: 'Donor record permanently deleted.' });
     } catch (error) {

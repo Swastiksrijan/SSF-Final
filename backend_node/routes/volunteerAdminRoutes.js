@@ -41,7 +41,7 @@ router.get('/admin/volunteers', requireAdminAuth, async (req, res) => {
             submittedAt: v.createdAt, status: v.status,
             volunteerId: v.volunteerId, certId: v.certId, approvedAt: v.approvedAt,
             idDocumentUrl: v.idDocumentPath ? `/uploads/${path.basename(v.idDocumentPath)}` : null,
-            profilePhotoPath: v.profilePhotoPath || null
+            profilePhotoPath: v.profilePhotoPath ? `/uploads/${path.basename(v.profilePhotoPath)}` : null
         })));
     } catch (error) {
         console.error('❌ Volunteer admin list error:', error);

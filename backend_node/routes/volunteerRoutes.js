@@ -120,8 +120,8 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
     try {
         const { name, email, phone, volunteer_type, position, id_type, message } = req.body;
 
-        if (!req.file) {
-            return res.status(400).json({ status: 'error', message: 'ID Document is required' });
+        if (!name || !email || !phone) {
+            return res.status(400).json({ status: 'error', message: 'Full name, email and phone are required' });
         }
 
         const newVolunteer = await Volunteer.create({
@@ -130,9 +130,9 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
             phone,
             volunteerType: volunteer_type,
             position,
-            idType: id_type,
+            idType: id_type || null,
             message,
-            idDocumentPath: req.file.path,
+            idDocumentPath: req.file ? `/uploads/${req.file.filename}` : null,
             status: 'pending',
             isVerified: false
         });
@@ -256,7 +256,7 @@ router.get('/admin/volunteers', requireAdminAuth, async (req, res) => {
         const volunteers = await Volunteer.findAll({ order: [['createdAt', 'DESC']] });
 
         const formatted = volunteers.map(v => {
-            const fileName = path.basename(v.idDocumentPath);
+            const fileName = v.idDocumentPath ? path.basename(v.idDocumentPath) : null;
             return {
                 id: v.id,
                 fullName: v.fullName,
@@ -267,7 +267,7 @@ router.get('/admin/volunteers', requireAdminAuth, async (req, res) => {
                 submittedAt: v.createdAt,
                 status: v.status,
                 certId: v.certId,
-                idDocumentUrl: `/uploads/${fileName}`
+                idDocumentUrl: fileName ? `/uploads/${fileName}` : null
             };
         });
 

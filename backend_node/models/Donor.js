@@ -13,6 +13,8 @@ const Donor = sequelize.define('Donor', {
     donationPurpose: { type: DataTypes.STRING, allowNull: true },
     amount: { type: DataTypes.DECIMAL(12, 2), allowNull: true },
     pan: { type: DataTypes.STRING, allowNull: true },
+    idDocumentPath: { type: DataTypes.STRING, allowNull: true },
+    profilePhotoPath: { type: DataTypes.STRING, allowNull: true },
     address: { type: DataTypes.TEXT, allowNull: true },
     paymentMode: { type: DataTypes.STRING, allowNull: true },
     receiptPreference: { type: DataTypes.STRING, allowNull: true, defaultValue: 'email' },

@@ -827,18 +827,17 @@ function RequestModal({ service, categories, onClose }) {
 }
 
 function inputCls(error) {
-  return "w-full rounded-xl border bg-white px-3.5 py-3 text-sm text-zinc-800 outline-none transition placeholder:text-zinc-400 focus:ring-4 " +
-    (error ? "border-red-300 focus:border-red-400 focus:ring-red-100" : "border-zinc-200 focus:border-[#176447] focus:ring-[#176447]/10");
+  return "ssf-input" + (error ? " ssf-input-error" : "");
 }
 
 function Field({ label, required, error, children }) {
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-xs font-black uppercase tracking-wide text-zinc-500">
-        {label}{required && <span className="text-[#176447]"> *</span>}
+    <label className="ssf-field">
+      <span className="ssf-label">
+        {label}{required && <span className="ssf-req" aria-hidden="true">*</span>}
       </span>
       {children}
-      {error && <span className="mt-1 block text-xs font-semibold text-red-600">{error}</span>}
+      {error && <span className="ssf-hint" style={{ color: "#B91C1C", fontWeight: 600 }}>{error}</span>}
     </label>
   );
 }

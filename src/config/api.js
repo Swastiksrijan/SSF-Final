@@ -16,6 +16,7 @@ export const ENDPOINTS = {
     USER_DOCUMENT: (type, id, accountId) => `${API_BASE_URL}/api/user-document/${type}/${encodeURIComponent(id)}?account=${encodeURIComponent(accountId)}`,
     VERIFY: (code) => `${API_BASE_URL}/api/verify/${encodeURIComponent(code)}`,
     MEMBER_PAYMENT_LINK: `${API_BASE_URL}/api/member-payment-link`,
+    MEMBER_PAYMENT_SUBMIT: `${API_BASE_URL}/api/member-payment-submit`,
     AWARENESS_QUIZ: (quizId = 'ssf-awareness-1') => `${API_BASE_URL}/api/quiz/${encodeURIComponent(quizId)}`,
     AWARENESS_QUIZ_SUBMIT: (quizId = 'ssf-awareness-1') => `${API_BASE_URL}/api/quiz/${encodeURIComponent(quizId)}/submit`,
     AWARENESS_QUIZ_CERTIFICATE: (id) => `${API_BASE_URL}/api/quiz/certificate/${encodeURIComponent(id)}`,

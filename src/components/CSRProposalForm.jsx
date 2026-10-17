@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ENDPOINTS } from "../config/api";
+import { Alert, Field, FormNote, Input, Select, SubmitButton, Textarea } from "./forms/FormUI";
 
 const initialForm = {
   companyName: "",
@@ -50,18 +51,25 @@ export default function CSRProposalForm() {
   };
 
   return (
-    <form onSubmit={submit} className="space-y-4" noValidate>
-      <input name="companyName" value={form.companyName} onChange={update} required placeholder="Company Name *" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900" />
-      <input name="contactPerson" value={form.contactPerson} onChange={update} required placeholder="Contact Person *" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900" />
-      <input type="email" name="email" value={form.email} onChange={update} required placeholder="Work Email *" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900" />
-      <div className="grid grid-cols-[110px_minmax(0,1fr)] gap-2">
-        <select name="countryCode" value={form.countryCode} onChange={update} className="rounded-xl border border-slate-200 px-2 py-3 text-slate-900"><option>+91</option><option>+1</option><option>+44</option><option>+971</option><option>+65</option></select>
-        <input type="tel" inputMode="numeric" name="phone" value={form.phone} onChange={update} required placeholder="Phone Number *" className="min-w-0 rounded-xl border border-slate-200 px-4 py-3 text-slate-900" />
+    <form onSubmit={submit} className="ssf-form" noValidate>
+      <div className="ssf-form-grid ssf-form-grid-2">
+        <Field label="Company Name" required><Input name="companyName" value={form.companyName} onChange={update} placeholder="Company / organisation name" /></Field>
+        <Field label="Contact Person" required><Input name="contactPerson" value={form.contactPerson} onChange={update} placeholder="Your name" /></Field>
       </div>
-      <select name="interestArea" value={form.interestArea} onChange={update} className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900"><option>General CSR</option><option>Education</option><option>Healthcare</option><option>Skill Development</option><option>Women Empowerment</option><option>Environment</option></select>
-      <textarea name="proposal" value={form.proposal} onChange={update} required rows="4" placeholder="Proposal / Requirement *" className="w-full rounded-xl border border-slate-200 px-4 py-3 text-slate-900" />
-      {status.message && <p className={status.type === "success" ? "text-green-700" : "text-red-600"}>{status.message}</p>}
-      <button type="submit" disabled={submitting} className="w-full rounded-xl bg-emerald-600 px-5 py-3 font-semibold text-white disabled:opacity-60">{submitting ? "Submitting..." : "Submit Request"}</button>
+      <Field label="Work Email" required><Input type="email" name="email" value={form.email} onChange={update} placeholder="name@company.com" /></Field>
+      <Field label="Phone Number" required>
+        <div className="grid grid-cols-[110px_minmax(0,1fr)] gap-2">
+          <Select name="countryCode" value={form.countryCode} onChange={update}><option>+91</option><option>+1</option><option>+44</option><option>+971</option><option>+65</option></Select>
+          <Input type="tel" inputMode="numeric" name="phone" value={form.phone} onChange={update} className="min-w-0" placeholder="Phone number" />
+        </div>
+      </Field>
+      <Field label="CSR Interest Area">
+        <Select name="interestArea" value={form.interestArea} onChange={update}><option>General CSR</option><option>Education</option><option>Healthcare</option><option>Skill Development</option><option>Women Empowerment</option><option>Environment</option></Select>
+      </Field>
+      <Field label="Proposal / Requirement" required><Textarea name="proposal" value={form.proposal} onChange={update} rows={4} placeholder="Tell us about your CSR proposal, collaboration or requirement." /></Field>
+      <FormNote>Your proposal is reviewed by the SSF partnership team. This is an enquiry, not a confirmed partnership.</FormNote>
+      {status.message && <Alert tone={status.type === "success" ? "success" : "error"}>{status.message}</Alert>}
+      <SubmitButton busy={submitting}>Submit Request</SubmitButton>
     </form>
   );
 }

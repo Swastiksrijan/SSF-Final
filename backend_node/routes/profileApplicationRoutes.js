@@ -16,6 +16,9 @@ const idDocumentOnly = (_req, file, cb) => ['image/jpeg', 'image/png', 'applicat
 const uploadVolunteerFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file), limits: { fileSize: 5 * 1024 * 1024, files: 2 } });
 const uploadMemberFiles = multer({ storage, fileFilter: (req, file, cb) => file.fieldname === 'profile_photo' ? profilePhotoOnly(req, file, cb) : idDocumentOnly(req, file), limits: { files: 2, fileSize: 5 * 1024 * 1024 } });
 const uploadProfilePhoto = multer({ storage, fileFilter: profilePhotoOnly, limits: { fileSize: 5 * 1024 * 1024, files: 1 } });
+// Older rows stored the absolute server path (multer's file.path) instead of a
+// public URL, which leaked deploy internals to the admin UI. Normalise both.
+const publicUploadUrl = (stored) => (stored ? `/uploads/${path.basename(String(stored))}` : null);
 const hashPassword = (password) => { const salt = crypto.randomBytes(16).toString('hex'); const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex'); return `${salt}:${hash}`; };
 const sendAdminNotification = async (subject, text) => {
     if (!emailConfigured()) return;
@@ -32,10 +35,10 @@ router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', max
     try {
         const { name, email, phone, volunteer_type, position, id_type, message } = req.body || {};
         const idDocument = req.files?.id_document?.[0]; const profilePhoto = req.files?.profile_photo?.[0];
-        if (!name || !email || !phone || !idDocument || !profilePhoto) return res.status(400).json({ status: 'error', message: 'Full name, email, phone, profile photo and ID document are required.' });
+        if (!name || !email || !phone || !profilePhoto) return res.status(400).json({ status: 'error', message: 'Full name, email, phone and profile photo are required.' });
         if (profilePhoto.size > 2 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' });
-        if (idDocument.size > 5 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'ID document must be 5MB or smaller.' });
-        const newVolunteer = await Volunteer.create({ fullName: name.trim(), email: email.trim().toLowerCase(), phone: phone.trim(), volunteerType: volunteer_type || 'field', position: position || 'General Volunteer', idType: id_type || 'College ID', message: message || null, idDocumentPath: idDocument.path, profilePhotoPath: `/uploads/${profilePhoto.filename}`, status: 'pending', isVerified: false });
+        if (idDocument && idDocument.size > 5 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'ID document must be 5MB or smaller.' });
+        const newVolunteer = await Volunteer.create({ fullName: name.trim(), email: email.trim().toLowerCase(), phone: phone.trim(), volunteerType: volunteer_type || 'field', position: position || 'General Volunteer', idType: id_type || null, message: message || null, idDocumentPath: idDocument ? `/uploads/${idDocument.filename}` : null, profilePhotoPath: `/uploads/${profilePhoto.filename}`, status: 'pending', isVerified: false });
         await sendAdminNotification(`New Volunteer Registration: ${name}`, `New volunteer application received. Name: ${name}, Type: ${volunteer_type || 'field'}, Position: ${position || 'General Volunteer'}, Phone: ${phone}, Email: ${email}`);
         return res.status(201).json({ status: 'success', message: 'Application submitted successfully', data: newVolunteer });
     } catch (error) { console.error('❌ Volunteer registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
@@ -43,24 +46,24 @@ router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', max
 
 router.post('/member-signup', uploadMemberFiles.fields([{ name: 'profile_photo', maxCount: 1 }, { name: 'id_document', maxCount: 1 }]), async (req, res) => {
     try {
-        const { fullName, email, confirmEmail, phone, password, memberType, idProofType, message } = req.body || {};
+        const { fullName, email, confirmEmail, phone, password, memberType, idProofType, identityNumber, message } = req.body || {};
         const primaryEmail = (email || '').trim().toLowerCase(); const secondaryEmail = (confirmEmail || '').trim().toLowerCase(); const isWebsiteAccount = memberType === 'website_signup';
         const profilePhoto = req.files?.profile_photo?.[0]; const idDocument = req.files?.id_document?.[0];
         if (!fullName || !primaryEmail || !phone || !memberType) return res.status(400).json({ status: 'error', message: 'Full name, email, phone and membership type are required.' });
         if (!isWebsiteAccount && !secondaryEmail) return res.status(400).json({ status: 'error', message: 'Email confirmation is required.' });
         if (secondaryEmail && primaryEmail !== secondaryEmail) return res.status(400).json({ status: 'error', message: 'Email fields do not match' });
         if (!password || password.length < 8) return res.status(400).json({ status: 'error', message: 'Password must be at least 8 characters' });
-        if (!isWebsiteAccount && (!profilePhoto || !idDocument || !idProofType)) return res.status(400).json({ status: 'error', message: 'Full name, email, phone, membership type, profile photo and identity proof are required.' });
+        if (!isWebsiteAccount && !profilePhoto) return res.status(400).json({ status: 'error', message: 'Full name, email, phone, membership type and profile photo are required.' });
         if (profilePhoto && profilePhoto.size > 2 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'Profile photo must be 2MB or smaller.' });
         if (idDocument && idDocument.size > 5 * 1024 * 1024) return res.status(400).json({ status: 'error', message: 'Identity proof must be 5MB or smaller.' });
         const photoPath = profilePhoto ? `/uploads/${profilePhoto.filename}` : null; const idDocumentPath = idDocument ? `/uploads/${idDocument.filename}` : null;
         const existing = await Member.findOne({ where: { email: primaryEmail } });
         if (existing) {
             if (existing.passwordHash) return res.status(409).json({ status: 'error', message: 'An account with this email already exists. Please log in.' });
-            await existing.update({ passwordHash: hashPassword(password), phone: phone.trim(), memberType: isWebsiteAccount ? 'website_signup' : memberType, idProofType: idProofType || existing.idProofType, idDocumentPath: idDocumentPath || existing.idDocumentPath, profilePhotoPath: photoPath || existing.profilePhotoPath, message: isWebsiteAccount ? 'Signup from website' : (message || existing.message) });
+            await existing.update({ passwordHash: hashPassword(password), phone: phone.trim(), memberType: isWebsiteAccount ? 'website_signup' : memberType, idProofType: idProofType || existing.idProofType, identityNumber: String(identityNumber || '').trim() || existing.identityNumber || null, idDocumentPath: idDocumentPath || existing.idDocumentPath, profilePhotoPath: photoPath || existing.profilePhotoPath, message: isWebsiteAccount ? 'Signup from website' : (message || existing.message) });
             return res.status(200).json({ status: 'success', message: 'Your existing record now has a website account. You are signed in.', data: existing, user: { id: existing.id, fullName: existing.fullName, email: existing.email, phone: existing.phone, memberType: existing.memberType, status: existing.status } });
         }
-        const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: phone.trim(), passwordHash: hashPassword(password), memberType: isWebsiteAccount ? 'website_signup' : memberType, message: isWebsiteAccount ? 'Signup from website' : (message || null), profilePhotoPath: photoPath, idProofType: idProofType || null, idDocumentPath, status: isWebsiteAccount ? 'approved' : 'pending', paymentStatus: isWebsiteAccount ? 'not_required' : (memberType === 'advisory' ? 'not_required' : 'pending') });
+        const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: phone.trim(), passwordHash: hashPassword(password), memberType: isWebsiteAccount ? 'website_signup' : memberType, message: isWebsiteAccount ? 'Signup from website' : (message || null), profilePhotoPath: photoPath, idProofType: idProofType || null, identityNumber: String(identityNumber || '').trim() || null, idDocumentPath, status: isWebsiteAccount ? 'approved' : 'pending', paymentStatus: isWebsiteAccount ? 'not_required' : (memberType === 'advisory' ? 'not_required' : 'pending') });
         await sendAdminNotification(`New ${isWebsiteAccount ? 'Website Account' : 'Member'} Signup: ${fullName}`, `New ${isWebsiteAccount ? 'website account' : 'member application'} received. Name: ${fullName}, Type: ${isWebsiteAccount ? 'website account' : memberType}, Email: ${primaryEmail}, Phone: ${phone}`);
         return res.status(201).json({ status: 'success', message: isWebsiteAccount ? 'Account created successfully. You are now signed in.' : 'Membership application submitted successfully', data: newMember, user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
     } catch (error) { console.error('❌ Member registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
@@ -88,7 +91,7 @@ router.delete('/member-profile/:id/photo', async (req, res) => {
 });
 
 router.get('/admin/members', requireAdminAuth, async (req, res) => {
-    try { const members = await Member.findAll({ attributes: { exclude: ['passwordHash'] }, order: [['createdAt', 'DESC']] }); const includeAccounts = String(req.query.includeAccounts || '').toLowerCase() === 'true'; const visible = includeAccounts ? members : members.filter(member => !isAccountOnly(member)); return res.json(visible.map(member => ({ ...member.toJSON(), profilePhotoPath: member.profilePhotoPath || null, idDocumentPath: member.idDocumentPath || null }))); }
+    try { const members = await Member.findAll({ attributes: { exclude: ['passwordHash'] }, order: [['createdAt', 'DESC']] }); const includeAccounts = String(req.query.includeAccounts || '').toLowerCase() === 'true'; const visible = includeAccounts ? members : members.filter(member => !isAccountOnly(member)); return res.json(visible.map(member => ({ ...member.toJSON(), profilePhotoPath: publicUploadUrl(member.profilePhotoPath), idDocumentPath: publicUploadUrl(member.idDocumentPath) }))); }
     catch (error) { console.error('❌ Member admin list error:', error); return res.status(500).json({ message: 'Server Error' }); }
 });
 

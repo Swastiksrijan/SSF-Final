@@ -1,8 +1,18 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { FaArrowRight, FaBell, FaCertificate, FaCheckCircle, FaClipboardList, FaDonate, FaFileAlt, FaHandsHelping, FaIdCard, FaSignOutAlt, FaUserCircle, FaUserEdit, FaCamera, FaDownload } from "react-icons/fa";
-import { ENDPOINTS } from "../config/api";
+import { API_BASE_URL, ENDPOINTS } from "../config/api";
 import { generateCertificate } from "../utils/generateCertificate";
+
+// Photos come back either as a /uploads/... path or, when persisted in
+// PostgreSQL, as a base64 data: URL. Both must pass through untouched.
+const photoUrl = (path) => path ? (/^(?:https?:\/\/|data:|blob:)/i.test(path) ? path : `${API_BASE_URL}${path.startsWith("/") ? "" : "/"}${path}`) : "";
+
+// Same fee schedule and Razorpay page as the membership forms, so the member
+// sees one consistent amount wherever the payment is started from.
+const MEMBERSHIP_PAYMENT_LINK = "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view";
+const FEE_MEMBER_TYPES = ["general", "active", "life"];
+const needsFee = (member) => FEE_MEMBER_TYPES.includes(String(member?.memberType || "").trim().toLowerCase());
 
 const cards = [
   { id: "profile", title: "My Profile", text: "View and update your profile details.", icon: FaUserEdit },
@@ -86,7 +96,7 @@ export default function MemberDashboard() {
   const memberStatus = user.status || "pending";
   const memberType = user.memberType === "website_signup" ? "Website Member" : (user.memberType || "Website Member");
   const joinedDate = user.loggedInAt || user.createdAt ? new Date(user.loggedInAt || user.createdAt).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—";
-  const avatar = photo || "";
+  const avatar = photo || photoUrl(user.profilePhotoPath);
 
   return (
     <main className="min-h-screen bg-[#EAF0F6] pt-32 pb-20 px-4"><div className="max-w-6xl mx-auto">
@@ -97,7 +107,7 @@ export default function MemberDashboard() {
       <section className="mt-8 grid lg:grid-cols-[1.4fr_0.8fr] gap-6"><div className="space-y-6">
         <article id="profile" className="scroll-mt-32 bg-white rounded-3xl border border-zinc-100 p-6 sm:p-8 shadow-sm"><div className="flex items-center justify-between mb-6"><div><p className="text-xs uppercase tracking-widest font-bold text-[#176447]">My Account</p><h2 className="text-2xl font-black text-[#12345A]">My Profile</h2></div><FaIdCard className="text-2xl text-zinc-300" /></div><div className="flex flex-col sm:flex-row items-center sm:items-start gap-6 mb-6 p-5 rounded-2xl bg-zinc-50"><div className="relative"><div className="w-28 h-28 rounded-full overflow-hidden border-4 border-white shadow-md bg-white flex items-center justify-center text-6xl text-zinc-300">{avatar ? <img src={avatar} alt="Profile" className="w-full h-full object-cover" /> : <FaUserCircle />}</div><label htmlFor="profile-photo-2" className="absolute right-0 bottom-0 px-3 py-2 rounded-full bg-[#176447] text-white cursor-pointer"><FaCamera /><input id="profile-photo-2" type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={handlePhotoChange} /></label></div><div className="text-center sm:text-left"><h3 className="text-xl font-black text-[#12345A]">{user.fullName || "Member"}</h3><p className="text-sm text-zinc-500 mt-1">Profile Photo</p><p className="text-xs text-zinc-400 mt-2">JPG, PNG or WebP • Maximum 2 MB</p></div></div><div className="grid sm:grid-cols-2 gap-4">{[["Full Name",user.fullName],["Email",user.email],["Phone",user.phone],["Membership",memberType],["Member ID",user.memberId || "Pending approval"]].map(([label,value]) => <div key={label} className="rounded-2xl bg-zinc-50 p-4"><p className="text-xs font-bold text-zinc-400 uppercase">{label}</p><p className="mt-1 font-bold text-[#12345A] break-all">{value || "—"}</p></div>)}</div></article>
 
-        <article id="applications" className="scroll-mt-32 bg-white rounded-3xl border border-zinc-100 p-6 sm:p-8 shadow-sm"><div className="flex items-center justify-between mb-6"><div><p className="text-xs uppercase tracking-widest font-bold text-[#176447]">Track progress</p><h2 className="text-2xl font-black text-[#12345A]">My Applications</h2></div><FaClipboardList className="text-2xl text-zinc-300" /></div><div className="rounded-2xl border border-zinc-100 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"><div><p className="font-black text-[#12345A]">Membership Application</p><p className="text-sm text-zinc-500 mt-1">Your official membership approval status.</p></div><StatusBadge status={memberStatus} /></div><Link to="/GetInvolved" className="inline-flex items-center gap-2 mt-4 px-4 py-2.5 rounded-xl bg-[#12345A] text-white font-bold">Get Involved <FaArrowRight /></Link></article>
+        <article id="applications" className="scroll-mt-32 bg-white rounded-3xl border border-zinc-100 p-6 sm:p-8 shadow-sm"><div className="flex items-center justify-between mb-6"><div><p className="text-xs uppercase tracking-widest font-bold text-[#176447]">Track progress</p><h2 className="text-2xl font-black text-[#12345A]">My Applications</h2></div><FaClipboardList className="text-2xl text-zinc-300" /></div><div className="rounded-2xl border border-zinc-100 p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4"><div><p className="font-black text-[#12345A]">Membership Application</p><p className="text-sm text-zinc-500 mt-1">Your official membership approval status.</p></div><StatusBadge status={memberStatus} /></div>{needsFee(user) && String(user.paymentStatus || "").toLowerCase() !== "paid" && memberStatus !== "approved" && <div className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 p-5"><p className="font-black text-amber-900">Membership fee pending</p><p className="text-sm text-amber-800 mt-1">Approval needs a confirmed fee payment. Pay through the secure Razorpay page, then submit your UPI / UTR reference from the Membership form in Get Involved.</p><a href={MEMBERSHIP_PAYMENT_LINK} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 mt-3 px-4 py-2.5 rounded-xl bg-[#12345A] text-white font-bold">Pay Membership Fee <FaArrowRight /></a></div>}<Link to="/GetInvolved" className="inline-flex items-center gap-2 mt-4 px-4 py-2.5 rounded-xl bg-[#12345A] text-white font-bold">Get Involved <FaArrowRight /></Link></article>
 
         <article id="contributions" className="scroll-mt-32 bg-white rounded-3xl border border-zinc-100 p-6 sm:p-8 shadow-sm"><div className="flex items-center justify-between mb-6"><div><p className="text-xs uppercase tracking-widest font-bold text-[#176447]">Support SSF</p><h2 className="text-2xl font-black text-[#12345A]">My Contributions</h2></div><FaDonate className="text-2xl text-zinc-300" /></div><div className="rounded-2xl bg-zinc-50 p-6"><p className="font-bold text-[#12345A]">Contribution history will appear here when donation tracking is linked to member accounts.</p><Link to="/Donate" className="inline-flex items-center gap-2 mt-4 px-4 py-2.5 rounded-xl bg-[#176447] text-white font-bold">Donate to SSF <FaArrowRight /></Link></div></article>
 

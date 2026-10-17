@@ -1,6 +1,7 @@
 import { useState } from "react";
-import { FaCheckCircle, FaExclamationCircle, FaSpinner, FaArrowRight } from "react-icons/fa";
+import { FaArrowRight } from "react-icons/fa";
 import { API_BASE_URL } from "../config/api";
+import { Alert, Field, FormHead, FormNote, Input, Select, SubmitButton, SuccessPanel, Textarea } from "./forms/FormUI";
 
 const INITIAL = { name: "", countryCode: "+91", phone: "", email: "", message: "" };
 
@@ -46,40 +47,42 @@ export default function GetInvolvedInterestForm({ type = "movement", onClose }) 
   };
 
   if (status === "success") return (
-    <div className="p-8 md:p-10 text-center space-y-5">
-      <div className="w-16 h-16 mx-auto rounded-full bg-[#EAF0F6] text-[#176447] flex items-center justify-center text-3xl"><FaCheckCircle /></div>
-      <h3 className="text-2xl font-black text-[#12345A]">Request Submitted</h3>
-      <p className="text-[#26343D]">Thank you. Swastik Srijan Foundation has received your request and our team will contact you.</p>
-      <button onClick={onClose} className="px-6 py-3 rounded-xl bg-[#12345A] text-white font-bold hover:bg-[#176447] hover:text-[#12345A] transition-colors">Close</button>
+    <div className="p-8 md:p-10">
+      <SuccessPanel title="Request Submitted" actions={
+        onClose ? <button onClick={onClose} className="px-6 py-3 rounded-xl bg-[#12345A] text-white font-bold hover:bg-[#176447] transition-colors">Close</button> : null
+      }>
+        Thank you. Swastik Srijan Foundation has received your request and our team will contact you.
+      </SuccessPanel>
     </div>
   );
 
   return (
     <div className="p-6 md:p-10">
-      <div className="mb-7"><p className="text-xs uppercase tracking-widest font-bold text-[#12345A]">Get Involved</p><h3 className="text-2xl md:text-3xl font-black text-[#12345A] mt-1">{meta.title}</h3><p className="text-sm text-[#26343D] mt-2">{meta.hi}</p></div>
-      <form onSubmit={submit} className="space-y-5" noValidate>
-        <div className="grid md:grid-cols-2 gap-5">
-          <div><label className="gil-label">Full Name *</label><input className="gil-input" value={form.name} onChange={e => update("name", e.target.value)} placeholder="Your full name" required /></div>
-          <div><label className="gil-label">Email Address *</label><input type="email" className="gil-input" value={form.email} onChange={e => update("email", e.target.value)} placeholder="you@example.com" required /></div>
+      <FormHead eyebrow="Get Involved" title={meta.title} subtitle={meta.hi} />
+      <form onSubmit={submit} className="ssf-form mt-6" noValidate>
+        <div className="ssf-form-grid ssf-form-grid-2">
+          <Field label="Full Name" required><Input value={form.name} onChange={e => update("name", e.target.value)} placeholder="Your full name" autoComplete="name" /></Field>
+          <Field label="Email Address" required><Input type="email" value={form.email} onChange={e => update("email", e.target.value)} placeholder="you@example.com" autoComplete="email" /></Field>
         </div>
-        <div>
-          <label className="gil-label">Mobile Number *</label>
+        <Field label="Mobile Number" required>
           <div className="grid grid-cols-[120px_minmax(0,1fr)] gap-2 w-full">
-            <select className="gil-input !w-full" value={form.countryCode} onChange={e => update("countryCode", e.target.value)} aria-label="Country code">
+            <Select value={form.countryCode} onChange={e => update("countryCode", e.target.value)} aria-label="Country code">
               <option value="+91">🇮🇳 +91</option>
               <option value="+1">🇺🇸 +1</option>
               <option value="+44">🇬🇧 +44</option>
               <option value="+61">🇦🇺 +61</option>
               <option value="+971">🇦🇪 +971</option>
-            </select>
-            <input type="tel" inputMode="numeric" name="phone" className="gil-input !w-full min-w-0" value={form.phone} onChange={e => update("phone", e.target.value.replace(/\D/g, ""))} placeholder="Enter mobile number" autoComplete="tel-national" required />
+            </Select>
+            <Input type="tel" inputMode="numeric" name="phone" className="min-w-0" value={form.phone} onChange={e => update("phone", e.target.value.replace(/\D/g, ""))} placeholder="Enter mobile number" autoComplete="tel-national" />
           </div>
-        </div>
-        <div><label className="gil-label">How would you like to contribute? *</label><textarea className="gil-input resize-none" rows={5} value={form.message} onChange={e => update("message", e.target.value)} placeholder={type === "partner" ? "Tell us about your company, CSR interest, collaboration or partnership idea." : "Tell us how you would like to participate, support or stay connected."} required /></div>
-        {status === "error" && <div className="p-4 rounded-xl bg-[#FCF3F0] border border-[#EAF0F6] text-[#A73800] text-sm font-semibold flex gap-2"><FaExclamationCircle />{error}</div>}
-        <button type="submit" disabled={status === "submitting"} className="w-full bg-[#12345A] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#176447] hover:text-[#12345A] transition-all flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting securely...</> : <>Submit Request <FaArrowRight /></>}</button>
+        </Field>
+        <Field label="How would you like to contribute?" required>
+          <Textarea rows={5} value={form.message} onChange={e => update("message", e.target.value)} placeholder={type === "partner" ? "Tell us about your company, CSR interest, collaboration or partnership idea." : "Tell us how you would like to participate, support or stay connected."} />
+        </Field>
+        <FormNote>Your request is recorded for the SSF team to review and follow up. No payment is involved at this step.</FormNote>
+        {status === "error" && <Alert tone="error">{error}</Alert>}
+        <SubmitButton busy={status === "submitting"} busyLabel="Submitting securely…">Submit Request <FaArrowRight /></SubmitButton>
       </form>
-      <style>{`.gil-label{display:block;font-size:.72rem;font-weight:800;color:#26343D;text-transform:uppercase;letter-spacing:.08em;margin:0 0 .45rem .25rem}.gil-input{width:100%;padding:.9rem 1rem;background:#FAF9F5;border:1px solid #EAF0F6;border-radius:.8rem;outline:none;font-weight:500}.gil-input:focus{border-color:#F7A814;box-shadow:0 0 0 4px rgba(23,100,71,.1)}`}</style>
     </div>
   );
 }

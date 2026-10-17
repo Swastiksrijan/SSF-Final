@@ -30,6 +30,9 @@ router.get('/user-portal/:id', async (req, res) => {
             certId: membershipAccount ? member.certId : null,
             certificateType: membershipAccount ? member.certificateType : null,
             certificateIssuedAt: membershipAccount ? member.certificateIssuedAt : null,
+            reviewNote: member.reviewNote || null,
+            idProofType: member.idProofType || null,
+            identityNumber: member.identityNumber || null,
             profilePhotoPath: member.profilePhotoData || member.profilePhotoPath,
             createdAt: member.createdAt
         };
@@ -42,7 +45,7 @@ router.get('/user-portal/:id', async (req, res) => {
         // Account/profile data must never disappear just because an optional
         // activity table/query is unavailable. Load each activity independently.
         const [volunteersResult, donorsResult, internshipsResult, interestsResult] = await Promise.allSettled([
-            Volunteer.findAll({ where: { email }, attributes: ['id','fullName','email','phone','volunteerType','position','status','isVerified','volunteerId','certId','approvedAt','createdAt'], order: [['createdAt','DESC']] }),
+            Volunteer.findAll({ where: { email }, attributes: ['id','fullName','email','phone','volunteerType','position','status','isVerified','volunteerId','certId','approvedAt','reviewNote','idType','identityNumber','createdAt'], order: [['createdAt','DESC']] }),
             Donor.findAll({ where: { email }, attributes: ['id','donorId','fullName','email','amount','donationPurpose','paymentMode','paymentStatus','status','createdAt'], order: [['createdAt','DESC']] }),
             InternshipApplication.findAll({ where: { email }, attributes: ['id','fullName','email','college','course','internshipType','duration','startDate','status','internId','joiningLetterId','completionCertId','selectedAt','completedAt','createdAt'], order: [['createdAt','DESC']] }),
             Interest.findAll({ where: { email }, attributes: ['id','interestType','fullName','email','phone','category','message','status','createdAt'], order: [['createdAt','DESC']] })

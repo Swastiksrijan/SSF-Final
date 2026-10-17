@@ -13,6 +13,7 @@ import {
 import { CONTACT_INFO } from "../config/contact";
 import profilePdf from "../assets/Swastik Srijan Profile 2026.pdf";
 import PageHero from "../components/PageHero";
+import { Field, Input, Select, SubmitButton } from "../components/forms/FormUI";
 
 export default function CSRPartnership() {
     useEffect(() => {
@@ -346,28 +347,20 @@ export default function CSRPartnership() {
                     </div>
 
                     <div className="p-12 md:p-16 md:w-1/2 bg-white">
-                        <form className="space-y-6">
-                            <h3 className="text-2xl font-bold text-[#12345A] mb-4">Request a Proposal</h3>
-                            <div>
-                                <label className="block text-sm font-bold text-zinc-500 mb-2">Company Name</label>
-                                <input type="text" className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#176447] focus:ring-2 focus:ring-[#176447]/20 outline-none transition-all" placeholder="Enter company name" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-zinc-500 mb-2">Phone / Email</label>
-                                <input type="text" className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#176447] focus:ring-2 focus:ring-[#176447]/20 outline-none transition-all" placeholder="How can we reach you?" />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-bold text-zinc-500 mb-2">Interest Area</label>
-                                <select className="w-full px-4 py-3 rounded-xl bg-zinc-50 border border-zinc-200 focus:border-[#176447] focus:ring-2 focus:ring-[#176447]/20 outline-none transition-all">
+                        <form className="ssf-form" onSubmit={(e) => e.preventDefault()}>
+                            <h3 className="ssf-form-title">Request a Proposal</h3>
+                            <p className="ssf-form-sub">Share your requirement and the SSF partnership team will respond.</p>
+                            <Field label="Company Name" required><Input type="text" placeholder="Enter company name" /></Field>
+                            <Field label="Phone / Email" required><Input type="text" placeholder="How can we reach you?" /></Field>
+                            <Field label="Interest Area" required>
+                                <Select>
                                     <option>General CSR</option>
                                     <option>Education</option>
                                     <option>Healthcare</option>
                                     <option>Skill Development</option>
-                                </select>
-                            </div>
-                            <button className="w-full py-4 bg-[#12345A] text-white font-bold rounded-xl hover:bg-[#12345A] transition-colors shadow-lg">
-                                Submit Request
-                            </button>
+                                </Select>
+                            </Field>
+                            <SubmitButton>Submit Request</SubmitButton>
                         </form>
                     </div>
                 </div>

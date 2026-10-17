@@ -4,6 +4,7 @@ import emailjs from "@emailjs/browser";
 import { FaTimes, FaUserPlus, FaSignInAlt, FaWhatsapp, FaEnvelope, FaArrowLeft, FaKey } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import { ENDPOINTS } from "../config/api";
+import { Alert, Field, Input, SubmitButton } from "./forms/FormUI";
 
 const SESSION_KEY = "ssf_user_session";
 const initialSignup = { fullName: "", email: "", phone: "", password: "" };
@@ -134,21 +135,21 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
                     <button type="button" className={`flex-1 py-2 rounded-lg font-semibold text-sm ${mode === "login" ? "bg-white text-[#12345A] shadow" : "text-zinc-500"}`} onClick={showLogin}>Login</button>
                 </div>}
 
-                {mode === "forgot" ? <form onSubmit={handleForgot} className="space-y-3">
+                {mode === "forgot" ? <form onSubmit={handleForgot} className="ssf-form">
                     <p className="text-sm text-zinc-500 leading-relaxed">Enter the email address registered with your SSF account. We will send a secure password reset link.</p>
-                    <input required type="email" autoComplete="email" placeholder="Registered Email" value={forgotData.email} onChange={(e) => setForgotData({ email: e.target.value })} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />
-                    <button type="submit" disabled={status === "submitting"} className="w-full bg-[#176447] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-60"><FaKey />{status === "submitting" ? "Sending..." : "Send Reset Link"}</button>
+                    <Field label="Registered Email" required><Input required type="email" autoComplete="email" placeholder="you@example.com" value={forgotData.email} onChange={(e) => setForgotData({ email: e.target.value })} /></Field>
+                    <SubmitButton busy={status === "submitting"} busyLabel="Sending…"><FaKey /> Send Reset Link</SubmitButton>
                     <button type="button" onClick={showLogin} className="w-full py-2 text-sm font-bold text-[#12345A] inline-flex items-center justify-center gap-2"><FaArrowLeft /> Back to Login</button>
-                </form> : <form onSubmit={handleSubmit} className="space-y-3">
-                    {mode === "signup" && <input required autoComplete="name" placeholder="Full Name" value={signupData.fullName} onChange={(e) => setSignupData(prev => ({ ...prev, fullName: e.target.value }))} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />}
-                    <input required type="email" autoComplete="email" placeholder="Email" value={mode === "signup" ? signupData.email : loginData.email} onChange={(e) => mode === "signup" ? setSignupData(prev => ({ ...prev, email: e.target.value })) : setLoginData(prev => ({ ...prev, email: e.target.value }))} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />
-                    {mode === "signup" && <input required autoComplete="tel" placeholder="Phone" value={signupData.phone} onChange={(e) => setSignupData(prev => ({ ...prev, phone: e.target.value }))} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />}
-                    <input required minLength={8} type="password" autoComplete={mode === "signup" ? "new-password" : "current-password"} placeholder={mode === "signup" ? "Password (minimum 8 characters)" : "Password"} value={mode === "signup" ? signupData.password : loginData.password} onChange={(e) => mode === "signup" ? setSignupData(prev => ({ ...prev, password: e.target.value })) : setLoginData(prev => ({ ...prev, password: e.target.value }))} className="w-full px-4 py-3 bg-zinc-50 rounded-xl" />
-                    {mode === "login" && <button type="button" onClick={() => { setMode("forgot"); setStatus("idle"); setMessage(""); }} className="text-sm font-bold text-[#176447] hover:underline">Forgot Password?</button>}
-                    <button type="submit" disabled={status === "submitting"} className="w-full bg-[#176447] text-white font-bold py-3 rounded-xl flex items-center justify-center gap-2 disabled:opacity-60">{mode === "signup" ? <FaUserPlus /> : <FaSignInAlt />}{status === "submitting" ? "Please wait..." : mode === "signup" ? "Create Account" : "Login"}</button>
+                </form> : <form onSubmit={handleSubmit} className="ssf-form">
+                    {mode === "signup" && <Field label="Full Name" required><Input required autoComplete="name" placeholder="Your full name" value={signupData.fullName} onChange={(e) => setSignupData(prev => ({ ...prev, fullName: e.target.value }))} /></Field>}
+                    <Field label="Email" required><Input required type="email" autoComplete="email" placeholder="you@example.com" value={mode === "signup" ? signupData.email : loginData.email} onChange={(e) => mode === "signup" ? setSignupData(prev => ({ ...prev, email: e.target.value })) : setLoginData(prev => ({ ...prev, email: e.target.value }))} /></Field>
+                    {mode === "signup" && <Field label="Mobile Number" required><Input required autoComplete="tel" inputMode="numeric" placeholder="Enter mobile number" value={signupData.phone} onChange={(e) => setSignupData(prev => ({ ...prev, phone: e.target.value.replace(/[^0-9 +()-]/g, "") }))} /></Field>}
+                    <Field label="Password" required hint={mode === "signup" ? "Minimum 8 characters" : undefined}><Input required minLength={8} type="password" autoComplete={mode === "signup" ? "new-password" : "current-password"} placeholder={mode === "signup" ? "Minimum 8 characters" : "Your password"} value={mode === "signup" ? signupData.password : loginData.password} onChange={(e) => mode === "signup" ? setSignupData(prev => ({ ...prev, password: e.target.value })) : setLoginData(prev => ({ ...prev, password: e.target.value }))} /></Field>
+                    {mode === "login" && <button type="button" onClick={() => { setMode("forgot"); setStatus("idle"); setMessage(""); }} className="text-sm font-bold text-[#176447] hover:underline self-start">Forgot Password?</button>}
+                    <SubmitButton busy={status === "submitting"} busyLabel="Please wait…">{mode === "signup" ? <><FaUserPlus /> Create Account</> : <><FaSignInAlt /> Login</>}</SubmitButton>
                 </form>}
 
-                {message && <p className={`mt-3 text-sm ${status === "error" ? "text-red-600" : "text-green-700"}`} role="status" aria-live="polite">{message}</p>}
+                {message && <Alert tone={status === "error" ? "error" : "success"}>{message}</Alert>}
                 {mode !== "forgot" && <div className="grid grid-cols-2 gap-3 mt-4">
                     <a href={adminWhatsAppLink} target="_blank" rel="noreferrer" className="text-center py-2 rounded-xl bg-[#25D366] text-white font-semibold text-sm flex items-center justify-center gap-2"><FaWhatsapp /> WhatsApp</a>
                     <a href={`mailto:${CONTACT_INFO.primaryEmail}?subject=${encodeURIComponent(`New ${mode} alert`)}&body=${encodeURIComponent(message || "New login/signup activity on website.")}`} className="text-center py-2 rounded-xl bg-[#12345A] text-white font-semibold text-sm flex items-center justify-center gap-2"><FaEnvelope /> Email</a>

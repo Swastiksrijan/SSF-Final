@@ -22,6 +22,8 @@ const Member = sequelize.define('Member', {
     paymentId: { type: DataTypes.STRING, allowNull: true, unique: true },
     paymentLinkId: { type: DataTypes.STRING, allowNull: true, unique: true },
     paymentAmount: { type: DataTypes.INTEGER, allowNull: true },
+    paymentMode: { type: DataTypes.STRING, allowNull: true },
+    paymentReference: { type: DataTypes.STRING, allowNull: true },
     paymentPaidAt: { type: DataTypes.DATE, allowNull: true },
     memberId: { type: DataTypes.STRING, allowNull: true, unique: true },
     certId: { type: DataTypes.STRING, allowNull: true, unique: true },

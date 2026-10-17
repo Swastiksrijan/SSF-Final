@@ -424,3 +424,78 @@ a { text-underline-offset: .18em; }
 ::selection { color: var(--ssf-white); background: var(--ssf-navy); }
 :focus-visible { outline: 3px solid var(--ssf-gold); outline-offset: 3px; }
 .premium-card { background: var(--ssf-white); border-color: rgba(18,52,90,.10); }
+
+/* ============================================================================
+   SSF UNIFIED FORM SYSTEM
+   ----------------------------------------------------------------------------
+   One shared visual language for EVERY form on the site (public pages, the
+   Join SSF / Get Involved modals and the logged-in User Portal). Pages import
+   these classes instead of re-declaring their own `inputClass` / `gil-input`
+   / inline <style> blocks, so the layout, spacing, labels, focus ring and
+   validation states never drift apart again.
+   ============================================================================ */
+.ssf-form { display:flex; flex-direction:column; gap:1.25rem; }
+.ssf-form-grid { display:grid; gap:1rem; }
+@media (min-width:768px){ .ssf-form-grid-2 { grid-template-columns:repeat(2,minmax(0,1fr)); } .ssf-form-grid-3 { grid-template-columns:repeat(3,minmax(0,1fr)); } }
+.ssf-field { display:flex; flex-direction:column; gap:.4rem; }
+.ssf-label { display:block; font-size:.72rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--ssf-charcoal); }
+.ssf-label .ssf-req { color:var(--ssf-saffron); margin-left:.15rem; }
+.ssf-hint { font-size:.75rem; color:#617389; line-height:1.45; }
+
+.ssf-input, .ssf-select, .ssf-textarea {
+  width:100%; padding:.85rem 1rem; background:var(--ssf-white);
+  border:1px solid #D8E1EA; border-radius:.85rem; outline:none;
+  font-size:.95rem; font-weight:500; color:var(--ssf-charcoal);
+  transition:border-color .18s ease, box-shadow .18s ease, background-color .18s ease;
+}
+.ssf-textarea { resize:vertical; min-height:7rem; }
+.ssf-input::placeholder, .ssf-textarea::placeholder { color:#8FA1B7; font-weight:400; }
+.ssf-input:focus, .ssf-select:focus, .ssf-textarea:focus {
+  border-color:var(--ssf-green); box-shadow:0 0 0 4px rgba(23,100,71,.12); background:var(--ssf-white);
+}
+.ssf-input:disabled, .ssf-input[readonly], .ssf-select:disabled, .ssf-textarea[readonly] {
+  background:#F3F5F7; color:#42546A; cursor:not-allowed;
+}
+.ssf-input[aria-invalid="true"], .ssf-select[aria-invalid="true"], .ssf-textarea[aria-invalid="true"] {
+  border-color:#B91C1C; box-shadow:0 0 0 4px rgba(185,28,28,.10);
+}
+.ssf-input-error { border-color:#B91C1C !important; box-shadow:0 0 0 4px rgba(185,28,28,.10) !important; }
+.ssf-file {
+  width:100%; padding:.7rem .9rem; background:var(--ssf-soft-blue);
+  border:1px dashed #B9C7D6; border-radius:.85rem; font-size:.85rem; color:var(--ssf-charcoal); cursor:pointer;
+}
+.ssf-file:focus { outline:none; border-color:var(--ssf-green); box-shadow:0 0 0 4px rgba(23,100,71,.12); }
+.ssf-file::file-selector-button {
+  margin-right:.85rem; padding:.5rem 1rem; border:0; border-radius:.6rem;
+  background:var(--ssf-navy); color:var(--ssf-white); font-weight:700; font-size:.8rem; cursor:pointer;
+}
+.ssf-file::file-selector-button:hover { background:var(--ssf-green); }
+
+.ssf-check { display:flex; align-items:flex-start; gap:.6rem; font-size:.85rem; color:var(--ssf-charcoal); }
+.ssf-check input { margin-top:.2rem; accent-color:var(--ssf-green); width:1.05rem; height:1.05rem; }
+
+.ssf-form-note {
+  border-radius:1rem; border:1px solid #D8E1EA; background:var(--ssf-soft-blue);
+  padding:1rem 1.1rem; font-size:.85rem; line-height:1.55; color:#42546A;
+}
+.ssf-alert { border-radius:1rem; padding:.85rem 1rem; font-size:.85rem; font-weight:600; display:flex; gap:.55rem; align-items:flex-start; }
+.ssf-alert-error { background:#FDF2F2; border:1px solid #F3C9C9; color:#B91C1C; }
+.ssf-alert-success { background:#F0FAF4; border:1px solid #BFE6CE; color:var(--ssf-green); }
+.ssf-alert-info { background:var(--ssf-soft-blue); border:1px solid #D8E1EA; color:var(--ssf-charcoal); }
+
+.ssf-submit {
+  width:100%; display:inline-flex; align-items:center; justify-content:center; gap:.7rem;
+  padding:1rem 1.25rem; border:0; border-radius:1rem; cursor:pointer;
+  background:var(--ssf-navy); color:var(--ssf-white); font-weight:800; font-size:1rem;
+  transition:background-color .18s ease, transform .18s ease, box-shadow .18s ease;
+}
+.ssf-submit:hover:not(:disabled) { background:var(--ssf-green); transform:translateY(-1px); box-shadow:0 14px 30px -18px rgba(23,100,71,.6); }
+.ssf-submit:disabled { opacity:.6; cursor:not-allowed; }
+
+.ssf-success { text-align:center; padding:2.5rem 1.25rem; }
+.ssf-success-icon { width:4rem; height:4rem; margin:0 auto 1rem; border-radius:9999px; display:flex; align-items:center; justify-content:center; font-size:1.9rem; background:#EAF7EF; color:var(--ssf-green); }
+
+.ssf-form-head { border-bottom:1px solid #E7EDF1; padding-bottom:1.1rem; }
+.ssf-eyebrow { font-size:.68rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--ssf-green); }
+.ssf-form-title { font-size:1.6rem; font-weight:900; color:var(--ssf-navy); margin-top:.35rem; letter-spacing:-.01em; }
+.ssf-form-sub { font-size:.9rem; color:#617389; margin-top:.35rem; }
