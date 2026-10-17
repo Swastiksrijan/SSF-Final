@@ -4,8 +4,8 @@ const FloatingTicker = () => {
     const valuesText = "सेवा • समर्पण • समग्र विकास";
 
     return (
-        <div className="relative z-30 mt-3 px-4 md:px-10">
-            <div className="mx-auto grid max-w-7xl gap-4 md:gap-5 lg:grid-cols-2 lg:items-stretch">
+        <div className="relative z-30 -mt-5 px-4 md:px-10">
+            <div className="mx-auto grid max-w-6xl gap-4 md:gap-5 lg:grid-cols-2 lg:items-stretch">
                 {/* Left — identity + scrolling values ticker */}
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}
