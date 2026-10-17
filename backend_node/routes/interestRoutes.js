@@ -148,6 +148,20 @@ router.patch('/admin/interests/:id/status', requireAdminAuth, async (req, res) =
     } catch (error) { console.error('❌ Interest status update error:', error); return res.status(500).json({ message: 'Unable to update status.' }); }
 });
 
+router.patch('/admin/interests/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const interest = await Interest.findByPk(req.params.id);
+        if (!interest) return res.status(404).json({ message: 'Request not found.' });
+        const allowed = ['fullName', 'email', 'phone', 'category', 'message'];
+        const updates = {};
+        for (const field of allowed) if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) updates[field] = req.body[field];
+        if (updates.email !== undefined) { updates.email = String(updates.email || '').trim().toLowerCase(); if (!/^\S+@\S+\.\S+$/.test(updates.email)) return res.status(400).json({ message: 'Please enter a valid email address.' }); }
+        if (updates.fullName !== undefined) { updates.fullName = String(updates.fullName || '').trim(); if (updates.fullName.length < 3) return res.status(400).json({ message: 'Please enter the name.' }); }
+        await interest.update(updates);
+        return res.json({ status: 'success', message: 'Request updated.', data: interest });
+    } catch (error) { console.error('❌ Interest update error:', error); return res.status(500).json({ message: 'Unable to update request.' }); }
+});
+
 const deleteInterest = async (req, res) => {
     try {
         const interest = await Interest.findByPk(req.params.id);

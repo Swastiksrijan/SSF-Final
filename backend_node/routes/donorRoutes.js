@@ -82,6 +82,64 @@ router.get('/admin/donors', requireAdminAuth, async (_req, res) => {
     }
 });
 
+// A donation certificate is issued once the payment is confirmed. Its ID is
+// derived from the donor's own number so the certificate and the receipt stay
+// linked to the same person without a second sequence.
+const donorCertificateId = (donor) => (donor.donorId ? String(donor.donorId).replace('SSF-DON-', 'SSF-DONCERT-') : null);
+
+// One admin endpoint covers the whole donor record: status, payment
+// confirmation and the editable contact fields. Keeping it single means the
+// audit trail records one clear action instead of a spray of partial updates.
+router.patch('/admin/donors/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const donor = await Donor.findByPk(req.params.id);
+        if (!donor) return res.status(404).json({ message: 'Donor record not found.' });
+        const allowed = ['fullName', 'email', 'phone', 'city', 'state', 'country', 'donationPurpose', 'amount', 'pan', 'address', 'paymentMode', 'receiptPreference', 'paymentStatus', 'status', 'notes'];
+        const updates = {};
+        for (const field of allowed) if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) updates[field] = req.body[field];
+        if (updates.email !== undefined) {
+            updates.email = String(updates.email || '').trim().toLowerCase();
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(updates.email)) return res.status(400).json({ message: 'Please enter a valid email address.' });
+        }
+        if (updates.fullName !== undefined) { updates.fullName = String(updates.fullName || '').trim(); if (updates.fullName.length < 3) return res.status(400).json({ message: 'Please enter the donor name.' }); }
+        if (updates.phone !== undefined) { updates.phone = String(updates.phone || '').replace(/\D/g, ''); if (updates.phone.length < 7 || updates.phone.length > 15) return res.status(400).json({ message: 'Please enter a valid mobile number.' }); }
+        if (updates.pan !== undefined) { updates.pan = String(updates.pan || '').trim().toUpperCase() || null; if (updates.pan && !/^[A-Z]{5}[0-9]{4}[A-Z]$/.test(updates.pan)) return res.status(400).json({ message: 'Please enter a valid PAN (e.g. AAKAS7123H) or leave it blank.' }); }
+        if (updates.amount !== undefined) updates.amount = updates.amount === null || updates.amount === '' ? null : Number(updates.amount);
+        if (updates.status !== undefined && !['new', 'contacted', 'completed'].includes(String(updates.status))) return res.status(400).json({ message: 'Invalid donor status.' });
+        if (updates.paymentStatus !== undefined && !['pending', 'paid', 'failed', 'offline'].includes(String(updates.paymentStatus))) return res.status(400).json({ message: 'Invalid payment status.' });
+        // Confirming the payment issues the donation certificate ID exactly once.
+        // A legacy row may predate donorId, so mint one from the same scheme the
+        // public form uses rather than leaving the certificate unidentifiable.
+        if (['paid', 'offline'].includes(String(updates.paymentStatus || donor.paymentStatus)) && !donor.certId) {
+            if (!donor.donorId) {
+                const now = new Date();
+                const monthYear = `${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getFullYear()).slice(-2)}`;
+                updates.donorId = `SSF-DON-${monthYear}-${String((await Donor.count()) + 1).padStart(4, '0')}`;
+            }
+            updates.certId = donorCertificateId({ donorId: updates.donorId || donor.donorId });
+        }
+        await donor.update(updates);
+        return res.json({ status: 'success', message: 'Donor record updated.', donor: donor.toJSON() });
+    } catch (error) {
+        console.error('❌ Admin donor update error:', error);
+        return res.status(500).json({ message: 'Unable to update donor record.' });
+    }
+});
+
+router.patch('/admin/donors/:id/status', requireAdminAuth, async (req, res) => {
+    try {
+        const donor = await Donor.findByPk(req.params.id);
+        if (!donor) return res.status(404).json({ message: 'Donor record not found.' });
+        const status = String(req.body?.status || '').trim().toLowerCase();
+        if (!['new', 'contacted', 'completed'].includes(status)) return res.status(400).json({ message: 'Invalid donor status.' });
+        await donor.update({ status });
+        return res.json({ status: 'success', message: `Donor status changed to ${status}.`, donor: donor.toJSON() });
+    } catch (error) {
+        console.error('❌ Admin donor status error:', error);
+        return res.status(500).json({ message: 'Unable to change donor status.' });
+    }
+});
+
 const removeStoredFile = (storedPath) => { if (!storedPath) return; const filePath = path.join(__dirname, '..', String(storedPath).replace(/^\/+/, '')); try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Donor upload cleanup failed:', error.message); } };
 
 router.delete('/admin/donors/:id', requireAdminAuth, async (req, res) => {

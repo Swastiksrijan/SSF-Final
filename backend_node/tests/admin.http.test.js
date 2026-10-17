@@ -17,6 +17,7 @@ mem.public.registerEnum('enum_Donors_paymentStatus', ['pending', 'paid', 'failed
 mem.public.registerEnum('enum_Donors_status', ['new', 'contacted', 'completed']);
 mem.public.registerEnum('enum_Interests_interestType', ['movement', 'partner', 'volunteer', 'member']);
 mem.public.registerEnum('enum_Interests_status', ['new', 'contacted', 'approved', 'rejected', 'closed']);
+mem.public.registerEnum('enum_ContactMessages_status', ['new', 'contacted', 'closed']);
 mem.public.registerEnum('enum_InternshipApplications_status', ['pending', 'reviewed', 'selected', 'completed', 'rejected']);
 mem.public.registerEnum('enum_RoleDocuments_role', ['donor', 'intern', 'student', 'volunteer_teacher', 'skill_volunteer', 'ambassador']);
 mem.public.registerEnum('enum_RoleDocuments_documentType', ['identity_card', 'certificate', 'joining_letter', 'completion_certificate', 'participation_certificate', 'training_certificate', 'appreciation_certificate', 'outstanding_contribution_certificate', 'partner_recognition']);
@@ -30,7 +31,7 @@ mem.public.interceptQueries((sql) => {
     try { mem.public.none(sql.replace(/DECIMAL\(12,2\)/g, 'NUMERIC(12,2)')); } finally { rewritingDonors = false; }
     return [];
   }
-  if (/CREATE TABLE IF NOT EXISTS "(Interests|RoleDocuments)"/.test(sql)) return [];
+  if (/CREATE TABLE IF NOT EXISTS "RoleDocuments"/.test(sql)) return [];
   return null;
 });
 const pgAdapter = mem.adapters.createPg();
@@ -75,6 +76,7 @@ async function main() {
   const Donor = require('../models/Donor');
   const InternshipApplication = require('../models/InternshipApplication');
   const Interest = require('../models/Interest');
+  const ContactMessage = require('../models/ContactMessage');
   const RoleDocument = require('../models/RoleDocument');
   const AuditLog = require('../models/AuditLog');
   await sequelize.sync({ force: true });
@@ -83,7 +85,7 @@ async function main() {
   app.use(express.json());
   const { adminAuditTrail } = require('../middleware/adminAuditTrail');
   app.use('/api', adminAuditTrail());
-  for (const route of ['adminDashboardRoutes', 'memberCertificateRoutes', 'volunteerAdminRoutes', 'userPortalRoutes', 'submissionRoutes', 'portalParticipationRoutes']) {
+  for (const route of ['adminDashboardRoutes', 'memberCertificateRoutes', 'volunteerAdminRoutes', 'userPortalRoutes', 'submissionRoutes', 'portalParticipationRoutes', 'donorRoutes', 'internshipRoutes', 'contactRoutes', 'interestRoutes', 'userDocumentRoutes']) {
     app.use('/api', require(`../routes/${route}`));
   }
   const server = app.listen(0);
@@ -161,6 +163,50 @@ async function main() {
     const after = (await json('/api/admin/audit-logs', auth)).body;
     ok('a failed delete is still recorded', after.length > before, `${before} -> ${after.length}`);
     ok('failed actions are marked unsuccessful', after.some((r) => r.detail?.ok === false));
+
+    console.log('\nDonor admin: status, payment confirmation and certificate ID');
+    const donor = await Donor.findOne({ where: { email: 'rakesh@example.com' } });
+    ok('donor status requires admin auth', (await send(`/api/admin/donors/${donor.id}/status`, 'PATCH', { status: 'contacted' })).status === 401);
+    const donorStatus = await send(`/api/admin/donors/${donor.id}/status`, 'PATCH', { status: 'contacted' }, auth);
+    ok('donor status update works', donorStatus.status === 200 && donorStatus.body.donor?.status === 'contacted', JSON.stringify(donorStatus.body).slice(0, 160));
+    ok('invalid donor status is rejected', (await send(`/api/admin/donors/${donor.id}/status`, 'PATCH', { status: 'nonsense' }, auth)).status === 400);
+    const donorEdit = await send(`/api/admin/donors/${donor.id}`, 'PATCH', { fullName: 'Rakesh Kumar Gupta', phone: '9876500011', pan: 'AAKAS7123H' }, auth);
+    ok('donor fields are editable', donorEdit.status === 200 && donorEdit.body.donor?.fullName === 'Rakesh Kumar Gupta', JSON.stringify(donorEdit.body).slice(0, 160));
+    ok('donor rejects a bad PAN', (await send(`/api/admin/donors/${donor.id}`, 'PATCH', { pan: 'bad' }, auth)).status === 400);
+    const donorCert = await send(`/api/admin/donors/${donor.id}`, 'PATCH', { paymentStatus: 'paid' }, auth);
+    ok('confirming the payment issues a donor certificate ID', /^SSF-DONCERT-/.test(String(donorCert.body.donor?.certId)), String(donorCert.body.donor?.certId));
+    ok('donor certificate verifies', (await json(`/api/verify/${donorCert.body.donor.certId}`)).body?.valid === true, JSON.stringify((await json(`/api/verify/${donorCert.body.donor.certId}`)).body));
+
+    console.log('\nEdit endpoints for every application type');
+    const vol = await Volunteer.findOne({ where: { email: 'vikram@example.com' } });
+    const volEdit = await send(`/api/admin/volunteers/${vol.id}`, 'PATCH', { email: 'vikram.rao@example.com', idType: 'PAN Card', identityNumber: 'AAKAS7123H', position: 'Field Lead' }, auth);
+    ok('volunteer edit accepts email, ID proof and position', volEdit.status === 200 && volEdit.body.volunteer?.email === 'vikram.rao@example.com' && volEdit.body.volunteer?.position === 'Field Lead', JSON.stringify(volEdit.body).slice(0, 200));
+    const member = await Member.findOne({ where: { email: 'asha@example.com' } });
+    const memEdit = await send(`/api/admin/members/${member.id}`, 'PATCH', { idProofType: 'Aadhaar Card', identityNumber: '1234 5678 9012', memberType: 'life' }, auth);
+    ok('member edit accepts ID proof and role', memEdit.status === 200 && memEdit.body.member?.idProofType === 'Aadhaar Card' && memEdit.body.member?.memberType === 'life', JSON.stringify(memEdit.body).slice(0, 200));
+    const intern = await InternshipApplication.findOne({ where: { email: 'neha@example.com' } });
+    const intEdit = await send(`/api/admin/internships/${intern.id}`, 'PATCH', { college: 'XYZ College', duration: '3 months' }, auth);
+    ok('internship edit works', intEdit.status === 200 && intEdit.body.data?.college === 'XYZ College', JSON.stringify(intEdit.body).slice(0, 160));
+    const contact = await ContactMessage.create({ firstName: 'Test', email: 'contact@example.com', message: 'Hello there, I need help.', status: 'new' });
+    const contactEdit = await send(`/api/admin/contacts/${contact.id}`, 'PATCH', { status: 'contacted', phone: '9876500022' }, auth);
+    ok('contact edit works', contactEdit.status === 200 && contactEdit.body.data?.status === 'contacted', JSON.stringify(contactEdit.body).slice(0, 160));
+    const interest = await Interest.create({ interestType: 'partner', fullName: 'Partner Person', email: 'partner@example.com', phone: '9876500033', message: 'We would like to partner with SSF.', status: 'new' });
+    const interestEdit = await send(`/api/admin/interests/${interest.id}`, 'PATCH', { category: 'CSR Partner', phone: '9876500044' }, auth);
+    ok('interest edit works', interestEdit.status === 200 && interestEdit.body.data?.category === 'CSR Partner', JSON.stringify(interestEdit.body).slice(0, 160));
+
+    console.log('\nIssued ID re-issue and revoke');
+    const reissue = await send(`/api/admin/volunteers/${vol.id}/reissue`, 'POST', {}, auth);
+    ok('volunteer IDs can be re-issued', reissue.status === 400 || reissue.status === 200, String(reissue.status));
+    await send(`/api/admin/volunteers/${vol.id}/status`, 'PATCH', { status: 'approved' }, auth);
+    const reissue2 = await send(`/api/admin/volunteers/${vol.id}/reissue`, 'POST', {}, auth);
+    ok('an approved volunteer re-issue returns fresh IDs', reissue2.status === 200 && /^SSF-VOL-/.test(String(reissue2.body.volunteerId)), JSON.stringify(reissue2.body).slice(0, 160));
+    const revoke = await send(`/api/admin/volunteers/${vol.id}/revoke`, 'POST', {}, auth);
+    ok('volunteer IDs can be revoked', revoke.status === 200, JSON.stringify(revoke.body).slice(0, 160));
+    const revoked = await Volunteer.findByPk(vol.id);
+    ok('a revoked volunteer keeps no IDs', revoked.volunteerId === null && revoked.certId === null && revoked.status === 'rejected', JSON.stringify({ id: revoked.volunteerId, cert: revoked.certId, status: revoked.status }));
+    ok('a revoked volunteer ID no longer verifies', (await json(`/api/verify/${reissue2.body.volunteerId}`)).status === 404);
+    ok('member re-issue requires an approved member', (await send(`/api/admin/members/${member.id}/reissue`, 'POST', {}, auth)).status === 400, '');
+    ok('member revoke reports nothing to revoke', (await send(`/api/admin/members/${member.id}/revoke`, 'POST', {}, auth)).status === 400, '');
   } catch (error) {
     fail += 1;
     console.error('\n  \u2717 unexpected failure:', error);

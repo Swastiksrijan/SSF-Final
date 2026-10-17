@@ -19,6 +19,8 @@ const COLUMNS = [
   // Donors can attach a PAN / identity document and a profile photo.
   { table: 'Donors', column: 'idDocumentPath', type: 'VARCHAR(255)' },
   { table: 'Donors', column: 'profilePhotoPath', type: 'VARCHAR(255)' },
+  // A donation certificate is issued once the payment is confirmed.
+  { table: 'Donors', column: 'certId', type: 'VARCHAR(255)' },
   // Membership approval is gated on a confirmed payment, so the payment mode
   // and the UPI/UTR/receipt reference are recorded for audit.
   { table: 'Members', column: 'paymentMode', type: 'VARCHAR(255)' },

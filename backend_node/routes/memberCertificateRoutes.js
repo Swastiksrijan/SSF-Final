@@ -66,11 +66,13 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
     try {
         const member = await Member.findByPk(req.params.id);
         if (!member) return res.status(404).json({ message: 'Member not found' });
-        const allowed = ['fullName', 'email', 'phone', 'memberType', 'message', 'status', 'paymentStatus', 'paymentMode', 'paymentReference', 'paymentId', 'paymentAmount', 'paymentLinkId', 'reviewNote'];
+        const allowed = ['fullName', 'email', 'phone', 'memberType', 'message', 'status', 'paymentStatus', 'paymentMode', 'paymentReference', 'paymentId', 'paymentAmount', 'paymentLinkId', 'reviewNote', 'idProofType', 'identityNumber'];
         const updates = {};
         for (const field of allowed) if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) updates[field] = req.body[field];
         if (updates.email) updates.email = String(updates.email).trim().toLowerCase();
         if (updates.reviewNote !== undefined) updates.reviewNote = String(updates.reviewNote || '').trim() || null;
+        if (updates.idProofType !== undefined) updates.idProofType = String(updates.idProofType || '').trim() || null;
+        if (updates.identityNumber !== undefined) updates.identityNumber = String(updates.identityNumber || '').trim() || null;
         if (updates.memberType && String(updates.memberType).toLowerCase() === 'website_signup') return res.status(400).json({ message: 'website_signup is an account type, not a membership role.' });
         if (updates.status && !['pending', 'changes_requested', 'approved', 'rejected'].includes(String(updates.status))) return res.status(400).json({ message: 'Invalid member status' });
         if (updates.paymentStatus && !['not_required', 'pending', 'paid', 'failed'].includes(String(updates.paymentStatus))) return res.status(400).json({ message: 'Invalid payment status' });
@@ -119,6 +121,38 @@ router.patch('/admin/members/:id/status', requireAdminAuth, async (req, res) => 
         await member.update(updates);
         return res.json({ status: 'success', message: `Member status changed to ${status}.`, member: member.toJSON() });
     } catch (error) { console.error('❌ Member status error:', error); return res.status(500).json({ message: 'Unable to change member status.' }); }
+});
+
+// Re-issue an approved member's official IDs with a fresh number. Used when an
+// ID was issued in error or needs to be replaced; the old number stops
+// verifying because the record only keeps the latest one.
+router.post('/admin/members/:id/reissue', requireAdminAuth, async (req, res) => {
+    try {
+        const member = await Member.findByPk(req.params.id);
+        if (!member) return res.status(404).json({ message: 'Member not found' });
+        if (!isRealMembership(member)) return res.status(400).json({ message: 'This is an SSF account, not a membership application.' });
+        if (member.status !== 'approved') return res.status(400).json({ message: 'Only an approved member has IDs to re-issue.' });
+        const number = await getMemberNumber();
+        const issuedAt = new Date();
+        const period = getMonthYearCode(issuedAt);
+        const memberId = `SSF-MEM-${period}-${String(number).padStart(4, '0')}`;
+        const certId = `SSF-MCERT-${period}-${String(number).padStart(4, '0')}`;
+        await member.update({ memberId, certId, certificateType: 'Membership Certificate', certificateIssuedAt: issuedAt });
+        return res.json({ status: 'success', message: 'Member IDs re-issued.', memberId, certId, certificateIssuedAt: issuedAt });
+    } catch (error) { console.error('❌ Member re-issue error:', error); return res.status(500).json({ message: 'Unable to re-issue member IDs.' }); }
+});
+
+// Revoke an issued membership: the IDs are cleared and the record is rejected,
+// so the certificate and ID card stop verifying immediately.
+router.post('/admin/members/:id/revoke', requireAdminAuth, async (req, res) => {
+    try {
+        const member = await Member.findByPk(req.params.id);
+        if (!member) return res.status(404).json({ message: 'Member not found' });
+        if (!member.memberId && !member.certId) return res.status(400).json({ message: 'This member has no issued IDs to revoke.' });
+        const reason = String(req.body?.reviewNote || '').trim() || null;
+        await member.update({ status: 'rejected', memberId: null, certId: null, certificateType: null, certificateIssuedAt: null, reviewNote: reason });
+        return res.json({ status: 'success', message: 'Membership IDs revoked. The ID card and certificate no longer verify.' });
+    } catch (error) { console.error('❌ Member revoke error:', error); return res.status(500).json({ message: 'Unable to revoke member IDs.' }); }
 });
 
 router.delete('/admin/members/:id', requireAdminAuth, async (req, res) => {

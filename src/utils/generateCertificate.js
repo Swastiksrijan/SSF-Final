@@ -45,12 +45,18 @@ const getRoleLabel = (role, isMember) => {
   return value ? value.replace(/\b\w/g, (char) => char.toUpperCase()) : "Volunteer";
 };
 
+// A donor gets an appreciation certificate and a photo ID card, so the shared
+// generators need to recognise the role instead of defaulting to "Volunteer".
+const isDonorRole = (role) => String(role || "").trim().toLowerCase().includes("donor");
+
 export const generateIdentityCard = async ({ name, role, date, officialId, certId, photoUrl }) => {
   const normalizedRole = String(role || "volunteer").toLowerCase();
   const isMember = normalizedRole === "member" || normalizedRole.includes("membership");
-  const typeLabel = isMember ? "MEMBERSHIP" : "VOLUNTEER";
-  const idLabel = isMember ? "MEMBER ID" : "VOLUNTEER ID";
-  const roleLabel = getRoleLabel(role, isMember);
+  const isDonor = !isMember && normalizedRole.includes("donor");
+  const typeLabel = isMember ? "MEMBERSHIP" : isDonor ? "DONOR" : "VOLUNTEER";
+  const idLabel = isMember ? "MEMBER ID" : isDonor ? "DONOR ID" : "VOLUNTEER ID";
+  const cardLabel = isMember ? "MEMBER" : isDonor ? "DONOR" : "VOLUNTEER";
+  const roleLabel = isDonor ? "Donor" : getRoleLabel(role, isMember);
   const verificationUrl = certId ? `https://swastiksrijan.in/verify/${encodeURIComponent(certId)}` : null;
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [86, 54] });
   const W = 86; const H = 54;
@@ -69,7 +75,7 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   doc.setFont("helvetica", "bold"); doc.setTextColor("#FFFFFF"); doc.setFontSize(6.2);
   doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", 16, 6.6);
   doc.setFontSize(3.8); doc.setTextColor("#EAF0F6");
-  doc.text(isMember ? "OFFICIAL MEMBERSHIP IDENTITY CARD" : "OFFICIAL VOLUNTEER IDENTITY CARD", 16, 10.7);
+  doc.text(isMember ? "OFFICIAL MEMBERSHIP IDENTITY CARD" : isDonor ? "OFFICIAL DONOR IDENTITY CARD" : "OFFICIAL VOLUNTEER IDENTITY CARD", 16, 10.7);
   doc.setFontSize(3.1); doc.setTextColor("#FFFFFF"); doc.text(typeLabel, W - 5, 6.6, { align: "right" });
 
   const photoX = 5; const photoY = 18; const photoW = 22; const photoH = 27;
@@ -91,7 +97,7 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   doc.setDrawColor(gold); doc.setLineWidth(0.7); doc.roundedRect(photoX, photoY, photoW, photoH, 1.8, 1.8);
   doc.setFillColor(navy); doc.roundedRect(photoX, 42.5, photoW, 2.5, 0.8, 0.8, "F");
   doc.setFont("helvetica", "bold"); doc.setFontSize(3.2); doc.setTextColor("#FFFFFF");
-  doc.text(isMember ? "MEMBER" : "VOLUNTEER", photoX + photoW / 2, 44.25, { align: "center" });
+  doc.text(cardLabel, photoX + photoW / 2, 44.25, { align: "center" });
 
   const detailsX = 30;
   doc.setFont("helvetica", "bold"); doc.setTextColor(navy); fitText(doc, String(name || "Member"), 31, 9, 6); doc.text(String(name || "Member"), detailsX, 21.8);
@@ -160,15 +166,17 @@ export const generateCertificate = async (name, role, date, certId = null, membe
   const normalizedType = type.toLowerCase();
   const normalizedRole = String(role || "").trim();
   const isMember = normalizedRole.toLowerCase() === "member" || normalizedRole.toLowerCase().includes("membership");
+  const isDonor = !isMember && isDonorRole(normalizedRole);
 
   let heading = "CERTIFICATE OF APPRECIATION";
   if (isMember) heading = "CERTIFICATE OF MEMBERSHIP";
+  else if (isDonor) heading = "CERTIFICATE OF APPRECIATION";
   else if (normalizedType.includes("participation")) heading = "CERTIFICATE OF PARTICIPATION";
   else if (normalizedType.includes("experience")) heading = "CERTIFICATE OF EXPERIENCE";
   else if (normalizedType.includes("completion")) heading = "CERTIFICATE OF COMPLETION";
   else if (normalizedType.includes("service")) heading = "CERTIFICATE OF SERVICE";
 
-  const roleLabel = getRoleLabel(normalizedRole || (isMember ? "Member" : "Volunteer"), isMember);
+  const roleLabel = isDonor ? "Donor" : getRoleLabel(normalizedRole || (isMember ? "Member" : "Volunteer"), isMember);
   const officialId = memberId || (isMember ? null : deriveVolunteerId(certId));
   const verificationUrl = certId ? `https://swastiksrijan.in/verify/${encodeURIComponent(certId)}` : null;
 
@@ -250,7 +258,7 @@ export const generateCertificate = async (name, role, date, certId = null, membe
   doc.setFont("helvetica", "bold");
   doc.setTextColor(navy);
   doc.setFontSize(7.1);
-  if (officialId) doc.text(isMember ? "MEMBER ID" : "VOLUNTEER ID", 28, 147);
+  if (officialId) doc.text(isMember ? "MEMBER ID" : isDonor ? "DONOR ID" : "VOLUNTEER ID", 28, 147);
   if (certId) doc.text("OFFICIAL CERTIFICATE ID", 28, 158);
   doc.text("DATE OF ISSUE", 28, 169);
 
@@ -268,7 +276,7 @@ export const generateCertificate = async (name, role, date, certId = null, membe
     const sigW = 38;
     const sigH = Math.min((signature.height / signature.width) * sigW, 15);
     doc.addImage(signature, "PNG", sigX - sigW / 2, 149, sigW, sigH);
-  } catch {}
+  } catch { /* a missing signature image must not block certificate download */ }
   doc.setDrawColor("#26343D");
   doc.setLineWidth(0.45);
   doc.line(sigX - 28, 168, sigX + 28, 168);

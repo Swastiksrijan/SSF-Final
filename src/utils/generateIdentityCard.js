@@ -30,7 +30,16 @@ const getRoleLabel = (role, isMember) => {
     return value ? value.replace(/\b\w/g, (char) => char.toUpperCase()) : "Volunteer";
 };
 
-const getImageFormat = (url) => {\n    const match = String(url || "").match(/^data:image\\/([a-z0-9.+-]+);/i);\n    if (match) {\n        const type = match[1].toLowerCase();\n        return type === "jpg" || type === "jpeg" ? "JPEG" : type === "webp" ? "WEBP" : "PNG";\n    }\n    return "JPEG";\n};\n\nconst addPhoto = async (doc, photoUrl, x, y, w, h, gold) => {
+const getImageFormat = (url) => {
+    const match = String(url || "").match(/^data:image\/([a-z0-9.+-]+);/i);
+    if (match) {
+        const type = match[1].toLowerCase();
+        return type === "jpg" || type === "jpeg" ? "JPEG" : type === "webp" ? "WEBP" : "PNG";
+    }
+    return "JPEG";
+};
+
+const addPhoto = async (doc, photoUrl, x, y, w, h, gold) => {
     doc.setFillColor("#EAF0F6");
     doc.roundedRect(x, y, w, h, 1.8, 1.8, "F");
     if (!photoUrl) return false;

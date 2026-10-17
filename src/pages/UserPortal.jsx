@@ -169,6 +169,8 @@ export default function UserPortal() {
     approvedVolunteer && { title: "Volunteer ID Card", id: approvedVolunteer.volunteerId, href: approvedVolunteer.idCardUrl, kind: "vol-id" },
     approvedVolunteer && { title: "Volunteer Certificate", id: approvedVolunteer.certId, href: approvedVolunteer.certificateUrl, kind: "vol-cert" },
     ...donors.filter((item) => item.receiptUrl).map((item) => ({ title: "Donation Receipt", id: item.donorId, href: item.receiptUrl, kind: "receipt" })),
+    ...donors.filter((item) => item.idCardUrl).map((item) => ({ title: "Donor ID Card", id: item.donorId, href: item.idCardUrl, kind: "donor-id", donor: item })),
+    ...donors.filter((item) => item.certificateUrl).map((item) => ({ title: "Donation Certificate", id: item.certId || item.donorId, href: item.certificateUrl, kind: "donor-cert", donor: item })),
     selectedIntern?.internId && { title: "Internship ID Card", id: selectedIntern.internId, href: selectedIntern.idCardUrl, kind: "intern-id" },
     selectedIntern?.joiningLetterId && { title: "Internship Joining Letter", id: selectedIntern.joiningLetterId, href: selectedIntern.joiningLetterUrl, kind: "intern-letter" },
     selectedIntern?.completionCertId && { title: "Internship Completion Certificate", id: selectedIntern.completionCertId, href: selectedIntern.completionCertificateUrl, kind: "intern-cert" },
@@ -224,6 +226,14 @@ export default function UserPortal() {
   const downloadVolunteerIdCard = async () => {
     try { await generateIdentityCard({ name: approvedVolunteer.fullName, role: approvedVolunteer.volunteerType || "volunteer", date: dateText(approvedVolunteer.approvedAt), officialId: approvedVolunteer.volunteerId, certId: approvedVolunteer.certId, photoUrl: photo }); }
     catch (e) { setError(e.message || "Unable to generate the ID card PDF."); }
+  };
+  const downloadDonorIdCard = async (donor) => {
+    try { await generateIdentityCard({ name: donor.fullName, role: "donor", date: dateText(donor.createdAt), officialId: donor.donorId, certId: donor.certId, photoUrl: fileUrl(donor.profilePhotoPath) }); }
+    catch (e) { setError(e.message || "Unable to generate the ID card PDF."); }
+  };
+  const downloadDonorCertificate = async (donor) => {
+    try { await generateCertificate(donor.fullName, "donor", dateText(donor.createdAt), donor.certId || donor.donorId, donor.donorId, "Appreciation"); }
+    catch (e) { setError(e.message || "Unable to generate the certificate PDF."); }
   };
   const openOfficial = (href) => window.open(withToken(href, user.id), "_blank", "noopener,noreferrer");
 
@@ -421,6 +431,8 @@ export default function UserPortal() {
                         {doc.kind === "member-id" && <button type="button" onClick={downloadMemberIdCard} className="rounded-xl bg-[#12345A] text-white px-4 py-2 text-sm font-bold">Download PDF</button>}
                         {doc.kind === "vol-cert" && <button type="button" onClick={downloadVolunteerCertificate} className="rounded-xl bg-[#12345A] text-white px-4 py-2 text-sm font-bold">Download PDF</button>}
                         {doc.kind === "vol-id" && <button type="button" onClick={downloadVolunteerIdCard} className="rounded-xl bg-[#12345A] text-white px-4 py-2 text-sm font-bold">Download PDF</button>}
+                        {doc.kind === "donor-id" && <button type="button" onClick={() => downloadDonorIdCard(doc.donor)} className="rounded-xl bg-[#12345A] text-white px-4 py-2 text-sm font-bold">Download PDF</button>}
+                        {doc.kind === "donor-cert" && <button type="button" onClick={() => downloadDonorCertificate(doc.donor)} className="rounded-xl bg-[#12345A] text-white px-4 py-2 text-sm font-bold">Download PDF</button>}
                         {doc.href && <button type="button" onClick={() => openOfficial(doc.href)} className="rounded-xl bg-white border border-[#D8E1EA] text-[#12345A] px-4 py-2 text-sm font-bold">Official copy</button>}
                       </div>
                     </div>

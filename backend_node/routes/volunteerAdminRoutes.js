@@ -84,6 +84,10 @@ router.patch('/admin/volunteers/:id', requireAdminAuth, async (req, res) => {
         const updates = {};
         for (const field of allowed) if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) updates[field] = req.body[field];
         if (updates.email) updates.email = String(updates.email).trim().toLowerCase();
+        if (updates.identityNumber !== undefined) updates.identityNumber = String(updates.identityNumber || '').trim() || null;
+        if (updates.idType !== undefined) updates.idType = String(updates.idType || '').trim() || null;
+        if (updates.volunteerType !== undefined) updates.volunteerType = String(updates.volunteerType || '').trim() || 'field';
+        if (updates.position !== undefined) updates.position = String(updates.position || '').trim() || null;
         if (updates.status && !['pending', 'changes_requested', 'approved', 'rejected'].includes(String(updates.status))) return res.status(400).json({ message: 'Invalid volunteer status' });
         if (updates.status === 'approved' && volunteer.status !== 'approved') {
             const approvedCount = await Volunteer.count({ where: { status: 'approved' } });
@@ -96,7 +100,8 @@ router.patch('/admin/volunteers/:id', requireAdminAuth, async (req, res) => {
             updates.certId = volunteer.certId || `SSF-VCERT-${period}-${String(approvedCount + 1).padStart(4, '0')}`;
             updates.reviewNote = null;
         }
-        if (updates.status === 'rejected' || updates.status === 'changes_requested') updates.isVerified = false;
+        if (updates.status === 'rejected') { updates.isVerified = false; updates.volunteerId = null; updates.certId = null; updates.approvedAt = null; }
+        else if (updates.status === 'changes_requested') updates.isVerified = false;
         await volunteer.update(updates);
         return res.json({ status: 'success', message: 'Volunteer record updated.', volunteer: volunteer.toJSON() });
     } catch (error) { console.error('❌ Volunteer update error:', error); return res.status(500).json({ message: 'Unable to update volunteer record.' }); }
@@ -109,6 +114,7 @@ router.patch('/admin/volunteers/:id/status', requireAdminAuth, async (req, res) 
         const status = String(req.body?.status || '').trim().toLowerCase();
         if (!['pending', 'changes_requested', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid volunteer status' });
         const updates = { status, isVerified: status === 'approved' };
+        if (status === 'rejected') { updates.volunteerId = null; updates.certId = null; updates.approvedAt = null; }
         if (req.body?.reviewNote !== undefined) updates.reviewNote = String(req.body.reviewNote || '').trim() || null;
         if (status === 'approved' && !volunteer.volunteerId) {
             const approvedCount = await Volunteer.count({ where: { status: 'approved' } });
@@ -122,6 +128,38 @@ router.patch('/admin/volunteers/:id/status', requireAdminAuth, async (req, res) 
         await volunteer.update(updates);
         return res.json({ status: 'success', message: `Volunteer status changed to ${status}.`, volunteer: volunteer.toJSON() });
     } catch (error) { console.error('❌ Volunteer status error:', error); return res.status(500).json({ message: 'Unable to change volunteer status.' }); }
+});
+
+// Re-issue an approved volunteer's official IDs with a fresh number (an ID
+// issued in error, or a replacement card). The previous number stops verifying
+// because the record keeps only the latest one.
+router.post('/admin/volunteers/:id/reissue', requireAdminAuth, async (req, res) => {
+    try {
+        const volunteer = await Volunteer.findByPk(req.params.id);
+        if (!volunteer) return res.status(404).json({ message: 'Volunteer not found' });
+        if (volunteer.status !== 'approved') return res.status(400).json({ message: 'Only an approved volunteer has IDs to re-issue.' });
+        const approvedCount = await Volunteer.count({ where: { status: 'approved' } });
+        const issuedAt = new Date();
+        const period = getMonthYearCode(issuedAt);
+        const number = String(approvedCount + 1).padStart(4, '0');
+        const volunteerId = `SSF-VOL-${period}-${number}`;
+        const certId = `SSF-VCERT-${period}-${number}`;
+        await volunteer.update({ volunteerId, certId, approvedAt: issuedAt, reviewNote: null });
+        return res.json({ status: 'success', message: 'Volunteer IDs re-issued.', volunteerId, certId, approvedAt: issuedAt });
+    } catch (error) { console.error('❌ Volunteer re-issue error:', error); return res.status(500).json({ message: 'Unable to re-issue volunteer IDs.' }); }
+});
+
+// Revoke an issued volunteer ID: the IDs are cleared and the record is rejected
+// so the ID card and certificate stop verifying immediately.
+router.post('/admin/volunteers/:id/revoke', requireAdminAuth, async (req, res) => {
+    try {
+        const volunteer = await Volunteer.findByPk(req.params.id);
+        if (!volunteer) return res.status(404).json({ message: 'Volunteer not found' });
+        if (!volunteer.volunteerId && !volunteer.certId) return res.status(400).json({ message: 'This volunteer has no issued IDs to revoke.' });
+        const reason = String(req.body?.reviewNote || '').trim() || null;
+        await volunteer.update({ status: 'rejected', isVerified: false, volunteerId: null, certId: null, approvedAt: null, reviewNote: reason });
+        return res.json({ status: 'success', message: 'Volunteer IDs revoked. The ID card and certificate no longer verify.' });
+    } catch (error) { console.error('❌ Volunteer revoke error:', error); return res.status(500).json({ message: 'Unable to revoke volunteer IDs.' }); }
 });
 
 router.delete('/admin/volunteers/:id', requireAdminAuth, async (req, res) => {

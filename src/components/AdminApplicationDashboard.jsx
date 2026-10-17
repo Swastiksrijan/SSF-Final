@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
-import { FaBriefcase, FaEnvelope, FaEye, FaHandshake, FaHandsHelping, FaHeart, FaIdCard, FaPen, FaTrash, FaUsers } from 'react-icons/fa';
+import { FaBan, FaBriefcase, FaCertificate, FaEnvelope, FaEye, FaHandshake, FaHandsHelping, FaHeart, FaIdCard, FaPen, FaRedo, FaTrash, FaUsers } from 'react-icons/fa';
 import { API_BASE_URL, ENDPOINTS } from '../config/api';
+import { generateCertificate, generateIdentityCard } from '../utils/generateCertificate';
 
 const TOKEN_KEY = 'ssf_admin_token';
 const tabs = [
@@ -38,6 +39,16 @@ const STATUS_CHOICES = {
   interest: ['new', 'contacted', 'approved', 'rejected', 'closed'],
 };
 
+const editEndpoints = (kind, id) => {
+  if (kind === 'volunteer') return ENDPOINTS.ADMIN_UPDATE_VOLUNTEER(id);
+  if (kind === 'member') return ENDPOINTS.ADMIN_UPDATE_MEMBER(id);
+  if (kind === 'donor') return ENDPOINTS.ADMIN_UPDATE_DONOR(id);
+  if (kind === 'internship') return ENDPOINTS.ADMIN_UPDATE_INTERNSHIP(id);
+  if (kind === 'contact') return ENDPOINTS.ADMIN_UPDATE_CONTACT(id);
+  if (kind === 'interest' || kind === 'volunteer-interest' || kind === 'member-interest') return ENDPOINTS.ADMIN_UPDATE_INTEREST(id);
+  return null;
+};
+
 const deleteEndpoints = (kind, id) => {
   const safeId = encodeURIComponent(id);
   if (kind === 'contact') return [`${API_BASE_URL}/api/admin/contacts/${safeId}/delete`, `${API_BASE_URL}/api/admin/contacts/${safeId}`];
@@ -49,6 +60,75 @@ const deleteEndpoints = (kind, id) => {
   return null;
 };
 
+// The fields each record type actually exposes for editing. Issued IDs are not
+// listed here — they are managed through the approve / re-issue / revoke flow.
+const EDIT_FIELDS = {
+  volunteer: [
+    { name: 'fullName', label: 'Full name', required: true },
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phone', label: 'Mobile number' },
+    { name: 'volunteerType', label: 'Volunteer type', type: 'select', options: [['field', 'Field Volunteer'], ['program', 'Program Volunteer'], ['professional', 'Professional Volunteer'], ['digital', 'Digital / Online Volunteer']] },
+    { name: 'position', label: 'Position / role' },
+    { name: 'idType', label: 'ID proof type', type: 'select', options: [['', '—'], ['Aadhaar Card', 'Aadhaar Card'], ['PAN Card', 'PAN Card'], ['Voter ID', 'Voter ID'], ['Driving Licence', 'Driving Licence'], ['Passport', 'Passport'], ['College / Student ID', 'College / Student ID'], ['Other Government ID', 'Other Government ID']] },
+    { name: 'identityNumber', label: 'ID number' },
+    { name: 'message', label: 'Message / notes', type: 'textarea' },
+  ],
+  member: [
+    { name: 'fullName', label: 'Full name', required: true },
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phone', label: 'Mobile number' },
+    { name: 'memberType', label: 'Membership role', type: 'select', options: [['general', 'General Member'], ['active', 'Active Member'], ['life', 'Life Member'], ['advisory', 'Advisory / Expert Member']] },
+    { name: 'idProofType', label: 'ID proof type', type: 'select', options: [['', '—'], ['Aadhaar Card', 'Aadhaar Card'], ['PAN Card', 'PAN Card'], ['Voter ID', 'Voter ID'], ['Driving Licence', 'Driving Licence'], ['Passport', 'Passport'], ['Other Government ID', 'Other Government ID']] },
+    { name: 'identityNumber', label: 'ID number' },
+    { name: 'message', label: 'Message / notes', type: 'textarea' },
+  ],
+  donor: [
+    { name: 'fullName', label: 'Full name', required: true },
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phone', label: 'Mobile number' },
+    { name: 'city', label: 'City' },
+    { name: 'state', label: 'State' },
+    { name: 'donationPurpose', label: 'Donation purpose' },
+    { name: 'amount', label: 'Amount (₹)', type: 'number' },
+    { name: 'pan', label: 'PAN' },
+    { name: 'paymentMode', label: 'Payment mode' },
+    { name: 'paymentStatus', label: 'Payment status', type: 'select', options: [['pending', 'Pending'], ['paid', 'Paid'], ['offline', 'Offline (bank/UPI)'], ['failed', 'Failed']] },
+    { name: 'notes', label: 'Notes', type: 'textarea' },
+  ],
+  internship: [
+    { name: 'fullName', label: 'Full name', required: true },
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phone', label: 'Mobile number' },
+    { name: 'college', label: 'College' },
+    { name: 'course', label: 'Course' },
+    { name: 'internshipType', label: 'Internship area' },
+    { name: 'duration', label: 'Duration' },
+    { name: 'startDate', label: 'Start date', type: 'date' },
+    { name: 'message', label: 'Message / notes', type: 'textarea' },
+  ],
+  contact: [
+    { name: 'firstName', label: 'First name', required: true },
+    { name: 'lastName', label: 'Last name' },
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phone', label: 'Phone' },
+    { name: 'message', label: 'Message', type: 'textarea' },
+  ],
+  interest: [
+    { name: 'fullName', label: 'Full name', required: true },
+    { name: 'email', label: 'Email', type: 'email' },
+    { name: 'phone', label: 'Phone' },
+    { name: 'category', label: 'Category' },
+    { name: 'message', label: 'Message', type: 'textarea' },
+  ],
+};
+
+const editKind = (kind) => (['volunteer-interest', 'member-interest'].includes(kind) ? 'interest' : kind);
+
+// An official ID exists once the record has been approved and given a number.
+const issuedId = (record) => ['volunteer', 'member'].includes(record.kind) && record.status === 'approved' && !!record.applicationId && !String(record.applicationId).startsWith('Record ') && !String(record.applicationId).startsWith('Account ');
+
+const isDonorIssued = (record) => record.kind === 'donor' && ['paid', 'offline'].includes(String(record.paymentStatus || '').toLowerCase());
+
 export default function AdminApplicationDashboard() {
   const [data, setData] = useState({ contacts: [], internships: [], interests: [], volunteers: [], members: [], donors: [] });
   const [tab, setTab] = useState('all');
@@ -56,6 +136,7 @@ export default function AdminApplicationDashboard() {
   const [error, setError] = useState('');
   const [authenticated, setAuthenticated] = useState(Boolean(localStorage.getItem(TOKEN_KEY)));
   const [busy, setBusy] = useState('');
+  const [editTarget, setEditTarget] = useState(null);
   const [query, setQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('');
   const [page, setPage] = useState(1);
@@ -92,9 +173,9 @@ export default function AdminApplicationDashboard() {
   const records = useMemo(() => {
     const contacts = data.contacts.map(x => ({ ...x, kind: 'contact', title: `${x.firstName || ''} ${x.lastName || ''}`.trim(), subtitle: x.email, detail: 'Contact inquiry', date: x.createdAt }));
     const internships = data.internships.map(x => ({ ...x, kind: 'internship', title: x.fullName, subtitle: x.email, detail: `${x.college || '—'} • ${x.course || '—'} • ${x.internshipType || 'Internship'} • ${x.duration || '—'}`, date: x.createdAt, applicationId: x.internId || `Application ${x.id}`, photoUrl: fileUrl(x.profilePhotoUrl || x.profilePhotoPath), idDocumentUrl: fileUrl(x.idDocumentUrl || x.idDocumentPath), resumeUrl: fileUrl(x.resumeUrl || x.resumePath), proofType: x.idType, proofNumber: x.identityNumber }));
-    const volunteers = data.volunteers.map(x => ({ ...x, kind: 'volunteer', title: x.fullName, subtitle: x.email, detail: `Volunteer • ${x.volunteerType || 'General Volunteer'} • ${x.position || 'General Volunteer'} • ${x.phone || '—'}`, date: x.submittedAt || x.createdAt, applicationId: x.volunteerId || `Record ${x.id}`, photoUrl: fileUrl(x.profilePhotoPath), idDocumentUrl: fileUrl(x.idDocumentUrl || x.idDocumentPath), proofType: x.idType, proofNumber: x.identityNumber }));
-    const members = data.members.map(x => ({ ...x, kind: 'member', title: x.fullName, subtitle: x.email, detail: `Membership • ${x.memberType || 'Member'} • ${x.phone || '—'}`, date: x.createdAt, applicationId: x.memberId || `Account ${x.id}`, photoUrl: fileUrl(x.profilePhotoPath), idDocumentUrl: fileUrl(x.idDocumentPath), proofType: x.idProofType, proofNumber: x.identityNumber }));
-    const donors = data.donors.map(x => ({ ...x, kind: 'donor', title: x.fullName, subtitle: x.email, detail: `Donation • ${x.donationPurpose || 'General'} • Amount: ${x.amount == null ? 'Not specified' : `₹${Number(x.amount).toFixed(2)}`} • ${x.phone || '—'}`, date: x.createdAt, applicationId: x.donorId || `Record ${x.id}`, photoUrl: fileUrl(x.profilePhotoUrl || x.profilePhotoPath), idDocumentUrl: fileUrl(x.idDocumentUrl || x.idDocumentPath), proofNumber: x.pan }));
+    const volunteers = data.volunteers.map(x => ({ ...x, kind: 'volunteer', title: x.fullName, subtitle: x.email, detail: `Volunteer • ${x.volunteerType || 'General Volunteer'} • ${x.position || 'General Volunteer'} • ${x.phone || '—'}`, date: x.submittedAt || x.createdAt, applicationId: x.volunteerId || `Record ${x.id}`, certificateId: x.certId, photoUrl: fileUrl(x.profilePhotoPath), idDocumentUrl: fileUrl(x.idDocumentUrl || x.idDocumentPath), proofType: x.idType, proofNumber: x.identityNumber }));
+    const members = data.members.map(x => ({ ...x, kind: 'member', title: x.fullName, subtitle: x.email, detail: `Membership • ${x.memberType || 'Member'} • ${x.phone || '—'}`, date: x.createdAt, applicationId: x.memberId || `Account ${x.id}`, certificateId: x.certId, photoUrl: fileUrl(x.profilePhotoPath), idDocumentUrl: fileUrl(x.idDocumentPath), proofType: x.idProofType, proofNumber: x.identityNumber }));
+    const donors = data.donors.map(x => ({ ...x, kind: 'donor', title: x.fullName, subtitle: x.email, detail: `Donation • ${x.donationPurpose || 'General'} • Amount: ${x.amount == null ? 'Not specified' : `₹${Number(x.amount).toFixed(2)}`} • ${x.phone || '—'}`, date: x.createdAt, applicationId: x.donorId || `Record ${x.id}`, certificateId: x.certId, photoUrl: fileUrl(x.profilePhotoUrl || x.profilePhotoPath), idDocumentUrl: fileUrl(x.idDocumentUrl || x.idDocumentPath), proofNumber: x.pan }));
     const interests = data.interests.map(x => ({ ...x, kind: x.interestType === 'volunteer' ? 'volunteer-interest' : x.interestType === 'member' ? 'member-interest' : 'interest', title: x.fullName, subtitle: x.email, detail: `${interestLabel(x.interestType)}${x.category ? ` • ${x.category}` : ''} • ${x.phone || '—'}`, date: x.createdAt }));
     return [...contacts, ...internships, ...volunteers, ...members, ...donors, ...interests].filter(x => tab === 'all' || x.kind === tab || (tab === 'interest' && ['interest', 'volunteer-interest', 'member-interest'].includes(x.kind))).sort((a, b) => new Date(b.date || 0) - new Date(a.date || 0));
   }, [data, tab]);
@@ -144,26 +225,74 @@ export default function AdminApplicationDashboard() {
     finally { setBusy(''); }
   };
 
-  const editRecord = async (record) => {
-    const endpoint = record.kind === 'volunteer' ? ENDPOINTS.ADMIN_UPDATE_VOLUNTEER(record.id) : record.kind === 'member' ? ENDPOINTS.ADMIN_UPDATE_MEMBER(record.id) : null;
+  const openEdit = (record) => setEditTarget(record);
+
+  const saveEdit = async (record, values) => {
+    const kind = editKind(record.kind);
+    const endpoint = editEndpoints(kind, record.id);
     if (!endpoint) return;
-    const fullName = window.prompt('Edit full name:', record.title || '');
-    if (fullName === null) return;
-    const phone = window.prompt('Edit mobile number:', record.phone || '');
-    if (phone === null) return;
-    const message = window.prompt('Edit message / notes:', record.message || '');
-    if (message === null) return;
-    if (fullName.trim().length < 3) { setError('Full name must be at least 3 characters.'); return; }
     setBusy(`${record.kind}-${record.id}`); setError('');
     try {
       const token = localStorage.getItem(TOKEN_KEY);
-      const response = await fetch(endpoint, { method: 'PATCH', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ fullName: fullName.trim(), phone: phone.trim(), message: message.trim() }) });
+      const response = await fetch(endpoint, { method: 'PATCH', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify(values) });
       if (response.status === 401) { localStorage.removeItem(TOKEN_KEY); setAuthenticated(false); return; }
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || 'Unable to update the record.');
+      setEditTarget(null);
       await load();
     } catch (e) { setError(e.message || 'Unable to update the record.'); }
     finally { setBusy(''); }
+  };
+
+  // Re-issue mints a fresh official ID number for an approved record.
+  const reissueIds = async (record) => {
+    const endpoint = record.kind === 'volunteer' ? ENDPOINTS.ADMIN_REISSUE_VOLUNTEER(record.id) : record.kind === 'member' ? ENDPOINTS.ADMIN_REISSUE_MEMBER(record.id) : null;
+    if (!endpoint) return;
+    if (!window.confirm(`Re-issue a new ID number for ${record.title}?\n\nThe previous ID card and certificate will stop verifying.`)) return;
+    setBusy(`${record.kind}-${record.id}`); setError('');
+    try {
+      const token = localStorage.getItem(TOKEN_KEY);
+      const response = await fetch(endpoint, { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
+      if (response.status === 401) { localStorage.removeItem(TOKEN_KEY); setAuthenticated(false); return; }
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.message || 'Unable to re-issue the ID.');
+      await load();
+    } catch (e) { setError(e.message || 'Unable to re-issue the ID.'); }
+    finally { setBusy(''); }
+  };
+
+  // Revoke clears the issued IDs and rejects the record, so the old card and
+  // certificate stop verifying immediately.
+  const revokeIds = async (record) => {
+    const endpoint = record.kind === 'volunteer' ? ENDPOINTS.ADMIN_REVOKE_VOLUNTEER(record.id) : record.kind === 'member' ? ENDPOINTS.ADMIN_REVOKE_MEMBER(record.id) : null;
+    if (!endpoint) return;
+    if (!window.confirm(`Revoke the issued IDs for ${record.title}?\n\nThe ID card and certificate will stop verifying. This cannot be undone.`)) return;
+    setBusy(`${record.kind}-${record.id}`); setError('');
+    try {
+      const token = localStorage.getItem(TOKEN_KEY);
+      const response = await fetch(endpoint, { method: 'POST', headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({}) });
+      if (response.status === 401) { localStorage.removeItem(TOKEN_KEY); setAuthenticated(false); return; }
+      const result = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(result.message || 'Unable to revoke the IDs.');
+      await load();
+    } catch (e) { setError(e.message || 'Unable to revoke the IDs.'); }
+    finally { setBusy(''); }
+  };
+
+  // Admins can download the same ID card / certificate PDF the applicant sees,
+  // so a lost document can be replaced without the member logging in.
+  const downloadIdCard = async (record) => {
+    try {
+      const role = record.kind === 'member' ? 'member' : record.kind === 'donor' ? 'donor' : (record.volunteerType || 'volunteer');
+      await generateIdentityCard({ name: record.title, role, date: dateText(record.date), officialId: record.applicationId, certId: record.certificateId, photoUrl: record.photoUrl });
+    } catch (e) { setError(e.message || 'Unable to generate the ID card.'); }
+  };
+  const downloadCertificate = async (record) => {
+    try {
+      const role = record.kind === 'member' ? 'member' : record.kind === 'donor' ? 'donor' : (record.volunteerType || 'volunteer');
+      const type = record.kind === 'donor' ? 'Appreciation' : record.kind === 'member' ? 'Membership' : 'Participation';
+      await generateCertificate(record.title, role, dateText(record.date), record.certificateId || record.applicationId, record.applicationId, type);
+    } catch (e) { setError(e.message || 'Unable to generate the certificate.'); }
   };
 
   const deleteRecord = async record => {
@@ -209,13 +338,14 @@ export default function AdminApplicationDashboard() {
       </select>
     </div>
     {error && <div className="mx-6 md:mx-8 mt-5 p-4 rounded-xl bg-red-50 text-red-700 font-semibold text-sm">{error}</div>}
-    <div className="p-6 md:p-8 pt-5 overflow-x-auto">{loading ? <div className="py-12 text-center text-zinc-400">Loading applications…</div> : pageRows.length === 0 ? <div className="py-12 text-center text-zinc-400">{filtered.length === 0 && (query || statusFilter) ? 'No record matches your search or filter.' : 'No submissions found.'}</div> : <table className="w-full text-left min-w-[1200px]"><thead><tr className="bg-zinc-50 text-zinc-400 font-bold text-xs uppercase tracking-widest"><th className="px-5 py-4">Applicant</th><th className="px-5 py-4">Type / Category</th><th className="px-5 py-4">Submitted</th><th className="px-5 py-4">Status / Action</th><th className="px-5 py-4">Message / Information</th></tr></thead><tbody className="divide-y divide-zinc-50 text-sm">{pageRows.map(record => { const canDelete = deleteEndpoints(record.kind === 'volunteer-interest' || record.kind === 'member-interest' ? 'interest' : record.kind, record.id); return <tr key={`${record.kind}-${record.id}`} className="align-top"><td className="px-5 py-5"><button type="button" onClick={() => setDetail(record)} className="font-bold text-[#12345A] text-left hover:text-[#176447] underline decoration-dotted">{record.title}</button><p className="text-xs text-zinc-500 mt-1">{record.subtitle}</p>{record.phone && <p className="text-xs text-zinc-500">{record.phone}</p>}<button type="button" onClick={() => setDetail(record)} className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-[#EAF0F6] text-[#12345A] px-2.5 py-1.5 text-[11px] font-black"><FaEye /> View details</button></td><td className="px-5 py-5"><p className="font-bold">{record.kind === 'donor' ? 'Donor' : record.kind === 'interest' || record.kind === 'volunteer-interest' || record.kind === 'member-interest' ? interestLabel(record.interestType) : record.kind}</p><p className="text-xs text-zinc-500 mt-1 max-w-[320px]">{record.detail}</p>{record.applicationId && <p className="text-xs font-bold text-[#12345A] mt-2">{record.applicationId}</p>}{record.proofType && <p className="text-xs text-zinc-500 mt-1">ID proof: <span className="font-semibold">{record.proofType}</span>{record.proofNumber ? ` • ${record.proofNumber}` : ''}</p>}{!record.proofType && record.proofNumber && <p className="text-xs text-zinc-500 mt-1">PAN: <span className="font-semibold">{record.proofNumber}</span></p>}<div className="flex flex-wrap items-center gap-3 mt-2">{record.photoUrl && <img src={record.photoUrl} alt={`${record.title || 'Applicant'} profile photo`} className="h-12 w-12 rounded-lg object-cover border border-zinc-200" />}{record.idDocumentUrl && <a href={record.idDocumentUrl} target="_blank" rel="noreferrer" className="text-xs font-bold text-blue-700 inline-block">Open ID Document</a>}{record.resumeUrl && <a href={record.resumeUrl} target="_blank" rel="noreferrer" className="text-xs font-bold text-blue-700 inline-block">Open Resume</a>}</div></td><td className="px-5 py-5 whitespace-nowrap text-xs text-zinc-600">{dateText(record.date)}</td><td className="px-5 py-5"><div className="flex flex-col gap-2">{statusOptions(record) ? <select disabled={busy === `${record.kind}-${record.id}`} value={record.status || ''} onChange={e => updateStatus(record, e.target.value)} className="rounded-lg border border-zinc-200 px-2 py-2 text-xs font-bold">{statusOptions(record)}</select> : <span className="inline-flex w-fit rounded-lg bg-zinc-100 px-3 py-2 text-xs font-bold text-zinc-700">{record.status || 'Submitted'}</span>}{(record.kind === 'volunteer' || record.kind === 'member') && <button onClick={() => editRecord(record)} disabled={!!busy} className="inline-flex items-center justify-center gap-2 bg-zinc-100 hover:bg-zinc-200 px-3 py-2 rounded-xl font-bold text-xs"><FaPen />{busy === `${record.kind}-${record.id}` ? 'Working…' : 'Edit'}</button>}{canDelete && <button onClick={() => deleteRecord(record)} disabled={!!busy} className="inline-flex items-center justify-center gap-2 bg-red-600 text-white hover:bg-red-700 px-3 py-2 rounded-xl font-bold text-xs"><FaTrash />{busy === `${record.kind}-${record.id}` ? 'Working…' : 'Delete Permanently'}</button>}</div></td><td className="px-5 py-5 max-w-[380px] text-xs leading-5 text-zinc-600">{record.reviewNote && <span className="block mb-1 rounded-lg bg-amber-50 border border-amber-200 px-2 py-1 font-semibold text-amber-800">Correction asked: {record.reviewNote}</span>}{record.message || record.notes || '—'}</td></tr>; })}</tbody></table>}</div>
+    <div className="p-6 md:p-8 pt-5 overflow-x-auto">{loading ? <div className="py-12 text-center text-zinc-400">Loading applications…</div> : pageRows.length === 0 ? <div className="py-12 text-center text-zinc-400">{filtered.length === 0 && (query || statusFilter) ? 'No record matches your search or filter.' : 'No submissions found.'}</div> : <table className="w-full text-left min-w-[1200px]"><thead><tr className="bg-zinc-50 text-zinc-400 font-bold text-xs uppercase tracking-widest"><th className="px-5 py-4">Applicant</th><th className="px-5 py-4">Type / Category</th><th className="px-5 py-4">Submitted</th><th className="px-5 py-4">Status / Action</th><th className="px-5 py-4">Message / Information</th></tr></thead><tbody className="divide-y divide-zinc-50 text-sm">{pageRows.map(record => { const canDelete = deleteEndpoints(record.kind === 'volunteer-interest' || record.kind === 'member-interest' ? 'interest' : record.kind, record.id); return <tr key={`${record.kind}-${record.id}`} className="align-top"><td className="px-5 py-5"><button type="button" onClick={() => setDetail(record)} className="font-bold text-[#12345A] text-left hover:text-[#176447] underline decoration-dotted">{record.title}</button><p className="text-xs text-zinc-500 mt-1">{record.subtitle}</p>{record.phone && <p className="text-xs text-zinc-500">{record.phone}</p>}<button type="button" onClick={() => setDetail(record)} className="mt-2 inline-flex items-center gap-1.5 rounded-lg bg-[#EAF0F6] text-[#12345A] px-2.5 py-1.5 text-[11px] font-black"><FaEye /> View details</button></td><td className="px-5 py-5"><p className="font-bold">{record.kind === 'donor' ? 'Donor' : record.kind === 'interest' || record.kind === 'volunteer-interest' || record.kind === 'member-interest' ? interestLabel(record.interestType) : record.kind}</p><p className="text-xs text-zinc-500 mt-1 max-w-[320px]">{record.detail}</p>{record.applicationId && <p className="text-xs font-bold text-[#12345A] mt-2">{record.applicationId}</p>}{record.proofType && <p className="text-xs text-zinc-500 mt-1">ID proof: <span className="font-semibold">{record.proofType}</span>{record.proofNumber ? ` • ${record.proofNumber}` : ''}</p>}{!record.proofType && record.proofNumber && <p className="text-xs text-zinc-500 mt-1">PAN: <span className="font-semibold">{record.proofNumber}</span></p>}<div className="flex flex-wrap items-center gap-3 mt-2">{record.photoUrl && <img src={record.photoUrl} alt={`${record.title || 'Applicant'} profile photo`} className="h-12 w-12 rounded-lg object-cover border border-zinc-200" />}{record.idDocumentUrl && <a href={record.idDocumentUrl} target="_blank" rel="noreferrer" className="text-xs font-bold text-blue-700 inline-block">Open ID Document</a>}{record.resumeUrl && <a href={record.resumeUrl} target="_blank" rel="noreferrer" className="text-xs font-bold text-blue-700 inline-block">Open Resume</a>}</div></td><td className="px-5 py-5 whitespace-nowrap text-xs text-zinc-600">{dateText(record.date)}</td><td className="px-5 py-5"><div className="flex flex-col gap-2">{statusOptions(record) ? <select disabled={busy === `${record.kind}-${record.id}`} value={record.status || ''} onChange={e => updateStatus(record, e.target.value)} className="rounded-lg border border-zinc-200 px-2 py-2 text-xs font-bold">{statusOptions(record)}</select> : <span className="inline-flex w-fit rounded-lg bg-zinc-100 px-3 py-2 text-xs font-bold text-zinc-700">{record.status || 'Submitted'}</span>}{(EDIT_FIELDS[editKind(record.kind)]) && <button onClick={() => openEdit(record)} disabled={!!busy} className="inline-flex items-center justify-center gap-2 bg-zinc-100 hover:bg-zinc-200 px-3 py-2 rounded-xl font-bold text-xs"><FaPen />{busy === `${record.kind}-${record.id}` ? 'Working…' : 'Edit'}</button>}{issuedId(record) || isDonorIssued(record) ? <div className="flex flex-wrap gap-2 pt-1"><button onClick={() => downloadIdCard(record)} className="inline-flex items-center gap-1.5 bg-[#12345A] text-white px-3 py-2 rounded-xl font-bold text-xs"><FaIdCard /> ID Card</button><button onClick={() => downloadCertificate(record)} className="inline-flex items-center gap-1.5 bg-[#176447] text-white px-3 py-2 rounded-xl font-bold text-xs"><FaCertificate /> Certificate</button>{(record.kind === 'member' || record.kind === 'volunteer') && <button onClick={() => reissueIds(record)} className="inline-flex items-center gap-1.5 bg-amber-100 text-amber-800 px-3 py-2 rounded-xl font-bold text-xs"><FaRedo /> Re-issue</button>}{(record.kind === 'member' || record.kind === 'volunteer') && <button onClick={() => revokeIds(record)} className="inline-flex items-center gap-1.5 bg-zinc-800 text-white px-3 py-2 rounded-xl font-bold text-xs"><FaBan /> Revoke</button>}</div> : null}{canDelete && <button onClick={() => deleteRecord(record)} disabled={!!busy} className="inline-flex items-center justify-center gap-2 bg-red-600 text-white hover:bg-red-700 px-3 py-2 rounded-xl font-bold text-xs"><FaTrash />{busy === `${record.kind}-${record.id}` ? 'Working…' : 'Delete Permanently'}</button>}</div></td><td className="px-5 py-5 max-w-[380px] text-xs leading-5 text-zinc-600">{record.reviewNote && <span className="block mb-1 rounded-lg bg-amber-50 border border-amber-200 px-2 py-1 font-semibold text-amber-800">Correction asked: {record.reviewNote}</span>}{record.message || record.notes || '—'}</td></tr>; })}</tbody></table>}</div>
     {!loading && filtered.length > 0 && <div className="px-6 md:px-8 pb-6 flex flex-wrap items-center justify-between gap-3"><p className="text-xs text-zinc-500">Showing {(currentPage - 1) * pageSize + 1}–{Math.min(currentPage * pageSize, filtered.length)} of {filtered.length} record{filtered.length === 1 ? '' : 's'}</p><div className="flex gap-2"><button type="button" disabled={currentPage <= 1} onClick={() => setPage(currentPage - 1)} className="rounded-xl bg-zinc-100 px-4 py-2 text-sm font-bold disabled:opacity-40">Previous</button><span className="px-3 py-2 text-sm font-bold text-zinc-500">Page {currentPage} of {pageCount}</span><button type="button" disabled={currentPage >= pageCount} onClick={() => setPage(currentPage + 1)} className="rounded-xl bg-zinc-100 px-4 py-2 text-sm font-bold disabled:opacity-40">Next</button></div></div>}
-    {detail && <RecordDrawer record={detail} onClose={() => setDetail(null)} onStatus={(status) => { updateStatus(detail, status); setDetail(null); }} onEdit={() => { setDetail(null); editRecord(detail); }} onDelete={() => { setDetail(null); deleteRecord(detail); }} canDelete={!!deleteEndpoints(detail.kind === 'volunteer-interest' || detail.kind === 'member-interest' ? 'interest' : detail.kind, detail.id)} />}
+    {detail && <RecordDrawer record={detail} onClose={() => setDetail(null)} onStatus={(status) => { updateStatus(detail, status); setDetail(null); }} onEdit={EDIT_FIELDS[editKind(detail.kind)] ? () => { const target = detail; setDetail(null); openEdit(target); } : null} onDelete={() => { setDetail(null); deleteRecord(detail); }} canDelete={!!deleteEndpoints(detail.kind === 'volunteer-interest' || detail.kind === 'member-interest' ? 'interest' : detail.kind, detail.id)} onIdCard={issuedId(detail) || isDonorIssued(detail) ? () => downloadIdCard(detail) : null} onCertificate={issuedId(detail) || isDonorIssued(detail) ? () => downloadCertificate(detail) : null} onReissue={['member', 'volunteer'].includes(detail.kind) && issuedId(detail) ? () => reissueIds(detail) : null} onRevoke={['member', 'volunteer'].includes(detail.kind) && issuedId(detail) ? () => revokeIds(detail) : null} />}
+    {editTarget && <EditModal record={editTarget} busy={busy === `${editTarget.kind}-${editTarget.id}`} onClose={() => setEditTarget(null)} onSave={saveEdit} />}
   </section>;
 }
 
-function RecordDrawer({ record, onClose, onStatus, onEdit, onDelete, canDelete }) {
+function RecordDrawer({ record, onClose, onStatus, onEdit, onDelete, canDelete, onIdCard, onCertificate, onReissue, onRevoke }) {
   const rows = [
     ['Type', record.kind === 'donor' ? 'Donor' : ['interest', 'volunteer-interest', 'member-interest'].includes(record.kind) ? interestLabel(record.interestType) : record.kind],
     ['Email', record.subtitle],
@@ -255,6 +385,17 @@ function RecordDrawer({ record, onClose, onStatus, onEdit, onDelete, canDelete }
             {record.resumeUrl && <a href={record.resumeUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-[#EAF0F6] text-[#12345A] px-4 py-2.5 text-sm font-bold">Open resume</a>}
             {record.receiptUrl && <a href={record.receiptUrl} target="_blank" rel="noreferrer" className="rounded-xl bg-[#EAF0F6] text-[#12345A] px-4 py-2.5 text-sm font-bold">Open receipt</a>}
           </div>
+          {(onIdCard || onCertificate || onReissue || onRevoke) && (
+            <div className="border-t border-zinc-100 pt-5 space-y-3">
+              <p className="text-xs font-black uppercase tracking-widest text-zinc-400">Official ID &amp; documents</p>
+              <div className="flex flex-wrap gap-2">
+                {onIdCard && <button type="button" onClick={onIdCard} className="inline-flex items-center gap-2 rounded-xl bg-[#12345A] text-white px-4 py-2.5 text-sm font-bold"><FaIdCard /> Download ID card</button>}
+                {onCertificate && <button type="button" onClick={onCertificate} className="inline-flex items-center gap-2 rounded-xl bg-[#176447] text-white px-4 py-2.5 text-sm font-bold"><FaCertificate /> Download certificate</button>}
+                {onReissue && <button type="button" onClick={onReissue} className="inline-flex items-center gap-2 rounded-xl bg-amber-100 text-amber-800 px-4 py-2.5 text-sm font-bold"><FaRedo /> Re-issue new ID</button>}
+                {onRevoke && <button type="button" onClick={onRevoke} className="inline-flex items-center gap-2 rounded-xl bg-zinc-800 text-white px-4 py-2.5 text-sm font-bold"><FaBan /> Revoke issued IDs</button>}
+              </div>
+            </div>
+          )}
           <div className="border-t border-zinc-100 pt-5 space-y-3">
             <div>
               <label className="text-xs font-black uppercase tracking-widest text-zinc-400">Set status</label>
@@ -263,12 +404,68 @@ function RecordDrawer({ record, onClose, onStatus, onEdit, onDelete, canDelete }
               </select>
             </div>
             <div className="flex flex-wrap gap-2">
-              {(record.kind === 'volunteer' || record.kind === 'member') && <button type="button" onClick={onEdit} className="inline-flex items-center gap-2 rounded-xl bg-zinc-100 px-4 py-2.5 text-sm font-bold"><FaPen /> Edit details</button>}
+              {onEdit && <button type="button" onClick={onEdit} className="inline-flex items-center gap-2 rounded-xl bg-zinc-100 px-4 py-2.5 text-sm font-bold"><FaPen /> Edit details</button>}
               {canDelete && <button type="button" onClick={onDelete} className="inline-flex items-center gap-2 rounded-xl bg-red-600 text-white px-4 py-2.5 text-sm font-bold"><FaTrash /> Delete permanently</button>}
             </div>
           </div>
         </div>
       </aside>
+    </div>
+  );
+}
+
+// A single modal replaces the old chain of window.prompt() calls, so an admin
+// can see and correct every editable field of a record in one place.
+function EditModal({ record, busy, onClose, onSave }) {
+  const fields = EDIT_FIELDS[editKind(record.kind)] || [];
+  const [values, setValues] = useState(() => {
+    const initial = {};
+    for (const field of fields) initial[field.name] = record[field.name] ?? '';
+    return initial;
+  });
+  const [localError, setLocalError] = useState('');
+
+  const submit = (event) => {
+    event.preventDefault();
+    const payload = {};
+    for (const field of fields) {
+      const raw = values[field.name];
+      const text = typeof raw === 'string' ? raw.trim() : raw;
+      if (field.required && !text) { setLocalError(`${field.label} is required.`); return; }
+      if (text !== '' && text !== null && text !== undefined) payload[field.name] = field.type === 'number' ? Number(text) : text;
+    }
+    setLocalError('');
+    onSave(record, payload);
+  };
+
+  return (
+    <div className="fixed inset-0 z-[140] flex items-center justify-center p-4" role="dialog" aria-modal="true">
+      <button type="button" aria-label="Close edit" onClick={onClose} className="absolute inset-0 bg-black/40 backdrop-blur-sm" />
+      <form onSubmit={submit} className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-white rounded-3xl shadow-2xl p-6">
+        <p className="text-[10px] font-black uppercase tracking-[0.18em] text-[#176447]">Edit record</p>
+        <h3 className="text-xl font-black text-[#12345A] mt-0.5">{record.title || 'Record'}</h3>
+        <div className="mt-5 space-y-4">
+          {fields.map((field) => (
+            <div key={field.name}>
+              <label htmlFor={`edit-${field.name}`} className="text-xs font-black uppercase tracking-widest text-zinc-400">{field.label}</label>
+              {field.type === 'select' ? (
+                <select id={`edit-${field.name}`} value={values[field.name] ?? ''} onChange={(e) => setValues((v) => ({ ...v, [field.name]: e.target.value }))} className="mt-1.5 w-full rounded-xl border border-zinc-200 px-4 py-2.5 text-sm font-semibold">
+                  {field.options.map(([value, label]) => <option key={value} value={value}>{label}</option>)}
+                </select>
+              ) : field.type === 'textarea' ? (
+                <textarea id={`edit-${field.name}`} rows={3} value={values[field.name] ?? ''} onChange={(e) => setValues((v) => ({ ...v, [field.name]: e.target.value }))} className="mt-1.5 w-full rounded-xl border border-zinc-200 px-4 py-2.5 text-sm" />
+              ) : (
+                <input id={`edit-${field.name}`} type={field.type || 'text'} value={values[field.name] ?? ''} onChange={(e) => setValues((v) => ({ ...v, [field.name]: e.target.value }))} className="mt-1.5 w-full rounded-xl border border-zinc-200 px-4 py-2.5 text-sm" />
+              )}
+            </div>
+          ))}
+        </div>
+        {localError && <p className="mt-4 rounded-xl bg-red-50 px-4 py-2.5 text-sm font-semibold text-red-700">{localError}</p>}
+        <div className="mt-6 flex justify-end gap-2">
+          <button type="button" onClick={onClose} className="rounded-xl bg-zinc-100 px-5 py-2.5 text-sm font-bold">Cancel</button>
+          <button type="submit" disabled={busy} className="rounded-xl bg-[#12345A] text-white px-5 py-2.5 text-sm font-bold disabled:opacity-50">{busy ? 'Saving…' : 'Save changes'}</button>
+        </div>
+      </form>
     </div>
   );
 }

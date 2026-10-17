@@ -83,6 +83,23 @@ router.patch('/admin/internships/:id/status', requireAdminAuth, async (req, res)
     } catch (error) { console.error('❌ Internship status update error:', error); return res.status(500).json({ message: 'Unable to update status.' }); }
 });
 
+// Edit the editable details of an application (not the issued IDs — those are
+// managed by the status workflow).
+router.patch('/admin/internships/:id', requireAdminAuth, async (req, res) => {
+    try {
+        const application = await InternshipApplication.findByPk(req.params.id);
+        if (!application) return res.status(404).json({ message: 'Internship application not found.' });
+        const allowed = ['fullName', 'email', 'phone', 'college', 'course', 'internshipType', 'duration', 'startDate', 'message', 'idType', 'identityNumber'];
+        const updates = {};
+        for (const field of allowed) if (Object.prototype.hasOwnProperty.call(req.body || {}, field)) updates[field] = req.body[field];
+        if (updates.email) { updates.email = String(updates.email).trim().toLowerCase(); if (!/^\S+@\S+\.\S+$/.test(updates.email)) return res.status(400).json({ message: 'Please enter a valid email address.' }); }
+        if (updates.fullName !== undefined) { updates.fullName = String(updates.fullName || '').trim(); if (updates.fullName.length < 3) return res.status(400).json({ message: 'Please enter the applicant name.' }); }
+        if (updates.startDate !== undefined) updates.startDate = String(updates.startDate || '').trim() || null;
+        await application.update(updates);
+        return res.json({ status: 'success', message: 'Internship application updated.', data: application });
+    } catch (error) { console.error('❌ Internship update error:', error); return res.status(500).json({ message: 'Unable to update internship application.' }); }
+});
+
 const removeStoredFile = (storedPath) => { if (!storedPath) return; const filePath = path.join(__dirname, '..', String(storedPath).replace(/^\/+/, '')); try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Internship upload cleanup failed:', error.message); } };
 const deleteInternship = async (req, res) => {
     try {

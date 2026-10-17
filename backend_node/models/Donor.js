@@ -19,6 +19,7 @@ const Donor = sequelize.define('Donor', {
     paymentMode: { type: DataTypes.STRING, allowNull: true },
     receiptPreference: { type: DataTypes.STRING, allowNull: true, defaultValue: 'email' },
     paymentStatus: { type: DataTypes.ENUM('pending', 'paid', 'failed', 'offline'), defaultValue: 'pending' },
+    certId: { type: DataTypes.STRING, allowNull: true, unique: true },
     notes: { type: DataTypes.TEXT, allowNull: true },
     status: { type: DataTypes.ENUM('new', 'contacted', 'completed'), defaultValue: 'new' }
 }, { timestamps: true });
