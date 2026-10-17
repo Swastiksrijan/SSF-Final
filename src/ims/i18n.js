@@ -442,6 +442,12 @@ export const DICT = {
   grp_setup: { en: 'Users & Setup', hi: 'उपयोगकर्ता एवं सेटअप' },
   legacy_registers: { en: 'Legacy Registers', hi: 'पुरानी पंजिकाएँ' },
   all_modules: { en: 'All Modules', hi: 'सभी मॉड्यूल' },
+  // The wide sections (Finance has ~70 modules) render as a grouped panel
+  // instead of a single scrolling row, so nothing is hidden off-screen.
+  nav_panel_open: { en: 'Hide module panel', hi: 'मॉड्यूल पैनल छिपाएँ' },
+  nav_panel_closed: { en: 'Show all modules', hi: 'सभी मॉड्यूल दिखाएँ' },
+  nav_jump: { en: 'Jump to a module', hi: 'किसी मॉड्यूल पर जाएँ' },
+  nav_current: { en: 'Current', hi: 'वर्तमान' },
   online_meetings: { en: 'Online Meetings', hi: 'ऑनलाइन बैठकें' },
   invitations: { en: 'Invitations', hi: 'आमंत्रण' },
   reminders: { en: 'Reminders', hi: 'अनुस्मारक' },
