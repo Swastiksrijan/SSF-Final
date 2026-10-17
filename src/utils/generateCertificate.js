@@ -53,9 +53,10 @@ export const generateIdentityCard = async ({ name, role, date, officialId, certI
   const normalizedRole = String(role || "volunteer").toLowerCase();
   const isMember = normalizedRole === "member" || normalizedRole.includes("membership");
   const isDonor = !isMember && normalizedRole.includes("donor");
-  const typeLabel = isMember ? "MEMBERSHIP" : isDonor ? "DONOR" : "VOLUNTEER";
-  const idLabel = isMember ? "MEMBER ID" : isDonor ? "DONOR ID" : "VOLUNTEER ID";
-  const cardLabel = isMember ? "MEMBER" : isDonor ? "DONOR" : "VOLUNTEER";
+  const isIntern = !isMember && !isDonor && normalizedRole.includes("intern");
+  const typeLabel = isMember ? "MEMBERSHIP" : isDonor ? "DONOR" : isIntern ? "INTERNSHIP" : "VOLUNTEER";
+  const idLabel = isMember ? "MEMBER ID" : isDonor ? "DONOR ID" : isIntern ? "INTERN ID" : "VOLUNTEER ID";
+  const cardLabel = isMember ? "MEMBER" : isDonor ? "DONOR" : isIntern ? "INTERN" : "VOLUNTEER";
   const roleLabel = isDonor ? "Donor" : getRoleLabel(role, isMember);
   const verificationUrl = certId ? `https://swastiksrijan.in/verify/${encodeURIComponent(certId)}` : null;
   const doc = new jsPDF({ orientation: "landscape", unit: "mm", format: [86, 54] });
