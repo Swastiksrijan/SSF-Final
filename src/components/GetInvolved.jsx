@@ -21,7 +21,7 @@
 //               <span className="bg-[#EAF0F6] py-1 px-4 rounded-md">Teaching</span>
 //               <span className="bg-[#EAF0F6] py-1 px-4 rounded-md">Awareness Drives</span>
 //             </div>
-//             <Link to="/volunteer" className="bg-[#005DFF] text-white drop-shadow-md drop-shadow-white font-bold text-xl px-4 py-3 flex items-center justify-center gap-2 rounded-xl cursor-pointer hover:scale-103 active:scale-95 duration-200 transition-all ease">
+//             <Link to="/volunteer" className="bg-[#314C6C] text-white drop-shadow-md drop-shadow-white font-bold text-xl px-4 py-3 flex items-center justify-center gap-2 rounded-xl cursor-pointer hover:scale-103 active:scale-95 duration-200 transition-all ease">
 //               <span>Explore</span>
 //               <FaArrowRightLong />
 //             </Link>

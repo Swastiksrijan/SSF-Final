@@ -73,7 +73,7 @@ export default function VolunteerForm() {
                 </div>
                 <div><label className="field-label">Why do you want to volunteer? *</label><textarea className={`${inputClass} resize-none`} rows={4} value={form.message} onChange={e => set("message", e.target.value)} placeholder="Tell us briefly how you would like to contribute." required /></div>
                 <div><label className="field-label flex items-center gap-2"><FaUpload /> Identity Document *</label><input type="file" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,application/pdf" onChange={e => set("idDocument", e.target.files?.[0] || null)} className={inputClass} required /><p className="mt-1 text-xs text-[#26343D]">JPG, PNG, WebP or PDF · max 5MB</p></div>
-                {status === "error" && <div className="p-4 rounded-xl bg-[#fef2f2] text-[#b91c1c] text-sm font-semibold flex gap-2"><FaExclamationCircle className="mt-0.5 shrink-0" />{error}</div>}
+                {status === "error" && <div className="p-4 rounded-xl bg-[#FCF3F0] text-[#A73800] text-sm font-semibold flex gap-2"><FaExclamationCircle className="mt-0.5 shrink-0" />{error}</div>}
                 <button type="submit" disabled={status === "submitting"} className="w-full bg-[#12345A] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#176447] hover:text-[#12345A] transition flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting...</> : <>Submit Volunteer Application <FaArrowRight /></>}</button>
             </form>
             <style>{`.field-label{display:block;font-size:.72rem;font-weight:800;color:#26343D;text-transform:uppercase;letter-spacing:.07em;margin:0 0 .4rem .15rem}`}</style>

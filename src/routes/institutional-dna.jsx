@@ -76,7 +76,7 @@ function InstitutionalDNA() {
                 subtitle: "Ethics",
                 desc: "ईमानदारी और पारदर्शिता हमारी कार्यसंस्कृति की नींव है।",
                 pillar: "03",
-                color: "from-[#d90429] to-[#ef233c]"
+                color: "from-[#A73800] to-[#C5470D]"
               },
               {
                 title: "राष्ट्र",
@@ -111,7 +111,7 @@ function InstitutionalDNA() {
                 subtitle: "Stability",
                 desc: "संस्था सभी कानूनी एवं संस्थागत ढाँचों के अंतर्गत कार्य करती है।",
                 pillar: "08",
-                color: "from-[#d90429] to-[#ef233c]"
+                color: "from-[#A73800] to-[#C5470D]"
               }
             ].map((item, i) => (
               <motion.div
@@ -174,7 +174,7 @@ function InstitutionalDNA() {
               viewport={{ once: true }}
               className="bg-white p-16 md:p-24 text-[#12345A] flex flex-col justify-center"
             >
-              <p className="text-[#d90429] font-bold uppercase tracking-[0.3em] text-xs mb-10">Our Mission</p>
+              <p className="text-[#A73800] font-bold uppercase tracking-[0.3em] text-xs mb-10">Our Mission</p>
               <ul className="space-y-8">
                 {[
                   "गुणवत्तापूर्ण शिक्षा एवं कौशल विकास",

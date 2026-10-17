@@ -268,7 +268,7 @@ export default function UpcomingProjects() {
                     {/* Footer of Doc */}
                     <div className="h-16 border-t border-[#EAF0F6] flex items-center justify-between px-6 bg-[#EAF0F6]/60">
                       <div className="text-[10px] font-bold text-[#12345A]">OFFICIAL</div>
-                      <FaFilePdf className="text-[#b3261e] text-lg" />
+                      <FaFilePdf className="text-[#A73800] text-lg" />
                     </div>
                   </div>
                 </div>
@@ -462,7 +462,7 @@ export default function UpcomingProjects() {
           </p>
           <div className="pt-8">
             <Link to="/Contact">
-              <button className="btn-cta px-14 py-6 text-xl shadow-[#d90429]/25">
+              <button className="btn-cta px-14 py-6 text-xl shadow-[#A73800]/25">
                 Become a Vision Partner | विजन पार्टनर बनें
               </button>
             </Link>

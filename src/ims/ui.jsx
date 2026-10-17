@@ -28,8 +28,8 @@ export function Kpi({ icon, label, value, tone = 'navy' }) {
     orange: 'from-[#176447] to-[#176447] text-white',
     green: 'from-[#176447] to-emerald-500 text-white',
     teal: 'from-[#176447] to-[#176447] text-white',
-    red: 'from-[#DC2626] to-rose-500 text-white',
-    amber: 'from-[#D97706] to-amber-400 text-white',
+    red: 'from-[#C5470D] to-rose-500 text-white',
+    amber: 'from-[#C2830A] to-amber-400 text-white',
     slate: 'from-slate-700 to-slate-600 text-white',
   };
   const I = Icons[icon] || Icons.Activity;
@@ -283,7 +283,7 @@ export function SectionHero({ title, hi, eyebrow, icon = 'LayoutDashboard', tone
     orange: 'from-[#176447] to-[#176447]',
     teal: 'from-[#176447] to-[#176447]',
     green: 'from-[#176447] to-emerald-600',
-    amber: 'from-[#b45309] to-[#D97706]',
+    amber: 'from-[#976401] to-[#C2830A]',
     slate: 'from-slate-700 to-slate-600',
   };
   return (

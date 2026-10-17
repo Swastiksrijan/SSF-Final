@@ -10,8 +10,8 @@ export default function CorePhilosophy() {
             desc: "To build an inclusive, ethical, and empowered society where every individual has access to education, health, and dignity.",
             link: "/Vision",
             // Bright Azure Blue
-            bg: "bg-[#0081d1]",
-            text: "text-[#0081d1]",
+            bg: "bg-[#3A5D85]",
+            text: "text-[#3A5D85]",
             delay: 0
         },
         {
@@ -40,7 +40,7 @@ export default function CorePhilosophy() {
         <section className="py-24 bg-white relative overflow-hidden">
             {/* Background Elements matching new vibrant colors */}
             <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full max-w-7xl pointer-events-none">
-                <div className="absolute top-20 left-10 w-80 h-80 bg-[#0081d1] rounded-full blur-[100px] opacity-10"></div>
+                <div className="absolute top-20 left-10 w-80 h-80 bg-[#3A5D85] rounded-full blur-[100px] opacity-10"></div>
                 <div className="absolute bottom-20 right-10 w-80 h-80 bg-[#176447] rounded-full blur-[100px] opacity-10"></div>
             </div>
 

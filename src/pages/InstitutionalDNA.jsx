@@ -75,7 +75,7 @@ export default function InstitutionalDNA() {
                 subtitle: "नैतिकता",
                 desc: "Honesty and transparency are the pillars of our work culture.",
                 pillar: "03",
-                color: "from-[#d90429] to-[#ef233c]"
+                color: "from-[#A73800] to-[#C5470D]"
               },
               {
                 title: "Nation",
@@ -110,7 +110,7 @@ export default function InstitutionalDNA() {
                 subtitle: "स्थिरता",
                 desc: "The organization operates within all legal and institutional frameworks.",
                 pillar: "08",
-                color: "from-[#d90429] to-[#ef233c]"
+                color: "from-[#A73800] to-[#C5470D]"
               }
             ].map((item, i) => (
               <motion.div
@@ -175,7 +175,7 @@ export default function InstitutionalDNA() {
               viewport={{ once: true }}
               className="bg-white p-16 md:p-24 text-[#12345A] flex flex-col justify-center"
             >
-              <p className="text-[#d90429] font-bold uppercase tracking-[0.3em] text-xs mb-10">Our Mission</p>
+              <p className="text-[#A73800] font-bold uppercase tracking-[0.3em] text-xs mb-10">Our Mission</p>
               <ul className="space-y-8">
                 {[
                   "Quality Education & Skill Development",

@@ -14,7 +14,7 @@ const YELLOW = "#F7A814";
 const SKY = "#EAF0F6";
 const GREEN = "#176447";
 const LEAF = "#176447";
-const RED = "#e03131";
+const RED = "#C5470D";
 const PURPLE = "#12345A";
 
 function Tile({ children, bg = NAVY, label = "Illustration" }) {
@@ -61,7 +61,7 @@ function Orange({ s = 1 }) {
   return <g transform={`scale(${s})`}>
     <circle r="36" fill="#176447" />
     <circle r="36" fill="none" stroke="#176447" strokeWidth="3" />
-    {Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6; return <circle key={i} cx={Math.cos(a) * 20} cy={Math.sin(a) * 20} r="1.6" fill="#ffd8a8" />; })}
+    {Array.from({ length: 12 }, (_, i) => { const a = i * Math.PI / 6; return <circle key={i} cx={Math.cos(a) * 20} cy={Math.sin(a) * 20} r="1.6" fill="#F7E3BC" />; })}
     <circle cx="-10" cy="-12" r="12" fill="#ffffff" opacity="0.25" />
     <path d="M0 -36 q10 -10 18 -4 q-8 10 -18 4 z" fill={LEAF} />
   </g>;
@@ -69,7 +69,7 @@ function Orange({ s = 1 }) {
 
 function Mango({ s = 1 }) {
   return <g transform={`scale(${s})`}>
-    <path d="M-30 -18 C -34 -44 8 -50 26 -28 C 42 -8 30 34 -2 36 C -32 38 -26 -2 -30 -18 Z" fill="#f59f00" />
+    <path d="M-30 -18 C -34 -44 8 -50 26 -28 C 42 -8 30 34 -2 36 C -32 38 -26 -2 -30 -18 Z" fill="#ECA21B" />
     <path d="M-30 -18 C -34 -44 8 -50 26 -28" fill="none" stroke={RED} strokeOpacity="0.5" strokeWidth="8" strokeLinecap="round" />
     <path d="M24 -30 q12 -8 18 -2 q-8 10 -18 2 z" fill={LEAF} />
   </g>;
@@ -88,7 +88,7 @@ function Grapes({ s = 1 }) {
 function Watermelon({ s = 1 }) {
   return <g transform={`scale(${s})`}>
     <path d="M-44 8 A 44 44 0 0 1 44 8 Z" fill={GREEN} />
-    <path d="M-40 8 A 40 40 0 0 1 40 8 Z" fill="#e03131" />
+    <path d="M-40 8 A 40 40 0 0 1 40 8 Z" fill="#C5470D" />
     <path d="M-40 8 A 40 40 0 0 1 40 8 Z" fill="none" stroke="#ffffff" strokeOpacity="0.5" strokeWidth="5" />
     {[[-20, -2], [0, -14], [20, -2], [-10, 0], [10, 0]].map(([x, y], i) => <ellipse key={i} cx={x} cy={y} rx="2.6" ry="4" fill="#26343D" transform={`rotate(${x * 0.6} ${x} ${y})`} />)}
   </g>;
@@ -221,7 +221,7 @@ export function FarmingArt() {
   return <Tile label="Farming" bg="#12345A">
     <rect x="-80" y="26" width="160" height="30" rx="8" fill="#F7A814" />
     <g transform="translate(0,-6)">
-      <circle cy="-30" r="14" fill="#ffd8a8" />
+      <circle cy="-30" r="14" fill="#F7E3BC" />
       <path d="M-20 -8 a20 22 0 0 1 40 0 z" fill={ORANGE} />
       <rect x="-22" y="-30" width="44" height="8" rx="4" fill={YELLOW} />
     </g>
@@ -287,7 +287,7 @@ export function SafetyArt() {
 export function MythArt() {
   return <Tile label="Myth vs reality" bg="#12345A">
     <g transform="translate(0,-24)">
-      <text x="-34" y="6" textAnchor="middle" fontSize="30" fill="#ff8787">✗</text>
+      <text x="-34" y="6" textAnchor="middle" fontSize="30" fill="#F6CEC0">✗</text>
       <text x="30" y="6" textAnchor="middle" fontSize="22" fontWeight="800" fill="#fff">Myth</text>
     </g>
     <g transform="translate(0,34)">

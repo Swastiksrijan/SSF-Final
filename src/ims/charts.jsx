@@ -3,7 +3,7 @@
 const NAVY = '#12345A';
 const ORANGE = '#176447';
 const AMBER = '#F7A814';
-const TONES = [NAVY, ORANGE, AMBER, '#176447', '#176447', '#12345A', '#be123c', '#26343D'];
+const TONES = [NAVY, ORANGE, AMBER, '#176447', '#176447', '#12345A', '#A73800', '#26343D'];
 
 /** Simple two-column bar chart. data = [{ label, value }] */
 export function BarChart({ data = [], height = 180, color = ORANGE, valueFmt = (v) => v }) {

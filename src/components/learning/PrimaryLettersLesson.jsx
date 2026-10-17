@@ -121,7 +121,7 @@ function Section({ icon, title, subtitle, children, tone = "sky" }) {
     sky: { wrap: "border-[#EAF0F6] bg-gradient-to-br from-[#EAF0F6] to-white", bar: "from-[#12345A] to-[#176447]", chip: "bg-[#EAF0F6] text-[#12345A]", title: "text-[#12345A]" },
     purple: { wrap: "border-[#12345A] bg-gradient-to-br from-[#EAF0F6] to-white", bar: "from-[#12345A] to-[#12345A]", chip: "bg-[#12345A] text-[#12345A]", title: "text-[#12345A]" },
     green: { wrap: "border-[#EAF0F6] bg-gradient-to-br from-[#EAF0F6] to-white", bar: "from-[#176447] to-[#176447]", chip: "bg-[#EAF0F6] text-[#176447]", title: "text-[#176447]" },
-    amber: { wrap: "border-[#F7A814] bg-gradient-to-br from-[#FAF9F5] to-white", bar: "from-[#b45309] to-[#f59e0b]", chip: "bg-[#FAF9F5] text-[#92400e]", title: "text-[#F7A814]" },
+    amber: { wrap: "border-[#F7A814] bg-gradient-to-br from-[#FAF9F5] to-white", bar: "from-[#976401] to-[#ECA21B]", chip: "bg-[#FAF9F5] text-[#785003]", title: "text-[#F7A814]" },
     rose: { wrap: "border-[#EAF0F6] bg-gradient-to-br from-[#EAF0F6] to-white", bar: "from-[#12345A] to-[#12345A]", chip: "bg-[#EAF0F6] text-[#12345A]", title: "text-[#12345A]" }
   };
   const t = tones[tone] || tones.sky;
@@ -239,7 +239,7 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
     <Section icon="🅰️" title="Module 7 — Hindi व्यंजन / Consonants" subtitle="समूह में सीखो: क ख ग घ ङ" tone="amber">
       <div className="space-y-3">
         {VYANJAN_SETS.map((set, i) => <div key={i} className="flex flex-wrap gap-2">
-          {set.map(v => <button key={v} type="button" onClick={() => speak(`${v}, ${VYANJAN_WORDS[v] || ""}`)} title={VYANJAN_WORDS[v]} className="flex min-w-[74px] flex-col items-center rounded-xl border-2 border-[#F7A814] bg-white px-3 py-2 shadow-sm transition hover:border-[#d90429]">
+          {set.map(v => <button key={v} type="button" onClick={() => speak(`${v}, ${VYANJAN_WORDS[v] || ""}`)} title={VYANJAN_WORDS[v]} className="flex min-w-[74px] flex-col items-center rounded-xl border-2 border-[#F7A814] bg-white px-3 py-2 shadow-sm transition hover:border-[#A73800]">
             <span className="text-2xl font-black text-[#12345A]">{v}</span>
             <span className="text-[10px] font-bold text-zinc-500">{VYANJAN_WORDS[v]}</span>
           </button>)}
@@ -306,7 +306,7 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
             const chosen = gameAnswers[key];
             const correct = chosen === o && o === g.answer;
             const wrong = chosen === o && o !== g.answer;
-            return <button key={o} type="button" onClick={() => { setGameAnswers(a => ({ ...a, [key]: o })); if (o === g.answer) speak("Correct! " + o); }} className={"rounded-xl px-4 py-2 text-lg font-black shadow-sm transition " + (correct ? "bg-[#176447] text-white" : wrong ? "bg-[#d90429] text-white" : "bg-[#FAF9F5] text-[#12345A] border-2 border-zinc-200")}>{o}</button>;
+            return <button key={o} type="button" onClick={() => { setGameAnswers(a => ({ ...a, [key]: o })); if (o === g.answer) speak("Correct! " + o); }} className={"rounded-xl px-4 py-2 text-lg font-black shadow-sm transition " + (correct ? "bg-[#176447] text-white" : wrong ? "bg-[#A73800] text-white" : "bg-[#FAF9F5] text-[#12345A] border-2 border-zinc-200")}>{o}</button>;
           })}</div>
           {gameAnswers[key] && <div className="mt-2 text-xs font-black">{gameAnswers[key] === g.answer ? "✅ सही!" : "❌ फिर कोशिश करें — सही उत्तर: " + g.answer}</div>}
         </div>)}
@@ -330,7 +330,7 @@ export default function PrimaryLettersLesson({ onNextLesson, nextLessonTitle, on
             const chosen = quizAnswers[i];
             const correct = chosen === oi && oi === ans;
             const wrong = chosen === oi && oi !== ans;
-            return <button key={o} type="button" onClick={() => { setQuizAnswers(a => ({ ...a, [i]: oi })); speak(o); }} className={"rounded-xl px-4 py-2 text-sm font-black shadow-sm transition " + (correct ? "bg-[#176447] text-white" : wrong ? "bg-[#d90429] text-white" : "bg-[#FAF9F5] text-[#12345A] border-2 border-zinc-200")}>{o}</button>;
+            return <button key={o} type="button" onClick={() => { setQuizAnswers(a => ({ ...a, [i]: oi })); speak(o); }} className={"rounded-xl px-4 py-2 text-sm font-black shadow-sm transition " + (correct ? "bg-[#176447] text-white" : wrong ? "bg-[#A73800] text-white" : "bg-[#FAF9F5] text-[#12345A] border-2 border-zinc-200")}>{o}</button>;
           })}</div>
         </div>)}
       </div>

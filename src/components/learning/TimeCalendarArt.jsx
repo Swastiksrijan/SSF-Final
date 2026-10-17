@@ -15,7 +15,7 @@ const ORANGE = "#176447";
 const YELLOW = "#F7A814";
 const SKY = "#EAF0F6";
 const GREEN = "#176447";
-const ROSE = "#e5484d";
+const ROSE = "#C5470D";
 
 function Tile({ children, bg = NAVY, label = "Illustration" }) {
   const uid = useId().replace(/[:]/g, "");

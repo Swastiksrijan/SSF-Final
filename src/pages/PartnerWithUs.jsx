@@ -118,7 +118,7 @@ export default function PartnerWithUs() {
                                 icon: <FaChalkboardTeacher />,
                                 title: "Expert Mentors",
                                 hindiTitle: "विशेषज्ञ परामर्शदाता",
-                                color: "border-[#d90429]",
+                                color: "border-[#A73800]",
                                 desc: "Subject matter experts can join as guest faculty or curriculum advisors for our National Academy projects.",
                                 points: ["Guest Lectures", "Curriculum Design"],
                                 stat: "100+ Mentors Onboard"

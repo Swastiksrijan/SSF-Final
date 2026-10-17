@@ -148,7 +148,7 @@ export default function Campaign() {
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-6 pt-8">
             <Link to="/DonateAndSupport" className="sm:w-auto">
-              <button className="btn-cta w-full px-14 py-6 text-xl shadow-[#d90429]/20">
+              <button className="btn-cta w-full px-14 py-6 text-xl shadow-[#A73800]/20">
                 Donate Now
               </button>
             </Link>

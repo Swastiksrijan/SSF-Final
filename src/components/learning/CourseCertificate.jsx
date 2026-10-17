@@ -83,7 +83,7 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
     <div className="mt-5 grid gap-3 md:grid-cols-3">
       <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-xs font-black uppercase tracking-widest text-[#12345A]">Course</div><div className="mt-1 text-base font-black text-[#12345A] md:text-lg">{title}</div></div>
       <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-xs font-black uppercase tracking-widest text-[#12345A]">Progress</div><div className="mt-1 text-base font-black text-[#12345A] md:text-lg">{progress}% complete</div></div>
-      <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-xs font-black uppercase tracking-widest text-[#12345A]">Status</div><div className="mt-1 text-base font-black md:text-lg">{requested ? <span className="text-[#176447]">Requested ✓</span> : <span className="text-[#b45309]">Not requested yet</span>}</div></div>
+      <div className="rounded-2xl border border-zinc-200 bg-white p-4"><div className="text-xs font-black uppercase tracking-widest text-[#12345A]">Status</div><div className="mt-1 text-base font-black md:text-lg">{requested ? <span className="text-[#176447]">Requested ✓</span> : <span className="text-[#976401]">Not requested yet</span>}</div></div>
     </div>
 
     <p className="mt-4 text-sm leading-7 text-zinc-600 md:text-base">

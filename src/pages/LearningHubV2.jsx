@@ -72,8 +72,8 @@ const CATEGORY_META = {
   "Digital Skills / डिजिटल कौशल": { key:"digital", icon:FaLaptop, color:"from-[#12345A] to-[#12345A]" },
   "Career & Workplace / करियर एवं कार्यस्थल": { key:"career", icon:FaBriefcase, color:"from-[#26343D] to-[#12345A]" },
   "Skill Development / कौशल विकास": { key:"skills", icon:FaHandsHelping, color:"from-[#176447] to-[#176447]" },
-  "Women & Child Development / महिला एवं बाल विकास": { key:"women", icon:FaChild, color:"from-[#12345A] to-[#d90429]" },
-  "Health / स्वास्थ्य": { key:"health", icon:FaHeartbeat, color:"from-[#9d0208] to-[#e63946]" },
+  "Women & Child Development / महिला एवं बाल विकास": { key:"women", icon:FaChild, color:"from-[#12345A] to-[#A73800]" },
+  "Health / स्वास्थ्य": { key:"health", icon:FaHeartbeat, color:"from-[#742A0C] to-[#C5470D]" },
   "Environment / पर्यावरण": { key:"environment", icon:FaLeaf, color:"from-[#176447] to-[#176447]" },
   "Agriculture & Rural Development / कृषि एवं ग्रामीण विकास": { key:"agriculture", icon:FaSeedling, color:"from-[#176447] to-[#176447]" },
   "Social Justice & Human Values / सामाजिक न्याय एवं मानवीय मूल्य": { key:"justice", icon:FaBalanceScale, color:"from-[#26343D] to-[#26343D]" },
@@ -90,7 +90,7 @@ const CATEGORY_META = {
   "AI & Future Technology / AI एवं भविष्य की तकनीक": { key:"digital", icon:FaLaptop, color:"from-[#12345A] to-[#12345A]" },
   "Media & Information Literacy / मीडिया एवं सूचना साक्षरता": { key:"digital", icon:FaShieldAlt, color:"from-[#12345A] to-[#176447]" },
   "Life Skills / जीवन कौशल": { key:"community", icon:FaHandsHelping, color:"from-[#176447] to-[#176447]" },
-  "Practical Everyday Life / दैनिक व्यावहारिक जीवन": { key:"health", icon:FaChild, color:"from-[#9d0208] to-[#e63946]" },
+  "Practical Everyday Life / दैनिक व्यावहारिक जीवन": { key:"health", icon:FaChild, color:"from-[#742A0C] to-[#C5470D]" },
   "Entrepreneurship & Work / उद्यमिता एवं कार्य": { key:"skills", icon:FaBriefcase, color:"from-[#26343D] to-[#12345A]" },
   "Research & Mastery Skills / शोध एवं दक्षता कौशल": { key:"education", icon:FaBookOpen, color:"from-[#12345A] to-[#EAF0F6]" },
   "Arts, Creativity & Culture / कला, रचनात्मकता एवं संस्कृति": { key:"culture", icon:FaBookOpen, color:"from-[#12345A] to-[#176447]" },
@@ -189,7 +189,7 @@ const SUBJECT_VISUAL_GLYPH = {
 const HUB_ACCENTS = ["#176447","#F7A814","#EAF0F6","#176447","#176447","#F7A814","#EAF0F6","#176447"];
 const HUB_PALETTES = [
   ["#12345A","#12345A"],["#12345A","#12345A"],["#176447","#12345A"],["#12345A","#12345A"],
-  ["#9d0208","#12345A"],["#176447","#176447"],["#12345A","#12345A"],["#176447","#12345A"],
+  ["#742A0C","#12345A"],["#176447","#176447"],["#12345A","#12345A"],["#176447","#12345A"],
   ["#F7A814","#F7A814"],["#26343D","#12345A"],["#176447","#12345A"],["#12345A","#12345A"],["#12345A","#F7A814"]
 ];
 // Hand-coded SVG cover art (no stock photos). Kept inline so every subject and
@@ -2476,9 +2476,9 @@ function PrimaryLessonVisual({ lesson }) {
       </div>}
 
       <div className="mt-6 rounded-[1.4rem] border-2 border-[#EAF0F6] bg-[#FAF9F5] p-5">
-        <div className="text-sm font-black uppercase tracking-widest text-[#9d0208]">🪜 Step-by-Step / चरणबद्ध सीखना</div>
+        <div className="text-sm font-black uppercase tracking-widest text-[#742A0C]">🪜 Step-by-Step / चरणबद्ध सीखना</div>
         <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {(detail.steps || ["🎯 उद्देश्य समझें","👀 उदाहरण देखें","🔊 सुनें और बोलें","✍️ स्वयं करें","🔎 उत्तर जाँचें","🔁 दोबारा अभ्यास करें"]).map((x,i)=><div key={i} className="rounded-xl bg-white p-4 text-sm font-black leading-6 text-zinc-700 shadow-sm"><span className="mr-2 text-[#d90429]">{i+1}.</span>{x}</div>)}
+          {(detail.steps || ["🎯 उद्देश्य समझें","👀 उदाहरण देखें","🔊 सुनें और बोलें","✍️ स्वयं करें","🔎 उत्तर जाँचें","🔁 दोबारा अभ्यास करें"]).map((x,i)=><div key={i} className="rounded-xl bg-white p-4 text-sm font-black leading-6 text-zinc-700 shadow-sm"><span className="mr-2 text-[#A73800]">{i+1}.</span>{x}</div>)}
         </div>
       </div>
 

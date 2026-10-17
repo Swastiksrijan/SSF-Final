@@ -76,7 +76,7 @@ export default function GetInvolvedInterestForm({ type = "movement", onClose }) 
           </div>
         </div>
         <div><label className="gil-label">How would you like to contribute? *</label><textarea className="gil-input resize-none" rows={5} value={form.message} onChange={e => update("message", e.target.value)} placeholder={type === "partner" ? "Tell us about your company, CSR interest, collaboration or partnership idea." : "Tell us how you would like to participate, support or stay connected."} required /></div>
-        {status === "error" && <div className="p-4 rounded-xl bg-[#fef2f2] border border-[#EAF0F6] text-[#b91c1c] text-sm font-semibold flex gap-2"><FaExclamationCircle />{error}</div>}
+        {status === "error" && <div className="p-4 rounded-xl bg-[#FCF3F0] border border-[#EAF0F6] text-[#A73800] text-sm font-semibold flex gap-2"><FaExclamationCircle />{error}</div>}
         <button type="submit" disabled={status === "submitting"} className="w-full bg-[#12345A] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#176447] hover:text-[#12345A] transition-all flex items-center justify-center gap-3 disabled:opacity-60">{status === "submitting" ? <><FaSpinner className="animate-spin" /> Submitting securely...</> : <>Submit Request <FaArrowRight /></>}</button>
       </form>
       <style>{`.gil-label{display:block;font-size:.72rem;font-weight:800;color:#26343D;text-transform:uppercase;letter-spacing:.08em;margin:0 0 .45rem .25rem}.gil-input{width:100%;padding:.9rem 1rem;background:#FAF9F5;border:1px solid #EAF0F6;border-radius:.8rem;outline:none;font-weight:500}.gil-input:focus{border-color:#F7A814;box-shadow:0 0 0 4px rgba(23,100,71,.1)}`}</style>

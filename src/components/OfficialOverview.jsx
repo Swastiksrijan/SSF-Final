@@ -39,7 +39,7 @@ export default function OfficialOverview() {
             <div className="bg-gradient-to-br from-[#12345A] to-[#12345A] rounded-[2rem] p-8 md:p-10 shadow-2xl relative overflow-hidden z-10 mt-6">
                 {/* Background decoration */}
                 <div className="absolute top-0 right-0 w-80 h-80 bg-[#12345A] opacity-20 rounded-full blur-[80px] translate-x-1/2 -translate-y-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#d90429] opacity-10 rounded-full blur-[80px] -translate-x-1/2 translate-y-1/2"></div>
+                <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#A73800] opacity-10 rounded-full blur-[80px] -translate-x-1/2 translate-y-1/2"></div>
 
                 <div className="relative z-10 text-center space-y-8">
                     <div className="space-y-3">
@@ -94,7 +94,7 @@ export default function OfficialOverview() {
 
                         <Link
                             to="/Members"
-                            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-200 transform bg-[#d90429] text-white hover:bg-[#b00422] hover:-translate-y-0.5 shadow-lg shadow-red-900/20 text-sm min-w-[180px] justify-center"
+                            className="flex items-center gap-2 px-6 py-3 rounded-full font-bold transition-all duration-200 transform bg-[#A73800] text-white hover:bg-[#8A3008] hover:-translate-y-0.5 shadow-lg shadow-red-900/20 text-sm min-w-[180px] justify-center"
                         >
                             <FaHandHoldingHeart className="text-xl" /> Become a Member
                         </Link>

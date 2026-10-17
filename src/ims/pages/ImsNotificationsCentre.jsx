@@ -21,8 +21,8 @@ import { REFRESH_EVENT, CHANGED_EVENT } from '../NotificationsHeader';
 import { NotificationsModules } from '../SectionNav';
 
 const SEVERITY = {
-  critical: 'border-l-[#DC2626] bg-rose-50/60',
-  warning: 'border-l-[#D97706] bg-amber-50/50',
+  critical: 'border-l-[#C5470D] bg-rose-50/60',
+  warning: 'border-l-[#C2830A] bg-amber-50/50',
   info: 'border-l-[#12345A] bg-sky-50/40',
 };
 const TASK_TONE = {

@@ -46,7 +46,7 @@ export default function SSFNationalAcademy() {
                     transition={{ duration: 5, repeat: Infinity }}
                 />
                 <motion.div
-                    className="absolute bottom-0 left-10 w-96 h-96 bg-[#d90429]/10 rounded-full blur-3xl"
+                    className="absolute bottom-0 left-10 w-96 h-96 bg-[#A73800]/10 rounded-full blur-3xl"
                     animate={{ scale: [1.2, 1, 1.2], opacity: [0.2, 0.4, 0.2] }}
                     transition={{ duration: 6, repeat: Infinity }}
                 />
@@ -56,7 +56,7 @@ export default function SSFNationalAcademy() {
                     <motion.div
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
-                        className="inline-flex items-center gap-3 bg-gradient-to-r from-[#176447]/20 to-[#d90429]/20 backdrop-blur-md border border-[#176447]/30 px-6 py-3 rounded-full"
+                        className="inline-flex items-center gap-3 bg-gradient-to-r from-[#176447]/20 to-[#A73800]/20 backdrop-blur-md border border-[#176447]/30 px-6 py-3 rounded-full"
                     >
                         <span className="relative flex h-3 w-3">
                             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#176447] opacity-75"></span>
@@ -99,7 +99,7 @@ export default function SSFNationalAcademy() {
                             </div>
                             <div className="h-3 bg-white/20 rounded-full overflow-hidden">
                                 <motion.div
-                                    className="h-full bg-gradient-to-r from-[#176447] to-[#d90429] rounded-full"
+                                    className="h-full bg-gradient-to-r from-[#176447] to-[#A73800] rounded-full"
                                     initial={{ width: 0 }}
                                     animate={{ width: "35%" }}
                                     transition={{ duration: 1.5, ease: "easeOut" }}
@@ -137,7 +137,7 @@ export default function SSFNationalAcademy() {
                                 viewport={{ once: true }}
                                 className="flex items-start gap-4 p-6 bg-white rounded-2xl shadow-lg border border-zinc-100 hover:shadow-xl hover:border-[#176447]/30 transition-all"
                             >
-                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#176447] to-[#d90429] flex items-center justify-center text-white font-bold shrink-0">
+                                <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#176447] to-[#A73800] flex items-center justify-center text-white font-bold shrink-0">
                                     {idx + 1}
                                 </div>
                                 <p className="text-zinc-700 font-medium leading-relaxed">{obj}</p>
@@ -236,7 +236,7 @@ export default function SSFNationalAcademy() {
             </div>
 
             {/* ================= FUNDING REQUIREMENTS ================= */}
-            <div className="py-24 bg-gradient-to-br from-[#d90429]/5 via-white to-[#176447]/5">
+            <div className="py-24 bg-gradient-to-br from-[#A73800]/5 via-white to-[#176447]/5">
                 <div className="max-w-6xl mx-auto px-6">
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -244,7 +244,7 @@ export default function SSFNationalAcademy() {
                         viewport={{ once: true }}
                         className="text-center mb-16"
                     >
-                        <p className="text-[#d90429] font-bold text-xs uppercase tracking-[0.2em] mb-4">Support Our Vision | हमारे विजन का समर्थन करें</p>
+                        <p className="text-[#A73800] font-bold text-xs uppercase tracking-[0.2em] mb-4">Support Our Vision | हमारे विजन का समर्थन करें</p>
                         <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A] mb-6">
                             Funding Requirements | फंड की जरूरतें
                         </h2>
@@ -296,7 +296,7 @@ export default function SSFNationalAcademy() {
                                 href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#d90429] to-[#b00422] text-white font-bold px-10 py-5 rounded-full hover:shadow-2xl hover:shadow-red-500/30 hover:-translate-y-1 transition-all"
+                                className="inline-flex items-center justify-center gap-3 bg-gradient-to-r from-[#A73800] to-[#8A3008] text-white font-bold px-10 py-5 rounded-full hover:shadow-2xl hover:shadow-red-500/30 hover:-translate-y-1 transition-all"
                             >
                                 <FaHeart className="text-lg" />
                                 Support This Project
@@ -347,7 +347,7 @@ export default function SSFNationalAcademy() {
             </div>
 
             {/* ================= CTA ================= */}
-            <div className="py-24 bg-gradient-to-br from-[#176447] to-[#d90429] relative overflow-hidden">
+            <div className="py-24 bg-gradient-to-br from-[#176447] to-[#A73800] relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(#ffffff_1px,transparent_1px)] [background-size:40px_40px] opacity-[0.1]"></div>
                 <div className="max-w-4xl mx-auto px-6 text-center relative z-10">
                     <motion.div
@@ -365,7 +365,7 @@ export default function SSFNationalAcademy() {
                             href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-3 bg-white text-[#d90429] font-bold px-12 py-5 rounded-full text-lg hover:shadow-2xl hover:-translate-y-1 transition-all"
+                            className="inline-flex items-center gap-3 bg-white text-[#A73800] font-bold px-12 py-5 rounded-full text-lg hover:shadow-2xl hover:-translate-y-1 transition-all"
                         >
                             <FaRupeeSign className="text-xl" />
                             Donate Now

@@ -162,7 +162,7 @@ export default function JourneyPage() {
                   year: "2017",
                   title: "Education Focus",
                   desc: "Education support initiatives launched for underprivileged children.",
-                  color: "#d90429"
+                  color: "#A73800"
                 },
                 {
                   year: "2018",
@@ -192,7 +192,7 @@ export default function JourneyPage() {
                   year: "2022",
                   title: "Strengthening Communities",
                   desc: "Reinforced efforts with disaster relief, implemented long-term resilience-building initiatives recovering from challenges.",
-                  color: "#d90429"
+                  color: "#A73800"
                 },
                 {
                   year: "2023",
@@ -216,7 +216,7 @@ export default function JourneyPage() {
                   year: "2026+",
                   title: "Continuing the Mission",
                   desc: "Expanding impact through partnerships, innovation, and sustainable community development.",
-                  color: "#d90429"
+                  color: "#A73800"
                 }
               ].map((item, i) => (
                 <div key={i} className={`relative flex items-center justify-between md:justify-normal even:md:flex-row-reverse group`}>

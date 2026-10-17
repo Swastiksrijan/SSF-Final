@@ -93,7 +93,7 @@ export default function VisionPage() {
                                 <Link to="/Mission" className="btn-secondary border-[#12345A] text-[#12345A] hover:bg-[#12345A] hover:text-white">
                                     Explore Our Mission <FaHandHoldingHeart />
                                 </Link>
-                                <Link to="/institutional-dna" className="btn-secondary border-[#d90429] text-[#d90429] hover:bg-[#d90429] hover:text-white">
+                                <Link to="/institutional-dna" className="btn-secondary border-[#A73800] text-[#A73800] hover:bg-[#A73800] hover:text-white">
                                     Explore Institutional DNA <FaShieldAlt />
                                 </Link>
                             </div>

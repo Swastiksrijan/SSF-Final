@@ -191,12 +191,12 @@ const HumanityAndTruth = () => {
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-4 text-lg">
               <p><span className="font-bold text-[#176447]">अच्छाई:</span> भूखे को खाना देना, कमजोर की मदद करना, सच्चाई के लिए खड़ा होना।</p>
-              <p><span className="font-bold text-[#d90429]">बुराई:</span> ताकत के साथ संवेदना का अभाव, लाभ को जीवन से ऊपर रखना।</p>
+              <p><span className="font-bold text-[#A73800]">बुराई:</span> ताकत के साथ संवेदना का अभाव, लाभ को जीवन से ऊपर रखना।</p>
               <p className="italic pt-4">कोई बच्चा बुरा पैदा नहीं होता। पर परिस्थिति उसे कठोर बना देती है।</p>
             </div>
             <div className="space-y-4 text-lg text-[#12345A] italic border-l-2 border-[#EAF0F6] pl-6">
               <p><span className="font-bold text-[#176447]">Good:</span> Feeding the hungry, helping the weak, standing for truth.</p>
-              <p><span className="font-bold text-[#d90429]">Evil:</span> Lack of sensitivity with power, keeping profit above life.</p>
+              <p><span className="font-bold text-[#A73800]">Evil:</span> Lack of sensitivity with power, keeping profit above life.</p>
               <p className="pt-4">No child is born evil. But circumstances make them harsh.</p>
             </div>
           </div>

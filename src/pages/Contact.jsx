@@ -93,7 +93,7 @@ export default function Contact() {
                 </div>
               </div>
               <div className="flex gap-5">
-                <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-[#d90429] shrink-0"><MapPin className="w-5 h-5" /></div>
+                <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-[#A73800] shrink-0"><MapPin className="w-5 h-5" /></div>
                 <div>
                   <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-2">Registered Office</p>
                   <p className="text-[#12345A] text-sm md:text-base font-medium leading-relaxed">{CONTACT_INFO.address.fullRegistered}</p>

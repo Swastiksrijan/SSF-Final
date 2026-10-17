@@ -91,7 +91,7 @@ export default function ImsDashboard() {
                 <BarChart
                   data={[
                     { label: t('total_income'), value: data.finance.income, color: '#176447' },
-                    { label: t('total_expenses'), value: data.finance.expense, color: '#be123c' },
+                    { label: t('total_expenses'), value: data.finance.expense, color: '#A73800' },
                     { label: t('net_balance'), value: data.finance.net, color: '#12345A' },
                     { label: t('donations'), value: data.finance.donationsTotal, color: '#176447' },
                   ]}
@@ -150,7 +150,7 @@ export default function ImsDashboard() {
               <Card className="p-4">
                 <ColumnChart data={[
                   { label: t('total_income'), value: data.finance.income, color: '#176447' },
-                  { label: t('total_expenses'), value: data.finance.expense, color: '#be123c' },
+                  { label: t('total_expenses'), value: data.finance.expense, color: '#A73800' },
                   { label: t('donations'), value: data.finance.donationsTotal, color: '#176447' },
                   { label: t('bank_balance'), value: data.finance.bankBalance, color: '#12345A' },
                   { label: t('cash_balance'), value: data.finance.cashBalance, color: '#176447' },
@@ -163,7 +163,7 @@ export default function ImsDashboard() {
                   { label: t('upcoming_meetings'), value: data.governance.upcomingMeetings, color: '#12345A' },
                   { label: t('pending_resolutions'), value: data.governance.pendingResolutions, color: '#176447' },
                   { label: t('pending_actions'), value: data.governance.pendingActions, color: '#F7A814' },
-                  { label: t('pending_cases'), value: data.governance.openCases, color: '#be123c' },
+                  { label: t('pending_cases'), value: data.governance.openCases, color: '#A73800' },
                 ]} />
               </Card>
             </Section>
@@ -251,7 +251,7 @@ function Section({ title, icon, count, badge, children }) {
 function NetBalanceCard({ net, income, expense, t }) {
   const positive = net >= 0;
   return (
-    <Card className={`relative overflow-hidden p-5 ${positive ? 'bg-gradient-to-br from-[#12345A] to-[#12345A]' : 'bg-gradient-to-br from-[#7f1d1d] to-[#b91c1c]'} text-white`}>
+    <Card className={`relative overflow-hidden p-5 ${positive ? 'bg-gradient-to-br from-[#12345A] to-[#12345A]' : 'bg-gradient-to-br from-[#742A0C] to-[#A73800]'} text-white`}>
       <span aria-hidden className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-white/10" />
       <div className="relative">
         <p className="text-[11px] font-bold uppercase tracking-[.18em] text-white/60">{t('net_balance')}</p>
@@ -259,7 +259,7 @@ function NetBalanceCard({ net, income, expense, t }) {
         <p className="mt-3 flex flex-wrap items-center gap-x-2 gap-y-1 text-xs font-semibold text-white/80">
           <span>{t('total_income')} <span className="text-[#176447]">{money(income)}</span></span>
           <span className="text-white/50">−</span>
-          <span>{t('total_expenses')} <span className="text-[#FEF2F2]">{money(expense)}</span></span>
+          <span>{t('total_expenses')} <span className="text-[#FCF3F0]">{money(expense)}</span></span>
         </p>
       </div>
     </Card>

@@ -16,7 +16,7 @@ function Card({ tone = "sky", icon, title, subtitle, children }) {
     sky: ["border-[#EAF0F6] from-[#EAF0F6]", "from-[#12345A] to-[#176447]", "bg-[#EAF0F6] text-[#12345A]", "text-[#12345A]"],
     purple: ["border-[#12345A] from-[#EAF0F6]", "from-[#12345A] to-[#12345A]", "bg-[#12345A] text-[#12345A]", "text-[#12345A]"],
     green: ["border-[#EAF0F6] from-[#EAF0F6]", "from-[#176447] to-[#176447]", "bg-[#EAF0F6] text-[#176447]", "text-[#176447]"],
-    amber: ["border-[#F7A814] from-[#FAF9F5]", "from-[#b45309] to-[#f59e0b]", "bg-[#FAF9F5] text-[#92400e]", "text-[#F7A814]"],
+    amber: ["border-[#F7A814] from-[#FAF9F5]", "from-[#976401] to-[#ECA21B]", "bg-[#FAF9F5] text-[#785003]", "text-[#F7A814]"],
     rose: ["border-[#EAF0F6] from-[#EAF0F6]", "from-[#12345A] to-[#12345A]", "bg-[#EAF0F6] text-[#12345A]", "text-[#12345A]"]
   };
   const t = tones[tone] || tones.sky;
