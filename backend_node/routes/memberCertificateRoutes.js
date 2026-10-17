@@ -147,10 +147,13 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
                 updates.certificateType = member.certificateType || 'Membership Certificate';
                 updates.certificateIssuedAt = now;
                 // When the number is adopted from the offline register, the
-                // register's own category and post are the truth. Adopt them
-                // unless the admin set those fields in this same request.
+                // register's post is the truth for the *designation*. Its
+                // memberType is a ROLE ("Founder Member"), not a billing plan,
+                // so it must never be copied into the plan column — that is what
+                // removed the fee amount from the member's Payments tab. The
+                // plan is derived instead.
                 const entry = identity.registerEntryFor(issued.memberId);
-                if (entry?.memberType && updates.memberType === undefined) updates.memberType = entry.memberType;
+                if (updates.memberType === undefined && !identity.isMembershipPlan(member.memberType)) updates.memberType = identity.planFor(member);
                 if (entry?.designation && updates.designation === undefined && !member.designation) updates.designation = entry.designation;
             }
         }

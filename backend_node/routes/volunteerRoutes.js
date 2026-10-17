@@ -253,7 +253,7 @@ router.post('/member-login', async (req, res) => {
             status: 'success',
             message: 'Login successful',
             token: issueToken(member),
-            user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, memberCategory: memberCategoryFor(member), memberId: identity.holdsOfficialMemberId(member) ? member.memberId : null, status: member.status }
+            user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: identity.isMembershipPlan(member.memberType) ? member.memberType : identity.planFor(member), plan: identity.planFor(member), memberCategory: memberCategoryFor(member), memberId: identity.holdsOfficialMemberId(member) ? member.memberId : null, status: member.status }
         });
     } catch (error) {
         console.error('❌ Member login error:', error);

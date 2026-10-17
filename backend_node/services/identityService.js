@@ -178,18 +178,40 @@ const registerEntryFor = (memberId) => {
   return registerEntries().find((entry) => entry.memberId === wanted) || null;
 };
 
+// A membership is billed on a PLAN (general / active / life / advisory), but the
+// offline register records a ROLE ("Founder Member", "Executive Member").
+// Anything that prices a membership — the portal fee card, the Razorpay amount —
+// must read the plan, never the role. Writing the role into `memberType` is what
+// stripped the fee amount off every registered member's Payments tab.
+const MEMBERSHIP_PLANS = ['general', 'active', 'life', 'advisory'];
+const isMembershipPlan = (value) => MEMBERSHIP_PLANS.includes(String(value || '').trim().toLowerCase());
+const planFor = (member) => {
+  const stored = String(member?.memberType || '').trim().toLowerCase();
+  if (isMembershipPlan(stored)) return stored;
+  const role = String(registerEntryFor(member?.memberId)?.memberType || '').toLowerCase();
+  if (role.includes('life')) return 'life';
+  if (role.includes('active')) return 'active';
+  if (role.includes('advisory')) return 'advisory';
+  return 'general';
+};
+
 // Repair rows left contradictory by an older approval: an account-only signup
-// that was later given a register number. Idempotent — a repaired row no longer
-// matches, so re-running on every boot is safe.
+// that was later given a register number, and rows whose `memberType` holds the
+// register ROLE instead of the billing PLAN. Idempotent — a repaired row no
+// longer matches, so re-running on every boot is safe.
 const reconcileRegisterMembers = async (Member) => {
   const rows = await Member.findAll({ where: { memberId: { [Op.ne]: null } } });
   let promoted = 0;
   for (const row of rows) {
-    if (!hasAccountMarker(row)) continue;
     const entry = registerEntryFor(row.memberId);
     const patch = {};
-    if (String(row.message || '').trim().toLowerCase() === 'signup from website') patch.message = null;
-    if (entry?.memberType) patch.memberType = entry.memberType;
+    const staleWebsiteMarker = hasAccountMarker(row);
+    // A role ("Founder Member") or the website marker in `memberType` is not a
+    // plan; restore the plan so the fee card can price the membership again.
+    if (!isMembershipPlan(row.memberType)) {
+      patch.memberType = planFor(row);
+    }
+    if (staleWebsiteMarker && String(row.message || '').trim().toLowerCase() === 'signup from website') patch.message = null;
     if (entry?.designation && !row.designation) patch.designation = entry.designation;
     if (!row.certId) patch.certId = memberCertIdFor(row.memberId);
     if (!row.certificateType) patch.certificateType = 'Membership Certificate';
@@ -251,5 +273,6 @@ module.exports = {
   isMemberId, isVolunteerId, isDonorId, isTaken, matchRegisterEntry, registerOverview,
   registerEntries, reserve, revokeFor, listIssuances,
   REAL_MEMBERSHIP_TYPES, holdsOfficialMemberId, hasAccountMarker, isAccountOnly, isRealMembership,
+  MEMBERSHIP_PLANS, isMembershipPlan, planFor,
   registerEntryFor, reconcileRegisterMembers,
 };

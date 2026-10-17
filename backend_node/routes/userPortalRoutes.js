@@ -23,11 +23,13 @@ router.get('/user-portal/:id', requireAccountAuth((req) => req.params.id), async
 
         const email = String(member.email || '').trim().toLowerCase();
         const membershipAccount = isRealMembership(member);
-        // `memberType` is the plan the person chose (general / active / life /
-        // advisory) and the portal keys the fee logic off it, so it is sent
-        // as-is. The register's own wording ("Founder Member", "Treasurer") is
-        // a separate display field, so showing it never disturbs the fee card.
+        // `memberType` on the row is the billing plan, but older approvals wrote
+        // the register ROLE ("Founder Member") into it, which stripped the fee
+        // amount off the Payments tab. Send a derived `plan` so the portal can
+        // always price the membership, and keep the register wording in
+        // `memberCategory` purely for display.
         const registerEntry = membershipAccount ? identity.registerEntryFor(member.memberId) : null;
+        const plan = membershipAccount ? identity.planFor(member) : 'general';
         const memberCategory = membershipAccount
             ? (registerEntry?.memberType || (identity.hasAccountMarker(member) ? 'Member' : member.memberType))
             : null;
@@ -36,7 +38,8 @@ router.get('/user-portal/:id', requireAccountAuth((req) => req.params.id), async
             fullName: member.fullName,
             email: member.email,
             phone: member.phone,
-            memberType: membershipAccount ? member.memberType : 'general',
+            memberType: membershipAccount ? plan : 'general',
+            plan,
             memberCategory,
             designation: registerEntry?.designation || member.designation || null,
             status: member.status,

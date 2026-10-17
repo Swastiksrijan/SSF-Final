@@ -18,19 +18,22 @@ import { EmptyState, InlineAlert, ProgressRing, SectionCard, StatCard, StatusChi
 
 const MEMBERSHIP_FEE_TYPES = ["general", "active", "life"];
 const MEMBERSHIP_FEES = { general: 1200, active: 2500, life: 8000 };
-const needsFee = (memberType) => MEMBERSHIP_FEE_TYPES.includes(String(memberType || "").trim().toLowerCase());
 // `memberType` cannot be trusted as the single key for "is this a member?".
 // A website applicant carries the plan (general/active/life/advisory), a person
 // adopted from the offline register carries the register's wording ("Founder
 // Member"), and a bare account carries 'website_signup'. Membership is really
 // proven by the issued number or an approval, so the fee UI follows either and
 // a register member never loses their payment options to a display label.
-const hasMembership = (user) => needsFee(user?.memberType)
+const hasMembership = (user) => !!planKey(user)
   || !!user?.memberId
   || (String(user?.status || "").toLowerCase() === "approved" && String(user?.memberType || "").trim().toLowerCase() !== "website_signup");
-// The plan drives the fee amount, so only a priced plan yields one. A register
-// member has no online plan and is shown "as per the register" instead.
-const planKey = (user) => (needsFee(user?.memberType) ? String(user.memberType).trim().toLowerCase() : null);
+// The plan drives the fee amount. The backend sends it as `plan` (derived from
+// the row, so an older approval that stored the register role cannot hide it);
+// fall back to `memberType` for cached sessions.
+const planKey = (user) => {
+  const value = String(user?.plan || user?.memberType || "").trim().toLowerCase();
+  return MEMBERSHIP_FEE_TYPES.includes(value) ? value : null;
+};
 
 const fileUrl = (path) => {
   if (!path) return null;
@@ -538,7 +541,10 @@ function PaymentsTab({ user, donors }) {
   // Executive / General Member) still has a membership record, so the fee
   // section must stay visible instead of vanishing with the plan.
   const showMembershipFee = hasMembership(user);
-  const planLabel = user.memberCategory || (key ? statusLabel(key) : "Member");
+  // The fee card is priced by the PLAN, so its heading names the plan
+  // ("General membership"), never the register role ("Founder Member") — the
+  // role is shown separately as the account type.
+  const planLabel = key ? statusLabel(key) : "Member";
   return (
     <>
       {showMembershipFee && (

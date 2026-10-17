@@ -391,9 +391,11 @@ async function main() {
     ok('portal returns the member ID', stuckPortal.body.account?.memberId === 'SSF-MBR-00003', String(stuckPortal.body.account?.memberId));
     ok('portal exposes the ID card URL', String(stuckPortal.body.account?.idCardUrl || '').includes('/api/user-document/membership-id/SSF-MBR-00003'), String(stuckPortal.body.account?.idCardUrl).slice(0, 80));
     ok('portal shows the register category in a separate field, not in memberType', stuckPortal.body.account?.memberCategory === 'Founder Member', String(stuckPortal.body.account?.memberCategory));
-    // memberType is the plan the portal keys its fee logic off, so it must stay
-    // the plan and never be replaced by the register wording.
-    ok('memberType stays the membership plan', stuckPortal.body.account?.memberType === 'website_signup', String(stuckPortal.body.account?.memberType));
+    // memberType is the billing plan the portal keys its fee logic off, so it
+    // must be the plan and never the register role — a role there strips the fee
+    // amount off the Payments tab.
+    ok('memberType stays the membership plan', stuckPortal.body.account?.memberType === 'general', String(stuckPortal.body.account?.memberType));
+    ok('the plan is exposed for the fee card', stuckPortal.body.account?.plan === 'general', String(stuckPortal.body.account?.plan));
     const cardRes = await fetch(`${base}/api/user-document/membership-id/SSF-MBR-00003?account=${stuck.id}&token=${encodeURIComponent(stuckToken)}`);
     ok('the ID card document itself renders (200)', cardRes.status === 200, String(cardRes.status));
     const cardHtml = await cardRes.text();
@@ -411,7 +413,9 @@ async function main() {
     const fixed = await Member.findByPk(stuck.id);
     ok('the repair reports the row it changed', repaired.promoted >= 1, JSON.stringify(repaired));
     ok('the stale marker is cleared', !fixed.message, String(fixed.message));
-    ok('the register category replaces website_signup', fixed.memberType === 'Founder Member', String(fixed.memberType));
+    // The repair must restore the billing PLAN, not copy the register ROLE into
+    // the plan column (that is the bug that hid the fee amount).
+    ok('the repair restores the billing plan, not the register role', fixed.memberType === 'general', String(fixed.memberType));
     ok('the post from the register is filled in', fixed.designation === 'Treasurer', String(fixed.designation));
     ok('running the repair again changes nothing', (await identity.reconcileRegisterMembers(Member)).promoted === 0);
 
