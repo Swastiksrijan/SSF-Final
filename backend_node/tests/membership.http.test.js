@@ -390,8 +390,10 @@ async function main() {
     const stuckPortal = await fetch(`${base}/api/user-portal/${stuck.id}`, { headers: stuckHeaders }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
     ok('portal returns the member ID', stuckPortal.body.account?.memberId === 'SSF-MBR-00003', String(stuckPortal.body.account?.memberId));
     ok('portal exposes the ID card URL', String(stuckPortal.body.account?.idCardUrl || '').includes('/api/user-document/membership-id/SSF-MBR-00003'), String(stuckPortal.body.account?.idCardUrl).slice(0, 80));
-    ok('portal shows the register category, not the stale marker', stuckPortal.body.account?.memberType === 'Founder Member', String(stuckPortal.body.account?.memberType));
-
+    ok('portal shows the register category in a separate field, not in memberType', stuckPortal.body.account?.memberCategory === 'Founder Member', String(stuckPortal.body.account?.memberCategory));
+    // memberType is the plan the portal keys its fee logic off, so it must stay
+    // the plan and never be replaced by the register wording.
+    ok('memberType stays the membership plan', stuckPortal.body.account?.memberType === 'website_signup', String(stuckPortal.body.account?.memberType));
     const cardRes = await fetch(`${base}/api/user-document/membership-id/SSF-MBR-00003?account=${stuck.id}&token=${encodeURIComponent(stuckToken)}`);
     ok('the ID card document itself renders (200)', cardRes.status === 200, String(cardRes.status));
     const cardHtml = await cardRes.text();

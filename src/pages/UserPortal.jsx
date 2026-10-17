@@ -164,8 +164,8 @@ export default function UserPortal() {
   const needsCorrection = String(user?.status || "").toLowerCase() === "changes_requested" && !!user?.reviewNote;
 
   const documents = useMemo(() => [
-    memberApproved && { title: "Membership ID Card", id: user.memberId, href: user.idCardUrl, kind: "member-id" },
-    memberApproved && { title: "Membership Certificate", id: user.certId, href: user.certificateUrl, kind: "member-cert" },
+    memberApproved && { title: "Membership ID Card", id: user.memberId, href: user.idCardUrl, kind: "member-id", subtitle: user.memberCategory || null },
+    memberApproved && { title: "Membership Certificate", id: user.certId, href: user.certificateUrl, kind: "member-cert", subtitle: user.memberCategory || null },
     approvedVolunteer && { title: "Volunteer ID Card", id: approvedVolunteer.volunteerId, href: approvedVolunteer.idCardUrl, kind: "vol-id" },
     approvedVolunteer && { title: "Volunteer Certificate", id: approvedVolunteer.certId, href: approvedVolunteer.certificateUrl, kind: "vol-cert" },
     ...donors.filter((item) => item.receiptUrl).map((item) => ({ title: "Donation Receipt", id: item.donorId, href: item.receiptUrl, kind: "receipt" })),
@@ -182,7 +182,15 @@ export default function UserPortal() {
     const items = [{ key: "created", title: "Account created", detail: user.email, at: dateTimeText(user.createdAt), done: true }];
     if (needsFee(user.memberType)) {
       const paid = String(user.paymentStatus || "").toLowerCase() === "paid";
-      items.push({ key: "fee", title: paid ? "Membership fee confirmed" : "Membership fee pending", detail: paid ? `${formatINR(MEMBERSHIP_FEES[user.memberType])} received` : `Pay ${formatINR(MEMBERSHIP_FEES[user.memberType])} to unlock approval`, at: user.paymentPaidAt ? dateTimeText(user.paymentPaidAt) : null, done: paid });
+      const approved = user.status === "approved";
+      // An approved member must never be told to "pay to unlock approval".
+      items.push({
+        key: "fee",
+        title: paid ? "Membership fee confirmed" : approved ? "Membership fee on record" : "Membership fee pending",
+        detail: paid ? `${formatINR(MEMBERSHIP_FEES[user.memberType])} received` : approved ? "The SSF team maintains your membership fee record." : `Pay ${formatINR(MEMBERSHIP_FEES[user.memberType])} to unlock approval`,
+        at: user.paymentPaidAt ? dateTimeText(user.paymentPaidAt) : null,
+        done: paid,
+      });
     }
     if (user.status === "approved") items.push({ key: "approved", title: "Membership approved", detail: user.memberId ? `Member ID ${user.memberId}` : null, at: dateTimeText(user.certificateIssuedAt), done: true });
     else if (needsCorrection) items.push({ key: "correction", title: "Correction requested", detail: user.reviewNote, at: null, done: false });
@@ -346,6 +354,7 @@ export default function UserPortal() {
                   </div>
                   <div className="mt-5 space-y-2">
                     <button type="button" onClick={() => goTab("documents")} className="w-full rounded-xl bg-[#EAF0F6] text-[#12345A] px-4 py-2.5 text-sm font-bold text-left">View certificates &amp; ID cards</button>
+                    <button type="button" onClick={() => goTab("payments")} className="w-full rounded-xl bg-[#EAF0F6] text-[#12345A] px-4 py-2.5 text-sm font-bold text-left">Membership fee &amp; payments</button>
                     <button type="button" onClick={() => goTab("applications")} className="w-full rounded-xl bg-[#EAF0F6] text-[#12345A] px-4 py-2.5 text-sm font-bold text-left">Start a new application</button>
                   </div>
                 </SectionCard>
@@ -382,9 +391,9 @@ export default function UserPortal() {
 
               <SectionCard eyebrow="Track" title="My applications">
                 <div className="space-y-3">
-                  {needsFee(user.memberType) && (
+                  {(needsFee(user.memberType) || !!user.memberId) && (
                     <div className="rounded-2xl border border-[#D8E1EA] p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-                      <div><p className="font-black text-[#12345A]">Membership — {statusLabel(user.memberType)}</p><p className="text-sm text-zinc-500 mt-0.5">{statusLabel(user.status)} · {formatINR(MEMBERSHIP_FEES[user.memberType])}/year</p></div>
+                      <div><p className="font-black text-[#12345A]">Membership — {user.memberCategory || statusLabel(user.memberType)}</p><p className="text-sm text-zinc-500 mt-0.5">{statusLabel(user.status)}{MEMBERSHIP_FEES[user.memberType] ? ` · ${formatINR(MEMBERSHIP_FEES[user.memberType])}/year` : user.memberId ? ` · ${user.memberId}` : ""}</p></div>
                       <div className="flex items-center gap-2"><StatusChip status={user.status} /><StatusChip status={user.paymentStatus} /></div>
                     </div>
                   )}
@@ -406,7 +415,7 @@ export default function UserPortal() {
                       <StatusChip status={i.status} />
                     </div>
                   ))}
-                  {!needsFee(user.memberType) && volunteers.length === 0 && internships.length === 0 && interests.length === 0 && (
+                  {!needsFee(user.memberType) && !user.memberId && volunteers.length === 0 && internships.length === 0 && interests.length === 0 && (
                     <EmptyState title="No applications yet">Use the cards above to start your first application with SSF.</EmptyState>
                   )}
                 </div>
@@ -423,7 +432,7 @@ export default function UserPortal() {
                   {documents.map((doc) => (
                     <div key={doc.kind} className="rounded-2xl border border-[#D8E1EA] bg-[#FAF9F5] p-4">
                       <div className="flex items-start justify-between gap-3">
-                        <div><p className="font-black text-[#12345A]">{doc.title}</p><p className="text-xs text-zinc-500 mt-1 break-all">ID: {doc.id || "—"}</p></div>
+                        <div><p className="font-black text-[#12345A]">{doc.title}</p><p className="text-xs text-zinc-500 mt-1 break-all">ID: {doc.id || "—"}</p>{doc.subtitle && <p className="text-xs font-bold text-[#176447] mt-1">{doc.subtitle}</p>}</div>
                         <FaDownload className="text-[#176447] mt-1" />
                       </div>
                       <div className="flex flex-wrap gap-2 mt-4">
@@ -510,24 +519,39 @@ function ProfileTab({ user, onRefresh }) {
 }
 
 function PaymentsTab({ user, donors }) {
-  const fee = MEMBERSHIP_FEES[user.memberType];
+  const planKey = String(user.memberType || "").trim().toLowerCase();
+  const fee = MEMBERSHIP_FEES[planKey];
   const paid = String(user.paymentStatus || "").toLowerCase() === "paid";
+  // A member whose plan is not one of the priced tiers (a registered Founder /
+  // Executive / General Member) still has a membership record, so the fee
+  // section must stay visible instead of vanishing with the plan.
+  const showMembershipFee = needsFee(user.memberType) || !!user.memberId;
+  const planLabel = user.memberCategory || (needsFee(user.memberType) ? statusLabel(user.memberType) : "Member");
   return (
     <>
-      {needsFee(user.memberType) && (
-        <SectionCard eyebrow="Membership fee" title={`${statusLabel(user.memberType)} membership`}>
+      {showMembershipFee && (
+        <SectionCard eyebrow="Membership fee" title={`${planLabel} membership`}>
           <div className="grid sm:grid-cols-3 gap-4">
-            <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Amount</p><p className="text-2xl font-black text-[#12345A] mt-1">{formatINR(fee)}<span className="text-sm font-bold text-zinc-400">/year</span></p></div>
+            <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Amount</p><p className="text-2xl font-black text-[#12345A] mt-1">{fee ? <>{formatINR(fee)}<span className="text-sm font-bold text-zinc-400">/year</span></> : <span className="text-base font-bold text-zinc-500">As per the SSF register</span>}</p></div>
             <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Status</p><div className="mt-1.5"><StatusChip status={user.paymentStatus} /></div></div>
             <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Confirmed on</p><p className="font-bold text-[#12345A] mt-1">{user.paymentPaidAt ? dateText(user.paymentPaidAt) : "—"}</p></div>
           </div>
           {user.paymentMode && <p className="text-sm text-zinc-500 mt-4">Recorded as <strong>{user.paymentMode}</strong>{user.paymentReference ? ` · reference ${user.paymentReference}` : ""}</p>}
-          {!paid && (
+          {fee && !paid && (
             <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5">
               <p className="font-black text-amber-900 flex items-center gap-2"><FaExclamationCircle /> Membership fee not yet confirmed</p>
-              <p className="text-sm text-amber-800 mt-1">Pay the fee through the secure Razorpay page, then submit your UPI / UTR reference from the Membership form so the SSF team can verify it.</p>
+              <p className="text-sm text-amber-800 mt-1">Pay {formatINR(fee)} through the secure Razorpay page, then submit your UPI / UTR reference from the Membership form so the SSF team can verify it.</p>
               <div className="flex flex-wrap gap-2 mt-3">
                 <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[#12345A] text-white px-4 py-2.5 font-bold">Pay {formatINR(fee)} <FaArrowRight /></a>
+              </div>
+            </div>
+          )}
+          {!fee && !paid && (
+            <div className="mt-5 rounded-2xl border border-[#D8E1EA] bg-[#FAF9F5] p-5">
+              <p className="font-black text-[#12345A]">Membership fee for {planLabel} members is maintained by the SSF office.</p>
+              <p className="text-sm text-zinc-600 mt-1">Nothing is due online right now. If you wish to contribute, you can pay from the secure Razorpay page and the team will record it against your member record.</p>
+              <div className="flex flex-wrap gap-2 mt-3">
+                <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-white border border-[#D8E1EA] text-[#12345A] px-4 py-2.5 font-bold">Pay online <FaArrowRight /></a>
               </div>
             </div>
           )}
@@ -599,7 +623,8 @@ function SettingsTab({ user, onLogout }) {
       <SectionCard eyebrow="Account" title="Account details">
         <dl className="grid sm:grid-cols-2 gap-4 text-sm max-w-2xl">
           <div><dt className="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Email</dt><dd className="font-semibold text-[#12345A] mt-1">{user.email}</dd></div>
-          <div><dt className="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Account type</dt><dd className="font-semibold text-[#12345A] mt-1">{statusLabel(user.memberType || "general")}</dd></div>
+          <div><dt className="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Account type</dt><dd className="font-semibold text-[#12345A] mt-1">{user.memberCategory || statusLabel(user.memberType || "general")}</dd></div>
+          {user.designation && <div><dt className="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Post / designation</dt><dd className="font-semibold text-[#12345A] mt-1">{user.designation}</dd></div>}
           <div><dt className="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Member ID</dt><dd className="font-semibold text-[#12345A] mt-1">{user.memberId || "Not issued"}</dd></div>
           <div><dt className="text-zinc-400 font-bold uppercase text-[10px] tracking-widest">Joined</dt><dd className="font-semibold text-[#12345A] mt-1">{dateText(user.createdAt)}</dd></div>
         </dl>

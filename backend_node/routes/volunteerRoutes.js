@@ -9,11 +9,13 @@ const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 const identity = require('../services/identityService');
 const { Op } = require('sequelize');
-// Report a member's true category. A row whose number came from the offline
-// register must not keep showing the leftover 'website_signup' marker.
-const memberTypeFor = (member) => (identity.holdsOfficialMemberId(member)
-    ? (identity.registerEntryFor(member.memberId)?.memberType || member.memberType)
-    : member.memberType);
+// `memberType` stays the plan the person chose (general / active / life /
+// advisory) because the portal keys its membership-fee logic off it. The
+// register's own wording ("Founder Member", "Treasurer") is display-only and
+// travels in its own field, so showing it never disturbs the fee card.
+const memberCategoryFor = (member) => (identity.holdsOfficialMemberId(member)
+    ? (identity.registerEntryFor(member.memberId)?.memberType || (identity.hasAccountMarker(member) ? 'Member' : member.memberType))
+    : null);
 const { issueToken } = require('../services/userAuth');
 
 // --- 1. File Upload Configuration ---
@@ -251,7 +253,7 @@ router.post('/member-login', async (req, res) => {
             status: 'success',
             message: 'Login successful',
             token: issueToken(member),
-            user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: memberTypeFor(member), status: member.status }
+            user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, memberCategory: memberCategoryFor(member), memberId: identity.holdsOfficialMemberId(member) ? member.memberId : null, status: member.status }
         });
     } catch (error) {
         console.error('❌ Member login error:', error);

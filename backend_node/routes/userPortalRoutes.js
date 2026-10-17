@@ -23,16 +23,21 @@ router.get('/user-portal/:id', requireAccountAuth((req) => req.params.id), async
 
         const email = String(member.email || '').trim().toLowerCase();
         const membershipAccount = isRealMembership(member);
-        // Show the register's own category and post when the number comes from
-        // the offline register, so a Founder Member is not labelled "website
-        // signup" just because that was the column left behind.
+        // `memberType` is the plan the person chose (general / active / life /
+        // advisory) and the portal keys the fee logic off it, so it is sent
+        // as-is. The register's own wording ("Founder Member", "Treasurer") is
+        // a separate display field, so showing it never disturbs the fee card.
         const registerEntry = membershipAccount ? identity.registerEntryFor(member.memberId) : null;
+        const memberCategory = membershipAccount
+            ? (registerEntry?.memberType || (identity.hasAccountMarker(member) ? 'Member' : member.memberType))
+            : null;
         const account = {
             id: member.id,
             fullName: member.fullName,
             email: member.email,
             phone: member.phone,
-            memberType: membershipAccount ? (registerEntry?.memberType || member.memberType) : 'general',
+            memberType: membershipAccount ? member.memberType : 'general',
+            memberCategory,
             designation: registerEntry?.designation || member.designation || null,
             status: member.status,
             memberId: membershipAccount ? member.memberId : null,
