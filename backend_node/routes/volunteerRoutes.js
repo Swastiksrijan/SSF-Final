@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 const identity = require('../services/identityService');
+const { Op } = require('sequelize');
 // Report a member's true category. A row whose number came from the offline
 // register must not keep showing the leftover 'website_signup' marker.
 const memberTypeFor = (member) => (identity.holdsOfficialMemberId(member)
@@ -340,11 +341,19 @@ router.post('/admin/approve/:id', requireAdminAuth, async (req, res) => {
 });
 
 // @route   GET /api/verify/:certId
-router.get('/verify/:certId', async (req, res) => {
+router.get('/verify/:certId', async (req, res, next) => {
+    const certId = String(req.params.certId || '');
+    // Volunteer verification owns the SSF-VOL / SSF-VCERT prefixes only. Without
+    // this guard it answered for every other ID as well, so a member ID reached
+    // this handler first (it is mounted earlier) and always came back "not
+    // found" — the public verify page failed for every member card.
+    if (!certId.startsWith('SSF-VOL-') && !certId.startsWith('SSF-VCERT-')) return next();
     try {
+        // An ID card carries the volunteer number, a certificate carries the
+        // certId. Look up either, so both prefixes verify.
         const volunteer = await Volunteer.findOne({
             where: {
-                certId: req.params.certId,
+                [Op.or]: [{ certId }, { volunteerId: certId }],
                 status: 'approved'
             }
         });

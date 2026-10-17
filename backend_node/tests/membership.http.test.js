@@ -399,6 +399,10 @@ async function main() {
     ok('the card shows the register category', cardHtml.includes('Founder Member'));
     const verifyRes = await fetch(`${base}/api/verify/SSF-MBR-00003`).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
     ok('the public verify page validates the card', verifyRes.status === 200 && verifyRes.body.valid === true, JSON.stringify(verifyRes.body).slice(0, 150));
+    const verifyCertRes = await fetch(`${base}/api/verify/SSF-MCERT-00003`).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
+    ok('the public verify page validates the certificate too', verifyCertRes.status === 200 && verifyCertRes.body.valid === true, JSON.stringify(verifyCertRes.body).slice(0, 150));
+    const volVerify = await fetch(`${base}/api/verify/SSF-VOL-2510-9999`).then(async (r) => ({ status: r.status, body: await r.json().catch(() => ({})) }));
+    ok('an unknown volunteer ID still answers as not-found', volVerify.status === 404, String(volVerify.status));
 
     console.log('\nThe one-time repair fixes rows left contradictory by the old approval:');
     const repaired = await identity.reconcileRegisterMembers(Member);
