@@ -4,12 +4,12 @@ const FloatingTicker = () => {
     const hindiText = "सेवा • समर्पण • समग्र विकास • सेवा • समर्पण • समग्र विकास • सेवा • समर्पण • समग्र विकास • ";
 
     return (
-        <div className="relative z-30 -mt-16 mx-4 md:mx-auto max-w-5xl">
+        <div className="w-full">
             <motion.div
                 initial={{ opacity: 0, y: 50 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="bg-[#002344] rounded-2xl shadow-xl border border-zinc-700/30 p-6 md:p-8 text-center text-white overflow-hidden relative"
+                className="h-full rounded-2xl border border-[#C6A04A]/30 bg-[#102A43] p-6 text-center text-white shadow-xl md:p-8 overflow-hidden relative"
             >
                 <div className="relative z-10 space-y-2">
                     <h2 className="text-3xl md:text-4xl font-serif font-bold tracking-wide drop-shadow-md">
