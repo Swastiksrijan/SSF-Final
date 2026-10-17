@@ -55,6 +55,7 @@ export default function UserPortal() {
   const [portal, setPortal] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [sessionExpired, setSessionExpired] = useState(false);
   const [tab, setTab] = useState(tabFromHash);
   const [openForm, setOpenForm] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
@@ -67,7 +68,10 @@ export default function UserPortal() {
 
   const refresh = useCallback(async (session) => {
     const response = await fetch(ENDPOINTS.USER_PORTAL(session.id), { headers: authHeaders() });
-    if (response.status === 401) { clearSession(); navigate({ to: "/" }); return; }
+    // A session saved before token-based auth has no token, and a token can
+    // expire. Both mean "log in again", which must be said plainly instead of
+    // bouncing the visitor away with no explanation.
+    if (response.status === 401) { clearSession(); setUser(null); setSessionExpired(true); return; }
     if (!response.ok) throw new Error("Unable to load your portal right now.");
     const data = await response.json();
     setPortal(data);
@@ -77,13 +81,14 @@ export default function UserPortal() {
       setUser(fresh);
       writeSession(fresh);
     }
-  }, [navigate]);
+  }, []);
 
   useEffect(() => {
     let alive = true;
     (async () => {
       const saved = readSession();
-      if (!saved?.id || !saved?.token) { navigate({ to: "/" }); return; }
+      if (!saved?.id) { navigate({ to: "/" }); return; }
+      if (!saved?.token) { clearSession(); setSessionExpired(true); setLoading(false); return; }
       setUser(saved);
       try { await refresh(saved); }
       catch (e) { if (alive) setError(e.message || "Unable to load your portal."); }
@@ -286,6 +291,17 @@ export default function UserPortal() {
         </nav>
 
         {error && <InlineAlert tone="error" className="mt-4">{error}</InlineAlert>}
+
+        {sessionExpired && (
+          <SectionCard eyebrow="Please log in again" title="Your session needs to be refreshed" className="border-amber-300 bg-amber-50 mt-4">
+            <p className="text-sm text-[#26343D]">
+              For your security, portal access now needs a fresh login. This happens once after a security update, or when a session has been open for a very long time.
+            </p>
+            <button type="button" onClick={() => navigate({ to: "/" })} className="mt-4 inline-flex items-center gap-2 rounded-xl bg-[#12345A] text-white px-5 py-3 font-bold">
+              Go to login <FaArrowRight />
+            </button>
+          </SectionCard>
+        )}
 
         <div className="mt-5 space-y-5">
           {tab === "overview" && (

@@ -6,11 +6,20 @@
       "destination": "https://ngo-backend-03hq.onrender.com/api/digital-office/google/callback"
     },
     {
-      "source": "/((?!api/|assets/).*)",
+      "source": "/((?!api/|assets/|version.json$).*)",
       "destination": "/index.html"
     }
   ],
   "headers": [
+    {
+      "source": "/version.json",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "no-store, max-age=0"
+        }
+      ]
+    },
     {
       "source": "/assets/(.*)",
       "headers": [

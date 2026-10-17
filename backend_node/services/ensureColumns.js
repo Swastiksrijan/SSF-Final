@@ -23,6 +23,15 @@ const COLUMNS = [
   // and the UPI/UTR/receipt reference are recorded for audit.
   { table: 'Members', column: 'paymentMode', type: 'VARCHAR(255)' },
   { table: 'Members', column: 'paymentReference', type: 'VARCHAR(255)' },
+  // The model gained a base64 photo plus profile-application fields after the
+  // table already existed, and sequelize.sync() without alter never adds
+  // columns. Without these, saving a portal profile photo fails on any
+  // database older than the model.
+  { table: 'Members', column: 'profilePhotoData', type: 'TEXT' },
+  { table: 'Members', column: 'idProofType', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'identityNumber', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'idDocumentPath', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'reviewNote', type: 'TEXT' },
 ];
 
 async function ensureColumns() {

@@ -129,7 +129,7 @@ async function ensurePerson(src) {
     city: src.city || undefined,
     state: src.state || undefined,
     pinCode: src.pinCode || undefined,
-    status: 'active',
+    status: src.status || 'active',
   };
   const existing = await models.ImsPerson.findOne({ where: { fullName: src.name } });
   if (existing) {
@@ -173,7 +173,8 @@ async function seedMembers() {
         personId: person.id, memberNo: m.memberId,
         category: m.memberType || 'Ordinary',
         admissionDate: m.joiningDate || undefined,
-        applicationStatus: 'approved', approvedBy: 'Register Seed',
+        applicationStatus: m.status === 'former' ? 'closed' : 'approved', approvedBy: 'Register Seed',
+        status: m.status || 'active',
         feeFrequency: 'annual',
         createdBy: 'register-seed', createdByName: 'Register Seed',
       },
@@ -183,12 +184,18 @@ async function seedMembers() {
       const patch = {};
       if (member.memberNo !== m.memberId) patch.memberNo = m.memberId;
       if ((member.category || null) !== (m.memberType || null)) patch.category = m.memberType;
+      const wantedStatus = m.status || 'active';
+      const wantedApplication = m.status === 'former' ? 'closed' : 'approved';
+      if (member.status !== wantedStatus) patch.status = wantedStatus;
+      if (member.applicationStatus !== wantedApplication) patch.applicationStatus = wantedApplication;
       if (Object.keys(patch).length) await member.update(patch);
     }
-    await models.ImsPersonRole.findOrCreate({
+    const roleStatus = ['active', 'inactive', 'former'].includes(m.status) ? m.status : 'active';
+    const [personRole] = await models.ImsPersonRole.findOrCreate({
       where: { personId: person.id, roleCode: 'member' },
-      defaults: { personId: person.id, roleCode: 'member', refType: 'members', refId: member.id, status: 'active' },
+      defaults: { personId: person.id, roleCode: 'member', refType: 'members', refId: member.id, status: roleStatus },
     });
+    if (personRole.status !== roleStatus) await personRole.update({ status: roleStatus });
   }
   return out;
 }

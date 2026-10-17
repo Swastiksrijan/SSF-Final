@@ -33,7 +33,9 @@ export default function ImsMembersList() {
     { key: 'category', en: 'Category', hi: 'श्रेणी', render: (r) => r.category || '—' },
     { key: 'admissionDate', en: 'Admission', hi: 'प्रवेश', render: (r) => r.admissionDate || '—' },
     { key: 'feeAmount', en: 'Fee', hi: 'शुल्क', render: (r) => (r.feeAmount ? `₹${r.feeAmount} / ${r.feeFrequency || ''}` : '—') },
-    { key: 'applicationStatus', en: 'Status', hi: 'स्थिति', render: (r) => <Badge status={r.applicationStatus || r.status} /> },
+    // The register file drives the real status; applicationStatus only says
+    // whether the membership was ever approved.
+    { key: 'status', en: 'Status', hi: 'स्थिति', render: (r) => <Badge status={r.status || r.applicationStatus} /> },
   ];
 
   return (
