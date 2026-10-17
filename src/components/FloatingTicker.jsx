@@ -14,7 +14,13 @@ const FloatingTicker = () => {
                     className="bg-[#12345A] rounded-2xl shadow-xl border border-white/10 px-6 py-7 md:px-9 md:py-9 text-center text-white overflow-hidden relative flex flex-col justify-center"
                 >
                     <div className="relative z-10 space-y-3">
-                        <h2 className="text-3xl md:text-4xl font-serif font-bold tracking-wide drop-shadow-md">
+                        <p className="text-[11px] font-bold uppercase tracking-[0.22em] text-[#F7A814]">
+                            Registered Society • Established 2013
+                        </p>
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-300">
+                            Operating Across India <span className="text-[#F7A814]/70">|</span> पंजीकृत संस्था • संपूर्ण भारत में कार्यक्षेत्र
+                        </p>
+                        <h2 className="pt-2 text-3xl md:text-4xl font-serif font-bold tracking-wide drop-shadow-md">
                             Swastik Srijan Foundation
                         </h2>
                         <p className="text-[#F7A814] font-medium text-lg md:text-xl tracking-wider uppercase font-sans">
