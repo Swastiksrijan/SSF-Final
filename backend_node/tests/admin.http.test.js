@@ -86,7 +86,7 @@ async function main() {
   app.use(express.json());
   const { adminAuditTrail } = require('../middleware/adminAuditTrail');
   app.use('/api', adminAuditTrail());
-  for (const route of ['adminDashboardRoutes', 'memberCertificateRoutes', 'volunteerAdminRoutes', 'userPortalRoutes', 'submissionRoutes', 'portalParticipationRoutes', 'donorRoutes', 'internshipRoutes', 'contactRoutes', 'interestRoutes', 'userDocumentRoutes']) {
+  for (const route of ['adminDashboardRoutes', 'memberCertificateRoutes', 'volunteerAdminRoutes', 'userPortalRoutes', 'submissionRoutes', 'profileApplicationRoutes', 'portalParticipationRoutes', 'donorRoutes', 'internshipRoutes', 'contactRoutes', 'interestRoutes', 'userDocumentRoutes']) {
     app.use('/api', require(`../routes/${route}`));
   }
   const server = app.listen(0);
@@ -195,6 +195,30 @@ async function main() {
     const interestEdit = await send(`/api/admin/interests/${interest.id}`, 'PATCH', { category: 'CSR Partner', phone: '9876500044' }, auth);
     ok('interest edit works', interestEdit.status === 200 && interestEdit.body.data?.category === 'CSR Partner', JSON.stringify(interestEdit.body).slice(0, 160));
 
+    console.log('\nWebsite signups must be visible to the admin (regression)');
+    const allRows = await json('/api/admin/members?includeAccounts=true', auth);
+    const hidden = await json('/api/admin/members', auth);
+    const acct = (Array.isArray(allRows.body) ? allRows.body : []).find((m) => m.email === 'acct@example.com');
+    ok('includeAccounts=true returns the account-only signup', !!acct, `n=${allRows.body.length}`);
+    ok('the default list still hides account-only signups', !(Array.isArray(hidden.body) ? hidden.body : []).some((m) => m.email === 'acct@example.com'), '');
+    ok('the account-only row is flagged website_signup so the UI can label it', acct?.memberType === 'website_signup');
+    // The whole point: the admin must be able to turn an account-only signup into
+    // a real member with an ID. It is stored as already 'approved', which used to
+    // skip the ID mint entirely.
+    const promote = await send(`/api/admin/members/${acct.id}`, 'PATCH', { memberType: 'general', paymentStatus: 'paid', paymentMode: 'Cash' }, auth);
+    ok('an account-only signup can be given a membership role', promote.status === 200 && promote.body.member?.memberType === 'general', JSON.stringify(promote.body).slice(0, 200));
+    ok('promoting it mints an official member ID', /^SSF-MBR-\d{5}$/.test(String(promote.body.member?.memberId || '')), String(promote.body.member?.memberId));
+    ok('promoting it mints a certificate ID', String(promote.body.member?.certId || '').startsWith('SSF-MCERT-'), String(promote.body.member?.certId));
+    const ledger = await json('/api/admin/id-issuances?kind=member', auth);
+    ok('the minted number reaches the issuance ledger', ledger.body.some((r) => r.value === promote.body.member?.memberId), '');
+    // A real member must never be downgraded back to the account marker.
+    const downgrade = await send(`/api/admin/members/${acct.id}`, 'PATCH', { memberType: 'website_signup' }, auth);
+    ok('a real member cannot be downgraded to website_signup', downgrade.status === 400, String(downgrade.status));
+    // Posting back the account marker on an account-only row is a harmless no-op,
+    // because the edit modal sends every field it loaded.
+    const keepMarker = await send(`/api/admin/members/${acct.id}`, 'PATCH', { memberType: 'general', designation: 'Programme Lead' }, auth);
+    ok('re-saving an unchanged role is a no-op, not an error', keepMarker.status === 200 && keepMarker.body.member?.designation === 'Programme Lead', JSON.stringify(keepMarker.body).slice(0, 160));
+
     console.log('\nIssued ID re-issue and revoke');
     const reissue = await send(`/api/admin/volunteers/${vol.id}/reissue`, 'POST', {}, auth);
     ok('volunteer IDs can be re-issued', reissue.status === 400 || reissue.status === 200, String(reissue.status));
@@ -212,8 +236,12 @@ async function main() {
     console.log('\nIdentity numbers: no reuse, register series, manual correction');
     const { nextMemberId, nextVolunteerId, nextDonorId, isMemberId } = require('../services/identityService');
     // The offline register holds SSF-MBR-00018, so the next website member must
-    // continue that series rather than start a parallel one.
-    ok('next member id continues the register series', (await nextMemberId(Member)) === 'SSF-MBR-00019', await nextMemberId(Member));
+    // continue that series rather than start a parallel one. The exact suffix
+    // depends on how many numbers earlier tests already minted, so assert the
+    // series and the floor rather than a fixed number.
+    const nextId = await nextMemberId(Member);
+    ok('next member id continues the register series', /^SSF-MBR-\d{5}$/.test(nextId) && nextId > 'SSF-MBR-00018', nextId);
+    ok('the next member id is still free', !(await Member.findOne({ where: { memberId: nextId } })), nextId);
     ok('register member id is accepted', isMemberId('SSF-MBR-00001'));
     ok('website member id is still accepted', isMemberId('SSF-MEM-2510-0001'));
     ok('a random string is not a member id', !isMemberId('MEM-1'));

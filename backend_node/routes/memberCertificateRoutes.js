@@ -110,17 +110,34 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
                 await identity.reserve({ kind: 'member', value: wanted, certValue: updates.certId, recordId: member.id, holderName: member.fullName, holderEmail: member.email, note: 'Assigned by admin' });
             }
         }
-        if (updates.memberType && String(updates.memberType).toLowerCase() === 'website_signup') return res.status(400).json({ message: 'website_signup is an account type, not a membership role.' });
+        // website_signup is an account type, not a membership role, so a real
+        // member can never be downgraded to it. It is accepted as a no-op when
+        // the row already is one, because the edit modal posts back every field
+        // it loaded.
+        if (updates.memberType && String(updates.memberType).toLowerCase() === 'website_signup' && String(member.memberType || '').toLowerCase() !== 'website_signup') return res.status(400).json({ message: 'website_signup is an account type, not a membership role.' });
         if (updates.status && !['pending', 'changes_requested', 'approved', 'rejected'].includes(String(updates.status))) return res.status(400).json({ message: 'Invalid member status' });
         if (updates.paymentStatus && !['not_required', 'pending', 'paid', 'failed'].includes(String(updates.paymentStatus))) return res.status(400).json({ message: 'Invalid payment status' });
         if (updates.paymentMode !== undefined) updates.paymentMode = String(updates.paymentMode || '').trim() || null;
         if (updates.paymentReference !== undefined) updates.paymentReference = String(updates.paymentReference || '').trim() || null;
         if (updates.paymentStatus === 'paid' && member.paymentStatus !== 'paid') updates.paymentPaidAt = new Date();
-        if (updates.status === 'approved') {
-            const prospective = { ...member.toJSON(), ...updates };
+        const prospective = { ...member.toJSON(), ...updates };
+        // "Signup from website" is a system marker, not the applicant's own
+        // words, and it also marks the row as account-only. Promoting the row to
+        // a real role has to drop it, or isRealMembership stays false and the ID
+        // is never minted.
+        if (updates.memberType && REAL_MEMBERSHIP_TYPES.includes(String(updates.memberType).toLowerCase()) && isAccountOnly(member)) {
+            updates.message = null;
+            prospective.message = null;
+        }
+        if (updates.status === 'approved' && !isRealMembership(prospective)) return res.status(400).json({ message: 'Only a submitted membership application can be approved as a member. Choose a membership role first.' });
+        // An account-only signup is already stored as 'approved', so gating the
+        // ID mint on the incoming status alone would never issue its number. The
+        // mint therefore runs whenever the record is (or is becoming) an approved
+        // real membership and still has no number — including the case where the
+        // admin only changes the role.
+        if ((updates.status || member.status) === 'approved' && isRealMembership(prospective)) {
             if (requiresPayment(prospective) && prospective.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: prospective.paymentStatus });
-            if (!isRealMembership(prospective)) return res.status(400).json({ message: 'Only a submitted membership application can be approved as a member.' });
-            if (member.status !== 'approved' && !member.memberId && !updates.memberId) {
+            if (!member.memberId && !updates.memberId) {
                 const now = new Date();
                 const issued = await buildMemberIdentity(member);
                 updates.memberId = issued.memberId;
@@ -133,6 +150,9 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
             updates.memberId = null; updates.certId = null; updates.certificateType = null; updates.certificateIssuedAt = null;
         }
         await member.update(updates);
+        // Record the number in the append-only ledger so a later re-issue or
+        // revoke can never hand the same number to somebody else.
+        if (updates.memberId) await identity.reserve({ kind: 'member', value: updates.memberId, certValue: updates.certId, recordId: member.id, holderName: member.fullName, holderEmail: member.email });
         return res.json({ status: 'success', message: 'Member record updated.', member: member.toJSON() });
     } catch (error) { console.error('❌ Member update error:', error); return res.status(500).json({ message: 'Unable to update member record.' }); }
 });
