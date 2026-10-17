@@ -77,19 +77,6 @@ export default function Home() {
               <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#146B50]" /> Working across India</span>
             </div>
           </motion.div>
-          <motion.aside initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.15 }} className="w-full">
-            <div className="relative rounded-[2rem] border border-[#d8b96d]/45 bg-[#0b2740]/90 p-7 shadow-2xl shadow-black/20 backdrop-blur-md md:p-9">
-              <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
-              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878]">Our guiding promise</p>
-              <h2 className="mt-5 font-serif text-3xl leading-snug text-white">Serve with integrity. Act with compassion.</h2>
-              <p className="mt-4 leading-relaxed text-slate-200">We strive to create lasting, meaningful social value through responsible action, community participation and cooperation.</p>
-              <div className="mt-7 border-t border-white/15 pt-6">
-                <p className="text-sm font-semibold text-[#f0dba5]">हमारा संकल्प</p>
-                <p className="mt-2 leading-relaxed text-slate-200">ईमानदारी से सेवा, संवेदनशीलता के साथ कार्य और समाज के लिए स्थायी सकारात्मक परिवर्तन।</p>
-              </div>
-              <div className="mt-7 flex items-center gap-3 text-sm text-slate-300"><span className="h-px flex-1 bg-[#d8b96d]/50" /><span>Since December 2013</span><span className="h-px flex-1 bg-[#d8b96d]/50" /></div>
-            </div>
-          </motion.aside>
         </div>
       </section>
 
@@ -105,7 +92,24 @@ export default function Home() {
         <p className="container mx-auto mt-6 max-w-7xl px-5 text-xs leading-relaxed text-slate-500 md:px-8">Registered NGO • Registered office: Rewa, Madhya Pradesh • Area of work: India-wide. Institutional details should be read with the relevant official records.</p>
       </section>
 
-      <FloatingTicker />
+      <section className="relative z-30 -mt-16 px-5 md:px-8">
+        <div className="container mx-auto grid max-w-7xl grid-cols-1 items-stretch gap-5 md:grid-cols-2">
+          <FloatingTicker />
+          <motion.aside initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.7 }} className="w-full">
+            <div className="relative h-full rounded-[2rem] border border-[#d8b96d]/45 bg-[#0b2740]/95 p-7 shadow-2xl shadow-black/20 backdrop-blur-md md:p-9">
+              <div className="absolute left-8 top-0 h-1 w-20 -translate-y-1/2 rounded-full bg-[#d8b96d]" />
+              <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#e8c878]">Our guiding promise</p>
+              <h2 className="mt-5 font-serif text-3xl leading-snug text-white">Serve with integrity. Act with compassion.</h2>
+              <p className="mt-4 leading-relaxed text-slate-200">We strive to create lasting, meaningful social value through responsible action, community participation and cooperation.</p>
+              <div className="mt-7 border-t border-white/15 pt-6">
+                <p className="text-sm font-semibold text-[#f0dba5]">हमारा संकल्प</p>
+                <p className="mt-2 leading-relaxed text-slate-200">ईमानदारी से सेवा, संवेदनशीलता के साथ कार्य और समाज के लिए स्थायी सकारात्मक परिवर्तन।</p>
+              </div>
+              <div className="mt-7 flex items-center gap-3 text-sm text-slate-300"><span className="h-px flex-1 bg-[#d8b96d]/50" /><span>Since December 2013</span><span className="h-px flex-1 bg-[#d8b96d]/50" /></div>
+            </div>
+          </motion.aside>
+        </div>
+      </section>
 
       <section className="bg-[#fbfaf7] px-5 pb-16 pt-5 md:px-8 md:pb-20">
         <div className="container mx-auto max-w-7xl">
