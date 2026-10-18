@@ -10,12 +10,16 @@ import { exportRecordsPdf } from '../pdf';
 import { exportRecordsExcel } from '../excel';
 
 const TOKEN = () => localStorage.getItem('ssf_admin_token') || '';
-const get = (path) => fetch(`${API_BASE_URL}${path}`, { headers: { Authorization: `Bearer ${TOKEN()}` } }).then(r => r.json());
+const parse = (r) => r.json().then(body => {
+  if (!r.ok) throw new Error((body && body.message) || `Request failed (${r.status})`);
+  return body;
+});
+const get = (path) => fetch(`${API_BASE_URL}${path}`, { headers: { Authorization: `Bearer ${TOKEN()}` } }).then(parse);
 const post = (path, body) => fetch(`${API_BASE_URL}${path}`, {
   method: 'POST',
   headers: { Authorization: `Bearer ${TOKEN()}`, 'Content-Type': 'application/json' },
   body: JSON.stringify(body || {}),
-}).then(r => r.json());
+}).then(parse);
 
 /** Reports Centre — real links to report datasets + CSV/PDF export. */
 export function ImsReports() {
@@ -186,8 +190,8 @@ export function ImsPermissions() {
       <PageHeader title={t('users_perms')} subtitle={t('tagline')} />
       {!data ? <Spinner /> : (
         <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-          {Object.entries(data.roles).map(([code, r]) => {
-            const g = data.grants[code] || {};
+          {Object.entries(data.roles || {}).map(([code, r]) => {
+            const g = (data.grants || {})[code] || {};
             return (
               <Card key={code} className="p-4">
                 <div className="font-semibold text-slate-800">{r.en} <span className="text-xs text-slate-400">/ {r.hi}</span></div>

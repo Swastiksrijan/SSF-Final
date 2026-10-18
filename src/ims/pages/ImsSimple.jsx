@@ -7,7 +7,11 @@ import { ims } from '../api';
 import { API_BASE_URL } from '../../config/api';
 
 const TOKEN = () => localStorage.getItem('ssf_admin_token') || '';
-const get = (path) => fetch(`${API_BASE_URL}${path}`, { headers: { Authorization: `Bearer ${TOKEN()}` } }).then(r => r.json());
+const get = (path) => fetch(`${API_BASE_URL}${path}`, { headers: { Authorization: `Bearer ${TOKEN()}` } })
+  .then(r => r.json().then(body => {
+    if (!r.ok) throw new Error((body && body.message) || `Request failed (${r.status})`);
+    return body;
+  }));
 
 /** Audit Trail viewer */
 export function ImsAuditTrail() {
@@ -60,7 +64,7 @@ export function ImsIntegrity() {
             <span className={`text-2xl font-bold ${data.totalIssues ? 'text-rose-600' : 'text-emerald-600'}`}>{data.totalIssues}</span>
           </Card>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-            {data.checks.map(c => (
+            {(data.checks || []).map(c => (
               <Card key={c.key} className="flex items-center justify-between p-4">
                 <span className="text-sm text-slate-700">{c.label}</span>
                 <span className={`rounded-full px-2.5 py-0.5 text-sm font-bold ${c.count ? 'bg-rose-100 text-rose-700' : 'bg-emerald-100 text-emerald-700'}`}>{c.count}</span>
@@ -85,7 +89,7 @@ export function ImsModuleDashboard({ module, titleKey, icon = 'BarChart3', activ
       {!data && <Spinner />}
       {data && (
         <div className="grid grid-cols-2 gap-3 md:grid-cols-3 xl:grid-cols-4">
-          {Object.entries(data.kpis).map(([k, v]) => (
+          {Object.entries(data.kpis || {}).map(([k, v]) => (
             <Card key={k} className="flex items-center gap-3 p-4">
               <span className="grid h-10 w-10 place-items-center rounded-lg bg-[#12345A] text-white"><I size={20} /></span>
               <span>
@@ -123,14 +127,14 @@ export function ImsRegisters() {
         <>
           <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
             <Card className="p-4"><span className="block text-xs uppercase tracking-wide text-slate-400">Total</span><span className="text-2xl font-bold text-[#12345A]">{data.total}</span></Card>
-            {data.byGroup.map(g => (
+            {(data.byGroup || []).map(g => (
               <Card key={g.group} className="p-4">
                 <span className="block text-xs uppercase tracking-wide text-slate-400">{GROUP_LABEL[g.group] ? (lang === 'hi' ? GROUP_LABEL[g.group][1] : GROUP_LABEL[g.group][0]) : g.group}</span>
                 <span className="text-2xl font-bold text-slate-800">{g.count}</span>
               </Card>
             ))}
           </div>
-          {data.groups.map(g => (
+          {(data.groups || []).map(g => (
             <section key={g} className="mb-5">
               <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-500">{GROUP_LABEL[g] ? (lang === 'hi' ? GROUP_LABEL[g][1] : GROUP_LABEL[g][0]) : g}</h2>
               <Card className="overflow-hidden">
@@ -141,7 +145,7 @@ export function ImsRegisters() {
                       <th className="px-4 py-2.5">Basis (Niyamavali)</th><th className="px-4 py-2.5 text-right">Records</th>
                     </tr></thead>
                     <tbody className="divide-y divide-slate-100">
-                      {data.registers.filter(r => r.group === g).map(r => (
+                      {(data.registers || []).filter(r => r.group === g).map(r => (
                         <tr key={r.rule} className="hover:bg-slate-50">
                           <td className="px-4 py-2.5 font-medium text-slate-800">{r.en}</td>
                           <td className="px-4 py-2.5 text-slate-600">{r.hi}</td>
