@@ -10,6 +10,7 @@ import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
 import OptimizedImage from "../components/OptimizedImage";
+import { CONTACT_INFO } from "../config/contact";
 import pageHeader from "../assets/page-header.jpg";
 
 const values = [
@@ -84,6 +85,7 @@ export default function Home() {
               शिक्षा, कौशल, स्वास्थ्य-जागरूकता, पर्यावरण संरक्षण और सार्थक साझेदारी के माध्यम से समावेशी सामुदायिक विकास की दिशा में प्रयास।
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+              <a href={CONTACT_INFO.social.razorpay} target="_blank" rel="noopener noreferrer" className="ssf-nav-donate inline-flex min-h-12 items-center justify-center gap-2 rounded-full px-7 py-3 font-black transition hover:-translate-y-0.5"><FaHeart /> Donate Now</a>
               <Link to="/About" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-[#176447] px-6 py-3 font-bold text-white transition hover:-translate-y-0.5 hover:bg-[#176447]">Discover SSF <FaArrowRight /></Link>
               <Link to="/CSRPartnership" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-[#F7A814]/70 px-6 py-3 font-bold text-[#F7A814] transition hover:bg-white/10">CSR & Institutional Partnerships <FaHandshake /></Link>
               <Link to="/JoinUs" className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full border border-white/40 px-6 py-3 font-semibold text-white transition hover:bg-white/10"><FaUsers /> Join the Mission</Link>

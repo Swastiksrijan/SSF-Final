@@ -29,7 +29,7 @@ export default function CSRPartnership() {
         {
             icon: <FaFileContract />,
             title: "Tax Exemption",
-            description: "All contributions are eligible for 50% tax exemption under Section 80G of the Income Tax Act, 1961."
+            description: "Contributions are eligible for 50% tax exemption under Section 80G of the Income Tax Act, 1961. Our 80G status is currently provisional (final approval applied for)."
         },
         {
             icon: <FaGlobeAsia />,
@@ -120,7 +120,7 @@ export default function CSRPartnership() {
                                 </div>
                                 <div>
                                     <h4 className="text-xl font-bold mb-1">80G Tax Exemption</h4>
-                                    <p className="text-zinc-400 text-sm">Donors receive a 50% tax deduction on their contributed amount under Section 80G.</p>
+                                    <p className="text-zinc-400 text-sm">Contributions are eligible for 50% tax exemption under Section 80G (currently provisional — final approval applied for).</p>
                                 </div>
                             </div>
                             <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">

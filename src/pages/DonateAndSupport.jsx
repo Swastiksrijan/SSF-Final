@@ -14,7 +14,7 @@ export default function DonateAndSupport() {
   const faqs = [
     {
       question: "Is my donation tax-exempt?",
-      answer: "Yes, all donations to Swastik Srijan Foundation are 50% tax-exempt under Section 80G of the Income Tax Act, 1961. You will receive a tax exemption certificate via email within 48 hours of your donation."
+      answer: "Donations to Swastik Srijan Foundation are eligible for 50% tax exemption under Section 80G of the Income Tax Act, 1961. Our 80G status is currently provisional (final approval applied for). A tax exemption certificate is emailed within 48 hours of your donation."
     },
     {
       question: "Is it safe to donate online?",
