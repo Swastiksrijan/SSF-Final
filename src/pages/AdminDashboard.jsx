@@ -114,9 +114,14 @@ export default function AdminDashboard() {
                 breadcrumb={["Admin", "Command Center", current.crumb || current.label]}
                 icon={<current.icon />}
                 action={
-                  <button type="button" onClick={logout} className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20">
-                    <FaSignOutAlt /> Logout
-                  </button>
+                  <div className="flex flex-wrap items-center gap-2.5">
+                    <a href="/ims" className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20">
+                      SSF OneOffice (IMS) <FaExternalLinkAlt className="text-[11px]" />
+                    </a>
+                    <button type="button" onClick={logout} className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20">
+                      <FaSignOutAlt /> Logout
+                    </button>
+                  </div>
                 }
               />
             </div>
