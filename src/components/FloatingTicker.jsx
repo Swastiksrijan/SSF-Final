@@ -138,10 +138,10 @@ const PROFILE_FEATURES = [
 ];
 
 const SHARE_TEXT = "Join Swastik Srijan Foundation — become a Member, Volunteer, Leadership, Intern, Donor or Partner.";
-/* The hash drops the recipient straight onto the join card (see the id on the
-   wrapper below) instead of the top of the home page. Hash fragments never
-   reach the server, so the OG tags for `/` still drive the link preview. */
-const SHARE_URL = "https://swastiksrijan.in/#join-ssf";
+/* Points at the join page, not the home page, so tapping the link preview in
+   WhatsApp/Facebook lands on a page that actually has the signup forms. Its OG
+   tags are generated in scripts/generate-share-pages.mjs. */
+const SHARE_URL = "https://swastiksrijan.in/JoinUs";
 
 const FloatingTicker = () => {
     const [authMode, setAuthMode] = useState(null);
@@ -274,6 +274,16 @@ const FloatingTicker = () => {
                                     <ShareIcon aria-hidden="true" className="h-3.5 w-3.5" />
                                     {shareState === "done" ? "Shared" : "Share"}
                                 </button>
+                            </div>
+                            {/* The card travels as a PNG, and a raster image cannot carry a
+                                tappable link — so the join URL goes in as a QR code the
+                                recipient can scan from the shared photo itself. */}
+                            <div className="mt-3 flex items-center gap-3 rounded-xl border p-2.5" style={{ borderColor: HAIRLINE }}>
+                                <img src="/images/join-ssf-qr.png" alt="QR code to join Swastik Srijan Foundation" className="h-16 w-16 shrink-0 rounded-lg bg-white p-1" />
+                                <div className="leading-tight">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.12em] text-[#F7A814]">Scan to Join</p>
+                                    <p className="mt-1 text-[10px] font-semibold" style={{ color: "rgba(255,255,255,0.75)" }}>swastiksrijan.in/JoinUs</p>
+                                </div>
                             </div>
                         </div>
                     </Foot>
