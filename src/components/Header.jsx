@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
-import { FaUserCircle, FaTachometerAlt, FaUserEdit, FaClipboardList, FaDonate, FaSignOutAlt, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaGraduationCap, FaHeart } from "react-icons/fa";
+import { FaUserCircle, FaTachometerAlt, FaUserEdit, FaClipboardList, FaDonate, FaSignOutAlt, FaPhoneAlt, FaEnvelope, FaMapMarkerAlt, FaHeart } from "react-icons/fa";
 import AuthModal from "./AuthModal";
 import TopContactBar from "./TopContactBar";
 import { useLanguage } from "../context/LanguageContext";
@@ -54,8 +54,7 @@ const Header = () => {
     { name: "About Us", path: "/About", subItems: [{ name: "Mission & Vision", path: "/Mission" }, { name: "Our Objectives", path: "/Objectives" }, { name: "Meet Our Team", path: "/Team" }, { name: "Upcoming Projects", path: "/UpcomingProjects" }] },
     { name: "Our Work", path: "/OurInitiatives", subItems: [{ name: "Our Initiatives & Impact", path: "/OurInitiatives" }, { name: "Awareness Quiz & Certificate", path: "/AwarenessQuiz" }, { name: "SSF Digital HelpCentre", path: "/HelpCentre" }, { name: "Education & Child Development", path: "/OurInitiatives#education" }, { name: "Health & Well-being", path: "/OurInitiatives#health" }, { name: "Women Empowerment & Livelihood", path: "/OurInitiatives#women" }, { name: "Social Awareness", path: "/OurInitiatives#awareness" }] },
     { name: "Impact", path: "/Impact" },
-    { name: "Gallery", path: "/Media" },
-    { name: "News & Events", path: "/Blog" }
+    { name: "Gallery", path: "/Media" }
   ];
 
   const getInvolvedItems = [
@@ -112,7 +111,6 @@ const Header = () => {
         </nav>
 
         <div className="flex items-center gap-2.5 shrink-0">
-          <Link to="/LearningHub" onClick={closeMenu} aria-label="SSF Learning Hub — Learn, Grow, Share" className="hidden 2xl:inline-flex group relative items-center gap-2.5 pl-2.5 pr-4 py-2 rounded-2xl bg-white/10 text-white font-black ring-1 ring-white/25 hover:bg-white/15 transition-all duration-300 whitespace-nowrap overflow-hidden"><span className="pointer-events-none absolute top-0 -left-1/3 h-full w-1/3 -skew-x-12 bg-white/25 blur-md opacity-0 group-hover:opacity-100 group-hover:translate-x-[430%] transition-all duration-700" aria-hidden="true" /><span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-white/20 text-[#F7A814] ring-1 ring-white/35"><FaGraduationCap className="text-base" /></span><span className="relative flex flex-col items-start leading-none"><span className="text-[13px] tracking-tight">SSF Learning Hub</span><span className="mt-1 text-[8px] font-extrabold tracking-[0.15em] text-[#F7A814]">LEARN • GROW • SHARE</span></span></Link>
 
           {user ? <div className="relative hidden lg:block"><button onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen} aria-haspopup="menu" className="group flex items-center gap-2.5 px-3 py-2 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.02em] hover:border-[#F7A814]/70 hover:bg-white/15 transition-all duration-200"><span className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 ring-1 ring-white/30">{profilePhoto ? <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" /> : <FaUserCircle className="text-2xl text-white/80" />}</span><span className="max-w-28 truncate">{user.fullName || user.email}</span><IoIosArrowDown className={`transition-transform duration-200 ${accountOpen ? "rotate-180" : ""}`} /></button>{accountOpen && account}</div> : <button onClick={() => openAuth("signup")} className="hidden lg:inline-flex items-center px-5 py-2.5 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.03em] hover:bg-white/15 hover:border-[#F7A814]/70 transition-all duration-200">Join SSF</button>}
 
@@ -130,7 +128,6 @@ const Header = () => {
         <button onClick={toggleLang} className="mt-4 px-3 py-1.5 rounded-lg border border-white/15 text-xs font-bold">{lang === "en" ? "हिन्दी" : "English"}</button>
       </div>
       {!user && <div className="mb-5"><button onClick={() => { closeMenu(); openAuth("signup"); }} className="w-full py-3.5 rounded-2xl bg-gradient-to-r from-[#12345A] to-[#176447] text-white font-extrabold tracking-wide">Join SSF</button></div>}
-      <Link to="/LearningHub" onClick={closeMenu} aria-label="SSF Learning Hub — Learn, Grow, Share" className="group relative mb-5 flex items-center justify-center gap-3 w-full py-4 rounded-2xl bg-gradient-to-r from-[#12345A] via-[#12345A] to-[#176447] text-white font-black tracking-wide shadow-[0_10px_30px_rgba(18,52,90,0.35)] ring-1 ring-[#F7A814]/70 overflow-hidden"><span className="pointer-events-none absolute inset-0 bg-gradient-to-br from-white/20 via-transparent to-black/10" aria-hidden="true" /><span className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-white/25 text-white ring-1 ring-white/45 shadow-sm"><FaGraduationCap className="text-lg" /></span><span className="relative flex flex-col items-start leading-none"><span className="text-[15px]">SSF Learning Hub</span><span className="mt-1 text-[9px] tracking-[0.16em] text-[#F7A814]">LEARN • GROW • SHARE</span></span></Link>
       <Link to="/Donate" onClick={closeMenu} className="mb-5 flex items-center justify-center gap-2 w-full py-4 rounded-2xl ssf-nav-donate font-black tracking-wide"><FaHeart /> Donate Now</Link>
       {user && <><Link to="/UserPortal" onClick={closeMenu} className="block w-full mb-3 py-3.5 rounded-2xl bg-[#12345A] text-white text-center font-extrabold tracking-wide">My SSF Dashboard</Link><button type="button" onClick={() => { closeMenu(); logout(); }} className="block w-full mb-5 py-3.5 rounded-2xl border border-[#F6CEC0] text-[#A73800] font-extrabold tracking-wide">Logout</button></>}
       {navItems.map(item => item.subItems ? <div key={item.name} className="border-b"><div className="flex items-center"><Link to={item.path} onClick={closeMenu} className="flex-1 py-4 text-lg font-bold text-[#12345A]">{item.name}</Link><button type="button" aria-label={`Toggle ${item.name} submenu`} aria-expanded={mobileSubMenu === item.name} onClick={() => toggleMobileSubMenu(item.name)} className="p-4 text-[#12345A]"><IoIosArrowDown className={`transition-transform duration-200 ${mobileSubMenu === item.name ? "rotate-180" : ""}`} /></button></div>{mobileSubMenu === item.name && <div className="pl-4 pb-2 border-l-2 border-[#F7A814]/30">{item.subItems.map(sub => <Link key={sub.name} to={sub.path} onClick={closeMenu} className="block py-3 text-[#26343D]">{sub.name}</Link>)}</div>}</div> : <Link key={item.name} to={item.path} onClick={closeMenu} className="block py-4 border-b text-lg font-bold text-[#12345A]">{item.name}</Link>)}

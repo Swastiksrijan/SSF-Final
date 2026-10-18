@@ -11,7 +11,7 @@ export default function LearningHubNav() {
   return <nav aria-label="SSF Learning Hub navigation"
     className="sticky top-20 z-40 border-y border-white/10 bg-[#12345A]/95 shadow-[0_10px_30px_rgba(18,52,90,0.28)] backdrop-blur md:top-[116px]">
     <div className="mx-auto flex max-w-7xl items-center gap-1.5 px-3 py-2.5 md:gap-2 md:px-4">
-      <Link to="/LearningHub" className="hidden shrink-0 items-center gap-2 pr-2 lg:flex" aria-label="SSF Learning Hub home">
+      <Link to="/LearningHub" className="flex shrink-0 items-center gap-2 pr-2" aria-label="SSF Learning Hub home">
         <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#F7A814] to-[#176447] text-[#12345A] shadow-sm">🎓</span>
         <span className="flex flex-col leading-none">
           <span className="text-[13px] font-black text-white">SSF Learning Hub</span>
