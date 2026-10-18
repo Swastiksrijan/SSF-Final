@@ -28,8 +28,9 @@ const Diagonals = () => (
 /* Reusable premium banner: gradient plate, diagonal cyan graphics, a left text
    block, an optional glass stat rail that fills the middle, and an optional
    white pill action on the right. Everything the caller passes in (avatar,
-   badges, extra rows) is rendered as-is. */
-export default function HeaderBanner({ eyebrow, title, subtitle, leading, badges, stats, action, secondaryAction, children }) {
+   badges, extra rows) is rendered as-is. `titleAs` lets a caller keep the page
+   heading level correct (defaults to h1, which is what the User Portal uses). */
+export default function HeaderBanner({ eyebrow, title, subtitle, leading, badges, stats, action, secondaryAction, children, titleAs: Title = "h1" }) {
   return (
     <header className="relative overflow-hidden rounded-[20px] text-white shadow-lg" style={{ background: BANNER_GRADIENT }}>
       <Diagonals />
@@ -38,7 +39,7 @@ export default function HeaderBanner({ eyebrow, title, subtitle, leading, badges
           {leading}
           <div className="min-w-0">
             {eyebrow && <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#9FE4F5]">{eyebrow}</p>}
-            <h1 className="mt-1 truncate text-2xl font-black leading-tight md:text-[28px] lg:text-[30px]">{title}</h1>
+            <Title className="mt-1 truncate text-2xl font-black leading-tight md:text-[28px] lg:text-[30px]">{title}</Title>
             {subtitle && <p className="mt-1 truncate text-sm font-medium text-white/75">{subtitle}</p>}
             {badges && <div className="mt-2.5 flex flex-wrap items-center gap-2">{badges}</div>}
           </div>

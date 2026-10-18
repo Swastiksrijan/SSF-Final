@@ -17,19 +17,20 @@ import AdminUserManagement from "../components/AdminUserManagement";
 import AdminLearningCertificates from "../components/AdminLearningCertificates";
 import { AdminAuditLog, AdminOverview } from "../components/dashboard/AdminOverview";
 import { SectionCard } from "../components/dashboard/DashboardUI";
+import AdminPageHeader from "../components/dashboard/AdminPageHeader";
 import { ENDPOINTS } from "../config/api";
 
 const TOKEN_KEY = "ssf_admin_token";
 
 const MODULES = [
-  { id: "overview", label: "Dashboard", hint: "Live KPIs & work queue", icon: FaChartLine },
-  { id: "applications", label: "Applications", hint: "Intake, status & records", icon: FaClipboardList },
-  { id: "ids", label: "ID Register", hint: "Issued IDs & member register", icon: FaIdCard },
-  { id: "people", label: "People & Roles", hint: "Members, volunteers, approvals", icon: FaUsers },
-  { id: "users", label: "User Management", hint: "Accounts & access", icon: FaUserShield },
-  { id: "learning", label: "Learning Certificates", hint: "Course completions", icon: FaCertificate },
-  { id: "audit", label: "Audit Log", hint: "Every admin change", icon: FaHistory },
-  { id: "settings", label: "Settings", hint: "Session, exports & links", icon: FaCog },
+  { id: "overview", label: "Dashboard", hint: "Live KPIs & work queue", icon: FaChartLine, crumb: "Overview" },
+  { id: "applications", label: "Applications", hint: "Intake, status & records", icon: FaClipboardList, crumb: "Applications" },
+  { id: "ids", label: "ID Register", hint: "Issued IDs & member register", icon: FaIdCard, crumb: "ID Register" },
+  { id: "people", label: "People & Roles", hint: "Members, volunteers, approvals", icon: FaUsers, crumb: "People & Roles" },
+  { id: "users", label: "User Management", hint: "Accounts & access", icon: FaUserShield, crumb: "User Management" },
+  { id: "learning", label: "Learning Certificates", hint: "Course completions", icon: FaCertificate, crumb: "Learning" },
+  { id: "audit", label: "Audit Log", hint: "Every admin change", icon: FaHistory, crumb: "Audit Log" },
+  { id: "settings", label: "Settings", hint: "Session, exports & links", icon: FaCog, crumb: "Settings" },
 ];
 
 export default function AdminDashboard() {
@@ -105,10 +106,20 @@ export default function AdminDashboard() {
               </button>
             </div>
 
-            <header className="mb-5 hidden lg:block">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#176447]">{current.hint}</p>
-              <h2 className="text-3xl font-black text-[#12345A] mt-1">{current.label}</h2>
-            </header>
+            <div className="mb-5">
+              <AdminPageHeader
+                eyebrow="SSF Admin · Command Center"
+                title={current.label}
+                subtitle={current.hint}
+                breadcrumb={["Admin", "Command Center", current.crumb || current.label]}
+                icon={<current.icon />}
+                action={
+                  <button type="button" onClick={logout} className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20">
+                    <FaSignOutAlt /> Logout
+                  </button>
+                }
+              />
+            </div>
 
             {active === "overview" && <AdminOverview onOpenModule={open} />}
 

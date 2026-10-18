@@ -3,6 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { FaUsers, FaCheckCircle, FaTimesCircle, FaShieldAlt, FaDownload, FaLock, FaIdCard, FaCertificate } from "react-icons/fa";
 import { generateCertificate } from "../utils/generateCertificate";
 import { ENDPOINTS } from "../config/api";
+import AdminPageHeader from "../components/dashboard/AdminPageHeader";
 
 const TOKEN_KEY = "ssf_admin_token";
 
@@ -116,13 +117,50 @@ export default function AdminPortal() {
     }), [members, applications]);
 
     if (!token) {
-        return <div className="min-h-screen bg-zinc-50 pt-32 pb-24 px-6 flex items-center justify-center"><form onSubmit={handleLogin} className="w-full max-w-md bg-white p-8 rounded-3xl shadow-lg border border-zinc-100 space-y-5"><div className="text-center space-y-2"><div className="inline-flex items-center gap-2 text-[#176447] font-bold uppercase tracking-widest text-xs"><FaLock /> Admin Login</div><h1 className="text-3xl font-black text-[#12345A]">Secure Portal Access</h1></div><input type="text" placeholder="Username" value={loginForm.username} onChange={e => setLoginForm({ ...loginForm, username: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-zinc-200" required /><input type="password" placeholder="Password" value={loginForm.password} onChange={e => setLoginForm({ ...loginForm, password: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-zinc-200" required />{loginError && <p className="text-red-500 text-sm font-semibold">{loginError}</p>}<button type="submit" className="w-full bg-[#12345A] text-white py-3 rounded-xl font-bold">Login</button></form></div>;
+        return <div className="min-h-screen bg-[#EAF0F6] pt-28 pb-24 px-4 sm:px-6">
+            <div className="max-w-3xl mx-auto">
+                <AdminPageHeader
+                    eyebrow="SSF Admin"
+                    title="Secure Portal Access"
+                    subtitle="Sign in to manage applications, members, records and certificates."
+                    breadcrumb={["Admin", "Login"]}
+                    icon={<FaShieldAlt />}
+                />
+                <form onSubmit={handleLogin} className="mt-6 w-full bg-white p-8 rounded-3xl shadow-lg border border-zinc-100 space-y-5">
+                    <div className="text-center space-y-2">
+                        <div className="inline-flex items-center gap-2 text-[#176447] font-bold uppercase tracking-widest text-xs"><FaLock /> Admin Login</div>
+                        <h1 className="text-2xl font-black text-[#12345A]">Sign in to the Admin Panel</h1>
+                    </div>
+                    <input type="text" placeholder="Username" value={loginForm.username} onChange={e => setLoginForm({ ...loginForm, username: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-zinc-200" required />
+                    <input type="password" placeholder="Password" value={loginForm.password} onChange={e => setLoginForm({ ...loginForm, password: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-zinc-200" required />
+                    {loginError && <p className="text-red-500 text-sm font-semibold">{loginError}</p>}
+                    <button type="submit" className="w-full bg-[#12345A] text-white py-3 rounded-xl font-bold">Login</button>
+                </form>
+            </div>
+        </div>;
     }
 
     return (
         <div className="min-h-screen bg-zinc-50 pt-32 pb-24 px-6">
             <div className="max-w-7xl mx-auto space-y-8">
-                <header className="bg-white p-8 rounded-[2.5rem] shadow-sm border border-zinc-100 flex flex-col lg:flex-row lg:items-center justify-between gap-6"><div><div className="flex items-center gap-2 text-[#176447] font-bold uppercase tracking-widest text-xs"><FaShieldAlt /> Secure Admin Portal</div><h1 className="text-4xl font-black text-[#12345A] mt-2">Volunteer + Member Management</h1><p className="text-sm text-zinc-500 mt-2">Approve applications, issue official IDs and manage certificates.</p></div><div className="flex flex-wrap items-center gap-2"><span className="px-3 py-2 rounded-xl bg-orange-50 text-orange-700 font-bold text-xs">Vol. Pending {stats.pending}</span><span className="px-3 py-2 rounded-xl bg-emerald-50 text-emerald-700 font-bold text-xs">Vol. Approved {stats.approved}</span><span className="px-3 py-2 rounded-xl bg-blue-50 text-blue-700 font-bold text-xs">Members Pending {stats.pendingMembers}</span><span className="px-3 py-2 rounded-xl bg-violet-50 text-violet-700 font-bold text-xs">Members Approved {stats.approvedMembers}</span><Link to="/SSFDigitalOffice" className="px-4 py-2 rounded-xl bg-[#12345A] text-white font-bold">SSF Digital Office</Link> <Link to="/ims" className="px-4 py-2 rounded-xl bg-[#176447] text-white font-bold">SSF OneOffice (IMS)</Link> <button onClick={handleLogout} className="px-4 py-2 rounded-xl bg-zinc-100 font-bold">Logout</button></div></header>
+                <AdminPageHeader
+                    eyebrow="SSF Admin"
+                    title="Volunteer + Member Management"
+                    subtitle="Approve applications, issue official IDs and manage certificates."
+                    breadcrumb={["Admin", "Volunteer + Member Management"]}
+                    icon={<FaShieldAlt />}
+                    action={
+                        <div className="flex flex-wrap items-center gap-2">
+                            <span className="rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-bold ring-1 ring-white/20">Vol. Pending {stats.pending}</span>
+                            <span className="rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-bold ring-1 ring-white/20">Vol. Approved {stats.approved}</span>
+                            <span className="rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-bold ring-1 ring-white/20">Members Pending {stats.pendingMembers}</span>
+                            <span className="rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-bold ring-1 ring-white/20">Members Approved {stats.approvedMembers}</span>
+                            <Link to="/SSFDigitalOffice" className="rounded-full bg-white px-4 py-2 text-xs font-black text-[#12345A]">SSF Digital Office</Link>
+                            <Link to="/ims" className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-xs font-black text-white">SSF OneOffice (IMS)</Link>
+                            <button onClick={handleLogout} className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-xs font-black text-white">Logout</button>
+                        </div>
+                    }
+                />
 
                 <section className="bg-white rounded-[2.5rem] shadow-sm border border-zinc-100 overflow-hidden"><div className="p-8 border-b border-zinc-100"><h2 className="text-2xl font-black text-[#12345A] flex items-center gap-2"><FaUsers /> Volunteer Applications</h2></div><div className="overflow-x-auto"><table className="w-full text-left"><thead><tr className="bg-zinc-50 text-zinc-400 font-bold text-xs uppercase tracking-widest"><th className="px-6 py-5">Volunteer</th><th className="px-6 py-5">Type</th><th className="px-6 py-5">Status / Certificate</th><th className="px-6 py-5 text-right">Action</th></tr></thead><tbody className="divide-y divide-zinc-50 text-sm">{applications.length === 0 ? <tr><td colSpan="4" className="px-6 py-10 text-center text-zinc-400">No volunteer applications found.</td></tr> : applications.map(app => <tr key={app.id}><td className="px-6 py-5"><p className="font-bold text-[#12345A]">{app.fullName}</p><p className="text-xs text-zinc-500">{app.email} • {app.phone}</p></td><td className="px-6 py-5 font-semibold">{app.volunteerType}</td><td className="px-6 py-5">{app.status === "approved" ? <span className="text-emerald-700 font-bold"><FaCheckCircle className="inline mr-1" />{app.certId}</span> : <span className="text-orange-600 font-bold">Pending</span>}</td><td className="px-6 py-5 text-right">{app.status === "pending" ? <button onClick={() => handleApproveVolunteer(app.id)} className="bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold">Approve</button> : <button onClick={() => downloadCertificate(app, app.volunteerType || "volunteer")} className="bg-zinc-100 px-3 py-2 rounded-xl font-bold" title="Download certificate"><FaDownload /></button>}</td></tr>)}</tbody></table></div></section>
 
