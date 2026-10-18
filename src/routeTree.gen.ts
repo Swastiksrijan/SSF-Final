@@ -21,6 +21,7 @@ import { Route as TermsAndConditionsRouteImport } from './routes/TermsAndConditi
 import { Route as TeamRouteImport } from './routes/Team'
 import { Route as StoriesRouteImport } from './routes/Stories'
 import { Route as SkillProgramsRouteImport } from './routes/SkillPrograms'
+import { Route as SignupRouteImport } from './routes/Signup'
 import { Route as SSFNationalAcademyRouteImport } from './routes/SSFNationalAcademy'
 import { Route as SSFDigitalOfficeRouteImport } from './routes/SSFDigitalOffice'
 import { Route as RegistrationDetailsRouteImport } from './routes/RegistrationDetails'
@@ -173,6 +174,11 @@ const StoriesRoute = StoriesRouteImport.update({
 const SkillProgramsRoute = SkillProgramsRouteImport.update({
   id: '/SkillPrograms',
   path: '/SkillPrograms',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SignupRoute = SignupRouteImport.update({
+  id: '/Signup',
+  path: '/Signup',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SSFNationalAcademyRoute = SSFNationalAcademyRouteImport.update({
@@ -687,6 +693,7 @@ export interface FileRoutesByFullPath {
   '/RegistrationDetails': typeof RegistrationDetailsRoute
   '/SSFDigitalOffice': typeof SSFDigitalOfficeRoute
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
+  '/Signup': typeof SignupRoute
   '/SkillPrograms': typeof SkillProgramsRoute
   '/Stories': typeof StoriesRoute
   '/Team': typeof TeamRoute
@@ -793,6 +800,7 @@ export interface FileRoutesByTo {
   '/RegistrationDetails': typeof RegistrationDetailsRoute
   '/SSFDigitalOffice': typeof SSFDigitalOfficeRoute
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
+  '/Signup': typeof SignupRoute
   '/SkillPrograms': typeof SkillProgramsRoute
   '/Stories': typeof StoriesRoute
   '/Team': typeof TeamRoute
@@ -901,6 +909,7 @@ export interface FileRoutesById {
   '/RegistrationDetails': typeof RegistrationDetailsRoute
   '/SSFDigitalOffice': typeof SSFDigitalOfficeRoute
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
+  '/Signup': typeof SignupRoute
   '/SkillPrograms': typeof SkillProgramsRoute
   '/Stories': typeof StoriesRoute
   '/Team': typeof TeamRoute
@@ -1010,6 +1019,7 @@ export interface FileRouteTypes {
     | '/RegistrationDetails'
     | '/SSFDigitalOffice'
     | '/SSFNationalAcademy'
+    | '/Signup'
     | '/SkillPrograms'
     | '/Stories'
     | '/Team'
@@ -1116,6 +1126,7 @@ export interface FileRouteTypes {
     | '/RegistrationDetails'
     | '/SSFDigitalOffice'
     | '/SSFNationalAcademy'
+    | '/Signup'
     | '/SkillPrograms'
     | '/Stories'
     | '/Team'
@@ -1223,6 +1234,7 @@ export interface FileRouteTypes {
     | '/RegistrationDetails'
     | '/SSFDigitalOffice'
     | '/SSFNationalAcademy'
+    | '/Signup'
     | '/SkillPrograms'
     | '/Stories'
     | '/Team'
@@ -1331,6 +1343,7 @@ export interface RootRouteChildren {
   RegistrationDetailsRoute: typeof RegistrationDetailsRoute
   SSFDigitalOfficeRoute: typeof SSFDigitalOfficeRoute
   SSFNationalAcademyRoute: typeof SSFNationalAcademyRoute
+  SignupRoute: typeof SignupRoute
   SkillProgramsRoute: typeof SkillProgramsRoute
   StoriesRoute: typeof StoriesRoute
   TeamRoute: typeof TeamRoute
@@ -1477,6 +1490,13 @@ declare module '@tanstack/react-router' {
       path: '/SkillPrograms'
       fullPath: '/SkillPrograms'
       preLoaderRoute: typeof SkillProgramsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Signup': {
+      id: '/Signup'
+      path: '/Signup'
+      fullPath: '/Signup'
+      preLoaderRoute: typeof SignupRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/SSFNationalAcademy': {
@@ -2203,6 +2223,7 @@ const rootRouteChildren: RootRouteChildren = {
   RegistrationDetailsRoute: RegistrationDetailsRoute,
   SSFDigitalOfficeRoute: SSFDigitalOfficeRoute,
   SSFNationalAcademyRoute: SSFNationalAcademyRoute,
+  SignupRoute: SignupRoute,
   SkillProgramsRoute: SkillProgramsRoute,
   StoriesRoute: StoriesRoute,
   TeamRoute: TeamRoute,

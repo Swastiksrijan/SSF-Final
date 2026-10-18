@@ -10,7 +10,7 @@ const initialSignup = { fullName: "", email: "", phone: "", password: "" };
 const initialLogin = { email: "", password: "" };
 const initialForgot = { email: "" };
 
-export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = "signup", stayOnSuccess = false }) {
+export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = "signup", stayOnSuccess = false, variant = "modal" }) {
     const navigate = useNavigate();
     const [mode, setMode] = useState(initialMode);
     const [signupData, setSignupData] = useState(initialSignup);
@@ -20,12 +20,12 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
     const [message, setMessage] = useState("");
 
     useEffect(() => {
-        if (open) {
+        if (open || variant === "inline") {
             setMode(initialMode);
             setStatus("idle");
             setMessage("");
         }
-    }, [open, initialMode]);
+    }, [open, initialMode, variant]);
 
     useEffect(() => {
         if (import.meta.env.VITE_EMAILJS_PUBLIC_KEY) emailjs.init(import.meta.env.VITE_EMAILJS_PUBLIC_KEY);
@@ -40,7 +40,7 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
         return `https://wa.me/${target}?text=${encodeURIComponent(text)}`;
     }, [mode, signupData, loginData]);
 
-    if (!open) return null;
+    if (variant === "modal" && !open) return null;
 
     const sendEmailNotification = async () => {
         const serviceId = import.meta.env.VITE_EMAILJS_SERVICE_ID;
@@ -108,7 +108,12 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
             setMessage(mode === "signup" ? "Account created successfully. You are now signed in." : "Login successful. Welcome back.");
             if (onAuthSuccess) onAuthSuccess(session);
             onClose?.();
-            if (!stayOnSuccess) navigate({ to: returnTo && returnTo !== "/" ? returnTo : "/UserPortal" });
+            if (!stayOnSuccess) {
+                // The inline variant lives on /Signup itself, so returning to
+                // `returnTo` would just redraw the same form — go to the portal.
+                const target = variant === "inline" ? "/UserPortal" : (returnTo && returnTo !== "/" ? returnTo : "/UserPortal");
+                navigate({ to: target });
+            }
         } catch (error) {
             console.error("Auth error", error);
             setStatus("error");
@@ -118,10 +123,12 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
 
     const showLogin = () => { setMode("login"); setStatus("idle"); setMessage(""); };
 
+    const isModal = variant === "modal";
+
     return (
-        <div className="fixed inset-0 z-[120] bg-black/45 backdrop-blur-sm flex items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="auth-title">
+        <div className={isModal ? "fixed inset-0 z-[120] bg-black/45 backdrop-blur-sm flex items-center justify-center p-4" : "flex justify-center w-full"} role={isModal ? "dialog" : undefined} aria-modal={isModal || undefined} aria-labelledby="auth-title">
             <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-zinc-100 p-6 relative">
-                <button onClick={onClose} className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-900" aria-label="Close auth modal"><FaTimes /></button>
+                {isModal && <button onClick={onClose} className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-900" aria-label="Close auth modal"><FaTimes /></button>}
                 <h3 id="auth-title" className="text-2xl font-bold text-[#12345A] mb-5">{mode === "signup" ? "Join SSF" : mode === "login" ? "Welcome Back" : "Reset Password"}</h3>
 
                 {mode !== "forgot" && <div className="flex gap-2 bg-zinc-100 rounded-xl p-1 mb-5">
