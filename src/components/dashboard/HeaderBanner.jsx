@@ -26,14 +26,15 @@ const Diagonals = () => (
 );
 
 /* Reusable premium banner: gradient plate, diagonal cyan graphics, a left text
-   block and an optional white pill action on the right. Everything the caller
-   passes in (avatar, badges, extra rows) is rendered as-is. */
-export default function HeaderBanner({ eyebrow, title, subtitle, leading, badges, action, secondaryAction, children }) {
+   block, an optional glass stat rail that fills the middle, and an optional
+   white pill action on the right. Everything the caller passes in (avatar,
+   badges, extra rows) is rendered as-is. */
+export default function HeaderBanner({ eyebrow, title, subtitle, leading, badges, stats, action, secondaryAction, children }) {
   return (
     <header className="relative overflow-hidden rounded-[20px] text-white shadow-lg" style={{ background: BANNER_GRADIENT }}>
       <Diagonals />
-      <div className="relative z-10 flex flex-col gap-5 p-5 md:p-6 lg:min-h-[140px] lg:flex-row lg:items-center lg:justify-between lg:gap-8 lg:px-8 lg:py-4">
-        <div className="flex min-w-0 items-center gap-4">
+      <div className="relative z-10 flex flex-col gap-5 p-5 md:p-6 lg:min-h-[140px] lg:flex-row lg:items-center lg:justify-between lg:gap-6 lg:px-8 lg:py-4">
+        <div className="flex min-w-0 items-center gap-4 lg:shrink-0">
           {leading}
           <div className="min-w-0">
             {eyebrow && <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#9FE4F5]">{eyebrow}</p>}
@@ -42,6 +43,16 @@ export default function HeaderBanner({ eyebrow, title, subtitle, leading, badges
             {badges && <div className="mt-2.5 flex flex-wrap items-center gap-2">{badges}</div>}
           </div>
         </div>
+        {stats && stats.length > 0 && (
+          <dl className="hidden min-w-0 flex-1 items-center xl:flex">
+            {stats.map((s, i) => (
+              <div key={s.label} className={`min-w-0 flex-1 ${i > 0 ? "border-l border-white/20 pl-5" : ""} pr-3`}>
+                <dt className="truncate text-[10px] font-black uppercase tracking-[0.08em] text-[#9FE4F5]">{s.label}</dt>
+                <dd className="mt-0.5 truncate text-lg font-black leading-tight">{s.value}</dd>
+              </div>
+            ))}
+          </dl>
+        )}
         {(action || secondaryAction) && (
           <div className="flex shrink-0 flex-wrap items-center gap-2.5">
             {secondaryAction}

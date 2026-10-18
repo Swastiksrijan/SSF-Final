@@ -293,6 +293,11 @@ export default function UserPortal() {
               {user.memberId && <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold ring-1 ring-white/20">{user.memberId}</span>}
             </>
           }
+          stats={[
+            { label: "Status", value: statusLabel(user.status || "active") },
+            { label: "Roles", value: activeRoleCount },
+            { label: "Contributed", value: formatINR(totalContributed) },
+          ]}
           secondaryAction={
             <button type="button" onClick={() => goTab("profile")} className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"><FaUserEdit /> Edit profile</button>
           }
