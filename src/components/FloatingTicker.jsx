@@ -138,7 +138,10 @@ const PROFILE_FEATURES = [
 ];
 
 const SHARE_TEXT = "Join Swastik Srijan Foundation — become a Member, Volunteer, Leadership, Intern, Donor or Partner.";
-const SHARE_URL = "https://swastiksrijan.in/";
+/* The hash drops the recipient straight onto the join card (see the id on the
+   wrapper below) instead of the top of the home page. Hash fragments never
+   reach the server, so the OG tags for `/` still drive the link preview. */
+const SHARE_URL = "https://swastiksrijan.in/#join-ssf";
 
 const FloatingTicker = () => {
     const [authMode, setAuthMode] = useState(null);
@@ -147,9 +150,12 @@ const FloatingTicker = () => {
 
     /* WhatsApp/Instagram show a page link as a bare thumbnail, so the only way the
        full card travels is as an image. Render it and hand the file to the OS
-       share sheet, falling back to a copied link on desktops without one. */
+       share sheet. The URL rides inside `text` rather than `url`, because Chrome
+       rejects `url` whenever `files` is present — and without it the recipient
+       gets a picture with nothing to tap. */
     const handleShare = async () => {
         setShareState("working");
+        const message = `${SHARE_TEXT}\n${SHARE_URL}`;
         let file = null;
         try {
             if (joinCardRef.current) {
@@ -163,11 +169,11 @@ const FloatingTicker = () => {
 
         try {
             if (file && navigator.canShare?.({ files: [file] })) {
-                await navigator.share({ files: [file], title: "Swastik Srijan Foundation", text: SHARE_TEXT });
+                await navigator.share({ files: [file], title: "Swastik Srijan Foundation", text: message });
             } else if (navigator.share) {
-                await navigator.share({ title: "Swastik Srijan Foundation", text: SHARE_TEXT, url: SHARE_URL });
+                await navigator.share({ title: "Swastik Srijan Foundation", text: message, url: SHARE_URL });
             } else {
-                await navigator.clipboard.writeText(`${SHARE_TEXT}\n${SHARE_URL}`);
+                await navigator.clipboard.writeText(message);
             }
             setShareState("done");
         } catch {
@@ -180,7 +186,7 @@ const FloatingTicker = () => {
     const ShareIcon = shareState === "done" ? Check : shareState === "idle" ? Share2 : LinkIcon;
 
     return (
-        <div className="relative z-30 -mt-5 px-4 md:px-10">
+        <div id="join-ssf" className="relative z-30 -mt-5 scroll-mt-24 px-4 md:px-10">
             <div className="mx-auto grid max-w-7xl gap-4 md:gap-5 lg:grid-cols-3 lg:items-stretch">
                 {/* Left — identity + values */}
                 <Card delay={0.5}>
