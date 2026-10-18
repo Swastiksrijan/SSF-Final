@@ -14,6 +14,7 @@ import { API_BASE_URL, ENDPOINTS } from "../config/api";
 import { authHeaders, clearSession, readSession, writeSession, withToken } from "../utils/userSession";
 import { generateCertificate, generateIdentityCard } from "../utils/generateCertificate";
 import UserParticipationForms from "../components/UserParticipationForms";
+import HeaderBanner, { BannerAction } from "../components/dashboard/HeaderBanner";
 import { EmptyState, InlineAlert, ProgressRing, SectionCard, StatCard, StatusChip, Timeline, statusLabel } from "../components/dashboard/DashboardUI";
 
 const MEMBERSHIP_FEE_TYPES = ["general", "active", "life"];
@@ -273,43 +274,45 @@ export default function UserPortal() {
   return (
     <main className="min-h-screen bg-[#EAF0F6] pt-24 md:pt-28 pb-16 px-3 sm:px-6">
       <div className="max-w-6xl mx-auto">
-        {/* Identity bar */}
-        <header className="rounded-3xl bg-[#12345A] text-white p-5 md:p-7 shadow-sm relative overflow-hidden">
-          <div className="absolute -right-16 -top-20 h-64 w-64 rounded-full bg-white/5" />
-          <div className="relative flex flex-col sm:flex-row sm:items-center justify-between gap-5">
-            <div className="flex items-center gap-4">
-              <div className="relative shrink-0">
-                <div className="h-20 w-20 rounded-2xl overflow-hidden bg-white/10 ring-2 ring-white/20 flex items-center justify-center text-3xl">
-                  {displayPhoto ? <img src={displayPhoto} alt="Profile" className="h-full w-full object-cover" /> : <FaUserCircle className="text-white/60" />}
-                </div>
-                <button type="button" onClick={() => fileRef.current?.click()} disabled={photoBusy} aria-label="Change profile photo" className="absolute -bottom-2 -right-2 h-9 w-9 rounded-full bg-[#F7A814] text-[#12345A] flex items-center justify-center shadow"><FaCamera /></button>
+        {/* Identity banner */}
+        <HeaderBanner
+          eyebrow="My SSF Workspace"
+          title={user.fullName}
+          subtitle={`${user.email}${user.phone ? ` · ${user.phone}` : ""}`}
+          leading={
+            <div className="relative shrink-0">
+              <div className="flex h-20 w-20 items-center justify-center overflow-hidden rounded-2xl bg-white/15 text-3xl ring-2 ring-white/30 backdrop-blur-sm">
+                {displayPhoto ? <img src={displayPhoto} alt="Profile" className="h-full w-full object-cover" /> : <FaUserCircle className="text-white/60" />}
               </div>
-              <div className="min-w-0">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#F7A814]">My SSF Workspace</p>
-                <h1 className="text-2xl md:text-3xl font-black truncate">{user.fullName}</h1>
-                <p className="text-sm text-white/70 truncate">{user.email}{user.phone ? ` · ${user.phone}` : ""}</p>
-                <div className="flex flex-wrap items-center gap-2 mt-2">
-                  <StatusChip status={user.status || "active"} />
-                  {user.memberId && <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-bold">{user.memberId}</span>}
+              <button type="button" onClick={() => fileRef.current?.click()} disabled={photoBusy} aria-label="Change profile photo" className="absolute -bottom-2 -right-2 flex h-9 w-9 items-center justify-center rounded-full bg-[#F7A814] text-[#12345A] shadow-lg"><FaCamera /></button>
+            </div>
+          }
+          badges={
+            <>
+              <StatusChip status={user.status || "active"} />
+              {user.memberId && <span className="rounded-full bg-white/15 px-2.5 py-1 text-[11px] font-bold ring-1 ring-white/20">{user.memberId}</span>}
+            </>
+          }
+          secondaryAction={
+            <button type="button" onClick={() => goTab("profile")} className="inline-flex items-center gap-2 rounded-full border border-white/40 bg-white/10 px-5 py-2.5 text-sm font-black text-white backdrop-blur-sm transition hover:bg-white/20"><FaUserEdit /> Edit profile</button>
+          }
+          action={<BannerAction label="Logout" icon={<FaSignOutAlt />} onClick={logout} />}
+        >
+          {(photoMessage || photoFile || user?.profilePhotoPath) && (
+            <div className="relative z-10 px-5 pb-5 md:px-6 lg:px-8 lg:pb-6">
+              {photoMessage && <p className="text-xs font-semibold text-[#9FE4F5]">{photoMessage}</p>}
+              {photoFile ? (
+                <div className="flex flex-wrap gap-2">
+                  <button type="button" onClick={savePhoto} disabled={photoBusy} className="rounded-full bg-white px-4 py-2 text-xs font-black text-[#12345A] disabled:opacity-60">{photoBusy ? "Saving…" : "Save photo"}</button>
+                  <button type="button" onClick={() => { setPhotoFile(null); setPhotoPreview(null); if (fileRef.current) fileRef.current.value = ""; }} className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-xs font-black text-white">Cancel</button>
                 </div>
-              </div>
+              ) : user?.profilePhotoPath ? (
+                <button type="button" onClick={removePhoto} disabled={photoBusy} className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-xs font-black text-white disabled:opacity-50">{photoBusy ? "Working…" : "Remove photo"}</button>
+              ) : null}
             </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <button type="button" onClick={() => goTab("profile")} className="inline-flex items-center gap-2 rounded-xl bg-white/10 hover:bg-white/15 px-4 py-2.5 text-sm font-black"><FaUserEdit /> Edit profile</button>
-              <button type="button" onClick={logout} className="inline-flex items-center gap-2 rounded-xl bg-white text-[#12345A] hover:bg-zinc-100 px-4 py-2.5 text-sm font-black"><FaSignOutAlt /> Logout</button>
-            </div>
-          </div>
-          {photoMessage && <p className="relative text-xs text-[#F7A814] mt-3">{photoMessage}</p>}
+          )}
           <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={choosePhoto} className="hidden" />
-          {photoFile ? (
-            <div className="relative flex flex-wrap gap-2 mt-3">
-              <button type="button" onClick={savePhoto} disabled={photoBusy} className="rounded-xl bg-[#F7A814] text-[#12345A] px-4 py-2 text-xs font-black">{photoBusy ? "Saving…" : "Save photo"}</button>
-              <button type="button" onClick={() => { setPhotoFile(null); setPhotoPreview(null); if (fileRef.current) fileRef.current.value = ""; }} className="rounded-xl bg-white/10 px-4 py-2 text-xs font-black">Cancel</button>
-            </div>
-          ) : user?.profilePhotoPath ? (
-            <button type="button" onClick={removePhoto} disabled={photoBusy} className="relative mt-3 rounded-xl bg-white/10 px-4 py-2 text-xs font-black disabled:opacity-50">{photoBusy ? "Working…" : "Remove photo"}</button>
-          ) : null}
-        </header>
+        </HeaderBanner>
 
         {/* Tab bar */}
         <nav className="sticky top-20 md:top-28 z-20 mt-4 rounded-2xl border border-[#D8E1EA] bg-white/95 backdrop-blur shadow-sm p-2 overflow-x-auto">
