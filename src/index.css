@@ -499,3 +499,113 @@ a { text-underline-offset: .18em; }
 .ssf-eyebrow { font-size:.68rem; font-weight:800; letter-spacing:.16em; text-transform:uppercase; color:var(--ssf-green); }
 .ssf-form-title { font-size:1.6rem; font-weight:900; color:var(--ssf-navy); margin-top:.35rem; letter-spacing:-.01em; }
 .ssf-form-sub { font-size:.9rem; color:#617389; margin-top:.35rem; }
+
+/* ============================================================================
+   PREMIUM SHARED CHROME — Top Contact Bar, Main Navigation Header, Footer
+   ----------------------------------------------------------------------------
+   All graphics are CSS only (gradients, clip-path, pseudo-elements) so no image
+   or heavy library is needed. Colours stay inside the approved SSF palette.
+   ============================================================================ */
+
+/* ---- 1. TOP CONTACT BAR -------------------------------------------------- */
+.ssf-contact-bar {
+  position: relative;
+  background:
+    linear-gradient(90deg,
+      #0B2340 0%, #12345A 26%, #1B4E7A 52%, #0E6B6B 78%, #12A0B4 100%);
+  border-bottom: 1px solid rgba(247,168,20,.28);
+  box-shadow: inset 0 -1px 0 rgba(255,255,255,.06);
+}
+.ssf-contact-bar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.10) 45%, transparent 90%);
+}
+
+/* ---- 2. MAIN NAVIGATION HEADER ------------------------------------------ */
+.ssf-nav-shell {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(118deg,
+      #0A2038 0%, #12345A 34%, #164C7A 58%, #0E6B6B 80%, #12808F 100%);
+  border-bottom: 1px solid rgba(247,168,20,.30);
+  box-shadow: 0 14px 34px -20px rgba(6,20,38,.75);
+}
+/* diagonal geometric shapes */
+.ssf-nav-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(115deg, transparent 0 62%, rgba(255,255,255,.055) 62% 63%, transparent 63%),
+    linear-gradient(115deg, transparent 0 74%, rgba(18,160,180,.16) 74% 100%),
+    linear-gradient(295deg, transparent 0 88%, rgba(247,168,20,.10) 88% 100%);
+}
+/* translucent ribbon + subtle gloss */
+.ssf-nav-shell::after {
+  content: "";
+  position: absolute;
+  top: -60%;
+  left: -10%;
+  width: 60%;
+  height: 220%;
+  pointer-events: none;
+  transform: skewX(-18deg);
+  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.10) 50%, rgba(255,255,255,0) 100%);
+}
+.ssf-nav-shell > * { position: relative; z-index: 1; }
+
+.ssf-nav-link {
+  position: relative;
+  color: #EAF0F6;
+  font-weight: 700;
+  letter-spacing: .01em;
+  transition: color .18s ease;
+}
+.ssf-nav-link:hover { color: #F7A814; }
+.ssf-nav-link[data-active="true"] { color: #FFFFFF; }
+.ssf-nav-link[data-active="true"]::after {
+  content: "";
+  position: absolute;
+  left: 0; right: 0; bottom: -.55rem;
+  height: 3px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #F7A814, #12A0B4);
+  box-shadow: 0 0 12px rgba(247,168,20,.55);
+}
+.ssf-nav-dropdown {
+  background: #FFFFFF;
+  border: 1px solid #EAF0F6;
+  box-shadow: 0 26px 60px -24px rgba(6,20,38,.55);
+}
+.ssf-nav-donate {
+  background: linear-gradient(120deg, #E6530E 0%, #F7A814 55%, #FFC64D 100%);
+  color: #241000;
+  box-shadow: 0 12px 28px -14px rgba(230,83,14,.75);
+}
+.ssf-nav-donate:hover { filter: brightness(1.06); }
+
+/* ---- 3. MAIN WEBSITE FOOTER --------------------------------------------- */
+.ssf-footer-shell {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(160deg, #0A2038 0%, #12345A 40%, #0E4A63 72%, #0B6B6B 100%);
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(90deg, #F7A814, #12A0B4, #176447) 1;
+}
+.ssf-footer-shell::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(115deg, transparent 0 78%, rgba(18,160,180,.10) 78% 100%);
+}
+
+/* ---- Link helpers reusing the palette ----------------------------------- */
+.ssf-chrome-link { color: #EAF0F6; transition: color .18s ease; }
+.ssf-chrome-link:hover { color: #F7A814; }
