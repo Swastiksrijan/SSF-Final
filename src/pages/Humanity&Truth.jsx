@@ -1,4 +1,9 @@
 import React from "react";
+import {
+  EmblemChip, EmblemInfinite, EmblemPower, EmblemScriptures, EmblemBalance,
+  EmblemDual, EmblemSociety, EmblemPillar, EmblemTilt, EmblemNature,
+  EmblemWorld, EmblemUniverse, EmblemHands, EmblemUnity,
+} from "../components/humanity/HumanityEmblems";
 
 const HumanityAndTruth = () => {
   return (
@@ -48,9 +53,12 @@ const HumanityAndTruth = () => {
 
         {/* 2. संसार : अनंत और अज्ञात */}
         <section className="bg-white/85 border border-[#EAF0F6] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)]">
-          <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A] mb-6">
-            2. संसार : अनंत और अज्ञात <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">The World: Infinite and Unknown</span>
-          </h2>
+          <div className="mb-6 flex items-center gap-4">
+            <EmblemChip><EmblemInfinite /></EmblemChip>
+            <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+              2. संसार : अनंत और अज्ञात <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">The World: Infinite and Unknown</span>
+            </h2>
+          </div>
           <div className="space-y-6 text-lg leading-relaxed">
             <div className="grid md:grid-cols-2 gap-8">
               <div className="space-y-4">
@@ -71,9 +79,12 @@ const HumanityAndTruth = () => {
 
         {/* 3. क्या कोई शक्ति है? */}
         <section className="bg-white/85 border border-[#EAF0F6] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)]">
-          <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A] mb-6">
-            3. क्या कोई शक्ति है? <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Is There a Power?</span>
-          </h2>
+          <div className="mb-6 flex items-center gap-4">
+            <EmblemChip><EmblemPower /></EmblemChip>
+            <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+              3. क्या कोई शक्ति है? <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Is There a Power?</span>
+            </h2>
+          </div>
           <div className="space-y-6 text-lg leading-relaxed">
             <div className="grid md:grid-cols-2 gap-8">
               <div>
@@ -108,9 +119,12 @@ const HumanityAndTruth = () => {
 
         {/* 4. धर्म और शास्त्र : सार क्या कहते हैं */}
         <section className="bg-white/85 border border-[#EAF0F6] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)]">
-          <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A] mb-6">
-            4. धर्म और शास्त्र : सार क्या कहते हैं <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Religion and Scriptures: What is the Essence?</span>
-          </h2>
+          <div className="mb-6 flex items-center gap-4">
+            <EmblemChip><EmblemScriptures /></EmblemChip>
+            <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+              4. धर्म और शास्त्र : सार क्या कहते हैं <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Religion and Scriptures: What is the Essence?</span>
+            </h2>
+          </div>
           <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <div className="p-6 border border-[#EAF0F6] hover:border-[#F7A814] transition-colors bg-white">
               <p className="font-hindi font-bold text-[#12345A]">वेद | Vedas:</p>
@@ -147,9 +161,12 @@ const HumanityAndTruth = () => {
 
         {/* 5. राम : मानव मूल्य का आदर्श */}
         <section className="bg-white p-8 md:p-12 rounded-2xl shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)] border border-[#EAF0F6]">
-          <h2 className="text-xl md:text-3xl font-hindi font-bold text-[#12345A] mb-6">
-            5. राम : मानव मूल्य का आदर्श <span className="block text-lg md:text-xl font-merriweather font-normal opacity-60 mt-1">Ram: The Ideal of Human Values</span>
-          </h2>
+          <div className="mb-6 flex items-center gap-4">
+            <EmblemChip><EmblemBalance /></EmblemChip>
+            <h2 className="text-xl md:text-3xl font-hindi font-bold text-[#12345A]">
+              5. राम : मानव मूल्य का आदर्श <span className="block text-lg md:text-xl font-merriweather font-normal opacity-60 mt-1">Ram: The Ideal of Human Values</span>
+            </h2>
+          </div>
           <div className="grid md:grid-cols-2 gap-8 mb-8 pb-8 border-b border-[#EAF0F6]">
             <p className="text-lg text-justify leading-relaxed">
               राम को किसी पूजा, मूर्ति या परंपरा तक सीमित नहीं किया गया है। राम उनके चरित्र और मानव मूल्यों के आदर्श प्रतीक हैं। वे हमें बताते हैं कि मानवता का असली माप बिना भेदभाव, करुणा, मर्यादा और समभाव में है।
@@ -185,9 +202,12 @@ const HumanityAndTruth = () => {
 
         {/* 6. अच्छाई और बुराई */}
         <section className="bg-white/85 border border-[#EAF0F6] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)]">
-          <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A] mb-6">
-            6. अच्छाई और बुराई <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Good and Evil</span>
-          </h2>
+          <div className="mb-6 flex items-center gap-4">
+            <EmblemChip><EmblemDual /></EmblemChip>
+            <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+              6. अच्छाई और बुराई <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Good and Evil</span>
+            </h2>
+          </div>
           <div className="grid md:grid-cols-2 gap-8">
             <div className="space-y-4 text-lg">
               <p><span className="font-bold text-[#176447]">अच्छाई:</span> भूखे को खाना देना, कमजोर की मदद करना, सच्चाई के लिए खड़ा होना।</p>
@@ -204,9 +224,12 @@ const HumanityAndTruth = () => {
 
         {/* 7. समाज, जाति, वर्ग, राष्ट्र */}
         <section className="bg-white/85 border border-[#EAF0F6] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)]">
-          <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A] mb-6">
-            7. समाज, जाति, वर्ग, राष्ट्र <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Society, Caste, Class, Nation</span>
-          </h2>
+          <div className="mb-6 flex items-center gap-4">
+            <EmblemChip><EmblemSociety /></EmblemChip>
+            <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+              7. समाज, जाति, वर्ग, राष्ट्र <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Society, Caste, Class, Nation</span>
+            </h2>
+          </div>
           <div className="grid md:grid-cols-2 gap-8 text-lg leading-relaxed">
             <p>
               जाति, धर्म, देश — पहचान के लिए बने हैं, दीवार नहीं बनने के लिए। एक गरीब माँ, भूख और दर्द = कोई धर्म या देश नहीं जानता। दर्द और मानवता किसी सीमा में बंधी नहीं होती।
@@ -220,16 +243,22 @@ const HumanityAndTruth = () => {
         {/* 8 & 9. शासन, सत्ता और तटस्थता */}
         <section className="grid md:grid-cols-2 gap-12 bg-white/85 border border-[#EAF0F6] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)]">
           <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
-              8. शासन, सत्ता <span className="block text-lg font-merriweather font-normal opacity-60 mt-1">Governance and Power</span>
-            </h2>
+            <div className="flex items-center gap-4">
+              <EmblemChip><EmblemPillar /></EmblemChip>
+              <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+                8. शासन, सत्ता <span className="block text-lg font-merriweather font-normal opacity-60 mt-1">Governance and Power</span>
+              </h2>
+            </div>
             <p className="text-justify leading-relaxed">जहाँ शक्ति है वहाँ जवाबदेही जरूरी है। जब लोग डर के कारण चुप रहते हैं, अन्याय सामान्य बन जाता है।</p>
             <p className="text-[#12345A] italic text-justify leading-relaxed">Where there is power, accountability is necessary. When people stay silent out of fear, injustice becomes normal.</p>
           </div>
           <div className="space-y-4">
-            <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
-              9. तटस्थता का भ्रम <span className="block text-lg font-merriweather font-normal opacity-60 mt-1">The Illusion of Neutrality</span>
-            </h2>
+            <div className="flex items-center gap-4">
+              <EmblemChip><EmblemTilt /></EmblemChip>
+              <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+                9. तटस्थता का भ्रम <span className="block text-lg font-merriweather font-normal opacity-60 mt-1">The Illusion of Neutrality</span>
+              </h2>
+            </div>
             <p className="text-justify leading-relaxed">हर स्थिति में चुप रहना सही नहीं होता। जब अन्याय साफ दिखे और हम तटस्थ रहें — तो हम भी उस पीड़ा का हिस्सा बन जाते हैं।</p>
             <p className="text-[#12345A] italic text-justify leading-relaxed">It is not right to remain silent in every situation. When injustice is clearly visible and we remain neutral, we also become part of that suffering.</p>
           </div>
@@ -237,9 +266,12 @@ const HumanityAndTruth = () => {
 
         {/* 10. प्रकृति और अन्य जीव */}
         <section className="bg-white/85 border border-[#EAF0F6] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)]">
-          <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A] mb-6">
-            10. प्रकृति और अन्य जीव <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Nature and Other Beings</span>
-          </h2>
+          <div className="mb-6 flex items-center gap-4">
+            <EmblemChip><EmblemNature /></EmblemChip>
+            <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+              10. प्रकृति और अन्य जीव <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Nature and Other Beings</span>
+            </h2>
+          </div>
           <div className="grid md:grid-cols-2 gap-8 text-lg leading-relaxed mb-6">
             <p>जंगल, नदियाँ, जीव — ये सब जीवन का हिस्सा हैं। हमारा कर्तव्य है उन्हें सम्मान देना, उपयोग नहीं करना।</p>
             <p className="text-[#12345A] italic border-l-2 border-[#EAF0F6] pl-6">Forests, rivers, creatures — they are all part of life. Our duty is to give them respect, not just use them.</p>
@@ -254,16 +286,22 @@ const HumanityAndTruth = () => {
         <section className="space-y-12 bg-white/85 border border-[#EAF0F6] rounded-2xl p-6 md:p-10 shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)]">
           <div className="grid md:grid-cols-2 gap-12">
             <div className="space-y-4">
-              <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
-                11. आज की दुनिया <span className="block text-lg font-merriweather font-normal opacity-60 mt-1">Today's World and Future</span>
-              </h2>
+              <div className="flex items-center gap-4">
+                <EmblemChip><EmblemWorld /></EmblemChip>
+                <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+                  11. आज की दुनिया <span className="block text-lg font-merriweather font-normal opacity-60 mt-1">Today's World and Future</span>
+                </h2>
+              </div>
               <p>Digital जुड़ाव है, लेकिन अकेलापन बढ़ा है। यदि भविष्य केवल जीतना सिखाएगा, हिंसा बढ़ेगी। यदि भविष्य महसूस करना सिखाएगा, मानवता बचेगी।</p>
               <p className="text-[#12345A] italic">Digital connectivity is there, but loneliness has increased. If the future only teaches winning, violence will increase. If the future teaches feeling, humanity will survive.</p>
             </div>
             <div className="space-y-4">
-              <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
-                12. ब्रह्मांड और अज्ञान <span className="block text-lg font-merriweather font-normal opacity-60 mt-1">The Universe and Mystery</span>
-              </h2>
+              <div className="flex items-center gap-4">
+                <EmblemChip><EmblemUniverse /></EmblemChip>
+                <h2 className="text-2xl md:text-3xl font-hindi font-bold text-[#12345A]">
+                  12. ब्रह्मांड और अज्ञान <span className="block text-lg font-merriweather font-normal opacity-60 mt-1">The Universe and Mystery</span>
+                </h2>
+              </div>
               <p>ब्रह्मांड अज्ञात है, चेतना का रहस्य अभी तक पूरी तरह समझा नहीं गया। विनम्रता: “हम सब अधूरे हैं और यही मानवता है।”</p>
               <p className="text-[#12345A] italic">The universe is unknown, the mystery of consciousness is not yet fully understood. Humility: "We are all incomplete, and that is humanity."</p>
             </div>
@@ -273,9 +311,12 @@ const HumanityAndTruth = () => {
         {/* 13. Swastik Srijan Foundation का अनुभव */}
         <section className="bg-[#12345A] text-white p-8 md:p-12 rounded-2xl relative overflow-hidden shadow-[0_26px_60px_-30px_rgba(18,52,90,0.9)]">
           <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -mr-16 -mt-16"></div>
-          <h2 className="text-2xl md:text-3xl font-hindi font-bold mb-8 relative z-10">
-            13. Swastik Srijan Foundation का अनुभव <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Experience of Swastik Srijan Foundation</span>
-          </h2>
+          <div className="mb-8 flex items-center gap-4 relative z-10">
+            <EmblemChip tone="dark"><EmblemHands /></EmblemChip>
+            <h2 className="text-2xl md:text-3xl font-hindi font-bold">
+              13. Swastik Srijan Foundation का अनुभव <span className="block text-xl font-merriweather font-normal opacity-60 mt-1">Experience of Swastik Srijan Foundation</span>
+            </h2>
+          </div>
           <div className="grid md:grid-cols-3 gap-8 text-center relative z-10">
             <div className="space-y-2 p-6 bg-white/5 rounded-xl">
               <p className="text-3xl font-bold text-[#F7A814]">भूख | Hunger</p>
@@ -301,6 +342,7 @@ const HumanityAndTruth = () => {
 
         {/* 14. अंतिम निष्कर्ष : सबका साझा सत्य */}
         <section className="text-center py-12 border-t border-[#EAF0F6] bg-white/85 border border-[#EAF0F6] rounded-2xl px-6 md:px-10 shadow-[0_20px_50px_-38px_rgba(18,52,90,0.65)]">
+          <div className="mb-8 flex justify-center"><EmblemChip className="h-16 w-16"><EmblemUnity /></EmblemChip></div>
           <h2 className="text-3xl md:text-4xl font-hindi font-bold text-[#12345A] mb-8">
             14. अंतिम निष्कर्ष : सबका साझा सत्य <span className="block text-2xl font-merriweather font-normal opacity-60 mt-1">Final Conclusion: A Shared Truth</span>
           </h2>
