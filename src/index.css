@@ -614,3 +614,28 @@ a { text-underline-offset: .18em; }
 /* ---- Link helpers reusing the palette ----------------------------------- */
 .ssf-chrome-link { color: #EAF0F6; transition: color .18s ease; }
 .ssf-chrome-link:hover { color: #F7A814; }
+
+/* ---- 4. SSF-IMS APPLICATION SHELL ---------------------------------------
+   One source of truth for the IMS chrome geometry. The header, the section
+   strip and the sidebar all derive their sticky offsets from these three
+   numbers, so the three bars can never drift apart.
+
+   Why these exist at all: the sticky bars used to be offset with ad-hoc
+   Tailwind classes (`top-[4.5rem]`, `top-[7.5rem]`, `top-24`), and the strip
+   was wrapped in a container only as tall as the bar itself — so it had no
+   room to travel and simply scrolled away with the page. Keeping the numbers
+   here (and the strip unwrapped) is what keeps the chrome pinned.          */
+:root {
+  --ims-header-h: 64px;
+  --ims-strip-h: 46px;
+  --ims-chrome-h: 110px; /* --ims-header-h + --ims-strip-h */
+}
+
+/* The root layout wrapper must not use `overflow-x: hidden`: an overflow value
+   other than `visible`/`clip` on an ancestor turns that ancestor into the
+   sticky containing block and breaks `position: sticky` for the whole app
+   (header, strip and sidebar all scroll away together). `clip` suppresses the
+   horizontal overflow without creating a scroll container. */
+.ssf-root-shell { overflow-x: clip; }
+
+.ssf-ims-shell { overflow-x: clip; }

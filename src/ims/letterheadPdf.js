@@ -1,59 +1,73 @@
 // SSF-IMS — bilingual official letterhead (लेटरहेड / लेटरपैड).
 //
 // Any letter the Foundation sends — to a government department, a company, a
-// bank, a donor or a member — is written here once and comes out on the
-// Foundation's own letterhead, in English, हिंदी or both.
+// bank, a donor or a member — is written once here and comes out on the
+// Foundation's own stationery, in English, हिंदी or both.
 //
 // Why the browser paints it: jsPDF has no Indic shaping, so drawing Devanagari
 // with jsPDF breaks conjuncts. We lay the letter out as real HTML (the browser
-// shapes Devanagari correctly), rasterise the header and the body with
-// html2canvas, and assemble A4 pages with jsPDF. The header raster is stamped on
-// every page, so a two-page letter still looks like letterhead stationery.
+// shapes Devanagari correctly), rasterise it with html2canvas, and assemble A4
+// pages with jsPDF. The masthead is stamped on every page, so a two-page letter
+// still reads as letterhead stationery.
+//
+// Both faces are bundled with the app (no Google Fonts fetch at raster time),
+// so Hindi and English shape identically offline and on a network that blocks
+// fonts.googleapis.com.
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import logoImg from '../assets/new-logo.png';
+import latinUrl from '../assets/fonts/PlusJakartaSans-Variable.ttf?url';
 import devaRegularUrl from '../assets/fonts/NotoSansDevanagari-Regular.ttf?url';
 import devaBoldUrl from '../assets/fonts/NotoSansDevanagari-Bold.ttf?url';
 import { CONTACT_INFO } from '../config/contact';
 
 const NAVY = '#12345A';
 const TEAL = '#176447';
+const GOLD = '#C6A04A';
 const INK = '#26343D';
+const MUTED = '#5B6B7A';
+const HAIRLINE = '#D5DEE8';
 
 export const PAGE_W_MM = 210;
 export const PAGE_H_MM = 297;
-const PAGE_W_PX = 794;                    // A4 @ 96dpi — the width we raster at
-const FOOTER_MM = 16;
-const MARGIN_MM = 14;
-const BODY_BOTTOM_MM = PAGE_H_MM - FOOTER_MM - 4;
-// The header/body rasters are laid on the page at MARGIN_MM and carry their own
-// 34px inner padding, so page text really starts a little inside the margin.
-// The stamped footer uses the same x so the rules and text line up.
-const PAD_PX = 34;
-const TEXT_X_MM = MARGIN_MM + (PAD_PX / PAGE_W_PX) * (PAGE_W_MM - 2 * MARGIN_MM);
+const MARGIN_MM = 14;                     // print margin on every edge
+const PAGE_W_PX = 794;                    // A4 @ 96dpi — the raster width, i.e. the full page
+// The raster is stamped at the full page width, so its inner padding IS the
+// page margin: 14mm at 96dpi. Keeping the two in step is what makes the header,
+// body and jsPDF-drawn footer share one left/right edge.
+const PAD_PX = Math.round(MARGIN_MM * PAGE_W_PX / PAGE_W_MM);
+const FOOTER_MM = 15;
+const HEADER_GAP_MM = 5;                  // breathing room between masthead and body
+const WATERMARK_OPACITY = 0.09;
 
+const pxPerMm = PAGE_W_PX / PAGE_W_MM;
+
+// Organisation identity. Every line below is attested in the repository:
+// name/registration/scope in src/ims/orgProfileData.js, the taglines in
+// src/components/Header.jsx and src/components/FloatingTicker.jsx, and the
+// office address/contact in src/config/contact.js.
 const ORG = {
   en: 'Swastik Srijan Foundation Samiti',
-  short: 'Swastik Srijan Foundation',
-  shortHi: 'स्वस्तिक सृजन फाउंडेशन',
   hi: 'स्वस्तिक सृजन फाउंडेशन समिति',
+  taglineHi: 'सेवा • समर्पण • समग्र विकास',
   taglineEn: 'Service • Dedication • Creation',
-  taglineHi: 'सेवा • समर्पण • सृजन',
+  identity: 'Registered Society • Established 2013 • Pan-India Presence',
   regNo: '05/22/03/11448/13',
+  regDate: '30 December 2013',
   regLineEn: 'Registered under the Madhya Pradesh Societies Registration Act, 1973',
   regLineHi: 'मध्य प्रदेश सोसाइटी पंजीकरण अधिनियम, 1973 के अंतर्गत पंजीकृत',
+  website: 'www.swastiksrijan.in',
 };
 
 export const ADDRESS_LINE = CONTACT_INFO.address.fullRegistered;
-export const CONTACT_LINE = `${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail} · swastiksrijan.in`;
 
 const esc = (s) => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-// Bundled Devanagari face, embedded once, so Hindi shapes offline too.
-let devaFontCss = null;
-async function devaFontFaceCss() {
-  if (devaFontCss != null) return devaFontCss;
+// ── fonts ───────────────────────────────────────────────────────────────────
+let fontCss = null;
+async function fontFaceCss() {
+  if (fontCss != null) return fontCss;
   const toData = async (url) => {
     const res = await fetch(url);
     const buf = new Uint8Array(await res.arrayBuffer());
@@ -63,11 +77,13 @@ async function devaFontFaceCss() {
     return `data:font/ttf;base64,${btoa(s)}`;
   };
   try {
-    const [reg, bold] = await Promise.all([toData(devaRegularUrl), toData(devaBoldUrl)]);
-    devaFontCss = `@font-face{font-family:'SSFDevanagari';src:url(${reg}) format('truetype');font-weight:400;font-style:normal;}
+    const [latin, reg, bold] = await Promise.all([toData(latinUrl), toData(devaRegularUrl), toData(devaBoldUrl)]);
+    fontCss = `
+      @font-face{font-family:'SSFLatin';src:url(${latin}) format('truetype');font-weight:200 800;font-style:normal;}
+      @font-face{font-family:'SSFDevanagari';src:url(${reg}) format('truetype');font-weight:400;font-style:normal;}
       @font-face{font-family:'SSFDevanagari';src:url(${bold}) format('truetype');font-weight:700;font-style:normal;}`;
-  } catch { devaFontCss = ''; }
-  return devaFontCss;
+  } catch { fontCss = ''; }
+  return fontCss;
 }
 
 const pick = (en, hi, lang) => (lang === 'hi' ? hi : lang === 'both' ? `${en} / ${hi}` : en);
@@ -76,7 +92,7 @@ async function ensureFonts() {
   try {
     if (document.fonts && document.fonts.ready) await document.fonts.ready;
     await Promise.all([
-      "700 18px 'Plus Jakarta Sans'", "400 13px 'Plus Jakarta Sans'",
+      "700 18px 'SSFLatin'", "400 13px 'SSFLatin'",
       "400 13px 'SSFDevanagari'", "700 14px 'SSFDevanagari'",
     ].map((f) => document.fonts.load(f).catch(() => {})));
   } catch { /* fonts optional */ }
@@ -89,120 +105,134 @@ function preloadImages(root) {
   return Promise.all(jobs);
 }
 
-async function renderHost(html, extraCss) {
-  const host = document.createElement('div');
-  host.setAttribute('data-ssf-letterhead', 'pdf');
-  host.style.cssText = `position:fixed;left:-99999px;top:0;width:${PAGE_W_PX}px;background:#fff;z-index:-1;`;
-  host.innerHTML = `<style>${await devaFontFaceCss()}${extraCss || BASE_CSS}</style>${html}`;
-  document.body.appendChild(host);
-  try {
-    await ensureFonts();
-    await preloadImages(host);
-    const canvas = await html2canvas(host, {
-      scale: 2, backgroundColor: '#ffffff', useCORS: true, logging: false,
-      width: PAGE_W_PX, windowWidth: PAGE_W_PX,
-    });
-    return { canvas, host };
-  } catch (e) { host.remove(); throw e; }
-}
-
 // ── layout ──────────────────────────────────────────────────────────────────
 const BASE_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; }
   .lh {
     width: ${PAGE_W_PX}px; background: #ffffff; color: ${INK};
-    font-family: 'Plus Jakarta Sans','SSFDevanagari',system-ui,sans-serif;
-    font-size: 12.5px; line-height: 1.6; -webkit-font-smoothing: antialiased;
+    font-family: 'SSFLatin', system-ui, sans-serif;
+    font-size: 12.5px; line-height: 1.62; -webkit-font-smoothing: antialiased;
     position: relative;
   }
-  .hi { font-family: 'SSFDevanagari','Mukta',sans-serif; }
-  .lh-head {
-    position: relative; z-index: 1; padding: 0 34px 0;
-    background: linear-gradient(180deg, #f7fafc 0%, #ffffff 88%);
-    border-bottom: 1px solid #dbe4ec;
-  }
-  .lh-accent { height: 5px; margin: 0 -34px 17px; background: linear-gradient(90deg, ${NAVY} 0%, ${NAVY} 72%, ${TEAL} 72%, ${TEAL} 91%, #c6a15b 91%, #c6a15b 100%); }
-  .lh-head-top { display: flex; align-items: center; gap: 16px; }
-  .lh-logo-wrap { width: 78px; height: 78px; display: grid; place-items: center; flex-shrink: 0; border: 1px solid #dbe4ec; border-radius: 15px; background: #ffffff; box-shadow: 0 3px 12px rgba(18,52,90,.08); }
-  .lh-logo { width: 68px; height: 68px; object-fit: contain; }
-  .lh-names { flex: 1; min-width: 0; padding-top: 1px; }
-  .lh-eyebrow { font-size: 8px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: ${TEAL}; margin-bottom: 5px; }
-  .lh-name-en { font-size: 21px; font-weight: 800; color: ${NAVY}; letter-spacing: -.025em; line-height: 1.16; }
-  .lh-name-hi { font-size: 15px; font-weight: 700; color: ${NAVY}; margin-top: 4px; line-height: 1.3; }
-  .lh-tag { margin-top: 7px; font-size: 8px; font-weight: 700; letter-spacing: .055em; color: ${TEAL}; }
-  .lh-right { text-align: right; flex-shrink: 0; width: 150px; padding-left: 12px; border-left: 1px solid #dbe4ec; }
-  .lh-right .doc-label { display: inline-block; padding: 5px 7px; border-radius: 4px; background: #eaf3ef; color: ${TEAL}; font-size: 7px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
-  .lh-right .kv { margin-top: 7px; font-size: 8.5px; color: ${INK}; line-height: 1.55; }
-  .lh-right .kv .k { color: ${NAVY}; font-weight: 800; }
-  .lh-legal { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 14px; padding: 9px 0 10px; color: #526477; font-size: 7.5px; line-height: 1.45; }
-  .lh-legal-main { flex: 1; min-width: 0; }
-  .lh-legal-hi { margin-top: 2px; color: #657587; font-family: 'SSFDevanagari','Mukta',sans-serif; }
-  .lh-legal-reg { flex-shrink: 0; text-align: right; color: ${NAVY}; font-size: 8px; font-weight: 800; }
-  .lh-rule { height: 3px; background: linear-gradient(90deg, ${NAVY} 0%, ${NAVY} 72%, ${TEAL} 72%, ${TEAL} 91%, #c6a15b 91%, #c6a15b 100%); }
-  .lh-rule-thin { height: 1px; background: #e7edf2; }
+  .hi { font-family: 'SSFDevanagari', sans-serif; }
 
-  .lh-body { position: relative; z-index: 1; padding: 0 34px; }
-  .lh-to { margin-top: 2px; font-size: 12px; line-height: 1.65; }
+  /* ---- masthead ---- */
+  .lh-head { position: relative; z-index: 1; padding: 0 ${PAD_PX}px; }
+  .lh-accent { height: 3px; background: linear-gradient(90deg, ${NAVY} 0 58%, ${TEAL} 58% 86%, ${GOLD} 86% 100%); }
+  .lh-head-top { display: flex; align-items: center; gap: 16px; padding: 15px 0 12px; }
+  .lh-logo-wrap {
+    width: 76px; height: 76px; flex-shrink: 0; display: grid; place-items: center;
+    border: 1px solid ${HAIRLINE}; border-radius: 50%; background: #ffffff;
+  }
+  .lh-logo { width: 62px; height: auto; display: block; }
+  .lh-names { flex: 1; min-width: 0; }
+  .lh-identity { font-size: 7.2px; font-weight: 700; letter-spacing: .19em; text-transform: uppercase; color: ${TEAL}; }
+  .lh-name-en { margin-top: 5px; font-size: 21.5px; font-weight: 800; color: ${NAVY}; letter-spacing: -.015em; line-height: 1.12; }
+  .lh-name-hi { margin-top: 3px; font-size: 15px; font-weight: 700; color: ${NAVY}; line-height: 1.32; }
+  .lh-tag { margin-top: 6px; font-size: 8.4px; font-weight: 700; color: ${TEAL}; letter-spacing: .04em; }
+  .lh-tag .en { color: ${MUTED}; font-weight: 600; }
+
+  .lh-ref {
+    flex-shrink: 0; width: 152px; padding-left: 14px; margin-left: 2px;
+    border-left: 1px solid ${HAIRLINE}; text-align: right;
+  }
+  .lh-ref .cap { font-size: 7px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: ${MUTED}; }
+  .lh-ref .row { margin-top: 7px; }
+  .lh-ref .k { font-size: 7px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: ${TEAL}; }
+  .lh-ref .v { margin-top: 1px; font-size: 10px; font-weight: 700; color: ${NAVY}; word-break: break-word; }
+
+  .lh-rule { height: 2px; background: linear-gradient(90deg, ${NAVY} 0 58%, ${TEAL} 58% 86%, ${GOLD} 86% 100%); }
+  .lh-legal {
+    display: flex; justify-content: space-between; align-items: baseline; gap: 18px;
+    padding: 7px 0 8px; color: ${MUTED}; font-size: 7.4px; line-height: 1.5;
+  }
+  .lh-legal-hi { margin-top: 2px; color: #71818F; }
+  .lh-legal-reg { flex-shrink: 0; text-align: right; color: ${NAVY}; font-size: 7.6px; font-weight: 800; }
+  .lh-legal-reg .sub { color: ${MUTED}; font-weight: 600; }
+  .lh-rule-thin { height: 1px; background: #EAF0F6; }
+
+  /* ---- body ---- */
+  .lh-body { position: relative; z-index: 1; padding: 0 ${PAD_PX}px; }
+  .lh-meta { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; }
+  .lh-to { font-size: 12px; line-height: 1.62; }
   .lh-to .lbl { font-weight: 800; color: ${NAVY}; }
-  .lh-subject { margin-top: 14px; border-left: 4px solid ${TEAL}; padding: 7px 12px; background: #f4f8fb; }
-  .lh-subject .lbl { font-size: 9px; font-weight: 800; letter-spacing: .12em; text-transform: uppercase; color: ${TEAL}; }
+  .lh-fields { flex-shrink: 0; text-align: right; font-size: 11px; line-height: 1.6; }
+  .lh-fields .k { font-weight: 800; color: ${NAVY}; }
+  .lh-fields .fill { display: inline-block; min-width: 132px; border-bottom: 1px dotted #9FB0C0; padding-bottom: 1px; color: ${INK}; font-weight: 600; }
+
+  .lh-subject { margin-top: 15px; padding: 8px 12px; background: #F4F8FB; border-left: 4px solid ${TEAL}; }
+  .lh-subject .lbl { font-size: 8.6px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: ${TEAL}; }
   .lh-subject .txt { margin-top: 3px; font-size: 13px; font-weight: 700; color: ${NAVY}; line-height: 1.45; }
-  .lh-salut { margin-top: 14px; font-size: 12.5px; font-weight: 700; color: ${INK}; }
+
+  .lh-salut { margin-top: 15px; font-size: 12.5px; font-weight: 700; color: ${INK}; }
   .lh-p { margin-top: 9px; font-size: 12.5px; text-align: justify; white-space: pre-wrap; }
   .lh-thanks { margin-top: 16px; font-size: 12.5px; }
+
   .lh-sign { margin-top: 26px; text-align: right; }
   .lh-sign .for { font-size: 12px; font-weight: 700; color: ${INK}; }
-  .lh-sign .nm { margin-top: 30px; font-size: 13px; font-weight: 800; color: ${NAVY}; }
+  .lh-sign .nm { margin-top: 32px; font-size: 13px; font-weight: 800; color: ${NAVY}; }
   .lh-sign .desig { font-size: 11px; color: ${INK}; }
-  .lh-sign .line { margin: 22px 0 0 auto; width: 210px; border-top: 1px dashed #b9c6d4; }
-  .lh-extra { margin-top: 18px; font-size: 11px; }
+  .lh-sign .line { margin: 24px 0 0 auto; width: 208px; border-top: 1px dashed #B9C6D4; }
+
+  .lh-extra { margin-top: 16px; font-size: 11px; line-height: 1.55; }
   .lh-extra .lbl { font-weight: 800; color: ${NAVY}; }
 
+  /* ---- footer (only used by the live HTML preview; the PDF stamps its own) ---- */
+  .lh-foot { margin-top: 18px; padding: 0 ${PAD_PX}px; }
+  .lh-foot .rule { height: 1px; background: ${HAIRLINE}; }
+  .lh-foot .grid { display: flex; justify-content: space-between; gap: 18px; padding-top: 4px; font-size: 7.6px; color: ${MUTED}; line-height: 1.45; }
+  .lh-foot .grid .right { text-align: right; flex-shrink: 0; }
+  .lh-foot .pageno { margin-top: 3px; text-align: center; font-size: 7.2px; color: #94A3B8; }
 `;
 
 function headerHtml(f = {}) {
   return `<div class="lh-head">
     <div class="lh-accent"></div>
     <div class="lh-head-top">
-      <div class="lh-logo-wrap"><img class="lh-logo" src="${logoImg}" alt="SSF" /></div>
+      <div class="lh-logo-wrap"><img class="lh-logo" src="${logoImg}" alt="Swastik Srijan Foundation Samiti" /></div>
       <div class="lh-names">
-        <div class="lh-eyebrow">Registered Non-Profit Organisation</div>
+        <div class="lh-identity">${esc(ORG.identity)}</div>
         <div class="lh-name-en">${esc(ORG.en)}</div>
         <div class="lh-name-hi hi">${esc(ORG.hi)}</div>
-        <div class="lh-tag">${esc(ORG.taglineEn)} &nbsp;•&nbsp; ${esc(ORG.taglineHi)}</div>
+        <div class="lh-tag hi">${esc(ORG.taglineHi)} <span class="en">• ${esc(ORG.taglineEn)}</span></div>
       </div>
-      <div class="lh-right">
-        <div class="doc-label">OFFICIAL CORRESPONDENCE</div>
-        <div class="kv"><span class="k">Letter Ref.</span><br/>${esc(f.letterNo || 'To be assigned')}</div>
-        <div class="kv"><span class="k">Date</span><br/>${esc(f.date || '')}</div>
+      <div class="lh-ref">
+        <div class="cap">Official Correspondence</div>
+        <div class="row"><div class="k">Ref. No.</div><div class="v">${esc(f.letterNo || 'To be assigned')}</div></div>
+        <div class="row"><div class="k">Date</div><div class="v">${esc(f.date || '')}</div></div>
       </div>
     </div>
+    <div class="lh-rule"></div>
     <div class="lh-legal">
       <div class="lh-legal-main">
         <div>${esc(ORG.regLineEn)}</div>
-        <div class="lh-legal-hi">${esc(ORG.regLineHi)}</div>
+        <div class="lh-legal-hi hi">${esc(ORG.regLineHi)}</div>
       </div>
-      <div class="lh-legal-reg">REGISTRATION NO.<br/>${esc(ORG.regNo)}</div>
+      <div class="lh-legal-reg">REGN. NO. ${esc(ORG.regNo)}<br/><span class="sub">Registered ${esc(ORG.regDate)}</span></div>
     </div>
-    <div class="lh-rule"></div>
     <div class="lh-rule-thin"></div>
   </div>`;
 }
 
-/** Full letter body (everything between the header rule and the footer rule). */
 function bodyHtml(f, lang) {
   const paragraphs = String(f.body || '').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
-  const toBlock = [
-    f.toName, f.toDesignation, f.toOrg, f.toAddress,
-  ].map((v) => String(v || '').trim()).filter(Boolean);
+  const toBlock = [f.toName, f.toDesignation, f.toOrg, f.toAddress]
+    .map((v) => String(v || '').trim()).filter(Boolean);
   const salutation = f.salutation || pick('Respected Sir/Madam,', 'आदरणीय महोदय / महोदया,', lang);
   const closing = f.closing || pick('Thank you,', 'धन्यवाद,', lang);
+  const refLine = String(f.letterNo || '').trim();
+  const dateLine = String(f.date || '').trim();
 
   return `<div class="lh-body">
-    ${toBlock.length ? `<div class="lh-to" data-safe>
-      <div class="lbl">${pick('To,', 'प्रति,', lang)}</div>
-      ${toBlock.map((line) => `<div>${esc(line)}</div>`).join('')}
+    ${(toBlock.length || refLine || dateLine) ? `<div class="lh-meta" data-safe>
+      ${toBlock.length ? `<div class="lh-to">
+        <div class="lbl">${pick('To,', 'प्रति,', lang)}</div>
+        ${toBlock.map((line) => `<div>${esc(line)}</div>`).join('')}
+      </div>` : '<div class="lh-to"></div>'}
+      <div class="lh-fields">
+        <div><span class="k">Ref. No.:</span> <span class="fill">${esc(refLine || '—')}</span></div>
+        <div><span class="k">${pick('Date', 'दिनांक', lang)}:</span> <span class="fill">${esc(dateLine || '—')}</span></div>
+      </div>
     </div>` : ''}
     ${f.subject ? `<div class="lh-subject" data-safe>
       <div class="lbl">${pick('Subject', 'विषय', lang)}</div>
@@ -214,7 +244,7 @@ function bodyHtml(f, lang) {
     <div class="lh-sign" data-safe>
       <div class="for">${pick('For', 'हेतु', lang)} ${esc(ORG.en)}</div>
       <div class="line"></div>
-      <div class="nm">${esc(f.signatoryName || 'Ramesh Pandey')}</div>
+      <div class="nm">${esc(f.signatoryName || '')}</div>
       <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
     </div>
     ${f.enclosures ? `<div class="lh-extra" data-safe>
@@ -226,36 +256,101 @@ function bodyHtml(f, lang) {
   </div>`;
 }
 
-function renderBody(f, lang) {
-  return `<div class="lh">${bodyHtml(f, lang)}</div>`;
+function footerHtml(f, page, pages) {
+  return `<div class="lh-foot">
+    <div class="rule"></div>
+    <div class="grid">
+      <div>Registered Office: ${esc(ADDRESS_LINE)}</div>
+      <div class="right">${esc(CONTACT_INFO.phones.primaryFormatted)} · ${esc(CONTACT_INFO.primaryEmail)}<br/>${esc(ORG.website)}</div>
+    </div>
+    <div class="pageno">Ref. ${esc(f.letterNo || '—')} &nbsp;·&nbsp; Page ${page} of ${pages}</div>
+  </div>`;
 }
 
-/** Render the letterhead header alone, so it can be measured and stamped. */
-async function measureHeader(f) {
-  const { canvas } = await renderHost(`<div class="lh">${headerHtml(f)}</div>`);
-  return canvas;
+/** Standalone HTML document of one A4 sheet — used for the live on-screen preview. */
+export async function letterheadPreviewHtml(f, { lang = 'both', watermark = true } = {}) {
+  const logo = watermark ? await logoDataUrl() : null;
+  return `<!doctype html><html lang="en-IN"><head><meta charset="utf-8"/>
+<title>${esc(f.letterNo || 'SSF Letterhead')}</title>
+<style>${await fontFaceCss()}
+  html,body{margin:0;padding:0;background:#8a97a3;}
+  /* The preview mirrors the PDF sheet: masthead pinned to the top margin,
+     footer pinned to the bottom margin, body flowing in between. */
+  .sheet{position:relative;width:${PAGE_W_MM}mm;height:${PAGE_H_MM}mm;margin:0 auto;background:#fff;overflow:hidden;}
+  .sheet .mark{position:absolute;left:50%;top:50%;width:112mm;height:112mm;margin:-56mm 0 0 -56mm;opacity:${WATERMARK_OPACITY};pointer-events:none;}
+  .sheet .inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;
+    padding:${MARGIN_MM}mm 0 ${FOOTER_MM - 9}mm;}
+  .sheet .lh{flex:1;display:flex;flex-direction:column;min-height:0;}
+  .sheet .lh-foot{margin-top:auto;}
+  @media print{@page{size:A4;margin:0}html,body{background:#fff}.sheet{margin:0}}
+  ${BASE_CSS}
+</style></head><body>
+  <div class="sheet">
+    ${logo ? `<img class="mark" src="${logo}" alt=""/>` : ''}
+    <div class="inner">
+      <div class="lh">${headerHtml(f)}${bodyHtml(f, lang)}${footerHtml(f, 1, 1)}</div>
+    </div>
+  </div>
+</body></html>`;
 }
 
 // ── rasterise → A4 pages ────────────────────────────────────────────────────
-const pxPerMm = PAGE_W_PX / PAGE_W_MM;
+let logoImagePromise;
+/** The logo as a decoded image element (canvas drawImage cannot take a URL). */
+function logoImage() {
+  if (!logoImagePromise) {
+    logoImagePromise = new Promise((res) => {
+      const img = new Image();
+      img.onload = () => res(img);
+      img.onerror = () => res(null);
+      img.src = logoImg;
+    });
+  }
+  return logoImagePromise;
+}
 
-// Logo as a data URL, so the faint watermark can be stamped straight by jsPDF
-// (vector placement keeps the PDF small, unlike baking it into every page raster).
 let logoDataUrlCache;
+/** The logo as a PNG data URL, for stamping into a standalone HTML preview. */
 async function logoDataUrl() {
   if (logoDataUrlCache !== undefined) return logoDataUrlCache;
-  logoDataUrlCache = await new Promise((res) => {
-    const img = new Image();
-    img.onload = () => {
-      const c = document.createElement('canvas');
-      c.width = img.naturalWidth; c.height = img.naturalHeight;
-      c.getContext('2d').drawImage(img, 0, 0);
-      res(c.toDataURL('image/png'));
-    };
-    img.onerror = () => res(null);
-    img.src = logoImg;
-  });
+  const img = await logoImage();
+  if (!img) { logoDataUrlCache = null; return null; }
+  const c = document.createElement('canvas');
+  c.width = img.naturalWidth; c.height = img.naturalHeight;
+  c.getContext('2d').drawImage(img, 0, 0);
+  logoDataUrlCache = c.toDataURL('image/png');
   return logoDataUrlCache;
+}
+
+async function renderHost(html, { transparent = false, minHeightPx = 0 } = {}) {
+  const host = document.createElement('div');
+  host.setAttribute('data-ssf-letterhead', 'pdf');
+  host.style.cssText = `position:fixed;left:-99999px;top:0;width:${PAGE_W_PX}px;z-index:-1;`;
+  // The body raster must stay transparent so the watermark drawn underneath it
+  // shows through between the lines of text, and it is given the full writing
+  // height so the watermark sits at the centre of the page rather than of
+  // however much text happens to be written.
+  const extra = transparent
+    ? `.lh{background:transparent${minHeightPx ? `;min-height:${minHeightPx}px` : ''}}`
+    : '';
+  host.innerHTML = `<style>${await fontFaceCss()}${BASE_CSS}${extra}</style>${html}`;
+  document.body.appendChild(host);
+  try {
+    await ensureFonts();
+    await preloadImages(host);
+    const canvas = await html2canvas(host, {
+      scale: 2, backgroundColor: transparent ? null : '#ffffff', useCORS: true, logging: false,
+      width: PAGE_W_PX, windowWidth: PAGE_W_PX,
+    });
+    return { canvas, host };
+  } catch (e) { host.remove(); throw e; }
+}
+
+/** Render the masthead alone, so it can be measured once and stamped per page. */
+async function measureHeader(f) {
+  const { canvas, host } = await renderHost(`<div class="lh">${headerHtml(f)}</div>`);
+  host.remove();
+  return canvas;
 }
 
 function safeBoundaries(host, scale) {
@@ -266,28 +361,24 @@ function safeBoundaries(host, scale) {
     .sort((a, b) => a - b);
 }
 
-/** Height the header raster occupies once laid on the page (mm). */
-function headerHeightMm(headerCanvas) {
-  return (PAGE_W_MM - 2 * MARGIN_MM) * (headerCanvas.height / headerCanvas.width);
-}
+const headerHeightMm = (headerCanvas) => (PAGE_W_MM) * (headerCanvas.height / headerCanvas.width);
 
 function stampHeader(pdf, headerCanvas) {
-  const w = PAGE_W_MM - 2 * MARGIN_MM;
-  pdf.addImage(headerCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', MARGIN_MM, MARGIN_MM, w, headerHeightMm(headerCanvas), undefined, 'FAST');
+  pdf.addImage(headerCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, MARGIN_MM, PAGE_W_MM, headerHeightMm(headerCanvas), undefined, 'FAST');
 }
 
 function stampFooter(pdf, meta) {
-  const y = PAGE_H_MM - FOOTER_MM + 3;
-  const xr = PAGE_W_MM - TEXT_X_MM;
+  const y = PAGE_H_MM - FOOTER_MM;
+  const xr = PAGE_W_MM - MARGIN_MM;
   pdf.setDrawColor(213, 222, 232); pdf.setLineWidth(0.2);
-  pdf.line(TEXT_X_MM, y, xr, y);
-  pdf.setTextColor(91, 107, 122); pdf.setFontSize(6.6);
-  pdf.text(`Registered Office: ${ADDRESS_LINE}`, TEXT_X_MM, y + 4);
-  pdf.text(`${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail} · swastiksrijan.in`,
-    xr, y + 4, { align: 'right' });
-  pdf.setTextColor(148, 163, 184); pdf.setFontSize(6.2);
+  pdf.line(MARGIN_MM, y, xr, y);
+  pdf.setTextColor(91, 107, 122); pdf.setFontSize(6.4);
+  pdf.text(`Registered Office: ${ADDRESS_LINE}`, MARGIN_MM, y + 4.2);
+  pdf.text(`${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail} · ${ORG.website}`,
+    xr, y + 4.2, { align: 'right' });
+  pdf.setTextColor(148, 163, 184); pdf.setFontSize(6);
   pdf.text(`Ref. ${meta.letterNo || '—'}  ·  Page ${pdf.internal.getCurrentPageInfo().pageNumber} of ${meta.pageCount}`,
-    PAGE_W_MM / 2, y + 8, { align: 'center' });
+    PAGE_W_MM / 2, y + 8.4, { align: 'center' });
 }
 
 /**
@@ -298,12 +389,19 @@ function stampFooter(pdf, meta) {
  */
 export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}) {
   const headerCanvas = await measureHeader(f);
-  const body = await renderHost(renderBody(f, lang));
-  const watermarkImg = watermark ? await logoDataUrl() : null;
+  const headerH = headerHeightMm(headerCanvas);
+  const bodyTop = MARGIN_MM + headerH + HEADER_GAP_MM;
+  const bodyBottom = PAGE_H_MM - FOOTER_MM - 4;
+  const writingPx = Math.round((bodyBottom - bodyTop) * pxPerMm);
+  // The body raster is transparent so the watermark, drawn underneath it, stays
+  // visible between the lines of text instead of being painted over by a white
+  // background (which is what hid the watermark in the previous layout).
+  const body = await renderHost(`<div class="lh">${bodyHtml(f, lang)}</div>`, {
+    transparent: true, minHeightPx: writingPx,
+  });
+  const watermarkImg = watermark ? await logoImage() : null;
   try {
     const scale = body.canvas.width / PAGE_W_PX;
-    const bodyTop = MARGIN_MM + headerHeightMm(headerCanvas) + 4;
-    const bodyBottom = PAGE_H_MM - FOOTER_MM - 4;
     const pageContentPx = Math.round((bodyBottom - bodyTop) * pxPerMm * scale);
     const boundaries = [0, ...safeBoundaries(body.host, scale), body.canvas.height];
 
@@ -321,20 +419,19 @@ export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}
       slice.width = body.canvas.width; slice.height = h;
       const sctx = slice.getContext('2d');
       sctx.fillStyle = '#ffffff'; sctx.fillRect(0, 0, slice.width, slice.height);
+      if (watermarkImg) {
+        const size = 112 * pxPerMm * scale;
+        sctx.globalAlpha = WATERMARK_OPACITY;
+        sctx.drawImage(watermarkImg, (slice.width - size) / 2, (slice.height - size) / 2, size, size);
+        sctx.globalAlpha = 1;
+      }
       sctx.drawImage(body.canvas, 0, y, body.canvas.width, h, 0, 0, body.canvas.width, h);
 
       if (!first) pdf.addPage();
       first = false;
-      if (watermarkImg) {
-        const wm = 96;
-        pdf.setGState(new pdf.GState({ opacity: 0.06 }));
-        pdf.addImage(watermarkImg, 'PNG', (PAGE_W_MM - wm) / 2, (PAGE_H_MM - wm) / 2, wm, wm, undefined, 'FAST');
-        pdf.setGState(new pdf.GState({ opacity: 1 }));
-      }
       stampHeader(pdf, headerCanvas);
       const hMm = (h / scale) * (PAGE_W_MM / PAGE_W_PX);
-      pdf.addImage(slice.toDataURL('image/jpeg', 0.95), 'JPEG',
-        MARGIN_MM, bodyTop, PAGE_W_MM - 2 * MARGIN_MM, hMm, undefined, 'FAST');
+      pdf.addImage(slice.toDataURL('image/jpeg', 0.95), 'JPEG', 0, bodyTop, PAGE_W_MM, hMm, undefined, 'FAST');
       y = end;
     }
     const pages = pdf.internal.getNumberOfPages();
@@ -356,7 +453,6 @@ export function letterFileName(f, lang) {
   return `${safe}-${lang}-${new Date().toISOString().slice(0, 10)}.pdf`;
 }
 
-/** Download the letter. */
 export async function downloadLetterPdf(f, opts = {}) {
   const pdf = await buildLetterPdf(f, opts);
   pdf.save(letterFileName(f, opts.lang || 'both'));
@@ -386,8 +482,8 @@ export async function printLetterPdf(f, opts = {}) {
 export function letterPlainText(f, lang = 'both') {
   const L = [];
   L.push(ORG.en, ORG.hi);
-  L.push(`${ORG.taglineEn} · ${ORG.taglineHi}`);
-  L.push(`Reg. No. ${ORG.regNo}`);
+  L.push(`${ORG.taglineHi} · ${ORG.taglineEn}`);
+  L.push(`Regn. No. ${ORG.regNo} · Registered ${ORG.regDate}`);
   L.push('');
   L.push(`Ref. No.: ${f.letterNo || '—'}`);
   L.push(`Date: ${f.date || ''}`);
@@ -399,18 +495,16 @@ export function letterPlainText(f, lang = 'both') {
   L.push(String(f.body || '').trim(), '');
   L.push(f.closing || pick('Thank you,', 'धन्यवाद,', lang), '');
   L.push(`${pick('For', 'हेतु', lang)} ${ORG.en}`);
-  L.push(f.signatoryName || 'Ramesh Pandey');
+  if (f.signatoryName) L.push(f.signatoryName);
   L.push(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang));
   if (f.enclosures) L.push('', `${pick('Enclosures', 'संलग्नक', lang)}: ${f.enclosures}`);
   if (f.cc) L.push(`${pick('Copy to', 'प्रतिलिपि', lang)}: ${f.cc}`);
-  L.push('', `${ADDRESS_LINE}`, `${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail} · swastiksrijan.in`);
+  L.push('', `Registered Office: ${ADDRESS_LINE}`,
+    `${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail} · ${ORG.website}`);
   return L.join('\n');
 }
 
-/**
- * Share the letter: the PDF itself on devices that can take a file (mobile
- * share sheet), otherwise a WhatsApp / e-mail text share.
- */
+/** Share the letter: the PDF itself on devices that can take a file, else text. */
 export async function shareLetterPdf(f, { lang = 'both', via = 'native' } = {}) {
   const text = letterPlainText(f, lang);
   if (via === 'native') {
@@ -437,11 +531,23 @@ export async function shareLetterPdf(f, { lang = 'both', via = 'native' } = {}) 
   return { shared: 'clipboard' };
 }
 
-/** Next letter number for the year, e.g. SSF/LTR/2026/0007. */
+/**
+ * Suggested next letter reference, e.g. SSF/LTR/2026/0007, derived from the
+ * letters already stored in the IMS Documents register.
+ *
+ * This is a *suggestion* only. The collision-proof identity of a saved letter is
+ * the permanent recordId the server issues atomically at save time
+ * (see `documentId` in ImsLetterhead), because the register's own ID sequence is
+ * row-locked and cannot hand the same number to two concurrent saves. A number
+ * typed here by hand can still be edited freely by the admin.
+ */
 export function nextLetterNo(existing = [], year = new Date().getFullYear()) {
   const prefix = `SSF/LTR/${year}/`;
   const max = existing
-    .map((r) => String((r && r.data && r.data.letterNo) || ''))
+    .map((r) => {
+      const d = (r && r.data) || {};
+      return String(d.letterNo || r.letterNo || '');
+    })
     .filter((n) => n.startsWith(prefix))
     .map((n) => parseInt(n.slice(prefix.length), 10) || 0)
     .reduce((a, b) => Math.max(a, b), 0);
@@ -449,3 +555,4 @@ export function nextLetterNo(existing = [], year = new Date().getFullYear()) {
 }
 
 export const LETTERHEAD_ORG = ORG;
+export const LETTERHEAD_LAYOUT = { PAGE_W_MM, PAGE_H_MM, MARGIN_MM, FOOTER_MM, PAD_PX, PAGE_W_PX, pxPerMm };

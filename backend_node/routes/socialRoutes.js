@@ -10,7 +10,7 @@ const {
   planDue, planExtra, runPending, publishPost, enabledPlatforms, getConfig, setConfig,
   allEvents, eventsForDate, timezone, localParts, DEFAULT_TZ,
   planCourseSeries, COURSES, COURSE_TIMES, repairCourseSeries,
-  planAwarenessSeries, seriesTimes, seriesEnabled, SERIES, DEFAULT_SERIES_TIMES,
+  planAwarenessSeries, seriesTimes, seriesEnabled, SERIES, DEFAULT_SERIES_TIMES, seriesSlotsPerDay,
 } = require('../services/social/publisher');
 const { postSvg } = require('../services/social/image');
 
@@ -53,6 +53,7 @@ function postView(row) {
     exampleEn: p.exampleEn, exampleHi: p.exampleHi,
     takeawayEn: p.takeawayEn, takeawayHi: p.takeawayHi,
     ctaEn: p.ctaEn, ctaHi: p.ctaHi,
+    ctaUrl: p.ctaUrl, ctaLabelEn: p.ctaLabelEn, ctaLabelHi: p.ctaLabelHi,
     bodyEn: p.bodyEn, bodyHi: p.bodyHi, hashtags: p.hashtags,
     contentSource: p.contentSource, contentVerified: p.contentVerified,
     tradition: p.tradition, solemn: p.solemn, palette: p.palette,
@@ -149,7 +150,7 @@ async function dashboard() {
     times, autoApprove, postSeq: seq, timezone: tz,
     today, todayLocalTime: local.hhmm, nextScheduledAt: nextAt, dailyTime,
     channels: startupChannels,
-    scheduledPerDay: (dailyAwareness === false ? 0 : 1) + (COURSE_TIMES || []).length + (SERIES || []).length,
+    scheduledPerDay: (dailyAwareness === false ? 0 : 1) + (COURSE_TIMES || []).length + seriesSlotsPerDay(seriesOn),
     dailyAwareness: dailyAwareness !== false,
     stats: { total: all.length, published, partial, draft, failed },
     heartbeat,
@@ -244,8 +245,17 @@ router.post('/social/config', requireAuth, wrap(async (req, r) => {
     await setConfig('courseTimes', clean);
   }
   if (stimes && typeof stimes === 'object') {
+    // A series time is 'HH:MM' or an array of 'HH:MM' (to post more than once a day).
     const clean = {};
-    for (const [k, v] of Object.entries(stimes)) if (/^\d{1,2}:\d{2}$/.test(String(v))) clean[k] = String(v);
+    const okTime = (v) => /^\d{1,2}:\d{2}$/.test(String(v));
+    for (const [k, v] of Object.entries(stimes)) {
+      if (Array.isArray(v)) {
+        const arr = v.map((x) => String(x)).filter(okTime);
+        if (arr.length) clean[k] = arr;
+      } else if (okTime(v)) {
+        clean[k] = String(v);
+      }
+    }
     await setConfig('seriesTimes', clean);
   }
   if (senabled && typeof senabled === 'object') {
@@ -273,6 +283,11 @@ router.get('/social/series', requireAuth, wrap(async (_req, r) => {
       const p = progBy[s.key];
       const last = p ? Number(p.lastChapter || 0) : 0;
       const total = (s.items || []).length;
+      const slots = (() => {
+        const t = times[s.key];
+        const arr = Array.isArray(t) ? t : (t ? [t] : []);
+        return arr.filter((x) => /^\d{1,2}:\d{2}$/.test(String(x)));
+      })();
       return {
         key: s.key, emoji: s.emoji, category: s.category,
         titleEn: s.title.en, titleHi: s.title.hi,
@@ -280,7 +295,14 @@ router.get('/social/series', requireAuth, wrap(async (_req, r) => {
         nextChapter: last < total ? last + 1 : null,
         nextTitleEn: last < total ? s.items[last].title.en : null,
         nextTitleHi: last < total ? s.items[last].title.hi : null,
-        time: times[s.key] || null, enabled: enabled[s.key] !== false,
+        // `time` kept as the first slot for backward-compat; `times` is the full set.
+        time: slots[0] || null,
+        times: slots,
+        postsPerDay: slots.length || 1,
+        enabled: enabled[s.key] !== false,
+        ctaUrl: s.ctaUrl || null,
+        ctaLabelEn: (s.ctaLabel && s.ctaLabel.en) || null,
+        ctaLabelHi: (s.ctaLabel && s.ctaLabel.hi) || null,
       };
     }),
     times, enabled,
@@ -389,7 +411,8 @@ router.patch('/social/posts/:id', requireAuth, wrap(async (req, r) => {
   if (!post) return r.status(404).json({ message: 'Post not found' });
   const columns = ['titleEn', 'titleHi', 'bodyEn', 'bodyHi', 'hashtags', 'imageUrl', 'status'];
   const dataFields = ['headingEn', 'headingHi', 'subtitleEn', 'subtitleHi', 'exampleEn', 'exampleHi',
-    'takeawayEn', 'takeawayHi', 'ctaEn', 'ctaHi', 'contentSource', 'tradition', 'palette'];
+    'takeawayEn', 'takeawayHi', 'ctaEn', 'ctaHi', 'contentSource', 'tradition', 'palette',
+    'ctaUrl', 'ctaLabelEn', 'ctaLabelHi'];
   const patch = {};
   const dataPatch = { ...(post.data || {}) };
   for (const k of columns) if (req.body && req.body[k] != null) patch[k] = req.body[k];
@@ -494,6 +517,7 @@ router.get('/social/posts', wrap(async (req, r) => {
     titleEn: p.titleEn, titleHi: p.titleHi, bodyEn: p.bodyEn, bodyHi: p.bodyHi, hashtags: p.hashtags,
     subtitleEn: p.subtitleEn, subtitleHi: p.subtitleHi, exampleEn: p.exampleEn, exampleHi: p.exampleHi,
     takeawayEn: p.takeawayEn, takeawayHi: p.takeawayHi, ctaEn: p.ctaEn, ctaHi: p.ctaHi,
+    ctaUrl: p.ctaUrl, ctaLabelEn: p.ctaLabelEn, ctaLabelHi: p.ctaLabelHi,
     contentSource: p.contentSource, tradition: p.tradition, solemn: p.solemn,
     image: p.imageUrl, publishedAt: p.publishedAt,
   }; }) });

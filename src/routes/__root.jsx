@@ -52,7 +52,11 @@ function RootChrome() {
   const isIms = pathname === "/ims" || pathname.startsWith("/ims/");
   return (
     <LanguageProvider>
-      <div className="min-h-screen w-full flex flex-col font-inria overflow-x-hidden">
+      {/* `ssf-root-shell` is `overflow-x: clip`, NOT `hidden`. A hidden
+          overflow here would become the sticky containing block and unpin the
+          IMS header/strip/sidebar; `clip` trims the horizontal overflow
+          identically while leaving sticky positioning intact. */}
+      <div className="ssf-root-shell min-h-screen w-full flex flex-col font-inria">
         <SeoManager />
         {!isIms && <Header />}
         {!isIms && <ScrollToHash />}

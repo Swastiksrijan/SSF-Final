@@ -349,18 +349,113 @@ export function sectionModuleCount(section) {
 // row per section. Clicking a section opens its dashboard, which lists every
 // module of that section as a card. This keeps the menu short while every
 // register stays reachable (nothing is removed from the app).
+//
+// Which entry lights up is derived from the route (see sidebarKeyForPath), not
+// from a per-page label, so no `activeKey` bookkeeping is needed here.
 export const SIDEBAR = [
   { key: 'main_dashboard', icon: 'LayoutDashboard', path: '/ims' },
   { key: 'global_search', icon: 'Search', path: '/ims/search' },
-  { key: 'notifications', icon: 'Bell', path: '/ims/sections/notifications', activeKey: 'notifications_dashboard' },
+  { key: 'notifications', icon: 'Bell', path: '/ims/sections/notifications' },
   { key: 'social_publisher', icon: 'Megaphone', path: '/ims/social' },
-  { key: 'volunteer_network', icon: 'Network', path: '/ims/volunteer-network', activeKey: 'volunteer_dashboard' },
-  { key: 'organisation', icon: 'Building2', path: '/ims/sections/organisation', activeKey: 'organisation_dashboard' },
-  { key: 'governance', icon: 'Scale', path: '/ims/sections/governance', activeKey: 'governance_dashboard' },
-  { key: 'programmes', icon: 'Layers', path: '/ims/sections/programmes', activeKey: 'programmes_dashboard' },
-  { key: 'finance', icon: 'PieChart', path: '/ims/finance', activeKey: 'finance_dashboard' },
-  { key: 'resources', icon: 'Boxes', path: '/ims/sections/resources', activeKey: 'resources_dashboard' },
-  { key: 'compliance', icon: 'ShieldCheck', path: '/ims/sections/compliance', activeKey: 'compliance_dashboard' },
-  { key: 'records', icon: 'Files', path: '/ims/sections/records', activeKey: 'records_dashboard' },
-  { key: 'admin', icon: 'Settings', path: '/ims/sections/admin', activeKey: 'admin_dashboard' },
+  { key: 'volunteer_network', icon: 'Network', path: '/ims/volunteer-network' },
+  { key: 'organisation', icon: 'Building2', path: '/ims/sections/organisation' },
+  { key: 'governance', icon: 'Scale', path: '/ims/sections/governance' },
+  { key: 'programmes', icon: 'Layers', path: '/ims/sections/programmes' },
+  { key: 'finance', icon: 'PieChart', path: '/ims/finance' },
+  { key: 'resources', icon: 'Boxes', path: '/ims/sections/resources' },
+  { key: 'compliance', icon: 'ShieldCheck', path: '/ims/sections/compliance' },
+  { key: 'records', icon: 'Files', path: '/ims/sections/records' },
+  { key: 'admin', icon: 'Settings', path: '/ims/sections/admin' },
 ];
+
+// --- Active-location resolution -------------------------------------------
+//
+// One module = one canonical route, but a module is often reachable through
+// several paths (its own route, the legacy register route, the generic
+// resource route). Pages also label themselves with many different `active`
+// strings — "members", "letterhead", "office_history", "users_perms", a raw
+// `resource`… — which is why the sidebar highlight used to vanish on 33 of 47
+// routes and the section strip stayed blank: the label was compared against
+// the sidebar keys with `===`.
+//
+// Both bars now resolve through these helpers, which collapse every alias onto
+// the single sidebar entry that owns it. Add a new module route and it lights
+// up its section automatically.
+
+// Section -> the sidebar entry that owns it. SECTIONS has no `volunteer`
+// module, but its modules live under the volunteer section dashboard.
+const SECTION_SIDEBAR_KEY = { volunteer: 'volunteer_network' };
+
+const itemPath = (it) => it.path || (it.resource ? `/ims/r/${it.resource}` : null);
+
+// Maps the many historical page labels onto a real sidebar key.
+const ACTIVE_ALIASES = {
+  main_dashboard: 'main_dashboard',
+  dashboard: 'main_dashboard',
+  notification_centre: 'notifications',
+  contacts: 'notifications',
+  social_publisher: 'social_publisher',
+  volunteer_dashboard: 'volunteer_network',
+  finance_dashboard: 'finance',
+  cost_centres: 'finance',
+  ledger_journal: 'finance',
+  receipts_payments: 'finance',
+  cash_accounts: 'finance',
+  bank_accounts: 'finance',
+  statement_import: 'finance',
+  users_perms: 'admin',
+  users: 'admin',
+  audit_trail: 'admin',
+  data: 'admin',
+  import_export: 'admin',
+  office_history: 'organisation',
+  history: 'organisation',
+  org_profile: 'organisation',
+  org_profile_pdf: 'organisation',
+  documents: 'organisation',
+  download_center: 'records',
+};
+
+export function sidebarKeyFor(active) {
+  if (!active) return null;
+  const key = String(active);
+  if (key.endsWith('_dashboard')) return SECTION_SIDEBAR_KEY[key.slice(0, -'_dashboard'.length)] || key.slice(0, -'_dashboard'.length);
+  if (ACTIVE_ALIASES[key]) return ACTIVE_ALIASES[key];
+  // Section-dashboard modules and bare module keys that ARE sidebar entries.
+  for (const id of Object.keys(SECTIONS)) {
+    if (sectionGroups(id).some((g) => g.items.some((it) => it.key === key))) {
+      return SECTION_SIDEBAR_KEY[id] || id;
+    }
+  }
+  if (SIDEBAR.some((s) => s.key === key)) return key;
+  // A bare `resource` label (e.g. "policies", "members") that names a module.
+  for (const id of Object.keys(SECTIONS)) {
+    if (sectionGroups(id).some((g) => g.items.some((it) => it.resource === key))) {
+      return SECTION_SIDEBAR_KEY[id] || id;
+    }
+  }
+  return null;
+}
+
+export function sidebarKeyForPath(pathname) {
+  if (!pathname || !pathname.startsWith('/ims')) return null;
+  const direct = SIDEBAR.find((s) => s.path === pathname);
+  if (direct) return direct.key;
+  // /ims/sections/<id> is a section dashboard even when the sidebar entry uses
+  // a friendlier path (volunteer -> /ims/volunteer-network).
+  const dash = pathname.match(/^\/ims\/sections\/([^/]+)\/?$/);
+  if (dash && SECTIONS[dash[1]]) return SECTION_SIDEBAR_KEY[dash[1]] || dash[1];
+  if (pathname.startsWith('/ims/legacy/') || pathname.startsWith('/ims/r/')) {
+    for (const id of Object.keys(SECTIONS)) {
+      if (sectionGroups(id).some((g) => g.items.some((it) => itemPath(it) === pathname))) {
+        return SECTION_SIDEBAR_KEY[id] || id;
+      }
+    }
+  }
+  for (const id of Object.keys(SECTIONS)) {
+    if (sectionGroups(id).some((g) => g.items.some((it) => it.path === pathname))) {
+      return SECTION_SIDEBAR_KEY[id] || id;
+    }
+  }
+  return null;
+}

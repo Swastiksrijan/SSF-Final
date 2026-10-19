@@ -1,7 +1,7 @@
-import { useEffect, useState } from 'react';
-import { Link, useNavigate } from '@tanstack/react-router';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { Link, useNavigate, useRouterState } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
-import { SIDEBAR } from '../ims/sectionModules';
+import { SIDEBAR, sidebarKeyFor, sidebarKeyForPath } from '../ims/sectionModules';
 import SectionNav from './SectionNav';
 import NotificationsHeader from './NotificationsHeader';
 import { useLang } from '../ims/LangContext';
@@ -21,6 +21,9 @@ export default function ImsLayout({ children, active }) {
   const [q, setQ] = useState('');
   const [results, setResults] = useState(null);
   const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const shellRef = useRef(null);
+  const barRef = useRef(null);
 
   useEffect(() => {
     if (!q.trim()) { setResults(null); return; }
@@ -29,6 +32,42 @@ export default function ImsLayout({ children, active }) {
     }, 250);
     return () => clearTimeout(id);
   }, [q]);
+
+  // The sidebar must sit exactly under the sticky chrome, and the chrome is
+  // taller on the Notification Centre (its identity bar replaces the slim
+  // section strip). Rather than hard-code a second offset that will drift, the
+  // real height of header + secondary bar is published as `--ims-chrome-h` and
+  // the sidebar consumes it. A ResizeObserver keeps it correct across language
+  // switches and window resizes.
+  const publishChromeHeight = useCallback(() => {
+    const shell = shellRef.current;
+    const bar = barRef.current;
+    if (!shell || !bar) return;
+    const header = shell.querySelector('header');
+    const h = (header ? header.offsetHeight : 0) + bar.offsetHeight;
+    if (h > 0) shell.style.setProperty('--ims-chrome-h', `${h}px`);
+  }, []);
+
+  useEffect(() => {
+    publishChromeHeight();
+    const bar = barRef.current;
+    if (!bar || typeof ResizeObserver === 'undefined') return undefined;
+    const ro = new ResizeObserver(publishChromeHeight);
+    ro.observe(bar);
+    const header = shellRef.current?.querySelector('header');
+    if (header) ro.observe(header);
+    window.addEventListener('resize', publishChromeHeight);
+    return () => { ro.disconnect(); window.removeEventListener('resize', publishChromeHeight); };
+  }, [publishChromeHeight, active]);
+
+  // Escape closes the mobile drawer, matching the behaviour of every other
+  // overlay in the app (FormDrawer, DownloadCenter).
+  useEffect(() => {
+    if (!open) return undefined;
+    const onKey = (e) => { if (e.key === 'Escape') setOpen(false); };
+    document.addEventListener('keydown', onKey);
+    return () => document.removeEventListener('keydown', onKey);
+  }, [open]);
 
   const goToSearch = () => { if (q.trim()) { navigate({ to: '/ims/search', search: { q: q.trim() } }); setResults(null); } };
   const onSearchSubmit = (e) => { e.preventDefault(); goToSearch(); };
@@ -40,12 +79,17 @@ export default function ImsLayout({ children, active }) {
     else navigate({ to: '/ims/r/$resource', params: { resource: r.resource }, search: { open: String(r.id) } });
   };
 
+  const notifications = active === 'notifications' || active === 'notification_centre';
+  // The route is the most reliable signal, with the page's own `active` label as
+  // fallback — either way every alias collapses onto one sidebar entry.
+  const activeKey = sidebarKeyForPath(pathname) || sidebarKeyFor(active);
+
   return (
-    <div className="min-h-screen bg-slate-50 text-slate-800" style={{ fontFamily: 'inherit' }}>
+    <div ref={shellRef} className="ssf-ims-shell min-h-screen bg-slate-50 text-slate-800" style={{ fontFamily: 'inherit' }}>
       {/* top bar */}
       <header className="sticky top-0 z-40 bg-[#12345A] text-white shadow-md">
         <div className="mx-auto flex h-16 max-w-[1600px] items-center gap-3 px-4">
-          <button className="lg:hidden rounded p-2 hover:bg-white/10" onClick={() => setOpen(o => !o)} aria-label="Menu">
+          <button className="lg:hidden rounded p-2 hover:bg-white/10" onClick={() => setOpen(o => !o)} aria-label="Menu" aria-expanded={open}>
             <Icons.Menu size={22} />
           </button>
           <Link to="/ims" className="flex items-center gap-2">
@@ -61,6 +105,7 @@ export default function ImsLayout({ children, active }) {
             <input
               value={q} onChange={e => setQ(e.target.value)}
               placeholder={t('search_placeholder')}
+              aria-label={t('search_placeholder')}
               className="w-full rounded-lg bg-white/10 py-2 pl-9 pr-3 text-sm text-white placeholder-white/60 outline-none focus:bg-white/15"
             />
             {results && (
@@ -92,6 +137,7 @@ export default function ImsLayout({ children, active }) {
               <Icons.Globe size={14} /> {lang === 'en' ? 'Website' : 'वेबसाइट'}
             </a>
             <button onClick={() => setLang(lang === 'en' ? 'hi' : 'en')}
+              aria-label={lang === 'en' ? 'Switch to Hindi' : 'Switch to English'}
               className="rounded-lg border border-white/25 px-3 py-1.5 text-xs font-semibold hover:bg-white/10">
               {lang === 'en' ? 'हिंदी' : 'English'}
             </button>
@@ -101,20 +147,39 @@ export default function ImsLayout({ children, active }) {
         </div>
       </header>
 
-      {/* The Notification Centre is global (watches every register), so it uses
-          its own identity bar instead of a single section's tab strip. */}
-      {active === 'notifications' || active === 'notification_centre' ? <NotificationsHeader /> : <SectionNav active={active} />}
+      {/* Secondary bar. ImsLayout owns the sticky slot so the section strip and
+          the Notification Centre identity bar cannot drift apart — they are two
+          faces of the same bar. The Notification Centre is global (it watches
+          every register), so it shows its own identity bar instead of a single
+          section's tab strip. */}
+      <div ref={barRef} className="sticky z-30" style={{ top: 'var(--ims-header-h)' }}>
+        {notifications ? <NotificationsHeader /> : <SectionNav active={active} />}
+      </div>
+
+      {/* Backdrop for the mobile drawer. Sits under the drawer (z-10 < z-20)
+          and closes it on tap, so the content behind is visibly inert. */}
+      {open && (
+        <div
+          className="fixed inset-0 z-10 bg-slate-900/40 lg:hidden"
+          onClick={() => setOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
       <div className="mx-auto flex max-w-[1600px]">
         {/* sidebar */}
-        <aside className={`${open ? 'block' : 'hidden'} fixed top-[7.5rem] bottom-0 left-0 z-20 w-72 overflow-y-auto border-r border-slate-200 bg-white pb-24 lg:sticky lg:top-[7.5rem] lg:block lg:h-[calc(100vh-7.5rem)]`}>
+        <aside
+          className={`${open ? 'block' : 'hidden'} fixed bottom-0 left-0 z-20 w-72 overflow-y-auto border-r border-slate-200 bg-white pb-24 lg:sticky lg:block lg:h-[calc(100vh-var(--ims-chrome-h))]`}
+          style={{ top: 'var(--ims-chrome-h)' }}
+        >
           <nav className="space-y-1 p-3">
             {SIDEBAR.map((item) => {
-              const isActive = active === (item.activeKey || item.key);
+              const isActive = activeKey === item.key;
               const both = tBoth(item.key);
               return (
                 <button key={item.key}
                   onClick={() => (setOpen(false), navigate({ to: item.path }))}
+                  aria-current={isActive ? 'page' : undefined}
                   className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-150
                     ${isActive ? 'bg-gradient-to-r from-[#12345A] to-[#12345A] text-white shadow-[0_8px_20px_-10px_rgba(18,52,90,0.7)]' : 'text-slate-600 hover:bg-slate-100'}`}>
                   <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg transition-colors ${isActive ? 'bg-white/15' : 'bg-slate-100 group-hover:bg-slate-200'}`}>

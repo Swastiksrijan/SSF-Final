@@ -217,6 +217,8 @@ const EXTRA_FIELDS = [
   'headingEn', 'headingHi', 'subtitleEn', 'subtitleHi',
   'exampleEn', 'exampleHi', 'takeawayEn', 'takeawayHi',
   'ctaEn', 'ctaHi', 'catLabelEn', 'catLabelHi',
+  // per-series call-to-action link + button label (used by the Join stream)
+  'ctaUrl', 'ctaLabelEn', 'ctaLabelHi',
   // course-series metadata (course name, chapter number, series position)
   'courseKey', 'chapterNo', 'chapterTotal',
   // awareness-series metadata (Samvidhan / Yojana / Charak / GK / English …)
