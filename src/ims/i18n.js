@@ -407,6 +407,7 @@ export const DICT = {
   monthly_report: { en: 'Monthly Report', hi: 'मासिक रिपोर्ट' },
   quarterly_report: { en: 'Quarterly Report', hi: 'त्रैमासिक रिपोर्ट' },
   annual_report: { en: 'Annual Report', hi: 'वार्षिक रिपोर्ट' },
+  annual_reports: { en: 'Annual Progress Reports', hi: 'वार्षिक प्रगति प्रतिवेदन' },
   audit_history: { en: 'Audit History', hi: 'लेखा इतिहास' },
   cc_txn_note: { en: 'All transactions linked to this cost centre — derived automatically from Receipts & Payments (no duplicate entry).', hi: 'इस लागत केंद्र से जुड़े सभी लेन-देन — प्राप्तियाँ एवं भुगतान से स्वतः प्राप्त (कोई दोहरी प्रविष्टि नहीं)।' },
   cc_doc_note: { en: 'Supporting bills/invoices stay linked to their financial transaction; cost-centre documents are additional references.', hi: 'सहायक बिल/चालान अपने वित्तीय लेन-देन से जुड़े रहते हैं; लागत केंद्र दस्तावेज़ अतिरिक्त संदर्भ हैं।' },

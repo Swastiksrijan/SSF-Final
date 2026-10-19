@@ -288,6 +288,7 @@ export const SECTIONS = {
         { key: 'documents', icon: 'Files', resource: 'documents' },
         { key: 'communications', icon: 'MessageSquare', resource: 'communications' },
         { key: 'reports', icon: 'BarChart3', path: '/ims/reports' },
+        { key: 'annual_reports', icon: 'CalendarRange', path: '/ims/annual-reports' },
         { key: 'download_center', icon: 'Download', path: '/ims/download-center' },
         { key: 'document_index', icon: 'ListTree', path: legacy('documentIndex') },
         { key: 'knowledge', icon: 'BookMarked', path: '/ims/knowledge' },

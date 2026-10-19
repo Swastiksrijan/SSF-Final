@@ -100,6 +100,7 @@ import { Route as ImsCasesRouteImport } from './routes/ims/cases'
 import { Route as ImsBankBookRouteImport } from './routes/ims/bank-book'
 import { Route as ImsAuditTrailRouteImport } from './routes/ims/audit-trail'
 import { Route as ImsAppointmentLettersRouteImport } from './routes/ims/appointment-letters'
+import { Route as ImsAnnualReportsRouteImport } from './routes/ims/annual-reports'
 import { Route as ImsActivitiesRouteImport } from './routes/ims/activities'
 import { Route as LearningHubMyLearningRouteImport } from './routes/LearningHub/my-learning'
 import { Route as LearningHubKnowledgeWorldRouteImport } from './routes/LearningHub/knowledge-world'
@@ -574,6 +575,11 @@ const ImsAppointmentLettersRoute = ImsAppointmentLettersRouteImport.update({
   path: '/ims/appointment-letters',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsAnnualReportsRoute = ImsAnnualReportsRouteImport.update({
+  id: '/ims/annual-reports',
+  path: '/ims/annual-reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsActivitiesRoute = ImsActivitiesRouteImport.update({
   id: '/ims/activities',
   path: '/ims/activities',
@@ -717,6 +723,7 @@ export interface FileRoutesByFullPath {
   '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
   '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
   '/ims/activities': typeof ImsActivitiesRoute
+  '/ims/annual-reports': typeof ImsAnnualReportsRoute
   '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
   '/ims/bank-book': typeof ImsBankBookRoute
@@ -825,6 +832,7 @@ export interface FileRoutesByTo {
   '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
   '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
   '/ims/activities': typeof ImsActivitiesRoute
+  '/ims/annual-reports': typeof ImsAnnualReportsRoute
   '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
   '/ims/bank-book': typeof ImsBankBookRoute
@@ -935,6 +943,7 @@ export interface FileRoutesById {
   '/LearningHub/knowledge-world': typeof LearningHubKnowledgeWorldRoute
   '/LearningHub/my-learning': typeof LearningHubMyLearningRoute
   '/ims/activities': typeof ImsActivitiesRoute
+  '/ims/annual-reports': typeof ImsAnnualReportsRoute
   '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
   '/ims/bank-book': typeof ImsBankBookRoute
@@ -1046,6 +1055,7 @@ export interface FileRouteTypes {
     | '/LearningHub/knowledge-world'
     | '/LearningHub/my-learning'
     | '/ims/activities'
+    | '/ims/annual-reports'
     | '/ims/appointment-letters'
     | '/ims/audit-trail'
     | '/ims/bank-book'
@@ -1154,6 +1164,7 @@ export interface FileRouteTypes {
     | '/LearningHub/knowledge-world'
     | '/LearningHub/my-learning'
     | '/ims/activities'
+    | '/ims/annual-reports'
     | '/ims/appointment-letters'
     | '/ims/audit-trail'
     | '/ims/bank-book'
@@ -1263,6 +1274,7 @@ export interface FileRouteTypes {
     | '/LearningHub/knowledge-world'
     | '/LearningHub/my-learning'
     | '/ims/activities'
+    | '/ims/annual-reports'
     | '/ims/appointment-letters'
     | '/ims/audit-trail'
     | '/ims/bank-book'
@@ -1369,6 +1381,7 @@ export interface RootRouteChildren {
   InstitutionalDnaRoute: typeof InstitutionalDnaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   ImsActivitiesRoute: typeof ImsActivitiesRoute
+  ImsAnnualReportsRoute: typeof ImsAnnualReportsRoute
   ImsAppointmentLettersRoute: typeof ImsAppointmentLettersRoute
   ImsAuditTrailRoute: typeof ImsAuditTrailRoute
   ImsBankBookRoute: typeof ImsBankBookRoute
@@ -2058,6 +2071,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsAppointmentLettersRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/annual-reports': {
+      id: '/ims/annual-reports'
+      path: '/ims/annual-reports'
+      fullPath: '/ims/annual-reports'
+      preLoaderRoute: typeof ImsAnnualReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/activities': {
       id: '/ims/activities'
       path: '/ims/activities'
@@ -2257,6 +2277,7 @@ const rootRouteChildren: RootRouteChildren = {
   InstitutionalDnaRoute: InstitutionalDnaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   ImsActivitiesRoute: ImsActivitiesRoute,
+  ImsAnnualReportsRoute: ImsAnnualReportsRoute,
   ImsAppointmentLettersRoute: ImsAppointmentLettersRoute,
   ImsAuditTrailRoute: ImsAuditTrailRoute,
   ImsBankBookRoute: ImsBankBookRoute,
