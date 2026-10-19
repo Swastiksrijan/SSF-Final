@@ -29,6 +29,12 @@ export default function ImsSectionDashboard({ section }) {
   const { t } = useLang();
   const navigate = useNavigate();
   const [data, setData] = useState(null);
+  // Group headings double as collapse toggles, so a long section can be folded
+  // down to the block the admin is working in. They used to be plain <h2>
+  // labels sitting between the cards, which read as dead modules.
+  const [collapsed, setCollapsed] = useState({});
+  const isOpen = (key) => !collapsed[key];
+  const toggleGroup = (key) => setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
 
   useEffect(() => {
     ims.moduleDashboard(cfg.module).then(setData).catch(() => setData({ kpis: {} }));
@@ -78,11 +84,18 @@ export default function ImsSectionDashboard({ section }) {
 
           {groups.map((g) => (
             <Card key={g.labelKey} className="p-5">
-              <h2 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-500">
+              <button
+                type="button"
+                onClick={() => toggleGroup(g.labelKey)}
+                aria-expanded={isOpen(g.labelKey)}
+                className="mb-4 flex w-full items-center gap-2 rounded-lg text-left text-sm font-bold uppercase tracking-wider text-slate-500 transition-colors hover:text-[#12345A]"
+              >
                 <span className="grid h-6 w-6 place-items-center rounded-lg bg-[#12345A]/5 text-[#176447]"><Icons.Layers size={14} /></span>
                 {t(g.labelKey)}
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-500">{g.items.length}</span>
-              </h2>
+                <Icons.ChevronDown size={16} className={`ml-auto shrink-0 transition-transform ${isOpen(g.labelKey) ? '' : '-rotate-90'}`} />
+              </button>
+              {isOpen(g.labelKey) && (
               <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
                 {g.items.map((l) => {
                   const I = Icons[l.icon] || Icons.Folder;
@@ -114,6 +127,7 @@ export default function ImsSectionDashboard({ section }) {
                   );
                 })}
               </div>
+              )}
             </Card>
           ))}
         </div>

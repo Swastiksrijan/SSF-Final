@@ -190,9 +190,18 @@ export default function SectionNav({ active }) {
             >
               {groups.map((g) => (
                 <span key={g.labelKey} className="flex items-center gap-1">
-                  <span className="mx-1 hidden shrink-0 text-[10px] font-semibold uppercase tracking-wide text-slate-300 xl:inline">
+                  {/* The group heading used to be plain text sitting between the
+                      tabs, so it read as a module that was greyed out. It is a
+                      real button now and opens the section dashboard, where the
+                      group's modules are listed. */}
+                  <button
+                    type="button"
+                    onClick={() => navigate({ to: dashboardPath(sectionId) })}
+                    title={hi ? 'इस समूह के मॉड्यूल देखें' : 'View this group of modules'}
+                    className="mx-1 hidden shrink-0 rounded-md px-1.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-slate-400 transition-colors hover:bg-slate-100 hover:text-[#12345A] xl:inline"
+                  >
                     {hi ? tBoth(g.labelKey)[1] : tBoth(g.labelKey)[0]}
-                  </span>
+                  </button>
                   {g.items.map((item) => {
                     const on = item.key === activeKey;
                     // Tabs use a short label when one exists, so a long name such
@@ -247,6 +256,11 @@ export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight 
   const hi = lang === 'hi';
   const groups = sectionGroups(sectionId);
   const [filter, setFilter] = useState('');
+  // Group headings fold their block open and shut. They were plain <h3> labels
+  // before, so they looked like modules that had been disabled.
+  const [collapsed, setCollapsed] = useState({});
+  const isOpen = (key) => !collapsed[key];
+  const toggleGroup = (key) => setCollapsed((prev) => ({ ...prev, [key]: !prev[key] }));
   const needle = filter.trim().toLowerCase();
   const matches = (it) => `${tBoth(it.key)[0]} ${tBoth(it.key)[1]} ${tBoth(it.shortKey || it.key)[0]}`.toLowerCase().includes(needle);
   const anyMatch = !needle || groups.some((g) => g.items.some(matches));
@@ -281,11 +295,18 @@ export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight 
           if (items.length === 0) return null;
           return (
             <div key={g.labelKey}>
-              <h3 className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+              <button
+                type="button"
+                onClick={() => toggleGroup(g.labelKey)}
+                aria-expanded={isOpen(g.labelKey)}
+                className="mb-2 flex w-full items-center gap-2 rounded-lg text-left text-[11px] font-bold uppercase tracking-wider text-slate-500 transition-colors hover:text-[#12345A]"
+              >
                 <span className="grid h-5 w-5 place-items-center rounded-md bg-[#12345A]/5 text-[#176447]"><Icons.Layers size={12} /></span>
                 {hi ? tBoth(g.labelKey)[1] : tBoth(g.labelKey)[0]}
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">{items.length}</span>
-              </h3>
+                <Icons.ChevronDown size={14} className={`ml-auto shrink-0 transition-transform ${isOpen(g.labelKey) ? '' : '-rotate-90'}`} />
+              </button>
+              {isOpen(g.labelKey) && (
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
                 {items.map((item) => {
                   const on = item.key === activeKey;
@@ -315,6 +336,7 @@ export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight 
                   );
                 })}
               </div>
+              )}
             </div>
           );
         })}
