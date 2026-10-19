@@ -134,6 +134,24 @@ async function seriesTimes() {
   const cfg = await getConfig('seriesTimes', null);
   return (cfg && typeof cfg === 'object') ? cfg : DEFAULT_SERIES_TIMES;
 }
+
+// A series slot config may be a single 'HH:MM' or an array of them. Normalise to
+// an array so a series can publish the same chapter more than once a day.
+function slotList(t) {
+  const raw = Array.isArray(t) ? t : [t];
+  const clean = raw.map((x) => String(x)).filter((x) => /^\d{1,2}:\d{2}$/.test(x));
+  return clean.length ? clean : ['23:59'];
+}
+
+// How many series posts go out per day for the given times + enabled maps.
+function seriesSlotsPerDay(times = DEFAULT_SERIES_TIMES, enabled = DEFAULT_SERIES_ENABLED) {
+  let n = 0;
+  for (const s of SERIES) {
+    if (enabled && enabled[s.key] === false) continue;
+    n += slotList((times || {})[s.key]).length;
+  }
+  return n;
+}
 async function seriesEnabled() {
   const cfg = await getConfig('seriesEnabled', null);
   // No explicit config -> the safe 3-on default (see series.js). An explicit
@@ -150,28 +168,34 @@ async function planAwarenessSeries(date) {
   let seq = Number((await getConfig('post_seq', 0)) || 0);
 
   for (const series of SERIES) {
-    const slot = `series-${series.key}`;
     // Idempotent per (day, series): if today's chapter already exists (draft OR
     // published), never create a second one — repeated ticks must not flood the
     // channels. A disabled series (config `seriesEnabled[key] === false`) is skipped.
     if (enabled[series.key] === false) continue;
-    const already = await SocialPost.findOne({ where: { postDate, slot } });
-    if (already) continue;
+    const slots = slotList(times[series.key]);
     const total = (series.items || []).length;
     const prog = await SocialSeriesProgress.findOne({ where: { seriesKey: series.key } });
     const lastChapter = prog ? Number(prog.lastChapter || 0) : 0;
     if (lastChapter >= total) continue; // series finished — nothing left
     const chapterNo = lastChapter + 1;
-    const plan = buildSeriesPost(series, chapterNo, day, slot);
+    const plan = buildSeriesPost(series, chapterNo, day, `series-${series.key}`);
     const enriched = { ...plan, contentHash: contentHash(plan) };
     const { row, extra } = splitPlan(enriched);
-    seq += 1;
-    const row2 = await SocialPost.create({
-      ...row, data: extra, postRef: nextRef(seq), status: 'draft',
-      scheduledFor: slotDate(postDate, series.key, times),
-      createdBy: 'scheduler', createdByName: 'Series Scheduler',
-    });
-    created.push(row2);
+    // One draft per slot time. A series with two slots (e.g. Join SSF) publishes
+    // the SAME chapter twice a day; the slot suffix keeps each row distinct so the
+    // per-(day, slot) uniqueness still holds and the chapter never advances twice.
+    for (let i = 0; i < slots.length; i += 1) {
+      const slot = i === 0 ? `series-${series.key}` : `series-${series.key}-${i + 1}`;
+      const already = await SocialPost.findOne({ where: { postDate, slot } });
+      if (already) continue;
+      seq += 1;
+      const row2 = await SocialPost.create({
+        ...row, data: extra, slot, postRef: nextRef(seq), status: 'draft',
+        scheduledFor: slotDate(postDate, slot, { [slot]: slots[i] }),
+        createdBy: 'scheduler', createdByName: 'Series Scheduler',
+      });
+      created.push(row2);
+    }
   }
   await setConfig('post_seq', seq);
   return created;
@@ -424,7 +448,11 @@ async function runPendingInner({ force = false, date = new Date(), source = 'int
         due = force || hhmm >= at;
       } else if (p.kind === 'series') {
         const key = p.data?.seriesKey;
-        const at = String((sTimes && sTimes[key]) || '23:59');
+        const slots = slotList(sTimes && sTimes[key]);
+        // Slot rows are `series-<key>` (first) then `series-<key>-<n>` (later ones).
+        const m = /-(\d+)$/.exec(String(p.slot || ''));
+        const idx = m ? Math.max(0, Number(m[1]) - 1) : 0;
+        const at = String(slots[Math.min(idx, slots.length - 1)] || '23:59');
         due = force || hhmm >= at;
       } else {
         due = force || (autoApprove && hhmm >= time);
@@ -486,4 +514,5 @@ module.exports = {
   DEFAULT_TZ, SocialEvent, SocialRunLog, dailyTime, recentTopicKeys, RECENT_TOPIC_DAYS,
   planCourseSeries, courseTimes, COURSES, COURSE_TIMES, SocialCourseProgress, repairCourseSeries,
   planAwarenessSeries, seriesTimes, seriesEnabled, SERIES, DEFAULT_SERIES_TIMES, SocialSeriesProgress,
+  DEFAULT_SERIES_ENABLED, slotList, seriesSlotsPerDay,
 };

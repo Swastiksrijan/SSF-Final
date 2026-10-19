@@ -58,6 +58,15 @@ const esc = (s) => String(s == null ? '' : s)
   .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
   .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 
+// Footer button label. A series may override it (e.g. the Join stream prints
+// "Join SSF" instead of "Join Us"). The image route receives raw DB rows, so
+// the label can live on the row directly or inside its JSONB `data` payload.
+function ctaButtonLabel(post) {
+  const d = (post && post.data) ? post.data : {};
+  const label = (post && post.ctaLabelEn) || d.ctaLabelEn || 'Join Us';
+  return String(label);
+}
+
 // ---- shared layout maths (used by both the canvas and SVG renderers) --------
 
 // Greedy word-wrap into lines of at most `max` characters (SVG fallback only).
@@ -133,7 +142,7 @@ function postSvg(post) {
   <text x="70" y="926" font-size="28" font-weight="700" fill="${accent}">${esc(ORG.website)}   ${esc(ORG.phone)}</text>
   <text x="70" y="976" font-size="24" font-weight="700" fill="#ffffff" opacity="0.75">#SSF #SwastikSrijan #${esc(post.category || 'community')}</text>
   <rect x="680" y="905" width="330" height="82" rx="41" fill="#FF6600"/>
-  <text x="845" y="957" text-anchor="middle" font-size="34" font-weight="800" fill="#ffffff">Join Us</text>
+  <text x="845" y="957" text-anchor="middle" font-size="34" font-weight="800" fill="#ffffff">${esc(ctaButtonLabel(post))}</text>
 </svg>`;
 }
 
@@ -257,11 +266,18 @@ async function drawPost(post, format = 'png') {
   ctx.fillText(`#SSF #SwastikSrijan #${post.category || 'community'}`, M, 976);
   ctx.globalAlpha = 1;
 
-  // "Join Us" button -> the post caption carries the same link so a tap opens it
+  // "Join Us" button -> the post caption carries the same link so a tap opens it.
+  // A series may override the label (e.g. the Join stream prints "Join SSF").
   ctx.fillStyle = '#FF6600'; roundRect(ctx, 680, 905, 330, 82, 41); ctx.fill();
   ctx.fillStyle = '#ffffff'; ctx.textAlign = 'center';
-  ctx.font = `800 34px ${FONT_STACK}`;
-  ctx.fillText('Join Us', 845, 957);
+  const btnLabel = ctaButtonLabel(post);
+  let btnFont = 34;
+  ctx.font = `800 ${btnFont}px ${FONT_STACK}`;
+  // Shrink the label so a longer bilingual override still fits inside the pill.
+  while (ctx.measureText(btnLabel).width > 290 && btnFont > 20) {
+    btnFont -= 2; ctx.font = `800 ${btnFont}px ${FONT_STACK}`;
+  }
+  ctx.fillText(btnLabel, 845, 957);
   ctx.textAlign = 'left';
 
   return Buffer.from(canvas.toBuffer(format === 'jpeg' ? 'image/jpeg' : 'image/png'));
