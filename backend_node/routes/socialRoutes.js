@@ -53,6 +53,7 @@ function postView(row) {
     exampleEn: p.exampleEn, exampleHi: p.exampleHi,
     takeawayEn: p.takeawayEn, takeawayHi: p.takeawayHi,
     ctaEn: p.ctaEn, ctaHi: p.ctaHi,
+    ctaUrl: p.ctaUrl, ctaLabelEn: p.ctaLabelEn, ctaLabelHi: p.ctaLabelHi,
     bodyEn: p.bodyEn, bodyHi: p.bodyHi, hashtags: p.hashtags,
     contentSource: p.contentSource, contentVerified: p.contentVerified,
     tradition: p.tradition, solemn: p.solemn, palette: p.palette,
@@ -281,6 +282,9 @@ router.get('/social/series', requireAuth, wrap(async (_req, r) => {
         nextTitleEn: last < total ? s.items[last].title.en : null,
         nextTitleHi: last < total ? s.items[last].title.hi : null,
         time: times[s.key] || null, enabled: enabled[s.key] !== false,
+        ctaUrl: s.ctaUrl || null,
+        ctaLabelEn: (s.ctaLabel && s.ctaLabel.en) || null,
+        ctaLabelHi: (s.ctaLabel && s.ctaLabel.hi) || null,
       };
     }),
     times, enabled,
@@ -389,7 +393,8 @@ router.patch('/social/posts/:id', requireAuth, wrap(async (req, r) => {
   if (!post) return r.status(404).json({ message: 'Post not found' });
   const columns = ['titleEn', 'titleHi', 'bodyEn', 'bodyHi', 'hashtags', 'imageUrl', 'status'];
   const dataFields = ['headingEn', 'headingHi', 'subtitleEn', 'subtitleHi', 'exampleEn', 'exampleHi',
-    'takeawayEn', 'takeawayHi', 'ctaEn', 'ctaHi', 'contentSource', 'tradition', 'palette'];
+    'takeawayEn', 'takeawayHi', 'ctaEn', 'ctaHi', 'contentSource', 'tradition', 'palette',
+    'ctaUrl', 'ctaLabelEn', 'ctaLabelHi'];
   const patch = {};
   const dataPatch = { ...(post.data || {}) };
   for (const k of columns) if (req.body && req.body[k] != null) patch[k] = req.body[k];
@@ -494,6 +499,7 @@ router.get('/social/posts', wrap(async (req, r) => {
     titleEn: p.titleEn, titleHi: p.titleHi, bodyEn: p.bodyEn, bodyHi: p.bodyHi, hashtags: p.hashtags,
     subtitleEn: p.subtitleEn, subtitleHi: p.subtitleHi, exampleEn: p.exampleEn, exampleHi: p.exampleHi,
     takeawayEn: p.takeawayEn, takeawayHi: p.takeawayHi, ctaEn: p.ctaEn, ctaHi: p.ctaHi,
+    ctaUrl: p.ctaUrl, ctaLabelEn: p.ctaLabelEn, ctaLabelHi: p.ctaLabelHi,
     contentSource: p.contentSource, tradition: p.tradition, solemn: p.solemn,
     image: p.imageUrl, publishedAt: p.publishedAt,
   }; }) });

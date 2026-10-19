@@ -8,6 +8,7 @@ const swasthya = require('./healthWisdom');
 const gk = require('./discussionPrompts');
 const englishWord = require('./englishWordSeries');
 const prerna = require('./manavMulyaSeries');
+const join = require('./joinSeries');
 
 // Default IST slot times, spread across the day so a learner meets a different
 // subject each time they open the phone. Nothing here removes any existing post.
@@ -18,6 +19,7 @@ const DEFAULT_SERIES_TIMES = {
   gk: '14:00',
   'english-word': '18:00',
   prerna: '20:00',
+  join: '16:00',
 };
 
 // Safe default: only THREE series are ON out of the box. Flooding 12 posts/day at
@@ -30,9 +32,10 @@ const DEFAULT_SERIES_ENABLED = {
   gk: false,
   'english-word': false,
   prerna: false,
+  join: false,
 };
 
-const SERIES = [samvidhan, swasthya, yojana, gk, englishWord, prerna];
+const SERIES = [samvidhan, swasthya, yojana, gk, englishWord, prerna, join];
 
 const seriesByKey = {};
 for (const s of SERIES) seriesByKey[s.key] = s;

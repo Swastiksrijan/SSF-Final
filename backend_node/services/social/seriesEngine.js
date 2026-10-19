@@ -64,10 +64,26 @@ function buildSeriesPost(series, chapterNo, date, slot) {
     ? `➡️ अगला: ${chapterNo + 1}/${total} — "${next.title.hi}" (कल)`
     : `➡️ यह शृंखला पूरी हुई। SSF की अगली शृंखला देखते रहें।`;
 
-  const note = (item.note ? item.note : series.note) || '';
+  // `note` may be a plain string or a bilingual T(en, hi). Resolve it per
+  // language — interpolating the object directly rendered "[object Object]".
+  const noteObj = item.note || series.note || null;
+  const noteEn = noteObj ? (typeof noteObj === 'string' ? noteObj : (noteObj.en || '')) : '';
+  const noteHi = noteObj ? (typeof noteObj === 'string' ? noteObj : (noteObj.hi || '')) : '';
+
+  // Optional per-series call-to-action link + button label (bilingual). Only
+  // rendered when the series declares both a label and a URL.
+  const ctaUrl = series.ctaUrl || '';
+  const ctaLabelObj = series.ctaLabel || null;
+  const ctaLabelEn = ctaLabelObj ? (typeof ctaLabelObj === 'string' ? ctaLabelObj : (ctaLabelObj.en || '')) : '';
+  const ctaLabelHi = ctaLabelObj ? (typeof ctaLabelObj === 'string' ? ctaLabelObj : (ctaLabelObj.hi || '')) : '';
+  const ctaLineEn = (ctaLabelEn && ctaUrl) ? `🔗 ${ctaLabelEn}: ${ctaUrl}` : '';
+  const ctaLineHi = (ctaLabelHi && ctaUrl) ? `🔗 ${ctaLabelHi}: ${ctaUrl}` : '';
 
   // Optional "how to actually get the benefit" box. Only rendered when present.
   const x = item.extra;
+  // A box may declare a `fee` — a paid tier is not "(free)", so drop the qualifier.
+  const whereEn = x && x.fee ? '🏢 Where to apply:' : '🏢 Where to apply (free):';
+  const whereHi = x && x.fee ? '🏢 कहाँ आवेदन करें:' : '🏢 कहाँ आवेदन करें (निःशुल्क):';
   const labhEn = x ? [
     '🎯 लाभ / What you get:',
     `• ${x.labh.en}`,
@@ -75,7 +91,7 @@ function buildSeriesPost(series, chapterNo, date, slot) {
     `• ${x.who.en}`,
     '📄 Documents:',
     `• ${x.docs.en}`,
-    '🏢 Where to apply (free):',
+    whereEn,
     `• ${x.where.en}`,
   ].join('\n') : '';
   const labhHi = x ? [
@@ -85,7 +101,7 @@ function buildSeriesPost(series, chapterNo, date, slot) {
     `• ${x.who.hi}`,
     '📄 कागज़ात:',
     `• ${x.docs.hi}`,
-    '🏢 कहाँ आवेदन करें (निःशुल्क):',
+    whereHi,
     `• ${x.where.hi}`,
   ].join('\n') : '';
 
@@ -97,7 +113,8 @@ function buildSeriesPost(series, chapterNo, date, slot) {
     `✅ Today's task: ${item.task.en}`,
     `💡 Tip: ${item.tip.en}`,
     `⚠️ Caution: ${item.avoid.en}`, '',
-    note ? `ℹ️ ${note}` : '',
+    noteEn ? `ℹ️ ${noteEn}` : '',
+    ctaLineEn,
     nextEn, '',
     `🌐 ${ORG.website}  |  📞 ${ORG.phone}`, tags,
   ];
@@ -109,7 +126,8 @@ function buildSeriesPost(series, chapterNo, date, slot) {
     `✅ आज का काम: ${item.task.hi}`,
     `💡 टिप: ${item.tip.hi}`,
     `⚠️ सावधानी: ${item.avoid.hi}`, '',
-    note ? `ℹ️ ${note}` : '',
+    noteHi ? `ℹ️ ${noteHi}` : '',
+    ctaLineHi,
     nextHi, '',
     `🌐 ${ORG.website}  |  📞 ${ORG.phone}`, tags,
   ];
@@ -126,8 +144,11 @@ function buildSeriesPost(series, chapterNo, date, slot) {
     subtitleEn: series.title.en, subtitleHi: series.title.hi,
     exampleEn: item.example.en, exampleHi: item.example.hi,
     takeawayEn: item.task.en, takeawayHi: item.task.hi,
-    ctaEn: series.cta ? series.cta.en : 'Learn, share, and help someone benefit.',
-    ctaHi: series.cta ? series.cta.hi : 'सीखें, बाँटें और किसी को लाभ पहुँचाएँ।',
+    ctaEn: series.cta ? (typeof series.cta === 'string' ? series.cta : series.cta.en) : 'Learn, share, and help someone benefit.',
+    ctaHi: series.cta ? (typeof series.cta === 'string' ? series.cta : series.cta.hi) : 'सीखें, बाँटें और किसी को लाभ पहुँचाएँ।',
+    ctaUrl,
+    ctaLabelEn,
+    ctaLabelHi,
     catLabelEn: series.title.en, catLabelHi: series.title.hi,
     contentSource: 'library', contentVerified: series.verified || '2026-01',
     dateEn, dateHi,

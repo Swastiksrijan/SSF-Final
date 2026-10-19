@@ -193,10 +193,10 @@ async function main() {
   ok('run is logged', logs.length >= 1);
   ok('run log records source', logs[0].source === 'test-run');
 
-  console.log('\nDaily awareness series (Samvidhan / Yojana / Charak / GK / English / Prerna):');
+  console.log('\nDaily awareness series (Samvidhan / Yojana / Charak / GK / English / Prerna / Join):');
   const { SERIES } = publisher;
   const { buildSeriesPost } = require('../services/social/seriesEngine');
-  ok('six awareness series registered', SERIES.length === 6, `n=${SERIES.length}`);
+  ok('seven awareness series registered', SERIES.length === 7, `n=${SERIES.length}`);
   for (const s of SERIES) {
     const p = buildSeriesPost(s, 1, new Date(2026, 9, 12), `series-${s.key}`);
     ok(`series ${s.key} builds a bilingual chapter`, p.bodyEn.length > 200 && p.bodyHi.length > 200 && p.kind === 'series' && p.seriesKey === s.key && p.chapterNo === 1);
@@ -224,6 +224,27 @@ async function main() {
   const gkSeries = SERIES.find((s) => s.key === 'gk');
   ok('a chapter that omits the labh box renders exactly as before (no stray heading)', !/कौन पात्र/.test(buildSeriesPost(gkSeries, 1, new Date(2026, 9, 12), 'series-gk').bodyHi) || !!gkSeries.items[0].extra);
 
+  // The Join stream (seventh) invites participation and must carry the real
+  // Join link + a per-post button label, and cover every registered objective.
+  const join = SERIES.find((s) => s.key === 'join');
+  ok('Join series registered as the seventh stream', !!join && join.items.length === 17, `items=${join && join.items.length}`);
+  ok('Join series carries the official Join link', /^https:\/\/swastiksrijan\.in\/JoinUs$/.test(join.ctaUrl || ''), join.ctaUrl);
+  const joinPost = buildSeriesPost(join, 1, new Date(2026, 9, 12), 'series-join');
+  ok('Join post exposes ctaUrl + bilingual button label', joinPost.ctaUrl === join.ctaUrl && joinPost.ctaLabelEn === 'Join SSF' && joinPost.ctaLabelHi === 'SSF से जुड़ें', JSON.stringify(joinPost.ctaLabelEn));
+  ok('Join caption prints the link line in both languages', joinPost.bodyEn.includes(join.ctaUrl) && joinPost.bodyHi.includes(join.ctaUrl));
+  ok('Join caption renders the anti-fraud note (not [object Object])', /SSF never asks for money/i.test(joinPost.bodyEn) && /पैसा नहीं माँगता/.test(joinPost.bodyHi));
+  // The paid membership chapter must not label its "where to apply" box as free.
+  const memberPost = buildSeriesPost(join, join.items.findIndex((it) => /Membership —/.test(it.title.en)) + 1, new Date(2026, 9, 12), 'series-join');
+  ok('paid membership box drops the "(free)" qualifier', !/\(free\)/i.test(memberPost.bodyEn) && !/निःशुल्क/.test(memberPost.bodyHi));
+  ok('free chapters keep the "(free)" qualifier', (() => { const freeIdx = join.items.findIndex((it) => it.extra && !it.extra.fee); return freeIdx >= 0 && /\(free\)/i.test(buildSeriesPost(join, freeIdx + 1, new Date(2026, 9, 12), 'series-join').bodyEn); })());
+  const objectiveRe = [/Education/, /Skill Development/, /Women & Child/, /Health/, /Environment/, /Agriculture/, /Social Justice/, /Disability/, /Animal Protection/, /Religious & Cultural/];
+  ok('Join series covers all ten registered objectives', objectiveRe.every((re) => join.items.some((it) => re.test(it.title.en))));
+  // Every series' note now resolves to text in both languages, never "[object Object]".
+  for (const s of SERIES) {
+    const p = buildSeriesPost(s, 1, new Date(2026, 9, 12), `series-${s.key}`);
+    ok(`series ${s.key} renders its note as text, not [object Object]`, !/\[object Object\]/.test(p.bodyEn + p.bodyHi));
+  }
+
   // Series planning is idempotent and advances one chapter per day on publish.
   const { SocialSeriesProgress } = require('../models/social');
   await SocialSeriesProgress.destroy({ where: {} });
@@ -234,27 +255,27 @@ async function main() {
   ok('fresh install plans only the safe 3-series default', dflt.length === 3, `got=${dflt.length}`);
   await SocialSeriesProgress.destroy({ where: {} });
   await SocialPost.destroy({ where: { kind: 'series' } });
-  // Enable all six for the ordering/idempotency flow below.
-  await publisher.setConfig('seriesEnabled', { samvidhan: true, yojana: true, swasthya: true, gk: true, 'english-word': true, prerna: true });
+  // Enable all seven for the ordering/idempotency flow below.
+  await publisher.setConfig('seriesEnabled', { samvidhan: true, yojana: true, swasthya: true, gk: true, 'english-word': true, prerna: true, join: true });
   const sday1 = new Date(2026, 8, 1);
   const sp1 = await publisher.planAwarenessSeries(sday1);
-  ok('one awareness-series post per series per day', sp1.length === 6, `got=${sp1.length}`);
+  ok('one awareness-series post per series per day', sp1.length === 7, `got=${sp1.length}`);
   const spAgain = await publisher.planAwarenessSeries(sday1);
   ok('repeated series ticks create no duplicates', spAgain.length === 0, `got=${spAgain.length}`);
-  ok('every series gets its own slot', new Set(sp1.map((p) => p.slot)).size === 6);
+  ok('every series gets its own slot', new Set(sp1.map((p) => p.slot)).size === 7);
   ok('all are series kind with chapter 1', sp1.every((p) => p.kind === 'series' && p.data.chapterNo === 1));
   const platforms1 = await publisher.enabledPlatforms();
   for (const p of sp1) await publisher.publishPost(p, platforms1);
   const sprog = await SocialSeriesProgress.findAll();
-  ok('all six series pointers advanced to 1', sprog.length === 6 && sprog.every((x) => Number(x.lastChapter) === 1));
+  ok('all seven series pointers advanced to 1', sprog.length === 7 && sprog.every((x) => Number(x.lastChapter) === 1));
   const sp2 = await publisher.planAwarenessSeries(new Date(2026, 8, 2));
-  ok('day 2 releases chapter 2 of each series', sp2.length === 6 && sp2.every((p) => p.data.chapterNo === 2));
+  ok('day 2 releases chapter 2 of each series', sp2.length === 7 && sp2.every((p) => p.data.chapterNo === 2));
   // A disabled series is skipped without touching the others.
   await publisher.setConfig('seriesEnabled', { gk: false });
   await SocialPost.destroy({ where: { postDate: '2026-09-03', kind: 'series' } });
   const sp3 = await publisher.planAwarenessSeries(new Date(2026, 8, 3));
   ok('disabled series is skipped', !sp3.some((p) => p.data.seriesKey === 'gk'), `keys=${sp3.map((p) => p.data.seriesKey)}`);
-  ok('other series still run', sp3.length === 5, `got=${sp3.length}`);
+  ok('other series still run', sp3.length === 6, `got=${sp3.length}`);
   await publisher.setConfig('seriesEnabled', {});
 
   console.log(`\nRESULT: ${pass} passed, ${fail} failed`);

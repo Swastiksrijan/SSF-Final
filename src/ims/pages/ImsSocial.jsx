@@ -532,7 +532,7 @@ function CoursesTab({ courses, busy, run, lang }) {
   );
 }
 
-// ---- daily awareness series tab (Samvidhan / Yojana / Charak / GK / English / Prerna) --
+// ---- daily awareness series tab (Samvidhan / Yojana / Charak / GK / English / Prerna / Join) --
 function SeriesTab({ series, busy, run, lang }) {
   const hi = lang === 'hi';
   const list = (series && series.series) || [];
@@ -546,8 +546,8 @@ function SeriesTab({ series, busy, run, lang }) {
             </h2>
             <p className="mt-1 max-w-2xl text-xs text-slate-500">
               {hi
-                ? 'छह शृंखलाएँ: संविधान, स्वास्थ्य (चरक), सरकारी योजना, सामान्य ज्ञान, अंग्रेज़ी शब्द एवं प्रेरणा — प्रत्येक से रोज़ एक अध्याय, क्रम से (कभी कहीं का कहीं नहीं)।'
-                : 'Six series: Samvidhan, Health (Charak), Sarkari Yojana, General Knowledge, English word, and Motivation — one chapter each per day, always in order (never out of sequence).'}
+                ? 'सात शृंखलाएँ: संविधान, स्वास्थ्य (चरक), सरकारी योजना, सामान्य ज्ञान, अंग्रेज़ी शब्द, प्रेरणा एवं जुड़िए SSF — प्रत्येक से रोज़ एक अध्याय, क्रम से (कभी कहीं का कहीं नहीं)।'
+                : 'Seven series: Samvidhan, Health (Charak), Sarkari Yojana, General Knowledge, English word, Motivation, and Join SSF — one chapter each per day, always in order (never out of sequence).'}
             </p>
           </div>
           <div className="flex gap-2">
