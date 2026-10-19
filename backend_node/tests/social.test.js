@@ -246,36 +246,60 @@ async function main() {
   }
 
   // Series planning is idempotent and advances one chapter per day on publish.
+  {
+    // Slot helpers: a series time is 'HH:MM' or an array; counts add up.
+    const { slotList, seriesSlotsPerDay, DEFAULT_SERIES_TIMES, DEFAULT_SERIES_ENABLED } = require('../services/social/publisher');
+    ok('slotList normalises a single time to a 1-array', JSON.stringify(slotList('16:00')) === JSON.stringify(['16:00']));
+    ok('slotList keeps both times of an array', JSON.stringify(slotList(['16:00', '21:00'])) === JSON.stringify(['16:00', '21:00']));
+    ok('slotList drops malformed values', JSON.stringify(slotList(['16:00', 'bad', '21:00'])) === JSON.stringify(['16:00', '21:00']));
+    ok('seriesSlotsPerDay = 3 single + 2 join = 5 by default', seriesSlotsPerDay(DEFAULT_SERIES_TIMES, DEFAULT_SERIES_ENABLED) === 5, `got=${seriesSlotsPerDay(DEFAULT_SERIES_TIMES, DEFAULT_SERIES_ENABLED)}`);
+  }
   const { SocialSeriesProgress } = require('../models/social');
   await SocialSeriesProgress.destroy({ where: {} });
   await SocialPost.destroy({ where: { kind: 'series' } });
-  // Safe default: only 3 series ship enabled, so a fresh install does not flood.
+  // Safe default: 3 awareness series (1 slot each) + Join SSF (2 slots) = 5 posts.
   await publisher.setConfig('seriesEnabled', null);
   const dflt = await publisher.planAwarenessSeries(new Date(2026, 7, 1));
-  ok('fresh install plans only the safe 3-series default', dflt.length === 3, `got=${dflt.length}`);
+  ok('fresh install plans the default set (3 series + Join twice a day = 5)', dflt.length === 5, `got=${dflt.length}`);
+  ok('Join SSF ships enabled by default', new Set(dflt.map((p) => p.data.seriesKey)).size === 4 && dflt.some((p) => p.data.seriesKey === 'join'), `keys=${[...new Set(dflt.map((p) => p.data.seriesKey))]}`);
+  ok('Join SSF drafts two slots a day (same chapter)', dflt.filter((p) => p.data.seriesKey === 'join').length === 2 && dflt.filter((p) => p.data.seriesKey === 'join').every((p) => p.data.chapterNo === 1));
+  {
+    const joinDrafts = dflt.filter((p) => p.data.seriesKey === 'join').sort((a, b) => a.scheduledFor - b.scheduledFor);
+    const hhmm = (d) => `${String(new Date(d).getHours()).padStart(2, '0')}:${String(new Date(d).getMinutes()).padStart(2, '0')}`;
+    ok('Join SSF slots land at the two configured times (07:00 and 19:00)', hhmm(joinDrafts[0].scheduledFor) === '07:00' && hhmm(joinDrafts[1].scheduledFor) === '19:00', joinDrafts.map((p) => hhmm(p.scheduledFor)).join(','));
+  }
   await SocialSeriesProgress.destroy({ where: {} });
   await SocialPost.destroy({ where: { kind: 'series' } });
   // Enable all seven for the ordering/idempotency flow below.
   await publisher.setConfig('seriesEnabled', { samvidhan: true, yojana: true, swasthya: true, gk: true, 'english-word': true, prerna: true, join: true });
   const sday1 = new Date(2026, 8, 1);
   const sp1 = await publisher.planAwarenessSeries(sday1);
-  ok('one awareness-series post per series per day', sp1.length === 7, `got=${sp1.length}`);
+  ok('all seven series planned (Join twice) = 8 posts a day', sp1.length === 8, `got=${sp1.length}`);
   const spAgain = await publisher.planAwarenessSeries(sday1);
   ok('repeated series ticks create no duplicates', spAgain.length === 0, `got=${spAgain.length}`);
-  ok('every series gets its own slot', new Set(sp1.map((p) => p.slot)).size === 7);
+  ok('every series slot is distinct', new Set(sp1.map((p) => p.slot)).size === 8);
   ok('all are series kind with chapter 1', sp1.every((p) => p.kind === 'series' && p.data.chapterNo === 1));
   const platforms1 = await publisher.enabledPlatforms();
   for (const p of sp1) await publisher.publishPost(p, platforms1);
   const sprog = await SocialSeriesProgress.findAll();
   ok('all seven series pointers advanced to 1', sprog.length === 7 && sprog.every((x) => Number(x.lastChapter) === 1));
+  {
+    // Join's two slots both published, but its pointer advanced only ONCE — the
+    // second slot must never burn a second chapter.
+    const jp = sp1.filter((p) => p.data.seriesKey === 'join');
+    const jPublished = await SocialPost.findAll({ where: { id: jp.map((p) => p.id) } });
+    const jProg = sprog.find((x) => x.seriesKey === 'join');
+    ok('both Join slots published the same chapter', jPublished.length === 2 && jPublished.every((p) => p.status === 'published' && p.data.chapterNo === 1));
+    ok('Join pointer advanced once despite two slots', jProg && Number(jProg.lastChapter) === 1, `lastChapter=${jProg && jProg.lastChapter}`);
+  }
   const sp2 = await publisher.planAwarenessSeries(new Date(2026, 8, 2));
-  ok('day 2 releases chapter 2 of each series', sp2.length === 7 && sp2.every((p) => p.data.chapterNo === 2));
+  ok('day 2 releases chapter 2 of each series', sp2.length === 8 && sp2.every((p) => p.data.chapterNo === 2));
   // A disabled series is skipped without touching the others.
   await publisher.setConfig('seriesEnabled', { gk: false });
   await SocialPost.destroy({ where: { postDate: '2026-09-03', kind: 'series' } });
   const sp3 = await publisher.planAwarenessSeries(new Date(2026, 8, 3));
   ok('disabled series is skipped', !sp3.some((p) => p.data.seriesKey === 'gk'), `keys=${sp3.map((p) => p.data.seriesKey)}`);
-  ok('other series still run', sp3.length === 6, `got=${sp3.length}`);
+  ok('other series still run', sp3.length === 7, `got=${sp3.length}`);
   await publisher.setConfig('seriesEnabled', {});
 
   console.log(`\nRESULT: ${pass} passed, ${fail} failed`);

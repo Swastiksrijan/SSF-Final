@@ -60,10 +60,11 @@ async function main() {
     ok('series endpoint 200', series.status === 200, JSON.stringify(series.body).slice(0, 120));
     ok('seven series returned', Array.isArray(series.body.series) && series.body.series.length === 7);
     ok('each series carries a time', series.body.series.every((s) => /^\d{1,2}:\d{2}$/.test(String(s.time || ''))));
+    ok('Join series runs twice a day (two slots)', (() => { const j = series.body.series.find((s) => s.key === 'join'); return !!j && Array.isArray(j.times) && j.times.length === 2 && j.postsPerDay === 2; })(), JSON.stringify(series.body.series.find((s) => s.key === 'join') || {}));
     ok('Join series exposes its CTA link + label', (() => { const j = series.body.series.find((s) => s.key === 'join'); return !!j && /JoinUs$/.test(j.ctaUrl || '') && j.ctaLabelEn === 'Join SSF'; })(), JSON.stringify((series.body.series.find((s) => s.key === 'join') || {}).ctaUrl));
     const sPlan = await send('/api/social/series/plan', 'POST', {});
-    ok('series/plan drafts the safe 3-series default (not all 7)', sPlan.body.created === 3, JSON.stringify(sPlan.body));
-    // Explicitly enabling all seven must be reflected by config (safe default is 3-on).
+    ok('series/plan drafts the default set (3 series + Join twice = 5)', sPlan.body.created === 5, JSON.stringify(sPlan.body));
+    // Explicitly enabling all seven must be reflected by config (Join is on by default).
     await send('/api/social/config', 'POST', { seriesEnabled: { samvidhan: true, yojana: true, swasthya: true, gk: true, 'english-word': true, prerna: true, join: true } });
     const cfg = await get('/api/social/config', auth);
     ok('config reports all seven enabled after the toggle', cfg.body.seriesEnabled && Object.values(cfg.body.seriesEnabled).filter(Boolean).length === 7, JSON.stringify(cfg.body.seriesEnabled));

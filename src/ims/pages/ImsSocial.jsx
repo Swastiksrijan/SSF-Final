@@ -546,8 +546,8 @@ function SeriesTab({ series, busy, run, lang }) {
             </h2>
             <p className="mt-1 max-w-2xl text-xs text-slate-500">
               {hi
-                ? 'सात शृंखलाएँ: संविधान, स्वास्थ्य (चरक), सरकारी योजना, सामान्य ज्ञान, अंग्रेज़ी शब्द, प्रेरणा एवं जुड़िए SSF — प्रत्येक से रोज़ एक अध्याय, क्रम से (कभी कहीं का कहीं नहीं)।'
-                : 'Seven series: Samvidhan, Health (Charak), Sarkari Yojana, General Knowledge, English word, Motivation, and Join SSF — one chapter each per day, always in order (never out of sequence).'}
+                ? 'सात शृंखलाएँ: संविधान, स्वास्थ्य (चरक), सरकारी योजना, सामान्य ज्ञान, अंग्रेज़ी शब्द, प्रेरणा एवं जुड़िए SSF — प्रत्येक से रोज़ एक अध्याय, क्रम से (कभी कहीं का कहीं नहीं)। जुड़िए SSF का अध्याय दिन में दो बार जाता है।'
+                : 'Seven series: Samvidhan, Health (Charak), Sarkari Yojana, General Knowledge, English word, Motivation, and Join SSF — one chapter each per day, always in order (never out of sequence). The Join SSF chapter goes out twice a day.'}
             </p>
           </div>
           <div className="flex gap-2">
@@ -583,7 +583,12 @@ function SeriesTab({ series, busy, run, lang }) {
                     ? (hi ? 'सभी अध्याय पूरे 🎓' : 'All chapters done 🎓')
                     : (hi ? `अगला: ${c.nextChapter} — ${c.nextTitleHi}` : `Next: ${c.nextChapter} — ${c.nextTitleEn}`)}
                 </span>
-                {c.time && <span className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-600">🕗 {c.time}</span>}
+                <span className="flex items-center gap-1">
+                  {((c.times && c.times.length) ? c.times : (c.time ? [c.time] : [])).map((t) => (
+                    <span key={t} className="rounded-full bg-slate-100 px-2 py-0.5 font-bold text-slate-600">🕗 {t}</span>
+                  ))}
+                  {(c.postsPerDay || 1) > 1 && <span className="rounded-full bg-[#176447]/10 px-2 py-0.5 font-bold text-[#176447]">{hi ? `${c.postsPerDay}× रोज़` : `${c.postsPerDay}×/day`}</span>}
+                </span>
               </div>
               {c.enabled === false && <div className="mt-1 text-[10px] font-semibold text-rose-500">{hi ? 'बंद है' : 'Paused'}</div>}
             </Card>
