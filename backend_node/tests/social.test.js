@@ -117,6 +117,11 @@ async function main() {
     const days = [...new Set(made.map((p) => { const q = publisher.localParts(new Date(p.postDate), 'Asia/Kolkata'); return `${q.y}-${String(q.m).padStart(2, '0')}-${String(q.d).padStart(2, '0')}`; }))];
     ok('planner files drafts under the configured-timezone date, not UTC', days.length === 1 && days[0] === '2026-10-20', days.join(','));
     ok('planner still creates both Join slots for that day', made.filter((p) => p.data.seriesKey === 'join').length === 2);
+    // The stored intended-time must be the IST wall clock, so the dashboard shows
+    // 07:00/19:00 (not 12:30/00:30, which is what a UTC-parsed wall time yields).
+    const joinRows = made.filter((p) => p.data.seriesKey === 'join').sort((a, b) => a.scheduledFor - b.scheduledFor);
+    const wall = joinRows.map((p) => publisher.localParts(new Date(p.scheduledFor), 'Asia/Kolkata').hhmm);
+    ok('scheduled time is stored as the configured-timezone wall clock', wall.join(',') === '07:00,19:00', wall.join(','));
   }
 
   console.log('\nDedup / idempotency / published history:');
@@ -130,7 +135,7 @@ async function main() {
   ok('exactly one post for the day', dayPosts.length === 1, `got=${dayPosts.length}`);
   const draftRow = await SocialPost.findOne({ where: { postDate: '2026-07-20', slot: 'daily' } });
   ok('post uses the single daily slot', !!draftRow);
-  ok('scheduledFor preserves the daily time (08:00)', String(draftRow.scheduledFor).includes('08:00'), String(draftRow.scheduledFor));
+  ok('scheduledFor preserves the daily time (08:00)', publisher.localParts(new Date(draftRow.scheduledFor), 'Asia/Kolkata').hhmm === '08:00', String(draftRow.scheduledFor));
   await draftRow.update({ status: 'published', titleEn: 'ORIGINAL', publishedAt: new Date() });
   await publisher.planDue({ date: new Date(2026, 6, 20), rebuild: true });
   const afterRebuild = await SocialPost.findByPk(draftRow.id);
@@ -301,7 +306,7 @@ async function main() {
   ok('Join SSF drafts two slots a day (same chapter)', dflt.filter((p) => p.data.seriesKey === 'join').length === 2 && dflt.filter((p) => p.data.seriesKey === 'join').every((p) => p.data.chapterNo === 1));
   {
     const joinDrafts = dflt.filter((p) => p.data.seriesKey === 'join').sort((a, b) => a.scheduledFor - b.scheduledFor);
-    const hhmm = (d) => `${String(new Date(d).getHours()).padStart(2, '0')}:${String(new Date(d).getMinutes()).padStart(2, '0')}`;
+    const hhmm = (d) => publisher.localParts(new Date(d), 'Asia/Kolkata').hhmm;
     ok('Join SSF slots land at the two configured times (07:00 and 19:00)', hhmm(joinDrafts[0].scheduledFor) === '07:00' && hhmm(joinDrafts[1].scheduledFor) === '19:00', joinDrafts.map((p) => hhmm(p.scheduledFor)).join(','));
   }
   await SocialSeriesProgress.destroy({ where: {} });

@@ -168,6 +168,7 @@ async function planAwarenessSeries(date) {
   const { y, m, d } = localParts(date, await timezone());
   const day = new Date(y, m - 1, d);
   const postDate = ymd(day);
+  const tz = await timezone();
   const created = [];
   let seq = Number((await getConfig('post_seq', 0)) || 0);
 
@@ -195,7 +196,7 @@ async function planAwarenessSeries(date) {
       seq += 1;
       const row2 = await SocialPost.create({
         ...row, data: extra, slot, postRef: nextRef(seq), status: 'draft',
-        scheduledFor: slotDate(postDate, slot, { [slot]: slots[i] }),
+        scheduledFor: slotDate(postDate, slot, { [slot]: slots[i] }, tz),
         createdBy: 'scheduler', createdByName: 'Series Scheduler',
       });
       created.push(row2);
@@ -224,6 +225,7 @@ async function planCourseSeries(date) {
   const { y, m, d } = localParts(date, await timezone());
   const day = new Date(y, m - 1, d);
   const postDate = ymd(day);
+  const tz = await timezone();
   const created = [];
   let seq = Number((await getConfig('post_seq', 0)) || 0);
 
@@ -250,7 +252,7 @@ async function planCourseSeries(date) {
     seq += 1;
     const row2 = await SocialPost.create({
       ...row, data: extra, postRef: nextRef(seq), status: 'draft',
-      scheduledFor: slotDate(postDate, i, times),
+      scheduledFor: slotDate(postDate, i, times, tz),
       createdBy: 'scheduler', createdByName: 'Course Scheduler',
     });
     created.push(row2);
@@ -322,7 +324,7 @@ async function planDue({ date = new Date(), rebuild = false } = {}) {
     const row2 = await SocialPost.create({
       ...row, data: extra, postRef: nextRef(seq), status: 'draft',
       // Preserve the intended post time, not the moment generation ran.
-      scheduledFor: slotDate(postDate, 'daily', times),
+      scheduledFor: slotDate(postDate, 'daily', times, tz),
       createdBy: 'scheduler', createdByName: 'Social Scheduler',
     });
     created.push(row2);
@@ -333,11 +335,22 @@ async function planDue({ date = new Date(), rebuild = false } = {}) {
 
 // Intended scheduled timestamp for a slot: the local date + configured HH:MM.
 // `slot` may be a key into an object of times, or an index into an array.
-function slotDate(postDate, slot, times) {
+// The wall time is interpreted in the configured timezone, so a 07:00 IST slot
+// is stored as 01:30Z (not 07:00Z, which the dashboard would show as 12:30 IST).
+function zonedToUtc(y, mo, d, hh, mm, tz) {
+  const guess = Date.UTC(y, mo - 1, d, hh, mm);
+  const fmt = new Intl.DateTimeFormat('en-GB', { timeZone: tz, hour12: false, year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit' });
+  const p = {};
+  for (const { type, value } of fmt.formatToParts(new Date(guess))) p[type] = value;
+  const shown = Date.UTC(Number(p.year), Number(p.month) - 1, Number(p.day), Number(p.hour) % 24, Number(p.minute));
+  return new Date(guess - (shown - guess));
+}
+
+function slotDate(postDate, slot, times, tz = DEFAULT_TZ) {
   const t = Array.isArray(times) ? times[slot] : (times || {})[slot];
   const [hh, mm] = String(t || '00:00').split(':');
-  const dt = new Date(`${postDate}T${String(hh).padStart(2, '0')}:${String(mm || '00').padStart(2, '0')}:00`);
-  return dt;
+  const [y, mo, d] = String(postDate).split('-').map(Number);
+  return zonedToUtc(y, mo, d, Number(hh), Number(mm || '00'), tz);
 }
 
 // Create one extra, on-demand post (admin "Post now") from the library.
