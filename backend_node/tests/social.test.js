@@ -245,6 +245,28 @@ async function main() {
     ok(`series ${s.key} renders its note as text, not [object Object]`, !/\[object Object\]/.test(p.bodyEn + p.bodyHi));
   }
 
+  // Instagram rejects captions over 2,200 chars, so the adapter must trim — while
+  // keeping the site link. Without this, whole series (e.g. yojana) never post.
+  {
+    const { caption, igCaption, IG_CAPTION_MAX } = require('../services/social/channels');
+    const offenders = [];
+    for (const s of SERIES) {
+      for (let i = 1; i <= (s.items || []).length; i += 1) {
+        const ig = igCaption(buildSeriesPost(s, i, new Date(2026, 9, 12), `series-${s.key}`));
+        if (ig.length > IG_CAPTION_MAX) offenders.push(`${s.key} ch${i} (${ig.length})`);
+      }
+    }
+    ok('every series chapter has an Instagram-safe caption', offenders.length === 0, offenders.join(', '));
+    ok('IG caption trims an over-long post but keeps the site link', (() => {
+      const ig = igCaption({ bodyEn: 'A'.repeat(3000), bodyHi: 'B'.repeat(3000) });
+      return ig.length <= IG_CAPTION_MAX && ig.includes('swastiksrijan.in') && /swastiksrijan\.in\/?$/.test(ig);
+    })());
+    ok('IG caption leaves a short post untouched', (() => {
+      const short = { bodyEn: 'Hi', bodyHi: 'नमस्ते' };
+      return igCaption(short) === caption(short);
+    })());
+  }
+
   // Series planning is idempotent and advances one chapter per day on publish.
   {
     // Slot helpers: a series time is 'HH:MM' or an array; counts add up.

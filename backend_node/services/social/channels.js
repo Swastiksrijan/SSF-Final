@@ -96,6 +96,18 @@ function caption(post) {
   return `${post.bodyEn}\n\n————\n${post.bodyHi}\n\n${SITE}`;
 }
 
+// Instagram rejects a caption longer than 2,200 characters ("The caption was too
+// long."). Trim to fit, but ALWAYS keep the trailing site link — it is the whole
+// point of the post — so only the body is shortened.
+const IG_CAPTION_MAX = 2200;
+function igCaption(post) {
+  const full = caption(post);
+  if (full.length <= IG_CAPTION_MAX) return full;
+  const tail = `\n\n${SITE}`;
+  const room = Math.max(0, IG_CAPTION_MAX - tail.length - 1); // 1 for the ellipsis
+  return `${full.slice(0, room).trimEnd()}…${tail}`;
+}
+
 async function multipartCall(url, fields) {
   const form = new FormData();
   for (const [k, v] of Object.entries(fields)) {
@@ -251,7 +263,7 @@ async function publishInstagram(post, creds) {
   if (img) img = img.replace(/format=png/i, 'format=jpeg').replace(/\/([^/?]+\.png)(\?|$)/i, (m, f, q) => `/${f.replace(/\.png$/i, '.jpg')}${q || ''}`);
   if (!img) return { ok: false, error: 'public_image_url_unavailable' };
   try {
-    const container = await formCall(`${GRAPH}/${igUserId}/media`, { image_url: img, caption: caption(post), access_token: token });
+    const container = await formCall(`${GRAPH}/${igUserId}/media`, { image_url: img, caption: igCaption(post), access_token: token });
     const created = container?.id;
     if (!created) return { ok: false, error: 'container_failed' };
     // Instagram processes the uploaded image asynchronously; publishing before
@@ -505,4 +517,4 @@ async function testChannel(platform, creds) {
   return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };
 }
 
-module.exports = { ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount };
+module.exports = { ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount, caption, igCaption, IG_CAPTION_MAX };
