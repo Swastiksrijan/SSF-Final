@@ -14,7 +14,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useNavigate } from '@tanstack/react-router';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, StatStrip, Tabs, Empty, Spinner, Button, DetailModal } from '../ui';
+import { Card, StatStrip, Tabs, Empty, Spinner, Button, DetailModal, PageHeader } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { REFRESH_EVENT, CHANGED_EVENT } from '../NotificationsHeader';
@@ -207,6 +207,7 @@ export default function ImsNotificationsCentre() {
   return (
     <ImsLayout active="notification_centre">
       {/* Header (title + Refresh/Mark-all) is rendered by ImsLayout. */}
+      <PageHeader title={t('centre_kicker')} subtitle={t('centre_purpose')} />
       <NotificationsModules activeKey="notification_centre" />
       <StatStrip items={kpis} />
 

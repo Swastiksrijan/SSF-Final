@@ -5,7 +5,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, StatStrip, Empty, Spinner, Button, FormDrawer } from '../ui';
+import { Card, StatStrip, Empty, Spinner, Button, FormDrawer, PAGE_TITLE_ON_DARK } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { NotificationsModules } from '../SectionNav';
@@ -155,7 +155,7 @@ export default function ImsContacts() {
             <Icons.Contact size={24} />
           </span>
           <div className="min-w-0 flex-1">
-            <h1 className="text-xl font-black leading-tight tracking-tight sm:text-2xl">{t('contacts_title')}</h1>
+            <h1 className={`${PAGE_TITLE_ON_DARK} leading-tight`}>{t('contacts_title')}</h1>
             <p className="mt-0.5 text-sm font-medium text-white/70">{t('contacts_subtitle')}</p>
           </div>
           <div className="flex flex-wrap items-center gap-2">

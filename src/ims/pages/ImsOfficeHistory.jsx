@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import ImsLayout from '../ImsLayout';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
+import { PAGE_TITLE_ON_DARK } from '../ui';
 
 const cls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#12345A]/20";
 
@@ -22,7 +23,8 @@ const formatOfficeDate=function(value){ if(!value)return "—";
 };
 
 // Navy title card — identical to the old Digital Office SimpleOfficeCard.
-function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#12345A] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
+// Renders the page's single <h1> so this route has a real top-level heading.
+function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#12345A] text-white rounded-2xl p-6"><h1 className={PAGE_TITLE_ON_DARK}>{title}</h1><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 
 // ---- adapter: new backend <-> old record contract --------------------------
 // old record: { id, recordId, module:"officeHistory", recordType, recordDate,

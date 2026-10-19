@@ -2,14 +2,13 @@
 // the IMS layout. Each page wires the legacy data contract (rows + add /
 // updateRecord / archive / restore / summary) to the ported component so the
 // screens behave exactly like the old SSF Digital Office.
-import { useNavigate } from '@tanstack/react-router';
 import ImsLayout from './ImsLayout';
 import { useOfficeRows, exportRows, exportExcel, exportPdf } from './oldOfficeCore';
 import {
   Dashboard, MeetingsHub, MembersRegister, ManagingCommittee,
   MembershipContributions, NotificationsHub, Reports, Audit, Users,
   OfficialDocuments, AppointmentLetters, DonorSlips, SeparationManagement,
-  DownloadCenter,
+  DownloadCentrePage,
 } from './oldOfficeComponents';
 import { BankBook, CashBook } from './oldOfficeFinance';
 import AdminLearningCertificates from '../components/AdminLearningCertificates';
@@ -86,10 +85,8 @@ export function ImsSeparationsLegacy(){
 }
 
 export function ImsDownloadCenterLegacy(){
-  const navigate = useNavigate();
   const { rows } = useOfficeRows('documents');
-  const setActive = (id) => { if(id) navigate({ to: '/ims/r/$resource', params: { resource: id } }).catch(()=>{}); };
-  return <Shell active="download_center"><DownloadCenter active="documents" rows={rows} exportRows={exportRows} exportExcel={exportExcel} exportPdf={exportPdf} setActive={setActive} token={token()}/></Shell>;
+  return <Shell active="download_center"><DownloadCentrePage active="documents" rows={rows} exportRows={exportRows} exportExcel={exportExcel} exportPdf={exportPdf} token={token()}/></Shell>;
 }
 
 export function ImsBankBookLegacy(){
@@ -106,5 +103,5 @@ export function ImsCashBookLegacy(){
 // dedicated AdminLearningCertificates screen; the inline LearningCertificates
 // copy inside SSFDigitalOffice.jsx was dead code and is not ported.
 export function ImsLearningCertificatesLegacy(){
-  return <Shell active="learning_certificates"><AdminLearningCertificates token={token()}/></Shell>;
+  return <Shell active="learning_certificates"><AdminLearningCertificates token={token()} titleTag="h1"/></Shell>;
 }

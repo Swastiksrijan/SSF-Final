@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import * as Icons from 'lucide-react';
 import ImsLayout from '../ImsLayout';
-import { Card, Kpi, Empty, Spinner } from '../ui';
+import { Card, Kpi, Empty, Spinner, PAGE_TITLE_ON_DARK } from '../ui';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { BarChart, DonutChart, ColumnChart } from '../charts';
@@ -220,7 +220,7 @@ function Hero({ title, eyebrow, tagline, updated, actions }) {
           <img src={logoImg} alt="SSF logo" className="h-16 w-16 shrink-0 rounded-2xl bg-white p-2 object-contain sm:h-20 sm:w-20" />
           <div>
             <p className="text-[11px] font-black uppercase tracking-[.2em] text-[#F7A814]">{eyebrow}</p>
-            <h1 className="mt-2 text-2xl font-black leading-tight tracking-tight sm:text-3xl">{title}</h1>
+            <h1 className={`${PAGE_TITLE_ON_DARK} mt-2`}>{title}</h1>
             <p className="mt-2 max-w-3xl text-sm text-white/75">{tagline}</p>
             {updated && <p className="mt-2 text-[11px] font-semibold text-white/50">{updated}</p>}
           </div>
