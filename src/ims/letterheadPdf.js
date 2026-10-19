@@ -118,22 +118,29 @@ const BASE_CSS = `
   }
   .hi { font-family: 'SSFDevanagari','Mukta',sans-serif; }
   .lh-head {
-    position: relative; z-index: 1; padding: 18px 34px 0;
+    position: relative; z-index: 1; padding: 0 34px 0;
+    background: linear-gradient(180deg, #f7fafc 0%, #ffffff 88%);
+    border-bottom: 1px solid #dbe4ec;
   }
-  .lh-head-top { display: flex; align-items: flex-start; gap: 14px; }
-  .lh-logo { width: 70px; height: 70px; object-fit: contain; flex-shrink: 0; }
-  .lh-names { flex: 1; min-width: 0; padding-top: 2px; }
-  .lh-name-en { font-size: 20px; font-weight: 800; color: ${NAVY}; letter-spacing: .005em; line-height: 1.15; }
-  .lh-name-hi { font-size: 15px; font-weight: 700; color: ${NAVY}; margin-top: 2px; line-height: 1.3; }
-  .lh-tag { margin-top: 5px; font-size: 8.5px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: ${TEAL}; }
-  .lh-right { text-align: right; flex-shrink: 0; max-width: 214px; }
-  .lh-right .onm { font-size: 12px; font-weight: 800; color: ${NAVY}; line-height: 1.25; }
-  .lh-right .onm-hi { font-size: 11px; font-weight: 700; color: ${NAVY}; line-height: 1.3; }
-  .lh-right .kv { margin-top: 4px; font-size: 9.5px; color: ${INK}; line-height: 1.5; }
+  .lh-accent { height: 5px; margin: 0 -34px 17px; background: linear-gradient(90deg, ${NAVY} 0%, ${NAVY} 72%, ${TEAL} 72%, ${TEAL} 91%, #c6a15b 91%, #c6a15b 100%); }
+  .lh-head-top { display: flex; align-items: center; gap: 16px; }
+  .lh-logo-wrap { width: 78px; height: 78px; display: grid; place-items: center; flex-shrink: 0; border: 1px solid #dbe4ec; border-radius: 15px; background: #ffffff; box-shadow: 0 3px 12px rgba(18,52,90,.08); }
+  .lh-logo { width: 68px; height: 68px; object-fit: contain; }
+  .lh-names { flex: 1; min-width: 0; padding-top: 1px; }
+  .lh-eyebrow { font-size: 8px; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: ${TEAL}; margin-bottom: 5px; }
+  .lh-name-en { font-size: 21px; font-weight: 800; color: ${NAVY}; letter-spacing: -.025em; line-height: 1.16; }
+  .lh-name-hi { font-size: 15px; font-weight: 700; color: ${NAVY}; margin-top: 4px; line-height: 1.3; }
+  .lh-tag { margin-top: 7px; font-size: 8px; font-weight: 700; letter-spacing: .055em; color: ${TEAL}; }
+  .lh-right { text-align: right; flex-shrink: 0; width: 150px; padding-left: 12px; border-left: 1px solid #dbe4ec; }
+  .lh-right .doc-label { display: inline-block; padding: 5px 7px; border-radius: 4px; background: #eaf3ef; color: ${TEAL}; font-size: 7px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+  .lh-right .kv { margin-top: 7px; font-size: 8.5px; color: ${INK}; line-height: 1.55; }
   .lh-right .kv .k { color: ${NAVY}; font-weight: 800; }
-  .lh-right .reg { margin-top: 4px; font-size: 8px; color: #5b6b7a; line-height: 1.45; }
-  .lh-rule { margin-top: 11px; height: 3px; background: linear-gradient(90deg, ${NAVY} 0%, ${NAVY} 62%, ${TEAL} 62%, ${TEAL} 100%); }
-  .lh-rule-thin { margin-top: 3px; height: 1px; background: #d5dee8; }
+  .lh-legal { display: flex; justify-content: space-between; align-items: center; gap: 16px; margin-top: 14px; padding: 9px 0 10px; color: #526477; font-size: 7.5px; line-height: 1.45; }
+  .lh-legal-main { flex: 1; min-width: 0; }
+  .lh-legal-hi { margin-top: 2px; color: #657587; font-family: 'SSFDevanagari','Mukta',sans-serif; }
+  .lh-legal-reg { flex-shrink: 0; text-align: right; color: ${NAVY}; font-size: 8px; font-weight: 800; }
+  .lh-rule { height: 3px; background: linear-gradient(90deg, ${NAVY} 0%, ${NAVY} 72%, ${TEAL} 72%, ${TEAL} 91%, #c6a15b 91%, #c6a15b 100%); }
+  .lh-rule-thin { height: 1px; background: #e7edf2; }
 
   .lh-body { position: relative; z-index: 1; padding: 0 34px; }
   .lh-to { margin-top: 2px; font-size: 12px; line-height: 1.65; }
@@ -156,21 +163,27 @@ const BASE_CSS = `
 
 function headerHtml(f = {}) {
   return `<div class="lh-head">
+    <div class="lh-accent"></div>
     <div class="lh-head-top">
-      <img class="lh-logo" src="${logoImg}" alt="SSF" />
+      <div class="lh-logo-wrap"><img class="lh-logo" src="${logoImg}" alt="SSF" /></div>
       <div class="lh-names">
+        <div class="lh-eyebrow">Registered Non-Profit Organisation</div>
         <div class="lh-name-en">${esc(ORG.en)}</div>
         <div class="lh-name-hi hi">${esc(ORG.hi)}</div>
-        <div class="lh-tag">${esc(ORG.taglineEn)} &nbsp;·&nbsp; ${esc(ORG.taglineHi)}</div>
+        <div class="lh-tag">${esc(ORG.taglineEn)} &nbsp;•&nbsp; ${esc(ORG.taglineHi)}</div>
       </div>
       <div class="lh-right">
-        <div class="onm">${esc(ORG.short)}</div>
-        <div class="onm-hi hi">${esc(ORG.shortHi)}</div>
-        <div class="kv"><span class="k">Reg. No.</span> ${esc(ORG.regNo)}</div>
-        <div class="kv"><span class="k">Ref. No.</span> ${esc(f.letterNo || '—')}</div>
-        <div class="kv"><span class="k">Date</span> ${esc(f.date || '')}</div>
-        <div class="reg">${esc(ORG.regLineEn)}<br/><span class="hi">${esc(ORG.regLineHi)}</span></div>
+        <div class="doc-label">OFFICIAL CORRESPONDENCE</div>
+        <div class="kv"><span class="k">Letter Ref.</span><br/>${esc(f.letterNo || 'To be assigned')}</div>
+        <div class="kv"><span class="k">Date</span><br/>${esc(f.date || '')}</div>
       </div>
+    </div>
+    <div class="lh-legal">
+      <div class="lh-legal-main">
+        <div>${esc(ORG.regLineEn)}</div>
+        <div class="lh-legal-hi">${esc(ORG.regLineHi)}</div>
+      </div>
+      <div class="lh-legal-reg">REGISTRATION NO.<br/>${esc(ORG.regNo)}</div>
     </div>
     <div class="lh-rule"></div>
     <div class="lh-rule-thin"></div>
