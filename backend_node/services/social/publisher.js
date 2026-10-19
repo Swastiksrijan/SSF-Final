@@ -162,7 +162,11 @@ async function seriesEnabled() {
 async function planAwarenessSeries(date) {
   const times = await seriesTimes();
   const enabled = await seriesEnabled();
-  const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // The calendar day must be the CONFIGURED timezone's day, matching runPending's
+  // publish loop. On a UTC server the two disagree between 00:00 and 05:29 IST,
+  // which orphaned the morning drafts (planned as "yesterday", never published).
+  const { y, m, d } = localParts(date, await timezone());
+  const day = new Date(y, m - 1, d);
   const postDate = ymd(day);
   const created = [];
   let seq = Number((await getConfig('post_seq', 0)) || 0);
@@ -215,7 +219,10 @@ async function courseTimes() {
 async function planCourseSeries(date) {
   const times = await courseTimes();
   if (!times.length) return [];
-  const day = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // Same reason as planAwarenessSeries: use the configured-timezone day, not the
+  // server's, so course drafts are never filed under the wrong date.
+  const { y, m, d } = localParts(date, await timezone());
+  const day = new Date(y, m - 1, d);
   const postDate = ymd(day);
   const created = [];
   let seq = Number((await getConfig('post_seq', 0)) || 0);
