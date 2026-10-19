@@ -7,7 +7,7 @@
 import { useEffect, useState } from 'react';
 import {
   FileSignature, Eye, Download, Printer, Share2, Mail, MessageCircle, Copy,
-  FilePlus2, Loader2, X, CheckCircle2, Languages, Droplets, Save,
+  FilePlus2, Loader2, X, CheckCircle2, AlertTriangle, Languages, Droplets, Save,
 } from 'lucide-react';
 import ImsLayout from '../ImsLayout';
 import { useLang } from '../LangContext';
@@ -34,7 +34,8 @@ export default function ImsLetterhead() {
   const [pdfLang, setPdfLang] = useState('both');
   const [watermark, setWatermark] = useState(true);
   const [busy, setBusy] = useState('');
-  const [notice, setNotice] = useState('');
+  const [notice, setNotice] = useState(null);
+  const say = (text, tone = 'ok') => setNotice({ text, tone });
   const [preview, setPreview] = useState(null);
   const [f, setF] = useState({
     letterNo: '', date: today, letterType: LETTER_TYPES[0].en,
@@ -66,21 +67,21 @@ export default function ImsLetterhead() {
   };
 
   const guard = () => {
-    if (!f.subject.trim() && !f.body.trim()) { setNotice(lang === 'hi' ? 'विषय या पत्र-विषयक पाठ भरें।' : 'Enter a subject or body text first.'); return false; }
+    if (!f.subject.trim() && !f.body.trim()) { say(lang === 'hi' ? 'पहले विषय या पत्र का पाठ भरें, तभी PDF बनेगा।' : 'Fill the subject or body first — then the PDF will be created.', 'warn'); return false; }
     return true;
   };
 
   const run = async (key, fn) => {
     if (!guard()) return;
-    setBusy(key); setNotice('');
+    setBusy(key); setNotice(null);
     try { await fn(); }
-    catch (e) { setNotice((lang === 'hi' ? 'त्रुटि: ' : 'Error: ') + e.message); }
+    catch (e) { say((lang === 'hi' ? 'त्रुटि: ' : 'Error: ') + e.message, 'err'); }
     finally { setBusy(''); }
   };
 
   const doPreview = () => run('preview', async () => {
     const { url, opened } = await previewLetterPdf(f, { lang: pdfLang, watermark });
-    if (opened) setNotice(lang === 'hi' ? 'नए टैब में खुल गया।' : 'Opened in a new tab.');
+    if (opened) say(lang === 'hi' ? 'नए टैब में खुल गया।' : 'Opened in a new tab.');
     else setPreview({ url });
   });
   const doDownload = () => run('download', () => downloadLetterPdf(f, { lang: pdfLang, watermark }));
@@ -89,13 +90,13 @@ export default function ImsLetterhead() {
   const doEmail = () => run('email', async () => { await shareLetterPdf(f, { lang: pdfLang, via: 'email' }); });
   const doShare = () => run('share', async () => {
     const r = await shareLetterPdf(f, { lang: pdfLang, via: 'native' });
-    setNotice(lang === 'hi'
+    say(lang === 'hi'
       ? `साझा किया गया (${r.shared}).`
       : `Shared (${r.shared}).`);
   });
   const doCopy = () => run('copy', async () => {
     await navigator.clipboard.writeText(letterPlainText(f, pdfLang));
-    setNotice(lang === 'hi' ? 'पत्र की सामग्री कॉपी हो गई।' : 'Letter text copied.');
+    say(lang === 'hi' ? 'पत्र की सामग्री कॉपी हो गई।' : 'Letter text copied.');
   });
 
   const doSave = () => run('save', async () => {
@@ -114,7 +115,7 @@ export default function ImsLetterhead() {
     });
     setRows((r) => [{ data: { letterNo: f.letterNo, subject: f.subject, name: f.toName }, recordDate: f.date, recordType: f.letterType, id: 'tmp' }, ...r]);
     setF((x) => ({ ...x, letterNo: nextLetterNo([...rows, { data: { letterNo: f.letterNo } }]), subject: '', body: '', toName: '', toOrg: '', toAddress: '', toDesignation: '' }));
-    setNotice(lang === 'hi'
+    say(lang === 'hi'
       ? 'वैधानिक दस्तावेज़ पंजिका में सहेज दिया गया।'
       : 'Saved to the Official Documents register.');
   });
@@ -242,8 +243,8 @@ export default function ImsLetterhead() {
           </div>
 
           {notice && (
-            <div className="mt-4 flex items-start gap-2 rounded-xl bg-emerald-50 px-4 py-3 text-sm font-semibold text-emerald-800">
-              <CheckCircle2 size={16} className="mt-0.5 shrink-0" /> <span>{notice}</span>
+            <div className={`mt-4 flex items-start gap-2 rounded-xl px-4 py-3 text-sm font-semibold ${notice.tone === 'ok' ? 'bg-emerald-50 text-emerald-800' : notice.tone === 'warn' ? 'bg-amber-50 text-amber-900' : 'bg-red-50 text-red-800'}`} role={notice.tone === 'ok' ? 'status' : 'alert'}>
+              {notice.tone === 'ok' ? <CheckCircle2 size={16} className="mt-0.5 shrink-0" /> : <AlertTriangle size={16} className="mt-0.5 shrink-0" />} <span>{notice.text}</span>
             </div>
           )}
         </div>
