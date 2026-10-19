@@ -7,11 +7,17 @@ export function Card({ children, className = '' }) {
   return <div className={`rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(18,52,90,0.04),0_8px_24px_-12px_rgba(18,52,90,0.12)] ${className}`}>{children}</div>;
 }
 
+// One page-title treatment for the whole IMS. Every page heading — PageHeader,
+// SectionHero and the legacy SimpleOfficeCard banner — renders through this, so
+// the title size cannot drift again. 32px is the dominant size across the app.
+export const PAGE_TITLE = 'text-2xl font-black tracking-tight sm:text-[32px]';
+export const PAGE_TITLE_ON_DARK = `${PAGE_TITLE} text-white`;
+
 export function PageHeader({ title, subtitle, actions }) {
   return (
     <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
       <div className="min-w-0">
-        <h1 className="text-2xl font-black tracking-tight text-[#12345A]">{title}</h1>
+        <h1 className={`${PAGE_TITLE} text-[#12345A]`}>{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
       </div>
       {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
@@ -295,7 +301,7 @@ export function SectionHero({ title, hi, eyebrow, icon = 'LayoutDashboard', tone
           <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20"><I size={24} /></span>
           <div>
             {eyebrow && <p className="text-[11px] font-black uppercase tracking-[.22em] text-[#F7A814]">{eyebrow}</p>}
-            <h1 className="mt-1.5 text-2xl font-black leading-tight tracking-tight sm:text-[32px]">{title}</h1>
+            <h1 className={`mt-1.5 leading-tight ${PAGE_TITLE_ON_DARK}`}>{title}</h1>
             {hi && lang !== 'hi' && <p className="mt-1 text-sm font-semibold text-white/70">{hi}</p>}
           </div>
         </div>

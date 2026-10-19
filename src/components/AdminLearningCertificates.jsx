@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FaCertificate, FaEye, FaCheckCircle, FaClock, FaExternalLinkAlt, FaSyncAlt } from "react-icons/fa";
 import { ENDPOINTS } from "../config/api";
 import { generateCertificate } from "../utils/generateCertificate";
+import { PAGE_TITLE_ON_DARK } from "../ims/ui";
 
 const TOKEN_KEY = "ssf_admin_token";
 
@@ -11,7 +12,10 @@ const dateLabel = (value) => {
   return Number.isNaN(d.getTime()) ? "—" : d.toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" });
 };
 
-export default function AdminLearningCertificates() {
+// `titleTag` lets the SSF-IMS shell (which renders no page title of its own on
+// this route) promote this heading to the page's single <h1>. The Admin Portal
+// and Digital Office already have their own <h1>, so they keep the default.
+export default function AdminLearningCertificates({ titleTag: Title = 'h2' } = {}) {
   const [token, setToken] = useState(localStorage.getItem(TOKEN_KEY) || "");
   const [items, setItems] = useState([]);
   const [selected, setSelected] = useState(null);
@@ -100,7 +104,7 @@ export default function AdminLearningCertificates() {
       <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
         <div>
           <p className="text-xs font-black uppercase tracking-[0.2em] text-[#176447]">SSF Learning Hub</p>
-          <h2 className="text-2xl sm:text-3xl font-black mt-1">Learning Certificates / शिक्षण प्रमाणपत्र</h2>
+          <Title className={`${PAGE_TITLE_ON_DARK} mt-1`}>Learning Certificates / शिक्षण प्रमाणपत्र</Title>
           <p className="text-sm text-white/70 mt-2 max-w-3xl">Review completed learning records, issue official certificate IDs, and open the verification record. Account creation alone never issues a certificate.</p>
         </div>
         <button onClick={load} disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-xl bg-white text-[#12345A] px-4 py-2.5 text-sm font-black">

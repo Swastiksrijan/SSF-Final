@@ -11,6 +11,7 @@ import { CASH_BOOKS, listCashStatements, getCashStatement, cashStatementRecords 
 import { FIN_REGISTERS, FIN_FY_LIST, getFinRegister } from "../data/financialRecords";
 import { LABELS } from "./oldOfficeModules";
 import { cls, formatOfficeDate, downloadPdf, printRecord, TOKEN_KEY } from "./oldOfficeCore";
+import { PAGE_TITLE_ON_DARK } from "./ui";
 
 const MONEY = new Set(["donations","expenses","contribution","cash","bank","ledger"]);
 const SPECIAL_DOCS = new Set(["meetings","mou","certificates","idcards"]);
@@ -95,7 +96,7 @@ function BankBook({ rows, add, archive, updateRecord, token, reload }){
  return <div className="space-y-5">
   <div className="bg-[#12345A] text-white rounded-2xl p-6">
    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h2 className="text-2xl font-black">Bank Book / बैंक बही</h2><p className="text-white/70 mt-1">Financial-year-wise statement · saal ke hisaab se entries</p></div></div>
+    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h1 className={PAGE_TITLE_ON_DARK}>Bank Book / बैंक बही</h1><p className="text-white/70 mt-1">Financial-year-wise statement · saal ke hisaab se entries</p></div></div>
     <div className="flex flex-wrap gap-2 items-center">
      <select value={fy} onChange={e=>setFy(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#12345A] font-bold">{(fyList.length?fyList:[fy].filter(Boolean)).map(f=><option key={f} value={f}>FY {f}</option>)}</select>
      <button type="button" onClick={startForm} className="bg-[#176447] text-white px-4 py-2.5 rounded-xl font-bold">+ Add Entry</button>
@@ -237,7 +238,7 @@ function CashBook({ rows, add, archive, updateRecord, token, reload }){
  return <div className="space-y-5">
   <div className="bg-[#12345A] text-white rounded-2xl p-6">
    <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
-    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h2 className="text-2xl font-black">Cash Book / रोकड़ बही</h2><p className="text-white/70 mt-1">Financial-year-wise cash receipts &amp; payments with running balance · वित्तीय वर्ष अनुसार नकद प्राप्ति एवं भुगतान</p></div></div>
+    <div className="flex items-center gap-3"><FaBook className="text-2xl"/><div><h1 className={PAGE_TITLE_ON_DARK}>Cash Book / रोकड़ बही</h1><p className="text-white/70 mt-1">Financial-year-wise cash receipts &amp; payments with running balance · वित्तीय वर्ष अनुसार नकद प्राप्ति एवं भुगतान</p></div></div>
     <div className="flex flex-wrap gap-2 items-center">
      <select value={bookId} onChange={e=>setBookId(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#12345A] font-bold">{Object.values(CASH_BOOKS).map(b=><option key={b.id} value={b.id}>{b.name}</option>)}</select>
      <select value={fy} onChange={e=>setFy(e.target.value)} className="px-3 py-2.5 rounded-xl text-[#12345A] font-bold">{(fyList.length?fyList:[fy].filter(Boolean)).map(s=><option key={s} value={s}>FY {s}</option>)}</select>

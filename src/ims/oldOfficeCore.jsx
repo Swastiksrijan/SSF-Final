@@ -9,6 +9,7 @@ import jsPDF from 'jspdf';
 import { API_BASE_URL, ENDPOINTS } from '../config/api';
 import logoImg from '../assets/new-logo.png';
 import { LABELS } from './oldOfficeModules';
+import { PAGE_TITLE_ON_DARK } from './ui';
 
 export const TOKEN_KEY = 'ssf_admin_token';
 
@@ -22,7 +23,11 @@ export function formatOfficeDate(value){ if(!value)return "—";
  return Number.isNaN(d.getTime())?s:d.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
 }
 
-export function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#12345A] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
+// Legacy office pages share this banner. It renders the page's single <h1> so
+// every IMS route has exactly one top-level heading at the same size.
+// `bare` drops the banner for the two pages that ship their own richer hero
+// (Members Register, Managing Committee) — otherwise they stack two navy headers.
+export function SimpleOfficeCard({title,subtitle,bare,children}){return <div className="space-y-5">{!bare&&<div className="bg-[#12345A] text-white rounded-2xl p-6"><h1 className={PAGE_TITLE_ON_DARK}>{title}</h1><p className="text-white/70 mt-1">{subtitle}</p></div>}{children}</div>}
 
 export const downloadPdf=function(doc,filename){
  try{ doc.save(filename||"ssf-document.pdf"); }

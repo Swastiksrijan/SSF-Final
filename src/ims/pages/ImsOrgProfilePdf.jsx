@@ -9,6 +9,7 @@ import {
 import ImsLayout from '../ImsLayout';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
+import { PAGE_TITLE_ON_DARK } from '../ui';
 import { PROFILE_DOC } from '../orgProfileData';
 import { previewProfilePdf, downloadProfilePdf } from '../orgProfilePdf';
 
@@ -90,7 +91,7 @@ export default function ImsOrgProfilePdf() {
           <div className="flex items-start gap-4">
             <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white/10 text-[#176447]"><FileText size={22} /></span>
             <div className="min-w-0">
-              <h1 className="text-2xl font-black leading-tight sm:text-3xl">
+              <h1 className={`${PAGE_TITLE_ON_DARK} leading-tight`}>
                 {lang === 'hi' ? 'संस्था परिचय पत्र — साझा करने योग्य PDF' : 'Organisation Profile PDF — ready to share'}
               </h1>
               <p className="mt-1 max-w-3xl text-sm text-white/70">

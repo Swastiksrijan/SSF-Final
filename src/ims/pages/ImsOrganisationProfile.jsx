@@ -11,6 +11,7 @@ import ImsLayout from '../ImsLayout';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
 import { API_BASE_URL, ENDPOINTS } from '../../config/api';
+import { PAGE_TITLE_ON_DARK } from '../ui';
 
 const TOKEN_KEY = 'ssf_admin_token';
 const cls = "w-full px-3 py-3 rounded-xl border border-zinc-200 bg-white outline-none focus:ring-2 focus:ring-[#12345A]/20";
@@ -23,7 +24,7 @@ const formatOfficeDate=function(value){ if(!value)return "—";
  return Number.isNaN(d.getTime())?s:d.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
 };
 
-function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#12345A] text-white rounded-2xl p-6"><h2 className="text-2xl font-black">{title}</h2><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
+function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#12345A] text-white rounded-2xl p-6"><h1 className={PAGE_TITLE_ON_DARK}>{title}</h1><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 
 // The old component carries a member-photo helper that was never reachable from
 // this section; these stubs keep that dead code harmless without editing the
