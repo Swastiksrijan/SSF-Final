@@ -277,17 +277,30 @@ function stampHeader(pdf, headerCanvas) {
 }
 
 function stampFooter(pdf, meta) {
-  const y = PAGE_H_MM - FOOTER_MM + 3;
-  const xr = PAGE_W_MM - TEXT_X_MM;
-  pdf.setDrawColor(213, 222, 232); pdf.setLineWidth(0.2);
-  pdf.line(TEXT_X_MM, y, xr, y);
-  pdf.setTextColor(91, 107, 122); pdf.setFontSize(6.6);
-  pdf.text(`Registered Office: ${ADDRESS_LINE}`, TEXT_X_MM, y + 4);
-  pdf.text(`${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail} · swastiksrijan.in`,
-    xr, y + 4, { align: 'right' });
-  pdf.setTextColor(148, 163, 184); pdf.setFontSize(6.2);
+  // Premium institutional footer: navy band, a restrained gold rule, and
+  // readable contact / pagination details on every page.
+  const top = PAGE_H_MM - FOOTER_MM;
+  pdf.setFillColor(16, 42, 67); // #102A43
+  pdf.rect(0, top, PAGE_W_MM, FOOTER_MM, 'F');
+  pdf.setFillColor(198, 160, 74); // #C6A04A
+  pdf.rect(0, top, PAGE_W_MM, 0.9, 'F');
+
+  const centerX = PAGE_W_MM / 2;
+  pdf.setTextColor(255, 255, 255);
+  pdf.setFont('helvetica', 'bold');
+  pdf.setFontSize(6.2);
+  pdf.text('SWASTIK SRIJAN FOUNDATION SAMITI', centerX, top + 4.5, { align: 'center' });
+
+  pdf.setFont('helvetica', 'normal');
+  pdf.setFontSize(5.7);
+  pdf.text(`Registered Office: ${ADDRESS_LINE}`, centerX, top + 7.7, { align: 'center', maxWidth: PAGE_W_MM - 16 });
+  pdf.setTextColor(226, 236, 244);
+  pdf.text(`${CONTACT_INFO.phones.primaryFormatted}  |  ${CONTACT_INFO.primaryEmail}  |  www.swastiksrijan.in`,
+    centerX, top + 10.8, { align: 'center', maxWidth: PAGE_W_MM - 16 });
+  pdf.setTextColor(226, 190, 105);
+  pdf.setFontSize(5.4);
   pdf.text(`Ref. ${meta.letterNo || '—'}  ·  Page ${pdf.internal.getCurrentPageInfo().pageNumber} of ${meta.pageCount}`,
-    PAGE_W_MM / 2, y + 8, { align: 'center' });
+    centerX, top + 14, { align: 'center' });
 }
 
 /**

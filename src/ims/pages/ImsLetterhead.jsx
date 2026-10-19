@@ -125,20 +125,42 @@ export default function ImsLetterhead() {
   return (
     <ImsLayout active="letterhead">
       <div className="mx-auto max-w-5xl space-y-5">
-        {/* header */}
-        <div className="rounded-2xl bg-[#12345A] p-6 text-white sm:p-8">
-          <div className="flex items-start gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white/10 text-[#176447]"><FileSignature size={22} /></span>
-            <div className="min-w-0">
-              <h1 className="text-2xl font-black leading-tight sm:text-3xl">
-                {lang === 'hi' ? 'लेटरहेड — आधिकारिक पत्र' : 'Letterhead — Official Letter'}
-              </h1>
-              <p className="mt-1 max-w-3xl text-sm text-white/70">
-                {lang === 'hi'
-                  ? 'किसी भी विषय पर — शासकीय विभाग, कंपनी, बैंक, दानदाता या सदस्य को — संस्था के लेटरहेड पर पत्र लिखें। अंग्रेज़ी, हिंदी या दोनों में; डाउनलोड, प्रिंट (ऑफ़लाइन भी) या व्हाट्सएप/ईमेल पर भेजें।'
-                  : 'Write to anyone — a government department, company, bank, donor or member — on the Foundation\u2019s own letterhead. English, हिंदी or both; download, print (works offline) or share on WhatsApp / e-mail.'}
-              </p>
+        {/* premium institutional header */}
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <div className="h-1.5 bg-gradient-to-r from-[#102A43] via-[#146B70] to-[#C6A04A]" />
+          <div className="grid gap-5 p-5 sm:p-7 lg:grid-cols-[minmax(0,1fr)_240px]">
+            <div className="flex items-start gap-4">
+              <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-[#e7edf2] bg-[#f8fafc] text-[#146B70]"><FileSignature size={25} /></span>
+              <div className="min-w-0">
+                <p className="text-[10px] font-extrabold uppercase tracking-[0.2em] text-[#146B70]">SSF · Official Correspondence</p>
+                <h1 className="mt-1 text-2xl font-black leading-tight text-[#102A43] sm:text-3xl">
+                  {lang === 'hi' ? 'आधिकारिक लेटरहेड' : 'Official Letterhead Studio'}
+                </h1>
+                <p className="mt-1 text-sm font-bold text-[#146B70]">Swastik Srijan Foundation Samiti</p>
+                <p className="text-sm font-semibold text-slate-600">स्वस्तिक सृजन फाउंडेशन समिति</p>
+                <p className="mt-3 max-w-3xl text-sm leading-6 text-slate-600">
+                  {lang === 'hi'
+                    ? 'सरकारी विभाग, CSR कंपनियों, बैंकों, दानदाताओं और आम जनता के लिए संस्था के आधिकारिक प्रारूप में पत्र तैयार करें। PDF डाउनलोड करें, प्रिंट करें या साझा करें।'
+                    : 'Prepare formal letters for government departments, CSR partners, banks, donors and the public. Preview, download a polished PDF, print, or share it.'}
+                </p>
+              </div>
             </div>
+            <div className="rounded-xl border border-slate-200 bg-[#F8FAFC] p-4">
+              <div className="text-[10px] font-extrabold uppercase tracking-[0.16em] text-slate-500">{lang === 'hi' ? 'संस्था की पहचान' : 'Institutional identity'}</div>
+              <div className="mt-3 border-b border-slate-200 pb-3">
+                <div className="text-[10px] font-bold text-slate-500">{lang === 'hi' ? 'पंजीकरण संख्या' : 'Registration No.'}</div>
+                <div className="mt-1 text-sm font-extrabold tracking-wide text-[#102A43]">05/22/03/11448/13</div>
+                <div className="mt-0.5 text-[11px] text-slate-500">MP Societies Registration Act, 1973</div>
+              </div>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                <div><div className="text-[10px] font-bold text-slate-500">{lang === 'hi' ? 'स्थापना' : 'Established'}</div><div className="mt-1 text-sm font-bold text-[#102A43]">2013</div></div>
+                <div><div className="text-[10px] font-bold text-slate-500">{lang === 'hi' ? 'कार्यक्षेत्र' : 'Scope'}</div><div className="mt-1 text-sm font-bold text-[#146B70]">{lang === 'hi' ? 'अखिल भारत' : 'Pan India'}</div></div>
+              </div>
+            </div>
+          </div>
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 bg-white px-5 py-3 text-xs text-slate-500 sm:px-7">
+            <span>{lang === 'hi' ? 'स्वचालित संदर्भ क्रमांक' : 'Automatic reference numbering'}</span>
+            <span className="font-semibold text-[#146B70]">{lang === 'hi' ? 'ऑनलाइन तैयार करें · PDF डाउनलोड · ऑफलाइन प्रिंट' : 'Create online · Download PDF · Print offline'}</span>
           </div>
         </div>
 
