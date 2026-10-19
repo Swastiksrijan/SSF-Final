@@ -104,6 +104,20 @@ async function main() {
   ok('timezone configurable (IANA)', (await publisher.timezone()) === 'America/New_York');
   await publisher.setConfig('timezone', 'Asia/Kolkata');
   ok('local parts respect tz (IST 08:00)', publisher.localParts(new Date('2026-03-04T02:30:00Z'), 'Asia/Kolkata').hhmm === '08:00');
+  {
+    // Regression: a planner called at 01:00 IST (19:30 UTC the day before) must
+    // file drafts under the IST date, not the server's UTC date — otherwise the
+    // early-morning slots are planned for "yesterday" and never publish.
+    await publisher.setConfig('seriesEnabled', { samvidhan: true, yojana: true, swasthya: true, join: true });
+    await publisher.setConfig('seriesTimes', { join: ['07:00', '19:00'] });
+    await SocialPost.destroy({ where: { kind: 'series' } });
+    await publisher.SocialSeriesProgress.destroy({ where: {} });
+    const earlyIst = new Date('2026-10-19T19:30:00Z'); // 2026-10-20 01:00 IST
+    const made = await publisher.planAwarenessSeries(earlyIst);
+    const days = [...new Set(made.map((p) => { const q = publisher.localParts(new Date(p.postDate), 'Asia/Kolkata'); return `${q.y}-${String(q.m).padStart(2, '0')}-${String(q.d).padStart(2, '0')}`; }))];
+    ok('planner files drafts under the configured-timezone date, not UTC', days.length === 1 && days[0] === '2026-10-20', days.join(','));
+    ok('planner still creates both Join slots for that day', made.filter((p) => p.data.seriesKey === 'join').length === 2);
+  }
 
   console.log('\nDedup / idempotency / published history:');
   await SocialPost.destroy({ where: {} });
