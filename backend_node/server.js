@@ -199,6 +199,19 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Volunteer seed skipped:', e.message);
     }
+    // Annual Progress Reports 2013-14 → 2025-26 — the year-wise reporting record,
+    // from data/annualReports.js. Additive and idempotent, so it runs on every
+    // boot and keeps the report register, its programmes, projects, activities
+    // and public documents in step with the source documents.
+    try {
+        const { seedAnnualReports } = require('./services/ims/annualReportSeed');
+        const ar = await seedAnnualReports();
+        if (ar.programmes || ar.projects || ar.documents || ar.activities) {
+            console.log(`✅ Annual reports: ${ar.years} year(s) — ${ar.programmes} programme(s), ${ar.financialYears} financial year(s), ${ar.projects} project(s), ${ar.documents} document(s), ${ar.activities} activity(ies) created`);
+        }
+    } catch (e) {
+        console.error('⚠️ Annual reports seed skipped:', e.message);
+    }
     // Derive the Notification & Action Centre alerts from real source records.
     // Idempotent (stable eventKey) and additive: it never edits or clears tasks.
     try {

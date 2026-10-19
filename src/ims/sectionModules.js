@@ -34,6 +34,7 @@ export const SECTIONS = {
         { key: 'letterhead', icon: 'FileSignature', path: '/ims/letterhead' },
         { key: 'donor_slips', icon: 'Receipt', path: '/ims/donor-slips' },
         { key: 'registers_required', icon: 'BookMarked', path: '/ims/registers' },
+        { key: 'annual_reports', icon: 'CalendarRange', path: '/ims/annual-reports' },
         { key: 'office_history', icon: 'History', path: '/ims/history' },
       ] },
     ],

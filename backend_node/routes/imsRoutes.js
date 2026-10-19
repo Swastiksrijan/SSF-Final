@@ -12,6 +12,7 @@ const { seedMeetings } = require('../services/ims/meetingsSeed');
 const { seedPolicy } = require('../services/ims/policySeed');
 const { seedOrgProfile } = require('../services/ims/orgProfileSeed');
 const { seedOfficeHistory } = require('../services/ims/officeHistorySeed');
+const { seedAnnualReports, annualReportRegister } = require('../services/ims/annualReportSeed');
 const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { universalSearch, meta: searchMeta } = require('../services/ims/search');
 const { volunteerDashboard } = require('../services/ims/volunteerNetwork');
@@ -46,7 +47,8 @@ router.post('/ims/seed', wrap(async (_req, r) => {
   const policy = await seedPolicy();
   const orgProfile = await seedOrgProfile();
   const officeHistory = await seedOfficeHistory();
-  r.json({ ...governance, meetings, policy, orgProfile, officeHistory });
+  const annualReports = await seedAnnualReports();
+  r.json({ ...governance, meetings, policy, orgProfile, officeHistory, annualReports });
 }));
 
 // Meetings & Minutes register — transcribed from the scanned baithak register.
@@ -58,6 +60,10 @@ router.post('/ims/org-profile/seed', wrap(async (_req, r) => r.json(await seedOr
 
 // ---- managing committee history (seeded from real office data) -------------
 router.post('/ims/office-history/seed', wrap(async (_req, r) => r.json(await seedOfficeHistory())));
+
+// ---- annual progress reports (year-wise reporting record, 2013-14 → 2025-26)
+router.post('/ims/annual-reports/seed', wrap(async (_req, r) => r.json(await seedAnnualReports())));
+router.get('/ims/annual-reports', wrap(async (_req, r) => r.json(await annualReportRegister())));
 
 // ---- person 360 ------------------------------------------------------------
 router.get('/ims/person360/:id', wrap(async (req, r) => {

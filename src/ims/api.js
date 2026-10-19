@@ -99,6 +99,8 @@ export const ims = {
   // ---- ORGANISATION PROFILE: master identity (seeded) ----
   orgProfileSeed: () => fetch(`${API_BASE_URL}/api/ims/org-profile/seed`, { method: 'POST', headers: headers() }).then(handle),
   officeHistorySeed: () => fetch(`${API_BASE_URL}/api/ims/office-history/seed`, { method: 'POST', headers: headers() }).then(handle),
+  annualReports: () => fetch(`${API_BASE_URL}/api/ims/annual-reports`, { headers: headers() }).then(handle),
+  annualReportsSeed: () => fetch(`${API_BASE_URL}/api/ims/annual-reports/seed`, { method: 'POST', headers: headers() }).then(handle),
 
   // ---- NOTIFICATION & ACTION CENTRE ----
   notifications: (params = {}) => {

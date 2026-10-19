@@ -55,6 +55,7 @@ const ANNUAL_REPORTS = [
   ['2017–18', 'https://drive.google.com/file/d/1JlFCdN7dGRLAK3NXZa1WlaRV6PBRjSaJ/view?usp=drivesdk'],
   ['2018–19', 'https://drive.google.com/file/d/1u_ewjd6MUhARR_g35PRCQQX12TpmZd_F/view?usp=drivesdk'],
   ['2019–20', 'https://drive.google.com/file/d/1ogaIch6vpZXL7SDGRYokdm0ARdzif5Od/view?usp=drivesdk'],
+  // 2020–21 was the "Annual Progress & Community Service Report" (COVID-19 year).
   ['2020–21', 'https://drive.google.com/file/d/1osL_PaieAjLxLPK9lX52aNj4Gk51jgBg/view?usp=drivesdk'],
   ['2021–22', 'https://drive.google.com/file/d/1FolHQb41PjtJDbbJxDK4tz8xgEgh2744/view?usp=drivesdk'],
   ['2022–23', 'https://drive.google.com/file/d/19aC8NZ0q0-yjUxhOgJLzQFES7IIrh4tq/view?usp=drivesdk'],
