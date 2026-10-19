@@ -18,6 +18,7 @@ export const NAV = [
       { key: 'membership_contributions', icon: 'Coins', path: '/ims/membership-contributions', resource: 'membershipContributions' },
       { key: 'appointment_letters', icon: 'Mail', path: '/ims/appointment-letters', resource: 'appointmentLetters' },
       { key: 'official_documents', icon: 'FileCheck2', path: '/ims/official-documents', resource: 'officialDocuments' },
+      { key: 'letterhead', icon: 'FileSignature', path: '/ims/letterhead' },
       { key: 'donor_slips', icon: 'Receipt', path: '/ims/donor-slips', resource: 'donorSlips' },
       { key: 'separations', icon: 'UserMinus', path: '/ims/separations', resource: 'separations' },
       { key: 'constitution', icon: 'ScrollText', path: '/ims/constitution' },

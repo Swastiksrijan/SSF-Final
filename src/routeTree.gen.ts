@@ -84,6 +84,7 @@ import { Route as ImsMembershipContributionsRouteImport } from './routes/ims/mem
 import { Route as ImsMembersRouteImport } from './routes/ims/members'
 import { Route as ImsMeetingsRouteImport } from './routes/ims/meetings'
 import { Route as ImsManagingCommitteeRouteImport } from './routes/ims/managing-committee'
+import { Route as ImsLetterheadRouteImport } from './routes/ims/letterhead'
 import { Route as ImsLearningCertificatesRouteImport } from './routes/ims/learning-certificates'
 import { Route as ImsKnowledgeRouteImport } from './routes/ims/knowledge'
 import { Route as ImsIntegrityRouteImport } from './routes/ims/integrity'
@@ -493,6 +494,11 @@ const ImsManagingCommitteeRoute = ImsManagingCommitteeRouteImport.update({
   path: '/ims/managing-committee',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsLetterheadRoute = ImsLetterheadRouteImport.update({
+  id: '/ims/letterhead',
+  path: '/ims/letterhead',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsLearningCertificatesRoute = ImsLearningCertificatesRouteImport.update({
   id: '/ims/learning-certificates',
   path: '/ims/learning-certificates',
@@ -726,6 +732,7 @@ export interface FileRoutesByFullPath {
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
   '/ims/learning-certificates': typeof ImsLearningCertificatesRoute
+  '/ims/letterhead': typeof ImsLetterheadRoute
   '/ims/managing-committee': typeof ImsManagingCommitteeRoute
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
@@ -833,6 +840,7 @@ export interface FileRoutesByTo {
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
   '/ims/learning-certificates': typeof ImsLearningCertificatesRoute
+  '/ims/letterhead': typeof ImsLetterheadRoute
   '/ims/managing-committee': typeof ImsManagingCommitteeRoute
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
@@ -942,6 +950,7 @@ export interface FileRoutesById {
   '/ims/integrity': typeof ImsIntegrityRoute
   '/ims/knowledge': typeof ImsKnowledgeRoute
   '/ims/learning-certificates': typeof ImsLearningCertificatesRoute
+  '/ims/letterhead': typeof ImsLetterheadRoute
   '/ims/managing-committee': typeof ImsManagingCommitteeRoute
   '/ims/meetings': typeof ImsMeetingsRoute
   '/ims/members': typeof ImsMembersRoute
@@ -1052,6 +1061,7 @@ export interface FileRouteTypes {
     | '/ims/integrity'
     | '/ims/knowledge'
     | '/ims/learning-certificates'
+    | '/ims/letterhead'
     | '/ims/managing-committee'
     | '/ims/meetings'
     | '/ims/members'
@@ -1159,6 +1169,7 @@ export interface FileRouteTypes {
     | '/ims/integrity'
     | '/ims/knowledge'
     | '/ims/learning-certificates'
+    | '/ims/letterhead'
     | '/ims/managing-committee'
     | '/ims/meetings'
     | '/ims/members'
@@ -1267,6 +1278,7 @@ export interface FileRouteTypes {
     | '/ims/integrity'
     | '/ims/knowledge'
     | '/ims/learning-certificates'
+    | '/ims/letterhead'
     | '/ims/managing-committee'
     | '/ims/meetings'
     | '/ims/members'
@@ -1372,6 +1384,7 @@ export interface RootRouteChildren {
   ImsIntegrityRoute: typeof ImsIntegrityRoute
   ImsKnowledgeRoute: typeof ImsKnowledgeRoute
   ImsLearningCertificatesRoute: typeof ImsLearningCertificatesRoute
+  ImsLetterheadRoute: typeof ImsLetterheadRoute
   ImsManagingCommitteeRoute: typeof ImsManagingCommitteeRoute
   ImsMeetingsRoute: typeof ImsMeetingsRoute
   ImsMembersRoute: typeof ImsMembersRoute
@@ -1933,6 +1946,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsManagingCommitteeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/letterhead': {
+      id: '/ims/letterhead'
+      path: '/ims/letterhead'
+      fullPath: '/ims/letterhead'
+      preLoaderRoute: typeof ImsLetterheadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/learning-certificates': {
       id: '/ims/learning-certificates'
       path: '/ims/learning-certificates'
@@ -2252,6 +2272,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsIntegrityRoute: ImsIntegrityRoute,
   ImsKnowledgeRoute: ImsKnowledgeRoute,
   ImsLearningCertificatesRoute: ImsLearningCertificatesRoute,
+  ImsLetterheadRoute: ImsLetterheadRoute,
   ImsManagingCommitteeRoute: ImsManagingCommitteeRoute,
   ImsMeetingsRoute: ImsMeetingsRoute,
   ImsMembersRoute: ImsMembersRoute,

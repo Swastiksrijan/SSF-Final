@@ -189,6 +189,7 @@ export const DICT = {
   membership_contributions: { en: 'Membership & Contribution', hi: 'सदस्यता व योगदान' },
   appointment_letters: { en: 'Appointment Letters', hi: 'नियुक्ति पत्र' },
   official_documents: { en: 'Official Documents', hi: 'वैधानिक दस्तावेज़' },
+  letterhead: { en: 'Letterhead / Letter', hi: 'लेटरहेड / पत्र' },
   donor_slips: { en: 'Donor Slips & Receipts', hi: 'दान रसीदें' },
   separations: { en: 'Role Changes & Separation', hi: 'पद परिवर्तन व पृथक्करण' },
   download_center: { en: 'Download / Export', hi: 'डाउनलोड / निर्यात' },
