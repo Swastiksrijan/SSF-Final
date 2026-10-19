@@ -125,7 +125,7 @@ export default function SectionNav({ active }) {
 
   return (
     <div ref={menuRef} className="relative z-30">
-      <div className="sticky top-[4.5rem] border-b border-slate-200 bg-white/95 shadow-[0_8px_18px_-14px_rgba(18,52,90,0.4)] backdrop-blur">
+      <div className="border-b border-slate-200 bg-white/95 shadow-[0_8px_18px_-14px_rgba(18,52,90,0.4)] backdrop-blur">
         <div className="mx-auto flex max-w-[1600px] items-center gap-3 px-4 lg:px-8">
           <button
             type="button"
