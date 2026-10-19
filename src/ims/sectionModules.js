@@ -31,6 +31,7 @@ export const SECTIONS = {
       ] },
       { labelKey: 'grp_documents', items: [
         { key: 'official_documents', icon: 'FileCheck2', path: '/ims/official-documents' },
+        { key: 'letterhead', icon: 'FileSignature', path: '/ims/letterhead' },
         { key: 'donor_slips', icon: 'Receipt', path: '/ims/donor-slips' },
         { key: 'registers_required', icon: 'BookMarked', path: '/ims/registers' },
         { key: 'office_history', icon: 'History', path: '/ims/history' },
