@@ -8,6 +8,7 @@ const { mainDashboard, moduleDashboard } = require('../services/ims/dashboard');
 const { person360 } = require('../services/ims/person360');
 const { meetingDossier, member360 } = require('../services/ims/workspaces');
 const { seedGovernance } = require('../services/ims/seed');
+const { seedMeetings } = require('../services/ims/meetingsSeed');
 const { seedPolicy } = require('../services/ims/policySeed');
 const { seedOrgProfile } = require('../services/ims/orgProfileSeed');
 const { seedOfficeHistory } = require('../services/ims/officeHistorySeed');
@@ -41,11 +42,16 @@ router.get('/ims/roles', (_req, r) => r.json({ roles: ROLES, grants: DEFAULT_GRA
 // ---- seed ------------------------------------------------------------------
 router.post('/ims/seed', wrap(async (_req, r) => {
   const governance = await seedGovernance();
+  const meetings = await seedMeetings();
   const policy = await seedPolicy();
   const orgProfile = await seedOrgProfile();
   const officeHistory = await seedOfficeHistory();
-  r.json({ ...governance, policy, orgProfile, officeHistory });
+  r.json({ ...governance, meetings, policy, orgProfile, officeHistory });
 }));
+
+// Meetings & Minutes register — transcribed from the scanned baithak register.
+// Additive and idempotent: safe to call repeatedly.
+router.post('/ims/meetings/seed', wrap(async (_req, r) => r.json(await seedMeetings())));
 
 // ---- organisation profile (master identity, seeded) ------------------------
 router.post('/ims/org-profile/seed', wrap(async (_req, r) => r.json(await seedOrgProfile())));

@@ -163,6 +163,18 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Member register seed skipped:', e.message);
     }
+    // Meetings & Minutes register — from data/meetingsRegister.js (the scanned
+    // baithak register). Additive and idempotent; runs once the People master
+    // exists so attendance can be linked to real persons.
+    try {
+        const { seedMeetings } = require('./services/ims/meetingsSeed');
+        const mt = await seedMeetings();
+        if (mt.meetings || mt.attendees) {
+            console.log(`✅ Meetings register: ${mt.meetings} meeting(s), ${mt.attendees} attendance row(s), ${mt.resolutions} resolution(s)`);
+        }
+    } catch (e) {
+        console.error('⚠️ Meetings register seed skipped:', e.message);
+    }
     // An earlier approval issued a register number but left the row still
     // carrying the website-account marker, which hid that member's ID card in
     // the portal. Repair those rows once per boot; idempotent.
