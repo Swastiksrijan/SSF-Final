@@ -52,25 +52,25 @@ export default function NotificationsHeader() {
   };
 
   return (
-    <div className="relative mb-6 overflow-hidden rounded-3xl bg-gradient-to-br from-[#12345A] to-[#12345A] p-5 text-white shadow-[0_18px_40px_-22px_rgba(18,52,90,0.55)] sm:p-6">
-      <span className="pointer-events-none absolute -right-14 -top-16 h-48 w-48 rounded-full bg-white/10" />
-      <div className="relative flex flex-wrap items-center gap-4">
-        <span className="grid h-12 w-12 shrink-0 place-items-center rounded-2xl bg-white/15 ring-1 ring-white/20">
-          <Icons.BellRing size={24} />
+    <div className="border-b border-slate-200 bg-white/95 shadow-[0_8px_18px_-14px_rgba(18,52,90,0.4)] backdrop-blur">
+      <div className="mx-auto flex max-w-[1600px] flex-wrap items-center gap-3 px-4 py-2 lg:px-8">
+        <span className="grid h-7 w-7 shrink-0 place-items-center rounded-md bg-[#12345A] text-[#F7A814]">
+          <Icons.BellRing size={15} />
         </span>
-        <div className="min-w-0 flex-1">
-          <h1 className="text-xl font-black leading-tight tracking-tight sm:text-2xl">{t('centre_kicker')}</h1>
-          <p className="mt-0.5 text-sm font-medium text-white/70">{t('centre_purpose')}</p>
-        </div>
+        <span className="min-w-0 leading-tight">
+          <span className="block text-xs font-bold text-[#12345A]">{t('centre_kicker')}</span>
+          <span className="block text-[10px] font-medium text-[#176447]">{t('centre_purpose')}</span>
+        </span>
+        <span className="min-w-0 flex-1" />
         <div className="flex flex-wrap items-center gap-2">
           <button type="button" onClick={refresh} disabled={busy}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-white/10 px-3.5 py-2 text-sm font-semibold text-white ring-1 ring-white/20 transition hover:bg-white/20 disabled:opacity-50">
-            <Icons.RefreshCw size={15} className={busy ? 'animate-spin' : ''} />
+            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-semibold text-slate-700 transition-colors hover:border-[#12345A] hover:text-[#12345A] disabled:opacity-50">
+            <Icons.RefreshCw size={14} className={busy ? 'animate-spin' : ''} />
             {t('refresh')}
           </button>
           <button type="button" onClick={markAll} disabled={busy || unread === 0}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-[#176447] px-3.5 py-2 text-sm font-bold text-white shadow-sm transition hover:bg-[#176447] disabled:opacity-50">
-            <Icons.CheckCheck size={15} />
+            className="inline-flex items-center gap-1.5 rounded-lg bg-[#176447] px-2.5 py-1.5 text-xs font-bold text-white shadow-sm transition-colors hover:bg-[#12345A] disabled:opacity-50">
+            <Icons.CheckCheck size={14} />
             {t('mark_all_read')}
             {unread > 0 && <span className="rounded-full bg-white/25 px-1.5 text-[11px] font-black">{unread}</span>}
           </button>
