@@ -1,14 +1,12 @@
-// SSF brand asset library — one place for every official logo, seal, signature,
-// certificate and pledge badge, so any page can use them without hunting through
-// the public folder.
+// SSF brand asset library — one place for every official logo, certificate and
+// pledge badge, so any page can use them without hunting through the public folder.
 //
-// Everything lives under `public/brand/` (served at `/brand/...`) except the two
-// pieces the letterhead renderer imports as modules (`src/assets/brand/`), because
-// Vite must inline those into the PDF build.
+// Everything lives under `public/brand/` (served at `/brand/...`). The letterhead
+// renderer keeps its own copies of the seal and the signature in
+// `src/assets/brand/`, because Vite must inline those into the PDF build — and
+// because they must NOT sit at a guessable public URL (see the note in BRAND).
 //
 //   public/brand/logo/          SSF logos — round mark, wordmark, horizontal, banner
-//   public/brand/seals/         Sanstha seal / mohar (registration, president, sanstha)
-//   public/brand/signatures/    Scanned signatory signatures (transparent PNG)
 //   public/brand/certificates/  Awards / appreciation certificates to named people
 //   public/brand/badges/        Government pledge & participation certificates
 //   public/brand/promo/         Infographics, posters and campaign artwork
