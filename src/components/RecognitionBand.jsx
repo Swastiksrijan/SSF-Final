@@ -34,11 +34,15 @@ function Tile({ item, onOpen }) {
       className="group w-40 shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-white text-left shadow-sm transition hover:-translate-y-1 hover:border-[#F7A814] hover:shadow-lg sm:w-48"
     >
       <span className="flex h-28 items-center justify-center bg-[#F5F8FB] p-2 sm:h-32">
+        {/* Eager, not lazy: the strip is an auto-scrolling marquee, so a lazy tile
+            is still off-screen when the browser evaluates it and never loads —
+            the visitor sees an empty grey box. */}
         <img
           src={item.src}
           alt={`${item.label} — ${tag.en}`}
-          loading="lazy"
-          className={`max-h-full max-w-full object-contain ${item.kind === 'sign' ? 'opacity-90' : ''}`}
+          loading="eager"
+          decoding="async"
+          className="max-h-full max-w-full object-contain"
         />
       </span>
       <span className="block px-3 py-2.5">
