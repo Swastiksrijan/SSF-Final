@@ -95,7 +95,12 @@ export default function Team() {
         </div>
       </section>
 
-      <section className="py-20 lg:py-28 px-6 lg:px-8 bg-white border-b border-[#EAF0F6]"><div className="max-w-7xl mx-auto"><div className="mb-14 lg:mb-16"><SectionHeader enTitle="Leadership & Governance" hiTitle="नेतृत्व एवं शासन" description="The governing leadership responsible for strategic direction, governance, policy, compliance and institutional development." /></div><div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7">{teamStructure.leadership.map((member, index) => <TeamMemberCard key={`leadership-${index}`} member={member} index={index} />)}</div></div></section>
+      <section className="py-20 lg:py-28 px-6 lg:px-8 bg-white border-b border-[#EAF0F6]"><div className="max-w-7xl mx-auto"><div className="mb-14 lg:mb-16"><SectionHeader enTitle="Leadership & Governance" hiTitle="नेतृत्व एवं शासन" description="The governing leadership responsible for strategic direction, governance, policy, compliance and institutional development." /></div>
+        <figure className="mb-12 overflow-hidden rounded-[2rem] border border-[#EAF0F6] bg-[#FAF9F5] p-4 shadow-sm md:p-6">
+          <img src={BRAND.governingBody} alt="The governing body of Swastik Srijan Foundation Samiti" loading="lazy" className="mx-auto w-full max-w-2xl rounded-2xl" />
+          <figcaption className="mt-4 text-center text-sm font-semibold text-slate-500">The Foundation&apos;s governing body · कार्यकारिणी समिति</figcaption>
+        </figure>
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7">{teamStructure.leadership.map((member, index) => <TeamMemberCard key={`leadership-${index}`} member={member} index={index} />)}</div></div></section>
 
       <section className="py-20 lg:py-28 px-6 lg:px-8 bg-[#EAF0F6] border-b border-[#EAF0F6]"><div className="max-w-7xl mx-auto"><div className="mb-14 lg:mb-16"><SectionHeader enTitle="Advisory Council" hiTitle="सलाहकार परिषद्" description="Experienced professionals providing strategic, legal and institutional guidance to the Foundation." /></div><div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">{teamStructure.advisory.map((member, index) => <TeamMemberCard key={`advisory-${index}`} member={member} index={index} />)}</div></div></section>
 

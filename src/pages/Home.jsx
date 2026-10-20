@@ -10,7 +10,10 @@ import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
 import OptimizedImage from "../components/OptimizedImage";
+import TrustCredentials from "../components/TrustCredentials";
+import PledgeWall from "../components/PledgeWall";
 import { CONTACT_INFO } from "../config/contact";
+import { BRAND } from "../data/brandAssets";
 import pageHeader from "../assets/page-header.jpg";
 
 const values = [
@@ -111,6 +114,8 @@ export default function Home() {
 
       <FloatingTicker />
 
+      <TrustCredentials />
+
       <section className="relative border-y border-[#12345A]/10 bg-[#EAF0F6] py-8 shadow-[0_22px_46px_-36px_rgba(18,52,90,0.45)]">
         <div className="container mx-auto grid max-w-7xl gap-4 px-5 sm:grid-cols-2 lg:grid-cols-4 md:px-8">
           {[
@@ -189,7 +194,13 @@ export default function Home() {
 
       <section className="bg-white px-5 py-16 md:px-8 md:py-20">
         <div className="container mx-auto max-w-7xl">
-          <div className="mb-9 max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Our Focus Areas · हमारे कार्यक्षेत्र</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#12345A] md:text-5xl">Where we focus our efforts</h2><p className="mt-4 leading-relaxed text-slate-600">These areas reflect the Foundation’s broad objectives. Individual activities and programmes are developed according to community needs, resources and partnerships.</p></div>
+          <div className="mb-9 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+            <div className="max-w-3xl"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Our Focus Areas · हमारे कार्यक्षेत्र</p><h2 className="mt-3 font-serif text-3xl leading-tight text-[#12345A] md:text-5xl">Where we focus our efforts</h2><p className="mt-4 leading-relaxed text-slate-600">These areas reflect the Foundation’s broad objectives. Individual activities and programmes are developed according to community needs, resources and partnerships.</p></div>
+            <figure className="mx-auto w-full max-w-sm">
+              <img src={BRAND.focusWheel} alt="Diagram of the Foundation's focus areas" loading="lazy" className="w-full" />
+              <figcaption className="mt-3 text-center text-xs font-semibold text-slate-500">The Foundation&apos;s focus areas · कार्यक्षेत्र</figcaption>
+            </figure>
+          </div>
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {focusAreas.map((item) => <Link to={item.path} key={item.title} className="group flex gap-4 rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-0.5 hover:border-[#F7A814] hover:shadow-lg"><span className="relative h-14 w-14 shrink-0 overflow-hidden rounded-full border-2 border-[#F7A814] bg-white shadow-sm"><img src={item.image} alt="" loading="lazy" className="h-full w-full object-cover transition duration-300 group-hover:scale-110" /></span><span className="min-w-0"><span className="block font-bold text-[#12345A]">{item.title}</span><span className="mt-1 block text-sm font-medium text-[#12345A]">{item.hi}</span><span className="mt-3 block text-sm leading-relaxed text-slate-600">{item.text}</span><span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-[#12345A]">Explore <FaArrowRight className="transition group-hover:translate-x-1" /></span></span></Link>)}
           </div>
@@ -267,6 +278,28 @@ export default function Home() {
           </div>
         </div>
       </section>
+      <section className="border-y border-[#EAF0F6] bg-[#FAF9F5] px-5 py-14 md:px-8 md:py-16">
+        <div className="container mx-auto max-w-7xl">
+          <div className="mx-auto mb-8 max-w-3xl text-center">
+            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#12345A]">National Pledges · राष्ट्रीय संकल्प</p>
+            <h2 className="mt-3 font-serif text-3xl text-[#12345A] md:text-4xl">Campaigns we have pledged to.</h2>
+            <p className="mt-4 leading-relaxed text-slate-600">
+              From Swachh Bharat and Fit India to LiFE and TB Mukt Bharat, the Foundation has formally
+              taken part in national campaigns and holds the pledge certificates to show for it.
+            </p>
+            <p className="mt-2 font-hindi leading-relaxed text-slate-600">
+              स्वच्छ भारत, फिट इंडिया, LiFE और टीबी मुक्त भारत जैसे राष्ट्रीय अभियानों में संस्था की औपचारिक सहभागिता रही है।
+            </p>
+          </div>
+          <PledgeWall limit={24} />
+          <div className="mt-8 text-center">
+            <Link to="/Transparency" className="inline-flex items-center gap-2 rounded-full border border-[#12345A] px-6 py-3 font-bold text-[#12345A] transition hover:bg-[#EAF0F6]">
+              View certificates &amp; compliance <FaArrowRight />
+            </Link>
+          </div>
+        </div>
+      </section>
+
       <section className="bg-white px-5 py-12 md:px-8"><div className="container mx-auto max-w-7xl"><div className="mb-8 text-center"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Support SSF • सहयोग करें</p><h2 className="mt-2 font-serif text-3xl text-[#12345A] md:text-4xl">Help meaningful work move forward.</h2></div><EliteDonationCard /></div></section>
       <section className="bg-[#FAF9F5] px-5 py-16 md:px-8 md:py-20"><div className="container mx-auto max-w-7xl"><div className="mb-10 text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#12345A] md:text-sm">Institutional Journey • संस्थागत यात्रा</p><h2 className="mt-3 font-serif text-3xl text-[#12345A] md:text-5xl">A continuing journey of service.</h2><p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">Explore the history and milestones documented by SSF.</p></div><ImpactTimeline /><div className="mt-8 text-center"><Link to="/Journey" className="inline-flex items-center gap-2 rounded-full border border-[#12345A] px-6 py-3 font-bold text-[#12345A] transition hover:bg-[#EAF0F6]">View service journey <FaArrowRight /></Link></div></div></section>
 

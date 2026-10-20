@@ -26,13 +26,26 @@
 // the watermark drawn underneath it stays visible between the lines of text.
 // Stamping it as JPEG (as an earlier revision did) painted an opaque white
 // block over the watermark and erased it.
+
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import logoImg from '../assets/new-logo.png';
+import signatureImg from '../assets/brand/signature-secretary.png';
+import sealImg from '../assets/brand/seal-sanstha.png';
 import latinUrl from '../assets/fonts/PlusJakartaSans-Variable.ttf?url';
 import devaRegularUrl from '../assets/fonts/NotoSansDevanagari-Regular.ttf?url';
 import devaBoldUrl from '../assets/fonts/NotoSansDevanagari-Bold.ttf?url';
 import { CONTACT_INFO } from '../config/contact';
+
+// The Foundation holds a scanned signature for one signatory only. Printing it
+// under another person's name would be a forged signature, so the renderer
+// paints it only when the selected signatory matches the scan's owner.
+export const SIGNATURE_HOLDER = 'Amit Kumar Pandey';
+
+function hasSignatureScan(f) {
+  if (f.signature === false) return false;
+  return !f.signatoryName || f.signatoryName.trim() === SIGNATURE_HOLDER;
+}
 
 // Palette: the approved SSF brand tokens declared in src/index.css `:root`
 // (--ssf-navy, --ssf-green, --ssf-ivory, --ssf-soft-blue, --ssf-charcoal,
@@ -210,9 +223,15 @@ const BASE_CSS = `
   .lh-p { margin-top: 9px; font-size: 12.4px; text-align: justify; white-space: pre-wrap; }
   .lh-thanks { margin-top: 16px; font-size: 12.4px; }
 
-  .lh-sign { margin-top: 26px; text-align: right; }
+  .lh-sign { margin-top: 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+  .lh-sign-col { text-align: right; margin-left: auto; }
   .lh-sign .for { font-size: 12px; font-weight: 700; color: ${INK}; }
-  .lh-sign .line { margin: 34px 0 0 auto; width: 208px; border-top: 1px dashed #B9C6D4; }
+  /* The scanned signature sits above the name, the way it is written on paper.
+     The dashed rule stays underneath as the signing line. */
+  .lh-sign .sig { height: 34px; width: auto; margin: 8px 2px 0 auto; display: block; }
+  .lh-sign .line { margin: 2px 0 0 auto; width: 208px; border-top: 1px dashed #B9C6D4; }
+  /* Organisation seal, bottom-left of the signing block. */
+  .lh-sign .seal { width: 88px; height: auto; opacity: .88; flex-shrink: 0; }
   .lh-sign .nm { margin-top: 5px; font-size: 13px; font-weight: 800; color: ${NAVY}; }
   .lh-sign .desig { font-size: 11px; color: ${INK}; }
 
@@ -282,10 +301,14 @@ function bodyHtml(f, lang) {
     ${paragraphs.map((p) => `<div class="lh-p" data-safe>${esc(p)}</div>`).join('')}
     <div class="lh-thanks" data-safe>${esc(closing)}</div>
     <div class="lh-sign" data-safe>
-      <div class="for">${pick('For', 'हेतु', lang)} ${esc(ORG.en)}</div>
-      <div class="line"></div>
-      <div class="nm">${esc(f.signatoryName || '')}</div>
-      <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
+      ${f.seal === false ? '' : `<img class="seal" src="${sealImg}" alt="Organisation seal" />`}
+      <div class="lh-sign-col">
+        <div class="for">${pick('For', 'हेतु', lang)} ${esc(ORG.en)}</div>
+        ${hasSignatureScan(f) ? `<img class="sig" src="${signatureImg}" alt="Signature" data-signature-img />` : ''}
+        <div class="line"></div>
+        <div class="nm">${esc(f.signatoryName || '')}</div>
+        <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
+      </div>
     </div>
     ${f.enclosures ? `<div class="lh-extra" data-safe>
       <span class="lbl">${pick('Enclosures', 'संलग्नक', lang)}:</span> ${esc(f.enclosures)}

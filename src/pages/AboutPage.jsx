@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { FaArrowRight, FaCalendarAlt, FaGlobeAsia, FaHeart, FaHandshake, FaShieldAlt, FaUsers, FaBullseye } from "react-icons/fa";
 import OptimizedImage from "../components/OptimizedImage";
+import { BRAND } from "../data/brandAssets";
 import footerImg1 from "../assets/footer-gallery-1.jpg";
 import footerImg2 from "../assets/footer-gallery-2.jpg";
 import footerImg3 from "../assets/footer-gallery-3.jpg";
@@ -83,7 +84,12 @@ export default function AboutPage() {
             </div>
             <h3 className="text-xl font-bold text-[#12345A] mt-5">Mr. Ramesh Pandey</h3><p className="text-[#E6530E] font-semibold text-sm">Founder & President</p>
           </div>
-          <div className="space-y-5 text-[#26343D] leading-relaxed text-lg"><p>“Social development becomes meaningful when people come together with a spirit of cooperation, learning and responsibility. Swastik Srijan Foundation was established with the belief that every person deserves dignity, opportunity and a chance to contribute.”</p><p>Our journey is guided by education, skill development, awareness, community participation and practical support. We seek to encourage positive change through sincere service, transparency and meaningful partnerships.</p><p className="font-hindi text-base text-[#26343D]">हमारा प्रयास है कि सहयोग, कौशल, जागरूकता और सृजन के माध्यम से समाज में सकारात्मक परिवर्तन को बढ़ावा दिया जाए। सेवा में पारदर्शिता, सम्मान और समान अवसर हमारे लिए महत्वपूर्ण हैं।</p></div>
+          <div className="space-y-5 text-[#26343D] leading-relaxed text-lg"><p>“Social development becomes meaningful when people come together with a spirit of cooperation, learning and responsibility. Swastik Srijan Foundation was established with the belief that every person deserves dignity, opportunity and a chance to contribute.”</p><p>Our journey is guided by education, skill development, awareness, community participation and practical support. We seek to encourage positive change through sincere service, transparency and meaningful partnerships.</p><p className="font-hindi text-base text-[#26343D]">हमारा प्रयास है कि सहयोग, कौशल, जागरूकता और सृजन के माध्यम से समाज में सकारात्मक परिवर्तन को बढ़ावा दिया जाए। सेवा में पारदर्शिता, सम्मान और समान अवसर हमारे लिए महत्वपूर्ण हैं।</p>
+            <div className="flex items-center gap-3 pt-2">
+              <img src={BRAND.sealSanstha} alt="Swastik Srijan Foundation official seal" className="h-16 w-16 object-contain" />
+              <span className="text-xs font-bold uppercase tracking-[0.16em] text-[#176447]">Official seal of the Foundation<br />संस्था की मोहर</span>
+            </div>
+          </div>
         </div>
       </div></section>
 

@@ -4,6 +4,7 @@ import {
   EmblemDual, EmblemSociety, EmblemPillar, EmblemTilt, EmblemNature,
   EmblemWorld, EmblemUniverse, EmblemHands, EmblemUnity,
 } from "../components/humanity/HumanityEmblems";
+import { BRAND } from "../data/brandAssets";
 
 const HumanityAndTruth = () => {
   return (
@@ -21,6 +22,16 @@ const HumanityAndTruth = () => {
             Humanity and Truth: As the World Truly Is
           </p>
           <div className="mt-10 h-px w-24 bg-[#176447] mx-auto opacity-50"></div>
+          <figure className="mt-10 mx-auto max-w-2xl overflow-hidden rounded-2xl border border-[#EAF0F6] shadow-[0_20px_50px_-40px_rgba(18,52,90,0.6)]">
+            <img
+              src={BRAND.humanityAndTruth}
+              alt="मानवता और सत्य: एक सार्वभौमिक यात्रा — Humanity and Truth: a universal journey"
+              className="w-full object-cover"
+            />
+            <figcaption className="bg-white/90 px-4 py-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#12345A]">
+              मानवता और सत्य · एक सार्वभौमिक यात्रा
+            </figcaption>
+          </figure>
         </div>
       </section>
 
@@ -377,7 +388,12 @@ const HumanityAndTruth = () => {
 
           <div className="pt-8">
             <div className="h-px w-16 bg-[#176447] mx-auto mb-6"></div>
-            <h3 className="text-2xl font-hindi font-bold text-[#12345A]">Ramesh Pandey</h3>
+            <img
+              src={BRAND.sealSanstha}
+              alt="Official seal of Swastik Srijan Foundation"
+              className="mx-auto h-20 w-20 object-contain"
+            />
+            <h3 className="mt-4 text-2xl font-hindi font-bold text-[#12345A]">Ramesh Pandey</h3>
             <p className="text-[#12345A] font-bold">Founder</p>
             <p className="text-[#12345A]">Swastik Srijan Foundation</p>
           </div>
