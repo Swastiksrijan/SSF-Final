@@ -19,6 +19,7 @@ import {
   FaMusic,
   FaShareAlt,
 } from "react-icons/fa";
+import { BRAND } from "../data/brandAssets";
 
 export const Route = createFileRoute("/Objectives")({
   component: ObjectivesPage,
@@ -179,6 +180,10 @@ function ObjectivesPage() {
               <div className="mx-auto max-w-5xl">
                 <div className="mb-8 text-center"><p className="text-xs font-black uppercase tracking-[0.2em] text-[#12345A]">Registered Scope | पंजीकृत कार्यक्षेत्र</p><h3 className="mt-2 text-3xl font-serif font-bold text-[#12345A] md:text-4xl">Our Broader Areas of Work | हमारे व्यापक कार्यक्षेत्र</h3><p className="mx-auto mt-4 max-w-3xl text-[#26343D] leading-7">The summary above highlights our principal focus areas. Our registered objectives are broader and provide scope for work in education, skills, health, women and children, rural development, environment, social awareness and other community-focused areas, subject to applicable rules and available resources.<br/>ऊपर दिया गया सारांश हमारे प्रमुख कार्यक्षेत्रों को दर्शाता है। हमारे पंजीकृत उद्देश्य व्यापक हैं और लागू नियमों तथा उपलब्ध संसाधनों के अनुसार शिक्षा, कौशल, स्वास्थ्य, महिला एवं बाल विकास, ग्रामीण विकास, पर्यावरण, सामाजिक जागरूकता तथा अन्य समुदाय-केंद्रित क्षेत्रों में कार्य की गुंजाइश प्रदान करते हैं।</p></div>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{["Education & Knowledge", "Skill Development & Livelihood", "Women & Child Development", "Health & Well-being", "Environment & Natural Resources", "Agriculture & Rural Development", "Social Justice & Awareness", "Disability, Elderly & Rehabilitation", "Animal & Wildlife Protection", "Cultural, Creative & Community Development"].map((area) => <div key={area} className="flex items-center gap-3 rounded-2xl border border-[#EAF0F6] bg-white p-4 shadow-sm"><FaCheckCircle className="shrink-0 text-[#F7A814]" /><span className="font-bold text-[#26343D]">{area}</span></div>)}</div>
+                <figure className="mx-auto mt-10 max-w-xl overflow-hidden rounded-2xl border border-[#EAF0F6] bg-white shadow-sm">
+                  <img src={BRAND.legalWorkAreas} alt="Chart of the areas in which Swastik Srijan Foundation is legally registered to work" loading="lazy" className="w-full" />
+                  <figcaption className="px-4 py-3 text-center text-xs font-semibold text-[#26343D]">Areas in which the Foundation is legally registered to work · पंजीकृत कार्यक्षेत्र</figcaption>
+                </figure>
                 <p className="mt-6 text-center text-xs leading-6 text-[#26343D]">This website section is a concise public summary and does not replace the Foundation’s registration documents, memorandum or rules.<br/>यह वेबसाइट अनुभाग एक संक्षिप्त सार्वजनिक विवरण है और फाउंडेशन के पंजीकरण दस्तावेजों, मेमोरेंडम या नियमों का स्थान नहीं लेता।</p>
               </div>
             </motion.section>
