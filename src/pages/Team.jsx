@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { FaArrowRight } from "react-icons/fa";
+import { BRAND } from "../data/brandAssets";
 
 // Team data structure - Single source of truth
 const teamStructure = {
