@@ -13,6 +13,7 @@ const { seedPolicy } = require('../services/ims/policySeed');
 const { seedOrgProfile } = require('../services/ims/orgProfileSeed');
 const { seedOfficeHistory } = require('../services/ims/officeHistorySeed');
 const { seedAnnualReports, annualReportRegister } = require('../services/ims/annualReportSeed');
+const { seedFinancialYearRegisters } = require('../services/ims/fyRegistersSeed');
 const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { universalSearch, meta: searchMeta } = require('../services/ims/search');
 const { volunteerDashboard } = require('../services/ims/volunteerNetwork');
@@ -48,7 +49,8 @@ router.post('/ims/seed', wrap(async (_req, r) => {
   const orgProfile = await seedOrgProfile();
   const officeHistory = await seedOfficeHistory();
   const annualReports = await seedAnnualReports();
-  r.json({ ...governance, meetings, policy, orgProfile, officeHistory, annualReports });
+  const fyRegisters = await seedFinancialYearRegisters();
+  r.json({ ...governance, meetings, policy, orgProfile, officeHistory, annualReports, fyRegisters });
 }));
 
 // Meetings & Minutes register — transcribed from the scanned baithak register.
@@ -64,6 +66,10 @@ router.post('/ims/office-history/seed', wrap(async (_req, r) => r.json(await see
 // ---- annual progress reports (year-wise reporting record, 2013-14 → 2025-26)
 router.post('/ims/annual-reports/seed', wrap(async (_req, r) => r.json(await seedAnnualReports())));
 router.get('/ims/annual-reports', wrap(async (_req, r) => r.json(await annualReportRegister())));
+
+// ---- FY 2025-26 workbook registers (Sector Registers, Annual Compliance,
+// Sahyog in-kind support) — additive and idempotent.
+router.post('/ims/fy-registers/seed', wrap(async (_req, r) => r.json(await seedFinancialYearRegisters())));
 
 // ---- person 360 ------------------------------------------------------------
 router.get('/ims/person360/:id', wrap(async (req, r) => {
