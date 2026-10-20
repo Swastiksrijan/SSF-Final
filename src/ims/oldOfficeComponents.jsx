@@ -8,6 +8,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { FaArrowLeft, FaBook, FaChartLine, FaDownload, FaPlus, FaSearch, FaUsers, FaFileAlt, FaRupeeSign, FaCalendarAlt, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaPrint, FaVideo, FaUserTie, FaCheckCircle, FaPiggyBank } from "react-icons/fa";
 import jsPDF from "jspdf";
+import logoImg from "../assets/new-logo.png";
 import { API_BASE_URL, ENDPOINTS } from "../config/api";
 import { generateCertificate, generateIdentityCard } from "../utils/generateCertificate";
 import { cls, formatOfficeDate, SimpleOfficeCard, exportRows, exportExcel, exportPdf, printRecord, downloadPdf, TOKEN_KEY } from "./oldOfficeCore";
@@ -181,7 +182,7 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
   </div>
   {tab==="calendar"&&<MeetingCalendar rows={calendarRows.concat(onlineRows,resolutionRows)} linkedRows={calendarRows.concat(onlineRows,resolutionRows)} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
   {tab==="online"&&<OnlineMeetings token={token}/>}
-  {tab==="resolution"&&<MeetingResolutions rows={calendarRows.concat(onlineRows,resolutionRows)} add={async function(module,data){const ok=await add(module,data);if(ok)await loadMeetingLinkedRows();return ok;}} archive={archive} restore={restore} token={token}/>}
+  {tab==="resolution"&&<MeetingResolutions rows={calendarRows.concat(onlineRows,resolutionRows)} add={async function(module,data){const ok=await add(module,data);if(ok)await loadMeetingLinkedRows();return ok;}} archive={archive} restore={restore} token={token} updateRecord={updateRecord}/>}
  </div>;
 }
 function OnlineMeetings({token}){
@@ -719,7 +720,7 @@ function MembershipContributions({rows,add,archive}){
 }
 
 
-function MeetingResolutions({rows,add,archive,restore,token}){
+function MeetingResolutions({rows,add,archive,restore,token,updateRecord}){
  const resolutionRows=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
  const calendarRows=(rows||[]).filter(r=>r.module==="meetings"&&r.status!=="deleted");
  const existing=resolutionRows;
@@ -901,6 +902,30 @@ function ManagingCommittee({rows,add,updateRecord,archive,token,loaded}){
  const displayPhoto=r=>{const d=r?.data||{};const seedMember=seed.find(m=>m.memberId===String(d.memberId||""));return photoOverrides[d.memberId]||d.photoUrl||seedMember?.photoUrl||"";};
  const choosePhoto=e=>{const f=e.target.files?.[0];if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){setNotice("Photo must be JPG, PNG or WebP.");e.target.value="";return;}if(f.size>2*1024*1024){setNotice("Photo must be 2MB or smaller.");e.target.value="";return;}setPhotoFile(f);setPhotoPreview(URL.createObjectURL(f));};
  const clearPhoto=()=>{setPhotoFile(null);setPhotoPreview("");};
+ const savePhoto=async()=>{
+  if(!editId||!photoFile||saving)return;
+  setSaving(true);
+  try{
+   const fd=new FormData();
+   fd.append("profilePhoto",photoFile);
+   fd.append("memberId",String(form.memberId||""));
+   fd.append("fullName",String(form.fullName||""));
+   fd.append("sourceModule","managingCommittee");
+   fd.append("recordId",String(editId));
+   const pr=await fetch(ENDPOINTS.DIGITAL_OFFICE_MEMBER_PHOTO,{method:"POST",headers:{Authorization:`Bearer ${token}`,"X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"},body:fd});
+   const pj=await pr.json().catch(()=>({}));
+   if(!pr.ok)throw new Error(pj.message||"Photo upload failed.");
+   const saved=pj.photoUrl||"";
+   if(saved&&form.memberId)setPhotoOverrides(x=>({...x,[String(form.memberId)]:saved}));
+   setPhotoFile(null);
+   setPhotoPreview(saved);
+   setNotice("Photo saved successfully. Refresh/reload ke baad bhi photo rahegi.");
+  }catch(e){
+   setNotice(e.message||"Photo save failed.");
+  }finally{
+   setSaving(false);
+  }
+ };
  const currentRows=seed.map(m=>currentByMember.get(m.memberId)||null);
  const currentRecords=seed.map(m=>currentByMember.get(m.memberId)).filter(Boolean);
  const seedRestoreRef=useRef(false);

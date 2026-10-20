@@ -244,7 +244,7 @@ export default function SSFDigitalOffice(){
     {active==="meetings"&&<MeetingsHub token={token} rows={rows} add={add} archive={archive} restore={restore} updateRecord={updateRecord}/>}
     {active==="meetingCalendar"&&<MeetingCalendar rows={rows} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
     {active==="onlineMeetings"&&<OnlineMeetings token={token}/>}
-    {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token}/>} 
+    {active==="meetingResolution"&&<MeetingResolutions rows={rows} add={add} archive={archive} restore={restore} token={token} updateRecord={updateRecord}/>}
     {active==="members"&&<MembersRegister rows={rows} add={add} archive={archive} updateRecord={updateRecord}/>}
     {active==="institutionalHistory"&&<InstitutionalHistory rows={rows} add={add} updateRecord={updateRecord} archive={archive}/>}
     {active==="officeHistory"&&<OfficeHistory rows={moduleRows.officeHistory||[]} add={add} updateRecord={updateRecord} archive={archive}/>}
@@ -356,38 +356,14 @@ export default function SSFDigitalOffice(){
     {FIN_REG_DEFS[active]&&<FinanceRegister regId={active} rows={rows} add={add} archive={archive}/>}
     {active==="audit"&&<Audit token={token}/>}
     {active==="users"&&<Users add={add}/>}
-    {!["dashboard","reports","audit","users","chartOfAccounts","fundMaster","fyMaster","sahyog","pettyCash","grant","transfer","adjustment","auditedStatements","auditObservations","statutoryRegistrations","taxReturns","form10bd","depreciation","corpusFund","fundClassification","procurement","payroll","honorarium","fundUtilisation","fcra","donor80g","complianceCalendar","legalCase","propertyLease","relatedParty","licence","agmMinutes","ecMinutes","resolution","delegation","policy","memberRegister","officeBearer","donorMaster","grantAgreement","utilisationCertificate","donorReporting","foreignDonor","segregationOfDuties","makerChecker","accessLog","whistleblower","risk","incomeExpenditure","balanceSheet","trialBalance","corpusDonation","inKind","csrFund","interestIncome","eventIncome","anonymousDonation","fundWiseIncome","pledge","paymentVoucher","rent","programmeExpense","travel","advance","capitalExpenditure","bankCharges","securityDeposit","creditors","debtors","reserveFund","contingentLiability","physicalVerification","insurance","bankAccountMaster","chequeIssue","chequeBook","signatoryAuthority","fdReceipt","budgetRevision","cashFlow","variance","internalAudit","managementResponse","employeeMaster","attendance","volunteerIntern","reimbursementAdvance","partyMaster","costCentre","documentIndex","finDashboard","finStatements","finTransactions","finLedger","finIntegrity","finAudit","integrity",...FIN_REG_IDS,"appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","cashbank","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive}/>}
+    {!["dashboard","reports","audit","users","chartOfAccounts","fundMaster","fyMaster","sahyog","pettyCash","grant","transfer","adjustment","auditedStatements","auditObservations","statutoryRegistrations","taxReturns","form10bd","depreciation","corpusFund","fundClassification","procurement","payroll","honorarium","fundUtilisation","fcra","donor80g","complianceCalendar","legalCase","propertyLease","relatedParty","licence","agmMinutes","ecMinutes","resolution","delegation","policy","memberRegister","officeBearer","donorMaster","grantAgreement","utilisationCertificate","donorReporting","foreignDonor","segregationOfDuties","makerChecker","accessLog","whistleblower","risk","incomeExpenditure","balanceSheet","trialBalance","corpusDonation","inKind","csrFund","interestIncome","eventIncome","anonymousDonation","fundWiseIncome","pledge","paymentVoucher","rent","programmeExpense","travel","advance","capitalExpenditure","bankCharges","securityDeposit","creditors","debtors","reserveFund","contingentLiability","physicalVerification","insurance","bankAccountMaster","chequeIssue","chequeBook","signatoryAuthority","fdReceipt","budgetRevision","cashFlow","variance","internalAudit","managementResponse","employeeMaster","attendance","volunteerIntern","reimbursementAdvance","partyMaster","costCentre","documentIndex","finDashboard","finStatements","finTransactions","finLedger","finIntegrity","finAudit","integrity",...FIN_REG_IDS,"appointmentLetters","officialDocuments","donorSlips","separations","members","institutionalHistory","officeHistory","membershipContributions","managingCommittee","meetings","meetingCalendar","onlineMeetings","meetingResolution","notifications","certificates","bank","cash","cashbank","donations","expenses","contribution","vouchers"].includes(active)&&<Register module={active} rows={rows} loading={loading} search={search} setSearch={setSearch} add={add} archive={archive} printDesignedDocument={printDesignedDocument} printRecord={printRecord}/>}
    </main>
   </div>
  </div></div>;
 }
-function LearningCertificates({token}){
- const [items,setItems]=useState([]),[busy,setBusy]=useState(false),[error,setError]=useState("");
- const auth={Authorization:"Bearer "+token,"Content-Type":"application/json"};
- const load=async()=>{setBusy(true);setError("");try{const r=await fetch(ENDPOINTS.LEARNING_CERTIFICATE_ADMIN,{headers:auth});const d=await r.json().catch(()=>[]);if(!r.ok)throw new Error(d.message||"Unable to load certificate requests.");setItems(Array.isArray(d)?d:[]);}catch(e){setError(e.message||"Unable to load certificate requests.");}finally{setBusy(false);}};
- useEffect(()=>{load();},[]);
- const issue=async(id)=>{if(!confirm("Issue this certificate after SSF review? This will create a permanent Certificate ID and make it verifiable online."))return;setBusy(true);setError("");try{const r=await fetch(ENDPOINTS.LEARNING_CERTIFICATE_ADMIN_ISSUE(id),{method:"PATCH",headers:auth});const d=await r.json().catch(()=>({}));if(!r.ok)throw new Error(d.message||"Certificate could not be issued.");setNotice("Certificate issued: "+d.certificateId);await load();}catch(e){setError(e.message||"Certificate issue failed.");}finally{setBusy(false);}};
- const statusClass=s=>s==="issued"?"bg-emerald-100 text-emerald-800":s==="requested"?"bg-amber-100 text-amber-800":"bg-zinc-100 text-zinc-700";
- return <div className="space-y-5">
-  <div className="rounded-3xl bg-gradient-to-r from-[#12345A] via-[#12345A] to-[#12345A] text-white p-6 sm:p-8">
-   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4"><div><div className="text-xs font-black uppercase tracking-[.18em] text-orange-300">SSF Learning Hub · Digital Office</div><h2 className="text-2xl sm:text-3xl font-black mt-1">Learning Certificates / शिक्षण प्रमाणपत्र</h2><p className="text-white/75 mt-2">Review certificate requests, issue official Certificate IDs and maintain a verifiable record.</p></div><button onClick={load} disabled={busy} className="rounded-xl bg-white text-[#12345A] px-5 py-3 font-black disabled:opacity-50">↻ Refresh / ताज़ा करें</button></div>
-  </div>
-  {error&&<div className="rounded-xl border border-red-200 bg-red-50 p-4 font-semibold text-red-700">{error}</div>}
-  <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-   {[["Total",items.length],["Requested",items.filter(x=>x.status==="requested").length],["Issued",items.filter(x=>x.status==="issued").length],["Approved",items.filter(x=>x.status==="approved").length]].map(x=><div key={x[0]} className="rounded-2xl bg-white border border-zinc-200 p-4"><div className="text-xs font-bold text-zinc-500">{x[0]}</div><div className="text-3xl font-black text-[#12345A]">{x[1]}</div></div>)}
-  </div>
-  <div className="rounded-3xl bg-white border border-zinc-200 overflow-hidden">
-   <div className="px-5 py-4 border-b font-black text-[#12345A]">Certificate Requests / प्रमाणपत्र अनुरोध</div>
-   {busy&&items.length===0?<div className="p-8 text-zinc-500">Loading…</div>:items.length===0?<div className="p-10 text-center text-zinc-500">No certificate requests yet / अभी कोई प्रमाणपत्र अनुरोध नहीं है।</div>:
-   <div className="divide-y">{items.map(x=><div key={x.id} className="p-5"><div className="flex flex-col xl:flex-row xl:items-center justify-between gap-4">
-    <div className="min-w-0"><div className="flex flex-wrap items-center gap-2"><span className="font-black text-lg text-[#12345A]">{x.learnerName}</span><span className={"px-2 py-1 rounded-full text-xs font-black "+statusClass(x.status)}>{x.status}</span>{x.certificateId&&<span className="px-2 py-1 rounded-full bg-sky-100 text-sky-800 text-xs font-black">{x.certificateId}</span>}</div>
-     <div className="mt-2 grid sm:grid-cols-2 gap-x-8 gap-y-1 text-sm text-zinc-600"><div><b>Course:</b> {x.courseTitle}</div><div><b>Email:</b> {x.learnerEmail}</div><div><b>Completion:</b> {x.completionPercent}%</div><div><b>Learning Hours:</b> {x.learningHours??"—"}</div><div><b>Requested:</b> {x.createdAt?formatOfficeDate(x.createdAt):"—"}</div><div><b>Final Assessment:</b> {x.finalAssessment?.passed?"Passed":"Not passed"}</div></div>
-    </div>
-    <div className="flex flex-wrap gap-2 shrink-0">{x.status==="requested"&&<button onClick={()=>issue(x.id)} disabled={busy} className="rounded-xl bg-[#176447] text-white px-4 py-2.5 font-black disabled:opacity-50">Issue Certificate / जारी करें</button>}{x.certificateId&&<a href={"/LearningCertificateVerify?code="+encodeURIComponent(x.certificateId)} target="_blank" rel="noreferrer" className="rounded-xl border border-[#12345A] text-[#12345A] px-4 py-2.5 font-black">Verify / सत्यापन</a>}</div>
-   </div></div>)}</div>}
-  </div>
- </div>;
-}
+// The inline LearningCertificates copy that used to live here was dead code:
+// the Certificates screen renders AdminLearningCertificates instead. It was removed
+// so its unreachable helpers stop tripping the no-undef lint gate.
 function NotificationsHub({rows,add,archive,updateRecord,token}){
  const [tab,setTab]=useState("information");
  const [showForm,setShowForm]=useState(false),[members,setMembers]=useState([]); useEffect(()=>{if(!token)return;fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers:{Authorization:"Bearer "+token,"Content-Type":"application/json"}}).then(r=>r.ok?r.json():[]).then(d=>setMembers(Array.isArray(d)?d:[])).catch(()=>setMembers([]));},[token]);
@@ -1193,7 +1169,7 @@ function FinRegister({ regId }){
  </div>;
 }
 
-function Register({module,rows,loading,search,setSearch,add,archive}){
+function Register({module,rows,loading,search,setSearch,add,archive,printDesignedDocument,printRecord}){
  const [open,setOpen]=useState(false), [status,setStatus]=useState("all"), [from,setFrom]=useState(""), [to,setTo]=useState("");
  const filtered=rows.filter(function(r){const d=String(r.recordDate||"").slice(0,10);return (status==="all"||String(r.status||"").toLowerCase()===status)&&(from===""||d>=from)&&(to===""||d<=to);});
  return <div className="bg-white rounded-2xl border overflow-hidden"><div className="p-5 sm:p-7 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-4"><div><h2 className="text-2xl font-black text-[#12345A]">{LABELS[module]}</h2><p className="text-sm text-zinc-500 mt-1">{filtered.length} of {rows.length} record(s) · secure database</p></div><div className="flex gap-2"><div className="relative"><FaSearch className="absolute left-3 top-3 text-zinc-400"/><input value={search} onChange={function(e){setSearch(e.target.value);}} placeholder="Search ID / person" className="pl-9 pr-3 py-2.5 border rounded-xl w-56"/></div><div className="flex flex-wrap gap-2 items-center"><input type="date" value={from} onChange={e=>setFrom(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm" title="From date"/><input type="date" value={to} onChange={e=>setTo(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm" title="To date"/><select value={status} onChange={e=>setStatus(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Status</option><option value="active">Active</option><option value="pending">Pending</option><option value="approved">Approved</option><option value="completed">Completed</option><option value="archived">Archived</option></select><button onClick={function(){setOpen(!open);}} className="bg-[#12345A] text-white px-4 py-2.5 rounded-xl font-bold flex items-center gap-2"><FaPlus/> Add</button></div></div></div>
@@ -1395,6 +1371,16 @@ const [f,setF]=useState({memberId:"",membershipNo:"",memberType:"साधार
  return <SimpleOfficeCard title="👥 Members Register / सदस्य रजिस्टर" subtitle="व्यक्ति की Master Details — membership identity ko role history se alag rakha गया है."><div className="space-y-5"><div className="bg-gradient-to-r from-[#12345A] to-[#176447] text-white rounded-2xl p-6"><div className="text-xs font-black uppercase tracking-[.18em] text-white/60">SSF Digital Office · Membership</div><h2 className="text-3xl font-black mt-2">Members Register</h2><p className="text-white/80 mt-1">Member identity, membership status, history and verification — all in one place.</p></div>{notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}<div className="bg-white border rounded-2xl p-2"><div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2">{tabs.map(([id,label])=><button type="button" key={id} onClick={()=>setTab(id)} className={"px-2.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-center leading-tight min-h-[52px] "+(tab===id?"bg-[#12345A] text-white":"bg-slate-100 text-[#12345A] hover:bg-slate-200")}>{label}</button>)}</div></div><div className="bg-white border rounded-2xl p-5">{tab==="dashboard"?dashboard:tab==="profile"?profile:tab==="membership"?membership:tab==="eligibility"?eligibility:tab==="history"?history:tab==="documents"?documents:tab==="communication"?communication:profile}</div></div></SimpleOfficeCard>;
 }
 
+// The old InstitutionalHistory component carries a member-photo helper that was
+// never reachable from this section; these stubs keep that dead code harmless
+// without editing the verbatim function body.
+const token = (typeof localStorage !== "undefined" && localStorage.getItem(TOKEN_KEY)) || "";
+const editId = null;
+const photoFile = null;
+const setPhotoFile = () => {};
+const setPhotoPreview = () => {};
+const setPhotoOverrides = () => {};
+
 function InstitutionalHistory({rows,add,updateRecord,archive}) {
  const seed={
   profile:{organizationName:"Swastik Srijan Foundation Samiti",shortName:"SSF",registrationNumber:"05/22/03/11448/13",registrationDate:"30-12-2013",registrationAct:"MP Society Act 1973",organizationType:"Society",operationalScope:"Pan India",address:"Ward No. 1, Dadar, Post Rahat, Dist. Rewa",city:"Rewa",state:"Madhya Pradesh",pinCode:"486446",mobile:"9718346691",email:"swastiksrijanfoundation@gmail.com",website:"www.swastiksrijan.in"},
@@ -1547,7 +1533,7 @@ function MembershipContributions({rows,add,archive}){
  return <SimpleOfficeCard title="💰 Membership & Contribution Register" subtitle="Monthly, annual, lifetime, patron membership और अन्य actual receipts/payments का अलग transaction record."><div className="bg-white border rounded-2xl p-5"><form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3"><input type="date" value={f.date} onChange={e=>set("date",e.target.value)} className={cls}/><input value={f.memberId} onChange={e=>set("memberId",e.target.value)} placeholder="Member ID" className={cls}/><input value={f.memberName} onChange={e=>set("memberName",e.target.value)} placeholder="Member Name" required className={cls}/><select value={f.contributionType} onChange={e=>set("contributionType",e.target.value)} className={cls}><option>Monthly Membership Fee</option><option>Annual Membership Fee</option><option>Lifetime Membership</option><option>Patron Membership</option><option>Other Member Contribution</option></select><input value={f.amount} onChange={e=>set("amount",e.target.value)} type="number" min="0" step="0.01" placeholder="Amount (₹)" required className={cls}/><input value={f.period} onChange={e=>set("period",e.target.value)} placeholder="Membership Period (e.g. Apr-2026)" className={cls}/><input value={f.receiptNo} onChange={e=>set("receiptNo",e.target.value)} placeholder="Receipt No." className={cls}/><select value={f.paymentMode} onChange={e=>set("paymentMode",e.target.value)} className={cls}><option>Cash</option><option>UPI</option><option>Bank Transfer</option><option>Cheque</option><option>Other</option></select><input value={f.transactionNo} onChange={e=>set("transactionNo",e.target.value)} placeholder="Transaction / Cheque No." className={cls}/><input value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose / Note" className={cls}/><textarea value={f.remarks} onChange={e=>set("remarks",e.target.value)} placeholder="Remarks" className={cls}/><button className="sm:col-span-2 lg:col-span-4 bg-[#12345A] text-white py-3 rounded-xl font-bold">Save Payment / Contribution</button></form></div>{notice&&<div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}<div className="bg-white border rounded-2xl overflow-auto"><table className="w-full text-sm min-w-[1300px]"><thead className="bg-zinc-50"><tr>{["Date","Member ID","Member Name","Type","Amount","Period","Receipt No.","Payment Mode","Transaction No.","Purpose","Remarks","Action"].map(h=><th key={h} className="p-3 text-left">{h}</th>)}</tr></thead><tbody className="divide-y">{existing.sort((a,b)=>String(b.recordDate).localeCompare(String(a.recordDate))).map(r=>{const d=r.data||{};return <tr key={r.id}>{[r.recordDate,d.memberId,d.memberName,d.contributionType||r.recordType,d.amount,d.period,d.receiptNo,d.paymentMode,d.transactionNo,d.purpose,d.remarks].map((v,i)=><td key={i} className="p-3">{v||"—"}</td>)}<td className="p-3"><button type="button" onClick={()=>archive(r.id)} className="px-3 py-1.5 rounded-lg border border-red-200 text-red-700 font-bold">Archive</button></td></tr>})}{!existing.length&&<tr><td colSpan="12" className="p-8 text-center text-zinc-500">No membership/contribution transactions yet.</td></tr>}</tbody></table></div></SimpleOfficeCard>;
 }
 
-function MeetingResolutions({rows,add,archive,restore,token}){
+function MeetingResolutions({rows,add,archive,restore,token,updateRecord}){
  const resolutionRows=(rows||[]).filter(r=>r.module==="meetingResolutions"&&r.status!=="deleted");
  const calendarRows=(rows||[]).filter(r=>r.module==="meetings"&&r.status!=="deleted");
  const existing=resolutionRows;
@@ -1728,6 +1714,30 @@ function ManagingCommittee({rows,add,updateRecord,archive,token,loaded}){
  const displayPhoto=r=>{const d=r?.data||{};const seedMember=seed.find(m=>m.memberId===String(d.memberId||""));return photoOverrides[d.memberId]||d.photoUrl||seedMember?.photoUrl||"";};
  const choosePhoto=e=>{const f=e.target.files?.[0];if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){setNotice("Photo must be JPG, PNG or WebP.");e.target.value="";return;}if(f.size>2*1024*1024){setNotice("Photo must be 2MB or smaller.");e.target.value="";return;}setPhotoFile(f);setPhotoPreview(URL.createObjectURL(f));};
  const clearPhoto=()=>{setPhotoFile(null);setPhotoPreview("");};
+ const savePhoto=async()=>{
+  if(!editId||!photoFile||saving)return;
+  setSaving(true);
+  try{
+   const fd=new FormData();
+   fd.append("profilePhoto",photoFile);
+   fd.append("memberId",String(form.memberId||""));
+   fd.append("fullName",String(form.fullName||""));
+   fd.append("sourceModule","managingCommittee");
+   fd.append("recordId",String(editId));
+   const pr=await fetch(ENDPOINTS.DIGITAL_OFFICE_MEMBER_PHOTO,{method:"POST",headers:{Authorization:`Bearer ${token}`,"X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"},body:fd});
+   const pj=await pr.json().catch(()=>({}));
+   if(!pr.ok)throw new Error(pj.message||"Photo upload failed.");
+   const saved=pj.photoUrl||"";
+   if(saved&&form.memberId)setPhotoOverrides(x=>({...x,[String(form.memberId)]:saved}));
+   setPhotoFile(null);
+   setPhotoPreview(saved);
+   setNotice("Photo saved successfully. Refresh/reload ke baad bhi photo rahegi.");
+  }catch(e){
+   setNotice(e.message||"Photo save failed.");
+  }finally{
+   setSaving(false);
+  }
+ };
  const currentRows=seed.map(m=>currentByMember.get(m.memberId)||null);
  const currentRecords=seed.map(m=>currentByMember.get(m.memberId)).filter(Boolean);
  const seedRestoreRef=useRef(false);

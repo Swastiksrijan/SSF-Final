@@ -43,6 +43,7 @@ import { isVocabularySubject, VOCABULARY_COURSE, readVocabularyProgress } from "
 import { HeroArt as VocabHeroArt, chapterArt as vocabChapterArt } from "../components/learning/VocabularyArt";
 import { isTreesForestsSubject, TREES_FORESTS_COURSE, readTreesForestsProgress } from "../data/treesForestsCourse";
 import { HeroArt as TreesHeroArt, chapterArt as treesChapterArt } from "../components/learning/TreesForestsArt";
+import { readMigratedProgress } from "../data/courseProgress";
 import LearningHubHome from "../components/learning/LearningHubHome";
 import SubjectCard from "../components/learning/SubjectCard";
 import { courseBadge } from "../data/learningWorld";

@@ -1,0 +1,22 @@
+name: Lint Gate
+
+# Blocks the undefined-variable class of bug that crashes the running app
+# (for example the production "BRAND is not defined" error on the Team page).
+# Only `no-undef` is enforced here; the wider lint backlog is tracked separately.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  no-undef:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - name: Fail on undefined variables
+        run: npm run lint:gate

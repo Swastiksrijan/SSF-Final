@@ -10,6 +10,7 @@
     "dev": "vite",
     "build": "tsr generate && node scripts/build-gallery.mjs && node scripts/build-members.mjs && vite build && node scripts/generate-share-pages.mjs",
     "lint": "eslint .",
+    "lint:gate": "eslint --config eslint.gate.config.js .",
     "preview": "vite preview",
     "tsr": "tsr",
     "gallery": "node scripts/build-gallery.mjs",
