@@ -1,11 +1,14 @@
 // "Registered. Recognised. Accountable." — the Foundation's formal credentials
-// on the home page: the statutory registrations, the sanstha seal, the
-// authorised signature and the count of government pledge certificates held.
-// The seal and signature are shown as real artefacts, not icons, because a
-// visitor deciding whether to trust an NGO looks for exactly those marks.
+// on the home page: the statutory registrations and the count of government
+// pledge certificates held.
+//
+// Deliberately does NOT display the organisation seal or the scanned signature.
+// Those are the marks the Foundation applies to paper it issues; publishing them
+// on a public page would hand anyone a copy to forge letters, certificates and
+// receipts with. They stay confined to the letterhead engine (src/ims).
 import { Link } from "@tanstack/react-router";
-import { FaArrowRight, FaCheckCircle, FaFileSignature, FaStamp, FaShieldAlt } from "react-icons/fa";
-import { BRAND, CREDENTIALS, BADGE_COUNT, CERT_COUNT } from "../data/brandAssets";
+import { FaArrowRight, FaCheckCircle, FaShieldAlt } from "react-icons/fa";
+import { CREDENTIALS, BADGE_COUNT, CERT_COUNT } from "../data/brandAssets";
 import RecognitionBand from "./RecognitionBand";
 
 export default function TrustCredentials() {
@@ -53,25 +56,7 @@ export default function TrustCredentials() {
 
           <div className="relative">
             <div className="relative overflow-hidden rounded-[1.75rem] border border-[#EAF0F6] bg-[#FAF9F5] p-6 shadow-[0_30px_60px_-45px_rgba(18,52,90,0.6)] md:p-8">
-              <div className="grid grid-cols-2 gap-4">
-                <figure className="flex flex-col items-center rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm">
-                  <img src={BRAND.sealSanstha} alt="Swastik Srijan Foundation official seal (mohar)" loading="lazy" className="h-24 w-24 object-contain md:h-28 md:w-28" />
-                  <figcaption className="mt-3">
-                    <span className="block text-[11px] font-black uppercase tracking-[0.14em] text-[#176447]"><FaStamp className="mr-1 inline" />Official seal</span>
-                    <span className="mt-1 block text-xs font-bold text-[#12345A]">संस्था मोहर</span>
-                  </figcaption>
-                </figure>
-                <figure className="flex flex-col items-center justify-center rounded-2xl border border-slate-200 bg-white p-4 text-center shadow-sm">
-                  <img src={BRAND.signatureSecretary} alt="Authorised signature of Amit Kumar Pandey, Secretary, Swastik Srijan Foundation" loading="lazy" className="h-16 w-auto object-contain md:h-20" />
-                  <figcaption className="mt-3">
-                    <span className="block text-[11px] font-black uppercase tracking-[0.14em] text-[#176447]"><FaFileSignature className="mr-1 inline" />Authorised signatory</span>
-                    <span className="mt-1 block text-xs font-bold text-[#12345A]">Amit Kumar Pandey · Secretary</span>
-                    <span className="block text-[11px] text-slate-500">अधिकृत हस्ताक्षरकर्ता</span>
-                  </figcaption>
-                </figure>
-              </div>
-
-              <div className="mt-4 grid grid-cols-3 gap-3">
+              <div className="grid grid-cols-3 gap-3">
                 {[[`${CERT_COUNT}`, 'Recognition certificates', 'सम्मान प्रमाण-पत्र'], [`${BADGE_COUNT}+`, 'Government pledges', 'शासकीय संकल्प'], ['2013', 'Serving since', 'स्थापना वर्ष']].map(([v, en, hi]) => (
                   <div key={en} className="rounded-2xl bg-[#12345A] p-4 text-center text-white">
                     <p className="font-serif text-2xl font-bold text-[#F7A814]">{v}</p>
@@ -82,7 +67,8 @@ export default function TrustCredentials() {
               </div>
 
               <p className="mt-4 text-center text-[11px] leading-relaxed text-slate-500">
-                The seal and signature above are the marks used on the Foundation&apos;s official stationery.
+                The Foundation applies its seal and an authorised signature to the official letters,
+                certificates and receipts it issues.
               </p>
             </div>
           </div>
@@ -92,7 +78,7 @@ export default function TrustCredentials() {
           <div className="mb-5 flex flex-wrap items-end justify-between gap-3">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Recognitions &amp; Pledges · सम्मान एवं संकल्प</p>
-              <h3 className="mt-2 font-serif text-2xl text-[#12345A] md:text-3xl">Certificates, seals and national pledges.</h3>
+              <h3 className="mt-2 font-serif text-2xl text-[#12345A] md:text-3xl">Certificates and national pledges.</h3>
             </div>
             <Link to="/Transparency" className="inline-flex items-center gap-2 text-sm font-bold text-[#12345A] hover:text-[#176447]">
               See all records <FaArrowRight />

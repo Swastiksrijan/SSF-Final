@@ -388,11 +388,6 @@ const HumanityAndTruth = () => {
 
           <div className="pt-8">
             <div className="h-px w-16 bg-[#176447] mx-auto mb-6"></div>
-            <img
-              src={BRAND.sealSanstha}
-              alt="Official seal of Swastik Srijan Foundation"
-              className="mx-auto h-20 w-20 object-contain"
-            />
             <h3 className="mt-4 text-2xl font-hindi font-bold text-[#12345A]">Ramesh Pandey</h3>
             <p className="text-[#12345A] font-bold">Founder</p>
             <p className="text-[#12345A]">Swastik Srijan Foundation</p>
