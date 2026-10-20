@@ -7,22 +7,20 @@ import { useState } from "react";
 import { X } from "lucide-react";
 import { BRAND, CERTS, BADGES } from "../data/brandAssets";
 
-/* The band is deliberately a mix, not a single category: a logo, the seal, the
-   signature and two kinds of certificate, so it reads as "institutional
-   credentials" rather than "photo album". */
+/* The band is deliberately a mix, not a single category: the emblem plus two
+   kinds of certificate and the government pledge badges, so it reads as
+   "institutional credentials" rather than "photo album".
+   It must NOT carry the organisation seal or the scanned signature — those are
+   the marks used to authenticate paper the Foundation issues, and a public page
+   that republishes them hands out a forgery kit. */
 const RECOGNITION_ITEMS = [
   { src: BRAND.logoRound, label: 'SSF Emblem', sub: 'स्थापित 2013', kind: 'logo' },
-  { src: BRAND.sealSanstha, label: 'Sanstha Seal', sub: 'संस्था मोहर', kind: 'seal' },
-  { src: BRAND.sealRegistration, label: 'Registration Seal', sub: 'पंजीकरण मोहर', kind: 'seal' },
-  { src: BRAND.signatureSecretary, label: 'Amit Kumar Pandey', sub: 'अधिकृत हस्ताक्षर · Secretary', kind: 'sign' },
   ...CERTS.slice(0, 6).map((c) => ({ src: c.src, label: c.name, sub: c.hi, kind: 'cert' })),
   ...BADGES.slice(0, 8).map((b) => ({ src: b.src, label: b.en, sub: b.hi, kind: 'pledge' })),
 ];
 
 const KIND_TAG = {
   logo: { en: 'Emblem', hi: 'प्रतीक' },
-  seal: { en: 'Official Seal', hi: 'मोहर' },
-  sign: { en: 'Signature', hi: 'हस्ताक्षर' },
   cert: { en: 'Certificate', hi: 'प्रमाण-पत्र' },
   pledge: { en: 'Pledge', hi: 'संकल्प' },
 };

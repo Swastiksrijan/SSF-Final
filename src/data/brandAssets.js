@@ -24,12 +24,10 @@ export const BRAND = {
   logoBanner: `${B}/logo/ssf-banner-wordmark.png`,
   favicon: `${B}/logo/ssf-favicon-512.png`,
 
-  sealRegistration: `${B}/seals/ssf-seal-registration.png`,
-  sealPresident: `${B}/seals/ssf-seal-president.png`,
-  sealSanstha: `${B}/seals/ssf-seal-sanstha.png`,
-
-  signatureSecretary: `${B}/signatures/signature-amit-kumar-pandey.png`,
-  signatureInvoice: `${B}/signatures/signature-amit-invoice-block.png`,
+  // NOTE: no seal* / signature* keys here on purpose. The organisation seal and
+  // the scanned signature authenticate paper the Foundation issues; republishing
+  // them (they would sit at a plain, guessable /brand/... URL) is a forgery kit.
+  // The letterhead engine imports its own bundled copies from src/assets/brand/.
 
   donationCertificate: `${B}/promo/donation-certificate.png`,
   legalWorkAreas: `${B}/promo/legal-work-areas.png`,
