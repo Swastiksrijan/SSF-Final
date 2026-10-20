@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { FaBuilding, FaIdCard, FaBalanceScale, FaBullseye, FaAward, FaEnvelope } from "react-icons/fa";
 import { motion } from "framer-motion";
 import { CONTACT_INFO } from "../config/contact";
+import { BRAND } from "../data/brandAssets";
 import PageHero from "../components/PageHero";
 
 export default function RegistrationDetails() {
@@ -180,6 +181,37 @@ export default function RegistrationDetails() {
               <img src="/images/uploads/ngo-darpan.jpg" alt="NITI Aayog DARPAN" className="w-full h-auto rounded-2xl" />
               <p className="text-center font-bold text-[#12345A] mt-4">NITI Aayog DARPAN Registration</p>
             </div>
+          </div>
+
+          {/* The marks the Foundation actually puts on paper: its seals and the
+              one scanned signature it holds. */}
+          <div className="max-w-6xl mx-auto mt-12 rounded-[2rem] border border-zinc-100 bg-[#FAF9F5] p-8 md:p-10">
+            <div className="grid gap-8 md:grid-cols-3">
+              <figure className="flex flex-col items-center text-center">
+                <img src={BRAND.sealSanstha} alt="Official seal (mohar) of Swastik Srijan Foundation Samiti" loading="lazy" className="h-28 w-28 object-contain" />
+                <figcaption className="mt-4">
+                  <span className="block font-bold text-[#12345A]">Organisation Seal</span>
+                  <span className="block text-sm font-semibold text-[#176447]">संस्था मोहर</span>
+                </figcaption>
+              </figure>
+              <figure className="flex flex-col items-center text-center">
+                <img src={BRAND.sealRegistration} alt="Society registration seal of Swastik Srijan Foundation Samiti" loading="lazy" className="h-28 w-28 object-contain" />
+                <figcaption className="mt-4">
+                  <span className="block font-bold text-[#12345A]">Registration Seal</span>
+                  <span className="block text-sm font-semibold text-[#176447]">पंजीकरण मोहर</span>
+                </figcaption>
+              </figure>
+              <figure className="flex flex-col items-center text-center">
+                <img src={BRAND.signatureSecretary} alt="Authorised signature of Amit Kumar Pandey, Secretary, Swastik Srijan Foundation" loading="lazy" className="h-20 w-auto object-contain" />
+                <figcaption className="mt-4">
+                  <span className="block font-bold text-[#12345A]">Amit Kumar Pandey</span>
+                  <span className="block text-sm font-semibold text-[#176447]">Secretary · अधिकृत हस्ताक्षरकर्ता</span>
+                </figcaption>
+              </figure>
+            </div>
+            <p className="mt-8 text-center text-sm text-zinc-500">
+              The seal and authorised signature above are the marks used on the Foundation&apos;s official letters, certificates and receipts.
+            </p>
           </div>
         </section>
 

@@ -8,7 +8,7 @@ import { useEffect, useMemo, useState } from 'react';
 import {
   FileSignature, Eye, Download, Printer, Share2, Mail, MessageCircle, Copy,
   FilePlus2, Loader2, X, CheckCircle2, AlertTriangle, Languages, Droplets, Save,
-  FileText, RotateCcw,
+  FileText, RotateCcw, PenLine, Stamp,
 } from 'lucide-react';
 import ImsLayout from '../ImsLayout';
 import { useLang } from '../LangContext';
@@ -18,13 +18,24 @@ import { LETTER_TYPES } from '../letterheadData';
 import {
   downloadLetterPdf, previewLetterPdf, printLetterPdf, shareLetterPdf,
   letterPlainText, nextLetterNo, letterFileName, letterheadPreviewHtml,
-  PAGE_W_MM, PAGE_H_MM,
+  PAGE_W_MM, PAGE_H_MM, SIGNATURE_HOLDER,
 } from '../letterheadPdf';
 
 const LANGS = [
   { id: 'both', en: 'Bilingual', hi: 'द्विभाषी' },
   { id: 'en', en: 'English only', hi: 'केवल अंग्रेज़ी' },
   { id: 'hi', en: 'Hindi only', hi: 'केवल हिंदी' },
+];
+
+// Who may sign, and whose scanned signature the Foundation actually holds. The
+// scan is the Secretary's, so `scan: true` sits on that entry only — picking
+// another signatory hides the scan rather than printing the wrong person's
+// signature under a different name.
+const SIGNATORIES = [
+  { name: 'Amit Kumar Pandey', designation: 'Secretary', scan: true },
+  { name: 'Ramesh Pandey', designation: 'Founder & National President' },
+  { name: 'Preeti Shukla', designation: 'Vice President' },
+  { name: 'Divya Sharma', designation: 'Treasurer' },
 ];
 
 // The composer writes into the IMS Documents register (`documents`), the module
@@ -43,8 +54,12 @@ const blankLetter = () => ({
   letterNo: '', date: today(), letterType: LETTER_TYPES[0].en,
   toName: '', toDesignation: '', toOrg: '', toAddress: '',
   subject: '', salutation: '', body: '', closing: '', enclosures: '', cc: '',
-  // The President named in src/ims/orgProfileData.js; editable before sending.
-  signatoryName: 'Ramesh Pandey', signatoryDesignation: 'Founder & National President',
+  // Defaults to the Secretary, because the scanned signature the Foundation
+  // holds is his — see SIGNATORIES. Editable before sending.
+  signatoryName: 'Amit Kumar Pandey', signatoryDesignation: 'Secretary',
+  // The scanned signature is only printed for a signatory whose scan we hold;
+  // the organisation seal is always available.
+  signature: true, seal: true,
 });
 
 const TEMPLATE_KEY = 'ssf_letterhead_template';
@@ -76,6 +91,10 @@ export default function ImsLetterhead() {
   const [f, setF] = useState(blankLetter);
 
   const set = (k, v) => setF((x) => ({ ...x, [k]: v }));
+
+  // The scanned signature belongs to one signatory; the toggle is only
+  // meaningful for that person, and the PDF prints the scan only for them.
+  const hasScan = f.signatoryName.trim() === SIGNATURE_HOLDER;
 
   useEffect(() => {
     ims.list(REGISTER, { limit: 500 })
@@ -182,6 +201,7 @@ export default function ImsLetterhead() {
         subject: f.subject, salutation: f.salutation, body: f.body, closing: f.closing,
         enclosures: f.enclosures, cc: f.cc,
         signatoryName: f.signatoryName, signatoryDesignation: f.signatoryDesignation,
+        signature: f.signature !== false, seal: f.seal !== false,
         language: pdfLang, watermark,
       },
     });
@@ -263,9 +283,23 @@ export default function ImsLetterhead() {
                   placeholder={lang === 'hi' ? 'पत्र की मुख्य सामग्री… (खाली पंक्ति छोड़ने पर नया पैराग्राफ बनेगा)' : 'Main letter text… (a blank line starts a new paragraph)'} /></div>
               <div><label className={label}>{lang === 'hi' ? 'धन्यवाद वाक्य' : 'Closing'}</label>
                 <input className={cls + ' mt-1'} value={f.closing} onChange={(e) => set('closing', e.target.value)} placeholder={lang === 'hi' ? 'धन्यवाद,' : 'Thank you,'} /></div>
-              <div><label className={label}>{lang === 'hi' ? 'हस्ताक्षरकर्ता का नाम' : 'Signatory name'}</label>
-                <input className={cls + ' mt-1'} value={f.signatoryName} onChange={(e) => set('signatoryName', e.target.value)} /></div>
-              <div><label className={label}>{lang === 'hi' ? 'हस्ताक्षरकर्ता का पद' : 'Signatory designation'}</label>
+              <div><label className={label}>{lang === 'hi' ? 'हस्ताक्षरकर्ता' : 'Signatory'}</label>
+                <select
+                  className={cls + ' mt-1'}
+                  value={f.signatoryName}
+                  onChange={(e) => {
+                    const s = SIGNATORIES.find((x) => x.name === e.target.value);
+                    if (s) { set('signatoryName', s.name); set('signatoryDesignation', s.designation); }
+                    else set('signatoryName', e.target.value);
+                  }}
+                >
+                  {SIGNATORIES.map((s) => (
+                    <option key={s.name} value={s.name}>
+                      {s.name} — {s.designation}{s.scan ? (lang === 'hi' ? ' (हस्ताक्षर उपलब्ध)' : ' (signature on file)') : ''}
+                    </option>
+                  ))}
+                  {!SIGNATORIES.some((s) => s.name === f.signatoryName) && <option value={f.signatoryName}>{f.signatoryName}</option>}
+                </select>
                 <input className={cls + ' mt-1'} value={f.signatoryDesignation} onChange={(e) => set('signatoryDesignation', e.target.value)} /></div>
               <div><label className={label}>{lang === 'hi' ? 'संलग्नक' : 'Enclosures'}</label>
                 <input className={cls + ' mt-1'} value={f.enclosures} onChange={(e) => set('enclosures', e.target.value)} placeholder={lang === 'hi' ? '1. … 2. …' : '1. … 2. …'} /></div>
@@ -289,6 +323,25 @@ export default function ImsLetterhead() {
                 <input type="checkbox" checked={watermark} onChange={(e) => setWatermark(e.target.checked)} className="h-4 w-4 accent-[#12345A]" />
                 <Droplets size={14} className="text-[#176447]" />
                 {lang === 'hi' ? 'हल्का लोगो वॉटरमार्क' : 'Faint logo watermark'}
+              </label>
+              <label
+                className={`inline-flex items-center gap-2 text-xs font-bold ${hasScan ? 'cursor-pointer text-slate-600' : 'cursor-not-allowed text-slate-400'}`}
+                title={hasScan ? '' : (lang === 'hi' ? 'इस हस्ताक्षरकर्ता का स्कैन उपलब्ध नहीं है — केवल संस्था मोहर लगेगी' : 'No scanned signature on file for this signatory — only the seal will print')}
+              >
+                <input
+                  type="checkbox"
+                  disabled={!hasScan}
+                  checked={hasScan && f.signature !== false}
+                  onChange={(e) => set('signature', e.target.checked)}
+                  className="h-4 w-4 accent-[#12345A] disabled:opacity-40"
+                />
+                <PenLine size={14} className={hasScan ? 'text-[#176447]' : 'text-slate-300'} />
+                {lang === 'hi' ? 'हस्ताक्षर' : 'Signature'}
+              </label>
+              <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-bold text-slate-600">
+                <input type="checkbox" checked={f.seal !== false} onChange={(e) => set('seal', e.target.checked)} className="h-4 w-4 accent-[#12345A]" />
+                <Stamp size={14} className="text-[#176447]" />
+                {lang === 'hi' ? 'संस्था मोहर' : 'Organisation seal'}
               </label>
             </div>
 

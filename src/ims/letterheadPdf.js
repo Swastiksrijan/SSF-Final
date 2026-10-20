@@ -13,20 +13,50 @@
 // Both faces are bundled with the app (no Google Fonts fetch at raster time),
 // so Hindi and English shape identically offline and on a network that blocks
 // fonts.googleapis.com.
+//
+// Print geometry, all in millimetres on a true A4 sheet:
+//
+//   0 ─────────────────────────────────────────────── top of paper
+//   14   masthead accent band, then the header block (identity + Ref. No./Date)
+//   ~56  writing area begins (To, Subject, body, signature)
+//   282  footer rule (Registered Office · contact · page)
+//   297 ─────────────────────────────────────────────── bottom of paper
+//
+// The body is rasterised with a transparent background and stamped as PNG, so
+// the watermark drawn underneath it stays visible between the lines of text.
+// Stamping it as JPEG (as an earlier revision did) painted an opaque white
+// block over the watermark and erased it.
+
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import logoImg from '../assets/new-logo.png';
+import signatureImg from '../assets/brand/signature-secretary.png';
+import sealImg from '../assets/brand/seal-sanstha.png';
 import latinUrl from '../assets/fonts/PlusJakartaSans-Variable.ttf?url';
 import devaRegularUrl from '../assets/fonts/NotoSansDevanagari-Regular.ttf?url';
 import devaBoldUrl from '../assets/fonts/NotoSansDevanagari-Bold.ttf?url';
 import { CONTACT_INFO } from '../config/contact';
 
+// The Foundation holds a scanned signature for one signatory only. Printing it
+// under another person's name would be a forged signature, so the renderer
+// paints it only when the selected signatory matches the scan's owner.
+export const SIGNATURE_HOLDER = 'Amit Kumar Pandey';
+
+function hasSignatureScan(f) {
+  if (f.signature === false) return false;
+  return !f.signatoryName || f.signatoryName.trim() === SIGNATURE_HOLDER;
+}
+
+// Palette: the approved SSF brand tokens declared in src/index.css `:root`
+// (--ssf-navy, --ssf-green, --ssf-ivory, --ssf-soft-blue, --ssf-charcoal,
+// --ssf-gold), reused verbatim so the stationery matches the website.
 const NAVY = '#12345A';
 const TEAL = '#176447';
-const GOLD = '#C6A04A';
+const GOLD = '#F7A814';
 const INK = '#26343D';
 const MUTED = '#5B6B7A';
 const HAIRLINE = '#D5DEE8';
+const SOFT_BLUE = '#EAF0F6';
 
 export const PAGE_W_MM = 210;
 export const PAGE_H_MM = 297;
@@ -36,16 +66,18 @@ const PAGE_W_PX = 794;                    // A4 @ 96dpi — the raster width, i.
 // page margin: 14mm at 96dpi. Keeping the two in step is what makes the header,
 // body and jsPDF-drawn footer share one left/right edge.
 const PAD_PX = Math.round(MARGIN_MM * PAGE_W_PX / PAGE_W_MM);
-const FOOTER_MM = 15;
+const FOOTER_MM = 15;                     // footer rule sits 15mm above the paper edge
 const HEADER_GAP_MM = 5;                  // breathing room between masthead and body
-const WATERMARK_OPACITY = 0.09;
+const WATERMARK_OPACITY = 0.055;          // faint enough to survive B/W photocopying
+const WATERMARK_MM = 118;                 // watermark size, centred on the page
 
 const pxPerMm = PAGE_W_PX / PAGE_W_MM;
 
 // Organisation identity. Every line below is attested in the repository:
-// name/registration/scope in src/ims/orgProfileData.js, the taglines in
-// src/components/Header.jsx and src/components/FloatingTicker.jsx, and the
-// office address/contact in src/config/contact.js.
+// name/registration/scope in src/ims/orgProfileData.js and
+// src/pages/RegistrationDetails.jsx, the taglines in src/components/Header.jsx
+// and src/components/FloatingTicker.jsx, and the office address/contact in
+// src/config/contact.js. Nothing here is invented.
 const ORG = {
   en: 'Swastik Srijan Foundation Samiti',
   hi: 'स्वस्तिक सृजन फाउंडेशन समिति',
@@ -111,77 +143,108 @@ const BASE_CSS = `
   .lh {
     width: ${PAGE_W_PX}px; background: #ffffff; color: ${INK};
     font-family: 'SSFLatin', system-ui, sans-serif;
-    font-size: 12.5px; line-height: 1.62; -webkit-font-smoothing: antialiased;
+    font-size: 12.4px; line-height: 1.6; -webkit-font-smoothing: antialiased;
     position: relative;
   }
   .hi { font-family: 'SSFDevanagari', sans-serif; }
 
-  /* ---- masthead ---- */
+  /* ---- masthead ------------------------------------------------------- */
   .lh-head { position: relative; z-index: 1; padding: 0 ${PAD_PX}px; }
-  .lh-accent { height: 3px; background: linear-gradient(90deg, ${NAVY} 0 58%, ${TEAL} 58% 86%, ${GOLD} 86% 100%); }
-  .lh-head-top { display: flex; align-items: center; gap: 16px; padding: 15px 0 12px; }
-  .lh-logo-wrap {
-    width: 76px; height: 76px; flex-shrink: 0; display: grid; place-items: center;
-    border: 1px solid ${HAIRLINE}; border-radius: 50%; background: #ffffff;
+  /* The tri-band is the Foundation's institutional mark: navy (the
+     organisation), green (its service work) and a narrow gold rule (the
+     accent). It reads as one deliberate device rather than decoration. */
+  .lh-accent { height: 2.6px; background: linear-gradient(90deg, ${NAVY} 0 62%, ${TEAL} 62% 88%, ${GOLD} 88% 100%); }
+
+  .lh-head-top { display: flex; align-items: center; gap: 17px; padding: 15px 0 13px; }
+
+  /* Double-ring seal around the emblem — an outer navy hairline and an inner
+     gold hairline, the conventional way a registered society presents its
+     mark on official stationery. Both rings are real borders on nested
+     elements, not box-shadow: html2canvas does not rasterise box-shadow, so
+     an inset ring silently disappeared from the printed PDF. */
+  .lh-seal {
+    flex-shrink: 0; width: 76px; height: 76px; padding: 3px;
+    display: grid; place-items: center;
+    border: 1px solid rgba(18,52,90,.26); border-radius: 50%; background: #ffffff;
   }
-  .lh-logo { width: 62px; height: auto; display: block; }
+  .lh-seal-inner {
+    width: 100%; height: 100%; display: grid; place-items: center;
+    border: 1px solid rgba(247,168,20,.7); border-radius: 50%;
+  }
+  .lh-logo { width: 58px; height: auto; display: block; }
+
   .lh-names { flex: 1; min-width: 0; }
-  .lh-identity { font-size: 7.2px; font-weight: 700; letter-spacing: .19em; text-transform: uppercase; color: ${TEAL}; }
-  .lh-name-en { margin-top: 5px; font-size: 21.5px; font-weight: 800; color: ${NAVY}; letter-spacing: -.015em; line-height: 1.12; }
-  .lh-name-hi { margin-top: 3px; font-size: 15px; font-weight: 700; color: ${NAVY}; line-height: 1.32; }
-  .lh-tag { margin-top: 6px; font-size: 8.4px; font-weight: 700; color: ${TEAL}; letter-spacing: .04em; }
+  .lh-identity { display: flex; align-items: center; gap: 7px; }
+  .lh-identity .dash { width: 16px; height: 2px; background: ${GOLD}; flex-shrink: 0; }
+  .lh-identity .txt { font-size: 7.1px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; color: ${TEAL}; }
+  .lh-name-en { margin-top: 6px; font-size: 21.5px; font-weight: 800; color: ${NAVY}; letter-spacing: -.015em; line-height: 1.1; }
+  .lh-name-hi { margin-top: 4px; font-size: 15px; font-weight: 700; color: ${NAVY}; line-height: 1.3; }
+  .lh-tag { margin-top: 7px; font-size: 8.3px; font-weight: 700; color: ${TEAL}; letter-spacing: .03em; }
+  .lh-tag .sep { color: ${GOLD}; padding: 0 5px; }
   .lh-tag .en { color: ${MUTED}; font-weight: 600; }
 
   .lh-ref {
-    flex-shrink: 0; width: 152px; padding-left: 14px; margin-left: 2px;
+    flex-shrink: 0; width: 156px; padding-left: 15px;
     border-left: 1px solid ${HAIRLINE}; text-align: right;
   }
-  .lh-ref .cap { font-size: 7px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; color: ${MUTED}; }
-  .lh-ref .row { margin-top: 7px; }
-  .lh-ref .k { font-size: 7px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: ${TEAL}; }
-  .lh-ref .v { margin-top: 1px; font-size: 10px; font-weight: 700; color: ${NAVY}; word-break: break-word; }
+  .lh-ref .cap { font-size: 7px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: ${MUTED}; }
+  .lh-ref .row { margin-top: 8px; }
+  .lh-ref .k { font-size: 7px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: ${TEAL}; }
+  .lh-ref .v { margin-top: 2px; font-size: 10px; font-weight: 700; color: ${NAVY}; word-break: break-word; }
 
-  .lh-rule { height: 2px; background: linear-gradient(90deg, ${NAVY} 0 58%, ${TEAL} 58% 86%, ${GOLD} 86% 100%); }
+  /* Two-tone double rule closing the masthead. */
+  .lh-rule { height: 1.6px; background: ${NAVY}; }
+  .lh-rule-gold { height: 0.7px; background: ${GOLD}; }
+
   .lh-legal {
     display: flex; justify-content: space-between; align-items: baseline; gap: 18px;
-    padding: 7px 0 8px; color: ${MUTED}; font-size: 7.4px; line-height: 1.5;
+    padding: 7px 0 8px; color: ${MUTED}; font-size: 7.3px; line-height: 1.5;
   }
   .lh-legal-hi { margin-top: 2px; color: #71818F; }
-  .lh-legal-reg { flex-shrink: 0; text-align: right; color: ${NAVY}; font-size: 7.6px; font-weight: 800; }
-  .lh-legal-reg .sub { color: ${MUTED}; font-weight: 600; }
-  .lh-rule-thin { height: 1px; background: #EAF0F6; }
+  .lh-legal-reg { flex-shrink: 0; text-align: right; color: ${NAVY}; font-size: 7.5px; font-weight: 800; letter-spacing: .04em; }
+  .lh-legal-reg .sub { color: ${MUTED}; font-weight: 600; letter-spacing: 0; }
+  .lh-rule-thin { height: 1px; background: ${SOFT_BLUE}; }
 
-  /* ---- body ---- */
-  .lh-body { position: relative; z-index: 1; padding: 0 ${PAD_PX}px; }
-  .lh-meta { display: flex; justify-content: space-between; gap: 24px; align-items: flex-start; }
-  .lh-to { font-size: 12px; line-height: 1.62; }
+  /* ---- body ----------------------------------------------------------- */
+  /* Flex column, not block: a block child's margin-top would collapse out of
+     .lh and inflate the raster height, pushing a letter that fits onto a
+     spurious second page. Which block is first varies (To, Subject or the
+     salutation, depending on what the composer filled in), so containing the
+     collapse here fixes it for every shape of letter at once. */
+  .lh-body { position: relative; z-index: 1; display: flex; flex-direction: column; padding: 0 ${PAD_PX}px; }
+  .lh-to { font-size: 12px; line-height: 1.6; }
   .lh-to .lbl { font-weight: 800; color: ${NAVY}; }
-  .lh-fields { flex-shrink: 0; text-align: right; font-size: 11px; line-height: 1.6; }
-  .lh-fields .k { font-weight: 800; color: ${NAVY}; }
-  .lh-fields .fill { display: inline-block; min-width: 132px; border-bottom: 1px dotted #9FB0C0; padding-bottom: 1px; color: ${INK}; font-weight: 600; }
 
-  .lh-subject { margin-top: 15px; padding: 8px 12px; background: #F4F8FB; border-left: 4px solid ${TEAL}; }
-  .lh-subject .lbl { font-size: 8.6px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: ${TEAL}; }
+  .lh-subject { margin-top: 15px; padding: 8px 12px; background: #F5F8FB; border-left: 3px solid ${NAVY}; border-top: 1px solid ${SOFT_BLUE}; border-right: 1px solid ${SOFT_BLUE}; border-bottom: 1px solid ${SOFT_BLUE}; }
+  .lh-subject .lbl { font-size: 8.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: ${TEAL}; }
   .lh-subject .txt { margin-top: 3px; font-size: 13px; font-weight: 700; color: ${NAVY}; line-height: 1.45; }
 
-  .lh-salut { margin-top: 15px; font-size: 12.5px; font-weight: 700; color: ${INK}; }
-  .lh-p { margin-top: 9px; font-size: 12.5px; text-align: justify; white-space: pre-wrap; }
-  .lh-thanks { margin-top: 16px; font-size: 12.5px; }
+  .lh-salut { margin-top: 15px; font-size: 12.4px; font-weight: 700; color: ${INK}; }
+  .lh-p { margin-top: 9px; font-size: 12.4px; text-align: justify; white-space: pre-wrap; }
+  .lh-thanks { margin-top: 16px; font-size: 12.4px; }
 
-  .lh-sign { margin-top: 26px; text-align: right; }
+  .lh-sign { margin-top: 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
+  .lh-sign-col { text-align: right; margin-left: auto; }
   .lh-sign .for { font-size: 12px; font-weight: 700; color: ${INK}; }
-  .lh-sign .nm { margin-top: 32px; font-size: 13px; font-weight: 800; color: ${NAVY}; }
+  /* The scanned signature sits above the name, the way it is written on paper.
+     The dashed rule stays underneath as the signing line. */
+  .lh-sign .sig { height: 34px; width: auto; margin: 8px 2px 0 auto; display: block; }
+  .lh-sign .line { margin: 2px 0 0 auto; width: 208px; border-top: 1px dashed #B9C6D4; }
+  /* Organisation seal, bottom-left of the signing block. */
+  .lh-sign .seal { width: 88px; height: auto; opacity: .88; flex-shrink: 0; }
+  .lh-sign .nm { margin-top: 5px; font-size: 13px; font-weight: 800; color: ${NAVY}; }
   .lh-sign .desig { font-size: 11px; color: ${INK}; }
-  .lh-sign .line { margin: 24px 0 0 auto; width: 208px; border-top: 1px dashed #B9C6D4; }
 
   .lh-extra { margin-top: 16px; font-size: 11px; line-height: 1.55; }
   .lh-extra .lbl { font-weight: 800; color: ${NAVY}; }
 
-  /* ---- footer (only used by the live HTML preview; the PDF stamps its own) ---- */
+  /* ---- footer (live HTML preview only; the PDF stamps its own) --------- */
   .lh-foot { margin-top: 18px; padding: 0 ${PAD_PX}px; }
-  .lh-foot .rule { height: 1px; background: ${HAIRLINE}; }
-  .lh-foot .grid { display: flex; justify-content: space-between; gap: 18px; padding-top: 4px; font-size: 7.6px; color: ${MUTED}; line-height: 1.45; }
+  .lh-foot .rule { position: relative; height: 1px; background: ${HAIRLINE}; }
+  .lh-foot .rule::before { content: ''; position: absolute; left: 0; top: 0; width: 34px; height: 1px; background: ${GOLD}; }
+  .lh-foot .grid { display: flex; justify-content: space-between; gap: 18px; padding-top: 4px; font-size: 7.4px; color: ${MUTED}; line-height: 1.5; }
   .lh-foot .grid .right { text-align: right; flex-shrink: 0; }
+  .lh-foot .grid .right .site { color: ${NAVY}; font-weight: 700; }
   .lh-foot .pageno { margin-top: 3px; text-align: center; font-size: 7.2px; color: #94A3B8; }
 `;
 
@@ -189,12 +252,12 @@ function headerHtml(f = {}) {
   return `<div class="lh-head">
     <div class="lh-accent"></div>
     <div class="lh-head-top">
-      <div class="lh-logo-wrap"><img class="lh-logo" src="${logoImg}" alt="Swastik Srijan Foundation Samiti" /></div>
+      <div class="lh-seal"><div class="lh-seal-inner"><img class="lh-logo" src="${logoImg}" alt="Swastik Srijan Foundation Samiti" /></div></div>
       <div class="lh-names">
-        <div class="lh-identity">${esc(ORG.identity)}</div>
+        <div class="lh-identity"><span class="dash"></span><span class="txt">${esc(ORG.identity)}</span></div>
         <div class="lh-name-en">${esc(ORG.en)}</div>
         <div class="lh-name-hi hi">${esc(ORG.hi)}</div>
-        <div class="lh-tag hi">${esc(ORG.taglineHi)} <span class="en">• ${esc(ORG.taglineEn)}</span></div>
+        <div class="lh-tag hi">${esc(ORG.taglineHi)}<span class="sep">•</span><span class="en">${esc(ORG.taglineEn)}</span></div>
       </div>
       <div class="lh-ref">
         <div class="cap">Official Correspondence</div>
@@ -203,6 +266,7 @@ function headerHtml(f = {}) {
       </div>
     </div>
     <div class="lh-rule"></div>
+    <div class="lh-rule-gold"></div>
     <div class="lh-legal">
       <div class="lh-legal-main">
         <div>${esc(ORG.regLineEn)}</div>
@@ -220,19 +284,14 @@ function bodyHtml(f, lang) {
     .map((v) => String(v || '').trim()).filter(Boolean);
   const salutation = f.salutation || pick('Respected Sir/Madam,', 'आदरणीय महोदय / महोदया,', lang);
   const closing = f.closing || pick('Thank you,', 'धन्यवाद,', lang);
-  const refLine = String(f.letterNo || '').trim();
-  const dateLine = String(f.date || '').trim();
 
+  // Ref. No. and Date live once, in the masthead's right-hand column. They are
+  // deliberately not repeated here: printing them twice on one sheet reads as a
+  // layout mistake on formal stationery.
   return `<div class="lh-body">
-    ${(toBlock.length || refLine || dateLine) ? `<div class="lh-meta" data-safe>
-      ${toBlock.length ? `<div class="lh-to">
-        <div class="lbl">${pick('To,', 'प्रति,', lang)}</div>
-        ${toBlock.map((line) => `<div>${esc(line)}</div>`).join('')}
-      </div>` : '<div class="lh-to"></div>'}
-      <div class="lh-fields">
-        <div><span class="k">Ref. No.:</span> <span class="fill">${esc(refLine || '—')}</span></div>
-        <div><span class="k">${pick('Date', 'दिनांक', lang)}:</span> <span class="fill">${esc(dateLine || '—')}</span></div>
-      </div>
+    ${toBlock.length ? `<div class="lh-to" data-safe>
+      <div class="lbl">${pick('To,', 'प्रति,', lang)}</div>
+      ${toBlock.map((line) => `<div>${esc(line)}</div>`).join('')}
     </div>` : ''}
     ${f.subject ? `<div class="lh-subject" data-safe>
       <div class="lbl">${pick('Subject', 'विषय', lang)}</div>
@@ -242,10 +301,14 @@ function bodyHtml(f, lang) {
     ${paragraphs.map((p) => `<div class="lh-p" data-safe>${esc(p)}</div>`).join('')}
     <div class="lh-thanks" data-safe>${esc(closing)}</div>
     <div class="lh-sign" data-safe>
-      <div class="for">${pick('For', 'हेतु', lang)} ${esc(ORG.en)}</div>
-      <div class="line"></div>
-      <div class="nm">${esc(f.signatoryName || '')}</div>
-      <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
+      ${f.seal === false ? '' : `<img class="seal" src="${sealImg}" alt="Organisation seal" />`}
+      <div class="lh-sign-col">
+        <div class="for">${pick('For', 'हेतु', lang)} ${esc(ORG.en)}</div>
+        ${hasSignatureScan(f) ? `<img class="sig" src="${signatureImg}" alt="Signature" data-signature-img />` : ''}
+        <div class="line"></div>
+        <div class="nm">${esc(f.signatoryName || '')}</div>
+        <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
+      </div>
     </div>
     ${f.enclosures ? `<div class="lh-extra" data-safe>
       <span class="lbl">${pick('Enclosures', 'संलग्नक', lang)}:</span> ${esc(f.enclosures)}
@@ -261,7 +324,7 @@ function footerHtml(f, page, pages) {
     <div class="rule"></div>
     <div class="grid">
       <div>Registered Office: ${esc(ADDRESS_LINE)}</div>
-      <div class="right">${esc(CONTACT_INFO.phones.primaryFormatted)} · ${esc(CONTACT_INFO.primaryEmail)}<br/>${esc(ORG.website)}</div>
+      <div class="right">${esc(CONTACT_INFO.phones.primaryFormatted)} · ${esc(CONTACT_INFO.primaryEmail)}<br/><span class="site">${esc(ORG.website)}</span></div>
     </div>
     <div class="pageno">Ref. ${esc(f.letterNo || '—')} &nbsp;·&nbsp; Page ${page} of ${pages}</div>
   </div>`;
@@ -269,7 +332,7 @@ function footerHtml(f, page, pages) {
 
 /** Standalone HTML document of one A4 sheet — used for the live on-screen preview. */
 export async function letterheadPreviewHtml(f, { lang = 'both', watermark = true } = {}) {
-  const logo = watermark ? await logoDataUrl() : null;
+  const mark = watermark ? await watermarkDataUrl() : null;
   return `<!doctype html><html lang="en-IN"><head><meta charset="utf-8"/>
 <title>${esc(f.letterNo || 'SSF Letterhead')}</title>
 <style>${await fontFaceCss()}
@@ -277,16 +340,19 @@ export async function letterheadPreviewHtml(f, { lang = 'both', watermark = true
   /* The preview mirrors the PDF sheet: masthead pinned to the top margin,
      footer pinned to the bottom margin, body flowing in between. */
   .sheet{position:relative;width:${PAGE_W_MM}mm;height:${PAGE_H_MM}mm;margin:0 auto;background:#fff;overflow:hidden;}
-  .sheet .mark{position:absolute;left:50%;top:50%;width:112mm;height:112mm;margin:-56mm 0 0 -56mm;opacity:${WATERMARK_OPACITY};pointer-events:none;}
+  .sheet .mark{position:absolute;left:50%;top:50%;width:${WATERMARK_MM}mm;height:${WATERMARK_MM}mm;margin:-${WATERMARK_MM / 2}mm 0 0 -${WATERMARK_MM / 2}mm;opacity:${WATERMARK_OPACITY};pointer-events:none;}
   .sheet .inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;
-    padding:${MARGIN_MM}mm 0 ${FOOTER_MM - 9}mm;}
+    padding:${MARGIN_MM}mm 0 4mm;}
   .sheet .lh{flex:1;display:flex;flex-direction:column;min-height:0;}
-  .sheet .lh-foot{margin-top:auto;}
+  /* The 4mm bottom padding plus the footer's own height puts the footer rule
+     around 282mm, exactly where the PDF's jsPDF-drawn footer rule sits
+     (PAGE_H_MM - FOOTER_MM), so preview and print agree to the millimetre. */
+  .sheet .lh-foot{margin-top:auto;padding-bottom:0;}
   @media print{@page{size:A4;margin:0}html,body{background:#fff}.sheet{margin:0}}
   ${BASE_CSS}
 </style></head><body>
   <div class="sheet">
-    ${logo ? `<img class="mark" src="${logo}" alt=""/>` : ''}
+    ${mark ? `<img class="mark" src="${mark}" alt=""/>` : ''}
     <div class="inner">
       <div class="lh">${headerHtml(f)}${bodyHtml(f, lang)}${footerHtml(f, 1, 1)}</div>
     </div>
@@ -309,17 +375,34 @@ function logoImage() {
   return logoImagePromise;
 }
 
-let logoDataUrlCache;
-/** The logo as a PNG data URL, for stamping into a standalone HTML preview. */
-async function logoDataUrl() {
-  if (logoDataUrlCache !== undefined) return logoDataUrlCache;
-  const img = await logoImage();
-  if (!img) { logoDataUrlCache = null; return null; }
-  const c = document.createElement('canvas');
-  c.width = img.naturalWidth; c.height = img.naturalHeight;
-  c.getContext('2d').drawImage(img, 0, 0);
-  logoDataUrlCache = c.toDataURL('image/png');
-  return logoDataUrlCache;
+let watermarkPromise;
+/**
+ * The emblem as a navy monochrome PNG, for the page watermark.
+ *
+ * The source logo is a full-colour roundel whose pale plate reaches the corners
+ * of the square image, so stamping it as-is would drop a faint grey box behind
+ * the text. Re-tinting every opaque pixel navy (and keeping the alpha channel)
+ * leaves a clean silhouette that reads as a watermark and photocopies well.
+ */
+function watermarkDataUrl() {
+  if (!watermarkPromise) {
+    watermarkPromise = (async () => {
+      const img = await logoImage();
+      if (!img) return null;
+      const S = 900;
+      const c = document.createElement('canvas');
+      c.width = S; c.height = S;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0, S, S);
+      // `source-in` keeps the existing alpha and replaces every colour with navy.
+      ctx.globalCompositeOperation = 'source-in';
+      ctx.fillStyle = NAVY;
+      ctx.fillRect(0, 0, S, S);
+      ctx.globalCompositeOperation = 'source-over';
+      return c.toDataURL('image/png');
+    })();
+  }
+  return watermarkPromise;
 }
 
 async function renderHost(html, { transparent = false, minHeightPx = 0 } = {}) {
@@ -328,8 +411,7 @@ async function renderHost(html, { transparent = false, minHeightPx = 0 } = {}) {
   host.style.cssText = `position:fixed;left:-99999px;top:0;width:${PAGE_W_PX}px;z-index:-1;`;
   // The body raster must stay transparent so the watermark drawn underneath it
   // shows through between the lines of text, and it is given the full writing
-  // height so the watermark sits at the centre of the page rather than of
-  // however much text happens to be written.
+  // height so the writing area is the same on every page of every letter.
   const extra = transparent
     ? `.lh{background:transparent${minHeightPx ? `;min-height:${minHeightPx}px` : ''}}`
     : '';
@@ -367,18 +449,35 @@ function stampHeader(pdf, headerCanvas) {
   pdf.addImage(headerCanvas.toDataURL('image/jpeg', 0.95), 'JPEG', 0, MARGIN_MM, PAGE_W_MM, headerHeightMm(headerCanvas), undefined, 'FAST');
 }
 
+/** Faint navy emblem, centred on the page and drawn under the text. */
+function stampWatermark(pdf, dataUrl) {
+  if (!dataUrl) return;
+  const size = WATERMARK_MM;
+  pdf.setGState(new pdf.GState({ opacity: WATERMARK_OPACITY }));
+  pdf.addImage(dataUrl, 'PNG', (PAGE_W_MM - size) / 2, (PAGE_H_MM - size) / 2, size, size, undefined, 'FAST');
+  pdf.setGState(new pdf.GState({ opacity: 1 }));
+}
+
 function stampFooter(pdf, meta) {
   const y = PAGE_H_MM - FOOTER_MM;
   const xr = PAGE_W_MM - MARGIN_MM;
+  // Institutional divider: a hairline across the page with a short gold
+  // segment at its left end, echoing the masthead band.
   pdf.setDrawColor(213, 222, 232); pdf.setLineWidth(0.2);
   pdf.line(MARGIN_MM, y, xr, y);
-  pdf.setTextColor(91, 107, 122); pdf.setFontSize(6.4);
-  pdf.text(`Registered Office: ${ADDRESS_LINE}`, MARGIN_MM, y + 4.2);
-  pdf.text(`${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail} · ${ORG.website}`,
-    xr, y + 4.2, { align: 'right' });
-  pdf.setTextColor(148, 163, 184); pdf.setFontSize(6);
+  pdf.setDrawColor(247, 168, 20); pdf.setLineWidth(0.5);
+  pdf.line(MARGIN_MM, y, MARGIN_MM + 9, y);
+  // 7.4pt keeps the registered address legible on a 600dpi office printer; the
+  // earlier 6.4pt footer was effectively unreadable once printed.
+  pdf.setTextColor(91, 107, 122); pdf.setFontSize(7.4);
+  pdf.text(`Registered Office: ${ADDRESS_LINE}`, MARGIN_MM, y + 4.4);
+  pdf.text(`${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail}`,
+    xr, y + 4.4, { align: 'right' });
+  pdf.setTextColor(18, 52, 90); pdf.setFontSize(7.2);
+  pdf.text(ORG.website, xr, y + 8.3, { align: 'right' });
+  pdf.setTextColor(148, 163, 184); pdf.setFontSize(6.8);
   pdf.text(`Ref. ${meta.letterNo || '—'}  ·  Page ${pdf.internal.getCurrentPageInfo().pageNumber} of ${meta.pageCount}`,
-    PAGE_W_MM / 2, y + 8.4, { align: 'center' });
+    PAGE_W_MM / 2, y + 11.6, { align: 'center' });
 }
 
 /**
@@ -399,7 +498,7 @@ export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}
   const body = await renderHost(`<div class="lh">${bodyHtml(f, lang)}</div>`, {
     transparent: true, minHeightPx: writingPx,
   });
-  const watermarkImg = watermark ? await logoImage() : null;
+  const mark = watermark ? await watermarkDataUrl() : null;
   try {
     const scale = body.canvas.width / PAGE_W_PX;
     const pageContentPx = Math.round((bodyBottom - bodyTop) * pxPerMm * scale);
@@ -410,6 +509,7 @@ export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}
     while (y < body.canvas.height) {
       let end = Math.min(y + pageContentPx, body.canvas.height);
       if (end < body.canvas.height) {
+        // Break between blocks, never through a line of text.
         let best = -1;
         for (const b of boundaries) { if (b > y && b <= end) best = b; else if (b > end) break; }
         if (best > y) end = best;
@@ -418,20 +518,16 @@ export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}
       const slice = document.createElement('canvas');
       slice.width = body.canvas.width; slice.height = h;
       const sctx = slice.getContext('2d');
-      sctx.fillStyle = '#ffffff'; sctx.fillRect(0, 0, slice.width, slice.height);
-      if (watermarkImg) {
-        const size = 112 * pxPerMm * scale;
-        sctx.globalAlpha = WATERMARK_OPACITY;
-        sctx.drawImage(watermarkImg, (slice.width - size) / 2, (slice.height - size) / 2, size, size);
-        sctx.globalAlpha = 1;
-      }
+      // No white fill: the slice keeps its alpha so the watermark shows through.
       sctx.drawImage(body.canvas, 0, y, body.canvas.width, h, 0, 0, body.canvas.width, h);
 
       if (!first) pdf.addPage();
       first = false;
+      stampWatermark(pdf, mark);
       stampHeader(pdf, headerCanvas);
       const hMm = (h / scale) * (PAGE_W_MM / PAGE_W_PX);
-      pdf.addImage(slice.toDataURL('image/jpeg', 0.95), 'JPEG', 0, bodyTop, PAGE_W_MM, hMm, undefined, 'FAST');
+      // PNG (not JPEG) — JPEG has no alpha channel and would erase the watermark.
+      pdf.addImage(slice.toDataURL('image/png'), 'PNG', 0, bodyTop, PAGE_W_MM, hMm, undefined, 'FAST');
       y = end;
     }
     const pages = pdf.internal.getNumberOfPages();

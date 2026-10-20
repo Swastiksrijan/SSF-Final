@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import qrCode from "../assets/barcode.jpg"; // Updated to the correct QR code image
 import heroInvestImage from "/images/real/scholarship_distribution.jpg";
+import { BRAND } from "../data/brandAssets";
 
 export default function DonateAndSupport() {
   const [openFaq, setOpenFaq] = useState(null);
@@ -238,7 +239,7 @@ export default function DonateAndSupport() {
               </div>
             </div>
 
-            <div className="flex justify-center">
+            <div className="flex flex-col items-center gap-6">
               <div className="relative w-80 h-80">
                 <FaChartPie className="w-full h-full text-zinc-200 drop-shadow-xl" />
                 <div className="absolute inset-0 flex items-center justify-center flex-col">
@@ -246,6 +247,13 @@ export default function DonateAndSupport() {
                   <span className="text-sm font-bold tracking-widest text-zinc-400 uppercase mt-2">To Programs</span>
                 </div>
               </div>
+              <figure className="w-full max-w-md overflow-hidden rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm">
+                <img src={BRAND.donationCertificate} alt="80G donation exemption certificate issued by Swastik Srijan Foundation" loading="lazy" className="w-full rounded-xl" />
+                <figcaption className="mt-3 px-1 pb-1 text-center text-xs font-bold text-[#12345A]">
+                  80G tax-exemption certificate issued for every donation
+                  <span className="mt-0.5 block font-semibold text-zinc-500">प्रत्येक दान पर 80G प्रमाण-पत्र जारी</span>
+                </figcaption>
+              </figure>
             </div>
           </div>
         </div>
