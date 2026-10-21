@@ -245,7 +245,6 @@ const BASE_CSS = `
   .lh-sign-trio { width: 100%; display: flex; flex-direction: row; gap: 8px; align-items: flex-end; }
   .lh-sign-trio .person { flex: 1 1 0; width: 33.333%; min-width: 0; text-align: center; break-inside: avoid; }
   .lh-sign-trio .line { margin: 6px auto 0; width: 92%; max-width: 150px; border-top: 1px solid #9AAABD; }
-  .lh-sign-trio-head { text-align: center; font-size: 8px; line-height: 1.25; font-weight: 700; color: ${INK}; margin: 0 0 2px; }
   .lh-sign-trio-org { text-align: center; font-size: 9px; line-height: 1.2; font-weight: 800; color: ${NAVY}; margin: 0 0 2px; }
   .lh-sign-trio .nm { margin-top: 4px; font-size: 9.5px; line-height: 1.2; font-weight: 800; color: ${NAVY}; overflow-wrap: anywhere; }
   .lh-sign-trio .desig { font-size: 8.5px; line-height: 1.2; color: ${INK}; }
