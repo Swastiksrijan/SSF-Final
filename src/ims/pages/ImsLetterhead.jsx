@@ -87,11 +87,12 @@ export default function ImsLetterhead() {
   const [busy, setBusy] = useState('');
   const [notice, setNotice] = useState(null);
   const [query, setQuery] = useState('');
+  const [customSignatoryName, setCustomSignatoryName] = useState('');
   const [preview, setPreview] = useState(null);
   const set = (key, value) => setF((old) => ({ ...old, [key]: value }));
   const say = (text, tone) => setNotice({ text, tone: tone || 'ok' });
   const activeGroup = TYPE_GROUPS.find((g) => g.code === f.groupCode) || TYPE_GROUPS[0];
-  const signatory = SIGNATORIES.find((s) => s.name === f.signatoryName);
+  const outputLetter = useMemo(() => ({ ...f, signatoryName: f.signatoryName === 'Other authorised signatory' ? customSignatoryName.trim() : f.signatoryName }), [f, customSignatoryName]);
   const isSecretary = f.signatoryName === SIGNATURE_HOLDER;
 
   useEffect(() => {
@@ -148,7 +149,7 @@ export default function ImsLetterhead() {
       say(hindi ? 'कृपया विषय या पत्र की सामग्री भरें।' : 'Please enter a subject or letter body.', 'warn');
       return false;
     }
-    if (!f.signatoryName || !f.signatoryDesignation) {
+    if (!outputLetter.signatoryName || !f.signatoryDesignation) {
       say(hindi ? 'हस्ताक्षरकर्ता का नाम और पद भरें।' : 'Please provide the signatory name and designation.', 'warn');
       return false;
     }
@@ -163,19 +164,19 @@ export default function ImsLetterhead() {
     finally { setBusy(''); }
   };
   const doPreview = () => run('preview', async () => {
-    const result = await previewLetterPdf(f, { lang: pdfLang, watermark });
+    const result = await previewLetterPdf(outputLetter, { lang: pdfLang, watermark });
     if (result.opened) say(hindi ? 'PDF नए टैब में खुला है।' : 'PDF opened in a new tab.');
     else setPreview({ url: result.url });
   });
-  const doDownload = () => run('download', () => downloadLetterPdf(f, { lang: pdfLang, watermark }));
-  const doPrint = () => run('print', () => printLetterPdf(f, { lang: pdfLang, watermark }));
+  const doDownload = () => run('download', () => downloadLetterPdf(outputLetter, { lang: pdfLang, watermark }));
+  const doPrint = () => run('print', () => printLetterPdf(outputLetter, { lang: pdfLang, watermark }));
   const doSave = () => run('save', async () => {
     const payload = {
       title: f.subject || activeGroup.en + ' — ' + (f.toName || f.toOrg || 'Official letter'),
       category: CATEGORY,
       docType: activeGroup.en,
       issueDate: f.date,
-      owner: f.signatoryName,
+      owner: outputLetter.signatoryName,
       source: 'SSF Official Letter Generator',
       approvedBy: f.signatoryDesignation,
       data: {
@@ -184,7 +185,7 @@ export default function ImsLetterhead() {
         toName: f.toName, toDesignation: f.toDesignation, toOrg: f.toOrg, toAddress: f.toAddress,
         subject: f.subject, salutation: f.salutation, body: f.body, closing: f.closing,
         enclosures: f.enclosures, cc: f.cc,
-        signatoryName: f.signatoryName, signatoryDesignation: f.signatoryDesignation,
+        signatoryName: outputLetter.signatoryName, signatoryDesignation: f.signatoryDesignation,
         signature: isSecretary && f.signature === true, seal: f.seal !== false,
         language: pdfLang, watermark,
       },
@@ -192,7 +193,9 @@ export default function ImsLetterhead() {
     const created = await ims.create(REGISTER, payload);
     setRows((old) => [created, ...old]);
     const next = { ...initialLetter(), groupCode: f.groupCode, letterType: f.letterType,
-      signatoryName: f.signatoryName, signatoryDesignation: f.signatoryDesignation };
+      signatoryName: f.signatoryName === 'Other authorised signatory' ? 'Ramesh Pandey' : f.signatoryName,
+      signatoryDesignation: f.signatoryName === 'Other authorised signatory' ? 'President' : f.signatoryDesignation };
+    if (f.signatoryName === 'Other authorised signatory') setCustomSignatoryName('');
     next.letterNo = nextRef([created, ...rows], next.groupCode, next.date);
     setF(next);
     say((hindi ? 'पत्र दस्तावेज़ पंजिका में सुरक्षित है। संदर्भ: ' : 'Letter saved to the permanent Documents register. Reference: ') + f.letterNo + (created.recordId ? ' · ' + created.recordId : ''));
@@ -266,9 +269,10 @@ export default function ImsLetterhead() {
                 <div><label className={label}>{hindi ? 'हस्ताक्षरकर्ता' : 'Signatory'}</label><select className={cls} value={f.signatoryName} onChange={(e) => {
                   const chosen = SIGNATORIES.find((s) => s.name === e.target.value);
                   setF((old) => ({ ...old, signatoryName: e.target.value, signatoryDesignation: chosen ? chosen.designation : old.signatoryDesignation, signature: false }));
+                  if (e.target.value !== 'Other authorised signatory') setCustomSignatoryName('');
                 }}>{SIGNATORIES.map((s) => <option key={s.name} value={s.name}>{s.name} — {hindi ? s.hi : s.designation}</option>)}</select></div>
                 <div><label className={label}>{hindi ? 'पदनाम' : 'Designation'}</label><input className={cls} value={f.signatoryDesignation} onChange={(e) => set('signatoryDesignation', e.target.value)} /></div>
-                {f.signatoryName === 'Other authorised signatory' && <div className="sm:col-span-2"><label className={label}>{hindi ? 'अधिकृत व्यक्ति का पूरा नाम' : 'Full name of authorised person'}</label><input className={cls} value={f.signatoryName === 'Other authorised signatory' ? '' : f.signatoryName} onChange={(e) => set('signatoryName', e.target.value)} placeholder={hindi ? 'पूरा नाम दर्ज करें' : 'Enter full name'} /></div>}
+                {f.signatoryName === 'Other authorised signatory' && <div className="sm:col-span-2"><label className={label}>{hindi ? 'अधिकृत व्यक्ति का पूरा नाम' : 'Full name of authorised person'}</label><input className={cls} value={customSignatoryName} onChange={(e) => setCustomSignatoryName(e.target.value)} placeholder={hindi ? 'पूरा नाम दर्ज करें' : 'Enter full name'} /></div>}
               </div>
               <div className="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm">
                 <label className="inline-flex items-center gap-2"><input type="checkbox" checked={f.signature === true && isSecretary} disabled={!isSecretary} onChange={(e) => set('signature', e.target.checked)} className="h-4 w-4 accent-[#12345A]" /><span className={!isSecretary ? 'text-slate-400' : 'text-slate-700'}>{hindi ? 'सचिव के उपलब्ध हस्ताक्षर स्कैन का उपयोग' : 'Use Secretary signature scan (only if selected)'}</span></label>
@@ -322,7 +326,7 @@ export default function ImsLetterhead() {
           </div>
         </div>
       </div>
-      {preview && preview.url && <div className="fixed inset-0 z-[1200] flex flex-col bg-black/70 p-3 sm:p-6"><div className="mb-2 flex items-center justify-between text-white"><span className="text-sm font-bold">{letterFileName(f, pdfLang)}</span><button type="button" onClick={closePreview} className="inline-flex items-center gap-1 rounded-lg bg-white/10 px-3 py-1.5 text-sm font-bold"><X size={15} />{hindi ? 'बंद करें' : 'Close'}</button></div><iframe title="SSF letter PDF" src={preview.url} className="min-h-0 flex-1 w-full rounded-xl bg-white" /></div>}
+      {preview && preview.url && <div className="fixed inset-0 z-[1200] flex flex-col bg-black/70 p-3 sm:p-6"><div className="mb-2 flex items-center justify-between text-white"><span className="text-sm font-bold">{letterFileName(outputLetter, pdfLang)}</span><button type="button" onClick={closePreview} className="inline-flex items-center gap-1 rounded-lg bg-white/10 px-3 py-1.5 text-sm font-bold"><X size={15} />{hindi ? 'बंद करें' : 'Close'}</button></div><iframe title="SSF letter PDF" src={preview.url} className="min-h-0 flex-1 w-full rounded-xl bg-white" /></div>}
     </ImsLayout>
   );
 }
