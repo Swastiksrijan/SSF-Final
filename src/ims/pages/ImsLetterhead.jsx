@@ -220,7 +220,14 @@ export default function ImsLetterhead() {
     say(lang === 'hi'
       ? `दस्तावेज़ पंजिका में सहेज दिया गया (${created.recordId}).`
       : `Saved to the Documents register (${created.recordId}).`);
-  });        {/* premium workspace header */}
+  });
+
+  const closePreview = () => { if (preview?.url) URL.revokeObjectURL(preview.url); setPreview(null); };
+
+  return (
+    <ImsLayout active="letterhead">
+      <div className="mx-auto max-w-[1500px] space-y-5">
+        {/* premium workspace header */}
         <div className="relative isolate overflow-hidden rounded-2xl bg-gradient-to-br from-[#0B1F3A] via-[#12345A] to-[#176447] p-6 text-white shadow-lg shadow-[#12345A]/10 sm:p-8">
           <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 h-56 w-56 rounded-full border border-white/10" />
           <div aria-hidden="true" className="pointer-events-none absolute -right-2 -top-10 h-36 w-36 rounded-full border border-[#F7A814]/20" />
@@ -240,12 +247,6 @@ export default function ImsLetterhead() {
                 {lang === 'hi'
                   ? 'शासकीय विभाग, कंपनी, बैंक, दानदाता या सदस्य के लिए संस्था के आधिकारिक लेटरहेड पर पत्र तैयार करें। हिंदी, अंग्रेज़ी या द्विभाषी प्रारूप में पूर्वावलोकन, PDF, प्रिंट और साझा करने की सुविधा।'
                   : 'Prepare formal correspondence for government departments, companies, banks, donors and members. Draft in English, Hindi or both, then preview, download as PDF, print or share.'}
-              </p>
-            </div>
-          </div>
-        </div>
-
- member — on the Foundation\u2019s own letterhead. English, हिंदी or both; download, print (works offline) or share on WhatsApp / e-mail.'}
               </p>
             </div>
           </div>
