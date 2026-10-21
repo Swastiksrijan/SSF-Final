@@ -56,7 +56,7 @@ const today = () => {
 };
 
 const blankLetter = () => ({
-  blankMode: false,
+  blankMode: true,
   letterNo: '', date: today(), letterType: LETTER_TYPES[0].en,
   toName: '', toDesignation: '', toOrg: '', toAddress: '',
   subject: '', salutation: '', body: '', closing: '', enclosures: '', cc: '',
