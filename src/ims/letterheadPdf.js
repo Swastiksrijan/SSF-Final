@@ -228,7 +228,7 @@ const BASE_CSS = `
   /* Keep the signature block at the end of the letter, above the fixed registered-office footer.
      On short letters it settles near the bottom of the writing area; on long letters it follows
      the final paragraph naturally. Enclosures/CC are placed before this block in bodyHtml. */
-  .lh-sign { margin-top: auto; padding-top: 9px; border-top: 1px solid ${HAIRLINE}; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; break-inside: avoid; }
+  .lh-sign { margin-top: auto; padding-top: 7px; border-top: 1px solid ${HAIRLINE}; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; break-inside: avoid; }
   .lh-sign-left { flex: 1; min-width: 0; padding-bottom: 2px; }
   .lh-sign-left .closing { font-size: 12px; font-weight: 700; color: ${INK}; }
   .lh-sign-left .org { margin-top: 0; font-size: 10.5px; font-weight: 800; color: ${NAVY}; }
@@ -237,12 +237,12 @@ const BASE_CSS = `
   .lh-sign-left .seal { display: block; width: 30px; height: auto; margin: 0; opacity: .9; flex-shrink: 0; }
   .lh-sign-seal { display: block; width: 42px; height: auto; margin: 4px auto 0; opacity: .9; }
   .lh-sign-col { width: 235px; flex-shrink: 0; text-align: center; }
-  .lh-sign-trio { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: end; }
-  .lh-sign-trio .person { min-width: 0; text-align: center; break-inside: avoid; }
-  .lh-sign-trio .line { margin: 20px auto 0; width: 100%; max-width: 150px; border-top: 1px solid #9AAABD; }
-  .lh-sign-trio .nm { margin-top: 5px; font-size: 10.5px; font-weight: 800; color: ${NAVY}; overflow-wrap: anywhere; }
-  .lh-sign-trio .desig { font-size: 9px; color: ${INK}; }
-  .lh-sign-trio .for { font-size: 8px; color: ${MUTED}; }
+  .lh-sign-trio { width: 100%; display: flex; flex-direction: row; gap: 8px; align-items: flex-end; }
+  .lh-sign-trio .person { flex: 1 1 0; width: 33.333%; min-width: 0; text-align: center; break-inside: avoid; }
+  .lh-sign-trio .line { margin: 10px auto 0; width: 92%; max-width: 150px; border-top: 1px solid #9AAABD; }
+  .lh-sign-trio .nm { margin-top: 4px; font-size: 9.5px; line-height: 1.2; font-weight: 800; color: ${NAVY}; overflow-wrap: anywhere; }
+  .lh-sign-trio .desig { font-size: 8.5px; line-height: 1.2; color: ${INK}; }
+  .lh-sign-trio .for { font-size: 7px; line-height: 1.2; color: ${MUTED}; }
   .lh-sign .for { font-size: 10px; font-weight: 700; color: ${INK}; }
   .lh-sign .sig { height: 34px; max-width: 150px; object-fit: contain; margin: 5px auto 0; display: block; }
   .lh-sign .line { margin: 2px auto 0; width: 205px; border-top: 1px solid #9AAABD; }
