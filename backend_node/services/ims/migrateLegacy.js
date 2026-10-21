@@ -17,6 +17,23 @@ const { logAudit, link } = require('./audit');
 
 const LEGACY_MARK = 'legacy';
 
+// Read legacy tables in bounded pages so migrations are not silently capped at
+// the first 5,000 rows. An explicit maxRows is only for controlled diagnostics.
+async function fetchAll(Model, maxRows = 0, pageSize = 500) {
+  const all = [];
+  let offset = 0;
+  while (true) {
+    const remaining = maxRows > 0 ? maxRows - all.length : pageSize;
+    if (maxRows > 0 && remaining <= 0) break;
+    const pageLimit = Math.min(pageSize, maxRows > 0 ? remaining : pageSize);
+    const rows = await Model.findAll({ limit: pageLimit, offset, order: [['id', 'ASC']] });
+    all.push(...rows);
+    if (rows.length < pageLimit) break;
+    offset += rows.length;
+  }
+  return all;
+}
+
 // ---- helpers ---------------------------------------------------------------
 const s = (v) => (v === undefined || v === null ? undefined : String(v).trim() || undefined);
 const num = (v) => (v === undefined || v === null || v === '' ? undefined : Number(v));
@@ -59,7 +76,7 @@ async function ensurePerson(src, stats) {
     address: s(src.address), city: s(src.city), state: s(src.state),
     gender: s(src.gender), dob: day(src.dob),
     occupation: s(src.occupation),
-    data: { legacySource: src.__source || null },
+    data: { legacySource: src.__source || null, _legacyFullRecord: src },
     createdBy: 'migration', createdByName: 'Legacy Import',
   });
   await logAudit({ entityType: 'persons', entityId: recordId, action: 'create', newValue: row.toJSON(), actor: 'migration' });
@@ -182,17 +199,29 @@ function pickText(module, data) {
 }
 
 async function importDigitalOfficeRecord(rec, stats, dryRun) {
-  const module = rec.module;
-  const resource = MODULE_MAP[module];
-  if (!resource) { stats.unmapped.push(`${module}:${rec.recordId}`); return; }
+  const module = rec.module || 'unknown';
+  // Preserve unmapped rows in the IMS Documents register instead of dropping them.
+  const mappedResource = MODULE_MAP[module];
+  const resource = mappedResource || 'documents';
+  const isFallbackArchive = !mappedResource;
+  if (isFallbackArchive) stats.unmapped.push(String(module) + ':' + String(rec.recordId));
   const done = await alreadyMigrated('digital-office', rec.recordId);
   if (done) { stats.skipped++; return; }
 
   const data = rec.data || {};
   const payload = {
     ...pickText(resource, data),
+    ...(isFallbackArchive ? {
+      title: 'Legacy Register: ' + module + ' — ' + rec.recordId,
+      description: 'Preserved from SSF Digital Office register "' + module + '". Original fields are stored in data for later review.',
+    } : {}),
     status: rec.status === 'active' ? 'active' : (rec.status || 'active'),
-    data: { ...data, _legacyModule: module, _legacyRecordId: rec.recordId },
+    data: {
+      ...data,
+      _legacyModule: module,
+      _legacyRecordId: rec.recordId,
+      _legacyFullRecord: typeof rec.toJSON === 'function' ? rec.toJSON() : rec,
+    },
     createdBy: 'migration', createdByName: 'Legacy Import',
   };
   if (rec.recordDate) payload.meetingDate = payload.meetingDate || day(rec.recordDate);
@@ -218,16 +247,16 @@ async function importDigitalOfficeRecord(rec, stats, dryRun) {
 }
 
 // ---- run -------------------------------------------------------------------
-async function migrateLegacy({ dryRun = true, limit = 5000 } = {}) {
+async function migrateLegacy({ dryRun = true, limit = 0 } = {}) {
   const stats = {
-    dryRun, limit,
+    dryRun, limit: limit || 'all',
     personsCreated: 0, personsReused: 0,
     skipped: 0, created: {}, wouldCreate: {}, unmapped: [],
     sources: {},
   };
 
   // 1. Public Member accounts -> Person + Membership
-  const legacyMembers = await require('../../models/Member').findAll({ limit });
+  const legacyMembers = await fetchAll(require('../../models/Member'), limit);
   stats.sources.members = legacyMembers.length;
   for (const m of legacyMembers) {
     const done = await alreadyMigrated('member', m.id);
@@ -250,7 +279,7 @@ async function migrateLegacy({ dryRun = true, limit = 5000 } = {}) {
   }
 
   // 2. Volunteers -> Person + Volunteer
-  const legacyVols = await require('../../models/Volunteer').findAll({ limit });
+  const legacyVols = await fetchAll(require('../../models/Volunteer'), limit);
   stats.sources.volunteers = legacyVols.length;
   for (const v of legacyVols) {
     const done = await alreadyMigrated('volunteer', v.id);
@@ -268,7 +297,7 @@ async function migrateLegacy({ dryRun = true, limit = 5000 } = {}) {
   }
 
   // 3. Donors -> Person + Donor
-  const legacyDonors = await require('../../models/Donor').findAll({ limit });
+  const legacyDonors = await fetchAll(require('../../models/Donor'), limit);
   stats.sources.donors = legacyDonors.length;
   for (const d of legacyDonors) {
     const done = await alreadyMigrated('donor', d.id);
@@ -286,7 +315,7 @@ async function migrateLegacy({ dryRun = true, limit = 5000 } = {}) {
   }
 
   // 4. FinanceTransaction -> Transaction
-  const legacyTxns = await require('../../models/FinanceTransaction').findAll({ limit });
+  const legacyTxns = await fetchAll(require('../../models/FinanceTransaction'), limit);
   stats.sources.financeTransactions = legacyTxns.length;
   for (const t of legacyTxns) {
     const done = await alreadyMigrated('finance-txn', t.id);
@@ -299,7 +328,7 @@ async function migrateLegacy({ dryRun = true, limit = 5000 } = {}) {
       amount: num(t.amount), direction: t.direction || (t.transactionType === 'income' ? 'in' : 'out'),
       sourceModule: 'finance', sourceRecordId: t.transactionId,
       needsReview: !!t.needsReview,
-      data: t.data || {},
+      data: { ...(t.data || {}), _legacyFullRecord: typeof t.toJSON === 'function' ? t.toJSON() : t },
       createdBy: 'migration', createdByName: 'Legacy Import',
     });
     await markMigrated('finance-txn', t.id, 'transactions', recId);
@@ -307,7 +336,7 @@ async function migrateLegacy({ dryRun = true, limit = 5000 } = {}) {
   }
 
   // 5. Flat DigitalOfficeRecords -> mapped IMS masters
-  const legacyOffice = await require('../../models/DigitalOfficeRecord').findAll({ limit });
+  const legacyOffice = await fetchAll(require('../../models/DigitalOfficeRecord'), limit);
   stats.sources.digitalOfficeRecords = legacyOffice.length;
   for (const rec of legacyOffice) {
     await importDigitalOfficeRecord(rec, stats, dryRun);
