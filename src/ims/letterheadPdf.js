@@ -68,7 +68,7 @@ const PAGE_W_PX = 794;                    // A4 @ 96dpi — the raster width, i.
 const PAD_PX = Math.round(MARGIN_MM * PAGE_W_PX / PAGE_W_MM);
 const FOOTER_MM = 15;                     // footer rule sits 15mm above the paper edge
 const HEADER_GAP_MM = 5;                  // breathing room between masthead and body
-const WATERMARK_OPACITY = 0.055;          // faint enough to survive B/W photocopying
+const WATERMARK_OPACITY = 0.09;          // faint enough to survive B/W photocopying
 const WATERMARK_MM = 118;                 // watermark size, centred on the page
 
 const pxPerMm = PAGE_W_PX / PAGE_W_MM;
@@ -155,7 +155,7 @@ const BASE_CSS = `
      accent). It reads as one deliberate device rather than decoration. */
   .lh-accent { height: 2.6px; background: linear-gradient(90deg, ${NAVY} 0 62%, ${TEAL} 62% 88%, ${GOLD} 88% 100%); }
 
-  .lh-head-top { display: flex; align-items: center; gap: 17px; padding: 15px 0 13px; }
+  .lh-head-top { display: flex; align-items: center; gap: 12px; padding: 15px 0 13px; }
 
   /* Double-ring seal around the emblem — an outer navy hairline and an inner
      gold hairline, the conventional way a registered society presents its
@@ -184,7 +184,7 @@ const BASE_CSS = `
   .lh-tag .en { color: ${MUTED}; font-weight: 600; }
 
   .lh-ref {
-    flex-shrink: 0; width: 156px; padding-left: 15px;
+    flex-shrink: 0; width: 140px; min-width: 0; padding-left: 12px;
     border-left: 1px solid ${HAIRLINE}; text-align: right;
   }
   .lh-ref .cap { font-size: 7px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: ${MUTED}; }
@@ -197,9 +197,11 @@ const BASE_CSS = `
   .lh-rule-gold { height: 0.7px; background: ${GOLD}; }
 
   .lh-legal {
-    display: flex; justify-content: space-between; align-items: baseline; gap: 18px;
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;
     padding: 7px 0 8px; color: ${MUTED}; font-size: 7.3px; line-height: 1.5;
   }
+  .lh-legal-main { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .lh-legal-reg { max-width: 34%; overflow-wrap: anywhere; }
   .lh-legal-hi { margin-top: 2px; color: #71818F; }
   .lh-legal-reg { flex-shrink: 0; text-align: right; color: ${NAVY}; font-size: 7.5px; font-weight: 800; letter-spacing: .04em; }
   .lh-legal-reg .sub { color: ${MUTED}; font-weight: 600; letter-spacing: 0; }
@@ -246,8 +248,9 @@ const BASE_CSS = `
   .lh-foot { margin-top: 18px; padding: 0 ${PAD_PX}px; }
   .lh-foot .rule { position: relative; height: 1px; background: ${HAIRLINE}; }
   .lh-foot .rule::before { content: ''; position: absolute; left: 0; top: 0; width: 34px; height: 1px; background: ${GOLD}; }
-  .lh-foot .grid { display: flex; justify-content: space-between; gap: 18px; padding-top: 4px; font-size: 7.4px; color: ${MUTED}; line-height: 1.5; }
-  .lh-foot .grid .right { text-align: right; flex-shrink: 0; }
+  .lh-foot .grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding-top: 4px; font-size: 7.4px; color: ${MUTED}; line-height: 1.5; }
+  .lh-foot .grid .left { flex: 1; min-width: 0; overflow-wrap: anywhere; }
+  .lh-foot .grid .right { width: 34%; max-width: 220px; min-width: 0; text-align: right; flex-shrink: 0; overflow-wrap: anywhere; word-break: break-word; }
   .lh-foot .grid .right .site { color: ${NAVY}; font-weight: 700; }
   .lh-foot .pageno { margin-top: 3px; text-align: center; font-size: 7.2px; color: #94A3B8; }
 `;
@@ -339,8 +342,8 @@ function footerHtml(f, page, pages) {
   return `<div class="lh-foot">
     <div class="rule"></div>
     <div class="grid">
-      <div>Registered Office: ${esc(ADDRESS_LINE)}</div>
-      <div class="right">${esc(CONTACT_INFO.phones.primaryFormatted)} · ${esc(CONTACT_INFO.primaryEmail)}<br/><span class="site">${esc(ORG.website)}</span></div>
+      <div class="left">Registered Office: ${esc(ADDRESS_LINE)}</div>
+      <div class="right">${esc(CONTACT_INFO.phones.primaryFormatted)}<br/>${esc(CONTACT_INFO.primaryEmail)}<br/><span class="site">${esc(ORG.website)}</span></div>
     </div>
     <div class="pageno">Ref. ${esc(f.letterNo || '—')} &nbsp;·&nbsp; Page ${page} of ${pages}</div>
   </div>`;
@@ -393,12 +396,9 @@ function logoImage() {
 
 let watermarkPromise;
 /**
- * The emblem as a navy monochrome PNG, for the page watermark.
- *
- * The source logo is a full-colour roundel whose pale plate reaches the corners
- * of the square image, so stamping it as-is would drop a faint grey box behind
- * the text. Re-tinting every opaque pixel navy (and keeping the alpha channel)
- * leaves a clean silhouette that reads as a watermark and photocopies well.
+ * Full-colour logo watermark, clipped to a circle so the square source image
+ * cannot leave a rectangular plate behind the letter text. Page-level opacity
+ * keeps the emblem subtle while preserving its original brand colours.
  */
 function watermarkDataUrl() {
   if (!watermarkPromise) {
@@ -410,10 +410,11 @@ function watermarkDataUrl() {
       c.width = S; c.height = S;
       const ctx = c.getContext('2d');
       ctx.drawImage(img, 0, 0, S, S);
-      // `source-in` keeps the existing alpha and replaces every colour with navy.
-      ctx.globalCompositeOperation = 'source-in';
-      ctx.fillStyle = NAVY;
-      ctx.fillRect(0, 0, S, S);
+      // Keep original logo colours; mask to a circle to remove square corners.
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.beginPath();
+      ctx.arc(S / 2, S / 2, S * 0.485, 0, Math.PI * 2);
+      ctx.fill();
       ctx.globalCompositeOperation = 'source-over';
       return c.toDataURL('image/png');
     })();
@@ -485,15 +486,18 @@ function stampFooter(pdf, meta) {
   pdf.line(MARGIN_MM, y, MARGIN_MM + 9, y);
   // 7.4pt keeps the registered address legible on a 600dpi office printer; the
   // earlier 6.4pt footer was effectively unreadable once printed.
-  pdf.setTextColor(91, 107, 122); pdf.setFontSize(7.4);
-  pdf.text(`Registered Office: ${ADDRESS_LINE}`, MARGIN_MM, y + 4.4);
-  pdf.text(`${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail}`,
-    xr, y + 4.4, { align: 'right' });
-  pdf.setTextColor(18, 52, 90); pdf.setFontSize(7.2);
-  pdf.text(ORG.website, xr, y + 8.3, { align: 'right' });
-  pdf.setTextColor(148, 163, 184); pdf.setFontSize(6.8);
+  pdf.setTextColor(91, 107, 122); pdf.setFontSize(7.1);
+  const addressLines = pdf.splitTextToSize(`Registered Office: ${ADDRESS_LINE}`, 112);
+  pdf.text(addressLines.slice(0, 2), MARGIN_MM, y + 4.0, { lineHeightFactor: 1.15 });
+  const contactX = xr;
+  pdf.setFontSize(7.0);
+  pdf.text(CONTACT_INFO.phones.primaryFormatted, contactX, y + 4.0, { align: 'right' });
+  pdf.text(CONTACT_INFO.primaryEmail, contactX, y + 7.1, { align: 'right' });
+  pdf.setTextColor(18, 52, 90); pdf.setFontSize(7.0);
+  pdf.text(ORG.website, contactX, y + 10.1, { align: 'right' });
+  pdf.setTextColor(148, 163, 184); pdf.setFontSize(6.5);
   pdf.text(`Ref. ${meta.letterNo || '—'}  ·  Page ${pdf.internal.getCurrentPageInfo().pageNumber} of ${meta.pageCount}`,
-    PAGE_W_MM / 2, y + 11.6, { align: 'center' });
+    PAGE_W_MM / 2, y + 13.0, { align: 'center' });
 }
 
 /**
