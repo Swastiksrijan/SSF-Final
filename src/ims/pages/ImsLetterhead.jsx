@@ -57,7 +57,7 @@ const initialLetter = () => ({
   letterType: LETTER_TYPES[0].en,
   toName: '', toDesignation: '', toOrg: '', toAddress: '',
   subject: '', salutation: 'Respected Sir/Madam,',
-  body: '', closing: 'Thank you,',
+  body: '', closing: '',
   enclosures: '', cc: '',
   signatoryName: 'Ramesh Pandey',
   signatoryDesignation: 'President',
@@ -143,7 +143,7 @@ export default function ImsLetterhead() {
       subject: template ? (hindi ? template.subject.hi : template.subject.en) : old.subject,
       body: template ? (hindi ? template.body.hi : template.body.en) : old.body,
       salutation: hindi ? 'आदरणीय महोदय / महोदया,' : 'Respected Sir/Madam,',
-      closing: hindi ? 'सादर,' : 'Thank you,',
+      closing: '',
     }));
   };
   const refreshRef = () => set('letterNo', nextRef(rows, f.groupCode, f.date));
@@ -262,7 +262,6 @@ export default function ImsLetterhead() {
               <div className="sm:col-span-2"><label className={label}>{hindi ? 'विषय' : 'Subject'}</label><input className={cls} value={f.subject} onChange={(e) => set('subject', e.target.value)} placeholder={hindi ? 'पत्र का संक्षिप्त विषय' : 'Short, clear subject line'} /></div>
               <div className="sm:col-span-2"><label className={label}>{hindi ? 'संबोधन' : 'Salutation'}</label><input className={cls} value={f.salutation} onChange={(e) => set('salutation', e.target.value)} /></div>
               <div className="sm:col-span-2"><label className={label}>{hindi ? 'पत्र की सामग्री' : 'Letter body'}</label><textarea className={cls + ' min-h-[220px] resize-y leading-6'} value={f.body} onChange={(e) => set('body', e.target.value)} placeholder={hindi ? 'अपना पत्र यहाँ लिखें…' : 'Write the letter here…'} /></div>
-              <div><label className={label}>{hindi ? 'समापन' : 'Closing'}</label><input className={cls} value={f.closing} onChange={(e) => set('closing', e.target.value)} /></div>
               <div><label className={label}>{hindi ? 'संलग्नक' : 'Enclosures'}</label><input className={cls} value={f.enclosures} onChange={(e) => set('enclosures', e.target.value)} placeholder={hindi ? 'यदि हों तो' : 'If any'} /></div>
               <div className="sm:col-span-2"><label className={label}>{hindi ? 'प्रतिलिपि (CC)' : 'Copy to (CC)'}</label><input className={cls} value={f.cc} onChange={(e) => set('cc', e.target.value)} /></div>
             </div>
@@ -272,6 +271,9 @@ export default function ImsLetterhead() {
               <div className="grid gap-3 sm:grid-cols-2">
                 <div className="sm:col-span-2">
                   <label className={label}>{hindi ? 'हस्ताक्षरकर्ता / व्यवस्था' : 'Signatory'}</label>
+                  <button type="button" onClick={() => { setF((old) => ({ ...old, signatoryMode: 'trio', signature: false })); setCustomSignatoryName(''); }} className="mb-2 w-full rounded-xl border-2 border-[#12345A] bg-blue-50 px-3 py-2.5 text-left text-sm font-extrabold text-[#12345A] hover:bg-blue-100">
+                    {hindi ? '★ तीनों एक साथ चुनें — अध्यक्ष + सचिव + कोषाध्यक्ष' : '★ Select all three — President + Secretary + Treasurer'}
+                  </button>
                   <select className={cls} value={f.signatoryMode === 'trio' ? '__trio__' : f.signatoryName} onChange={(e) => {
                     if (e.target.value === '__trio__') {
                       setF((old) => ({ ...old, signatoryMode: 'trio', signature: false }));
