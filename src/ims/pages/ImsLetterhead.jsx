@@ -111,16 +111,15 @@ export default function ImsLetterhead() {
   // Auto-number the first letter of the year from the real register; the admin
   // can overwrite it. The register's own recordId stays the collision-proof
   // identity of every saved letter.
+  // Keep blank stationery genuinely blank. Generate a reference number only
+  // when the user switches into letter-writing mode.
   useEffect(() => {
-    setF((x) => (x.letterNo ? x : { ...x, letterNo: nextLetterNo(rows) }));
+    setF((x) => (x.blankMode || x.letterNo ? x : { ...x, letterNo: nextLetterNo(rows) }));
   }, [rows]);
 
-  // A restored working template, so the same wording can be reused.
+  // Clear any previously saved draft so it cannot repopulate the blank page.
   useEffect(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem(TEMPLATE_KEY) || 'null');
-      if (saved && typeof saved === 'object') setF((x) => ({ ...x, ...saved }));
-    } catch { /* ignore a corrupt template */ }
+    try { localStorage.removeItem(TEMPLATE_KEY); } catch { /* ignore */ }
   }, []);
 
   const letters = useMemo(() => rows.map(rowToLetter), [rows]);
@@ -266,7 +265,7 @@ export default function ImsLetterhead() {
               <button type="button" onClick={() => set('blankMode', true)} className={`rounded-xl border px-4 py-3 text-sm font-extrabold transition ${f.blankMode ? 'border-[#176447] bg-[#176447] text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-[#176447]'}`}>
                 {lang === 'hi' ? 'खाली लेटरहेड' : 'Blank letterhead'}
               </button>
-              <button type="button" onClick={() => set('blankMode', false)} className={`rounded-xl border px-4 py-3 text-sm font-extrabold transition ${!f.blankMode ? 'border-[#12345A] bg-[#12345A] text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-[#12345A]'}`}>
+              <button type="button" onClick={() => setF((x) => ({ ...x, blankMode: false, letterNo: x.letterNo || nextLetterNo(rows) }))} className={`rounded-xl border px-4 py-3 text-sm font-extrabold transition ${!f.blankMode ? 'border-[#12345A] bg-[#12345A] text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-[#12345A]'}`}>
                 {lang === 'hi' ? 'पत्र लिखें' : 'Write a letter'}
               </button>
             </div>
