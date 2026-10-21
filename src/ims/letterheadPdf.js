@@ -453,7 +453,7 @@ async function renderHost(html, { transparent = false, minHeightPx = 0 } = {}) {
   // shows through between the lines of text, and it is given the full writing
   // height so the writing area is the same on every page of every letter.
   const extra = transparent
-    ? `.lh{background:transparent${minHeightPx ? `;min-height:${minHeightPx}px` : ''}}\n       .lh-body{${minHeightPx ? `min-height:${minHeightPx}px;` : ''}flex:1 0 auto;display:flex;flex-direction:column}\n       .lh-sign{margin-top:auto;flex-shrink:0}`
+    ? `.lh{background:transparent${minHeightPx ? `;min-height:${minHeightPx}px;display:flex;flex-direction:column` : ''}}\n       .lh-body{${minHeightPx ? `min-height:${minHeightPx}px;` : ''}flex:1 1 auto;min-height:0;box-sizing:border-box;display:flex;flex-direction:column}\n       .lh-sign{margin-top:auto;flex-shrink:0}`
     : '';
   host.innerHTML = `<style>${await fontFaceCss()}${BASE_CSS}${extra}</style>${html}`;
   document.body.appendChild(host);
