@@ -231,12 +231,12 @@ router.get('/ims/coverage', wrap(async (_req, r) => {
 // ---- legacy -> IMS migration (additive, idempotent) ------------------------
 // GET  = dry run report (nothing written). POST = actual import.
 router.get('/ims/migrate-legacy', wrap(async (req, r) => {
-  const stats = await migrateLegacy({ dryRun: true, limit: Number(req.query.limit) || 5000 });
+  const stats = await migrateLegacy({ dryRun: true, limit: Number(req.query.limit) || 0 });
   r.json({ mode: 'dry-run', note: 'Nothing written. POST to this URL to import.', ...stats });
 }));
 
 router.post('/ims/migrate-legacy', wrap(async (req, r) => {
-  const stats = await migrateLegacy({ dryRun: false, limit: Number((req.body && req.body.limit) || req.query.limit) || 5000 });
+  const stats = await migrateLegacy({ dryRun: false, limit: Number((req.body && req.body.limit) || req.query.limit) || 0 });
   r.json({ mode: 'import', ...stats });
 }));
 
