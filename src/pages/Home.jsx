@@ -11,7 +11,6 @@ import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
 import OptimizedImage from "../components/OptimizedImage";
 import TrustCredentials from "../components/TrustCredentials";
-import PledgeWall from "../components/PledgeWall";
 import { CONTACT_INFO } from "../config/contact";
 import { BRAND } from "../data/brandAssets";
 import pageHeader from "../assets/page-header.jpg";
@@ -278,28 +277,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-      <section className="border-y border-[#EAF0F6] bg-[#FAF9F5] px-5 py-14 md:px-8 md:py-16">
-        <div className="container mx-auto max-w-7xl">
-          <div className="mx-auto mb-8 max-w-3xl text-center">
-            <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#12345A]">National Pledges · राष्ट्रीय संकल्प</p>
-            <h2 className="mt-3 font-serif text-3xl text-[#12345A] md:text-4xl">Campaigns we have pledged to.</h2>
-            <p className="mt-4 leading-relaxed text-slate-600">
-              From Swachh Bharat and Fit India to LiFE and TB Mukt Bharat, the Foundation has formally
-              taken part in national campaigns and holds the pledge certificates to show for it.
-            </p>
-            <p className="mt-2 font-hindi leading-relaxed text-slate-600">
-              स्वच्छ भारत, फिट इंडिया, LiFE और टीबी मुक्त भारत जैसे राष्ट्रीय अभियानों में संस्था की औपचारिक सहभागिता रही है।
-            </p>
-          </div>
-          <PledgeWall limit={24} />
-          <div className="mt-8 text-center">
-            <Link to="/Transparency" className="inline-flex items-center gap-2 rounded-full border border-[#12345A] px-6 py-3 font-bold text-[#12345A] transition hover:bg-[#EAF0F6]">
-              View certificates &amp; compliance <FaArrowRight />
-            </Link>
-          </div>
-        </div>
-      </section>
-
       <section className="bg-white px-5 py-12 md:px-8"><div className="container mx-auto max-w-7xl"><div className="mb-8 text-center"><p className="text-xs font-bold uppercase tracking-[0.2em] text-[#12345A]">Support SSF • सहयोग करें</p><h2 className="mt-2 font-serif text-3xl text-[#12345A] md:text-4xl">Help meaningful work move forward.</h2></div><EliteDonationCard /></div></section>
       <section className="bg-[#FAF9F5] px-5 py-16 md:px-8 md:py-20"><div className="container mx-auto max-w-7xl"><div className="mb-10 text-center"><p className="text-xs font-bold uppercase tracking-[0.22em] text-[#12345A] md:text-sm">Institutional Journey • संस्थागत यात्रा</p><h2 className="mt-3 font-serif text-3xl text-[#12345A] md:text-5xl">A continuing journey of service.</h2><p className="mx-auto mt-4 max-w-2xl leading-relaxed text-slate-600">Explore the history and milestones documented by SSF.</p></div><ImpactTimeline /><div className="mt-8 text-center"><Link to="/Journey" className="inline-flex items-center gap-2 rounded-full border border-[#12345A] px-6 py-3 font-bold text-[#12345A] transition hover:bg-[#EAF0F6]">View service journey <FaArrowRight /></Link></div></div></section>
 
