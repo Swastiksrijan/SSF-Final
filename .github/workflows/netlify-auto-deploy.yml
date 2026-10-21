@@ -1,0 +1,23 @@
+name: Netlify Auto Deploy
+
+on:
+  push:
+    branches: [main, work]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Netlify build hook
+        env:
+          NETLIFY_BUILD_HOOK: ${{ secrets.NETLIFY_BUILD_HOOK }}
+        run: |
+          if [ -z "$NETLIFY_BUILD_HOOK" ]; then
+            echo "::error::NETLIFY_BUILD_HOOK secret is missing. Add it in Settings > Secrets and variables > Actions."
+            exit 1
+          fi
+          curl --fail --silent --show-error --request POST "$NETLIFY_BUILD_HOOK"
