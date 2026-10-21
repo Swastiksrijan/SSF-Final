@@ -280,13 +280,26 @@ export default function ImsLetterhead() {
             <span className="text-sm font-bold text-[#12345A]">{lang === 'hi' ? 'पत्र का प्रकार' : 'Letter type'}</span>
             <span className="text-[11px] text-slate-400">{lang === 'hi' ? '(चुनने पर विषय/प्रारूप भर जाता है)' : '(fills a subject + draft)'}</span>
           </div>
-          <div className="mt-3 flex flex-wrap gap-2">
-            {LETTER_TYPES.map((t) => (
-              <button key={t.en} type="button" onClick={() => applyTemplate(t)}
-                className={`rounded-xl border px-3 py-2 text-xs font-bold transition ${f.letterType === t.en ? 'border-[#12345A] bg-[#12345A] text-white' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`}>
-                {lang === 'hi' ? t.hi : t.en}
-              </button>
-            ))}
+          <div className="mt-3">
+            <label htmlFor="ssf-letter-type" className={label}>{lang === 'hi' ? 'सूची से पत्र का प्रकार चुनें' : 'Select a letter type'}</label>
+            <select
+              id="ssf-letter-type"
+              value={f.letterType}
+              onChange={(e) => {
+                const selected = LETTER_TYPES.find((t) => t.en === e.target.value);
+                if (selected) applyTemplate(selected);
+              }}
+              className={cls + ' mt-1.5'}
+            >
+              {LETTER_TYPES.map((t) => (
+                <option key={t.en} value={t.en}>{lang === 'hi' ? t.hi : t.en}</option>
+              ))}
+            </select>
+            <p className="mt-2 text-xs leading-5 text-slate-500">
+              {lang === 'hi'
+                ? 'प्रकार चुनते ही विषय और प्रारंभिक पत्र-पाठ भर जाएगा। आप दोनों को अपनी आवश्यकता के अनुसार बदल सकते हैं।'
+                : 'Selecting a type fills in a suggested subject and draft. You can edit both before downloading or saving.'}
+            </p>
           </div>
         </div>}
 
