@@ -62,6 +62,7 @@ const initialLetter = () => ({
   signatoryDesignation: 'President',
   signature: false,
   seal: true,
+  sealPosition: 'left',
 });
 const rowToLetter = (r) => {
   const d = rowData(r);
@@ -186,7 +187,7 @@ export default function ImsLetterhead() {
         subject: f.subject, salutation: f.salutation, body: f.body, closing: f.closing,
         enclosures: f.enclosures, cc: f.cc,
         signatoryName: outputLetter.signatoryName, signatoryDesignation: f.signatoryDesignation,
-        signature: isSecretary && f.signature === true, seal: f.seal !== false,
+        signature: isSecretary && f.signature === true, seal: f.seal !== false, sealPosition: f.sealPosition || 'left',
         language: pdfLang, watermark,
       },
     };
@@ -277,6 +278,7 @@ export default function ImsLetterhead() {
               <div className="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm">
                 <label className="inline-flex items-center gap-2"><input type="checkbox" checked={f.signature === true && isSecretary} disabled={!isSecretary} onChange={(e) => set('signature', e.target.checked)} className="h-4 w-4 accent-[#12345A]" /><span className={!isSecretary ? 'text-slate-400' : 'text-slate-700'}>{hindi ? 'सचिव के उपलब्ध हस्ताक्षर स्कैन का उपयोग' : 'Use Secretary signature scan (only if selected)'}</span></label>
                 <label className="inline-flex items-center gap-2"><input type="checkbox" checked={f.seal !== false} onChange={(e) => set('seal', e.target.checked)} className="h-4 w-4 accent-[#12345A]" /><Stamp size={15} className="text-[#176447]" />{hindi ? 'संस्था की मुहर' : 'Organisation seal'}</label>
+                <div className="min-w-[210px] flex-1"><label className={label}>{hindi ? 'मुहर की जगह' : 'Seal placement'}</label><select className={cls} value={f.sealPosition || 'left'} onChange={(e) => set('sealPosition', e.target.value)}><option value="left">{hindi ? 'संस्था के नाम के पास (छोटी)' : 'Beside organisation name (small)'}</option><option value="signatory">{hindi ? 'अधिकृत हस्ताक्षर के पास' : 'Beside authorised signatory'}</option></select></div>
                 <label className="inline-flex items-center gap-2"><input type="checkbox" checked={watermark} onChange={(e) => setWatermark(e.target.checked)} className="h-4 w-4 accent-[#12345A]" />{hindi ? 'हल्का वॉटरमार्क' : 'Faint watermark'}</label>
               </div>
               {!isSecretary && <p className="mt-2 text-xs leading-5 text-amber-800">{hindi ? 'इस पदाधिकारी के नाम पर सचिव के हस्ताक्षर नहीं लगेंगे। वास्तविक हस्ताक्षर के लिए प्रिंट के बाद हस्ताक्षर करें।' : 'The Secretary’s scanned signature will not be placed under another person’s name. Print and sign manually for other signatories.'}</p>}
