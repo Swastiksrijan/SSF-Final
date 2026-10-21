@@ -237,6 +237,12 @@ const BASE_CSS = `
   .lh-sign-left .seal { display: block; width: 30px; height: auto; margin: 0; opacity: .9; flex-shrink: 0; }
   .lh-sign-seal { display: block; width: 42px; height: auto; margin: 4px auto 0; opacity: .9; }
   .lh-sign-col { width: 235px; flex-shrink: 0; text-align: center; }
+  .lh-sign-trio { width: 100%; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; align-items: end; }
+  .lh-sign-trio .person { min-width: 0; text-align: center; break-inside: avoid; }
+  .lh-sign-trio .line { margin: 20px auto 0; width: 100%; max-width: 150px; border-top: 1px solid #9AAABD; }
+  .lh-sign-trio .nm { margin-top: 5px; font-size: 10.5px; font-weight: 800; color: ${NAVY}; overflow-wrap: anywhere; }
+  .lh-sign-trio .desig { font-size: 9px; color: ${INK}; }
+  .lh-sign-trio .for { font-size: 8px; color: ${MUTED}; }
   .lh-sign .for { font-size: 10px; font-weight: 700; color: ${INK}; }
   .lh-sign .sig { height: 34px; max-width: 150px; object-fit: contain; margin: 5px auto 0; display: block; }
   .lh-sign .line { margin: 2px auto 0; width: 205px; border-top: 1px solid #9AAABD; }
@@ -323,19 +329,31 @@ function bodyHtml(f, lang) {
       <span class="lbl">${pick('Copy to', 'प्रतिलिपि', lang)}:</span> ${esc(f.cc)}
     </div>` : ''}
     <div class="lh-sign" data-safe>
-      <div class="lh-sign-left">
-        <div class="closing">${esc(closing)}</div>
-        ${f.seal !== false && (f.sealPosition === 'left' || !f.sealPosition) ? `<div class="orgline"><div class="org">${esc(ORG.en)}</div><img class="seal" src="${sealImg}" alt="Organisation seal" /></div>` : `<div class="org">${esc(ORG.en)}</div>`}
-        <div class="tag hi">${esc(ORG.taglineHi)} · ${esc(ORG.taglineEn)}</div>
-      </div>
-      <div class="lh-sign-col">
-        <div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div>
-        ${hasSignatureScan(f) ? `<img class="sig" src="${signatureImg}" alt="Signature" data-signature-img />` : ''}
-        <div class="line"></div>
-        ${f.seal !== false && f.sealPosition === 'signatory' ? `<img class="lh-sign-seal" src="${sealImg}" alt="Organisation seal" />` : ''}
-        <div class="nm">${esc(f.signatoryName || '')}</div>
-        <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
-      </div>
+      ${f.signatoryMode === 'trio' ? `
+        <div style="width:100%">
+          <div class="closing" style="margin-bottom:10px">${esc(closing)}</div>
+          <div class="lh-sign-trio">
+            <div class="person"><div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div><div class="line"></div><div class="nm">Ramesh Pandey</div><div class="desig">${pick('President', 'अध्यक्ष', lang)}</div></div>
+            <div class="person"><div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div><div class="line"></div><div class="nm">Amit Kumar Pandey</div><div class="desig">${pick('Secretary', 'सचिव', lang)}</div></div>
+            <div class="person"><div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div><div class="line"></div>${f.seal !== false && f.sealPosition === 'signatory' ? `<img class="lh-sign-seal" src="${sealImg}" alt="Organisation seal" />` : ''}<div class="nm">Divya Sharma</div><div class="desig">${pick('Treasurer', 'कोषाध्यक्ष', lang)}</div></div>
+          </div>
+          ${f.seal !== false && (f.sealPosition === 'left' || !f.sealPosition) ? `<div class="orgline" style="justify-content:flex-start;margin-top:8px"><div class="org">${esc(ORG.en)}</div><img class="seal" src="${sealImg}" alt="Organisation seal" /></div>` : ''}
+        </div>
+      ` : `
+        <div class="lh-sign-left">
+          <div class="closing">${esc(closing)}</div>
+          ${f.seal !== false && (f.sealPosition === 'left' || !f.sealPosition) ? `<div class="orgline"><div class="org">${esc(ORG.en)}</div><img class="seal" src="${sealImg}" alt="Organisation seal" /></div>` : `<div class="org">${esc(ORG.en)}</div>`}
+          <div class="tag hi">${esc(ORG.taglineHi)} · ${esc(ORG.taglineEn)}</div>
+        </div>
+        <div class="lh-sign-col">
+          <div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div>
+          ${hasSignatureScan(f) ? `<img class="sig" src="${signatureImg}" alt="Signature" data-signature-img />` : ''}
+          <div class="line"></div>
+          ${f.seal !== false && f.sealPosition === 'signatory' ? `<img class="lh-sign-seal" src="${sealImg}" alt="Organisation seal" />` : ''}
+          <div class="nm">${esc(f.signatoryName || '')}</div>
+          <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
+        </div>
+      `}
     </div>
   </div>`;
 }
