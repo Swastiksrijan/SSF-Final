@@ -262,8 +262,8 @@ function headerHtml(f = {}) {
       </div>
       <div class="lh-ref">
         <div class="cap">Official Correspondence</div>
-        <div class="row"><div class="k">Ref. No.</div><div class="v">${esc(f.letterNo || 'To be assigned')}</div></div>
-        <div class="row"><div class="k">Date</div><div class="v">${esc(f.date || '')}</div></div>
+        <div class="row"><div class="k">Ref. No.</div><div class="v">${f.blankMode ? '________________' : esc(f.letterNo || 'To be assigned')}</div></div>
+        <div class="row"><div class="k">Date</div><div class="v">${f.blankMode ? '________________' : esc(f.date || '')}</div></div>
       </div>
     </div>
     <div class="lh-rule"></div>
@@ -280,6 +280,14 @@ function headerHtml(f = {}) {
 }
 
 function bodyHtml(f, lang) {
+  if (f.blankMode) {
+    return `<div class="lh-body" style="min-height:640px;flex:1;display:flex;flex-direction:column;justify-content:flex-end">
+      <div style="flex:1;min-height:470px"></div>
+      <div style="display:flex;justify-content:flex-end;gap:40px;padding:0 0 18px;color:${MUTED};font-size:10px">
+        <div style="width:150px;text-align:center;border-top:1px solid #9AAABD;padding-top:6px">Authorised Signatory / अधिकृत हस्ताक्षरकर्ता</div>
+      </div>
+    </div>`;
+  }
   const paragraphs = String(f.body || '').split(/\n{2,}/).map((p) => p.trim()).filter(Boolean);
   const toBlock = [f.toName, f.toDesignation, f.toOrg, f.toAddress]
     .map((v) => String(v || '').trim()).filter(Boolean);
@@ -550,7 +558,7 @@ export async function letterPdfBlob(f, opts) {
 }
 
 export function letterFileName(f, lang) {
-  const safe = String(f.letterNo || 'SSF-LETTER').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  const safe = String(f.blankMode ? 'SSF-Blank-Letterhead' : (f.letterNo || 'SSF-LETTER')).replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, '');
   return `${safe}-${lang}-${new Date().toISOString().slice(0, 10)}.pdf`;
 }
 
@@ -586,6 +594,11 @@ export function letterPlainText(f, lang = 'both') {
   L.push(`${ORG.taglineHi} · ${ORG.taglineEn}`);
   L.push(`Regn. No. ${ORG.regNo} · Registered ${ORG.regDate}`);
   L.push('');
+  if (f.blankMode) {
+    L.push('Blank official letterhead — PDF attachment contains the stationery.');
+    L.push(`Registered Office: ${ADDRESS_LINE}`, `${CONTACT_INFO.phones.primaryFormatted} · ${CONTACT_INFO.primaryEmail} · ${ORG.website}`);
+    return L.join('\\n');
+  }
   L.push(`Ref. No.: ${f.letterNo || '—'}`);
   L.push(`Date: ${f.date || ''}`);
   L.push('');
