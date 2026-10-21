@@ -52,10 +52,10 @@ function hasSignatureScan(f) {
 // --ssf-gold), reused verbatim so the stationery matches the website.
 const NAVY = '#12345A';
 const TEAL = '#176447';
-const GOLD = '#F7A814';
+const GOLD = '#B89B62';
 const INK = '#26343D';
 const MUTED = '#5B6B7A';
-const HAIRLINE = '#D5DEE8';
+const HAIRLINE = '#C7D2DE';
 const SOFT_BLUE = '#EAF0F6';
 
 export const PAGE_W_MM = 210;
@@ -66,7 +66,7 @@ const PAGE_W_PX = 794;                    // A4 @ 96dpi — the raster width, i.
 // page margin: 14mm at 96dpi. Keeping the two in step is what makes the header,
 // body and jsPDF-drawn footer share one left/right edge.
 const PAD_PX = Math.round(MARGIN_MM * PAGE_W_PX / PAGE_W_MM);
-const FOOTER_MM = 15;                     // footer rule sits 15mm above the paper edge
+const FOOTER_MM = 18;                     // footer rule sits 15mm above the paper edge
 const HEADER_GAP_MM = 5;                  // breathing room between masthead and body
 const WATERMARK_OPACITY = 0.075;         // subtle colour visible behind the full writing area
 const WATERMARK_MM = 158;                 // watermark size, centred on the page
@@ -213,7 +213,7 @@ const BASE_CSS = `
      spurious second page. Which block is first varies (To, Subject or the
      salutation, depending on what the composer filled in), so containing the
      collapse here fixes it for every shape of letter at once. */
-  .lh-body { position: relative; z-index: 1; display: flex; flex: 1 0 auto; flex-direction: column; padding: 0 ${PAD_PX}px; }
+  .lh-body { position: relative; z-index: 1; display: flex; flex: 1 0 auto; flex-direction: column; padding: 0 ${PAD_PX}px 3mm; }
   .lh-to { font-size: 12px; line-height: 1.6; }
   .lh-to .lbl { font-weight: 800; color: ${NAVY}; }
 
@@ -228,12 +228,14 @@ const BASE_CSS = `
   /* Keep the signature block at the end of the letter, above the fixed registered-office footer.
      On short letters it settles near the bottom of the writing area; on long letters it follows
      the final paragraph naturally. Enclosures/CC are placed before this block in bodyHtml. */
-  .lh-sign { margin-top: auto; padding-top: 13px; border-top: 1px solid ${HAIRLINE}; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; break-inside: avoid; }
+  .lh-sign { margin-top: auto; padding-top: 9px; border-top: 1px solid ${HAIRLINE}; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; break-inside: avoid; }
   .lh-sign-left { flex: 1; min-width: 0; padding-bottom: 2px; }
   .lh-sign-left .closing { font-size: 12px; font-weight: 700; color: ${INK}; }
-  .lh-sign-left .org { margin-top: 5px; font-size: 11px; font-weight: 800; color: ${NAVY}; }
+  .lh-sign-left .org { margin-top: 0; font-size: 10.5px; font-weight: 800; color: ${NAVY}; }
+  .lh-sign-left .orgline { display: flex; align-items: center; gap: 7px; margin-top: 5px; }
   .lh-sign-left .tag { margin-top: 2px; font-size: 8px; color: ${MUTED}; letter-spacing: .02em; }
-  .lh-sign-left .seal { display: block; width: 66px; height: auto; margin-top: 9px; opacity: .88; }
+  .lh-sign-left .seal { display: block; width: 30px; height: auto; margin: 0; opacity: .9; flex-shrink: 0; }
+  .lh-sign-seal { display: block; width: 42px; height: auto; margin: 4px auto 0; opacity: .9; }
   .lh-sign-col { width: 235px; flex-shrink: 0; text-align: center; }
   .lh-sign .for { font-size: 10px; font-weight: 700; color: ${INK}; }
   .lh-sign .sig { height: 34px; max-width: 150px; object-fit: contain; margin: 5px auto 0; display: block; }
@@ -245,9 +247,9 @@ const BASE_CSS = `
   .lh-extra .lbl { font-weight: 800; color: ${NAVY}; }
 
   /* ---- footer (live HTML preview only; the PDF stamps its own) --------- */
-  .lh-foot { margin-top: 18px; padding: 0 ${PAD_PX}px; }
+  .lh-foot { margin-top: 12px; padding: 0 ${PAD_PX}px; }
   .lh-foot .rule { position: relative; height: 1px; background: ${HAIRLINE}; }
-  .lh-foot .rule::before { content: ''; position: absolute; left: 0; top: 0; width: 34px; height: 1px; background: ${GOLD}; }
+  .lh-foot .rule::before { content: ''; position: absolute; left: 0; top: 0; width: 28px; height: 1px; background: ${NAVY}; }
   .lh-foot .grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding-top: 4px; font-size: 7.4px; color: ${MUTED}; line-height: 1.5; }
   .lh-foot .grid .left { flex: 1; min-width: 0; overflow-wrap: anywhere; }
   .lh-foot .grid .right { width: 34%; max-width: 220px; min-width: 0; text-align: right; flex-shrink: 0; overflow-wrap: anywhere; word-break: break-word; }
@@ -323,14 +325,14 @@ function bodyHtml(f, lang) {
     <div class="lh-sign" data-safe>
       <div class="lh-sign-left">
         <div class="closing">${esc(closing)}</div>
-        <div class="org">${esc(ORG.en)}</div>
+        ${f.seal !== false && (f.sealPosition === 'left' || !f.sealPosition) ? `<div class="orgline"><div class="org">${esc(ORG.en)}</div><img class="seal" src="${sealImg}" alt="Organisation seal" /></div>` : `<div class="org">${esc(ORG.en)}</div>`}
         <div class="tag hi">${esc(ORG.taglineHi)} · ${esc(ORG.taglineEn)}</div>
-        ${f.seal === false ? '' : `<img class="seal" src="${sealImg}" alt="Organisation seal" />`}
       </div>
       <div class="lh-sign-col">
         <div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div>
         ${hasSignatureScan(f) ? `<img class="sig" src="${signatureImg}" alt="Signature" data-signature-img />` : ''}
         <div class="line"></div>
+        ${f.seal !== false && f.sealPosition === 'signatory' ? `<img class="lh-sign-seal" src="${sealImg}" alt="Organisation seal" />` : ''}
         <div class="nm">${esc(f.signatoryName || '')}</div>
         <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
       </div>
@@ -360,7 +362,7 @@ export async function letterheadPreviewHtml(f, { lang = 'both', watermark = true
      footer pinned to the bottom margin, body flowing in between. */
   .sheet{position:relative;width:${PAGE_W_MM}mm;height:${PAGE_H_MM}mm;margin:0 auto;background:#fff;overflow:hidden;box-sizing:border-box;}
   .sheet::after{content:'';position:absolute;inset:4mm;border:1.1px solid ${NAVY};pointer-events:none;z-index:20;}
-  .sheet::before{content:'';position:absolute;inset:5.3mm;border:0.35px solid ${GOLD};pointer-events:none;z-index:20;}
+  .sheet::before{content:'';position:absolute;inset:5.3mm;border:0.35px solid #D7E0E8;pointer-events:none;z-index:20;}
   .sheet .mark{position:absolute;left:50%;top:50%;width:${WATERMARK_MM}mm;height:${WATERMARK_MM}mm;margin:-${WATERMARK_MM / 2}mm 0 0 -${WATERMARK_MM / 2}mm;opacity:${WATERMARK_OPACITY};pointer-events:none;}
   .sheet .inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;
     padding:${MARGIN_MM}mm 0 4mm;}
@@ -559,7 +561,7 @@ export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}
       // Premium double border, inset from the paper edge so no printer clips it.
       pdf.setDrawColor(18, 52, 90); pdf.setLineWidth(0.65);
       pdf.rect(4.2, 4.2, PAGE_W_MM - 8.4, PAGE_H_MM - 8.4, 'S');
-      pdf.setDrawColor(247, 168, 20); pdf.setLineWidth(0.22);
+      pdf.setDrawColor(199, 210, 222); pdf.setLineWidth(0.22);
       pdf.rect(5.4, 5.4, PAGE_W_MM - 10.8, PAGE_H_MM - 10.8, 'S');
     }
     pdf.setPage(1);
