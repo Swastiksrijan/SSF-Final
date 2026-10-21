@@ -14,12 +14,17 @@
 // so Hindi and English shape identically offline and on a network that blocks
 // fonts.googleapis.com.
 //
-// Print geometry, all in millimetres on a true A4 sheet:
+// Print geometry, all in millimetres on a true A4 sheet. The sheet is a
+// *letterpad*, not a blank page with a heading: a double-rule frame encloses
+// the whole page on every sheet, and the masthead, writing area and footer all
+// sit inside it.
 //
 //   0 ─────────────────────────────────────────────── top of paper
-//   14   masthead accent band, then the header block (identity + Ref. No./Date)
-//   ~56  writing area begins (To, Subject, body, signature)
-//   282  footer rule (Registered Office · contact · page)
+//    9   frame: outer navy hairline (+ corner studs), inner gold hairline at 10.6
+//   18   masthead accent band, then the header block (identity + Ref. No./Date)
+//   ~60  writing area begins (To, Subject, body, signature)
+//   268  footer rule (Registered Office · contact · page)
+//   286  frame's inner rule
 //   297 ─────────────────────────────────────────────── bottom of paper
 //
 // The body is rasterised with a transparent background and stamped as PNG, so
@@ -60,13 +65,23 @@ const SOFT_BLUE = '#EAF0F6';
 
 export const PAGE_W_MM = 210;
 export const PAGE_H_MM = 297;
-const MARGIN_MM = 14;                     // print margin on every edge
+const MARGIN_MM = 18;                     // print margin on every edge
 const PAGE_W_PX = 794;                    // A4 @ 96dpi — the raster width, i.e. the full page
 // The raster is stamped at the full page width, so its inner padding IS the
-// page margin: 14mm at 96dpi. Keeping the two in step is what makes the header,
+// page margin: 18mm at 96dpi. Keeping the two in step is what makes the header,
 // body and jsPDF-drawn footer share one left/right edge.
 const PAD_PX = Math.round(MARGIN_MM * PAGE_W_PX / PAGE_W_MM);
-const FOOTER_MM = 15;                     // footer rule sits 15mm above the paper edge
+// The letterpad frame. `FRAME_MM` is the outer rule's inset from the paper
+// edge; the gold rule sits `FRAME_RULE_MM` further in, and a small navy stud is
+// centred on each corner of the outer rule. Content is inset by MARGIN_MM, so
+// it clears the inner gold rule by ~7.4mm.
+const FRAME_MM = 9;
+const FRAME_RULE_MM = 1.6;
+const FRAME_STUD_MM = 1.8;
+const FOOTER_RULE_MM = 268;               // footer rule, measured from the paper top
+const FOOTER_MM = PAGE_H_MM - FOOTER_RULE_MM;   // jsPDF draws the footer from the bottom
+const FOOTER_GAP_MM = 4;                  // clearance between the last body line and the rule
+const BODY_BOTTOM_MM = FOOTER_RULE_MM - FOOTER_GAP_MM;
 const HEADER_GAP_MM = 5;                  // breathing room between masthead and body
 const WATERMARK_OPACITY = 0.055;          // faint enough to survive B/W photocopying
 const WATERMARK_MM = 118;                 // watermark size, centred on the page
@@ -239,14 +254,53 @@ const BASE_CSS = `
   .lh-extra .lbl { font-weight: 800; color: ${NAVY}; }
 
   /* ---- footer (live HTML preview only; the PDF stamps its own) --------- */
+  /* Spacing mirrors stampFooter's millimetre offsets (rule, then text at
+     +4.4mm / +8.3mm / +12.6mm) so the preview's footer sits where the PDF's
+     does instead of a few millimetres higher. */
   .lh-foot { margin-top: 18px; padding: 0 ${PAD_PX}px; }
   .lh-foot .rule { position: relative; height: 1px; background: ${HAIRLINE}; }
   .lh-foot .rule::before { content: ''; position: absolute; left: 0; top: 0; width: 34px; height: 1px; background: ${GOLD}; }
-  .lh-foot .grid { display: flex; justify-content: space-between; gap: 18px; padding-top: 4px; font-size: 7.4px; color: ${MUTED}; line-height: 1.5; }
+  .lh-foot .grid { display: flex; justify-content: space-between; gap: 18px; padding-top: 3.3mm; font-size: 7.4px; color: ${MUTED}; line-height: 1.5; }
   .lh-foot .grid .right { text-align: right; flex-shrink: 0; }
   .lh-foot .grid .right .site { color: ${NAVY}; font-weight: 700; }
-  .lh-foot .pageno { margin-top: 3px; text-align: center; font-size: 7.2px; color: #94A3B8; }
+  .lh-foot .pageno { margin-top: 2.1mm; text-align: center; font-size: 7.2px; color: #94A3B8; }
+
+  /* ---- letterpad frame ------------------------------------------------ */
+  /* The device that makes this stationery read as a *pad* rather than a page
+     with a heading: a navy hairline enclosing the sheet, an inset gold
+     hairline, and a navy stud centred on each corner. Drawn as four 1px
+     absolutely-positioned rules per ring (plus four studs) instead of one
+     bordered box, because html2canvas rasterises the rules pixel-perfectly
+     while a bordered element can land on a half-pixel and come out grey. */
+  .lh-frame { position: absolute; top: 0; left: 0; right: 0; bottom: 0; pointer-events: none; z-index: 3; }
+  .lh-frame i { position: absolute; display: block; background: ${NAVY}; }
+  .lh-frame i.outer-h { left: ${FRAME_MM}mm; right: ${FRAME_MM}mm; height: 1px; }
+  .lh-frame i.outer-v { top: ${FRAME_MM}mm; bottom: ${FRAME_MM}mm; width: 1px; }
+  .lh-frame i.gold-h { left: ${FRAME_MM + FRAME_RULE_MM}mm; right: ${FRAME_MM + FRAME_RULE_MM}mm; height: 1px; background: ${GOLD}; opacity: .85; }
+  .lh-frame i.gold-v { top: ${FRAME_MM + FRAME_RULE_MM}mm; bottom: ${FRAME_MM + FRAME_RULE_MM}mm; width: 1px; background: ${GOLD}; opacity: .85; }
+  .lh-frame i.stud { width: ${FRAME_STUD_MM}mm; height: ${FRAME_STUD_MM}mm; margin: -${FRAME_STUD_MM / 2}mm 0 0 -${FRAME_STUD_MM / 2}mm; }
 `;
+
+/** The letterpad's enclosing double rule with a stud on each corner.
+ *  Millimetre literals rather than calc(): html2canvas resolves neither `inset`
+ *  nor `calc(100% - 9mm)`, and the sheet is a known 210 × 297mm. */
+function frameHtml() {
+  const s = FRAME_MM; const g = FRAME_MM + FRAME_RULE_MM;
+  const R = PAGE_W_MM - s; const B = PAGE_H_MM - s;
+  const studs = [[s, s], [R, s], [s, B], [R, B]]
+    .map(([x, y]) => `<i class="stud" style="left:${x}mm;top:${y}mm"></i>`).join('');
+  return `<div class="lh-frame">
+    <i class="outer-h" style="top:${s}mm"></i>
+    <i class="outer-h" style="bottom:${s}mm"></i>
+    <i class="outer-v" style="left:${s}mm"></i>
+    <i class="outer-v" style="right:${s}mm"></i>
+    <i class="gold-h" style="top:${g}mm"></i>
+    <i class="gold-h" style="bottom:${g}mm"></i>
+    <i class="gold-v" style="left:${g}mm"></i>
+    <i class="gold-v" style="right:${g}mm"></i>
+    ${studs}
+  </div>`;
+}
 
 function headerHtml(f = {}) {
   return `<div class="lh-head">
@@ -338,24 +392,34 @@ export async function letterheadPreviewHtml(f, { lang = 'both', watermark = true
 <style>${await fontFaceCss()}
   html,body{margin:0;padding:0;background:#8a97a3;}
   /* The preview mirrors the PDF sheet: masthead pinned to the top margin,
-     footer pinned to the bottom margin, body flowing in between. */
+     footer pinned to the bottom margin, body flowing in between, and the
+     letterpad frame drawn over the whole sheet. */
   .sheet{position:relative;width:${PAGE_W_MM}mm;height:${PAGE_H_MM}mm;margin:0 auto;background:#fff;overflow:hidden;}
   .sheet .mark{position:absolute;left:50%;top:50%;width:${WATERMARK_MM}mm;height:${WATERMARK_MM}mm;margin:-${WATERMARK_MM / 2}mm 0 0 -${WATERMARK_MM / 2}mm;opacity:${WATERMARK_OPACITY};pointer-events:none;}
   .sheet .inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;
-    padding:${MARGIN_MM}mm 0 4mm;}
-  .sheet .lh{flex:1;display:flex;flex-direction:column;min-height:0;}
-  /* The 4mm bottom padding plus the footer's own height puts the footer rule
-     around 282mm, exactly where the PDF's jsPDF-drawn footer rule sits
-     (PAGE_H_MM - FOOTER_MM), so preview and print agree to the millimetre. */
-  .sheet .lh-foot{margin-top:auto;padding-bottom:0;}
+    padding:${MARGIN_MM}mm 0 0;}
+  .sheet .lh{flex:1;display:flex;flex-direction:column;min-height:0;background:transparent;
+    /* .lh spans MARGIN_MM..paper bottom, so this padding is what ends the
+       writing area at exactly BODY_BOTTOM_MM — the same millimetre the PDF
+       uses — and the preview shows precisely the text that fits on paper. */
+    padding-bottom:${PAGE_H_MM - BODY_BOTTOM_MM}mm;}
+  /* The writing area ends at the same millimetre as the PDF's (bodyBottom), so
+     the preview shows exactly the text that will fit on the printed sheet. */
+  .sheet .lh-body{flex:1;min-height:0;overflow:hidden;margin-top:${HEADER_GAP_MM}mm;}
+  /* Pinned to the sheet itself, not to .lh — .lh begins at the top margin, so
+     absolute positioning against it would push the footer past the paper edge.
+     At FOOTER_RULE_MM it matches the PDF's jsPDF-drawn rule exactly. */
+  .sheet .lh-foot{position:absolute;top:${FOOTER_RULE_MM}mm;left:0;right:0;margin:0;z-index:1;}
   @media print{@page{size:A4;margin:0}html,body{background:#fff}.sheet{margin:0}}
   ${BASE_CSS}
 </style></head><body>
   <div class="sheet">
     ${mark ? `<img class="mark" src="${mark}" alt=""/>` : ''}
     <div class="inner">
-      <div class="lh">${headerHtml(f)}${bodyHtml(f, lang)}${footerHtml(f, 1, 1)}</div>
+      <div class="lh">${headerHtml(f)}${bodyHtml(f, lang)}</div>
     </div>
+    ${footerHtml(f, 1, 1)}
+    ${frameHtml()}
   </div>
 </body></html>`;
 }
@@ -458,11 +522,35 @@ function stampWatermark(pdf, dataUrl) {
   pdf.setGState(new pdf.GState({ opacity: 1 }));
 }
 
+/**
+ * The letterpad frame: a navy hairline enclosing the sheet, an inset gold
+ * hairline, and a navy stud on each corner. Drawn with jsPDF vector primitives
+ * rather than rasterised, so the rules stay hairline-crisp at 600dpi print
+ * instead of picking up the raster's antialiasing.
+ */
+function stampFrame(pdf) {
+  const s = FRAME_MM; const g = FRAME_MM + FRAME_RULE_MM;
+  const R = PAGE_W_MM - s; const B = PAGE_H_MM - s;
+  const r2 = PAGE_W_MM - g; const b2 = PAGE_H_MM - g;
+  pdf.setDrawColor(18, 52, 90);
+  pdf.setLineWidth(0.25);
+  pdf.rect(s, s, R - s, B - s);
+  pdf.setDrawColor(247, 168, 20);
+  pdf.setLineWidth(0.18);
+  pdf.rect(g, g, r2 - g, b2 - g);
+  // Corner studs sit centred on the outer rule's four corners.
+  const h = FRAME_STUD_MM / 2;
+  pdf.setFillColor(18, 52, 90);
+  [[s, s], [R, s], [s, B], [R, B]].forEach(([x, y]) => pdf.rect(x - h, y - h, FRAME_STUD_MM, FRAME_STUD_MM, 'F'));
+}
+
 function stampFooter(pdf, meta) {
-  const y = PAGE_H_MM - FOOTER_MM;
+  const y = FOOTER_RULE_MM;
   const xr = PAGE_W_MM - MARGIN_MM;
-  // Institutional divider: a hairline across the page with a short gold
-  // segment at its left end, echoing the masthead band.
+  // Institutional divider: a hairline across the writing column with a short
+  // gold segment at its left end, echoing the masthead band. It spans the text
+  // column, not the whole sheet, so it reads as part of the letter block
+  // instead of colliding with the letterpad frame.
   pdf.setDrawColor(213, 222, 232); pdf.setLineWidth(0.2);
   pdf.line(MARGIN_MM, y, xr, y);
   pdf.setDrawColor(247, 168, 20); pdf.setLineWidth(0.5);
@@ -477,7 +565,7 @@ function stampFooter(pdf, meta) {
   pdf.text(ORG.website, xr, y + 8.3, { align: 'right' });
   pdf.setTextColor(148, 163, 184); pdf.setFontSize(6.8);
   pdf.text(`Ref. ${meta.letterNo || '—'}  ·  Page ${pdf.internal.getCurrentPageInfo().pageNumber} of ${meta.pageCount}`,
-    PAGE_W_MM / 2, y + 11.6, { align: 'center' });
+    PAGE_W_MM / 2, y + 12.6, { align: 'center' });
 }
 
 /**
@@ -490,7 +578,7 @@ export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}
   const headerCanvas = await measureHeader(f);
   const headerH = headerHeightMm(headerCanvas);
   const bodyTop = MARGIN_MM + headerH + HEADER_GAP_MM;
-  const bodyBottom = PAGE_H_MM - FOOTER_MM - 4;
+  const bodyBottom = BODY_BOTTOM_MM;
   const writingPx = Math.round((bodyBottom - bodyTop) * pxPerMm);
   // The body raster is transparent so the watermark, drawn underneath it, stays
   // visible between the lines of text instead of being painted over by a white
@@ -531,7 +619,11 @@ export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}
       y = end;
     }
     const pages = pdf.internal.getNumberOfPages();
-    for (let p = 1; p <= pages; p++) { pdf.setPage(p); stampFooter(pdf, { ...f, pageCount: pages }); }
+    for (let p = 1; p <= pages; p++) {
+      pdf.setPage(p);
+      stampFrame(pdf);
+      stampFooter(pdf, { ...f, pageCount: pages });
+    }
     pdf.setPage(1);
     return pdf;
   } finally {
