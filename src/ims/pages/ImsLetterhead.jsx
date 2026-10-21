@@ -282,8 +282,8 @@ export default function ImsLetterhead() {
                     setF((old) => ({ ...old, signatoryMode: 'single', signatoryName: e.target.value, signatoryDesignation: chosen ? chosen.designation : old.signatoryDesignation, signature: false }));
                     if (e.target.value !== 'Other authorised signatory') setCustomSignatoryName('');
                   }}>
+                    <option value="__trio__">{hindi ? '★ तीनों एक साथ — अध्यक्ष + सचिव + कोषाध्यक्ष' : '★ Select all three — President + Secretary + Treasurer'}</option>
                     {SIGNATORIES.filter((s) => s.name !== '__trio__').map((s) => <option key={s.name} value={s.name}>{s.name} — {hindi ? s.hi : s.designation}</option>)}
-                    <option value="__trio__">{hindi ? 'अध्यक्ष + सचिव + कोषाध्यक्ष — तीनों एक लाइन में' : 'President + Secretary + Treasurer — all three in one row'}</option>
                   </select>
                   {f.signatoryMode === 'trio' && <p className="mt-2 rounded-lg bg-blue-50 px-3 py-2 text-xs text-blue-900">{hindi ? 'PDF में Ramesh Pandey (अध्यक्ष), Amit Kumar Pandey (सचिव) और Divya Sharma (कोषाध्यक्ष) के तीन हस्ताक्षर बॉक्स एक ही पंक्ति में आएँगे।' : 'The PDF will show Ramesh Pandey (President), Amit Kumar Pandey (Secretary) and Divya Sharma (Treasurer) in one row.'}</p>}
                 </div>
