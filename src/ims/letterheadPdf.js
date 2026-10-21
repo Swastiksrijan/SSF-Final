@@ -68,8 +68,8 @@ const PAGE_W_PX = 794;                    // A4 @ 96dpi — the raster width, i.
 const PAD_PX = Math.round(MARGIN_MM * PAGE_W_PX / PAGE_W_MM);
 const FOOTER_MM = 15;                     // footer rule sits 15mm above the paper edge
 const HEADER_GAP_MM = 5;                  // breathing room between masthead and body
-const WATERMARK_OPACITY = 0.09;          // faint enough to survive B/W photocopying
-const WATERMARK_MM = 118;                 // watermark size, centred on the page
+const WATERMARK_OPACITY = 0.075;         // subtle colour visible behind the full writing area
+const WATERMARK_MM = 158;                 // watermark size, centred on the page
 
 const pxPerMm = PAGE_W_PX / PAGE_W_MM;
 
@@ -430,7 +430,7 @@ async function renderHost(html, { transparent = false, minHeightPx = 0 } = {}) {
   // shows through between the lines of text, and it is given the full writing
   // height so the writing area is the same on every page of every letter.
   const extra = transparent
-    ? `.lh{background:transparent${minHeightPx ? `;min-height:${minHeightPx}px` : ''}}`
+    ? `.lh{background:transparent${minHeightPx ? `;min-height:${minHeightPx}px` : ''}}\n       .lh-body{${minHeightPx ? `min-height:${minHeightPx}px;` : ''}flex:1 0 auto;display:flex;flex-direction:column}\n       .lh-sign{margin-top:auto;flex-shrink:0}`
     : '';
   host.innerHTML = `<style>${await fontFaceCss()}${BASE_CSS}${extra}</style>${html}`;
   document.body.appendChild(host);
