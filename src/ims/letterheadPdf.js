@@ -155,7 +155,7 @@ const BASE_CSS = `
      accent). It reads as one deliberate device rather than decoration. */
   .lh-accent { height: 2.6px; background: linear-gradient(90deg, ${NAVY} 0 62%, ${TEAL} 62% 88%, ${GOLD} 88% 100%); }
 
-  .lh-head-top { display: flex; align-items: center; gap: 12px; padding: 15px 0 13px; }
+  .lh-head-top { display: flex; align-items: center; gap: 8px; padding: 13px 0 12px; min-width: 0; }
 
   /* Double-ring seal around the emblem — an outer navy hairline and an inner
      gold hairline, the conventional way a registered society presents its
@@ -163,7 +163,7 @@ const BASE_CSS = `
      elements, not box-shadow: html2canvas does not rasterise box-shadow, so
      an inset ring silently disappeared from the printed PDF. */
   .lh-seal {
-    flex-shrink: 0; width: 76px; height: 76px; padding: 3px;
+    flex-shrink: 0; width: 68px; height: 68px; padding: 3px;
     display: grid; place-items: center;
     border: 1px solid rgba(18,52,90,.26); border-radius: 50%; background: #ffffff;
   }
@@ -171,26 +171,26 @@ const BASE_CSS = `
     width: 100%; height: 100%; display: grid; place-items: center;
     border: 1px solid rgba(247,168,20,.7); border-radius: 50%;
   }
-  .lh-logo { width: 58px; height: auto; display: block; }
+  .lh-logo { width: 52px; height: auto; display: block; }
 
   .lh-names { flex: 1; min-width: 0; }
   .lh-identity { display: flex; align-items: center; gap: 7px; }
   .lh-identity .dash { width: 16px; height: 2px; background: ${GOLD}; flex-shrink: 0; }
   .lh-identity .txt { font-size: 7.1px; font-weight: 800; letter-spacing: .17em; text-transform: uppercase; color: ${TEAL}; }
-  .lh-name-en { margin-top: 6px; font-size: 21.5px; font-weight: 800; color: ${NAVY}; letter-spacing: -.015em; line-height: 1.1; }
-  .lh-name-hi { margin-top: 4px; font-size: 15px; font-weight: 700; color: ${NAVY}; line-height: 1.3; }
+  .lh-name-en { margin-top: 5px; font-size: 19px; font-weight: 800; color: ${NAVY}; letter-spacing: -.02em; line-height: 1.14; overflow-wrap: anywhere; }
+  .lh-name-hi { margin-top: 4px; font-size: 14px; font-weight: 700; color: ${NAVY}; line-height: 1.3; overflow-wrap: anywhere; }
   .lh-tag { margin-top: 7px; font-size: 8.3px; font-weight: 700; color: ${TEAL}; letter-spacing: .03em; }
   .lh-tag .sep { color: ${GOLD}; padding: 0 5px; }
   .lh-tag .en { color: ${MUTED}; font-weight: 600; }
 
   .lh-ref {
-    flex-shrink: 0; width: 140px; min-width: 0; padding-left: 12px;
+    flex: 0 0 116px; width: 116px; min-width: 0; padding-left: 8px;
     border-left: 1px solid ${HAIRLINE}; text-align: right;
   }
-  .lh-ref .cap { font-size: 7px; font-weight: 800; letter-spacing: .15em; text-transform: uppercase; color: ${MUTED}; }
+  .lh-ref .cap { font-size: 6.4px; font-weight: 800; letter-spacing: .06em; line-height: 1.35; text-transform: uppercase; color: ${MUTED}; overflow-wrap: anywhere; }
   .lh-ref .row { margin-top: 8px; }
   .lh-ref .k { font-size: 7px; font-weight: 800; letter-spacing: .13em; text-transform: uppercase; color: ${TEAL}; }
-  .lh-ref .v { margin-top: 2px; font-size: 10px; font-weight: 700; color: ${NAVY}; word-break: break-word; }
+  .lh-ref .v { margin-top: 2px; font-size: 9.2px; font-weight: 700; color: ${NAVY}; overflow-wrap: anywhere; word-break: break-word; }
 
   /* Two-tone double rule closing the masthead. */
   .lh-rule { height: 1.6px; background: ${NAVY}; }
@@ -358,7 +358,9 @@ export async function letterheadPreviewHtml(f, { lang = 'both', watermark = true
   html,body{margin:0;padding:0;background:#8a97a3;}
   /* The preview mirrors the PDF sheet: masthead pinned to the top margin,
      footer pinned to the bottom margin, body flowing in between. */
-  .sheet{position:relative;width:${PAGE_W_MM}mm;height:${PAGE_H_MM}mm;margin:0 auto;background:#fff;overflow:hidden;}
+  .sheet{position:relative;width:${PAGE_W_MM}mm;height:${PAGE_H_MM}mm;margin:0 auto;background:#fff;overflow:hidden;box-sizing:border-box;}
+  .sheet::after{content:'';position:absolute;inset:4mm;border:1.1px solid ${NAVY};pointer-events:none;z-index:20;}
+  .sheet::before{content:'';position:absolute;inset:5.3mm;border:0.35px solid ${GOLD};pointer-events:none;z-index:20;}
   .sheet .mark{position:absolute;left:50%;top:50%;width:${WATERMARK_MM}mm;height:${WATERMARK_MM}mm;margin:-${WATERMARK_MM / 2}mm 0 0 -${WATERMARK_MM / 2}mm;opacity:${WATERMARK_OPACITY};pointer-events:none;}
   .sheet .inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;
     padding:${MARGIN_MM}mm 0 4mm;}
@@ -551,7 +553,15 @@ export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}
       y = end;
     }
     const pages = pdf.internal.getNumberOfPages();
-    for (let p = 1; p <= pages; p++) { pdf.setPage(p); stampFooter(pdf, { ...f, pageCount: pages }); }
+    for (let p = 1; p <= pages; p++) {
+      pdf.setPage(p);
+      stampFooter(pdf, { ...f, pageCount: pages });
+      // Premium double border, inset from the paper edge so no printer clips it.
+      pdf.setDrawColor(18, 52, 90); pdf.setLineWidth(0.65);
+      pdf.rect(4.2, 4.2, PAGE_W_MM - 8.4, PAGE_H_MM - 8.4, 'S');
+      pdf.setDrawColor(247, 168, 20); pdf.setLineWidth(0.22);
+      pdf.rect(5.4, 5.4, PAGE_W_MM - 10.8, PAGE_H_MM - 10.8, 'S');
+    }
     pdf.setPage(1);
     return pdf;
   } finally {
