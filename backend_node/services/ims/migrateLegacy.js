@@ -76,7 +76,7 @@ async function ensurePerson(src, stats) {
     address: s(src.address), city: s(src.city), state: s(src.state),
     gender: s(src.gender), dob: day(src.dob),
     occupation: s(src.occupation),
-    data: { legacySource: src.__source || null },
+    data: { legacySource: src.__source || null, _legacyFullRecord: src },
     createdBy: 'migration', createdByName: 'Legacy Import',
   });
   await logAudit({ entityType: 'persons', entityId: recordId, action: 'create', newValue: row.toJSON(), actor: 'migration' });
@@ -220,7 +220,7 @@ async function importDigitalOfficeRecord(rec, stats, dryRun) {
       ...data,
       _legacyModule: module,
       _legacyRecordId: rec.recordId,
-      ...(isFallbackArchive ? { _legacyFullRecord: typeof rec.toJSON === 'function' ? rec.toJSON() : rec } : {}),
+      _legacyFullRecord: typeof rec.toJSON === 'function' ? rec.toJSON() : rec,
     },
     createdBy: 'migration', createdByName: 'Legacy Import',
   };
@@ -328,7 +328,7 @@ async function migrateLegacy({ dryRun = true, limit = 0 } = {}) {
       amount: num(t.amount), direction: t.direction || (t.transactionType === 'income' ? 'in' : 'out'),
       sourceModule: 'finance', sourceRecordId: t.transactionId,
       needsReview: !!t.needsReview,
-      data: t.data || {},
+      data: { ...(t.data || {}), _legacyFullRecord: typeof t.toJSON === 'function' ? t.toJSON() : t },
       createdBy: 'migration', createdByName: 'Legacy Import',
     });
     await markMigrated('finance-txn', t.id, 'transactions', recId);
