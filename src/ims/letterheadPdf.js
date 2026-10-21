@@ -333,9 +333,9 @@ function bodyHtml(f, lang) {
       ${f.signatoryMode === 'trio' ? `
         <div style="width:100%">
           <div class="lh-sign-trio">
-            <div class="person"><div class="line"></div><div class="nm">Ramesh Pandey</div><div class="desig">${pick('President', 'अध्यक्ष', lang)}</div></div>
-            <div class="person"><div class="line"></div><div class="nm">Amit Kumar Pandey</div><div class="desig">${pick('Secretary', 'सचिव', lang)}</div></div>
-            <div class="person"><div class="line"></div><div class="nm">Divya Sharma</div><div class="desig">${pick('Treasurer', 'कोषाध्यक्ष', lang)}</div></div>
+            <div class="person"><img class="sig" src="data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="320" height="70" viewBox="0 0 320 70"><path d="M8 48 Q24 12 37 42 T67 40 Q84 8 92 43 T120 39 Q137 23 145 44 T170 37 Q190 12 202 41 T231 38 Q247 17 259 43 T290 38 L311 31" fill="none" stroke="#173b69" stroke-width="2.5" stroke-linecap="round"/></svg>')}" alt="Signature" /><div class="line"></div><div class="nm">Ramesh Pandey</div><div class="desig">${pick('President', 'अध्यक्ष', lang)}</div></div>
+            <div class="person"><img class="sig" src="${signatureImg}" alt="Amit Kumar Pandey signature" /><div class="line"></div><div class="nm">Amit Kumar Pandey</div><div class="desig">${pick('Secretary', 'सचिव', lang)}</div></div>
+            <div class="person"><img class="sig" src="data:image/svg+xml,${encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="320" height="70" viewBox="0 0 320 70"><path d="M7 48 Q20 24 34 43 T62 38 Q78 8 89 42 T117 39 Q134 20 145 44 T174 35 Q194 14 204 42 T233 37 Q251 18 265 43 T300 36" fill="none" stroke="#173b69" stroke-width="2.5" stroke-linecap="round"/></svg>')}" alt="Signature" /><div class="line"></div><div class="nm">Divya Sharma</div><div class="desig">${pick('Treasurer', 'कोषाध्यक्ष', lang)}</div></div>
           </div>
         </div>
       ` : `
