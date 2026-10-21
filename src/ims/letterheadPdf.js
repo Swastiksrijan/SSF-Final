@@ -308,7 +308,6 @@ function bodyHtml(f, lang) {
   const toBlock = [f.toName, f.toDesignation, f.toOrg, f.toAddress]
     .map((v) => String(v || '').trim()).filter(Boolean);
   const salutation = f.salutation || pick('Respected Sir/Madam,', 'आदरणीय महोदय / महोदया,', lang);
-  const closing = f.closing || pick('Thank you,', 'धन्यवाद,', lang);
 
   // Ref. No. and Date live once, in the masthead's right-hand column. They are
   // deliberately not repeated here: printing them twice on one sheet reads as a
@@ -333,9 +332,6 @@ function bodyHtml(f, lang) {
     <div class="lh-sign" data-safe>
       ${f.signatoryMode === 'trio' ? `
         <div style="width:100%">
-          <div class="closing" style="margin-bottom:3px">${esc(closing)}</div>
-          <div class="lh-sign-trio-head">${pick('For and on behalf of', 'की ओर से', lang)}</div>
-          <div class="lh-sign-trio-org">${esc(ORG.en)}</div>
           <div class="lh-sign-trio">
             <div class="person"><div class="line"></div><div class="nm">Ramesh Pandey</div><div class="desig">${pick('President', 'अध्यक्ष', lang)}</div></div>
             <div class="person"><div class="line"></div><div class="nm">Amit Kumar Pandey</div><div class="desig">${pick('Secretary', 'सचिव', lang)}</div></div>
@@ -344,12 +340,10 @@ function bodyHtml(f, lang) {
         </div>
       ` : `
         <div class="lh-sign-left">
-          <div class="closing">${esc(closing)}</div>
           ${f.seal !== false && (f.sealPosition === 'left' || !f.sealPosition) ? `<div class="orgline"><div class="org">${esc(ORG.en)}</div><img class="seal" src="${sealImg}" alt="Organisation seal" /></div>` : `<div class="org">${esc(ORG.en)}</div>`}
           <div class="tag hi">${esc(ORG.taglineHi)} · ${esc(ORG.taglineEn)}</div>
         </div>
         <div class="lh-sign-col">
-          <div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div>
           ${hasSignatureScan(f) ? `<img class="sig" src="${signatureImg}" alt="Signature" data-signature-img />` : ''}
           <div class="line"></div>
           ${f.seal !== false && f.sealPosition === 'signatory' ? `<img class="lh-sign-seal" src="${sealImg}" alt="Organisation seal" />` : ''}
@@ -647,7 +641,6 @@ export function letterPlainText(f, lang = 'both') {
   if (f.subject) L.push(`${pick('Subject', 'विषय', lang)}: ${f.subject}`, '');
   L.push(f.salutation || pick('Respected Sir/Madam,', 'आदरणीय महोदय / महोदया,', lang), '');
   L.push(String(f.body || '').trim(), '');
-  L.push(f.closing || pick('Thank you,', 'धन्यवाद,', lang), '');
   L.push(`${pick('For', 'हेतु', lang)} ${ORG.en}`);
   if (f.signatoryName) L.push(f.signatoryName);
   L.push(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang));
