@@ -404,7 +404,7 @@ export default function ImsLetterhead() {
                 {busy === 'copy' ? <Loader2 size={16} className="animate-spin" /> : <Copy size={16} />}{lang === 'hi' ? 'पाठ कॉपी' : 'Copy text'}
               </button>
               <button type="button" disabled={!!busy || f.blankMode} onClick={doSave} className="inline-flex items-center gap-2 rounded-xl bg-[#12345A] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40">
-                {busy === 'save' ? <Loader2 size={16} className="animate-spin" /> : <FilePlus2 size={16} />}{f.blankMode ? (lang === 'hi' ? 'खाली प्रारूप सहेजें' : 'Save blank template') : (lang === 'hi' ? 'पंजिका में सहेजें' : 'File in register')}
+                {busy === 'save' ? <Loader2 size={16} className="animate-spin" /> : <FilePlus2 size={16} />}{lang === 'hi' ? 'पंजिका में सहेजें' : 'File in register'}
               </button>
               <button type="button" onClick={doSaveTemplate} className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50">
                 <Save size={16} />{lang === 'hi' ? 'प्रारूप सहेजें' : 'Save template'}
