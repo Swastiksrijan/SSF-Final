@@ -48,7 +48,12 @@ const CATEGORY = 'Official Correspondence';
 const cls = 'w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none focus:border-[#12345A] focus:ring-2 focus:ring-[#12345A]/10';
 const label = 'text-[11px] font-bold uppercase tracking-wide text-slate-500';
 
-const today = () => new Date().toISOString().slice(0, 10);
+// Use the browser's local calendar date so India users do not get yesterday's date at UTC/IST boundaries.
+const today = () => {
+  const d = new Date();
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
+  return local.toISOString().slice(0, 10);
+};
 
 const blankLetter = () => ({
   letterNo: '', date: today(), letterType: LETTER_TYPES[0].en,
@@ -222,18 +227,26 @@ export default function ImsLetterhead() {
   return (
     <ImsLayout active="letterhead">
       <div className="mx-auto max-w-[1500px] space-y-5">
-        {/* header */}
-        <div className="rounded-2xl bg-[#12345A] p-6 text-white sm:p-8">
-          <div className="flex items-start gap-4">
-            <span className="grid h-12 w-12 shrink-0 place-items-center rounded-xl bg-white/10 text-[#176447]"><FileSignature size={22} /></span>
-            <div className="min-w-0">
-              <h1 className={`${PAGE_TITLE_ON_DARK} leading-tight`}>
+        {/* premium workspace header */}
+        <div className="relative isolate overflow-hidden rounded-2xl bg-gradient-to-br from-[#0B1F3A] via-[#12345A] to-[#176447] p-6 text-white shadow-lg shadow-[#12345A]/10 sm:p-8">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-20 h-56 w-56 rounded-full border border-white/10" />
+          <div aria-hidden="true" className="pointer-events-none absolute -right-2 -top-10 h-36 w-36 rounded-full border border-[#F7A814]/20" />
+          <div className="relative flex items-start gap-4 sm:gap-5">
+            <span className="grid h-14 w-14 shrink-0 place-items-center rounded-2xl border border-white/15 bg-white/10 text-[#F7A814] shadow-inner sm:h-16 sm:w-16"><FileSignature size={26} strokeWidth={1.8} /></span>
+            <div className="min-w-0 flex-1">
+              <div className="mb-2 flex flex-wrap items-center gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/10 px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.16em] text-white/85">
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#F7A814]" /> SSF · Official Stationery
+                </span>
+                <span className="rounded-full border border-white/10 px-2.5 py-1 text-[10px] font-semibold tracking-wide text-white/65">A4 · PDF · Print</span>
+              </div>
+              <h1 className={`${PAGE_TITLE_ON_DARK} leading-tight tracking-tight`}>
                 {lang === 'hi' ? 'लेटरहेड — आधिकारिक पत्र' : 'Letterhead — Official Letter'}
               </h1>
-              <p className="mt-1 max-w-3xl text-sm text-white/70">
+              <p className="mt-2 max-w-3xl text-sm leading-6 text-white/75">
                 {lang === 'hi'
-                  ? 'किसी भी विषय पर — शासकीय विभाग, कंपनी, बैंक, दानदाता या सदस्य को — संस्था के लेटरहेड पर पत्र लिखें। अंग्रेज़ी, हिंदी या दोनों में; डाउनलोड, प्रिंट (ऑफ़लाइन भी) या व्हाट्सएप/ईमेल पर भेजें।'
-                  : 'Write to anyone — a government department, company, bank, donor or member — on the Foundation\u2019s own letterhead. English, हिंदी or both; download, print (works offline) or share on WhatsApp / e-mail.'}
+                  ? 'शासकीय विभाग, कंपनी, बैंक, दानदाता या सदस्य के लिए संस्था के आधिकारिक लेटरहेड पर पत्र तैयार करें। हिंदी, अंग्रेज़ी या द्विभाषी प्रारूप में पूर्वावलोकन, PDF, प्रिंट और साझा करने की सुविधा।'
+                  : 'Prepare formal correspondence for government departments, companies, banks, donors and members. Draft in English, Hindi or both, then preview, download as PDF, print or share.'}
               </p>
             </div>
           </div>
