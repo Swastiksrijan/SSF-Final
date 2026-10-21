@@ -330,6 +330,9 @@ function bodyHtml(f, lang) {
       <span class="lbl">${pick('Copy to', 'प्रतिलिपि', lang)}:</span> ${esc(f.cc)}
     </div>` : ''}
     <div class="lh-sign" data-safe>
+      <div class="lh-sign-trio-head" style="width:100%;text-align:center;font-size:9px;font-weight:700;margin:0 0 7px">
+        ${pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang)}
+      </div>
       ${f.signatoryMode === 'trio' ? `
         <div style="width:100%">
           <div class="lh-sign-trio">
