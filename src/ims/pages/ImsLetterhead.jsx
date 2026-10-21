@@ -28,6 +28,7 @@ const SIGNATORIES = [
   { name: 'Preeti Shukla', designation: 'Vice President', hi: 'उपाध्यक्ष' },
   { name: 'Divya Sharma', designation: 'Treasurer', hi: 'कोषाध्यक्ष' },
   { name: 'Kiran Pandey', designation: 'Joint Secretary', hi: 'संयुक्त सचिव' },
+  { name: '__trio__', designation: 'President + Secretary + Treasurer', hi: 'अध्यक्ष + सचिव + कोषाध्यक्ष — तीनों एक लाइन में' },
   { name: 'Other authorised signatory', designation: 'Authorised Signatory', hi: 'अधिकृत हस्ताक्षरकर्ता' },
 ];
 const cls = 'w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 outline-none transition focus:border-[#12345A] focus:ring-2 focus:ring-[#12345A]/10';
@@ -269,15 +270,27 @@ export default function ImsLetterhead() {
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <h3 className="mb-3 flex items-center gap-2 text-sm font-extrabold text-[#12345A]"><FileSignature size={16} />{hindi ? 'हस्ताक्षर एवं प्राधिकरण' : 'Signatory & authorisation'}</h3>
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="sm:col-span-2"><label className={label}>{hindi ? 'हस्ताक्षर व्यवस्था चुनें' : 'Choose signatory arrangement'}</label><div className="grid gap-2 sm:grid-cols-2"><label className={'flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition ' + ((f.signatoryMode || 'single') === 'single' ? 'border-[#12345A] bg-blue-50 ring-1 ring-[#12345A]' : 'border-slate-200 bg-white hover:border-slate-300')}><input type="radio" name="signatoryMode" value="single" checked={(f.signatoryMode || 'single') === 'single'} onChange={() => set('signatoryMode', 'single')} className="mt-1 h-4 w-4 accent-[#12345A]" /><span><span className="block text-sm font-extrabold text-[#12345A]">{hindi ? 'एक हस्ताक्षरकर्ता' : 'Single signatory'}</span><span className="mt-1 block text-xs text-slate-500">{hindi ? 'केवल एक अधिकृत व्यक्ति' : 'One authorised person'}</span></span></label><label className={'flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition ' + (f.signatoryMode === 'trio' ? 'border-[#176447] bg-emerald-50 ring-1 ring-[#176447]' : 'border-slate-200 bg-white hover:border-slate-300')}><input type="radio" name="signatoryMode" value="trio" checked={f.signatoryMode === 'trio'} onChange={() => set('signatoryMode', 'trio')} className="mt-1 h-4 w-4 accent-[#176447]" /><span><span className="block text-sm font-extrabold text-[#176447]">{hindi ? 'तीनों के हस्ताक्षर — एक ही लाइन में' : 'All three sign — in one row'}</span><span className="mt-1 block text-xs text-slate-600">{hindi ? 'अध्यक्ष + सचिव + कोषाध्यक्ष' : 'President + Secretary + Treasurer'}</span></span></label></div></div>
-                {f.signatoryMode !== 'trio' && <><div><label className={label}>{hindi ? 'हस्ताक्षरकर्ता' : 'Signatory'}</label><select className={cls} value={f.signatoryName} onChange={(e) => {
-                  const chosen = SIGNATORIES.find((s) => s.name === e.target.value);
-                  setF((old) => ({ ...old, signatoryName: e.target.value, signatoryDesignation: chosen ? chosen.designation : old.signatoryDesignation, signature: false }));
-                  if (e.target.value !== 'Other authorised signatory') setCustomSignatoryName('');
-                }}>{SIGNATORIES.map((s) => <option key={s.name} value={s.name}>{s.name} — {hindi ? s.hi : s.designation}</option>)}</select></div>
-                <div><label className={label}>{hindi ? 'पदनाम' : 'Designation'}</label><input className={cls} value={f.signatoryDesignation} onChange={(e) => set('signatoryDesignation', e.target.value)} /></div>
-                {f.signatoryName === 'Other authorised signatory' && <div className="sm:col-span-2"><label className={label}>{hindi ? 'अधिकृत व्यक्ति का पूरा नाम' : 'Full name of authorised person'}</label><input className={cls} value={customSignatoryName} onChange={(e) => setCustomSignatoryName(e.target.value)} placeholder={hindi ? 'पूरा नाम दर्ज करें' : 'Enter full name'} /></div>}</>}
-                {f.signatoryMode === 'trio' && <p className="sm:col-span-2 rounded-lg bg-blue-50 px-3 py-2 text-xs text-blue-900">{hindi ? 'PDF में अध्यक्ष, सचिव और कोषाध्यक्ष के तीन हस्ताक्षर बॉक्स एक ही पंक्ति में आएँगे।' : 'The PDF will show three signature blocks—President, Secretary and Treasurer—on one line.'}</p>}
+                <div className="sm:col-span-2">
+                  <label className={label}>{hindi ? 'हस्ताक्षरकर्ता / व्यवस्था' : 'Signatory'}</label>
+                  <select className={cls} value={f.signatoryMode === 'trio' ? '__trio__' : f.signatoryName} onChange={(e) => {
+                    if (e.target.value === '__trio__') {
+                      setF((old) => ({ ...old, signatoryMode: 'trio', signature: false }));
+                      setCustomSignatoryName('');
+                      return;
+                    }
+                    const chosen = SIGNATORIES.find((s) => s.name === e.target.value);
+                    setF((old) => ({ ...old, signatoryMode: 'single', signatoryName: e.target.value, signatoryDesignation: chosen ? chosen.designation : old.signatoryDesignation, signature: false }));
+                    if (e.target.value !== 'Other authorised signatory') setCustomSignatoryName('');
+                  }}>
+                    {SIGNATORIES.filter((s) => s.name !== '__trio__').map((s) => <option key={s.name} value={s.name}>{s.name} — {hindi ? s.hi : s.designation}</option>)}
+                    <option value="__trio__">{hindi ? 'अध्यक्ष + सचिव + कोषाध्यक्ष — तीनों एक लाइन में' : 'President + Secretary + Treasurer — all three in one row'}</option>
+                  </select>
+                  {f.signatoryMode === 'trio' && <p className="mt-2 rounded-lg bg-blue-50 px-3 py-2 text-xs text-blue-900">{hindi ? 'PDF में Ramesh Pandey (अध्यक्ष), Amit Kumar Pandey (सचिव) और Divya Sharma (कोषाध्यक्ष) के तीन हस्ताक्षर बॉक्स एक ही पंक्ति में आएँगे।' : 'The PDF will show Ramesh Pandey (President), Amit Kumar Pandey (Secretary) and Divya Sharma (Treasurer) in one row.'}</p>}
+                </div>
+                {f.signatoryMode !== 'trio' && <>
+                  <div><label className={label}>{hindi ? 'पदनाम' : 'Designation'}</label><input className={cls} value={f.signatoryDesignation} onChange={(e) => set('signatoryDesignation', e.target.value)} /></div>
+                  {f.signatoryName === 'Other authorised signatory' && <div className="sm:col-span-2"><label className={label}>{hindi ? 'अधिकृत व्यक्ति का पूरा नाम' : 'Full name of authorised person'}</label><input className={cls} value={customSignatoryName} onChange={(e) => setCustomSignatoryName(e.target.value)} placeholder={hindi ? 'पूरा नाम दर्ज करें' : 'Enter full name'} /></div>}
+                </>}
               </div>
               <div className="mt-3 flex flex-wrap gap-x-5 gap-y-3 text-sm">
                 <label className="inline-flex items-center gap-2"><input type="checkbox" checked={f.signature === true && isSecretary} disabled={!isSecretary} onChange={(e) => set('signature', e.target.checked)} className="h-4 w-4 accent-[#12345A]" /><span className={!isSecretary ? 'text-slate-400' : 'text-slate-700'}>{hindi ? 'सचिव के उपलब्ध हस्ताक्षर स्कैन का उपयोग' : 'Use Secretary signature scan (only if selected)'}</span></label>
