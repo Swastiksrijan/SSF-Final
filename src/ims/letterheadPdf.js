@@ -228,7 +228,12 @@ const BASE_CSS = `
   /* Keep the signature block at the end of the letter, above the fixed registered-office footer.
      On short letters it settles near the bottom of the writing area; on long letters it follows
      the final paragraph naturally. Enclosures/CC are placed before this block in bodyHtml. */
-  .lh-sign { margin-top: auto; padding-top: 7px; border-top: 1px solid ${HAIRLINE}; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; break-inside: avoid; }
+  .lh-sign { margin-top: auto; padding-top: 7px; border-top: 1px solid ${HAIRLINE}; display: flex; flex-direction: column; break-inside: avoid; }
+  /* The heading spans the block, above the signatories. It must not be a child
+     of the row: the row's space-between would treat it as a third item and
+     collapse .lh-sign-left to zero width. */
+  .lh-sign-head { width: 100%; text-align: center; font-size: 9px; font-weight: 700; color: ${INK}; margin: 0 0 7px; }
+  .lh-sign-row { width: 100%; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
   .lh-sign-left { flex: 1; min-width: 0; padding-bottom: 2px; }
   .lh-sign-left .closing { font-size: 12px; font-weight: 700; color: ${INK}; }
   .lh-sign-left .org { margin-top: 0; font-size: 10.5px; font-weight: 800; color: ${NAVY}; }
@@ -330,9 +335,8 @@ function bodyHtml(f, lang) {
       <span class="lbl">${pick('Copy to', 'प्रतिलिपि', lang)}:</span> ${esc(f.cc)}
     </div>` : ''}
     <div class="lh-sign" data-safe>
-      <div class="lh-sign-trio-head" style="width:100%;text-align:center;font-size:9px;font-weight:700;margin:0 0 7px">
-        ${pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang)}
-      </div>
+      <div class="lh-sign-head">${pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang)}</div>
+      <div class="lh-sign-row">
       ${f.signatoryMode === 'trio' ? `
         <div style="width:100%">
           <div class="lh-sign-trio">
@@ -354,6 +358,7 @@ function bodyHtml(f, lang) {
           <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
         </div>
       `}
+      </div>
     </div>
   </div>`;
 }
