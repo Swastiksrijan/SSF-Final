@@ -211,7 +211,7 @@ const BASE_CSS = `
      spurious second page. Which block is first varies (To, Subject or the
      salutation, depending on what the composer filled in), so containing the
      collapse here fixes it for every shape of letter at once. */
-  .lh-body { position: relative; z-index: 1; display: flex; flex-direction: column; padding: 0 ${PAD_PX}px; }
+  .lh-body { position: relative; z-index: 1; display: flex; flex: 1 0 auto; flex-direction: column; padding: 0 ${PAD_PX}px; }
   .lh-to { font-size: 12px; line-height: 1.6; }
   .lh-to .lbl { font-weight: 800; color: ${NAVY}; }
 
@@ -223,7 +223,10 @@ const BASE_CSS = `
   .lh-p { margin-top: 9px; font-size: 12.4px; text-align: justify; white-space: pre-wrap; }
   .lh-thanks { margin-top: 16px; font-size: 12.4px; }
 
-  .lh-sign { margin-top: 24px; padding-top: 13px; border-top: 1px solid ${HAIRLINE}; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; break-inside: avoid; }
+  /* Keep the signature block at the end of the letter, above the fixed registered-office footer.
+     On short letters it settles near the bottom of the writing area; on long letters it follows
+     the final paragraph naturally. Enclosures/CC are placed before this block in bodyHtml. */
+  .lh-sign { margin-top: auto; padding-top: 13px; border-top: 1px solid ${HAIRLINE}; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; break-inside: avoid; }
   .lh-sign-left { flex: 1; min-width: 0; padding-bottom: 2px; }
   .lh-sign-left .closing { font-size: 12px; font-weight: 700; color: ${INK}; }
   .lh-sign-left .org { margin-top: 5px; font-size: 11px; font-weight: 800; color: ${NAVY}; }
@@ -308,6 +311,12 @@ function bodyHtml(f, lang) {
     </div>` : ''}
     <div class="lh-salut" data-safe>${esc(salutation)}</div>
     ${paragraphs.map((p) => `<div class="lh-p" data-safe>${esc(p)}</div>`).join('')}
+    ${f.enclosures ? `<div class="lh-extra" data-safe>
+      <span class="lbl">${pick('Enclosures', 'संलग्नक', lang)}:</span> ${esc(f.enclosures)}
+    </div>` : ''}
+    ${f.cc ? `<div class="lh-extra" data-safe>
+      <span class="lbl">${pick('Copy to', 'प्रतिलिपि', lang)}:</span> ${esc(f.cc)}
+    </div>` : ''}
     <div class="lh-sign" data-safe>
       <div class="lh-sign-left">
         <div class="closing">${esc(closing)}</div>
@@ -323,12 +332,6 @@ function bodyHtml(f, lang) {
         <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
       </div>
     </div>
-    ${f.enclosures ? `<div class="lh-extra" data-safe>
-      <span class="lbl">${pick('Enclosures', 'संलग्नक', lang)}:</span> ${esc(f.enclosures)}
-    </div>` : ''}
-    ${f.cc ? `<div class="lh-extra" data-safe>
-      <span class="lbl">${pick('Copy to', 'प्रतिलिपि', lang)}:</span> ${esc(f.cc)}
-    </div>` : ''}
   </div>`;
 }
 
