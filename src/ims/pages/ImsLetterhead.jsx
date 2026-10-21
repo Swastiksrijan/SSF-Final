@@ -56,6 +56,7 @@ const today = () => {
 };
 
 const blankLetter = () => ({
+  blankMode: false,
   letterNo: '', date: today(), letterType: LETTER_TYPES[0].en,
   toName: '', toDesignation: '', toOrg: '', toAddress: '',
   subject: '', salutation: '', body: '', closing: '', enclosures: '', cc: '',
@@ -150,6 +151,7 @@ export default function ImsLetterhead() {
   };
 
   const guard = () => {
+    if (f.blankMode) return true;
     if (!f.subject.trim() && !f.body.trim()) { say(lang === 'hi' ? 'पहले विषय या पत्र का पाठ भरें, तभी PDF बनेगा।' : 'Fill the subject or body first — then the PDF will be created.', 'warn'); return false; }
     return true;
   };
@@ -169,7 +171,8 @@ export default function ImsLetterhead() {
   });
   const doDownload = () => run('download', () => downloadLetterPdf(f, { lang: pdfLang, watermark }));
   const doPrint = () => run('print', () => printLetterPdf(f, { lang: pdfLang, watermark }));
-  const doWhatsApp = () => run('wa', async () => { await shareLetterPdf(f, { lang: pdfLang, via: 'whatsapp' }); });
+  // Native sharing can attach the actual PDF; on Android the user can choose WhatsApp.
+  const doWhatsApp = () => run('wa', async () => { await shareLetterPdf(f, { lang: pdfLang, via: 'native' }); });
   const doEmail = () => run('email', async () => { await shareLetterPdf(f, { lang: pdfLang, via: 'email' }); });
   const doShare = () => run('share', async () => {
     const r = await shareLetterPdf(f, { lang: pdfLang, via: 'native' });
@@ -252,8 +255,26 @@ export default function ImsLetterhead() {
           </div>
         </div>
 
+        {/* Choose blank official stationery or compose a filled letter. */}
+        <div className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <h2 className="text-base font-black text-[#12345A]">{lang === 'hi' ? 'लेटरहेड का प्रकार चुनें' : 'Choose your letterhead'}</h2>
+              <p className="mt-1 text-xs leading-5 text-slate-500">{lang === 'hi' ? 'खाली आधिकारिक लेटरपैड डाउनलोड करें या इसी पर पत्र लिखकर PDF साझा करें।' : 'Download blank official stationery, or type a letter and export/share it as a PDF.'}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-2 sm:min-w-[330px]">
+              <button type="button" onClick={() => set('blankMode', true)} className={`rounded-xl border px-4 py-3 text-sm font-extrabold transition ${f.blankMode ? 'border-[#176447] bg-[#176447] text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-[#176447]'}`}>
+                {lang === 'hi' ? 'खाली लेटरहेड' : 'Blank letterhead'}
+              </button>
+              <button type="button" onClick={() => set('blankMode', false)} className={`rounded-xl border px-4 py-3 text-sm font-extrabold transition ${!f.blankMode ? 'border-[#12345A] bg-[#12345A] text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-[#12345A]'}`}>
+                {lang === 'hi' ? 'पत्र लिखें' : 'Write a letter'}
+              </button>
+            </div>
+          </div>
+        </div>
+
         {/* letter type templates */}
-        <div className="rounded-2xl border border-slate-200 bg-white p-5">
+        {!f.blankMode && <div className="rounded-2xl border border-slate-200 bg-white p-5">
           <div className="flex items-center gap-2">
             <FileSignature size={16} className="text-[#176447]" />
             <span className="text-sm font-bold text-[#12345A]">{lang === 'hi' ? 'पत्र का प्रकार' : 'Letter type'}</span>
@@ -267,12 +288,12 @@ export default function ImsLetterhead() {
               </button>
             ))}
           </div>
-        </div>
+        </div>}
 
         <div className="grid gap-5 xl:grid-cols-2">
           {/* composer */}
           <div className="rounded-2xl border border-slate-200 bg-white p-5">
-            <div className="grid gap-3 sm:grid-cols-2">
+            {!f.blankMode && <div className="grid gap-3 sm:grid-cols-2">
               <div><label className={label}>{lang === 'hi' ? 'पत्र क्रमांक (संदर्भ)' : 'Letter No. (Reference)'}</label>
                 <input className={cls + ' mt-1'} value={f.letterNo} onChange={(e) => set('letterNo', e.target.value)} placeholder="SSF/LTR/2026/0001" /></div>
               <div><label className={label}>{lang === 'hi' ? 'दिनांक' : 'Date'}</label>
@@ -318,7 +339,8 @@ export default function ImsLetterhead() {
                 <input className={cls + ' mt-1'} value={f.enclosures} onChange={(e) => set('enclosures', e.target.value)} placeholder={lang === 'hi' ? '1. … 2. …' : '1. … 2. …'} /></div>
               <div className="sm:col-span-2"><label className={label}>{lang === 'hi' ? 'प्रतिलिपि' : 'Copy to'}</label>
                 <input className={cls + ' mt-1'} value={f.cc} onChange={(e) => set('cc', e.target.value)} /></div>
-            </div>
+            </div>}
+            {f.blankMode && <div className="rounded-xl border border-dashed border-[#C8D4E1] bg-[#F7F9FC] p-4 text-sm text-slate-600">{lang === 'hi' ? 'यह खाली A4 लेटरपैड है। संस्था का लोगो, पंजीकरण विवरण और संपर्क स्थायी रहेंगे; पत्र लिखने का स्थान खाली रहेगा।' : 'This is the blank A4 stationery. The logo, registration details and contacts stay in place, with a clean writing area.'}</div>}
 
             {/* options */}
             <div className="mt-5 flex flex-wrap items-center gap-3 border-t border-slate-100 pt-4">
@@ -381,7 +403,7 @@ export default function ImsLetterhead() {
               <button type="button" disabled={!!busy} onClick={doCopy} className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40">
                 {busy === 'copy' ? <Loader2 size={16} className="animate-spin" /> : <Copy size={16} />}{lang === 'hi' ? 'पाठ कॉपी' : 'Copy text'}
               </button>
-              <button type="button" disabled={!!busy} onClick={doSave} className="inline-flex items-center gap-2 rounded-xl bg-[#12345A] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40">
+              <button type="button" disabled={!!busy || f.blankMode} onClick={doSave} className="inline-flex items-center gap-2 rounded-xl bg-[#12345A] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-40">
                 {busy === 'save' ? <Loader2 size={16} className="animate-spin" /> : <FilePlus2 size={16} />}{lang === 'hi' ? 'पंजिका में सहेजें' : 'File in register'}
               </button>
               <button type="button" onClick={doSaveTemplate} className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50">
