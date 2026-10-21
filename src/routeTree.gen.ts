@@ -99,6 +99,7 @@ import { Route as ImsCashBookRouteImport } from './routes/ims/cash-book'
 import { Route as ImsCasesRouteImport } from './routes/ims/cases'
 import { Route as ImsBankBookRouteImport } from './routes/ims/bank-book'
 import { Route as ImsAuditTrailRouteImport } from './routes/ims/audit-trail'
+import { Route as ImsAuditReportsRouteImport } from './routes/ims/audit-reports'
 import { Route as ImsAppointmentLettersRouteImport } from './routes/ims/appointment-letters'
 import { Route as ImsAnnualReportsRouteImport } from './routes/ims/annual-reports'
 import { Route as ImsActivitiesRouteImport } from './routes/ims/activities'
@@ -570,6 +571,11 @@ const ImsAuditTrailRoute = ImsAuditTrailRouteImport.update({
   path: '/ims/audit-trail',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsAuditReportsRoute = ImsAuditReportsRouteImport.update({
+  id: '/ims/audit-reports',
+  path: '/ims/audit-reports',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsAppointmentLettersRoute = ImsAppointmentLettersRouteImport.update({
   id: '/ims/appointment-letters',
   path: '/ims/appointment-letters',
@@ -725,6 +731,7 @@ export interface FileRoutesByFullPath {
   '/ims/activities': typeof ImsActivitiesRoute
   '/ims/annual-reports': typeof ImsAnnualReportsRoute
   '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
+  '/ims/audit-reports': typeof ImsAuditReportsRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
   '/ims/bank-book': typeof ImsBankBookRoute
   '/ims/cases': typeof ImsCasesRoute
@@ -834,6 +841,7 @@ export interface FileRoutesByTo {
   '/ims/activities': typeof ImsActivitiesRoute
   '/ims/annual-reports': typeof ImsAnnualReportsRoute
   '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
+  '/ims/audit-reports': typeof ImsAuditReportsRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
   '/ims/bank-book': typeof ImsBankBookRoute
   '/ims/cases': typeof ImsCasesRoute
@@ -945,6 +953,7 @@ export interface FileRoutesById {
   '/ims/activities': typeof ImsActivitiesRoute
   '/ims/annual-reports': typeof ImsAnnualReportsRoute
   '/ims/appointment-letters': typeof ImsAppointmentLettersRoute
+  '/ims/audit-reports': typeof ImsAuditReportsRoute
   '/ims/audit-trail': typeof ImsAuditTrailRoute
   '/ims/bank-book': typeof ImsBankBookRoute
   '/ims/cases': typeof ImsCasesRoute
@@ -1057,6 +1066,7 @@ export interface FileRouteTypes {
     | '/ims/activities'
     | '/ims/annual-reports'
     | '/ims/appointment-letters'
+    | '/ims/audit-reports'
     | '/ims/audit-trail'
     | '/ims/bank-book'
     | '/ims/cases'
@@ -1166,6 +1176,7 @@ export interface FileRouteTypes {
     | '/ims/activities'
     | '/ims/annual-reports'
     | '/ims/appointment-letters'
+    | '/ims/audit-reports'
     | '/ims/audit-trail'
     | '/ims/bank-book'
     | '/ims/cases'
@@ -1276,6 +1287,7 @@ export interface FileRouteTypes {
     | '/ims/activities'
     | '/ims/annual-reports'
     | '/ims/appointment-letters'
+    | '/ims/audit-reports'
     | '/ims/audit-trail'
     | '/ims/bank-book'
     | '/ims/cases'
@@ -1383,6 +1395,7 @@ export interface RootRouteChildren {
   ImsActivitiesRoute: typeof ImsActivitiesRoute
   ImsAnnualReportsRoute: typeof ImsAnnualReportsRoute
   ImsAppointmentLettersRoute: typeof ImsAppointmentLettersRoute
+  ImsAuditReportsRoute: typeof ImsAuditReportsRoute
   ImsAuditTrailRoute: typeof ImsAuditTrailRoute
   ImsBankBookRoute: typeof ImsBankBookRoute
   ImsCasesRoute: typeof ImsCasesRoute
@@ -2064,6 +2077,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsAuditTrailRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/audit-reports': {
+      id: '/ims/audit-reports'
+      path: '/ims/audit-reports'
+      fullPath: '/ims/audit-reports'
+      preLoaderRoute: typeof ImsAuditReportsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/appointment-letters': {
       id: '/ims/appointment-letters'
       path: '/ims/appointment-letters'
@@ -2279,6 +2299,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsActivitiesRoute: ImsActivitiesRoute,
   ImsAnnualReportsRoute: ImsAnnualReportsRoute,
   ImsAppointmentLettersRoute: ImsAppointmentLettersRoute,
+  ImsAuditReportsRoute: ImsAuditReportsRoute,
   ImsAuditTrailRoute: ImsAuditTrailRoute,
   ImsBankBookRoute: ImsBankBookRoute,
   ImsCasesRoute: ImsCasesRoute,

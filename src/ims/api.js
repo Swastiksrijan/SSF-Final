@@ -102,6 +102,23 @@ export const ims = {
   annualReports: () => fetch(`${API_BASE_URL}/api/ims/annual-reports`, { headers: headers() }).then(handle),
   annualReportsSeed: () => fetch(`${API_BASE_URL}/api/ims/annual-reports/seed`, { method: 'POST', headers: headers() }).then(handle),
 
+  // ---- AUDITED FINANCIAL STATEMENTS: year-wise audit-report register ----
+  auditReports: () => fetch(`${API_BASE_URL}/api/ims/audit-reports`, { headers: headers() }).then(handle),
+  // Opens the scanned, CA-signed PDF. Fetched with the bearer token, because a
+  // plain link would be rejected by the auth middleware.
+  auditReportFile: async (financialYear) => {
+    const res = await fetch(`${API_BASE_URL}/api/ims/audit-reports/${encodeURIComponent(financialYear)}/file`, { headers: headers() });
+    if (!res.ok) {
+      let body = null;
+      try { body = await res.json(); } catch { body = null; }
+      throw new Error((body && body.message) || `Signed report unavailable (${res.status})`);
+    }
+    const blob = await res.blob();
+    const url = URL.createObjectURL(blob);
+    window.open(url, '_blank', 'noopener');
+    setTimeout(() => URL.revokeObjectURL(url), 60000);
+  },
+
   // ---- NOTIFICATION & ACTION CENTRE ----
   notifications: (params = {}) => {
     const qs = new URLSearchParams(params).toString();

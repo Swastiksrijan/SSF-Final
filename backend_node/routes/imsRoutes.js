@@ -1,5 +1,7 @@
 // SSF-IMS API. One generic resource engine + specialised endpoints.
 const express = require('express');
+const path = require('path');
+const fs = require('fs');
 const router = express.Router();
 const { models } = require('../models/ims');
 const { Op } = require('sequelize');
@@ -13,6 +15,7 @@ const { seedPolicy } = require('../services/ims/policySeed');
 const { seedOrgProfile } = require('../services/ims/orgProfileSeed');
 const { seedOfficeHistory } = require('../services/ims/officeHistorySeed');
 const { seedAnnualReports, annualReportRegister } = require('../services/ims/annualReportSeed');
+const { auditReportRegister } = require('../services/ims/auditReports');
 const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { universalSearch, meta: searchMeta } = require('../services/ims/search');
 const { volunteerDashboard } = require('../services/ims/volunteerNetwork');
@@ -64,6 +67,28 @@ router.post('/ims/office-history/seed', wrap(async (_req, r) => r.json(await see
 // ---- annual progress reports (year-wise reporting record, 2013-14 → 2025-26)
 router.post('/ims/annual-reports/seed', wrap(async (_req, r) => r.json(await seedAnnualReports())));
 router.get('/ims/annual-reports', wrap(async (_req, r) => r.json(await annualReportRegister())));
+
+// ---- audited financial statements (year-wise audit-report register) --------
+// Read-only: served from data/auditReports.json, the CA-signed statements.
+router.get('/ims/audit-reports', wrap(async (_req, r) => r.json(auditReportRegister())));
+
+// The scanned, CA-signed report itself. The register only carries the figures;
+// this hands over the PDF the auditor signed, so a reader can check them.
+router.get('/ims/audit-reports/:financialYear/file', wrap(async (req, r) => {
+  const reg = auditReportRegister();
+  const year = reg.years.find((y) => y.financialYear === req.params.financialYear);
+  if (!year || !year.sourceFile) return r.status(404).json({ message: 'No signed report held for that financial year.' });
+
+  // Resolve inside the archive only — never follow the stored path blindly.
+  const root = path.resolve(__dirname, '..', '..', 'audit-reports');
+  const file = path.resolve(root, path.basename(path.dirname(year.sourceFile)), path.basename(year.sourceFile));
+  if (!file.startsWith(root + path.sep) || !fs.existsSync(file)) {
+    return r.status(404).json({ message: 'Signed report file is not available.' });
+  }
+  r.setHeader('Content-Type', 'application/pdf');
+  r.setHeader('Content-Disposition', `inline; filename="${path.basename(file)}"`);
+  fs.createReadStream(file).pipe(r);
+}));
 
 // ---- person 360 ------------------------------------------------------------
 router.get('/ims/person360/:id', wrap(async (req, r) => {
