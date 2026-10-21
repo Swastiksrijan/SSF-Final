@@ -331,12 +331,13 @@ function bodyHtml(f, lang) {
     <div class="lh-sign" data-safe>
       ${f.signatoryMode === 'trio' ? `
         <div style="width:100%">
-          <div class="closing" style="margin-bottom:10px">${esc(closing)}</div>
+          <div class="closing" style="margin-bottom:4px">${esc(closing)}</div>
           <div class="lh-sign-trio">
-            <div class="person"><div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div><div class="line"></div><div class="nm">Ramesh Pandey</div><div class="desig">${pick('President', 'अध्यक्ष', lang)}</div></div>
-            <div class="person"><div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div><div class="line"></div><div class="nm">Amit Kumar Pandey</div><div class="desig">${pick('Secretary', 'सचिव', lang)}</div></div>
-            <div class="person"><div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div><div class="line"></div>${f.seal !== false && f.sealPosition === 'signatory' ? `<img class="lh-sign-seal" src="${sealImg}" alt="Organisation seal" />` : ''}<div class="nm">Divya Sharma</div><div class="desig">${pick('Treasurer', 'कोषाध्यक्ष', lang)}</div></div>
+            <div class="person"><div class="line"></div><div class="nm">Ramesh Pandey</div><div class="desig">${pick('President', 'अध्यक्ष', lang)}</div></div>
+            <div class="person"><div class="line"></div><div class="nm">Amit Kumar Pandey</div><div class="desig">${pick('Secretary', 'सचिव', lang)}</div></div>
+            <div class="person"><div class="line"></div>${f.seal !== false && f.sealPosition === 'signatory' ? `<img class="lh-sign-seal" src="${sealImg}" alt="Organisation seal" />` : ''}<div class="nm">Divya Sharma</div><div class="desig">${pick('Treasurer', 'कोषाध्यक्ष', lang)}</div></div>
           </div>
+          <div class="for" style="text-align:right;margin-top:3px">${pick('For and on behalf of', 'की ओर से', lang)} ${esc(ORG.en)}</div>
           ${f.seal !== false && (f.sealPosition === 'left' || !f.sealPosition) ? `<div class="orgline" style="justify-content:flex-start;margin-top:8px"><div class="org">${esc(ORG.en)}</div><img class="seal" src="${sealImg}" alt="Organisation seal" /></div>` : ''}
         </div>
       ` : `
