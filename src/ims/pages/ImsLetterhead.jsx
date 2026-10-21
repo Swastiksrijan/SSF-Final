@@ -151,7 +151,7 @@ export default function ImsLetterhead() {
       say(hindi ? 'कृपया विषय या पत्र की सामग्री भरें।' : 'Please enter a subject or letter body.', 'warn');
       return false;
     }
-    if (!outputLetter.signatoryName || !f.signatoryDesignation) {
+    if (f.signatoryMode !== 'trio' && (!outputLetter.signatoryName || !f.signatoryDesignation)) {
       say(hindi ? 'हस्ताक्षरकर्ता का नाम और पद भरें।' : 'Please provide the signatory name and designation.', 'warn');
       return false;
     }
@@ -269,7 +269,7 @@ export default function ImsLetterhead() {
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
               <h3 className="mb-3 flex items-center gap-2 text-sm font-extrabold text-[#12345A]"><FileSignature size={16} />{hindi ? 'हस्ताक्षर एवं प्राधिकरण' : 'Signatory & authorisation'}</h3>
               <div className="grid gap-3 sm:grid-cols-2">
-                <div className="sm:col-span-2"><label className={label}>{hindi ? 'हस्ताक्षर व्यवस्था' : 'Signatory arrangement'}</label><select className={cls} value={f.signatoryMode || 'single'} onChange={(e) => set('signatoryMode', e.target.value)}><option value="single">{hindi ? 'एक हस्ताक्षरकर्ता' : 'Single signatory'}</option><option value="trio">{hindi ? 'अध्यक्ष + सचिव + कोषाध्यक्ष (तीनों एक लाइन में)' : 'President + Secretary + Treasurer (three in one row)'}</option></select></div>
+                <div className="sm:col-span-2"><label className={label}>{hindi ? 'हस्ताक्षर व्यवस्था चुनें' : 'Choose signatory arrangement'}</label><div className="grid gap-2 sm:grid-cols-2"><label className={'flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition ' + ((f.signatoryMode || 'single') === 'single' ? 'border-[#12345A] bg-blue-50 ring-1 ring-[#12345A]' : 'border-slate-200 bg-white hover:border-slate-300')}><input type="radio" name="signatoryMode" value="single" checked={(f.signatoryMode || 'single') === 'single'} onChange={() => set('signatoryMode', 'single')} className="mt-1 h-4 w-4 accent-[#12345A]" /><span><span className="block text-sm font-extrabold text-[#12345A]">{hindi ? 'एक हस्ताक्षरकर्ता' : 'Single signatory'}</span><span className="mt-1 block text-xs text-slate-500">{hindi ? 'केवल एक अधिकृत व्यक्ति' : 'One authorised person'}</span></span></label><label className={'flex cursor-pointer items-start gap-3 rounded-xl border p-3 transition ' + (f.signatoryMode === 'trio' ? 'border-[#176447] bg-emerald-50 ring-1 ring-[#176447]' : 'border-slate-200 bg-white hover:border-slate-300')}><input type="radio" name="signatoryMode" value="trio" checked={f.signatoryMode === 'trio'} onChange={() => set('signatoryMode', 'trio')} className="mt-1 h-4 w-4 accent-[#176447]" /><span><span className="block text-sm font-extrabold text-[#176447]">{hindi ? 'तीनों के हस्ताक्षर — एक ही लाइन में' : 'All three sign — in one row'}</span><span className="mt-1 block text-xs text-slate-600">{hindi ? 'अध्यक्ष + सचिव + कोषाध्यक्ष' : 'President + Secretary + Treasurer'}</span></span></label></div></div>
                 {f.signatoryMode !== 'trio' && <><div><label className={label}>{hindi ? 'हस्ताक्षरकर्ता' : 'Signatory'}</label><select className={cls} value={f.signatoryName} onChange={(e) => {
                   const chosen = SIGNATORIES.find((s) => s.name === e.target.value);
                   setF((old) => ({ ...old, signatoryName: e.target.value, signatoryDesignation: chosen ? chosen.designation : old.signatoryDesignation, signature: false }));
