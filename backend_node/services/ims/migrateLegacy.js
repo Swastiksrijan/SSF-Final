@@ -199,17 +199,29 @@ function pickText(module, data) {
 }
 
 async function importDigitalOfficeRecord(rec, stats, dryRun) {
-  const module = rec.module;
-  const resource = MODULE_MAP[module];
-  if (!resource) { stats.unmapped.push(`${module}:${rec.recordId}`); return; }
+  const module = rec.module || 'unknown';
+  // Preserve unmapped rows in the IMS Documents register instead of dropping them.
+  const mappedResource = MODULE_MAP[module];
+  const resource = mappedResource || 'documents';
+  const isFallbackArchive = !mappedResource;
+  if (isFallbackArchive) stats.unmapped.push(String(module) + ':' + String(rec.recordId));
   const done = await alreadyMigrated('digital-office', rec.recordId);
   if (done) { stats.skipped++; return; }
 
   const data = rec.data || {};
   const payload = {
     ...pickText(resource, data),
+    ...(isFallbackArchive ? {
+      title: 'Legacy Register: ' + module + ' — ' + rec.recordId,
+      description: 'Preserved from SSF Digital Office register "' + module + '". Original fields are stored in data for later review.',
+    } : {}),
     status: rec.status === 'active' ? 'active' : (rec.status || 'active'),
-    data: { ...data, _legacyModule: module, _legacyRecordId: rec.recordId },
+    data: {
+      ...data,
+      _legacyModule: module,
+      _legacyRecordId: rec.recordId,
+      ...(isFallbackArchive ? { _legacyFullRecord: typeof rec.toJSON === 'function' ? rec.toJSON() : rec } : {}),
+    },
     createdBy: 'migration', createdByName: 'Legacy Import',
   };
   if (rec.recordDate) payload.meetingDate = payload.meetingDate || day(rec.recordDate);
