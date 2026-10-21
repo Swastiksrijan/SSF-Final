@@ -223,17 +223,18 @@ const BASE_CSS = `
   .lh-p { margin-top: 9px; font-size: 12.4px; text-align: justify; white-space: pre-wrap; }
   .lh-thanks { margin-top: 16px; font-size: 12.4px; }
 
-  .lh-sign { margin-top: 26px; display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; }
-  .lh-sign-col { text-align: right; margin-left: auto; }
-  .lh-sign .for { font-size: 12px; font-weight: 700; color: ${INK}; }
-  /* The scanned signature sits above the name, the way it is written on paper.
-     The dashed rule stays underneath as the signing line. */
-  .lh-sign .sig { height: 34px; width: auto; margin: 8px 2px 0 auto; display: block; }
-  .lh-sign .line { margin: 2px 0 0 auto; width: 208px; border-top: 1px dashed #B9C6D4; }
-  /* Organisation seal, bottom-left of the signing block. */
-  .lh-sign .seal { width: 88px; height: auto; opacity: .88; flex-shrink: 0; }
-  .lh-sign .nm { margin-top: 5px; font-size: 13px; font-weight: 800; color: ${NAVY}; }
-  .lh-sign .desig { font-size: 11px; color: ${INK}; }
+  .lh-sign { margin-top: 24px; padding-top: 13px; border-top: 1px solid ${HAIRLINE}; display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; break-inside: avoid; }
+  .lh-sign-left { flex: 1; min-width: 0; padding-bottom: 2px; }
+  .lh-sign-left .closing { font-size: 12px; font-weight: 700; color: ${INK}; }
+  .lh-sign-left .org { margin-top: 5px; font-size: 11px; font-weight: 800; color: ${NAVY}; }
+  .lh-sign-left .tag { margin-top: 2px; font-size: 8px; color: ${MUTED}; letter-spacing: .02em; }
+  .lh-sign-left .seal { display: block; width: 66px; height: auto; margin-top: 9px; opacity: .88; }
+  .lh-sign-col { width: 235px; flex-shrink: 0; text-align: center; }
+  .lh-sign .for { font-size: 10px; font-weight: 700; color: ${INK}; }
+  .lh-sign .sig { height: 34px; max-width: 150px; object-fit: contain; margin: 5px auto 0; display: block; }
+  .lh-sign .line { margin: 2px auto 0; width: 205px; border-top: 1px solid #9AAABD; }
+  .lh-sign .nm { margin-top: 5px; font-size: 12px; font-weight: 800; color: ${NAVY}; }
+  .lh-sign .desig { font-size: 10px; color: ${INK}; }
 
   .lh-extra { margin-top: 16px; font-size: 11px; line-height: 1.55; }
   .lh-extra .lbl { font-weight: 800; color: ${NAVY}; }
@@ -299,11 +300,15 @@ function bodyHtml(f, lang) {
     </div>` : ''}
     <div class="lh-salut" data-safe>${esc(salutation)}</div>
     ${paragraphs.map((p) => `<div class="lh-p" data-safe>${esc(p)}</div>`).join('')}
-    <div class="lh-thanks" data-safe>${esc(closing)}</div>
     <div class="lh-sign" data-safe>
-      ${f.seal === false ? '' : `<img class="seal" src="${sealImg}" alt="Organisation seal" />`}
+      <div class="lh-sign-left">
+        <div class="closing">${esc(closing)}</div>
+        <div class="org">${esc(ORG.en)}</div>
+        <div class="tag hi">${esc(ORG.taglineHi)} · ${esc(ORG.taglineEn)}</div>
+        ${f.seal === false ? '' : `<img class="seal" src="${sealImg}" alt="Organisation seal" />`}
+      </div>
       <div class="lh-sign-col">
-        <div class="for">${pick('For', 'हेतु', lang)} ${esc(ORG.en)}</div>
+        <div class="for">${pick('For and on behalf of', 'की ओर से', lang)}<br/>${esc(ORG.en)}</div>
         ${hasSignatureScan(f) ? `<img class="sig" src="${signatureImg}" alt="Signature" data-signature-img />` : ''}
         <div class="line"></div>
         <div class="nm">${esc(f.signatoryName || '')}</div>
