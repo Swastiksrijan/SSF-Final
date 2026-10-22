@@ -174,27 +174,42 @@ export default function ImsLayout({ children, active }) {
           className={`${open ? 'block' : 'hidden'} fixed bottom-0 left-0 z-20 w-72 overflow-y-auto border-r border-slate-200 bg-white pb-24 lg:sticky lg:block lg:h-[calc(100vh-var(--ims-chrome-h))]`}
           style={{ top: 'var(--ims-chrome-h)' }}
         >
-          <nav className="space-y-1 p-3">
-            {SIDEBAR.map((item) => {
-              const isActive = activeKey === item.key;
-              const both = tBoth(item.key);
-              return (
-                <button key={item.key}
-                  onClick={() => (setOpen(false), navigate({ to: item.path }))}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-left transition-all duration-150
-                    ${isActive ? 'bg-gradient-to-r from-[#12345A] to-[#12345A] text-white shadow-[0_8px_20px_-10px_rgba(18,52,90,0.7)]' : 'text-slate-600 hover:bg-slate-100'}`}>
-                  <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg transition-colors ${isActive ? 'bg-white/15' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
-                    <Icon name={item.icon} size={16} className={isActive ? 'text-[#F7A814]' : 'text-slate-500'} />
-                  </span>
-                  <span className="min-w-0 flex-1 leading-tight">
-                    <span className={`block truncate text-sm font-semibold ${isActive ? 'text-white' : 'text-[#12345A]'}`}>{both[0]}</span>
-                    <span className={`block truncate text-[11px] font-medium ${isActive ? 'text-[#FAF9F5]/90' : 'text-[#176447]'}`}>{both[1]}</span>
-                  </span>
-                  {isActive && <Icons.ChevronRight size={15} className="shrink-0 text-white/60" />}
-                </button>
-              );
-            })}
+          <nav className="space-y-5 p-3">
+            {[
+              { title: 'Quick Access', hi: 'त्वरित पहुँच', keys: ['main_dashboard', 'global_search', 'notifications', 'social_publisher', 'volunteer_network'] },
+              { title: 'Organisation & Operations', hi: 'संस्था एवं संचालन', keys: ['organisation', 'governance', 'programmes', 'finance', 'resources'] },
+              { title: 'Control & Records', hi: 'नियंत्रण एवं अभिलेख', keys: ['compliance', 'records', 'admin'] },
+            ].map((group) => (
+              <section key={group.title} aria-label={lang === 'en' ? group.title : group.hi}>
+                <h2 className="mb-2 px-3 text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">
+                  <span>{lang === 'en' ? group.title : group.hi}</span>
+                </h2>
+                <div className="space-y-1">
+                  {group.keys.map((key) => {
+                    const item = SIDEBAR.find((entry) => entry.key === key);
+                    if (!item) return null;
+                    const isActive = activeKey === item.key;
+                    const both = tBoth(item.key);
+                    return (
+                      <button key={item.key}
+                        onClick={() => (setOpen(false), navigate({ to: item.path }))}
+                        aria-current={isActive ? 'page' : undefined}
+                        className={`group flex min-h-[54px] w-full items-center gap-3 rounded-xl border px-3 py-2 text-left transition-all duration-150
+                          ${isActive ? 'border-[#12345A] bg-[#12345A] text-white shadow-[0_8px_20px_-10px_rgba(18,52,90,0.7)]' : 'border-transparent text-slate-600 hover:border-slate-200 hover:bg-slate-50'}`}>
+                        <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-lg transition-colors ${isActive ? 'bg-white/15' : 'bg-slate-100 group-hover:bg-slate-200'}`}>
+                          <Icon name={item.icon} size={17} className={isActive ? 'text-[#F7A814]' : 'text-slate-500'} />
+                        </span>
+                        <span className="min-w-0 flex-1 leading-tight">
+                          <span className={`block truncate text-[13px] font-semibold ${isActive ? 'text-white' : 'text-[#12345A]'}`}>{both[0]}</span>
+                          <span className={`mt-0.5 block truncate text-[11px] font-medium ${isActive ? 'text-white/80' : 'text-[#176447]'}`}>{both[1]}</span>
+                        </span>
+                        {isActive && <Icons.ChevronRight size={15} className="shrink-0 text-white/70" />}
+                      </button>
+                    );
+                  })}
+                </div>
+              </section>
+            ))}
           </nav>
         </aside>
 
