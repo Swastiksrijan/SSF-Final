@@ -226,7 +226,7 @@ export default function SectionNav({ active }) {
       {dropdown && menuOpen && (
         <div className="absolute left-0 right-0 top-full z-40 border-b border-slate-200 bg-white shadow-[0_24px_48px_-24px_rgba(18,52,90,0.55)]">
           <div className="mx-auto max-w-[1600px] px-4 py-4 lg:px-8">
-            <SectionModuleDirectory sectionId={sectionId} activeKey={activeKey} maxHeight="60vh" />
+            <SectionModuleDirectory sectionId={sectionId} activeKey={activeKey} maxHeight="52vh" collapsible defaultOpenFirstGroup={false} />
           </div>
         </div>
       )}
@@ -241,7 +241,7 @@ export default function SectionNav({ active }) {
 // The full module list of a section as a searchable, grouped card grid. Shared
 // by the header dropdown and by the section dashboard (Finance), so a wide
 // section's modules always live in one place the admin can open and click.
-export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight = null, collapsible = false }) {
+export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight = null, collapsible = false, defaultOpenFirstGroup = true }) {
   const navigate = useNavigate();
   const { lang } = useLang();
   const hi = lang === 'hi';
@@ -322,7 +322,7 @@ export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight 
             return <div key={g.labelKey}>{heading}{cards}</div>;
           }
           return (
-            <details key={g.labelKey} defaultOpen={groupIndex === 0} open={needle ? true : undefined} className="group/finance rounded-xl border border-slate-200 bg-white px-3">
+            <details key={g.labelKey} defaultOpen={defaultOpenFirstGroup && groupIndex === 0} open={needle ? true : undefined} className="group/finance rounded-xl border border-slate-200 bg-white px-3">
               <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
                 {heading}
               </summary>
