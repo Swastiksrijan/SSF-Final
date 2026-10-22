@@ -345,20 +345,20 @@ function bodyHtml(f, lang) {
         <div style="width:100%">
           <div class="lh-sign-trio">
             <div class="person"><div class="line"></div><div class="nm">Ramesh Pandey</div><div class="desig">${pick('President', 'अध्यक्ष', lang)}</div></div>
-            <div class="person"><img class="sig" src="${signatureImg}" alt="Amit Kumar Pandey signature" /><div class="line"></div><div class="nm">Amit Kumar Pandey</div><div class="desig">${pick('Secretary', 'सचिव', lang)}</div></div>
+            <div class="person"><img class="sig" src="${signatureImg}" alt="Amit Kumar Pandey signature" onerror="this.style.display='none'" /><div class="line"></div><div class="nm">Amit Kumar Pandey</div><div class="desig">${pick('Secretary', 'सचिव', lang)}</div></div>
             <div class="person"><div class="line"></div><div class="nm">Divya Sharma</div><div class="desig">${pick('Treasurer', 'कोषाध्यक्ष', lang)}</div></div>
           </div>
-          ${f.seal !== false ? `<img class="lh-sign-trio-seal" src="${sealImg}" alt="Organisation seal" />` : ''}
+          ${f.seal !== false ? `<img class="lh-sign-trio-seal" src="${sealImg}" alt="Organisation seal" onerror="this.style.display='none'" />` : ''}
         </div>
       ` : `
         <div class="lh-sign-left">
-          ${f.seal !== false && (f.sealPosition === 'left' || !f.sealPosition) ? `<div class="orgline"><div class="org">${esc(ORG.en)}</div><img class="seal" src="${sealImg}" alt="Organisation seal" /></div>` : `<div class="org">${esc(ORG.en)}</div>`}
+          ${f.seal !== false && (f.sealPosition === 'left' || !f.sealPosition) ? `<div class="orgline"><div class="org">${esc(ORG.en)}</div><img class="seal" src="${sealImg}" alt="Organisation seal" onerror="this.style.display='none'" /></div>` : `<div class="org">${esc(ORG.en)}</div>`}
           <div class="tag hi">${esc(ORG.taglineHi)} · ${esc(ORG.taglineEn)}</div>
         </div>
         <div class="lh-sign-col">
-          ${hasSignatureScan(f) ? `<img class="sig" src="${signatureImg}" alt="Signature" data-signature-img />` : ''}
+          ${hasSignatureScan(f) ? `<img class="sig" src="${signatureImg}" alt="Signature" data-signature-img onerror="this.style.display='none'" />` : ''}
           <div class="line"></div>
-          ${f.seal !== false && f.sealPosition === 'signatory' ? `<img class="lh-sign-seal" src="${sealImg}" alt="Organisation seal" />` : ''}
+          ${f.seal !== false && f.sealPosition === 'signatory' ? `<img class="lh-sign-seal" src="${sealImg}" alt="Organisation seal" onerror="this.style.display='none'" />` : ''}
           <div class="nm">${esc(f.signatoryName || '')}</div>
           <div class="desig">${esc(f.signatoryDesignation || pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang))}</div>
         </div>
