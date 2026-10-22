@@ -126,7 +126,7 @@ export default function SectionNav({ active }) {
   return (
     <div ref={menuRef} className="relative z-30">
       <div className="border-b border-slate-200 bg-white/95 shadow-[0_8px_18px_-14px_rgba(18,52,90,0.4)] backdrop-blur">
-        <div className="mx-auto flex max-w-[1600px] items-center gap-3 px-4 lg:px-8">
+        <div className="mx-auto flex min-w-0 max-w-[1600px] items-center gap-2 overflow-hidden px-3 sm:gap-3 sm:px-4 lg:px-8">
           <button
             type="button"
             onClick={() => navigate({ to: dashboardPath(sectionId) })}
@@ -138,7 +138,7 @@ export default function SectionNav({ active }) {
             </span>
             <span className="leading-tight">
               <span className="block text-xs font-bold text-[#12345A]">{secEn}</span>
-              <span className="block text-[10px] font-medium text-[#176447]">{secHi}</span>
+              <span className="hidden text-[10px] font-medium text-[#176447] sm:block">{secHi}</span>
             </span>
           </button>
 
@@ -151,7 +151,7 @@ export default function SectionNav({ active }) {
             className={tabClass(isDashboard)}
           >
             <Icon name="LayoutGrid" />
-            {hi ? 'अवलोकन' : 'Overview'}
+            <span className="hidden sm:inline">{hi ? 'अवलोकन' : 'Overview'}</span>
           </button>
 
           {dropdown ? (
@@ -179,7 +179,7 @@ export default function SectionNav({ active }) {
                 className={`flex shrink-0 items-center gap-1.5 rounded-lg border px-2.5 py-1.5 text-xs font-semibold transition-colors ${menuOpen ? 'border-[#12345A] bg-[#12345A] text-white' : 'border-slate-300 bg-white text-slate-700 hover:border-[#12345A] hover:text-[#12345A]'}`}
               >
                 <Icon name="LayoutGrid" />
-                {hi ? 'मॉड्यूल' : 'Modules'}
+                <span className="hidden sm:inline">{hi ? 'मॉड्यूल' : 'Modules'}</span>
                 <Icons.ChevronDown size={14} className={`transition-transform ${menuOpen ? 'rotate-180' : ''}`} />
               </button>
             </>
