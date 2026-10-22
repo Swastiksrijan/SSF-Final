@@ -41,13 +41,6 @@ export default function ImsFinanceDashboard() {
 
       {err && <p className="mb-4 rounded-lg bg-rose-50 px-3 py-2 text-sm font-semibold text-rose-700">{err}</p>}
 
-      {/* Every finance module in one place, so a treasurer can see the whole
-          tree and click straight into it instead of hunting through the strip. */}
-      <Card className="mb-5 p-5">
-        <h2 className="mb-3 text-sm font-black uppercase tracking-wide text-slate-500">{t('all_modules')}</h2>
-        <SectionModuleDirectory sectionId="finance" />
-      </Card>
-
       <div className="mb-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
         <Kpi icon="TrendingUp" label={t('income')} value={inr(k.income)} tone="green" />
         <Kpi icon="TrendingDown" label={t('expenses')} value={inr(k.expense)} tone="red" />
@@ -72,6 +65,18 @@ export default function ImsFinanceDashboard() {
           <Button variant="hero" icon="ReceiptText" onClick={() => navigate({ to: '/ims/finance/receipts-payments' })}>{t('receipts_payments')}</Button>
           <Button variant="ghost" icon="BookOpen" onClick={() => navigate({ to: '/ims/finance/ledger' })}>{t('ledger_journal')}</Button>
         </div>
+      </Card>
+
+      {/* Compact module directory: groups can be expanded when needed. */}
+      <Card className="mb-5 p-4 sm:p-5">
+        <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <h2 className="text-sm font-black uppercase tracking-wide text-slate-600">{t('all_modules')}</h2>
+            <p className="mt-1 text-xs text-slate-400">Choose a category to open only the tools you need.</p>
+          </div>
+          <span className="rounded-full bg-[#12345A]/5 px-3 py-1 text-[11px] font-bold text-[#12345A]">8 categories · all modules retained</span>
+        </div>
+        <SectionModuleDirectory sectionId="finance" collapsible />
       </Card>
 
       <div className="grid gap-5 lg:grid-cols-3">
