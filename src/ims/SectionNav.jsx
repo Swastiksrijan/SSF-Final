@@ -241,7 +241,7 @@ export default function SectionNav({ active }) {
 // The full module list of a section as a searchable, grouped card grid. Shared
 // by the header dropdown and by the section dashboard (Finance), so a wide
 // section's modules always live in one place the admin can open and click.
-export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight = null }) {
+export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight = null, collapsible = false }) {
   const navigate = useNavigate();
   const { lang } = useLang();
   const hi = lang === 'hi';
@@ -276,46 +276,58 @@ export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight 
         </button>
       </div>
       <div className="space-y-4 overflow-y-auto pr-1" style={maxHeight ? { maxHeight } : undefined}>
-        {groups.map((g) => {
+        {groups.map((g, groupIndex) => {
           const items = needle ? g.items.filter(matches) : g.items;
           if (items.length === 0) return null;
-          return (
-            <div key={g.labelKey}>
-              <h3 className="mb-2 flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-400">
-                <span className="grid h-5 w-5 place-items-center rounded-md bg-[#12345A]/5 text-[#176447]"><Icons.Layers size={12} /></span>
-                {hi ? tBoth(g.labelKey)[1] : tBoth(g.labelKey)[0]}
-                <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">{items.length}</span>
-              </h3>
-              <div className="grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-                {items.map((item) => {
-                  const on = item.key === activeKey;
-                  const [en, hiLabel] = tBoth(item.key);
-                  const I = Icons[item.icon] || Icons.Folder;
-                  if (item.planned) {
-                    return (
-                      <div key={item.key} title={hi ? 'जल्द आ रहा है' : 'Coming soon'}
-                        className="flex cursor-not-allowed items-center gap-2.5 rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-3 py-2 text-left">
-                        <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-slate-200 text-slate-400"><I size={15} /></span>
-                        <span className="min-w-0">
-                          <span className="block truncate text-xs font-semibold text-slate-400">{en}</span>
-                          <span className="block truncate text-[10px] text-slate-400">{hiLabel}</span>
-                        </span>
-                      </div>
-                    );
-                  }
+          const heading = (
+            <h3 className={`flex items-center gap-2 text-[11px] font-bold uppercase tracking-wider text-slate-500 ${collapsible ? 'mb-0 min-h-10' : 'mb-2 text-slate-400'}`}>
+              <span className="grid h-6 w-6 place-items-center rounded-lg bg-[#12345A]/5 text-[#176447]"><Icons.Layers size={13} /></span>
+              <span className="min-w-0 flex-1">{hi ? tBoth(g.labelKey)[1] : tBoth(g.labelKey)[0]}</span>
+              <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-bold text-slate-500">{items.length}</span>
+              {collapsible && <Icons.ChevronDown size={15} className="text-slate-400" />}
+            </h3>
+          );
+          const cards = (
+            <div className={`grid grid-cols-1 gap-2 sm:grid-cols-2 ${collapsible ? 'lg:grid-cols-3 xl:grid-cols-4' : 'lg:grid-cols-4 xl:grid-cols-5'}`}>
+              {items.map((item) => {
+                const on = item.key === activeKey;
+                const [en, hiLabel] = tBoth(item.key);
+                const I = Icons[item.icon] || Icons.Folder;
+                if (item.planned) {
                   return (
-                    <button key={item.key} type="button" onClick={() => go(item)} aria-current={on ? 'page' : undefined}
-                      className={`group flex items-center gap-2.5 rounded-xl border px-3 py-2 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_10px_26px_-14px_rgba(18,52,90,0.35)] ${on ? 'border-[#12345A]/40 bg-white ring-1 ring-[#12345A]/15' : 'border-slate-200 bg-white hover:border-[#12345A]/40'}`}>
-                      <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg shadow-sm ring-1 ring-black/5 ${on ? 'bg-gradient-to-br from-[#176447] to-[#176447] text-white' : 'bg-gradient-to-br from-[#12345A] to-[#12345A] text-white'}`}><I size={15} /></span>
+                    <div key={item.key} title={hi ? 'जल्द आ रहा है' : 'Coming soon'}
+                      className="flex cursor-not-allowed items-center gap-2.5 rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-3 py-2 text-left">
+                      <span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-slate-200 text-slate-400"><I size={15} /></span>
                       <span className="min-w-0">
-                        <span className={`block truncate text-xs font-semibold ${on ? 'text-[#176447]' : 'text-slate-800 group-hover:text-[#12345A]'}`}>{en}</span>
+                        <span className="block truncate text-xs font-semibold text-slate-400">{en}</span>
                         <span className="block truncate text-[10px] text-slate-400">{hiLabel}</span>
                       </span>
-                    </button>
+                    </div>
                   );
-                })}
-              </div>
+                }
+                return (
+                  <button key={item.key} type="button" onClick={() => go(item)} aria-current={on ? 'page' : undefined}
+                    className={`group flex items-center gap-2.5 rounded-xl border px-3 py-2 text-left transition-all duration-150 hover:-translate-y-0.5 hover:shadow-[0_10px_26px_-14px_rgba(18,52,90,0.35)] ${on ? 'border-[#12345A]/40 bg-white ring-1 ring-[#12345A]/15' : 'border-slate-200 bg-white hover:border-[#12345A]/40'}`}>
+                    <span className={`grid h-8 w-8 shrink-0 place-items-center rounded-lg shadow-sm ring-1 ring-black/5 ${on ? 'bg-gradient-to-br from-[#176447] to-[#176447] text-white' : 'bg-gradient-to-br from-[#12345A] to-[#12345A] text-white'}`}><I size={15} /></span>
+                    <span className="min-w-0">
+                      <span className={`block truncate text-xs font-semibold ${on ? 'text-[#176447]' : 'text-slate-800 group-hover:text-[#12345A]'}`}>{en}</span>
+                      <span className="block truncate text-[10px] text-slate-400">{hiLabel}</span>
+                    </span>
+                  </button>
+                );
+              })}
             </div>
+          );
+          if (!collapsible) {
+            return <div key={g.labelKey}>{heading}{cards}</div>;
+          }
+          return (
+            <details key={g.labelKey} open={needle ? true : undefined} className="group/finance rounded-xl border border-slate-200 bg-white px-3">
+              <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
+                {heading}
+              </summary>
+              <div className="pb-3">{cards}</div>
+            </details>
           );
         })}
         {!anyMatch && <p className="py-6 text-center text-sm text-slate-400">{hi ? 'कोई मॉड्यूल नहीं मिला' : 'No module matches'}</p>}
