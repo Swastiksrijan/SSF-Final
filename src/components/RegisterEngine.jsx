@@ -3,9 +3,11 @@
 // One bilingual, audit-ready pattern for every register so the MIS never has to
 // change shape: bilingual headers, Add / Edit / View / Archive / Restore, search,
 // FY filter, CSV export and PDF print. Each register is just a `def` object.
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import jsPDF from "jspdf";
 import logoImg from "../assets/new-logo.png";
+import { ENDPOINTS } from "../config/api";
+import { BANK_ACCOUNTS } from "../data/bankStatements";
 import { FaPlus, FaSearch, FaEdit, FaEye, FaArchive, FaUndo, FaFileCsv, FaPrint, FaSync, FaChevronDown } from "react-icons/fa";
 
 export const num = (v) => { const n = parseFloat(String(v == null ? "" : v).replace(/[^0-9.\-]/g, "")); return isFinite(n) ? n : 0; };
@@ -60,6 +62,49 @@ function RecordForm({ def, initial, onSubmit, onCancel, busy }) {
     else seed[f.k] = "";
   });
   const [form, setForm] = useState(seed);
+  const [linkedOptions, setLinkedOptions] = useState({});
+  useEffect(() => {
+    let cancelled = false;
+    const loadLinkedOptions = async () => {
+      const sources = Array.from(new Set(def.fields.map((f) => f.source).filter(Boolean)));
+      const next = {};
+      for (const source of sources) {
+        if (source === "bankAccounts") {
+          next[source] = Object.values(BANK_ACCOUNTS).map((a) => ({
+            value: `${a.bank} • ${a.branch} • A/c ending ${String(a.accountNumber || "").slice(-4)} • IFSC ${a.ifsc}`,
+            label: `${a.bank} • ${a.branch} • A/c ending ${String(a.accountNumber || "").slice(-4)} • IFSC ${a.ifsc}`
+          }));
+          continue;
+        }
+        const module = source === "persons" ? "persons" : source === "resolutions" ? "resolutions" : "";
+        if (!module) continue;
+        try {
+          const token = localStorage.getItem("ssf_admin_token") || "";
+          const response = await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS + "?module=" + encodeURIComponent(module), {
+            headers: { Authorization: "Bearer " + token }
+          });
+          if (!response.ok) continue;
+          const body = await response.json();
+          const records = Array.isArray(body) ? body : (Array.isArray(body?.records) ? body.records : []);
+          next[source] = records.filter((r) => r.status !== "deleted").map((r) => {
+            const d = r.data || {};
+            if (source === "persons") {
+              const name = d.fullName || d.name || d.fullNameHi || r.recordType || r.recordId;
+              const designation = d.designation || d.position || d.role || "";
+              return { value: name, label: designation ? `${name} — ${designation}` : name };
+            }
+            const number = d.resolutionNo || d.resolutionNumber || r.recordId || "Resolution";
+            const title = d.title || d.body || d.resolutionText || "";
+            const label = `${number}${title ? " — " + String(title).replace(/\\s+/g, " ").slice(0, 110) : ""}`;
+            return { value: label, label };
+          }).filter((o) => o.value);
+        } catch { /* Keep the register usable if linked records cannot be loaded. */ }
+      }
+      if (!cancelled) setLinkedOptions(next);
+    };
+    loadLinkedOptions();
+    return () => { cancelled = true; };
+  }, [def]);
   const set = (k, v) => setForm((x) => ({ ...x, [k]: v }));
   const submit = (e) => { e.preventDefault(); onSubmit(form); };
   return (
@@ -71,7 +116,14 @@ function RecordForm({ def, initial, onSubmit, onCancel, busy }) {
           </label>
           {f.t === "select" ? (
             <select value={form[f.k] || ""} onChange={(e) => set(f.k, e.target.value)} className={inputCls} disabled={f.ro}>
-              {(f.o || []).map((o) => <option key={o} value={o}>{o}</option>)}
+              {f.source && <option value="">Select / चुनें…</option>}
+              {(f.source ? (linkedOptions[f.source] || []) : (f.o || [])).map((o) => {
+                const value = typeof o === "string" ? o : o.value;
+                const label = typeof o === "string" ? o : o.label;
+                return <option key={value} value={value}>{label}</option>;
+              })}
+              {f.source && form[f.k] && !(linkedOptions[f.source] || []).some((o) => (typeof o === "string" ? o : o.value) === form[f.k]) &&
+                <option value={form[f.k]}>{form[f.k]}</option>}
             </select>
           ) : f.t === "textarea" ? (
             <textarea value={form[f.k] || ""} onChange={(e) => set(f.k, e.target.value)} className={inputCls} rows={2} disabled={f.ro} />
