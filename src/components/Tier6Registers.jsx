@@ -483,14 +483,14 @@ export const SIGNATORY_AUTHORITY_DEF = {
   intro: "Bank account par kaun sign karega — board resolution ref ke saath.",
   dateKey: "validFrom", amountKey: null,
   fields: [
-    { k: "name", l: "Name", lHi: "नाम", t: "text", req: true },
-    { k: "designation", l: "Designation", lHi: "पद", t: "text" },
-    { k: "bankAccount", l: "Bank Account", lHi: "बैंक खाता", t: "text" },
+    { k: "name", l: "Name", lHi: "नाम", t: "select", source: "persons", req: true },
+    { k: "designation", l: "Designation", lHi: "पद", t: "select", o: ["Founder & President", "President", "Vice President", "Secretary", "Joint Secretary", "Treasurer", "Governing Body Member", "Authorised Signatory", "Other"] },
+    { k: "bankAccount", l: "Bank Account", lHi: "बैंक खाता", t: "select", source: "bankAccounts", req: true },
     { k: "authorityType", l: "Authority", lHi: "अधिकार", t: "select", o: ["Single Signatory", "Joint Signatory", "Online / Net Banking"] },
-    { k: "resolutionRef", l: "Board Resolution Ref", lHi: "बोर्ड संकल्प संदर्भ", t: "text" },
-    { k: "validFrom", l: "Valid From", lHi: "मान्य प्रारंभ", t: "date" },
+    { k: "resolutionRef", l: "Board Resolution Ref", lHi: "बोर्ड संकल्प संदर्भ", t: "select", source: "resolutions", req: true },
+    { k: "validFrom", l: "Valid From", lHi: "मान्य प्रारंभ", t: "date", req: true },
     { k: "validTo", l: "Valid To", lHi: "मान्य तक", t: "date" },
-    { k: "status", l: "Status", lHi: "स्थिति", t: "select", o: ["Active", "Revoked"] },
+    { k: "status", l: "Status", lHi: "स्थिति", t: "select", o: ["Active", "Revoked"], def: "Active" },
     { k: "remarks", l: "Remarks", lHi: "टिप्पणी", t: "text", full: true }
   ]
 };
