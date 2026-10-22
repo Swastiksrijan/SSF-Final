@@ -107,16 +107,11 @@ function RecordForm({ def, initial, onSubmit, onCancel, busy }) {
             return { value: label, label };
           }).filter((o) => o.value);
           if (source === "bankAccounts") {
-            const merged = [...(next[source] || []), ...(next[source] || []), ...(records.filter((r) => r.status !== "deleted").map((r) => {
-              const d = r.data || {};
-              const bank = d.bankName || d.bank || d.name || "Bank";
-              const branch = d.branch || "";
-              const account = String(d.accountNo || d.accountNumber || "");
-              const masked = account ? `A/c ending ${account.slice(-4)}` : "Account number not entered";
-              const ifsc = d.ifsc ? ` • IFSC ${d.ifsc}` : "";
-              const label = [bank, branch, masked].filter(Boolean).join(" • ") + ifsc;
+            const staticBankOptions = Object.values(BANK_ACCOUNTS).map((a) => {
+              const label = `${a.bank} • ${a.branch} • A/c ending ${String(a.accountNumber || "").slice(-4)} • IFSC ${a.ifsc}`;
               return { value: label, label };
-            }))];
+            });
+            const merged = [...staticBankOptions, ...(next[source] || [])];
             next[source] = Array.from(new Map(merged.map((o) => [o.value, o])).values());
           }
           if (source === "persons") {
