@@ -153,7 +153,7 @@ const BASE_CSS = `
   /* The tri-band is the Foundation's institutional mark: navy (the
      organisation), green (its service work) and a narrow gold rule (the
      accent). It reads as one deliberate device rather than decoration. */
-  .lh-accent { height: 2.6px; background: linear-gradient(90deg, ${NAVY} 0 62%, ${TEAL} 62% 88%, ${GOLD} 88% 100%); }
+  .lh-accent { height: 3.4px; background: linear-gradient(90deg, ${NAVY} 0 58%, ${TEAL} 58% 86%, ${GOLD} 86% 100%); }
 
   .lh-head-top { display: flex; align-items: center; gap: 8px; padding: 13px 0 12px; min-width: 0; }
 
@@ -184,8 +184,10 @@ const BASE_CSS = `
   .lh-tag .en { color: ${MUTED}; font-weight: 600; }
 
   .lh-ref {
-    flex: 0 0 116px; width: 116px; min-width: 0; padding-left: 8px;
-    border-left: 1px solid ${HAIRLINE}; text-align: right;
+    flex: 0 0 122px; width: 122px; min-width: 0; padding: 7px 7px 5px 9px;
+    border-left: 2px solid ${GOLD}; border-radius: 0 5px 5px 0;
+    background: linear-gradient(135deg, #F7F9FC 0%, #EEF3F8 100%);
+    text-align: right;
   }
   .lh-ref .cap { font-size: 6.4px; font-weight: 800; letter-spacing: .06em; line-height: 1.35; text-transform: uppercase; color: ${MUTED}; overflow-wrap: anywhere; }
   .lh-ref .row { margin-top: 8px; }
@@ -217,7 +219,7 @@ const BASE_CSS = `
   .lh-to { font-size: 12px; line-height: 1.6; }
   .lh-to .lbl { font-weight: 800; color: ${NAVY}; }
 
-  .lh-subject { margin-top: 15px; padding: 8px 12px; background: #F5F8FB; border-left: 3px solid ${NAVY}; border-top: 1px solid ${SOFT_BLUE}; border-right: 1px solid ${SOFT_BLUE}; border-bottom: 1px solid ${SOFT_BLUE}; }
+  .lh-subject { margin-top: 15px; padding: 9px 13px; background: linear-gradient(100deg, #F1F5FA 0%, #FBFCFE 100%); border-left: 3px solid ${NAVY}; border-top: 1px solid ${SOFT_BLUE}; border-right: 1px solid ${SOFT_BLUE}; border-bottom: 1px solid ${SOFT_BLUE}; border-radius: 0 4px 4px 0; }
   .lh-subject .lbl { font-size: 8.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: ${TEAL}; }
   .lh-subject .txt { margin-top: 3px; font-size: 13px; font-weight: 700; color: ${NAVY}; line-height: 1.45; }
 
@@ -228,7 +230,7 @@ const BASE_CSS = `
   /* Keep the signature block at the end of the letter, above the fixed registered-office footer.
      On short letters it settles near the bottom of the writing area; on long letters it follows
      the final paragraph naturally. Enclosures/CC are placed before this block in bodyHtml. */
-  .lh-sign { margin-top: auto; padding-top: 7px; border-top: 1px solid ${HAIRLINE}; display: flex; flex-direction: column; break-inside: avoid; }
+  .lh-sign { margin-top: auto; padding: 9px 10px 2px; border-top: 1.5px solid ${NAVY}; border-bottom: 1px solid ${SOFT_BLUE}; background: linear-gradient(180deg, rgba(234,240,246,.34) 0%, rgba(255,255,255,0) 100%); display: flex; flex-direction: column; break-inside: avoid; }
   /* The heading spans the block, above the signatories. It must not be a child
      of the row: the row's space-between would treat it as a third item and
      collapse .lh-sign-left to zero width. */
@@ -260,8 +262,8 @@ const BASE_CSS = `
 
   /* ---- footer (live HTML preview only; the PDF stamps its own) --------- */
   .lh-foot { margin-top: 12px; padding: 0 ${PAD_PX}px; }
-  .lh-foot .rule { position: relative; height: 1px; background: ${HAIRLINE}; }
-  .lh-foot .rule::before { content: ''; position: absolute; left: 0; top: 0; width: 28px; height: 1px; background: ${NAVY}; }
+  .lh-foot .rule { position: relative; height: 1.2px; background: linear-gradient(90deg, ${NAVY} 0 18%, ${HAIRLINE} 18% 88%, ${GOLD} 88% 100%); }
+  .lh-foot .rule::before { content: ''; position: absolute; left: 0; top: -1px; width: 28px; height: 2px; background: ${TEAL}; }
   .lh-foot .grid { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; padding-top: 4px; font-size: 7.4px; color: ${MUTED}; line-height: 1.5; }
   .lh-foot .grid .left { flex: 1; min-width: 0; overflow-wrap: anywhere; }
   .lh-foot .grid .right { width: 34%; max-width: 220px; min-width: 0; text-align: right; flex-shrink: 0; overflow-wrap: anywhere; word-break: break-word; }
