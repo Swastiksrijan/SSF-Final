@@ -74,9 +74,8 @@ function RecordForm({ def, initial, onSubmit, onCancel, busy }) {
             value: `${a.bank} • ${a.branch} • A/c ending ${String(a.accountNumber || "").slice(-4)} • IFSC ${a.ifsc}`,
             label: `${a.bank} • ${a.branch} • A/c ending ${String(a.accountNumber || "").slice(-4)} • IFSC ${a.ifsc}`
           }));
-          continue;
         }
-        const module = source === "persons" ? "persons" : source === "resolutions" ? "resolutions" : "";
+        const module = source === "persons" ? "persons" : source === "resolutions" ? "resolutions" : source === "bankAccounts" ? "bankAccounts" : "";
         if (!module) continue;
         try {
           const token = localStorage.getItem("ssf_admin_token") || "";
@@ -93,11 +92,33 @@ function RecordForm({ def, initial, onSubmit, onCancel, busy }) {
               const designation = d.designation || d.position || d.role || "";
               return { value: name, label: designation ? `${name} — ${designation}` : name };
             }
+            if (source === "bankAccounts") {
+              const bank = d.bankName || d.bank || d.name || "Bank";
+              const branch = d.branch || "";
+              const account = String(d.accountNo || d.accountNumber || "");
+              const masked = account ? `A/c ending ${account.slice(-4)}` : "Account number not entered";
+              const ifsc = d.ifsc ? ` • IFSC ${d.ifsc}` : "";
+              const label = [bank, branch, masked].filter(Boolean).join(" • ") + ifsc;
+              return { value: label, label };
+            }
             const number = d.resolutionNo || d.resolutionNumber || r.recordId || "Resolution";
             const title = d.title || d.body || d.resolutionText || "";
             const label = `${number}${title ? " — " + String(title).replace(/\s+/g, " ").slice(0, 110) : ""}`;
             return { value: label, label };
           }).filter((o) => o.value);
+          if (source === "bankAccounts") {
+            const merged = [...(next[source] || []), ...(next[source] || []), ...(records.filter((r) => r.status !== "deleted").map((r) => {
+              const d = r.data || {};
+              const bank = d.bankName || d.bank || d.name || "Bank";
+              const branch = d.branch || "";
+              const account = String(d.accountNo || d.accountNumber || "");
+              const masked = account ? `A/c ending ${account.slice(-4)}` : "Account number not entered";
+              const ifsc = d.ifsc ? ` • IFSC ${d.ifsc}` : "";
+              const label = [bank, branch, masked].filter(Boolean).join(" • ") + ifsc;
+              return { value: label, label };
+            }))];
+            next[source] = Array.from(new Map(merged.map((o) => [o.value, o])).values());
+          }
           if (source === "persons") {
             const knownOfficeBearers = [
               "Ramesh Pandey", "Preeti Shukla", "Amit Kumar Pandey", "Divya Sharma",
