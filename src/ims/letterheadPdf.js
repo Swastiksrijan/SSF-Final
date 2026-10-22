@@ -51,8 +51,8 @@ function hasSignatureScan(f) {
 // (--ssf-navy, --ssf-green, --ssf-ivory, --ssf-soft-blue, --ssf-charcoal,
 // --ssf-gold), reused verbatim so the stationery matches the website.
 const NAVY = '#12345A';
-const TEAL = '#176447';
-const GOLD = '#B89B62';
+const TEAL = '#2A4A73';   // secondary navy (was green) — keeps the palette navy + gold
+const GOLD = '#C08A1E';
 const INK = '#26343D';
 const MUTED = '#5B6B7A';
 const HAIRLINE = '#C7D2DE';
@@ -153,7 +153,7 @@ const BASE_CSS = `
   /* The tri-band is the Foundation's institutional mark: navy (the
      organisation), green (its service work) and a narrow gold rule (the
      accent). It reads as one deliberate device rather than decoration. */
-  .lh-accent { height: 3.4px; background: linear-gradient(90deg, ${NAVY} 0 58%, ${TEAL} 58% 86%, ${GOLD} 86% 100%); }
+  .lh-accent { height: 3.4px; background: linear-gradient(90deg, ${NAVY} 0 84%, ${GOLD} 84% 100%); }
 
   .lh-head-top { display: flex; align-items: center; gap: 8px; padding: 13px 0 12px; min-width: 0; }
 
@@ -169,7 +169,7 @@ const BASE_CSS = `
   }
   .lh-seal-inner {
     width: 100%; height: 100%; display: grid; place-items: center;
-    border: 1px solid rgba(247,168,20,.7); border-radius: 50%;
+    border: 1px solid rgba(192,138,30,.75); border-radius: 50%;
   }
   .lh-logo { width: 52px; height: auto; display: block; }
 
@@ -186,7 +186,7 @@ const BASE_CSS = `
   .lh-ref {
     flex: 0 0 122px; width: 122px; min-width: 0; padding: 7px 7px 5px 9px;
     border-left: 2px solid ${GOLD}; border-radius: 0 5px 5px 0;
-    background: linear-gradient(135deg, #F7F9FC 0%, #EEF3F8 100%);
+    background: #F5F8FB;
     text-align: right;
   }
   .lh-ref .cap { font-size: 6.4px; font-weight: 800; letter-spacing: .06em; line-height: 1.35; text-transform: uppercase; color: ${MUTED}; overflow-wrap: anywhere; }
@@ -219,7 +219,7 @@ const BASE_CSS = `
   .lh-to { font-size: 12px; line-height: 1.6; }
   .lh-to .lbl { font-weight: 800; color: ${NAVY}; }
 
-  .lh-subject { margin-top: 15px; padding: 9px 13px; background: linear-gradient(100deg, #F1F5FA 0%, #FBFCFE 100%); border-left: 3px solid ${NAVY}; border-top: 1px solid ${SOFT_BLUE}; border-right: 1px solid ${SOFT_BLUE}; border-bottom: 1px solid ${SOFT_BLUE}; border-radius: 0 4px 4px 0; }
+  .lh-subject { margin-top: 15px; padding: 9px 13px; background: #F5F8FB; border-left: 3px solid ${NAVY}; border-top: 1px solid ${SOFT_BLUE}; border-right: 1px solid ${SOFT_BLUE}; border-bottom: 1px solid ${SOFT_BLUE}; border-radius: 0 4px 4px 0; }
   .lh-subject .lbl { font-size: 8.5px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: ${TEAL}; }
   .lh-subject .txt { margin-top: 3px; font-size: 13px; font-weight: 700; color: ${NAVY}; line-height: 1.45; }
 
@@ -230,11 +230,13 @@ const BASE_CSS = `
   /* Keep the signature block at the end of the letter, above the fixed registered-office footer.
      On short letters it settles near the bottom of the writing area; on long letters it follows
      the final paragraph naturally. Enclosures/CC are placed before this block in bodyHtml. */
-  .lh-sign { margin-top: auto; padding: 9px 10px 2px; border-top: 1.5px solid ${NAVY}; border-bottom: 1px solid ${SOFT_BLUE}; background: linear-gradient(180deg, rgba(234,240,246,.34) 0%, rgba(255,255,255,0) 100%); display: flex; flex-direction: column; break-inside: avoid; }
+  .lh-sign { margin-top: auto; padding: 10px 4px 2px; border-top: 1px solid ${NAVY}; display: flex; flex-direction: column; break-inside: avoid; }
   /* The heading spans the block, above the signatories. It must not be a child
      of the row: the row's space-between would treat it as a third item and
      collapse .lh-sign-left to zero width. */
-  .lh-sign-head { width: 100%; text-align: center; font-size: 9px; font-weight: 700; color: ${INK}; margin: 0 0 7px; }
+  .lh-sign-gap { height: 26px; flex-shrink: 0; }
+  .lh-sign-trio-seal { display: block; width: 40px; height: auto; margin: 8px auto 0; opacity: .9; }
+  .lh-sign-head { width: 100%; text-align: left; font-size: 8px; font-weight: 800; letter-spacing: .14em; text-transform: uppercase; color: ${TEAL}; margin: 0 0 8px; }
   .lh-sign-row { width: 100%; display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; }
   .lh-sign-left { flex: 1; min-width: 0; padding-bottom: 2px; }
   .lh-sign-left .closing { font-size: 12px; font-weight: 700; color: ${INK}; }
@@ -335,6 +337,7 @@ function bodyHtml(f, lang) {
     ${f.cc ? `<div class="lh-extra" data-safe>
       <span class="lbl">${pick('Copy to', 'प्रतिलिपि', lang)}:</span> ${esc(f.cc)}
     </div>` : ''}
+    <div class="lh-sign-gap"></div>
     <div class="lh-sign" data-safe>
       <div class="lh-sign-head">${pick('Authorised Signatory', 'अधिकृत हस्ताक्षरकर्ता', lang)}</div>
       <div class="lh-sign-row">
@@ -345,6 +348,7 @@ function bodyHtml(f, lang) {
             <div class="person"><img class="sig" src="${signatureImg}" alt="Amit Kumar Pandey signature" /><div class="line"></div><div class="nm">Amit Kumar Pandey</div><div class="desig">${pick('Secretary', 'सचिव', lang)}</div></div>
             <div class="person"><div class="line"></div><div class="nm">Divya Sharma</div><div class="desig">${pick('Treasurer', 'कोषाध्यक्ष', lang)}</div></div>
           </div>
+          ${f.seal !== false ? `<img class="lh-sign-trio-seal" src="${sealImg}" alt="Organisation seal" />` : ''}
         </div>
       ` : `
         <div class="lh-sign-left">
@@ -382,20 +386,22 @@ export async function letterheadPreviewHtml(f, { lang = 'both', watermark = true
 <title>${esc(f.letterNo || 'SSF Letterhead')}</title>
 <style>${await fontFaceCss()}
   html,body{margin:0;padding:0;background:#8a97a3;}
+  body{padding:12px 0;}
   /* The preview mirrors the PDF sheet: masthead pinned to the top margin,
      footer pinned to the bottom margin, body flowing in between. */
-  .sheet{position:relative;width:${PAGE_W_MM}mm;height:${PAGE_H_MM}mm;margin:0 auto;background:#fff;overflow:hidden;box-sizing:border-box;}
-  .sheet::after{content:'';position:absolute;inset:4mm;border:1.1px solid ${NAVY};pointer-events:none;z-index:20;}
-  .sheet::before{content:'';position:absolute;inset:5.3mm;border:0.35px solid #D7E0E8;pointer-events:none;z-index:20;}
+  .sheet{position:relative;width:${PAGE_W_MM}mm;min-height:${PAGE_H_MM}mm;margin:0 auto;background:#fff;box-sizing:border-box;}
+  .sheet::after{content:'';position:absolute;inset:4.2mm;border:0.4px solid ${NAVY};pointer-events:none;z-index:20;}
+  .pgbreak{position:absolute;left:0;right:0;height:0;border-top:1px dashed #9AAABD;z-index:30;}
+  .pgbreak span{position:absolute;right:6px;top:-14px;font:9px sans-serif;color:#5B6B7A;}
   .sheet .mark{position:absolute;left:50%;top:50%;width:${WATERMARK_MM}mm;height:${WATERMARK_MM}mm;margin:-${WATERMARK_MM / 2}mm 0 0 -${WATERMARK_MM / 2}mm;opacity:${WATERMARK_OPACITY};pointer-events:none;}
-  .sheet .inner{position:relative;z-index:1;height:100%;display:flex;flex-direction:column;
-    padding:${MARGIN_MM}mm 0 4mm;}
+  .sheet .inner{position:relative;z-index:1;min-height:${PAGE_H_MM}mm;display:flex;flex-direction:column;
+    padding:${MARGIN_MM}mm 0 4mm;min-height:inherit;box-sizing:border-box;}
   .sheet .lh{flex:1;display:flex;flex-direction:column;min-height:0;}
   /* The 4mm bottom padding plus the footer's own height puts the footer rule
      around 282mm, exactly where the PDF's jsPDF-drawn footer rule sits
      (PAGE_H_MM - FOOTER_MM), so preview and print agree to the millimetre. */
   .sheet .lh-foot{margin-top:auto;padding-bottom:0;}
-  @media print{@page{size:A4;margin:0}html,body{background:#fff}.sheet{margin:0}}
+  @media print{@page{size:A4;margin:0}html,body{background:#fff}body{padding:0}.pgbreak{display:none}.sheet{margin:0}}
   ${BASE_CSS}
 </style></head><body>
   <div class="sheet">
@@ -404,6 +410,24 @@ export async function letterheadPreviewHtml(f, { lang = 'both', watermark = true
       <div class="lh">${headerHtml(f)}${bodyHtml(f, lang)}${footerHtml(f, 1, 1)}</div>
     </div>
   </div>
+<script>
+(function(){
+  var sheet=document.querySelector('.sheet'),inner=sheet.querySelector('.inner');
+  var mm=sheet.offsetWidth/${PAGE_W_MM},pageH=${PAGE_H_MM}*mm;
+  function fit(){
+    // Grow the sheet in whole A4 pages so a long letter is never clipped and the footer stays visible.
+    sheet.style.height='auto';inner.style.minHeight='0';
+    var pages=Math.max(1,Math.ceil((inner.scrollHeight-2)/pageH));
+    sheet.style.minHeight=(pages*${PAGE_H_MM})+'mm';inner.style.minHeight=(pages*${PAGE_H_MM})+'mm';
+    sheet.querySelectorAll('.pgbreak').forEach(function(n){n.remove();});
+    for(var i=1;i<pages;i++){var d=document.createElement('div');d.className='pgbreak';d.style.top=(i*${PAGE_H_MM})+'mm';d.innerHTML='<span>Page '+i+' | '+(i+1)+'</span>';sheet.appendChild(d);}
+    document.body.style.zoom=1;var avail=document.documentElement.clientWidth-16,w=sheet.offsetWidth;
+    document.body.style.zoom=Math.min(1,avail/w);
+  }
+  window.addEventListener('resize',fit);
+  window.addEventListener('load',function(){fit();setTimeout(fit,300);});
+})();
+</script>
 </body></html>`;
 }
 
@@ -510,7 +534,7 @@ function stampFooter(pdf, meta) {
   // segment at its left end, echoing the masthead band.
   pdf.setDrawColor(213, 222, 232); pdf.setLineWidth(0.2);
   pdf.line(MARGIN_MM, y, xr, y);
-  pdf.setDrawColor(247, 168, 20); pdf.setLineWidth(0.5);
+  pdf.setDrawColor(192, 138, 30); pdf.setLineWidth(0.5);
   pdf.line(MARGIN_MM, y, MARGIN_MM + 9, y);
   // 7.4pt keeps the registered address legible on a 600dpi office printer; the
   // earlier 6.4pt footer was effectively unreadable once printed.
@@ -583,10 +607,8 @@ export async function buildLetterPdf(f, { lang = 'both', watermark = true } = {}
       pdf.setPage(p);
       stampFooter(pdf, { ...f, pageCount: pages });
       // Premium double border, inset from the paper edge so no printer clips it.
-      pdf.setDrawColor(18, 52, 90); pdf.setLineWidth(0.65);
+      pdf.setDrawColor(18, 52, 90); pdf.setLineWidth(0.3);
       pdf.rect(4.2, 4.2, PAGE_W_MM - 8.4, PAGE_H_MM - 8.4, 'S');
-      pdf.setDrawColor(199, 210, 222); pdf.setLineWidth(0.22);
-      pdf.rect(5.4, 5.4, PAGE_W_MM - 10.8, PAGE_H_MM - 10.8, 'S');
     }
     pdf.setPage(1);
     return pdf;
