@@ -58,12 +58,12 @@ export default function ImsSectionDashboard({ section }) {
 
       {!data && <Spinner />}
       {data && (
-        <div className="space-y-5">
+        <div className="mx-auto w-full max-w-[1500px] space-y-6">
           {chartData.length > 0 && (
             <>
               <StatStrip items={chartKeys.filter((k) => k in kpis).map((k) => ({ labelKey: k, label: t(k), value: num(k), icon: iconFor(k) }))} />
 
-              <div className="grid gap-5 lg:grid-cols-2">
+              <div className="grid min-w-0 gap-4 xl:grid-cols-2">
                 <Card className="p-4">
                   <h2 className="mb-3 text-sm font-bold uppercase tracking-wide text-slate-500">{t('overview')}</h2>
                   <BarChart data={chartData} valueFmt={(v) => v} />
@@ -77,13 +77,13 @@ export default function ImsSectionDashboard({ section }) {
           )}
 
           {groups.map((g) => (
-            <Card key={g.labelKey} className="p-5">
-              <h2 className="mb-4 flex items-center gap-2 text-sm font-bold uppercase tracking-wider text-slate-500">
+            <Card key={g.labelKey} className="min-w-0 p-4 sm:p-5">
+              <h2 className="mb-4 flex min-w-0 items-center gap-2 text-xs font-bold uppercase tracking-wider text-slate-500 sm:text-sm">
                 <span className="grid h-6 w-6 place-items-center rounded-lg bg-[#12345A]/5 text-[#176447]"><Icons.Layers size={14} /></span>
                 {t(g.labelKey)}
                 <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-500">{g.items.length}</span>
               </h2>
-              <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
                 {g.items.map((l) => {
                   const I = Icons[l.icon] || Icons.Folder;
                   // Cards use the short label when one exists, so a long name
@@ -93,7 +93,7 @@ export default function ImsSectionDashboard({ section }) {
                   if (l.planned) {
                     return (
                       <div key={l.key} title={t('coming_soon')}
-                        className="flex cursor-not-allowed items-center gap-3 rounded-2xl border border-dashed border-slate-200 bg-slate-50/60 px-3.5 py-3 text-left">
+                        className="flex min-h-[76px] min-w-0 cursor-not-allowed items-center gap-3 rounded-xl border border-dashed border-slate-200 bg-slate-50/60 px-3 py-3 text-left">
                         <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-slate-200 text-slate-400"><I size={18} /></span>
                         <span className="min-w-0">
                           <span className="block truncate text-sm font-semibold text-slate-400">{en}</span>
@@ -104,7 +104,7 @@ export default function ImsSectionDashboard({ section }) {
                   }
                   return (
                     <button key={l.key} type="button" onClick={() => go(l)}
-                      className="group flex items-center gap-3 rounded-2xl border border-slate-200 bg-white px-3.5 py-3 text-left transition-all duration-150 hover:-translate-y-0.5 hover:border-[#12345A]/40 hover:shadow-[0_10px_26px_-14px_rgba(18,52,90,0.35)]">
+                      className="group flex min-h-[76px] min-w-0 items-center gap-3 rounded-xl border border-slate-200 bg-white px-3 py-3 text-left transition-all duration-150 hover:-translate-y-0.5 hover:border-[#12345A]/40 hover:shadow-[0_10px_26px_-14px_rgba(18,52,90,0.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#176447] focus-visible:ring-offset-2">
                       <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-gradient-to-br from-[#12345A] to-[#12345A] text-white shadow-sm ring-1 ring-black/5"><I size={18} /></span>
                       <span className="min-w-0">
                         <span className="block truncate text-sm font-semibold text-slate-800 group-hover:text-[#12345A]">{en}</span>
