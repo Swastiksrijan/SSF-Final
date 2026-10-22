@@ -322,7 +322,7 @@ export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight 
             return <div key={g.labelKey}>{heading}{cards}</div>;
           }
           return (
-            <details key={g.labelKey} open={needle ? true : undefined} className="group/finance rounded-xl border border-slate-200 bg-white px-3">
+            <details key={g.labelKey} defaultOpen={groupIndex === 0} open={needle ? true : undefined} className="group/finance rounded-xl border border-slate-200 bg-white px-3">
               <summary className="flex cursor-pointer list-none items-center gap-2 [&::-webkit-details-marker]:hidden">
                 {heading}
               </summary>
