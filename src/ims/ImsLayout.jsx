@@ -44,7 +44,9 @@ export default function ImsLayout({ children, active }) {
     const bar = barRef.current;
     if (!shell || !bar) return;
     const header = shell.querySelector('header');
-    const h = (header ? header.offsetHeight : 0) + bar.offsetHeight;
+    const headerHeight = header ? header.offsetHeight : 0;
+    const h = headerHeight + bar.offsetHeight;
+    if (headerHeight > 0) shell.style.setProperty('--ims-header-h', `${headerHeight}px`);
     if (h > 0) shell.style.setProperty('--ims-chrome-h', `${h}px`);
   }, []);
 
