@@ -124,7 +124,7 @@ function RecordForm({ def, initial, onSubmit, onCancel, busy }) {
             {f.l}{f.lHi ? " / " + f.lHi : ""}{f.req ? " *" : ""}
           </label>
           {f.t === "select" ? (
-            <select value={form[f.k] || ""} onChange={(e) => set(f.k, e.target.value)} className={inputCls} disabled={f.ro}>
+            <select value={form[f.k] || ""} onChange={(e) => set(f.k, e.target.value)} className={inputCls} disabled={f.ro} required={!!f.req}>
               {f.source && <option value="">Select / चुनें…</option>}
               {(f.source ? (linkedOptions[f.source] || []) : (f.o || [])).map((o) => {
                 const value = typeof o === "string" ? o : o.value;
