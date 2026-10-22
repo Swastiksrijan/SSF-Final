@@ -95,9 +95,18 @@ function RecordForm({ def, initial, onSubmit, onCancel, busy }) {
             }
             const number = d.resolutionNo || d.resolutionNumber || r.recordId || "Resolution";
             const title = d.title || d.body || d.resolutionText || "";
-            const label = `${number}${title ? " — " + String(title).replace(/\\s+/g, " ").slice(0, 110) : ""}`;
+            const label = `${number}${title ? " — " + String(title).replace(/\s+/g, " ").slice(0, 110) : ""}`;
             return { value: label, label };
           }).filter((o) => o.value);
+          if (source === "persons") {
+            const knownOfficeBearers = [
+              "Ramesh Pandey", "Preeti Shukla", "Amit Kumar Pandey", "Divya Sharma",
+              "Kiran Pandey", "Sandeep Tripathi", "Prameesh Singh", "Rishi Kumar Pandey",
+              "Ritesh Kumar Tiwari"
+            ].map((name) => ({ value: name, label: name }));
+            const merged = [...(next[source] || []), ...knownOfficeBearers];
+            next[source] = Array.from(new Map(merged.map((o) => [o.value, o])).values());
+          }
         } catch { /* Keep the register usable if linked records cannot be loaded. */ }
       }
       if (!cancelled) setLinkedOptions(next);
