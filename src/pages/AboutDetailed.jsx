@@ -1,210 +1,201 @@
-import { IoIosCheckmarkCircle } from "react-icons/io";
-import { FiTarget, FiArrowRight } from "react-icons/fi";
+const ABFrame = "/images/real/academy_banner_wide.jpg";
+const ABFrame1 = "/images/health.png";
+const ABFrame2 = "/images/real/women_community_meeting.jpg";
+const ABFrame3 = "/images/real/girls-study-group-mat.jpg";
+const ABFrame4 = "/images/real/awareness-poster-viewing.jpg";
+const ABFrame5 = "/images/people_help.png";
 
-const initiatives = [
-  {
-    tag: "Education",
-    sdg: "UN SDG 4: Quality Education",
-    title: "Ensuring every child has access to quality education and the tools to succeed.",
-    subtitle: "हर बच्चे को गुणवत्तापूर्ण शिक्षा एवं आत्मनिर्भर भविष्य",
-    points: [
-      "Scholarships & financial aid for underprivileged students",
-      "Distribution of books, school kits, uniforms & digital learning materials",
-      "Community study centers, mentorship & remedial academic support",
-      "Special counseling drives to reduce school dropout rates in rural Rewa",
-    ],
-    images: [
-      { src: "/images/real/academy_banner_wide.jpg", alt: "Education Initiatives SSF" }
-    ],
-    singleImage: true,
-  },
-  {
-    tag: "Nutrition & Health",
-    sdg: "UN SDG 3: Good Health & Well-being",
-    title: "Bringing accessible, preventive healthcare to the doorstep of every family.",
-    subtitle: "सुलभ एवं नि:शुल्क प्राथमिक स्वास्थ्य व पोषण सेवाएं",
-    points: [
-      "Free multi-specialty medical checkups and diagnostic health camps",
-      "Direct distribution of essential life-saving medicines and supplements",
-      "Grassroot awareness campaigns on menstrual hygiene, sanitation & clean water",
-      "Focused nutritional support programs for expectant mothers and malnourished children",
-    ],
-    images: [
-      { src: "/images/health.png", alt: "Health & Nutrition Camps" }
-    ],
-    singleImage: true,
-  },
-  {
-    tag: "Rural & Women Development",
-    sdg: "UN SDG 5 & 8: Decent Work & Gender Equality",
-    title: "Building self-reliant rural communities through sustainable livelihood initiatives.",
-    subtitle: "महिला सशक्तिकरण, स्वावलंबन एवं पर्यावरण संरक्षण",
-    points: [
-      "Formation, training, and micro-grant support for Women Self-Help Groups (SHGs)",
-      "Vocational sewing, handicraft, and local entrepreneurship training",
-      "Eco-restoration through intensive village tree plantation & water conservation drives",
-      "Support for sustainable agriculture practices and small village enterprises",
-    ],
-    images: [
-      { src: "/images/real/women_community_meeting.jpg", alt: "Women Community SHG Meeting" },
-      { src: "/images/real/tree_planting_2.jpg", alt: "Environmental Tree Plantation" }
-    ],
-    singleImage: false,
-  },
-  {
-    tag: "Youth Empowerment",
-    sdg: "UN SDG 8: Decent Work & Economic Growth",
-    title: "Equipping rural youth with technical skills, leadership, and employment readiness.",
-    subtitle: "युवा कौशल विकास, करियर मार्गदर्शन एवं खेल प्रोत्साहन",
-    points: [
-      "Market-aligned vocational and digital literacy training workshops",
-      "Dedicated career guidance, soft skills, and personality development sessions",
-      "Sports and youth club initiatives fostering team spirit, leadership, and fitness",
-      "Direct job readiness mentoring and connection with regional employment avenues",
-    ],
-    images: [
-      { src: "/images/real/girls-study-group-mat.jpg", alt: "Youth Study Group Rewa" },
-      { src: "/images/real/cricket-child.jpg", alt: "Youth Sports Initiative" }
-    ],
-    singleImage: false,
-  },
-  {
-    tag: "Health Awareness & Preventive Care",
-    sdg: "UN SDG 3: Community Well-being",
-    title: "Empowering rural citizens with actionable health awareness and early diagnosis.",
-    subtitle: "स्वास्थ्य साक्षरता, नेत्र जांच शिविर एवं प्राथमिक उपचार जागरूकता",
-    points: [
-      "Community workshops on epidemic prevention, first aid, and lifestyle health",
-      "Specialized vision care and eye checkup camps for rural seniors and school kids",
-      "Mental wellness counseling and family health guidance in remote villages",
-      "Hygiene awareness rallies led by community youth volunteers",
-    ],
-    images: [
-      { src: "/images/real/awareness-poster-viewing.jpg", alt: "Health Awareness Poster Viewing" },
-      { src: "/images/real/vision-health-camp.jpg", alt: "Vision and Eye Care Camp" }
-    ],
-    singleImage: false,
-  },
-  {
-    tag: "Humanitarian & Homeless Support",
-    sdg: "UN SDG 1 & 2: No Poverty & Zero Hunger",
-    title: "Restoring dignity, safety, and immediate emergency relief to vulnerable citizens.",
-    subtitle: "आपदा राहत, भोजन एवं वस्त्र वितरण — मानवीय गरिमा की रक्षा",
-    points: [
-      "Emergency food rations, warm clothes, and blanket distribution in winter",
-      "Temporary relief and rehabilitation support for destitute families",
-      "Emergency outreach during seasonal hardships and natural distress",
-      "Community-driven programs fostering compassion, safety, and human dignity",
-    ],
-    images: [
-      { src: "/images/people_help.png", alt: "Humanitarian Outreach and Relief" }
-    ],
-    singleImage: true,
-  },
-];
+import { IoIosCheckmarkCircle } from "react-icons/io";
 
 function AbtDetailed() {
   return (
-    <section className="w-full bg-gradient-to-b from-slate-50 via-white to-slate-50 py-20 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-6xl mx-auto space-y-16">
-        
-        {/* Section Header */}
-        <div className="text-center max-w-3xl mx-auto space-y-4">
-          <div className="inline-flex items-center gap-2 bg-amber-500/10 text-amber-700 border border-amber-500/20 px-4 py-1.5 rounded-full text-xs font-semibold tracking-wider uppercase">
-            <FiTarget className="text-sm" /> Key Intervention Pillars
+    <section className="w-full bg-white py-16 px-4">
+      <div className="max-w-6xl mx-auto space-y-20">
+
+        {/* ========== EDUCATION ========== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="space-y-4">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
+              Education
+            </span>
+            <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
+              Ensuring every child has access to quality education and the tools they need to succeed.
+            </h2>
+
+            <ul className="space-y-3 text-zinc-700">
+              {[
+                "Scholarships for underprivileged students",
+                "Distribution of books, uniforms, and learning materials",
+                "Mentorship and academic support programs",
+                "Initiatives to reduce school dropout rates",
+              ].map((item, i) => (
+                <li key={i} className="flex gap-2">
+                  <IoIosCheckmarkCircle className="text-green-600 text-xl shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
           </div>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-[#0F2A4A] tracking-tight leading-tight">
-            Transforming Lives Across Rewa & Rural India
-          </h2>
-          <p className="text-base sm:text-lg text-slate-600 leading-relaxed">
-            Since 2013, Swastik Srijan Foundation has championed grassroot empowerment across 6 core pillars, 
-            combining field execution with strict statutory compliance and institutional accountability.
-          </p>
+
+          <img src={ABFrame} alt="Education initiatives" className="w-full" />
         </div>
 
-        {/* Initiatives List */}
-        <div className="space-y-16">
-          {initiatives.map((item, index) => {
-            const isEven = index % 2 === 0;
+        {/* ========== NUTRITION & HEALTH ========== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <img src={ABFrame1} alt="Health programs" className="w-full hidden md:block" />
 
-            return (
-              <div
-                key={index}
-                className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-10 shadow-sm hover:shadow-xl transition-all duration-300 grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center"
-              >
-                {/* Content Column */}
-                <div className={`space-y-5 lg:col-span-7 ${isEven ? "lg:order-1" : "lg:order-2"}`}>
-                  <div className="flex flex-wrap items-center gap-2.5">
-                    <span className="bg-[#0F2A4A] text-white text-xs font-bold px-3.5 py-1 rounded-full uppercase tracking-wide">
-                      {item.tag}
-                    </span>
-                    <span className="bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-medium px-3 py-0.5 rounded-full">
-                      {item.sdg}
-                    </span>
-                  </div>
+          <div className="space-y-4">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
+              Nutrition & Health
+            </span>
+            <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
+              Bringing healthcare within reach of every community member.
+            </h2>
 
-                  <div>
-                    <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 leading-snug">
-                      {item.title}
-                    </h3>
-                    <p className="text-sm font-medium text-amber-700 mt-1.5">
-                      {item.subtitle}
-                    </p>
-                  </div>
+            <ul className="space-y-3 text-zinc-700">
+              {[
+                "Free medical checkups and health camps",
+                "Access to essential medicines and treatments",
+                "Awareness programs on hygiene and disease prevention",
+                "Support for maternal and child healthcare",
+              ].map((item, i) => (
+                <li key={i} className="flex gap-2">
+                  <IoIosCheckmarkCircle className="text-green-600 text-xl shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
 
-                  <ul className="space-y-3 text-slate-700 text-sm sm:text-base pt-2">
-                    {item.points.map((point, i) => (
-                      <li key={i} className="flex items-start gap-3">
-                        <IoIosCheckmarkCircle className="text-emerald-600 text-xl shrink-0 mt-0.5" />
-                        <span className="leading-relaxed">{point}</span>
-                      </li>
-                    ))}
-                  </ul>
+          <img src={ABFrame1} alt="" className="w-full md:hidden" />
+        </div>
 
-                  <div className="pt-2">
-                    <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0F2A4A] bg-slate-100 px-3 py-1.5 rounded-lg">
-                      100% Direct Field Delivery <FiArrowRight className="text-amber-600" />
-                    </span>
-                  </div>
-                </div>
+        {/* ========== DEVELOPMENT ========== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="space-y-4">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
+              Development
+            </span>
+            <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
+              Building stronger, self-sufficient rural communities through sustainable development.
+            </h2>
 
-                {/* Images Column */}
-                <div className={`lg:col-span-5 ${isEven ? "lg:order-2" : "lg:order-1"}`}>
-                  {item.singleImage ? (
-                    <div className="overflow-hidden rounded-2xl shadow-md border border-slate-100 group">
-                      <img
-                        src={item.images[0].src}
-                        alt={item.images[0].alt}
-                        loading="lazy"
-                        className="w-full h-72 sm:h-80 object-cover group-hover:scale-105 transition-transform duration-500"
-                        onError={(e) => {
-                          e.target.onerror = null;
-                          e.target.src = "/images/real/community-rally-children.jpg";
-                        }}
-                      />
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
-                      {item.images.map((img, imgIdx) => (
-                        <div key={imgIdx} className="overflow-hidden rounded-2xl shadow-md border border-slate-100 group">
-                          <img
-                            src={img.src}
-                            alt={img.alt}
-                            loading="lazy"
-                            className="w-full h-44 sm:h-52 object-cover group-hover:scale-105 transition-transform duration-500"
-                            onError={(e) => {
-                              e.target.onerror = null;
-                              e.target.src = "/images/real/community-education-meeting.jpg";
-                            }}
-                          />
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+            <ul className="space-y-3 text-zinc-700">
+              {[
+                "Infrastructure improvements for villages",
+                "Skill-development & livelihood training",
+                "Women-led self-help group support",
+                "Programs promoting agriculture & entrepreneurship",
+              ].map((item, i) => (
+                <li key={i} className="flex gap-2">
+                  <IoIosCheckmarkCircle className="text-green-600 text-xl shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <img src={ABFrame2} alt="Rural development" className="w-full h-full object-cover rounded-xl" />
+            <img src="/images/real/tree_planting_2.jpg" alt="Environmental initiative" className="w-full h-full object-cover rounded-xl" />
+          </div>
+        </div>
+
+        {/* ========== YOUTH EMPOWERMENT ========== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="grid grid-cols-2 gap-4">
+            <img src={ABFrame3} alt="Youth study group" className="w-full h-full object-cover rounded-xl shadow-sm hidden md:block" />
+            <img src="/images/real/cricket-child.jpg" alt="Child playing cricket" className="w-full h-full object-cover rounded-xl shadow-sm hidden md:block" />
+          </div>
+
+          <div className="space-y-4">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
+              Youth Empowerment
+            </span>
+            <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
+              Empowering young individuals with skills to build independent futures.
+            </h2>
+
+            <ul className="space-y-3 text-zinc-700">
+              {[
+                "Vocational & technical skill training",
+                "Career guidance & personality development",
+                "Communication & leadership workshops",
+                "Job readiness and employment support",
+              ].map((item, i) => (
+                <li key={i} className="flex gap-2">
+                  <IoIosCheckmarkCircle className="text-green-600 text-xl shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 md:hidden">
+            <img src={ABFrame3} alt="Youth study group" className="w-full h-full object-cover rounded-xl shadow-sm" />
+            <img src="/images/real/cricket-child.jpg" alt="Child playing cricket" className="w-full h-full object-cover rounded-xl shadow-sm" />
+          </div>
+        </div>
+
+        {/* ========== HEALTH AWARENESS ========== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <div className="space-y-4">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
+              Health Awareness
+            </span>
+            <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
+              Promoting healthier communities through education and prevention.
+            </h2>
+
+            <ul className="space-y-3 text-zinc-700">
+              {[
+                "Hygiene and nutrition awareness",
+                "Disease prevention & first-aid training",
+                "Mental health and wellness guidance",
+                "Family and community health counseling",
+              ].map((item, i) => (
+                <li key={i} className="flex gap-2">
+                  <IoIosCheckmarkCircle className="text-green-600 text-xl shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <img src={ABFrame4} alt="Health awareness poster viewing" className="w-full h-full object-cover rounded-xl shadow-sm" />
+            <img src="/images/real/vision-health-camp.jpg" alt="Vision & Eye Care Camp" className="w-full h-full object-cover rounded-xl shadow-sm" />
+          </div>
+        </div>
+
+        {/* ========== HOMELESS SUPPORT ========== */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 items-center">
+          <img src={ABFrame5} alt="Homeless support" className="w-full hidden md:block" />
+
+          <div className="space-y-4">
+            <span className="inline-block text-sm text-[#12345A] bg-[#12345A]/5 px-3 py-1 rounded">
+              Homeless Support
+            </span>
+            <h2 className="text-2xl md:text-3xl font-semibold text-zinc-900">
+              Providing dignity, care, and essential support to the homeless.
+            </h2>
+
+            <ul className="space-y-3 text-zinc-700">
+              {[
+                "Food and clothing distribution",
+                "Temporary assistance for vulnerable families",
+                "Community outreach programs",
+                "Safety, care, and dignity initiatives",
+              ].map((item, i) => (
+                <li key={i} className="flex gap-2">
+                  <IoIosCheckmarkCircle className="text-green-600 text-xl shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <img src={ABFrame5} alt="" className="w-full md:hidden" />
         </div>
 
       </div>
