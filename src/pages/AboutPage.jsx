@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
   FaArrowRight,
@@ -9,118 +9,53 @@ import {
   FaShieldAlt,
   FaUsers,
   FaBullseye,
-  FaLeaf,
   FaRegCompass,
   FaQuoteLeft,
 } from "react-icons/fa";
 import OptimizedImage from "../components/OptimizedImage";
+import TrustSection from "../components/TrustSection";
 import footerImg1 from "../assets/footer-gallery-1.jpg";
 import footerImg2 from "../assets/footer-gallery-2.jpg";
 import footerImg3 from "../assets/footer-gallery-3.jpg";
 
 const organizationFacts = [
-  {
-    icon: FaCalendarAlt,
-    label: "Established",
-    value: "December 2013",
-    detail: "A journey of service and learning",
-  },
-  {
-    icon: FaShieldAlt,
-    label: "Registration",
-    value: "05/22/03/11448/13",
-    detail: "Madhya Pradesh Societies Act, 1973",
-    compact: true,
-  },
-  {
-    icon: FaGlobeAsia,
-    label: "Area of Work",
-    value: "Pan India",
-    detail: "A vision for communities across India",
-  },
-  {
-    icon: FaHeart,
-    label: "Registered Office",
-    value: "Rewa, M.P.",
-    detail: "Madhya Pradesh, India",
-  },
+  { icon: FaCalendarAlt, label: "Established", value: "December 2013", detail: "A journey of service and learning" },
+  { icon: FaShieldAlt, label: "Registration", value: "05/22/03/11448/13", detail: "Madhya Pradesh Societies Act, 1973", compact: true },
+  { icon: FaGlobeAsia, label: "Area of Work", value: "Pan India", detail: "A vision for communities across India" },
+  { icon: FaHeart, label: "Registered Office", value: "Rewa, M.P.", detail: "Madhya Pradesh, India" },
 ];
 
 const quickLinks = [
-  {
-    to: "/Mission",
-    eyebrow: "Our direction",
-    title: "Mission & Vision",
-    description: "The principles and values that guide our work.",
-    action: "Discover our vision",
-  },
-  {
-    to: "/Objectives",
-    eyebrow: "Our priorities",
-    title: "Our Objectives",
-    description: "The focus areas that shape our community initiatives.",
-    action: "Explore objectives",
-  },
-  {
-    to: "/Team",
-    eyebrow: "People behind the work",
-    title: "Meet Our Team",
-    description: "The leadership and volunteers working toward our purpose.",
-    action: "Meet the team",
-  },
+  { to: "/Mission", eyebrow: "Our direction", title: "Mission & Vision", description: "The principles and values that guide our work.", action: "Discover our vision" },
+  { to: "/Objectives", eyebrow: "Our priorities", title: "Our Objectives", description: "The focus areas that shape our community initiatives.", action: "Explore objectives" },
+  { to: "/Team", eyebrow: "People behind the work", title: "Meet Our Team", description: "The leadership and volunteers working toward our purpose.", action: "Meet the team" },
 ];
 
 const principles = [
-  {
-    icon: FaBullseye,
-    number: "01",
-    title: "Our Mission",
-    description:
-      "To contribute to inclusive community development through education, skills, health, awareness, participation and practical support.",
-  },
-  {
-    icon: FaHandshake,
-    number: "02",
-    title: "Our Approach",
-    description:
-      "We encourage cooperation, learning, responsible awareness and partnerships that can create meaningful and sustainable outcomes.",
-  },
-  {
-    icon: FaHeart,
-    number: "03",
-    title: "Our Values",
-    description:
-      "Transparency, dignity, equal opportunity, cooperation and service without discrimination guide our work.",
-  },
+  { icon: FaBullseye, number: "01", title: "Our Mission", description: "To contribute to inclusive community development through education, skills, health, awareness, participation and practical support." },
+  { icon: FaHandshake, number: "02", title: "Our Approach", description: "We encourage cooperation, learning, responsible awareness and partnerships that can create meaningful and sustainable outcomes." },
+  { icon: FaHeart, number: "03", title: "Our Values", description: "Transparency, dignity, equal opportunity, cooperation and service without discrimination guide our work." },
 ];
 
 const journey = [
-  {
-    years: "2013–2017",
-    title: "Laying the foundation",
-    description:
-      "Building the foundation, community relationships and early social initiatives.",
-  },
-  {
-    years: "2018–2024",
-    title: "Learning through service",
-    description:
-      "Continuing social initiatives, learning activities and community-focused work.",
-  },
-  {
-    years: "2025–2026",
-    title: "Strengthening participation",
-    description:
-      "Developing digital outreach, awareness and opportunities for wider participation.",
-  },
+  { years: "2013–2017", title: "Laying the foundation", description: "Building the foundation, community relationships and early social initiatives." },
+  { years: "2018–2024", title: "Learning through service", description: "Continuing social initiatives, learning activities and community-focused work." },
+  { years: "2025–2026", title: "Strengthening participation", description: "Developing digital outreach, awareness and opportunities for wider participation." },
 ];
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
   visible: { opacity: 1, y: 0 },
 };
+const noMotion = {
+  hidden: { opacity: 1, y: 0 },
+  visible: { opacity: 1, y: 0 },
+};
 
 export default function AboutPage() {
+  const reduce = useReducedMotion();
+  const fade = reduce ? noMotion : fadeUp;
+
   return (
     <main className="min-h-screen overflow-hidden bg-white font-sans text-[#26343D]">
       {/* Hero */}
@@ -152,14 +87,14 @@ export default function AboutPage() {
           <motion.div
             initial="hidden"
             animate="visible"
-            variants={fadeUp}
+            variants={fade}
             transition={{ duration: 0.7, ease: "easeOut" }}
             className="max-w-4xl"
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#FFD28A] backdrop-blur-md sm:text-sm">
               <span className="h-2 w-2 rounded-full bg-[#F7A814]" />
               Swastik Srijan Foundation
-              <span className="text-white/55">/</span>
+              <span className="text-white/85">/</span>
               स्थापना 2013
             </div>
             <h1 className="mt-7 max-w-4xl text-4xl font-black leading-[1.04] tracking-[-0.04em] text-white [text-shadow:0_3px_24px_rgba(0,0,0,0.35)] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.25rem]">
@@ -189,9 +124,9 @@ export default function AboutPage() {
                 Be part of the journey <FaHeart aria-hidden="true" />
               </Link>
             </div>
-            <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold tracking-wide text-white/70 sm:text-sm">
+            <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold tracking-wide text-white/90 sm:text-sm">
               <span className="inline-flex items-center gap-2"><FaShieldAlt className="text-[#FFC56D]" /> Registered society</span>
-              <span className="hidden h-1 w-1 rounded-full bg-white/45 sm:block" />
+              <span className="hidden h-1 w-1 rounded-full bg-white/60 sm:block" />
               <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#FFC56D]" /> Pan-India area of work</span>
             </div>
           </motion.div>
@@ -231,7 +166,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.25 }}
-            variants={fadeUp}
+            variants={fade}
             transition={{ duration: 0.55 }}
           >
             <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#D94C13] sm:text-sm">About SSF</p>
@@ -261,7 +196,7 @@ export default function AboutPage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
-                variants={fadeUp}
+                variants={fade}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
                 className={index === 0 ? "sm:col-span-2" : ""}
               >
@@ -305,7 +240,7 @@ export default function AboutPage() {
               <h3 className="relative mt-6 text-2xl font-extrabold">Mr. Ramesh Pandey</h3>
               <p className="relative mt-2 text-sm font-bold text-[#FFC56D]">Founder & President</p>
               <div className="relative mt-5 h-px w-16 bg-white/30" />
-              <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.17em] text-white/65">Swastik Srijan Foundation</p>
+              <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.17em] text-white/85">Swastik Srijan Foundation</p>
             </div>
             <div className="flex flex-col justify-center px-6 py-9 sm:px-10 sm:py-12 lg:px-14">
               <FaQuoteLeft className="text-3xl text-[#F7A814]" aria-hidden="true" />
@@ -357,7 +292,7 @@ export default function AboutPage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.25 }}
-                variants={fadeUp}
+                variants={fade}
                 transition={{ duration: 0.45, delay: index * 0.1 }}
                 className="relative rounded-3xl border border-[#E7EBEF] bg-gradient-to-br from-white to-[#FBFCFD] p-6 shadow-[0_16px_42px_-28px_rgba(9,37,65,0.42)] transition duration-300 hover:-translate-y-1 hover:border-[#D6E2E9] sm:p-8"
               >
@@ -388,7 +323,7 @@ export default function AboutPage() {
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.25 }}
-            variants={fadeUp}
+            variants={fade}
             transition={{ duration: 0.55 }}
             className="space-y-6"
           >
@@ -414,7 +349,7 @@ export default function AboutPage() {
             </Link>
           </motion.div>
           <motion.div
-            initial={{ opacity: 0, scale: 0.97 }}
+            initial={reduce ? false : { opacity: 0, scale: 0.97 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.65 }}
@@ -453,11 +388,11 @@ export default function AboutPage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
-                variants={fadeUp}
+                variants={fade}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
                 className="group relative overflow-hidden rounded-3xl border border-[#E7EBEF] bg-gradient-to-br from-white via-white to-[#F8FBF9] p-7 transition duration-300 hover:-translate-y-1 hover:border-[#D6E2E9] hover:shadow-[0_28px_65px_-35px_rgba(9,37,65,0.45)] sm:p-8"
               >
-                <span className="absolute right-6 top-4 text-5xl font-black tracking-tighter text-[#12345A]/[0.05]">{number}</span>
+                <span className="absolute right-6 top-4 text-5xl font-black tracking-tighter text-[#12345A]/[0.05]" aria-hidden="true">{number}</span>
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F4F8F5] text-2xl text-[#176447] transition duration-200 group-hover:bg-[#176447] group-hover:text-white">
                   <Icon aria-hidden="true" />
                 </div>
@@ -525,6 +460,9 @@ export default function AboutPage() {
         </div>
       </section>
 
+      {/* Verifiable documents and impact numbers (shows only the items you fill in) */}
+      <TrustSection />
+
       {/* Closing call to action */}
       <section className="relative isolate overflow-hidden bg-[#092541] px-5 py-20 text-white sm:px-8 sm:py-24 lg:px-12">
         <div className="absolute inset-0 bg-gradient-to-br from-[#12345A] via-[#092541] to-[#124B3A]" aria-hidden="true" />
@@ -536,7 +474,7 @@ export default function AboutPage() {
           </div>
           <p className="mt-6 text-xs font-extrabold uppercase tracking-[0.22em] text-[#FFC56D] sm:text-sm">Get involved</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">Positive change begins when we come together.</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/90 sm:text-lg">
             Join, volunteer or partner with Swastik Srijan Foundation and contribute
             to meaningful community development.
           </p>
@@ -554,7 +492,7 @@ export default function AboutPage() {
               Volunteer <FaHeart aria-hidden="true" />
             </Link>
           </div>
-          <p className="mt-8 text-sm font-medium text-white/55">Humanity & Truth · मानवता और सत्य</p>
+          <p className="mt-8 text-sm font-medium text-white/80">Humanity & Truth · मानवता और सत्य</p>
         </div>
       </section>
     </main>
