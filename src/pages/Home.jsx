@@ -330,7 +330,7 @@ export default function Home() {
       {/* 3 CARDS IN A SINGLE UNIFIED INSTITUTIONAL FRAME (पुरानी डुप्लीकेट हटा दी गई) */}
       {/* ========================================================================= */}
       <section className="relative z-20 -mt-12 mb-10 sm:mb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="relative overflow-hidden rounded-[2.25rem] border border-amber-300/35 bg-gradient-to-br from-[#06182B] via-[#0B2C4B] to-[#081B30] p-6 sm:p-8 lg:p-10 shadow-[0_28px_70px_-18px_rgba(7,25,44,0.58)] text-white backdrop-blur-xl before:pointer-events-none before:absolute before:inset-x-8 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-amber-300/80 before:to-transparent">
+        <div className="relative overflow-hidden rounded-[2.25rem] border border-amber-300/35 bg-[radial-gradient(ellipse_at_50%_100%,rgba(249,115,22,0.06)_0%,rgba(250,204,21,0.05)_5%,transparent_34%),linear-gradient(135deg,#06182B_0%,#0B2C4B_38%,#0B3B3A_70%,#081B30_100%)] p-6 sm:p-8 lg:p-10 shadow-[0_28px_70px_-18px_rgba(7,25,44,0.58)] text-white backdrop-blur-xl before:pointer-events-none before:absolute before:inset-x-8 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-amber-300/80 before:to-transparent">
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 divide-y lg:divide-y-0 lg:divide-x divide-white/10 items-stretch">
             
