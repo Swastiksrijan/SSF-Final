@@ -108,7 +108,7 @@ export default function Home() {
             <p className="inline-flex items-center gap-2 rounded-full border border-[#F7A814]/45 bg-white/[0.08] px-4 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FFD277] shadow-lg shadow-black/10 backdrop-blur-md sm:text-xs">
               <FaSeedling /> Registered Society · Since 2013
             </p>
-            <div className="relative w-full max-w-sm lg:translate-x-16 rounded-[1.75rem] border border-white/15 bg-white/[0.07] p-7 shadow-2xl shadow-black/10 backdrop-blur-xl lg:pb-8">
+            <div className="relative w-full max-w-sm rounded-[1.75rem] border border-white/15 bg-white/[0.07] p-7 shadow-2xl shadow-black/10 backdrop-blur-xl lg:pb-8">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#F7A814]">Our Purpose</p>
             <p className="mt-5 font-serif text-3xl leading-snug text-white xl:text-4xl">Service with purpose.</p>
             <p className="mt-2 font-serif text-3xl italic leading-snug text-[#FFD277] xl:text-4xl">Progress through people.</p>
