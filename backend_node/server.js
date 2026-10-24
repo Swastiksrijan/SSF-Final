@@ -212,6 +212,18 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Annual reports seed skipped:', e.message);
     }
+    // FY 2025-26 workbook registers — Sector Registers (as activities), Annual
+    // Compliance and the Sahyog in-kind support. Additive and idempotent, so it
+    // runs on every boot and keeps the three registers in step with the workbook.
+    try {
+        const { seedFinancialYearRegisters } = require('./services/ims/fyRegistersSeed');
+        const fr = await seedFinancialYearRegisters();
+        if (fr.sectorActivities || fr.compliance || fr.sahyog) {
+            console.log(`✅ FY 2025-26 registers: ${fr.sectorActivities} sector activity(ies), ${fr.compliance} compliance row(s), ${fr.sahyog} sahyog row(s) created`);
+        }
+    } catch (e) {
+        console.error('⚠️ FY 2025-26 registers seed skipped:', e.message);
+    }
     // Derive the Notification & Action Centre alerts from real source records.
     // Idempotent (stable eventKey) and additive: it never edits or clears tasks.
     try {
