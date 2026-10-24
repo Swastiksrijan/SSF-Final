@@ -186,8 +186,8 @@ export default function Home() {
             transition={{ duration: 0.65, ease: "easeOut" }} 
             className="max-w-4xl"
           >
-            {/* Trust Micro-Tag */}
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-amber-400/35 bg-white/[0.07] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-300 shadow-xl backdrop-blur-md">
+            {/* Trust Micro-Tag (2 chawal ke dane barabar niche) */}
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-amber-400/35 bg-white/[0.07] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-300 shadow-xl backdrop-blur-md mt-2">
               <FaSeedling className="text-amber-400 text-sm" />
               <span>Registered Society · Dedicated Since 2013</span>
             </div>
@@ -271,17 +271,18 @@ export default function Home() {
             </div>
           </Motion.div>
 
-          {/* Right Floating Strategic Anchor (Desktop) */}
+          {/* Right Floating Strategic Anchor (Desktop) - 2.5 Inch Right Shifted */}
           <Motion.div 
             initial={{ opacity: 0, x: 20 }} 
             animate={{ opacity: 1, x: 0 }} 
             transition={{ duration: 0.65, delay: 0.2 }} 
-            className="relative hidden min-h-[520px] flex-col items-end justify-between lg:flex lg:self-stretch"
+            className="relative hidden min-h-[520px] flex-col items-end justify-between lg:flex lg:self-stretch lg:translate-x-[2.5in]"
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-white/[0.08] px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-300 shadow-xl backdrop-blur-md">
               <FaShieldAlt className="text-amber-400" /> Statutory Transparency
             </div>
 
+            {/* 2.5 Inch Right Placed Mission Card */}
             <div className="relative w-full rounded-3xl border border-white/20 bg-gradient-to-b from-white/[0.12] to-white/[0.04] p-8 shadow-2xl backdrop-blur-xl">
               <span className="inline-block rounded-full bg-amber-400/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-amber-300">
                 Foundational Mission
