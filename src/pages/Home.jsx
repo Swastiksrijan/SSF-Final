@@ -1079,7 +1079,7 @@ export default function Home() {
               <div className="relative overflow-hidden rounded-[1.6rem] border border-white bg-white p-2 shadow-[0_24px_65px_-28px_rgba(18,52,90,0.48)] sm:rounded-[2rem] sm:p-3">
                 <div className="relative aspect-[4/4.7] overflow-hidden rounded-[1.15rem] bg-[#E9ECE8] sm:rounded-[1.45rem]">
                   <OptimizedImage
-                    src="/Teams_Images/ramesh_pandey.jpg?v=2"
+                    src="/Teams_Images/ramesh_pandey.jpg?v=3"
                     alt="Ramesh Pandey, Founder and President of Swastik Srijan Foundation"
                     className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-[1.025]"
                   />

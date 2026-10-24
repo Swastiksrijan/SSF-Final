@@ -1,5 +1,5 @@
 {
-  "count": 48,
+  "count": 47,
   "items": [
     {
       "id": "1772088610374",
@@ -249,16 +249,9 @@
     {
       "id": "ramesh-pandey",
       "name": "Ramesh Pandey",
-      "file": "Ramesh Pandey.jpg",
+      "file": "Ramesh_pandey.jpg",
       "photo": "/members/ramesh-pandey.jpg",
       "square": "/members/ramesh-pandey-sq.jpg"
-    },
-    {
-      "id": "ramesh-pandey-2",
-      "name": "Ramesh Pandey",
-      "file": "Ramesh_pandey.jpg",
-      "photo": "/members/ramesh-pandey-2.jpg",
-      "square": "/members/ramesh-pandey-2-sq.jpg"
     },
     {
       "id": "rani",
