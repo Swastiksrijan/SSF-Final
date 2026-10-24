@@ -39,6 +39,7 @@ export default function FooterSection() {
               <Link key={idx} to="/Media" className="relative h-28 sm:h-36 rounded-2xl overflow-hidden border border-white/10 group bg-black/20">
                 <img src={img} alt={`Swastik Srijan Foundation media ${idx + 1}`} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-70" />
+                {idx === 0 && <div className="pointer-events-none absolute inset-y-0 left-0 w-28 bg-gradient-to-r from-[#176447]/95 via-[#12345A]/75 to-transparent sm:w-36 lg:w-40" aria-hidden="true" />}
                 <span className="absolute bottom-3 left-3 text-[10px] font-bold uppercase tracking-wider text-white/90">SSF • Media</span>
               </Link>
             ))}
