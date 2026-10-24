@@ -209,7 +209,7 @@ export default function Home() {
           >
             {/* Trust Micro-Tag (2 chawal ke dane barabar niche) */}
             <div className="mt-2 flex flex-wrap items-center gap-2 sm:gap-2.5">
-              <div className="inline-flex items-center gap-2.5 rounded-full border border-amber-400/35 bg-white/[0.07] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-300 shadow-xl backdrop-blur-md">
+              <div className="hidden sm:inline-flex items-center gap-2.5 rounded-full border border-amber-400/35 bg-white/[0.07] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-300 shadow-xl backdrop-blur-md">
                 <FaSeedling className="text-amber-400 text-sm" />
                 <span>Registered Society · Dedicated Since 2013</span>
               </div>
