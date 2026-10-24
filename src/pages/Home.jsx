@@ -731,28 +731,25 @@ export default function Home() {
       </section>
 
       {/* ================= FOCUS AREAS / WORK PILLARS ================= */}
-      <section className="bg-slate-50 px-5 py-20 md:px-8 md:py-28 border-t border-slate-200/90">
-        <div className="container mx-auto max-w-7xl">
+      <section className="relative isolate overflow-hidden bg-[#FAF9F5] px-5 py-20 md:px-8 md:py-28 border-t border-slate-200/90">
+        {/* Focus-wheel watermark: the former side illustration now sits softly behind the section content. */}
+        <div aria-hidden="true" className="pointer-events-none absolute right-[-7rem] top-0 z-[-1] flex h-[32rem] w-[32rem] items-center justify-center opacity-[0.10] md:right-[-2rem] md:top-[-3rem] md:h-[42rem] md:w-[42rem]">
+          <img src={BRAND.focusWheel} alt="" loading="lazy" className="h-full w-full object-contain" />
+        </div>
+        <div className="container mx-auto max-w-7xl relative z-10">
           
-          <div className="mb-14 grid gap-8 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+          <div className="mb-14">
             <div className="max-w-3xl">
-              <span className="rounded-full bg-amber-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-amber-800">
+              <span className="rounded-full bg-[#176447]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#176447]">
                 Our Focus Areas · हमारे कार्यक्षेत्र
               </span>
               <h2 className="mt-4 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
                 Where we focus our efforts
               </h2>
-              <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+              <p className="mt-4 text-base leading-relaxed text-[#26343D] sm:text-lg">
                 These core pillars reflect the Foundation’s statutory objectives. Programs are custom-tailored to local community requirements and aligned with UN Sustainable Development Goals.
               </p>
             </div>
-            
-            <figure className="mx-auto w-full max-w-sm rounded-3xl bg-white p-6 shadow-md border border-slate-200">
-              <img src={BRAND.focusWheel} alt="Diagram of the Foundation's focus areas" loading="lazy" className="w-full h-auto" />
-              <figcaption className="mt-3 text-center text-xs font-bold text-slate-500 uppercase tracking-wider">
-                The Foundation&apos;s Focus Pillars · कार्यक्षेत्र
-              </figcaption>
-            </figure>
           </div>
 
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
