@@ -104,7 +104,7 @@ export default function Home() {
             </p>
           </Motion.div>
 
-          <Motion.div initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative hidden min-h-[560px] flex-col items-end justify-between pt-8 lg:flex lg:self-stretch">
+          <Motion.div initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative hidden min-h-[560px] flex-col items-end justify-between lg:flex lg:self-stretch">
             <p className="inline-flex items-center gap-2 rounded-full border border-[#F7A814]/45 bg-white/[0.08] px-4 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FFD277] shadow-lg shadow-black/10 backdrop-blur-md sm:text-xs">
               <FaSeedling /> Registered Society · Since 2013
             </p>
