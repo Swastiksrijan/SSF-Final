@@ -161,6 +161,7 @@ const communityPhotoStrip = [
 
 export default function Home() {
   const [loginOpen, setLoginOpen] = useState(false);
+  const [authMode, setAuthMode] = useState("signup");
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -268,12 +269,13 @@ export default function Home() {
                 CSR & Institutional Partnerships <FaHandshake className="text-base" />
               </Link>
 
-              <Link 
-                to="/JoinUs" 
-                className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border border-white/30 bg-white/5 px-6 py-3.5 text-sm font-semibold text-white backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-white/60 hover:bg-white/15"
+              <button
+                type="button"
+                onClick={() => { setAuthMode("signup"); setLoginOpen(true); }}
+                className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border border-amber-300/80 bg-[#FAF9F5] px-6 py-3.5 text-sm font-extrabold text-[#12345A] shadow-lg shadow-black/15 transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-300"
               >
                 <FaUsers /> Join SSF
-              </Link>
+              </button>
             </div>
 
             {/* Official Compliance Badges Bar */}
@@ -389,7 +391,7 @@ export default function Home() {
                   <Link to="/Signup" className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-3 py-2 text-xs font-black text-[#12345A] shadow-md hover:brightness-110 transition-all">
                     Join SSF
                   </Link>
-                  <button type="button" onClick={() => setLoginOpen(true)} className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition-all">
+                  <button type="button" onClick={() => { setAuthMode("login"); setLoginOpen(true); }} className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition-all">
                     <FaSignInAlt className="mr-1.5" /> Login
                   </button>
                 </div>
@@ -1274,7 +1276,7 @@ export default function Home() {
         </div>
       </section>
 
-      <AuthModal open={loginOpen} initialMode="login" onClose={() => setLoginOpen(false)} />
+      <AuthModal open={loginOpen} initialMode={authMode} onClose={() => setLoginOpen(false)} />
     </main>
   );
 }
