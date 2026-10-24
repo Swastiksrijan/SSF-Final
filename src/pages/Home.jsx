@@ -390,10 +390,10 @@ export default function Home() {
                 </div>
 
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white">Full Name <span className="ml-1 text-[10px] font-bold text-amber-300">[Volunteer]</span></div>
-                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white">Email <span className="ml-1 text-[10px] font-bold text-amber-300">[Member]</span></div>
-                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white">Mobile Number <span className="ml-1 text-[10px] font-bold text-amber-300">[Digital Volunteer]</span></div>
-                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white">Password <span className="block text-[9px] text-slate-300">Minimum 8 characters</span><span className="mt-1 block text-[10px] font-bold text-amber-300">[Certificate & ID Card]</span></div>
+                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white"><span className="block font-bold text-amber-300">Member & Volunteer</span><span className="mt-1 block text-[10px] text-slate-300">Join our social mission</span></div>
+                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white"><span className="block font-bold text-amber-300">Donor & Collaborator</span><span className="mt-1 block text-[10px] text-slate-300">Support meaningful change</span></div>
+                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white"><span className="block font-bold text-amber-300">Internship & Digital Volunteer</span><span className="mt-1 block text-[10px] text-slate-300">Contribute your skills</span></div>
+                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white"><span className="block font-bold text-amber-300">Digital ID Card & Certificate</span><span className="mt-1 block text-[10px] text-slate-300">For eligible participants</span></div>
                 </div>
 
                 <Link to="/Signup" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-4 py-2.5 text-xs font-black text-[#07192C] shadow-md hover:brightness-110 transition-all">
