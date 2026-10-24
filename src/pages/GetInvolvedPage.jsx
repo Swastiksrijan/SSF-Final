@@ -2,6 +2,9 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaUsers, FaWhatsapp, FaArrowRight, FaHandsHelping, FaAward, FaHandshake, FaHeart, FaTimes, FaBullhorn } from "react-icons/fa";
 import VolunteerForm from "../components/VolunteerForm";
+import heroPhoto1 from "../assets/footer-gallery-1.jpg";
+import heroPhoto2 from "../assets/footer-gallery-2.jpg";
+import heroPhoto3 from "../assets/footer-gallery-3.jpg";
 import MemberForm from "../components/MemberForm";
 import GetInvolvedInterestForm from "../components/GetInvolvedInterestForm";
 import { CONTACT_INFO } from "../config/contact";
@@ -33,19 +36,19 @@ export default function GetInvolvedPage() {
         <section className="relative isolate min-h-[420px] h-[58vh] max-h-[680px] md:min-h-[560px] overflow-hidden bg-[#092541] px-3 py-3 sm:px-5 sm:py-5">
             <div className="absolute inset-3 sm:inset-5 grid grid-cols-2 grid-rows-2 gap-2 sm:gap-3 md:grid-cols-4 md:grid-rows-2 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden">
                 <div className="col-span-2 row-span-2 md:col-span-2">
-                    <img src="/images/real/girls-study-group-mat.jpg" alt="Girls learning together in a community study group" className="h-full w-full object-cover" />
+                    <img src={heroPhoto1} alt="Girls learning together in a community study group" className="h-full w-full object-cover" />
                 </div>
                 <div className="hidden md:block">
-                    <img src="/images/real/awareness-poster-viewing.jpg" alt="Community awareness activity" className="h-full w-full object-cover" />
+                    <img src={heroPhoto2} alt="Community awareness activity" className="h-full w-full object-cover" />
                 </div>
                 <div className="hidden md:block">
-                    <img src="/images/real/women_community_meeting.jpg" alt="Women participating in a community meeting" className="h-full w-full object-cover" />
+                    <img src={heroPhoto3} alt="Women participating in a community meeting" className="h-full w-full object-cover" />
                 </div>
                 <div className="col-span-1 md:col-span-2">
-                    <img src="/images/real/tree_plantation.jpg" alt="Community environmental activity" className="h-full w-full object-cover" />
+                    <img src={heroPhoto1} alt="Community environmental activity" className="h-full w-full object-cover" />
                 </div>
                 <div className="col-span-1 md:col-span-2">
-                    <img src="/images/real/stationery-distribution.jpg" alt="Learning materials being shared" className="h-full w-full object-cover" />
+                    <img src={heroPhoto2} alt="Learning materials being shared" className="h-full w-full object-cover" />
                 </div>
             </div>
             <div className="absolute inset-3 sm:inset-5 rounded-[1.5rem] sm:rounded-[2rem] bg-gradient-to-r from-[#07192d]/80 via-[#07192d]/55 to-[#07192d]/35" />
