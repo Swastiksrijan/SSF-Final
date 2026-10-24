@@ -190,7 +190,7 @@ export default function ImsLetterhead() {
         enclosures: f.enclosures, cc: f.cc,
         signatoryName: outputLetter.signatoryName, signatoryDesignation: f.signatoryDesignation,
         signatoryMode: f.signatoryMode || 'single',
-        signature: isSecretary && f.signature === true, seal: f.seal !== false, sealPosition: f.sealPosition || 'left', signatoryMode: f.signatoryMode || 'single',
+        signature: isSecretary && f.signature === true, seal: f.seal !== false, sealPosition: f.sealPosition || 'left',
         language: pdfLang, watermark,
       },
     };
@@ -327,7 +327,7 @@ export default function ImsLetterhead() {
                 <span className="rounded-full bg-slate-100 px-2 py-1 text-[10px] font-bold text-slate-500">A4</span>
               </div>
               <div className="mt-4 overflow-hidden rounded-xl border border-slate-200 bg-slate-100">
-                {sheet ? <iframe title="SSF A4 letter preview" src={sheet} className="h-[780px] w-full border-0" /> : <div className="grid h-[780px] place-items-center text-slate-400"><Loader2 size={20} className="animate-spin" /></div>}
+                {sheet ? <iframe title="SSF A4 letter preview" src={sheet} className="h-[70vh] min-h-[520px] w-full border-0 lg:h-[880px]" /> : <div className="grid h-[780px] place-items-center text-slate-400"><Loader2 size={20} className="animate-spin" /></div>}
               </div>
             </section>
             <section className="rounded-2xl border border-slate-200 bg-white p-4 sm:p-5">
