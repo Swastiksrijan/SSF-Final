@@ -1055,52 +1055,84 @@ export default function Home() {
         </div>
       </section>
 
-      {/* ================= FOUNDER'S MESSAGE ================= */}
-      <section className="bg-gradient-to-br from-[#EAF0F6] via-white to-[#FAF9F5] px-5 py-20 md:px-8 md:py-28 border-t border-slate-200">
-        <div className="container mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.7fr_1.3fr]">
-          
-          <div className="text-center lg:text-left">
-            <div className="relative mx-auto h-52 w-52 overflow-hidden rounded-3xl border-4 border-white bg-white p-1.5 shadow-2xl lg:mx-0 group">
-              <OptimizedImage 
-                src="/Teams_Images/ramesh_pandey.jpg?v=2" 
-                alt="Ramesh Pandey, Founder and President of Swastik Srijan Foundation" 
-                className="h-full w-full rounded-2xl object-cover group-hover:scale-105 transition-transform duration-500" 
-              />
-            </div>
-            <div className="mt-4">
-              <span className="inline-block text-xs font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-3 py-1 rounded-full border border-amber-200">
-                Foundation Leadership
-              </span>
-            </div>
+      {/* ================= FOUNDER'S MESSAGE — SIGNATURE LEADERSHIP ================= */}
+      <section className="relative isolate overflow-hidden border-y border-[#E2E7E8] bg-[#F8F7F2] px-5 py-20 sm:px-8 md:py-28">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+          <div className="absolute -right-32 -top-28 h-[28rem] w-[28rem] rounded-full border border-[#12345A]/[0.07] md:h-[42rem] md:w-[42rem]" />
+          <div className="absolute -right-16 -top-12 h-[21rem] w-[21rem] rounded-full border border-[#176447]/[0.07] md:h-[32rem] md:w-[32rem]" />
+          <div className="absolute bottom-0 left-0 h-1 w-36 bg-gradient-to-r from-[#176447] via-[#D5B66A] to-transparent" />
+        </div>
+
+        <div className="container mx-auto max-w-7xl">
+          <div className="mb-10 flex flex-wrap items-center gap-3 md:mb-14">
+            <span className="h-px w-10 bg-[#176447]" />
+            <span className="text-[11px] font-bold uppercase tracking-[0.24em] text-[#176447]">Leadership & Institutional Purpose</span>
+            <span className="rounded-full border border-[#D9DFD9] bg-white/70 px-3 py-1 text-[10px] font-semibold tracking-[0.12em] text-[#52616A]">EST. DECEMBER 2013</span>
           </div>
 
-          <div className="space-y-5">
-            <div>
-              <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Message from the Founder</p>
-              <h2 className="mt-2 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
-                Mr. Ramesh Pandey
-                <span className="block mt-1 font-sans text-base font-semibold text-[#176447]">Founder & President</span>
+          <div className="grid items-center gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:gap-20">
+            <div className="relative mx-auto w-full max-w-[390px] lg:mx-0">
+              <div aria-hidden="true" className="absolute -left-3 -top-3 h-24 w-24 rounded-tl-[2rem] border-l-2 border-t-2 border-[#D5B66A] sm:-left-5 sm:-top-5 sm:h-32 sm:w-32" />
+              <div aria-hidden="true" className="absolute -bottom-3 -right-3 h-24 w-24 rounded-br-[2rem] border-b-2 border-r-2 border-[#176447]/70 sm:-bottom-5 sm:-right-5 sm:h-32 sm:w-32" />
+              <div className="relative overflow-hidden rounded-[1.6rem] border border-white bg-white p-2 shadow-[0_24px_65px_-28px_rgba(18,52,90,0.48)] sm:rounded-[2rem] sm:p-3">
+                <div className="relative aspect-[4/4.7] overflow-hidden rounded-[1.15rem] bg-[#E9ECE8] sm:rounded-[1.45rem]">
+                  <OptimizedImage
+                    src="/Teams_Images/ramesh_pandey.jpg?v=2"
+                    alt="Ramesh Pandey, Founder and President of Swastik Srijan Foundation"
+                    className="h-full w-full object-cover object-center transition-transform duration-700 hover:scale-[1.025]"
+                  />
+                  <div className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#07192C]/75 via-[#07192C]/20 to-transparent" />
+                  <div className="absolute bottom-4 left-4 right-4 flex items-end justify-between gap-3 sm:bottom-5 sm:left-5 sm:right-5">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/75">Institutional Leadership</p>
+                      <p className="mt-1 text-sm font-semibold text-white sm:text-base">Swastik Srijan Foundation</p>
+                    </div>
+                    <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-white/35 bg-white/15 text-[#F7D88A] backdrop-blur-md">
+                      <FaSeedling className="text-lg" />
+                    </span>
+                  </div>
+                </div>
+              </div>
+              <div className="relative mx-auto mt-5 flex w-fit items-center gap-3 rounded-full border border-[#E0E4DF] bg-white/90 px-5 py-2.5 shadow-sm">
+                <span className="h-2 w-2 rounded-full bg-[#176447]" />
+                <span className="text-[11px] font-bold uppercase tracking-[0.15em] text-[#12345A]">Founder & President</span>
+              </div>
+            </div>
+
+            <div className="relative pt-2 lg:py-5">
+              <div className="flex items-center gap-2 text-[#176447]">
+                <FaQuoteLeft className="text-lg opacity-80" />
+                <span className="text-[11px] font-bold uppercase tracking-[0.22em]">A Message from Our Founder</span>
+              </div>
+
+              <h2 className="mt-5 font-serif text-4xl font-bold leading-[1.08] tracking-tight text-[#12345A] sm:text-5xl md:text-6xl">
+                Mr. Ramesh <span className="text-[#176447]">Pandey</span>
               </h2>
-            </div>
+              <p className="mt-4 flex flex-wrap items-center gap-3 text-sm font-semibold text-[#52616A] sm:text-base">
+                <span className="h-px w-8 bg-[#D5B66A]" />
+                Founder & President, Swastik Srijan Foundation
+              </p>
 
-            <blockquote className="border-l-4 border-amber-400 pl-6 font-serif text-xl font-medium leading-relaxed text-[#12345A] md:text-2xl">
-              “Service becomes truly transformative when it reaches the community with dignity, ethical cooperation, and lasting hope.”
-            </blockquote>
+              <blockquote className="relative mt-8 max-w-3xl border-l-[3px] border-[#D5B66A] pl-5 font-serif text-xl font-medium leading-relaxed text-[#12345A] sm:pl-7 sm:text-2xl md:text-[1.75rem] md:leading-[1.55]">
+                “Service becomes truly transformative when it reaches the community with dignity, ethical cooperation, and lasting hope.”
+              </blockquote>
 
-            <p className="leading-relaxed text-slate-600 text-base sm:text-lg">
-              Swastik Srijan Foundation was conceived in December 2013 on the conviction that positive societal progress thrives when people unite, learn together, and execute accountable grassroots actions. We welcome institutional partners, CSR teams, and compassionate citizens to review our work and walk together.
-            </p>
+              <p className="mt-7 max-w-2xl text-[15px] leading-8 text-[#52616A] sm:text-base sm:leading-8">
+                Swastik Srijan Foundation was conceived in December 2013 on the conviction that positive societal progress thrives when people unite, learn together, and take accountable action at the grassroots. We welcome institutional partners, CSR teams, and compassionate citizens to review our work and walk together.
+              </p>
 
-            <div>
-              <Link 
-                to="/About" 
-                className="inline-flex items-center gap-2 rounded-full border border-[#07192C] bg-white px-6 py-3 text-sm font-bold text-[#12345A] transition-all duration-300 hover:bg-[#12345A] hover:text-white"
-              >
-                Read SSF Governance Profile <FaArrowRight className="text-xs" />
-              </Link>
+              <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
+                <Link
+                  to="/About"
+                  className="group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#12345A] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_-12px_rgba(18,52,90,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#176447] hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#176447]"
+                >
+                  Read SSF Governance Profile
+                  <FaArrowRight className="text-xs transition-transform duration-300 group-hover:translate-x-1" />
+                </Link>
+                <span className="text-xs font-medium tracking-wide text-[#748087]">Service · Dignity · Accountability</span>
+              </div>
             </div>
           </div>
-
         </div>
       </section>
 
