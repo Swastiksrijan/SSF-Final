@@ -73,7 +73,7 @@ export default function Home() {
         <div className="absolute -right-36 -top-28 -z-10 h-96 w-96 rounded-full border border-[#F7A814]/25 shadow-[0_0_0_36px_rgba(247,168,20,0.035),0_0_0_76px_rgba(247,168,20,0.025)] md:right-[-8rem] md:top-[-7rem] md:h-[680px] md:w-[680px]" />
         <div className="container mx-auto grid max-w-7xl items-center gap-10 px-5 md:px-10 lg:grid-cols-[minmax(0,1fr)_20rem] lg:gap-12">
           <Motion.div initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="max-w-4xl motion-reduce:transform-none">
-            <p className="relative left-2.5 inline-flex items-center gap-2 rounded-full border border-[#F7A814]/45 bg-white/[0.08] px-4 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FFD277] shadow-lg shadow-black/10 backdrop-blur-md sm:text-xs">
+            <p className="relative left-10 inline-flex items-center gap-2 rounded-full border border-[#F7A814]/45 bg-white/[0.08] px-4 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FFD277] shadow-lg shadow-black/10 backdrop-blur-md sm:text-xs">
               <FaSeedling /> Registered Society · Since 2013
             </p>
             <p className="mt-7 text-lg font-semibold tracking-[0.025em] text-white/95 sm:text-xl md:text-2xl">Swastik Srijan Foundation Samiti</p>
