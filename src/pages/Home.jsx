@@ -306,17 +306,17 @@ export default function Home() {
             </div>
 
             {/* 2.5 Inch Right Placed Mission Card */}
-            <div className="relative w-full rounded-3xl border border-white/20 bg-gradient-to-b from-white/[0.12] to-white/[0.04] p-8 shadow-2xl backdrop-blur-xl">
-              <span className="inline-block rounded-full bg-amber-400/20 px-3 py-1 text-[11px] font-black uppercase tracking-[0.2em] text-amber-300">
+            <div className="relative w-full max-w-[17rem] self-end overflow-hidden rounded-2xl border border-amber-300/30 bg-gradient-to-br from-[#102F4D]/95 via-[#0B2340]/95 to-[#07192C]/95 p-5 shadow-[0_18px_45px_-18px_rgba(0,0,0,0.75)] backdrop-blur-xl before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-amber-300/80 before:to-transparent">
+              <span className="inline-flex items-center rounded-full border border-amber-300/25 bg-amber-300/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.16em] text-amber-200">
                 Foundational Mission
               </span>
-              <p className="mt-5 font-serif text-3xl font-bold leading-snug text-white">
+              <p className="mt-3 font-serif text-2xl font-bold leading-tight text-white">
                 Service with purpose.
               </p>
-              <p className="mt-2 font-serif text-3xl italic leading-snug text-amber-300">
+              <p className="mt-1.5 font-serif text-2xl italic leading-tight text-amber-300">
                 Progress through people.
               </p>
-              <p className="mt-4 text-xs leading-relaxed text-slate-300">
+              <p className="mt-3 border-t border-white/10 pt-3 text-[11px] leading-relaxed text-slate-300">
                 100% direct field execution in rural and semi-urban communities with zero intermediary leakage.
               </p>
             </div>
