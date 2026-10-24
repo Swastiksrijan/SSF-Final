@@ -366,74 +366,38 @@ export default function Home() {
                   <span>Your Digital Connection • नया</span>
                 </div>
 
-                <h3 className="mt-4 font-serif text-xl sm:text-2xl font-bold text-white">
-                  Join the Mission. Make a Difference.
+                <h3 className="mt-2 font-serif text-xl sm:text-2xl font-bold text-white">
+                  Join SSF
                 </h3>
-                
-                <p className="mt-2 text-xs text-slate-300 leading-relaxed font-hindi">
-                  SSF के साथ जुड़ें और अपनी डिजिटल प्रोफ़ाइल बनाएँ। Create your verified account as a Member, Volunteer or Donor.
+                <p className="mt-1 text-xs text-slate-300 leading-relaxed">
+                  Create your verified account and be a part of our mission.
                 </p>
 
-                {/* 4 Interactive Feature Chips */}
-                <div className="mt-5 grid grid-cols-2 gap-2.5">
-                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-amber-400/50 transition-colors">
-                    <FaIdCard className="text-amber-400 text-sm shrink-0" />
-                    <div>
-                      <p className="text-[11px] font-bold text-white leading-none">Digital ID Card</p>
-                      <p className="text-[10px] text-slate-400 font-hindi leading-tight mt-0.5">पहचान पत्र</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-amber-400/50 transition-colors">
-                    <FaCertificate className="text-emerald-400 text-sm shrink-0" />
-                    <div>
-                      <p className="text-[11px] font-bold text-white leading-none">Certificates</p>
-                      <p className="text-[10px] text-slate-400 font-hindi leading-tight mt-0.5">प्रमाण-पत्र</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-amber-400/50 transition-colors">
-                    <FaHeart className="text-rose-400 text-sm shrink-0" />
-                    <div>
-                      <p className="text-[11px] font-bold text-white leading-none">Donor Profile</p>
-                      <p className="text-[10px] text-slate-400 font-hindi leading-tight mt-0.5">दाता प्रोफ़ाइल</p>
-                    </div>
-                  </div>
-
-                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-amber-400/50 transition-colors">
-                    <FaUserCircle className="text-sky-400 text-sm shrink-0" />
-                    <div>
-                      <p className="text-[11px] font-bold text-white leading-none">Member Profile</p>
-                      <p className="text-[10px] text-slate-400 font-hindi leading-tight mt-0.5">सदस्य प्रोफ़ाइल</p>
-                    </div>
-                  </div>
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <Link to="/Signup" className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-3 py-2 text-xs font-black text-[#07192C] shadow-md hover:brightness-110 transition-all">
+                    Join SSF
+                  </Link>
+                  <Link to="/Login" className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition-all">
+                    <FaSignInAlt className="mr-1.5" /> Login
+                  </Link>
                 </div>
-              </div>
 
-              {/* Action Buttons */}
-              <div className="mt-6 pt-4 border-t border-white/10 flex flex-wrap items-center gap-2.5">
-                <Link
-                  to="/JoinUs"
-                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 px-4 py-2.5 text-xs font-black text-[#07192C] shadow-md hover:brightness-110 transition-all"
-                >
-                  Join SSF / Sign Up <FaArrowRight className="text-[10px]" />
+                <div className="mt-3 grid grid-cols-2 gap-2">
+                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white">Full Name</div>
+                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white">Email</div>
+                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white">Mobile Number</div>
+                  <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white">Password <span className="block text-[9px] text-slate-300">Minimum 8 characters</span></div>
+                </div>
+
+                <Link to="/Signup" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-4 py-2.5 text-xs font-black text-[#07192C] shadow-md hover:brightness-110 transition-all">
+                  Create Account <FaArrowRight className="text-[10px]" />
                 </Link>
 
-                <Link
-                  to="/Login"
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/5 px-3.5 py-2.5 text-xs font-bold text-white hover:bg-white/10 transition-all"
-                >
-                  <FaSignInAlt className="text-xs" /> Login
-                </Link>
-
-                <button
-                  onClick={handleShare}
-                  type="button"
-                  title="Share Foundation"
-                  className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 p-2.5 text-xs font-bold text-slate-300 hover:text-white hover:bg-white/10 transition-all"
-                >
-                  <FaShareAlt />
-                </button>
+                <div className="mt-3 flex items-center justify-center gap-2">
+                  <a href="https://wa.me/919718346691?text=New%20Signup%0AName%3A%20%0AEmail%3A%20%0APhone%3A%20" target="_blank" rel="noreferrer" className="inline-flex flex-1 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/10 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500/20 transition-all">WhatsApp</a>
+                  <span className="h-6 w-px bg-white/25" />
+                  <a href="mailto:info@swastiksrijan.in?subject=New%20signup%20alert&body=New%20login%2Fsignup%20activity%20on%20website." className="inline-flex flex-1 items-center justify-center rounded-full border border-sky-400/60 bg-sky-500/10 px-3 py-2 text-xs font-bold text-white hover:bg-sky-500/20 transition-all">Email</a>
+                </div>
               </div>
             </div>
 
