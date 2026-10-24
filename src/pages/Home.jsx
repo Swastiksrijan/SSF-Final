@@ -736,8 +736,8 @@ export default function Home() {
 
       {/* ================= FOCUS AREAS / WORK PILLARS ================= */}
       <section className="relative isolate overflow-hidden bg-[#FAF9F5] px-5 py-20 md:px-8 md:py-28 border-t border-slate-200/90">
-        {/* Focus-wheel watermark: the former side illustration now sits softly behind the section content. */}
-        <div aria-hidden="true" className="pointer-events-none absolute right-[-7rem] top-0 z-[-1] flex h-[32rem] w-[32rem] items-center justify-center opacity-[0.10] md:right-[-2rem] md:top-[-3rem] md:h-[42rem] md:w-[42rem]">
+        {/* Smaller, subtle focus-wheel watermark, layered behind the section content. */}
+        <div aria-hidden="true" className="pointer-events-none absolute right-[-3rem] top-12 z-0 flex h-[22rem] w-[22rem] items-center justify-center opacity-[0.08] md:right-6 md:top-8 md:h-[29rem] md:w-[29rem]">
           <img src={BRAND.focusWheel} alt="" loading="lazy" className="h-full w-full object-contain" />
         </div>
         <div className="container mx-auto max-w-7xl relative z-10">
@@ -761,9 +761,9 @@ export default function Home() {
               <Link 
                 to={item.path} 
                 key={item.title} 
-                className="group flex gap-5 rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400 hover:shadow-xl"
+                className="group flex gap-4 rounded-3xl border border-slate-200 bg-white/95 p-5 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400 hover:shadow-xl"
               >
-                <span className="relative h-16 w-16 shrink-0 overflow-hidden rounded-2xl border-2 border-amber-400 bg-slate-50 shadow-sm">
+                <span className="relative h-12 w-12 shrink-0 overflow-hidden rounded-xl border-2 border-amber-400 bg-slate-50 shadow-sm sm:h-14 sm:w-14">
                   <img src={item.image} alt="" loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-110" />
                 </span>
                 
