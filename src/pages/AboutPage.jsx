@@ -1,4 +1,4 @@
-import { motion, useReducedMotion } from "framer-motion";
+import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
   FaArrowRight,
@@ -9,124 +9,189 @@ import {
   FaShieldAlt,
   FaUsers,
   FaBullseye,
+  FaLeaf,
   FaRegCompass,
   FaQuoteLeft,
 } from "react-icons/fa";
 import OptimizedImage from "../components/OptimizedImage";
-import TrustSection from "../components/TrustSection";
 import footerImg1 from "../assets/footer-gallery-1.jpg";
 import footerImg2 from "../assets/footer-gallery-2.jpg";
 import footerImg3 from "../assets/footer-gallery-3.jpg";
 
 const organizationFacts = [
-  { icon: FaCalendarAlt, label: "Established", value: "December 2013", detail: "A journey of service and learning" },
-  { icon: FaShieldAlt, label: "Registration", value: "05/22/03/11448/13", detail: "Madhya Pradesh Societies Act, 1973", compact: true },
-  { icon: FaGlobeAsia, label: "Area of Work", value: "Pan India", detail: "A vision for communities across India" },
-  { icon: FaHeart, label: "Registered Office", value: "Rewa, M.P.", detail: "Madhya Pradesh, India" },
+  {
+    icon: FaCalendarAlt,
+    label: "Established",
+    value: "December 2013",
+    detail: "A journey of service and learning",
+  },
+  {
+    icon: FaShieldAlt,
+    label: "Registration",
+    value: "05/22/03/11448/13",
+    detail: "Madhya Pradesh Societies Act, 1973",
+    compact: true,
+  },
+  {
+    icon: FaGlobeAsia,
+    label: "Area of Work",
+    value: "Pan India",
+    detail: "A vision for communities across India",
+  },
+  {
+    icon: FaHeart,
+    label: "Registered Office",
+    value: "Rewa, M.P.",
+    detail: "Madhya Pradesh, India",
+  },
 ];
 
 const quickLinks = [
-  { to: "/Mission", eyebrow: "Our direction", title: "Mission & Vision", description: "The principles and values that guide our work.", action: "Discover our vision" },
-  { to: "/Objectives", eyebrow: "Our priorities", title: "Our Objectives", description: "The focus areas that shape our community initiatives.", action: "Explore objectives" },
-  { to: "/Team", eyebrow: "People behind the work", title: "Meet Our Team", description: "The leadership and volunteers working toward our purpose.", action: "Meet the team" },
+  {
+    to: "/Mission",
+    eyebrow: "Our direction",
+    title: "Mission & Vision",
+    description: "The principles and values that guide our work.",
+    action: "Discover our vision",
+  },
+  {
+    to: "/Objectives",
+    eyebrow: "Our priorities",
+    title: "Our Objectives",
+    description: "The focus areas that shape our community initiatives.",
+    action: "Explore objectives",
+  },
+  {
+    to: "/Team",
+    eyebrow: "People behind the work",
+    title: "Meet Our Team",
+    description: "The leadership and volunteers working toward our purpose.",
+    action: "Meet the team",
+  },
 ];
 
 const principles = [
-  { icon: FaBullseye, number: "01", title: "Our Mission", description: "To contribute to inclusive community development through education, skills, health, awareness, participation and practical support." },
-  { icon: FaHandshake, number: "02", title: "Our Approach", description: "We encourage cooperation, learning, responsible awareness and partnerships that can create meaningful and sustainable outcomes." },
-  { icon: FaHeart, number: "03", title: "Our Values", description: "Transparency, dignity, equal opportunity, cooperation and service without discrimination guide our work." },
+  {
+    icon: FaBullseye,
+    number: "01",
+    title: "Our Mission",
+    description:
+      "To contribute to inclusive community development through education, skills, health, awareness, participation and practical support.",
+  },
+  {
+    icon: FaHandshake,
+    number: "02",
+    title: "Our Approach",
+    description:
+      "We encourage cooperation, learning, responsible awareness and partnerships that can create meaningful and sustainable outcomes.",
+  },
+  {
+    icon: FaHeart,
+    number: "03",
+    title: "Our Values",
+    description:
+      "Transparency, dignity, equal opportunity, cooperation and service without discrimination guide our work.",
+  },
 ];
 
 const journey = [
-  { years: "2013–2017", title: "Laying the foundation", description: "Building the foundation, community relationships and early social initiatives." },
-  { years: "2018–2024", title: "Learning through service", description: "Continuing social initiatives, learning activities and community-focused work." },
-  { years: "2025–2026", title: "Strengthening participation", description: "Developing digital outreach, awareness and opportunities for wider participation." },
+  {
+    years: "2013–2017",
+    title: "Laying the foundation",
+    description:
+      "Building the foundation, community relationships and early social initiatives.",
+  },
+  {
+    years: "2018–2024",
+    title: "Learning through service",
+    description:
+      "Continuing social initiatives, learning activities and community-focused work.",
+  },
+  {
+    years: "2025–2026",
+    title: "Strengthening participation",
+    description:
+      "Developing digital outreach, awareness and opportunities for wider participation.",
+  },
 ];
 
 const fadeUp = {
   hidden: { opacity: 0, y: 22 },
   visible: { opacity: 1, y: 0 },
 };
-const noMotion = {
-  hidden: { opacity: 1, y: 0 },
-  visible: { opacity: 1, y: 0 },
-};
 
 export default function AboutPage() {
-  const reduce = useReducedMotion();
-  const fade = reduce ? noMotion : fadeUp;
-
   return (
     <main className="min-h-screen overflow-hidden bg-white font-sans text-[#26343D]">
       {/* Hero */}
-      <section className="relative isolate min-h-[520px] overflow-hidden bg-[#092541] text-white sm:min-h-[570px] lg:min-h-[640px]">
-        <div className="absolute inset-0 grid grid-cols-3 gap-1.5 p-2 sm:gap-2 sm:p-3 lg:gap-3 lg:p-4" aria-hidden="true">
+      <section className="relative isolate min-h-[600px] overflow-hidden bg-[#071D34] text-white sm:min-h-[660px] lg:min-h-[740px]">
+        <div className="absolute inset-0 grid grid-cols-3 gap-1 p-1 sm:gap-2 sm:p-2 lg:gap-3 lg:p-3" aria-hidden="true">
           {[footerImg1, footerImg2, footerImg3].map((img, index) => (
             <div
               key={index}
-              className={`relative overflow-hidden rounded-xl sm:rounded-2xl lg:rounded-[1.75rem] ${
+              className={`relative overflow-hidden rounded-lg sm:rounded-2xl lg:rounded-[2rem] ${
                 index === 1 ? "translate-y-4 sm:translate-y-6" : ""
               }`}
             >
               <img
                 src={img}
                 alt=""
-                className="h-full w-full scale-[1.02] object-cover object-center opacity-100 [filter:brightness(1.08)_contrast(1.08)_saturate(1.12)]"
+                className="h-full w-full scale-[1.015] object-cover object-center opacity-100 [filter:brightness(1.12)_contrast(1.10)_saturate(1.10)] transition-transform duration-700"
                 loading={index === 0 ? "eager" : "lazy"}
               />
             </div>
           ))}
         </div>
-        <div className="absolute inset-0 bg-[#092541]/18" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071d34]/78 via-[#092541]/28 to-[#092541]/[0.08]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071d34]/65 via-transparent to-[#071d34]/10" />
+        <div className="absolute inset-0 bg-[#092541]/[0.04]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#06182B]/70 via-[#092541]/[0.14] to-[#092541]/[0.02]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071d34]/45 via-transparent to-[#071d34]/[0.04]" />
         <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#E6530E]/15 blur-3xl" aria-hidden="true" />
         <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#176447]/25 blur-3xl" aria-hidden="true" />
 
-        <div className="relative z-10 mx-auto flex min-h-[520px] max-w-7xl items-center px-5 py-20 sm:min-h-[570px] sm:px-8 lg:min-h-[640px] lg:px-12">
+        <div className="relative z-10 mx-auto flex min-h-[600px] max-w-7xl items-center px-5 py-20 sm:min-h-[660px] sm:px-8 lg:min-h-[740px] lg:px-12">
           <motion.div
             initial="hidden"
             animate="visible"
-            variants={fade}
+            variants={fadeUp}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="max-w-4xl"
+            className="max-w-5xl"
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.16em] text-[#FFD28A] backdrop-blur-md sm:text-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-[#06182B]/35 px-4 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FFE0A3] shadow-lg shadow-black/10 backdrop-blur-md sm:text-sm">
               <span className="h-2 w-2 rounded-full bg-[#F7A814]" />
               Swastik Srijan Foundation
-              <span className="text-white/85">/</span>
+              <span className="text-white/55">/</span>
               स्थापना 2013
             </div>
-            <h1 className="mt-7 max-w-4xl text-4xl font-black leading-[1.04] tracking-[-0.04em] text-white [text-shadow:0_3px_24px_rgba(0,0,0,0.35)] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.25rem]">
+            <h1 className="mt-8 max-w-5xl text-[2.65rem] font-black leading-[0.99] tracking-[-0.045em] text-white [text-shadow:0_3px_28px_rgba(0,0,0,0.48)] sm:text-6xl md:text-7xl lg:text-[5.4rem] xl:text-[6.1rem]">
               A purpose rooted in{" "}
               <span className="text-[#FFC56D]">humanity.</span>
               <span className="mt-2 block text-white/95">A future shaped together.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.28)] sm:text-lg md:text-xl">
+            <p className="mt-7 max-w-2xl text-base font-semibold leading-8 text-white [text-shadow:0_2px_16px_rgba(0,0,0,0.42)] sm:text-lg md:text-xl lg:text-[1.35rem] lg:leading-9">
               Empowering communities through education, health, awareness and
               sustainable development—with dignity, participation and care.
             </p>
-            <p className="mt-3 max-w-2xl text-base leading-8 text-white/95 [text-shadow:0_2px_10px_rgba(0,0,0,0.25)] sm:text-lg">
+            <p className="mt-4 max-w-2xl text-base font-medium leading-8 text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.42)] sm:text-lg">
               शिक्षा, स्वास्थ्य, जागरूकता और सतत विकास के माध्यम से समुदायों के
               साथ मिलकर सकारात्मक बदलाव की दिशा में प्रयास।
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-9 flex flex-wrap gap-3">
               <Link
                 to="/Mission"
-                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F7A814] px-6 py-3 text-sm font-extrabold text-[#092541] shadow-lg shadow-black/15 transition duration-200 hover:-translate-y-0.5 hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#F7A814]/40"
+                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#FFC247] to-[#F7A814] px-7 py-4 text-sm font-black text-[#092541] shadow-[0_16px_35px_-15px_rgba(0,0,0,0.55)] transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-[#F7A814]/45 sm:px-8"
               >
                 Discover our purpose <FaArrowRight aria-hidden="true" />
               </Link>
               <Link
                 to="/GetInvolved"
-                className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/45 bg-white/10 px-6 py-3 text-sm font-bold text-white backdrop-blur transition duration-200 hover:-translate-y-0.5 hover:bg-white hover:text-[#092541] focus:outline-none focus:ring-4 focus:ring-white/30"
+                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-white/55 bg-[#06182B]/25 px-7 py-4 text-sm font-extrabold text-white shadow-lg backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-white hover:bg-white hover:text-[#092541] focus:outline-none focus:ring-4 focus:ring-white/35 sm:px-8"
               >
                 Be part of the journey <FaHeart aria-hidden="true" />
               </Link>
             </div>
-            <div className="mt-9 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs font-semibold tracking-wide text-white/90 sm:text-sm">
+            <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 text-xs font-bold tracking-wide text-white/90 sm:text-sm">
               <span className="inline-flex items-center gap-2"><FaShieldAlt className="text-[#FFC56D]" /> Registered society</span>
-              <span className="hidden h-1 w-1 rounded-full bg-white/60 sm:block" />
+              <span className="hidden h-1 w-1 rounded-full bg-white/45 sm:block" />
               <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#FFC56D]" /> Pan-India area of work</span>
             </div>
           </motion.div>
@@ -136,7 +201,7 @@ export default function AboutPage() {
 
       {/* Organization facts */}
       <section className="relative z-20 -mt-5 px-4 sm:-mt-8 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 overflow-hidden rounded-3xl border border-[#E5EBF0] bg-white shadow-[0_28px_80px_-38px_rgba(9,37,65,0.38)] sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 overflow-hidden rounded-[1.75rem] border border-white/80 bg-white shadow-[0_30px_90px_-40px_rgba(9,37,65,0.42)] ring-1 ring-[#12345A]/[0.04] sm:grid-cols-2 lg:grid-cols-4">
           {organizationFacts.map(({ icon: Icon, label, value, detail, compact }, index) => (
             <div
               key={label}
@@ -144,7 +209,7 @@ export default function AboutPage() {
                 index > 0 ? "border-t border-[#E8EDF1] sm:border-t-0 lg:border-l" : ""
               } ${index === 2 ? "sm:border-l sm:border-[#E8EDF1] lg:border-l" : ""}`}
             >
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-[#FFF4E4] text-xl text-[#D94C13] transition duration-200 group-hover:scale-105 group-hover:bg-[#F7A814] group-hover:text-[#092541]">
+              <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#FFF3DE] to-[#FFE5B8] text-xl text-[#C74713] shadow-sm transition duration-300 group-hover:-translate-y-1 group-hover:shadow-md">
                 <Icon aria-hidden="true" />
               </div>
               <div className="min-w-0">
@@ -160,13 +225,13 @@ export default function AboutPage() {
       </section>
 
       {/* Introduction */}
-      <section className="px-5 py-20 sm:px-8 sm:py-24 lg:px-12">
+      <section className="px-5 py-24 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto grid max-w-7xl gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:items-start lg:gap-20">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.25 }}
-            variants={fade}
+            variants={fadeUp}
             transition={{ duration: 0.55 }}
           >
             <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#D94C13] sm:text-sm">About SSF</p>
@@ -196,7 +261,7 @@ export default function AboutPage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
-                variants={fade}
+                variants={fadeUp}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
                 className={index === 0 ? "sm:col-span-2" : ""}
               >
@@ -219,7 +284,7 @@ export default function AboutPage() {
       </section>
 
       {/* Founder message */}
-      <section className="relative overflow-hidden border-y border-[#E7EBEF] bg-[#F7F6F1] px-5 py-20 sm:px-8 sm:py-24 lg:px-12">
+      <section className="relative overflow-hidden border-y border-[#E7EBEF] bg-[linear-gradient(135deg,#FBFAF6_0%,#F3F6F3_55%,#F8F4EC_100%)] px-5 py-24 sm:px-8 sm:py-28 lg:px-12">
         <div className="absolute -right-24 -top-24 h-80 w-80 rounded-full border-[50px] border-[#176447]/[0.04]" aria-hidden="true" />
         <div className="relative mx-auto max-w-7xl">
           <div className="mb-10 max-w-2xl">
@@ -240,7 +305,7 @@ export default function AboutPage() {
               <h3 className="relative mt-6 text-2xl font-extrabold">Mr. Ramesh Pandey</h3>
               <p className="relative mt-2 text-sm font-bold text-[#FFC56D]">Founder & President</p>
               <div className="relative mt-5 h-px w-16 bg-white/30" />
-              <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.17em] text-white/85">Swastik Srijan Foundation</p>
+              <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.17em] text-white/65">Swastik Srijan Foundation</p>
             </div>
             <div className="flex flex-col justify-center px-6 py-9 sm:px-10 sm:py-12 lg:px-14">
               <FaQuoteLeft className="text-3xl text-[#F7A814]" aria-hidden="true" />
@@ -273,7 +338,7 @@ export default function AboutPage() {
       </section>
 
       {/* Journey */}
-      <section className="px-5 py-20 sm:px-8 sm:py-24 lg:px-12">
+      <section className="px-5 py-24 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#D94C13] sm:text-sm">Our Journey</p>
@@ -292,7 +357,7 @@ export default function AboutPage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.25 }}
-                variants={fade}
+                variants={fadeUp}
                 transition={{ duration: 0.45, delay: index * 0.1 }}
                 className="relative rounded-3xl border border-[#E7EBEF] bg-gradient-to-br from-white to-[#FBFCFD] p-6 shadow-[0_16px_42px_-28px_rgba(9,37,65,0.42)] transition duration-300 hover:-translate-y-1 hover:border-[#D6E2E9] sm:p-8"
               >
@@ -317,13 +382,13 @@ export default function AboutPage() {
       </section>
 
       {/* Team */}
-      <section className="border-y border-[#E7EBEF] bg-[#F7F6F1] px-5 py-20 sm:px-8 sm:py-24 lg:px-12">
+      <section className="border-y border-[#E7EBEF] bg-[linear-gradient(135deg,#FBFAF6_0%,#F3F6F3_55%,#F8F4EC_100%)] px-5 py-24 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-2 lg:gap-16">
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, amount: 0.25 }}
-            variants={fade}
+            variants={fadeUp}
             transition={{ duration: 0.55 }}
             className="space-y-6"
           >
@@ -349,7 +414,7 @@ export default function AboutPage() {
             </Link>
           </motion.div>
           <motion.div
-            initial={reduce ? false : { opacity: 0, scale: 0.97 }}
+            initial={{ opacity: 0, scale: 0.97 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, amount: 0.25 }}
             transition={{ duration: 0.65 }}
@@ -372,7 +437,7 @@ export default function AboutPage() {
       </section>
 
       {/* Mission, approach and values */}
-      <section className="px-5 py-20 sm:px-8 sm:py-24 lg:px-12">
+      <section className="px-5 py-24 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#D94C13] sm:text-sm">What guides us</p>
@@ -388,11 +453,11 @@ export default function AboutPage() {
                 initial="hidden"
                 whileInView="visible"
                 viewport={{ once: true, amount: 0.2 }}
-                variants={fade}
+                variants={fadeUp}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
                 className="group relative overflow-hidden rounded-3xl border border-[#E7EBEF] bg-gradient-to-br from-white via-white to-[#F8FBF9] p-7 transition duration-300 hover:-translate-y-1 hover:border-[#D6E2E9] hover:shadow-[0_28px_65px_-35px_rgba(9,37,65,0.45)] sm:p-8"
               >
-                <span className="absolute right-6 top-4 text-5xl font-black tracking-tighter text-[#12345A]/[0.05]" aria-hidden="true">{number}</span>
+                <span className="absolute right-6 top-4 text-5xl font-black tracking-tighter text-[#12345A]/[0.05]">{number}</span>
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F4F8F5] text-2xl text-[#176447] transition duration-200 group-hover:bg-[#176447] group-hover:text-white">
                   <Icon aria-hidden="true" />
                 </div>
@@ -406,7 +471,7 @@ export default function AboutPage() {
       </section>
 
       {/* Trust and governance */}
-      <section className="border-t border-[#E7EBEF] bg-[#F7F6F1] px-5 py-20 sm:px-8 sm:py-24 lg:px-12">
+      <section className="border-t border-[#E7EBEF] bg-[linear-gradient(135deg,#FBFAF6_0%,#F3F6F3_55%,#F8F4EC_100%)] px-5 py-24 sm:px-8 sm:py-28 lg:px-12">
         <div className="mx-auto max-w-7xl">
           <div className="mx-auto max-w-3xl text-center">
             <p className="text-xs font-extrabold uppercase tracking-[0.22em] text-[#D94C13] sm:text-sm">Transparency & governance</p>
@@ -460,9 +525,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Verifiable documents and impact numbers (shows only the items you fill in) */}
-      <TrustSection />
-
       {/* Closing call to action */}
       <section className="relative isolate overflow-hidden bg-[#092541] px-5 py-20 text-white sm:px-8 sm:py-24 lg:px-12">
         <div className="absolute inset-0 bg-gradient-to-br from-[#12345A] via-[#092541] to-[#124B3A]" aria-hidden="true" />
@@ -474,7 +536,7 @@ export default function AboutPage() {
           </div>
           <p className="mt-6 text-xs font-extrabold uppercase tracking-[0.22em] text-[#FFC56D] sm:text-sm">Get involved</p>
           <h2 className="mt-3 text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl">Positive change begins when we come together.</h2>
-          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/90 sm:text-lg">
+          <p className="mx-auto mt-5 max-w-2xl text-base leading-8 text-white/75 sm:text-lg">
             Join, volunteer or partner with Swastik Srijan Foundation and contribute
             to meaningful community development.
           </p>
@@ -492,7 +554,7 @@ export default function AboutPage() {
               Volunteer <FaHeart aria-hidden="true" />
             </Link>
           </div>
-          <p className="mt-8 text-sm font-medium text-white/80">Humanity & Truth · मानवता और सत्य</p>
+          <p className="mt-8 text-sm font-medium text-white/55">Humanity & Truth · मानवता और सत्य</p>
         </div>
       </section>
     </main>
