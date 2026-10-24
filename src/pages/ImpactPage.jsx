@@ -125,10 +125,10 @@ export default function ImpactPage() {
                 <div className="absolute inset-0 p-2 sm:p-3 lg:p-4">
                     <div className="grid h-full grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-5">
                         <div className="relative col-span-2 row-span-2 min-h-[600px] overflow-hidden rounded-xl sm:col-span-2 lg:col-span-2">
-                            <img src="/images/community-team-group.jpg" alt="Community members participating together" className="h-full w-full object-cover object-center" />
+                            <img src="/images/real/ssf_event_members.jpg" alt="Swastik Srijan Foundation members at a community event" className="h-full w-full object-cover object-center" />
                         </div>
                         <div className="relative hidden overflow-hidden rounded-xl sm:block">
-                            <img src="/images/real/community-education-meeting.jpg" alt="Community learning and discussion" className="h-full w-full object-cover object-center" />
+                            <img src="/images/real/stationery-distribution.jpg" alt="Educational stationery distribution for learners" className="h-full w-full object-cover object-center" />
                         </div>
                         <div className="relative hidden overflow-hidden rounded-xl sm:block">
                             <img src="/images/real/children-mat-session.jpg" alt="Children participating in a learning session" className="h-full w-full object-cover object-center" />
