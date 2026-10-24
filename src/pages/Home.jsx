@@ -442,7 +442,9 @@ export default function Home() {
       </section>
 
       {/* ================= KEY STATUTORY METRICS STRIP ================= */}
-      <section className="relative border-y border-slate-200/90 bg-gradient-to-r from-white via-slate-50 to-amber-50/40 py-10 shadow-sm md:py-12">
+      <section className="relative overflow-hidden border-y border-[#24496B]/70 bg-gradient-to-br from-[#0B2038] via-[#12345A] to-[#1B4668] py-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] md:py-12">
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.12] bg-[radial-gradient(ellipse_at_18%_20%,rgba(245,190,75,0.55),transparent_35%),radial-gradient(ellipse_at_82%_78%,rgba(125,190,220,0.5),transparent_38%)]" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.06] bg-[url('/assets/new-logo-DCfoGBCm.png')] bg-no-repeat bg-center bg-contain" />
         <div className="container mx-auto grid max-w-7xl gap-5 px-5 sm:grid-cols-2 lg:grid-cols-4 md:px-8">
           {[
             [FaShieldAlt, "Since 2013", "Registered Society (MP Act)", "10+ Years Dedicated Service"],
@@ -452,16 +454,16 @@ export default function Home() {
           ].map(([Icon, value, label, sub]) => (
             <div 
               key={label} 
-              className="group relative overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400/80 hover:shadow-xl"
+              className="group relative overflow-hidden rounded-2xl border border-white/15 bg-white/[0.07] p-6 shadow-lg shadow-black/10 backdrop-blur-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-300/70 hover:bg-white/[0.11] hover:shadow-xl"
             >
               <span aria-hidden="true" className="absolute left-0 top-0 h-full w-1.5 bg-gradient-to-b from-amber-400 to-amber-600" />
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-serif text-2xl font-bold text-[#07192C]">{value}</p>
-                  <p className="mt-1 text-sm font-semibold text-slate-700">{label}</p>
-                  <p className="mt-1 text-xs text-slate-500">{sub}</p>
+                  <p className="font-serif text-2xl font-bold text-white">{value}</p>
+                  <p className="mt-1 text-sm font-semibold text-slate-100">{label}</p>
+                  <p className="mt-1 text-xs text-slate-300">{sub}</p>
                 </div>
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-slate-100 text-[#07192C] transition-colors duration-300 group-hover:bg-[#07192C] group-hover:text-amber-400">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-amber-300/20 bg-white/10 text-amber-300 transition-colors duration-300 group-hover:bg-amber-400 group-hover:text-[#07192C]">
                   <Icon className="text-xl" />
                 </div>
               </div>
