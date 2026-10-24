@@ -403,7 +403,7 @@ export default function Home() {
                   <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white"><span className="block font-bold text-[#F8FAFC]">Digital ID Card & Certificate</span><span className="mt-1 block text-[10px] text-[#CBD5E1]">For eligible participants</span></div>
                 </div>
 
-                <Link to="/Signup" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-4 py-2.5 text-xs font-black text-[#12345A] shadow-md hover:brightness-110 transition-all">
+                <Link to="/Signup" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full border border-[#F7A814] bg-[#12345A] px-4 py-2.5 text-xs font-black text-white shadow-md transition-all hover:-translate-y-0.5 hover:bg-[#176447] hover:shadow-lg">
                   Create Account <FaArrowRight className="text-[10px]" />
                 </Link>
 
