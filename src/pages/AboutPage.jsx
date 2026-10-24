@@ -129,22 +129,22 @@ export default function AboutPage() {
           {[footerImg1, footerImg2, footerImg3].map((img, index) => (
             <div
               key={index}
-              className={`relative overflow-hidden rounded-xl sm:rounded-2xl ${
-                index === 1 ? "translate-y-5 sm:translate-y-8" : ""
+              className={`relative overflow-hidden rounded-xl sm:rounded-2xl lg:rounded-[1.75rem] ${
+                index === 1 ? "translate-y-4 sm:translate-y-6" : ""
               }`}
             >
               <img
                 src={img}
                 alt=""
-                className="h-full w-full scale-105 object-cover object-center opacity-70"
+                className="h-full w-full scale-[1.02] object-cover object-center opacity-100 [filter:brightness(1.08)_contrast(1.08)_saturate(1.12)]"
                 loading={index === 0 ? "eager" : "lazy"}
               />
             </div>
           ))}
         </div>
-        <div className="absolute inset-0 bg-[#092541]/65" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#071d34]/90 via-[#092541]/65 to-[#092541]/45" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071d34] via-transparent to-[#071d34]/35" />
+        <div className="absolute inset-0 bg-[#092541]/18" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#071d34]/78 via-[#092541]/28 to-[#092541]/[0.08]" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071d34]/65 via-transparent to-[#071d34]/10" />
         <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#E6530E]/15 blur-3xl" aria-hidden="true" />
         <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#176447]/25 blur-3xl" aria-hidden="true" />
 
@@ -162,16 +162,16 @@ export default function AboutPage() {
               <span className="text-white/55">/</span>
               स्थापना 2013
             </div>
-            <h1 className="mt-7 max-w-4xl text-4xl font-black leading-[1.08] tracking-[-0.035em] text-white sm:text-5xl md:text-6xl lg:text-7xl">
+            <h1 className="mt-7 max-w-4xl text-4xl font-black leading-[1.04] tracking-[-0.04em] text-white [text-shadow:0_3px_24px_rgba(0,0,0,0.35)] sm:text-5xl md:text-6xl lg:text-7xl xl:text-[5.25rem]">
               A purpose rooted in{" "}
               <span className="text-[#FFC56D]">humanity.</span>
               <span className="mt-2 block text-white/95">A future shaped together.</span>
             </h1>
-            <p className="mt-6 max-w-2xl text-base leading-8 text-slate-100 sm:text-lg md:text-xl">
+            <p className="mt-6 max-w-2xl text-base font-medium leading-8 text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.28)] sm:text-lg md:text-xl">
               Empowering communities through education, health, awareness and
               sustainable development—with dignity, participation and care.
             </p>
-            <p className="mt-3 max-w-2xl text-base leading-8 text-white/80 sm:text-lg">
+            <p className="mt-3 max-w-2xl text-base leading-8 text-white/95 [text-shadow:0_2px_10px_rgba(0,0,0,0.25)] sm:text-lg">
               शिक्षा, स्वास्थ्य, जागरूकता और सतत विकास के माध्यम से समुदायों के
               साथ मिलकर सकारात्मक बदलाव की दिशा में प्रयास।
             </p>
@@ -201,7 +201,7 @@ export default function AboutPage() {
 
       {/* Organization facts */}
       <section className="relative z-20 -mt-5 px-4 sm:-mt-8 sm:px-6 lg:px-8">
-        <div className="mx-auto grid max-w-7xl grid-cols-1 overflow-hidden rounded-3xl border border-[#E5EBF0] bg-white shadow-[0_24px_70px_-35px_rgba(9,37,65,0.35)] sm:grid-cols-2 lg:grid-cols-4">
+        <div className="mx-auto grid max-w-7xl grid-cols-1 overflow-hidden rounded-3xl border border-[#E5EBF0] bg-white shadow-[0_28px_80px_-38px_rgba(9,37,65,0.38)] sm:grid-cols-2 lg:grid-cols-4">
           {organizationFacts.map(({ icon: Icon, label, value, detail, compact }, index) => (
             <div
               key={label}
@@ -267,7 +267,7 @@ export default function AboutPage() {
               >
                 <Link
                   to={item.to}
-                  className="group flex h-full min-h-[190px] flex-col rounded-3xl border border-[#E7EBEF] bg-[#FBFAF7] p-6 transition duration-300 hover:-translate-y-1 hover:border-[#D9E3EA] hover:bg-white hover:shadow-[0_20px_45px_-30px_rgba(9,37,65,0.45)] focus:outline-none focus:ring-4 focus:ring-[#12345A]/15 sm:p-7"
+                  className="group flex h-full min-h-[205px] flex-col rounded-3xl border border-[#E7EBEF] bg-gradient-to-br from-[#FBFAF7] to-white p-6 transition duration-300 hover:-translate-y-1 hover:border-[#D9E3EA] hover:shadow-[0_24px_55px_-30px_rgba(9,37,65,0.45)] focus:outline-none focus:ring-4 focus:ring-[#12345A]/15 sm:p-7"
                 >
                   <span className="text-[11px] font-extrabold uppercase tracking-[0.17em] text-[#D94C13]">{item.eyebrow}</span>
                   <h3 className="mt-3 text-xl font-extrabold text-[#12345A] sm:text-2xl">{item.title}</h3>
@@ -359,7 +359,7 @@ export default function AboutPage() {
                 viewport={{ once: true, amount: 0.25 }}
                 variants={fadeUp}
                 transition={{ duration: 0.45, delay: index * 0.1 }}
-                className="relative rounded-3xl border border-[#E7EBEF] bg-white p-6 shadow-[0_12px_35px_-28px_rgba(9,37,65,0.4)] sm:p-8"
+                className="relative rounded-3xl border border-[#E7EBEF] bg-gradient-to-br from-white to-[#FBFCFD] p-6 shadow-[0_16px_42px_-28px_rgba(9,37,65,0.42)] transition duration-300 hover:-translate-y-1 hover:border-[#D6E2E9] sm:p-8"
               >
                 <div className="relative z-10 flex h-14 w-14 items-center justify-center rounded-2xl border-4 border-white bg-[#FFF1DE] text-xl text-[#D94C13] shadow-sm">
                   {index === 0 ? <FaHeart aria-hidden="true" /> : index === 1 ? <FaUsers aria-hidden="true" /> : <FaGlobeAsia aria-hidden="true" />}
@@ -455,7 +455,7 @@ export default function AboutPage() {
                 viewport={{ once: true, amount: 0.2 }}
                 variants={fadeUp}
                 transition={{ duration: 0.45, delay: index * 0.08 }}
-                className="group relative overflow-hidden rounded-3xl border border-[#E7EBEF] bg-white p-7 transition duration-300 hover:-translate-y-1 hover:shadow-[0_25px_55px_-35px_rgba(9,37,65,0.45)] sm:p-8"
+                className="group relative overflow-hidden rounded-3xl border border-[#E7EBEF] bg-gradient-to-br from-white via-white to-[#F8FBF9] p-7 transition duration-300 hover:-translate-y-1 hover:border-[#D6E2E9] hover:shadow-[0_28px_65px_-35px_rgba(9,37,65,0.45)] sm:p-8"
               >
                 <span className="absolute right-6 top-4 text-5xl font-black tracking-tighter text-[#12345A]/[0.05]">{number}</span>
                 <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-[#F4F8F5] text-2xl text-[#176447] transition duration-200 group-hover:bg-[#176447] group-hover:text-white">
