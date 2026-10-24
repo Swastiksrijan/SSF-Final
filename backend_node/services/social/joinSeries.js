@@ -282,6 +282,93 @@ items.push(
   ),
 );
 
+
+/*
+ * National Outreach & Growth expansion — audience-specific invitations.
+ * These chapters use the existing safe, bilingual Join SSF stream and its
+ * existing scheduler; no new publishing slots or platform credentials are added.
+ */
+items.push(
+  CH(
+    T('Teachers & mentors — share the gift of learning', 'शिक्षक एवं मार्गदर्शक — ज्ञान बाँटने का अवसर'),
+    T('A teacher’s two hours can open a door that stays open for years.', 'शिक्षक के दो घंटे ऐसा द्वार खोल सकते हैं जो वर्षों तक खुला रहे।'),
+    [
+      T('Teachers can volunteer for learning support, mentoring and study guidance.', 'शिक्षक सीखने में सहयोग, मार्गदर्शन एवं अध्ययन-सहायता के लिए स्वयंसेवा कर सकते हैं।'),
+      T('Retired educators and subject experts are welcome to explore suitable ways to contribute.', 'सेवानिवृत्त शिक्षक एवं विषय-विशेषज्ञ योगदान के उपयुक्त तरीके तलाश सकते हैं।'),
+      T('Institutions and individual educators can propose a learning collaboration through the official SSF website.', 'संस्थाएँ एवं शिक्षक आधिकारिक SSF वेबसाइट के माध्यम से शैक्षिक सहयोग का प्रस्ताव दे सकते हैं।'),
+    ],
+    T('A maths teacher may mentor a small group online, while another educator shares reading resources.', 'गणित शिक्षक छोटे समूह को ऑनलाइन मार्गदर्शन दे सकते हैं, जबकि दूसरे शिक्षक पठन-सामग्री साझा कर सकते हैं।'),
+    T('Choose one subject or skill you could share, then register through the official Join Us page.', 'एक विषय या कौशल चुनें जिसे आप बाँट सकते हैं, फिर आधिकारिक जुड़िए पेज पर पंजीकरण करें।'),
+    T('Start with a realistic time commitment and a clear learning goal.', 'वास्तविक समय-प्रतिबद्धता और स्पष्ट सीखने के लक्ष्य से शुरुआत करें।'),
+    T('Volunteering is not a promise of paid employment; confirm every activity with the SSF team.', 'स्वयंसेवा सशुल्क नौकरी का वादा नहीं है; हर गतिविधि की पुष्टि SSF टीम से करें।')
+  ),
+  CH(
+    T('Doctors & health professionals — strengthen health awareness', 'चिकित्सक एवं स्वास्थ्य विशेषज्ञ — स्वास्थ्य-जागरूकता मजबूत करें'),
+    T('A trusted health message can help a family seek the right care sooner.', 'विश्वसनीय स्वास्थ्य-संदेश किसी परिवार को समय पर सही उपचार लेने में मदद कर सकता है।'),
+    [
+      T('Qualified professionals may explore awareness talks, prevention education and community-health collaboration.', 'योग्य पेशेवर जागरूकता वार्ता, रोकथाम-शिक्षा एवं सामुदायिक स्वास्थ्य सहयोग तलाश सकते हैं।'),
+      T('Hospitals, clinics and health institutions can propose lawful, clearly scoped partnerships.', 'अस्पताल, क्लिनिक एवं स्वास्थ्य संस्थान विधिसम्मत और स्पष्ट उद्देश्य वाली साझेदारी का प्रस्ताव दे सकते हैं।'),
+      T('Public posts should educate people and encourage appropriate professional care.', 'सार्वजनिक पोस्ट लोगों को शिक्षित करें और उचित पेशेवर उपचार के लिए प्रेरित करें।'),
+    ],
+    T('A qualified professional may explain prevention and warning signs in a community session without diagnosing people online.', 'योग्य विशेषज्ञ सामुदायिक सत्र में रोकथाम एवं चेतावनी संकेत समझा सकते हैं, बिना ऑनलाइन निदान किए।'),
+    T('Share your area of expertise through the official SSF Join Us page.', 'आधिकारिक SSF जुड़िए पेज पर अपनी विशेषज्ञता साझा करें।'),
+    T('Keep advice evidence-based, accessible and within your professional scope.', 'सलाह प्रमाण-आधारित, सरल और अपनी पेशेवर सीमा के भीतर रखें।'),
+    T('Never share patient information or promise medical outcomes in a public campaign.', 'सार्वजनिक अभियान में मरीज की जानकारी साझा न करें और उपचार-परिणाम का वादा न करें।')
+  ),
+  CH(
+    T('Schools, colleges & institutions — partner for community impact', 'विद्यालय, महाविद्यालय एवं संस्थाएँ — सामाजिक प्रभाव के लिए साझेदारी'),
+    T('When institutions work together, local ideas can become practical community programmes.', 'संस्थाएँ साथ काम करें तो स्थानीय विचार व्यावहारिक सामुदायिक कार्यक्रम बन सकते हैं।'),
+    [
+      T('Schools and colleges can explore learning, volunteering and awareness activities.', 'विद्यालय एवं महाविद्यालय शिक्षण, स्वयंसेवा एवं जागरूकता गतिविधियाँ तलाश सकते हैं।'),
+      T('Hospitals, NGOs and community groups can propose complementary programmes.', 'अस्पताल, NGO एवं सामुदायिक समूह पूरक कार्यक्रमों का प्रस्ताव दे सकते हैं।'),
+      T('Every collaboration should have a clear purpose, responsible contacts and written scope.', 'हर साझेदारी का स्पष्ट उद्देश्य, जिम्मेदार संपर्क और लिखित कार्य-सीमा होनी चाहिए।'),
+    ],
+    T('A college volunteer group could help organise a digital-literacy session with a local community partner.', 'महाविद्यालय का स्वयंसेवी समूह स्थानीय साझेदार के साथ डिजिटल-साक्षरता सत्र आयोजित करने में मदद कर सकता है।'),
+    T('Send a short proposal describing your institution, community need and possible contribution.', 'अपनी संस्था, सामुदायिक आवश्यकता और संभावित योगदान का संक्षिप्त प्रस्ताव भेजें।'),
+    T('Begin with a small, measurable activity and review the learning before expanding.', 'छोटी, मापने योग्य गतिविधि से शुरू करें और विस्तार से पहले सीख की समीक्षा करें।'),
+    T('Do not announce a partnership or use another organisation’s logo without written approval.', 'लिखित अनुमति बिना साझेदारी की घोषणा या दूसरी संस्था का लोगो उपयोग न करें।')
+  ),
+  CH(
+    T('CSR & responsible businesses — explore a transparent partnership', 'CSR एवं जिम्मेदार व्यवसाय — पारदर्शी साझेदारी तलाशें'),
+    T('Good partnerships begin with a real community need, clear responsibilities and honest records.', 'अच्छी साझेदारी वास्तविक सामुदायिक आवश्यकता, स्पष्ट जिम्मेदारियों और ईमानदार अभिलेखों से शुरू होती है।'),
+    [
+      T('Companies and CSR teams can explore whether an SSF initiative aligns with their priorities.', 'कंपनियाँ एवं CSR टीमें देख सकती हैं कि SSF की कोई पहल उनकी प्राथमिकताओं से मेल खाती है या नहीं।'),
+      T('A first conversation can identify the geography, beneficiaries, outcomes and compliance documents required.', 'पहली बातचीत में क्षेत्र, लाभार्थी, परिणाम और आवश्यक अनुपालन दस्तावेज़ पहचाने जा सकते हैं।'),
+      T('No project, funding or CSR approval should be assumed before formal written confirmation.', 'औपचारिक लिखित पुष्टि से पहले किसी परियोजना, फंडिंग या CSR स्वीकृति को निश्चित न मानें।'),
+    ],
+    T('A company may first request a concept note and review the organisation’s documents before deciding on next steps.', 'कंपनी अगले कदम तय करने से पहले संकल्पना-पत्र और संस्था के दस्तावेज़ माँग सकती है।'),
+    T('Use the official website to contact SSF and outline your organisation’s interest.', 'SSF से संपर्क करने और अपनी संस्था की रुचि बताने के लिए आधिकारिक वेबसाइट का उपयोग करें।'),
+    T('Keep proposals realistic, costed and linked to measurable outcomes.', 'प्रस्ताव यथार्थवादी, लागत-स्पष्ट और मापने योग्य परिणामों से जुड़े रखें।'),
+    T('Do not claim that funding is secured, or that a project is approved, until documented.', 'दस्तावेज़ मिलने तक फंडिंग सुनिश्चित या परियोजना स्वीकृत होने का दावा न करें।')
+  ),
+  CH(
+    T('District & state coordinators — lead through service', 'जिला एवं राज्य समन्वयक — सेवा से नेतृत्व'),
+    T('Leadership is not a title first; it is dependable work, local relationships and accountability.', 'नेतृत्व पहले पद नहीं; भरोसेमंद काम, स्थानीय संबंध और जवाबदेही है।'),
+    [
+      T('People with time, coordination skills and a service mindset can express interest in local leadership.', 'समय, समन्वय-कौशल और सेवा-भाव रखने वाले लोग स्थानीय नेतृत्व में रुचि बता सकते हैं।'),
+      T('Potential coordinators should be ready to communicate clearly, keep records and work as a team.', 'संभावित समन्वयकों को स्पष्ट संवाद, अभिलेख-संधारण और टीम के साथ काम करने के लिए तैयार रहना चाहिए।'),
+      T('Any role or authority must be confirmed by the authorised SSF team in writing.', 'किसी भी भूमिका या अधिकार की पुष्टि अधिकृत SSF टीम द्वारा लिखित रूप में होनी चाहिए।'),
+    ],
+    T('A local volunteer can start by mapping community needs and submitting a short activity plan for review.', 'स्थानीय स्वयंसेवक सामुदायिक आवश्यकताओं की जानकारी लेकर समीक्षा हेतु छोटी गतिविधि-योजना दे सकता है।'),
+    T('Register through Join Us and describe your location, experience and realistic availability.', 'जुड़िए पेज से पंजीकरण करें और अपना क्षेत्र, अनुभव एवं उपलब्ध समय बताएँ।'),
+    T('Build trust through small commitments completed on time.', 'समय पर छोटे वादे पूरे करके भरोसा बनाएँ।'),
+    T('Do not announce yourself as an appointed office-bearer or collect money without written authorisation.', 'लिखित अनुमति बिना स्वयं को नियुक्त पदाधिकारी घोषित न करें और धन एकत्र न करें।')
+  ),
+  CH(
+    T('Donors & resource supporters — contribute with confidence', 'दानदाता एवं संसाधन-सहयोगी — भरोसे के साथ योगदान'),
+    T('Support can be financial or practical: books, skills, equipment, time or a useful connection.', 'सहयोग आर्थिक या व्यावहारिक हो सकता है: किताबें, कौशल, उपकरण, समय या उपयोगी संपर्क।'),
+    [
+      T('Choose a purpose that aligns with your values and capacity.', 'अपने मूल्यों और क्षमता के अनुरूप उद्देश्य चुनें।'),
+      T('Ask for the official process and documentation before making a contribution.', 'योगदान देने से पहले आधिकारिक प्रक्रिया एवं दस्तावेज़ पूछें।'),
+      T('Non-financial support can also help a community activity move forward.', 'गैर-वित्तीय सहयोग भी सामुदायिक गतिविधि को आगे बढ़ा सकता है।'),
+    ],
+    T('A supporter might offer learning materials, professional time or an introduction to a potential partner.', 'सहयोगी शिक्षण-सामग्री, पेशेवर समय या संभावित साझेदार से परिचय दे सकता है।'),
+    T('Contact SSF through the official website to discuss an appropriate way to help.', 'उचित सहयोग के तरीके पर चर्चा के लिए आधिकारिक वेबसाइट से SSF से संपर्क करें।'),
+    T('Keep receipts and written confirmations for any approved financial contribution.', 'स्वीकृत आर्थिक योगदान की रसीद और लिखित पुष्टि सुरक्षित रखें।'),
+    T('Never send money to a personal account based only on a social-media message.', 'केवल सोशल-मीडिया संदेश के आधार पर किसी निजी खाते में पैसा न भेजें।')
+  )
+);
+
 module.exports = {
   key: 'join',
   emoji: '🤝',
