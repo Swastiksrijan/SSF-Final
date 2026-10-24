@@ -484,7 +484,7 @@ export default function AboutPage() {
                 className="block aspect-[4/3] w-full object-cover"
               />
               <div
-                className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(23,100,71,0.68)_0%,rgba(18,52,90,0.52)_48%,rgba(18,52,90,0.10)_100%)]"
+                className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(23,100,71,0.90)_0%,rgba(23,100,71,0.84)_48%,rgba(18,52,90,0.86)_52%,rgba(18,52,90,0.92)_100%)]"
                 aria-hidden="true"
               />
             </div>
