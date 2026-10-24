@@ -104,7 +104,7 @@ export default function Home() {
             </p>
           </Motion.div>
 
-          <Motion.div initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative top-2 hidden rounded-[1.75rem] border border-white/15 bg-white/[0.07] p-7 shadow-2xl shadow-black/10 backdrop-blur-xl lg:block lg:self-end lg:pb-8">
+          <Motion.div initial={{ opacity: 0, y: -14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.2 }} className="relative top-0.5 hidden rounded-[1.75rem] border border-white/15 bg-white/[0.07] p-7 shadow-2xl shadow-black/10 backdrop-blur-xl lg:block lg:self-end lg:pb-8">
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#F7A814]">Our Purpose</p>
             <p className="mt-5 font-serif text-3xl leading-snug text-white xl:text-4xl">Service with purpose.</p>
             <p className="mt-2 font-serif text-3xl italic leading-snug text-[#FFD277] xl:text-4xl">Progress through people.</p>
