@@ -177,6 +177,7 @@ export const SECTIONS = {
         { key: 'cash_flow', icon: 'Waves', path: legacy('cashFlow') },
         { key: 'fund_wise_income', icon: 'Wallet', path: legacy('fundWiseIncome') },
         { key: 'budget_legacy', icon: 'Target', path: legacy('budget') },
+        { key: 'audit_reports', shortKey: 'audit_reports_short', icon: 'ShieldCheck', path: '/ims/audit-reports' },
         { key: 'audited_statements', icon: 'FileCheck2', path: legacy('auditedStatements') },
       ] },
     ],
@@ -231,6 +232,7 @@ export const SECTIONS = {
         { key: 'compliance_calendar', icon: 'CalendarClock', path: legacy('complianceCalendar') },
       ] },
       { labelKey: 'grp_risk', items: [
+        { key: 'audit_reports', shortKey: 'audit_reports_short', icon: 'ShieldCheck', path: '/ims/audit-reports' },
         { key: 'audit_risk', icon: 'SearchCheck', resource: 'audits' },
         { key: 'internal_audit', icon: 'ClipboardCheck', path: legacy('internalAudit') },
         { key: 'audits_legacy', icon: 'FileText', path: legacy('audits') },
@@ -406,6 +408,7 @@ const ACTIVE_ALIASES = {
   users_perms: 'admin',
   users: 'admin',
   audit_trail: 'admin',
+  audit_reports: 'finance',
   data: 'admin',
   import_export: 'admin',
   office_history: 'organisation',

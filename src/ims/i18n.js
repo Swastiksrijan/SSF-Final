@@ -201,6 +201,8 @@ export const DICT = {
   transfer: { en: 'Transfer', hi: 'अंतरण' },
   adjustment: { en: 'Adjustment', hi: 'समायोजन' },
   audited_statements: { en: 'Audited Statements', hi: 'लेखापरीक्षित वित्तीय विवरण' },
+  audit_reports: { en: 'Audited Financial Statements', hi: 'लेखापरीक्षित वित्तीय विवरण' },
+  audit_reports_short: { en: 'Audit Reports', hi: 'लेखा परीक्षा प्रतिवेदन' },
   audit_observations: { en: 'Audit Observations', hi: 'लेखापरीक्षा टिप्पणियाँ' },
   statutory_registrations: { en: 'Statutory Registrations', hi: 'वैधानिक पंजीकरण' },
   tax_returns: { en: 'Tax Returns', hi: 'कर विवरणी' },
