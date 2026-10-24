@@ -142,11 +142,11 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-        <div className="absolute inset-0 bg-[#092541]/[0.04]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#06182B]/70 via-[#092541]/[0.14] to-[#092541]/[0.02]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071d34]/45 via-transparent to-[#071d34]/[0.04]" />
+        {/* Keep the photographs bright and readable; concentrate the text contrast on the left. */}
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,24,43,0.94)_0%,rgba(9,37,65,0.76)_32%,rgba(9,37,65,0.34)_52%,rgba(9,37,65,0.06)_70%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(7,29,52,0.20)_0%,transparent_32%)]" />
         <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#E6530E]/15 blur-3xl" aria-hidden="true" />
-        <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#176447]/25 blur-3xl" aria-hidden="true" />
+        <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#176447]/10 blur-3xl" aria-hidden="true" />
 
         <div className="relative z-10 mx-auto flex min-h-[600px] max-w-7xl items-center px-5 py-20 sm:min-h-[660px] sm:px-8 lg:min-h-[740px] lg:px-12">
           <motion.div
@@ -154,7 +154,7 @@ export default function AboutPage() {
             animate="visible"
             variants={fadeUp}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="max-w-5xl"
+            className="max-w-3xl xl:max-w-[48rem]"
           >
             <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-[#06182B]/35 px-4 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FFE0A3] shadow-lg shadow-black/10 backdrop-blur-md sm:text-sm">
               <span className="h-2 w-2 rounded-full bg-[#F7A814]" />
@@ -162,7 +162,7 @@ export default function AboutPage() {
               <span className="text-white/55">/</span>
               स्थापना 2013
             </div>
-            <h1 className="mt-8 max-w-5xl text-[2.65rem] font-black leading-[0.99] tracking-[-0.045em] text-white [text-shadow:0_3px_28px_rgba(0,0,0,0.48)] sm:text-6xl md:text-7xl lg:text-[5.4rem] xl:text-[6.1rem]">
+            <h1 className="mt-8 max-w-4xl text-[2.65rem] font-black leading-[0.99] tracking-[-0.045em] text-white [text-shadow:0_3px_28px_rgba(0,0,0,0.48)] sm:text-6xl md:text-7xl lg:text-[5.4rem] xl:text-[6.1rem]">
               A purpose rooted in{" "}
               <span className="text-[#FFC56D]">humanity.</span>
               <span className="mt-2 block text-white/95">A future shaped together.</span>
