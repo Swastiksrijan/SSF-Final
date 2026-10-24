@@ -96,13 +96,13 @@ const Header = () => {
             <img src={logoImg} alt="Swastik Srijan Foundation" className="h-full w-full object-contain" />
           </span>
           <span className="hidden sm:flex flex-col leading-none">
-            <span className={`block font-black text-lg leading-none tracking-tight ${isScrolled ? "text-[#12345A]" : "text-white"}`}>Swastik Srijan</span>
-            <span className={`block font-bold text-[10px] tracking-[0.22em] uppercase mt-1 ${isScrolled ? "text-[#176447]" : "text-[#F7A814]"}`}>Foundation Samiti</span>
-            <span className={`block text-[9px] tracking-[0.14em] uppercase mt-1 ${isScrolled ? "text-[#26343D]/75" : "text-[#EAF0F6]/80"}`}>Service • Dedication • Creation</span>
+            <span className={`block font-black text-lg leading-none tracking-tight text-white`}>Swastik Srijan</span>
+            <span className={`block font-bold text-[10px] tracking-[0.22em] uppercase mt-1 text-[#F7A814]`}>Foundation Samiti</span>
+            <span className={`block text-[9px] tracking-[0.14em] uppercase mt-1 text-[#EAF0F6]/80`}>Service • Dedication • Creation</span>
           </span>
         </Link>
 
-        <nav className={`hidden xl:flex items-center gap-4 lg:gap-5 ${isScrolled ? "ssf-nav-links-scrolled" : ""}`}>
+        <nav className={`hidden xl:flex items-center gap-4 lg:gap-5 `}>
           {navItems.map(item => (
             <div key={item.name} className="relative group">
               <Link to={item.path} data-active={isActive(item.path)} className="ssf-nav-link flex items-center gap-1.5 py-2 text-sm">
@@ -124,7 +124,7 @@ const Header = () => {
 
           <Link to="/Donate" className="ssf-nav-donate inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-black text-[13px] tracking-[0.03em] whitespace-nowrap transition-transform hover:-translate-y-0.5"><FaHeart className="text-[12px]" /> Donate Now</Link>
 
-          <button aria-label={menuOpen ? "Close menu" : "Open menu"} className={`xl:hidden text-2xl p-2 rounded-xl ${isScrolled ? "text-[#12345A] hover:bg-[#EAF0F6]" : "text-white hover:bg-white/10"}`} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <HiX /> : <HiOutlineMenu />}</button>
+          <button aria-label={menuOpen ? "Close menu" : "Open menu"} className={`xl:hidden text-2xl p-2 rounded-xl text-white hover:bg-white/10`} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <HiX /> : <HiOutlineMenu />}</button>
         </div>
       </div>
     </div>
