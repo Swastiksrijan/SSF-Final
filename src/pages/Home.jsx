@@ -553,7 +553,7 @@ export default function Home() {
 
                 <div className="flex flex-1 flex-col justify-between p-7">
                   <div>
-                    <h3 className="font-serif text-2xl font-bold text-[#12345A] group-hover:text-amber-600 transition-colors">
+                    <h3 className="font-serif text-2xl font-bold text-[#12345A] group-hover:text-[#176447] transition-colors">
                       {item.title}
                     </h3>
                     <p className="mt-3 text-sm leading-relaxed text-slate-600">
@@ -562,7 +562,7 @@ export default function Home() {
                   </div>
                   
                   <div className="mt-6 pt-5 border-t border-slate-100">
-                    <Link to="/Media" className="inline-flex items-center gap-2 text-sm font-bold text-[#12345A] group-hover:text-amber-600">
+                    <Link to="/Media" className="inline-flex items-center gap-2 text-sm font-bold text-[#12345A] group-hover:text-[#176447]">
                       View documented activities <FaArrowRight className="text-xs transition-transform group-hover:translate-x-1" />
                     </Link>
                   </div>
@@ -600,7 +600,7 @@ export default function Home() {
                 <div className="relative block h-24 w-24 overflow-hidden rounded-full border-4 border-slate-100 bg-slate-50 p-1 shadow-md transition-all duration-300 group-hover:border-amber-400 group-hover:shadow-xl sm:h-28 sm:w-28 md:h-32 md:w-32">
                   <img src={item.src} alt={item.alt} loading="lazy" className="h-full w-full rounded-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <span className="mt-3.5 text-xs font-bold text-[#12345A] group-hover:text-amber-600">
+                <span className="mt-3.5 text-xs font-bold text-[#12345A] group-hover:text-[#176447]">
                   {item.label}
                 </span>
               </Link>
@@ -610,7 +610,7 @@ export default function Home() {
           <div className="mt-12 text-center">
             <Link 
               to="/Media" 
-              className="inline-flex items-center gap-2 rounded-full border border-[#07192C]/20 bg-white px-7 py-3.5 text-sm font-bold text-[#12345A] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400 hover:bg-slate-50 hover:shadow-md"
+              className="inline-flex items-center gap-2 rounded-full border border-[#176447]/35 bg-white px-7 py-3.5 text-sm font-bold text-[#176447] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-[#176447] hover:bg-[#EAF0F6] hover:shadow-md"
             >
               सभी तस्वीरें और समाचार देखें <FaArrowRight className="text-xs" />
             </Link>
@@ -629,7 +629,7 @@ export default function Home() {
             </div>
             <h2 className="font-serif text-3xl font-bold tracking-tight text-[#12345A] sm:text-4xl md:text-5xl">
               Show the work. <br />
-              <span className="text-amber-600">Share the learning.</span>
+              <span className="text-[#176447]">Share the learning.</span>
             </h2>
             <p className="leading-relaxed text-slate-600 text-base sm:text-lg">
               Institutional confidence solidifies when activities, field stories, annual audits, and project outcomes are published responsibly. Explore SSF’s documented path since 2013.
@@ -652,19 +652,19 @@ export default function Home() {
               <Link 
                 key={item.title} 
                 to={item.path} 
-                className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400 hover:shadow-xl"
+                className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#176447] hover:shadow-xl"
               >
                 <div>
                   <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-xl text-[#12345A] transition-colors group-hover:bg-[#12345A] group-hover:text-amber-400">
                     {item.icon}
                   </span>
-                  <h3 className="mt-5 text-xl font-bold text-[#12345A] group-hover:text-amber-600 transition-colors">
+                  <h3 className="mt-5 text-xl font-bold text-[#12345A] group-hover:text-[#176447] transition-colors">
                     {item.title}
                   </h3>
-                  <p className="text-xs font-semibold text-amber-600 mt-0.5">{item.hi}</p>
+                  <p className="text-xs font-semibold text-[#176447] mt-0.5">{item.hi}</p>
                   <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.text}</p>
                 </div>
-                <div className="mt-6 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#12345A] group-hover:text-amber-600 pt-4 border-t border-slate-100">
+                <div className="mt-6 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#12345A] group-hover:text-[#176447] pt-4 border-t border-slate-100">
                   Explore Details <FaArrowRight className="text-[10px] transition-transform group-hover:translate-x-1" />
                 </div>
               </Link>
@@ -768,7 +768,7 @@ export default function Home() {
                 
                 <span className="min-w-0 flex-1 flex flex-col justify-between">
                   <div>
-                    <span className="block font-serif text-lg font-bold text-[#12345A] group-hover:text-amber-600 transition-colors">
+                    <span className="block font-serif text-lg font-bold text-[#12345A] group-hover:text-[#176447] transition-colors">
                       {item.title}
                     </span>
                     <span className="mt-0.5 block text-xs font-semibold text-amber-600">
@@ -779,7 +779,7 @@ export default function Home() {
                     </span>
                   </div>
                   
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#12345A] group-hover:text-amber-600">
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#12345A] group-hover:text-[#176447]">
                     Explore Pillar <FaArrowRight className="text-[10px] transition-transform group-hover:translate-x-1" />
                   </span>
                 </span>
@@ -982,7 +982,7 @@ export default function Home() {
             {proofItems.map((item) => (
               <div 
                 key={item.title} 
-                className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400 hover:shadow-xl"
+                className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-[#176447] hover:shadow-xl"
               >
                 <div>
                   <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-xl text-[#12345A] group-hover:bg-[#12345A] group-hover:text-amber-400 transition-colors">
