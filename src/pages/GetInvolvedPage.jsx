@@ -1,12 +1,10 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FaUsers, FaWhatsapp, FaArrowRight, FaHandsHelping, FaAward, FaHandshake, FaHeart, FaTimes, FaBullhorn } from "react-icons/fa";
-import PageHero from "../components/PageHero";
 import VolunteerForm from "../components/VolunteerForm";
 import MemberForm from "../components/MemberForm";
 import GetInvolvedInterestForm from "../components/GetInvolvedInterestForm";
 import { CONTACT_INFO } from "../config/contact";
-import pageHeader from "../assets/page-header.jpg";
 
 export default function GetInvolvedPage() {
     const [activeForm, setActiveForm] = useState(null);
@@ -32,7 +30,34 @@ export default function GetInvolvedPage() {
         return () => { window.removeEventListener("ssf-getinvolved-form", handleFormRequest); document.body.style.overflow = ""; };
     }, []);
     return <div className="w-full bg-white font-sans text-[#12345A] overflow-hidden">
-        <PageHero image={pageHeader} title="Get Involved" subtitle="Join our mission to transform lives and build a better Bharat." hindiSubtitle="राष्ट्र निर्माण के इस पावन लक्ष्य में अपना योगदान दें।" height="h-[40vh] md:h-[60vh]" overlayOpacity="bg-black/40" contentClassName="-translate-y-16 md:-translate-y-20" />
+        <section className="relative isolate min-h-[420px] h-[58vh] max-h-[680px] md:min-h-[560px] overflow-hidden bg-[#092541] px-3 py-3 sm:px-5 sm:py-5">
+            <div className="absolute inset-3 sm:inset-5 grid grid-cols-2 grid-rows-2 gap-2 sm:gap-3 md:grid-cols-4 md:grid-rows-2 rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden">
+                <div className="col-span-2 row-span-2 md:col-span-2">
+                    <img src="/images/real/girls-study-group-mat.jpg" alt="Girls learning together in a community study group" className="h-full w-full object-cover" />
+                </div>
+                <div className="hidden md:block">
+                    <img src="/images/real/awareness-poster-viewing.jpg" alt="Community awareness activity" className="h-full w-full object-cover" />
+                </div>
+                <div className="hidden md:block">
+                    <img src="/images/real/women_community_meeting.jpg" alt="Women participating in a community meeting" className="h-full w-full object-cover" />
+                </div>
+                <div className="col-span-1 md:col-span-2">
+                    <img src="/images/real/tree_plantation.jpg" alt="Community environmental activity" className="h-full w-full object-cover" />
+                </div>
+                <div className="col-span-1 md:col-span-2">
+                    <img src="/images/real/stationery-distribution.jpg" alt="Learning materials being shared" className="h-full w-full object-cover" />
+                </div>
+            </div>
+            <div className="absolute inset-3 sm:inset-5 rounded-[1.5rem] sm:rounded-[2rem] bg-gradient-to-r from-[#07192d]/80 via-[#07192d]/55 to-[#07192d]/35" />
+            <div className="relative z-10 flex h-full min-h-[390px] items-center justify-center px-4 text-center sm:min-h-[520px]">
+                <div className="max-w-4xl rounded-[1.5rem] border border-white/25 bg-[#092541]/55 px-5 py-8 shadow-2xl backdrop-blur-md sm:rounded-[2rem] sm:px-10 sm:py-10 md:px-14">
+                    <p className="mb-4 text-xs font-extrabold uppercase tracking-[0.22em] text-[#F7A814] sm:text-sm">सेवा • सहभागिता • सृजन</p>
+                    <h1 className="text-4xl font-black tracking-tight text-white sm:text-5xl md:text-7xl">Get Involved</h1>
+                    <p className="mx-auto mt-5 max-w-2xl text-base font-semibold leading-relaxed text-white sm:text-lg md:text-xl">Join our mission to transform lives and build a better Bharat.</p>
+                    <p className="mx-auto mt-3 max-w-2xl text-base font-bold leading-relaxed text-white/95 sm:text-lg">राष्ट्र निर्माण के इस पावन लक्ष्य में अपना योगदान दें।</p>
+                </div>
+            </div>
+        </section>
         <section className="py-24 px-6"><div className="max-w-7xl mx-auto"><div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
             {roles.map((role, i) => <motion.div key={role.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { delay: i * .12, duration: .5 } } }} className={`p-9 rounded-[2.5rem] border-2 ${role.color} flex flex-col h-full hover:shadow-2xl transition-all duration-500 group`}><div className="w-20 h-20 bg-white rounded-3xl flex items-center justify-center text-4xl shadow-sm mb-7 group-hover:scale-110 transition-transform">{role.icon}</div><h3 className="text-2xl font-bold text-[#12345A] mb-2">{role.title}</h3><h4 className="text-lg font-hindi text-[#26343D] mb-5 font-bold">{role.titleHi}</h4><p className="text-[#26343D] leading-relaxed mb-8 font-medium flex-grow">{role.desc}</p>{role.link?<a href={role.link} className="w-full flex items-center justify-center gap-3 bg-[#12345A] text-white py-4 rounded-2xl font-bold hover:bg-[#176447] hover:text-[#12345A] transition-colors shadow-lg">{role.btnText}<FaArrowRight/></a>:<button type="button" onClick={()=>openForm(role.id)} className="w-full flex items-center justify-center gap-3 bg-[#12345A] text-white py-4 rounded-2xl font-bold hover:bg-[#176447] hover:text-[#12345A] transition-colors shadow-lg">{role.btnText}<FaArrowRight/></button>}</motion.div>)}
         </div></div></section>
