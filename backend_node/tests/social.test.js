@@ -246,7 +246,17 @@ async function main() {
   // The Join stream (seventh) invites participation and must carry the real
   // Join link + a per-post button label, and cover every registered objective.
   const join = SERIES.find((s) => s.key === 'join');
-  ok('Join series registered as the seventh stream', !!join && join.items.length === 17, `items=${join && join.items.length}`);
+  ok('Join series registered with all outreach chapters', !!join && join.items.length === 23, `items=${join && join.items.length}`);
+  const outreachTitles = [
+    /Teachers & mentors/i, /Doctors & health professionals/i,
+    /Schools, colleges & institutions/i, /CSR & responsible businesses/i,
+    /District & state coordinators/i, /Donors & resource supporters/i,
+  ];
+  ok('Join series includes all six new audience segments', outreachTitles.every((re) => join.items.some((it) => re.test(it.title.en))));
+  ok('new outreach chapters include English and Hindi content', outreachTitles.every((re) => {
+    const it = join.items.find((x) => re.test(x.title.en));
+    return !!it && !!it.title.hi && !!it.hook.en && !!it.hook.hi && !!it.avoid.en && !!it.avoid.hi;
+  }));
   ok('Join series carries the official Join link', /^https:\/\/swastiksrijan\.in\/JoinUs$/.test(join.ctaUrl || ''), join.ctaUrl);
   const joinPost = buildSeriesPost(join, 1, new Date(2026, 9, 12), 'series-join');
   ok('Join post exposes ctaUrl + bilingual button label', joinPost.ctaUrl === join.ctaUrl && joinPost.ctaLabelEn === 'Join SSF' && joinPost.ctaLabelHi === 'SSF से जुड़ें', JSON.stringify(joinPost.ctaLabelEn));
