@@ -124,7 +124,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-white font-sans text-[#26343D]">
       {/* Hero */}
-      <section className="relative isolate min-h-[600px] overflow-hidden bg-[#071D34] text-white sm:min-h-[660px] lg:min-h-[740px]">
+      <section className="relative isolate min-h-[620px] overflow-hidden bg-[#071D34] text-white sm:min-h-[660px] lg:min-h-[740px]">
         <div className="absolute inset-0 grid grid-cols-3 gap-1 p-1 sm:gap-2 sm:p-2 lg:gap-3 lg:p-3" aria-hidden="true">
           {[footerImg1, footerImg2, footerImg3].map((img, index) => (
             <div
@@ -136,63 +136,67 @@ export default function AboutPage() {
               <img
                 src={img}
                 alt=""
-                className="h-full w-full scale-[1.015] object-cover object-center opacity-100 [filter:brightness(1.12)_contrast(1.10)_saturate(1.10)] transition-transform duration-700"
+                className="h-full w-full scale-[1.015] object-cover object-center [filter:brightness(1.12)_contrast(1.10)_saturate(1.10)] transition-transform duration-700"
                 loading={index === 0 ? "eager" : "lazy"}
               />
             </div>
           ))}
         </div>
-        {/* Keep the photographs bright and readable; concentrate the text contrast on the left. */}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,24,43,0.94)_0%,rgba(9,37,65,0.76)_32%,rgba(9,37,65,0.34)_52%,rgba(9,37,65,0.06)_70%,transparent_100%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(7,29,52,0.20)_0%,transparent_32%)]" />
-        <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#E6530E]/15 blur-3xl" aria-hidden="true" />
+        {/* Strong contrast behind the headline, while keeping most of the photography visible. */}
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,24,43,0.94)_0%,rgba(9,37,65,0.78)_34%,rgba(9,37,65,0.34)_57%,rgba(9,37,65,0.08)_76%,transparent_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(7,29,52,0.24)_0%,transparent_35%)]" />
+        <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#E6530E]/10 blur-3xl" aria-hidden="true" />
         <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#176447]/10 blur-3xl" aria-hidden="true" />
 
-        <div className="relative z-10 mx-auto flex min-h-[600px] max-w-7xl items-center px-5 py-20 sm:min-h-[660px] sm:px-8 lg:min-h-[740px] lg:px-12">
+        <div className="relative z-10 mx-auto flex min-h-[620px] max-w-7xl items-center px-5 py-16 sm:min-h-[660px] sm:px-8 sm:py-20 lg:min-h-[740px] lg:px-12">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeUp}
             transition={{ duration: 0.7, ease: "easeOut" }}
-            className="max-w-3xl xl:max-w-[48rem]"
+            className="grid w-full items-center gap-9 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 xl:gap-20"
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-[#06182B]/35 px-4 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.18em] text-[#FFE0A3] shadow-lg shadow-black/10 backdrop-blur-md sm:text-sm">
-              <span className="h-2 w-2 rounded-full bg-[#F7A814]" />
-              Swastik Srijan Foundation
-              <span className="text-white/55">/</span>
-              स्थापना 2013
+            <div className="max-w-3xl">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-[#06182B]/45 px-4 py-2.5 text-[11px] font-extrabold uppercase tracking-[0.16em] text-[#FFE0A3] shadow-lg shadow-black/10 backdrop-blur-md sm:text-sm">
+                <span className="h-2 w-2 rounded-full bg-[#F7A814]" />
+                Swastik Srijan Foundation
+                <span className="text-white/55">/</span>
+                स्थापना 2013
+              </div>
+              <h1 className="mt-7 text-[2.6rem] font-black leading-[1.02] tracking-[-0.045em] text-white [text-shadow:0_3px_28px_rgba(0,0,0,0.48)] sm:text-6xl md:text-7xl lg:text-[4.35rem] xl:text-[5rem]">
+                A purpose rooted in{" "}
+                <span className="text-[#FFC56D]">humanity.</span>
+                <span className="mt-3 block text-white/95">A future shaped together.</span>
+              </h1>
             </div>
-            <h1 className="mt-8 max-w-4xl text-[2.65rem] font-black leading-[0.99] tracking-[-0.045em] text-white [text-shadow:0_3px_28px_rgba(0,0,0,0.48)] sm:text-6xl md:text-7xl lg:text-[5.4rem] xl:text-[6.1rem]">
-              A purpose rooted in{" "}
-              <span className="text-[#FFC56D]">humanity.</span>
-              <span className="mt-2 block text-white/95">A future shaped together.</span>
-            </h1>
-            <p className="mt-7 max-w-2xl text-base font-semibold leading-8 text-white [text-shadow:0_2px_16px_rgba(0,0,0,0.42)] sm:text-lg md:text-xl lg:text-[1.35rem] lg:leading-9">
-              Empowering communities through education, health, awareness and
-              sustainable development—with dignity, participation and care.
-            </p>
-            <p className="mt-4 max-w-2xl text-base font-medium leading-8 text-white [text-shadow:0_2px_14px_rgba(0,0,0,0.42)] sm:text-lg">
-              शिक्षा, स्वास्थ्य, जागरूकता और सतत विकास के माध्यम से समुदायों के
-              साथ मिलकर सकारात्मक बदलाव की दिशा में प्रयास।
-            </p>
-            <div className="mt-9 flex flex-wrap gap-3">
-              <Link
-                to="/Mission"
-                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#FFC247] to-[#F7A814] px-7 py-4 text-sm font-black text-[#092541] shadow-[0_16px_35px_-15px_rgba(0,0,0,0.55)] transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-[#F7A814]/45 sm:px-8"
-              >
-                Discover our purpose <FaArrowRight aria-hidden="true" />
-              </Link>
-              <Link
-                to="/GetInvolved"
-                className="inline-flex min-h-14 items-center justify-center gap-3 rounded-full border border-white/55 bg-[#06182B]/25 px-7 py-4 text-sm font-extrabold text-white shadow-lg backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-white hover:bg-white hover:text-[#092541] focus:outline-none focus:ring-4 focus:ring-white/35 sm:px-8"
-              >
-                Be part of the journey <FaHeart aria-hidden="true" />
-              </Link>
-            </div>
-            <div className="mt-10 flex flex-wrap items-center gap-x-5 gap-y-3 text-xs font-bold tracking-wide text-white/90 sm:text-sm">
-              <span className="inline-flex items-center gap-2"><FaShieldAlt className="text-[#FFC56D]" /> Registered society</span>
-              <span className="hidden h-1 w-1 rounded-full bg-white/45 sm:block" />
-              <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#FFC56D]" /> Pan-India area of work</span>
+
+            <div className="max-w-2xl rounded-3xl border border-white/15 bg-[#071D34]/35 p-5 shadow-[0_24px_70px_-35px_rgba(0,0,0,0.65)] backdrop-blur-[3px] sm:p-7 lg:ml-auto lg:p-8">
+              <p className="text-base font-semibold leading-7 text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.35)] sm:text-lg sm:leading-8">
+                Empowering communities through education, health, awareness and sustainable development—with dignity, participation and care.
+              </p>
+              <div className="my-5 h-px w-16 bg-[#FFC56D]/80" />
+              <p lang="hi" className="text-base font-medium leading-8 text-white/95 sm:text-lg">
+                शिक्षा, स्वास्थ्य, जागरूकता और सतत विकास के माध्यम से समुदायों के साथ मिलकर सकारात्मक बदलाव की दिशा में प्रयास।
+              </p>
+              <div className="mt-7 flex flex-wrap gap-3">
+                <Link
+                  to="/Mission"
+                  className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-gradient-to-r from-[#FFC247] to-[#F7A814] px-6 py-3 text-sm font-black text-[#092541] shadow-[0_16px_35px_-15px_rgba(0,0,0,0.55)] transition duration-300 hover:-translate-y-1 hover:shadow-xl hover:brightness-105 focus:outline-none focus:ring-4 focus:ring-[#F7A814]/45 sm:px-7"
+                >
+                  Discover our purpose <FaArrowRight aria-hidden="true" />
+                </Link>
+                <Link
+                  to="/GetInvolved"
+                  className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full border border-white/55 bg-white/10 px-6 py-3 text-sm font-extrabold text-white shadow-lg backdrop-blur-md transition duration-300 hover:-translate-y-1 hover:border-white hover:bg-white hover:text-[#092541] focus:outline-none focus:ring-4 focus:ring-white/35 sm:px-7"
+                >
+                  Be part of the journey <FaHeart aria-hidden="true" />
+                </Link>
+              </div>
+              <div className="mt-6 flex flex-wrap items-center gap-x-4 gap-y-3 text-xs font-bold tracking-wide text-white/90 sm:text-sm">
+                <span className="inline-flex items-center gap-2"><FaShieldAlt className="text-[#FFC56D]" /> Registered society</span>
+                <span className="hidden h-1 w-1 rounded-full bg-white/45 sm:block" />
+                <span className="inline-flex items-center gap-2"><FaGlobeAsia className="text-[#FFC56D]" /> Pan-India area of work</span>
+              </div>
             </div>
           </motion.div>
         </div>
