@@ -142,11 +142,13 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
+        {/* A subtle sky-blue photographic tint, keeping the original images natural. */}
+        <div className="pointer-events-none absolute inset-0 bg-[#87CEEB]/[0.13] mix-blend-soft-light" aria-hidden="true" />
         {/* Strong contrast behind the headline, while keeping most of the photography visible. */}
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,24,43,0.94)_0%,rgba(9,37,65,0.78)_34%,rgba(9,37,65,0.34)_57%,rgba(9,37,65,0.08)_76%,transparent_100%)]" />
         <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(7,29,52,0.24)_0%,transparent_35%)]" />
-        <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#E6530E]/10 blur-3xl" aria-hidden="true" />
-        <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#176447]/10 blur-3xl" aria-hidden="true" />
+        <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#87CEEB]/12 blur-3xl" aria-hidden="true" />
+        <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#87CEEB]/10 blur-3xl" aria-hidden="true" />
 
         <div className="relative z-10 mx-auto flex min-h-[620px] max-w-7xl items-center px-5 py-16 sm:min-h-[660px] sm:px-8 sm:py-20 lg:min-h-[740px] lg:px-12">
           <motion.div
