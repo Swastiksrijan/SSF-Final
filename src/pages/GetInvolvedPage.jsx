@@ -44,10 +44,10 @@ export default function GetInvolvedPage() {
                 <div className="hidden md:block">
                     <img src={heroPhoto3} alt="Women participating in a community meeting" className="h-full w-full object-cover" />
                 </div>
-                <div className="col-span-1 md:col-span-2">
+                <div className="col-span-1 md:col-span-1">
                     <img src={heroPhoto1} alt="Community environmental activity" className="h-full w-full object-cover" />
                 </div>
-                <div className="col-span-1 md:col-span-2">
+                <div className="col-span-1 md:col-span-1">
                     <img src={heroPhoto2} alt="Learning materials being shared" className="h-full w-full object-cover" />
                 </div>
             </div>
