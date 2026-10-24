@@ -322,7 +322,7 @@ export default function Home() {
       {/* ========================================================================= */}
       {/* 3 CARDS IN A SINGLE UNIFIED INSTITUTIONAL FRAME (पुरानी डुप्लीकेट हटा दी गई) */}
       {/* ========================================================================= */}
-      <section className="relative z-20 my-10 sm:my-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="relative z-20 -mt-12 mb-10 sm:mb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="rounded-[2.25rem] border border-amber-400/30 bg-gradient-to-br from-[#06182B] via-[#09223D] to-[#081B30] p-6 sm:p-8 lg:p-10 shadow-[0_25px_60px_-15px_rgba(7,25,44,0.45)] text-white backdrop-blur-xl">
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 divide-y lg:divide-y-0 lg:divide-x divide-white/10 items-stretch">
