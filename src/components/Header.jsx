@@ -12,6 +12,7 @@ import logoImg from "../assets/new-logo.png";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [mobileSubMenu, setMobileSubMenu] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
   const [authMode, setAuthMode] = useState("signup");
@@ -19,6 +20,13 @@ const Header = () => {
   const [user, setUser] = useState(() => readSession());
   const location = useLocation();
   const { lang, toggleLang } = useLanguage();
+
+  useEffect(() => {
+    const onScroll = () => setIsScrolled(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
 
   useEffect(() => {
     const fn = e => setUser(e.detail || null);
@@ -76,11 +84,11 @@ const Header = () => {
     </div>
   );
 
-  return <header className="fixed top-0 left-0 right-0 z-50 font-sans">
+  return <header className={`fixed top-0 left-0 right-0 z-50 font-sans ${isScrolled ? "ssf-header-scrolled" : "ssf-header-top"}`}>
     <div className="ssf-contact-bar-wrap">
       <TopContactBar lang={lang} onToggleLang={toggleLang} />
     </div>
-    <div className="ssf-nav-shell">
+    <div className={`ssf-nav-shell ${isScrolled ? "is-scrolled" : "is-transparent"}`}>
       <div className="ssf-nav-bg" aria-hidden="true" />
       <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-3">
         <Link to="/" onClick={closeMenu} className="flex items-center gap-3 shrink-0 group">
@@ -88,13 +96,13 @@ const Header = () => {
             <img src={logoImg} alt="Swastik Srijan Foundation" className="h-full w-full object-contain" />
           </span>
           <span className="hidden sm:flex flex-col leading-none">
-            <span className="block text-white font-black text-lg leading-none tracking-tight">Swastik Srijan</span>
-            <span className="block text-[#F7A814] font-bold text-[10px] tracking-[0.22em] uppercase mt-1">Foundation Samiti</span>
-            <span className="block text-[#EAF0F6]/80 text-[9px] tracking-[0.14em] uppercase mt-1">Service • Dedication • Creation</span>
+            <span className={`block font-black text-lg leading-none tracking-tight ${isScrolled ? "text-[#12345A]" : "text-white"}`}>Swastik Srijan</span>
+            <span className={`block font-bold text-[10px] tracking-[0.22em] uppercase mt-1 ${isScrolled ? "text-[#176447]" : "text-[#F7A814]"}`}>Foundation Samiti</span>
+            <span className={`block text-[9px] tracking-[0.14em] uppercase mt-1 ${isScrolled ? "text-[#26343D]/75" : "text-[#EAF0F6]/80"}`}>Service • Dedication • Creation</span>
           </span>
         </Link>
 
-        <nav className="hidden xl:flex items-center gap-4 lg:gap-5">
+        <nav className={`hidden xl:flex items-center gap-4 lg:gap-5 ${isScrolled ? "ssf-nav-links-scrolled" : ""}`}>
           {navItems.map(item => (
             <div key={item.name} className="relative group">
               <Link to={item.path} data-active={isActive(item.path)} className="ssf-nav-link flex items-center gap-1.5 py-2 text-sm">
@@ -112,11 +120,11 @@ const Header = () => {
 
         <div className="flex items-center gap-2.5 shrink-0">
 
-          {user ? <div className="relative hidden lg:block"><button onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen} aria-haspopup="menu" className="group flex items-center gap-2.5 px-3 py-2 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.02em] hover:border-[#F7A814]/70 hover:bg-white/15 transition-all duration-200"><span className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 ring-1 ring-white/30">{profilePhoto ? <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" /> : <FaUserCircle className="text-2xl text-white/80" />}</span><span className="max-w-28 truncate">{user.fullName || user.email}</span><IoIosArrowDown className={`transition-transform duration-200 ${accountOpen ? "rotate-180" : ""}`} /></button>{accountOpen && account}</div> : <button onClick={() => openAuth("signup")} className="hidden lg:inline-flex items-center px-5 py-2.5 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.03em] hover:bg-white/15 hover:border-[#F7A814]/70 transition-all duration-200">Join SSF</button>}
+          {user ? <div className="relative hidden lg:block"><button onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen} aria-haspopup="menu" className="group flex items-center gap-2.5 px-3 py-2 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.02em] hover:border-[#F7A814]/70 hover:bg-white/15 transition-all duration-200"><span className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 ring-1 ring-white/30">{profilePhoto ? <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" /> : <FaUserCircle className="text-2xl text-white/80" />}</span><span className="max-w-28 truncate">{user.fullName || user.email}</span><IoIosArrowDown className={`transition-transform duration-200 ${accountOpen ? "rotate-180" : ""}`} /></button>{accountOpen && account}</div> : <button onClick={() => openAuth("signup")} className={`hidden lg:inline-flex items-center px-5 py-2.5 rounded-full border font-extrabold text-[13px] tracking-[0.03em] transition-all duration-200 ${isScrolled ? "border-[#176447]/25 bg-[#EAF0F6] text-[#12345A] hover:bg-[#176447]/10" : "border-white/25 bg-white/10 text-white hover:bg-white/15 hover:border-[#F7A814]/70"}`}>Join SSF</button>}
 
           <Link to="/Donate" className="ssf-nav-donate inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-black text-[13px] tracking-[0.03em] whitespace-nowrap transition-transform hover:-translate-y-0.5"><FaHeart className="text-[12px]" /> Donate Now</Link>
 
-          <button aria-label={menuOpen ? "Close menu" : "Open menu"} className="xl:hidden text-2xl text-white p-2 rounded-xl hover:bg-white/10" onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <HiX /> : <HiOutlineMenu />}</button>
+          <button aria-label={menuOpen ? "Close menu" : "Open menu"} className={`xl:hidden text-2xl p-2 rounded-xl ${isScrolled ? "text-[#12345A] hover:bg-[#EAF0F6]" : "text-white hover:bg-white/10"}`} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <HiX /> : <HiOutlineMenu />}</button>
         </div>
       </div>
     </div>
