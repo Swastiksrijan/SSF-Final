@@ -179,7 +179,7 @@ export default function Home() {
     <main className="w-full overflow-hidden bg-[#FAF9F5] font-sans text-[#26343D] antialiased selection:bg-[#F59E0B]/30">
       
       {/* ================= HERO SECTION ================= */}
-      <section className="relative isolate flex min-h-[680px] items-center overflow-hidden bg-[#07192C] py-20 text-white sm:min-h-[720px] md:min-h-[780px] md:py-28">
+      <section className="relative isolate flex min-h-[680px] items-center overflow-hidden bg-[#12345A] py-20 text-white sm:min-h-[720px] md:min-h-[780px] md:py-28">
         
         {/* Visual Backdrops */}
         <div className="absolute inset-0 -z-20">
@@ -252,7 +252,7 @@ export default function Home() {
 
               <Link 
                 to="/About" 
-                className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[#176447] to-[#1F7A57] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-emerald-900/45 hover:brightness-110"
+                className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full bg-gradient-to-r from-[#176447] to-[#176447] px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-emerald-900/30 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-emerald-900/45 hover:brightness-110"
               >
                 Discover SSF <FaArrowRight className="text-xs" />
               </Link>
@@ -382,7 +382,7 @@ export default function Home() {
                 </p>
 
                 <div className="mt-3 grid grid-cols-2 gap-2">
-                  <Link to="/Signup" className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-3 py-2 text-xs font-black text-[#07192C] shadow-md hover:brightness-110 transition-all">
+                  <Link to="/Signup" className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-3 py-2 text-xs font-black text-[#12345A] shadow-md hover:brightness-110 transition-all">
                     Join SSF
                   </Link>
                   <Link to="/Login" className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition-all">
@@ -397,7 +397,7 @@ export default function Home() {
                   <div className="rounded-lg border border-sky-200/30 bg-white/[0.06] px-3 py-2 text-xs text-white"><span className="block font-bold text-[#F8FAFC]">Digital ID Card & Certificate</span><span className="mt-1 block text-[10px] text-[#CBD5E1]">For eligible participants</span></div>
                 </div>
 
-                <Link to="/Signup" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-4 py-2.5 text-xs font-black text-[#07192C] shadow-md hover:brightness-110 transition-all">
+                <Link to="/Signup" className="mt-3 inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-4 py-2.5 text-xs font-black text-[#12345A] shadow-md hover:brightness-110 transition-all">
                   Create Account <FaArrowRight className="text-[10px]" />
                 </Link>
 
@@ -493,7 +493,7 @@ export default function Home() {
                   <p className="mt-1 text-sm font-semibold text-slate-100">{label}</p>
                   <p className="mt-1 text-xs text-slate-300">{sub}</p>
                 </div>
-                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-amber-300/20 bg-white/10 text-amber-300 transition-colors duration-300 group-hover:bg-amber-400 group-hover:text-[#07192C]">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-amber-300/20 bg-white/10 text-amber-300 transition-colors duration-300 group-hover:bg-amber-400 group-hover:text-[#12345A]">
                   <Icon className="text-xl" />
                 </div>
               </div>
@@ -508,10 +508,10 @@ export default function Home() {
           
           <div className="mb-14 flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2 rounded-full bg-[#07192C]/5 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#07192C]">
+              <div className="inline-flex items-center gap-2 rounded-full bg-[#12345A]/5 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#12345A]">
                 Work & Community · कार्य और समुदाय
               </div>
-              <h2 className="mt-4 font-serif text-3xl font-bold tracking-tight text-[#07192C] sm:text-4xl md:text-5xl">
+              <h2 className="mt-4 font-serif text-3xl font-bold tracking-tight text-[#12345A] sm:text-4xl md:text-5xl">
                 The work matters. So does the evidence.
               </h2>
               <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
@@ -520,10 +520,10 @@ export default function Home() {
             </div>
             
             <div className="flex flex-wrap gap-3">
-              <Link to="/Media" className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-[#07192C] shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md">
+              <Link to="/Media" className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-[#12345A] shadow-sm transition duration-300 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md">
                 <FaNewspaper className="text-amber-500" /> Media & Gallery
               </Link>
-              <Link to="/Impact" className="inline-flex items-center gap-2 rounded-full bg-[#07192C] px-5 py-3 text-sm font-bold text-white shadow-md transition duration-300 hover:-translate-y-0.5 hover:bg-[#0B2542]">
+              <Link to="/Impact" className="inline-flex items-center gap-2 rounded-full bg-[#12345A] px-5 py-3 text-sm font-bold text-white shadow-md transition duration-300 hover:-translate-y-0.5 hover:bg-[#176447]">
                 <FaChartLine className="text-amber-400" /> Work & Impact
               </Link>
             </div>
@@ -543,17 +543,17 @@ export default function Home() {
                     className="h-full w-full object-cover transition duration-700 group-hover:scale-105" 
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-40 transition-opacity" />
-                  <span className="absolute left-4 top-4 rounded-full bg-[#07192C]/90 px-3.5 py-1 text-xs font-bold tracking-wide text-white backdrop-blur-md">
+                  <span className="absolute left-4 top-4 rounded-full bg-[#12345A]/90 px-3.5 py-1 text-xs font-bold tracking-wide text-white backdrop-blur-md">
                     {item.label}
                   </span>
-                  <span className="absolute right-4 top-4 rounded-full bg-amber-400 px-3 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-[#07192C]">
+                  <span className="absolute right-4 top-4 rounded-full bg-amber-400 px-3 py-0.5 text-[11px] font-extrabold uppercase tracking-wider text-[#12345A]">
                     {item.badge}
                   </span>
                 </div>
 
                 <div className="flex flex-1 flex-col justify-between p-7">
                   <div>
-                    <h3 className="font-serif text-2xl font-bold text-[#07192C] group-hover:text-amber-600 transition-colors">
+                    <h3 className="font-serif text-2xl font-bold text-[#12345A] group-hover:text-amber-600 transition-colors">
                       {item.title}
                     </h3>
                     <p className="mt-3 text-sm leading-relaxed text-slate-600">
@@ -562,7 +562,7 @@ export default function Home() {
                   </div>
                   
                   <div className="mt-6 pt-5 border-t border-slate-100">
-                    <Link to="/Media" className="inline-flex items-center gap-2 text-sm font-bold text-[#07192C] group-hover:text-amber-600">
+                    <Link to="/Media" className="inline-flex items-center gap-2 text-sm font-bold text-[#12345A] group-hover:text-amber-600">
                       View documented activities <FaArrowRight className="text-xs transition-transform group-hover:translate-x-1" />
                     </Link>
                   </div>
@@ -582,7 +582,7 @@ export default function Home() {
             <span className="rounded-full bg-amber-500/10 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.2em] text-amber-700">
               Glimpses of SSF · संस्था की झलकियाँ
             </span>
-            <h2 className="mt-4 font-serif text-3xl font-bold text-[#07192C] sm:text-4xl md:text-5xl">
+            <h2 className="mt-4 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
               Real moments. Shared purpose.
             </h2>
             <p className="mt-3 text-base text-slate-600 sm:text-lg">
@@ -600,7 +600,7 @@ export default function Home() {
                 <div className="relative block h-24 w-24 overflow-hidden rounded-full border-4 border-slate-100 bg-slate-50 p-1 shadow-md transition-all duration-300 group-hover:border-amber-400 group-hover:shadow-xl sm:h-28 sm:w-28 md:h-32 md:w-32">
                   <img src={item.src} alt={item.alt} loading="lazy" className="h-full w-full rounded-full object-cover group-hover:scale-105 transition-transform duration-500" />
                 </div>
-                <span className="mt-3.5 text-xs font-bold text-[#07192C] group-hover:text-amber-600">
+                <span className="mt-3.5 text-xs font-bold text-[#12345A] group-hover:text-amber-600">
                   {item.label}
                 </span>
               </Link>
@@ -610,7 +610,7 @@ export default function Home() {
           <div className="mt-12 text-center">
             <Link 
               to="/Media" 
-              className="inline-flex items-center gap-2 rounded-full border border-[#07192C]/20 bg-white px-7 py-3.5 text-sm font-bold text-[#07192C] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400 hover:bg-slate-50 hover:shadow-md"
+              className="inline-flex items-center gap-2 rounded-full border border-[#07192C]/20 bg-white px-7 py-3.5 text-sm font-bold text-[#12345A] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400 hover:bg-slate-50 hover:shadow-md"
             >
               सभी तस्वीरें और समाचार देखें <FaArrowRight className="text-xs" />
             </Link>
@@ -627,7 +627,7 @@ export default function Home() {
             <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-emerald-800">
               Impact & Accountability • प्रभाव एवं जवाबदेही
             </div>
-            <h2 className="font-serif text-3xl font-bold tracking-tight text-[#07192C] sm:text-4xl md:text-5xl">
+            <h2 className="font-serif text-3xl font-bold tracking-tight text-[#12345A] sm:text-4xl md:text-5xl">
               Show the work. <br />
               <span className="text-amber-600">Share the learning.</span>
             </h2>
@@ -635,7 +635,7 @@ export default function Home() {
               Institutional confidence solidifies when activities, field stories, annual audits, and project outcomes are published responsibly. Explore SSF’s documented path since 2013.
             </p>
             <div className="p-5 rounded-2xl bg-white border border-slate-200/80 shadow-sm">
-              <p className="text-xs font-bold uppercase tracking-wider text-[#07192C]">Ethical Commitment</p>
+              <p className="text-xs font-bold uppercase tracking-wider text-[#12345A]">Ethical Commitment</p>
               <p className="mt-1 text-sm text-slate-600 leading-relaxed">
                 Only verified field execution data and documented milestones are presented as organizational indicators.
               </p>
@@ -655,16 +655,16 @@ export default function Home() {
                 className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400 hover:shadow-xl"
               >
                 <div>
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-xl text-[#07192C] transition-colors group-hover:bg-[#07192C] group-hover:text-amber-400">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-xl text-[#12345A] transition-colors group-hover:bg-[#12345A] group-hover:text-amber-400">
                     {item.icon}
                   </span>
-                  <h3 className="mt-5 text-xl font-bold text-[#07192C] group-hover:text-amber-600 transition-colors">
+                  <h3 className="mt-5 text-xl font-bold text-[#12345A] group-hover:text-amber-600 transition-colors">
                     {item.title}
                   </h3>
                   <p className="text-xs font-semibold text-amber-600 mt-0.5">{item.hi}</p>
                   <p className="mt-3 text-sm leading-relaxed text-slate-600">{item.text}</p>
                 </div>
-                <div className="mt-6 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#07192C] group-hover:text-amber-600 pt-4 border-t border-slate-100">
+                <div className="mt-6 flex items-center gap-2 text-xs font-extrabold uppercase tracking-wider text-[#12345A] group-hover:text-amber-600 pt-4 border-t border-slate-100">
                   Explore Details <FaArrowRight className="text-[10px] transition-transform group-hover:translate-x-1" />
                 </div>
               </Link>
@@ -680,10 +680,10 @@ export default function Home() {
           
           <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-3xl">
-              <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#07192C]">
+              <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#12345A]">
                 In the News · समाचारों में
               </span>
-              <h2 className="mt-4 font-serif text-3xl font-bold text-[#07192C] sm:text-4xl md:text-5xl">
+              <h2 className="mt-4 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
                 A documented journey, not just a promise.
               </h2>
               <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
@@ -693,7 +693,7 @@ export default function Home() {
             
             <Link 
               to="/Media" 
-              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#07192C] px-6 py-3.5 text-sm font-bold text-white shadow-md transition duration-300 hover:-translate-y-0.5 hover:bg-[#0B2542]"
+              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#12345A] px-6 py-3.5 text-sm font-bold text-white shadow-md transition duration-300 hover:-translate-y-0.5 hover:bg-[#176447]"
             >
               Explore Media Archive <FaArrowRight className="text-xs" />
             </Link>
@@ -717,9 +717,9 @@ export default function Home() {
                 <div className="flex items-center justify-between border-t border-slate-100 px-6 py-4 bg-white">
                   <div>
                     <span className="text-xs font-bold text-amber-600 uppercase tracking-wider">{item.source}</span>
-                    <p className="font-semibold text-[#07192C] text-sm">{item.label}</p>
+                    <p className="font-semibold text-[#12345A] text-sm">{item.label}</p>
                   </div>
-                  <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-[#07192C] group-hover:bg-[#07192C] group-hover:text-amber-400 transition-colors">
+                  <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-[#12345A] group-hover:bg-[#12345A] group-hover:text-amber-400 transition-colors">
                     <FaArrowRight className="text-xs" />
                   </div>
                 </div>
@@ -739,7 +739,7 @@ export default function Home() {
               <span className="rounded-full bg-amber-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-amber-800">
                 Our Focus Areas · हमारे कार्यक्षेत्र
               </span>
-              <h2 className="mt-4 font-serif text-3xl font-bold text-[#07192C] sm:text-4xl md:text-5xl">
+              <h2 className="mt-4 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
                 Where we focus our efforts
               </h2>
               <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
@@ -768,7 +768,7 @@ export default function Home() {
                 
                 <span className="min-w-0 flex-1 flex flex-col justify-between">
                   <div>
-                    <span className="block font-serif text-lg font-bold text-[#07192C] group-hover:text-amber-600 transition-colors">
+                    <span className="block font-serif text-lg font-bold text-[#12345A] group-hover:text-amber-600 transition-colors">
                       {item.title}
                     </span>
                     <span className="mt-0.5 block text-xs font-semibold text-amber-600">
@@ -779,7 +779,7 @@ export default function Home() {
                     </span>
                   </div>
                   
-                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#07192C] group-hover:text-amber-600">
+                  <span className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-[#12345A] group-hover:text-amber-600">
                     Explore Pillar <FaArrowRight className="text-[10px] transition-transform group-hover:translate-x-1" />
                   </span>
                 </span>
@@ -790,7 +790,7 @@ export default function Home() {
           <div className="mt-10 text-center">
             <Link 
               to="/Objectives" 
-              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#07192C] border border-slate-200 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md"
+              className="inline-flex items-center gap-2 rounded-full bg-white px-7 py-3.5 text-sm font-bold text-[#12345A] border border-slate-200 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400 hover:shadow-md"
             >
               View all registered statutory objectives <FaArrowRight className="text-xs" />
             </Link>
@@ -804,10 +804,10 @@ export default function Home() {
         <div className="container mx-auto max-w-7xl">
           
           <div className="mx-auto mb-14 max-w-3xl text-center">
-            <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#07192C]">
+            <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#12345A]">
               Purpose & Direction • उद्देश्य एवं दिशा
             </span>
-            <h2 className="mt-4 font-serif text-3xl font-bold text-[#07192C] sm:text-4xl md:text-5xl">
+            <h2 className="mt-4 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
               A clear purpose. A shared future.
             </h2>
             <p className="mt-4 text-base text-slate-600 sm:text-lg">
@@ -823,14 +823,14 @@ export default function Home() {
               <span className="text-xs font-bold uppercase tracking-[0.2em] text-amber-600">
                 Our Mission • हमारा मिशन
               </span>
-              <h3 className="relative mt-4 font-serif text-2xl font-bold leading-snug text-[#07192C] md:text-3xl">
+              <h3 className="relative mt-4 font-serif text-2xl font-bold leading-snug text-[#12345A] md:text-3xl">
                 To contribute to inclusive development through education, skills, health, awareness, and community participation.
               </h3>
               <p className="mt-5 leading-relaxed text-slate-600 font-hindi text-base">
                 शिक्षा, कौशल, स्वास्थ्य, जागरूकता और सामुदायिक सहभागिता के माध्यम से समावेशी विकास में सक्रिय और पारदर्शी योगदान देना।
               </p>
               <div className="mt-8">
-                <Link to="/Mission" className="inline-flex items-center gap-2 text-sm font-bold text-[#07192C] hover:text-amber-600">
+                <Link to="/Mission" className="inline-flex items-center gap-2 text-sm font-bold text-[#12345A] hover:text-amber-600">
                   Explore our full mission <FaArrowRight className="text-xs" />
                 </Link>
               </div>
@@ -867,7 +867,7 @@ export default function Home() {
                 <span className="text-[10px] font-black uppercase tracking-wider text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
                   {value.tag}
                 </span>
-                <p className="mt-3 font-serif text-xl font-bold text-[#07192C]">{value.title}</p>
+                <p className="mt-3 font-serif text-xl font-bold text-[#12345A]">{value.title}</p>
                 <p className="text-xs font-semibold text-slate-500">{value.hi}</p>
                 <p className="mt-3 text-xs leading-relaxed text-slate-600">{value.text}</p>
               </div>
@@ -959,10 +959,10 @@ export default function Home() {
         <div className="container mx-auto grid max-w-7xl gap-10 lg:grid-cols-[0.8fr_1.2fr] items-center">
           
           <div className="space-y-5">
-            <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#07192C]">
+            <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#12345A]">
               Trust & Transparency · पारदर्शिता
             </span>
-            <h2 className="font-serif text-3xl font-bold leading-tight text-[#07192C] sm:text-4xl md:text-5xl">
+            <h2 className="font-serif text-3xl font-bold leading-tight text-[#12345A] sm:text-4xl md:text-5xl">
               Trust should be supported by records.
             </h2>
             <p className="leading-relaxed text-slate-600 text-base sm:text-lg">
@@ -971,7 +971,7 @@ export default function Home() {
             <div>
               <Link 
                 to="/Transparency" 
-                className="inline-flex items-center gap-2 rounded-full bg-[#07192C] px-7 py-3.5 text-sm font-bold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#0C2A4C]"
+                className="inline-flex items-center gap-2 rounded-full bg-[#12345A] px-7 py-3.5 text-sm font-bold text-white shadow-md transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#176447]"
               >
                 Open Transparency Centre <FaArrowRight className="text-xs" />
               </Link>
@@ -985,18 +985,18 @@ export default function Home() {
                 className="group flex flex-col justify-between rounded-3xl border border-slate-200 bg-white p-7 shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:border-amber-400 hover:shadow-xl"
               >
                 <div>
-                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-xl text-[#07192C] group-hover:bg-[#07192C] group-hover:text-amber-400 transition-colors">
+                  <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-slate-100 text-xl text-[#12345A] group-hover:bg-[#12345A] group-hover:text-amber-400 transition-colors">
                     {item.icon}
                   </span>
                   <p className="mt-4 text-[10px] font-black uppercase tracking-wider text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full inline-block">
                     {item.meta}
                   </p>
-                  <h3 className="mt-3 font-serif text-lg font-bold text-[#07192C]">{item.title}</h3>
+                  <h3 className="mt-3 font-serif text-lg font-bold text-[#12345A]">{item.title}</h3>
                   <p className="mt-2 text-xs leading-relaxed text-slate-600">{item.text}</p>
                 </div>
                 
                 <div className="mt-6 pt-4 border-t border-slate-100">
-                  <Link to="/Transparency" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#07192C] group-hover:text-amber-600">
+                  <Link to="/Transparency" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#12345A] group-hover:text-amber-600">
                     View Records <FaArrowRight className="text-[10px]" />
                   </Link>
                 </div>
@@ -1029,13 +1029,13 @@ export default function Home() {
           <div className="space-y-5">
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Message from the Founder</p>
-              <h2 className="mt-2 font-serif text-3xl font-bold text-[#07192C] sm:text-4xl md:text-5xl">
+              <h2 className="mt-2 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
                 Mr. Ramesh Pandey
                 <span className="block mt-1 font-sans text-base font-semibold text-amber-600">Founder & President</span>
               </h2>
             </div>
 
-            <blockquote className="border-l-4 border-amber-400 pl-6 font-serif text-xl font-medium leading-relaxed text-[#07192C] md:text-2xl">
+            <blockquote className="border-l-4 border-amber-400 pl-6 font-serif text-xl font-medium leading-relaxed text-[#12345A] md:text-2xl">
               “Service becomes truly transformative when it reaches the community with dignity, ethical cooperation, and lasting hope.”
             </blockquote>
 
@@ -1046,7 +1046,7 @@ export default function Home() {
             <div>
               <Link 
                 to="/About" 
-                className="inline-flex items-center gap-2 rounded-full border border-[#07192C] bg-white px-6 py-3 text-sm font-bold text-[#07192C] transition-all duration-300 hover:bg-[#07192C] hover:text-white"
+                className="inline-flex items-center gap-2 rounded-full border border-[#07192C] bg-white px-6 py-3 text-sm font-bold text-[#12345A] transition-all duration-300 hover:bg-[#12345A] hover:text-white"
               >
                 Read SSF Governance Profile <FaArrowRight className="text-xs" />
               </Link>
@@ -1085,7 +1085,7 @@ export default function Home() {
                 className="group flex h-full flex-col justify-between rounded-3xl border border-white/15 bg-white/[0.06] p-7 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400 hover:bg-white/[0.12] hover:shadow-2xl"
               >
                 <div>
-                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-400/15 text-2xl text-amber-300 group-hover:bg-amber-400 group-hover:text-[#07192C] transition-colors">
+                  <span className="flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-400/15 text-2xl text-amber-300 group-hover:bg-amber-400 group-hover:text-[#12345A] transition-colors">
                     {item.icon}
                   </span>
                   <h3 className="mt-6 text-xl font-bold tracking-tight text-white">{item.title}</h3>
@@ -1111,7 +1111,7 @@ export default function Home() {
             <span className="rounded-full bg-amber-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-amber-800">
               Support SSF • सहयोग करें
             </span>
-            <h2 className="mt-3 font-serif text-3xl font-bold text-[#07192C] sm:text-4xl">
+            <h2 className="mt-3 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl">
               Help Meaningful Grassroots Work Move Forward
             </h2>
             <p className="mt-2 text-sm text-slate-500">
@@ -1127,10 +1127,10 @@ export default function Home() {
         <div className="container mx-auto max-w-7xl">
           
           <div className="mb-14 text-center">
-            <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#07192C]">
+            <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#12345A]">
               Institutional Journey • संस्थागत यात्रा
             </span>
-            <h2 className="mt-3 font-serif text-3xl font-bold text-[#07192C] sm:text-4xl md:text-5xl">
+            <h2 className="mt-3 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
               A Continuing Journey of Service Since 2013
             </h2>
             <p className="mx-auto mt-4 max-w-2xl text-base text-slate-600 sm:text-lg">
@@ -1143,7 +1143,7 @@ export default function Home() {
           <div className="mt-12 text-center">
             <Link 
               to="/Journey" 
-              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-8 py-3.5 text-sm font-bold text-[#07192C] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400 hover:bg-slate-50 hover:shadow-md"
+              className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white px-8 py-3.5 text-sm font-bold text-[#12345A] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-amber-400 hover:bg-slate-50 hover:shadow-md"
             >
               View Detailed Service Journey <FaArrowRight className="text-xs" />
             </Link>
@@ -1160,7 +1160,7 @@ export default function Home() {
             <span className="rounded-full bg-amber-500/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-amber-800">
               Take the Next Step · अगला कदम
             </span>
-            <h2 className="mt-4 font-serif text-3xl font-bold text-[#07192C] sm:text-4xl">
+            <h2 className="mt-4 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl">
               Every meaningful partnership starts somewhere.
             </h2>
             <p className="mt-3 text-base text-slate-600 leading-relaxed">
@@ -1171,21 +1171,21 @@ export default function Home() {
           <div className="flex flex-col gap-3.5 sm:flex-row sm:flex-wrap">
             <Link 
               to="/JoinUs" 
-              className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#07192C] px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#0B2542]"
+              className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#12345A] px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#176447]"
             >
               <FaUsers /> Join SSF
             </Link>
 
             <Link 
               to="/PartnerWithUs" 
-              className="inline-flex items-center justify-center gap-2.5 rounded-full border border-amber-500/80 bg-white px-7 py-3.5 text-sm font-bold text-[#07192C] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-50 hover:border-amber-600"
+              className="inline-flex items-center justify-center gap-2.5 rounded-full border border-amber-500/80 bg-white px-7 py-3.5 text-sm font-bold text-[#12345A] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-50 hover:border-amber-600"
             >
               <FaHandshake className="text-amber-600" /> Partner With Us
             </Link>
 
             <Link 
               to="/Donate" 
-              className="inline-flex items-center justify-center gap-2.5 rounded-full border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-[#07192C] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-50 hover:border-slate-400"
+              className="inline-flex items-center justify-center gap-2.5 rounded-full border border-slate-300 bg-white px-7 py-3.5 text-sm font-bold text-[#12345A] shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-slate-50 hover:border-slate-400"
             >
               <FaHeart className="text-red-500" /> Support SSF
             </Link>
