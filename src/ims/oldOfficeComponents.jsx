@@ -778,7 +778,6 @@ function MeetingResolutions({rows,add,archive,restore,token,updateRecord}){
  };
  useEffect(()=>{loadArchived();},[rows]);
  const blank={meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",meetingTitle:"",purpose:"",venue:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:"",presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"",attendanceSummary:"",attendanceSheetRef:"",agenda:"",decision:"",minutes:"",resolutionNo:"",resolutionStatus:"Passed",actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",remarks:""};
- const [linkedMeetingKey,setLinkedMeetingKey]=useState("");
  const [f,setF]=useState(blank);
  const [notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false);
  const permanentDelete=async function(id){
@@ -792,30 +791,6 @@ function MeetingResolutions({rows,add,archive,restore,token,updateRecord}){
   }catch(e){setNotice(e.message||"Permanent deletion failed.");}
  };
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
- const linkedMeetingRows=(rows||[]).filter(r=>["meetings","onlineMeetings"].includes(r.module)&&r.status!=="deleted");
- const chooseLinkedMeeting=(key)=>{
-  setLinkedMeetingKey(key);
-  const source=linkedMeetingRows.find(r=>String(r.module)+":"+String(r.id)===key);
-  if(!source)return;
-  const d=source.data||{};
-  const online=source.module==="onlineMeetings";
-  const date=String(d.date||d.meetingDate||source.recordDate||"").slice(0,10);
-  setF(x=>({...x,
-   meetingDate:date||x.meetingDate,
-   startTime:String(d.time||d.startTime||x.startTime||""),
-   meetingType:String(d.meetingType||d.type||source.recordType||x.meetingType||"Other"),
-   meetingMode:online?"Online":String(d.meetingMode||d.mode||x.meetingMode||"Online"),
-   meetingTitle:String(d.meetingTitle||d.title||d.name||x.meetingTitle||""),
-   purpose:String(d.purpose||x.purpose||""),
-   venue:String(d.venue||x.venue||""),
-   onlineMeetingId:String(d.meetingId||d.onlineMeetingId||x.onlineMeetingId||""),
-   onlineMeetingLink:String(d.meetingLink||d.onlineMeetingLink||x.onlineMeetingLink||""),
-   onlinePlatform:String(d.platform||d.onlinePlatform||(d.meetingLink?"Google Meet":x.onlinePlatform||"Google Meet")),
-   organizer:String(d.organizer||d.createdByName||x.organizer||""),
-   agenda:String(d.agenda||x.agenda||"")
-  }));
- };
-
  const save=async e=>{
   e.preventDefault();
   if(saving)return;
@@ -850,10 +825,6 @@ function MeetingResolutions({rows,add,archive,restore,token,updateRecord}){
   <div className="bg-white border rounded-2xl p-5">
    <div className="bg-[#FAF9F5] border border-[#EAF0F6] rounded-xl p-4 mb-4 text-sm text-[#12345A]"><b>Official Record:</b> Meeting mode के अनुसार Online / Offline / Hybrid details भरें. Meeting complete होने के बाद attendance, minutes, decisions और resolutions finalize करें.</div>
    <form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-    <select value={linkedMeetingKey} onChange={e=>chooseLinkedMeeting(e.target.value)} className={cls+" sm:col-span-2 lg:col-span-4"} aria-label="Select a scheduled or online meeting">
-     <option value="">Select Scheduled Meeting / कैलेंडर या ऑनलाइन बैठक चुनें (optional)</option>
-     {linkedMeetingRows.map(r=>{const d=r.data||{};const date=String(d.date||d.meetingDate||r.recordDate||"").slice(0,10);const title=d.meetingTitle||d.title||d.name||r.recordType||"Untitled meeting";return <option key={String(r.module)+":"+String(r.id)} value={String(r.module)+":"+String(r.id)}>{r.module==="onlineMeetings"?"Online":"Calendar"} · {title} · {date||"No date"}</option>;})}
-    </select>
     <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls} placeholder="Meeting Date"/>
     <input type="time" value={f.startTime} onChange={e=>set("startTime",e.target.value)} className={cls} placeholder="Start Time"/>
     <input type="time" value={f.endTime} onChange={e=>set("endTime",e.target.value)} className={cls} placeholder="End Time"/>
