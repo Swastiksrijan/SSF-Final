@@ -15,6 +15,24 @@ import { cls, formatOfficeDate, SimpleOfficeCard, exportRows, exportExcel, expor
 import { PAGE_TITLE, PAGE_TITLE_ON_DARK } from "./ui";
 import { LABELS, MODULES } from "./oldOfficeModules";
 
+// The Meeting Calendar tab uses a longer meeting-type list than the Online
+// Meetings / Meeting & Resolution forms. Map across so the linked-meeting
+// dropdown can fill the type field with a value the target select accepts.
+const LINKED_MEETING_TYPE_MAP={
+ "General Body Meeting":"General Body",
+ "Managing Committee Meeting":"Managing Committee",
+ "Special Meeting":"Other",
+ "Emergency Meeting":"Emergency Meeting",
+ "MoU / Collaboration Meeting":"MoU / Collaboration",
+ "Volunteer Meeting":"Volunteer",
+ "Member Meeting":"Member",
+ "Donor Meeting":"Donor",
+ "Project / Program Meeting":"Project / Program",
+ "Event / Camp Meeting":"Event / Camp",
+ "Training / Workshop":"Training / Workshop",
+ "Internal Office Meeting":"Internal Office Meeting",
+ "Other":"Other"
+};
 
 function NotificationsHub({rows,add,archive,updateRecord,token}){
  const [tab,setTab]=useState("information");
@@ -181,15 +199,31 @@ function MeetingsHub({token,rows,add,archive,restore,updateRecord}){
    <div className="flex flex-col sm:flex-row gap-2 overflow-x-auto">{tabs.map(function(t){return <button key={t[0]} type="button" onClick={function(){setTab(t[0]);loadMeetingLinkedRows();}} className={"shrink-0 min-w-[220px] px-4 py-3 rounded-xl font-bold text-left transition "+(tab===t[0]?"bg-[#12345A] text-white shadow-sm":"bg-zinc-50 text-[#12345A] hover:bg-zinc-100")}>{t[1]}</button>;})}</div>
   </div>
   {tab==="calendar"&&<MeetingCalendar rows={calendarRows.concat(onlineRows,resolutionRows)} linkedRows={calendarRows.concat(onlineRows,resolutionRows)} add={add} archive={archive} updateRecord={updateRecord} token={token}/>}
-  {tab==="online"&&<OnlineMeetings token={token}/>}
+  {tab==="online"&&<OnlineMeetings token={token} rows={calendarRows}/>}
   {tab==="resolution"&&<MeetingResolutions rows={calendarRows.concat(onlineRows,resolutionRows)} add={async function(module,data){const ok=await add(module,data);if(ok)await loadMeetingLinkedRows();return ok;}} archive={archive} restore={restore} token={token} updateRecord={updateRecord}/>}
  </div>;
 }
-function OnlineMeetings({token}){
+function OnlineMeetings({token,rows}){
  const blank={title:"",type:"Managing Committee",date:new Date().toISOString().slice(0,10),time:"15:15",purpose:"",agenda:""};
- const [form,setForm]=useState(blank),[link,setLink]=useState(""),[members,setMembers]=useState([]),[selected,setSelected]=useState([]),[records,setRecords]=useState([]),[notice,setNotice]=useState(""),[working,setWorking]=useState(false),[googleConnected,setGoogleConnected]=useState(false),[editingId,setEditingId]=useState(null);
+ const [form,setForm]=useState(blank),[link,setLink]=useState(""),[members,setMembers]=useState([]),[selected,setSelected]=useState([]),[records,setRecords]=useState([]),[linkedMeetingKey,setLinkedMeetingKey]=useState(""),[notice,setNotice]=useState(""),[working,setWorking]=useState(false),[googleConnected,setGoogleConnected]=useState(false),[editingId,setEditingId]=useState(null);
  const headers={Authorization:"Bearer "+token,"Content-Type":"application/json"};
  const loadRecords=async()=>{try{const r=await fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=onlineMeetings",{headers});const d=r.ok?await r.json():[];setRecords(Array.isArray(d)?d:[]);}catch(e){setRecords([]);}};
+ const linkedMeetingRows=(rows||[]).filter(r=>r.status!=="deleted"&&r.status!=="archived");
+ const chooseLinkedMeeting=key=>{
+  setLinkedMeetingKey(key);
+  const source=linkedMeetingRows.find(r=>String(r.id)===key);
+  if(!source)return;
+  const d=source.data||{};
+  setForm(x=>({...x,
+   title:d.meetingTitle||d.title||x.title,
+   type:LINKED_MEETING_TYPE_MAP[d.meetingType]||d.meetingType||x.type,
+   date:String(d.date||source.recordDate||x.date||"").slice(0,10),
+   time:String(d.time||d.startTime||x.time||""),
+   purpose:d.purpose||x.purpose,
+   agenda:d.agenda||x.agenda
+  }));
+  setNotice("Scheduled meeting selected. Title, type, date, time, purpose and agenda calendar se bhar diye gaye hain; Google Meet create karne se pehle check kar lein.");
+ };
  useEffect(()=>{fetch(ENDPOINTS.DIGITAL_OFFICE_RECORDS+"?module=members",{headers}).then(r=>r.ok?r.json():[]).then(d=>setMembers(Array.isArray(d)?d:[])).catch(()=>setMembers([]));fetch(ENDPOINTS.DIGITAL_OFFICE_GOOGLE_STATUS,{headers}).then(r=>r.ok?r.json():{connected:false}).then(d=>setGoogleConnected(Boolean(d.connected))).catch(()=>setGoogleConnected(false));loadRecords();},[]);
  const toggle=id=>setSelected(s=>s.includes(id)?s.filter(x=>x!==id):[...s,id]);
  const selectedEmails=()=>members.filter(r=>selected.includes(r.id)).map(r=>(r.data||{}).email).filter(Boolean);
@@ -210,6 +244,7 @@ function OnlineMeetings({token}){
   <div className="bg-white border rounded-2xl overflow-hidden">
    <div className="bg-[#12345A] text-white p-6"><div className="flex items-center gap-3"><FaVideo className="text-2xl"/><div><h1 className={PAGE_TITLE_ON_DARK}>Online Meeting / ऑनलाइन बैठक</h1><p className="text-white/70 mt-1">SSF Digital Office se direct Google Meet link create karein aur selected participants ko invitation/share bhejein.</p></div></div></div>
    <div className="p-6 grid md:grid-cols-2 gap-4">
+    <div className="md:col-span-2"><label className="text-xs font-bold text-zinc-500">Select Scheduled Meeting / कैलेंडर से बैठक चुनें</label><select value={linkedMeetingKey} onChange={e=>chooseLinkedMeeting(e.target.value)} className={cls+" mt-1"} aria-label="Select a meeting from the calendar"><option value="">— Select a scheduled meeting —</option>{linkedMeetingRows.map(r=>{const d=r.data||{};const date=String(d.date||r.recordDate||"").slice(0,10);return <option key={r.id} value={r.id}>{date||"No date"} · {d.time||"—"} · {d.meetingTitle||d.title||"Untitled meeting"} ({d.meetingType||r.recordType||"Meeting"})</option>})}</select><p className="text-xs text-zinc-500 mt-1">{linkedMeetingRows.length?"Choose a meeting already scheduled in Meeting Calendar; its title, type, date, time, purpose and agenda will fill below.":"No meetings found in Meeting Calendar. Schedule one there first, then refresh this page."}</p></div>
     <div><label className="text-xs font-bold text-zinc-500">Meeting Title</label><input value={form.title} onChange={e=>setForm({...form,title:e.target.value})} placeholder="Meeting title" className={cls+" mt-1"}/></div>
     <div><label className="text-xs font-bold text-zinc-500">Meeting Type</label><select value={form.type} onChange={e=>setForm({...form,type:e.target.value})} className={cls+" mt-1"}><option>Managing Committee</option><option>General Body</option><option>Emergency Meeting</option><option>MoU / Collaboration</option><option>Volunteer</option><option>Member</option><option>Donor</option><option>Project / Program</option><option>Event / Camp</option><option>Training / Workshop</option><option>Internal Office Meeting</option><option>Other</option></select></div>
     <div><label className="text-xs font-bold text-zinc-500">Date</label><input type="date" value={form.date} onChange={e=>setForm({...form,date:e.target.value})} className={cls+" mt-1"}/></div>
@@ -778,6 +813,7 @@ function MeetingResolutions({rows,add,archive,restore,token,updateRecord}){
  };
  useEffect(()=>{loadArchived();},[rows]);
  const blank={meetingDate:new Date().toISOString().slice(0,10),startTime:"",endTime:"",meetingType:"Managing Committee Meeting",meetingMode:"Online",meetingTitle:"",purpose:"",venue:"",onlineMeetingId:"",onlineMeetingLink:"",onlinePlatform:"Google Meet",organizer:"",presentMembers:"",absentMembers:"",onlineParticipants:"",offlineParticipants:"",attendance:"",attendanceSummary:"",attendanceSheetRef:"",agenda:"",decision:"",minutes:"",resolutionNo:"",resolutionStatus:"Passed",actionPoints:"",responsiblePersons:"",targetDate:"",supportingDocument:"",recordingRef:"",remarks:""};
+ const [linkedMeetingKey,setLinkedMeetingKey]=useState("");
  const [f,setF]=useState(blank);
  const [notice,setNotice]=useState(""),[editingId,setEditingId]=useState(null),[saving,setSaving]=useState(false);
  const permanentDelete=async function(id){
@@ -791,6 +827,31 @@ function MeetingResolutions({rows,add,archive,restore,token,updateRecord}){
   }catch(e){setNotice(e.message||"Permanent deletion failed.");}
  };
  const set=(k,v)=>setF(x=>({...x,[k]:v}));
+ const linkedMeetingRows=(rows||[]).filter(r=>["meetings","onlineMeetings"].includes(r.module)&&r.status!=="deleted"&&r.status!=="archived");
+ const chooseLinkedMeeting=(key)=>{
+  setLinkedMeetingKey(key);
+  const source=linkedMeetingRows.find(r=>String(r.module)+":"+String(r.id)===key);
+  if(!source)return;
+  const d=source.data||{};
+  const online=source.module==="onlineMeetings";
+  const date=String(d.date||d.meetingDate||source.recordDate||"").slice(0,10);
+  setF(x=>({...x,
+   meetingDate:date||x.meetingDate,
+   startTime:String(d.time||d.startTime||x.startTime||""),
+   meetingType:String(d.meetingType||d.type||source.recordType||x.meetingType||"Other"),
+   meetingMode:online?"Online":String(d.mode||d.meetingMode||x.meetingMode||"Online"),
+   meetingTitle:String(d.meetingTitle||d.title||d.name||x.meetingTitle||""),
+   purpose:String(d.purpose||x.purpose||""),
+   venue:String(d.venue||x.venue||""),
+   onlineMeetingId:String(d.meetingId||d.onlineMeetingId||x.onlineMeetingId||""),
+   onlineMeetingLink:String(d.meetingLink||d.onlineMeetingLink||x.onlineMeetingLink||""),
+   onlinePlatform:String(d.platform||d.onlinePlatform||(d.meetingLink?"Google Meet":x.onlinePlatform||"Google Meet")),
+   organizer:String(d.organizer||d.organizerHost||d.createdByName||x.organizer||""),
+   presentMembers:String(d.participants||d.presentMembers||x.presentMembers||""),
+   agenda:String(d.agenda||x.agenda||"")
+  }));
+  setNotice("Scheduled meeting selected. Available details filled in; verify before saving.");
+ };
  const save=async e=>{
   e.preventDefault();
   if(saving)return;
@@ -825,10 +886,14 @@ function MeetingResolutions({rows,add,archive,restore,token,updateRecord}){
   <div className="bg-white border rounded-2xl p-5">
    <div className="bg-[#FAF9F5] border border-[#EAF0F6] rounded-xl p-4 mb-4 text-sm text-[#12345A]"><b>Official Record:</b> Meeting mode के अनुसार Online / Offline / Hybrid details भरें. Meeting complete होने के बाद attendance, minutes, decisions और resolutions finalize करें.</div>
    <form onSubmit={save} className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+    <select value={linkedMeetingKey} onChange={e=>chooseLinkedMeeting(e.target.value)} className={cls+" sm:col-span-2 lg:col-span-4"} aria-label="Select a scheduled or online meeting">
+     <option value="">Select Scheduled Meeting / कैलेंडर या ऑनलाइन बैठक चुनें (optional)</option>
+     {linkedMeetingRows.map(r=>{const d=r.data||{};const date=String(d.date||d.meetingDate||r.recordDate||"").slice(0,10);const title=d.meetingTitle||d.title||d.name||r.recordType||"Untitled meeting";return <option key={String(r.module)+":"+String(r.id)} value={String(r.module)+":"+String(r.id)}>{r.module==="onlineMeetings"?"Online":"Calendar"} · {title} · {date||"No date"}</option>;})}
+    </select>
     <input type="date" value={f.meetingDate} onChange={e=>set("meetingDate",e.target.value)} className={cls} placeholder="Meeting Date"/>
     <input type="time" value={f.startTime} onChange={e=>set("startTime",e.target.value)} className={cls} placeholder="Start Time"/>
     <input type="time" value={f.endTime} onChange={e=>set("endTime",e.target.value)} className={cls} placeholder="End Time"/>
-    <select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} className={cls}><option>General Body Meeting</option><option>Managing Committee Meeting</option><option>Special Meeting</option><option>Emergency Meeting</option><option>MoU / Collaboration Meeting</option><option>Project / Program Meeting</option><option>Other</option></select>
+    <select value={f.meetingType} onChange={e=>set("meetingType",e.target.value)} className={cls}><option>General Body Meeting</option><option>Managing Committee Meeting</option><option>Special Meeting</option><option>Emergency Meeting</option><option>MoU / Collaboration Meeting</option><option>Volunteer Meeting</option><option>Member Meeting</option><option>Donor Meeting</option><option>Project / Program Meeting</option><option>Event / Camp Meeting</option><option>Training / Workshop</option><option>Internal Office Meeting</option><option>Other</option></select>
     <select value={f.meetingMode} onChange={e=>set("meetingMode",e.target.value)} className={cls}><option>Online</option><option>Offline</option><option>Hybrid</option></select>
     <input value={f.meetingTitle} onChange={e=>set("meetingTitle",e.target.value)} placeholder="Meeting Title" required className={cls}/>
     <input value={f.purpose} onChange={e=>set("purpose",e.target.value)} placeholder="Purpose / उद्देश्य" className={cls}/>
