@@ -207,8 +207,8 @@ export default function Home() {
             transition={{ duration: 0.65, ease: "easeOut" }} 
             className="max-w-4xl"
           >
-            {/* Trust Micro-Tag (2 chawal ke dane barabar niche) */}
-            <div className="mt-2 flex flex-wrap items-center gap-2 sm:gap-2.5">
+            {/* Trust Micro-Tag — moved lower so it clears the mobile header */}
+            <div className="mt-12 flex flex-wrap items-center gap-2 sm:mt-2 sm:gap-2.5">
               <div className="inline-flex max-w-full items-center gap-1.5 rounded-full border border-amber-400/35 bg-white/[0.07] px-2.5 py-1.5 text-[9px] font-semibold uppercase tracking-[0.08em] text-amber-300 shadow-xl backdrop-blur-md sm:gap-2.5 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.18em]">
                 <FaSeedling className="shrink-0 text-amber-400 text-xs sm:text-sm" />
                 <span>Registered Society · Dedicated Since 2013</span>
