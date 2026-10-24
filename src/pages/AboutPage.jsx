@@ -14,9 +14,7 @@ import {
   FaQuoteLeft,
 } from "react-icons/fa";
 import OptimizedImage from "../components/OptimizedImage";
-import footerImg1 from "../assets/footer-gallery-1.jpg";
-import footerImg2 from "../assets/footer-gallery-2.jpg";
-import footerImg3 from "../assets/footer-gallery-3.jpg";
+import pageHeader from "../assets/page-header.jpg";
 
 const organizationFacts = [
   {
@@ -125,26 +123,16 @@ export default function AboutPage() {
     <main className="min-h-screen overflow-hidden bg-white font-sans text-[#26343D]">
       {/* Hero */}
       <section className="relative isolate min-h-[600px] overflow-hidden bg-[#071D34] text-white sm:min-h-[660px] lg:min-h-[740px]">
-        <div className="absolute inset-0 grid grid-cols-3 gap-1 p-1 sm:gap-2 sm:p-2 lg:gap-3 lg:p-3" aria-hidden="true">
-          {[footerImg1, footerImg2, footerImg3].map((img, index) => (
-            <div
-              key={index}
-              className={`relative overflow-hidden rounded-lg sm:rounded-2xl lg:rounded-[2rem] ${
-                index === 1 ? "translate-y-4 sm:translate-y-6" : ""
-              }`}
-            >
-              <img
-                src={img}
-                alt=""
-                className="h-full w-full scale-[1.015] object-cover object-center opacity-100 [filter:brightness(1.12)_contrast(1.10)_saturate(1.10)] transition-transform duration-700"
-                loading={index === 0 ? "eager" : "lazy"}
-              />
-            </div>
-          ))}
+        <div className="absolute inset-0" aria-hidden="true">
+          <img
+            src={pageHeader}
+            alt=""
+            fetchPriority="high"
+            className="h-full w-full object-cover object-center [filter:brightness(1.08)_contrast(1.08)_saturate(1.08)]"
+          />
         </div>
-        <div className="absolute inset-0 bg-[#092541]/[0.04]" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#06182B]/70 via-[#092541]/[0.14] to-[#092541]/[0.02]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#071d34]/45 via-transparent to-[#071d34]/[0.04]" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#06182B]/80 via-[#092541]/50 to-[#092541]/15" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#071d34]/40 via-transparent to-[#071d34]/10" />
         <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#E6530E]/15 blur-3xl" aria-hidden="true" />
         <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#176447]/25 blur-3xl" aria-hidden="true" />
 
