@@ -7,7 +7,6 @@ import {
   FaBullseye, FaHandsHelping, FaCompass, FaCheckCircle, FaAward,
   FaIdCard, FaCertificate, FaUserCircle, FaSignInAlt, FaShareAlt, FaQuoteLeft
 } from "react-icons/fa";
-import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
 import OptimizedImage from "../components/OptimizedImage";
@@ -319,8 +318,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Floating Ticker */}
-      <FloatingTicker />
 
       {/* ========================================================================= */}
       {/* 3 CARDS IN A SINGLE UNIFIED INSTITUTIONAL FRAME (पुरानी डुप्लीकेट हटा दी गई) */}
