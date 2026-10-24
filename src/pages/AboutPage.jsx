@@ -251,15 +251,35 @@ export default function AboutPage() {
             <div className="mt-6 h-1 w-20 rounded-full bg-gradient-to-r from-[#E6530E] via-[#F7A814] to-[#176447]" />
             <p className="mt-6 text-lg leading-8 text-[#53616C]">
               Swastik Srijan Foundation is a registered non-profit organization
-              based in Rewa, Madhya Pradesh. Established in December 2013, the
-              Foundation works to contribute to community development through
-              education, health, skills, awareness and sustainable initiatives.
+              established in December 2013, with its roots in Rewa, Madhya Pradesh,
+              India, and a pan-India field of operation. Guided by the principles
+              of humanity, integrity, social responsibility and inclusive
+              development, the Foundation strives to contribute to a more
+              equitable, aware, empowered and sustainable society.
             </p>
             <p className="mt-5 text-base leading-8 text-[#53616C]">
-              दिसंबर 2013 में स्थापित स्वस्तिक सृजन फाउंडेशन मध्य प्रदेश के रीवा
-              में स्थित एक पंजीकृत गैर-लाभकारी संस्था है। संस्था शिक्षा, स्वास्थ्य,
-              कौशल, जागरूकता और सतत पहलों के माध्यम से समुदाय के विकास में योगदान
-              देने का प्रयास करती है।
+              The Foundation works towards community development through
+              initiatives focused on education, health and well-being, skill
+              development, public awareness, social welfare and sustainable
+              development. It seeks to encourage meaningful participation,
+              strengthen community capabilities and build collaborations with
+              individuals, volunteers, educational institutions, professionals,
+              civil society organizations and responsible corporate partners.
+            </p>
+            <p lang="hi" className="mt-5 text-base leading-8 text-[#53616C]">
+              स्वस्तिक सृजन फाउंडेशन दिसंबर 2013 में स्थापित एक पंजीकृत गैर-लाभकारी
+              संस्था है, जिसका आधार रीवा, मध्य प्रदेश, भारत में है तथा जिसका
+              कार्यक्षेत्र संपूर्ण भारत है। मानवता, सत्यनिष्ठा, सामाजिक उत्तरदायित्व
+              और समावेशी विकास के मूल्यों से प्रेरित संस्था एक अधिक न्यायपूर्ण,
+              जागरूक, सशक्त और सतत समाज के निर्माण में योगदान देने के लिए प्रतिबद्ध है।
+            </p>
+            <p lang="hi" className="mt-5 text-base leading-8 text-[#53616C]">
+              संस्था शिक्षा, स्वास्थ्य एवं कल्याण, कौशल विकास, जन-जागरूकता, सामाजिक
+              कल्याण तथा सतत विकास से संबंधित पहलों के माध्यम से समुदायों के विकास
+              की दिशा में कार्य करती है। संस्था का प्रयास है कि व्यक्तियों और
+              समुदायों की क्षमताओं को प्रोत्साहित किया जाए तथा स्वयंसेवकों, शिक्षकों,
+              स्वास्थ्य एवं अन्य क्षेत्रों के पेशेवरों, शैक्षणिक संस्थानों, सामाजिक
+              संगठनों और उत्तरदायी कॉर्पोरेट भागीदारों के साथ सार्थक सहयोग विकसित हो।
             </p>
           </motion.div>
 
