@@ -620,7 +620,7 @@ export default function Home() {
       </section>
 
       {/* ================= IMPACT & ACCOUNTABILITY ================= */}
-      <section className="bg-gradient-to-br from-slate-100 via-white to-slate-100 px-5 py-20 md:px-8 md:py-28">
+      <section className="bg-gradient-to-br from-[#EAF0F6] via-white to-[#FAF9F5] px-5 py-20 md:px-8 md:py-28">
         <div className="container mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[0.85fr_1.15fr]">
           
           <div className="space-y-5">
@@ -996,7 +996,7 @@ export default function Home() {
                 </div>
                 
                 <div className="mt-6 pt-4 border-t border-slate-100">
-                  <Link to="/Transparency" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#12345A] group-hover:text-amber-600">
+                  <Link to="/Transparency" className="inline-flex items-center gap-1.5 text-xs font-bold text-[#176447] group-hover:text-[#12345A]">
                     View Records <FaArrowRight className="text-[10px]" />
                   </Link>
                 </div>
@@ -1008,7 +1008,7 @@ export default function Home() {
       </section>
 
       {/* ================= FOUNDER'S MESSAGE ================= */}
-      <section className="bg-gradient-to-br from-slate-100 via-white to-slate-100 px-5 py-20 md:px-8 md:py-28 border-t border-slate-200">
+      <section className="bg-gradient-to-br from-[#EAF0F6] via-white to-[#FAF9F5] px-5 py-20 md:px-8 md:py-28 border-t border-slate-200">
         <div className="container mx-auto grid max-w-7xl items-center gap-10 lg:grid-cols-[0.7fr_1.3fr]">
           
           <div className="text-center lg:text-left">
@@ -1031,7 +1031,7 @@ export default function Home() {
               <p className="text-xs font-bold uppercase tracking-[0.2em] text-slate-500">Message from the Founder</p>
               <h2 className="mt-2 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
                 Mr. Ramesh Pandey
-                <span className="block mt-1 font-sans text-base font-semibold text-amber-600">Founder & President</span>
+                <span className="block mt-1 font-sans text-base font-semibold text-[#176447]">Founder & President</span>
               </h2>
             </div>
 
