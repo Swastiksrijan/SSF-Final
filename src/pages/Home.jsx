@@ -679,58 +679,71 @@ export default function Home() {
       </section>
 
       {/* ================= IN THE NEWS / MEDIA ================= */}
-      <section className="bg-white px-5 py-20 md:px-8 md:py-28 border-t border-slate-200/80">
+      <section className="relative isolate overflow-hidden border-t border-[#E4E8EC] bg-gradient-to-br from-[#F4F6F8] via-[#FAF9F5] to-[#F3EEE4] px-5 py-20 md:px-8 md:py-28">
+        {/* Quiet editorial accents behind the media archive */}
+        <div aria-hidden="true" className="pointer-events-none absolute -right-24 -top-24 -z-10 h-80 w-80 rounded-full border border-[#D5B66A]/30" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-12 -top-12 -z-10 h-56 w-56 rounded-full border border-[#12345A]/[0.08]" />
         <div className="container mx-auto max-w-7xl">
-          
           <div className="mb-12 flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <div className="max-w-3xl">
-              <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#12345A]">
+              <span className="inline-flex items-center gap-2 rounded-full border border-[#D8C79D] bg-white/80 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-[#12345A] shadow-sm">
+                <FaNewspaper className="text-[#B88728]" />
                 In the News · समाचारों में
               </span>
-              <h2 className="mt-4 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
-                A documented journey, not just a promise.
+              <h2 className="mt-5 font-serif text-3xl font-bold leading-tight tracking-tight text-[#12345A] sm:text-4xl md:text-5xl">
+                A documented journey, <span className="text-[#176447]">not just a promise.</span>
               </h2>
-              <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
+              <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
                 Print and regional news coverage documenting past and continuing field efforts across Rewa and surrounding areas.
               </p>
+              <div className="mt-5 h-1 w-20 rounded-full bg-gradient-to-r from-[#176447] via-[#D5A43B] to-[#12345A]" />
             </div>
-            
-            <Link 
-              to="/Media" 
-              className="inline-flex shrink-0 items-center gap-2 rounded-full bg-[#12345A] px-6 py-3.5 text-sm font-bold text-white shadow-md transition duration-300 hover:-translate-y-0.5 hover:bg-[#176447]"
+            <Link
+              to="/Media"
+              className="inline-flex min-h-12 shrink-0 items-center justify-center gap-2 rounded-full border border-[#12345A] bg-[#12345A] px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-[#12345A]/15 transition duration-300 hover:-translate-y-0.5 hover:border-[#176447] hover:bg-[#176447] hover:shadow-xl"
             >
               Explore Media Archive <FaArrowRight className="text-xs" />
             </Link>
           </div>
 
           <div className="grid gap-6 sm:grid-cols-3">
-            {pressItems.map((item) => (
-              <Link 
-                to="/Media" 
-                key={item.image} 
-                className="group flex flex-col overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition-all duration-300 hover:-translate-y-2 hover:border-amber-400/80 hover:shadow-xl"
+            {pressItems.map((item, index) => (
+              <Link
+                to="/Media"
+                key={item.image}
+                className="group relative flex flex-col overflow-hidden rounded-[1.65rem] border border-white bg-white/90 p-2 shadow-[0_14px_40px_-24px_rgba(18,52,90,0.42)] ring-1 ring-[#12345A]/[0.05] transition-all duration-500 hover:-translate-y-2 hover:border-[#D8BC79] hover:shadow-[0_24px_55px_-25px_rgba(18,52,90,0.38)]"
               >
-                <div className="flex h-64 items-center justify-center overflow-hidden bg-slate-50 p-4">
-                  <img 
-                    src={item.image} 
-                    alt={item.alt} 
-                    loading="lazy" 
-                    className="h-full w-full object-contain transition duration-500 group-hover:scale-105" 
+                <div className="relative flex h-64 items-center justify-center overflow-hidden rounded-[1.2rem] border border-[#E6E0D2] bg-gradient-to-br from-[#F6F2E9] via-[#F9FAFB] to-[#EAF0F6] p-4 sm:h-72">
+                  <div aria-hidden="true" className="pointer-events-none absolute inset-3 rounded-xl border border-white/80" />
+                  <img
+                    src={item.image}
+                    alt={item.alt}
+                    loading="lazy"
+                    className="relative z-10 h-full w-full object-contain drop-shadow-[0_8px_12px_rgba(18,52,90,0.13)] transition duration-700 ease-out group-hover:scale-[1.035]"
                   />
+                  <span className="absolute left-4 top-4 z-20 inline-flex items-center gap-1.5 rounded-full border border-white/80 bg-white/90 px-3 py-1.5 text-[10px] font-extrabold uppercase tracking-wider text-[#12345A] shadow-sm backdrop-blur">
+                    <FaNewspaper className="text-[#B88728]" /> Archive {String(index + 1).padStart(2, "0")}
+                  </span>
                 </div>
-                <div className="flex items-center justify-between border-t border-slate-100 px-6 py-4 bg-white">
-                  <div>
-                    <span className="text-xs font-bold text-amber-600 uppercase tracking-wider">{item.source}</span>
-                    <p className="font-semibold text-[#12345A] text-sm">{item.label}</p>
+                <div className="flex flex-1 items-center justify-between gap-3 px-4 py-4 sm:px-5">
+                  <div className="min-w-0">
+                    <span className="inline-block rounded-full bg-[#176447]/[0.08] px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[0.12em] text-[#176447]">
+                      {item.source}
+                    </span>
+                    <p className="mt-2 font-serif text-base font-bold text-[#12345A] transition-colors group-hover:text-[#176447]">
+                      {item.label}
+                    </p>
                   </div>
-                  <div className="h-8 w-8 rounded-full bg-slate-100 flex items-center justify-center text-[#12345A] group-hover:bg-[#12345A] group-hover:text-amber-400 transition-colors">
-                    <FaArrowRight className="text-xs" />
-                  </div>
+                  <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#DDE4E9] bg-[#F5F7F8] text-[#12345A] transition-all duration-300 group-hover:border-[#176447] group-hover:bg-[#176447] group-hover:text-white">
+                    <FaArrowRight className="text-xs transition-transform group-hover:translate-x-0.5" />
+                  </span>
                 </div>
               </Link>
             ))}
           </div>
-
+          <p className="mt-6 text-xs leading-relaxed text-slate-500">
+            Media items are presented as a record of coverage. Select a card to explore the archive.
+          </p>
         </div>
       </section>
 
