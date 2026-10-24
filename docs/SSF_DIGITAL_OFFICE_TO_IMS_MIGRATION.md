@@ -38,3 +38,15 @@ Make `/ims` the single supported office portal before retiring `/SSFDigitalOffic
 - [ ] Authentication, permissions, exports/PDFs, and external integrations tested.
 - [ ] User accepts IMS as the only portal; old URL redirect and rollback plan verified.
 - [ ] Only then consider retiring the old UI.
+
+
+## Detailed route audit added (2026-10-24)
+- Parsed the legacy module catalogue: 139 distinct module IDs.
+- Found 89 distinct explicit `legacy('moduleId')` links in `src/ims/sectionModules.js`. This is a navigation-link count, not a statement that the other 50 are missing: some use dedicated IMS routes, canonical resources, or custom screens and must be classified individually.
+- The compatibility route `/ims/legacy/$module` is protected by the same `ssf_admin_token` login gate as the old portal. It renders `ImsLegacyRegister` inside `LangProvider`.
+- `src/ims/oldOfficeCore.jsx` is the bridge that reads/writes the Digital Office records endpoint. This supports a staged UI consolidation without immediately copying records to a second table, but it does not prove every legacy module uses the same data contract correctly.
+- The old portal's backend Google integration currently defaults `GOOGLE_FRONTEND_URL` to `https://swastiksrijan.in/SSFDigitalOffice`. Do not change that default until the OAuth flow has been tested with IMS and deployment configuration/environment overrides have been checked; otherwise Google sign-in could break during the transition.
+- The repository workflow `.github/workflows/netlify-auto-deploy.yml` triggers Netlify only on pushes to `main` or `work`, not this migration branch. Changes on the migration branch are therefore not expected to appear on the live website automatically.
+
+## Immediate next implementation gate
+Before changing routes or redirecting users, produce a per-ID audit table covering all 139 module IDs with the actual destination component/route, data endpoint, navigation reachability, and test status. The table must distinguish source-code presence from verified runtime behavior. Then fix confirmed gaps in this branch and run the repository's build/lint checks in CI before opening a cutover PR.
