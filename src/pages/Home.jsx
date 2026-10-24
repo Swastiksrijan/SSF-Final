@@ -11,7 +11,6 @@ import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
 import OptimizedImage from "../components/OptimizedImage";
-import TrustCredentials from "../components/TrustCredentials";
 import { CONTACT_INFO } from "../config/contact";
 import { BRAND } from "../data/brandAssets";
 import pageHeader from "../assets/page-header.jpg";
@@ -204,17 +203,10 @@ export default function Home() {
             transition={{ duration: 0.65, ease: "easeOut" }} 
             className="max-w-4xl"
           >
-            {/* Trust Micro-Tag + Statutory Transparency (mobile) — 1 chawal dana niche */}
-            <div className="mt-3 flex flex-wrap items-center gap-2 sm:gap-2.5">
-              <div className="inline-flex items-center gap-1 rounded-full border border-amber-400/35 bg-white/[0.07] px-2.5 py-1.5 text-[10px] font-semibold uppercase leading-snug tracking-[0.02em] text-amber-300 shadow-xl backdrop-blur-md sm:gap-2.5 sm:px-4 sm:py-2 sm:text-xs sm:tracking-[0.18em]">
-                <FaSeedling className="shrink-0 text-xs text-amber-400 sm:text-sm" />
-                <span>Registered Society · Dedicated Since 2013</span>
-              </div>
-
-              {/* Sirf mobile/tablet: desktop pe ye right column me already dikhta hai */}
-              <span className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-white/[0.08] px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider text-amber-300 shadow-xl backdrop-blur-md sm:px-4 sm:text-xs lg:hidden">
-                <FaShieldAlt className="shrink-0 text-amber-400" /> Statutory Transparency
-              </span>
+            {/* Trust Micro-Tag (2 chawal ke dane barabar niche) */}
+            <div className="inline-flex items-center gap-2.5 rounded-full border border-amber-400/35 bg-white/[0.07] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-300 shadow-xl backdrop-blur-md mt-2">
+              <FaSeedling className="text-amber-400 text-sm" />
+              <span>Registered Society · Dedicated Since 2013</span>
             </div>
 
             <p className="mt-5 text-base font-semibold tracking-wide text-slate-300 sm:text-lg md:text-xl">
@@ -327,10 +319,13 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Floating Ticker */}
+      <FloatingTicker />
+
       {/* ========================================================================= */}
-      {/* 3 CARDS IN A SINGLE UNIFIED INSTITUTIONAL FRAME (HERO KE THEEK NICHE) */}
+      {/* 3 CARDS IN A SINGLE UNIFIED INSTITUTIONAL FRAME (पुरानी डुप्लीकेट हटा दी गई) */}
       {/* ========================================================================= */}
-      <section className="relative z-20 -mt-8 sm:-mt-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+      <section className="relative z-20 my-10 sm:my-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <div className="rounded-[2.25rem] border border-amber-400/30 bg-gradient-to-br from-[#06182B] via-[#09223D] to-[#081B30] p-6 sm:p-8 lg:p-10 shadow-[0_25px_60px_-15px_rgba(7,25,44,0.45)] text-white backdrop-blur-xl">
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 divide-y lg:divide-y-0 lg:divide-x divide-white/10 items-stretch">
@@ -484,10 +479,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-
-      {/* Ticker & Verified Credentials Bar */}
-      <FloatingTicker />
-      <TrustCredentials />
 
       {/* ================= KEY STATUTORY METRICS STRIP ================= */}
       <section className="relative border-y border-slate-200/90 bg-gradient-to-r from-white via-slate-50 to-amber-50/40 py-10 shadow-sm md:py-12">
