@@ -121,14 +121,35 @@ export default function ImpactPage() {
     return (
         <div className="w-full bg-white font-sans text-[#12345A] overflow-hidden">
             {/* ================= HERO ================= */}
-            <PageHero
-                image={pageHeader}
-                title="Impact"
-                subtitle="Witness the tangible transformation driven by community action and dedication."
-                hindiSubtitle="सामुदायिक सेवा और समर्पण से उपजे वास्तविक परिवर्तन की एक झलक।"
-                height="h-[40vh] md:h-[60vh]"
-                overlayOpacity="bg-black/40"
-            />
+            <section className="relative isolate min-h-[560px] overflow-hidden bg-[#071D34] pt-32 pb-16 text-white sm:min-h-[620px] sm:pt-36 md:min-h-[680px] md:pt-40">
+                <div className="absolute inset-0 grid grid-cols-2 gap-1 opacity-75 sm:grid-cols-4">
+                    <div className="relative col-span-2 row-span-2 min-h-[560px] sm:col-span-2">
+                        <img src="/images/community-team-group.jpg" alt="Community members gathered together" className="h-full w-full object-cover" />
+                    </div>
+                    <div className="relative hidden min-h-[280px] sm:block">
+                        <img src="/images/real/community-education-meeting.jpg" alt="Community learning and discussion" className="h-full w-full object-cover" />
+                    </div>
+                    <div className="relative hidden min-h-[280px] sm:block">
+                        <img src="/images/real/children-mat-session.jpg" alt="Children taking part in a learning session" className="h-full w-full object-cover" />
+                    </div>
+                    <div className="relative hidden min-h-[280px] sm:block">
+                        <img src="/images/real/women_empowerment_tailoring.jpg" alt="Skills and community development" className="h-full w-full object-cover" />
+                    </div>
+                    <div className="relative hidden min-h-[280px] sm:block">
+                        <img src="/images/real/tree_plantation.jpg" alt="Community environmental activity" className="h-full w-full object-cover" />
+                    </div>
+                </div>
+                <div className="absolute inset-0 bg-gradient-to-r from-[#071D34]/95 via-[#071D34]/75 to-[#071D34]/35" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#071D34] via-transparent to-[#071D34]/35" />
+                <div className="relative z-10 mx-auto flex min-h-[390px] max-w-7xl items-end px-5 pb-10 sm:min-h-[430px] sm:px-8 md:pb-16">
+                    <div className="max-w-3xl">
+                        <span className="mb-5 inline-flex items-center rounded-full border border-white/25 bg-white/10 px-4 py-2 text-[10px] font-bold uppercase tracking-[0.22em] text-white backdrop-blur-md sm:text-xs">Swastik Srijan Foundation · Since 2013</span>
+                        <h1 className="text-5xl font-serif font-bold leading-tight tracking-tight sm:text-6xl md:text-7xl">Impact <span className="text-[#F7A814]">in Action</span></h1>
+                        <p className="mt-5 max-w-2xl text-base font-medium leading-relaxed text-white/90 sm:text-lg md:text-xl">Witness the tangible transformation driven by community action and dedication.</p>
+                        <p className="mt-3 max-w-2xl font-hindi text-sm leading-relaxed text-white/85 sm:text-base">सामुदायिक सेवा, सहभागिता और समर्पण से उपजे वास्तविक परिवर्तन की एक झलक।</p>
+                    </div>
+                </div>
+            </section>
 
             {/* ================= EVIDENCE & DOCUMENTATION ================= */}
             <WorkEvidenceBanner page="impact" />
