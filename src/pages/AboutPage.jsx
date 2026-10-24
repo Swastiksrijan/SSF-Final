@@ -283,7 +283,32 @@ export default function AboutPage() {
             </p>
           </motion.div>
 
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="space-y-6">
+            <motion.figure
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.2 }}
+              variants={fadeUp}
+              transition={{ duration: 0.55 }}
+              className="group relative overflow-hidden rounded-[2rem] border border-[#E5E8E5] bg-white p-3 shadow-[0_28px_70px_-38px_rgba(9,37,65,0.42)]"
+            >
+              <div className="relative overflow-hidden rounded-[1.45rem] bg-[#12345A]">
+                <img
+                  src={footerImg1}
+                  alt="Community-focused work and the spirit of service at Swastik Srijan Foundation"
+                  className="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.04]"
+                  loading="lazy"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#071D34]/85 via-[#071D34]/10 to-transparent" aria-hidden="true" />
+                <figcaption className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-6">
+                  <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#FFD88A]">Our commitment</p>
+                  <p className="mt-2 text-xl font-black leading-snug sm:text-2xl">Working together for communities across India</p>
+                  <p lang="hi" className="mt-2 text-sm font-semibold leading-6 text-white/90">भारत भर में समुदायों के साथ मिलकर सकारात्मक बदलाव की दिशा में प्रयास।</p>
+                </figcaption>
+              </div>
+              <div className="pointer-events-none absolute inset-0 rounded-[2rem] ring-1 ring-inset ring-[#12345A]/[0.08]" aria-hidden="true" />
+            </motion.figure>
+            <div className="grid gap-4 sm:grid-cols-2">
             {quickLinks.map((item, index) => (
               <motion.div
                 key={item.to}
@@ -308,6 +333,7 @@ export default function AboutPage() {
                 </Link>
               </motion.div>
             ))}
+            </div>
           </div>
         </div>
       </section>
