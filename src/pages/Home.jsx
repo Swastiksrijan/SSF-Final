@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion as Motion } from "framer-motion";
 import {
@@ -9,6 +10,7 @@ import {
 } from "react-icons/fa";
 import ImpactTimeline from "../components/ImpactTimeline";
 import EliteDonationCard from "../components/EliteDonationCard";
+import AuthModal from "../components/AuthModal";
 import OptimizedImage from "../components/OptimizedImage";
 import { CONTACT_INFO } from "../config/contact";
 import { BRAND } from "../data/brandAssets";
@@ -158,6 +160,8 @@ const communityPhotoStrip = [
 ];
 
 export default function Home() {
+  const [loginOpen, setLoginOpen] = useState(false);
+
   const handleShare = async () => {
     if (navigator.share) {
       try {
@@ -385,9 +389,9 @@ export default function Home() {
                   <Link to="/Signup" className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-3 py-2 text-xs font-black text-[#12345A] shadow-md hover:brightness-110 transition-all">
                     Join SSF
                   </Link>
-                  <Link to="/Login" className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition-all">
+                  <button type="button" onClick={() => setLoginOpen(true)} className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition-all">
                     <FaSignInAlt className="mr-1.5" /> Login
-                  </Link>
+                  </button>
                 </div>
 
                 <div className="mt-3 grid grid-cols-2 gap-2">
@@ -1191,6 +1195,7 @@ export default function Home() {
         </div>
       </section>
 
+      <AuthModal open={loginOpen} initialMode="login" onClose={() => setLoginOpen(false)} />
     </main>
   );
 }
