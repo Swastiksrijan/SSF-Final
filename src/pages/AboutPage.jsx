@@ -159,13 +159,13 @@ export default function AboutPage() {
             className="grid w-full items-center gap-9 lg:grid-cols-[1.08fr_0.92fr] lg:gap-14 xl:gap-20"
           >
             <div className="max-w-3xl">
-              <div className="inline-flex items-center gap-2.5 rounded-full border border-[#FFD88A]/60 bg-gradient-to-r from-[#092541]/90 via-[#12345A]/85 to-[#176447]/80 px-4 py-2.5 text-[11px] font-extrabold tracking-[0.04em] text-white shadow-[0_10px_35px_-12px_rgba(247,168,20,0.65)] backdrop-blur-md sm:gap-3 sm:px-5 sm:text-sm">
+              <div className="inline-flex max-w-full flex-wrap items-center justify-center gap-2 rounded-full border border-[#FFD88A]/60 bg-gradient-to-r from-[#092541]/90 via-[#12345A]/85 to-[#176447]/80 px-3 py-2 text-[10px] font-extrabold tracking-[0.02em] text-white shadow-[0_10px_35px_-12px_rgba(247,168,20,0.65)] backdrop-blur-md sm:gap-3 sm:px-5 sm:py-2.5 sm:text-sm sm:tracking-[0.04em]">
                 <span className="relative flex h-2.5 w-2.5 shrink-0">
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#FFC56D]/60" />
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-gradient-to-br from-[#FFE3A0] to-[#F7A814] shadow-[0_0_12px_rgba(247,168,20,0.8)]" />
                 </span>
-                <span className="text-white">Swastik Srijan Foundation</span>
-                <span className="h-4 w-px bg-gradient-to-b from-transparent via-[#FFD88A]/80 to-transparent" />
+                <span className="text-center text-white">Swastik Srijan Foundation</span>
+                <span className="hidden h-4 w-px bg-gradient-to-b from-transparent via-[#FFD88A]/80 to-transparent sm:block" />
                 <span className="whitespace-nowrap font-black text-[#FFD88A]">स्थापना 2013</span>
               </div>
               <h1 className="mt-7 text-[2.6rem] font-black leading-[1.02] tracking-[-0.045em] text-white [text-shadow:0_3px_28px_rgba(0,0,0,0.48)] sm:text-6xl md:text-7xl lg:text-[4.35rem] xl:text-[5rem]">
