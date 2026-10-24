@@ -4,7 +4,8 @@ import {
   FaArrowRight, FaBookOpen, FaBuilding, FaFileAlt,
   FaHandshake, FaHeart, FaLeaf, FaUsers, FaLaptop,
   FaGraduationCap, FaShieldAlt, FaNewspaper, FaChartLine, FaSeedling,
-  FaBullseye, FaHandsHelping, FaCompass, FaCheckCircle, FaAward
+  FaBullseye, FaHandsHelping, FaCompass, FaCheckCircle, FaAward,
+  FaIdCard, FaCertificate, FaUserCircle, FaSignInAlt, FaShareAlt, FaQuoteLeft
 } from "react-icons/fa";
 import FloatingTicker from "../components/FloatingTicker";
 import ImpactTimeline from "../components/ImpactTimeline";
@@ -159,6 +160,23 @@ const communityPhotoStrip = [
 ];
 
 export default function Home() {
+  const handleShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: "Swastik Srijan Foundation",
+          text: "Join the mission of Swastik Srijan Foundation. Empowering communities across India.",
+          url: window.location.href,
+        });
+      } catch (err) {
+        // User dismissed
+      }
+    } else {
+      navigator.clipboard.writeText(window.location.href);
+      alert("Link copied to clipboard!");
+    }
+  };
+
   return (
     <main className="w-full overflow-hidden bg-[#FBFBFA] font-sans text-[#1E293B] antialiased selection:bg-[#F59E0B]/30">
       
@@ -299,6 +317,164 @@ export default function Home() {
             </div>
           </Motion.div>
 
+        </div>
+      </section>
+
+      {/* ========================================================================= */}
+      {/* 3 CARDS IN A SINGLE UNIFIED INSTITUTIONAL FRAME (HERO KE THEEK NICHE) */}
+      {/* ========================================================================= */}
+      <section className="relative z-20 -mt-8 sm:-mt-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div className="rounded-[2.25rem] border border-amber-400/30 bg-gradient-to-br from-[#06182B] via-[#09223D] to-[#081B30] p-6 sm:p-8 lg:p-10 shadow-[0_25px_60px_-15px_rgba(7,25,44,0.45)] text-white backdrop-blur-xl">
+          
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 divide-y lg:divide-y-0 lg:divide-x divide-white/10 items-stretch">
+            
+            {/* FRAME PILLAR 1: संस्थागत पहचान व अधिदेश */}
+            <div className="flex flex-col justify-between pt-2 lg:pt-0 lg:pr-8">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-amber-400/15 border border-amber-400/30 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-amber-300">
+                  <FaShieldAlt className="text-amber-400 text-xs" />
+                  <span>Registered Society • Est. Dec 2013</span>
+                </div>
+                
+                <h2 className="mt-5 font-serif text-2xl sm:text-3xl font-bold tracking-tight text-white leading-snug">
+                  Swastik Srijan Foundation
+                </h2>
+                <p className="mt-2 text-sm font-semibold text-amber-300/95 tracking-wide">
+                  Empowering Lives. Building a Better Bharat.
+                </p>
+
+                <p className="mt-4 text-xs font-hindi text-slate-300 leading-relaxed bg-white/[0.04] p-3 rounded-xl border border-white/5">
+                  पंजीकृत संस्था • संपूर्ण भारत में कार्यक्षेत्र <br />
+                  <span className="font-bold text-amber-200">सेवा • समर्पण • समग्र विकास</span>
+                </p>
+
+                <p className="mt-4 text-xs text-slate-300 leading-relaxed">
+                  Operating with constitutional compliance under MP Society Registration Act. Ground interventions dedicated to inclusive community progress since December 2013.
+                </p>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-slate-400">
+                <span className="font-mono font-semibold">Reg: 05/22/03/11448/13</span>
+                <span className="text-emerald-400 font-bold">● Active Status</span>
+              </div>
+            </div>
+
+            {/* FRAME PILLAR 2: डिजिटल कनेक्ट व नागरिक प्रोफाइल */}
+            <div className="flex flex-col justify-between pt-8 lg:pt-0 lg:px-8">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-sky-500/15 border border-sky-400/30 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-sky-300">
+                  <FaLaptop className="text-xs" />
+                  <span>Your Digital Connection • नया</span>
+                </div>
+
+                <h3 className="mt-4 font-serif text-xl sm:text-2xl font-bold text-white">
+                  Join the Mission. Make a Difference.
+                </h3>
+                
+                <p className="mt-2 text-xs text-slate-300 leading-relaxed font-hindi">
+                  SSF के साथ जुड़ें और अपनी डिजिटल प्रोफ़ाइल बनाएँ। Create your verified account as a Member, Volunteer or Donor.
+                </p>
+
+                {/* 4 Interactive Feature Chips */}
+                <div className="mt-5 grid grid-cols-2 gap-2.5">
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-amber-400/50 transition-colors">
+                    <FaIdCard className="text-amber-400 text-sm shrink-0" />
+                    <div>
+                      <p className="text-[11px] font-bold text-white leading-none">Digital ID Card</p>
+                      <p className="text-[10px] text-slate-400 font-hindi leading-tight mt-0.5">पहचान पत्र</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-amber-400/50 transition-colors">
+                    <FaCertificate className="text-emerald-400 text-sm shrink-0" />
+                    <div>
+                      <p className="text-[11px] font-bold text-white leading-none">Certificates</p>
+                      <p className="text-[10px] text-slate-400 font-hindi leading-tight mt-0.5">प्रमाण-पत्र</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-amber-400/50 transition-colors">
+                    <FaHeart className="text-rose-400 text-sm shrink-0" />
+                    <div>
+                      <p className="text-[11px] font-bold text-white leading-none">Donor Profile</p>
+                      <p className="text-[10px] text-slate-400 font-hindi leading-tight mt-0.5">दाता प्रोफ़ाइल</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.05] border border-white/10 hover:border-amber-400/50 transition-colors">
+                    <FaUserCircle className="text-sky-400 text-sm shrink-0" />
+                    <div>
+                      <p className="text-[11px] font-bold text-white leading-none">Member Profile</p>
+                      <p className="text-[10px] text-slate-400 font-hindi leading-tight mt-0.5">सदस्य प्रोफ़ाइल</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="mt-6 pt-4 border-t border-white/10 flex flex-wrap items-center gap-2.5">
+                <Link
+                  to="/JoinUs"
+                  className="inline-flex flex-1 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-400 to-amber-500 px-4 py-2.5 text-xs font-black text-[#07192C] shadow-md hover:brightness-110 transition-all"
+                >
+                  Join SSF / Sign Up <FaArrowRight className="text-[10px]" />
+                </Link>
+
+                <Link
+                  to="/Login"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/20 bg-white/5 px-3.5 py-2.5 text-xs font-bold text-white hover:bg-white/10 transition-all"
+                >
+                  <FaSignInAlt className="text-xs" /> Login
+                </Link>
+
+                <button
+                  onClick={handleShare}
+                  type="button"
+                  title="Share Foundation"
+                  className="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 p-2.5 text-xs font-bold text-slate-300 hover:text-white hover:bg-white/10 transition-all"
+                >
+                  <FaShareAlt />
+                </button>
+              </div>
+            </div>
+
+            {/* FRAME PILLAR 3: हमारा संकल्प / GUIDING PROMISE */}
+            <div className="flex flex-col justify-between pt-8 lg:pt-0 lg:pl-8">
+              <div>
+                <div className="inline-flex items-center gap-2 rounded-full bg-emerald-500/15 border border-emerald-400/30 px-3.5 py-1 text-[11px] font-extrabold uppercase tracking-widest text-emerald-300">
+                  <FaAward className="text-xs" />
+                  <span>Our Guiding Promise • हमारा संकल्प</span>
+                </div>
+
+                <div className="mt-5 relative">
+                  <FaQuoteLeft className="text-3xl text-amber-400/20 absolute -top-3 -left-2" />
+                  <blockquote className="pl-6 font-serif text-lg sm:text-xl font-bold leading-snug text-white">
+                    “Serve with integrity. <br />
+                    <span className="text-amber-300 italic">Act with compassion.”</span>
+                  </blockquote>
+                </div>
+
+                <p className="mt-4 text-xs text-slate-200 leading-relaxed">
+                  We strive to create lasting, meaningful social value through responsible action, community participation and institutional cooperation.
+                </p>
+
+                <div className="mt-4 p-3.5 rounded-2xl bg-amber-400/10 border border-amber-400/20 font-hindi text-xs leading-relaxed text-amber-100">
+                  <strong className="block text-amber-300 mb-1">हमारा संकल्प:</strong>
+                  ईमानदारी से सेवा, संवेदनशीलता के साथ कार्य और समाज के लिए स्थायी सकारात्मक परिवर्तन सुनिश्चित करना।
+                </div>
+              </div>
+
+              <div className="mt-6 pt-4 border-t border-white/10">
+                <Link
+                  to="/About"
+                  className="inline-flex items-center gap-2 text-xs font-bold text-amber-300 hover:text-white transition-colors"
+                >
+                  संस्था के सिद्धांत एवं कार्यप्रणाली जानें <FaArrowRight className="text-[10px]" />
+                </Link>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
