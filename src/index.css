@@ -510,10 +510,8 @@ a { text-underline-offset: .18em; }
 /* ---- 1. TOP CONTACT BAR -------------------------------------------------- */
 .ssf-contact-bar {
   position: relative;
-  background:
-    linear-gradient(90deg,
-      #0B2340 0%, #12345A 26%, #1B4E7A 52%, #0E6B6B 78%, #12A0B4 100%);
-  border-bottom: 1px solid rgba(247,168,20,.28);
+  background: linear-gradient(100deg, #081A2E 0%, #12345A 38%, #14556A 72%, #176447 100%);
+  border-bottom: 1px solid rgba(247,168,20,.62);
   box-shadow: inset 0 -1px 0 rgba(255,255,255,.06);
 }
 .ssf-contact-bar::before {
@@ -521,28 +519,22 @@ a { text-underline-offset: .18em; }
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.10) 45%, transparent 90%);
+  background: linear-gradient(105deg, transparent 0%, rgba(255,255,255,.07) 48%, transparent 78%);
 }
 
 /* ---- 2. MAIN NAVIGATION HEADER ------------------------------------------ */
 .ssf-nav-shell {
   position: relative;
-  background: rgba(250, 249, 245, .90);
-  border-bottom: 1px solid rgba(18, 52, 90, .10);
-  box-shadow: 0 10px 30px -22px rgba(6,20,38,.30);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
+  background: linear-gradient(108deg, #0B1F38 0%, #12345A 48%, #14556A 78%, #176447 115%);
+  border-bottom: 1px solid rgba(247,168,20,.45);
+  box-shadow: 0 12px 30px -18px rgba(3,14,27,.65);
   transition: background .25s ease, border-color .25s ease, box-shadow .25s ease;
 }
-.ssf-nav-shell.is-transparent {
-  background: rgba(250, 249, 245, .14);
-  border-bottom-color: rgba(255,255,255,.18);
-  box-shadow: 0 10px 30px -22px rgba(0,0,0,.35);
-}
+.ssf-nav-shell.is-transparent,
 .ssf-nav-shell.is-scrolled {
-  background: rgba(250, 249, 245, .97);
-  border-bottom-color: rgba(18, 52, 90, .12);
-  box-shadow: 0 12px 32px -22px rgba(6,20,38,.40);
+  background: linear-gradient(108deg, #0B1F38 0%, #12345A 48%, #14556A 78%, #176447 115%);
+  border-bottom-color: rgba(247,168,20,.45);
+  box-shadow: 0 12px 30px -18px rgba(3,14,27,.65);
 }
 .ssf-nav-bg {
   position: absolute;
@@ -554,18 +546,20 @@ a { text-underline-offset: .18em; }
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(115deg, transparent 0 62%, rgba(18,52,90,.035) 62% 63%, transparent 63%),
-    linear-gradient(115deg, transparent 0 74%, rgba(18,100,71,.045) 74% 100%);
+  background:
+    radial-gradient(ellipse at 72% 0%, rgba(135,206,235,.13), transparent 42%),
+    linear-gradient(115deg, transparent 0 62%, rgba(255,255,255,.035) 62% 63%, transparent 63%),
+    linear-gradient(115deg, transparent 0 78%, rgba(247,168,20,.055) 78% 100%);
 }
 .ssf-nav-bg::after {
   content: "";
   position: absolute;
-  top: -60%;
-  left: -10%;
-  width: 60%;
-  height: 220%;
+  top: -70%;
+  left: -12%;
+  width: 54%;
+  height: 240%;
   transform: skewX(-18deg);
-  background: linear-gradient(90deg, rgba(255,255,255,0) 0%, rgba(255,255,255,.10) 50%, rgba(255,255,255,0) 100%);
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.075) 50%, transparent 100%);
 }
 .ssf-nav-shell > *:not(.ssf-nav-bg) { position: relative; z-index: 1; }
 .ssf-nav-link {
@@ -576,11 +570,11 @@ a { text-underline-offset: .18em; }
   transition: color .18s ease;
   text-shadow: 0 1px 7px rgba(0,0,0,.24);
 }
-.ssf-nav-links-scrolled .ssf-nav-link { color: #12345A; text-shadow: none; }
+
 .ssf-nav-link:hover { color: #F7A814; }
-.ssf-nav-links-scrolled .ssf-nav-link:hover { color: #176447; }
+
 .ssf-nav-link[data-active="true"] { color: #FFFFFF; }
-.ssf-nav-links-scrolled .ssf-nav-link[data-active="true"] { color: #176447; }
+
 .ssf-nav-link[data-active="true"]::after {
   content: "";
   position: absolute;
