@@ -330,7 +330,7 @@ export default function Home() {
       {/* 3 CARDS IN A SINGLE UNIFIED INSTITUTIONAL FRAME (पुरानी डुप्लीकेट हटा दी गई) */}
       {/* ========================================================================= */}
       <section className="relative z-20 -mt-12 mb-10 sm:mb-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-        <div className="rounded-[2.25rem] border border-amber-400/30 bg-gradient-to-br from-[#06182B] via-[#09223D] to-[#081B30] p-6 sm:p-8 lg:p-10 shadow-[0_25px_60px_-15px_rgba(7,25,44,0.45)] text-white backdrop-blur-xl">
+        <div className="relative overflow-hidden rounded-[2.25rem] border border-amber-300/35 bg-[radial-gradient(ellipse_at_8%_0%,rgba(245,158,11,0.17),transparent_34%),radial-gradient(ellipse_at_94%_100%,rgba(56,189,248,0.16),transparent_38%),linear-gradient(135deg,#06182B_0%,#0B2C4B_48%,#081B30_100%)] p-6 sm:p-8 lg:p-10 shadow-[0_28px_70px_-18px_rgba(7,25,44,0.58)] text-white backdrop-blur-xl before:pointer-events-none before:absolute before:inset-x-8 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-amber-300/80 before:to-transparent">
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-10 divide-y lg:divide-y-0 lg:divide-x divide-white/10 items-stretch">
             
@@ -471,7 +471,7 @@ export default function Home() {
       </section>
 
       {/* ================= KEY STATUTORY METRICS STRIP ================= */}
-      <section className="relative overflow-hidden border-y border-[#24496B]/70 bg-gradient-to-br from-[#0B2038] via-[#12345A] to-[#1B4668] py-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.12)] md:py-12">
+      <section className="relative isolate overflow-hidden border-y border-[#4A7899]/60 bg-[radial-gradient(ellipse_at_12%_0%,rgba(245,158,11,0.2),transparent_34%),radial-gradient(ellipse_at_88%_100%,rgba(45,212,191,0.17),transparent_36%),linear-gradient(115deg,#081A2E_0%,#123A60_52%,#174D68_100%)] py-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] md:py-12">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.12] bg-[radial-gradient(ellipse_at_18%_20%,rgba(245,190,75,0.55),transparent_35%),radial-gradient(ellipse_at_82%_78%,rgba(125,190,220,0.5),transparent_38%)]" />
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.06] bg-[url('/assets/new-logo-DCfoGBCm.png')] bg-no-repeat bg-center bg-contain" />
         <div className="container mx-auto grid max-w-7xl gap-5 px-5 sm:grid-cols-2 lg:grid-cols-4 md:px-8">
