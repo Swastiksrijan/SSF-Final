@@ -176,7 +176,7 @@ export default function Home() {
   };
 
   return (
-    <main className="w-full overflow-hidden bg-[#FBFBFA] font-sans text-[#1E293B] antialiased selection:bg-[#F59E0B]/30">
+    <main className="w-full overflow-hidden bg-[#FAF9F5] font-sans text-[#26343D] antialiased selection:bg-[#F59E0B]/30">
       
       {/* ================= HERO SECTION ================= */}
       <section className="relative isolate flex min-h-[680px] items-center overflow-hidden bg-[#07192C] py-20 text-white sm:min-h-[720px] md:min-h-[780px] md:py-28">
