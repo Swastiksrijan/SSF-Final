@@ -445,6 +445,28 @@ export default function Home() {
             </div>
 
           </div>
+
+          <div className="mt-8 border-t border-white/10 pt-6 sm:mt-9 sm:pt-7">
+            <h3 className="text-center font-serif text-xl font-bold tracking-tight text-white sm:text-2xl">
+              Building a Stronger, Kinder and More Inclusive Society
+            </h3>
+            <div className="mt-5 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+              {[
+                [FaUsers, "Children & Youth"],
+                [FaGraduationCap, "Education"],
+                [FaHeart, "Health & Wellbeing"],
+                [FaLeaf, "Sustainability"],
+                [FaHandsHelping, "Community Development"],
+              ].map(([Icon, label]) => (
+                <div key={label} className="flex flex-col items-center gap-2 rounded-xl border border-white/10 bg-white/[0.04] px-3 py-4 text-center transition-all duration-300 hover:border-amber-300/40 hover:bg-white/[0.08]">
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full border border-amber-300/25 bg-amber-300/10 text-lg text-amber-300">
+                    <Icon />
+                  </span>
+                  <span className="text-xs font-semibold leading-snug text-slate-100 sm:text-sm">{label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </section>
 
