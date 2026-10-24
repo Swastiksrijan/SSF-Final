@@ -300,6 +300,7 @@ export default function AboutPage() {
                   loading="lazy"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#071D34]/85 via-[#071D34]/10 to-transparent" aria-hidden="true" />
+                <div className="pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#071D34]/55 via-[#071D34]/20 to-transparent" aria-hidden="true" />
                 <figcaption className="absolute inset-x-0 bottom-0 p-5 text-white sm:p-6">
                   <p className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#FFD88A]">Our commitment</p>
                   <p className="mt-2 text-xl font-black leading-snug sm:text-2xl">Working together for communities across India</p>
