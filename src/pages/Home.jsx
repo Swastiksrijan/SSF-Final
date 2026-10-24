@@ -814,80 +814,114 @@ export default function Home() {
       </section>
 
       {/* ================= MISSION, VISION & CORE VALUES ================= */}
-      <section className="px-5 py-20 md:px-8 md:py-28 bg-white">
-        <div className="container mx-auto max-w-7xl">
-          
+      <section className="relative isolate overflow-hidden border-t border-[#E5E9EC] bg-gradient-to-b from-[#F4F7FA] via-[#FAF9F5] to-white px-5 py-20 md:px-8 md:py-28">
+        {/* Elegant, understated background geometry */}
+        <div aria-hidden="true" className="pointer-events-none absolute -right-28 top-10 -z-10 h-96 w-96 rounded-full border border-[#D8C79D]/40" />
+        <div aria-hidden="true" className="pointer-events-none absolute -right-16 top-22 -z-10 h-72 w-72 rounded-full border border-[#12345A]/[0.07]" />
+        <div aria-hidden="true" className="pointer-events-none absolute -left-24 bottom-10 -z-10 h-72 w-72 rounded-full bg-[#176447]/[0.035] blur-3xl" />
+        <div className="container relative mx-auto max-w-7xl">
           <div className="mx-auto mb-14 max-w-3xl text-center">
-            <span className="rounded-full bg-slate-100 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#12345A]">
+            <span className="inline-flex items-center gap-2 rounded-full border border-[#D9C99F] bg-white/85 px-4 py-2 text-xs font-extrabold uppercase tracking-[0.16em] text-[#12345A] shadow-sm">
+              <FaCompass className="text-[#B88728]" />
               Purpose & Direction • उद्देश्य एवं दिशा
             </span>
-            <h2 className="mt-4 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl md:text-5xl">
-              A clear purpose. A shared future.
+            <h2 className="mt-5 font-serif text-3xl font-bold leading-tight tracking-tight text-[#12345A] sm:text-4xl md:text-5xl">
+              A clear purpose. <span className="text-[#176447]">A shared future.</span>
             </h2>
-            <p className="mt-4 text-base text-slate-600 sm:text-lg">
+            <p className="mx-auto mt-4 max-w-2xl text-base leading-relaxed text-slate-600 sm:text-lg">
               SSF’s mission and vision guide every institutional partnership, grassroots action, and community priority.
             </p>
+            <div className="mx-auto mt-6 h-1 w-20 rounded-full bg-gradient-to-r from-[#176447] via-[#D5A43B] to-[#12345A]" />
           </div>
 
-          <div className="grid gap-8 lg:grid-cols-2">
-            
-            {/* Mission Card */}
-            <article className="relative overflow-hidden rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 to-white p-8 shadow-md md:p-12">
-              <span className="absolute right-6 top-3 font-serif text-8xl text-slate-200/50 select-none">“</span>
-              <span className="text-xs font-bold uppercase tracking-[0.2em] text-amber-600">
-                Our Mission • हमारा मिशन
-              </span>
-              <h3 className="relative mt-4 font-serif text-2xl font-bold leading-snug text-[#12345A] md:text-3xl">
+          <div className="grid items-stretch gap-6 lg:grid-cols-2 lg:gap-8">
+            {/* Mission */}
+            <article className="group relative flex h-full flex-col overflow-hidden rounded-[1.8rem] border border-[#DDE5EB] bg-white/95 p-7 shadow-[0_18px_50px_-30px_rgba(18,52,90,0.35)] transition-all duration-500 hover:-translate-y-1 hover:border-[#CDB36F] hover:shadow-[0_28px_65px_-32px_rgba(18,52,90,0.42)] sm:p-9 md:p-11">
+              <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#176447] via-[#7EA99A] to-transparent" />
+              <div aria-hidden="true" className="pointer-events-none absolute -right-8 -top-10 flex h-40 w-40 items-center justify-center rounded-full bg-[#176447]/[0.045] text-[8rem] text-[#176447]/[0.07] transition-transform duration-700 group-hover:scale-110">
+                <FaBullseye />
+              </div>
+              <div className="relative flex items-center gap-4">
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-[#D4E5DC] bg-gradient-to-br from-[#EAF4EE] to-white text-2xl text-[#176447] shadow-sm">
+                  <FaBullseye />
+                </span>
+                <div>
+                  <p className="text-xs font-extrabold uppercase tracking-[0.17em] text-[#176447]">Our Mission</p>
+                  <p className="mt-1 font-hindi text-sm font-semibold text-slate-500">हमारा मिशन</p>
+                </div>
+              </div>
+              <h3 className="relative mt-7 font-serif text-2xl font-bold leading-snug text-[#12345A] sm:text-[1.7rem]">
                 To contribute to inclusive development through education, skills, health, awareness, and community participation.
               </h3>
-              <p className="mt-5 leading-relaxed text-slate-600 font-hindi text-base">
+              <p className="relative mt-5 border-l-2 border-[#D8C79D] pl-4 font-hindi text-base leading-relaxed text-slate-600">
                 शिक्षा, कौशल, स्वास्थ्य, जागरूकता और सामुदायिक सहभागिता के माध्यम से समावेशी विकास में सक्रिय और पारदर्शी योगदान देना।
               </p>
-              <div className="mt-8">
-                <Link to="/Mission" className="inline-flex items-center gap-2 text-sm font-bold text-[#12345A] hover:text-amber-600">
-                  Explore our full mission <FaArrowRight className="text-xs" />
+              <div className="relative mt-auto pt-8">
+                <Link to="/Mission" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-[#D9E4DE] bg-[#F4F8F5] px-5 py-3 text-sm font-bold text-[#176447] transition-all duration-300 hover:border-[#176447] hover:bg-[#176447] hover:text-white">
+                  Explore our full mission <FaArrowRight className="text-xs transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
             </article>
 
-            {/* Vision Card */}
-            <article className="relative overflow-hidden rounded-3xl border border-[#0A223B] bg-gradient-to-br from-[#07192C] via-[#0D2947] to-[#12385F] p-8 text-white shadow-xl md:p-12">
-              <div className="absolute -right-16 -top-16 h-56 w-56 rounded-full border border-amber-400/20" />
-              <span className="relative text-xs font-bold uppercase tracking-[0.2em] text-amber-300">
-                Our Vision • हमारा विज़न
-              </span>
-              <h3 className="relative mt-4 font-serif text-2xl font-bold leading-snug md:text-3xl">
+            {/* Vision */}
+            <article className="group relative flex h-full flex-col overflow-hidden rounded-[1.8rem] border border-[#183A5C] bg-gradient-to-br from-[#07192C] via-[#0D2947] to-[#16466A] p-7 text-white shadow-[0_22px_55px_-28px_rgba(7,25,44,0.65)] transition-all duration-500 hover:-translate-y-1 hover:shadow-[0_30px_70px_-30px_rgba(7,25,44,0.7)] sm:p-9 md:p-11">
+              <div aria-hidden="true" className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-amber-300 via-[#E8D5A0] to-transparent" />
+              <div aria-hidden="true" className="absolute -right-16 -top-16 h-64 w-64 rounded-full border border-amber-300/20 transition-transform duration-700 group-hover:scale-110" />
+              <div aria-hidden="true" className="absolute -right-7 -top-7 h-44 w-44 rounded-full border border-white/[0.07]" />
+              <div className="relative flex items-center gap-4">
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl border border-amber-300/25 bg-amber-300/10 text-2xl text-amber-300 shadow-inner">
+                  <FaCompass />
+                </span>
+                <div>
+                  <p className="text-xs font-extrabold uppercase tracking-[0.17em] text-amber-300">Our Vision</p>
+                  <p className="mt-1 font-hindi text-sm font-semibold text-slate-300">हमारा विज़न</p>
+                </div>
+              </div>
+              <h3 className="relative mt-7 font-serif text-2xl font-bold leading-snug text-white sm:text-[1.7rem]">
                 A just, educated, inclusive and sustainable India where every individual has the opportunity to thrive with dignity.
               </h3>
-              <p className="relative mt-5 leading-relaxed text-slate-300 font-hindi text-base">
+              <p className="relative mt-5 border-l-2 border-amber-300/70 pl-4 font-hindi text-base leading-relaxed text-slate-300">
                 एक न्यायपूर्ण, शिक्षित, समावेशी और सतत भारत, जहाँ प्रत्येक व्यक्ति को गरिमा और समानता के साथ आगे बढ़ने का समान अवसर मिले।
               </p>
-              <div className="relative mt-8">
-                <Link to="/Vision" className="inline-flex items-center gap-2 text-sm font-bold text-amber-300 hover:text-white">
-                  Explore our institutional vision <FaArrowRight className="text-xs" />
+              <div className="relative mt-auto pt-8">
+                <Link to="/Vision" className="inline-flex min-h-11 items-center gap-2 rounded-full border border-amber-300/30 bg-white/[0.07] px-5 py-3 text-sm font-bold text-amber-200 transition-all duration-300 hover:border-amber-300 hover:bg-amber-300 hover:text-[#12345A]">
+                  Explore our institutional vision <FaArrowRight className="text-xs transition-transform group-hover:translate-x-1" />
                 </Link>
               </div>
             </article>
-
           </div>
 
-          {/* 4 Core Pillars */}
-          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-            {values.map((value) => (
-              <div 
-                key={value.title} 
-                className="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 hover:shadow-lg"
-              >
-                <span className="text-[10px] font-black uppercase tracking-wider text-amber-600 bg-amber-50 px-2.5 py-0.5 rounded-full border border-amber-200">
-                  {value.tag}
-                </span>
-                <p className="mt-3 font-serif text-xl font-bold text-[#12345A]">{value.title}</p>
-                <p className="text-xs font-semibold text-slate-500">{value.hi}</p>
-                <p className="mt-3 text-xs leading-relaxed text-slate-600">{value.text}</p>
+          {/* Core values — four distinct institutional principles */}
+          <div className="mt-16">
+            <div className="mb-7 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <span className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#176447]">The Principles We Stand By</span>
+                <h3 className="mt-2 font-serif text-2xl font-bold text-[#12345A] sm:text-3xl">Our Core Values <span className="font-hindi text-lg font-semibold text-slate-500">· हमारे मूल मूल्य</span></h3>
               </div>
-            ))}
+              <p className="max-w-xl text-sm leading-relaxed text-slate-500">The standards that shape how we serve, collaborate, and remain accountable.</p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+              {values.map((value, index) => (
+                <article
+                  key={value.title}
+                  className="group relative flex h-full flex-col overflow-hidden rounded-[1.4rem] border border-[#E0E6EA] bg-white/90 p-6 shadow-[0_12px_35px_-26px_rgba(18,52,90,0.35)] transition-all duration-300 hover:-translate-y-1.5 hover:border-[#D4BD7D] hover:shadow-[0_22px_40px_-25px_rgba(18,52,90,0.32)]"
+                >
+                  <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#176447]/70 via-[#D5A43B]/80 to-transparent opacity-70 transition-opacity group-hover:opacity-100" />
+                  <div className="flex items-start justify-between gap-3">
+                    <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#EAF0F6] font-serif text-lg font-bold text-[#12345A] transition-colors group-hover:bg-[#12345A] group-hover:text-amber-300">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="rounded-full border border-[#E7DAB8] bg-[#FBF7EC] px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-[0.1em] text-[#8B6825]">
+                      {value.tag}
+                    </span>
+                  </div>
+                  <h4 className="mt-5 font-serif text-xl font-bold text-[#12345A] transition-colors group-hover:text-[#176447]">{value.title}</h4>
+                  <p className="mt-1 font-hindi text-xs font-semibold text-slate-500">{value.hi}</p>
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-slate-600">{value.text}</p>
+                </article>
+              ))}
+            </div>
           </div>
-
         </div>
       </section>
 
