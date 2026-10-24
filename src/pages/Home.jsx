@@ -543,7 +543,7 @@ export default function Home() {
       </section>
 
       {/* ================= COMMUNITY PHOTO STRIP ================= */}
-      <section className="border-y border-slate-200/80 bg-white px-5 py-20 md:px-8 md:py-24">
+      <section className="border-y border-slate-200/80 bg-gradient-to-br from-[#EEF4F8] via-[#F8FAFC] to-[#EAF1F7] px-5 py-20 md:px-8 md:py-24">
         <div className="container mx-auto max-w-7xl">
           
           <div className="mb-12 text-center">
