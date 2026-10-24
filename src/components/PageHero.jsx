@@ -21,7 +21,7 @@ export default function PageHero({
     subtitle,
     hindiSubtitle,
     height = "min-h-[60vh]",
-    overlayOpacity = "bg-black/50",
+    overlayOpacity = "bg-[#12345A]/15",
     imageClass = "w-full h-full",
     objectFit = "cover",
     objectPosition = "center",
@@ -67,10 +67,10 @@ export default function PageHero({
                     alt={altTitle || title || "Hero Image"}
                     className={imageClass}
                     objectFit={objectFit}
-                    style={{ objectPosition }}
+                    style={{ objectPosition, filter: "brightness(1.12) contrast(1.06) saturate(1.08)" }}
                 />
                 {/* Gradient Overlay for better text readability */}
-                <div className={`absolute inset-0 ${overlayOpacity} bg-gradient-to-b from-[#12345A]/60 via-transparent to-[#12345A]/80`}></div>
+                <div className={`absolute inset-0 ${overlayOpacity} bg-gradient-to-b from-[#12345A]/25 via-[#12345A]/5 to-[#12345A]/55`}></div>
             </div>
 
             {/* Content Container */}
