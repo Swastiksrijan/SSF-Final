@@ -483,6 +483,10 @@ export default function AboutPage() {
                 alt="SSF team and core members"
                 className="block aspect-[4/3] w-full object-cover"
               />
+              <div
+                className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(23,100,71,0.68)_0%,rgba(18,52,90,0.52)_48%,rgba(18,52,90,0.10)_100%)]"
+                aria-hidden="true"
+              />
             </div>
             <div className="absolute -left-3 top-8 rounded-2xl border border-white/70 bg-white/95 px-4 py-3 shadow-lg backdrop-blur sm:-left-5">
               <p className="text-xs font-extrabold uppercase tracking-wider text-[#176447]">Together</p>
