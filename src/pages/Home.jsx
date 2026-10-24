@@ -203,9 +203,16 @@ export default function Home() {
             className="max-w-4xl"
           >
             {/* Trust Micro-Tag (2 chawal ke dane barabar niche) */}
-            <div className="inline-flex items-center gap-2.5 rounded-full border border-amber-400/35 bg-white/[0.07] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-300 shadow-xl backdrop-blur-md mt-2">
-              <FaSeedling className="text-amber-400 text-sm" />
-              <span>Registered Society · Dedicated Since 2013</span>
+            <div className="mt-2 flex flex-wrap items-center gap-2 sm:gap-2.5">
+              <div className="inline-flex items-center gap-2.5 rounded-full border border-amber-400/35 bg-white/[0.07] px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-amber-300 shadow-xl backdrop-blur-md">
+                <FaSeedling className="text-amber-400 text-sm" />
+                <span>Registered Society · Dedicated Since 2013</span>
+              </div>
+
+              {/* Mobile/tablet only — desktop pe ye badge right column me hai */}
+              <span className="mt-2 inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-white/[0.08] px-3.5 py-2 text-[11px] font-bold uppercase tracking-wider text-amber-300 shadow-xl backdrop-blur-md sm:px-4 sm:text-xs lg:hidden">
+                <FaShieldAlt className="shrink-0 text-amber-400" /> Statutory Transparency
+              </span>
             </div>
 
             <p className="mt-5 text-base font-semibold tracking-wide text-slate-300 sm:text-lg md:text-xl">
@@ -294,7 +301,7 @@ export default function Home() {
             transition={{ duration: 0.65, delay: 0.2 }} 
             className="relative hidden min-h-[520px] flex-col items-end justify-between lg:flex lg:self-stretch lg:translate-x-[2.5in]"
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-white/[0.08] px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-300 shadow-xl backdrop-blur-md">
+            <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-white/[0.08] px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-300 shadow-xl backdrop-blur-md">
               <FaShieldAlt className="text-amber-400" /> Statutory Transparency
             </div>
 
