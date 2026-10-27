@@ -123,7 +123,7 @@ export const PLEDGE_WALL = [
 export const CREDENTIALS = [
   { en: 'Registered Society', hi: 'पंजीकृत संस्था', note: 'Regn. No. 05/22/03/11448/13', since: '2013' },
   { en: '12AB Registered', hi: '12AB पंजीकृत', note: 'Income Tax exemption' },
-  { en: '80G Provisional', hi: '80G अस्थायी', note: 'Final approval applied' },
+  { en: '80G Status Pending', hi: '80G स्थिति लंबित', note: 'Final application pending; confirm current validity before claiming a deduction' },
   { en: 'CSR-1 Registered', hi: 'CSR-1 पंजीकृत', note: 'CSR eligibility' },
   { en: 'NGO Darpan', hi: 'एनजीओ दर्पण', note: 'NITI Aayog' },
   { en: 'Govt. Pledges', hi: 'शासकीय संकल्प', note: `${BADGES.length}+ national campaigns` },
