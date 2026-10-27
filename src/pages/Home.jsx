@@ -286,7 +286,7 @@ export default function Home() {
                 </span>
                 <span className="text-slate-500" aria-hidden="true">|</span>
                 <span className="inline-flex items-center gap-1.5 text-amber-300">
-                  <FaCheckCircle className="text-xs" /> 80G Provisional (Final Applied)
+                  <FaCheckCircle className="text-xs" /> 80G Final Application Pending
                 </span>
                 <span className="text-slate-500" aria-hidden="true">|</span>
                 <span className="inline-flex items-center gap-1.5 text-sky-400">
