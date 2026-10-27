@@ -107,7 +107,7 @@ export default function CSRPartnership() {
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
                     <div>
                         <h2 className="text-4xl font-serif font-bold mb-6">
-                            Maximize Impact,<br /> <span className="text-[#176447]">Optimize Taxes.</span>
+                            Partner for Impact,<br /> <span className="text-[#176447]">Build Trust.</span>
                         </h2>
                         <p className="text-lg text-zinc-300 leading-relaxed mb-8">
                             Partnering with Swastik Srijan Foundation can support documented community-development outcomes and transparent reporting. Any tax treatment depends on the applicable approval status, the nature of the contribution and current law.
@@ -116,7 +116,7 @@ export default function CSRPartnership() {
                         <div className="space-y-6">
                             <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
                                 <div className="shrink-0 w-12 h-12 rounded-full bg-[#176447] flex items-center justify-center text-xl font-bold">
-                                    %
+                                    <FaCheckCircle />
                                 </div>
                                 <div>
                                     <h4 className="text-xl font-bold mb-1">80G Status & Donor Eligibility</h4>
