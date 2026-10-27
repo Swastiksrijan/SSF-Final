@@ -1,0 +1,23 @@
+{
+  "id": "/",
+  "name": "Swastik Srijan Foundation",
+  "short_name": "SSF",
+  "description": "Official app for Swastik Srijan Foundation — programmes, social initiatives, volunteering, membership and contact information.",
+  "lang": "en-IN",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#ffffff",
+  "theme_color": "#12345A",
+  "categories": ["education", "social", "lifestyle"],
+  "icons": [
+    {
+      "src": "/images/favicon.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
