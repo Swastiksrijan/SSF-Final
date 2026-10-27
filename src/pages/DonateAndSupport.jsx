@@ -15,7 +15,7 @@ export default function DonateAndSupport() {
   const faqs = [
     {
       question: "Is my donation tax-exempt?",
-      answer: "Donations to Swastik Srijan Foundation are eligible for 50% tax exemption under Section 80G of the Income Tax Act, 1961. Our 80G status is currently provisional (final approval applied for). A tax exemption certificate is emailed within 48 hours of your donation."
+      answer: "The Foundation's final 80G approval application was submitted in July 2026 and is pending confirmation. The earlier provisional approval covered AY 2024–25 through AY 2026–27; please confirm current eligibility with the Foundation before claiming any deduction. Any tax benefit depends on the approval in force, the donation date and applicable law."
     },
     {
       question: "Is it safe to donate online?",
@@ -196,7 +196,7 @@ export default function DonateAndSupport() {
 
                   <div className="flex items-start gap-3 text-xs text-zinc-400 bg-black/30 p-4 rounded-lg">
                     <FaCheckCircle className="text-green-500 shrink-0 mt-0.5" />
-                    <p>After transfer, please share transaction details (Screenshot/UTR) to <b>contact@swastiksrijan.org</b> to receive your 80G tax exemption receipt.</p>
+                    <p>After transfer, please share transaction details (Screenshot/UTR) to <b>contact@swastiksrijan.org</b> to request a donation receipt. Any 80G tax document depends on current approval status and donor eligibility.</p>
                   </div>
                 </div>
               </div>
@@ -248,10 +248,10 @@ export default function DonateAndSupport() {
                 </div>
               </div>
               <figure className="w-full max-w-md overflow-hidden rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm">
-                <img src={BRAND.donationCertificate} alt="80G donation exemption certificate issued by Swastik Srijan Foundation" loading="lazy" className="w-full rounded-xl" />
+                <img src={BRAND.donationCertificate} alt="Tax-related donation document for Swastik Srijan Foundation" loading="lazy" className="w-full rounded-xl" />
                 <figcaption className="mt-3 px-1 pb-1 text-center text-xs font-bold text-[#12345A]">
-                  80G tax-exemption certificate issued for every donation
-                  <span className="mt-0.5 block font-semibold text-zinc-500">प्रत्येक दान पर 80G प्रमाण-पत्र जारी</span>
+                  Tax documentation is subject to current approval status and donor eligibility
+                  <span className="mt-0.5 block font-semibold text-zinc-500">कर संबंधी दस्तावेज़ वर्तमान स्वीकृति और दानदाता की पात्रता पर निर्भर हैं</span>
                 </figcaption>
               </figure>
             </div>
@@ -301,8 +301,8 @@ export default function DonateAndSupport() {
       <section className="py-12 bg-black text-center text-zinc-400 text-sm px-4">
         <div className="max-w-4xl mx-auto flex flex-wrap justify-center gap-6 opacity-60">
           <span className="flex items-center gap-2"><FaCheckCircle /> Registered NGO</span>
-          <span className="flex items-center gap-2"><FaCheckCircle /> 12A Certified</span>
-          <span className="flex items-center gap-2"><FaCheckCircle /> 80G Tax Exempt</span>
+          <span className="flex items-center gap-2"><FaCheckCircle /> 12AB Registered</span>
+          <span className="flex items-center gap-2"><FaCheckCircle /> 80G Status: Confirm Current Eligibility</span>
           <span className="flex items-center gap-2"><FaCheckCircle /> CSR-1 Compliant</span>
         </div>
       </section>
