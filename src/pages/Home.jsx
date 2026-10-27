@@ -286,7 +286,7 @@ export default function Home() {
                 </span>
                 <span className="text-slate-500" aria-hidden="true">|</span>
                 <span className="inline-flex items-center gap-1.5 text-amber-300">
-                  <FaCheckCircle className="text-xs" /> 80G Provisional (Final Applied)
+                  <FaCheckCircle className="text-xs" /> 80G Final Application Pending
                 </span>
                 <span className="text-slate-500" aria-hidden="true">|</span>
                 <span className="inline-flex items-center gap-1.5 text-sky-400">
@@ -300,18 +300,18 @@ export default function Home() {
             </div>
           </Motion.div>
 
-          {/* Right Floating Strategic Anchor (Desktop) - 2.5 Inch Right Shifted */}
+          {/* Right-side trust card stays inside the hero grid on desktop. */}
           <Motion.div 
             initial={{ opacity: 0, x: 20 }} 
             animate={{ opacity: 1, x: 0 }} 
             transition={{ duration: 0.65, delay: 0.2 }} 
-            className="relative hidden min-h-[520px] flex-col items-end justify-between lg:flex lg:self-stretch lg:translate-x-[2.5in]"
+            className="relative hidden min-h-[520px] flex-col items-end justify-between lg:flex lg:self-stretch"
           >
             <div className="mt-2 inline-flex items-center gap-2 rounded-full border border-amber-400/40 bg-white/[0.08] px-4 py-2 text-xs font-bold uppercase tracking-wider text-amber-300 shadow-xl backdrop-blur-md">
               <FaShieldAlt className="text-amber-400" /> Statutory Transparency
             </div>
 
-            {/* 2.5 Inch Right Placed Mission Card */}
+            {/* Mission and trust card */}
             <div className="relative w-full max-w-[17rem] self-end overflow-hidden rounded-2xl border border-amber-300/30 bg-gradient-to-br from-[#102F4D]/95 via-[#0B2340]/95 to-[#07192C]/95 p-5 shadow-[0_18px_45px_-18px_rgba(0,0,0,0.75)] backdrop-blur-xl before:absolute before:inset-x-0 before:top-0 before:h-px before:bg-gradient-to-r before:from-transparent before:via-amber-300/80 before:to-transparent">
               <span className="inline-flex items-center rounded-full border border-amber-300/25 bg-amber-300/10 px-2.5 py-1 text-[9px] font-black uppercase tracking-[0.16em] text-amber-200">
                 Foundational Mission

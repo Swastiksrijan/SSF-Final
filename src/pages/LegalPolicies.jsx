@@ -58,7 +58,7 @@ export default function LegalPolicies() {
                                 We use collected information for the following purposes:
                             </p>
                             <ul className="list-disc ml-5 text-zinc-600 space-y-1">
-                                <li>Processing donations and issuing tax exemption certificates (80G receipts)</li>
+                                <li>Processing donations and issuing donation receipts and, where currently authorised, applicable tax documents</li>
                                 <li>Responding to inquiries and providing information about our programs</li>
                                 <li>Sending updates, newsletters, and impact reports to donors and supporters</li>
                                 <li>Improving our website, services, and program delivery</li>

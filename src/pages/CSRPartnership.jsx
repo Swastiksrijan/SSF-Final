@@ -29,7 +29,7 @@ export default function CSRPartnership() {
         {
             icon: <FaFileContract />,
             title: "Tax Exemption",
-            description: "Contributions are eligible for 50% tax exemption under Section 80G of the Income Tax Act, 1961. Our 80G status is currently provisional (final approval applied for)."
+            description: "The final 80G approval application was submitted in July 2026 and is pending confirmation. The earlier provisional approval covered AY 2024–25 through AY 2026–27. Confirm current eligibility before claiming any deduction; tax treatment depends on the approval in force and applicable law."
         },
         {
             icon: <FaGlobeAsia />,
@@ -39,7 +39,7 @@ export default function CSRPartnership() {
         {
             icon: <FaHandshake />,
             title: "End-to-End Compliance",
-            description: "We are fully compliant with CSR-1, 12A, and all NGO regulations, offering a hassle-free partnership experience."
+            description: "The Foundation maintains its CSR-1 registration and 12AB registration records. Partners should review the current statutory documents and project-specific compliance requirements before engagement."
         }
     ];
 
@@ -51,7 +51,7 @@ export default function CSRPartnership() {
         { label: "Registration Date", value: "30/12/2013" },
         { label: "Registered Office", value: CONTACT_INFO.address.fullRegistered },
         { label: "CSR-1 Registration", value: "Available & Compliant" },
-        { label: "12A & 80G", value: "Certified" },
+        { label: "12AB & 80G Status", value: "See current status" },
     ];
 
     return (
@@ -107,20 +107,20 @@ export default function CSRPartnership() {
                 <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-16 items-center relative z-10">
                     <div>
                         <h2 className="text-4xl font-serif font-bold mb-6">
-                            Maximize Impact,<br /> <span className="text-[#176447]">Optimize Taxes.</span>
+                            Partner for Impact,<br /> <span className="text-[#176447]">Build Trust.</span>
                         </h2>
                         <p className="text-lg text-zinc-300 leading-relaxed mb-8">
-                            Partnering with Swastik Srijan Foundation not only helps you fulfill your corporate social responsibility but also provides tangible financial benefits through tax exemptions.
+                            Partnering with Swastik Srijan Foundation can support documented community-development outcomes and transparent reporting. Any tax treatment depends on the applicable approval status, the nature of the contribution and current law.
                         </p>
 
                         <div className="space-y-6">
                             <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">
                                 <div className="shrink-0 w-12 h-12 rounded-full bg-[#176447] flex items-center justify-center text-xl font-bold">
-                                    %
+                                    <FaCheckCircle />
                                 </div>
                                 <div>
-                                    <h4 className="text-xl font-bold mb-1">80G Tax Exemption</h4>
-                                    <p className="text-zinc-400 text-sm">Contributions are eligible for 50% tax exemption under Section 80G (currently provisional — final approval applied for).</p>
+                                    <h4 className="text-xl font-bold mb-1">80G Status & Donor Eligibility</h4>
+                                    <p className="text-zinc-400 text-sm">Final 80G approval application pending confirmation. Please verify current validity and eligibility before claiming any tax deduction.</p>
                                 </div>
                             </div>
                             <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-sm">

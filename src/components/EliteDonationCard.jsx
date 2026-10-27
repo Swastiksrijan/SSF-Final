@@ -38,7 +38,7 @@ export default function EliteDonationCard() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-2.5">
-            <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">80G Provisional*</span>
+            <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">80G Status Pending*</span>
             <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">12AB Registered</span>
             <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">CSR-1</span>
             <span className="text-[11px] font-bold bg-white/5 border border-white/10 text-zinc-200 px-3.5 py-1.5 rounded-full">Serving Since 2013</span>
@@ -87,7 +87,7 @@ export default function EliteDonationCard() {
           </div>
 
           <p className="text-[10px] text-zinc-500 max-w-2xl mx-auto leading-relaxed">
-            *Tax exemption is subject to applicable provisions and donor eligibility.
+            *The Foundation's final 80G approval application is pending confirmation. Please verify current eligibility before claiming any deduction.
           </p>
         </div>
       </div>

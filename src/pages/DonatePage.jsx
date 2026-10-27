@@ -10,7 +10,7 @@ export default function DonatePage() {
   const [openFaq, setOpenFaq] = useState(null);
 
   const faqs = [
-    { question: "Is my donation tax-exempt?", answer: "Donations to Swastik Srijan Foundation are eligible for 50% tax exemption under Section 80G of the Income Tax Act, 1961. Our 80G status is currently provisional (final approval applied for). A tax exemption certificate is emailed within 48 hours of your donation." },
+    { question: "Is my donation tax-exempt?", answer: "The Foundation's final 80G approval application was submitted in July 2026 and is pending confirmation. The earlier provisional approval covered AY 2024–25 through AY 2026–27; please confirm current eligibility with the Foundation before claiming any deduction. Any tax benefit depends on the approval in force, the donation date and applicable law." },
     { question: "Is it safe to donate online?", answer: "Absolutely. We use Razorpay, a PCI-DSS compliant payment gateway that uses 128-bit encryption to ensure your transaction is completely secure." },
     { question: "Can I donate from outside India?", answer: "Currently, we can only accept donations from Indian bank accounts and cards due to FCRA regulations. We are working on enabling international donations soon." },
     { question: "How will my donation be used?", answer: "We are committed to financial transparency. 85% of your donation directly funds our programs (Education, Health, Livelihood), 10% goes towards administrative costs, and 5% covers fundraising efforts." }
@@ -151,7 +151,7 @@ export default function DonatePage() {
                 <img src={qrCode} alt="Scan to Donate" className="w-20 h-20 rounded-xl border border-[#EAF0F6] object-cover" />
                 <div><p className="font-bold text-[#12345A]">Scan for UPI</p><p className="text-xs text-[#26343D] mt-1">Fast Bank-to-Bank Transfer</p></div>
               </div>
-              <div className="mt-4 p-4 bg-[#EAF0F6] border border-[#EAF0F6] rounded-2xl"><p className="text-sm font-bold text-[#12345A] leading-relaxed">📩 After transfer, email receipt details to receive your 80G certificate.</p></div>
+              <div className="mt-4 p-4 bg-[#EAF0F6] border border-[#EAF0F6] rounded-2xl"><p className="text-sm font-bold text-[#12345A] leading-relaxed">📩 After transfer, email your transaction details to request a donation receipt. Any 80G tax document depends on current approval status and donor eligibility.</p></div>
             </div>
           </div>
         </div>
@@ -174,7 +174,7 @@ export default function DonatePage() {
               <h2 className="mt-2 text-3xl md:text-4xl font-black flex items-center gap-3"><FaClipboardCheck className="text-[#F7A814]" /> TAX & LEGAL BENEFITS</h2>
               <div className="mt-7 grid gap-3">
                 <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#F7A814] shrink-0" /><div><h4 className="font-bold">Registered under MP Societies Registration Act, 1973</h4></div></div>
-                <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#EAF0F6] shrink-0" /><div><h4 className="font-bold">12A & 80G – Provisional (Final Approval Applied)</h4><p className="text-sm text-zinc-400 mt-1">80G certificate available for eligible donors</p></div></div>
+                <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#EAF0F6] shrink-0" /><div><h4 className="font-bold">12AB Registered · 80G Final Application Pending</h4><p className="text-sm text-zinc-400 mt-1">Please confirm current 80G eligibility before claiming a deduction</p></div></div>
                 <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#176447] shrink-0" /><div><h4 className="font-bold">CSR-1 Registered</h4><p className="text-sm text-zinc-400 mt-1">Eligible for CSR Funding</p></div></div>
                 <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#F7A814] shrink-0" /><div><h4 className="font-bold">NITI Aayog (NGO Darpan) Registered</h4></div></div>
               </div>

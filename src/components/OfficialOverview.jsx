@@ -11,7 +11,7 @@ export default function OfficialOverview() {
         },
         {
             title: "Compliance",
-            content: ["NITI Aayog (NGO Darpan)", "CSR 1, 12A & 80G – Provisionally Approved, Final Approval Applied"],
+            content: ["NITI Aayog (NGO Darpan)", "CSR-1 Registered; 12AB Registered; 80G final approval application pending"],
         },
         {
             title: "Presence",
