@@ -100,11 +100,21 @@ for (const [route, data] of Object.entries(pages)) {
 // static shell for each fixed route so direct URLs and refreshes don't 404 on
 // static hosts (Vercel serves dist/<route>/index.html for /<route>).
 const appRoutes = [
-  '/ims', '/ims/registers', '/ims/reports', '/ims/finance', '/ims/history',
-  '/ims/constitution', '/ims/data', '/ims/impact', '/ims/integrity',
-  '/ims/knowledge', '/ims/notifications', '/ims/permissions',
-  '/ims/procurement', '/ims/audit-trail', '/ims/search',
+  // Core IMS sections and static registers from src/routeTree.gen.ts.
+  // Keep direct URLs and refreshes working on static hosts as new routes are added.
+  '/ims', '/ims/volunteer-network', '/ims/users', '/ims/social', '/ims/separations',
+  '/ims/search', '/ims/reports', '/ims/registers', '/ims/procurement', '/ims/policies',
+  '/ims/permissions', '/ims/org-profile-pdf', '/ims/org-profile', '/ims/official-documents',
+  '/ims/office', '/ims/notifications', '/ims/membership-contributions', '/ims/members',
+  '/ims/meetings', '/ims/managing-committee', '/ims/letterhead', '/ims/learning-certificates',
+  '/ims/knowledge', '/ims/integrity', '/ims/impact', '/ims/history', '/ims/download-center',
+  '/ims/donor-slips', '/ims/data', '/ims/contacts', '/ims/constitution', '/ims/cash-book',
+  '/ims/cases', '/ims/bank-book', '/ims/audit-trail', '/ims/appointment-letters',
+  '/ims/annual-reports', '/ims/activities', '/ims/finance',
+  '/ims/finance/statement-import', '/ims/finance/receipts-payments',
+  '/ims/finance/ledger', '/ims/finance/cost-centres',
   '/admin', '/SSFDigitalOffice', '/AdminPortal',
+
 ];
 for (const route of appRoutes) {
   const targetDir = path.join(distDir, route.slice(1));
