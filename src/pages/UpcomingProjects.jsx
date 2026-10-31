@@ -35,7 +35,7 @@ export default function UpcomingProjects() {
               <h2 className="text-4xl lg:text-5xl font-serif font-bold text-[#12345A]">Building a School for the Future</h2>
             </div>
             <p className="text-xl text-[#26343D] leading-relaxed font-medium">
-              We are on a mission to establish the <strong>SSF National Academy</strong>—a modern school dedicated to providing quality education and a brighter future for underprivileged children in rural areas. <br /><span className="text-lg opacity-90 mt-2 block">ग्रामीण भारत के वंचित बच्चों को गुणवत्तापूर्ण शिक्षा प्रदान करने के लिए हम इस विद्यालय का निर्माण कर रहे हैं।</span>
+              SSF National Academy is a long-term educational vision for a modern school serving children in rural communities. This project has not started: no construction or operational launch is being claimed. It can move forward only after a suitable location, feasibility, required permissions, a realistic project plan and adequate funding/resources are secured. <br /><span className="text-lg opacity-90 mt-2 block">SSF National Academy संस्था की दीर्घकालीन शैक्षिक परिकल्पना है। यह परियोजना अभी शुरू नहीं हुई है। पर्याप्त संसाधन, व्यवहार्यता और आवश्यक अनुमतियाँ मिलने के बाद ही इस पर आगे बढ़ा जाएगा।</span>
             </p>
 
             <div className="space-y-8 pt-4">
