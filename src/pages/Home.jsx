@@ -976,7 +976,7 @@ export default function Home() {
           <div className="grid gap-6 md:grid-cols-3">
             
             <Link 
-              to="/CSRPartnership" 
+              to="/FundingPartnerships" 
               className="group rounded-3xl border border-white/15 bg-white/[0.06] p-8 shadow-xl backdrop-blur-md transition-all duration-300 hover:-translate-y-2 hover:border-amber-400 hover:bg-white/[0.1]"
             >
               <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-400/20 text-amber-300 text-2xl group-hover:scale-110 transition-transform">
@@ -1186,7 +1186,7 @@ export default function Home() {
             {[
               { title: "MEMBER", hi: "सदस्य बनें", text: "संस्था की दीर्घकालिक सेवा यात्रा और सामाजिक संकल्प का अभिन्न हिस्सा बनें।", path: "/JoinUs?role=member", icon: <FaUsers /> },
               { title: "VOLUNTEER", hi: "स्वयंसेवक बनें", text: "अपने समय, कौशल और सेवा-भावना से जमीनी अभियानों को मजबूती दें।", path: "/JoinUs?role=volunteer", icon: <FaHandsHelping /> },
-              { title: "SUPPORTER / DONOR", hi: "सहयोगकर्ता / दानदाता", text: "पारदर्शी और कर-मुक्त (80G) सहयोग से बच्चों की शिक्षा व स्वास्थ्य को आगे बढ़ाएं।", path: "/Donate", icon: <FaHeart /> },
+              { title: "SUPPORTER / DONOR", hi: "सहयोगकर्ता / दानदाता", text: "पारदर्शी सहयोग से बच्चों की शिक्षा व स्वास्थ्य को आगे बढ़ाएं। 80G कर-लाभ केवल वैध अंतिम स्वीकृति लागू होने पर ही उपलब्ध होगा।", path: "/Donate", icon: <FaHeart /> },
               { title: "PARTNER", hi: "साझेदार बनें", text: "आपकी संस्था / कंपनी / ट्रस्ट SSF के साथ CSR व विकास योजनाओं में सहयोग कर सकती है।", path: "/PartnerWithUs", icon: <FaHandshake /> },
             ].map((item) => (
               <Link 
