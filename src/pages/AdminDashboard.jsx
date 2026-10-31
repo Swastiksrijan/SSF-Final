@@ -91,6 +91,7 @@ export default function AdminDashboard() {
               </nav>
 
               <div className="rounded-3xl bg-white border border-[#EAF0F6] shadow-sm p-4 space-y-2">
+                <a href="/admin/funding-outreach" className="flex items-center justify-between gap-2 rounded-2xl bg-[#12345A] text-white px-4 py-3 text-sm font-black">Funding & CSR Outreach <FaExternalLinkAlt className="text-xs" /></a>
                 <a href="/ims" className="flex items-center justify-between gap-2 rounded-2xl bg-[#176447] text-white px-4 py-3 text-sm font-black">SSF OneOffice (IMS) <FaExternalLinkAlt className="text-xs" /></a>
                 <button type="button" onClick={logout} className="w-full flex items-center justify-center gap-2 rounded-2xl border border-red-200 text-red-600 px-4 py-3 text-sm font-black"><FaSignOutAlt /> Logout</button>
               </div>
