@@ -55,6 +55,11 @@ export default function SustainableLivelihoodPage() {
         <h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">Earn responsibly. Reinvest in social good.</h2>
         <p className="mt-5 text-base leading-8 text-slate-600">The initiative is designed to reduce long-term dependence on donations, CSR and government assistance. It does not replace the Foundation’s charitable work; it aims to create a dependable support system for that work.</p>
       </div>
+      <div className="mx-auto mt-7 max-w-5xl rounded-2xl border border-[#C9DDD1] bg-[#F1F6F3] p-6 text-left md:p-8">
+        <h3 className="text-xl font-extrabold text-[#002344]">रोजगार, उचित कीमत और सामाजिक उद्देश्य—तीनों का संतुलन</h3>
+        <p className="mt-3 text-sm leading-7 text-slate-700">हमारा उद्देश्य केवल कारोबार करना नहीं है। जहाँ व्यवहार्यता हो, वहाँ स्थानीय लोगों को उचित वेतन और सुरक्षित कार्य-परिस्थितियों के साथ काम देना तथा अच्छी गुणवत्ता के उत्पाद उचित और यथासंभव सुलभ कीमत पर उपलब्ध कराना भी इस मॉडल का हिस्सा है। कीमत तय करते समय कच्चा माल, श्रम, गुणवत्ता, पैकेजिंग, परिवहन, कर और अन्य वास्तविक लागतों को शामिल किया जाएगा; केवल सस्ता दिखने के लिए घाटे में बिक्री या गुणवत्ता से समझौता नहीं होगा।</p>
+        <p className="mt-3 text-sm leading-7 text-slate-700">किसी भी व्यावसायिक गतिविधि को शुरू करने से पहले यह जाँचा जाएगा कि वह संस्था के पंजीकृत उद्देश्यों और लागू कानूनों के अनुरूप है या नहीं। जहाँ आवश्यक हो, अलग वैधानिक व्यावसायिक इकाई, अलग खाते और संबंधित-पक्ष लेनदेन की पारदर्शी स्वीकृति अपनाई जाएगी। अंतिम संरचना CA और NGO-कानून विशेषज्ञ की लिखित सलाह के बाद ही तय होगी।</p>
+      </div>
       <div className="mt-10 grid gap-4 md:grid-cols-4">
         {[["01","Identify demand","Choose useful products and services with real buyers."],["02","Start lean","Trade, aggregate, provide services or use job-work before heavy investment."],["03","Build surplus","Track every cost, improve quality and grow repeat customers."],["04","Support the mission","Apply available lawful surplus to the Foundation’s charitable objects."]].map(([n,t,d])=><div key={n} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="text-sm font-black text-[#fb8500]">{n}</div><h3 className="mt-3 text-lg font-extrabold text-[#002344]">{t}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{d}</p></div>)}
       </div>
