@@ -12,7 +12,7 @@ export default function DonatePage() {
   const faqs = [
     { question: "Is my donation tax-exempt?", answer: "The Foundation's final 80G approval application was submitted in July 2026 and is pending confirmation. The earlier provisional approval covered AY 2024–25 through AY 2026–27; please confirm current eligibility with the Foundation before claiming any deduction. Any tax benefit depends on the approval in force, the donation date and applicable law." },
     { question: "Is it safe to donate online?", answer: "Absolutely. We use Razorpay, a PCI-DSS compliant payment gateway that uses 128-bit encryption to ensure your transaction is completely secure." },
-    { question: "Can I donate from outside India?", answer: "Currently, we can only accept donations from Indian bank accounts and cards due to FCRA regulations. We are working on enabling international donations soon." },
+    { question: "Can I donate from outside India?", answer: "Please do not send any foreign contribution unless the Foundation has first obtained the required FCRA registration or project-specific prior permission. Contact the Foundation to verify the current legal position before initiating any cross-border transfer." },
     { question: "How will my donation be used?", answer: "We are committed to financial transparency. 85% of your donation directly funds our programs (Education, Health, Livelihood), 10% goes towards administrative costs, and 5% covers fundraising efforts." }
   ];
 
@@ -175,7 +175,7 @@ export default function DonatePage() {
               <div className="mt-7 grid gap-3">
                 <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#F7A814] shrink-0" /><div><h4 className="font-bold">Registered under MP Societies Registration Act, 1973</h4></div></div>
                 <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#EAF0F6] shrink-0" /><div><h4 className="font-bold">12AB Registered · 80G Final Application Pending</h4><p className="text-sm text-zinc-400 mt-1">Please confirm current 80G eligibility before claiming a deduction</p></div></div>
-                <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#176447] shrink-0" /><div><h4 className="font-bold">CSR-1 Registered</h4><p className="text-sm text-zinc-400 mt-1">Eligible for CSR Funding</p></div></div>
+                <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#176447] shrink-0" /><div><h4 className="font-bold">CSR-1 Registered</h4><p className="text-sm text-zinc-400 mt-1">CSR project implementation remains subject to all applicable eligibility conditions, including valid 80G approval where required. Please contact us for current status.</p></div></div>
                 <div className="flex gap-4 p-4 rounded-2xl bg-white/5 border border-white/10"><FaCheckCircle className="mt-1 text-[#F7A814] shrink-0" /><div><h4 className="font-bold">NITI Aayog (NGO Darpan) Registered</h4></div></div>
               </div>
             </div>
