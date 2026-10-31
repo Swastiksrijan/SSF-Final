@@ -1,6 +1,7 @@
-import { createFileRoute } from "@tanstack/react-router";
-import SustainableLivelihoodPage from "../pages/SustainableLivelihoodPage";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/SustainableLivelihood")({
-  component: SustainableLivelihoodPage,
+  beforeLoad: () => {
+    throw redirect({ to: "/FundingPartnerships" });
+  },
 });
