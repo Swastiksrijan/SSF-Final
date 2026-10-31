@@ -68,7 +68,7 @@ export default function FooterSection() {
                 <FooterLink to="/Objectives">Objectives</FooterLink>
                 <FooterLink to="/Team">Our Team</FooterLink>
                 <FooterLink to="/Humanity&Truth">Humanity & Truth</FooterLink>
-                <FooterLink to="/ServiceJourney">Service Journey</FooterLink>
+                <FooterLink to="/Journey">Service Journey</FooterLink>
                 <FooterLink to="/Transparency">Transparency & Records</FooterLink>
               </ul>
             </nav>
