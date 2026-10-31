@@ -152,8 +152,8 @@ const SUBJECT_TITLES = {
   prerna: { en: 'Values & Social Awareness', hi: 'मूल्य एवं सामाजिक जागरूकता' },
 };
 const QUIZ_CATALOG = [
-  { quizId: 'ssf-awareness-1', subject: 'all', title: { en: 'SSF General Awareness Quiz', hi: 'SSF सामान्य जागरूकता प्रश्नोत्तरी' }, description: { en: 'A mixed assessment across all six learning subjects.', hi: 'छहों विषयों पर आधारित मिश्रित प्रश्नोत्तरी।' } },
-  ...SUBJECTS.map((subject) => ({ quizId: `ssf-${subject}-quiz`, subject, title: SUBJECT_TITLES[subject], description: { en: `Test your knowledge in ${SUBJECT_TITLES[subject].en}.`, hi: `${SUBJECT_TITLES[subject].hi} में अपना ज्ञान जाँचें।` } })),
+  { quizId: 'ssf-awareness-1', subject: 'all', questionCount: 10, title: { en: 'SSF General Awareness Quiz', hi: 'SSF सामान्य जागरूकता प्रश्नोत्तरी' }, description: { en: 'A mixed assessment across all six learning subjects.', hi: 'छहों विषयों पर आधारित मिश्रित प्रश्नोत्तरी।' } },
+  ...SUBJECTS.map((subject) => ({ quizId: `ssf-${subject}-quiz`, subject, questionCount: QUESTIONS.filter((q) => q.subject === subject).length, title: SUBJECT_TITLES[subject], description: { en: `Test your knowledge in ${SUBJECT_TITLES[subject].en}.`, hi: `${SUBJECT_TITLES[subject].hi} में अपना ज्ञान जाँचें।` } })),
 ];
 const byId = {};
 for (const q of QUESTIONS) byId[q.id] = q;
