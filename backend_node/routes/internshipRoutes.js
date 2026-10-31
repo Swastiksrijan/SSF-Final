@@ -4,6 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const { sendMail, emailConfigured } = require('../services/mailer');
 const InternshipApplication = require('../models/InternshipApplication');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 const { Op } = require('sequelize');
 const router = express.Router();
 const uploadDir = path.join(__dirname, '..', 'uploads', 'internships');
@@ -57,6 +58,7 @@ router.post('/internship', (req, res) => {
         } catch (error) {
             cleanup();
             console.error('❌ Internship submission error:', error);
+            if (databaseUnavailableResponse(res, error)) return;
             return res.status(500).json({ message: 'Unable to submit right now. Please try again.' });
         }
     });

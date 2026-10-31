@@ -4,6 +4,7 @@ const { sendMail, emailConfigured } = require('../services/mailer');
 const Interest = require('../models/Interest');
 const Member = require('../models/Member');
 const Volunteer = require('../models/Volunteer');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 const sendAdminNotification = async (subject, text) => {
     if (!emailConfigured()) return;
@@ -117,7 +118,7 @@ router.post('/interest', async (req, res) => {
         const label = labelMap[type];
         await sendAdminNotification(`New ${label} Interest: ${fullName}`, `New ${label} request received.\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nCategory: ${category || 'Not specified'}\nMessage: ${finalMessage}`);
         return res.status(201).json({ status: 'success', message: 'Request submitted successfully.', data: { id: interest.id, type: interest.interestType, category: interest.category } });
-    } catch (error) { console.error('❌ Interest submission error:', error); return res.status(500).json({ message: 'Unable to submit right now. Please try again.' }); }
+    } catch (error) { console.error('❌ Interest submission error:', error); if (databaseUnavailableResponse(res, error)) return; return res.status(500).json({ message: 'Unable to submit right now. Please try again.' }); }
 });
 
 router.get('/admin/interests', requireAdminAuth, async (_req, res) => {

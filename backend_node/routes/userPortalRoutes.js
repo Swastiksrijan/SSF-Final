@@ -6,6 +6,7 @@ const Donor = require('../models/Donor');
 const InternshipApplication = require('../models/InternshipApplication');
 const Interest = require('../models/Interest');
 const { requireAccountAuth } = require('../services/userAuth');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 const identity = require('../services/identityService');
 const REAL_MEMBERSHIP_TYPES = identity.REAL_MEMBERSHIP_TYPES;
@@ -90,6 +91,7 @@ router.get('/user-portal/:id', requireAccountAuth((req) => req.params.id), async
         return res.json({ account, activities: { volunteers: safeVolunteers, donors: safeDonors, internships: safeInternships, interests } });
     } catch (error) {
         console.error('❌ User portal error:', error);
+        if (databaseUnavailableResponse(res, error)) return;
         return res.status(500).json({ message: 'Unable to load account portal data.' });
     }
 });

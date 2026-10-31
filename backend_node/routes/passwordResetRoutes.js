@@ -2,6 +2,7 @@ const express = require('express');
 const crypto = require('crypto');
 const { sendMail, emailConfigured } = require('../services/mailer');
 const Member = require('../models/Member');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 const router = express.Router();
 const FRONTEND_URL = (process.env.FRONTEND_URL || process.env.FRONTEND_PUBLIC_URL || 'https://swastiksrijan.in').replace(/\/$/, '');
@@ -40,6 +41,7 @@ router.post('/forgot-password', async (req, res) => {
         return res.json({ status: 'success', message: 'If an account exists for this email, a password reset link has been sent.' });
     } catch (error) {
         console.error('❌ Forgot password error:', error);
+        if (databaseUnavailableResponse(res, error)) return;
         return res.status(500).json({ status: 'error', message: 'Unable to process password reset right now. Please try again later.' });
     }
 });
@@ -59,6 +61,7 @@ router.post('/reset-password', async (req, res) => {
         return res.json({ status: 'success', message: 'Password reset successfully. You can now log in with your new password.' });
     } catch (error) {
         console.error('❌ Reset password error:', error);
+        if (databaseUnavailableResponse(res, error)) return;
         return res.status(500).json({ status: 'error', message: 'Unable to reset password right now.' });
     }
 });

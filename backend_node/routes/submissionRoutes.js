@@ -9,6 +9,7 @@ const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 const identity = require('../services/identityService');
 const { requireAccountAuth, issueToken } = require('../services/userAuth');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 const router = express.Router();
 const uploadDir = path.join(__dirname, '../uploads');
@@ -138,6 +139,7 @@ router.post('/member-signup', multipart([
   } catch (error) {
     removeFile(profilePhoto); removeFile(idDocument);
     console.error('❌ Membership submission error:', error);
+    if (databaseUnavailableResponse(res, error)) return;
     return res.status(500).json({ status: 'error', message: process.env.NODE_ENV === 'production' ? 'Unable to save the membership application right now. Please try again.' : (error.message || 'Unable to submit your membership application.') });
   }
 });
@@ -178,6 +180,7 @@ router.post('/member-application', multipart([
   } catch (error) {
     removeFile(profilePhoto); removeFile(idDocument);
     console.error('❌ Portal membership submission error:', error);
+    if (databaseUnavailableResponse(res, error)) return;
     return res.status(500).json({ status: 'error', message: process.env.NODE_ENV === 'production' ? 'Unable to save the membership application right now. Please try again.' : (error.message || 'Unable to submit the membership application.') });
   }
 });

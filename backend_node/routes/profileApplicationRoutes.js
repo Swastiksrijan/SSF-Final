@@ -8,6 +8,7 @@ const { sendMail, emailConfigured } = require('../services/mailer');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 const identity = require('../services/identityService');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 const uploadDir = path.join(__dirname, '../uploads');
 if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true });
@@ -43,7 +44,7 @@ router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', max
         const newVolunteer = await Volunteer.create({ fullName: name.trim(), email: email.trim().toLowerCase(), phone: phone.trim(), volunteerType: volunteer_type || 'field', position: position || 'General Volunteer', idType: id_type || null, message: message || null, idDocumentPath: idDocument ? `/uploads/${idDocument.filename}` : null, profilePhotoPath: `/uploads/${profilePhoto.filename}`, status: 'pending', isVerified: false });
         await sendAdminNotification(`New Volunteer Registration: ${name}`, `New volunteer application received. Name: ${name}, Type: ${volunteer_type || 'field'}, Position: ${position || 'General Volunteer'}, Phone: ${phone}, Email: ${email}`);
         return res.status(201).json({ status: 'success', message: 'Application submitted successfully', data: newVolunteer });
-    } catch (error) { console.error('❌ Volunteer registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
+    } catch (error) { console.error('❌ Volunteer registration error:', error); if (databaseUnavailableResponse(res, error)) return; return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
 });
 
 router.post('/member-signup', uploadMemberFiles.fields([{ name: 'profile_photo', maxCount: 1 }, { name: 'id_document', maxCount: 1 }]), async (req, res) => {
@@ -68,7 +69,7 @@ router.post('/member-signup', uploadMemberFiles.fields([{ name: 'profile_photo',
         const newMember = await Member.create({ fullName: fullName.trim(), email: primaryEmail, phone: phone.trim(), passwordHash: hashPassword(password), memberType: isWebsiteAccount ? 'website_signup' : memberType, message: isWebsiteAccount ? 'Signup from website' : (message || null), profilePhotoPath: photoPath, idProofType: idProofType || null, identityNumber: String(identityNumber || '').trim() || null, idDocumentPath, status: isWebsiteAccount ? 'approved' : 'pending', paymentStatus: isWebsiteAccount ? 'not_required' : (memberType === 'advisory' ? 'not_required' : 'pending') });
         await sendAdminNotification(`New ${isWebsiteAccount ? 'Website Account' : 'Member'} Signup: ${fullName}`, `New ${isWebsiteAccount ? 'website account' : 'member application'} received. Name: ${fullName}, Type: ${isWebsiteAccount ? 'website account' : memberType}, Email: ${primaryEmail}, Phone: ${phone}`);
         return res.status(201).json({ status: 'success', message: isWebsiteAccount ? 'Account created successfully. You are now signed in.' : 'Membership application submitted successfully', data: newMember, token: issueToken(newMember), user: { id: newMember.id, fullName: newMember.fullName, email: newMember.email, phone: newMember.phone, memberType: newMember.memberType, status: newMember.status } });
-    } catch (error) { console.error('❌ Member registration error:', error); return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
+    } catch (error) { console.error('❌ Member registration error:', error); if (databaseUnavailableResponse(res, error)) return; return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
 });
 
 router.patch('/member-profile/:id/photo', requireAccountAuth((req) => req.params.id), uploadProfilePhoto.single('profilePhoto'), async (req, res) => {

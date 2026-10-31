@@ -8,6 +8,7 @@ const crypto = require('crypto');
 const router = express.Router();
 const Member = require('../models/Member');
 const { requireAccountAuth } = require('../services/userAuth');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 const hashPassword = (password) => {
   const salt = crypto.randomBytes(16).toString('hex');
@@ -61,6 +62,7 @@ router.patch('/account/profile', requireAccountAuth(), async (req, res) => {
     return res.json({ status: 'success', message: 'Profile updated.', user: publicMember(member) });
   } catch (error) {
     console.error('Account profile update error:', error);
+    if (databaseUnavailableResponse(res, error)) return;
     return res.status(500).json({ message: 'Unable to update your profile right now.' });
   }
 });
@@ -79,6 +81,7 @@ router.post('/account/password', requireAccountAuth(), async (req, res) => {
     return res.json({ status: 'success', message: 'Password changed successfully.' });
   } catch (error) {
     console.error('Account password change error:', error);
+    if (databaseUnavailableResponse(res, error)) return;
     return res.status(500).json({ message: 'Unable to change your password right now.' });
   }
 });

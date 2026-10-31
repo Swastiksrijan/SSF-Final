@@ -33,6 +33,15 @@ app.get('/api/health/email', (_req, res) => res.json({
     fromName: process.env.EMAIL_FROM_NAME || null,
 }));
 
+// Live database probe. Returns 200 when a trivial query succeeds, 503 when the
+// database is down or over its provider quota — the single fastest way to tell
+// "the app is broken" from "the database is broken".
+app.get('/api/health/db', async (_req, res) => {
+    const { databaseStatus } = require('./services/dbHealth');
+    const status = await databaseStatus();
+    res.status(status.ok ? 200 : 503).json(status);
+});
+
 const memberCertificateRoutes = require('./routes/memberCertificateRoutes');
 const learningCertificateRoutes = require('./routes/learningCertificateRoutes');
 const volunteerAdminRoutes = require('./routes/volunteerAdminRoutes');
@@ -119,6 +128,19 @@ app.use('/api', quizRoutes);
 app.use('/api', adminDashboardRoutes);
 // Logged-in user self-service: own profile + password.
 app.use('/api', accountRoutes);
+
+// Last-resort error handler. Most routes already catch their own errors, but a
+// synchronous throw (or an async throw before the route's try/catch) would
+// otherwise return Express's default HTML error page. When the cause is the
+// database being unreachable or over quota, answer with a clear 503 instead of
+// a misleading "Server Error" — and never leak the raw driver message.
+app.use((err, _req, res, _next) => {
+    console.error('❌ Unhandled request error:', err && (err.message || err));
+    if (res.headersSent) return;
+    const { databaseUnavailableResponse } = require('./services/dbHealth');
+    if (databaseUnavailableResponse(res, err)) return;
+    res.status(err && err.status ? err.status : 500).json({ status: 'error', message: 'Something went wrong on our side. Please try again.' });
+});
 
 // `alter: true` re-introspects every foreign key on every boot. On a free-tier
 // Postgres that can exceed the provider's statement/connection timeout and get

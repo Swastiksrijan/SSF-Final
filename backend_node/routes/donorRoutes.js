@@ -6,6 +6,7 @@ const { sendMail, emailConfigured } = require('../services/mailer');
 const router = express.Router();
 const Donor = require('../models/Donor');
 const identity = require('../services/identityService');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 // Donor uploads are optional: a PAN / identity document and a profile photo.
 // JSON bodies (the Join SSF hub and the User Portal) still work unchanged —
@@ -70,6 +71,7 @@ router.post('/donor', upload.fields([{ name: 'profile_photo', maxCount: 1 }, { n
     } catch (error) {
         cleanup();
         console.error('❌ Donor registration error:', error);
+        if (databaseUnavailableResponse(res, error)) return;
         return res.status(500).json({ message: 'Unable to save donor details right now.' });
     }
 });

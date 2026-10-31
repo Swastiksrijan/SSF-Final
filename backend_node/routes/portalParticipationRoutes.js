@@ -4,6 +4,7 @@ const { sendMail, emailConfigured } = require('../services/mailer');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 const { requireAccountAuth } = require('../services/userAuth');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 const router = express.Router();
 const cleanEmail = (value) => String(value || '').trim().toLowerCase();
@@ -77,6 +78,7 @@ router.post('/portal-member-application', requireAccountAuth((req) => (req.body 
     return res.status(201).json({ status: 'success', message: 'Membership application submitted successfully. It is now under review.', emailSent, user: { id: member.id, fullName: member.fullName, email: member.email, phone: member.phone, memberType: member.memberType, status: member.status } });
   } catch (error) {
     console.error('Portal membership submission error:', error);
+    if (databaseUnavailableResponse(res, error)) return;
     return res.status(500).json({ status: 'error', message: 'Unable to save the membership application right now. Please try again.' });
   }
 });

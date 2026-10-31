@@ -17,6 +17,7 @@ const memberCategoryFor = (member) => (identity.holdsOfficialMemberId(member)
     ? (identity.registerEntryFor(member.memberId)?.memberType || (identity.hasAccountMarker(member) ? 'Member' : member.memberType))
     : null);
 const { issueToken } = require('../services/userAuth');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 // --- 1. File Upload Configuration ---
 const storage = multer.diskStorage({
@@ -229,6 +230,7 @@ router.post('/member-signup', async (req, res) => {
         });
     } catch (error) {
         console.error('❌ Member signup error:', error);
+        if (databaseUnavailableResponse(res, error)) return;
         res.status(500).json({ status: 'error', message: 'Server Error' });
     }
 });
@@ -257,6 +259,7 @@ router.post('/member-login', async (req, res) => {
         });
     } catch (error) {
         console.error('❌ Member login error:', error);
+        if (databaseUnavailableResponse(res, error)) return;
         res.status(500).json({ status: 'error', message: 'Server Error' });
     }
 });
