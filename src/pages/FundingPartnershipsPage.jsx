@@ -32,7 +32,7 @@ const proposalPack = [
 
 export default function FundingPartnershipsPage() {
   const sharePage = async () => {
-    const shareData = { title: "Sustainable Development | Swastik Srijan Foundation Samiti", text: "Explore our funding, partnerships, livelihood and community development initiatives.", url: window.location.href };
+    const shareData = { title: "Funding, CSR & Social Enterprise | Swastik Srijan Foundation Samiti", text: "Support SSF’s charitable programmes, responsible partnerships and long-term livelihood initiatives in Rewa and beyond.", url: window.location.href };
     if (navigator.share) {
       try { await navigator.share(shareData); } catch (error) { if (error?.name !== "AbortError") console.error("Share failed", error); }
     } else if (navigator.clipboard?.writeText) {
@@ -46,9 +46,9 @@ export default function FundingPartnershipsPage() {
       <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-36 md:px-8 md:pb-28 md:pt-44">
         <p className="mb-4 text-xs font-bold uppercase tracking-[.28em] text-[#ffb347]">Swastik Srijan Foundation Samiti · Funding & Partnerships</p>
         <div className="max-w-4xl">
-          <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Funding, Partnerships &amp; Sustainable Development</h1>
+          <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Funding, CSR, Partnerships &amp; Social Enterprise</h1>
           <p className="mt-4 text-xl font-semibold text-white/90">सहयोग, वित्तपोषण एवं साझेदारी</p>
-          <p className="mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-lg">We invite responsible support from companies, banks, industries, philanthropists, institutions, government programmes and citizens. Every request will be linked to a clear purpose, realistic budget, accountable implementation and measurable outcomes.</p>
+          <p className="mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-lg">We invite companies, banks, industries, philanthropists, institutions, government programmes and citizens to partner with Swastik Srijan Foundation Samiti. Our approach combines accountable charitable programmes with a carefully phased livelihood and social-enterprise vision—so the Foundation can build stronger, more reliable support for its mission over time.</p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a href="#funding-options" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] hover:bg-[#ffad4d]">Explore support options <ArrowRight size={18}/></a>
             <Link to="/Contact" className="inline-flex items-center gap-2 rounded-full border border-white/35 px-6 py-3 font-bold text-white hover:bg-white/10">Submit a partnership enquiry</Link>
@@ -57,6 +57,39 @@ export default function FundingPartnershipsPage() {
         </div>
         <div className="mt-14 grid gap-3 sm:grid-cols-3">
           {[[ "2013", "Foundation journey" ],[ "Rewa, MP", "Grassroots focus" ],[ "Pan-India", "Long-term ambition" ]].map(([v,l])=><div key={l} className="rounded-2xl border border-white/15 bg-white/10 p-5"><div className="text-2xl font-black text-[#ffb347]">{v}</div><div className="mt-1 text-sm text-white/75">{l}</div></div>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="bg-white px-5 py-16 md:px-8 md:py-20">
+      <div className="mx-auto max-w-7xl">
+        <div className="max-w-4xl">
+          <p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">Our long-term direction</p>
+          <h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">Build a stronger, more self-reliant Foundation</h2>
+          <p className="mt-5 text-base leading-8 text-slate-600">Since 2013, Swastik Srijan Foundation Samiti has continued its journey with a grassroots focus. Our long-term aim is to strengthen social programmes while developing lawful, mission-aligned livelihood activities that can create local work and contribute to the Foundation’s charitable objectives. We do not want essential community work to depend on a single donor or funding source.</p>
+        </div>
+        <div className="mt-9 grid gap-4 md:grid-cols-4">
+          {[
+            ["01","Support real social needs","Education, health, skills, women and youth development, environment and rural communities."],
+            ["02","Validate one Rewa pilot","Study local demand, buyers, suppliers, costs, skills and permissions before selecting the first enterprise."],
+            ["03","Start small and prove it","Begin with confirmed orders or service demand; track every cost and expand only after repeat customers and sound operating results."],
+            ["04","Reinvest responsibly","Apply only the surplus that may lawfully be used toward the Foundation’s charitable objects, with transparent accounts and oversight."]
+          ].map(([n,t,d])=><article key={n} className="rounded-2xl border border-slate-200 bg-[#F8FAFC] p-5"><span className="text-sm font-black text-[#fb8500]">{n}</span><h3 className="mt-3 font-extrabold text-[#002344]">{t}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{d}</p></article>)}
+        </div>
+        <div className="mt-7 rounded-2xl border border-[#C9DDD1] bg-[#F1F6F3] p-6 md:p-8">
+          <h3 className="text-xl font-extrabold text-[#002344]">A responsible first step—not ten businesses at once</h3>
+          <p className="mt-3 text-sm leading-7 text-slate-700">The first Rewa project has not yet been declared operational or selected as a final investment. SSF will compare practical options such as institutional supplies, local-product aggregation and packing, or digital and printing services. The final choice will depend on buyer interest, verified quotations, realistic margins, working capital, registrations and the Foundation’s legal and tax advice. Machinery will be considered only when demand justifies it.</p>
+          <p className="mt-3 text-sm leading-7 text-slate-700">We will prepare a project-specific concept note and detailed project report before stating a funding amount. No investment, sales, profit, grant or employment outcome is guaranteed.</p>
+        </div>
+        <div className="mt-7 grid gap-4 md:grid-cols-2">
+          <div className="rounded-2xl bg-[#002344] p-6 text-white">
+            <h3 className="text-lg font-extrabold">Charitable programme support</h3>
+            <p className="mt-2 text-sm leading-7 text-white/80">Donations, eligible CSR grants and government assistance will be requested for clearly defined charitable projects and used only for their approved purposes, subject to eligibility and applicable law.</p>
+          </div>
+          <div className="rounded-2xl border border-slate-200 bg-white p-6">
+            <h3 className="text-lg font-extrabold text-[#002344]">Enterprise and livelihood finance</h3>
+            <p className="mt-2 text-sm leading-7 text-slate-600">Commercial activity will require its own lawful structure, approvals, accounting and funding route. Business finance, customer advances, purchase orders or equipment partnerships will not be presented as charitable donations or mixed with restricted CSR funds.</p>
+          </div>
         </div>
       </div>
     </section>
