@@ -98,13 +98,13 @@ export default function AwarenessQuiz() {
       <section className="bg-gradient-to-br from-[#0B355B] via-[#123F68] to-[#176447] px-4 py-8 text-white md:py-12">
         <div className="mx-auto max-w-6xl">
           <div className="mb-5 flex items-center gap-2 text-xs font-semibold text-white/70">
-            <Link to="/" className="hover:text-white">Home</Link><FaChevronRight className="text-[9px]" /><span>Learning Centre</span><FaChevronRight className="text-[9px]" /><span className="text-white">Awareness Quiz</span>
+            <Link to="/" className="hover:text-white">Home</Link><FaChevronRight className="text-[9px]" /><span>Learning Centre</span><FaChevronRight className="text-[9px]" /><span className="text-white">Learning & Awareness</span>
           </div>
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end">
             <div className="max-w-3xl">
               <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-xs font-bold tracking-wider text-emerald-100"><FaGraduationCap /> SSF KNOWLEDGE & LEARNING CENTRE</div>
-              <h1 className="text-3xl font-black leading-tight md:text-5xl">Awareness Quiz <span className="block text-2xl font-semibold text-emerald-100 md:text-3xl">जागरूकता प्रश्नोत्तरी</span></h1>
-              <p className="mt-3 max-w-2xl text-sm leading-6 text-blue-50/85 md:text-base">Test your knowledge, understand important topics and take one more step towards an aware and empowered society.</p>
+              <h1 className="text-3xl font-black leading-tight md:text-5xl">Learning & Awareness Centre <span className="block text-2xl font-semibold text-emerald-100 md:text-3xl">शिक्षा एवं जागरूकता केंद्र</span></h1>
+              <p className="mt-3 max-w-2xl text-sm leading-6 text-blue-50/85 md:text-base">Explore learning resources, take available assessments and build knowledge for an aware and empowered society.</p>
             </div>
             <div className="grid grid-cols-3 gap-2 text-center">
               <div className="min-w-[82px] rounded-xl border border-white/15 bg-white/10 px-3 py-3"><div className="text-xl font-black">{quiz?.size || questions.length || "—"}</div><div className="text-[10px] text-white/70">QUESTIONS</div></div>
@@ -194,8 +194,8 @@ export default function AwarenessQuiz() {
               <div className="flex items-center gap-3"><span className="rounded-xl bg-blue-50 p-3 text-xl text-[#123F68]"><FaBookOpen /></span><div><h2 className="text-xl font-black text-[#12345A]">Before you begin</h2><p className="text-sm text-slate-500">परीक्षा शुरू करने से पहले निर्देश पढ़ें</p></div></div>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {[
-                  ["10 questions", "सभी प्रश्नों के उत्तर देने का प्रयास करें।"],
-                  ["80% to pass", "प्रमाणपत्र हेतु कम-से-कम 80% अंक आवश्यक हैं।"],
+                  [`${questions.length} questions`, "सभी प्रश्नों के उत्तर देने का प्रयास करें।"],
+                  [`${quiz.passPercent ?? 80}% to pass`, "प्रमाणपत्र हेतु निर्धारित न्यूनतम अंक आवश्यक हैं।"],
                   ["One question at a time", "आप आगे-पीछे जाकर उत्तर बदल सकते हैं।"],
                   ["Login required for certificate", "प्रमाणपत्र जारी करने के लिए Learning Account में लॉगिन जरूरी है।"],
                 ].map(([a,b]) => <div key={a} className="rounded-xl bg-slate-50 p-4"><div className="font-bold text-[#12345A]">{a}</div><div className="mt-1 text-sm text-slate-500">{b}</div></div>)}
