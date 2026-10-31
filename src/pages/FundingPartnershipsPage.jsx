@@ -94,6 +94,29 @@ export default function FundingPartnershipsPage() {
       </div>
     </section>
 
+    <section id="our-purpose" className="bg-[#F1F6F3] px-5 py-16 md:px-8 md:py-20">
+      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[1.05fr_.95fr]">
+        <div>
+          <p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">हमारा उद्देश्य · Our purpose</p>
+          <h2 className="mt-3 font-serif text-3xl font-bold leading-tight text-[#002344] md:text-4xl">सहायता पर निर्भरता से आत्मनिर्भर सामाजिक विकास की ओर</h2>
+          <p className="mt-5 text-base leading-8 text-slate-700">वर्ष 2013 से Swastik Srijan Foundation Samiti ने सीमित संसाधनों के बावजूद अपनी सामाजिक यात्रा जारी रखी है। हमारा अनुभव बताता है कि केवल अनियमित दान, CSR सहायता या सरकारी अनुदान पर निर्भर रहकर सामाजिक कार्यों को लंबे समय तक निरंतर चलाना कठिन हो सकता है। इसलिए हमारा दीर्घकालीन उद्देश्य संस्था को अधिक आर्थिक रूप से सक्षम बनाना है—ताकि समाजसेवा किसी एक दानदाता, संस्था या सहायता स्रोत पर निर्भर न रहे।</p>
+          <p className="mt-4 text-base leading-8 text-slate-700">हम व्यवहार्य सामाजिक उद्यमों, उत्पादन एवं सेवा इकाइयों, स्थानीय उत्पादों और बाजार से जुड़े कार्यों को चरणबद्ध तरीके से विकसित करना चाहते हैं। इनके माध्यम से स्थानीय युवाओं, महिलाओं, कारीगरों, किसानों और अन्य समुदाय सदस्यों के लिए सम्मानजनक काम के अवसर बन सकें तथा उपयोगी और गुणवत्तापूर्ण वस्तुएँ उचित एवं यथासंभव सुलभ कीमत पर उपलब्ध कराई जा सकें।</p>
+          <p className="mt-4 text-base leading-8 text-slate-700">किसी इकाई से प्राप्त आय में से सभी वास्तविक लागत, उचित वेतन, संचालन, रखरखाव, कर, आवश्यक आरक्षित राशि और वैधानिक दायित्व पूरे करने के बाद जो अधिशेष कानूनन उपलब्ध हो, उसका उपयोग संस्था के पंजीकृत सामाजिक एवं धर्मार्थ उद्देश्यों को मजबूत करने में किया जाएगा।</p>
+        </div>
+        <div className="rounded-3xl bg-[#002344] p-7 text-white md:p-9">
+          <h3 className="text-xl font-extrabold">हम किन सिद्धांतों पर आगे बढ़ेंगे?</h3>
+          <ul className="mt-5 space-y-4 text-sm leading-7 text-white/85">
+            <li><strong className="text-[#ffb347]">स्वतंत्रता:</strong> किसी एक दानदाता, CSR संस्था या सरकारी सहायता पर स्थायी निर्भरता कम करना।</li>
+            <li><strong className="text-[#ffb347]">निष्पक्षता:</strong> अवसर, खरीद, साझेदारी और लाभार्थी चयन स्पष्ट मानदंडों, वास्तविक आवश्यकता और दस्तावेज़ी प्रक्रिया से करना—राजनीतिक या निजी पक्षपात से नहीं।</li>
+            <li><strong className="text-[#ffb347]">सामाजिक मूल्य:</strong> जहाँ लागत और गुणवत्ता अनुमति दें, वहाँ उचित एवं सुलभ कीमतों पर उपयोगी उत्पाद और सेवाएँ उपलब्ध कराना।</li>
+            <li><strong className="text-[#ffb347]">जवाबदेही:</strong> अलग लेखे, उचित अनुमतियाँ, सत्यापित रिपोर्ट और स्वतंत्र पेशेवर सलाह के साथ काम करना।</li>
+            <li><strong className="text-[#ffb347]">चरणबद्ध विकास:</strong> पहले मांग और खरीदारों की पुष्टि, फिर छोटा पायलट; सफल परिणाम के प्रमाण के बाद ही विस्तार।</li>
+          </ul>
+          <p className="mt-6 border-t border-white/15 pt-5 text-xs leading-6 text-white/65">यह हमारा दीर्घकालीन दृष्टिकोण है, वर्तमान में संचालित इकाइयों, सुनिश्चित रोजगार, बिक्री, लाभ या स्वीकृत वित्तपोषण का दावा नहीं।</p>
+        </div>
+      </div>
+    </section>
+
     <section className="mx-auto max-w-7xl px-5 py-14 md:px-8 md:py-18">
       <div className="mx-auto max-w-4xl text-center">
         <p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">A clear reason to support</p>
