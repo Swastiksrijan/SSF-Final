@@ -43,7 +43,7 @@ export default function OurInitiativesPage() {
       </div>
       <div className="relative z-10 mx-auto max-w-6xl text-center">
         <p className="mb-4 text-sm font-extrabold uppercase tracking-[0.25em] text-[#F7A814]">Education • Health • Skills • Awareness • Community Development</p>
-        <h1 className="text-4xl font-black tracking-tight md:text-6xl">Our Initiatives & Impact</h1>
+        <h1 className="text-4xl font-black tracking-tight md:text-6xl">Our Initiatives & Programmes</h1>
         <p className="mx-auto mt-6 max-w-3xl text-lg leading-8 text-[#EAF0F6] md:text-xl">Swastik Srijan Foundation works to create meaningful opportunities through education, health awareness, counselling, skill development, social participation and community support.</p>
         <div className="mt-9 flex flex-wrap justify-center gap-3"><Link to="/Donate" className="rounded-full bg-[#176447] px-7 py-3.5 font-extrabold text-[#12345A] shadow-lg transition hover:-translate-y-0.5">Support Our Work</Link><Link to="/Volunteer" className="rounded-full border border-white/30 bg-white/10 px-7 py-3.5 font-extrabold backdrop-blur transition hover:bg-white/15">Become a Volunteer</Link><Link to="/PartnerWithUs" className="rounded-full border border-white/30 px-7 py-3.5 font-extrabold transition hover:bg-white/10">Partner With Us</Link></div>
       </div>
