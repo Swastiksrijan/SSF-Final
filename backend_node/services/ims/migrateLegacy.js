@@ -252,10 +252,16 @@ async function migrateLegacy({ dryRun = true, limit = 0 } = {}) {
     dryRun, limit: limit || 'all',
     personsCreated: 0, personsReused: 0,
     skipped: 0, created: {}, wouldCreate: {}, unmapped: [],
-    sources: {},
+    sources: {}, errors: [],
+  };
+  // One missing/unreadable legacy table must never abort the whole migration —
+  // the remaining sources still land in IMS and the failure is reported.
+  const step = async (name, fn) => {
+    try { await fn(); } catch (e) { stats.errors.push(`${name}: ${e.message}`); }
   };
 
   // 1. Public Member accounts -> Person + Membership
+  await step('members', async () => {
   const legacyMembers = await fetchAll(require('../../models/Member'), limit);
   stats.sources.members = legacyMembers.length;
   for (const m of legacyMembers) {
@@ -277,8 +283,10 @@ async function migrateLegacy({ dryRun = true, limit = 0 } = {}) {
     await markMigrated('member', m.id, 'persons', person.recordId);
     stats.created.members = (stats.created.members || 0) + 1;
   }
+  });
 
   // 2. Volunteers -> Person + Volunteer
+  await step('volunteers', async () => {
   const legacyVols = await fetchAll(require('../../models/Volunteer'), limit);
   stats.sources.volunteers = legacyVols.length;
   for (const v of legacyVols) {
@@ -295,8 +303,10 @@ async function migrateLegacy({ dryRun = true, limit = 0 } = {}) {
     await markMigrated('volunteer', v.id, 'persons', person.recordId);
     stats.created.volunteers = (stats.created.volunteers || 0) + 1;
   }
+  });
 
   // 3. Donors -> Person + Donor
+  await step('donors', async () => {
   const legacyDonors = await fetchAll(require('../../models/Donor'), limit);
   stats.sources.donors = legacyDonors.length;
   for (const d of legacyDonors) {
@@ -313,8 +323,10 @@ async function migrateLegacy({ dryRun = true, limit = 0 } = {}) {
     await markMigrated('donor', d.id, 'persons', person.recordId);
     stats.created.donors = (stats.created.donors || 0) + 1;
   }
+  });
 
   // 4. FinanceTransaction -> Transaction
+  await step('financeTransactions', async () => {
   const legacyTxns = await fetchAll(require('../../models/FinanceTransaction'), limit);
   stats.sources.financeTransactions = legacyTxns.length;
   for (const t of legacyTxns) {
@@ -334,13 +346,16 @@ async function migrateLegacy({ dryRun = true, limit = 0 } = {}) {
     await markMigrated('finance-txn', t.id, 'transactions', recId);
     stats.created.transactions = (stats.created.transactions || 0) + 1;
   }
+  });
 
   // 5. Flat DigitalOfficeRecords -> mapped IMS masters
+  await step('digitalOfficeRecords', async () => {
   const legacyOffice = await fetchAll(require('../../models/DigitalOfficeRecord'), limit);
   stats.sources.digitalOfficeRecords = legacyOffice.length;
   for (const rec of legacyOffice) {
     await importDigitalOfficeRecord(rec, stats, dryRun);
   }
+  });
 
   stats.unmapped = [...new Set(stats.unmapped)];
   return stats;

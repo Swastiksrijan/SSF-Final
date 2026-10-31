@@ -347,6 +347,7 @@ async function runLegacyMigration() {
         const created = Object.entries(stats.created).map(([k, v]) => `${k}:${v}`).join(', ') || 'none';
         console.log(`✅ Legacy data migrated into IMS — created ${created}; skipped ${stats.skipped}; unmapped ${stats.unmapped.length}`);
         if (stats.unmapped.length) console.log('⚠️ Unmapped legacy modules:', stats.unmapped.slice(0, 20).join(', '));
+        if (stats.errors && stats.errors.length) console.log('⚠️ Legacy sources skipped:', stats.errors.join(' | '));
     } catch (e) {
         console.error('⚠️ Legacy migration skipped:', e.message);
     }
