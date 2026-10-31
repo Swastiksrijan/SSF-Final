@@ -6,16 +6,29 @@ name: SSF Social Awareness Publisher
 #   GitHub's scheduled cron is best-effort on free repos and often fires far
 #   less often than requested (this repo was seeing ~20 runs/24h instead of 288),
 #   so the Render free instance fell asleep between runs and the daily post went
-#   out hours late. Each run here therefore stays alive for ~5 hours, pinging
-#   the backend every 5 minutes, which keeps Render awake so the backend's own
-#   5-minute timer publishes the day's post on time (within a few minutes).
-#   `concurrency` cancels the previous long run when a new trigger arrives, so
-#   exactly one keep-alive loop is ever running.
+#   out hours late. Each run here therefore stays alive while a post is due,
+#   pinging the backend every 5 minutes, which keeps Render awake so the
+#   backend's own 5-minute timer publishes the post on time. `concurrency`
+#   cancels the previous run when a new trigger arrives, so exactly one
+#   keep-alive loop is ever running.
+#
+# Why the keep-alive now only runs around post slots:
+#   The backend holds a persistent Postgres pool and its 5-minute social timer
+#   queries the database on every tick. Pinging Render 24/7 kept the Neon compute
+#   active continuously, which burned through Neon's free-tier 191.9
+#   compute-hours/month in about a week and surfaced as "Server Error" on every
+#   login/signup/form. Runs now wake the backend only inside a short window
+#   around each post slot, so Neon auto-suspends for the rest of the day.
+#   Keep SLOTS_IST in step with the admin "times" / "seriesTimes" / "courseTimes"
+#   config (defaults: 07:00, 07:30, 09:00, 11:00, 14:00, 18:00, 19:00, 20:00,
+#   21:00 IST).
 #
 # The backend is idempotent (one post per day; a draft flips to published once),
 # so extra pings are harmless and can never duplicate a post.
 on:
   schedule:
+    # Every 5 minutes so a run always lands inside a wake window even when
+    # GitHub's best-effort cron is late; runs outside every window exit at once.
     - cron: '*/5 * * * *'
   workflow_dispatch:
     inputs:
@@ -38,11 +51,34 @@ jobs:
           BACKEND_URL: ${{ secrets.SOCIAL_BACKEND_URL }}
           SCHEDULER_SECRET: ${{ secrets.SCHEDULER_SECRET }}
           FORCE: ${{ github.event.inputs.force }}
+          # Post slots (IST) and how long before/after each one to keep Render
+          # awake so the post actually goes out. Defaults cover the daily
+          # awareness post (08:00), the four awareness series, the course
+          # chapters and the twice-daily Join stream.
+          SLOTS_IST: '07:00 07:30 08:00 09:00 11:00 14:00 18:00 19:00 20:00 21:00'
+          WAKE_BEFORE_MIN: '2'
+          WAKE_AFTER_MIN: '15'
         run: |
           BASE="${BACKEND_URL:-https://ngo-backend-03hq.onrender.com}"
           KEY="${SCHEDULER_SECRET:-ssf-admin-portal-token}"
           FORCE_Q=""
           if [ "$FORCE" = "true" ]; then FORCE_Q="&force=1"; fi
+
+          ist_minutes() { echo $(( 10#$(TZ=Asia/Kolkata date +%H) * 60 + 10#$(TZ=Asia/Kolkata date +%M) )); }
+
+          # True when "now" is inside [slot - before, slot + after] for any slot.
+          in_window() {
+            local now slot sh sm slot_mins
+            now=$(ist_minutes)
+            for slot in $SLOTS_IST; do
+              sh=${slot%%:*}; sm=${slot##*:}
+              slot_mins=$(( 10#$sh * 60 + 10#$sm ))
+              if [ "$now" -ge "$((slot_mins - WAKE_BEFORE_MIN))" ] && [ "$now" -le "$((slot_mins + WAKE_AFTER_MIN))" ]; then
+                return 0
+              fi
+            done
+            return 1
+          }
 
           call_once() {
             code=$(curl -s -o /tmp/out.json -w "%{http_code}" \
@@ -60,9 +96,18 @@ jobs:
             exit 0
           fi
 
-          # Warm up (Render may be cold-starting) then loop, keeping it awake.
+          # Outside every post window: do not wake Render (and therefore do not
+          # wake Neon). This is what lets the database auto-suspend.
+          if ! in_window; then
+            echo "Outside every post window ($(date +%H:%M) UTC / $(ist_minutes) IST minutes) — not waking the backend."
+            exit 0
+          fi
+
+          # Warm up (Render may be cold-starting) then stay awake until the
+          # window closes, so a post due in the next few minutes is not missed.
           curl -s -o /dev/null --max-time 90 "$BASE/" || true
-          for i in $(seq 1 60); do
+          for i in $(seq 1 8); do
+            in_window || break
             call_once
-            sleep 300
+            sleep 240
           done
