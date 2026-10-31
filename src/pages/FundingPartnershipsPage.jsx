@@ -51,6 +51,7 @@ export default function FundingPartnershipsPage() {
           <div className="mt-9 flex flex-wrap gap-3">
             <a href="#funding-options" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] hover:bg-[#ffad4d]">Explore support options <ArrowRight size={18}/></a>
             <Link to="/Contact" className="inline-flex items-center gap-2 rounded-full border border-white/35 px-6 py-3 font-bold text-white hover:bg-white/10">Submit a partnership enquiry</Link>
+            <Link to="/PartnerOutreach" className="inline-flex items-center gap-2 rounded-full border border-[#ffb347]/60 px-6 py-3 font-bold text-[#ffcf8b] hover:bg-white/10">Donor & CSR Outreach Desk <ArrowRight size={18}/></Link>
             <button type="button" onClick={sharePage} className="inline-flex items-center gap-2 rounded-full border border-white/35 px-6 py-3 font-bold text-white hover:bg-white/10">Share this page</button>
           </div>
         </div>
