@@ -34,6 +34,8 @@ export default function AwarenessQuiz() {
   const [showDashboard, setShowDashboard] = useState(true);
   const [showInstructions, setShowInstructions] = useState(true);
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
+  const [attemptHistory, setAttemptHistory] = useState([]);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/quiz`)
@@ -47,6 +49,21 @@ export default function AwarenessQuiz() {
     window.addEventListener("ssf-auth-changed", fn);
     return () => window.removeEventListener("ssf-auth-changed", fn);
   }, []);
+
+  useEffect(() => {
+    if (!user?.token) { setAttemptHistory([]); return; }
+    let active = true;
+    setHistoryLoading(true);
+    fetch(`${API_BASE_URL}/api/quiz/my-attempts`, { headers: { Authorization: `Bearer ${user.token}` } })
+      .then(async (r) => {
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(data.message || "Quiz history unavailable.");
+        if (active) setAttemptHistory(data.attempts || []);
+      })
+      .catch(() => { if (active) setAttemptHistory([]); })
+      .finally(() => { if (active) setHistoryLoading(false); });
+    return () => { active = false; };
+  }, [user, result]);
 
   const chooseQuiz = async (quizId) => {
     if (!quizId) return;
@@ -197,6 +214,24 @@ export default function AwarenessQuiz() {
             </div>
             <div className="mt-5 rounded-2xl border border-blue-100 bg-blue-50 p-4 text-sm leading-6 text-blue-900"><b>Learning Hub:</b> विस्तृत courses, lessons, activities और course assessments के लिए <Link to="/LearningHub" className="font-black underline">SSF Learning Hub खोलें</Link>।</div>
           </div>
+          {user?.token && (
+            <section className="mt-9 rounded-3xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div><div className="text-xs font-black uppercase tracking-wider text-[#176447]">Your learning record</div><h2 className="mt-1 text-xl font-black text-[#12345A]">Quiz History / आपकी परीक्षा का रिकॉर्ड</h2><p className="mt-1 text-sm text-slate-500">आपके खाते में सुरक्षित किए गए पिछले प्रयास।</p></div>
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-bold text-slate-600">{attemptHistory.length} saved attempts</span>
+              </div>
+              {historyLoading ? <p className="mt-4 text-sm text-slate-500">Loading your history…</p> : attemptHistory.length ? (
+                <div className="mt-4 divide-y divide-slate-100">
+                  {attemptHistory.slice(0, 5).map((item) => (
+                    <div key={item.id} className="flex flex-wrap items-center justify-between gap-3 py-3">
+                      <div className="min-w-0"><div className="font-bold text-[#12345A]">{item.quizTitle}</div><div className="mt-1 text-xs text-slate-500">{new Date(item.createdAt).toLocaleDateString()} · {item.correct}/{item.total} correct</div></div>
+                      <div className="flex items-center gap-2"><span className="text-sm font-black text-[#12345A]">{item.percent}%</span><span className={"rounded-full px-3 py-1 text-xs font-bold " + (item.passed ? "bg-emerald-50 text-emerald-700" : "bg-amber-50 text-amber-700")}>{item.passed ? "Passed" : "Try again"}</span>{item.certificateId && <span className="text-xs font-bold text-emerald-700">Certificate</span>}</div>
+                    </div>
+                  ))}
+                </div>
+              ) : <p className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-500">अभी कोई Quiz attempt सेव नहीं है। अपना पहला Quiz शुरू करें।</p>}
+            </section>
+          )}
           <div className="mt-9 grid gap-3 sm:grid-cols-3">
             <Link to="/LearningHub/my-learning" className="rounded-2xl border border-slate-200 bg-white p-4 text-sm font-bold text-[#12345A] hover:border-[#176447]/40">📈 My Learning <span className="mt-1 block text-xs font-normal text-slate-500">अपनी learning progress देखें</span></Link>
             <Link to="/LearningCertificateVerify" className="rounded-2xl border border-slate-200 bg-white p-4 text-sm font-bold text-[#12345A] hover:border-[#176447]/40">🏅 Certificate Verification <span className="mt-1 block text-xs font-normal text-slate-500">जारी प्रमाणपत्र की जाँच करें</span></Link>
