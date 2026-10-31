@@ -67,7 +67,7 @@ async function main() {
   const server = app.listen(0);
   const base = `http://127.0.0.1:${server.address().port}`;
   const get = (p) => fetch(base + p).then(async (r) => ({ status: r.status, body: await r.json() }));
-  const post = (p, body) => fetch(base + p, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body || {}) }).then(async (r) => ({ status: r.status, body: await r.json() }));
+  const post = (p, body, token) => fetch(base + p, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body || {}) }).then(async (r) => ({ status: r.status, body: await r.json() }));
 
   try {
     console.log('\nQuiz API:');
@@ -81,9 +81,11 @@ async function main() {
 
     // A real, verified learning account.
     const member = await Member.create({ fullName: 'Test Learner', email: 'learner@example.com', phone: '9000000000', passwordHash: 'x', status: 'approved' });
+    const { issueToken } = require('../services/userAuth');
+    const learnerToken = issueToken(member);
 
     console.log('\nAuto-certificate on pass:');
-    const submit = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: allRight });
+    const submit = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: allRight }, learnerToken);
     ok('pass issues a certificate immediately (no admin step)', submit.status === 200 && submit.body.passed === true && submit.body.certificate && submit.body.certificate.certificateId, JSON.stringify(submit.body).slice(0, 160));
     ok('certificate id has the SSF-LCERT format', /^SSF-LCERT-\d{4}-\d{5}$/.test(submit.body.certificate.certificateId), submit.body.certificate.certificateId);
     ok('certificate carries a verification URL', /LearningCertificateVerify\?code=/.test(submit.body.certificate.verificationUrl));
@@ -96,14 +98,16 @@ async function main() {
     ok('unknown cert is not valid', missing.status === 404 && missing.body.valid === false);
 
     console.log('\nOne certificate per account+quiz (idempotent):');
-    const again = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: allRight });
+    const again = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: allRight }, learnerToken);
     ok('re-submitting returns the SAME certificate', again.body.certificate.certificateId === certId, `${again.body.certificate.certificateId} vs ${certId}`);
     const count = await LearningCertificate.count({ where: { accountId: member.id } });
     ok('only one certificate row exists', count === 1, `rows=${count}`);
 
     console.log('\nGuards:');
-    const fakeMember = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'someone-else@example.com' }, answers: allRight });
-    ok('wrong email = 401 (no certificate)', fakeMember.status === 401 && !fakeMember.body.certificate);
+    const fakeMember = await post('/api/quiz/ssf-awareness-1/submit', { accountId: 'someone-elses-id', learner: { email: 'someone-else@example.com' }, answers: allRight }, learnerToken);
+    ok('certificate account is derived from signed token, not body IDs', fakeMember.status === 200 && fakeMember.body.certificate?.certificateId === certId);
+    const noToken = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: allRight });
+    ok('forged account ID without a signed token cannot issue a certificate', noToken.body.passed === true && noToken.body.certificate === null);
     const noAccount = await post('/api/quiz/ssf-awareness-1/submit', { answers: allRight });
     ok('pass without account passes but issues no cert', noAccount.body.passed === true && noAccount.body.certificate === null);
     const fakeQuizSubmit = await post('/api/quiz/not-a-published-quiz/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: allRight });
