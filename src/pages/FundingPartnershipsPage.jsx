@@ -35,7 +35,7 @@ export default function FundingPartnershipsPage() {
       <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-36 md:px-8 md:pb-28 md:pt-44">
         <p className="mb-4 text-xs font-bold uppercase tracking-[.28em] text-[#ffb347]">Swastik Srijan Foundation Samiti · Funding & Partnerships</p>
         <div className="max-w-4xl">
-          <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Partner with us to create lasting impact</h1>
+          <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Funding, Partnerships &amp; Sustainable Development</h1>
           <p className="mt-4 text-xl font-semibold text-white/90">सहयोग, वित्तपोषण एवं साझेदारी</p>
           <p className="mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-lg">We invite responsible support from companies, banks, industries, philanthropists, institutions, government programmes and citizens. Every request will be linked to a clear purpose, realistic budget, accountable implementation and measurable outcomes.</p>
           <div className="mt-9 flex flex-wrap gap-3">
