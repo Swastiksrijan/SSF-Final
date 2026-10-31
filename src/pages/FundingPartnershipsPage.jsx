@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import SustainableLivelihoodContent from "./SustainableLivelihoodPage";
 import { ArrowRight, Building2, Landmark, HandHeart, Factory, GraduationCap, HeartPulse, Sprout, Users, FileText, ShieldCheck, ClipboardList, PackageCheck, Handshake, IndianRupee, BriefcaseBusiness, BadgeCheck } from "lucide-react";
 
 const fundingRoutes = [
@@ -119,6 +120,10 @@ export default function FundingPartnershipsPage() {
 
     <section className="bg-[#002344] px-5 py-16 text-center text-white md:px-8 md:py-20">
       <div className="mx-auto max-w-3xl"><Handshake className="mx-auto text-[#ffb347]" size={38}/><h2 className="mt-5 font-serif text-3xl font-bold md:text-4xl">Let us build a project together</h2><p className="mt-5 leading-8 text-white/75">Companies, banks, institutions, government departments, philanthropists, industry leaders and citizens are welcome to discuss a defined project, partnership, equipment contribution or institutional requirement.</p><div className="mt-8 flex flex-wrap justify-center gap-3"><Link to="/Contact" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b]">Contact the Foundation <ArrowRight size={18}/></Link><Link to="/Donate" className="rounded-full border border-white/35 px-6 py-3 font-bold hover:bg-white/10">Donate online</Link></div><p className="mt-8 text-xs leading-6 text-white/50">This page explains potential funding and partnership routes. It is not a public offer, sanction letter, guarantee of eligibility or assurance that any grant or finance has been approved. All proposals remain subject to due diligence, approvals and applicable law.</p></div>
+    </section>
+
+    <section id="sustainable-livelihood" className="scroll-mt-24">
+      <SustainableLivelihoodContent />
     </section>
   </main>;
 }
