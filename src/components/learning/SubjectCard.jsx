@@ -63,10 +63,10 @@ export default function SubjectCard({ subject, onOpen, onShare, progress = 0, ba
       </div>}
 
       <div className="mt-5 grid grid-cols-[1fr_auto] gap-2">
-        <button type="button" onClick={() => onOpen(subject)} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#176447] to-[#176447] px-5 py-3.5 text-sm font-bold text-[#12345A] shadow-[0_16px_36px_-22px_rgba(247,168,20,0.95)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#176447]/25">
+        <button type="button" onClick={() => onOpen(subject)} className="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-[#176447] to-[#176447] px-5 py-3.5 text-sm font-extrabold text-white shadow-[0_16px_36px_-22px_rgba(23,100,71,0.65)] transition hover:brightness-110 focus:outline-none focus:ring-4 focus:ring-[#176447]/25">
           {actionLabel || (pct > 0 && pct < 100 ? "Continue Learning / जारी रखें" : "Start Learning / सीखना शुरू करें")} <FaArrowRight />
         </button>
-        {onShare && <button type="button" onClick={() => onShare(subject)} aria-label={"Share " + subject.en} title="Share this course" className="inline-flex min-w-12 items-center justify-center gap-2 rounded-full border border-[#176447]/30 bg-[#FAF9F5] px-3.5 text-[#176447] transition hover:bg-[#FAF9F5] focus:outline-none focus:ring-4 focus:ring-[#176447]/20">
+        {onShare && <button type="button" onClick={() => onShare(subject)} aria-label={"Share " + subject.en} title="Share this course" className="inline-flex min-w-12 items-center justify-center gap-2 rounded-full border border-[#176447]/30 bg-white px-3.5 text-[#176447] transition hover:bg-[#FAF9F5] focus:outline-none focus:ring-4 focus:ring-[#176447]/20">
           <FaShareAlt /> <span className="sr-only">Share</span>
         </button>}
       </div>
