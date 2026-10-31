@@ -143,6 +143,18 @@ const QUESTIONS = [
 ];
 
 const SUBJECTS = ['samvidhan', 'yojana', 'swasthya', 'gk', 'english-word', 'prerna'];
+const SUBJECT_TITLES = {
+  samvidhan: { en: 'Constitution & Citizenship', hi: 'संविधान एवं नागरिकता' },
+  yojana: { en: 'Government Schemes', hi: 'सरकारी योजनाएँ' },
+  swasthya: { en: 'Health & Hygiene', hi: 'स्वास्थ्य एवं स्वच्छता' },
+  gk: { en: 'General Knowledge', hi: 'सामान्य ज्ञान' },
+  'english-word': { en: 'English & Vocabulary', hi: 'अंग्रेज़ी एवं शब्दावली' },
+  prerna: { en: 'Values & Social Awareness', hi: 'मूल्य एवं सामाजिक जागरूकता' },
+};
+const QUIZ_CATALOG = [
+  { quizId: 'ssf-awareness-1', subject: 'all', questionCount: 10, title: { en: 'SSF General Awareness Quiz', hi: 'SSF सामान्य जागरूकता प्रश्नोत्तरी' }, description: { en: 'A mixed assessment across all six learning subjects.', hi: 'छहों विषयों पर आधारित मिश्रित प्रश्नोत्तरी।' } },
+  ...SUBJECTS.map((subject) => ({ quizId: `ssf-${subject}-quiz`, subject, questionCount: QUESTIONS.filter((q) => q.subject === subject).length, title: SUBJECT_TITLES[subject], description: { en: `Test your knowledge in ${SUBJECT_TITLES[subject].en}.`, hi: `${SUBJECT_TITLES[subject].hi} में अपना ज्ञान जाँचें।` } })),
+];
 const byId = {};
 for (const q of QUESTIONS) byId[q.id] = q;
 
@@ -167,10 +179,14 @@ function shuffle(arr, seed) {
 function buildQuiz(quizId = 'ssf-awareness-1', size = 10) {
   let seed = 0;
   for (const ch of String(quizId)) seed = (seed * 31 + ch.charCodeAt(0)) & 0x7fffffff;
-  const picked = shuffle(QUESTIONS, seed).slice(0, size);
+  const catalogItem = QUIZ_CATALOG.find((item) => item.quizId === quizId);
+  const subject = catalogItem?.subject;
+  const pool = subject && subject !== 'all' ? QUESTIONS.filter((q) => q.subject === subject) : QUESTIONS;
+  const picked = shuffle(pool, seed).slice(0, Math.min(size, pool.length));
   return {
     quizId,
-    title: { en: 'SSF Awareness Quiz', hi: 'SSF जागरूकता प्रश्नोत्तरी' },
+    subject: subject || 'all',
+    title: catalogItem?.title || { en: 'SSF Awareness Quiz', hi: 'SSF जागरूकता प्रश्नोत्तरी' },
     passPercent: 80,
     size: picked.length,
     questions: picked.map((q) => ({ id: q.id, subject: q.subject, q: q.q, options: q.options })),
@@ -194,4 +210,4 @@ function scoreQuiz(quizId, answers, size = 10) {
   return { correct, total, percent, passed: percent >= paper.passPercent, wrong, passPercent: paper.passPercent };
 }
 
-module.exports = { QUESTIONS, SUBJECTS, buildQuiz, scoreQuiz, byId };
+module.exports = { QUESTIONS, SUBJECTS, SUBJECT_TITLES, QUIZ_CATALOG, buildQuiz, scoreQuiz, byId };

@@ -34,7 +34,7 @@ async function main() {
   const LearningCertificate = require('../models/LearningCertificate');
   await sequelize.sync({ force: true });
 
-  const { buildQuiz, scoreQuiz, QUESTIONS } = require('../services/social/quizBank');
+  const { buildQuiz, scoreQuiz, QUESTIONS, QUIZ_CATALOG, SUBJECTS } = require('../services/social/quizBank');
 
   console.log('\nQuiz bank (server-side answers):');
   ok('bank has at least 30 questions', QUESTIONS.length >= 30, `n=${QUESTIONS.length}`);
@@ -43,6 +43,12 @@ async function main() {
   ok('pass mark is 80%', paper.passPercent === 80);
   ok('no answer key is ever sent to the client', paper.questions.every((q) => q.answer === undefined && q.explain === undefined));
   ok('paper is stable for the same quizId', JSON.stringify(buildQuiz('ssf-awareness-1').questions.map((q) => q.id)) === JSON.stringify(paper.questions.map((q) => q.id)));
+  ok('catalog contains general + six subject quizzes', QUIZ_CATALOG.length === SUBJECTS.length + 1, `n=${QUIZ_CATALOG.length}`);
+  for (const subject of SUBJECTS) {
+    const subjectPaper = buildQuiz(`ssf-${subject}-quiz`);
+    ok(`${subject} quiz only contains its subject questions`, subjectPaper.questions.length > 0 && subjectPaper.questions.every((q) => q.subject === subject));
+    ok(`${subject} quiz does not expose answer key`, subjectPaper.questions.every((q) => q.answer === undefined && q.explain === undefined));
+  }
 
   // A perfect submission passes; a blank one fails.
   const allRight = {};
@@ -65,6 +71,8 @@ async function main() {
 
   try {
     console.log('\nQuiz API:');
+    const catalogue = await get('/api/quiz');
+    ok('GET quiz catalogue lists seven published assessments', catalogue.status === 200 && catalogue.body.quizzes?.length === 7, JSON.stringify(catalogue.body.quizzes?.length));
     const q = await get('/api/quiz/ssf-awareness-1');
     ok('GET quiz 200', q.status === 200, JSON.stringify(q.body).slice(0, 100));
     ok('quiz API hides answers', q.body.quiz.questions.every((x) => x.answer === undefined));
