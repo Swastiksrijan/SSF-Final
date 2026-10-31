@@ -41,7 +41,11 @@ function verificationUrl(certificateId) {
 
 // The quiz paper. Public (no token) so any visitor can attempt it.
 router.get('/quiz/:quizId', wrap(async (req, r) => {
-  r.json({ ok: true, quiz: buildQuiz(String(req.params.quizId || 'ssf-awareness-1')) });
+  const quizId = String(req.params.quizId || 'ssf-awareness-1');
+  if (!QUIZ_CATALOG.some((item) => item.quizId === quizId)) {
+    return r.status(404).json({ ok: false, message: 'Quiz not found or not published.' });
+  }
+  r.json({ ok: true, quiz: buildQuiz(quizId) });
 }));
 
 router.get('/quiz', wrap(async (_req, r) => {
@@ -52,6 +56,9 @@ router.get('/quiz', wrap(async (_req, r) => {
 // certificate automatically and return it in the same response.
 router.post('/quiz/:quizId/submit', wrap(async (req, r) => {
   const quizId = String(req.params.quizId || 'ssf-awareness-1');
+  if (!QUIZ_CATALOG.some((item) => item.quizId === quizId)) {
+    return r.status(404).json({ ok: false, message: 'Quiz not found or not published.' });
+  }
   const { accountId, learner, answers } = req.body || {};
   const result = scoreQuiz(quizId, answers || {});
   if (!result.passed) {
