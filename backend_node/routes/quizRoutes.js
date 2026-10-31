@@ -125,7 +125,7 @@ router.post('/quiz/:quizId/submit', wrap(async (req, r) => {
   } else if (!record.certificateId) {
     await record.update({ status: 'issued', certificateId: await nextCertificateId(), certificateIssuedAt: now });
   }
-  await QuizAttempt.update({ certificateId: record.certificateId }, { where: { accountId: member.id, quizId, certificateId: null }, limit: 1 });
+  await QuizAttempt.update({ certificateId: record.certificateId }, { where: { accountId: member.id, quizId, certificateId: null } });
   return r.json({
     ok: true, passed: true, correct: result.correct, total: result.total, percent: result.percent, passPercent: result.passPercent, wrong: [],
     certificate: { certificateId: record.certificateId, learnerName: record.learnerName, courseTitle: record.courseTitle, issuedAt: record.certificateIssuedAt, verificationUrl: verificationUrl(record.certificateId) },
