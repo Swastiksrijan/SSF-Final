@@ -50,9 +50,24 @@ async function main() {
   console.log('   created:', JSON.stringify(stats.created));
   console.log('   skipped:', stats.skipped, '| unmapped:', stats.unmapped.length);
 
+  // Finance foundation (chart of accounts, current FY, cash/bank accounts) then
+  // the official Financial Records workbook — so a fresh database comes up with
+  // the full donation/expense history and audited years, not an empty ledger.
+  console.log('5) Seeding finance foundation...');
+  const { financeSeed } = require('../services/ims/financeSeed');
+  const f = await financeSeed();
+  console.log('   accounts:', f.accounts, '| FY:', f.financialYear || 'existing', '| cash:', f.cashAccounts, '| bank:', f.bankAccounts);
+
+  console.log('6) Seeding the official finance workbook...');
+  const { seedOfficialWorkbook } = require('../services/ims/workbookSeed');
+  const wb = await seedOfficialWorkbook({ actor: 'bootstrap' });
+  console.log('   finance transactions:', wb.created, '| audited years:', wb.auditYearsCreated);
+
   const { models } = require('../models/ims');
   const [legacyCount] = await sequelize.query('SELECT COUNT(*)::int AS n FROM "DigitalOfficeRecords"');
-  console.log('5) Verify: DigitalOfficeRecords =', legacyCount[0].n);
+  console.log('7) Verify: DigitalOfficeRecords =', legacyCount[0].n);
+  const [txCount] = await sequelize.query('SELECT COUNT(*)::int AS n FROM "FinanceTransactions"');
+  console.log('   Verify: FinanceTransactions =', txCount[0].n);
 
   await sequelize.close();
   console.log('DONE');
