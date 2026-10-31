@@ -18,6 +18,7 @@ export const SECTIONS = {
     subgroups: [
       { labelKey: 'grp_identity', items: [
         { key: 'org_profile', icon: 'Building2', path: '/ims/org-profile' },
+        { key: 'institutional_history', shortKey: 'institution_short', icon: 'Landmark', path: '/ims/org-profile?tab=history' },
         { key: 'org_profile_pdf', icon: 'FileText', path: '/ims/org-profile-pdf' },
         { key: 'constitution', icon: 'ScrollText', path: '/ims/constitution' },
         { key: 'governanceRules', icon: 'Scale', resource: 'governanceRules' },
@@ -48,6 +49,7 @@ export const SECTIONS = {
         { key: 'members', icon: 'IdCard', path: '/ims/members', resource: 'members' },
         { key: 'managing_committee', icon: 'UserTie', path: '/ims/managing-committee' },
         { key: 'committees', icon: 'Landmark', resource: 'committees' },
+        { key: 'committee_members', shortKey: 'committee_members_short', icon: 'Users', resource: 'committeeMembers' },
       ] },
       { labelKey: 'grp_meetings', items: [
         { key: 'meetings', shortKey: 'meetings_nav', icon: 'CalendarClock', path: '/ims/meetings', resource: 'meetings' },
@@ -188,6 +190,7 @@ export const SECTIONS = {
       { labelKey: 'grp_resources', items: [
         { key: 'donors', icon: 'Heart', resource: 'donors' },
         { key: 'grants', icon: 'BadgeDollarSign', resource: 'grants' },
+        { key: 'grant_register', shortKey: 'grant_register', icon: 'BadgeDollarSign', path: legacy('grant') },
         { key: 'assets', icon: 'Package', resource: 'assets' },
         { key: 'employees', icon: 'BriefcaseBusiness', resource: 'employees' },
         { key: 'attendance_register', icon: 'CalendarCheck', resource: 'attendance' },
@@ -232,6 +235,7 @@ export const SECTIONS = {
       ] },
       { labelKey: 'grp_risk', items: [
         { key: 'audit_risk', icon: 'SearchCheck', resource: 'audits' },
+        { key: 'fin_audit', shortKey: 'fin_audit', icon: 'SearchCheck', path: legacy('finAudit') },
         { key: 'internal_audit', icon: 'ClipboardCheck', path: legacy('internalAudit') },
         { key: 'audits_legacy', icon: 'FileText', path: legacy('audits') },
         { key: 'audit_observations', icon: 'AlertCircle', path: legacy('auditObservations') },
@@ -255,6 +259,8 @@ export const SECTIONS = {
       ] },
       { labelKey: 'grp_donor_compliance', items: [
         { key: 'donor_master', icon: 'Heart', path: legacy('donorMaster') },
+        { key: 'donor_80g', shortKey: 'donor_80g', icon: 'Receipt', path: legacy('donor80g') },
+        { key: 'form_10bd', shortKey: 'form_10bd', icon: 'FileSpreadsheet', path: legacy('form10bd') },
         { key: 'grant_agreement', icon: 'FileSignature', path: legacy('grantAgreement') },
         { key: 'utilisation_certificate', icon: 'FileCheck2', path: legacy('utilisationCertificate') },
         { key: 'donor_reporting', icon: 'BarChart3', path: legacy('donorReporting') },
@@ -265,6 +271,7 @@ export const SECTIONS = {
         { key: 'maker_checker', icon: 'UserCheck', path: legacy('makerChecker') },
         { key: 'access_log', icon: 'ClipboardList', path: legacy('accessLog') },
         { key: 'integrity', icon: 'Fingerprint', path: '/ims/integrity' },
+        { key: 'fin_integrity', shortKey: 'fin_integrity', icon: 'Fingerprint', path: legacy('finIntegrity') },
         { key: 'whistleblower', icon: 'Megaphone', path: legacy('whistleblower') },
       ] },
     ],
@@ -294,7 +301,8 @@ export const SECTIONS = {
         { key: 'knowledge', icon: 'BookMarked', path: '/ims/knowledge' },
       ] },
       { labelKey: 'grp_certificates', items: [
-        P('certificates_letters', 'Award'),
+        { key: 'certificates_letters', shortKey: 'certificates_letters', icon: 'Award', path: '/ims/learning-certificates' },
+        { key: 'id_cards', shortKey: 'id_cards', icon: 'IdCard', path: legacy('idcards') },
         P('member_certificates', 'IdCard'),
         P('donor_certificates', 'Heart'),
         P('volunteer_certificates', 'HandHeart'),

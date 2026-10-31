@@ -17,7 +17,7 @@ import ChartOfAccounts from '../components/ChartOfAccounts';
 import FYMaster from '../components/FYMaster';
 import { FinanceDashboard, FinanceStatements, IntegrityCheck } from '../components/FinanceOffice';
 import { FinanceTransactions, FinanceLedger, FinanceIntegrity, FinanceAudit } from '../components/FinanceOps';
-import { AuditedStatements, AuditObservations, StatutoryRegistrations, TaxReturns } from '../components/AuditComplianceRegisters';
+import { AuditedStatements, AuditObservations, StatutoryRegistrations, TaxReturns, Form10BD } from '../components/AuditComplianceRegisters';
 import { DepreciationSchedule, CorpusFund, FundClassification, ProcurementRegister, PayrollRegister, HonorariumRegister, FundUtilisation } from '../components/AssetsFundsRegisters';
 import {
   FcraRegister, Donor80GRegister, ComplianceCalendar, LegalCaseRegister, PropertyLeaseRegister,
@@ -71,6 +71,8 @@ const REGISTERS = {
   memberRegister: { C: MemberRegisterGovernance, nav: 'member_register' },
   officeBearer: { C: OfficeBearerRegister, nav: 'office_bearer' },
   donorMaster: { C: DonorMasterRegister, nav: 'donor_master' },
+  donor80g: { C: Donor80GRegister, nav: 'donor_80g' },
+  form10bd: { C: Form10BD, nav: 'form_10bd' },
   grantAgreement: { C: GrantAgreementRegister, nav: 'grant_agreement' },
   utilisationCertificate: { C: UtilisationCertificateRegister, nav: 'utilisation_certificate' },
   donorReporting: { C: DonorReportingCalendar, nav: 'donor_reporting' },
@@ -129,7 +131,7 @@ const REGISTERS = {
 const GENERIC_REGISTERS = new Set([
   'activities', 'assets', 'audits', 'beneficiaries', 'brs', 'budget', 'cashbank',
   'contribution', 'documents', 'donations', 'donors', 'events', 'expenses',
-  'fixedAssets', 'internships', 'inventory', 'investments', 'inward', 'ledger',
+  'fixedAssets', 'idcards', 'internships', 'inventory', 'investments', 'inward', 'ledger',
   'loans', 'mou', 'outward', 'projects', 'statutoryDues', 'tds', 'volunteers', 'vouchers',
 ]);
 

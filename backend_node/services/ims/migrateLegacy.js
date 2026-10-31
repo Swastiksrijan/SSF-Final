@@ -113,6 +113,7 @@ const MODULE_MAP = {
   donors: 'donors', donorMaster: 'donors', foreignDonor: 'donors',
   donations: 'donations', contribution: 'donations', corpusDonation: 'donations',
   anonymousDonation: 'donations', donor80g: 'donations', inKind: 'donations', csrFund: 'donations',
+  form10bd: 'donations',
   // finance masters
   chartOfAccounts: 'accounts', fyMaster: 'financialYears', fundMaster: 'funds',
   fundClassification: 'funds', corpusFund: 'funds', reserveFund: 'funds',
@@ -155,7 +156,7 @@ const MODULE_MAP = {
   institutionalHistory: 'institutionalHistory',
   membershipContributions: 'donations', donorSlips: 'donations',
   separations: 'employees',
-  appointmentLetters: 'documents', idcards: 'documents',
+  appointmentLetters: 'documents', idcards: 'documents', certificates: 'documents',
   users: 'users',
 };
 
