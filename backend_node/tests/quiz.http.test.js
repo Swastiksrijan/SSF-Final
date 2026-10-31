@@ -87,6 +87,7 @@ async function main() {
     console.log('\nAuto-certificate on pass:');
     const submit = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: allRight }, learnerToken);
     ok('pass issues a certificate immediately (no admin step)', submit.status === 200 && submit.body.passed === true && submit.body.certificate && submit.body.certificate.certificateId, JSON.stringify(submit.body).slice(0, 160));
+    ok('certificate is linked to the signed-in member', submit.body.certificate?.learnerName === member.fullName);
     ok('certificate id has the SSF-LCERT format', /^SSF-LCERT-\d{4}-\d{5}$/.test(submit.body.certificate.certificateId), submit.body.certificate.certificateId);
     ok('certificate carries a verification URL', /LearningCertificateVerify\?code=/.test(submit.body.certificate.verificationUrl));
     const certId = submit.body.certificate.certificateId;
