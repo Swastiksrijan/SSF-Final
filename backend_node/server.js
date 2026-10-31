@@ -176,6 +176,18 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Organisation profile seed skipped:', e.message);
     }
+    // Finance foundation: chart of accounts, current financial year, default
+    // cash/bank accounts and cost centres. Without this a fresh database has no
+    // accounts for the registers to post against (idempotent).
+    try {
+        const { financeSeed } = require('./services/ims/financeSeed');
+        const f = await financeSeed();
+        if (f.accounts || f.financialYear || f.cashAccounts || f.bankAccounts) {
+            console.log(`✅ Finance foundation: ${f.accounts} account(s), FY ${f.financialYear || 'existing'}, ${f.cashAccounts} cash + ${f.bankAccounts} bank account(s)`);
+        }
+    } catch (e) {
+        console.error('⚠️ Finance foundation seed skipped:', e.message);
+    }
     // Member Register — authoritative, from data/membersRegister.js. Keeps the
     // People master and the Contacts directory in step on every boot.
     try {
@@ -246,6 +258,19 @@ async function runSeeds() {
         if (d.configured && (d.sent || d.failed)) console.log(`📣 Action Centre sent ${d.sent} alert(s) ${JSON.stringify(d.byChannel || {})}, ${d.failed} failed`);
     } catch (e) {
         console.error('⚠️ Notification sync skipped:', e.message);
+    }
+    // Official Financial Records workbook (data/officialRegisters.json) — the
+    // canonical donation/expense transactions plus the CA-signed audit years.
+    // Idempotent (keyed by sourceRecordId), so a brand-new database populates
+    // its finance registers on first boot without any admin action.
+    try {
+        const { seedOfficialWorkbook } = require('./services/ims/workbookSeed');
+        const wb = await seedOfficialWorkbook({ actor: 'system' });
+        if (wb.created || wb.auditYearsCreated) {
+            console.log(`✅ Official workbook: ${wb.created} finance transaction(s), ${wb.auditYearsCreated} audited year(s)`);
+        }
+    } catch (e) {
+        console.error('⚠️ Official workbook seed skipped:', e.message);
     }
     // Multicultural festival & observance calendar. Seeds only MISSING keys, so
     // an admin's edits, approvals or exclusions are never overwritten.

@@ -5,6 +5,7 @@ const AuditYear = require('../models/AuditYear');
 const AuditRecord = require('../models/AuditRecord');
 const FinanceTransaction = require('../models/FinanceTransaction');
 const DigitalOfficeRecord = require('../models/DigitalOfficeRecord');
+const { seedOfficialWorkbook } = require('../services/ims/workbookSeed');
 
 const router = express.Router();
 
@@ -299,137 +300,11 @@ const buildLinked = (regId, srcId, seq, mode) => {
 };
 
 router.post('/digital-office/finance/seed', requireOfficeAuth, async (req, res) => {
-  const t = await sequelize.transaction();
   try {
     const force = String(req.query.force || '') === '1';
-    if (force) await FinanceTransaction.destroy({ where: {}, transaction: t });
-    let data;
-    try { data = require('../data/officialRegisters.json'); }
-    catch (_) { await t.rollback(); return res.status(500).json({ message: 'officialRegisters.json not found. Run the generator.' }); }
-    const CANONICAL = ['donations', 'expenses'];
-    let created = 0, skipped = 0;
-    for (const reg of (data.registers || [])) {
-      if (!CANONICAL.includes(reg.id)) continue;
-      const module = sourceModuleOf(reg.id);
-      const col = (name) => reg.columns.indexOf(name);
-      const ci = { date: col('Date'), particulars: col('Particulars'), memberName: col('Member Name'), type: col('Type'), category: col('Category'), mode: col('Mode'), amount: col('Amount (₹)'), ref: col('Bank Reference / UTR') };
-      let seq = 0;
-      for (const row of (reg.rows || [])) {
-        seq += 1;
-        const srcId = 'SSF-' + String(module).slice(0, 3).toUpperCase() + '-' + String(row[ci.date] || '').replace(/-/g, '') + '-' + String(seq).padStart(5, '0');
-        const exists = await FinanceTransaction.findOne({ where: { sourceRecordId: srcId, sourceModule: module }, attributes: ['id'], transaction: t });
-        if (exists) { skipped += 1; continue; }
-        const date = String(row[ci.date] || '').slice(0, 10);
-        if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) { skipped += 1; continue; }
-        const amount = num(row[ci.amount]);
-        if (!amount) { skipped += 1; continue; }
-        const mode = ci.mode >= 0 ? (row[ci.mode] || 'Cash') : 'Cash';
-        const inKind = reg.id === 'expenses' && isInKind(mode);
-        const direction = reg.id === 'donations' ? _R.in : (inKind ? 'none' : _R.out);
-        const fy = _fyOf(date);
-        const transactionId = await (async () => {
-          const last = await FinanceTransaction.findOne({ where: { transactionId: { [Op.like]: 'FIN-' + fy + '-%' } }, order: [['transactionId', 'DESC']], transaction: t });
-          let s = last ? parseInt(String(last.transactionId).replace(/^.*-/, ''), 10) + 1 : 1;
-          if (!isFinite(s) || s < 1) s = 1;
-          let c = 'FIN-' + fy + '-' + String(s).padStart(6, '0');
-          while (await FinanceTransaction.findOne({ where: { transactionId: c }, attributes: ['id'], transaction: t })) { s += 1; c = 'FIN-' + fy + '-' + String(s).padStart(6, '0'); }
-          return c;
-        })();
-        const party = ci.particulars >= 0 ? (row[ci.particulars] || '') : (ci.memberName >= 0 ? row[ci.memberName] : '');
-        const typeOf = reg.id === 'donations' ? (/contribution/i.test(String(row[ci.type] || '')) ? 'membership' : 'donation') : 'expense';
-        await FinanceTransaction.create({
-          transactionId, financialYear: fy, transactionDate: date, transactionType: typeOf, amount, direction,
-          paymentMode: mode, referenceNumber: ci.ref >= 0 ? (row[ci.ref] || null) : null, partyId: party || null,
-          receiptId: reg.id === 'donations' ? srcId : null,
-          voucherId: reg.id === 'expenses' ? 'SSF-VOU-expenses-' + String(seq).padStart(5, '0') : null,
-          sourceModule: module, sourceRecordId: srcId, needsReview: false,
-          linkedRecords: buildLinked(reg.id, srcId, seq, mode),
-          data: { importedFrom: 'official-workbook', register: reg.id, particulars: party, inKind }
-        }, { transaction: t });
-        created += 1;
-      }
-    }
-    // Opening balances from the audited summary (dated 1 April) so the running
-    // cash/bank balances are meaningful and can be compared to the audited close.
-    const summaryMap = {};
-    (data.auditSummary || []).forEach((x) => { summaryMap[x.particulars] = x.amount; });
-    const openings = [
-      { label: 'Opening Cash Balance', mode: 'Cash' },
-      { label: 'Opening Bank Balance (UBI)', mode: 'Bank' }
-    ];
-    for (const op of openings) {
-      const amt = num(summaryMap[op.label]);
-      if (!amt) continue;
-      const srcId = 'SSF-OPN-' + op.mode.toUpperCase() + '-00001';
-      const exists = await FinanceTransaction.findOne({ where: { sourceRecordId: srcId }, attributes: ['id'], transaction: t });
-      if (exists) { skipped += 1; continue; }
-      const transactionId = await (async () => {
-        const last = await FinanceTransaction.findOne({ where: { transactionId: { [Op.like]: 'FIN-2025-26-%' } }, order: [['transactionId', 'DESC']], transaction: t });
-        let s = last ? parseInt(String(last.transactionId).replace(/^.*-/, ''), 10) + 1 : 1;
-        let c = 'FIN-2025-26-' + String(s).padStart(6, '0');
-        while (await FinanceTransaction.findOne({ where: { transactionId: c }, attributes: ['id'], transaction: t })) { s += 1; c = 'FIN-2025-26-' + String(s).padStart(6, '0'); }
-        return c;
-      })();
-      await FinanceTransaction.create({
-        transactionId, financialYear: '2025-26', transactionDate: '2025-04-01', transactionType: 'opening',
-        amount: amt, direction: 'in', paymentMode: op.mode, partyId: 'Opening Balance',
-        sourceModule: 'opening', sourceRecordId: srcId, linkedRecords: [], needsReview: false,
-        data: { importedFrom: 'official-workbook', opening: true, label: op.label }
-      }, { transaction: t });
-      created += 1;
-    }
-    // Seed the FY 2025-26 audit year with the audited summary figures.
-    const fyLabel = '2025-26';
-    let year = await AuditYear.findOne({ where: { financialYear: fyLabel }, transaction: t });
-    if (!year) {
-      const summary = {};
-      (data.auditSummary || []).forEach((x) => { summary[x.particulars] = x.amount; });
-      year = await AuditYear.create({
-        auditId: 'AUD-2025-26-001', financialYear: fyLabel, assessmentYear: '2026-27',
-        auditStatus: 'Completed', auditType: 'Statutory', submissionStatus: 'To Be Confirmed',
-        currentVersion: 'Final', remarks: 'Seeded from the official Financial Records workbook Audit Summary.',
-        summary, createdBy: req.headers['x-office-actor'] || 'admin'
-      }, { transaction: t });
-    }
-    // Seed every audited year (from the CA-signed statements) into the audit
-    // year master + audit report records, so the whole history lives in fields.
-    let auditYearsCreated = 0;
-    try {
-      const reports = require('../data/auditReports.json');
-      for (const r of (reports.reports || [])) {
-        const exists = await AuditYear.findOne({ where: { financialYear: r.financialYear }, transaction: t });
-        if (exists) continue;
-        const summary = {
-          'Income for the year': r.incomeTotal,
-          'Expenditure for the year': r.expenditureTotal,
-          'Opening Cash Balance': r.openingBalances && r.openingBalances.cash,
-          'Opening Bank Balance (UBI)': r.openingBalances && r.openingBalances.bank,
-          'Total Opening Balance': r.openingBalances && r.openingBalances.total,
-          'Closing Cash Balance': r.closingBalances && r.closingBalances.cash,
-          'Closing Bank Balance (UBI)': r.closingBalances && r.closingBalances.bank,
-          'General Fund Opening Balance': r.generalFund && r.generalFund.opening,
-          'General Fund Closing Balance': r.generalFund && r.generalFund.closing,
-          'Surplus/Deficit transferred to Balance Sheet': r.result && (r.result.type === 'surplus' ? r.result.amount : -r.result.amount)
-        };
-        const auditId = await nextSeqId(AuditYear, 'auditId', 'AUD-' + r.financialYear + '-');
-        await AuditYear.create({
-          auditId, financialYear: r.financialYear, assessmentYear: r.assessmentYear || null,
-          auditStatus: r.status || 'Audited', auditType: 'Statutory',
-          auditorName: (r.auditor && r.auditor.partner) || null, auditFirm: (r.auditor && r.auditor.firm) || null,
-          membershipNo: (r.auditor && r.auditor.membershipNo) || null, auditorContact: (r.auditor && r.auditor.phone) || null,
-          auditorEmail: (r.auditor && r.auditor.email) || null,
-          reportDate: (r.auditor && r.auditor.reportDate) || null,
-          submissionStatus: 'Filed', currentVersion: 'Final',
-          remarks: 'Transcribed from CA-signed audited statements (' + r.sourceFile + ').',
-          summary, createdBy: req.headers['x-office-actor'] || 'admin'
-        }, { transaction: t });
-        auditYearsCreated += 1;
-      }
-    } catch (e) { console.error('auditReports seed skipped:', e.message); }
-    await t.commit();
-    return res.json({ status: 'ok', created, skipped, auditYear: year ? year.auditId : null, auditYearsCreated });
+    const result = await seedOfficialWorkbook({ force, actor: req.headers['x-office-actor'] || 'admin' });
+    return res.json(result);
   } catch (e) {
-    try { await t.rollback(); } catch (_) {}
     console.error('Finance seed failed:', e);
     res.status(500).json({ message: 'Seed failed.', detail: e.message });
   }
