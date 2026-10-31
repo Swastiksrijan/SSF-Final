@@ -15,7 +15,7 @@ const express = require('express');
 const router = express.Router();
 const LearningCertificate = require('../models/LearningCertificate');
 const Member = require('../models/Member');
-const { buildQuiz, scoreQuiz, SUBJECTS } = require('../services/social/quizBank');
+const { buildQuiz, scoreQuiz, SUBJECTS, QUIZ_CATALOG } = require('../services/social/quizBank');
 
 const wrap = (fn) => (req, r) => fn(req, r).catch((e) => { console.error('quiz error:', e); r.status(500).json({ message: 'Server Error' }); });
 
@@ -45,7 +45,7 @@ router.get('/quiz/:quizId', wrap(async (req, r) => {
 }));
 
 router.get('/quiz', wrap(async (_req, r) => {
-  r.json({ ok: true, quiz: buildQuiz('ssf-awareness-1'), subjects: SUBJECTS });
+  r.json({ ok: true, quiz: buildQuiz('ssf-awareness-1'), subjects: SUBJECTS, quizzes: QUIZ_CATALOG });
 }));
 
 // Submit answers. If the account is verified and the score >= 80%, issue the
@@ -68,7 +68,7 @@ router.post('/quiz/:quizId/submit', wrap(async (req, r) => {
   }
 
   const courseId = `quiz-${quizId}`;
-  const courseTitle = 'SSF Awareness Quiz';
+  const courseTitle = buildQuiz(quizId).title.en;
   // One certificate per account + quiz.
   let record = await LearningCertificate.findOne({ where: { accountId, courseId, status: ['requested', 'approved', 'issued'] } });
   const now = new Date();
