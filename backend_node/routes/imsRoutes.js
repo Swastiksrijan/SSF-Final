@@ -18,6 +18,7 @@ const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { universalSearch, meta: searchMeta } = require('../services/ims/search');
 const { volunteerDashboard } = require('../services/ims/volunteerNetwork');
 const { ROLES, DEFAULT_GRANTS } = require('../services/ims/rbac');
+const { databaseUnavailableResponse } = require('../services/dbHealth');
 
 // Auth: reuse the office bearer token so the existing admin session works.
 const requireImsAuth = (req, r, next) => {
@@ -30,6 +31,7 @@ const requireImsAuth = (req, r, next) => {
 router.use('/ims', requireImsAuth);
 
 const wrap = (fn) => (req, r) => fn(req, r).catch(e => {
+  if (databaseUnavailableResponse(r, e)) return;
   const status = e.status || 500;
   r.status(status).json({ message: e.message || 'IMS error', duplicates: e.duplicates });
 });

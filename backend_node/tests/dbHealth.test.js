@@ -57,6 +57,25 @@ async function main() {
   ok('reachable database reports ok', status.ok === true, JSON.stringify(status));
   ok('reachable database reports reachable', status.reachable === true);
 
+  console.log('\nSafety-net middleware (no route may leak a raw driver message):');
+  const { databaseUnavailableMiddleware } = require('../services/dbHealth');
+  const runMiddleware = (body) => {
+    const res = { statusCode: 200, body: null };
+    res.status = (code) => { res.statusCode = code; return res; };
+    res.json = (b) => { res.body = b; return res; };
+    databaseUnavailableMiddleware({}, res, () => {});
+    res.json(body);
+    return res;
+  };
+  const leaked = runMiddleware({ message: 'Your account or project has exceeded the quota. Upgrade your plan to increase limits.' });
+  ok('raw quota message is rewritten to 503', leaked.statusCode === 503, String(leaked.statusCode));
+  ok('rewritten body carries DATABASE_UNAVAILABLE', leaked.body?.code === 'DATABASE_UNAVAILABLE');
+  ok('rewritten body hides the driver text', !/quota|Neon|plan/i.test(leaked.body?.message || ''));
+  const kept = runMiddleware({ message: 'Please enter your email address.' });
+  ok('ordinary message is passed through untouched', kept.statusCode === 200 && kept.body.message === 'Please enter your email address.');
+  const alreadyHonest = runMiddleware({ code: 'DATABASE_UNAVAILABLE', message: 'quota' });
+  ok('an already-shaped 503 body is left alone', alreadyHonest.body.code === 'DATABASE_UNAVAILABLE' && alreadyHonest.body.message === 'quota');
+
   console.log(`\n${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 }

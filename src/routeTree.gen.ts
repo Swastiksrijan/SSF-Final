@@ -19,7 +19,10 @@ import { Route as UpcomingProjectsRouteImport } from './routes/UpcomingProjects'
 import { Route as TransparencyRouteImport } from './routes/Transparency'
 import { Route as TermsAndConditionsRouteImport } from './routes/TermsAndConditions'
 import { Route as TeamRouteImport } from './routes/Team'
+import { Route as SustainableLivelihoodRouteImport } from './routes/SustainableLivelihood'
+import { Route as SustainableDevelopmentRouteImport } from './routes/SustainableDevelopment'
 import { Route as StoriesRouteImport } from './routes/Stories'
+import { Route as SocialEnterprisesRouteImport } from './routes/SocialEnterprises'
 import { Route as SkillProgramsRouteImport } from './routes/SkillPrograms'
 import { Route as SignupRouteImport } from './routes/Signup'
 import { Route as SSFNationalAcademyRouteImport } from './routes/SSFNationalAcademy'
@@ -46,10 +49,12 @@ import { Route as ImpactRouteImport } from './routes/Impact'
 import { Route as HumanityChar38TruthRouteImport } from './routes/Humanity&Truth'
 import { Route as HelpCentreRouteImport } from './routes/HelpCentre'
 import { Route as GetInvolvedRouteImport } from './routes/GetInvolved'
+import { Route as FundingPartnershipsRouteImport } from './routes/FundingPartnerships'
 import { Route as DonorRouteImport } from './routes/Donor'
 import { Route as DonationRefundPolicyRouteImport } from './routes/DonationRefundPolicy'
 import { Route as DonateAndSupportRouteImport } from './routes/DonateAndSupport'
 import { Route as DonateRouteImport } from './routes/Donate'
+import { Route as DevelopmentImpactRouteImport } from './routes/DevelopmentImpact'
 import { Route as CookiePolicyRouteImport } from './routes/CookiePolicy'
 import { Route as ContactRouteImport } from './routes/Contact'
 import { Route as CampaignsRouteImport } from './routes/Campaigns'
@@ -167,9 +172,24 @@ const TeamRoute = TeamRouteImport.update({
   path: '/Team',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SustainableLivelihoodRoute = SustainableLivelihoodRouteImport.update({
+  id: '/SustainableLivelihood',
+  path: '/SustainableLivelihood',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SustainableDevelopmentRoute = SustainableDevelopmentRouteImport.update({
+  id: '/SustainableDevelopment',
+  path: '/SustainableDevelopment',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StoriesRoute = StoriesRouteImport.update({
   id: '/Stories',
   path: '/Stories',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SocialEnterprisesRoute = SocialEnterprisesRouteImport.update({
+  id: '/SocialEnterprises',
+  path: '/SocialEnterprises',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SkillProgramsRoute = SkillProgramsRouteImport.update({
@@ -303,6 +323,11 @@ const GetInvolvedRoute = GetInvolvedRouteImport.update({
   path: '/GetInvolved',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FundingPartnershipsRoute = FundingPartnershipsRouteImport.update({
+  id: '/FundingPartnerships',
+  path: '/FundingPartnerships',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DonorRoute = DonorRouteImport.update({
   id: '/Donor',
   path: '/Donor',
@@ -321,6 +346,11 @@ const DonateAndSupportRoute = DonateAndSupportRouteImport.update({
 const DonateRoute = DonateRouteImport.update({
   id: '/Donate',
   path: '/Donate',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const DevelopmentImpactRoute = DevelopmentImpactRouteImport.update({
+  id: '/DevelopmentImpact',
+  path: '/DevelopmentImpact',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CookiePolicyRoute = CookiePolicyRouteImport.update({
@@ -670,10 +700,12 @@ export interface FileRoutesByFullPath {
   '/Campaigns': typeof CampaignsRoute
   '/Contact': typeof ContactRoute
   '/CookiePolicy': typeof CookiePolicyRoute
+  '/DevelopmentImpact': typeof DevelopmentImpactRoute
   '/Donate': typeof DonateRoute
   '/DonateAndSupport': typeof DonateAndSupportRoute
   '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
   '/Donor': typeof DonorRoute
+  '/FundingPartnerships': typeof FundingPartnershipsRoute
   '/GetInvolved': typeof GetInvolvedRoute
   '/HelpCentre': typeof HelpCentreRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
@@ -700,7 +732,10 @@ export interface FileRoutesByFullPath {
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
   '/Signup': typeof SignupRoute
   '/SkillPrograms': typeof SkillProgramsRoute
+  '/SocialEnterprises': typeof SocialEnterprisesRoute
   '/Stories': typeof StoriesRoute
+  '/SustainableDevelopment': typeof SustainableDevelopmentRoute
+  '/SustainableLivelihood': typeof SustainableLivelihoodRoute
   '/Team': typeof TeamRoute
   '/TermsAndConditions': typeof TermsAndConditionsRoute
   '/Transparency': typeof TransparencyRoute
@@ -779,10 +814,12 @@ export interface FileRoutesByTo {
   '/Campaigns': typeof CampaignsRoute
   '/Contact': typeof ContactRoute
   '/CookiePolicy': typeof CookiePolicyRoute
+  '/DevelopmentImpact': typeof DevelopmentImpactRoute
   '/Donate': typeof DonateRoute
   '/DonateAndSupport': typeof DonateAndSupportRoute
   '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
   '/Donor': typeof DonorRoute
+  '/FundingPartnerships': typeof FundingPartnershipsRoute
   '/GetInvolved': typeof GetInvolvedRoute
   '/HelpCentre': typeof HelpCentreRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
@@ -808,7 +845,10 @@ export interface FileRoutesByTo {
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
   '/Signup': typeof SignupRoute
   '/SkillPrograms': typeof SkillProgramsRoute
+  '/SocialEnterprises': typeof SocialEnterprisesRoute
   '/Stories': typeof StoriesRoute
+  '/SustainableDevelopment': typeof SustainableDevelopmentRoute
+  '/SustainableLivelihood': typeof SustainableLivelihoodRoute
   '/Team': typeof TeamRoute
   '/TermsAndConditions': typeof TermsAndConditionsRoute
   '/Transparency': typeof TransparencyRoute
@@ -888,10 +928,12 @@ export interface FileRoutesById {
   '/Campaigns': typeof CampaignsRoute
   '/Contact': typeof ContactRoute
   '/CookiePolicy': typeof CookiePolicyRoute
+  '/DevelopmentImpact': typeof DevelopmentImpactRoute
   '/Donate': typeof DonateRoute
   '/DonateAndSupport': typeof DonateAndSupportRoute
   '/DonationRefundPolicy': typeof DonationRefundPolicyRoute
   '/Donor': typeof DonorRoute
+  '/FundingPartnerships': typeof FundingPartnershipsRoute
   '/GetInvolved': typeof GetInvolvedRoute
   '/HelpCentre': typeof HelpCentreRoute
   '/Humanity&Truth': typeof HumanityChar38TruthRoute
@@ -918,7 +960,10 @@ export interface FileRoutesById {
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
   '/Signup': typeof SignupRoute
   '/SkillPrograms': typeof SkillProgramsRoute
+  '/SocialEnterprises': typeof SocialEnterprisesRoute
   '/Stories': typeof StoriesRoute
+  '/SustainableDevelopment': typeof SustainableDevelopmentRoute
+  '/SustainableLivelihood': typeof SustainableLivelihoodRoute
   '/Team': typeof TeamRoute
   '/TermsAndConditions': typeof TermsAndConditionsRoute
   '/Transparency': typeof TransparencyRoute
@@ -999,10 +1044,12 @@ export interface FileRouteTypes {
     | '/Campaigns'
     | '/Contact'
     | '/CookiePolicy'
+    | '/DevelopmentImpact'
     | '/Donate'
     | '/DonateAndSupport'
     | '/DonationRefundPolicy'
     | '/Donor'
+    | '/FundingPartnerships'
     | '/GetInvolved'
     | '/HelpCentre'
     | '/Humanity&Truth'
@@ -1029,7 +1076,10 @@ export interface FileRouteTypes {
     | '/SSFNationalAcademy'
     | '/Signup'
     | '/SkillPrograms'
+    | '/SocialEnterprises'
     | '/Stories'
+    | '/SustainableDevelopment'
+    | '/SustainableLivelihood'
     | '/Team'
     | '/TermsAndConditions'
     | '/Transparency'
@@ -1108,10 +1158,12 @@ export interface FileRouteTypes {
     | '/Campaigns'
     | '/Contact'
     | '/CookiePolicy'
+    | '/DevelopmentImpact'
     | '/Donate'
     | '/DonateAndSupport'
     | '/DonationRefundPolicy'
     | '/Donor'
+    | '/FundingPartnerships'
     | '/GetInvolved'
     | '/HelpCentre'
     | '/Humanity&Truth'
@@ -1137,7 +1189,10 @@ export interface FileRouteTypes {
     | '/SSFNationalAcademy'
     | '/Signup'
     | '/SkillPrograms'
+    | '/SocialEnterprises'
     | '/Stories'
+    | '/SustainableDevelopment'
+    | '/SustainableLivelihood'
     | '/Team'
     | '/TermsAndConditions'
     | '/Transparency'
@@ -1216,10 +1271,12 @@ export interface FileRouteTypes {
     | '/Campaigns'
     | '/Contact'
     | '/CookiePolicy'
+    | '/DevelopmentImpact'
     | '/Donate'
     | '/DonateAndSupport'
     | '/DonationRefundPolicy'
     | '/Donor'
+    | '/FundingPartnerships'
     | '/GetInvolved'
     | '/HelpCentre'
     | '/Humanity&Truth'
@@ -1246,7 +1303,10 @@ export interface FileRouteTypes {
     | '/SSFNationalAcademy'
     | '/Signup'
     | '/SkillPrograms'
+    | '/SocialEnterprises'
     | '/Stories'
+    | '/SustainableDevelopment'
+    | '/SustainableLivelihood'
     | '/Team'
     | '/TermsAndConditions'
     | '/Transparency'
@@ -1326,10 +1386,12 @@ export interface RootRouteChildren {
   CampaignsRoute: typeof CampaignsRoute
   ContactRoute: typeof ContactRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
+  DevelopmentImpactRoute: typeof DevelopmentImpactRoute
   DonateRoute: typeof DonateRoute
   DonateAndSupportRoute: typeof DonateAndSupportRoute
   DonationRefundPolicyRoute: typeof DonationRefundPolicyRoute
   DonorRoute: typeof DonorRoute
+  FundingPartnershipsRoute: typeof FundingPartnershipsRoute
   GetInvolvedRoute: typeof GetInvolvedRoute
   HelpCentreRoute: typeof HelpCentreRoute
   HumanityChar38TruthRoute: typeof HumanityChar38TruthRoute
@@ -1356,7 +1418,10 @@ export interface RootRouteChildren {
   SSFNationalAcademyRoute: typeof SSFNationalAcademyRoute
   SignupRoute: typeof SignupRoute
   SkillProgramsRoute: typeof SkillProgramsRoute
+  SocialEnterprisesRoute: typeof SocialEnterprisesRoute
   StoriesRoute: typeof StoriesRoute
+  SustainableDevelopmentRoute: typeof SustainableDevelopmentRoute
+  SustainableLivelihoodRoute: typeof SustainableLivelihoodRoute
   TeamRoute: typeof TeamRoute
   TermsAndConditionsRoute: typeof TermsAndConditionsRoute
   TransparencyRoute: typeof TransparencyRoute
@@ -1491,11 +1556,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TeamRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/SustainableLivelihood': {
+      id: '/SustainableLivelihood'
+      path: '/SustainableLivelihood'
+      fullPath: '/SustainableLivelihood'
+      preLoaderRoute: typeof SustainableLivelihoodRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/SustainableDevelopment': {
+      id: '/SustainableDevelopment'
+      path: '/SustainableDevelopment'
+      fullPath: '/SustainableDevelopment'
+      preLoaderRoute: typeof SustainableDevelopmentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/Stories': {
       id: '/Stories'
       path: '/Stories'
       fullPath: '/Stories'
       preLoaderRoute: typeof StoriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/SocialEnterprises': {
+      id: '/SocialEnterprises'
+      path: '/SocialEnterprises'
+      fullPath: '/SocialEnterprises'
+      preLoaderRoute: typeof SocialEnterprisesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/SkillPrograms': {
@@ -1680,6 +1766,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof GetInvolvedRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/FundingPartnerships': {
+      id: '/FundingPartnerships'
+      path: '/FundingPartnerships'
+      fullPath: '/FundingPartnerships'
+      preLoaderRoute: typeof FundingPartnershipsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/Donor': {
       id: '/Donor'
       path: '/Donor'
@@ -1706,6 +1799,13 @@ declare module '@tanstack/react-router' {
       path: '/Donate'
       fullPath: '/Donate'
       preLoaderRoute: typeof DonateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/DevelopmentImpact': {
+      id: '/DevelopmentImpact'
+      path: '/DevelopmentImpact'
+      fullPath: '/DevelopmentImpact'
+      preLoaderRoute: typeof DevelopmentImpactRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/CookiePolicy': {
@@ -2214,10 +2314,12 @@ const rootRouteChildren: RootRouteChildren = {
   CampaignsRoute: CampaignsRoute,
   ContactRoute: ContactRoute,
   CookiePolicyRoute: CookiePolicyRoute,
+  DevelopmentImpactRoute: DevelopmentImpactRoute,
   DonateRoute: DonateRoute,
   DonateAndSupportRoute: DonateAndSupportRoute,
   DonationRefundPolicyRoute: DonationRefundPolicyRoute,
   DonorRoute: DonorRoute,
+  FundingPartnershipsRoute: FundingPartnershipsRoute,
   GetInvolvedRoute: GetInvolvedRoute,
   HelpCentreRoute: HelpCentreRoute,
   HumanityChar38TruthRoute: HumanityChar38TruthRoute,
@@ -2244,7 +2346,10 @@ const rootRouteChildren: RootRouteChildren = {
   SSFNationalAcademyRoute: SSFNationalAcademyRoute,
   SignupRoute: SignupRoute,
   SkillProgramsRoute: SkillProgramsRoute,
+  SocialEnterprisesRoute: SocialEnterprisesRoute,
   StoriesRoute: StoriesRoute,
+  SustainableDevelopmentRoute: SustainableDevelopmentRoute,
+  SustainableLivelihoodRoute: SustainableLivelihoodRoute,
   TeamRoute: TeamRoute,
   TermsAndConditionsRoute: TermsAndConditionsRoute,
   TransparencyRoute: TransparencyRoute,

@@ -20,10 +20,19 @@ export default function ImsLayout({ children, active }) {
   const [open, setOpen] = useState(false);
   const [q, setQ] = useState('');
   const [results, setResults] = useState(null);
+  const [dbDown, setDbDown] = useState(false);
   const navigate = useNavigate();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const shellRef = useRef(null);
   const barRef = useRef(null);
+
+  // One honest banner for the whole IMS when the database itself is down, so no
+  // screen is left looking like the data was deleted.
+  useEffect(() => {
+    const onDown = () => setDbDown(true);
+    window.addEventListener('ims-db-down', onDown);
+    return () => window.removeEventListener('ims-db-down', onDown);
+  }, []);
 
   useEffect(() => {
     if (!q.trim()) { setResults(null); return; }
@@ -213,7 +222,26 @@ export default function ImsLayout({ children, active }) {
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 px-3 py-5 sm:px-4 sm:py-6 lg:px-8 lg:py-8"><div className="mx-auto w-full max-w-[1600px]">{children}</div></main>
+        <main className="min-w-0 flex-1 px-3 py-5 sm:px-4 sm:py-6 lg:px-8 lg:py-8"><div className="mx-auto w-full max-w-[1600px]">
+          {dbDown && (
+            <div role="alert" className="mb-5 flex items-start gap-3 rounded-2xl border border-amber-300 bg-amber-50 p-4 text-sm text-amber-900">
+              <Icons.DatabaseZap size={20} className="mt-0.5 shrink-0 text-amber-600" />
+              <div className="flex-1">
+                <p className="font-bold">{lang === 'hi' ? 'डेटा सेवा अस्थायी रूप से उपलब्ध नहीं है' : 'Data service is temporarily unavailable'}</p>
+                <p className="mt-1 leading-6">
+                  {lang === 'hi'
+                    ? 'आपका सारा डेटा सुरक्षित है — कुछ भी मिटा नहीं है। सर्वर डेटाबेस (Neon/Postgres) अभी जवाब नहीं दे रहा, इसलिए रजिस्टर खाली दिख रहे हैं। सेवा बहाल होते ही सब अपने आप दिखने लगेगा।'
+                    : 'Your data is safe — nothing has been deleted. The database (Neon/Postgres) is not responding right now, so the registers look empty. Everything reappears automatically once the service is restored.'}
+                </p>
+                <button type="button" onClick={() => window.location.reload()}
+                  className="mt-3 inline-flex items-center gap-2 rounded-lg border border-amber-400 bg-white px-3 py-1.5 text-xs font-bold text-amber-800 hover:bg-amber-100">
+                  <Icons.RefreshCw size={14} />{lang === 'hi' ? 'दोबारा कोशिश करें' : 'Retry now'}
+                </button>
+              </div>
+            </div>
+          )}
+          {children}
+        </div></main>
       </div>
     </div>
   );

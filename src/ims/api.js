@@ -18,7 +18,14 @@ async function handle(res) {
   if (!res.ok) {
     const err = new Error((body && body.message) || `Request failed (${res.status})`);
     err.status = res.status;
+    err.code = body && body.code;
     err.duplicates = body && body.duplicates;
+    // A database outage makes EVERY page look empty, which reads as "my data
+    // is gone". Broadcast it once so the shared IMS chrome can show one honest
+    // banner instead of every screen silently rendering nothing.
+    if (err.code === 'DATABASE_UNAVAILABLE' && typeof window !== 'undefined') {
+      window.dispatchEvent(new CustomEvent('ims-db-down'));
+    }
     throw err;
   }
   return body;

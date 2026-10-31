@@ -76,4 +76,22 @@ const databaseStatus = async () => {
     }
 };
 
-module.exports = { isDatabaseDown, isQuotaError, databaseUnavailableResponse, databaseStatus, SERVICE_MESSAGE };
+// Express middleware: no handler may leak a raw database driver message to the
+// browser. Many routes catch their own errors and reply with `{ message: e.message }`
+// instead of using databaseUnavailableResponse(); when that message is really a
+// DB outage we rewrite the response to the honest 503 shape. Mounted before the
+// routes so it wraps every res.json call.
+const databaseUnavailableMiddleware = (_req, res, next) => {
+    const sendJson = res.json.bind(res);
+    res.json = (body) => {
+        if (body && typeof body === 'object' && !body.code
+            && typeof body.message === 'string' && isDatabaseDown(body.message)) {
+            res.status(503);
+            return sendJson({ status: 'error', code: 'DATABASE_UNAVAILABLE', message: SERVICE_MESSAGE });
+        }
+        return sendJson(body);
+    };
+    next();
+};
+
+module.exports = { isDatabaseDown, isQuotaError, databaseUnavailableResponse, databaseStatus, databaseUnavailableMiddleware, SERVICE_MESSAGE };

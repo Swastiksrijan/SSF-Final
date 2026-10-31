@@ -22,6 +22,15 @@ app.use(cors());
 app.use(express.json({ limit: '12mb' }));
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
+const { databaseUnavailableMiddleware } = require('./services/dbHealth');
+
+// Safety net: no handler may leak a raw database driver message (for example the
+// Neon "Your account or project has exceeded the quota. Upgrade your plan…"
+// text) to the browser. Many routes catch their own errors and reply with
+// `{ message: e.message }`; when that message is really a DB outage we rewrite
+// the response to the honest 503 shape instead. Runs before every route.
+app.use(databaseUnavailableMiddleware);
+
 app.get('/', (_req, res) => res.send('SSF NGO Backend is Running with PostgreSQL!'));
 
 // Lightweight diagnostics: confirm which mail transport the running process
