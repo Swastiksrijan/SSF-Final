@@ -63,9 +63,14 @@ async function main() {
   const wb = await seedOfficialWorkbook({ actor: 'bootstrap' });
   console.log('   finance transactions:', wb.created, '| audited years:', wb.auditYearsCreated);
 
+  console.log('7) Seeding the FY 2025-26 registers (Sector, Compliance, Sahyog)...');
+  const { seedFinancialYearRegisters } = require('../services/ims/fyRegistersSeed');
+  const fr = await seedFinancialYearRegisters();
+  console.log('   sector activities:', fr.sectorActivities, '| compliance:', fr.compliance, '| sahyog:', fr.sahyog);
+
   const { models } = require('../models/ims');
   const [legacyCount] = await sequelize.query('SELECT COUNT(*)::int AS n FROM "DigitalOfficeRecords"');
-  console.log('7) Verify: DigitalOfficeRecords =', legacyCount[0].n);
+  console.log('8) Verify: DigitalOfficeRecords =', legacyCount[0].n);
   const [txCount] = await sequelize.query('SELECT COUNT(*)::int AS n FROM "FinanceTransactions"');
   console.log('   Verify: FinanceTransactions =', txCount[0].n);
 

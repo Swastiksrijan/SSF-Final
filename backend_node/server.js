@@ -155,6 +155,19 @@ app.use((err, _req, res, _next) => {
 const SYNC_ALTER = String(process.env.DB_SYNC_ALTER || '').toLowerCase() === 'true';
 
 async function runSeeds() {
+    // Governance foundation: bylaws rules, roles, the organisation record and
+    // the current Managing Committee. Without this a fresh database has no
+    // organisation identity or committee for the rest of the registers to
+    // attach to (idempotent and self-healing).
+    try {
+        const { seedGovernance } = require('./services/ims/seed');
+        const g = await seedGovernance();
+        if (g.rules || g.roles || g.org || g.committeeMembers) {
+            console.log(`✅ Governance: ${g.rules} rule(s), ${g.roles} role(s), org ${g.org ? 'created' : 'existing'}, ${g.committeeMembers} committee member(s)`);
+        }
+    } catch (e) {
+        console.error('⚠️ Governance seed skipped:', e.message);
+    }
     // Fresh install: seed the default Cost Centre master so the finance
     // classification dimension is never empty on first load (idempotent).
     try {
@@ -175,6 +188,23 @@ async function runSeeds() {
         if (seeded.created) console.log(`✅ Seeded ${seeded.created} organisation profile sections`);
     } catch (e) {
         console.error('⚠️ Organisation profile seed skipped:', e.message);
+    }
+    // Institutional Policy & Procedure Manual (one master policy record) and the
+    // Managing Committee History register. Additive and idempotent — an approved
+    // policy is never overwritten.
+    try {
+        const { seedPolicy } = require('./services/ims/policySeed');
+        const p = await seedPolicy();
+        if (p.created || p.updated) console.log(`✅ Policy manual: ${p.created ? 'created' : 'updated'}`);
+    } catch (e) {
+        console.error('⚠️ Policy seed skipped:', e.message);
+    }
+    try {
+        const { seedOfficeHistory } = require('./services/ims/officeHistorySeed');
+        const oh = await seedOfficeHistory();
+        if (oh.officeHistory) console.log(`✅ Office history: ${oh.officeHistory} record(s)`);
+    } catch (e) {
+        console.error('⚠️ Office history seed skipped:', e.message);
     }
     // Finance foundation: chart of accounts, current financial year, default
     // cash/bank accounts and cost centres. Without this a fresh database has no
@@ -245,6 +275,18 @@ async function runSeeds() {
         }
     } catch (e) {
         console.error('⚠️ Annual reports seed skipped:', e.message);
+    }
+    // FY 2025-26 workbook registers — Sector Registers (as activities), Annual
+    // Compliance and the Sahyog in-kind support. Additive and idempotent, so it
+    // runs on every boot and keeps the three registers in step with the workbook.
+    try {
+        const { seedFinancialYearRegisters } = require('./services/ims/fyRegistersSeed');
+        const fr = await seedFinancialYearRegisters();
+        if (fr.sectorActivities || fr.compliance || fr.sahyog) {
+            console.log(`✅ FY 2025-26 registers: ${fr.sectorActivities} sector activity(ies), ${fr.compliance} compliance row(s), ${fr.sahyog} sahyog row(s) created`);
+        }
+    } catch (e) {
+        console.error('⚠️ FY 2025-26 registers seed skipped:', e.message);
     }
     // Derive the Notification & Action Centre alerts from real source records.
     // Idempotent (stable eventKey) and additive: it never edits or clears tasks.
