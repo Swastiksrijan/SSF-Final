@@ -6,6 +6,10 @@ import {
 } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 import logoImg from "../assets/footer-logo-circle-v3.png";
+import footerImg1 from "../assets/footer-gallery-1.jpg";
+import footerImg2 from "../assets/footer-gallery-2.jpg";
+import footerImg3 from "../assets/footer-gallery-3.jpg";
+import footerImg4 from "../assets/footer-gallery-4.png";
 
 const socialItems = [
   { icon: FaFacebookF, href: CONTACT_INFO.social.facebook, label: "Facebook" },
@@ -30,6 +34,24 @@ export default function FooterSection() {
   return (
     <footer className="relative isolate w-full overflow-hidden bg-[#002344] text-white">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[.06]" style={{ backgroundImage: "radial-gradient(#ffffff 1px, transparent 1px)", backgroundSize: "28px 28px" }} />
+      <div className="relative mx-auto max-w-7xl px-5 pt-10 sm:px-7 sm:pt-12 lg:px-8">
+        <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-[11px] font-extrabold uppercase tracking-[.2em] text-[#ffb347]">From our work</p>
+            <h3 className="mt-1 text-xl font-extrabold text-white sm:text-2xl">Recent Media</h3>
+            <p className="mt-1 text-xs text-white/65">Glimpses of our community initiatives and activities</p>
+          </div>
+          <Link to="/Media" className="inline-flex items-center gap-2 text-xs font-bold text-white/80 transition hover:text-[#ffb347]">View Media Gallery <FaArrowRight /></Link>
+        </div>
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+          {[footerImg1, footerImg2, footerImg3, footerImg4].map((img, idx) => (
+            <Link key={idx} to="/Media" aria-label={`Open SSF media gallery, image ${idx + 1}`} className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/15 bg-white/5 shadow-lg">
+              <img src={img} alt={`Swastik Srijan Foundation community activity ${idx + 1}`} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
+              <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#00172d]/90 to-transparent px-3 pb-2 pt-7 text-[10px] font-bold uppercase tracking-wider text-white/90">SSF • Community Work</span>
+            </Link>
+          ))}
+        </div>
+      </div>
       <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-7 sm:py-14 lg:px-8">
         <div className="grid gap-10 border-b border-white/15 pb-10 lg:grid-cols-[1.35fr_2.65fr] lg:gap-14">
           <div>
@@ -61,7 +83,7 @@ export default function FooterSection() {
 
           <div className="grid grid-cols-2 gap-x-6 gap-y-9 sm:grid-cols-3 xl:grid-cols-4">
             <nav aria-label="About the Foundation">
-              <h3 className={headingClass}>The Foundation</h3>
+              <h3 className={headingClass + " min-h-10"}>The Foundation</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/About">About SSF</FooterLink>
                 <FooterLink to="/Mission">Mission & Vision</FooterLink>
@@ -74,7 +96,7 @@ export default function FooterSection() {
             </nav>
 
             <nav aria-label="Programs and activities">
-              <h3 className={headingClass}>Programs & Work</h3>
+              <h3 className={headingClass + " min-h-10"}>Programs & Work</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/OurInitiatives">Initiatives</FooterLink>
                 <FooterLink to="/LearningHub">Learning Hub</FooterLink>
@@ -88,7 +110,7 @@ export default function FooterSection() {
             </nav>
 
             <nav aria-label="Sustainable development and livelihoods">
-              <h3 className={headingClass}>Sustainable Development</h3>
+              <h3 className={headingClass + " min-h-10"}>Sustainable Development</h3>
               <ul className="space-y-2.5">
                 <FooterLink to="/SustainableDevelopment">Development Model</FooterLink>
                 <FooterLink to="/SocialEnterprises">Social Enterprises & Livelihoods</FooterLink>
@@ -107,7 +129,7 @@ export default function FooterSection() {
 
             <div className="col-span-2 sm:col-span-1">
               <nav aria-label="Funding and participation">
-                <h3 className={headingClass}>Funding & Partnerships</h3>
+                <h3 className={headingClass + " min-h-10"}>Funding & Partnerships</h3>
                 <ul className="space-y-2.5">
                   <FooterLink to="/FundingPartnerships">Funding & CSR Opportunities</FooterLink>
                   <FooterLink to="/PartnerOutreach">Donor & CSR Outreach Desk</FooterLink>
