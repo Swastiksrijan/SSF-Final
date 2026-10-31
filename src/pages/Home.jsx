@@ -815,6 +815,34 @@ export default function Home() {
         </div>
       </section>
 
+
+      {/* ================= SOCIAL ENTERPRISES & LIVELIHOODS ================= */}
+      <section className="border-t border-slate-200 bg-[#F1F6F3] px-5 py-16 md:px-8 md:py-20">
+        <div className="mx-auto max-w-7xl">
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_.9fr] lg:items-center">
+            <div>
+              <span className="inline-flex rounded-full bg-[#176447]/10 px-3.5 py-1 text-xs font-bold uppercase tracking-widest text-[#176447]">Self-reliance · आत्मनिर्भरता</span>
+              <h2 className="mt-4 font-serif text-3xl font-bold text-[#12345A] sm:text-4xl">Social Enterprises & Livelihoods</h2>
+              <p className="mt-4 max-w-2xl text-base leading-8 text-slate-700">SSF के प्रस्तावित व्यवसाय, उत्पादन इकाइयाँ, सेवाएँ, सप्लाई और रोजगार-सृजन के अवसर—एक ही जगह। पहले एक व्यवहार्य कारोबार, फिर चरणबद्ध विस्तार।</p>
+              <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">यह सभी विकल्पों की योजना-सूची है; इन्हें वर्तमान में संचालित व्यवसाय नहीं बताया जा रहा। प्रत्येक कार्य बाजार, लागत, अनुमति और वित्तीय व्यवहार्यता जाँचने के बाद ही शुरू होगा।</p>
+              <Link to="/SocialEnterprises" className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-7 py-3.5 text-sm font-extrabold text-[#17212b] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#ffad4d]">सभी व्यवसाय और अवसर देखें <FaArrowRight /></Link>
+            </div>
+            <div className="grid grid-cols-2 gap-3">
+              {[
+                ["कृषि एवं खाद्य प्रसंस्करण","/SocialEnterprises#agriculture"],
+                ["पेपर एवं पैकेजिंग","/SocialEnterprises#paper-packaging"],
+                ["वस्त्र एवं फुटवियर","/SocialEnterprises#garments-footwear"],
+                ["सप्लाई एवं वितरण","/SocialEnterprises#trading-supply"],
+                ["डिजिटल एवं प्रोफेशनल सेवाएँ","/SocialEnterprises#digital-services"],
+                ["निर्माण एवं मरम्मत","/SocialEnterprises#manufacturing-repair"],
+                ["हरित अर्थव्यवस्था","/SocialEnterprises#green-economy"],
+                ["चरणबद्ध योजना","/SocialEnterprises#roadmap"]
+              ].map(([label,path])=><Link key={path} to={path} className="group rounded-2xl border border-[#D7E3DC] bg-white p-4 text-sm font-bold leading-6 text-[#12345A] shadow-sm transition hover:-translate-y-1 hover:border-[#176447] hover:shadow-md">{label}<span className="ml-2 inline-block text-[#176447] transition group-hover:translate-x-1">→</span></Link>)}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ================= MISSION, VISION & CORE VALUES ================= */}
       <section className="relative isolate overflow-hidden border-t border-[#E5E9EC] bg-gradient-to-b from-[#F4F7FA] via-[#FAF9F5] to-white px-5 py-20 md:px-8 md:py-28">
         {/* Elegant, understated background geometry */}
