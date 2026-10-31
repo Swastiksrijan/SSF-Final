@@ -76,6 +76,8 @@ async function main() {
     const q = await get('/api/quiz/ssf-awareness-1');
     ok('GET quiz 200', q.status === 200, JSON.stringify(q.body).slice(0, 100));
     ok('quiz API hides answers', q.body.quiz.questions.every((x) => x.answer === undefined));
+    const unknownQuiz = await get('/api/quiz/not-a-published-quiz');
+    ok('unknown quiz IDs return 404', unknownQuiz.status === 404 && unknownQuiz.body.ok === false);
 
     // A real, verified learning account.
     const member = await Member.create({ fullName: 'Test Learner', email: 'learner@example.com', phone: '9000000000', passwordHash: 'x', status: 'approved' });
@@ -104,6 +106,8 @@ async function main() {
     ok('wrong email = 401 (no certificate)', fakeMember.status === 401 && !fakeMember.body.certificate);
     const noAccount = await post('/api/quiz/ssf-awareness-1/submit', { answers: allRight });
     ok('pass without account passes but issues no cert', noAccount.body.passed === true && noAccount.body.certificate === null);
+    const fakeQuizSubmit = await post('/api/quiz/not-a-published-quiz/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: allRight });
+    ok('unknown quiz cannot be scored or issue a certificate', fakeQuizSubmit.status === 404 && fakeQuizSubmit.body.ok === false);
     const failSubmit = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: {} });
     ok('failing score issues no certificate', failSubmit.body.passed === false && failSubmit.body.certificate === null);
   } finally {
