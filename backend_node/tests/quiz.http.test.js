@@ -119,7 +119,7 @@ async function main() {
     ok('unknown quiz cannot be scored or issue a certificate', fakeQuizSubmit.status === 404 && fakeQuizSubmit.body.ok === false);
     const failSubmit = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: {} }, learnerToken);
     ok('failing score issues no certificate', failSubmit.body.passed === false && failSubmit.body.certificate === null);
-    ok('failed authenticated attempts are also saved', await QuizAttempt.count({ where: { accountId: member.id } }) === 3);
+    ok('failed authenticated attempts are also saved', await QuizAttempt.count({ where: { accountId: member.id } }) === 4);
     const anonymousHistory = await get('/api/quiz/my-attempts');
     ok('history endpoint rejects anonymous access', anonymousHistory.status === 401);
   } finally {
