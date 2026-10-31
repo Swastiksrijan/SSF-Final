@@ -1,6 +1,7 @@
 import { createRootRoute, useRouterState, Outlet } from "@tanstack/react-router";
 import Header from "../components/Header";
 import FooterSection from "../pages/FooterSection";
+import GlobalSupportBar from "../components/GlobalSupportBar";
 import ScrollToHash from "../components/ScrollToHash";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import SeoManager from "../components/SeoManager";
@@ -64,6 +65,7 @@ function RootChrome() {
         {!isIms && <SSFSupportChatPro />}
         <BlogHero />
         <Outlet />
+        {!isIms && <GlobalSupportBar />}
         {!isIms && <FooterSection />}
       </div>
     </LanguageProvider>
