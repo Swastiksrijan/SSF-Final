@@ -83,11 +83,11 @@ router.post('/quiz/:quizId/submit', wrap(async (req, r) => {
   const courseId = `quiz-${quizId}`;
   const courseTitle = buildQuiz(quizId).title.en;
   // One certificate per account + quiz.
-  let record = await LearningCertificate.findOne({ where: { accountId, courseId, status: ['requested', 'approved', 'issued'] } });
+  let record = await LearningCertificate.findOne({ where: { accountId: member.id, courseId, status: ['requested', 'approved', 'issued'] } });
   const now = new Date();
   if (!record) {
     record = await LearningCertificate.create({
-      accountId, learnerName: member.fullName, learnerEmail: member.email, courseId, courseTitle,
+      accountId: member.id, learnerName: member.fullName, learnerEmail: member.email, courseId, courseTitle,
       completionPercent: 100, moduleAssessments: {}, finalAssessment: { passed: true, score: result.percent, quizId },
       status: 'issued', certificateId: await nextCertificateId(), certificateIssuedAt: now,
     });
