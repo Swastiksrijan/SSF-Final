@@ -11,9 +11,9 @@ export default function DonatePage() {
 
   const faqs = [
     { question: "Is my donation tax-exempt?", answer: "The Foundation's final 80G approval application was submitted in July 2026 and is pending confirmation. The earlier provisional approval covered AY 2024–25 through AY 2026–27; please confirm current eligibility with the Foundation before claiming any deduction. Any tax benefit depends on the approval in force, the donation date and applicable law." },
-    { question: "Is it safe to donate online?", answer: "Absolutely. We use Razorpay, a PCI-DSS compliant payment gateway that uses 128-bit encryption to ensure your transaction is completely secure." },
+    { question: "Is it safe to donate online?", answer: "Online payments are processed through the Razorpay checkout. Before confirming, verify the beneficiary and payment details shown there. Never share your OTP, PIN or banking password with anyone." },
     { question: "Can I donate from outside India?", answer: "Please do not send any foreign contribution unless the Foundation has first obtained the required FCRA registration or project-specific prior permission. Contact the Foundation to verify the current legal position before initiating any cross-border transfer." },
-    { question: "How will my donation be used?", answer: "We are committed to financial transparency. 85% of your donation directly funds our programs (Education, Health, Livelihood), 10% goes towards administrative costs, and 5% covers fundraising efforts." }
+    { question: "How will my donation be used?", answer: "Donations are recorded and used for the purpose accepted and communicated to the donor, subject to applicable law and any donor restrictions. Actual programme delivery, administration, monitoring and other permitted costs are recorded against the relevant approved budget. We do not publish a fixed percentage split unless it is supported by an approved, current financial policy." }
   ];
 
   const causes = [
@@ -28,7 +28,7 @@ export default function DonatePage() {
     { text: "Serving communities since 2013", textHi: "2013 से समुदाय की सेवा में" },
     { text: "Grassroots, volunteer-driven organization", textHi: "जमीनी स्तर पर स्वयंसेवकों द्वारा संचालित संगठन" },
     { text: "Transparent & compliant NGO", textHi: "पारदर्शी और अनुपालन करने वाली संस्था" },
-    { text: "Funds used directly on the ground", textHi: "निधि का सीधे धरातल पर उपयोग" }
+    { text: "Purpose-based use with proper records", textHi: "स्वीकृत उद्देश्य के अनुसार उपयोग और उचित लेखा-जोखा" }
   ];
 
   return (
