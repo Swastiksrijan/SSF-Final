@@ -33,7 +33,7 @@ export default function SustainableLivelihoodPage() {
     <section className="relative overflow-hidden bg-[#002344] text-white">
       <div className="absolute inset-0 opacity-20" style={{backgroundImage:"radial-gradient(circle at 15% 20%, #2d6a4f 0, transparent 32%), radial-gradient(circle at 85% 80%, #fb8500 0, transparent 28%)"}} />
       <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-36 md:px-8 md:pb-28 md:pt-44">
-        <p className="mb-4 text-xs font-bold uppercase tracking-[.28em] text-[#ffb347]">Swastik Srijan Foundation · Long-term sustainability initiative</p>
+        <p className="mb-4 text-xs font-bold uppercase tracking-[.28em] text-[#ffb347]">Swastik Srijan Foundation Samiti · Long-term sustainability initiative</p>
         <div className="max-w-4xl">
           <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Sustainable Livelihood & Social Enterprise Initiative</h1>
           <p className="mt-4 text-xl font-semibold text-white/90">स्थायी आजीविका एवं सामाजिक उद्यम पहल</p>
