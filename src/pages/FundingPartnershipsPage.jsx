@@ -78,7 +78,7 @@ export default function FundingPartnershipsPage() {
         </div>
         <div className="mt-7 rounded-2xl border border-[#C9DDD1] bg-[#F1F6F3] p-6 md:p-8">
           <h3 className="text-xl font-extrabold text-[#002344]">A responsible first step—not ten businesses at once</h3>
-          <p className="mt-3 text-sm leading-7 text-slate-700">The first Rewa project has not yet been declared operational or selected as a final investment. SSF will compare practical options such as institutional supplies, local-product aggregation and packing, or digital and printing services. The final choice will depend on buyer interest, verified quotations, realistic margins, working capital, registrations and the Foundation’s legal and tax advice. Machinery will be considered only when demand justifies it.</p>
+          <p className="mt-3 text-sm leading-7 text-slate-700">No enterprise or production unit is currently operating or has been launched. First, SSF will seek suitable funding, resources and in-kind support, then assess buyer interest, verified quotations, realistic margins, working capital and feasibility. Only one suitable unit will be selected at a time. The required activity-specific licences, registrations and legal paperwork will be completed before that unit starts; requirements will depend on the chosen activity. Machinery will be considered only when demand justifies it.</p>
           <p className="mt-3 text-sm leading-7 text-slate-700">We will prepare a project-specific concept note and detailed project report before stating a funding amount. No investment, sales, profit, grant or employment outcome is guaranteed.</p>
         </div>
         <div className="mt-7 grid gap-4 md:grid-cols-2">
