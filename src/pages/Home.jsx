@@ -103,9 +103,9 @@ const proofItems = [
   },
   { 
     title: "Statutory Approvals", 
-    text: "Verified 12AB, MCA CSR-1, PAN, and active institutional compliance filings.", 
+    text: "12AB, CSR-1, PAN and other institutional records are available for verification; 80G status is shown separately.", 
     icon: <FaShieldAlt />,
-    meta: "Statutory Certified" 
+    meta: "Records available for review" 
   },
   { 
     title: "Audited Financials", 
@@ -263,7 +263,7 @@ export default function Home() {
               </Link>
 
               <Link 
-                to="/CSRPartnership" 
+                to="/FundingPartnerships" 
                 className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border border-amber-400/60 bg-amber-400/10 px-6 py-3.5 text-sm font-bold text-amber-300 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:bg-amber-400/20 hover:text-white"
               >
                 CSR & Institutional Partnerships <FaHandshake className="text-base" />
@@ -323,7 +323,7 @@ export default function Home() {
                 Progress through people.
               </p>
               <p className="mt-3 border-t border-white/10 pt-3 text-[11px] leading-relaxed text-slate-300">
-                100% direct field execution in rural and semi-urban communities with zero intermediary leakage.
+                Community-focused work, responsible use of resources and clear records for every funded activity.
               </p>
             </div>
           </Motion.div>
@@ -1225,7 +1225,7 @@ export default function Home() {
               Help Meaningful Grassroots Work Move Forward
             </h2>
             <p className="mt-2 text-sm text-slate-500">
-              Direct Bank & UPI Transfer • 100% On-ground Allocation
+              Bank & UPI support • Purpose-based, documented use of funds
             </p>
           </div>
           <EliteDonationCard />
