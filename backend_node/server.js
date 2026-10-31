@@ -314,6 +314,17 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Official workbook seed skipped:', e.message);
     }
+    // Legacy Digital Office finance masters still shown by the Digital Office
+    // screens: Chart of Accounts and the Financial Year Master (idempotent).
+    try {
+        const { seedLegacyOffice } = require('./services/ims/legacyOfficeSeed');
+        const lo = await seedLegacyOffice({ actor: 'system' });
+        if (lo.chartOfAccounts || lo.fyMaster) {
+            console.log(`✅ Legacy office masters: ${lo.chartOfAccounts} account head(s), ${lo.fyMaster} financial year(s)`);
+        }
+    } catch (e) {
+        console.error('⚠️ Legacy office masters seed skipped:', e.message);
+    }
     // Multicultural festival & observance calendar. Seeds only MISSING keys, so
     // an admin's edits, approvals or exclusions are never overwritten.
     try {

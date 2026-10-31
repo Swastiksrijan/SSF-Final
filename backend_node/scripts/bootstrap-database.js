@@ -68,9 +68,14 @@ async function main() {
   const fr = await seedFinancialYearRegisters();
   console.log('   sector activities:', fr.sectorActivities, '| compliance:', fr.compliance, '| sahyog:', fr.sahyog);
 
+  console.log('8) Seeding the legacy Digital Office masters (Chart of Accounts, FY Master)...');
+  const { seedLegacyOffice } = require('../services/ims/legacyOfficeSeed');
+  const lo = await seedLegacyOffice({ actor: 'bootstrap' });
+  console.log('   account heads:', lo.chartOfAccounts, '| financial years:', lo.fyMaster);
+
   const { models } = require('../models/ims');
   const [legacyCount] = await sequelize.query('SELECT COUNT(*)::int AS n FROM "DigitalOfficeRecords"');
-  console.log('8) Verify: DigitalOfficeRecords =', legacyCount[0].n);
+  console.log('9) Verify: DigitalOfficeRecords =', legacyCount[0].n);
   const [txCount] = await sequelize.query('SELECT COUNT(*)::int AS n FROM "FinanceTransactions"');
   console.log('   Verify: FinanceTransactions =', txCount[0].n);
 
