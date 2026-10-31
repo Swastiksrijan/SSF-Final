@@ -6,7 +6,8 @@ const standards = [
   ["Budget and use of funds", "Publish an approved budget and report actual receipts and expenditure against the correct project and funding conditions."],
   ["Evidence of delivery", "Use dated activity records, bills, attendance or delivery records, photographs where appropriate and beneficiary feedback—with privacy safeguards."],
   ["Results and learning", "Report outputs and outcomes only when supported by records. Explain delays, changes, challenges and lessons honestly."],
-  ["Independent checks", "Maintain books, bank records, vouchers, procurement documents and statutory filings; obtain audit and professional review as applicable."]
+  ["Independent checks", "Maintain books, bank records, vouchers, procurement documents and statutory filings; obtain audit and professional review as applicable."],
+  ["Fair and non-partisan decisions", "Use written criteria for beneficiary selection, recruitment, procurement and partnerships; document quotations, approvals and conflicts of interest; do not allow political or personal influence to replace the published process."]
 ];
 
 export default function DevelopmentImpactPage() {
