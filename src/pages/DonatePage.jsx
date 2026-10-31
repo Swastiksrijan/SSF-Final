@@ -38,11 +38,11 @@ export default function DonatePage() {
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-[1.05fr_.95fr] gap-8 items-center">
             <div className="text-white py-6 md:py-10">
-              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-semibold mb-5"><FaHandHoldingHeart className="text-[#F7A814]" /> Support meaningful work</span>
+              <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-semibold mb-5"><FaHandHoldingHeart className="text-[#F7A814]" /> Support Swastik Srijan Foundation Samiti</span>
               <h1 className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight">Your Support.<br /><span className="text-[#F7A814]">Real Impact.</span></h1>
               <p className="mt-5 text-lg md:text-xl text-[#EAF0F6] max-w-xl font-hindi leading-relaxed">आपका दान सिर्फ पैसा नहीं, आशा बनता है। शिक्षा, स्वास्थ्य, कौशल, युवा और पर्यावरण से जुड़े प्रयासों में सहयोग करें।</p>
               <div className="mt-7 flex flex-col sm:flex-row gap-3">
-                <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="inline-flex justify-center items-center gap-2 bg-[#176447] hover:bg-[#176447] text-[#12345A] font-bold px-7 py-4 rounded-2xl shadow-xl transition-all hover:-translate-y-0.5">👉 Donate Now</a>
+                <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="inline-flex justify-center items-center gap-2 bg-[#176447] hover:bg-[#176447] text-[#12345A] font-bold px-7 py-4 rounded-2xl shadow-xl transition-all hover:-translate-y-0.5">👉 Donate Now / Support SSF</a>
                 <a href="#donate-methods" className="inline-flex justify-center items-center px-7 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold transition-colors">दान कैसे करें ↓</a>
               </div>
               <div className="mt-7 flex flex-wrap gap-2 text-xs text-[#EAF0F6]">
@@ -101,7 +101,7 @@ export default function DonatePage() {
                 <ul className="mt-6 space-y-2.5 flex-1">
                   {cause.points.map((point, i) => <li key={i} className="flex items-center gap-3 text-sm md:text-base text-[#26343D]"><span className="w-1.5 h-1.5 rounded-full bg-[#176447] transition-colors" />{point}</li>)}
                 </ul>
-                <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="mt-6 w-full text-center py-3.5 rounded-xl bg-white border border-[#EAF0F6] hover:bg-[#12345A] hover:text-white hover:border-[#12345A] font-bold transition-all">👉 {cause.btnText}</a>
+                <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="mt-6 w-full text-center py-3.5 rounded-xl bg-white border border-[#EAF0F6] hover:bg-[#12345A] hover:text-white hover:border-[#12345A] font-bold transition-all">👉 {cause.btnText} · Support SSF</a>
               </motion.article>
             ))}
           </div>
@@ -129,7 +129,7 @@ export default function DonatePage() {
                   <li className="flex gap-3 items-center"><FaCheckCircle className="text-[#F7A814]" /> Net Banking</li>
                 </ul>
                 <div className="mt-auto pt-7">
-                  <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-[#176447] hover:bg-[#176447] text-[#12345A] py-4 rounded-xl font-black text-lg shadow-lg transition-colors">👉 Donate Now</a>
+                  <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-[#176447] hover:bg-[#176447] text-[#12345A] py-4 rounded-xl font-black text-lg shadow-lg transition-colors">👉 Donate Now / Support SSF</a>
                   <p className="mt-3 text-xs text-[#EAF0F6] flex justify-center items-center gap-2"><FaShieldAlt className="text-[#176447]" /> Razorpay / Secure Gateway</p>
                 </div>
               </div>
@@ -141,7 +141,7 @@ export default function DonatePage() {
               <p className="mt-1 text-[#26343D] text-sm">Direct Account Transfer</p>
               <div className="mt-5 bg-white rounded-2xl border border-[#EAF0F6] overflow-hidden">
                 <div className="divide-y divide-zinc-100">
-                  <div className="p-4"><p className="text-xs text-[#26343D]">Account Name</p><p className="mt-1 font-bold">Swastik Srijan Foundation</p></div>
+                  <div className="p-4"><p className="text-xs text-[#26343D]">Account Name</p><p className="mt-1 font-bold">Swastik Srijan Foundation Samiti</p></div>
                   <div className="p-4"><p className="text-xs text-[#26343D]">Bank</p><p className="mt-1 font-bold">Union Bank of India</p></div>
                   <div className="p-4"><p className="text-xs text-[#26343D]">Account No.</p><p className="mt-1 font-mono font-bold break-all">481401010036579</p></div>
                   <div className="p-4"><p className="text-xs text-[#26343D]">IFSC Code</p><p className="mt-1 font-mono font-bold text-[#12345A]">UBIN0548146</p></div>
@@ -149,9 +149,9 @@ export default function DonatePage() {
               </div>
               <div className="mt-4 flex items-center gap-4 p-3 bg-white rounded-2xl border-2 border-dashed border-[#EAF0F6]">
                 <img src={qrCode} alt="Scan to Donate" className="w-20 h-20 rounded-xl border border-[#EAF0F6] object-cover" />
-                <div><p className="font-bold text-[#12345A]">Scan for UPI</p><p className="text-xs text-[#26343D] mt-1">Fast Bank-to-Bank Transfer</p></div>
+                <div><p className="font-bold text-[#12345A]">Scan to Pay via UPI / Paytm</p><p className="text-xs text-[#26343D] mt-1">Scan the official QR code to make a payment.</p></div>
               </div>
-              <div className="mt-4 p-4 bg-[#EAF0F6] border border-[#EAF0F6] rounded-2xl"><p className="text-sm font-bold text-[#12345A] leading-relaxed">📩 After transfer, email your transaction details to request a donation receipt. Any 80G tax document depends on current approval status and donor eligibility.</p></div>
+              <div className="mt-4 rounded-2xl border border-[#EAF0F6] bg-white p-4"><p className="text-xs font-semibold uppercase tracking-wider text-[#26343D]">Paytm mobile number</p><a href="tel:9718346691" className="mt-1 inline-block text-xl font-black tracking-wide text-[#12345A]">9718346691</a><p className="mt-1 text-xs text-[#26343D]">You may use this number in Paytm where mobile-number payments are supported. Verify the recipient name before confirming.</p></div><div className="mt-4 p-4 bg-[#EAF0F6] border border-[#EAF0F6] rounded-2xl"><p className="text-sm font-bold text-[#12345A] leading-relaxed">📩 After transfer, email your transaction details to request a donation receipt. Any 80G tax document depends on current approval status and donor eligibility.</p></div>
             </div>
           </div>
         </div>
