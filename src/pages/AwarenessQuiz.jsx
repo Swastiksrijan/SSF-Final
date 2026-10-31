@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { FaGraduationCap, FaCheckCircle, FaTimesCircle, FaWhatsapp, FaArrowLeft, FaArrowRight, FaBookOpen, FaShieldAlt, FaTrophy, FaRedo, FaHome, FaChevronRight } from "react-icons/fa";
 import { Link } from "@tanstack/react-router";
 import AuthModal from "../components/AuthModal";
-import { ENDPOINTS } from "../config/api";
+import { API_BASE_URL, ENDPOINTS } from "../config/api";
 import { generateCertificate } from "../utils/generateCertificate";
 
 const SESSION_KEY = "ssf_user_session";
@@ -22,6 +22,8 @@ const SUBJECTS = {
 
 export default function AwarenessQuiz() {
   const [quiz, setQuiz] = useState(null);
+  const [quizCatalog, setQuizCatalog] = useState([]);
+  const [selectedQuizId, setSelectedQuizId] = useState(QUIZ_ID);
   const [error, setError] = useState("");
   const [answers, setAnswers] = useState({});
   const [user, setUser] = useState(readSession);
@@ -34,14 +36,28 @@ export default function AwarenessQuiz() {
   const [showSubmitConfirm, setShowSubmitConfirm] = useState(false);
 
   useEffect(() => {
-    fetch(ENDPOINTS.AWARENESS_QUIZ(QUIZ_ID))
+    fetch(`${API_BASE_URL}/api/quiz`)
       .then((r) => { if (!r.ok) throw new Error("Quiz service is temporarily unavailable."); return r.json(); })
-      .then((d) => { if (!d.quiz?.questions?.length) throw new Error("No questions are available right now."); setQuiz(d.quiz); })
+      .then((d) => {
+        if (!d.quiz?.questions?.length) throw new Error("No questions are available right now.");
+        setQuiz(d.quiz); setQuizCatalog(d.quizzes || []);
+      })
       .catch((e) => setError(e.message || "Quiz load nahi ho payi. Please try again."));
     const fn = (e) => setUser(sessionUser(e));
     window.addEventListener("ssf-auth-changed", fn);
     return () => window.removeEventListener("ssf-auth-changed", fn);
   }, []);
+
+  const chooseQuiz = async (quizId) => {
+    if (!quizId) return;
+    setError(""); setSubmitting(false);
+    try {
+      const response = await fetch(ENDPOINTS.AWARENESS_QUIZ(quizId));
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok || !data.quiz?.questions?.length) throw new Error(data.message || "This quiz is not available right now.");
+      setSelectedQuizId(quizId); setQuiz(data.quiz); setAnswers({}); setResult(null); setCurrent(0); setShowSubmitConfirm(false); setShowInstructions(true); setShowDashboard(false);
+    } catch (e) { setError(e.message || "Quiz load nahi ho payi."); }
+  };
 
   const questions = quiz?.questions || [];
   const answeredCount = useMemo(() => Object.keys(answers).length, [answers]);
@@ -58,7 +74,7 @@ export default function AwarenessQuiz() {
     try {
       // Only selected option indexes are sent. The answer key remains on the server.
       const payload = { accountId: user.id, learner: { fullName: user.fullName, email: user.email }, answers };
-      const res = await fetch(ENDPOINTS.AWARENESS_QUIZ_SUBMIT(QUIZ_ID), {
+      const res = await fetch(ENDPOINTS.AWARENESS_QUIZ_SUBMIT(selectedQuizId), {
         method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
       });
       const data = await res.json().catch(() => ({}));
@@ -72,7 +88,7 @@ export default function AwarenessQuiz() {
   const download = async () => {
     const cert = result?.certificate;
     if (!cert) return;
-    await generateCertificate(cert.learnerName, "Awareness Quiz", new Date(cert.issuedAt || Date.now()), cert.certificateId, null, cert.courseTitle || "Awareness Quiz");
+    await generateCertificate(cert.learnerName, cert.courseTitle || "SSF Quiz", new Date(cert.issuedAt || Date.now()), cert.certificateId, null, cert.courseTitle || "SSF Quiz");
   };
 
   const retry = () => { setResult(null); setAnswers({}); setCurrent(0); setShowSubmitConfirm(false); };
@@ -144,15 +160,19 @@ export default function AwarenessQuiz() {
               <div><div className="text-xs font-black uppercase tracking-[0.18em] text-[#176447]">Take an assessment</div><h2 className="mt-2 text-2xl font-black text-[#12345A] md:text-3xl">Available Quiz / उपलब्ध प्रश्नोत्तरी</h2><p className="mt-1 text-sm text-slate-500">यहाँ केवल वही Quiz दिखाए जाते हैं जो वर्तमान में सर्वर पर उपलब्ध हैं।</p></div>
               <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800">{quiz ? "1 Published Quiz" : "Checking availability"}</span>
             </div>
-            <div className="mt-5 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-              {quiz ? <article className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
-                <div className="flex items-start justify-between gap-3"><span className="rounded-xl bg-blue-50 p-3 text-2xl text-[#123F68]"><FaGraduationCap /></span><span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-800">Available now</span></div>
-                <h3 className="mt-4 text-xl font-black text-[#12345A]">Awareness Quiz</h3><p className="mt-1 text-sm font-semibold text-slate-500">जागरूकता प्रश्नोत्तरी</p>
-                <p className="mt-3 flex-1 text-sm leading-6 text-slate-600">संविधान, सरकारी योजनाएँ, स्वास्थ्य, सामान्य ज्ञान, अंग्रेज़ी और सामाजिक जागरूकता से जुड़े प्रश्न।</p>
-                <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold text-slate-500"><span className="rounded-lg bg-slate-50 px-3 py-2">{questions.length || quiz.size || "—"} Questions</span><span className="rounded-lg bg-slate-50 px-3 py-2">{quiz.passPercent ?? 80}% Pass Mark</span><span className="rounded-lg bg-slate-50 px-3 py-2">Free</span></div>
-                <button type="button" onClick={() => setShowDashboard(false)} className="mt-5 w-full rounded-xl bg-[#176447] px-4 py-3 text-sm font-black text-white hover:bg-[#12543B]">View Quiz & Start <FaArrowRight className="ml-2 inline" /></button>
-              </article> : <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500 md:col-span-2 xl:col-span-3">Quiz service से उपलब्धता जाँची जा रही है…</div>}
-            </div>
+            <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+              {quizCatalog.length ? quizCatalog.map((item) => {
+                const subject = SUBJECTS[item.subject] || ["General Awareness", "सामान्य जागरूकता"];
+                const isGeneral = item.subject === "all";
+                return <article key={item.quizId} className="flex flex-col rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                  <div className="flex items-start justify-between gap-3"><span className="rounded-xl bg-blue-50 p-3 text-2xl text-[#123F68]">{isGeneral ? "🌐" : item.subject === "samvidhan" ? "⚖️" : item.subject === "yojana" ? "🏛️" : item.subject === "swasthya" ? "🩺" : item.subject === "gk" ? "📚" : item.subject === "english-word" ? "🔤" : "🌱"}</span><span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-800">Available now</span></div>
+                  <h3 className="mt-4 text-lg font-black text-[#12345A]">{item.title.en}</h3><p className="mt-1 text-sm font-semibold text-slate-500">{item.title.hi}</p>
+                  <p className="mt-3 flex-1 text-sm leading-6 text-slate-600">{item.description?.en || subject[0]}</p>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold text-slate-500"><span className="rounded-lg bg-slate-50 px-3 py-2">{isGeneral ? "10" : "6"} Questions</span><span className="rounded-lg bg-slate-50 px-3 py-2">80% Pass Mark</span><span className="rounded-lg bg-slate-50 px-3 py-2">Free</span></div>
+                  <button type="button" onClick={() => chooseQuiz(item.quizId)} className="mt-5 w-full rounded-xl bg-[#176447] px-4 py-3 text-sm font-black text-white hover:bg-[#12543B]">Start this Quiz <FaArrowRight className="ml-2 inline" /></button>
+                </article>;
+              }) : <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500">Quiz catalogue is loading…</div>}
+            </div>/div>
           </div>
 
           <div className="mt-10">
@@ -191,7 +211,7 @@ export default function AwarenessQuiz() {
 
           {quiz && !result && showInstructions && (
             <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm md:p-7">
-              <div className="flex items-center gap-3"><span className="rounded-xl bg-blue-50 p-3 text-xl text-[#123F68]"><FaBookOpen /></span><div><h2 className="text-xl font-black text-[#12345A]">Before you begin</h2><p className="text-sm text-slate-500">परीक्षा शुरू करने से पहले निर्देश पढ़ें</p></div></div>
+              <div className="flex items-center gap-3"><span className="rounded-xl bg-blue-50 p-3 text-xl text-[#123F68]"><FaBookOpen /></span><div><h2 className="text-xl font-black text-[#12345A]">{quiz.title?.en || "Before you begin"}</h2><p className="text-sm text-slate-500">परीक्षा शुरू करने से पहले निर्देश पढ़ें</p></div></div>
               <div className="mt-5 grid gap-3 sm:grid-cols-2">
                 {[
                   [`${questions.length} questions`, "सभी प्रश्नों के उत्तर देने का प्रयास करें।"],
