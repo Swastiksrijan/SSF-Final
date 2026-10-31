@@ -75,7 +75,7 @@ export default function AwarenessQuiz() {
       // Only selected option indexes are sent. The answer key remains on the server.
       const payload = { accountId: user.id, learner: { fullName: user.fullName, email: user.email }, answers };
       const res = await fetch(ENDPOINTS.AWARENESS_QUIZ_SUBMIT(selectedQuizId), {
-        method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload),
+        method: "POST", headers: { "Content-Type": "application/json", ...(user.token ? { Authorization: `Bearer ${user.token}` } : {}) }, body: JSON.stringify(payload),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) throw new Error(data.message || "Submit fail ho gaya.");

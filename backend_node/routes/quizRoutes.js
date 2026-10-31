@@ -16,6 +16,7 @@ const router = express.Router();
 const LearningCertificate = require('../models/LearningCertificate');
 const Member = require('../models/Member');
 const { buildQuiz, scoreQuiz, SUBJECTS, QUIZ_CATALOG } = require('../services/social/quizBank');
+const { authorizeAccount } = require('../services/userAuth');
 
 const wrap = (fn) => (req, r) => fn(req, r).catch((e) => { console.error('quiz error:', e); r.status(500).json({ message: 'Server Error' }); });
 
@@ -59,18 +60,23 @@ router.post('/quiz/:quizId/submit', wrap(async (req, r) => {
   if (!QUIZ_CATALOG.some((item) => item.quizId === quizId)) {
     return r.status(404).json({ ok: false, message: 'Quiz not found or not published.' });
   }
-  const { accountId, learner, answers } = req.body || {};
+  const { answers } = req.body || {};
+  const authHeader = String(req.headers.authorization || '');
+  const accountAuth = authHeader ? authorizeAccount(req) : null;
+  if (accountAuth && !accountAuth.ok) {
+    return r.status(accountAuth.status).json({ ok: false, message: accountAuth.message });
+  }
   const result = scoreQuiz(quizId, answers || {});
   if (!result.passed) {
     return r.json({ ok: true, passed: false, correct: result.correct, total: result.total, percent: result.percent, passPercent: result.passPercent, wrong: result.wrong, certificate: null });
   }
 
   // Passed. A certificate needs a verified learning account (name + email match).
-  if (!accountId || !learner || !learner.email) {
+  if (!accountAuth || !accountAuth.ok || accountAuth.admin || !accountAuth.accountId) {
     return r.json({ ok: true, passed: true, correct: result.correct, total: result.total, percent: result.percent, passPercent: result.passPercent, wrong: [], certificate: null, message: 'Sign in with your learning account to receive your certificate.' });
   }
-  const member = await Member.findByPk(accountId);
-  if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(learner.email).toLowerCase()) {
+  const member = await Member.findByPk(accountAuth.accountId);
+  if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(accountAuth.email).toLowerCase()) {
     return r.status(401).json({ ok: false, message: 'Learning account could not be verified.' });
   }
 
