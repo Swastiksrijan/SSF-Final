@@ -54,22 +54,13 @@ export default function UpcomingProjects() {
                 </div>
                 <div>
                   <h4 className="text-xl font-bold text-[#12345A]">We Need Your Support</h4>
-                  <p className="text-[#26343D] font-medium mt-1">Building this school requires collective effort. Your donations will directly fund the construction of classrooms and facilities.</p>
+                  <p className="text-[#26343D] font-medium mt-1">The school concept will require a separate, approved project proposal, land and permission review, itemised budget and dedicated funding plan before any construction appeal or commitment is made.</p>
                 </div>
               </div>
             </div>
 
             <div className="pt-6">
-              <a
-                href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view"
-                target="_blank"
-                rel="noreferrer noopener"
-                className="inline-block"
-              >
-                <button className="px-10 py-4 bg-[#176447] text-[#12345A] font-bold rounded-full hover:bg-[#176447] transition-colors shadow-lg shadow-[#F7A814]/25 flex items-center gap-2 text-lg">
-                  Donate to Build the School | विद्यालय निर्माण में सहयोग करें <FaHeart className="text-sm" />
-                </button>
-              </a>
+              <Link to="/Contact" className="inline-flex items-center gap-2 rounded-full bg-[#12345A] px-8 py-4 text-white font-bold hover:bg-[#176447] transition-colors">Discuss this long-term vision <FaArrowRight className="text-sm" /></Link>
             </div>
           </div>
           <div className="relative">
