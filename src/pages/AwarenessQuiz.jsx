@@ -86,7 +86,7 @@ export default function AwarenessQuiz() {
   }, [result, user]);
 
   const submit = async () => {
-    if (!user) { setAuthOpen(true); return; }
+    if (!user?.token) { setAuthOpen(true); return; }
     setSubmitting(true); setError(""); setShowSubmitConfirm(false);
     try {
       // Only selected option indexes are sent. The answer key remains on the server.
