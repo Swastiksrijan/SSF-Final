@@ -32,6 +32,7 @@ async function main() {
   const { sequelize } = require('../models/social');
   const Member = require('../models/Member');
   const LearningCertificate = require('../models/LearningCertificate');
+  const QuizAttempt = require('../models/QuizAttempt');
   await sequelize.sync({ force: true });
 
   const { buildQuiz, scoreQuiz, QUESTIONS, QUIZ_CATALOG, SUBJECTS } = require('../services/social/quizBank');
@@ -66,7 +67,7 @@ async function main() {
   app.use('/api', router);
   const server = app.listen(0);
   const base = `http://127.0.0.1:${server.address().port}`;
-  const get = (p) => fetch(base + p).then(async (r) => ({ status: r.status, body: await r.json() }));
+  const get = (p, token) => fetch(base + p, { headers: token ? { Authorization: `Bearer ${token}` } : {} }).then(async (r) => ({ status: r.status, body: await r.json() }));
   const post = (p, body, token) => fetch(base + p, { method: 'POST', headers: { 'Content-Type': 'application/json', ...(token ? { Authorization: `Bearer ${token}` } : {}) }, body: JSON.stringify(body || {}) }).then(async (r) => ({ status: r.status, body: await r.json() }));
 
   try {
@@ -91,6 +92,9 @@ async function main() {
     ok('certificate id has the SSF-LCERT format', /^SSF-LCERT-\d{4}-\d{5}$/.test(submit.body.certificate.certificateId), submit.body.certificate.certificateId);
     ok('certificate carries a verification URL', /LearningCertificateVerify\?code=/.test(submit.body.certificate.verificationUrl));
     const certId = submit.body.certificate.certificateId;
+    const history = await get('/api/quiz/my-attempts', learnerToken);
+    ok('learner history returns the saved quiz attempt', history.status === 200 && history.body.attempts?.length === 1 && history.body.attempts[0].quizId === 'ssf-awareness-1');
+    ok('attempt is stored in the database', await QuizAttempt.count({ where: { accountId: member.id } }) === 1);
 
     console.log('\nPublic verification:');
     const verify = await get(`/api/quiz/certificate/${certId}`);
@@ -113,8 +117,11 @@ async function main() {
     ok('pass without account passes but issues no cert', noAccount.body.passed === true && noAccount.body.certificate === null);
     const fakeQuizSubmit = await post('/api/quiz/not-a-published-quiz/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: allRight });
     ok('unknown quiz cannot be scored or issue a certificate', fakeQuizSubmit.status === 404 && fakeQuizSubmit.body.ok === false);
-    const failSubmit = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: {} });
+    const failSubmit = await post('/api/quiz/ssf-awareness-1/submit', { accountId: member.id, learner: { email: 'learner@example.com' }, answers: {} }, learnerToken);
     ok('failing score issues no certificate', failSubmit.body.passed === false && failSubmit.body.certificate === null);
+    ok('failed authenticated attempts are also saved', await QuizAttempt.count({ where: { accountId: member.id } }) === 3);
+    const anonymousHistory = await get('/api/quiz/my-attempts');
+    ok('history endpoint rejects anonymous access', anonymousHistory.status === 401);
   } finally {
     server.close();
     await sequelize.close();
