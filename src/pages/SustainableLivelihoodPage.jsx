@@ -64,7 +64,17 @@ export default function SustainableLivelihoodPage() {
       <div className="mx-auto max-w-7xl px-5 md:px-8">
         <div className="max-w-3xl"><p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">Opportunity portfolio</p><h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">A broad list of potential activities</h2><p className="mt-4 leading-7 text-slate-600">This is a long-term opportunity bank, not a promise to launch every activity. Each unit will be screened for demand, capital, margins, skills, licences and environmental impact before approval.</p></div>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
-          {sectors.map(({icon:Icon,title,hindi,items})=><article key={title} className="rounded-2xl border border-slate-200 bg-[#FBFCFE] p-6 transition hover:-translate-y-0.5 hover:shadow-lg"><div className="flex items-start gap-4"><div className="rounded-xl bg-[#EAF2EE] p-3 text-[#2d6a4f]"><Icon size={25}/></div><div><h3 className="text-lg font-extrabold text-[#002344]">{title}</h3><p className="mt-1 text-sm font-semibold text-[#2d6a4f]">{hindi}</p></div></div><ul className="mt-5 grid gap-2 sm:grid-cols-2">{items.map(item=><li key={item} className="flex gap-2 text-sm leading-6 text-slate-600"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#fb8500]"/>{item}</li>)}</ul></article>)}
+          {sectors.map(({icon:Icon,title,hindi,items})=><article key={title} className="rounded-2xl border border-slate-200 bg-[#FBFCFE] p-6 transition hover:-translate-y-0.5 hover:shadow-lg"><div className="flex items-start gap-4"><div className="rounded-xl bg-[#EAF2EE] p-3 text-[#2d6a4f]"><Icon size={25}/></div><div><h3 className="text-lg font-extrabold text-[#002344]">{title}</h3><p className="mt-1 text-sm font-semibold text-[#2d6a4f]">{hindi}</p></div></div><ul className="mt-5 grid gap-2 sm:grid-cols-2">{items.map(item=><li key={item} className="flex gap-2 text-sm leading-6 text-slate-600"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#fb8500]"/>{item}</li>)}</ul><p className="mt-5 border-t border-slate-200 pt-4 text-sm font-semibold leading-6 text-[#2d6a4f]">इसके अतिरिक्त: इस क्षेत्र से संबंधित अन्य सभी वैध एवं उपयोगी कार्य, उत्पाद, सेवाएँ, व्यापार, प्रशिक्षण, नवाचार तथा भविष्य में विकसित होने वाली गतिविधियाँ भी—इत्यादि।</p></article>)}
+        </div>
+      </div>
+    </section>
+
+    <section className="bg-[#F1F6F3] py-10">
+      <div className="mx-auto max-w-7xl px-5 md:px-8">
+        <div className="rounded-2xl border border-[#C9DDD1] bg-white p-6 md:p-8">
+          <h2 className="text-xl font-extrabold text-[#002344]">व्यापक एवं समावेशी कार्यक्षेत्र — अन्य संबंधित कार्य भी सम्मिलित</h2>
+          <p className="mt-3 text-sm leading-7 text-slate-700">ऊपर दी गई सूची उदाहरणात्मक है, अंतिम या सीमित सूची नहीं। प्रत्येक क्षेत्र में उल्लिखित कार्यों के अतिरिक्त उससे प्रत्यक्ष या सहायक रूप से संबंधित अन्य सभी वैध गतिविधियाँ, उत्पाद, सेवाएँ, खरीद-बिक्री, निर्माण, प्रसंस्करण, पैकेजिंग, भंडारण, परिवहन, विपणन, प्रशिक्षण, तकनीकी सहायता, अनुसंधान, नवाचार, रोजगार-सृजन, वितरण, मरम्मत, रखरखाव, परामर्श, साझेदारी तथा भविष्य में विकसित होने वाले कार्य भी आवश्यकता और व्यवहार्यता के अनुसार शामिल किए जा सकते हैं।</p>
+          <p className="mt-3 text-sm leading-7 text-slate-700">इन सभी गतिविधियों का चयन संस्था के पंजीकृत उद्देश्यों, लागू कानूनों, आवश्यक अनुमतियों, वित्तीय क्षमता, पारदर्शिता और सामाजिक हित के अनुरूप ही किया जाएगा। यह प्रावधान किसी निषिद्ध, अनधिकृत या संस्था के उद्देश्यों से असंबंधित गतिविधि की अनुमति नहीं देता।</p>
         </div>
       </div>
     </section>
