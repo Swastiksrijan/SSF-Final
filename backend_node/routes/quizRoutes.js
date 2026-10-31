@@ -14,6 +14,7 @@
 const express = require('express');
 const router = express.Router();
 const LearningCertificate = require('../models/LearningCertificate');
+const QuizAttempt = require('../models/QuizAttempt');
 const Member = require('../models/Member');
 const { buildQuiz, scoreQuiz, SUBJECTS, QUIZ_CATALOG } = require('../services/social/quizBank');
 const { authorizeAccount } = require('../services/userAuth');
@@ -39,6 +40,20 @@ function verificationUrl(certificateId) {
   const frontend = (process.env.FRONTEND_URL || 'https://swastiksrijan.in').replace(/\/$/, '');
   return `${frontend}/LearningCertificateVerify?code=${encodeURIComponent(certificateId)}`;
 }
+
+// A learner can view only their own saved assessment history.
+router.get('/quiz/my-attempts', wrap(async (req, r) => {
+  const auth = authorizeAccount(req);
+  if (!auth.ok) return r.status(auth.status).json({ ok: false, message: auth.message });
+  if (auth.admin || !auth.accountId) return r.status(403).json({ ok: false, message: 'A learner account is required.' });
+  const attempts = await QuizAttempt.findAll({
+    where: { accountId: auth.accountId },
+    attributes: ['id', 'quizId', 'quizTitle', 'correct', 'total', 'percent', 'passPercent', 'passed', 'certificateId', 'createdAt'],
+    order: [['createdAt', 'DESC']],
+    limit: 100,
+  });
+  r.json({ ok: true, attempts });
+}));
 
 // The quiz paper. Public (no token) so any visitor can attempt it.
 router.get('/quiz/:quizId', wrap(async (req, r) => {
@@ -67,17 +82,33 @@ router.post('/quiz/:quizId/submit', wrap(async (req, r) => {
     return r.status(accountAuth.status).json({ ok: false, message: accountAuth.message });
   }
   const result = scoreQuiz(quizId, answers || {});
+  // Resolve the signed-in learner once, before saving an attempt or issuing a certificate.
+  let member = null;
+  if (accountAuth && accountAuth.ok && !accountAuth.admin && accountAuth.accountId) {
+    member = await Member.findByPk(accountAuth.accountId);
+    if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(accountAuth.email).toLowerCase()) {
+      return r.status(401).json({ ok: false, message: 'Learning account could not be verified.' });
+    }
+    await QuizAttempt.create({
+      accountId: member.id,
+      quizId,
+      quizTitle: buildQuiz(quizId).title.en,
+      correct: result.correct,
+      total: result.total,
+      percent: result.percent,
+      passPercent: result.passPercent,
+      passed: result.passed,
+      answerSelections: answers && typeof answers === 'object' && !Array.isArray(answers) ? answers : {},
+    });
+  }
+
   if (!result.passed) {
     return r.json({ ok: true, passed: false, correct: result.correct, total: result.total, percent: result.percent, passPercent: result.passPercent, wrong: result.wrong, certificate: null });
   }
 
-  // Passed. A certificate needs a verified learning account (name + email match).
-  if (!accountAuth || !accountAuth.ok || accountAuth.admin || !accountAuth.accountId) {
+  // Passed. A certificate needs a verified learning account.
+  if (!member) {
     return r.json({ ok: true, passed: true, correct: result.correct, total: result.total, percent: result.percent, passPercent: result.passPercent, wrong: [], certificate: null, message: 'Sign in with your learning account to receive your certificate.' });
-  }
-  const member = await Member.findByPk(accountAuth.accountId);
-  if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(accountAuth.email).toLowerCase()) {
-    return r.status(401).json({ ok: false, message: 'Learning account could not be verified.' });
   }
 
   const courseId = `quiz-${quizId}`;
@@ -94,6 +125,7 @@ router.post('/quiz/:quizId/submit', wrap(async (req, r) => {
   } else if (!record.certificateId) {
     await record.update({ status: 'issued', certificateId: await nextCertificateId(), certificateIssuedAt: now });
   }
+  await QuizAttempt.update({ certificateId: record.certificateId }, { where: { accountId: member.id, quizId, certificateId: null } });
   return r.json({
     ok: true, passed: true, correct: result.correct, total: result.total, percent: result.percent, passPercent: result.passPercent, wrong: [],
     certificate: { certificateId: record.certificateId, learnerName: record.learnerName, courseTitle: record.courseTitle, issuedAt: record.certificateIssuedAt, verificationUrl: verificationUrl(record.certificateId) },
