@@ -15,7 +15,8 @@ const express = require('express');
 const router = express.Router();
 const LearningCertificate = require('../models/LearningCertificate');
 const Member = require('../models/Member');
-const { buildQuiz, scoreQuiz, SUBJECTS } = require('../services/social/quizBank');
+const { buildQuiz, scoreQuiz, SUBJECTS, QUIZ_CATALOG } = require('../services/social/quizBank');
+const { authorizeAccount } = require('../services/userAuth');
 
 const wrap = (fn) => (req, r) => fn(req, r).catch((e) => { console.error('quiz error:', e); r.status(500).json({ message: 'Server Error' }); });
 
@@ -41,40 +42,52 @@ function verificationUrl(certificateId) {
 
 // The quiz paper. Public (no token) so any visitor can attempt it.
 router.get('/quiz/:quizId', wrap(async (req, r) => {
-  r.json({ ok: true, quiz: buildQuiz(String(req.params.quizId || 'ssf-awareness-1')) });
+  const quizId = String(req.params.quizId || 'ssf-awareness-1');
+  if (!QUIZ_CATALOG.some((item) => item.quizId === quizId)) {
+    return r.status(404).json({ ok: false, message: 'Quiz not found or not published.' });
+  }
+  r.json({ ok: true, quiz: buildQuiz(quizId) });
 }));
 
 router.get('/quiz', wrap(async (_req, r) => {
-  r.json({ ok: true, quiz: buildQuiz('ssf-awareness-1'), subjects: SUBJECTS });
+  r.json({ ok: true, quiz: buildQuiz('ssf-awareness-1'), subjects: SUBJECTS, quizzes: QUIZ_CATALOG });
 }));
 
 // Submit answers. If the account is verified and the score >= 80%, issue the
 // certificate automatically and return it in the same response.
 router.post('/quiz/:quizId/submit', wrap(async (req, r) => {
   const quizId = String(req.params.quizId || 'ssf-awareness-1');
-  const { accountId, learner, answers } = req.body || {};
+  if (!QUIZ_CATALOG.some((item) => item.quizId === quizId)) {
+    return r.status(404).json({ ok: false, message: 'Quiz not found or not published.' });
+  }
+  const { answers } = req.body || {};
+  const authHeader = String(req.headers.authorization || '');
+  const accountAuth = authHeader ? authorizeAccount(req) : null;
+  if (accountAuth && !accountAuth.ok) {
+    return r.status(accountAuth.status).json({ ok: false, message: accountAuth.message });
+  }
   const result = scoreQuiz(quizId, answers || {});
   if (!result.passed) {
     return r.json({ ok: true, passed: false, correct: result.correct, total: result.total, percent: result.percent, passPercent: result.passPercent, wrong: result.wrong, certificate: null });
   }
 
   // Passed. A certificate needs a verified learning account (name + email match).
-  if (!accountId || !learner || !learner.email) {
+  if (!accountAuth || !accountAuth.ok || accountAuth.admin || !accountAuth.accountId) {
     return r.json({ ok: true, passed: true, correct: result.correct, total: result.total, percent: result.percent, passPercent: result.passPercent, wrong: [], certificate: null, message: 'Sign in with your learning account to receive your certificate.' });
   }
-  const member = await Member.findByPk(accountId);
-  if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(learner.email).toLowerCase()) {
+  const member = await Member.findByPk(accountAuth.accountId);
+  if (!member || !member.passwordHash || String(member.email).toLowerCase() !== String(accountAuth.email).toLowerCase()) {
     return r.status(401).json({ ok: false, message: 'Learning account could not be verified.' });
   }
 
   const courseId = `quiz-${quizId}`;
-  const courseTitle = 'SSF Awareness Quiz';
+  const courseTitle = buildQuiz(quizId).title.en;
   // One certificate per account + quiz.
-  let record = await LearningCertificate.findOne({ where: { accountId, courseId, status: ['requested', 'approved', 'issued'] } });
+  let record = await LearningCertificate.findOne({ where: { accountId: member.id, courseId, status: ['requested', 'approved', 'issued'] } });
   const now = new Date();
   if (!record) {
     record = await LearningCertificate.create({
-      accountId, learnerName: member.fullName, learnerEmail: member.email, courseId, courseTitle,
+      accountId: member.id, learnerName: member.fullName, learnerEmail: member.email, courseId, courseTitle,
       completionPercent: 100, moduleAssessments: {}, finalAssessment: { passed: true, score: result.percent, quizId },
       status: 'issued', certificateId: await nextCertificateId(), certificateIssuedAt: now,
     });
