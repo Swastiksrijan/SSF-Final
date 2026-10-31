@@ -319,7 +319,7 @@ export default function LearningHubHome({
       <section className="pt-14 md:pt-20">
         <SectionTitle icon={<FaBookOpen />} eyebrow="Explore the full library / पूरी लाइब्रेरी"
           title="और भी बहुत कुछ सीखने के लिए"
-          subtitle={`सभी \${subjects.length} subjects को search, category, level और learning type के अनुसार explore करें।`}
+          subtitle={`सभी ${subjects.length} subjects को search, category, level और learning type के अनुसार explore करें।`}
           action={<button type="button" onClick={onExplore} className="self-start rounded-full border border-[#176447]/30 px-5 py-2.5 text-xs font-extrabold text-[#176447] transition hover:bg-[#EAF2ED]">Open full library <FaArrowRight className="ml-1 inline" /></button>} />
         <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
           {explorePreview.map((s) => { const info = cardInfo ? cardInfo(s) : {}; return <SubjectCard key={s.id} subject={s} onOpen={onOpenSubject} onShare={onShareSubject} progress={cardProgress ? cardProgress(s) : 0} badge={info.badge} level={info.level} moduleCount={info.moduleCount} hours={info.hours} />; })}
