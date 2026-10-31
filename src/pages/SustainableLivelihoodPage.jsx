@@ -88,6 +88,70 @@ export default function SustainableLivelihoodPage() {
       </div>
     </section>
 
+
+    <section className="bg-white py-16">
+      <div className="mx-auto max-w-7xl px-5 md:px-8">
+        <p className="text-xs font-black uppercase tracking-widest text-[#2d6a4f]">More livelihood opportunities</p>
+        <h2 className="mt-3 font-serif text-3xl font-bold text-[#002344]">Additional sectors for phased development</h2>
+        <div className="mt-8 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+          {[
+            ["Education & learning resources","Learning kits, notebooks, charts, school consumables, computer literacy and job-linked skill courses."],
+            ["Health, hygiene & care essentials","Hygiene kits, sanitary products, reusable cloth goods and approved institutional supplies; no unlicensed medical practice."],
+            ["Household & utility products","Cleaning tools, kitchen items, low-cost furniture, bamboo, jute, coir and locally made goods."],
+            ["Construction & maintenance","Building-material distribution, plumbing/electrical supplies, pavers, repair and facility-support services through qualified workers."],
+            ["Renewable energy & water efficiency","Solar lamps, energy-efficient products, water-saving equipment and qualified installation partners."],
+            ["Transport & logistics","Local delivery, farm aggregation, packing, dispatch, fulfilment and last-mile distribution."],
+            ["Employment & placement support","Job-readiness, interview preparation, workplace skills and transparent placement facilitation without job guarantees."],
+            ["Culture, crafts & local tourism","Artisan products, folk crafts, local experience partnerships and responsible community-based tourism."],
+            ["Animal husbandry & allied services","Fodder, dairy support, poultry, fisheries, veterinary-linked supplies and farmer market connections."]
+          ].map(([t,d])=><article key={t} className="rounded-2xl border border-slate-200 bg-[#FBFCFE] p-6"><h3 className="font-extrabold text-[#002344]">{t}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{d}</p></article>)}
+        </div>
+      </div>
+    </section>
+    <section className="mx-auto max-w-7xl px-5 py-16 md:px-8">
+      <p className="text-xs font-black uppercase tracking-widest text-[#2d6a4f]">Operating model</p>
+      <h2 className="mt-3 font-serif text-3xl font-bold text-[#002344]">Choose the lightest viable model first</h2>
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {[
+          ["Trading & distribution","Supply existing products against identified customer demand."],
+          ["Services","Digital, design, printing, training and maintenance services."],
+          ["Job-work partnerships","Use existing local capacity and pay workers/vendors transparently."],
+          ["Packing & own brand","Clean, grade, label and market products after compliance checks."],
+          ["Small manufacturing","Add machinery only after repeat orders and cost validation."],
+          ["Institutional supply","Serve schools, offices, hostels and organisations through valid orders."],
+          ["Online catalogue","Publish verified products, availability, prices and order terms."],
+          ["Producer networks","Connect farmers, SHGs, artisans and youth with buyers."]
+        ].map(([t,d])=><article key={t} className="rounded-2xl bg-[#F7F9FC] p-5"><h3 className="font-bold text-[#002344]">{t}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{d}</p></article>)}
+      </div>
+    </section>
+    <section className="bg-[#F7F9FC] py-16">
+      <div className="mx-auto max-w-7xl px-5 md:px-8">
+        <h2 className="font-serif text-3xl font-bold text-[#002344]">Employment, products and public progress</h2>
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <div className="rounded-2xl bg-white p-6 shadow-sm"><h3 className="text-xl font-extrabold text-[#002344]">Dignified livelihood opportunities</h3><p className="mt-3 text-sm leading-7 text-slate-600">Potential roles may include production, packing, tailoring, sales, delivery, data entry, digital services and training support. Engagement will depend on actual projects, fair work terms, safe conditions and available resources. Women, youth, farmers, artisans, SHGs and other local community members may be included wherever feasible.</p></div>
+          <div className="rounded-2xl bg-white p-6 shadow-sm"><h3 className="text-xl font-extrabold text-[#002344]">SSF products & services catalogue</h3><p className="mt-3 text-sm leading-7 text-slate-600">A future catalogue can display verified products and services, specifications, quality details, transparent prices, availability, enquiry and delivery terms. Nothing will be shown as available until it is genuinely ready.</p></div>
+        </div>
+        <div className="mt-6 rounded-2xl bg-[#002344] p-7 text-white"><h3 className="text-xl font-bold">Public project status and impact reporting</h3><p className="mt-3 text-sm leading-7 text-white/75">Each project will be labelled accurately: Under Consideration, Feasibility Study, Seeking Funding, Seeking Partners, Pilot Started, Operational or Expansion. Future reporting may include active units, orders fulfilled, workers engaged, farmers/SHGs linked, training delivered and verified surplus applied to charitable programmes. Figures will be published only from records.</p></div>
+      </div>
+    </section>
+    <section className="mx-auto max-w-7xl px-5 py-16 md:px-8">
+      <h2 className="font-serif text-3xl font-bold text-[#002344]">Partnership, transparency and safeguards</h2>
+      <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {[
+          ["Buyers & institutions","Share specifications, vendor requirements, quotations or purchase forecasts."],
+          ["Farmers, SHGs & artisans","Explore responsible sourcing, production and market-linkage partnerships."],
+          ["Equipment & material partners","Offer suitable machinery, tools or raw material with transparent valuation."],
+          ["Mentors & technical experts","Help with feasibility, costing, quality systems and training."],
+          ["Financial institutions","Discuss eligible credit only after project and applicant appraisal."],
+          ["Community supporters","Identify local needs, workers, customers and responsible partners."]
+        ].map(([t,d])=><article key={t} className="rounded-2xl border border-slate-200 p-5"><h3 className="font-bold text-[#002344]">{t}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{d}</p></article>)}
+      </div>
+      <div className="mt-8 rounded-2xl border border-slate-300 bg-[#F7F9FC] p-6"><h3 className="font-bold text-[#002344]">Governance and legal safeguards</h3><p className="mt-3 text-sm leading-7 text-slate-600">Each unit should have an approved project plan, separate cost tracking, invoices, stock and bank records, documented procurement, conflict-of-interest controls, fair wages, safety measures and periodic review. Product quality, labelling, GST, FSSAI, Legal Metrology, labour, pollution and other licences will be checked wherever applicable. Restricted donations and CSR grants must only be used for their sanctioned purposes. Commercial income is not automatically tax-exempt; the Foundation will obtain case-specific professional advice on its legal status, 12AB conditions, tax treatment and permitted activities before launch. Only surplus that may lawfully be applied will support the Foundation's charitable objects.</p></div>
+      <div className="mt-8"><h3 className="text-xl font-extrabold text-[#002344]">Frequently asked questions</h3><div className="mt-4 grid gap-5 md:grid-cols-2">
+        {[["Are all listed activities running now?","No. This is a proposed opportunity portfolio; project status will be disclosed accurately."],["Will every idea be started?","No. Only viable activities with demand, skills, funding and legal clearance will proceed."],["Are jobs or profits guaranteed?","No. Employment and business outcomes depend on actual operations; no job, return or product availability is guaranteed."],["Can an organisation place an order or partner?","Yes. Share requirements through the Contact page for review."],["How will income support social work?","Any surplus legally available for application will be documented and used according to the Foundation's charitable objects and applicable law."],["Can CSR funds finance business units?","Restricted CSR funds will not be diverted to commercial capital; each grant will be used only for its approved purpose."]].map(([q,a])=><div key={q}><h4 className="font-bold text-[#002344]">{q}</h4><p className="mt-2 text-sm leading-7 text-slate-600">{a}</p></div>)}
+      </div></div>
+    </section>
+
     <section className="bg-[#002344] px-5 py-16 text-center text-white md:px-8 md:py-20">
       <div className="mx-auto max-w-3xl"><GraduationCap className="mx-auto text-[#ffb347]" size={38}/><h2 className="mt-5 font-serif text-3xl font-bold md:text-4xl">A stronger foundation for lasting social impact</h2><p className="mt-5 leading-8 text-white/75">We welcome responsible business mentors, technical experts, buyers, producer groups, equipment partners and supporters who can help build sustainable livelihoods and strengthen community service.</p><div className="mt-8 flex flex-wrap justify-center gap-3"><Link to="/Contact" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] hover:bg-[#ffad4d]">Connect with SSF <ArrowRight size={18}/></Link><Link to="/GetInvolved" className="rounded-full border border-white/35 px-6 py-3 font-bold hover:bg-white/10">Get involved</Link></div><p className="mt-8 text-xs leading-6 text-white/50">This page describes a proposed initiative and potential activities. It is not a claim that all listed units are currently operational, funded, licensed or accepting orders. Each activity will begin only after feasibility, approvals and compliance checks.</p></div>
     </section>
