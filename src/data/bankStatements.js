@@ -1,7 +1,7 @@
-// SSF Digital Office — Bank Book statements.
+// SSF OneOffice (IMS) — Bank Book statements.
 //
 // Bank statement data is kept here (not hard-coded in the UI) so a financial
-// year's entries can be imported into the Digital Office database and then
+// year's entries can be imported into the OneOffice (IMS) database and then
 // linked from other registers. `bankStatementRecords(fy)` converts a statement
 // into the office record shape used by POST /api/digital-office/records.
 //

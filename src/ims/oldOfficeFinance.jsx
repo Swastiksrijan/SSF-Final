@@ -1,5 +1,5 @@
-// Verbatim port of the old SSF Digital Office finance components.
-// Copied unchanged from src/pages/SSFDigitalOffice.jsx.
+// Verbatim port of the old SSF OneOffice (IMS) finance components.
+// Copied unchanged from the original office app.
 /* eslint-disable no-unused-vars */
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { FaBook, FaCertificate, FaIdCard, FaPlus, FaPrint, FaSearch } from "react-icons/fa";
@@ -90,7 +90,7 @@ function BankBook({ rows, add, archive, updateRecord, token, reload }){
    d.setTextColor(30); d.text("Opening Balance",cols[1],y); d.text(opening.toFixed(2),cols[5],y); y+=5;
    entries.forEach(function(e){ const par=d.splitTextToSize(String(e.particulars||""),66)[0]||""; d.text(String(e.date),cols[0],y); d.text(par,cols[1],y); d.text(String(e.chqNum||""),cols[2],y); if(e.withdrawal!=null)d.text(Number(e.withdrawal).toFixed(2),cols[3],y); if(e.deposit!=null)d.text(Number(e.deposit).toFixed(2),cols[4],y); d.text(Number(balByKey[e.key]).toFixed(2),cols[5],y); y+=5; if(y>280){d.addPage();y=20;} });
    d.setFont(undefined,"bold"); d.text("Total",cols[1],y); d.text(totals.withdrawal.toFixed(2),cols[3],y); d.text(totals.deposit.toFixed(2),cols[4],y); d.text("Closing "+closing.toFixed(2),cols[5],y);
-   d.setFontSize(8); d.setTextColor(120); d.text("Computer-generated bank book · SSF Digital Office",105,288,{align:"center"});
+   d.setFontSize(8); d.setTextColor(120); d.text("Computer-generated bank book · SSF OneOffice (IMS)",105,288,{align:"center"});
    downloadPdf(d,"ssf-bank-book-"+fy+".pdf");
  };
  return <div className="space-y-5">
@@ -127,7 +127,7 @@ function BankBook({ rows, add, archive, updateRecord, token, reload }){
    <div className="mt-4 flex items-end gap-2 h-40 overflow-x-auto">
     {chart.map(function(c){return <div key={c.m} className="flex-1 min-w-[34px] flex flex-col items-center justify-end gap-0.5"><div className="flex items-end gap-0.5 h-32"><div className="w-3 bg-emerald-500 rounded-t" style={{height:Math.round((c.deposit/maxBar)*100)+"%",minHeight:c.deposit?3:0}} title={"Deposit "+money(c.deposit)}></div><div className="w-3 bg-red-500 rounded-t" style={{height:Math.round((c.withdrawal/maxBar)*100)+"%",minHeight:c.withdrawal?3:0}} title={"Withdrawal "+money(c.withdrawal)}></div></div><div className="text-[9px] text-zinc-500">{c.m.slice(5)}</div></div>;})}
    </div>
-   <p className="text-xs text-zinc-400 mt-2">Sirf Digital Office me darj entries par based (selected year ke month-wise).</p>
+   <p className="text-xs text-zinc-400 mt-2">Sirf OneOffice (IMS) me darj entries par based (selected year ke month-wise).</p>
   </div>
 
   <div className="bg-white rounded-2xl border overflow-hidden">
@@ -182,7 +182,7 @@ function CashBook({ rows, add, archive, updateRecord, token, reload }){
    return false;
  }),[rows,fy,statement]);
  const entries=useMemo(()=>{
-   const extra=dbRows.map(r=>{const d=r.data||{};const receipt=Number(d.receipt||(d.direction==="in"?r.amount:0))||null;const payment=Number(d.payment||(d.direction==="out"?r.amount:0))||null;return {key:r.id||r.recordId,dbId:r.id,raw:r,date:String(r.recordDate||d.date||"").slice(0,10),particulars:d.purpose||d.particulars||d.notes||r.recordType||"",type:d.type||r.recordType||"",category:d.category||"",mode:d.mode||d.paymentMode||"Cash",receipt:receipt,payment:payment,voucherNo:d.voucherNo||d.referenceNo||"",remarks:d.remarks||"",verifiedBy:d.verifiedBy||"",source:"Digital Office"};});
+   const extra=dbRows.map(r=>{const d=r.data||{};const receipt=Number(d.receipt||(d.direction==="in"?r.amount:0))||null;const payment=Number(d.payment||(d.direction==="out"?r.amount:0))||null;return {key:r.id||r.recordId,dbId:r.id,raw:r,date:String(r.recordDate||d.date||"").slice(0,10),particulars:d.purpose||d.particulars||d.notes||r.recordType||"",type:d.type||r.recordType||"",category:d.category||"",mode:d.mode||d.paymentMode||"Cash",receipt:receipt,payment:payment,voucherNo:d.voucherNo||d.referenceNo||"",remarks:d.remarks||"",verifiedBy:d.verifiedBy||"",source:"OneOffice (IMS)"};});
    const dbSig=new Set(extra.map(e=>sigOf(e.date,e.receipt,e.payment,e.particulars)));
    const base=statement?statement.transactions.map((t,i)=>({key:"s"+(i+1),slNo:i+1,date:t.date,particulars:t.particulars,type:t.type,category:t.category,mode:t.mode,receipt:t.receipt||null,payment:t.payment||null,voucherNo:t.voucherNo,remarks:t.remarks,verifiedBy:t.verifiedBy,source:"Cash Book"})).filter(e=>!dbSig.has(sigOf(e.date,e.receipt,e.payment,e.particulars))):[];
    return base.concat(extra).sort((a,b)=>(a.date<b.date?-1:a.date>b.date?1:0));
@@ -206,8 +206,8 @@ function CashBook({ rows, add, archive, updateRecord, token, reload }){
  });
  const importStatement=async function(){
    if(!statement)return;
-   if(!pendingNew.length){ alert("All entries for FY "+fy+" are already saved in the Digital Office database."); return; }
-   if(!confirm("Import "+pendingNew.length+" cash entr"+(pendingNew.length===1?"y":"ies")+" for FY "+fy+" into the Digital Office database? Already-saved entries are skipped."))return;
+   if(!pendingNew.length){ alert("All entries for FY "+fy+" are already saved in the OneOffice (IMS) database."); return; }
+   if(!confirm("Import "+pendingNew.length+" cash entr"+(pendingNew.length===1?"y":"ies")+" for FY "+fy+" into the OneOffice (IMS) database? Already-saved entries are skipped."))return;
    setImporting(true);
    let ok=0,fail=0;
    for(const p of pendingNew){ const r=await add("cash",{recordDate:p.recordDate,recordType:p.recordType,amount:p.amount,paymentMode:p.paymentMode,direction:p.direction,data:p.data},true); if(r)ok++; else fail++; }
@@ -232,7 +232,7 @@ function CashBook({ rows, add, archive, updateRecord, token, reload }){
    d.setTextColor(30); d.text("Opening Balance",cols[1],y); d.text(opening.toFixed(2),cols[5],y); y+=5;
    entries.forEach(function(e){ const par=d.splitTextToSize(String(e.particulars||""),62)[0]||""; d.text(String(e.date),cols[0],y); d.text(par,cols[1],y); d.text(String(e.type||""),cols[2],y); if(e.receipt)d.text(Number(e.receipt).toFixed(2),cols[3],y); if(e.payment)d.text(Number(e.payment).toFixed(2),cols[4],y); d.text(Number(balanceByKey[e.key]).toFixed(2),cols[5],y); d.text(String(e.voucherNo||""),cols[6],y); y+=5; if(y>280){d.addPage();y=20;} });
    d.setFont(undefined,"bold"); d.text("Total",cols[1],y); d.text(totals.receipt.toFixed(2),cols[3],y); d.text(totals.payment.toFixed(2),cols[4],y); d.text("Closing "+closing.toFixed(2),cols[5],y);
-   d.setFontSize(8); d.setTextColor(120); d.text("Computer-generated cash book · SSF Digital Office",105,288,{align:"center"});
+   d.setFontSize(8); d.setTextColor(120); d.text("Computer-generated cash book · SSF OneOffice (IMS)",105,288,{align:"center"});
    downloadPdf(d,"ssf-cash-book-"+fy+".pdf");
  };
  return <div className="space-y-5">
@@ -256,7 +256,7 @@ function CashBook({ rows, add, archive, updateRecord, token, reload }){
 
   <div className="bg-white rounded-2xl border overflow-hidden">
    <div className="p-5 border-b flex flex-col xl:flex-row xl:items-center justify-between gap-3">
-    <div><h3 className="text-xl font-black text-[#12345A]">Cash Book / रोकड़ बही · FY {fy}</h3><p className="text-sm text-zinc-500 mt-1">{filtered.length} of {entries.length} entries · {dbRows.length} in Digital Office database</p></div>
+    <div><h3 className="text-xl font-black text-[#12345A]">Cash Book / रोकड़ बही · FY {fy}</h3><p className="text-sm text-zinc-500 mt-1">{filtered.length} of {entries.length} entries · {dbRows.length} in OneOffice (IMS) database</p></div>
     <div className="flex flex-wrap gap-2 items-center">
      <input value={search} onChange={e=>setSearch(e.target.value)} placeholder="Search / खोजें — particulars / category / voucher" className="px-3 py-2.5 border rounded-xl w-60"/>
      <select value={type} onChange={e=>setType(e.target.value)} className="px-3 py-2.5 border rounded-xl text-sm"><option value="all">All Entries / सभी</option><option value="income">Receipts (Income) / प्राप्ति</option><option value="expence">Payments (Expence) / भुगतान</option></select>
@@ -313,7 +313,7 @@ function FinRegister({ regId }){
    d.setFontSize(7); d.setTextColor(0,35,68); let x=10; reg.columns.forEach((c,i)=>{d.text(String(c).slice(0,26),x,y);x+=colW[i];}); y+=4;
    d.setTextColor(30);
    rows.forEach(r=>{x=10; r.forEach((v,i)=>{d.text(String(v==null?"":v).slice(0,30),x,y);x+=colW[i];}); y+=4; if(y>195){d.addPage();y=20;}});
-   d.setFontSize(7); d.setTextColor(120); d.text("Computer-generated from SSF financial records · SSF Digital Office",148,205,{align:"center"});
+   d.setFontSize(7); d.setTextColor(120); d.text("Computer-generated from SSF financial records · SSF OneOffice (IMS)",148,205,{align:"center"});
    downloadPdf(d,"ssf-"+regId+"-"+fy+".pdf");
  };
  return <div className="space-y-5">

@@ -1,9 +1,9 @@
-// SSF Digital Office — Cash Book.
+// SSF OneOffice (IMS) — Cash Book.
 //
 // Cash (रोकड़) is a separate book from the bank. Entries here are manual /
 // collected-cash records (membership contributions, member donations, phone
 // and programme expenses). Kept as data so a financial year can be imported
-// into the Digital Office database and linked from other registers.
+// into the OneOffice (IMS) database and linked from other registers.
 //
 // FY 2025-26 verified: opening 1,219 + receipts 51,569 − payments 47,459.75 =
 // closing 5,328.25. NOTE: ordered by date the running balance dips below zero

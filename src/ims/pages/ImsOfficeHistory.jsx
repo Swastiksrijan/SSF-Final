@@ -1,6 +1,6 @@
 // SSF-IMS Managing Committee History.
 // The OfficeHistory component below is the EXACT component from the old
-// SSF Digital Office (src/pages/SSFDigitalOffice.jsx, function OfficeHistory) —
+// SSF OneOffice (IMS) (the original office app, function OfficeHistory) —
 // same JSX, same classes, same data shape (record.module / record.data.*).
 // The only additions are: the ImsLayout wrapper (sidebar/header of the new IMS)
 // and a thin adapter (imsOfficeRows / imsOfficeAdd / imsOfficeUpdate /
@@ -66,7 +66,7 @@ const imsOfficeArchive=async(id)=>{
 };
 
 // ===========================================================================
-// OfficeHistory — copied verbatim from SSFDigitalOffice.jsx (function OfficeHistory)
+// OfficeHistory — copied verbatim from the original office app (function OfficeHistory)
 // ===========================================================================
 function OfficeHistory({rows,add,updateRecord,archive}){
  const allExisting=(rows||[]).filter(r=>r.module==="officeHistory"&&r.status!=="deleted");

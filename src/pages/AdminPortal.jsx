@@ -155,7 +155,6 @@ export default function AdminPortal() {
                             <span className="rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-bold ring-1 ring-white/20">Vol. Approved {stats.approved}</span>
                             <span className="rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-bold ring-1 ring-white/20">Members Pending {stats.pendingMembers}</span>
                             <span className="rounded-full bg-white/15 px-3 py-1.5 text-[11px] font-bold ring-1 ring-white/20">Members Approved {stats.approvedMembers}</span>
-                            <Link to="/SSFDigitalOffice" className="rounded-full bg-white px-4 py-2 text-xs font-black text-[#12345A]">SSF Digital Office</Link>
                             <Link to="/ims" className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-xs font-black text-white">SSF OneOffice (IMS)</Link>
                             <button onClick={handleLogout} className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-xs font-black text-white">Logout</button>
                         </div>

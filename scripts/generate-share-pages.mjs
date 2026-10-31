@@ -113,7 +113,7 @@ const appRoutes = [
   '/ims/annual-reports', '/ims/activities', '/ims/finance',
   '/ims/finance/statement-import', '/ims/finance/receipts-payments',
   '/ims/finance/ledger', '/ims/finance/cost-centres',
-  '/admin', '/SSFDigitalOffice', '/AdminPortal',
+  '/admin', '/AdminPortal',
 
 ];
 for (const route of appRoutes) {

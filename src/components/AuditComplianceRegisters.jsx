@@ -1,4 +1,4 @@
-// SSF Digital Office — Tier 3: Audit (AUDT-02/03) & Compliance (COMP-01/02/03).
+// SSF OneOffice (IMS) — Tier 3: Audit (AUDT-02/03) & Compliance (COMP-01/02/03).
 //
 // AUDT-02 Audited Statements Archive · AUDT-03 Audit Observation & Compliance
 // COMP-01 Statutory Registration · COMP-02 Tax & Return Filing · COMP-03 Form 10BD/10BE

@@ -1,4 +1,4 @@
-// SSF Digital Office — Tier 4: Assets & Funds registers.
+// SSF OneOffice (IMS) — Tier 4: Assets & Funds registers.
 //
 // ASST-02 Depreciation Schedule · ASST-08 Corpus/Endowment Fund · ASST-09 Restricted/Unrestricted Fund
 // EXPN-03 Procurement/Purchase · EXPN-04 Salary & Payroll · EXPN-05 Honorarium & Stipend

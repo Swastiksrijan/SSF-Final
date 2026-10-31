@@ -1,4 +1,4 @@
-// Verbatim replication of every remaining old Digital Office register that
+// Verbatim replication of every remaining old office register that
 // lived in a standalone component under src/components/. Each register is
 // rendered unchanged; only the legacy data contract is wired to the IMS API.
 import { useParams } from '@tanstack/react-router';

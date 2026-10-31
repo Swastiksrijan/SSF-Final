@@ -1,8 +1,8 @@
-// SSF-IMS bridge to the legacy Digital Office data contract.
+// SSF-IMS bridge to the legacy office data contract.
 // The ported components read rows shaped
 //   { id, recordId, module, recordType, recordDate, status, data:{...} }
 // and call add/updateRecord/archive/restore. The helpers below are copied from
-// SSFDigitalOffice.jsx so the ported screens behave exactly like the old office.
+// the original office app so the ported screens behave exactly like the old office.
 /* eslint-disable react-refresh/only-export-components */
 import { useCallback, useEffect, useState } from 'react';
 import jsPDF from 'jspdf';
@@ -109,7 +109,7 @@ export function exportExcel(data,name){
   const escXml=function(v){return String(v??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&apos;");};
   const cell=function(v){const value=v===null||v===undefined?"":String(v);return '<Cell><Data ss:Type="String">'+escXml(value)+'</Data></Cell>';};
   const rowsXml=["<Row>"+headers.map(cell).join("")+"</Row>",...flat.map(function(row){return "<Row>"+headers.map(function(h){return cell(row[h]);}).join("")+"</Row>";})].join("");
-  const xml='<?xml version="1.0" encoding="UTF-8"?>'+'<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'+'<Worksheet ss:Name="SSF Digital Office"><Table>'+rowsXml+'</Table></Worksheet></Workbook>';
+  const xml='<?xml version="1.0" encoding="UTF-8"?>'+'<Workbook xmlns="urn:schemas-microsoft-com:office:spreadsheet" xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:x="urn:schemas-microsoft-com:office:excel" xmlns:ss="urn:schemas-microsoft-com:office:spreadsheet">'+'<Worksheet ss:Name="SSF OneOffice (IMS)"><Table>'+rowsXml+'</Table></Worksheet></Workbook>';
   const blob=new Blob(["\uFEFF",xml],{type:"application/vnd.ms-excel"});
   const a=document.createElement("a");const url=URL.createObjectURL(blob);
   a.href=url;a.download=name+".xls";document.body.appendChild(a);a.click();a.remove();
@@ -118,7 +118,7 @@ export function exportExcel(data,name){
 
 export function printRecord(r){
   const d=new jsPDF(); const data=r.data||{}; d.setTextColor(0,35,68); d.addImage(logoImg,"PNG",16,9,18,18); d.setFontSize(18); d.text("Swastik Srijan Foundation Samiti",105,18,{align:"center"}); d.setFontSize(11); d.setTextColor(80); d.text((LABELS[r.module]||r.module)+" · "+r.recordId,105,26,{align:"center"});
-  let y=42; d.setTextColor(20); d.setFontSize(11); const lines=[]; Object.entries(data).forEach(([k,v])=>{if(v!==null&&v!==undefined&&String(v).trim()!==""){let val=String(v); if(val.length>95) val=val.slice(0,95)+"…"; lines.push([k.replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()),val]);}}); lines.forEach(([k,v])=>{d.setFont(undefined,"bold");d.text(k+":",16,y);d.setFont(undefined,"normal");d.text(v,58,y);y+=7;if(y>275){d.addPage();y=20;}}); d.setFontSize(9); d.setTextColor(120); d.text("Computer-generated office record · SSF Digital Office",105,288,{align:"center"}); downloadPdf(d,r.recordId+".pdf");
+  let y=42; d.setTextColor(20); d.setFontSize(11); const lines=[]; Object.entries(data).forEach(([k,v])=>{if(v!==null&&v!==undefined&&String(v).trim()!==""){let val=String(v); if(val.length>95) val=val.slice(0,95)+"…"; lines.push([k.replace(/([A-Z])/g," $1").replace(/^./,c=>c.toUpperCase()),val]);}}); lines.forEach(([k,v])=>{d.setFont(undefined,"bold");d.text(k+":",16,y);d.setFont(undefined,"normal");d.text(v,58,y);y+=7;if(y>275){d.addPage();y=20;}}); d.setFontSize(9); d.setTextColor(120); d.text("Computer-generated office record · SSF OneOffice (IMS)",105,288,{align:"center"}); downloadPdf(d,r.recordId+".pdf");
 }
 
 export function exportPdf(data,title){
@@ -132,7 +132,7 @@ export function exportPdf(data,title){
    fields.forEach(function(pair){let value=String(pair[1]??"");const wrapped=d.splitTextToSize(value,132);d.setFont(undefined,"bold");d.setTextColor(40);d.text(pair[0]+":",16,y);d.setFont(undefined,"normal");d.text(wrapped,58,y);y+=Math.max(7,wrapped.length*5);if(y>275){d.addPage();y=20;}});
    y+=4;if(y>275){d.addPage();y=20;}
   });
-  d.setFontSize(9);d.setTextColor(120);d.text("Computer-generated office record · SSF Digital Office",105,288,{align:"center"});d.save(title.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".pdf");
+  d.setFontSize(9);d.setTextColor(120);d.text("Computer-generated office record · SSF OneOffice (IMS)",105,288,{align:"center"});d.save(title.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".pdf");
 }
 
 // ---- row hook --------------------------------------------------------------

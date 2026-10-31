@@ -1,7 +1,7 @@
-// SSF-IMS pages that render the verbatim old Digital Office components inside
+// SSF-IMS pages that render the verbatim old office components inside
 // the IMS layout. Each page wires the legacy data contract (rows + add /
 // updateRecord / archive / restore / summary) to the ported component so the
-// screens behave exactly like the old SSF Digital Office.
+// screens behave exactly like the old SSF OneOffice (IMS).
 import ImsLayout from './ImsLayout';
 import { useOfficeRows, exportRows, exportExcel, exportPdf } from './oldOfficeCore';
 import {
@@ -101,7 +101,7 @@ export function ImsCashBookLegacy(){
 
 // Certificate requests raised from the Learning Hub. The old office rendered the
 // dedicated AdminLearningCertificates screen; the inline LearningCertificates
-// copy inside SSFDigitalOffice.jsx was dead code and is not ported.
+// copy inside the original office app was dead code and is not ported.
 export function ImsLearningCertificatesLegacy(){
   return <Shell active="learning_certificates"><AdminLearningCertificates token={token()} titleTag="h1"/></Shell>;
 }

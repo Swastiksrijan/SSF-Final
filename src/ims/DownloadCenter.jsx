@@ -1,5 +1,5 @@
 // SSF-IMS Download Center — pick any register + format (CSV / Excel / PDF),
-// mirroring the legacy SSF Digital Office "Download / Export" dropdown.
+// mirroring the legacy SSF OneOffice (IMS) "Download / Export" dropdown.
 //
 // The panel is rendered in a portal with fixed positioning (anchored to the
 // trigger) so it is never clipped by a parent's overflow-hidden (e.g. the

@@ -91,7 +91,6 @@ export default function AdminDashboard() {
               </nav>
 
               <div className="rounded-3xl bg-white border border-[#EAF0F6] shadow-sm p-4 space-y-2">
-                <a href="/SSFDigitalOffice" className="flex items-center justify-between gap-2 rounded-2xl bg-[#EAF0F6] text-[#12345A] px-4 py-3 text-sm font-black">SSF Digital Office <FaExternalLinkAlt className="text-xs" /></a>
                 <a href="/ims" className="flex items-center justify-between gap-2 rounded-2xl bg-[#176447] text-white px-4 py-3 text-sm font-black">SSF OneOffice (IMS) <FaExternalLinkAlt className="text-xs" /></a>
                 <button type="button" onClick={logout} className="w-full flex items-center justify-center gap-2 rounded-2xl border border-red-200 text-red-600 px-4 py-3 text-sm font-black"><FaSignOutAlt /> Logout</button>
               </div>
@@ -187,7 +186,6 @@ function AdminSettings({ onLogout }) {
       <SectionCard eyebrow="Session" title="Admin session">
         <p className="text-sm text-zinc-600">Your admin session is stored on this device only. Logging out removes it immediately — always log out on a shared computer.</p>
         <div className="flex flex-wrap gap-2 mt-4">
-          <a href="/SSFDigitalOffice" className="inline-flex items-center gap-2 rounded-xl bg-[#EAF0F6] text-[#12345A] px-4 py-2.5 text-sm font-black">SSF Digital Office <FaExternalLinkAlt className="text-xs" /></a>
           <a href="/ims" className="inline-flex items-center gap-2 rounded-xl bg-[#176447] text-white px-4 py-2.5 text-sm font-black">SSF OneOffice (IMS) <FaExternalLinkAlt className="text-xs" /></a>
           <button type="button" onClick={onLogout} className="inline-flex items-center gap-2 rounded-xl border border-red-200 text-red-600 px-4 py-2.5 text-sm font-black"><FaSignOutAlt /> Logout</button>
         </div>

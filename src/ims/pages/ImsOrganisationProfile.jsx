@@ -1,6 +1,6 @@
 // SSF-IMS Institution Profile & Compliance.
 // The InstitutionalHistory component below is the EXACT component from the old
-// SSF Digital Office (src/pages/SSFDigitalOffice.jsx, function InstitutionalHistory) —
+// SSF OneOffice (IMS) (the original office app, function InstitutionalHistory) —
 // same JSX, same classes, same 10-section sidebar, tabs, colours and data shape
 // (record.module / record.data.*). The only additions are: the ImsLayout wrapper,
 // the imports it needs, and a thin adapter that maps the new backend to the old
@@ -59,7 +59,7 @@ const imsInstArchive=async(id)=>{
 };
 
 // ===========================================================================
-// InstitutionalHistory — copied verbatim from SSFDigitalOffice.jsx
+// InstitutionalHistory — copied verbatim from the original office app
 // ===========================================================================
 function InstitutionalHistory({rows,add,updateRecord,archive}) {
  const seed={
@@ -72,7 +72,7 @@ function InstitutionalHistory({rows,add,updateRecord,archive}) {
   finance:{financialYear:"2025-26",bankName:"Union Bank of India",branch:"Transport Nagar, Rewa",accountNumber:"481401010036579",ifsc:"UBIN0548146",upi:"9718346691@ptyes",auditorName:"CA Kapil Tiwari",auditorContact:"8527067812",booksStatus:"Audited accounts and supporting records are maintained as available. FY 2025-26 internal reconciliation / record completion can be updated here with audit references."},
   government:{udyam:"UDYAM-MP-38-0042763",msmeType:"Micro (2025-26), Services",udyogAadhaar:"MP38D0003317",esic:"81000588360001399",epfo:"MPJBP3643700000",digitalIndia:"REG2025070722444819",ncsEmployerId:"F7900E570628",ncsOrganizationId:"P20G74-0022474929830",lin:"1-2984-2321-4",mpJanAbhiyan:"NV2022REW0004",startupRegistration:"OI-0825-9266HS"},
   calendar:{complianceName:"Annual statutory / regulatory filings and renewals",authority:"Registrar / Income Tax / NGO Darpan / MCA or other applicable authority",dueDate:"",financialYear:"2025-26",status:"Pending — update each compliance item with its actual due date and filing acknowledgement",filingDate:"",acknowledgement:"",responsiblePerson:"Secretary / authorised compliance person",remarks:"Create separate calendar records for each applicable filing, renewal, notice or compliance event."},
-  history:{date:new Date().toISOString().slice(0,10),eventType:"Institution Formation / Compliance Record",title:"Swastik Srijan Foundation Samiti — Institutional Profile",referenceNo:"05/22/03/11448/13",description:"Registered on 30-12-2013 under the Madhya Pradesh Societies Registration Act, 1973. Institutional profile and compliance records are maintained in SSF Digital Office.",supportingDocument:"Registered Rules / Niyamavali; Registration Certificate; statutory certificates and filings",remarks:"Add future amendments, registrations, notices, renewals, certificates and compliance events here with their source documents."}
+  history:{date:new Date().toISOString().slice(0,10),eventType:"Institution Formation / Compliance Record",title:"Swastik Srijan Foundation Samiti — Institutional Profile",referenceNo:"05/22/03/11448/13",description:"Registered on 30-12-2013 under the Madhya Pradesh Societies Registration Act, 1973. Institutional profile and compliance records are maintained in SSF OneOffice (IMS).",supportingDocument:"Registered Rules / Niyamavali; Registration Certificate; statutory certificates and filings",remarks:"Add future amendments, registrations, notices, renewals, certificates and compliance events here with their source documents."}
  };
  const labels=[
   ["profile","🏢 Organization Profile / संस्था परिचय"],
@@ -156,12 +156,12 @@ function InstitutionalHistory({rows,add,updateRecord,archive}) {
   if(tab==="calendar")return <>{field("complianceName","Compliance / Return Name")}{field("authority","Authority")}{field("dueDate","Due Date","", "date")}{field("financialYear","Financial Year")}{field("status","Status")}{field("filingDate","Filing Date","","date")}{field("acknowledgement","Acknowledgement No.")}{field("responsiblePerson","Responsible Person")}{field("remarks","Remarks",true,"textarea")}</>;
   return <>{field("date","Date","","date")}{field("eventType","Document / Compliance Event Type")}{field("title","Document / Event Title")}{field("referenceNo","Document / Reference No.")}{field("description","Description / Details",true,"textarea")}{field("supportingDocument","Supporting Document / File Reference",true)}{field("remarks","Remarks",true,"textarea")}</>;
  };
- return <SimpleOfficeCard title="🏛️ Institution Profile & Compliance / संस्था परिचय एवं अनुपालन" subtitle="SSF Digital Office — master organisational profile, statutory registrations, governance, finance and compliance records.">
+ return <SimpleOfficeCard title="🏛️ Institution Profile & Compliance / संस्था परिचय एवं अनुपालन" subtitle="SSF OneOffice (IMS) — master organisational profile, statutory registrations, governance, finance and compliance records.">
   <div className="grid grid-cols-1 lg:grid-cols-[280px_minmax(0,1fr)] gap-5">
    <div className="bg-zinc-50 border rounded-2xl p-3 h-fit">{labels.map(([id,label])=><button key={id} type="button" onClick={()=>setTab(id)} className={"w-full text-left px-3 py-3 rounded-xl mb-1 font-bold "+(tab===id?"bg-[#12345A] text-white":"text-[#12345A] hover:bg-white")}>{label}</button>)}</div>
    <div className="min-w-0">
     <div className="bg-white border rounded-2xl overflow-hidden">
-     <div className="p-5 border-b"><h3 className="text-xl font-black text-[#12345A]">{labels.find(x=>x[0]===tab)?.[1]}</h3><p className="text-sm text-zinc-500 mt-1">{multiRecordTabs.has(tab)?"Multiple records are supported here. Use Save Record for a new entry and Edit to update an existing entry.":"Existing saved section data will be loaded here; unrelated Digital Office records are untouched."}</p></div>
+     <div className="p-5 border-b"><h3 className="text-xl font-black text-[#12345A]">{labels.find(x=>x[0]===tab)?.[1]}</h3><p className="text-sm text-zinc-500 mt-1">{multiRecordTabs.has(tab)?"Multiple records are supported here. Use Save Record for a new entry and Edit to update an existing entry.":"Existing saved section data will be loaded here; unrelated OneOffice (IMS) records are untouched."}</p></div>
      <form onSubmit={save} className="p-5 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{renderFields()}<div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2 pt-2"><button disabled={saving} className="bg-[#12345A] text-white px-6 py-3 rounded-xl font-bold">{saving?(editingId?"Updating…":"Saving…"):(editingId?"Update Record":"Save Record")}</button></div></form>
     </div>
     {notice&&<div className="mt-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-3 font-semibold">{notice}</div>}

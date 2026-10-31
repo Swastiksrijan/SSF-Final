@@ -2,7 +2,7 @@
 //
 // The sidebar shows only the 9 primary sections. Each section dashboard then
 // lists its modules as cards, grouped into labelled blocks. Items map to a
-// generic IMS resource, a custom page, an old Digital Office register, or are
+// generic IMS resource, a custom page, an old office register, or are
 // flagged `planned` (structure reserved, screen not built yet).
 //
 // Nothing is deleted: every existing register/page stays reachable. Where two

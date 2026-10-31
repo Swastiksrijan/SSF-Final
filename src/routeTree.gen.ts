@@ -23,7 +23,6 @@ import { Route as StoriesRouteImport } from './routes/Stories'
 import { Route as SkillProgramsRouteImport } from './routes/SkillPrograms'
 import { Route as SignupRouteImport } from './routes/Signup'
 import { Route as SSFNationalAcademyRouteImport } from './routes/SSFNationalAcademy'
-import { Route as SSFDigitalOfficeRouteImport } from './routes/SSFDigitalOffice'
 import { Route as RegistrationDetailsRouteImport } from './routes/RegistrationDetails'
 import { Route as RefundPolicyRouteImport } from './routes/RefundPolicy'
 import { Route as RefundAndCancellationRouteImport } from './routes/RefundAndCancellation'
@@ -186,11 +185,6 @@ const SignupRoute = SignupRouteImport.update({
 const SSFNationalAcademyRoute = SSFNationalAcademyRouteImport.update({
   id: '/SSFNationalAcademy',
   path: '/SSFNationalAcademy',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SSFDigitalOfficeRoute = SSFDigitalOfficeRouteImport.update({
-  id: '/SSFDigitalOffice',
-  path: '/SSFDigitalOffice',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RegistrationDetailsRoute = RegistrationDetailsRouteImport.update({
@@ -703,7 +697,6 @@ export interface FileRoutesByFullPath {
   '/RefundAndCancellation': typeof RefundAndCancellationRoute
   '/RefundPolicy': typeof RefundPolicyRoute
   '/RegistrationDetails': typeof RegistrationDetailsRoute
-  '/SSFDigitalOffice': typeof SSFDigitalOfficeRoute
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
   '/Signup': typeof SignupRoute
   '/SkillPrograms': typeof SkillProgramsRoute
@@ -812,7 +805,6 @@ export interface FileRoutesByTo {
   '/RefundAndCancellation': typeof RefundAndCancellationRoute
   '/RefundPolicy': typeof RefundPolicyRoute
   '/RegistrationDetails': typeof RegistrationDetailsRoute
-  '/SSFDigitalOffice': typeof SSFDigitalOfficeRoute
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
   '/Signup': typeof SignupRoute
   '/SkillPrograms': typeof SkillProgramsRoute
@@ -923,7 +915,6 @@ export interface FileRoutesById {
   '/RefundAndCancellation': typeof RefundAndCancellationRoute
   '/RefundPolicy': typeof RefundPolicyRoute
   '/RegistrationDetails': typeof RegistrationDetailsRoute
-  '/SSFDigitalOffice': typeof SSFDigitalOfficeRoute
   '/SSFNationalAcademy': typeof SSFNationalAcademyRoute
   '/Signup': typeof SignupRoute
   '/SkillPrograms': typeof SkillProgramsRoute
@@ -1035,7 +1026,6 @@ export interface FileRouteTypes {
     | '/RefundAndCancellation'
     | '/RefundPolicy'
     | '/RegistrationDetails'
-    | '/SSFDigitalOffice'
     | '/SSFNationalAcademy'
     | '/Signup'
     | '/SkillPrograms'
@@ -1144,7 +1134,6 @@ export interface FileRouteTypes {
     | '/RefundAndCancellation'
     | '/RefundPolicy'
     | '/RegistrationDetails'
-    | '/SSFDigitalOffice'
     | '/SSFNationalAcademy'
     | '/Signup'
     | '/SkillPrograms'
@@ -1254,7 +1243,6 @@ export interface FileRouteTypes {
     | '/RefundAndCancellation'
     | '/RefundPolicy'
     | '/RegistrationDetails'
-    | '/SSFDigitalOffice'
     | '/SSFNationalAcademy'
     | '/Signup'
     | '/SkillPrograms'
@@ -1365,7 +1353,6 @@ export interface RootRouteChildren {
   RefundAndCancellationRoute: typeof RefundAndCancellationRoute
   RefundPolicyRoute: typeof RefundPolicyRoute
   RegistrationDetailsRoute: typeof RegistrationDetailsRoute
-  SSFDigitalOfficeRoute: typeof SSFDigitalOfficeRoute
   SSFNationalAcademyRoute: typeof SSFNationalAcademyRoute
   SignupRoute: typeof SignupRoute
   SkillProgramsRoute: typeof SkillProgramsRoute
@@ -1530,13 +1517,6 @@ declare module '@tanstack/react-router' {
       path: '/SSFNationalAcademy'
       fullPath: '/SSFNationalAcademy'
       preLoaderRoute: typeof SSFNationalAcademyRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/SSFDigitalOffice': {
-      id: '/SSFDigitalOffice'
-      path: '/SSFDigitalOffice'
-      fullPath: '/SSFDigitalOffice'
-      preLoaderRoute: typeof SSFDigitalOfficeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/RegistrationDetails': {
@@ -2261,7 +2241,6 @@ const rootRouteChildren: RootRouteChildren = {
   RefundAndCancellationRoute: RefundAndCancellationRoute,
   RefundPolicyRoute: RefundPolicyRoute,
   RegistrationDetailsRoute: RegistrationDetailsRoute,
-  SSFDigitalOfficeRoute: SSFDigitalOfficeRoute,
   SSFNationalAcademyRoute: SSFNationalAcademyRoute,
   SignupRoute: SignupRoute,
   SkillProgramsRoute: SkillProgramsRoute,

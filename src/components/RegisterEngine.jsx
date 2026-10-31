@@ -1,4 +1,4 @@
-// SSF Digital Office — reusable Register Engine.
+// SSF OneOffice (IMS) — reusable Register Engine.
 //
 // One bilingual, audit-ready pattern for every register so the MIS never has to
 // change shape: bilingual headers, Add / Edit / View / Archive / Restore, search,
@@ -34,7 +34,7 @@ export const tablePdf = (title, columns, rows, filename) => {
   d.setFontSize(7); d.setTextColor(0, 35, 68); let x = 10; columns.forEach((c, i) => { d.text(String(c).slice(0, 26), x, y); x += colW[i]; }); y += 4;
   d.setTextColor(30);
   rows.forEach((r) => { x = 10; r.forEach((v, i) => { d.text(String(v == null ? "" : v).slice(0, 30), x, y); x += colW[i]; }); y += 4; if (y > 195) { d.addPage(); y = 20; } });
-  d.setFontSize(7); d.setTextColor(120); d.text("Computer-generated from SSF Digital Office financial records", 148, 205, { align: "center" });
+  d.setFontSize(7); d.setTextColor(120); d.text("Computer-generated from SSF OneOffice (IMS) financial records", 148, 205, { align: "center" });
   downloadPdf(d, filename);
 };
 

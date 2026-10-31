@@ -258,7 +258,7 @@ export function ImsData() {
       </Card>
 
       <Card className="mt-4 p-5">
-        <h2 className="text-sm font-bold text-slate-800">{hi ? 'पुराने Digital Office डेटा को IMS में लाएँ' : 'Import legacy Digital Office data into IMS'}</h2>
+        <h2 className="text-sm font-bold text-slate-800">{hi ? 'पुराने office डेटा को IMS में लाएँ' : 'Import legacy office data into IMS'}</h2>
         <p className="mt-1 text-sm text-slate-600">
           {hi
             ? 'यह केवल नए IMS अभिलेख जोड़ता है — पुराने किसी डेटा को बदलता या हटाता नहीं ("कुछ हटाना नहीं")। दोबारा चलाने पर दोहराव नहीं होता।'

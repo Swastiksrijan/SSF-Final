@@ -1,4 +1,4 @@
-// SSF Digital Office — Adjustment / Prior-period Entry Register (CORE-13).
+// SSF OneOffice (IMS) — Adjustment / Prior-period Entry Register (CORE-13).
 //
 // Corrections that come out of an audit or a book-closing: prior-period items,
 // reclassifications, rounding and depreciation adjustments. Nothing is ever

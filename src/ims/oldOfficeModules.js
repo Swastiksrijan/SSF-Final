@@ -1,5 +1,5 @@
-// Old SSF Digital Office module table (icons + bilingual labels).
-// Copied verbatim from SSFDigitalOffice.jsx so the ported components and the
+// Old SSF OneOffice (IMS) module table (icons + bilingual labels).
+// Copied verbatim from the original office app so the ported components and the
 // export helpers resolve the same labels.
 import { FaBook, FaChartLine, FaCalendarAlt, FaUsers, FaFileAlt, FaRupeeSign, FaTasks, FaUserShield, FaHistory, FaBoxes, FaIdCard, FaCertificate, FaHandshake, FaBalanceScale, FaUserTie, FaCheckCircle, FaPiggyBank } from "react-icons/fa";
 

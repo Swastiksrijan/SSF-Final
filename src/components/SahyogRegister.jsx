@@ -1,4 +1,4 @@
-// SSF Digital Office — Sahyog Register (INCM-04).
+// SSF OneOffice (IMS) — Sahyog Register (INCM-04).
 //
 // Founder / Office-Bearer / IT / Auditor / well-wisher support given to the
 // organisation without a receipt: cash, advance, rent, fee, utility, service,

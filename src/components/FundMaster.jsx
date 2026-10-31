@@ -1,4 +1,4 @@
-// SSF Digital Office — Fund / Project Master (MSTR-02).
+// SSF OneOffice (IMS) — Fund / Project Master (MSTR-02).
 //
 // Every rupee in the books belongs to a fund. This master defines those funds
 // (general/unrestricted, restricted, corpus, project-wise) so income and

@@ -46,7 +46,7 @@ const Header = () => {
     setUser(null);
     setAccountOpen(false);
   };
-  if (location.pathname === "/SSFDigitalOffice" || location.pathname === "/admin") return null;
+  if (location.pathname === "/admin") return null;
 
   const isActive = path => {
     if (path === "/") return location.pathname === "/";

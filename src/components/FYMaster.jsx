@@ -1,4 +1,4 @@
-// SSF Digital Office — Financial Year Master + Opening Balance (वित्तीय वर्ष मास्टर).
+// SSF OneOffice (IMS) — Financial Year Master + Opening Balance (वित्तीय वर्ष मास्टर).
 //
 // The FY spine of the MIS: one row per financial year with its opening balances
 // (carried from the previous audited year's closing), closing balances, general

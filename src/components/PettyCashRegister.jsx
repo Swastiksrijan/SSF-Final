@@ -1,4 +1,4 @@
-// SSF Digital Office — Petty Cash / Imprest Register (CORE-07).
+// SSF OneOffice (IMS) — Petty Cash / Imprest Register (CORE-07).
 //
 // Small day-to-day expenses that never touch the main cash book. Each entry
 // records whether cash was received into the imprest float or spent from it,

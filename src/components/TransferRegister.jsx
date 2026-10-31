@@ -1,4 +1,4 @@
-// SSF Digital Office — Bank / Cash Transfer Register (CORE-08).
+// SSF OneOffice (IMS) — Bank / Cash Transfer Register (CORE-08).
 //
 // Records money moving between our own accounts (cash -> bank, bank -> cash,
 // one bank account -> another) or between funds/projects. This is a transfer,

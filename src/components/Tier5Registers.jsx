@@ -1,4 +1,4 @@
-// SSF Digital Office — Tier 5: Compliance (COMP-04..10), Governance (GOVN-01..07),
+// SSF OneOffice (IMS) — Tier 5: Compliance (COMP-04..10), Governance (GOVN-01..07),
 // Donor management (DONR-01..05) and Risk / internal control (RISK-01..05).
 //
 // Every register is a thin RegisterEngine wrapper via the shared factory, so it

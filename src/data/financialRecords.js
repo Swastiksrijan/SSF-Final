@@ -1,4 +1,4 @@
-// SSF Digital Office - financial records, generated from the official
+// SSF OneOffice (IMS) - financial records, generated from the official
 // 'Swastik Srijan Foundation Samiti - Financial Records' workbook (FY 2025-26).
 // Registers are stored as {columns, rows} so the UI can render them generically.
 // Regenerate from the workbook rather than hand-editing large tables.

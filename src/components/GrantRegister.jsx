@@ -1,4 +1,4 @@
-// SSF Digital Office — Grant Register (INCM-06, domestic).
+// SSF OneOffice (IMS) — Grant Register (INCM-06, domestic).
 //
 // Domestic institutional grants: the agreement, amount sanctioned vs received,
 // the balance, and the utilisation-certificate (UC) due date. Foreign/FCRA

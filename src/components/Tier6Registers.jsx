@@ -1,4 +1,4 @@
-// SSF Digital Office — Tier 6: remaining registers from docs/finance-registers-plan.md
+// SSF OneOffice (IMS) — Tier 6: remaining registers from docs/finance-registers-plan.md
 //
 // Covers CORE-10..12 · INCM-02/05/07/09/11/12/13/14 · EXPN-02/06/07/08/09/10/13 ·
 // ASST-05/06/07/10/11/12/13 · BANK-01/03/04/05/06 · BUDG-02/03/05 ·

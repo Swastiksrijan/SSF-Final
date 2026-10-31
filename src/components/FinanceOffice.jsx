@@ -1,4 +1,4 @@
-// SSF Digital Office — Finance system.
+// SSF OneOffice (IMS) — Finance system.
 //
 // Built on the official financial-records workbook (see src/data/financialRecords.js).
 // The Master Voucher Register is treated as the single source of truth: every
@@ -118,7 +118,7 @@ function statementPdf(title, fy, tables) {
     t.rows.forEach((r) => { r.forEach((c, i) => d.text(String(c == null ? "" : c).slice(0, 40), 14 + i * 60, y)); y += 4.5; if (y > 285) { d.addPage(); y = 20; } });
     y += 6;
   });
-  d.setFontSize(8); d.setTextColor(120); d.text("Computer-generated from the official financial records · SSF Digital Office", 105, 290, { align: "center" });
+  d.setFontSize(8); d.setTextColor(120); d.text("Computer-generated from the official financial records · SSF OneOffice (IMS)", 105, 290, { align: "center" });
   downloadPdf(d, "ssf-" + title.toLowerCase().replace(/[^a-z]+/g, "-") + "-" + fy + ".pdf");
 }
 

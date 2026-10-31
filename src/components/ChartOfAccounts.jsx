@@ -1,4 +1,4 @@
-// SSF Digital Office — Chart of Accounts (COA / लेखा-शीर्ष मास्टर).
+// SSF OneOffice (IMS) — Chart of Accounts (COA / लेखा-शीर्ष मास्टर).
 //
 // The head master every register and statement will reference. Built on the
 // shared RegisterEngine so it carries bilingual headers + Add/Edit/View/Archive.

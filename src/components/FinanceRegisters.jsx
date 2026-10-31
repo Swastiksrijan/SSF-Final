@@ -1,8 +1,8 @@
-// SSF Digital Office — operational financial registers.
+// SSF OneOffice (IMS) — operational financial registers.
 //
 // These are the registers an audit-ready NGO is expected to keep *in addition*
 // to the core books (cash / bank / vouchers / donations / expenses). They are
-// fully editable and stored in the Digital Office database (module-wise), and
+// fully editable and stored in the OneOffice (IMS) database (module-wise), and
 // each carries the fields an auditor asks for:
 //
 //   fixedAssets     Fixed Asset Register (cost, depreciation, WDV)
@@ -41,7 +41,7 @@ const tablePdf = (title, columns, rows, filename) => {
   d.setFontSize(7); d.setTextColor(0, 35, 68); let x = 10; columns.forEach((c, i) => { d.text(String(c).slice(0, 26), x, y); x += colW[i]; }); y += 4;
   d.setTextColor(30);
   rows.forEach((r) => { x = 10; r.forEach((v, i) => { d.text(String(v == null ? "" : v).slice(0, 30), x, y); x += colW[i]; }); y += 4; if (y > 195) { d.addPage(); y = 20; } });
-  d.setFontSize(7); d.setTextColor(120); d.text("Computer-generated from SSF Digital Office financial records", 148, 205, { align: "center" });
+  d.setFontSize(7); d.setTextColor(120); d.text("Computer-generated from SSF OneOffice (IMS) financial records", 148, 205, { align: "center" });
   downloadPdf(d, filename);
 };
 
@@ -265,7 +265,7 @@ export function FinanceRegister({ regId, rows, add, archive }) {
           </tbody>
         </table></div>
       </div>
-      <p className="text-xs text-zinc-400">Ye register Digital Office database me save hota hai (module "{regId}"). Official workbook registers read-only hain; ye operational registers aap khud bharte hain.</p>
+      <p className="text-xs text-zinc-400">Ye register OneOffice (IMS) database me save hota hai (module "{regId}"). Official workbook registers read-only hain; ye operational registers aap khud bharte hain.</p>
     </div>
   );
 }
