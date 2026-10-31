@@ -29,7 +29,7 @@ const principles = [
 ];
 
 export default function SustainableLivelihoodPage() {
-  return <main className="min-h-screen bg-[#F7F9FC] text-[#26343D]">
+  return <>
     <section className="relative overflow-hidden bg-[#002344] text-white">
       <div className="absolute inset-0 opacity-20" style={{backgroundImage:"radial-gradient(circle at 15% 20%, #2d6a4f 0, transparent 32%), radial-gradient(circle at 85% 80%, #fb8500 0, transparent 28%)"}} />
       <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-36 md:px-8 md:pb-28 md:pt-44">
@@ -165,5 +165,5 @@ export default function SustainableLivelihoodPage() {
     <section className="bg-[#002344] px-5 py-16 text-center text-white md:px-8 md:py-20">
       <div className="mx-auto max-w-3xl"><GraduationCap className="mx-auto text-[#ffb347]" size={38}/><h2 className="mt-5 font-serif text-3xl font-bold md:text-4xl">A stronger foundation for lasting social impact</h2><p className="mt-5 leading-8 text-white/75">We welcome responsible business mentors, technical experts, buyers, producer groups, equipment partners and supporters who can help build sustainable livelihoods and strengthen community service.</p><div className="mt-8 flex flex-wrap justify-center gap-3"><Link to="/Contact" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] hover:bg-[#ffad4d]">Connect with SSF <ArrowRight size={18}/></Link><Link to="/GetInvolved" className="rounded-full border border-white/35 px-6 py-3 font-bold hover:bg-white/10">Get involved</Link></div><p className="mt-8 text-xs leading-6 text-white/50">This page describes a proposed initiative and potential activities. It is not a claim that all listed units are currently operational, funded, licensed or accepting orders. Each activity will begin only after feasibility, approvals and compliance checks.</p></div>
     </section>
-  </main>;
+  </>;
 }
