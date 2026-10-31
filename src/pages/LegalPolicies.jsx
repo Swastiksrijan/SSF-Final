@@ -344,8 +344,8 @@ export default function LegalPolicies() {
                             <p className="text-zinc-700"><strong>Registration:</strong> Registered under the Madhya Pradesh Societies Registration Act, 1973</p>
                             <p className="text-zinc-700"><strong>Registration Number:</strong> 11448/13</p>
                             <p className="text-zinc-700"><strong>Year of Establishment:</strong> 2013</p>
-                            <p className="text-zinc-700"><strong>80G Registration:</strong> Available for tax exemption on donations</p>
-                            <p className="text-zinc-700"><strong>12A Registration:</strong> Registered for income tax exemption</p>
+                            <p className="text-zinc-700"><strong>80G Status:</strong> Final approval application pending. No 80G deduction should be claimed unless a valid approval is in force for the donation date and the donation qualifies.</p>
+                            <p className="text-zinc-700"><strong>12AB Registration:</strong> Registered under the applicable income-tax provisions, subject to the terms and validity of the registration.</p>
                         </div>
                     </section>
 
