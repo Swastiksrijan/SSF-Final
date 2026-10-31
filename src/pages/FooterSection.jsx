@@ -134,7 +134,7 @@ export default function FooterSection() {
               <a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="flex min-w-0 items-start gap-3 hover:text-[#ffb347]">
                 <FaEnvelope className="mt-1 shrink-0 text-[#ffb347]" /><span className="break-all">{CONTACT_INFO.primaryEmail}</span>
               </a>
-              <a href={`tel:${CONTACT_INFO.phones.primary.replace(/\\s/g, "")}`} className="flex items-start gap-3 hover:text-[#ffb347]">
+              <a href={`tel:${CONTACT_INFO.phones.primary.replace(/\s/g, "")}`} className="flex items-start gap-3 hover:text-[#ffb347]">
                 <FaPhoneAlt className="mt-1 shrink-0 text-[#ffb347]" /><span>{CONTACT_INFO.phones.primaryFormatted}</span>
               </a>
               <a href={CONTACT_INFO.social.whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-start gap-3 hover:text-[#ffb347]">
