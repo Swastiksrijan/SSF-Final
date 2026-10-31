@@ -157,8 +157,8 @@ export default function AwarenessQuiz() {
           {error && <div role="alert" className="mt-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-semibold text-red-700">{error}</div>}
           <div className="mt-9">
             <div className="flex flex-wrap items-end justify-between gap-3">
-              <div><div className="text-xs font-black uppercase tracking-[0.18em] text-[#176447]">Take an assessment</div><h2 className="mt-2 text-2xl font-black text-[#12345A] md:text-3xl">Available Quiz / उपलब्ध प्रश्नोत्तरी</h2><p className="mt-1 text-sm text-slate-500">यहाँ केवल वही Quiz दिखाए जाते हैं जो वर्तमान में सर्वर पर उपलब्ध हैं।</p></div>
-              <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800">{quiz ? "1 Published Quiz" : "Checking availability"}</span>
+              <div><div className="text-xs font-black uppercase tracking-[0.18em] text-[#176447]">Take an assessment</div><h2 className="mt-2 text-2xl font-black text-[#12345A] md:text-3xl">Available Quiz / उपलब्ध प्रश्नोत्तरी</h2><p className="mt-1 text-sm text-slate-500">नीचे सात प्रकाशित Quiz उपलब्ध हैं—एक सामान्य जागरूकता और छह विषयवार प्रश्नोत्तरी।</p></div>
+              <span className="rounded-full bg-emerald-50 px-3 py-1.5 text-xs font-bold text-emerald-800">{quizCatalog.length ? `${quizCatalog.length} Published Quizzes` : "Checking availability"}</span>
             </div>
             <div className="mt-5 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               {quizCatalog.length ? quizCatalog.map((item) => {
@@ -168,17 +168,17 @@ export default function AwarenessQuiz() {
                   <div className="flex items-start justify-between gap-3"><span className="rounded-xl bg-blue-50 p-3 text-2xl text-[#123F68]">{isGeneral ? "🌐" : item.subject === "samvidhan" ? "⚖️" : item.subject === "yojana" ? "🏛️" : item.subject === "swasthya" ? "🩺" : item.subject === "gk" ? "📚" : item.subject === "english-word" ? "🔤" : "🌱"}</span><span className="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-black uppercase tracking-wide text-emerald-800">Available now</span></div>
                   <h3 className="mt-4 text-lg font-black text-[#12345A]">{item.title.en}</h3><p className="mt-1 text-sm font-semibold text-slate-500">{item.title.hi}</p>
                   <p className="mt-3 flex-1 text-sm leading-6 text-slate-600">{item.description?.en || subject[0]}</p>
-                  <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold text-slate-500"><span className="rounded-lg bg-slate-50 px-3 py-2">{isGeneral ? "10" : "6"} Questions</span><span className="rounded-lg bg-slate-50 px-3 py-2">80% Pass Mark</span><span className="rounded-lg bg-slate-50 px-3 py-2">Free</span></div>
+                  <div className="mt-4 flex flex-wrap gap-2 text-xs font-bold text-slate-500"><span className="rounded-lg bg-slate-50 px-3 py-2">{item.questionCount || (isGeneral ? 10 : 6)} Questions</span><span className="rounded-lg bg-slate-50 px-3 py-2">80% Pass Mark</span><span className="rounded-lg bg-slate-50 px-3 py-2">Free</span></div>
                   <button type="button" onClick={() => chooseQuiz(item.quizId)} className="mt-5 w-full rounded-xl bg-[#176447] px-4 py-3 text-sm font-black text-white hover:bg-[#12543B]">Start this Quiz <FaArrowRight className="ml-2 inline" /></button>
                 </article>;
               }) : <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-8 text-center text-sm text-slate-500">Quiz catalogue is loading…</div>}
-            </div>/div>
+            </div>
           </div>
 
           <div className="mt-10">
             <div className="text-xs font-black uppercase tracking-[0.18em] text-[#176447]">Explore by subject</div>
             <h2 className="mt-2 text-2xl font-black text-[#12345A] md:text-3xl">Learning Categories / सीखने के विषय</h2>
-            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-500">इन विषयों के learning courses और resources SSF Learning Hub में उपलब्ध हैं। इन सभी के लिए अलग-अलग Quiz अभी उपलब्ध होने का दावा नहीं किया जा रहा है।</p>
+            <p className="mt-1 max-w-3xl text-sm leading-6 text-slate-500">इनमें से छह विषयों की Quiz ऊपर उपलब्ध हैं। अन्य विषयों के Courses और Learning Resources SSF Learning Hub में देखें।</p>
             <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
               {[
                 ["📚","Education & General Knowledge","शिक्षा एवं सामान्य ज्ञान"],
