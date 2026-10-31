@@ -9,7 +9,7 @@ import PageHero from "../components/PageHero";
 import { Field, Input, Textarea, SubmitButton } from "../components/forms/FormUI";
 
 export default function Contact() {
-  const [formData, setFormData] = useState({ firstName: "", lastName: "", email: "", phone: "", message: "" });
+  const [formData, setFormData] = useState({ firstName: "", lastName: "", email: "", phone: "", enquiryType: "General enquiry", organisation: "", message: "" });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState({ show: false, type: "", message: "" });
 
@@ -35,13 +35,13 @@ export default function Contact() {
       const response = await fetch(ENDPOINTS.CONTACT, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({ ...formData, message: `Enquiry type: ${formData.enquiryType}\nOrganisation: ${formData.organisation || "Not provided"}\n\n${formData.message}` }),
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || "Unable to submit right now.");
 
       showToast("success", "Message successfully submitted!");
-      setFormData({ firstName: "", lastName: "", email: "", phone: "", message: "" });
+      setFormData({ firstName: "", lastName: "", email: "", phone: "", enquiryType: "General enquiry", organisation: "", message: "" });
     } catch (error) {
       console.error("Contact form error:", error);
       showToast("error", error.message || "Failed to send message. Please try again!");
@@ -104,7 +104,7 @@ export default function Contact() {
 
             <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6">
               <p className="font-bold text-[#12345A] mb-2">WhatsApp Support 📲</p>
-              <p className="text-sm text-zinc-600 leading-relaxed">You are encouraged to send us a message on WhatsApp for faster response.</p>
+              <p className="text-sm text-zinc-600 leading-relaxed">You are encouraged to send us a message on WhatsApp for faster response.</p><a href={CONTACT_INFO.social.whatsapp} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#176447] px-5 py-3 text-sm font-bold text-white">WhatsApp the Foundation</a>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4">
@@ -125,6 +125,8 @@ export default function Contact() {
               </div>
               <Field label="Email Address" required><Input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="jane@example.com" /></Field>
               <Field label="Mobile Number"><Input name="phone" type="tel" inputMode="numeric" value={formData.phone} onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value.replace(/\D/g, "") }))} placeholder="Enter mobile number" /></Field>
+              <Field label="Enquiry Type"><select name="enquiryType" value={formData.enquiryType} onChange={handleChange} className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-[#12345A] focus:border-[#176447] focus:outline-none"><option>General enquiry</option><option>CSR / Corporate funding</option><option>Government grant / institutional project</option><option>Individual donation / recurring support</option><option>Machinery / production unit / equipment</option><option>Raw material / workspace / vehicle / in-kind support</option><option>Business partnership / buyer / purchase order</option><option>NGO / academic / institutional partnership</option><option>Volunteer / professional expertise</option></select></Field>
+              <Field label="Company / Organisation (optional)"><Input name="organisation" value={formData.organisation} onChange={handleChange} placeholder="Company, institution or organisation name" /></Field>
               <Field label="Message" required><Textarea name="message" value={formData.message} onChange={handleChange} rows={5} minLength={10} placeholder="How can we help you today?" /></Field>
               <SubmitButton busy={isSubmitting} busyLabel="Submitting…"><span>Send Message</span><Send className="w-5 h-5" /></SubmitButton>
             </form>
