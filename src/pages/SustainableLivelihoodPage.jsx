@@ -35,8 +35,8 @@ export default function SustainableLivelihoodPage() {
       <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-36 md:px-8 md:pb-28 md:pt-44">
         <p className="mb-4 text-xs font-bold uppercase tracking-[.28em] text-[#ffb347]">Swastik Srijan Foundation Samiti · Long-term sustainability initiative</p>
         <div className="max-w-4xl">
-          <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Sustainable Livelihood & Social Enterprise Initiative</h1>
-          <p className="mt-4 text-xl font-semibold text-white/90">स्थायी आजीविका एवं सामाजिक उद्यम पहल</p>
+          <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Social Enterprises & Livelihoods</h1>
+          <p className="mt-4 text-xl font-semibold text-white/90">संस्था के प्रस्तावित व्यवसाय, उत्पादन, सेवाएँ और रोजगार के अवसर</p>
           <p className="mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-lg">Building responsible, income-generating activities whose lawful surplus can strengthen the Foundation’s social mission—so education, health, skills, rural development and community service can continue with greater financial resilience.</p>
           <div className="mt-9 flex flex-wrap gap-3">
             <a href="#roadmap" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] hover:bg-[#ffad4d]">Explore the roadmap <ArrowRight size={18}/></a>
@@ -62,7 +62,7 @@ export default function SustainableLivelihoodPage() {
 
     <section className="bg-white py-16 md:py-20">
       <div className="mx-auto max-w-7xl px-5 md:px-8">
-        <div className="max-w-3xl"><p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">Opportunity portfolio</p><h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">A broad list of potential activities</h2><p className="mt-4 leading-7 text-slate-600">This is a long-term opportunity bank, not a promise to launch every activity. Each unit will be screened for demand, capital, margins, skills, licences and environmental impact before approval.</p></div>
+        <div className="max-w-3xl"><p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">Opportunity portfolio</p><h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">संस्था के लिए संभावित व्यवसायों और आय-सृजन कार्यों की विस्तृत सूची</h2><p className="mt-4 leading-7 text-slate-600">This is a long-term opportunity bank, not a promise to launch every activity. Each unit will be screened for demand, capital, margins, skills, licences and environmental impact before approval.</p></div>
         <div className="mt-10 grid gap-5 md:grid-cols-2">
           {sectors.map(({icon:Icon,title,hindi,items})=><article key={title} className="rounded-2xl border border-slate-200 bg-[#FBFCFE] p-6 transition hover:-translate-y-0.5 hover:shadow-lg"><div className="flex items-start gap-4"><div className="rounded-xl bg-[#EAF2EE] p-3 text-[#2d6a4f]"><Icon size={25}/></div><div><h3 className="text-lg font-extrabold text-[#002344]">{title}</h3><p className="mt-1 text-sm font-semibold text-[#2d6a4f]">{hindi}</p></div></div><ul className="mt-5 grid gap-2 sm:grid-cols-2">{items.map(item=><li key={item} className="flex gap-2 text-sm leading-6 text-slate-600"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#fb8500]"/>{item}</li>)}</ul><p className="mt-5 border-t border-slate-200 pt-4 text-sm font-semibold leading-6 text-[#2d6a4f]">इसके अतिरिक्त: इस क्षेत्र से संबंधित अन्य सभी वैध एवं उपयोगी कार्य, उत्पाद, सेवाएँ, व्यापार, प्रशिक्षण, नवाचार तथा भविष्य में विकसित होने वाली गतिविधियाँ भी—इत्यादि।</p></article>)}
         </div>
