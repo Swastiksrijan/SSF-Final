@@ -1,5 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import SustainableLivelihoodContent from "./SustainableLivelihoodPage";
+import qrCode from "../assets/barcode.jpg";
+import { motion } from "framer-motion";
 import { ArrowRight, Building2, Landmark, HandHeart, Factory, GraduationCap, HeartPulse, Sprout, Users, FileText, ShieldCheck, ClipboardList, PackageCheck, Handshake, IndianRupee, BriefcaseBusiness, BadgeCheck } from "lucide-react";
 
 const fundingRoutes = [
@@ -29,6 +31,15 @@ const proposalPack = [
 ];
 
 export default function FundingPartnershipsPage() {
+  const sharePage = async () => {
+    const shareData = { title: "Sustainable Development | Swastik Srijan Foundation Samiti", text: "Explore our funding, partnerships, livelihood and community development initiatives.", url: window.location.href };
+    if (navigator.share) {
+      try { await navigator.share(shareData); } catch (error) { if (error?.name !== "AbortError") console.error("Share failed", error); }
+    } else if (navigator.clipboard?.writeText) {
+      await navigator.clipboard.writeText(window.location.href);
+      window.alert("Page link copied. You can now share it.");
+    }
+  };
   return <main className="min-h-screen bg-[#F7F9FC] text-[#26343D]">
     <section className="relative overflow-hidden bg-[#002344] text-white">
       <div className="absolute inset-0 opacity-20" style={{backgroundImage:"radial-gradient(circle at 15% 20%, #2d6a4f 0, transparent 32%), radial-gradient(circle at 85% 80%, #fb8500 0, transparent 28%)"}} />
@@ -41,6 +52,7 @@ export default function FundingPartnershipsPage() {
           <div className="mt-9 flex flex-wrap gap-3">
             <a href="#funding-options" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] hover:bg-[#ffad4d]">Explore support options <ArrowRight size={18}/></a>
             <Link to="/Contact" className="inline-flex items-center gap-2 rounded-full border border-white/35 px-6 py-3 font-bold text-white hover:bg-white/10">Submit a partnership enquiry</Link>
+            <button type="button" onClick={sharePage} className="inline-flex items-center gap-2 rounded-full border border-white/35 px-6 py-3 font-bold text-white hover:bg-white/10">Share this page</button>
           </div>
         </div>
         <div className="mt-14 grid gap-3 sm:grid-cols-3">
@@ -58,6 +70,42 @@ export default function FundingPartnershipsPage() {
       <div className="mt-10 grid gap-5 md:grid-cols-2">
         {projects.map(({icon:Icon,title,desc,use})=><article key={title} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm"><div className="flex items-start gap-4"><div className="rounded-xl bg-[#EAF2EE] p-3 text-[#2d6a4f]"><Icon size={25}/></div><div><h3 className="text-lg font-extrabold text-[#002344]">{title}</h3><p className="mt-2 text-sm leading-6 text-slate-600">{desc}</p></div></div><div className="mt-5 rounded-xl bg-[#F7F9FC] p-4"><p className="text-xs font-black uppercase tracking-wider text-[#2d6a4f]">Possible use of support</p><p className="mt-2 text-sm leading-6 text-slate-700">{use}</p></div></article>)}
       </div>
+    </section>
+
+
+    <section id="support-ssf" className="relative overflow-hidden bg-[#F1F6F3] px-5 py-16 md:px-8 md:py-20 scroll-mt-24">
+      <motion.div initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.15 }} transition={{ duration: 0.65 }} className="mx-auto max-w-7xl">
+        <div className="mx-auto max-w-3xl text-center">
+          <p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">Your support creates impact</p>
+          <h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">Donate Now / Support Our Mission</h2>
+          <p className="mt-4 leading-8 text-slate-600">Swastik Srijan Foundation Samiti welcomes responsible support for education, health, skills, youth, environment and community development. Choose a secure online payment or direct bank/UPI transfer.</p>
+        </div>
+        <div className="mt-10 grid gap-5 lg:grid-cols-2">
+          <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }} className="rounded-3xl bg-[#002344] p-7 text-white shadow-xl md:p-9">
+            <HandHeart size={34} className="text-[#ffb347]"/>
+            <p className="mt-4 text-xs font-bold uppercase tracking-[.2em] text-[#ffb347]">Fast & secure</p>
+            <h3 className="mt-2 font-serif text-3xl font-bold">Online Donation</h3>
+            <p className="mt-3 text-sm leading-7 text-white/75">Pay securely through the Foundation’s existing Razorpay payment page. Available payment methods are shown on the Razorpay checkout.</p>
+            <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" className="mt-7 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#fb8500] px-6 py-4 font-extrabold text-[#17212b] hover:bg-[#ffad4d]">Donate Now / Support SSF <ArrowRight size={18}/></a>
+            <p className="mt-4 text-xs text-white/55">Please confirm the beneficiary shown on the payment page before completing payment.</p>
+          </motion.div>
+          <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ duration: 0.6, delay: 0.1 }} className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm md:p-9">
+            <Landmark size={32} className="text-[#2d6a4f]"/>
+            <h3 className="mt-4 font-serif text-2xl font-bold text-[#002344]">Bank Transfer & Paytm / UPI</h3>
+            <div className="mt-5 divide-y divide-slate-100 rounded-2xl border border-slate-200">
+              <div className="p-4"><p className="text-xs text-slate-500">Account Name / Beneficiary</p><p className="mt-1 font-bold text-[#002344]">Swastik Srijan Foundation Samiti</p></div>
+              <div className="p-4"><p className="text-xs text-slate-500">Bank</p><p className="mt-1 font-bold text-[#002344]">Union Bank of India</p></div>
+              <div className="p-4"><p className="text-xs text-slate-500">Account Number</p><p className="mt-1 break-all font-mono font-bold text-[#002344]">481401010036579</p></div>
+              <div className="p-4"><p className="text-xs text-slate-500">IFSC</p><p className="mt-1 font-mono font-bold text-[#002344]">UBIN0548146</p></div>
+            </div>
+            <div className="mt-4 flex flex-wrap items-center gap-4 rounded-2xl border border-dashed border-[#C9DDD1] bg-[#F7F9FC] p-4">
+              <img src={qrCode} alt="Swastik Srijan Foundation Samiti UPI payment QR code" className="h-24 w-24 rounded-xl border border-slate-200 bg-white object-contain"/>
+              <div className="min-w-0 flex-1"><p className="font-bold text-[#002344]">Scan to Pay</p><p className="mt-1 text-xs text-slate-600">Use the existing official QR scanner.</p><p className="mt-3 text-xs font-semibold text-slate-500">Paytm mobile number</p><a href="tel:9718346691" className="text-xl font-black tracking-wide text-[#2d6a4f]">9718346691</a></div>
+            </div>
+            <p className="mt-4 text-xs leading-6 text-slate-500">Before confirming a bank transfer, verify that the beneficiary name displayed by your bank matches the account’s actual registered name. Please share transaction details with the Foundation for acknowledgement.</p>
+          </motion.div>
+        </div>
+      </motion.div>
     </section>
 
     <section id="funding-options" className="scroll-mt-24 bg-white py-16 md:py-20">
