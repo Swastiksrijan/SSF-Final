@@ -112,7 +112,9 @@ router.get('/admin/complaints', adminOnly, async (req, res) => {
   try {
     const status = clean(req.query.status, 40);
     const where = statuses.has(status) ? { status } : {};
-    const rows = await Complaint.findAll({ where, order: [['createdAt', 'DESC']], limit: 300 });
+    // Keep the complete register: resolved/closed rows remain stored and visible.
+    // Do not cap the register at the latest 300 complaints.
+    const rows = await Complaint.findAll({ where, order: [['createdAt', 'DESC']] });
     return res.json({ total: rows.length, complaints: rows });
   } catch (error) {
     if (databaseUnavailableResponse(res, error)) return;
