@@ -52,7 +52,7 @@ export default function FooterSection() {
         </div>
       </div>
       <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-7 sm:py-14 lg:px-8">
-        <div className="grid gap-10 border-b border-white/15 pb-10 lg:grid-cols-[1.35fr_2.65fr] lg:gap-14">
+        <div className="grid gap-10 border-b border-white/15 pb-10 lg:grid-cols-[minmax(0,1.25fr)_repeat(5,minmax(0,1fr))] lg:gap-14">
           <div>
             <Link to="/" className="inline-flex items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffb347]">
               <img src={logoImg} alt="Swastik Srijan Foundation Samiti logo" className="h-16 w-16 rounded-full bg-white p-1.5 object-contain shadow-lg" />
@@ -80,58 +80,65 @@ export default function FooterSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-4 sm:gap-x-6">
-            <nav aria-label="About the Foundation">
-              <h3 className={headingClass + " min-h-10"}>The Foundation</h3>
-              <ul className="space-y-2.5">
-                <FooterLink to="/About">About SSF</FooterLink>
-                <FooterLink to="/Mission">Mission & Vision</FooterLink>
-                <FooterLink to="/Objectives">Objectives</FooterLink>
-                <FooterLink to="/Team">Our Team</FooterLink>
-                <FooterLink to="/Humanity&Truth">Humanity & Truth</FooterLink>
-                <FooterLink to="/Journey">Service Journey</FooterLink>
-                <FooterLink to="/Transparency">Transparency & Records</FooterLink>
-              </ul>
-            </nav>
+          <nav aria-label="About the Foundation" className="min-w-0">
+            <h3 className={headingClass + " min-h-10"}>The Foundation</h3>
+            <ul className="space-y-2.5">
+              <FooterLink to="/About">About SSF</FooterLink>
+              <FooterLink to="/Mission">Mission & Vision</FooterLink>
+              <FooterLink to="/Objectives">Objectives</FooterLink>
+              <FooterLink to="/Team">Our Team</FooterLink>
+              <FooterLink to="/Humanity&Truth">Humanity & Truth</FooterLink>
+              <FooterLink to="/Journey">Service Journey</FooterLink>
+              <FooterLink to="/Transparency">Transparency & Records</FooterLink>
+            </ul>
+          </nav>
 
-            <nav aria-label="Programs and activities">
-              <h3 className={headingClass + " min-h-10"}>Programs & Work</h3>
-              <ul className="space-y-2.5">
-                <FooterLink to="/OurInitiatives">Initiatives</FooterLink>
-                <FooterLink to="/LearningHub">Learning Hub</FooterLink>
-                <FooterLink to="/HelpCentre">Digital Help Centre</FooterLink>
-                <FooterLink to="/Impact">Impact & Outcomes</FooterLink>
-                <FooterLink to="/Campaigns">Campaigns</FooterLink>
-                <FooterLink to="/Blog">Blog & Stories</FooterLink>
-                <FooterLink to="/UpcomingProjects">Future Projects</FooterLink>
-              </ul>
-            </nav>
+          <nav aria-label="Programs and activities" className="min-w-0">
+            <h3 className={headingClass + " min-h-10"}>Programs & Work</h3>
+            <ul className="space-y-2.5">
+              <FooterLink to="/OurInitiatives">Initiatives</FooterLink>
+              <FooterLink to="/LearningHub">Learning Hub</FooterLink>
+              <FooterLink to="/HelpCentre">Digital Help Centre</FooterLink>
+              <FooterLink to="/Impact">Impact & Outcomes</FooterLink>
+              <FooterLink to="/Campaigns">Campaigns</FooterLink>
+              <FooterLink to="/Blog">Blog & Stories</FooterLink>
+              <FooterLink to="/UpcomingProjects">Future Projects</FooterLink>
+            </ul>
+          </nav>
 
-            <nav aria-label="Sustainable development and livelihoods">
-              <h3 className={headingClass + " min-h-10"}>Sustainable Development</h3>
-              <ul className="space-y-2.5">
-                <FooterLink to="/SustainableDevelopment">Sustainable Development</FooterLink>
-              </ul>
-            </nav>
+          <nav aria-label="Sustainable development" className="min-w-0">
+            <h3 className={headingClass + " min-h-10"}>Sustainable Development</h3>
+            <ul className="space-y-2.5">
+              <FooterLink to="/SustainableDevelopment">Development Model</FooterLink>
+              <FooterLink to="/SocialEnterprises">Social Enterprises</FooterLink>
+              <FooterLink to="/DevelopmentImpact">Impact & Reports</FooterLink>
+              <FooterLink to="/UpcomingProjects">Future Livelihood Projects</FooterLink>
+            </ul>
+          </nav>
 
-            <div className="col-span-2 sm:col-span-1">
-              <nav aria-label="Support and participation">
-                <h3 className={headingClass + " min-h-10"}>Support & Participate</h3>
-                <ul className="space-y-2.5">
-                  <FooterLink to="/FundingPartnerships">Funding & CSR Opportunities</FooterLink>
-                  <FooterLink to="/Campaigns">Campaigns & Appeals</FooterLink>
-                    <FooterLink to="/PartnerOutreach">Donor & CSR Outreach Desk</FooterLink>
-                  <FooterLink to="/Volunteer">Volunteer</FooterLink>
-                  <FooterLink to="/Members">Membership</FooterLink>
-                  <FooterLink to="/Internship">Internship</FooterLink>
-                  <FooterLink to="/GetInvolved">Join & Participate</FooterLink>
-                  <FooterLink to="/Donate">Donate / Support</FooterLink>
-                  <FooterLink to="/Contact">Contact & Enquiry</FooterLink>
-                  <FooterLink to="/ComplaintGrievance">Complaint & Grievance Redressal</FooterLink>
-                </ul>
-              </nav>
-            </div>
-          </div>
+          <nav aria-label="Funding and support" className="min-w-0">
+            <h3 className={headingClass + " min-h-10"}>Funding & Support</h3>
+            <ul className="space-y-2.5">
+              <FooterLink to="/FundingPartnerships">Funding & CSR</FooterLink>
+              <FooterLink to="/Donor">Donor Registration</FooterLink>
+              <FooterLink to="/CSRPartnership">Corporate Partnership</FooterLink>
+              <FooterLink to="/PartnerOutreach">Outreach Desk</FooterLink>
+              <FooterLink to="/Campaigns">Campaigns & Appeals</FooterLink>
+              <FooterLink to="/Donate">Donate / Support</FooterLink>
+            </ul>
+          </nav>
+
+          <nav aria-label="Get involved and help" className="min-w-0">
+            <h3 className={headingClass + " min-h-10"}>Get Involved & Help</h3>
+            <ul className="space-y-2.5">
+              <FooterLink to="/Volunteer">Volunteer</FooterLink>
+              <FooterLink to="/Members">Membership</FooterLink>
+              <FooterLink to="/Internship">Internship</FooterLink>
+              <FooterLink to="/GetInvolved">Join & Participate</FooterLink>
+              <FooterLink to="/Contact">Contact & Enquiry</FooterLink>
+              <FooterLink to="/ComplaintGrievance">Grievance Redressal</FooterLink>
+            </ul>
+          </nav>
         </div>
 
         <div className="border-b border-white/15 py-9">

@@ -106,8 +106,8 @@ const Header = () => {
           </span>
         </Link>
 
-        <nav aria-label="Main navigation" className="hidden 2xl:flex flex-1 min-w-0 items-center justify-between gap-1 px-1">
-          {navItems.slice(0, 6).map(item => (
+        <nav aria-label="Main navigation" className="hidden xl:flex flex-1 min-w-0 items-center justify-between gap-1 px-1">
+          {navItems.slice(0, 5).map(item => (
             <div key={item.name} className="relative group">
               <Link to={item.path} data-active={isActive(item.path)} className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">
                 {item.name}{item.subItems && <IoIosArrowDown className="text-[10px] shrink-0" />}
@@ -117,7 +117,12 @@ const Header = () => {
           ))}
           <div className="relative group">
             <button type="button" aria-haspopup="true" className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">More <IoIosArrowDown className="text-[10px]" /></button>
-            <div className="absolute top-full right-0 w-64 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2">
+            <div className="absolute top-full right-0 w-64 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2 max-h-[75vh] overflow-y-auto">
+              <Link to="/FundingPartnerships" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Funding & Partnerships</Link>
+              <Link to="/Donor" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Become a Donor / Donor Registration</Link>
+              <Link to="/CSRPartnership" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">CSR & Corporate Partnership</Link>
+              <Link to="/PartnerOutreach" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Donor & CSR Outreach Desk</Link>
+              <Link to="/DevelopmentImpact" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Impact & Transparency Reports</Link>
               <Link to="/Impact" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Impact</Link>
               <Link to="/ComplaintGrievance" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Complaints & Grievance</Link>
               <Link to="/Media" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Gallery</Link>
@@ -134,12 +139,12 @@ const Header = () => {
 
           <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" aria-label="Open donation page" className="ssf-nav-donate inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-black text-[13px] tracking-[0.03em] whitespace-nowrap transition-transform hover:-translate-y-0.5"><FaHeart className="text-[12px]" /> Donate Now</a>
 
-          <button aria-label={menuOpen ? "Close menu" : "Open menu"} className={`2xl:hidden text-2xl p-2 rounded-xl text-white hover:bg-white/10`} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <HiX /> : <HiOutlineMenu />}</button>
+          <button aria-label={menuOpen ? "Close menu" : "Open menu"} className={`xl:hidden text-2xl p-2 rounded-xl text-white hover:bg-white/10`} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <HiX /> : <HiOutlineMenu />}</button>
         </div>
       </div>
     </div>
 
-    {menuOpen && <div className={`2xl:hidden fixed inset-0 ${isScrolled ? "top-20" : "top-[114px]"} bg-white z-40 overflow-y-auto pb-20`}><nav className="p-5 sm:p-6">
+    {menuOpen && <div className={`xl:hidden fixed inset-0 ${isScrolled ? "top-20" : "top-[114px]"} bg-white z-40 overflow-y-auto pb-20`}><nav className="p-5 sm:p-6">
       <div className="mb-5 rounded-2xl bg-[#12345A] text-white p-4">
         <p className="text-[10px] uppercase tracking-[0.16em] text-[#F7A814] font-black mb-3">Official Contact</p>
         <div className="space-y-2.5 text-sm"><a href="https://wa.me/919718346691" target="_blank" rel="noreferrer" className="flex items-center gap-3"><FaPhoneAlt className="text-[#F7A814]" /> +91 97183 46691</a><a href="mailto:info@swastiksrijan.in" className="flex items-center gap-3"><FaEnvelope className="text-[#F7A814]" /> info@swastiksrijan.in</a><div className="flex items-center gap-3 text-[#EAF0F6]"><FaMapMarkerAlt className="text-[#F7A814]" /> Rewa, Madhya Pradesh, India</div></div>
