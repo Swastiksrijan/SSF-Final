@@ -43,7 +43,7 @@ export default function CampaignsPage() {
   };
 
   return <section className="min-h-screen bg-white font-inria">
-    <PageHero image="/images/uploads/our-campaigns-collage.jpg" title="Our Campaigns | हमारे अभियान" subtitle="SSF के सभी प्रमुख पंजीकृत उद्देश्य क्षेत्रों के लिए अलग-अलग सहयोग अभियान।" hindiSubtitle="अपनी पसंद का उद्देश्य चुनें, सहयोग करें और अभियान को अपने नेटवर्क तक पहुँचाएँ।" />
+    <PageHero image="/images/real/community-education-meeting.jpg" title="Our Campaigns | हमारे अभियान" subtitle="SSF के सभी प्रमुख पंजीकृत उद्देश्य क्षेत्रों के लिए अलग-अलग सहयोग अभियान।" hindiSubtitle="अपनी पसंद का उद्देश्य चुनें, सहयोग करें और अभियान को अपने नेटवर्क तक पहुँचाएँ।" />
     <div className="bg-[#002344] px-5 py-10 text-white"><div className="mx-auto grid max-w-7xl gap-6 md:grid-cols-[1fr_auto] md:items-center"><div><p className="text-xs font-black uppercase tracking-[.2em] text-[#ffb347]">10 objective areas · 10 campaign themes</p><h2 className="mt-2 text-2xl font-black md:text-3xl">एक उद्देश्य चुनें, उसके लिए आवाज़ उठाएँ</h2><p className="mt-2 max-w-3xl text-sm leading-7 text-white/75">ये संस्था के व्यापक पंजीकृत उद्देश्य क्षेत्रों पर आधारित प्रस्तावित अभियान हैं। गतिविधियाँ संसाधन, समुदाय की आवश्यकता, व्यवहार्यता और आवश्यक अनुमतियों के अनुसार शुरू होंगी।</p></div><a href={RAZORPAY_LINK} target="_blank" rel="noopener noreferrer" className="inline-flex items-center justify-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-extrabold text-[#17212b]">Donate via Razorpay <FaArrowRight/></a></div></div>
 
     <div className="bg-gradient-to-b from-white to-[#EAF0F6] py-16 md:py-20"><div className="mx-auto max-w-7xl px-5">
