@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { CheckCircle, XCircle, X, Mail, Phone, MapPin, Send, ExternalLink, MessageCircle, Clock, Building2 } from "lucide-react";
+import { CheckCircle, XCircle, X, Mail, Phone, MapPin, Send, ExternalLink, Clock } from "lucide-react";
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { FaArrowRight } from "react-icons/fa";
@@ -81,7 +81,7 @@ export default function Contact() {
                 <div className="w-12 h-12 bg-blue-50 rounded-2xl flex items-center justify-center text-[#12345A] shrink-0"><Mail className="w-5 h-5" /></div>
                 <div>
                   <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-2">Email Support</p>
-                  <button onClick={() => copyToClipboard(CONTACT_INFO.primaryEmail, "Email")} className="text-[#12345A] text-lg font-semibold hover:text-[#176447] break-all text-left">{CONTACT_INFO.primaryEmail}</button>
+                  <a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="text-[#12345A] text-lg font-semibold hover:text-[#176447] break-all">{CONTACT_INFO.primaryEmail}</a>
                   <div className="mt-2 flex flex-wrap items-center gap-3 text-xs"><a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="font-bold text-[#176447] hover:underline">Send an email</a><button type="button" onClick={() => copyToClipboard(CONTACT_INFO.primaryEmail, "Email")} className="text-zinc-500 underline underline-offset-2 hover:text-[#12345A]">Copy email</button></div>
                 </div>
               </div>
@@ -119,14 +119,14 @@ export default function Contact() {
               <h3 className="text-2xl md:text-3xl font-black text-[#12345A]">Send us a Message</h3>
               <p className="text-sm text-zinc-500 mt-2">Share the details below and select the enquiry category that best matches your request. Please do not include passwords, OTPs, bank PINs or unnecessary sensitive personal information.</p>
             </div>
-            <form onSubmit={handleSubmit} className="ssf-form">
+            <form onSubmit={handleSubmit} className="ssf-form" aria-label="Contact and partnership enquiry form">
               <div className="ssf-form-grid ssf-form-grid-2">
                 <Field label="First Name / पहला नाम" required><Input name="firstName" value={formData.firstName} onChange={handleChange} placeholder="Enter your first name" autoComplete="given-name" required maxLength={80} /></Field>
                 <Field label="Last Name / उपनाम"><Input name="lastName" value={formData.lastName} onChange={handleChange} placeholder="Enter your last name" autoComplete="family-name" maxLength={80} /></Field>
               </div>
               <Field label="Email Address / ईमेल" required><Input name="email" type="email" value={formData.email} onChange={handleChange} placeholder="you@example.com" autoComplete="email" required maxLength={160} /></Field>
               <Field label="Mobile Number / मोबाइल नंबर" hint="Optional · Include country code if outside India"><Input name="phone" type="tel" autoComplete="tel" value={formData.phone} onChange={(e) => setFormData((prev) => ({ ...prev, phone: e.target.value.replace(/[^0-9+()\s-]/g, "").slice(0, 20) }))} placeholder="+91 98765 43210" /></Field>
-              <Field label="Enquiry Type"><select name="enquiryType" value={formData.enquiryType} onChange={handleChange} className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-[#12345A] focus:border-[#176447] focus:outline-none"><option>General enquiry</option><option>CSR / Corporate funding</option><option>Government grant / institutional project</option><option>Individual donation / recurring support</option><option>Machinery / production unit / equipment</option><option>Raw material / workspace / vehicle / in-kind support</option><option>Business partnership / buyer / purchase order</option><option>NGO / academic / institutional partnership</option><option>Volunteer / professional expertise</option></select></Field>
+              <Field label="Enquiry Type / पूछताछ का विषय"><select name="enquiryType" value={formData.enquiryType} onChange={handleChange} className="w-full rounded-xl border border-zinc-200 bg-white px-4 py-3 text-sm text-[#12345A] focus:border-[#176447] focus:outline-none"><option>General enquiry</option><option>CSR / Corporate funding</option><option>Government grant / institutional project</option><option>Individual donation / recurring support</option><option>Machinery / production unit / equipment</option><option>Raw material / workspace / vehicle / in-kind support</option><option>Business partnership / buyer / purchase order</option><option>NGO / academic / institutional partnership</option><option>Volunteer / professional expertise</option></select></Field>
               <Field label="Company / Organisation (optional)"><Input name="organisation" value={formData.organisation} onChange={handleChange} placeholder="Company, institution or organisation name" autoComplete="organization" maxLength={160} /></Field>
               <Field label="Message / संदेश" required hint="Please provide enough detail for our team to understand your enquiry."><Textarea name="message" value={formData.message} onChange={handleChange} rows={5} minLength={10} maxLength={5000} required placeholder="Tell us how we can help, what support or information you are seeking, and how we may contact you." /></Field>
               <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4 text-xs leading-6 text-zinc-600"><p className="font-bold text-[#12345A]">Privacy notice / गोपनीयता सूचना</p><p>By submitting this form, you are asking Swastik Srijan Foundation Samiti to use the details you provide to review and respond to your enquiry. Please read our <Link to="/PrivacyPolicy" className="font-bold text-[#176447] underline underline-offset-2">Privacy Policy</Link>. Do not submit sensitive personal or financial credentials.</p></div>
