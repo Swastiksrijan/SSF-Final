@@ -117,6 +117,13 @@ router.post('/interest', async (req, res) => {
         const labelMap = { partner: 'CSR / Partnership', movement: 'Nation-Building Movement', volunteer: 'Volunteer', member: 'Membership' };
         const label = labelMap[type];
         await sendAdminNotification(`New ${label} Interest: ${fullName}`, `New ${label} request received.\nName: ${fullName}\nEmail: ${email}\nPhone: ${phone}\nCategory: ${category || 'Not specified'}\nMessage: ${finalMessage}`);
+        if (type === 'partner') {
+            await sendApplicantEmail(
+                email.trim().toLowerCase(),
+                'We received your CSR / Corporate Partnership enquiry - Swastik Srijan Foundation',
+                `Dear ${fullName.trim()},\n\nThank you for contacting Swastik Srijan Foundation Samiti regarding a CSR / corporate partnership. Your enquiry has been received and recorded under reference ${interest.id}.\n\nOur team will review the information and contact you if further details are needed. Submission of an enquiry does not constitute an approved CSR project or confirmed partnership.\n\nRegards,\nSwastik Srijan Foundation Samiti\nhttps://swastiksrijan.in/`
+            );
+        }
         return res.status(201).json({ status: 'success', message: 'Request submitted successfully.', data: { id: interest.id, type: interest.interestType, category: interest.category } });
     } catch (error) { console.error('❌ Interest submission error:', error); if (databaseUnavailableResponse(res, error)) return; return res.status(500).json({ message: 'Unable to submit right now. Please try again.' }); }
 });
