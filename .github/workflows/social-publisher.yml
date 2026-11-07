@@ -55,7 +55,7 @@ jobs:
           # awake so the post actually goes out. Defaults cover the daily
           # awareness post (08:00), the four awareness series, the course
           # chapters and the twice-daily Join stream.
-          SLOTS_IST: '07:00 07:30 08:00 09:00 11:00 14:00 18:00 19:00 20:00 21:00'
+          SLOTS_IST: '07:00 07:30 08:00 09:00 11:00 12:30 14:00 18:00 19:00 20:00 21:00'
           WAKE_BEFORE_MIN: '2'
           WAKE_AFTER_MIN: '15'
         run: |
