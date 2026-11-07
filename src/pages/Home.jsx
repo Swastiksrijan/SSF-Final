@@ -108,10 +108,10 @@ const proofItems = [
     meta: "Records available for review" 
   },
   { 
-    title: "Audited Financials", 
-    text: "Audited financial statements and statutory annual reports open for formal institutional review.", 
+    title: "Financial & Statutory Records", 
+    text: "Relevant financial and statutory records can be shared for institutional due diligence, subject to availability and applicable disclosure requirements.", 
     icon: <FaChartLine />,
-    meta: "Transparent Reporting" 
+    meta: "Due-diligence support" 
   },
 ];
 
@@ -121,24 +121,24 @@ const activityCards = [
     alt: "Children taking part in a learning session", 
     label: "Education", 
     title: "Learning with the Community", 
-    text: "Documented on-ground literacy and remedial education initiatives in rural Rewa.",
-    badge: "Field Delivery"
+    text: "A selected photograph from a past community learning activity; future sessions depend on resources and local planning.",
+    badge: "Past Activity"
   },
   { 
     image: "/images/real/women_empowerment_tailoring.jpg", 
     alt: "Women taking part in a skills and livelihood activity", 
     label: "Women & Skills", 
     title: "Skills, Confidence & Participation", 
-    text: "Direct vocational training sessions fostering dignity and household economic self-reliance.",
-    badge: "Empowerment"
+    text: "A selected photograph from a past skills-related community activity; future training depends on funding and implementation planning.",
+    badge: "Past Activity"
   },
   { 
     image: "/images/real/tree_plantation.jpg", 
     alt: "Tree plantation activity", 
     label: "Environment", 
     title: "Awareness Through Direct Action", 
-    text: "Ecological responsibility drives led by village volunteers and school students.",
-    badge: "Sustainability"
+    text: "A selected photograph from a past environment-related activity; future drives depend on local coordination and available resources.",
+    badge: "Past Activity"
   },
 ];
 
