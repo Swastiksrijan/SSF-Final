@@ -26,7 +26,7 @@ const campaigns = [
 
 export default function CampaignsPage() {
   const [copied, setCopied] = useState("");
-  const campaignUrl = (campaign) => `${window.location.origin}/Campaigns#${campaign.id}`;
+  const campaignUrl = (campaign) => `${window.location.origin}/Campaigns/${campaign.id}`;
   const shareCampaign = async (campaign) => {
     const url = campaignUrl(campaign);
     const message = `Swastik Srijan Foundation Samiti | ${campaign.hindi}\n${campaign.appeal}\n\nअभियान देखें: ${url}\nसहयोग: ${RAZORPAY_LINK}`;
