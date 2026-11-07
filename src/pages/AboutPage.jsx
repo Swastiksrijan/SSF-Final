@@ -142,11 +142,10 @@ export default function AboutPage() {
             </div>
           ))}
         </div>
-        {/* A subtle sky-blue photographic tint, keeping the original images natural. */}
-        <div className="pointer-events-none absolute inset-0 bg-[#87CEEB]/[0.13] mix-blend-soft-light" aria-hidden="true" />
-        {/* Strong contrast behind the headline, while keeping most of the photography visible. */}
-        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,24,43,0.94)_0%,rgba(9,37,65,0.78)_34%,rgba(9,37,65,0.34)_57%,rgba(9,37,65,0.08)_76%,transparent_100%)]" />
-        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(7,29,52,0.24)_0%,transparent_35%)]" />
+        {/* Keep the original photographs visible; use a restrained neutral overlay only for text contrast. */}
+        <div className="pointer-events-none absolute inset-0 bg-[#F4F7F8]/[0.035]" aria-hidden="true" />
+        <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(6,24,43,0.72)_0%,rgba(9,37,65,0.56)_32%,rgba(9,37,65,0.30)_58%,rgba(9,37,65,0.12)_78%,rgba(9,37,65,0.04)_100%)]" />
+        <div className="absolute inset-0 bg-[linear-gradient(0deg,rgba(7,29,52,0.42)_0%,rgba(7,29,52,0.08)_30%,transparent_58%)]" />
         <div className="absolute -left-24 top-24 h-72 w-72 rounded-full bg-[#87CEEB]/12 blur-3xl" aria-hidden="true" />
         <div className="absolute -right-24 bottom-0 h-80 w-80 rounded-full bg-[#87CEEB]/10 blur-3xl" aria-hidden="true" />
 
@@ -175,7 +174,7 @@ export default function AboutPage() {
               </h1>
             </div>
 
-            <div className="max-w-2xl rounded-3xl border border-white/15 bg-[#071D34]/35 p-5 shadow-[0_24px_70px_-35px_rgba(0,0,0,0.65)] backdrop-blur-[3px] sm:p-7 lg:ml-auto lg:p-8">
+            <div className="max-w-2xl rounded-3xl border border-white/25 bg-[#071D34]/55 p-5 shadow-[0_24px_70px_-35px_rgba(0,0,0,0.65)] backdrop-blur-md sm:p-7 lg:ml-auto lg:p-8">
               <p className="text-base font-semibold leading-7 text-white [text-shadow:0_2px_12px_rgba(0,0,0,0.35)] sm:text-lg sm:leading-8">
                 Empowering communities through education, health, awareness and sustainable development—with dignity, participation and care.
               </p>
