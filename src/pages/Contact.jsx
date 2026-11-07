@@ -57,11 +57,11 @@ export default function Contact() {
   return (
     <main className="min-h-screen bg-white">
       {toast.show && (
-        <div className="fixed top-20 left-4 right-4 md:left-auto md:right-6 md:top-24 z-50">
+        <div className="fixed top-20 left-4 right-4 md:left-auto md:right-6 md:top-24 z-50" role="status" aria-live="polite" aria-atomic="true">
           <div className={`flex items-center gap-3 px-4 py-4 md:px-8 md:py-5 rounded-2xl shadow-2xl border ${toast.type === "success" ? "bg-white border-green-500 text-green-900" : "bg-white border-red-500 text-red-900"}`}>
             {toast.type === "success" ? <CheckCircle className="w-5 h-5 text-green-600 shrink-0" /> : <XCircle className="w-5 h-5 text-red-600 shrink-0" />}
             <span className="font-bold text-sm md:text-base">{toast.message}</span>
-            <button onClick={hideToast} className="p-1 hover:bg-zinc-100 rounded-full ml-auto"><X className="w-4 h-4" /></button>
+            <button type="button" onClick={hideToast} aria-label="Dismiss notification" className="p-2 hover:bg-zinc-100 rounded-full ml-auto focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#176447]"><X className="w-4 h-4" /></button>
           </div>
         </div>
       )}
@@ -82,7 +82,7 @@ export default function Contact() {
                 <div>
                   <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-2">Email Support</p>
                   <a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="text-[#12345A] text-lg font-semibold hover:text-[#176447] break-all">{CONTACT_INFO.primaryEmail}</a>
-                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs"><a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="font-bold text-[#176447] hover:underline">Send an email</a><button type="button" onClick={() => copyToClipboard(CONTACT_INFO.primaryEmail, "Email")} className="text-zinc-500 underline underline-offset-2 hover:text-[#12345A]">Copy email</button></div>
+                  <div className="mt-2 flex flex-wrap items-center gap-3 text-xs"><a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="font-bold text-[#176447] hover:underline">Send an email</a><button type="button" onClick={() => copyToClipboard(CONTACT_INFO.primaryEmail, "Email")} className="text-zinc-500 underline underline-offset-2 hover:text-[#12345A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#176447] rounded-sm">Copy email</button></div>
                 </div>
               </div>
               <div className="flex gap-5">
@@ -97,20 +97,20 @@ export default function Contact() {
                 <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-[#A73800] shrink-0"><MapPin className="w-5 h-5" /></div>
                 <div>
                   <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-2">Registered Office</p>
-                  <p className="text-[#12345A] text-sm md:text-base font-semibold leading-relaxed">{CONTACT_INFO.address.fullRegistered}</p><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT_INFO.address.fullRegistered)}`} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#176447] hover:underline"><MapPin className="h-4 w-4" /> View address on Google Maps <ExternalLink className="h-3.5 w-3.5" /></a><p className="mt-2 text-xs text-zinc-500">Please contact us before visiting to confirm availability.</p>
+                  <p className="text-[#12345A] text-sm md:text-base font-semibold leading-relaxed">{CONTACT_INFO.address.fullRegistered}</p><a href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONTACT_INFO.address.fullRegistered)}`} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 text-sm font-bold text-[#176447] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#176447] rounded-sm"><MapPin className="h-4 w-4" /> View address on Google Maps <ExternalLink className="h-3.5 w-3.5" /></a><p className="mt-2 text-xs text-zinc-500">Please contact us before visiting to confirm availability.</p>
                 </div>
               </div>
             </div>
 
             <div className="bg-orange-50 border border-orange-100 rounded-2xl p-6">
               <p className="font-bold text-[#12345A] mb-2">WhatsApp Support 📲</p>
-              <p className="text-sm text-zinc-600 leading-relaxed">For a quick message or a short enquiry, connect with the Foundation on WhatsApp. For formal proposals and documents, please use email or the enquiry form.</p><a href={CONTACT_INFO.social.whatsapp} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#176447] px-5 py-3 text-sm font-bold text-white">WhatsApp the Foundation</a>
+              <p className="text-sm text-zinc-600 leading-relaxed">For a quick message or a short enquiry, connect with the Foundation on WhatsApp. For formal proposals and documents, please use email or the enquiry form.</p><a href={CONTACT_INFO.social.whatsapp} target="_blank" rel="noopener noreferrer" className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#176447] px-5 py-3 text-sm font-bold text-white hover:bg-[#125238] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#176447]">WhatsApp the Foundation</a>
             </div>
 
             <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-5"><div className="flex items-center gap-2 text-[#12345A]"><Clock className="h-5 w-5" /><p className="font-bold">Contact hours</p></div><p className="mt-2 text-sm text-zinc-600">Monday to Saturday · 9:00 AM – 6:00 PM (IST)</p><p className="mt-1 text-xs text-zinc-500">Messages received outside these hours may be reviewed on the next working day.</p></div>
             <div className="flex flex-col sm:flex-row gap-4">
-              <Link to="/Volunteer" className="flex-1 py-4 px-6 bg-[#12345A] text-white font-bold rounded-xl text-center hover:bg-[#12345A] transition-colors">Join as Volunteer</Link>
-              <Link to="/Members" className="flex-1 py-4 px-6 bg-[#176447] text-white font-bold rounded-xl text-center hover:bg-[#176447] transition-colors">Membership <FaArrowRight className="inline ml-2" /></Link>
+              <Link to="/Volunteer" className="flex-1 py-4 px-6 bg-[#12345A] text-white font-bold rounded-xl text-center hover:bg-[#0d2847] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#176447]">Join as Volunteer</Link>
+              <Link to="/Members" className="flex-1 py-4 px-6 bg-[#176447] text-white font-bold rounded-xl text-center hover:bg-[#125238] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#176447]">Membership <FaArrowRight className="inline ml-2" /></Link>
             </div>
           </motion.div>
 
