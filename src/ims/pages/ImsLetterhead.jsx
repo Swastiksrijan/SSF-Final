@@ -2,7 +2,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import {
   FileSignature, Download, Printer, Eye, Save, FileText, Languages,
-  CheckCircle2, AlertTriangle, Loader2, RefreshCw, Search, X, Stamp
+  CheckCircle2, AlertTriangle, Loader2, RefreshCw, Search, X, Stamp,
+  Share2, Mail, MessageCircle, Copy, PenLine,
 } from 'lucide-react';
 import ImsLayout from '../ImsLayout';
 import { useLang } from '../LangContext';
@@ -10,8 +11,9 @@ import { ims } from '../api';
 import { PAGE_TITLE_ON_DARK } from '../ui';
 import { LETTER_TYPES } from '../letterheadData';
 import {
-  downloadLetterPdf, previewLetterPdf, printLetterPdf, letterFileName,
-  letterheadPreviewHtml, PAGE_W_MM, PAGE_H_MM, SIGNATURE_HOLDER,
+  downloadLetterPdf, previewLetterPdf, printLetterPdf, shareLetterPdf,
+  letterPlainText, letterFileName, letterheadPreviewHtml,
+  PAGE_W_MM, PAGE_H_MM, SIGNATURE_HOLDER,
 } from '../letterheadPdf';
 
 const REGISTER = 'documents';
@@ -50,7 +52,9 @@ const nextRef = (rows, groupCode, dateValue) => {
   return prefix + String(max + 1).padStart(4, '0');
 };
 const initialLetter = () => ({
-  blankMode: false,
+  // Opens as approved blank stationery: no reference, subject or body required
+  // for a download. Writing a letter is one explicit click away.
+  blankMode: true,
   letterNo: '',
   date: today(),
   groupCode: 'GEN',
@@ -107,8 +111,10 @@ export default function ImsLetterhead() {
   }, []);
 
   useEffect(() => {
-    if (!f.letterNo) setF((old) => old.letterNo ? old : ({ ...old, letterNo: nextRef(rows, old.groupCode, old.date) }));
-  }, [rows, f.letterNo]);
+    // Blank stationery stays genuinely blank — a reference number only appears
+    // once the user starts writing a letter.
+    if (!f.blankMode && !f.letterNo) setF((old) => old.letterNo ? old : ({ ...old, letterNo: nextRef(rows, old.groupCode, old.date) }));
+  }, [rows, f.letterNo, f.blankMode]);
 
   useEffect(() => {
     let alive = true;
@@ -147,7 +153,13 @@ export default function ImsLetterhead() {
     }));
   };
   const refreshRef = () => set('letterNo', nextRef(rows, f.groupCode, f.date));
+
+  const chooseBlank = () => setF((old) => ({ ...old, blankMode: true }));
+  const chooseWrite = () => setF((old) => ({ ...old, blankMode: false, letterNo: old.letterNo || nextRef(rows, old.groupCode, old.date) }));
+
   const validate = () => {
+    // Blank stationery needs no subject or body — it is just the approved sheet.
+    if (f.blankMode) return true;
     if (!f.subject.trim() && !f.body.trim()) {
       say(hindi ? 'कृपया विषय या पत्र की सामग्री भरें।' : 'Please enter a subject or letter body.', 'warn');
       return false;
@@ -173,6 +185,23 @@ export default function ImsLetterhead() {
   });
   const doDownload = () => run('download', () => downloadLetterPdf(outputLetter, { lang: pdfLang, watermark }));
   const doPrint = () => run('print', () => printLetterPdf(outputLetter, { lang: pdfLang, watermark }));
+  // Native sharing attaches the real PDF; on Android the share sheet offers WhatsApp.
+  const doShare = () => run('share', async () => {
+    const result = await shareLetterPdf(outputLetter, { lang: pdfLang, via: 'native' });
+    if (result.shared === 'file') say(hindi ? 'PDF साझा किया गया।' : 'PDF shared.');
+    else if (result.shared === 'clipboard') say(hindi ? 'पत्र की सामग्री कॉपी हो गई — PDF डाउनलोड कर संलग्न करें।' : 'Letter text copied — download the PDF to attach it.');
+    else say(hindi ? 'साझा किया गया।' : 'Shared.');
+  });
+  const doWhatsApp = () => run('wa', async () => {
+    const result = await shareLetterPdf(outputLetter, { lang: pdfLang, via: 'native' });
+    if (result.shared === 'file') say(hindi ? 'PDF साझा किया गया — WhatsApp चुनें।' : 'PDF shared — choose WhatsApp.');
+    else { await shareLetterPdf(outputLetter, { lang: pdfLang, via: 'whatsapp' }); say(hindi ? 'WhatsApp खोला गया।' : 'WhatsApp opened.'); }
+  });
+  const doEmail = () => run('email', async () => { await shareLetterPdf(outputLetter, { lang: pdfLang, via: 'email' }); });
+  const doCopy = () => run('copy', async () => {
+    await navigator.clipboard.writeText(letterPlainText(outputLetter, pdfLang));
+    say(hindi ? 'पत्र की सामग्री कॉपी हो गई।' : 'Letter text copied.');
+  });
   const doSave = () => run('save', async () => {
     const payload = {
       title: f.subject || activeGroup.en + ' — ' + (f.toName || f.toOrg || 'Official letter'),
@@ -235,12 +264,27 @@ export default function ImsLetterhead() {
             <div className="flex items-center justify-between gap-3">
               <div>
                 <h2 className="text-lg font-black text-[#12345A]">{hindi ? 'पत्र का विवरण' : 'Letter details'}</h2>
-                <p className="mt-1 text-xs text-slate-500">{hindi ? 'क्रमांक और तारीख स्वतः भरे जाते हैं; जरूरत हो तो बदल सकते हैं।' : 'Reference number and date are filled automatically; you can edit them if needed.'}</p>
+                <p className="mt-1 text-xs text-slate-500">{f.blankMode ? (hindi ? 'स्वीकृत खाली A4 लेटरपैड — जैसा है वैसा डाउनलोड, प्रिंट या साझा करें।' : 'Approved blank A4 stationery — download, print or share it as it is.') : (hindi ? 'क्रमांक और तारीख स्वतः भरे जाते हैं; जरूरत हो तो बदल सकते हैं।' : 'Reference number and date are filled automatically; you can edit them if needed.')}</p>
               </div>
               <span className="rounded-full bg-emerald-50 px-3 py-1 text-[10px] font-bold text-emerald-800">A4 · PDF</span>
             </div>
 
+            {/* Two modes: approved blank stationery, or a written letter. */}
+            <div className="rounded-xl border border-slate-200 bg-slate-50 p-3 sm:p-4">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <h3 className="text-sm font-extrabold text-[#12345A]">{hindi ? 'लेटरहेड का प्रकार चुनें' : 'Choose your letterhead'}</h3>
+                  <p className="mt-1 text-xs leading-5 text-slate-500">{hindi ? 'खाली आधिकारिक लेटरपैड डाउनलोड करें, या इसी पर पत्र लिखकर PDF साझा करें।' : 'Download blank official stationery, or type a letter and export/share it as a PDF.'}</p>
+                </div>
+                <div className="grid grid-cols-2 gap-2 sm:min-w-[320px]">
+                  <button type="button" onClick={chooseBlank} className={'rounded-xl border px-4 py-2.5 text-sm font-extrabold transition ' + (f.blankMode ? 'border-[#176447] bg-[#176447] text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-[#176447]')}><PenLine size={15} className="mr-1.5 inline" />{hindi ? 'खाली लेटरहेड' : 'Blank letterhead'}</button>
+                  <button type="button" onClick={chooseWrite} className={'rounded-xl border px-4 py-2.5 text-sm font-extrabold transition ' + (!f.blankMode ? 'border-[#12345A] bg-[#12345A] text-white shadow-md' : 'border-slate-200 bg-white text-slate-700 hover:border-[#12345A]')}>{hindi ? 'पत्र लिखें' : 'Write a letter'}</button>
+                </div>
+              </div>
+            </div>
+
             <div className="grid gap-3 sm:grid-cols-2">
+              {!f.blankMode && <>
               <div>
                 <label className={label}>{hindi ? 'संदर्भ क्रमांक' : 'Reference number'}</label>
                 <div className="flex gap-2">
@@ -264,6 +308,8 @@ export default function ImsLetterhead() {
               <div className="sm:col-span-2"><label className={label}>{hindi ? 'पत्र की सामग्री' : 'Letter body'}</label><textarea className={cls + ' min-h-[220px] resize-y leading-6'} value={f.body} onChange={(e) => set('body', e.target.value)} placeholder={hindi ? 'अपना पत्र यहाँ लिखें…' : 'Write the letter here…'} /></div>
               <div><label className={label}>{hindi ? 'संलग्नक' : 'Enclosures'}</label><input className={cls} value={f.enclosures} onChange={(e) => set('enclosures', e.target.value)} placeholder={hindi ? 'यदि हों तो' : 'If any'} /></div>
               <div className="sm:col-span-2"><label className={label}>{hindi ? 'प्रतिलिपि (CC)' : 'Copy to (CC)'}</label><input className={cls} value={f.cc} onChange={(e) => set('cc', e.target.value)} /></div>
+              </>}
+              {f.blankMode && <div className="sm:col-span-2 rounded-xl border border-dashed border-[#C8D4E1] bg-[#F7F9FC] p-4 text-sm leading-6 text-slate-600">{hindi ? 'यह स्वीकृत खाली A4 लेटरपैड है। संस्था का लोगो, पंजीकरण विवरण, पता और संपर्क अपरिवर्तित रहेंगे; लिखने का स्थान खाली रहेगा। PDF डाउनलोड, प्रिंट या साझा करने के लिए विषय या पत्र-पाठ आवश्यक नहीं है।' : 'This is the approved blank A4 stationery. The logo, registration details, address and contacts stay in place with a clean writing area. No subject or body is needed to download, print or share it.'}</div>}
             </div>
 
             <div className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -315,7 +361,11 @@ export default function ImsLetterhead() {
               <button type="button" disabled={!!busy} onClick={doPreview} className="inline-flex items-center gap-2 rounded-xl bg-[#12345A] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{busy === 'preview' ? <Loader2 size={16} className="animate-spin" /> : <Eye size={16} />}{hindi ? 'पूर्वावलोकन' : 'Preview PDF'}</button>
               <button type="button" disabled={!!busy} onClick={doDownload} className="inline-flex items-center gap-2 rounded-xl bg-[#176447] px-4 py-2.5 text-sm font-bold text-white disabled:opacity-50">{busy === 'download' ? <Loader2 size={16} className="animate-spin" /> : <Download size={16} />}{hindi ? 'PDF डाउनलोड' : 'Download PDF'}</button>
               <button type="button" disabled={!!busy} onClick={doPrint} className="inline-flex items-center gap-2 rounded-xl border border-[#12345A] px-4 py-2.5 text-sm font-bold text-[#12345A] disabled:opacity-50">{busy === 'print' ? <Loader2 size={16} className="animate-spin" /> : <Printer size={16} />}{hindi ? 'प्रिंट' : 'Print'}</button>
-              <button type="button" disabled={!!busy} onClick={doSave} className="inline-flex items-center gap-2 rounded-xl bg-[#F7A814] px-4 py-2.5 text-sm font-bold text-[#12345A] disabled:opacity-50">{busy === 'save' ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}{hindi ? 'पंजिका में सुरक्षित करें' : 'Save to register'}</button>
+              <button type="button" disabled={!!busy} onClick={doShare} className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50">{busy === 'share' ? <Loader2 size={16} className="animate-spin" /> : <Share2 size={16} />}{hindi ? 'साझा करें' : 'Share'}</button>
+              <button type="button" disabled={!!busy} onClick={doWhatsApp} className="inline-flex items-center gap-2 rounded-xl border border-[#176447] px-4 py-2.5 text-sm font-bold text-[#176447] disabled:opacity-50">{busy === 'wa' ? <Loader2 size={16} className="animate-spin" /> : <MessageCircle size={16} />}WhatsApp</button>
+              <button type="button" disabled={!!busy} onClick={doEmail} className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50">{busy === 'email' ? <Loader2 size={16} className="animate-spin" /> : <Mail size={16} />}{hindi ? 'ईमेल' : 'Email'}</button>
+              <button type="button" disabled={!!busy} onClick={doCopy} className="inline-flex items-center gap-2 rounded-xl border border-slate-300 px-4 py-2.5 text-sm font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-50">{busy === 'copy' ? <Loader2 size={16} className="animate-spin" /> : <Copy size={16} />}{hindi ? 'पाठ कॉपी' : 'Copy text'}</button>
+              <button type="button" disabled={!!busy || f.blankMode} onClick={doSave} title={f.blankMode ? (hindi ? 'पंजिका में सहेजने के लिए पत्र लिखें' : 'Write a letter to file it in the register') : ''} className="inline-flex items-center gap-2 rounded-xl bg-[#F7A814] px-4 py-2.5 text-sm font-bold text-[#12345A] disabled:opacity-50">{busy === 'save' ? <Loader2 size={16} className="animate-spin" /> : <Save size={16} />}{hindi ? 'पंजिका में सुरक्षित करें' : 'Save to register'}</button>
             </div>
             {notice && <div role={notice.tone === 'err' || notice.tone === 'warn' ? 'alert' : 'status'} className={'flex items-start gap-2 rounded-xl px-4 py-3 text-sm font-semibold ' + (notice.tone === 'ok' ? 'bg-emerald-50 text-emerald-800' : notice.tone === 'warn' ? 'bg-amber-50 text-amber-900' : 'bg-red-50 text-red-800')}>{notice.tone === 'ok' ? <CheckCircle2 size={16} className="mt-0.5 shrink-0" /> : <AlertTriangle size={16} className="mt-0.5 shrink-0" />}<span>{notice.text}</span></div>}
           </section>
