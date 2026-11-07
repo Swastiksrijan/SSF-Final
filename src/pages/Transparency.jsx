@@ -8,7 +8,7 @@ import PledgeWall from "../components/PledgeWall";
 const documents = [
     { title: "Registration / Legal Identity", hindi: "पंजीकरण एवं कानूनी पहचान", status: "Registered Since 2013", description: "Official registration record of Swastik Srijan Foundation Samiti.", href: "https://drive.google.com/file/d/1mvFn14TYtG-tiiE5_spHrUClTls1-Ii-/view?usp=sharing" },
     { title: "12AB Registration", hindi: "12AB पंजीकरण", status: "Registered", description: "Income Tax statutory registration record available for public verification.", href: "https://drive.google.com/file/d/1MVtgKePT2WNTSrF1vrjrDIdrCZ6HaNrS/view?usp=drivesdk" },
-    { title: "80G Status", hindi: "80G स्थिति", status: "Final Approval Applied", description: "Current status is presented as application / provisional status and is not described as final approval.", href: "https://drive.google.com/file/d/1uUAQuXCkz6H_sEJGgDvSx2Gj_PsIIVvB/view?usp=drivesdk" },
+    { title: "80G Status", hindi: "80G स्थिति", status: "Application Submitted", description: "Application submitted; final 80G approval is not being claimed. Please refer to the latest official order/status for confirmation.", href: "https://drive.google.com/file/d/1uUAQuXCkz6H_sEJGgDvSx2Gj_PsIIVvB/view?usp=drivesdk" },
     { title: "CSR-1 Registration", hindi: "CSR-1 पंजीकरण", status: "Registered", description: "CSR-1 registration record maintained for corporate partnership documentation.", href: "https://drive.google.com/file/d/1LdL8_IC3K6f4ZEddb68ki_393QkIBvcX/view?usp=drivesdk" },
     { title: "NGO Darpan", hindi: "एनजीओ दर्पण", status: "Registered", description: "NGO Darpan registration record shared for transparency and verification.", href: "https://drive.google.com/file/d/15OX155DuYsymGQmEKCcoux1FGES_DSLH/view?usp=sharing" },
     { title: "Audited Accounts", hindi: "ऑडिटेड खाते", status: "Audit Records", description: "Audited financial records are maintained as part of the Foundation's accountability practices.", href: "https://drive.google.com/file/d/1ka7G73eU1SamorxUJivAJKldnOuNIdZU/view?usp=sharing" },
@@ -32,7 +32,7 @@ const annualReports = [
 ];
 
 const reports = [
-    { title: "Program Highlights", hindi: "कार्यक्रम प्रमुख झलकियाँ", note: "Available upon request" },
+    { title: "Program Highlights", hindi: "कार्यक्रम प्रमुख झलकियाँ", note: "Available on request, subject to record availability and disclosure safeguards" },
     { title: "Financial Summaries", hindi: "वित्तीय सारांश", note: "Available upon request" },
     { title: "Impact Reports", hindi: "प्रभाव रिपोर्ट", note: "Available upon request" }
 ];
@@ -104,6 +104,17 @@ export default function Transparency() {
                 </div>
             </section>
 
+            <section className="bg-[#FFF9EF] border-b border-[#E9D6B8] px-5 py-7 sm:px-8">
+                <div className="mx-auto max-w-6xl rounded-2xl border border-[#E9D6B8] bg-white p-5 sm:p-7">
+                    <div className="flex items-start gap-3">
+                        <FaShieldAlt className="mt-1 shrink-0 text-[#9A5B10] text-xl" />
+                        <div>
+                            <h2 className="font-bold text-[#12345A]">महत्वपूर्ण स्थिति सूचना / Important status note</h2>
+                            <p className="mt-2 text-sm leading-7 text-zinc-700">80G के संबंध में आवेदन प्रस्तुत किया गया है; इस वेबसाइट पर अंतिम 80G स्वीकृति का दावा नहीं किया जा रहा है। कृपया इसे स्वीकृति प्रमाण-पत्र न मानें। किसी भी दस्तावेज़ की स्थिति के लिए संबंधित नवीनतम आधिकारिक आदेश/पोर्टल रिकॉर्ड ही मान्य होगा। अन्य रिपोर्ट और वित्तीय जानकारी भी उपलब्ध रिकॉर्ड तथा गोपनीयता/वैधानिक सीमाओं के अनुसार साझा की जाएगी।</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
             <section className="py-16 lg:py-20 px-6 max-w-6xl mx-auto">
                 <div className="grid lg:grid-cols-2 gap-6 mb-16">
                     {sections.map((section, idx) => (
@@ -136,7 +147,7 @@ export default function Transparency() {
 
             <section className="py-20 bg-white"><div className="container mx-auto px-6 max-w-5xl"><div className="text-center mb-10"><div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-zinc-50 border border-zinc-200 text-[#176447] text-xs font-black uppercase tracking-widest"><FaBuilding /> Public documents</div><h2 className="text-3xl font-serif font-bold text-[#12345A] mt-5">Policies &amp; Public Documents</h2><p className="text-[#176447] font-serif font-bold italic mt-2">नीतियाँ और सार्वजनिक दस्तावेज़</p></div><div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">{policies.map((policy) => <a key={policy.path} href={policy.path} className="bg-white rounded-xl border border-zinc-200 px-5 py-5 text-sm font-bold text-[#12345A] hover:border-[#176447] hover:text-[#176447] transition-all shadow-sm">{policy.title} <span className="float-right">→</span></a>)}</div></div></section>
 
-            <section className="py-16 bg-[#12345A] text-white"><div className="container mx-auto px-6 max-w-4xl text-center"><FaEnvelope className="mx-auto text-[#176447] text-3xl mb-5" /><h2 className="text-3xl font-serif font-bold">Document Verification &amp; Requests</h2><p className="text-zinc-300 mt-4 leading-relaxed">For clarification, document verification, or reports not currently displayed online, please contact the Foundation. Information is shared in good faith to support transparency and public trust.</p><button onClick={() => { navigator.clipboard.writeText(CONTACT_INFO.primaryEmail); alert("Email copied to clipboard!"); }} className="mt-7 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#176447] text-white font-bold hover:bg-[#176447] transition-colors">{CONTACT_INFO.primaryEmail}</button></div></section>
+            <section className="py-16 bg-[#12345A] text-white"><div className="container mx-auto px-6 max-w-4xl text-center"><FaEnvelope className="mx-auto text-[#176447] text-3xl mb-5" /><h2 className="text-3xl font-serif font-bold">Document Verification &amp; Requests</h2><p className="text-zinc-300 mt-4 leading-relaxed">For clarification, document verification, or reports not currently displayed online, please contact the Foundation. Information is shared in good faith to support transparency and public trust.</p><button onClick={() => { navigator.clipboard.writeText(CONTACT_INFO.primaryEmail); alert("Email copied to clipboard!"); }} className="mt-7 inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#176447] text-white font-bold hover:bg-[#12563d] transition-colors focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60">{CONTACT_INFO.primaryEmail}</button></div></section>
         </div>
     );
 }
