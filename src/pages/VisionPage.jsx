@@ -25,22 +25,22 @@ export default function VisionPage() {
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            className="bg-gradient-to-br from-[#12345A] to-[#12345A] rounded-[3rem] p-12 lg:p-16 text-white shadow-2xl mb-16"
+                            className="bg-gradient-to-br from-[#092541] via-[#12345A] to-[#176447] rounded-[2rem] sm:rounded-[2.5rem] p-7 sm:p-10 lg:p-14 text-white shadow-[0_28px_80px_-35px_rgba(9,37,65,0.55)] mb-12 sm:mb-16"
                         >
-                            <h2 className="text-3xl lg:text-4xl font-serif font-bold mb-8 text-center text-[#176447]">
+                            <h2 className="text-2xl sm:text-3xl lg:text-4xl font-serif font-bold mb-6 sm:mb-8 text-center text-[#FFC56D]">
                                 A Commitment to Inclusive Growth
                             </h2>
-                            <p className="text-xl lg:text-2xl leading-relaxed text-center font-medium mb-8">
+                            <p className="text-base sm:text-lg lg:text-2xl leading-relaxed text-center font-medium mb-6 sm:mb-8 text-white">
                                 Our vision reflects our commitment to inclusive growth, ethical action, and human dignity. We aspire to create a society where development reaches the last person and contributes to a stronger nation and a better world.
                             </p>
-                            <div className="w-24 h-1 bg-[#176447] mx-auto mb-8 opacity-50"></div>
-                            <p className="text-lg lg:text-xl leading-relaxed text-center font-hindi opacity-90">
+                            <div className="w-24 h-1 bg-[#FFC56D] mx-auto mb-6 sm:mb-8 rounded-full"></div>
+                            <p className="text-base sm:text-lg lg:text-xl leading-relaxed text-center font-hindi text-white/95">
                                 हमारी दृष्टि समावेशी विकास, नैतिक कार्य और मानव गरिमा के प्रति हमारी प्रतिबद्धता को दर्शाती है, जहाँ विकास अंतिम व्यक्ति तक पहुँचे और राष्ट्र व विश्व के कल्याण में योगदान दे।
                             </p>
                         </motion.div>
 
                         {/* Core Pillars / Goals */}
-                        <div className="grid lg:grid-cols-2 gap-12 mb-16">
+                        <div className="grid lg:grid-cols-2 gap-6 sm:gap-10 lg:gap-12 mb-12 sm:mb-16">
                             {/* Hindi Vision Points */}
                             <motion.div
                                 initial={{ opacity: 0, x: -30 }}
@@ -51,7 +51,7 @@ export default function VisionPage() {
                                 <h3 className="text-2xl font-serif font-bold text-[#12345A] border-l-4 border-[#176447] pl-4">
                                     लक्ष्य और दृष्टि
                                 </h3>
-                                <div className="bg-blue-50/50 p-8 rounded-3xl border border-blue-100">
+                                <div className="bg-[#F3F7FA] p-6 sm:p-8 rounded-3xl border border-[#DCE6EF] shadow-sm">
                                     <p className="text-xl text-[#12345A] font-medium leading-relaxed">
                                         एक ऐसा समावेशी, नैतिक और सशक्त समाज बनाना जहाँ प्रत्येक व्यक्ति को शिक्षा, स्वास्थ्य, सम्मान, अवसर और सुरक्षित भविष्य प्राप्त हो — राष्ट्र निर्माण के माध्यम से वैश्विक कल्याण की दिशा में।
                                     </p>
@@ -68,7 +68,7 @@ export default function VisionPage() {
                                 <h3 className="text-2xl font-serif font-bold text-[#12345A] border-l-4 border-[#176447] pl-4">
                                     Vision Goals
                                 </h3>
-                                <div className="bg-amber-50/50 p-8 rounded-3xl border border-amber-100">
+                                <div className="bg-[#FFF8EA] p-6 sm:p-8 rounded-3xl border border-[#F3E2BF] shadow-sm">
                                     <p className="text-xl text-[#12345A] font-medium leading-relaxed">
                                         To build an inclusive, ethical, and empowered society where every individual has access to education, health, dignity, opportunities, and a secure future—contributing to nation-building and global well-being.
                                     </p>
@@ -81,7 +81,7 @@ export default function VisionPage() {
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
-                            className="bg-zinc-50 rounded-[2.5rem] p-12 border border-zinc-200"
+                            className="bg-gradient-to-br from-[#F7F9FB] to-[#F4F8F5] rounded-[2rem] sm:rounded-[2.5rem] p-7 sm:p-10 lg:p-12 border border-[#E1E8E5]"
                         >
                             <h3 className="text-3xl font-serif font-bold text-[#12345A] mb-6 text-center">
                                 Our Path Forward
@@ -116,7 +116,7 @@ export default function VisionPage() {
                         <h2 className="text-4xl lg:text-5xl font-serif font-bold text-white leading-tight">
                             Let's Build a Better World Together
                         </h2>
-                        <p className="text-xl text-zinc-400 font-medium">
+                        <p className="text-base sm:text-lg text-white/80 font-medium leading-8">
                             If your ideas, principles, or goals align with our organization, feel free to join us in building a better world.
                         </p>
                         <div className="flex flex-col sm:flex-row justify-center gap-6 pt-6">
