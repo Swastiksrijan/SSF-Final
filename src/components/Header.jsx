@@ -112,13 +112,12 @@ const Header = () => {
               <Link to={item.path} data-active={isActive(item.path)} className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">
                 {item.name}{item.subItems && <IoIosArrowDown className="text-[10px] shrink-0" />}
               </Link>
-              {item.subItems && <div className="absolute top-full left-0 w-72 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2">
-              <Link to="/FundingPartnerships" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Funding &amp; Partnerships</Link>{item.subItems.map(sub => <Link key={sub.name} to={sub.path} className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:text-[#12345A] hover:bg-[#EAF0F6] rounded-xl">{sub.name}</Link>)}</div></div>}
+              {item.subItems && <div className="absolute top-full left-0 w-72 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2">{item.subItems.map(sub => <Link key={sub.name} to={sub.path} className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:text-[#12345A] hover:bg-[#EAF0F6] rounded-xl">{sub.name}</Link>)}</div></div>}
             </div>
           ))}
           <div className="relative group">
             <button type="button" aria-haspopup="true" className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">More <IoIosArrowDown className="text-[10px]" /></button>
-            <div className="absolute top-full right-0 w-64 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2">
+            <div className="absolute top-full right-0 w-64 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2"><Link to="/FundingPartnerships" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Funding &amp; Partnerships</Link>
               <Link to="/Impact" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Impact</Link>
               <Link to="/ComplaintGrievance" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Complaints & Grievance</Link>
               <Link to="/Media" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Gallery</Link>
