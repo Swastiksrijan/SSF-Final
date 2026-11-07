@@ -112,18 +112,7 @@ export default function FooterSection() {
             <nav aria-label="Sustainable development and livelihoods">
               <h3 className={headingClass + " min-h-10"}>Sustainable Development</h3>
               <ul className="space-y-2.5">
-                <FooterLink to="/SustainableDevelopment">Development Model</FooterLink>
-                <FooterLink to="/SocialEnterprises">Social Enterprises & Livelihoods</FooterLink>
-                <FooterLink to="/SocialEnterprises#agriculture">Agriculture & Farmer Economy</FooterLink>
-                <FooterLink to="/SocialEnterprises#paper-packaging">Paper & Packaging</FooterLink>
-                <FooterLink to="/SocialEnterprises#garments-footwear">Garments & Footwear</FooterLink>
-                <FooterLink to="/SocialEnterprises#food-processing">Food Processing</FooterLink>
-                <FooterLink to="/SocialEnterprises#trading-supply">Trading & Supply</FooterLink>
-                <FooterLink to="/SocialEnterprises#digital-services">Digital & Professional Services</FooterLink>
-                <FooterLink to="/SocialEnterprises#manufacturing-repair">Manufacturing & Repair</FooterLink>
-                <FooterLink to="/SocialEnterprises#green-economy">Green Economy & Recycling</FooterLink>
-                <FooterLink to="/SocialEnterprises#roadmap">Phased Roadmap</FooterLink>
-                <FooterLink to="/DevelopmentImpact">Impact & Reports</FooterLink>
+                <FooterLink to="/SustainableDevelopment">Sustainable Development</FooterLink>
               </ul>
             </nav>
 
