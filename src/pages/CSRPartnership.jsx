@@ -24,7 +24,7 @@ export default function CSRPartnership() {
         {
             icon: <FaChartLine />,
             title: "Measurable Impact",
-            description: "We provide detailed impact reports with quantifiable metrics, ensuring you see the exact value of your contribution."
+            description: "We aim to share available project records, utilisation details and outcome updates in a clear, responsible manner. Reporting will reflect verified information."
         },
         {
             icon: <FaFileContract />,
@@ -34,12 +34,12 @@ export default function CSRPartnership() {
         {
             icon: <FaGlobeAsia />,
             title: "Grassroots Reach",
-            description: "Our deep connection with rural communities ensures your CSR funds reach the most marginalized beneficiaries."
+            description: "Partnerships can help develop and support community-focused projects, subject to local needs assessment, resources and implementation readiness."
         },
         {
             icon: <FaHandshake />,
             title: "End-to-End Compliance",
-            description: "The Foundation maintains its CSR-1 registration and 12AB registration records. Partners should review the current statutory documents and project-specific compliance requirements before engagement."
+            description: "The Foundation maintains CSR-1 and 12AB registration records. Each proposed project and partnership remains subject to applicable law, due diligence and written agreement."
         }
     ];
 
@@ -47,11 +47,12 @@ export default function CSRPartnership() {
         { label: "Legal Name", value: "Swastik Srijan Foundation Samiti" },
         { label: "Status", value: "Registered Non-Governmental Organization (NGO)" },
         { label: "Act", value: "Madhya Pradesh Societies Registration Act, 1973" },
-        { label: "Registration No.", value: "11448/13" },
+        { label: "Registration No.", value: "05/22/03/11448/13" },
         { label: "Registration Date", value: "30/12/2013" },
         { label: "Registered Office", value: CONTACT_INFO.address.fullRegistered },
-        { label: "CSR-1 Registration", value: "Available & Compliant" },
-        { label: "12AB & 80G Status", value: "See current status" },
+        { label: "CSR-1 Registration", value: "Registered (document available for due diligence)" },
+        { label: "12AB Status", value: "Registered (as per current records)" },
+        { label: "80G Status", value: "Application submitted; final approval pending" },
     ];
 
     return (
@@ -66,7 +67,7 @@ export default function CSRPartnership() {
             />
 
             {/* ================= WHY PARTNER (BENEFITS) ================= */}
-            <section id="benefits" className="py-24 px-6 bg-white relative">
+            <section id="benefits" className="py-14 sm:py-18 lg:py-24 px-4 sm:px-6 bg-white relative">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-20">
                         <h2 className="text-4xl font-serif font-bold text-[#12345A] mb-4">Why Partner with SSF?</h2>
@@ -99,7 +100,7 @@ export default function CSRPartnership() {
             </section>
 
             {/* ================= TAX & COMPLIANCE SECTION ================= */}
-            <section className="py-24 px-6 bg-[#12345A] text-white relative overflow-hidden">
+            <section className="py-14 sm:py-18 lg:py-24 px-4 sm:px-6 bg-[#12345A] text-white relative overflow-hidden">
                 {/* Background Patterns */}
                 <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#176447]/10 rounded-full blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
                 <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-[#12345A]/20 rounded-full blur-[100px] translate-y-1/2 -translate-x-1/2"></div>
@@ -129,7 +130,7 @@ export default function CSRPartnership() {
                                 </div>
                                 <div>
                                     <h4 className="text-xl font-bold mb-1">CSR-1 Compliant</h4>
-                                    <p className="text-zinc-400 text-sm">We are registered with the Ministry of Corporate Affairs (MCA) for undertaking CSR activities.</p>
+                                    <p className="text-zinc-400 text-sm">CSR-1 registration is on record. The company and Foundation should complete applicable eligibility checks and due diligence for each proposed project before execution.</p>
                                 </div>
                             </div>
                         </div>
@@ -149,7 +150,7 @@ export default function CSRPartnership() {
                             ))}
                         </div>
                         <div className="mt-8 pt-6 border-t border-zinc-100 text-center">
-                            <p className="text-xs text-zinc-400 font-bold uppercase tracking-wider mb-2">Verified & Trusted</p>
+                            <p className="text-xs text-zinc-500 font-bold uppercase tracking-wider mb-2">Registration references</p>
                             <div className="flex justify-center gap-4 text-2xl text-[#12345A]">
                                 <FaFileContract title="12A Registered" />
                                 <FaHandshake title="CSR-1 Compliant" />
@@ -161,10 +162,10 @@ export default function CSRPartnership() {
             </section>
 
             {/* ================= CERTIFICATIONS ================= */}
-            <section className="py-24 px-6 bg-white">
+            <section className="py-14 sm:py-18 lg:py-24 px-4 sm:px-6 bg-white">
                 <div className="max-w-7xl mx-auto text-center mb-16">
                     <h2 className="text-4xl font-serif font-bold text-[#12345A] mb-4">Recognitions & Certifications</h2>
-                    <p className="text-xl text-zinc-500">Endorsed by national bodies for transparency and integrity.</p>
+                    <p className="text-xl text-zinc-500">Selected records and acknowledgements are displayed for reference.</p>
                 </div>
 
                 <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
@@ -220,37 +221,36 @@ export default function CSRPartnership() {
                         </div>
                         <div className="mt-6 text-center">
                             <h3 className="text-xl font-bold text-[#12345A]">All India Registered</h3>
-                            <p className="text-zinc-500 mt-2 text-sm">Operational scope covering all of India, registered under MP Society Act.</p>
+                            <p className="text-zinc-500 mt-2 text-sm">The Society's registered area of operation is All India under the MP Societies Registration Act.</p>
                         </div>
                     </motion.div>
                 </div>
             </section>
 
-            {/* ================= SOCIAL IMPACT ================= */}
-            <section className="py-24 px-6 bg-zinc-50">
-                <div className="max-w-7xl mx-auto text-center mb-16">
-                    <h2 className="text-4xl font-serif font-bold text-[#12345A] mb-4">Focus Areas for CSR</h2>
-                    <p className="text-xl text-zinc-500">Align your CSR goals with our key initiatives.</p>
+            {/* ================= CSR FOCUS AREAS ================= */}
+            <section className="py-14 sm:py-18 lg:py-24 px-4 sm:px-6 bg-zinc-50">
+                <div className="max-w-7xl mx-auto text-center mb-12">
+                    <h2 className="text-3xl sm:text-4xl font-serif font-bold text-[#12345A] mb-4">Focus Areas for CSR</h2>
+                    <p className="text-base sm:text-xl text-zinc-500 max-w-3xl mx-auto">Potential areas for discussion and partnership, based on community needs, available resources and project feasibility.</p>
                 </div>
-
-                <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
                     {[
-                        { title: "Education", count: "5000+", label: "Students Impacted", img: "bg-gradient-to-br from-blue-400 to-blue-600" },
-                        { title: "Healthcare", count: "100+", label: "Medical Camps", img: "bg-gradient-to-br from-green-400 to-green-600" },
-                        { title: "Women Empowerment", count: "2000+", label: "Women Trained", img: "bg-gradient-to-br from-purple-400 to-purple-600" },
-                    ].map((stat, i) => (
-                        <motion.div
-                            key={i}
-                            whileHover={{ y: -10 }}
-                            className={`p-10 rounded-[2rem] text-white shadow-xl ${stat.img} relative overflow-hidden`}
-                        >
-                            <div className="absolute top-0 right-0 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl -mr-10 -mt-10"></div>
-                            <h3 className="text-2xl font-bold mb-2">{stat.title}</h3>
-                            <div className="text-5xl font-black mb-1">{stat.count}</div>
-                            <p className="font-medium opacity-90">{stat.label}</p>
-                        </motion.div>
+                        { title: "Education & Digital Learning", detail: "Learning support, digital access and capacity building" },
+                        { title: "Health & Community Well-being", detail: "Community awareness and support initiatives" },
+                        { title: "Women & Youth Development", detail: "Skills, livelihood readiness and participation" },
+                        { title: "Environment & Sustainability", detail: "Local environmental awareness and practical action" },
+                        { title: "Rural Development", detail: "Community-led development and access to opportunities" },
+                        { title: "Sustainable Livelihoods", detail: "Feasibility-led livelihood and income-generation pilots" },
+                    ].map((item) => (
+                        <div key={item.title} className="rounded-2xl bg-white border border-zinc-200 p-6 shadow-sm">
+                            <h3 className="text-lg font-bold text-[#12345A] mb-2">{item.title}</h3>
+                            <p className="text-sm text-zinc-600 leading-relaxed">{item.detail}</p>
+                        </div>
                     ))}
                 </div>
+                <p className="max-w-5xl mx-auto mt-8 text-sm text-zinc-600 text-center leading-relaxed bg-white border border-zinc-200 rounded-xl p-4">
+                    Current status: the Foundation is at the resource-mobilisation and project-planning stage. These are proposed focus areas, not a claim that programmes are presently running or that beneficiary targets have already been achieved. Implementation will begin only after funding, needs assessment, approvals and compliance checks.
+                </p>
             </section>
 
             {/* ================= INVITATION BANNER ================= */}
@@ -278,7 +278,7 @@ export default function CSRPartnership() {
                             Ready to create an impact?
                         </h2>
                         <p className="text-zinc-400 text-lg mb-8 relative z-10">
-                            Connect with our CSR relations team to discuss proposals, site visits, or collaboration opportunities.
+                            Connect with the Foundation to discuss a proposed project, resource support, equipment donation or a potential partnership. All proposals are subject to feasibility, approvals and written agreement.
                         </p>
                         <div className="space-y-4 relative z-10">
                             <div className="flex items-center gap-4 text-white">
