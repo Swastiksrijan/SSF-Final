@@ -32,15 +32,15 @@ export default function SustainableLivelihoodPage() {
   return <>
     <section className="relative overflow-hidden bg-[#002344] text-white">
       <div className="absolute inset-0 opacity-20" style={{backgroundImage:"radial-gradient(circle at 15% 20%, #2d6a4f 0, transparent 32%), radial-gradient(circle at 85% 80%, #fb8500 0, transparent 28%)"}} />
-      <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-36 md:px-8 md:pb-28 md:pt-44">
+      <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-28 sm:pt-32 md:px-8 md:pb-28 md:pt-44">
         <p className="mb-4 text-xs font-bold uppercase tracking-[.28em] text-[#ffb347]">Swastik Srijan Foundation Samiti · Long-term sustainability initiative</p>
         <div className="max-w-4xl">
           <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Social Enterprises & Livelihoods</h1>
           <p className="mt-4 text-xl font-semibold text-white/90">संस्था के प्रस्तावित व्यवसाय, उत्पादन, सेवाएँ और रोजगार के अवसर</p>
-          <p className="mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-lg">Building responsible, income-generating activities whose lawful surplus can strengthen the Foundation’s social mission—so education, health, skills, rural development and community service can continue with greater financial resilience.</p><p className="mt-4 max-w-3xl rounded-xl border border-amber-300/30 bg-white/10 p-4 text-sm leading-7 text-amber-100">Current status: no enterprise or production unit has started. First, funds, resources and feasibility will be secured; then units will be considered one at a time. Activity-specific licences, registrations and legal paperwork will be completed before the selected unit begins. No launch is promised before these conditions are met.</p>
+          <p className="mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-lg">Building responsible, income-generating activities whose lawful surplus can strengthen the Foundation’s social mission—so education, health, skills, rural development and community service can continue with greater financial resilience.</p><p className="mt-4 max-w-3xl rounded-xl border border-amber-300/30 bg-white/10 p-4 text-sm leading-7 text-amber-100">वर्तमान स्थिति / Current status: अभी संस्था की कोई व्यावसायिक इकाई या उत्पादन केंद्र शुरू नहीं हुआ है। संस्था फिलहाल संसाधन जुटाने, बाजार की मांग जाँचने और व्यवहार्यता अध्ययन के चरण में है। पर्याप्त वित्तपोषण, वास्तविक खरीदारों की पुष्टि, आवश्यक अनुमतियाँ और कानूनी अनुपालन सुनिश्चित होने के बाद ही एक-एक गतिविधि पर विचार किया जाएगा। किसी इकाई के शुरू होने या रोजगार/आय मिलने का दावा अभी नहीं किया जा रहा है।</p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <a href="#roadmap" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] hover:bg-[#ffad4d]">Explore the roadmap <ArrowRight size={18}/></a>
-            <Link to="/Contact" className="inline-flex items-center gap-2 rounded-full border border-white/35 px-6 py-3 font-bold text-white hover:bg-white/10">Discuss partnership</Link>
+            <a href="#roadmap" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] hover:bg-[#ffad4d] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-[#fb8500]/50">Explore the roadmap <ArrowRight size={18}/></a>
+            <Link to="/Contact" className="inline-flex items-center gap-2 rounded-full border border-white/35 px-6 py-3 font-bold text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-white/60">Discuss partnership</Link>
           </div>
         </div>
         <div className="mt-14 grid gap-3 sm:grid-cols-3">
