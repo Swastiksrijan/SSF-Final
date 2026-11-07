@@ -164,7 +164,7 @@ export default function AboutPage() {
                   <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[#FFC56D]/60" />
                   <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-gradient-to-br from-[#FFE3A0] to-[#F7A814] shadow-[0_0_12px_rgba(247,168,20,0.8)]" />
                 </span>
-                <span className="text-center text-white">Swastik Srijan Foundation</span>
+                <span className="text-center text-white">Swastik Srijan Foundation Samiti</span>
                 <span className="hidden h-4 w-px bg-gradient-to-b from-transparent via-[#FFD88A]/80 to-transparent sm:block" />
                 <span className="whitespace-nowrap font-black text-[#FFD88A]">स्थापना 2013</span>
               </div>
@@ -250,7 +250,7 @@ export default function AboutPage() {
             </h2>
             <div className="mt-6 h-1 w-20 rounded-full bg-gradient-to-r from-[#E6530E] via-[#F7A814] to-[#176447]" />
             <p className="mt-6 text-lg leading-8 text-[#53616C]">
-              Swastik Srijan Foundation is a registered non-profit organization
+              Swastik Srijan Foundation Samiti (also known as Swastik Srijan Foundation) is a registered non-profit organization
               established in December 2013, with its roots in Rewa, Madhya Pradesh,
               India, and a pan-India field of operation. Guided by the principles
               of humanity, integrity, social responsibility and inclusive
@@ -267,7 +267,7 @@ export default function AboutPage() {
               civil society organizations and responsible corporate partners.
             </p>
             <p lang="hi" className="mt-5 text-base leading-8 text-[#53616C]">
-              स्वस्तिक सृजन फाउंडेशन दिसंबर 2013 में स्थापित एक पंजीकृत गैर-लाभकारी
+              स्वस्तिक सृजन फाउंडेशन समिति (Swastik Srijan Foundation Samiti) दिसंबर 2013 में स्थापित एक पंजीकृत गैर-लाभकारी
               संस्था है, जिसका आधार रीवा, मध्य प्रदेश, भारत में है तथा जिसका
               कार्यक्षेत्र संपूर्ण भारत है। मानवता, सत्यनिष्ठा, सामाजिक उत्तरदायित्व
               और समावेशी विकास के मूल्यों से प्रेरित संस्था एक अधिक न्यायपूर्ण,
@@ -361,7 +361,7 @@ export default function AboutPage() {
               <h3 className="relative mt-6 text-2xl font-extrabold">Mr. Ramesh Pandey</h3>
               <p className="relative mt-2 text-sm font-bold text-[#FFC56D]">Founder & President</p>
               <div className="relative mt-5 h-px w-16 bg-white/30" />
-              <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.17em] text-white/65">Swastik Srijan Foundation</p>
+              <p className="relative mt-4 text-xs font-semibold uppercase tracking-[0.17em] text-white/65">Swastik Srijan Foundation Samiti</p>
             </div>
             <div className="flex flex-col justify-center px-6 py-9 sm:px-10 sm:py-12 lg:px-14">
               <FaQuoteLeft className="text-3xl text-[#F7A814]" aria-hidden="true" />
@@ -484,7 +484,7 @@ export default function AboutPage() {
                 className="block aspect-[4/3] w-full object-cover"
               />
               <div
-                className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(23,100,71,0.90)_0%,rgba(23,100,71,0.84)_48%,rgba(18,52,90,0.86)_52%,rgba(18,52,90,0.92)_100%)]"
+                className="pointer-events-none absolute inset-0 bg-[linear-gradient(90deg,rgba(23,100,71,0.28)_0%,rgba(23,100,71,0.20)_48%,rgba(18,52,90,0.22)_52%,rgba(18,52,90,0.30)_100%)]"
                 aria-hidden="true"
               />
             </div>
@@ -564,6 +564,20 @@ export default function AboutPage() {
                 communication, proper records and accountability to the communities
                 and partners we serve.
               </p>
+              <div className="mt-7 rounded-2xl border border-[#DCE8DF] bg-[#F4F8F5] p-5">
+                <h4 className="text-sm font-extrabold text-[#12345A]">Statutory registrations | वैधानिक पंजीयन</h4>
+                <div className="mt-3 grid gap-3 sm:grid-cols-2">
+                  <div>
+                    <p className="text-sm font-bold text-[#176447]">12AB</p>
+                    <p className="mt-1 text-xs leading-5 text-[#64727D]">Income-tax registration status stated by the Foundation.</p>
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-[#176447]">CSR-1</p>
+                    <p className="mt-1 text-xs leading-5 text-[#64727D]">CSR registration stated by the Foundation for eligible CSR engagement.</p>
+                  </div>
+                </div>
+                <p lang="hi" className="mt-3 text-xs leading-6 text-[#64727D]">संस्था द्वारा 12AB एवं CSR-1 पंजीयन की जानकारी दी गई है। संबंधित प्रमाणपत्रों और लागू शर्तों की पुष्टि के बाद ही किसी विशिष्ट कर-लाभ या CSR पात्रता का दावा किया जाना चाहिए।</p>
+              </div>
               <div className="mt-7 grid gap-3 sm:grid-cols-2">
                 <div className="flex items-center gap-3 rounded-2xl border border-[#E3E8E3] bg-white p-4">
                   <FaShieldAlt className="shrink-0 text-xl text-[#176447]" aria-hidden="true" />
