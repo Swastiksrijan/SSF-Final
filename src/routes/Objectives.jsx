@@ -113,7 +113,7 @@ function ObjectivesPage() {
       <section className="bg-white py-20 md:py-24">
         <div className="container mx-auto px-6">
           <div className="mx-auto max-w-6xl">
-            <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16 overflow-hidden rounded-[2.5rem] border border-[#EAF0F6] bg-white shadow-2xl">
+            <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12 sm:mb-16 overflow-hidden rounded-[1.75rem] sm:rounded-[2.5rem] border border-[#EAF0F6] bg-white shadow-xl">
               <div className="grid lg:grid-cols-2">
                 <div className="h-[330px] overflow-hidden lg:h-auto"><img src="/images/real/children-playing-park.jpg" alt="Foundation objectives" className="h-full w-full object-cover" /></div>
                 <div className="flex flex-col justify-center bg-gradient-to-br from-[#12345A] to-[#12345A] p-9 text-white md:p-14">
@@ -137,11 +137,11 @@ function ObjectivesPage() {
             <div className="mb-20">
               <div className="mb-10 text-center">
                 <p className="text-xs font-black uppercase tracking-[0.2em] text-[#12345A]">10 Objective Areas | 10 प्रमुख उद्देश्य क्षेत्र</p>
-                <h3 className="mt-2 text-3xl font-serif font-bold text-[#12345A] md:text-4xl">Our Objective | हमारा उद्देश्यs | हमारे उद्देश्य | हमारे उद्देश्य</h3>
-                <p className="mx-auto mt-3 max-w-3xl text-[#26343D]">Each objective is presented as an independent, photo-based share card that can be shared directly on WhatsApp or other apps.<br/>प्रत्येक उद्देश्य को एक स्वतंत्र फोटो-आधारित शेयर कार्ड के रूप में प्रस्तुत किया गया है, जिसे सीधे WhatsApp या अन्य ऐप्स पर साझा किया जा सकता है।</p>
+                <h3 className="mt-2 text-3xl font-serif font-bold text-[#12345A] md:text-4xl">Our Objectives | हमारे उद्देश्य</h3>
+                <p className="mx-auto mt-3 max-w-3xl text-[#26343D]">These are the Foundation’s broad registered objective areas. Actual programmes and activities are undertaken according to available resources, community needs, approvals and applicable rules.<br/>ये संस्था के व्यापक पंजीकृत उद्देश्य क्षेत्र हैं। वास्तविक कार्यक्रम एवं गतिविधियाँ उपलब्ध संसाधनों, समुदाय की आवश्यकताओं, स्वीकृतियों और लागू नियमों के अनुसार संचालित की जाती हैं।</p>
               </div>
 
-              <div className="grid gap-8 md:grid-cols-2">
+              <div className="grid gap-5 sm:gap-7 lg:gap-8 md:grid-cols-2">
                 {detailedObjectives.map((objective, index) => (
                   <motion.article key={objective.id} id={objective.id} initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: 0.12 }} transition={{ duration: 0.5, delay: (index % 2) * 0.08 }} className="group scroll-mt-28 overflow-hidden rounded-[2rem] border border-[#EAF0F6] bg-white shadow-lg transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
                     <div className="relative h-56 overflow-hidden">
@@ -151,14 +151,14 @@ function ObjectivesPage() {
                       <span className="absolute right-5 top-5 rounded-full bg-white/95 px-4 py-2 text-xs font-black text-[#12345A] shadow-sm">Objective {String(index + 1).padStart(2, "0")}</span>
                     </div>
 
-                    <div className="p-7">
+                    <div className="p-5 sm:p-7">
                       <div className="flex items-start justify-between gap-4">
                         <div>
                           <h4 className="text-2xl font-serif font-bold text-[#12345A] md:text-3xl">{objective.title}</h4>
                           <p className="mt-1 text-sm font-semibold text-[#26343D]">{objective.subtitle}</p>
                         </div>
                       </div>
-                      <p className={`mt-3 bg-gradient-to-r ${objective.tone} bg-clip-text font-bold text-transparent`}>{objective.tagline}</p>
+                      <p className="mt-3 font-bold leading-relaxed text-[#176447]">{objective.tagline}</p>
 
                       <div className="mt-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
                         {objective.items.map((item) => <div key={item} className="rounded-xl border border-[#EAF0F6] bg-[#EAF0F6] px-3 py-2 text-sm font-medium text-[#26343D] transition group-hover:bg-white">✓ {item}</div>)}
@@ -176,7 +176,7 @@ function ObjectivesPage() {
               </div>
             </div>
 
-            <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-16 rounded-[2.5rem] border border-[#EAF0F6] bg-[#EAF0F6] p-8 md:p-12">
+            <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12 sm:mb-16 rounded-[1.75rem] sm:rounded-[2.5rem] border border-[#EAF0F6] bg-[#EAF0F6] p-6 sm:p-8 md:p-12">
               <div className="mx-auto max-w-5xl">
                 <div className="mb-8 text-center"><p className="text-xs font-black uppercase tracking-[0.2em] text-[#12345A]">Registered Scope | पंजीकृत कार्यक्षेत्र</p><h3 className="mt-2 text-3xl font-serif font-bold text-[#12345A] md:text-4xl">Our Broader Areas of Work | हमारे व्यापक कार्यक्षेत्र</h3><p className="mx-auto mt-4 max-w-3xl text-[#26343D] leading-7">The summary above highlights our principal focus areas. Our registered objectives are broader and provide scope for work in education, skills, health, women and children, rural development, environment, social awareness and other community-focused areas, subject to applicable rules and available resources.<br/>ऊपर दिया गया सारांश हमारे प्रमुख कार्यक्षेत्रों को दर्शाता है। हमारे पंजीकृत उद्देश्य व्यापक हैं और लागू नियमों तथा उपलब्ध संसाधनों के अनुसार शिक्षा, कौशल, स्वास्थ्य, महिला एवं बाल विकास, ग्रामीण विकास, पर्यावरण, सामाजिक जागरूकता तथा अन्य समुदाय-केंद्रित क्षेत्रों में कार्य की गुंजाइश प्रदान करते हैं।</p></div>
                 <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">{["Education & Knowledge", "Skill Development & Livelihood", "Women & Child Development", "Health & Well-being", "Environment & Natural Resources", "Agriculture & Rural Development", "Social Justice & Awareness", "Disability, Elderly & Rehabilitation", "Animal & Wildlife Protection", "Cultural, Creative & Community Development"].map((area) => <div key={area} className="flex items-center gap-3 rounded-2xl border border-[#EAF0F6] bg-white p-4 shadow-sm"><FaCheckCircle className="shrink-0 text-[#F7A814]" /><span className="font-bold text-[#26343D]">{area}</span></div>)}</div>
