@@ -2,6 +2,7 @@ const express = require('express');
 const crypto = require('crypto');
 const { Op } = require('sequelize');
 const Complaint = require('../models/Complaint');
+const ResolvedGrievance = require('../models/ResolvedGrievance');
 const { sendMail, emailConfigured } = require('../services/mailer');
 const { databaseUnavailableResponse } = require('../services/dbHealth');
 
@@ -122,6 +123,32 @@ router.get('/admin/complaints', adminOnly, async (req, res) => {
   }
 });
 
+router.get('/admin/resolved-grievances', adminOnly, async (_req, res) => {
+  try {
+    // Backfill existing resolved/closed complaints once they are viewed. The
+    // unique complaintId makes this safe to repeat and prevents duplicate rows.
+    const alreadyResolved = await Complaint.findAll({ where: { status: { [Op.in]: ['resolved', 'closed'] } } });
+    for (const item of alreadyResolved) {
+      if (!item.resolvedAt || !item.resolutionNote) continue;
+      await ResolvedGrievance.findOrCreate({
+        where: { complaintId: item.id },
+        defaults: {
+          complaintId: item.id, reference: item.reference, fullName: item.fullName,
+          email: item.email, phone: item.phone, category: item.category,
+          subject: item.subject, description: item.description,
+          resolutionNote: item.resolutionNote, receivedAt: item.createdAt,
+          resolvedAt: item.resolvedAt, resolvedBy: 'Previously resolved complaint'
+        }
+      });
+    }
+    const rows = await ResolvedGrievance.findAll({ order: [['resolvedAt', 'DESC']] });
+    return res.json({ total: rows.length, complaints: rows });
+  } catch (error) {
+    if (databaseUnavailableResponse(res, error)) return;
+    return res.status(500).json({ message: 'Unable to load the resolved grievance register.' });
+  }
+});
+
 router.patch('/admin/complaints/:id', adminOnly, async (req, res) => {
   try {
     const complaint = await Complaint.findByPk(req.params.id);
@@ -133,7 +160,20 @@ router.patch('/admin/complaints/:id', adminOnly, async (req, res) => {
     const previousStatus = complaint.status;
     const previousNote = complaint.resolutionNote || '';
     const nextNote = resolutionNote || previousNote;
-    await complaint.update({ status, resolutionNote: nextNote, resolvedAt: status === 'resolved' ? (complaint.resolvedAt || new Date()) : null });
+    const resolvedAt = status === 'resolved' ? (complaint.resolvedAt || new Date()) : complaint.resolvedAt;
+    await complaint.update({ status, resolutionNote: nextNote, resolvedAt });
+    // First resolution creates a permanent register entry. Later edits refresh
+    // the recorded resolution, but reopening the live complaint never deletes it.
+    if (status === 'resolved' && nextNote.length >= 5) {
+      await ResolvedGrievance.upsert({
+        complaintId: complaint.id, reference: complaint.reference,
+        fullName: complaint.fullName, email: complaint.email, phone: complaint.phone,
+        category: complaint.category, subject: complaint.subject,
+        description: complaint.description, resolutionNote: nextNote,
+        receivedAt: complaint.createdAt, resolvedAt,
+        resolvedBy: clean(req.body?.resolvedBy, 160) || 'IMS Administrator'
+      });
+    }
     let notification = { sent: false, reason: 'no_change' };
     if (complaint.email && (previousStatus !== status || previousNote !== nextNote)) {
       notification = await notifySubmitter(complaint);
