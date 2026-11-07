@@ -66,6 +66,7 @@ const contactRoutes = require('./routes/contactRoutes');
 const complaintRoutes = require('./routes/complaintRoutes');
 // Register the grievance model before sequelize.sync so its table is created.
 require('./models/Complaint');
+require('./models/ResolvedGrievance'); // Permanent auto-populated resolved grievance register
 const internshipRoutes = require('./routes/internshipRoutes');
 const donorRoutes = require('./routes/donorRoutes');
 const roleDocumentRoutes = require('./routes/roleDocumentRoutes');
