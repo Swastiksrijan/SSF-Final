@@ -11,14 +11,15 @@ export default function SustainableDevelopmentPage() {
   return <>
     <section className="relative overflow-hidden bg-[#002344] text-white">
       <div className="absolute inset-0 opacity-25" style={{backgroundImage:"radial-gradient(circle at 12% 20%, #2d6a4f 0, transparent 32%), radial-gradient(circle at 88% 75%, #fb8500 0, transparent 30%)"}} />
-      <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-36 md:px-8 md:pb-28 md:pt-44">
+      <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-28 sm:pt-32 md:px-8 md:pb-28 md:pt-44">
         <p className="mb-4 text-xs font-bold uppercase tracking-[.28em] text-[#ffb347]">Swastik Srijan Foundation Samiti · Since 2013</p>
         <div className="max-w-4xl">
           <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Sustainable Development</h1>
           <p className="mt-4 text-xl font-semibold text-white/90">स्थायी सामाजिक विकास और संस्था की आत्मनिर्भरता</p>
           <p className="mt-6 max-w-3xl text-base leading-8 text-white/80 md:text-lg">Our aim is to build a Foundation that can sustain meaningful community work over the long term—through responsible partnerships, transparent support and carefully tested social-enterprise opportunities.</p>
           <p className="mt-3 max-w-3xl text-base leading-8 text-white/80">हमारा लक्ष्य है कि सामाजिक कार्य केवल अस्थायी सहायता पर निर्भर न रहें। संस्था समुदाय की जरूरतों के अनुसार काम करे, भरोसेमंद साझेदारियाँ बनाए और व्यवहार्यता जाँचकर अपने वैध आय-सृजन के अवसर विकसित करे।</p>
-          <div className="mt-8 flex flex-wrap gap-3"><Link to="/SocialEnterprises" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] hover:bg-[#ffad4d]">Explore social enterprises <ArrowRight size={18}/></Link><Link to="/FundingPartnerships" className="rounded-full border border-white/35 px-6 py-3 font-bold hover:bg-white/10">Funding & partnerships</Link></div>
+          <div className="mt-6 max-w-3xl rounded-2xl border border-[#ffb347]/50 bg-white/10 p-5 shadow-sm backdrop-blur-sm"><p className="text-sm font-extrabold uppercase tracking-wider text-[#ffb347]">Current status · वर्तमान स्थिति</p><p className="mt-2 text-sm leading-7 text-white">No income-generating unit or production activity has started yet. The Foundation is at the funding, resource mobilisation and feasibility stage. Any pilot will be considered one at a time, only after demand, funding, permissions and applicable compliance requirements are checked.</p><p className="mt-2 text-sm leading-7 text-white/85">अभी कोई आय-सृजन इकाई या उत्पादन कार्य शुरू नहीं हुआ है। संस्था पहले फंडिंग, संसाधन और व्यवहार्यता की तैयारी कर रही है। मांग, धन, अनुमति और जरूरी अनुपालन की जाँच के बाद ही एक-एक करके पायलट शुरू करने पर विचार होगा।</p></div>
+          <div className="mt-8 flex flex-wrap gap-3"><Link to="/SocialEnterprises" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b] transition hover:bg-[#ffad4d] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffb347]">Explore social enterprises <ArrowRight size={18}/></Link><Link to="/FundingPartnerships" className="rounded-full border border-white/35 px-6 py-3 font-bold hover:bg-white/10">Funding & partnerships</Link></div>
         </div>
       </div>
     </section>
