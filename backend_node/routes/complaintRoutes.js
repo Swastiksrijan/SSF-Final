@@ -35,7 +35,7 @@ router.post('/complaints', async (req, res) => {
     if (clean(req.body?.website, 200)) return res.status(400).json({ message: 'Unable to accept this submission.' });
     const fullName = clean(req.body?.fullName, 120);
     const email = clean(req.body?.email, 160).toLowerCase();
-    const phone = clean(req.body?.phone, 24);
+    const phone = clean(req.body?.phone, 24).replace(/\\D/g, '');
     const category = clean(req.body?.category, 80);
     const subject = clean(req.body?.subject, 180);
     const description = clean(req.body?.description, 10000);
@@ -60,7 +60,8 @@ router.post('/complaints', async (req, res) => {
 router.post('/complaints/track', async (req, res) => {
   try {
     const reference = clean(req.body?.reference, 32).toUpperCase();
-    const contact = clean(req.body?.contact, 160).toLowerCase();
+    const rawContact = clean(req.body?.contact, 160).toLowerCase();
+    const contact = rawContact.includes('@') ? rawContact : rawContact.replace(/\\D/g, '');
     if (!reference || !contact) return res.status(400).json({ message: 'Enter your reference number and the email/mobile number used when submitting.' });
     const complaint = await Complaint.findOne({ where: { reference, [Op.or]: [{ email: contact }, { phone: contact }] } });
     if (!complaint) return res.status(404).json({ message: 'No matching complaint was found. Check the reference number and contact detail.' });
