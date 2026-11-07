@@ -227,6 +227,49 @@ export default function MissionPage() {
               </div>
             ))}
           </div>
+
+          <p className="mx-auto mt-6 max-w-5xl text-sm md:text-base text-[#53616C] leading-7">
+            Integrity — सत्यनिष्ठा • Compassion — करुणा • Inclusion — समावेशन • Excellence — उत्कृष्टता • Sustainability — सततता • Volunteerism — स्वयंसेवा
+          </p>
+        </div>
+      </section>
+
+      {/* ================= MISSION PRIORITIES ================= */}
+      <section className="relative overflow-hidden bg-[#F5F8FA] py-16 md:py-24">
+        <div className="container relative z-10 mx-auto px-6">
+          <div className="mx-auto mb-12 max-w-4xl text-center">
+            <span className="text-xs font-bold uppercase tracking-[0.2em] text-[#176447]">From Purpose to Action | संकल्प से कार्य तक</span>
+            <h2 className="mt-3 text-3xl font-serif font-bold text-[#12345A] md:text-4xl">Our Mission Priorities | हमारी प्राथमिकताएँ</h2>
+            <p className="mt-4 text-base leading-7 text-[#53616C] md:text-lg">
+              These focus areas describe the ways in which the Foundation seeks to put its mission into practice, subject to resources, partnerships and applicable permissions.
+            </p>
+            <p className="mt-2 text-base leading-7 text-[#53616C]">
+              ये प्राथमिकताएँ संस्था के मिशन को कार्यरूप देने की दिशा बताती हैं। इन पर गतिविधियाँ उपलब्ध संसाधनों, सहयोग और आवश्यक अनुमतियों के अनुसार संचालित की जाएँगी।
+            </p>
+          </div>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              ["Education & Learning", "शिक्षा एवं सीखना", "Learning opportunities, digital literacy and student support."],
+              ["Health & Well-being", "स्वास्थ्य एवं कल्याण", "Health awareness, preventive practices and community well-being."],
+              ["Skills & Livelihoods", "कौशल एवं आजीविका", "Skill development, vocational learning and self-reliance."],
+              ["Women & Child Development", "महिला एवं बाल विकास", "Dignity, safety, opportunity and inclusive participation."],
+              ["Rural & Community Development", "ग्रामीण एवं सामुदायिक विकास", "Local participation and practical community-led initiatives."],
+              ["Environment & Sustainability", "पर्यावरण एवं सतत विकास", "Environmental awareness and responsible resource use."],
+              ["Social Awareness", "सामाजिक जागरूकता", "Civic awareness, equality, harmony and responsible citizenship."],
+              ["Partnership & Capacity Building", "साझेदारी एवं क्षमता निर्माण", "Transparent collaboration, training and institutional strengthening."]
+            ].map(([title, hindi, description]) => (
+              <article key={title} className="rounded-2xl border border-[#E2EAF0] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+                <h3 className="text-lg font-bold leading-snug text-[#12345A]">{title}</h3>
+                <p className="mt-1 text-sm font-semibold text-[#176447]">{hindi}</p>
+                <p className="mt-3 text-sm leading-6 text-[#53616C]">{description}</p>
+              </article>
+            ))}
+          </div>
+          <div className="mt-10 flex flex-wrap justify-center gap-3">
+            <Link to="/Objectives" className="rounded-full bg-[#12345A] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#176447]">Read Our Objectives | उद्देश्य देखें</Link>
+            <Link to="/Vision" className="rounded-full border border-[#12345A] px-6 py-3 text-sm font-bold text-[#12345A] transition hover:bg-[#EAF0F6]">Explore Our Vision | दृष्टि देखें</Link>
+            <Link to="/Contact" className="rounded-full border border-[#176447] px-6 py-3 text-sm font-bold text-[#176447] transition hover:bg-[#EAF0F6]">Discuss a Partnership | सहयोग हेतु संपर्क</Link>
+          </div>
         </div>
       </section>
 
