@@ -17,7 +17,7 @@ const sendAdminNotification = async (subject, text) => {
 const sendApplicantEmail = async (to, subject, text) => {
     if (!emailConfigured() || !to) return;
     try {
-        await sendMail({ from: '"Swastik Srijan Foundation"', to, subject, text });
+        await sendMail({ to, subject, text });
     } catch (error) { console.error('⚠️ Applicant notification failed:', error.message); }
 };
 
