@@ -52,7 +52,7 @@ export default function FooterSection() {
         </div>
       </div>
       <div className="relative mx-auto max-w-7xl px-5 py-12 sm:px-7 sm:py-14 lg:px-8">
-        <div className="grid gap-10 border-b border-white/15 pb-10 lg:grid-cols-[minmax(0,1.25fr)_repeat(5,minmax(0,1fr))] lg:gap-14">
+        <div className="grid grid-cols-1 items-start gap-x-8 gap-y-10 border-b border-white/15 pb-10 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-[minmax(0,1.35fr)_repeat(5,minmax(0,1fr))] 2xl:gap-x-7">
           <div>
             <Link to="/" className="inline-flex items-center gap-3 rounded-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#ffb347]">
               <img src={logoImg} alt="Swastik Srijan Foundation Samiti logo" className="h-16 w-16 rounded-full bg-white p-1.5 object-contain shadow-lg" />
