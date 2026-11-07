@@ -185,7 +185,7 @@ export default function ImsLayout({ children, active }) {
         >
           <nav className="space-y-5 p-3">
             {[
-              { title: 'Quick Access', hi: 'त्वरित पहुँच', keys: ['main_dashboard', 'global_search', 'notifications', 'social_publisher', 'volunteer_network'] },
+              { title: 'Quick Access', hi: 'त्वरित पहुँच', keys: ['main_dashboard', 'global_search', 'notifications', 'complaint_grievance', 'social_publisher', 'volunteer_network'] },
               { title: 'Organisation & Operations', hi: 'संस्था एवं संचालन', keys: ['organisation', 'governance', 'programmes', 'finance', 'resources'] },
               { title: 'Control & Records', hi: 'नियंत्रण एवं अभिलेख', keys: ['compliance', 'records', 'admin'] },
             ].map((group) => (
