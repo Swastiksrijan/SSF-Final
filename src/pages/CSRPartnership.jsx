@@ -346,22 +346,16 @@ export default function CSRPartnership() {
                         </div>
                     </div>
 
-                    <div className="p-12 md:p-16 md:w-1/2 bg-white">
-                        <form className="ssf-form" onSubmit={(e) => e.preventDefault()}>
-                            <h3 className="ssf-form-title">Request a Proposal</h3>
-                            <p className="ssf-form-sub">Share your requirement and the SSF partnership team will respond.</p>
-                            <Field label="Company Name" required><Input type="text" placeholder="Enter company name" /></Field>
-                            <Field label="Phone / Email" required><Input type="text" placeholder="How can we reach you?" /></Field>
-                            <Field label="Interest Area" required>
-                                <Select>
-                                    <option>General CSR</option>
-                                    <option>Education</option>
-                                    <option>Healthcare</option>
-                                    <option>Skill Development</option>
-                                </Select>
-                            </Field>
-                            <SubmitButton>Submit Request</SubmitButton>
-                        </form>
+                    <div className="p-6 sm:p-8 md:p-12 md:w-1/2 bg-white flex flex-col justify-center">
+                        <div className="max-w-md mx-auto">
+                            <p className="text-xs font-bold uppercase tracking-[0.2em] text-[#176447] mb-3">Start a conversation</p>
+                            <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#12345A] mb-4">Discuss a CSR partnership</h3>
+                            <p className="text-zinc-600 leading-relaxed mb-7">Please share your organisation's requirement through our main contact form. This keeps enquiries in one place and avoids a form here that cannot reliably submit or track your request.</p>
+                            <a href="/Contact" className="inline-flex items-center justify-center gap-3 w-full sm:w-auto px-7 py-4 rounded-xl bg-[#176447] text-white font-bold hover:bg-[#12345A] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#176447] transition-colors">
+                                Open Contact Form <FaEnvelope aria-hidden="true" />
+                            </a>
+                            <p className="text-xs text-zinc-500 mt-4">You can select CSR / Corporate Partnership as your enquiry type.</p>
+                        </div>
                     </div>
                 </div>
             </section>
