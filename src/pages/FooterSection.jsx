@@ -81,7 +81,7 @@ export default function FooterSection() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-6 gap-y-9 sm:grid-cols-3 xl:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-5 gap-y-9 sm:grid-cols-4 sm:gap-x-6">
             <nav aria-label="About the Foundation">
               <h3 className={headingClass + " min-h-10"}>The Foundation</h3>
               <ul className="space-y-2.5">
@@ -103,7 +103,6 @@ export default function FooterSection() {
                 <FooterLink to="/HelpCentre">Digital Help Centre</FooterLink>
                 <FooterLink to="/Impact">Impact & Outcomes</FooterLink>
                 <FooterLink to="/Campaigns">Campaigns</FooterLink>
-                <FooterLink to="/Media">Media Gallery</FooterLink>
                 <FooterLink to="/Blog">Blog & Stories</FooterLink>
                 <FooterLink to="/UpcomingProjects">Future Projects</FooterLink>
               </ul>
@@ -122,23 +121,20 @@ export default function FooterSection() {
                 <ul className="space-y-2.5">
                   <FooterLink to="/FundingPartnerships">Funding & CSR Opportunities</FooterLink>
                   <FooterLink to="/PartnerOutreach">Donor & CSR Outreach Desk</FooterLink>
+                <FooterLink to="/Volunteer">Volunteer</FooterLink>
+                <FooterLink to="/Members">Membership</FooterLink>
+                <FooterLink to="/Internship">Internship</FooterLink>
+                <FooterLink to="/GetInvolved">Join & Participate</FooterLink>
+                <FooterLink to="/Donate">Donate / Support</FooterLink>
+                <FooterLink to="/Contact">Contact & Enquiry</FooterLink>
                 </ul>
               </nav>
-              <nav aria-label="Get involved" className="mt-8">
-                <h3 className={headingClass}>Get Involved</h3>
-                <ul className="space-y-2.5">
-                  <FooterLink to="/Volunteer">Volunteer</FooterLink>
-                  <FooterLink to="/Members">Membership</FooterLink>
-                  <FooterLink to="/Internship">Internship</FooterLink>
-                  <FooterLink to="/GetInvolved">Join & Participate</FooterLink>
-                  <FooterLink to="/Donate">Donate / Support</FooterLink>
-                </ul>
-              </nav>
+              
             </div>
           </div>
         </div>
 
-        <div className="grid gap-8 border-b border-white/15 py-9 md:grid-cols-[1fr_auto] md:items-start">
+        <div className="border-b border-white/15 py-9">
           <div>
             <h3 className={headingClass}>Contact the Foundation</h3>
             <div className="grid gap-4 text-sm text-white/80 sm:grid-cols-2">
@@ -156,14 +152,6 @@ export default function FooterSection() {
                 <span>Registered Office<br />{CONTACT_INFO.address.fullRegistered}</span>
               </div>
             </div>
-          </div>
-          <div className="md:min-w-48">
-            <h3 className={headingClass}>Explore</h3>
-            <ul className="space-y-2.5 text-sm">
-              <FooterLink to="/Contact">Contact & Enquiry</FooterLink>
-              <FooterLink to="/Transparency">Registration & Documents</FooterLink>
-              <FooterLink to="/Media">News & Media</FooterLink>
-            </ul>
           </div>
         </div>
 
