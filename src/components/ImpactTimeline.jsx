@@ -46,7 +46,8 @@ export default function ImpactTimeline() {
                 <div className="text-center max-w-4xl mx-auto mb-12">
                     <span className="inline-flex px-5 py-2 rounded-full bg-[#12345A] text-white text-[10px] font-black uppercase tracking-[0.25em] shadow-xl">2013 — 2026 • Service Journey</span>
                     <h2 className="mt-6 text-4xl md:text-6xl font-serif font-bold text-[#12345A]">SSF SERVICE JOURNEY <span className="text-[#12345A]">| सेवा यात्रा</span></h2>
-                    <p className="mt-5 text-[#26343D] text-base md:text-lg leading-relaxed">Fourteen years of a continuing journey — from registration and foundation building to learning, community development, digital outreach and ongoing service.</p>
+                    <p className="mt-5 text-[#26343D] text-base md:text-lg leading-relaxed">A continuing journey since 2013 — from registration and foundation building to learning, community development, digital outreach and ongoing service.</p>
+                    <p className="mt-3 text-sm leading-6 text-[#53616C]">This timeline presents broad phases and focus areas of the Foundation. It is not a year-wise claim of completed projects or beneficiary numbers. | यह समयरेखा संस्था की व्यापक यात्रा और प्राथमिकताओं का परिचय है, प्रत्येक वर्ष में पूर्ण परियोजनाओं या लाभार्थियों की प्रमाणित सूची नहीं।</p>
                     <div className="mt-6 flex flex-wrap justify-center gap-2 text-[9px] font-black uppercase tracking-[0.18em]">
                         <span className="px-3 py-1.5 rounded-full bg-[#EAF0F6] text-[#12345A]">Support</span>
                         <span className="px-3 py-1.5 rounded-full bg-[#EAF0F6] text-[#12345A]">Skill</span>
