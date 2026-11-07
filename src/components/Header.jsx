@@ -64,6 +64,7 @@ const Header = () => {
     { name: "Sustainable Development", path: "/SustainableDevelopment", subItems: [{ name: "Development Model", path: "/SustainableDevelopment" }, { name: "All Business & Livelihood Options", path: "/SocialEnterprises" }, { name: "Agriculture & Food Processing", path: "/SocialEnterprises#agriculture" }, { name: "Paper & Packaging", path: "/SocialEnterprises#paper-packaging" }, { name: "Garments & Footwear", path: "/SocialEnterprises#garments-footwear" }, { name: "Trading & Supply", path: "/SocialEnterprises#trading-supply" }, { name: "Digital & Professional Services", path: "/SocialEnterprises#digital-services" }, { name: "Manufacturing & Repair", path: "/SocialEnterprises#manufacturing-repair" }, { name: "Green Economy", path: "/SocialEnterprises#green-economy" }, { name: "Phased Roadmap", path: "/SocialEnterprises#roadmap" }, { name: "Impact, Transparency & Reports", path: "/DevelopmentImpact" }] },
     { name: "Funding & Partnerships", path: "/FundingPartnerships", subItems: [{ name: "Funding & CSR Overview", path: "/FundingPartnerships" }, { name: "Donor & CSR Outreach Desk", path: "/PartnerOutreach" }] },
     { name: "Impact", path: "/Impact" },
+    { name: "Complaints", path: "/ComplaintGrievance" },
     { name: "Gallery", path: "/Media" }
   ];
 
