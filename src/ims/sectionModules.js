@@ -283,6 +283,7 @@ export const SECTIONS = {
       { labelKey: 'grp_notifications', items: [
         { key: 'notification_centre', icon: 'Bell', path: '/ims/notifications' },
         { key: 'contacts', icon: 'Contact', path: '/ims/contacts' },
+        { key: 'complaint_grievance', icon: 'ShieldAlert', path: '/ims/complaints' },
       ] },
     ],
   },
@@ -364,6 +365,7 @@ export const SIDEBAR = [
   { key: 'main_dashboard', icon: 'LayoutDashboard', path: '/ims' },
   { key: 'global_search', icon: 'Search', path: '/ims/search' },
   { key: 'notifications', icon: 'Bell', path: '/ims/sections/notifications' },
+  { key: 'complaint_grievance', icon: 'ShieldAlert', path: '/ims/complaints' },
   { key: 'social_publisher', icon: 'Megaphone', path: '/ims/social' },
   { key: 'volunteer_network', icon: 'Network', path: '/ims/volunteer-network' },
   { key: 'organisation', icon: 'Building2', path: '/ims/sections/organisation' },
@@ -402,6 +404,7 @@ const ACTIVE_ALIASES = {
   dashboard: 'main_dashboard',
   notification_centre: 'notifications',
   contacts: 'notifications',
+  complaint_grievance: 'complaint_grievance',
   social_publisher: 'social_publisher',
   volunteer_dashboard: 'volunteer_network',
   finance_dashboard: 'finance',
