@@ -23,11 +23,11 @@ export default function DonateAndSupport() {
     },
     {
       question: "Can I donate from outside India?",
-      answer: "Currently, we can only accept donations from Indian bank accounts and cards due to FCRA regulations. We are working on enabling international donations soon."
+      answer: "The Foundation is not currently authorised to accept foreign contributions under FCRA. Please do not send foreign-source contributions. If you are unsure whether a contribution is covered, contact the Foundation before making a payment."
     },
     {
       question: "How will my donation be used?",
-      answer: "We are committed to financial transparency. 85% of your donation directly funds our programs (Education, Health, Livelihood), 10% goes towards administrative costs, and 5% covers fundraising efforts."
+      answer: "Contributions are recorded and used in line with the stated purpose, any donor restrictions, approved budgets and applicable law. We do not publish a fixed 85/10/5 allocation on this page. Utilisation information can be shared through relevant records, subject to availability and disclosure requirements."
     }
   ];
 
@@ -72,8 +72,11 @@ export default function DonateAndSupport() {
         </div>
       </section>
 
-      {/* ================= IMPACT TIERS ================= */}
+      {/* ================= ILLUSTRATIVE SUPPORT OPTIONS ================= */}
       <section className="py-12 px-4 -mt-16 relative z-20">
+        <p className="mx-auto mb-5 max-w-4xl rounded-xl border border-amber-200 bg-amber-50 px-5 py-3 text-center text-sm leading-relaxed text-amber-950">
+          Illustrative contribution levels only. These are not guaranteed unit costs, beneficiary counts or confirmed programme outputs. Actual use depends on approved plans, quotations, available resources and any donor restrictions.
+        </p>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {impactTiers.map((tier, i) => (
             <motion.div
@@ -214,38 +217,34 @@ export default function DonateAndSupport() {
               <h2 className="text-3xl md:text-4xl font-black text-black">Complete Financial <br /><span className="text-[#12345A]">Transparency</span></h2>
               <h3 className="text-2xl font-hindi text-zinc-500">पूर्ण वित्तीय पारदर्शिता</h3>
               <p className="text-lg text-zinc-600 leading-relaxed">
-                We believe you deserve to know exactly where your money goes. For every ₹100 you donate, ₹85 goes directly to the field.
+                Every contribution is recorded and applied in accordance with its stated purpose, donor restrictions, approved budgets and applicable law. We do not claim a fixed percentage split unless it is supported by the relevant approved financial records.
               </p>
-              <p className="text-zinc-400 mt-2 text-md">
-                हमारा मानना है कि आपको यह जानने का पूरा अधिकार है कि आपका पैसा कहाँ जा रहा है। आपके द्वारा दान किए गए प्रत्येक ₹100 में से ₹85 सीधे क्षेत्र (फील्ड) में सेवा के लिए जाते हैं।
+              <p className="text-zinc-600 mt-2 text-md">
+                प्रत्येक सहयोग का लेखा रखा जाता है और उसका उपयोग घोषित उद्देश्य, दानदाता की शर्तों, स्वीकृत बजट तथा लागू कानून के अनुसार किया जाता है। प्रमाणित अभिलेखों के बिना किसी निश्चित प्रतिशत-विभाजन का दावा नहीं किया जाता।
               </p>
 
               <div className="space-y-4 pt-4">
-                <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm">
-                  <div className="w-3 h-3 rounded-full bg-[#12345A]"></div>
-                  <div className="flex-1 font-bold">Program Implementation</div>
-                  <div className="font-mono font-bold text-xl">85%</div>
+                <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm">
+                  <div className="mt-1 h-3 w-3 shrink-0 rounded-full bg-[#12345A]"></div>
+                  <div><p className="font-bold">Programme activities</p><p className="mt-1 text-sm text-zinc-600">Approved activities and materials within the purpose of the contribution.</p></div>
                 </div>
-                <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm">
-                  <div className="w-3 h-3 rounded-full bg-black"></div>
-                  <div className="flex-1 font-bold">Admin & Overheads</div>
-                  <div className="font-mono font-bold text-xl">10%</div>
+                <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm">
+                  <div className="mt-1 h-3 w-3 shrink-0 rounded-full bg-black"></div>
+                  <div><p className="font-bold">Essential administration & compliance</p><p className="mt-1 text-sm text-zinc-600">Permitted operating, accounting and statutory requirements, where applicable.</p></div>
                 </div>
-                <div className="flex items-center gap-4 p-4 bg-white rounded-xl shadow-sm">
-                  <div className="w-3 h-3 rounded-full bg-zinc-400"></div>
-                  <div className="flex-1 font-bold">Fundraising Costs</div>
-                  <div className="font-mono font-bold text-xl">5%</div>
+                <div className="flex items-start gap-4 p-4 bg-white rounded-xl shadow-sm">
+                  <div className="mt-1 h-3 w-3 shrink-0 rounded-full bg-zinc-400"></div>
+                  <div><p className="font-bold">Monitoring & reporting</p><p className="mt-1 text-sm text-zinc-600">Record-keeping and updates in line with donor terms and disclosure requirements.</p></div>
                 </div>
               </div>
             </div>
 
             <div className="flex flex-col items-center gap-6">
-              <div className="relative w-80 h-80">
-                <FaChartPie className="w-full h-full text-zinc-200 drop-shadow-xl" />
-                <div className="absolute inset-0 flex items-center justify-center flex-col">
-                  <span className="text-6xl font-black text-[#12345A] drop-shadow-sm">85%</span>
-                  <span className="text-sm font-bold tracking-widest text-zinc-400 uppercase mt-2">To Programs</span>
-                </div>
+              <div className="flex min-h-64 w-full max-w-md flex-col justify-center rounded-3xl border border-zinc-200 bg-white p-8 text-center shadow-sm">
+                <FaFileContract className="mx-auto text-5xl text-[#12345A]" />
+                <h3 className="mt-5 text-xl font-extrabold text-[#12345A]">Accountability through records</h3>
+                <p className="mt-3 leading-relaxed text-zinc-600">Donation receipts, approved budgets and utilisation records are maintained and shared as applicable, subject to availability and lawful disclosure.</p>
+                <p className="mt-3 font-hindi text-sm leading-relaxed text-zinc-500">रसीद, स्वीकृत बजट और उपयोग संबंधी अभिलेख लागू नियमों के अनुसार रखे और साझा किए जाते हैं।</p>
               </div>
               <figure className="w-full max-w-md overflow-hidden rounded-2xl border border-zinc-200 bg-white p-3 shadow-sm">
                 <img src={BRAND.donationCertificate} alt="Tax-related donation document for Swastik Srijan Foundation" loading="lazy" className="w-full rounded-xl" />
