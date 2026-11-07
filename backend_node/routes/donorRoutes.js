@@ -34,7 +34,6 @@ const getDonorNumber = async (date = new Date()) => identity.nextDonorId(Donor, 
 const sendDonorAcknowledgement = async (donor) => {
     if (!emailConfigured() || !donor.email) return;
     await sendMail({
-        from: '"Swastik Srijan Foundation"',
         to: donor.email,
         replyTo: process.env.EMAIL_USER || undefined,
         subject: 'Thank you for connecting with Swastik Srijan Foundation',
@@ -45,7 +44,6 @@ const sendDonorAcknowledgement = async (donor) => {
 const sendAdminEmail = async (donor) => {
     if (!emailConfigured()) return;
     await sendMail({
-        from: '"Swastik Srijan Website"',
         to: process.env.EMAIL_USER,
         subject: `New Donor Registration - ${donor.donorId}`,
         text: `New donor registered.\nDonor ID: ${donor.donorId}\nName: ${donor.fullName}\nEmail: ${donor.email}\nPhone: ${donor.phone}\nAmount: ${donor.amount || 'Not specified'}\nPurpose: ${donor.donationPurpose || 'General donation'}`
