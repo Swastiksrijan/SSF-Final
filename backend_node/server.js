@@ -63,6 +63,9 @@ const userPortalRoutes = require('./routes/userPortalRoutes');
 const userDocumentRoutes = require('./routes/userDocumentRoutes');
 const interestRoutes = require('./routes/interestRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const complaintRoutes = require('./routes/complaintRoutes');
+// Register the grievance model before sequelize.sync so its table is created.
+require('./models/Complaint');
 const internshipRoutes = require('./routes/internshipRoutes');
 const donorRoutes = require('./routes/donorRoutes');
 const roleDocumentRoutes = require('./routes/roleDocumentRoutes');
@@ -120,6 +123,7 @@ app.use('/api', userPortalRoutes);
 app.use('/api', userDocumentRoutes);
 app.use('/api', interestRoutes);
 app.use('/api', contactRoutes);
+app.use('/api', complaintRoutes);
 app.use('/api', internshipRoutes);
 app.use('/api', donorRoutes);
 // Reusable IDs/certificates/letters for roles that do not have a dedicated document flow yet.
