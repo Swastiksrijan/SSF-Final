@@ -9,7 +9,6 @@ import logoImg from "../assets/footer-logo-circle-v3.png";
 import footerImg1 from "../assets/footer-gallery-1.jpg";
 import footerImg2 from "../assets/footer-gallery-2.jpg";
 import footerImg3 from "../assets/footer-gallery-3.jpg";
-import footerImg4 from "../assets/footer-gallery-4.png";
 
 const socialItems = [
   { icon: FaFacebookF, href: CONTACT_INFO.social.facebook, label: "Facebook" },
@@ -43,8 +42,8 @@ export default function FooterSection() {
           </div>
           <Link to="/Media" className="inline-flex items-center gap-2 text-xs font-bold text-white/80 transition hover:text-[#ffb347]">View Media Gallery <FaArrowRight /></Link>
         </div>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
-          {[footerImg1, footerImg2, footerImg3, footerImg4].map((img, idx) => (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-4">
+          {[footerImg1, footerImg2, footerImg3].map((img, idx) => (
             <Link key={idx} to="/Media" aria-label={`Open SSF media gallery, image ${idx + 1}`} className="group relative aspect-[4/3] overflow-hidden rounded-xl border border-white/15 bg-white/5 shadow-lg">
               <img src={img} alt={`Swastik Srijan Foundation community activity ${idx + 1}`} loading="lazy" className="h-full w-full object-cover transition duration-500 group-hover:scale-105" />
               <span className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-[#00172d]/90 to-transparent px-3 pb-2 pt-7 text-[10px] font-bold uppercase tracking-wider text-white/90">SSF • Community Work</span>
