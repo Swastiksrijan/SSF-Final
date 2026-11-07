@@ -25,7 +25,7 @@ export default function DonatePage() {
   ];
 
   const whyDonate = [
-    { text: "Serving communities since 2013", textHi: "2013 से समुदाय की सेवा में" },
+    { text: "Established in 2013", textHi: "2013 में स्थापित संस्था" },
     { text: "Grassroots, volunteer-driven organization", textHi: "जमीनी स्तर पर स्वयंसेवकों द्वारा संचालित संगठन" },
     { text: "Transparent & compliant NGO", textHi: "पारदर्शी और अनुपालन करने वाली संस्था" },
     { text: "Purpose-based use with proper records", textHi: "स्वीकृत उद्देश्य के अनुसार उपयोग और उचित लेखा-जोखा" }
@@ -39,10 +39,10 @@ export default function DonatePage() {
           <div className="grid lg:grid-cols-[1.05fr_.95fr] gap-8 items-center">
             <div className="text-white py-6 md:py-10">
               <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-semibold mb-5"><FaHandHoldingHeart className="text-[#F7A814]" /> Support Swastik Srijan Foundation Samiti</span>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight">Your Support.<br /><span className="text-[#F7A814]">Real Impact.</span></h1>
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight">Your Support.<br /><span className="text-[#F7A814]">Support Our Mission.</span></h1>
               <p className="mt-5 text-lg md:text-xl text-[#EAF0F6] max-w-xl font-hindi leading-relaxed">आपका दान सिर्फ पैसा नहीं, आशा बनता है। शिक्षा, स्वास्थ्य, कौशल, युवा और पर्यावरण से जुड़े प्रयासों में सहयोग करें।</p>
               <div className="mt-7 flex flex-col sm:flex-row gap-3">
-                <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="inline-flex justify-center items-center gap-2 bg-[#176447] hover:bg-[#176447] text-[#12345A] font-bold px-7 py-4 rounded-2xl shadow-xl transition-all hover:-translate-y-0.5">👉 Donate Now / Support SSF</a>
+                <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="inline-flex justify-center items-center gap-2 bg-[#176447] hover:bg-[#125238] text-white font-bold px-7 py-4 rounded-2xl shadow-xl transition-all hover:-translate-y-0.5">👉 Donate Now / Support SSF</a>
                 <a href="#donate-methods" className="inline-flex justify-center items-center px-7 py-4 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 text-white font-bold transition-colors">दान कैसे करें ↓</a>
               </div>
               <div className="mt-7 flex flex-wrap gap-2 text-xs text-[#EAF0F6]">
@@ -66,6 +66,7 @@ export default function DonatePage() {
               <span className="text-[#12345A] text-sm font-black uppercase tracking-[0.2em]">Why support SSF</span>
               <h2 className="mt-2 text-3xl md:text-4xl font-black text-[#12345A]">Why Your Donation Matters</h2>
               <p className="mt-2 text-xl md:text-2xl font-hindi text-[#26343D]">आपका दान क्यों मायने रखता है</p>
+              <div className="mt-4 rounded-2xl border border-[#F7A814]/50 bg-[#FFF8E8] p-4 text-sm leading-relaxed text-[#26343D]"><p className="font-bold text-[#12345A]">Current status / वर्तमान स्थिति</p><p className="mt-1">The Foundation is currently mobilising resources and planning projects. The causes listed here describe proposed areas of charitable work; they should not be read as confirmation that every programme is currently running. Activities will begin as resources, feasibility and applicable approvals permit.</p><p className="mt-2 font-hindi">संस्था वर्तमान में संसाधन जुटाने और परियोजनाओं की योजना बनाने के चरण में है। यहाँ दिए गए विषय प्रस्तावित कार्यक्षेत्र हैं, सभी कार्यक्रमों के वर्तमान में संचालित होने का दावा नहीं। उपलब्ध संसाधनों, व्यवहार्यता और आवश्यक अनुमतियों के अनुसार गतिविधियाँ शुरू की जाएँगी।</p></div>
               <div className="mt-7 grid gap-3">
                 {whyDonate.map((item, idx) => (
                   <motion.div key={idx} initial={{ opacity: 0, x: -15 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} transition={{ delay: idx * 0.08 }} className="flex items-start gap-3 p-4 rounded-2xl bg-[#EAF0F6] border border-[#EAF0F6] hover:border-[#F7A814]/50 hover:shadow-sm transition-all">
@@ -129,7 +130,7 @@ export default function DonatePage() {
                   <li className="flex gap-3 items-center"><FaCheckCircle className="text-[#F7A814]" /> Net Banking</li>
                 </ul>
                 <div className="mt-auto pt-7">
-                  <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-[#176447] hover:bg-[#176447] text-[#12345A] py-4 rounded-xl font-black text-lg shadow-lg transition-colors">👉 Donate Now / Support SSF</a>
+                  <a href={RAZORPAY_URL} target="_blank" rel="noopener noreferrer" className="block w-full text-center bg-[#176447] hover:bg-[#125238] text-white py-4 rounded-xl font-black text-lg shadow-lg transition-colors">👉 Donate Now / Support SSF</a>
                   <p className="mt-3 text-xs text-[#EAF0F6] flex justify-center items-center gap-2"><FaShieldAlt className="text-[#176447]" /> Razorpay / Secure Gateway</p>
                 </div>
               </div>
