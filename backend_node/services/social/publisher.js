@@ -15,6 +15,7 @@ const { buildSeriesPost, advanceSeriesProgress } = require('./seriesEngine');
 const DEFAULT_PLATFORMS = ['website', 'facebook', 'instagram', 'telegram', 'linkedin', 'whatsapp', 'x', 'youtube'];
 const POWER_AUTOMATE = Number(process.env.SOCIAL_AUTO == null ? 1 : process.env.SOCIAL_AUTO) !== 0;
 const DEFAULT_TZ = process.env.SOCIAL_TZ || 'Asia/Kolkata';
+const { planCampaignPost } = require('./campaigns');
 
 async function getConfig(key, fallback = null) {
   const row = await SocialConfig.findOne({ where: { key } });
@@ -445,6 +446,7 @@ async function runPendingInner({ force = false, date = new Date(), source = 'int
     await planDue({ date });
     await planCourseSeries(date);
     await planAwarenessSeries(date);
+    await planCampaignPost(date);
     const autoApprove = await getConfig('auto_approve', POWER_AUTOMATE);
     const { y, m, d } = localParts(date, tz);
     const postDate = `${y}-${String(m).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -462,7 +464,9 @@ async function runPendingInner({ force = false, date = new Date(), source = 'int
     const published = [];
     for (const p of drafts) {
       let due;
-      if (p.kind === 'course') {
+      if (p.kind === 'campaign') {
+        due = force || (autoApprove && hhmm >= '12:30');
+      } else if (p.kind === 'course') {
         const idx = Math.max(0, COURSES.findIndex((c) => c.key === p.data?.courseKey));
         const at = String(cTimes[idx] || '23:59');
         due = force || hhmm >= at;
