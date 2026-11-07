@@ -39,6 +39,7 @@ export const DICT = {
   notifications: { en: 'Notifications', hi: 'सूचनाएँ' },
   notification_centre: { en: 'Notification Centre', hi: 'सूचना केंद्र' },
   contacts: { en: 'Contacts', hi: 'संपर्क' },
+  complaint_grievance: { en: 'Complaint & Grievance Register', hi: 'शिकायत एवं शिकायत निवारण रजिस्टर' },
   unread: { en: 'Unread', hi: 'अपठित' },
   total: { en: 'Total', hi: 'कुल' },
   critical: { en: 'Critical', hi: 'गंभीर' },
