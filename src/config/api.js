@@ -27,6 +27,8 @@ export const ENDPOINTS = {
     AWARENESS_QUIZ_CERTIFICATE: (id) => `${API_BASE_URL}/api/quiz/certificate/${encodeURIComponent(id)}`,
     PORTAL_VOLUNTEER: `${API_BASE_URL}/api/portal-volunteer`,
     CONTACT: `${API_BASE_URL}/api/contact`,
+    COMPLAINTS: `${API_BASE_URL}/api/complaints`,
+    COMPLAINT_TRACK: `${API_BASE_URL}/api/complaints/track`,
     INTEREST: `${API_BASE_URL}/api/interest`,
     INTERNSHIP: `${API_BASE_URL}/api/internship`,
     DONOR: `${API_BASE_URL}/api/donor`,
