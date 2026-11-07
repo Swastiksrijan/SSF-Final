@@ -73,7 +73,7 @@ async function planCampaignPost(date = new Date()) {
     bodyEn,
     bodyHi,
     hashtags: campaign.tags,
-    imageUrl: `${WEBSITE}/images/uploads/our-campaigns-collage.jpg`,
+    imageUrl: `${WEBSITE}/images/real/community-education-meeting.jpg`,
     kind: 'campaign',
     status: 'draft',
     scheduledFor: new Date(Date.UTC(y, m - 1, d, 7, 0, 0)),
