@@ -126,6 +126,7 @@ export default function FooterSection() {
                   <FooterLink to="/GetInvolved">Join & Participate</FooterLink>
                   <FooterLink to="/Donate">Donate / Support</FooterLink>
                   <FooterLink to="/Contact">Contact & Enquiry</FooterLink>
+                  <FooterLink to="/ComplaintGrievance">Complaint & Grievance Redressal</FooterLink>
                 </ul>
               </nav>
             </div>
