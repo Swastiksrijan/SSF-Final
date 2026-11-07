@@ -119,6 +119,7 @@ export default function FooterSection() {
                 <h3 className={headingClass + " min-h-10"}>Support & Participate</h3>
                 <ul className="space-y-2.5">
                   <FooterLink to="/FundingPartnerships">Funding & CSR Opportunities</FooterLink>
+                  <FooterLink to="/Campaigns">Campaigns & Appeals</FooterLink>
                     <FooterLink to="/PartnerOutreach">Donor & CSR Outreach Desk</FooterLink>
                   <FooterLink to="/Volunteer">Volunteer</FooterLink>
                   <FooterLink to="/Members">Membership</FooterLink>
