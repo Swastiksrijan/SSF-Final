@@ -30,6 +30,7 @@ const MODULES = [
   { id: "users", label: "User Management", hint: "Accounts & access", icon: FaUserShield, crumb: "User Management" },
   { id: "learning", label: "Learning Certificates", hint: "Course completions", icon: FaCertificate, crumb: "Learning" },
   { id: "audit", label: "Audit Log", hint: "Every admin change", icon: FaHistory, crumb: "Audit Log" },
+  { id: "grievances", label: "Complaint & Grievance Register", hint: "View and resolve public complaints", icon: FaClipboardList, crumb: "Grievances" },
   { id: "settings", label: "Settings", hint: "Session, exports & links", icon: FaCog, crumb: "Settings" },
 ];
 
@@ -46,6 +47,10 @@ export default function AdminDashboard() {
   };
 
   const open = (id) => {
+    if (id === "grievances") {
+      window.location.assign("/ims/complaints");
+      return;
+    }
     setActive(id);
     sessionStorage.setItem("ssf_admin_module", id);
     setNavOpen(false);
