@@ -1,0 +1,80 @@
+name: Encrypted Neon Database Backup
+
+on:
+  schedule:
+    # Daily at 07:00 India time (01:30 UTC)
+    - cron: "30 1 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ssf-neon-database-backup
+  cancel-in-progress: false
+
+jobs:
+  backup:
+    name: Create encrypted database backup
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check backup secrets
+        id: config
+        shell: bash
+        env:
+          NEON_DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+        run: |
+          if [[ -z "$NEON_DATABASE_URL" || -z "$BACKUP_ENCRYPTION_KEY" ]]; then
+            echo "backup_enabled=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Backup is not active yet. Add NEON_DATABASE_URL and BACKUP_ENCRYPTION_KEY repository secrets."
+            exit 0
+          fi
+          echo "backup_enabled=true" >> "$GITHUB_OUTPUT"
+
+      - name: Create PostgreSQL custom-format dump
+        if: steps.config.outputs.backup_enabled == 'true'
+        env:
+          DATABASE_URL: ${{ secrets.NEON_DATABASE_URL }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          docker run --rm \
+            -e DATABASE_URL \
+            -v "$GITHUB_WORKSPACE:/backup" \
+            -w /backup \
+            postgres:17-alpine \
+            sh -ec 'pg_dump --format=custom --no-owner --no-acl "$DATABASE_URL" --file=ssf-db.dump'
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE:/backup" \
+            postgres:17-alpine \
+            pg_restore --list /backup/ssf-db.dump >/dev/null
+          test -s ssf-db.dump
+
+      - name: Encrypt backup
+        if: steps.config.outputs.backup_enabled == 'true'
+        env:
+          BACKUP_ENCRYPTION_KEY: ${{ secrets.BACKUP_ENCRYPTION_KEY }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          openssl enc -aes-256-cbc -pbkdf2 -iter 600000 -salt \
+            -in ssf-db.dump \
+            -out ssf-db.dump.enc \
+            -pass env:BACKUP_ENCRYPTION_KEY
+          test -s ssf-db.dump.enc
+          rm -f ssf-db.dump
+
+      - name: Store encrypted backup for 7 days
+        if: steps.config.outputs.backup_enabled == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ssf-neon-db-backup-${{ github.run_id }}
+          path: ssf-db.dump.enc
+          if-no-files-found: error
+          retention-days: 7
+          compression-level: 0
+
+      - name: Explain inactive setup
+        if: steps.config.outputs.backup_enabled != 'true'
+        run: echo "No database was accessed and no backup was created. Configure both repository secrets to activate scheduled backups."
