@@ -11,9 +11,13 @@ const categories = new Set(['service', 'staff', 'volunteer', 'donation', 'websit
 const statuses = new Set(['received', 'under_review', 'awaiting_information', 'resolved', 'closed']);
 const clean = (v, max) => String(v || '').trim().slice(0, max);
 const adminOnly = (req, res, next) => {
-  const token = String(req.headers.authorization || '').replace(/^Bearer\s+/i, '');
-  if (!process.env.ADMIN_PORTAL_TOKEN || !token || token !== process.env.ADMIN_PORTAL_TOKEN) {
-    return res.status(401).json({ message: 'Authorised staff access required.' });
+  // Use the same office bearer-token rule as /api/ims. Anyone with a valid
+  // IMS login session can therefore manage grievances without a second token.
+  const auth = String(req.headers.authorization || '');
+  const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
+  const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+  if (!token || token !== expected) {
+    return res.status(401).json({ message: 'Please sign in to SSF-IMS to access the grievance register.' });
   }
   next();
 };
