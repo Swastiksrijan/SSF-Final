@@ -48,7 +48,7 @@ const pages = {
   '/Blog/learning-and-responsibility': ['Learning & Responsibility / सीख एवं जिम्मेदारी | SSF Knowledge & Awareness', 'Continuous learning, discipline, teamwork, leadership and responsibility in everyday life.', '/images/learningHub.png'],
   '/Blog/public-awareness': ['Public Awareness / जन-जागरूकता | SSF Knowledge & Awareness', 'Responsible public-interest information, safety messages, campaigns and community participation.', '/images/uploads/our-campaigns-collage.jpg'],
   '/Media': ['Media Gallery | Swastik Srijan Foundation', 'Photos and videos from our programs, events and community impact work.', '/images/gallery.png'],
-  '/Campaigns': ['SSF Campaigns | Real Activities & Ways to Support', 'Explore SSF campaigns in education, skills, women and child development, health, environment, rural development, social justice, rehabilitation, animal protection and culture.', '/images/real/community-education-meeting.jpg?v=20261107'],
+  '/Campaigns': ['SSF Campaigns | Real Activities & Ways to Support', 'Explore SSF campaigns in education, skills, women and child development, health, environment, rural development, social justice, rehabilitation, animal protection and culture.', '/images/real/community-education-meeting.jpg'],
   '/UpcomingProjects': ['Upcoming Projects | Swastik Srijan Foundation', 'Discover planned initiatives across education, health, livelihoods and community development.', '/images/real/dreams-taking-flight.png'],
   '/LearningHub': ['SSF Learning Hub | Swastik Srijan Foundation', 'Access learning, training and educational resources from Swastik Srijan Foundation.', '/images/learningHub.png'],
   '/AwarenessQuiz': ['Awareness Quiz & Certificate | Swastik Srijan Foundation', 'Take the free SSF awareness quiz on your rights, government schemes and health. Score 80% or more and download your certificate instantly.', '/images/real/awareness-poster-viewing.jpg'],
@@ -82,6 +82,19 @@ function buildHtml(route, [title, description, image]) {
   html = html.replace(/<meta property="og:description"[^>]*>/i, `<meta property="og:description" content="${escapeHtml(description)}" />`);
   html = html.replace(/<meta property="og:url"[^>]*>/i, `<meta property="og:url" content="${url}" />`);
   html = html.replace(/<meta property="og:image"[^>]*>/i, `<meta property="og:image" content="${absoluteImage}" />`);
+  // Explicit image metadata improves compatibility with social link-preview crawlers.
+  html = html.replace(/<meta property="og:image:secure_url"[^>]*>/i, '');
+  html = html.replace(/<meta property="og:image:width"[^>]*>/i, '');
+  html = html.replace(/<meta property="og:image:height"[^>]*>/i, '');
+  html = html.replace(/<meta property="og:image:type"[^>]*>/i, '');
+  html = html.replace(/<meta property="og:image:alt"[^>]*>/i, '');
+  html = html.replace(/<meta property="og:image"[^>]*>/i, `<meta property="og:image" content="${absoluteImage}" />`);
+  html = html.replace(/<meta property="og:image"[^>]*>/i, `<meta property="og:image" content="${absoluteImage}" />`);
+  html = html.replace(/<meta property="og:site_name"[^>]*>/i, `<meta property="og:site_name" content="Swastik Srijan Foundation" />`);
+  html = html.replace(/<meta name="twitter:card"[^>]*>/i, '<meta name="twitter:card" content="summary_large_image" />');
+  html = html.replace(/<meta name="twitter:image"[^>]*>/i, `<meta name="twitter:image" content="${absoluteImage}" />`);
+  // Keep OG image attributes adjacent to the primary image tag for parsers.
+  html = html.replace(`<meta property="og:image" content="${absoluteImage}" />`, `<meta property="og:image" content="${absoluteImage}" />\\n  <meta property="og:image:secure_url" content="${absoluteImage}" />\\n  <meta property="og:image:type" content="image/jpeg" />\\n  <meta property="og:image:width" content="1200" />\\n  <meta property="og:image:height" content="630" />\\n  <meta property="og:image:alt" content="Swastik Srijan Foundation community education and campaign activities" />`);
   html = html.replace(/<meta name="twitter:title"[^>]*>/i, `<meta name="twitter:title" content="${escapeHtml(title)}" />`);
   html = html.replace(/<meta name="twitter:description"[^>]*>/i, `<meta name="twitter:description" content="${escapeHtml(description)}" />`);
   html = html.replace(/<meta name="twitter:image"[^>]*>/i, `<meta name="twitter:image" content="${absoluteImage}" />`);
