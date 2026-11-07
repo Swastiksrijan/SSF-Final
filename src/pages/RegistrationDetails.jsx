@@ -24,8 +24,7 @@ export default function RegistrationDetails() {
           <li><strong>Full Name:</strong> Swastik Srijan Foundation Samiti</li>
           <li><strong>Type:</strong> Non-Governmental Organization (NGO)</li>
           <li>
-            <strong>Scope:</strong> Nationwide activities covering education,
-            health, women & child welfare.
+            <strong>Area of Operation:</strong> All India (as stated in the Society's records).
           </li>
         </ul>
       ),
