@@ -18,7 +18,7 @@ export default function RegistrationDetails() {
       icon: <FaBuilding />,
       title: "Organization Overview",
       content:
-        "Swastik Srijan Foundation (SSF) is a legally registered non-profit organization committed to education, health, social welfare, environment, and cultural development across India.",
+        "Swastik Srijan Foundation Samiti (SSF) is a registered society working towards education, health, social welfare, environment and cultural development. Its stated area of operation is All India.",
       extra: (
         <ul className="list-disc pl-6 mt-3 space-y-1 font-medium">
           <li><strong>Full Name:</strong> Swastik Srijan Foundation Samiti</li>
@@ -51,12 +51,14 @@ export default function RegistrationDetails() {
       icon: <FaBalanceScale />,
       title: "Compliance & Governance",
       content:
-        "SSF operates in full compliance with Indian laws and regulations applicable to non-profit organizations.",
+        "The Foundation maintains its registration and applicable compliance records. The status shown below reflects information currently available to the Foundation; statutory certificates and approvals should be read with their respective validity and issuing-authority records.",
       extra: (
         <>
           <ul className="list-disc pl-6 mt-3 space-y-1 font-medium">
-            <li>Maintains transparency through annual filings and audits.</li>
-            <li>Governed by an Executive Committee (President, Secretary, Treasurer).</li>
+            <li><strong>12AB:</strong> Registered (as per the Foundation's current records).</li>
+            <li><strong>CSR-1:</strong> Registered (as per the Foundation's current records).</li>
+            <li><strong>80G:</strong> Application submitted; final approval is not being claimed.</li>
+            <li>Governed by the committee under the Society's governing documents.</li>
           </ul>
         </>
       ),
@@ -68,9 +70,9 @@ export default function RegistrationDetails() {
       content: null,
       extra: (
         <ul className="list-disc pl-6 space-y-2 font-medium">
-          <li>Legal recognition as a charitable organization</li>
-          <li>Authority to conduct nationwide welfare programs</li>
-          <li>Transparency and trust for donors & beneficiaries</li>
+          <li>Registered society under the applicable Madhya Pradesh societies law.</li>
+          <li>Area of operation recorded as All India.</li>
+          <li>Donors and partners may request relevant supporting records, subject to availability and applicable disclosure safeguards.</li>
         </ul>
       ),
     },
@@ -87,14 +89,14 @@ export default function RegistrationDetails() {
         hindiSubtitle="पंजीकरण विवरण - स्वास्तिक सृजन फाउंडेशन की आधिकारिक कानूनी पंजीकरण और शासन जानकारी।"
       />
 
-      <div className="max-w-7xl mx-auto py-32 px-6">
+      <div className="max-w-7xl mx-auto py-14 sm:py-20 lg:py-28 px-4 sm:px-6">
 
         {/* ================= INTRO CARD ================= */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true }}
-          className="bg-white rounded-[2.5rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] p-10 md:p-16 mb-20 border-l-8 border-[#12345A] relative overflow-hidden group"
+          className="bg-white rounded-[2rem] shadow-[0_20px_60px_-15px_rgba(0,0,0,0.08)] p-6 sm:p-8 md:p-12 lg:p-16 mb-12 md:mb-16 border-l-8 border-[#12345A] relative overflow-hidden group"
         >
           <div className="absolute top-0 right-0 w-40 h-40 bg-[#12345A]/5 rounded-full translate-x-1/2 -translate-y-1/2 group-hover:scale-125 transition-transform duration-700"></div>
           <h2 className="text-4xl font-serif font-bold mb-8 text-[#12345A]">
@@ -116,7 +118,7 @@ export default function RegistrationDetails() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className="bg-white rounded-[2rem] shadow-sm p-10 hover:shadow-xl hover:bg-[#12345A] transition-all duration-500 border border-zinc-100 group"
+              className="bg-white rounded-[2rem] shadow-sm p-6 sm:p-8 lg:p-10 hover:shadow-xl hover:bg-[#12345A] transition-all duration-500 border border-zinc-100 group"
               onMouseEnter={() => setActiveSection(section.id)}
               onMouseLeave={() => setActiveSection(null)}
             >
@@ -155,7 +157,7 @@ export default function RegistrationDetails() {
         {/* ================= OFFICIAL DOCUMENTS ================= */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-serif font-bold text-[#12345A] mb-4">Official Recognize & Certificates</h2>
+            <h2 className="text-3xl font-serif font-bold text-[#12345A] mb-4">Official Recognition & Certificates</h2>
             <p className="text-lg text-zinc-500 max-w-2xl mx-auto mb-10">
               We are committed to maintaining the highest standards of transparency and integrity.
             </p>
@@ -198,7 +200,7 @@ export default function RegistrationDetails() {
         >
           <div className="absolute top-0 right-0 w-96 h-96 bg-[#176447] opacity-[0.05] rounded-full translate-x-1/3 -translate-y-1/3 blur-[120px]"></div>
 
-          <div className="p-12 md:p-20 text-center relative z-10 space-y-8">
+          <div className="p-6 sm:p-8 md:p-14 lg:p-20 text-center relative z-10 space-y-6 md:space-y-8">
             <div className="w-20 h-20 bg-[#176447] text-white rounded-[1.5rem] mx-auto flex items-center justify-center text-3xl shadow-lg shadow-[#176447]/20">
               <FaEnvelope />
             </div>
@@ -220,7 +222,7 @@ export default function RegistrationDetails() {
                     navigator.clipboard.writeText(CONTACT_INFO.primaryEmail);
                     alert("Email copied to clipboard!");
                   }}
-                  className="font-serif font-bold text-2xl md:text-3xl hover:text-[#176447] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#176447] pb-1"
+                  className="font-serif font-bold text-lg sm:text-2xl md:text-3xl break-all hover:text-[#176447] transition-colors cursor-pointer outline-none border-b border-white/10 hover:border-[#176447] pb-1"
                   title="Click to copy"
                 >
                   {CONTACT_INFO.primaryEmail}
