@@ -116,20 +116,19 @@ export default function FooterSection() {
             </nav>
 
             <div className="col-span-2 sm:col-span-1">
-              <nav aria-label="Funding and participation">
-                <h3 className={headingClass + " min-h-10"}>Funding & Partnerships</h3>
+              <nav aria-label="Support and participation">
+                <h3 className={headingClass + " min-h-10"}>Support & Participate</h3>
                 <ul className="space-y-2.5">
                   <FooterLink to="/FundingPartnerships">Funding & CSR Opportunities</FooterLink>
-                  <FooterLink to="/PartnerOutreach">Donor & CSR Outreach Desk</FooterLink>
-                <FooterLink to="/Volunteer">Volunteer</FooterLink>
-                <FooterLink to="/Members">Membership</FooterLink>
-                <FooterLink to="/Internship">Internship</FooterLink>
-                <FooterLink to="/GetInvolved">Join & Participate</FooterLink>
-                <FooterLink to="/Donate">Donate / Support</FooterLink>
-                <FooterLink to="/Contact">Contact & Enquiry</FooterLink>
+                    <FooterLink to="/PartnerOutreach">Donor & CSR Outreach Desk</FooterLink>
+                  <FooterLink to="/Volunteer">Volunteer</FooterLink>
+                  <FooterLink to="/Members">Membership</FooterLink>
+                  <FooterLink to="/Internship">Internship</FooterLink>
+                  <FooterLink to="/GetInvolved">Join & Participate</FooterLink>
+                  <FooterLink to="/Donate">Donate / Support</FooterLink>
+                  <FooterLink to="/Contact">Contact & Enquiry</FooterLink>
                 </ul>
               </nav>
-              
             </div>
           </div>
         </div>
