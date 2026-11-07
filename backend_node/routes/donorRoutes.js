@@ -31,6 +31,17 @@ const donorFileUrl = (file) => (file ? `/uploads/donors/${file.filename}` : null
 // one, so a deleted record cannot cause a duplicate ID.
 const getDonorNumber = async (date = new Date()) => identity.nextDonorId(Donor, date);
 
+const sendDonorAcknowledgement = async (donor) => {
+    if (!emailConfigured() || !donor.email) return;
+    await sendMail({
+        from: '"Swastik Srijan Foundation"',
+        to: donor.email,
+        replyTo: process.env.EMAIL_USER || undefined,
+        subject: 'Thank you for connecting with Swastik Srijan Foundation',
+        text: `Dear ${donor.fullName},\n\nThank you for registering your donor details with Swastik Srijan Foundation Samiti. Your Donor Reference ID is ${donor.donorId}.\n\nThis email confirms receipt of your registration details only; it is not a payment confirmation or donation receipt. If you have made a payment, it will be reconciled separately against the payment record.\n\nDonation purpose: ${donor.donationPurpose || 'General Donation'}\n\nFor any correction or assistance, please reply to this email.\n\nRegards,\nSwastik Srijan Foundation Samiti\nhttps://swastiksrijan.in/`
+    });
+};
+
 const sendAdminEmail = async (donor) => {
     if (!emailConfigured()) return;
     await sendMail({
@@ -67,6 +78,7 @@ router.post('/donor', upload.fields([{ name: 'profile_photo', maxCount: 1 }, { n
         const donor = await Donor.create({ donorId, fullName: cleanName, email: cleanEmail, phone: cleanPhone, city: String(city || '').trim() || null, state: String(state || '').trim() || null, country: String(country || 'India').trim() || 'India', donationPurpose: String(donationPurpose || '').trim() || null, amount: amount ? Number(amount) : null, pan: String(pan || '').trim().toUpperCase() || null, address: String(address || '').trim() || null, paymentMode: String(paymentMode || '').trim() || null, receiptPreference: String(receiptPreference || 'email').trim(), paymentStatus: paymentMode === 'bank_transfer' || paymentMode === 'upi' ? 'offline' : 'pending', notes: String(notes || '').trim() || null, profilePhotoPath: donorFileUrl(profilePhoto), idDocumentPath: donorFileUrl(idDocument) });
         await identity.reserve({ kind: 'donor', value: donorId, recordId: donor.id, holderName: donor.fullName, holderEmail: donor.email });
         try { await sendAdminEmail(donor); } catch (emailError) { console.error('⚠️ Donor notification email failed:', emailError.message); }
+        try { await sendDonorAcknowledgement(donor); } catch (emailError) { console.error('⚠️ Donor acknowledgement email failed:', emailError.message); }
         return res.status(201).json({ status: 'success', message: 'Donor details submitted successfully.', donorId: donor.donorId });
     } catch (error) {
         cleanup();
