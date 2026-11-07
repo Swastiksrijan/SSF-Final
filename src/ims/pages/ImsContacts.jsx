@@ -170,6 +170,7 @@ export default function ImsContacts() {
         </div>
       </div>
 
+      <div className="mb-4 flex justify-end"><a href="/ims/complaints" className="inline-flex items-center gap-2 rounded-xl bg-[#176447] px-4 py-2.5 text-sm font-bold text-white hover:bg-[#125238]">Complaint &amp; Grievance Register <Icons.ShieldAlert size={16} /></a></div>
       <NotificationsModules activeKey="contacts" />
 
       {data && (
