@@ -99,6 +99,7 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
         'प्रति: ' + row.personName,
         'सदस्य ID: ' + (row.memberId || 'रजिस्टर में उपलब्ध नहीं / पुष्टि अपेक्षित'),
         'वर्तमान पद: ' + (row.currentDesignation || 'रिकॉर्ड अनुसार'),
+        'संपर्क ईमेल: ' + row.email,
         'विषय: अपना पक्ष/स्पष्टीकरण प्रस्तुत करने के संबंध में।',
         customNotice ? 'अतिरिक्त विवरण:\\n' + customNotice : '',
         'लागू नियम/उप-नियम: ' + row.bylawClause,
