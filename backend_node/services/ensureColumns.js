@@ -60,6 +60,7 @@ const COLUMNS = [
   { table: 'Donors', column: 'idValidTill', type: 'DATE' },
   { table: 'Donors', column: 'idActive', type: 'BOOLEAN DEFAULT true' },
   // Preserve committee and General Body proceedings separately from the final order.
+  { table: 'MemberActions', column: 'noticeReference', type: 'VARCHAR(64)' },
   { table: 'MemberActions', column: 'committeeDecisionText', type: 'TEXT' },
   { table: 'MemberActions', column: 'generalBodyDecisionText', type: 'TEXT' },
 ];
