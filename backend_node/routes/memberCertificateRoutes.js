@@ -221,6 +221,11 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
         // real membership and still has no number — including the case where the
         // admin only changes the role.
         if ((updates.status || member.status) === 'approved' && isRealMembership(prospective)) {
+            if (!member.memberId && !updates.memberId) {
+                const committeeReference = String(req.body?.committeeReference || '').trim();
+                if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before approval and Member ID issuance.' });
+                updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_APPROVAL: ${committeeReference}`].filter(Boolean).join(' | ');
+            }
             if (requiresPayment(prospective) && prospective.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: prospective.paymentStatus });
             if (!member.memberId && !updates.memberId) {
                 const now = new Date();
@@ -258,9 +263,17 @@ router.patch('/admin/members/:id/status', requireAdminAuth, async (req, res) => 
         const status = String(req.body?.status || '').trim().toLowerCase();
         if (!['pending', 'changes_requested', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid member status' });
         if (status === 'approved' && !isRealMembership(member)) return res.status(400).json({ message: 'This account has not submitted a membership application.' });
+        if (status === 'approved' && !member.memberId) {
+            const committeeReference = String(req.body?.committeeReference || '').trim();
+            if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before approval and Member ID issuance.' });
+        }
         if (status === 'approved' && requiresPayment(member) && member.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: member.paymentStatus });
         const updates = { status };
         if (req.body?.reviewNote !== undefined) updates.reviewNote = String(req.body.reviewNote || '').trim() || null;
+        if (status === 'approved' && !member.memberId) {
+            const committeeReference = String(req.body?.committeeReference || '').trim();
+            updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_APPROVAL: ${committeeReference}`].filter(Boolean).join(' | ');
+        }
         if (status === 'approved' && !member.memberId) {
             const now = new Date(); const issued = await buildMemberIdentity(member);
             updates.memberId = issued.memberId;
