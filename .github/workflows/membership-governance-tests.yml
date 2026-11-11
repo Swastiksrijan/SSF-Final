@@ -1,0 +1,43 @@
+name: Membership and Governance Regression Tests
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "backend_node/routes/memberCertificateRoutes.js"
+      - "backend_node/routes/governanceVerificationRoutes.js"
+      - "backend_node/models/GovernanceVerification.js"
+      - "backend_node/services/identityService.js"
+      - "backend_node/tests/membership.http.test.js"
+      - "backend_node/tests/admin.http.test.js"
+      - "backend_node/package.json"
+      - "backend_node/package-lock.json"
+      - ".github/workflows/membership-governance-tests.yml"
+  pull_request:
+    paths:
+      - "backend_node/routes/memberCertificateRoutes.js"
+      - "backend_node/routes/governanceVerificationRoutes.js"
+      - "backend_node/models/GovernanceVerification.js"
+      - "backend_node/services/identityService.js"
+      - "backend_node/tests/membership.http.test.js"
+      - "backend_node/tests/admin.http.test.js"
+      - "backend_node/package.json"
+      - "backend_node/package-lock.json"
+      - ".github/workflows/membership-governance-tests.yml"
+
+jobs:
+  membership-governance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: backend_node/package-lock.json
+      - name: Install backend dependencies
+        run: npm ci --prefix backend_node
+      - name: Test membership and governance workflows
+        run: |
+          node backend_node/tests/membership.http.test.js
+          node backend_node/tests/admin.http.test.js
