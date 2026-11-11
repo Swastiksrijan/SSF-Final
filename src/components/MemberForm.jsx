@@ -9,7 +9,7 @@ const CATEGORIES = [
 
 const initial = {
   fullName: "", email: "", phone: "", dateOfBirth: "", fatherOrGuardian: "",
-  address: "", occupation: "", citizenship: "Indian", memberType: "general", paymentPlan: "annual",
+  address: "", occupation: "", citizenship: "Indian", citizenshipConfirmed: false, memberType: "general", paymentPlan: "annual",
   electronicSignature: "", acceptsRules: false, goodCharacter: false, noAlcohol: false, declaration: false,
 };
 
@@ -29,7 +29,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
     if (!form.fullName.trim() || !form.email.trim() || !form.phone.trim() || !form.dateOfBirth || !form.address.trim() || !form.occupation.trim()) {
       setError("कृपया सभी आवश्यक जानकारी भरें।"); return;
     }
-    if (!form.acceptsRules || !form.goodCharacter || !form.noAlcohol || !form.declaration || form.electronicSignature.trim().toLowerCase() !== form.fullName.trim().toLowerCase()) {
+    if (!form.citizenshipConfirmed || !form.acceptsRules || !form.goodCharacter || !form.noAlcohol || !form.declaration || form.electronicSignature.trim().toLowerCase() !== form.fullName.trim().toLowerCase()) {
       setError("कृपया सभी घोषणाएँ स्वीकार करें और अपने पूरे नाम से डिजिटल हस्ताक्षर करें।"); return;
     }
     setStatus("submitting");
@@ -97,7 +97,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
           <label className="flex gap-3 text-sm text-slate-700"><input type="checkbox" checked={form.acceptsRules} onChange={e => set("acceptsRules", e.target.checked)} /> मैं संस्था की नियमावली का पालन करने के लिए सहमत हूँ।</label>
           <label className="flex gap-3 text-sm text-slate-700"><input type="checkbox" checked={form.goodCharacter} onChange={e => set("goodCharacter", e.target.checked)} /> मैं घोषित करता/करती हूँ कि मेरा चरित्र अच्छा है।</label>
           <label className="flex gap-3 text-sm text-slate-700"><input type="checkbox" checked={form.noAlcohol} onChange={e => set("noAlcohol", e.target.checked)} /> मैं नियमावली में दी गई मद्यपान संबंधी शर्त स्वीकार करता/करती हूँ।</label>
-          <p className="text-xs text-slate-500">नागरिकता: भारतीय (यह आवेदन भारतीय नागरिकों के लिए है)।</p>
+          <label className="flex gap-3 text-sm text-slate-700"><input type="checkbox" checked={form.citizenshipConfirmed} onChange={e => set("citizenshipConfirmed", e.target.checked)} /> मैं भारतीय नागरिक हूँ।</label>
           <label className="flex gap-3 text-sm text-slate-700"><input type="checkbox" checked={form.declaration} onChange={e => set("declaration", e.target.checked)} /> मेरे द्वारा दी गई जानकारी सत्य है। मैं समझता/समझती हूँ कि आवेदन पर प्रबंध समिति निर्णय लेगी और आवेदन जमा करने मात्र से सदस्यता नहीं मिलेगी।</label>
         </div>
         <label className="block text-sm font-semibold text-slate-700">डिजिटल हस्ताक्षर — अपना पूरा नाम लिखें *<input required value={form.electronicSignature} onChange={e => set("electronicSignature", e.target.value)} placeholder="पूरा नाम जैसा ऊपर लिखा है" className="mt-1 w-full rounded-xl border border-slate-300 p-3" /><span className="mt-1 block text-xs font-normal text-slate-500">यह ऑनलाइन सहमति/हस्ताक्षर का रिकॉर्ड होगा।</span></label>
