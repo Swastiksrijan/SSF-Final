@@ -79,6 +79,7 @@ const socialRoutes = require('./routes/socialRoutes');
 const quizRoutes = require('./routes/quizRoutes');
 const adminDashboardRoutes = require('./routes/adminDashboardRoutes');
 const accountRoutes = require('./routes/accountRoutes');
+const governanceVerificationRoutes = require('./routes/governanceVerificationRoutes');
 const { adminAuditTrail } = require('./middleware/adminAuditTrail');
 // Register SSF-IMS models so sequelize.sync creates their tables.
 require('./models/ims');
@@ -88,6 +89,8 @@ require('./models/social');
 require('./models/AuditLog');
 // Register the ID issuance ledger so sequelize.sync creates its table.
 require('./models/IdIssuance');
+// Separate verification records for existing members and office bearers.
+require('./models/GovernanceVerification');
 
 // Watchdog (registered BEFORE the routes so it runs on every request): any
 // request that reaches the app proves Render is awake, so kick the publisher
@@ -142,6 +145,7 @@ app.use('/api', quizRoutes);
 app.use('/api', adminDashboardRoutes);
 // Logged-in user self-service: own profile + password.
 app.use('/api', accountRoutes);
+app.use('/api', governanceVerificationRoutes);
 
 // Last-resort error handler. Most routes already catch their own errors, but a
 // synchronous throw (or an async throw before the route's try/catch) would
