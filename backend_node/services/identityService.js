@@ -71,7 +71,14 @@ const reserve = async ({ kind, value, certValue = null, recordId = null, holderN
   try {
     const IdIssuance = require('../models/IdIssuance');
     const existing = await IdIssuance.findOne({ where: { kind, value } });
-    if (existing) return existing;
+    if (existing) {
+      // A revoked number may be reactivated only for the same record/person;
+      // it is never transferred to a different holder.
+      if (existing.status === 'revoked' && String(existing.recordId || '') === String(recordId || '')) {
+        await existing.update({ status: 'issued', revokedAt: null, issuedAt: new Date(), note: note || existing.note, holderName: holderName || existing.holderName, holderEmail: holderEmail || existing.holderEmail });
+      }
+      return existing;
+    }
     return await IdIssuance.create({ kind, value, certValue, recordId, holderName, holderEmail, note, status: 'issued', issuedAt: new Date() });
   } catch (error) {
     console.warn('ID ledger write failed:', error.message);
