@@ -17,11 +17,16 @@ import UserParticipationForms from "../components/UserParticipationForms";
 import HeaderBanner, { BannerAction } from "../components/dashboard/HeaderBanner";
 import { EmptyState, InlineAlert, ProgressRing, SectionCard, StatCard, StatusChip, Timeline, statusLabel } from "../components/dashboard/DashboardUI";
 
-const MEMBERSHIP_FEE_TYPES = ["general", "active", "life", "patron"];
+const MEMBERSHIP_FEE_TYPES = ["general", "life", "patron"];
 const MEMBERSHIP_FEES = { general: 1200, active: 2500, life: 8000, patron: 10000 };
 const membershipFeeFor = (user) => {
   const key = planKey(user);
   if (key === "general" && /Ordinary membership payment preference: monthly/i.test(user?.message || "")) return 100;
+  if (key === "patron") {
+    const match = String(user?.message || "").match(/Patron installment count:\\s*(\\d+)/i);
+    const count = match ? Number(match[1]) : 1;
+    return [1, 2, 3, 4, 6, 12].includes(count) ? (count === 1 ? 10000 : Math.ceil(10000 / count)) : 10000;
+  }
   return key ? MEMBERSHIP_FEES[key] : null;
 };
 // `memberType` cannot be trusted as the single key for "is this a member?".
@@ -209,7 +214,7 @@ export default function UserPortal() {
       items.push({
         key: "fee",
         title: paid ? "Membership contribution verified" : paymentSubmitted ? "Payment submitted — Treasurer verification pending" : approved ? "Membership contribution on record" : paymentAuthorized ? "Committee reviewed — contribution may be paid" : "Application under committee review",
-        detail: paid ? `${formatINR(membershipFeeFor(user))} received` : paymentSubmitted ? "Razorpay has returned a payment reference. The contribution is not yet confirmed; the Treasurer must verify it." : approved ? "The SSF team maintains your contribution record." : paymentAuthorized ? "The Managing Committee has recorded its decision. Please follow the payment instructions shared by SSF." : "Please wait for the Managing Committee's decision. Do not pay before authorization.",
+        detail: paid ? `${formatINR(membershipFeeFor(user))} contribution received` : paymentSubmitted ? "Razorpay has returned a payment reference. The contribution is not yet confirmed; the Treasurer must verify it." : approved ? "The SSF team maintains your contribution record." : paymentAuthorized ? "The Managing Committee has recorded its decision. Please follow the payment instructions shared by SSF." : "Please wait for the Managing Committee's decision. Do not pay before authorization.",
         at: user.paymentPaidAt ? dateTimeText(user.paymentPaidAt) : null,
         done: paid,
       });
