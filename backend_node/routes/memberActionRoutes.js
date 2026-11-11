@@ -121,8 +121,7 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
         'संपर्क ईमेल: ' + row.email,
         'नोटिस संदर्भ संख्या: ' + row.noticeReference,
         'विषय: अपना पक्ष/स्पष्टीकरण प्रस्तुत करने के संबंध में।',
-        customNotice ? 'अतिरिक्त विवरण:
-' + customNotice : '',
+        customNotice ? 'अतिरिक्त विवरण: ' + customNotice : '',
         'लागू नियम/उप-नियम: ' + row.bylawClause,
         'प्रस्तावित कार्रवाई का कारण: ' + row.grounds,
         'तथ्य एवं उपलब्ध रिकॉर्ड: ' + row.factualSummary,
