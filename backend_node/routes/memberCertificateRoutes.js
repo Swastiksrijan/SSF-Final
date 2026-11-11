@@ -276,6 +276,23 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
             updates.memberId = null; updates.certId = null; updates.certificateType = null; updates.certificateIssuedAt = null;
         }
         await member.update(updates);
+        if (updates.receiptNumber) {
+            try {
+                const imsPerson = await imsModels.ImsPerson.findOne({ where: { email: String(member.email || '').trim().toLowerCase() } });
+                if (imsPerson) {
+                    const imsMembership = await imsModels.ImsMembership.findOne({ where: { personId: imsPerson.id }, order: [['id', 'DESC']] });
+                    if (imsMembership) {
+                        let receipts = [];
+                        try { receipts = JSON.parse(member.receiptHistory || '[]'); } catch (_) { receipts = []; }
+                        await imsMembership.update({
+                            receiptNumber: updates.receiptNumber,
+                            feeAmount: Number(member.contributionTotalPaise || updates.contributionTotalPaise || updates.paymentAmount || 0) / 100,
+                            data: { ...(imsMembership.data || {}), membershipContributionReceipts: receipts, contributionTotalPaise: Number(member.contributionTotalPaise || updates.contributionTotalPaise || 0), lastReceiptNumber: updates.receiptNumber }
+                        });
+                    }
+                }
+            } catch (imsError) { console.warn('Membership receipt IMS sync skipped:', imsError.message); }
+        }
         // Record the number in the append-only ledger so a later re-issue or
         // revoke can never hand the same number to somebody else.
         if (updates.memberId) await identity.reserve({ kind: 'member', value: updates.memberId, certValue: updates.certId, recordId: member.id, holderName: member.fullName, holderEmail: member.email });
