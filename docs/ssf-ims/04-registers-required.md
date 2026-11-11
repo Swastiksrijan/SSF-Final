@@ -1,8 +1,7 @@
 # SSF-IMS — How many registers are needed (per Niyamavali)?
 
 > Aapka sawaal: **"Niyamavali ke hisaab se asal me kitni registers chahiye?"**
-> Jawab: **23 pramukh registers**, 5 hisson me. Neeche har register ka
-> aadhaar (bylaw / accountability) aur uska asli IMS master diya hai.
+> Jawab: **23 primary registers + 7 linked operational views = 30 register entries**. 23 primary registers use dedicated IMS masters; 7 additional views reuse those same masters or existing office registers so duplicate data is not created.
 
 > Ye list system ke andar hi zinda hai — `/api/ims/register-map` endpoint
 > har register ka **live count** deta hai, aur **Registers Required** page
@@ -59,13 +58,23 @@
 
 ---
 
+## F. Additional linked operational views (7)
+
+| # | Register / view | पंजिका / विवरण | Basis | Existing IMS destination |
+|---|---|---|---|---|
+| 24 | Membership Application & Admission | सदस्यता आवेदन एवं प्रवेश | Rule 6 | `members` |
+| 25 | Membership Categories & Honorary Members | सदस्यता श्रेणी एवं सम्माननीय सदस्य | Rules 5–9 | `members` |
+| 26 | Membership Fee & Contribution | सदस्यता शुल्क एवं अंशदान | Rule 5 | `membership-contributions` |
+| 27 | Annual & Special General Body Meetings | वार्षिक एवं विशेष आम सभा | Rule 10 | `meetings` |
+| 28 | Meeting Notices, Agenda & Dispatch | बैठक सूचना, कार्यसूची एवं प्रेषण | Rule 10 | `meetings` |
+| 29 | Stock & Inventory | भंडार एवं सामग्री | Operational control | `inventory` |
+| 30 | Inward & Outward Correspondence | आवक एवं जावक पत्राचार | Operational record | `communications` |
+
+These seven are **linked views**, not seven new independent databases. The same member, meeting, inventory or communication record must not be entered twice.
+
 ## Jawab ek line me
 
-**Niyamavali ke hisaab se 23 pramukh registers chahiye** (7 governance +
-7 finance + 4 programme + 3 compliance + 2 people). Purane Digital Office me
-~120 "modules" the — unme bahut duplicate aur mix the. Ab in 23 registers ke
-peeche **relational masters** hain, isliye ek hi data ek jagah rehta hai aur
-har register usi se apne aap bharta hai.
+**IMS now presents 30 register entries:** 23 primary registers (7 governance + 7 finance + 4 programme + 3 compliance + 2 people) and 7 linked operational views. The 23 primary registers have live counts from their existing IMS masters; the 7 linked views open the existing working modules and are labelled Linked rather than showing a misleading zero count. Supporting masters (Persons, Funds, Accounts, Financial Years, Parties, Bank/Cash accounts, Committees, Programmes, Users) remain supporting masters, not separate registers.
 
 **Note:** in 23 ke alawa kuch **supporting masters** bhi hain (Persons, Funds,
 Accounts, Financial Years, Parties, Bank/Cash accounts, Committees, Programmes,
