@@ -8,9 +8,10 @@
 import { useState } from "react";
 import {
   FaBars, FaCertificate, FaChartLine, FaClipboardList, FaCog, FaExternalLinkAlt,
-  FaHistory, FaIdCard, FaSignOutAlt, FaUserShield, FaUsers, FaTimes,
+  FaHistory, FaIdCard, FaSignOutAlt, FaUserShield, FaUsers, FaTimes, FaGavel,
 } from "react-icons/fa";
 import AdminPortalV2 from "./AdminPortalV2";
+import MemberActionManager from "../components/MemberActionManager";
 import AdminApplicationDashboard from "../components/AdminApplicationDashboard";
 import AdminIdRegister from "../components/dashboard/AdminIdRegister";
 import AdminUserManagement from "../components/AdminUserManagement";
@@ -27,6 +28,7 @@ const MODULES = [
   { id: "applications", label: "Applications", hint: "Intake, status & records", icon: FaClipboardList, crumb: "Applications" },
   { id: "ids", label: "ID Register", hint: "Issued IDs & member register", icon: FaIdCard, crumb: "ID Register" },
   { id: "people", label: "People & Roles", hint: "Members, volunteers, approvals", icon: FaUsers, crumb: "People & Roles" },
+  { id: "notices", label: "Notice Management", hint: "Notices, replies, hearings & decisions", icon: FaGavel, crumb: "Notice Management" },
   { id: "users", label: "User Management", hint: "Accounts & access", icon: FaUserShield, crumb: "User Management" },
   { id: "learning", label: "Learning Certificates", hint: "Course completions", icon: FaCertificate, crumb: "Learning" },
   { id: "audit", label: "Audit Log", hint: "Every admin change", icon: FaHistory, crumb: "Audit Log" },
@@ -143,6 +145,12 @@ export default function AdminDashboard() {
                   <AdminPortalV2 />
                 </SectionCard>
               </div>
+            )}
+
+            {active === "notices" && (
+              <SectionCard eyebrow="Governance & due process" title="Member / Office-bearer Notice Register" subtitle="Create and issue show-cause notices, receive replies, schedule hearings and record committee / General Body proceedings. This is a record workflow; it does not itself authorize removal.">
+                <MemberActionManager token={localStorage.getItem(TOKEN_KEY) || ""} />
+              </SectionCard>
             )}
 
             {active === "users" && (
