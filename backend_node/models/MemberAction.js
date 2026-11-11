@@ -1,0 +1,34 @@
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
+
+module.exports = sequelize.define('MemberAction', {
+  id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+  personName: { type: DataTypes.STRING, allowNull: false },
+  email: { type: DataTypes.STRING, allowNull: false },
+  phone: { type: DataTypes.STRING, allowNull: true },
+  memberId: { type: DataTypes.STRING, allowNull: true },
+  currentDesignation: { type: DataTypes.STRING, allowNull: true },
+  actionScope: { type: DataTypes.ENUM('membership_review', 'office_bearer_role_review'), allowNull: false },
+  bylawClause: { type: DataTypes.STRING, allowNull: false },
+  grounds: { type: DataTypes.TEXT, allowNull: false },
+  factualSummary: { type: DataTypes.TEXT, allowNull: false },
+  noticeText: { type: DataTypes.TEXT, allowNull: true },
+  replyDueAt: { type: DataTypes.DATE, allowNull: false },
+  responseTokenHash: { type: DataTypes.STRING, allowNull: true, unique: true },
+  status: { type: DataTypes.ENUM('draft', 'notice_issued', 'reply_received', 'hearing_scheduled', 'committee_review', 'general_body_review', 'closed'), defaultValue: 'draft' },
+  dispatchMethod: { type: DataTypes.STRING, allowNull: true },
+  dispatchReference: { type: DataTypes.STRING, allowNull: true },
+  dispatchAt: { type: DataTypes.DATE, allowNull: true },
+  emailDeliveryStatus: { type: DataTypes.STRING, allowNull: true },
+  replyText: { type: DataTypes.TEXT, allowNull: true },
+  replyReceivedAt: { type: DataTypes.DATE, allowNull: true },
+  hearingAt: { type: DataTypes.DATE, allowNull: true },
+  hearingNotes: { type: DataTypes.TEXT, allowNull: true },
+  committeeMeetingReference: { type: DataTypes.STRING, allowNull: true },
+  generalBodyMeetingReference: { type: DataTypes.STRING, allowNull: true },
+  decisionType: { type: DataTypes.STRING, allowNull: true },
+  decisionText: { type: DataTypes.TEXT, allowNull: true },
+  decisionAt: { type: DataTypes.DATE, allowNull: true },
+  createdBy: { type: DataTypes.STRING, allowNull: true },
+  updatedBy: { type: DataTypes.STRING, allowNull: true }
+}, { timestamps: true });
