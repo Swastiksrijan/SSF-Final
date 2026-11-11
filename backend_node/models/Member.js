@@ -28,6 +28,7 @@ const Member = sequelize.define('Member', {
     paymentStatus: { type: DataTypes.ENUM('not_required', 'pending', 'paid', 'failed'), defaultValue: 'pending' },
     paymentId: { type: DataTypes.STRING, allowNull: true, unique: true },
     paymentLinkId: { type: DataTypes.STRING, allowNull: true, unique: true },
+    paymentUrl: { type: DataTypes.STRING, allowNull: true },
     paymentAmount: { type: DataTypes.INTEGER, allowNull: true },
     paymentMode: { type: DataTypes.STRING, allowNull: true },
     paymentReference: { type: DataTypes.STRING, allowNull: true },
