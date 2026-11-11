@@ -4,12 +4,14 @@ import { FaCrown, FaUserShield, FaUserTie, FaAward, FaUsers, FaHandHoldingHeart,
 import CertificateGenerator from "../components/CertificateGenerator";
 import MemberForm from "../components/MemberForm";
 import GovernanceVerificationForm from "../components/GovernanceVerificationForm";
+import MemberActionResponse from "../components/MemberActionResponse";
 
 const Members = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedMemberType, setSelectedMemberType] = useState("general");
   const [directApplication, setDirectApplication] = useState(false);
   const [directVerification, setDirectVerification] = useState(false);
+  const [noticeToken, setNoticeToken] = useState("");
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -30,12 +32,15 @@ const Members = () => {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("verify") === "1") setDirectVerification(true);
+    if (params.get("notice")) setNoticeToken(params.get("notice"));
     if (params.get("apply") === "1") {
       const requestedType = params.get("type");
       setSelectedMemberType(["patron", "life", "general"].includes(requestedType) ? requestedType : "general");
       setDirectApplication(true);
     }
   }, []);
+
+  if (noticeToken) return <MemberActionResponse token={noticeToken} />;
 
   if (directVerification) return (
     <main className="min-h-screen bg-slate-50 px-4 pb-12 pt-32 sm:px-6">
