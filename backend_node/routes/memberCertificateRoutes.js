@@ -26,10 +26,21 @@ const getMemberNumber = async () => identity.nextMemberId(Member);
 // exists in the offline register keeps their original number (matched on email
 // or mobile) so they never end up with two parallel member IDs.
 const buildMemberIdentity = async (member) => {
+  // An ID already attached to this person's official record always wins.
+  // Never replace a legacy ID merely because the current application is new.
+  const existingId = String(member?.memberId || '').trim();
+  if (identity.isMemberId(existingId) && !(await identity.isTaken(Member, 'memberId', existingId, member.id))) {
+    return { memberId: existingId, certId: identity.memberCertIdFor(existingId) };
+  }
+  // If this is an offline-register member who has not yet claimed an online
+  // account, adopt the register number rather than minting a second identity.
   const adopted = identity.matchRegisterEntry(member);
   const memberId = adopted && identity.isMemberId(adopted.memberId)
     ? adopted.memberId
     : await identity.nextMemberId(Member);
+  if (await identity.isTaken(Member, 'memberId', memberId, member.id)) {
+    throw new Error(`Member ID ${memberId} is already assigned; committee must resolve the register match before issuing a new ID.`);
+  }
   return { memberId, certId: identity.memberCertIdFor(memberId) };
 };
 const getMonthYearCode = (date = new Date()) => { const month = String(date.getMonth() + 1).padStart(2, '0'); const year = String(date.getFullYear()).slice(-2); return `${month}${year}`; };
