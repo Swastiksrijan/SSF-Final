@@ -49,7 +49,7 @@ router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', max
 
 router.post('/member-application-bylaw', async (req, res) => {
     try {
-        const { fullName, email, phone, memberType, dateOfBirth, fatherOrGuardian, address, occupation, citizenship, acceptsRules, goodCharacter, noAlcohol, electronicSignature, declaration } = req.body || {};
+        const { fullName, email, phone, memberType, dateOfBirth, fatherOrGuardian, address, occupation, citizenship, acceptsRules, goodCharacter, noAlcohol, citizenshipConfirmed, electronicSignature, declaration } = req.body || {};
         const allowedTypes = new Set(['patron', 'life', 'general']);
         const type = String(memberType || '').toLowerCase();
         const normalizedEmail = String(email || '').trim().toLowerCase();
@@ -62,7 +62,7 @@ router.post('/member-application-bylaw', async (req, res) => {
         if (Number.isNaN(dob.getTime()) || dob > adultCutoff) {
             return res.status(400).json({ status: 'error', message: 'Applicant must be at least 18 years old.' });
         }
-        if (String(citizenship) !== 'Indian' || !acceptsRules || !goodCharacter || !noAlcohol || String(electronicSignature || '').trim().length < 2 || !declaration) {
+        if (String(citizenship) !== 'Indian' || !citizenshipConfirmed || !acceptsRules || !goodCharacter || !noAlcohol || String(electronicSignature || '').trim().length < 2 || !declaration) {
             return res.status(400).json({ status: 'error', message: 'Please confirm the eligibility declarations and enter your full name as digital signature.' });
         }
         const existing = await Member.findOne({ where: { email: normalizedEmail } });
