@@ -19,6 +19,11 @@ import { EmptyState, InlineAlert, ProgressRing, SectionCard, StatCard, StatusChi
 
 const MEMBERSHIP_FEE_TYPES = ["general", "active", "life", "patron"];
 const MEMBERSHIP_FEES = { general: 1200, active: 2500, life: 8000, patron: 10000 };
+const membershipFeeFor = (user) => {
+  const key = planKey(user);
+  if (key === "general" && /Ordinary membership payment preference: monthly/i.test(user?.message || "")) return 100;
+  return key ? MEMBERSHIP_FEES[key] : null;
+};
 // `memberType` cannot be trusted as the single key for "is this a member?".
 // A website applicant carries the plan (general/active/life/advisory), a person
 // adopted from the offline register carries the register's wording ("Founder
@@ -200,10 +205,11 @@ export default function UserPortal() {
       const paid = String(user.paymentStatus || "").toLowerCase() === "paid";
       const approved = user.status === "approved";
       const paymentAuthorized = String(user.reviewNote || "").startsWith("SSF_COMMITTEE_PAYMENT_AUTHORIZED");
+      const paymentSubmitted = !!user.paymentId && !paid;
       items.push({
         key: "fee",
-        title: paid ? "Membership contribution verified" : approved ? "Membership contribution on record" : paymentAuthorized ? "Committee reviewed — contribution may be paid" : "Application under committee review",
-        detail: paid ? `${formatINR(MEMBERSHIP_FEES[user.memberType])} received` : approved ? "The SSF team maintains your contribution record." : paymentAuthorized ? "The Managing Committee has recorded its decision. Please follow the payment instructions shared by SSF." : "Please wait for the Managing Committee's decision. Do not pay before authorization.",
+        title: paid ? "Membership contribution verified" : paymentSubmitted ? "Payment submitted — Treasurer verification pending" : approved ? "Membership contribution on record" : paymentAuthorized ? "Committee reviewed — contribution may be paid" : "Application under committee review",
+        detail: paid ? `${formatINR(membershipFeeFor(user))} received` : paymentSubmitted ? "Razorpay has returned a payment reference. The contribution is not yet confirmed; the Treasurer must verify it." : approved ? "The SSF team maintains your contribution record." : paymentAuthorized ? "The Managing Committee has recorded its decision. Please follow the payment instructions shared by SSF." : "Please wait for the Managing Committee's decision. Do not pay before authorization.",
         at: user.paymentPaidAt ? dateTimeText(user.paymentPaidAt) : null,
         done: paid,
       });
@@ -220,7 +226,8 @@ export default function UserPortal() {
     if (needsCorrection) list.push({ id: "correction", tone: "warning", title: "Action required: correction requested", body: user.reviewNote, action: "Fix & resubmit" });
     if (hasMembership(user) && String(user.paymentStatus || "").toLowerCase() !== "paid" && user.status !== "approved") {
       const paymentAuthorized = String(user.reviewNote || "").startsWith("SSF_COMMITTEE_PAYMENT_AUTHORIZED");
-      list.push({ id: "fee", tone: paymentAuthorized ? "warning" : "info", title: paymentAuthorized ? "Committee has authorized the contribution" : "Application is under committee review", body: paymentAuthorized ? "Please follow the payment instructions shared by SSF. Your contribution will be confirmed by the Treasurer." : "Please wait for the Managing Committee's decision. Do not pay before authorization." });
+      const paymentSubmitted = !!user.paymentId;
+      list.push({ id: "fee", tone: paymentSubmitted || paymentAuthorized ? "warning" : "info", title: paymentSubmitted ? "Payment awaiting Treasurer verification" : paymentAuthorized ? "Committee has authorized the contribution" : "Application is under committee review", body: paymentSubmitted ? "Your payment reference has been received. It will show as confirmed only after the Treasurer verifies the amount and reference." : paymentAuthorized ? "Please follow the payment instructions shared by SSF. Your contribution will be confirmed by the Treasurer." : "Please wait for the Managing Committee's decision. Do not pay before authorization." });
     }
     if (memberApproved) list.push({ id: "issued", tone: "success", title: "Membership ID and certificate issued", body: `Your official Member ID ${user.memberId} is ready to download from Documents.` });
     if (String(user.paymentStatus || "").toLowerCase() === "paid") list.push({ id: "paid", tone: "success", title: "Payment confirmed", body: `We have confirmed your membership fee payment${user.paymentPaidAt ? ` on ${dateText(user.paymentPaidAt)}` : ""}.` });
@@ -546,7 +553,7 @@ function ProfileTab({ user, onRefresh }) {
 
 function PaymentsTab({ user, donors }) {
   const key = planKey(user);
-  const fee = key ? MEMBERSHIP_FEES[key] : null;
+  const fee = membershipFeeFor(user);
   const paid = String(user.paymentStatus || "").toLowerCase() === "paid";
   // A member whose plan is not one of the priced tiers (a registered Founder /
   // Executive / General Member) still has a membership record, so the fee
