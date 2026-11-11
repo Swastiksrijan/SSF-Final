@@ -293,21 +293,20 @@ async function main() {
     const patronApproved = await send(`/api/admin/member-approve/${patron.id}`, 'POST', { committeeReference: 'ECM-PATRON-003' }, auth);
     ok('patron is admitted after all installments and committee approval', patronApproved.status === 200 && /^SSF-MBR-\\d{5}$/.test(String(patronApproved.body.memberId)));
 
-    console.log('\nAdvisory membership is honorary (no fee gate):');
-    const advEmail = 'advisor@example.com';
-    const advSignup = await send('/api/member-account-signup', 'POST', { fullName: 'Meera Nair', email: advEmail, confirmEmail: advEmail, phone: '9811111111', password: 'StrongPass1', memberType: 'advisory' });
-    const advId = advSignup.body.user?.id;
+    console.log('\nAdvisory membership is honorary and committee-appointed:');
+    const advRow = await Member.create({
+      fullName: 'Meera Nair', email: 'advisor@example.com', phone: '9811111111',
+      memberType: 'advisory', message: 'Committee invitation for honorary membership.',
+      status: 'pending', paymentStatus: 'not_required'
+    });
+    const advToken = require('../services/userAuth').issueToken(advRow);
     const ashaToken = userToken;
-    userToken = advSignup.body.token;
-    ok('advisory signup accepted', advSignup.status === 201, JSON.stringify(advSignup.body).slice(0, 150));
-    ok('advisory payment marked not required', advSignup.body.user?.paymentStatus === 'not_required', advSignup.body.user?.paymentStatus);
-    const advApply = await upload('/api/member-application', { accountId: advId, fullName: 'Meera Nair', email: advEmail, phone: '9811111111', memberType: 'advisory', message: 'Legal advisory support.' }, { profile_photo: PNG });
-    ok('advisory application accepted', advApply.status === 201, JSON.stringify(advApply.body).slice(0, 150));
-    const advApprove = await send(`/api/admin/member-approve/${advId}`, 'POST', { committeeReference: 'ECM-TEST-ADV-001' }, auth);
-    ok('advisory approves without any payment', advApprove.status === 200, JSON.stringify(advApprove.body).slice(0, 200));
-    ok('advisory member id issued', /^SSF-MBR-\d{5}$/.test(String(advApprove.body.memberId)), advApprove.body.memberId);
-    const advPay = await send('/api/member-payment-submit', 'POST', { memberId: advId, paymentMode: 'UPI', paymentReference: '999999999999' });
-    ok('advisory payment submit refused', advPay.status === 400, JSON.stringify(advPay.body).slice(0, 150));
+    userToken = advToken;
+    const advApprove = await send(`/api/admin/member-approve/${advRow.id}`, 'POST', { committeeReference: 'ECM-TEST-ADV-001' }, auth);
+    ok('committee can approve honorary membership without a payment', advApprove.status === 200, JSON.stringify(advApprove.body).slice(0, 200));
+    ok('honorary member receives committee-issued Member ID', /^SSF-MBR-\\d{5}$/.test(String(advApprove.body.memberId)), advApprove.body.memberId);
+    const advPay = await send('/api/member-payment-submit', 'POST', { memberId: advRow.id, paymentMode: 'UPI', paymentReference: '999999999999' });
+    ok('honorary member cannot submit a membership fee', advPay.status === 400, JSON.stringify(advPay.body).slice(0, 150));
     userToken = ashaToken;
 
     console.log('\nVolunteer application (public route, with identity proof):');
