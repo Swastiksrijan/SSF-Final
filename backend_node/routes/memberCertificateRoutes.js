@@ -5,6 +5,8 @@ const path = require('path');
 const fs = require('fs');
 const router = express.Router();
 const Member = require('../models/Member');
+const { models: imsModels } = require('../models/ims');
+const { Op } = require('sequelize');
 const { requireAccountAuth, issueToken } = require('../services/userAuth');
 const identity = require('../services/identityService');
 
@@ -74,7 +76,33 @@ router.get('/member-payment-callback', async (req, res) => {
 });
 
 router.post('/admin/member-approve/:id', requireAdminAuth, async (req, res) => {
-    try { const member = await Member.findByPk(req.params.id); if (!member) return res.status(404).json({ message: 'Member not found' }); if (!isRealMembership(member)) return res.status(400).json({ message: 'This is an SSF account, not a membership application. The person must choose and submit a membership application first.' }); if (member.status === 'approved' && member.memberId && member.certId) return res.status(400).json({ message: 'Member is already approved', memberId: member.memberId, certId: member.certId }); if (requiresPayment(member) && member.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: member.paymentStatus }); const certificateIssuedAt = new Date(); const { memberId, certId } = await buildMemberIdentity(member); await member.update({ status: 'approved', memberId, certId, certificateType: 'Membership Certificate', certificateIssuedAt }); await identity.reserve({ kind: 'member', value: memberId, certValue: certId, recordId: member.id, holderName: member.fullName, holderEmail: member.email }); const frontendUrl = (process.env.FRONTEND_URL || 'https://swastiksrijan.in').replace(/\/$/, ''); const verificationUrl = `${frontendUrl}/verify/${certId}`; let emailSent = true; let warning = null; try { await sendEmail(member.email, 'Membership Approved - Swastik Srijan Foundation', `Congratulations! Your SSF membership has been approved. Member ID: ${memberId}. Certificate ID: ${certId}. Verify: ${verificationUrl}`, `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;padding:24px;border:1px solid #eee;border-radius:16px"><h2>Membership Approved</h2><p>Welcome, <strong>${member.fullName}</strong>.</p><p><strong>Member ID:</strong> ${memberId}</p><p><strong>Certificate ID:</strong> ${certId}</p><p><a href="${verificationUrl}">Verify Certificate</a></p></div>`); } catch (emailError) { emailSent = false; warning = 'Member approved, but the email notification failed.'; console.error('⚠️ Member approval email failed:', emailError.message); } return res.json({ status: 'success', memberId, certId, certificateType: 'Membership Certificate', certificateIssuedAt, verificationUrl, emailSent, warning }); }
+    try { const member = await Member.findByPk(req.params.id); if (!member) return res.status(404).json({ message: 'Member not found' }); if (!isRealMembership(member)) return res.status(400).json({ message: 'This is an SSF account, not a membership application. The person must choose and submit a membership application first.' }); if (member.status === 'approved' && member.memberId && member.certId) return res.status(400).json({ message: 'Member is already approved', memberId: member.memberId, certId: member.certId }); if (requiresPayment(member) && member.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: member.paymentStatus }); const certificateIssuedAt = new Date(); const { memberId, certId } = await buildMemberIdentity(member); await member.update({ status: 'approved', memberId, certId, certificateType: 'Membership Certificate', certificateIssuedAt });
+        await identity.reserve({ kind: 'member', value: memberId, certValue: certId, recordId: member.id, holderName: member.fullName, holderEmail: member.email });
+        const imsPerson = await imsModels.ImsPerson.findOne({ where: { email: String(member.email || '').trim().toLowerCase() } });
+        if (imsPerson) {
+            const imsMembership = await imsModels.ImsMembership.findOne({
+                where: { personId: imsPerson.id, applicationStatus: { [Op.in]: ['submitted', 'review'] } },
+                order: [['id', 'DESC']]
+            });
+            if (imsMembership) {
+                const approvedOn = new Date().toISOString().slice(0, 10);
+                await imsMembership.update({
+                    memberNo: memberId, applicationStatus: 'approved', status: 'active',
+                    admissionDate: approvedOn, approvalDate: approvedOn,
+                    receiptNumber: member.paymentReference || null,
+                    feeAmount: member.paymentAmount ? Number(member.paymentAmount) / 100 : null,
+                    approvedBy: 'Managing Committee',
+                    data: { ...(imsMembership.data || {}), legacyMemberId: member.id, officialMemberId: memberId, approvedOn }
+                });
+                await imsModels.ImsPersonRole.findOrCreate({
+                    where: { personId: imsPerson.id, roleCode: 'member', refId: imsMembership.id },
+                    defaults: {
+                        recordId: 'PR-' + imsMembership.id + '-member', personId: imsPerson.id,
+                        roleCode: 'member', refType: 'members', refId: imsMembership.id, status: 'active'
+                    }
+                });
+            }
+        } const frontendUrl = (process.env.FRONTEND_URL || 'https://swastiksrijan.in').replace(/\/$/, ''); const verificationUrl = `${frontendUrl}/verify/${certId}`; let emailSent = true; let warning = null; try { await sendEmail(member.email, 'Membership Approved - Swastik Srijan Foundation', `Congratulations! Your SSF membership has been approved. Member ID: ${memberId}. Certificate ID: ${certId}. Verify: ${verificationUrl}`, `<div style="font-family:Arial,sans-serif;max-width:620px;margin:auto;padding:24px;border:1px solid #eee;border-radius:16px"><h2>Membership Approved</h2><p>Welcome, <strong>${member.fullName}</strong>.</p><p><strong>Member ID:</strong> ${memberId}</p><p><strong>Certificate ID:</strong> ${certId}</p><p><a href="${verificationUrl}">Verify Certificate</a></p></div>`); } catch (emailError) { emailSent = false; warning = 'Member approved, but the email notification failed.'; console.error('⚠️ Member approval email failed:', emailError.message); } return res.json({ status: 'success', memberId, certId, certificateType: 'Membership Certificate', certificateIssuedAt, verificationUrl, emailSent, warning }); }
     catch (error) { console.error('❌ Member approval error:', error); res.status(500).json({ message: 'Server Error' }); }
 });
 
