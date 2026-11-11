@@ -58,7 +58,8 @@ router.post('/member-application-bylaw', async (req, res) => {
             return res.status(400).json({ status: 'error', message: 'Please complete all required application fields.' });
         }
         const dob = new Date(dateOfBirth);
-        if (Number.isNaN(dob.getTime()) || dob >= new Date() || (new Date().getFullYear() - dob.getFullYear()) < 18) {
+        const adultCutoff = new Date(); adultCutoff.setFullYear(adultCutoff.getFullYear() - 18);
+        if (Number.isNaN(dob.getTime()) || dob > adultCutoff) {
             return res.status(400).json({ status: 'error', message: 'Applicant must be at least 18 years old.' });
         }
         if (String(citizenship) !== 'Indian' || !acceptsRules || !goodCharacter || !noAlcohol || String(electronicSignature || '').trim().length < 2 || !declaration) {
@@ -72,6 +73,7 @@ router.post('/member-application-bylaw', async (req, res) => {
             'Date of birth: ' + dateOfBirth,
             'Father / Guardian: ' + String(fatherOrGuardian || '').trim(),
             'Occupation: ' + String(occupation).trim(),
+            'Ordinary membership payment preference: ' + String(req.body.paymentPlan || 'not applicable'),
             'Citizenship: Indian',
             'Rule 7 declarations: rules accepted; good character; no-alcohol condition accepted',
             'Digital signature: ' + String(electronicSignature).trim(),
