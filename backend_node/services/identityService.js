@@ -183,7 +183,7 @@ const registerEntryFor = (memberId) => {
 // Anything that prices a membership — the portal fee card, the Razorpay amount —
 // must read the plan, never the role. Writing the role into `memberType` is what
 // stripped the fee amount off every registered member's Payments tab.
-const MEMBERSHIP_PLANS = ['general', 'active', 'life', 'advisory'];
+const MEMBERSHIP_PLANS = ['general', 'active', 'life', 'advisory', 'patron'];
 const isMembershipPlan = (value) => MEMBERSHIP_PLANS.includes(String(value || '').trim().toLowerCase());
 const planFor = (member) => {
   const stored = String(member?.memberType || '').trim().toLowerCase();
