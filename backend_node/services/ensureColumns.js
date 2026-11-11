@@ -59,6 +59,9 @@ const COLUMNS = [
   { table: 'Donors', column: 'idValidFrom', type: 'DATE' },
   { table: 'Donors', column: 'idValidTill', type: 'DATE' },
   { table: 'Donors', column: 'idActive', type: 'BOOLEAN DEFAULT true' },
+  // Preserve committee and General Body proceedings separately from the final order.
+  { table: 'MemberActions', column: 'committeeDecisionText', type: 'TEXT' },
+  { table: 'MemberActions', column: 'generalBodyDecisionText', type: 'TEXT' },
 ];
 
 async function ensureColumns() {
