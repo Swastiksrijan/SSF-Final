@@ -157,7 +157,7 @@ export function ImsRegisters() {
       {!data && <Spinner />}
       {data && (
         <>
-          <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
+          <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-8">
             <Card className="p-4"><span className="block text-xs uppercase tracking-wide text-slate-400">Total</span><span className="text-2xl font-bold text-[#12345A]">{allRegisters.length}</span></Card>
             {groups.map(group => (
               <Card key={group} className="p-4">
