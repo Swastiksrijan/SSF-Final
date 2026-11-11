@@ -163,6 +163,7 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
         if (updates.memberType && String(updates.memberType).toLowerCase() === 'website_signup' && String(member.memberType || '').toLowerCase() !== 'website_signup') return res.status(400).json({ message: 'website_signup is an account type, not a membership role.' });
         if (updates.status && !['pending', 'changes_requested', 'approved', 'rejected'].includes(String(updates.status))) return res.status(400).json({ message: 'Invalid member status' });
         if (updates.paymentStatus && !['not_required', 'pending', 'paid', 'failed'].includes(String(updates.paymentStatus))) return res.status(400).json({ message: 'Invalid payment status' });
+        if (updates.paymentStatus === 'paid' && !hasCommitteePaymentAuthorization(member)) return res.status(403).json({ message: 'Payment cannot be verified before the Managing Committee authorizes the contribution.' });
         if (updates.paymentMode !== undefined) updates.paymentMode = String(updates.paymentMode || '').trim() || null;
         if (updates.paymentReference !== undefined) updates.paymentReference = String(updates.paymentReference || '').trim() || null;
         if (updates.paymentStatus === 'paid' && member.paymentStatus !== 'paid') updates.paymentPaidAt = new Date();
