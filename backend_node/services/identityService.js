@@ -169,7 +169,7 @@ const digits = (value) => String(value || '').replace(/\D/g, '');
 // (Divya Sharma SSF-MBR-00003 and the rest) look like empty website accounts:
 // their number was issued but the marker was never updated, so the portal
 // withheld their ID card and the admin list labelled them "Account only".
-const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory', 'patron'];
+const REAL_MEMBERSHIP_TYPES = ['general', 'life', 'advisory', 'patron'];
 const holdsOfficialMemberId = (member) => Boolean(String(member?.memberId || '').trim());
 const hasAccountMarker = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup'
   || String(member?.message || '').trim().toLowerCase() === 'signup from website';
@@ -187,17 +187,18 @@ const registerEntryFor = (memberId) => {
 
 // A membership is billed on a PLAN (general / active / life / advisory), but the
 // offline register records a ROLE ("Founder Member", "Executive Member").
+// Rule 5 membership classes are general, life and patron; advisory is honorary.
+// Any legacy "active" role is normalized to ordinary membership, not a new class.
 // Anything that prices a membership — the portal fee card, the Razorpay amount —
 // must read the plan, never the role. Writing the role into `memberType` is what
 // stripped the fee amount off every registered member's Payments tab.
-const MEMBERSHIP_PLANS = ['general', 'active', 'life', 'advisory', 'patron'];
+const MEMBERSHIP_PLANS = ['general', 'life', 'advisory', 'patron'];
 const isMembershipPlan = (value) => MEMBERSHIP_PLANS.includes(String(value || '').trim().toLowerCase());
 const planFor = (member) => {
   const stored = String(member?.memberType || '').trim().toLowerCase();
   if (isMembershipPlan(stored)) return stored;
   const role = String(registerEntryFor(member?.memberId)?.memberType || '').toLowerCase();
   if (role.includes('life')) return 'life';
-  if (role.includes('active')) return 'active';
   if (role.includes('advisory')) return 'advisory';
   return 'general';
 };
