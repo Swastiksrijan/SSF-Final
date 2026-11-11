@@ -119,8 +119,10 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
         'सदस्य ID: ' + (row.memberId || 'रजिस्टर में उपलब्ध नहीं / पुष्टि अपेक्षित'),
         'वर्तमान पद: ' + (row.currentDesignation || 'रिकॉर्ड अनुसार'),
         'संपर्क ईमेल: ' + row.email,
+        'नोटिस संदर्भ संख्या: ' + row.noticeReference,
         'विषय: अपना पक्ष/स्पष्टीकरण प्रस्तुत करने के संबंध में।',
-        customNotice ? 'अतिरिक्त विवरण:\\n' + customNotice : '',
+        customNotice ? 'अतिरिक्त विवरण:
+' + customNotice : '',
         'लागू नियम/उप-नियम: ' + row.bylawClause,
         'प्रस्तावित कार्रवाई का कारण: ' + row.grounds,
         'तथ्य एवं उपलब्ध रिकॉर्ड: ' + row.factualSummary,
@@ -129,7 +131,7 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
         'यदि आप व्यक्तिगत/ऑनलाइन सुनवाई चाहते हैं, तो जवाब में इसकी मांग और सुविधाजनक संपर्क विवरण लिखें।',
         'आपका जवाब और उपलब्ध रिकॉर्ड निष्पक्ष रूप से सक्षम समिति/निकाय के सामने रखा जाएगा।',
         'महत्वपूर्ण: यह नोटिस केवल आरोप/प्रस्तावित कार्रवाई की जानकारी देकर आपका पक्ष सुनने का अवसर है। इसे दोष सिद्धि, सदस्यता समाप्ति या पद से हटाने का अंतिम आदेश न माना जाए। अंतिम निर्णय केवल लागू नियमों और विधिवत प्रक्रिया के बाद ही लिया जा सकता है।'
-      ].filter(Boolean).join('\\n\\n');
+      ].filter(Boolean).join('\n\n');
       const logoUrl = String(b.logoUrl || '').trim();
       let safeLogoUrl = '';
       try {
