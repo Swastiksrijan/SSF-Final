@@ -112,7 +112,19 @@ const SUPPORTING_REGISTER_VIEWS = [
   { group: 'governance', rule: 'special_general_body', en: 'Annual & Special General Body Meeting View', hi: 'वार्षिक एवं विशेष आम सभा बैठक विवरण', basis: 'Rule 10 — annual meeting and special meeting on written requisition', resource: 'meetings', path: '/ims/meetings', linked: true },
   { group: 'governance', rule: 'meeting_notices_agenda', en: 'Meeting Notices, Agenda & Dispatch View', hi: 'बैठक सूचना, कार्यसूची एवं प्रेषण विवरण', basis: 'Rule 10 — 15-day General Body and 7-day Managing Committee notice', resource: 'meetings', path: '/ims/meetings', linked: true },
   { group: 'resources', rule: 'stock_inventory', en: 'Stock & Inventory Register', hi: 'भंडार एवं सामग्री पंजिका', basis: 'Operational control — stock receipts, issues and balance', resource: 'inventory', path: '/ims/r/inventory', linked: true },
-  { group: 'records', rule: 'inward_outward_correspondence', en: 'Inward & Outward Correspondence Register', hi: 'आवक एवं जावक पत्राचार पंजिका', basis: 'Operational record — incoming/outgoing letters and acknowledgements', resource: 'communications', path: '/ims/r/communications', linked: true },
+  { group: 'compliance', rule: 'annual_report_record', en: 'Annual Report & Progress Report Register', hi: 'वार्षिक प्रतिवेदन एवं प्रगति रिपोर्ट पंजिका', basis: 'Rule 11 — General Body considers annual report and progress', resource: 'annualReports', path: '/ims/annual-reports', linked: true },
+  { group: 'finance', rule: 'permanent_fund_record', en: 'Permanent Fund Register', hi: 'स्थायी निधि पंजिका', basis: 'Rule 11 — General Body considers permanent fund and property matters', resource: 'funds', path: '/ims/r/funds', linked: true },
+  { group: 'compliance', rule: 'auditor_appointment_record', en: 'Auditor Appointment & Tenure Record', hi: 'लेखापरीक्षक नियुक्ति एवं कार्यकाल रिकॉर्ड', basis: 'Rule 11 — General Body appoints auditor; retain appointment and report', resource: 'audits', path: '/ims/r/audits', linked: true },
+  { group: 'governance', rule: 'election_record', en: 'Managing Committee Election & Result Record', hi: 'प्रबंध समिति चुनाव एवं परिणाम रिकॉर्ड', basis: 'Rule 12 — nine positions elected by eligible members under Rules 5(A)–(C)', resource: 'committeeMembers', path: '/ims/managing-committee', linked: true },
+  { group: 'governance', rule: 'committee_term_record', en: 'Committee Tenure, Extension & Handover Record', hi: 'कार्यकारिणी कार्यकाल, विस्तार एवं हस्तांतरण रिकॉर्ड', basis: 'Rule 13 — three-year term; extension up to six months only with General Body approval', resource: 'committeeMembers', path: '/ims/managing-committee', linked: true },
+  { group: 'finance', rule: 'bank_signatory_record', en: 'Bank Mandate & Joint Signatory Record', hi: 'बैंक संचालन एवं संयुक्त हस्ताक्षरकर्ता रिकॉर्ड', basis: 'Rule 20 — bank withdrawals by prescribed joint signatories', resource: 'bankAccounts', path: '/ims/bank-book', linked: true },
+  { group: 'finance', rule: 'cash_limit_record', en: 'Cash-in-Hand Limit Control', hi: 'नकद सीमा नियंत्रण रिकॉर्ड', basis: 'Rule 20 — maximum cash in hand ₹4,500; not a daily expense limit', resource: 'cashAccounts', path: '/ims/cash-book', linked: true },
+  { group: 'compliance', rule: 'annual_filing_record', en: 'Annual Committee List & Accounts Filing Record', hi: 'वार्षिक समिति सूची एवं लेखा दाखिला रिकॉर्ड', basis: 'Rule 21 — file committee list within 45 days of annual meeting and audited accounts as prescribed', resource: 'compliance', path: '/ims/r/compliance', linked: true },
+  { group: 'governance', rule: 'amendment_record', en: 'Rules & Bylaws Amendment Record', hi: 'नियमावली संशोधन रिकॉर्ड', basis: 'Rule 22 — amendment requires two-thirds of total members and applicable Registrar process', resource: 'governanceRules', path: '/ims/constitution', linked: true },
+  { group: 'compliance', rule: 'dissolution_record', en: 'Dissolution & Asset Disposal Record', hi: 'विघटन एवं संपत्ति निस्तारण रिकॉर्ड', basis: 'Rule 23 — dissolution resolution and transfer of remaining assets as specified', resource: 'assets', path: '/ims/r/assets', linked: true },
+  { group: 'finance', rule: 'immovable_property_permission', en: 'Immovable Property & Registrar Permission Record', hi: 'अचल संपत्ति एवं रजिस्ट्रार अनुमति रिकॉर्ड', basis: 'Rule 24 — property transactions subject to written Registrar permission as stated in the bylaws', resource: 'assets', path: '/ims/r/assets', linked: true },
+  { group: 'governance', rule: 'registrar_meeting_record', en: 'Registrar-Called Meeting Record', hi: 'रजिस्ट्रार द्वारा बुलाई गई बैठक रिकॉर्ड', basis: 'Rule 25 — Registrar’s authority to call a meeting', resource: 'meetings', path: '/ims/meetings', linked: true },
+  { group: 'compliance', rule: 'dispute_record', en: 'Dispute & Resolution Record', hi: 'विवाद एवं निस्तारण रिकॉर्ड', basis: 'Rule 26 — dispute procedure under the bylaws', resource: 'compliance', path: '/ims/r/compliance', linked: true },
 ];
 
 const REGISTER_PATHS = {
@@ -123,6 +135,7 @@ const REGISTER_PATHS = {
   cashAccounts: '/ims/cash-book',
   bankAccounts: '/ims/bank-book',
   transactions: '/ims/finance/ledger',
+  annualReports: '/ims/annual-reports',
 };
 
 /** Shows the actual IMS destination for every register; linked views reuse one master. */
