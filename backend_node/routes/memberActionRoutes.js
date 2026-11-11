@@ -34,7 +34,7 @@ router.get('/admin/member-actions/member-lookup', requireAdmin, async (req, res)
   try {
     const name = String(req.query.name || '').trim().toLocaleLowerCase('en-IN');
     const email = String(req.query.email || '').trim().toLowerCase();
-    const phone = String(req.query.phone || '').replace(/\\D/g, '').slice(-10);
+    const phone = String(req.query.phone || '').replace(/\D/g, '').slice(-10);
     if (!name && !email && !phone) return res.status(400).json({ message: 'नाम, ईमेल या मोबाइल दर्ज करें।' });
     const dbRows = await Member.findAll({ attributes: ['memberId', 'fullName', 'email', 'phone', 'designation'], raw: true });
     const byId = new Map();
@@ -46,7 +46,7 @@ router.get('/admin/member-actions/member-lookup', requireAdmin, async (req, res)
       const old = byId.get(member.memberId) || {};
       byId.set(member.memberId, { ...old, memberId: member.memberId, fullName: member.fullName || old.fullName || '', email: member.email || old.email || '', phone: member.phone || old.phone || '', designation: member.designation || old.designation || '' });
     }
-    const digits = value => String(value || '').replace(/\\D/g, '').slice(-10);
+    const digits = value => String(value || '').replace(/\D/g, '').slice(-10);
     const matches = [...byId.values()].filter(person =>
       (!name || String(person.fullName || '').toLocaleLowerCase('en-IN').includes(name)) &&
       (!email || String(person.email || '').trim().toLowerCase() === email) &&
