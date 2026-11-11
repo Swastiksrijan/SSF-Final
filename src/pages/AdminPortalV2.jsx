@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { FaUsers, FaShieldAlt, FaLock, FaIdCard, FaCertificate, FaCamera, FaTrash } from "react-icons/fa";
 import { generateCertificate, generateIdentityCard } from "../utils/generateCertificate";
 import { API_BASE_URL, ENDPOINTS } from "../config/api";
-import MemberActionManager from "../components/MemberActionManager";
 
 const TOKEN_KEY = "ssf_admin_token";
 const photoUrl = (path) => {
@@ -257,7 +256,6 @@ export default function AdminPortalV2() {
           </tr>)}
           </tbody></table></div>
         </section>
-        <MemberActionManager token={token} />
         <section className="bg-white rounded-[2.5rem] shadow-sm border border-zinc-100 overflow-hidden"><div className="p-8 border-b border-zinc-100 flex flex-wrap items-center justify-between gap-4"><div><h2 className="text-2xl font-black text-[#12345A] flex items-center gap-2"><FaCertificate /> Issued Documents</h2><p className="text-sm text-zinc-500 mt-1">Download certificate and Photo ID separately. No automatic double-download.</p></div><div className="flex gap-2">{[["all", "All"], ["volunteer", "Volunteers"], ["membership", "Members"]].map(([value, label]) => <button key={value} onClick={() => setFilter(value)} className={`px-4 py-2 rounded-xl text-sm font-bold ${filter === value ? "bg-[#12345A] text-white" : "bg-zinc-100 text-zinc-700"}`}>{label}</button>)}</div></div><div className="divide-y divide-zinc-100">{records.length === 0 ? <p className="p-10 text-center text-zinc-400">No issued certificates.</p> : records.map(record => <div key={`${record.kind}-${record.id}`} className="p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-5"><div><p className="font-bold text-[#12345A]">{record.fullName}</p><p className="text-xs text-zinc-500">{record.label} • {record.certId}</p><p className="text-xs text-zinc-500 mt-1">{record.memberId || record.volunteerId || "Official ID available after approval"}</p></div><div className="flex flex-wrap justify-end gap-2 w-full lg:w-auto"><button type="button" onClick={() => downloadCertificate(record, record.role)} disabled={!!busy} className="inline-flex items-center justify-center gap-2 bg-zinc-100 hover:bg-zinc-200 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap"><FaCertificate /> {record.kind === "membership" ? "Membership Certificate PDF" : "Volunteer Certificate PDF"}</button><button type="button" onClick={() => downloadIdCard(record, record.role)} disabled={!!busy} className="inline-flex items-center justify-center gap-2 bg-[#12345A] text-white hover:opacity-90 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap"><FaIdCard /> {record.kind === "membership" ? "Member ID Card PDF" : "Volunteer ID Card PDF"}</button><button type="button" onClick={() => record.kind === "membership" ? deleteMember(record) : deleteVolunteer(record)} disabled={!!busy} className="inline-flex items-center justify-center gap-2 bg-red-600 text-white hover:bg-red-700 px-4 py-2 rounded-xl font-bold text-xs whitespace-nowrap"><FaTrash /> Delete</button></div></div>)}</div></section>
     </div></div>;
 }
