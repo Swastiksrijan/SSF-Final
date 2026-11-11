@@ -52,9 +52,11 @@ router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', max
 
 router.post('/member-application-bylaw', async (req, res) => {
     try {
-        const { fullName, email, phone, memberType, dateOfBirth, fatherOrGuardian, address, occupation, citizenship, acceptsRules, goodCharacter, noAlcohol, citizenshipConfirmed, electronicSignature, declaration } = req.body || {};
+        const { fullName, email, phone, memberType, dateOfBirth, fatherOrGuardian, address, occupation, citizenship, acceptsRules, goodCharacter, noAlcohol, citizenshipConfirmed, electronicSignature, declaration, paymentPlan, patronInstallments } = req.body || {};
         const allowedTypes = new Set(['patron', 'life', 'general']);
         const type = String(memberType || '').toLowerCase();
+        const installmentCount = type === 'patron' ? Number(patronInstallments || 1) : 1;
+        if (type === 'patron' && ![1, 2, 3, 4, 6, 12].includes(installmentCount)) return res.status(400).json({ status: 'error', message: 'Patron contribution may be paid in one, two, three, four, six or twelve installments within one year.' });
         const normalizedEmail = String(email || '').trim().toLowerCase();
         const normalizedPhone = String(phone || '').trim();
         if (!fullName || String(fullName).trim().length < 3 || !normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail) || normalizedPhone.replace(/\D/g, '').length < 7 || !allowedTypes.has(type) || !dateOfBirth || !String(address || '').trim() || !String(occupation || '').trim()) {
@@ -77,6 +79,7 @@ router.post('/member-application-bylaw', async (req, res) => {
             'Father / Guardian: ' + String(fatherOrGuardian || '').trim(),
             'Occupation: ' + String(occupation).trim(),
             'Ordinary membership payment preference: ' + String(req.body.paymentPlan || 'not applicable'),
+            'Patron installment count: ' + (type === 'patron' ? installmentCount : 'not applicable'),
             'Citizenship: Indian',
             'Rule 7 declarations: rules accepted; good character; no-alcohol condition accepted',
             'Digital signature: ' + String(electronicSignature).trim(),
@@ -117,10 +120,10 @@ router.post('/member-application-bylaw', async (req, res) => {
             const category = type === 'patron' ? 'Guardian/Patron' : (type === 'life' ? 'Lifetime' : 'Ordinary');
             membershipRecord = await imsModels.ImsMembership.create({
                 recordId: memberRecordId, personId: person.id, category,
-                feeFrequency: type === 'general' ? String(req.body.paymentPlan || 'annual') : (type === 'patron' ? 'one-time-or-instalments' : 'one-time'),
+                feeFrequency: type === 'general' ? String(paymentPlan || 'annual') : (type === 'patron' ? (installmentCount === 1 ? 'one-time' : `${installmentCount}-instalments-within-one-year`) : 'one-time'),
                 applicationStatus: 'submitted', signatureNote: 'Online declaration signed by: ' + String(electronicSignature).trim(),
                 status: 'pending', createdBy: 'public_online_application', createdByName: 'Website Membership Application',
-                data: { dateOfBirth, fatherOrGuardian: String(fatherOrGuardian || '').trim(), citizenship: 'Indian', occupation: String(occupation).trim(), address: String(address).trim(), electronicSignature: String(electronicSignature).trim(), declaration: String(declaration).trim(), paymentPlan: String(req.body.paymentPlan || 'not applicable') }
+                data: { dateOfBirth, fatherOrGuardian: String(fatherOrGuardian || '').trim(), citizenship: 'Indian', occupation: String(occupation).trim(), address: String(address).trim(), electronicSignature: String(electronicSignature).trim(), declaration: String(declaration).trim(), paymentPlan: String(paymentPlan || 'not applicable'), patronInstallments: type === 'patron' ? installmentCount : null }
             }, { transaction });
             await transaction.commit();
         } catch (saveError) {
