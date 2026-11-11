@@ -19,7 +19,7 @@ import HeaderBanner, { BannerAction } from "../components/dashboard/HeaderBanner
 import { EmptyState, InlineAlert, ProgressRing, SectionCard, StatCard, StatusChip, Timeline, statusLabel } from "../components/dashboard/DashboardUI";
 
 const MEMBERSHIP_FEE_TYPES = ["general", "life", "patron"];
-const MEMBERSHIP_FEES = { general: 1200, active: 2500, life: 8000, patron: 10000 };
+const MEMBERSHIP_FEES = { general: 1200, life: 8000, patron: 10000 };
 const membershipFeeFor = (user) => {
   const key = planKey(user);
   if (key === "general" && /Ordinary membership payment preference: monthly/i.test(user?.message || "")) return 100;
