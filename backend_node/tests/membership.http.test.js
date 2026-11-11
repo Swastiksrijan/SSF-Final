@@ -13,6 +13,8 @@ const mem = newDb();
 // block, so the enum types are pre-registered and those two queries intercepted.
 mem.public.registerEnum('enum_Members_status', ['pending', 'changes_requested', 'approved', 'rejected']);
 mem.public.registerEnum('enum_Members_paymentStatus', ['not_required', 'pending', 'paid', 'failed']);
+mem.public.registerEnum('enum_GovernanceVerifications_requestType', ['existing_member', 'office_bearer']);
+mem.public.registerEnum('enum_GovernanceVerifications_status', ['pending', 'verified', 'changes_requested', 'rejected']);
 mem.public.registerEnum('enum_Volunteers_status', ['pending', 'changes_requested', 'approved', 'rejected']);
 mem.public.registerEnum('enum_Donors_paymentStatus', ['pending', 'paid', 'failed', 'offline']);
 mem.public.registerEnum('enum_Donors_status', ['new', 'contacted', 'completed']);
@@ -81,6 +83,7 @@ async function main() {
   const { sequelize } = require('../models/social');
   // Register every model under test before sync so the tables are created.
   const Member = require('../models/Member');
+  require('../models/GovernanceVerification');
   const Volunteer = require('../models/Volunteer');
   const Donor = require('../models/Donor');
   const InternshipApplication = require('../models/InternshipApplication');
@@ -107,7 +110,7 @@ async function main() {
 
   const app = express();
   app.use(express.json());
-  for (const route of ['submissionRoutes', 'memberCertificateRoutes', 'volunteerAdminRoutes', 'userPortalRoutes', 'portalParticipationRoutes', 'profileApplicationRoutes', 'userDocumentRoutes', 'roleDocumentRoutes', 'volunteerRoutes', 'internshipRoutes', 'donorRoutes']) {
+  for (const route of ['governanceVerificationRoutes', 'submissionRoutes', 'memberCertificateRoutes', 'volunteerAdminRoutes', 'userPortalRoutes', 'portalParticipationRoutes', 'profileApplicationRoutes', 'userDocumentRoutes', 'roleDocumentRoutes', 'volunteerRoutes', 'internshipRoutes', 'donorRoutes']) {
     app.use('/api', require(`../routes/${route}`));
   }
   const server = app.listen(0);
