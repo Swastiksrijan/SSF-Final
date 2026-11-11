@@ -31,6 +31,12 @@ const GOVERNANCE_RULES = [
   { key: 'lifetime_to_patron_fee', value: '2000', ruleText: 'Lifetime member may become Patron with Rs 2,000+.', ruleTextHi: 'आजीवन सदस्य ₹2,000+ पर पैट्रन बन सकते हैं।' },
   { key: 'ordinary_fee', value: '100/1200', ruleText: 'Ordinary: Rs 100/month or Rs 1,200/year.', ruleTextHi: 'साधारण: ₹100/माह या ₹1,200/वर्ष।' },
   { key: 'ordinary_unpaid_months', value: '6', ruleText: 'Ordinary membership may end after 6 months unpaid without satisfactory reason.', ruleTextHi: '6 माह बिना भुगतान पर साधारण सदस्यता समाप्त हो सकती है।' },
+  { key: 'amendment_vote', value: '2/3', ruleText: 'Rule 22: amendment requires approval by two-thirds of the total members, subject to the registered bylaws and applicable Registrar process.', ruleTextHi: 'नियम 22: संशोधन के लिए कुल सदस्यों के दो-तिहाई का अनुमोदन तथा पंजीकृत नियमावली और लागू रजिस्ट्रार प्रक्रिया आवश्यक है।' },
+  { key: 'dissolution_vote', value: '3/5', ruleText: 'Rule 23: dissolution requires three-fifths vote; remaining assets transfer to an organisation with similar objects as specified in the bylaws.', ruleTextHi: 'नियम 23: विघटन हेतु तीन-पाँचवाँ मत आवश्यक; शेष संपत्ति नियमावली में निर्दिष्ट समान उद्देश्यों वाली संस्था को हस्तांतरित होगी।' },
+  { key: 'immovable_property_permission', value: 'Written Registrar permission', ruleText: 'Rule 24: immovable property transactions require written Registrar permission as stated in the registered bylaws.', ruleTextHi: 'नियम 24: पंजीकृत नियमावली के अनुसार अचल संपत्ति के लेन-देन हेतु रजिस्ट्रार की लिखित अनुमति आवश्यक है।' },
+  { key: 'registrar_called_meeting', value: 'Rule 25', ruleText: 'Maintain notice, attendance and minutes for a meeting called by the Registrar.', ruleTextHi: 'नियम 25 के अंतर्गत रजिस्ट्रार द्वारा बुलाई गई बैठक की सूचना, उपस्थिति और कार्यवृत्त सुरक्षित रखें।' },
+  { key: 'dispute_resolution', value: 'Rule 26', ruleText: 'Record disputes and follow the dispute-resolution procedure stated in the bylaws.', ruleTextHi: 'नियम 26 में दी गई विवाद निस्तारण प्रक्रिया का पालन करें और उसका रिकॉर्ड रखें।' },
+  { key: 'committee_election_eligibility', value: 'Rules 5(A)–(C), 12', ruleText: 'Only members in categories 5(A), 5(B) and 5(C), duly entered in the member register, are eligible for Managing Committee election under Rule 12; honorary members under 5(D) are not eligible.', ruleTextHi: 'नियम 12 के अनुसार केवल नियम 5(A), 5(B), 5(C) के विधिवत सदस्य पंजिका में दर्ज सदस्य पात्र हैं; सम्माननीय सदस्य 5(D) पात्र नहीं हैं।' },
 ];
 
 const ROLES = [
