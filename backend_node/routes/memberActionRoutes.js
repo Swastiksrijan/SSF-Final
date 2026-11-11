@@ -2,6 +2,8 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 const MemberAction = require('../models/MemberAction');
+const Member = require('../models/Member');
+const identity = require('../services/identityService');
 const { sendMail, emailConfigured } = require('../services/mailer');
 
 const adminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
@@ -24,6 +26,34 @@ const escapeHtml = value => String(value || '').replace(/[&<>"']/g, c => ({'&':'
 router.get('/admin/member-actions', requireAdmin, async (_req, res) => {
   try { const rows = await MemberAction.findAll({ order: [['createdAt', 'DESC']] }); res.json(rows.map(publicRecord)); }
   catch (e) { console.error('Member action list:', e); res.status(500).json({ message: 'नोटिस रजिस्टर लोड नहीं हो सका।' }); }
+});
+
+// Match an existing registered member by exact email/mobile or a name fragment.
+// Multiple matches are returned for explicit selection; never guess an ID.
+router.get('/admin/member-actions/member-lookup', requireAdmin, async (req, res) => {
+  try {
+    const name = String(req.query.name || '').trim().toLocaleLowerCase('en-IN');
+    const email = String(req.query.email || '').trim().toLowerCase();
+    const phone = String(req.query.phone || '').replace(/\\D/g, '').slice(-10);
+    if (!name && !email && !phone) return res.status(400).json({ message: 'नाम, ईमेल या मोबाइल दर्ज करें।' });
+    const dbRows = await Member.findAll({ attributes: ['memberId', 'fullName', 'email', 'phone', 'designation'], raw: true });
+    const byId = new Map();
+    for (const entry of identity.registerEntries()) {
+      byId.set(entry.memberId, { memberId: entry.memberId, fullName: entry.name, email: entry.email || '', phone: entry.mobile || '', designation: entry.designation || '' });
+    }
+    for (const member of dbRows) {
+      if (!member.memberId) continue;
+      const old = byId.get(member.memberId) || {};
+      byId.set(member.memberId, { ...old, memberId: member.memberId, fullName: member.fullName || old.fullName || '', email: member.email || old.email || '', phone: member.phone || old.phone || '', designation: member.designation || old.designation || '' });
+    }
+    const digits = value => String(value || '').replace(/\\D/g, '').slice(-10);
+    const matches = [...byId.values()].filter(person =>
+      (!name || String(person.fullName || '').toLocaleLowerCase('en-IN').includes(name)) &&
+      (!email || String(person.email || '').trim().toLowerCase() === email) &&
+      (!phone || digits(person.phone) === phone)
+    ).slice(0, 20);
+    return res.json({ matches });
+  } catch (e) { console.error('Member lookup:', e); return res.status(500).json({ message: 'सदस्य रजिस्टर से मिलान नहीं हो सका।' }); }
 });
 
 router.post('/admin/member-actions', requireAdmin, async (req, res) => {
