@@ -1,7 +1,7 @@
 # SSF-IMS — How many registers are needed (per Niyamavali)?
 
 > Aapka sawaal: **"Niyamavali ke hisaab se asal me kitni registers chahiye?"**
-> Jawab: **23 primary register modules + 20 linked compliance/operational views = 43 index entries**. 23 primary registers use dedicated IMS masters; 7 additional views reuse those same masters or existing office registers so duplicate data is not created.
+> Jawab: **23 primary register modules + 19 linked compliance/operational views = 42 index entries**. 23 primary registers use dedicated IMS masters; 7 additional views reuse those same masters or existing office registers so duplicate data is not created.
 
 > Ye list system ke andar hi zinda hai — `/api/ims/register-map` endpoint
 > har register ka **live count** deta hai, aur **Registers Required** page
@@ -74,7 +74,7 @@ These seven are **linked views**, not seven new independent databases. The same 
 
 ## Jawab ek line me
 
-**IMS index presents 43 entries:** 23 primary register modules and 20 linked compliance/operational views. Counts are live only for the 23 primary models. Linked views open existing modules and are labelled Linked; they do not claim a separate database or a live count. Supporting masters (Persons, Funds, Accounts, Financial Years, Parties, Bank/Cash accounts, Committees, Programmes, Users) remain supporting masters, not separate registers.
+**IMS index presents 42 entries:** 23 primary register modules and 19 linked compliance/operational views. Counts are live only for the 23 primary models. Linked views open existing modules and are labelled Linked; they do not claim a separate database or a live count. Supporting masters (Persons, Funds, Accounts, Financial Years, Parties, Bank/Cash accounts, Committees, Programmes, Users) remain supporting masters, not separate registers.
 
 **Note:** in 23 ke alawa kuch **supporting masters** bhi hain (Persons, Funds,
 Accounts, Financial Years, Parties, Bank/Cash accounts, Committees, Programmes,
@@ -86,7 +86,7 @@ nahi, "master" hain.
 
 | # | Register / view | Rule | IMS destination | Purpose |
 |---|---|---|---|---|
-| 31 | Annual Report & Progress Report | Rule 11 | annual-reports | Annual and progress report placed before General Body |
+| 31 | Annual Report & Progress Report | Rule 11 | annual-reports / documents | Historical year-wise reports are view-only; new signed reports should be stored in Documents and tabled at General Body |
 | 32 | Permanent Fund | Rule 11 | funds | Permanent fund and property matters considered by General Body |
 | 33 | Auditor Appointment & Tenure | Rule 11 | audits | General Body auditor appointment and audit evidence |
 | 34 | Managing Committee Election & Result | Rule 12 | managing-committee | Eligible voters/candidates, nine positions and election result evidence |
@@ -100,7 +100,7 @@ nahi, "master" hain.
 | 42 | Registrar-Called Meeting | Rule 25 | meetings | Meeting called by Registrar and related notice/minutes |
 | 43 | Dispute & Resolution | Rule 26 | compliance | Dispute record, steps taken and outcome |
 
-These 13 are linked compliance views over existing modules, not separate databases. The exact statutory filing forms, deadlines and Registrar procedure must follow applicable Madhya Pradesh law and Registrar directions; this index does not replace legal verification.
+These 13 Rule 11–26 compliance views are part of the 19 linked views over existing modules, not separate databases. The exact statutory filing forms, deadlines and Registrar procedure must follow applicable Madhya Pradesh law and Registrar directions; this index does not replace legal verification.
 
 ## H. Important interpretation controls
 
