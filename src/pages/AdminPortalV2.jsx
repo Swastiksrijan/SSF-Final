@@ -12,8 +12,8 @@ const formatDate = (person) => new Date(person.certificateIssuedAt || person.app
 
 // A membership with a fee cannot be approved until the fee is confirmed, so the
 // admin needs to see the payment state and be able to record an offline payment.
-const MEMBERSHIP_FEES = { general: 1200, active: 2500, life: 8000 };
-const FEE_MEMBER_TYPES = ["general", "active", "life"];
+const MEMBERSHIP_FEES = { general: 1200, active: 2500, life: 8000, patron: 10000 };
+const FEE_MEMBER_TYPES = ["general", "active", "life", "patron"];
 const needsFee = (member) => FEE_MEMBER_TYPES.includes(String(member?.memberType || "").trim().toLowerCase());
 const paymentLabel = (member) => {
     const status = String(member?.paymentStatus || "pending").toLowerCase();
