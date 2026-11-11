@@ -9,7 +9,7 @@ const CATEGORIES = [
 
 const initial = {
   fullName: "", email: "", phone: "", dateOfBirth: "", fatherOrGuardian: "",
-  address: "", occupation: "", citizenship: "Indian", citizenshipConfirmed: false, memberType: "general", paymentPlan: "annual",
+  address: "", occupation: "", citizenship: "Indian", citizenshipConfirmed: false, memberType: "general", paymentPlan: "annual", patronInstallments: "1",
   electronicSignature: "", acceptsRules: false, goodCharacter: false, noAlcohol: false, declaration: false,
 };
 
@@ -92,6 +92,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
           <label className="block text-sm font-semibold text-slate-700">व्यवसाय / Occupation *<input required value={form.occupation} onChange={e => set("occupation", e.target.value)} className="mt-1 w-full rounded-xl border border-slate-300 p-3" /></label>
         </div>
         <label className="block text-sm font-semibold text-slate-700">पूरा पता *<textarea required rows={3} value={form.address} onChange={e => set("address", e.target.value)} className="mt-1 w-full rounded-xl border border-slate-300 p-3" /></label>
+        {form.memberType === "patron" && <label className="block text-sm font-semibold text-slate-700">संरक्षक सदस्य अंशदान भुगतान विकल्प<select value={form.patronInstallments} onChange={e => set("patronInstallments", e.target.value)} className="mt-1 w-full rounded-xl border border-slate-300 p-3"><option value="1">एकमुश्त ₹10,000 या अधिक</option><option value="2">2 किस्तें (कम-से-कम ₹5,000 प्रति किस्त)</option><option value="3">3 किस्तें (कम-से-कम ₹3,334 प्रति किस्त)</option><option value="4">4 किस्तें (कम-से-कम ₹2,500 प्रति किस्त)</option><option value="6">6 किस्तें (कम-से-कम ₹1,667 प्रति किस्त)</option><option value="12">12 किस्तें (कम-से-कम ₹834 प्रति किस्त)</option></select><span className="mt-1 block text-xs font-normal text-slate-500">सभी किस्तें एक वर्ष के भीतर पूरी करनी होंगी। समिति की अनुमति के बाद ही भुगतान करें।</span></label>}
         {form.memberType === "general" && <label className="block text-sm font-semibold text-slate-700">साधारण सदस्यता भुगतान अवधि
           <select value={form.paymentPlan} onChange={e => set("paymentPlan", e.target.value)} className="mt-1 w-full rounded-xl border border-slate-300 p-3"><option value="monthly">₹100 प्रति माह</option><option value="annual">₹1,200 प्रति वर्ष</option></select>
         </label>}
