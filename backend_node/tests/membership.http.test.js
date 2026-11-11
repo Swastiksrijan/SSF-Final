@@ -378,6 +378,33 @@ async function main() {
     const portalVol = await send('/api/portal-volunteer', 'POST', { accountId, name: 'Asha Verma', email, phone: '9876543210', volunteer_type: 'field', message: 'I can help with drives.' });
     ok('portal volunteer application accepted', [200, 201].includes(portalVol.status), JSON.stringify(portalVol.body).slice(0, 200));
 
+    console.log('\nSeparate annual member and office-bearer verification records:');
+    const identityForVerification = require('../services/identityService');
+    const registerEntryForVerification = identityForVerification.registerEntries()[0];
+    const legacyRequest = await send('/api/governance-verifications', 'POST', {
+      requestType: 'existing_member', fullName: registerEntryForVerification.name,
+      email: registerEntryForVerification.email || 'legacy.verify@example.com',
+      phone: registerEntryForVerification.mobile || '9000000000',
+      memberId: registerEntryForVerification.memberId,
+      requestedChanges: 'Annual verification'
+    });
+    ok('legacy member verification request accepted', legacyRequest.status === 201, JSON.stringify(legacyRequest.body).slice(0, 160));
+    const verificationInbox = await json('/api/admin/governance-verifications', auth);
+    ok('verification inbox is admin protected', (await json('/api/admin/governance-verifications')).status === 401);
+    const legacyVerificationRow = verificationInbox.body.find(r => r.memberId === registerEntryForVerification.memberId);
+    const verifiedLegacy = await send(`/api/admin/governance-verifications/${legacyVerificationRow.id}`, 'PATCH', { status: 'verified', committeeReference: 'ECM-VERIFY-001' }, auth);
+    ok('legacy member is checked against the official register', verifiedLegacy.status === 200 && verifiedLegacy.body.record?.status === 'verified', JSON.stringify(verifiedLegacy.body).slice(0, 160));
+    const officeRequest = await send('/api/governance-verifications', 'POST', {
+      requestType: 'office_bearer', fullName: 'Test Office Bearer', email: 'office.bearer@example.com',
+      phone: '9000000011', designation: 'Treasurer', termStart: '2026-01-01', termEnd: '2028-12-31'
+    });
+    ok('office bearer request accepted as separate record', officeRequest.status === 201, JSON.stringify(officeRequest.body).slice(0, 160));
+    const officeInbox = await json('/api/admin/governance-verifications', auth);
+    const officeRow = officeInbox.body.find(r => r.email === 'office.bearer@example.com');
+    const verifiedOffice = await send(`/api/admin/governance-verifications/${officeRow.id}`, 'PATCH', { status: 'verified', committeeReference: 'ECM-VERIFY-002' }, auth);
+    ok('office bearer committee decision recorded', verifiedOffice.status === 200 && verifiedOffice.body.record?.status === 'verified');
+    ok('office bearer verification does not create a Member record', !(await Member.findOne({ where: { email: 'office.bearer@example.com' } })));
+
     console.log('\nA registered member whose role marker was never updated still gets their ID card:');
     // This is the exact production shape that hid Divya Sharma's card: an
     // approval issued the register number but left memberType as
