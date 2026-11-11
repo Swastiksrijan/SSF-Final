@@ -17,8 +17,8 @@ import UserParticipationForms from "../components/UserParticipationForms";
 import HeaderBanner, { BannerAction } from "../components/dashboard/HeaderBanner";
 import { EmptyState, InlineAlert, ProgressRing, SectionCard, StatCard, StatusChip, Timeline, statusLabel } from "../components/dashboard/DashboardUI";
 
-const MEMBERSHIP_FEE_TYPES = ["general", "active", "life"];
-const MEMBERSHIP_FEES = { general: 1200, active: 2500, life: 8000 };
+const MEMBERSHIP_FEE_TYPES = ["general", "active", "life", "patron"];
+const MEMBERSHIP_FEES = { general: 1200, active: 2500, life: 8000, patron: 10000 };
 // `memberType` cannot be trusted as the single key for "is this a member?".
 // A website applicant carries the plan (general/active/life/advisory), a person
 // adopted from the offline register carries the register's wording ("Founder
