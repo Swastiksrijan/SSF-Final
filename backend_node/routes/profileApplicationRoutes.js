@@ -47,6 +47,55 @@ router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', max
     } catch (error) { console.error('❌ Volunteer registration error:', error); if (databaseUnavailableResponse(res, error)) return; return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
 });
 
+router.post('/member-application-bylaw', async (req, res) => {
+    try {
+        const { fullName, email, phone, memberType, dateOfBirth, fatherOrGuardian, address, occupation, citizenship, acceptsRules, goodCharacter, noAlcohol, electronicSignature, declaration } = req.body || {};
+        const allowedTypes = new Set(['patron', 'life', 'general']);
+        const type = String(memberType || '').toLowerCase();
+        const normalizedEmail = String(email || '').trim().toLowerCase();
+        const normalizedPhone = String(phone || '').trim();
+        if (!fullName || String(fullName).trim().length < 3 || !normalizedEmail || !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(normalizedEmail) || !normalizedPhone || !allowedTypes.has(type) || !dateOfBirth || !address || !occupation) {
+            return res.status(400).json({ status: 'error', message: 'Please complete all required application fields.' });
+        }
+        const dob = new Date(dateOfBirth);
+        if (Number.isNaN(dob.getTime()) || dob >= new Date() || (new Date().getFullYear() - dob.getFullYear()) < 18) {
+            return res.status(400).json({ status: 'error', message: 'Applicant must be at least 18 years old.' });
+        }
+        if (String(citizenship) !== 'Indian' || !acceptsRules || !goodCharacter || !noAlcohol || String(electronicSignature || '').trim().length < 2 || !declaration) {
+            return res.status(400).json({ status: 'error', message: 'Please confirm the eligibility declarations and enter your full name as digital signature.' });
+        }
+        const existing = await Member.findOne({ where: { email: normalizedEmail } });
+        if (existing) return res.status(409).json({ status: 'error', message: 'An application or account with this email already exists. Please contact SSF if you need to update it.' });
+        const applicationDetails = [
+            'BYLAW MEMBERSHIP APPLICATION',
+            'Category: ' + type,
+            'Date of birth: ' + dateOfBirth,
+            'Father / Guardian: ' + String(fatherOrGuardian || '').trim(),
+            'Occupation: ' + String(occupation).trim(),
+            'Citizenship: Indian',
+            'Rule 7 declarations: rules accepted; good character; no-alcohol condition accepted',
+            'Digital signature: ' + String(electronicSignature).trim(),
+            'Declaration: ' + String(declaration).trim(),
+            'Submitted online on: ' + new Date().toISOString(),
+            'Application status: Pending Managing Committee decision'
+        ].join('\\n');
+        const application = await Member.create({
+            fullName: String(fullName).trim(), email: normalizedEmail, phone: normalizedPhone,
+            memberType: type, designation: String(occupation).trim(),
+            guardianName: String(fatherOrGuardian || '').trim() || null,
+            address: String(address).trim(), message: applicationDetails,
+            status: 'pending', paymentStatus: 'pending'
+        });
+        await sendAdminNotification('New Bylaw Membership Application: ' + application.fullName,
+            'A new online membership application is awaiting Managing Committee review.\\nName: ' + application.fullName + '\\nCategory: ' + type + '\\nEmail: ' + normalizedEmail + '\\nPhone: ' + normalizedPhone + '\\nStatus: Pending. No membership has been granted.');
+        return res.status(201).json({ status: 'success', message: 'Application received. It remains pending until the Managing Committee records its decision.', applicationId: application.id, statusLabel: 'Pending Approval' });
+    } catch (error) {
+        console.error('Bylaw membership application error:', error);
+        if (databaseUnavailableResponse(res, error)) return;
+        return res.status(500).json({ status: 'error', message: 'Unable to save the application right now. Please try again.' });
+    }
+});
+
 router.post('/member-signup', uploadMemberFiles.fields([{ name: 'profile_photo', maxCount: 1 }, { name: 'id_document', maxCount: 1 }]), async (req, res) => {
     try {
         const { fullName, email, confirmEmail, phone, password, memberType, idProofType, identityNumber, message } = req.body || {};
