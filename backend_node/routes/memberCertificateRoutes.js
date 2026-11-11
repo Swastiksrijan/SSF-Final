@@ -181,6 +181,22 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
         if (updates.status && !['pending', 'changes_requested', 'approved', 'rejected'].includes(String(updates.status))) return res.status(400).json({ message: 'Invalid member status' });
         if (updates.paymentStatus && !['not_required', 'pending', 'paid', 'failed'].includes(String(updates.paymentStatus))) return res.status(400).json({ message: 'Invalid payment status' });
         if (updates.paymentStatus === 'paid' && !hasCommitteePaymentAuthorization(member)) return res.status(403).json({ message: 'Payment cannot be verified before the Managing Committee authorizes the contribution.' });
+        if (updates.paymentStatus === 'paid') {
+            const mode = String(updates.paymentMode || member.paymentMode || '').trim();
+            const reference = String(updates.paymentReference || member.paymentReference || '').trim();
+            const amountPaise = Number(updates.paymentAmount ?? member.paymentAmount ?? 0);
+            if (!mode || reference.length < 4 || !Number.isFinite(amountPaise) || amountPaise <= 0) {
+                return res.status(400).json({ message: 'Treasurer verification requires the actual amount, payment mode and UTR / transaction reference.' });
+            }
+            const minimumPaise = membershipAmounts(member) * 100;
+            if (minimumPaise && amountPaise < minimumPaise) return res.status(400).json({ message: 'The recorded contribution is below the applicable Rule 5 minimum. Record an eligible installment only where the bylaws permit it.' });
+            if (member.paymentStatus !== 'paid' && !member.receiptNumber) {
+                const year = new Date().getFullYear();
+                updates.receiptNumber = `SSF-RCP-${year}-${String(member.id).replace(/-/g, '').slice(0, 8).toUpperCase()}`;
+                updates.receiptIssuedAt = new Date();
+                updates.paymentVerifiedBy = 'Treasurer / Authorized Admin';
+            }
+        }
         if (updates.paymentMode !== undefined) updates.paymentMode = String(updates.paymentMode || '').trim() || null;
         if (updates.paymentReference !== undefined) updates.paymentReference = String(updates.paymentReference || '').trim() || null;
         if (updates.paymentStatus === 'paid' && member.paymentStatus !== 'paid') updates.paymentPaidAt = new Date();
