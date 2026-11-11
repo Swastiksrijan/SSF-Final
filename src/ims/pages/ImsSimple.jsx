@@ -104,7 +104,28 @@ export function ImsModuleDashboard({ module, titleKey, icon = 'BarChart3', activ
   );
 }
 
-/** Registers Required (per Niyamavali) — live map of statutory registers → IMS masters. */
+/** Registers & Records — primary registers plus linked operational views. */
+const SUPPORTING_REGISTER_VIEWS = [
+  { group: 'governance', rule: 'membership_applications', en: 'Membership Application & Admission Register', hi: 'सदस्यता आवेदन एवं प्रवेश पंजिका', basis: 'Rule 6 — written application and Managing Committee decision', resource: 'members', path: '/ims/members', linked: true },
+  { group: 'governance', rule: 'membership_categories', en: 'Membership Categories & Honorary Members View', hi: 'सदस्यता श्रेणी एवं सम्माननीय सदस्य विवरण', basis: 'Rules 5–9 — category, eligibility, cessation and member register', resource: 'members', path: '/ims/members', linked: true },
+  { group: 'finance', rule: 'membership_contributions', en: 'Membership Fee & Contribution Register', hi: 'सदस्यता शुल्क एवं अंशदान पंजिका', basis: 'Rule 5 — actual fee/contribution receipts; no assumed or backdated payment', resource: 'membershipContributions', path: '/ims/membership-contributions', linked: true },
+  { group: 'governance', rule: 'special_general_body', en: 'Annual & Special General Body Meeting View', hi: 'वार्षिक एवं विशेष आम सभा बैठक विवरण', basis: 'Rule 10 — annual meeting and special meeting on written requisition', resource: 'meetings', path: '/ims/meetings', linked: true },
+  { group: 'governance', rule: 'meeting_notices_agenda', en: 'Meeting Notices, Agenda & Dispatch View', hi: 'बैठक सूचना, कार्यसूची एवं प्रेषण विवरण', basis: 'Rule 10 — 15-day General Body and 7-day Managing Committee notice', resource: 'meetings', path: '/ims/meetings', linked: true },
+  { group: 'resources', rule: 'stock_inventory', en: 'Stock & Inventory Register', hi: 'भंडार एवं सामग्री पंजिका', basis: 'Operational control — stock receipts, issues and balance', resource: 'inventory', path: '/ims/r/inventory', linked: true },
+  { group: 'records', rule: 'inward_outward_correspondence', en: 'Inward & Outward Correspondence Register', hi: 'आवक एवं जावक पत्राचार पंजिका', basis: 'Operational record — incoming/outgoing letters and acknowledgements', resource: 'communications', path: '/ims/r/communications', linked: true },
+];
+
+const REGISTER_PATHS = {
+  members: '/ims/members',
+  committeeMembers: '/ims/managing-committee',
+  meetings: '/ims/meetings',
+  governanceRules: '/ims/constitution',
+  cashAccounts: '/ims/cash-book',
+  bankAccounts: '/ims/bank-book',
+  transactions: '/ims/finance/ledger',
+};
+
+/** Shows the actual IMS destination for every register; linked views reuse one master. */
 export function ImsRegisters() {
   const { t, lang } = useLang();
   const [data, setData] = useState(null);
@@ -115,7 +136,18 @@ export function ImsRegisters() {
     programme: ['Programmes / कार्यक्रम', 'कार्यक्रम'],
     compliance: ['Compliance / अनुपालन', 'अनुपालन'],
     hr: ['People / मानव संसाधन', 'मानव संसाधन'],
+    resources: ['Resources / संसाधन', 'संसाधन'],
+    records: ['Records / अभिलेख', 'अभिलेख'],
   };
+  const allRegisters = [
+    ...((data && data.registers) || []).map(r => ({
+      ...r,
+      path: REGISTER_PATHS[r.resource] || `/ims/r/${r.resource}`,
+      linked: false,
+    })),
+    ...SUPPORTING_REGISTER_VIEWS,
+  ];
+  const groups = [...new Set(allRegisters.map(r => r.group))];
   return (
     <ImsLayout active="registers_required">
       <PageHeader
@@ -125,16 +157,16 @@ export function ImsRegisters() {
       {!data && <Spinner />}
       {data && (
         <>
-          <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-5">
-            <Card className="p-4"><span className="block text-xs uppercase tracking-wide text-slate-400">Total</span><span className="text-2xl font-bold text-[#12345A]">{data.total}</span></Card>
-            {(data.byGroup || []).map(g => (
-              <Card key={g.group} className="p-4">
-                <span className="block text-xs uppercase tracking-wide text-slate-400">{GROUP_LABEL[g.group] ? (lang === 'hi' ? GROUP_LABEL[g.group][1] : GROUP_LABEL[g.group][0]) : g.group}</span>
-                <span className="text-2xl font-bold text-slate-800">{g.count}</span>
+          <div className="mb-4 grid grid-cols-2 gap-3 md:grid-cols-4 xl:grid-cols-7">
+            <Card className="p-4"><span className="block text-xs uppercase tracking-wide text-slate-400">Total</span><span className="text-2xl font-bold text-[#12345A]">{allRegisters.length}</span></Card>
+            {groups.map(group => (
+              <Card key={group} className="p-4">
+                <span className="block text-xs uppercase tracking-wide text-slate-400">{GROUP_LABEL[group] ? (lang === 'hi' ? GROUP_LABEL[group][1] : GROUP_LABEL[group][0]) : group}</span>
+                <span className="text-2xl font-bold text-slate-800">{allRegisters.filter(r => r.group === group).length}</span>
               </Card>
             ))}
           </div>
-          {(data.groups || []).map(g => (
+          {groups.map(g => (
             <section key={g} className="mb-5">
               <h2 className="mb-2 text-sm font-bold uppercase tracking-wide text-slate-500">{GROUP_LABEL[g] ? (lang === 'hi' ? GROUP_LABEL[g][1] : GROUP_LABEL[g][0]) : g}</h2>
               <Card className="overflow-hidden">
@@ -142,17 +174,18 @@ export function ImsRegisters() {
                   <table className="w-full min-w-[720px] text-sm">
                     <thead><tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase text-slate-500">
                       <th className="px-4 py-2.5">Register</th><th className="px-4 py-2.5">पंजिका</th>
-                      <th className="px-4 py-2.5">Basis (Niyamavali)</th><th className="px-4 py-2.5 text-right">Records</th>
+                      <th className="px-4 py-2.5">Basis (Niyamavali)</th><th className="px-4 py-2.5 text-right">Records</th><th className="px-4 py-2.5 text-right">Open</th>
                     </tr></thead>
                     <tbody className="divide-y divide-slate-100">
-                      {(data.registers || []).filter(r => r.group === g).map(r => (
+                      {allRegisters.filter(r => r.group === g).map(r => (
                         <tr key={r.rule} className="hover:bg-slate-50">
                           <td className="px-4 py-2.5 font-medium text-slate-800">{r.en}</td>
                           <td className="px-4 py-2.5 text-slate-600">{r.hi}</td>
                           <td className="px-4 py-2.5 text-xs text-slate-500">{r.basis}</td>
                           <td className="px-4 py-2.5 text-right">
-                            <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${r.count ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>{r.count}</span>
+                            <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${r.linked ? 'bg-blue-50 text-blue-700' : r.count ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-500'}`}>{r.linked ? 'Linked' : r.count}</span>
                           </td>
+                          <td className="px-4 py-2.5 text-right"><a href={r.path} className="inline-flex rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-bold text-[#12345A] hover:border-[#176447] hover:text-[#176447]">Open →</a></td>
                         </tr>
                       ))}
                     </tbody>
