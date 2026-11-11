@@ -33,7 +33,8 @@ const monthYearCode = (date = new Date()) => `${String(date.getMonth() + 1).padS
 const normalizeMemberType = (category) => {
     const value = String(category || '').toLowerCase();
     if (value.includes('life')) return 'life';
-    if (value.includes('active')) return 'active';
+    if (value.includes('patron')) return 'patron';
+    if (value.includes('active')) return 'general';
     if (value.includes('advisory')) return 'advisory';
     return 'general';
 };
