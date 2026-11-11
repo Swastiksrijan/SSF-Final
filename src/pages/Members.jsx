@@ -48,6 +48,19 @@ const Members = () => {
         </div>
       </section>
 
+      <section className="border-b border-zinc-100 bg-white px-6 py-12">
+        <div className="mx-auto grid max-w-6xl gap-5 md:grid-cols-2">
+          <div className="rounded-2xl border border-[#EAF0F6] bg-zinc-50 p-6">
+            <h3 className="text-lg font-black text-[#12345A]">Active Participation / सक्रिय भूमिका</h3>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-600">Planning, programme execution, project monitoring and volunteer coordination remain ways in which approved members and volunteers may contribute. “Active Member” is not a separate membership class in Rule 5.</p>
+          </div>
+          <div className="rounded-2xl border border-[#EAF0F6] bg-zinc-50 p-6">
+            <h3 className="text-lg font-black text-[#12345A]">Honorary / Expert Contribution</h3>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-600">The Managing Committee may confer Honorary Membership for a period it determines. Honorary members may attend General Body meetings but do not have voting rights. It is not a self-paid online membership category.</p>
+          </div>
+        </div>
+      </section>
+
       <section className="py-24 px-6 bg-white" id="apply"><div className="max-w-6xl mx-auto"><div className="bg-gradient-to-br from-zinc-50 to-white p-6 sm:p-10 md:p-16 rounded-[2rem] md:rounded-[4rem] border border-zinc-200 shadow-xl"><div className="grid md:grid-cols-2 gap-16">
         <div className="space-y-6"><h3 className="text-2xl font-bold text-[#12345A] flex items-center gap-3"><FaCheckCircle className="text-[#176447]" /> Qualification Of Members</h3><ul className="space-y-4">{["Age should not be less than 18 years", "Must be an Indian citizen", "Pledge to follow the rules of the committee", "Must satisfy the Rule 7 condition relating to alcohol", "Must submit an application to the Managing Committee (online application is received for committee review)"].map((rule, i) => <li key={i} className="flex items-start gap-3 text-zinc-600"><div className="mt-1 min-w-[20px]"><FaCheckCircle className="text-green-500 text-lg" /></div><span className="font-medium">{rule}</span></li>)}</ul></div>
         <div className="space-y-6"><h3 className="text-2xl font-bold text-[#12345A] flex items-center gap-3"><FaHandHoldingHeart className="text-[#176447]" /> Membership Termination</h3><p className="text-zinc-600 leading-relaxed">Membership may cease under the grounds and procedure in Rule 8. For ordinary members, Rule 5(C) also provides for termination after six months of non-payment without a satisfactory reason. The Managing Committee must record the applicable decision and date.</p>
