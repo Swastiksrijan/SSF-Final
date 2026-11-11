@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { FaCrown, FaUserShield, FaUserTie, FaAward, FaUsers, FaHandHoldingHeart, FaArrowRight, FaCheckCircle, FaTimes } from "react-icons/fa";
 import CertificateGenerator from "../components/CertificateGenerator";
@@ -23,6 +23,14 @@ const Members = () => {
     setSelectedMemberType(memberType);
     setIsFormOpen(true);
   };
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("apply") === "1") {
+      const requestedType = params.get("type");
+      openApplication(["patron", "life", "general"].includes(requestedType) ? requestedType : "general");
+    }
+  }, []);
 
   return (
     <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
