@@ -202,22 +202,15 @@ async function main() {
     ok('includeAccounts=true returns the account-only signup', !!acct, `n=${allRows.body.length}`);
     ok('the default list still hides account-only signups', !(Array.isArray(hidden.body) ? hidden.body : []).some((m) => m.email === 'acct@example.com'), '');
     ok('the account-only row is flagged website_signup so the UI can label it', acct?.memberType === 'website_signup');
-    // The whole point: the admin must be able to turn an account-only signup into
-    // a real member with an ID. It is stored as already 'approved', which used to
-    // skip the ID mint entirely.
+    // A website account is not a membership application. The admin cannot
+    // turn it into a member or issue an ID without a separate bylaw application.
     const promote = await send(`/api/admin/members/${acct.id}`, 'PATCH', { memberType: 'general', paymentStatus: 'paid', paymentMode: 'Cash' }, auth);
-    ok('an account-only signup can be given a membership role', promote.status === 200 && promote.body.member?.memberType === 'general', JSON.stringify(promote.body).slice(0, 200));
-    ok('promoting it mints an official member ID', /^SSF-MBR-\d{5}$/.test(String(promote.body.member?.memberId || '')), String(promote.body.member?.memberId));
-    ok('promoting it mints a certificate ID', String(promote.body.member?.certId || '').startsWith('SSF-MCERT-'), String(promote.body.member?.certId));
-    const ledger = await json('/api/admin/id-issuances?kind=member', auth);
-    ok('the minted number reaches the issuance ledger', ledger.body.some((r) => r.value === promote.body.member?.memberId), '');
-    // A real member must never be downgraded back to the account marker.
-    const downgrade = await send(`/api/admin/members/${acct.id}`, 'PATCH', { memberType: 'website_signup' }, auth);
-    ok('a real member cannot be downgraded to website_signup', downgrade.status === 400, String(downgrade.status));
-    // Posting back the account marker on an account-only row is a harmless no-op,
-    // because the edit modal sends every field it loaded.
-    const keepMarker = await send(`/api/admin/members/${acct.id}`, 'PATCH', { memberType: 'general', designation: 'Programme Lead' }, auth);
-    ok('re-saving an unchanged role is a no-op, not an error', keepMarker.status === 200 && keepMarker.body.member?.designation === 'Programme Lead', JSON.stringify(keepMarker.body).slice(0, 160));
+    ok('account-only signup cannot bypass the membership application', promote.status === 403 || promote.status === 400, JSON.stringify(promote.body).slice(0, 200));
+    const unchangedAccount = await Member.findByPk(acct.id);
+    ok('account-only signup keeps its account role and receives no Member ID', unchangedAccount.memberType === 'website_signup' && !unchangedAccount.memberId);
+    // Re-saving the unchanged account marker remains harmless.
+    const keepMarker = await send(`/api/admin/members/${acct.id}`, 'PATCH', { memberType: 'website_signup', designation: 'Programme Lead' }, auth);
+    ok('account-only profile fields can still be edited without granting membership', keepMarker.status === 200 && keepMarker.body.member?.designation === 'Programme Lead', JSON.stringify(keepMarker.body).slice(0, 160));
 
     // The exact production shape that hid 7 registered members from the admin
     // list: an approval issued the register number but left memberType as
@@ -258,17 +251,17 @@ async function main() {
     ok('a random string is not a member id', !isMemberId('MEM-1'));
 
     // A rejected member must not free their number for reuse.
-    const reuse = await Member.create({ fullName: 'Reuse Person', email: 'reuse@example.com', phone: '9876500099', passwordHash: 'x', memberType: 'general', status: 'pending', paymentStatus: 'paid' });
-    await send(`/api/admin/members/${reuse.id}/status`, 'PATCH', { status: 'approved' }, auth);
+    const reuse = await Member.create({ fullName: 'Reuse Person', email: 'reuse@example.com', phone: '9876500099', passwordHash: 'x', memberType: 'general', status: 'pending', paymentStatus: 'paid', paymentAmount: 120000, contributionTotalPaise: 120000, receiptNumber: 'TEST-REUSE-001' });
+    await send(`/api/admin/members/${reuse.id}/status`, 'PATCH', { status: 'approved', committeeReference: 'ECM-TEST-REUSE-001' }, auth);
     const reuseId = (await Member.findByPk(reuse.id)).memberId;
     await send(`/api/admin/members/${reuse.id}/status`, 'PATCH', { status: 'rejected' }, auth);
-    const later = await Member.create({ fullName: 'Later Person', email: 'later@example.com', phone: '9876500098', passwordHash: 'x', memberType: 'general', status: 'pending', paymentStatus: 'paid' });
-    await send(`/api/admin/members/${later.id}/status`, 'PATCH', { status: 'approved' }, auth);
+    const later = await Member.create({ fullName: 'Later Person', email: 'later@example.com', phone: '9876500098', passwordHash: 'x', memberType: 'general', status: 'pending', paymentStatus: 'paid', paymentAmount: 120000, contributionTotalPaise: 120000, receiptNumber: 'TEST-LATER-001' });
+    await send(`/api/admin/members/${later.id}/status`, 'PATCH', { status: 'approved', committeeReference: 'ECM-TEST-LATER-001' }, auth);
     ok('a revoked number is never handed out again', (await Member.findByPk(later.id)).memberId !== reuseId, `${reuseId} -> ${(await Member.findByPk(later.id)).memberId}`);
 
     console.log('\nRegister: an existing member keeps their original number');
-    const adopted = await Member.create({ fullName: 'Ramesh Pandey', email: 'rameshpandey335@gmail.com', phone: '9718346691', passwordHash: 'x', memberType: 'general', status: 'pending', paymentStatus: 'paid' });
-    await send(`/api/admin/members/${adopted.id}/status`, 'PATCH', { status: 'approved' }, auth);
+    const adopted = await Member.create({ fullName: 'Ramesh Pandey', email: 'rameshpandey335@gmail.com', phone: '9718346691', passwordHash: 'x', memberType: 'general', status: 'pending', paymentStatus: 'paid', paymentAmount: 120000, contributionTotalPaise: 120000, receiptNumber: 'TEST-ADOPT-001' });
+    await send(`/api/admin/members/${adopted.id}/status`, 'PATCH', { status: 'approved', committeeReference: 'ECM-TEST-ADOPT-001' }, auth);
     const adoptedRow = await Member.findByPk(adopted.id);
     ok('a register member adopts their offline number', adoptedRow.memberId === 'SSF-MBR-00001', String(adoptedRow.memberId));
     ok('the adopted certificate id follows the member id', adoptedRow.certId === 'SSF-MCERT-00001', String(adoptedRow.certId));
@@ -280,16 +273,16 @@ async function main() {
     ok('member register marks an unclaimed number', register.body.find((r) => r.memberId === 'SSF-MBR-00002')?.claimed === false);
 
     console.log('\nManual ID correction (the admin can set or fix a number)');
-    await Member.update({ status: 'approved', paymentStatus: 'paid' }, { where: { id: member.id } });
-    const manual = await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'SSF-MBR-00002', designation: 'Volunteer Coordinator', city: 'Rewa', idValidTill: '2030-12-31' }, auth);
+    await Member.update({ status: 'approved', paymentStatus: 'paid', paymentAmount: 120000, contributionTotalPaise: 120000, receiptNumber: 'TEST-MANUAL-001' }, { where: { id: member.id } });
+    const manual = await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'SSF-MBR-00002', committeeReference: 'ECM-TEST-MANUAL-001', designation: 'Volunteer Coordinator', city: 'Rewa', idValidTill: '2030-12-31' }, auth);
     ok('admin can assign a register number by hand', manual.status === 200 && manual.body.member?.memberId === 'SSF-MBR-00002', JSON.stringify(manual.body).slice(0, 200));
     ok('the hand-assigned number carries its certificate id', manual.body.member?.certId === 'SSF-MCERT-00002', String(manual.body.member?.certId));
     ok('the corrected designation is stored', manual.body.member?.designation === 'Volunteer Coordinator');
     ok('a malformed manual id is refused', (await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'MBR-2' }, auth)).status === 400);
     ok('a duplicate manual id is refused', (await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'SSF-MBR-00001' }, auth)).status === 400);
-    const clearId = await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: '' }, auth);
+    const clearId = await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: '', committeeReference: 'ECM-TEST-CLEAR-001' }, auth);
     ok('an id can be cleared', clearId.status === 200 && clearId.body.member?.memberId === null, String(clearId.body.member?.memberId));
-    await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'SSF-MBR-00002' }, auth);
+    await send(`/api/admin/members/${member.id}`, 'PATCH', { memberId: 'SSF-MBR-00002', committeeReference: 'ECM-TEST-RESTORE-001' }, auth);
 
     console.log('\nDeactivate an ID card (stops verifying without deleting the record)');
     const off = await send(`/api/admin/members/${member.id}/id-status`, 'POST', { idActive: false }, auth);
