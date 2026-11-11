@@ -213,9 +213,12 @@ async function main() {
     ok('resubmission returns to pending', afterResub.status === 'pending', afterResub.status);
 
     console.log('\nApproval is gated on payment:');
-    const blocked = await send(`/api/admin/member-approve/${accountId}`, 'POST', {}, auth);
+    const blocked = await send(`/api/admin/member-approve/${accountId}`, 'POST', { committeeReference: 'ECM-TEST-001' }, auth);
     ok('approval blocked while fee is unpaid', blocked.status === 400, JSON.stringify(blocked.body).slice(0, 200));
     ok('blocked response reports payment status', blocked.body.paymentStatus === 'pending', blocked.body.paymentStatus);
+
+    const paymentAuthorization = await send(`/api/admin/members/${accountId}/authorize-payment`, 'POST', { reviewNote: 'ECM-TEST-001, payment authorization recorded' }, auth);
+    ok('committee authorization recorded before payment', paymentAuthorization.status === 200, JSON.stringify(paymentAuthorization.body).slice(0, 150));
 
     const badPayment = await send('/api/member-payment-submit', 'POST', { memberId: accountId, paymentMode: 'UPI', paymentReference: '12' });
     ok('short payment reference rejected', badPayment.status === 400, JSON.stringify(badPayment.body).slice(0, 150));
@@ -228,19 +231,20 @@ async function main() {
     ok('self-reported payment stays unverified', paidRow.paymentStatus === 'pending', paidRow.paymentStatus);
     ok('approval still blocked before admin confirmation', (await send(`/api/admin/member-approve/${accountId}`, 'POST', {}, auth)).status === 400);
 
-    const confirmPayment = await send(`/api/admin/members/${accountId}`, 'PATCH', { paymentStatus: 'paid' }, auth);
+    const confirmPayment = await send(`/api/admin/members/${accountId}`, 'PATCH', { paymentStatus: 'paid', paymentAmount: 120000, paymentMode: 'UPI', paymentReference: '425789123456' }, auth);
     ok('admin records the fee as received', confirmPayment.status === 200, JSON.stringify(confirmPayment.body).slice(0, 150));
     const confirmedRow = await Member.findByPk(accountId);
     ok('payment marked paid', confirmedRow.paymentStatus === 'paid', confirmedRow.paymentStatus);
     ok('paid timestamp recorded', !!confirmedRow.paymentPaidAt, String(confirmedRow.paymentPaidAt));
+    ok('Treasurer receipt number generated', /^SSF-RCP-/.test(String(confirmedRow.receiptNumber || '')), String(confirmedRow.receiptNumber));
 
     console.log('\nApproval:');
-    const approve = await send(`/api/admin/member-approve/${accountId}`, 'POST', {}, auth);
+    const approve = await send(`/api/admin/member-approve/${accountId}`, 'POST', { committeeReference: 'ECM-TEST-002' }, auth);
     ok('approval 200', approve.status === 200, JSON.stringify(approve.body).slice(0, 200));
     ok('member id issued', /^SSF-MBR-\d{5}$/.test(String(approve.body.memberId)), approve.body.memberId);
     ok('certificate id issued', /^SSF-MCERT-\d{5}$/.test(String(approve.body.certId)), approve.body.certId);
     ok('approval returns a verification url', /\/verify\//.test(String(approve.body.verificationUrl)), approve.body.verificationUrl);
-    ok('double approval rejected', (await send(`/api/admin/member-approve/${accountId}`, 'POST', {}, auth)).status === 400);
+    ok('double approval rejected', (await send(`/api/admin/member-approve/${accountId}`, 'POST', { committeeReference: 'ECM-TEST-003' }, auth)).status === 400);
 
     const approved = await json(`/api/user-portal/${accountId}`);
     ok('portal reports approved status', approved.body.account?.status === 'approved', approved.body.account?.status);
@@ -275,7 +279,7 @@ async function main() {
     ok('advisory payment marked not required', advSignup.body.user?.paymentStatus === 'not_required', advSignup.body.user?.paymentStatus);
     const advApply = await upload('/api/member-application', { accountId: advId, fullName: 'Meera Nair', email: advEmail, phone: '9811111111', memberType: 'advisory', message: 'Legal advisory support.' }, { profile_photo: PNG });
     ok('advisory application accepted', advApply.status === 201, JSON.stringify(advApply.body).slice(0, 150));
-    const advApprove = await send(`/api/admin/member-approve/${advId}`, 'POST', {}, auth);
+    const advApprove = await send(`/api/admin/member-approve/${advId}`, 'POST', { committeeReference: 'ECM-TEST-ADV-001' }, auth);
     ok('advisory approves without any payment', advApprove.status === 200, JSON.stringify(advApprove.body).slice(0, 200));
     ok('advisory member id issued', /^SSF-MBR-\d{5}$/.test(String(advApprove.body.memberId)), advApprove.body.memberId);
     const advPay = await send('/api/member-payment-submit', 'POST', { memberId: advId, paymentMode: 'UPI', paymentReference: '999999999999' });
