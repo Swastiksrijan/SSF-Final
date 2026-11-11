@@ -26,6 +26,9 @@ const COLUMNS = [
   { table: 'Members', column: 'paymentMode', type: 'VARCHAR(255)' },
   { table: 'Members', column: 'paymentReference', type: 'VARCHAR(255)' },
   { table: 'Members', column: 'receiptNumber', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'receiptHistory', type: 'TEXT' },
+  { table: 'Members', column: 'contributionTotalPaise', type: 'INTEGER DEFAULT 0' },
+  { table: 'Members', column: 'patronInstallmentsPaid', type: 'INTEGER DEFAULT 0' },
   { table: 'Members', column: 'receiptIssuedAt', type: 'TIMESTAMP WITH TIME ZONE' },
   { table: 'Members', column: 'paymentVerifiedBy', type: 'VARCHAR(255)' },
   // The model gained a base64 photo plus profile-application fields after the
