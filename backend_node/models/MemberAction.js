@@ -3,6 +3,7 @@ const sequelize = require('../config/database');
 
 module.exports = sequelize.define('MemberAction', {
   id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+  noticeReference: { type: DataTypes.STRING, allowNull: true, unique: true },
   personName: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
   phone: { type: DataTypes.STRING, allowNull: true },
