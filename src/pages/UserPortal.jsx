@@ -5,6 +5,7 @@
 // caller owns the account it is being asked about.
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
+import jsPDF from "jspdf";
 import {
   FaArrowRight, FaBell, FaCamera, FaCheckCircle, FaClipboardList, FaCog, FaDownload,
   FaExclamationCircle, FaFileAlt, FaHandsHelping, FaIdCard, FaKey, FaRupeeSign,
@@ -54,6 +55,27 @@ const fileUrl = (path) => {
 const dateText = (value) => (value ? new Date(value).toLocaleDateString("en-IN", { day: "2-digit", month: "short", year: "numeric" }) : "—");
 const dateTimeText = (value) => (value ? new Date(value).toLocaleString("en-IN", { dateStyle: "medium", timeStyle: "short" }) : "—");
 const formatINR = (value) => (value == null || value === "" ? "—" : `₹${Number(value).toLocaleString("en-IN")}`);
+const downloadMembershipReceipt = (user, receipt) => {
+  const doc = new jsPDF();
+  doc.setFont("helvetica", "bold"); doc.setFontSize(17);
+  doc.text("SWASTIK SRIJAN FOUNDATION SAMITI", 105, 22, { align: "center" });
+  doc.setFontSize(13); doc.text("MEMBERSHIP CONTRIBUTION RECEIPT", 105, 32, { align: "center" });
+  doc.setFont("helvetica", "normal"); doc.setFontSize(10);
+  const lines = [
+    ["Receipt No.", receipt.receiptNumber || "—"],
+    ["Member Name", user.fullName || "—"],
+    ["Member ID", user.memberId || "Pending"],
+    ["Amount Received", formatINR(Number(receipt.amountPaise || 0) / 100)],
+    ["Payment Mode", receipt.mode || "—"],
+    ["Transaction / UTR Reference", receipt.reference || "—"],
+    ["Date of Receipt", dateTimeText(receipt.paidAt)],
+    ["Verified By", receipt.verifiedBy || "Treasurer / Authorized Admin"]
+  ];
+  let y = 50;
+  for (const [label, value] of lines) { doc.setFont("helvetica", "bold"); doc.text(label + ":", 18, y); doc.setFont("helvetica", "normal"); doc.text(String(value), 75, y, { maxWidth: 115 }); y += 11; }
+  doc.setFontSize(9); doc.text("This receipt acknowledges the contribution recorded by the Foundation. It is not a certificate of tax-deductible donation or an 80G claim.", 18, y + 10, { maxWidth: 174 });
+  doc.save(`${receipt.receiptNumber || "SSF-contribution-receipt"}.pdf`);
+};
 
 const TABS = [
   { id: "overview", label: "Overview", icon: FaIdCard },
@@ -596,7 +618,7 @@ function PaymentsTab({ user, donors }) {
             <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Confirmed on</p><p className="font-bold text-[#12345A] mt-1">{user.paymentPaidAt ? dateText(user.paymentPaidAt) : "—"}</p></div>
           </div>
           {user.paymentMode && <p className="text-sm text-zinc-500 mt-4">Recorded as <strong>{user.paymentMode}</strong>{user.paymentReference ? ` · reference ${user.paymentReference}` : ""}</p>}
-          {membershipReceipts.length > 0 && <div className="mt-5 overflow-x-auto"><h3 className="mb-2 font-bold text-[#12345A]">Verified membership contribution receipts</h3><table className="w-full text-left text-sm"><thead><tr className="border-b text-xs uppercase text-zinc-400"><th className="py-2 pr-3">Receipt</th><th className="py-2 pr-3">Amount</th><th className="py-2 pr-3">Mode / Reference</th><th className="py-2">Verified on</th></tr></thead><tbody>{membershipReceipts.map((receipt, index) => <tr key={receipt.receiptNumber || index} className="border-b border-zinc-100"><td className="py-2 pr-3 font-bold text-[#176447]">{receipt.receiptNumber}</td><td className="py-2 pr-3">{formatINR(Number(receipt.amountPaise || 0) / 100)}</td><td className="py-2 pr-3">{receipt.mode} · {receipt.reference}</td><td className="py-2">{dateText(receipt.paidAt)}</td></tr>)}</tbody></table></div>}
+          {membershipReceipts.length > 0 && <div className="mt-5 overflow-x-auto"><h3 className="mb-2 font-bold text-[#12345A]">Verified membership contribution receipts</h3><table className="w-full text-left text-sm"><thead><tr className="border-b text-xs uppercase text-zinc-400"><th className="py-2 pr-3">Receipt</th><th className="py-2 pr-3">Amount</th><th className="py-2 pr-3">Mode / Reference</th><th className="py-2">Verified on</th></tr></thead><tbody>{membershipReceipts.map((receipt, index) => <tr key={receipt.receiptNumber || index} className="border-b border-zinc-100"><td className="py-2 pr-3 font-bold text-[#176447]">{receipt.receiptNumber}</td><td className="py-2 pr-3">{formatINR(Number(receipt.amountPaise || 0) / 100)}</td><td className="py-2 pr-3">{receipt.mode} · {receipt.reference}</td><td className="py-2">{dateText(receipt.paidAt)} <button type="button" onClick={() => downloadMembershipReceipt(user, receipt)} className="ml-2 rounded-lg bg-[#12345A] px-2 py-1 text-xs font-bold text-white">PDF</button></td></tr>)}</tbody></table></div>}
           {fee && !paid && (
             <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5">
               <p className="font-black text-amber-900 flex items-center gap-2"><FaExclamationCircle /> {paymentAuthorized ? "Committee-authorized contribution" : "Application awaiting committee decision"}</p>
