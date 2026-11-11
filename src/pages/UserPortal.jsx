@@ -24,7 +24,7 @@ const membershipFeeFor = (user) => {
   const key = planKey(user);
   if (key === "general" && /Ordinary membership payment preference: monthly/i.test(user?.message || "")) return 100;
   if (key === "patron") {
-    const match = String(user?.message || "").match(/Patron installment count:\\s*(\\d+)/i);
+    const match = String(user?.message || "").match(/Patron installment count:\s*(\d+)/i);
     const count = match ? Number(match[1]) : 1;
     return [1, 2, 3, 4, 6, 12].includes(count) ? (count === 1 ? 10000 : Math.ceil(10000 / count)) : 10000;
   }
@@ -626,7 +626,7 @@ function PaymentsTab({ user, donors }) {
               {paymentAuthorized && <button type="button" onClick={startMembershipPayment} disabled={paymentBusy} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#12345A] text-white px-4 py-2.5 font-bold disabled:opacity-60">{paymentBusy ? "Creating secure link…" : `Pay ${formatINR(fee)} securely`} <FaArrowRight /></button>}
               {paymentError && <p role="alert" className="mt-2 text-sm font-semibold text-red-700">{paymentError}</p>}
               {String(user.paymentId || "") && <p className="mt-2 text-sm font-semibold text-amber-900">Payment reference received; Treasurer verification is pending.</p>}
-              {key === "patron" && <p className="mt-2 text-xs text-amber-800">Installment {Number(user.patronInstallmentsPaid || 0) + 1} of {(String(user.message || "").match(/Patron installment count:\\s*(\\d+)/i) || [])[1] || 1}; all installments must be completed within one year.</p>}
+              {key === "patron" && <p className="mt-2 text-xs text-amber-800">Installment {Number(user.patronInstallmentsPaid || 0) + 1} of {(String(user.message || "").match(/Patron installment count:\s*(\d+)/i) || [])[1] || 1}; all installments must be completed within one year.</p>}
             </div>
           )}
           {!fee && !paid && (
