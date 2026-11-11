@@ -568,6 +568,7 @@ function PaymentsTab({ user, donors }) {
   // ("General membership"), never the register role ("Founder Member") — the
   // role is shown separately as the account type.
   const planLabel = key ? statusLabel(key) : "Member";
+  const feePeriod = key === "life" ? "one-time" : key === "patron" ? "per instalment" : (key === "general" && /Ordinary membership payment preference: monthly/i.test(user.message || "") ? "/month" : "/year");
   let membershipReceipts = [];
   try { membershipReceipts = JSON.parse(user.receiptHistory || "[]"); } catch (_) { membershipReceipts = []; }
   const paymentAuthorized = String(user.reviewNote || "").startsWith("SSF_COMMITTEE_PAYMENT_AUTHORIZED");
@@ -590,7 +591,7 @@ function PaymentsTab({ user, donors }) {
       {showMembershipFee && (
         <SectionCard eyebrow="Membership fee" title={`${planLabel} membership`}>
           <div className="grid sm:grid-cols-3 gap-4">
-            <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Amount</p><p className="text-2xl font-black text-[#12345A] mt-1">{fee ? <>{formatINR(fee)}<span className="text-sm font-bold text-zinc-400">/year</span></> : <span className="text-base font-bold text-zinc-500">As per the SSF register</span>}</p></div>
+            <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Amount</p><p className="text-2xl font-black text-[#12345A] mt-1">{fee ? <>{formatINR(fee)}<span className="text-sm font-bold text-zinc-400"> {feePeriod}</span></> : <span className="text-base font-bold text-zinc-500">As per the SSF register</span>}</p></div>
             <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Status</p><div className="mt-1.5"><StatusChip status={user.paymentStatus} /></div></div>
             <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Confirmed on</p><p className="font-bold text-[#12345A] mt-1">{user.paymentPaidAt ? dateText(user.paymentPaidAt) : "—"}</p></div>
           </div>
