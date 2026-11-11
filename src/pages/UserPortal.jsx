@@ -568,6 +568,8 @@ function PaymentsTab({ user, donors }) {
   // ("General membership"), never the register role ("Founder Member") — the
   // role is shown separately as the account type.
   const planLabel = key ? statusLabel(key) : "Member";
+  let membershipReceipts = [];
+  try { membershipReceipts = JSON.parse(user.receiptHistory || "[]"); } catch (_) { membershipReceipts = []; }
   const paymentAuthorized = String(user.reviewNote || "").startsWith("SSF_COMMITTEE_PAYMENT_AUTHORIZED");
   const [paymentBusy, setPaymentBusy] = useState(false);
   const [paymentError, setPaymentError] = useState("");
@@ -593,6 +595,7 @@ function PaymentsTab({ user, donors }) {
             <div><p className="text-xs font-black uppercase tracking-widest text-zinc-400">Confirmed on</p><p className="font-bold text-[#12345A] mt-1">{user.paymentPaidAt ? dateText(user.paymentPaidAt) : "—"}</p></div>
           </div>
           {user.paymentMode && <p className="text-sm text-zinc-500 mt-4">Recorded as <strong>{user.paymentMode}</strong>{user.paymentReference ? ` · reference ${user.paymentReference}` : ""}</p>}
+          {membershipReceipts.length > 0 && <div className="mt-5 overflow-x-auto"><h3 className="mb-2 font-bold text-[#12345A]">Verified membership contribution receipts</h3><table className="w-full text-left text-sm"><thead><tr className="border-b text-xs uppercase text-zinc-400"><th className="py-2 pr-3">Receipt</th><th className="py-2 pr-3">Amount</th><th className="py-2 pr-3">Mode / Reference</th><th className="py-2">Verified on</th></tr></thead><tbody>{membershipReceipts.map((receipt, index) => <tr key={receipt.receiptNumber || index} className="border-b border-zinc-100"><td className="py-2 pr-3 font-bold text-[#176447]">{receipt.receiptNumber}</td><td className="py-2 pr-3">{formatINR(Number(receipt.amountPaise || 0) / 100)}</td><td className="py-2 pr-3">{receipt.mode} · {receipt.reference}</td><td className="py-2">{dateText(receipt.paidAt)}</td></tr>)}</tbody></table></div>}
           {fee && !paid && (
             <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5">
               <p className="font-black text-amber-900 flex items-center gap-2"><FaExclamationCircle /> {paymentAuthorized ? "Committee-authorized contribution" : "Application awaiting committee decision"}</p>
