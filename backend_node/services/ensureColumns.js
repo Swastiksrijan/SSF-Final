@@ -25,6 +25,7 @@ const COLUMNS = [
   // and the UPI/UTR/receipt reference are recorded for audit.
   { table: 'Members', column: 'paymentMode', type: 'VARCHAR(255)' },
   { table: 'Members', column: 'paymentReference', type: 'VARCHAR(255)' },
+  { table: 'Members', column: 'paymentUrl', type: 'VARCHAR(500)' },
   { table: 'Members', column: 'receiptNumber', type: 'VARCHAR(255)' },
   { table: 'Members', column: 'receiptHistory', type: 'TEXT' },
   { table: 'Members', column: 'contributionTotalPaise', type: 'INTEGER DEFAULT 0' },
