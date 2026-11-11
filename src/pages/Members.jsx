@@ -92,6 +92,13 @@ const Members = () => {
         </div>
       </section>
 
+      <section className="bg-white px-6 py-10">
+        <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-5 rounded-3xl border border-[#EAF0F6] bg-slate-50 p-7 md:flex-row md:items-center">
+          <div><h2 className="text-xl font-black text-[#12345A]">पहले से सदस्य हैं या पदाधिकारी हैं?</h2><p className="mt-2 text-sm text-slate-600">पुराने Member ID को बनाए रखते हुए वार्षिक सदस्य सत्यापन या पदाधिकारी सत्यापन जमा करें।</p></div>
+          <a href="/Members?verify=1" className="inline-flex shrink-0 items-center rounded-xl bg-[#12345A] px-6 py-3 font-bold text-white hover:bg-[#176447]">सत्यापन फॉर्म खोलें</a>
+        </div>
+      </section>
+
       <section className="py-24 px-6 bg-white" id="apply"><div className="max-w-6xl mx-auto"><div className="bg-gradient-to-br from-zinc-50 to-white p-6 sm:p-10 md:p-16 rounded-[2rem] md:rounded-[4rem] border border-zinc-200 shadow-xl"><div className="grid md:grid-cols-2 gap-16">
         <div className="space-y-6"><h3 className="text-2xl font-bold text-[#12345A] flex items-center gap-3"><FaCheckCircle className="text-[#176447]" /> Qualification Of Members</h3><ul className="space-y-4">{["Age should not be less than 18 years", "Must be an Indian citizen", "Pledge to follow the rules of the committee", "Must satisfy the Rule 7 condition relating to alcohol", "Must submit an application to the Managing Committee (online application is received for committee review)"].map((rule, i) => <li key={i} className="flex items-start gap-3 text-zinc-600"><div className="mt-1 min-w-[20px]"><FaCheckCircle className="text-green-500 text-lg" /></div><span className="font-medium">{rule}</span></li>)}</ul></div>
         <div className="space-y-6"><h3 className="text-2xl font-bold text-[#12345A] flex items-center gap-3"><FaHandHoldingHeart className="text-[#176447]" /> Membership Termination</h3><p className="text-zinc-600 leading-relaxed">Membership may cease under the grounds and procedure in Rule 8. For ordinary members, Rule 5(C) also provides for termination after six months of non-payment without a satisfactory reason. The Managing Committee must record the applicable decision and date.</p>
