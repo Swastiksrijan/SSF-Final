@@ -60,6 +60,7 @@ const membershipAmounts = (member) => {
 // confirmed. Advisory/expert membership is honorary, so it is exempt.
 const PAID_MEMBERSHIP_TYPES = ['general', 'life', 'patron'];
 const requiresPayment = (member) => PAID_MEMBERSHIP_TYPES.includes(String(member?.memberType || '').trim().toLowerCase());
+const hasVerifiedContribution = (member) => String(member?.paymentStatus || '').toLowerCase() === 'paid' && Boolean(member?.receiptNumber) && Number(member?.contributionTotalPaise || member?.paymentAmount || 0) > 0;
 const paymentGateMessage = 'Membership fee is not confirmed yet. The applicant must complete the payment, or the admin must record it as received, before approval.';
 
 router.post('/member-account-signup', async (req, res) => {
@@ -98,6 +99,7 @@ router.post('/member-payment-submit', requireAccountAuth((req) => (req.body || {
         if (!member) return res.status(404).json({ message: 'Membership application not found.' });
         if (!isRealMembership(member)) return res.status(400).json({ message: 'This account has not applied for membership yet.' });
         if (!requiresPayment(member)) return res.status(400).json({ message: 'Advisory / expert membership is honorary and does not need a fee.' });
+        if (!hasCommitteePaymentAuthorization(member)) return res.status(403).json({ message: 'The Managing Committee must authorize the contribution before payment details can be submitted.' });
         if (member.paymentStatus === 'paid') return res.json({ status: 'success', message: 'Your membership fee is already confirmed.', paymentStatus: 'paid' });
         const mode = String(paymentMode || '').trim();
         const reference = String(paymentReference || '').trim();
@@ -114,7 +116,7 @@ router.get('/member-payment-callback', async (req, res) => {
 });
 
 router.post('/admin/member-approve/:id', requireAdminAuth, async (req, res) => {
-    try { const member = await Member.findByPk(req.params.id); if (!member) return res.status(404).json({ message: 'Member not found' }); const committeeReference = String(req.body?.committeeReference || '').trim(); if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before approval and ID issuance.' }); if (!isRealMembership(member)) return res.status(400).json({ message: 'This is an SSF account, not a membership application. The person must choose and submit a membership application first.' }); if (member.status === 'approved' && member.memberId && member.certId) return res.status(400).json({ message: 'Member is already approved', memberId: member.memberId, certId: member.certId }); if (requiresPayment(member) && member.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: member.paymentStatus }); const certificateIssuedAt = new Date(); const { memberId, certId } = await buildMemberIdentity(member); const approvalNote = `SSF_COMMITTEE_APPROVAL: ${committeeReference}`; const reviewNote = [member.reviewNote, approvalNote].filter(Boolean).join(' | '); await member.update({ status: 'approved', memberId, certId, certificateType: 'Membership Certificate', certificateIssuedAt, reviewNote });
+    try { const member = await Member.findByPk(req.params.id); if (!member) return res.status(404).json({ message: 'Member not found' }); const committeeReference = String(req.body?.committeeReference || '').trim(); if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before approval and ID issuance.' }); if (!isRealMembership(member)) return res.status(400).json({ message: 'This is an SSF account, not a membership application. The person must choose and submit a membership application first.' }); if (member.status === 'approved' && member.memberId && member.certId) return res.status(400).json({ message: 'Member is already approved', memberId: member.memberId, certId: member.certId }); if (requiresPayment(member) && !hasVerifiedContribution(member)) return res.status(400).json({ message: paymentGateMessage, paymentStatus: member.paymentStatus }); const certificateIssuedAt = new Date(); const { memberId, certId } = await buildMemberIdentity(member); const approvalNote = `SSF_COMMITTEE_APPROVAL: ${committeeReference}`; const reviewNote = [member.reviewNote, approvalNote].filter(Boolean).join(' | '); await member.update({ status: 'approved', memberId, certId, certificateType: 'Membership Certificate', certificateIssuedAt, reviewNote });
         await identity.reserve({ kind: 'member', value: memberId, certValue: certId, recordId: member.id, holderName: member.fullName, holderEmail: member.email, note: `Managing Committee approval: ${committeeReference}` });
         const imsPerson = await imsModels.ImsPerson.findOne({ where: { email: String(member.email || '').trim().toLowerCase() } });
         if (imsPerson) {
@@ -258,7 +260,7 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
             updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_APPROVAL: ${committeeReference}`].filter(Boolean).join(' | ');
         }
         if ((updates.status || member.status) === 'approved' && isRealMembership(prospective)) {
-            if (requiresPayment(prospective) && prospective.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: prospective.paymentStatus });
+            if (requiresPayment(prospective) && !hasVerifiedContribution(prospective)) return res.status(400).json({ message: paymentGateMessage, paymentStatus: prospective.paymentStatus });
             if (!member.memberId && !updates.memberId) {
                 const now = new Date();
                 const issued = await buildMemberIdentity(member);
@@ -317,7 +319,7 @@ router.patch('/admin/members/:id/status', requireAdminAuth, async (req, res) => 
             const committeeReference = String(req.body?.committeeReference || '').trim();
             if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before admission approval.' });
         }
-        if (status === 'approved' && requiresPayment(member) && member.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: member.paymentStatus });
+        if (status === 'approved' && requiresPayment(member) && !hasVerifiedContribution(member)) return res.status(400).json({ message: paymentGateMessage, paymentStatus: member.paymentStatus });
         const updates = { status };
         if (req.body?.reviewNote !== undefined) updates.reviewNote = String(req.body.reviewNote || '').trim() || null;
         if (status === 'approved') {
