@@ -31,10 +31,10 @@ const buildMemberIdentity = async (member) => {
   return { memberId, certId: identity.memberCertIdFor(memberId) };
 };
 const getMonthYearCode = (date = new Date()) => { const month = String(date.getMonth() + 1).padStart(2, '0'); const year = String(date.getFullYear()).slice(-2); return `${month}${year}`; };
-const membershipAmounts = { general: 1200, active: 2500, life: 8000 };
+const membershipAmounts = { general: 1200, active: 2500, life: 8000, patron: 10000 };
 // A membership that carries a fee can only be approved once that fee is
 // confirmed. Advisory/expert membership is honorary, so it is exempt.
-const PAID_MEMBERSHIP_TYPES = ['general', 'active', 'life'];
+const PAID_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'patron'];
 const requiresPayment = (member) => PAID_MEMBERSHIP_TYPES.includes(String(member?.memberType || '').trim().toLowerCase());
 const paymentGateMessage = 'Membership fee is not confirmed yet. The applicant must complete the payment, or the admin must record it as received, before approval.';
 
