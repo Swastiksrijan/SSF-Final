@@ -3,6 +3,8 @@ const crypto = require('crypto');
 const router = express.Router();
 const MemberAction = require('../models/MemberAction');
 const Member = require('../models/Member');
+const sequelize = require('../config/database');
+const { Op } = require('sequelize');
 const identity = require('../services/identityService');
 const { sendMail, emailConfigured } = require('../services/mailer');
 
@@ -22,6 +24,21 @@ const publicRecord = row => {
   return value;
 };
 const escapeHtml = value => String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function noticeFinancialYear(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit' }).formatToParts(date);
+  const p = Object.fromEntries(parts.map(x => [x.type, x.value]));
+  const y = Number(p.year), m = Number(p.month), start = m >= 4 ? y : y - 1;
+  return start + '-' + String(start + 1).slice(-2);
+}
+async function nextNoticeReference(transaction) {
+  const fy = noticeFinancialYear();
+  const prefix = 'SSF/NOTICE/' + fy + '/';
+  await sequelize.query('SELECT pg_advisory_xact_lock(hashtext(:lockKey))', { replacements: { lockKey: 'ssf-notice-' + fy }, transaction });
+  const refs = await MemberAction.findAll({ attributes: ['noticeReference'], where: { noticeReference: { [Op.like]: prefix + '%' } }, transaction, raw: true });
+  const highest = refs.reduce((n, item) => Math.max(n, Number(String(item.noticeReference || '').split('/').pop()) || 0), 0);
+  return prefix + String(highest + 1).padStart(4, '0');
+}
+
 
 router.get('/admin/member-actions', requireAdmin, async (_req, res) => {
   try { const rows = await MemberAction.findAll({ order: [['createdAt', 'DESC']] }); res.json(rows.map(publicRecord)); }
@@ -65,14 +82,15 @@ router.post('/admin/member-actions', requireAdmin, async (req, res) => {
     }
     const due = new Date(b.replyDueAt);
     if (!Number.isFinite(due.getTime()) || due.getTime() <= Date.now()) return res.status(400).json({ message: 'जवाब की अंतिम तारीख भविष्य की होनी चाहिए।' });
-    const row = await MemberAction.create({
+    const row = await sequelize.transaction(async transaction => MemberAction.create({
+      noticeReference: await nextNoticeReference(transaction),
       personName: String(b.personName).trim(), email: String(b.email).trim().toLowerCase(),
       phone: String(b.phone || '').trim() || null, memberId: String(b.memberId || '').trim() || null,
       currentDesignation: String(b.currentDesignation || '').trim() || null,
       actionScope: b.actionScope, bylawClause: String(b.bylawClause).trim(),
       grounds: String(b.grounds).trim(), factualSummary: String(b.factualSummary).trim(),
       noticeText: String(b.noticeText || '').trim() || null, replyDueAt: due, createdBy: 'Admin Portal'
-    });
+    }, { transaction }));
     res.status(201).json(publicRecord(row));
   } catch (e) { console.error('Member action create:', e); res.status(500).json({ message: 'नोटिस ड्राफ्ट सेव नहीं हो सका।' }); }
 });
@@ -88,6 +106,7 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
       const dispatchReference = String(b.dispatchReference || '').trim();
       if (!['email', 'registered_post', 'speed_post', 'hand_delivery', 'email_and_post'].includes(method)) return res.status(400).json({ message: 'भेजने का सही माध्यम चुनें।' });
       if (['registered_post', 'speed_post', 'hand_delivery', 'email_and_post'].includes(method) && !dispatchReference) return res.status(400).json({ message: 'डाक रसीद/हैंड डिलीवरी प्रमाण का विवरण दर्ज करें।' });
+      if (!row.noticeReference) await row.update({ noticeReference: await sequelize.transaction(t => nextNoticeReference(t)) });
       const rawToken = crypto.randomBytes(32).toString('hex');
       const baseUrl = (process.env.FRONTEND_PUBLIC_URL || 'https://swastiksrijan.in').replace(/\/$/, '');
       const responseUrl = baseUrl + '/Members?notice=' + rawToken;
@@ -111,10 +130,23 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
         'आपका जवाब और उपलब्ध रिकॉर्ड निष्पक्ष रूप से सक्षम समिति/निकाय के सामने रखा जाएगा।',
         'महत्वपूर्ण: यह नोटिस केवल आरोप/प्रस्तावित कार्रवाई की जानकारी देकर आपका पक्ष सुनने का अवसर है। इसे दोष सिद्धि, सदस्यता समाप्ति या पद से हटाने का अंतिम आदेश न माना जाए। अंतिम निर्णय केवल लागू नियमों और विधिवत प्रक्रिया के बाद ही लिया जा सकता है।'
       ].filter(Boolean).join('\\n\\n');
+      const logoUrl = String(b.logoUrl || '').trim();
+      let safeLogoUrl = '';
+      try {
+        const parsed = new URL(logoUrl);
+        if (parsed.protocol === 'https:' && (parsed.hostname === 'swastiksrijan.in' || parsed.hostname.endsWith('.swastiksrijan.in') || parsed.hostname.endsWith('.vercel.app'))) safeLogoUrl = parsed.href;
+      } catch { /* optional logo */ }
+      const htmlBody = '<div style="max-width:760px;margin:0 auto;padding:30px 36px;border:1px solid #d7dee8;color:#172b3a;font-family:Arial,sans-serif;line-height:1.65;background:#fff">' +
+        '<div style="display:flex;align-items:center;gap:18px;border-bottom:3px solid #176447;padding-bottom:18px;margin-bottom:22px">' +
+        (safeLogoUrl ? '<img src="' + escapeHtml(safeLogoUrl) + '" alt="Swastik Srijan Foundation Samiti logo" style="width:86px;height:86px;object-fit:contain" />' : '') +
+        '<div><div style="font-size:22px;font-weight:800;color:#12345A">SWASTIK SRIJAN FOUNDATION SAMITI</div><div style="font-size:16px;font-weight:700;color:#176447">स्वस्तिक सृजन फाउंडेशन समिति</div><div style="font-size:12px;color:#64748b">आधिकारिक सूचना / Official Communication</div></div></div>' +
+        '<div style="display:flex;justify-content:space-between;gap:12px;font-size:13px"><b>नोटिस संदर्भ: ' + escapeHtml(row.noticeReference || '') + '</b><b>दिनांक: ' + escapeHtml(new Date().toLocaleDateString('hi-IN', { timeZone: 'Asia/Kolkata' })) + '</b></div>' +
+        '<h2 style="text-align:center;color:#12345A;font-size:19px;margin:24px 0 18px">कारण बताओ नोटिस</h2><div style="white-space:pre-wrap">' + escapeHtml(textBody) + '</div>' +
+        '<div style="margin-top:30px;padding-top:14px;border-top:1px solid #d7dee8;font-size:12px;color:#64748b">Swastik Srijan Foundation Samiti | यह नोटिस संस्था के अभिलेख हेतु जारी किया गया है।</div></div>';
       let delivery = 'not_sent';
       if (['email', 'email_and_post'].includes(method)) {
         if (!emailConfigured()) return res.status(503).json({ message: 'ईमेल सेवा कॉन्फ़िगर नहीं है। पहले डाक से भेजें या ईमेल सेवा सेट करें।' });
-        await sendMail({ to: row.email, subject: 'SSF कारण बताओ नोटिस — ' + row.personName, text: textBody, html: '<div style="font-family:Arial,sans-serif;white-space:pre-line">' + escapeHtml(textBody) + '</div><p><a href="' + responseUrl + '">ऑनलाइन जवाब दें</a></p>' });
+        await sendMail({ to: row.email, subject: 'SSF कारण बताओ नोटिस — ' + row.personName, text: textBody, html: htmlBody });
         delivery = 'email_sent';
       }
       await row.update({ noticeText: textBody, responseTokenHash: hashToken(rawToken), status: 'notice_issued', dispatchMethod: method, dispatchReference: dispatchReference || null, dispatchAt: new Date(), emailDeliveryStatus: delivery, updatedBy: 'Admin Portal' });
