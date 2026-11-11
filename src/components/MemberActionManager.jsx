@@ -3,6 +3,25 @@ import { ENDPOINTS } from "../config/api";
 
 const headers = token => ({ Authorization: `Bearer ${token}` });
 const dateText = value => value ? new Date(value).toLocaleString("en-IN") : "—";
+const csvCell = value => '"' + String(value ?? "").replace(/"/g, '""') + '"';
+const exportRegister = rows => {
+  const columns = [
+    ["रिकॉर्ड ID","id"],["नाम","personName"],["ईमेल","email"],["मोबाइल","phone"],["सदस्य ID","memberId"],
+    ["वर्तमान पद","currentDesignation"],["कार्रवाई का दायरा","actionScope"],["लागू नियम","bylawClause"],
+    ["कारण","grounds"],["तथ्य/दस्तावेज","factualSummary"],["नोटिस","noticeText"],["जवाब अंतिम तारीख","replyDueAt"],
+    ["स्थिति","status"],["भेजने का माध्यम","dispatchMethod"],["भेजने का प्रमाण","dispatchReference"],
+    ["भेजने की तारीख","dispatchAt"],["ईमेल स्थिति","emailDeliveryStatus"],["प्राप्त जवाब","replyText"],
+    ["जवाब प्राप्त तारीख","replyReceivedAt"],["सुनवाई तारीख","hearingAt"],["सुनवाई विवरण","hearingNotes"],
+    ["समिति बैठक संदर्भ","committeeMeetingReference"],["समिति कार्यवाही","committeeDecisionText"],
+    ["सामान्य सभा संदर्भ","generalBodyMeetingReference"],["सामान्य सभा कार्यवाही","generalBodyDecisionText"],
+    ["अंतिम निर्णय प्रकार","decisionType"],["अंतिम निर्णय/आदेश","decisionText"],["निर्णय तारीख","decisionAt"],
+    ["रिकॉर्ड बनाया","createdAt"],["अंतिम अपडेट","updatedAt"]
+  ];
+  const csv = "\uFEFF" + [columns.map(c=>csvCell(c[0])).join(","), ...rows.map(row=>columns.map(c=>csvCell(row[c[1]] ?? "")).join(","))].join("\r\n");
+  const blob = new Blob([csv], {type:"text/csv;charset=utf-8"});
+  const url = URL.createObjectURL(blob); const a=document.createElement("a");
+  a.href=url; a.download="SSF_Member_Notice_Action_Register.csv"; a.click(); URL.revokeObjectURL(url);
+};
 
 export default function MemberActionManager({ token }) {
   const [rows, setRows] = useState([]);
@@ -29,7 +48,7 @@ export default function MemberActionManager({ token }) {
   const close = row => { const type=window.prompt("निर्णय प्रकार: no_action / advisory / warning / role_change_approved / membership_termination_approved / other"); if(!type) return; const ref=window.prompt("सक्षम निकाय की बैठक/प्रस्ताव संख्या (यदि पद/सदस्यता समाप्ति का निर्णय है)",""); const note=window.prompt("अंतिम आदेश/कारण सहित पूरा निर्णय"); if(!note) return; act(row,{action:"close",decisionType:type,committeeMeetingReference:ref||"",decisionText:note}); };
   const status = {draft:"ड्राफ्ट",notice_issued:"नोटिस जारी",reply_received:"जवाब प्राप्त",hearing_scheduled:"सुनवाई तय",committee_review:"समिति समीक्षा",general_body_review:"सामान्य सभा समीक्षा",closed:"बंद"};
   return <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-    <div className="border-b p-6 sm:p-8"><h2 className="text-2xl font-black text-[#12345A]">सदस्य / पदाधिकारी नोटिस एवं कार्रवाई रजिस्टर</h2><p className="mt-2 text-sm text-slate-600">ड्राफ्ट → नोटिस और जवाब → सुनवाई → बैठक कार्यवाही → सक्षम निकाय का निर्णय। कोई स्वतः निष्कासन नहीं।</p></div>
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b p-6 sm:p-8"><div><h2 className="text-2xl font-black text-[#12345A]">सदस्य / पदाधिकारी नोटिस एवं कार्रवाई रजिस्टर</h2><p className="mt-2 text-sm text-slate-600">आसान प्रक्रिया: 1. ड्राफ्ट  2. नोटिस  3. जवाब  4. सुनवाई  5. समिति  6. सामान्य सभा (जहाँ जरूरी)  7. अंतिम आदेश। जवाब आने से केस अपने-आप बंद नहीं होता।</p></div><button type="button" onClick={()=>exportRegister(rows)} disabled={!rows.length} className="rounded-xl border border-[#12345A] px-4 py-2 text-sm font-bold text-[#12345A] disabled:opacity-40">Excel रजिस्टर डाउनलोड करें</button></div>
     <form onSubmit={createDraft} className="grid gap-4 border-b bg-slate-50 p-6 sm:grid-cols-2 sm:p-8">
       <h3 className="sm:col-span-2 text-lg font-bold text-[#12345A]">नया कारण बताओ नोटिस — ड्राफ्ट</h3>
       <input required value={form.personName} onChange={e=>update("personName",e.target.value)} placeholder="सदस्य / पदाधिकारी का पूरा नाम" className="rounded-xl border p-3"/>
@@ -51,13 +70,13 @@ export default function MemberActionManager({ token }) {
       <p className="mt-3 text-sm text-slate-600">नियम: {row.bylawClause} • जवाब की तारीख: {dateText(row.replyDueAt)}</p>
       {row.replyText && <div className="mt-3 rounded-xl bg-emerald-50 p-4 text-sm"><b>प्राप्त जवाब:</b><p className="mt-1 whitespace-pre-wrap">{row.replyText}</p></div>}
       {row.hearingNotes && <p className="mt-2 text-sm text-slate-600">सुनवाई: {dateText(row.hearingAt)} • {row.hearingNotes}</p>}
-      {row.decisionText && <p className="mt-2 whitespace-pre-wrap text-sm text-slate-700">कार्यवाही/निर्णय: {row.decisionText}</p>}
+      {row.committeeDecisionText && <p className="mt-2 whitespace-pre-wrap text-sm text-slate-700"><b>समिति कार्यवाही:</b> {row.committeeDecisionText}</p>}{row.generalBodyDecisionText && <p className="mt-2 whitespace-pre-wrap text-sm text-slate-700"><b>सामान्य सभा कार्यवाही:</b> {row.generalBodyDecisionText}</p>}{row.decisionText && <p className="mt-2 whitespace-pre-wrap text-sm text-slate-700"><b>अंतिम निर्णय:</b> {row.decisionText}</p>}
       {row.status==="draft" && <button disabled={busy} onClick={()=>issue(row)} className="mt-4 rounded-lg bg-[#176447] px-4 py-2 text-sm font-bold text-white">नोटिस जाँचकर जारी करें</button>}
       {["notice_issued","reply_received","hearing_scheduled"].includes(row.status) && <div className="mt-4 flex flex-wrap gap-2">{["notice_issued","reply_received"].includes(row.status) && <button disabled={busy} onClick={()=>hearing(row)} className="rounded-lg bg-indigo-700 px-3 py-2 text-xs font-bold text-white">सुनवाई तय करें</button>}<button disabled={busy} onClick={()=>committee(row)} className="rounded-lg bg-slate-700 px-3 py-2 text-xs font-bold text-white">समिति कार्यवाही दर्ज करें</button></div>}
       {row.status==="committee_review" && <div className="mt-4 flex flex-wrap gap-2"><button disabled={busy} onClick={()=>generalBody(row)} className="rounded-lg bg-indigo-700 px-3 py-2 text-xs font-bold text-white">सामान्य सभा में रखें</button><button disabled={busy} onClick={()=>close(row)} className="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white">अंतिम निर्णय दर्ज करें</button></div>}
       {row.status==="general_body_review" && <button disabled={busy} onClick={()=>close(row)} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-bold text-white">सामान्य सभा के निर्णय के बाद बंद करें</button>}
       {row.dispatchMethod && <p className="mt-3 text-xs text-slate-400">भेजने का माध्यम: {row.dispatchMethod} • {row.dispatchReference||row.emailDeliveryStatus||"—"}</p>}
-      {row.status==="closed" && <p className="mt-2 text-xs font-bold text-slate-500">अंतिम निर्णय: {row.decisionType}</p>}
+      {row.status==="closed" && <p className="mt-2 text-xs font-bold text-slate-500">अंतिम निर्णय: {row.decisionType}</p>}{row.status==="reply_received" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जवाब पढ़ें → आवश्यकता हो तो सुनवाई तय करें → फिर समिति की बैठक में कार्यवाही दर्ज करें।</p>}{row.status==="hearing_scheduled" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: सुनवाई पूरी होने पर उसका सार दर्ज रखें → समिति कार्यवाही दर्ज करें।</p>}{row.status==="committee_review" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जहाँ नियम/निर्णय के लिए जरूरी हो, सामान्य सभा की कार्यवाही दर्ज करें; अन्यथा सक्षम समिति का वैध अंतिम निर्णय दर्ज करें।</p>}
     </article>)}</div>
   </section>;
 }
