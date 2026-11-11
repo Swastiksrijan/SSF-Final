@@ -48,7 +48,12 @@ const membershipAmounts = (member) => {
     const type = String(member?.memberType || '').trim().toLowerCase();
     if (type === 'general') return /Ordinary membership payment preference: monthly/i.test(member.message || '') ? 100 : 1200;
     if (type === 'life') return 8000;
-    if (type === 'patron') return 10000;
+    if (type === 'patron') {
+        const match = String(member.message || '').match(/Patron installment count:\\s*(\\d+)/i);
+        const count = match ? Number(match[1]) : 1;
+        if (![1, 2, 3, 4, 6, 12].includes(count)) return 10000;
+        return count === 1 ? 10000 : Math.ceil(10000 / count);
+    }
     return null;
 };
 // A membership that carries a fee can only be approved once that fee is
