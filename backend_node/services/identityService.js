@@ -185,7 +185,7 @@ const registerEntryFor = (memberId) => {
   return registerEntries().find((entry) => entry.memberId === wanted) || null;
 };
 
-// A membership is billed on a PLAN (general / active / life / advisory), but the
+// A membership is billed on a Rule 5 PLAN (general / life / patron), while honorary advisory membership is committee-appointed, but the
 // offline register records a ROLE ("Founder Member", "Executive Member").
 // Rule 5 membership classes are general, life and patron; advisory is honorary.
 // Any legacy "active" role is normalized to ordinary membership, not a new class.
