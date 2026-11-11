@@ -169,7 +169,7 @@ const REQUIRED_REGISTERS = [
   { group: 'governance', rule: 'members_register', model: 'ImsMember', resource: 'members', basis: 'Bylaw — Members Register (सदस्य पंजिका)', en: 'Members Register', hi: 'सदस्य पंजिका' },
   { group: 'governance', rule: 'committee_register', model: 'ImsCommitteeMember', resource: 'committeeMembers', basis: 'Bylaw — Managing Committee (प्रबंधकारिणी)', en: 'Managing Committee Register', hi: 'प्रबंधकारिणी पंजिका' },
   { group: 'governance', rule: 'meetings_minutes', model: 'ImsMeeting', resource: 'meetings', basis: 'Bylaw — GB yearly, MC monthly; notice 15/7 days', en: 'Meetings & Minutes Register', hi: 'बैठक एवं कार्यवृत्त पंजिका' },
-  { group: 'governance', rule: 'resolutions', model: 'ImsResolution', resource: 'resolutions', basis: 'Bylaw — Special resolution copy to Registrar in 45 days', en: 'Resolutions Register', hi: 'संकल्प पंजिका' },
+  { group: 'governance', rule: 'resolutions', model: 'ImsResolution', resource: 'resolutions', basis: 'Rule 21 — annual committee list within 45 days after the annual meeting; do not infer this deadline for every special resolution', en: 'Resolutions Register', hi: 'संकल्प पंजिका' },
   { group: 'governance', rule: 'action_taken', model: 'ImsAction', resource: 'actions', basis: 'Accountability — decision follow-up', en: 'Action-Taken Register', hi: 'कार्य-अनुपालन पंजिका' },
   { group: 'governance', rule: 'attendance', model: 'ImsAttendee', resource: 'attendees', basis: 'Bylaw — quorum 3/5 (GB) and 1/2 (MC)', en: 'Attendance Register', hi: 'उपस्थिति पंजिका' },
   { group: 'governance', rule: 'governance_rules', model: 'ImsGovernanceRule', resource: 'governanceRules', basis: 'Memorandum & Rules', en: 'Constitution & Bylaws', hi: 'संविधान एवं नियमावली' },
