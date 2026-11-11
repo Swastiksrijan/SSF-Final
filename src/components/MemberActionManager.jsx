@@ -14,7 +14,7 @@ const openNoticePreview = row => {
     "वर्तमान पद: " + (row.currentDesignation || "रिकॉर्ड अनुसार"),
     "संपर्क ईमेल: " + row.email,
     "विषय: अपना पक्ष/स्पष्टीकरण प्रस्तुत करने के संबंध में।",
-    row.noticeText ? "अतिरिक्त विवरण:\n" + row.noticeText : "",
+    row.noticeText ? "अतिरिक्त विवरण: " + row.noticeText : "",
     "लागू नियम/उप-नियम: " + row.bylawClause,
     "प्रस्तावित कार्रवाई का कारण: " + row.grounds,
     "तथ्य एवं उपलब्ध रिकॉर्ड: " + row.factualSummary,
