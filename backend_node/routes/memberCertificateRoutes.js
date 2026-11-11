@@ -78,7 +78,7 @@ router.post('/admin/members/:id/authorize-payment', requireAdminAuth, async (req
         if (member.status !== 'pending') return res.status(400).json({ message: 'Only a pending application can be reviewed for payment authorization.' });
         const decisionNote = String(req.body?.reviewNote || '').trim();
         if (!decisionNote) return res.status(400).json({ message: 'Please enter the Managing Committee decision/reference.' });
-        await member.update({ reviewNote: 'SSF_COMMITTEE_PAYMENT_AUTHORIZED: ' + decisionNote });
+        await member.update({ reviewNote: ['SSF_COMMITTEE_PAYMENT_AUTHORIZED: ' + decisionNote, member.reviewNote ? 'Previous review note: ' + member.reviewNote : null].filter(Boolean).join(' | ') });
         return res.json({ status: 'success', message: 'Committee payment authorization recorded. The applicant may now submit the contribution.', member: member.toJSON() });
     } catch (error) { console.error('Membership payment authorization error:', error); return res.status(500).json({ message: 'Unable to record committee authorization.' }); }
 });
