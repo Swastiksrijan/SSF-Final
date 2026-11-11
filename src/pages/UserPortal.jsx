@@ -199,11 +199,11 @@ export default function UserPortal() {
     if (hasMembership(user)) {
       const paid = String(user.paymentStatus || "").toLowerCase() === "paid";
       const approved = user.status === "approved";
-      // An approved member must never be told to "pay to unlock approval".
+      const paymentAuthorized = String(user.reviewNote || "").startsWith("SSF_COMMITTEE_PAYMENT_AUTHORIZED");
       items.push({
         key: "fee",
-        title: paid ? "Membership fee confirmed" : approved ? "Membership fee on record" : "Membership fee pending",
-        detail: paid ? `${formatINR(MEMBERSHIP_FEES[user.memberType])} received` : approved ? "The SSF team maintains your membership fee record." : `Pay ${formatINR(MEMBERSHIP_FEES[user.memberType])} to unlock approval`,
+        title: paid ? "Membership contribution verified" : approved ? "Membership contribution on record" : paymentAuthorized ? "Committee reviewed — contribution may be paid" : "Application under committee review",
+        detail: paid ? `${formatINR(MEMBERSHIP_FEES[user.memberType])} received` : approved ? "The SSF team maintains your contribution record." : paymentAuthorized ? "The Managing Committee has recorded its decision. Please follow the payment instructions shared by SSF." : "Please wait for the Managing Committee's decision. Do not pay before authorization.",
         at: user.paymentPaidAt ? dateTimeText(user.paymentPaidAt) : null,
         done: paid,
       });
@@ -219,7 +219,8 @@ export default function UserPortal() {
     const list = [];
     if (needsCorrection) list.push({ id: "correction", tone: "warning", title: "Action required: correction requested", body: user.reviewNote, action: "Fix & resubmit" });
     if (hasMembership(user) && String(user.paymentStatus || "").toLowerCase() !== "paid" && user.status !== "approved") {
-      list.push({ id: "fee", tone: "warning", title: "Membership fee pending", body: `Your ${statusLabel(user.memberType)} membership needs a confirmed fee payment of ${formatINR(MEMBERSHIP_FEES[user.memberType])} before approval.`, action: "Pay membership fee" });
+      const paymentAuthorized = String(user.reviewNote || "").startsWith("SSF_COMMITTEE_PAYMENT_AUTHORIZED");
+      list.push({ id: "fee", tone: paymentAuthorized ? "warning" : "info", title: paymentAuthorized ? "Committee has authorized the contribution" : "Application is under committee review", body: paymentAuthorized ? "Please follow the payment instructions shared by SSF. Your contribution will be confirmed by the Treasurer." : "Please wait for the Managing Committee's decision. Do not pay before authorization." });
     }
     if (memberApproved) list.push({ id: "issued", tone: "success", title: "Membership ID and certificate issued", body: `Your official Member ID ${user.memberId} is ready to download from Documents.` });
     if (String(user.paymentStatus || "").toLowerCase() === "paid") list.push({ id: "paid", tone: "success", title: "Payment confirmed", body: `We have confirmed your membership fee payment${user.paymentPaidAt ? ` on ${dateText(user.paymentPaidAt)}` : ""}.` });
