@@ -156,7 +156,7 @@ router.post('/member-application', multipart([
     const accountId = req.account.accountId;
     const normalizedEmail = cleanEmail(email);
     const normalizedPhone = cleanPhone(phone);
-    const allowedTypes = new Set(['general', 'active', 'life', 'advisory']);
+    const allowedTypes = new Set(['general', 'life', 'patron']);
     if (!accountId || !fullName || !normalizedEmail || !normalizedPhone || !allowedTypes.has(String(memberType || '').toLowerCase()) || !profilePhoto) {
       removeFile(profilePhoto); removeFile(idDocument);
       return res.status(400).json({ status: 'error', message: 'Please complete all membership fields and upload a profile photo.' });
