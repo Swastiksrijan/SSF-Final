@@ -28,9 +28,33 @@ export default function MemberActionManager({ token }) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
   const [form, setForm] = useState({ personName:"", email:"", phone:"", memberId:"", currentDesignation:"", actionScope:"office_bearer_role_review", bylawClause:"नियम 8 / नियम 12 / लागू नियम", grounds:"", factualSummary:"", replyDueAt:"", noticeText:"" });
+  const [memberMatches, setMemberMatches] = useState([]);
+  const [lookupMessage, setLookupMessage] = useState("");
+
   const load = async () => { const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { headers: headers(token) }); const d = await r.json().catch(() => []); if (!r.ok) throw new Error(d.message || "रजिस्टर लोड नहीं हुआ"); setRows(Array.isArray(d) ? d : []); };
   useEffect(() => { load().catch(e => setMessage(e.message)); }, [token]);
   const update = (key, value) => setForm(p => ({ ...p, [key]: value }));
+  const lookupMember = async () => {
+    const params = new URLSearchParams();
+    if (form.personName.trim()) params.set("name", form.personName.trim());
+    if (form.email.trim()) params.set("email", form.email.trim());
+    if (form.phone.trim()) params.set("phone", form.phone.trim());
+    if (![...params.keys()].length) return;
+    try {
+      const r = await fetch(`${ENDPOINTS.ADMIN_MEMBER_LOOKUP}?${params.toString()}`, { headers: headers(token) });
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw new Error(d.message || "सदस्य नहीं मिला");
+      const matches = Array.isArray(d.matches) ? d.matches : [];
+      setMemberMatches(matches);
+      if (matches.length === 1) {
+        const m = matches[0];
+        setForm(p => ({ ...p, memberId: m.memberId || "", personName: p.personName || m.fullName || "", email: p.email || m.email || "", phone: p.phone || m.phone || "", currentDesignation: p.currentDesignation || m.designation || "" }));
+        setLookupMessage("सदस्य रजिस्टर से Member ID अपने-आप भर दी गई।");
+      } else if (matches.length > 1) setLookupMessage("एक से अधिक सदस्य मिले हैं। नीचे सही सदस्य चुनें।");
+      else setLookupMessage("रजिस्टर में मिलान नहीं मिला। गैर-सदस्य/नए व्यक्ति के लिए ID खाली रखें।");
+    } catch (e) { setLookupMessage(e.message); }
+  };
+  const selectMember = m => { setForm(p => ({ ...p, memberId:m.memberId, personName:m.fullName||p.personName, email:m.email||p.email, phone:m.phone||p.phone, currentDesignation:m.designation||p.currentDesignation })); setMemberMatches([]); setLookupMessage("सदस्य चुना गया: "+m.memberId); };
   const createDraft = async e => {
     e.preventDefault(); setBusy(true); setMessage("");
     try { const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { method:"POST", headers:{ ...headers(token), "Content-Type":"application/json" }, body:JSON.stringify({ ...form, replyDueAt:new Date(form.replyDueAt).toISOString() }) }); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.message || "ड्राफ्ट सेव नहीं हुआ"); setMessage("नोटिस ड्राफ्ट सुरक्षित हो गया। जारी करने से पहले सभी तथ्य और नियम जाँचें।"); setForm(p=>({ ...p, personName:"", email:"", phone:"", memberId:"", currentDesignation:"", grounds:"", factualSummary:"", replyDueAt:"", noticeText:"" })); await load(); }
@@ -45,17 +69,19 @@ export default function MemberActionManager({ token }) {
   const hearing = row => { const when=window.prompt("सुनवाई की तारीख और समय (उदाहरण: 2026-11-25T11:00)"); if(!when) return; const notes=window.prompt("सुनवाई का स्थान/ऑनलाइन माध्यम और सूचना विवरण"); if(!notes) return; act(row,{action:"hearing",hearingAt:when,hearingNotes:notes}); };
   const committee = row => { const ref=window.prompt("प्रबंध समिति बैठक/कार्यवाही संदर्भ"); if(!ref) return; const note=window.prompt("जवाब, सुनवाई और समिति की चर्चा का पूरा सार"); if(!note) return; act(row,{action:"committee_review",committeeMeetingReference:ref,decisionText:note}); };
   const generalBody = row => { const ref=window.prompt("सामान्य सभा बैठक/प्रस्ताव संदर्भ"); if(!ref) return; const note=window.prompt("सामान्य सभा की कार्यवाही और निर्णय का पूरा विवरण"); if(!note) return; act(row,{action:"general_body_review",generalBodyMeetingReference:ref,decisionText:note}); };
-  const close = row => { const type=window.prompt("निर्णय प्रकार: no_action / advisory / warning / role_change_approved / membership_termination_approved / other"); if(!type) return; const ref=window.prompt("सक्षम निकाय की बैठक/प्रस्ताव संख्या (यदि पद/सदस्यता समाप्ति का निर्णय है)",""); const note=window.prompt("अंतिम आदेश/कारण सहित पूरा निर्णय"); if(!note) return; act(row,{action:"close",decisionType:type,committeeMeetingReference:ref||"",decisionText:note}); };
+  const close = row => { const options=[["1","no_action","कोई कार्रवाई नहीं"],["2","advisory","सलाह"],["3","warning","चेतावनी"],["4","role_change_approved","पद में परिवर्तन"],["5","membership_termination_approved","सदस्यता समाप्ति"],["6","other","अन्य निर्णय"]]; const picked=window.prompt("अंतिम निर्णय का प्रकार चुनें:\\n1. कोई कार्रवाई नहीं\\n2. सलाह\\n3. चेतावनी\\n4. पद में परिवर्तन\\n5. सदस्यता समाप्ति\\n6. अन्य निर्णय","1"); if(!picked) return; const choice=options.find(item=>item[0]===picked.trim()||item[1]===picked.trim()); if(!choice){window.alert("कृपया 1 से 6 में सही विकल्प चुनें।");return;} if(["role_change_approved","membership_termination_approved"].includes(choice[1]) && row.status!=="general_body_review"){window.alert("इस निर्णय से पहले सामान्य सभा की विधिवत कार्यवाही दर्ज करें।");return;} const note=window.prompt("अंतिम आदेश/कारण सहित पूरा निर्णय लिखें"); if(!note || !note.trim()) return; act(row,{action:"close",decisionType:choice[1],generalBodyMeetingReference:row.generalBodyMeetingReference||"",committeeMeetingReference:row.committeeMeetingReference||"",decisionText:note.trim()}); };
   const status = {draft:"ड्राफ्ट",notice_issued:"नोटिस जारी",reply_received:"जवाब प्राप्त",hearing_scheduled:"सुनवाई तय",committee_review:"समिति समीक्षा",general_body_review:"सामान्य सभा समीक्षा",closed:"बंद"};
   return <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
     <div className="flex flex-wrap items-center justify-between gap-3 border-b p-6 sm:p-8"><div><h2 className="text-2xl font-black text-[#12345A]">सदस्य / पदाधिकारी नोटिस एवं कार्रवाई रजिस्टर</h2><p className="mt-2 text-sm text-slate-600">आसान प्रक्रिया: 1. ड्राफ्ट  2. नोटिस  3. जवाब  4. सुनवाई  5. समिति  6. सामान्य सभा (जहाँ जरूरी)  7. अंतिम आदेश। जवाब आने से केस अपने-आप बंद नहीं होता।</p></div><button type="button" onClick={()=>exportRegister(rows)} disabled={!rows.length} className="rounded-xl border border-[#12345A] px-4 py-2 text-sm font-bold text-[#12345A] disabled:opacity-40">Excel रजिस्टर डाउनलोड करें</button></div>
     <form onSubmit={createDraft} className="grid gap-4 border-b bg-slate-50 p-6 sm:grid-cols-2 sm:p-8">
       <h3 className="sm:col-span-2 text-lg font-bold text-[#12345A]">नया कारण बताओ नोटिस — ड्राफ्ट</h3>
-      <input required value={form.personName} onChange={e=>update("personName",e.target.value)} placeholder="सदस्य / पदाधिकारी का पूरा नाम" className="rounded-xl border p-3"/>
-      <input required type="email" value={form.email} onChange={e=>update("email",e.target.value)} placeholder="आधिकारिक ईमेल" className="rounded-xl border p-3"/>
-      <input value={form.phone} onChange={e=>update("phone",e.target.value)} placeholder="मोबाइल" className="rounded-xl border p-3"/>
-      <input value={form.memberId} onChange={e=>update("memberId",e.target.value)} placeholder="पुराना Member ID (यदि हो)" className="rounded-xl border p-3"/>
+      <input required value={form.personName} onChange={e=>update("personName",e.target.value)} onBlur={lookupMember} placeholder="सदस्य / पदाधिकारी का पूरा नाम" className="rounded-xl border p-3"/>
+      <input required type="email" value={form.email} onChange={e=>update("email",e.target.value)} onBlur={lookupMember} placeholder="आधिकारिक ईमेल" className="rounded-xl border p-3"/>
+      <input value={form.phone} onChange={e=>update("phone",e.target.value)} onBlur={lookupMember} placeholder="मोबाइल" className="rounded-xl border p-3"/>
+      <input value={form.memberId} onChange={e=>update("memberId",e.target.value)} placeholder="Member ID (अपने-आप भरेगी)" className="rounded-xl border p-3" readOnly/>
       <input value={form.currentDesignation} onChange={e=>update("currentDesignation",e.target.value)} placeholder="वर्तमान पद (यदि हो)" className="rounded-xl border p-3"/>
+      {lookupMessage && <div className="sm:col-span-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">{lookupMessage}</div>}
+      {memberMatches.length>1 && <div className="sm:col-span-2 rounded-xl border bg-white p-3"><p className="mb-2 text-sm font-bold">सही सदस्य चुनें</p>{memberMatches.map(m=><button type="button" key={m.memberId} onClick={()=>selectMember(m)} className="mr-2 mb-2 rounded-lg border px-3 py-2 text-left text-sm hover:bg-slate-50">{m.fullName} • {m.memberId} • {m.designation||"पद दर्ज नहीं"}</button>)}</div>}
       <select value={form.actionScope} onChange={e=>update("actionScope",e.target.value)} className="rounded-xl border p-3"><option value="office_bearer_role_review">केवल पदाधिकारी पद की समीक्षा</option><option value="membership_review">सदस्यता की समीक्षा</option></select>
       <input required value={form.bylawClause} onChange={e=>update("bylawClause",e.target.value)} placeholder="नियमावली का लागू नियम/उप-नियम" className="rounded-xl border p-3 sm:col-span-2"/>
       <textarea required value={form.grounds} onChange={e=>update("grounds",e.target.value)} rows={3} placeholder="कारण — स्पष्ट और निष्पक्ष भाषा में" className="rounded-xl border p-3 sm:col-span-2"/>
