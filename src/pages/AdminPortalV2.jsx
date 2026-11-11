@@ -88,18 +88,24 @@ export default function AdminPortalV2() {
     };
 
     const markPaymentReceived = async (member) => {
-        const fee = MEMBERSHIP_FEES[String(member.memberType || "").toLowerCase()];
-        const reference = window.prompt(`Record the membership fee${fee ? ` of \u20b9${fee}` : ""} received from ${member.fullName}.\n\nEnter the UPI / UTR / receipt reference:`);
+        const type = String(member.memberType || "").toLowerCase();
+        const monthlyOrdinary = type === "general" && /Ordinary membership payment preference: monthly/i.test(member.message || "");
+        const minimum = monthlyOrdinary ? 100 : (MEMBERSHIP_FEES[type] || 0);
+        const amountText = window.prompt(`Enter the actual amount received from ${member.fullName} (minimum ₹${minimum.toLocaleString("en-IN")}):`, String(minimum));
+        if (amountText === null) return;
+        const amount = Number(String(amountText).replace(/,/g, "").trim());
+        if (!Number.isFinite(amount) || amount < minimum) return window.alert(`Amount must be at least ₹${minimum.toLocaleString("en-IN")}.`);
+        const reference = window.prompt(`Enter the UPI / UTR / receipt reference for ₹${amount.toLocaleString("en-IN")} received from ${member.fullName}:`);
         if (reference === null) return;
         if (String(reference).trim().length < 4) return window.alert("Please enter a valid payment reference (at least 4 characters).");
         setBusy(`pay-${member.id}`);
         try {
-            const response = await fetch(ENDPOINTS.ADMIN_UPDATE_MEMBER(member.id), { method: "PATCH", headers: { ...authHeaders(), "Content-Type": "application/json" }, body: JSON.stringify({ paymentStatus: "paid", paymentMode: "Recorded by admin", paymentReference: String(reference).trim() }) });
+            const response = await fetch(ENDPOINTS.ADMIN_UPDATE_MEMBER(member.id), { method: "PATCH", headers: { ...authHeaders(), "Content-Type": "application/json" }, body: JSON.stringify({ paymentStatus: "paid", paymentAmount: Math.round(amount * 100), paymentMode: "Recorded by admin", paymentReference: String(reference).trim() }) });
             const result = await response.json().catch(() => ({}));
             if (response.status === 401) return logout();
             if (!response.ok) return window.alert(result.message || "Unable to record the payment");
             await loadMembers();
-            window.alert(`Membership fee recorded as received for ${member.fullName}. You can now approve and issue the Member ID.`);
+            window.alert(`Membership contribution of ₹${amount.toLocaleString("en-IN")} recorded as received for ${member.fullName}. You can now approve and issue the Member ID.`);
         } finally { setBusy(""); }
     };
 
