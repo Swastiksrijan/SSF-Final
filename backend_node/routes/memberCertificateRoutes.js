@@ -169,6 +169,11 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
         // number that belongs to somebody else is refused.
         if (updates.memberId !== undefined) {
             const wanted = String(updates.memberId || '').trim();
+            if (wanted && wanted !== String(member.memberId || '')) {
+                const committeeReference = String(req.body?.committeeReference || '').trim();
+                if (!committeeReference) return res.status(400).json({ message: 'Committee resolution reference is required to assign or restore an official Member ID.' });
+                updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_ID_ASSIGNMENT: ${committeeReference}`].filter(Boolean).join(' | ');
+            }
             if (!wanted) updates.memberId = null;
             else {
                 if (!identity.isMemberId(wanted)) return res.status(400).json({ message: 'Member ID must look like SSF-MBR-00001 or SSF-MEM-2510-0001.' });
@@ -240,12 +245,12 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
         // mint therefore runs whenever the record is (or is becoming) an approved
         // real membership and still has no number — including the case where the
         // admin only changes the role.
+        if (updates.status === 'approved' && isRealMembership(prospective)) {
+            const committeeReference = String(req.body?.committeeReference || '').trim();
+            if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before admission approval.' });
+            updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_APPROVAL: ${committeeReference}`].filter(Boolean).join(' | ');
+        }
         if ((updates.status || member.status) === 'approved' && isRealMembership(prospective)) {
-            if (!member.memberId && !updates.memberId) {
-                const committeeReference = String(req.body?.committeeReference || '').trim();
-                if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before approval and Member ID issuance.' });
-                updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_APPROVAL: ${committeeReference}`].filter(Boolean).join(' | ');
-            }
             if (requiresPayment(prospective) && prospective.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: prospective.paymentStatus });
             if (!member.memberId && !updates.memberId) {
                 const now = new Date();
@@ -283,14 +288,14 @@ router.patch('/admin/members/:id/status', requireAdminAuth, async (req, res) => 
         const status = String(req.body?.status || '').trim().toLowerCase();
         if (!['pending', 'changes_requested', 'approved', 'rejected'].includes(status)) return res.status(400).json({ message: 'Invalid member status' });
         if (status === 'approved' && !isRealMembership(member)) return res.status(400).json({ message: 'This account has not submitted a membership application.' });
-        if (status === 'approved' && !member.memberId) {
+        if (status === 'approved') {
             const committeeReference = String(req.body?.committeeReference || '').trim();
-            if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before approval and Member ID issuance.' });
+            if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before admission approval.' });
         }
         if (status === 'approved' && requiresPayment(member) && member.paymentStatus !== 'paid') return res.status(400).json({ message: paymentGateMessage, paymentStatus: member.paymentStatus });
         const updates = { status };
         if (req.body?.reviewNote !== undefined) updates.reviewNote = String(req.body.reviewNote || '').trim() || null;
-        if (status === 'approved' && !member.memberId) {
+        if (status === 'approved') {
             const committeeReference = String(req.body?.committeeReference || '').trim();
             updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_APPROVAL: ${committeeReference}`].filter(Boolean).join(' | ');
         }
@@ -317,11 +322,13 @@ router.post('/admin/members/:id/reissue', requireAdminAuth, async (req, res) => 
         if (!member) return res.status(404).json({ message: 'Member not found' });
         if (!isRealMembership(member)) return res.status(400).json({ message: 'This is an SSF account, not a membership application.' });
         if (member.status !== 'approved') return res.status(400).json({ message: 'Only an approved member has IDs to re-issue.' });
+        const committeeReference = String(req.body?.committeeReference || '').trim();
+        if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required to re-issue an official ID.' });
         const issuedAt = new Date();
         const { memberId, certId } = await buildMemberIdentity(member);
         await identity.revokeFor('member', member.id, 'Re-issued');
         await member.update({ memberId, certId, certificateType: 'Membership Certificate', certificateIssuedAt: issuedAt });
-        await identity.reserve({ kind: 'member', value: memberId, certValue: certId, recordId: member.id, holderName: member.fullName, holderEmail: member.email });
+        await identity.reserve({ kind: 'member', value: memberId, certValue: certId, recordId: member.id, holderName: member.fullName, holderEmail: member.email, note: `Committee re-issue approval: ${committeeReference}` });
         return res.json({ status: 'success', message: 'Member IDs re-issued.', memberId, certId, certificateIssuedAt: issuedAt });
     } catch (error) { console.error('❌ Member re-issue error:', error); return res.status(500).json({ message: 'Unable to re-issue member IDs.' }); }
 });
