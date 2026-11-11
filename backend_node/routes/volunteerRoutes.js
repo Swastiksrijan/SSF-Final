@@ -9,7 +9,7 @@ const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
 const identity = require('../services/identityService');
 const { Op } = require('sequelize');
-// `memberType` stays the plan the person chose (general / active / life /
+// `memberType` stays the bylaw plan the person chose (general / life / patron /
 // advisory) because the portal keys its membership-fee logic off it. The
 // register's own wording ("Founder Member", "Treasurer") is display-only and
 // travels in its own field, so showing it never disturbs the fee card.
