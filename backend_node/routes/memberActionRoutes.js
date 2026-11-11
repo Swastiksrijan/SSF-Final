@@ -87,15 +87,21 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
       if (!Number.isFinite(hearingAt.getTime()) || !String(b.hearingNotes || '').trim()) return res.status(400).json({ message: 'सुनवाई की तारीख और विवरण आवश्यक हैं।' });
       await row.update({ hearingAt, hearingNotes: String(b.hearingNotes).trim(), status: 'hearing_scheduled', updatedBy: 'Admin Portal' });
     } else if (b.action === 'committee_review') {
+      const mayReview = ['reply_received', 'hearing_scheduled'].includes(row.status) || (row.status === 'notice_issued' && Date.now() > new Date(row.replyDueAt).getTime());
+      if (!mayReview) return res.status(409).json({ message: 'समिति समीक्षा से पहले जवाब की अवधि पूरी होने दें और प्राप्त जवाब/सुनवाई रिकॉर्ड करें।' });
       if (!String(b.committeeMeetingReference || '').trim() || !String(b.decisionText || '').trim()) return res.status(400).json({ message: 'समिति बैठक/प्रस्ताव संदर्भ और कार्यवाही दर्ज करें।' });
       await row.update({ committeeMeetingReference: String(b.committeeMeetingReference).trim(), decisionText: String(b.decisionText).trim(), status: 'committee_review', updatedBy: 'Admin Portal' });
     } else if (b.action === 'general_body_review') {
+      if (row.status !== 'committee_review') return res.status(409).json({ message: 'पहले प्रबंध समिति की समीक्षा और कार्यवाही दर्ज करें।' });
       if (!String(b.generalBodyMeetingReference || '').trim() || !String(b.decisionText || '').trim()) return res.status(400).json({ message: 'सामान्य सभा की बैठक/प्रस्ताव संख्या और निर्णय दर्ज करें।' });
       await row.update({ generalBodyMeetingReference: String(b.generalBodyMeetingReference).trim(), decisionText: String(b.decisionText).trim(), status: 'general_body_review', updatedBy: 'Admin Portal' });
     } else if (b.action === 'close') {
+      if (!['committee_review', 'general_body_review'].includes(row.status)) return res.status(409).json({ message: 'अंतिम निर्णय से पहले समिति समीक्षा और आवश्यक सामान्य सभा प्रक्रिया पूरी करें।' });
       const decisionType = String(b.decisionType || '').trim();
       if (!['no_action', 'advisory', 'warning', 'role_change_approved', 'membership_termination_approved', 'other'].includes(decisionType) || !String(b.decisionText || '').trim()) return res.status(400).json({ message: 'अंतिम निर्णय का प्रकार और पूरा आदेश दर्ज करें।' });
-      if (['role_change_approved', 'membership_termination_approved'].includes(decisionType) && !String(b.generalBodyMeetingReference || b.committeeMeetingReference || '').trim()) return res.status(400).json({ message: 'सक्षम निकाय के बैठक/प्रस्ताव का संदर्भ आवश्यक है।' });
+      if (['role_change_approved', 'membership_termination_approved'].includes(decisionType) && (row.status !== 'general_body_review' || !String(b.generalBodyMeetingReference || '').trim())) return res.status(400).json({ message: 'पद/सदस्यता समाप्ति दर्ज करने से पहले सामान्य सभा की विधिवत कार्यवाही और प्रस्ताव संदर्भ आवश्यक है।' });
+      if (decisionType === 'role_change_approved' && row.actionScope !== 'office_bearer_role_review') return res.status(400).json({ message: 'यह रिकॉर्ड पदाधिकारी पद की समीक्षा के लिए नहीं है।' });
+      if (decisionType === 'membership_termination_approved' && row.actionScope !== 'membership_review') return res.status(400).json({ message: 'यह रिकॉर्ड सदस्यता समीक्षा के लिए नहीं है।' });
       await row.update({ decisionType, decisionText: String(b.decisionText).trim(), decisionAt: new Date(), status: 'closed', generalBodyMeetingReference: String(b.generalBodyMeetingReference || row.generalBodyMeetingReference || '').trim() || null, committeeMeetingReference: String(b.committeeMeetingReference || row.committeeMeetingReference || '').trim() || null, updatedBy: 'Admin Portal' });
     } else if (b.action !== 'save_draft') return res.status(400).json({ message: 'अमान्य कार्रवाई।' });
     return res.json({ status: 'success', record: publicRecord(row) });
