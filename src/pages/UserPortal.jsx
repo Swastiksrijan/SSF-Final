@@ -568,6 +568,21 @@ function PaymentsTab({ user, donors }) {
   // ("General membership"), never the register role ("Founder Member") — the
   // role is shown separately as the account type.
   const planLabel = key ? statusLabel(key) : "Member";
+  const paymentAuthorized = String(user.reviewNote || "").startsWith("SSF_COMMITTEE_PAYMENT_AUTHORIZED");
+  const [paymentBusy, setPaymentBusy] = useState(false);
+  const [paymentError, setPaymentError] = useState("");
+  const startMembershipPayment = async () => {
+    setPaymentBusy(true); setPaymentError("");
+    try {
+      const response = await fetch(ENDPOINTS.MEMBER_PAYMENT_LINK, { method: "POST", headers: { ...authHeaders(), "Content-Type": "application/json" }, body: JSON.stringify({ memberId: user.id }) });
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.message || "Unable to create membership payment link.");
+      if (data.paymentUrl) window.location.assign(data.paymentUrl);
+      else if (data.status === "paid") setPaymentError("Your contribution is already marked as paid.");
+      else throw new Error("Payment link was not returned. Please contact SSF office.");
+    } catch (error) { setPaymentError(error.message || "Unable to start payment."); }
+    finally { setPaymentBusy(false); }
+  };
   return (
     <>
       {showMembershipFee && (
@@ -580,11 +595,12 @@ function PaymentsTab({ user, donors }) {
           {user.paymentMode && <p className="text-sm text-zinc-500 mt-4">Recorded as <strong>{user.paymentMode}</strong>{user.paymentReference ? ` · reference ${user.paymentReference}` : ""}</p>}
           {fee && !paid && (
             <div className="mt-5 rounded-2xl border border-amber-200 bg-amber-50 p-5">
-              <p className="font-black text-amber-900 flex items-center gap-2"><FaExclamationCircle /> Membership fee not yet confirmed</p>
-              <p className="text-sm text-amber-800 mt-1">Pay {formatINR(fee)} through the secure Razorpay page, then submit your UPI / UTR reference from the Membership form so the SSF team can verify it.</p>
-              <div className="flex flex-wrap gap-2 mt-3">
-                <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-xl bg-[#12345A] text-white px-4 py-2.5 font-bold">Pay {formatINR(fee)} <FaArrowRight /></a>
-              </div>
+              <p className="font-black text-amber-900 flex items-center gap-2"><FaExclamationCircle /> {paymentAuthorized ? "Committee-authorized contribution" : "Application awaiting committee decision"}</p>
+              <p className="text-sm text-amber-800 mt-1">{paymentAuthorized ? `Your authorized contribution is ${formatINR(fee)}. Complete payment using your member-specific secure Razorpay link. The Treasurer will verify it before membership approval.` : "Please wait for the Managing Committee to review your application. Do not pay before the committee authorizes the contribution."}</p>
+              {paymentAuthorized && <button type="button" onClick={startMembershipPayment} disabled={paymentBusy} className="mt-3 inline-flex items-center gap-2 rounded-xl bg-[#12345A] text-white px-4 py-2.5 font-bold disabled:opacity-60">{paymentBusy ? "Creating secure link…" : `Pay ${formatINR(fee)} securely`} <FaArrowRight /></button>}
+              {paymentError && <p role="alert" className="mt-2 text-sm font-semibold text-red-700">{paymentError}</p>}
+              {String(user.paymentId || "") && <p className="mt-2 text-sm font-semibold text-amber-900">Payment reference received; Treasurer verification is pending.</p>}
+              {key === "patron" && <p className="mt-2 text-xs text-amber-800">Installment {Number(user.patronInstallmentsPaid || 0) + 1} of {(String(user.message || "").match(/Patron installment count:\\s*(\\d+)/i) || [])[1] || 1}; all installments must be completed within one year.</p>}
             </div>
           )}
           {!fee && !paid && (
@@ -596,7 +612,7 @@ function PaymentsTab({ user, donors }) {
               </div>
             </div>
           )}
-          {paid && <InlineAlert tone="success" className="mt-5">Your membership fee is confirmed. No further payment is needed.</InlineAlert>}
+          {paid && <InlineAlert tone="success" className="mt-5">Your membership contribution is fully verified. Receipt: {user.receiptNumber || "available from SSF office"}.</InlineAlert>}
         </SectionCard>
       )}
       <SectionCard eyebrow="Contributions" title="Donations & receipts">
