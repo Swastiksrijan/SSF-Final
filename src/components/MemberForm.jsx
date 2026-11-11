@@ -9,7 +9,7 @@ const CATEGORIES = [
 
 const initial = {
   fullName: "", email: "", phone: "", dateOfBirth: "", fatherOrGuardian: "",
-  address: "", occupation: "", memberType: "general", paymentPlan: "annual",
+  address: "", occupation: "", citizenship: "Indian", memberType: "general", paymentPlan: "annual",
   electronicSignature: "", acceptsRules: false, goodCharacter: false, noAlcohol: false, declaration: false,
 };
 
