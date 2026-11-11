@@ -91,18 +91,25 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
       const rawToken = crypto.randomBytes(32).toString('hex');
       const baseUrl = (process.env.FRONTEND_PUBLIC_URL || 'https://swastiksrijan.in').replace(/\/$/, '');
       const responseUrl = baseUrl + '/Members?notice=' + rawToken;
-      const textBody = row.noticeText || [
+      const customNotice = String(row.noticeText || '').trim();
+      const textBody = [
         'स्वस्तिक सृजन फाउंडेशन समिति',
         'कारण बताओ नोटिस',
+        'दिनांक: ' + new Date().toLocaleDateString('hi-IN', { timeZone: 'Asia/Kolkata' }),
         'प्रति: ' + row.personName,
-        'सदस्यता/पद: ' + (row.currentDesignation || row.memberId || 'रिकॉर्ड अनुसार'),
-        'नियमावली: ' + row.bylawClause,
-        'कारण: ' + row.grounds,
-        'तथ्य: ' + row.factualSummary,
-        'कृपया ' + new Date(row.replyDueAt).toLocaleDateString('hi-IN') + ' तक अपना लिखित जवाब दें।',
-        'ऑनलाइन जवाब: ' + responseUrl,
-        'यह नोटिस केवल पक्ष रखने का अवसर है; यह निष्कासन/पद से हटाने का अंतिम आदेश नहीं है।'
-      ].join('\n');
+        'सदस्य ID: ' + (row.memberId || 'रजिस्टर में उपलब्ध नहीं / पुष्टि अपेक्षित'),
+        'वर्तमान पद: ' + (row.currentDesignation || 'रिकॉर्ड अनुसार'),
+        'विषय: अपना पक्ष/स्पष्टीकरण प्रस्तुत करने के संबंध में।',
+        customNotice ? 'अतिरिक्त विवरण:\\n' + customNotice : '',
+        'लागू नियम/उप-नियम: ' + row.bylawClause,
+        'प्रस्तावित कार्रवाई का कारण: ' + row.grounds,
+        'तथ्य एवं उपलब्ध रिकॉर्ड: ' + row.factualSummary,
+        'आपसे अनुरोध है कि नीचे दी गई अंतिम तारीख तक अपना लिखित जवाब और यदि चाहें तो सहायक दस्तावेज प्रस्तुत करें: ' + new Date(row.replyDueAt).toLocaleString('hi-IN', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Kolkata' }),
+        'ऑनलाइन जवाब देने का लिंक: ' + responseUrl,
+        'यदि आप व्यक्तिगत/ऑनलाइन सुनवाई चाहते हैं, तो जवाब में इसकी मांग और सुविधाजनक संपर्क विवरण लिखें।',
+        'आपका जवाब और उपलब्ध रिकॉर्ड निष्पक्ष रूप से सक्षम समिति/निकाय के सामने रखा जाएगा।',
+        'महत्वपूर्ण: यह नोटिस केवल आरोप/प्रस्तावित कार्रवाई की जानकारी देकर आपका पक्ष सुनने का अवसर है। इसे दोष सिद्धि, सदस्यता समाप्ति या पद से हटाने का अंतिम आदेश न माना जाए। अंतिम निर्णय केवल लागू नियमों और विधिवत प्रक्रिया के बाद ही लिया जा सकता है।'
+      ].filter(Boolean).join('\\n\\n');
       let delivery = 'not_sent';
       if (['email', 'email_and_post'].includes(method)) {
         if (!emailConfigured()) return res.status(503).json({ message: 'ईमेल सेवा कॉन्फ़िगर नहीं है। पहले डाक से भेजें या ईमेल सेवा सेट करें।' });
