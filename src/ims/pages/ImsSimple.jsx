@@ -165,7 +165,7 @@ export function ImsRegisters() {
     <ImsLayout active="registers_required">
       <PageHeader
         title={t('registers_required')}
-        subtitle={lang === 'hi' ? 'नियमावली के अनुसार संस्था को कुल इतनी पंजिकाएँ चाहिए — नीचे हर पंजिका का असली मास्टर और गिनती है।' : 'Per the SSF Niyamavali, this is the full set of registers the organisation needs — each mapped to its real IMS master with a live count.'}
+        subtitle={lang === 'hi' ? 'नियमावली से जुड़े मुख्य रजिस्टर और अनुपालन/संचालन के लिंक्ड रिकॉर्ड — लिंक्ड प्रविष्टियाँ मौजूदा रिकॉर्ड का ही उपयोग करती हैं।' : 'Bylaw-linked register index: primary IMS registers plus linked compliance and operational views. Linked entries reuse existing records.'}
       />
       {!data && <Spinner />}
       {data && (
