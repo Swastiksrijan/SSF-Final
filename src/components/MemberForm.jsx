@@ -67,8 +67,9 @@ export default function MemberForm({ initialMemberType = "general" }) {
   return (
     <div className="rounded-3xl border border-[#EAF0F6] bg-white p-5 md:p-8 shadow-xl">
       <p className="text-xs font-black uppercase tracking-widest text-[#176447]">Swastik Srijan Foundation Samiti</p>
-      <h3 className="mt-2 text-2xl font-black text-[#12345A]">Membership Application Form</h3>
-      <p className="mt-1 text-sm text-[#26343D]">नियमावली के नियम 5–9 के अनुसार सदस्यता आवेदन</p>
+      <h3 className="mt-2 text-2xl font-black text-[#12345A]">सदस्यता हेतु आवेदन</h3>
+      <p className="mt-1 text-sm font-semibold text-[#26343D]">Membership Application Form · नियमावली के नियम 5–9 के अनुसार</p>
+      <p className="mt-2 text-sm leading-relaxed text-slate-600">Swastik Srijan Foundation Samiti से जुड़ने के लिए नीचे अपनी जानकारी भरें। आवेदन की समीक्षा प्रबंध समिति द्वारा की जाएगी।</p>
 
       <div className="mt-6 grid gap-3 md:grid-cols-3">
         {CATEGORIES.map(item => <button type="button" key={item.id} onClick={() => set("memberType", item.id)} className={`rounded-2xl border p-4 text-left transition ${form.memberType === item.id ? "border-[#176447] bg-[#EAF0F6] ring-2 ring-[#176447]/20" : "border-slate-200 hover:border-[#176447]"}`}>
