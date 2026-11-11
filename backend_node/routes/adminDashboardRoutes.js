@@ -29,8 +29,8 @@ const safeCount = async (model, where) => {
   catch (error) { console.warn('Dashboard count skipped:', error.message); return 0; }
 };
 
-const PAID_TYPES = ['general', 'active', 'life'];
-const REAL_TYPES = ['general', 'active', 'life', 'advisory'];
+const PAID_TYPES = ['general', 'life', 'patron'];
+const REAL_TYPES = ['general', 'life', 'patron', 'advisory'];
 const accountOnly = { [Op.or]: [{ memberType: 'website_signup' }, { message: 'Signup from website' }] };
 
 // GET /api/admin/dashboard -> headline KPIs, the pending queue and recent activity.
