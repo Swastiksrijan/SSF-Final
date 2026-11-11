@@ -116,6 +116,7 @@ const Header = () => {
               {item.subItems && <div className="absolute top-full left-0 w-72 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2">{item.subItems.map(sub => <Link key={sub.name} to={sub.path} className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:text-[#12345A] hover:bg-[#EAF0F6] rounded-xl">{sub.name}</Link>)}</div></div>}
             </div>
           ))}
+          <Link to="/Members" data-active={isActive("/Members")} className="ssf-nav-link flex items-center justify-center px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">Join Us</Link>
           <div className="relative group">
             <button type="button" aria-haspopup="true" className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">More <IoIosArrowDown className="text-[10px]" /></button>
             <div className="absolute top-full right-0 w-64 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2 max-h-[75vh] overflow-y-auto">
