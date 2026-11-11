@@ -272,6 +272,27 @@ async function main() {
     const noAccount = await fetch(`${base}/api/user-document/membership-id/${encodeURIComponent(approve.body.memberId)}`).then((r) => r.status);
     ok('document without account reference is refused', noAccount === 400, String(noAccount));
 
+    console.log('\nPatron contribution instalments and individual receipts:');
+    const patron = await Member.create({
+      fullName: 'Patron Test Member', email: 'patron.installment@example.com', phone: '9000000022',
+      memberType: 'patron', message: 'BYLAW MEMBERSHIP APPLICATION\\nPatron installment count: 2',
+      status: 'pending', paymentStatus: 'pending'
+    });
+    const patronAuth = await send(`/api/admin/members/${patron.id}/authorize-payment`, 'POST', { reviewNote: 'ECM-PATRON-001 authorizes the two-installment contribution' }, auth);
+    ok('committee authorizes patron installments', patronAuth.status === 200);
+    const firstInstallment = await send(`/api/admin/members/${patron.id}`, 'PATCH', { paymentStatus: 'paid', paymentAmount: 500000, paymentMode: 'UPI', paymentReference: 'PATRON-UTR-001' }, auth);
+    const afterFirst = await Member.findByPk(patron.id);
+    ok('first patron installment receives a receipt but remains pending', firstInstallment.status === 200 && afterFirst.paymentStatus === 'pending' && afterFirst.patronInstallmentsPaid === 1);
+    ok('first patron receipt is preserved', JSON.parse(afterFirst.receiptHistory || '[]').length === 1);
+    ok('patron cannot be admitted before all installments are complete', (await send(`/api/admin/member-approve/${patron.id}`, 'POST', { committeeReference: 'ECM-PATRON-002' }, auth)).status === 400);
+    const secondInstallment = await send(`/api/admin/members/${patron.id}`, 'PATCH', { paymentStatus: 'paid', paymentAmount: 500000, paymentMode: 'UPI', paymentReference: 'PATRON-UTR-002' }, auth);
+    const afterSecond = await Member.findByPk(patron.id);
+    ok('second patron installment completes the contribution', secondInstallment.status === 200 && afterSecond.paymentStatus === 'paid' && afterSecond.patronInstallmentsPaid === 2);
+    ok('both patron receipts remain in the history', JSON.parse(afterSecond.receiptHistory || '[]').length === 2);
+    ok('patron cumulative contribution reaches ₹10,000', afterSecond.contributionTotalPaise === 1000000);
+    const patronApproved = await send(`/api/admin/member-approve/${patron.id}`, 'POST', { committeeReference: 'ECM-PATRON-003' }, auth);
+    ok('patron is admitted after all installments and committee approval', patronApproved.status === 200 && /^SSF-MBR-\\d{5}$/.test(String(patronApproved.body.memberId)));
+
     console.log('\nAdvisory membership is honorary (no fee gate):');
     const advEmail = 'advisor@example.com';
     const advSignup = await send('/api/member-account-signup', 'POST', { fullName: 'Meera Nair', email: advEmail, confirmEmail: advEmail, phone: '9811111111', password: 'StrongPass1', memberType: 'advisory' });
