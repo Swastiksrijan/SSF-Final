@@ -55,7 +55,7 @@ router.post('/portal-member-application', requireAccountAuth((req) => (req.body 
     const accountId = req.account.accountId;
     const normalizedEmail = cleanEmail(email);
     const normalizedPhone = cleanPhone(phone);
-    const allowedTypes = new Set(['general', 'active', 'life', 'advisory']);
+    const allowedTypes = new Set(['general', 'life', 'patron']);
     const selectedType = String(memberType || '').toLowerCase();
     if (!accountId || !fullName || !normalizedEmail || !normalizedPhone || !allowedTypes.has(selectedType)) {
       return res.status(400).json({ status: 'error', message: 'Please complete all membership fields.' });
