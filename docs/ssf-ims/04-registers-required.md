@@ -1,7 +1,7 @@
 # SSF-IMS — How many registers are needed (per Niyamavali)?
 
 > Aapka sawaal: **"Niyamavali ke hisaab se asal me kitni registers chahiye?"**
-> Jawab: **23 primary registers + 7 linked operational views = 30 register entries**. 23 primary registers use dedicated IMS masters; 7 additional views reuse those same masters or existing office registers so duplicate data is not created.
+> Jawab: **23 primary register modules + 20 linked compliance/operational views = 43 index entries**. 23 primary registers use dedicated IMS masters; 7 additional views reuse those same masters or existing office registers so duplicate data is not created.
 
 > Ye list system ke andar hi zinda hai — `/api/ims/register-map` endpoint
 > har register ka **live count** deta hai, aur **Registers Required** page
@@ -24,9 +24,9 @@
 
 | # | Register | पंजिका | Niyamavali aadhaar | IMS master |
 |---|---|---|---|---|
-| 8 | Cash Book | रोकड़ पंजिका | Bylaw — Treasurer daily cash limit ₹4,500 | `cashAccounts` |
+| 8 | Cash Book | रोकड़ पंजिका | Rule 20 — maximum cash in hand ₹4,500; not a daily spending limit | `cashAccounts` |
 | 9 | Bank Book | बैंक पंजिका | Accountability — bank reconciliation | `bankAccounts` |
-| 10 | Voucher Register | वाउचर पंजिका | Bylaw — Secretary expense limit ₹5,000 | `vouchers` |
+| 10 | Voucher Register | वाउचर पंजिका | Rule 15–19 — Secretary spending authority up to ₹5,000 per task (as provided) | `vouchers` |
 | 11 | Donation Register | दान पंजिका | Accountability — 80G receipts | `donations` |
 | 12 | Grant Register | अनुदान पंजिका | Accountability — utilisation certificates | `grants` |
 | 13 | Fixed Asset Register | स्थायी संपत्ति पंजिका | Accountability — asset verification | `assets` |
@@ -45,7 +45,7 @@
 
 | # | Register | पंजिका | Aadhaar | IMS master |
 |---|---|---|---|---|
-| 19 | Compliance Register | अनुपालन पंजिका | Bylaw — Registrar filing in 45 days | `compliance` |
+| 19 | Compliance Register | अनुपालन पंजिका | Rule 21 — annual committee list within 45 days of annual meeting; audited accounts as prescribed | `compliance` |
 | 20 | Audit Register | लेखा-परीक्षण पंजिका | Accountability — internal/external audit | `audits` |
 | 21 | Risk Register | जोखिम पंजिका | Accountability — risk management | `risks` |
 
@@ -74,9 +74,41 @@ These seven are **linked views**, not seven new independent databases. The same 
 
 ## Jawab ek line me
 
-**IMS now presents 30 register entries:** 23 primary registers (7 governance + 7 finance + 4 programme + 3 compliance + 2 people) and 7 linked operational views. The 23 primary registers have live counts from their existing IMS masters; the 7 linked views open the existing working modules and are labelled Linked rather than showing a misleading zero count. Supporting masters (Persons, Funds, Accounts, Financial Years, Parties, Bank/Cash accounts, Committees, Programmes, Users) remain supporting masters, not separate registers.
+**IMS index presents 43 entries:** 23 primary register modules and 20 linked compliance/operational views. Counts are live only for the 23 primary models. Linked views open existing modules and are labelled Linked; they do not claim a separate database or a live count. Supporting masters (Persons, Funds, Accounts, Financial Years, Parties, Bank/Cash accounts, Committees, Programmes, Users) remain supporting masters, not separate registers.
 
 **Note:** in 23 ke alawa kuch **supporting masters** bhi hain (Persons, Funds,
 Accounts, Financial Years, Parties, Bank/Cash accounts, Committees, Programmes,
 Users) jo in registers ko chalane ke liye zaroori hain — lekin wo "register"
 nahi, "master" hain.
+
+
+## G. Additional bylaw compliance controls (13 linked views)
+
+| # | Register / view | Rule | IMS destination | Purpose |
+|---|---|---|---|---|
+| 31 | Annual Report & Progress Report | Rule 11 | annual-reports | Annual and progress report placed before General Body |
+| 32 | Permanent Fund | Rule 11 | funds | Permanent fund and property matters considered by General Body |
+| 33 | Auditor Appointment & Tenure | Rule 11 | audits | General Body auditor appointment and audit evidence |
+| 34 | Managing Committee Election & Result | Rule 12 | managing-committee | Eligible voters/candidates, nine positions and election result evidence |
+| 35 | Committee Tenure, Extension & Handover | Rule 13 | managing-committee | Three-year term; extension up to six months only with General Body approval |
+| 36 | Bank Mandate & Joint Signatories | Rule 20 | bank-book | Approved bank mandate and joint signatory evidence |
+| 37 | Cash-in-Hand Limit Control | Rule 20 | cash-book | Maximum cash-in-hand ₹4,500; this is not a daily expense limit |
+| 38 | Annual Committee List & Accounts Filing | Rule 21 | compliance | Committee list within 45 days after annual meeting and audited accounts filing evidence |
+| 39 | Rules & Bylaws Amendment | Rule 22 | constitution | Two-thirds approval and applicable Registrar process |
+| 40 | Dissolution & Asset Disposal | Rule 23 | assets | Dissolution resolution and remaining asset transfer record |
+| 41 | Immovable Property & Registrar Permission | Rule 24 | assets | Property record and written permission evidence where required by the bylaws |
+| 42 | Registrar-Called Meeting | Rule 25 | meetings | Meeting called by Registrar and related notice/minutes |
+| 43 | Dispute & Resolution | Rule 26 | compliance | Dispute record, steps taken and outcome |
+
+These 13 are linked compliance views over existing modules, not separate databases. The exact statutory filing forms, deadlines and Registrar procedure must follow applicable Madhya Pradesh law and Registrar directions; this index does not replace legal verification.
+
+## H. Important interpretation controls
+
+- Rule 5(A)–(D) membership categories remain distinct. Honorary members may attend General Body meetings as stated in the bylaws but have no voting right; Rule 12 election eligibility is limited to categories 5(A), (B), (C) as written.
+- Rule 10: Annual General Body, Special General Body and Managing Committee meetings are meeting types/bodies, not three separate membership classes. Keep minutes, notice, agenda, attendance and quorum evidence.
+- Rule 12: Managing Committee consists of nine posts: President, Vice-President, Secretary, Treasurer, Joint Secretary and four members.
+- Rule 13: retain start/end dates and any General Body-approved extension evidence.
+- Rule 20: record approved joint bank signatories and cash-in-hand ceiling; do not convert ₹4,500 into a daily expense cap.
+- Rule 21: the 45-day deadline relates to filing the annual committee list after the annual meeting; preserve separate proof of audited-account filing.
+- Rules 22–26: keep amendment, dissolution, property, Registrar-called meeting and dispute evidence linked to the relevant decision/document.
+- A linked view is not proof that the underlying workflow has full forms or validation. The source module remains the authoritative record and must be checked for required fields before operational use.
