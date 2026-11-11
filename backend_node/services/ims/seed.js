@@ -57,6 +57,24 @@ async function seedGovernance() {
     });
     if (created) out.rules++;
   }
+  // Keep existing saved governance entries aligned with the corrected bylaws text.
+  for (const rule of GOVERNANCE_RULES) {
+    await models.ImsGovernanceRule.update({
+      value: rule.value, ruleText: rule.ruleText, ruleTextHi: rule.ruleTextHi,
+      source: 'SSF Bylaws / Memorandum & Rules', version: 1,
+    }, { where: { key: rule.key } });
+  }
+  await models.ImsGovernanceRule.update({
+    value: 'Replaced — see annual committee list filing rule',
+    ruleText: 'Retired: old seed text incorrectly described the 45-day deadline. Refer to the annual committee list filing rule.',
+    ruleTextHi: 'पुराना विवरण निरस्त: 45 दिन की समय-सीमा का पुराना वर्णन गलत था। वार्षिक समिति सूची दाखिला नियम देखें।',
+  }, { where: { key: 'registrar_filing_days' } });
+  await models.ImsGovernanceRule.update({
+    value: 'As prescribed',
+    ruleText: 'Do not infer a general 45-day deadline for special resolutions from Rule 21; follow applicable law and Registrar directions.',
+    ruleTextHi: 'नियम 21 से विशेष संकल्प के लिए सामान्य 45 दिन की समय-सीमा न मानें; लागू कानून और रजिस्ट्रार निर्देश देखें।',
+  }, { where: { key: 'special_resolution_copy_days' } });
+
   for (const [code, en, hi] of ROLES) {
     const [, created] = await models.ImsRole.findOrCreate({
       where: { code }, defaults: { code, labelEn: en, labelHi: hi },
