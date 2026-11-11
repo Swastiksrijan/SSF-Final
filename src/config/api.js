@@ -37,6 +37,8 @@ export const ENDPOINTS = {
     ADMIN_MEMBERS: `${API_BASE_URL}/api/admin/members`,
     GOVERNANCE_VERIFICATIONS: `${API_BASE_URL}/api/admin/governance-verifications`,
     GOVERNANCE_VERIFICATION_SUBMIT: `${API_BASE_URL}/api/governance-verifications`,
+    ADMIN_MEMBER_ACTIONS: `${API_BASE_URL}/api/admin/member-actions`,
+    MEMBER_ACTION_RESPONSE: (token) => `${API_BASE_URL}/api/member-action-response/${encodeURIComponent(token)}`,
     ADMIN_DONORS: `${API_BASE_URL}/api/admin/donors`,
     ADMIN_DELETE_DONOR: (id) => `${API_BASE_URL}/api/admin/donors/${encodeURIComponent(id)}`,
     ADMIN_UPDATE_DONOR: (id) => `${API_BASE_URL}/api/admin/donors/${encodeURIComponent(id)}`,
