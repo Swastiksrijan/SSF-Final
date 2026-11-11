@@ -14,7 +14,8 @@ const openNoticePreview = row => {
     "वर्तमान पद: " + (row.currentDesignation || "रिकॉर्ड अनुसार"),
     "संपर्क ईमेल: " + row.email,
     "विषय: अपना पक्ष/स्पष्टीकरण प्रस्तुत करने के संबंध में।",
-    row.noticeText ? "अतिरिक्त विवरण:\\n" + row.noticeText : "",
+    row.noticeText ? "अतिरिक्त विवरण:
+" + row.noticeText : "",
     "लागू नियम/उप-नियम: " + row.bylawClause,
     "प्रस्तावित कार्रवाई का कारण: " + row.grounds,
     "तथ्य एवं उपलब्ध रिकॉर्ड: " + row.factualSummary,
@@ -22,7 +23,7 @@ const openNoticePreview = row => {
     "ऑनलाइन जवाब लिंक: नोटिस जारी होने पर जोड़ा जाएगा।",
     "यदि आप व्यक्तिगत/ऑनलाइन सुनवाई चाहते हैं, तो जवाब में इसकी मांग और सुविधाजनक संपर्क विवरण लिखें।",
     "यह नोटिस केवल अपना पक्ष रखने का अवसर है; यह दोष सिद्धि, सदस्यता समाप्ति या पद से हटाने का अंतिम आदेश नहीं है।"
-  ].filter(Boolean).join("\\n\\n");
+  ].filter(Boolean).join("\n\n");
   const html = `<!doctype html><html><head><meta charset="utf-8"><title>SSF Notice Preview</title>
   <style>body{font:15px/1.7 Arial,sans-serif;color:#172b3a;margin:0;background:#eef2f6}.sheet{max-width:800px;margin:28px auto;background:#fff;padding:42px 48px;border:1px solid #d7dee8;box-shadow:0 4px 24px #0f172a18}.head{display:flex;align-items:center;gap:20px;border-bottom:3px solid #176447;padding-bottom:18px}.head img{width:92px;height:92px;object-fit:contain}.en{font-size:22px;font-weight:800;color:#12345A}.hi{font-size:17px;font-weight:700;color:#176447}.meta{display:flex;justify-content:space-between;gap:12px;margin-top:22px;font-size:13px}.body{white-space:pre-wrap;margin-top:20px}.foot{border-top:1px solid #d7dee8;margin-top:32px;padding-top:12px;font-size:12px;color:#64748b}.print{margin:20px 0;padding:10px 18px;background:#12345A;color:white;border:0;border-radius:8px}@media print{body{background:white}.sheet{margin:0;border:0;box-shadow:none;max-width:none;padding:18mm}.print{display:none}}</style></head><body>
   <main class="sheet"><header class="head"><img src="${noticeEscape(new URL(logoImg, window.location.origin).href)}" alt="SSF Logo"><div><div class="en">SWASTIK SRIJAN FOUNDATION SAMITI</div><div class="hi">स्वस्तिक सृजन फाउंडेशन समिति</div><div>आधिकारिक सूचना / Official Communication</div></div></header>
