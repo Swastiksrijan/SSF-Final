@@ -3,11 +3,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { FaCrown, FaUserShield, FaUserTie, FaAward, FaUsers, FaHandHoldingHeart, FaArrowRight, FaCheckCircle, FaTimes } from "react-icons/fa";
 import CertificateGenerator from "../components/CertificateGenerator";
 import MemberForm from "../components/MemberForm";
+import GovernanceVerificationForm from "../components/GovernanceVerificationForm";
 
 const Members = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedMemberType, setSelectedMemberType] = useState("general");
   const [directApplication, setDirectApplication] = useState(false);
+  const [directVerification, setDirectVerification] = useState(false);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -27,12 +29,22 @@ const Members = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
+    if (params.get("verify") === "1") setDirectVerification(true);
     if (params.get("apply") === "1") {
       const requestedType = params.get("type");
       setSelectedMemberType(["patron", "life", "general"].includes(requestedType) ? requestedType : "general");
       setDirectApplication(true);
     }
   }, []);
+
+  if (directVerification) return (
+    <main className="min-h-screen bg-slate-50 px-4 pb-12 pt-32 sm:px-6">
+      <div className="mx-auto max-w-4xl">
+        <a href="/Members" className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-[#12345A] hover:text-[#176447]">← सदस्यता जानकारी पर वापस जाएँ</a>
+        <GovernanceVerificationForm />
+      </div>
+    </main>
+  );
 
   if (directApplication) return (
     <main className="min-h-screen bg-slate-50 px-4 pb-12 pt-32 sm:px-6">
