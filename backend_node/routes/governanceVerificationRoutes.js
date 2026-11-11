@@ -66,14 +66,14 @@ router.patch('/admin/governance-verifications/:id', requireAdminAuth, async (req
     if (status === 'verified' && row.requestType === 'existing_member' && row.memberId) {
       const registerEntry = identity.registerEntryFor(row.memberId);
       if (!registerEntry) return res.status(404).json({ message: 'यह Member ID आधिकारिक पुराने सदस्य रजिस्टर में नहीं मिली। सत्यापन रोक दिया गया है।' });
-      const norm = value => String(value || '').trim().toLowerCase().replace(/\\s+/g, ' ');
+      const norm = value => String(value || '').trim().toLowerCase().replace(/\s+/g, ' ');
       if (norm(registerEntry.name) !== norm(row.fullName)) return res.status(409).json({ message: 'दर्ज नाम पुराने सदस्य रजिस्टर से मेल नहीं खाता। मूल दस्तावेज देखकर सुधार करें।' });
       const registerEmail = norm(registerEntry.email);
-      const registerMobile = String(registerEntry.mobile || '').replace(/\\D/g, '').slice(-10);
+      const registerMobile = String(registerEntry.mobile || '').replace(/\D/g, '').slice(-10);
       if (registerEmail && registerEmail !== norm(row.email)) return res.status(409).json({ message: 'ईमेल पुराने सदस्य रजिस्टर से मेल नहीं खाता। मूल रजिस्टर की जाँच करें।' });
-      if (registerMobile && registerMobile !== String(row.phone || '').replace(/\\D/g, '').slice(-10)) return res.status(409).json({ message: 'मोबाइल पुराने सदस्य रजिस्टर से मेल नहीं खाता। मूल रजिस्टर की जाँच करें।' });
+      if (registerMobile && registerMobile !== String(row.phone || '').replace(/\D/g, '').slice(-10)) return res.status(409).json({ message: 'मोबाइल पुराने सदस्य रजिस्टर से मेल नहीं खाता। मूल रजिस्टर की जाँच करें।' });
       const existing = await Member.findOne({ where: { memberId: row.memberId } });
-      if (existing && (String(existing.email).toLowerCase() !== row.email || String(existing.phone).replace(/\\D/g, '').slice(-10) !== row.phone.replace(/\\D/g, '').slice(-10))) {
+      if (existing && (String(existing.email).toLowerCase() !== row.email || String(existing.phone).replace(/\D/g, '').slice(-10) !== row.phone.replace(/\D/g, '').slice(-10))) {
         return res.status(409).json({ message: 'Member ID से जुड़ा वेबसाइट रिकॉर्ड अलग ईमेल/मोबाइल दिखा रहा है। पहले मूल रजिस्टर से मैन्युअल जाँच करें।' });
       }
     }
