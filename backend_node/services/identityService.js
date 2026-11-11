@@ -67,12 +67,12 @@ const ledgerValues = async (kind) => {
   }
 };
 
-const reserve = async ({ kind, value, certValue = null, recordId = null, holderName = null, holderEmail = null }) => {
+const reserve = async ({ kind, value, certValue = null, recordId = null, holderName = null, holderEmail = null, note = null }) => {
   try {
     const IdIssuance = require('../models/IdIssuance');
     const existing = await IdIssuance.findOne({ where: { kind, value } });
     if (existing) return existing;
-    return await IdIssuance.create({ kind, value, certValue, recordId, holderName, holderEmail, status: 'issued', issuedAt: new Date() });
+    return await IdIssuance.create({ kind, value, certValue, recordId, holderName, holderEmail, note, status: 'issued', issuedAt: new Date() });
   } catch (error) {
     console.warn('ID ledger write failed:', error.message);
     return null;
