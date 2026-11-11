@@ -7,6 +7,9 @@ const crypto = require('crypto');
 const { sendMail, emailConfigured } = require('../services/mailer');
 const Volunteer = require('../models/Volunteer');
 const Member = require('../models/Member');
+const { models: imsModels, sequelize: imsSequelize } = require('../models/ims');
+const { nextId } = require('../services/ims/ids');
+const { Op } = require('sequelize');
 const identity = require('../services/identityService');
 const { databaseUnavailableResponse } = require('../services/dbHealth');
 
@@ -81,16 +84,52 @@ router.post('/member-application-bylaw', async (req, res) => {
             'Submitted online on: ' + new Date().toISOString(),
             'Application status: Pending Managing Committee decision'
         ].join('\n');
-        const application = await Member.create({
-            fullName: String(fullName).trim(), email: normalizedEmail, phone: normalizedPhone,
-            memberType: type, designation: String(occupation).trim(),
-            guardianName: String(fatherOrGuardian || '').trim() || null,
-            address: String(address).trim(), message: applicationDetails,
-            status: 'pending', paymentStatus: 'pending'
-        });
+        const transaction = await imsSequelize.transaction();
+        let application;
+        let membershipRecord;
+        try {
+            let person = await imsModels.ImsPerson.findOne({ where: { email: normalizedEmail }, transaction });
+            if (!person) {
+                const personRecordId = await nextId('PERSON', undefined, imsModels.ImsPerson);
+                person = await imsModels.ImsPerson.create({
+                    recordId: personRecordId, fullName: String(fullName).trim(), dob: dateOfBirth,
+                    mobile: normalizedPhone, email: normalizedEmail, address: String(address).trim(),
+                    occupation: String(occupation).trim(), notes: 'Created from public online membership application; membership pending committee decision.',
+                    status: 'active'
+                }, { transaction });
+            }
+            const existingImsApplication = await imsModels.ImsMembership.findOne({
+                where: { personId: person.id, applicationStatus: { [Op.in]: ['submitted', 'review', 'approved'] } },
+                transaction
+            });
+            if (existingImsApplication) {
+                await transaction.rollback();
+                return res.status(409).json({ status: 'error', message: 'An active or pending membership record already exists for this applicant. Please contact SSF.' });
+            }
+            const memberRecordId = await nextId('MEM', undefined, imsModels.ImsMembership);
+            application = await Member.create({
+                fullName: String(fullName).trim(), email: normalizedEmail, phone: normalizedPhone,
+                memberType: type, designation: String(occupation).trim(),
+                guardianName: String(fatherOrGuardian || '').trim() || null,
+                address: String(address).trim(), message: applicationDetails,
+                status: 'pending', paymentStatus: 'pending'
+            }, { transaction });
+            const category = type === 'patron' ? 'Guardian/Patron' : (type === 'life' ? 'Lifetime' : 'Ordinary');
+            membershipRecord = await imsModels.ImsMembership.create({
+                recordId: memberRecordId, personId: person.id, category,
+                feeFrequency: type === 'general' ? String(req.body.paymentPlan || 'annual') : (type === 'patron' ? 'one-time-or-instalments' : 'one-time'),
+                applicationStatus: 'submitted', signatureNote: 'Online declaration signed by: ' + String(electronicSignature).trim(),
+                status: 'pending', createdBy: 'public_online_application', createdByName: 'Website Membership Application',
+                data: { dateOfBirth, fatherOrGuardian: String(fatherOrGuardian || '').trim(), citizenship: 'Indian', occupation: String(occupation).trim(), address: String(address).trim(), electronicSignature: String(electronicSignature).trim(), declaration: String(declaration).trim(), paymentPlan: String(req.body.paymentPlan || 'not applicable') }
+            }, { transaction });
+            await transaction.commit();
+        } catch (saveError) {
+            if (!transaction.finished) await transaction.rollback();
+            throw saveError;
+        }
         await sendAdminNotification('New Bylaw Membership Application: ' + application.fullName,
-            'A new online membership application is awaiting Managing Committee review.\nName: ' + application.fullName + '\nCategory: ' + type + '\nEmail: ' + normalizedEmail + '\nPhone: ' + normalizedPhone + '\nStatus: Pending. No membership has been granted.');
-        return res.status(201).json({ status: 'success', message: 'Application received. It remains pending until the Managing Committee records its decision.', applicationId: application.id, statusLabel: 'Pending Approval' });
+            'A new online membership application is awaiting Managing Committee review.\\nName: ' + application.fullName + '\\nCategory: ' + type + '\\nEmail: ' + normalizedEmail + '\\nPhone: ' + normalizedPhone + '\\nIMS Record: ' + membershipRecord.recordId + '\\nStatus: Pending. No membership has been granted.');
+        return res.status(201).json({ status: 'success', message: 'Application received. It remains pending until the Managing Committee records its decision.', applicationId: application.id, imsRecordId: membershipRecord.recordId, statusLabel: 'Pending Approval' });
     } catch (error) {
         console.error('Bylaw membership application error:', error);
         if (databaseUnavailableResponse(res, error)) return;
