@@ -14,10 +14,9 @@ const Members = () => {
   };
 
   const memberTypes = [
-    { id: "general", title: "General Member", titleHi: "साधारण सदस्य", icon: <FaUserTie />, color: "bg-blue-50 text-blue-600", border: "border-blue-100", role: ["Annual meetings participation", "Suggestions and guidance (सुझाव और मार्गदर्शन)", "Support institutional objectives"], price: "₹100/month", freq: "(₹1,200/year)" },
-    { id: "active", title: "Active Member", titleHi: "सक्रिय सदस्य", icon: <FaUsers />, color: "bg-emerald-50 text-emerald-600", border: "border-emerald-100", role: ["Planning & execution", "Project monitoring", "Volunteer coordination"], price: "₹2,500/year", freq: "One-time or installments" },
-    { id: "life", title: "Life Member", titleHi: "आजीवन सदस्य", icon: <FaUserShield />, color: "bg-purple-50 text-purple-600", border: "border-purple-100", role: ["Long-term association", "Strategic guidance", "Institutional strength"], price: "₹8,000+", freq: "One-time donation", highlight: true },
-    { id: "advisory", title: "Advisory / Expert Member", titleHi: "सलाहकार सदस्य", icon: <FaAward />, color: "bg-orange-50 text-orange-600", border: "border-orange-100", role: ["Policy guidance", "Legal / Financial / CSR advice", "Growth & governance support"], price: "By Invitation", freq: "Honorary" }
+    { id: "patron", title: "Patron Member", titleHi: "संरक्षक सदस्य", icon: <FaCrown />, color: "bg-amber-50 text-amber-700", border: "border-amber-100", role: ["Participate in the institution’s General Body as per the bylaws", "Support the Foundation’s objectives"], price: "₹10,000 or more", freq: "One-time or up to 12 instalments within one year" },
+    { id: "life", title: "Life Member", titleHi: "आजीवन सदस्य", icon: <FaUserShield />, color: "bg-purple-50 text-purple-600", border: "border-purple-100", role: ["Long-term association with the Foundation", "Participate in governance as per the bylaws"], price: "₹8,000 or more", freq: "Contribution under Rule 5(B)" },
+    { id: "general", title: "Ordinary Member", titleHi: "साधारण सदस्य", icon: <FaUserTie />, color: "bg-blue-50 text-blue-600", border: "border-blue-100", role: ["Participate in the General Body as per the bylaws", "Membership remains valid for the paid period"], price: "₹100/month or ₹1,200/year", freq: "Six-month non-payment clause applies as written in Rule 5(C)" }
   ];
 
   const openApplication = (memberType = "general") => {
@@ -35,7 +34,7 @@ const Members = () => {
       <section className="py-24 px-6 bg-zinc-50 border-y border-zinc-100">
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-16 space-y-4"><h2 className="text-3xl md:text-5xl font-bold text-[#12345A]">Member के प्रकार</h2><p className="text-zinc-500 text-lg font-medium">Choose your level of commitment and impact.</p></div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {memberTypes.map((type, i) => (
               <motion.div key={type.id} initial="hidden" whileInView="visible" viewport={{ once: true }} variants={{ hidden: { opacity: 0, y: 30 }, visible: { opacity: 1, y: 0, transition: { delay: i * 0.1 } } }} className={`bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 ${type.border} shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col relative ${type.highlight ? 'ring-2 ring-purple-200' : ''}`}>
                 {type.highlight && <div className="absolute -top-4 left-1/2 -translate-x-1/2"><span className="bg-purple-500 text-white text-xs font-bold px-4 py-1 rounded-full shadow-lg uppercase tracking-wider">Most Popular</span></div>}
@@ -50,12 +49,12 @@ const Members = () => {
       </section>
 
       <section className="py-24 px-6 bg-white" id="apply"><div className="max-w-6xl mx-auto"><div className="bg-gradient-to-br from-zinc-50 to-white p-6 sm:p-10 md:p-16 rounded-[2rem] md:rounded-[4rem] border border-zinc-200 shadow-xl"><div className="grid md:grid-cols-2 gap-16">
-        <div className="space-y-6"><h3 className="text-2xl font-bold text-[#12345A] flex items-center gap-3"><FaCheckCircle className="text-[#176447]" /> Qualification Of Members</h3><ul className="space-y-4">{["Age should not be less than 18 years", "Must be an Indian citizen", "Pledge to follow the rules of the committee", "Sober lifestyle preferred (no alcohol)", "Must apply in writing via application form"].map((rule, i) => <li key={i} className="flex items-start gap-3 text-zinc-600"><div className="mt-1 min-w-[20px]"><FaCheckCircle className="text-green-500 text-lg" /></div><span className="font-medium">{rule}</span></li>)}</ul></div>
-        <div className="space-y-6"><h3 className="text-2xl font-bold text-[#12345A] flex items-center gap-3"><FaHandHoldingHeart className="text-[#176447]" /> Membership Termination</h3><p className="text-zinc-600 leading-relaxed">Membership of the organization will end in the event of death, resignation, or if a member works against the interest of the society. Non-payment of dues for 6 months without reason also leads to termination.</p>
-          <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 mt-8"><h4 className="font-bold text-[#12345A] mb-4 text-lg">Ready to Apply?</h4><div className="space-y-3">
+        <div className="space-y-6"><h3 className="text-2xl font-bold text-[#12345A] flex items-center gap-3"><FaCheckCircle className="text-[#176447]" /> Qualification Of Members</h3><ul className="space-y-4">{["Age should not be less than 18 years", "Must be an Indian citizen", "Pledge to follow the rules of the committee", "Must satisfy the Rule 7 condition relating to alcohol", "Must submit an application to the Managing Committee (online application is received for committee review)"].map((rule, i) => <li key={i} className="flex items-start gap-3 text-zinc-600"><div className="mt-1 min-w-[20px]"><FaCheckCircle className="text-green-500 text-lg" /></div><span className="font-medium">{rule}</span></li>)}</ul></div>
+        <div className="space-y-6"><h3 className="text-2xl font-bold text-[#12345A] flex items-center gap-3"><FaHandHoldingHeart className="text-[#176447]" /> Membership Termination</h3><p className="text-zinc-600 leading-relaxed">Membership may cease under the grounds and procedure in Rule 8. For ordinary members, Rule 5(C) also provides for termination after six months of non-payment without a satisfactory reason. The Managing Committee must record the applicable decision and date.</p>
+          <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 mt-8"><h4 className="font-bold text-[#12345A] mb-4 text-lg">Apply for Membership</h4><div className="space-y-3">
             <button onClick={() => openApplication("general")} className="w-full flex justify-between items-center bg-white p-4 rounded-xl hover:shadow-md transition text-lg font-bold text-zinc-700 hover:text-[#12345A] cursor-pointer"><span>📝 Member Application Form</span><FaArrowRight /></button>
-            <a href="https://forms.gle/S6Qc56QE8nLYdDTL9" target="_blank" rel="noreferrer" className="w-full flex justify-between items-center bg-white p-4 rounded-xl hover:shadow-md transition text-lg font-bold text-[#176447] cursor-pointer"><span>📑 Apply via Google Form</span><FaArrowRight /></a>
-            <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noreferrer" className="flex justify-between items-center bg-[#12345A] text-white p-4 rounded-xl hover:shadow-md hover:bg-[#176447] transition text-sm font-bold"><span>💳 Pay Membership Fee Online</span><FaArrowRight /></a>
+            
+            
           </div></div>
         </div>
       </div></div></div></section>
