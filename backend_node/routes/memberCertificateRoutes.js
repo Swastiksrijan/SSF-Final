@@ -89,10 +89,10 @@ router.post('/admin/member-approve/:id', requireAdminAuth, async (req, res) => {
                 await imsMembership.update({
                     memberNo: memberId, applicationStatus: 'approved', status: 'active',
                     admissionDate: approvedOn, approvalDate: approvedOn,
-                    receiptNumber: member.paymentReference || null,
+                    receiptNumber: null,
                     feeAmount: member.paymentAmount ? Number(member.paymentAmount) / 100 : null,
                     approvedBy: 'Managing Committee',
-                    data: { ...(imsMembership.data || {}), legacyMemberId: member.id, officialMemberId: memberId, approvedOn }
+                    data: { ...(imsMembership.data || {}), legacyMemberId: member.id, officialMemberId: memberId, approvedOn, paymentReference: member.paymentReference || null }
                 });
                 await imsModels.ImsPersonRole.findOrCreate({
                     where: { personId: imsPerson.id, roleCode: 'member', refId: imsMembership.id },
