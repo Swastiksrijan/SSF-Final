@@ -143,12 +143,12 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
         (safeLogoUrl ? '<img src="' + escapeHtml(safeLogoUrl) + '" alt="Swastik Srijan Foundation Samiti logo" style="width:86px;height:86px;object-fit:contain" />' : '') +
         '<div><div style="font-size:22px;font-weight:800;color:#12345A">SWASTIK SRIJAN FOUNDATION SAMITI</div><div style="font-size:16px;font-weight:700;color:#176447">स्वस्तिक सृजन फाउंडेशन समिति</div><div style="font-size:12px;color:#64748b">आधिकारिक सूचना / Official Communication</div></div></div>' +
         '<div style="display:flex;justify-content:space-between;gap:12px;font-size:13px"><b>नोटिस संदर्भ: ' + escapeHtml(row.noticeReference || '') + '</b><b>दिनांक: ' + escapeHtml(new Date().toLocaleDateString('hi-IN', { timeZone: 'Asia/Kolkata' })) + '</b></div>' +
-        '<h2 style="text-align:center;color:#12345A;font-size:19px;margin:24px 0 18px">कारण बताओ नोटिस</h2><div style="white-space:pre-wrap">' + escapeHtml(textBody) + '</div>' +
+        '<h2 style="text-align:center;color:#12345A;font-size:19px;margin:24px 0 18px">कारण बताओ नोटिस</h2><div style="white-space:pre-wrap">' + escapeHtml(textBody) + '</div><p style="text-align:center;margin:26px 0"><a href="' + escapeHtml(responseUrl) + '" style="display:inline-block;background:#12345A;color:#fff;text-decoration:none;padding:12px 22px;border-radius:7px;font-weight:bold">ऑनलाइन जवाब दें</a></p>' +
         '<div style="margin-top:30px;padding-top:14px;border-top:1px solid #d7dee8;font-size:12px;color:#64748b">Swastik Srijan Foundation Samiti | यह नोटिस संस्था के अभिलेख हेतु जारी किया गया है।</div></div>';
       let delivery = 'not_sent';
       if (['email', 'email_and_post'].includes(method)) {
         if (!emailConfigured()) return res.status(503).json({ message: 'ईमेल सेवा कॉन्फ़िगर नहीं है। पहले डाक से भेजें या ईमेल सेवा सेट करें।' });
-        await sendMail({ to: row.email, subject: 'SSF कारण बताओ नोटिस — ' + row.personName, text: textBody, html: htmlBody });
+        await sendMail({ to: row.email, subject: 'SSF कारण बताओ नोटिस — ' + row.noticeReference + ' — ' + row.personName, text: textBody, html: htmlBody });
         delivery = 'email_sent';
       }
       await row.update({ noticeText: textBody, responseTokenHash: hashToken(rawToken), status: 'notice_issued', dispatchMethod: method, dispatchReference: dispatchReference || null, dispatchAt: new Date(), emailDeliveryStatus: delivery, updatedBy: 'Admin Portal' });
