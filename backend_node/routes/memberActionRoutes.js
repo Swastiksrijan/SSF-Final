@@ -90,11 +90,11 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
       const mayReview = ['reply_received', 'hearing_scheduled'].includes(row.status) || (row.status === 'notice_issued' && Date.now() > new Date(row.replyDueAt).getTime());
       if (!mayReview) return res.status(409).json({ message: 'समिति समीक्षा से पहले जवाब की अवधि पूरी होने दें और प्राप्त जवाब/सुनवाई रिकॉर्ड करें।' });
       if (!String(b.committeeMeetingReference || '').trim() || !String(b.decisionText || '').trim()) return res.status(400).json({ message: 'समिति बैठक/प्रस्ताव संदर्भ और कार्यवाही दर्ज करें।' });
-      await row.update({ committeeMeetingReference: String(b.committeeMeetingReference).trim(), decisionText: String(b.decisionText).trim(), status: 'committee_review', updatedBy: 'Admin Portal' });
+      await row.update({ committeeMeetingReference: String(b.committeeMeetingReference).trim(), committeeDecisionText: String(b.decisionText).trim(), status: 'committee_review', updatedBy: 'Admin Portal' });
     } else if (b.action === 'general_body_review') {
       if (row.status !== 'committee_review') return res.status(409).json({ message: 'पहले प्रबंध समिति की समीक्षा और कार्यवाही दर्ज करें।' });
       if (!String(b.generalBodyMeetingReference || '').trim() || !String(b.decisionText || '').trim()) return res.status(400).json({ message: 'सामान्य सभा की बैठक/प्रस्ताव संख्या और निर्णय दर्ज करें।' });
-      await row.update({ generalBodyMeetingReference: String(b.generalBodyMeetingReference).trim(), decisionText: String(b.decisionText).trim(), status: 'general_body_review', updatedBy: 'Admin Portal' });
+      await row.update({ generalBodyMeetingReference: String(b.generalBodyMeetingReference).trim(), generalBodyDecisionText: String(b.decisionText).trim(), status: 'general_body_review', updatedBy: 'Admin Portal' });
     } else if (b.action === 'close') {
       if (!['committee_review', 'general_body_review'].includes(row.status)) return res.status(409).json({ message: 'अंतिम निर्णय से पहले समिति समीक्षा और आवश्यक सामान्य सभा प्रक्रिया पूरी करें।' });
       const decisionType = String(b.decisionType || '').trim();
