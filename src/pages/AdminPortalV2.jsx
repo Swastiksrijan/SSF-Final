@@ -151,9 +151,12 @@ export default function AdminPortalV2() {
         const reference = window.prompt(`Enter the UPI / UTR / receipt reference for ₹${amount.toLocaleString("en-IN")} received from ${member.fullName}:`);
         if (reference === null) return;
         if (String(reference).trim().length < 4) return window.alert("Please enter a valid payment reference (at least 4 characters).");
+        const paymentMode = window.prompt("Select / enter payment mode (UPI, Bank Transfer, Cash, Cheque, Razorpay):", member.paymentMode || "UPI");
+        if (paymentMode === null) return;
+        if (!paymentMode.trim()) return window.alert("Payment mode is required.");
         setBusy(`pay-${member.id}`);
         try {
-            const response = await fetch(ENDPOINTS.ADMIN_UPDATE_MEMBER(member.id), { method: "PATCH", headers: { ...authHeaders(), "Content-Type": "application/json" }, body: JSON.stringify({ paymentStatus: "paid", paymentAmount: Math.round(amount * 100), paymentMode: "Recorded by admin", paymentReference: String(reference).trim() }) });
+            const response = await fetch(ENDPOINTS.ADMIN_UPDATE_MEMBER(member.id), { method: "PATCH", headers: { ...authHeaders(), "Content-Type": "application/json" }, body: JSON.stringify({ paymentStatus: "paid", paymentAmount: Math.round(amount * 100), paymentMode: paymentMode.trim(), paymentReference: String(reference).trim() }) });
             const result = await response.json().catch(() => ({}));
             if (response.status === 401) return logout();
             if (!response.ok) return window.alert(result.message || "Unable to record the payment");
