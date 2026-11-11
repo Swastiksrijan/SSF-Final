@@ -57,7 +57,7 @@ router.post('/member-application-bylaw', async (req, res) => {
         const type = String(memberType || '').toLowerCase();
         const normalizedEmail = String(email || '').trim().toLowerCase();
         const normalizedPhone = String(phone || '').trim();
-        if (!fullName || String(fullName).trim().length < 3 || !normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail) || !normalizedPhone || !allowedTypes.has(type) || !dateOfBirth || !address || !occupation) {
+        if (!fullName || String(fullName).trim().length < 3 || !normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail) || normalizedPhone.replace(/\D/g, '').length < 7 || !allowedTypes.has(type) || !dateOfBirth || !String(address || '').trim() || !String(occupation || '').trim()) {
             return res.status(400).json({ status: 'error', message: 'Please complete all required application fields.' });
         }
         const dob = new Date(dateOfBirth);
@@ -65,7 +65,7 @@ router.post('/member-application-bylaw', async (req, res) => {
         if (Number.isNaN(dob.getTime()) || dob > adultCutoff) {
             return res.status(400).json({ status: 'error', message: 'Applicant must be at least 18 years old.' });
         }
-        if (String(citizenship) !== 'Indian' || !citizenshipConfirmed || !acceptsRules || !goodCharacter || !noAlcohol || String(electronicSignature || '').trim().length < 2 || !declaration) {
+        if (String(citizenship) !== 'Indian' || !citizenshipConfirmed || !acceptsRules || !goodCharacter || !noAlcohol || String(electronicSignature || '').trim().length < 2 || String(electronicSignature || '').trim().toLowerCase() !== String(fullName || '').trim().toLowerCase() || !declaration) {
             return res.status(400).json({ status: 'error', message: 'Please confirm the eligibility declarations and enter your full name as digital signature.' });
         }
         const existing = await Member.findOne({ where: { email: normalizedEmail } });
