@@ -19,6 +19,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const [applicationId, setApplicationId] = useState("");
+  const [imsRecordId, setImsRecordId] = useState("");
   const [message, setMessage] = useState("");
   const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
   const selected = CATEGORIES.find(item => item.id === form.memberType) || CATEGORIES[2];
@@ -41,6 +42,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || "आवेदन जमा नहीं हो सका।");
       setApplicationId(result.applicationId || "");
+      setImsRecordId(result.imsRecordId || "");
       setMessage(result.message || "आवेदन प्राप्त हुआ।");
       setStatus("success");
     } catch (err) {
@@ -54,11 +56,11 @@ export default function MemberForm({ initialMemberType = "general" }) {
       <div className="text-3xl mb-3">✓</div>
       <h3 className="text-2xl font-black text-[#12345A]">आवेदन प्राप्त हुआ</h3>
       <p className="mt-2 text-[#26343D]">{message}</p>
-      {applicationId && <p className="mt-3 text-sm font-semibold text-[#12345A]">Application Reference: {applicationId}</p>}
+      {applicationId && <p className="mt-3 text-sm font-semibold text-[#12345A]">Application Reference: {applicationId}</p>}{imsRecordId && <p className="mt-1 text-sm font-semibold text-[#176447]">IMS Membership Record: {imsRecordId}</p>}
       <div className="mt-5 rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">
         <strong>स्थिति: Pending Approval</strong><br />यह आवेदन सदस्यता की स्वीकृति नहीं है। प्रबंध समिति का निर्णय दर्ज होने और नियमावली की शर्तें पूरी होने के बाद ही सदस्यता प्रभावी होगी। अभी भुगतान न करें; समिति से प्राप्त निर्देशों के अनुसार ही अंशदान करें।
       </div>
-      <button type="button" onClick={() => { setForm(initial); setStatus("idle"); setApplicationId(""); }} className="mt-5 rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white">Close / नया आवेदन</button>
+      <button type="button" onClick={() => { setForm(initial); setStatus("idle"); setApplicationId(""); setImsRecordId(""); }} className="mt-5 rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white">Close / नया आवेदन</button>
     </div>
   );
 
@@ -100,7 +102,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
           <label className="flex gap-3 text-sm text-slate-700"><input type="checkbox" checked={form.citizenshipConfirmed} onChange={e => set("citizenshipConfirmed", e.target.checked)} /> मैं भारतीय नागरिक हूँ।</label>
           <label className="flex gap-3 text-sm text-slate-700"><input type="checkbox" checked={form.declaration} onChange={e => set("declaration", e.target.checked)} /> मेरे द्वारा दी गई जानकारी सत्य है। मैं समझता/समझती हूँ कि आवेदन पर प्रबंध समिति निर्णय लेगी और आवेदन जमा करने मात्र से सदस्यता नहीं मिलेगी।</label>
         </div>
-        <label className="block text-sm font-semibold text-slate-700">डिजिटल हस्ताक्षर — अपना पूरा नाम लिखें *<input required value={form.electronicSignature} onChange={e => set("electronicSignature", e.target.value)} placeholder="पूरा नाम जैसा ऊपर लिखा है" className="mt-1 w-full rounded-xl border border-slate-300 p-3" /><span className="mt-1 block text-xs font-normal text-slate-500">यह ऑनलाइन सहमति/हस्ताक्षर का रिकॉर्ड होगा।</span></label>
+        <label className="block text-sm font-semibold text-slate-700">डिजिटल हस्ताक्षर — अपना पूरा नाम लिखें *<input required value={form.electronicSignature} onChange={e => set("electronicSignature", e.target.value)} placeholder="पूरा नाम जैसा ऊपर लिखा है" className="mt-1 w-full rounded-xl border border-slate-300 p-3" /><span className="mt-1 block text-xs font-normal text-slate-500">यह ऑनलाइन सहमति/हस्ताक्षर का रिकॉर्ड होगा। आवश्यकता होने पर प्रबंध समिति हस्ताक्षरित प्रति भी मांग सकती है।</span></label>
         {error && <p role="alert" className="rounded-xl bg-red-50 p-3 text-sm text-red-700">{error}</p>}
         <button disabled={status === "submitting"} type="submit" className="w-full rounded-xl bg-[#12345A] px-6 py-4 font-black text-white hover:bg-[#176447] disabled:opacity-60">{status === "submitting" ? "आवेदन जमा हो रहा है…" : "Submit Membership Application / आवेदन जमा करें"}</button>
         <p className="text-xs leading-relaxed text-slate-500">आवेदन मिलने पर समिति द्वारा समीक्षा की जाएगी। स्वीकृति/अस्वीकृति और प्रवेश की तारीख व रसीद संख्या सदस्यता रजिस्टर में दर्ज की जाएगी। कृपया समिति के निर्देश से पहले भुगतान न करें।</p>
