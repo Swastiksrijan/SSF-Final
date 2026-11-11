@@ -162,7 +162,7 @@ const digits = (value) => String(value || '').replace(/\D/g, '');
 // (Divya Sharma SSF-MBR-00003 and the rest) look like empty website accounts:
 // their number was issued but the marker was never updated, so the portal
 // withheld their ID card and the admin list labelled them "Account only".
-const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory'];
+const REAL_MEMBERSHIP_TYPES = ['general', 'active', 'life', 'advisory', 'patron'];
 const holdsOfficialMemberId = (member) => Boolean(String(member?.memberId || '').trim());
 const hasAccountMarker = (member) => String(member?.memberType || '').trim().toLowerCase() === 'website_signup'
   || String(member?.message || '').trim().toLowerCase() === 'signup from website';
