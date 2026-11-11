@@ -169,10 +169,10 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
         // number that belongs to somebody else is refused.
         if (updates.memberId !== undefined) {
             const wanted = String(updates.memberId || '').trim();
-            if (wanted && wanted !== String(member.memberId || '')) {
+            if (wanted !== String(member.memberId || '')) {
                 const committeeReference = String(req.body?.committeeReference || '').trim();
-                if (!committeeReference) return res.status(400).json({ message: 'Committee resolution reference is required to assign or restore an official Member ID.' });
-                updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_ID_ASSIGNMENT: ${committeeReference}`].filter(Boolean).join(' | ');
+                if (!committeeReference) return res.status(400).json({ message: 'Committee resolution reference is required to assign, restore or clear an official Member ID.' });
+                updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_ID_CHANGE: ${committeeReference}`].filter(Boolean).join(' | ');
             }
             if (!wanted) updates.memberId = null;
             else {
@@ -233,6 +233,11 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
         if (updates.paymentReference !== undefined) updates.paymentReference = String(updates.paymentReference || '').trim() || null;
         if (updates.paymentStatus === 'paid' && member.paymentStatus !== 'paid') updates.paymentPaidAt = new Date();
         const prospective = { ...member.toJSON(), ...updates };
+        if ((updates.status || member.status) === 'approved' && isRealMembership(prospective) && !member.memberId && !updates.memberId) {
+            const committeeReference = String(req.body?.committeeReference || '').trim();
+            if (!committeeReference) return res.status(400).json({ message: 'Managing Committee resolution / meeting reference is required before an official Member ID can be issued.' });
+            updates.reviewNote = [updates.reviewNote || member.reviewNote, `SSF_COMMITTEE_APPROVAL: ${committeeReference}`].filter(Boolean).join(' | ');
+        }
         // "Signup from website" is a system marker, not the applicant's own
         // words, and it also marks the row as account-only. Promoting the row to
         // a real role has to drop it, or isRealMembership stays false and the ID
@@ -273,7 +278,8 @@ router.patch('/admin/members/:id', requireAdminAuth, async (req, res) => {
             }
         }
         if (updates.status === 'rejected') {
-            updates.memberId = null; updates.certId = null; updates.certificateType = null; updates.certificateIssuedAt = null;
+            if (member.memberId) updates.idActive = false;
+            else { updates.memberId = null; updates.certId = null; updates.certificateType = null; updates.certificateIssuedAt = null; }
         }
         await member.update(updates);
         if (updates.receiptNumber) {
@@ -324,7 +330,10 @@ router.patch('/admin/members/:id/status', requireAdminAuth, async (req, res) => 
             updates.certId = member.certId || issued.certId;
             updates.certificateType = member.certificateType || 'Membership Certificate'; updates.certificateIssuedAt = now;
         }
-        if (status === 'rejected') { updates.memberId = null; updates.certId = null; updates.certificateType = null; updates.certificateIssuedAt = null; }
+        if (status === 'rejected') {
+            if (member.memberId) updates.idActive = false;
+            else { updates.memberId = null; updates.certId = null; updates.certificateType = null; updates.certificateIssuedAt = null; }
+        }
         if (status === 'rejected') await identity.revokeFor('member', member.id, updates.reviewNote || 'Rejected');
         await member.update(updates);
         if (updates.memberId) await identity.reserve({ kind: 'member', value: updates.memberId, certValue: updates.certId, recordId: member.id, holderName: member.fullName, holderEmail: member.email });
@@ -361,7 +370,7 @@ router.post('/admin/members/:id/revoke', requireAdminAuth, async (req, res) => {
         if (!member.memberId && !member.certId) return res.status(400).json({ message: 'This member has no issued IDs to revoke.' });
         const reason = String(req.body?.reviewNote || '').trim() || null;
         await identity.revokeFor('member', member.id, reason || 'Revoked by admin');
-        await member.update({ status: 'rejected', memberId: null, certId: null, certificateType: null, certificateIssuedAt: null, reviewNote: reason });
+        await member.update({ status: 'rejected', idActive: false, reviewNote: reason });
         return res.json({ status: 'success', message: 'Membership IDs revoked. The ID card and certificate no longer verify.' });
     } catch (error) { console.error('❌ Member revoke error:', error); return res.status(500).json({ message: 'Unable to revoke member IDs.' }); }
 });
