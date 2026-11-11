@@ -19,7 +19,7 @@ const minimumContribution = (member) => {
     const type = String(member?.memberType || "").trim().toLowerCase();
     if (type === "general") return /Ordinary membership payment preference: monthly/i.test(member.message || "") ? 100 : 1200;
     if (type === "patron") {
-        const match = String(member.message || "").match(/Patron installment count:\\s*(\\d+)/i);
+        const match = String(member.message || "").match(/Patron installment count:\s*(\d+)/i);
         const count = match ? Number(match[1]) : 1;
         return [1, 2, 3, 4, 6, 12].includes(count) ? (count === 1 ? 10000 : Math.ceil(10000 / count)) : 10000;
     }
