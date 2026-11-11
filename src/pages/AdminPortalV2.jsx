@@ -15,6 +15,16 @@ const formatDate = (person) => new Date(person.certificateIssuedAt || person.app
 const MEMBERSHIP_FEES = { general: 1200, life: 8000, patron: 10000 };
 const FEE_MEMBER_TYPES = ["general", "life", "patron"];
 const needsFee = (member) => FEE_MEMBER_TYPES.includes(String(member?.memberType || "").trim().toLowerCase());
+const minimumContribution = (member) => {
+    const type = String(member?.memberType || "").trim().toLowerCase();
+    if (type === "general") return /Ordinary membership payment preference: monthly/i.test(member.message || "") ? 100 : 1200;
+    if (type === "patron") {
+        const match = String(member.message || "").match(/Patron installment count:\\s*(\\d+)/i);
+        const count = match ? Number(match[1]) : 1;
+        return [1, 2, 3, 4, 6, 12].includes(count) ? (count === 1 ? 10000 : Math.ceil(10000 / count)) : 10000;
+    }
+    return MEMBERSHIP_FEES[type] || 0;
+};
 const paymentLabel = (member) => {
     const status = String(member?.paymentStatus || "pending").toLowerCase();
     if (!needsFee(member)) return "Not required";
@@ -133,7 +143,7 @@ export default function AdminPortalV2() {
     const markPaymentReceived = async (member) => {
         const type = String(member.memberType || "").toLowerCase();
         const monthlyOrdinary = type === "general" && /Ordinary membership payment preference: monthly/i.test(member.message || "");
-        const minimum = monthlyOrdinary ? 100 : (MEMBERSHIP_FEES[type] || 0);
+        const minimum = minimumContribution(member);
         const amountText = window.prompt(`Enter the actual amount received from ${member.fullName} (minimum ₹${minimum.toLocaleString("en-IN")}):`, String(minimum));
         if (amountText === null) return;
         const amount = Number(String(amountText).replace(/,/g, "").trim());
