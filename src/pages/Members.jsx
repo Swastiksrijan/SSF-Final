@@ -7,6 +7,7 @@ import MemberForm from "../components/MemberForm";
 const Members = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedMemberType, setSelectedMemberType] = useState("general");
+  const [directApplication, setDirectApplication] = useState(false);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 30 },
@@ -28,9 +29,19 @@ const Members = () => {
     const params = new URLSearchParams(window.location.search);
     if (params.get("apply") === "1") {
       const requestedType = params.get("type");
-      openApplication(["patron", "life", "general"].includes(requestedType) ? requestedType : "general");
+      setSelectedMemberType(["patron", "life", "general"].includes(requestedType) ? requestedType : "general");
+      setDirectApplication(true);
     }
   }, []);
+
+  if (directApplication) return (
+    <main className="min-h-screen bg-slate-50 px-4 pb-12 pt-32 sm:px-6">
+      <div className="mx-auto max-w-4xl">
+        <a href="/Members" className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-[#12345A] hover:text-[#176447]">← सदस्यता जानकारी पर वापस जाएँ</a>
+        <MemberForm key={selectedMemberType} initialMemberType={selectedMemberType} />
+      </div>
+    </main>
+  );
 
   return (
     <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
