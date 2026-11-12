@@ -145,13 +145,23 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
         '<h2 style="text-align:center;color:#12345A;font-size:19px;margin:24px 0 18px">कारण बताओ नोटिस</h2><div style="white-space:pre-wrap">' + escapeHtml(textBody) + '</div><p style="text-align:center;margin:26px 0"><a href="' + escapeHtml(responseUrl) + '" style="display:inline-block;background:#12345A;color:#fff;text-decoration:none;padding:12px 22px;border-radius:7px;font-weight:bold">ऑनलाइन जवाब दें</a></p>' +
         '<div style="margin-top:30px;padding-top:14px;border-top:1px solid #d7dee8;font-size:12px;color:#64748b">Swastik Srijan Foundation Samiti | यह नोटिस संस्था के अभिलेख हेतु जारी किया गया है।</div></div>';
       let delivery = 'not_sent';
+      let emailWarning = null;
       if (['email', 'email_and_post'].includes(method)) {
         if (!emailConfigured()) return res.status(503).json({ message: 'ईमेल सेवा कॉन्फ़िगर नहीं है। पहले डाक से भेजें या ईमेल सेवा सेट करें।' });
-        await sendMail({ to: row.email, subject: 'SSF कारण बताओ नोटिस — ' + row.noticeReference + ' — ' + row.personName, text: textBody, html: htmlBody });
-        delivery = 'email_sent';
+        try {
+          await sendMail({ to: row.email, subject: 'SSF कारण बताओ नोटिस — ' + row.noticeReference + ' — ' + row.personName, text: textBody, html: htmlBody });
+          delivery = 'email_sent';
+        } catch (emailError) {
+          // A mail failure must never roll back the notice: the record, the
+          // reference number and the member response link are still created, so
+          // the admin can hand-deliver, post it, or resend after fixing mail.
+          console.error('⚠️ Notice email failed:', emailError.message);
+          delivery = 'email_failed';
+          emailWarning = 'नोटिस दर्ज हो गया, पर ईमेल भेजना विफल रहा। कृपया WhatsApp/डाक से भेजें या ईमेल सेवा जाँचें।';
+        }
       }
       await row.update({ noticeText: textBody, responseTokenHash: hashToken(rawToken), status: 'notice_issued', dispatchMethod: method, dispatchReference: dispatchReference || null, dispatchAt: new Date(), emailDeliveryStatus: delivery, updatedBy: 'Admin Portal' });
-      return res.json({ status: 'success', record: publicRecord(row), responseUrl });
+      return res.json({ status: 'success', record: publicRecord(row), responseUrl, emailWarning });
     }
     if (b.action === 'hearing') {
       const hearingAt = new Date(b.hearingAt);

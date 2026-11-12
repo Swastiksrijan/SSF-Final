@@ -10,6 +10,9 @@ on:
       - "backend_node/services/identityService.js"
       - "backend_node/tests/membership.http.test.js"
       - "backend_node/tests/admin.http.test.js"
+      - "backend_node/tests/memberAction.http.test.js"
+      - "backend_node/routes/memberActionRoutes.js"
+      - "backend_node/models/MemberAction.js"
       - "backend_node/package.json"
       - "backend_node/package-lock.json"
       - ".github/workflows/membership-governance-tests.yml"
@@ -21,6 +24,9 @@ on:
       - "backend_node/services/identityService.js"
       - "backend_node/tests/membership.http.test.js"
       - "backend_node/tests/admin.http.test.js"
+      - "backend_node/tests/memberAction.http.test.js"
+      - "backend_node/routes/memberActionRoutes.js"
+      - "backend_node/models/MemberAction.js"
       - "backend_node/package.json"
       - "backend_node/package-lock.json"
       - ".github/workflows/membership-governance-tests.yml"
@@ -41,3 +47,4 @@ jobs:
         run: |
           node backend_node/tests/membership.http.test.js
           node backend_node/tests/admin.http.test.js
+          node backend_node/tests/memberAction.http.test.js
