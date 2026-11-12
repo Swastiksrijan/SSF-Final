@@ -174,6 +174,15 @@ async function main() {
     ok('the decision type is recorded', close.body.record?.decisionType === 'membership_termination_approved');
     ok('the committee minutes survive the close', close.body.record?.committeeDecisionText === 'समिति ने जवाब पर विचार किया।');
     ok('the General Body minutes survive the close', close.body.record?.generalBodyDecisionText === 'gb');
+
+    console.log('\nDeleting a mistaken / test record:');
+    const deletable = await send('/api/admin/member-actions', 'POST', { personName: 'Delete Me', email: 'delete.me@example.com', actionScope: 'membership_review', bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
+    const delDraft = await send(`/api/admin/member-actions/${deletable.body.id}`, 'DELETE', null, auth);
+    ok('a draft record can be deleted', delDraft.status === 200, JSON.stringify(delDraft.body));
+    const gone = await send(`/api/admin/member-actions/${deletable.body.id}`, 'DELETE', null, auth);
+    ok('a deleted record is gone', gone.status === 404, JSON.stringify(gone.body));
+    const delClosed = await send(`/api/admin/member-actions/${draft1.body.id}`, 'DELETE', null, auth);
+    ok('a closed (final-order) record cannot be deleted', delClosed.status === 409, JSON.stringify(delClosed.body));
   } catch (error) {
     fail += 1;
     console.error('\n  \u2717 unexpected failure:', error);

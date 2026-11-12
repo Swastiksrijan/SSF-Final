@@ -189,6 +189,19 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
   } catch (e) { console.error('Member action update:', e); res.status(500).json({ message: 'नोटिस प्रक्रिया अपडेट नहीं हो सकी।' }); }
 });
 
+// Remove a record that has not reached a final order — a test entry, a wrong
+// person, or a mistake. Closed records (final decisions) are kept for the
+// institution's legal record and cannot be deleted here.
+router.delete('/admin/member-actions/:id', requireAdmin, async (req, res) => {
+  try {
+    const row = await MemberAction.findByPk(req.params.id);
+    if (!row) return res.status(404).json({ message: 'नोटिस रिकॉर्ड नहीं मिला।' });
+    if (row.status === 'closed') return res.status(409).json({ message: 'अंतिम निर्णय वाला रिकॉर्ड हटाया नहीं जा सकता।' });
+    await row.destroy();
+    return res.json({ status: 'success' });
+  } catch (e) { console.error('Member action delete:', e); return res.status(500).json({ message: 'रिकॉर्ड हटाया नहीं जा सका।' }); }
+});
+
 router.get('/member-action-response/:token', async (req, res) => {
   try {
     const row = await MemberAction.findOne({ where: { responseTokenHash: hashToken(req.params.token), status: ['notice_issued', 'reply_received', 'hearing_scheduled', 'committee_review', 'general_body_review'] } });
