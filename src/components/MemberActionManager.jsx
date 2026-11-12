@@ -82,6 +82,7 @@ export default function MemberActionManager({ token }) {
   const [form, setForm] = useState({ personName:"", email:"", phone:"", memberId:"", currentDesignation:"", actionScope:"office_bearer_role_review", bylawClause:"नियम 8 / नियम 12 / लागू नियम", grounds:"", factualSummary:"", replyDueAt:"", noticeText:"" });
   const [memberMatches, setMemberMatches] = useState([]);
   const [lookupMessage, setLookupMessage] = useState("");
+  const [closing, setClosing] = useState(null);
 
   const load = async () => { const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { headers: headers(token) }); const d = await r.json().catch(() => []); if (!r.ok) throw new Error(d.message || "रजिस्टर लोड नहीं हुआ"); setRows(Array.isArray(d) ? d : []); };
   useEffect(() => { load().catch(e => setMessage(e.message)); }, [token]);
@@ -114,8 +115,8 @@ export default function MemberActionManager({ token }) {
   };
   const act = async (row, body) => {
     setBusy(true); setMessage("");
-    try { const r=await fetch(`${ENDPOINTS.ADMIN_MEMBER_ACTIONS}/${row.id}`, { method:"PATCH", headers:{ ...headers(token), "Content-Type":"application/json" }, body:JSON.stringify(body) }); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.message || "कार्रवाई विफल"); if(d.emailWarning) setMessage(d.emailWarning); else if(d.responseUrl) { await navigator.clipboard?.writeText(d.responseUrl).catch(()=>{}); setMessage("नोटिस जारी हुआ। जवाब लिंक कॉपी करने का प्रयास किया गया: "+d.responseUrl); } else setMessage("रिकॉर्ड अपडेट हो गया।"); await load(); }
-    catch(e){ setMessage(e.message); } finally { setBusy(false); }
+    try { const r=await fetch(`${ENDPOINTS.ADMIN_MEMBER_ACTIONS}/${row.id}`, { method:"PATCH", headers:{ ...headers(token), "Content-Type":"application/json" }, body:JSON.stringify(body) }); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.message || "कार्रवाई विफल"); if(d.emailWarning) setMessage(d.emailWarning); else if(d.responseUrl) { await navigator.clipboard?.writeText(d.responseUrl).catch(()=>{}); setMessage("नोटिस जारी हुआ। जवाब लिंक कॉपी करने का प्रयास किया गया: "+d.responseUrl); } else setMessage("रिकॉर्ड अपडेट हो गया।"); await load(); return true; }
+    catch(e){ setMessage(e.message); return false; } finally { setBusy(false); }
   };
   const saveNoticePdf = async row => { try { await downloadNoticePdf(row); } catch (e) { setMessage("PDF बनाते समय त्रुटि: " + (e.message || e)); } };
   const remove = async row => { if(!window.confirm("क्या आप इस नोटिस रिकॉर्ड को हटाना चाहते हैं? यह वापस नहीं आएगा।")) return; setBusy(true); setMessage(""); try { const r=await fetch(`${ENDPOINTS.ADMIN_MEMBER_ACTIONS}/${row.id}`, { method:"DELETE", headers:headers(token) }); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.message || "रिकॉर्ड हटाया नहीं जा सका"); setMessage("रिकॉर्ड हटा दिया गया।"); await load(); } catch(e){ setMessage(e.message); } finally { setBusy(false); } };
@@ -123,7 +124,17 @@ export default function MemberActionManager({ token }) {
   const hearing = row => { const when=window.prompt("सुनवाई की तारीख और समय (उदाहरण: 2026-11-25T11:00)"); if(!when) return; const notes=window.prompt("सुनवाई का स्थान/ऑनलाइन माध्यम और सूचना विवरण"); if(!notes) return; act(row,{action:"hearing",hearingAt:when,hearingNotes:notes}); };
   const committee = row => { const ref=window.prompt("प्रबंध समिति बैठक/कार्यवाही संदर्भ"); if(!ref) return; const note=window.prompt("जवाब, सुनवाई और समिति की चर्चा का पूरा सार"); if(!note) return; act(row,{action:"committee_review",committeeMeetingReference:ref,decisionText:note}); };
   const generalBody = row => { const ref=window.prompt("सामान्य सभा बैठक/प्रस्ताव संदर्भ"); if(!ref) return; const note=window.prompt("सामान्य सभा की कार्यवाही और निर्णय का पूरा विवरण"); if(!note) return; act(row,{action:"general_body_review",generalBodyMeetingReference:ref,decisionText:note}); };
-  const close = row => { const options=[["1","no_action","कोई कार्रवाई नहीं"],["2","advisory","सलाह"],["3","warning","चेतावनी"],["4","role_change_approved","पद में परिवर्तन"],["5","membership_termination_approved","सदस्यता समाप्ति"],["6","other","अन्य निर्णय"]]; const picked=window.prompt("अंतिम निर्णय का प्रकार चुनें:\n1. कोई कार्रवाई नहीं\n2. सलाह\n3. चेतावनी\n4. पद में परिवर्तन\n5. सदस्यता समाप्ति\n6. अन्य निर्णय","1"); if(!picked) return; const choice=options.find(item=>item[0]===picked.trim()||item[1]===picked.trim()); if(!choice){window.alert("कृपया 1 से 6 में सही विकल्प चुनें।");return;} if(["role_change_approved","membership_termination_approved"].includes(choice[1]) && row.status!=="general_body_review"){window.alert("इस निर्णय से पहले सामान्य सभा की विधिवत कार्यवाही दर्ज करें।");return;} const note=window.prompt("अंतिम आदेश/कारण सहित पूरा निर्णय लिखें"); if(!note || !note.trim()) return; act(row,{action:"close",decisionType:choice[1],generalBodyMeetingReference:row.generalBodyMeetingReference||"",committeeMeetingReference:row.committeeMeetingReference||"",decisionText:note.trim()}); };
+  // "अंतिम निर्णय दर्ज करें" opens a proper form. The old flow used window.prompt
+  // pop-ups; when a step was skipped (e.g. a role-change decision chosen before
+  // the General Body stage) it only flashed an alert, the record never changed,
+  // and the "अगला चरण" hint kept reappearing with no visible reason.
+  const openClose = row => setClosing({ row, decisionType: "no_action", note: "", ref: "" });
+  const submitClose = async e => {
+    e.preventDefault();
+    const { row, decisionType, note, ref } = closing;
+    const ok = await act(row, { action: "close", decisionType, decisionText: note.trim(), generalBodyMeetingReference: ref.trim(), committeeMeetingReference: row.committeeMeetingReference || "" });
+    if (ok) setClosing(null);
+  };
   // Click-to-WhatsApp: opens WhatsApp with the notice text pre-filled for the
   // member's number. The admin still presses Send in WhatsApp, so this is a
   // manual share, not an automated Cloud API delivery.
@@ -166,11 +177,40 @@ export default function MemberActionManager({ token }) {
       <button type="button" onClick={()=>saveNoticePdf(row)} className="mt-4 mr-2 rounded-lg border border-[#176447] px-4 py-2 text-sm font-bold text-[#176447]">PDF डाउनलोड करें</button>
       {row.status!=="draft" && row.noticeText && <button type="button" onClick={()=>shareWhatsApp(row)} className="mt-4 mr-2 rounded-lg bg-[#25D366] px-4 py-2 text-sm font-bold text-white">WhatsApp पर साझा करें</button>}
       {["notice_issued","reply_received","hearing_scheduled"].includes(row.status) && <div className="mt-4 flex flex-wrap gap-2">{["notice_issued","reply_received"].includes(row.status) && <button disabled={busy} onClick={()=>hearing(row)} className="rounded-lg bg-indigo-700 px-3 py-2 text-xs font-bold text-white">सुनवाई तय करें</button>}<button disabled={busy} onClick={()=>committee(row)} className="rounded-lg bg-slate-700 px-3 py-2 text-xs font-bold text-white">समिति कार्यवाही दर्ज करें</button></div>}
-      {row.status==="committee_review" && <div className="mt-4 flex flex-wrap gap-2"><button disabled={busy} onClick={()=>generalBody(row)} className="rounded-lg bg-indigo-700 px-3 py-2 text-xs font-bold text-white">सामान्य सभा में रखें</button><button disabled={busy} onClick={()=>close(row)} className="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white">अंतिम निर्णय दर्ज करें</button></div>}
-      {row.status==="general_body_review" && <button disabled={busy} onClick={()=>close(row)} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-bold text-white">सामान्य सभा के निर्णय के बाद बंद करें</button>}
+      {row.status==="committee_review" && <div className="mt-4 flex flex-wrap gap-2"><button disabled={busy} onClick={()=>generalBody(row)} className="rounded-lg bg-indigo-700 px-3 py-2 text-xs font-bold text-white">सामान्य सभा में रखें</button><button disabled={busy} onClick={()=>openClose(row)} className="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white">अंतिम निर्णय दर्ज करें</button></div>}
+      {row.status==="general_body_review" && <button disabled={busy} onClick={()=>openClose(row)} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-bold text-white">सामान्य सभा के निर्णय के बाद बंद करें</button>}
       {row.dispatchMethod && <p className="mt-3 text-xs text-slate-400">भेजने का माध्यम: {row.dispatchMethod} • {row.dispatchReference||row.emailDeliveryStatus||"—"}</p>}
       {row.status==="draft" && <button type="button" disabled={busy} onClick={()=>remove(row)} className="mt-4 mr-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-bold text-red-700">रिकॉर्ड हटाएँ</button>}
       {row.status==="closed" && <p className="mt-2 text-xs font-bold text-slate-500">अंतिम निर्णय: {row.decisionType}</p>}{row.status==="reply_received" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जवाब पढ़ें → आवश्यकता हो तो सुनवाई तय करें → फिर समिति की बैठक में कार्यवाही दर्ज करें।</p>}{row.status==="hearing_scheduled" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: सुनवाई पूरी होने पर उसका सार दर्ज रखें → समिति कार्यवाही दर्ज करें।</p>}{row.status==="committee_review" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जहाँ नियम/निर्णय के लिए जरूरी हो, सामान्य सभा की कार्यवाही दर्ज करें; अन्यथा सक्षम समिति का वैध अंतिम निर्णय दर्ज करें।</p>}
     </article>)}</div>
+    {closing && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" onClick={()=>setClosing(null)}>
+      <form onSubmit={submitClose} onClick={e=>e.stopPropagation()} className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+        <h3 className="text-lg font-black text-[#12345A]">अंतिम निर्णय दर्ज करें</h3>
+        <p className="mt-1 text-sm text-slate-500">{closing.row.personName} • {closing.row.noticeReference || "—"} • {status[closing.row.status]}</p>
+        <label className="mt-4 block text-sm font-semibold text-slate-600">निर्णय का प्रकार
+          <select value={closing.decisionType} onChange={e=>setClosing(p=>({...p, decisionType:e.target.value}))} className="mt-1 w-full rounded-xl border p-3">
+            <option value="no_action">कोई कार्रवाई नहीं</option>
+            <option value="advisory">सलाह</option>
+            <option value="warning">चेतावनी</option>
+            {closing.row.actionScope==="office_bearer_role_review" && <option value="role_change_approved">पद में परिवर्तन (सामान्य सभा आवश्यक)</option>}
+            {closing.row.actionScope==="membership_review" && <option value="membership_termination_approved">सदस्यता समाप्ति (सामान्य सभा आवश्यक)</option>}
+            <option value="other">अन्य निर्णय</option>
+          </select>
+        </label>
+        {["role_change_approved","membership_termination_approved"].includes(closing.decisionType) && <>
+          <p className="mt-3 rounded-xl bg-amber-50 p-3 text-sm text-amber-800">{closing.row.status==="general_body_review" ? "यह निर्णय सामान्य सभा की कार्यवाही के आधार पर दर्ज होगा।" : "ध्यान दें: पद/सदस्यता समाप्ति से पहले सामान्य सभा की विधिवत कार्यवाही आवश्यक है। पहले “सामान्य सभा में रखें” से कार्यवाही दर्ज करें, वरना यह निर्णय अस्वीकार हो जाएगा।"}</p>
+          <label className="mt-3 block text-sm font-semibold text-slate-600">सामान्य सभा बैठक/प्रस्ताव संदर्भ
+            <input value={closing.ref} onChange={e=>setClosing(p=>({...p, ref:e.target.value}))} placeholder="उदाहरण: GB/2026/01" className="mt-1 w-full rounded-xl border p-3"/>
+          </label>
+        </>}
+        <label className="mt-3 block text-sm font-semibold text-slate-600">अंतिम आदेश/कारण सहित पूरा निर्णय
+          <textarea required value={closing.note} onChange={e=>setClosing(p=>({...p, note:e.target.value}))} rows={5} placeholder="सक्षम निकाय का पूरा निर्णय और उसके कारण लिखें…" className="mt-1 w-full rounded-xl border p-3"/>
+        </label>
+        <div className="mt-5 flex justify-end gap-2">
+          <button type="button" onClick={()=>setClosing(null)} className="rounded-xl border px-4 py-2 text-sm font-bold text-slate-600">रद्द करें</button>
+          <button type="submit" disabled={busy || !closing.note.trim()} className="rounded-xl bg-emerald-700 px-5 py-2 text-sm font-bold text-white disabled:opacity-50">{busy?"सुरक्षित हो रहा है…":"अंतिम निर्णय सुरक्षित करें"}</button>
+        </div>
+      </form>
+    </div>}
   </section>;
 }
