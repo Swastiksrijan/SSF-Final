@@ -9,11 +9,12 @@ const Donor = require('../models/Donor');
 const InternshipApplication = require('../models/InternshipApplication');
 const Interest = require('../models/Interest');
 const ContactMessage = require('../models/ContactMessage');
+const adminAuth = require('../services/adminAuth');
 
 const requireAdminAuth = (req, res, next) => {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
-    const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+    const expected = adminAuth.configuredToken();
     if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized admin access' });
     next();
 };

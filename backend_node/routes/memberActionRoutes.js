@@ -7,8 +7,9 @@ const sequelize = require('../config/database');
 const { Op } = require('sequelize');
 const identity = require('../services/identityService');
 const { sendMail, emailConfigured } = require('../services/mailer');
+const adminAuth = require('../services/adminAuth');
 
-const adminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+const adminToken = () => adminAuth.configuredToken();
 const requireAdmin = (req, res, next) => {
   const header = req.headers.authorization || '';
   const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';

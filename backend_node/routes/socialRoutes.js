@@ -2,6 +2,7 @@
 // Admin (token-protected): dashboard, plan, publish, channel connect, settings.
 // Public: published posts as JSON + the generated SVG image.
 const express = require('express');
+const adminAuth = require('../services/adminAuth');
 const router = express.Router();
 const { Op } = require('sequelize');
 const { SocialChannel, SocialPost, SocialConfig, SocialEvent, SocialRunLog } = require('../models/social');
@@ -14,13 +15,10 @@ const {
 } = require('../services/social/publisher');
 const { postSvg } = require('../services/social/image');
 
-// NOTE: follows the app-wide convention used by every other admin route
-// (auditRoutes, imsRoutes, financeRoutes, ...). The whole backend shares the
-// same ADMIN_PORTAL_TOKEN with the same fallback, so this module stays
-// consistent rather than breaking the live admin portal. TODO(security): move
-// ADMIN_PORTAL_TOKEN to a real env secret and drop the shared fallback across
-// all routes together. Tokens are never logged.
-const ADMIN_TOKEN = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+// Admin auth is shared across the backend via services/adminAuth.js, which
+// reads ADMIN_PORTAL_TOKEN and has no fallback (a missing secret denies access
+// instead of opening it). Tokens are never logged.
+const ADMIN_TOKEN = () => adminAuth.configuredToken();
 const requireAuth = (req, r, next) => {
   const auth = req.headers.authorization || '';
   const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';

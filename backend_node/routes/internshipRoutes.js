@@ -6,6 +6,7 @@ const { sendMail, emailConfigured } = require('../services/mailer');
 const InternshipApplication = require('../models/InternshipApplication');
 const { databaseUnavailableResponse } = require('../services/dbHealth');
 const { Op } = require('sequelize');
+const adminAuth = require('../services/adminAuth');
 const router = express.Router();
 const uploadDir = path.join(__dirname, '..', 'uploads', 'internships');
 fs.mkdirSync(uploadDir, { recursive: true });
@@ -32,7 +33,7 @@ const removeFile = (file) => { if (file?.path) fs.unlink(file.path, () => {}); }
 const publicUrl = (file) => (file ? `/uploads/internships/${file.filename}` : null);
 
 const notifyAdmin = async (application) => { if (!emailConfigured()) return; const recipients=(process.env.ADMIN_EMAILS||process.env.ADMIN_EMAIL||'swastiksrijanfoundation@gmail.com').split(',').map(v=>v.trim()).filter(Boolean).join(','); try { await sendMail({from:'"SSF Internship"',to:recipients,subject:`New Internship Application: ${application.fullName}`,text:`New internship application received.\n\nName: ${application.fullName}\nEmail: ${application.email}\nPhone: ${application.phone}\nCollege: ${application.college}\nCourse: ${application.course}\nArea: ${application.internshipType}\nDuration: ${application.duration}\nStart Date: ${application.startDate||'Not specified'}\nResume: ${application.resumePath}\nIdentity proof: ${application.idDocumentPath||'Not provided'}`}); } catch(error){console.error('⚠️ Internship notification failed:',error.message);} };
-const requireAdminAuth=(req,res,next)=>{const authHeader=req.headers.authorization||'';const token=authHeader.startsWith('Bearer ')?authHeader.slice(7).trim():'';const expected=process.env.ADMIN_PORTAL_TOKEN||'ssf-admin-portal-token';if(!token||token!==expected)return res.status(401).json({message:'Unauthorized admin access'});next();};
+const requireAdminAuth=(req,res,next)=>{const authHeader=req.headers.authorization||'';const token=authHeader.startsWith('Bearer ')?authHeader.slice(7).trim():'';const expected=adminAuth.configuredToken();if(!token||token!==expected)return res.status(401).json({message:'Unauthorized admin access'});next();};
 const nextNumber=async()=> (await InternshipApplication.count({where:{internId:{[Op.ne]:null}}}))+1;
 const code=(prefix,number,date=new Date())=>`${prefix}-${String(date.getMonth()+1).padStart(2,'0')}${String(date.getFullYear()).slice(-2)}-${String(number).padStart(4,'0')}`;
 

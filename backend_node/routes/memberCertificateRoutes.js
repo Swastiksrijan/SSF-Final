@@ -9,13 +9,14 @@ const { models: imsModels } = require('../models/ims');
 const { Op } = require('sequelize');
 const { requireAccountAuth, issueToken } = require('../services/userAuth');
 const identity = require('../services/identityService');
+const adminAuth = require('../services/adminAuth');
 
 const REAL_MEMBERSHIP_TYPES = identity.REAL_MEMBERSHIP_TYPES;
 // A person holding an official member number is a member even if the old
 // account marker is still on the row. See identityService for the reasoning.
 const isAccountOnly = (member) => identity.isAccountOnly(member);
 const isRealMembership = (member) => identity.isRealMembership(member);
-const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+const getAdminToken = () => adminAuth.configuredToken();
 const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.authorization || ''; const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : ''; if (!token || token !== getAdminToken()) return res.status(401).json({ message: 'Unauthorized admin access' }); next(); };
 const sendEmail = async (to, subject, text, html) => { if (!emailConfigured()) throw new Error('Email credentials missing in .env file'); await sendMail({ from: '"Swastik Srijan Admin"', to, subject, text, html }); };
 // Member numbers continue the offline register series (SSF-MBR-000NN), never

@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const LearningCertificate = require('../models/LearningCertificate');
 const Member = require('../models/Member');
+const adminAuth = require('../services/adminAuth');
 
-const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+const getAdminToken = () => adminAuth.configuredToken();
 const requireAdminAuth = (req,res,next) => {
   const token = String(req.headers.authorization || '').replace(/^Bearer\s+/,'').trim();
   if (!token || token !== getAdminToken()) return res.status(401).json({ message:'Unauthorized admin access' });

@@ -1,4 +1,5 @@
 const express = require('express');
+const adminAuth = require('../services/adminAuth');
 const { Op } = require('sequelize');
 const sequelize = require('../config/database');
 const AuditYear = require('../models/AuditYear');
@@ -12,7 +13,7 @@ const router = express.Router();
 const requireOfficeAuth = (req, res, next) => {
   const auth = req.headers.authorization || '';
   const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
-  const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+  const expected = adminAuth.configuredToken();
   if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized digital office access' });
   next();
 };

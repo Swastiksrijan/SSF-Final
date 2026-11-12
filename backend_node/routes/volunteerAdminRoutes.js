@@ -5,8 +5,9 @@ const fs = require('fs');
 const router = express.Router();
 const Volunteer = require('../models/Volunteer');
 const identity = require('../services/identityService');
+const adminAuth = require('../services/adminAuth');
 
-const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+const getAdminToken = () => adminAuth.configuredToken();
 const requireAdminAuth = (req, res, next) => {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';

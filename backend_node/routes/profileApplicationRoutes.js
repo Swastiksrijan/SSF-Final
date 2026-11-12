@@ -26,13 +26,14 @@ const uploadProfilePhoto = multer({ storage, fileFilter: profilePhotoOnly, limit
 const publicUploadUrl = (stored) => (stored ? `/uploads/${path.basename(String(stored))}` : null);
 const hashPassword = (password) => { const salt = crypto.randomBytes(16).toString('hex'); const hash = crypto.scryptSync(password, `${salt}${process.env.AUTH_PEPPER || ''}`, 64).toString('hex'); return `${salt}:${hash}`; };
 const { requireAccountAuth, issueToken } = require('../services/userAuth');
+const adminAuth = require('../services/adminAuth');
 const sendAdminNotification = async (subject, text) => {
     if (!emailConfigured()) return;
     const recipients = (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'swastiksrijanfoundation@gmail.com').split(',').map((email) => email.trim()).filter(Boolean).join(',');
     try { await sendMail({ from: '"Swastik Srijan Admin"', to: recipients, subject, text }); }
     catch (error) { console.error('⚠️ Admin notification failed:', error.message); }
 };
-const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+const getAdminToken = () => adminAuth.configuredToken();
 const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.authorization || ''; const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : ''; if (!token || token !== getAdminToken()) return res.status(401).json({ message: 'Unauthorized admin access' }); next(); };
 const isAccountOnly = (member) => identity.isAccountOnly(member);
 const removeStoredFile = (storedPath) => { if (!storedPath) return; const relative = String(storedPath).replace(/^\/+/, ''); const filePath = path.join(__dirname, '..', relative); try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Upload cleanup failed:', error.message); } };

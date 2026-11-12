@@ -2,8 +2,9 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 const RoleDocument = require('../models/RoleDocument');
+const adminAuth = require('../services/adminAuth');
 
-const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+const getAdminToken = () => adminAuth.configuredToken();
 const requireAdminAuth = (req, res, next) => {
     const header = req.headers.authorization || '';
     const token = header.startsWith('Bearer ') ? header.slice(7).trim() : '';

@@ -13,11 +13,12 @@ const Donor = require('../models/Donor');
 const InternshipApplication = require('../models/InternshipApplication');
 const FinanceTransaction = require('../models/FinanceTransaction');
 const { sendMail, emailConfigured } = require('../services/mailer');
+const adminAuth = require('../services/adminAuth');
 
 const router = express.Router();
 const GOOGLE_FRONTEND_URL = String(process.env.GOOGLE_FRONTEND_URL || 'https://swastiksrijan.in/SSFDigitalOffice').trim();
 const GOOGLE_OAUTH_REDIRECT_URI = String(process.env.GOOGLE_OAUTH_REDIRECT_URI || 'https://swastiksrijan.in/api/digital-office/google/callback').trim();
-const googleTokenKey = () => crypto.createHash('sha256').update(String(process.env.GOOGLE_TOKEN_ENCRYPTION_KEY || process.env.ADMIN_PORTAL_TOKEN || 'ssf-google-token-key').trim()).digest();
+const googleTokenKey = () => crypto.createHash('sha256').update(String(process.env.GOOGLE_TOKEN_ENCRYPTION_KEY || adminAuth.configuredToken() || 'ssf-google-token-key').trim()).digest();
 const encryptGoogleToken = (value) => {
   const iv = crypto.randomBytes(12);
   const cipher = crypto.createCipheriv('aes-256-gcm', googleTokenKey(), iv);
@@ -84,7 +85,7 @@ const getGoogleAccessToken = async () => {
 const requireOfficeAuth = (req, res, next) => {
   const auth = req.headers.authorization || '';
   const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
-  const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+  const expected = adminAuth.configuredToken();
   if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized digital office access' });
   next();
 };
