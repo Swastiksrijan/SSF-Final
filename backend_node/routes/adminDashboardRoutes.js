@@ -193,4 +193,24 @@ router.post('/admin/diagnostics/email', requireAdminAuth, async (req, res) => {
   }
 });
 
+// Temporary, admin-only: read the provider's own delivery log so "accepted" can
+// be checked against what actually happened (delivered / blocked / bounced / spam).
+router.get('/admin/diagnostics/email-events', requireAdminAuth, async (req, res) => {
+  const key = String(process.env.BREVO_API_KEY || '').trim();
+  if (!key) return res.status(503).json({ message: 'Brevo is not configured on the server.' });
+  const email = String((req.query.email || '').trim());
+  const qs = new URLSearchParams({ limit: '100', sort: 'desc' });
+  if (email) qs.set('email', email);
+  try {
+    const r = await fetch(`https://api.brevo.com/v3/smtp/statistics/events?${qs}`, { headers: { 'api-key': key, accept: 'application/json' } });
+    const body = await r.text();
+    if (!r.ok) return res.status(502).json({ message: `Brevo events ${r.status}`, detail: body.slice(0, 400) });
+    const data = JSON.parse(body);
+    const events = (data.events || []).map((e) => ({ date: e.date, email: e.email, subject: e.subject, event: e.event, reason: e.reason, messageId: e.messageId }));
+    return res.json({ count: events.length, events });
+  } catch (e) {
+    return res.status(502).json({ message: 'Could not read Brevo events.', detail: e.message });
+  }
+});
+
 module.exports = router;
