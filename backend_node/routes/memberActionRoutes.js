@@ -189,14 +189,15 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
   } catch (e) { console.error('Member action update:', e); res.status(500).json({ message: 'नोटिस प्रक्रिया अपडेट नहीं हो सकी।' }); }
 });
 
-// Remove a record that has not reached a final order — a test entry, a wrong
-// person, or a mistake. Closed records (final decisions) are kept for the
-// institution's legal record and cannot be deleted here.
+// Remove a notice that was never issued — a test entry, a wrong person, or a
+// mistake caught before dispatch. Once a notice has been issued to a real
+// person (any status other than 'draft') it is part of the institution's
+// record and is kept: to retire it, record a final 'no_action' decision.
 router.delete('/admin/member-actions/:id', requireAdmin, async (req, res) => {
   try {
     const row = await MemberAction.findByPk(req.params.id);
     if (!row) return res.status(404).json({ message: 'नोटिस रिकॉर्ड नहीं मिला।' });
-    if (row.status === 'closed') return res.status(409).json({ message: 'अंतिम निर्णय वाला रिकॉर्ड हटाया नहीं जा सकता।' });
+    if (row.status !== 'draft') return res.status(409).json({ message: 'जारी हो चुका नोटिस रिकॉर्ड हटाया नहीं जा सकता। उसे “कोई कार्रवाई नहीं” के अंतिम निर्णय से बंद करें।' });
     await row.destroy();
     return res.json({ status: 'success' });
   } catch (e) { console.error('Member action delete:', e); return res.status(500).json({ message: 'रिकॉर्ड हटाया नहीं जा सका।' }); }
