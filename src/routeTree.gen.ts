@@ -31,6 +31,7 @@ import { Route as RefundPolicyRouteImport } from './routes/RefundPolicy'
 import { Route as RefundAndCancellationRouteImport } from './routes/RefundAndCancellation'
 import { Route as PrivacyPolicyRouteImport } from './routes/PrivacyPolicy'
 import { Route as PartnerWithUsRouteImport } from './routes/PartnerWithUs'
+import { Route as PartnerOutreachRouteImport } from './routes/PartnerOutreach'
 import { Route as OurInitiativesRouteImport } from './routes/OurInitiatives'
 import { Route as ObjectivesRouteImport } from './routes/Objectives'
 import { Route as MissionRouteImport } from './routes/Mission'
@@ -57,12 +58,14 @@ import { Route as DonateRouteImport } from './routes/Donate'
 import { Route as DevelopmentImpactRouteImport } from './routes/DevelopmentImpact'
 import { Route as CookiePolicyRouteImport } from './routes/CookiePolicy'
 import { Route as ContactRouteImport } from './routes/Contact'
+import { Route as ComplaintGrievanceRouteImport } from './routes/ComplaintGrievance'
 import { Route as CampaignsRouteImport } from './routes/Campaigns'
 import { Route as CampaignRouteImport } from './routes/Campaign'
 import { Route as CSRPartnershipRouteImport } from './routes/CSRPartnership'
 import { Route as BlogRouteImport } from './routes/Blog'
 import { Route as AwarenessQuizRouteImport } from './routes/AwarenessQuiz'
 import { Route as AdminPortalRouteImport } from './routes/AdminPortal'
+import { Route as AdminFundingOutreachRouteImport } from './routes/AdminFundingOutreach'
 import { Route as AboutRouteImport } from './routes/About'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ImsIndexRouteImport } from './routes/ims/index'
@@ -99,6 +102,7 @@ import { Route as ImsDonorSlipsRouteImport } from './routes/ims/donor-slips'
 import { Route as ImsDataRouteImport } from './routes/ims/data'
 import { Route as ImsContactsRouteImport } from './routes/ims/contacts'
 import { Route as ImsConstitutionRouteImport } from './routes/ims/constitution'
+import { Route as ImsComplaintsRouteImport } from './routes/ims/complaints'
 import { Route as ImsCashBookRouteImport } from './routes/ims/cash-book'
 import { Route as ImsCasesRouteImport } from './routes/ims/cases'
 import { Route as ImsBankBookRouteImport } from './routes/ims/bank-book'
@@ -232,6 +236,11 @@ const PartnerWithUsRoute = PartnerWithUsRouteImport.update({
   path: '/PartnerWithUs',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PartnerOutreachRoute = PartnerOutreachRouteImport.update({
+  id: '/PartnerOutreach',
+  path: '/PartnerOutreach',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OurInitiativesRoute = OurInitiativesRouteImport.update({
   id: '/OurInitiatives',
   path: '/OurInitiatives',
@@ -363,6 +372,11 @@ const ContactRoute = ContactRouteImport.update({
   path: '/Contact',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ComplaintGrievanceRoute = ComplaintGrievanceRouteImport.update({
+  id: '/ComplaintGrievance',
+  path: '/ComplaintGrievance',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CampaignsRoute = CampaignsRouteImport.update({
   id: '/Campaigns',
   path: '/Campaigns',
@@ -391,6 +405,11 @@ const AwarenessQuizRoute = AwarenessQuizRouteImport.update({
 const AdminPortalRoute = AdminPortalRouteImport.update({
   id: '/AdminPortal',
   path: '/AdminPortal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminFundingOutreachRoute = AdminFundingOutreachRouteImport.update({
+  id: '/AdminFundingOutreach',
+  path: '/AdminFundingOutreach',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -574,6 +593,11 @@ const ImsConstitutionRoute = ImsConstitutionRouteImport.update({
   path: '/ims/constitution',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsComplaintsRoute = ImsComplaintsRouteImport.update({
+  id: '/ims/complaints',
+  path: '/ims/complaints',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsCashBookRoute = ImsCashBookRouteImport.update({
   id: '/ims/cash-book',
   path: '/ims/cash-book',
@@ -692,12 +716,14 @@ const LearningHubCourseSubjectIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/About': typeof AboutRoute
+  '/AdminFundingOutreach': typeof AdminFundingOutreachRoute
   '/AdminPortal': typeof AdminPortalRoute
   '/AwarenessQuiz': typeof AwarenessQuizRoute
   '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
   '/Campaigns': typeof CampaignsRoute
+  '/ComplaintGrievance': typeof ComplaintGrievanceRoute
   '/Contact': typeof ContactRoute
   '/CookiePolicy': typeof CookiePolicyRoute
   '/DevelopmentImpact': typeof DevelopmentImpactRoute
@@ -724,6 +750,7 @@ export interface FileRoutesByFullPath {
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
   '/OurInitiatives': typeof OurInitiativesRoute
+  '/PartnerOutreach': typeof PartnerOutreachRoute
   '/PartnerWithUs': typeof PartnerWithUsRoute
   '/PrivacyPolicy': typeof PrivacyPolicyRoute
   '/RefundAndCancellation': typeof RefundAndCancellationRoute
@@ -757,6 +784,7 @@ export interface FileRoutesByFullPath {
   '/ims/bank-book': typeof ImsBankBookRoute
   '/ims/cases': typeof ImsCasesRoute
   '/ims/cash-book': typeof ImsCashBookRoute
+  '/ims/complaints': typeof ImsComplaintsRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/contacts': typeof ImsContactsRoute
   '/ims/data': typeof ImsDataRoute
@@ -806,12 +834,14 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/About': typeof AboutRoute
+  '/AdminFundingOutreach': typeof AdminFundingOutreachRoute
   '/AdminPortal': typeof AdminPortalRoute
   '/AwarenessQuiz': typeof AwarenessQuizRoute
   '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
   '/Campaigns': typeof CampaignsRoute
+  '/ComplaintGrievance': typeof ComplaintGrievanceRoute
   '/Contact': typeof ContactRoute
   '/CookiePolicy': typeof CookiePolicyRoute
   '/DevelopmentImpact': typeof DevelopmentImpactRoute
@@ -837,6 +867,7 @@ export interface FileRoutesByTo {
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
   '/OurInitiatives': typeof OurInitiativesRoute
+  '/PartnerOutreach': typeof PartnerOutreachRoute
   '/PartnerWithUs': typeof PartnerWithUsRoute
   '/PrivacyPolicy': typeof PrivacyPolicyRoute
   '/RefundAndCancellation': typeof RefundAndCancellationRoute
@@ -870,6 +901,7 @@ export interface FileRoutesByTo {
   '/ims/bank-book': typeof ImsBankBookRoute
   '/ims/cases': typeof ImsCasesRoute
   '/ims/cash-book': typeof ImsCashBookRoute
+  '/ims/complaints': typeof ImsComplaintsRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/contacts': typeof ImsContactsRoute
   '/ims/data': typeof ImsDataRoute
@@ -920,12 +952,14 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/About': typeof AboutRoute
+  '/AdminFundingOutreach': typeof AdminFundingOutreachRoute
   '/AdminPortal': typeof AdminPortalRoute
   '/AwarenessQuiz': typeof AwarenessQuizRoute
   '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
   '/Campaigns': typeof CampaignsRoute
+  '/ComplaintGrievance': typeof ComplaintGrievanceRoute
   '/Contact': typeof ContactRoute
   '/CookiePolicy': typeof CookiePolicyRoute
   '/DevelopmentImpact': typeof DevelopmentImpactRoute
@@ -952,6 +986,7 @@ export interface FileRoutesById {
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
   '/OurInitiatives': typeof OurInitiativesRoute
+  '/PartnerOutreach': typeof PartnerOutreachRoute
   '/PartnerWithUs': typeof PartnerWithUsRoute
   '/PrivacyPolicy': typeof PrivacyPolicyRoute
   '/RefundAndCancellation': typeof RefundAndCancellationRoute
@@ -985,6 +1020,7 @@ export interface FileRoutesById {
   '/ims/bank-book': typeof ImsBankBookRoute
   '/ims/cases': typeof ImsCasesRoute
   '/ims/cash-book': typeof ImsCashBookRoute
+  '/ims/complaints': typeof ImsComplaintsRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/contacts': typeof ImsContactsRoute
   '/ims/data': typeof ImsDataRoute
@@ -1036,12 +1072,14 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/About'
+    | '/AdminFundingOutreach'
     | '/AdminPortal'
     | '/AwarenessQuiz'
     | '/Blog'
     | '/CSRPartnership'
     | '/Campaign'
     | '/Campaigns'
+    | '/ComplaintGrievance'
     | '/Contact'
     | '/CookiePolicy'
     | '/DevelopmentImpact'
@@ -1068,6 +1106,7 @@ export interface FileRouteTypes {
     | '/Mission'
     | '/Objectives'
     | '/OurInitiatives'
+    | '/PartnerOutreach'
     | '/PartnerWithUs'
     | '/PrivacyPolicy'
     | '/RefundAndCancellation'
@@ -1101,6 +1140,7 @@ export interface FileRouteTypes {
     | '/ims/bank-book'
     | '/ims/cases'
     | '/ims/cash-book'
+    | '/ims/complaints'
     | '/ims/constitution'
     | '/ims/contacts'
     | '/ims/data'
@@ -1150,12 +1190,14 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/About'
+    | '/AdminFundingOutreach'
     | '/AdminPortal'
     | '/AwarenessQuiz'
     | '/Blog'
     | '/CSRPartnership'
     | '/Campaign'
     | '/Campaigns'
+    | '/ComplaintGrievance'
     | '/Contact'
     | '/CookiePolicy'
     | '/DevelopmentImpact'
@@ -1181,6 +1223,7 @@ export interface FileRouteTypes {
     | '/Mission'
     | '/Objectives'
     | '/OurInitiatives'
+    | '/PartnerOutreach'
     | '/PartnerWithUs'
     | '/PrivacyPolicy'
     | '/RefundAndCancellation'
@@ -1214,6 +1257,7 @@ export interface FileRouteTypes {
     | '/ims/bank-book'
     | '/ims/cases'
     | '/ims/cash-book'
+    | '/ims/complaints'
     | '/ims/constitution'
     | '/ims/contacts'
     | '/ims/data'
@@ -1263,12 +1307,14 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/About'
+    | '/AdminFundingOutreach'
     | '/AdminPortal'
     | '/AwarenessQuiz'
     | '/Blog'
     | '/CSRPartnership'
     | '/Campaign'
     | '/Campaigns'
+    | '/ComplaintGrievance'
     | '/Contact'
     | '/CookiePolicy'
     | '/DevelopmentImpact'
@@ -1295,6 +1341,7 @@ export interface FileRouteTypes {
     | '/Mission'
     | '/Objectives'
     | '/OurInitiatives'
+    | '/PartnerOutreach'
     | '/PartnerWithUs'
     | '/PrivacyPolicy'
     | '/RefundAndCancellation'
@@ -1328,6 +1375,7 @@ export interface FileRouteTypes {
     | '/ims/bank-book'
     | '/ims/cases'
     | '/ims/cash-book'
+    | '/ims/complaints'
     | '/ims/constitution'
     | '/ims/contacts'
     | '/ims/data'
@@ -1378,12 +1426,14 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AdminFundingOutreachRoute: typeof AdminFundingOutreachRoute
   AdminPortalRoute: typeof AdminPortalRoute
   AwarenessQuizRoute: typeof AwarenessQuizRoute
   BlogRoute: typeof BlogRouteWithChildren
   CSRPartnershipRoute: typeof CSRPartnershipRoute
   CampaignRoute: typeof CampaignRoute
   CampaignsRoute: typeof CampaignsRoute
+  ComplaintGrievanceRoute: typeof ComplaintGrievanceRoute
   ContactRoute: typeof ContactRoute
   CookiePolicyRoute: typeof CookiePolicyRoute
   DevelopmentImpactRoute: typeof DevelopmentImpactRoute
@@ -1410,6 +1460,7 @@ export interface RootRouteChildren {
   MissionRoute: typeof MissionRoute
   ObjectivesRoute: typeof ObjectivesRoute
   OurInitiativesRoute: typeof OurInitiativesRoute
+  PartnerOutreachRoute: typeof PartnerOutreachRoute
   PartnerWithUsRoute: typeof PartnerWithUsRoute
   PrivacyPolicyRoute: typeof PrivacyPolicyRoute
   RefundAndCancellationRoute: typeof RefundAndCancellationRoute
@@ -1439,6 +1490,7 @@ export interface RootRouteChildren {
   ImsBankBookRoute: typeof ImsBankBookRoute
   ImsCasesRoute: typeof ImsCasesRoute
   ImsCashBookRoute: typeof ImsCashBookRoute
+  ImsComplaintsRoute: typeof ImsComplaintsRoute
   ImsConstitutionRoute: typeof ImsConstitutionRoute
   ImsContactsRoute: typeof ImsContactsRoute
   ImsDataRoute: typeof ImsDataRoute
@@ -1640,6 +1692,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PartnerWithUsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/PartnerOutreach': {
+      id: '/PartnerOutreach'
+      path: '/PartnerOutreach'
+      fullPath: '/PartnerOutreach'
+      preLoaderRoute: typeof PartnerOutreachRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/OurInitiatives': {
       id: '/OurInitiatives'
       path: '/OurInitiatives'
@@ -1822,6 +1881,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ContactRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ComplaintGrievance': {
+      id: '/ComplaintGrievance'
+      path: '/ComplaintGrievance'
+      fullPath: '/ComplaintGrievance'
+      preLoaderRoute: typeof ComplaintGrievanceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/Campaigns': {
       id: '/Campaigns'
       path: '/Campaigns'
@@ -1862,6 +1928,13 @@ declare module '@tanstack/react-router' {
       path: '/AdminPortal'
       fullPath: '/AdminPortal'
       preLoaderRoute: typeof AdminPortalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/AdminFundingOutreach': {
+      id: '/AdminFundingOutreach'
+      path: '/AdminFundingOutreach'
+      fullPath: '/AdminFundingOutreach'
+      preLoaderRoute: typeof AdminFundingOutreachRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/About': {
@@ -2116,6 +2189,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsConstitutionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/complaints': {
+      id: '/ims/complaints'
+      path: '/ims/complaints'
+      fullPath: '/ims/complaints'
+      preLoaderRoute: typeof ImsComplaintsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/cash-book': {
       id: '/ims/cash-book'
       path: '/ims/cash-book'
@@ -2306,12 +2386,14 @@ const LearningHubRouteWithChildren = LearningHubRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AdminFundingOutreachRoute: AdminFundingOutreachRoute,
   AdminPortalRoute: AdminPortalRoute,
   AwarenessQuizRoute: AwarenessQuizRoute,
   BlogRoute: BlogRouteWithChildren,
   CSRPartnershipRoute: CSRPartnershipRoute,
   CampaignRoute: CampaignRoute,
   CampaignsRoute: CampaignsRoute,
+  ComplaintGrievanceRoute: ComplaintGrievanceRoute,
   ContactRoute: ContactRoute,
   CookiePolicyRoute: CookiePolicyRoute,
   DevelopmentImpactRoute: DevelopmentImpactRoute,
@@ -2338,6 +2420,7 @@ const rootRouteChildren: RootRouteChildren = {
   MissionRoute: MissionRoute,
   ObjectivesRoute: ObjectivesRoute,
   OurInitiativesRoute: OurInitiativesRoute,
+  PartnerOutreachRoute: PartnerOutreachRoute,
   PartnerWithUsRoute: PartnerWithUsRoute,
   PrivacyPolicyRoute: PrivacyPolicyRoute,
   RefundAndCancellationRoute: RefundAndCancellationRoute,
@@ -2367,6 +2450,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsBankBookRoute: ImsBankBookRoute,
   ImsCasesRoute: ImsCasesRoute,
   ImsCashBookRoute: ImsCashBookRoute,
+  ImsComplaintsRoute: ImsComplaintsRoute,
   ImsConstitutionRoute: ImsConstitutionRoute,
   ImsContactsRoute: ImsContactsRoute,
   ImsDataRoute: ImsDataRoute,

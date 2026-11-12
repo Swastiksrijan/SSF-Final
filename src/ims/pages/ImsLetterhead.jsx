@@ -189,7 +189,6 @@ export default function ImsLetterhead() {
         subject: f.subject, salutation: f.salutation, body: f.body, closing: f.closing,
         enclosures: f.enclosures, cc: f.cc,
         signatoryName: outputLetter.signatoryName, signatoryDesignation: f.signatoryDesignation,
-        signatoryMode: f.signatoryMode || 'single',
         signature: isSecretary && f.signature === true, seal: f.seal !== false, sealPosition: f.sealPosition || 'left', signatoryMode: f.signatoryMode || 'single',
         language: pdfLang, watermark,
       },
