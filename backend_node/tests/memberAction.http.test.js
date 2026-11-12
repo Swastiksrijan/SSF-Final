@@ -53,6 +53,17 @@ async function main() {
 
   const app = express();
   app.use(express.json());
+  // The mailer is replaced so the email path is exercised without a live SMTP
+  // server: the first call succeeds, the second throws (to prove a mail failure
+  // never rolls back the notice). Everything else is the real router.
+  const mailerPath = require.resolve('../services/mailer');
+  require(mailerPath);
+  const mailCalls = [];
+  let mailShouldFail = false;
+  require.cache[mailerPath].exports = {
+    emailConfigured: () => true,
+    sendMail: async (opts) => { mailCalls.push(opts); if (mailShouldFail) throw new Error('simulated SMTP outage'); return { ok: true, provider: 'test' }; },
+  };
   app.use('/api', require('../routes/memberActionRoutes'));
   const server = app.listen(0);
   const base = `http://127.0.0.1:${server.address().port}`;
@@ -103,6 +114,26 @@ async function main() {
     ok('the issued copy is stored on the record', typeof issued.body.record?.noticeText === 'string' && issued.body.record.noticeText.includes('कारण बताओ नोटिस'));
     const reIssue = await send(`/api/admin/member-actions/${draft1.body.id}`, 'PATCH', { action: 'issue_notice', dispatchMethod: 'hand_delivery', dispatchReference: 'again' }, auth);
     ok('an already-issued notice cannot be re-issued', reIssue.status === 409, JSON.stringify(reIssue.body));
+
+    console.log('\nEmail dispatch (and a mail outage must not lose the notice):');
+    const emailDraft = await send('/api/admin/member-actions', 'POST', { personName: 'Email Test', email: 'email.test@example.com', actionScope: 'membership_review', bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
+    const emailSent = await send(`/api/admin/member-actions/${emailDraft.body.id}`, 'PATCH', { action: 'issue_notice', dispatchMethod: 'email' }, auth);
+    ok('an email notice is issued', emailSent.status === 200, JSON.stringify(emailSent.body));
+    ok('the notice was actually handed to the mailer', mailCalls.length === 1 && mailCalls[0].to === 'email.test@example.com', JSON.stringify(mailCalls.map((c) => c.to)));
+    ok('the email body carries the notice reference', mailCalls[0].subject.includes(emailSent.body.record.noticeReference), mailCalls[0].subject);
+    ok('the email body carries the response link', String(mailCalls[0].html).includes('/Members?notice='), 'html');
+    ok('the delivery status is email_sent', emailSent.body.record.emailDeliveryStatus === 'email_sent', emailSent.body.record.emailDeliveryStatus);
+
+    const failDraft = await send('/api/admin/member-actions', 'POST', { personName: 'Mail Fail', email: 'mail.fail@example.com', actionScope: 'membership_review', bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
+    mailShouldFail = true;
+    const failIssue = await send(`/api/admin/member-actions/${failDraft.body.id}`, 'PATCH', { action: 'issue_notice', dispatchMethod: 'email' }, auth);
+    mailShouldFail = false;
+    ok('a mail outage still returns success (notice is not lost)', failIssue.status === 200, JSON.stringify(failIssue.body));
+    ok('the outage is surfaced as a warning, not an error', typeof failIssue.body.emailWarning === 'string' && failIssue.body.emailWarning.length > 0, JSON.stringify(failIssue.body));
+    ok('the record is still marked notice_issued', failIssue.body.record?.status === 'notice_issued', failIssue.body.record?.status);
+    ok('the delivery status records the failure', failIssue.body.record?.emailDeliveryStatus === 'email_failed', failIssue.body.record?.emailDeliveryStatus);
+    ok('the reference number survives the outage', /^SSF\/NOTICE\/\d{4}-\d{2}\/\d{4}$/.test(failIssue.body.record?.noticeReference || ''), failIssue.body.record?.noticeReference);
+    ok('the member response link survives the outage', String(failIssue.body.responseUrl).includes('/Members?notice='), failIssue.body.responseUrl);
 
     console.log('\nMember reply (public token):');
     const token = issued.body.responseUrl.split('notice=')[1];
