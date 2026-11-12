@@ -16,6 +16,7 @@ const Interest = require('../models/Interest');
 const ContactMessage = require('../models/ContactMessage');
 const AuditLog = require('../models/AuditLog');
 const { getAdminToken } = require('../services/userAuth');
+const { sendMail, emailConfigured, fromEmail, fromName } = require('../services/mailer');
 
 const requireAdminAuth = (req, res, next) => {
   const header = req.headers.authorization || '';
@@ -157,6 +158,38 @@ router.get('/admin/overview.csv', requireAdminAuth, async (req, res) => {
   } catch (error) {
     console.error('CSV export error:', error);
     return res.status(500).json({ message: 'Unable to export that record set.' });
+  }
+});
+
+// Temporary, admin-only diagnostic: sends one real email through the same
+// transport the notices use and reports exactly what the provider said, so we
+// can tell "accepted" apart from "delivered" when a member says no mail arrived.
+router.post('/admin/diagnostics/email', requireAdminAuth, async (req, res) => {
+  const to = String((req.body && req.body.to) || '').trim();
+  if (!to) return res.status(400).json({ message: 'Provide a "to" email address.' });
+  const report = {
+    configured: emailConfigured(),
+    provider: process.env.BREVO_API_KEY ? 'brevo' : (process.env.EMAIL_USER ? 'gmail-smtp' : 'none'),
+    from: `${fromName()} <${fromEmail()}>`,
+    to,
+    accepted: false,
+    providerResponse: null,
+    error: null,
+  };
+  if (!report.configured) return res.status(503).json({ ...report, error: 'No email transport is configured on the server (BREVO_API_KEY / EMAIL_USER missing).' });
+  try {
+    const out = await sendMail({
+      to,
+      subject: 'SSF email delivery test',
+      text: 'This is a delivery test from the SSF admin portal. If you can read this, the email path works end to end.',
+      html: '<p>This is a delivery test from the SSF admin portal. If you can read this, the email path works end to end.</p>',
+    });
+    report.accepted = true;
+    report.providerResponse = out;
+    return res.json(report);
+  } catch (e) {
+    report.error = e.message;
+    return res.status(502).json(report);
   }
 });
 
