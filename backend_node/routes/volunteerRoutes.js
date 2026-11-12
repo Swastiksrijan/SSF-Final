@@ -18,6 +18,7 @@ const memberCategoryFor = (member) => (identity.holdsOfficialMemberId(member)
     : null);
 const { issueToken } = require('../services/userAuth');
 const { databaseUnavailableResponse } = require('../services/dbHealth');
+const adminAuth = require('../services/adminAuth');
 
 // --- 1. File Upload Configuration ---
 const storage = multer.diskStorage({
@@ -60,7 +61,7 @@ const getAdminRecipients = () => {
     return recipients.join(',');
 };
 
-const getAdminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+const getAdminToken = () => adminAuth.configuredToken();
 
 const requireAdminAuth = (req, res, next) => {
     const authHeader = req.headers.authorization || '';
@@ -111,14 +112,27 @@ const verifyPassword = (password, storedValue) => {
 router.post('/admin/login', async (req, res) => {
     const { username, password } = req.body || {};
 
-    const adminUsername = process.env.ADMIN_USERNAME || 'admin';
-    const adminPassword = process.env.ADMIN_PASSWORD || 'admin123';
+    // No default credentials. If the deployment has not set ADMIN_USERNAME and
+    // ADMIN_PASSWORD, the portal login is disabled rather than open to admin/admin123.
+    const adminUsername = String(process.env.ADMIN_USERNAME || '').trim();
+    const adminPassword = String(process.env.ADMIN_PASSWORD || '');
+    if (!adminUsername || !adminPassword) {
+        return res.status(503).json({ status: 'error', message: 'Admin login is not configured on the server. Set ADMIN_USERNAME and ADMIN_PASSWORD.' });
+    }
+    if (!getAdminToken()) {
+        return res.status(503).json({ status: 'error', message: 'Admin access is not configured on the server. Set ADMIN_PORTAL_TOKEN.' });
+    }
 
     if (!username || !password) {
         return res.status(400).json({ status: 'error', message: 'Username and password are required' });
     }
 
-    if (username !== adminUsername || password !== adminPassword) {
+    const same = (a, b) => {
+        const x = Buffer.from(String(a));
+        const y = Buffer.from(String(b));
+        return x.length === y.length && crypto.timingSafeEqual(x, y);
+    };
+    if (!same(username, adminUsername) || !same(password, adminPassword)) {
         return res.status(401).json({ status: 'error', message: 'Invalid credentials' });
     }
 

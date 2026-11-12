@@ -5,6 +5,7 @@ const Complaint = require('../models/Complaint');
 const ResolvedGrievance = require('../models/ResolvedGrievance');
 const { sendMail, emailConfigured } = require('../services/mailer');
 const { databaseUnavailableResponse } = require('../services/dbHealth');
+const adminAuth = require('../services/adminAuth');
 
 const router = express.Router();
 const attempts = new Map();
@@ -16,7 +17,7 @@ const adminOnly = (req, res, next) => {
   // IMS login session can therefore manage grievances without a second token.
   const auth = String(req.headers.authorization || '');
   const token = auth.startsWith('Bearer ') ? auth.slice(7).trim() : '';
-  const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+  const expected = adminAuth.configuredToken();
   if (!token || token !== expected) {
     return res.status(401).json({ message: 'Please sign in to SSF-IMS to access the grievance register.' });
   }

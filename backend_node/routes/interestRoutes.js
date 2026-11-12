@@ -5,6 +5,7 @@ const Interest = require('../models/Interest');
 const Member = require('../models/Member');
 const Volunteer = require('../models/Volunteer');
 const { databaseUnavailableResponse } = require('../services/dbHealth');
+const adminAuth = require('../services/adminAuth');
 
 const sendAdminNotification = async (subject, text) => {
     if (!emailConfigured()) return;
@@ -24,7 +25,7 @@ const sendApplicantEmail = async (to, subject, text) => {
 const requireAdminAuth = (req, res, next) => {
     const authHeader = req.headers.authorization || '';
     const token = authHeader.startsWith('Bearer ') ? authHeader.slice(7).trim() : '';
-    const expected = process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+    const expected = adminAuth.configuredToken();
     if (!token || token !== expected) return res.status(401).json({ message: 'Unauthorized admin access' });
     next();
 };
