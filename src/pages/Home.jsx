@@ -15,6 +15,7 @@ import OptimizedImage from "../components/OptimizedImage";
 import { CONTACT_INFO } from "../config/contact";
 import { BRAND } from "../data/brandAssets";
 import pageHeader from "../assets/page-header.jpg";
+import logoImg from "../assets/new-logo.png";
 
 const values = [
   { 
@@ -480,7 +481,7 @@ export default function Home() {
       {/* ================= KEY STATUTORY METRICS STRIP ================= */}
       <section className="relative isolate overflow-hidden border-y border-[#4A7899]/60 bg-[radial-gradient(ellipse_at_12%_0%,rgba(245,158,11,0.2),transparent_34%),radial-gradient(ellipse_at_88%_100%,rgba(45,212,191,0.17),transparent_36%),linear-gradient(115deg,#081A2E_0%,#123A60_52%,#174D68_100%)] py-10 shadow-[inset_0_1px_0_rgba(255,255,255,0.16)] md:py-12">
         <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.12] bg-[radial-gradient(ellipse_at_18%_20%,rgba(245,190,75,0.55),transparent_35%),radial-gradient(ellipse_at_82%_78%,rgba(125,190,220,0.5),transparent_38%)]" />
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.06] bg-[url('/assets/new-logo-DCfoGBCm.png')] bg-no-repeat bg-center bg-contain" />
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-no-repeat bg-center bg-contain opacity-[0.06]" style={{ backgroundImage: `url(${logoImg})` }} />
         <div className="container mx-auto grid max-w-7xl gap-5 px-5 sm:grid-cols-2 lg:grid-cols-4 md:px-8">
           {[
             [FaShieldAlt, "Since 2013", "Registered Society (MP Act)", "10+ Years Dedicated Service"],

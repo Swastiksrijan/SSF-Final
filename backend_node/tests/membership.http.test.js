@@ -25,13 +25,17 @@ mem.public.registerEnum('enum_RoleDocuments_role', ['donor', 'intern', 'student'
 mem.public.registerEnum('enum_RoleDocuments_documentType', ['identity_card', 'certificate', 'joining_letter', 'completion_certificate', 'participation_certificate', 'training_certificate', 'appreciation_certificate', 'outstanding_contribution_certificate', 'partner_recognition']);
 mem.public.registerEnum('enum_RoleDocuments_status', ['active', 'revoked', 'expired']);
 let rewritingDonors = false;
+let rewritingDecimals = false;
 mem.public.interceptQueries((sql) => {
   if (sql.includes('pg_enum') && /typname='enum_/.test(sql)) return [];
   if (/DROP TYPE IF EXISTS "public"\."enum_/.test(sql)) return [];
-  // pg-mem cannot parse DECIMAL(12,2) column configs, so the Donors table is
-  // created with NUMERIC instead — same semantics, parseable by pg-mem. The
-  // re-entrancy guard stops the rewritten statement from being intercepted
-  // again (which would recurse forever).
+  // pg-mem cannot parse any DECIMAL(x,y) column config (the IMS masters use
+  // DECIMAL(14,2)), so rewrite every occurrence to NUMERIC for the create pass.
+  if (!rewritingDecimals && /DECIMAL\(\s*\d+\s*,\s*\d+\s*\)/i.test(sql)) {
+    rewritingDecimals = true;
+    try { mem.public.none(sql.replace(/DECIMAL\(\s*\d+\s*,\s*\d+\s*\)/gi, 'NUMERIC')); } finally { rewritingDecimals = false; }
+    return [];
+  }
   if (!rewritingDonors && /CREATE TABLE IF NOT EXISTS "Donors"/.test(sql)) {
     rewritingDonors = true;
     try { mem.public.none(sql.replace(/DECIMAL\(12,2\)/g, 'NUMERIC(12,2)')); } finally { rewritingDonors = false; }
@@ -89,7 +93,26 @@ async function main() {
   const InternshipApplication = require('../models/InternshipApplication');
   const Interest = require('../models/Interest');
   const RoleDocument = require('../models/RoleDocument');
+  // The append-only ID-issuance ledger must be registered before sync or every
+  // ledger write fails and ID numbering silently falls back.
+  require('../models/IdIssuance');
   await sequelize.sync({ force: true });
+
+  // Approving a member now also writes the IMS admission register (ImsPerson /
+  // ImsMembership / ImsPersonRole), so those masters must exist for the real
+  // memberCertificateRoutes handler to run. Sync them individually (a global
+  // sync dies on the legacy ENUM columns, which pg-mem cannot create) and
+  // replace findOrCreate, which pg-mem cannot run.
+  const { models: imsModels } = require('../models/ims');
+  for (const M of Object.values(imsModels)) await M.sync({ force: true });
+  for (const M of [imsModels.ImsPerson, imsModels.ImsMembership, imsModels.ImsPersonRole, imsModels.ImsRelation]) {
+    M.findOrCreate = async function ({ where, defaults }) {
+      let row = await M.findOne({ where });
+      if (row) return [row, false];
+      row = await M.create({ ...where, ...defaults });
+      return [row, true];
+    };
+  }
 
   console.log('\nColumn-add migration (ensureColumns):');
   // Production databases predate the internship/donor upload columns, so
@@ -291,7 +314,7 @@ async function main() {
     ok('both patron receipts remain in the history', JSON.parse(afterSecond.receiptHistory || '[]').length === 2);
     ok('patron cumulative contribution reaches ₹10,000', afterSecond.contributionTotalPaise === 1000000);
     const patronApproved = await send(`/api/admin/member-approve/${patron.id}`, 'POST', { committeeReference: 'ECM-PATRON-003' }, auth);
-    ok('patron is admitted after all installments and committee approval', patronApproved.status === 200 && /^SSF-MBR-\\d{5}$/.test(String(patronApproved.body.memberId)));
+    ok('patron is admitted after all installments and committee approval', patronApproved.status === 200 && /^SSF-MBR-\d{5}$/.test(String(patronApproved.body.memberId)));
 
     console.log('\nAdvisory membership is honorary and committee-appointed:');
     const advRow = await Member.create({
@@ -304,7 +327,7 @@ async function main() {
     userToken = advToken;
     const advApprove = await send(`/api/admin/member-approve/${advRow.id}`, 'POST', { committeeReference: 'ECM-TEST-ADV-001' }, auth);
     ok('committee can approve honorary membership without a payment', advApprove.status === 200, JSON.stringify(advApprove.body).slice(0, 200));
-    ok('honorary member receives committee-issued Member ID', /^SSF-MBR-\\d{5}$/.test(String(advApprove.body.memberId)), advApprove.body.memberId);
+    ok('honorary member receives committee-issued Member ID', /^SSF-MBR-\d{5}$/.test(String(advApprove.body.memberId)), advApprove.body.memberId);
     const advPay = await send('/api/member-payment-submit', 'POST', { memberId: advRow.id, paymentMode: 'UPI', paymentReference: '999999999999' });
     ok('honorary member cannot submit a membership fee', advPay.status === 400, JSON.stringify(advPay.body).slice(0, 150));
     userToken = ashaToken;

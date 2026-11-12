@@ -2,6 +2,10 @@ const express = require('express');
 const crypto = require('crypto');
 const router = express.Router();
 const MemberAction = require('../models/MemberAction');
+const Member = require('../models/Member');
+const sequelize = require('../config/database');
+const { Op } = require('sequelize');
+const identity = require('../services/identityService');
 const { sendMail, emailConfigured } = require('../services/mailer');
 
 const adminToken = () => process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
@@ -20,10 +24,53 @@ const publicRecord = row => {
   return value;
 };
 const escapeHtml = value => String(value || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function noticeFinancialYear(date = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', { timeZone: 'Asia/Kolkata', year: 'numeric', month: '2-digit' }).formatToParts(date);
+  const p = Object.fromEntries(parts.map(x => [x.type, x.value]));
+  const y = Number(p.year), m = Number(p.month), start = m >= 4 ? y : y - 1;
+  return start + '-' + String(start + 1).slice(-2);
+}
+async function nextNoticeReference(transaction) {
+  const fy = noticeFinancialYear();
+  const prefix = 'SSF/NOTICE/' + fy + '/';
+  await sequelize.query('SELECT pg_advisory_xact_lock(hashtext(:lockKey))', { replacements: { lockKey: 'ssf-notice-' + fy }, transaction });
+  const refs = await MemberAction.findAll({ attributes: ['noticeReference'], where: { noticeReference: { [Op.like]: prefix + '%' } }, transaction, raw: true });
+  const highest = refs.reduce((n, item) => Math.max(n, Number(String(item.noticeReference || '').split('/').pop()) || 0), 0);
+  return prefix + String(highest + 1).padStart(4, '0');
+}
+
 
 router.get('/admin/member-actions', requireAdmin, async (_req, res) => {
   try { const rows = await MemberAction.findAll({ order: [['createdAt', 'DESC']] }); res.json(rows.map(publicRecord)); }
   catch (e) { console.error('Member action list:', e); res.status(500).json({ message: 'नोटिस रजिस्टर लोड नहीं हो सका।' }); }
+});
+
+// Match an existing registered member by exact email/mobile or a name fragment.
+// Multiple matches are returned for explicit selection; never guess an ID.
+router.get('/admin/member-actions/member-lookup', requireAdmin, async (req, res) => {
+  try {
+    const name = String(req.query.name || '').trim().toLocaleLowerCase('en-IN');
+    const email = String(req.query.email || '').trim().toLowerCase();
+    const phone = String(req.query.phone || '').replace(/\D/g, '').slice(-10);
+    if (!name && !email && !phone) return res.status(400).json({ message: 'नाम, ईमेल या मोबाइल दर्ज करें।' });
+    const dbRows = await Member.findAll({ attributes: ['memberId', 'fullName', 'email', 'phone', 'designation'], raw: true });
+    const byId = new Map();
+    for (const entry of identity.registerEntries()) {
+      byId.set(entry.memberId, { memberId: entry.memberId, fullName: entry.name, email: entry.email || '', phone: entry.mobile || '', designation: entry.designation || '' });
+    }
+    for (const member of dbRows) {
+      if (!member.memberId) continue;
+      const old = byId.get(member.memberId) || {};
+      byId.set(member.memberId, { ...old, memberId: member.memberId, fullName: member.fullName || old.fullName || '', email: member.email || old.email || '', phone: member.phone || old.phone || '', designation: member.designation || old.designation || '' });
+    }
+    const digits = value => String(value || '').replace(/\D/g, '').slice(-10);
+    const matches = [...byId.values()].filter(person =>
+      (!name || String(person.fullName || '').toLocaleLowerCase('en-IN').includes(name)) &&
+      (!email || String(person.email || '').trim().toLowerCase() === email) &&
+      (!phone || digits(person.phone) === phone)
+    ).slice(0, 20);
+    return res.json({ matches });
+  } catch (e) { console.error('Member lookup:', e); return res.status(500).json({ message: 'सदस्य रजिस्टर से मिलान नहीं हो सका।' }); }
 });
 
 router.post('/admin/member-actions', requireAdmin, async (req, res) => {
@@ -35,14 +82,15 @@ router.post('/admin/member-actions', requireAdmin, async (req, res) => {
     }
     const due = new Date(b.replyDueAt);
     if (!Number.isFinite(due.getTime()) || due.getTime() <= Date.now()) return res.status(400).json({ message: 'जवाब की अंतिम तारीख भविष्य की होनी चाहिए।' });
-    const row = await MemberAction.create({
+    const row = await sequelize.transaction(async transaction => MemberAction.create({
+      noticeReference: await nextNoticeReference(transaction),
       personName: String(b.personName).trim(), email: String(b.email).trim().toLowerCase(),
       phone: String(b.phone || '').trim() || null, memberId: String(b.memberId || '').trim() || null,
       currentDesignation: String(b.currentDesignation || '').trim() || null,
       actionScope: b.actionScope, bylawClause: String(b.bylawClause).trim(),
       grounds: String(b.grounds).trim(), factualSummary: String(b.factualSummary).trim(),
       noticeText: String(b.noticeText || '').trim() || null, replyDueAt: due, createdBy: 'Admin Portal'
-    });
+    }, { transaction }));
     res.status(201).json(publicRecord(row));
   } catch (e) { console.error('Member action create:', e); res.status(500).json({ message: 'नोटिस ड्राफ्ट सेव नहीं हो सका।' }); }
 });
@@ -58,25 +106,48 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
       const dispatchReference = String(b.dispatchReference || '').trim();
       if (!['email', 'registered_post', 'speed_post', 'hand_delivery', 'email_and_post'].includes(method)) return res.status(400).json({ message: 'भेजने का सही माध्यम चुनें।' });
       if (['registered_post', 'speed_post', 'hand_delivery', 'email_and_post'].includes(method) && !dispatchReference) return res.status(400).json({ message: 'डाक रसीद/हैंड डिलीवरी प्रमाण का विवरण दर्ज करें।' });
+      if (!row.noticeReference) await row.update({ noticeReference: await sequelize.transaction(t => nextNoticeReference(t)) });
       const rawToken = crypto.randomBytes(32).toString('hex');
       const baseUrl = (process.env.FRONTEND_PUBLIC_URL || 'https://swastiksrijan.in').replace(/\/$/, '');
       const responseUrl = baseUrl + '/Members?notice=' + rawToken;
-      const textBody = row.noticeText || [
+      const customNotice = String(row.noticeText || '').trim();
+      const textBody = [
         'स्वस्तिक सृजन फाउंडेशन समिति',
         'कारण बताओ नोटिस',
+        'दिनांक: ' + new Date().toLocaleDateString('hi-IN', { timeZone: 'Asia/Kolkata' }),
         'प्रति: ' + row.personName,
-        'सदस्यता/पद: ' + (row.currentDesignation || row.memberId || 'रिकॉर्ड अनुसार'),
-        'नियमावली: ' + row.bylawClause,
-        'कारण: ' + row.grounds,
-        'तथ्य: ' + row.factualSummary,
-        'कृपया ' + new Date(row.replyDueAt).toLocaleDateString('hi-IN') + ' तक अपना लिखित जवाब दें।',
-        'ऑनलाइन जवाब: ' + responseUrl,
-        'यह नोटिस केवल पक्ष रखने का अवसर है; यह निष्कासन/पद से हटाने का अंतिम आदेश नहीं है।'
-      ].join('\n');
+        'सदस्य ID: ' + (row.memberId || 'रजिस्टर में उपलब्ध नहीं / पुष्टि अपेक्षित'),
+        'वर्तमान पद: ' + (row.currentDesignation || 'रिकॉर्ड अनुसार'),
+        'संपर्क ईमेल: ' + row.email,
+        'नोटिस संदर्भ संख्या: ' + row.noticeReference,
+        'विषय: अपना पक्ष/स्पष्टीकरण प्रस्तुत करने के संबंध में।',
+        customNotice ? 'अतिरिक्त विवरण: ' + customNotice : '',
+        'लागू नियम/उप-नियम: ' + row.bylawClause,
+        'प्रस्तावित कार्रवाई का कारण: ' + row.grounds,
+        'तथ्य एवं उपलब्ध रिकॉर्ड: ' + row.factualSummary,
+        'आपसे अनुरोध है कि नीचे दी गई अंतिम तारीख तक अपना लिखित जवाब और यदि चाहें तो सहायक दस्तावेज प्रस्तुत करें: ' + new Date(row.replyDueAt).toLocaleString('hi-IN', { dateStyle: 'long', timeStyle: 'short', timeZone: 'Asia/Kolkata' }),
+        'ऑनलाइन जवाब देने का लिंक: ' + responseUrl,
+        'यदि आप व्यक्तिगत/ऑनलाइन सुनवाई चाहते हैं, तो जवाब में इसकी मांग और सुविधाजनक संपर्क विवरण लिखें।',
+        'आपका जवाब और उपलब्ध रिकॉर्ड निष्पक्ष रूप से सक्षम समिति/निकाय के सामने रखा जाएगा।',
+        'महत्वपूर्ण: यह नोटिस केवल आरोप/प्रस्तावित कार्रवाई की जानकारी देकर आपका पक्ष सुनने का अवसर है। इसे दोष सिद्धि, सदस्यता समाप्ति या पद से हटाने का अंतिम आदेश न माना जाए। अंतिम निर्णय केवल लागू नियमों और विधिवत प्रक्रिया के बाद ही लिया जा सकता है।'
+      ].filter(Boolean).join('\n\n');
+      const logoUrl = String(b.logoUrl || '').trim();
+      let safeLogoUrl = '';
+      try {
+        const parsed = new URL(logoUrl);
+        if (parsed.protocol === 'https:' && (parsed.hostname === 'swastiksrijan.in' || parsed.hostname.endsWith('.swastiksrijan.in') || parsed.hostname.endsWith('.vercel.app'))) safeLogoUrl = parsed.href;
+      } catch { /* optional logo */ }
+      const htmlBody = '<div style="max-width:760px;margin:0 auto;padding:30px 36px;border:1px solid #d7dee8;color:#172b3a;font-family:Arial,sans-serif;line-height:1.65;background:#fff">' +
+        '<div style="display:flex;align-items:center;gap:18px;border-bottom:3px solid #176447;padding-bottom:18px;margin-bottom:22px">' +
+        (safeLogoUrl ? '<img src="' + escapeHtml(safeLogoUrl) + '" alt="Swastik Srijan Foundation Samiti logo" style="width:86px;height:86px;object-fit:contain" />' : '') +
+        '<div><div style="font-size:22px;font-weight:800;color:#12345A">SWASTIK SRIJAN FOUNDATION SAMITI</div><div style="font-size:16px;font-weight:700;color:#176447">स्वस्तिक सृजन फाउंडेशन समिति</div><div style="font-size:12px;color:#64748b">आधिकारिक सूचना / Official Communication</div></div></div>' +
+        '<div style="display:flex;justify-content:space-between;gap:12px;font-size:13px"><b>नोटिस संदर्भ: ' + escapeHtml(row.noticeReference || '') + '</b><b>दिनांक: ' + escapeHtml(new Date().toLocaleDateString('hi-IN', { timeZone: 'Asia/Kolkata' })) + '</b></div>' +
+        '<h2 style="text-align:center;color:#12345A;font-size:19px;margin:24px 0 18px">कारण बताओ नोटिस</h2><div style="white-space:pre-wrap">' + escapeHtml(textBody) + '</div><p style="text-align:center;margin:26px 0"><a href="' + escapeHtml(responseUrl) + '" style="display:inline-block;background:#12345A;color:#fff;text-decoration:none;padding:12px 22px;border-radius:7px;font-weight:bold">ऑनलाइन जवाब दें</a></p>' +
+        '<div style="margin-top:30px;padding-top:14px;border-top:1px solid #d7dee8;font-size:12px;color:#64748b">Swastik Srijan Foundation Samiti | यह नोटिस संस्था के अभिलेख हेतु जारी किया गया है।</div></div>';
       let delivery = 'not_sent';
       if (['email', 'email_and_post'].includes(method)) {
         if (!emailConfigured()) return res.status(503).json({ message: 'ईमेल सेवा कॉन्फ़िगर नहीं है। पहले डाक से भेजें या ईमेल सेवा सेट करें।' });
-        await sendMail({ to: row.email, subject: 'SSF कारण बताओ नोटिस — ' + row.personName, text: textBody, html: '<div style="font-family:Arial,sans-serif;white-space:pre-line">' + escapeHtml(textBody) + '</div><p><a href="' + responseUrl + '">ऑनलाइन जवाब दें</a></p>' });
+        await sendMail({ to: row.email, subject: 'SSF कारण बताओ नोटिस — ' + row.noticeReference + ' — ' + row.personName, text: textBody, html: htmlBody });
         delivery = 'email_sent';
       }
       await row.update({ noticeText: textBody, responseTokenHash: hashToken(rawToken), status: 'notice_issued', dispatchMethod: method, dispatchReference: dispatchReference || null, dispatchAt: new Date(), emailDeliveryStatus: delivery, updatedBy: 'Admin Portal' });
@@ -90,11 +161,11 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
       const mayReview = ['reply_received', 'hearing_scheduled'].includes(row.status) || (row.status === 'notice_issued' && Date.now() > new Date(row.replyDueAt).getTime());
       if (!mayReview) return res.status(409).json({ message: 'समिति समीक्षा से पहले जवाब की अवधि पूरी होने दें और प्राप्त जवाब/सुनवाई रिकॉर्ड करें।' });
       if (!String(b.committeeMeetingReference || '').trim() || !String(b.decisionText || '').trim()) return res.status(400).json({ message: 'समिति बैठक/प्रस्ताव संदर्भ और कार्यवाही दर्ज करें।' });
-      await row.update({ committeeMeetingReference: String(b.committeeMeetingReference).trim(), decisionText: String(b.decisionText).trim(), status: 'committee_review', updatedBy: 'Admin Portal' });
+      await row.update({ committeeMeetingReference: String(b.committeeMeetingReference).trim(), committeeDecisionText: String(b.decisionText).trim(), status: 'committee_review', updatedBy: 'Admin Portal' });
     } else if (b.action === 'general_body_review') {
       if (row.status !== 'committee_review') return res.status(409).json({ message: 'पहले प्रबंध समिति की समीक्षा और कार्यवाही दर्ज करें।' });
       if (!String(b.generalBodyMeetingReference || '').trim() || !String(b.decisionText || '').trim()) return res.status(400).json({ message: 'सामान्य सभा की बैठक/प्रस्ताव संख्या और निर्णय दर्ज करें।' });
-      await row.update({ generalBodyMeetingReference: String(b.generalBodyMeetingReference).trim(), decisionText: String(b.decisionText).trim(), status: 'general_body_review', updatedBy: 'Admin Portal' });
+      await row.update({ generalBodyMeetingReference: String(b.generalBodyMeetingReference).trim(), generalBodyDecisionText: String(b.decisionText).trim(), status: 'general_body_review', updatedBy: 'Admin Portal' });
     } else if (b.action === 'close') {
       if (!['committee_review', 'general_body_review'].includes(row.status)) return res.status(409).json({ message: 'अंतिम निर्णय से पहले समिति समीक्षा और आवश्यक सामान्य सभा प्रक्रिया पूरी करें।' });
       const decisionType = String(b.decisionType || '').trim();

@@ -3,6 +3,7 @@ const sequelize = require('../config/database');
 
 module.exports = sequelize.define('MemberAction', {
   id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
+  noticeReference: { type: DataTypes.STRING, allowNull: true, unique: true },
   personName: { type: DataTypes.STRING, allowNull: false },
   email: { type: DataTypes.STRING, allowNull: false },
   phone: { type: DataTypes.STRING, allowNull: true },
@@ -26,6 +27,8 @@ module.exports = sequelize.define('MemberAction', {
   hearingNotes: { type: DataTypes.TEXT, allowNull: true },
   committeeMeetingReference: { type: DataTypes.STRING, allowNull: true },
   generalBodyMeetingReference: { type: DataTypes.STRING, allowNull: true },
+  committeeDecisionText: { type: DataTypes.TEXT, allowNull: true },
+  generalBodyDecisionText: { type: DataTypes.TEXT, allowNull: true },
   decisionType: { type: DataTypes.STRING, allowNull: true },
   decisionText: { type: DataTypes.TEXT, allowNull: true },
   decisionAt: { type: DataTypes.DATE, allowNull: true },
