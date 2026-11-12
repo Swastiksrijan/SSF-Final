@@ -16,7 +16,6 @@ const Interest = require('../models/Interest');
 const ContactMessage = require('../models/ContactMessage');
 const AuditLog = require('../models/AuditLog');
 const { getAdminToken } = require('../services/userAuth');
-const { sendMail, emailConfigured, fromEmail, fromName } = require('../services/mailer');
 
 const requireAdminAuth = (req, res, next) => {
   const header = req.headers.authorization || '';
@@ -158,58 +157,6 @@ router.get('/admin/overview.csv', requireAdminAuth, async (req, res) => {
   } catch (error) {
     console.error('CSV export error:', error);
     return res.status(500).json({ message: 'Unable to export that record set.' });
-  }
-});
-
-// Temporary, admin-only diagnostic: sends one real email through the same
-// transport the notices use and reports exactly what the provider said, so we
-// can tell "accepted" apart from "delivered" when a member says no mail arrived.
-router.post('/admin/diagnostics/email', requireAdminAuth, async (req, res) => {
-  const to = String((req.body && req.body.to) || '').trim();
-  if (!to) return res.status(400).json({ message: 'Provide a "to" email address.' });
-  const report = {
-    configured: emailConfigured(),
-    provider: process.env.BREVO_API_KEY ? 'brevo' : (process.env.EMAIL_USER ? 'gmail-smtp' : 'none'),
-    from: `${fromName()} <${fromEmail()}>`,
-    to,
-    accepted: false,
-    providerResponse: null,
-    error: null,
-  };
-  if (!report.configured) return res.status(503).json({ ...report, error: 'No email transport is configured on the server (BREVO_API_KEY / EMAIL_USER missing).' });
-  try {
-    const out = await sendMail({
-      to,
-      subject: 'SSF email delivery test',
-      text: 'This is a delivery test from the SSF admin portal. If you can read this, the email path works end to end.',
-      html: '<p>This is a delivery test from the SSF admin portal. If you can read this, the email path works end to end.</p>',
-    });
-    report.accepted = true;
-    report.providerResponse = out;
-    return res.json(report);
-  } catch (e) {
-    report.error = e.message;
-    return res.status(502).json(report);
-  }
-});
-
-// Temporary, admin-only: read the provider's own delivery log so "accepted" can
-// be checked against what actually happened (delivered / blocked / bounced / spam).
-router.get('/admin/diagnostics/email-events', requireAdminAuth, async (req, res) => {
-  const key = String(process.env.BREVO_API_KEY || '').trim();
-  if (!key) return res.status(503).json({ message: 'Brevo is not configured on the server.' });
-  const email = String((req.query.email || '').trim());
-  const qs = new URLSearchParams({ limit: '100', sort: 'desc' });
-  if (email) qs.set('email', email);
-  try {
-    const r = await fetch(`https://api.brevo.com/v3/smtp/statistics/events?${qs}`, { headers: { 'api-key': key, accept: 'application/json' } });
-    const body = await r.text();
-    if (!r.ok) return res.status(502).json({ message: `Brevo events ${r.status}`, detail: body.slice(0, 400) });
-    const data = JSON.parse(body);
-    const events = (data.events || []).map((e) => ({ date: e.date, email: e.email, subject: e.subject, event: e.event, reason: e.reason, messageId: e.messageId }));
-    return res.json({ count: events.length, events });
-  } catch (e) {
-    return res.status(502).json({ message: 'Could not read Brevo events.', detail: e.message });
   }
 });
 
