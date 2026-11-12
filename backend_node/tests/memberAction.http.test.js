@@ -185,6 +185,8 @@ async function main() {
     ok('a closed (final-order) record cannot be deleted', delClosed.status === 409, JSON.stringify(delClosed.body));
     const delIssued = await send(`/api/admin/member-actions/${emailDraft.body.id}`, 'DELETE', null, auth);
     ok('an issued notice cannot be deleted (only drafts can)', delIssued.status === 409, JSON.stringify(delIssued.body));
+    const delForced = await send(`/api/admin/member-actions/${draft1.body.id}?force=true`, 'DELETE', null, auth);
+    ok('a mistaken issued/closed record can be removed only with the explicit force override', delForced.status === 200, JSON.stringify(delForced.body));
   } catch (error) {
     fail += 1;
     console.error('\n  \u2717 unexpected failure:', error);

@@ -197,7 +197,13 @@ router.delete('/admin/member-actions/:id', requireAdmin, async (req, res) => {
   try {
     const row = await MemberAction.findByPk(req.params.id);
     if (!row) return res.status(404).json({ message: 'नोटिस रिकॉर्ड नहीं मिला।' });
-    if (row.status !== 'draft') return res.status(409).json({ message: 'जारी हो चुका नोटिस रिकॉर्ड हटाया नहीं जा सकता। उसे “कोई कार्रवाई नहीं” के अंतिम निर्णय से बंद करें।' });
+    // Drafts delete freely. An issued/closed record breaks the member's reply
+    // link if removed, so it needs an explicit override (force=true) that the
+    // portal only offers behind a warning naming the person.
+    const force = String(req.query.force || '') === 'true';
+    if (row.status !== 'draft' && !force) {
+      return res.status(409).json({ message: 'जारी हो चुका नोटिस रिकॉर्ड सीधे हटाया नहीं जा सकता। सचेत रहते हुए हटाने के लिए पुष्टि करें।' });
+    }
     await row.destroy();
     return res.json({ status: 'success' });
   } catch (e) { console.error('Member action delete:', e); return res.status(500).json({ message: 'रिकॉर्ड हटाया नहीं जा सका।' }); }
