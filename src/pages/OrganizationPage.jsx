@@ -90,22 +90,10 @@ export default function OrganizationPage() {
     </section>
 
     <section className="mx-auto max-w-7xl px-5 sm:px-8 py-16">
-      <SectionHeading eyebrow="03 / Head Office & Administration" title="मुख्य कार्यालय एवं प्रशासनिक व्यवस्था" description="प्रबंध समिति के निर्णयों और संस्था की स्वीकृत योजनाओं को लागू करने के लिए मुख्य कार्यालय प्रशासनिक समन्वय का केंद्र होगा। आवश्यकतानुसार कार्य-विभाजन और जिम्मेदारियाँ लिखित आदेश/समिति प्रस्ताव से तय की जा सकती हैं।"/>
-      <div className="mx-auto max-w-4xl">
-        <div className="rounded-2xl bg-[#12345A] p-6 text-center text-white shadow-lg"><Building2 className="mx-auto h-8 w-8 text-[#F7A814]"/><h3 className="mt-2 text-xl font-black">Head Office / मुख्य कार्यालय</h3><p className="mt-1 text-sm text-white/75">प्रबंध समिति के मार्गदर्शन में केंद्रीय प्रशासनिक समन्वय</p></div>
-        <div className="mx-auto h-8 w-px bg-[#B8C6D1]"/>
-        <div className="grid gap-3 sm:grid-cols-2">
-          {["प्रशासन एवं कार्यालय प्रबंधन","वित्त एवं लेखा","कार्यक्रम एवं परियोजना समन्वय","सदस्यता एवं स्वयंसेवक समन्वय","दस्तावेज़, अनुपालन एवं रिपोर्टिंग","संचार, मीडिया एवं जनसंपर्क"].map(x=><div key={x} className="rounded-xl border border-[#DCE5EB] bg-white p-4 text-center font-bold text-[#12345A]">{x}</div>)}
-        </div>
-      </div>
-    </section>
-
-    <section className="bg-[#EDF3F2] py-16">
-      <div className="mx-auto max-w-7xl px-5 sm:px-8">
-        <SectionHeading eyebrow="04 / Departments" title="विभाग एवं उनके उद्देश्य" description="विभाग कार्यों को व्यवस्थित करने के लिए प्रशासनिक इकाइयाँ हैं। विभागाध्यक्ष/समन्वयक की नियुक्ति और अधिकार लिखित स्वीकृति से होंगे; विभाग अपने आप में नियमावली की संवैधानिक समिति नहीं बन जाते।"/>
-        <div className="grid gap-4 md:grid-cols-2">
-          {departments.map(([name, desc])=><div key={name} className="flex gap-4 rounded-2xl bg-white p-5 shadow-sm"><div className="mt-1 rounded-xl bg-[#EAF1F4] p-3"><ClipboardList className="h-5 w-5 text-[#176447]"/></div><div><h3 className="font-black text-[#12345A]">{name}</h3><p className="mt-2 text-sm leading-6 text-[#53616C]">{desc}</p></div></div>)}
-        </div>
+      <SectionHeading eyebrow="03 / Administration" title="प्रशासनिक व्यवस्था" description="संस्था के दैनिक प्रशासन, विभागीय कार्य-विभाजन, जिम्मेदार पदों और आंतरिक समन्वय की विस्तृत व्यवस्था आवश्यकता एवं सक्षम स्वीकृति के अनुसार निर्धारित की जाती है। इसकी अद्यतन जानकारी संस्था के अधिकृत आंतरिक प्रबंधन तंत्र में सुरक्षित रखी जाती है।"/>
+      <div className="rounded-3xl border border-[#DCE5EB] bg-white p-7 md:p-9 shadow-sm">
+        <h3 className="text-xl font-black text-[#12345A]">पारदर्शिता और जवाबदेही</h3>
+        <p className="mt-3 text-sm leading-7 text-[#53616C]">सार्वजनिक रूप से केवल स्वीकृत नीतियाँ, संस्था के उद्देश्य और अधिकृत पदाधिकारियों की जानकारी प्रकाशित की जाएगी। विभागीय जिम्मेदारियाँ, नियुक्ति आदेश, आंतरिक संपर्क विवरण तथा क्षेत्रीय इकाइयों की संचालन-संबंधी जानकारी सार्वजनिक सूची नहीं है; इन्हें संबंधित आंतरिक अभिलेखों में रखा जाएगा।</p>
       </div>
     </section>
 
