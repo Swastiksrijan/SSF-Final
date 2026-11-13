@@ -435,7 +435,7 @@ function OfficialDocuments({rows,add}){
   if(data.body){d.setFont(undefined,"normal");const lines=d.splitTextToSize(String(data.body),pageW-left*2);lines.forEach(line=>{if(y>pageH-45){d.addPage();y=22;}d.text(line,left,y);y+=5.5;});}
   if(data.remarks){y+=6;d.setFont(undefined,"bold");d.text("Remarks:",left,y);y+=6;d.setFont(undefined,"normal");d.splitTextToSize(String(data.remarks),pageW-left*2).forEach(line=>{if(y>pageH-45){d.addPage();y=22;}d.text(line,left,y);y+=5.5;});}
   if(y>pageH-42){d.addPage();y=22;} y+=12;d.setFont(undefined,"bold");d.text("For Swastik Srijan Foundation Samiti",left,y);y+=14;d.text(String(data.signatory||"Ramesh Pandey").split("\\n")[0],left,y);y+=5;d.setFont(undefined,"normal");d.text(String(data.signatory||"Founder & National President").split("\\n").slice(1).join(" ")||"Founder & National President",left,y);
-  d.setFontSize(8);d.setTextColor(120);d.text("Computer-generated official office document · Issued by authorised SSF administration",pageW/2,pageH-10,{align:"center"});
+  d.setFontSize(9);d.setTextColor(180,35,35);d.setFont(undefined,"bold");d.text("DRAFT FOR REVIEW — NOT VALID UNTIL APPROVED AND SIGNED",pageW/2,pageH-17,{align:"center"});d.setFontSize(8);d.setTextColor(120);d.setFont(undefined,"normal");d.text("Prepared in SSF OneOffice · Final issue requires competent-authority approval",pageW/2,pageH-10,{align:"center"});
   const url=URL.createObjectURL(d.output("blob")),a=document.createElement("a");a.href=url;a.download=data.documentNo.replace(/[\\/]/g,"-")+".pdf";a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
  };
  const submit=async e=>{e.preventDefault();if(!f.name.trim()&&!f.docType.includes("Notice")&&!f.docType.includes("Circular")){setNotice("Name / recipient required.");return;}const data={...f,documentNo:nextNo()};await add("officialDocuments",{recordDate:f.date,recordType:f.docType,status:"active",data});await makePdf(data);setNotice("Official document saved and PDF generated: "+data.documentNo);};
@@ -511,9 +511,9 @@ function AppointmentLetters({rows,add}){
   d.setFontSize(8);d.setTextColor(120);d.text("Computer-generated official office document · Issued by authorised SSF administration",pageW/2,pageH-10,{align:"center"});
   const filename=(data.appointmentNo||"SSF-Appointment").replace(/[\/\\]/g,"-")+".pdf";const blob=d.output("blob"),url=URL.createObjectURL(blob),a=document.createElement("a");a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1500);
  };
- const submit=async e=>{e.preventDefault();const appointmentNo=nextNumber();const data={appointmentNo,...f};await add("appointmentLetters",{recordDate:f.date,recordType:"Appointment Letter",status:"active",data});await makePdf(data);};
+ const submit=async e=>{e.preventDefault();const appointmentNo=nextNumber();const data={appointmentNo,...f,documentStatus:"Draft — pending approval"};const saved=await add("appointmentLetters",{recordDate:f.date,recordType:"Appointment Letter Draft",status:"draft",data});if(saved)await makePdf(data);};
  return <div className="bg-white rounded-2xl border overflow-hidden">
-  <div className="bg-[#12345A] text-white p-6 sm:p-7"><div className="flex items-center gap-3"><FaUserTie className="text-2xl"/><div><h1 className={PAGE_TITLE_ON_DARK}>Appointment Letters</h1><p className="text-white/70 mt-1">Authorised Admin can create, issue and download official SSF appointment letters.</p></div></div></div>
+  <div className="bg-[#12345A] text-white p-6 sm:p-7"><div className="flex items-center gap-3"><FaUserTie className="text-2xl"/><div><h1 className={PAGE_TITLE_ON_DARK}>Appointment Letters</h1><p className="text-white/70 mt-1">Prepare appointment-letter drafts for review; final issue requires recorded approval and authorised signature.</p></div></div></div>
   <form onSubmit={submit} className="p-5 sm:p-7 grid sm:grid-cols-2 lg:grid-cols-4 gap-3 bg-zinc-50">
    {input("name","Full Name",true)}{input("designation","Designation / Position",true)}{input("email","Email (optional)")}{input("phone","Phone (optional)")}
    {input("department","Department / Programme")}{input("date","Issue Date",true)}{input("joiningDate","Joining / Effective Date",true)}{input("validUntil","Valid Until (optional)")}
@@ -521,7 +521,7 @@ function AppointmentLetters({rows,add}){
    {input("reportingTo","Reporting To")}{input("location","Location / Area")}{input("reference","Reference / Remarks")}
    <div className="sm:col-span-2 lg:col-span-4 bg-white border rounded-xl p-4"><div className="font-black text-[#12345A]">Standard NGO Responsibilities</div><p className="text-xs text-zinc-500 mt-1 mb-3">Admin can edit these for the specific appointment.</p>{area("responsibilities","Responsibilities",8)}</div>
    <div className="sm:col-span-2 lg:col-span-4">{area("terms","Terms & Conduct",5)}</div>
-   <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2"><button className="bg-[#12345A] text-white px-6 py-3 rounded-xl font-bold"><FaFileAlt className="inline mr-2"/>Save & Generate Appointment Letter</button><span className="text-xs text-zinc-500 self-center">The PDF uses SSF letterhead, registration details, appointment number and authorised signatory.</span></div>
+   <div className="sm:col-span-2 lg:col-span-4 flex flex-wrap gap-2"><button className="bg-[#12345A] text-white px-6 py-3 rounded-xl font-bold"><FaFileAlt className="inline mr-2"/>Save Draft & Generate Review PDF</button><span className="text-xs text-zinc-500 self-center">The PDF is clearly marked DRAFT. Confirm the appointment, authority and signatory before issuing.</span></div>
   </form>
  </div>;
 }
