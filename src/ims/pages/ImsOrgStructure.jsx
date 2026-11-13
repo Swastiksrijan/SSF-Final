@@ -4,14 +4,27 @@ import { PageHeader, Card } from '../ui';
 import { Building2, Network, BriefcaseBusiness, ClipboardList, ShieldCheck, ArrowUpRight, Users, Landmark, FileCheck2, Layers3 } from 'lucide-react';
 
 const departments = [
-  ['Education & Learning', 'शिक्षा, साक्षरता, डिजिटल शिक्षा और कौशल विकास।'],
-  ['Health & Community Well-being', 'स्वास्थ्य जागरूकता, जनकल्याण और समुदाय आधारित सहयोग।'],
-  ['Women, Child & Social Inclusion', 'महिला, बाल विकास, समान अवसर और सामाजिक समावेशन।'],
-  ['Livelihood & Sustainable Development', 'आजीविका, कौशल, पर्यावरण-अनुकूल गतिविधियाँ और टिकाऊ विकास।'],
-  ['Environment & Rural Development', 'पर्यावरण संरक्षण, ग्रामीण विकास और स्थानीय जरूरतों पर आधारित गतिविधियाँ।'],
-  ['Administration, Finance & Compliance', 'कार्यालयीन समन्वय, वित्तीय अनुशासन, अभिलेख और वैधानिक अनुपालन।'],
-  ['Communication & Partnerships', 'जनसंपर्क, सूचना, मीडिया, साझेदारी और समुदाय से संवाद।'],
-  ['Monitoring, Evaluation & Reporting', 'कार्य प्रगति, परिणाम, दस्तावेजीकरण और रिपोर्टिंग।'],
+  ['Education, Literacy & Educational Institutions','शिक्षा प्रमुख; प्राथमिक/माध्यमिक/उच्चतर/कॉलेज शिक्षा; तकनीकी व कंप्यूटर शिक्षा; नर्सिंग शिक्षा; वयस्क शिक्षा; पुस्तकालय; शिक्षक प्रशिक्षण; समावेशी शिक्षा; छात्र मार्गदर्शन/छात्रवृत्ति; स्कूल कार्यक्रम।'],
+  ['Women Empowerment & Child Development','महिला सशक्तिकरण प्रमुख; बाल कल्याण; बालिका संरक्षण; महिला सुरक्षा; परिवार कल्याण; महिला स्वास्थ्य/पोषण; SHG; विधवा/निराश्रित महिला सहायता; बाल विकास केंद्र; महिला कौशल/स्वरोजगार।'],
+  ['Health, Nutrition & Rehabilitation','स्वास्थ्य सेवा प्रमुख; जनस्वास्थ्य जागरूकता; पोषण/कुपोषण रोकथाम; HIV/AIDS जागरूकता/परामर्श; कैंसर जागरूकता; नशामुक्ति/पुनर्वास; प्राकृतिक चिकित्सा/योग; स्वास्थ्य शिविर; दिव्यांग पुनर्वास; मानसिक स्वास्थ्य/परामर्श।'],
+  ['Social Welfare & Inclusive Development','सामाजिक कल्याण प्रमुख; गरीब/जरूरतमंद सहायता; वरिष्ठ नागरिक; अनाथ/निराश्रित; दिव्यांग समावेशन; वंचित/SC समुदाय; जनजातीय/वनवासी समुदाय; मलिन बस्ती; दूरस्थ/सीमावर्ती क्षेत्र; सामाजिक सुरक्षा योजनाएँ।'],
+  ['Rural & Community Development','ग्रामीण विकास प्रमुख; ग्राम विकास कार्यक्रम; सामुदायिक सेवा केंद्र; ग्रामीण शिक्षा/स्वास्थ्य; ग्राम संस्थान संचालन; ग्रामीण आधारभूत संरचना; जनभागीदारी; ग्रामीण सरकारी योजनाएँ।'],
+  ['Agriculture, Horticulture & Organic Farming','कृषि विकास प्रमुख; जैविक/प्राकृतिक खेती; बागवानी/फल उत्पादन; औषधीय पौधे; किसान प्रशिक्षण; खाद्य प्रसंस्करण/परिरक्षण; कृषि उपज विपणन; अनुसंधान/विस्तार।'],
+  ['Animal Husbandry, Cow Protection & Animal Welfare','पशुपालन प्रमुख; गौ-संरक्षण; डेयरी; बकरी/भेड़ पालन; कुक्कुट/अन्य पशुधन; पशु कल्याण/संरक्षण; पशु चिकित्सा शिविर; पशु-पक्षी संरक्षण जागरूकता।'],
+  ['Environment, Water & Natural Resources','पर्यावरण संरक्षण प्रमुख; वृक्षारोपण/वन संरक्षण; जल संरक्षण; जैव विविधता; प्राकृतिक संसाधन; वैकल्पिक/नवीकरणीय ऊर्जा; प्रदूषण जागरूकता; स्वच्छता/कचरा प्रबंधन।'],
+  ['Skill Development, Employment & Village Industries','कौशल विकास प्रमुख; रोजगार/करियर मार्गदर्शन; स्वरोजगार; खादी/ग्रामोद्योग; लघु उद्योग/उद्यमिता; सिलाई/कढ़ाई; महिला उद्यमिता; युवा रोजगार; उत्पादन/विपणन; आजीविका/आय सृजन।'],
+  ['Youth, Sports, Culture & Yoga','युवा विकास प्रमुख; खेल/शारीरिक शिक्षा; योग/प्राकृतिक विज्ञान; सांस्कृतिक कार्यक्रम; संगीत/कला; साहित्य/चर्चा मंच; युवा नेतृत्व; राष्ट्रीय दिवस/सामुदायिक आयोजन।'],
+  ['Disaster Relief & Humanitarian Assistance','आपदा राहत प्रमुख; आपात सहायता; राहत सामग्री प्रबंधन; पुनर्वास/पुनर्निर्माण; स्वयंसेवी राहत दल।'],
+  ['Organization, Membership & Volunteer Management','संगठन/सदस्यता प्रमुख; सदस्यता आवेदन; सदस्य रजिस्टर; स्वयंसेवक प्रबंधन; संगठन विस्तार; सदस्य प्रशिक्षण/परिचय; सामुदायिक संपर्क। सदस्यता स्वीकृति/समाप्ति नियमावली और सक्षम समिति के अनुसार।'],
+  ['Project Planning, Implementation & Evaluation','परियोजना नियोजन प्रमुख; प्रस्ताव विकास; परियोजना क्रियान्वयन; निगरानी/मूल्यांकन; रिपोर्टिंग; परिणाम/प्रभाव आकलन; दस्तावेजीकरण; जोखिम प्रबंधन।'],
+  ['CSR, Grants, Funding & Partnerships','CSR/कॉर्पोरेट साझेदारी प्रमुख; अनुदान/सरकारी योजनाएँ; दाता संबंध; संस्थागत साझेदारी; उद्योग/व्यापार संपर्क; परियोजना वित्तपोषण; संसाधन जुटाना; मशीन/उपकरण सहयोग; प्रायोजन।'],
+  ['Finance, Accounts, Budget & Internal Controls','वित्त/लेखा समन्वय; बजट/व्यय नियंत्रण; बैंक/भुगतान रिकॉर्ड; दान/रसीद रजिस्टर; परियोजना लेखे; वेतन; संपत्ति/स्टॉक रजिस्टर; आंतरिक वित्तीय समीक्षा। कोषाध्यक्ष के अधीन; स्वतः बैंक अधिकार नहीं।'],
+  ['Legal, Registration & Compliance','विधिक/अनुपालन समन्वय; पंजीयन दस्तावेज; आयकर; 12AB/80G; CSR-1; सरकारी विभाग संपर्क; अनुबंध; नीतियाँ/आंतरिक प्रक्रियाएँ। विधिक राय/ऑडिट/कर प्रमाणन योग्य पेशेवर से।'],
+  ['Media, Communication & Public Relations','मीडिया/जनसंपर्क प्रमुख; प्रेस संपर्क; सोशल मीडिया; वेबसाइट सामग्री; प्रकाशन/प्रचार; फोटो/वीडियो दस्तावेजीकरण; जन-जागरूकता संचार।'],
+  ['IT, Digital Office & MIS','आईटी/डिजिटल संचालन प्रमुख; वेबसाइट/पोर्टल; MIS/डेटा; डिजिटल अभिलेख; ऑनलाइन आवेदन/सदस्य सेवाएँ; साइबर सुरक्षा/डेटा गोपनीयता; डिजिटल प्रशिक्षण/तकनीकी सहायता।'],
+  ['Human Resources & Personnel Management','मानव संसाधन समन्वय; भर्ती/कार्मिक रिकॉर्ड; कर्मचारी प्रशिक्षण; उपस्थिति/प्रदर्शन; वेतन/सेवा शर्तें; कर्मचारी कल्याण/शिकायत। नियुक्ति/भुगतान स्वीकृत बजट व श्रम कानून के अनुसार।'],
+  ['Institutions, Centres & Office Operations','संस्था संचालन प्रमुख; स्कूल; प्रशिक्षण केंद्र; सेवा केंद्र; कार्यालय/सुविधा प्रबंधन; उपकरण/सामग्री; सुरक्षा/सुविधा प्रबंधन।'],
+  ['Quality, Transparency & Grievance Redressal','गुणवत्ता/प्रदर्शन समीक्षा; आंतरिक प्रक्रिया निगरानी; शिकायत/सुझाव; पारदर्शिता/सूचना प्रबंधन; सामाजिक प्रभाव समीक्षा। वैधानिक ऑडिटर या समिति/साधारण सभा का विकल्प नहीं।'],
 ];
 
 const levels = [
@@ -63,7 +76,38 @@ export default function ImsOrgStructure() {
       <Link to="/ims/r/committeeMembers" className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-emerald-800 hover:underline">प्रबंध समिति रजिस्टर खोलें <ArrowUpRight size={16}/></Link>
     </Card>
 
+    
+    <Card className="mb-6 border border-blue-200 bg-blue-50/60 shadow-sm">
+      <p className="text-xs font-black uppercase tracking-wider text-blue-800">पंजीकृत नाम का अभिलेखीय मिलान</p>
+      <h2 className="mt-2 text-xl font-extrabold text-slate-900">स्वास्तिक सृजन फाउंडेशन समिति</h2>
+      <p className="mt-1 text-sm text-slate-700">पंजीकरण प्रमाणपत्र में बताया गया हिंदी नाम। नियमावली Rule 1 में अंग्रेज़ी नाम “SWASTIK SRIJAN FOUNDATION” दर्ज है। दोनों अभिलेखों के नाम-अंतर को नोट किया गया है; अंग्रेज़ी कानूनी नाम या नियमावली संशोधन का दावा प्रमाणित पंजीयन रिकॉर्ड के मिलान के बिना न करें।</p>
+    </Card>
+    <Card className="mb-6 border border-emerald-200 bg-emerald-50/50 shadow-sm">
+      <SectionTitle Icon={Landmark} title="संवैधानिक व्यवस्था — नियमावली के अनुसार" subtitle="संवैधानिक निकाय और पदों की सीमा" />
+      <div className="grid gap-3 md:grid-cols-2">
+        <div className="rounded-xl border bg-white p-4"><h3 className="font-bold">साधारण सभा (General Body)</h3><p className="mt-2 text-sm leading-6 text-slate-600">कम-से-कम एक वार्षिक बैठक; 15 दिन की सूचना; गणपूर्ति 3/5। नियम 11 के अनुसार वार्षिक प्रतिवेदन, बजट, लेखे, स्थायी निधि/संपत्ति व्यवस्था और लेखा परीक्षक की नियुक्ति पर विचार/अनुमोदन।</p></div>
+        <div className="rounded-xl border bg-white p-4"><h3 className="font-bold">9 सदस्यीय प्रबंध समिति</h3><p className="mt-2 text-sm leading-6 text-slate-600">अध्यक्ष 1, उपाध्यक्ष 1, मंत्री 1, कोषाध्यक्ष 1, सह-मंत्री 1 और सदस्य 4। कार्यकाल 3 वर्ष; नई समिति बनने तक अधिकतम 6 माह की निरंतरता केवल पर्याप्त कारण और साधारण सभा की स्वीकृति से। मासिक बैठक, 7 दिन की सूचना और आधे सदस्यों की गणपूर्ति।</p></div>
+      </div>
+      <p className="mt-3 rounded-lg bg-amber-50 p-3 text-sm leading-6 text-amber-900">National President / National General Secretary जैसे अतिरिक्त संवैधानिक पद नियमावली में नहीं हैं। विभागाध्यक्ष और क्षेत्रीय समन्वयक केवल लिखित स्वीकृत प्रशासनिक दायित्व होंगे, प्रबंध समिति का विकल्प नहीं।</p>
+    </Card>
+    <Card className="mb-6 border border-amber-200 bg-amber-50/50 shadow-sm">
+      <SectionTitle Icon={Wallet} title="वित्तीय अधिकार एवं वैधानिक नियंत्रण" subtitle="विभागीय पद से बैंक या व्यय अधिकार स्वतः नहीं मिलता" />
+      <ul className="space-y-2 text-sm leading-6 text-slate-700">
+        <li>• बैंक निकासी: अध्यक्ष अथवा मंत्री/सचिव और कोषाध्यक्ष के संयुक्त हस्ताक्षर।</li>
+        <li>• मंत्री/सचिव: नियम 17 के अनुसार एक कार्य पर ₹5,000 तक व्यय।</li>
+        <li>• कोषाध्यक्ष: दैनिक खर्च हेतु अधिकतम ₹4,500 अपने पास रख सकता है; लेखे रखेगा और स्वीकृत व्यय करेगा।</li>
+        <li>• सभी निधियाँ अनुसूचित बैंक/डाकघर में; विभागीय वित्त समन्वयक को स्वतः बैंक हस्ताक्षर/निकासी अधिकार नहीं।</li>
+        <li>• साधारण सभा बजट/लेखे अनुमोदित और लेखा परीक्षक नियुक्त करती है; आंतरिक समीक्षा वैधानिक ऑडिट का विकल्प नहीं।</li>
+        <li>• वार्षिक बैठक के 45 दिनों के भीतर नियम 21 के अनुसार प्रबंध समिति सूची और लेखा विवरण दाखिल। संशोधन हेतु 2/3 और विघटन हेतु 3/5 सदस्य समर्थन नियम 22–23 के अनुसार।</li>
+      </ul>
+      <p className="mt-3 text-xs leading-5 text-amber-950">नियम 14(च) और नियम 24 में संपत्ति के नाम/स्वामित्व की भाषा में अंतर है; इसे कानूनी सलाह से स्पष्ट करें। नियमावली का पता PIN 486001 है; दूसरे कर अभिलेख में अलग PIN का उल्लेख है—पते में बदलाव से पहले आधिकारिक अभिलेख मिलाएँ।</p>
+    </Card>
     <Card className="mb-6 border border-slate-200 shadow-sm">
+      <SectionTitle Icon={Users} title="सलाहकार परिषदें / Advisory Councils" subtitle="विशेषज्ञ सलाह हेतु प्रस्तावित, गैर-शासी व्यवस्था" />
+      <p className="text-sm leading-6 text-slate-700">National Advisory Council; Education Advisory Board; Health Advisory Board; Agriculture & Environment Advisory Board; Finance & CSR Advisory Board; Legal Advisory Board; Technical Advisory Board; Youth Advisory Council; Women Advisory Council; Social Development Advisory Council.</p>
+      <p className="mt-2 text-xs leading-5 text-slate-500">सलाहकारों को स्वतः मतदान, प्रबंधकीय, बैंकिंग या वित्तीय अधिकार नहीं मिलेंगे।</p>
+    </Card>
+<Card className="mb-6 border border-slate-200 shadow-sm">
       <SectionTitle Icon={Layers3} title="2. प्रशासनिक एवं विभागीय व्यवस्था" subtitle="कार्य-आधारित इकाइयाँ — स्वीकृति और वास्तविक आवश्यकता के अनुसार सक्रिय हों" />
       <div className="grid gap-3 md:grid-cols-2">
         {departments.map(([name,desc],i)=><div key={name} className="flex gap-3 rounded-xl border border-slate-200 bg-slate-50/70 p-4"><span className="grid h-8 w-8 shrink-0 place-items-center rounded-lg bg-white text-xs font-black text-emerald-800 shadow-sm">{String(i+1).padStart(2,'0')}</span><div><h3 className="font-bold text-slate-800">{name}</h3><p className="mt-1 text-sm leading-6 text-slate-500">{desc}</p></div></div>)}
