@@ -564,7 +564,7 @@ export const DICT = {
   chapters_title: { en: 'Chapters', hi: 'अध्याय' },
   volunteer_tasks: { en: 'Volunteer Tasks', hi: 'स्वयंसेवक कार्य' },
   volunteer_funds: { en: 'Volunteer Funds', hi: 'स्वयंसेवक निधि' },
-  chapterMembers: { en: 'Chapter Members', hi: 'अध्याय सदस्य' },
+  chapterMembers: { en: 'Unit Role Assignments', hi: 'इकाई पद / दायित्व आवंटन' },
   grp_communications: { en: 'Communications', hi: 'संचार' },
   awareness_publisher: { en: 'Awareness Publisher', hi: 'जागरूकता प्रकाशक' },
 
