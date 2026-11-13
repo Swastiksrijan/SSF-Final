@@ -197,7 +197,6 @@ export const DICT = {
   departments_register: { en: 'Departments & Functional Units', hi: 'विभाग एवं कार्यात्मक इकाइयाँ' },
   field_units_register: { en: 'National to Village / Ward Units', hi: 'राष्ट्रीय से ग्राम / वार्ड इकाइयाँ' },
   unit_assignments_register: { en: 'Appointments & Unit Assignments', hi: 'नियुक्तियाँ एवं इकाई दायित्व' },
-  chapterMembers: { en: 'Unit Role Assignments', hi: 'इकाई पद / दायित्व आवंटन' },
   org_structure: { en: 'Internal Organisation Structure', hi: 'आंतरिक संगठनात्मक व्यवस्था' },
   org_profile: { en: 'Organisation Profile', hi: 'संस्था परिचय' },
   org_profile_pdf: { en: 'Profile PDF (Shareable)', hi: 'परिचय PDF (साझा योग्य)' },
