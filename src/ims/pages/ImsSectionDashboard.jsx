@@ -48,7 +48,13 @@ export default function ImsSectionDashboard({ section }) {
       const search = {};
       if (query) for (const [k, v] of new URLSearchParams(query)) search[k] = v;
       navigate({ to: pathname, search });
-    } else navigate({ to: '/ims/r/$resource', params: { resource: l.resource } });
+    } else {
+      navigate({
+        to: '/ims/r/$resource',
+        params: { resource: l.resource },
+        search: l.direction ? { direction: l.direction } : {},
+      });
+    }
   };
 
   return (
