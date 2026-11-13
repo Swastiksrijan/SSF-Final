@@ -45,6 +45,7 @@ export const DICT = {
   critical: { en: 'Critical', hi: 'गंभीर' },
   warning: { en: 'Warning', hi: 'चेतावनी' },
   organisation: { en: 'Organisation', hi: 'संस्था' },
+  organization_structure: { en: 'Organization Structure', hi: 'संगठनात्मक संरचना' },
   constitution: { en: 'Constitution & Bylaws', hi: 'संविधान एवं नियमावली' },
   history: { en: 'Institutional History', hi: 'संस्थागत इतिहास' },
   office_history: { en: 'Managing Committee History', hi: 'प्रबंधकारिणी समिति इतिहास' },
