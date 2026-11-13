@@ -71,9 +71,6 @@ const internshipRoutes = require('./routes/internshipRoutes');
 const donorRoutes = require('./routes/donorRoutes');
 const roleDocumentRoutes = require('./routes/roleDocumentRoutes');
 const passwordResetRoutes = require('./routes/passwordResetRoutes');
-const digitalOfficeRoutes = require('./routes/digitalOfficeRoutes');
-const financeRoutes = require('./routes/financeRoutes');
-const auditRoutes = require('./routes/auditRoutes');
 const imsRoutes = require('./routes/imsRoutes');
 const socialRoutes = require('./routes/socialRoutes');
 const quizRoutes = require('./routes/quizRoutes');
@@ -136,9 +133,6 @@ app.use('/api', donorRoutes);
 app.use('/api', roleDocumentRoutes);
 // Account password recovery.
 app.use('/api', passwordResetRoutes);
-app.use('/api', digitalOfficeRoutes);
-app.use('/api', financeRoutes);
-app.use('/api', auditRoutes);
 app.use('/api', imsRoutes);
 app.use('/api', socialRoutes);
 // Awareness quiz + automatic certificate issuance.
@@ -324,8 +318,8 @@ async function runSeeds() {
     }
     // Official Financial Records workbook (data/officialRegisters.json) — the
     // canonical donation/expense transactions plus the CA-signed audit years.
-    // Idempotent (keyed by sourceRecordId), so a brand-new database populates
-    // its finance registers on first boot without any admin action.
+    // Writes into the IMS finance masters; idempotent (keyed by sourceRecordId),
+    // so a brand-new database populates its registers on first boot.
     try {
         const { seedOfficialWorkbook } = require('./services/ims/workbookSeed');
         const wb = await seedOfficialWorkbook({ actor: 'system' });
@@ -334,17 +328,6 @@ async function runSeeds() {
         }
     } catch (e) {
         console.error('⚠️ Official workbook seed skipped:', e.message);
-    }
-    // Legacy Digital Office finance masters still shown by the Digital Office
-    // screens: Chart of Accounts and the Financial Year Master (idempotent).
-    try {
-        const { seedLegacyOffice } = require('./services/ims/legacyOfficeSeed');
-        const lo = await seedLegacyOffice({ actor: 'system' });
-        if (lo.chartOfAccounts || lo.fyMaster) {
-            console.log(`✅ Legacy office masters: ${lo.chartOfAccounts} account head(s), ${lo.fyMaster} financial year(s)`);
-        }
-    } catch (e) {
-        console.error('⚠️ Legacy office masters seed skipped:', e.message);
     }
     // Multicultural festival & observance calendar. Seeds only MISSING keys, so
     // an admin's edits, approvals or exclusions are never overwritten.
@@ -357,23 +340,6 @@ async function runSeeds() {
     }
 }
 
-// Copy the entire legacy SSF Digital Office dataset into the IMS masters.
-// ADDITIVE ONLY and idempotent (each imported row is stamped in ImsRelation),
-// so this is safe to run on every boot and skips anything already migrated.
-async function runLegacyMigration() {
-    if (String(process.env.IMS_AUTO_MIGRATE || 'true').toLowerCase() === 'false') return;
-    try {
-        const { migrateLegacy } = require('./services/ims/migrateLegacy');
-        const stats = await migrateLegacy({ dryRun: false });
-        const created = Object.entries(stats.created).map(([k, v]) => `${k}:${v}`).join(', ') || 'none';
-        console.log(`✅ Legacy data migrated into IMS — created ${created}; skipped ${stats.skipped}; unmapped ${stats.unmapped.length}`);
-        if (stats.unmapped.length) console.log('⚠️ Unmapped legacy modules:', stats.unmapped.slice(0, 20).join(', '));
-        if (stats.errors && stats.errors.length) console.log('⚠️ Legacy sources skipped:', stats.errors.join(' | '));
-    } catch (e) {
-        console.error('⚠️ Legacy migration skipped:', e.message);
-    }
-}
-
 let dbSynced = false;
 
 async function syncDatabase(attempts = 3) {
@@ -383,7 +349,6 @@ async function syncDatabase(attempts = 3) {
             console.log('✅ PostgreSQL Database Synced');
             await ensureColumns();
             await runSeeds();
-            await runLegacyMigration();
             if (SYNC_ALTER) {
                 try {
                     await sequelize.sync({ alter: true });

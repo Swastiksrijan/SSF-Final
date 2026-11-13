@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { LangProvider } from '../../ims/LangContext';
-import { ImsMembersLegacy } from '../../ims/oldOfficePages';
+import ImsMembersList from '../../ims/pages/ImsMembersList';
 
 const TOKEN_KEY = 'ssf_admin_token';
 
@@ -9,5 +9,5 @@ export const Route = createFileRoute('/ims/members')({
     const token = localStorage.getItem(TOKEN_KEY) || '';
     if (!token) throw redirect({ to: '/Admin', search: { redirect: location.href }, replace: true });
   },
-  component: () => <LangProvider><ImsMembersLegacy /></LangProvider>,
+  component: () => <LangProvider><ImsMembersList /></LangProvider>,
 });

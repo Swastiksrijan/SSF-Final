@@ -33,6 +33,7 @@ import { Route as PrivacyPolicyRouteImport } from './routes/PrivacyPolicy'
 import { Route as PartnerWithUsRouteImport } from './routes/PartnerWithUs'
 import { Route as PartnerOutreachRouteImport } from './routes/PartnerOutreach'
 import { Route as OurInitiativesRouteImport } from './routes/OurInitiatives'
+import { Route as OrganizationRouteImport } from './routes/Organization'
 import { Route as ObjectivesRouteImport } from './routes/Objectives'
 import { Route as MissionRouteImport } from './routes/Mission'
 import { Route as MemorandumAndRulesRouteImport } from './routes/MemorandumAndRules'
@@ -82,10 +83,10 @@ import { Route as ImsRegistersRouteImport } from './routes/ims/registers'
 import { Route as ImsProcurementRouteImport } from './routes/ims/procurement'
 import { Route as ImsPoliciesRouteImport } from './routes/ims/policies'
 import { Route as ImsPermissionsRouteImport } from './routes/ims/permissions'
+import { Route as ImsOrgStructureRouteImport } from './routes/ims/org-structure'
 import { Route as ImsOrgProfilePdfRouteImport } from './routes/ims/org-profile-pdf'
 import { Route as ImsOrgProfileRouteImport } from './routes/ims/org-profile'
 import { Route as ImsOfficialDocumentsRouteImport } from './routes/ims/official-documents'
-import { Route as ImsOfficeRouteImport } from './routes/ims/office'
 import { Route as ImsNotificationsRouteImport } from './routes/ims/notifications'
 import { Route as ImsMembershipContributionsRouteImport } from './routes/ims/membership-contributions'
 import { Route as ImsMembersRouteImport } from './routes/ims/members'
@@ -119,7 +120,6 @@ import { Route as ImsSectionsSectionRouteImport } from './routes/ims/sections/$s
 import { Route as ImsRResourceRouteImport } from './routes/ims/r/$resource'
 import { Route as ImsPersonIdRouteImport } from './routes/ims/person/$id'
 import { Route as ImsMemberIdRouteImport } from './routes/ims/member/$id'
-import { Route as ImsLegacyModuleRouteImport } from './routes/ims/legacy/$module'
 import { Route as ImsFinanceStatementImportRouteImport } from './routes/ims/finance/statement-import'
 import { Route as ImsFinanceReceiptsPaymentsRouteImport } from './routes/ims/finance/receipts-payments'
 import { Route as ImsFinanceLedgerRouteImport } from './routes/ims/finance/ledger'
@@ -244,6 +244,11 @@ const PartnerOutreachRoute = PartnerOutreachRouteImport.update({
 const OurInitiativesRoute = OurInitiativesRouteImport.update({
   id: '/OurInitiatives',
   path: '/OurInitiatives',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OrganizationRoute = OrganizationRouteImport.update({
+  id: '/Organization',
+  path: '/Organization',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ObjectivesRoute = ObjectivesRouteImport.update({
@@ -492,6 +497,11 @@ const ImsPermissionsRoute = ImsPermissionsRouteImport.update({
   path: '/ims/permissions',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsOrgStructureRoute = ImsOrgStructureRouteImport.update({
+  id: '/ims/org-structure',
+  path: '/ims/org-structure',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsOrgProfilePdfRoute = ImsOrgProfilePdfRouteImport.update({
   id: '/ims/org-profile-pdf',
   path: '/ims/org-profile-pdf',
@@ -505,11 +515,6 @@ const ImsOrgProfileRoute = ImsOrgProfileRouteImport.update({
 const ImsOfficialDocumentsRoute = ImsOfficialDocumentsRouteImport.update({
   id: '/ims/official-documents',
   path: '/ims/official-documents',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ImsOfficeRoute = ImsOfficeRouteImport.update({
-  id: '/ims/office',
-  path: '/ims/office',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ImsNotificationsRoute = ImsNotificationsRouteImport.update({
@@ -679,11 +684,6 @@ const ImsMemberIdRoute = ImsMemberIdRouteImport.update({
   path: '/ims/member/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ImsLegacyModuleRoute = ImsLegacyModuleRouteImport.update({
-  id: '/ims/legacy/$module',
-  path: '/ims/legacy/$module',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ImsFinanceStatementImportRoute =
   ImsFinanceStatementImportRouteImport.update({
     id: '/ims/finance/statement-import',
@@ -749,6 +749,7 @@ export interface FileRoutesByFullPath {
   '/MemorandumAndRules': typeof MemorandumAndRulesRoute
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
+  '/Organization': typeof OrganizationRoute
   '/OurInitiatives': typeof OurInitiativesRoute
   '/PartnerOutreach': typeof PartnerOutreachRoute
   '/PartnerWithUs': typeof PartnerWithUsRoute
@@ -801,10 +802,10 @@ export interface FileRoutesByFullPath {
   '/ims/members': typeof ImsMembersRoute
   '/ims/membership-contributions': typeof ImsMembershipContributionsRoute
   '/ims/notifications': typeof ImsNotificationsRoute
-  '/ims/office': typeof ImsOfficeRoute
   '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/org-profile-pdf': typeof ImsOrgProfilePdfRoute
+  '/ims/org-structure': typeof ImsOrgStructureRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -824,7 +825,6 @@ export interface FileRoutesByFullPath {
   '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
   '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
   '/ims/finance/statement-import': typeof ImsFinanceStatementImportRoute
-  '/ims/legacy/$module': typeof ImsLegacyModuleRoute
   '/ims/member/$id': typeof ImsMemberIdRoute
   '/ims/person/$id': typeof ImsPersonIdRoute
   '/ims/r/$resource': typeof ImsRResourceRoute
@@ -866,6 +866,7 @@ export interface FileRoutesByTo {
   '/MemorandumAndRules': typeof MemorandumAndRulesRoute
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
+  '/Organization': typeof OrganizationRoute
   '/OurInitiatives': typeof OurInitiativesRoute
   '/PartnerOutreach': typeof PartnerOutreachRoute
   '/PartnerWithUs': typeof PartnerWithUsRoute
@@ -918,10 +919,10 @@ export interface FileRoutesByTo {
   '/ims/members': typeof ImsMembersRoute
   '/ims/membership-contributions': typeof ImsMembershipContributionsRoute
   '/ims/notifications': typeof ImsNotificationsRoute
-  '/ims/office': typeof ImsOfficeRoute
   '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/org-profile-pdf': typeof ImsOrgProfilePdfRoute
+  '/ims/org-structure': typeof ImsOrgStructureRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -941,7 +942,6 @@ export interface FileRoutesByTo {
   '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
   '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
   '/ims/finance/statement-import': typeof ImsFinanceStatementImportRoute
-  '/ims/legacy/$module': typeof ImsLegacyModuleRoute
   '/ims/member/$id': typeof ImsMemberIdRoute
   '/ims/person/$id': typeof ImsPersonIdRoute
   '/ims/r/$resource': typeof ImsRResourceRoute
@@ -985,6 +985,7 @@ export interface FileRoutesById {
   '/MemorandumAndRules': typeof MemorandumAndRulesRoute
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
+  '/Organization': typeof OrganizationRoute
   '/OurInitiatives': typeof OurInitiativesRoute
   '/PartnerOutreach': typeof PartnerOutreachRoute
   '/PartnerWithUs': typeof PartnerWithUsRoute
@@ -1037,10 +1038,10 @@ export interface FileRoutesById {
   '/ims/members': typeof ImsMembersRoute
   '/ims/membership-contributions': typeof ImsMembershipContributionsRoute
   '/ims/notifications': typeof ImsNotificationsRoute
-  '/ims/office': typeof ImsOfficeRoute
   '/ims/official-documents': typeof ImsOfficialDocumentsRoute
   '/ims/org-profile': typeof ImsOrgProfileRoute
   '/ims/org-profile-pdf': typeof ImsOrgProfilePdfRoute
+  '/ims/org-structure': typeof ImsOrgStructureRoute
   '/ims/permissions': typeof ImsPermissionsRoute
   '/ims/policies': typeof ImsPoliciesRoute
   '/ims/procurement': typeof ImsProcurementRoute
@@ -1060,7 +1061,6 @@ export interface FileRoutesById {
   '/ims/finance/ledger': typeof ImsFinanceLedgerRoute
   '/ims/finance/receipts-payments': typeof ImsFinanceReceiptsPaymentsRoute
   '/ims/finance/statement-import': typeof ImsFinanceStatementImportRoute
-  '/ims/legacy/$module': typeof ImsLegacyModuleRoute
   '/ims/member/$id': typeof ImsMemberIdRoute
   '/ims/person/$id': typeof ImsPersonIdRoute
   '/ims/r/$resource': typeof ImsRResourceRoute
@@ -1105,6 +1105,7 @@ export interface FileRouteTypes {
     | '/MemorandumAndRules'
     | '/Mission'
     | '/Objectives'
+    | '/Organization'
     | '/OurInitiatives'
     | '/PartnerOutreach'
     | '/PartnerWithUs'
@@ -1157,10 +1158,10 @@ export interface FileRouteTypes {
     | '/ims/members'
     | '/ims/membership-contributions'
     | '/ims/notifications'
-    | '/ims/office'
     | '/ims/official-documents'
     | '/ims/org-profile'
     | '/ims/org-profile-pdf'
+    | '/ims/org-structure'
     | '/ims/permissions'
     | '/ims/policies'
     | '/ims/procurement'
@@ -1180,7 +1181,6 @@ export interface FileRouteTypes {
     | '/ims/finance/ledger'
     | '/ims/finance/receipts-payments'
     | '/ims/finance/statement-import'
-    | '/ims/legacy/$module'
     | '/ims/member/$id'
     | '/ims/person/$id'
     | '/ims/r/$resource'
@@ -1222,6 +1222,7 @@ export interface FileRouteTypes {
     | '/MemorandumAndRules'
     | '/Mission'
     | '/Objectives'
+    | '/Organization'
     | '/OurInitiatives'
     | '/PartnerOutreach'
     | '/PartnerWithUs'
@@ -1274,10 +1275,10 @@ export interface FileRouteTypes {
     | '/ims/members'
     | '/ims/membership-contributions'
     | '/ims/notifications'
-    | '/ims/office'
     | '/ims/official-documents'
     | '/ims/org-profile'
     | '/ims/org-profile-pdf'
+    | '/ims/org-structure'
     | '/ims/permissions'
     | '/ims/policies'
     | '/ims/procurement'
@@ -1297,7 +1298,6 @@ export interface FileRouteTypes {
     | '/ims/finance/ledger'
     | '/ims/finance/receipts-payments'
     | '/ims/finance/statement-import'
-    | '/ims/legacy/$module'
     | '/ims/member/$id'
     | '/ims/person/$id'
     | '/ims/r/$resource'
@@ -1340,6 +1340,7 @@ export interface FileRouteTypes {
     | '/MemorandumAndRules'
     | '/Mission'
     | '/Objectives'
+    | '/Organization'
     | '/OurInitiatives'
     | '/PartnerOutreach'
     | '/PartnerWithUs'
@@ -1392,10 +1393,10 @@ export interface FileRouteTypes {
     | '/ims/members'
     | '/ims/membership-contributions'
     | '/ims/notifications'
-    | '/ims/office'
     | '/ims/official-documents'
     | '/ims/org-profile'
     | '/ims/org-profile-pdf'
+    | '/ims/org-structure'
     | '/ims/permissions'
     | '/ims/policies'
     | '/ims/procurement'
@@ -1415,7 +1416,6 @@ export interface FileRouteTypes {
     | '/ims/finance/ledger'
     | '/ims/finance/receipts-payments'
     | '/ims/finance/statement-import'
-    | '/ims/legacy/$module'
     | '/ims/member/$id'
     | '/ims/person/$id'
     | '/ims/r/$resource'
@@ -1459,6 +1459,7 @@ export interface RootRouteChildren {
   MemorandumAndRulesRoute: typeof MemorandumAndRulesRoute
   MissionRoute: typeof MissionRoute
   ObjectivesRoute: typeof ObjectivesRoute
+  OrganizationRoute: typeof OrganizationRoute
   OurInitiativesRoute: typeof OurInitiativesRoute
   PartnerOutreachRoute: typeof PartnerOutreachRoute
   PartnerWithUsRoute: typeof PartnerWithUsRoute
@@ -1507,10 +1508,10 @@ export interface RootRouteChildren {
   ImsMembersRoute: typeof ImsMembersRoute
   ImsMembershipContributionsRoute: typeof ImsMembershipContributionsRoute
   ImsNotificationsRoute: typeof ImsNotificationsRoute
-  ImsOfficeRoute: typeof ImsOfficeRoute
   ImsOfficialDocumentsRoute: typeof ImsOfficialDocumentsRoute
   ImsOrgProfileRoute: typeof ImsOrgProfileRoute
   ImsOrgProfilePdfRoute: typeof ImsOrgProfilePdfRoute
+  ImsOrgStructureRoute: typeof ImsOrgStructureRoute
   ImsPermissionsRoute: typeof ImsPermissionsRoute
   ImsPoliciesRoute: typeof ImsPoliciesRoute
   ImsProcurementRoute: typeof ImsProcurementRoute
@@ -1528,7 +1529,6 @@ export interface RootRouteChildren {
   ImsFinanceLedgerRoute: typeof ImsFinanceLedgerRoute
   ImsFinanceReceiptsPaymentsRoute: typeof ImsFinanceReceiptsPaymentsRoute
   ImsFinanceStatementImportRoute: typeof ImsFinanceStatementImportRoute
-  ImsLegacyModuleRoute: typeof ImsLegacyModuleRoute
   ImsMemberIdRoute: typeof ImsMemberIdRoute
   ImsPersonIdRoute: typeof ImsPersonIdRoute
   ImsRResourceRoute: typeof ImsRResourceRoute
@@ -1704,6 +1704,13 @@ declare module '@tanstack/react-router' {
       path: '/OurInitiatives'
       fullPath: '/OurInitiatives'
       preLoaderRoute: typeof OurInitiativesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/Organization': {
+      id: '/Organization'
+      path: '/Organization'
+      fullPath: '/Organization'
+      preLoaderRoute: typeof OrganizationRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/Objectives': {
@@ -2049,6 +2056,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsPermissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/org-structure': {
+      id: '/ims/org-structure'
+      path: '/ims/org-structure'
+      fullPath: '/ims/org-structure'
+      preLoaderRoute: typeof ImsOrgStructureRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/org-profile-pdf': {
       id: '/ims/org-profile-pdf'
       path: '/ims/org-profile-pdf'
@@ -2068,13 +2082,6 @@ declare module '@tanstack/react-router' {
       path: '/ims/official-documents'
       fullPath: '/ims/official-documents'
       preLoaderRoute: typeof ImsOfficialDocumentsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/ims/office': {
-      id: '/ims/office'
-      path: '/ims/office'
-      fullPath: '/ims/office'
-      preLoaderRoute: typeof ImsOfficeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ims/notifications': {
@@ -2308,13 +2315,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsMemberIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/ims/legacy/$module': {
-      id: '/ims/legacy/$module'
-      path: '/ims/legacy/$module'
-      fullPath: '/ims/legacy/$module'
-      preLoaderRoute: typeof ImsLegacyModuleRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/ims/finance/statement-import': {
       id: '/ims/finance/statement-import'
       path: '/ims/finance/statement-import'
@@ -2419,6 +2419,7 @@ const rootRouteChildren: RootRouteChildren = {
   MemorandumAndRulesRoute: MemorandumAndRulesRoute,
   MissionRoute: MissionRoute,
   ObjectivesRoute: ObjectivesRoute,
+  OrganizationRoute: OrganizationRoute,
   OurInitiativesRoute: OurInitiativesRoute,
   PartnerOutreachRoute: PartnerOutreachRoute,
   PartnerWithUsRoute: PartnerWithUsRoute,
@@ -2467,10 +2468,10 @@ const rootRouteChildren: RootRouteChildren = {
   ImsMembersRoute: ImsMembersRoute,
   ImsMembershipContributionsRoute: ImsMembershipContributionsRoute,
   ImsNotificationsRoute: ImsNotificationsRoute,
-  ImsOfficeRoute: ImsOfficeRoute,
   ImsOfficialDocumentsRoute: ImsOfficialDocumentsRoute,
   ImsOrgProfileRoute: ImsOrgProfileRoute,
   ImsOrgProfilePdfRoute: ImsOrgProfilePdfRoute,
+  ImsOrgStructureRoute: ImsOrgStructureRoute,
   ImsPermissionsRoute: ImsPermissionsRoute,
   ImsPoliciesRoute: ImsPoliciesRoute,
   ImsProcurementRoute: ImsProcurementRoute,
@@ -2488,7 +2489,6 @@ const rootRouteChildren: RootRouteChildren = {
   ImsFinanceLedgerRoute: ImsFinanceLedgerRoute,
   ImsFinanceReceiptsPaymentsRoute: ImsFinanceReceiptsPaymentsRoute,
   ImsFinanceStatementImportRoute: ImsFinanceStatementImportRoute,
-  ImsLegacyModuleRoute: ImsLegacyModuleRoute,
   ImsMemberIdRoute: ImsMemberIdRoute,
   ImsPersonIdRoute: ImsPersonIdRoute,
   ImsRResourceRoute: ImsRResourceRoute,

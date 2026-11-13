@@ -15,7 +15,7 @@ const {
 const { postSvg } = require('../services/social/image');
 
 // NOTE: follows the app-wide convention used by every other admin route
-// (auditRoutes, imsRoutes, financeRoutes, ...). The whole backend shares the
+// (imsRoutes, ...). The whole backend shares the
 // same ADMIN_PORTAL_TOKEN with the same fallback, so this module stays
 // consistent rather than breaking the live admin portal. TODO(security): move
 // ADMIN_PORTAL_TOKEN to a real env secret and drop the shared fallback across

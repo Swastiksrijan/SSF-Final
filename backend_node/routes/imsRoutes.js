@@ -14,7 +14,6 @@ const { seedOrgProfile } = require('../services/ims/orgProfileSeed');
 const { seedOfficeHistory } = require('../services/ims/officeHistorySeed');
 const { seedAnnualReports, annualReportRegister } = require('../services/ims/annualReportSeed');
 const { seedFinancialYearRegisters } = require('../services/ims/fyRegistersSeed');
-const { migrateLegacy } = require('../services/ims/migrateLegacy');
 const { universalSearch, meta: searchMeta } = require('../services/ims/search');
 const { volunteerDashboard } = require('../services/ims/volunteerNetwork');
 const { ROLES, DEFAULT_GRANTS } = require('../services/ims/rbac');
@@ -210,16 +209,6 @@ router.get('/ims/register-map', wrap(async (_req, r) => {
 
 // ---- coverage vs the legacy flat registers ---------------------------------
 router.get('/ims/coverage', wrap(async (_req, r) => {
-  const { sequelize } = require('../models/ims');
-  let legacy = 0, legacyModules = 0;
-  try {
-    const [rows] = await sequelize.query(
-      'SELECT COUNT(DISTINCT module) AS modules, COUNT(*) AS rows FROM "DigitalOfficeRecords"',
-    );
-    legacy = Number(rows[0].rows || 0);
-    legacyModules = Number(rows[0].modules || 0);
-  } catch { /* legacy table absent */ }
-
   const required = REQUIRED_REGISTERS.length;
   const covered = [];
   for (const reg of REQUIRED_REGISTERS) {
@@ -230,22 +219,9 @@ router.get('/ims/coverage', wrap(async (_req, r) => {
   }
   r.json({
     requiredRegisters: required,
-    legacy: { rows: legacy, distinctModules: legacyModules },
     covered,
     missing: covered.filter(c => c.count === 0).length,
   });
-}));
-
-// ---- legacy -> IMS migration (additive, idempotent) ------------------------
-// GET  = dry run report (nothing written). POST = actual import.
-router.get('/ims/migrate-legacy', wrap(async (req, r) => {
-  const stats = await migrateLegacy({ dryRun: true, limit: Number(req.query.limit) || 0 });
-  r.json({ mode: 'dry-run', note: 'Nothing written. POST to this URL to import.', ...stats });
-}));
-
-router.post('/ims/migrate-legacy', wrap(async (req, r) => {
-  const stats = await migrateLegacy({ dryRun: false, limit: Number((req.body && req.body.limit) || req.query.limit) || 0 });
-  r.json({ mode: 'import', ...stats });
 }));
 
 // ---- FINANCE: one entry point + professional accounting --------------------

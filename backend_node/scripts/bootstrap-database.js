@@ -1,19 +1,14 @@
 // One-off bootstrap for a brand-new Neon database:
-//   sync schema -> seed masters -> restore Digital Office backup -> migrate to IMS.
+//   sync schema -> seed masters -> seed the official finance workbook.
 // Idempotent: safe to re-run. Uses DB_URL from the environment.
-const fs = require('fs');
-const path = require('path');
-
 async function main() {
   const sequelize = require('../config/database');
   require('../models/ims'); // register IMS models before sync
-  // Register every legacy model so sequelize.sync() creates their tables too.
-  for (const m of ['AuditRecord', 'AuditYear', 'ContactMessage', 'DigitalOfficeAudit',
-    'DigitalOfficeRecord', 'Donor', 'FinanceTransaction', 'Interest',
+  // Register every portal model so sequelize.sync() creates their tables too.
+  for (const m of ['ContactMessage', 'Donor', 'Interest',
     'InternshipApplication', 'LearningCertificate', 'Member', 'RoleDocument', 'Volunteer']) {
     require(`../models/${m}`);
   }
-  const DigitalOfficeRecord = require('../models/DigitalOfficeRecord');
 
   console.log('1) Syncing schema...');
   await sequelize.sync();
@@ -31,53 +26,26 @@ async function main() {
     if (s.created) console.log('   org profile sections:', s.created);
   } catch (e) { console.log('   seed warning:', e.message); }
 
-  console.log('3) Restoring Digital Office backup...');
-  const dir = path.join(__dirname, '..', '..', '.openhands', 'backups');
-  const files = fs.readdirSync(dir).filter(f => /^digital-office-records-.*\.json$/.test(f)).sort();
-  if (files.length) {
-    const rows = JSON.parse(fs.readFileSync(path.join(dir, files[files.length - 1]), 'utf8'));
-    const existing = new Set((await DigitalOfficeRecord.findAll({ attributes: ['recordId'] })).map(r => r.recordId));
-    const fresh = rows.filter(r => !existing.has(r.recordId));
-    if (fresh.length) { await DigitalOfficeRecord.bulkCreate(fresh, { validate: false }); }
-    console.log(`   backup ${files[files.length - 1]}: restored ${fresh.length}, already present ${rows.length - fresh.length}`);
-  } else {
-    console.log('   no backup file found');
-  }
-
-  console.log('4) Migrating legacy data into IMS...');
-  const { migrateLegacy } = require('../services/ims/migrateLegacy');
-  const stats = await migrateLegacy({ dryRun: false });
-  console.log('   created:', JSON.stringify(stats.created));
-  console.log('   skipped:', stats.skipped, '| unmapped:', stats.unmapped.length);
-
   // Finance foundation (chart of accounts, current FY, cash/bank accounts) then
   // the official Financial Records workbook — so a fresh database comes up with
   // the full donation/expense history and audited years, not an empty ledger.
-  console.log('5) Seeding finance foundation...');
+  console.log('3) Seeding finance foundation...');
   const { financeSeed } = require('../services/ims/financeSeed');
   const f = await financeSeed();
   console.log('   accounts:', f.accounts, '| FY:', f.financialYear || 'existing', '| cash:', f.cashAccounts, '| bank:', f.bankAccounts);
 
-  console.log('6) Seeding the official finance workbook...');
+  console.log('4) Seeding the official finance workbook...');
   const { seedOfficialWorkbook } = require('../services/ims/workbookSeed');
   const wb = await seedOfficialWorkbook({ actor: 'bootstrap' });
   console.log('   finance transactions:', wb.created, '| audited years:', wb.auditYearsCreated);
 
-  console.log('7) Seeding the FY 2025-26 registers (Sector, Compliance, Sahyog)...');
+  console.log('5) Seeding the FY 2025-26 registers (Sector, Compliance, Sahyog)...');
   const { seedFinancialYearRegisters } = require('../services/ims/fyRegistersSeed');
   const fr = await seedFinancialYearRegisters();
   console.log('   sector activities:', fr.sectorActivities, '| compliance:', fr.compliance, '| sahyog:', fr.sahyog);
 
-  console.log('8) Seeding the legacy Digital Office masters (Chart of Accounts, FY Master)...');
-  const { seedLegacyOffice } = require('../services/ims/legacyOfficeSeed');
-  const lo = await seedLegacyOffice({ actor: 'bootstrap' });
-  console.log('   account heads:', lo.chartOfAccounts, '| financial years:', lo.fyMaster);
-
-  const { models } = require('../models/ims');
-  const [legacyCount] = await sequelize.query('SELECT COUNT(*)::int AS n FROM "DigitalOfficeRecords"');
-  console.log('9) Verify: DigitalOfficeRecords =', legacyCount[0].n);
-  const [txCount] = await sequelize.query('SELECT COUNT(*)::int AS n FROM "FinanceTransactions"');
-  console.log('   Verify: FinanceTransactions =', txCount[0].n);
+  const [txCount] = await sequelize.query('SELECT COUNT(*)::int AS n FROM "ImsTransactions"');
+  console.log('6) Verify: ImsTransactions =', txCount[0].n);
 
   await sequelize.close();
   console.log('DONE');

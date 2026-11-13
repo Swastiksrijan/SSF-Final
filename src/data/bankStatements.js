@@ -1,9 +1,9 @@
 // SSF OneOffice (IMS) — Bank Book statements.
 //
 // Bank statement data is kept here (not hard-coded in the UI) so a financial
-// year's entries can be imported into the OneOffice (IMS) database and then
-// linked from other registers. `bankStatementRecords(fy)` converts a statement
-// into the office record shape used by POST /api/digital-office/records.
+// year's entries can be imported into the IMS ledger through the statement
+// importer. `bankStatementRecords(fy)` converts a statement into the record
+// shape the importer/backfill reads (see backend_node/scripts/backfill-bank-statements.js).
 //
 // NOTE: withdrawals/deposits are the raw bank amounts; balances are as printed
 // on the statement. Financial year 2025-26 was verified: opening 19,816.84 +

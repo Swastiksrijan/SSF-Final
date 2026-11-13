@@ -164,27 +164,29 @@ async function seedAnnualCompliance(out) {
 }
 
 // ---- 3. Sahyog in-kind support -> Sahyog register --------------------------
-// The Sahyog screen (src/components/SahyogRegister.jsx) reads the legacy Digital
-// Office contract, module 'sahyog', so the support lands where that register
-// looks for it. Recorded in-kind: income + matching expense, net effect nil.
+// Recorded in-kind: income + matching expense, net effect nil. Written into the
+// IMS transaction register so the Sahyog support lives with the finance records.
 async function seedSahyog(out) {
   out.sahyog = out.sahyog || 0;
-  const DigitalOfficeRecord = require('../../models/DigitalOfficeRecord');
+  const fy = await financialYear();
   for (let i = 0; i < SAHYOG_SUPPORT.length; i++) {
     const s = SAHYOG_SUPPORT[i];
     const recordId = sahyogId(i);
-    const exists = await DigitalOfficeRecord.findOne({ where: { recordId } });
+    const exists = await models.ImsTransaction.findOne({ where: { recordId } });
     if (exists) continue;
-    await DigitalOfficeRecord.create({
+    await models.ImsTransaction.create({
       recordId,
-      module: 'sahyog',
-      recordType: 'Support',
-      status: 'active',
-      recordDate: s.date,
+      transactionNo: recordId,
+      txnDate: s.date,
+      financialYearId: fy ? fy.id : null,
+      transactionType: 'sahyog',
       amount: s.amount,
-      paymentMode: 'In-kind',
-      account: 'In-kind',
       direction: 'in',
+      paymentMode: 'In-kind',
+      sourceModule: 'sahyog',
+      sourceRecordId: recordId,
+      needsReview: false,
+      status: 'active',
       createdBy: SEED.createdBy,
       createdByName: SEED.createdByName,
       data: {

@@ -5,12 +5,11 @@
 // (record.module / record.data.*). The only additions are: the ImsLayout wrapper,
 // the imports it needs, and a thin adapter that maps the new backend to the old
 // record contract. Bilingual (English + Hindi already in the component).
-/* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import ImsLayout from '../ImsLayout';
 import { useLang } from '../LangContext';
 import { ims } from '../api';
-import { API_BASE_URL, ENDPOINTS } from '../../config/api';
+import { API_BASE_URL } from '../../config/api';
 import { PAGE_TITLE_ON_DARK } from '../ui';
 
 const TOKEN_KEY = 'ssf_admin_token';
@@ -25,16 +24,6 @@ const formatOfficeDate=function(value){ if(!value)return "—";
 };
 
 function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#12345A] text-white rounded-2xl p-6"><h1 className={PAGE_TITLE_ON_DARK}>{title}</h1><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
-
-// The old component carries a member-photo helper that was never reachable from
-// this section; these stubs keep that dead code harmless without editing the
-// verbatim function body.
-const token = (typeof localStorage !== 'undefined' && localStorage.getItem(TOKEN_KEY)) || "";
-const editId = null;
-const photoFile = null;
-const setPhotoFile = () => {};
-const setPhotoPreview = () => {};
-const setPhotoOverrides = () => {};
 
 // ---- adapter: new backend <-> old record contract --------------------------
 function toOldRecord(r){
@@ -101,33 +90,6 @@ function InstitutionalHistory({rows,add,updateRecord,archive}) {
   setNotice("");
  },[tab,rows]);
  const set=(k,v)=>setForm(x=>({...x,[k]:v}));
- const photoSrc=p=>p?(String(p).startsWith("http")?String(p):API_BASE_URL+String(p)):"";
- const choosePhoto=e=>{const f=e.target.files?.[0];if(!f)return;if(!["image/jpeg","image/png","image/webp"].includes(f.type)){setNotice("Photo must be JPG, PNG or WebP.");e.target.value="";return;}if(f.size>2*1024*1024){setNotice("Photo must be 2MB or smaller.");e.target.value="";return;}setPhotoFile(f);setPhotoPreview(URL.createObjectURL(f));};
- const clearPhoto=()=>{setPhotoFile(null);setPhotoPreview("");};
- const savePhoto=async()=>{
-  if(!editId||!photoFile||saving)return;
-  setSaving(true);
-  try{
-   const fd=new FormData();
-   fd.append("profilePhoto",photoFile);
-   fd.append("memberId",String(form.memberId||""));
-   fd.append("fullName",String(form.fullName||""));
-   fd.append("sourceModule","managingCommittee");
-   fd.append("recordId",String(editId));
-   const pr=await fetch(ENDPOINTS.DIGITAL_OFFICE_MEMBER_PHOTO,{method:"POST",headers:{Authorization:`Bearer ${token}`,"X-Office-Actor":"admin","X-Office-Actor-Name":"SSF Admin"},body:fd});
-   const pj=await pr.json().catch(()=>({}));
-   if(!pr.ok)throw new Error(pj.message||"Photo upload failed.");
-   const saved=pj.photoUrl||"";
-   if(saved&&form.memberId)setPhotoOverrides(x=>({...x,[String(form.memberId)]:saved}));
-   setPhotoFile(null);
-   setPhotoPreview(saved);
-   setNotice("Photo saved successfully. Refresh/reload ke baad bhi photo rahegi.");
-  }catch(e){
-   setNotice(e.message||"Photo save failed.");
-  }finally{
-   setSaving(false);
-  }
- };
  const resetSectionForm=()=>{setEditingId(null);setForm({...seed[tab]});};
  const save=async e=>{
   e.preventDefault();

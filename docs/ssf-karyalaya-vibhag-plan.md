@@ -1,5 +1,11 @@
 # SSF Karyalaya — Vibhag (Division) Plan / विभाग योजना
 
+> **HISTORICAL — superseded.** This document predates the removal of the legacy
+> **SSF Digital Office** subsystem. Its "nothing will be removed" statements no
+> longer apply: the Digital Office is gone and only SSF-IMS remains. Kept for
+> historical context; see `docs/ssf-ims/05-migration.md` for the current state.
+
+
 > Status: **प्रस्ताव (Proposal)** — पुराना "SSF Digital Office" वैसा ही रहेगा, कुछ नहीं हटाया जाएगा.
 > Current office has **139 flat registers**. This plan groups them into **11 vibhag (divisions)** so the
 > menu shows 11 names, and each name opens many registers inside — exactly like

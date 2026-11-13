@@ -1,5 +1,11 @@
 # SSF Digital Office — Finance & Compliance Register Master (v2)
 
+> **HISTORICAL — superseded.** This document predates the removal of the legacy
+> **SSF Digital Office** subsystem. Its "nothing will be removed" statements no
+> longer apply: the Digital Office is gone and only SSF-IMS remains. Kept for
+> historical context; see `docs/ssf-ims/05-migration.md` for the current state.
+
+
 > Mission: ek aisa MIS jise **50 saal** tak structurally badalna na pade.
 > Rule: **kuch hatana nahi** — jo hai wo rahega, sirf sahi / expand karenge.
 > Nature: NGO / Society (pan-India) — **loan register ki zarurat nahi**, par hatayenge nahi.

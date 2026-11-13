@@ -1,65 +1,44 @@
-# SSF-IMS — Legacy data import (migration)
+# SSF-IMS — Legacy "SSF Digital Office" removal
 
-> Aapka niyam: **"kuch hatana nhi"**. Isliye ye migration **sirf jodta hai**,
-> kuch badalta ya hatata nahi. Dobara chalane par duplicate nahi banta.
+> **Status: DONE.** The legacy **SSF Digital Office** subsystem has been removed
+> completely. Only the **SSF-IMS** ("OneOffice") remains.
 
-## 1. Ye kya karta hai
+## 1. What happened
 
-Purane **SSF Digital Office** ka data utha kar naye **SSF-IMS masters** me
-additive roop se daalta hai:
+The IMS was originally built on top of the Digital Office. The Digital Office
+data was migrated into the IMS masters at boot (additive and idempotent), so
+every legacy row already exists as a native IMS record. With that migration
+verified, the whole Digital Office subsystem was deleted:
 
-| Purana source | Naya IMS record |
+| Removed | Where it lived |
 |---|---|
-| `Members` | **Person** + **Membership** (+ role `member`) |
-| `Volunteers` | **Person** + **Volunteer** (+ role `volunteer`) |
-| `Donors` | **Person** + **Donor** (+ role `donor`) |
-| `FinanceTransactions` | **Transaction** |
-| `DigitalOfficeRecords` (module map) | meeting / resolution / activity / asset / document / project / voucher / grant / compliance / audit / risk / notice ... |
+| Office engine + finance + audit routes | `backend_node/routes/{digitalOfficeRoutes,financeRoutes,auditRoutes}.js` |
+| Flat-register models | `backend_node/models/{DigitalOfficeRecord,DigitalOfficeAudit,FinanceTransaction,AuditYear,AuditRecord}.js` |
+| Legacy seed + migration | `backend_node/services/ims/{legacyOfficeSeed,migrateLegacy}.js` |
+| One-off scripts | `backend_node/{backup-digital-office.js,scripts/{migrate-legacy,restore-digital-office}.js}` |
+| Legacy tests | `backend_node/tests/{workbookSeed,fyRegisters,legacyOfficeSeed,legacyMigration,legacyReachability}.test.js` |
+| Legacy office UI | `src/ims/oldOffice*.jsx`, `src/routes/ims/{office.jsx,legacy/}` |
+| Legacy register components | `src/components/{RegisterEngine,registerFactory,FinanceOffice,FinanceOps,FinanceRegisters,Tier5Registers,Tier6Registers,AssetsFundsRegisters,AuditComplianceRegisters,ChartOfAccounts,FYMaster,SahyogRegister,PettyCashRegister,TransferRegister,AdjustmentRegister,FundMaster,GrantRegister}.jsx` |
 
-Person **mobile/email** se match hota hai — same aadmi dobara nahi banta,
-balki usi Person ko naya role milta hai. Yahi *"ENTER ONCE → LINK EVERYWHERE"*.
+## 2. Where the data lives now
 
-## 2. Additive + idempotent kaise
+Every register the Digital Office owned is a **native IMS resource** served by
+the generic engine (`backend_node/services/ims/resource.js`) and rendered by
+`/ims/r/<resource>`. The seed services write straight into the IMS tables:
 
-- Har imported legacy row ka nishaan `ImsRelations` me `fromType='legacy'`,
-  `fromId='<module>:<recordId>'` ke roop me save hota hai.
-- Agli baar wahi row mile to **skip** ho jaata hai — dubara entry nahi.
-- Koi legacy row **update ya delete nahi** hoti. Sirf naye IMS rows bante hain.
+- `services/ims/workbookSeed.js` — official-registers workbook + CA-signed audit years.
+- `services/ims/fyRegistersSeed.js` — FY registers (sector activities, compliance, Sahyog in-kind).
+- `scripts/bootstrap-database.js` — fresh-install bootstrap (IMS only).
 
-## 3. Chalane ke 3 tarike
+Bank statements that the old Bank Book page used to read from the frontend now
+flow through the IMS statement importer (`scripts/backfill-bank-statements.js` →
+`src/data/bankStatements.js` → `/ims/finance/statement-import`).
 
-**A. UI (sabse aasan)** — `/ims/data` page:
-- "Preview (dry run)" → kya-kya banega dikhata hai (kuch likhta nahi).
-- "Import now" → asli import.
+## 3. If data still looks missing
 
-**B. CLI (server par)**:
-```bash
-cd backend_node
-node scripts/migrate-legacy.js          # dry run (default)
-node scripts/migrate-legacy.js --apply  # asli import
-```
+The migration was additive, so nothing was deleted from the IMS side. If a
+specific register looks empty, re-run the relevant seed from the admin
+**Import / Export** (`/ims/data`) page, or check the resource directly at
+`/ims/r/<resource>`.
 
-**C. API**:
-```
-GET  /api/ims/migrate-legacy   # dry run
-POST /api/ims/migrate-legacy   # import
-```
-(Bearer token: wahi `ADMIN_PORTAL_TOKEN`.)
-
-## 4. Pehle kya karein (safe order)
-
-1. **Production DB ka backup** lein (Render se).
-2. Pehle **dry run** chalayein — dekh lein kitna banega.
-3. Phir **import** chalayein.
-4. `Integrity` page par jaayein — duplicate/adhure records check karein.
-5. Zarurat ho to `Persons` list me jaakar naye Person dekh lein.
-
-## 5. Testing (sandbox me ki gayi)
-
-- 6 legacy rows banaye → dry run me 7 naye records "wouldCreate" dikhe.
-- Import chalaya → sab ban gaye (3 Person + 1 member + 1 volunteer +
-  1 donor + 1 txn + 1 meeting + 1 resolution).
-- **Dubara chalaya → 6 skipped** (idempotent ✅), koi duplicate nahi.
-- `unmapped` khali — yaani har module ka map mil gaya.
-
-*End of migration guide.*
+*End of note.*

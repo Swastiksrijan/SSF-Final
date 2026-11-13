@@ -1,5 +1,11 @@
 # SSF-IMS — Phase 1: Existing System Audit
 
+> **HISTORICAL — superseded.** This document predates the removal of the legacy
+> **SSF Digital Office** subsystem. Its "nothing will be removed" statements no
+> longer apply: the Digital Office is gone and only SSF-IMS remains. Kept for
+> historical context; see `docs/ssf-ims/05-migration.md` for the current state.
+
+
 > Swastik Srijan Foundation — Integrated Management System
 > Working name: **SSF OneOffice** · Tagline: *One Organisation • One Record • Complete Accountability*
 > यह दस्तावेज़ पुराने **SSF Digital Office** का पूरा ऑडिट है (कुछ हटाया नहीं जाएगा)।

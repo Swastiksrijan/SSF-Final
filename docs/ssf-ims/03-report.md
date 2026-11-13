@@ -1,5 +1,11 @@
 # SSF-IMS — Phase 4 Report (SSF OneOffice)
 
+> **HISTORICAL — superseded.** This document predates the removal of the legacy
+> **SSF Digital Office** subsystem. Its "nothing will be removed" statements no
+> longer apply: the Digital Office is gone and only SSF-IMS remains. Kept for
+> historical context; see `docs/ssf-ims/05-migration.md` for the current state.
+
+
 > **SSF OneOffice** · *One Organisation • One Record • Complete Accountability*
 > **एक संस्था • एक रिकॉर्ड • पूर्ण जवाबदेही**
 > Ye report aasan Hindi/Hinglish me hai — taki bina technical jaankari ke bhi samajh aaye.
