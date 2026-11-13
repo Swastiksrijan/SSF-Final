@@ -39,7 +39,7 @@ async function planCampaignPost(date = new Date()) {
   const campaign = CAMPAIGNS[Math.floor(dayIndex / 2) % CAMPAIGNS.length];
   const pageUrl = `${WEBSITE}/Campaigns#${campaign.id}`;
   const titleEn = `SSF Campaign: ${campaign.en}`;
-  const titleHi = `स्वस्तिक सृजन फाउंडेशन: ${campaign.hi}`;
+  const titleHi = `स्वास्तिक सृजन फाउंडेशन: ${campaign.hi}`;
   const bodyEn = [
     '🤝 Join Swastik Srijan Foundation Samiti in supporting this objective area.',
     campaign.en,
@@ -51,7 +51,7 @@ async function planCampaignPost(date = new Date()) {
     '#SwastikSrijan #SSF',
   ].join('\n\n');
   const bodyHi = [
-    '🤝 स्वस्तिक सृजन फाउंडेशन समिति के इस उद्देश्य-क्षेत्र से जुड़ें।',
+    '🤝 स्वास्तिक सृजन फाउंडेशन समिति के इस उद्देश्य-क्षेत्र से जुड़ें।',
     campaign.hi,
     campaign.appealHi,
     'यह संस्था के घोषित उद्देश्यों से जुड़ा सहयोग आमंत्रण है। गतिविधियाँ सत्यापित सामुदायिक आवश्यकताओं, उपलब्ध संसाधनों और आवश्यक अनुमतियों के अनुसार शुरू होंगी।',
