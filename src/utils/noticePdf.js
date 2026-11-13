@@ -92,7 +92,7 @@ function noticeHtml(row) {
   const logo = new URL(logoImg, window.location.origin).href;
   const date = new Date().toLocaleDateString('hi-IN', { timeZone: 'Asia/Kolkata' });
   return `<div class="nt">
-    <header class="nt-head"><img src="${esc(logo)}" alt="SSF Logo"><div><div class="en">SWASTIK SRIJAN FOUNDATION SAMITI</div><div class="hi">स्वस्तिक सृजन फाउंडेशन समिति</div><div class="sub">आधिकारिक सूचना / Official Communication</div></div></header>
+    <header class="nt-head"><img src="${esc(logo)}" alt="SSF Logo"><div><div class="en">SWASTIK SRIJAN FOUNDATION SAMITI</div><div class="hi">स्वास्तिक सृजन फाउंडेशन समिति</div><div class="sub">आधिकारिक सूचना / Official Communication</div></div></header>
     <div class="nt-meta"><b>नोटिस संदर्भ: ${esc(row.noticeReference || 'ड्राफ्ट')}</b><b>दिनांक: ${esc(date)}</b></div>
     <h2 class="nt-title">कारण बताओ नोटिस</h2>
     <div class="nt-body">${esc(noticeLines(row))}</div>
