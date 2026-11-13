@@ -58,7 +58,7 @@ export default function MissionPage() {
                 </p>
 
                 <p className="text-lg font-hindi text-[#26343D] border-l-4 border-[#EAF0F6] pl-4 md:pl-6">
-                  स्वस्तिक सृजन फाउंडेशन 2013 में स्थापित एक जमीनी स्तर का गैर-लाभकारी संगठन है।
+                  स्वास्तिक सृजन फाउंडेशन 2013 में स्थापित एक जमीनी स्तर का गैर-लाभकारी संगठन है।
                 </p>
               </div>
             </div>
