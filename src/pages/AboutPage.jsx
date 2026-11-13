@@ -68,6 +68,13 @@ const quickLinks = [
     description: "The leadership and volunteers working toward our purpose.",
     action: "Meet the team",
   },
+  {
+    to: "/Organization",
+    eyebrow: "How we are organised",
+    title: "Organization & Governance",
+    description: "Our General Body, nine-member Managing Committee, functional departments and administrative network.",
+    action: "Explore our structure",
+  },
 ];
 
 const principles = [
