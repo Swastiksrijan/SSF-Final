@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { Users, Landmark, Network, ShieldCheck, BookOpen, ClipboardList, ArrowRight, Building2 } from "lucide-react";
+import { Users, Landmark, ShieldCheck, ArrowRight } from "lucide-react";
 
 const committee = [
   ["President", "अध्यक्ष", "प्रबंध समिति की अध्यक्षता तथा नियमावली के अनुसार संस्था के कार्यों में नेतृत्व।"],
@@ -14,16 +14,7 @@ const committee = [
   ["Executive Committee Member 4", "कार्यकारिणी सदस्य 4", "प्रबंध समिति के निर्णयों और संस्था के कार्यों में सहभागिता।"],
 ];
 
-const departments = [
-  ["Education & Learning", "शिक्षा, साक्षरता, डिजिटल शिक्षा और कौशल विकास से जुड़े कार्यक्रम।"],
-  ["Health & Community Well-being", "स्वास्थ्य जागरूकता, जनकल्याण और समुदाय आधारित सहयोग।"],
-  ["Women, Child & Social Inclusion", "महिला, बाल विकास, समान अवसर और वंचित समुदायों के सशक्तिकरण के प्रयास।"],
-  ["Livelihood & Sustainable Development", "आजीविका, कौशल, पर्यावरण-अनुकूल गतिविधियों और टिकाऊ विकास की पहल।"],
-  ["Environment & Rural Development", "पर्यावरण संरक्षण, ग्रामीण विकास और स्थानीय जरूरतों पर आधारित गतिविधियाँ।"],
-  ["Administration, Finance & Compliance", "कार्यालयीन समन्वय, वित्तीय अनुशासन, अभिलेख और वैधानिक अनुपालन।"],
-  ["Communication & Public Engagement", "जनसंपर्क, सूचना, मीडिया, साझेदारी और समुदाय से संवाद।"],
-  ["Monitoring, Evaluation & Reporting", "कार्य प्रगति, परिणाम, दस्तावेजीकरण और पारदर्शी रिपोर्टिंग।"],
-];
+
 
 function SectionHeading({ eyebrow, title, description }) {
   return <div className="max-w-3xl mb-8"><p className="text-xs font-black uppercase tracking-[.22em] text-[#176447]">{eyebrow}</p><h2 className="mt-2 text-2xl md:text-3xl font-black text-[#12345A]">{title}</h2>{description && <p className="mt-3 text-[#53616C] leading-7">{description}</p>}</div>;
@@ -98,7 +89,7 @@ export default function OrganizationPage() {
     </section>
 
     <section className="mx-auto max-w-7xl px-5 sm:px-8 py-16">
-      <SectionHeading eyebrow="05 / Field Coordination" title="राज्य से ग्राम/वार्ड स्तर तक समन्वय" description="संस्था का कार्यक्षेत्र अखिल भारतीय होने के अनुरूप, आवश्यकता, संसाधन और स्वीकृति के आधार पर विभिन्न स्तरों पर समन्वय इकाइयाँ विकसित की जा सकती हैं। ये पद/इकाइयाँ नियमावली में वर्णित प्रबंध समिति का विकल्प नहीं हैं।"/>
+      <SectionHeading eyebrow="04 / Field Coordination" title="राज्य से ग्राम/वार्ड स्तर तक समन्वय" description="संस्था का कार्यक्षेत्र अखिल भारतीय होने के अनुरूप, आवश्यकता, संसाधन और स्वीकृति के आधार पर विभिन्न स्तरों पर समन्वय इकाइयाँ विकसित की जा सकती हैं। ये पद/इकाइयाँ नियमावली में वर्णित प्रबंध समिति का विकल्प नहीं हैं।"/>
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
         {["राष्ट्रीय / केंद्रीय समन्वय","राज्य स्तरीय समन्वय","जिला स्तरीय समन्वय","विकासखंड स्तरीय समन्वय","ग्राम / वार्ड स्तरीय समन्वय"].map((x,i)=><div key={x} className="rounded-2xl border border-[#DCE5EB] bg-white p-5 text-center"><span className="mx-auto flex h-9 w-9 items-center justify-center rounded-full bg-[#176447] text-white font-black">{i+1}</span><p className="mt-3 font-black text-sm text-[#12345A]">{x}</p></div>)}
       </div>
