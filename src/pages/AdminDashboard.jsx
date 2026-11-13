@@ -17,6 +17,7 @@ import AdminIdRegister from "../components/dashboard/AdminIdRegister";
 import AdminUserManagement from "../components/AdminUserManagement";
 import AdminLearningCertificates from "../components/AdminLearningCertificates";
 import { AdminAuditLog, AdminOverview } from "../components/dashboard/AdminOverview";
+import OrganizationStructureContent from "../components/OrganizationStructureContent";
 import { SectionCard } from "../components/dashboard/DashboardUI";
 import AdminPageHeader from "../components/dashboard/AdminPageHeader";
 import { ENDPOINTS } from "../config/api";
@@ -28,6 +29,7 @@ const MODULES = [
   { id: "applications", label: "Applications", hint: "Intake, status & records", icon: FaClipboardList, crumb: "Applications" },
   { id: "ids", label: "ID Register", hint: "Issued IDs & member register", icon: FaIdCard, crumb: "ID Register" },
   { id: "people", label: "People & Roles", hint: "Members, volunteers, approvals", icon: FaUsers, crumb: "People & Roles" },
+  { id: "organization", label: "Organization Structure", hint: "Governance, departments & administrative levels", icon: FaGavel, crumb: "Organization Structure" },
   { id: "notices", label: "Notice Management", hint: "Notices, replies, hearings & decisions", icon: FaGavel, crumb: "Notice Management" },
   { id: "users", label: "User Management", hint: "Accounts & access", icon: FaUserShield, crumb: "User Management" },
   { id: "learning", label: "Learning Certificates", hint: "Course completions", icon: FaCertificate, crumb: "Learning" },
@@ -146,6 +148,8 @@ export default function AdminDashboard() {
                 </SectionCard>
               </div>
             )}
+
+            {active === "organization" && <OrganizationStructureContent mode="admin" />}
 
             {active === "notices" && (
               <SectionCard eyebrow="Governance & due process" title="Member / Office-bearer Notice Register" subtitle="Create and issue show-cause notices, receive replies, schedule hearings and record committee / General Body proceedings. This is a record workflow; it does not itself authorize removal.">
