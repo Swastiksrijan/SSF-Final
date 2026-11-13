@@ -63,6 +63,17 @@ const COLUMNS = [
   { table: 'MemberActions', column: 'noticeReference', type: 'VARCHAR(64)' },
   { table: 'MemberActions', column: 'committeeDecisionText', type: 'TEXT' },
   { table: 'MemberActions', column: 'generalBodyDecisionText', type: 'TEXT' },
+  // Inward/outward correspondence register: additive columns only; preserve all existing communication rows.
+  { table: 'ImsCommunications', column: 'referenceNo', type: 'VARCHAR(128)' },
+  { table: 'ImsCommunications', column: 'correspondenceDate', type: 'DATE' },
+  { table: 'ImsCommunications', column: 'communicationType', type: 'VARCHAR(64)' },
+  { table: 'ImsCommunications', column: 'recipientEmail', type: 'VARCHAR(255)' },
+  { table: 'ImsCommunications', column: 'recipientDesignation', type: 'VARCHAR(255)' },
+  { table: 'ImsCommunications', column: 'senderEmail', type: 'VARCHAR(255)' },
+  { table: 'ImsCommunications', column: 'followUpDate', type: 'DATE' },
+  { table: 'ImsCommunications', column: 'attachmentUrl', type: 'TEXT' },
+  { table: 'ImsCommunications', column: 'remarks', type: 'TEXT' },
+  { table: 'ImsCommunications', column: 'receivedAt', type: 'TIMESTAMP WITH TIME ZONE' },
 ];
 
 async function ensureColumns() {
