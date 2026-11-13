@@ -4,6 +4,7 @@ import { useState } from "react";
 import qrCode from "../assets/barcode.jpg"; // Updated to the correct QR code image
 import heroInvestImage from "/images/real/scholarship_distribution.jpg";
 import { BRAND } from "../data/brandAssets";
+import { CONTACT_INFO } from "../config/contact";
 
 export default function DonateAndSupport() {
   const [openFaq, setOpenFaq] = useState(null);
@@ -199,7 +200,7 @@ export default function DonateAndSupport() {
 
                   <div className="flex items-start gap-3 text-xs text-zinc-400 bg-black/30 p-4 rounded-lg">
                     <FaCheckCircle className="text-green-500 shrink-0 mt-0.5" />
-                    <p>After transfer, please share transaction details (Screenshot/UTR) to <b>contact@swastiksrijan.org</b> to request a donation receipt. Any 80G tax document depends on current approval status and donor eligibility.</p>
+                    <p>After transfer, please share transaction details (Screenshot/UTR) to <b>{CONTACT_INFO.primaryEmail}</b> to request a donation receipt. Any 80G tax document depends on current approval status and donor eligibility.</p>
                   </div>
                 </div>
               </div>
