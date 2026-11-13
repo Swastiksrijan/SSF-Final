@@ -17,6 +17,7 @@ export const SECTIONS = {
     titleKey: 'organisation', icon: 'Building2', tone: 'blue', module: 'organisation',
     subgroups: [
       { labelKey: 'grp_identity', items: [
+        { key: 'org_structure', icon: 'Network', path: '/ims/org-structure' },
         { key: 'org_profile', icon: 'Building2', path: '/ims/org-profile' },
         { key: 'institutional_history', shortKey: 'institution_short', icon: 'Landmark', path: '/ims/org-profile?tab=history' },
         { key: 'org_profile_pdf', icon: 'FileText', path: '/ims/org-profile-pdf' },
