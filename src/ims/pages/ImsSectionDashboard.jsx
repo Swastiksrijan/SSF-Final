@@ -41,8 +41,14 @@ export default function ImsSectionDashboard({ section }) {
     .map((k) => ({ label: t(k) !== k ? t(k) : k, value: num(k) }));
 
   const go = (l) => {
-    if (l.path) navigate({ to: l.path });
-    else navigate({ to: '/ims/r/$resource', params: { resource: l.resource } });
+    if (l.path) {
+      // Some cards point at the same resource view pre-filtered (e.g. the
+      // Inward / Outward correspondence registers both open `communications`).
+      const [pathname, query] = l.path.split('?');
+      const search = {};
+      if (query) for (const [k, v] of new URLSearchParams(query)) search[k] = v;
+      navigate({ to: pathname, search });
+    } else navigate({ to: '/ims/r/$resource', params: { resource: l.resource } });
   };
 
   return (

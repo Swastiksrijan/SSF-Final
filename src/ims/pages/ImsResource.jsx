@@ -10,9 +10,10 @@ import { downloadVolunteerTemplate, parseVolunteerWorkbook } from '../excel';
 
 export default function ImsResource() {
   const { resource } = useParams({ from: '/ims/r/$resource' });
-  const { open: openId } = useSearch({ from: '/ims/r/$resource' });
+  const { open: openId, direction: directionParam } = useSearch({ from: '/ims/r/$resource' });
   const openRef = String(openId || '').replace(/^"|"$/g, '');
-  const { t, lang } = useLang();
+  const direction = String(directionParam || '').replace(/^"|"$/g, '');
+  const { t } = useLang();
   const navigate = useNavigate();
   const schema = schemaFor(resource);
   const openHandled = useRef('');
@@ -34,7 +35,7 @@ export default function ImsResource() {
   const load = useCallback(async () => {
     setRows(null);
     try {
-      let r = await ims.list(resource, { search, limit: 100 });
+      let r = await ims.list(resource, { search, limit: 100, ...(direction ? { direction } : {}) });
       // Fresh install: the default cost-centre master may never have been
       // seeded; load it once so the register is never empty (idempotent).
       if (resource === 'costCentres' && (r.records || []).length === 0 && !search) {
@@ -54,7 +55,7 @@ export default function ImsResource() {
       setRows(r.records || []);
       setTotal(r.total || 0);
     } catch (e) { setErr(e.message); setRows([]); }
-  }, [resource, search]);
+  }, [resource, search, direction]);
 
   useEffect(() => { load(); }, [load]);
 
@@ -69,7 +70,9 @@ export default function ImsResource() {
   }, [openRef, rows, resource]);
 
   const primary = PRIMARY_FIELD[resource] || 'recordId';
-  const title = schema ? t(schema.titleKey) : resource;
+  const title = direction
+    ? t(direction === 'inward' ? 'correspondence_inward' : 'correspondence_outward')
+    : (schema ? t(schema.titleKey) : resource);
 
   const labelFor = (row) => {
     const v = row[primary];
@@ -77,7 +80,7 @@ export default function ImsResource() {
     return row.recordId;
   };
 
-  const openNew = () => { setDuplicates(null); setPendingPayload(null); setDrawer({ mode: 'create', initial: {} }); };
+  const openNew = () => { setDuplicates(null); setPendingPayload(null); setDrawer({ mode: 'create', initial: direction ? { direction } : {} }); };
   const openEdit = (row) => { setDuplicates(null); setDrawer({ mode: 'edit', initial: row, id: row.id }); };
 
   const submit = async (form) => {
@@ -192,7 +195,10 @@ export default function ImsResource() {
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-left text-xs uppercase tracking-wide text-slate-500">
                   <th className="px-4 py-2.5 font-semibold">ID</th>
+                  {resource === 'communications' && <th className="px-4 py-2.5 font-semibold">{t('date')}</th>}
                   <th className="px-4 py-2.5 font-semibold">{title}</th>
+                  {resource === 'communications' && <th className="px-4 py-2.5 font-semibold">{t('recipient')}</th>}
+                  {resource === 'communications' && <th className="px-4 py-2.5 font-semibold">{t('correspondence_direction')}</th>}
                   <th className="px-4 py-2.5 font-semibold">Status</th>
                   <th className="px-4 py-2.5 font-semibold text-right">Actions</th>
                 </tr>
@@ -201,15 +207,19 @@ export default function ImsResource() {
                 {rows.map(row => (
                   <tr key={row.id} className="hover:bg-slate-50">
                     <td className="whitespace-nowrap px-4 py-2.5 font-mono text-xs text-slate-500">{row.recordId}</td>
+                    {resource === 'communications' && <td className="whitespace-nowrap px-4 py-2.5 text-slate-600">{row.correspondenceDate || '—'}</td>}
                     <td className="px-4 py-2.5">
                       <button className="font-medium text-[#12345A] hover:underline"
                         onClick={() => {
                           if (resource === 'persons') navigate({ to: '/ims/person/$id', params: { id: String(row.id) } });
                           else if (resource === 'members') navigate({ to: '/ims/member/$id', params: { id: String(row.id) } });
+                          else openEdit(row);
                         }}>
                         {labelFor(row)}
                       </button>
                     </td>
+                    {resource === 'communications' && <td className="px-4 py-2.5 text-slate-600">{row.recipient || row.sender || '—'}</td>}
+                    {resource === 'communications' && <td className="px-4 py-2.5"><Badge status={row.direction} /></td>}
                     <td className="px-4 py-2.5"><Badge status={row.status} /></td>
                     <td className="whitespace-nowrap px-4 py-2.5 text-right">
                       <button onClick={() => openEdit(row)} className="mr-3 text-slate-500 hover:text-[#176447]" title={t('edit')}><Icons.Pencil size={16} /></button>
@@ -250,7 +260,7 @@ export default function ImsResource() {
             <div className="flex-1 overflow-y-auto p-4">
               {history.history.length === 0 && <p className="text-sm text-slate-400">{t('no_records')}</p>}
               <ol className="relative space-y-4 border-l border-slate-200 pl-4">
-                {history.history.map((h, i) => (
+                {history.history.map((h) => (
                   <li key={h.id} className="relative">
                     <span className="absolute -left-[21px] top-1 h-3 w-3 rounded-full bg-[#176447]" />
                     <div className="flex items-center gap-2">

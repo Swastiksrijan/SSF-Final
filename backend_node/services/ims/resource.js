@@ -173,6 +173,8 @@ async function list(key, query = {}) {
   const where = {};
   if (query.status) where.status = query.status;
   else where.status = { [Op.ne]: 'archived' };
+  // Inward / Outward register views filter the correspondence module by direction.
+  if (query.direction && r.model.rawAttributes.direction) where.direction = query.direction;
   if (query.search) {
     where[Op.or] = [
       { [r.name]: { [Op.iLike]: '%' + query.search + '%' } },
