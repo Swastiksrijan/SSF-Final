@@ -129,8 +129,8 @@ function ObjectivesPage() {
               <p className="text-xs font-black uppercase tracking-[0.2em] text-[#12345A]">Purpose & Direction | उद्देश्य एवं दिशा</p>
               <h3 className="mt-2 mb-6 text-3xl font-serif font-bold text-[#12345A] md:text-4xl">Objectives in Perspective | उद्देश्यों का परिप्रेक्ष्य</h3>
               <div className="mx-auto max-w-4xl space-y-5 text-lg font-medium leading-relaxed text-[#26343D]">
-                <p>The objectives of Swastik Srijan Foundation focus on social equity, human dignity, and sustainable development.<br/>स्वस्तिक सृजन फाउंडेशन के उद्देश्य सामाजिक समानता, मानव गरिमा और सतत विकास पर केंद्रित हैं।<br/><br/>We work to create positive social change through education, healthcare, women and child welfare, environmental protection, and livelihood generation.<br/>हम शिक्षा, स्वास्थ्य, महिला एवं बाल कल्याण, पर्यावरण संरक्षण और आजीविका के माध्यम से सकारात्मक सामाजिक परिवर्तन के लिए कार्य करते हैं।</p>
-                <p className="italic">स्वस्तिक सृजन फाउंडेशन के उद्देश्य सामाजिक समानता, मानव गरिमा और सतत विकास पर केंद्रित हैं। हम शिक्षा, स्वास्थ्य, महिला एवं बाल कल्याण, पर्यावरण संरक्षण और रोजगार के माध्यम से सकारात्मक सामाजिक परिवर्तन हेतु कार्य करते हैं।</p>
+                <p>The objectives of Swastik Srijan Foundation focus on social equity, human dignity, and sustainable development.<br/>स्वास्तिक सृजन फाउंडेशन के उद्देश्य सामाजिक समानता, मानव गरिमा और सतत विकास पर केंद्रित हैं।<br/><br/>We work to create positive social change through education, healthcare, women and child welfare, environmental protection, and livelihood generation.<br/>हम शिक्षा, स्वास्थ्य, महिला एवं बाल कल्याण, पर्यावरण संरक्षण और आजीविका के माध्यम से सकारात्मक सामाजिक परिवर्तन के लिए कार्य करते हैं।</p>
+                <p className="italic">स्वास्तिक सृजन फाउंडेशन के उद्देश्य सामाजिक समानता, मानव गरिमा और सतत विकास पर केंद्रित हैं। हम शिक्षा, स्वास्थ्य, महिला एवं बाल कल्याण, पर्यावरण संरक्षण और रोजगार के माध्यम से सकारात्मक सामाजिक परिवर्तन हेतु कार्य करते हैं।</p>
               </div>
             </motion.div>
 
