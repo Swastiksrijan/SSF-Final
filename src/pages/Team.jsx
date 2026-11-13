@@ -1,123 +1,67 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { FaArrowRight } from "react-icons/fa";
-import { BRAND } from "../data/brandAssets";
 
-// Team data structure - Single source of truth
-const teamStructure = {
-  leadership: [
-    { name: "Mr. Ramesh Pandey", designation: "Founder & President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg?v=3" },
-    { name: "Ms. Preeti Shukla", designation: "Vice President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_19.jpg" },
-    { name: "Mr. Amit Pandey", designation: "Secretary", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_15.jpg" },
-    { name: "Ms. Divya Sharma", designation: "Treasurer", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/divya_sharma.jpg" },
-    { name: "Ms. Kiran Pandey", designation: "Joint Secretary", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_22.jpg" },
-    { name: "Mr. Sandeep Tripathi", designation: "Board Member", location: "Satna, Madhya Pradesh", img: "/Teams_Images/sandeep_tripathi.jpg" },
-    { name: "Mr. Prameesh Singh", designation: "Board Member", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/prameesh_singh.jpg" },
-    { name: "Mr. Rishi Pandey", designation: "Board Member", location: "Satna, Madhya Pradesh", img: "/Teams_Images/rishi_pandey.jpg" },
-    { name: "Mr. Ritesh Tiwari", designation: "Board Member", location: "Mumbai, Maharashtra", img: "/Teams_Images/ritesh_tiwari.jpg" },
-  ],
-  advisory: [
-    { name: "Ms. Priya Shukla", designation: "Administrative Coordinator", location: "Madhya Pradesh", img: "/Teams_Images/priya_shukla.jpg" },
-    { name: "Mr. Chaman Rajora", designation: "National Advisory Board", location: "Haryana", img: "/Teams_Images/chaman_rajora.jpg" },
-    { name: "Mr. Kapil Tiwari", designation: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/kapil_tiwari.jpg" },
-    { name: "Mr. Harish Kumar", designation: "Legal Advisor", location: "Madhya Pradesh", img: "/Teams_Images/harish_kumar.jpg" },
-  ],
-  volunteers: [
-    { name: "Mr. Rajeev Pandey", designation: "Advisor & Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/rajeev_pandey.jpg" },
-    { name: "Ms. A. Gincy George", designation: "Head, Counselling Services", location: "Mumbai, Maharashtra", img: "/Teams_Images/image_1.jpg" },
-    { name: "Mr. Krishna Kumar", designation: "Volunteer & Advisor", location: "Hyderabad, Telangana", img: "/Teams_Images/krishna_kumar.jpg" },
-    { name: "Ms. Sneha Ravishankar Pandey", designation: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/sneha_ravishankar_pandey.jpg" },
-    { name: "Ms. Vaishnavi Manik Chaudhari", designation: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/vaishnavi_manik_chaudhari.jpg" },
-  ],
+const founder = {
+  name: "Ramesh Pandey",
+  designation: "Founder",
+  location: "Rewa, Madhya Pradesh",
+  img: "/Teams_Images/ramesh_pandey.jpg?v=3",
 };
 
-const TeamMemberCard = ({ member, index }) => (
-  <motion.div initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.5, delay: index * 0.05 }} className="h-full">
-    <div className="bg-white rounded-xl border border-[#EAF0F6] overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 h-full flex flex-col group">
-      <div className="relative w-full aspect-square bg-gradient-to-br from-[#EAF0F6] to-[#EAF0F6] overflow-hidden">
-        <img src={member.img || "/images/team/placeholder.jpg"} alt={`${member.name}, ${member.designation}`} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" loading="lazy" />
-        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/5 transition-colors duration-300"></div>
-      </div>
-      <div className="flex-1 flex flex-col justify-between p-5 lg:p-6">
-        <div className="space-y-2">
-          <h3 className="text-base lg:text-lg font-bold text-[#12345A] leading-tight tracking-tight">{member.name}</h3>
-          <p className="text-xs lg:text-sm font-semibold text-[#12345A] uppercase tracking-wider leading-tight">{member.designation}</p>
-        </div>
-        <p className="text-xs text-[#26343D] mt-3 pt-3 border-t border-[#EAF0F6] leading-tight">{member.location}</p>
-      </div>
-    </div>
-  </motion.div>
-);
+const volunteers = [
+  { name: "Mr. Rajeev Pandey", designation: "Advisor & Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/rajeev_pandey.jpg" },
+  { name: "Ms. A. Gincy George", designation: "Counselling Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/image_1.jpg" },
+  { name: "Mr. Krishna Kumar", designation: "Volunteer & Advisor", location: "Hyderabad, Telangana", img: "/Teams_Images/krishna_kumar.jpg" },
+  { name: "Ms. Sneha Ravishankar Pandey", designation: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/sneha_ravishankar_pandey.jpg" },
+  { name: "Ms. Vaishnavi Manik Chaudhari", designation: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/vaishnavi_manik_chaudhari.jpg" },
+];
 
-const SectionHeader = ({ enTitle, hiTitle, description }) => (
-  <div className="max-w-3xl mx-auto mb-14 lg:mb-16">
-    <div className="space-y-3">
-      <div>
-        <h2 className="text-3xl lg:text-4xl font-serif font-bold text-[#12345A]">{enTitle}</h2>
-        <p className="text-sm lg:text-base font-bold text-[#12345A] uppercase tracking-widest mt-2">{hiTitle}</p>
+function PersonCard({ person, index = 0 }) {
+  return (
+    <motion.article initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.45, delay: index * 0.04 }} className="overflow-hidden rounded-2xl border border-[#EAF0F6] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+      <div className="aspect-square overflow-hidden bg-[#EAF0F6]">
+        <img src={person.img} alt={person.name} loading="lazy" className="h-full w-full object-cover transition-transform duration-500 hover:scale-105" />
       </div>
-      <div className="w-12 h-1 bg-[#176447] rounded-full"></div>
-      <p className="text-base lg:text-lg text-[#26343D] leading-relaxed pt-2">{description}</p>
-    </div>
-  </div>
-);
+      <div className="p-5">
+        <h3 className="text-base font-extrabold text-[#12345A]">{person.name}</h3>
+        <p className="mt-2 text-xs font-bold uppercase tracking-wider text-[#176447]">{person.designation}</p>
+        <p className="mt-3 border-t border-[#EAF0F6] pt-3 text-xs text-slate-500">{person.location}</p>
+      </div>
+    </motion.article>
+  );
+}
+
+function SectionHeading({ eyebrow, title, subtitle }) {
+  return <div className="mb-9"><p className="text-xs font-black uppercase tracking-[.2em] text-[#176447]">{eyebrow}</p><h2 className="mt-3 text-3xl font-black text-[#12345A] md:text-4xl">{title}</h2><p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">{subtitle}</p></div>;
+}
 
 export default function Team() {
   return (
     <main className="min-h-screen bg-white font-sans">
-      <section className="relative min-h-[68vh] lg:min-h-[72vh] w-full overflow-hidden bg-[#12345A] text-white">
-        <div className="absolute inset-0 p-2 sm:p-3 lg:p-4">
-          <div className="grid h-full grid-cols-2 md:grid-cols-5 gap-1.5 sm:gap-2 lg:gap-3">
-            {teamStructure.leadership.map((member) => (
-              <div key={member.name} className="relative overflow-hidden rounded-lg lg:rounded-xl bg-[#12345A]">
-                <img
-                  src={member.img}
-                  alt=""
-                  className="h-full w-full object-cover object-center opacity-75 scale-105"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-        <div className="absolute inset-0 bg-[#12345A]/62"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-[#12345A]/35 via-[#12345A]/55 to-[#12345A]/90"></div>
-        <div className="relative z-10 flex min-h-[68vh] lg:min-h-[72vh] items-center justify-center px-5 py-24 lg:px-8">
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, ease: "easeOut" }} className="max-w-4xl text-center">
-            <div className="mx-auto inline-block rounded-2xl border border-white/15 bg-[#12345A]/55 px-6 py-6 sm:px-10 sm:py-7 backdrop-blur-sm shadow-2xl">
-              <p className="text-xs sm:text-sm md:text-base font-bold uppercase tracking-[0.22em] text-[#F7A814]">Swastik Srijan Foundation</p>
-              <h1 className="mt-3 text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-serif font-bold leading-tight">Our Team</h1>
-              <p className="mt-2 text-lg sm:text-xl md:text-2xl font-bold text-white">हमारी टीम</p>
-              <p className="mx-auto mt-4 max-w-3xl text-sm sm:text-base md:text-lg lg:text-xl text-[#EAF0F6] leading-relaxed font-light">
-                Meet the people who lead, guide and strengthen the mission of Swastik Srijan Foundation across India.
-              </p>
-              <div className="flex justify-center pt-5"><div className="w-16 h-1 bg-[#176447] rounded-full"></div></div>
-            </div>
-          </motion.div>
+      <section className="relative isolate overflow-hidden bg-[#082B49] px-5 py-28 text-white md:py-36">
+        <div className="absolute inset-0 -z-10 opacity-25" style={{ backgroundImage: "radial-gradient(circle at 15% 20%, #F7A814, transparent 32%), radial-gradient(circle at 85% 80%, #176447, transparent 34%)" }} />
+        <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-[1fr_.7fr]">
+          <div><p className="text-xs font-black uppercase tracking-[.22em] text-[#F7C45B]">People • Service • Community</p><h1 className="mt-5 text-4xl font-black md:text-6xl">People Behind the Mission</h1><p className="mt-3 text-xl font-semibold text-white/85">मिशन से जुड़े लोग</p><p className="mt-6 max-w-2xl text-sm leading-7 text-white/75 md:text-base">Meet the Founder and the volunteers who contribute their time, skills and experience to community-focused work.</p></div>
+          <div className="mx-auto w-full max-w-sm overflow-hidden rounded-[2rem] border border-white/15 bg-white/10 p-3 shadow-2xl"><img src={founder.img} alt="Ramesh Pandey, Founder" className="aspect-[4/5] w-full rounded-[1.5rem] object-cover" /><div className="px-3 py-4"><p className="text-lg font-extrabold">Ramesh Pandey</p><p className="mt-1 text-sm font-semibold text-[#F7C45B]">Founder</p></div></div>
         </div>
       </section>
 
-      <section className="py-20 lg:py-28 px-6 lg:px-8 bg-white border-b border-[#EAF0F6]"><div className="max-w-7xl mx-auto"><div className="mb-14 lg:mb-16"><SectionHeader enTitle="Leadership & Governance" hiTitle="नेतृत्व एवं शासन" description="The governing leadership responsible for strategic direction, governance, policy, compliance and institutional development." /></div>
-        <figure className="mb-12 overflow-hidden rounded-[2rem] border border-[#EAF0F6] bg-[#FAF9F5] p-4 shadow-sm md:p-6">
-          <img src={BRAND.governingBody} alt="The governing body of Swastik Srijan Foundation Samiti" loading="lazy" className="mx-auto w-full max-w-2xl rounded-2xl" />
-          <figcaption className="mt-4 text-center text-sm font-semibold text-slate-500">The Foundation&apos;s governing body · कार्यकारिणी समिति</figcaption>
-        </figure>
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7">{teamStructure.leadership.map((member, index) => <TeamMemberCard key={`leadership-${index}`} member={member} index={index} />)}</div></div></section>
+      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 md:py-20">
+        <SectionHeading eyebrow="Founder" title="संस्थापक" subtitle="The Foundation’s journey began in Rewa in December 2013 with a commitment to community service and inclusive development." />
+        <div className="grid max-w-sm gap-6"><PersonCard person={founder} /></div>
+      </section>
 
-      <section className="py-20 lg:py-28 px-6 lg:px-8 bg-[#EAF0F6] border-b border-[#EAF0F6]"><div className="max-w-7xl mx-auto"><div className="mb-14 lg:mb-16"><SectionHeader enTitle="Advisory Council" hiTitle="सलाहकार परिषद्" description="Experienced professionals providing strategic, legal and institutional guidance to the Foundation." /></div><div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-7">{teamStructure.advisory.map((member, index) => <TeamMemberCard key={`advisory-${index}`} member={member} index={index} />)}</div></div></section>
-
-      <section className="py-20 lg:py-28 px-6 lg:px-8 bg-white border-b border-[#EAF0F6]"><div className="max-w-7xl mx-auto"><div className="mb-14 lg:mb-16"><SectionHeader enTitle="Volunteer & Professional Network" hiTitle="स्वयंसेवक एवं प्रोफेशनल नेटवर्क" description="Dedicated volunteers and professionals supporting education, counselling, technology and community development initiatives." /></div><div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-7">{teamStructure.volunteers.map((member, index) => <TeamMemberCard key={`volunteer-${index}`} member={member} index={index} />)}</div></div></section>
-
-      <section className="py-24 lg:py-32 px-6 lg:px-8 bg-[#12345A] text-white border-t border-[#F7A814]/30"><div className="max-w-4xl mx-auto"><motion.div initial={{ opacity: 0, y: 24 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.7 }} className="text-center space-y-8">
-        <div className="space-y-3"><h2 className="text-4xl lg:text-5xl font-serif font-bold leading-tight">Join Our Mission</h2><div className="flex justify-center"><div className="w-12 h-1 bg-[#176447] rounded-full"></div></div></div>
-        <p className="text-lg lg:text-xl text-[#EAF0F6] leading-relaxed max-w-2xl mx-auto font-light">Together we can create lasting social impact through education, service and innovation.</p>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-8">
-          <Link to="/Volunteer"><button className="w-full px-6 py-3.5 lg:py-4 bg-[#176447] hover:bg-[#176447] text-[#12345A] font-bold rounded-lg transition-all duration-300 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2 text-sm lg:text-base">Become a Volunteer</button></Link>
-          <Link to="/Members"><button className="w-full px-6 py-3.5 lg:py-4 bg-white hover:bg-[#EAF0F6] text-[#12345A] font-bold rounded-lg transition-all duration-300 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2 text-sm lg:text-base">Become a Member</button></Link>
-          <Link to="/PartnerWithUs"><button className="w-full px-6 py-3.5 lg:py-4 bg-transparent border-2 border-white hover:bg-white/10 text-white font-bold rounded-lg transition-all duration-300 hover:border-[#F7A814] active:scale-95 text-sm lg:text-base">Partner With Us</button></Link>
-          <Link to="/Donate"><button className="w-full px-6 py-3.5 lg:py-4 bg-transparent border-2 border-[#F7A814] hover:bg-[#176447] hover:text-[#12345A] text-[#F7A814] font-bold rounded-lg transition-all duration-300 active:scale-95 flex items-center justify-center gap-2 text-sm lg:text-base">Donate Now</button></Link>
+      <section className="bg-[#F5F8FA] px-5 py-16 sm:px-8 md:py-20">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Volunteer & Professional Network" title="स्वयंसेवक एवं प्रोफेशनल नेटवर्क" subtitle="People contributing specialist knowledge, counselling, technology and volunteer support. Participation and assignments are based on mutual understanding and current programme needs." />
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{volunteers.map((person, index) => <PersonCard key={person.name} person={person} index={index} />)}</div>
         </div>
-        <div className="pt-8 border-t border-white/10"><p className="text-sm lg:text-base text-[#EAF0F6]">Every contribution strengthens our mission to empower communities across India.</p></div>
-      </motion.div></div></section>
+      </section>
+
+      <section className="bg-[#082B49] px-5 py-20 text-white sm:px-8">
+        <div className="mx-auto max-w-5xl text-center"><h2 className="text-3xl font-black md:text-4xl">Join Our Mission</h2><p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-white/75 md:text-base">Contribute your time, skills or resources to meaningful community initiatives.</p><div className="mt-8 flex flex-wrap justify-center gap-3"><Link to="/Volunteer" className="inline-flex items-center gap-2 rounded-full bg-[#176447] px-6 py-3 text-sm font-bold text-white">Volunteer <FaArrowRight /></Link><Link to="/PartnerWithUs" className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-bold text-white">Partner With Us</Link><Link to="/Donate" className="inline-flex items-center gap-2 rounded-full bg-[#F7A814] px-6 py-3 text-sm font-bold text-[#082B49]">Support SSF</Link></div></div>
+      </section>
     </main>
   );
 }
