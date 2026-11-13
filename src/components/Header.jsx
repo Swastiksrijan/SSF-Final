@@ -100,15 +100,15 @@ const Header = () => {
           <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/95 p-1.5 shadow-lg ring-1 ring-white/40 group-hover:scale-105 transition-transform">
             <img src={logoImg} alt="Swastik Srijan Foundation" className="h-full w-full object-contain" />
           </span>
-          <span className="hidden sm:flex flex-col leading-none">
-            <span className={`block font-black text-lg leading-none tracking-tight text-white`}>Swastik Srijan</span>
-            <span className={`block font-bold text-[10px] tracking-[0.22em] uppercase mt-1 text-[#F7A814]`}>Foundation Samiti</span>
-            <span className={`block text-[9px] tracking-[0.14em] uppercase mt-1 text-[#EAF0F6]/80`}>Service • Dedication • Creation</span>
+          <span className="flex flex-col leading-none min-w-0">
+            <span className="block font-black text-base sm:text-lg leading-none tracking-tight text-white">Swastik Srijan</span>
+            <span className="block font-bold text-[9px] sm:text-[10px] tracking-[0.16em] sm:tracking-[0.22em] uppercase mt-1 text-[#F7A814]">Foundation Samiti</span>
+            <span className="hidden md:block text-[9px] tracking-[0.14em] uppercase mt-1 text-[#EAF0F6]/80">Service • Dedication • Creation</span>
           </span>
         </Link>
 
         <nav aria-label="Main navigation" className="hidden xl:flex flex-1 min-w-0 items-center justify-between gap-1 px-1">
-          {navItems.slice(0, 5).map(item => (
+          {navItems.filter(item => ["Home", "About Us", "Our Work", "Campaigns", "Funding & Partnerships"].includes(item.name)).map(item => (
             <div key={item.name} className="relative group">
               <Link to={item.path} data-active={isActive(item.path)} className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">
                 {item.name}{item.subItems && <IoIosArrowDown className="text-[10px] shrink-0" />}
@@ -120,7 +120,9 @@ const Header = () => {
           <div className="relative group">
             <button type="button" aria-haspopup="true" className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">More <IoIosArrowDown className="text-[10px]" /></button>
             <div className="absolute top-full right-0 w-64 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2 max-h-[75vh] overflow-y-auto">
-              <Link to="/FundingPartnerships" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Funding & Partnerships</Link>
+              <Link to="/SustainableDevelopment" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Sustainable Development</Link>
+              <Link to="/SocialEnterprises" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Social Enterprises & Livelihood</Link>
+              <Link to="/Members?apply=1" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Membership Application</Link>
               <Link to="/Donor" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Become a Donor / Donor Registration</Link>
               <Link to="/CSRPartnership" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">CSR & Corporate Partnership</Link>
               <Link to="/PartnerOutreach" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Donor & CSR Outreach Desk</Link>
@@ -137,10 +139,10 @@ const Header = () => {
 
         <div className="flex items-center gap-2.5 shrink-0">
 
-          {user ? <div className="relative hidden lg:block"><button onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen} aria-haspopup="menu" className="group flex items-center gap-2.5 px-3 py-2 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.02em] hover:border-[#F7A814]/70 hover:bg-white/15 transition-all duration-200"><span className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 ring-1 ring-white/30">{profilePhoto ? <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" /> : <FaUserCircle className="text-2xl text-white/80" />}</span><span className="max-w-28 truncate">{user.fullName || user.email}</span><IoIosArrowDown className={`transition-transform duration-200 ${accountOpen ? "rotate-180" : ""}`} /></button>{accountOpen && account}</div> : <button onClick={() => openAuth("signup")} className="ssf-nav-join hidden lg:inline-flex items-center justify-center px-5 py-2.5 rounded-full border font-extrabold text-[13px] tracking-[0.03em] transition-all duration-200">Join SSF</button>}
+          {user ? <div className="relative hidden lg:block"><button onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen} aria-haspopup="menu" className="group flex items-center gap-2.5 px-3 py-2 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.02em] hover:border-[#F7A814]/70 hover:bg-white/15 transition-all duration-200"><span className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 ring-1 ring-white/30">{profilePhoto ? <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" /> : <FaUserCircle className="text-2xl text-white/80" />}</span><span className="max-w-28 truncate">{user.fullName || user.email}</span><IoIosArrowDown className={`transition-transform duration-200 ${accountOpen ? "rotate-180" : ""}`} /></button>{accountOpen && account}</div> : <button onClick={() => openAuth("signup")} className="ssf-nav-join hidden lg:inline-flex items-center justify-center px-4 py-2.5 rounded-full border font-extrabold text-[13px] tracking-[0.03em] transition-all duration-200">Join SSF</button>}
 
-          <a href="/Members?apply=1" aria-label="सदस्यता हेतु आवेदन" className="hidden lg:inline-flex items-center justify-center px-4 py-2.5 rounded-full border border-[#F7A814] bg-[#F7A814] text-[#12345A] font-black text-[12px] whitespace-nowrap hover:bg-white transition-colors">सदस्यता आवेदन</a>
-          <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" aria-label="Open donation page" className="ssf-nav-donate inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-black text-[13px] tracking-[0.03em] whitespace-nowrap transition-transform hover:-translate-y-0.5"><FaHeart className="text-[12px]" /> Donate Now</a>
+          
+          <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" aria-label="Open donation page" className="ssf-nav-donate inline-flex items-center gap-2 px-4 py-2.5 rounded-full font-black text-[13px] tracking-[0.03em] whitespace-nowrap transition-transform hover:-translate-y-0.5"><FaHeart className="text-[12px]" /> Donate Now</a>
 
           <button aria-label={menuOpen ? "Close menu" : "Open menu"} className={`xl:hidden text-2xl p-2 rounded-xl text-white hover:bg-white/10`} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <HiX /> : <HiOutlineMenu />}</button>
         </div>
