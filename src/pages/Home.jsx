@@ -1157,7 +1157,7 @@ export default function Home() {
                   to="/About"
                   className="group inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#12345A] px-7 py-3.5 text-sm font-bold text-white shadow-[0_12px_28px_-12px_rgba(18,52,90,0.7)] transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#176447] hover:shadow-lg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#176447]"
                 >
-                  Read SSF Governance Profile
+                  Explore Foundation Profile
                   <FaArrowRight className="text-xs transition-transform duration-300 group-hover:translate-x-1" />
                 </Link>
                 <span className="text-xs font-medium tracking-wide text-[#748087]">Service · Dignity · Accountability</span>
