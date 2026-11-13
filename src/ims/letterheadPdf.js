@@ -80,7 +80,7 @@ const pxPerMm = PAGE_W_PX / PAGE_W_MM;
 // src/config/contact.js. Nothing here is invented.
 const ORG = {
   en: 'Swastik Srijan Foundation Samiti',
-  hi: 'स्वस्तिक सृजन फाउंडेशन समिति',
+  hi: 'स्वास्तिक सृजन फाउंडेशन समिति',
   taglineHi: 'सेवा • समर्पण • समग्र विकास',
   taglineEn: 'Service • Dedication • Creation',
   identity: 'Registered Society • Established 2013 • Pan-India Presence',
