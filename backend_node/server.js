@@ -338,6 +338,16 @@ async function runSeeds() {
     } catch (e) {
         console.error('⚠️ Social calendar seed skipped:', e.message);
     }
+    // Correspondence & Communication: fill the fields added after the first
+    // records existed (mode, department, reply/follow-up status). Additive and
+    // idempotent — only empty columns are filled, reference numbers/dates kept.
+    try {
+        const { backfillCorrespondence } = require('./services/ims/correspondenceBackfill');
+        const bf = await backfillCorrespondence();
+        if (bf.touched) console.log(`✅ Correspondence backfill: ${bf.touched}/${bf.total} record(s) completed`);
+    } catch (e) {
+        console.error('⚠️ Correspondence backfill skipped:', e.message);
+    }
 }
 
 let dbSynced = false;

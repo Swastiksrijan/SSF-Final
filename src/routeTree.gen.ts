@@ -101,6 +101,7 @@ import { Route as ImsHistoryRouteImport } from './routes/ims/history'
 import { Route as ImsDownloadCenterRouteImport } from './routes/ims/download-center'
 import { Route as ImsDonorSlipsRouteImport } from './routes/ims/donor-slips'
 import { Route as ImsDataRouteImport } from './routes/ims/data'
+import { Route as ImsCorrespondenceRouteImport } from './routes/ims/correspondence'
 import { Route as ImsContactsRouteImport } from './routes/ims/contacts'
 import { Route as ImsConstitutionRouteImport } from './routes/ims/constitution'
 import { Route as ImsComplaintsRouteImport } from './routes/ims/complaints'
@@ -588,6 +589,11 @@ const ImsDataRoute = ImsDataRouteImport.update({
   path: '/ims/data',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsCorrespondenceRoute = ImsCorrespondenceRouteImport.update({
+  id: '/ims/correspondence',
+  path: '/ims/correspondence',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsContactsRoute = ImsContactsRouteImport.update({
   id: '/ims/contacts',
   path: '/ims/contacts',
@@ -788,6 +794,7 @@ export interface FileRoutesByFullPath {
   '/ims/complaints': typeof ImsComplaintsRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/contacts': typeof ImsContactsRoute
+  '/ims/correspondence': typeof ImsCorrespondenceRoute
   '/ims/data': typeof ImsDataRoute
   '/ims/donor-slips': typeof ImsDonorSlipsRoute
   '/ims/download-center': typeof ImsDownloadCenterRoute
@@ -905,6 +912,7 @@ export interface FileRoutesByTo {
   '/ims/complaints': typeof ImsComplaintsRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/contacts': typeof ImsContactsRoute
+  '/ims/correspondence': typeof ImsCorrespondenceRoute
   '/ims/data': typeof ImsDataRoute
   '/ims/donor-slips': typeof ImsDonorSlipsRoute
   '/ims/download-center': typeof ImsDownloadCenterRoute
@@ -1024,6 +1032,7 @@ export interface FileRoutesById {
   '/ims/complaints': typeof ImsComplaintsRoute
   '/ims/constitution': typeof ImsConstitutionRoute
   '/ims/contacts': typeof ImsContactsRoute
+  '/ims/correspondence': typeof ImsCorrespondenceRoute
   '/ims/data': typeof ImsDataRoute
   '/ims/donor-slips': typeof ImsDonorSlipsRoute
   '/ims/download-center': typeof ImsDownloadCenterRoute
@@ -1144,6 +1153,7 @@ export interface FileRouteTypes {
     | '/ims/complaints'
     | '/ims/constitution'
     | '/ims/contacts'
+    | '/ims/correspondence'
     | '/ims/data'
     | '/ims/donor-slips'
     | '/ims/download-center'
@@ -1261,6 +1271,7 @@ export interface FileRouteTypes {
     | '/ims/complaints'
     | '/ims/constitution'
     | '/ims/contacts'
+    | '/ims/correspondence'
     | '/ims/data'
     | '/ims/donor-slips'
     | '/ims/download-center'
@@ -1379,6 +1390,7 @@ export interface FileRouteTypes {
     | '/ims/complaints'
     | '/ims/constitution'
     | '/ims/contacts'
+    | '/ims/correspondence'
     | '/ims/data'
     | '/ims/donor-slips'
     | '/ims/download-center'
@@ -1494,6 +1506,7 @@ export interface RootRouteChildren {
   ImsComplaintsRoute: typeof ImsComplaintsRoute
   ImsConstitutionRoute: typeof ImsConstitutionRoute
   ImsContactsRoute: typeof ImsContactsRoute
+  ImsCorrespondenceRoute: typeof ImsCorrespondenceRoute
   ImsDataRoute: typeof ImsDataRoute
   ImsDonorSlipsRoute: typeof ImsDonorSlipsRoute
   ImsDownloadCenterRoute: typeof ImsDownloadCenterRoute
@@ -2182,6 +2195,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ImsDataRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/ims/correspondence': {
+      id: '/ims/correspondence'
+      path: '/ims/correspondence'
+      fullPath: '/ims/correspondence'
+      preLoaderRoute: typeof ImsCorrespondenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/ims/contacts': {
       id: '/ims/contacts'
       path: '/ims/contacts'
@@ -2454,6 +2474,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsComplaintsRoute: ImsComplaintsRoute,
   ImsConstitutionRoute: ImsConstitutionRoute,
   ImsContactsRoute: ImsContactsRoute,
+  ImsCorrespondenceRoute: ImsCorrespondenceRoute,
   ImsDataRoute: ImsDataRoute,
   ImsDonorSlipsRoute: ImsDonorSlipsRoute,
   ImsDownloadCenterRoute: ImsDownloadCenterRoute,
