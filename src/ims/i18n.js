@@ -130,7 +130,7 @@ export const DICT = {
   integrity: { en: 'Integrity', hi: 'अखंडता' },
   records: { en: 'Records', hi: 'अभिलेख' },
   documents: { en: 'Documents', hi: 'दस्तावेज़' },
-  communications: { en: 'Communications', hi: 'संचार' },
+  communications: { en: 'Correspondence & Communications', hi: 'पत्राचार एवं संचार' },
   reports: { en: 'Reports', hi: 'रिपोर्ट' },
   knowledge: { en: 'Institutional Knowledge', hi: 'संस्थागत ज्ञान' },
   admin: { en: 'Admin', hi: 'प्रशासन' },
