@@ -731,19 +731,29 @@ const ImsDocument = sequelize.define('ImsDocument', {
 
 const ImsCommunication = sequelize.define('ImsCommunication', {
   ...idCols,
-  channel: DataTypes.STRING, // system/email/sms/whatsapp/manual/phone
-  direction: DataTypes.STRING,
+  referenceNo: DataTypes.STRING,
+  correspondenceDate: DataTypes.DATEONLY,
+  communicationType: DataTypes.STRING,
+  channel: DataTypes.STRING, // email/letter/portal/courier/whatsapp/phone/sms/meeting/manual/system/other
+  direction: DataTypes.STRING, // inward/outward
   personId: DataTypes.INTEGER,
   recipient: DataTypes.STRING,
+  recipientEmail: DataTypes.STRING,
+  recipientDesignation: DataTypes.STRING,
   sender: DataTypes.STRING,
+  senderEmail: DataTypes.STRING,
   subject: DataTypes.STRING,
   message: DataTypes.TEXT,
   relatedType: DataTypes.STRING,
   relatedId: DataTypes.INTEGER,
   deliveryStatus: DataTypes.STRING,
   response: DataTypes.TEXT,
+  followUpDate: DataTypes.DATEONLY,
+  attachmentUrl: DataTypes.TEXT,
+  remarks: DataTypes.TEXT,
   retryCount: { type: DataTypes.INTEGER, defaultValue: 0 },
   sentAt: DataTypes.DATE,
+  receivedAt: DataTypes.DATE,
 }, S);
 
 // Managing Committee History — permanent record of committee appointments,
