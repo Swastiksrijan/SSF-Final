@@ -77,22 +77,13 @@ export default function VolunteerForm() {
                 </div>
                 <Field label="Preferred role / area of contribution" required><Select value={form.position} onChange={e => set("position", e.target.value)}>
                     <option value="General Volunteer">General Volunteer / सामान्य स्वयंसेवक</option>
-                    <option value="National / Central Coordination Interest">National / Central Coordination</option>
-                    <option value="State Coordinator Interest">State Coordinator</option>
-                    <option value="District Coordinator Interest">District Coordinator</option>
-                    <option value="Block Coordinator Interest">Block Coordinator</option>
-                    <option value="Village / Ward Coordinator Interest">Village / Ward Coordinator</option>
-                    <option value="Education & Youth Development">Education & Youth Development</option>
-                    <option value="Digital & Technology">Digital & Technology</option>
-                    <option value="Health & Community Well-being">Health & Community Well-being</option>
-                    <option value="Women & Child Welfare">Women & Child Welfare</option>
+                    <option value="Education & Mentoring">Education & Mentoring</option>
+                    <option value="Health & Well-being">Health & Well-being</option>
                     <option value="Skills & Livelihoods">Skills & Livelihoods</option>
                     <option value="Environment & Rural Development">Environment & Rural Development</option>
-                    <option value="Administration, Finance & Compliance">Administration, Finance & Compliance</option>
-                    <option value="Communication & Public Engagement">Communication & Public Engagement</option>
-                    <option value="Monitoring, Evaluation & Reporting">Monitoring, Evaluation & Reporting</option>
-                    <option value="Legal, CA & Specialist Support">Legal, CA & Specialist Support</option>
-                    <option value="Project & Programme Management">Project & Programme Management</option>
+                    <option value="Digital & Creative Support">Digital & Creative Support</option>
+                    <option value="Partnerships & Resource Support">Partnerships & Resource Support</option>
+                    <option value="General Community Support">General Community Support</option>
                 </Select></Field>
                 <div className="ssf-form-grid ssf-form-grid-2">
                     <Field label="Identity Proof Type" hint="Optional"><Select value={form.idType} onChange={e => set("idType", e.target.value)}>{ID_PROOF_TYPES.map(t => <option key={t} value={t}>{t}</option>)}</Select></Field>
