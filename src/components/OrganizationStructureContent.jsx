@@ -45,6 +45,15 @@ const levels = [
   ["Institution / Centre / Project", "संस्थान / केंद्र / परियोजना", "Institution Head, Principal, Centre In-charge, Project Director/Manager, Programme Officer, Field Officer, Teacher, Trainer and support staff."],
 ];
 
+const roleCatalog = [
+  ["Head Office", "मुख्य कार्यालय", "Head Office In-charge; Deputy Head Office In-charge; Department Head; Department Coordinator; Head Office Administration In-charge; Organization Coordinator; Finance & Accounts Coordinator; Legal & Compliance Coordinator; Media & PR Head; IT & MIS Head; HR Coordinator; Institution Operations Coordinator; Quality & Monitoring Coordinator."],
+  ["State", "राज्य स्तर", "State In-charge; State Deputy In-charge; State Organization Coordinator; State Administration Coordinator; State Department In-charge; State Project Coordinator; State CSR & Partnership Coordinator; State Membership & Volunteer In-charge; State Media & PR In-charge; State IT & MIS Coordinator."],
+  ["District", "जिला स्तर", "District In-charge; District Deputy In-charge; District Organization Coordinator; District Administration Coordinator; District Department In-charge; District Project Coordinator; District CSR & Support Coordinator; District Finance & Records Coordinator; District Media & PR In-charge; District Membership & Volunteer In-charge."],
+  ["Block / Tehsil", "विकासखंड / तहसील", "Block In-charge; Block Deputy In-charge; Block Organization Coordinator; Block Department In-charge; Block Project Coordinator; Block Volunteer Coordinator."],
+  ["Village / Ward / City", "ग्राम / वार्ड / नगर", "Village In-charge / Ward In-charge / City In-charge; Deputy In-charge; Organization Coordinator; Development In-charge; Education In-charge; Health & Nutrition In-charge; Women & Child Development In-charge; Agriculture In-charge; Environment & Sanitation In-charge; Livelihood & Employment In-charge; Youth & Sports In-charge; Volunteer Coordinator."],
+  ["Institution / Centre / Project", "संस्थान / केंद्र / परियोजना", "Institution Head; Institution Director; School Principal; Training Centre In-charge; Service Centre In-charge; Project Director; Project Manager; Centre Manager; Programme Officer; Field Officer; Community Worker; Teacher; Trainer; Office Assistant; Accounts Assistant; Technical Assistant; Volunteer."],
+];
+
 const managementLinks = [
   ["/ims/managing-committee", "Managing Committee Register", "प्रबंध समिति रजिस्टर"],
   ["/ims/meetings", "Meetings & Resolutions", "बैठकें एवं संकल्प"],
@@ -135,6 +144,18 @@ export default function OrganizationStructureContent({ mode = "public" }) {
           <div className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {levels.map(([en, hi, desc], i) => <article key={en} className="rounded-xl border border-slate-200 p-4">
               <p className="text-xs font-black text-[#D94C13]">LEVEL {i + 1}</p><h3 className="mt-1 font-extrabold text-[#12345A]">{en}</h3><p lang="hi" className="text-sm font-bold text-[#176447]">{hi}</p><p className="mt-2 text-xs leading-5 text-slate-600">{desc}</p>
+            </article>)}
+          </div>
+        </section>
+
+        <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-7">
+          <p className="text-xs font-black uppercase tracking-widest text-[#D94C13]">Designation catalogue</p>
+          <h2 className="mt-2 text-2xl font-black text-[#12345A]">Administrative post titles · प्रशासनिक पदनाम</h2>
+          <p className="mt-2 text-sm leading-6 text-slate-600">These are role-title patterns for use when work and suitable personnel are available. A title does not by itself create a statutory office, committee membership or financial authority.</p>
+          <div className="mt-5 grid gap-3 md:grid-cols-2">
+            {roleCatalog.map(([en, hi, roles]) => <article key={en} className="rounded-xl border border-slate-200 bg-[#FBFCFD] p-4">
+              <h3 className="font-extrabold text-[#12345A]">{en} <span className="font-semibold text-[#176447]">· {hi}</span></h3>
+              <p className="mt-2 text-xs leading-6 text-slate-600">{roles}</p>
             </article>)}
           </div>
         </section>
