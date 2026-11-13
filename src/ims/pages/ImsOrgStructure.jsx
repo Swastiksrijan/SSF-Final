@@ -1,3 +1,4 @@
+import { Link } from '@tanstack/react-router';
 import ImsLayout from '../ImsLayout';
 import { PageHeader, Card } from '../ui';
 
@@ -56,6 +57,24 @@ export default function ImsOrgStructure() {
       <h2 className="text-lg font-bold text-slate-900">विभाग एवं कार्यक्षेत्र / Departments</h2>
       <div className="mt-4 grid gap-3 md:grid-cols-2">
         {departments.map(([a,b]) => <div key={a} className="rounded-xl border border-slate-200 p-4"><p className="font-semibold text-slate-800">{a}</p><p className="mt-1 text-sm leading-6 text-slate-600">{b}</p></div>)}
+      </div>
+    </Card>
+    <Card className="mt-5">
+      <h2 className="text-lg font-bold text-slate-900">आंतरिक रजिस्टर खोलें / Open operational registers</h2>
+      <p className="mt-1 text-sm text-slate-600">नीचे के रजिस्टर मौजूदा IMS डेटाबेस से जुड़े हैं। वास्तविक रिकॉर्ड दर्ज करने के लिए संबंधित रजिस्टर खोलें।</p>
+      <div className="mt-4 grid gap-3 sm:grid-cols-3">
+        {[
+          ['/ims/r/costCentres', 'विभाग एवं कार्यात्मक इकाइयाँ', 'Department / Cost Centre Register'],
+          ['/ims/r/chapters', 'क्षेत्रीय इकाइयाँ', 'National / State / District / Block / Village / Ward'],
+          ['/ims/r/chapterMembers', 'नियुक्तियाँ एवं दायित्व', 'Person-wise Unit Role Assignments'],
+          ['/ims/r/persons', 'व्यक्ति मास्टर', 'Single Person Record'],
+          ['/ims/r/committeeMembers', 'प्रबंध समिति सदस्य', 'Constitutional 9-member Committee'],
+          ['/ims/appointment-letters', 'नियुक्ति पत्र', 'Issue and maintain appointment orders'],
+        ].map(([href,hi,en]) => <Link key={href} to={href} className="rounded-xl border border-slate-200 p-4 transition hover:border-[#12345A] hover:bg-slate-50">
+          <span className="block font-semibold text-[#12345A]">{hi}</span>
+          <span className="mt-1 block text-xs text-slate-500">{en}</span>
+          <span className="mt-3 block text-xs font-bold text-[#176447]">रजिस्टर खोलें →</span>
+        </Link>)}
       </div>
     </Card>
     <Card className="mt-5">
