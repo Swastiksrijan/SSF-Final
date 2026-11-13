@@ -149,6 +149,25 @@ export const ims = {
       method: 'POST', headers: headers(), body: JSON.stringify({ fromType, fromId, toType, toId, relation }),
     }).then(handle),
 
+  // ---- Correspondence & Communication Management ----
+  corrDashboard: () => fetch(`${API_BASE_URL}/api/ims/correspondence/dashboard`, { headers: headers() }).then(handle),
+  corrList: (params = {}) => {
+    const qs = new URLSearchParams(params).toString();
+    return fetch(`${API_BASE_URL}/api/ims/correspondence${qs ? '?' + qs : ''}`, { headers: headers() }).then(handle);
+  },
+  corrFollowUps: (scope = 'due') => fetch(`${API_BASE_URL}/api/ims/correspondence/follow-ups?scope=${scope}`, { headers: headers() }).then(handle),
+  corrDepartmentWise: () => fetch(`${API_BASE_URL}/api/ims/correspondence/department-wise`, { headers: headers() }).then(handle),
+  corrLinkCandidates: (search = '') => fetch(`${API_BASE_URL}/api/ims/correspondence/link-candidates?search=${encodeURIComponent(search)}`, { headers: headers() }).then(handle),
+  corrReplies: (id) => fetch(`${API_BASE_URL}/api/ims/correspondence/replies/${id}`, { headers: headers() }).then(handle),
+  corrLinkReply: (inwardId, outwardId) =>
+    fetch(`${API_BASE_URL}/api/ims/correspondence/link-reply`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ inwardId, outwardId }),
+    }).then(handle),
+  corrUnlinkReply: (inwardId) =>
+    fetch(`${API_BASE_URL}/api/ims/correspondence/unlink-reply`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ inwardId }),
+    }).then(handle),
+
   // ---- SOCIAL AWARENESS PUBLISHER ----
   socialDashboard: () => fetch(`${API_BASE_URL}/api/social/dashboard`, { headers: headers() }).then(handle),
   socialCourses: () => fetch(`${API_BASE_URL}/api/social/courses`, { headers: headers() }).then(handle),

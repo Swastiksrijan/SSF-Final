@@ -130,6 +130,18 @@ async function create(key, payload, req, opts = {}) {
     throw err;
   }
   const recordId = payload.recordId || await nextId(r.prefix, opts.year, r.model);
+  // Correspondence gets a human-readable reference (SSF/OUT/2026-27/001) unless
+  // one was supplied, and sensible status defaults so the registers/reports work
+  // out of the box.
+  if (key === 'communications') {
+    const corr = require('./correspondence');
+    if (!payload.referenceNo) {
+      try { payload.referenceNo = await corr.nextReference(payload.direction, payload.correspondenceDate); }
+      catch { /* a DB hiccup must not block the entry; the number can be set later */ }
+    }
+    if (!payload.replyStatus) payload.replyStatus = payload.direction === 'inward' ? 'not_required' : 'awaiting_reply';
+    if (!payload.followUpStatus) payload.followUpStatus = 'not_due';
+  }
   const row = await r.model.create({
     ...payload,
     ...flatColumns(r, payload),
@@ -186,7 +198,6 @@ async function list(key, query = {}) {
   const { rows, count } = await r.model.findAndCountAll({ where, limit, offset, order: [['id', 'DESC']] });
   return { records: rows, total: count };
 }
-
 async function getOne(key, idOrRecordId, withRelations = true) {
   const r = getResource(key);
   const where = /^\d+$/.test(String(idOrRecordId)) ? { id: idOrRecordId } : { recordId: idOrRecordId };

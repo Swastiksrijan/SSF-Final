@@ -133,6 +133,7 @@ export const DICT = {
   communications: { en: 'Correspondence & Communications', hi: 'पत्राचार एवं संचार' },
   inward_register: { en: 'Inward Register', hi: 'आवक रजिस्टर' },
   outward_register: { en: 'Outward Register', hi: 'जावक रजिस्टर' },
+  correspondence: { en: 'Correspondence & Communication', hi: 'पत्राचार एवं संचार' },
   correspondence_inward: { en: 'Inward Correspondence', hi: 'आवक पत्राचार' },
   correspondence_outward: { en: 'Outward Correspondence', hi: 'जावक पत्राचार' },
   correspondence_direction: { en: 'Direction', hi: 'दिशा' },

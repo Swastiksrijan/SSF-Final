@@ -202,10 +202,10 @@ export const SECTIONS = {
     titleKey: 'records', icon: 'Files', tone: 'blue', module: 'records',
     subgroups: [
       { labelKey: 'grp_records', items: [
-        { key: 'inward_register', icon: 'Inbox', resource: 'communications', direction: 'inward' },
-        { key: 'outward_register', icon: 'Send', resource: 'communications', direction: 'outward' },
+        { key: 'correspondence', icon: 'MessageSquare', path: '/ims/correspondence' },
+        { key: 'inward_register', icon: 'Inbox', path: '/ims/correspondence?tab=inward' },
+        { key: 'outward_register', icon: 'Send', path: '/ims/correspondence?tab=outward' },
         { key: 'documents', icon: 'Files', resource: 'documents' },
-        { key: 'communications', icon: 'MessageSquare', resource: 'communications' },
         { key: 'reports', icon: 'BarChart3', path: '/ims/reports' },
         { key: 'download_center', icon: 'Download', path: '/ims/download-center' },
         { key: 'knowledge', icon: 'BookMarked', path: '/ims/knowledge' },
@@ -331,6 +331,9 @@ const ACTIVE_ALIASES = {
   org_profile_pdf: 'organisation',
   documents: 'organisation',
   download_center: 'records',
+  correspondence: 'records',
+  inward_register: 'records',
+  outward_register: 'records',
 };
 
 export function sidebarKeyFor(active) {

@@ -62,8 +62,9 @@ async function nextId(prefix, year, model) {
 }
 
 function currentFyStartYear(date = new Date()) {
-  const m = date.getMonth(); // 0=Jan
-  return m >= 3 ? date.getFullYear() : date.getFullYear() - 1; // FY starts April
+  const d = date instanceof Date ? date : new Date(date);
+  const m = d.getMonth(); // 0=Jan
+  return m >= 3 ? d.getFullYear() : d.getFullYear() - 1; // FY starts April
 }
 
 module.exports = { nextId, currentFyStartYear, YEAR_PREFIXES };

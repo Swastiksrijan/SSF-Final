@@ -27,8 +27,18 @@ const dashboardPath = (id) =>
   id === 'finance' ? '/ims/finance' : id === 'volunteer' ? '/ims/volunteer-network' : `/ims/sections/${id}`;
 
 // A catalogue item resolves to either its explicit path or its generic
-// resource route; `planned` items have no target yet.
-const itemPath = (it) => it.path || (it.resource ? `/ims/r/${it.resource}` : null);
+// resource route; `planned` items have no target yet. A path may carry a query
+// string (e.g. `/ims/correspondence?tab=inward`) which selects a view inside the
+// same page; matching uses the bare path, navigation re-applies the query.
+const barePath = (p) => String(p).split('?')[0];
+const itemPath = (it) => barePath(it.path || (it.resource ? `/ims/r/${it.resource}` : '')) || null;
+const itemSearch = (it) => {
+  const q = it.path && it.path.split('?')[1];
+  if (!q) return null;
+  const s = {};
+  for (const [k, v] of new URLSearchParams(q)) s[k] = v;
+  return s;
+};
 
 // Sections past this size switch from one scrolling row to the dropdown, so no
 // module is ever hidden off the edge of the screen.
@@ -105,7 +115,7 @@ export default function SectionNav({ active }) {
   const go = (item) => {
     if (item.planned) return;
     setMenuOpen(false);
-    if (item.path) navigate({ to: item.path });
+    if (item.path) navigate({ to: barePath(item.path), search: itemSearch(item) || undefined });
     else if (item.resource) navigate({ to: '/ims/r/$resource', params: { resource: item.resource } });
   };
 
@@ -252,7 +262,7 @@ export function SectionModuleDirectory({ sectionId, activeKey = null, maxHeight 
 
   const go = (item) => {
     if (item.planned) return;
-    if (item.path) navigate({ to: item.path });
+    if (item.path) navigate({ to: barePath(item.path), search: itemSearch(item) || undefined });
     else if (item.resource) navigate({ to: '/ims/r/$resource', params: { resource: item.resource } });
   };
 
@@ -344,7 +354,7 @@ export function NotificationsModules({ activeKey }) {
   const items = sectionGroups('notifications').flatMap((g) => g.items);
   const go = (item) => {
     if (item.planned) return;
-    if (item.path) navigate({ to: item.path });
+    if (item.path) navigate({ to: barePath(item.path), search: itemSearch(item) || undefined });
     else if (item.resource) navigate({ to: '/ims/r/$resource', params: { resource: item.resource } });
   };
   return (

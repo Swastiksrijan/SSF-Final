@@ -735,21 +735,42 @@ const ImsCommunication = sequelize.define('ImsCommunication', {
   correspondenceDate: DataTypes.DATEONLY,
   communicationType: DataTypes.STRING,
   channel: DataTypes.STRING, // email/letter/portal/courier/whatsapp/phone/sms/meeting/manual/system/other
+  mode: DataTypes.STRING, // email/speed_post/registered_post/ordinary_post/hand_delivery/online_portal/other
   direction: DataTypes.STRING, // inward/outward
+  priority: DataTypes.STRING, // normal/important/urgent
   personId: DataTypes.INTEGER,
+  department: DataTypes.STRING,
+  departmentCategory: DataTypes.STRING,
   recipient: DataTypes.STRING,
   recipientEmail: DataTypes.STRING,
   recipientDesignation: DataTypes.STRING,
   sender: DataTypes.STRING,
   senderEmail: DataTypes.STRING,
+  senderDesignation: DataTypes.STRING,
+  senderPhone: DataTypes.STRING,
+  toEmails: DataTypes.TEXT,   // comma-separated, multiple recipients
+  ccEmails: DataTypes.TEXT,
+  bccEmails: DataTypes.TEXT,
   subject: DataTypes.STRING,
   message: DataTypes.TEXT,
+  messageId: DataTypes.STRING, // original email Message-ID, for future Gmail dedup
   relatedType: DataTypes.STRING,
   relatedId: DataTypes.INTEGER,
   deliveryStatus: DataTypes.STRING,
+  replyStatus: DataTypes.STRING, // awaiting_reply/reply_received/no_reply/not_required
+  replyDate: DataTypes.DATEONLY,
+  linkedOutwardId: DataTypes.INTEGER,
+  linkedOutwardRef: DataTypes.STRING,
+  replyCount: { type: DataTypes.INTEGER, defaultValue: 0 },
   response: DataTypes.TEXT,
   followUpDate: DataTypes.DATEONLY,
+  followUpStatus: DataTypes.STRING, // not_due/due/follow_up_done/closed/not_required
+  actionTaken: DataTypes.TEXT,
+  dispatchNo: DataTypes.STRING,
+  trackingNo: DataTypes.STRING,
+  externalRef: DataTypes.STRING,
   attachmentUrl: DataTypes.TEXT,
+  attachments: { type: DataTypes.JSONB, defaultValue: [] }, // [{name,url,type,size}]
   remarks: DataTypes.TEXT,
   retryCount: { type: DataTypes.INTEGER, defaultValue: 0 },
   sentAt: DataTypes.DATE,

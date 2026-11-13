@@ -399,6 +399,65 @@ router.post('/ims/contacts/sync-registers', wrap(async (_req, r) => r.status(200
 router.put('/ims/contacts/person/:id', wrap(async (req, r) => r.json(await contacts.updateContact(req.params.id, req.body || {}))));
 router.delete('/ims/contacts/person/:id', wrap(async (req, r) => r.json(await contacts.removeContact(req.params.id))));
 
+// ---- Correspondence & Communication Management ----------------------------
+// The `communications` resource is the single master store for both directions;
+// these endpoints add reference numbering, dashboard, follow-up and reply linking.
+const correspondence = require('../services/ims/correspondence');
+
+router.get('/ims/correspondence/dashboard', wrap(async (_req, r) => r.json(await correspondence.dashboard())));
+router.get('/ims/correspondence/follow-ups', wrap(async (req, r) => r.json(await correspondence.followUps({ scope: req.query.scope }))));
+router.get('/ims/correspondence/department-wise', wrap(async (_req, r) => r.json(await correspondence.departmentWise())));
+router.get('/ims/correspondence/link-candidates', wrap(async (req, r) => r.json(await correspondence.linkCandidates({ search: req.query.search, limit: req.query.limit }))));
+router.get('/ims/correspondence/replies/:id', wrap(async (req, r) => r.json(await correspondence.repliesOf(req.params.id))));
+router.post('/ims/correspondence/link-reply', wrap(async (req, r) => {
+  const { inwardId, outwardId } = req.body || {};
+  if (!inwardId || !outwardId) { const e = new Error('inwardId and outwardId are required'); e.status = 400; throw e; }
+  r.json(await correspondence.linkReply(inwardId, outwardId, req));
+}));
+router.post('/ims/correspondence/unlink-reply', wrap(async (req, r) => {
+  const { inwardId } = req.body || {};
+  if (!inwardId) { const e = new Error('inwardId is required'); e.status = 400; throw e; }
+  r.json(await correspondence.unlinkReply(inwardId, req));
+}));
+router.get('/ims/correspondence', wrap(async (req, r) => r.json(await correspondence.list(req.query))));
+
+// ---- Correspondence attachments -------------------------------------------
+// PDF / DOC / DOCX / JPG / PNG, up to 10 MB each. Stored under /uploads and
+// served statically; only the file metadata (name/url/type/size) is saved on the
+// record so the row stays small.
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+const corrUploadDir = path.join(__dirname, '..', 'uploads', 'correspondence');
+fs.mkdirSync(corrUploadDir, { recursive: true });
+const CORR_TYPES = [
+  'application/pdf',
+  'application/msword',
+  'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  'image/jpeg', 'image/png',
+];
+const corrUpload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, corrUploadDir),
+    filename: (_req, file, cb) => cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${path.extname(file.originalname).toLowerCase()}`),
+  }),
+  limits: { fileSize: 10 * 1024 * 1024, files: 5 },
+  fileFilter: (_req, file, cb) => (CORR_TYPES.includes(file.mimetype)
+    ? cb(null, true)
+    : cb(new Error('Only PDF, DOC, DOCX, JPG and PNG files are allowed.'))),
+});
+router.post('/ims/correspondence/upload', (req, res, next) => {
+  // multer calls back with an error for a rejected type / oversize file; turn it
+  // into a clear 400 instead of the generic 500 the last-resort handler returns.
+  corrUpload.array('files', 5)(req, res, (err) => {
+    if (err) return res.status(400).json({ status: 'error', message: err.message });
+    const files = (req.files || []).map((f) => ({
+      name: f.originalname, url: `/uploads/correspondence/${f.filename}`, type: f.mimetype, size: f.size,
+    }));
+    res.status(201).json({ files });
+  });
+});
+
 // ---- generic CRUD for every resource --------------------------------------
 router.get('/ims/:resource', wrap(async (req, r) => r.json(await res.list(req.params.resource, req.query))));
 

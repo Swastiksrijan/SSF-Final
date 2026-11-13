@@ -100,8 +100,10 @@ export const NAV = [
   {
     group: 'records', items: [
       { key: 'records_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/records' },
+      { key: 'correspondence', icon: 'MessageSquare', path: '/ims/correspondence' },
+      { key: 'inward_register', icon: 'Inbox', path: '/ims/correspondence?tab=inward' },
+      { key: 'outward_register', icon: 'Send', path: '/ims/correspondence?tab=outward' },
       { key: 'documents', icon: 'Files', resource: 'documents' },
-      { key: 'communications', icon: 'MessageSquare', resource: 'communications' },
       { key: 'reports', icon: 'BarChart3', path: '/ims/reports' },
       { key: 'knowledge', icon: 'BookMarked', path: '/ims/knowledge' },
     ],
