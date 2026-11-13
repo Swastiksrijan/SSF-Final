@@ -1,7 +1,7 @@
 import { Link } from '@tanstack/react-router';
 import ImsLayout from '../ImsLayout';
 import { PageHeader, Card } from '../ui';
-import { Building2, Network, BriefcaseBusiness, ClipboardList, ShieldCheck, ArrowUpRight, Users, Landmark, FileCheck2, Layers3 } from 'lucide-react';
+import { Building2, Network, BriefcaseBusiness, ClipboardList, ShieldCheck, ArrowUpRight, Users, Landmark, FileCheck2, Layers3, Wallet } from 'lucide-react';
 
 const departments = [
   ['Education, Literacy & Educational Institutions','शिक्षा प्रमुख; प्राथमिक/माध्यमिक/उच्चतर/कॉलेज शिक्षा; तकनीकी व कंप्यूटर शिक्षा; नर्सिंग शिक्षा; वयस्क शिक्षा; पुस्तकालय; शिक्षक प्रशिक्षण; समावेशी शिक्षा; छात्र मार्गदर्शन/छात्रवृत्ति; स्कूल कार्यक्रम।'],
