@@ -14,6 +14,7 @@ export const NAV = [
     group: 'organisation', items: [
       { key: 'organisation_dashboard', icon: 'LayoutDashboard', path: '/ims/sections/organisation' },
       { key: 'org_profile', icon: 'Building2', path: '/ims/org-profile' },
+      { key: 'org_structure', icon: 'Network', path: '/ims/org-structure' },
       { key: 'org_profile_pdf', icon: 'FileText', path: '/ims/org-profile-pdf' },
       { key: 'membership_contributions', icon: 'Coins', path: '/ims/membership-contributions', resource: 'membershipContributions' },
       { key: 'appointment_letters', icon: 'Mail', path: '/ims/appointment-letters', resource: 'appointmentLetters' },
