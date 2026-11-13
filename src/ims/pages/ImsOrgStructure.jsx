@@ -80,7 +80,6 @@ export default function ImsOrgStructure() {
     <Card className="mb-6 border border-blue-200 bg-blue-50/60 shadow-sm">
       <p className="text-xs font-black uppercase tracking-wider text-blue-800">पंजीकृत नाम का अभिलेखीय मिलान</p>
       <h2 className="mt-2 text-xl font-extrabold text-slate-900">स्वास्तिक सृजन फाउंडेशन समिति</h2>
-      <p className="mt-1 text-sm text-slate-700">पंजीकरण प्रमाणपत्र में बताया गया हिंदी नाम। नियमावली Rule 1 में अंग्रेज़ी नाम “SWASTIK SRIJAN FOUNDATION” दर्ज है। दोनों अभिलेखों के नाम-अंतर को नोट किया गया है; अंग्रेज़ी कानूनी नाम या नियमावली संशोधन का दावा प्रमाणित पंजीयन रिकॉर्ड के मिलान के बिना न करें।</p>
     </Card>
     <Card className="mb-6 border border-emerald-200 bg-emerald-50/50 shadow-sm">
       <SectionTitle Icon={Landmark} title="संवैधानिक व्यवस्था — नियमावली के अनुसार" subtitle="संवैधानिक निकाय और पदों की सीमा" />
