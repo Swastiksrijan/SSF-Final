@@ -2,7 +2,7 @@
 // Data is language-neutral; only fixed labels/messages live here.
 export const DICT = {
   app_name: { en: 'SSF OneOffice', hi: 'एस.एस.एफ. वनऑफिस' },
-  app_full: { en: 'Swastik Srijan Foundation — Integrated Management System', hi: 'स्वस्तिक सृजन फाउंडेशन — एकीकृत प्रबंधन प्रणाली' },
+  app_full: { en: 'Swastik Srijan Foundation — Integrated Management System', hi: 'स्वास्तिक सृजन फाउंडेशन — एकीकृत प्रबंधन प्रणाली' },
   working_name: { en: 'SSF OneOffice', hi: 'एस.एस.एफ. वनऑफिस' },
   tagline: { en: 'One Organisation • One Record • Complete Accountability', hi: 'एक संस्था • एक रिकॉर्ड • पूर्ण जवाबदेही' },
   management_system: { en: 'Integrated Management System', hi: 'एकीकृत प्रबंधन प्रणाली' },
