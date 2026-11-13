@@ -13,7 +13,7 @@
 // never an invented number.
 import { CONTACT_INFO } from '../config/contact';
 
-const P = { en: 'Swastik Srijan Foundation Samiti', hi: 'स्वस्तिक सृजन फाउंडेशन समिति' };
+const P = { en: 'Swastik Srijan Foundation Samiti', hi: 'स्वास्तिक सृजन फाउंडेशन समिति' };
 const T = (en, hi) => ({ en, hi });
 const kv = (len, hen, lv, hv) => ({ l: T(len, hen), v: T(lv, hv) });
 
@@ -151,7 +151,7 @@ export const PROFILE_RENDER = {
         { type: 'para',
           text: T(
             'Swastik Srijan Foundation Samiti is a registered non-profit society established in 2013 in Rewa, Madhya Pradesh. The Foundation works with rural, tribal and underserved communities across India on education, health and nutrition, women and child welfare, livelihood, environment and social awareness. Its approach is community-led: programmes are designed with the people they serve, implemented through local participation, and documented so that governance, finances and outcomes remain accountable.',
-            'स्वस्तिक सृजन फाउंडेशन समिति 2013 में रीवा, मध्य प्रदेश में स्थापित एक पंजीकृत गैर-लाभकारी सोसाइटी है। संस्था सम्पूर्ण भारत में ग्रामीण, जनजातीय एवं अलाभित समुदायों के साथ शिक्षा, स्वास्थ्य एवं पोषण, महिला एवं बाल कल्याण, आजीविका, पर्यावरण एवं सामाजिक जागरूकता के क्षेत्र में कार्य करती है। इसकी कार्यशैली समुदाय-नेतृत्व वाली है: कार्यक्रम समुदाय की भागीदारी से बनाए एवं क्रियान्वित किए जाते हैं, और शासन, वित्त एवं परिणामों की जवाबदेही हेतु उनका अभिलेखन किया जाता है।') },
+            'स्वास्तिक सृजन फाउंडेशन समिति 2013 में रीवा, मध्य प्रदेश में स्थापित एक पंजीकृत गैर-लाभकारी सोसाइटी है। संस्था सम्पूर्ण भारत में ग्रामीण, जनजातीय एवं अलाभित समुदायों के साथ शिक्षा, स्वास्थ्य एवं पोषण, महिला एवं बाल कल्याण, आजीविका, पर्यावरण एवं सामाजिक जागरूकता के क्षेत्र में कार्य करती है। इसकी कार्यशैली समुदाय-नेतृत्व वाली है: कार्यक्रम समुदाय की भागीदारी से बनाए एवं क्रियान्वित किए जाते हैं, और शासन, वित्त एवं परिणामों की जवाबदेही हेतु उनका अभिलेखन किया जाता है।') },
         { type: 'para',
           text: T(
             'The organisation maintains documented records relating to governance, programmes, finances and statutory compliance, and is registered for CSR partnership under the Ministry of Corporate Affairs and on the NGO Darpan portal of NITI Aayog.',
@@ -398,7 +398,7 @@ export const PROFILE_RENDER = {
         { type: 'para',
           text: T(
             'Swastik Srijan Foundation Samiti maintains documented records relating to governance, programmes, finances and statutory/compliance matters, subject to applicable requirements and periodic updating.',
-            'स्वस्तिक सृजन फाउंडेशन समिति शासन, कार्यक्रम, वित्त एवं सांविधिक/अनुपालन संबंधी प्रलेखित अभिलेख संधारित करती है, जो प्रचलित अपेक्षाओं एवं आवधिक अद्यतन के अधीन हैं।') },
+            'स्वास्तिक सृजन फाउंडेशन समिति शासन, कार्यक्रम, वित्त एवं सांविधिक/अनुपालन संबंधी प्रलेखित अभिलेख संधारित करती है, जो प्रचलित अपेक्षाओं एवं आवधिक अद्यतन के अधीन हैं।') },
         { type: 'docCards', label: T('Public Documents', 'सार्वजनिक दस्तावेज़'), items: PUB_DOCS },
       ],
     },
@@ -446,7 +446,7 @@ export const PROFILE_RENDER = {
         { type: 'para',
           text: T(
             'The information presented in this profile is based on the official records and documents maintained by Swastik Srijan Foundation Samiti and is subject to periodic update. Supporting registration, statutory, financial and institutional documents may be provided for due diligence where appropriate.',
-            'इस परिचय में प्रस्तुत जानकारी स्वस्तिक सृजन फाउंडेशन समिति द्वारा संधारित आधिकारिक अभिलेखों एवं दस्तावेज़ों पर आधारित है और आवधिक अद्यतन के अधीन है। उपयुक्त होने पर सहायक पंजीकरण, सांविधिक, वित्तीय एवं संस्थागत दस्तावेज़ जाँच हेतु उपलब्ध कराए जा सकते हैं।') },
+            'इस परिचय में प्रस्तुत जानकारी स्वास्तिक सृजन फाउंडेशन समिति द्वारा संधारित आधिकारिक अभिलेखों एवं दस्तावेज़ों पर आधारित है और आवधिक अद्यतन के अधीन है। उपयुक्त होने पर सहायक पंजीकरण, सांविधिक, वित्तीय एवं संस्थागत दस्तावेज़ जाँच हेतु उपलब्ध कराए जा सकते हैं।') },
       ],
     },
   ],
