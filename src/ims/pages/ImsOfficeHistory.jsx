@@ -22,7 +22,7 @@ const formatOfficeDate=function(value){ if(!value)return "—";
  return Number.isNaN(d.getTime())?s:d.toLocaleDateString("en-IN",{day:"2-digit",month:"2-digit",year:"numeric"});
 };
 
-// Navy title card — identical to the old Digital Office SimpleOfficeCard.
+// Navy title card shared by the IMS register pages.
 // Renders the page's single <h1> so this route has a real top-level heading.
 function SimpleOfficeCard({title,subtitle,children}){return <div className="space-y-5"><div className="bg-[#12345A] text-white rounded-2xl p-6"><h1 className={PAGE_TITLE_ON_DARK}>{title}</h1><p className="text-white/70 mt-1">{subtitle}</p></div>{children}</div>}
 

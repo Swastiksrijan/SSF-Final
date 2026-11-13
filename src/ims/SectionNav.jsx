@@ -3,8 +3,7 @@
 // The sidebar only lists the 9 primary sections. This strip sits directly under
 // the top bar and keeps every module of the active section one click away, so
 // opening a module never hides its siblings. ImsLayout renders it once, so it
-// appears on every IMS page — custom pages, generic resources and legacy
-// registers alike.
+// appears on every IMS page — custom pages and generic resources alike.
 //
 // Small sections fit their modules on one scrolling row. The wide ones (Finance
 // has ~70 modules in 8 blocks) do not. For those the strip stays a single row:

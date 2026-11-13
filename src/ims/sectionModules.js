@@ -286,12 +286,11 @@ export const SIDEBAR = [
 // --- Active-location resolution -------------------------------------------
 //
 // One module = one canonical route, but a module is often reachable through
-// several paths (its own route, the legacy register route, the generic
-// resource route). Pages also label themselves with many different `active`
-// strings — "members", "letterhead", "office_history", "users_perms", a raw
-// `resource`… — which is why the sidebar highlight used to vanish on 33 of 47
-// routes and the section strip stayed blank: the label was compared against
-// the sidebar keys with `===`.
+// several paths (its own route, the generic resource route). Pages also label
+// themselves with many different `active` strings — "members", "letterhead",
+// "office_history", "users_perms", a raw `resource`… — which is why the sidebar
+// highlight used to vanish on 33 of 47 routes and the section strip stayed
+// blank: the label was compared against the sidebar keys with `===`.
 //
 // Both bars now resolve through these helpers, which collapse every alias onto
 // the single sidebar entry that owns it. Add a new module route and it lights

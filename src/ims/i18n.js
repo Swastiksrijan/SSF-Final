@@ -429,7 +429,6 @@ export const DICT = {
   grp_notifications: { en: 'Alerts & Directory', hi: 'सूचनाएँ एवं निर्देशिका' },
   grp_reports: { en: 'Reports & Knowledge', hi: 'रिपोर्ट एवं ज्ञान' },
   grp_setup: { en: 'Users & Setup', hi: 'उपयोगकर्ता एवं सेटअप' },
-  legacy_registers: { en: 'Legacy Registers', hi: 'पुरानी पंजिकाएँ' },
   all_modules: { en: 'All Modules', hi: 'सभी मॉड्यूल' },
   // The wide sections (Finance has ~70 modules) open their module list as a
   // dropdown under the strip, so the page content below is never pushed down or

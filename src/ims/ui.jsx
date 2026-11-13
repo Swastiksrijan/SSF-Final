@@ -7,9 +7,9 @@ export function Card({ children, className = '' }) {
   return <div className={`rounded-2xl border border-slate-200/80 bg-white shadow-[0_1px_2px_rgba(18,52,90,0.04),0_8px_24px_-12px_rgba(18,52,90,0.12)] ${className}`}>{children}</div>;
 }
 
-// One page-title treatment for the whole IMS. Every page heading — PageHeader,
-// SectionHero and the legacy SimpleOfficeCard banner — renders through this, so
-// the title size cannot drift again. 32px is the dominant size across the app.
+// One page-title treatment for the whole IMS. Every page heading — PageHeader
+// and SectionHero — renders through this, so the title size cannot drift again.
+// 32px is the dominant size across the app.
 export const PAGE_TITLE = 'text-2xl font-black tracking-tight sm:text-[32px]';
 export const PAGE_TITLE_ON_DARK = `${PAGE_TITLE} text-white`;
 
