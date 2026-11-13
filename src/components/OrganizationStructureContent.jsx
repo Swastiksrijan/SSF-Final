@@ -55,7 +55,8 @@ const managementLinks = [
 ];
 
 export default function OrganizationStructureContent({ mode = "public" }) {
-  const adminMode = mode !== "public";
+  const adminMode = mode === "admin";
+  const internalMode = mode !== "public";
   return (
     <main className="min-h-screen bg-[#F5F7FA] text-[#243342]">
       <section className="relative overflow-hidden bg-[#092541] px-5 py-14 text-white sm:px-8 sm:py-20">
@@ -74,9 +75,9 @@ export default function OrganizationStructureContent({ mode = "public" }) {
       </section>
 
       <div className="mx-auto max-w-7xl space-y-8 px-4 py-9 sm:px-7 sm:py-12">
-        {adminMode && (
+        {internalMode && (
           <section className="rounded-2xl border border-[#C9D7E4] bg-white p-5 shadow-sm">
-            <p className="text-xs font-black uppercase tracking-widest text-[#176447]">Admin workspace · प्रशासनिक कार्यक्षेत्र</p>
+            <p className="text-xs font-black uppercase tracking-widest text-[#176447]">{adminMode ? "Admin workspace · प्रशासनिक कार्यक्षेत्र" : "IMS workspace · आंतरिक अभिलेख"}</p>
             <h2 className="mt-2 text-xl font-black text-[#12345A]">Actual appointments and statutory records are maintained in IMS</h2>
             <p className="mt-2 text-sm leading-6 text-slate-600">This page is the approved structure reference. Use the linked IMS registers to record real appointments, meeting resolutions and committee history. Do not treat a proposed role as an appointment.</p>
             <div className="mt-4 flex flex-wrap gap-2">
@@ -150,7 +151,7 @@ export default function OrganizationStructureContent({ mode = "public" }) {
           <p lang="hi" className="mt-4 text-sm leading-7 text-slate-700">विभाग प्रमुख तथा राज्य/जिला/ब्लॉक/ग्राम स्तर के प्रभारी प्रशासनिक नियुक्तियाँ होंगे। नियुक्ति, अधिकार और कार्यकाल सक्षम प्राधिकारी के लिखित अनुमोदन से तय होंगे। केवल पदनाम से किसी को बैंक संचालन या स्वतंत्र समिति का अधिकार नहीं मिलेगा।</p>
         </section>
 
-        {!adminMode && (
+        {!internalMode && (
           <section className="rounded-2xl bg-[#092541] p-6 text-white sm:p-8">
             <h2 className="text-xl font-black">Institutional records & transparency</h2>
             <p className="mt-2 max-w-3xl text-sm leading-6 text-white/75">Public information is shown here. Formal committee records, appointment orders, minutes and registers are maintained internally in SSF OneOffice (IMS).</p>
