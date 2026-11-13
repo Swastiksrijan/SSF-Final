@@ -194,6 +194,7 @@ export const DICT = {
   committees: { en: 'Committees', hi: 'समितियाँ' },
   committee_members: { en: 'Committee Members', hi: 'समिति सदस्य' },
   organisations: { en: 'Organisation Master', hi: 'संस्था मास्टर' },
+  org_structure: { en: 'Internal Organisation Structure', hi: 'आंतरिक संगठनात्मक व्यवस्था' },
   org_profile: { en: 'Organisation Profile', hi: 'संस्था परिचय' },
   org_profile_pdf: { en: 'Profile PDF (Shareable)', hi: 'परिचय PDF (साझा योग्य)' },
   managing_committee: { en: 'Managing Committee', hi: 'प्रबंधकारिणी समिति' },
