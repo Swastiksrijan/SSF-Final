@@ -187,11 +187,12 @@ export default function LegalPolicies() {
                             <h3 className="text-lg font-semibold text-zinc-800">2.4 Donations and Contributions</h3>
                             <p className="text-zinc-600 leading-relaxed">
                                 All donations made to SSF are voluntary and non-refundable except in cases of
-                                technical errors or duplicate transactions. Donors are eligible for tax deductions
-                                under Section 80G of the Income Tax Act, 1961, subject to applicable regulations.
+                                technical errors or duplicate transactions. The Foundation’s final 80G approval
+                                application is pending. A tax deduction must not be assumed; any benefit depends on
+                                a valid approval in force on the donation date and the donor’s eligibility.
                             </p>
                             <ul className="list-disc ml-5 text-zinc-600 space-y-1">
-                                <li>Tax exemption certificates (80G receipts) will be issued for eligible donations</li>
+                                <li>Donation acknowledgements are issued; any 80G certificate depends on the approval in force and applicable eligibility on the donation date.</li>
                                 <li>Donations are used exclusively for charitable purposes as per our objectives</li>
                                 <li>We reserve the right to use donations where they are most needed unless specified otherwise</li>
                             </ul>
@@ -331,7 +332,7 @@ export default function LegalPolicies() {
                             through our website and, where appropriate, via email to registered users.
                         </p>
                         <p className="text-zinc-600 leading-relaxed">
-                            <strong>Last Updated:</strong> January 2026
+                            <strong>Last Updated:</strong> November 2026
                         </p>
                     </section>
 
@@ -340,9 +341,9 @@ export default function LegalPolicies() {
                         <h2 className="text-2xl font-bold text-zinc-900">7. Legal Registration Details</h2>
 
                         <div className="bg-zinc-50 p-4 rounded-lg">
-                            <p className="text-zinc-700"><strong>Organization Name:</strong> Swastik Srijan Foundation</p>
+                            <p className="text-zinc-700"><strong>Organization Name:</strong> Swastik Srijan Foundation Samiti</p>
                             <p className="text-zinc-700"><strong>Registration:</strong> Registered under the Madhya Pradesh Societies Registration Act, 1973</p>
-                            <p className="text-zinc-700"><strong>Registration Number:</strong> 11448/13</p>
+                            <p className="text-zinc-700"><strong>Registration Number:</strong> 05/22/03/11448/13</p>
                             <p className="text-zinc-700"><strong>Year of Establishment:</strong> 2013</p>
                             <p className="text-zinc-700"><strong>80G Status:</strong> Final approval application pending. No 80G deduction should be claimed unless a valid approval is in force for the donation date and the donation qualifies.</p>
                             <p className="text-zinc-700"><strong>12AB Registration:</strong> Registered under the applicable income-tax provisions, subject to the terms and validity of the registration.</p>
@@ -359,7 +360,7 @@ export default function LegalPolicies() {
                         <div className="bg-zinc-50 p-4 rounded-lg mt-3">
                             <p className="text-zinc-700"><strong>Swastik Srijan Foundation</strong></p>
                             <p className="text-zinc-600">Email: {CONTACT_INFO.primaryEmail}</p>
-                            <p className="text-zinc-600">Website: www.swastiksrijan.org</p>
+                            <p className="text-zinc-600">Website: www.swastiksrijan.in</p>
                             <p className="text-zinc-600">Address: {CONTACT_INFO.address.registered}</p>
                         </div>
                     </section>
