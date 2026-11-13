@@ -37,7 +37,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
     try {
       const response = await fetch(`${API_BASE_URL}/api/member-application-bylaw`, {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ ...form, address: form.address.trim(), occupation: form.occupation.trim(), fullName: form.fullName.trim(), email: form.email.trim(), phone: form.phone.trim(), declaration: "I declare that the information supplied is true and I request membership subject to the bylaws and Managing Committee approval." })
+        body: JSON.stringify({ ...form, address: form.address.trim(), occupation: form.occupation.trim(), fullName: form.fullName.trim(), email: form.email.trim(), phone: form.phone.trim(), declaration: "I declare that the information supplied is true and request membership subject to the registered rules and required authorization." })
       });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || "आवेदन जमा नहीं हो सका।");
@@ -58,7 +58,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
       <p className="mt-2 text-[#26343D]">{message}</p>
       {applicationId && <p className="mt-3 text-sm font-semibold text-[#12345A]">Application Reference: {applicationId}</p>}{imsRecordId && <p className="mt-1 text-sm font-semibold text-[#176447]">IMS Membership Record: {imsRecordId}</p>}
       <div className="mt-5 rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-900">
-        <strong>स्थिति: Pending Approval</strong><br />यह आवेदन सदस्यता की स्वीकृति नहीं है। प्रबंध समिति का निर्णय दर्ज होने और नियमावली की शर्तें पूरी होने के बाद ही सदस्यता प्रभावी होगी। अभी भुगतान न करें; समिति से प्राप्त निर्देशों के अनुसार ही अंशदान करें।
+        <strong>स्थिति: Pending Approval</strong><br />यह आवेदन सदस्यता की स्वीकृति नहीं है। आवश्यक स्वीकृति दर्ज होने और नियमावली की शर्तें पूरी होने के बाद ही सदस्यता प्रभावी होगी। अभी भुगतान न करें; समिति से प्राप्त निर्देशों के अनुसार ही अंशदान करें।
       </div>
       <button type="button" onClick={() => { setForm(initial); setStatus("idle"); setApplicationId(""); setImsRecordId(""); }} className="mt-5 rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white">Close / नया आवेदन</button>
     </div>
@@ -69,7 +69,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
       <p className="text-xs font-black uppercase tracking-widest text-[#176447]">Swastik Srijan Foundation Samiti</p>
       <h3 className="mt-2 text-2xl font-black text-[#12345A]">सदस्यता हेतु आवेदन</h3>
       <p className="mt-1 text-sm font-semibold text-[#26343D]">Membership Application Form · नियमावली के नियम 5–9 के अनुसार</p>
-      <p className="mt-2 text-sm leading-relaxed text-slate-600">Swastik Srijan Foundation Samiti से जुड़ने के लिए नीचे अपनी जानकारी भरें। आवेदन की समीक्षा प्रबंध समिति द्वारा की जाएगी।</p>
+      <p className="mt-2 text-sm leading-relaxed text-slate-600">Swastik Srijan Foundation Samiti से जुड़ने के लिए नीचे अपनी जानकारी भरें। आवेदन की समीक्षा संस्था की अधिकृत प्रक्रिया के अनुसार की जाएगी।</p>
 
       <div className="mt-6 grid gap-3 md:grid-cols-3">
         {CATEGORIES.map(item => <button type="button" key={item.id} onClick={() => set("memberType", item.id)} className={`rounded-2xl border p-4 text-left transition ${form.memberType === item.id ? "border-[#176447] bg-[#EAF0F6] ring-2 ring-[#176447]/20" : "border-slate-200 hover:border-[#176447]"}`}>
@@ -79,7 +79,7 @@ export default function MemberForm({ initialMemberType = "general" }) {
       </div>
 
       <div className="mt-4 rounded-xl bg-slate-50 p-4 text-sm text-slate-700">
-        <strong>सम्माननीय सदस्य:</strong> यह सामान्य ऑनलाइन आवेदन श्रेणी नहीं है। नियम 5(D) के अनुसार प्रबंध समिति द्वारा निर्धारित अवधि के लिए मनोनीत किया जाता है; उन्हें आम सभा में भाग लेने का अधिकार है, मतदान का नहीं।
+        <strong>सम्माननीय सदस्य:</strong> यह अलग नामांकन-आधारित श्रेणी है और इस ऑनलाइन आवेदन फॉर्म के माध्यम से उपलब्ध नहीं है। जानकारी के लिए संस्था से संपर्क करें।
       </div>
 
       <form onSubmit={submit} className="mt-6 space-y-5">
