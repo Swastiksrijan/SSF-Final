@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { Users, Landmark, ShieldCheck, ArrowRight } from "lucide-react";
+import { Users, Landmark, ShieldCheck, ArrowRight, Network, Building2, GitBranch, BadgeCheck } from "lucide-react";
 
 const committee = [
   ["President", "अध्यक्ष", "प्रबंध समिति की अध्यक्षता तथा नियमावली के अनुसार संस्था के कार्यों में नेतृत्व।"],
@@ -38,11 +38,11 @@ export default function OrganizationPage() {
       </div>
     </section>
 
-    <section className="mx-auto max-w-7xl px-5 sm:px-8 py-14">
+    <section className="mx-auto max-w-7xl px-5 sm:px-8 py-16">
       <div className="grid gap-5 md:grid-cols-3">
-        <div className="rounded-2xl bg-white p-6 shadow-sm border border-[#E4EAF0]"><Landmark className="text-[#176447] w-8 h-8"/><h3 className="mt-4 font-black text-lg text-[#12345A]">साधारण सभा</h3><p className="mt-2 text-sm leading-6 text-[#53616C]">नियमावली के अनुसार पात्र सदस्यों का सर्वोच्च सामान्य निकाय।</p></div>
-        <div className="rounded-2xl bg-white p-6 shadow-sm border border-[#E4EAF0]"><Users className="text-[#176447] w-8 h-8"/><h3 className="mt-4 font-black text-lg text-[#12345A]">9 सदस्यीय प्रबंध समिति</h3><p className="mt-2 text-sm leading-6 text-[#53616C]">साधारण सभा द्वारा नियमों के अनुसार चुनी जाने वाली कार्यकारी समिति।</p></div>
-        <div className="rounded-2xl bg-white p-6 shadow-sm border border-[#E4EAF0]"><Network className="text-[#176447] w-8 h-8"/><h3 className="mt-4 font-black text-lg text-[#12345A]">प्रशासनिक नेटवर्क</h3><p className="mt-2 text-sm leading-6 text-[#53616C]">मुख्य कार्यालय, विभाग और आवश्यकतानुसार क्षेत्रीय समन्वय।</p></div>
+        <div className="group rounded-3xl bg-white p-7 shadow-[0_12px_35px_rgba(8,43,73,.07)] border border-[#E4EAF0] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(8,43,73,.12)]"><div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#EAF4EF]"><Landmark className="text-[#176447] w-6 h-6"/></div><h3 className="mt-4 font-black text-lg text-[#12345A]">साधारण सभा</h3><p className="mt-2 text-sm leading-6 text-[#53616C]">नियमावली के अनुसार पात्र सदस्यों का सर्वोच्च सामान्य निकाय।</p></div>
+        <div className="group rounded-3xl bg-white p-7 shadow-[0_12px_35px_rgba(8,43,73,.07)] border border-[#E4EAF0] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(8,43,73,.12)]"><div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#EAF4EF]"><Users className="text-[#176447] w-6 h-6"/></div><h3 className="mt-4 font-black text-lg text-[#12345A]">9 सदस्यीय प्रबंध समिति</h3><p className="mt-2 text-sm leading-6 text-[#53616C]">साधारण सभा द्वारा नियमों के अनुसार चुनी जाने वाली कार्यकारी समिति।</p></div>
+        <div className="group rounded-3xl bg-white p-7 shadow-[0_12px_35px_rgba(8,43,73,.07)] border border-[#E4EAF0] transition duration-300 hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(8,43,73,.12)]"><div className="grid h-12 w-12 place-items-center rounded-2xl bg-[#EAF4EF]"><Network className="text-[#176447] w-6 h-6"/></div><h3 className="mt-4 font-black text-lg text-[#12345A]">प्रशासनिक नेटवर्क</h3><p className="mt-2 text-sm leading-6 text-[#53616C]">मुख्य कार्यालय, विभाग और आवश्यकतानुसार क्षेत्रीय समन्वय।</p></div>
       </div>
     </section>
 
@@ -71,9 +71,9 @@ export default function OrganizationPage() {
       <div className="mx-auto max-w-7xl px-5 sm:px-8">
         <SectionHeading eyebrow="02 / Managing Committee" title="Managing Committee — प्रबंध समिति (9 सदस्य)" description="प्रबंध समिति संस्था का कार्यकारी/प्रशासनिक निकाय है। इसका गठन साधारण सभा द्वारा पंजीकृत नियमावली में निर्धारित निर्वाचन प्रक्रिया के अनुसार किया जाता है। नीचे नौ पदों का संरचनात्मक विवरण दिया गया है; यह किसी वर्तमान पदाधिकारी की नियुक्ति या निर्वाचन की घोषणा नहीं है।"/>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-          {committee.map(([en, hi, desc], i) => <article key={en} className="rounded-2xl border border-[#E4EAF0] bg-[#FAFBFC] p-5">
-            <div className="flex items-center justify-between"><span className="text-xs font-black tracking-widest text-[#176447]">POSITION {String(i+1).padStart(2,"0")}</span><span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#12345A] text-sm font-black text-white">{i+1}</span></div>
-            <h3 className="mt-4 text-lg font-black text-[#12345A]">{en}</h3><p className="mt-1 font-bold text-[#176447]">{hi}</p><p className="mt-3 text-sm leading-6 text-[#53616C]">{desc}</p>
+          {committee.map(([en, hi, desc], i) => <article key={en} className="group relative overflow-hidden rounded-3xl border border-[#E4EAF0] bg-white p-6 shadow-[0_8px_28px_rgba(8,43,73,.045)] transition duration-300 hover:-translate-y-1 hover:border-[#B8D5C7] hover:shadow-[0_16px_38px_rgba(8,43,73,.10)]"><div className="absolute right-0 top-0 h-20 w-20 rounded-bl-[3rem] bg-[#F0F6F3] transition group-hover:bg-[#E3F0E9]"/>
+            <div className="flex items-center justify-between"><span className="text-xs font-black tracking-widest text-[#176447]">POSITION {String(i+1).padStart(2,"0")}</span><span className="relative flex h-9 w-9 items-center justify-center rounded-xl bg-[#12345A] text-sm font-black text-white shadow-sm">{i+1}</span></div>
+            <h3 className="relative mt-5 text-lg font-black text-[#12345A]">{en}</h3><p className="mt-1 font-bold text-[#176447]">{hi}</p><p className="mt-3 text-sm leading-6 text-[#53616C]">{desc}</p>
           </article>)}
         </div>
         <p className="mt-6 rounded-xl border-l-4 border-[#F7A814] bg-[#FFF9E9] p-4 text-sm leading-6 text-[#5F5437]">कार्यकाल, पुनर्निर्वाचन, रिक्त पद, बैठक, कोरम और पदाधिकारियों के अधिकार/कर्तव्य पंजीकृत नियमावली के अनुसार ही लागू होंगे।</p>
