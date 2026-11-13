@@ -241,24 +241,6 @@ export default function RegistrationDetails() {
                     >
                       {CONTACT_INFO.secondaryEmail}
                     </button>
-                    <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2.5 py-1 rounded border border-white/10 uppercase tracking-widest shadow-sm">
-                      {CONTACT_INFO.techIssueNote}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between gap-4">
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(CONTACT_INFO.thirdEmail);
-                        alert("Email copied!");
-                      }}
-                      className="text-sm text-zinc-300 font-semibold hover:text-[#176447] transition-colors cursor-pointer outline-none"
-                      title="Click to copy"
-                    >
-                      {CONTACT_INFO.thirdEmail}
-                    </button>
-                    <span className="text-[7px] font-black bg-white/5 text-zinc-500 px-2.5 py-1 rounded border border-white/10 uppercase tracking-widest shadow-sm">
-                      {CONTACT_INFO.techIssueNote}
-                    </span>
                   </div>
                 </div>
               </div>
