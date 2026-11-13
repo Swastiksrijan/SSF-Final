@@ -266,7 +266,7 @@ export default function AboutPage() {
               civil society organizations and responsible corporate partners.
             </p>
             <p lang="hi" className="mt-5 text-base leading-8 text-[#53616C]">
-              स्वस्तिक सृजन फाउंडेशन समिति (Swastik Srijan Foundation Samiti) दिसंबर 2013 में स्थापित एक पंजीकृत गैर-लाभकारी
+              स्वास्तिक सृजन फाउंडेशन समिति (Swastik Srijan Foundation Samiti) दिसंबर 2013 में स्थापित एक पंजीकृत गैर-लाभकारी
               संस्था है, जिसका आधार रीवा, मध्य प्रदेश, भारत में है तथा जिसका
               कार्यक्षेत्र संपूर्ण भारत है। मानवता, सत्यनिष्ठा, सामाजिक उत्तरदायित्व
               और समावेशी विकास के मूल्यों से प्रेरित संस्था एक अधिक न्यायपूर्ण,
