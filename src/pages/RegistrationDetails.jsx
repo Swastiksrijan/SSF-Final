@@ -57,7 +57,7 @@ export default function RegistrationDetails() {
             <li><strong>12AB:</strong> Registered (as per the Foundation's current records).</li>
             <li><strong>CSR-1:</strong> Registered (as per the Foundation's current records).</li>
             <li><strong>80G:</strong> Application submitted; final approval is not being claimed.</li>
-            <li>Governed by the committee under the Society's governing documents.</li>
+            <li>Governance and administration follow the registered governing documents and applicable law.</li>
           </ul>
         </>
       ),
