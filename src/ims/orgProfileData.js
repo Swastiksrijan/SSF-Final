@@ -39,7 +39,7 @@ const GALLERY = [
 const PUB_DOCS = [
   { name: T('Registration Certificate', 'पंजीकरण प्रमाणपत्र'), tag: T('Registered · 2013', 'पंजीकृत · 2013'), url: 'https://drive.google.com/file/d/1mvFn14TYtG-tiiE5_spHrUClTls1-Ii-/view?usp=sharing' },
   { name: T('12AB Registration', '12AB पंजीकरण'), tag: T('Registered', 'पंजीकृत'), url: 'https://drive.google.com/file/d/1MVtgKePT2WNTSrF1vrjrDIdrCZ6HaNrS/view?usp=drivesdk' },
-  { name: T('80G Approval', '80G अनुमोदन'), tag: T('Registered', 'पंजीकृत'), url: 'https://drive.google.com/file/d/1uUAQuXCkz6H_sEJGgDvSx2Gj_PsIIVvB/view?usp=drivesdk' },
+  { name: T('80G Approval', '80G अनुमोदन'), tag: T('Final approval application pending', 'अंतिम स्वीकृति हेतु आवेदन लंबित'), url: 'https://drive.google.com/file/d/1uUAQuXCkz6H_sEJGgDvSx2Gj_PsIIVvB/view?usp=drivesdk' },
   { name: T('CSR-1 Registration (MCA)', 'सीएसआर-1 पंजीकरण (एमसीए)'), tag: T('Registered', 'पंजीकृत'), url: 'https://drive.google.com/file/d/1LdL8_IC3K6f4ZEddb68ki_393QkIBvcX/view?usp=drivesdk' },
   { name: T('NGO Darpan', 'एनजीओ दर्पण'), tag: T('Active', 'सक्रिय'), url: 'https://drive.google.com/file/d/15OX155DuYsymGQmEKCcoux1FGES_DSLH/view?usp=sharing' },
   { name: T('Audited Accounts', 'लेखा-परीक्षित खाते'), tag: T('Audit records', 'लेखा परीक्षण अभिलेख'), url: 'https://drive.google.com/file/d/1ka7G73eU1SamorxUJivAJKldnOuNIdZU/view?usp=sharing' },
@@ -291,7 +291,7 @@ export const PROFILE_RENDER = {
             [T('Society Registration', 'सोसाइटी पंजीकरण'), T('05/22/03/11448/13', '05/22/03/11448/13'), T('Registered · 30-12-2013 · MP Societies Act, 1973', 'पंजीकृत · 30-12-2013 · म.प्र. सोसाइटी अधिनियम, 1973')],
             [T('PAN', 'पैन'), T('AAKAS7123H', 'AAKAS7123H'), T('Registered', 'पंजीकृत')],
             [T('12AB Registration', '12AB पंजीकरण'), T('AAKAS7123H25BP01', 'AAKAS7123H25BP01'), T('Registered', 'पंजीकृत')],
-            [T('80G Approval', '80G अनुमोदन'), T('AAKAS7123HF20231', 'AAKAS7123HF20231'), T('Registered', 'पंजीकृत')],
+            [T('80G Final Application', '80G अंतिम आवेदन'), T('AAKAS7123HF20231', 'AAKAS7123HF20231'), T('Application submitted · final approval pending', 'आवेदन प्रस्तुत · अंतिम स्वीकृति लंबित')],
             [T('NGO Darpan ID', 'एनजीओ दर्पण आईडी'), T('MP/2017/0169529', 'MP/2017/0169529'), T('Active', 'सक्रिय')],
             [T('CSR-1 Registration (MCA)', 'सीएसआर-1 पंजीकरण (एमसीए)'), T('CSR00093974', 'CSR00093974'), T('Registered', 'पंजीकृत')],
             [T('MSME / Udyam', 'एमएसएमई / उद्यम'), T('UDYAM-MP-38-0042763', 'UDYAM-MP-38-0042763'), T('Registered · Micro (Services)', 'पंजीकृत · सूक्ष्म (सेवाएँ)')],
