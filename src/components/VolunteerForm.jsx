@@ -5,7 +5,7 @@ import { Alert, Field, FileField, FormNote, Input, Select, SubmitButton, Success
 
 const ID_PROOF_TYPES = ["Aadhaar Card", "PAN Card", "Voter ID", "Driving Licence", "Passport", "College / Student ID", "Other Government ID"];
 
-const initialForm = { name: "", email: "", phone: "", volunteerType: "field", idType: "Aadhaar Card", identityNumber: "", message: "", profilePhoto: null, idDocument: null };
+const initialForm = { name: "", email: "", phone: "", volunteerType: "field", position: "General Volunteer", idType: "Aadhaar Card", identityNumber: "", message: "", profilePhoto: null, idDocument: null };
 
 export default function VolunteerForm() {
     const [form, setForm] = useState(initialForm);
@@ -34,7 +34,7 @@ export default function VolunteerForm() {
             data.append("email", form.email.trim().toLowerCase());
             data.append("phone", form.phone.trim());
             data.append("volunteer_type", form.volunteerType);
-            data.append("position", "General Volunteer");
+            data.append("position", form.position);
             data.append("id_type", form.idType);
             data.append("identity_number", form.identityNumber.trim());
             data.append("message", form.message.trim());
@@ -75,6 +75,25 @@ export default function VolunteerForm() {
                     <Field label="Mobile Number" required><Input type="tel" inputMode="numeric" value={form.phone} onChange={e => set("phone", e.target.value.replace(/[^0-9 +()-]/g, ""))} placeholder="Your mobile number" autoComplete="tel" /></Field>
                     <Field label="Volunteer Type" required><Select value={form.volunteerType} onChange={e => set("volunteerType", e.target.value)}><option value="field">Field Volunteer</option><option value="program">Program Volunteer</option><option value="professional">Professional Volunteer</option><option value="digital">Digital / Online Volunteer</option></Select></Field>
                 </div>
+                <Field label="Preferred role / area of contribution" required><Select value={form.position} onChange={e => set("position", e.target.value)}>
+                    <option value="General Volunteer">General Volunteer / सामान्य स्वयंसेवक</option>
+                    <option value="National / Central Coordination Interest">National / Central Coordination</option>
+                    <option value="State Coordinator Interest">State Coordinator</option>
+                    <option value="District Coordinator Interest">District Coordinator</option>
+                    <option value="Block Coordinator Interest">Block Coordinator</option>
+                    <option value="Village / Ward Coordinator Interest">Village / Ward Coordinator</option>
+                    <option value="Education & Youth Development">Education & Youth Development</option>
+                    <option value="Digital & Technology">Digital & Technology</option>
+                    <option value="Health & Community Well-being">Health & Community Well-being</option>
+                    <option value="Women & Child Welfare">Women & Child Welfare</option>
+                    <option value="Skills & Livelihoods">Skills & Livelihoods</option>
+                    <option value="Environment & Rural Development">Environment & Rural Development</option>
+                    <option value="Administration, Finance & Compliance">Administration, Finance & Compliance</option>
+                    <option value="Communication & Public Engagement">Communication & Public Engagement</option>
+                    <option value="Monitoring, Evaluation & Reporting">Monitoring, Evaluation & Reporting</option>
+                    <option value="Legal, CA & Specialist Support">Legal, CA & Specialist Support</option>
+                    <option value="Project & Programme Management">Project & Programme Management</option>
+                </Select></Field>
                 <div className="ssf-form-grid ssf-form-grid-2">
                     <Field label="Identity Proof Type" hint="Optional"><Select value={form.idType} onChange={e => set("idType", e.target.value)}>{ID_PROOF_TYPES.map(t => <option key={t} value={t}>{t}</option>)}</Select></Field>
                     <Field label="ID Number" hint="Optional · Aadhaar / PAN / other ID number"><Input value={form.identityNumber} onChange={e => set("identityNumber", e.target.value)} placeholder="e.g. Aadhaar or PAN number" /></Field>
