@@ -69,6 +69,40 @@ const isPresident = (m) => /president/i.test(m.designation) && !/vice/i.test(m.d
 const president = committee.find(isPresident) || committee[0];
 const bearers = committee.filter((m) => !isPresident(m) && !isMember(m));
 const executives = committee.filter(isMember);
+const displayPost = (d) => (d === "Member" ? "Executive Member" : d);
+
+const GRAIN =
+  "radial-gradient(circle at 15% 12%, rgba(214,181,109,.14), transparent 42%), radial-gradient(circle at 85% 88%, rgba(23,75,58,.20), transparent 46%)";
+
+// ---------------------------------------------------------------------------
+// Small shared pieces
+// ---------------------------------------------------------------------------
+
+function Ornament({ tone = GOLD, className = "" }) {
+  return (
+    <div className={`flex items-center justify-center gap-3 ${className}`} aria-hidden="true">
+      <span className="h-px w-10 sm:w-16" style={{ background: `linear-gradient(90deg, transparent, ${tone})` }} />
+      <span className="h-1.5 w-1.5 rotate-45" style={{ backgroundColor: tone }} />
+      <span className="h-px w-10 sm:w-16" style={{ background: `linear-gradient(90deg, ${tone}, transparent)` }} />
+    </div>
+  );
+}
+
+function RaisedAvatar({ person, size = "md", ring }) {
+  const dims = size === "lg" ? "h-24 w-24 sm:h-28 sm:w-28" : size === "sm" ? "h-16 w-16" : "h-20 w-20 sm:h-24 sm:w-24";
+  const bg = ring || `linear-gradient(150deg, ${GOLD}, ${GREEN})`;
+  return (
+    <div className="rounded-full p-[3px] shadow-[0_20px_34px_-12px_rgba(0,35,68,.6)] transition-transform duration-300 group-hover:-translate-y-1" style={{ backgroundImage: bg }}>
+      {person.img ? (
+        <img src={person.img} alt={person.name} loading="lazy" className={`${dims} rounded-full border-[3px] border-white object-cover`} />
+      ) : (
+        <span className={`${dims} flex items-center justify-center rounded-full border-[3px] border-white bg-[#EAF0F6] text-lg font-black`} style={{ color: GREEN }}>
+          {nameOf(person).split(" ").map((w) => w[0]).slice(0, 2).join("")}
+        </span>
+      )}
+    </div>
+  );
+}
 
 // ---------------------------------------------------------------------------
 // Governance matrix — General Body → Managing Committee → President →
@@ -90,22 +124,6 @@ function DownLink({ className = "h-8" }) {
   );
 }
 
-function RaisedAvatar({ person, size = "md", ring }) {
-  const dims = size === "lg" ? "h-24 w-24 sm:h-28 sm:w-28" : size === "sm" ? "h-16 w-16" : "h-20 w-20 sm:h-24 sm:w-24";
-  const bg = ring || `linear-gradient(150deg, ${GOLD}, ${GREEN})`;
-  return (
-    <div className="rounded-full p-[3px] shadow-[0_18px_30px_-10px_rgba(0,35,68,.55)]" style={{ backgroundImage: bg }}>
-      {person.img ? (
-        <img src={person.img} alt={person.name} loading="lazy" className={`${dims} rounded-full border-[3px] border-white object-cover`} />
-      ) : (
-        <span className={`${dims} flex items-center justify-center rounded-full border-[3px] border-white bg-[#EAF0F6] text-lg font-black`} style={{ color: GREEN }}>
-          {nameOf(person).split(" ").map((w) => w[0]).slice(0, 2).join("")}
-        </span>
-      )}
-    </div>
-  );
-}
-
 function TierRow({ items, render }) {
   const n = items.length;
   const center = (i) => `${((i + 0.5) / n) * 100}%`;
@@ -114,7 +132,7 @@ function TierRow({ items, render }) {
       <span className="absolute top-0 h-[2px]" style={{ left: center(0), right: `calc(100% - ${center(n - 1)})`, backgroundColor: LINE }} aria-hidden="true" />
       <div className="flex items-stretch">
         {items.map((person, i) => (
-          <div key={person.name} className="relative flex-1 px-2 pt-9">
+          <div key={person.name} className="group relative flex-1 px-2 pt-9">
             <span className="absolute left-1/2 top-0 h-9 w-[2px] -translate-x-1/2" style={{ backgroundColor: LINE }} aria-hidden="true" />
             <Arrow className="top-[28px]" />
             {render(person, i)}
@@ -127,51 +145,60 @@ function TierRow({ items, render }) {
 
 function GeneralBodyBox() {
   return (
-    <div className="mx-auto max-w-2xl rounded-2xl border-2 bg-[#002344] px-6 py-6 text-center text-white" style={{ borderColor: GOLD }}>
-      <h3 className="font-serif text-xl font-bold tracking-wide md:text-2xl">General Body</h3>
-      <p className="font-hindi mt-1 text-sm font-semibold" style={{ color: GOLD }}>साधारण सभा</p>
-      <p className="mt-2 text-xs text-[#E6EDF3]">Supreme General Body of the Foundation</p>
+    <div className="relative mx-auto max-w-2xl overflow-hidden rounded-2xl border-2 bg-[#002344] px-6 py-6 text-center text-white shadow-[0_22px_44px_-30px_rgba(0,35,68,.9)]" style={{ borderColor: GOLD }}>
+      <span className="pointer-events-none absolute inset-0 opacity-70" style={{ backgroundImage: "radial-gradient(circle at 20% 0%, rgba(214,181,109,.18), transparent 55%)" }} aria-hidden="true" />
+      <h3 className="font-serif relative text-xl font-bold tracking-wide md:text-2xl">General Body</h3>
+      <p className="font-hindi relative mt-1 text-sm font-semibold" style={{ color: GOLD }}>साधारण सभा</p>
+      <p className="relative mt-2 text-xs text-[#E6EDF3]">Supreme General Body of the Foundation</p>
     </div>
   );
 }
 
 function CommitteeBox() {
   return (
-    <div className="mx-auto max-w-xl rounded-2xl border bg-[#174B3A] px-6 py-5 text-center text-white" style={{ borderColor: "#2D6A4F" }}>
-      <h3 className="font-serif text-lg font-bold md:text-xl">Managing Committee</h3>
-      <p className="font-hindi mt-1 text-sm font-semibold" style={{ color: GOLD }}>प्रबंधकारिणी समिति</p>
+    <div className="relative mx-auto max-w-xl overflow-hidden rounded-2xl border bg-[#174B3A] px-6 py-5 text-center text-white shadow-[0_22px_44px_-30px_rgba(23,75,58,.9)]" style={{ borderColor: "#2D6A4F" }}>
+      <span className="pointer-events-none absolute inset-0 opacity-70" style={{ backgroundImage: "radial-gradient(circle at 80% 0%, rgba(214,181,109,.16), transparent 55%)" }} aria-hidden="true" />
+      <h3 className="font-serif relative text-lg font-bold md:text-xl">Managing Committee</h3>
+      <p className="font-hindi relative mt-1 text-sm font-semibold" style={{ color: GOLD }}>प्रबंधकारिणी समिति</p>
     </div>
   );
 }
 
-function MatrixNode({ person, size = "md", ring }) {
+function MatrixNode({ person, size = "md", ring, badge }) {
   const Icon = POST_ICON[person.designation] || Users;
   const hindi = HINDI_POST[person.designation];
   return (
     <div className="flex h-full flex-col items-center text-center">
       <RaisedAvatar person={person} size={size} ring={ring} />
-      <Icon className="mt-3" size={16} color={GREEN} aria-hidden="true" />
-      <p className="mt-1 text-sm font-bold" style={{ color: NAVY }}>{person.designation === "Member" ? "Executive Member" : person.designation}</p>
+      <span className="mt-3 inline-flex h-8 w-8 items-center justify-center rounded-full border" style={{ borderColor: "#E3E9F0", backgroundColor: "#F8FAFB" }}>
+        <Icon size={15} color={GREEN} aria-hidden="true" />
+      </span>
+      <p className="mt-2 text-sm font-bold" style={{ color: NAVY }}>{displayPost(person.designation)}</p>
       {hindi && <p className="font-hindi mt-0.5 text-xs font-semibold" style={{ color: GREEN }}>{hindi}</p>}
+      {badge && <p className="mt-1 text-[10px] font-bold uppercase tracking-[.18em]" style={{ color: GOLD_DARK }}>{badge}</p>}
     </div>
   );
 }
 
 function GovernanceMatrix() {
   return (
-    <div className="rounded-[2rem] border border-[#E3E9F0] bg-white p-5 shadow-[0_30px_70px_-50px_rgba(0,35,68,.5)] sm:p-8 md:p-10">
-      <div className="mb-8 text-center">
-        <p className="text-[11px] font-black uppercase tracking-[.22em]" style={{ color: GREEN }}>Governance Structure</p>
+    <div className="relative overflow-hidden rounded-[2rem] border border-[#E3E9F0] bg-white p-5 shadow-[0_40px_90px_-60px_rgba(0,35,68,.6)] sm:p-8 md:p-12">
+      <span className="pointer-events-none absolute inset-0" style={{ backgroundImage: "radial-gradient(circle at 50% 0%, rgba(0,35,68,.05), transparent 60%), radial-gradient(circle at 100% 100%, rgba(23,75,58,.05), transparent 55%)" }} aria-hidden="true" />
+      <div className="relative mb-9 text-center">
+        <p className="text-[11px] font-black uppercase tracking-[.24em]" style={{ color: GREEN }}>Governance Structure</p>
         <h3 className="font-serif mt-2 text-2xl font-bold md:text-3xl" style={{ color: NAVY }}>संगठनात्मक संरचना</h3>
+        <Ornament className="mt-4" />
       </div>
 
       {/* Desktop / tablet */}
-      <div className="hidden sm:block">
+      <div className="relative hidden sm:block">
         <GeneralBodyBox />
         <DownLink className="h-9" />
         <CommitteeBox />
         <DownLink className="h-9" />
-        <div className="flex justify-center"><MatrixNode person={president} size="lg" ring={`linear-gradient(150deg, ${GOLD_DARK}, ${GOLD})`} /></div>
+        <div className="flex justify-center">
+          <MatrixNode person={president} size="lg" ring={`linear-gradient(150deg, ${GOLD_DARK}, ${GOLD})`} badge="Presiding" />
+        </div>
         <DownLink className="h-9" />
         <TierRow items={bearers} render={(p) => <MatrixNode person={p} />} />
         <DownLink className="h-9" />
@@ -179,16 +206,18 @@ function GovernanceMatrix() {
       </div>
 
       {/* Mobile */}
-      <div className="sm:hidden">
+      <div className="relative sm:hidden">
         <GeneralBodyBox />
         <DownLink className="h-7" />
         <CommitteeBox />
         <DownLink className="h-7" />
-        <div className="flex justify-center"><MatrixNode person={president} size="lg" ring={`linear-gradient(150deg, ${GOLD_DARK}, ${GOLD})`} /></div>
+        <div className="flex justify-center">
+          <MatrixNode person={president} size="lg" ring={`linear-gradient(150deg, ${GOLD_DARK}, ${GOLD})`} badge="Presiding" />
+        </div>
         <DownLink className="h-7" />
         <div className="grid grid-cols-2 gap-x-3 gap-y-7">
           {bearers.map((p) => (
-            <div key={p.name} className="flex flex-col items-center border-t-2 pt-6" style={{ borderColor: LINE }}>
+            <div key={p.name} className="group flex flex-col items-center border-t-2 pt-6" style={{ borderColor: LINE }}>
               <MatrixNode person={p} />
             </div>
           ))}
@@ -196,7 +225,7 @@ function GovernanceMatrix() {
         <DownLink className="h-7" />
         <div className="grid grid-cols-2 gap-x-3 gap-y-7">
           {executives.map((p) => (
-            <div key={p.name} className="flex flex-col items-center border-t-2 pt-6" style={{ borderColor: LINE }}>
+            <div key={p.name} className="group flex flex-col items-center border-t-2 pt-6" style={{ borderColor: LINE }}>
               <MatrixNode person={p} size="sm" />
             </div>
           ))}
@@ -218,15 +247,17 @@ function MemberCard({ person, index = 0, prominent = false }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ duration: 0.45, delay: index * 0.04 }}
-      className={`flex flex-col items-center rounded-2xl border bg-white p-6 text-center shadow-sm transition hover:-translate-y-1 hover:shadow-lg ${prominent ? "border-2" : ""}`}
-      style={{ borderColor: prominent ? NAVY : "#D9E0E7" }}
+      className={`group relative flex flex-col items-center overflow-hidden rounded-2xl border bg-white p-6 text-center shadow-[0_24px_50px_-40px_rgba(0,35,68,.6)] transition duration-300 hover:-translate-y-1 hover:shadow-[0_34px_60px_-38px_rgba(0,35,68,.6)] ${prominent ? "border-2" : "border-[#D9E0E7]"}`}
+      style={prominent ? { borderColor: NAVY } : undefined}
     >
+      <span className="pointer-events-none absolute inset-x-0 top-0 h-1" style={{ background: prominent ? `linear-gradient(90deg, ${GOLD_DARK}, ${GOLD})` : `linear-gradient(90deg, ${GREEN}, ${GOLD})` }} aria-hidden="true" />
       <RaisedAvatar person={person} size={prominent ? "lg" : "md"} ring={prominent ? `linear-gradient(150deg, ${GOLD_DARK}, ${GOLD})` : undefined} />
       <h3 className="mt-4 text-base font-extrabold" style={{ color: NAVY }}>{nameOf(person)}</h3>
       {prominent ? (
         <>
           <p className="font-hindi mt-1 text-sm font-semibold" style={{ color: GREEN }}>संस्थापक एवं अध्यक्ष</p>
-          <p className="mt-1 text-xs font-bold uppercase tracking-wide" style={{ color: GREEN }}>Founder &amp; President</p>
+          <p className="mt-1 text-[11px] font-bold uppercase tracking-[.16em]" style={{ color: GOLD_DARK }}>Founder &amp; President</p>
+          <span className="mt-3 h-px w-16" style={{ backgroundColor: "#E3E9F0" }} aria-hidden="true" />
           <p className="mt-3 text-sm leading-6 text-slate-600">{PRESIDENT_INTRO}</p>
         </>
       ) : (
@@ -242,8 +273,11 @@ function MemberCard({ person, index = 0, prominent = false }) {
 
 function SectionHeading({ eyebrow, title, subtitle }) {
   return (
-    <div className="mb-9">
-      <p className="text-xs font-black uppercase tracking-[.2em]" style={{ color: GREEN }}>{eyebrow}</p>
+    <div className="mb-10">
+      <p className="flex items-center gap-3 text-xs font-black uppercase tracking-[.2em]" style={{ color: GREEN }}>
+        <span className="h-px w-8" style={{ backgroundColor: GOLD }} aria-hidden="true" />
+        {eyebrow}
+      </p>
       <h2 className="font-serif mt-3 text-3xl font-bold md:text-4xl" style={{ color: NAVY }}>{title}</h2>
       {subtitle && <p className="mt-3 max-w-3xl text-sm leading-7 text-slate-600">{subtitle}</p>}
     </div>
@@ -254,12 +288,19 @@ export default function Team() {
   return (
     <main className="min-h-screen bg-white font-sans">
       <section className="relative isolate overflow-hidden bg-[#002344] px-5 pb-24 pt-36 text-white md:pb-28 md:pt-40">
-        <div className="mx-auto max-w-5xl text-center">
-          <p className="text-xs font-black uppercase tracking-[.28em]" style={{ color: GOLD }}>Swastik Srijan Foundation</p>
-          <h1 className="font-serif mt-3 text-4xl font-bold md:text-6xl">Our Team</h1>
-          <p className="mt-3 text-lg font-semibold md:text-xl" style={{ color: GOLD }}>Governance, Leadership &amp; Collective Responsibility</p>
+        <div className="absolute inset-0 -z-10" style={{ backgroundImage: GRAIN }} aria-hidden="true" />
+        <div className="absolute inset-x-0 bottom-0 -z-10 h-px" style={{ background: `linear-gradient(90deg, transparent, ${GOLD}, transparent)` }} aria-hidden="true" />
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="flex items-center justify-center gap-4 text-[11px] font-black uppercase tracking-[.3em]" style={{ color: GOLD }}>
+            <span className="hidden h-px w-10 sm:block" style={{ backgroundColor: GOLD }} aria-hidden="true" />
+            Swastik Srijan Foundation
+            <span className="hidden h-px w-10 sm:block" style={{ backgroundColor: GOLD }} aria-hidden="true" />
+          </p>
+          <h1 className="font-serif mt-4 text-4xl font-bold leading-tight md:text-6xl">Our Team</h1>
+          <Ornament className="mt-5" />
+          <p className="mt-5 text-lg font-semibold md:text-xl" style={{ color: GOLD }}>Governance, Leadership &amp; Collective Responsibility</p>
           <p className="font-hindi mt-1 text-base font-semibold text-[#E6EDF3]">हमारी टीम – नेतृत्व, सुशासन एवं सामूहिक उत्तरदायित्व</p>
-          <p className="mx-auto mt-5 max-w-2xl text-sm leading-6 text-[#E6EDF3]">The strength of our foundation lies in collective leadership, responsible governance and dedicated teamwork.</p>
+          <p className="mx-auto mt-6 max-w-2xl text-sm leading-6 text-[#E6EDF3]">The strength of our foundation lies in collective leadership, responsible governance and dedicated teamwork.</p>
           <p className="font-hindi mx-auto mt-1 max-w-2xl text-sm leading-6 text-[#E6EDF3]">हमारी संस्था की शक्ति सामूहिक नेतृत्व, जिम्मेदार प्रशासन और समर्पित टीमवर्क में निहित है।</p>
         </div>
       </section>
@@ -303,14 +344,16 @@ export default function Team() {
         </div>
       </section>
 
-      <section className="bg-[#002344] px-5 py-20 text-white sm:px-8">
+      <section className="relative isolate overflow-hidden bg-[#002344] px-5 py-20 text-white sm:px-8">
+        <div className="absolute inset-0 -z-10" style={{ backgroundImage: GRAIN }} aria-hidden="true" />
         <div className="mx-auto max-w-5xl text-center">
           <h2 className="font-serif text-3xl font-bold md:text-4xl">Join Our Mission</h2>
-          <p className="mx-auto mt-4 max-w-2xl text-sm leading-7 text-[#E6EDF3] md:text-base">Contribute your time, skills or resources to meaningful community initiatives.</p>
+          <Ornament className="mt-5" />
+          <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-[#E6EDF3] md:text-base">Contribute your time, skills or resources to meaningful community initiatives.</p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
-            <Link to="/Volunteer" className="inline-flex items-center gap-2 rounded-full bg-[#174B3A] px-6 py-3 text-sm font-bold text-white">Volunteer <FaArrowRight /></Link>
-            <Link to="/PartnerWithUs" className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-bold text-white">Partner With Us</Link>
-            <Link to="/Donate" className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold" style={{ backgroundColor: GOLD, color: NAVY }}>Support SSF</Link>
+            <Link to="/Volunteer" className="inline-flex items-center gap-2 rounded-full bg-[#174B3A] px-6 py-3 text-sm font-bold text-white transition hover:bg-[#1d5a46]">Volunteer <FaArrowRight /></Link>
+            <Link to="/PartnerWithUs" className="inline-flex items-center gap-2 rounded-full border border-white/30 px-6 py-3 text-sm font-bold text-white transition hover:border-white/60">Partner With Us</Link>
+            <Link to="/Donate" className="inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-bold transition hover:brightness-105" style={{ backgroundColor: GOLD, color: NAVY }}>Support SSF</Link>
           </div>
         </div>
       </section>
