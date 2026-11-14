@@ -16,6 +16,9 @@ const requireAdmin = (req, res, next) => {
   next();
 };
 const hashToken = value => crypto.createHash('sha256').update(String(value)).digest('hex');
+// Accepted scopes for a notice. Kept in one place so validation and the
+// edit guard never drift apart.
+const ACTION_SCOPES = ['membership_review', 'office_bearer_role_review', 'volunteer_review', 'staff_review', 'general_notice'];
 const publicRecord = row => {
   const value = row.toJSON();
   delete value.responseTokenHash;
@@ -124,7 +127,7 @@ router.post('/admin/member-actions', requireAdmin, async (req, res) => {
   try {
     const b = req.body || {};
     const required = ['personName', 'email', 'actionScope', 'bylawClause', 'grounds', 'factualSummary', 'replyDueAt'];
-    if (required.some(k => !String(b[k] || '').trim()) || !['membership_review', 'office_bearer_role_review'].includes(b.actionScope)) {
+    if (required.some(k => !String(b[k] || '').trim()) || !ACTION_SCOPES.includes(b.actionScope)) {
       return res.status(400).json({ message: 'नाम, ईमेल, कार्रवाई का दायरा, नियम, कारण, तथ्य और जवाब की अंतिम तारीख आवश्यक हैं।' });
     }
     const due = new Date(b.replyDueAt);
@@ -282,7 +285,7 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
       const factualSummary = String(b.factualSummary || '').trim();
       if (!personName || !email || !bylawClause || !grounds || !factualSummary) return res.status(400).json({ message: 'नाम, ईमेल, लागू नियम, कारण और तथ्य आवश्यक हैं।' });
       const scope = String(b.actionScope || row.actionScope).trim();
-      if (!['membership_review', 'office_bearer_role_review'].includes(scope)) return res.status(400).json({ message: 'कार्रवाई का सही दायरा चुनें।' });
+      if (!ACTION_SCOPES.includes(scope)) return res.status(400).json({ message: 'कार्रवाई का सही दायरा चुनें।' });
       // A recorded final order constrains the scope it was decided under.
       if (row.decisionType === 'role_change_approved' && scope !== 'office_bearer_role_review') return res.status(400).json({ message: 'इस रिकॉर्ड का अंतिम निर्णय पद परिवर्तन का है — दायरा बदला नहीं जा सकता।' });
       if (row.decisionType === 'membership_termination_approved' && scope !== 'membership_review') return res.status(400).json({ message: 'इस रिकॉर्ड का अंतिम निर्णय सदस्यता समाप्ति का है — दायरा बदला नहीं जा सकता।' });

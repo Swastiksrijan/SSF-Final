@@ -225,7 +225,7 @@ export default function MemberActionManager({ token }) {
       <input value={form.currentDesignation} onChange={e=>update("currentDesignation",e.target.value)} placeholder="वर्तमान पद (यदि हो)" className="rounded-xl border p-3"/>
       {lookupMessage && <div className="sm:col-span-2 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">{lookupMessage}</div>}
       {memberMatches.length>1 && <div className="sm:col-span-2 rounded-xl border bg-white p-3"><p className="mb-2 text-sm font-bold">सही सदस्य चुनें</p>{memberMatches.map(m=><button type="button" key={m.memberId} onClick={()=>selectMember(m)} className="mr-2 mb-2 rounded-lg border px-3 py-2 text-left text-sm hover:bg-slate-50">{m.fullName} • {m.memberId} • {m.designation||"पद दर्ज नहीं"}</button>)}</div>}
-      <select value={form.actionScope} onChange={e=>update("actionScope",e.target.value)} className="rounded-xl border p-3"><option value="office_bearer_role_review">केवल पदाधिकारी पद की समीक्षा</option><option value="membership_review">सदस्यता की समीक्षा</option></select>
+      <select value={form.actionScope} onChange={e=>update("actionScope",e.target.value)} className="rounded-xl border p-3">{SCOPES.map(s=><option key={s.value} value={s.value}>{s.label}</option>)}</select>
       <input required value={form.bylawClause} onChange={e=>update("bylawClause",e.target.value)} placeholder="नियमावली का लागू नियम/उप-नियम" className="rounded-xl border p-3 sm:col-span-2"/>
       <textarea required value={form.grounds} onChange={e=>update("grounds",e.target.value)} rows={3} placeholder="कारण — स्पष्ट और निष्पक्ष भाषा में" className="rounded-xl border p-3 sm:col-span-2"/>
       <textarea required value={form.factualSummary} onChange={e=>update("factualSummary",e.target.value)} rows={4} placeholder="तारीखों सहित तथ्य/रिकॉर्ड/दस्तावेजों का सार" className="rounded-xl border p-3 sm:col-span-2"/>
@@ -236,7 +236,7 @@ export default function MemberActionManager({ token }) {
     {message && <p className="break-words border-b bg-emerald-50 p-4 text-sm text-emerald-800">{message}</p>}
     {view==="table" && <RegisterTable rows={rows} status={status} dateText={dateText} onEdit={openEdit} onRemove={remove} busy={busy} />}
     <div className={view==="table" ? "hidden" : "divide-y"}>{rows.length===0?<p className="p-8 text-center text-slate-400">अभी कोई नोटिस रिकॉर्ड नहीं है।</p>:rows.map(row=><article key={row.id} className="p-6">
-      <div className="flex flex-wrap items-start justify-between gap-3"><div><div className="mb-2 inline-flex rounded-md bg-slate-100 px-2 py-1 text-xs font-bold text-slate-700">नोटिस Ref. No.: {row.noticeReference || "जारी होना बाकी"}</div><h3 className="font-bold text-[#12345A]">{row.personName} {row.memberId ? "• "+row.memberId : ""}</h3><p className="text-sm text-slate-500">{row.email} • {row.currentDesignation || (row.actionScope==="membership_review"?"सदस्यता समीक्षा":"पदाधिकारी समीक्षा")}</p></div><span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">{status[row.status]||row.status}</span></div>
+      <div className="flex flex-wrap items-start justify-between gap-3"><div><div className="mb-2 inline-flex rounded-md bg-slate-100 px-2 py-1 text-xs font-bold text-slate-700">नोटिस Ref. No.: {row.noticeReference || "जारी होना बाकी"}</div><h3 className="font-bold text-[#12345A]">{row.personName} {row.memberId ? "• "+row.memberId : ""}</h3><p className="text-sm text-slate-500">{row.email} • {row.currentDesignation || scopeLabel(row.actionScope)}</p></div><span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">{status[row.status]||row.status}</span></div>
       <p className="mt-3 text-sm text-slate-600">नियम: {row.bylawClause} • जवाब की तारीख: {dateText(row.replyDueAt)}</p>
       {row.replyText && <div className="mt-3 rounded-xl bg-emerald-50 p-4 text-sm"><b>प्राप्त जवाब:</b><p className="mt-1 whitespace-pre-wrap">{row.replyText}</p></div>}
       {row.hearingNotes && <p className="mt-2 text-sm text-slate-600">सुनवाई: {dateText(row.hearingAt)} • {row.hearingNotes}</p>}
@@ -312,10 +312,7 @@ export default function MemberActionManager({ token }) {
           <input value={editing.form.phone} onChange={e=>setEditing(p=>({...p,form:{...p.form,phone:e.target.value}}))} placeholder="मोबाइल" className="rounded-xl border p-3"/>
           <input value={editing.form.memberId} onChange={e=>setEditing(p=>({...p,form:{...p.form,memberId:e.target.value}}))} placeholder="Member ID" className="rounded-xl border p-3"/>
           <input value={editing.form.currentDesignation} onChange={e=>setEditing(p=>({...p,form:{...p.form,currentDesignation:e.target.value}}))} placeholder="वर्तमान पद" className="rounded-xl border p-3"/>
-          <select value={editing.form.actionScope} onChange={e=>setEditing(p=>({...p,form:{...p.form,actionScope:e.target.value}}))} className="rounded-xl border p-3">
-            <option value="office_bearer_role_review">केवल पदाधिकारी पद की समीक्षा</option>
-            <option value="membership_review">सदस्यता की समीक्षा</option>
-          </select>
+          <select value={editing.form.actionScope} onChange={e=>setEditing(p=>({...p,form:{...p.form,actionScope:e.target.value}}))} className="rounded-xl border p-3">{SCOPES.map(s=><option key={s.value} value={s.value}>{s.label}</option>)}</select>
           <input required value={editing.form.bylawClause} onChange={e=>setEditing(p=>({...p,form:{...p.form,bylawClause:e.target.value}}))} placeholder="लागू नियम/उप-नियम" className="rounded-xl border p-3 sm:col-span-2"/>
           <textarea required value={editing.form.grounds} onChange={e=>setEditing(p=>({...p,form:{...p.form,grounds:e.target.value}}))} rows={3} placeholder="कारण" className="rounded-xl border p-3 sm:col-span-2"/>
           <textarea required value={editing.form.factualSummary} onChange={e=>setEditing(p=>({...p,form:{...p.form,factualSummary:e.target.value}}))} rows={3} placeholder="तथ्य/दस्तावेज" className="rounded-xl border p-3 sm:col-span-2"/>
@@ -334,6 +331,14 @@ export default function MemberActionManager({ token }) {
 // The in-section register: a plain table of every notice/action record, updated
 // from the same loaded rows, so the whole due-process history is visible and
 // printable at a glance. Each finished stage shows its completion stamp.
+const SCOPES = [
+  { value: "office_bearer_role_review", label: "केवल पदाधिकारी पद की समीक्षा", short: "पदाधिकारी समीक्षा" },
+  { value: "membership_review", label: "सदस्यता की समीक्षा", short: "सदस्यता समीक्षा" },
+  { value: "volunteer_review", label: "स्वयंसेवक (Volunteer) की समीक्षा", short: "स्वयंसेवक समीक्षा" },
+  { value: "staff_review", label: "कर्मचारी / कार्यकर्ता की समीक्षा", short: "कर्मचारी समीक्षा" },
+  { value: "general_notice", label: "सामान्य नोटिस (कारण बताओ)", short: "सामान्य नोटिस" }
+];
+const scopeLabel = value => (SCOPES.find(s => s.value === value) || {}).short || "पदाधिकारी समीक्षा";
 const STATUS_TONE = {
   draft: "bg-slate-100 text-slate-700",
   notice_issued: "bg-amber-50 text-amber-800",
@@ -364,7 +369,7 @@ const DATE_KEYS = ["createdAt", "updatedAt", "replyDueAt", "dispatchAt", "replyR
 // the full text of the notice, reply, minutes and emails — lives behind a
 // per-row "पूरा विवरण" expansion so the table stays readable.
 function registerValue(row, key, status, dateText) {
-  if (key === "scopeLabel") return row.actionScope === "membership_review" ? "सदस्यता समीक्षा" : "पदाधिकारी समीक्षा";
+  if (key === "scopeLabel") return scopeLabel(row.actionScope);
   if (key === "statusLabel") return status[row.status] || row.status;
   if (key === "stageSummary") {
     if (row.decisionAt || row.status === "closed") return "अंतिम निर्णय जारी";

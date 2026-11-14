@@ -10,7 +10,7 @@ process.env.ADMIN_PORTAL_TOKEN = 'test-token';
 
 const { newDb } = require('pg-mem');
 const mem = newDb();
-mem.public.registerEnum('enum_MemberActions_actionScope', ['membership_review', 'office_bearer_role_review']);
+mem.public.registerEnum('enum_MemberActions_actionScope', ['membership_review', 'office_bearer_role_review', 'volunteer_review', 'staff_review', 'general_notice']);
 mem.public.registerEnum('enum_MemberActions_status', ['draft', 'notice_issued', 'reply_received', 'hearing_scheduled', 'committee_review', 'general_body_review', 'closed']);
 mem.public.registerEnum('enum_Members_status', ['pending', 'changes_requested', 'approved', 'rejected']);
 mem.public.registerEnum('enum_Members_paymentStatus', ['not_required', 'pending', 'paid', 'failed']);
@@ -217,6 +217,14 @@ async function main() {
     ok('editing a closed record keeps it closed', editIssued.body.record?.status === 'closed');
     const editScope = await send(`/api/admin/member-actions/${draft1.body.id}`, 'PATCH', { action: 'edit_details', personName: 'Ramesh Pandey', email: 'ramesh@example.com', actionScope: 'office_bearer_role_review', bylawClause: 'Rule 8', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
     ok('a final order locks the action scope', editScope.status === 400, JSON.stringify(editScope.body));
+
+    console.log('\nNotice scopes (member, office-bearer, volunteer, staff, general):');
+    for (const scope of ['volunteer_review', 'staff_review', 'general_notice']) {
+      const r = await send('/api/admin/member-actions', 'POST', { personName: 'Scope ' + scope, email: scope + '@example.com', actionScope: scope, bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
+      ok('a ' + scope + ' notice is accepted', r.status === 201 && r.body.actionScope === scope, JSON.stringify(r.body).slice(0, 120));
+    }
+    const badScope = await send('/api/admin/member-actions', 'POST', { personName: 'Bad Scope', email: 'bad@example.com', actionScope: 'not_a_scope', bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
+    ok('an unknown scope is rejected', badScope.status === 400, JSON.stringify(badScope.body));
 
     console.log('\nDeleting a mistaken / test record:');
     const deletable = await send('/api/admin/member-actions', 'POST', { personName: 'Delete Me', email: 'delete.me@example.com', actionScope: 'membership_review', bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
