@@ -154,20 +154,20 @@ export default function JoinRolesSection() {
   return (
     <section id="roles" style={{ scrollMarginTop: "calc(var(--ssf-header-h, 160px) + 1rem)" }} className="bg-[#F6F9FB] px-5 pb-16 sm:px-6">
       <div className="mx-auto max-w-6xl">
-        <div className="relative z-20 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#12345A] via-[#153f63] to-[#176447] px-5 py-10 text-white shadow-2xl ring-1 ring-white/10 sm:px-8 md:px-12 md:py-14">
-          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#F7A814]/20 blur-2xl" />
-          <div className="pointer-events-none absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
+        <div className="relative z-20 overflow-hidden rounded-[2rem] px-5 py-10 text-white shadow-2xl sm:px-8 md:px-12 md:py-14" style={{ background: "linear-gradient(135deg, #12345A 0%, #153f63 50%, #176447 100%)", backgroundColor: "#12345A" }}>
+          <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full blur-2xl" style={{ background: "rgba(247,168,20,0.20)" }} />
+          <div className="pointer-events-none absolute -bottom-16 -left-10 h-48 w-48 rounded-full blur-2xl" style={{ background: "rgba(255,255,255,0.10)" }} />
           <div className="relative">
             <p className="text-center text-[11px] font-black uppercase tracking-[0.28em] text-[#F7A814]">{t.kicker} • {lang === "hi" ? "Join & Contribute" : "जुड़ाव एवं योगदान"}</p>
             <h2 className="mt-4 text-center font-serif text-3xl font-black leading-tight md:text-5xl">{t.title}</h2>
-            <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-7 text-white/85 md:text-base">{t.intro}</p>
+            <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-7 text-white md:text-base" style={{ color: "rgba(255,255,255,0.88)" }}>{t.intro}</p>
 
             <ol className="mx-auto mt-9 flex flex-wrap items-stretch justify-center gap-x-2 gap-y-3">
               {ROADMAP.map((step, i) => (
                 <li key={i} className="flex items-center gap-2">
-                  <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2.5 text-center transition hover:border-white/40 hover:bg-white/20">
-                    <p className="text-sm font-black text-white">{lang === "hi" ? step.hi : step.en}</p>
-                    <p className="text-[11px] font-semibold text-white/70">{lang === "hi" ? step.en : step.hi}</p>
+                  <div className="rounded-2xl border border-[#E3EAF0] bg-white px-4 py-2.5 text-center shadow-sm transition hover:-translate-y-0.5 hover:shadow-md">
+                    <p className="text-sm font-black text-[#12345A]">{lang === "hi" ? step.hi : step.en}</p>
+                    <p className="text-[11px] font-semibold text-zinc-500">{lang === "hi" ? step.en : step.hi}</p>
                   </div>
                   {i < ROADMAP.length - 1 && <FaArrowRight className="shrink-0 text-[#F7A814]" aria-hidden="true" />}
                 </li>
