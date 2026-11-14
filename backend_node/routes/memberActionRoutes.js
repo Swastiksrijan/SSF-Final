@@ -46,7 +46,7 @@ const stageEmailHtml = (row, stage, bodyLines) =>
   '<p style="margin-top:24px;color:#64748b;font-size:12px">यह सूचना आपके अभिलेख एवं जानकारी हेतु भेजी जा रही है। Swastik Srijan Foundation Samiti</p></div>';
 
 async function recordStageEmail(row, stage, subject, bodyLines) {
-  const entry = { stage, label: STAGE[stage].label, to: row.email, subject, at: new Date().toISOString(), status: 'pending' };
+  const entry = { type: 'email', stage, label: STAGE[stage].label, to: row.email, subject, at: new Date().toISOString(), status: 'pending' };
   let warning = null;
   try {
     if (!emailConfigured()) throw new Error('ईमेल सेवा कॉन्फ़िगर नहीं है।');
@@ -274,6 +274,37 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
         'यह प्रक्रिया अब पूर्ण मानी जाती है।'
       ]);
       return res.json({ status: 'success', record: publicRecord(row), emailWarning });
+    } else if (b.action === 'edit_details') {
+      const personName = String(b.personName || '').trim();
+      const email = String(b.email || '').trim().toLowerCase();
+      const bylawClause = String(b.bylawClause || '').trim();
+      const grounds = String(b.grounds || '').trim();
+      const factualSummary = String(b.factualSummary || '').trim();
+      if (!personName || !email || !bylawClause || !grounds || !factualSummary) return res.status(400).json({ message: 'नाम, ईमेल, लागू नियम, कारण और तथ्य आवश्यक हैं।' });
+      const scope = String(b.actionScope || row.actionScope).trim();
+      if (!['membership_review', 'office_bearer_role_review'].includes(scope)) return res.status(400).json({ message: 'कार्रवाई का सही दायरा चुनें।' });
+      // A recorded final order constrains the scope it was decided under.
+      if (row.decisionType === 'role_change_approved' && scope !== 'office_bearer_role_review') return res.status(400).json({ message: 'इस रिकॉर्ड का अंतिम निर्णय पद परिवर्तन का है — दायरा बदला नहीं जा सकता।' });
+      if (row.decisionType === 'membership_termination_approved' && scope !== 'membership_review') return res.status(400).json({ message: 'इस रिकॉर्ड का अंतिम निर्णय सदस्यता समाप्ति का है — दायरा बदला नहीं जा सकता।' });
+      const due = b.replyDueAt ? new Date(b.replyDueAt) : new Date(row.replyDueAt);
+      if (!Number.isFinite(due.getTime())) return res.status(400).json({ message: 'जवाब की अंतिम तारीख सही नहीं है।' });
+      const next = {
+        personName, email,
+        phone: String(b.phone || '').trim() || null,
+        memberId: String(b.memberId || '').trim() || null,
+        currentDesignation: String(b.currentDesignation || '').trim() || null,
+        actionScope: scope, bylawClause, grounds, factualSummary, replyDueAt: due,
+        updatedBy: 'Admin Portal'
+      };
+      // The issued copy of the notice is an institutional record: its stored text
+      // is only editable while the record is still a draft.
+      if (row.status === 'draft' && b.noticeText !== undefined) next.noticeText = String(b.noticeText || '').trim() || null;
+      const changed = Object.keys(next).filter(k => k !== 'updatedBy' && String(row[k] ?? '') !== String(next[k] ?? ''));
+      await row.update(next);
+      const entry = { type: 'edit', stage: 'edit', label: 'विवरण संशोधित', at: new Date().toISOString(), status: 'recorded', fields: changed };
+      const log = Array.isArray(row.emailLog) ? [...row.emailLog, entry] : [entry];
+      await row.update({ emailLog: log });
+      return res.json({ status: 'success', record: publicRecord(row) });
     } else if (b.action !== 'save_draft') return res.status(400).json({ message: 'अमान्य कार्रवाई।' });
     return res.json({ status: 'success', record: publicRecord(row) });
   } catch (e) { console.error('Member action update:', e); res.status(500).json({ message: 'नोटिस प्रक्रिया अपडेट नहीं हो सकी।' }); }

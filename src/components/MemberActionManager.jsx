@@ -64,7 +64,7 @@ const exportRegister = async rows => {
   hr.height = 22;
   rows.forEach(row => {
     const out = {};
-    REGISTER_COLUMNS.forEach(c => { const withDerived = { ...row, emailLogSummary: Array.isArray(row.emailLog) ? row.emailLog.map(e => `${e.label || e.stage} (${e.status}${e.at ? " • " + new Date(e.at).toLocaleString("en-IN") : ""})`).join(" | ") : "" }; const v = withDerived[c[1]]; out[c[1]] = v == null ? "" : (typeof v === "object" ? JSON.stringify(v) : v); });
+    REGISTER_COLUMNS.forEach(c => { const withDerived = { ...row, emailLogSummary: Array.isArray(row.emailLog) ? row.emailLog.map(e => e.type === "edit" ? `विवरण संशोधित (${new Date(e.at).toLocaleString("en-IN")})` : `${e.label || e.stage} (${e.status}${e.at ? " • " + new Date(e.at).toLocaleString("en-IN") : ""})`).join(" | ") : "" }; const v = withDerived[c[1]]; out[c[1]] = v == null ? "" : (typeof v === "object" ? JSON.stringify(v) : v); });
     ws.addRow(out);
   });
   ws.autoFilter = { from: "A1", to: { row: 1, column: REGISTER_COLUMNS.length } };
@@ -84,6 +84,7 @@ export default function MemberActionManager({ token }) {
   const [lookupMessage, setLookupMessage] = useState("");
   const [closing, setClosing] = useState(null);
   const [view, setView] = useState("cards");
+  const [editing, setEditing] = useState(null);
 
   const load = async () => { const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { headers: headers(token), cache: "no-store" }); const d = await r.json().catch(() => []); if (!r.ok) throw new Error(d.message || "रजिस्टर लोड नहीं हुआ"); setRows(Array.isArray(d) ? d : []); };
   useEffect(() => { load().catch(e => setMessage(e.message)); }, [token]);
@@ -149,6 +150,7 @@ export default function MemberActionManager({ token }) {
     else if (body.action === "committee_review") setMessage("समिति की कार्यवाही पूर्ण दर्ज हो गई। सदस्य को ईमेल भेज दिया गया है।");
       else if (body.action === "general_body_review") setMessage("सामान्य सभा की कार्यवाही पूर्ण दर्ज हो गई। सदस्य को ईमेल भेज दिया गया है।");
     else if (body.action === "close") setMessage("अंतिम निर्णय दर्ज हो गया — प्रक्रिया पूर्ण। सदस्य को ईमेल भेज दिया गया है।");
+    else if (body.action === "edit_details") setMessage("रिकॉर्ड में संशोधन सुरक्षित हो गया।");
       else setMessage("रिकॉर्ड अपडेट हो गया।");
       await load();
       return true;
@@ -165,6 +167,17 @@ export default function MemberActionManager({ token }) {
   // pop-ups; when a step was skipped (e.g. a role-change decision chosen before
   // the General Body stage) it only flashed an alert, the record never changed,
   // and the "अगला चरण" hint kept reappearing with no visible reason.
+  // Editing corrects a mistaken record (a typo, a wrong person) without
+  // disturbing the workflow. The issued notice text is only editable as a draft.
+  const toLocalInput = value => { if (!value) return ""; const d = new Date(value); const p = n => String(n).padStart(2, "0"); return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())}T${p(d.getHours())}:${p(d.getMinutes())}`; };
+  const openEdit = row => setEditing({ row, form: { personName: row.personName || "", email: row.email || "", phone: row.phone || "", memberId: row.memberId || "", currentDesignation: row.currentDesignation || "", actionScope: row.actionScope || "membership_review", bylawClause: row.bylawClause || "", grounds: row.grounds || "", factualSummary: row.factualSummary || "", replyDueAt: toLocalInput(row.replyDueAt), noticeText: row.noticeText || "" } });
+  const submitEdit = async e => {
+    e.preventDefault();
+    const { row, form } = editing;
+    const payload = { action: "edit_details", ...form, replyDueAt: form.replyDueAt ? new Date(form.replyDueAt).toISOString() : "" };
+    const ok = await act(row, payload);
+    if (ok) setEditing(null);
+  };
   const openClose = row => setClosing({ row, decisionType: "no_action", note: "", ref: "" });
   const submitClose = async e => {
     e.preventDefault();
@@ -209,7 +222,7 @@ export default function MemberActionManager({ token }) {
       <button disabled={busy} className="rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white disabled:opacity-50 sm:col-span-2">{busy?"ईमेल भेजा जा रहा है…":"नोटिस जाँचकर ईमेल भेजें"}</button>
     </form>
     {message && <p className="break-words border-b bg-emerald-50 p-4 text-sm text-emerald-800">{message}</p>}
-    {view==="table" && <RegisterTable rows={rows} status={status} dateText={dateText} />}
+    {view==="table" && <RegisterTable rows={rows} status={status} dateText={dateText} onEdit={openEdit} onRemove={remove} busy={busy} />}
     <div className={view==="table" ? "hidden" : "divide-y"}>{rows.length===0?<p className="p-8 text-center text-slate-400">अभी कोई नोटिस रिकॉर्ड नहीं है।</p>:rows.map(row=><article key={row.id} className="p-6">
       <div className="flex flex-wrap items-start justify-between gap-3"><div><div className="mb-2 inline-flex rounded-md bg-slate-100 px-2 py-1 text-xs font-bold text-slate-700">नोटिस Ref. No.: {row.noticeReference || "जारी होना बाकी"}</div><h3 className="font-bold text-[#12345A]">{row.personName} {row.memberId ? "• "+row.memberId : ""}</h3><p className="text-sm text-slate-500">{row.email} • {row.currentDesignation || (row.actionScope==="membership_review"?"सदस्यता समीक्षा":"पदाधिकारी समीक्षा")}</p></div><span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">{status[row.status]||row.status}</span></div>
       <p className="mt-3 text-sm text-slate-600">नियम: {row.bylawClause} • जवाब की तारीख: {dateText(row.replyDueAt)}</p>
@@ -224,7 +237,7 @@ export default function MemberActionManager({ token }) {
       {row.status==="committee_review" && <div className="mt-4 flex flex-wrap gap-2"><button disabled={busy} onClick={()=>generalBody(row)} className="rounded-lg bg-indigo-700 px-3 py-2 text-xs font-bold text-white">सामान्य सभा में रखें</button><button disabled={busy} onClick={()=>openClose(row)} className="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white">अंतिम निर्णय दर्ज करें</button></div>}
       {row.status==="general_body_review" && <button disabled={busy} onClick={()=>openClose(row)} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-bold text-white">सामान्य सभा के निर्णय के बाद बंद करें</button>}
       {row.dispatchMethod && <p className="mt-3 text-xs text-slate-400">भेजने का माध्यम: {row.dispatchMethod} • {row.dispatchReference||row.emailDeliveryStatus||"—"}</p>}
-      <button type="button" disabled={busy} onClick={()=>remove(row)} className="mt-4 mr-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-bold text-red-700">{row.status==="draft"?"रिकॉर्ड हटाएँ":"रिकॉर्ड हटाएँ (सचेत)"}</button>
+      <button type="button" disabled={busy} onClick={()=>openEdit(row)} className="mt-4 mr-2 rounded-lg border border-[#12345A] px-4 py-2 text-sm font-bold text-[#12345A]">संपादित करें</button><button type="button" disabled={busy} onClick={()=>remove(row)} className="mt-4 mr-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-bold text-red-700">{row.status==="draft"?"रिकॉर्ड हटाएँ":"रिकॉर्ड हटाएँ (सचेत)"}</button>
       {row.status==="closed" && <p className="mt-2 text-xs font-bold text-slate-500">अंतिम निर्णय: {row.decisionType}</p>}{row.hearingCompletedAt && <p className="mt-2 text-xs font-bold text-emerald-700">✓ सुनवाई पूर्ण: {dateText(row.hearingCompletedAt)}</p>}{row.committeeReviewCompletedAt && <p className="mt-2 text-xs font-bold text-emerald-700">✓ समिति कार्यवाही पूर्ण: {dateText(row.committeeReviewCompletedAt)}</p>}{row.generalBodyReviewCompletedAt && <p className="mt-2 text-xs font-bold text-emerald-700">✓ सामान्य सभा कार्यवाही पूर्ण: {dateText(row.generalBodyReviewCompletedAt)}</p>}{row.status==="reply_received" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जवाब पढ़ें → आवश्यकता हो तो सुनवाई तय करें → फिर समिति की बैठक में कार्यवाही दर्ज करें।</p>}{row.status==="hearing_scheduled" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: सुनवाई पूरी होने पर उसका सार दर्ज रखें → समिति कार्यवाही दर्ज करें।</p>}{row.status==="committee_review" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जहाँ नियम/निर्णय के लिए जरूरी हो, सामान्य सभा की कार्यवाही दर्ज करें; अन्यथा सक्षम समिति का वैध अंतिम निर्णय दर्ज करें।</p>}
     </article>)}</div>
     {closing && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" onClick={()=>setClosing(null)}>
@@ -256,6 +269,33 @@ export default function MemberActionManager({ token }) {
         </div>
       </form>
     </div>}
+    {editing && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" onClick={()=>setEditing(null)}>
+      <form onSubmit={submitEdit} onClick={e=>e.stopPropagation()} className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+        <h3 className="text-lg font-black text-[#12345A]">रिकॉर्ड संपादित करें</h3>
+        <p className="mt-1 text-sm text-slate-500">{editing.row.noticeReference || "ड्राफ्ट"} • {status[editing.row.status] || editing.row.status}</p>
+        <p className="mt-2 rounded-xl bg-amber-50 p-3 text-xs text-amber-800">यहाँ केवल विवरण सुधारा जाता है — कार्यवाही की स्थिति, पूर्णता तिथियाँ और भेजे गए ईमेल नहीं बदलते। संशोधन की प्रविष्टि रिकॉर्ड में दर्ज हो जाती है।{editing.row.status !== "draft" && " जारी नोटिस का मूल पाठ केवल ड्राफ्ट में बदला जा सकता है।"}</p>
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          <input required value={editing.form.personName} onChange={e=>setEditing(p=>({...p,form:{...p.form,personName:e.target.value}}))} placeholder="नाम" className="rounded-xl border p-3"/>
+          <input required type="email" value={editing.form.email} onChange={e=>setEditing(p=>({...p,form:{...p.form,email:e.target.value}}))} placeholder="ईमेल" className="rounded-xl border p-3"/>
+          <input value={editing.form.phone} onChange={e=>setEditing(p=>({...p,form:{...p.form,phone:e.target.value}}))} placeholder="मोबाइल" className="rounded-xl border p-3"/>
+          <input value={editing.form.memberId} onChange={e=>setEditing(p=>({...p,form:{...p.form,memberId:e.target.value}}))} placeholder="Member ID" className="rounded-xl border p-3"/>
+          <input value={editing.form.currentDesignation} onChange={e=>setEditing(p=>({...p,form:{...p.form,currentDesignation:e.target.value}}))} placeholder="वर्तमान पद" className="rounded-xl border p-3"/>
+          <select value={editing.form.actionScope} onChange={e=>setEditing(p=>({...p,form:{...p.form,actionScope:e.target.value}}))} className="rounded-xl border p-3">
+            <option value="office_bearer_role_review">केवल पदाधिकारी पद की समीक्षा</option>
+            <option value="membership_review">सदस्यता की समीक्षा</option>
+          </select>
+          <input required value={editing.form.bylawClause} onChange={e=>setEditing(p=>({...p,form:{...p.form,bylawClause:e.target.value}}))} placeholder="लागू नियम/उप-नियम" className="rounded-xl border p-3 sm:col-span-2"/>
+          <textarea required value={editing.form.grounds} onChange={e=>setEditing(p=>({...p,form:{...p.form,grounds:e.target.value}}))} rows={3} placeholder="कारण" className="rounded-xl border p-3 sm:col-span-2"/>
+          <textarea required value={editing.form.factualSummary} onChange={e=>setEditing(p=>({...p,form:{...p.form,factualSummary:e.target.value}}))} rows={3} placeholder="तथ्य/दस्तावेज" className="rounded-xl border p-3 sm:col-span-2"/>
+          <label className="text-sm font-semibold text-slate-600">जवाब की अंतिम तारीख<input type="datetime-local" value={editing.form.replyDueAt} onChange={e=>setEditing(p=>({...p,form:{...p.form,replyDueAt:e.target.value}}))} className="mt-1 w-full rounded-xl border p-3"/></label>
+          {editing.row.status==="draft" && <textarea value={editing.form.noticeText} onChange={e=>setEditing(p=>({...p,form:{...p.form,noticeText:e.target.value}}))} rows={3} placeholder="अतिरिक्त विवरण (वैकल्पिक)" className="rounded-xl border p-3 sm:col-span-2"/>}
+        </div>
+        <div className="mt-5 flex justify-end gap-2">
+          <button type="button" onClick={()=>setEditing(null)} className="rounded-xl border px-4 py-2 text-sm font-bold text-slate-600">रद्द करें</button>
+          <button type="submit" disabled={busy} className="rounded-xl bg-[#12345A] px-5 py-2 text-sm font-bold text-white disabled:opacity-50">{busy?"सुरक्षित हो रहा है…":"संशोधन सुरक्षित करें"}</button>
+        </div>
+      </form>
+    </div>}
   </section>;
 }
 
@@ -280,10 +320,10 @@ const TABLE_COLUMNS = [
   ["समिति संदर्भ", "committeeMeetingReference"], ["समिति कार्यवाही", "committeeDecisionText"], ["समिति पूर्ण तिथि", "committeeReviewCompletedAt"],
   ["सामान्य सभा संदर्भ", "generalBodyMeetingReference"], ["सामान्य सभा कार्यवाही", "generalBodyDecisionText"], ["सामान्य सभा पूर्ण तिथि", "generalBodyReviewCompletedAt"],
   ["अंतिम निर्णय प्रकार", "decisionType"], ["अंतिम निर्णय", "decisionText"], ["निर्णय तिथि", "decisionAt"],
-  ["भेजे गए ईमेल", "emailLogSummary"], ["रिकॉर्ड बनाया", "createdAt"]
+  ["भेजे गए ईमेल", "emailLogSummary"], ["रिकॉर्ड बनाया", "createdAt"], ["कार्रवाई", "actions"]
 ];
 
-function RegisterTable({ rows, status, dateText }) {
+function RegisterTable({ rows, status, dateText, onEdit, onRemove, busy }) {
   if (!rows.length) return <p className="p-8 text-center text-slate-400">अभी कोई नोटिस रिकॉर्ड नहीं है।</p>;
   const cell = (row, key, i) => {
     if (key === "sno") return rows.length - i;
@@ -307,7 +347,12 @@ function RegisterTable({ rows, status, dateText }) {
               <tr key={row.id} className={i % 2 ? "bg-slate-50" : "bg-white"}>
                 {TABLE_COLUMNS.map(c => (
                   <td key={c[1]} className="max-w-[22rem] whitespace-nowrap px-3 py-2 align-top text-slate-700" title={c[1] === "statusLabel" ? "" : cell(row, c[1], i)}>
-                    {c[1] === "statusLabel"
+                    {c[1] === "actions" ? (
+                      <div className="flex gap-2">
+                        <button type="button" disabled={busy} onClick={()=>onEdit(row)} className="rounded-md border border-[#12345A] px-2 py-1 font-bold text-[#12345A] disabled:opacity-40">संपादित</button>
+                        <button type="button" disabled={busy} onClick={()=>onRemove(row)} className="rounded-md border border-red-300 px-2 py-1 font-bold text-red-700 disabled:opacity-40">हटाएँ</button>
+                      </div>
+                    ) : c[1] === "statusLabel"
                       ? <span className={`inline-block rounded-full px-2 py-0.5 font-bold ${STATUS_TONE[row.status] || "bg-slate-100 text-slate-700"}`}>{cell(row, c[1], i)}</span>
                       : <span className="block max-w-[22rem] overflow-hidden text-ellipsis">{cell(row, c[1], i)}</span>}
                   </td>
