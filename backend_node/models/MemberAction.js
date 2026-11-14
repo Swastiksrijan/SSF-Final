@@ -9,7 +9,7 @@ module.exports = sequelize.define('MemberAction', {
   phone: { type: DataTypes.STRING, allowNull: true },
   memberId: { type: DataTypes.STRING, allowNull: true },
   currentDesignation: { type: DataTypes.STRING, allowNull: true },
-  actionScope: { type: DataTypes.ENUM('membership_review', 'office_bearer_role_review'), allowNull: false },
+  actionScope: { type: DataTypes.ENUM('membership_review', 'office_bearer_role_review', 'volunteer_review', 'staff_review', 'general_notice'), allowNull: false },
   bylawClause: { type: DataTypes.STRING, allowNull: false },
   grounds: { type: DataTypes.TEXT, allowNull: false },
   factualSummary: { type: DataTypes.TEXT, allowNull: false },

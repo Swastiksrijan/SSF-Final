@@ -106,7 +106,33 @@ const COLUMNS = [
   { table: 'ImsCommunications', column: 'attachments', type: 'JSONB DEFAULT \'[]\'::jsonb' },
 ];
 
+// Values added to an existing Postgres ENUM. `sequelize.sync()` will not extend
+// an enum type that already exists, so a new option would be rejected on any
+// database older than the model. `ADD VALUE IF NOT EXISTS` is additive and safe
+// to run on every boot.
+const ENUM_VALUES = [
+  { type: 'enum_MemberActions_actionScope', values: ['volunteer_review', 'staff_review', 'general_notice'] },
+];
+
+async function ensureEnumValues() {
+  const added = [];
+  for (const { type, values } of ENUM_VALUES) {
+    for (const value of values) {
+      try {
+        await sequelize.query(`ALTER TYPE "${type}" ADD VALUE IF NOT EXISTS '${value}'`);
+        added.push(`${type}.${value}`);
+      } catch (error) {
+        // The type may not exist yet on a fresh install (sync creates it with
+        // every value), or pg-mem may not support ALTER TYPE. Never fatal.
+        console.warn(`⚠️ ensureEnumValues skipped ${type}.${value}: ${error.message}`);
+      }
+    }
+  }
+  return added;
+}
+
 async function ensureColumns() {
+  await ensureEnumValues();
   const added = [];
   for (const { table, column, type } of COLUMNS) {
     try {
@@ -121,4 +147,4 @@ async function ensureColumns() {
   return added;
 }
 
-module.exports = { ensureColumns, COLUMNS };
+module.exports = { ensureColumns, COLUMNS, ENUM_VALUES };
