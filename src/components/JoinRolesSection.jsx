@@ -162,14 +162,14 @@ export default function JoinRolesSection() {
             <h2 className="mt-4 text-center font-serif text-3xl font-black leading-tight md:text-5xl">{t.title}</h2>
             <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-7 text-white/85 md:text-base">{t.intro}</p>
 
-            <ol className="mx-auto mt-9 grid max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            <ol className="mx-auto mt-9 flex flex-wrap items-stretch justify-center gap-x-2 gap-y-3">
               {ROADMAP.map((step, i) => (
-                <li key={i} className="flex items-start gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
-                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F7A814] text-sm font-black text-[#12345A]">{i + 1}</span>
-                  <div>
+                <li key={i} className="flex items-center gap-2">
+                  <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2.5 text-center transition hover:border-white/40 hover:bg-white/20">
                     <p className="text-sm font-black text-white">{lang === "hi" ? step.hi : step.en}</p>
                     <p className="text-[11px] font-semibold text-white/70">{lang === "hi" ? step.en : step.hi}</p>
                   </div>
+                  {i < ROADMAP.length - 1 && <FaArrowRight className="shrink-0 text-[#F7A814]" aria-hidden="true" />}
                 </li>
               ))}
             </ol>
