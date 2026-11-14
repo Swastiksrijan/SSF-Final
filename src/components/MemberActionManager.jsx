@@ -109,9 +109,29 @@ export default function MemberActionManager({ token }) {
   };
   const selectMember = m => { setForm(p => ({ ...p, memberId:m.memberId, personName:m.fullName||p.personName, email:m.email||p.email, phone:m.phone||p.phone, currentDesignation:m.designation||p.currentDesignation })); setMemberMatches([]); setLookupMessage("सदस्य चुना गया: "+m.memberId); };
   const createDraft = async e => {
-    e.preventDefault(); setBusy(true); setMessage("");
-    try { const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { method:"POST", headers:{ ...headers(token), "Content-Type":"application/json" }, body:JSON.stringify({ ...form, replyDueAt:new Date(form.replyDueAt).toISOString() }) }); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.message || "ड्राफ्ट सेव नहीं हुआ"); setMessage("नोटिस ड्राफ्ट सुरक्षित हो गया। जारी करने से पहले सभी तथ्य और नियम जाँचें।"); setForm(p=>({ ...p, personName:"", email:"", phone:"", memberId:"", currentDesignation:"", grounds:"", factualSummary:"", replyDueAt:"", noticeText:"" })); await load(); }
-    catch(e){ setMessage(e.message); } finally { setBusy(false); }
+    e.preventDefault();
+    if (!window.confirm("कृपया सुनिश्चित करें कि नाम, ईमेल, लागू नियम, कारण, तथ्य और जवाब की अंतिम तारीख सही हैं। पुष्टि करने पर नोटिस सीधे दिए गए ईमेल पर भेजा जाएगा। क्या भेजें?")) return;
+    setBusy(true); setMessage("");
+    try {
+      const payload = { ...form, replyDueAt:new Date(form.replyDueAt).toISOString() };
+      const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { method:"POST", headers:{ ...headers(token), "Content-Type":"application/json" }, body:JSON.stringify(payload) });
+      const draft = await r.json().catch(()=>({}));
+      if (!r.ok) throw new Error(draft.message || "नोटिस रिकॉर्ड नहीं बन सका।");
+      const send = await fetch(`${ENDPOINTS.ADMIN_MEMBER_ACTIONS}/${draft.id}`, {
+        method:"PATCH",
+        headers:{ ...headers(token), "Content-Type":"application/json" },
+        body:JSON.stringify({ action:"issue_notice", dispatchMethod:"email", dispatchReference:"", logoUrl:new URL(logoImg, window.location.origin).href })
+      });
+      const result = await send.json().catch(()=>({}));
+      if (!send.ok) {
+        await load();
+        throw new Error(result.message || "नोटिस ईमेल नहीं भेजा जा सका। रिकॉर्ड ड्राफ्ट में सुरक्षित है; सुधार के बाद दोबारा जारी करें।");
+      }
+      setMessage("नोटिस सफलतापूर्वक ईमेल से जारी कर दिया गया। जवाब लिंक: " + (result.responseUrl || "रजिस्टर में उपलब्ध"));
+      setForm(p=>({ ...p, personName:"", email:"", phone:"", memberId:"", currentDesignation:"", grounds:"", factualSummary:"", replyDueAt:"", noticeText:"" }));
+      await load();
+    } catch(e) { setMessage(e.message); }
+    finally { setBusy(false); }
   };
   const act = async (row, body) => {
     setBusy(true); setMessage("");
@@ -149,7 +169,7 @@ export default function MemberActionManager({ token }) {
   return <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
     <div className="flex flex-wrap items-center justify-between gap-3 border-b p-6 sm:p-8"><div><h2 className="text-2xl font-black text-[#12345A]">सदस्य / पदाधिकारी नोटिस एवं कार्रवाई रजिस्टर</h2><p className="mt-2 text-sm text-slate-600">आसान प्रक्रिया: 1. ड्राफ्ट  2. नोटिस  3. जवाब  4. सुनवाई  5. समिति  6. सामान्य सभा (जहाँ जरूरी)  7. अंतिम आदेश। जवाब आने से केस अपने-आप बंद नहीं होता।</p><p className="mt-2 text-xs text-slate-500">Excel डाउनलोड उस समय का स्नैपशॉट है (live नहीं)। नई कार्रवाई के बाद दोबारा डाउनलोड करें। WhatsApp साझा करना मैनुअल है — स्वतः WhatsApp Delivery के लिए Meta Cloud API सेटअप आवश्यक है।</p></div><button type="button" onClick={()=>exportRegister(rows)} disabled={!rows.length} className="rounded-xl border border-[#12345A] px-4 py-2 text-sm font-bold text-[#12345A] disabled:opacity-40">Excel रजिस्टर डाउनलोड करें (.xlsx)</button></div>
     <form onSubmit={createDraft} className="grid gap-4 border-b bg-slate-50 p-6 sm:grid-cols-2 sm:p-8">
-      <h3 className="sm:col-span-2 text-lg font-bold text-[#12345A]">नया कारण बताओ नोटिस — ड्राफ्ट</h3>
+      <h3 className="sm:col-span-2 text-lg font-bold text-[#12345A]">नया कारण बताओ नोटिस — ईमेल से जारी करें</h3>
       <input required value={form.personName} onChange={e=>update("personName",e.target.value)} onBlur={lookupMember} placeholder="सदस्य / पदाधिकारी का पूरा नाम" className="rounded-xl border p-3"/>
       <input required type="email" value={form.email} onChange={e=>update("email",e.target.value)} onBlur={lookupMember} placeholder="आधिकारिक ईमेल" className="rounded-xl border p-3"/>
       <input value={form.phone} onChange={e=>update("phone",e.target.value)} onBlur={lookupMember} placeholder="मोबाइल" className="rounded-xl border p-3"/>
@@ -163,7 +183,7 @@ export default function MemberActionManager({ token }) {
       <textarea required value={form.factualSummary} onChange={e=>update("factualSummary",e.target.value)} rows={4} placeholder="तारीखों सहित तथ्य/रिकॉर्ड/दस्तावेजों का सार" className="rounded-xl border p-3 sm:col-span-2"/>
       <label className="text-sm font-semibold text-slate-600">जवाब की अंतिम तारीख<input required type="datetime-local" value={form.replyDueAt} onChange={e=>update("replyDueAt",e.target.value)} className="mt-1 w-full rounded-xl border p-3"/></label>
       <textarea value={form.noticeText} onChange={e=>update("noticeText",e.target.value)} rows={4} placeholder="वैकल्पिक: अतिरिक्त विवरण लिखें। नियम, कारण, तथ्य, जवाब की तारीख और जवाब लिंक सिस्टम नोटिस में जोड़ेगा।" className="rounded-xl border p-3"/>
-      <button disabled={busy} className="rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white disabled:opacity-50 sm:col-span-2">{busy?"सेव हो रहा है…":"नोटिस ड्राफ्ट सुरक्षित करें"}</button>
+      <button disabled={busy} className="rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white disabled:opacity-50 sm:col-span-2">{busy?"ईमेल भेजा जा रहा है…":"नोटिस जाँचकर ईमेल भेजें"}</button>
     </form>
     {message && <p className="break-words border-b bg-emerald-50 p-4 text-sm text-emerald-800">{message}</p>}
     <div className="divide-y">{rows.length===0?<p className="p-8 text-center text-slate-400">अभी कोई नोटिस रिकॉर्ड नहीं है।</p>:rows.map(row=><article key={row.id} className="p-6">
