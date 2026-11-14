@@ -115,7 +115,7 @@ async function main() {
     const reIssue = await send(`/api/admin/member-actions/${draft1.body.id}`, 'PATCH', { action: 'issue_notice', dispatchMethod: 'hand_delivery', dispatchReference: 'again' }, auth);
     ok('an already-issued notice cannot be re-issued', reIssue.status === 409, JSON.stringify(reIssue.body));
 
-    console.log('\nEmail dispatch (and a mail outage must not lose the notice):');
+    console.log('\nEmail dispatch (a mail outage must leave the draft retryable):');
     const emailDraft = await send('/api/admin/member-actions', 'POST', { personName: 'Email Test', email: 'email.test@example.com', actionScope: 'membership_review', bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
     const emailSent = await send(`/api/admin/member-actions/${emailDraft.body.id}`, 'PATCH', { action: 'issue_notice', dispatchMethod: 'email' }, auth);
     ok('an email notice is issued', emailSent.status === 200, JSON.stringify(emailSent.body));
@@ -128,12 +128,14 @@ async function main() {
     mailShouldFail = true;
     const failIssue = await send(`/api/admin/member-actions/${failDraft.body.id}`, 'PATCH', { action: 'issue_notice', dispatchMethod: 'email' }, auth);
     mailShouldFail = false;
-    ok('a mail outage still returns success (notice is not lost)', failIssue.status === 200, JSON.stringify(failIssue.body));
-    ok('the outage is surfaced as a warning, not an error', typeof failIssue.body.emailWarning === 'string' && failIssue.body.emailWarning.length > 0, JSON.stringify(failIssue.body));
-    ok('the record is still marked notice_issued', failIssue.body.record?.status === 'notice_issued', failIssue.body.record?.status);
-    ok('the delivery status records the failure', failIssue.body.record?.emailDeliveryStatus === 'email_failed', failIssue.body.record?.emailDeliveryStatus);
-    ok('the reference number survives the outage', /^SSF\/NOTICE\/\d{4}-\d{2}\/\d{4}$/.test(failIssue.body.record?.noticeReference || ''), failIssue.body.record?.noticeReference);
-    ok('the member response link survives the outage', String(failIssue.body.responseUrl).includes('/Members?notice='), failIssue.body.responseUrl);
+    ok('a mail outage returns 502 and does not issue the notice', failIssue.status === 502, JSON.stringify(failIssue.body));
+    ok('the failure explains that email delivery must be fixed before issuing', String(failIssue.body.message || '').includes('नोटिस जारी नहीं हुआ'), JSON.stringify(failIssue.body));
+    const afterMailFailure = await json('/api/admin/member-actions', auth);
+    const failedDraft = afterMailFailure.body.find((r) => r.id === failDraft.body.id);
+    ok('the record remains a retryable draft', failedDraft?.status === 'draft', JSON.stringify(failedDraft));
+    ok('the delivery status records the failure', failedDraft?.emailDeliveryStatus === 'email_failed', failedDraft?.emailDeliveryStatus);
+    ok('the reference number survives the outage', /^SSF\\/NOTICE\\/\\d{4}-\\d{2}\\/\\d{4}$/.test(failedDraft?.noticeReference || ''), failedDraft?.noticeReference);
+    ok('a response link is not activated when email delivery fails', !failedDraft?.responseUrl && !failedDraft?.responseTokenHash, JSON.stringify(failedDraft));
 
     console.log('\nMember reply (public token):');
     const token = issued.body.responseUrl.split('notice=')[1];
