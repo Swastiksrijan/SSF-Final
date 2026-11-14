@@ -144,7 +144,7 @@ const Header = () => {
       </div>
     </div>
 
-    {menuOpen && <div className={`xl:hidden fixed inset-0 top-[148px] bg-white z-40 overflow-y-auto pb-20`}><nav className="p-5 sm:p-6">
+    {menuOpen && <div className={`xl:hidden absolute inset-x-0 top-full max-h-[calc(100dvh-100%)] bg-white z-40 overflow-y-auto pb-20`}><nav className="p-5 sm:p-6">
       <div className="mb-5 rounded-2xl bg-[#12345A] text-white p-4">
         <p className="text-[10px] uppercase tracking-[0.16em] text-[#F7A814] font-black mb-3">Official Contact</p>
         <div className="space-y-2.5 text-sm"><a href="https://wa.me/919718346691" target="_blank" rel="noreferrer" className="flex items-center gap-3"><FaPhoneAlt className="text-[#F7A814]" /> +91 97183 46691</a><a href="mailto:info@swastiksrijan.in" className="flex items-center gap-3"><FaEnvelope className="text-[#F7A814]" /> info@swastiksrijan.in</a><div className="flex items-center gap-3 text-[#EAF0F6]"><FaMapMarkerAlt className="text-[#F7A814]" /> Rewa, Madhya Pradesh, India</div></div>

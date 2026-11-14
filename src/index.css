@@ -622,7 +622,12 @@ a { text-underline-offset: .18em; }
 .ssf-top-action-member:hover { background:#fff; }
 .ssf-top-action-donate { color:#fff; background:#176447; border-color:rgba(247,168,20,.65); }
 .ssf-top-action-donate:hover { background:#0E5744; }
-@media (max-width:639px) { .ssf-top-action { min-height:29px; padding:.42rem .62rem; font-size:9px; } }
+.ssf-top-action-lang { color:#fff; background:transparent; border-color:rgba(255,255,255,.3); }
+.ssf-top-action-lang:hover { color:#F7A814; border-color:#F7A814; }
+/* The desktop socials row already carries a language toggle; hide the compact pill there.
+   Declared here because `.ssf-top-action` display overrides Tailwind's `xl:hidden`. */
+@media (min-width:1280px) { .ssf-top-action-lang { display:none; } }
+@media (max-width:639px) { .ssf-top-action { min-height:26px; padding:.34rem .5rem; font-size:9px; gap:.28rem; } }
 @media (min-width:640px) and (max-width:1023px) { .ssf-top-action { padding:.4rem .8rem; font-size:10px; } }
 
 /* ---- 3. MAIN WEBSITE FOOTER --------------------------------------------- */

@@ -41,22 +41,20 @@ export default function TopContactBar({ lang, onToggleLang, onJoin }) {
             <FaGlobe className="text-[#F7A814]" />
             <span>swastiksrijan.in</span>
           </a>
-          <span className="hidden text-white/25 lg:inline">|</span>
-          <span className="hidden items-center gap-1.5 lg:inline-flex">
+          <span className="hidden text-white/25 xl:inline">|</span>
+          <span className="hidden items-center gap-1.5 xl:inline-flex">
             <FaMapMarkerAlt className="text-[#F7A814]" />
             <span>{CONTACT_INFO.address.registered}</span>
           </span>
         </div>
 
-        <div className="order-3 flex w-full items-center justify-center gap-1.5 whitespace-nowrap lg:order-none lg:w-auto lg:gap-2">
+        <div className="order-3 flex w-full flex-wrap items-center justify-center gap-1.5 whitespace-nowrap lg:order-none lg:w-auto lg:flex-nowrap lg:gap-2">
           <button type="button" onClick={onJoin} className="ssf-top-action ssf-top-action-join">Join SSF</button>
           <a href="/Members?apply=1" className="ssf-top-action ssf-top-action-member">सदस्यता आवेदन</a>
           <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" className="ssf-top-action ssf-top-action-donate"><FaHeart /> Donate Now</a>
+          <button type="button" onClick={onToggleLang} aria-label="Switch language" className="ssf-top-action ssf-top-action-lang xl:hidden">{lang === "en" ? "हिन्दी" : "English"}</button>
         </div>
-        <div className="ml-auto flex items-center gap-2 whitespace-nowrap lg:hidden">
-          <button type="button" onClick={onToggleLang} aria-label="Switch language" className="rounded-full border border-white/25 px-2 py-1 text-[9px] font-bold">{lang === "en" ? "हिन्दी" : "English"}</button>
-        </div>
-        <div className="ml-auto hidden items-center gap-2 whitespace-nowrap pl-2 sm:gap-3 2xl:flex">
+        <div className="ml-auto hidden items-center gap-2 whitespace-nowrap pl-2 sm:gap-3 xl:flex">
           <div className="flex items-center gap-1 sm:gap-1.5">
             {SOCIALS.map(({ icon: Icon, href, label }) => (
               <a
