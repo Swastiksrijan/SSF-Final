@@ -17,8 +17,8 @@ const SOCIALS = [
 
 /**
  * Slim gradient strip that sits above the main navigation header.
- * Real contact details and social links only — nothing invented.
- * The row scrolls horizontally on small screens so nothing is clipped.
+ * Verified contact details and primary actions stay visible.
+ * Small screens wrap into compact rows instead of horizontal scrolling.
  */
 export default function TopContactBar({ lang, onToggleLang, onJoin }) {
   const tel = CONTACT_INFO.phones.primary.replace(/\s/g, "");
