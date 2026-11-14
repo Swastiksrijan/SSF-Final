@@ -112,6 +112,7 @@ const COLUMNS = [
 // to run on every boot.
 const ENUM_VALUES = [
   { type: 'enum_MemberActions_actionScope', values: ['volunteer_review', 'staff_review', 'general_notice'] },
+  { type: 'enum_Interests_interestType', values: ['role'] },
 ];
 
 async function ensureEnumValues() {

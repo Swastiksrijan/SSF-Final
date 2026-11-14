@@ -16,7 +16,7 @@ mem.public.registerEnum('enum_Members_paymentStatus', ['not_required', 'pending'
 mem.public.registerEnum('enum_Volunteers_status', ['pending', 'changes_requested', 'approved', 'rejected']);
 mem.public.registerEnum('enum_Donors_paymentStatus', ['pending', 'paid', 'failed', 'offline']);
 mem.public.registerEnum('enum_Donors_status', ['new', 'contacted', 'completed']);
-mem.public.registerEnum('enum_Interests_interestType', ['movement', 'partner', 'volunteer', 'member']);
+mem.public.registerEnum('enum_Interests_interestType', ['movement', 'partner', 'volunteer', 'member', 'role']);
 mem.public.registerEnum('enum_Interests_status', ['new', 'contacted', 'approved', 'rejected', 'closed']);
 mem.public.registerEnum('enum_ContactMessages_status', ['new', 'contacted', 'closed']);
 mem.public.registerEnum('enum_InternshipApplications_status', ['pending', 'reviewed', 'selected', 'completed', 'rejected']);

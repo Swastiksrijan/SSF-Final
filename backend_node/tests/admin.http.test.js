@@ -15,7 +15,7 @@ mem.public.registerEnum('enum_Members_paymentStatus', ['not_required', 'pending'
 mem.public.registerEnum('enum_Volunteers_status', ['pending', 'changes_requested', 'approved', 'rejected']);
 mem.public.registerEnum('enum_Donors_paymentStatus', ['pending', 'paid', 'failed', 'offline']);
 mem.public.registerEnum('enum_Donors_status', ['new', 'contacted', 'completed']);
-mem.public.registerEnum('enum_Interests_interestType', ['movement', 'partner', 'volunteer', 'member']);
+mem.public.registerEnum('enum_Interests_interestType', ['movement', 'partner', 'volunteer', 'member', 'role']);
 mem.public.registerEnum('enum_Interests_status', ['new', 'contacted', 'approved', 'rejected', 'closed']);
 mem.public.registerEnum('enum_ContactMessages_status', ['new', 'contacted', 'closed']);
 mem.public.registerEnum('enum_InternshipApplications_status', ['pending', 'reviewed', 'selected', 'completed', 'rejected']);
@@ -194,6 +194,16 @@ async function main() {
     const interest = await Interest.create({ interestType: 'partner', fullName: 'Partner Person', email: 'partner@example.com', phone: '9876500033', message: 'We would like to partner with SSF.', status: 'new' });
     const interestEdit = await send(`/api/admin/interests/${interest.id}`, 'PATCH', { category: 'CSR Partner', phone: '9876500044' }, auth);
     ok('interest edit works', interestEdit.status === 200 && interestEdit.body.data?.category === 'CSR Partner', JSON.stringify(interestEdit.body).slice(0, 160));
+
+    console.log('\nRole-based join requests (a share link can carry any role)');
+    const roleReq = await send('/api/interest', 'POST', { type: 'role', role: 'district-in-charge', category: 'जिला प्रभारी', fullName: 'Role Person', email: 'role@example.com', phone: '9876500055', message: 'I would like to serve as a District In-charge.' });
+    ok('a role join request is accepted', roleReq.status === 201 && roleReq.body.data?.type === 'role', JSON.stringify(roleReq.body).slice(0, 160));
+    const storedRole = await Interest.findOne({ where: { email: 'role@example.com' } });
+    ok('the requested role is stored as the category', storedRole?.category === 'जिला प्रभारी' && storedRole?.interestType === 'role', String(storedRole?.category));
+    const roleShort = await send('/api/interest', 'POST', { type: 'role', category: 'स्वयंसेवक', fullName: 'Short Person', email: 'short@example.com', phone: '9876500066', message: 'too short' });
+    ok('a role request with a too-short message is rejected', roleShort.status === 400, JSON.stringify(roleShort.body).slice(0, 160));
+    const badType = await send('/api/interest', 'POST', { type: 'not_a_type', fullName: 'Nope Person', email: 'nope@example.com', phone: '9876500077', message: 'Not a valid type at all.' });
+    ok('an unknown interest type is still rejected', badType.status === 400, JSON.stringify(badType.body).slice(0, 160));
 
     console.log('\nWebsite signups must be visible to the admin (regression)');
     const allRows = await json('/api/admin/members?includeAccounts=true', auth);

@@ -4,6 +4,7 @@ import { FaCrown, FaUserShield, FaUserTie, FaAward, FaUsers, FaHandHoldingHeart,
 import CertificateGenerator from "../components/CertificateGenerator";
 import MemberForm from "../components/MemberForm";
 import MemberActionResponse from "../components/MemberActionResponse";
+import JoinRolesSection from "../components/JoinRolesSection";
 
 const Members = () => {
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -84,6 +85,8 @@ const Members = () => {
           </div>
         </div>
       </section>
+
+      <JoinRolesSection />
 
       <section className="bg-white px-6 py-10">
         <div className="mx-auto flex max-w-6xl flex-col items-start justify-between gap-5 rounded-3xl border border-[#EAF0F6] bg-slate-50 p-7 md:flex-row md:items-center">
