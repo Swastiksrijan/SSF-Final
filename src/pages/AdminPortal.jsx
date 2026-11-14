@@ -60,7 +60,7 @@ export default function AdminPortal() {
         e.preventDefault();
         setLoginError("");
         try {
-            const response = await fetch(ENDPOINTS.ADMIN_LOGIN, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(loginForm) });
+            const response = await fetch(ENDPOINTS.ADMIN_LOGIN, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ username: loginForm.username.trim(), password: loginForm.password }) });
             const result = await response.json();
             if (!response.ok) throw new Error(result.message || "Login failed");
             localStorage.setItem(TOKEN_KEY, result.token);
@@ -132,8 +132,8 @@ export default function AdminPortal() {
                         <div className="inline-flex items-center gap-2 text-[#176447] font-bold uppercase tracking-widest text-xs"><FaLock /> Admin Login</div>
                         <h1 className="text-2xl font-black text-[#12345A]">Sign in to the Admin Panel</h1>
                     </div>
-                    <input type="text" placeholder="Username" value={loginForm.username} onChange={e => setLoginForm({ ...loginForm, username: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-zinc-200" required />
-                    <input type="password" placeholder="Password" value={loginForm.password} onChange={e => setLoginForm({ ...loginForm, password: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-zinc-200" required />
+                    <input type="text" placeholder="Username" value={loginForm.username} onChange={e => setLoginForm({ ...loginForm, username: e.target.value })} autoComplete="username" autoCapitalize="none" autoCorrect="off" spellCheck={false} className="w-full px-4 py-3 rounded-xl border border-zinc-200" required />
+                    <input type="password" placeholder="Password" value={loginForm.password} onChange={e => setLoginForm({ ...loginForm, password: e.target.value })} autoComplete="current-password" className="w-full px-4 py-3 rounded-xl border border-zinc-200" required />
                     {loginError && <p className="text-red-500 text-sm font-semibold">{loginError}</p>}
                     <button type="submit" className="w-full bg-[#12345A] text-white py-3 rounded-xl font-bold">Login</button>
                     <InstallOfficeApp />
