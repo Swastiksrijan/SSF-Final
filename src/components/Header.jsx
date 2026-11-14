@@ -100,10 +100,10 @@ const Header = () => {
           <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/95 p-1.5 shadow-lg ring-1 ring-white/40 group-hover:scale-105 transition-transform">
             <img src={logoImg} alt="Swastik Srijan Foundation" className="h-full w-full object-contain" />
           </span>
-          <span className="hidden sm:flex flex-col leading-none">
-            <span className={`block font-black text-lg leading-none tracking-tight text-white`}>Swastik Srijan</span>
-            <span className={`block font-bold text-[10px] tracking-[0.22em] uppercase mt-1 text-[#F7A814]`}>Foundation Samiti</span>
-            <span className={`block text-[9px] tracking-[0.14em] uppercase mt-1 text-[#EAF0F6]/80`}>Service • Dedication • Creation</span>
+          <span className="flex flex-col leading-none min-w-0">
+            <span className="block font-black text-base sm:text-lg leading-none tracking-tight text-white">Swastik Srijan</span>
+            <span className="block font-bold text-[9px] sm:text-[10px] tracking-[0.16em] sm:tracking-[0.22em] uppercase mt-1 text-[#F7A814]">Foundation Samiti</span>
+            <span className="hidden md:block text-[9px] tracking-[0.14em] uppercase mt-1 text-[#EAF0F6]/80">Service • Dedication • Creation</span>
           </span>
         </Link>
 
