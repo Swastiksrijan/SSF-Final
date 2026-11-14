@@ -154,17 +154,38 @@ async function main() {
     const doubleReply = await send(`/api/member-action-response/${token}`, 'POST', { replyText: 'दूसरा जवाब भेज रहा हूँ जो स्वीकार नहीं होना चाहिए।' });
     ok('a second reply on the same token is refused', doubleReply.status === 404, JSON.stringify(doubleReply.body));
 
+    console.log('\nHearing (records the outcome, stamps completion and emails the member):');
+    const hearing = await send(`/api/admin/member-actions/${draft1.body.id}`, 'PATCH', { action: 'hearing', hearingAt: new Date().toISOString(), hearingNotes: 'ऑनलाइन सुनवाई — सदस्य उपस्थित', hearingOutcome: 'सुनवाई पूर्ण हुई; सदस्य का पक्ष सुना गया।' }, auth);
+    ok('a hearing is recorded', hearing.status === 200, JSON.stringify(hearing.body));
+    ok('the hearing is stamped complete', Boolean(hearing.body.record?.hearingCompletedAt), JSON.stringify(hearing.body.record?.hearingCompletedAt));
+    ok('the hearing outcome is stored', String(hearing.body.record?.hearingOutcome || '').includes('सुनवाई पूर्ण'), hearing.body.record?.hearingOutcome);
+    ok('the member is emailed the hearing outcome', mailCalls.some((c) => /सुनवाई पूर्ण/.test(c.subject || '')), JSON.stringify(mailCalls.map((c) => c.subject)));
+    ok('the email log records the hearing email', Array.isArray(hearing.body.record?.emailLog) && hearing.body.record.emailLog.some((e) => e.stage === 'hearing' && e.status === 'sent'), JSON.stringify(hearing.body.record?.emailLog));
+
+    console.log('\nA hearing mail outage must still keep the record:');
+    const hearingFailDraft = await send('/api/admin/member-actions', 'POST', { personName: 'Hearing Fail', email: 'hearing.fail@example.com', actionScope: 'membership_review', bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
+    mailShouldFail = true;
+    const hearingFail = await send(`/api/admin/member-actions/${hearingFailDraft.body.id}`, 'PATCH', { action: 'hearing', hearingAt: new Date().toISOString(), hearingNotes: 'सुनवाई', hearingOutcome: 'पूर्ण' }, auth);
+    mailShouldFail = false;
+    ok('a hearing is recorded even when its email fails', hearingFail.status === 200 && Boolean(hearingFail.body.record?.hearingCompletedAt), JSON.stringify(hearingFail.body));
+    ok('the email outage is surfaced as a warning', typeof hearingFail.body.emailWarning === 'string' && hearingFail.body.emailWarning.length > 0, JSON.stringify(hearingFail.body.emailWarning));
+    ok('the failed hearing email is logged', Array.isArray(hearingFail.body.record?.emailLog) && hearingFail.body.record.emailLog.some((e) => e.stage === 'hearing' && e.status === 'failed'), JSON.stringify(hearingFail.body.record?.emailLog));
+
     console.log('\nCommittee review (must wait for the reply window):');
     const early = await send(`/api/admin/member-actions/${draft2.body.id}`, 'PATCH', { action: 'committee_review', committeeMeetingReference: 'MC/2026/01', decisionText: 'note' }, auth);
     ok('committee review is blocked while a notice is still open', early.status === 409, JSON.stringify(early.body));
     const committee = await send(`/api/admin/member-actions/${draft1.body.id}`, 'PATCH', { action: 'committee_review', committeeMeetingReference: 'MC/2026/01', decisionText: 'समिति ने जवाब पर विचार किया।' }, auth);
     ok('committee review is recorded after the reply', committee.status === 200, JSON.stringify(committee.body));
     ok('the committee minutes are stored separately', committee.body.record?.committeeDecisionText === 'समिति ने जवाब पर विचार किया।' && !committee.body.record?.generalBodyDecisionText, JSON.stringify(committee.body.record));
+    ok('the committee review is stamped complete', Boolean(committee.body.record?.committeeReviewCompletedAt));
+    ok('the member is emailed the committee proceedings', mailCalls.some((c) => /समिति की कार्यवाही पूर्ण/.test(c.subject || '')), JSON.stringify(mailCalls.map((c) => c.subject)));
 
     console.log('\nGeneral Body review (only after committee):');
     const gbReview = await send(`/api/admin/member-actions/${draft1.body.id}`, 'PATCH', { action: 'general_body_review', generalBodyMeetingReference: 'GB/2026/01', decisionText: 'gb' }, auth);
     ok('General Body review is allowed after committee review', gbReview.status === 200, JSON.stringify(gbReview.body));
     ok('the General Body minutes are stored separately', gbReview.body.record?.generalBodyDecisionText === 'gb', JSON.stringify(gbReview.body.record));
+    ok('the General Body review is stamped complete', Boolean(gbReview.body.record?.generalBodyReviewCompletedAt));
+    ok('the member is emailed the General Body proceedings', mailCalls.some((c) => /सामान्य सभा की कार्यवाही पूर्ण/.test(c.subject || '')), JSON.stringify(mailCalls.map((c) => c.subject)));
 
     console.log('\nFinal order (gated by due process):');
     const wrongType = await send(`/api/admin/member-actions/${draft1.body.id}`, 'PATCH', { action: 'close', decisionType: 'banish', decisionText: 'x' }, auth);
@@ -177,6 +198,8 @@ async function main() {
     ok('the decision type is recorded', close.body.record?.decisionType === 'membership_termination_approved');
     ok('the committee minutes survive the close', close.body.record?.committeeDecisionText === 'समिति ने जवाब पर विचार किया।');
     ok('the General Body minutes survive the close', close.body.record?.generalBodyDecisionText === 'gb');
+    ok('the member is emailed the final decision', mailCalls.some((c) => /अंतिम निर्णय/.test(c.subject || '')), JSON.stringify(mailCalls.map((c) => c.subject)));
+    ok('the email log accumulates every stage', Array.isArray(close.body.record?.emailLog) && ['hearing', 'committee', 'general_body', 'final'].every((st) => close.body.record.emailLog.some((e) => e.stage === st && e.status === 'sent')), JSON.stringify(close.body.record?.emailLog));
 
     console.log('\nDeleting a mistaken / test record:');
     const deletable = await send('/api/admin/member-actions', 'POST', { personName: 'Delete Me', email: 'delete.me@example.com', actionScope: 'membership_review', bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);

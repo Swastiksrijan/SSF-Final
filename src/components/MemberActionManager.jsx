@@ -40,10 +40,10 @@ const REGISTER_COLUMNS = [
   ["कारण","grounds"],["तथ्य/दस्तावेज","factualSummary"],["नोटिस","noticeText"],["जवाब अंतिम तारीख","replyDueAt"],
   ["स्थिति","status"],["भेजने का माध्यम","dispatchMethod"],["भेजने का प्रमाण","dispatchReference"],
   ["भेजने की तारीख","dispatchAt"],["ईमेल स्थिति","emailDeliveryStatus"],["प्राप्त जवाब","replyText"],
-  ["जवाब प्राप्त तारीख","replyReceivedAt"],["सुनवाई तारीख","hearingAt"],["सुनवाई विवरण","hearingNotes"],
-  ["समिति बैठक संदर्भ","committeeMeetingReference"],["समिति कार्यवाही","committeeDecisionText"],
-  ["सामान्य सभा संदर्भ","generalBodyMeetingReference"],["सामान्य सभा कार्यवाही","generalBodyDecisionText"],
-  ["अंतिम निर्णय प्रकार","decisionType"],["अंतिम निर्णय/आदेश","decisionText"],["निर्णय तारीख","decisionAt"],
+  ["जवाब प्राप्त तारीख","replyReceivedAt"],["सुनवाई तारीख","hearingAt"],["सुनवाई विवरण","hearingNotes"],["सुनवाई का परिणाम","hearingOutcome"],["सुनवाई पूर्ण तिथि","hearingCompletedAt"],
+  ["समिति बैठक संदर्भ","committeeMeetingReference"],["समिति कार्यवाही","committeeDecisionText"],["समिति कार्यवाही पूर्ण तिथि","committeeReviewCompletedAt"],
+  ["सामान्य सभा संदर्भ","generalBodyMeetingReference"],["सामान्य सभा कार्यवाही","generalBodyDecisionText"],["सामान्य सभा कार्यवाही पूर्ण तिथि","generalBodyReviewCompletedAt"],
+  ["अंतिम निर्णय प्रकार","decisionType"],["अंतिम निर्णय/आदेश","decisionText"],["निर्णय तारीख","decisionAt"],["भेजे गए ईमेल (सार)","emailLogSummary"],
   ["रिकॉर्ड बनाया","createdAt"],["अंतिम अपडेट","updatedAt"]
 ];
 const NAVY = "FF12345A";
@@ -64,7 +64,7 @@ const exportRegister = async rows => {
   hr.height = 22;
   rows.forEach(row => {
     const out = {};
-    REGISTER_COLUMNS.forEach(c => { const v = row[c[1]]; out[c[1]] = v == null ? "" : (typeof v === "object" ? JSON.stringify(v) : v); });
+    REGISTER_COLUMNS.forEach(c => { const withDerived = { ...row, emailLogSummary: Array.isArray(row.emailLog) ? row.emailLog.map(e => `${e.label || e.stage} (${e.status}${e.at ? " • " + new Date(e.at).toLocaleString("en-IN") : ""})`).join(" | ") : "" }; const v = withDerived[c[1]]; out[c[1]] = v == null ? "" : (typeof v === "object" ? JSON.stringify(v) : v); });
     ws.addRow(out);
   });
   ws.autoFilter = { from: "A1", to: { row: 1, column: REGISTER_COLUMNS.length } };
@@ -83,6 +83,7 @@ export default function MemberActionManager({ token }) {
   const [memberMatches, setMemberMatches] = useState([]);
   const [lookupMessage, setLookupMessage] = useState("");
   const [closing, setClosing] = useState(null);
+  const [view, setView] = useState("cards");
 
   const load = async () => { const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { headers: headers(token), cache: "no-store" }); const d = await r.json().catch(() => []); if (!r.ok) throw new Error(d.message || "रजिस्टर लोड नहीं हुआ"); setRows(Array.isArray(d) ? d : []); };
   useEffect(() => { load().catch(e => setMessage(e.message)); }, [token]);
@@ -144,8 +145,10 @@ export default function MemberActionManager({ token }) {
       if (d.record) setRows(current => current.map(item => item.id === row.id ? d.record : item));
       if (d.emailWarning) setMessage(d.emailWarning);
       else if (d.responseUrl) { await navigator.clipboard?.writeText(d.responseUrl).catch(()=>{}); setMessage("नोटिस ईमेल से जारी हुआ। जवाब लिंक कॉपी करने का प्रयास किया गया: " + d.responseUrl); }
-      else if (body.action === "committee_review") setMessage("समिति की कार्यवाही दर्ज हो गई है। सदस्य को ईमेल भेज दिया गया है।");
-      else if (body.action === "general_body_review") setMessage("सामान्य सभा की कार्यवाही दर्ज हो गई है।");
+      else if (body.action === "hearing") setMessage("सुनवाई दर्ज हो गई — सुनवाई पूर्ण। सदस्य को ईमेल भेज दिया गया है।");
+    else if (body.action === "committee_review") setMessage("समिति की कार्यवाही पूर्ण दर्ज हो गई। सदस्य को ईमेल भेज दिया गया है।");
+      else if (body.action === "general_body_review") setMessage("सामान्य सभा की कार्यवाही पूर्ण दर्ज हो गई। सदस्य को ईमेल भेज दिया गया है।");
+    else if (body.action === "close") setMessage("अंतिम निर्णय दर्ज हो गया — प्रक्रिया पूर्ण। सदस्य को ईमेल भेज दिया गया है।");
       else setMessage("रिकॉर्ड अपडेट हो गया।");
       await load();
       return true;
@@ -155,7 +158,7 @@ export default function MemberActionManager({ token }) {
   const saveNoticePdf = async row => { try { await downloadNoticePdf(row); } catch (e) { setMessage("PDF बनाते समय त्रुटि: " + (e.message || e)); } };
   const remove = async row => { if(row.status!=="draft"){ if(!window.confirm(`सचेत रहें: “${row.personName}” का जारी हो चुका नोटिस रिकॉर्ड है। इसे हटाने से उनका जवाब लिंक काम नहीं करेगा। क्या वाकई हटाना है?`)) return; } else if(!window.confirm("क्या आप इस नोटिस ड्राफ्ट को हटाना चाहते हैं? यह वापस नहीं आएगा।")) return; setBusy(true); setMessage(""); try { const url = `${ENDPOINTS.ADMIN_MEMBER_ACTIONS}/${row.id}` + (row.status!=="draft" ? "?force=true" : ""); const r=await fetch(url, { method:"DELETE", headers:headers(token) }); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.message || "रिकॉर्ड हटाया नहीं जा सका"); setMessage("रिकॉर्ड हटा दिया गया।"); await load(); } catch(e){ setMessage(e.message); } finally { setBusy(false); } };
   const issue = row => { if(!window.confirm("क्या इस नोटिस को अभी दिए गए ईमेल पते पर जारी करके भेजना है? पूरा नोटिस अलग से “पूरा नोटिस देखें” बटन से देखा जा सकता है। पुष्टि करने पर ईमेल और ऑनलाइन जवाब लिंक भेजा जाएगा।")) return; act(row,{action:"issue_notice",dispatchMethod:"email",dispatchReference:"",logoUrl:new URL(logoImg, window.location.origin).href}); };
-  const hearing = row => { const when=window.prompt("सुनवाई की तारीख और समय (उदाहरण: 2026-11-25T11:00)"); if(!when) return; const notes=window.prompt("सुनवाई का स्थान/ऑनलाइन माध्यम और सूचना विवरण"); if(!notes) return; act(row,{action:"hearing",hearingAt:when,hearingNotes:notes}); };
+  const hearing = row => { const when = window.prompt("सुनवाई की तारीख और समय (उदाहरण: 2026-11-25T11:00)"); if (!when) return; const notes = window.prompt("सुनवाई का स्थान/ऑनलाइन माध्यम और सूचना विवरण"); if (!notes) return; const outcome = window.prompt("सुनवाई का परिणाम/सार (सुनवाई पूर्ण होने पर लिखें — यह रिकॉर्ड एवं रजिस्टर में दर्ज होगा)") || ""; act(row, { action: "hearing", hearingAt: when, hearingNotes: notes, hearingOutcome: outcome }); };
   const committee = row => { const ref=window.prompt("प्रबंध समिति बैठक/कार्यवाही संदर्भ"); if(!ref) return; const note=window.prompt("जवाब, सुनवाई और समिति की चर्चा का पूरा सार"); if(!note) return; act(row,{action:"committee_review",committeeMeetingReference:ref,decisionText:note}); };
   const generalBody = row => { const ref=window.prompt("सामान्य सभा बैठक/प्रस्ताव संदर्भ"); if(!ref) return; const note=window.prompt("सामान्य सभा की कार्यवाही और निर्णय का पूरा विवरण"); if(!note) return; act(row,{action:"general_body_review",generalBodyMeetingReference:ref,decisionText:note}); };
   // "अंतिम निर्णय दर्ज करें" opens a proper form. The old flow used window.prompt
@@ -179,9 +182,15 @@ export default function MemberActionManager({ token }) {
     const body = row.noticeText || ["कारण बताओ नोटिस", "प्रति: " + row.personName, "नोटिस संदर्भ: " + (row.noticeReference || "—"), "नियम: " + row.bylawClause, "कारण: " + row.grounds, "तथ्य: " + row.factualSummary, "जवाब की अंतिम तारीख: " + (row.replyDueAt ? new Date(row.replyDueAt).toLocaleString("hi-IN") : "—")].join("\n");
     window.open("https://wa.me/" + to + "?text=" + encodeURIComponent(body), "_blank");
   };
-  const status = {draft:"ड्राफ्ट",notice_issued:"नोटिस जारी",reply_received:"जवाब प्राप्त",hearing_scheduled:"सुनवाई तय",committee_review:"समिति कार्यवाही दर्ज — पूर्ण",general_body_review:"सामान्य सभा कार्यवाही दर्ज — पूर्ण",closed:"प्रक्रिया पूर्ण / अंतिम निर्णय दर्ज"};
+  const status = {draft:"ड्राफ्ट",notice_issued:"नोटिस जारी — जवाब प्रतीक्षित",reply_received:"जवाब प्राप्त — कार्यवाही प्रतीक्षित",hearing_scheduled:"सुनवाई पूर्ण",committee_review:"समिति की कार्यवाही पूर्ण",general_body_review:"सामान्य सभा की कार्यवाही पूर्ण",closed:"प्रक्रिया पूर्ण / अंतिम निर्णय जारी"};
   return <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b p-6 sm:p-8"><div><h2 className="text-2xl font-black text-[#12345A]">सदस्य / पदाधिकारी नोटिस एवं कार्रवाई रजिस्टर</h2><p className="mt-2 text-sm text-slate-600">आसान प्रक्रिया: 1. ड्राफ्ट  2. नोटिस  3. जवाब  4. सुनवाई  5. समिति  6. सामान्य सभा (जहाँ जरूरी)  7. अंतिम आदेश। जवाब आने से केस अपने-आप बंद नहीं होता।</p><p className="mt-2 text-xs text-slate-500">Excel डाउनलोड उस समय का स्नैपशॉट है (live नहीं)। नई कार्रवाई के बाद दोबारा डाउनलोड करें। WhatsApp साझा करना मैनुअल है — स्वतः WhatsApp Delivery के लिए Meta Cloud API सेटअप आवश्यक है।</p></div><button type="button" onClick={()=>exportRegister(rows)} disabled={!rows.length} className="rounded-xl border border-[#12345A] px-4 py-2 text-sm font-bold text-[#12345A] disabled:opacity-40">Excel रजिस्टर डाउनलोड करें (.xlsx)</button></div>
+    <div className="flex flex-wrap items-center justify-between gap-3 border-b p-6 sm:p-8"><div><h2 className="text-2xl font-black text-[#12345A]">सदस्य / पदाधिकारी नोटिस एवं कार्रवाई रजिस्टर</h2><p className="mt-2 text-sm text-slate-600">आसान प्रक्रिया: 1. ड्राफ्ट  2. नोटिस  3. जवाब  4. सुनवाई  5. समिति  6. सामान्य सभा (जहाँ जरूरी)  7. अंतिम आदेश। जवाब आने से केस अपने-आप बंद नहीं होता।</p><p className="mt-2 text-xs text-slate-500">Excel डाउनलोड उस समय का स्नैपशॉट है (live नहीं)। नई कार्रवाई के बाद दोबारा डाउनलोड करें। WhatsApp साझा करना मैनुअल है — स्वतः WhatsApp Delivery के लिए Meta Cloud API सेटअप आवश्यक है।</p></div><div className="flex flex-wrap items-center gap-2">
+          <div className="inline-flex rounded-xl border border-slate-300 p-0.5">
+            <button type="button" onClick={()=>setView("cards")} className={`rounded-lg px-3 py-1.5 text-sm font-bold ${view==="cards"?"bg-[#12345A] text-white":"text-slate-600"}`}>कार्ड दृश्य</button>
+            <button type="button" onClick={()=>setView("table")} className={`rounded-lg px-3 py-1.5 text-sm font-bold ${view==="table"?"bg-[#12345A] text-white":"text-slate-600"}`}>रजिस्टर तालिका</button>
+          </div>
+          <button type="button" onClick={()=>exportRegister(rows)} disabled={!rows.length} className="rounded-xl border border-[#12345A] px-4 py-2 text-sm font-bold text-[#12345A] disabled:opacity-40">Excel रजिस्टर डाउनलोड करें (.xlsx)</button>
+        </div></div>
     <form onSubmit={createDraft} className="grid gap-4 border-b bg-slate-50 p-6 sm:grid-cols-2 sm:p-8">
       <h3 className="sm:col-span-2 text-lg font-bold text-[#12345A]">नया कारण बताओ नोटिस — ईमेल से जारी करें</h3>
       <input required value={form.personName} onChange={e=>update("personName",e.target.value)} onBlur={lookupMember} placeholder="सदस्य / पदाधिकारी का पूरा नाम" className="rounded-xl border p-3"/>
@@ -200,7 +209,8 @@ export default function MemberActionManager({ token }) {
       <button disabled={busy} className="rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white disabled:opacity-50 sm:col-span-2">{busy?"ईमेल भेजा जा रहा है…":"नोटिस जाँचकर ईमेल भेजें"}</button>
     </form>
     {message && <p className="break-words border-b bg-emerald-50 p-4 text-sm text-emerald-800">{message}</p>}
-    <div className="divide-y">{rows.length===0?<p className="p-8 text-center text-slate-400">अभी कोई नोटिस रिकॉर्ड नहीं है।</p>:rows.map(row=><article key={row.id} className="p-6">
+    {view==="table" && <RegisterTable rows={rows} status={status} dateText={dateText} />}
+    <div className={view==="table" ? "hidden" : "divide-y"}>{rows.length===0?<p className="p-8 text-center text-slate-400">अभी कोई नोटिस रिकॉर्ड नहीं है।</p>:rows.map(row=><article key={row.id} className="p-6">
       <div className="flex flex-wrap items-start justify-between gap-3"><div><div className="mb-2 inline-flex rounded-md bg-slate-100 px-2 py-1 text-xs font-bold text-slate-700">नोटिस Ref. No.: {row.noticeReference || "जारी होना बाकी"}</div><h3 className="font-bold text-[#12345A]">{row.personName} {row.memberId ? "• "+row.memberId : ""}</h3><p className="text-sm text-slate-500">{row.email} • {row.currentDesignation || (row.actionScope==="membership_review"?"सदस्यता समीक्षा":"पदाधिकारी समीक्षा")}</p></div><span className="rounded-full bg-amber-50 px-3 py-1 text-xs font-bold text-amber-800">{status[row.status]||row.status}</span></div>
       <p className="mt-3 text-sm text-slate-600">नियम: {row.bylawClause} • जवाब की तारीख: {dateText(row.replyDueAt)}</p>
       {row.replyText && <div className="mt-3 rounded-xl bg-emerald-50 p-4 text-sm"><b>प्राप्त जवाब:</b><p className="mt-1 whitespace-pre-wrap">{row.replyText}</p></div>}
@@ -210,12 +220,12 @@ export default function MemberActionManager({ token }) {
       {row.status==="draft" && <><button type="button" onClick={()=>openNoticePreview(row)} className="mt-4 mr-2 rounded-lg border border-[#12345A] px-4 py-2 text-sm font-bold text-[#12345A]">पूरा नोटिस देखें</button><button disabled={busy} onClick={()=>issue(row)} className="mt-4 rounded-lg bg-[#176447] px-4 py-2 text-sm font-bold text-white">नोटिस जाँचकर जारी करें</button></>}
       <button type="button" onClick={()=>saveNoticePdf(row)} className="mt-4 mr-2 rounded-lg border border-[#176447] px-4 py-2 text-sm font-bold text-[#176447]">PDF डाउनलोड करें</button>
       {row.status!=="draft" && row.noticeText && <button type="button" onClick={()=>shareWhatsApp(row)} className="mt-4 mr-2 rounded-lg bg-[#25D366] px-4 py-2 text-sm font-bold text-white">WhatsApp पर साझा करें</button>}
-      {["notice_issued","reply_received","hearing_scheduled"].includes(row.status) && <div className="mt-4 flex flex-wrap gap-2">{["notice_issued","reply_received"].includes(row.status) && <button disabled={busy} onClick={()=>hearing(row)} className="rounded-lg bg-indigo-700 px-3 py-2 text-xs font-bold text-white">सुनवाई तय करें</button>}<button disabled={busy} onClick={()=>committee(row)} className="rounded-lg bg-slate-700 px-3 py-2 text-xs font-bold text-white">समिति कार्यवाही दर्ज करें</button></div>}
+      {["notice_issued","reply_received","hearing_scheduled"].includes(row.status) && <div className="mt-4 flex flex-wrap gap-2">{["notice_issued","reply_received"].includes(row.status) && <button disabled={busy} onClick={()=>hearing(row)} className="rounded-lg bg-indigo-700 px-3 py-2 text-xs font-bold text-white">सुनवाई तय करें</button>}{row.status==="hearing_scheduled" && <span className="rounded-lg bg-emerald-50 px-3 py-2 text-xs font-bold text-emerald-800">✓ सुनवाई पूर्ण{row.hearingCompletedAt ? " • " + dateText(row.hearingCompletedAt) : ""}</span>}<button disabled={busy} onClick={()=>committee(row)} className="rounded-lg bg-slate-700 px-3 py-2 text-xs font-bold text-white">समिति कार्यवाही दर्ज करें</button></div>}
       {row.status==="committee_review" && <div className="mt-4 flex flex-wrap gap-2"><button disabled={busy} onClick={()=>generalBody(row)} className="rounded-lg bg-indigo-700 px-3 py-2 text-xs font-bold text-white">सामान्य सभा में रखें</button><button disabled={busy} onClick={()=>openClose(row)} className="rounded-lg bg-emerald-700 px-3 py-2 text-xs font-bold text-white">अंतिम निर्णय दर्ज करें</button></div>}
       {row.status==="general_body_review" && <button disabled={busy} onClick={()=>openClose(row)} className="mt-4 rounded-lg bg-emerald-700 px-4 py-2 text-sm font-bold text-white">सामान्य सभा के निर्णय के बाद बंद करें</button>}
       {row.dispatchMethod && <p className="mt-3 text-xs text-slate-400">भेजने का माध्यम: {row.dispatchMethod} • {row.dispatchReference||row.emailDeliveryStatus||"—"}</p>}
       <button type="button" disabled={busy} onClick={()=>remove(row)} className="mt-4 mr-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-bold text-red-700">{row.status==="draft"?"रिकॉर्ड हटाएँ":"रिकॉर्ड हटाएँ (सचेत)"}</button>
-      {row.status==="closed" && <p className="mt-2 text-xs font-bold text-slate-500">अंतिम निर्णय: {row.decisionType}</p>}{row.status==="reply_received" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जवाब पढ़ें → आवश्यकता हो तो सुनवाई तय करें → फिर समिति की बैठक में कार्यवाही दर्ज करें।</p>}{row.status==="hearing_scheduled" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: सुनवाई पूरी होने पर उसका सार दर्ज रखें → समिति कार्यवाही दर्ज करें।</p>}{row.status==="committee_review" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जहाँ नियम/निर्णय के लिए जरूरी हो, सामान्य सभा की कार्यवाही दर्ज करें; अन्यथा सक्षम समिति का वैध अंतिम निर्णय दर्ज करें।</p>}
+      {row.status==="closed" && <p className="mt-2 text-xs font-bold text-slate-500">अंतिम निर्णय: {row.decisionType}</p>}{row.hearingCompletedAt && <p className="mt-2 text-xs font-bold text-emerald-700">✓ सुनवाई पूर्ण: {dateText(row.hearingCompletedAt)}</p>}{row.committeeReviewCompletedAt && <p className="mt-2 text-xs font-bold text-emerald-700">✓ समिति कार्यवाही पूर्ण: {dateText(row.committeeReviewCompletedAt)}</p>}{row.generalBodyReviewCompletedAt && <p className="mt-2 text-xs font-bold text-emerald-700">✓ सामान्य सभा कार्यवाही पूर्ण: {dateText(row.generalBodyReviewCompletedAt)}</p>}{row.status==="reply_received" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जवाब पढ़ें → आवश्यकता हो तो सुनवाई तय करें → फिर समिति की बैठक में कार्यवाही दर्ज करें।</p>}{row.status==="hearing_scheduled" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: सुनवाई पूरी होने पर उसका सार दर्ज रखें → समिति कार्यवाही दर्ज करें।</p>}{row.status==="committee_review" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जहाँ नियम/निर्णय के लिए जरूरी हो, सामान्य सभा की कार्यवाही दर्ज करें; अन्यथा सक्षम समिति का वैध अंतिम निर्णय दर्ज करें।</p>}
     </article>)}</div>
     {closing && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" onClick={()=>setClosing(null)}>
       <form onSubmit={submitClose} onClick={e=>e.stopPropagation()} className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
@@ -247,4 +257,66 @@ export default function MemberActionManager({ token }) {
       </form>
     </div>}
   </section>;
+}
+
+// The in-section register: a plain table of every notice/action record, updated
+// from the same loaded rows, so the whole due-process history is visible and
+// printable at a glance. Each finished stage shows its completion stamp.
+const STATUS_TONE = {
+  draft: "bg-slate-100 text-slate-700",
+  notice_issued: "bg-amber-50 text-amber-800",
+  reply_received: "bg-blue-50 text-blue-800",
+  hearing_scheduled: "bg-indigo-50 text-indigo-800",
+  committee_review: "bg-violet-50 text-violet-800",
+  general_body_review: "bg-cyan-50 text-cyan-800",
+  closed: "bg-emerald-50 text-emerald-800"
+};
+const TABLE_COLUMNS = [
+  ["क्रम", "sno"], ["नोटिस Ref. No.", "noticeReference"], ["नाम", "personName"], ["Member ID", "memberId"],
+  ["ईमेल", "email"], ["मोबाइल", "phone"], ["वर्तमान पद", "currentDesignation"], ["दायरा", "scopeLabel"],
+  ["लागू नियम", "bylawClause"], ["कारण", "grounds"], ["तथ्य", "factualSummary"], ["जवाब अंतिम तारीख", "replyDueAt"],
+  ["स्थिति", "statusLabel"], ["जवाब", "replyText"], ["सुनवाई", "hearingAt"], ["सुनवाई विवरण", "hearingNotes"],
+  ["सुनवाई परिणाम", "hearingOutcome"], ["सुनवाई पूर्ण तिथि", "hearingCompletedAt"],
+  ["समिति संदर्भ", "committeeMeetingReference"], ["समिति कार्यवाही", "committeeDecisionText"], ["समिति पूर्ण तिथि", "committeeReviewCompletedAt"],
+  ["सामान्य सभा संदर्भ", "generalBodyMeetingReference"], ["सामान्य सभा कार्यवाही", "generalBodyDecisionText"], ["सामान्य सभा पूर्ण तिथि", "generalBodyReviewCompletedAt"],
+  ["अंतिम निर्णय प्रकार", "decisionType"], ["अंतिम निर्णय", "decisionText"], ["निर्णय तिथि", "decisionAt"],
+  ["भेजे गए ईमेल", "emailLogSummary"], ["रिकॉर्ड बनाया", "createdAt"]
+];
+
+function RegisterTable({ rows, status, dateText }) {
+  if (!rows.length) return <p className="p-8 text-center text-slate-400">अभी कोई नोटिस रिकॉर्ड नहीं है।</p>;
+  const cell = (row, key, i) => {
+    if (key === "sno") return rows.length - i;
+    if (key === "scopeLabel") return row.actionScope === "membership_review" ? "सदस्यता समीक्षा" : "पदाधिकारी समीक्षा";
+    if (key === "statusLabel") return status[row.status] || row.status;
+    if (key === "emailLogSummary") return Array.isArray(row.emailLog) ? row.emailLog.map(e => `${e.label || e.stage} (${e.status})`).join(", ") : "—";
+    if (["createdAt", "updatedAt", "replyDueAt", "dispatchAt", "replyReceivedAt", "hearingAt", "hearingCompletedAt", "committeeReviewCompletedAt", "generalBodyReviewCompletedAt", "decisionAt"].includes(key)) return row[key] ? dateText(row[key]) : "—";
+    const v = row[key];
+    return v == null || v === "" ? "—" : String(v);
+  };
+  return (
+    <div className="border-b bg-slate-50/60 p-4 sm:p-6">
+      <p className="mb-3 text-xs text-slate-500">रजिस्टर तालिका — सभी कार्यवाही चरण, पूर्णता तिथियाँ एवं भेजे गए ईमेल एक साथ। नई कार्रवाई करने पर यह अपने-आप अद्यतन होती है।</p>
+      <div className="overflow-x-auto rounded-xl border bg-white">
+        <table className="min-w-full text-left text-xs">
+          <thead className="bg-[#12345A] text-white">
+            <tr>{TABLE_COLUMNS.map(c => <th key={c[1]} className="whitespace-nowrap px-3 py-2 font-bold">{c[0]}</th>)}</tr>
+          </thead>
+          <tbody>
+            {rows.map((row, i) => (
+              <tr key={row.id} className={i % 2 ? "bg-slate-50" : "bg-white"}>
+                {TABLE_COLUMNS.map(c => (
+                  <td key={c[1]} className="max-w-[22rem] whitespace-nowrap px-3 py-2 align-top text-slate-700" title={c[1] === "statusLabel" ? "" : cell(row, c[1], i)}>
+                    {c[1] === "statusLabel"
+                      ? <span className={`inline-block rounded-full px-2 py-0.5 font-bold ${STATUS_TONE[row.status] || "bg-slate-100 text-slate-700"}`}>{cell(row, c[1], i)}</span>
+                      : <span className="block max-w-[22rem] overflow-hidden text-ellipsis">{cell(row, c[1], i)}</span>}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
 }

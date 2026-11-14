@@ -63,6 +63,13 @@ const COLUMNS = [
   { table: 'MemberActions', column: 'noticeReference', type: 'VARCHAR(64)' },
   { table: 'MemberActions', column: 'committeeDecisionText', type: 'TEXT' },
   { table: 'MemberActions', column: 'generalBodyDecisionText', type: 'TEXT' },
+  // Stage-completion stamps and the per-stage email log, so the register shows
+  // when each proceeding finished and which emails actually went out.
+  { table: 'MemberActions', column: 'hearingOutcome', type: 'TEXT' },
+  { table: 'MemberActions', column: 'hearingCompletedAt', type: 'TIMESTAMP WITH TIME ZONE' },
+  { table: 'MemberActions', column: 'committeeReviewCompletedAt', type: 'TIMESTAMP WITH TIME ZONE' },
+  { table: 'MemberActions', column: 'generalBodyReviewCompletedAt', type: 'TIMESTAMP WITH TIME ZONE' },
+  { table: 'MemberActions', column: 'emailLog', type: 'JSONB DEFAULT \'[]\'::jsonb' },
   // Inward/outward correspondence register: additive columns only; preserve all existing communication rows.
   { table: 'ImsCommunications', column: 'referenceNo', type: 'VARCHAR(128)' },
   { table: 'ImsCommunications', column: 'correspondenceDate', type: 'DATE' },
