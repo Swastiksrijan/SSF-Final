@@ -4,6 +4,7 @@ import { FaUsers, FaCheckCircle, FaTimesCircle, FaShieldAlt, FaDownload, FaLock,
 import { generateCertificate } from "../utils/generateCertificate";
 import { ENDPOINTS } from "../config/api";
 import AdminPageHeader from "../components/dashboard/AdminPageHeader";
+import InstallOfficeApp from "../components/InstallOfficeApp";
 
 const TOKEN_KEY = "ssf_admin_token";
 
@@ -135,6 +136,7 @@ export default function AdminPortal() {
                     <input type="password" placeholder="Password" value={loginForm.password} onChange={e => setLoginForm({ ...loginForm, password: e.target.value })} className="w-full px-4 py-3 rounded-xl border border-zinc-200" required />
                     {loginError && <p className="text-red-500 text-sm font-semibold">{loginError}</p>}
                     <button type="submit" className="w-full bg-[#12345A] text-white py-3 rounded-xl font-bold">Login</button>
+                    <InstallOfficeApp />
                 </form>
             </div>
         </div>;
