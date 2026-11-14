@@ -143,6 +143,10 @@ export default function ImsLayout({ children, active }) {
           </form>
 
           <div className="ml-auto flex items-center gap-2">
+            <a href="/admin" title={t('back_to_admin_title')}
+              className="inline-flex items-center gap-1.5 rounded-lg bg-[#F7A814] px-3 py-1.5 text-xs font-bold text-[#12345A] shadow-sm transition-colors hover:bg-[#ffbe3d]">
+              <Icons.ArrowLeft size={14} /> <span className="hidden sm:inline">{t('back_to_admin')}</span>
+            </a>
             <a href="/" title="Back to website · वेबसाइट पर वापस"
               className="hidden items-center gap-1.5 rounded-lg border border-white/25 px-3 py-1.5 text-xs font-semibold hover:bg-white/10 sm:inline-flex">
               <Icons.Globe size={14} /> {lang === 'en' ? 'Website' : 'वेबसाइट'}
@@ -219,6 +223,18 @@ export default function ImsLayout({ children, active }) {
                 </div>
               </section>
             ))}
+            <section aria-label={t('back_to_admin_title')}>
+              <a href="/admin"
+                className="flex min-h-[54px] w-full items-center gap-3 rounded-xl border border-[#F7A814]/50 bg-[#F7A814]/10 px-3 py-2 text-left transition-all duration-150 hover:border-[#F7A814] hover:bg-[#F7A814]/20">
+                <span className="grid h-9 w-9 shrink-0 place-items-center rounded-lg bg-[#F7A814] text-[#12345A]">
+                  <Icons.ArrowLeft size={17} />
+                </span>
+                <span className="min-w-0 flex-1 leading-tight">
+                  <span className="block truncate text-[13px] font-semibold text-[#12345A]">{t('back_to_admin')}</span>
+                  <span className="mt-0.5 block truncate text-[11px] font-medium text-[#176447]">{t('back_to_admin_title')}</span>
+                </span>
+              </a>
+            </section>
           </nav>
         </aside>
 
