@@ -152,16 +152,23 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
           await sendMail({ to: row.email, subject: 'SSF कारण बताओ नोटिस — ' + row.noticeReference + ' — ' + row.personName, text: textBody, html: htmlBody });
           delivery = 'email_sent';
         } catch (emailError) {
-          // A mail failure must never roll back the notice: the record, the
-          // reference number and the member response link are still created, so
-          // the admin can hand-deliver, post it, or resend after fixing mail.
+          // Do not issue a notice or activate its reply link unless the required
+          // email dispatch actually succeeds. Keep the draft retryable.
           console.error('⚠️ Notice email failed:', emailError.message);
-          delivery = 'email_failed';
-          emailWarning = 'नोटिस दर्ज हो गया, पर ईमेल भेजना विफल रहा। कृपया WhatsApp/डाक से भेजें या ईमेल सेवा जाँचें।';
+          await row.update({
+            dispatchMethod: method,
+            dispatchReference: dispatchReference || null,
+            emailDeliveryStatus: 'email_failed',
+            updatedBy: 'Admin Portal'
+          });
+          return res.status(502).json({
+            message: 'नोटिस जारी नहीं हुआ क्योंकि ईमेल भेजना विफल रहा। Sender email/Brevo सेटिंग ठीक करके इसी ड्राफ्ट से दोबारा जारी करें।',
+            emailDeliveryStatus: 'email_failed'
+          });
         }
       }
       await row.update({ noticeText: textBody, responseTokenHash: hashToken(rawToken), status: 'notice_issued', dispatchMethod: method, dispatchReference: dispatchReference || null, dispatchAt: new Date(), emailDeliveryStatus: delivery, updatedBy: 'Admin Portal' });
-      return res.json({ status: 'success', record: publicRecord(row), responseUrl, emailWarning });
+      return res.json({ status: 'success', record: publicRecord(row), responseUrl, emailWarning: null });
     }
     if (b.action === 'hearing') {
       const hearingAt = new Date(b.hearingAt);
