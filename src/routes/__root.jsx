@@ -5,6 +5,7 @@ import GlobalSupportBar from "../components/GlobalSupportBar";
 import ScrollToHash from "../components/ScrollToHash";
 import ScrollToTopButton from "../components/ScrollToTopButton";
 import SeoManager from "../components/SeoManager";
+import AppManifest from "../components/AppManifest";
 import SSFSupportChatPro from "../components/SSFSupportChatPro";
 import { LanguageProvider } from "../context/LanguageContext";
 import OptimizedImage from "../components/OptimizedImage";
@@ -59,6 +60,7 @@ function RootChrome() {
           identically while leaving sticky positioning intact. */}
       <div className="ssf-root-shell min-h-screen w-full flex flex-col font-inria">
         <SeoManager />
+        <AppManifest />
         {!isIms && <Header />}
         {!isIms && <ScrollToHash />}
         {!isIms && <ScrollToTopButton />}

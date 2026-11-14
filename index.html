@@ -9,6 +9,19 @@
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="SSF" />
+  <script>
+    // Office install target: on /Admin use the office manifest so "Add to Home
+    // screen" makes a separate "SSF Office" icon that opens into admin login.
+    (function () {
+      var p = location.pathname;
+      if (p === "/Admin" || p === "/admin" || p === "/ims" || p.indexOf("/ims/") === 0) {
+        var m = document.querySelector('link[rel="manifest"]');
+        if (m) m.setAttribute("href", "/office.webmanifest");
+        var t = document.querySelector('meta[name="apple-mobile-web-app-title"]');
+        if (t) t.setAttribute("content", "SSF Office");
+      }
+    })();
+  </script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#12345A" />
   <meta name="description"
