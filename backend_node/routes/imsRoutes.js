@@ -458,6 +458,14 @@ router.post('/ims/correspondence/upload', (req, res, next) => {
   });
 });
 
+// ---- Unified submissions register ------------------------------------------
+// Read-through aggregation over every public form's table, plus office-side
+// remark/follow-up. Must precede the generic /ims/:resource route.
+const submissions = require('../services/ims/submissions');
+router.get('/ims/submissions', wrap(async (req, r) => r.json({ records: await submissions.list(req.query) })));
+router.get('/ims/submissions/summary', wrap(async (_req, r) => r.json(await submissions.summary())));
+router.put('/ims/submissions/note/:id', wrap(async (req, r) => r.json(await submissions.updateNote(req.params.id, req.body || {}))));
+
 // ---- generic CRUD for every resource --------------------------------------
 router.get('/ims/:resource', wrap(async (req, r) => r.json(await res.list(req.params.resource, req.query))));
 

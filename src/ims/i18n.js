@@ -36,6 +36,7 @@ export const DICT = {
   free_activity: { en: '₹0 (Free)', hi: '₹0 (निःशुल्क)' },
   only_free: { en: 'Only ₹0 activities', hi: 'केवल ₹0 गतिविधियाँ' },
   global_search: { en: 'Global Search', hi: 'खोज' },
+  submissions: { en: 'Submissions & Registrations', hi: 'आवेदन एवं पंजीकरण' },
   notifications: { en: 'Notifications', hi: 'सूचनाएँ' },
   notification_centre: { en: 'Notification Centre', hi: 'सूचना केंद्र' },
   contacts: { en: 'Contacts', hi: 'संपर्क' },

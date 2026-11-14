@@ -75,6 +75,7 @@ import { Route as VerifyCodeRouteImport } from './routes/verify.$code'
 import { Route as VerifyCertIdRouteImport } from './routes/verify.$certId'
 import { Route as ImsVolunteerNetworkRouteImport } from './routes/ims/volunteer-network'
 import { Route as ImsUsersRouteImport } from './routes/ims/users'
+import { Route as ImsSubmissionsRouteImport } from './routes/ims/submissions'
 import { Route as ImsSocialRouteImport } from './routes/ims/social'
 import { Route as ImsSeparationsRouteImport } from './routes/ims/separations'
 import { Route as ImsSearchRouteImport } from './routes/ims/search'
@@ -458,6 +459,11 @@ const ImsUsersRoute = ImsUsersRouteImport.update({
   path: '/ims/users',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ImsSubmissionsRoute = ImsSubmissionsRouteImport.update({
+  id: '/ims/submissions',
+  path: '/ims/submissions',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ImsSocialRoute = ImsSocialRouteImport.update({
   id: '/ims/social',
   path: '/ims/social',
@@ -821,6 +827,7 @@ export interface FileRoutesByFullPath {
   '/ims/search': typeof ImsSearchRoute
   '/ims/separations': typeof ImsSeparationsRoute
   '/ims/social': typeof ImsSocialRoute
+  '/ims/submissions': typeof ImsSubmissionsRoute
   '/ims/users': typeof ImsUsersRoute
   '/ims/volunteer-network': typeof ImsVolunteerNetworkRoute
   '/verify/$certId': typeof VerifyCertIdRoute
@@ -939,6 +946,7 @@ export interface FileRoutesByTo {
   '/ims/search': typeof ImsSearchRoute
   '/ims/separations': typeof ImsSeparationsRoute
   '/ims/social': typeof ImsSocialRoute
+  '/ims/submissions': typeof ImsSubmissionsRoute
   '/ims/users': typeof ImsUsersRoute
   '/ims/volunteer-network': typeof ImsVolunteerNetworkRoute
   '/verify/$certId': typeof VerifyCertIdRoute
@@ -1059,6 +1067,7 @@ export interface FileRoutesById {
   '/ims/search': typeof ImsSearchRoute
   '/ims/separations': typeof ImsSeparationsRoute
   '/ims/social': typeof ImsSocialRoute
+  '/ims/submissions': typeof ImsSubmissionsRoute
   '/ims/users': typeof ImsUsersRoute
   '/ims/volunteer-network': typeof ImsVolunteerNetworkRoute
   '/verify/$certId': typeof VerifyCertIdRoute
@@ -1180,6 +1189,7 @@ export interface FileRouteTypes {
     | '/ims/search'
     | '/ims/separations'
     | '/ims/social'
+    | '/ims/submissions'
     | '/ims/users'
     | '/ims/volunteer-network'
     | '/verify/$certId'
@@ -1298,6 +1308,7 @@ export interface FileRouteTypes {
     | '/ims/search'
     | '/ims/separations'
     | '/ims/social'
+    | '/ims/submissions'
     | '/ims/users'
     | '/ims/volunteer-network'
     | '/verify/$certId'
@@ -1417,6 +1428,7 @@ export interface FileRouteTypes {
     | '/ims/search'
     | '/ims/separations'
     | '/ims/social'
+    | '/ims/submissions'
     | '/ims/users'
     | '/ims/volunteer-network'
     | '/verify/$certId'
@@ -1533,6 +1545,7 @@ export interface RootRouteChildren {
   ImsSearchRoute: typeof ImsSearchRoute
   ImsSeparationsRoute: typeof ImsSeparationsRoute
   ImsSocialRoute: typeof ImsSocialRoute
+  ImsSubmissionsRoute: typeof ImsSubmissionsRoute
   ImsUsersRoute: typeof ImsUsersRoute
   ImsVolunteerNetworkRoute: typeof ImsVolunteerNetworkRoute
   VerifyCertIdRoute: typeof VerifyCertIdRoute
@@ -2011,6 +2024,13 @@ declare module '@tanstack/react-router' {
       path: '/ims/users'
       fullPath: '/ims/users'
       preLoaderRoute: typeof ImsUsersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ims/submissions': {
+      id: '/ims/submissions'
+      path: '/ims/submissions'
+      fullPath: '/ims/submissions'
+      preLoaderRoute: typeof ImsSubmissionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ims/social': {
@@ -2501,6 +2521,7 @@ const rootRouteChildren: RootRouteChildren = {
   ImsSearchRoute: ImsSearchRoute,
   ImsSeparationsRoute: ImsSeparationsRoute,
   ImsSocialRoute: ImsSocialRoute,
+  ImsSubmissionsRoute: ImsSubmissionsRoute,
   ImsUsersRoute: ImsUsersRoute,
   ImsVolunteerNetworkRoute: ImsVolunteerNetworkRoute,
   VerifyCertIdRoute: VerifyCertIdRoute,

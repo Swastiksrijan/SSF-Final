@@ -194,6 +194,17 @@ export const ims = {
   socialSaveEvent: (payload) => fetch(`${API_BASE_URL}/api/social/events`, { method: 'POST', headers: headers(), body: JSON.stringify(payload) }).then(handle),
   socialPatchEvent: (id, payload) => fetch(`${API_BASE_URL}/api/social/events/${id}`, { method: 'PATCH', headers: headers(), body: JSON.stringify(payload) }).then(handle),
   socialRemoveEvent: (id) => fetch(`${API_BASE_URL}/api/social/events/${id}`, { method: 'DELETE', headers: headers() }).then(handle),
+
+  // ---- Unified submissions register (every public form, live) ----
+  submissions: (params = {}) => {
+    const qs = new URLSearchParams();
+    for (const [k, v] of Object.entries(params)) if (v) qs.set(k, v);
+    return fetch(`${API_BASE_URL}/api/ims/submissions?${qs.toString()}`, { headers: headers() }).then(handle);
+  },
+  submissionsSummary: () => fetch(`${API_BASE_URL}/api/ims/submissions/summary`, { headers: headers() }).then(handle),
+  submissionsUpdateNote: (id, payload) => fetch(`${API_BASE_URL}/api/ims/submissions/note/${encodeURIComponent(id)}`, {
+    method: 'PUT', headers: headers(), body: JSON.stringify(payload),
+  }).then(handle),
 };
 
 // Public (no auth) social feed for the website News/Blog section.
