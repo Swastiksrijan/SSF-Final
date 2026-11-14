@@ -164,7 +164,7 @@ export default function JoinRolesSection() {
           </div>
         </div>
 
-        <ol className="mx-auto -mt-6 grid max-w-5xl gap-3 px-2 sm:grid-cols-2 lg:grid-cols-4">
+        <ol className="mx-auto mt-8 grid max-w-5xl gap-3 px-2 sm:grid-cols-2 lg:grid-cols-4">
           {ROADMAP.map((step, i) => (
             <li key={i} className="flex items-start gap-3 rounded-2xl border border-[#E3EAF0] bg-white p-4 shadow-sm">
               <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#176447] text-sm font-black text-white">{i + 1}</span>
