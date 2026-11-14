@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { FaArrowRight } from "react-icons/fa";
+import { BRAND } from "../data/brandAssets";
 
 const founder = {
   name: "Ramesh Pandey",
@@ -8,6 +9,20 @@ const founder = {
   location: "Rewa, Madhya Pradesh",
   img: "/Teams_Images/ramesh_pandey.jpg?v=3",
 };
+
+// Mirrors backend_node/data/managingCommittee.js — the single source of truth
+// for the current committee (term 2025–2028).
+const committee = [
+  { name: "Mr. Ramesh Pandey", designation: "President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/ramesh_pandey.jpg?v=3" },
+  { name: "Ms. Preeti Shukla", designation: "Vice President", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_19.jpg" },
+  { name: "Mr. Amit Kumar Pandey", designation: "Secretary", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_15.jpg" },
+  { name: "Ms. Divya Sharma", designation: "Treasurer", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/divya_sharma.jpg" },
+  { name: "Ms. Kiran Pandey", designation: "Joint Secretary", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/image_22.jpg" },
+  { name: "Mr. Ritesh Kumar Tiwari", designation: "Member", location: "Mumbai, Maharashtra", img: "/Teams_Images/ritesh_tiwari.jpg" },
+  { name: "Mr. Rishi Kumar Pandey", designation: "Member", location: "Satna, Madhya Pradesh", img: "/Teams_Images/rishi_pandey.jpg" },
+  { name: "Mr. Sandeep Tripathi", designation: "Member", location: "Satna, Madhya Pradesh", img: "/Teams_Images/sandeep_tripathi.jpg" },
+  { name: "Mr. Prameesh Singh", designation: "Member", location: "Rewa, Madhya Pradesh", img: "/Teams_Images/prameesh_singh.jpg" },
+];
 
 const volunteers = [
   { name: "Mr. Rajeev Pandey", designation: "Advisor & Volunteer", location: "Madhya Pradesh", img: "/Teams_Images/rajeev_pandey.jpg" },
@@ -42,7 +57,7 @@ export default function Team() {
       <section className="relative isolate overflow-hidden bg-[#082B49] px-5 py-28 text-white md:py-36">
         <div className="absolute inset-0 -z-10 opacity-25" style={{ backgroundImage: "radial-gradient(circle at 15% 20%, #F7A814, transparent 32%), radial-gradient(circle at 85% 80%, #176447, transparent 34%)" }} />
         <div className="mx-auto grid max-w-7xl items-center gap-10 md:grid-cols-[1fr_.7fr]">
-          <div><p className="text-xs font-black uppercase tracking-[.22em] text-[#F7C45B]">People • Service • Community</p><h1 className="mt-5 text-4xl font-black md:text-6xl">People Behind the Mission</h1><p className="mt-3 text-xl font-semibold text-white/85">मिशन से जुड़े लोग</p><p className="mt-6 max-w-2xl text-sm leading-7 text-white/75 md:text-base">Meet the Founder and the volunteers who contribute their time, skills and experience to community-focused work.</p></div>
+          <div><p className="text-xs font-black uppercase tracking-[.22em] text-[#F7C45B]">People • Service • Community</p><h1 className="mt-5 text-4xl font-black md:text-6xl">People Behind the Mission</h1><p className="mt-3 text-xl font-semibold text-white/85">मिशन से जुड़े लोग</p><p className="mt-6 max-w-2xl text-sm leading-7 text-white/75 md:text-base">Meet the Founder, the Managing Committee and the volunteers who contribute their time, skills and experience to community-focused work.</p></div>
           <div className="mx-auto w-full max-w-sm overflow-hidden rounded-[2rem] border border-white/15 bg-white/10 p-3 shadow-2xl"><img src={founder.img} alt="Ramesh Pandey, Founder" className="aspect-[4/5] w-full rounded-[1.5rem] object-cover" /><div className="px-3 py-4"><p className="text-lg font-extrabold">Ramesh Pandey</p><p className="mt-1 text-sm font-semibold text-[#F7C45B]">Founder</p></div></div>
         </div>
       </section>
@@ -53,6 +68,17 @@ export default function Team() {
       </section>
 
       <section className="bg-[#F5F8FA] px-5 py-16 sm:px-8 md:py-20">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Managing Committee" title="कार्यकारिणी समिति" subtitle="The office bearers and members who currently hold responsibility for the Foundation’s governance, finance, compliance and institutional development." />
+          <figure className="mb-12 overflow-hidden rounded-[2rem] border border-[#EAF0F6] bg-white p-4 shadow-sm md:p-6">
+            <img src={BRAND.governingBody} alt="The Managing Committee of Swastik Srijan Foundation Samiti" loading="lazy" className="mx-auto w-full max-w-2xl rounded-2xl" />
+            <figcaption className="mt-4 text-center text-sm font-semibold text-slate-500">The Foundation’s Managing Committee · कार्यकारिणी समिति</figcaption>
+          </figure>
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{committee.map((person, index) => <PersonCard key={person.name} person={person} index={index} />)}</div>
+        </div>
+      </section>
+
+      <section className="bg-white px-5 py-16 sm:px-8 md:py-20">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Volunteer & Professional Network" title="स्वयंसेवक एवं प्रोफेशनल नेटवर्क" subtitle="People contributing specialist knowledge, counselling, technology and volunteer support. Participation and assignments are based on mutual understanding and current programme needs." />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">{volunteers.map((person, index) => <PersonCard key={person.name} person={person} index={index} />)}</div>
