@@ -129,10 +129,10 @@ export default function AuthModal({ open, onClose, onAuthSuccess, initialMode = 
         <div className={isModal ? "fixed inset-0 z-[120] bg-black/45 backdrop-blur-sm flex items-center justify-center p-4" : "flex justify-center w-full"} role={isModal ? "dialog" : undefined} aria-modal={isModal || undefined} aria-labelledby="auth-title">
             <div className="bg-white w-full max-w-md rounded-3xl shadow-2xl border border-zinc-100 p-6 relative">
                 {isModal && <button onClick={onClose} className="absolute top-4 right-4 text-zinc-500 hover:text-zinc-900" aria-label="Close auth modal"><FaTimes /></button>}
-                <h3 id="auth-title" className="text-2xl font-bold text-[#12345A] mb-5">{mode === "signup" ? "Join SSF" : mode === "login" ? "Welcome Back" : "Reset Password"}</h3>
+                <h3 id="auth-title" className="text-2xl font-bold text-[#12345A] mb-5">{mode === "signup" ? "Join Us" : mode === "login" ? "Welcome Back" : "Reset Password"}</h3>
 
                 {mode !== "forgot" && <div className="flex gap-2 bg-zinc-100 rounded-xl p-1 mb-5">
-                    <button type="button" className={`flex-1 py-2 rounded-lg font-semibold text-sm ${mode === "signup" ? "bg-white text-[#12345A] shadow" : "text-zinc-500"}`} onClick={() => { setMode("signup"); setStatus("idle"); setMessage(""); }}>Join SSF</button>
+                    <button type="button" className={`flex-1 py-2 rounded-lg font-semibold text-sm ${mode === "signup" ? "bg-white text-[#12345A] shadow" : "text-zinc-500"}`} onClick={() => { setMode("signup"); setStatus("idle"); setMessage(""); }}>Join Us</button>
                     <button type="button" className={`flex-1 py-2 rounded-lg font-semibold text-sm ${mode === "login" ? "bg-white text-[#12345A] shadow" : "text-zinc-500"}`} onClick={showLogin}>Login</button>
                 </div>}
 

@@ -5,8 +5,10 @@ import CertificateGenerator from "../components/CertificateGenerator";
 import MemberForm from "../components/MemberForm";
 import MemberActionResponse from "../components/MemberActionResponse";
 import JoinRolesSection from "../components/JoinRolesSection";
+import { useLanguage } from "../context/LanguageContext";
 
 const Members = () => {
+  const { lang } = useLanguage();
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedMemberType, setSelectedMemberType] = useState("general");
   const [directApplication, setDirectApplication] = useState(false);
@@ -51,9 +53,38 @@ const Members = () => {
 
   return (
     <div className="w-full bg-white font-sans text-zinc-900 overflow-hidden">
-      <section className="relative h-[80vh] flex items-center justify-center bg-[#12345A] overflow-hidden">
-        <div className="absolute inset-0"><img src="/images/uploads/members-group.jpg" alt="Swastik Srijan Members Group" className="w-full h-full object-cover opacity-60" /><div className="absolute inset-0 bg-gradient-to-t from-[#12345A] via-[#12345A]/40 to-black/20"></div></div>
-        <div className="relative z-10 text-center px-6 max-w-5xl space-y-8"><motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-6"><div className="inline-block px-4 py-1.5 rounded-full bg-[#176447] text-white font-bold tracking-widest uppercase text-sm shadow-xl">Become a Member • सदस्य बनें</div><h1 className="text-4xl sm:text-6xl md:text-7xl font-sans font-bold text-white leading-tight drop-shadow-lg">The Backbone of <br /><span className="text-[#176447]">Our Foundation.</span></h1><p className="text-xl md:text-2xl text-zinc-100 font-medium leading-relaxed max-w-3xl mx-auto drop-shadow-md">"सदस्य वह है जो सेवा और सहयोग से संस्था के उद्देश्यों को आगे बढ़ाता है।"<br /><span className="text-lg opacity-80 font-normal">Join our charitable mission and help strengthen community initiatives.</span></p></motion.div></div>
+      <section className="relative flex min-h-[62vh] items-center justify-center overflow-hidden bg-[#12345A] py-24 sm:min-h-[70vh] lg:h-[78vh] lg:py-0">
+        <div className="absolute inset-0">
+          <img src="/images/uploads/members-group.jpg" alt="Swastik Srijan Foundation members and volunteers together" className="h-full w-full object-cover object-center opacity-70" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#0b2545] via-[#12345A]/70 to-[#12345A]/35" />
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0b2545]/80 via-transparent to-transparent" />
+        </div>
+        <div className="relative z-10 mx-auto w-full max-w-5xl px-6 text-center">
+          <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-7">
+            <div className="inline-flex items-center gap-2 rounded-full border border-white/20 bg-[#176447] px-4 py-1.5 text-xs font-bold uppercase tracking-[0.18em] text-white shadow-xl sm:text-sm">
+              <FaUsers className="text-sm" />
+              {lang === "hi" ? "सदस्य बनें" : "Become a Member"} • {lang === "hi" ? "Membership" : "सदस्यता"}
+            </div>
+            <h1 className="font-sans text-4xl font-bold leading-[1.1] text-white drop-shadow-lg sm:text-6xl md:text-7xl">
+              {lang === "hi" ? (<>संस्था का <span className="text-[#F7A814]">आधार।</span></>) : (<>The Backbone of <br className="hidden sm:block" /><span className="text-[#F7A814]">Our Foundation.</span></>)}
+            </h1>
+            <p className="mx-auto max-w-3xl text-lg font-medium leading-relaxed text-zinc-100 drop-shadow-md sm:text-xl md:text-2xl">
+              {lang === "hi" ? (
+                <>"सदस्य वह है जो सेवा और सहयोग से संस्था के उद्देश्यों को आगे बढ़ाता है।"<br /><span className="text-base font-normal opacity-80 sm:text-lg">सदस्य, स्वयंसेवक, पदाधिकारी या साझेदार — हर रूप में जुड़िए।</span></>
+              ) : (
+                <>"A member is one who carries the Foundation's objectives forward through service and support."<br /><span className="text-base font-normal opacity-80 sm:text-lg">Join as a member, volunteer, office bearer or partner — every role matters.</span></>
+              )}
+            </p>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-1">
+              <a href="#roles" className="inline-flex items-center gap-2 rounded-full bg-[#F7A814] px-6 py-3 text-sm font-black tracking-wide text-[#12345A] shadow-xl transition hover:-translate-y-0.5 sm:text-base">
+                {lang === "hi" ? "अपनी भूमिका चुनें" : "Choose your role"} <FaArrowRight />
+              </a>
+              <a href="#apply" className="inline-flex items-center gap-2 rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-bold tracking-wide text-white backdrop-blur-sm transition hover:bg-white/20 sm:text-base">
+                {lang === "hi" ? "सदस्यता आवेदन" : "Membership application"}
+              </a>
+            </div>
+          </motion.div>
+        </div>
       </section>
 
       <section className="py-24 px-6 bg-zinc-50 border-y border-zinc-100">

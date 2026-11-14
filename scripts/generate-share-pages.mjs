@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { JOIN_ROLES, findGroup } from '../src/data/joinRoles.js';
+import { buildShareCard } from './lib/share-card.mjs';
 
 const root = process.cwd();
 const distDir = path.join(root, 'dist');
@@ -29,7 +30,7 @@ const pages = {
   '/JoinUs': ['Join SSF | Create Your Swastik Srijan Foundation Account', 'Create your account as a Member, Volunteer, Leadership member, Intern, Donor or Partner of Swastik Srijan Foundation and get your digital ID card and certificates.', '/images/join-ssf-share.png'],
   '/Volunteer': ['Volunteer With Us | Swastik Srijan Foundation', 'Become a volunteer and contribute your time and skills to create meaningful social change.', '/images/volunteers.png'],
   '/Internship': ['Internship Programs | Swastik Srijan Foundation', 'Gain hands-on experience while contributing to meaningful social impact work.', '/images/ssf-youth-career.png'],
-  '/Members': ['Membership | Swastik Srijan Foundation', 'Become a member of Swastik Srijan Foundation and contribute to our governance, philosophy and future direction.', '/images/uploads/members-group.jpg'],
+  '/Members': ['Join Us · Membership | Swastik Srijan Foundation', 'Become a member of Swastik Srijan Foundation, volunteer, or take up a leadership, department or state role. Apply online / आवेदन करें.', '/images/share/members-hub.jpg'],
   '/Donate': ['Donate to Swastik Srijan Foundation | Support Our Mission', 'Support education, health, livelihoods and community development through Swastik Srijan Foundation.', '/images/uploads/donate-hero.jpg'],
   '/Donor': ['Become a Donor | Swastik Srijan Foundation', 'Support transparent giving and help strengthen education, health and community development initiatives.', '/images/real/direct-relief-women.jpg'],
   '/CSRPartnership': ['CSR Partnership | Corporate Social Responsibility', 'Partner with Swastik Srijan Foundation for meaningful CSR initiatives and sustainable community impact.', '/images/csr-hero.png'],
@@ -93,6 +94,8 @@ function buildHtml(route, [title, description, image, redirectTarget]) {
   html = html.replace(/<meta property="og:title"[^>]*>/i, `<meta property="og:title" content="${escapeHtml(title)}" />`);
   html = html.replace(/<meta property="og:description"[^>]*>/i, `<meta property="og:description" content="${escapeHtml(description)}" />`);
   html = html.replace(/<meta property="og:url"[^>]*>/i, `<meta property="og:url" content="${url}" />`);
+  html = html.replace(/<meta name="twitter:title"[^>]*>/i, `<meta name="twitter:title" content="${escapeHtml(title)}" />`);
+  html = html.replace(/<meta name="twitter:description"[^>]*>/i, `<meta name="twitter:description" content="${escapeHtml(description)}" />`);
   if (absoluteImage) {
     html = html.replace(/<meta property="og:image"[^>]*>/i, `<meta property="og:image" content="${absoluteImage}" />`);
     html = html.replace(/<meta name="twitter:card"[^>]*>/i, '<meta name="twitter:card" content="summary_large_image" />');
@@ -149,22 +152,48 @@ for (const route of appRoutes) {
   fs.writeFileSync(path.join(targetDir, 'index.html'), source);
 }
 
-// Every join role gets its own share card. The card carries the role name in the
-// title and description, so sharing /Members/<role> on social media previews the
-// role, not just "Membership". It then redirects to that role's application form.
-const roleImage = '/images/join-ssf-share.png';
+// Every join role gets its own share card: a real photograph of the Foundation
+// with the role name in Hindi and English and the Foundation name over it, so a
+// shared link previews a photo AND shows which role the link is for. The page
+// then redirects to that role's application form.
+const rolePhoto = '/images/uploads/members-group.jpg';
+const brandName = 'Swastik Srijan Foundation';
+const brandHindi = 'स्वास्तिक सृजन फाउंडेशन समिति';
 for (const role of JOIN_ROLES) {
   const group = findGroup(role.group);
-  const title = `${role.hi} — ${role.en} | Swastik Srijan Foundation`;
-  const description = `${role.en} (${role.hi}) — ${group ? group.en : 'Join us'}. Apply / आवेदन करें at Swastik Srijan Foundation.`;
+  const groupEn = group ? group.en : 'Membership & Participation';
+  const title = `${role.en} (${role.hi}) | ${brandName}`;
+  const description = `Join ${brandName} as ${role.en} (${role.hi}) — ${groupEn}. Apply online / आवेदन करें.`;
+  const image = `/images/share/members-${role.slug}.jpg`;
+  await buildShareCard({
+    photo: path.join(distDir, rolePhoto.slice(1)),
+    hindi: role.hi,
+    english: role.en,
+    kicker: 'JOIN US · MEMBERSHIP',
+    brand: brandName,
+    brandHindi,
+    out: path.join(distDir, image.slice(1)),
+  });
   const targetDir = path.join(distDir, 'Members', role.slug);
   fs.mkdirSync(targetDir, { recursive: true });
-  let html = buildHtml(`/Members/${role.slug}`, [title, description, roleImage, `/Members?role=${role.slug}`]);
+  let html = buildHtml(`/Members/${role.slug}`, [title, description, image, `/Members?role=${role.slug}`]);
   // This page exists only for the preview and redirects at once, so it must not
   // boot the app on a route the app does not serve.
   html = html.replace(/<script[^>]*type="module"[^>]*><\/script>\s*/gi, '');
   fs.writeFileSync(path.join(targetDir, 'index.html'), html);
 }
+
+// The join hub itself also previews a photo with the Foundation name on it.
+await buildShareCard({
+  photo: path.join(distDir, rolePhoto.slice(1)),
+  hindi: 'सदस्य बनें',
+  english: 'Join Us · Membership',
+  kicker: 'SWASTIK SRIJAN FOUNDATION',
+  brand: brandName,
+  brandHindi,
+  out: path.join(distDir, 'images/share/members-hub.jpg'),
+});
+
 
 fs.writeFileSync(indexPath, buildHtml('/', pages['/']));
 console.log(`Generated ${Object.keys(pages).length} SEO route pages + ${appRoutes.length} app route shells + ${JOIN_ROLES.length} role share pages.`);

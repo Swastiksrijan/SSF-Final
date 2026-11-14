@@ -275,7 +275,7 @@ export default function Home() {
                 onClick={() => { setAuthMode("signup"); setLoginOpen(true); }}
                 className="inline-flex min-h-12 items-center justify-center gap-2.5 rounded-full border border-amber-300/80 bg-[#FAF9F5] px-6 py-3.5 text-sm font-extrabold text-[#12345A] shadow-lg shadow-black/15 transition-all duration-300 hover:-translate-y-1 hover:border-amber-400 hover:bg-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-amber-300"
               >
-                <FaUsers /> Join SSF
+                <FaUsers /> Join Us
               </button>
             </div>
 
@@ -382,7 +382,7 @@ export default function Home() {
                 </div>
 
                 <h3 className="mt-2 font-serif text-xl sm:text-2xl font-bold text-white">
-                  Join SSF
+                  Join Us
                 </h3>
                 <p className="mt-1 text-xs text-slate-300 leading-relaxed">
                   Create your verified account and be a part of our mission.
@@ -390,7 +390,7 @@ export default function Home() {
 
                 <div className="mt-3 grid grid-cols-2 gap-2">
                   <Link to="/Signup" className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-amber-400 to-amber-500 px-3 py-2 text-xs font-black text-[#12345A] shadow-md hover:brightness-110 transition-all">
-                    Join SSF
+                    Join Us
                   </Link>
                   <button type="button" onClick={() => { setAuthMode("login"); setLoginOpen(true); }} className="inline-flex items-center justify-center rounded-full border border-white/20 bg-white/10 px-3 py-2 text-xs font-bold text-white hover:bg-white/15 transition-all">
                     <FaSignInAlt className="mr-1.5" /> Login
@@ -1284,7 +1284,7 @@ export default function Home() {
               to="/JoinUs" 
               className="inline-flex items-center justify-center gap-2.5 rounded-full bg-[#12345A] px-7 py-3.5 text-sm font-bold text-white shadow-lg transition-all duration-300 hover:-translate-y-0.5 hover:bg-[#176447]"
             >
-              <FaUsers /> Join SSF
+              <FaUsers /> Join Us
             </Link>
 
             <Link 
