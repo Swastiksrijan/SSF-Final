@@ -20,7 +20,7 @@ const MEMBERSHIP_TYPES = {
 const PAYMENT_MODES = ["Razorpay (online)", "UPI", "Bank transfer / NEFT", "Cash (paid at office)"];
 
 const FORM_CONFIG = {
-  volunteer: { title: "Volunteer", icon: FaUserFriends, eyebrow: "Serve with SSF", description: "Join SSF as a volunteer using the details already saved in your My Profile." },
+  volunteer: { title: "Volunteer", icon: FaUserFriends, eyebrow: "Serve with SSF", description: "Join Us as a volunteer using the details already saved in your My Profile." },
   membership: { title: "Membership", icon: FaUsers, eyebrow: "Become part of SSF", description: "Choose the membership type that best matches your participation." },
   donor: { title: "Donor", icon: FaHeart, eyebrow: "Support SSF", description: "Register your donor details and support Swastik Srijan Foundation through your contribution." },
   internship: { title: "Internship", icon: FaGraduationCap, eyebrow: "Learn through service", description: "Apply for an internship and gain practical experience through social work." },

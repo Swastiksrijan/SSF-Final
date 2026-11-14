@@ -254,7 +254,7 @@ const FloatingTicker = () => {
                                     onClick={() => setAuthMode("signup")}
                                     className="inline-flex flex-1 items-center justify-center gap-2 rounded-full bg-[#F7A814] px-4 py-2.5 text-xs font-black uppercase tracking-wide text-[#12345A] transition hover:bg-white"
                                 >
-                                    Join SSF / Sign Up
+                                    Join Us / Sign Up
                                 </button>
                                 <button
                                     type="button"

@@ -56,7 +56,7 @@ export default function TopContactBar({ lang, onToggleLang, onJoin }) {
         <div className="order-last flex w-full flex-wrap items-center justify-center gap-1.5 sm:gap-2 xl:order-none xl:w-auto xl:flex-nowrap">
           <button type="button" onClick={onJoin} className="ssf-top-action ssf-top-action-join">
             <FaUserPlus className="ssf-top-action-icon" />
-            <span>Join SSF</span>
+            <span>Join Us</span>
           </button>
           <a href="/Members?apply=1" className="ssf-top-action ssf-top-action-member">
             <FaIdCard className="ssf-top-action-icon" />

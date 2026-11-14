@@ -87,7 +87,7 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
     </div>
 
     <p className="mt-4 text-sm leading-7 text-zinc-600 md:text-base">
-      Certificate पाने के लिए नीचे <strong>Join SSF</strong> / <strong>Login</strong> करें। आपकी details admin panel में जाएँगी, admin verify करके certificate जारी करेगा।
+      Certificate पाने के लिए नीचे <strong>Join Us</strong> / <strong>Login</strong> करें। आपकी details admin panel में जाएँगी, admin verify करके certificate जारी करेगा।
     </p>
 
     {user ? <div className="mt-4 flex flex-wrap items-center gap-3 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
@@ -99,7 +99,7 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
     <div className="mt-5 flex flex-col gap-3 sm:flex-row">
       {user
         ? <button type="button" disabled={status === "submitting"} onClick={submitRequest} className="flex-1 rounded-xl bg-[#176447] px-5 py-3 text-sm font-black text-white disabled:opacity-50">{status === "submitting" ? "Submitting..." : requested ? "Request Again / दोबारा अनुरोध" : "Request Certificate / प्रमाणपत्र का अनुरोध करें"}</button>
-        : <button type="button" onClick={() => setAuthOpen(true)} className="flex-1 rounded-xl bg-gradient-to-br from-[#12345A] to-[#12345A] px-5 py-3 text-sm font-black text-white">Join SSF / Login to get Certificate</button>}
+        : <button type="button" onClick={() => setAuthOpen(true)} className="flex-1 rounded-xl bg-gradient-to-br from-[#12345A] to-[#12345A] px-5 py-3 text-sm font-black text-white">Join Us / Login to get Certificate</button>}
     </div>
 
     <div className="mt-4 border-t border-zinc-200 pt-4">
