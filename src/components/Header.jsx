@@ -91,7 +91,7 @@ const Header = () => {
 
   return <header className={`fixed top-0 left-0 right-0 z-50 font-sans ${isScrolled ? "ssf-header-scrolled" : "ssf-header-top"}`}>
     <div className="ssf-contact-bar-wrap">
-      <TopContactBar lang={lang} onToggleLang={toggleLang} />
+      <TopContactBar lang={lang} onToggleLang={toggleLang} onJoin={() => openAuth("signup")} />
     </div>
     <div className={`ssf-nav-shell ${isScrolled ? "is-scrolled" : "is-transparent"}`}>
       <div className="ssf-nav-bg" aria-hidden="true" />
@@ -137,17 +137,14 @@ const Header = () => {
 
         <div className="flex items-center gap-2.5 shrink-0">
 
-          {user ? <div className="relative hidden lg:block"><button onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen} aria-haspopup="menu" className="group flex items-center gap-2.5 px-3 py-2 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.02em] hover:border-[#F7A814]/70 hover:bg-white/15 transition-all duration-200"><span className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 ring-1 ring-white/30">{profilePhoto ? <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" /> : <FaUserCircle className="text-2xl text-white/80" />}</span><span className="max-w-28 truncate">{user.fullName || user.email}</span><IoIosArrowDown className={`transition-transform duration-200 ${accountOpen ? "rotate-180" : ""}`} /></button>{accountOpen && account}</div> : <button onClick={() => openAuth("signup")} className="ssf-nav-join hidden lg:inline-flex items-center justify-center px-5 py-2.5 rounded-full border font-extrabold text-[13px] tracking-[0.03em] transition-all duration-200">Join SSF</button>}
-
-          <a href="/Members?apply=1" aria-label="सदस्यता हेतु आवेदन" className="hidden lg:inline-flex items-center justify-center px-4 py-2.5 rounded-full border border-[#F7A814] bg-[#F7A814] text-[#12345A] font-black text-[12px] whitespace-nowrap hover:bg-white transition-colors">सदस्यता आवेदन</a>
-          <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" aria-label="Open donation page" className="ssf-nav-donate inline-flex items-center gap-2 px-5 py-2.5 rounded-full font-black text-[13px] tracking-[0.03em] whitespace-nowrap transition-transform hover:-translate-y-0.5"><FaHeart className="text-[12px]" /> Donate Now</a>
+          {user ? <div className="relative hidden lg:block"><button onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen} aria-haspopup="menu" className="group flex items-center gap-2.5 px-3 py-2 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.02em] hover:border-[#F7A814]/70 hover:bg-white/15 transition-all duration-200"><span className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 ring-1 ring-white/30">{profilePhoto ? <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" /> : <FaUserCircle className="text-2xl text-white/80" />}</span><span className="max-w-28 truncate">{user.fullName || user.email}</span><IoIosArrowDown className={`transition-transform duration-200 ${accountOpen ? "rotate-180" : ""}`} /></button>{accountOpen && account}</div>}
 
           <button aria-label={menuOpen ? "Close menu" : "Open menu"} className={`xl:hidden text-2xl p-2 rounded-xl text-white hover:bg-white/10`} onClick={() => setMenuOpen(!menuOpen)}>{menuOpen ? <HiX /> : <HiOutlineMenu />}</button>
         </div>
       </div>
     </div>
 
-    {menuOpen && <div className={`xl:hidden fixed inset-0 ${isScrolled ? "top-20" : "top-[114px]"} bg-white z-40 overflow-y-auto pb-20`}><nav className="p-5 sm:p-6">
+    {menuOpen && <div className={`xl:hidden fixed inset-0 top-[148px] bg-white z-40 overflow-y-auto pb-20`}><nav className="p-5 sm:p-6">
       <div className="mb-5 rounded-2xl bg-[#12345A] text-white p-4">
         <p className="text-[10px] uppercase tracking-[0.16em] text-[#F7A814] font-black mb-3">Official Contact</p>
         <div className="space-y-2.5 text-sm"><a href="https://wa.me/919718346691" target="_blank" rel="noreferrer" className="flex items-center gap-3"><FaPhoneAlt className="text-[#F7A814]" /> +91 97183 46691</a><a href="mailto:info@swastiksrijan.in" className="flex items-center gap-3"><FaEnvelope className="text-[#F7A814]" /> info@swastiksrijan.in</a><div className="flex items-center gap-3 text-[#EAF0F6]"><FaMapMarkerAlt className="text-[#F7A814]" /> Rewa, Madhya Pradesh, India</div></div>
