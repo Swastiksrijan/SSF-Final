@@ -376,6 +376,8 @@ export const DICT = {
   short_code: { en: 'Short Code', hi: 'संक्षिप्त कोड' },
   purpose: { en: 'Purpose', hi: 'उद्देश्य' },
   back: { en: 'Back', hi: 'वापस' },
+  back_to_admin: { en: 'Admin Panel', hi: 'प्रशासन पैनल' },
+  back_to_admin_title: { en: 'Back to Admin Panel', hi: 'प्रशासन पैनल पर वापस' },
   close: { en: 'Close', hi: 'बंद करें' },
   reopen: { en: 'Reopen', hi: 'पुनः खोलें' },
   budget: { en: 'Budget', hi: 'बजट' },
