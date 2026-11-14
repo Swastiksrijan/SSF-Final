@@ -124,7 +124,7 @@ export default function AboutPage() {
   return (
     <main className="min-h-screen overflow-hidden bg-white font-sans text-[#26343D]">
       {/* Hero */}
-      <section className="relative isolate min-h-[620px] overflow-hidden bg-[#071D34] text-white sm:min-h-[660px] lg:min-h-[740px]">
+      <section className="ssf-hero-offset relative isolate min-h-[620px] overflow-hidden bg-[#071D34] text-white sm:min-h-[660px] lg:min-h-[740px]">
         <div className="absolute inset-0 grid grid-cols-3 gap-1 p-1 sm:gap-2 sm:p-2 lg:gap-3 lg:p-3" aria-hidden="true">
           {[footerImg1, footerImg2, footerImg3].map((img, index) => (
             <div

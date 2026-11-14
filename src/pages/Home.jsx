@@ -185,7 +185,7 @@ export default function Home() {
     <main className="w-full overflow-hidden bg-[#FAF9F5] font-sans text-[#26343D] antialiased selection:bg-[#F59E0B]/30">
       
       {/* ================= HERO SECTION ================= */}
-      <section className="relative isolate flex min-h-[680px] items-center overflow-hidden bg-[#12345A] pt-32 pb-20 text-white sm:min-h-[720px] sm:py-20 md:min-h-[780px] md:py-28">
+      <section className="ssf-hero-offset relative isolate flex min-h-[680px] items-center overflow-hidden bg-[#12345A] pb-20 text-white sm:min-h-[720px] sm:pb-20 md:min-h-[780px] md:pb-28">
         
         {/* Visual Backdrops */}
         <div className="absolute inset-0 -z-20">

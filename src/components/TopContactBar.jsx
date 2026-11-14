@@ -18,9 +18,9 @@ const SOCIALS = [
 
 /**
  * Slim gradient strip that sits above the main navigation header.
- * Contact details sit on the left; the primary actions and the social links
- * form a single group on the right so the buttons and icons read as one
- * cluster. Below `xl` the strip wraps into centred rows.
+ * Contact details sit on the left, the primary actions in the centre and the
+ * social links on the right, so the three actions never leave a wide empty
+ * stretch. Below `xl` the strip wraps into centred rows.
  */
 export default function TopContactBar({ lang, onToggleLang, onJoin }) {
   const tel = CONTACT_INFO.phones.primary.replace(/\s/g, "");
@@ -53,45 +53,41 @@ export default function TopContactBar({ lang, onToggleLang, onJoin }) {
           </button>
         </div>
 
-        <div className="flex w-full flex-wrap items-center justify-center gap-2 xl:w-auto xl:flex-nowrap xl:justify-end xl:gap-2.5">
-          <div className="flex flex-wrap items-center justify-center gap-1.5 sm:gap-2">
-            <button type="button" onClick={onJoin} className="ssf-top-action ssf-top-action-join">
-              <FaUserPlus className="ssf-top-action-icon" />
-              <span>Join SSF</span>
-            </button>
-            <a href="/Members?apply=1" className="ssf-top-action ssf-top-action-member">
-              <FaIdCard className="ssf-top-action-icon" />
-              <span>सदस्यता आवेदन</span>
+        <div className="order-last flex w-full flex-wrap items-center justify-center gap-1.5 sm:gap-2 xl:order-none xl:w-auto xl:flex-nowrap">
+          <button type="button" onClick={onJoin} className="ssf-top-action ssf-top-action-join">
+            <FaUserPlus className="ssf-top-action-icon" />
+            <span>Join SSF</span>
+          </button>
+          <a href="/Members?apply=1" className="ssf-top-action ssf-top-action-member">
+            <FaIdCard className="ssf-top-action-icon" />
+            <span>सदस्यता आवेदन</span>
+          </a>
+          <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" className="ssf-top-action ssf-top-action-donate">
+            <FaHeart className="ssf-top-action-icon" />
+            <span>Donate Now</span>
+          </a>
+        </div>
+
+        <div className="hidden items-center gap-1.5 xl:flex">
+          {SOCIALS.map(({ icon: Icon, href, label }) => (
+            <a
+              key={label}
+              href={href}
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label={label}
+              title={label}
+              className="ssf-top-social"
+            >
+              <Icon />
             </a>
-            <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" className="ssf-top-action ssf-top-action-donate">
-              <FaHeart className="ssf-top-action-icon" />
-              <span>Donate Now</span>
-            </a>
-          </div>
-
-          <span className="hidden text-white/20 xl:inline">|</span>
-
-          <div className="hidden items-center gap-1.5 xl:flex">
-            {SOCIALS.map(({ icon: Icon, href, label }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noreferrer noopener"
-                aria-label={label}
-                title={label}
-                className="ssf-top-social"
-              >
-                <Icon />
-              </a>
-            ))}
-          </div>
-
+          ))}
+          <span className="mx-0.5 text-white/20">|</span>
           <button
             type="button"
             onClick={onToggleLang}
             aria-label="Switch language"
-            className="ssf-top-lang hidden xl:inline-flex"
+            className="ssf-top-lang inline-flex"
           >
             {lang === "en" ? "हिन्दी" : "English"}
           </button>

@@ -59,7 +59,7 @@ export default function PageHero({
     );
 
     return (
-        <section className={`relative ${height} flex items-center justify-center bg-[#12345A] text-white overflow-hidden pt-20`}>
+        <section className={`ssf-hero-offset relative ${height} flex items-center justify-center bg-[#12345A] text-white overflow-hidden`}>
             {/* Background Image */}
             <div className="absolute inset-0 z-0">
                 <OptimizedImage
