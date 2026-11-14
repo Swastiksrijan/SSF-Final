@@ -307,7 +307,7 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
       return res.json({ status: 'success', record: publicRecord(row) });
     } else if (b.action !== 'save_draft') return res.status(400).json({ message: 'अमान्य कार्रवाई।' });
     return res.json({ status: 'success', record: publicRecord(row) });
-  } catch (e) { console.error('Member action update:', e); res.status(500).json({ message: 'नोटिस प्रक्रिया अपडेट नहीं हो सकी।' }); }
+  } catch (e) { console.error('Member action update:', e); res.status(500).json({ message: 'कार्रवाई सुरक्षित नहीं हो सकी। कृपया कुछ क्षण बाद पुनः प्रयास करें; समस्या बनी रहे तो नोटिस Ref. No. बताकर संस्था से संपर्क करें।' }); }
 });
 
 // Remove a notice that was never issued — a test entry, a wrong person, or a
