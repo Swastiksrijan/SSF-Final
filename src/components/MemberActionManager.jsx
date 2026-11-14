@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { ENDPOINTS } from "../config/api";
 import logoImg from "../assets/new-logo.png";
 import { downloadNoticePdf } from "../utils/noticePdf";
@@ -85,6 +85,7 @@ export default function MemberActionManager({ token }) {
   const [closing, setClosing] = useState(null);
   const [view, setView] = useState("cards");
   const [editing, setEditing] = useState(null);
+  const [stageForm, setStageForm] = useState(null);
 
   const load = async () => { const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { headers: headers(token), cache: "no-store" }); const d = await r.json().catch(() => []); if (!r.ok) throw new Error(d.message || "रजिस्टर लोड नहीं हुआ"); setRows(Array.isArray(d) ? d : []); };
   useEffect(() => { load().catch(e => setMessage(e.message)); }, [token]);
@@ -160,9 +161,20 @@ export default function MemberActionManager({ token }) {
   const saveNoticePdf = async row => { try { await downloadNoticePdf(row); } catch (e) { setMessage("PDF बनाते समय त्रुटि: " + (e.message || e)); } };
   const remove = async row => { if(row.status!=="draft"){ if(!window.confirm(`सचेत रहें: “${row.personName}” का जारी हो चुका नोटिस रिकॉर्ड है। इसे हटाने से उनका जवाब लिंक काम नहीं करेगा। क्या वाकई हटाना है?`)) return; } else if(!window.confirm("क्या आप इस नोटिस ड्राफ्ट को हटाना चाहते हैं? यह वापस नहीं आएगा।")) return; setBusy(true); setMessage(""); try { const url = `${ENDPOINTS.ADMIN_MEMBER_ACTIONS}/${row.id}` + (row.status!=="draft" ? "?force=true" : ""); const r=await fetch(url, { method:"DELETE", headers:headers(token) }); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.message || "रिकॉर्ड हटाया नहीं जा सका"); setMessage("रिकॉर्ड हटा दिया गया।"); await load(); } catch(e){ setMessage(e.message); } finally { setBusy(false); } };
   const issue = row => { if(!window.confirm("क्या इस नोटिस को अभी दिए गए ईमेल पते पर जारी करके भेजना है? पूरा नोटिस अलग से “पूरा नोटिस देखें” बटन से देखा जा सकता है। पुष्टि करने पर ईमेल और ऑनलाइन जवाब लिंक भेजा जाएगा।")) return; act(row,{action:"issue_notice",dispatchMethod:"email",dispatchReference:"",logoUrl:new URL(logoImg, window.location.origin).href}); };
-  const hearing = row => { const when = window.prompt("सुनवाई की तारीख और समय (उदाहरण: 2026-11-25T11:00)"); if (!when) return; const notes = window.prompt("सुनवाई का स्थान/ऑनलाइन माध्यम और सूचना विवरण"); if (!notes) return; const outcome = window.prompt("सुनवाई का परिणाम/सार (सुनवाई पूर्ण होने पर लिखें — यह रिकॉर्ड एवं रजिस्टर में दर्ज होगा)") || ""; act(row, { action: "hearing", hearingAt: when, hearingNotes: notes, hearingOutcome: outcome }); };
-  const committee = row => { const ref=window.prompt("प्रबंध समिति बैठक/कार्यवाही संदर्भ"); if(!ref) return; const note=window.prompt("जवाब, सुनवाई और समिति की चर्चा का पूरा सार"); if(!note) return; act(row,{action:"committee_review",committeeMeetingReference:ref,decisionText:note}); };
-  const generalBody = row => { const ref=window.prompt("सामान्य सभा बैठक/प्रस्ताव संदर्भ"); if(!ref) return; const note=window.prompt("सामान्य सभा की कार्यवाही और निर्णय का पूरा विवरण"); if(!note) return; act(row,{action:"general_body_review",generalBodyMeetingReference:ref,decisionText:note}); };
+  const hearing = row => setStageForm({ kind: "hearing", row, hearingAt: toLocalInput(new Date(Date.now() + 7 * 864e5)), hearingNotes: "", hearingOutcome: "" });
+  const committee = row => setStageForm({ kind: "committee", row, ref: "", note: "" });
+  const generalBody = row => setStageForm({ kind: "general_body", row, ref: "", note: "" });
+  const submitStage = async e => {
+    e.preventDefault();
+    const { kind, row } = stageForm;
+    const body = kind === "hearing"
+      ? { action: "hearing", hearingAt: new Date(stageForm.hearingAt).toISOString(), hearingNotes: stageForm.hearingNotes, hearingOutcome: stageForm.hearingOutcome }
+      : kind === "committee"
+        ? { action: "committee_review", committeeMeetingReference: stageForm.ref, decisionText: stageForm.note }
+        : { action: "general_body_review", generalBodyMeetingReference: stageForm.ref, decisionText: stageForm.note };
+    const ok = await act(row, body);
+    if (ok) setStageForm(null);
+  };
   // "अंतिम निर्णय दर्ज करें" opens a proper form. The old flow used window.prompt
   // pop-ups; when a step was skipped (e.g. a role-change decision chosen before
   // the General Body stage) it only flashed an alert, the record never changed,
@@ -240,6 +252,26 @@ export default function MemberActionManager({ token }) {
       <button type="button" disabled={busy} onClick={()=>openEdit(row)} className="mt-4 mr-2 rounded-lg border border-[#12345A] px-4 py-2 text-sm font-bold text-[#12345A]">संपादित करें</button><button type="button" disabled={busy} onClick={()=>remove(row)} className="mt-4 mr-2 rounded-lg border border-red-300 px-4 py-2 text-sm font-bold text-red-700">{row.status==="draft"?"रिकॉर्ड हटाएँ":"रिकॉर्ड हटाएँ (सचेत)"}</button>
       {row.status==="closed" && <p className="mt-2 text-xs font-bold text-slate-500">अंतिम निर्णय: {row.decisionType}</p>}{row.hearingCompletedAt && <p className="mt-2 text-xs font-bold text-emerald-700">✓ सुनवाई पूर्ण: {dateText(row.hearingCompletedAt)}</p>}{row.committeeReviewCompletedAt && <p className="mt-2 text-xs font-bold text-emerald-700">✓ समिति कार्यवाही पूर्ण: {dateText(row.committeeReviewCompletedAt)}</p>}{row.generalBodyReviewCompletedAt && <p className="mt-2 text-xs font-bold text-emerald-700">✓ सामान्य सभा कार्यवाही पूर्ण: {dateText(row.generalBodyReviewCompletedAt)}</p>}{row.status==="reply_received" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जवाब पढ़ें → आवश्यकता हो तो सुनवाई तय करें → फिर समिति की बैठक में कार्यवाही दर्ज करें।</p>}{row.status==="hearing_scheduled" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: सुनवाई पूरी होने पर उसका सार दर्ज रखें → समिति कार्यवाही दर्ज करें।</p>}{row.status==="committee_review" && <p className="mt-3 rounded-lg bg-blue-50 p-3 text-sm text-blue-800">अगला चरण: जहाँ नियम/निर्णय के लिए जरूरी हो, सामान्य सभा की कार्यवाही दर्ज करें; अन्यथा सक्षम समिति का वैध अंतिम निर्णय दर्ज करें।</p>}
     </article>)}</div>
+    {stageForm && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" onClick={()=>setStageForm(null)}>
+      <form onSubmit={submitStage} onClick={e=>e.stopPropagation()} className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
+        <h3 className="text-lg font-black text-[#12345A]">{stageForm.kind==="hearing" ? "सुनवाई तय करें" : stageForm.kind==="committee" ? "समिति कार्यवाही दर्ज करें" : "सामान्य सभा में रखें"}</h3>
+        <p className="mt-1 text-sm text-slate-500">{stageForm.row.personName} • {stageForm.row.noticeReference || "—"}</p>
+        {stageForm.kind==="hearing" ? <>
+          <p className="mt-3 rounded-xl bg-blue-50 p-3 text-xs text-blue-800">सुनवाई पूर्ण होने पर यहाँ विवरण एवं परिणाम भरें। सुरक्षित होते ही सदस्य को “सुनवाई पूर्ण” का ईमेल जाएगा।</p>
+          <label className="mt-4 block text-sm font-semibold text-slate-600">सुनवाई की तारीख और समय<input required type="datetime-local" value={stageForm.hearingAt} onChange={e=>setStageForm(p=>({...p,hearingAt:e.target.value}))} className="mt-1 w-full rounded-xl border p-3"/></label>
+          <label className="mt-3 block text-sm font-semibold text-slate-600">स्थान / ऑनलाइन माध्यम एवं सूचना विवरण<textarea required value={stageForm.hearingNotes} onChange={e=>setStageForm(p=>({...p,hearingNotes:e.target.value}))} rows={2} className="mt-1 w-full rounded-xl border p-3"/></label>
+          <label className="mt-3 block text-sm font-semibold text-slate-600">सुनवाई का परिणाम / सार<textarea value={stageForm.hearingOutcome} onChange={e=>setStageForm(p=>({...p,hearingOutcome:e.target.value}))} rows={3} placeholder="सुनवाई पूर्ण होने पर सार लिखें — यह रिकॉर्ड एवं रजिस्टर में दर्ज होगा" className="mt-1 w-full rounded-xl border p-3"/></label>
+        </> : <>
+          <p className="mt-3 rounded-xl bg-blue-50 p-3 text-xs text-blue-800">सुरक्षित होते ही सदस्य को {stageForm.kind==="committee" ? "“समिति की कार्यवाही पूर्ण”" : "“सामान्य सभा की कार्यवाही पूर्ण”"} का ईमेल जाएगा।</p>
+          <label className="mt-4 block text-sm font-semibold text-slate-600">{stageForm.kind==="committee" ? "प्रबंध समिति बैठक / कार्यवाही संदर्भ" : "सामान्य सभा बैठक / प्रस्ताव संदर्भ"}<input required value={stageForm.ref} onChange={e=>setStageForm(p=>({...p,ref:e.target.value}))} className="mt-1 w-full rounded-xl border p-3"/></label>
+          <label className="mt-3 block text-sm font-semibold text-slate-600">{stageForm.kind==="committee" ? "जवाब, सुनवाई और समिति की चर्चा का पूरा सार" : "सामान्य सभा की कार्यवाही और निर्णय का पूरा विवरण"}<textarea required value={stageForm.note} onChange={e=>setStageForm(p=>({...p,note:e.target.value}))} rows={4} className="mt-1 w-full rounded-xl border p-3"/></label>
+        </>}
+        <div className="mt-5 flex justify-end gap-2">
+          <button type="button" onClick={()=>setStageForm(null)} className="rounded-xl border px-4 py-2 text-sm font-bold text-slate-600">रद्द करें</button>
+          <button type="submit" disabled={busy} className="rounded-xl bg-[#12345A] px-5 py-2 text-sm font-bold text-white disabled:opacity-50">{busy?"सुरक्षित हो रहा है…":"सुरक्षित करें एवं ईमेल भेजें"}</button>
+        </div>
+      </form>
+    </div>}
     {closing && <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 p-4" onClick={()=>setClosing(null)}>
       <form onSubmit={submitClose} onClick={e=>e.stopPropagation()} className="max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-2xl bg-white p-6 shadow-xl">
         <h3 className="text-lg font-black text-[#12345A]">अंतिम निर्णय दर्ज करें</h3>
@@ -313,51 +345,104 @@ const STATUS_TONE = {
 };
 const TABLE_COLUMNS = [
   ["क्रम", "sno"], ["नोटिस Ref. No.", "noticeReference"], ["नाम", "personName"], ["Member ID", "memberId"],
-  ["ईमेल", "email"], ["मोबाइल", "phone"], ["वर्तमान पद", "currentDesignation"], ["दायरा", "scopeLabel"],
-  ["लागू नियम", "bylawClause"], ["कारण", "grounds"], ["तथ्य", "factualSummary"], ["जवाब अंतिम तारीख", "replyDueAt"],
-  ["स्थिति", "statusLabel"], ["जवाब", "replyText"], ["सुनवाई", "hearingAt"], ["सुनवाई विवरण", "hearingNotes"],
-  ["सुनवाई परिणाम", "hearingOutcome"], ["सुनवाई पूर्ण तिथि", "hearingCompletedAt"],
+  ["वर्तमान पद", "currentDesignation"], ["दायरा", "scopeLabel"], ["जवाब अंतिम तारीख", "replyDueAt"],
+  ["स्थिति", "statusLabel"], ["अगला/अंतिम चरण", "stageSummary"], ["कार्रवाई", "actions"]
+];
+const DETAIL_FIELDS = [
+  ["ईमेल", "email"], ["मोबाइल", "phone"], ["लागू नियम", "bylawClause"], ["कारण", "grounds"], ["तथ्य/दस्तावेज", "factualSummary"],
+  ["जवाब", "replyText"], ["जवाब प्राप्त तिथि", "replyReceivedAt"],
+  ["सुनवाई तारीख", "hearingAt"], ["सुनवाई विवरण", "hearingNotes"], ["सुनवाई परिणाम", "hearingOutcome"], ["सुनवाई पूर्ण तिथि", "hearingCompletedAt"],
   ["समिति संदर्भ", "committeeMeetingReference"], ["समिति कार्यवाही", "committeeDecisionText"], ["समिति पूर्ण तिथि", "committeeReviewCompletedAt"],
   ["सामान्य सभा संदर्भ", "generalBodyMeetingReference"], ["सामान्य सभा कार्यवाही", "generalBodyDecisionText"], ["सामान्य सभा पूर्ण तिथि", "generalBodyReviewCompletedAt"],
   ["अंतिम निर्णय प्रकार", "decisionType"], ["अंतिम निर्णय", "decisionText"], ["निर्णय तिथि", "decisionAt"],
-  ["भेजे गए ईमेल", "emailLogSummary"], ["रिकॉर्ड बनाया", "createdAt"], ["कार्रवाई", "actions"]
+  ["भेजे गए ईमेल", "emailLogSummary"], ["भेजने का माध्यम", "dispatchMethod"], ["भेजने की तिथि", "dispatchAt"],
+  ["रिकॉर्ड बनाया", "createdAt"], ["अंतिम अपडेट", "updatedAt"]
 ];
+const DATE_KEYS = ["createdAt", "updatedAt", "replyDueAt", "dispatchAt", "replyReceivedAt", "hearingAt", "hearingCompletedAt", "committeeReviewCompletedAt", "generalBodyReviewCompletedAt", "decisionAt"];
+
+// The register shows the fields a reader needs at a glance; everything else —
+// the full text of the notice, reply, minutes and emails — lives behind a
+// per-row "पूरा विवरण" expansion so the table stays readable.
+function registerValue(row, key, status, dateText) {
+  if (key === "scopeLabel") return row.actionScope === "membership_review" ? "सदस्यता समीक्षा" : "पदाधिकारी समीक्षा";
+  if (key === "statusLabel") return status[row.status] || row.status;
+  if (key === "stageSummary") {
+    if (row.decisionAt || row.status === "closed") return "अंतिम निर्णय जारी";
+    if (row.generalBodyReviewCompletedAt) return "सामान्य सभा पूर्ण";
+    if (row.committeeReviewCompletedAt) return "समिति कार्यवाही पूर्ण";
+    if (row.hearingCompletedAt) return "सुनवाई पूर्ण";
+    if (row.replyReceivedAt || row.status === "reply_received") return "जवाब प्राप्त";
+    if (row.status === "notice_issued") return "नोटिस जारी";
+    return "ड्राफ्ट";
+  }
+  if (key === "emailLogSummary") return Array.isArray(row.emailLog) && row.emailLog.length
+    ? row.emailLog.map(e => e.type === "edit" ? "विवरण संशोधित" : `${e.label || e.stage} (${e.status})`).join(", ")
+    : "—";
+  if (DATE_KEYS.includes(key)) return row[key] ? dateText(row[key]) : "—";
+  const v = row[key];
+  return v == null || v === "" ? "—" : String(v);
+}
 
 function RegisterTable({ rows, status, dateText, onEdit, onRemove, busy }) {
+  const [expanded, setExpanded] = useState(null);
+  const [q, setQ] = useState("");
   if (!rows.length) return <p className="p-8 text-center text-slate-400">अभी कोई नोटिस रिकॉर्ड नहीं है।</p>;
-  const cell = (row, key, i) => {
-    if (key === "sno") return rows.length - i;
-    if (key === "scopeLabel") return row.actionScope === "membership_review" ? "सदस्यता समीक्षा" : "पदाधिकारी समीक्षा";
-    if (key === "statusLabel") return status[row.status] || row.status;
-    if (key === "emailLogSummary") return Array.isArray(row.emailLog) ? row.emailLog.map(e => `${e.label || e.stage} (${e.status})`).join(", ") : "—";
-    if (["createdAt", "updatedAt", "replyDueAt", "dispatchAt", "replyReceivedAt", "hearingAt", "hearingCompletedAt", "committeeReviewCompletedAt", "generalBodyReviewCompletedAt", "decisionAt"].includes(key)) return row[key] ? dateText(row[key]) : "—";
-    const v = row[key];
-    return v == null || v === "" ? "—" : String(v);
-  };
+  const needle = q.trim().toLowerCase();
+  const shown = needle ? rows.filter(r => [r.personName, r.noticeReference, r.memberId, r.email, r.currentDesignation].some(v => String(v || "").toLowerCase().includes(needle))) : rows;
+  const filled = (row) => DETAIL_FIELDS.filter(([, k]) => { const v = row[k]; return v != null && v !== ""; }).length;
   return (
     <div className="border-b bg-slate-50/60 p-4 sm:p-6">
-      <p className="mb-3 text-xs text-slate-500">रजिस्टर तालिका — सभी कार्यवाही चरण, पूर्णता तिथियाँ एवं भेजे गए ईमेल एक साथ। नई कार्रवाई करने पर यह अपने-आप अद्यतन होती है।</p>
+      <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+        <p className="text-xs text-slate-500">रजिस्टर — एक नज़र में सारी कार्यवाही। पूरा विवरण (नोटिस पाठ, जवाब, सुनवाई, समिति, ईमेल) के लिए पंक्ति में “पूरा विवरण” खोलें।</p>
+        <input value={q} onChange={e => setQ(e.target.value)} placeholder="खोजें: नाम / Ref. No. / Member ID / ईमेल" className="w-full max-w-xs rounded-lg border p-2 text-sm sm:w-auto" />
+      </div>
       <div className="overflow-x-auto rounded-xl border bg-white">
         <table className="min-w-full text-left text-xs">
           <thead className="bg-[#12345A] text-white">
-            <tr>{TABLE_COLUMNS.map(c => <th key={c[1]} className="whitespace-nowrap px-3 py-2 font-bold">{c[0]}</th>)}</tr>
+            <tr>
+              {TABLE_COLUMNS.map(c => <th key={c[1]} className="whitespace-nowrap px-3 py-2 font-bold">{c[0]}</th>)}
+              <th className="whitespace-nowrap px-3 py-2 font-bold">विवरण</th>
+            </tr>
           </thead>
           <tbody>
-            {rows.map((row, i) => (
-              <tr key={row.id} className={i % 2 ? "bg-slate-50" : "bg-white"}>
-                {TABLE_COLUMNS.map(c => (
-                  <td key={c[1]} className="max-w-[22rem] whitespace-nowrap px-3 py-2 align-top text-slate-700" title={c[1] === "statusLabel" ? "" : cell(row, c[1], i)}>
-                    {c[1] === "actions" ? (
-                      <div className="flex gap-2">
-                        <button type="button" disabled={busy} onClick={()=>onEdit(row)} className="rounded-md border border-[#12345A] px-2 py-1 font-bold text-[#12345A] disabled:opacity-40">संपादित</button>
-                        <button type="button" disabled={busy} onClick={()=>onRemove(row)} className="rounded-md border border-red-300 px-2 py-1 font-bold text-red-700 disabled:opacity-40">हटाएँ</button>
-                      </div>
-                    ) : c[1] === "statusLabel"
-                      ? <span className={`inline-block rounded-full px-2 py-0.5 font-bold ${STATUS_TONE[row.status] || "bg-slate-100 text-slate-700"}`}>{cell(row, c[1], i)}</span>
-                      : <span className="block max-w-[22rem] overflow-hidden text-ellipsis">{cell(row, c[1], i)}</span>}
+            {shown.length === 0 && <tr><td colSpan={TABLE_COLUMNS.length + 1} className="p-6 text-center text-slate-400">इस खोज से कोई रिकॉर्ड नहीं मिला।</td></tr>}
+            {shown.map((row, i) => (
+              <Fragment key={row.id}>
+                <tr className={i % 2 ? "bg-slate-50" : "bg-white"}>
+                  {TABLE_COLUMNS.map(c => (
+                    <td key={c[1]} className="max-w-[16rem] whitespace-nowrap px-3 py-2 align-top text-slate-700" title={registerValue(row, c[1], status, dateText)}>
+                      {c[1] === "sno" ? rows.length - rows.indexOf(row)
+                        : c[1] === "actions" ? (
+                          <div className="flex gap-2">
+                            <button type="button" disabled={busy} onClick={() => onEdit(row)} className="rounded-md border border-[#12345A] px-2 py-1 font-bold text-[#12345A] disabled:opacity-40">संपादित</button>
+                            <button type="button" disabled={busy} onClick={() => onRemove(row)} className="rounded-md border border-red-300 px-2 py-1 font-bold text-red-700 disabled:opacity-40">हटाएँ</button>
+                          </div>
+                        ) : c[1] === "statusLabel"
+                          ? <span className={`inline-block rounded-full px-2 py-0.5 font-bold ${STATUS_TONE[row.status] || "bg-slate-100 text-slate-700"}`}>{registerValue(row, c[1], status, dateText)}</span>
+                          : c[1] === "stageSummary"
+                            ? <span className="font-semibold text-[#12345A]">{registerValue(row, c[1], status, dateText)}</span>
+                            : <span className="block max-w-[16rem] overflow-hidden text-ellipsis">{registerValue(row, c[1], status, dateText)}</span>}
+                    </td>
+                  ))}
+                  <td className="whitespace-nowrap px-3 py-2 align-top">
+                    <button type="button" onClick={() => setExpanded(expanded === row.id ? null : row.id)} className="rounded-md border border-slate-300 px-2 py-1 font-bold text-slate-700">{expanded === row.id ? "बंद करें" : `पूरा विवरण (${filled(row)})`}</button>
                   </td>
-                ))}
-              </tr>
+                </tr>
+                {expanded === row.id && (
+                  <tr className="bg-slate-50">
+                    <td colSpan={TABLE_COLUMNS.length + 1} className="px-3 py-4">
+                      <dl className="grid gap-x-6 gap-y-3 sm:grid-cols-2 lg:grid-cols-3">
+                        {DETAIL_FIELDS.map(([label, key]) => (
+                          <div key={key} className="min-w-0">
+                            <dt className="text-[11px] font-bold uppercase tracking-wide text-slate-500">{label}</dt>
+                            <dd className="mt-0.5 whitespace-pre-wrap break-words text-sm text-slate-700">{registerValue(row, key, status, dateText)}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </td>
+                  </tr>
+                )}
+              </Fragment>
             ))}
           </tbody>
         </table>
