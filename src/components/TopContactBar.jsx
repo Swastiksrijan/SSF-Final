@@ -1,7 +1,7 @@
 import {
   FaEnvelope, FaPhoneAlt, FaGlobe, FaMapMarkerAlt,
   FaFacebookF, FaInstagram, FaLinkedinIn, FaTwitter,
-  FaTelegramPlane, FaWhatsapp, FaYoutube,
+  FaTelegramPlane, FaWhatsapp, FaYoutube, FaHeart,
 } from "react-icons/fa";
 import { CONTACT_INFO } from "../config/contact";
 
@@ -20,12 +20,12 @@ const SOCIALS = [
  * Real contact details and social links only — nothing invented.
  * The row scrolls horizontally on small screens so nothing is clipped.
  */
-export default function TopContactBar({ lang, onToggleLang }) {
+export default function TopContactBar({ lang, onToggleLang, onJoin }) {
   const tel = CONTACT_INFO.phones.primary.replace(/\s/g, "");
 
   return (
     <div className="ssf-contact-bar relative z-10 text-white">
-      <div className="relative z-10 mx-auto flex max-w-7xl items-center gap-3 overflow-x-auto px-4 py-1.5 text-[11px] leading-none lg:text-xs [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+      <div className="relative z-10 mx-auto flex max-w-7xl items-center gap-3 flex-wrap justify-center px-3 py-2 lg:flex-nowrap lg:px-4 lg:py-1.5 text-[11px] leading-none lg:text-xs [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
         <div className="flex items-center gap-2.5 whitespace-nowrap sm:gap-3">
           <a href={`tel:${tel}`} className="inline-flex items-center gap-1.5 transition-colors hover:text-[#F7A814]">
             <FaPhoneAlt className="text-[#F7A814]" />
@@ -48,7 +48,15 @@ export default function TopContactBar({ lang, onToggleLang }) {
           </span>
         </div>
 
-        <div className="ml-auto flex items-center gap-2 whitespace-nowrap pl-2 sm:gap-3">
+        <div className="order-3 flex w-full items-center justify-center gap-1.5 whitespace-nowrap lg:order-none lg:w-auto lg:gap-2">
+          <button type="button" onClick={onJoin} className="ssf-top-action ssf-top-action-join">Join SSF</button>
+          <a href="/Members?apply=1" className="ssf-top-action ssf-top-action-member">सदस्यता आवेदन</a>
+          <a href="https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view" target="_blank" rel="noopener noreferrer" className="ssf-top-action ssf-top-action-donate"><FaHeart /> Donate Now</a>
+        </div>
+        <div className="ml-auto flex items-center gap-2 whitespace-nowrap lg:hidden">
+          <button type="button" onClick={onToggleLang} aria-label="Switch language" className="rounded-full border border-white/25 px-2 py-1 text-[9px] font-bold">{lang === "en" ? "हिन्दी" : "English"}</button>
+        </div>
+        <div className="ml-auto hidden items-center gap-2 whitespace-nowrap pl-2 sm:gap-3 2xl:flex">
           <div className="flex items-center gap-1 sm:gap-1.5">
             {SOCIALS.map(({ icon: Icon, href, label }) => (
               <a
