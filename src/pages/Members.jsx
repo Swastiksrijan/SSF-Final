@@ -61,6 +61,9 @@ const Members = () => {
         <div className="relative z-10 text-center px-6 max-w-5xl space-y-8"><motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-6"><div className="inline-block px-4 py-1.5 rounded-full bg-[#176447] text-white font-bold tracking-widest uppercase text-sm shadow-xl">Become a Member • सदस्य बनें</div><h1 className="text-4xl sm:text-6xl md:text-7xl font-sans font-bold text-white leading-tight drop-shadow-lg">The Backbone of <br /><span className="text-[#176447]">Our Foundation.</span></h1><p className="text-xl md:text-2xl text-zinc-100 font-medium leading-relaxed max-w-3xl mx-auto drop-shadow-md">"सदस्य वह है जो सेवा और सहयोग से संस्था के उद्देश्यों को आगे बढ़ाता है।"<br /><span className="text-lg opacity-80 font-normal">Join our charitable mission and help strengthen community initiatives.</span></p></motion.div></div>
       </section>
 
+      {/* Join & Contribute — gradient dashboard hugging the hero */}
+      <JoinRolesSection />
+
       {/* Membership options */}
       <section id="member-types" className="border-b border-zinc-100 bg-gradient-to-b from-white to-[#F6F9FB] px-5 py-20 sm:px-6 sm:py-24">
         <div className="mx-auto max-w-6xl">
@@ -116,8 +119,6 @@ const Members = () => {
           </div>
         </div>
       </section>
-
-      <JoinRolesSection />
 
       {/* Existing members */}
       <section className="bg-white px-5 py-12 sm:px-6">
