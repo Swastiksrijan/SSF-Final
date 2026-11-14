@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { FaArrowRight } from "react-icons/fa";
-import { BRAND } from "../data/brandAssets";
 
 const founder = {
   name: "Ramesh Pandey",
@@ -39,6 +38,51 @@ const volunteers = [
   { name: "Ms. Vaishnavi Manik Chaudhari", designation: "Web & Technical Support Volunteer", location: "Mumbai, Maharashtra", img: "/Teams_Images/vaishnavi_manik_chaudhari.jpg" },
 ];
 
+// Rendered from the committee list, so the board updates whenever a member or
+// designation changes. Anyone whose designation contains "Member" shows as a
+// general member; every other title shows as an office-bearer card.
+const COMMITTEE_TERM = "2025–2028";
+
+function CommitteeBoard({ members }) {
+  const isMember = (m) => /member/i.test(m.designation);
+  const bearers = members.filter((m) => !isMember(m));
+  const general = members.filter(isMember);
+  return (
+    <div className="relative mb-12 overflow-hidden rounded-[2rem] border border-[#E3E9F0] bg-[#082B49] p-6 text-white shadow-lg sm:p-9">
+      <div className="pointer-events-none absolute inset-0 opacity-30" style={{ backgroundImage: "radial-gradient(circle at 12% 15%, #F7A814, transparent 30%), radial-gradient(circle at 88% 85%, #176447, transparent 32%)" }} aria-hidden="true" />
+      <div className="relative">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/15 pb-5">
+          <div>
+            <p className="text-[11px] font-black uppercase tracking-[.22em] text-[#F7C45B]">Swastik Srijan Foundation Samiti</p>
+            <h3 className="mt-2 text-2xl font-black sm:text-3xl">कार्यकारिणी समिति</h3>
+          </div>
+          <span className="rounded-full border border-[#F7C45B]/50 bg-[#F7A814]/15 px-4 py-2 text-xs font-bold text-[#F7C45B]">कार्यकाल {COMMITTEE_TERM}</span>
+        </div>
+
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+          {bearers.map((m) => (
+            <div key={m.name} className="rounded-2xl border border-white/12 bg-white/[0.07] px-4 py-3.5 backdrop-blur-sm">
+              <p className="text-[10px] font-black uppercase tracking-[.16em] text-[#F7C45B]">{m.designation}</p>
+              <p className="mt-1.5 text-sm font-bold leading-snug">{m.name.replace(/^(Mr\.|Ms\.|Mrs\.)\s*/, "")}</p>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-6 rounded-2xl border border-white/12 bg-white/[0.05] p-4 sm:p-5">
+          <p className="text-[10px] font-black uppercase tracking-[.16em] text-white/60">कार्यकारिणी सदस्य · Members</p>
+          <div className="mt-3 flex flex-wrap gap-2">
+            {general.map((m) => (
+              <span key={m.name} className="rounded-full border border-white/15 bg-white/10 px-3.5 py-1.5 text-xs font-semibold">{m.name.replace(/^(Mr\.|Ms\.|Mrs\.)\s*/, "")}</span>
+            ))}
+          </div>
+        </div>
+
+        <p className="mt-5 text-center text-[11px] font-medium text-white/55">Total {members.length} office bearers &amp; members · कुल {members.length} पदाधिकारी एवं सदस्य</p>
+      </div>
+    </div>
+  );
+}
+
 function PersonCard({ person, index = 0 }) {
   return (
     <motion.article initial={{ opacity: 0, y: 16 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.45, delay: index * 0.04 }} className="overflow-hidden rounded-2xl border border-[#EAF0F6] bg-white shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
@@ -72,10 +116,7 @@ export default function Team() {
       <section className="bg-[#F5F8FA] px-5 py-16 sm:px-8 md:py-20">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Managing Committee" title="कार्यकारिणी समिति" subtitle="The office bearers and members who currently hold responsibility for the Foundation’s governance, finance, compliance and institutional development." />
-          <figure className="mb-12 overflow-hidden rounded-[2rem] border border-[#EAF0F6] bg-white p-4 shadow-sm md:p-6">
-            <img src={BRAND.governingBody} alt="The Managing Committee of Swastik Srijan Foundation Samiti" loading="lazy" className="mx-auto w-full max-w-2xl rounded-2xl" />
-            <figcaption className="mt-4 text-center text-sm font-semibold text-slate-500">The Foundation’s Managing Committee · कार्यकारिणी समिति</figcaption>
-          </figure>
+          <CommitteeBoard members={committee} />
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">{committee.map((person, index) => <PersonCard key={person.name} person={person} index={index} />)}</div>
         </div>
       </section>
