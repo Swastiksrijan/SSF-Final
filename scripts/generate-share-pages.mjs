@@ -1,5 +1,6 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import { JOIN_ROLES, findGroup } from '../src/data/joinRoles.js';
 
 const root = process.cwd();
 const distDir = path.join(root, 'dist');
@@ -148,6 +149,23 @@ for (const route of appRoutes) {
   fs.writeFileSync(path.join(targetDir, 'index.html'), source);
 }
 
+// Every join role gets its own share card. The card carries the role name in the
+// title and description, so sharing /Members/<role> on social media previews the
+// role, not just "Membership". It then redirects to that role's application form.
+const roleImage = '/images/join-ssf-share.png';
+for (const role of JOIN_ROLES) {
+  const group = findGroup(role.group);
+  const title = `${role.hi} — ${role.en} | Swastik Srijan Foundation`;
+  const description = `${role.en} (${role.hi}) — ${group ? group.en : 'Join us'}. Apply / आवेदन करें at Swastik Srijan Foundation.`;
+  const targetDir = path.join(distDir, 'Members', role.slug);
+  fs.mkdirSync(targetDir, { recursive: true });
+  let html = buildHtml(`/Members/${role.slug}`, [title, description, roleImage, `/Members?role=${role.slug}`]);
+  // This page exists only for the preview and redirects at once, so it must not
+  // boot the app on a route the app does not serve.
+  html = html.replace(/<script[^>]*type="module"[^>]*><\/script>\s*/gi, '');
+  fs.writeFileSync(path.join(targetDir, 'index.html'), html);
+}
+
 fs.writeFileSync(indexPath, buildHtml('/', pages['/']));
-console.log(`Generated ${Object.keys(pages).length} SEO route pages + ${appRoutes.length} app route shells.`);
+console.log(`Generated ${Object.keys(pages).length} SEO route pages + ${appRoutes.length} app route shells + ${JOIN_ROLES.length} role share pages.`);
 console.log(`Home fallback image: ${site}${homeImage}`);

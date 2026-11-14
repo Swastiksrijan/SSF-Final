@@ -1,18 +1,20 @@
 // Every way a person can join Swastik Srijan Foundation, as a single flat list
 // of labelled roles. Each role carries a stable slug so a share link like
-// /Members?role=<slug> opens straight to that role's application form, and the
-// backend records the requested role with the interest.
+// /Members/<slug> previews that role and opens straight to its application form,
+// and the backend records the requested role with the interest.
 //
-// The groups mirror the registered organisational structure: constitutional
-// bodies, office bearers, advisory councils, departments, administrative
-// levels and institution/project posts. A departmental or field post is a
-// working assignment under the Managing Committee — it does not by itself make
-// the holder a member of the Managing Committee.
+// The groups mirror the organisational structure: membership, volunteering,
+// state (pradesh) units, advisory councils, departments, administrative levels
+// and institution/project posts. The Managing Committee and its office bearers
+// are not listed here — they are elected posts, already shown on the Team page.
+// A departmental or field post is a working assignment under the Managing
+// Committee — it does not by itself make the holder a member of the Managing
+// Committee.
 
 export const JOIN_GROUPS = [
   { id: "membership", hi: "सदस्यता", en: "Membership", note: "संस्था की सदस्यता के प्रकार", form: "member" },
   { id: "volunteer", hi: "स्वयंसेवा एवं क्षेत्रीय सहयोग", en: "Volunteering & Field Support", note: "समय, कौशल और सेवा-भावना से जुड़िए", form: "volunteer" },
-  { id: "committee", hi: "प्रबंध समिति एवं पदाधिकारी", en: "Managing Committee & Office Bearers", note: "नियमावली के अनुसार निर्वाचित पद", form: "role" },
+  { id: "pradesh", hi: "प्रदेश इकाई एवं राज्य स्तरीय पद", en: "State (Pradesh) Units & Posts", note: "प्रत्येक राज्य में संस्था की इकाई एवं पद", form: "role" },
   { id: "advisory", hi: "सलाहकार परिषद एवं विशेषज्ञ मंडल", en: "Advisory Councils & Expert Panels", note: "विषय विशेषज्ञों का सहयोग", form: "role" },
   { id: "department", hi: "विभाग एवं विभागीय प्रभारी", en: "Departments & In-charges", note: "मुख्य समिति के अधीन कार्यकारी विभाग", form: "role" },
   { id: "level", hi: "प्रशासनिक स्तर", en: "Administrative Levels", note: "मुख्य कार्यालय से ग्राम स्तर तक", form: "role" },
@@ -38,13 +40,13 @@ export const JOIN_ROLES = [
   R("volunteer", "block-volunteer-coordinator", "ब्लॉक स्वयंसेवक समन्वयक", "Block Volunteer Coordinator"),
   R("volunteer", "village-volunteer-coordinator", "ग्राम स्वयंसेवक समन्वयक", "Village Volunteer Coordinator"),
 
-  // ---- Managing Committee & office bearers (per the registered rules) ----
-  R("committee", "president", "अध्यक्ष", "President"),
-  R("committee", "vice-president", "उपाध्यक्ष", "Vice President"),
-  R("committee", "secretary", "सचिव", "Secretary"),
-  R("committee", "joint-secretary", "संयुक्त सचिव", "Joint Secretary"),
-  R("committee", "treasurer", "कोषाध्यक्ष", "Treasurer"),
-  R("committee", "executive-member", "कार्यकारिणी सदस्य", "Executive Member"),
+  // ---- State (Pradesh) units: the Foundation's wing in each state ----
+  R("pradesh", "pradesh-president", "प्रदेश अध्यक्ष", "State President"),
+  R("pradesh", "pradesh-vice-president", "प्रदेश उपाध्यक्ष", "State Vice President"),
+  R("pradesh", "pradesh-general-secretary", "प्रदेश महासचिव", "State General Secretary"),
+  R("pradesh", "pradesh-treasurer", "प्रदेश कोषाध्यक्ष", "State Treasurer"),
+  R("pradesh", "pradesh-organisation-secretary", "प्रदेश संगठन सचिव", "State Organisation Secretary"),
+  R("pradesh", "pradesh-coordinator", "प्रदेश समन्वयक", "State Coordinator"),
 
   // ---- Advisory councils & expert panels ----
   R("advisory", "national-advisory-council", "राष्ट्रीय सलाहकार परिषद", "National Advisory Council"),
