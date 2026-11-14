@@ -42,7 +42,7 @@ function SectionTitle({ eyebrow, children, accent = false }) {
 export default function PremiumJoinPage() {
   return (
     <main className="min-h-screen bg-white text-[#26343D] overflow-hidden">
-      <section className="relative min-h-[760px] md:min-h-[820px] flex items-center px-5 py-24 overflow-hidden">
+      <section className="ssf-hero-offset relative min-h-[760px] md:min-h-[820px] flex items-center px-5 py-24 overflow-hidden">
         <img src={pageHeader} alt="People coming together for community service with Swastik Srijan Foundation" className="absolute inset-0 w-full h-full object-cover object-center" />
         <div className="absolute inset-0 bg-[linear-gradient(90deg,rgba(18,52,90,.92)_0%,rgba(18,52,90,.78)_42%,rgba(18,52,90,.38)_72%,rgba(18,52,90,.62)_100%)]" />
         <div className="absolute inset-0 bg-gradient-to-b from-black/15 via-transparent to-black/35 pointer-events-none" />

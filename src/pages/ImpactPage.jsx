@@ -121,7 +121,7 @@ export default function ImpactPage() {
     return (
         <div className="w-full bg-white font-sans text-[#12345A] overflow-hidden">
             {/* ================= HERO ================= */}
-            <section className="relative isolate min-h-[620px] overflow-hidden bg-[#12345A] text-white sm:min-h-[680px] lg:min-h-[740px]">
+            <section className="ssf-hero-offset relative isolate min-h-[620px] overflow-hidden bg-[#12345A] text-white sm:min-h-[680px] lg:min-h-[740px]">
                 <div className="absolute inset-0 p-2 sm:p-3 lg:p-4">
                     <div className="grid h-full grid-cols-2 gap-2 sm:grid-cols-4 lg:grid-cols-5">
                         <div className="relative col-span-2 row-span-2 min-h-[600px] overflow-hidden rounded-xl sm:col-span-2 lg:col-span-2">
