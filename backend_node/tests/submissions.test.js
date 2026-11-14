@@ -119,6 +119,30 @@ async function main() {
   ok('summary counts member', summary.counts.member === 1);
   ok('summary tracks closed follow-up', summary.byFollowUp.closed === 1, JSON.stringify(summary.byFollowUp));
 
+  console.log('\nDelete (permanent, all source types incl. complaint):');
+  const complaintRow = (await subs.list({ type: 'complaint' }))[0];
+  const delResult = await subs.remove(complaintRow.id);
+  ok('complaint delete returns deleted flag', delResult.deleted === true && delResult.sourceType === 'complaint');
+  ok('complaint row gone from source table', (await Complaint.findByPk(complaintRow.sourceId)) === null);
+  ok('complaint gone from register', (await subs.list({ type: 'complaint' })).length === 0);
+
+  const contactRow = (await subs.list({ type: 'contact' }))[0];
+  await subs.updateNote(contactRow.id, { remark: 'temp', followUp: 'closed' });
+  await subs.remove(contactRow.id);
+  ok('contact row deleted', (await ContactMessage.findByPk(contactRow.sourceId)) === null);
+  ok('sidecar note cleaned up on delete', (await models.ImsSubmissionNote.findOne({ where: { sourceType: 'contact', sourceId: contactRow.sourceId } })) === null);
+  ok('summary reflects deletion', (await subs.summary()).total === 6, (await subs.summary()).total);
+
+  let delUnknown = false;
+  try { await subs.remove('nope:1'); } catch (e) { delUnknown = e.status === 400; }
+  ok('delete unknown type rejected (400)', delUnknown);
+  let delMissing = false;
+  try { await subs.remove('member:does-not-exist'); } catch (e) { delMissing = e.status === 404; }
+  ok('delete missing row rejected (404)', delMissing);
+  let delBadId = false;
+  try { await subs.remove('member:'); } catch (e) { delBadId = e.status === 400; }
+  ok('delete blank id rejected (400)', delBadId);
+
   console.log(`\n${fail === 0 ? 'PASS' : 'FAIL'} — ${pass} passed, ${fail} failed`);
   if (fail) process.exit(1);
 }

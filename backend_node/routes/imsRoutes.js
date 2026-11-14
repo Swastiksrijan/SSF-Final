@@ -465,6 +465,7 @@ const submissions = require('../services/ims/submissions');
 router.get('/ims/submissions', wrap(async (req, r) => r.json({ records: await submissions.list(req.query) })));
 router.get('/ims/submissions/summary', wrap(async (_req, r) => r.json(await submissions.summary())));
 router.put('/ims/submissions/note/:id', wrap(async (req, r) => r.json(await submissions.updateNote(req.params.id, req.body || {}))));
+router.delete('/ims/submissions/:id', wrap(async (req, r) => r.json(await submissions.remove(req.params.id))));
 
 // ---- generic CRUD for every resource --------------------------------------
 router.get('/ims/:resource', wrap(async (req, r) => r.json(await res.list(req.params.resource, req.query))));

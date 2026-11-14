@@ -7,6 +7,8 @@
 // kept in the ImsSubmissionNote sidecar, keyed by source type + row id, so the
 // original application data is never mutated.
 const { Op } = require('sequelize');
+const path = require('path');
+const fs = require('fs');
 const { models } = require('../../models/ims');
 
 const Interest = require('../../models/Interest');
@@ -189,4 +191,44 @@ async function updateNote(id, { remark, followUp, updatedBy } = {}) {
   return { sourceType, sourceId, remark: note.remark || '', followUp: note.followUp, updatedBy: note.updatedBy };
 }
 
-module.exports = { SOURCES, SOURCE_TYPES, FOLLOW_UP, list, summary, updateNote };
+// Uploaded files live under backend_node/uploads/<basename>; drop them with the
+// row so a deleted application leaves nothing behind on disk.
+function removeStoredFile(storedPath) {
+  if (!storedPath) return;
+  const filePath = path.join(__dirname, '..', '..', String(storedPath).replace(/^\/+/, ''));
+  try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (e) { console.warn('Submission upload cleanup failed:', e.message); }
+}
+
+// Columns that may hold an uploaded file, per source type.
+const FILE_FIELDS = {
+  member: ['profilePhotoPath', 'idDocumentPath'],
+  volunteer: ['idDocumentPath', 'profilePhotoPath'],
+  donor: ['idDocumentPath', 'profilePhotoPath'],
+  internship: ['resumePath', 'profilePhotoPath', 'idDocumentPath'],
+};
+
+/**
+ * Permanently delete one submission (source row + any uploaded file + its
+ * office note). Mirrors the existing per-module admin delete, but reachable for
+ * every type — including complaint, which had no delete anywhere before.
+ */
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+async function remove(id) {
+  const [sourceType, rawId] = String(id || '').split(':');
+  if (!SOURCES[sourceType]) { const e = new Error('Unknown submission type'); e.status = 400; throw e; }
+  const sourceId = String(rawId || '').trim();
+  // Every source table keys on a UUID; a malformed id can never match a row.
+  if (!sourceId) { const e = new Error('Invalid submission id'); e.status = 400; throw e; }
+  if (!UUID_RE.test(sourceId)) { const e = new Error('Submission not found'); e.status = 404; throw e; }
+
+  const row = await SOURCES[sourceType].model.findByPk(sourceId);
+  if (!row) { const e = new Error('Submission not found'); e.status = 404; throw e; }
+
+  for (const field of FILE_FIELDS[sourceType] || []) removeStoredFile(row[field]);
+  await row.destroy();
+  await models.ImsSubmissionNote.destroy({ where: { sourceType, sourceId } });
+  return { sourceType, sourceId, deleted: true };
+}
+
+module.exports = { SOURCES, SOURCE_TYPES, FOLLOW_UP, list, summary, updateNote, remove };

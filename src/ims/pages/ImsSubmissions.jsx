@@ -89,6 +89,7 @@ export default function ImsSubmissions() {
   const [followUp, setFollowUp] = useState('new');
   const [saving, setSaving] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true); setErr('');
@@ -138,6 +139,23 @@ export default function ImsSubmissions() {
     } finally { setSaving(false); }
   };
 
+  const removeRow = useCallback(async (row) => {
+    if (!row) return;
+    const label = L(SOURCE_LABELS[row.sourceType], row.sourceType);
+    const msg = hi
+      ? `"${row.name}" (${label}) को हमेशा के लिए हटाएँ?\n\nयह प्रविष्टि स्थायी रूप से मिट जाएगी। इसे वापस नहीं लाया जा सकता।`
+      : `Delete "${row.name}" (${label})?\n\nThis permanently removes the submission. This cannot be undone.`;
+    if (!window.confirm(msg)) return;
+    setDeleting(true);
+    try {
+      await ims.submissionsDelete(row.id);
+      setDetail(null);
+      load();
+    } catch (e) {
+      setErr(e.message || 'Unable to delete submission');
+    } finally { setDeleting(false); }
+  }, [hi, L, load]);
+
   const doExport = async () => {
     setExporting(true);
     try {
@@ -173,11 +191,16 @@ export default function ImsSubmissions() {
     { key: 'remark', en: 'Remark', hi: 'टिप्पणी', render: (r) => <span className="line-clamp-2 block max-w-[16rem] text-xs text-slate-600">{r.remark || <span className="text-slate-300">—</span>}</span> },
     { key: 'createdAt', en: 'Submitted', hi: 'प्राप्त', render: (r) => <span className="whitespace-nowrap text-xs text-slate-500">{r.createdAt ? new Date(r.createdAt).toLocaleDateString('en-IN') : '—'}</span> },
     { key: 'actions', en: '', hi: '', align: 'right', render: (r) => (
-      <button onClick={(e) => { e.stopPropagation(); openDetail(r); }} className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-bold text-[#176447] hover:bg-slate-50">
-        {hi ? 'टिप्पणी / अनुसरण' : 'Remark / Follow-up'}
-      </button>
+      <div className="flex items-center justify-end gap-2">
+        <button onClick={(e) => { e.stopPropagation(); openDetail(r); }} className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-bold text-[#176447] hover:bg-slate-50">
+          {hi ? 'टिप्पणी / अनुसरण' : 'Remark / Follow-up'}
+        </button>
+        <button onClick={(e) => { e.stopPropagation(); removeRow(r); }} aria-label={hi ? 'हटाएँ' : 'Delete'} title={hi ? 'हटाएँ' : 'Delete'} className="rounded-lg border border-rose-200 px-2 py-1.5 text-rose-600 hover:bg-rose-50">
+          <Icons.Trash2 size={15} />
+        </button>
+      </div>
     ) },
-  ], [L, hi, openDetail]);
+  ], [L, hi, openDetail, removeRow]);
 
   return (
     <ImsLayout>
@@ -278,9 +301,14 @@ export default function ImsSubmissions() {
               </div>
             </div>
 
-            <div className="flex justify-end gap-2">
-              <Button variant="ghost" onClick={() => setDetail(null)}>{hi ? 'रद्द करें' : 'Cancel'}</Button>
-              <Button icon="Check" onClick={saveNote} disabled={saving}>{saving ? (hi ? 'सहेजा जा रहा…' : 'Saving…') : (hi ? 'सहेजें' : 'Save')}</Button>
+            <div className="flex items-center justify-between gap-2">
+              <Button variant="danger" icon="Trash2" onClick={() => removeRow(detail)} disabled={deleting || saving}>
+                {hi ? 'हटाएँ' : 'Delete'}
+              </Button>
+              <div className="flex justify-end gap-2">
+                <Button variant="ghost" onClick={() => setDetail(null)}>{hi ? 'रद्द करें' : 'Cancel'}</Button>
+                <Button icon="Check" onClick={saveNote} disabled={saving || deleting}>{saving ? (hi ? 'सहेजा जा रहा…' : 'Saving…') : (hi ? 'सहेजें' : 'Save')}</Button>
+              </div>
             </div>
           </div>
         )}

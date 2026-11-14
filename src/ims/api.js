@@ -205,6 +205,9 @@ export const ims = {
   submissionsUpdateNote: (id, payload) => fetch(`${API_BASE_URL}/api/ims/submissions/note/${encodeURIComponent(id)}`, {
     method: 'PUT', headers: headers(), body: JSON.stringify(payload),
   }).then(handle),
+  submissionsDelete: (id) => fetch(`${API_BASE_URL}/api/ims/submissions/${encodeURIComponent(id)}`, {
+    method: 'DELETE', headers: headers(),
+  }).then(handle),
 };
 
 // Public (no auth) social feed for the website News/Blog section.
