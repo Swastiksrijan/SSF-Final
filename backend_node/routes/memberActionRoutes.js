@@ -177,8 +177,35 @@ router.patch('/admin/member-actions/:id', requireAdmin, async (req, res) => {
     } else if (b.action === 'committee_review') {
       const mayReview = ['reply_received', 'hearing_scheduled'].includes(row.status) || (row.status === 'notice_issued' && Date.now() > new Date(row.replyDueAt).getTime());
       if (!mayReview) return res.status(409).json({ message: 'समिति समीक्षा से पहले जवाब की अवधि पूरी होने दें और प्राप्त जवाब/सुनवाई रिकॉर्ड करें।' });
-      if (!String(b.committeeMeetingReference || '').trim() || !String(b.decisionText || '').trim()) return res.status(400).json({ message: 'समिति बैठक/प्रस्ताव संदर्भ और कार्यवाही दर्ज करें।' });
-      await row.update({ committeeMeetingReference: String(b.committeeMeetingReference).trim(), committeeDecisionText: String(b.decisionText).trim(), status: 'committee_review', updatedBy: 'Admin Portal' });
+      const meetingRef = String(b.committeeMeetingReference || '').trim();
+      const decisionText = String(b.decisionText || '').trim();
+      if (!meetingRef || !decisionText) return res.status(400).json({ message: 'समिति बैठक/प्रस्ताव संदर्भ और कार्यवाही दर्ज करें।' });
+      await row.update({ committeeMeetingReference: meetingRef, committeeDecisionText: decisionText, status: 'committee_review', updatedBy: 'Admin Portal' });
+      // The committee record is saved first. Then send the member an official
+      // email copy; delivery failure must not erase the valid proceedings.
+      let emailWarning = null;
+      try {
+        if (!emailConfigured()) throw new Error('ईमेल सेवा कॉन्फ़िगर नहीं है।');
+        const subject = 'SSF — समिति की कार्यवाही दर्ज | ' + (row.noticeReference || row.id);
+        const textBody = [
+          'स्वास्तिक सृजन फाउंडेशन समिति',
+          'समिति की कार्यवाही दर्ज होने की सूचना',
+          'प्रति: ' + row.personName,
+          'नोटिस संदर्भ: ' + (row.noticeReference || '—'),
+          'समिति बैठक/प्रस्ताव संदर्भ: ' + meetingRef,
+          'कार्यवाही दर्ज दिनांक: ' + new Date().toLocaleString('hi-IN', { timeZone: 'Asia/Kolkata' }),
+          'दर्ज कार्यवाही:',
+          decisionText,
+          'यह सूचना आपके अभिलेख और जानकारी हेतु भेजी जा रही है। यदि आगे सामान्य सभा की कार्यवाही या अंतिम निर्णय आवश्यक होगा, तो उसकी सूचना अलग से दी जाएगी।',
+          'Swastik Srijan Foundation Samiti'
+        ].join('\\n\\n');
+        const htmlBody = '<div style="max-width:720px;margin:0 auto;padding:28px;border:1px solid #d7dee8;color:#172b3a;font:15px/1.7 Arial,sans-serif"><h2 style="color:#12345A;margin:0 0 6px">SWASTIK SRIJAN FOUNDATION SAMITI</h2><p style="color:#176447;font-weight:bold;margin-top:0">समिति की कार्यवाही दर्ज होने की सूचना</p><hr/><p>प्रति: <b>' + escapeHtml(row.personName) + '</b></p><p>नोटिस संदर्भ: <b>' + escapeHtml(row.noticeReference || '—') + '</b></p><p>समिति बैठक/प्रस्ताव संदर्भ: <b>' + escapeHtml(meetingRef) + '</b></p><p>कार्यवाही दर्ज दिनांक: ' + escapeHtml(new Date().toLocaleString('hi-IN', { timeZone: 'Asia/Kolkata' })) + '</p><h3 style="color:#12345A">दर्ज कार्यवाही</h3><div style="white-space:pre-wrap">' + escapeHtml(decisionText) + '</div><p style="margin-top:24px;color:#64748b;font-size:12px">यह सूचना आपके अभिलेख और जानकारी हेतु भेजी जा रही है। आगे की प्रक्रिया, यदि आवश्यक हुई, तो अलग से सूचित की जाएगी।</p></div>';
+        await sendMail({ to: row.email, subject, text: textBody, html: htmlBody });
+      } catch (mailError) {
+        console.error('Committee proceedings email failed:', mailError.message);
+        emailWarning = 'समिति की कार्यवाही रजिस्टर में सफलतापूर्वक दर्ज हो गई है, लेकिन सदस्य को ईमेल नहीं भेजा जा सका: ' + mailError.message;
+      }
+      return res.json({ status: 'success', record: publicRecord(row), emailWarning });
     } else if (b.action === 'general_body_review') {
       if (row.status !== 'committee_review') return res.status(409).json({ message: 'पहले प्रबंध समिति की समीक्षा और कार्यवाही दर्ज करें।' });
       if (!String(b.generalBodyMeetingReference || '').trim() || !String(b.decisionText || '').trim()) return res.status(400).json({ message: 'सामान्य सभा की बैठक/प्रस्ताव संख्या और निर्णय दर्ज करें।' });
