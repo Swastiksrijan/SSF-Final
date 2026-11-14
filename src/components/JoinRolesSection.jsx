@@ -152,7 +152,7 @@ export default function JoinRolesSection() {
   const other = r => (lang === "hi" ? r.en : r.hi);
 
   return (
-    <section id="roles" style={{ scrollMarginTop: "calc(var(--ssf-header-h, 160px) + 1rem)" }} className="-mt-6 bg-[#F6F9FB] px-5 pb-16 sm:-mt-8 sm:px-6">
+    <section id="roles" style={{ scrollMarginTop: "calc(var(--ssf-header-h, 160px) + 1rem)" }} className="bg-[#F6F9FB] px-5 pb-16 sm:px-6">
       <div className="mx-auto max-w-6xl">
         <div className="relative z-20 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#12345A] via-[#153f63] to-[#176447] px-5 py-10 text-white shadow-2xl ring-1 ring-white/10 sm:px-8 md:px-12 md:py-14">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#F7A814]/20 blur-2xl" />
@@ -162,7 +162,19 @@ export default function JoinRolesSection() {
             <h2 className="mt-4 text-center font-serif text-3xl font-black leading-tight md:text-5xl">{t.title}</h2>
             <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-7 text-white/85 md:text-base">{t.intro}</p>
 
-            <div className="mt-8 flex flex-col gap-4 border-t border-white/15 pt-6 lg:flex-row lg:items-center lg:justify-between">
+            <ol className="mx-auto mt-9 grid max-w-5xl gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {ROADMAP.map((step, i) => (
+                <li key={i} className="flex items-start gap-3 rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#F7A814] text-sm font-black text-[#12345A]">{i + 1}</span>
+                  <div>
+                    <p className="text-sm font-black text-white">{lang === "hi" ? step.hi : step.en}</p>
+                    <p className="text-[11px] font-semibold text-white/70">{lang === "hi" ? step.en : step.hi}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+
+            <div className="mt-9 flex flex-col gap-4 border-t border-white/15 pt-6 lg:flex-row lg:items-center lg:justify-between">
               <div className="flex flex-wrap gap-2">
                 <button type="button" onClick={() => setGroup("all")} className={"rounded-full border px-4 py-2 text-sm font-bold transition " + (group === "all" ? "border-white bg-white text-[#12345A]" : "border-white/25 bg-white/10 text-white hover:border-white hover:bg-white/20")}>{t.all}</button>
                 {JOIN_GROUPS.map(g => (
@@ -176,18 +188,6 @@ export default function JoinRolesSection() {
             </div>
           </div>
         </div>
-
-        <ol className="mx-auto mt-8 grid max-w-5xl gap-3 px-2 sm:grid-cols-2 lg:grid-cols-4">
-          {ROADMAP.map((step, i) => (
-            <li key={i} className="flex items-start gap-3 rounded-2xl border border-[#E3EAF0] bg-white p-4 shadow-sm">
-              <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-[#176447] text-sm font-black text-white">{i + 1}</span>
-              <div>
-                <p className="text-sm font-black text-[#12345A]">{lang === "hi" ? step.hi : step.en}</p>
-                <p className="text-[11px] font-semibold text-zinc-500">{lang === "hi" ? step.en : step.hi}</p>
-              </div>
-            </li>
-          ))}
-        </ol>
 
         {shareNote && <p className="mt-4 break-words rounded-xl bg-emerald-50 p-3 text-sm font-semibold text-emerald-800">{shareNote}</p>}
 
