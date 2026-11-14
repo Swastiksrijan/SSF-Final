@@ -122,10 +122,10 @@ const Members = () => {
 
       {/* Existing members */}
       <section className="bg-white px-5 py-12 sm:px-6">
-        <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 rounded-[2rem] bg-gradient-to-br from-[#12345A] via-[#153f63] to-[#176447] p-7 text-white shadow-lg md:flex-row md:items-center md:justify-between md:p-9">
+        <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 rounded-[2rem] p-7 text-white shadow-lg md:flex-row md:items-center md:justify-between md:p-9" style={{ background: "linear-gradient(135deg, #12345A 0%, #153f63 50%, #176447 100%)", backgroundColor: "#12345A" }}>
           <div>
             <h2 className="text-xl font-black md:text-2xl">पहले से सदस्य हैं?</h2>
-            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/80">मौजूदा सदस्यता रिकॉर्ड या संपर्क विवरण अपडेट कराने के लिए संस्था से संपर्क करें।</p>
+            <p className="mt-2 max-w-2xl text-sm leading-6" style={{ color: "rgba(255,255,255,0.82)" }}>मौजूदा सदस्यता रिकॉर्ड या संपर्क विवरण अपडेट कराने के लिए संस्था से संपर्क करें।</p>
           </div>
           <a href="/Contact" className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-[#F7A814] px-6 py-3 font-black text-[#12345A] transition hover:bg-white">संपर्क करें <FaArrowRight /></a>
         </div>
