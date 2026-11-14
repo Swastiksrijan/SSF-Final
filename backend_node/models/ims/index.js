@@ -890,6 +890,21 @@ const ImsDeliveryAttempt = sequelize.define('ImsDeliveryAttempt', {
   reference: DataTypes.STRING,
 }, S);
 
+// ---- Submission notes (office sidecar) -------------------------------------
+// Every public form already writes to its own table (Interest, Member,
+// Volunteer, Donor, InternshipApplication, ContactMessage, Complaint). The
+// Submissions register reads those tables live and keeps only the office-side
+// extras — a remark and a follow-up status — in this sidecar, keyed by the
+// source type + row id. This avoids copying any submitted data.
+const ImsSubmissionNote = sequelize.define('ImsSubmissionNote', {
+  id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
+  sourceType: { type: DataTypes.STRING, allowNull: false }, // interest/member/volunteer/donor/internship/contact/complaint
+  sourceId: { type: DataTypes.STRING, allowNull: false }, // source row id (integer or UUID), stored as text
+  remark: DataTypes.TEXT,
+  followUp: { type: DataTypes.STRING, defaultValue: 'new' }, // new/contacted/follow_up/closed
+  updatedBy: DataTypes.STRING,
+}, S);
+
 const models = {
   ImsIdSequence, ImsPerson, ImsRole, ImsPersonRole, ImsOrganisation, ImsGovernanceRule,
   ImsPolicy, ImsOrgProfile, ImsMembership, ImsCommittee, ImsCommitteeMember, ImsMeeting, ImsMeetingAttendee,
@@ -904,6 +919,7 @@ const models = {
   ImsInstitutionHistory,
   ImsRelation, ImsAuditTrail, ImsUser, ImsRolePermission,
   ImsNotification, ImsDeliveryAttempt,
+  ImsSubmissionNote,
 };
 
 module.exports = { sequelize, models };

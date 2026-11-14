@@ -202,6 +202,7 @@ export const SECTIONS = {
     titleKey: 'records', icon: 'Files', tone: 'blue', module: 'records',
     subgroups: [
       { labelKey: 'grp_records', items: [
+        { key: 'submissions', icon: 'Inbox', path: '/ims/submissions' },
         { key: 'correspondence', icon: 'MessageSquare', path: '/ims/correspondence' },
         { key: 'inward_register', icon: 'Inbox', path: '/ims/correspondence?tab=inward' },
         { key: 'outward_register', icon: 'Send', path: '/ims/correspondence?tab=outward' },
