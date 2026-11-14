@@ -508,9 +508,11 @@ a { text-underline-offset: .18em; }
    ============================================================================ */
 
 /* Fixed public-site header height (contact strip + nav). Hero sections offset
-   their content by this so nothing hides behind the fixed header. */
-:root { --ssf-header-h: 166px; }
-@media (min-width:640px) { :root { --ssf-header-h: 170px; } }
+   their content by this so nothing hides behind the fixed header. The nav is now
+   visible on phones as a second row under the brand, so the small-screen height
+   grows with it; desktop is unchanged. */
+:root { --ssf-header-h: 206px; }
+@media (min-width:640px) { :root { --ssf-header-h: 212px; } }
 @media (min-width:1280px) { :root { --ssf-header-h: 130px; } }
 .ssf-hero-offset { padding-top: var(--ssf-header-h) !important; }
 
@@ -569,6 +571,13 @@ a { text-underline-offset: .18em; }
   background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,.075) 50%, transparent 100%);
 }
 .ssf-nav-shell > *:not(.ssf-nav-bg) { position: relative; z-index: 1; }
+
+/* The primary nav is shown on phones too (not just desktop). On small screens it
+   becomes one horizontally scrollable row under the brand, so every page name
+   stays reachable; the scrollbar itself is hidden. */
+.ssf-nav-scroll { -webkit-overflow-scrolling: touch; }
+
+
 .ssf-nav-link {
   position: relative;
   color: #FFFFFF;

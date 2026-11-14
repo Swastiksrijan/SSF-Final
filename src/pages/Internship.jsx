@@ -15,7 +15,7 @@ export default function Internship() {
   ];
 
   return <div className="w-full bg-white text-zinc-900 font-sans overflow-hidden">
-    <section className="relative min-h-[68vh] flex items-center overflow-hidden bg-[#12345A] text-white pt-36 pb-20 px-6">
+    <section className="ssf-hero-offset relative min-h-[68vh] flex items-center overflow-hidden bg-[#12345A] text-white pb-20 px-6">
       <div className="absolute inset-0">
         <OptimizedImage
           src="/images/real/education_girls.jpg"
