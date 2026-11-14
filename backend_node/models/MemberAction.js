@@ -25,13 +25,18 @@ module.exports = sequelize.define('MemberAction', {
   replyReceivedAt: { type: DataTypes.DATE, allowNull: true },
   hearingAt: { type: DataTypes.DATE, allowNull: true },
   hearingNotes: { type: DataTypes.TEXT, allowNull: true },
+  hearingOutcome: { type: DataTypes.TEXT, allowNull: true },
+  hearingCompletedAt: { type: DataTypes.DATE, allowNull: true },
   committeeMeetingReference: { type: DataTypes.STRING, allowNull: true },
   generalBodyMeetingReference: { type: DataTypes.STRING, allowNull: true },
   committeeDecisionText: { type: DataTypes.TEXT, allowNull: true },
   generalBodyDecisionText: { type: DataTypes.TEXT, allowNull: true },
+  committeeReviewCompletedAt: { type: DataTypes.DATE, allowNull: true },
+  generalBodyReviewCompletedAt: { type: DataTypes.DATE, allowNull: true },
   decisionType: { type: DataTypes.STRING, allowNull: true },
   decisionText: { type: DataTypes.TEXT, allowNull: true },
   decisionAt: { type: DataTypes.DATE, allowNull: true },
+  emailLog: { type: DataTypes.JSONB, allowNull: true },
   createdBy: { type: DataTypes.STRING, allowNull: true },
   updatedBy: { type: DataTypes.STRING, allowNull: true }
 }, { timestamps: true });
