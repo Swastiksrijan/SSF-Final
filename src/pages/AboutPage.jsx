@@ -618,7 +618,7 @@ export default function AboutPage() {
               to="/GetInvolved"
               className="inline-flex min-h-12 items-center justify-center gap-3 rounded-full bg-[#F7A814] px-7 py-3 text-sm font-extrabold text-[#092541] transition duration-200 hover:-translate-y-0.5 hover:bg-white focus:outline-none focus:ring-4 focus:ring-[#F7A814]/35"
             >
-              Join Us <FaArrowRight aria-hidden="true" />
+              Join SSF <FaArrowRight aria-hidden="true" />
             </Link>
             <Link
               to="/Volunteer"
