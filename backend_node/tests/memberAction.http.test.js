@@ -201,6 +201,23 @@ async function main() {
     ok('the member is emailed the final decision', mailCalls.some((c) => /अंतिम निर्णय/.test(c.subject || '')), JSON.stringify(mailCalls.map((c) => c.subject)));
     ok('the email log accumulates every stage', Array.isArray(close.body.record?.emailLog) && ['hearing', 'committee', 'general_body', 'final'].every((st) => close.body.record.emailLog.some((e) => e.stage === st && e.status === 'sent')), JSON.stringify(close.body.record?.emailLog));
 
+    console.log('\nEditing a record (details only; workflow untouched):');
+    const editDraft = await send('/api/admin/member-actions', 'POST', { personName: 'Edit Me', email: 'edit.me@example.com', actionScope: 'membership_review', bylawClause: 'Rule 9', grounds: 'old grounds', factualSummary: 'old facts', replyDueAt: future() }, auth);
+    const editOk = await send(`/api/admin/member-actions/${editDraft.body.id}`, 'PATCH', { action: 'edit_details', personName: 'Corrected Name', email: 'corrected@example.com', bylawClause: 'Rule 11', grounds: 'corrected grounds', factualSummary: 'corrected facts', noticeText: 'सुधरा हुआ विवरण', replyDueAt: future() }, auth);
+    ok('editing details succeeds', editOk.status === 200 && editOk.body.record?.personName === 'Corrected Name', JSON.stringify(editOk.body));
+    ok('the corrected fields are stored', editOk.body.record?.bylawClause === 'Rule 11' && editOk.body.record?.email === 'corrected@example.com');
+    ok('editing does not change the workflow status', editOk.body.record?.status === 'draft');
+    ok('a draft notice text is editable', editOk.body.record?.noticeText === 'सुधरा हुआ विवरण', editOk.body.record?.noticeText);
+    ok('the edit is recorded in the activity log', Array.isArray(editOk.body.record?.emailLog) && editOk.body.record.emailLog.some((e) => e.type === 'edit'), JSON.stringify(editOk.body.record?.emailLog));
+    const editBad = await send(`/api/admin/member-actions/${editDraft.body.id}`, 'PATCH', { action: 'edit_details', personName: '', email: 'x@y.z', bylawClause: 'r', grounds: 'g', factualSummary: 'f' }, auth);
+    ok('an edit missing required fields is rejected', editBad.status === 400, JSON.stringify(editBad.body));
+    const editIssued = await send(`/api/admin/member-actions/${draft1.body.id}`, 'PATCH', { action: 'edit_details', personName: 'Ramesh Pandey', email: 'ramesh@example.com', actionScope: 'membership_review', bylawClause: 'Rule 8', grounds: 'corrected', factualSummary: 'corrected', noticeText: 'HACKED TEXT', replyDueAt: future() }, auth);
+    ok('a closed record can still be corrected', editIssued.status === 200, JSON.stringify(editIssued.body));
+    ok('the issued notice text is NOT editable', !String(editIssued.body.record?.noticeText || '').includes('HACKED TEXT'), editIssued.body.record?.noticeText?.slice(0, 40));
+    ok('editing a closed record keeps it closed', editIssued.body.record?.status === 'closed');
+    const editScope = await send(`/api/admin/member-actions/${draft1.body.id}`, 'PATCH', { action: 'edit_details', personName: 'Ramesh Pandey', email: 'ramesh@example.com', actionScope: 'office_bearer_role_review', bylawClause: 'Rule 8', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
+    ok('a final order locks the action scope', editScope.status === 400, JSON.stringify(editScope.body));
+
     console.log('\nDeleting a mistaken / test record:');
     const deletable = await send('/api/admin/member-actions', 'POST', { personName: 'Delete Me', email: 'delete.me@example.com', actionScope: 'membership_review', bylawClause: 'Rule 9', grounds: 'g', factualSummary: 'f', replyDueAt: future() }, auth);
     const delDraft = await send(`/api/admin/member-actions/${deletable.body.id}`, 'DELETE', null, auth);
