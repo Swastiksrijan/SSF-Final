@@ -84,7 +84,7 @@ export default function MemberActionManager({ token }) {
   const [lookupMessage, setLookupMessage] = useState("");
   const [closing, setClosing] = useState(null);
 
-  const load = async () => { const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { headers: headers(token) }); const d = await r.json().catch(() => []); if (!r.ok) throw new Error(d.message || "रजिस्टर लोड नहीं हुआ"); setRows(Array.isArray(d) ? d : []); };
+  const load = async () => { const r = await fetch(ENDPOINTS.ADMIN_MEMBER_ACTIONS, { headers: headers(token), cache: "no-store" }); const d = await r.json().catch(() => []); if (!r.ok) throw new Error(d.message || "रजिस्टर लोड नहीं हुआ"); setRows(Array.isArray(d) ? d : []); };
   useEffect(() => { load().catch(e => setMessage(e.message)); }, [token]);
   const update = (key, value) => setForm(p => ({ ...p, [key]: value }));
   const lookupMember = async () => {
@@ -135,8 +135,22 @@ export default function MemberActionManager({ token }) {
   };
   const act = async (row, body) => {
     setBusy(true); setMessage("");
-    try { const r=await fetch(`${ENDPOINTS.ADMIN_MEMBER_ACTIONS}/${row.id}`, { method:"PATCH", headers:{ ...headers(token), "Content-Type":"application/json" }, body:JSON.stringify(body) }); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.message || "कार्रवाई विफल"); if(d.emailWarning) setMessage(d.emailWarning); else if(d.responseUrl) { await navigator.clipboard?.writeText(d.responseUrl).catch(()=>{}); setMessage("नोटिस जारी हुआ। जवाब लिंक कॉपी करने का प्रयास किया गया: "+d.responseUrl); } else setMessage("रिकॉर्ड अपडेट हो गया।"); await load(); return true; }
-    catch(e){ setMessage(e.message); return false; } finally { setBusy(false); }
+    try {
+      const r = await fetch(`${ENDPOINTS.ADMIN_MEMBER_ACTIONS}/${row.id}`, { method:"PATCH", headers:{ ...headers(token), "Content-Type":"application/json" }, body:JSON.stringify(body), cache:"no-store" });
+      const d = await r.json().catch(()=>({}));
+      if (!r.ok) throw new Error(d.message || "कार्रवाई विफल");
+      // Apply the server-confirmed record immediately so an old cached list
+      // cannot keep showing the previous action button/status.
+      if (d.record) setRows(current => current.map(item => item.id === row.id ? d.record : item));
+      if (d.emailWarning) setMessage(d.emailWarning);
+      else if (d.responseUrl) { await navigator.clipboard?.writeText(d.responseUrl).catch(()=>{}); setMessage("नोटिस ईमेल से जारी हुआ। जवाब लिंक कॉपी करने का प्रयास किया गया: " + d.responseUrl); }
+      else if (body.action === "committee_review") setMessage("समिति की कार्यवाही दर्ज हो गई है। सदस्य को ईमेल भेज दिया गया है।");
+      else if (body.action === "general_body_review") setMessage("सामान्य सभा की कार्यवाही दर्ज हो गई है।");
+      else setMessage("रिकॉर्ड अपडेट हो गया।");
+      await load();
+      return true;
+    } catch(e) { setMessage(e.message); return false; }
+    finally { setBusy(false); }
   };
   const saveNoticePdf = async row => { try { await downloadNoticePdf(row); } catch (e) { setMessage("PDF बनाते समय त्रुटि: " + (e.message || e)); } };
   const remove = async row => { if(row.status!=="draft"){ if(!window.confirm(`सचेत रहें: “${row.personName}” का जारी हो चुका नोटिस रिकॉर्ड है। इसे हटाने से उनका जवाब लिंक काम नहीं करेगा। क्या वाकई हटाना है?`)) return; } else if(!window.confirm("क्या आप इस नोटिस ड्राफ्ट को हटाना चाहते हैं? यह वापस नहीं आएगा।")) return; setBusy(true); setMessage(""); try { const url = `${ENDPOINTS.ADMIN_MEMBER_ACTIONS}/${row.id}` + (row.status!=="draft" ? "?force=true" : ""); const r=await fetch(url, { method:"DELETE", headers:headers(token) }); const d=await r.json().catch(()=>({})); if(!r.ok) throw new Error(d.message || "रिकॉर्ड हटाया नहीं जा सका"); setMessage("रिकॉर्ड हटा दिया गया।"); await load(); } catch(e){ setMessage(e.message); } finally { setBusy(false); } };
@@ -165,7 +179,7 @@ export default function MemberActionManager({ token }) {
     const body = row.noticeText || ["कारण बताओ नोटिस", "प्रति: " + row.personName, "नोटिस संदर्भ: " + (row.noticeReference || "—"), "नियम: " + row.bylawClause, "कारण: " + row.grounds, "तथ्य: " + row.factualSummary, "जवाब की अंतिम तारीख: " + (row.replyDueAt ? new Date(row.replyDueAt).toLocaleString("hi-IN") : "—")].join("\n");
     window.open("https://wa.me/" + to + "?text=" + encodeURIComponent(body), "_blank");
   };
-  const status = {draft:"ड्राफ्ट",notice_issued:"नोटिस जारी",reply_received:"जवाब प्राप्त",hearing_scheduled:"सुनवाई तय",committee_review:"समिति समीक्षा",general_body_review:"सामान्य सभा समीक्षा",closed:"बंद"};
+  const status = {draft:"ड्राफ्ट",notice_issued:"नोटिस जारी",reply_received:"जवाब प्राप्त",hearing_scheduled:"सुनवाई तय",committee_review:"समिति कार्यवाही दर्ज — पूर्ण",general_body_review:"सामान्य सभा कार्यवाही दर्ज — पूर्ण",closed:"प्रक्रिया पूर्ण / अंतिम निर्णय दर्ज"};
   return <section className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
     <div className="flex flex-wrap items-center justify-between gap-3 border-b p-6 sm:p-8"><div><h2 className="text-2xl font-black text-[#12345A]">सदस्य / पदाधिकारी नोटिस एवं कार्रवाई रजिस्टर</h2><p className="mt-2 text-sm text-slate-600">आसान प्रक्रिया: 1. ड्राफ्ट  2. नोटिस  3. जवाब  4. सुनवाई  5. समिति  6. सामान्य सभा (जहाँ जरूरी)  7. अंतिम आदेश। जवाब आने से केस अपने-आप बंद नहीं होता।</p><p className="mt-2 text-xs text-slate-500">Excel डाउनलोड उस समय का स्नैपशॉट है (live नहीं)। नई कार्रवाई के बाद दोबारा डाउनलोड करें। WhatsApp साझा करना मैनुअल है — स्वतः WhatsApp Delivery के लिए Meta Cloud API सेटअप आवश्यक है।</p></div><button type="button" onClick={()=>exportRegister(rows)} disabled={!rows.length} className="rounded-xl border border-[#12345A] px-4 py-2 text-sm font-bold text-[#12345A] disabled:opacity-40">Excel रजिस्टर डाउनलोड करें (.xlsx)</button></div>
     <form onSubmit={createDraft} className="grid gap-4 border-b bg-slate-50 p-6 sm:grid-cols-2 sm:p-8">
