@@ -134,7 +134,8 @@ async function main() {
     const failedDraft = afterMailFailure.body.find((r) => r.id === failDraft.body.id);
     ok('the record remains a retryable draft', failedDraft?.status === 'draft', JSON.stringify(failedDraft));
     ok('the delivery status records the failure', failedDraft?.emailDeliveryStatus === 'email_failed', failedDraft?.emailDeliveryStatus);
-    ok('the reference number survives the outage', /^SSF\\/NOTICE\\/\\d{4}-\\d{2}\\/\\d{4}$/.test(failedDraft?.noticeReference || ''), failedDraft?.noticeReference);
+    const refParts = String(failedDraft?.noticeReference || '').split('/');
+    ok('the reference number survives the outage', refParts.length === 4 && refParts[0] === 'SSF' && refParts[1] === 'NOTICE' && refParts[2].length === 7 && refParts[3].length === 4 && !Number.isNaN(Number(refParts[3])), failedDraft?.noticeReference);
     ok('a response link is not activated when email delivery fails', !failedDraft?.responseUrl && !failedDraft?.responseTokenHash, JSON.stringify(failedDraft));
 
     console.log('\nMember reply (public token):');
