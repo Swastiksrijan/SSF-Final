@@ -69,11 +69,6 @@ export default function Team() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-5 py-16 sm:px-8 md:py-20">
-        <SectionHeading eyebrow="Founder" title="संस्थापक" subtitle="The Foundation’s journey began in Rewa in December 2013 with a commitment to community service and inclusive development." />
-        <div className="grid max-w-sm gap-6"><PersonCard person={founder} /></div>
-      </section>
-
       <section className="bg-[#F5F8FA] px-5 py-16 sm:px-8 md:py-20">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Managing Committee" title="कार्यकारिणी समिति" subtitle="The office bearers and members who currently hold responsibility for the Foundation’s governance, finance, compliance and institutional development." />
