@@ -3,7 +3,7 @@ const sequelize = require('../config/database');
 
 const Interest = sequelize.define('Interest', {
     id: { type: DataTypes.UUID, defaultValue: DataTypes.UUIDV4, primaryKey: true },
-    interestType: { type: DataTypes.ENUM('movement', 'partner', 'volunteer', 'member'), allowNull: false },
+    interestType: { type: DataTypes.ENUM('movement', 'partner', 'volunteer', 'member', 'role'), allowNull: false },
     fullName: { type: DataTypes.STRING, allowNull: false },
     email: { type: DataTypes.STRING, allowNull: false },
     phone: { type: DataTypes.STRING, allowNull: false },
