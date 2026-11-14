@@ -152,15 +152,28 @@ export default function JoinRolesSection() {
   const other = r => (lang === "hi" ? r.en : r.hi);
 
   return (
-    <section id="roles" className="scroll-mt-28 border-t border-zinc-100 bg-gradient-to-b from-[#F6F9FB] to-white px-6 py-16">
+    <section id="roles" style={{ scrollMarginTop: "calc(var(--ssf-header-h, 160px) + 1rem)" }} className="-mt-6 bg-[#F6F9FB] px-5 pb-16 sm:-mt-8 sm:px-6">
       <div className="mx-auto max-w-6xl">
-        <div className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#12345A] via-[#153f63] to-[#176447] px-6 py-12 text-center text-white shadow-xl md:px-12 md:py-14">
+        <div className="relative z-20 overflow-hidden rounded-[2rem] bg-gradient-to-br from-[#12345A] via-[#153f63] to-[#176447] px-5 py-10 text-white shadow-2xl ring-1 ring-white/10 sm:px-8 md:px-12 md:py-14">
           <div className="pointer-events-none absolute -right-10 -top-10 h-40 w-40 rounded-full bg-[#F7A814]/20 blur-2xl" />
           <div className="pointer-events-none absolute -bottom-16 -left-10 h-48 w-48 rounded-full bg-white/10 blur-2xl" />
           <div className="relative">
-            <p className="text-[11px] font-black uppercase tracking-[0.28em] text-[#F7A814]">{t.kicker} • {lang === "hi" ? "Join & Contribute" : "जुड़ाव एवं योगदान"}</p>
-            <h2 className="mt-4 font-serif text-3xl font-black leading-tight md:text-5xl">{t.title}</h2>
-            <p className="mx-auto mt-5 max-w-3xl text-sm leading-7 text-white/85 md:text-base">{t.intro}</p>
+            <p className="text-center text-[11px] font-black uppercase tracking-[0.28em] text-[#F7A814]">{t.kicker} • {lang === "hi" ? "Join & Contribute" : "जुड़ाव एवं योगदान"}</p>
+            <h2 className="mt-4 text-center font-serif text-3xl font-black leading-tight md:text-5xl">{t.title}</h2>
+            <p className="mx-auto mt-5 max-w-3xl text-center text-sm leading-7 text-white/85 md:text-base">{t.intro}</p>
+
+            <div className="mt-8 flex flex-col gap-4 border-t border-white/15 pt-6 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex flex-wrap gap-2">
+                <button type="button" onClick={() => setGroup("all")} className={"rounded-full border px-4 py-2 text-sm font-bold transition " + (group === "all" ? "border-white bg-white text-[#12345A]" : "border-white/25 bg-white/10 text-white hover:border-white hover:bg-white/20")}>{t.all}</button>
+                {JOIN_GROUPS.map(g => (
+                  <button key={g.id} type="button" onClick={() => setGroup(g.id)} className={"rounded-full border px-4 py-2 text-sm font-bold transition " + (group === g.id ? "border-white bg-white text-[#12345A]" : "border-white/25 bg-white/10 text-white hover:border-white hover:bg-white/20")}>{lang === "hi" ? g.hi : g.en}</button>
+                ))}
+              </div>
+              <label className="flex items-center gap-2 rounded-xl border border-white/25 bg-white/10 px-3 py-2 lg:w-72">
+                <FaSearch className="text-white/70" />
+                <input value={query} onChange={e => setQuery(e.target.value)} placeholder={t.searchPh} className="w-full bg-transparent text-sm text-white outline-none placeholder:text-white/60" />
+              </label>
+            </div>
           </div>
         </div>
 
@@ -175,19 +188,6 @@ export default function JoinRolesSection() {
             </li>
           ))}
         </ol>
-
-        <div className="mt-10 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div className="flex flex-wrap gap-2">
-            <button type="button" onClick={() => setGroup("all")} className={"rounded-full border px-4 py-2 text-sm font-bold transition " + (group === "all" ? "border-[#176447] bg-[#176447] text-white" : "border-zinc-200 bg-white text-[#12345A] hover:border-[#176447]")}>{t.all}</button>
-            {JOIN_GROUPS.map(g => (
-              <button key={g.id} type="button" onClick={() => setGroup(g.id)} className={"rounded-full border px-4 py-2 text-sm font-bold transition " + (group === g.id ? "border-[#176447] bg-[#176447] text-white" : "border-zinc-200 bg-white text-[#12345A] hover:border-[#176447]")}>{lang === "hi" ? g.hi : g.en}</button>
-            ))}
-          </div>
-          <label className="flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-3 py-2 lg:w-72">
-            <FaSearch className="text-zinc-400" />
-            <input value={query} onChange={e => setQuery(e.target.value)} placeholder={t.searchPh} className="w-full bg-transparent text-sm outline-none" />
-          </label>
-        </div>
 
         {shareNote && <p className="mt-4 break-words rounded-xl bg-emerald-50 p-3 text-sm font-semibold text-emerald-800">{shareNote}</p>}
 
