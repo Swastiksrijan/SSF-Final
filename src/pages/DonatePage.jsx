@@ -33,7 +33,7 @@ export default function DonatePage() {
 
   return (
     <div className="w-full font-sans bg-[#EAF0F6] text-[#12345A]">
-      <section className="relative pt-20 md:pt-24 pb-8 md:pb-12 bg-[#12345A] overflow-hidden">
+      <section className="ssf-hero-offset relative pb-8 md:pb-12 bg-[#12345A] overflow-hidden">
         <div className="absolute inset-0" style={{ background: "radial-gradient(circle at 80% 20%, rgba(247,168,20,0.28), transparent 35%)" }} />
         <div className="relative max-w-7xl mx-auto px-4">
           <div className="grid lg:grid-cols-[1.05fr_.95fr] gap-8 items-center">

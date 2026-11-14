@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Link, useLocation } from "@tanstack/react-router";
 import { HiOutlineMenu, HiX } from "react-icons/hi";
 import { IoIosArrowDown } from "react-icons/io";
@@ -12,6 +12,21 @@ import logoImg from "../assets/new-logo.png";
 
 const Header = () => {
   const [menuOpen, setMenuOpen] = useState(false);
+
+  // Publish the header's real rendered height as `--ssf-header-h`, so hero
+  // sections offset by exactly the right amount at any width (the nav wraps to
+  // more rows on narrow screens, so a fixed number cannot be correct).
+  const headerRef = useRef(null);
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const apply = () => document.documentElement.style.setProperty("--ssf-header-h", `${Math.ceil(el.getBoundingClientRect().height)}px`);
+    apply();
+    if (typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileSubMenu, setMobileSubMenu] = useState(null);
   const [authOpen, setAuthOpen] = useState(false);
@@ -89,14 +104,14 @@ const Header = () => {
     </div>
   );
 
-  return <header className={`fixed top-0 left-0 right-0 z-50 font-sans ${isScrolled ? "ssf-header-scrolled" : "ssf-header-top"}`}>
+  return <header ref={headerRef} className={`fixed top-0 left-0 right-0 z-50 font-sans ${isScrolled ? "ssf-header-scrolled" : "ssf-header-top"}`}>
     <div className="ssf-contact-bar-wrap">
       <TopContactBar lang={lang} onToggleLang={toggleLang} onJoin={() => openAuth("signup")} />
     </div>
     <div className={`ssf-nav-shell ${isScrolled ? "is-scrolled" : "is-transparent"}`}>
       <div className="ssf-nav-bg" aria-hidden="true" />
-      <div className="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-3">
-        <Link to="/" onClick={closeMenu} className="flex items-center gap-3 shrink-0 group">
+      <div className="max-w-7xl mx-auto px-4 py-2 xl:h-20 flex flex-wrap xl:flex-nowrap items-center justify-between gap-x-3 gap-y-1">
+        <Link to="/" onClick={closeMenu} className="order-1 xl:order-none flex items-center gap-3 shrink-0 group">
           <span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-white/95 p-1.5 shadow-lg ring-1 ring-white/40 group-hover:scale-105 transition-transform">
             <img src={logoImg} alt="Swastik Srijan Foundation" className="h-full w-full object-contain" />
           </span>
@@ -107,18 +122,18 @@ const Header = () => {
           </span>
         </Link>
 
-        <nav aria-label="Main navigation" className="hidden xl:flex flex-1 min-w-0 items-center justify-between gap-1 px-1">
+        <nav aria-label="Main navigation" className="ssf-nav-scroll order-3 xl:order-none flex w-full xl:w-auto xl:flex-1 min-w-0 flex-wrap xl:flex-nowrap items-center justify-center xl:justify-between gap-x-1 gap-y-0.5 px-1 py-1 xl:py-0 whitespace-nowrap">
           {navItems.slice(0, 5).map(item => (
             <div key={item.name} className="relative group">
-              <Link to={item.path} data-active={isActive(item.path)} className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">
+              <Link to={item.path} data-active={isActive(item.path)} className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-1.5 xl:py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">
                 {item.name}{item.subItems && <IoIosArrowDown className="text-[10px] shrink-0" />}
               </Link>
               {item.subItems && <div className="absolute top-full left-0 w-72 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2">{item.subItems.map(sub => <Link key={sub.name} to={sub.path} className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:text-[#12345A] hover:bg-[#EAF0F6] rounded-xl">{sub.name}</Link>)}</div></div>}
             </div>
           ))}
-          <Link to="/Members" data-active={isActive("/Members")} className="ssf-nav-link flex items-center justify-center px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">Join Us</Link>
+          <Link to="/Members" data-active={isActive("/Members")} className="ssf-nav-link flex items-center justify-center px-1.5 py-1.5 xl:py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">Join Us</Link>
           <div className="relative group">
-            <button type="button" aria-haspopup="true" className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">More <IoIosArrowDown className="text-[10px]" /></button>
+            <button type="button" aria-haspopup="true" className="ssf-nav-link flex items-center justify-center gap-1 px-1.5 py-1.5 xl:py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">More <IoIosArrowDown className="text-[10px]" /></button>
             <div className="absolute top-full right-0 w-64 pt-3 opacity-0 invisible translate-y-1 group-hover:opacity-100 group-hover:visible group-hover:translate-y-0 group-focus-within:opacity-100 group-focus-within:visible transition-all duration-200"><div className="ssf-nav-dropdown rounded-2xl p-2 max-h-[75vh] overflow-y-auto">
               <Link to="/FundingPartnerships" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Funding & Partnerships</Link>
               <Link to="/Donor" className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">Become a Donor / Donor Registration</Link>
@@ -132,10 +147,10 @@ const Header = () => {
               {getInvolvedItems.map(item => <Link key={item.name} to={item.path} onClick={e => { if (item.form) e.preventDefault(); if (item.form) { openGetInvolvedForm(item.form); window.location.assign(item.path); } }} className="block px-4 py-3 text-sm font-semibold text-[#26343D] hover:bg-[#EAF0F6] rounded-xl">{item.name}</Link>)}
             </div></div>
           </div>
-          <Link to="/Contact" data-active={isActive("/Contact")} className="ssf-nav-link flex items-center justify-center px-1.5 py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">Contact</Link>
+          <Link to="/Contact" data-active={isActive("/Contact")} className="ssf-nav-link flex items-center justify-center px-1.5 py-1.5 xl:py-3 text-[11px] 2xl:text-xs whitespace-nowrap rounded-lg hover:bg-white/5">Contact</Link>
         </nav>
 
-        <div className="flex items-center gap-2.5 shrink-0">
+        <div className="order-2 xl:order-none ml-auto xl:ml-0 flex items-center gap-2.5 shrink-0">
 
           {user ? <div className="relative hidden lg:block"><button onClick={() => setAccountOpen(!accountOpen)} aria-expanded={accountOpen} aria-haspopup="menu" className="group flex items-center gap-2.5 px-3 py-2 rounded-full border border-white/25 bg-white/10 text-white font-extrabold text-[13px] tracking-[0.02em] hover:border-[#F7A814]/70 hover:bg-white/15 transition-all duration-200"><span className="w-8 h-8 rounded-full overflow-hidden bg-white/20 flex items-center justify-center shrink-0 ring-1 ring-white/30">{profilePhoto ? <img src={profilePhoto} alt="Profile" className="w-full h-full object-cover" /> : <FaUserCircle className="text-2xl text-white/80" />}</span><span className="max-w-28 truncate">{user.fullName || user.email}</span><IoIosArrowDown className={`transition-transform duration-200 ${accountOpen ? "rotate-180" : ""}`} /></button>{accountOpen && account}</div> : null}
 

@@ -42,7 +42,7 @@ export default function FundingPartnershipsPage() {
   return <main className="min-h-screen bg-[#F7F9FC] text-[#26343D]">
     <section className="relative overflow-hidden bg-[#002344] text-white">
       <div className="absolute inset-0 opacity-20" style={{backgroundImage:"radial-gradient(circle at 15% 20%, #2d6a4f 0, transparent 32%), radial-gradient(circle at 85% 80%, #fb8500 0, transparent 28%)"}} />
-      <div className="relative mx-auto max-w-7xl px-5 pb-20 pt-36 md:px-8 md:pb-28 md:pt-44">
+      <div className="ssf-hero-offset relative mx-auto max-w-7xl px-5 pb-20 md:px-8 md:pb-28">
         <p className="mb-4 text-xs font-bold uppercase tracking-[.28em] text-[#ffb347]">Swastik Srijan Foundation Samiti · Funding & Partnerships</p>
         <div className="max-w-4xl">
           <h1 className="font-serif text-4xl font-bold leading-tight md:text-6xl">Funding, CSR, Partnerships &amp; Social Enterprise</h1>

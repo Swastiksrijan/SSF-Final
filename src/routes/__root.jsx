@@ -16,7 +16,7 @@ function BlogHero() {
   if (pathname !== "/Blog") return null;
 
   return (
-    <section className="relative min-h-[48vh] md:min-h-[56vh] flex items-center justify-center overflow-hidden bg-[#12345A] text-white">
+    <section className="ssf-hero-offset relative min-h-[48vh] md:min-h-[56vh] flex items-center justify-center overflow-hidden bg-[#12345A] text-white">
       <div className="absolute inset-0">
         <OptimizedImage
           src="/images/real/education_girls.jpg"

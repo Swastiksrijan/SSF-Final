@@ -36,7 +36,7 @@ const focusOutcomes = [
 
 export default function OurInitiativesPage() {
   return <main className="bg-white text-[#12345A]">
-    <section className="relative overflow-hidden bg-[#12345A] px-6 pb-24 pt-36 text-white">
+    <section className="ssf-hero-offset relative overflow-hidden bg-[#12345A] px-6 pb-24 text-white">
       <div className="absolute inset-0 z-0">
         <OptimizedImage src={pageHeader} alt="Swastik Srijan Foundation community work" className="h-full w-full" objectFit="cover" />
         <div className="absolute inset-0 bg-[#12345A]/65 bg-gradient-to-b from-[#12345A]/60 via-[#12345A]/55 to-[#12345A]/85" />
