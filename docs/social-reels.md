@@ -38,10 +38,26 @@ three posts gets three different reels and a day with one post gets one reel —
 the same post is never reeled twice. To change the cadence, edit the cron list
 in `.github/workflows/social-reels.yml`.
 
-## One-time setup
+## How the reel reaches the backend
 
-The publish step needs the backend's scheduler key. Add it once as a repository
-secret (Settings → Secrets and variables → Actions):
+Two paths, tried in order:
+
+1. **Direct upload** — `POST /api/social/reel` with the scheduler key. Used when
+   the repo secret is set.
+2. **Repo inbox** — if the key is missing or the backend refuses it, the workflow
+   drops `reel.mp4` + `inbox.json` into the `reel-inbox` release of this repo,
+   and the backend's 5-minute social timer pulls it and publishes with its own
+   credentials. Nothing secret leaves the deployment, and a rotated key cannot
+   silently stop the reels.
+
+The inbox is idempotent: a post that already has a reel is never published
+twice, and a failing publish is retried at most 5 times before it is dropped.
+
+## One-time setup (optional)
+
+Direct upload needs the backend's scheduler key. Add it once as a repository
+secret (Settings → Secrets and variables → Actions) — without it the repo inbox
+takes over automatically:
 
 | Secret | Value |
 | --- | --- |

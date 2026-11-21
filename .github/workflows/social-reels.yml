@@ -32,7 +32,7 @@ on:
         default: false
 
 permissions:
-  contents: read
+  contents: write   # the inbox release lives in this repo
 
 concurrency:
   group: social-reels
@@ -158,6 +158,7 @@ jobs:
           ls -lh /tmp/reel.mp4
 
       - name: Publish the reel
+        id: publish
         if: steps.pick.outputs.skip != 'true'
         run: |
           # The backend expects force=1 (not the boolean input's "true").
@@ -176,11 +177,36 @@ jobs:
             echo "::notice::No video-capable channel connected yet (Instagram/Facebook/Telegram/YouTube). Connect one in IMS → Social Media."
             exit 0
           fi
-          if [ "$code" = "401" ]; then
-            echo "::error::Backend rejected the scheduler key. Add the repo secret SCHEDULER_SECRET (or ADMIN_PORTAL_TOKEN) with the same value as the backend's env var."
+          if [ "$code" = "200" ]; then
+            exit 0
+          fi
+          if [ "$code" = "409" ]; then
+            echo "::error::No video-capable channel connected. Connect Instagram / Facebook / Telegram / YouTube in IMS → Social Media."
             exit 1
           fi
-          [ "$code" = "200" ] || { echo "::error::reel publish failed ($code)"; exit 1; }
+          # No usable scheduler key (or the backend hiccuped): leave the reel in
+          # the repo inbox instead. The backend polls it every five minutes and
+          # publishes with its own credentials, so nothing has to be shared.
+          echo "::notice::Direct upload returned $code — dropping the reel in the repo inbox instead."
+          echo "inbox=true" >> "$GITHUB_OUTPUT"
+          exit 0
+
+      - name: Drop the reel in the repo inbox
+        if: steps.pick.outputs.skip != 'true' && steps.publish.outputs.inbox == 'true'
+        run: |
+          # A public release in this repo acts as a drop box: the backend pulls
+          # it every five minutes, so no secret has to reach this runner.
+          tag=reel-inbox
+          gh release view "$tag" >/dev/null 2>&1 \
+            || gh release create "$tag" --title "Reel inbox" --notes "Reels rendered by the SSF Daily Reel workflow; the backend publishes them."
+          gh release upload "$tag" /tmp/reel.mp4 --clobber
+          # Manifest last, so the backend never sees a manifest without a video.
+          printf '{"postId": %s, "ref": "%s", "renderedAt": "%s"}\n' \
+            "${{ steps.pick.outputs.post_id }}" "${{ steps.pick.outputs.ref }}" "$(date -u +%FT%TZ)" > /tmp/inbox.json
+          gh release upload "$tag" /tmp/inbox.json --clobber
+          echo "::notice::Reel queued in the repo inbox; the backend publishes it within ~5 minutes."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Keep the rendered reel for review
         if: always()
