@@ -29,9 +29,13 @@ from make_seva_reel import _centre as centre, _centre_wrapped as wrap_centre  # 
 from make_seva_reel import join, scene  # noqa: E402
 
 W, H = mr.W, mr.H
-HOOK_SECONDS = 3.4
-CARD_SECONDS = 5.6
-END_SECONDS = 4.2
+# Two headlines must still reach ~23s and three ~29s: a digest under 20 seconds
+# reads as a flash, not as something worth stopping for.
+HOOK_SECONDS = 4.0
+CARD_SECONDS = 6.4
+END_SECONDS = 5.4
+MIN_CARD = 6.4
+MAX_CARD = 9.5
 XFADE = 0.6
 
 MONTHS_HI = ['जनवरी', 'फ़रवरी', 'मार्च', 'अप्रैल', 'मई', 'जून', 'जुलाई', 'अगस्त',
@@ -133,6 +137,23 @@ def end_card(out_path):
     img.save(out_path)
 
 
+def narration(items):
+    """The whole digest, spoken: intro, each headline with its publisher, close.
+
+    The voice reads the same words that are on the card and names the source
+    every time, so a listener never gets a headline without attribution.
+    """
+    spoken = ['नमस्ते। आज की ज़रूरी खबरें, एक नज़र में।']
+    for n, item in enumerate(items):
+        lead = ('पहली खबर', 'दूसरी खबर', 'तीसरी खबर')[n] if n < 3 else f'खबर {n + 1}'
+        source = item.get('source') or item.get('domain') or ''
+        spoken.append(f"{lead} — {item['title']}।")
+        if source:
+            spoken.append(f'स्रोत: {source}।')
+    spoken.append('पूरी खबर मूल स्रोत पर पढ़ें। जानकारी और जागरूकता के लिए।')
+    return ' '.join(spoken)
+
+
 def main():
     ap = argparse.ArgumentParser(description='Render the daily news awareness reel.')
     ap.add_argument('--news', required=True, help='JSON from scripts/news_feed.py')
@@ -150,11 +171,18 @@ def main():
     ffmpeg = mr.ffmpeg_bin()
     tmp = tempfile.mkdtemp(prefix='news-')
     try:
-        # Only the intro is spoken: reading the headlines aloud would be copying
-        # more of someone else's work than we need.
         voice_path = os.path.join(tmp, 'voice.mp3')
-        spoken = False if args.no_voice else mr.make_voice(
-            'नमस्ते। आज की ज़रूरी खबरें, एक नज़र में।', args.voice, voice_path)
+        text = mr.clean_text(narration(items))
+        spoken = False if args.no_voice else mr.make_voice(text, args.voice, voice_path)
+
+        # The cards follow the voice: a headline stays up while it is being read,
+        # and the whole digest lands between 22 and 30 seconds either way.
+        if spoken:
+            audio = mr.audio_seconds(ffmpeg, voice_path)
+            card = min(MAX_CARD, max(MIN_CARD, (audio + 2.0 - HOOK_SECONDS - END_SECONDS) / len(items)))
+        else:
+            card = CARD_SECONDS
+        card = round(card, 2)
 
         stills = []
         hook = os.path.join(tmp, 'hook.png')
@@ -164,7 +192,7 @@ def main():
         for n, item in enumerate(items, start=1):
             png = os.path.join(tmp, f'news{n}.png')
             headline_card(item, n, len(items), png)
-            stills.append((png, CARD_SECONDS, True))
+            stills.append((png, card, True))
 
         end = os.path.join(tmp, 'end.png')
         end_card(end)
@@ -184,7 +212,8 @@ def main():
         os.makedirs(os.path.dirname(os.path.abspath(args.out)) or '.', exist_ok=True)
         mr.mux(ffmpeg, joined, voice_path if spoken else None, args.out, total, 0.4)
         print(json.dumps({'ok': True, 'out': os.path.abspath(args.out), 'seconds': round(total, 2),
-                          'cards': len(items), 'voice': spoken, 'bytes': os.path.getsize(args.out)}))
+                          'cards': len(items), 'cardSeconds': card, 'voice': spoken,
+                          'bytes': os.path.getsize(args.out)}))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

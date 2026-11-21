@@ -395,36 +395,35 @@ def end_card(out_path):
     centre('हर हाथ काम आता है', font('NotoSansDevanagari-Regular.ttf', 34), 350, GOLD_BRIGHT)
     centre('— चाहें तो हमारे माध्यम से —', font('NotoSansDevanagari-Regular.ttf', 26), 404, (196, 214, 232))
 
-    tile, gap, pad = 300, 48, 14
-    left = (W - (tile * 2 + gap)) // 2
-    y0 = 462
-    centres = [left + tile // 2, left + tile + gap + tile // 2]
-    for cx, img_qr in ((centres[0], qr_image(tile - pad * 2)),
-                       (centres[1], generated_qr(RAZORPAY_URL, tile - pad * 2))):
-        x0 = cx - tile // 2
-        d.rounded_rectangle([x0, y0, x0 + tile, y0 + tile], radius=24, fill=WHITE)
-        if img_qr is not None:
-            img.paste(img_qr, (x0 + pad, y0 + pad))
-        else:
-            centre_at('QR', font('NotoSans-Bold.ttf', 96), cx, y0 + 96, NAVY)
+    # One scanner only. Two codes side by side forced a choice at a glance and
+    # people scanned whichever looked bigger; the UPI/Paytm code is the one that
+    # reaches the account, so it gets the space. Razorpay stays as a typed link.
+    tile, pad = 460, 20
+    x0 = (W - tile) // 2
+    y0 = 470
+    d.rounded_rectangle([x0, y0, x0 + tile, y0 + tile], radius=28, fill=WHITE)
+    code = qr_image(tile - pad * 2)
+    if code is not None:
+        img.paste(code, (x0 + pad, y0 + pad))
+    else:
+        centre_at('QR', font('NotoSans-Bold.ttf', 120), W // 2, y0 + 140, NAVY)
 
-    centre_at('UPI  ·  Paytm', font('NotoSans-Bold.ttf', 28), centres[0], y0 + tile + 16, WHITE)
-    centre_at('Razorpay  ·  Card', font('NotoSans-Bold.ttf', 28), centres[1], y0 + tile + 16, WHITE)
-
+    centre('UPI  ·  Paytm', font('NotoSans-Bold.ttf', 30), y0 + tile + 16, WHITE)
     # "QR" must come from the Latin face: the Devanagari subset has no Q or R.
     centre_mixed([('QR', font('NotoSans-Bold.ttf', 28), (206, 222, 238)),
                   (' स्कैन करें', font('NotoSansDevanagari-Regular.ttf', 28), (206, 222, 238)),
-                  ('  •  Scan to pay', font('NotoSans-Regular.ttf', 28), (206, 222, 238))], y0 + tile + 66)
-    centre('UPI: ' + UPI_ID, font('NotoSans-Bold.ttf', 26), y0 + tile + 108, (206, 222, 238))
+                  ('  •  Scan to pay', font('NotoSans-Regular.ttf', 28), (206, 222, 238))], y0 + tile + 62)
+    centre('UPI: ' + UPI_ID, font('NotoSans-Bold.ttf', 26), y0 + tile + 106, (206, 222, 238))
 
-    d.line([(W // 2 - 150, y0 + tile + 158), (W // 2 + 150, y0 + tile + 158)], fill=GOLD, width=2)
-    centre(SITE + '/Donate', font('NotoSans-Bold.ttf', 42), y0 + tile + 178, GOLD_BRIGHT)
-    centre(RAZORPAY_URL.replace('https://', ''), font('NotoSans-Regular.ttf', 21), y0 + tile + 234, (186, 204, 224))
+    d.line([(W // 2 - 150, y0 + tile + 160), (W // 2 + 150, y0 + tile + 160)], fill=GOLD, width=2)
+    centre(SITE + '/Donate', font('NotoSans-Bold.ttf', 42), y0 + tile + 180, GOLD_BRIGHT)
+    centre('Razorpay: ' + RAZORPAY_URL.replace('https://', ''),
+           font('NotoSans-Regular.ttf', 21), y0 + tile + 246, (186, 204, 224))
 
     # Naming the payee is the cheapest anti-fraud check a viewer can make.
-    centre('Payee: SWASTIK SRIJAN FOUNDATION SAMITI', font('NotoSans-Regular.ttf', 23), 1112, (186, 204, 224))
-    centre('हर मदद मायने रखती है', font('NotoSansDevanagari-Bold.ttf', 36), 1206, GOLD)
-    centre('Every bit of help counts', font('NotoSans-Regular.ttf', 26), 1258, (186, 204, 224))
+    centre('Payee: SWASTIK SRIJAN FOUNDATION SAMITI', font('NotoSans-Regular.ttf', 23), 1214, (186, 204, 224))
+    centre('हर मदद मायने रखती है', font('NotoSansDevanagari-Bold.ttf', 36), 1560, GOLD)
+    centre('Every bit of help counts', font('NotoSans-Regular.ttf', 26), 1612, (186, 204, 224))
 
     centre('स्वास्तिक सृजन फाउंडेशन', font('NotoSansDevanagari-Regular.ttf', 28), H - 186, (170, 190, 210))
     centre('@swastiksrijan  •  Creating Change. Inspiring Lives.', font('NotoSans-Regular.ttf', 24), H - 140, (150, 172, 196))

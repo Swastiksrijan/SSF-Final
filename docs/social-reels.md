@@ -129,10 +129,11 @@ Payee: SWASTIK SRIJAN FOUNDATION SAMITI
 हर मदद मायने रखती है · Every bit of help counts
 ```
 
-Two codes, because a UPI QR is useless to someone paying by card: the left one is
-the foundation's own Paytm scanner, the right one is generated from `RAZORPAY_URL`.
-Naming the payee on the card gives the viewer the one check that catches a swapped
-QR.
+One scanner only — the foundation's own Paytm/UPI code, large, with the UPI id
+under it. Two codes side by side made people choose at a glance and scan the
+wrong one, so Razorpay is now a typed link on the card instead of a second QR.
+Naming the payee on the card gives the viewer the one check that catches a
+swapped QR.
 
 The QR is the foundation's real Paytm scanner, cropped to the code and stored at
 `backend_node/assets/donate-qr.png` — it encodes
@@ -171,8 +172,10 @@ end       "ये खबरें जानकारी के लिए है�
 ```
 
 Nothing is downloaded from the publisher: no article text, no photos, no logo.
-The cards are drawn by `scripts/make_news_reel.py`. The voice speaks only the
-intro — the headlines are read by the viewer, not by us.
+The cards are drawn by `scripts/make_news_reel.py`. The narration reads the same
+words that are on the card — intro, each headline, the publisher's name — and
+the cards are timed from the voice so a headline stays up while it is spoken.
+The digest lands between 22 and 30 seconds.
 
 ### Where the headlines come from
 

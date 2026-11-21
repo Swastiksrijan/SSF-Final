@@ -30,6 +30,10 @@ on:
         description: 'Queue the reel for publishing (uncheck to only render)'
         type: boolean
         default: true
+      force:
+        description: 'Publish again even if this slot already has a reel'
+        type: boolean
+        default: false
 
 permissions:
   contents: write   # the news inbox release lives in this repo
@@ -47,6 +51,7 @@ jobs:
       SLOT_IN: ${{ github.event.inputs.slot }}
       COUNT_IN: ${{ github.event.inputs.count }}
       PUBLISH_IN: ${{ github.event.inputs.publish }}
+      FORCE_IN: ${{ github.event.inputs.force }}
 
     steps:
       - uses: actions/checkout@v4
@@ -114,7 +119,7 @@ jobs:
           gh release upload "$tag" /tmp/reel.mp4 --clobber
           # Manifest last, so the backend never sees a manifest without a video.
           ASSET_URL="https://github.com/${{ github.repository }}/releases/download/$tag/reel.mp4" \
-          NOW="$(date -u +%FT%TZ)" \
+          NOW="$(date -u +%FT%TZ)" FORCE_IN="$FORCE_IN" \
           python3 - <<'PY'
           import json, os
           news = json.load(open('/tmp/news.json'))
@@ -133,6 +138,7 @@ jobs:
                       for i in news['items']
                   ],
               },
+              'force': os.environ.get('FORCE_IN') == 'true',
               'renderedAt': os.environ['NOW'],
               'assetUrl': os.environ['ASSET_URL'],
           }
