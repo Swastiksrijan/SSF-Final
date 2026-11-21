@@ -476,19 +476,31 @@ async function publishInstagramReel(post, creds, videoUrl) {
   if (!ig.id) return { ok: false, error: ig.error };
   const igUserId = ig.id;
   const tag = `ig ${igUserId} via ${ig.via}`;
+  const errors = [];
+  // Reels is the right format. Meta refuses the Reels container for this account
+  // with an internal error, so a 9:16 file also gets one try as a feed video
+  // before giving up — a letterboxed post beats no post.
   try {
-    // Resumable upload: we push the bytes ourselves instead of asking Meta to
-    // fetch a URL. The video_url path answers with "Generic internal error"
-    // (code -1/2207085) for a file it cannot retrieve, which says nothing.
     const buf = await loadVideo(videoUrl);
-    const created = await igCreateContainer(igUserId, token, { upload_type: 'resumable' }, post);
-    if (!created) return { ok: false, error: 'container_failed' };
+    const created = await igCreateContainer(igUserId, token, { media_type: 'REELS', upload_type: 'resumable' }, post);
+    if (!created) throw new Error('container_failed');
     await igUpload(created, buf, token);
-    return await igFinish(igUserId, created, token);
-  } catch (e) {
-    const hint = await igAccountHint(igUserId, token);
-    return { ok: false, error: `${e.message} [${tag}${hint ? `, ${hint}` : ''}]` };
+    return await igFinish(igUserId, created, token, 'reel');
+  } catch (e) { errors.push(`reels: ${e.message}`); }
+
+  const url = absoluteUrl(videoUrl);
+  if (url) {
+    try {
+      const created = await igCreateContainer(igUserId, token, { media_type: 'VIDEO', video_url: url }, post);
+      if (!created) throw new Error('container_failed');
+      return await igFinish(igUserId, created, token, 'p');
+    } catch (e) { errors.push(`video: ${e.message}`); }
+  } else {
+    errors.push('video: public_video_url_unavailable');
   }
+
+  const hint = await igAccountHint(igUserId, token);
+  return { ok: false, error: `${errors.join(' | ')} [${tag}${hint ? `, ${hint}` : ''}]` };
 }
 
 // The rendered file is on local disk (the inbox downloads it); a remote URL is
@@ -540,11 +552,11 @@ async function igUpload(containerId, buf, token) {
   return data || {};
 }
 
-async function igFinish(igUserId, containerId, token) {
+async function igFinish(igUserId, containerId, token, kind = 'reel') {
   const finished = await waitForIgContainer(containerId, token, 60, 5000);
   if (!finished) return { ok: false, error: 'instagram_video_processing_timeout' };
   const out = await formCall(`${GRAPH}/${igUserId}/media_publish`, { creation_id: containerId, access_token: token });
-  return { ok: true, url: out?.id ? `https://instagram.com/reel/${out.id}` : null };
+  return { ok: true, kind, url: out?.id ? `https://instagram.com/${kind}/${out.id}` : null };
 }
 
 // The id that can publish is the page's linked Instagram account, not whatever
