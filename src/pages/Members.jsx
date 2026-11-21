@@ -147,6 +147,7 @@ const Members = () => {
             <div className="flex h-full flex-col rounded-3xl border border-blue-100 bg-blue-50 p-7 sm:p-9">
               <h3 className="text-xl font-bold text-[#12345A]">Apply for Membership</h3>
               <p className="mt-3 text-sm leading-6 text-slate-600">Complete the application form with accurate details. Submission is an application only; membership becomes effective after the required review and confirmation.</p>
+              <a href="/MembershipHardcopy" className="mb-3 flex w-full items-center justify-between gap-3 rounded-2xl border border-[#176447]/25 bg-white p-4 text-left font-bold text-[#176447] shadow-sm transition hover:shadow-md"><span>📄 हार्ड-कॉपी आवेदन PDF डाउनलोड / प्रिंट</span><FaArrowRight className="shrink-0" /></a>
               <button onClick={() => openApplication("general")} className="mt-auto flex w-full items-center justify-between gap-3 rounded-2xl bg-white p-5 text-left text-lg font-bold text-zinc-700 shadow-sm transition hover:text-[#12345A] hover:shadow-md"><span>📝 Member Application Form</span><FaArrowRight className="shrink-0" /></button>
             </div>
           </div>
