@@ -141,25 +141,36 @@ async function jsonCall(url, { method = 'POST', headers = {}, body } = {}) {
   return data || {};
 }
 
+// Meta reports some failures as a bare "Fatal", which says nothing about what to
+// fix. Carry the machine-readable parts (code, subcode, type) in the message so
+// the dashboard and the logs show them.
+function graphError(data, status) {
+  const e = (data && data.error) || {};
+  const msg = (data && (data.description || e.message || data.error_description)) || `HTTP ${status}`;
+  const tags = [e.code, e.error_subcode].filter((v) => v !== undefined && v !== null);
+  const detail = [tags.length ? `code ${tags.join('/')}` : null, e.type, e.fbtrace_id ? `trace ${e.fbtrace_id}` : null]
+    .filter(Boolean).join(', ');
+  const err = new Error(detail ? `${msg} (${detail})` : msg);
+  err.status = status;
+  err.code = e.code;
+  err.subcode = e.error_subcode;
+  err.type = e.type;
+  return err;
+}
+
 async function formCall(url, form) {
   const params = new URLSearchParams(form);
   const res = await fetch(url, { method: 'POST', body: params });
   let data = null;
   try { data = await res.json(); } catch { /* ignore */ }
-  if (!res.ok) {
-    const msg = (data && (data.description || data.error?.message || data.error_description)) || `HTTP ${res.status}`;
-    const err = new Error(msg); err.status = res.status; throw err;
-  }
+  if (!res.ok) throw graphError(data, res.status);
   return data || {};
 }
 
 async function graphGet(url) {
   const res = await fetch(url);
   const data = await res.json().catch(() => null);
-  if (!res.ok) {
-    const msg = (data && (data.error?.message || data.message)) || `HTTP ${res.status}`;
-    const err = new Error(msg); err.status = res.status; throw err;
-  }
+  if (!res.ok) throw graphError(data, res.status);
   return data || {};
 }
 
