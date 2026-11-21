@@ -83,25 +83,28 @@ async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force
   const postId = Number(manifest.postId);
   if (!postId) return { skipped: 'bad-manifest', error: 'postId missing' };
 
+  // One workflow run = one request. A later run (a forced retry, say) carries a
+  // new renderedAt and must be handled even when the previous one succeeded.
+  const requestId = `${postId}:${manifest.renderedAt || ''}`;
   const wantForce = force === true || manifest.force === true;
   const state = (await getConfig(STATE_KEY, null)) || {};
-  if (state.postId === postId && (state.status === 'done' || (state.attempts || 0) >= MAX_ATTEMPTS)) {
+  if (state.requestId === requestId && (state.status === 'done' || (state.attempts || 0) >= MAX_ATTEMPTS)) {
     return { skipped: 'already-handled', postId };
   }
 
   const post = await SocialPost.findByPk(postId);
   if (!post) {
-    await setConfig(STATE_KEY, { postId, status: 'done', attempts: 0, error: 'post not found' });
+    await setConfig(STATE_KEY, { requestId, postId, status: 'done', attempts: 0, error: 'post not found' });
     return { skipped: 'no-post', postId };
   }
   if (!wantForce && post.data && post.data.reel && post.data.reel.publishedAt) {
-    await setConfig(STATE_KEY, { postId, status: 'done', attempts: 0 });
+    await setConfig(STATE_KEY, { requestId, postId, status: 'done', attempts: 0 });
     return { skipped: 'already-published', postId };
   }
 
-  const attempts = (state.postId === postId ? Number(state.attempts) || 0 : 0) + 1;
+  const attempts = (state.requestId === requestId ? Number(state.attempts) || 0 : 0) + 1;
   const remember = (status, error = null) => setConfig(STATE_KEY, {
-    postId, status, attempts, error, at: new Date().toISOString(),
+    requestId, postId, status, attempts, error, at: new Date().toISOString(),
   });
 
   try {
