@@ -66,6 +66,15 @@ function pruneReels() {
   } catch { /* pruning must never break publishing */ }
 }
 
+// A failed publish leaves no trace on the post (only a successful one stores a
+// reel), so a silent "Instagram: Fatal" would be invisible to the admin. Keep the
+// last attempt next to the post instead.
+async function noteAttempt(post, attempt) {
+  try {
+    await post.update({ data: { ...(post.data || {}), reelLastAttempt: attempt } });
+  } catch { /* never let bookkeeping break the publish path */ }
+}
+
 async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force = false } = {}) {
   if (typeof fetchImpl !== 'function') return { skipped: 'no-fetch' };
 
@@ -144,9 +153,11 @@ async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force
     const done = Boolean(out && (out.published || out.skipped));
     await remember(done ? 'done' : 'failed', done ? null : 'no channel accepted the reel');
     if (done) pruneReels();
+    if (!done) await noteAttempt(post, { at: new Date().toISOString(), results: out && out.results });
     return { postId, attempts, ...out };
   } catch (e) {
     await remember(attempts >= MAX_ATTEMPTS ? 'done' : 'failed', e.message);
+    await noteAttempt(post, { at: new Date().toISOString(), error: e.message });
     return { postId, attempts, error: e.message };
   }
 }

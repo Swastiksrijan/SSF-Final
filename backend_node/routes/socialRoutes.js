@@ -71,6 +71,7 @@ function postView(row) {
     tradition: p.tradition, solemn: p.solemn, palette: p.palette,
     scheduledFor: p.scheduledFor, publishedAt: p.publishedAt, results: p.platformResults,
     reel: p.reel || null,
+    reelLastAttempt: p.reelLastAttempt || null,
   };
 }
 
