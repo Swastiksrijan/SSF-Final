@@ -49,7 +49,7 @@ const MembershipHardcopy = () => {
         </header>
         <section className="mt-4 rounded-lg border border-slate-300 bg-slate-50 p-3 text-xs leading-5">
           <p className="font-bold text-[#12345A]">पंजीकृत कार्यालय / REGISTERED OFFICE</p>
-          <p>वार्ड नं. 1, दादर राहत, हुजूर, जिला रीवा, मध्य प्रदेश – 486446, भारत</p>
+          <p>वार्ड नं. 1, दादर राहथ, हुजूर, जिला रीवा, मध्य प्रदेश – 486446, भारत</p>
           <p>Ward No. 1, Dadar Rahat, Huzur, District Rewa, Madhya Pradesh – 486446, India</p>
           <p>वेबसाइट / Website: swastiksrijan.in | ईमेल / Email: info@swastiksrijan.in | फोन / Phone: +91 97183 46691</p>
         </section>
