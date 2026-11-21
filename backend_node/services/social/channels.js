@@ -476,7 +476,21 @@ async function publishInstagramReel(post, creds, videoUrl) {
     if (!finished) return { ok: false, error: 'instagram_video_processing_timeout' };
     const out = await formCall(`${GRAPH}/${igUserId}/media_publish`, { creation_id: created, access_token: token });
     return { ok: true, url: out?.id ? `https://instagram.com/reel/${out.id}` : null };
-  } catch (e) { return { ok: false, error: e.message }; }
+  } catch (e) {
+    // Meta rejects a container with errors that read the same for a bad video and
+    // a personal account, so name the account in the failure.
+    const hint = await igAccountHint(igUserId, token);
+    return { ok: false, error: hint ? `${e.message} [${hint}]` : e.message };
+  }
+}
+
+// Instagram publishing needs a Business/Creator account linked to the page; a
+// personal account fails with the same "Fatal" as a broken video.
+async function igAccountHint(igUserId, token) {
+  try {
+    const d = await graphGet(`${GRAPH}/${igUserId}?fields=username,account_type&access_token=${encodeURIComponent(token)}`);
+    return `account ${d.username || '?'} (${d.account_type || 'unknown'})`;
+  } catch (e) { return `account lookup failed: ${e.message}`; }
 }
 
 async function publishFacebookVideo(post, creds, videoUrl) {
