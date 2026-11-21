@@ -22,37 +22,27 @@ const ok = (name, cond, extra = '') => {
 };
 
 const REEL_DIR = path.join(__dirname, '..', 'uploads', 'reels');
+const VIDEO = Buffer.from('fake-mp4-bytes');
 
-// Minimal stand-in for fetch: a release document plus downloadable assets.
-function fakeFetch({ release, files = {}, status = 200 } = {}) {
+// Stand-in for fetch: serves the two release assets by URL suffix, the same way
+// github.com/releases/download/<tag>/<asset> does.
+function fakeFetch({ manifest, video = VIDEO, status = 200, skipVideo = false } = {}) {
   const calls = [];
   const impl = async (url) => {
     calls.push(url);
-    if (String(url).includes('/releases/tags/')) {
-      if (status !== 200) return { ok: false, status };
-      return { ok: true, status: 200, json: async () => release };
-    }
     const name = String(url).split('/').pop();
-    const body = files[name];
+    if (status !== 200) return { ok: false, status };
+    const body = name === 'inbox.json' ? manifest
+      : (name === 'reel.mp4' && !skipVideo ? video : null);
     if (!body) return { ok: false, status: 404 };
-    return {
-      ok: true, status: 200,
-      arrayBuffer: async () => body.buffer.slice(body.byteOffset, body.byteOffset + body.length),
-    };
+    const buf = Buffer.isBuffer(body) ? body : Buffer.from(typeof body === 'string' ? body : JSON.stringify(body));
+    return { ok: true, status: 200, arrayBuffer: async () => buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.length) };
   };
   impl.calls = calls;
   return impl;
 }
 
-const releaseDoc = (postId) => ({
-  tag_name: 'reel-inbox',
-  assets: [
-    { name: 'reel.mp4', size: 2048, browser_download_url: 'https://example.test/assets/reel.mp4' },
-    { name: 'inbox.json', size: 64, browser_download_url: 'https://example.test/assets/inbox.json' },
-  ],
-  body: '',
-  postId,
-});
+const manifestFor = (postId, extra = {}) => ({ postId, ref: `SOCIAL-${postId}`, renderedAt: '2026-11-21T10:00:00Z', ...extra });
 
 async function main() {
   const { sequelize, SocialPost } = require('../models/social');
@@ -72,34 +62,34 @@ async function main() {
     data,
   });
 
-  const manifest = (postId) => Buffer.from(JSON.stringify({ postId, ref: `SOCIAL-${postId}` }));
-  const video = Buffer.from('fake-mp4-bytes');
-
   const before = new Set(fs.existsSync(REEL_DIR) ? fs.readdirSync(REEL_DIR) : []);
-  const cleanup = () => {
+  process.on('exit', () => {
     for (const f of fs.existsSync(REEL_DIR) ? fs.readdirSync(REEL_DIR) : []) {
       if (!before.has(f)) fs.unlinkSync(path.join(REEL_DIR, f));
     }
-  };
-  process.on('exit', cleanup);
+  });
 
   console.log('reel inbox');
 
-  // Nothing published yet.
-  ok('no release -> no inbox', (await tick({ fetchImpl: fakeFetch({ status: 404 }) })).skipped === 'no-inbox');
+  // Nothing has ever been dropped.
+  ok('no manifest -> no inbox', (await tick({ fetchImpl: fakeFetch({ status: 404 }) })).skipped === 'no-inbox');
 
-  // GitHub failing must not throw into the timer.
+  // A release-host failure must not throw into the timer.
   const broken = await tick({ fetchImpl: fakeFetch({ status: 500 }) });
-  ok('github error is swallowed', broken.skipped === 'github-error', JSON.stringify(broken));
+  ok('download error is swallowed', broken.skipped === 'github-error', JSON.stringify(broken));
 
-  // A release without a manifest is ignored.
-  const noManifest = await tick({ fetchImpl: fakeFetch({ release: { assets: [{ name: 'reel.mp4' }] } }) });
-  ok('missing inbox.json -> no-manifest', noManifest.skipped === 'no-manifest', JSON.stringify(noManifest));
+  // Broken JSON is ignored.
+  const bad = await tick({ fetchImpl: fakeFetch({ manifest: 'not json' }) });
+  ok('unparsable manifest -> bad-manifest', bad.skipped === 'bad-manifest', JSON.stringify(bad));
+
+  // A manifest without a post id is ignored.
+  const noId = await tick({ fetchImpl: fakeFetch({ manifest: { ref: 'x' } }) });
+  ok('manifest without postId -> bad-manifest', noId.skipped === 'bad-manifest', JSON.stringify(noId));
 
   // Happy path.
   const post = await makePost();
   const published = [];
-  const fetch1 = fakeFetch({ release: releaseDoc(post.id), files: { 'inbox.json': manifest(post.id), 'reel.mp4': video } });
+  const fetch1 = fakeFetch({ manifest: manifestFor(post.id) });
   const out1 = await tick({
     fetchImpl: fetch1,
     publish: async ({ post: p, videoUrl }) => {
@@ -109,110 +99,90 @@ async function main() {
     },
   });
   ok('publishes the reel', out1.published === true, JSON.stringify(out1));
-  ok('writes the file under uploads/reels', published.length === 1 && published[0][1].startsWith('/uploads/reels/'), JSON.stringify(published));
-  ok('downloads both assets', fetch1.calls.length === 3, fetch1.calls.join(','));
-  const saved = fs.readdirSync(REEL_DIR).filter((f) => f.endsWith('.mp4') && !before.has(f));
-  ok('reel file exists on disk', saved.length >= 1, saved.join(','));
+  ok('stores the video under uploads/reels', published.length === 1 && published[0][1].startsWith('/uploads/reels/'), JSON.stringify(published));
+  ok('downloads manifest and video', fetch1.calls.length === 2, fetch1.calls.join(','));
+  ok('reel file exists on disk', fs.readdirSync(REEL_DIR).some((f) => f.endsWith('.mp4') && !before.has(f)));
   ok('state marked done', (await getConfig(STATE_KEY, {})).status === 'done');
 
-  // Second tick for the same post is a no-op (no double publish).
-  const fetch2 = fakeFetch({ release: releaseDoc(post.id), files: { 'inbox.json': manifest(post.id), 'reel.mp4': video } });
-  const out2 = await tick({ fetchImpl: fetch2, publish: async () => { throw new Error('must not publish twice'); } });
-  ok('same post is not published twice', out2.skipped === 'already-handled', JSON.stringify(out2));
-  ok('second tick reads the manifest only', fetch2.calls.length === 2 && !fetch2.calls.some((u) => u.endsWith('reel.mp4')), fetch2.calls.join(','));
+  // A new run for a post that already has a reel is skipped.
+  const fetch2 = fakeFetch({ manifest: manifestFor(post.id, { renderedAt: '2026-11-21T11:00:00Z' }) });
+  const out2 = await tick({ fetchImpl: fetch2, publish: async () => { throw new Error('must not publish'); } });
+  ok('post with a reel is skipped', out2.skipped === 'already-published', JSON.stringify(out2));
+  ok('skipped run downloads the manifest only', fetch2.calls.length === 1, fetch2.calls.join(','));
 
-  // A post that already carries a reel is skipped even if state is stale.
-  const reeled = await makePost({ reel: { videoUrl: '/uploads/reels/old.mp4', publishedAt: '2026-11-20T10:00:00.000Z' } });
-  await setConfig(STATE_KEY, { postId: 0, status: 'done', attempts: 0 });
-  const out3 = await tick({ fetchImpl: fakeFetch({ release: releaseDoc(reeled.id), files: { 'inbox.json': manifest(reeled.id), 'reel.mp4': video } }) });
-  ok('post with a reel is skipped', out3.skipped === 'already-published', JSON.stringify(out3));
+  // The same run seen twice must not publish twice, even when forced.
+  const retry = await makePost({ reel: { videoUrl: '/uploads/reels/old.mp4', publishedAt: '2026-11-20T10:00:00.000Z' } });
+  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  const forced = () => fakeFetch({ manifest: manifestFor(retry.id, { renderedAt: '2026-11-21T12:00:00Z', platforms: ['instagram'], force: true }) });
+  const out3a = await tick({ fetchImpl: forced(), publish: async () => ({ skipped: false, published: true }) });
+  ok('a forced run is processed', out3a.published === true, JSON.stringify(out3a));
+  const out3b = await tick({ fetchImpl: forced(), publish: async () => { throw new Error('must not run twice'); } });
+  ok('same request is handled once', out3b.skipped === 'already-handled', JSON.stringify(out3b));
 
-  // A publish failure is retried, then given up on.
+  // The next run is a fresh request, and keeps the targeted platform list.
+  const seen = {};
+  const out4 = await tick({
+    fetchImpl: fakeFetch({ manifest: manifestFor(retry.id, { renderedAt: '2026-11-21T12:30:00Z', platforms: ['instagram'], force: true }) }),
+    publish: async (args) => { Object.assign(seen, args); return { skipped: false, published: true }; },
+  });
+  ok('a later run for the same post is processed', out4.published === true, JSON.stringify(out4));
+  ok('platforms and force are forwarded', JSON.stringify(seen.platforms) === '["instagram"]' && seen.force === true, JSON.stringify(seen.platforms));
+
+  // A manifest assetUrl (the warm CDN) is what the platforms download.
+  const cdnPost = await makePost({ reel: { videoUrl: '/uploads/reels/old.mp4', publishedAt: '2026-11-20T10:00:00.000Z' } });
+  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  const seenCdn = {};
+  await tick({
+    fetchImpl: fakeFetch({
+      manifest: manifestFor(cdnPost.id, {
+        renderedAt: '2026-11-21T13:00:00Z', force: true,
+        assetUrl: 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4',
+      }),
+    }),
+    publish: async (args) => { Object.assign(seenCdn, args); return { skipped: false, published: true }; },
+  });
+  ok('manifest assetUrl becomes the video url',
+    seenCdn.videoUrl === 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4', String(seenCdn.videoUrl));
+
+  // A publish failure is retried, then given up on — and stays visible.
   const failing = await makePost();
-  await setConfig(STATE_KEY, { postId: 0, status: 'done', attempts: 0 });
-  const failingFetch = () => fakeFetch({ release: releaseDoc(failing.id), files: { 'inbox.json': manifest(failing.id), 'reel.mp4': video } });
+  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  const failManifest = () => fakeFetch({ manifest: manifestFor(failing.id, { renderedAt: '2026-11-21T14:00:00Z' }) });
   const failPublish = async () => { throw new Error('no reel channel connected'); };
-  const first = await tick({ fetchImpl: failingFetch(), publish: failPublish });
+  const first = await tick({ fetchImpl: failManifest(), publish: failPublish });
   ok('failure records an attempt', first.attempts === 1 && first.error === 'no reel channel connected', JSON.stringify(first));
   await failing.reload();
   ok('failure is visible on the post',
     failing.data.reelLastAttempt && failing.data.reelLastAttempt.error === 'no reel channel connected',
     JSON.stringify(failing.data.reelLastAttempt));
   let last;
-  for (let i = 0; i < MAX_ATTEMPTS; i += 1) last = await tick({ fetchImpl: failingFetch(), publish: failPublish });
+  for (let i = 0; i < MAX_ATTEMPTS; i += 1) last = await tick({ fetchImpl: failManifest(), publish: failPublish });
   ok('stops after MAX_ATTEMPTS', last.skipped === 'already-handled', JSON.stringify(last));
 
-  // A targeted retry: the manifest carries the warm CDN url, the platform list
-  // and force, and all three reach the publisher.
-  const retry = await makePost({ reel: { videoUrl: '/uploads/reels/old.mp4', publishedAt: '2026-11-20T10:00:00.000Z' } });
-  await setConfig(STATE_KEY, { postId: 0, status: 'done', attempts: 0 });
-  const seen = {};
+  // A manifest pointing at a missing video fails without publishing.
+  const noVideo = await makePost();
+  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
   const out5 = await tick({
-    fetchImpl: fakeFetch({
-      release: releaseDoc(retry.id),
-      files: {
-        'inbox.json': Buffer.from(JSON.stringify({
-          postId: retry.id,
-          assetUrl: 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4',
-          platforms: ['instagram'],
-          force: true,
-        })),
-        'reel.mp4': video,
-      },
-    }),
-    publish: async (args) => { Object.assign(seen, args); return { skipped: false, published: true }; },
+    fetchImpl: fakeFetch({ manifest: manifestFor(noVideo.id, { renderedAt: '2026-11-21T15:00:00Z' }), skipVideo: true }),
+    publish: async () => { throw new Error('must not publish'); },
   });
-  ok('force retry publishes', out5.published === true, JSON.stringify(out5));
-  ok('manifest assetUrl becomes the video url', seen.videoUrl === 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4', String(seen.videoUrl));
-  ok('platforms and force are forwarded', JSON.stringify(seen.platforms) === '["instagram"]' && seen.force === true, JSON.stringify(seen.platforms));
+  ok('missing video is an error, not a publish', out5.error === 'reel.mp4 missing from the inbox', JSON.stringify(out5));
 
-  // The same workflow run must never be handled twice, even when forced...
-  const sameRun = () => fakeFetch({
-    release: releaseDoc(retry.id),
-    files: {
-      'inbox.json': Buffer.from(JSON.stringify({ postId: retry.id, renderedAt: '2026-11-21T12:00:00Z', platforms: ['instagram'], force: true })),
-      'reel.mp4': video,
-    },
-  });
-  const out6a = await tick({ fetchImpl: sameRun(), publish: async () => ({ skipped: false, published: true }) });
-  ok('a forced run is processed', out6a.published === true, JSON.stringify(out6a));
-  const out6 = await tick({ fetchImpl: sameRun(), publish: async () => { throw new Error('must not run twice'); } });
-  ok('same request is handled once', out6.skipped === 'already-handled', JSON.stringify(out6));
-
-  // ...but the next run (a new renderedAt) is a fresh request.
-  const seen7 = {};
-  const out7 = await tick({
-    fetchImpl: fakeFetch({
-      release: releaseDoc(retry.id),
-      files: {
-        'inbox.json': Buffer.from(JSON.stringify({ postId: retry.id, renderedAt: '2026-11-21T12:30:00Z', platforms: ['instagram'], force: true })),
-        'reel.mp4': video,
-      },
-    }),
-    publish: async (args) => { Object.assign(seen7, args); return { skipped: false, published: true }; },
-  });
-  ok('a later run for the same post is processed', out7.published === true, JSON.stringify(out7));
-  ok('later run keeps the targeted platform', JSON.stringify(seen7.platforms) === '["instagram"]');
-
-  // Manifest without a postId is ignored.
-  const bad = await tick({ fetchImpl: fakeFetch({ release: releaseDoc(0), files: { 'inbox.json': Buffer.from('{"ref":"x"}') } }) });
-  ok('manifest without postId -> bad-manifest', bad.skipped === 'bad-manifest', JSON.stringify(bad));
-
-  // Unknown post id is dropped instead of retried forever.
-  await setConfig(STATE_KEY, { postId: 0, status: 'done', attempts: 0 });
-  const ghost = await tick({ fetchImpl: fakeFetch({ release: releaseDoc(999999), files: { 'inbox.json': manifest(999999), 'reel.mp4': video } }) });
+  // Unknown post ids are dropped instead of retried forever.
+  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  const ghost = await tick({ fetchImpl: fakeFetch({ manifest: manifestFor(999999, { renderedAt: '2026-11-21T16:00:00Z' }) }) });
   ok('unknown post -> no-post', ghost.skipped === 'no-post', JSON.stringify(ghost));
 
-  // The tick runs every minute; the inbox must not spend two GitHub calls each
-  // time or it trips the anonymous rate limit.
-  const oneFetch = fakeFetch({ release: { assets: [] } });
+  // The tick runs every minute; two checks must not hammer the release host.
+  const oneFetch = fakeFetch({ manifest: manifestFor(999999, { renderedAt: '2026-11-21T17:00:00Z' }) });
   await tick({ fetchImpl: oneFetch });
   const throttled = await tick({ fetchImpl: oneFetch });
   ok('checks are throttled per fetch impl', throttled.skipped === 'throttled', JSON.stringify(throttled));
   ok('throttled tick makes no extra call', oneFetch.calls.length === 1, oneFetch.calls.join(','));
 
   console.log(`\nRESULT: ${pass} passed, ${fail} failed`);
-  process.exit(fail ? 1 : 0);
+  await sequelize.close();
+  if (fail) process.exit(1);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => { console.error('TEST ERROR', e); process.exit(1); });

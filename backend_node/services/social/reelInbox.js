@@ -23,7 +23,13 @@ const { publishReel } = require('./reel');
 
 const REPO = process.env.REEL_INBOX_REPO || 'Swastiksrijan/SSF-Final';
 const TAG = process.env.REEL_INBOX_TAG || 'reel-inbox';
-const API = `https://api.github.com/repos/${REPO}/releases/tags/${TAG}`;
+// Straight to the release assets, not through api.github.com: the anonymous API
+// budget is 60 calls per hour *per IP*, and a shared host burns through it, after
+// which every check fails with a 403 and a queued reel waits forever. A release
+// download URL has no such limit.
+const BASE = (process.env.REEL_INBOX_URL || `https://github.com/${REPO}/releases/download/${TAG}`).replace(/\/$/, '');
+const MANIFEST_URL = `${BASE}/inbox.json`;
+const VIDEO_URL = `${BASE}/reel.mp4`;
 const REEL_DIR = path.join(__dirname, '..', '..', 'uploads', 'reels');
 const STATE_KEY = 'reel_inbox_state';
 const MAX_BYTES = 120 * 1024 * 1024;
@@ -40,19 +46,14 @@ const headers = { 'User-Agent': 'ssf-reel-inbox', Accept: 'application/vnd.githu
 const CHECK_EVERY_MS = 4 * 60 * 1000;
 const lastCheck = new WeakMap();
 
-async function fetchRelease(fetchImpl) {
-  const res = await fetchImpl(API, { headers });
+// Returns null when the inbox has never been created (404).
+async function download(url, fetchImpl) {
+  const res = await fetchImpl(url, { headers: { 'User-Agent': headers['User-Agent'] } });
   if (res.status === 404) return null;
-  if (!res.ok) throw new Error(`github ${res.status}`);
-  return res.json();
-}
-
-async function fetchAsset(asset, fetchImpl) {
-  const res = await fetchImpl(asset.browser_download_url, { headers: { 'User-Agent': headers['User-Agent'] } });
-  if (!res.ok) throw new Error(`asset ${asset.name} -> ${res.status}`);
+  if (!res.ok) throw new Error(`${url.split('/').pop()} -> ${res.status}`);
   const buf = Buffer.from(await res.arrayBuffer());
-  if (!buf.length) throw new Error(`asset ${asset.name} is empty`);
-  if (buf.length > MAX_BYTES) throw new Error(`asset ${asset.name} is too large`);
+  if (!buf.length) throw new Error(`${url.split('/').pop()} is empty`);
+  if (buf.length > MAX_BYTES) throw new Error(`${url.split('/').pop()} is too large`);
   return buf;
 }
 
@@ -82,21 +83,17 @@ async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force
   if (previous && Date.now() - previous < CHECK_EVERY_MS) return { skipped: 'throttled' };
   lastCheck.set(fetchImpl, Date.now());
 
-  let release;
+  let raw;
   try {
-    release = await fetchRelease(fetchImpl);
+    raw = await download(MANIFEST_URL, fetchImpl);
   } catch (e) {
     return { skipped: 'github-error', error: e.message };
   }
-  if (!release) return { skipped: 'no-inbox' };
-
-  const assets = release.assets || [];
-  const manifestAsset = assets.find((a) => a.name === 'inbox.json');
-  if (!manifestAsset) return { skipped: 'no-manifest' };
+  if (!raw) return { skipped: 'no-inbox' };
 
   let manifest;
   try {
-    manifest = JSON.parse((await fetchAsset(manifestAsset, fetchImpl)).toString('utf8'));
+    manifest = JSON.parse(raw.toString('utf8'));
   } catch (e) {
     return { skipped: 'bad-manifest', error: e.message };
   }
@@ -129,9 +126,8 @@ async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force
   });
 
   try {
-    const video = assets.find((a) => a.name === 'reel.mp4');
-    if (!video) throw new Error('reel.mp4 missing from the inbox');
-    const buf = await fetchAsset(video, fetchImpl);
+    const buf = await download(manifest.assetUrl || VIDEO_URL, fetchImpl);
+    if (!buf) throw new Error('reel.mp4 missing from the inbox');
 
     fs.mkdirSync(REEL_DIR, { recursive: true });
     const name = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}.mp4`;
