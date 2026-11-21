@@ -224,13 +224,19 @@ export default function FundingPartnershipsPage() {
 
     <section id="collaboration-platforms" className="bg-white px-5 py-14 md:px-8 md:py-16">
       <div className="mx-auto max-w-7xl">
-        <p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">Useful collaboration platforms</p>
-        <h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">Explore NGO &amp; volunteer connections</h2>
-        <p className="mt-4 max-w-3xl leading-7 text-slate-600">A helpful external platform for discovering volunteering and institutional engagement opportunities. This listing is informational and does not represent an approved or formal partnership with ConnectFor.</p>
-        <a href="https://www.connectfor.org/" target="_blank" rel="noopener noreferrer" className="mt-8 flex max-w-3xl items-center gap-6 rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
-          <div className="flex h-24 w-36 shrink-0 items-center justify-center rounded-2xl bg-white p-3"><img src="https://leher.org/wp-content/uploads/2018/02/12778745_1514770052161626_5596174727350132210_o.png" alt="ConnectFor logo" loading="lazy" className="max-h-full max-w-full object-contain"/></div>
-          <div><h3 className="text-xl font-extrabold text-[#002344]">ConnectFor</h3><p className="mt-2 text-sm leading-6 text-slate-600">Volunteer opportunities, NGO connections and CSR-related engagement resources.</p><span className="mt-3 inline-block text-sm font-bold text-[#176447]">Visit connectfor.org ↗</span></div>
-        </a>
+        <p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">Community connections</p>
+        <h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">Our Collaborations &amp; Community Support</h2>
+        <p className="mt-4 max-w-3xl leading-7 text-slate-600">One place to find useful NGO connections and local community-health resources. These listings are for information and outreach; they do not claim a signed MoU, confirmed discount, or formal partnership.</p>
+        <div className="mt-8 grid gap-6 md:grid-cols-2">
+          <a href="https://www.connectfor.org/" target="_blank" rel="noopener noreferrer" className="flex flex-col rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <div className="flex h-24 items-center justify-center rounded-2xl bg-white p-4"><span className="text-3xl font-black tracking-tight text-[#1C9A91]">connect<span className="ml-1 text-slate-500">for</span></span></div>
+            <h3 className="mt-5 text-xl font-extrabold text-[#002344]">ConnectFor</h3><p className="mt-2 text-sm leading-6 text-slate-600">A volunteer and NGO engagement platform, with institutional and CSR connection resources.</p><span className="mt-4 inline-block text-sm font-bold text-[#176447]">Visit official website ↗</span>
+          </a>
+          <a href="https://www.diagnopein.com/branch/Pune/Diagnopein-Diagnostic-Centre-in-Wagholi" target="_blank" rel="noopener noreferrer" className="flex flex-col rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <div className="flex h-24 items-center justify-center rounded-2xl bg-white p-4"><span className="text-center text-xl font-black text-[#176447]">DIAGNOPEIN <span className="block text-xs font-semibold tracking-[.18em] text-slate-500">DIAGNOSTIC &amp; DENTAL CENTRE</span></span></div>
+            <h3 className="mt-5 text-xl font-extrabold text-[#002344]">Diagnostic &amp; Dental Centre · Wagholi</h3><p className="mt-2 text-sm leading-6 text-slate-600">Local diagnostic and dental-care provider in Wagholi, Pune. Please confirm services and terms directly with the centre.</p><span className="mt-4 inline-block text-sm font-bold text-[#176447]">View Wagholi centre ↗</span>
+          </a>
+        </div>
       </div>
     </section>
 
