@@ -457,9 +457,11 @@ function absoluteUrl(u) {
 // longer than a photo, so the poll window is wider; publishing before the
 // status is FINISHED fails with "Media ID is not available".
 async function publishInstagramReel(post, creds, videoUrl) {
-  const igUserId = pick(creds, 'igUserId');
   const token = pick(creds, 'accessToken');
-  if (!igUserId || !token) return missing('Instagram');
+  if (!token) return missing('Instagram');
+  const ig = await resolveIgUserId(creds, token);
+  if (!ig.id) return { ok: false, error: ig.error };
+  const igUserId = ig.id;
   const url = absoluteUrl(videoUrl);
   if (!url) return { ok: false, error: 'public_video_url_unavailable' };
   try {
@@ -480,8 +482,27 @@ async function publishInstagramReel(post, creds, videoUrl) {
     // Meta rejects a container with errors that read the same for a bad video and
     // a personal account, so name the account in the failure.
     const hint = await igAccountHint(igUserId, token);
-    return { ok: false, error: hint ? `${e.message} [${hint}]` : e.message };
+    return { ok: false, error: `${e.message} [ig ${igUserId} via ${ig.via}${hint ? `, ${hint}` : ''}]` };
   }
+}
+
+// The id that can publish is the page's linked Instagram Business account, not
+// whatever was typed into the dashboard: a stale or personal id is accepted by
+// the API and then fails the container with an unexplained "Fatal".
+async function resolveIgUserId(creds, token) {
+  const pageId = pick(creds, 'pageId');
+  const stored = pick(creds, 'igUserId');
+  if (pageId) {
+    try {
+      const pageToken = await resolvePageToken(pageId, token);
+      const d = await graphGet(`${GRAPH}/${pageId}?fields=instagram_business_account{id,username}&access_token=${encodeURIComponent(pageToken)}`);
+      const linked = d && d.instagram_business_account;
+      if (linked && linked.id) return { id: linked.id, username: linked.username, via: 'page' };
+      if (!stored) return { error: 'page_has_no_instagram_business_account' };
+    } catch { /* fall back to the stored id */ }
+  }
+  if (!stored) return { error: 'instagram_user_id_missing' };
+  return { id: stored, via: 'stored' };
 }
 
 // Instagram publishing needs a Business/Creator account linked to the page; a
