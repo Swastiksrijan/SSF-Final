@@ -101,7 +101,7 @@ const SECTIONS = [
       branch: 'Transport Nagar, Rewa',
       accountNumber: '481401010036579',
       ifsc: 'UBIN0548146',
-      upi: '9718346691@ptyes',
+      upi: 'swastikstijanfoundation@ptyes',
       auditorName: 'CA Kapil Tiwari',
       auditorContact: '8527067812',
       booksStatus: 'Books of Accounts / लेखा पुस्तकें: Maintained / रखी जाती हैं — Cash Book, Bank Book, Ledger, Contribution & Expense Records and other supporting records / कैश बुक, बैंक बुक, लेजर, योगदान एवं व्यय अभिलेख तथा संबंधित सहायक अभिलेख।\nAudit Status / ऑडिट स्थिति: Audited Accounts maintained / लेखापरीक्षित खाते उपलब्ध हैं। Auditor: CA Kapil Tiwari.\nSupporting Records: Maintained wherever available / उपलब्धता के अनुसार सहायक अभिलेख सुरक्षित रखे जाते हैं।',
