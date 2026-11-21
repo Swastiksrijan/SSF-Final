@@ -775,6 +775,35 @@ export default function ImsSocial() {
             </Card>
           )}
 
+          <Card className="mb-6 border-[#176447]/20 bg-[#176447]/5 p-4">
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div className="flex items-start gap-3">
+                <span className="grid h-10 w-10 place-items-center rounded-xl bg-white text-[#176447]"><Icons.Clapperboard size={20} /></span>
+                <div>
+                  <h2 className="text-sm font-black text-[#12345A]">{lang === 'hi' ? 'SSF Smart Reel Automation' : 'SSF Smart Reel Automation'}</h2>
+                  <p className="mt-1 max-w-2xl text-xs leading-relaxed text-slate-600">
+                    {lang === 'hi'
+                      ? 'पहले से प्रकाशित पोस्ट से 9:16 MP4 Reel अपने-आप बनेगी और जुड़े हुए Facebook Page तथा Instagram Professional account पर प्रकाशित होगी।'
+                      : 'A 9:16 MP4 Reel is generated from an already-published post and sent automatically to connected Facebook and Instagram accounts.'}
+                  </p>
+                </div>
+              </div>
+              <Chip label={lang === 'hi' ? 'स्वचालित कतार' : 'Automatic queue'} tone="connected" />
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2 text-[11px]">
+              {data.channels.filter((ch) => ['facebook', 'instagram'].includes(ch.platform)).map((ch) => (
+                <span key={ch.platform} className="rounded-full bg-white px-3 py-1 font-semibold text-slate-600 ring-1 ring-slate-200">
+                  {ch.platform === 'facebook' ? 'Facebook' : 'Instagram'} · {ch.enabled && ch.configured ? (lang === 'hi' ? 'जुड़ा' : 'Connected') : (lang === 'hi' ? 'कनेक्ट करें' : 'Connect required')}
+                </span>
+              ))}
+            </div>
+            <p className="mt-2 text-[10px] text-slate-500">
+              {lang === 'hi'
+                ? 'नोट: Reel केवल मूल पोस्ट प्रकाशित होने के बाद बनेगी। Meta की अनुमति या token में समस्या होने पर मौजूदा पोस्ट प्रभावित नहीं होगी।'
+                : 'Reels are created only after the source post publishes. Meta permission or token errors do not affect the existing image-post scheduler.'}
+            </p>
+          </Card>
+
           <div className="mb-8">
             <h2 className="mb-3 text-sm font-black uppercase tracking-wider text-slate-500">{lang === 'hi' ? 'चैनल' : 'Channels'}</h2>
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
