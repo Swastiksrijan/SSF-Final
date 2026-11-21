@@ -1,6 +1,9 @@
 name: SSF Smart Reel Syntax Check
 
 on:
+  push:
+    branches:
+      - feature/ssf-smart-reel-automation
   pull_request:
     paths:
       - 'backend_node/routes/socialRoutes.js'
