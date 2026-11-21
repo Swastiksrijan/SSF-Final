@@ -141,8 +141,34 @@ async function main() {
     }),
     publish: async (args) => { Object.assign(seenCdn, args); return { skipped: false, published: true }; },
   });
-  ok('manifest assetUrl becomes the video url',
-    seenCdn.videoUrl === 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4', String(seenCdn.videoUrl));
+  ok('the local copy is tried first',
+    /^\/uploads\/reels\/.+\.mp4$/.test(String(seenCdn.videoUrl)), String(seenCdn.videoUrl));
+
+  // Instagram refuses the release asset URL (302 to a signed host), so a failure
+  // there gets one more try against the asset URL, and only for Instagram.
+  const retried = [];
+  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  const fallbackPost = await makePost();
+  await tick({
+    fetchImpl: fakeFetch({
+      manifest: manifestFor(fallbackPost.id, {
+        renderedAt: '2026-11-21T16:00:00Z',
+        assetUrl: 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4',
+      }),
+    }),
+    publish: async (args) => {
+      retried.push(args);
+      if (args.videoUrl.startsWith('/uploads/')) {
+        return { skipped: false, published: false, results: [{ platform: 'instagram', ok: false, error: 'Fatal' }] };
+      }
+      return { skipped: false, published: true, results: [{ platform: 'instagram', ok: true }] };
+    },
+  });
+  ok('a failed instagram publish retries the asset url',
+    retried.length === 2
+      && retried[1].videoUrl === 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4'
+      && JSON.stringify(retried[1].platforms) === '["instagram"]',
+    JSON.stringify(retried.map((r) => [r.videoUrl, r.platforms])));
 
   // A publish failure is retried, then given up on — and stays visible.
   const failing = await makePost();
