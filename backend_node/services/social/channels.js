@@ -167,9 +167,16 @@ function graphError(data, status) {
 async function formCall(url, form) {
   const params = new URLSearchParams(form);
   const res = await fetch(url, { method: 'POST', body: params });
+  const text = await res.text().catch(() => '');
   let data = null;
-  try { data = await res.json(); } catch { /* ignore */ }
-  if (!res.ok) throw graphError(data, res.status);
+  try { data = text ? JSON.parse(text) : null; } catch { /* not json */ }
+  if (!res.ok) {
+    const err = graphError(data, res.status);
+    // Meta sometimes answers with an empty or plain-text body, which would
+    // otherwise surface as a bare "HTTP 400".
+    if (!data) err.message = `${err.message}${text ? `: ${text.slice(0, 200)}` : ' (empty body)'}`;
+    throw err;
+  }
   return data || {};
 }
 
