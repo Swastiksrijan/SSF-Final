@@ -477,26 +477,25 @@ async function publishInstagramReel(post, creds, videoUrl) {
   const igUserId = ig.id;
   const tag = `ig ${igUserId} via ${ig.via}`;
   const errors = [];
-  // Reels is the right format. Meta refuses the Reels container for this account
-  // with an internal error, so a 9:16 file also gets one try as a feed video
-  // before giving up — a letterboxed post beats no post.
+  // Two ways to hand Meta the file: push the bytes (resumable) or let it fetch a
+  // public URL. They fail differently, so both are tried before giving up.
   try {
     const buf = await loadVideo(videoUrl);
     const created = await igCreateContainer(igUserId, token, { media_type: 'REELS', upload_type: 'resumable' }, post);
     if (!created) throw new Error('container_failed');
     await igUpload(created, buf, token);
-    return await igFinish(igUserId, created, token, 'reel');
-  } catch (e) { errors.push(`reels: ${e.message}`); }
+    return await igFinish(igUserId, created, token);
+  } catch (e) { errors.push(`upload: ${e.message}`); }
 
   const url = absoluteUrl(videoUrl);
   if (url) {
     try {
-      const created = await igCreateContainer(igUserId, token, { media_type: 'VIDEO', video_url: url }, post);
+      const created = await igCreateContainer(igUserId, token, { media_type: 'REELS', video_url: url }, post);
       if (!created) throw new Error('container_failed');
-      return await igFinish(igUserId, created, token, 'p');
-    } catch (e) { errors.push(`video: ${e.message}`); }
+      return await igFinish(igUserId, created, token);
+    } catch (e) { errors.push(`url: ${e.message}`); }
   } else {
-    errors.push('video: public_video_url_unavailable');
+    errors.push('url: public_video_url_unavailable');
   }
 
   const hint = await igAccountHint(igUserId, token);
@@ -552,11 +551,11 @@ async function igUpload(containerId, buf, token) {
   return data || {};
 }
 
-async function igFinish(igUserId, containerId, token, kind = 'reel') {
+async function igFinish(igUserId, containerId, token) {
   const finished = await waitForIgContainer(containerId, token, 60, 5000);
   if (!finished) return { ok: false, error: 'instagram_video_processing_timeout' };
   const out = await formCall(`${GRAPH}/${igUserId}/media_publish`, { creation_id: containerId, access_token: token });
-  return { ok: true, kind, url: out?.id ? `https://instagram.com/${kind}/${out.id}` : null };
+  return { ok: true, url: out?.id ? `https://instagram.com/reel/${out.id}` : null };
 }
 
 // The id that can publish is the page's linked Instagram account, not whatever
