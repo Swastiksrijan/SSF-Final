@@ -26,7 +26,7 @@ const reelUpload = multer({
 }).single('video');
 const reelTempDir = path.join(os.tmpdir(), 'ssf-social-reels');
 const reelJobKey = (postId) => `reel_job_${postId}`;
-const reelSecret = () => process.env.SCHEDULER_SECRET || ADMIN_TOKEN();
+const reelSecret = () => process.env.SCHEDULER_SECRET || process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
 const requireReelSecret = (req, r, next) => {
   if (!req.query.key || req.query.key !== reelSecret()) return r.status(401).json({ message: 'Unauthorized' });
   next();
