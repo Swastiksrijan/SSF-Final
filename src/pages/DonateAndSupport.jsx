@@ -1,7 +1,7 @@
 import { FaHandHoldingHeart, FaFileContract, FaUniversity, FaCheckCircle, FaRupeeSign, FaQrcode, FaShieldAlt, FaQuestionCircle, FaChevronDown, FaChevronUp } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import qrCode from "../assets/barcode.jpg"; // Updated to the correct QR code image
+import qrCode from "../assets/paytm-upi-scanner.jpg";
 import heroInvestImage from "/images/real/scholarship_distribution.jpg";
 import { BRAND } from "../data/brandAssets";
 import { CONTACT_INFO } from "../config/contact";
@@ -152,7 +152,7 @@ export default function DonateAndSupport() {
                     Use any UPI app (Google Pay, PhonePe, Paytm, BHIM) to scan and donate instantly.
                   </p>
                   <div className="inline-block px-4 py-2 bg-zinc-100 rounded-lg text-sm font-mono text-zinc-500">
-                    swastiksrijanfoundation@ptyes
+                    swastikstijanfoundation@ptyes
                   </div>
                 </div>
               </div>

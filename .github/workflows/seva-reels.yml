@@ -77,8 +77,12 @@ jobs:
             const date = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
             const bodyHi = g.ideas.map((i, n) => (n + 1) + '. ' + i.hi + ' — ' + (i.how || '')).join('\n');
             const bodyEn = g.ideas.map((i, n) => (n + 1) + '. ' + i.en).join('\n');
-            const ctaHi = '\n\nआप भी मदद कर सकते हैं — QR स्कैन करें, Paytm: 9718346691, या swastiksrijan.in/Donate पर Donate Now दबाएं।';
-            const ctaEn = '\n\nScan the QR, pay to 9718346691, or press Donate Now at swastiksrijan.in/Donate.';
+            const ctaHi = '\n\nइनमें से कोई एक तरीका आप खुद भी अपना सकते हैं — इसमें पैसा नहीं लगता, बस थोड़ा वक़्त।'
+              + '\nऔर अगर वक़्त नहीं है, तो कोई बात नहीं — हमारे ज़रिए आपकी मदद उस तक पहुँच जाएगी।'
+              + '\nQR स्कैन करें, या swastiksrijan.in/Donate पर जाएं।';
+            const ctaEn = '\n\nYou can do any of these yourself — no money needed, just a little time.'
+              + '\nAnd if you have no time, that is fine too: through us, your help still reaches them.'
+              + '\nScan the QR, or open swastiksrijan.in/Donate.';
             const out = { ...g, date, index: Number('$IDX'), bodyHi: bodyHi + ctaHi, bodyEn: bodyEn + ctaEn };
             require('fs').writeFileSync('/tmp/group.json', JSON.stringify(out, null, 2));
             console.log(g.titleHi + ' / ' + g.titleEn);
