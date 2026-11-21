@@ -1,5 +1,10 @@
 import React from "react";
 
+/* Pre-built static PDF (see MembershipHardcopy): one tap downloads the form.
+   Regenerate from this page's print view after editing it:
+   chromium --headless --no-pdf-header-footer --print-to-pdf=public/forms/SSF-Volunteer-Registration-Form.pdf http://localhost:12000/VolunteerHardcopy */
+const PDF_PATH = "/forms/SSF-Volunteer-Registration-Form.pdf";
+
 export default function VolunteerHardcopy() {
   const printForm = () => window.print();
   const line = (label, wide = false) => (
@@ -12,7 +17,8 @@ export default function VolunteerHardcopy() {
     <main className="volunteer-hardcopy ssf-hero-offset min-h-screen bg-slate-100 px-3 py-8 text-[#172B45] sm:px-6">
       <div className="no-print mx-auto mb-5 flex max-w-[850px] flex-wrap items-center justify-between gap-3">
         <a href="/Volunteer" className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-semibold">← Volunteer Page</a>
-        <button onClick={printForm} className="rounded-xl bg-[#176447] px-5 py-3 font-bold text-white shadow">प्रिंट करें / Print or Save as PDF</button>
+        <a href={PDF_PATH} download="SSF-Volunteer-Registration-Form.pdf" className="rounded-xl bg-[#176447] px-5 py-3 text-center font-bold text-white shadow">PDF डाउनलोड करें / Download PDF</a>
+        <button onClick={printForm} className="rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white shadow">प्रिंट करें / Print Form</button>
       </div>
 
       <article className="volunteer-paper mx-auto max-w-[850px] bg-white p-6 shadow-xl sm:p-10">
@@ -135,7 +141,7 @@ export default function VolunteerHardcopy() {
       </article>
 
       <div className="no-print mx-auto mt-4 max-w-[850px] rounded-xl bg-amber-50 p-4 text-sm text-amber-900">
-        <b>प्रिंट / PDF:</b> ऊपर “प्रिंट करें / Print or Save as PDF” दबाएँ। प्रिंटर चुनें या Destination में “Save as PDF” चुनकर फाइल सेव करें। A4 पेपर चुनें।
+        <b>PDF डाउनलोड / Download PDF:</b> ऊपर “PDF डाउनलोड करें / Download PDF” दबाएँ—फाइल तुरंत डाउनलोड हो जाएगी (फोन पर Downloads/Files में देखें)। उसे खोलकर A4 पेपर पर प्रिंट करें। वैकल्पिक रूप से “प्रिंट करें / Print Form” दबाकर प्रिंटर या “Save as PDF” चुनें।
         <p className="mt-2">ऑनलाइन आवेदन अलग से उपलब्ध है। यह हार्डकॉपी फॉर्म प्रिंट करके हाथ से भरने और हस्ताक्षर करने के लिए है।</p>
       </div>
 
