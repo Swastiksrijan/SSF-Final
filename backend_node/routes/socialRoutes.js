@@ -606,6 +606,9 @@ function pruneReels(keep = 10) {
   } catch { /* pruning must never break publishing */ }
 }
 
+// Why did (or didn't) a queued reel publish? Read-only and secret-free.
+router.get('/reels/inbox', (_req, res) => res.json(require('../services/social/reelInbox').status()));
+
 router.post('/social/reel', schedulerAuth, (req, r, next) => {
   reelUpload.single('video')(req, r, (err) => {
     if (err) return r.status(400).json({ ok: false, message: err.message });

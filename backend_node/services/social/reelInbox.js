@@ -76,7 +76,24 @@ async function noteAttempt(post, attempt) {
   } catch { /* never let bookkeeping break the publish path */ }
 }
 
-async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force = false } = {}) {
+// The inbox is invisible from outside: a skipped or failing check looks exactly
+// like "nothing was queued". Remember the last outcome so it can be inspected.
+let lastResult = null;
+
+function record(out) {
+  lastResult = { at: new Date().toISOString(), ...out };
+  return out;
+}
+
+async function tick(opts = {}) {
+  try {
+    return record(await check(opts));
+  } catch (e) {
+    return record({ skipped: 'error', error: e.message });
+  }
+}
+
+async function check({ fetchImpl = globalThis.fetch, publish = publishReel, force = false } = {}) {
   if (typeof fetchImpl !== 'function') return { skipped: 'no-fetch' };
 
   const previous = lastCheck.get(fetchImpl);
@@ -158,4 +175,9 @@ async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force
   }
 }
 
-module.exports = { tick, STATE_KEY, MAX_ATTEMPTS };
+// Public read-only view of the last check: no secrets, just what happened.
+function status() {
+  return { last: lastResult, inbox: MANIFEST_URL, maxAttempts: MAX_ATTEMPTS };
+}
+
+module.exports = { tick, status, STATE_KEY, MAX_ATTEMPTS };
