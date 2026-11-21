@@ -1,12 +1,34 @@
 import React from "react";
+import html2canvas from "html2canvas";
+import { jsPDF } from "jspdf";
 
 const MembershipHardcopy = () => {
   const printForm = () => window.print();
+  const downloadPdf = async () => {
+    const node = document.querySelector(".membership-print");
+    if (!node) return;
+    const canvas = await html2canvas(node, { scale: 2, backgroundColor: "#fff", useCORS: true, logging: false });
+    const pdf = new jsPDF("p", "mm", "a4");
+    const widthMm = 190, heightMm = 277;
+    const slicePx = Math.floor(canvas.width * heightMm / widthMm);
+    const part = document.createElement("canvas"), ctx = part.getContext("2d");
+    let offset = 0, page = 0;
+    while (offset < canvas.height) {
+      part.width = canvas.width; part.height = Math.min(slicePx, canvas.height - offset);
+      ctx.clearRect(0, 0, part.width, part.height);
+      ctx.drawImage(canvas, 0, offset, canvas.width, part.height, 0, 0, part.width, part.height);
+      if (page++) pdf.addPage();
+      pdf.addImage(part.toDataURL("image/jpeg", 0.94), "JPEG", 10, 10, widthMm, part.height * widthMm / canvas.width, undefined, "FAST");
+      offset += part.height;
+    }
+    pdf.save("SSF-Membership-Application-Hindi-English.pdf");
+  };
   return (
     <main className="min-h-screen bg-slate-100 px-3 py-8 text-[#172B45] sm:px-6">
       <div className="mx-auto mb-5 flex max-w-[820px] flex-wrap items-center justify-between gap-3 print:hidden">
         <a href="/Members" className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-semibold">← सदस्यता पेज</a>
-        <button onClick={printForm} className="rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white shadow">PDF डाउनलोड / प्रिंट करें</button>
+        <button onClick={downloadPdf} className="rounded-xl bg-[#176447] px-5 py-3 font-bold text-white shadow">अलग PDF डाउनलोड / Download PDF</button>
+        <button onClick={printForm} className="rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white shadow">प्रिंट / Print Form</button>
       </div>
       <article className="membership-print mx-auto max-w-[820px] bg-white p-6 shadow-xl sm:p-10">
         <header className="border-b-2 border-[#176447] pb-4 text-center">
@@ -15,6 +37,12 @@ const MembershipHardcopy = () => {
           <p className="mt-1 text-sm font-bold">MEMBERSHIP APPLICATION FORM</p>
           <p className="mt-1 text-xs">Swastik Srijan Foundation Samiti · नियमावली के नियम 5–9 के अनुसार</p>
         </header>
+        <section className="mt-4 rounded-lg border border-slate-300 bg-slate-50 p-3 text-xs leading-5">
+          <p className="font-bold text-[#12345A]">पंजीकृत कार्यालय / REGISTERED OFFICE</p>
+          <p>वार्ड नं. 1, दादर रहज, हुजूर, जिला रीवा, मध्य प्रदेश – 486446, भारत</p>
+          <p>Ward No. 1, Dadar Rahaj, Huzur, District Rewa, Madhya Pradesh – 486446, India</p>
+          <p>वेबसाइट / Website: swastiksrijan.in | ईमेल / Email: info@swastiksrijan.in | फोन / Phone: +91 97183 46691</p>
+        </section>
         <div className="mt-4 flex flex-wrap justify-between gap-2 text-xs">
           <span>आवेदन क्रमांक: __________________</span><span>दिनांक: ____ / ____ / ______</span>
         </div>
@@ -39,11 +67,11 @@ const MembershipHardcopy = () => {
         <section className="mt-5">
           <h2 className="mb-2 bg-[#EAF0F6] px-3 py-2 text-sm font-bold text-[#12345A]">3. पात्रता एवं घोषणा (Rule 7 declarations)</h2>
           <div className="space-y-2 text-sm leading-6">
-            <p>☐ मैं 18 वर्ष या उससे अधिक आयु का/की भारतीय नागरिक हूँ।</p>
-            <p>☐ मेरा चरित्र अच्छा है और मैं संस्था की नियमावली का पालन करूँगा/करूँगी।</p>
-            <p>☐ मैं नियमावली में वर्णित मद्यपान संबंधी पात्रता शर्त स्वीकार करता/करती हूँ।</p>
-            <p>☐ मैं संस्था के उद्देश्यों एवं नियमों के प्रति सहमति व्यक्त करता/करती हूँ।</p>
-            <p>☐ मेरे द्वारा दी गई सभी जानकारी सत्य एवं सही है।</p>
+            <p>☐ मैं 18 वर्ष या उससे अधिक आयु का/की भारतीय नागरिक हूँ। / I am an Indian citizen aged 18 or above.</p>
+            <p>☐ मेरा चरित्र अच्छा है और मैं संस्था की नियमावली का पालन करूँगा/करूँगी। / I am of good character and will follow the bylaws.</p>
+            <p>☐ मैं नियमावली में वर्णित मद्यपान संबंधी पात्रता शर्त स्वीकार करता/करती हूँ। / I accept the applicable alcohol-related eligibility condition in the bylaws.</p>
+            <p>☐ मैं संस्था के उद्देश्यों एवं नियमों के प्रति सहमति व्यक्त करता/करती हूँ। / I agree with the Foundation’s objectives and rules.</p>
+            <p>☐ मेरे द्वारा दी गई सभी जानकारी सत्य एवं सही है। / All information provided is true and correct.</p>
           </div>
           <p className="mt-3 text-sm">आवेदक के हस्ताक्षर / Applicant signature: ____________________________________</p>
           <p className="mt-3 text-sm">स्थान / Place: __________________________　 दिनांक / Date: __________________</p>
@@ -52,7 +80,7 @@ const MembershipHardcopy = () => {
           <h2 className="mb-2 text-sm font-bold text-[#12345A]">4. केवल संस्था के कार्यालय हेतु (For office use only)</h2>
           <div className="grid grid-cols-1 gap-3 text-sm sm:grid-cols-2">
             <p>आवेदन प्राप्ति / Received on: __________________</p><p>रजिस्टर क्रमांक / Register No.: __________________</p>
-            <p>समिति निर्णय: ☐ स्वीकृत　☐ अस्वीकृत　☐ लंबित</p><p>प्रवेश दिनांक / Admission date: __________________</p>
+            <p>समिति निर्णय / Committee decision: ☐ स्वीकृत / Approved　☐ अस्वीकृत / Rejected　☐ लंबित / Pending</p><p>प्रवेश दिनांक / Admission date: __________________</p>
             <p>अंशदान रसीद क्रमांक / Receipt No.: __________________</p><p>अधिकृत हस्ताक्षर / Authorized signature: __________________</p>
           </div>
         </section>
@@ -61,7 +89,7 @@ const MembershipHardcopy = () => {
         </footer>
       </article>
       <div className="mx-auto mt-4 max-w-[820px] rounded-xl bg-amber-50 p-4 text-sm text-amber-900 print:hidden">
-        <b>PDF कैसे सेव करें:</b> ऊपर “PDF डाउनलोड / प्रिंट करें” दबाएँ। प्रिंट विंडो में Destination / Printer के स्थान पर “Save as PDF” चुनकर सेव करें। फिर PDF प्रिंट करके हाथ से भर सकते हैं।
+        <b>अलग PDF / Separate PDF:</b> ऊपर “अलग PDF डाउनलोड / Download PDF” दबाने पर PDF फाइल सीधे डाउनलोड होगी। “प्रिंट / Print Form” से प्रिंटर या Save as PDF चुन सकते हैं। फॉर्म A4 पर प्रिंट कर हाथ से भरें।
         <p className="mt-2">हस्ताक्षरित फॉर्म की वेबसाइट पर सुरक्षित अपलोड सुविधा अभी मौजूदा सदस्यता प्रणाली में उपलब्ध नहीं है; इसलिए इस पेज पर फाइल चुनने का ऐसा विकल्प नहीं जोड़ा गया है जो वास्तव में फाइल जमा न करे।</p>
       </div>
       <style>{`
