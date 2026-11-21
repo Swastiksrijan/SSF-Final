@@ -1,43 +1,70 @@
-import React from "react";
+import React, { useState } from "react";
 import html2canvas from "html2canvas";
 import { jsPDF } from "jspdf";
 
 const MembershipHardcopy = () => {
+  const [downloading, setDownloading] = useState(false);
   const printForm = () => window.print();
+
   const downloadPdf = async () => {
     const node = document.querySelector(".membership-print");
-    if (!node) return;
-    const canvas = await html2canvas(node, { scale: 2, backgroundColor: "#fff", useCORS: true, logging: false });
-    const pdf = new jsPDF("p", "mm", "a4");
-    const widthMm = 190, heightMm = 277;
-    const slicePx = Math.floor(canvas.width * heightMm / widthMm);
-    const part = document.createElement("canvas"), ctx = part.getContext("2d");
-    let offset = 0, page = 0;
-    while (offset < canvas.height) {
-      part.width = canvas.width; part.height = Math.min(slicePx, canvas.height - offset);
-      ctx.clearRect(0, 0, part.width, part.height);
-      ctx.drawImage(canvas, 0, offset, canvas.width, part.height, 0, 0, part.width, part.height);
-      if (page++) pdf.addPage();
-      pdf.addImage(part.toDataURL("image/jpeg", 0.94), "JPEG", 10, 10, widthMm, part.height * widthMm / canvas.width, undefined, "FAST");
-      offset += part.height;
+    if (!node || downloading) return;
+    setDownloading(true);
+    try {
+      if (document.fonts?.ready) await document.fonts.ready;
+      const images = Array.from(node.querySelectorAll("img"));
+      await Promise.all(images.map((img) => {
+        if (img.complete) return Promise.resolve();
+        return new Promise((resolve) => {
+          img.onload = resolve;
+          img.onerror = resolve;
+        });
+      }));
+
+      const canvas = await html2canvas(node, {
+        scale: 2,
+        backgroundColor: "#fff",
+        useCORS: true,
+        logging: false,
+        imageTimeout: 15000,
+      });
+      const pdf = new jsPDF("p", "mm", "a4");
+      const pageWidth = 190;
+      const pageHeight = 277;
+      const sliceHeight = Math.floor(canvas.width * pageHeight / pageWidth);
+      let offset = 0;
+      let page = 0;
+
+      while (offset < canvas.height) {
+        const part = document.createElement("canvas");
+        part.width = canvas.width;
+        part.height = Math.min(sliceHeight, canvas.height - offset);
+        const ctx = part.getContext("2d");
+        if (!ctx) throw new Error("PDF canvas could not be created");
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, part.width, part.height);
+        ctx.drawImage(canvas, 0, offset, canvas.width, part.height, 0, 0, part.width, part.height);
+        if (page > 0) pdf.addPage();
+        const imageHeight = part.height * pageWidth / canvas.width;
+        pdf.addImage(part.toDataURL("image/jpeg", 0.96), "JPEG", 10, 10, pageWidth, imageHeight, undefined, "FAST");
+        offset += part.height;
+        page += 1;
+      }
+
+      pdf.save("SSF-Membership-Application-Hindi-English.pdf");
+    } catch (error) {
+      console.error("Membership PDF download failed:", error);
+      window.alert("PDF डाउनलोड नहीं हो पाया। कृपया Print Form दबाकर प्रिंट स्क्रीन में Save as PDF चुनें। / PDF download failed. Please use Print Form and choose Save as PDF.");
+    } finally {
+      setDownloading(false);
     }
-    const pdfBlob = pdf.output("blob");
-    const pdfUrl = URL.createObjectURL(pdfBlob);
-    const link = document.createElement("a");
-    link.href = pdfUrl;
-    link.download = "SSF-Membership-Application-Hindi-English.pdf";
-    link.type = "application/pdf";
-    link.style.display = "none";
-    document.body.appendChild(link);
-    link.click();
-    link.remove();
-    window.setTimeout(() => URL.revokeObjectURL(pdfUrl), 15000);
   };
+
   return (
     <main className="min-h-screen bg-slate-100 px-3 py-8 text-[#172B45] sm:px-6">
       <div className="mx-auto mb-5 flex max-w-[820px] flex-wrap items-center justify-between gap-3 print:hidden">
         <a href="/Members" className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-semibold">← सदस्यता पेज</a>
-        <button onClick={downloadPdf} className="rounded-xl bg-[#176447] px-5 py-3 font-bold text-white shadow">अलग PDF डाउनलोड / Download PDF</button>
+        <button onClick={downloadPdf} disabled={downloading} className="rounded-xl bg-[#176447] px-5 py-3 font-bold text-white shadow disabled:cursor-wait disabled:opacity-60">{downloading ? "PDF तैयार हो रहा है… / Preparing PDF…" : "PDF डाउनलोड करें / Download PDF"}</button>
         <button onClick={printForm} className="rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white shadow">प्रिंट / Print Form</button>
       </div>
       <article className="membership-print mx-auto max-w-[820px] bg-white p-6 shadow-xl sm:p-10">
@@ -99,8 +126,8 @@ const MembershipHardcopy = () => {
         </footer>
       </article>
       <div className="mx-auto mt-4 max-w-[820px] rounded-xl bg-amber-50 p-4 text-sm text-amber-900 print:hidden">
-        <b>अलग PDF / Separate PDF:</b> ऊपर “अलग PDF डाउनलोड / Download PDF” दबाने पर PDF फाइल सीधे डाउनलोड होगी। “प्रिंट / Print Form” से प्रिंटर या Save as PDF चुन सकते हैं। फॉर्म A4 पर प्रिंट कर हाथ से भरें।
-        <p className="mt-2">हस्ताक्षरित फॉर्म की वेबसाइट पर सुरक्षित अपलोड सुविधा अभी मौजूदा सदस्यता प्रणाली में उपलब्ध नहीं है; इसलिए इस पेज पर फाइल चुनने का ऐसा विकल्प नहीं जोड़ा गया है जो वास्तव में फाइल जमा न करे।</p>
+        <b>PDF डाउनलोड / Download PDF:</b> ऊपर हरे बटन से PDF फाइल डाउनलोड करें। फिर उसे खोलकर A4 पेपर पर प्रिंट करें। वैकल्पिक रूप से “प्रिंट / Print Form” दबाकर प्रिंटर या “Save as PDF” चुनें।
+        <p className="mt-2">हस्ताक्षरित फॉर्म की वेबसाइट पर सुरक्षित अपलोड सुविधा अभी उपलब्ध नहीं है। इसलिए फॉर्म डाउनलोड करके प्रिंट करें, हाथ से भरें और हस्ताक्षरित प्रति संस्था के रिकॉर्ड हेतु जमा करें।</p>
       </div>
       <style>{`
         .form-field { font-size: 12px; font-weight: 600; }
