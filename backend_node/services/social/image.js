@@ -10,7 +10,7 @@
 
 const fs = require('fs');
 const path = require('path');
-const { ORG } = require('./content');
+const { ORG, MONTHS_EN, MONTHS_HI } = require('./content');
 
 const FONT_DIR = path.join(__dirname, '..', '..', 'assets', 'fonts');
 const FONT_FILES = ['NotoSans-Regular.ttf', 'NotoSans-Bold.ttf',
@@ -27,6 +27,18 @@ const LOGO_URI = (() => {
 
 const SITE = 'https://swastiksrijan.in/';
 const FONT_STACK = '"Noto Sans Devanagari", "Noto Sans", "DejaVu Sans", sans-serif';
+
+// Rows loaded from the database only carry `postDate`; freshly planned posts
+// carry ready-made labels. Deriving the label here keeps the poster footer from
+// printing "undefined • undefined" for saved posts (IMS preview, reels).
+function dateLine(post) {
+  if (post.dateEn && post.dateHi) return `${post.dateEn} • ${post.dateHi}`;
+  const raw = String(post.postDate || post.date || '').slice(0, 10);
+  const parsed = raw ? new Date(`${raw}T06:00:00`) : new Date();
+  const d = Number.isNaN(parsed.getTime()) ? new Date() : parsed;
+  const day = d.getDate();
+  return `${day} ${MONTHS_EN[d.getMonth()]} ${d.getFullYear()} • ${day} ${MONTHS_HI[d.getMonth()]} ${d.getFullYear()}`;
+}
 
 const CAT = {
   education: ['#002344', '#0b3a63', '#FFD166'],
@@ -138,7 +150,7 @@ function postSvg(post) {
 
   <rect x="70" y="${L.barY}" width="150" height="10" rx="5" fill="${accent}"/>
 
-  <text x="70" y="880" font-size="28" fill="#ffffff" opacity="0.85">${esc(post.dateEn)} • ${esc(post.dateHi)}</text>
+  <text x="70" y="880" font-size="28" fill="#ffffff" opacity="0.85">${esc(dateLine(post))}</text>
   <text x="70" y="926" font-size="28" font-weight="700" fill="${accent}">${esc(ORG.website)}   ${esc(ORG.phone)}</text>
   <text x="70" y="976" font-size="24" font-weight="700" fill="#ffffff" opacity="0.75">#SSF #SwastikSrijan #${esc(post.category || 'community')}</text>
   <rect x="680" y="905" width="330" height="82" rx="41" fill="#FF6600"/>
@@ -257,7 +269,7 @@ async function drawPost(post, format = 'png') {
   // footer: date, contact (no emoji -> no missing-glyph boxes), hashtags, button
   ctx.fillStyle = '#ffffff'; ctx.globalAlpha = 0.85;
   ctx.font = `400 28px ${FONT_STACK}`;
-  ctx.fillText(`${post.dateEn} • ${post.dateHi}`, M, 880);
+  ctx.fillText(dateLine(post), M, 880);
   ctx.globalAlpha = 1; ctx.fillStyle = accent;
   ctx.font = `700 28px ${FONT_STACK}`;
   ctx.fillText(`${ORG.website}   ${ORG.phone}`, M, 926);

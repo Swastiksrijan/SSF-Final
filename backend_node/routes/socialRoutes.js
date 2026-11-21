@@ -3,6 +3,9 @@
 // Public: published posts as JSON + the generated SVG image.
 const express = require('express');
 const router = express.Router();
+const path = require('path');
+const fs = require('fs');
+const multer = require('multer');
 const { Op } = require('sequelize');
 const { SocialChannel, SocialPost, SocialConfig, SocialEvent, SocialRunLog } = require('../models/social');
 const content = require('../services/social/content');
@@ -28,6 +31,15 @@ const requireAuth = (req, r, next) => {
   next();
 };
 const wrap = (fn) => (req, r) => fn(req, r).catch((e) => r.status(e.status || 500).json({ message: e.message }));
+
+// Shared secret for machine callers (the GitHub Actions scheduler). Same value
+// as /social/cron so one workflow secret drives both the image and reel runs.
+const schedulerAuth = (req, r, next) => {
+  const secret = process.env.SCHEDULER_SECRET || ADMIN_TOKEN();
+  const key = req.headers['x-scheduler-key'] || req.query.key || '';
+  if (key !== secret) return r.status(401).json({ message: 'Unauthorized' });
+  next();
+};
 
 const PLATFORM_META = [
   { platform: 'website', en: 'Website / Blog', hi: 'वेबसाइट / ब्लॉग', always: true, fields: [] },
@@ -58,6 +70,7 @@ function postView(row) {
     contentSource: p.contentSource, contentVerified: p.contentVerified,
     tradition: p.tradition, solemn: p.solemn, palette: p.palette,
     scheduledFor: p.scheduledFor, publishedAt: p.publishedAt, results: p.platformResults,
+    reel: p.reel || null,
   };
 }
 
@@ -519,7 +532,7 @@ router.get('/social/posts', wrap(async (req, r) => {
     takeawayEn: p.takeawayEn, takeawayHi: p.takeawayHi, ctaEn: p.ctaEn, ctaHi: p.ctaHi,
     ctaUrl: p.ctaUrl, ctaLabelEn: p.ctaLabelEn, ctaLabelHi: p.ctaLabelHi,
     contentSource: p.contentSource, tradition: p.tradition, solemn: p.solemn,
-    image: p.imageUrl, publishedAt: p.publishedAt,
+    image: p.imageUrl, publishedAt: p.publishedAt, reel: p.reel || null,
   }; }) });
 }));
 
@@ -528,7 +541,9 @@ router.get('/social/image/daily', wrap(async (req, r) => {
   let post = null;
   if (req.query.postId) {
     const row = await SocialPost.findByPk(req.query.postId);
-    if (row) post = row.toJSON();
+    // mergePost folds the `data` JSONB (subtitle, example, labels) back in, so a
+    // saved post renders the same poster it was planned with.
+    if (row) post = content.mergePost(row);
   }
   if (!post) {
     const date = req.query.date ? new Date(req.query.date + 'T06:00:00') : new Date();
@@ -551,17 +566,70 @@ router.get('/social/image/daily', wrap(async (req, r) => {
 
 // Scheduler entry point. Render free sleeps; a GitHub Actions cron hits this.
 // Protected by a shared secret (SCHEDULER_SECRET) so it is safe to expose.
-router.get('/social/cron', async (req, r) => {
-  // Prefer a dedicated scheduler secret; otherwise accept the shared admin token
-  // (same convention as the rest of the app).
-  const secret = process.env.SCHEDULER_SECRET || ADMIN_TOKEN();
-  const key = req.query.key || '';
-  if (key !== secret) return r.status(401).json({ message: 'Unauthorized' });
+router.get('/social/cron', schedulerAuth, async (req, r) => {
   try {
     const force = req.query.force === '1';
     const out = await runPending({ force, source: 'github-cron' });
     r.json({ ok: true, ...out });
   } catch (e) { r.status(500).json({ ok: false, message: e.message }); }
 });
+
+// ---- reel (video) -----------------------------------------------------------
+// The reel is rendered on a GitHub Actions runner (ffmpeg + Hindi TTS, both
+// free) and posted here as one multipart call: the file is stored under
+// /uploads/reels so Instagram/Facebook/Telegram/YouTube can fetch it, then
+// published to the video-capable channels of the same post.
+const REEL_DIR = path.join(__dirname, '..', 'uploads', 'reels');
+fs.mkdirSync(REEL_DIR, { recursive: true });
+const reelUpload = multer({
+  storage: multer.diskStorage({
+    destination: (_req, _file, cb) => cb(null, REEL_DIR),
+    filename: (_req, _file, cb) => cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 10)}.mp4`),
+  }),
+  limits: { fileSize: 80 * 1024 * 1024, files: 1 },
+  fileFilter: (_req, file, cb) => (/^video\//.test(file.mimetype)
+    ? cb(null, true)
+    : cb(new Error('Only video files are allowed.'))),
+});
+
+// Keep only the newest reels: the file is only needed while the platforms fetch
+// it, and Render's disk is small. Older ones are no longer linked anywhere, so
+// keeping the last ten keeps a week and a half browsable in the IMS.
+function pruneReels(keep = 10) {
+  try {
+    const files = fs.readdirSync(REEL_DIR)
+      .map((f) => ({ f, t: fs.statSync(path.join(REEL_DIR, f)).mtimeMs }))
+      .sort((a, b) => b.t - a.t)
+      .slice(keep);
+    for (const { f } of files) fs.unlinkSync(path.join(REEL_DIR, f));
+  } catch { /* pruning must never break publishing */ }
+}
+
+router.post('/social/reel', schedulerAuth, (req, r, next) => {
+  reelUpload.single('video')(req, r, (err) => {
+    if (err) return r.status(400).json({ ok: false, message: err.message });
+    next();
+  });
+}, wrap(async (req, r) => {
+  const postId = Number(req.body.postId);
+  const row = postId ? await SocialPost.findByPk(postId) : null;
+  const dropUpload = () => { if (req.file) fs.unlink(req.file.path, () => {}); };
+  if (!row) { dropUpload(); return r.status(404).json({ ok: false, message: 'post not found' }); }
+  const videoUrl = req.file ? `/uploads/reels/${req.file.filename}` : String(req.body.videoUrl || '');
+  if (!videoUrl) return r.status(400).json({ ok: false, message: 'video file or videoUrl required' });
+
+  const platforms = String(req.body.platforms || '').split(',').map((s) => s.trim()).filter(Boolean);
+  const { publishReel } = require('../services/social/reel');
+  let out;
+  try {
+    out = await publishReel({ post: row, videoUrl, platforms, force: req.body.force === '1' });
+  } catch (e) {
+    dropUpload();
+    throw e;
+  }
+  if (!out.skipped && !out.published) dropUpload();
+  if (out.published) pruneReels();
+  r.json({ ok: out.skipped ? true : !!out.published, videoUrl, ...out });
+}));
 
 module.exports = router;

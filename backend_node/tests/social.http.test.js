@@ -97,6 +97,23 @@ async function main() {
     console.log('\nCron guard:');
     ok('cron without key = 401', (await get('/api/social/cron')).status === 401);
     ok('cron with key = 200', (await get('/api/social/cron?key=test-token')).status === 200);
+
+    console.log('\nReel endpoint:');
+    const reelForm = (fields) => {
+      const form = new FormData();
+      for (const [k, v] of Object.entries(fields)) form.append(k, v);
+      return form;
+    };
+    const postReel = (fields, headers = {}) => fetch(`${base}/api/social/reel`, {
+      method: 'POST', headers, body: reelForm(fields),
+    }).then(async (r) => ({ status: r.status, body: await r.json().catch(() => null) }));
+
+    ok('reel without scheduler key = 401', (await postReel({ postId: '1' })).status === 401);
+    ok('reel for an unknown post = 404', (await postReel({ postId: '999999' }, { 'x-scheduler-key': 'test-token' })).status === 404);
+    // No video-capable channel connected in this database -> 409, which the
+    // workflow reports as "connect one" instead of failing the run.
+    const reelNoChannel = await postReel({ postId: '1', videoUrl: 'https://example.org/a.mp4' }, { 'x-scheduler-key': 'test-token' });
+    ok('reel with no connected channel = 409', reelNoChannel.status === 409, JSON.stringify(reelNoChannel.body));
   } finally {
     server.close();
     await sequelize.close();

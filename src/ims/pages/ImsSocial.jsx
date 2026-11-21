@@ -11,6 +11,15 @@ import { ims } from '../api';
 import { makeReel, speakPost, downloadBlob } from '../reelMaker';
 import { profileUrlFor, idHintFor, captionFor, noteFor } from '../socialProfiles';
 
+// Rendered reels live on the backend (/uploads/reels/...), so a relative URL
+// needs the API origin prefix to open in a new tab.
+const reelHref = (url) => {
+  const v = String(url || '');
+  if (/^https?:\/\//i.test(v)) return v;
+  const base = (import.meta.env.VITE_BACKEND_URL || '').replace(/\/$/, '');
+  return `${base}${v.startsWith('/') ? '' : '/'}${v}`;
+};
+
 const FIELD_LABELS = {
   pageId: { en: 'Page ID', hi: 'पेज ID' },
   igUserId: { en: 'Instagram User ID', hi: 'इंस्टाग्राम यूज़र ID' },
@@ -323,6 +332,22 @@ function PostCard({ post, onPublish, onEdit, busy }) {
           {post.results && post.results.length > 0 && (
             <div className="mt-3 flex flex-wrap gap-1.5">
               {post.results.map((r) => (
+                <span key={r.platform} className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${r.ok ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-600'}`}>
+                  {r.ok ? '✓' : '✕'} {r.platform}
+                </span>
+              ))}
+            </div>
+          )}
+          {post.reel && post.reel.publishedAt && (
+            <div className="mt-3 flex flex-wrap items-center gap-1.5">
+              <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 px-2 py-0.5 text-[10px] font-bold text-indigo-700">
+                {lang === 'hi' ? '✓ रील' : '✓ Reel'}
+              </span>
+              <a href={reelHref(post.reel.videoUrl)} target="_blank" rel="noreferrer"
+                className="text-[10px] font-semibold text-indigo-600 underline">
+                {lang === 'hi' ? 'वीडियो देखें' : 'view video'}
+              </a>
+              {post.reel.results && post.reel.results.map((r) => (
                 <span key={r.platform} className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[10px] font-semibold ${r.ok ? 'bg-emerald-50 text-emerald-700' : 'bg-rose-50 text-rose-600'}`}>
                   {r.ok ? '✓' : '✕'} {r.platform}
                 </span>

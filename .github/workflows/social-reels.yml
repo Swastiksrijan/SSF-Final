@@ -1,0 +1,180 @@
+name: SSF Daily Reel
+
+# Turns published posts into 9:16 reels and publishes them to the SAME accounts
+# that already receive the image post (Instagram Reel / Facebook video /
+# Telegram video / YouTube Short).
+#
+# Three slots a day. Each run takes the newest published post that does not have
+# a reel yet, so the day gets up to three DIFFERENT reels and never the same one
+# twice; a slot with nothing new simply reports a notice.
+#
+# Everything here is free:
+#   * ffmpeg is pre-installed on ubuntu-latest, so rendering costs no money,
+#   * edge-tts (Microsoft Edge voices) gives a Hindi voiceover with no API key,
+#   * the finished MP4 is POSTed to the backend, which stores it under
+#     /uploads/reels and publishes it.
+#
+# The backend is idempotent per post (data.reel.publishedAt), so a retry can
+# never post the same reel twice.
+on:
+  schedule:
+    - cron: '30 3 * * *'   # 09:00 IST — after the 08:00 image post
+    - cron: '0 9 * * *'    # 14:30 IST — midday slot
+    - cron: '45 16 * * *'  # 22:15 IST — night slot (watch it 2-3 weeks before fixing)
+  workflow_dispatch:
+    inputs:
+      post_id:
+        description: 'Publish a reel for this post id (blank = newest post without a reel)'
+        default: ''
+      force:
+        description: 'Re-render and re-publish even if a reel already exists'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: social-reels
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BASE: ${{ secrets.SOCIAL_BACKEND_URL || 'https://ngo-backend-03hq.onrender.com' }}
+      KEY: ${{ secrets.SCHEDULER_SECRET || 'ssf-admin-portal-token' }}
+      POST_ID: ${{ github.event.inputs.post_id }}
+      FORCE: ${{ github.event.inputs.force }}
+      TZ: Asia/Kolkata
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fonts + Python deps
+        run: |
+          python3 -m pip install --quiet --upgrade pip
+          python3 -m pip install --quiet edge-tts gTTS pillow
+          # Pillow needs a real Devanagari font for the hook and end cards.
+          mkdir -p "$HOME/reel-fonts"
+          base=https://github.com/notofonts/noto-fonts/raw/main/hinted/ttf
+          for f in NotoSans-Regular NotoSans-Bold; do
+            curl -fsSL --retry 3 "$base/NotoSans/$f.ttf" -o "$HOME/reel-fonts/$f.ttf"
+          done
+          for f in NotoSansDevanagari-Regular NotoSansDevanagari-Bold; do
+            curl -fsSL --retry 3 "$base/NotoSansDevanagari/$f.ttf" -o "$HOME/reel-fonts/$f.ttf"
+          done
+          echo "REEL_FONT_DIR=$HOME/reel-fonts" >> "$GITHUB_ENV"
+
+      - name: Pick the post to turn into a reel
+        id: pick
+        run: |
+          # Render free sleeps; a cold start can take a minute.
+          curl -s -o /dev/null --max-time 90 "$BASE/" || true
+          curl -fsSL --max-time 120 --retry 3 --retry-delay 10 --retry-all-errors \
+            "$BASE/api/social/posts?limit=30" -o /tmp/posts.json
+          python3 - <<'PY'
+          import json, os, sys
+          from datetime import datetime, timedelta, timezone
+
+          posts = json.load(open('/tmp/posts.json')).get('posts') or []
+          wanted = (os.environ.get('POST_ID') or '').strip()
+          force = (os.environ.get('FORCE') or '').lower() == 'true'
+          today = os.popen('TZ=Asia/Kolkata date +%F').read().strip()
+          now = datetime.now(timezone.utc)
+
+          def has_reel(p):
+              return bool((p.get('reel') or {}).get('publishedAt'))
+
+          def published(p):
+              try:
+                  return datetime.fromisoformat(str(p.get('publishedAt') or '').replace('Z', '+00:00'))
+              except ValueError:
+                  return None
+
+          if wanted:
+              chosen = next((p for p in posts if str(p.get('id')) == wanted), None)
+              if not chosen:
+                  sys.exit(f'post {wanted} not found in the published list')
+          else:
+              # Today's published posts (IST), newest first, without a reel yet.
+              fresh = [p for p in posts if p.get('date') == today and (force or not has_reel(p))]
+              # Fall back to the last 26h so a missed midnight slot still reels
+              # yesterday's evening post instead of nothing.
+              if not fresh:
+                  fresh = [p for p in posts
+                           if published(p) and now - published(p) < timedelta(hours=26)
+                           and (force or not has_reel(p))]
+              fresh.sort(key=lambda p: published(p) or now, reverse=True)
+              chosen = fresh[0] if fresh else None
+
+          if not chosen:
+              print('no published post without a reel')
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+                  fh.write('skip=true\n')
+              sys.exit(0)
+
+          json.dump(chosen, open('/tmp/post.json', 'w'), ensure_ascii=False)
+          text = chosen.get('titleHi') or chosen.get('titleEn') or ''
+          body = chosen.get('bodyHi') or chosen.get('bodyEn') or ''
+          with open('/tmp/narration.txt', 'w', encoding='utf-8') as fh:
+              fh.write(f'{text}. {body}')
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+              fh.write('skip=false\n')
+              fh.write(f"post_id={chosen['id']}\n")
+              fh.write(f"ref={chosen.get('ref') or chosen['id']}\n")
+          print(f"post {chosen['id']} ({chosen.get('date')} {chosen.get('slot')}) -> reel")
+          PY
+
+      - name: Download the post poster
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          curl -fsSL --max-time 120 --retry 3 --retry-delay 10 --retry-all-errors \
+            "$BASE/api/social/image/daily?postId=${{ steps.pick.outputs.post_id }}&format=jpeg" \
+            -o /tmp/poster.jpg
+          ls -l /tmp/poster.jpg
+
+      - name: Render the 9:16 reel (hook + poster + end card, Hindi voice, music)
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          python3 - <<'PY'
+          import json, subprocess
+          post = json.load(open('/tmp/post.json'))
+          cmd = ['python3', 'scripts/make_reel.py',
+                 '--image', '/tmp/poster.jpg', '--out', '/tmp/reel.mp4',
+                 '--title-en', post.get('titleEn') or '',
+                 '--title-hi', post.get('titleHi') or '',
+                 '--text-file', '/tmp/narration.txt']
+          raise SystemExit(subprocess.run(cmd, text=True).returncode)
+          PY
+          ls -lh /tmp/reel.mp4
+
+      - name: Publish the reel
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          # The backend expects force=1 (not the boolean input's "true").
+          if [ "$FORCE" = "true" ]; then FORCE_FLAG=1; else FORCE_FLAG=0; fi
+          code=$(curl -sS -o /tmp/reel-out.json -w "%{http_code}" \
+            --max-time 420 --retry 2 --retry-delay 15 --retry-all-errors \
+            -X POST -H "x-scheduler-key: $KEY" \
+            -F "postId=${{ steps.pick.outputs.post_id }}" \
+            -F "force=$FORCE_FLAG" \
+            -F "video=@/tmp/reel.mp4;type=video/mp4" \
+            "$BASE/api/social/reel")
+          echo "HTTP $code"
+          cat /tmp/reel-out.json || true
+          echo
+          if [ "$code" = "409" ]; then
+            echo "::notice::No video-capable channel connected yet (Instagram/Facebook/Telegram/YouTube). Connect one in IMS → Social Media."
+            exit 0
+          fi
+          [ "$code" = "200" ] || { echo "::error::reel publish failed ($code)"; exit 1; }
+
+      - name: Keep the rendered reel for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reel-${{ steps.pick.outputs.ref || 'none' }}
+          path: /tmp/reel.mp4
+          if-no-files-found: ignore
+          retention-days: 7
