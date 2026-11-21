@@ -120,12 +120,19 @@ The card never opens with a demand for money.
 ```
 आप भी मदद करें · हर हाथ काम आता है
 — चाहें तो हमारे माध्यम से —
-QR (the foundation's own Paytm scanner)
+[QR: UPI · Paytm]      [QR: Razorpay · Card]
 QR स्कैन करें · Scan to pay
-UPI  swastikstijanfoundation@ptyes
+UPI: swastikstijanfoundation@ptyes
 swastiksrijan.in/Donate
-Razorpay · UPI · Card · NetBanking
+pages.razorpay.com/pl_NCiTn7wnBOJFYG/view
+Payee: SWASTIK SRIJAN FOUNDATION SAMITI
+हर मदद मायने रखती है · Every bit of help counts
 ```
+
+Two codes, because a UPI QR is useless to someone paying by card: the left one is
+the foundation's own Paytm scanner, the right one is generated from `RAZORPAY_URL`.
+Naming the payee on the card gives the viewer the one check that catches a swapped
+QR.
 
 The QR is the foundation's real Paytm scanner, cropped to the code and stored at
 `backend_node/assets/donate-qr.png` — it encodes
@@ -135,3 +142,18 @@ the `qrcode` package), so a missing file degrades instead of failing the render.
 
 Change the VPA, the donate URL or the Razorpay link in one place: `UPI_ID`,
 `DONATE_URL`, `RAZORPAY_URL` at the top of `scripts/make_reel.py`.
+
+### The caption carries the same links
+
+Every published caption — image post or reel — ends with the same footer, built by
+`footer()` in `backend_node/services/social/channels.js`:
+
+```
+swastiksrijan.in  ·  दान करें / Donate: https://swastiksrijan.in/Donate
+Razorpay: https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view
+UPI: swastikstijanfoundation@ptyes
+```
+
+Platforms linkify it, so the Razorpay page is one tap away. Instagram (2,200) and
+Telegram (1,024) have caption limits, so `captionWithin(post, max)` shortens the
+body and never the footer. X gets the English body plus the site link only.

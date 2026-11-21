@@ -253,30 +253,37 @@ def hook_card(post, out_path):
 
 
 def qr_image(size):
-    """The foundation's own Paytm scanner, cropped to the code. Falls back to a
-    generated QR for the donate page when the asset is missing."""
+    """The foundation's own Paytm scanner, cropped to the code."""
     if os.path.exists(QR_IMAGE):
-        img = Image.open(QR_IMAGE).convert('RGB')
-        return img.resize((size, size), Image.LANCZOS)
+        return Image.open(QR_IMAGE).convert('RGB').resize((size, size), Image.LANCZOS)
+    return generated_qr(DONATE_URL, size)
+
+
+def generated_qr(url, size):
+    """A plain QR for a link. None when the qrcode package is not installed."""
     try:
         import qrcode
     except ImportError:
         return None
-    qr = qrcode.QRCode(border=2, box_size=10, error_correction=qrcode.constants.ERROR_CORRECT_M)
-    qr.add_data(DONATE_URL)
+    qr = qrcode.QRCode(border=1, box_size=10, error_correction=qrcode.constants.ERROR_CORRECT_M)
+    qr.add_data(url)
     qr.make(fit=True)
     img = qr.make_image(fill_color='#002344', back_color='white').convert('RGB')
+    # NEAREST keeps the modules square; LANCZOS blurs them into an unscannable mess.
     return img.resize((size, size), Image.NEAREST)
 
 
 def end_card(out_path):
-    """The last seconds. Suggest first, ask second: a viewer is told they can help
-    on their own, and only then offered the foundation as one way to do it."""
-    img = glow(gradient(W, H, NAVY_LIGHT, NAVY), W // 2, 760, 560, GOLD, 45)
+    """The last seconds. Suggest first, ask second, and give both ways to pay:
+    a UPI QR for phones and a Razorpay link QR for cards."""
+    img = glow(gradient(W, H, NAVY_LIGHT, NAVY), W // 2, 620, 560, GOLD, 42)
     d = ImageDraw.Draw(img)
 
     def centre(text, fnt, y, fill):
         d.text(((W - d.textlength(text, font=fnt)) / 2, y), text, font=fnt, fill=fill)
+
+    def centre_at(text, fnt, cx, y, fill):
+        d.text((cx - d.textlength(text, font=fnt) / 2, y), text, font=fnt, fill=fill)
 
     def centre_mixed(parts, y):
         """Latin and Devanagari need different fonts; Devanagari fonts have no 'S'."""
@@ -286,38 +293,45 @@ def end_card(out_path):
             d.text((x, y), text, font=fnt, fill=fill)
             x += width
 
-    paste_logo(img, W // 2 - 80, 96, 160)
+    paste_logo(img, W // 2 - 76, 84, 152)
 
-    centre('आप भी मदद करें', font('NotoSansDevanagari-Bold.ttf', 76), 296, WHITE)
-    centre('हर हाथ काम आता है', font('NotoSansDevanagari-Regular.ttf', 38), 396, GOLD_BRIGHT)
-    centre('— चाहें तो हमारे माध्यम से —', font('NotoSansDevanagari-Regular.ttf', 28), 462, (196, 214, 232))
+    centre('आप भी मदद करें', font('NotoSansDevanagari-Bold.ttf', 66), 268, WHITE)
+    centre('हर हाथ काम आता है', font('NotoSansDevanagari-Regular.ttf', 34), 350, GOLD_BRIGHT)
+    centre('— चाहें तो हमारे माध्यम से —', font('NotoSansDevanagari-Regular.ttf', 26), 404, (196, 214, 232))
 
-    box, pad = 380, 20
-    x0, y0 = (W - box) // 2, 530
-    d.rounded_rectangle([x0, y0, x0 + box, y0 + box], radius=26, fill=WHITE)
-    qr = qr_image(box - pad * 2)
-    if qr is not None:
-        img.paste(qr, (x0 + pad, y0 + pad))
-    else:
-        centre('QR', font('NotoSans-Bold.ttf', 110), y0 + 120, NAVY)
+    tile, gap, pad = 300, 48, 14
+    left = (W - (tile * 2 + gap)) // 2
+    y0 = 462
+    centres = [left + tile // 2, left + tile + gap + tile // 2]
+    for cx, img_qr in ((centres[0], qr_image(tile - pad * 2)),
+                       (centres[1], generated_qr(RAZORPAY_URL, tile - pad * 2))):
+        x0 = cx - tile // 2
+        d.rounded_rectangle([x0, y0, x0 + tile, y0 + tile], radius=24, fill=WHITE)
+        if img_qr is not None:
+            img.paste(img_qr, (x0 + pad, y0 + pad))
+        else:
+            centre_at('QR', font('NotoSans-Bold.ttf', 96), cx, y0 + 96, NAVY)
+
+    centre_at('UPI  ·  Paytm', font('NotoSans-Bold.ttf', 28), centres[0], y0 + tile + 16, WHITE)
+    centre_at('Razorpay  ·  Card', font('NotoSans-Bold.ttf', 28), centres[1], y0 + tile + 16, WHITE)
 
     # "QR" must come from the Latin face: the Devanagari subset has no Q or R.
-    centre_mixed([('QR', font('NotoSans-Bold.ttf', 32), (206, 222, 238)),
-                  (' स्कैन करें', font('NotoSansDevanagari-Regular.ttf', 32), (206, 222, 238)),
-                  ('  •  Scan to pay', font('NotoSans-Regular.ttf', 32), (206, 222, 238))], y0 + box + 22)
+    centre_mixed([('QR', font('NotoSans-Bold.ttf', 28), (206, 222, 238)),
+                  (' स्कैन करें', font('NotoSansDevanagari-Regular.ttf', 28), (206, 222, 238)),
+                  ('  •  Scan to pay', font('NotoSans-Regular.ttf', 28), (206, 222, 238))], y0 + tile + 66)
+    centre('UPI: ' + UPI_ID, font('NotoSans-Bold.ttf', 26), y0 + tile + 108, (206, 222, 238))
 
-    centre('UPI', font('NotoSans-Regular.ttf', 24), y0 + box + 82, (170, 190, 210))
-    centre(UPI_ID, font('NotoSans-Bold.ttf', 32), y0 + box + 112, WHITE)
+    d.line([(W // 2 - 150, y0 + tile + 158), (W // 2 + 150, y0 + tile + 158)], fill=GOLD, width=2)
+    centre(SITE + '/Donate', font('NotoSans-Bold.ttf', 42), y0 + tile + 178, GOLD_BRIGHT)
+    centre(RAZORPAY_URL.replace('https://', ''), font('NotoSans-Regular.ttf', 21), y0 + tile + 234, (186, 204, 224))
 
-    d.line([(W // 2 - 150, y0 + box + 168), (W // 2 + 150, y0 + box + 168)], fill=GOLD, width=2)
-    centre(SITE + '/Donate', font('NotoSans-Bold.ttf', 46), y0 + box + 190, GOLD_BRIGHT)
-    centre('Razorpay  •  UPI  •  Card  •  NetBanking', font('NotoSans-Regular.ttf', 28), y0 + box + 256, (200, 216, 232))
+    # Naming the payee is the cheapest anti-fraud check a viewer can make.
+    centre('Payee: SWASTIK SRIJAN FOUNDATION SAMITI', font('NotoSans-Regular.ttf', 23), 1112, (186, 204, 224))
+    centre('हर मदद मायने रखती है', font('NotoSansDevanagari-Bold.ttf', 36), 1206, GOLD)
+    centre('Every bit of help counts', font('NotoSans-Regular.ttf', 26), 1258, (186, 204, 224))
 
-    centre('हर मदद मायने रखती है', font('NotoSansDevanagari-Bold.ttf', 40), 1330, GOLD)
-    centre('Every bit of help counts', font('NotoSans-Regular.ttf', 28), 1392, (186, 204, 224))
-
-    centre('स्वास्तिक सृजन फाउंडेशन', font('NotoSansDevanagari-Regular.ttf', 30), H - 190, (170, 190, 210))
-    centre('@swastiksrijan  •  Creating Change. Inspiring Lives.', font('NotoSans-Regular.ttf', 26), H - 142, (150, 172, 196))
+    centre('स्वास्तिक सृजन फाउंडेशन', font('NotoSansDevanagari-Regular.ttf', 28), H - 186, (170, 190, 210))
+    centre('@swastiksrijan  •  Creating Change. Inspiring Lives.', font('NotoSans-Regular.ttf', 24), H - 140, (150, 172, 196))
     img.save(out_path)
 
 
