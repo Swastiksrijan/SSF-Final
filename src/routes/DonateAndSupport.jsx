@@ -1,7 +1,8 @@
-// src/routes/DonateAndSupport.jsx
-import { createFileRoute } from "@tanstack/react-router";
-import DonatePage from "../pages/DonatePage";
+import { createFileRoute, redirect } from "@tanstack/react-router";
 
+// Legacy URL retained for bookmarks and search engines; Donate is the canonical page.
 export const Route = createFileRoute("/DonateAndSupport")({
-  component: DonatePage,
+  beforeLoad: () => {
+    throw redirect({ to: "/Donate", replace: true });
+  },
 });
