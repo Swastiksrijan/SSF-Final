@@ -1,0 +1,130 @@
+name: SSF Daily Reel
+
+# Renders yesterday's/today's awareness post into a 9:16 reel and publishes it
+# as a Reel/Short/video on the SAME accounts that already receive the image post.
+#
+# Everything here is free:
+#   * ffmpeg is pre-installed on ubuntu-latest, so rendering costs no money,
+#   * edge-tts (Microsoft Edge voices) gives a Hindi voiceover with no API key,
+#   * the finished MP4 is POSTed to the backend, which stores it under
+#     /uploads/reels and publishes it to Instagram / Facebook / Telegram /
+#     YouTube Shorts.
+#
+# The backend is idempotent per post (data.reel.publishedAt), so the retry run
+# below can never post the same reel twice.
+on:
+  schedule:
+    - cron: '45 3 * * *'   # 09:15 IST — after the 08:00 image post
+    - cron: '20 10 * * *'  # 15:50 IST — retry if the morning run failed
+  workflow_dispatch:
+    inputs:
+      post_id:
+        description: 'Publish a reel for this post id (blank = latest published post)'
+        default: ''
+      force:
+        description: 'Re-render and re-publish even if a reel already exists'
+        type: boolean
+        default: false
+
+permissions:
+  contents: read
+
+concurrency:
+  group: social-reels
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BASE: ${{ secrets.SOCIAL_BACKEND_URL || 'https://ngo-backend-03hq.onrender.com' }}
+      KEY: ${{ secrets.SCHEDULER_SECRET || 'ssf-admin-portal-token' }}
+      POST_ID: ${{ github.event.inputs.post_id }}
+      FORCE: ${{ github.event.inputs.force }}
+      TZ: Asia/Kolkata
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Pick the post to turn into a reel
+        id: pick
+        run: |
+          python3 -m pip install --quiet edge-tts gTTS
+          # Render free sleeps; a cold start can take a minute.
+          curl -s -o /dev/null --max-time 90 "$BASE/" || true
+          curl -fsSL --max-time 120 --retry 3 --retry-delay 10 --retry-all-errors \
+            "$BASE/api/social/posts?limit=5" -o /tmp/posts.json
+          python3 - <<'PY'
+          import json, os, sys
+          today = os.popen('date +%F').read().strip()
+          posts = json.load(open('/tmp/posts.json')).get('posts') or []
+          wanted = (os.environ.get('POST_ID') or '').strip()
+          if wanted:
+              chosen = next((p for p in posts if str(p.get('id')) == wanted), None)
+          else:
+              chosen = next((p for p in posts if p.get('date') == today), None) or (posts[0] if posts else None)
+          if not chosen:
+              print('no published post found'); sys.exit(1)
+          reel = chosen.get('reel') or {}
+          if reel.get('publishedAt') and (os.environ.get('FORCE') or '').lower() != 'true':
+              print(f"reel already published for post {chosen['id']}: {reel.get('videoUrl')}")
+              with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+                  fh.write('skip=true\n')
+              sys.exit(0)
+          json.dump(chosen, open('/tmp/post.json', 'w'), ensure_ascii=False)
+          # Narration: Hindi when available, otherwise English. The image already
+          # carries the bilingual text, so the voice only has to read one.
+          text = chosen.get('titleHi') or chosen.get('titleEn') or ''
+          body = chosen.get('bodyHi') or chosen.get('bodyEn') or ''
+          open('/tmp/narration.txt', 'w', encoding='utf-8').write(f"{text}. {body}")
+          with open(os.environ['GITHUB_OUTPUT'], 'a') as fh:
+              fh.write('skip=false\n')
+              fh.write(f"post_id={chosen['id']}\n")
+              fh.write(f"ref={chosen.get('ref') or chosen['id']}\n")
+          print(f"post {chosen['id']} ({chosen.get('date')}) -> reel")
+          PY
+
+      - name: Download the post poster
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          curl -fsSL --max-time 120 --retry 3 --retry-delay 10 --retry-all-errors \
+            "$BASE/api/social/image/daily?postId=${{ steps.pick.outputs.post_id }}&format=jpeg" \
+            -o /tmp/poster.jpg
+          ls -l /tmp/poster.jpg
+
+      - name: Render the 9:16 reel (ffmpeg + Hindi voiceover)
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          ffmpeg -version | head -1
+          python3 scripts/make_reel.py --image /tmp/poster.jpg --out /tmp/reel.mp4 \
+            --text-file /tmp/narration.txt
+
+      - name: Publish the reel
+        if: steps.pick.outputs.skip != 'true'
+        run: |
+          # The backend expects force=1 (not the boolean input's "true").
+          if [ "$FORCE" = "true" ]; then FORCE_FLAG=1; else FORCE_FLAG=0; fi
+          code=$(curl -sS -o /tmp/reel-out.json -w "%{http_code}" \
+            --max-time 420 --retry 2 --retry-delay 15 --retry-all-errors \
+            -X POST -H "x-scheduler-key: $KEY" \
+            -F "postId=${{ steps.pick.outputs.post_id }}" \
+            -F "force=$FORCE_FLAG" \
+            -F "video=@/tmp/reel.mp4;type=video/mp4" \
+            "$BASE/api/social/reel")
+          echo "HTTP $code"
+          cat /tmp/reel-out.json || true
+          echo
+          if [ "$code" = "409" ]; then
+            echo "::notice::No video-capable channel connected yet (Instagram/Facebook/Telegram/YouTube). Connect one in IMS → Social Media."
+            exit 0
+          fi
+          [ "$code" = "200" ] || { echo "::error::reel publish failed ($code)"; exit 1; }
+
+      - name: Keep the rendered reel for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reel-${{ steps.pick.outputs.ref || 'none' }}
+          path: /tmp/reel.mp4
+          if-no-files-found: ignore
+          retention-days: 14

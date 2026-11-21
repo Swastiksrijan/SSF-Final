@@ -427,6 +427,129 @@ async function resolveInstagramAccount({ pageId, accessToken }) {
   return { ok: false, error: 'no_linked_instagram', hint: 'Instagram is not linked to this Facebook Page. In the Page settings, connect the Instagram account (Professional/Business) to the Page, then retry.' };
 }
 
+// ---- video / reels ---------------------------------------------------------
+// The same accounts as above, but publishing a rendered MP4 instead of the
+// poster. Platforms that cannot take a video are simply absent from
+// REEL_ADAPTERS, so a reel run never tries them.
+
+// Video platforms fetch the file themselves, so the URL must be absolute and
+// publicly reachable (our own /uploads/reels/... is served by this backend).
+function absoluteUrl(u) {
+  const v = String(u || '');
+  if (/^https?:\/\//i.test(v)) return v;
+  const base = (process.env.PUBLIC_BASE_URL || '').replace(/\/$/, '');
+  if (!base || !v) return null;
+  return `${base}${v.startsWith('/') ? '' : '/'}${v}`;
+}
+
+// Instagram Reels. Video containers are processed server-side, which takes far
+// longer than a photo, so the poll window is wider; publishing before the
+// status is FINISHED fails with "Media ID is not available".
+async function publishInstagramReel(post, creds, videoUrl) {
+  const igUserId = pick(creds, 'igUserId');
+  const token = pick(creds, 'accessToken');
+  if (!igUserId || !token) return missing('Instagram');
+  const url = absoluteUrl(videoUrl);
+  if (!url) return { ok: false, error: 'public_video_url_unavailable' };
+  try {
+    const container = await formCall(`${GRAPH}/${igUserId}/media`, {
+      media_type: 'REELS',
+      video_url: url,
+      caption: igCaption(post),
+      share_to_feed: 'true',
+      access_token: token,
+    });
+    const created = container?.id;
+    if (!created) return { ok: false, error: 'container_failed' };
+    const finished = await waitForIgContainer(created, token, 60, 5000);
+    if (!finished) return { ok: false, error: 'instagram_video_processing_timeout' };
+    const out = await formCall(`${GRAPH}/${igUserId}/media_publish`, { creation_id: created, access_token: token });
+    return { ok: true, url: out?.id ? `https://instagram.com/reel/${out.id}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+async function publishFacebookVideo(post, creds, videoUrl) {
+  const pageId = pick(creds, 'pageId');
+  const stored = pick(creds, 'accessToken');
+  if (!pageId || !stored) return missing('Facebook');
+  const token = await resolvePageToken(pageId, stored);
+  const url = absoluteUrl(videoUrl);
+  if (!url) return { ok: false, error: 'public_video_url_unavailable' };
+  try {
+    const out = await formCall(`${GRAPH}/${pageId}/videos`, {
+      file_url: url,
+      description: caption(post),
+      access_token: token,
+    });
+    return { ok: true, url: out?.id ? `https://facebook.com/${pageId}/videos/${out.id}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+async function publishTelegramVideo(post, creds, videoUrl) {
+  const token = pick(creds, 'botToken');
+  const chatId = pick(creds, 'chatId');
+  if (!token || !chatId) return missing('Telegram');
+  const url = absoluteUrl(videoUrl);
+  if (!url) return { ok: false, error: 'public_video_url_unavailable' };
+  try {
+    const out = await jsonCall(`https://api.telegram.org/bot${token}/sendVideo`, {
+      body: {
+        chat_id: chatId, video: url, supports_streaming: true,
+        caption: caption(post).slice(0, 1024),
+      },
+    });
+    return { ok: true, url: out?.result?.message_id ? `https://t.me/c/${chatId}/${out.result.message_id}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+// YouTube Shorts via the resumable upload API. The backend has only a URL, so
+// it downloads the clip first (a reel is a few MB, well inside free-tier RAM).
+async function publishYouTubeShort(post, creds, videoUrl) {
+  const token = pick(creds, 'accessToken');
+  if (!token) return missing('YouTube');
+  const url = absoluteUrl(videoUrl);
+  if (!url) return { ok: false, error: 'public_video_url_unavailable' };
+  try {
+    const init = await fetch('https://www.googleapis.com/upload/youtube/v3/videos?uploadType=resumable&part=snippet,status', {
+      method: 'POST',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        'Content-Type': 'application/json; charset=UTF-8',
+        'X-Upload-Content-Type': 'video/mp4',
+      },
+      body: JSON.stringify({
+        snippet: {
+          title: `${post.titleEn || post.titleHi || 'SSF'} #Shorts`.slice(0, 100),
+          description: caption(post).slice(0, 4500),
+          categoryId: '27', // Education
+        },
+        status: { privacyStatus: 'public', selfDeclaredMadeForKids: false },
+      }),
+    });
+    const location = init.headers.get('location');
+    if (!init.ok || !location) {
+      const data = await init.json().catch(() => null);
+      throw new Error(data?.error?.message || `HTTP ${init.status}`);
+    }
+    const bytes = Buffer.from(await (await fetch(url)).arrayBuffer());
+    const put = await fetch(location, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'video/mp4', 'Content-Length': String(bytes.length) },
+      body: bytes,
+    });
+    const out = await put.json().catch(() => null);
+    if (!put.ok) throw new Error(out?.error?.message || `HTTP ${put.status}`);
+    return { ok: true, url: out?.id ? `https://youtube.com/shorts/${out.id}` : null };
+  } catch (e) { return { ok: false, error: e.message }; }
+}
+
+const REEL_ADAPTERS = {
+  instagram: publishInstagramReel,
+  facebook: publishFacebookVideo,
+  telegram: publishTelegramVideo,
+  youtube: publishYouTubeShort,
+};
+
 const ADAPTERS = {
   website: publishWebsite,
   telegram: publishTelegram,
@@ -517,4 +640,4 @@ async function testChannel(platform, creds) {
   return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };
 }
 
-module.exports = { ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount, caption, igCaption, IG_CAPTION_MAX };
+module.exports = { ADAPTERS, REEL_ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount, caption, igCaption, IG_CAPTION_MAX };
