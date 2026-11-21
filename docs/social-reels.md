@@ -110,12 +110,28 @@ A seva reel has no awareness post behind it, so the inbox creates the record
 same path as any other reel — the IMS Social list shows it with its per-platform
 results.
 
-### The donate ask on every reel
+### The ask comes last, and it is an offer
 
-Both series end on the same card: a QR to `https://swastiksrijan.in/Donate`, the
-UPI/Paytm number `9718346691`, and `swastiksrijan.in/Donate`. The QR is drawn with
-the `qrcode` package, so both workflows install it; without the package the card
-still renders with a plain "QR" placeholder instead of failing the render.
+The order matters: every reel first tells the viewer what they can do **by
+themselves** ("ये आप खुद भी कर सकते हैं / पैसा ज़रूरी नहीं, समय भी काफ़ी है"), and
+only then offers the foundation as one way to do it ("— चाहें तो हमारे माध्यम से —").
+The card never opens with a demand for money.
 
-Change the number or the URL in one place: `UPI_ID` / `DONATE_URL` at the top of
-`scripts/make_reel.py`.
+```
+आप भी मदद करें · हर हाथ काम आता है
+— चाहें तो हमारे माध्यम से —
+QR (the foundation's own Paytm scanner)
+QR स्कैन करें · Scan to pay
+UPI  swastikstijanfoundation@ptyes
+swastiksrijan.in/Donate
+Razorpay · UPI · Card · NetBanking
+```
+
+The QR is the foundation's real Paytm scanner, cropped to the code and stored at
+`backend_node/assets/donate-qr.png` — it encodes
+`upi://pay?pa=swastikstijanfoundation@ptyes&pn=SWASTIK SRIJAN FOUNDATION SAMITI`.
+Without that asset the card falls back to a generated QR for the donate page (needs
+the `qrcode` package), so a missing file degrades instead of failing the render.
+
+Change the VPA, the donate URL or the Razorpay link in one place: `UPI_ID`,
+`DONATE_URL`, `RAZORPAY_URL` at the top of `scripts/make_reel.py`.

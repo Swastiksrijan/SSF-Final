@@ -1,9 +1,9 @@
 import Heart from "../assets/Heart.png";
-import QRcode from "../assets/QR.png";
 import { IoCopyOutline } from "react-icons/io5";
 import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
-import Barcode from "../assets/barcode.jpg";
+import Scanner from "../assets/paytm-upi-scanner.jpg";
+import { CONTACT_INFO } from "../config/contact";
 function Supportour() {
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text);
@@ -51,15 +51,16 @@ function Supportour() {
 
           {/* QR Box */}
           <div className="flex flex-col items-center justify-center bg-[#12345A]/10 p-6 rounded border border-dashed w-full max-w-[420px]">
-            <img src={Barcode} className="w-40 h-40" />
+            <img src={Scanner} alt="Swastik Srijan Foundation Paytm UPI scanner"
+              className="w-full max-w-[260px] rounded-xl shadow-lg" />
 
             {/* UPI ID */}
             <div className="flex items-center gap-2 bg-white px-4 py-2 mt-4  shadow-[4px_4px_0px_#12345A] w-fit">
-              <span>swastikstijanfoundation@ptyes</span>
+              <span className="break-all text-sm">{CONTACT_INFO.social.upi}</span>
 
               <span
                 className="text-[#12345A] cursor-pointer ml-6 flex items-center gap-1"
-                onClick={() => handleCopy("swastiksrijanfoundation@ptyes")}
+                onClick={() => handleCopy(CONTACT_INFO.social.upi)}
               >
                 Copy <IoCopyOutline />
               </span>

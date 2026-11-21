@@ -9,7 +9,8 @@ Everything stays free: ffmpeg, Pillow, edge-tts, and a synthesised music bed.
 Reel shape:
   0.0s   hook   - "मदद करने के हज़ार तरीके" + the theme + तरीका number
   3.0s   3 cards - one way to help each, with its Hindi line and English gloss
-  end    donate - QR, UPI/Paytm number, website
+  +3.6s  "you can do this yourself" - the suggestion stands on its own
+  end    donate - and only then: QR, UPI id, donate page
 
 Usage:
   python3 scripts/make_seva_reel.py --group group.json --index 3 --out reel.mp4
@@ -32,6 +33,7 @@ W, H = mr.W, mr.H
 HOOK_SECONDS = 3.0
 END_SECONDS = mr.END_SECONDS
 MIN_CARD, MAX_CARD = 3.6, 7.0
+HELP_SECONDS = 3.6
 
 
 def _centre(draw, text, fnt, y, fill):
@@ -93,13 +95,30 @@ def idea_card(idea, number, out_path):
     img.save(out_path)
 
 
+def help_card(out_path):
+    """Before the ask: the viewer can do this themselves, for free."""
+    img = mr.glow(mr.gradient(W, H, mr.NAVY, mr.NAVY_LIGHT), W // 2, 620, 500, mr.GOLD, 55)
+    d = ImageDraw.Draw(img)
+    mr.brand_bar(img, d)
+
+    _centre_wrapped(d, 'ये आप खुद भी कर सकते हैं', mr.font('NotoSansDevanagari-Bold.ttf', 76), 700, mr.WHITE)
+    d.line([(W // 2 - 140, 830), (W // 2 + 140, 830)], fill=mr.GOLD, width=3)
+    _centre_wrapped(d, 'पैसा ज़रूरी नहीं, समय भी काफ़ी है', mr.font('NotoSansDevanagari-Regular.ttf', 44), 910, mr.GOLD_BRIGHT)
+    _centre_wrapped(d, 'अपने मोहल्ले, स्कूल या गांव से शुरुआत करें।', mr.font('NotoSansDevanagari-Regular.ttf', 34), 1010, (200, 216, 232))
+    _centre_wrapped(d, 'You can do this yourself — no money needed.', mr.font('NotoSans-Regular.ttf', 30), 1090, (186, 204, 224))
+
+    _centre(d, mr.SITE, mr.font('NotoSans-Bold.ttf', 32), H - 130, (200, 216, 232))
+    img.save(out_path)
+
+
 def narration(group, ideas):
     spoken = [group.get('titleHi') or 'मदद करने के हज़ार तरीके']
     spoken.append('तीन आसान तरीके।')
     for idea in ideas:
         spoken.append(f"{idea.get('hi')}. {idea.get('how') or ''}")
-    spoken.append(f"आप भी इनमें से कोई एक तरीका चुन सकते हैं। QR स्कैन करें, Paytm करें {mr.UPI_ID} पर, "
-                  f"या {mr.SITE} पर Donate Now दबाएं।")
+    spoken.append('इनमें से कोई एक तरीका आप खुद भी अपना सकते हैं। पैसा ज़रूरी नहीं, समय भी काफ़ी है।')
+    spoken.append(f"और अगर समय या साधन न हो, तो हमारे माध्यम से किसी तक मदद पहुँचा सकते हैं। "
+                  f"QR स्कैन करें, या {mr.SITE} पर Donate पर जाएं।")
     return ' '.join(s for s in spoken if s)
 
 
@@ -146,6 +165,12 @@ def main():
             mr.segment(ffmpeg, png, seg, card, zoom=True)
             parts.append(seg)
 
+        help_png = os.path.join(tmp, 'help.png')
+        help_card(help_png)
+        seg = os.path.join(tmp, 'help.mp4')
+        mr.segment(ffmpeg, help_png, seg, HELP_SECONDS, zoom=True)
+        parts.append(seg)
+
         end = os.path.join(tmp, 'end.png')
         mr.end_card(end)
         seg = os.path.join(tmp, 'end.mp4')
@@ -160,7 +185,7 @@ def main():
         mr.run([ffmpeg, '-y', '-hide_banner', '-loglevel', 'error', '-f', 'concat', '-safe', '0',
                 '-i', listing, '-c', 'copy', joined])
 
-        total = HOOK_SECONDS + card * len(ideas) + END_SECONDS
+        total = HOOK_SECONDS + card * len(ideas) + HELP_SECONDS + END_SECONDS
         os.makedirs(os.path.dirname(os.path.abspath(args.out)) or '.', exist_ok=True)
         mr.mux(ffmpeg, joined, voice_path if spoken else None, args.out, total, HOOK_SECONDS)
         print(json.dumps({'ok': True, 'out': os.path.abspath(args.out), 'seconds': round(total, 2),
