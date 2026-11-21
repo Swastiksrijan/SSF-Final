@@ -138,6 +138,30 @@ async function main() {
   for (let i = 0; i < MAX_ATTEMPTS; i += 1) last = await tick({ fetchImpl: failingFetch(), publish: failPublish });
   ok('stops after MAX_ATTEMPTS', last.skipped === 'already-handled', JSON.stringify(last));
 
+  // A targeted retry: the manifest carries the warm CDN url, the platform list
+  // and force, and all three reach the publisher.
+  const retry = await makePost({ reel: { videoUrl: '/uploads/reels/old.mp4', publishedAt: '2026-11-20T10:00:00.000Z' } });
+  await setConfig(STATE_KEY, { postId: 0, status: 'done', attempts: 0 });
+  const seen = {};
+  const out5 = await tick({
+    fetchImpl: fakeFetch({
+      release: releaseDoc(retry.id),
+      files: {
+        'inbox.json': Buffer.from(JSON.stringify({
+          postId: retry.id,
+          assetUrl: 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4',
+          platforms: ['instagram'],
+          force: true,
+        })),
+        'reel.mp4': video,
+      },
+    }),
+    publish: async (args) => { Object.assign(seen, args); return { skipped: false, published: true }; },
+  });
+  ok('force retry publishes', out5.published === true, JSON.stringify(out5));
+  ok('manifest assetUrl becomes the video url', seen.videoUrl === 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4', String(seen.videoUrl));
+  ok('platforms and force are forwarded', JSON.stringify(seen.platforms) === '["instagram"]' && seen.force === true, JSON.stringify(seen.platforms));
+
   // Manifest without a postId is ignored.
   const bad = await tick({ fetchImpl: fakeFetch({ release: releaseDoc(0), files: { 'inbox.json': Buffer.from('{"ref":"x"}') } }) });
   ok('manifest without postId -> bad-manifest', bad.skipped === 'bad-manifest', JSON.stringify(bad));

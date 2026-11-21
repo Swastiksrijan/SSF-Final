@@ -45,10 +45,17 @@ async function publishReel({ post, videoUrl, platforms, force = false, adapters 
   const anyOk = results.some((r) => r.ok);
   if (!anyOk) return { skipped: false, published: false, results };
 
+  // A targeted retry (one platform, force) must not erase the platforms that
+  // already succeeded earlier in the day.
+  const previousResults = (previous && previous.results) || [];
+  const merged = [
+    ...previousResults.filter((r) => !results.some((n) => n.platform === r.platform)),
+    ...results,
+  ];
   const reel = {
     videoUrl,
     publishedAt: new Date().toISOString(),
-    results,
+    results: merged,
   };
   await post.update({ data: { ...(post.data || {}), reel } });
 
