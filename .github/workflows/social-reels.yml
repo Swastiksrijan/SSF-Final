@@ -55,6 +55,12 @@ jobs:
         run: |
           python3 -m pip install --quiet --upgrade pip
           python3 -m pip install --quiet edge-tts gTTS pillow
+          # ubuntu-latest no longer ships ffmpeg; apt gives libx264 + aac, and
+          # imageio-ffmpeg is the fallback the script knows how to use.
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python3 -m pip install --quiet imageio-ffmpeg
+          ffmpeg -version | head -1
           # Pillow needs a real Devanagari font for the hook and end cards.
           mkdir -p "$HOME/reel-fonts"
           base=https://github.com/notofonts/noto-fonts/raw/main/hinted/ttf
