@@ -46,6 +46,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 330
     steps:
+      - name: Checkout the lightweight Reel worker
+        uses: actions/checkout@v4
+        with:
+          sparse-checkout: automation/social-reels
+          sparse-checkout-cone-mode: false
+
       - name: Keep the publisher awake and publish due posts
         env:
           BACKEND_URL: ${{ secrets.SOCIAL_BACKEND_URL }}
@@ -87,6 +93,15 @@ jobs:
             echo "$(date -u +%H:%M:%S) HTTP $code"
             cat /tmp/out.json 2>/dev/null || true
             echo
+
+            # Reels are a separate, idempotent queue. They are processed only
+            # after the existing post scheduler responds successfully.
+            if [ "$code" = "200" ]; then
+              if ! command -v ffmpeg >/dev/null 2>&1; then
+                sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+              fi
+              python3 automation/social-reels/main.py || echo "::warning::SSF Reel worker failed; pending jobs remain retryable."
+            fi
           }
 
           # A manual "force" run just publishes once and exits.

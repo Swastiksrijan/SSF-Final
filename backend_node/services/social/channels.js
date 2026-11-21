@@ -427,6 +427,87 @@ async function resolveInstagramAccount({ pageId, accessToken }) {
   return { ok: false, error: 'no_linked_instagram', hint: 'Instagram is not linked to this Facebook Page. In the Page settings, connect the Instagram account (Professional/Business) to the Page, then retry.' };
 }
 
+// ---- Reels (separate from the existing image-post adapters) --------------
+// Keep the existing GRAPH version and image publishers untouched. Reels use
+// the current Graph API version and the dedicated Page Video Reels / IG REELS
+// publishing flows.
+const REEL_GRAPH = 'https://graph.facebook.com/v27.0';
+
+async function publishFacebookReel(post, creds, videoBuffer) {
+  const pageId = pick(creds, 'pageId');
+  const token = pick(creds, 'accessToken');
+  if (!pageId || !token) return missing('Facebook');
+  if (!videoBuffer || !videoBuffer.length) return { ok: false, error: 'video_missing' };
+  try {
+    const start = await formCall(`${REEL_GRAPH}/${pageId}/video_reels`, {
+      upload_phase: 'START', access_token: token,
+    });
+    if (!start.video_id || !start.upload_url) throw new Error('facebook_reel_upload_not_initialized');
+
+    const uploaded = await fetch(start.upload_url, {
+      method: 'POST',
+      headers: {
+        Authorization: `OAuth ${token}`,
+        offset: '0',
+        file_size: String(videoBuffer.length),
+        'Content-Type': 'application/octet-stream',
+      },
+      body: videoBuffer,
+    });
+    const uploadBody = await uploaded.text();
+    if (!uploaded.ok) throw new Error(`facebook_reel_upload_http_${uploaded.status}: ${uploadBody.slice(0, 500)}`);
+
+    const finished = await formCall(`${REEL_GRAPH}/${pageId}/video_reels`, {
+      upload_phase: 'FINISH',
+      video_id: start.video_id,
+      video_state: 'PUBLISHED',
+      description: caption(post).slice(0, 5000),
+      title: String(post.titleEn || post.titleHi || 'Swastik Srijan Foundation').slice(0, 255),
+      access_token: token,
+    });
+    if (finished.success === false) throw new Error(finished.message || 'facebook_reel_publish_failed');
+    return { ok: true, id: start.video_id, url: `https://www.facebook.com/reel/${start.video_id}` };
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+}
+
+async function publishInstagramReel(post, creds, videoUrl) {
+  const igUserId = pick(creds, 'igUserId');
+  const token = pick(creds, 'accessToken');
+  if (!igUserId || !token) return missing('Instagram');
+  if (!videoUrl || !/^https:\/\//i.test(videoUrl)) return { ok: false, error: 'public_video_url_required' };
+  try {
+    const container = await formCall(`${REEL_GRAPH}/${igUserId}/media`, {
+      media_type: 'REELS',
+      video_url: videoUrl,
+      caption: igCaption(post),
+      share_to_feed: 'true',
+      access_token: token,
+    });
+    if (!container.id) throw new Error('instagram_reel_container_failed');
+
+    let ready = false;
+    for (let i = 0; i < 15; i += 1) {
+      const status = await graphGet(`${REEL_GRAPH}/${container.id}?fields=status_code,status&access_token=${encodeURIComponent(token)}`);
+      if (status.status_code === 'FINISHED') { ready = true; break; }
+      if (status.status_code === 'ERROR' || status.status_code === 'EXPIRED') {
+        throw new Error(status.status || 'instagram_reel_processing_failed');
+      }
+      await new Promise((resolve) => setTimeout(resolve, 4000));
+    }
+    if (!ready) throw new Error('instagram_reel_processing_timeout');
+
+    const published = await formCall(`${REEL_GRAPH}/${igUserId}/media_publish`, {
+      creation_id: container.id, access_token: token,
+    });
+    if (!published.id) throw new Error('instagram_reel_publish_failed');
+    return { ok: true, id: published.id, url: `https://www.instagram.com/reel/${published.id}/` };
+  } catch (e) {
+    return { ok: false, error: e.message };
+  }
+}
+
 const ADAPTERS = {
   website: publishWebsite,
   telegram: publishTelegram,
@@ -517,4 +598,4 @@ async function testChannel(platform, creds) {
   return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };
 }
 
-module.exports = { ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount, caption, igCaption, IG_CAPTION_MAX };
+module.exports = { ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount, caption, igCaption, IG_CAPTION_MAX, publishFacebookReel, publishInstagramReel };

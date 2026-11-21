@@ -3,6 +3,11 @@
 // Public: published posts as JSON + the generated SVG image.
 const express = require('express');
 const router = express.Router();
+const fs = require('fs');
+const os = require('os');
+const path = require('path');
+const crypto = require('crypto');
+const multer = require('multer');
 const { Op } = require('sequelize');
 const { SocialChannel, SocialPost, SocialConfig, SocialEvent, SocialRunLog } = require('../models/social');
 const content = require('../services/social/content');
@@ -13,6 +18,19 @@ const {
   planAwarenessSeries, seriesTimes, seriesEnabled, SERIES, DEFAULT_SERIES_TIMES, seriesSlotsPerDay,
 } = require('../services/social/publisher');
 const { postSvg } = require('../services/social/image');
+const { publishFacebookReel, publishInstagramReel } = require('../services/social/channels');
+
+const reelUpload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 80 * 1024 * 1024 },
+}).single('video');
+const reelTempDir = path.join(os.tmpdir(), 'ssf-social-reels');
+const reelJobKey = (postId) => `reel_job_${postId}`;
+const reelSecret = () => process.env.SCHEDULER_SECRET || process.env.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token';
+const requireReelSecret = (req, r, next) => {
+  if (!req.query.key || req.query.key !== reelSecret()) return r.status(401).json({ message: 'Unauthorized' });
+  next();
+};
 
 // NOTE: follows the app-wide convention used by every other admin route
 // (imsRoutes, ...). The whole backend shares the
@@ -507,6 +525,130 @@ router.post('/social/channels/:platform/test', requireAuth, wrap(async (req, r) 
   await row.update({ lastError: out.ok ? null : (out.error || 'test failed') });
   r.json(out);
 }));
+
+// ---- automatic Reels worker API -------------------------------------------
+// The existing scheduler remains unchanged. This additive queue only creates
+// Reels for posts that have already been published to Facebook or Instagram.
+router.get('/social/reels/pending', requireReelSecret, wrap(async (_req, r) => {
+  const rows = await SocialPost.findAll({
+    where: { status: { [Op.in]: ['published', 'partial'] } },
+    order: [['publishedAt', 'DESC'], ['id', 'DESC']],
+    limit: 60,
+  });
+  const channels = await SocialChannel.findAll();
+  const channelBy = Object.fromEntries(channels.map((ch) => [ch.platform, ch]));
+  const targets = ['facebook', 'instagram'].filter((name) => {
+    const ch = channelBy[name];
+    return !!(ch && ch.enabled && ch.credentials && Object.keys(ch.credentials).length);
+  });
+  if (!targets.length) return r.json({ ok: true, jobs: [] });
+
+  const jobs = [];
+  for (const post of rows) {
+    const postedToMeta = (post.platformResults || []).some((item) =>
+      ['facebook', 'instagram'].includes(item.platform) && item.ok);
+    if (!postedToMeta) continue;
+    const key = reelJobKey(post.id);
+    let job = await SocialConfig.findOne({ where: { key } });
+    if (!job) {
+      job = await SocialConfig.create({ key, value: { status: 'pending', attempts: 0, results: {} } });
+    }
+    const state = job.value || {};
+    const staleProcessing = state.status === 'processing' &&
+      Date.now() - new Date(job.updatedAt).getTime() > 20 * 60 * 1000;
+    if (staleProcessing) {
+      state.status = 'pending';
+      await job.update({ value: state });
+    }
+    if (!['pending', 'failed', 'partial'].includes(state.status) && !staleProcessing) continue;
+    if (Number(state.attempts || 0) >= 3) continue;
+    const base = (process.env.PUBLIC_BASE_URL || 'https://ngo-backend-03hq.onrender.com').replace(/\/$/, '');
+    let imageUrl = post.imageUrl || `${base}/api/social/image/daily?postId=${post.id}&format=jpeg`;
+    if (!/^https?:\/\//i.test(imageUrl)) imageUrl = `${base}${imageUrl.startsWith('/') ? '' : '/'}${imageUrl}`;
+    jobs.push({
+      postId: post.id, postRef: post.postRef, titleEn: post.titleEn, titleHi: post.titleHi,
+      bodyEn: post.bodyEn, bodyHi: post.bodyHi, hashtags: post.hashtags,
+      imageUrl, targets, attempts: Number(state.attempts || 0),
+    });
+    if (jobs.length >= 4) break;
+  }
+  r.json({ ok: true, jobs });
+}));
+
+// The runner uploads an MP4 here. Meta publishing happens server-side so tokens
+// never leave the backend. Per-platform results make retries idempotent.
+router.post('/social/reels/:postId/publish', requireReelSecret, reelUpload, wrap(async (req, r) => {
+  if (!req.file || !req.file.buffer || req.file.mimetype !== 'video/mp4') {
+    return r.status(400).json({ ok: false, message: 'A video/mp4 file is required in the video field.' });
+  }
+  const post = await SocialPost.findByPk(req.params.postId);
+  if (!post) return r.status(404).json({ ok: false, message: 'Post not found.' });
+  const key = reelJobKey(post.id);
+  let job = await SocialConfig.findOne({ where: { key } });
+  if (!job) job = await SocialConfig.create({ key, value: { status: 'pending', attempts: 0, results: {} } });
+  const state = { ...(job.value || {}) };
+  if (state.status === 'published') return r.json({ ok: true, status: 'published', results: state.results || {} });
+  if (state.status === 'processing' && Date.now() - new Date(job.updatedAt).getTime() < 20 * 60 * 1000) {
+    return r.status(409).json({ ok: false, message: 'This Reel is already being processed.' });
+  }
+
+  state.status = 'processing';
+  state.attempts = Number(state.attempts || 0) + 1;
+  state.startedAt = new Date().toISOString();
+  await job.update({ value: state });
+
+  await fs.promises.mkdir(reelTempDir, { recursive: true });
+  const filename = `${crypto.randomUUID()}.mp4`;
+  const filePath = path.join(reelTempDir, filename);
+  await fs.promises.writeFile(filePath, req.file.buffer);
+  const base = (process.env.PUBLIC_BASE_URL || 'https://ngo-backend-03hq.onrender.com').replace(/\/$/, '');
+  const videoUrl = `${base}/api/social/reels/media/${filename}`;
+  const channels = await SocialChannel.findAll();
+  const channelBy = Object.fromEntries(channels.map((ch) => [ch.platform, ch]));
+  const results = { ...(state.results || {}) };
+
+  try {
+    const fb = channelBy.facebook;
+    if (fb && fb.enabled && fb.credentials && !results.facebook?.ok) {
+      results.facebook = await publishFacebookReel(post, fb.credentials, req.file.buffer);
+    }
+    const ig = channelBy.instagram;
+    if (ig && ig.enabled && ig.credentials && !results.instagram?.ok) {
+      results.instagram = await publishInstagramReel(post, ig.credentials, videoUrl);
+    }
+  } finally {
+    // Instagram is only marked successful after its container reaches FINISHED
+    // and media_publish returns an id, so the public file can now be removed.
+    await fs.promises.unlink(filePath).catch(() => {});
+  }
+
+  const attempted = ['facebook', 'instagram'].filter((name) => {
+    const ch = channelBy[name];
+    return !!(ch && ch.enabled && ch.credentials && Object.keys(ch.credentials).length);
+  });
+  const allOk = attempted.length > 0 && attempted.every((name) => results[name]?.ok);
+  const anyOk = Object.values(results).some((item) => item && item.ok);
+  const status = allOk ? 'published' : (anyOk ? 'partial' : 'failed');
+  await job.update({
+    value: {
+      ...state, status, results, finishedAt: new Date().toISOString(),
+      lastError: Object.entries(results).filter(([, item]) => item && !item.ok).map(([name, item]) => `${name}: ${item.error || 'failed'}`).join('; ') || null,
+    },
+  });
+  r.json({ ok: allOk, status, results });
+}));
+
+// Public, short-lived media URL: Instagram fetches the MP4 from this route while
+// processing the Reel container. Filenames are generated UUIDs, never user input.
+router.get('/social/reels/media/:filename', (req, r) => {
+  const filename = String(req.params.filename || '');
+  if (!/^[a-f0-9-]{36}\.mp4$/i.test(filename)) return r.status(404).end();
+  const filePath = path.join(reelTempDir, filename);
+  if (!fs.existsSync(filePath)) return r.status(404).end();
+  r.set('Content-Type', 'video/mp4');
+  r.set('Cache-Control', 'public, max-age=300');
+  fs.createReadStream(filePath).pipe(r);
+});
 
 // ---- public ----------------------------------------------------------------
 router.get('/social/posts', wrap(async (req, r) => {

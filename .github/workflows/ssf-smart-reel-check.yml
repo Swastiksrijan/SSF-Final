@@ -1,0 +1,35 @@
+name: SSF Smart Reel Syntax Check
+
+on:
+  push:
+    branches:
+      - feature/ssf-smart-reel-automation
+  pull_request:
+    paths:
+      - 'backend_node/routes/socialRoutes.js'
+      - 'backend_node/services/social/channels.js'
+      - 'automation/social-reels/**'
+      - '.github/workflows/ssf-smart-reel-check.yml'
+      - '.github/workflows/social-publisher.yml'
+
+jobs:
+  syntax:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+      - name: Check backend JavaScript syntax
+        run: |
+          node --check backend_node/routes/socialRoutes.js
+          node --check backend_node/services/social/channels.js
+      - name: Check Reel worker Python syntax
+        run: python -m py_compile automation/social-reels/main.py
+      - name: Check workflow YAML
+        run: |
+          ruby -e "require 'yaml'; YAML.load_file('.github/workflows/social-publisher.yml')"
+          ruby -e "require 'yaml'; YAML.load_file('.github/workflows/ssf-smart-reel-check.yml')"
