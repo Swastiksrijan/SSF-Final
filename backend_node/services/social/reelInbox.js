@@ -32,6 +32,14 @@ const KEEP_REELS = 10;
 
 const headers = { 'User-Agent': 'ssf-reel-inbox', Accept: 'application/vnd.github+json' };
 
+// The social timer ticks every minute (a request kick, then the interval), and
+// each check costs two unauthenticated GitHub calls. Without a floor that is
+// enough to trip the 60/hour anonymous limit, after which every check fails and
+// a queued reel sits there forever. Keyed by the fetch implementation so tests
+// (which pass their own) are never throttled.
+const CHECK_EVERY_MS = 4 * 60 * 1000;
+const lastCheck = new WeakMap();
+
 async function fetchRelease(fetchImpl) {
   const res = await fetchImpl(API, { headers });
   if (res.status === 404) return null;
@@ -60,6 +68,10 @@ function pruneReels() {
 
 async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force = false } = {}) {
   if (typeof fetchImpl !== 'function') return { skipped: 'no-fetch' };
+
+  const previous = lastCheck.get(fetchImpl);
+  if (previous && Date.now() - previous < CHECK_EVERY_MS) return { skipped: 'throttled' };
+  lastCheck.set(fetchImpl, Date.now());
 
   let release;
   try {

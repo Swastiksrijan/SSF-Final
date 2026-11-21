@@ -42,6 +42,15 @@ app.get('/api/health/email', (_req, res) => res.json({
     fromName: process.env.EMAIL_FROM_NAME || null,
 }));
 
+// Which build is actually live? Render exports the commit it deployed, and the
+// process start time tells you whether a deploy restarted the app.
+const bootAt = Date.now();
+app.get('/api/build', (_req, res) => res.json({
+    commit: (process.env.RENDER_GIT_COMMIT || process.env.GITHUB_SHA || 'unknown').slice(0, 7),
+    branch: process.env.RENDER_GIT_BRANCH || '',
+    startedAt: new Date(bootAt).toISOString(),
+}));
+
 // Live database probe. Returns 200 when a trivial query succeeds, 503 when the
 // database is down or over its provider quota — the single fastest way to tell
 // "the app is broken" from "the database is broken".
