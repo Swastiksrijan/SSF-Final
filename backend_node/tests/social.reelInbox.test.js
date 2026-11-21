@@ -162,6 +162,34 @@ async function main() {
   ok('manifest assetUrl becomes the video url', seen.videoUrl === 'https://github.com/o/r/releases/download/reel-inbox/reel.mp4', String(seen.videoUrl));
   ok('platforms and force are forwarded', JSON.stringify(seen.platforms) === '["instagram"]' && seen.force === true, JSON.stringify(seen.platforms));
 
+  // The same workflow run must never be handled twice, even when forced...
+  const sameRun = () => fakeFetch({
+    release: releaseDoc(retry.id),
+    files: {
+      'inbox.json': Buffer.from(JSON.stringify({ postId: retry.id, renderedAt: '2026-11-21T12:00:00Z', platforms: ['instagram'], force: true })),
+      'reel.mp4': video,
+    },
+  });
+  const out6a = await tick({ fetchImpl: sameRun(), publish: async () => ({ skipped: false, published: true }) });
+  ok('a forced run is processed', out6a.published === true, JSON.stringify(out6a));
+  const out6 = await tick({ fetchImpl: sameRun(), publish: async () => { throw new Error('must not run twice'); } });
+  ok('same request is handled once', out6.skipped === 'already-handled', JSON.stringify(out6));
+
+  // ...but the next run (a new renderedAt) is a fresh request.
+  const seen7 = {};
+  const out7 = await tick({
+    fetchImpl: fakeFetch({
+      release: releaseDoc(retry.id),
+      files: {
+        'inbox.json': Buffer.from(JSON.stringify({ postId: retry.id, renderedAt: '2026-11-21T12:30:00Z', platforms: ['instagram'], force: true })),
+        'reel.mp4': video,
+      },
+    }),
+    publish: async (args) => { Object.assign(seen7, args); return { skipped: false, published: true }; },
+  });
+  ok('a later run for the same post is processed', out7.published === true, JSON.stringify(out7));
+  ok('later run keeps the targeted platform', JSON.stringify(seen7.platforms) === '["instagram"]');
+
   // Manifest without a postId is ignored.
   const bad = await tick({ fetchImpl: fakeFetch({ release: releaseDoc(0), files: { 'inbox.json': Buffer.from('{"ref":"x"}') } }) });
   ok('manifest without postId -> bad-manifest', bad.skipped === 'bad-manifest', JSON.stringify(bad));
