@@ -50,6 +50,13 @@ const MembershipHardcopy = () => {
             <div className="form-field sm:col-span-2"><span>संरक्षक सदस्य अंशदान भुगतान विकल्प / Patron member contribution payment option</span><div className="write-line">☐ एकमुश्त　 ☐ 2　 ☐ 3　 ☐ 4　 ☐ 6　 ☐ 12 किस्तें (एक वर्ष के भीतर)</div></div>
           </div>
         </section>
+        <section className="mt-4">
+          <h2 className="mb-2 bg-[#EAF0F6] px-3 py-2 text-sm font-bold text-[#12345A]">फोटो / APPLICANT PHOTOGRAPH</h2>
+          <div className="member-photo-row">
+            <div className="member-photo-frame"><span>यहाँ हाल की रंगीन पासपोर्ट आकार की फोटो चिपकाएँ<br/>PASTE RECENT PASSPORT-SIZE PHOTO HERE</span></div>
+            <p className="text-xs leading-5 text-slate-600">आवेदक की हाल की रंगीन पासपोर्ट आकार की फोटो (लगभग 3.5 × 4.5 सेमी) लगाएँ। / Attach one recent colour passport-size photograph (approx. 3.5 × 4.5 cm).</p>
+          </div>
+        </section>
         <section className="mt-5">
           <h2 className="mb-2 bg-[#EAF0F6] px-3 py-2 text-sm font-bold text-[#12345A]">3. नियम 7 के अनुसार पात्रता एवं घोषणा / Eligibility and declaration under Rule 7</h2>
           <div className="space-y-2 text-sm leading-6">
@@ -81,6 +88,8 @@ const MembershipHardcopy = () => {
       <style>{`
         .form-field { font-size: 12px; font-weight: 600; }
         .write-line { min-height: 27px; border-bottom: 1px solid #94a3b8; margin-top: 3px; font-weight: 400; }
+        .member-photo-row { display:flex; align-items:center; gap:16px; min-height:49mm; }
+        .member-photo-frame { width:35mm; height:45mm; flex:0 0 35mm; border:1px solid #64748b; display:flex; align-items:center; justify-content:center; padding:4px; text-align:center; color:#64748b; font-size:9px; font-weight:700; }
         @media print {
           @page { size: A4; margin: 12mm; }
           body { background: white !important; }
@@ -89,6 +98,7 @@ const MembershipHardcopy = () => {
           .membership-print { max-width: none !important; padding: 0 !important; box-shadow: none !important; }
           .form-field { break-inside: avoid; }
           section { break-inside: avoid; }
+          .member-photo-row { break-inside: avoid; }
         }
       `}</style>
     </main>
