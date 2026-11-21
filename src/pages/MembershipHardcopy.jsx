@@ -21,7 +21,17 @@ const MembershipHardcopy = () => {
       pdf.addImage(part.toDataURL("image/jpeg", 0.94), "JPEG", 10, 10, widthMm, part.height * widthMm / canvas.width, undefined, "FAST");
       offset += part.height;
     }
-    pdf.save("SSF-Membership-Application-Hindi-English.pdf");
+    const pdfBlob = pdf.output("blob");
+    const pdfUrl = URL.createObjectURL(pdfBlob);
+    const link = document.createElement("a");
+    link.href = pdfUrl;
+    link.download = "SSF-Membership-Application-Hindi-English.pdf";
+    link.type = "application/pdf";
+    link.style.display = "none";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(pdfUrl), 15000);
   };
   return (
     <main className="min-h-screen bg-slate-100 px-3 py-8 text-[#172B45] sm:px-6">
@@ -39,8 +49,8 @@ const MembershipHardcopy = () => {
         </header>
         <section className="mt-4 rounded-lg border border-slate-300 bg-slate-50 p-3 text-xs leading-5">
           <p className="font-bold text-[#12345A]">पंजीकृत कार्यालय / REGISTERED OFFICE</p>
-          <p>वार्ड नं. 1, दादर रहज, हुजूर, जिला रीवा, मध्य प्रदेश – 486446, भारत</p>
-          <p>Ward No. 1, Dadar Rahaj, Huzur, District Rewa, Madhya Pradesh – 486446, India</p>
+          <p>वार्ड नं. 1, दादर राहत, हुजूर, जिला रीवा, मध्य प्रदेश – 486446, भारत</p>
+          <p>Ward No. 1, Dadar Rahat, Huzur, District Rewa, Madhya Pradesh – 486446, India</p>
           <p>वेबसाइट / Website: swastiksrijan.in | ईमेल / Email: info@swastiksrijan.in | फोन / Phone: +91 97183 46691</p>
         </section>
         <div className="mt-4 flex flex-wrap justify-between gap-2 text-xs">
