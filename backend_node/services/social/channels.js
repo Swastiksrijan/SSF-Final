@@ -15,6 +15,8 @@
 
 const GRAPH = 'https://graph.facebook.com/v21.0';
 const crypto = require('crypto');
+const fs = require('fs');
+const path = require('path');
 const { postPng, site: SITE } = require('./image');
 const { ORG } = require('./content');
 
@@ -466,28 +468,68 @@ async function publishInstagramReel(post, creds, videoUrl) {
   const ig = await resolveIgUserId(creds, token);
   if (!ig.id) return { ok: false, error: ig.error };
   const igUserId = ig.id;
-  const url = absoluteUrl(videoUrl);
-  if (!url) return { ok: false, error: 'public_video_url_unavailable' };
+  const tag = `ig ${igUserId} via ${ig.via}`;
   try {
-    const container = await formCall(`${GRAPH}/${igUserId}/media`, {
-      media_type: 'REELS',
-      video_url: url,
-      caption: igCaption(post),
-      share_to_feed: 'true',
-      access_token: token,
-    });
-    const created = container?.id;
+    // Resumable upload: we push the bytes ourselves instead of asking Meta to
+    // fetch a URL. The video_url path answers with "Generic internal error"
+    // (code -1/2207085) for a file it cannot retrieve, which says nothing.
+    const buf = await loadVideo(videoUrl);
+    const created = await igCreateContainer(igUserId, token, { upload_type: 'resumable' }, post);
     if (!created) return { ok: false, error: 'container_failed' };
-    const finished = await waitForIgContainer(created, token, 60, 5000);
-    if (!finished) return { ok: false, error: 'instagram_video_processing_timeout' };
-    const out = await formCall(`${GRAPH}/${igUserId}/media_publish`, { creation_id: created, access_token: token });
-    return { ok: true, url: out?.id ? `https://instagram.com/reel/${out.id}` : null };
+    await igUpload(created, buf, token);
+    return await igFinish(igUserId, created, token);
   } catch (e) {
-    // Meta rejects a container with errors that read the same for a bad video and
-    // a personal account, so name the account in the failure.
     const hint = await igAccountHint(igUserId, token);
-    return { ok: false, error: `${e.message} [ig ${igUserId} via ${ig.via}${hint ? `, ${hint}` : ''}]` };
+    return { ok: false, error: `${e.message} [${tag}${hint ? `, ${hint}` : ''}]` };
   }
+}
+
+// The rendered file is on local disk (the inbox downloads it); a remote URL is
+// fetched only when the caller passed one.
+async function loadVideo(videoUrl) {
+  const local = String(videoUrl || '');
+  if (local.startsWith('/uploads/reels/')) {
+    return fs.readFileSync(path.join(__dirname, '..', '..', 'uploads', 'reels', path.basename(local)));
+  }
+  const url = absoluteUrl(local);
+  if (!url) throw new Error('public_video_url_unavailable');
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`video -> ${res.status}`);
+  return Buffer.from(await res.arrayBuffer());
+}
+
+async function igCreateContainer(igUserId, token, extra, post) {
+  const out = await formCall(`${GRAPH}/${igUserId}/media`, {
+    media_type: 'REELS',
+    caption: igCaption(post),
+    share_to_feed: 'true',
+    ...extra,
+    access_token: token,
+  });
+  return out && out.id;
+}
+
+async function igUpload(containerId, buf, token) {
+  const res = await fetch(`https://rupload.facebook.com/ig-api-upload/v21.0/${containerId}`, {
+    method: 'POST',
+    headers: {
+      Authorization: `OAuth ${token}`,
+      offset: '0',
+      file_size: String(buf.length),
+      'Content-Type': 'application/octet-stream',
+    },
+    body: buf,
+  });
+  const data = await res.json().catch(() => null);
+  if (!res.ok || (data && data.debug_info && data.debug_info.type)) throw graphError(data, res.status);
+  return data || {};
+}
+
+async function igFinish(igUserId, containerId, token) {
+  const finished = await waitForIgContainer(containerId, token, 60, 5000);
+  if (!finished) return { ok: false, error: 'instagram_video_processing_timeout' };
+  const out = await formCall(`${GRAPH}/${igUserId}/media_publish`, { creation_id: containerId, access_token: token });
+  return { ok: true, url: out?.id ? `https://instagram.com/reel/${out.id}` : null };
 }
 
 // The id that can publish is the page's linked Instagram account, not whatever
