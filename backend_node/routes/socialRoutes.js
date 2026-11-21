@@ -541,7 +541,9 @@ router.get('/social/image/daily', wrap(async (req, r) => {
   let post = null;
   if (req.query.postId) {
     const row = await SocialPost.findByPk(req.query.postId);
-    if (row) post = row.toJSON();
+    // mergePost folds the `data` JSONB (subtitle, example, labels) back in, so a
+    // saved post renders the same poster it was planned with.
+    if (row) post = content.mergePost(row);
   }
   if (!post) {
     const date = req.query.date ? new Date(req.query.date + 'T06:00:00') : new Date();
