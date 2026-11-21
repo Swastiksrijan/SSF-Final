@@ -1,0 +1,157 @@
+name: SSF News Awareness
+
+# Two awareness reels a day (morning 07:00 IST, evening 19:30 IST): three
+# headlines from Google News, each shown with the publisher's name and the link
+# in the caption. No article text, no publisher photos, no opinion — the point
+# is to keep the audience informed about education, health, environment and
+# welfare, not to re-publish anyone's journalism.
+#
+# The picker (scripts/news_feed.py) drops crime, politics, entertainment and
+# dry government notices, needs at least two usable headlines, and skips the
+# run otherwise. Run it by hand with "publish" unchecked to render the reel and
+# keep it as an artifact without queueing it for publishing.
+#
+# Separate release (`news-inbox`) so a news run can never overwrite a post or a
+# seva reel waiting to be published.
+
+on:
+  schedule:
+    - cron: '30 1 * * *'   # 07:00 IST
+    - cron: '0 14 * * *'   # 19:30 IST
+  workflow_dispatch:
+    inputs:
+      slot:
+        description: 'morning or evening (blank = decided by the current hour)'
+        default: ''
+      count:
+        description: 'How many headlines to carry (2-3)'
+        default: '3'
+      publish:
+        description: 'Queue the reel for publishing (uncheck to only render)'
+        type: boolean
+        default: true
+
+permissions:
+  contents: write   # the news inbox release lives in this repo
+
+concurrency:
+  group: news-awareness
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TZ: Asia/Kolkata
+      SLOT_IN: ${{ github.event.inputs.slot }}
+      COUNT_IN: ${{ github.event.inputs.count }}
+      PUBLISH_IN: ${{ github.event.inputs.publish }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fonts, ffmpeg and the free tooling
+        run: |
+          python3 -m pip install --quiet --upgrade pip
+          python3 -m pip install --quiet edge-tts gTTS pillow
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          ffmpeg -version | head -1
+          mkdir -p "$HOME/reel-fonts"
+          base=https://github.com/notofonts/noto-fonts/raw/main/hinted/ttf
+          for f in NotoSans-Regular NotoSans-Bold; do
+            curl -fsSL --retry 3 "$base/NotoSans/$f.ttf" -o "$HOME/reel-fonts/$f.ttf"
+          done
+          for f in NotoSansDevanagari-Regular NotoSansDevanagari-Bold; do
+            curl -fsSL --retry 3 "$base/NotoSansDevanagari/$f.ttf" -o "$HOME/reel-fonts/$f.ttf"
+          done
+          echo "REEL_FONT_DIR=$HOME/reel-fonts" >> "$GITHUB_ENV"
+
+      - name: Decide the slot
+        id: slot
+        run: |
+          SLOT="${SLOT_IN}"
+          if [ -z "$SLOT" ]; then
+            # Cron runs at 01:30 and 14:00 UTC; anything before noon UTC is the
+            # morning digest.
+            H=$(date -u +%H)
+            if [ "$H" -lt 8 ]; then SLOT=morning; else SLOT=evening; fi
+          fi
+          COUNT="${COUNT_IN:-3}"
+          echo "slot=$SLOT" >> "$GITHUB_OUTPUT"
+          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          echo "Picked slot=$SLOT count=$COUNT"
+
+      - name: Pick the headlines
+        id: pick
+        run: |
+          # exit 2 = fewer than two safe headlines; the step then stops the run
+          # instead of publishing a thin or off-topic post.
+          python3 scripts/news_feed.py --slot "${{ steps.slot.outputs.slot }}" \
+            --count "${{ steps.slot.outputs.count }}" --out /tmp/news.json
+          python3 -c "
+          import json
+          d = json.load(open('/tmp/news.json'))
+          for i in d['items']:
+              print(f\"- [{i['topicHi']}] {i['title']}\")
+              print(f\"  {i['source']} · {i['url']}\")
+          print('caption chars:', len(d['bodyHi']))
+          "
+
+      - name: Render the reel (hook + headlines + disclaimer)
+        run: |
+          python3 scripts/make_news_reel.py --news /tmp/news.json --out /tmp/reel.mp4
+          ls -lh /tmp/reel.mp4
+
+      - name: Drop the reel in the news inbox
+        if: ${{ github.event.inputs.publish != 'false' && env.PUBLISH_IN != 'false' }}
+        run: |
+          tag=news-inbox
+          gh release view "$tag" >/dev/null 2>&1 \
+            || gh release create "$tag" --title "News reel inbox" \
+                 --notes "Reels rendered by the SSF News Awareness workflow; the backend publishes them."
+          gh release upload "$tag" /tmp/reel.mp4 --clobber
+          # Manifest last, so the backend never sees a manifest without a video.
+          ASSET_URL="https://github.com/${{ github.repository }}/releases/download/$tag/reel.mp4" \
+          NOW="$(date -u +%FT%TZ)" \
+          python3 - <<'PY'
+          import json, os
+          news = json.load(open('/tmp/news.json'))
+          manifest = {
+              'news': {
+                  'date': news['date'],
+                  'slot': news['slot'],
+                  'titleHi': news['titleHi'],
+                  'titleEn': news['titleEn'],
+                  'bodyHi': news['bodyHi'],
+                  'bodyEn': news['bodyEn'],
+                  'hashtags': news['hashtags'],
+                  'items': [
+                      {'title': i['title'], 'source': i.get('source', ''),
+                       'domain': i.get('domain', ''), 'url': i['url']}
+                      for i in news['items']
+                  ],
+              },
+              'renderedAt': os.environ['NOW'],
+              'assetUrl': os.environ['ASSET_URL'],
+          }
+          json.dump(manifest, open('/tmp/inbox.json', 'w'), ensure_ascii=False)
+          print(json.dumps({'slot': manifest['news']['slot'], 'date': manifest['news']['date'],
+                            'headlines': len(manifest['news']['items'])}, ensure_ascii=False))
+          PY
+          gh release upload "$tag" /tmp/inbox.json --clobber
+          echo "::notice::News reel queued in news-inbox; the backend publishes it within ~5 minutes."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Keep the rendered reel for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: news-reel-${{ steps.slot.outputs.slot }}-${{ github.run_number }}
+          path: |
+            /tmp/reel.mp4
+            /tmp/news.json
+          if-no-files-found: ignore
+          retention-days: 7

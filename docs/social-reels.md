@@ -157,3 +157,56 @@ UPI: swastikstijanfoundation@ptyes
 Platforms linkify it, so the Razorpay page is one tap away. Instagram (2,200) and
 Telegram (1,024) have caption limits, so `captionWithin(post, max)` shortens the
 body and never the footer. X gets the English body plus the site link only.
+
+## News reels — "आज की ज़रूरी खबरें"
+
+Twice a day (07:00 and 19:30 IST) the foundation posts a short awareness digest
+of two or three news headlines. It is deliberately thin on rights: we carry the
+**headline, the publisher's name and the link**, and nothing else.
+
+```
+hook      "आज की ज़रूरी खबरें · एक नज़र में" + the subjects covered
+1..n      one headline per card: subject chip, headline, "स्रोत: <publisher>", domain
+end       "ये खबरें जानकारी के लिए हैं" + "किसी खबर पर हमारी राय नहीं है" + the site
+```
+
+Nothing is downloaded from the publisher: no article text, no photos, no logo.
+The cards are drawn by `scripts/make_news_reel.py`. The voice speaks only the
+intro — the headlines are read by the viewer, not by us.
+
+### Where the headlines come from
+
+`scripts/news_feed.py` reads Google News RSS (`hl=hi`, `gl=IN`), which needs no
+API key and returns the publisher and the link with every item. Then it:
+
+* **keeps to subjects we can talk about** — education, health, environment, women
+  and girls, welfare schemes, rural India, child rights;
+* **drops the rest** — crime, deaths, politics, ministers, elections, courts,
+  entertainment, cricket, markets, and dry paperwork (राजभाषा, निरीक्षण, टेंडर);
+* **de-duplicates** near-identical headlines from different outlets;
+* **prefers** fresh items from a list of established outlets, and short headlines;
+* **needs at least two** usable stories, otherwise the run stops and nothing is
+  published — a thin or off-topic digest is worse than none.
+
+Google wraps the link in an opaque redirect; `resolve()` turns it back into the
+publisher's own URL, so the caption points at the article rather than at Google.
+If that call ever breaks, the Google link is kept — attribution still works.
+
+### Keeping it inside the platform limits
+
+Telegram caps a video caption at 1,024 characters and the shared donate footer
+takes ~150 of them, so the news body is capped at `MAX_CAPTION` (820). When three
+headlines and their links do not fit, the third is dropped rather than letting a
+platform cut a source link off the end of the caption.
+
+### Cadence and the off switch
+
+`.github/workflows/news-awareness.yml` runs at `30 1 * * *` (07:00 IST) and
+`0 14 * * *` (19:30 IST), with a different half of the subject list each slot so
+morning and evening never carry the same stories. It drops the reel into its own
+release, `news-inbox`, and `reelInbox.js` creates one post per (day, slot) —
+`NEWS-<date>-<slot>` — so the two digests coexist and a retry updates rather than
+duplicates.
+
+To render without publishing, run the workflow by hand with **publish**
+unchecked: the reel and the picked headlines stay as a build artifact for review.

@@ -33,7 +33,7 @@ const VIDEO_URL = `${BASE}/reel.mp4`;
 // One release per content series. A single shared inbox loses reels whenever the
 // instance is asleep and the next workflow run overwrites the manifest, so each
 // series gets its own tag and its own state.
-const TAGS = (process.env.REEL_INBOX_TAGS || 'reel-inbox,seva-inbox')
+const TAGS = (process.env.REEL_INBOX_TAGS || 'reel-inbox,seva-inbox,news-inbox')
   .split(',').map((t) => t.trim()).filter(Boolean);
 const REEL_DIR = path.join(__dirname, '..', '..', 'uploads', 'reels');
 const STATE_KEY = 'reel_inbox_state';
@@ -151,6 +151,41 @@ async function ensureSevaPost(seva) {
   }
 }
 
+// A news reel has no post yet either: the headlines are picked by the workflow
+// minutes before it runs. One post per (day, slot), so a morning and an evening
+// digest coexist and a retry of the same run updates the same record.
+async function ensureNewsPost(news) {
+  const date = String(news.date || new Date().toISOString().slice(0, 10));
+  const slot = String(news.slot || 'morning').replace(/[^a-z]/gi, '') || 'morning';
+  const postRef = `NEWS-${date}-${slot}`;
+  const existing = await SocialPost.findOne({ where: { postRef } });
+  if (existing) return existing;
+  try {
+    return await SocialPost.create({
+      postRef,
+      postDate: date,
+      slot: `news-${slot}`,
+      topicKey: `news-${slot}`,
+      category: 'news',
+      kind: 'news',
+      titleEn: news.titleEn || '',
+      titleHi: news.titleHi || '',
+      bodyEn: news.bodyEn || '',
+      bodyHi: news.bodyHi || '',
+      hashtags: news.hashtags || '',
+      status: 'published',
+      publishedAt: new Date(),
+      createdBy: 'reel-inbox',
+      data: { news },
+    });
+  } catch (e) {
+    // postRef is unique: a concurrent tick may have created it first.
+    const row = await SocialPost.findOne({ where: { postRef } });
+    if (row) return row;
+    throw e;
+  }
+}
+
 async function checkTag(tag, { fetchImpl = globalThis.fetch, publish = publishReel, force = false } = {}) {
   const base = `https://github.com/${REPO}/releases/download/${tag}`;
   const manifestUrl = `${base}/inbox.json`;
@@ -171,9 +206,13 @@ async function checkTag(tag, { fetchImpl = globalThis.fetch, publish = publishRe
   }
 
   const postId = Number(manifest.postId);
-  if (!postId && !manifest.seva) return { tag, skipped: 'bad-manifest', error: 'postId or seva missing' };
+  if (!postId && !manifest.seva && !manifest.news) {
+    return { tag, skipped: 'bad-manifest', error: 'postId, seva or news missing' };
+  }
 
-  const post = postId ? await SocialPost.findByPk(postId) : await ensureSevaPost(manifest.seva);
+  const post = postId ? await SocialPost.findByPk(postId)
+    : manifest.seva ? await ensureSevaPost(manifest.seva)
+      : await ensureNewsPost(manifest.news);
   if (!post) {
     return { tag, skipped: 'no-post', postId };
   }

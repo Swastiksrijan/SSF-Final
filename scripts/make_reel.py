@@ -27,6 +27,7 @@ import argparse
 import asyncio
 import json
 import os
+import re
 import shutil
 import subprocess
 import sys
@@ -212,6 +213,101 @@ def draw_lines(draw, lines, x, y, fnt, fill, leading):
     return y
 
 
+# ---- mixed Hindi / Latin text ---------------------------------------------
+# The Devanagari faces have no Latin letters (a publisher name would render as
+# empty boxes) and the Latin faces have no Devanagari. Every string that may
+# hold both — a headline, "स्रोत: Dainik Bhaskar" — is drawn run by run.
+
+DEVANAGARI = re.compile(r'[\u0900-\u097F]')
+
+
+def script_runs(text):
+    """Split a string into [(run, is_devanagari), ...].
+
+    Spaces stay with the run before them. ASCII punctuation exists in both faces
+    so it joins the current run; a non-ASCII symbol (·, •, ₹, …) only exists in
+    the Latin face and would render as an empty box in the Devanagari one, so it
+    starts a Latin run of its own.
+    """
+    runs, current, current_dev = [], '', None
+
+    def flush():
+        nonlocal current, current_dev
+        if current:
+            runs.append((current, bool(current_dev)))
+        current, current_dev = '', None
+
+    for ch in str(text or ''):
+        if ch == ' ':
+            current += ch
+            continue
+        if DEVANAGARI.match(ch):
+            # Matras, virama and anusvara are not alphanumeric but belong to the
+            # Devanagari face all the same — splitting them off breaks shaping.
+            is_dev = True
+        elif ch.isalnum():
+            is_dev = False
+        elif ord(ch) < 128:
+            is_dev = current_dev if current_dev is not None else False
+        else:
+            is_dev = False
+        if current_dev is None:
+            current_dev = is_dev
+        elif is_dev != current_dev:
+            flush()
+            current_dev = is_dev
+        current += ch
+    flush()
+    return runs
+
+
+def _faces(fnt):
+    """(devanagari_face, latin_face) at the same size, from whichever was passed."""
+    path = getattr(fnt, 'path', '') or ''
+    size = getattr(fnt, 'size', 40)
+    if 'Devanagari' in path:
+        latin = font('NotoSans-Bold.ttf' if 'Bold' in path else 'NotoSans-Regular.ttf', size)
+        return fnt, latin
+    dev = font('NotoSansDevanagari-Bold.ttf' if 'Bold' in path else 'NotoSansDevanagari-Regular.ttf', size)
+    return dev, fnt
+
+
+def text_width(draw, text, fnt):
+    dev, lat = _faces(fnt)
+    return sum(draw.textlength(run, font=(dev if is_dev else lat))
+               for run, is_dev in script_runs(text))
+
+
+def draw_text(draw, text, fnt, xy, fill, centre_w=None, shadow=True):
+    """Draw text at `xy` (or centred on `centre_w`), one script at a time."""
+    dev, lat = _faces(fnt)
+    runs = script_runs(text)
+    widths = [draw.textlength(run, font=(dev if is_dev else lat)) for run, is_dev in runs]
+    x = (centre_w - sum(widths)) / 2 if centre_w is not None else xy[0]
+    y = xy[1]
+    for (run, is_dev), width in zip(runs, widths):
+        face = dev if is_dev else lat
+        if shadow:
+            draw.text((x + 3, y + 3), run, font=face, fill=(0, 0, 0, 170))
+        draw.text((x, y), run, font=face, fill=fill)
+        x += width
+
+
+def wrap_mixed(draw, text, fnt, max_width, limit=None):
+    """Same as wrap(), but measures the real width of mixed-script text."""
+    lines, line = [], ''
+    for word in str(text or '').split():
+        trial = f'{line} {word}'.strip()
+        if text_width(draw, trial, fnt) <= max_width or not line:
+            line = trial
+        else:
+            lines.append(line)
+            line = word
+    if line:
+        lines.append(line)
+    return lines[:limit] if limit else lines
+
+
 def brand_bar(img, draw):
     """Small SSF lockup used at the top of the hook card."""
     paste_logo(img, 70, 70, 104)
@@ -389,7 +485,9 @@ def mux(ffmpeg, video, voice_path, out_path, total, voice_at):
         graph.append(f'[1:a]adelay={delay}|{delay},apad=pad_dur={total:.2f},'
                      f'atrim=0:{total:.2f}[voice]')
     cmd += ['-f', 'lavfi', '-i', music_source(total)]
-    graph.append(f'[2:a]afade=t=in:st=0:d=1.5,'
+    # The music is the third input only when a voice track sits between them.
+    music_in = 2 if voice_path else 1
+    graph.append(f'[{music_in}:a]afade=t=in:st=0:d=1.5,'
                  f'afade=t=out:st={max(0.0, total - 2.0):.2f}:d=2.0[music]')
     if voice_path:
         graph.append('[voice][music]amix=inputs=2:duration=first:dropout_transition=0:weights=1 0.35[a]')
