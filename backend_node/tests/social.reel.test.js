@@ -93,6 +93,28 @@ async function main() {
   ok('all-failed run reports published:false', failed.published === false);
   ok('all-failed run stores no reel', !(p4.data && p4.data.reel));
 
+  // 7) A targeted retry (one platform, force) keeps the platforms that already
+  //    succeeded — retrying Instagram must not erase the Facebook link.
+  await SocialChannel.create({ platform: 'facebook', accountName: 'ssf page', enabled: true, credentials: { pageId: '1474', accessToken: 'tok' }, status: 'connected' });
+  const p5 = await makePost();
+  const both = {
+    instagram: async () => ({ ok: true, url: 'https://instagram.com/reel/1' }),
+    facebook: async () => ({ ok: true, url: 'https://facebook.com/1' }),
+  };
+  await publishReel({ post: p5, videoUrl: '/uploads/reels/f.mp4', adapters: both });
+  await p5.reload();
+  ok('two platforms recorded', p5.data.reel.results.length === 2, JSON.stringify(p5.data.reel.results));
+
+  const retryIg = { instagram: async () => ({ ok: true, url: 'https://instagram.com/reel/2' }) };
+  await publishReel({ post: p5, videoUrl: '/uploads/reels/g.mp4', platforms: ['instagram'], force: true, adapters: retryIg });
+  await p5.reload();
+  const kept = p5.data.reel.results;
+  ok('retry updates only the retried platform',
+    kept.length === 2
+      && kept.find((r) => r.platform === 'instagram').url.endsWith('/2')
+      && kept.find((r) => r.platform === 'facebook').url.endsWith('/1'),
+    JSON.stringify(kept));
+
   console.log(`\nRESULT: ${pass} passed, ${fail} failed`);
   await sequelize.close();
   if (fail) process.exit(1);

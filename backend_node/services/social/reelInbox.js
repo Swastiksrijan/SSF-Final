@@ -83,6 +83,7 @@ async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force
   const postId = Number(manifest.postId);
   if (!postId) return { skipped: 'bad-manifest', error: 'postId missing' };
 
+  const wantForce = force === true || manifest.force === true;
   const state = (await getConfig(STATE_KEY, null)) || {};
   if (state.postId === postId && (state.status === 'done' || (state.attempts || 0) >= MAX_ATTEMPTS)) {
     return { skipped: 'already-handled', postId };
@@ -93,7 +94,7 @@ async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force
     await setConfig(STATE_KEY, { postId, status: 'done', attempts: 0, error: 'post not found' });
     return { skipped: 'no-post', postId };
   }
-  if (!force && post.data && post.data.reel && post.data.reel.publishedAt) {
+  if (!wantForce && post.data && post.data.reel && post.data.reel.publishedAt) {
     await setConfig(STATE_KEY, { postId, status: 'done', attempts: 0 });
     return { skipped: 'already-published', postId };
   }
@@ -112,7 +113,19 @@ async function tick({ fetchImpl = globalThis.fetch, publish = publishReel, force
     const name = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}.mp4`;
     fs.writeFileSync(path.join(REEL_DIR, name), buf);
 
-    const out = await publish({ post, videoUrl: `/uploads/reels/${name}` });
+    // Instagram and Facebook download the file themselves. Our own /uploads URL
+    // sits on a host that may be asleep, and a slow first byte makes Instagram
+    // fail the container with a bare "Fatal", so prefer the release asset URL
+    // (a warm CDN) when the manifest carries one.
+    const videoUrl = typeof manifest.assetUrl === 'string' && /^https:\/\//.test(manifest.assetUrl)
+      ? manifest.assetUrl
+      : `/uploads/reels/${name}`;
+    const out = await publish({
+      post,
+      videoUrl,
+      platforms: Array.isArray(manifest.platforms) ? manifest.platforms : undefined,
+      force: wantForce,
+    });
     const done = Boolean(out && (out.published || out.skipped));
     await remember(done ? 'done' : 'failed', done ? null : 'no channel accepted the reel');
     if (done) pruneReels();

@@ -30,6 +30,9 @@ on:
         description: 'Re-render and re-publish even if a reel already exists'
         type: boolean
         default: false
+      platforms:
+        description: 'Comma-separated platforms for a targeted retry (blank = every connected channel)'
+        default: ''
 
 permissions:
   contents: write   # the inbox release lives in this repo
@@ -49,6 +52,7 @@ jobs:
       KEY: ${{ secrets.SCHEDULER_SECRET || secrets.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token' }}
       POST_ID: ${{ github.event.inputs.post_id }}
       FORCE: ${{ github.event.inputs.force }}
+      PLATFORMS: ${{ github.event.inputs.platforms }}
       TZ: Asia/Kolkata
     steps:
       - uses: actions/checkout@v4
@@ -201,8 +205,28 @@ jobs:
             || gh release create "$tag" --title "Reel inbox" --notes "Reels rendered by the SSF Daily Reel workflow; the backend publishes them."
           gh release upload "$tag" /tmp/reel.mp4 --clobber
           # Manifest last, so the backend never sees a manifest without a video.
-          printf '{"postId": %s, "ref": "%s", "renderedAt": "%s"}\n' \
-            "${{ steps.pick.outputs.post_id }}" "${{ steps.pick.outputs.ref }}" "$(date -u +%FT%TZ)" > /tmp/inbox.json
+          ASSET_URL="https://github.com/${{ github.repository }}/releases/download/$tag/reel.mp4" \
+          POST_ID_PICKED="${{ steps.pick.outputs.post_id }}" \
+          REF="${{ steps.pick.outputs.ref }}" \
+          NOW="$(date -u +%FT%TZ)" \
+          python3 - <<'PY'
+          import json, os
+          manifest = {
+              'postId': int(os.environ['POST_ID_PICKED']),
+              'ref': os.environ.get('REF', ''),
+              'renderedAt': os.environ['NOW'],
+              # Warm CDN URL: Instagram and Facebook fetch the file themselves and
+              # fail with a bare "Fatal" when our host is cold.
+              'assetUrl': os.environ['ASSET_URL'],
+          }
+          platforms = [p.strip() for p in (os.environ.get('PLATFORMS') or '').split(',') if p.strip()]
+          if platforms:
+              manifest['platforms'] = platforms
+          if os.environ.get('FORCE') == 'true':
+              manifest['force'] = True
+          json.dump(manifest, open('/tmp/inbox.json', 'w'))
+          print(manifest)
+          PY
           gh release upload "$tag" /tmp/inbox.json --clobber
           echo "::notice::Reel queued in the repo inbox; the backend publishes it within ~5 minutes."
         env:
