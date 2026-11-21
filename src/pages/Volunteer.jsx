@@ -137,6 +137,13 @@ export default function Volunteer() {
                 <FaArrowRight />
               </button>
               <a
+                href="/VolunteerHardcopy"
+                className="bg-[#12345A] text-white px-8 py-5 rounded-2xl font-bold text-lg hover:bg-[#176447] transition-all flex items-center gap-3 shadow-xl"
+              >
+                हार्डकॉपी फॉर्म / Print Form
+                <FaArrowRight />
+              </a>
+              <a
                 href="https://forms.gle/S6Qc56QE8nLYdDTL9"
                 target="_blank"
                 rel="noreferrer"
