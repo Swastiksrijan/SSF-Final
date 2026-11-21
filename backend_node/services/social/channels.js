@@ -150,7 +150,11 @@ function graphError(data, status) {
   const tags = [e.code, e.error_subcode].filter((v) => v !== undefined && v !== null);
   const detail = [tags.length ? `code ${tags.join('/')}` : null, e.type, e.fbtrace_id ? `trace ${e.fbtrace_id}` : null]
     .filter(Boolean).join(', ');
-  const err = new Error(detail ? `${msg} (${detail})` : msg);
+  // Meta keeps the human-readable cause in error_user_msg; error.message is often
+  // a placeholder like "Fatal".
+  const reason = [e.error_user_title, e.error_user_msg].filter(Boolean).join(': ');
+  const text = [msg, reason && `— ${reason}`].filter(Boolean).join(' ');
+  const err = new Error(detail ? `${text} (${detail})` : text);
   err.status = status;
   err.code = e.code;
   err.subcode = e.error_subcode;
