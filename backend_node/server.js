@@ -412,6 +412,8 @@ async function socialTick() {
         if (created.length) console.log(`✅ Social publisher planned ${created.length} post(s) for today`);
         const out = await runPending({ source: 'internal-timer' });
         if (out.published.length) console.log(`✅ Social publisher published ${out.published.length} due post(s)`);
+        const inbox = await require('./services/social/reelInbox').tick();
+        if (inbox && !inbox.skipped) console.log(`✅ Reel inbox: ${JSON.stringify(inbox)}`);
         await socialMissedAlert();
     } catch (e) {
         console.error('⚠️ Social publisher tick skipped:', e.message);
