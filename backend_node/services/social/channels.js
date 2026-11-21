@@ -520,8 +520,16 @@ async function igUpload(containerId, buf, token) {
     },
     body: buf,
   });
-  const data = await res.json().catch(() => null);
-  if (!res.ok || (data && data.debug_info && data.debug_info.type)) throw graphError(data, res.status);
+  const text = await res.text().catch(() => '');
+  let data = null;
+  try { data = text ? JSON.parse(text) : null; } catch { /* not json */ }
+  if (!res.ok || (data && data.debug_info && data.debug_info.type)) {
+    // The upload host answers some failures with an empty body, which would
+    // otherwise surface as a bare "HTTP 400".
+    const err = graphError(data, res.status);
+    if (!data) err.message = `${err.message}${text ? `: ${text.slice(0, 200)}` : ' (empty body)'}`;
+    throw err;
+  }
   return data || {};
 }
 
