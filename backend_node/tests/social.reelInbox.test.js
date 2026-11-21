@@ -3,6 +3,8 @@
 //
 //   node backend_node/tests/social.reelInbox.test.js
 process.env.NODE_ENV = 'test';
+// One series per run: the seva inbox has its own test file and its own tag.
+process.env.REEL_INBOX_TAGS = 'reel-inbox';
 
 const fs = require('fs');
 const path = require('path');
@@ -102,7 +104,7 @@ async function main() {
   ok('stores the video under uploads/reels', published.length === 1 && published[0][1].startsWith('/uploads/reels/'), JSON.stringify(published));
   ok('downloads manifest and video', fetch1.calls.length === 2, fetch1.calls.join(','));
   ok('reel file exists on disk', fs.readdirSync(REEL_DIR).some((f) => f.endsWith('.mp4') && !before.has(f)));
-  ok('state marked done', (await getConfig(STATE_KEY, {})).status === 'done');
+  ok('state marked done', (await getConfig(`${STATE_KEY}:reel-inbox`, {})).status === 'done');
 
   // A new run for a post that already has a reel is skipped.
   const fetch2 = fakeFetch({ manifest: manifestFor(post.id, { renderedAt: '2026-11-21T11:00:00Z' }) });
@@ -112,7 +114,7 @@ async function main() {
 
   // The same run seen twice must not publish twice, even when forced.
   const retry = await makePost({ reel: { videoUrl: '/uploads/reels/old.mp4', publishedAt: '2026-11-20T10:00:00.000Z' } });
-  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  await setConfig(`${STATE_KEY}:reel-inbox`, { requestId: '', status: 'done', attempts: 0 });
   const forced = () => fakeFetch({ manifest: manifestFor(retry.id, { renderedAt: '2026-11-21T12:00:00Z', platforms: ['instagram'], force: true }) });
   const out3a = await tick({ fetchImpl: forced(), publish: async () => ({ skipped: false, published: true }) });
   ok('a forced run is processed', out3a.published === true, JSON.stringify(out3a));
@@ -130,7 +132,7 @@ async function main() {
 
   // A manifest assetUrl (the warm CDN) is what the platforms download.
   const cdnPost = await makePost({ reel: { videoUrl: '/uploads/reels/old.mp4', publishedAt: '2026-11-20T10:00:00.000Z' } });
-  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  await setConfig(`${STATE_KEY}:reel-inbox`, { requestId: '', status: 'done', attempts: 0 });
   const seenCdn = {};
   await tick({
     fetchImpl: fakeFetch({
@@ -147,7 +149,7 @@ async function main() {
   // Instagram refuses the release asset URL (302 to a signed host), so a failure
   // there gets one more try against the asset URL, and only for Instagram.
   const retried = [];
-  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  await setConfig(`${STATE_KEY}:reel-inbox`, { requestId: '', status: 'done', attempts: 0 });
   const fallbackPost = await makePost();
   await tick({
     fetchImpl: fakeFetch({
@@ -172,7 +174,7 @@ async function main() {
 
   // A publish failure is retried, then given up on — and stays visible.
   const failing = await makePost();
-  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  await setConfig(`${STATE_KEY}:reel-inbox`, { requestId: '', status: 'done', attempts: 0 });
   const failManifest = () => fakeFetch({ manifest: manifestFor(failing.id, { renderedAt: '2026-11-21T14:00:00Z' }) });
   const failPublish = async () => { throw new Error('no reel channel connected'); };
   const first = await tick({ fetchImpl: failManifest(), publish: failPublish });
@@ -187,7 +189,7 @@ async function main() {
 
   // A manifest pointing at a missing video fails without publishing.
   const noVideo = await makePost();
-  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  await setConfig(`${STATE_KEY}:reel-inbox`, { requestId: '', status: 'done', attempts: 0 });
   const out5 = await tick({
     fetchImpl: fakeFetch({ manifest: manifestFor(noVideo.id, { renderedAt: '2026-11-21T15:00:00Z' }), skipVideo: true }),
     publish: async () => { throw new Error('must not publish'); },
@@ -195,7 +197,7 @@ async function main() {
   ok('missing video is an error, not a publish', out5.error === 'reel.mp4 missing from the inbox', JSON.stringify(out5));
 
   // Unknown post ids are dropped instead of retried forever.
-  await setConfig(STATE_KEY, { requestId: '', status: 'done', attempts: 0 });
+  await setConfig(`${STATE_KEY}:reel-inbox`, { requestId: '', status: 'done', attempts: 0 });
   const ghost = await tick({ fetchImpl: fakeFetch({ manifest: manifestFor(999999, { renderedAt: '2026-11-21T16:00:00Z' }) }) });
   ok('unknown post -> no-post', ghost.skipped === 'no-post', JSON.stringify(ghost));
 

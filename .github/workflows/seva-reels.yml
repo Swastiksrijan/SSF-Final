@@ -1,0 +1,138 @@
+name: SSF Seva Reels
+
+# "मदद करने के हज़ार तरीके" — a daily reel that teaches one theme and three
+# concrete ways to help today, then asks for support with a QR code, the UPI /
+# Paytm number and the donate page.
+#
+# Why a separate workflow from SSF Daily Reel: this series is not tied to an
+# awareness post, it rotates through its own list, and it drops into its own
+# release (`seva-inbox`) so a busy post-reel day can never overwrite it.
+#
+# Free end to end: ffmpeg, Pillow, edge-tts, a synthesised music bed, and a QR
+# drawn with the `qrcode` package. No API key, no stock footage, no licence.
+
+on:
+  schedule:
+    - cron: '30 6 * * *'   # 12:00 IST, between the 09:00 and 14:30 post reels
+  workflow_dispatch:
+    inputs:
+      index:
+        description: 'Seva group number (blank = rotate with the calendar)'
+        default: ''
+      force:
+        description: 'Re-render and re-publish even if this group already went out'
+        type: boolean
+        default: false
+
+permissions:
+  contents: write   # the seva inbox release lives in this repo
+
+concurrency:
+  group: seva-reels
+  cancel-in-progress: false
+
+jobs:
+  reel:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TZ: Asia/Kolkata
+      GROUP_INDEX: ${{ github.event.inputs.index }}
+      FORCE: ${{ github.event.inputs.force }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fonts, ffmpeg and the free tooling
+        run: |
+          python3 -m pip install --quiet --upgrade pip
+          python3 -m pip install --quiet edge-tts gTTS pillow qrcode
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+          python3 -m pip install --quiet imageio-ffmpeg
+          ffmpeg -version | head -1
+          mkdir -p "$HOME/reel-fonts"
+          base=https://github.com/notofonts/noto-fonts/raw/main/hinted/ttf
+          for f in NotoSans-Regular NotoSans-Bold; do
+            curl -fsSL --retry 3 "$base/NotoSans/$f.ttf" -o "$HOME/reel-fonts/$f.ttf"
+          done
+          for f in NotoSansDevanagari-Regular NotoSansDevanagari-Bold; do
+            curl -fsSL --retry 3 "$base/NotoSansDevanagari/$f.ttf" -o "$HOME/reel-fonts/$f.ttf"
+          done
+          echo "REEL_FONT_DIR=$HOME/reel-fonts" >> "$GITHUB_ENV"
+
+      - name: Pick the group for today
+        id: pick
+        run: |
+          # Blank input rotates with the calendar, so the series walks the whole
+          # list instead of repeating group 1 forever.
+          IDX="${GROUP_INDEX}"
+          if [ -z "$IDX" ]; then
+            IDX=$(python3 -c "import datetime; print((datetime.date.today().timetuple().tm_yday - 1) % 12)")
+          fi
+          echo "index=$IDX" >> "$GITHUB_OUTPUT"
+          node -e "
+            const { getGroup } = require('./backend_node/data/sevaIdeas');
+            const g = getGroup(Number(process.env.IDX || '$IDX'));
+            const date = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Kolkata' });
+            const bodyHi = g.ideas.map((i, n) => (n + 1) + '. ' + i.hi + ' — ' + (i.how || '')).join('\n');
+            const bodyEn = g.ideas.map((i, n) => (n + 1) + '. ' + i.en).join('\n');
+            const ctaHi = '\n\nआप भी मदद कर सकते हैं — QR स्कैन करें, Paytm: 9718346691, या swastiksrijan.in/Donate पर Donate Now दबाएं।';
+            const ctaEn = '\n\nScan the QR, pay to 9718346691, or press Donate Now at swastiksrijan.in/Donate.';
+            const out = { ...g, date, index: Number('$IDX'), bodyHi: bodyHi + ctaHi, bodyEn: bodyEn + ctaEn };
+            require('fs').writeFileSync('/tmp/group.json', JSON.stringify(out, null, 2));
+            console.log(g.titleHi + ' / ' + g.titleEn);
+          "
+          cat /tmp/group.json
+
+      - name: Render the reel (hook + three ways + donate card)
+        run: |
+          python3 scripts/make_seva_reel.py --group /tmp/group.json \
+            --index "${{ steps.pick.outputs.index }}" --out /tmp/reel.mp4
+          ls -lh /tmp/reel.mp4
+
+      - name: Drop the reel in the seva inbox
+        run: |
+          tag=seva-inbox
+          gh release view "$tag" >/dev/null 2>&1 \
+            || gh release create "$tag" --title "Seva reel inbox" \
+                 --notes "Reels rendered by the SSF Seva Reels workflow; the backend publishes them."
+          gh release upload "$tag" /tmp/reel.mp4 --clobber
+          # Manifest last, so the backend never sees a manifest without a video.
+          ASSET_URL="https://github.com/${{ github.repository }}/releases/download/$tag/reel.mp4" \
+          NOW="$(date -u +%FT%TZ)" \
+          FORCE_IN="${FORCE}" \
+          python3 - <<'PY'
+          import json, os
+          group = json.load(open('/tmp/group.json'))
+          manifest = {
+              'seva': {
+                  'date': group['date'],
+                  'index': group['index'],
+                  'titleHi': group.get('titleHi', ''),
+                  'titleEn': group.get('titleEn', ''),
+                  'bodyHi': group.get('bodyHi', ''),
+                  'bodyEn': group.get('bodyEn', ''),
+                  'hashtags': '#SwastikSrijanFoundation #Seva #MadadKarein #NGO #Donate',
+              },
+              'renderedAt': os.environ['NOW'],
+              'assetUrl': os.environ['ASSET_URL'],
+          }
+          if (os.environ.get('FORCE_IN') or '').lower() == 'true':
+              manifest['force'] = True
+          json.dump(manifest, open('/tmp/inbox.json', 'w'), ensure_ascii=False)
+          print(json.dumps({k: (v if k != 'seva' else {kk: vv for kk, vv in v.items() if kk != 'bodyHi'}) for k, v in manifest.items()}, ensure_ascii=False))
+          PY
+          gh release upload "$tag" /tmp/inbox.json --clobber
+          echo "::notice::Seva reel queued in seva-inbox; the backend publishes it within ~5 minutes."
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Keep the rendered reel for review
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: seva-reel-${{ steps.pick.outputs.index }}
+          path: /tmp/reel.mp4
+          if-no-files-found: ignore
+          retention-days: 7

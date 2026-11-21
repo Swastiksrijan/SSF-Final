@@ -16,7 +16,7 @@ mangles Hindi conjuncts.
 Reel shape:
   0.0s              hook card  - the bilingual message, so the first two seconds land
   2.6s              poster     - the published poster, slow zoom, Hindi narration
-  narration end     end card   - Follow SSF + website
+  narration end     end card   - donate: QR, UPI/Paytm number, website
 
 Usage:
   python3 scripts/make_reel.py --image post.jpg --out reel.mp4 \
@@ -37,7 +37,7 @@ from PIL import Image, ImageDraw, ImageFilter, ImageFont
 W, H = 1080, 1920
 FPS = 30
 HOOK_SECONDS = 2.6
-END_SECONDS = 3.4
+END_SECONDS = 5.0
 MIN_BODY, MAX_BODY = 6.0, 45.0
 MAX_SPOKEN_CHARS = 380  # ~35s of Hindi speech at +8% rate
 SPEECH_RATE = '+8%'
@@ -55,6 +55,8 @@ GOLD = (214, 181, 109)
 GOLD_BRIGHT = (255, 209, 102)
 WHITE = (255, 255, 255)
 SITE = 'swastiksrijan.in'
+DONATE_URL = 'https://swastiksrijan.in/Donate'
+UPI_ID = '9718346691'
 
 
 def _is_font(path):
@@ -246,11 +248,24 @@ def hook_card(post, out_path):
     img.save(out_path)
 
 
+def qr_image(url, size):
+    """QR for the donate page. None when the qrcode package is not installed."""
+    try:
+        import qrcode
+    except ImportError:
+        return None
+    qr = qrcode.QRCode(border=2, box_size=10, error_correction=qrcode.constants.ERROR_CORRECT_M)
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color='#002344', back_color='white').convert('RGB')
+    # NEAREST keeps the modules square; LANCZOS blurs them into an unscannable mess.
+    return img.resize((size, size), Image.NEAREST)
+
+
 def end_card(out_path):
-    """Last ~3.4s: Follow SSF + website."""
-    img = glow(gradient(W, H, NAVY_LIGHT, NAVY), W // 2, 720, 520, GOLD, 55)
+    """Last seconds: the ask. QR, UPI number and the donate page, every reel."""
+    img = glow(gradient(W, H, NAVY_LIGHT, NAVY), W // 2, 860, 560, GOLD, 50)
     d = ImageDraw.Draw(img)
-    paste_logo(img, W // 2 - 120, 470, 240)
 
     def centre(text, fnt, y, fill):
         d.text(((W - d.textlength(text, font=fnt)) / 2, y), text, font=fnt, fill=fill)
@@ -263,14 +278,36 @@ def end_card(out_path):
             d.text((x, y), text, font=fnt, fill=fill)
             x += width
 
-    centre('Follow SSF', font('NotoSans-Bold.ttf', 104), 790, WHITE)
-    centre_mixed([('SSF', font('NotoSans-Bold.ttf', 62), GOLD_BRIGHT),
-                  (' को फॉलो करें', font('NotoSansDevanagari-Bold.ttf', 62), GOLD_BRIGHT)], 918)
-    d.line([(W // 2 - 130, 1032), (W // 2 + 130, 1032)], fill=GOLD, width=3)
-    centre(SITE, font('NotoSans-Bold.ttf', 56), 1086, WHITE)
-    centre('@swastiksrijan  •  Join Us', font('NotoSans-Regular.ttf', 38), 1176, (200, 216, 232))
-    centre('स्वास्तिक सृजन फाउंडेशन', font('NotoSansDevanagari-Regular.ttf', 34), H - 200, (170, 190, 210))
-    centre('Creating Change. Inspiring Lives.', font('NotoSans-Regular.ttf', 30), H - 148, (150, 172, 196))
+    paste_logo(img, W // 2 - 92, 120, 184)
+
+    centre('DONATE NOW', font('NotoSans-Bold.ttf', 92), 350, GOLD_BRIGHT)
+    centre('अभी दान करें', font('NotoSansDevanagari-Bold.ttf', 58), 470, WHITE)
+
+    box, pad = 420, 22
+    x0, y0 = (W - box) // 2, 590
+    d.rounded_rectangle([x0, y0, x0 + box, y0 + box], radius=28, fill=WHITE)
+    qr = qr_image(DONATE_URL, box - pad * 2)
+    if qr is not None:
+        img.paste(qr, (x0 + pad, y0 + pad))
+    else:
+        centre('QR', font('NotoSans-Bold.ttf', 120), y0 + 130, NAVY)
+
+    # "QR" must come from the Latin face: the Devanagari subset has no Q or R.
+    centre_mixed([('QR', font('NotoSans-Bold.ttf', 34), (206, 222, 238)),
+                  (' स्कैन करें', font('NotoSansDevanagari-Regular.ttf', 34), (206, 222, 238)),
+                  ('  •  Scan to donate', font('NotoSans-Regular.ttf', 34), (206, 222, 238))], y0 + box + 26)
+
+    d.line([(W // 2 - 150, y0 + box + 96), (W // 2 + 150, y0 + box + 96)], fill=GOLD, width=3)
+    centre_mixed([('UPI / Paytm  ', font('NotoSans-Regular.ttf', 40), (200, 216, 232)),
+                  (UPI_ID, font('NotoSans-Bold.ttf', 54), WHITE)], y0 + box + 126)
+    centre(SITE + '/Donate', font('NotoSans-Bold.ttf', 56), y0 + box + 216, GOLD_BRIGHT)
+    centre('@swastiksrijan  •  Join Us', font('NotoSans-Regular.ttf', 36), y0 + box + 300, (200, 216, 232))
+
+    centre('हर मदद मायने रखती है', font('NotoSansDevanagari-Bold.ttf', 46), y0 + box + 372, GOLD)
+    centre('Every bit of help counts', font('NotoSans-Regular.ttf', 32), y0 + box + 434, (200, 216, 232))
+
+    centre('स्वास्तिक सृजन फाउंडेशन', font('NotoSansDevanagari-Regular.ttf', 34), H - 150, (170, 190, 210))
+    centre('Creating Change. Inspiring Lives.', font('NotoSans-Regular.ttf', 30), H - 100, (150, 172, 196))
     img.save(out_path)
 
 

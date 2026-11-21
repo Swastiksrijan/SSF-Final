@@ -60,7 +60,7 @@ jobs:
       - name: Fonts + Python deps
         run: |
           python3 -m pip install --quiet --upgrade pip
-          python3 -m pip install --quiet edge-tts gTTS pillow
+          python3 -m pip install --quiet edge-tts gTTS pillow qrcode
           # ubuntu-latest no longer ships ffmpeg; apt gives libx264 + aac, and
           # imageio-ffmpeg is the fallback the script knows how to use.
           sudo apt-get update -qq
