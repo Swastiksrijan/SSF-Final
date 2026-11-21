@@ -277,7 +277,7 @@ async function main() {
   // Instagram rejects captions over 2,200 chars, so the adapter must trim — while
   // keeping the site link. Without this, whole series (e.g. yojana) never post.
   {
-    const { caption, igCaption, IG_CAPTION_MAX } = require('../services/social/channels');
+    const { caption, igCaption, captionWithin, IG_CAPTION_MAX, TELEGRAM_CAPTION_MAX, RAZORPAY_URL, UPI_ID } = require('../services/social/channels');
     const offenders = [];
     for (const s of SERIES) {
       for (let i = 1; i <= (s.items || []).length; i += 1) {
@@ -286,9 +286,16 @@ async function main() {
       }
     }
     ok('every series chapter has an Instagram-safe caption', offenders.length === 0, offenders.join(', '));
-    ok('IG caption trims an over-long post but keeps the site link', (() => {
+    ok('IG caption trims an over-long post but keeps the donate footer', (() => {
       const ig = igCaption({ bodyEn: 'A'.repeat(3000), bodyHi: 'B'.repeat(3000) });
-      return ig.length <= IG_CAPTION_MAX && ig.includes('swastiksrijan.in') && /swastiksrijan\.in\/?$/.test(ig);
+      return ig.length <= IG_CAPTION_MAX
+        && ig.includes('swastiksrijan.in/Donate')
+        && ig.includes(RAZORPAY_URL)
+        && ig.trimEnd().endsWith(UPI_ID);
+    })());
+    ok('Telegram caption stays inside 1024 characters and still carries the links', (() => {
+      const t = captionWithin({ bodyEn: 'A'.repeat(2000), bodyHi: 'B'.repeat(2000) }, TELEGRAM_CAPTION_MAX);
+      return t.length <= TELEGRAM_CAPTION_MAX && t.includes(RAZORPAY_URL) && t.trimEnd().endsWith(UPI_ID);
     })());
     ok('IG caption leaves a short post untouched', (() => {
       const short = { bodyEn: 'Hi', bodyHi: 'नमस्ते' };

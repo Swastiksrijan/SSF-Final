@@ -91,23 +91,39 @@ async function exchangeFacebookToken({ appId, appSecret, shortToken }) {
   }
 }
 
-// Bilingual caption used for image posts and plain-text fallbacks. A bare URL
-// is appended so the post's "Join Us" button has somewhere to go on platforms
-// that only expose the caption (Facebook/Telegram linkify it automatically).
-function caption(post) {
-  return `${post.bodyEn}\n\n————\n${post.bodyHi}\n\n${SITE}`;
+// Every caption ends with the same three ways to give. A reader who wants to help
+// should never have to hunt for the link, and each platform linkifies it for us.
+const DONATE_URL = 'https://swastiksrijan.in/Donate';
+const RAZORPAY_URL = 'https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view';
+// The VPA printed on the foundation's own Paytm scanner; a phone-number VPA is a
+// different account.
+const UPI_ID = 'swastikstijanfoundation@ptyes';
+
+function footer() {
+  return `\n\n${SITE}  ·  दान करें / Donate: ${DONATE_URL}`
+    + `\nRazorpay: ${RAZORPAY_URL}`
+    + `\nUPI: ${UPI_ID}`;
 }
 
-// Instagram rejects a caption longer than 2,200 characters ("The caption was too
-// long."). Trim to fit, but ALWAYS keep the trailing site link — it is the whole
-// point of the post — so only the body is shortened.
+// Bilingual caption used for image posts and plain-text fallbacks.
+function caption(post) {
+  return `${post.bodyEn}\n\n————\n${post.bodyHi}${footer()}`;
+}
+
+// Instagram rejects a caption longer than 2,200 characters and Telegram caps a
+// caption at 1,024. Trim to fit, but ALWAYS keep the footer — the donate link is
+// the whole point — so only the body is shortened.
 const IG_CAPTION_MAX = 2200;
-function igCaption(post) {
+const TELEGRAM_CAPTION_MAX = 1024;
+function captionWithin(post, max) {
   const full = caption(post);
-  if (full.length <= IG_CAPTION_MAX) return full;
-  const tail = `\n\n${SITE}`;
-  const room = Math.max(0, IG_CAPTION_MAX - tail.length - 1); // 1 for the ellipsis
+  if (full.length <= max) return full;
+  const tail = footer();
+  const room = Math.max(0, max - tail.length - 1); // 1 for the ellipsis
   return `${full.slice(0, room).trimEnd()}…${tail}`;
+}
+function igCaption(post) {
+  return captionWithin(post, IG_CAPTION_MAX);
 }
 
 async function multipartCall(url, fields) {
@@ -209,7 +225,7 @@ async function publishTelegram(post, creds) {
     const png = await safePng(post);
     if (png) {
       const out = await multipartCall(`https://api.telegram.org/bot${token}/sendPhoto`, {
-        chat_id: chatId, caption: text.slice(0, 1024),
+        chat_id: chatId, caption: captionWithin(post, TELEGRAM_CAPTION_MAX),
         photo: { blob: new Blob([png], { type: 'image/png' }), filename: 'ssf-post.png' },
       });
       return { ok: true, url: out?.result?.message_id ? `https://t.me/c/${chatId}/${out.result.message_id}` : null };
@@ -217,7 +233,7 @@ async function publishTelegram(post, creds) {
     if (publicBase) {
       const photo = `${publicBase.replace(/\/$/, '')}${post.imageUrl}`;
       const out = await jsonCall(`https://api.telegram.org/bot${token}/sendPhoto`, {
-        body: { chat_id: chatId, photo, caption: text.slice(0, 1024) },
+        body: { chat_id: chatId, photo, caption: captionWithin(post, TELEGRAM_CAPTION_MAX) },
       });
       return { ok: true, url: out?.result?.message_id ? `https://t.me/c/${chatId}/${out.result.message_id}` : null };
     }
@@ -395,7 +411,12 @@ async function publishX(post, creds) {
   // but posting requires the OAuth 1.0a quadruple.
   if (!consumerKey || !consumerSecret || !token || !tokenSecret) return missing('X');
   const auth = (method, url, params) => oauth1Header({ method, url, params, consumerKey, consumerSecret, token, tokenSecret });
-  const text = caption(post).slice(0, 280);
+  // X allows 280 characters: the whole bilingual caption never fits, so send the
+  // English body plus the site link and skip the footer.
+  const link = ` ${SITE}`;
+  const text = post.bodyEn.length + link.length <= 280
+    ? `${post.bodyEn}${link}`
+    : `${post.bodyEn.slice(0, 280 - link.length - 1).trimEnd()}…${link}`;
   try {
     const mediaIds = [];
     const png = await safePng(post);
@@ -642,7 +663,7 @@ async function publishTelegramVideo(post, creds, videoUrl) {
     const out = await jsonCall(`https://api.telegram.org/bot${token}/sendVideo`, {
       body: {
         chat_id: chatId, video: url, supports_streaming: true,
-        caption: caption(post).slice(0, 1024),
+        caption: captionWithin(post, TELEGRAM_CAPTION_MAX),
       },
     });
     return { ok: true, url: out?.result?.message_id ? `https://t.me/c/${chatId}/${out.result.message_id}` : null };
@@ -787,4 +808,5 @@ async function testChannel(platform, creds) {
   return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };
 }
 
-module.exports = { ADAPTERS, REEL_ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount, diagnoseInstagram, caption, igCaption, IG_CAPTION_MAX };
+module.exports = {
+  footer, captionWithin, TELEGRAM_CAPTION_MAX, DONATE_URL, RAZORPAY_URL, UPI_ID, ADAPTERS, REEL_ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount, diagnoseInstagram, caption, igCaption, IG_CAPTION_MAX };

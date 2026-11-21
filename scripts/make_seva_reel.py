@@ -112,13 +112,14 @@ def help_card(out_path):
 
 
 def narration(group, ideas):
-    spoken = [group.get('titleHi') or 'मदद करने के हज़ार तरीके']
-    spoken.append('तीन आसान तरीके।')
-    for idea in ideas:
-        spoken.append(f"{idea.get('hi')}. {idea.get('how') or ''}")
-    spoken.append('इनमें से कोई एक तरीका आप खुद भी अपना सकते हैं। पैसा ज़रूरी नहीं, समय भी काफ़ी है।')
-    spoken.append(f"और अगर समय या साधन न हो, तो हमारे माध्यम से किसी तक मदद पहुँचा सकते हैं। "
-                  f"QR स्कैन करें, या {mr.SITE} पर Donate पर जाएं।")
+    """Spoken the way a person would say it, not the way a form reads."""
+    spoken = ['नमस्ते।', 'आज बात सिर्फ़ एक — मदद।',
+              f"{group.get('titleHi') or ''}।", 'तीन तरीके, जो आप आज ही कर सकते हैं।']
+    for n, idea in enumerate(ideas[:3]):
+        spoken.append(f"{('पहला', 'दूसरा', 'तीसरा')[n]} — {idea.get('hi')}. {idea.get('how') or ''}")
+    spoken.append('ये तीनों काम आप खुद भी कर सकते हैं। इसमें पैसा नहीं लगता, बस थोड़ा वक़्त लगता है।')
+    spoken.append('और अगर वक़्त नहीं है, तो कोई बात नहीं। हमारे फाउंडेशन के ज़रिए आपकी मदद उस तक पहुँच जाएगी।')
+    spoken.append(f"नीचे QR स्कैन करें, या {mr.SITE} पर Donate खोलें।")
     return ' '.join(s for s in spoken if s)
 
 
