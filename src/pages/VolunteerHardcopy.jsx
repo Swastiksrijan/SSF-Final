@@ -9,7 +9,7 @@ export default function VolunteerHardcopy() {
   );
 
   return (
-    <main className="volunteer-hardcopy min-h-screen bg-slate-100 px-3 py-8 text-[#172B45] sm:px-6">
+    <main className="volunteer-hardcopy ssf-hero-offset min-h-screen bg-slate-100 px-3 py-8 text-[#172B45] sm:px-6">
       <div className="no-print mx-auto mb-5 flex max-w-[850px] flex-wrap items-center justify-between gap-3">
         <a href="/Volunteer" className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-semibold">← Volunteer Page</a>
         <button onClick={printForm} className="rounded-xl bg-[#176447] px-5 py-3 font-bold text-white shadow">प्रिंट करें / Print or Save as PDF</button>
@@ -156,7 +156,8 @@ export default function VolunteerHardcopy() {
         @media print {
           @page { size:A4; margin:12mm; }
           body { background:#fff !important; }
-          .volunteer-hardcopy { padding:0 !important; background:#fff !important; }
+          .ssf-root-shell > *:not(main) { display:none !important; }
+          .volunteer-hardcopy, .volunteer-hardcopy.ssf-hero-offset { padding:0 !important; background:#fff !important; }
           .no-print { display:none !important; }
           .volunteer-paper { max-width:none !important; padding:0 !important; box-shadow:none !important; }
           .section-heading,.upload-box { break-inside:avoid; }

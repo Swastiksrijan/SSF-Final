@@ -1,77 +1,19 @@
-import React, { useEffect, useState } from "react";
-import html2canvas from "html2canvas";
-import { jsPDF } from "jspdf";
+import React from "react";
+
+/* The PDF is a pre-built static file: generating it in the browser with
+   html2canvas/jsPDF failed on many phones and in-app browsers. Regenerate it
+   from this page's print view whenever the form changes:
+   chromium --headless --no-pdf-header-footer --print-to-pdf=public/forms/SSF-Membership-Application-Form.pdf http://localhost:12000/MembershipHardcopy */
+const PDF_PATH = "/forms/SSF-Membership-Application-Form.pdf";
 
 const MembershipHardcopy = () => {
-  const [downloading, setDownloading] = useState(false);
-  const [pdfUrl, setPdfUrl] = useState("");
-  useEffect(() => () => { if (pdfUrl) URL.revokeObjectURL(pdfUrl); }, [pdfUrl]);
   const printForm = () => window.print();
 
-  const downloadPdf = async () => {
-    const node = document.querySelector(".membership-print");
-    if (!node || downloading) return;
-    if (pdfUrl) { URL.revokeObjectURL(pdfUrl); setPdfUrl(""); }
-    setDownloading(true);
-    try {
-      if (document.fonts?.ready) await document.fonts.ready;
-      const images = Array.from(node.querySelectorAll("img"));
-      await Promise.all(images.map((img) => {
-        if (img.complete) return Promise.resolve();
-        return new Promise((resolve) => {
-          img.onload = resolve;
-          img.onerror = resolve;
-        });
-      }));
-
-      const canvas = await html2canvas(node, {
-        scale: 2,
-        backgroundColor: "#fff",
-        useCORS: true,
-        logging: false,
-        imageTimeout: 15000,
-      });
-      const pdf = new jsPDF("p", "mm", "a4");
-      const pageWidth = 190;
-      const pageHeight = 277;
-      const sliceHeight = Math.floor(canvas.width * pageHeight / pageWidth);
-      let offset = 0;
-      let page = 0;
-
-      while (offset < canvas.height) {
-        const part = document.createElement("canvas");
-        part.width = canvas.width;
-        part.height = Math.min(sliceHeight, canvas.height - offset);
-        const ctx = part.getContext("2d");
-        if (!ctx) throw new Error("PDF canvas could not be created");
-        ctx.fillStyle = "#fff";
-        ctx.fillRect(0, 0, part.width, part.height);
-        ctx.drawImage(canvas, 0, offset, canvas.width, part.height, 0, 0, part.width, part.height);
-        if (page > 0) pdf.addPage();
-        const imageHeight = part.height * pageWidth / canvas.width;
-        pdf.addImage(part.toDataURL("image/jpeg", 0.96), "JPEG", 10, 10, pageWidth, imageHeight, undefined, "FAST");
-        offset += part.height;
-        page += 1;
-      }
-
-      const blob = pdf.output("blob");
-      if (!blob || blob.size < 1000) throw new Error("Generated PDF is empty");
-      const url = URL.createObjectURL(blob);
-      setPdfUrl(url);
-    } catch (error) {
-      console.error("Membership PDF download failed:", error);
-      window.alert("PDF डाउनलोड नहीं हो पाया। कृपया Print Form दबाकर प्रिंट स्क्रीन में Save as PDF चुनें। / PDF download failed. Please use Print Form and choose Save as PDF.");
-    } finally {
-      setDownloading(false);
-    }
-  };
-
   return (
-    <main className="min-h-screen bg-slate-100 px-3 py-8 text-[#172B45] sm:px-6">
+    <main className="ssf-hero-offset min-h-screen bg-slate-100 px-3 py-8 text-[#172B45] sm:px-6">
       <div className="mx-auto mb-5 flex max-w-[820px] flex-wrap items-center justify-between gap-3 print:hidden">
         <a href="/Members" className="rounded-xl border border-slate-300 bg-white px-4 py-2.5 font-semibold">← सदस्यता पेज</a>
-        <button onClick={downloadPdf} disabled={downloading} className="rounded-xl bg-[#176447] px-5 py-3 font-bold text-white shadow disabled:cursor-wait disabled:opacity-60">{downloading ? "PDF तैयार हो रहा है… / Preparing PDF…" : "PDF तैयार करें / Prepare PDF"}</button>
-        {pdfUrl && <a href={pdfUrl} download="SSF-Membership-Application-Hindi-English.pdf" className="rounded-xl border-2 border-[#176447] bg-white px-5 py-3 text-center font-bold text-[#176447] shadow">PDF डाउनलोड करें / Download PDF</a>}
+        <a href={PDF_PATH} download="SSF-Membership-Application-Form.pdf" className="rounded-xl bg-[#176447] px-5 py-3 text-center font-bold text-white shadow">PDF डाउनलोड करें / Download PDF</a>
         <button onClick={printForm} className="rounded-xl bg-[#12345A] px-5 py-3 font-bold text-white shadow">प्रिंट / Print Form</button>
       </div>
       <article className="membership-print mx-auto max-w-[820px] bg-white p-6 shadow-xl sm:p-10">
@@ -133,7 +75,7 @@ const MembershipHardcopy = () => {
         </footer>
       </article>
       <div className="mx-auto mt-4 max-w-[820px] rounded-xl bg-amber-50 p-4 text-sm text-amber-900 print:hidden">
-        <b>PDF डाउनलोड / Download PDF:</b> पहले “PDF तैयार करें / Prepare PDF” दबाएँ। PDF तैयार होने के बाद “PDF डाउनलोड करें / Download PDF” लिंक दिखाई देगा—उसे दबाकर फाइल सेव करें। फिर उसे खोलकर A4 पेपर पर प्रिंट करें। वैकल्पिक रूप से “प्रिंट / Print Form” दबाकर प्रिंटर या “Save as PDF” चुनें।
+        <b>PDF डाउनलोड / Download PDF:</b> ऊपर “PDF डाउनलोड करें / Download PDF” दबाएँ—फाइल तुरंत डाउनलोड हो जाएगी (फोन पर Downloads/Files में देखें)। उसे खोलकर A4 पेपर पर प्रिंट करें। वैकल्पिक रूप से “प्रिंट / Print Form” दबाकर प्रिंटर या “Save as PDF” चुनें।
         <p className="mt-2">हस्ताक्षरित फॉर्म की वेबसाइट पर सुरक्षित अपलोड सुविधा अभी उपलब्ध नहीं है। इसलिए फॉर्म डाउनलोड करके प्रिंट करें, हाथ से भरें और हस्ताक्षरित प्रति संस्था के रिकॉर्ड हेतु जमा करें।</p>
       </div>
       <style>{`
@@ -142,7 +84,8 @@ const MembershipHardcopy = () => {
         @media print {
           @page { size: A4; margin: 12mm; }
           body { background: white !important; }
-          main { padding: 0 !important; background: white !important; }
+          .ssf-root-shell > *:not(main) { display: none !important; }
+          main, main.ssf-hero-offset { padding: 0 !important; background: white !important; }
           .membership-print { max-width: none !important; padding: 0 !important; box-shadow: none !important; }
           .form-field { break-inside: avoid; }
           section { break-inside: avoid; }
