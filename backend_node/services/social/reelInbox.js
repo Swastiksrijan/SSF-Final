@@ -150,19 +150,21 @@ async function check({ fetchImpl = globalThis.fetch, publish = publishReel, forc
     const name = `${Date.now()}-${crypto.randomBytes(4).toString('hex')}.mp4`;
     fs.writeFileSync(path.join(REEL_DIR, name), buf);
 
-    // Instagram and Facebook download the file themselves. Our own /uploads URL
-    // sits on a host that may be asleep, and a slow first byte makes Instagram
-    // fail the container with a bare "Fatal", so prefer the release asset URL
-    // (a warm CDN) when the manifest carries one.
-    const videoUrl = typeof manifest.assetUrl === 'string' && /^https:\/\//.test(manifest.assetUrl)
+    // The platforms download the file themselves. Our own copy is served straight
+    // from disk by the process that is already awake, while the release asset URL
+    // answers with a 302 to a signed host — Instagram refuses that with a bare
+    // "Fatal" (Facebook accepts it). So try the local copy first and give the
+    // asset URL a second chance for Instagram only.
+    const localUrl = `/uploads/reels/${name}`;
+    const cdnUrl = typeof manifest.assetUrl === 'string' && /^https:\/\//.test(manifest.assetUrl)
       ? manifest.assetUrl
-      : `/uploads/reels/${name}`;
-    const out = await publish({
-      post,
-      videoUrl,
-      platforms: Array.isArray(manifest.platforms) ? manifest.platforms : undefined,
-      force: wantForce,
-    });
+      : null;
+    const platforms = Array.isArray(manifest.platforms) ? manifest.platforms : undefined;
+    let out = await publish({ post, videoUrl: localUrl, platforms, force: wantForce });
+    if (cdnUrl && failed(out, 'instagram')) {
+      const retry = await publish({ post, videoUrl: cdnUrl, platforms: ['instagram'], force: true });
+      out = merge(out, retry);
+    }
     const done = Boolean(out && (out.published || out.skipped));
     await remember(done ? 'done' : 'failed', done ? null : 'no channel accepted the reel');
     if (done) pruneReels();
@@ -173,6 +175,22 @@ async function check({ fetchImpl = globalThis.fetch, publish = publishReel, forc
     await noteAttempt(post, { at: new Date().toISOString(), error: e.message });
     return { postId, attempts, error: e.message };
   }
+}
+
+const failed = (out, platform) => Boolean(out && Array.isArray(out.results)
+  && out.results.some((r) => r.platform === platform && !r.ok));
+
+// Keep the first run's per-platform results, replacing only what was retried.
+function merge(out, retry) {
+  const retried = (retry && retry.results) || [];
+  const results = [...(out.results || []).filter((r) => !retried.some((n) => n.platform === r.platform)), ...retried];
+  return {
+    ...out,
+    ...retry,
+    results,
+    published: Boolean(out.published || (retry && retry.published)),
+    skipped: Boolean(out.skipped || (retry && retry.skipped)),
+  };
 }
 
 // Public read-only view of the last check: no secrets, just what happened.
