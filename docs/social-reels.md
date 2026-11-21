@@ -73,3 +73,49 @@ Actions → **SSF Daily Reel** → Run workflow. Leave `post_id` empty to take t
 newest un-reeled post, or pass a post id to force that one. The rendered MP4 is
 kept as a build artifact for 7 days, so a bad reel can be checked before the
 next slot.
+
+## Seva reels — "मदद करने के हज़ार तरीके"
+
+A second, independent series: each reel teaches one theme and **three concrete
+ways a viewer can help today**, then asks for support.
+
+```
+hook   मदद करने के हज़ार तरीके / <theme> / तरीका #N
+card 1 01  <way to help>   Hindi line + English gloss + the spoken detail
+card 2 02  ...
+card 3 03  ...
+end    DONATE NOW · QR · UPI/Paytm 9718346691 · swastiksrijan.in/Donate
+```
+
+| Piece | Where |
+| --- | --- |
+| The 36 ways (12 groups of 3) | `backend_node/data/sevaIdeas.js` |
+| Renderer | `scripts/make_seva_reel.py` |
+| Schedule + inbox | `.github/workflows/seva-reels.yml` → release `seva-inbox` |
+| End card (shared with the post reels) | `scripts/make_reel.py` → `end_card()` |
+
+Add a way to help by editing `sevaIdeas.js` — nothing else changes. The group for
+a day is `(day of year - 1) % 12`, so the series walks the whole list and then
+repeats; pass `index` on a manual run to render a specific group.
+
+### Why a separate inbox tag
+
+The backend polls one inbox per series (`REEL_INBOX_TAGS`, default
+`reel-inbox,seva-inbox`). A single shared manifest loses a reel whenever the free
+instance is asleep and the next workflow run overwrites the manifest before it is
+read, so each series keeps its own tag and its own state key.
+
+A seva reel has no awareness post behind it, so the inbox creates the record
+(`postRef` `SEVA-<date>-<index>`, slot `seva`) and then publishes it through the
+same path as any other reel — the IMS Social list shows it with its per-platform
+results.
+
+### The donate ask on every reel
+
+Both series end on the same card: a QR to `https://swastiksrijan.in/Donate`, the
+UPI/Paytm number `9718346691`, and `swastiksrijan.in/Donate`. The QR is drawn with
+the `qrcode` package, so both workflows install it; without the package the card
+still renders with a plain "QR" placeholder instead of failing the render.
+
+Change the number or the URL in one place: `UPI_ID` / `DONATE_URL` at the top of
+`scripts/make_reel.py`.
