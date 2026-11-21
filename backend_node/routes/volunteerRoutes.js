@@ -127,9 +127,11 @@ router.post('/admin/login', async (req, res) => {
 
 // @route   POST /api/register
 // @desc    Register a new volunteer
-router.post('/register', upload.single('id_document'), async (req, res) => {
+router.post('/register', upload.fields([{ name: 'profile_photo', maxCount: 1 }, { name: 'id_document', maxCount: 1 }]), async (req, res) => {
     try {
-        const { name, email, phone, volunteer_type, position, id_type, message } = req.body;
+        const { name, email, phone, volunteer_type, position, id_type, identity_number, message } = req.body;
+        const profilePhoto = req.files?.profile_photo?.[0] || null;
+        const idDocument = req.files?.id_document?.[0] || null;
 
         if (!name || !email || !phone) {
             return res.status(400).json({ status: 'error', message: 'Full name, email and phone are required' });
@@ -142,8 +144,10 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
             volunteerType: volunteer_type,
             position,
             idType: id_type || null,
+            identityNumber: identity_number || null,
             message,
-            idDocumentPath: req.file ? `/uploads/${req.file.filename}` : null,
+            idDocumentPath: idDocument ? `/uploads/${idDocument.filename}` : null,
+            profilePhotoPath: profilePhoto ? `/uploads/${profilePhoto.filename}` : null,
             status: 'pending',
             isVerified: false
         });
@@ -151,7 +155,7 @@ router.post('/register', upload.single('id_document'), async (req, res) => {
         const notify = await sendAdminNotification({
             subject: `New Volunteer Registration: ${name}`,
             text: `A new volunteer has applied. Name: ${name}, Type: ${volunteer_type}, Position: ${position}, Phone: ${phone}, Email: ${email}`,
-            html: `<h3>New Volunteer Request</h3><p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Type:</strong> ${volunteer_type}</p><p><strong>Position:</strong> ${position}</p><p><strong>Message:</strong> ${message || 'N/A'}</p>`
+            html: `<h3>New Volunteer Request</h3><p><strong>Name:</strong> ${name}</p><p><strong>Email:</strong> ${email}</p><p><strong>Phone:</strong> ${phone}</p><p><strong>Type:</strong> ${volunteer_type}</p><p><strong>Position:</strong> ${position}</p><p><strong>Message:</strong> ${message || 'N/A'}</p><p><strong>Photo uploaded:</strong> ${profilePhoto ? 'Yes' : 'No'}</p>`
         });
 
         res.status(201).json({
