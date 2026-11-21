@@ -84,6 +84,7 @@ async function noteAttempt(post, attempt) {
 // The inbox is invisible from outside: a skipped or failing check looks exactly
 // like "nothing was queued". Remember the last outcome so it can be inspected.
 let lastResult = null;
+const lastByTag = {};
 
 function record(out) {
   lastResult = { at: new Date().toISOString(), ...out };
@@ -107,7 +108,11 @@ async function check(opts = {}) {
   lastCheck.set(fetchImpl, Date.now());
 
   const results = [];
-  for (const tag of TAGS) results.push(await checkTag(tag, opts));
+  for (const tag of TAGS) {
+    const result = await checkTag(tag, opts);
+    lastByTag[tag] = result;
+    results.push(result);
+  }
   // Report the first inbox that had something to say; "no-inbox" means idle.
   return results.find((r) => r.skipped !== 'no-inbox') || { skipped: 'no-inbox' };
 }
@@ -246,7 +251,14 @@ function merge(out, retry) {
 
 // Public read-only view of the last check: no secrets, just what happened.
 function status() {
-  return { last: lastResult, inbox: MANIFEST_URL, maxAttempts: MAX_ATTEMPTS };
+  return {
+    last: lastResult,
+    // One line per series: a quiet reel-inbox must not hide a seva publish.
+    byTag: lastByTag,
+    inbox: MANIFEST_URL,
+    inboxes: TAGS,
+    maxAttempts: MAX_ATTEMPTS,
+  };
 }
 
 module.exports = { tick, status, STATE_KEY, MAX_ATTEMPTS, TAGS };
