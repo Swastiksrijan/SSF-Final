@@ -44,7 +44,9 @@ jobs:
     timeout-minutes: 30
     env:
       BASE: ${{ secrets.SOCIAL_BACKEND_URL || 'https://ngo-backend-03hq.onrender.com' }}
-      KEY: ${{ secrets.SCHEDULER_SECRET || 'ssf-admin-portal-token' }}
+      # Same value as the backend's SCHEDULER_SECRET (or ADMIN_PORTAL_TOKEN when
+      # that is what the deployment sets). See docs/social-reels.md.
+      KEY: ${{ secrets.SCHEDULER_SECRET || secrets.ADMIN_PORTAL_TOKEN || 'ssf-admin-portal-token' }}
       POST_ID: ${{ github.event.inputs.post_id }}
       FORCE: ${{ github.event.inputs.force }}
       TZ: Asia/Kolkata
@@ -173,6 +175,10 @@ jobs:
           if [ "$code" = "409" ]; then
             echo "::notice::No video-capable channel connected yet (Instagram/Facebook/Telegram/YouTube). Connect one in IMS → Social Media."
             exit 0
+          fi
+          if [ "$code" = "401" ]; then
+            echo "::error::Backend rejected the scheduler key. Add the repo secret SCHEDULER_SECRET (or ADMIN_PORTAL_TOKEN) with the same value as the backend's env var."
+            exit 1
           fi
           [ "$code" = "200" ] || { echo "::error::reel publish failed ($code)"; exit 1; }
 
