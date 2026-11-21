@@ -222,6 +222,18 @@ export default function FundingPartnershipsPage() {
       </div>
     </section>
 
+    <section id="collaboration-platforms" className="bg-white px-5 py-14 md:px-8 md:py-16">
+      <div className="mx-auto max-w-7xl">
+        <p className="text-xs font-black uppercase tracking-[.22em] text-[#2d6a4f]">Useful collaboration platforms</p>
+        <h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">Explore NGO &amp; volunteer connections</h2>
+        <p className="mt-4 max-w-3xl leading-7 text-slate-600">A helpful external platform for discovering volunteering and institutional engagement opportunities. This listing is informational and does not represent an approved or formal partnership with ConnectFor.</p>
+        <a href="https://www.connectfor.org/" target="_blank" rel="noopener noreferrer" className="mt-8 flex max-w-3xl items-center gap-6 rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <div className="flex h-24 w-36 shrink-0 items-center justify-center rounded-2xl bg-white p-3"><img src="https://leher.org/wp-content/uploads/2018/02/12778745_1514770052161626_5596174727350132210_o.png" alt="ConnectFor logo" loading="lazy" className="max-h-full max-w-full object-contain"/></div>
+          <div><h3 className="text-xl font-extrabold text-[#002344]">ConnectFor</h3><p className="mt-2 text-sm leading-6 text-slate-600">Volunteer opportunities, NGO connections and CSR-related engagement resources.</p><span className="mt-3 inline-block text-sm font-bold text-[#176447]">Visit connectfor.org ↗</span></div>
+        </a>
+      </div>
+    </section>
+
     <section className="bg-[#002344] px-5 py-16 text-center text-white md:px-8 md:py-20">
       <div className="mx-auto max-w-3xl"><Handshake className="mx-auto text-[#ffb347]" size={38}/><h2 className="mt-5 font-serif text-3xl font-bold md:text-4xl">Let us build a project together</h2><p className="mt-5 leading-8 text-white/75">Companies, banks, institutions, government departments, philanthropists, industry leaders and citizens are welcome to discuss a defined project, partnership, equipment contribution or institutional requirement.</p><div className="mt-8 flex flex-wrap justify-center gap-3"><Link to="/Contact" className="inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-6 py-3 font-bold text-[#17212b]">Contact the Foundation <ArrowRight size={18}/></Link><Link to="/Donate" className="rounded-full border border-white/35 px-6 py-3 font-bold hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#2d6a4f]">Donate online</Link></div><p className="mt-8 text-xs leading-6 text-white/50">This page explains potential funding and partnership routes. It is not a public offer, sanction letter, guarantee of eligibility or assurance that any grant or finance has been approved. All proposals remain subject to due diligence, approvals and applicable law.</p></div>
     </section>
