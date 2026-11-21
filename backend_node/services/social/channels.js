@@ -486,20 +486,16 @@ async function publishInstagramReel(post, creds, videoUrl) {
   }
 }
 
-// The id that can publish is the page's linked Instagram Business account, not
-// whatever was typed into the dashboard: a stale or personal id is accepted by
-// the API and then fails the container with an unexplained "Fatal".
+// The id that can publish is the page's linked Instagram account, not whatever
+// was typed into the dashboard: a stale or personal id is accepted by the API and
+// then fails the container with an unexplained "Fatal".
 async function resolveIgUserId(creds, token) {
   const pageId = pick(creds, 'pageId');
   const stored = pick(creds, 'igUserId');
   if (pageId) {
-    try {
-      const pageToken = await resolvePageToken(pageId, token);
-      const d = await graphGet(`${GRAPH}/${pageId}?fields=instagram_business_account{id,username}&access_token=${encodeURIComponent(pageToken)}`);
-      const linked = d && d.instagram_business_account;
-      if (linked && linked.id) return { id: linked.id, username: linked.username, via: 'page' };
-      if (!stored) return { error: 'page_has_no_instagram_business_account' };
-    } catch { /* fall back to the stored id */ }
+    const linked = await resolveInstagramAccount({ pageId, accessToken: token });
+    if (linked.ok) return { id: linked.igUserId, username: linked.username, via: linked.link };
+    if (!stored) return { error: linked.error };
   }
   if (!stored) return { error: 'instagram_user_id_missing' };
   return { id: stored, via: 'stored' };
@@ -512,6 +508,39 @@ async function igAccountHint(igUserId, token) {
     const d = await graphGet(`${GRAPH}/${igUserId}?fields=username,account_type&access_token=${encodeURIComponent(token)}`);
     return `account ${d.username || '?'} (${d.account_type || 'unknown'})`;
   } catch (e) { return `account lookup failed: ${e.message}`; }
+}
+
+// One place to answer "why can't this account publish?": the linked account, the
+// id in use, the publishing quota and the granted scopes. Tokens never leave here.
+async function diagnoseInstagram(creds) {
+  const token = pick(creds, 'accessToken');
+  if (!token) return { ok: false, error: 'access_token_missing' };
+  const pageId = pick(creds, 'pageId');
+  const stored = pick(creds, 'igUserId');
+  const probe = async (url) => {
+    try { return { ok: true, data: await graphGet(url) }; } catch (e) { return { ok: false, error: e.message }; }
+  };
+  const pageToken = pageId ? await resolvePageToken(pageId, token) : token;
+  const ig = await resolveIgUserId(creds, token);
+  const out = {
+    ok: Boolean(ig.id),
+    igUserId: ig.id || null,
+    via: ig.via || null,
+    resolveError: ig.error || null,
+    page: pageId
+      ? await probe(`${GRAPH}/${pageId}?fields=name,instagram_business_account{id,username}&access_token=${encodeURIComponent(pageToken)}`)
+      : { ok: false, error: 'page_id_missing' },
+    storedId: stored
+      ? await probe(`${GRAPH}/${stored}?fields=username&access_token=${encodeURIComponent(token)}`)
+      : { ok: false, error: 'ig_user_id_missing' },
+    permissions: await probe(`${GRAPH}/me/permissions?access_token=${encodeURIComponent(token)}`),
+  };
+  if (ig.id) {
+    out.publishingLimit = await probe(
+      `${GRAPH}/${ig.id}/content_publishing_limit?fields=quota_usage,config&access_token=${encodeURIComponent(token)}`,
+    );
+  }
+  return out;
 }
 
 async function publishFacebookVideo(post, creds, videoUrl) {
@@ -686,4 +715,4 @@ async function testChannel(platform, creds) {
   return { ok: false, platform, error: 'test_not_available', hint: 'Save & connect, then publish a post to verify.' };
 }
 
-module.exports = { ADAPTERS, REEL_ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount, caption, igCaption, IG_CAPTION_MAX };
+module.exports = { ADAPTERS, REEL_ADAPTERS, testChannel, exchangeFacebookToken, resolveInstagramAccount, diagnoseInstagram, caption, igCaption, IG_CAPTION_MAX };

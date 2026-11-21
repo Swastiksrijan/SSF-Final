@@ -609,6 +609,20 @@ function pruneReels(keep = 10) {
 // Why did (or didn't) a queued reel publish? Read-only and secret-free.
 router.get('/reels/inbox', (_req, res) => res.json(require('../services/social/reelInbox').status()));
 
+// Why Instagram refuses a reel: linked account, id in use, quota, granted scopes.
+// Cached because each call spends Graph quota and Meta rate-limits per app.
+let igDiagnosis = { at: 0, body: null };
+router.get('/reels/inbox/instagram', async (_req, res) => {
+  if (igDiagnosis.body && Date.now() - igDiagnosis.at < 10 * 60 * 1000) return res.json(igDiagnosis.body);
+  try {
+    const { SocialChannel } = require('../models/social');
+    const row = await SocialChannel.findOne({ where: { platform: 'instagram' } });
+    const body = await require('../services/social/channels').diagnoseInstagram((row && row.credentials) || {});
+    igDiagnosis = { at: Date.now(), body };
+    res.json(body);
+  } catch (e) { res.status(500).json({ ok: false, error: e.message }); }
+});
+
 router.post('/social/reel', schedulerAuth, (req, r, next) => {
   reelUpload.single('video')(req, r, (err) => {
     if (err) return r.status(400).json({ ok: false, message: err.message });
