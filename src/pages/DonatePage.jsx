@@ -148,9 +148,12 @@ export default function DonatePage() {
                   <div className="p-4"><p className="text-xs text-[#26343D]">IFSC Code</p><p className="mt-1 font-mono font-bold text-[#12345A]">UBIN0548146</p></div>
                 </div>
               </div>
-              <div className="mt-4 flex items-center gap-4 p-3 bg-white rounded-2xl border-2 border-dashed border-[#EAF0F6]">
-                <img src={qrCode} alt="Scan to Donate" className="w-20 h-20 rounded-xl border border-[#EAF0F6] object-cover" />
-                <div><p className="font-bold text-[#12345A]">Scan to Pay via UPI / Paytm</p><p className="text-xs text-[#26343D] mt-1">Scan the official QR code to make a payment.</p></div>
+              <div className="mt-4 flex flex-col items-center gap-3 p-5 bg-white rounded-2xl border-2 border-dashed border-[#EAF0F6] text-center">
+                <p className="font-bold text-lg text-[#12345A]">Scan to Pay via UPI / Paytm</p>
+                <a href={qrCode} target="_blank" rel="noopener noreferrer" aria-label="Open full-size official donation QR code">
+                  <img src={qrCode} alt="Official UPI / Paytm donation QR code — open full size to scan" className="block w-full max-w-[280px] aspect-square h-auto rounded-xl border border-[#EAF0F6] bg-white object-contain p-2" />
+                </a>
+                <p className="text-xs text-[#26343D]">QR कोड बड़ा करके स्कैन करें। जरूरत हो तो QR पर टैप करके पूरी फोटो खोलें।</p>
               </div>
               <div className="mt-4 rounded-2xl border border-[#EAF0F6] bg-white p-4"><p className="text-xs font-semibold uppercase tracking-wider text-[#26343D]">Paytm mobile number</p><a href="tel:9718346691" className="mt-1 inline-block text-xl font-black tracking-wide text-[#12345A]">9718346691</a><p className="mt-1 text-xs text-[#26343D]">You may use this number in Paytm where mobile-number payments are supported. Verify the recipient name before confirming.</p></div><div className="mt-4 p-4 bg-[#EAF0F6] border border-[#EAF0F6] rounded-2xl"><p className="text-sm font-bold text-[#12345A] leading-relaxed">📩 After transfer, email your transaction details to request a donation receipt. Any 80G tax document depends on current approval status and donor eligibility.</p></div>
             </div>
