@@ -134,6 +134,10 @@ async function main() {
   const failPublish = async () => { throw new Error('no reel channel connected'); };
   const first = await tick({ fetchImpl: failingFetch(), publish: failPublish });
   ok('failure records an attempt', first.attempts === 1 && first.error === 'no reel channel connected', JSON.stringify(first));
+  await failing.reload();
+  ok('failure is visible on the post',
+    failing.data.reelLastAttempt && failing.data.reelLastAttempt.error === 'no reel channel connected',
+    JSON.stringify(failing.data.reelLastAttempt));
   let last;
   for (let i = 0; i < MAX_ATTEMPTS; i += 1) last = await tick({ fetchImpl: failingFetch(), publish: failPublish });
   ok('stops after MAX_ATTEMPTS', last.skipped === 'already-handled', JSON.stringify(last));
