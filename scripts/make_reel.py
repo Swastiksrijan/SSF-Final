@@ -16,7 +16,7 @@ mangles Hindi conjuncts.
 Reel shape:
   0.0s              hook card  - the bilingual message, so the first two seconds land
   2.6s              poster     - the published poster, slow zoom, Hindi narration
-  narration end     end card   - donate: QR, UPI/Paytm number, website
+  narration end     end card   - help first, then the ask: QR, UPI, donate page
 
 Usage:
   python3 scripts/make_reel.py --image post.jpg --out reel.mp4 \
@@ -56,7 +56,11 @@ GOLD_BRIGHT = (255, 209, 102)
 WHITE = (255, 255, 255)
 SITE = 'swastiksrijan.in'
 DONATE_URL = 'https://swastiksrijan.in/Donate'
-UPI_ID = '9718346691'
+RAZORPAY_URL = 'https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view'
+# The VPA printed on the foundation's own Paytm scanner. A phone-number VPA is a
+# different account, so this must stay the one the QR encodes.
+UPI_ID = 'swastikstijanfoundation@ptyes'
+QR_IMAGE = os.path.join(ROOT, 'backend_node', 'assets', 'donate-qr.png')
 
 
 def _is_font(path):
@@ -248,23 +252,27 @@ def hook_card(post, out_path):
     img.save(out_path)
 
 
-def qr_image(url, size):
-    """QR for the donate page. None when the qrcode package is not installed."""
+def qr_image(size):
+    """The foundation's own Paytm scanner, cropped to the code. Falls back to a
+    generated QR for the donate page when the asset is missing."""
+    if os.path.exists(QR_IMAGE):
+        img = Image.open(QR_IMAGE).convert('RGB')
+        return img.resize((size, size), Image.LANCZOS)
     try:
         import qrcode
     except ImportError:
         return None
     qr = qrcode.QRCode(border=2, box_size=10, error_correction=qrcode.constants.ERROR_CORRECT_M)
-    qr.add_data(url)
+    qr.add_data(DONATE_URL)
     qr.make(fit=True)
     img = qr.make_image(fill_color='#002344', back_color='white').convert('RGB')
-    # NEAREST keeps the modules square; LANCZOS blurs them into an unscannable mess.
     return img.resize((size, size), Image.NEAREST)
 
 
 def end_card(out_path):
-    """Last seconds: the ask. QR, UPI number and the donate page, every reel."""
-    img = glow(gradient(W, H, NAVY_LIGHT, NAVY), W // 2, 860, 560, GOLD, 50)
+    """The last seconds. Suggest first, ask second: a viewer is told they can help
+    on their own, and only then offered the foundation as one way to do it."""
+    img = glow(gradient(W, H, NAVY_LIGHT, NAVY), W // 2, 760, 560, GOLD, 45)
     d = ImageDraw.Draw(img)
 
     def centre(text, fnt, y, fill):
@@ -278,36 +286,38 @@ def end_card(out_path):
             d.text((x, y), text, font=fnt, fill=fill)
             x += width
 
-    paste_logo(img, W // 2 - 92, 120, 184)
+    paste_logo(img, W // 2 - 80, 96, 160)
 
-    centre('DONATE NOW', font('NotoSans-Bold.ttf', 92), 350, GOLD_BRIGHT)
-    centre('अभी दान करें', font('NotoSansDevanagari-Bold.ttf', 58), 470, WHITE)
+    centre('आप भी मदद करें', font('NotoSansDevanagari-Bold.ttf', 76), 296, WHITE)
+    centre('हर हाथ काम आता है', font('NotoSansDevanagari-Regular.ttf', 38), 396, GOLD_BRIGHT)
+    centre('— चाहें तो हमारे माध्यम से —', font('NotoSansDevanagari-Regular.ttf', 28), 462, (196, 214, 232))
 
-    box, pad = 420, 22
-    x0, y0 = (W - box) // 2, 590
-    d.rounded_rectangle([x0, y0, x0 + box, y0 + box], radius=28, fill=WHITE)
-    qr = qr_image(DONATE_URL, box - pad * 2)
+    box, pad = 380, 20
+    x0, y0 = (W - box) // 2, 530
+    d.rounded_rectangle([x0, y0, x0 + box, y0 + box], radius=26, fill=WHITE)
+    qr = qr_image(box - pad * 2)
     if qr is not None:
         img.paste(qr, (x0 + pad, y0 + pad))
     else:
-        centre('QR', font('NotoSans-Bold.ttf', 120), y0 + 130, NAVY)
+        centre('QR', font('NotoSans-Bold.ttf', 110), y0 + 120, NAVY)
 
     # "QR" must come from the Latin face: the Devanagari subset has no Q or R.
-    centre_mixed([('QR', font('NotoSans-Bold.ttf', 34), (206, 222, 238)),
-                  (' स्कैन करें', font('NotoSansDevanagari-Regular.ttf', 34), (206, 222, 238)),
-                  ('  •  Scan to donate', font('NotoSans-Regular.ttf', 34), (206, 222, 238))], y0 + box + 26)
+    centre_mixed([('QR', font('NotoSans-Bold.ttf', 32), (206, 222, 238)),
+                  (' स्कैन करें', font('NotoSansDevanagari-Regular.ttf', 32), (206, 222, 238)),
+                  ('  •  Scan to pay', font('NotoSans-Regular.ttf', 32), (206, 222, 238))], y0 + box + 22)
 
-    d.line([(W // 2 - 150, y0 + box + 96), (W // 2 + 150, y0 + box + 96)], fill=GOLD, width=3)
-    centre_mixed([('UPI / Paytm  ', font('NotoSans-Regular.ttf', 40), (200, 216, 232)),
-                  (UPI_ID, font('NotoSans-Bold.ttf', 54), WHITE)], y0 + box + 126)
-    centre(SITE + '/Donate', font('NotoSans-Bold.ttf', 56), y0 + box + 216, GOLD_BRIGHT)
-    centre('@swastiksrijan  •  Join Us', font('NotoSans-Regular.ttf', 36), y0 + box + 300, (200, 216, 232))
+    centre('UPI', font('NotoSans-Regular.ttf', 24), y0 + box + 82, (170, 190, 210))
+    centre(UPI_ID, font('NotoSans-Bold.ttf', 32), y0 + box + 112, WHITE)
 
-    centre('हर मदद मायने रखती है', font('NotoSansDevanagari-Bold.ttf', 46), y0 + box + 372, GOLD)
-    centre('Every bit of help counts', font('NotoSans-Regular.ttf', 32), y0 + box + 434, (200, 216, 232))
+    d.line([(W // 2 - 150, y0 + box + 168), (W // 2 + 150, y0 + box + 168)], fill=GOLD, width=2)
+    centre(SITE + '/Donate', font('NotoSans-Bold.ttf', 46), y0 + box + 190, GOLD_BRIGHT)
+    centre('Razorpay  •  UPI  •  Card  •  NetBanking', font('NotoSans-Regular.ttf', 28), y0 + box + 256, (200, 216, 232))
 
-    centre('स्वास्तिक सृजन फाउंडेशन', font('NotoSansDevanagari-Regular.ttf', 34), H - 150, (170, 190, 210))
-    centre('Creating Change. Inspiring Lives.', font('NotoSans-Regular.ttf', 30), H - 100, (150, 172, 196))
+    centre('हर मदद मायने रखती है', font('NotoSansDevanagari-Bold.ttf', 40), 1330, GOLD)
+    centre('Every bit of help counts', font('NotoSans-Regular.ttf', 28), 1392, (186, 204, 224))
+
+    centre('स्वास्तिक सृजन फाउंडेशन', font('NotoSansDevanagari-Regular.ttf', 30), H - 190, (170, 190, 210))
+    centre('@swastiksrijan  •  Creating Change. Inspiring Lives.', font('NotoSans-Regular.ttf', 26), H - 142, (150, 172, 196))
     img.save(out_path)
 
 

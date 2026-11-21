@@ -1,10 +1,12 @@
 import { FaHandHoldingHeart, FaCheckCircle, FaShieldAlt, FaGraduationCap, FaHeartbeat, FaBriefcase, FaRunning, FaTree, FaClipboardCheck, FaChevronDown } from "react-icons/fa";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import qrCode from "../assets/barcode.jpg";
+import qrCode from "../assets/paytm-upi-scanner.jpg";
 import DonorForm from "../components/DonorForm";
 
-const RAZORPAY_URL = "https://pages.razorpay.com/pl_NCiTn7wnBOJFYG/view";
+import { CONTACT_INFO } from "../config/contact";
+
+const RAZORPAY_URL = CONTACT_INFO.social.razorpay;
 
 export default function DonatePage() {
   const [openFaq, setOpenFaq] = useState(null);
@@ -151,9 +153,11 @@ export default function DonatePage() {
               <div className="mt-4 flex flex-col items-center gap-3 p-5 bg-white rounded-2xl border-2 border-dashed border-[#EAF0F6] text-center">
                 <p className="font-bold text-lg text-[#12345A]">Scan to Pay via UPI / Paytm</p>
                 <a href={qrCode} target="_blank" rel="noopener noreferrer" aria-label="Open full-size official donation QR code">
-                  <img src={qrCode} alt="Official UPI / Paytm donation QR code — open full size to scan" className="block w-full max-w-[280px] aspect-square h-auto rounded-xl border border-[#EAF0F6] bg-white object-contain p-2" />
+                  <img src={qrCode} alt="Swastik Srijan Foundation Paytm UPI scanner — open full size to scan" className="block w-full max-w-[260px] h-auto rounded-xl border border-[#EAF0F6] bg-white p-2" />
                 </a>
                 <p className="text-xs text-[#26343D]">QR कोड बड़ा करके स्कैन करें। जरूरत हो तो QR पर टैप करके पूरी फोटो खोलें।</p>
+                <p className="text-xs text-[#26343D]">The foundation's own Paytm scanner. The payee must read <span className="font-semibold">SWASTIK SRIJAN FOUNDATION SAMITI</span>.</p>
+                <p className="text-xs font-mono text-[#12345A] break-all">{CONTACT_INFO.social.upi}</p>
               </div>
               <div className="mt-4 rounded-2xl border border-[#EAF0F6] bg-white p-4"><p className="text-xs font-semibold uppercase tracking-wider text-[#26343D]">Paytm mobile number</p><a href="tel:9718346691" className="mt-1 inline-block text-xl font-black tracking-wide text-[#12345A]">9718346691</a><p className="mt-1 text-xs text-[#26343D]">You may use this number in Paytm where mobile-number payments are supported. Verify the recipient name before confirming.</p></div><div className="mt-4 p-4 bg-[#EAF0F6] border border-[#EAF0F6] rounded-2xl"><p className="text-sm font-bold text-[#12345A] leading-relaxed">📩 After transfer, email your transaction details to request a donation receipt. Any 80G tax document depends on current approval status and donor eligibility.</p></div>
             </div>
