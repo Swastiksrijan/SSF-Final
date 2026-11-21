@@ -199,6 +199,14 @@ async function main() {
   const ghost = await tick({ fetchImpl: fakeFetch({ release: releaseDoc(999999), files: { 'inbox.json': manifest(999999), 'reel.mp4': video } }) });
   ok('unknown post -> no-post', ghost.skipped === 'no-post', JSON.stringify(ghost));
 
+  // The tick runs every minute; the inbox must not spend two GitHub calls each
+  // time or it trips the anonymous rate limit.
+  const oneFetch = fakeFetch({ release: { assets: [] } });
+  await tick({ fetchImpl: oneFetch });
+  const throttled = await tick({ fetchImpl: oneFetch });
+  ok('checks are throttled per fetch impl', throttled.skipped === 'throttled', JSON.stringify(throttled));
+  ok('throttled tick makes no extra call', oneFetch.calls.length === 1, oneFetch.calls.join(','));
+
   console.log(`\nRESULT: ${pass} passed, ${fail} failed`);
   process.exit(fail ? 1 : 0);
 }
