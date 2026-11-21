@@ -488,13 +488,13 @@ async function publishInstagramReel(post, creds, videoUrl) {
     if (!container.id) throw new Error('instagram_reel_container_failed');
 
     let ready = false;
-    for (let i = 0; i < 24; i += 1) {
+    for (let i = 0; i < 15; i += 1) {
       const status = await graphGet(`${REEL_GRAPH}/${container.id}?fields=status_code,status&access_token=${encodeURIComponent(token)}`);
       if (status.status_code === 'FINISHED') { ready = true; break; }
       if (status.status_code === 'ERROR' || status.status_code === 'EXPIRED') {
         throw new Error(status.status || 'instagram_reel_processing_failed');
       }
-      await new Promise((resolve) => setTimeout(resolve, 5000));
+      await new Promise((resolve) => setTimeout(resolve, 4000));
     }
     if (!ready) throw new Error('instagram_reel_processing_timeout');
 
