@@ -228,14 +228,12 @@ export default function FundingPartnershipsPage() {
         <h2 className="mt-3 font-serif text-3xl font-bold text-[#002344] md:text-4xl">Our Collaborations &amp; Community Support</h2>
         <p className="mt-4 max-w-3xl leading-7 text-slate-600">One place to find useful NGO connections and local community-health resources. These listings are for information and outreach; they do not claim a signed MoU, confirmed discount, or formal partnership.</p>
         <div className="mt-8 grid gap-6 md:grid-cols-2">
-          <a href="https://www.connectfor.org/" target="_blank" rel="noopener noreferrer" className="flex flex-col rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+          <article className="flex flex-col rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm">
             <div className="flex h-24 items-center justify-center rounded-2xl bg-white p-4"><span className="text-3xl font-black tracking-tight text-[#1C9A91]">connect<span className="ml-1 text-slate-500">for</span></span></div>
-            <h3 className="mt-5 text-xl font-extrabold text-[#002344]">ConnectFor</h3><p className="mt-2 text-sm leading-6 text-slate-600">A volunteer and NGO engagement platform, with institutional and CSR connection resources.</p><span className="mt-4 inline-block text-sm font-bold text-[#176447]">Visit official website ↗</span>
-          </a>
-          <a href="https://www.diagnopein.com/branch/Pune/Diagnopein-Diagnostic-Centre-in-Wagholi" target="_blank" rel="noopener noreferrer" className="flex flex-col rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg">
+            <h3 className="mt-5 text-xl font-extrabold text-[#002344]">ConnectFor</h3><p className="mt-2 text-sm leading-6 text-slate-600">A volunteer and NGO engagement platform, with institutional and CSR connection resources.</p></article>
+          <article className="flex flex-col rounded-3xl border border-slate-200 bg-[#F8FAFC] p-6 shadow-sm">
             <div className="flex h-24 items-center justify-center rounded-2xl bg-white p-4"><span className="text-center text-xl font-black text-[#176447]">DIAGNOPEIN <span className="block text-xs font-semibold tracking-[.18em] text-slate-500">DIAGNOSTIC &amp; DENTAL CENTRE</span></span></div>
-            <h3 className="mt-5 text-xl font-extrabold text-[#002344]">Diagnostic &amp; Dental Centre · Wagholi</h3><p className="mt-2 text-sm leading-6 text-slate-600">Local diagnostic and dental-care provider in Wagholi, Pune. Please confirm services and terms directly with the centre.</p><span className="mt-4 inline-block text-sm font-bold text-[#176447]">View Wagholi centre ↗</span>
-          </a>
+            <h3 className="mt-5 text-xl font-extrabold text-[#002344]">Diagnostic &amp; Dental Centre · Wagholi</h3><p className="mt-2 text-sm leading-6 text-slate-600">Local diagnostic and dental-care provider in Wagholi, Pune. Please confirm services and terms directly with the centre.</p></article>
         </div>
       </div>
     </section>
