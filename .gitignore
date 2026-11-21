@@ -47,3 +47,6 @@ public/tmp-sheet.jpg
 # Python bytecode (scripts/ helpers)
 __pycache__/
 *.pyc
+
+# uploaded reels (generated at runtime)
+backend_node/uploads/
