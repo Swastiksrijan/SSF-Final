@@ -648,7 +648,7 @@ router.get('/social/reels/media/:filename', (req, r) => {
   r.set('Content-Type', 'video/mp4');
   r.set('Cache-Control', 'public, max-age=300');
   fs.createReadStream(filePath).pipe(r);
-}));
+});
 
 // ---- public ----------------------------------------------------------------
 router.get('/social/posts', wrap(async (req, r) => {
