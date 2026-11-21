@@ -59,15 +59,15 @@ export default function PartnerWithUs() {
                         </p>
 
                         <p className="text-lg text-zinc-600 font-medium leading-relaxed">
-                            We help corporates fulfill their CSR goals with transparent, scalable, and measurable impact projects that align with UN Sustainable Development Goals.
+                            We invite corporates to explore project-based social-impact collaborations aligned with the UN Sustainable Development Goals. Each proposal is subject to eligibility, due diligence, and mutually agreed terms.
                         </p>
 
                         <div className="grid sm:grid-cols-2 gap-6">
                             {[
-                                { title: "12A/80G Certified", desc: "Full tax benefits for all contributions." },
-                                { title: "CSR-1 Registered", desc: "Compliant with Ministry of Corporate Affairs." },
-                                { title: "Quarterly Reports", desc: "Transparent financial and impact reporting." },
-                                { title: "Volunteer Drifts", desc: "Involve your employees in direct fieldwork." }
+                                { title: "80G Application Submitted", desc: "Approval is awaited; tax benefits must not be claimed until approval is granted." },
+                                { title: "CSR-1 Registered", desc: "Registration is in place; project eligibility and approvals remain subject to applicable rules." },
+                                { title: "Project-wise Reporting", desc: "Financial and progress updates for supported projects, as agreed." },
+                                { title: "Volunteer Drives", desc: "Explore employee volunteering and community engagement." }
                             ].map((item, i) => (
                                 <div key={i} className="bg-[#EAF0F6] p-6 rounded-3xl border border-zinc-100 hover:border-[#176447]/20 transition-all">
                                     <h4 className="font-bold text-[#12345A] mb-2">{item.title}</h4>
@@ -112,7 +112,7 @@ export default function PartnerWithUs() {
                                 color: "border-[#176447]",
                                 desc: "Schools, colleges, and training institutes can partner for student exchange, internships, and research projects.",
                                 points: ["Campus Chapters", "Resource Sharing"],
-                                stat: "50+ Schools Partnered"
+                                stat: "Institutional Collaboration"
                             },
                             {
                                 icon: <FaChalkboardTeacher />,
@@ -121,7 +121,7 @@ export default function PartnerWithUs() {
                                 color: "border-[#A73800]",
                                 desc: "Subject matter experts can join as guest faculty or curriculum advisors for our National Academy projects.",
                                 points: ["Guest Lectures", "Curriculum Design"],
-                                stat: "100+ Mentors Onboard"
+                                stat: "Expert Mentorship"
                             },
                             {
                                 icon: <FaGlobeAsia />,
@@ -130,7 +130,7 @@ export default function PartnerWithUs() {
                                 color: "border-[#176447]",
                                 desc: "Grassroot organizations can collaborate to implement our models in new geographies. Let's scale together.",
                                 points: ["Joint Implementation", "Scaling Impact"],
-                                stat: "15+ NGO Partners"
+                                stat: "NGO Collaboration"
                             }
                         ].map((item, i) => (
                             <motion.div
