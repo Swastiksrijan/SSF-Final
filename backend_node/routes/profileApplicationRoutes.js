@@ -50,6 +50,20 @@ router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', max
     } catch (error) { console.error('❌ Volunteer registration error:', error); if (databaseUnavailableResponse(res, error)) return; return res.status(500).json({ status: 'error', message: error.message || 'Server Error' }); }
 });
 
+// Optional photograph for the public membership application. The application
+// itself is JSON, so a skipped or failed upload must never block submission.
+router.post('/member-application-photo', (req, res) => {
+    uploadProfilePhoto.single('profilePhoto')(req, res, (error) => {
+        if (error) return res.status(400).json({ status: 'error', message: 'Photo must be a JPG, PNG or WebP file up to 2 MB.' });
+        if (!req.file) return res.status(400).json({ status: 'error', message: 'Please select a photo to upload.' });
+        if (req.file.size > 2 * 1024 * 1024) {
+            try { fs.unlinkSync(req.file.path); } catch (_) { /* ignore cleanup failure */ }
+            return res.status(400).json({ status: 'error', message: 'Photo must be 2 MB or smaller.' });
+        }
+        return res.status(201).json({ status: 'success', photoPath: `/uploads/${req.file.filename}` });
+    });
+});
+
 router.post('/member-application-bylaw', async (req, res) => {
     try {
         const { fullName, email, phone, memberType, dateOfBirth, fatherOrGuardian, address, occupation, citizenship, acceptsRules, goodCharacter, noAlcohol, citizenshipConfirmed, electronicSignature, declaration, paymentPlan, patronInstallments } = req.body || {};
@@ -72,6 +86,9 @@ router.post('/member-application-bylaw', async (req, res) => {
         }
         const existing = await Member.findOne({ where: { email: normalizedEmail } });
         if (existing) return res.status(409).json({ status: 'error', message: 'An application or account with this email already exists. Please contact SSF if you need to update it.' });
+        // Photograph is optional; only accept a path this server generated.
+        const photoFileName = /^\/uploads\/([A-Za-z0-9._-]+)$/.exec(String(req.body.photoPath || '').trim());
+        const photoPath = photoFileName && fs.existsSync(path.join(uploadDir, photoFileName[1])) ? `/uploads/${photoFileName[1]}` : null;
         const applicationDetails = [
             'BYLAW MEMBERSHIP APPLICATION',
             'Category: ' + type,
@@ -81,6 +98,7 @@ router.post('/member-application-bylaw', async (req, res) => {
             'Ordinary membership payment preference: ' + String(req.body.paymentPlan || 'not applicable'),
             'Patron installment count: ' + (type === 'patron' ? installmentCount : 'not applicable'),
             'Citizenship: Indian',
+            'Photograph: ' + (photoPath ? 'uploaded' : 'not provided'),
             'Rule 7 declarations: rules accepted; good character; no-alcohol condition accepted',
             'Digital signature: ' + String(electronicSignature).trim(),
             'Declaration: ' + String(declaration).trim(),
@@ -115,6 +133,7 @@ router.post('/member-application-bylaw', async (req, res) => {
                 memberType: type, designation: String(occupation).trim(),
                 guardianName: String(fatherOrGuardian || '').trim() || null,
                 address: String(address).trim(), message: applicationDetails,
+                profilePhotoPath: photoPath,
                 status: 'pending', paymentStatus: 'pending'
             }, { transaction });
             const category = type === 'patron' ? 'Guardian/Patron' : (type === 'life' ? 'Lifetime' : 'Ordinary');
@@ -123,7 +142,7 @@ router.post('/member-application-bylaw', async (req, res) => {
                 feeFrequency: type === 'general' ? String(paymentPlan || 'annual') : (type === 'patron' ? (installmentCount === 1 ? 'one-time' : `${installmentCount}-instalments-within-one-year`) : 'one-time'),
                 applicationStatus: 'submitted', signatureNote: 'Online declaration signed by: ' + String(electronicSignature).trim(),
                 status: 'pending', createdBy: 'public_online_application', createdByName: 'Website Membership Application',
-                data: { dateOfBirth, fatherOrGuardian: String(fatherOrGuardian || '').trim(), citizenship: 'Indian', occupation: String(occupation).trim(), address: String(address).trim(), electronicSignature: String(electronicSignature).trim(), declaration: String(declaration).trim(), paymentPlan: String(paymentPlan || 'not applicable'), patronInstallments: type === 'patron' ? installmentCount : null }
+                data: { dateOfBirth, fatherOrGuardian: String(fatherOrGuardian || '').trim(), citizenship: 'Indian', occupation: String(occupation).trim(), address: String(address).trim(), electronicSignature: String(electronicSignature).trim(), declaration: String(declaration).trim(), paymentPlan: String(paymentPlan || 'not applicable'), patronInstallments: type === 'patron' ? installmentCount : null, photoPath }
             }, { transaction });
             await transaction.commit();
         } catch (saveError) {

@@ -46,9 +46,9 @@ const Members = () => {
   if (noticeToken) return <MemberActionResponse token={noticeToken} />;
 
   if (directApplication) return (
-    <main className="min-h-screen bg-slate-50 px-4 pb-12 pt-32 sm:px-6">
-      <div className="mx-auto max-w-4xl">
-        <a href="/Members" className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-[#12345A] hover:text-[#176447]">← सदस्यता जानकारी पर वापस जाएँ</a>
+    <main className="ssf-hero-offset min-h-screen bg-slate-50 px-4 pb-12 sm:px-6">
+      <div className="mx-auto max-w-4xl pt-6">
+        <a href="/Members" className="mb-5 inline-flex items-center gap-2 text-sm font-bold text-[#12345A] hover:text-[#176447]">← सदस्यता जानकारी पर वापस जाएँ / Back to membership information</a>
         <MemberForm key={selectedMemberType} initialMemberType={selectedMemberType} />
       </div>
     </main>
