@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as InstitutionalDnaRouteImport } from './routes/institutional-dna'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as VolunteerHardcopyRouteImport } from './routes/VolunteerHardcopy'
 import { Route as VolunteerRouteImport } from './routes/Volunteer'
 import { Route as VisionRouteImport } from './routes/Vision'
 import { Route as UserPortalRouteImport } from './routes/UserPortal'
@@ -37,6 +38,7 @@ import { Route as OrganizationRouteImport } from './routes/Organization'
 import { Route as ObjectivesRouteImport } from './routes/Objectives'
 import { Route as MissionRouteImport } from './routes/Mission'
 import { Route as MemorandumAndRulesRouteImport } from './routes/MemorandumAndRules'
+import { Route as MembershipHardcopyRouteImport } from './routes/MembershipHardcopy'
 import { Route as MembersRouteImport } from './routes/Members'
 import { Route as MemberDashboardRouteImport } from './routes/MemberDashboard'
 import { Route as MediaRouteImport } from './routes/Media'
@@ -141,6 +143,11 @@ const InstitutionalDnaRoute = InstitutionalDnaRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VolunteerHardcopyRoute = VolunteerHardcopyRouteImport.update({
+  id: '/VolunteerHardcopy',
+  path: '/VolunteerHardcopy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VolunteerRoute = VolunteerRouteImport.update({
@@ -266,6 +273,11 @@ const MissionRoute = MissionRouteImport.update({
 const MemorandumAndRulesRoute = MemorandumAndRulesRouteImport.update({
   id: '/MemorandumAndRules',
   path: '/MemorandumAndRules',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MembershipHardcopyRoute = MembershipHardcopyRouteImport.update({
+  id: '/MembershipHardcopy',
+  path: '/MembershipHardcopy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MembersRoute = MembersRouteImport.update({
@@ -758,6 +770,7 @@ export interface FileRoutesByFullPath {
   '/Media': typeof MediaRoute
   '/MemberDashboard': typeof MemberDashboardRoute
   '/Members': typeof MembersRoute
+  '/MembershipHardcopy': typeof MembershipHardcopyRoute
   '/MemorandumAndRules': typeof MemorandumAndRulesRoute
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
@@ -783,6 +796,7 @@ export interface FileRoutesByFullPath {
   '/UserPortal': typeof UserPortalRoute
   '/Vision': typeof VisionRoute
   '/Volunteer': typeof VolunteerRoute
+  '/VolunteerHardcopy': typeof VolunteerHardcopyRoute
   '/admin': typeof AdminRoute
   '/institutional-dna': typeof InstitutionalDnaRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -877,6 +891,7 @@ export interface FileRoutesByTo {
   '/Media': typeof MediaRoute
   '/MemberDashboard': typeof MemberDashboardRoute
   '/Members': typeof MembersRoute
+  '/MembershipHardcopy': typeof MembershipHardcopyRoute
   '/MemorandumAndRules': typeof MemorandumAndRulesRoute
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
@@ -902,6 +917,7 @@ export interface FileRoutesByTo {
   '/UserPortal': typeof UserPortalRoute
   '/Vision': typeof VisionRoute
   '/Volunteer': typeof VolunteerRoute
+  '/VolunteerHardcopy': typeof VolunteerHardcopyRoute
   '/admin': typeof AdminRoute
   '/institutional-dna': typeof InstitutionalDnaRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -998,6 +1014,7 @@ export interface FileRoutesById {
   '/Media': typeof MediaRoute
   '/MemberDashboard': typeof MemberDashboardRoute
   '/Members': typeof MembersRoute
+  '/MembershipHardcopy': typeof MembershipHardcopyRoute
   '/MemorandumAndRules': typeof MemorandumAndRulesRoute
   '/Mission': typeof MissionRoute
   '/Objectives': typeof ObjectivesRoute
@@ -1023,6 +1040,7 @@ export interface FileRoutesById {
   '/UserPortal': typeof UserPortalRoute
   '/Vision': typeof VisionRoute
   '/Volunteer': typeof VolunteerRoute
+  '/VolunteerHardcopy': typeof VolunteerHardcopyRoute
   '/admin': typeof AdminRoute
   '/institutional-dna': typeof InstitutionalDnaRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -1120,6 +1138,7 @@ export interface FileRouteTypes {
     | '/Media'
     | '/MemberDashboard'
     | '/Members'
+    | '/MembershipHardcopy'
     | '/MemorandumAndRules'
     | '/Mission'
     | '/Objectives'
@@ -1145,6 +1164,7 @@ export interface FileRouteTypes {
     | '/UserPortal'
     | '/Vision'
     | '/Volunteer'
+    | '/VolunteerHardcopy'
     | '/admin'
     | '/institutional-dna'
     | '/reset-password'
@@ -1239,6 +1259,7 @@ export interface FileRouteTypes {
     | '/Media'
     | '/MemberDashboard'
     | '/Members'
+    | '/MembershipHardcopy'
     | '/MemorandumAndRules'
     | '/Mission'
     | '/Objectives'
@@ -1264,6 +1285,7 @@ export interface FileRouteTypes {
     | '/UserPortal'
     | '/Vision'
     | '/Volunteer'
+    | '/VolunteerHardcopy'
     | '/admin'
     | '/institutional-dna'
     | '/reset-password'
@@ -1359,6 +1381,7 @@ export interface FileRouteTypes {
     | '/Media'
     | '/MemberDashboard'
     | '/Members'
+    | '/MembershipHardcopy'
     | '/MemorandumAndRules'
     | '/Mission'
     | '/Objectives'
@@ -1384,6 +1407,7 @@ export interface FileRouteTypes {
     | '/UserPortal'
     | '/Vision'
     | '/Volunteer'
+    | '/VolunteerHardcopy'
     | '/admin'
     | '/institutional-dna'
     | '/reset-password'
@@ -1480,6 +1504,7 @@ export interface RootRouteChildren {
   MediaRoute: typeof MediaRoute
   MemberDashboardRoute: typeof MemberDashboardRoute
   MembersRoute: typeof MembersRoute
+  MembershipHardcopyRoute: typeof MembershipHardcopyRoute
   MemorandumAndRulesRoute: typeof MemorandumAndRulesRoute
   MissionRoute: typeof MissionRoute
   ObjectivesRoute: typeof ObjectivesRoute
@@ -1505,6 +1530,7 @@ export interface RootRouteChildren {
   UserPortalRoute: typeof UserPortalRoute
   VisionRoute: typeof VisionRoute
   VolunteerRoute: typeof VolunteerRoute
+  VolunteerHardcopyRoute: typeof VolunteerHardcopyRoute
   AdminRoute: typeof AdminRoute
   InstitutionalDnaRoute: typeof InstitutionalDnaRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
@@ -1583,6 +1609,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/VolunteerHardcopy': {
+      id: '/VolunteerHardcopy'
+      path: '/VolunteerHardcopy'
+      fullPath: '/VolunteerHardcopy'
+      preLoaderRoute: typeof VolunteerHardcopyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/Volunteer': {
@@ -1758,6 +1791,13 @@ declare module '@tanstack/react-router' {
       path: '/MemorandumAndRules'
       fullPath: '/MemorandumAndRules'
       preLoaderRoute: typeof MemorandumAndRulesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/MembershipHardcopy': {
+      id: '/MembershipHardcopy'
+      path: '/MembershipHardcopy'
+      fullPath: '/MembershipHardcopy'
+      preLoaderRoute: typeof MembershipHardcopyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/Members': {
@@ -2456,6 +2496,7 @@ const rootRouteChildren: RootRouteChildren = {
   MediaRoute: MediaRoute,
   MemberDashboardRoute: MemberDashboardRoute,
   MembersRoute: MembersRoute,
+  MembershipHardcopyRoute: MembershipHardcopyRoute,
   MemorandumAndRulesRoute: MemorandumAndRulesRoute,
   MissionRoute: MissionRoute,
   ObjectivesRoute: ObjectivesRoute,
@@ -2481,6 +2522,7 @@ const rootRouteChildren: RootRouteChildren = {
   UserPortalRoute: UserPortalRoute,
   VisionRoute: VisionRoute,
   VolunteerRoute: VolunteerRoute,
+  VolunteerHardcopyRoute: VolunteerHardcopyRoute,
   AdminRoute: AdminRoute,
   InstitutionalDnaRoute: InstitutionalDnaRoute,
   ResetPasswordRoute: ResetPasswordRoute,
