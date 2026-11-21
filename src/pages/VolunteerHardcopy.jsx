@@ -93,7 +93,7 @@ export default function VolunteerHardcopy() {
         <section className="mt-5">
           <h2 className="section-heading">4. फोटो एवं दस्तावेज / PHOTO & DOCUMENTS</h2>
           <div className="upload-grid">
-            <div className="upload-box"><b>प्रोफाइल फोटो / PROFILE PHOTO</b><p>यहाँ हाल की पासपोर्ट आकार की फोटो चिपकाएँ।</p><p>Paste a recent passport-size photograph here.</p></div>
+            <div className="photo-upload"><b>पासपोर्ट आकार की फोटो / PASSPORT-SIZE PHOTO</b><div className="photo-frame"><span>यहाँ फोटो चिपकाएँ<br/>PASTE PHOTO HERE</span></div><p>हाल की रंगीन पासपोर्ट आकार की फोटो (लगभग 3.5 × 4.5 सेमी)। / Recent colour passport-size photograph (approx. 3.5 × 4.5 cm).</p></div>
             <div className="upload-box"><b>पहचान पत्र की प्रति (वैकल्पिक) / ID PROOF COPY (OPTIONAL)</b><p>आवश्यक होने पर पहचान पत्र की स्वैच्छिक प्रति संलग्न करें।</p><p>Attach a voluntary copy of ID proof only if required.</p></div>
           </div>
         </section>
@@ -155,6 +155,8 @@ export default function VolunteerHardcopy() {
         .upload-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
         .upload-box { border:1px dashed #94a3b8; min-height:120px; padding:12px; font-size:11px; line-height:1.6; text-align:center; }
         .upload-box p { margin-top:8px; }
+        .photo-upload { display:flex; flex-direction:column; align-items:center; border:1px dashed #94a3b8; padding:9px; text-align:center; font-size:10px; line-height:1.5; }
+        .photo-frame { width:35mm; height:45mm; margin:7px auto; border:1px solid #64748b; display:flex; align-items:center; justify-content:center; color:#64748b; font-size:9px; font-weight:700; }
         .write-area { border:1px solid #94a3b8; padding:5px 10px; }
         .write-area div { height:25px; border-bottom:1px solid #cbd5e1; }
         .declarations { display:grid; gap:9px; font-size:12px; line-height:1.55; }
