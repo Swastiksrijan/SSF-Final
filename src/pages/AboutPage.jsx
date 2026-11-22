@@ -352,7 +352,7 @@ export default function AboutPage() {
               <div className="absolute inset-0 bg-gradient-to-br from-[#12345A] via-[#0D2B49] to-[#176447]" aria-hidden="true" />
               <div className="relative w-full max-w-[230px] overflow-hidden rounded-[1.5rem] border border-white/20 bg-white/10 p-2 shadow-2xl">
                 <OptimizedImage
-                  src="/Teams_Images/ramesh_pandey.jpg?v=3"
+                  src="/Teams_Images/ramesh_pandey.jpg?v=4"
                   alt="Mr. Ramesh Pandey, Founder and President of Swastik Srijan Foundation"
                   className="block aspect-square w-full rounded-[1rem] object-cover"
                 />
