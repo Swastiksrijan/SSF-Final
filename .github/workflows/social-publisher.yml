@@ -58,6 +58,14 @@ jobs:
           SLOTS_IST: '07:00 07:30 08:00 09:00 11:00 12:30 14:00 18:00 19:00 20:00 21:00'
           WAKE_BEFORE_MIN: '2'
           WAKE_AFTER_MIN: '15'
+          # The daily awareness post is the one that must not slip. GitHub's
+          # best-effort cron fires a handful of times a day here, not every five
+          # minutes, so a 17-minute window around 08:00 was missed on most days
+          # and the post only went out when something else woke Render — hours
+          # late, or not at all. This slot keeps a much wider catch-up window;
+          # the backend publishes whatever is due the moment it is awake.
+          CATCHUP_SLOTS_IST: '08:00'
+          CATCHUP_AFTER_MIN: '150'
         run: |
           BASE="${BACKEND_URL:-https://ngo-backend-03hq.onrender.com}"
           KEY="${SCHEDULER_SECRET:-ssf-admin-portal-token}"
@@ -66,7 +74,8 @@ jobs:
 
           ist_minutes() { echo $(( 10#$(TZ=Asia/Kolkata date +%H) * 60 + 10#$(TZ=Asia/Kolkata date +%M) )); }
 
-          # True when "now" is inside [slot - before, slot + after] for any slot.
+          # True when "now" is inside [slot - before, slot + after] for any slot,
+          # or inside the wider catch-up window that protects the daily post.
           in_window() {
             local now slot sh sm slot_mins
             now=$(ist_minutes)
@@ -74,6 +83,13 @@ jobs:
               sh=${slot%%:*}; sm=${slot##*:}
               slot_mins=$(( 10#$sh * 60 + 10#$sm ))
               if [ "$now" -ge "$((slot_mins - WAKE_BEFORE_MIN))" ] && [ "$now" -le "$((slot_mins + WAKE_AFTER_MIN))" ]; then
+                return 0
+              fi
+            done
+            for slot in $CATCHUP_SLOTS_IST; do
+              sh=${slot%%:*}; sm=${slot##*:}
+              slot_mins=$(( 10#$sh * 60 + 10#$sm ))
+              if [ "$now" -ge "$((slot_mins - WAKE_BEFORE_MIN))" ] && [ "$now" -le "$((slot_mins + CATCHUP_AFTER_MIN))" ]; then
                 return 0
               fi
             done
@@ -106,7 +122,9 @@ jobs:
           # Warm up (Render may be cold-starting) then stay awake until the
           # window closes, so a post due in the next few minutes is not missed.
           curl -s -o /dev/null --max-time 90 "$BASE/" || true
-          for i in $(seq 1 8); do
+          # The catch-up window is hours long, so the loop is bounded by the
+          # window rather than by a fixed count.
+          for i in $(seq 1 60); do
             in_window || break
             call_once
             sleep 240

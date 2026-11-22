@@ -151,6 +151,20 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Wake the backend so the reel is picked up now
+        # The inbox only publishes while Render is awake, and the free instance
+        # sleeps after ~15 idle minutes. Without this the reel can sit in the
+        # inbox until something else happens to wake the backend.
+        if: ${{ github.event.inputs.publish != 'false' && env.PUBLISH_IN != 'false' }}
+        continue-on-error: true
+        run: |
+          BASE="${BACKEND_URL:-https://ngo-backend-03hq.onrender.com}"
+          for i in $(seq 1 6); do
+            curl -s -o /dev/null --max-time 60 "$BASE/" || true
+            sleep 150
+          done
+          echo "Backend kept awake for ~15 minutes."
+
       - name: Keep the rendered reel for review
         if: always()
         uses: actions/upload-artifact@v4
