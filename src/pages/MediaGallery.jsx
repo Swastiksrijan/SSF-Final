@@ -568,13 +568,13 @@ const YOUTUBE_VIDEOS = [
   {
     id: "yoBh0mb9GZE",
     title: "Ground Impact & Community Stories",
-    desc: "A glimpse into our daily activities and the lives we touch across India.",
+    desc: "A selection of community activity and programme documentation.",
     category: "Impact"
   },
   {
     id: "Zv-vUjPSbAc",
     title: "Empowering Rural Education",
-    desc: "See how we are bringing quality education to the most remote corners.",
+    desc: "A video highlight related to education and learning.",
     category: "Education"
   },
   {
@@ -924,13 +924,13 @@ export default function MediaGallery() {
                 </p>
                 <div className="space-y-3">
                   <div className="flex items-center gap-3 text-zinc-300 text-sm border-b border-zinc-800 pb-2">
-                    <span className="text-zinc-500 w-24">Date:</span> {selectedImg.year}
+                    <span className="text-zinc-500 w-24">Year:</span> {selectedImg.year || "Not specified"}
                   </div>
                   <div className="flex items-center gap-3 text-zinc-300 text-sm border-b border-zinc-800 pb-2">
                     <span className="text-zinc-500 w-24">Category:</span> {selectedImg.category}
                   </div>
                   <div className="flex items-center gap-3 text-zinc-300 text-sm border-b border-zinc-800 pb-2">
-                    <span className="text-zinc-500 w-24">Location:</span> Bihar, India
+                    <span className="text-zinc-500 w-24">Location:</span> Refer to the original activity record
                   </div>
                 </div>
               </div>
