@@ -7,11 +7,11 @@ import OptimizedImage from "../components/OptimizedImage";
 export default function Internship() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const roles = [
-    { icon: <FaBullhorn />, title: "Social Media & Marketing", hi: "सोशल मीडिया और मार्केटिंग", desc: "Create content, manage campaigns and help SSF reach a wider audience.", req: "Instagram, LinkedIn and basic Canva/design skills." },
-    { icon: <FaLaptop />, title: "Content Writing & Blogging", hi: "कंटेंट राइटिंग और ब्लॉगिंग", desc: "Write articles, impact stories, newsletters and awareness content.", req: "Strong English and/or Hindi writing skills." },
-    { icon: <FaBriefcase />, title: "Field Research & Impact", hi: "फील्ड रिसर्च और इम्पेक्ट", desc: "Support field data collection, project monitoring and community research.", req: "Willingness to travel and interact with communities." },
-    { icon: <FaGraduationCap />, title: "Education & Mentorship", hi: "शिक्षा और मेंटरशिप", desc: "Support teaching programmes, learning modules and children’s mentorship.", req: "Interest in teaching and working with children." },
-    { icon: <FaCode />, title: "Web Development & Tech", hi: "वेब डेवलपमेंट और टेक", desc: "Help build and maintain digital tools and the Foundation’s technology ecosystem.", req: "React, HTML/CSS, Node.js or data-management skills." }
+    { icon: <FaBullhorn />, title: "Social Media & Marketing", image: "https://images.unsplash.com/photo-1611162617474-5b21e879e113?auto=format&fit=crop&w=900&q=80", hi: "सोशल मीडिया और मार्केटिंग", desc: "Create content, manage campaigns and help SSF reach a wider audience.", req: "Instagram, LinkedIn and basic Canva/design skills." },
+    { icon: <FaLaptop />, title: "Content Writing & Blogging", image: "https://images.unsplash.com/photo-1455390582262-044c्बd5e2?auto=format&fit=crop&w=900&q=80", hi: "कंटेंट राइटिंग और ब्लॉगिंग", desc: "Write articles, impact stories, newsletters and awareness content.", req: "Strong English and/or Hindi writing skills." },
+    { icon: <FaBriefcase />, title: "Field Research & Impact", image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80", hi: "फील्ड रिसर्च और इम्पेक्ट", desc: "Support field data collection, project monitoring and community research.", req: "Willingness to travel and interact with communities." },
+    { icon: <FaGraduationCap />, title: "Education & Mentorship", image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80", hi: "शिक्षा और मेंटरशिप", desc: "Support teaching programmes, learning modules and children’s mentorship.", req: "Interest in teaching and working with children." },
+    { icon: <FaCode />, title: "Web Development & Tech", image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80", hi: "वेब डेवलपमेंट और टेक", desc: "Help build and maintain digital tools and the Foundation’s technology ecosystem.", req: "React, HTML/CSS, Node.js or data-management skills." }
   ];
 
   return <div className="w-full bg-white text-zinc-900 font-sans overflow-hidden">
@@ -42,6 +42,7 @@ export default function Internship() {
         <div className="text-center mb-12"><h2 className="text-3xl md:text-5xl font-black text-[#12345A]">Internship के अवसर</h2><p className="text-zinc-500 mt-3">Choose the area where your skills can create the most impact.</p></div>
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-7">
           {roles.map((role, i) => <motion.article key={role.title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * .08 }} className="bg-white p-7 rounded-3xl border border-zinc-200 shadow-sm hover:shadow-xl transition-shadow">
+            <figure className="mb-5 overflow-hidden rounded-2xl"><OptimizedImage src={role.image} alt={`${role.title} से संबंधित प्रतीकात्मक चित्र`} className="h-32 w-full" objectFit="cover" /><figcaption className="pt-1 text-[11px] text-zinc-400">प्रतीकात्मक चित्र</figcaption></figure>
             <div className="w-14 h-14 rounded-2xl bg-orange-50 text-[#176447] flex items-center justify-center text-2xl mb-6">{role.icon}</div>
             <h3 className="text-xl font-black text-[#12345A]">{role.title}</h3><p className="text-sm font-bold text-zinc-400 mt-1 mb-5">{role.hi}</p>
             <p className="text-sm text-zinc-600 leading-relaxed mb-5">{role.desc}</p>
