@@ -18,14 +18,15 @@ export default function RegistrationDetails() {
       icon: <FaBuilding />,
       title: "Organization Overview",
       content:
-        "Swastik Srijan Foundation Samiti (SSF) is a registered society working towards education, health, social welfare, environment and cultural development. Its stated area of operation is All India.",
+        "Swastik Srijan Foundation Samiti (SSF) is a registered society working towards education, health, social welfare, environment and cultural development. The registered Society documents record its permitted area of operation as All India; its current primary focus is Rewa, Madhya Pradesh.",
       extra: (
         <ul className="list-disc pl-6 mt-3 space-y-1 font-medium">
           <li><strong>Full Name:</strong> Swastik Srijan Foundation Samiti</li>
           <li><strong>Type:</strong> Non-Governmental Organization (NGO)</li>
           <li>
-            <strong>Area of Operation:</strong> All India (as stated in the Society's records).
+            <strong>Permitted Area of Operation:</strong> All India (as recorded in the registered Society documents).
           </li>
+          <li><strong>Current Primary Focus:</strong> Rewa, Madhya Pradesh, India.</li></li>
         </ul>
       ),
     },
@@ -90,7 +91,9 @@ export default function RegistrationDetails() {
 
       <div className="max-w-7xl mx-auto py-14 sm:py-20 lg:py-28 px-4 sm:px-6">
 
-        {/* ================= INTRO CARD ================= */}
+        <p className="mx-auto max-w-7xl px-4 pt-5 text-right text-xs font-semibold text-slate-500">Page reviewed: 24 November 2026</p>
+
+      {/* ================= INTRO CARD ================= */}
         <motion.div
           initial={{ opacity: 0, scale: 0.95 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -156,9 +159,9 @@ export default function RegistrationDetails() {
         {/* ================= OFFICIAL DOCUMENTS ================= */}
         <section className="mb-20">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-serif font-bold text-[#12345A] mb-4">Official Recognition & Certificates</h2>
+            <h2 className="text-3xl font-serif font-bold text-[#12345A] mb-4">Public Participation & Reference Records</h2>
             <p className="text-lg text-zinc-500 max-w-2xl mx-auto mb-10">
-              We are committed to maintaining the highest standards of transparency and integrity.
+              The images below document contribution, pledge participation and NGO Darpan registration. A contribution acknowledgement or pledge certificate is not a government endorsement or special government affiliation.
             </p>
             <div className="max-w-4xl mx-auto rounded-[2rem] overflow-hidden shadow-2xl border-4 border-white mb-16 group">
               <img
@@ -171,7 +174,7 @@ export default function RegistrationDetails() {
           <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="bg-white p-4 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-xl transition-all">
               <img src="/images/uploads/pm-cares-cert.jpg" alt="PM CARES Certificate" className="w-full h-auto rounded-2xl" />
-              <p className="text-center font-bold text-[#12345A] mt-4">PM CARES Fund Contribution</p>
+              <p className="text-center font-bold text-[#12345A] mt-4">PM CARES Fund Contribution Acknowledgement</p>
             </div>
             <div className="bg-white p-4 rounded-3xl shadow-sm border border-zinc-100 hover:shadow-xl transition-all">
               <img src="/images/uploads/integrity-pledge.jpg" alt="Integrity Pledge" className="w-full h-auto rounded-2xl" />
