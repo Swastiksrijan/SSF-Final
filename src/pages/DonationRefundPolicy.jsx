@@ -16,6 +16,10 @@ export default function DonationRefundPolicy() {
       <div className="max-w-5xl mx-auto py-16 px-4">
 
         <div className="bg-white rounded-2xl shadow-xl p-8 md:p-12 mb-12 border-l-8 border-[#12345A]">
+          <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+            <span className="text-xs font-bold uppercase tracking-wider text-[#176447]">Policy for donors</span>
+            <span className="rounded-full bg-zinc-100 px-3 py-2 text-xs font-semibold text-zinc-500">Last Updated: 24 November 2026</span>
+          </div>
           <h2 className="text-3xl font-bold mb-6 text-zinc-900">Donation & Refund Policy</h2>
           <p className="text-lg text-zinc-600 leading-relaxed">
             Swastik Srijan Foundation Samiti ("the Foundation") is an Indian registered non-profit organisation committed to transparency, responsible use of funds, and compliance with applicable laws. This Donation & Refund Policy explains our approach to donations and the limited circumstances under which refund requests will be considered.
@@ -78,7 +82,7 @@ export default function DonationRefundPolicy() {
             </p>
 
             <p className="text-zinc-500 mt-4 text-sm">
-              Please include "Refund Request" in your email subject and attach any transaction receipts or proofs. We will acknowledge receipt and aim to respond within 7 working days.
+              Please include "Refund Request" in your email subject and attach the relevant transaction receipt or payment evidence. We will review the request after verifying the transaction. Any response or approved refund may take additional time depending on the information required and the relevant bank or payment provider.
             </p>
           </section>
 
