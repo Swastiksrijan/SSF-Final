@@ -113,7 +113,7 @@ export default function PrivacyPolicy() {
       title: "8. Cookies and Analytics",
       hindi: "कुकीज़ और एनालिटिक्स",
       content:
-        "Our website may use cookies or similar technologies for essential functionality, preferences, analytics, security and performance. The availability and purpose of particular cookies may depend on the services enabled on the website. Where required, relevant consent or browser controls may be used. Disabling certain cookies may affect some website features."
+        "The website may use browser storage, cookies or similar technologies where needed for core functions, security, forms and user-requested services. As of 24 November 2026, the website source reviewed for this policy did not identify a configured third-party analytics provider such as Google Analytics. Some donation buttons may emit a donation-click event to a dataLayer only if one is supplied by the hosting environment; this code does not itself identify or configure an analytics provider. External payment providers may apply their own cookies or tracking when you leave the SSF website. You can manage or block cookies through your browser settings, although essential website functions may be affected."
     },
     {
       id: "thirdparty",
@@ -211,7 +211,7 @@ export default function PrivacyPolicy() {
             </motion.div>
             <div className="mt-4 flex flex-wrap justify-between gap-2 px-2 text-xs text-slate-400">
               <span>Swastik Srijan Foundation</span>
-              <span>Last reviewed: September 2026</span>
+              <span>Last reviewed: 24 November 2026</span>
             </div>
           </div>
         </div>
