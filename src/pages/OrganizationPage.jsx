@@ -52,7 +52,7 @@ export default function OrganizationPage() {
             <h2 className="mt-3 text-3xl font-black leading-tight text-[#12345A] md:text-4xl">समाज के साथ,<br/>समाज के लिए</h2>
             <p className="mt-5 max-w-md text-sm leading-7 text-[#657480]">हम मानते हैं कि स्थायी विकास की शुरुआत स्थानीय जरूरतों को समझने और उपलब्ध संसाधनों का सही उपयोग करने से होती है।</p>
             <figure className="mt-7 overflow-hidden rounded-3xl border border-[#E1E8ED] bg-white shadow-sm">
-              <img src="/images/real/leadership.jpg" alt="Community leadership and participation" loading="lazy" className="aspect-[16/9] w-full object-cover" />
+              <img src="/images/real/ssf_event_members.jpg" alt="Community leadership and participation" loading="lazy" className="aspect-[16/9] w-full object-cover" />
               <figcaption className="px-4 py-3 text-xs font-semibold text-[#657480]">समुदाय की भागीदारी एवं नेतृत्व · प्रतीकात्मक चित्र</figcaption>
             </figure>
           </div>
