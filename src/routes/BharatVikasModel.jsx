@@ -302,6 +302,198 @@ function BharatVikasModelPage() {
         </div>
       </section>
 
+
+      {/* ADDITIVE EXPANSION: all new chapters below supplement the original vision above. */}
+      <section className="bg-[#fffaf0] px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Expanded education framework" title="A complete pathway for every learner" text="The existing learning journey is further supported by individual guidance, teacher development, inclusive learning support and opportunities for lifelong growth." />
+          <div className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Talent, aptitude & interest discovery", "Age-appropriate observation, learner portfolios, counselling, exposure to different fields and opportunities to discover strengths without labelling or limiting children."],
+              ["Individual development plans", "Regular conversations among learners, families, teachers and qualified counsellors to set realistic learning goals and review progress."],
+              ["Strong academic foundations", "Reading, writing, mathematics, languages, science, humanities, critical thinking, digital literacy and curriculum-aligned learning support."],
+              ["Practical and experiential education", "Demonstrations, supervised projects, field visits, laboratories, gardens, workshops, community studies and reflection on real-world problems."],
+              ["Competitive examinations & career guidance", "Accurate information, study skills, mentoring and preparation options for suitable entrance, scholarship, public-service and professional examinations—without making exam coaching the whole purpose of education."],
+              ["Teacher education & continuous development", "Recruitment of qualified educators, induction, mentoring, subject development, inclusive pedagogy, child protection, classroom practice and regular professional learning."],
+              ["Support for learners who need help", "Early identification of learning barriers, bridge courses, remedial support, accessible materials, counselling and family engagement."],
+              ["Enrichment for advanced learners", "Deeper projects, research mentorship, competitions, advanced reading, creative challenges and opportunities matched to readiness."],
+              ["Digital, AI & lifelong learning", "Responsible use of digital tools and AI, media literacy, online safety, continuing education and reskilling opportunities for youth and adults."]
+            ].map(([title, text]) => <article key={title} className="rounded-2xl border border-[#eadfca] bg-white p-5"><h3 className="text-lg font-extrabold text-[#12345A]">{title}</h3><p className="mt-3 text-sm leading-7 text-slate-600">{text}</p></article>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Practical life skills" title="Skills that make people more capable in everyday life" text="Practical learning will be age-appropriate, supervised, inclusive and safety-led. It will build respect for all forms of work and help learners understand how homes, communities and essential services function." />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Food, cooking & nutrition", "Kitchen hygiene, safe cooking, meal planning, nutrition, food storage and reducing food waste."],
+              ["Electrical, electronics & machines", "Basic circuits, safe appliance awareness, electronics, maintenance concepts and supervised machine operation."],
+              ["Carpentry, plumbing & construction", "Materials, measuring, basic repairs, water fittings, tools, construction safety and practical design."],
+              ["Tailoring, design & crafts", "Stitching, textiles, repair, handicrafts, product design, local crafts and creative making."],
+              ["Money, banking & financial literacy", "Saving, budgeting, bank accounts, digital payments, interest, responsible borrowing, insurance awareness and fraud prevention."],
+              ["First aid & emergency response", "Age-appropriate first aid, emergency contacts, fire and disaster safety, basic response and when to seek professional help."],
+              ["Self-defence & personal safety", "Situational awareness, boundaries, consent, safe help-seeking, digital safety and age-appropriate self-defence."],
+              ["Communication & leadership", "Listening, speaking, writing, teamwork, public presentation, negotiation, empathy and responsible leadership."],
+              ["Time, work & personal organisation", "Planning, punctuality, goal setting, problem-solving, self-care and balancing study, rest and activities."],
+              ["Family, society & civic responsibility", "Respect, care, shared responsibilities, community participation, constitutional values and responsible citizenship."]
+            ].map(([title, text]) => <article key={title} className="rounded-2xl border border-slate-200 p-5"><h3 className="font-extrabold text-[#12345A]">{title}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{text}</p></article>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f5f8fb] px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Agriculture to enterprise" title="Connect the complete production and value chain" text="The proposed ecosystem will help learners and communities understand how natural resources, knowledge, production, processing, quality, markets and livelihoods connect. Commercial activity, if developed, will be lawful, professionally managed and separate from compulsory student learning." />
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Seeds, nurseries & planting material", "Seed knowledge, nursery management, saplings, local varieties, seed conservation and quality planting material."],
+              ["Crop, fruit, flower & vegetable systems", "Field crops, orchards, vegetables, flowers, protected cultivation, horticulture and locally suitable cropping systems."],
+              ["Modern and regenerative agriculture", "Soil health, efficient irrigation, water conservation, integrated pest management, farm mechanisation and climate-resilient practices."],
+              ["Allied livelihoods", "Responsible dairy, animal husbandry, fisheries, poultry, beekeeping and other suitable activities with expert animal-welfare and biosecurity oversight."],
+              ["Processing, preservation & packaging", "Food safety, grading, storage, processing, preservation, packaging, quality assurance and value addition."],
+              ["Tools, machinery & farm technology", "Appropriate farm equipment, repair, sensors, irrigation technology, digital advisory and locally useful innovations."],
+              ["Branding, marketing & market access", "Product standards, branding, pricing, logistics, retail, digital commerce, institutional buyers and consumer trust."],
+              ["Cooperatives, FPOs & producer networks", "Collective procurement, producer organisations, shared facilities, fair market access and transparent benefit sharing."],
+              ["Agri-enterprises & start-ups", "Business planning, incubation, finance readiness, research partnerships and responsible rural entrepreneurship."]
+            ].map(([title, text]) => <article key={title} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"><h3 className="font-extrabold text-[#12345A]">{title}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{text}</p></article>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Higher education & research" title="Build knowledge institutions across disciplines" text="The long-term aspiration is to develop specialised academic and research capacity in response to public needs, subject to demand, feasibility, qualified faculty, partnerships and statutory approvals." />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Science & foundational research", "Physics, chemistry, biology, mathematics, materials, interdisciplinary science and research methods."],
+              ["Engineering & advanced technology", "Engineering disciplines, computing, electronics, robotics, automation, manufacturing and emerging technologies."],
+              ["Agriculture & animal sciences", "Agricultural sciences, horticulture, soil and water, veterinary and animal sciences, food systems and rural innovation."],
+              ["Health & medical sciences", "Public health, allied health, nursing, health technology, preventive care and other programmes only through appropriate approvals."],
+              ["Management & entrepreneurship", "Management, finance, operations, social enterprise, cooperatives, innovation and responsible business."],
+              ["Law, governance & public administration", "Legal education, constitutional studies, public policy, governance, administration and justice awareness."],
+              ["Environment & climate research", "Ecology, biodiversity, climate adaptation, renewable energy, water, waste and sustainable development."],
+              ["AI, robotics, space & emerging fields", "Artificial intelligence, data science, robotics, aerospace and space science through qualified academic and research collaborations."],
+              ["Innovation, invention & start-up incubation", "Maker spaces, prototyping, intellectual property awareness, technology transfer, incubation and responsible commercialisation."]
+            ].map(([title, text]) => <article key={title} className="rounded-2xl border border-slate-200 p-5"><h3 className="font-extrabold text-[#12345A]">{title}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{text}</p></article>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#12345A] px-5 py-16 text-white sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Village & city development" title="Solutions shaped by the realities of each community" text="The model will not impose one identical solution everywhere. Rural and urban development plans will be designed with local people, evidence, institutions and context." light />
+          <div className="grid gap-6 lg:grid-cols-2">
+            <article className="rounded-3xl border border-white/15 bg-white/[.07] p-7">
+              <h3 className="text-2xl font-black text-[#FFD27A]">Rural development framework</h3>
+              <ul className="mt-5 space-y-3 text-sm leading-7 text-white/80">{["Higher and more stable farm and allied-livelihood incomes","Local jobs, skill centres, small enterprises and value addition","Access to quality education, health awareness and digital services","Safe drinking water, sanitation, nutrition and clean energy","Women’s participation, leadership, safety and economic opportunity","Youth skills, career guidance, entrepreneurship and local innovation","Community institutions, producer groups and village-level planning"].map(x => <li key={x} className="flex gap-3"><FaCheckCircle className="mt-1 shrink-0 text-[#FFD27A]" />{x}</li>)}</ul>
+            </article>
+            <article className="rounded-3xl border border-white/15 bg-white/[.07] p-7">
+              <h3 className="text-2xl font-black text-[#FFD27A]">Urban development framework</h3>
+              <ul className="mt-5 space-y-3 text-sm leading-7 text-white/80">{["Education, employable skills, career pathways and entrepreneurship","Responsible waste management, recycling and circular economy","Urban agriculture, green spaces, biodiversity and clean air","Water conservation, energy efficiency and resilient infrastructure","Technology-enabled public services and digital inclusion","Community health, sports, arts, safety and accessible public spaces","Local enterprise, innovation, research and dignified employment"].map(x => <li key={x} className="flex gap-3"><FaCheckCircle className="mt-1 shrink-0 text-[#FFD27A]" />{x}</li>)}</ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Equity & social inclusion" title="Opportunity must reach those who need it most" text="The model will work toward access, dignity and participation for learners and communities who face economic, social, geographic or accessibility barriers." />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Economically weaker families", "Scholarships, fee support, learning materials, meals or other assistance based on transparent eligibility and available resources."],
+              ["Girls’ education and safety", "Safe access, retention, leadership, health awareness, mentoring, sports participation and pathways to further study."],
+              ["Women’s skills and livelihoods", "Adult learning, digital and financial literacy, vocational skills, enterprise support and access to markets."],
+              ["Disability inclusion", "Accessible buildings, inclusive teaching, reasonable accommodations, assistive technology and individual support."],
+              ["Underserved and disadvantaged communities", "Community outreach, fair admissions processes, bridge support and culturally respectful engagement."],
+              ["Rural talent and remote learners", "Local outreach, transport or digital access solutions where feasible, mentoring and pathways to advanced learning."]
+            ].map(([title, text]) => <article key={title} className="rounded-2xl border border-slate-200 p-5"><h3 className="font-extrabold text-[#12345A]">{title}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{text}</p></article>)}
+          </div>
+          <p className="mt-5 rounded-2xl bg-[#fffaf0] p-5 text-sm leading-7 text-[#624a1c]">Scholarships and inclusion programmes will require transparent criteria, safeguarding, appropriate data privacy and realistic funding. No benefit or admission guarantee is implied by this vision page.</p>
+        </div>
+      </section>
+
+      <section className="bg-[#f5f8fb] px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Campus and infrastructure master plan" title="Plan the full ecosystem in connected, feasible stages" text="The following is a long-term infrastructure menu for assessment—not a statement that land, buildings, equipment or approvals have already been secured." />
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {["School and higher-education academic blocks","Student hostels and supervised residential facilities, if feasible","Libraries, reading rooms and digital knowledge centres","Science, computer, engineering and research laboratories","Sports grounds, courts, gymnasium and indoor facilities","Agricultural land, demonstration farms, gardens and orchards","Nurseries, greenhouses and protected cultivation","Dairy and animal-care facilities designed for welfare","Food processing, storage, testing and packaging facilities","Health centre and referral/clinical partnerships as permitted","Arts, music, theatre and cultural learning spaces","Vocational training, maker and enterprise centres","Solar power, energy storage and efficiency systems","Water supply, rainwater harvesting, sanitation and wastewater treatment","Waste segregation, recycling and composting systems","Accessible transport, roads, pathways and emergency systems","Staff, faculty and researcher accommodation where required","Community outreach, extension and public learning spaces"].map(x => <div key={x} className="rounded-xl border border-slate-200 bg-white px-4 py-4 text-sm font-semibold leading-6 text-slate-700"><FaCheckCircle className="mr-2 inline text-[#176447]" />{x}</div>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Governance & institutional strength" title="A strong institution must be built behind the vision" text="Professional governance, public trust and accountability are essential for a project of this scale. Structures will be developed as the programme grows and in accordance with applicable law." />
+          <div className="grid gap-4 md:grid-cols-2">
+            {[
+              ["Expert advisory council", "Seek independent expertise in education, science, agriculture, health, finance, law, child protection, infrastructure, environment and community development."],
+              ["Professional leadership & teams", "Build accountable academic, operational, finance, safeguarding, engineering, research, partnership and monitoring teams with defined roles."],
+              ["Transparent finance & procurement", "Use approved budgets, documented procurement, conflict-of-interest controls, grant restrictions, financial reporting and statutory audits."],
+              ["Independent evaluation & public reporting", "Publish appropriate progress information, measure outcomes, commission reviews and act on lessons and complaints."],
+              ["Child protection & grievance systems", "Maintain child-safeguarding policies, staff verification and training, safe reporting channels, response procedures and oversight."],
+              ["University and research collaboration", "Create written, clearly scoped collaborations for faculty development, curriculum, research, evaluation and technical advice."],
+              ["Responsible funding partnerships", "Engage government programmes, CSR, philanthropy, foundations and other lawful sources without assuming any grant or partnership is secured."],
+              ["Community voice & participation", "Include parents, learners, local residents, educators and relevant community organisations in consultation and feedback."]
+            ].map(([title, text]) => <article key={title} className="rounded-2xl border border-slate-200 p-5"><h3 className="font-extrabold text-[#12345A]">{title}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{text}</p></article>)}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f5f8fb] px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-7xl">
+          <SectionHeading eyebrow="Financial and economic sustainability" title="Build a diversified resource model—without compromising education" text="A project of this scale will need realistic capital planning, recurring operating support, partnerships and phased investment. Income generation may support sustainability, but must not become a substitute for education or public benefit." />
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            {[
+              ["Agriculture and horticulture", "Potential lawful sale of surplus produce, nursery plants, seeds or other products after meeting learning, safety and operating needs."],
+              ["Processed food and local products", "Quality-assured, compliant food products and value-added goods where facilities, licences and market feasibility exist."],
+              ["Training and continuing education", "Appropriately designed training programmes for youth, adults, farmers, teachers and community groups."],
+              ["Social enterprise and services", "Mission-aligned services, repair, design, production or community enterprise with transparent accounting and governance."],
+              ["Technology and innovation products", "Responsible licensing, prototypes, technology transfer and products emerging from mature research partnerships."],
+              ["Research and institutional partnerships", "Project grants, sponsored research, technical collaborations and evaluation partnerships under written agreements."],
+              ["Donations, CSR and philanthropy", "Eligible contributions and grants subject to donor conditions, due diligence, statutory compliance and transparent utilisation."],
+              ["Government programmes and convergence", "Explore suitable public schemes and institutional support where eligibility, approvals and programme rules permit."],
+              ["Long-term financial planning", "Separate capital and operating budgets, maintenance reserves, risk planning, independent audits and periodic financial sustainability reviews."]
+            ].map(([title, text]) => <article key={title} className="rounded-2xl bg-white p-5 shadow-sm ring-1 ring-slate-200"><h3 className="font-extrabold text-[#12345A]">{title}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{text}</p></article>)}
+          </div>
+          <p className="mt-6 rounded-2xl border border-[#e7d5a9] bg-[#fffaf0] p-5 text-sm leading-7 text-[#624a1c]"><strong>Public-benefit safeguard:</strong> Access for economically weaker learners, educational quality, child welfare and the organisation’s charitable purpose must not depend solely on commercial profit. Any income-generating activity must comply with applicable law, the organisation’s objects and relevant tax and grant conditions.</p>
+        </div>
+      </section>
+
+      <section className="px-5 py-16 sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeading eyebrow="Implementation roadmap" title="Three horizons: what exists, what is next and what is envisioned" text="A clear distinction between present reality, medium-term development and long-term aspiration protects credibility and helps partners assess each stage responsibly." />
+          <div className="grid gap-5 md:grid-cols-3">
+            <article className="rounded-3xl border border-slate-200 bg-white p-6"><p className="text-xs font-black uppercase tracking-[.18em] text-[#176447]">Horizon 1</p><h3 className="mt-2 text-xl font-black text-[#12345A]">Current work & readiness</h3><p className="mt-3 text-sm leading-7 text-slate-600">Document the organisation’s actual activities, governance, statutory status, audited records and available capacity. Conduct Rewa needs assessment, consultations, feasibility, concept design and preparation of a realistic pilot proposal. Only verified activities and resources should be described as current.</p></article>
+            <article className="rounded-3xl border border-slate-200 bg-white p-6"><p className="text-xs font-black uppercase tracking-[.18em] text-[#176447]">Horizon 2</p><h3 className="mt-2 text-xl font-black text-[#12345A]">Medium-term pilot & strengthening</h3><p className="mt-3 text-sm leading-7 text-slate-600">Implement a feasible Rewa education and skills pilot after resources and approvals are secured. Build the team, teacher support, community participation, learning measurement, safe facilities and selected practical modules. Evaluate results before expanding.</p></article>
+            <article className="rounded-3xl border border-slate-200 bg-white p-6"><p className="text-xs font-black uppercase tracking-[.18em] text-[#176447]">Horizon 3</p><h3 className="mt-2 text-xl font-black text-[#12345A]">Long-term national vision</h3><p className="mt-3 text-sm leading-7 text-slate-600">Develop the integrated Rewa campus, additional educational and research institutions, rural and urban development programmes, and a network across Madhya Pradesh and India. Explore international cooperation only when capacity, evidence and governance support it.</p></article>
+          </div>
+          <div className="mt-7 rounded-2xl bg-[#eaf3ef] p-6">
+            <h3 className="font-black text-[#12345A]">Indicative milestones to be set after feasibility</h3>
+            <p className="mt-2 text-sm leading-7 text-slate-700">Baseline and community assessment → Detailed Project Report and cost estimates → land/site and regulatory due diligence → resource mobilisation and written partnerships → pilot launch → periodic learning and safeguarding reviews → independent evaluation → evidence-based expansion decision. No calendar dates, budgets or outcomes are promised on this concept page.</p>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#071d33] px-5 py-16 text-white sm:px-8 sm:py-24">
+        <div className="mx-auto max-w-6xl">
+          <SectionHeading eyebrow="Development challenges & proposed responses" title="Understand the problem before designing the solution" text="A Rewa baseline study and later local assessments should identify which challenges are most significant in each geography. The following are themes for investigation and programme design, not unsupported claims about measured local conditions." light />
+          <div className="grid gap-4 md:grid-cols-2">
+            {[
+              ["Unequal access to quality learning", "Strengthen foundational learning, teacher support, safe infrastructure, inclusion, mentoring and practical exposure."],
+              ["Gap between education and practical capability", "Connect classroom learning with supervised projects, life skills, laboratories, farms, workshops and career awareness."],
+              ["Limited local livelihood and value addition opportunities", "Explore skills, producer networks, processing, local enterprise, market access and responsible technology."],
+              ["Research and innovation disconnected from local needs", "Encourage community problem statements, university partnerships, research mentorship and appropriate innovation."],
+              ["Rural and urban service and infrastructure gaps", "Use local evidence to prioritise water, sanitation, health awareness, energy, waste, digital access and public spaces."],
+              ["Barriers faced by women and underserved learners", "Design safe, accessible, affordable and inclusive programmes with community participation and transparent support."],
+              ["Environmental and climate pressures", "Promote water stewardship, soil health, biodiversity, renewable energy, waste reduction and climate-resilient practices."],
+              ["Weak coordination across sectors", "Create partnerships with clear roles, shared milestones, responsible data use, transparent finance and independent evaluation."]
+            ].map(([title, text]) => <article key={title} className="rounded-2xl border border-white/15 bg-white/[.06] p-5"><h3 className="font-extrabold text-[#FFD27A]">{title}</h3><p className="mt-2 text-sm leading-7 text-white/75">{text}</p></article>)}
+          </div>
+        </div>
+      </section>
+
       <section className="bg-gradient-to-br from-[#12345A] via-[#14556a] to-[#176447] px-5 py-16 text-white sm:px-8 sm:py-24">
         <div className="mx-auto max-w-5xl text-center">
           <FaGlobeAsia className="mx-auto text-4xl text-[#FFD27A]" />
