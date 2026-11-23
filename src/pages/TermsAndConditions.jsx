@@ -65,7 +65,13 @@ export default function TermsAndConditions() {
       icon: <FaHandHoldingHeart />,
       title: "6. Donations & Financial Transactions",
       content:
-        "Donations are voluntary contributions made to support the Foundation's charitable and social-development activities. Donation-related transactions may be subject to the separate Donation & Refund Policy and to the terms of the applicable payment service provider. Donors should review the relevant details before completing a transaction.",
+        <>
+          Donations are voluntary contributions made to support the Foundation's charitable and social-development activities. Donation-related transactions may be subject to the separate{" "}
+          <Link to="/RefundAndCancellation" className="font-bold text-[#12345A] underline decoration-2 underline-offset-2 hover:text-[#176447]">
+            Donation & Refund Policy
+          </Link>{" "}
+          and to the terms of the applicable payment service provider. Donors should review the relevant details before completing a transaction.
+        </>,
     },
     {
       id: "accuracy",
@@ -182,7 +188,10 @@ export default function TermsAndConditions() {
       <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 md:py-16">
         {/* ================= INTRODUCTION ================= */}
         <div className="mb-10 rounded-3xl border border-zinc-200 border-l-8 border-l-[#12345A] bg-white p-7 shadow-lg sm:p-10">
-          <div className="mb-3 text-xs font-extrabold uppercase tracking-[0.2em] text-[#176447]">Effective for website use</div>
+          <div className="mb-3 flex flex-wrap items-center justify-between gap-2 text-xs font-extrabold uppercase tracking-[0.2em] text-[#176447]">
+            <span>Effective for website use</span>
+            <span className="rounded-full bg-zinc-100 px-3 py-2 tracking-normal text-zinc-500">Last Updated: 24 November 2026</span>
+          </div>
           <h2 className="mb-4 text-2xl font-black text-zinc-900 sm:text-3xl">Welcome to Swastik Srijan Foundation</h2>
           <p className="text-base leading-8 text-zinc-600 sm:text-lg">
             These Terms of Use explain the basic rules governing access to and use of our website and online facilities. They are designed to support responsible use, transparency and respectful interaction with the Foundation.
