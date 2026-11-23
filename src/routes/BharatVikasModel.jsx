@@ -3,8 +3,8 @@ import {
   FaArrowRight, FaBookOpen, FaFlask, FaSeedling, FaLaptopCode,
   FaRunning, FaMusic, FaHeartbeat, FaShieldAlt, FaIndustry,
   FaLeaf, FaUsers, FaGlobeAsia, FaLightbulb, FaHandsHelping,
-  FaGraduationCap, FaChartLine, FaWater, FaBalanceScale, FaBuilding,
-  FaCheckCircle, FaCompass, FaMapMarkedAlt, FaRecycle, FaUtensils
+  FaChartLine, FaWater, FaBalanceScale, FaBuilding,
+  FaCheckCircle, FaCompass, FaRecycle, FaUtensils
 } from "react-icons/fa";
 
 export const Route = createFileRoute("/BharatVikasModel")({
