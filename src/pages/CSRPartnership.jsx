@@ -235,16 +235,20 @@ export default function CSRPartnership() {
                 </div>
                 <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
                     {[
-                        { title: "Education & Digital Learning", detail: "Learning support, digital access and capacity building" },
-                        { title: "Health & Community Well-being", detail: "Community awareness and support initiatives" },
-                        { title: "Women & Youth Development", detail: "Skills, livelihood readiness and participation" },
-                        { title: "Environment & Sustainability", detail: "Local environmental awareness and practical action" },
-                        { title: "Rural Development", detail: "Community-led development and access to opportunities" },
-                        { title: "Sustainable Livelihoods", detail: "Feasibility-led livelihood and income-generation pilots" },
+                        { title: "Education & Digital Learning", detail: "Learning support, digital access and capacity building", image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80" },
+                        { title: "Health & Community Well-being", detail: "Community awareness and support initiatives", image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80" },
+                        { title: "Women & Youth Development", detail: "Skills, livelihood readiness and participation", image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80" },
+                        { title: "Environment & Sustainability", detail: "Local environmental awareness and practical action", image: "https://images.unsplash.com/photo-1532996122724-e3c354a0b15b?auto=format&fit=crop&w=900&q=80" },
+                        { title: "Rural Development", detail: "Community-led development and access to opportunities", image: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80" },
+                        { title: "Sustainable Livelihoods", detail: "Feasibility-led livelihood and income-generation pilots", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=900&q=80" },
                     ].map((item) => (
-                        <div key={item.title} className="rounded-2xl bg-white border border-zinc-200 p-6 shadow-sm">
-                            <h3 className="text-lg font-bold text-[#12345A] mb-2">{item.title}</h3>
-                            <p className="text-sm text-zinc-600 leading-relaxed">{item.detail}</p>
+                        <div key={item.title} className="overflow-hidden rounded-2xl bg-white border border-zinc-200 shadow-sm">
+                            <img src={item.image} alt={`${item.title} से संबंधित प्रतीकात्मक चित्र`} loading="lazy" className="h-40 w-full object-cover" />
+                            <div className="p-6">
+                                <h3 className="text-lg font-bold text-[#12345A] mb-2">{item.title}</h3>
+                                <p className="text-sm text-zinc-600 leading-relaxed">{item.detail}</p>
+                                <p className="mt-3 text-xs text-zinc-400">प्रतीकात्मक चित्र</p>
+                            </div>
                         </div>
                     ))}
                 </div>
