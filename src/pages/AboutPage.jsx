@@ -526,6 +526,32 @@ export default function AboutPage() {
               </motion.article>
             ))}
           </div>
+
+          {/* Small symbolic visual pair; all existing About content and photographs remain unchanged. */}
+          <div className="mt-10 grid gap-5 sm:grid-cols-2">
+            <figure className="overflow-hidden rounded-2xl border border-[#E7EBEF] bg-white shadow-sm">
+              <img
+                src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80"
+                alt="Students learning together in a classroom"
+                loading="lazy"
+                className="aspect-[16/9] w-full object-cover"
+              />
+              <figcaption className="px-4 py-3 text-sm font-semibold text-[#12345A]">
+                शिक्षा एवं कौशल विकास <span className="ml-2 text-xs font-medium text-[#64727D]">· प्रतीकात्मक चित्र</span>
+              </figcaption>
+            </figure>
+            <figure className="overflow-hidden rounded-2xl border border-[#E7EBEF] bg-white shadow-sm">
+              <img
+                src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1000&q=80"
+                alt="Healthcare professional supporting community health"
+                loading="lazy"
+                className="aspect-[16/9] w-full object-cover"
+              />
+              <figcaption className="px-4 py-3 text-sm font-semibold text-[#12345A]">
+                स्वास्थ्य एवं सामुदायिक सहयोग <span className="ml-2 text-xs font-medium text-[#64727D]">· प्रतीकात्मक चित्र</span>
+              </figcaption>
+            </figure>
+          </div>
         </div>
       </section>
 
