@@ -70,7 +70,7 @@ The activity is presented as a community-support effort; a verified beneficiary 
     image: "/images/uploads/learning-hub-1.jpg",
     short: {
       en: "An archived account describes computer and printer support for a school; a quantified improvement figure is not stated.",
-      hi: "कंप्यूटर और प्रिंटर के दान से स्कूल की प्रभावशीलता में 98% सुधार हुआ।"
+      hi: "एक अभिलेखित विवरण में स्कूल को कंप्यूटर और प्रिंटर सहायता देने का उल्लेख है; सुधार का कोई सत्यापित प्रतिशत यहाँ उपलब्ध नहीं है।"
     },
     full: {
       en: `At Dadar School, SSF donated computers and printers to improve academic efficiency.
@@ -78,7 +78,7 @@ The activity is presented as a community-support effort; a verified beneficiary 
 Motivational visits encouraged teachers to enhance punctuality and engagement. The archive describes the intended improvements in teaching support and student engagement. A measured success rate is not provided.`,
       hi: `दादर स्कूल में, SSF ने शैक्षणिक दक्षता में सुधार के लिए कंप्यूटर और प्रिंटर दान किए।
 
-प्रेरक यात्राओं ने शिक्षकों को समय की पाबंदी और जुड़ाव बढ़ाने के लिए प्रोत्साहित किया। कार्यक्रम के परिणामस्वरूप 98% सफलता दर मिली और शिक्षण गुणवत्ता और छात्र प्रदर्शन में उल्लेखनीय सुधार हुआ।`
+अभिलेख में शिक्षकों को प्रोत्साहित करने और शिक्षण सहयोग बेहतर बनाने के प्रयासों का उल्लेख है। कोई सत्यापित सफलता प्रतिशत या मापा हुआ परिणाम उपलब्ध नहीं है।`
     }
   },
   {
