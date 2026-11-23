@@ -58,6 +58,30 @@ export default function OurInitiativesPage() {
       <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">{workPrinciples.map(({ icon: Icon, title, text }) => <article key={title} className="rounded-3xl border border-[#EAF0F6] bg-white p-6 shadow-sm transition hover:-translate-y-1 hover:shadow-lg"><div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EAF0F6] text-xl text-[#12345A]"><Icon /></div><h3 className="mt-5 text-xl font-black">{title}</h3><p className="mt-2 text-sm leading-6 text-[#26343D]">{text}</p></article>)}</div>
     </div></section>
 
+    <section className="border-y border-[#EAF0F6] bg-white px-6 py-12 md:py-16">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-8 text-center">
+          <p className="text-sm font-extrabold uppercase tracking-[0.2em] text-[#12345A]">Our Work in Communities</p>
+          <h2 className="mt-2 text-3xl font-black md:text-4xl">Learning, health awareness & community participation</h2>
+          <p className="mx-auto mt-3 max-w-3xl leading-7 text-[#26343D]">A glimpse of the themes reflected in the Foundation’s education, health-awareness and grassroots engagement work.</p>
+        </div>
+        <div className="grid gap-5 md:grid-cols-3">
+          <figure className="overflow-hidden rounded-2xl border border-[#EAF0F6] bg-white shadow-sm">
+            <img src="/images/real/education_girls.jpg" alt="Girls participating in an educational activity" loading="lazy" className="aspect-[16/10] w-full object-cover" />
+            <figcaption className="px-4 py-3 text-sm font-bold text-[#12345A]">Education & child development</figcaption>
+          </figure>
+          <figure className="overflow-hidden rounded-2xl border border-[#EAF0F6] bg-white shadow-sm">
+            <img src="/images/real/optical-health-camp.png" alt="Community optical health awareness camp" loading="lazy" className="aspect-[16/10] w-full object-cover" />
+            <figcaption className="px-4 py-3 text-sm font-bold text-[#12345A]">Health awareness & preventive support</figcaption>
+          </figure>
+          <figure className="overflow-hidden rounded-2xl border border-[#EAF0F6] bg-white shadow-sm">
+            <img src="/images/real/rural-awareness.jpg" alt="Rural community awareness and participation" loading="lazy" className="aspect-[16/10] w-full object-cover" />
+            <figcaption className="px-4 py-3 text-sm font-bold text-[#12345A]">Rural & community participation</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
     <section className="bg-[#EAF0F6] px-6 py-14 md:py-20"><div className="mx-auto max-w-6xl">
       <div className="mb-12 max-w-3xl"><p className="text-sm font-extrabold uppercase tracking-[0.2em] text-[#12345A]">What We Do</p><h2 className="mt-2 text-3xl font-black md:text-4xl">A clear view of our initiatives</h2><p className="mt-4 text-lg leading-8 text-[#26343D]">Our initiatives reflect the Foundation’s broad registered objectives while presenting current public-facing work in a clear and responsible way. The scope of any particular activity depends on resources, volunteers, partnerships and local requirements.</p></div>
       <div className="grid gap-6 md:grid-cols-2">{initiatives.map((item) => { const Icon = item.icon; return <article id={item.anchor} key={item.title} className={`scroll-mt-28 group rounded-3xl border p-7 shadow-sm transition hover:-translate-y-1 hover:shadow-xl ${item.featured ? 'border-[#F7A814]/35 bg-[#EAF0F6] md:col-span-2' : 'border-[#EAF0F6] bg-white'}`}><div className="flex items-start gap-5"><div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-[#12345A] text-2xl text-white shadow-md"><Icon /></div><div className="min-w-0 flex-1"><div className="mb-2 flex flex-wrap items-center gap-2"><h3 className="text-xl font-black md:text-2xl">{item.title}</h3><span className="rounded-full bg-[#EAF0F6] px-3 py-1 text-xs font-bold text-[#26343D]">{item.tag}</span></div><p className="leading-7 text-[#26343D]">{item.description}</p><ul className="mt-5 grid gap-2 sm:grid-cols-2">{item.points.map((point) => <li key={point} className="flex gap-2 text-sm font-semibold text-[#26343D]"><span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[#176447]" />{point}</li>)}</ul>{item.link && <Link to={item.link} className="mt-6 inline-flex items-center gap-2 font-extrabold text-[#12345A] hover:text-[#12345A]">{item.linkText}<FaArrowRight className="text-sm transition group-hover:translate-x-1" /></Link>}</div></div></article> })}</div>
