@@ -83,7 +83,7 @@ export default function FooterSection() {
           </div>
         </section>
 
-        <section aria-label="Website navigation" className="grid grid-cols-2 gap-x-5 gap-y-9 border-b border-white/10 py-10 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-6 lg:gap-x-6">
+        <section aria-label="Website navigation" className="grid grid-cols-2 gap-x-5 gap-y-9 border-b border-white/10 py-10 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-7 lg:gap-x-5">
           <FooterColumn label="The Foundation">
             <FooterLink to="/About">About SSF</FooterLink>
             <FooterLink to="/Mission">Mission & Vision</FooterLink>
@@ -107,6 +107,9 @@ export default function FooterSection() {
             <FooterLink to="/SocialEnterprises">Social Enterprises</FooterLink>
             <FooterLink to="/DevelopmentImpact">Impact & Reports</FooterLink>
             <FooterLink to="/UpcomingProjects">Future Livelihood Projects</FooterLink>
+          </FooterColumn>
+          <FooterColumn label="National Vision">
+            <FooterLink to="/BharatVikasModel">Bharat Vikas Model</FooterLink>
           </FooterColumn>
           <FooterColumn label="Funding & Support">
             <FooterLink to="/FundingPartnerships">Funding & CSR</FooterLink>
