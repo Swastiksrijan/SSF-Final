@@ -20,6 +20,8 @@ export default function LegalPolicies() {
                     </p>
                 </div>
 
+                <p className="text-center text-xs font-semibold text-zinc-500">Reviewed: 24 November 2026</p>
+
                 {/* ================= CONTENT ================= */}
                 <div className="bg-white rounded-xl shadow-sm p-6 md:p-10 space-y-10">
 
@@ -33,8 +35,7 @@ export default function LegalPolicies() {
                                 Swastik Srijan Foundation ("SSF", "we", "us", or "our") is committed to protecting
                                 the privacy and security of personal information of our donors, beneficiaries,
                                 volunteers, and website visitors. This Privacy Policy outlines how we collect,
-                                use, store, and protect your personal data in compliance with the Digital Personal
-                                Data Protection Act, 2023 (DPDP Act) and other applicable Indian laws.
+                                use, store, and protect your personal data with reference to the Digital Personal Data Protection Act, 2023 (DPDP Act), rules brought into force, and other applicable Indian laws, as applicable.
                             </p>
                         </div>
 
@@ -108,7 +109,7 @@ export default function LegalPolicies() {
                                 <li><strong>Right to Correction:</strong> Request correction of inaccurate or incomplete data</li>
                                 <li><strong>Right to Erasure:</strong> Request deletion of your personal data (subject to legal retention requirements)</li>
                                 <li><strong>Right to Withdraw Consent:</strong> Withdraw your consent for data processing at any time</li>
-                                <li><strong>Right to Data Portability:</strong> Request transfer of your data to another organization</li>
+                                
                                 <li><strong>Right to Grievance Redressal:</strong> Raise concerns about data processing practices</li>
                             </ul>
                         </div>
@@ -116,9 +117,7 @@ export default function LegalPolicies() {
                         <div className="space-y-3">
                             <h3 className="text-lg font-semibold text-zinc-800">1.7 Cookies and Tracking Technologies</h3>
                             <p className="text-zinc-600 leading-relaxed">
-                                Our website may use cookies and similar tracking technologies to enhance user
-                                experience and analyze site traffic. You can control cookie preferences through
-                                your browser settings. Disabling cookies may affect certain website functionalities.
+                                Our website may use essential cookies or similar technologies needed for site functionality. As of the latest source review, no third-party analytics provider is identified as configured in the website code. External payment providers may apply their own cookies or tracking when you use their services. You can manage cookies through your browser settings.
                             </p>
                         </div>
 
@@ -135,8 +134,7 @@ export default function LegalPolicies() {
                             <h3 className="text-lg font-semibold text-zinc-800">1.9 Data Retention</h3>
                             <p className="text-zinc-600 leading-relaxed">
                                 We retain personal data only for as long as necessary to fulfill the purposes
-                                outlined in this policy or as required by law. Financial records are maintained
-                                for a minimum of 7 years as per Indian tax and accounting regulations.
+                                outlined in this policy or as required by law. Financial and other records are retained for the period required by applicable law and legitimate organisational needs.
                             </p>
                         </div>
                     </section>
@@ -256,14 +254,13 @@ export default function LegalPolicies() {
                             <ul className="list-disc ml-5 text-zinc-600 space-y-1">
                                 <li>Duplicate transactions due to technical errors</li>
                                 <li>Incorrect donation amount charged due to payment gateway issues</li>
-                                <li>Unauthorized transactions (subject to verification)</li>
                             </ul>
                         </div>
 
                         <div className="space-y-3">
                             <h3 className="text-lg font-semibold text-zinc-800">3.3 Refund Process</h3>
                             <p className="text-zinc-600 leading-relaxed">
-                                To request a refund, please contact us within 7 days of the transaction with:
+                                To request a refund, please contact us with the transaction details (transaction ID, date, amount and payment method) and any supporting evidence. Requests are reviewed after transaction verification.
                             </p>
                             <ul className="list-disc ml-5 text-zinc-600 space-y-1">
                                 <li>Transaction ID and payment receipt</li>
@@ -271,17 +268,14 @@ export default function LegalPolicies() {
                                 <li>Supporting documentation (if applicable)</li>
                             </ul>
                             <p className="text-zinc-600 leading-relaxed">
-                                Approved refunds will be processed within 14-21 business days to the original
-                                payment method.
+                                If a refund is approved, it will be sent to the original payment method. Processing time may vary depending on the bank or payment provider.
                             </p>
                         </div>
 
                         <div className="space-y-3">
                             <h3 className="text-lg font-semibold text-zinc-800">3.4 Cancellation Policy</h3>
                             <p className="text-zinc-600 leading-relaxed">
-                                For recurring donations or pledges, donors may cancel their commitment by
-                                contacting us at least 7 days before the next scheduled payment. Amounts
-                                already donated are non-refundable.
+                                For recurring donations or pledges, donors may contact the Foundation to request cancellation before the next scheduled payment. The request should be made sufficiently in advance for the payment provider to process it. Amounts already donated are non-refundable.
                             </p>
                         </div>
                     </section>
@@ -308,16 +302,15 @@ export default function LegalPolicies() {
                         <h2 className="text-2xl font-bold text-zinc-900">5. Grievance Redressal Mechanism</h2>
 
                         <p className="text-zinc-600 leading-relaxed">
-                            For any concerns, complaints, or queries regarding data protection, privacy,
-                            or these policies, please contact our Data Protection Officer:
+                            For concerns, complaints, or queries regarding data protection, privacy, or these policies, please contact the Foundation's designated grievance contact:
                         </p>
                         <div className="bg-zinc-50 p-4 rounded-lg mt-3">
-                            <p className="text-zinc-700"><strong>Data Protection Officer</strong></p>
+                            <p className="text-zinc-700"><strong>Grievance Contact</strong></p>
                             <p className="text-zinc-600">Swastik Srijan Foundation</p>
                             <p className="text-zinc-600">Email: {CONTACT_INFO.dataProtectionOfficer.email}</p>
                             <p className="text-zinc-600">Phone: {CONTACT_INFO.dataProtectionOfficer.phone}</p>
                             <p className="text-zinc-600 mt-2">
-                                We are committed to resolving grievances within 30 days of receipt.
+                                We will review the grievance and respond as soon as reasonably practicable, subject to the information required and applicable legal timelines.
                             </p>
                         </div>
                     </section>
@@ -332,7 +325,7 @@ export default function LegalPolicies() {
                             through our website and, where appropriate, via email to registered users.
                         </p>
                         <p className="text-zinc-600 leading-relaxed">
-                            <strong>Last Updated:</strong> November 2026
+                            <strong>Last Updated:</strong> 24 November 2026
                         </p>
                     </section>
 
