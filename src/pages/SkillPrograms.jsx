@@ -103,13 +103,17 @@ export default function SkillPrograms() {
                             </div>
                         </div>
                     </div>
-                    <div className="bg-white rounded-2xl p-8 h-full min-h-[400px] flex items-center justify-center shadow-lg transform rotate-2 hover:rotate-0 transition duration-500">
-                        {/* Placeholder for Image */}
-                        <div className="text-center">
-                            <h3 className="text-5xl font-black text-zinc-200 mb-2">JOBS</h3>
-                            <p className="text-xl font-bold text-zinc-400">Livelihood & Dignity</p>
-                        </div>
-                    </div>
+                    <figure className="overflow-hidden rounded-2xl bg-white shadow-lg">
+                        <img
+                            src="/images/real/computer-donation-clean-v2.png"
+                            alt="Computer equipment supporting digital learning opportunities"
+                            loading="lazy"
+                            className="h-full min-h-[400px] w-full object-cover"
+                        />
+                        <figcaption className="px-5 py-4 text-sm font-bold text-zinc-700">
+                            Digital skills & learning access · प्रतीकात्मक संदर्भ
+                        </figcaption>
+                    </figure>
                 </div>
             </section>
 
