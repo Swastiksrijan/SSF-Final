@@ -15,6 +15,7 @@ export default function Volunteer() {
       icon: <FaMapMarkerAlt />,
       title: "Field Volunteer",
       titleHi: "सेवा देने वाले - फील्ड",
+      image: "https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=900&q=80",
       color: "bg-orange-50 text-[#176447]",
       border: "border-orange-100",
       work: ["Education programs (शिक्षा कार्यक्रम)", "Health camps (स्वास्थ्य शिविर)", "Rural/Urban outreach", "Activities with children", "Sports, Environment, Awareness"],
@@ -25,6 +26,7 @@ export default function Volunteer() {
       icon: <FaProjectDiagram />,
       title: "Program Volunteer",
       titleHi: "प्रोजेक्ट वालंटियर",
+      image: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80",
       color: "bg-blue-50 text-[#12345A]",
       border: "border-blue-100",
       work: ["Regular support in a project", "Women empowerment initiatives", "Livelihood / Skill training", "Sports & cultural activities"],
@@ -35,6 +37,7 @@ export default function Volunteer() {
       icon: <FaUserTie />,
       title: "Professional Volunteer",
       titleHi: "प्रोफेशनल वालंटियर",
+      image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=900&q=80",
       color: "bg-emerald-50 text-emerald-600",
       border: "border-emerald-100",
       work: ["Teaching / Training", "Doctor / Nurse / Health advisor", "Legal / CA / Compliance support", "IT, Website, Design, Content"],
@@ -45,6 +48,7 @@ export default function Volunteer() {
       icon: <FaLaptop />,
       title: "Digital / Online Volunteer",
       titleHi: "डिजिटल वालंटियर",
+      image: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=900&q=80",
       color: "bg-purple-50 text-purple-600",
       border: "border-purple-100",
       work: ["Social media management", "Content writing", "Poster / video creation", "Online awareness & campaigns"],
@@ -88,6 +92,10 @@ export default function Volunteer() {
                 }}
                 className={`bg-white p-6 sm:p-8 rounded-[2rem] sm:rounded-[2.5rem] border-2 ${type.border} shadow-sm hover:shadow-2xl transition-all duration-500 flex flex-col`}
               >
+                <figure className="mb-5 overflow-hidden rounded-2xl">
+                  <img src={type.image} alt={`${type.title} से संबंधित प्रतीकात्मक चित्र`} loading="lazy" className="h-28 w-full object-cover" />
+                  <figcaption className="pt-1 text-[11px] text-zinc-400">प्रतीकात्मक चित्र</figcaption>
+                </figure>
                 <div className={`w-16 h-16 ${type.color} rounded-2xl flex items-center justify-center text-3xl mb-8`}>
                   {type.icon}
                 </div>
