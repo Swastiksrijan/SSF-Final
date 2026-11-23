@@ -44,20 +44,16 @@ The process involves separating plasma from the blood and returning the remainin
     date: "June 2021",
     image: "/images/protection-ecosystem.png",
     short: {
-      en: "The archived story describes a mask-awareness and distribution initiative during the COVID-19 period.",
-      hi: "COVID-19 लॉकडाउन के दौरान SSF ने कमजोर समुदायों को मुफ्त मास्क वितरित किए।"
+      en: "A record of SSF’s COVID-19 community-service and relief activities, which were also reported in newspapers.",
+      hi: "COVID-19 के दौरान SSF की सामुदायिक सेवा और राहत गतिविधियों का विवरण, जिनकी खबरें अखबारों में भी प्रकाशित हुईं।"
     },
     full: {
-      en: `During the COVID-19 pandemic, SSF launched a mask distribution drive after government mandates made mask-wearing compulsory.
+      en: `During the COVID-19 pandemic, Swastik Srijan Foundation carried out community-service and relief activities to support people affected by the crisis. The Foundation’s work during this period was reported in newspapers on multiple occasions.
 
-Volunteers distributed masks across Noida and nearby areas, especially targeting those who could not afford them. Alongside distribution, awareness sessions on hygiene, mask usage, and social distancing were conducted.
+The archived coverage and activity records document the Foundation’s contribution during an exceptionally difficult period. This is a historical account; specific activities and beneficiary numbers should be read from the corresponding newspaper reports and original records.`,
+      hi: `COVID-19 महामारी के दौरान स्वास्तिक सृजन फाउंडेशन ने संकट से प्रभावित लोगों की सहायता के लिए सामुदायिक सेवा और राहत के कई कार्य किए। इस अवधि में फाउंडेशन के कार्यों की खबरें कई बार अखबारों में प्रकाशित हुईं।
 
-The activity is presented as a community-support effort; a verified beneficiary total is not stated here.`,
-      hi: `COVID-19 महामारी के दौरान, सरकारी आदेशों द्वारा मास्क पहनना अनिवार्य किए जाने के बाद SSF ने मास्क वितरण अभियान शुरू किया।
-
-स्वयंसेवकों ने नोएडा और आसपास के क्षेत्रों में मास्क वितरित किए, विशेष रूप से उन लोगों को लक्षित किया जो उन्हें खरीद नहीं सकते थे। वितरण के साथ-साथ, स्वच्छता, मास्क के उपयोग और सामाजिक दूरी पर जागरूकता सत्र आयोजित किए गए।
-
-इस पहल ने सैकड़ों परिवारों की रक्षा करने में मदद की और सामुदायिक विश्वास को मजबूत किया।`
+अभिलेखित समाचार और गतिविधि संबंधी रिकॉर्ड उस कठिन समय में फाउंडेशन के योगदान का विवरण देते हैं। यह एक ऐतिहासिक विवरण है; विशेष गतिविधियों और लाभार्थियों की संख्या के लिए संबंधित समाचार-कतरनों और मूल रिकॉर्ड को देखा जाना चाहिए।`
     }
   },
   {
@@ -69,16 +65,16 @@ The activity is presented as a community-support effort; a verified beneficiary 
     date: "Jan 2022",
     image: "/images/uploads/learning-hub-1.jpg",
     short: {
-      en: "An archived account describes computer and printer support for a school; a quantified improvement figure is not stated.",
-      hi: "एक अभिलेखित विवरण में स्कूल को कंप्यूटर और प्रिंटर सहायता देने का उल्लेख है; सुधार का कोई सत्यापित प्रतिशत यहाँ उपलब्ध नहीं है।"
+      en: "SSF provided computer support to a school. The initiative was covered in the news, and subsequent school results included individual students scoring 98 and 95 marks.",
+      hi: "SSF ने एक स्कूल को कंप्यूटर सहायता दी। इस पहल की खबर प्रकाशित हुई और इसके बाद स्कूल के परिणामों में कुछ विद्यार्थियों ने 98 और 95 अंक प्राप्त किए।"
     },
     full: {
-      en: `At Dadar School, SSF donated computers and printers to improve academic efficiency.
+      en: `At Dadar School, Swastik Srijan Foundation provided computer support to strengthen teaching and learning facilities. The initiative was also covered in newspaper reports.
 
-Motivational visits encouraged teachers to enhance punctuality and engagement. The archive describes the intended improvements in teaching support and student engagement. A measured success rate is not provided.`,
-      hi: `दादर स्कूल में, SSF ने शैक्षणिक दक्षता में सुधार के लिए कंप्यूटर और प्रिंटर दान किए।
+Following the support, the school’s results improved; some students subsequently scored 98 and 95 marks. These are individual students’ reported marks, not a percentage improvement attributed solely to the computers. The result details should be read alongside the school’s examination records and related news coverage.`,
+      hi: `दादर स्कूल में स्वास्तिक सृजन फाउंडेशन ने शिक्षण और अध्ययन सुविधाओं को बेहतर बनाने के लिए कंप्यूटर सहायता दी। इस पहल की खबर अखबार में भी प्रकाशित हुई थी।
 
-अभिलेख में शिक्षकों को प्रोत्साहित करने और शिक्षण सहयोग बेहतर बनाने के प्रयासों का उल्लेख है। कोई सत्यापित सफलता प्रतिशत या मापा हुआ परिणाम उपलब्ध नहीं है।`
+इस सहायता के बाद स्कूल के परिणामों में सुधार हुआ और कुछ विद्यार्थियों ने आगे चलकर 98 और 95 अंक प्राप्त किए। ये विद्यार्थियों के व्यक्तिगत प्राप्तांक हैं, कंप्यूटर सहायता के कारण परिणाम में हुई प्रतिशत वृद्धि नहीं। परिणामों के विवरण को स्कूल के परीक्षा रिकॉर्ड और संबंधित समाचारों के साथ देखा जाना चाहिए।`
     }
   },
   {
