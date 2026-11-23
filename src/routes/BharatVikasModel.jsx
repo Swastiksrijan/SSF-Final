@@ -115,6 +115,23 @@ function ConceptCampusIllustration() {
   );
 }
 
+
+function ConceptImageBand({ items }) {
+  return (
+    <div className="mx-auto mb-10 grid max-w-6xl gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {items.map(({ src, alt, label }) => (
+        <figure key={label} className="group overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm">
+          <img src={src} alt={alt} loading="lazy" className="h-48 w-full object-cover transition duration-500 group-hover:scale-[1.03] sm:h-52" />
+          <figcaption className="flex items-center justify-between gap-3 px-4 py-3">
+            <span className="text-sm font-bold text-[#12345A]">{label}</span>
+            <span className="shrink-0 rounded-full bg-[#fff6df] px-2.5 py-1 text-[9px] font-extrabold uppercase tracking-wider text-[#8a641c]">प्रतीकात्मक चित्र</span>
+          </figcaption>
+        </figure>
+      ))}
+    </div>
+  );
+}
+
 function BharatVikasModelPage() {
   return (
     <main className="w-full overflow-hidden bg-white text-slate-800">
@@ -163,6 +180,11 @@ function BharatVikasModelPage() {
       <section className="px-5 py-16 sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Integrated learning ecosystem" title="One campus. Many disciplines. Shared purpose." text="The long-term concept brings academic learning together with practical exposure, research, creativity, health, livelihoods and community development. These are proposed areas of development, not claims that facilities already exist." />
+          <ConceptImageBand items={[
+            { src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1200&q=80", alt: "विद्यालय में सीखते विद्यार्थी", label: "शिक्षा और सीखना" },
+            { src: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?auto=format&fit=crop&w=1200&q=80", alt: "प्रयोगशाला में तकनीकी कार्य", label: "विज्ञान और अनुसंधान" },
+            { src: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80", alt: "डिजिटल तकनीक का उपयोग", label: "डिजिटल तकनीक" }
+          ]} />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {pillars.map(({ icon: Icon, title, text }, i) => (
               <article key={title} className="group rounded-2xl border border-slate-200 bg-white p-5 transition hover:-translate-y-1 hover:border-[#b8d1c6] hover:shadow-xl">
@@ -180,6 +202,11 @@ function BharatVikasModelPage() {
       <section className="bg-[#f5f8fb] px-5 py-16 sm:px-8 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <SectionHeading eyebrow="Learning journey" title="From discovery to informed specialisation" text="The learning framework aims to give every child broad exposure while respecting age, ability, interests, curriculum requirements and individual pace." />
+          <ConceptImageBand items={[
+            { src: "https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=80", alt: "कक्षा में जिज्ञासा और अध्ययन", label: "बुनियादी शिक्षा" },
+            { src: "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1200&q=80", alt: "हाथों से प्रयोग और निर्माण", label: "प्रायोगिक शिक्षा" },
+            { src: "https://images.unsplash.com/photo-1523240795612-9a054b0db644?auto=format&fit=crop&w=1200&q=80", alt: "समूह में सीखते युवा", label: "उच्च शिक्षा की तैयारी" }
+          ]} />
           <div className="grid gap-5 md:grid-cols-2">
             {stages.map((stage) => (
               <article key={stage.no} className="rounded-3xl bg-white p-6 shadow-sm ring-1 ring-slate-200 sm:p-8">
@@ -202,6 +229,11 @@ function BharatVikasModelPage() {
       <section className="px-5 py-16 sm:px-8 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <SectionHeading eyebrow="A living and learning campus" title="A campus that learns from nature and responsible production" text="The proposed campus may progressively connect learning spaces with farms, gardens, food systems, workshops, clean energy and community services. Every facility will depend on feasibility, expertise, approvals and sustainable operating plans." />
+          <ConceptImageBand items={[
+            { src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80", alt: "खेत और हरित कृषि क्षेत्र", label: "कृषि और बागवानी" },
+            { src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80", alt: "प्राकृतिक और हरित परिवेश", label: "पर्यावरण संरक्षण" },
+            { src: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?auto=format&fit=crop&w=1200&q=80", alt: "स्वच्छ ऊर्जा की अवधारणा", label: "नवीकरणीय ऊर्जा" }
+          ]} />
           <div className="grid gap-6 lg:grid-cols-2">
             <div className="rounded-3xl bg-[#12345A] p-7 text-white sm:p-9">
               <FaSeedling className="text-3xl text-[#FFD27A]" />
@@ -223,6 +255,11 @@ function BharatVikasModelPage() {
       <section className="bg-[#071d33] px-5 py-16 text-white sm:px-8 sm:py-24">
         <div className="mx-auto max-w-6xl">
           <SectionHeading eyebrow="A long-term institutional pathway" title="From school to advanced learning and research" text="The vision can grow into a connected network of educational and research institutions. Each stage must be independently planned, professionally governed and established under the applicable legal and regulatory framework." light />
+          <ConceptImageBand items={[
+            { src: "https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=1200&q=80", alt: "शैक्षणिक संस्थान का प्रतीकात्मक दृश्य", label: "विद्यालय और संस्थान" },
+            { src: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1200&q=80", alt: "अनुसंधान प्रयोगशाला", label: "उच्चस्तरीय शोध" },
+            { src: "https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80", alt: "उच्च शिक्षा और अध्ययन", label: "कॉलेज और विश्वविद्यालय" }
+          ]} />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             {[
               ["01", "Integrated school", "Strong foundational, academic, practical, creative and physical education."],
@@ -326,6 +363,11 @@ function BharatVikasModelPage() {
       <section className="px-5 py-16 sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Practical life skills" title="Skills that make people more capable in everyday life" text="Practical learning will be age-appropriate, supervised, inclusive and safety-led. It will build respect for all forms of work and help learners understand how homes, communities and essential services function." />
+          <ConceptImageBand items={[
+            { src: "https://images.unsplash.com/photo-1556911220-bff31c812dba?auto=format&fit=crop&w=1200&q=80", alt: "भोजन तैयार करने का अभ्यास", label: "पाक-कला और पोषण" },
+            { src: "https://images.unsplash.com/photo-1581092160607-ee22621dd758?auto=format&fit=crop&w=1200&q=80", alt: "उपकरणों के साथ तकनीकी अभ्यास", label: "मशीन और मरम्मत कौशल" },
+            { src: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80", alt: "कंप्यूटर आधारित कौशल", label: "डिजिटल साक्षरता" }
+          ]} />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               ["Food, cooking & nutrition", "Kitchen hygiene, safe cooking, meal planning, nutrition, food storage and reducing food waste."],
@@ -346,6 +388,11 @@ function BharatVikasModelPage() {
       <section className="bg-[#f5f8fb] px-5 py-16 sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Agriculture to enterprise" title="Connect the complete production and value chain" text="The proposed ecosystem will help learners and communities understand how natural resources, knowledge, production, processing, quality, markets and livelihoods connect. Commercial activity, if developed, will be lawful, professionally managed and separate from compulsory student learning." />
+          <ConceptImageBand items={[
+            { src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80", alt: "खेती और फसल उत्पादन", label: "कृषि उत्पादन" },
+            { src: "https://images.unsplash.com/photo-1604719312566-8912e9c8a213?auto=format&fit=crop&w=1200&q=80", alt: "खाद्य उत्पाद और बाजार", label: "खाद्य प्रसंस्करण" },
+            { src: "https://images.unsplash.com/photo-1542838132-92c53300491e?auto=format&fit=crop&w=1200&q=80", alt: "ताजा कृषि उपज", label: "मूल्य संवर्धन" }
+          ]} />
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {[
               ["Seeds, nurseries & planting material", "Seed knowledge, nursery management, saplings, local varieties, seed conservation and quality planting material."],
@@ -365,6 +412,11 @@ function BharatVikasModelPage() {
       <section className="px-5 py-16 sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Higher education & research" title="Build knowledge institutions across disciplines" text="The long-term aspiration is to develop specialised academic and research capacity in response to public needs, subject to demand, feasibility, qualified faculty, partnerships and statutory approvals." />
+          <ConceptImageBand items={[
+            { src: "https://images.unsplash.com/photo-1532094349884-543bc11b234d?auto=format&fit=crop&w=1200&q=80", alt: "वैज्ञानिक प्रयोग", label: "विज्ञान अनुसंधान" },
+            { src: "https://images.unsplash.com/photo-1581092335878-2d9ff86ca2bf?auto=format&fit=crop&w=1200&q=80", alt: "इंजीनियरिंग और तकनीकी नवाचार", label: "इंजीनियरिंग" },
+            { src: "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=1200&q=80", alt: "कंप्यूटिंग और डिजिटल नवाचार", label: "AI और कंप्यूटिंग" }
+          ]} />
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {[
               ["Science & foundational research", "Physics, chemistry, biology, mathematics, materials, interdisciplinary science and research methods."],
@@ -384,6 +436,11 @@ function BharatVikasModelPage() {
       <section className="bg-[#12345A] px-5 py-16 text-white sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Village & city development" title="Solutions shaped by the realities of each community" text="The model will not impose one identical solution everywhere. Rural and urban development plans will be designed with local people, evidence, institutions and context." light />
+          <ConceptImageBand items={[
+            { src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1200&q=80", alt: "ग्रामीण कृषि और आजीविका", label: "ग्रामीण विकास" },
+            { src: "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1200&q=80", alt: "शहरी आधारभूत संरचना", label: "शहरी विकास" },
+            { src: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=1200&q=80", alt: "समुदाय की सहभागिता", label: "सामुदायिक विकास" }
+          ]} />
           <div className="grid gap-6 lg:grid-cols-2">
             <article className="rounded-3xl border border-white/15 bg-white/[.07] p-7">
               <h3 className="text-2xl font-black text-[#FFD27A]">Rural development framework</h3>
@@ -417,6 +474,11 @@ function BharatVikasModelPage() {
       <section className="bg-[#f5f8fb] px-5 py-16 sm:px-8 sm:py-24">
         <div className="mx-auto max-w-7xl">
           <SectionHeading eyebrow="Campus and infrastructure master plan" title="Plan the full ecosystem in connected, feasible stages" text="The following is a long-term infrastructure menu for assessment—not a statement that land, buildings, equipment or approvals have already been secured." />
+          <ConceptImageBand items={[
+            { src: "https://images.unsplash.com/photo-1497366754035-f200968a6e72?auto=format&fit=crop&w=1200&q=80", alt: "सीखने और काम करने के स्थान", label: "शैक्षणिक भवन" },
+            { src: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=1200&q=80", alt: "खेल और शारीरिक गतिविधि", label: "खेल परिसर" },
+            { src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?auto=format&fit=crop&w=1200&q=80", alt: "हरित और टिकाऊ परिसर", label: "हरित कैंपस" }
+          ]} />
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {["School and higher-education academic blocks","Student hostels and supervised residential facilities, if feasible","Libraries, reading rooms and digital knowledge centres","Science, computer, engineering and research laboratories","Sports grounds, courts, gymnasium and indoor facilities","Agricultural land, demonstration farms, gardens and orchards","Nurseries, greenhouses and protected cultivation","Dairy and animal-care facilities designed for welfare","Food processing, storage, testing and packaging facilities","Health centre and referral/clinical partnerships as permitted","Arts, music, theatre and cultural learning spaces","Vocational training, maker and enterprise centres","Solar power, energy storage and efficiency systems","Water supply, rainwater harvesting, sanitation and wastewater treatment","Waste segregation, recycling and composting systems","Accessible transport, roads, pathways and emergency systems","Staff, faculty and researcher accommodation where required","Community outreach, extension and public learning spaces"].map(x => <div key={x} className="rounded-xl border border-slate-200 bg-white px-4 py-4 text-sm font-semibold leading-6 text-slate-700"><FaCheckCircle className="mr-2 inline text-[#176447]" />{x}</div>)}
           </div>
