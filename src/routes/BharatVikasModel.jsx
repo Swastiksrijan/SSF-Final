@@ -136,7 +136,9 @@ function BharatVikasModelPage() {
   return (
     <main className="w-full overflow-hidden bg-white text-slate-800">
       <section className="relative isolate overflow-hidden bg-[#071d33] text-white">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(247,168,20,.22),transparent_30%),radial-gradient(circle_at_85%_75%,rgba(18,160,180,.22),transparent_34%),linear-gradient(120deg,#071d33,#12345a_55%,#14556a)]" />
+        <img src="https://images.unsplash.com/photo-1562774053-701939374585?auto=format&fit=crop&w=2200&q=85" alt="" aria-hidden="true" fetchPriority="high" className="absolute inset-0 h-full w-full object-cover object-center" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#06182c]/95 via-[#09233c]/85 to-[#09233c]/55" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_15%_20%,rgba(247,168,20,.18),transparent_30%),radial-gradient(circle_at_85%_75%,rgba(18,160,180,.18),transparent_34%)]" />
         <div className="absolute inset-0 opacity-[.12]" style={{ backgroundImage: "linear-gradient(rgba(255,255,255,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.2) 1px,transparent 1px)", backgroundSize: "42px 42px" }} />
         <div className="relative mx-auto max-w-7xl px-5 pb-16 pt-28 sm:px-8 sm:pb-24 sm:pt-36">
           <div className="max-w-4xl">
