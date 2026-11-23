@@ -51,6 +51,10 @@ export default function OrganizationPage() {
             <p className="text-xs font-black uppercase tracking-[.2em] text-[#176447]">Who We Are</p>
             <h2 className="mt-3 text-3xl font-black leading-tight text-[#12345A] md:text-4xl">समाज के साथ,<br/>समाज के लिए</h2>
             <p className="mt-5 max-w-md text-sm leading-7 text-[#657480]">हम मानते हैं कि स्थायी विकास की शुरुआत स्थानीय जरूरतों को समझने और उपलब्ध संसाधनों का सही उपयोग करने से होती है।</p>
+            <figure className="mt-7 overflow-hidden rounded-3xl border border-[#E1E8ED] bg-white shadow-sm">
+              <img src="/images/real/leadership.jpg" alt="Community leadership and participation" loading="lazy" className="aspect-[16/9] w-full object-cover" />
+              <figcaption className="px-4 py-3 text-xs font-semibold text-[#657480]">समुदाय की भागीदारी एवं नेतृत्व · प्रतीकात्मक चित्र</figcaption>
+            </figure>
           </div>
           <div className="rounded-[1.75rem] border border-[#E1E8ED] bg-white p-7 shadow-[0_18px_50px_rgba(8,43,73,.06)] md:p-10">
             <p className="text-base leading-8 text-[#53616C]">संस्था का उद्देश्य ऐसे अवसरों और पहलों को बढ़ावा देना है, जिनसे व्यक्ति और समुदाय अपनी क्षमता विकसित कर सकें। हम स्थानीय आवश्यकताओं, उपलब्ध संसाधनों और सहयोगी संस्थाओं के साथ मिलकर उपयोगी एवं व्यावहारिक गतिविधियों को आगे बढ़ाने पर ध्यान देते हैं।</p>
