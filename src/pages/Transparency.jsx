@@ -52,7 +52,7 @@ const sections = [
         { label: "Year of Registration", value: "2013" },
         { label: "Nature of Organization", value: "Non-Profit / Voluntary Organization" },
         { label: "Registered Office", value: "Rewa, Madhya Pradesh" },
-        { label: "Area of Work", value: "Across India" }
+        { label: "Primary Focus Area", value: "Rewa, Madhya Pradesh, India" }
     ] },
     { title: "Governance & Compliance", hindi: "शासन और अनुपालन", icon: <FaBalanceScale />, content: ["The foundation is governed by its duly constituted Governing Body, which oversees policy decisions, compliance, and strategic direction.", "All activities are carried out in alignment with the organization’s rules, regulations, and objectives."] },
     { title: "Financial Transparency", hindi: "वित्तीय पारदर्शिता", icon: <FaHandHoldingUsd />, content: ["Swastik Srijan Foundation follows responsible financial management practices to ensure that resources are utilized effectively and ethically.", "Financial information and reports are maintained to reflect the proper use of funds in support of our programs and initiatives."] },
@@ -110,7 +110,7 @@ export default function Transparency() {
                         <FaShieldAlt className="mt-1 shrink-0 text-[#9A5B10] text-xl" />
                         <div>
                             <h2 className="font-bold text-[#12345A]">महत्वपूर्ण स्थिति सूचना / Important status note</h2>
-                            <p className="mt-2 text-sm leading-7 text-zinc-700">80G के संबंध में आवेदन प्रस्तुत किया गया है; इस वेबसाइट पर अंतिम 80G स्वीकृति का दावा नहीं किया जा रहा है। कृपया इसे स्वीकृति प्रमाण-पत्र न मानें। किसी भी दस्तावेज़ की स्थिति के लिए संबंधित नवीनतम आधिकारिक आदेश/पोर्टल रिकॉर्ड ही मान्य होगा। अन्य रिपोर्ट और वित्तीय जानकारी भी उपलब्ध रिकॉर्ड तथा गोपनीयता/वैधानिक सीमाओं के अनुसार साझा की जाएगी।</p>
+                            <p className="mt-2 text-sm leading-7 text-zinc-700">80G के संबंध में आवेदन प्रस्तुत किया गया है; इस वेबसाइट पर अंतिम 80G स्वीकृति का दावा नहीं किया जा रहा है। कृपया इसे स्वीकृति प्रमाण-पत्र न मानें। किसी भी दस्तावेज़ की स्थिति के लिए संबंधित नवीनतम आधिकारिक आदेश/पोर्टल रिकॉर्ड ही मान्य होगा। अन्य रिपोर्ट और वित्तीय जानकारी भी उपलब्ध रिकॉर्ड तथा गोपनीयता/वैधानिक सीमाओं के अनुसार साझा की जाएगी। पेज की समीक्षा: 24 नवम्बर 2026।</p>
                         </div>
                     </div>
                 </div>
