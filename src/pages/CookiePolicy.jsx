@@ -21,7 +21,7 @@ const items = [
     {
         title: "Analytics & Performance",
         icon: FaGlobe,
-        text: "If analytics or performance technologies are enabled on the website, they may help us understand general usage patterns and improve content, accessibility and performance. We do not use this section to claim that a particular analytics provider is active unless it is actually configured."
+        text: "As of 24 November 2026, the website source reviewed for this policy did not identify a configured third-party analytics provider such as Google Analytics. Some donation buttons can send a donation-click event to a dataLayer only if the hosting environment provides one; this code does not itself configure an analytics provider. If analytics or performance tools are added later, this policy should be updated to identify them and explain their purpose."
     },
     {
         title: "Third-Party Services",
@@ -57,7 +57,7 @@ export default function CookiePolicy() {
                                 </p>
                                 <p className="mt-2 text-sm sm:text-base text-zinc-400">कुकी नीति — वेबसाइट पर कुकीज़ और समान तकनीकों के उपयोग की स्पष्ट जानकारी।</p>
                                 <div className="mt-7 inline-flex items-center rounded-xl border border-white/10 bg-black/10 px-4 py-2.5 text-xs sm:text-sm text-zinc-300">
-                                    Last Updated: <span className="ml-2 font-bold text-white">14 September 2026</span>
+                                    Last Updated: <span className="ml-2 font-bold text-white">24 November 2026</span>
                                 </div>
                             </div>
                             <div className="shrink-0 flex justify-center">
