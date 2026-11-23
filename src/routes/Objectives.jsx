@@ -72,10 +72,10 @@ function ObjectivesPage() {
     <div className="w-full overflow-hidden bg-white">
       <section className="relative min-h-[58vh] md:min-h-[72vh] w-full overflow-hidden bg-[#12345A] text-white">
         <div className="absolute inset-0 grid grid-cols-2 md:grid-cols-4 gap-1.5 md:gap-2">
-          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} src="/images/real/classroom-floor-seating.jpg" alt="Community education session" className="h-full w-full object-cover" />
-          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.08 }} src="/images/real/women_empowerment_tailoring.jpg" alt="Women skill development" className="h-full w-full object-cover" />
-          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.16 }} src="/images/real/children-playing-park.jpg" alt="Children and community development" className="h-full w-full object-cover" />
-          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.24 }} src="/images/tree-planting-1.jpg" alt="Environmental sustainability activity" className="h-full w-full object-cover" />
+          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.8 }} src="/images/real/green-warriors-students.jpg" alt="Students participating in an environmental community activity" className="h-full w-full object-cover" />
+          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.9, delay: 0.08 }} src="/images/real/health-center-visit.jpg" alt="Community health outreach" className="h-full w-full object-cover" />
+          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.16 }} src="/images/real/awareness-poster-viewing.jpg" alt="Community awareness activity" className="h-full w-full object-cover" />
+          <motion.img initial={{ opacity: 0, scale: 1.06 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, delay: 0.24 }} src="/images/real/child-protection-support.jpg" alt="Child protection and community support" className="h-full w-full object-cover" />
         </div>
         <div className="absolute inset-0 bg-[#12345A]/58"></div>
         <div className="absolute inset-0 bg-gradient-to-b from-[#12345A]/25 via-[#12345A]/55 to-[#12345A]/90"></div>
@@ -115,7 +115,7 @@ function ObjectivesPage() {
           <div className="mx-auto max-w-6xl">
             <motion.div initial={{ opacity: 0, y: 25 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mb-12 sm:mb-16 overflow-hidden rounded-[1.75rem] sm:rounded-[2.5rem] border border-[#EAF0F6] bg-white shadow-xl">
               <div className="grid lg:grid-cols-2">
-                <div className="h-[330px] overflow-hidden lg:h-auto"><img src="/images/real/children-playing-park.jpg" alt="Foundation objectives" className="h-full w-full object-cover" /></div>
+                <div className="h-[330px] overflow-hidden lg:h-auto"><img src="/images/real/village-community-center.jpg" alt="Community development and local participation" className="h-full w-full object-cover" /></div>
                 <div className="flex flex-col justify-center bg-gradient-to-br from-[#12345A] to-[#12345A] p-9 text-white md:p-14">
                   <p className="mb-3 text-xs font-black uppercase tracking-[0.2em] text-[#F7A814]">Our Objective | हमारा उद्देश्य</p>
                   <h2 className="mb-6 text-3xl font-serif font-bold text-[#F7A814] md:text-4xl">Promoting Holistic Development | समग्र विकास को बढ़ावा देना</h2>
