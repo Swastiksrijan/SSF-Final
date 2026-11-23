@@ -83,7 +83,7 @@ export default function FooterSection() {
           </div>
         </section>
 
-        <section aria-label="Website navigation" className="grid grid-cols-2 gap-x-5 gap-y-9 border-b border-white/10 py-10 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-7 lg:gap-x-5">
+        <section aria-label="Website navigation" className="grid grid-cols-2 gap-x-5 gap-y-9 border-b border-white/10 py-10 sm:grid-cols-3 sm:gap-x-7 lg:grid-cols-4 lg:gap-x-6 xl:grid-cols-7 xl:gap-x-5">
           <FooterColumn label="The Foundation">
             <FooterLink to="/About">About SSF</FooterLink>
             <FooterLink to="/Mission">Mission & Vision</FooterLink>
