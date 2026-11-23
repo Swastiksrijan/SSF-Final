@@ -17,6 +17,7 @@ export default function MemorandumAndRules() {
       <div className="mx-auto max-w-5xl">
         <header className="rounded-[2rem] bg-[#082B49] px-6 py-12 text-center text-white shadow-xl md:px-12 md:py-16">
           <p className="text-xs font-black uppercase tracking-[.22em] text-[#F7C45B]">Public Institutional Overview</p>
+          <p className="mt-2 text-[11px] font-semibold tracking-wide text-white/60">Page reviewed: 24 November 2026</p>
           <h1 className="mt-4 text-3xl font-black md:text-5xl">Institutional Framework</h1>
           <p className="mt-3 text-xl font-semibold text-white/85">संस्थागत परिचय एवं उद्देश्य</p>
           <p className="mx-auto mt-5 max-w-2xl text-sm leading-7 text-white/75 md:text-base">
@@ -31,7 +32,7 @@ export default function MemorandumAndRules() {
               <div className="rounded-xl bg-[#F5F8FA] p-4"><p className="text-xs font-bold text-[#176447]">Registered Name</p><p className="mt-1 font-bold">Swastik Srijan Foundation Samiti</p><p className="mt-1 text-sm text-slate-600">स्वास्तिक सृजन फाउंडेशन समिति</p></div>
               <div className="rounded-xl bg-[#F5F8FA] p-4"><p className="text-xs font-bold text-[#176447]">Registration</p><p className="mt-1 font-bold">05/22/03/11448/13</p><p className="mt-1 text-sm text-slate-600">30 December 2013 · Madhya Pradesh Societies Registration Act, 1973</p></div>
               <div className="rounded-xl bg-[#F5F8FA] p-4"><p className="text-xs font-bold text-[#176447]">Registered Office</p><p className="mt-1 font-semibold">Rewa, Madhya Pradesh, India</p></div>
-              <div className="rounded-xl bg-[#F5F8FA] p-4"><p className="text-xs font-bold text-[#176447]">Area of Operation</p><p className="mt-1 font-semibold">All India, as recorded in the Society documents</p></div>
+              <div className="rounded-xl bg-[#F5F8FA] p-4"><p className="text-xs font-bold text-[#176447]">Permitted Area of Operation</p><p className="mt-1 font-semibold">All India, as recorded in the registered Society documents</p><p className="mt-1 text-xs leading-5 text-slate-500">Current primary focus: Rewa, Madhya Pradesh. Activities depend on local needs, resources and applicable permissions.</p></div>
             </div>
           </section>
 
