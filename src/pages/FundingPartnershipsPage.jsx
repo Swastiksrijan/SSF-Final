@@ -76,7 +76,7 @@ export default function FundingPartnershipsPage() {
             ["02","Validate one Rewa pilot","Study local demand, buyers, suppliers, costs, skills and permissions before selecting the first enterprise."],
             ["03","Start small and prove it","Begin with confirmed orders or service demand; track every cost and expand only after repeat customers and sound operating results."],
             ["04","Reinvest responsibly","Apply only the surplus that may lawfully be used toward the Foundation’s charitable objects, with transparent accounts and oversight."]
-          ].map(([n,t,d])=><article key={n} className="overflow-hidden rounded-2xl border border-slate-200 bg-[#F8FAFC]"><div className="p-5"><span className="text-sm font-black text-[#fb8500]">{n}</span><h3 className="mt-3 font-extrabold text-[#002344]">{t}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{d}</p></article>)}
+          ].map(([n,t,d])=><article key={n} className="overflow-hidden rounded-2xl border border-slate-200 bg-[#F8FAFC]"><div className="p-5"><span className="text-sm font-black text-[#fb8500]">{n}</span><h3 className="mt-3 font-extrabold text-[#002344]">{t}</h3><p className="mt-2 text-sm leading-7 text-slate-600">{d}</p></div></article>)}
         </div>
         <div className="mt-7 rounded-2xl border border-[#C9DDD1] bg-[#F1F6F3] p-6 md:p-8">
           <h3 className="text-xl font-extrabold text-[#002344]">A responsible first step—not ten businesses at once</h3>
