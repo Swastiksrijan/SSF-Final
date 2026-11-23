@@ -548,11 +548,6 @@ export default function Home() {
               <p className="mt-4 text-base leading-relaxed text-slate-600 sm:text-lg">
                 Explore documented grassroots programs and community initiatives. We believe institutional trust is earned through verifiable field action, not unsupported claims.
               </p>
-              <HomeSymbolicPhotoBand items={[
-                { src: "https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=900&q=80", alt: "Students learning together in a classroom", label: "समुदाय आधारित शिक्षा" },
-                { src: "https://images.unsplash.com/photo-1559027615-cd4628902d4a?auto=format&fit=crop&w=900&q=80", alt: "Volunteers working together for community support", label: "सामुदायिक सहभागिता" },
-                { src: "https://images.unsplash.com/photo-1511632765486-a01980e01a18?auto=format&fit=crop&w=900&q=80", alt: "People participating in a community gathering", label: "जनभागीदारी" },
-              ]} />
             </div>
             
             <div className="flex flex-wrap gap-3">
@@ -801,7 +796,6 @@ export default function Home() {
               <HomeSymbolicPhotoBand items={[
                 { src: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=900&q=80", alt: "Healthcare professional supporting preventive health", label: "स्वास्थ्य एवं जागरूकता" },
                 { src: "https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=900&q=80", alt: "Green agricultural fields and food production", label: "कृषि एवं आजीविका" },
-                { src: "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=900&q=80", alt: "Green natural landscape and biodiversity", label: "पर्यावरण संरक्षण" },
               ]} />
             </div>
           </div>
@@ -863,7 +857,6 @@ export default function Home() {
               <HomeSymbolicPhotoBand items={[
                 { src: "https://images.unsplash.com/photo-1500651230702-0e2d8a49d4ad?auto=format&fit=crop&w=900&q=80", alt: "Fresh produce from agriculture", label: "कृषि एवं खाद्य उत्पादन" },
                 { src: "https://images.unsplash.com/photo-1604719312566-8912e9c8a213?auto=format&fit=crop&w=900&q=80", alt: "Food products arranged for retail and distribution", label: "प्रसंस्करण एवं विपणन" },
-                { src: "https://images.unsplash.com/photo-1556761175-b413da4baf72?auto=format&fit=crop&w=900&q=80", alt: "People collaborating in a business planning meeting", label: "उद्यमिता एवं रोजगार" },
               ]} />
               <Link to="/SocialEnterprises" className="mt-7 inline-flex items-center gap-2 rounded-full bg-[#fb8500] px-7 py-3.5 text-sm font-extrabold text-[#17212b] shadow-sm transition hover:-translate-y-0.5 hover:bg-[#ffad4d]">सभी व्यवसाय और अवसर देखें <FaArrowRight /></Link>
             </div>
@@ -1014,7 +1007,6 @@ export default function Home() {
             <HomeSymbolicPhotoBand items={[
               { src: "https://images.unsplash.com/photo-1521737711867-e3b97375f902?auto=format&fit=crop&w=900&q=80", alt: "Team members collaborating around a table", label: "साझेदारी एवं सहयोग" },
               { src: "https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=900&q=80", alt: "Planning and reviewing project documents", label: "योजना एवं जवाबदेही" },
-              { src: "https://images.unsplash.com/photo-1521791136064-7986c2920216?auto=format&fit=crop&w=900&q=80", alt: "Professionals joining hands in partnership", label: "संस्थागत सहभागिता" },
             ]} />
           </div>
 
