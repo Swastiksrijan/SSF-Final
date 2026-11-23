@@ -13,18 +13,18 @@ const BLOG_POSTS = [
     date: "May 2021",
     image: "/images/real/news_media_1.jpg",
     short: {
-      en: "Plasma donation saves lives by providing critical antibodies to patients in need. Learn how SSF supported this cause.",
+      en: "A historical account of plasma-donation awareness and donor coordination during the COVID-19 period.",
       hi: "प्लाज्मा दान मरीजों को महत्वपूर्ण एंटीबॉडी प्रदान करके जीवन बचाता है। जानें कि SSF ने इस नेक कार्य में कैसे सहयोग किया।"
     },
     full: {
       en: `Plasma donation is often referred to as 'The Gift of Life.' During the peak of the COVID-19 pandemic, the demand for convalescent plasma skyrocketed, creating a critical bridge between life and death for many. Swastik Srijan Foundation (SSF) recognized this urgency and launched a dedicated Plasma Support Cell.
 
-Our team worked round-the-clock to:
+The archived account describes these support activities:
 1. Connect verified donors with families in distress.
 2. Educate the public about the safety and requirements of plasma donation.
 3. Debunk myths surrounding the donation process to encourage more volunteers.
 
-The process involves separating plasma from the blood and returning the remaining components to the donor. It is a safe, painless procedure that can save up to three lives. SSF continues to maintain a registry of blood and plasma donors to respond to future medical emergencies swiftly. Your one donation can be the miracle someone is praying for.`,
+The process involves separating plasma from the blood and returning the remaining components to the donor. Plasma donation must be assessed and carried out by an authorized blood centre, following medical screening and applicable guidelines. This historical account should not be read as a current donor registry or medical service announcement.`,
       hi: `प्लाज्मा दान को अक्सर 'जीवन का उपहार' कहा जाता है। COVID-19 महामारी के चरम के दौरान, स्वस्थ हो चुके व्यक्तियों के प्लाज्मा की मांग आसमान छू गई, जिससे कई लोगों के लिए जीवन और मृत्यु के बीच एक महत्वपूर्ण पुल बन गया। स्वास्तिक सृजन फाउंडेशन (SSF) ने इस तात्कालिकता को पहचाना और एक समर्पित प्लाज्मा सपोर्ट सेल लॉन्च किया।
 
 हमारी टीम ने चौबीसों घंटे काम किया:
@@ -44,7 +44,7 @@ The process involves separating plasma from the blood and returning the remainin
     date: "June 2021",
     image: "/images/protection-ecosystem.png",
     short: {
-      en: "SSF distributed free masks to vulnerable communities during the COVID-19 lockdown.",
+      en: "The archived story describes a mask-awareness and distribution initiative during the COVID-19 period.",
       hi: "COVID-19 लॉकडाउन के दौरान SSF ने कमजोर समुदायों को मुफ्त मास्क वितरित किए।"
     },
     full: {
@@ -52,7 +52,7 @@ The process involves separating plasma from the blood and returning the remainin
 
 Volunteers distributed masks across Noida and nearby areas, especially targeting those who could not afford them. Alongside distribution, awareness sessions on hygiene, mask usage, and social distancing were conducted.
 
-This initiative helped protect hundreds of families and strengthened community trust.`,
+The activity is presented as a community-support effort; a verified beneficiary total is not stated here.`,
       hi: `COVID-19 महामारी के दौरान, सरकारी आदेशों द्वारा मास्क पहनना अनिवार्य किए जाने के बाद SSF ने मास्क वितरण अभियान शुरू किया।
 
 स्वयंसेवकों ने नोएडा और आसपास के क्षेत्रों में मास्क वितरित किए, विशेष रूप से उन लोगों को लक्षित किया जो उन्हें खरीद नहीं सकते थे। वितरण के साथ-साथ, स्वच्छता, मास्क के उपयोग और सामाजिक दूरी पर जागरूकता सत्र आयोजित किए गए।
@@ -69,13 +69,13 @@ This initiative helped protect hundreds of families and strengthened community t
     date: "Jan 2022",
     image: "/images/uploads/learning-hub-1.jpg",
     short: {
-      en: "Donation of computers and printers led to a 98% improvement in school effectiveness.",
+      en: "An archived account describes computer and printer support for a school; a quantified improvement figure is not stated.",
       hi: "कंप्यूटर और प्रिंटर के दान से स्कूल की प्रभावशीलता में 98% सुधार हुआ।"
     },
     full: {
       en: `At Dadar School, SSF donated computers and printers to improve academic efficiency.
 
-Motivational visits encouraged teachers to enhance punctuality and engagement. The program resulted in a 98% success rate and significantly improved teaching quality and student performance.`,
+Motivational visits encouraged teachers to enhance punctuality and engagement. The archive describes the intended improvements in teaching support and student engagement. A measured success rate is not provided.`,
       hi: `दादर स्कूल में, SSF ने शैक्षणिक दक्षता में सुधार के लिए कंप्यूटर और प्रिंटर दान किए।
 
 प्रेरक यात्राओं ने शिक्षकों को समय की पाबंदी और जुड़ाव बढ़ाने के लिए प्रोत्साहित किया। कार्यक्रम के परिणामस्वरूप 98% सफलता दर मिली और शिक्षण गुणवत्ता और छात्र प्रदर्शन में उल्लेखनीय सुधार हुआ।`
@@ -94,7 +94,7 @@ Motivational visits encouraged teachers to enhance punctuality and engagement. T
       hi: "आधुनिक शिक्षण उपकरणों ने छात्र जुड़ाव और सीखने के परिणामों को बदल दिया।"
     },
     full: {
-      en: `SSF improved infrastructure and introduced modern teaching aids in Noida Sector 53 schools.
+      en: `The archived account describes education-support activities in Noida Sector 53.
 
 Workshops and motivational sessions helped teachers design customized lesson plans, leading to improved student participation and academic growth.`,
       hi: `SSF ने नोएडा सेक्टर 53 के स्कूलों में बुनियादी ढांचे में सुधार किया और आधुनिक शिक्षण सहायक सामग्री पेश की।
@@ -117,7 +117,7 @@ Workshops and motivational sessions helped teachers design customized lesson pla
     full: {
       en: `A young boy in Noida was on the verge of losing his school admission due to unpaid fees.
 
-SSF stepped in, paid the fees, and ensured uninterrupted education. This support restored hope and strengthened the child's determination to succeed.`,
+SSF stepped in, paid the fees, and ensured uninterrupted education. The account describes fee assistance intended to help the child continue schooling.`,
       hi: `नोएडा में एक युवा लड़का अवैतनिक फीस के कारण अपने स्कूल प्रवेश खोने के कगार पर था।
 
 SSF ने हस्तक्षेप किया, फीस का भुगतान किया, और निर्बाध शिक्षा सुनिश्चित की। इस समर्थन ने आशा बहाल की और बच्चे के सफल होने के दृढ़ संकल्प को मजबूत किया।`
@@ -349,7 +349,7 @@ export default function Blogs() {
         </div>
         <p className="text-zinc-400">
           {language === "en"
-            ? "Real stories of change, compassion, and community upliftment."
+            ? "Stories and historical accounts from the Foundation’s archive. Details should be read with their supporting records."
             : "परिवर्तन, करुणा और सामुदायिक उत्थान की वास्तविक कहानियाँ।"}
         </p>
       </motion.div>
