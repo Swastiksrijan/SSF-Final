@@ -67,7 +67,7 @@ export default function TermsAndConditions() {
       content:
         <>
           Donations are voluntary contributions made to support the Foundation's charitable and social-development activities. Donation-related transactions may be subject to the separate{" "}
-          <Link to="/RefundAndCancellation" className="font-bold text-[#12345A] underline decoration-2 underline-offset-2 hover:text-[#176447]">
+          <Link to="/DonationRefundPolicy" className="font-bold text-[#12345A] underline decoration-2 underline-offset-2 hover:text-[#176447]">
             Donation & Refund Policy
           </Link>{" "}
           and to the terms of the applicable payment service provider. Donors should review the relevant details before completing a transaction.
