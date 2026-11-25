@@ -26,7 +26,7 @@ export default function RegistrationDetails() {
           <li>
             <strong>Permitted Area of Operation:</strong> All India (as recorded in the registered Society documents).
           </li>
-          <li><strong>Current Primary Focus:</strong> Rewa, Madhya Pradesh, India.</li></li>
+          <li><strong>Current Primary Focus:</strong> Rewa, Madhya Pradesh, India.</li>
         </ul>
       ),
     },
