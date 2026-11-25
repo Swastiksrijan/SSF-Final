@@ -167,6 +167,10 @@ export const ims = {
     fetch(`${API_BASE_URL}/api/ims/correspondence/unlink-reply`, {
       method: 'POST', headers: headers(), body: JSON.stringify({ inwardId }),
     }).then(handle),
+  corrGmailImport: (records = []) =>
+    fetch(`${API_BASE_URL}/api/ims/correspondence/gmail-import`, {
+      method: 'POST', headers: headers(), body: JSON.stringify({ records }),
+    }).then(handle),
 
   // ---- SOCIAL AWARENESS PUBLISHER ----
   socialDashboard: () => fetch(`${API_BASE_URL}/api/social/dashboard`, { headers: headers() }).then(handle),

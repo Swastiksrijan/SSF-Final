@@ -403,6 +403,7 @@ router.delete('/ims/contacts/person/:id', wrap(async (req, r) => r.json(await co
 // The `communications` resource is the single master store for both directions;
 // these endpoints add reference numbering, dashboard, follow-up and reply linking.
 const correspondence = require('../services/ims/correspondence');
+const gmailImport = require('../services/ims/gmailImport');
 
 router.get('/ims/correspondence/dashboard', wrap(async (_req, r) => r.json(await correspondence.dashboard())));
 router.get('/ims/correspondence/follow-ups', wrap(async (req, r) => r.json(await correspondence.followUps({ scope: req.query.scope }))));
@@ -420,6 +421,12 @@ router.post('/ims/correspondence/unlink-reply', wrap(async (req, r) => {
   r.json(await correspondence.unlinkReply(inwardId, req));
 }));
 router.get('/ims/correspondence', wrap(async (req, r) => r.json(await correspondence.list(req.query))));
+// Reviewed Gmail messages are appended to the same master register. The route
+// is protected by the existing IMS bearer-token middleware; Message-ID dedupes.
+router.post('/ims/correspondence/gmail-import', wrap(async (req, r) => {
+  const out = await gmailImport.importReviewed((req.body || {}).records, req);
+  r.status(out.failed ? 207 : 200).json(out);
+}));
 
 // ---- Correspondence attachments -------------------------------------------
 // PDF / DOC / DOCX / JPG / PNG, up to 10 MB each. Stored under /uploads and

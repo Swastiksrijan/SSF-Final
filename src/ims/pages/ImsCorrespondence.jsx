@@ -75,10 +75,15 @@ export default function ImsCorrespondence() {
   const [stats, setStats] = useState(null);
   const [rows, setRows] = useState(null);
   const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
+  const pageSize = 100;
   const [err, setErr] = useState('');
   const [drawer, setDrawer] = useState(null); // {mode, initial}
   const [viewing, setViewing] = useState(null);
   const [replies, setReplies] = useState(null);
+  const gmailFileRef = useRef(null);
+  const [gmailImporting, setGmailImporting] = useState(false);
+  const [gmailImportSummary, setGmailImportSummary] = useState('');
 
   const [filters, setFilters] = useState({ search: '', fromDate: '', toDate: '', direction: '', deliveryStatus: '', replyStatus: '' });
   const direction = tab === 'outward' ? 'outward' : tab === 'inward' ? 'inward' : '';
@@ -96,7 +101,7 @@ export default function ImsCorrespondence() {
     let alive = true;
     (async () => {
       try {
-        const params = { limit: 500, ...filters };
+        const params = { limit: pageSize, offset: page * pageSize, ...filters };
         if (direction) params.direction = direction;
         for (const k of Object.keys(params)) if (params[k] === '') delete params[k];
         const r = await ims.corrList(params);
@@ -104,9 +109,25 @@ export default function ImsCorrespondence() {
       } catch (e) { if (alive) { setErr(e.message); setRows([]); } }
     })();
     return () => { alive = false; };
-  }, [tab, direction, filters, nonce]);
+  }, [tab, direction, filters, nonce, page]);
 
   const refresh = () => { loadStats(); setNonce((n) => n + 1); };
+
+  const importGmailFile = async (event) => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    setGmailImporting(true); setErr(''); setGmailImportSummary('');
+    try {
+      const parsed = JSON.parse(await file.text());
+      const records = Array.isArray(parsed) ? parsed : parsed.records;
+      if (!Array.isArray(records)) throw new Error('JSON file must contain an array or { records: [...] }.');
+      const result = await ims.corrGmailImport(records);
+      setGmailImportSummary(`Gmail import: ${result.inserted || 0} added, ${result.skipped || 0} duplicates skipped, ${result.failed || 0} failed, ${result.linkFailed || 0} reply links need review.`);
+      refresh();
+    } catch (e) { setErr(e.message || 'Gmail import failed.'); }
+    finally { setGmailImporting(false); }
+  };
 
   const openReplies = async (row) => {
     setViewing(row); setReplies(null);
@@ -129,6 +150,10 @@ export default function ImsCorrespondence() {
         title={lang === 'hi' ? 'पत्राचार एवं संचार प्रबंधन' : 'Correspondence & Communication Management'}
         subtitle={lang === 'hi' ? 'एक ही मास्टर सिस्टम में जावक एवं आवक पत्राचार' : 'One master system for all outward and inward correspondence'}
         actions={<>
+          <input ref={gmailFileRef} type="file" accept=".json,application/json" className="hidden" onChange={importGmailFile} />
+          <Button icon="Upload" variant="ghost" disabled={gmailImporting} onClick={() => gmailFileRef.current?.click()}>
+            {gmailImporting ? (lang === 'hi' ? 'आयात हो रहा है…' : 'Importing…') : (lang === 'hi' ? 'Gmail डेटा आयात' : 'Import Gmail Data')}
+          </Button>
           <Button icon="Plus" onClick={() => setDrawer({ mode: 'create', initial: direction ? { direction } : {} })}>
             {lang === 'hi' ? 'नई प्रविष्टि' : 'New Entry'}
           </Button>
@@ -136,12 +161,13 @@ export default function ImsCorrespondence() {
       />
       <Tabs tabs={tabs} value={tab} onChange={setTab} />
       {err && <Card className="mb-3 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</Card>}
+      {gmailImportSummary && <Card className="mb-3 border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">{gmailImportSummary}</Card>}
 
       {tab === 'dashboard' && <Dashboard stats={stats} onOpen={(id) => setTab(id)} lang={lang} />}
       {['all', 'outward', 'inward'].includes(tab) && (
         <Register
           rows={rows} total={total} lang={lang} t={t}
-          filters={filters} setFilters={setFilters}
+          filters={filters} setFilters={setFilters} page={page} setPage={setPage} pageSize={pageSize}
           onView={openReplies} onEdit={(r) => setDrawer({ mode: 'edit', initial: r })}
           onReply={(r) => setDrawer({ mode: 'create', initial: { direction: 'inward', linkedOutwardId: r.id, linkedOutwardRef: r.referenceNo || r.recordId, department: r.department || r.recipient || '', subject: `Re: ${r.subject || ''}` } })}
           onArchive={async (r) => {
@@ -198,8 +224,10 @@ function Dashboard({ stats, onOpen, lang }) {
 }
 
 // ---- Register table + filters ---------------------------------------------
-function Register({ rows, total, lang, t, filters, setFilters, onView, onEdit, onReply, onArchive }) {
-  const set = (k, v) => setFilters((f) => ({ ...f, [k]: v }));
+function Register({ rows, total, lang, t, filters, setFilters, page, setPage, pageSize, onView, onEdit, onReply, onArchive }) {
+  const set = (k, v) => { setPage(0); setFilters((f) => ({ ...f, [k]: v })); };
+  const setYear = (year) => { setPage(0); setFilters((f) => ({ ...f, fromDate: `${year}-01-01`, toDate: year === 2026 ? '2026-11-25' : `${year}-12-31` })); };
+  const clearDates = () => { setPage(0); setFilters((f) => ({ ...f, fromDate: '', toDate: '' })); };
   const from = (r) => r.senderEmail || '—';
   const to = (r) => r.toEmails || r.recipientEmail || '—';
   return (
