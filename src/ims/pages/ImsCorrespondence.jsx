@@ -123,7 +123,7 @@ export default function ImsCorrespondence() {
       const records = Array.isArray(parsed) ? parsed : parsed.records;
       if (!Array.isArray(records)) throw new Error('JSON file must contain an array or { records: [...] }.');
       const result = await ims.corrGmailImport(records);
-      setGmailImportSummary(`Gmail import: ${result.inserted || 0} added, ${result.skipped || 0} duplicates skipped, ${result.failed || 0} failed.`);
+      setGmailImportSummary(`Gmail import: ${result.inserted || 0} added, ${result.skipped || 0} duplicates skipped, ${result.failed || 0} failed, ${result.linkFailed || 0} reply links need review.`);
       refresh();
     } catch (e) { setErr(e.message || 'Gmail import failed.'); }
     finally { setGmailImporting(false); }
