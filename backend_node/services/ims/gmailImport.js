@@ -25,7 +25,10 @@ function normalise(input) {
   if (!subject) throw new Error('Each import row needs a subject.');
   return {
     direction, messageId, correspondenceDate,
-    communicationType: 'official_correspondence', channel: 'email', mode: 'email',
+    communicationType: clean(input.communicationType, 60) || 'official_email',
+    department: clean(input.department, 200),
+    departmentCategory: clean(input.departmentCategory, 60),
+    channel: 'email', mode: 'email',
     priority: clean(input.priority, 20) || 'normal',
     sender, senderEmail: clean(input.senderEmail, 320),
     recipient, recipientEmail: clean(input.recipientEmail, 320),
