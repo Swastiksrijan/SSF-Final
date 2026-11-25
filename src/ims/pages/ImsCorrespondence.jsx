@@ -150,7 +150,7 @@ export default function ImsCorrespondence() {
         subtitle={lang === 'hi' ? 'एक ही मास्टर सिस्टम में जावक एवं आवक पत्राचार' : 'One master system for all outward and inward correspondence'}
         actions={<>
           <input ref={gmailFileRef} type="file" accept=".json,application/json" className="hidden" onChange={importGmailFile} />
-          <Button icon="Upload" variant="outline" disabled={gmailImporting} onClick={() => gmailFileRef.current?.click()}>
+          <Button icon="Upload" variant="ghost" disabled={gmailImporting} onClick={() => gmailFileRef.current?.click()}>
             {gmailImporting ? (lang === 'hi' ? 'आयात हो रहा है…' : 'Importing…') : (lang === 'hi' ? 'Gmail डेटा आयात' : 'Import Gmail Data')}
           </Button>
           <Button icon="Plus" onClick={() => setDrawer({ mode: 'create', initial: direction ? { direction } : {} })}>
