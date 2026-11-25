@@ -1,6 +1,6 @@
 // Safe, additive Gmail import for the SSF correspondence master register.
 // The caller must supply reviewed/normalised messages; Gmail credentials never
-// enter the IMS backend. Message-ID is the idempotency key.
+// enter the IMS backend. Gmail message ID (or RFC Message-ID) is the idempotency key.
 const { models } = require('../../models/ims');
 const resource = require('./resource');
 const { logAudit } = require('./audit');
@@ -31,7 +31,7 @@ function normalise(input) {
     recipient, recipientEmail: clean(input.recipientEmail, 320),
     toEmails: clean(input.toEmails, 2000), ccEmails: clean(input.ccEmails, 2000),
     subject, message: clean(input.message || input.snippet, 12000),
-    deliveryStatus: clean(input.deliveryStatus, 30) || (direction === 'outward' ? 'sent' : 'received'),
+    deliveryStatus: clean(input.deliveryStatus, 30) || (direction === 'outward' ? 'sent' : 'not_applicable'),
     sentAt: direction === 'outward' ? (input.sentAt || correspondenceDate) : null,
     receivedAt: direction === 'inward' ? (input.receivedAt || correspondenceDate) : null,
     replyStatus: direction === 'outward' ? 'awaiting_reply' : 'not_required',
