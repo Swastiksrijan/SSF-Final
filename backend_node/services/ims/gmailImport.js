@@ -36,6 +36,7 @@ function normalise(input) {
     receivedAt: direction === 'inward' ? (input.receivedAt || correspondenceDate) : null,
     replyStatus: direction === 'outward' ? 'awaiting_reply' : 'not_required',
     followUpStatus: 'not_due',
+    externalRef: clean(input.gmailThreadId, 100),
     remarks: 'Imported from Gmail after review. Gmail thread ID: ' + clean(input.gmailThreadId, 100),
     status: 'active',
   };
@@ -51,6 +52,18 @@ async function importReviewed(rows, req) {
       const existing = await models.ImsCommunication.findOne({ where: { messageId: payload.messageId } });
       if (existing) { result.skipped += 1; result.records.push({ row: i, status: 'duplicate', recordId: existing.recordId }); continue; }
       const created = await resource.create('communications', payload, req, { skipDuplicateCheck: true });
+      // When an inward reply shares a Gmail thread with an existing outward
+      // message, link it automatically; never guess across different threads.
+      if (payload.direction === 'inward' && payload.externalRef) {
+        const outward = await models.ImsCommunication.findOne({
+          where: { externalRef: payload.externalRef, direction: 'outward', status: { [require('sequelize').Op.ne]: 'archived' } },
+          order: [['correspondenceDate', 'ASC'], ['id', 'ASC']],
+        });
+        if (outward) {
+          const correspondence = require('./correspondence');
+          await correspondence.linkReply(created.id, outward.id, req);
+        }
+      }
       result.inserted += 1;
       result.records.push({ row: i, status: 'inserted', recordId: created.recordId, referenceNo: created.referenceNo });
     } catch (error) {
