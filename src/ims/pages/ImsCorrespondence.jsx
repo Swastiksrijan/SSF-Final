@@ -83,6 +83,7 @@ export default function ImsCorrespondence() {
   const [replies, setReplies] = useState(null);
   const gmailFileRef = useRef(null);
   const [gmailImporting, setGmailImporting] = useState(false);
+  const [gmailImportSummary, setGmailImportSummary] = useState('');
 
   const [filters, setFilters] = useState({ search: '', fromDate: '', toDate: '', direction: '', deliveryStatus: '', replyStatus: '' });
   const direction = tab === 'outward' ? 'outward' : tab === 'inward' ? 'inward' : '';
@@ -116,13 +117,13 @@ export default function ImsCorrespondence() {
     const file = event.target.files && event.target.files[0];
     event.target.value = '';
     if (!file) return;
-    setGmailImporting(true); setErr('');
+    setGmailImporting(true); setErr(''); setGmailImportSummary('');
     try {
       const parsed = JSON.parse(await file.text());
       const records = Array.isArray(parsed) ? parsed : parsed.records;
       if (!Array.isArray(records)) throw new Error('JSON file must contain an array or { records: [...] }.');
       const result = await ims.corrGmailImport(records);
-      setErr(`Gmail import: ${result.inserted || 0} added, ${result.skipped || 0} duplicates skipped, ${result.failed || 0} failed.`);
+      setGmailImportSummary(`Gmail import: ${result.inserted || 0} added, ${result.skipped || 0} duplicates skipped, ${result.failed || 0} failed.`);
       refresh();
     } catch (e) { setErr(e.message || 'Gmail import failed.'); }
     finally { setGmailImporting(false); }
@@ -160,6 +161,7 @@ export default function ImsCorrespondence() {
       />
       <Tabs tabs={tabs} value={tab} onChange={setTab} />
       {err && <Card className="mb-3 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</Card>}
+      {gmailImportSummary && <Card className="mb-3 border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">{gmailImportSummary}</Card>}
 
       {tab === 'dashboard' && <Dashboard stats={stats} onOpen={(id) => setTab(id)} lang={lang} />}
       {['all', 'outward', 'inward'].includes(tab) && (
