@@ -14,7 +14,7 @@ const dateOnly = (v) => {
 
 function normalise(input) {
   const direction = clean(input.direction, 12).toLowerCase();
-  const messageId = clean(input.messageId, 998);
+  const messageId = clean(input.messageId || input.gmailMessageId, 998);
   const correspondenceDate = dateOnly(input.correspondenceDate || input.date);
   if (!['inward', 'outward'].includes(direction)) throw new Error('Each import row needs direction inward or outward.');
   if (!messageId) throw new Error('Each import row needs the original Gmail Message-ID for safe deduplication.');
