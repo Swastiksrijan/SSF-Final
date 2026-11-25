@@ -81,6 +81,8 @@ export default function ImsCorrespondence() {
   const [drawer, setDrawer] = useState(null); // {mode, initial}
   const [viewing, setViewing] = useState(null);
   const [replies, setReplies] = useState(null);
+  const gmailFileRef = useRef(null);
+  const [gmailImporting, setGmailImporting] = useState(false);
 
   const [filters, setFilters] = useState({ search: '', fromDate: '', toDate: '', direction: '', deliveryStatus: '', replyStatus: '' });
   const direction = tab === 'outward' ? 'outward' : tab === 'inward' ? 'inward' : '';
@@ -110,6 +112,22 @@ export default function ImsCorrespondence() {
 
   const refresh = () => { loadStats(); setNonce((n) => n + 1); };
 
+  const importGmailFile = async (event) => {
+    const file = event.target.files && event.target.files[0];
+    event.target.value = '';
+    if (!file) return;
+    setGmailImporting(true); setErr('');
+    try {
+      const parsed = JSON.parse(await file.text());
+      const records = Array.isArray(parsed) ? parsed : parsed.records;
+      if (!Array.isArray(records)) throw new Error('JSON file must contain an array or { records: [...] }.');
+      const result = await ims.corrGmailImport(records);
+      setErr(`Gmail import: ${result.inserted || 0} added, ${result.skipped || 0} duplicates skipped, ${result.failed || 0} failed.`);
+      refresh();
+    } catch (e) { setErr(e.message || 'Gmail import failed.'); }
+    finally { setGmailImporting(false); }
+  };
+
   const openReplies = async (row) => {
     setViewing(row); setReplies(null);
     try { const d = await ims.corrReplies(row.id); setReplies(d.replies || []); } catch { setReplies([]); }
@@ -131,6 +149,10 @@ export default function ImsCorrespondence() {
         title={lang === 'hi' ? 'पत्राचार एवं संचार प्रबंधन' : 'Correspondence & Communication Management'}
         subtitle={lang === 'hi' ? 'एक ही मास्टर सिस्टम में जावक एवं आवक पत्राचार' : 'One master system for all outward and inward correspondence'}
         actions={<>
+          <input ref={gmailFileRef} type="file" accept=".json,application/json" className="hidden" onChange={importGmailFile} />
+          <Button icon="Upload" variant="outline" disabled={gmailImporting} onClick={() => gmailFileRef.current?.click()}>
+            {gmailImporting ? (lang === 'hi' ? 'आयात हो रहा है…' : 'Importing…') : (lang === 'hi' ? 'Gmail डेटा आयात' : 'Import Gmail Data')}
+          </Button>
           <Button icon="Plus" onClick={() => setDrawer({ mode: 'create', initial: direction ? { direction } : {} })}>
             {lang === 'hi' ? 'नई प्रविष्टि' : 'New Entry'}
           </Button>
