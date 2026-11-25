@@ -75,6 +75,8 @@ export default function ImsCorrespondence() {
   const [stats, setStats] = useState(null);
   const [rows, setRows] = useState(null);
   const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(0);
+  const pageSize = 100;
   const [err, setErr] = useState('');
   const [drawer, setDrawer] = useState(null); // {mode, initial}
   const [viewing, setViewing] = useState(null);
@@ -96,7 +98,7 @@ export default function ImsCorrespondence() {
     let alive = true;
     (async () => {
       try {
-        const params = { limit: 500, ...filters };
+        const params = { limit: pageSize, offset: page * pageSize, ...filters };
         if (direction) params.direction = direction;
         for (const k of Object.keys(params)) if (params[k] === '') delete params[k];
         const r = await ims.corrList(params);
@@ -104,7 +106,7 @@ export default function ImsCorrespondence() {
       } catch (e) { if (alive) { setErr(e.message); setRows([]); } }
     })();
     return () => { alive = false; };
-  }, [tab, direction, filters, nonce]);
+  }, [tab, direction, filters, nonce, page]);
 
   const refresh = () => { loadStats(); setNonce((n) => n + 1); };
 
@@ -141,7 +143,7 @@ export default function ImsCorrespondence() {
       {['all', 'outward', 'inward'].includes(tab) && (
         <Register
           rows={rows} total={total} lang={lang} t={t}
-          filters={filters} setFilters={setFilters}
+          filters={filters} setFilters={setFilters} page={page} setPage={setPage} pageSize={pageSize}
           onView={openReplies} onEdit={(r) => setDrawer({ mode: 'edit', initial: r })}
           onReply={(r) => setDrawer({ mode: 'create', initial: { direction: 'inward', linkedOutwardId: r.id, linkedOutwardRef: r.referenceNo || r.recordId, department: r.department || r.recipient || '', subject: `Re: ${r.subject || ''}` } })}
           onArchive={async (r) => {
@@ -198,8 +200,10 @@ function Dashboard({ stats, onOpen, lang }) {
 }
 
 // ---- Register table + filters ---------------------------------------------
-function Register({ rows, total, lang, t, filters, setFilters, onView, onEdit, onReply, onArchive }) {
-  const set = (k, v) => setFilters((f) => ({ ...f, [k]: v }));
+function Register({ rows, total, lang, t, filters, setFilters, page, setPage, pageSize, onView, onEdit, onReply, onArchive }) {
+  const set = (k, v) => { setPage(0); setFilters((f) => ({ ...f, [k]: v })); };
+  const setYear = (year) => { setPage(0); setFilters((f) => ({ ...f, fromDate: `${year}-01-01`, toDate: year === 2026 ? '2026-11-25' : `${year}-12-31` })); };
+  const clearDates = () => { setPage(0); setFilters((f) => ({ ...f, fromDate: '', toDate: '' })); };
   const from = (r) => r.senderEmail || '—';
   const to = (r) => r.toEmails || r.recipientEmail || '—';
   return (
