@@ -48,27 +48,33 @@ function normalise(input) {
 async function importReviewed(rows, req) {
   if (!Array.isArray(rows) || !rows.length) { const e = new Error('Provide reviewed rows to import.'); e.status = 400; throw e; }
   if (rows.length > 200) { const e = new Error('Import is limited to 200 rows per batch.'); e.status = 400; throw e; }
-  const result = { inserted: 0, skipped: 0, failed: 0, records: [], errors: [] };
+  const result = { inserted: 0, skipped: 0, failed: 0, linkFailed: 0, records: [], errors: [] };
   for (let i = 0; i < rows.length; i += 1) {
     try {
       const payload = normalise(rows[i]);
       const existing = await models.ImsCommunication.findOne({ where: { messageId: payload.messageId } });
       if (existing) { result.skipped += 1; result.records.push({ row: i, status: 'duplicate', recordId: existing.recordId }); continue; }
       const created = await resource.create('communications', payload, req, { skipDuplicateCheck: true });
-      // When an inward reply shares a Gmail thread with an existing outward
-      // message, link it automatically; never guess across different threads.
-      if (payload.direction === 'inward' && payload.externalRef) {
-        const outward = await models.ImsCommunication.findOne({
-          where: { externalRef: payload.externalRef, direction: 'outward', status: { [require('sequelize').Op.ne]: 'archived' } },
-          order: [['correspondenceDate', 'ASC'], ['id', 'ASC']],
-        });
-        if (outward) {
-          const correspondence = require('./correspondence');
-          await correspondence.linkReply(created.id, outward.id, req);
-        }
-      }
       result.inserted += 1;
       result.records.push({ row: i, status: 'inserted', recordId: created.recordId, referenceNo: created.referenceNo });
+      // When an inward reply shares a Gmail thread with an existing outward
+      // message, link it automatically; never guess across different threads.
+      // A link failure must not misreport the already-created record as failed.
+      if (payload.direction === 'inward' && payload.externalRef) {
+        try {
+          const outward = await models.ImsCommunication.findOne({
+            where: { externalRef: payload.externalRef, direction: 'outward', status: { [require('sequelize').Op.ne]: 'archived' } },
+            order: [['correspondenceDate', 'ASC'], ['id', 'ASC']],
+          });
+          if (outward) {
+            const correspondence = require('./correspondence');
+            await correspondence.linkReply(created.id, outward.id, req);
+          }
+        } catch (linkError) {
+          result.linkFailed += 1;
+          result.errors.push({ row: i, message: 'Record inserted, but reply linking failed: ' + (linkError.message || 'unknown error') });
+        }
+      }
     } catch (error) {
       result.failed += 1;
       result.errors.push({ row: i, message: error.message || 'Import failed' });
