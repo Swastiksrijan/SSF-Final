@@ -5,10 +5,9 @@ import { Alert, Field, FileField, FormHead, FormNote, Input, Select, SubmitButto
 
 const INITIAL = {
   fullName: "", email: "", countryCode: "+91", phone: "", college: "", course: "",
-  internshipType: "", duration: "", startDate: "", message: "", idType: "Aadhaar Card", identityNumber: ""
+  internshipType: "", duration: "", startDate: "", message: ""
 };
 
-const ID_PROOF_TYPES = ["Aadhaar Card", "PAN Card", "Voter ID", "Driving Licence", "Passport", "College / Student ID", "Other Government ID"];
 
 const roles = [
   ["social_media", "Social Media & Marketing"],
@@ -22,7 +21,7 @@ export default function InternshipForm({ onClose }) {
   const [form, setForm] = useState(INITIAL);
   const [resume, setResume] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
-  const [idDocument, setIdDocument] = useState(null);
+  const [privacyConsent, setPrivacyConsent] = useState(false);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const update = (name, value) => setForm((p) => ({ ...p, [name]: value }));
@@ -38,19 +37,15 @@ export default function InternshipForm({ onClose }) {
     if (!form.duration) return setError("Please select your preferred duration.");
     if (!resume) return setError("Please upload your resume (PDF, DOC or DOCX).");
     if (resume.size > 5 * 1024 * 1024) return setError("Resume must be 5 MB or smaller.");
-    if (!profilePhoto) return setError("Please upload a profile photo (used for your Internship ID card).");
-    if (profilePhoto.size > 2 * 1024 * 1024) return setError("Profile photo must be 2 MB or smaller.");
-    if (idDocument && idDocument.size > 5 * 1024 * 1024) return setError("Identity document must be 5 MB or smaller.");
+    if (profilePhoto && profilePhoto.size > 2 * 1024 * 1024) return setError("Profile photo must be 2 MB or smaller.");
+    if (!privacyConsent) return setError("Please confirm that you have read the application privacy notice.");
     setStatus("submitting"); setError("");
     try {
       const data = new FormData();
       Object.entries(form).forEach(([key, value]) => data.append(key, value));
       data.set("phone", `${form.countryCode} ${form.phone}`);
-      data.set("id_type", form.idType);
-      data.set("identity_number", form.identityNumber.trim());
       data.append("resume", resume);
-      data.append("profile_photo", profilePhoto);
-      if (idDocument) data.append("id_document", idDocument);
+      if (profilePhoto) data.append("profile_photo", profilePhoto);
       const response = await fetch(ENDPOINTS.INTERNSHIP, { method: "POST", body: data });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || "Unable to submit right now. Please try again.");
@@ -95,15 +90,11 @@ export default function InternshipForm({ onClose }) {
       <Field label="Preferred Start Date"><Input type="date" value={form.startDate} onChange={e => update("startDate", e.target.value)} /></Field>
       <div className="ssf-form-grid ssf-form-grid-2">
         <FileField label="Resume / CV" required accept=".pdf,.doc,.docx,application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hint="PDF, DOC or DOCX · maximum 5 MB" onChange={e => setResume(e.target.files?.[0] || null)} />
-        <FileField label="Profile Photo" required accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hint="JPG, PNG or WebP · max 2MB · used for your Internship ID card" onChange={e => setProfilePhoto(e.target.files?.[0] || null)} />
+        <FileField label="Profile Photo" accept="image/jpeg,image/png,image/webp,image/heic,image/heif" hint="Optional · JPG, PNG or WebP · max 2MB · requested only if needed after selection for an ID card" onChange={e => setProfilePhoto(e.target.files?.[0] || null)} />
       </div>
-      <div className="ssf-form-grid ssf-form-grid-2">
-        <Field label="Identity Proof Type" hint="Optional"><Select value={form.idType} onChange={e => update("idType", e.target.value)}>{ID_PROOF_TYPES.map(t => <option key={t} value={t}>{t}</option>)}</Select></Field>
-        <Field label="ID Number" hint="Optional · Aadhaar / PAN / other ID number"><Input value={form.identityNumber} onChange={e => update("identityNumber", e.target.value)} placeholder="e.g. Aadhaar or PAN number" /></Field>
-      </div>
-      <FileField label="Identity Document" accept=".jpg,.jpeg,.png,.webp,.heic,.heif,.pdf,application/pdf" hint="Optional · JPG, PNG, WebP or PDF · max 5MB" onChange={e => setIdDocument(e.target.files?.[0] || null)} />
       <Field label="Why do you want to intern with SSF?"><Textarea rows={4} value={form.message} onChange={e => update("message", e.target.value)} placeholder="Tell us about your interests, skills and what you hope to learn." /></Field>
-      <FormNote>Your resume is used only for internship evaluation. Your profile photo is used for your Internship ID card; the identity document is optional — add Aadhaar / PAN / Voter ID only if you have it handy.</FormNote>
+      <FormNote>We use your name, contact details, education information and CV to review and administer this application. Access is restricted to authorised team members; data is not sold. A profile photo is optional and may be requested separately after selection if an ID card is needed. Do not upload Aadhaar, PAN or any government identity document here. For privacy questions, correction or deletion requests, contact swastiksrijanfoundation@gmail.com. Applicants under 18 must arrange written parent/guardian consent before any internship activity.</FormNote>
+      <label className="flex items-start gap-3 text-sm text-zinc-600 leading-relaxed"><input type="checkbox" className="mt-1 h-4 w-4 accent-[#176447]" checked={privacyConsent} onChange={e => setPrivacyConsent(e.target.checked)} /><span>I have read the application privacy notice above and agree that SSF may use the information I submit to assess and respond to this internship application. <strong className="text-red-600">*</strong></span></label>
       {status === "error" && <Alert tone="error">{error}</Alert>}
       <SubmitButton busy={status === "submitting"} busyLabel="Submitting securely…">Submit Internship Application <FaArrowRight /></SubmitButton>
     </form>
