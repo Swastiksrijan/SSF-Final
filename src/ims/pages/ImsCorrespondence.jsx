@@ -310,7 +310,7 @@ function Register({ rows, total, lang, t, filters, setFilters, page, setPage, pa
               <tbody className="divide-y divide-slate-100">
                 {rows.map((r, i) => (
                   <tr key={r.id} className="hover:bg-slate-50">
-                    <td className="px-3 py-2.5 text-slate-500">{i + 1}</td>
+                    <td className="px-3 py-2.5 text-slate-500">{page * pageSize + i + 1}</td>
                     <td className="whitespace-nowrap px-3 py-2.5 font-mono text-xs text-slate-600">{r.referenceNo || r.recordId}</td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-slate-600">{r.correspondenceDate || '—'}</td>
                     <td className="px-3 py-2.5"><Badge status={r.direction} /></td>
