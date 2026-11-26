@@ -10,19 +10,19 @@ import footerImg3 from "../assets/footer-gallery-3.jpg";
 import footerImg4 from "../assets/footer-gallery-4.png";
 
 const ROLES = [
-  { id: "member", title: "MEMBER / सदस्य", text: "Swastik Srijan Foundation / स्थापना की यात्रा का हिस्सा बनना चाहता हूँ।", icon: FaUsers, color: "blue" },
-  { id: "volunteer", title: "VOLUNTEER / स्वयंसेवक", text: "अपने समय, ज्ञान या skill से सक्रिय रूप से योगदान करना चाहता हूँ।", icon: FaHandsHelping, color: "green" },
-  { id: "donor", title: "SUPPORT / सहयोग", text: "अपने resources या financial support से अच्छे काम को आगे बढ़ाना चाहता हूँ।", icon: FaHeart, color: "navy" },
-  { id: "partner", title: "PARTNER / साझेदार", text: "अपनी संस्था, company या network के साथ मिलकर काम करना चाहता हूँ।", icon: FaHandshake, color: "teal" },
+  { id: "member", title: "MEMBER / सदस्य", text: "I want to be part of the Swastik Srijan Foundation journey. / मैं Swastik Srijan Foundation की यात्रा का हिस्सा बनना चाहता हूँ।", icon: FaUsers, color: "blue" },
+  { id: "volunteer", title: "VOLUNTEER / स्वयंसेवक", text: "I want to contribute through my time, knowledge or skills. / मैं अपने समय, ज्ञान या कौशल के माध्यम से योगदान करना चाहता हूँ।", icon: FaHandsHelping, color: "green" },
+  { id: "donor", title: "SUPPORT / सहयोग", text: "I want to support meaningful work through resources or financial support. / मैं संसाधनों या आर्थिक सहयोग से अच्छे कार्यों को आगे बढ़ाना चाहता हूँ।", icon: FaHeart, color: "navy" },
+  { id: "partner", title: "PARTNER / साझेदार", text: "I want to work with the Foundation through my organisation, company or network. / मैं अपनी संस्था, कंपनी या नेटवर्क के माध्यम से Foundation के साथ काम करना चाहता हूँ।", icon: FaHandshake, color: "teal" },
 ];
 
 const GIFTS = [
-  { label: "TIME", icon: FaClock, role: "volunteer" },
-  { label: "KNOWLEDGE", icon: FaLightbulb, role: "volunteer" },
-  { label: "SKILL", icon: FaTools, role: "volunteer" },
-  { label: "NETWORK", icon: FaShareAlt, role: "partner" },
-  { label: "RESOURCES", icon: FaBuilding, role: "partner" },
-  { label: "JUST THE WILL", icon: FaHeart, role: "volunteer" },
+  { label: "TIME / समय", icon: FaClock, role: "volunteer" },
+  { label: "KNOWLEDGE / ज्ञान", icon: FaLightbulb, role: "volunteer" },
+  { label: "SKILL / कौशल", icon: FaTools, role: "volunteer" },
+  { label: "NETWORK / नेटवर्क", icon: FaShareAlt, role: "partner" },
+  { label: "RESOURCES / संसाधन", icon: FaBuilding, role: "partner" },
+  { label: "WILLINGNESS / इच्छा", icon: FaHeart, role: "volunteer" },
 ];
 
 const colors = {
