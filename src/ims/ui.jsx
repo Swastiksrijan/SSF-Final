@@ -58,14 +58,18 @@ const BADGE = {
   pending: 'bg-amber-100 text-amber-700', draft: 'bg-slate-100 text-slate-600', review: 'bg-amber-100 text-amber-700', inProgress: 'bg-blue-100 text-blue-700',
   overdue: 'bg-rose-100 text-rose-700', rejected: 'bg-rose-100 text-rose-700', cancelled: 'bg-slate-100 text-slate-500', archived: 'bg-slate-100 text-slate-500', absent: 'bg-rose-100 text-rose-700',
   inactive: 'bg-amber-100 text-amber-700', former: 'bg-slate-100 text-slate-500', resigned: 'bg-slate-100 text-slate-500', closed: 'bg-slate-100 text-slate-600', detected: 'bg-rose-100 text-rose-700', assigned: 'bg-blue-100 text-blue-700', notified: 'bg-amber-100 text-amber-700', decision: 'bg-indigo-100 text-indigo-700', action: 'bg-blue-100 text-blue-700', followUp: 'bg-amber-100 text-amber-700',
+  outward: 'bg-indigo-100 text-indigo-700', inward: 'bg-emerald-100 text-emerald-700',
+  sent: 'bg-blue-100 text-blue-700', delivered: 'bg-emerald-100 text-emerald-700', failed: 'bg-rose-100 text-rose-700', returned: 'bg-rose-100 text-rose-700', unknown: 'bg-slate-100 text-slate-600', not_applicable: 'bg-slate-100 text-slate-500',
+  awaiting_reply: 'bg-amber-100 text-amber-700', reply_received: 'bg-emerald-100 text-emerald-700', no_reply: 'bg-rose-100 text-rose-700', not_required: 'bg-slate-100 text-slate-500',
+  due: 'bg-amber-100 text-amber-700', not_due: 'bg-slate-100 text-slate-600', follow_up_done: 'bg-emerald-100 text-emerald-700',
 };
 
-export function Badge({ status }) {
+export function Badge({ status, label }) {
   const cls = BADGE[status] || 'bg-slate-100 text-slate-600';
   return (
     <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-0.5 text-[11px] font-semibold ${cls}`}>
       <span className="h-1.5 w-1.5 rounded-full bg-current opacity-70" />
-      {status || '—'}
+      {label || status || '—'}
     </span>
   );
 }

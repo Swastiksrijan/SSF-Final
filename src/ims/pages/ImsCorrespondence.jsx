@@ -313,14 +313,14 @@ function Register({ rows, total, lang, t, filters, setFilters, page, setPage, pa
                     <td className="px-3 py-2.5 text-slate-500">{page * pageSize + i + 1}</td>
                     <td className="whitespace-nowrap px-3 py-2.5 font-mono text-xs text-slate-600">{r.referenceNo || r.recordId}</td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-slate-600">{r.correspondenceDate || '—'}</td>
-                    <td className="px-3 py-2.5"><Badge status={r.direction} /></td>
+                    <td className="px-3 py-2.5"><Badge status={r.direction} label={labelOf(DIRECTION, r.direction, lang)} /></td>
                     <td className="px-3 py-2.5 text-slate-700">{r.department || r.recipient || '—'}</td>
                     <td className="px-3 py-2.5 text-slate-600">{from(r)}</td>
                     <td className="px-3 py-2.5 text-slate-600">{to(r)}</td>
                     <td className="max-w-[280px] px-3 py-2.5 text-slate-700"><span className="line-clamp-2">{r.subject || '—'}</span></td>
                     <td className="px-3 py-2.5 text-slate-600">{labelOf(MODES, r.mode, lang)}</td>
-                    <td className="px-3 py-2.5"><Badge status={r.deliveryStatus} /></td>
-                    <td className="px-3 py-2.5"><Badge status={r.replyStatus} /></td>
+                    <td className="px-3 py-2.5"><Badge status={r.deliveryStatus} label={labelOf(DELIVERY, r.deliveryStatus, lang)} /></td>
+                    <td className="px-3 py-2.5"><Badge status={r.replyStatus} label={labelOf(REPLY, r.replyStatus, lang)} /></td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-slate-600">{r.followUpDate || '—'}</td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-slate-600">
                       {r.direction === 'outward'
@@ -402,7 +402,7 @@ function FollowUp({ scope, lang, onView, onEdit, refresh }) {
                     <td className="whitespace-nowrap px-3 py-2.5">
                       {r.followUpDate || '—'} {r.overdue && <span className="ml-1 rounded bg-rose-100 px-1.5 text-[11px] font-semibold text-rose-700">Overdue</span>}
                     </td>
-                    <td className="px-3 py-2.5"><Badge status={r.replyStatus} /></td>
+                    <td className="px-3 py-2.5"><Badge status={r.replyStatus} label={labelOf(REPLY, r.replyStatus, lang)} /></td>
                     <td className="whitespace-nowrap px-3 py-2.5 text-right">
                       <button onClick={() => onView(r)} className="mr-2 text-slate-500 hover:text-[#12345A]" title="View"><Icons.Eye size={16} /></button>
                       <button onClick={() => onEdit(r)} className="mr-2 text-slate-500 hover:text-[#176447]" title="Edit"><Icons.Pencil size={16} /></button>
