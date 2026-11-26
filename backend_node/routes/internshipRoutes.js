@@ -75,8 +75,8 @@ router.get('/admin/internships/:id/files/:kind', requireAdminAuth, async (req, r
         const allowedRoots = ['/private_uploads/internships/', '/uploads/internships/'];
         const prefix = allowedRoots.find(root => stored.startsWith(root));
         if (!prefix) return res.status(404).json({ message: 'File not found.' });
-        const filePath = path.resolve(__dirname, '..', stored.replace(/^\\/+/, ''));
-        const expectedRoot = path.resolve(__dirname, '..', prefix.replace(/^\\/+|\\/+$/g, ''));
+        const filePath = path.resolve(__dirname, '..', stored.slice(1));
+        const expectedRoot = path.resolve(__dirname, '..', prefix.slice(1, -1));
         if (!filePath.startsWith(expectedRoot + path.sep) || !fs.existsSync(filePath)) return res.status(404).json({ message: 'File not found.' });
         return res.download(filePath, path.basename(filePath));
     } catch (error) {
