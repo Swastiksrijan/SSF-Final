@@ -37,6 +37,13 @@ const requireAdminAuth = (req, res, next) => { const authHeader = req.headers.au
 const isAccountOnly = (member) => identity.isAccountOnly(member);
 const removeStoredFile = (storedPath) => { if (!storedPath) return; const relative = String(storedPath).replace(/^\/+/, ''); const filePath = path.join(__dirname, '..', relative); try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (error) { console.warn('Upload cleanup failed:', error.message); } };
 
+// Render's disk is wiped on every deploy and restart, so a stored /uploads path
+// dies with it. Photos are kept inline in the database instead.
+const toPhotoDataUrl = (file) => (file && file.path && file.mimetype
+    ? `data:${file.mimetype};base64,${fs.readFileSync(file.path).toString('base64')}`
+    : null);
+const isPhotoDataUrl = (value) => /^data:image\/(png|jpe?g|webp);base64,[A-Za-z0-9+/=]+$/.test(String(value || ''));
+
 router.post('/register', uploadVolunteerFiles.fields([{ name: 'id_document', maxCount: 1 }, { name: 'profile_photo', maxCount: 1 }]), async (req, res) => {
     try {
         const { name, email, phone, volunteer_type, position, id_type, message } = req.body || {};
@@ -60,7 +67,10 @@ router.post('/member-application-photo', (req, res) => {
             try { fs.unlinkSync(req.file.path); } catch (_) { /* ignore cleanup failure */ }
             return res.status(400).json({ status: 'error', message: 'Photo must be 2 MB or smaller.' });
         }
-        return res.status(201).json({ status: 'success', photoPath: `/uploads/${req.file.filename}` });
+        const photoData = toPhotoDataUrl(req.file);
+        try { fs.unlinkSync(req.file.path); } catch (_) { /* ignore cleanup failure */ }
+        if (!photoData) return res.status(400).json({ status: 'error', message: 'Unable to read that photo. Please try another file.' });
+        return res.status(201).json({ status: 'success', photoPath: photoData });
     });
 });
 
@@ -87,8 +97,10 @@ router.post('/member-application-bylaw', async (req, res) => {
         const existing = await Member.findOne({ where: { email: normalizedEmail } });
         if (existing) return res.status(409).json({ status: 'error', message: 'An application or account with this email already exists. Please contact SSF if you need to update it.' });
         // Photograph is optional; only accept a path this server generated.
-        const photoFileName = /^\/uploads\/([A-Za-z0-9._-]+)$/.exec(String(req.body.photoPath || '').trim());
-        const photoPath = photoFileName && fs.existsSync(path.join(uploadDir, photoFileName[1])) ? `/uploads/${photoFileName[1]}` : null;
+        const submittedPhoto = String(req.body.photoPath || '').trim();
+        const photoData = isPhotoDataUrl(submittedPhoto) ? submittedPhoto : null;
+        const photoFileName = /^\/uploads\/([A-Za-z0-9._-]+)$/.exec(submittedPhoto);
+        const photoPath = !photoData && photoFileName && fs.existsSync(path.join(uploadDir, photoFileName[1])) ? `/uploads/${photoFileName[1]}` : null;
         const applicationDetails = [
             'BYLAW MEMBERSHIP APPLICATION',
             'Category: ' + type,
@@ -134,6 +146,7 @@ router.post('/member-application-bylaw', async (req, res) => {
                 guardianName: String(fatherOrGuardian || '').trim() || null,
                 address: String(address).trim(), message: applicationDetails,
                 profilePhotoPath: photoPath,
+                profilePhotoData: photoData,
                 status: 'pending', paymentStatus: 'pending'
             }, { transaction });
             const category = type === 'patron' ? 'Guardian/Patron' : (type === 'life' ? 'Lifetime' : 'Ordinary');
