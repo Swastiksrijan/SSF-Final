@@ -7,7 +7,7 @@ const InternshipApplication = require('../models/InternshipApplication');
 const { databaseUnavailableResponse } = require('../services/dbHealth');
 const { Op } = require('sequelize');
 const router = express.Router();
-const uploadDir = path.join(__dirname, '..', 'uploads', 'internships');
+const uploadDir = path.join(__dirname, '..', 'private_uploads', 'internships');
 fs.mkdirSync(uploadDir, { recursive: true });
 const storage = multer.diskStorage({ destination: (_req, _file, cb) => cb(null, uploadDir), filename: (_req, file, cb) => cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${path.extname(file.originalname).toLowerCase()}`) });
 
@@ -29,7 +29,7 @@ const upload = multer({
 });
 
 const removeFile = (file) => { if (file?.path) fs.unlink(file.path, () => {}); };
-const publicUrl = (file) => (file ? `/uploads/internships/${file.filename}` : null);
+const privateFilePath = (file) => (file ? `/private_uploads/internships/${file.filename}` : null);
 
 const notifyAdmin = async (application) => { if (!emailConfigured()) return; const recipients=(process.env.ADMIN_EMAILS||process.env.ADMIN_EMAIL||'swastiksrijanfoundation@gmail.com').split(',').map(v=>v.trim()).filter(Boolean).join(','); try { await sendMail({from:'"SSF Internship"',to:recipients,subject:`New Internship Application: ${application.fullName}`,text:`New internship application received.\n\nName: ${application.fullName}\nEmail: ${application.email}\nPhone: ${application.phone}\nCollege: ${application.college}\nCourse: ${application.course}\nArea: ${application.internshipType}\nDuration: ${application.duration}\nStart Date: ${application.startDate||'Not specified'}\nResume: ${application.resumePath}\nIdentity proof: ${application.idDocumentPath||'Not provided'}`}); } catch(error){console.error('⚠️ Internship notification failed:',error.message);} };
 const requireAdminAuth=(req,res,next)=>{const authHeader=req.headers.authorization||'';const token=authHeader.startsWith('Bearer ')?authHeader.slice(7).trim():'';const expected=process.env.ADMIN_PORTAL_TOKEN||'ssf-admin-portal-token';if(!token||token!==expected)return res.status(401).json({message:'Unauthorized admin access'});next();};
@@ -52,7 +52,7 @@ router.post('/internship', (req, res) => {
             if (!clean.college || !clean.course || !clean.internshipType || !clean.duration) { cleanup(); return res.status(400).json({ message: 'Please complete all required application fields.' }); }
             if (!resume) { cleanup(); return res.status(400).json({ message: 'Please upload your resume.' }); }
             if (profilePhoto && profilePhoto.size > 2 * 1024 * 1024) { cleanup(); return res.status(400).json({ message: 'Profile photo must be 2MB or smaller.' }); }
-            const application = await InternshipApplication.create({ ...clean, resumePath: publicUrl(resume), profilePhotoPath: publicUrl(profilePhoto), idDocumentPath: publicUrl(idDocument), idType: String(id_type || '').trim() || null, identityNumber: String(identity_number || '').trim() || null, status: 'pending' });
+            const application = await InternshipApplication.create({ ...clean, resumePath: privateFilePath(resume), profilePhotoPath: privateFilePath(profilePhoto), idDocumentPath: privateFilePath(idDocument), idType: String(id_type || '').trim() || null, identityNumber: String(identity_number || '').trim() || null, status: 'pending' });
             await notifyAdmin(application);
             return res.status(201).json({ status: 'success', message: 'Internship application submitted successfully.', data: { id: application.id } });
         } catch (error) {
@@ -64,10 +64,31 @@ router.post('/internship', (req, res) => {
     });
 });
 
+router.get('/admin/internships/:id/files/:kind', requireAdminAuth, async (req, res) => {
+    try {
+        const fields = { resume: 'resumePath', photo: 'profilePhotoPath', 'id-document': 'idDocumentPath' };
+        const field = fields[String(req.params.kind || '')];
+        if (!field) return res.status(400).json({ message: 'Invalid internship file type.' });
+        const application = await InternshipApplication.findByPk(req.params.id);
+        if (!application) return res.status(404).json({ message: 'Internship application not found.' });
+        const stored = String(application[field] || '');
+        const allowedRoots = ['/private_uploads/internships/', '/uploads/internships/'];
+        const prefix = allowedRoots.find(root => stored.startsWith(root));
+        if (!prefix) return res.status(404).json({ message: 'File not found.' });
+        const filePath = path.resolve(__dirname, '..', stored.replace(/^\\/+/, ''));
+        const expectedRoot = path.resolve(__dirname, '..', prefix.replace(/^\\/+|\\/+$/g, ''));
+        if (!filePath.startsWith(expectedRoot + path.sep) || !fs.existsSync(filePath)) return res.status(404).json({ message: 'File not found.' });
+        return res.download(filePath, path.basename(filePath));
+    } catch (error) {
+        console.error('Internship file access error:', error);
+        return res.status(500).json({ message: 'Unable to open the requested file.' });
+    }
+});
+
 router.get('/admin/internships', requireAdminAuth, async (_req, res) => {
     try {
         const rows = await InternshipApplication.findAll({ order: [['createdAt', 'DESC']] });
-        return res.json(rows.map((r) => ({ ...r.toJSON(), resumeUrl: r.resumePath, profilePhotoUrl: r.profilePhotoPath, idDocumentUrl: r.idDocumentPath })));
+        return res.json(rows.map((r) => ({ ...r.toJSON(), resumeUrl: null, profilePhotoUrl: null, idDocumentUrl: null, resumeAvailable: Boolean(r.resumePath), profilePhotoAvailable: Boolean(r.profilePhotoPath), idDocumentAvailable: Boolean(r.idDocumentPath) })));
     } catch (error) { console.error('❌ Admin internships fetch error:', error); return res.status(500).json({ message: 'Unable to load internship applications.' }); }
 });
 
