@@ -65,6 +65,9 @@ router.get('/admin/internships/:id/files/:kind', requireAdminAuth, async (req, r
         const fields = { resume: 'resumePath', photo: 'profilePhotoPath', 'id-document': 'idDocumentPath' };
         const field = fields[String(req.params.kind || '')];
         if (!field) return res.status(400).json({ message: 'Invalid internship file type.' });
+        if (!/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(String(req.params.id || ''))) {
+            return res.status(404).json({ message: 'Internship application not found.' });
+        }
         const application = await InternshipApplication.findByPk(req.params.id);
         if (!application) return res.status(404).json({ message: 'Internship application not found.' });
         const stored = String(application[field] || '');
