@@ -66,6 +66,7 @@ import { Route as CampaignsRouteImport } from './routes/Campaigns'
 import { Route as CampaignRouteImport } from './routes/Campaign'
 import { Route as CSRPartnershipRouteImport } from './routes/CSRPartnership'
 import { Route as BlogRouteImport } from './routes/Blog'
+import { Route as BharatVikasModelRouteImport } from './routes/BharatVikasModel'
 import { Route as AwarenessQuizRouteImport } from './routes/AwarenessQuiz'
 import { Route as AdminPortalRouteImport } from './routes/AdminPortal'
 import { Route as AdminFundingOutreachRouteImport } from './routes/AdminFundingOutreach'
@@ -416,6 +417,11 @@ const BlogRoute = BlogRouteImport.update({
   path: '/Blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BharatVikasModelRoute = BharatVikasModelRouteImport.update({
+  id: '/BharatVikasModel',
+  path: '/BharatVikasModel',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AwarenessQuizRoute = AwarenessQuizRouteImport.update({
   id: '/AwarenessQuiz',
   path: '/AwarenessQuiz',
@@ -743,6 +749,7 @@ export interface FileRoutesByFullPath {
   '/AdminFundingOutreach': typeof AdminFundingOutreachRoute
   '/AdminPortal': typeof AdminPortalRoute
   '/AwarenessQuiz': typeof AwarenessQuizRoute
+  '/BharatVikasModel': typeof BharatVikasModelRoute
   '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
@@ -865,6 +872,7 @@ export interface FileRoutesByTo {
   '/AdminFundingOutreach': typeof AdminFundingOutreachRoute
   '/AdminPortal': typeof AdminPortalRoute
   '/AwarenessQuiz': typeof AwarenessQuizRoute
+  '/BharatVikasModel': typeof BharatVikasModelRoute
   '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
@@ -987,6 +995,7 @@ export interface FileRoutesById {
   '/AdminFundingOutreach': typeof AdminFundingOutreachRoute
   '/AdminPortal': typeof AdminPortalRoute
   '/AwarenessQuiz': typeof AwarenessQuizRoute
+  '/BharatVikasModel': typeof BharatVikasModelRoute
   '/Blog': typeof BlogRouteWithChildren
   '/CSRPartnership': typeof CSRPartnershipRoute
   '/Campaign': typeof CampaignRoute
@@ -1111,6 +1120,7 @@ export interface FileRouteTypes {
     | '/AdminFundingOutreach'
     | '/AdminPortal'
     | '/AwarenessQuiz'
+    | '/BharatVikasModel'
     | '/Blog'
     | '/CSRPartnership'
     | '/Campaign'
@@ -1233,6 +1243,7 @@ export interface FileRouteTypes {
     | '/AdminFundingOutreach'
     | '/AdminPortal'
     | '/AwarenessQuiz'
+    | '/BharatVikasModel'
     | '/Blog'
     | '/CSRPartnership'
     | '/Campaign'
@@ -1354,6 +1365,7 @@ export interface FileRouteTypes {
     | '/AdminFundingOutreach'
     | '/AdminPortal'
     | '/AwarenessQuiz'
+    | '/BharatVikasModel'
     | '/Blog'
     | '/CSRPartnership'
     | '/Campaign'
@@ -1477,6 +1489,7 @@ export interface RootRouteChildren {
   AdminFundingOutreachRoute: typeof AdminFundingOutreachRoute
   AdminPortalRoute: typeof AdminPortalRoute
   AwarenessQuizRoute: typeof AwarenessQuizRoute
+  BharatVikasModelRoute: typeof BharatVikasModelRoute
   BlogRoute: typeof BlogRouteWithChildren
   CSRPartnershipRoute: typeof CSRPartnershipRoute
   CampaignRoute: typeof CampaignRoute
@@ -1989,6 +2002,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/BharatVikasModel': {
+      id: '/BharatVikasModel'
+      path: '/BharatVikasModel'
+      fullPath: '/BharatVikasModel'
+      preLoaderRoute: typeof BharatVikasModelRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/AwarenessQuiz': {
       id: '/AwarenessQuiz'
       path: '/AwarenessQuiz'
@@ -2469,6 +2489,7 @@ const rootRouteChildren: RootRouteChildren = {
   AdminFundingOutreachRoute: AdminFundingOutreachRoute,
   AdminPortalRoute: AdminPortalRoute,
   AwarenessQuizRoute: AwarenessQuizRoute,
+  BharatVikasModelRoute: BharatVikasModelRoute,
   BlogRoute: BlogRouteWithChildren,
   CSRPartnershipRoute: CSRPartnershipRoute,
   CampaignRoute: CampaignRoute,

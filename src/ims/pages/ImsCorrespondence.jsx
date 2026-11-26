@@ -84,6 +84,7 @@ export default function ImsCorrespondence() {
   const gmailFileRef = useRef(null);
   const [gmailImporting, setGmailImporting] = useState(false);
   const [gmailImportSummary, setGmailImportSummary] = useState('');
+  const [gmailImportErrors, setGmailImportErrors] = useState([]);
 
   const [filters, setFilters] = useState({ search: '', fromDate: '', toDate: '', direction: '', deliveryStatus: '', replyStatus: '' });
   const direction = tab === 'outward' ? 'outward' : tab === 'inward' ? 'inward' : '';
@@ -95,6 +96,7 @@ export default function ImsCorrespondence() {
   }, []);
 
   useEffect(() => { loadStats(); }, [loadStats]);
+  useEffect(() => { setPage(0); }, [tab]);
 
   useEffect(() => {
     if (!['all', 'outward', 'inward'].includes(tab)) return;
@@ -117,13 +119,14 @@ export default function ImsCorrespondence() {
     const file = event.target.files && event.target.files[0];
     event.target.value = '';
     if (!file) return;
-    setGmailImporting(true); setErr(''); setGmailImportSummary('');
+    setGmailImporting(true); setErr(''); setGmailImportSummary(''); setGmailImportErrors([]);
     try {
       const parsed = JSON.parse(await file.text());
       const records = Array.isArray(parsed) ? parsed : parsed.records;
       if (!Array.isArray(records)) throw new Error('JSON file must contain an array or { records: [...] }.');
       const result = await ims.corrGmailImport(records);
       setGmailImportSummary(`Gmail import: ${result.inserted || 0} added, ${result.skipped || 0} duplicates skipped, ${result.failed || 0} failed, ${result.linkFailed || 0} reply links need review.`);
+      setGmailImportErrors(Array.isArray(result.errors) ? result.errors : []);
       refresh();
     } catch (e) { setErr(e.message || 'Gmail import failed.'); }
     finally { setGmailImporting(false); }
@@ -162,6 +165,21 @@ export default function ImsCorrespondence() {
       <Tabs tabs={tabs} value={tab} onChange={setTab} />
       {err && <Card className="mb-3 border-rose-200 bg-rose-50 p-3 text-sm text-rose-700">{err}</Card>}
       {gmailImportSummary && <Card className="mb-3 border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800">{gmailImportSummary}</Card>}
+      {gmailImportErrors.length > 0 && (
+        <Card className="mb-3 border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+          <p className="font-semibold">
+            {lang === 'hi'
+              ? `${gmailImportErrors.length} पंक्ति आयात नहीं हुई — कारण:`
+              : `${gmailImportErrors.length} row(s) not imported — reason:`}
+          </p>
+          <ul className="mt-1 max-h-40 list-disc overflow-auto pl-5">
+            {gmailImportErrors.slice(0, 25).map((e, i) => (
+              <li key={i}>{lang === 'hi' ? 'पंक्ति' : 'Row'} {(e.row ?? i) + 1}: {e.message}</li>
+            ))}
+          </ul>
+          {gmailImportErrors.length > 25 && <p className="mt-1 text-xs">…{gmailImportErrors.length - 25} {lang === 'hi' ? 'और' : 'more'}</p>}
+        </Card>
+      )}
 
       {tab === 'dashboard' && <Dashboard stats={stats} onOpen={(id) => setTab(id)} lang={lang} />}
       {['all', 'outward', 'inward'].includes(tab) && (
@@ -225,9 +243,19 @@ function Dashboard({ stats, onOpen, lang }) {
 
 // ---- Register table + filters ---------------------------------------------
 function Register({ rows, total, lang, t, filters, setFilters, page, setPage, pageSize, onView, onEdit, onReply, onArchive }) {
+  const L = (en, hi) => (lang === 'hi' ? hi : en);
   const set = (k, v) => { setPage(0); setFilters((f) => ({ ...f, [k]: v })); };
-  const setYear = (year) => { setPage(0); setFilters((f) => ({ ...f, fromDate: `${year}-01-01`, toDate: year === 2026 ? '2026-11-25' : `${year}-12-31` })); };
+  const setYear = (year) => {
+    const end = year === new Date().getFullYear() ? new Date().toISOString().slice(0, 10) : `${year}-12-31`;
+    setPage(0);
+    setFilters((f) => ({ ...f, fromDate: `${year}-01-01`, toDate: end }));
+  };
   const clearDates = () => { setPage(0); setFilters((f) => ({ ...f, fromDate: '', toDate: '' })); };
+  const thisYear = new Date().getFullYear();
+  const years = [thisYear, thisYear - 1, thisYear - 2, thisYear - 3];
+  const activeYear = years.find((y) => filters.fromDate === `${y}-01-01`);
+  const pages = Math.max(1, Math.ceil(total / pageSize));
+  const chip = (on) => `rounded-full border px-2.5 py-1 text-[11px] font-semibold ${on ? 'border-[#12345A] bg-[#12345A] text-white' : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'}`;
   const from = (r) => r.senderEmail || '—';
   const to = (r) => r.toEmails || r.recipientEmail || '—';
   return (
@@ -247,6 +275,11 @@ function Register({ rows, total, lang, t, filters, setFilters, page, setPage, pa
             <option value="">{lang === 'hi' ? 'उत्तर स्थिति' : 'Reply Status'}</option>
             {REPLY.map((o) => <option key={o[0]} value={o[0]}>{lang === 'hi' ? o[2] : o[1]}</option>)}
           </select>
+        </div>
+        <div className="mt-2 flex flex-wrap items-center gap-1.5">
+          <span className="mr-1 text-[11px] font-semibold uppercase tracking-wide text-slate-400">{L('Year', 'वर्ष')}</span>
+          <button onClick={clearDates} className={chip(!activeYear && !filters.fromDate && !filters.toDate)}>{L('All', 'सभी')}</button>
+          {years.map((y) => <button key={y} onClick={() => setYear(y)} className={chip(activeYear === y)}>{y}</button>)}
         </div>
       </Card>
 
@@ -307,8 +340,17 @@ function Register({ rows, total, lang, t, filters, setFilters, page, setPage, pa
               </tbody>
             </table>
           </div>
-          <div className="border-t border-slate-100 px-4 py-2 text-xs text-slate-500">
-            {lang === 'hi' ? `${rows.length} / ${total} दिखाए जा रहे हैं` : `Showing ${rows.length} of ${total}`}
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 px-4 py-2 text-xs text-slate-500">
+            <span>{lang === 'hi' ? `${rows.length} / ${total} दिखाए जा रहे हैं` : `Showing ${rows.length} of ${total}`}</span>
+            {total > pageSize && (
+              <div className="flex items-center gap-2">
+                <button onClick={() => setPage(Math.max(0, page - 1))} disabled={page === 0}
+                  className="rounded border border-slate-200 px-2 py-1 font-semibold disabled:opacity-40">‹ {L('Prev', 'पिछला')}</button>
+                <span>{L('Page', 'पृष्ठ')} {page + 1} / {pages}</span>
+                <button onClick={() => setPage(page + 1)} disabled={page + 1 >= pages}
+                  className="rounded border border-slate-200 px-2 py-1 font-semibold disabled:opacity-40">{L('Next', 'अगला')} ›</button>
+              </div>
+            )}
           </div>
         </Card>
       )}
