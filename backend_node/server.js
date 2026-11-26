@@ -20,7 +20,9 @@ app.use(cors());
 // a data URL) can be created through the IMS. The previous 100kb default rejected
 // them with a 413 before the request ever reached a route.
 app.use(express.json({ limit: '12mb' }));
-// Internship applications may contain personal data. Keep legacy internship files off the public static mount; authorised admins use the protected download route.\napp.use('/uploads/internships', (_req, res) => res.status(404).json({ message: 'Not found' }));\napp.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+// Internship applications may contain personal data. Keep legacy internship files off the public static mount; authorised admins use the protected download route.
+app.use('/uploads/internships', (_req, res) => res.status(404).json({ message: 'Not found' }));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 const { databaseUnavailableMiddleware } = require('./services/dbHealth');
 
