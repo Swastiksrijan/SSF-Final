@@ -11,10 +11,8 @@ const uploadDir = path.join(__dirname, '..', 'private_uploads', 'internships');
 fs.mkdirSync(uploadDir, { recursive: true });
 const storage = multer.diskStorage({ destination: (_req, _file, cb) => cb(null, uploadDir), filename: (_req, file, cb) => cb(null, `${Date.now()}-${Math.random().toString(36).slice(2, 10)}${path.extname(file.originalname).toLowerCase()}`) });
 
-// One multipart pass carries the resume, an optional profile photo and an
-// optional identity document. The resume stays mandatory (it is the basis of
-// the application); the photo and ID proof are optional so a candidate without
-// a scanned document on hand is never blocked from applying.
+// The initial application accepts only the required CV and an optional profile
+// photo. Government identity documents are not collected through this public form.
 const RESUME_TYPES = ['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'];
 const IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/heic', 'image/heif'];
 const upload = multer({
@@ -23,7 +21,6 @@ const upload = multer({
     fileFilter: (_req, file, cb) => {
         if (file.fieldname === 'resume') return RESUME_TYPES.includes(file.mimetype) ? cb(null, true) : cb(new Error('Resume must be PDF, DOC or DOCX.'));
         if (file.fieldname === 'profile_photo') return IMAGE_TYPES.includes(file.mimetype) ? cb(null, true) : cb(new Error('Profile photo must be JPG, PNG or WebP.'));
-        if (file.fieldname === 'id_document') return (IMAGE_TYPES.includes(file.mimetype) || file.mimetype === 'application/pdf') ? cb(null, true) : cb(new Error('Identity document must be JPG, PNG, WebP or PDF.'));
         return cb(new Error('Unexpected upload field.'));
     }
 });
@@ -37,11 +34,10 @@ const nextNumber=async()=> (await InternshipApplication.count({where:{internId:{
 const code=(prefix,number,date=new Date())=>`${prefix}-${String(date.getMonth()+1).padStart(2,'0')}${String(date.getFullYear()).slice(-2)}-${String(number).padStart(4,'0')}`;
 
 router.post('/internship', (req, res) => {
-    upload.fields([{ name: 'resume', maxCount: 1 }, { name: 'profile_photo', maxCount: 1 }, { name: 'id_document', maxCount: 1 }])(req, res, async (uploadError) => {
+    upload.fields([{ name: 'resume', maxCount: 1 }, { name: 'profile_photo', maxCount: 1 }])(req, res, async (uploadError) => {
         const resume = req.files?.resume?.[0];
         const profilePhoto = req.files?.profile_photo?.[0];
-        const idDocument = req.files?.id_document?.[0];
-        const cleanup = () => { removeFile(resume); removeFile(profilePhoto); removeFile(idDocument); };
+        const cleanup = () => { removeFile(resume); removeFile(profilePhoto); };
         try {
             if (uploadError) return res.status(400).json({ message: uploadError.message || 'Invalid upload.' });
             const { fullName, email, phone, college, course, internshipType, duration, startDate, message, id_type, identity_number } = req.body || {};
@@ -52,7 +48,7 @@ router.post('/internship', (req, res) => {
             if (!clean.college || !clean.course || !clean.internshipType || !clean.duration) { cleanup(); return res.status(400).json({ message: 'Please complete all required application fields.' }); }
             if (!resume) { cleanup(); return res.status(400).json({ message: 'Please upload your resume.' }); }
             if (profilePhoto && profilePhoto.size > 2 * 1024 * 1024) { cleanup(); return res.status(400).json({ message: 'Profile photo must be 2MB or smaller.' }); }
-            const application = await InternshipApplication.create({ ...clean, resumePath: privateFilePath(resume), profilePhotoPath: privateFilePath(profilePhoto), idDocumentPath: privateFilePath(idDocument), idType: String(id_type || '').trim() || null, identityNumber: String(identity_number || '').trim() || null, status: 'pending' });
+            const application = await InternshipApplication.create({ ...clean, resumePath: privateFilePath(resume), profilePhotoPath: privateFilePath(profilePhoto), idType: String(id_type || '').trim() || null, identityNumber: String(identity_number || '').trim() || null, status: 'pending' });
             await notifyAdmin(application);
             return res.status(201).json({ status: 'success', message: 'Internship application submitted successfully.', data: { id: application.id } });
         } catch (error) {
