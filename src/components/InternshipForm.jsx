@@ -5,10 +5,9 @@ import { Alert, Field, FileField, FormHead, FormNote, Input, Select, SubmitButto
 
 const INITIAL = {
   fullName: "", email: "", countryCode: "+91", phone: "", college: "", course: "",
-  internshipType: "", duration: "", startDate: "", message: "", idType: "Aadhaar Card", identityNumber: ""
+  internshipType: "", duration: "", startDate: "", message: ""
 };
 
-const ID_PROOF_TYPES = ["Aadhaar Card", "PAN Card", "Voter ID", "Driving Licence", "Passport", "College / Student ID", "Other Government ID"];
 
 const roles = [
   ["social_media", "Social Media & Marketing"],
