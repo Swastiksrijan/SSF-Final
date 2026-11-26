@@ -17,11 +17,14 @@ const roles = [
   ["tech_dev", "Web Development & Tech"]
 ];
 
+const POLICY_VERSION = "internship-policy-2026-11-26";
+
 export default function InternshipForm({ onClose }) {
   const [form, setForm] = useState(INITIAL);
   const [resume, setResume] = useState(null);
   const [profilePhoto, setProfilePhoto] = useState(null);
   const [privacyConsent, setPrivacyConsent] = useState(false);
+  const [unpaidAck, setUnpaidAck] = useState(false);
   const [status, setStatus] = useState("idle");
   const [error, setError] = useState("");
   const update = (name, value) => setForm((p) => ({ ...p, [name]: value }));
@@ -39,6 +42,7 @@ export default function InternshipForm({ onClose }) {
     if (resume.size > 5 * 1024 * 1024) return setError("Resume must be 5 MB or smaller.");
     if (profilePhoto && profilePhoto.size > 2 * 1024 * 1024) return setError("Profile photo must be 2 MB or smaller.");
     if (!privacyConsent) return setError("Please confirm that you have read the application privacy notice.");
+    if (!unpaidAck) return setError("Please confirm that you understand this is an unpaid internship with no fee and no expenses paid by SSF.");
     setStatus("submitting"); setError("");
     try {
       const data = new FormData();
@@ -46,6 +50,8 @@ export default function InternshipForm({ onClose }) {
       data.set("phone", `${form.countryCode} ${form.phone}`);
       data.append("resume", resume);
       if (profilePhoto) data.append("profile_photo", profilePhoto);
+      data.append("policy_ack", "true");
+      data.append("policy_version", POLICY_VERSION);
       const response = await fetch(ENDPOINTS.INTERNSHIP, { method: "POST", body: data });
       const result = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(result.message || "Unable to submit right now. Please try again.");
@@ -61,13 +67,17 @@ export default function InternshipForm({ onClose }) {
       <SuccessPanel title="Application Submitted" actions={
         onClose ? <button onClick={onClose} className="px-7 py-3 rounded-xl bg-[#12345A] text-white font-bold hover:bg-[#176447] transition-colors">Close</button> : null
       }>
-        Thank you. Your internship application has been received. Our team will review it and contact you by email or phone.
+        Thank you. Your internship application has been received. Our team will review it and contact you by email or phone. This internship is free and unpaid — SSF never asks for any fee or payment; report anyone demanding money in SSF's name to swastiksrijanfoundation@gmail.com.
       </SuccessPanel>
     </div>
   );
 
   return <div className="p-6 md:p-10">
     <FormHead eyebrow="Internship Application" title="Apply for an Internship" subtitle="इंटर्नशिप के लिए आवेदन करें" />
+    <div className="mt-5 rounded-2xl border border-[#176447]/30 bg-[#176447]/5 p-4 text-sm leading-relaxed text-zinc-700">
+      <p className="font-black text-[#12345A]">निःशुल्क और अवैतनिक | Free and unpaid internship</p>
+      <p className="mt-1">SSF किसी भी चरण पर कोई शुल्क नहीं लेता और कोई stipend, वेतन या भत्ता नहीं देता। यात्रा, भोजन, आवास, इंटरनेट और अन्य खर्च आप स्वयं वहन करेंगे। किसी व्यक्तिगत खाते/UPI पर पैसा न भेजें — SSF कभी पैसे नहीं मांगता; ऐसी मांग होने पर swastiksrijanfoundation@gmail.com पर सूचित करें।</p>
+    </div>
     <form onSubmit={submit} className="ssf-form mt-6" noValidate>
       <div className="ssf-form-grid ssf-form-grid-2">
         <Field label="Full Name" required><Input value={form.fullName} onChange={e => update("fullName", e.target.value)} placeholder="Your full name" autoComplete="name" /></Field>
@@ -95,6 +105,7 @@ export default function InternshipForm({ onClose }) {
       <Field label="Why do you want to intern with SSF?"><Textarea rows={4} value={form.message} onChange={e => update("message", e.target.value)} placeholder="Tell us about your interests, skills and what you hope to learn." /></Field>
       <FormNote>We use your name, contact details, education information and CV to review and administer this application. Access is restricted to authorised team members; data is not sold. A profile photo is optional and may be requested separately after selection if an ID card is needed. Do not upload Aadhaar, PAN or any government identity document here. For privacy questions, correction or deletion requests, contact swastiksrijanfoundation@gmail.com. Applicants under 18 must arrange written parent/guardian consent before any internship activity.</FormNote>
       <label className="flex items-start gap-3 text-sm text-zinc-600 leading-relaxed"><input type="checkbox" className="mt-1 h-4 w-4 accent-[#176447]" checked={privacyConsent} onChange={e => setPrivacyConsent(e.target.checked)} /><span>I have read the application privacy notice above and agree that SSF may use the information I submit to assess and respond to this internship application. <strong className="text-red-600">*</strong></span></label>
+      <label className="flex items-start gap-3 text-sm text-zinc-600 leading-relaxed"><input type="checkbox" className="mt-1 h-4 w-4 accent-[#176447]" checked={unpaidAck} onChange={e => setUnpaidAck(e.target.checked)} /><span>मैं समझता/समझती हूँ कि यह Internship निःशुल्क और अवैतनिक है — SSF कोई शुल्क नहीं लेता, कोई stipend/वेतन/भत्ता नहीं देता, और यात्रा, भोजन, आवास तथा अन्य खर्च मैं स्वयं वहन करूँगा/करूँगी। <strong className="text-red-600">*</strong></span></label>
       {status === "error" && <Alert tone="error">{error}</Alert>}
       <SubmitButton busy={status === "submitting"} busyLabel="Submitting securely…">Submit Internship Application <FaArrowRight /></SubmitButton>
     </form>

@@ -16,6 +16,10 @@ const COLUMNS = [
   { table: 'InternshipApplications', column: 'idDocumentPath', type: 'VARCHAR(255)' },
   { table: 'InternshipApplications', column: 'idType', type: 'VARCHAR(255)' },
   { table: 'InternshipApplications', column: 'identityNumber', type: 'VARCHAR(255)' },
+  // The free, unpaid and self-borne-expense policy is acknowledged before an
+  // application is accepted, and the acknowledgement is kept as evidence.
+  { table: 'InternshipApplications', column: 'policyAcknowledgedAt', type: 'TIMESTAMP WITH TIME ZONE' },
+  { table: 'InternshipApplications', column: 'policyVersion', type: 'VARCHAR(255)' },
   // Donors can attach a PAN / identity document and a profile photo.
   { table: 'Donors', column: 'idDocumentPath', type: 'VARCHAR(255)' },
   { table: 'Donors', column: 'profilePhotoPath', type: 'VARCHAR(255)' },

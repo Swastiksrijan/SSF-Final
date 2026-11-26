@@ -17,6 +17,8 @@ const InternshipApplication = sequelize.define('InternshipApplication', {
     idType: { type: DataTypes.STRING, allowNull: true },
     identityNumber: { type: DataTypes.STRING, allowNull: true },
     message: { type: DataTypes.TEXT, allowNull: true },
+    policyAcknowledgedAt: { type: DataTypes.DATE, allowNull: true },
+    policyVersion: { type: DataTypes.STRING, allowNull: true },
     status: { type: DataTypes.ENUM('pending', 'reviewed', 'selected', 'completed', 'rejected'), defaultValue: 'pending' },
     internId: { type: DataTypes.STRING, allowNull: true, unique: true },
     joiningLetterId: { type: DataTypes.STRING, allowNull: true, unique: true },
