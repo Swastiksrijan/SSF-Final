@@ -140,6 +140,12 @@ export default function FooterSection() {
           <div className="min-w-0">
             <p className={headingClass}>Email</p>
             <a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="break-all text-sm text-white/75 transition hover:text-[#ffc46b]"><FaEnvelope className="mr-2 inline text-[#ffc46b]" />{CONTACT_INFO.primaryEmail}</a>
+            <div className="mt-1.5 break-all text-xs text-white/60">
+              <a href={`mailto:${CONTACT_INFO.alternateEmail}`} className="transition hover:text-[#ffc46b]">{CONTACT_INFO.alternateEmail}</a>
+              {" · "}
+              <a href={`https://${CONTACT_INFO.alternateDomain}`} target="_blank" rel="noopener noreferrer" className="transition hover:text-[#ffc46b]">{CONTACT_INFO.alternateDomain}</a>
+              {" "}<span className="text-white/35">(alternate)</span>
+            </div>
           </div>
           <div>
             <p className={headingClass}>Call Us</p>

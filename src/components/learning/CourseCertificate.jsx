@@ -41,7 +41,7 @@ export default function CourseCertificate({ subject, courseTitle, courseMeta, pr
   }, [subject, title, user, progress]);
   const emailHref = useMemo(() => {
     const body = "Namaste SSF Team,\n\nI have completed the learning for: " + subject.en + " (" + title + ").\n\nLearner name: " + (user?.fullName || "") + "\nAccount email: " + (user?.email || "") + "\nProgress: " + progress + "%\n\nPlease review my certificate request.\n\nThank you.";
-    return "mailto:info@swastiksrijan.in?subject=" + encodeURIComponent("Certificate request – " + subject.en) + "&body=" + encodeURIComponent(body);
+    return "mailto:info@swastiksrijan.org?subject=" + encodeURIComponent("Certificate request – " + subject.en) + "&body=" + encodeURIComponent(body);
   }, [subject, title, user, progress]);
 
   const submitRequest = async () => {

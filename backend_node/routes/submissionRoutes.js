@@ -48,7 +48,7 @@ const multipart = (fields) => (req, res, next) => {
   });
 };
 
-const adminRecipients = () => (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.in').split(',').map(v => v.trim()).filter(Boolean).join(',');
+const adminRecipients = () => (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.org').split(',').map(v => v.trim()).filter(Boolean).join(',');
 const notifyAdmin = async (subject, text) => {
   if (!emailConfigured()) { console.warn('⚠️ Email credentials missing; application was saved without email notification.'); return false; }
   try {

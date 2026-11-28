@@ -33,7 +33,7 @@ export default function VolunteerHardcopy() {
           <p className="font-bold text-[#12345A]">पंजीकृत कार्यालय / REGISTERED OFFICE</p>
           <p>वार्ड नं. 1, ग्राम – दादर, पोस्ट – रहट, हुजूर, जिला रीवा, मध्य प्रदेश – 486446, भारत</p>
           <p>Ward No. 1, Village – Dadar, Post – Rahat, Huzur, District Rewa, Madhya Pradesh – 486446, India</p>
-          <p>वेबसाइट / Website: swastiksrijan.in | ईमेल / Email: info@swastiksrijan.in | फोन / Phone: +91 97183 46691</p>
+          <p>वेबसाइट / Website: swastiksrijan.in | ईमेल / Email: info@swastiksrijan.org | फोन / Phone: +91 97183 46691</p>
         </section>
 
         <div className="mt-4 flex flex-wrap justify-between gap-2 text-xs">
