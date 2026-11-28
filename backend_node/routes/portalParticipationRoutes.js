@@ -12,7 +12,7 @@ const cleanPhone = (value) => String(value || '').replace(/\s+/g, ' ').trim();
 const notifyAdmin = async (subject, text) => {
   if (!emailConfigured()) return false;
   try {
-    await sendMail({ from: '"Swastik Srijan Admin"', to: (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.in'), subject, text });
+    await sendMail({ from: '"Swastik Srijan Admin"', to: (process.env.ADMIN_EMAILS || process.env.ADMIN_EMAIL || 'info@swastiksrijan.org'), subject, text });
     return true;
   } catch (error) {
     console.error('Portal participation notification failed:', error.message);

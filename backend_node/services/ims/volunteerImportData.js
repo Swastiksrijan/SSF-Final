@@ -507,7 +507,7 @@ const VOLUNTEER_IMPORT = [
   },
   {
     fullName: "Raj kumar",
-    email: "Info@swastiksrijan.in",
+    email: "Info@swastiksrijan.org",
     mobile: "9372711674",
     city: "Pume",
     state: "Maharastra",

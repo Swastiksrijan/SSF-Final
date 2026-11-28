@@ -435,7 +435,7 @@ export default function Home() {
                 <div className="mt-3 flex items-center justify-center gap-2">
                   <a href="https://wa.me/919718346691?text=New%20Signup%0AName%3A%20%0AEmail%3A%20%0APhone%3A%20" target="_blank" rel="noreferrer" className="inline-flex flex-1 items-center justify-center rounded-full border border-emerald-400/60 bg-emerald-500/10 px-3 py-2 text-xs font-bold text-white hover:bg-emerald-500/20 transition-all">WhatsApp</a>
                   <span className="h-6 w-px bg-white/25" />
-                  <a href="mailto:info@swastiksrijan.in?subject=New%20signup%20alert&body=New%20login%2Fsignup%20activity%20on%20website." className="inline-flex flex-1 items-center justify-center rounded-full border border-sky-400/60 bg-sky-500/10 px-3 py-2 text-xs font-bold text-white hover:bg-sky-500/20 transition-all">Email</a>
+                  <a href="mailto:info@swastiksrijan.org?subject=New%20signup%20alert&body=New%20login%2Fsignup%20activity%20on%20website." className="inline-flex flex-1 items-center justify-center rounded-full border border-sky-400/60 bg-sky-500/10 px-3 py-2 text-xs font-bold text-white hover:bg-sky-500/20 transition-all">Email</a>
                 </div>
               </div>
             </div>

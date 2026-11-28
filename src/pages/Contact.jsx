@@ -82,6 +82,16 @@ export default function Contact() {
                 <div>
                   <p className="text-[10px] font-black text-zinc-400 uppercase tracking-[0.2em] mb-2">Email Support</p>
                   <a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="text-[#12345A] text-lg font-semibold hover:text-[#176447] break-all">{CONTACT_INFO.primaryEmail}</a>
+                  <p className="mt-1 text-xs text-zinc-500">
+                    Alternate / वैकल्पिक:{" "}
+                    <a href={`mailto:${CONTACT_INFO.alternateEmail}`} className="font-semibold text-[#12345A] hover:text-[#176447] break-all">
+                      {CONTACT_INFO.alternateEmail}
+                    </a>
+                    {" · "}
+                    <a href={`https://${CONTACT_INFO.alternateDomain}`} target="_blank" rel="noopener noreferrer" className="font-semibold text-[#12345A] hover:text-[#176447] break-all">
+                      {CONTACT_INFO.alternateDomain}
+                    </a>
+                  </p>
                   <div className="mt-2 flex flex-wrap items-center gap-3 text-xs"><a href={`mailto:${CONTACT_INFO.primaryEmail}`} className="font-bold text-[#176447] hover:underline">Send an email</a><button type="button" onClick={() => copyToClipboard(CONTACT_INFO.primaryEmail, "Email")} className="text-zinc-500 underline underline-offset-2 hover:text-[#12345A] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#176447] rounded-sm">Copy email</button></div>
                 </div>
               </div>

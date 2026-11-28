@@ -15,7 +15,7 @@ const ORG = {
   mottoHi: 'सहयोग • कौशल • जागरूकता • सृजन',
   website: 'swastiksrijan.in',
   phone: '+91 97183 46691',
-  email: 'info@swastiksrijan.in',
+  email: 'info@swastiksrijan.org',
   baseHashtags: '#SwastikSrijan #SSF #NGO #SocialImpact #India',
 };
 

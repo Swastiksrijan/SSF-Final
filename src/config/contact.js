@@ -4,11 +4,13 @@
  */
 export const CONTACT_INFO = {
     // Emails
-    primaryEmail: "info@swastiksrijan.in",
-    presidentEmail: "president@swastiksrijan.in",
+    primaryEmail: "info@swastiksrijan.org",
+    presidentEmail: "info@swastiksrijan.org",
     backupEmail: "swastiksrijanfoundation@gmail.com",
     secondaryEmail: "swastiksrijanfoundation@gmail.com",
-    privacyEmail: "info@swastiksrijan.in", // Dedicated privacy email for legal pages
+    privacyEmail: "info@swastiksrijan.org", // Dedicated privacy email for legal pages
+    alternateEmail: "info@swastiksrijan.in",
+    alternateDomain: "swastiksrijan.in",
 
     // Phone Numbers
     phones: {
@@ -43,7 +45,7 @@ export const CONTACT_INFO = {
     // Legal/DPO Info
     dataProtectionOfficer: {
         name: "Secretary, Swastik Srijan Foundation",
-        email: "info@swastiksrijan.in",
+        email: "info@swastiksrijan.org",
         phone: "+91 9718346691",
     }
 };

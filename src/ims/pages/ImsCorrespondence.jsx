@@ -708,11 +708,11 @@ function CorrespondenceDrawer({ mode, initial, lang, t, onClose, onSaved }) {
                 {isInward ? (
                   <>
                     <Input label={L('From Email', 'प्रेषक ईमेल')} value={form.senderEmail} onChange={(v) => set('senderEmail', v)} placeholder="sender@example.com" />
-                    <Input label={L('To Email (SSF)', 'प्राप्तकर्ता ईमेल (SSF)')} value={form.toEmails} onChange={(v) => set('toEmails', v)} placeholder="info@swastiksrijan.in" />
+                    <Input label={L('To Email (SSF)', 'प्राप्तकर्ता ईमेल (SSF)')} value={form.toEmails} onChange={(v) => set('toEmails', v)} placeholder="info@swastiksrijan.org" />
                   </>
                 ) : (
                   <>
-                    <Input label={L('From Email (SSF)', 'प्रेषक ईमेल (SSF)')} value={form.senderEmail} onChange={(v) => set('senderEmail', v)} placeholder="info@swastiksrijan.in" />
+                    <Input label={L('From Email (SSF)', 'प्रेषक ईमेल (SSF)')} value={form.senderEmail} onChange={(v) => set('senderEmail', v)} placeholder="info@swastiksrijan.org" />
                     <Input label={L('To Email(s)', 'प्राप्तकर्ता ईमेल')} value={form.toEmails} onChange={(v) => set('toEmails', v)} placeholder="ps.dept@mp.gov.in, officer@mp.gov.in" />
                   </>
                 )}

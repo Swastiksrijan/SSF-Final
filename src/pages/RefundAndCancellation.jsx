@@ -150,8 +150,8 @@ export default function RefundAndCancellation() {
             </div>
             <div>
               <p className="text-sm font-semibold uppercase tracking-wider text-slate-500">Refund / Support</p>
-              <a href="mailto:info@swastiksrijan.in" className="mt-2 inline-flex items-center gap-2 font-semibold text-orange-600 hover:text-orange-700">
-                <FaEnvelope /> info@swastiksrijan.in
+              <a href="mailto:info@swastiksrijan.org" className="mt-2 inline-flex items-center gap-2 font-semibold text-orange-600 hover:text-orange-700">
+                <FaEnvelope /> info@swastiksrijan.org
               </a>
               <p className="mt-2 text-slate-600">Website: swastiksrijan.in</p>
             </div>
